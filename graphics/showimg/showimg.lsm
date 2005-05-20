@@ -1,0 +1,12 @@
+Begin3
+Title:          ShowImg 
+Version:        0.9.4
+Entered-date:   02/09/2001
+Description:    A feature-rich image viewer for KDE3.x
+Keywords:       image viewer
+Author:         Richard Groult <rgroult@jalix.org> 
+Maintained-by:  Richard Groult <rgroult@jalix.org> 
+Home-page:      http://www.jalix.org/projets/showimg 
+Platforms:      Linux and other Unices
+Copying-policy: GNU Public License
+End

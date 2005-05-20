@@ -1,0 +1,1392 @@
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<class>DataWizard</class>
+<widget class="QWizard">
+    <property name="name">
+        <cstring>DataWizard</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>711</width>
+            <height>456</height>
+        </rect>
+    </property>
+    <property name="sizePolicy">
+        <sizepolicy>
+            <hsizetype>5</hsizetype>
+            <vsizetype>1</vsizetype>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+        </sizepolicy>
+    </property>
+    <property name="caption">
+        <string>Data Wizard</string>
+    </property>
+    <widget class="QWidget">
+        <property name="name">
+            <cstring>_pageDataSource</cstring>
+        </property>
+        <attribute name="title">
+            <string>Data Source</string>
+        </attribute>
+        <grid>
+            <property name="name">
+                <cstring>unnamed</cstring>
+            </property>
+            <widget class="QLabel" row="0" column="0" rowspan="1" colspan="4">
+                <property name="name">
+                    <cstring>textLabel2</cstring>
+                </property>
+                <property name="text">
+                    <string>&lt;p&gt;Please select a &lt;i&gt;data source&lt;/i&gt; to work from.  This will typically be your file containing data points or vectors.&lt;/p&gt;</string>
+                </property>
+                <property name="alignment">
+                    <set>WordBreak|AlignTop|AlignHCenter</set>
+                </property>
+            </widget>
+            <spacer row="1" column="1">
+                <property name="name">
+                    <cstring>spacer0</cstring>
+                </property>
+                <property name="orientation">
+                    <enum>Vertical</enum>
+                </property>
+                <property name="sizeType">
+                    <enum>Expanding</enum>
+                </property>
+                <property name="sizeHint">
+                    <size>
+                        <width>31</width>
+                        <height>100</height>
+                    </size>
+                </property>
+            </spacer>
+            <spacer row="2" column="0">
+                <property name="name">
+                    <cstring>spacer1</cstring>
+                </property>
+                <property name="orientation">
+                    <enum>Horizontal</enum>
+                </property>
+                <property name="sizeType">
+                    <enum>Expanding</enum>
+                </property>
+                <property name="sizeHint">
+                    <size>
+                        <width>101</width>
+                        <height>21</height>
+                    </size>
+                </property>
+            </spacer>
+            <widget class="KURLRequester" row="2" column="1" colspan="2" rowspan="1">
+                <property name="name">
+                    <cstring>_url</cstring>
+                </property>
+                <property name="sizePolicy">
+                    <sizepolicy>
+                        <hsizetype>5</hsizetype>
+                        <vsizetype>5</vsizetype>
+                        <horstretch>3</horstretch>
+                        <verstretch>0</verstretch>
+                    </sizepolicy>
+                </property>
+            </widget>
+            <spacer row="2" column="3">
+                <property name="name">
+                    <cstring>spacer2</cstring>
+                </property>
+                <property name="orientation">
+                    <enum>Horizontal</enum>
+                </property>
+                <property name="sizeType">
+                    <enum>Expanding</enum>
+                </property>
+                <property name="sizeHint">
+                    <size>
+                        <width>71</width>
+                        <height>21</height>
+                    </size>
+                </property>
+            </spacer>
+            <hbox row="3" column="1" colspan="2" rowspan="1">
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>_fileType</cstring>
+                    </property>
+                    <property name="alignment">
+                        <set>WordBreak|AlignTop</set>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>5</hsizetype>
+                            <vsizetype>5</vsizetype>
+                            <horstretch>2</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>_testURL</cstring>
+                    </property>
+                    <property name="hidden">
+                        <bool>true</bool>
+                    </property>
+                    <property name="text">
+                        <string>Connec&amp;t</string>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>5</hsizetype>
+                            <vsizetype>5</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>_configureSource</cstring>
+                    </property>
+                    <property name="enabled">
+                        <bool>false</bool>
+                    </property>
+                    <property name="text">
+                        <string>Con&amp;figure...</string>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>5</hsizetype>
+                            <vsizetype>5</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                </widget>
+            </hbox>
+            <spacer row="4" column="1">
+                <property name="name">
+                    <cstring>spacer5</cstring>
+                </property>
+                <property name="orientation">
+                    <enum>Vertical</enum>
+                </property>
+                <property name="sizeType">
+                    <enum>Expanding</enum>
+                </property>
+                <property name="sizeHint">
+                    <size>
+                        <width>31</width>
+                        <height>170</height>
+                    </size>
+                </property>
+            </spacer>
+        </grid>
+    </widget>
+    <widget class="QWidget">
+        <property name="name">
+            <cstring>_pageVectors</cstring>
+        </property>
+        <attribute name="title">
+            <string>Select Data</string>
+        </attribute>
+        <grid>
+            <property name="name">
+                <cstring>unnamed</cstring>
+            </property>
+            <widget class="QLayoutWidget" row="0" column="0">
+                <property name="name">
+                    <cstring>layout14</cstring>
+                </property>
+                <grid>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <widget class="QLineEdit" row="0" column="0" rowspan="1" colspan="2">
+                        <property name="name">
+                            <cstring>_vectorReduction</cstring>
+                        </property>
+                        <property name="toolTip" stdset="0">
+                            <string>Search Filter</string>
+                        </property>
+                        <property name="whatsThis" stdset="0">
+                            <string>Search Filter: Fields matching this filter will be selected and moved to the top of the list (but not checked).  '*' and '?' wild cards are supported.</string>
+                        </property>
+                    </widget>
+                    <widget class="QPushButton" row="0" column="2">
+                        <property name="name">
+                            <cstring>_vectorSearch</cstring>
+                        </property>
+                        <property name="sizePolicy">
+                            <sizepolicy>
+                                <hsizetype>0</hsizetype>
+                                <vsizetype>0</vsizetype>
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                            </sizepolicy>
+                        </property>
+                        <property name="text">
+                            <string>&amp;Search</string>
+                        </property>
+                        <property name="whatsThis" stdset="0">
+                            <string>Appends the '*' wild card to the beginning and end of the search filter to match everything containing the search filter text.</string>
+                        </property>
+                    </widget>
+                    <widget class="QPushButton" row="1" column="0">
+                        <property name="name">
+                            <cstring>_checkVectors</cstring>
+                        </property>
+                        <property name="text">
+                            <string>C&amp;heck Selected</string>
+                        </property>
+                        <property name="whatsThis" stdset="0">
+                            <string>Mark all selected fields for making curves.</string>
+                        </property>
+                    </widget>
+                    <widget class="QPushButton" row="1" column="1" rowspan="1" colspan="2">
+                        <property name="name">
+                            <cstring>_uncheckAll</cstring>
+                        </property>
+                        <property name="enabled">
+                            <bool>false</bool>
+                        </property>
+                        <property name="text">
+                            <string>&amp;Uncheck All</string>
+                        </property>
+                        <property name="whatsThis" stdset="0">
+                            <string>Clear all checked fields - undoes all previous selections.</string>
+                        </property>
+                    </widget>
+                    <widget class="QListView" row="2" column="0" rowspan="1" colspan="3">
+                        <column>
+                            <property name="text">
+                                <string>Field/Column</string>
+                            </property>
+                            <property name="clickable">
+                                <bool>true</bool>
+                            </property>
+                            <property name="resizable">
+                                <bool>true</bool>
+                            </property>
+                        </column>
+                        <property name="name">
+                            <cstring>_vectors</cstring>
+                        </property>
+                        <property name="resizePolicy">
+                            <enum>AutoOneFit</enum>
+                        </property>
+                        <property name="selectionMode">
+                            <enum>Extended</enum>
+                        </property>
+                        <property name="showSortIndicator">
+                            <bool>true</bool>
+                        </property>
+                        <property name="toolTip" stdset="0">
+                            <string>Field Selection: checked fields are plotted.</string>
+                        </property>
+                        <property name="whatsThis" stdset="0">
+                            <string>Field Selection: All checked fields will be plotted. Fields which are selected but not checked will not be plotted: they need to be checked first.</string>
+                        </property>
+                    </widget>
+                </grid>
+            </widget>
+            <widget class="QLayoutWidget" row="0" column="1">
+                <property name="name">
+                    <cstring>layout53</cstring>
+                </property>
+                <vbox>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <widget class="KstDataRange">
+                        <property name="name">
+                            <cstring>_kstDataRange</cstring>
+                        </property>
+                    </widget>
+                    <widget class="QButtonGroup">
+                        <property name="name">
+                            <cstring>buttonGroup5</cstring>
+                        </property>
+                        <property name="sizePolicy">
+                            <sizepolicy>
+                                <hsizetype>5</hsizetype>
+                                <vsizetype>0</vsizetype>
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                            </sizepolicy>
+                        </property>
+                        <property name="title">
+                            <string>Plot Types</string>
+                        </property>
+                        <grid>
+                            <property name="name">
+                                <cstring>unnamed</cstring>
+                            </property>
+                            <widget class="QRadioButton" row="0" column="2">
+                                <property name="name">
+                                    <cstring>_radioButtonPlotDataPSD</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>XY &amp;and power spectrum</string>
+                                </property>
+                                <property name="whatsThis" stdset="0">
+                                    <string>Produce both XY plots and Power Spectra of the data selected to the left.</string>
+                                </property>
+                            </widget>
+                            <widget class="QRadioButton" row="0" column="0">
+                                <property name="name">
+                                    <cstring>_radioButtonPlotData</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>&amp;XY</string>
+                                </property>
+                                <property name="checked">
+                                    <bool>true</bool>
+                                </property>
+                                <property name="whatsThis" stdset="0">
+                                    <string>Make XY plots only.  The Y (independent) variables are selected to the left.  The X (dependent) variable is selected below.</string>
+                                </property>
+                            </widget>
+                            <widget class="QRadioButton" row="0" column="1">
+                                <property name="name">
+                                    <cstring>_radioButtonPlotPSD</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>&amp;Power spectrum</string>
+                                </property>
+                                <property name="whatsThis" stdset="0">
+                                    <string>Only produce power spectrum plots.  The PSDs of the data selected to the left are generated using the parameters below.</string>
+                                </property>
+                            </widget>
+                            <widget class="Line" row="1" column="0" rowspan="1" colspan="3">
+                                <property name="name">
+                                    <cstring>line2</cstring>
+                                </property>
+                                <property name="frameShape">
+                                    <enum>HLine</enum>
+                                </property>
+                                <property name="frameShadow">
+                                    <enum>Sunken</enum>
+                                </property>
+                                <property name="orientation">
+                                    <enum>Horizontal</enum>
+                                </property>
+                            </widget>
+                            <widget class="QLayoutWidget" row="2" column="0" rowspan="1" colspan="3">
+                                <property name="name">
+                                    <cstring>layout16</cstring>
+                                </property>
+                                <hbox>
+                                    <property name="name">
+                                        <cstring>unnamed</cstring>
+                                    </property>
+                                    <widget class="QLabel">
+                                        <property name="name">
+                                            <cstring>_xvectLabel</cstring>
+                                        </property>
+                                        <property name="sizePolicy">
+                                            <sizepolicy>
+                                                <hsizetype>4</hsizetype>
+                                                <vsizetype>5</vsizetype>
+                                                <horstretch>0</horstretch>
+                                                <verstretch>0</verstretch>
+                                            </sizepolicy>
+                                        </property>
+                                        <property name="text">
+                                            <string>X axis vector:</string>
+                                        </property>
+                                        <property name="buddy" stdset="0">
+                                            <cstring>_xVector</cstring>
+                                        </property>
+                                    </widget>
+                                    <widget class="KstComboBox">
+                                        <property name="name">
+                                            <cstring>_xVector</cstring>
+                                        </property>
+                                        <property name="sizePolicy">
+                                            <sizepolicy>
+                                                <hsizetype>1</hsizetype>
+                                                <vsizetype>0</vsizetype>
+                                                <horstretch>1</horstretch>
+                                                <verstretch>0</verstretch>
+                                            </sizepolicy>
+                                        </property>
+                                        <property name="editable">
+                                            <bool>true</bool>
+                                        </property>
+                                        <property name="insertionPolicy">
+                                            <enum>NoInsertion</enum>
+                                        </property>
+                                        <property name="autoCompletion">
+                                            <bool>true</bool>
+                                        </property>
+                                        <property name="duplicatesEnabled">
+                                            <bool>false</bool>
+                                        </property>
+                                        <property name="urlDropsEnabled" stdset="0">
+                                            <bool>false</bool>
+                                        </property>
+                                        <property name="whatsThis" stdset="0">
+                                            <string>The field to be used as the X axis in XY curves.</string>
+                                        </property>
+                                    </widget>
+                                </hbox>
+                            </widget>
+                        </grid>
+                    </widget>
+                    <widget class="KstFFTOptions">
+                        <property name="name">
+                            <cstring>_kstFFTOptions</cstring>
+                        </property>
+                        <property name="enabled">
+                            <bool>false</bool>
+                        </property>
+                    </widget>
+                    <widget class="QCheckBox">
+                        <property name="name">
+                            <cstring>_applyFilters</cstring>
+                        </property>
+                        <property name="enabled">
+                            <bool>false</bool>
+                        </property>
+                        <property name="text">
+                            <string>Apply filters</string>
+                        </property>
+                    </widget>
+                </vbox>
+            </widget>
+        </grid>
+    </widget>
+    <widget class="QWidget">
+        <property name="name">
+            <cstring>_pageFilters</cstring>
+        </property>
+        <attribute name="title">
+            <string>Filters</string>
+        </attribute>
+        <grid>
+            <property name="name">
+                <cstring>unnamed</cstring>
+            </property>
+            <widget class="QLayoutWidget" row="0" column="1" rowspan="2" colspan="1">
+                <property name="name">
+                    <cstring>layout4</cstring>
+                </property>
+                <grid>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <widget class="QPushButton" row="1" column="1">
+                        <property name="name">
+                            <cstring>_newFilter</cstring>
+                        </property>
+                        <property name="text">
+                            <string>&amp;New Filter...</string>
+                        </property>
+                    </widget>
+                    <spacer row="1" column="0">
+                        <property name="name">
+                            <cstring>spacer6</cstring>
+                        </property>
+                        <property name="orientation">
+                            <enum>Horizontal</enum>
+                        </property>
+                        <property name="sizeType">
+                            <enum>Expanding</enum>
+                        </property>
+                        <property name="sizeHint">
+                            <size>
+                                <width>121</width>
+                                <height>21</height>
+                            </size>
+                        </property>
+                    </spacer>
+                    <widget class="QListBox" row="0" column="0" rowspan="1" colspan="2">
+                        <property name="name">
+                            <cstring>_filterList</cstring>
+                        </property>
+                    </widget>
+                </grid>
+            </widget>
+            <widget class="QLabel" row="0" column="0">
+                <property name="name">
+                    <cstring>textLabel4</cstring>
+                </property>
+                <property name="text">
+                    <string>&lt;p&gt;If you wish, select a filter to apply to the fields that are read in.&lt;/p&gt;</string>
+                </property>
+            </widget>
+            <spacer row="1" column="0">
+                <property name="name">
+                    <cstring>spacer7</cstring>
+                </property>
+                <property name="orientation">
+                    <enum>Vertical</enum>
+                </property>
+                <property name="sizeType">
+                    <enum>Expanding</enum>
+                </property>
+                <property name="sizeHint">
+                    <size>
+                        <width>51</width>
+                        <height>151</height>
+                    </size>
+                </property>
+            </spacer>
+        </grid>
+    </widget>
+    <widget class="QWidget">
+        <property name="name">
+            <cstring>_pagePlot</cstring>
+        </property>
+        <attribute name="title">
+            <string>Plot Layout</string>
+        </attribute>
+        <grid>
+            <property name="name">
+                <cstring>unnamed</cstring>
+            </property>
+            <widget class="QButtonGroup" row="2" column="1" rowspan="2" colspan="1">
+                <property name="name">
+                    <cstring>_windowGroup</cstring>
+                </property>
+                <property name="enabled">
+                    <bool>true</bool>
+                </property>
+                <property name="title">
+                    <string>Plot Place&amp;ment</string>
+                </property>
+                <vbox>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <widget class="QRadioButton">
+                        <property name="name">
+                            <cstring>_currentWindow</cstring>
+                        </property>
+                        <property name="text">
+                            <string>In current &amp;window</string>
+                        </property>
+                        <property name="checked">
+                            <bool>true</bool>
+                        </property>
+                    </widget>
+                    <widget class="QLayoutWidget">
+                        <property name="name">
+                            <cstring>layout11</cstring>
+                        </property>
+                        <hbox>
+                            <property name="name">
+                                <cstring>unnamed</cstring>
+                            </property>
+                            <widget class="QRadioButton">
+                                <property name="name">
+                                    <cstring>_existingWindow</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>In existing window</string>
+                                </property>
+                                <property name="accel">
+                                    <string></string>
+                                </property>
+                            </widget>
+                            <widget class="KstComboBox">
+                                <property name="name">
+                                    <cstring>_windowName</cstring>
+                                </property>
+                                <property name="enabled">
+                                    <bool>false</bool>
+                                </property>
+                                <property name="sizePolicy">
+                                    <sizepolicy>
+                                        <hsizetype>1</hsizetype>
+                                        <vsizetype>0</vsizetype>
+                                        <horstretch>1</horstretch>
+                                        <verstretch>0</verstretch>
+                                    </sizepolicy>
+                                </property>
+                            </widget>
+                        </hbox>
+                    </widget>
+                    <widget class="QRadioButton">
+                        <property name="name">
+                            <cstring>_newWindow</cstring>
+                        </property>
+                        <property name="text">
+                            <string>In new win&amp;dow</string>
+                        </property>
+                    </widget>
+                    <widget class="QRadioButton">
+                        <property name="name">
+                            <cstring>_newWindows</cstring>
+                        </property>
+                        <property name="enabled">
+                            <bool>false</bool>
+                        </property>
+                        <property name="text">
+                            <string>XY and PSD pl&amp;ots in separate new windows</string>
+                        </property>
+                    </widget>
+                    <widget class="QLayoutWidget">
+                        <property name="name">
+                            <cstring>layout13</cstring>
+                        </property>
+                        <hbox>
+                            <property name="name">
+                                <cstring>unnamed</cstring>
+                            </property>
+                            <widget class="QLabel">
+                                <property name="name">
+                                    <cstring>_newWindowNameLabel</cstring>
+                                </property>
+                                <property name="sizePolicy">
+                                    <sizepolicy>
+                                        <hsizetype>0</hsizetype>
+                                        <vsizetype>5</vsizetype>
+                                        <horstretch>0</horstretch>
+                                        <verstretch>0</verstretch>
+                                    </sizepolicy>
+                                </property>
+                                <property name="text">
+                                    <string>New window name:</string>
+                                </property>
+                            </widget>
+                            <widget class="QLineEdit">
+                                <property name="name">
+                                    <cstring>_newWindowName</cstring>
+                                </property>
+                                <property name="sizePolicy">
+                                    <sizepolicy>
+                                        <hsizetype>1</hsizetype>
+                                        <vsizetype>0</vsizetype>
+                                        <horstretch>0</horstretch>
+                                        <verstretch>0</verstretch>
+                                    </sizepolicy>
+                                </property>
+                            </widget>
+                        </hbox>
+                    </widget>
+                </vbox>
+            </widget>
+            <widget class="QButtonGroup" row="0" column="1" rowspan="2" colspan="1">
+                <property name="name">
+                    <cstring>_plotGroup</cstring>
+                </property>
+                <property name="title">
+                    <string>Cu&amp;rve Placement</string>
+                </property>
+                <grid>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <widget class="QRadioButton" row="0" column="0">
+                        <property name="name">
+                            <cstring>_onePlot</cstring>
+                        </property>
+                        <property name="text">
+                            <string>&amp;All curves in one plot</string>
+                        </property>
+                        <property name="checked">
+                            <bool>true</bool>
+                        </property>
+                    </widget>
+                    <widget class="QRadioButton" row="1" column="0">
+                        <property name="name">
+                            <cstring>_multiplePlots</cstring>
+                        </property>
+                        <property name="text">
+                            <string>&amp;1 new plot per curve</string>
+                        </property>
+                        <property name="accel">
+                            <string>Alt+1</string>
+                        </property>
+                    </widget>
+                    <widget class="QLayoutWidget" row="2" column="0">
+                        <property name="name">
+                            <cstring>layout5</cstring>
+                        </property>
+                        <hbox>
+                            <property name="name">
+                                <cstring>unnamed</cstring>
+                            </property>
+                            <widget class="QRadioButton">
+                                <property name="name">
+                                    <cstring>_cycleThrough</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>Cycle t&amp;hrough</string>
+                                </property>
+                            </widget>
+                            <widget class="QSpinBox">
+                                <property name="name">
+                                    <cstring>_plotNumber</cstring>
+                                </property>
+                                <property name="enabled">
+                                    <bool>false</bool>
+                                </property>
+                                <property name="suffix">
+                                    <string> plots</string>
+                                </property>
+                                <property name="buttonSymbols">
+                                    <enum>PlusMinus</enum>
+                                </property>
+                                <property name="maxValue">
+                                    <number>20</number>
+                                </property>
+                                <property name="minValue">
+                                    <number>2</number>
+                                </property>
+                            </widget>
+                        </hbox>
+                    </widget>
+                    <widget class="QRadioButton" row="3" column="0">
+                        <property name="name">
+                            <cstring>_cycleExisting</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Cycle through exi&amp;sting plots</string>
+                        </property>
+                        <property name="checked">
+                            <bool>false</bool>
+                        </property>
+                    </widget>
+                    <widget class="QLayoutWidget" row="4" column="0">
+                        <property name="name">
+                            <cstring>layout5</cstring>
+                        </property>
+                        <hbox>
+                            <property name="name">
+                                <cstring>unnamed</cstring>
+                            </property>
+                            <widget class="QRadioButton">
+                                <property name="name">
+                                    <cstring>_existingPlot</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>All curv&amp;es in plot</string>
+                                </property>
+                            </widget>
+                            <widget class="KstComboBox">
+                                <property name="name">
+                                    <cstring>_existingPlotName</cstring>
+                                </property>
+                                <property name="enabled">
+                                    <bool>false</bool>
+                                </property>
+                            </widget>
+                        </hbox>
+                    </widget>
+                </grid>
+            </widget>
+            <widget class="QButtonGroup" row="0" column="0">
+                <property name="name">
+                    <cstring>buttonGroup1</cstring>
+                </property>
+                <property name="margin">
+                    <number>0</number>
+                </property>
+                <property name="title">
+                    <string>Cur&amp;ve Style</string>
+                </property>
+                <grid>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <widget class="QRadioButton" row="0" column="0">
+                        <property name="name">
+                            <cstring>_drawLines</cstring>
+                        </property>
+                        <property name="text">
+                            <string>L&amp;ines only</string>
+                        </property>
+                        <property name="checked">
+                            <bool>true</bool>
+                        </property>
+                    </widget>
+                    <widget class="QRadioButton" row="2" column="0">
+                        <property name="name">
+                            <cstring>_drawBoth</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Lines and points</string>
+                        </property>
+                        <property name="accel">
+                            <string></string>
+                        </property>
+                    </widget>
+                    <widget class="QRadioButton" row="1" column="0">
+                        <property name="name">
+                            <cstring>_drawPoints</cstring>
+                        </property>
+                        <property name="text">
+                            <string>&amp;Points only</string>
+                        </property>
+                    </widget>
+                </grid>
+            </widget>
+            <widget class="QButtonGroup" row="1" column="0" rowspan="2" colspan="1">
+                <property name="name">
+                    <cstring>buttonGroup3</cstring>
+                </property>
+                <property name="title">
+                    <string>Label &amp;Generation</string>
+                </property>
+                <vbox>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <widget class="QCheckBox">
+                        <property name="name">
+                            <cstring>_xAxisLabels</cstring>
+                        </property>
+                        <property name="text">
+                            <string>&amp;X-axis labels</string>
+                        </property>
+                        <property name="checked">
+                            <bool>true</bool>
+                        </property>
+                    </widget>
+                    <widget class="QCheckBox">
+                        <property name="name">
+                            <cstring>_yAxisLabels</cstring>
+                        </property>
+                        <property name="text">
+                            <string>&amp;Y-axis labels</string>
+                        </property>
+                        <property name="checked">
+                            <bool>true</bool>
+                        </property>
+                    </widget>
+                    <widget class="QCheckBox">
+                        <property name="name">
+                            <cstring>_plotTitles</cstring>
+                        </property>
+                        <property name="text">
+                            <string>&amp;Title labels</string>
+                        </property>
+                        <property name="checked">
+                            <bool>true</bool>
+                        </property>
+                    </widget>
+                    <widget class="QLayoutWidget">
+                        <property name="name">
+                            <cstring>layout20</cstring>
+                        </property>
+                        <hbox>
+                            <property name="name">
+                                <cstring>unnamed</cstring>
+                            </property>
+                            <widget class="QLabel">
+                                <property name="name">
+                                    <cstring>textLabel2_3</cstring>
+                                </property>
+                                <property name="sizePolicy">
+                                    <sizepolicy>
+                                        <hsizetype>0</hsizetype>
+                                        <vsizetype>5</vsizetype>
+                                        <horstretch>0</horstretch>
+                                        <verstretch>0</verstretch>
+                                    </sizepolicy>
+                                </property>
+                                <property name="text">
+                                    <string>Legends:</string>
+                                </property>
+                            </widget>
+                            <widget class="QButtonGroup">
+                                <property name="name">
+                                    <cstring>buttonGroup7</cstring>
+                                </property>
+                                <property name="frameShape">
+                                    <enum>NoFrame</enum>
+                                </property>
+                                <property name="title">
+                                    <string></string>
+                                </property>
+                                <hbox>
+                                    <property name="name">
+                                        <cstring>unnamed</cstring>
+                                    </property>
+                                    <property name="margin">
+                                        <number>0</number>
+                                    </property>
+                                    <property name="spacing">
+                                        <number>0</number>
+                                    </property>
+                                    <widget class="QRadioButton">
+                                        <property name="name">
+                                            <cstring>_legendsOn</cstring>
+                                        </property>
+                                        <property name="text">
+                                            <string>O&amp;n</string>
+                                        </property>
+                                    </widget>
+                                    <widget class="QRadioButton">
+                                        <property name="name">
+                                            <cstring>_legendsOff</cstring>
+                                        </property>
+                                        <property name="text">
+                                            <string>&amp;Off</string>
+                                        </property>
+                                    </widget>
+                                    <widget class="QRadioButton">
+                                        <property name="name">
+                                            <cstring>_legendsAuto</cstring>
+                                        </property>
+                                        <property name="text">
+                                            <string>A&amp;uto</string>
+                                        </property>
+                                        <property name="checked">
+                                            <bool>true</bool>
+                                        </property>
+                                    </widget>
+                                </hbox>
+                            </widget>
+                        </hbox>
+                    </widget>
+                </vbox>
+            </widget>
+            <widget class="QButtonGroup" row="3" column="0">
+                <property name="name">
+                    <cstring>_psdAxisGroup</cstring>
+                </property>
+                <property name="title">
+                    <string>Power Spectrum Axis Mode</string>
+                </property>
+                <vbox>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <widget class="QCheckBox">
+                        <property name="name">
+                            <cstring>_psdLogX</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Lo&amp;g X axis</string>
+                        </property>
+                    </widget>
+                    <widget class="QCheckBox">
+                        <property name="name">
+                            <cstring>_psdLogY</cstring>
+                        </property>
+                        <property name="text">
+                            <string>&amp;Log Y axis</string>
+                        </property>
+                    </widget>
+                </vbox>
+            </widget>
+            <widget class="QLayoutWidget" row="4" column="0" rowspan="1" colspan="2">
+                <property name="name">
+                    <cstring>layout26</cstring>
+                </property>
+                <hbox>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <widget class="QCheckBox">
+                        <property name="name">
+                            <cstring>_reGrid</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Re-grid</string>
+                        </property>
+                    </widget>
+                    <widget class="QLabel">
+                        <property name="name">
+                            <cstring>_columnLabel</cstring>
+                        </property>
+                        <property name="sizePolicy">
+                            <sizepolicy>
+                                <hsizetype>0</hsizetype>
+                                <vsizetype>0</vsizetype>
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                            </sizepolicy>
+                        </property>
+                        <property name="text">
+                            <string>Columns:</string>
+                        </property>
+                        <property name="alignment">
+                            <set>AlignVCenter|AlignRight</set>
+                        </property>
+                        <property name="buddy" stdset="0">
+                            <cstring>PlotCols</cstring>
+                        </property>
+                        <property name="hAlign" stdset="0">
+                        </property>
+                    </widget>
+                    <widget class="QSpinBox">
+                        <property name="name">
+                            <cstring>_plotColumns</cstring>
+                        </property>
+                        <property name="sizePolicy">
+                            <sizepolicy>
+                                <hsizetype>1</hsizetype>
+                                <vsizetype>0</vsizetype>
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                            </sizepolicy>
+                        </property>
+                        <property name="maxValue">
+                            <number>10</number>
+                        </property>
+                        <property name="minValue">
+                            <number>1</number>
+                        </property>
+                    </widget>
+                    <spacer>
+                        <property name="name">
+                            <cstring>spacer31</cstring>
+                        </property>
+                        <property name="orientation">
+                            <enum>Horizontal</enum>
+                        </property>
+                        <property name="sizeType">
+                            <enum>Expanding</enum>
+                        </property>
+                        <property name="sizeHint">
+                            <size>
+                                <width>100</width>
+                                <height>31</height>
+                            </size>
+                        </property>
+                    </spacer>
+                </hbox>
+            </widget>
+        </grid>
+    </widget>
+</widget>
+<customwidgets>
+    <customwidget>
+        <class>KstFFTOptions</class>
+        <header location="local">fftoptionswidget.h</header>
+        <sizehint>
+            <width>-1</width>
+            <height>-1</height>
+        </sizehint>
+        <container>0</container>
+        <sizepolicy>
+            <hordata>5</hordata>
+            <verdata>5</verdata>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+        </sizepolicy>
+        <pixmap>image0</pixmap>
+    </customwidget>
+    <customwidget>
+        <class>KstDataRange</class>
+        <header location="local">datarangewidget.h</header>
+        <sizehint>
+            <width>-1</width>
+            <height>-1</height>
+        </sizehint>
+        <container>0</container>
+        <sizepolicy>
+            <hordata>5</hordata>
+            <verdata>5</verdata>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+        </sizepolicy>
+        <pixmap>image1</pixmap>
+    </customwidget>
+</customwidgets>
+<images>
+    <image name="image0">
+        <data format="XPM.GZ" length="4462">789c9d97c76e24490e86effd1442f3d65870d2451a0ce6206f5adeb4cc620f8c34f2553225b5a4c1befb46927fe6a1d4c0ccac4287fa8a0c26834193f5dbb785b3fd9d856fbf7d799ec9ecba5ea8afe469e15bf3727ffffeeffffcf1e797af49b2d0ffc7d142f2f55f5fbe1ecc16ea85dde9a4ed81290045faa77ca49cf4ab67ba1e3953969173651ab9d4fdf1c8a27c3872ad7c3c72d3b32c2a67c3f3444636fbef23eb7e590267e68fcc4656395d8dacf6d938ef97eaef289781cddebdb2846fccff44b989ba58e3411f3dc75158e6df1d3889539517ca49bf54fe43398d1dec4f46567f685fd9c539f43fc025f80c1c3ce8d93f28e77185f8bf0c6cfae4c0b5f9c3c6e5c0542a4b5876fe13708df39d2bd7716372aa8c93c4e4723bb2f977aadc26ceec4bdb7310e6b0bfab9c2445ecd49f1370694cebca65d260ffa6711a41aef14d24e94cee6be3348e0ae5e9c8765f07ca3e8db17f0f9c825794eb3489351fe9bb7217e4969f29388bd51ee9fda5715a19730696b852fea95c6471647ca95cf64bcf43e0cef4657b647bfe6acf213d6bb32f9a9f5992b5a64f9a8f990b6cf9ecc15d6cf9acf6b2da55a8a75cb973dee4b2d1b38b5c05de02434e87e01aacfb351df5bebddea74b5c67f9c795711ea15e357e2ecde358fb87efc0a867df8cac728a074e62e527706afb59f3cf6583be5c28bb3c35f693812d1fbdc6dbe57966fec932d899ffa4f7e38adca17e34beaeca4b9c271a18f1d5fc739257b0d70d9c68be7bed7fcee7827ab91cd8e4740cf6b19d4ffb87ab07b9bf516e72d4a3ac821b9cef6e60d84f47367ded2fae1d9f7704f6163f79000ffde27660f387ed3c5dbf54dfeebb0bf6acbe6b706bfa5ef32f8f8b18f5bf0f463f20edb77956a4e68fbc80b3c4facd163847be6bfde72ec86dbeac82715fbc0286be683cf3bc081d44f7df80d344fb0b6b7de64581fb916765297263d6fccd9b7ee97e566e8b06cfdb1f59cf2bda2f8bbc2c11df0c5c41aefdb328ca22b1feb0012eedbce24736f91b18fb796d64eb87cb60817dcdafb07d906bfd14d22f659d8785ef97b2f6d7b2df6ef1d6fb2babaac6f92e8c25b27ecc1f239b7f3a5fca5a8678ea7c2d9bc0e6ef1238b3fca2c7814d5f4cbf9334b5f833384bed3c7a5f5514f4adbe2ec07962e7590457f06f6f649b977afe2a16f42f5e070bfc591e18f7a5f1a812a9e0df39d827da4fbd8c6ccfd7785569bf945f953371a9d5a3de67950bfa2d75c63eb2fb15bdcfaaf011e6c7263846bf8f4636f91618f3c7d3c0f047fb69550efab2074e12bd6fd27957553ec33c5b043bcc7f9d0795f818fdb501a3df8ae673e507ff69021eea37063bc45ffb73550736ff36c0a84f3e0317a86f8b5f139e6ffe1f821de6d9127898ff3be00a7c3ab2cd03e3d697560ff40016e47b3bb2e96bbd559d8f32bbff4b7065f193042c98873acf240af6adbf3c83c5f2954bb0c7bcd77c107d81d2fdebc63e33ff640aaecc9e1c8151df5c803dfaadc64b52dfa03ed64636ffb4ff4b2867f453ede7227586fcd3f9264ded91fffafe236d5da37fe83c91ceb7b9e5b7f6731ff92ed7f747d6fbf7e185cf58347e3e6932e47b3430fa893edf87d795c2fc3f003b67f5f902cec17abfde0dfa3c053b3c5ffb832fc2eb8fddcf233887fc195c801f46b6f3cdc02558fba72f7d2d1a7f7e321ee58fe0cad86bbff24dd3e2fe74fef836b0c6eb60d62fa6bf5e07b3419f853dd7dc70fb8bd5f1255fd90ed30f9f3c5ff30ddff21ddff384a7fcc08ffcc4cf61cdf8855ff9e79c7e1db4dff89d3f7891977899577895d7789d377893b7f83b6fcfe937bc13b477798ff7f9800ff928ac633ee11f7cca6761d7f99c7e1b3cb908da11c7413be1943376e153cc39175c72f549ff9e17c31744429e6a6aa8a58e2ee98aaee9866e7f617fc24b7417a4f734a1293dd0233dd133cd8285177aa5f9f3b63ca5377aa78f607b919668995682e62aadd17ab0b1419b9ff41f682b48bed336edd02eed05ed7d5ea3033a0cdf1ed1f127fd273ae123fa41a774a6b685cee982228a837e42e927fd47caf8985c38651eb40b2ac38e4a5842658a97fab33fd248cb87d2c9a55cc9b5dcc82d1fc99ddccb44a6f230af2f8ff224cf417f262ff22a3fe54ddee543166549966545567f617f4dd66523dc6b2c9bb225df655b7682f692ecca9eeccfe97772c09b722847722c27c1f3eb70f66bf9116c9fca999ccbc59cfe25bf4a143a5ef8992561324a78bd92522acf9ebc78efe7cf7b153276db37bef59dbff457fedadff85b7f27abfede4ffcd4cf9ff76faeff4fffefeff8c7f5fedfdfbffc0fa355c495</data>
+    </image>
+    <image name="image1">
+        <data format="XPM.GZ" length="45">789cd3d7528808f055d0d2e72a2e492cc94c5648ce482c52d04a29cdcdad8c8eb5ade6523250004143a55a6b2e0026630c4f</data>
+    </image>
+</images>
+<connections>
+    <connection>
+        <sender>_cycleThrough</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>_plotNumber</receiver>
+        <slot>setEnabled(bool)</slot>
+    </connection>
+    <connection>
+        <sender>_existingPlot</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>_existingPlotName</receiver>
+        <slot>setEnabled(bool)</slot>
+    </connection>
+    <connection>
+        <sender>_existingWindow</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>_windowName</receiver>
+        <slot>setEnabled(bool)</slot>
+    </connection>
+    <connection>
+        <sender>_newWindow</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>DataWizard</receiver>
+        <slot>updatePlotBox()</slot>
+    </connection>
+    <connection>
+        <sender>_currentWindow</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>DataWizard</receiver>
+        <slot>updatePlotBox()</slot>
+    </connection>
+    <connection>
+        <sender>_existingWindow</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>DataWizard</receiver>
+        <slot>updatePlotBox()</slot>
+    </connection>
+    <connection>
+        <sender>_windowName</sender>
+        <signal>activated(int)</signal>
+        <receiver>DataWizard</receiver>
+        <slot>updatePlotBox()</slot>
+    </connection>
+    <connection>
+        <sender>_applyFilters</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>DataWizard</receiver>
+        <slot>applyFiltersChecked(bool)</slot>
+    </connection>
+    <connection>
+        <sender>_uncheckAll</sender>
+        <signal>clicked()</signal>
+        <receiver>DataWizard</receiver>
+        <slot>uncheckAll()</slot>
+    </connection>
+    <connection>
+        <sender>_checkVectors</sender>
+        <signal>clicked()</signal>
+        <receiver>DataWizard</receiver>
+        <slot>fieldListChanged()</slot>
+    </connection>
+    <connection>
+        <sender>_vectorReduction</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>DataWizard</receiver>
+        <slot>vectorSubset(const QString&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>_checkVectors</sender>
+        <signal>clicked()</signal>
+        <receiver>DataWizard</receiver>
+        <slot>checkSelected()</slot>
+    </connection>
+    <connection>
+        <sender>_newFilter</sender>
+        <signal>clicked()</signal>
+        <receiver>DataWizard</receiver>
+        <slot>newFilter()</slot>
+    </connection>
+    <connection>
+        <sender>_radioButtonPlotData</sender>
+        <signal>clicked()</signal>
+        <receiver>DataWizard</receiver>
+        <slot>disablePSDEntries()</slot>
+    </connection>
+    <connection>
+        <sender>_radioButtonPlotData</sender>
+        <signal>clicked()</signal>
+        <receiver>DataWizard</receiver>
+        <slot>enableXEntries()</slot>
+    </connection>
+    <connection>
+        <sender>_radioButtonPlotPSD</sender>
+        <signal>clicked()</signal>
+        <receiver>DataWizard</receiver>
+        <slot>enablePSDEntries()</slot>
+    </connection>
+    <connection>
+        <sender>_radioButtonPlotPSD</sender>
+        <signal>clicked()</signal>
+        <receiver>DataWizard</receiver>
+        <slot>disableXEntries()</slot>
+    </connection>
+    <connection>
+        <sender>_radioButtonPlotDataPSD</sender>
+        <signal>clicked()</signal>
+        <receiver>DataWizard</receiver>
+        <slot>enablePSDEntries()</slot>
+    </connection>
+    <connection>
+        <sender>_radioButtonPlotDataPSD</sender>
+        <signal>clicked()</signal>
+        <receiver>DataWizard</receiver>
+        <slot>enableXEntries()</slot>
+    </connection>
+    <connection>
+        <sender>_vectorSearch</sender>
+        <signal>clicked()</signal>
+        <receiver>DataWizard</receiver>
+        <slot>_search()</slot>
+    </connection>
+    <connection>
+        <sender>_newWindows</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>DataWizard</receiver>
+        <slot>updatePlotBox()</slot>
+    </connection>
+    <connection>
+        <sender>_plotGroup</sender>
+        <signal>clicked(int)</signal>
+        <receiver>DataWizard</receiver>
+        <slot>updateColumns()</slot>
+    </connection>
+    <connection>
+        <sender>_windowGroup</sender>
+        <signal>clicked(int)</signal>
+        <receiver>DataWizard</receiver>
+        <slot>updateColumns()</slot>
+    </connection>
+    <connection>
+        <sender>_vectors</sender>
+        <signal>pressed(QListViewItem*)</signal>
+        <receiver>DataWizard</receiver>
+        <slot>fieldListChanged()</slot>
+    </connection>
+    <connection>
+        <sender>_url</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>DataWizard</receiver>
+        <slot>sourceChanged(const QString&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>_configureSource</sender>
+        <signal>clicked()</signal>
+        <receiver>DataWizard</receiver>
+        <slot>configureSource()</slot>
+    </connection>
+    <connection>
+        <sender>_testURL</sender>
+        <signal>clicked()</signal>
+        <receiver>DataWizard</receiver>
+        <slot>testURL()</slot>
+    </connection>
+    <connection>
+        <sender>_plotColumns</sender>
+        <signal>valueChanged(int)</signal>
+        <receiver>DataWizard</receiver>
+        <slot>plotColsChanged()</slot>
+    </connection>
+</connections>
+<tabstops>
+    <tabstop>_url</tabstop>
+    <tabstop>_testURL</tabstop>
+    <tabstop>_configureSource</tabstop>
+    <tabstop>_vectorReduction</tabstop>
+    <tabstop>_vectorSearch</tabstop>
+    <tabstop>_checkVectors</tabstop>
+    <tabstop>_uncheckAll</tabstop>
+    <tabstop>_vectors</tabstop>
+    <tabstop>_kstDataRange</tabstop>
+    <tabstop>_radioButtonPlotData</tabstop>
+    <tabstop>_radioButtonPlotPSD</tabstop>
+    <tabstop>_radioButtonPlotDataPSD</tabstop>
+    <tabstop>_xVector</tabstop>
+    <tabstop>_kstFFTOptions</tabstop>
+    <tabstop>_applyFilters</tabstop>
+    <tabstop>_newFilter</tabstop>
+    <tabstop>_filterList</tabstop>
+    <tabstop>_drawLines</tabstop>
+    <tabstop>_drawPoints</tabstop>
+    <tabstop>_drawBoth</tabstop>
+    <tabstop>_xAxisLabels</tabstop>
+    <tabstop>_yAxisLabels</tabstop>
+    <tabstop>_plotTitles</tabstop>
+    <tabstop>_legendsOn</tabstop>
+    <tabstop>_legendsOff</tabstop>
+    <tabstop>_legendsAuto</tabstop>
+    <tabstop>_psdLogX</tabstop>
+    <tabstop>_psdLogY</tabstop>
+    <tabstop>_onePlot</tabstop>
+    <tabstop>_multiplePlots</tabstop>
+    <tabstop>_cycleThrough</tabstop>
+    <tabstop>_plotNumber</tabstop>
+    <tabstop>_cycleExisting</tabstop>
+    <tabstop>_existingPlot</tabstop>
+    <tabstop>_existingPlotName</tabstop>
+    <tabstop>_currentWindow</tabstop>
+    <tabstop>_existingWindow</tabstop>
+    <tabstop>_windowName</tabstop>
+    <tabstop>_newWindow</tabstop>
+    <tabstop>_newWindows</tabstop>
+    <tabstop>_newWindowName</tabstop>
+    <tabstop>_reGrid</tabstop>
+    <tabstop>_plotColumns</tabstop>
+</tabstops>
+<includes>
+    <include location="local" impldecl="in implementation">kstcolorsequence.h</include>
+    <include location="local" impldecl="in implementation">kstvcurve.h</include>
+    <include location="local" impldecl="in implementation">kstuinames.h</include>
+    <include location="local" impldecl="in implementation">kstpsd.h</include>
+    <include location="local" impldecl="in implementation">kstrvector.h</include>
+    <include location="local" impldecl="in declaration">kstdatacollection.h</include>
+    <include location="global" impldecl="in implementation">kdialogbase.h</include>
+    <include location="global" impldecl="in implementation">kmessagebox.h</include>
+    <include location="global" impldecl="in implementation">knuminput.h</include>
+    <include location="global" impldecl="in implementation">kiconloader.h</include>
+    <include location="global" impldecl="in implementation">qguardedptr.h</include>
+    <include location="global" impldecl="in implementation">qregexp.h</include>
+    <include location="global" impldecl="in implementation">assert.h</include>
+    <include location="global" impldecl="in implementation">stdlib.h</include>
+    <include location="global" impldecl="in implementation">math.h</include>
+    <include location="local" impldecl="in implementation">kstvectordefaults.h</include>
+    <include location="local" impldecl="in implementation">kstviewwindow.h</include>
+    <include location="local" impldecl="in implementation">kstcombobox.h</include>
+    <include location="local" impldecl="in implementation">kstlegend.h</include>
+    <include location="global" impldecl="in implementation">qdeepcopy.h</include>
+    <include location="global" impldecl="in implementation">config.h</include>
+    <include location="local" impldecl="in implementation">psversion.h</include>
+    <include location="local" impldecl="in implementation">sysinfo.h</include>
+    <include location="local" impldecl="in implementation">datawizard.ui.h</include>
+    <include location="global" impldecl="in implementation">kurlcompletion.h</include>
+    <include location="global" impldecl="in implementation">kdebug.h</include>
+</includes>
+<variables>
+    <variable access="private">static const QString&amp; defaultTag;</variable>
+    <variable access="private">QString _file;</variable>
+    <variable access="private">bool _inTest;</variable>
+    <variable access="private">QGuardedPtr&lt;QWidget&gt; _configWidget;</variable>
+</variables>
+<slots>
+    <slot access="private">init()</slot>
+    <slot access="private">xChanged( const QString &amp; txt )</slot>
+    <slot access="private">sourceChanged( const QString &amp; txt )</slot>
+    <slot access="private">fieldListChanged()</slot>
+    <slot access="private">updateWindowBox()</slot>
+    <slot access="private">updateColumns()</slot>
+    <slot access="private">updatePlotBox()</slot>
+    <slot access="private">uncheckAll()</slot>
+    <slot access="private">vectorSubset( const QString &amp; filter )</slot>
+    <slot access="private">checkSelected()</slot>
+    <slot access="private">newFilter()</slot>
+    <slot access="private">finished()</slot>
+    <slot access="private">applyFiltersChecked( bool on )</slot>
+    <slot access="private">enableXEntries()</slot>
+    <slot access="private">disableXEntries()</slot>
+    <slot access="private">enablePSDEntries()</slot>
+    <slot access="private">disablePSDEntries()</slot>
+    <slot access="private">_search()</slot>
+    <slot access="private">_disableWindowEntries()</slot>
+    <slot access="private">_enableWindowEntries()</slot>
+    <slot access="private">configureSource()</slot>
+    <slot access="private">plotColsChanged()</slot>
+    <slot access="private">markSourceAndSave()</slot>
+    <slot access="private">testURL()</slot>
+</slots>
+<functions>
+    <function returnType="bool">xVectorOk()</function>
+    <function returnType="bool">yVectorsOk()</function>
+    <function>showPage( QWidget * page )</function>
+</functions>
+<pixmapinproject/>
+<layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>kurlrequester.h</includehint>
+    <includehint>klineedit.h</includehint>
+    <includehint>kpushbutton.h</includehint>
+    <includehint>kstdatarange.h</includehint>
+    <includehint>klineedit.h</includehint>
+    <includehint>kstfftoptions.h</includehint>
+    <includehint>kstcombobox.h</includehint>
+</includehints>
+</UI>
