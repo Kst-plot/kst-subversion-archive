@@ -1,3 +1,0 @@
-if test "x$want_showimgdb" != "xyes" ; then
-	DO_NOT_COMPILE="kexidb $DO_NOT_COMPILE"
-fi
