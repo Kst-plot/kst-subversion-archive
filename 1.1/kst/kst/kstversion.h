@@ -18,7 +18,7 @@
 #ifndef KSTVERSION_H
 #define KSTVERSION_H
 
-#define KSTVERSION "1.1.0"
+#define KSTVERSION "1.1.1_devel"
 
 #endif
 
