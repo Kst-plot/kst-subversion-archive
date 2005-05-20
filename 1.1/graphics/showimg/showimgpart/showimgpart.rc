@@ -1,0 +1,26 @@
+<!DOCTYPE kpartgui>
+<kpartgui name="ShowImgPart">
+<MenuBar>
+ <Menu name="file"><Text>&amp;File</Text>
+  <Action name="saveAs"/>
+ </Menu>
+ <Menu name="view"><Text>&amp;View</Text>
+  <Separator/>
+  <Action name="view_zoomm"/>
+  <Action name="view_effects"/>
+  <Action name="view_Orientation"/>
+ </Menu>
+</MenuBar>
+<ToolBar name="mainToolBar"><text>Main Toolbar</text>
+ <Separator/>
+ <Action name="Previous Image"/>
+ <Action name="Next Image"/>
+ <Separator/>
+ <Action name="Shrink"/>
+ <Action name="Originale size"/>
+ <Action name="Zoom in"/>
+ <Action name="Rotate Right"/>
+ <Action name="view_effects"/>
+ <Separator/>
+</ToolBar>
+</kpartgui>

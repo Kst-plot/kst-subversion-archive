@@ -1,0 +1,29 @@
+How to build Kst for Mac OS X
+-----------------------------
+
+[Work in progress]
+
+1) Install Mac OS X developer tools (gcc)
+2) Install Mac OS X X11 server
+3) Install Qt and KDE via fink, along with dependencies
+4) Install Kst:
+
+4a) Check out from CVS or unpackage tarball
+4b) export QTDIR=/sw
+    export KDEDIR=/sw
+4c) make -f Makefile.cvs if you use anoncvs
+4d) ./configure --prefix=/sw --enable-debug --without-arts \
+    --with-qt-includes=/sw/include/qt 
+4e) cd kst ; make && sudo make install
+4f) cd ../doc/kst ; make && sudo make install
+
+
+Notes
+-----
+o Errors about AC_CHECK_STDBOOL?  Remove this entry from
+  showimg/showimg/configure.in.in or upgrade to a newer autoconf
+o Make sure you have all the image libraries installed (jpeg, png, etc) or
+  you may not be able to export those formats in Kst
+o You may need additional configure parameters in order to pick up cfitsio,
+  gsl, piolib, or cdf installations as required
+ 

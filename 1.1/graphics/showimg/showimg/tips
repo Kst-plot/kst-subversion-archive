@@ -1,0 +1,75 @@
+<tip category="showimg">
+<html>
+<h2>
+<img src="hicolor/32x32/apps/showimg.png">
+&nbsp;Welcome to ShowImg
+</h2>
+<p>
+You can check for a new version at the
+<center><a href="http://www.jalix.org/projects/showimg">ShowImg project page</a></center>
+</p>
+</html>
+</tip>
+
+<tip category="showimg">
+<html>
+<p>...that you can <b>rename</b> your images using 'Tools' -> <img src="../apps/showimg/icons/hicolor/16x16/actions/item_rename.png">&nbsp;'Batch&nbsp;rename'?</p>
+</html>
+</tip>
+
+<tip category="showimg">
+<html>
+<p>...that you can search <b>similar</b> images by using 'Tools' -> 'Find&nbsp;images' -> 'Similar&nbsp;images'?</p>
+</html>
+</tip>
+
+<tip category="showimg">
+<html>
+<p>...that you can <b>convert</b> image format by using 'Tools' -> 'Convert' -> 'Format'?</p>
+</html>
+</tip>
+
+<tip category="showimg">
+<html>
+<p>
+...that ShowImg can use the <b><a href="http://digikam.sourceforge.net/">digikam</a> plugins</b>?
+</p>
+<p>Use 'Setting' -> 'Configure&nbsp;showimg' -> 'Plugins' to choose plugins you want to enable.
+</p>
+<br>
+<p>
+You can see screenshots at the <a href="http://digikam.sourceforge.net/plugins.html">digikam plugins page</a>.
+</p>
+</html>
+</tip>
+
+<tip category="showimg">
+<html>
+<p>...that you can <b>extract images</b> in archives (<tt>.tar, .zip,...</tt>) using drag'n'drop?</p>
+</html>
+</tip>
+
+<tip category="showimg">
+<html>
+<p>...that you can <b>fit to screen</b> images using <img src="../apps/showimg/icons/hicolor/32x32/actions/viewmag_enlarge.png">&nbsp;'Shrink if bigger' and &nbsp;<img src="../apps/showimg/icons/hicolor/32x32/actions/viewmag_shrink.png">'Enlarge if smaller'?</p>
+</html>
+</tip>
+
+<tip category="showimg">
+<html>
+<p>...that you can <b>rotate</b> image files using 'Tools' -> 'Convert' -> <img src="../apps/showimg/icons/hicolor/16x16/actions/rotation_acw.png">&nbsp;'Rotate left' and <img src="../apps/showimg/icons/hicolor/16x16/actions/rotation_cw.png">&nbsp;'Rotate right'?</p>
+<p>Moreover, if the <tt>jpegtran</tt> program is installed then JPEG files rotations are lossless rotation.</p>
+</html>
+</tip>
+
+<tip category="showimg">
+<html>
+<p>...that using <b>albums</b> can drag'n'drop icons from the icon view to the album icon to select and manage images?</p>
+</html>
+</tip>
+
+<tip category="showimg">
+<html>
+<p>...that you can download and <b>display <tt>ftp/http</tt> URL files</b>? Just write the URL in the <img src="crystalsvg/22x22/actions/locationbar_erase.png">&nbsp;location&nbsp;toolbar and press enter.</p>
+</html>
+</tip>
