@@ -1,0 +1,24 @@
+Major:
+- more verbose error messages (ie: which argument is wrong, and why)
+- what should we do for toString()?  It's basically empty in all classes
+- "delete" support - in order drop references?
+- Possible to create duplicate tagnames with current script code
+- use inheritence to make it less tedious to implement bindings
+- Plots are flattened from inside windows - will be a problem when plot groups
+  are accessible - what to do?
+
+
+General Completion:
+- need to finish plugin bindings - after freeze
+- input and output map for data objects
+
+
+Would be nice:
+- save and load state
+- object browser GUI
+- multiple interpreters?
+- dump list of loaded files
+- many bindings lack good [or any] bindings (ComboBox, list{view,box}, etc)
+- string comparisons are too slow - at least use ustring
+- collection class is read-only presently - make read-write
+

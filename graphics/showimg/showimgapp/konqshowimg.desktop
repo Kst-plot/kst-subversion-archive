@@ -1,0 +1,27 @@
+[Desktop Entry]
+ServiceTypes=inode/directory
+Actions=ShowImg;
+Encoding=UTF-8
+
+[Desktop Action ShowImg]
+Name=Browse Images with ShowImg
+Name[br]=Furchal skeudennoù gant ShowImg
+Name[cs]=Procházet obrázky v ShowImg
+Name[da]=Gennemse billeder med ShowImg
+Name[es]=Examinar imágenes con ShowImg
+Name[et]=Piltide sirvimine ShowImg-ga
+Name[fr]=Parcourir les images avec ShowImg
+Name[hi]=शो-आईएमजी के साथ ब़्राउज़ करें
+Name[it]=Sfoglia immagini con ShowImg
+Name[nl]=Blader door afbeeldingen met ShowImg
+Name[pt]=Navegar em Imagens com o ShowImg
+Name[pt_BR]=Navegar em Imagens com o ShowImg
+Name[ru]=Просмотр изображений в ShowImg
+Name[sr]=Прегледање слика ShowImg-ом
+Name[sr@Latn]=Pregledanje slika ShowImg-om
+Name[sv]=Bläddra bland bilder med Showimg
+Name[ta]=உருவத்தைக் காட்டு என்பதில் பிம்பங்களை உலாவு
+Name[tr]=ShowImg ile resimlere gözatın
+Name[zh_CN]=使用 ShowImg 浏览图像
+Icon=showimg
+Exec=showimg %u

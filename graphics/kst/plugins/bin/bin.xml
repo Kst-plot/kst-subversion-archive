@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Module SYSTEM "file:/Repository/Level2/Soft/ProC/moduledef.dtd">
+<module>
+<intro>
+<modulename name="bin"/>    <!-- The name of the module -->
+<author name="Rick Chern"/> <!-- The name of the author -->
+<description text="Bins data into the given size bins.  Each bin contains the mean of the elements belonging to the bin."/>
+                                <!-- A description of the module -->
+<version minor="1" major="0"/>  <!-- The version number of the module -->
+<state devstate="release"/>     <!-- The development state of the module -->
+</intro>
+
+<interface>
+<!--inputs here-->
+<input>
+<table type="float" name="Input Vector" descr="The vector containing elements to bin." />
+</input>
+
+<input>
+<float name="Bin Size" descr="The size of each bin." />
+</input>
+
+<!--outputs here-->
+<output>
+<table type="float" name="Bins" descr="The means of the data in each bin." />
+</output>
+
+</interface>
+
+</module>

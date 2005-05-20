@@ -1,0 +1,48 @@
+Next release: 1.1.0		(expected May 03, 2005) - cvs is branched here
+
+1.1 Release Plan - performance release
+----------------
+1) Double-check DCOP compatibility with 1.0
+
+2) Double-check .kst file compatibility with 1.0
+
+
+
+1.2 Release Plan - scripting and tools release   (Late July?)
+----------------
+1) Features remaining:
+	- JS Scripting complete     (main focus)
+	- Fix performance problem in axis labels
+	- New label parser+renderer activated
+	- New view objects for annotating and drawing
+	- Implement proper drag+drop, undo and copy/cut/paste
+	- Various new tools (like measuring distance between points)
+	- Waterfall plots
+	- Matrix and image reworking
+	- Monochrome and greyscale mode
+	- Enhance time support
+
+
+1.3 Release Plan - data analysis release     (November?)
+----------------
+1) Features remaining:
+	- Object templates and complex object construction (main focus)
+	- Healpix
+	- 3D?
+
+
+<--- Consider branching at this point and starting porting work for v2.0 --->
+
+2.0 Release Plan - make_it_cool   (~Mid 2006)
+----------------
+1) Features remaining:
+	- Port to Qt4 / KDE4
+	- Rework renderer and threading model
+	- Extract plotting into a library for other C++ apps
+	- Fix all the issues in "devel-docs/Kst2"
+	- 3D (if not done in 1.3)
+	- Data sources can now be data sinks too
+	- View objects are clean enough to do web output too
+	- C++ Namespaces used, class names cleaned up
+	- DCOP interface goes away, possible reduced d-bus interface added
+

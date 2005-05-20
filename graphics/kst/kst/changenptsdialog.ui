@@ -1,0 +1,204 @@
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<class>KstChangeNptsDialog</class>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>KstChangeNptsDialog</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>384</width>
+            <height>291</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Change Data Samples</string>
+    </property>
+    <property name="icon">
+        <pixmap>image0</pixmap>
+    </property>
+    <grid>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <property name="margin">
+            <number>11</number>
+        </property>
+        <property name="spacing">
+            <number>6</number>
+        </property>
+        <widget class="QLabel" row="0" column="0" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>TextLabel1</cstring>
+            </property>
+            <property name="frameShape">
+                <enum>MShape</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>MShadow</enum>
+            </property>
+            <property name="text">
+                <string>Vectors to change:</string>
+            </property>
+        </widget>
+        <widget class="QLayoutWidget" row="3" column="0" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>Layout33</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <property name="margin">
+                    <number>0</number>
+                </property>
+                <property name="spacing">
+                    <number>6</number>
+                </property>
+                <spacer>
+                    <property name="name">
+                        <cstring>Spacer15</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>20</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>Apply</cstring>
+                    </property>
+                    <property name="default">
+                        <bool>true</bool>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Apply</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Apply new data sample specifications to selected vectors.</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>Cancel</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Close</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Close dialog without applying further changes.</string>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+        <widget class="QLayoutWidget" row="1" column="1">
+            <property name="name">
+                <cstring>Layout4</cstring>
+            </property>
+            <vbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <property name="margin">
+                    <number>0</number>
+                </property>
+                <property name="spacing">
+                    <number>6</number>
+                </property>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>Clear</cstring>
+                    </property>
+                    <property name="text">
+                        <string>C&amp;lear</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Unselect all vectors in the list.</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>SelectAll</cstring>
+                    </property>
+                    <property name="text">
+                        <string>S&amp;elect All</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Select all vectors in the list.</string>
+                    </property>
+                </widget>
+            </vbox>
+        </widget>
+        <widget class="QListBox" row="1" column="0">
+            <property name="name">
+                <cstring>CurveList</cstring>
+            </property>
+            <property name="selectionMode">
+                <enum>Multi</enum>
+            </property>
+            <property name="whatsThis" stdset="0">
+                <string>The sample ranges for the vectors selected in this list will be changed.</string>
+            </property>
+        </widget>
+        <widget class="KstDataRange" row="2" column="0" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>_kstDataRange</cstring>
+            </property>
+        </widget>
+    </grid>
+</widget>
+<customwidgets>
+    <customwidget>
+        <class>KstDataRange</class>
+        <header location="local">datarangewidget.h</header>
+        <sizehint>
+            <width>-1</width>
+            <height>-1</height>
+        </sizehint>
+        <container>0</container>
+        <sizepolicy>
+            <hordata>5</hordata>
+            <verdata>5</verdata>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+        </sizepolicy>
+        <pixmap>image1</pixmap>
+    </customwidget>
+</customwidgets>
+<images>
+    <image name="image0">
+        <data format="XPM.GZ" length="736">789c6d91c16ac3300c86ef790a13ddc270d3a6818eb247e8d871307670249bedd016baf630c6de7d92ecc46e961f63fce7b37edbcaaa31af2f07d3acaaafabbb7ea2c10f77310ddd8ec7efb7f7a79faade6c0c8f9d59d70f556d0d9ae7f3c9cb1a780dad4a6c8876db6e75a713dbadbbb6533b88ed5dffd83bb15eecae1b6b496c60612f16471b821e0a0bb29158676703864450453a8926e2e24705de7b2257d650027cb8a7799a029e832fd24ac0a848830c884df84762296091c6046289ac704a1303630928cc69772ad208240ca79a7c37022208fa5cb8bb8190f41469856ccb6909282cd37c7c23a5a25cc36dc42cde40b3bea57663f917d2bf244b8e07e5b40545628705d5bffbea0f3f7bc243</data>
+    </image>
+    <image name="image1">
+        <data format="XPM.GZ" length="45">789cd3d7528808f055d0d2e72a2e492cc94c5648ce482c52d04a29cdcdad8c8eb5ade6523250004143a55a6b2e0026630c4f</data>
+    </image>
+</images>
+<connections>
+    <connection>
+        <sender>Cancel</sender>
+        <signal>clicked()</signal>
+        <receiver>KstChangeNptsDialog</receiver>
+        <slot>reject()</slot>
+    </connection>
+</connections>
+<tabstops>
+    <tabstop>CurveList</tabstop>
+    <tabstop>Clear</tabstop>
+    <tabstop>SelectAll</tabstop>
+    <tabstop>Apply</tabstop>
+    <tabstop>Cancel</tabstop>
+</tabstops>
+<layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>kstdatarange.h</includehint>
+</includehints>
+</UI>

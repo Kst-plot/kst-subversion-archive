@@ -1,0 +1,135 @@
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<class>KstDataDialog</class>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>KstDataDialog</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>401</width>
+            <height>483</height>
+        </rect>
+    </property>
+    <grid>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QLayoutWidget" row="1" column="0">
+            <property name="name">
+                <cstring>Layout1</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <property name="margin">
+                    <number>0</number>
+                </property>
+                <property name="spacing">
+                    <number>6</number>
+                </property>
+                <spacer>
+                    <property name="name">
+                        <cstring>Horizontal Spacing2</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>20</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>_ok</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;OK</string>
+                    </property>
+                    <property name="accel">
+                        <string></string>
+                    </property>
+                    <property name="autoDefault">
+                        <bool>true</bool>
+                    </property>
+                    <property name="default">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>_cancel</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Cancel</string>
+                    </property>
+                    <property name="accel">
+                        <string></string>
+                    </property>
+                    <property name="autoDefault">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+        <widget class="QFrame" row="0" column="0">
+            <property name="name">
+                <cstring>_contents</cstring>
+            </property>
+            <property name="frameShape">
+                <enum>NoFrame</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Plain</enum>
+            </property>
+        </widget>
+    </grid>
+</widget>
+<connections>
+    <connection>
+        <sender>_ok</sender>
+        <signal>clicked()</signal>
+        <receiver>KstDataDialog</receiver>
+        <slot>ok()</slot>
+    </connection>
+    <connection>
+        <sender>_cancel</sender>
+        <signal>clicked()</signal>
+        <receiver>KstDataDialog</receiver>
+        <slot>close()</slot>
+    </connection>
+</connections>
+<includes>
+    <include location="local" impldecl="in declaration">kstdataobject.h</include>
+    <include location="local" impldecl="in implementation">kstdatadialog.ui.h</include>
+</includes>
+<variables>
+    <variable>bool _newDialog;</variable>
+    <variable>KstDataObjectPtr _dp;</variable>
+</variables>
+<slots>
+    <slot>ok()</slot>
+    <slot>close()</slot>
+    <slot>reject()</slot>
+    <slot>init()</slot>
+    <slot>showNew()</slot>
+    <slot>showEdit( const QString &amp; field )</slot>
+    <slot returnType="bool">newObject()</slot>
+    <slot returnType="bool">editObject()</slot>
+</slots>
+<functions>
+    <function access="protected" specifier="pure virtual" returnType="QString">objectName()</function>
+    <function access="protected" specifier="pure virtual">fillFieldsForEdit()</function>
+    <function access="protected" specifier="pure virtual">fillFieldsForNew()</function>
+    <function access="protected" specifier="pure virtual" returnType="KstDataObjectPtr">findObject( const QString &amp; name )</function>
+</functions>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>
