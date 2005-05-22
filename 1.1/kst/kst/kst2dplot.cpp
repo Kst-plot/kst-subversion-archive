@@ -2291,6 +2291,7 @@ void Kst2DPlot::draw(QPainter &p, KstPaintType type, double resolutionEnhancemen
   }
 
   // only attempt to draw if plot is big enough
+  kdDebug () << tagName() << ": x_px = " << x_px << " xright_bdr_px = " << xright_bdr_px << " xleft_bdr_px = " << xleft_bdr_px << " y_px = " << y_px << " ybot_bdr_px = " << ybot_bdr_px << " ytop_bdr_px = " << ytop_bdr_px << endl;
   if (x_px - xright_bdr_px - xleft_bdr_px >= 10.0 &&
       y_px - ybot_bdr_px - ytop_bdr_px + 1.0 - ytop_bdr_px >= 10.0) {
     Lx = RelPlotRegion.left();

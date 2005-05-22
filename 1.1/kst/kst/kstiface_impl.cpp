@@ -1059,7 +1059,7 @@ bool KstIfaceImpl::maximizePlot(const QString& plotName) {
       Kst2DPlotList::Iterator plot_iter = plotlist.findTag(plotName);
       if (plot_iter != plotlist.end()) {
         app->deleteIterator(iter);
-        (*plot_iter)->zoom(true);
+        (*plot_iter)->setMaximized(true);
         return true;
       }
     }
@@ -1080,7 +1080,7 @@ bool KstIfaceImpl::unmaximizePlot(const QString& plotName) {
       Kst2DPlotList::Iterator plot_iter = plotlist.findTag(plotName);
       if (plot_iter != plotlist.end()) {
         app->deleteIterator(iter);
-        (*plot_iter)->zoom(false);
+        (*plot_iter)->setMaximized(false);
         return true;
       }
     }

@@ -149,7 +149,8 @@ class KstViewObject : public KstObject {
     virtual void drawFocusRect(QPainter& p);
     virtual void drawSelectRect(QPainter& p);
 
-    virtual void zoom(bool zoom);
+    virtual void setMaximized(bool maximized);
+    bool maximized() const;
     virtual bool isSelected() const;
     virtual void setSelected(bool selected);
     void selectAll();

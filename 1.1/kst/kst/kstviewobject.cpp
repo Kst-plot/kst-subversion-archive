@@ -299,6 +299,13 @@ void KstViewObject::drawSelectRect(QPainter& p) {
 void KstViewObject::appendChild(KstViewObjectPtr obj, bool keepAspect) {
   obj->_parent = this;
   _children.append(obj);
+
+  for (KstViewObjectList::Iterator i = children().begin(); i != children().end(); ++i) {
+    if ((*i)->maximized()) {
+      (*i)->setMaximized(false);
+    }
+  }
+
   if (keepAspect) {
     obj->updateFromAspect();
   } else {
@@ -310,6 +317,13 @@ void KstViewObject::appendChild(KstViewObjectPtr obj, bool keepAspect) {
 void KstViewObject::prependChild(KstViewObjectPtr obj, bool keepAspect) {
   obj->_parent = this;
   _children.prepend(obj);
+
+  for (KstViewObjectList::Iterator i = _children.begin(); i != _children.end(); ++i) {
+    if ((*i)->maximized()) {
+      (*i)->setMaximized(false);
+    }
+  }
+
   if (keepAspect) {
     obj->updateFromAspect();
   } else {
@@ -339,6 +353,13 @@ void KstViewObject::insertChildAfter(const KstViewObjectPtr after, KstViewObject
     _children.prepend(obj);
   }
   obj->_parent = this;
+
+  for (KstViewObjectList::Iterator i = _children.begin(); i != _children.end(); ++i) {
+    if ((*i)->maximized()) {
+      (*i)->setMaximized(false);
+    }
+  }
+
   if (keepAspect) {
     obj->updateFromAspect();
   } else {
@@ -1043,8 +1064,13 @@ void KstViewObject::setSelected(bool selected) {
 }
 
 
-void KstViewObject::zoom(bool zoom) {
-  if (_maximized != zoom) {
+bool KstViewObject::maximized() const {
+  return _maximized;
+}
+
+
+void KstViewObject::setMaximized(bool maximized) {
+  if (_maximized != maximized) {
     zoomToggle();
   }
 }

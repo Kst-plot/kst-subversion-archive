@@ -203,7 +203,7 @@ void KstTopLevelView::setViewMode(ViewMode v) {
     clearFocus();
     paint(P_PAINT);
   } else if (_mode == DisplayMode && v != DisplayMode) {
-    recursively<bool>(&KstViewObject::zoom, false);
+    recursively<bool>(&KstViewObject::setMaximized, false);
   }
 
   _mode = v;
