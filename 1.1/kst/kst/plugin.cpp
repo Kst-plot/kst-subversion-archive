@@ -188,6 +188,7 @@ void Plugin::Data::clear() {
   _inputs.clear();
   _outputs.clear();
   _parameters.clear();
+  _hints.clear();
 }
 
 
