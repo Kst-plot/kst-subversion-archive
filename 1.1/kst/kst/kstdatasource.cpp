@@ -459,7 +459,7 @@ KstDataSourceConfigWidget* KstDataSource::configWidgetForSource(const QString& f
 
 
 bool KstDataSource::supportsTime(const QString& filename, const QString& type) {
-  if (filename == "stdin" || filename == "-") {
+  if (filename.isEmpty() || filename == "stdin" || filename == "-") {
     return false;
   }
 
@@ -469,6 +469,9 @@ bool KstDataSource::supportsTime(const QString& filename, const QString& type) {
   }
 
   QValueList<PluginSortContainer> bestPlugins = bestPluginsForSource(fn, type);
+  if (bestPlugins.isEmpty()) {
+    return false;
+  }
   return (*bestPlugins.begin()).plugin->supportsTime(kConfigObject, fn);
 }
 
