@@ -590,7 +590,6 @@ bool KstPluginDialogI::new_I() {
       plugin = new KstPlugin;
       plugin->writeLock();
       if (!saveInputs(plugin, pPtr)) {
-        KMessageBox::sorry(this, i18n("One or more of the inputs was undefined."));
         plugin->writeUnlock();
         plugin = 0L;
         return false;
@@ -603,7 +602,6 @@ bool KstPluginDialogI::new_I() {
       }
       plugin->setTagName(tagName);
       if (!saveOutputs(plugin, pPtr)) {
-        KMessageBox::sorry(this, i18n("One or more of the outputs was undefined."));
         plugin->writeUnlock();
         plugin = 0L;
         return false;
