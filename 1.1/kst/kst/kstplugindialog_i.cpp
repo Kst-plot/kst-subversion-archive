@@ -178,23 +178,11 @@ void KstPluginDialogI::_fillFieldsForEdit() {
 }
 
 
-void KstPluginDialogI::_fillFieldsForNew() {
+void KstPluginDialogI::_fillFieldsForNew() { 
   updatePluginList();
-
-  KstPluginList plugins = kstObjectSubList<KstDataObject, KstPlugin>(KST::dataObjectList);
-
-  /* set tag name */
-  _tagName->setText(plugin_defaultTag);
-
-  updatePluginList();
-
   PluginCombo->setCurrentItem(0);
   pluginChanged(PluginCombo->currentItem());
-  PluginCombo->setEnabled(true);
-
-  KstSharedPtr<Plugin> plugin = PluginCollection::self()->plugin(_pluginList[PluginCombo->currentItem()]);
-
-  fillVectorScalarCombos(plugin);
+  _tagName->setText(plugin_defaultTag); 
 }
 
 
@@ -392,6 +380,8 @@ void KstPluginDialogI::restoreInputs(const QValueList<Plugin::Data::IOValue>& ta
 
 
 bool KstPluginDialogI::saveInputs(KstPluginPtr plugin, KstSharedPtr<Plugin> p) {
+  bool rc = true;
+  
   KST::vectorList.lock().readLock();
   KST::scalarList.lock().readLock();
   KST::stringList.lock().readLock();
@@ -404,11 +394,13 @@ bool KstPluginDialogI::saveInputs(KstPluginPtr plugin, KstSharedPtr<Plugin> p) {
       KstVectorPtr v = *KST::vectorList.findTag(vs->selectedVector());
       if (v) {
         v->writeLock(); // to match with plugin->writeLock()
+        if (plugin->inputVectors().contains((*it)._name) && plugin->inputVectors()[(*it)._name] != v) {
+          plugin->inputVectors()[(*it)._name]->writeUnlock();
+        }
+        plugin->inputVectors().insert((*it)._name, v);
+      } else if (plugin->inputVectors().contains((*it)._name)) {
+        plugin->inputVectors().erase((*it)._name);
       }
-      if (plugin->inputVectors().contains((*it)._name) && plugin->inputVectors()[(*it)._name] != v) {
-        plugin->inputVectors()[(*it)._name]->writeUnlock();
-      }
-      plugin->inputVectors().insert((*it)._name, v);
     } else if ((*it)._type == Plugin::Data::IOValue::StringType) {
       QObject *field = _frameWidget->child((*it)._name.latin1(), "StringSelector");
       assert(field);
@@ -467,7 +459,8 @@ bool KstPluginDialogI::saveInputs(KstPluginPtr plugin, KstSharedPtr<Plugin> p) {
   KST::stringList.lock().readUnlock();
   KST::scalarList.lock().readUnlock();
   KST::vectorList.lock().readUnlock();
-  return true;
+  
+  return rc;
 }
 
 
@@ -589,7 +582,6 @@ bool KstPluginDialogI::new_I() {
     _tagName->setFocus();
     return false;
   }
-
   KstPluginPtr plugin;
   int pitem = PluginCombo->currentItem();
   if (pitem >= 0 && PluginCombo->count() > 0) {
@@ -598,6 +590,7 @@ bool KstPluginDialogI::new_I() {
       plugin = new KstPlugin;
       plugin->writeLock();
       if (!saveInputs(plugin, pPtr)) {
+        KMessageBox::sorry(this, i18n("One or more of the inputs was undefined."));
         plugin->writeUnlock();
         plugin = 0L;
         return false;
@@ -610,6 +603,7 @@ bool KstPluginDialogI::new_I() {
       }
       plugin->setTagName(tagName);
       if (!saveOutputs(plugin, pPtr)) {
+        KMessageBox::sorry(this, i18n("One or more of the outputs was undefined."));
         plugin->writeUnlock();
         plugin = 0L;
         return false;
