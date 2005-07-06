@@ -193,6 +193,8 @@ class KstApp : public KMdiMainFrm {
     void slotSettingsChanged();
     void addNewWindowMenu();
 
+    void fixKMdi();
+
   public slots:
     void fromEnd();
 

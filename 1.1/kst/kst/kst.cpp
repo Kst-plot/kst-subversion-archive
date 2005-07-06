@@ -35,6 +35,7 @@
 #include <kprogress.h>
 #include <kstandarddirs.h>
 #include <kstatusbar.h>
+#include <ktabwidget.h>
 #include <qdatetime.h>
 
 // application specific includes
@@ -150,9 +151,12 @@ KstApp::KstApp(QWidget *parent, const char *name)
   connect(KstEventMonitorI::globalInstance(), SIGNAL(modified()), doc, SLOT(wasModified()));
   connect(KstImageDialogI::globalInstance(), SIGNAL(modified()), doc, SLOT(wasModified()));
   connect(KstMatrixDialogI::globalInstance(), SIGNAL(modified()), doc, SLOT(wasModified()));
+  connect(this, SIGNAL(mdiModeHasBeenChangedTo(KMdi::MdiMode)), SLOT(fixKMdi()));
 
   initActions();
   readOptions();
+
+  fixKMdi();
 
   _updateThread = new UpdateThread(doc);
   _updateThread->setUpdateTime(KstSettings::globalSettings()->plotUpdateTimer);
@@ -1891,9 +1895,11 @@ void KstApp::updateMemoryStatus() {
 #endif
 }
 
+
 const QStringList KstApp::recentFiles() const {
   return recent->items();
 }
+
 
 void KstApp::showQuickStartDialog() {
 #ifdef KST_QUICKSTART_DLG
@@ -1901,6 +1907,14 @@ void KstApp::showQuickStartDialog() {
     _quickStartDialog->show_I();
   }
 #endif
+}
+
+
+void KstApp::fixKMdi() {
+  KTabWidget *tw = tabWidget();
+  if (tw) {
+    tw->setHoverCloseButton(false);
+  }
 }
 
 #include "kst.moc"
