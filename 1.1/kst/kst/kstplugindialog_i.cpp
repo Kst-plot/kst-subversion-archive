@@ -19,9 +19,13 @@
 
 // include files for Qt
 #include <qcombobox.h>
+#include <qframe.h>
+#include <qgroupbox.h>
 #include <qlabel.h>
 #include <qlayout.h>
 #include <qlineedit.h>
+#include <qobjectlist.h>
+#include <qtextedit.h>
 #include <qtimer.h>
 #include <qtooltip.h>
 #include <qwhatsthis.h>
@@ -29,7 +33,6 @@
 // include files for KDE
 #include <kcolorbutton.h>
 #include <kdebug.h>
-#include <klocale.h>
 #include <kmessagebox.h>
 
 // application specific includes
@@ -56,18 +59,15 @@ KstPluginDialogI *KstPluginDialogI::globalInstance() {
   return _inst;
 }
 
-
-static const QString& plugin_defaultTag = KGlobal::staticQString("<Auto Name>");
-
 KstPluginDialogI::KstPluginDialogI(QWidget* parent, const char* name,
                                    bool modal, WFlags fl)
 : KstPluginDialog(parent, name, modal, fl) {
   Init();
   connect(PluginCombo, SIGNAL(activated(int)), this, SLOT(pluginChanged(int)));
   connect(_pluginManager, SIGNAL(clicked()), this, SLOT(showPluginManager()));
-
-  QGridLayout *grid = new QGridLayout(_pluginFrame, 1, 1);
-  grid->addWidget(_frameWidget = new QWidget(_pluginFrame, "Frame Widget"), 0, 0);
+  
+  _pluginInfoGrid = 0L;
+  _pluginInputOutputGrid = 0L;
 }
 
 
@@ -100,7 +100,7 @@ void KstPluginDialogI::updatePluginList() {
                                                   it != pluginMap.end();
                                                                    ++it) {
     _pluginList += it.data()._name;
-    PluginCombo->insertItem(i18n("%1 (v%2) - %3").arg(it.data()._readableName).arg(it.data()._version).arg(it.data()._description));
+    PluginCombo->insertItem(i18n("%1 (v%2)").arg(it.data()._readableName).arg(it.data()._version));
     if (it.data()._name == previous) {
       newFocus = cnt;
       oldIEntries = cacheInputs(it.data()._inputs);
@@ -128,14 +128,14 @@ void KstPluginDialogI::updateForm() {
     const QValueList<Plugin::Data::IOValue>& itable = plugin->data()._inputs;
     for (QValueList<Plugin::Data::IOValue>::ConstIterator it = itable.begin(); it != itable.end(); ++it) {
       if ((*it)._type == Plugin::Data::IOValue::TableType) { // vector
-        QObject *field = _frameWidget->child((*it)._name.latin1(), "VectorSelector");
+        QObject *field = _pluginInputOutputFrame->child((*it)._name.latin1(), "VectorSelector");
         assert(field);
         if (field) {
           VectorSelector *vs = static_cast<VectorSelector*>(field);
           vs->update();
         }
       } else if ((*it)._type == Plugin::Data::IOValue::StringType) { // string
-        QObject *field = _frameWidget->child((*it)._name.latin1(), "StringSelector");
+        QObject *field = _pluginInputOutputFrame->child((*it)._name.latin1(), "StringSelector");
         assert(field);
         if (field) {
           StringSelector *ss = static_cast<StringSelector*>(field);
@@ -144,7 +144,7 @@ void KstPluginDialogI::updateForm() {
       } else if ((*it)._type == Plugin::Data::IOValue::PidType) { 
         // Nothing
       } else {
-        QObject *field = _frameWidget->child((*it)._name.latin1(), "ScalarSelector");
+        QObject *field = _pluginInputOutputFrame->child((*it)._name.latin1(), "ScalarSelector");
         assert(field);
         if (field) {
           ScalarSelector *ss = static_cast<ScalarSelector*>(field);
@@ -202,7 +202,7 @@ void KstPluginDialogI::fillVectorScalarCombos(KstSharedPtr<Plugin> plugin) {
     for (QValueList<Plugin::Data::IOValue>::ConstIterator it = itable.begin();
          it != itable.end(); ++it) {
       if ((*it)._type == Plugin::Data::IOValue::TableType) { // vector
-        QObject *field = _frameWidget->child((*it)._name.latin1(), "VectorSelector");
+        QObject *field = _pluginInputOutputFrame->child((*it)._name.latin1(), "VectorSelector");
         assert(field);
         if (field) {
           VectorSelector *vs = static_cast<VectorSelector*>(field);
@@ -215,7 +215,7 @@ void KstPluginDialogI::fillVectorScalarCombos(KstSharedPtr<Plugin> plugin) {
           }
         }
       } else if ((*it)._type == Plugin::Data::IOValue::StringType) {
-        QObject *field = _frameWidget->child((*it)._name.latin1(), "StringSelector");
+        QObject *field = _pluginInputOutputFrame->child((*it)._name.latin1(), "StringSelector");
         assert(field);
         if (field) {
           StringSelector *ss = static_cast<StringSelector*>(field);
@@ -230,7 +230,7 @@ void KstPluginDialogI::fillVectorScalarCombos(KstSharedPtr<Plugin> plugin) {
       } else if ((*it)._type == Plugin::Data::IOValue::PidType) { 
         // Nothing
       } else {
-        QObject *field = _frameWidget->child((*it)._name.latin1(), "ScalarSelector");
+        QObject *field = _pluginInputOutputFrame->child((*it)._name.latin1(), "ScalarSelector");
         assert(field);
         if (field) {
           ScalarSelector *ss = static_cast<ScalarSelector*>(field);
@@ -249,7 +249,7 @@ void KstPluginDialogI::fillVectorScalarCombos(KstSharedPtr<Plugin> plugin) {
     if (DPvalid) {
       const QValueList<Plugin::Data::IOValue>& otable = plugin->data()._outputs;
       for (QValueList<Plugin::Data::IOValue>::ConstIterator it = otable.begin(); it != otable.end(); ++it) {
-        QObject *field = _frameWidget->child((*it)._name.latin1(), "QLineEdit");
+        QObject *field = _pluginInputOutputFrame->child((*it)._name.latin1(), "QLineEdit");
         assert(field);
         if (field) {
           QLineEdit *li = static_cast<QLineEdit*>(field);
@@ -272,7 +272,7 @@ void KstPluginDialogI::fillVectorScalarCombos(KstSharedPtr<Plugin> plugin) {
     QString cur = _pluginList[PluginCombo->currentItem()];
     Plugin::Data pdata = pc->pluginList()[pc->pluginNameList()[cur]];
     for (QValueList<Plugin::Data::IOValue>::ConstIterator it = pdata._outputs.begin(); it != pdata._outputs.end(); ++it) {
-      QObject *field = _frameWidget->child((*it)._name.latin1(), "QLineEdit");
+      QObject *field = _pluginInputOutputFrame->child((*it)._name.latin1(), "QLineEdit");
       if (field) {
         static_cast<QLineEdit*>(field)->setText(QString::null);
       }
@@ -287,11 +287,9 @@ void KstPluginDialogI::update() {
 
 
 void KstPluginDialogI::fixupLayout() {
-  _frameWidget->updateGeometry();
-  _pluginFrame->updateGeometry();
-  resize(sizeHint());
-  setMinimumSize(size());
-  updateGeometry();
+  adjustSize();
+  resize(650, minimumSizeHint().height());
+  setFixedHeight(height());
 }
 
 
@@ -299,22 +297,22 @@ QMap<QString,QString> KstPluginDialogI::cacheInputs(const QValueList<Plugin::Dat
   QMap<QString,QString> rc;
   for (QValueList<Plugin::Data::IOValue>::ConstIterator it = table.begin(); it != table.end(); ++it) {
     if ((*it)._type == Plugin::Data::IOValue::TableType) {
-      QObject *field = _frameWidget->child((*it)._name.latin1(), "VectorSelector");
+      QObject *field = _pluginInputOutputFrame->child((*it)._name.latin1(), "VectorSelector");
       if (field) {
         rc[(*it)._name] = static_cast<VectorSelector*>(field)->selectedVector();
       } else {
-        field = _frameWidget->child((*it)._name.latin1(), "QLineEdit");
+        field = _pluginInputOutputFrame->child((*it)._name.latin1(), "QLineEdit");
         if (field) {
           rc[(*it)._name] = static_cast<QLineEdit*>(field)->text();
         }
       }
 
     } else if ((*it)._type == Plugin::Data::IOValue::StringType) {
-      QObject *field = _frameWidget->child((*it)._name.latin1(), "StringSelector");
+      QObject *field = _pluginInputOutputFrame->child((*it)._name.latin1(), "StringSelector");
       if (field) {
         rc[(*it)._name] = static_cast<StringSelector*>(field)->selectedString();
       } else {
-        field = _frameWidget->child((*it)._name.latin1(), "QLineEdit");
+        field = _pluginInputOutputFrame->child((*it)._name.latin1(), "QLineEdit");
         if (field) {
           rc[(*it)._name] = static_cast<QLineEdit*>(field)->text();
         }
@@ -322,11 +320,11 @@ QMap<QString,QString> KstPluginDialogI::cacheInputs(const QValueList<Plugin::Dat
     } else if ((*it)._type == Plugin::Data::IOValue::PidType) {
       // Nothing
     } else if ((*it)._type == Plugin::Data::IOValue::FloatType) {
-      QObject *field = _frameWidget->child((*it)._name.latin1(), "ScalarSelector");
+      QObject *field = _pluginInputOutputFrame->child((*it)._name.latin1(), "ScalarSelector");
       if (field) {
         rc[(*it)._name] = static_cast<ScalarSelector*>(field)->selectedScalar();
       } else {
-        field = _frameWidget->child((*it)._name.latin1(), "QLineEdit");
+        field = _pluginInputOutputFrame->child((*it)._name.latin1(), "QLineEdit");
         if (field) {
           rc[(*it)._name] = static_cast<QLineEdit*>(field)->text();
         }
@@ -343,21 +341,21 @@ void KstPluginDialogI::restoreInputs(const QValueList<Plugin::Data::IOValue>& ta
       continue;
     }
     if ((*it)._type == Plugin::Data::IOValue::TableType) {
-      QObject *field = _frameWidget->child((*it)._name.latin1(), "VectorSelector");
+      QObject *field = _pluginInputOutputFrame->child((*it)._name.latin1(), "VectorSelector");
       if (field) {
         static_cast<VectorSelector*>(field)->setSelection(v[(*it)._name]);
       } else {
-        field = _frameWidget->child((*it)._name.latin1(), "QLineEdit");
+        field = _pluginInputOutputFrame->child((*it)._name.latin1(), "QLineEdit");
         if (field) {
           static_cast<QLineEdit*>(field)->setText(v[(*it)._name]);
         }
       }
     } else if ((*it)._type == Plugin::Data::IOValue::StringType) {
-      QObject *field = _frameWidget->child((*it)._name.latin1(), "StringSelector");
+      QObject *field = _pluginInputOutputFrame->child((*it)._name.latin1(), "StringSelector");
       if (field) {
         static_cast<StringSelector*>(field)->setSelection(v[(*it)._name]);
       } else {
-        field = _frameWidget->child((*it)._name.latin1(), "QLineEdit");
+        field = _pluginInputOutputFrame->child((*it)._name.latin1(), "QLineEdit");
         if (field) {
           static_cast<QLineEdit*>(field)->setText(v[(*it)._name]);
         }
@@ -365,11 +363,11 @@ void KstPluginDialogI::restoreInputs(const QValueList<Plugin::Data::IOValue>& ta
     } else if ((*it)._type == Plugin::Data::IOValue::PidType) {
       // Nothing
     } else if ((*it)._type == Plugin::Data::IOValue::FloatType) {
-      QObject *field = _frameWidget->child((*it)._name.latin1(), "ScalarSelector");
+      QObject *field = _pluginInputOutputFrame->child((*it)._name.latin1(), "ScalarSelector");
       if (field) {
         static_cast<ScalarSelector*>(field)->setSelection(v[(*it)._name]);
       } else {
-        field = _frameWidget->child((*it)._name.latin1(), "QLineEdit");
+        field = _pluginInputOutputFrame->child((*it)._name.latin1(), "QLineEdit");
         if (field) {
           static_cast<QLineEdit*>(field)->setText(v[(*it)._name]);
         }
@@ -388,7 +386,7 @@ bool KstPluginDialogI::saveInputs(KstPluginPtr plugin, KstSharedPtr<Plugin> p) {
   const QValueList<Plugin::Data::IOValue>& itable = p->data()._inputs;
   for (QValueList<Plugin::Data::IOValue>::ConstIterator it = itable.begin(); it != itable.end(); ++it) {
     if ((*it)._type == Plugin::Data::IOValue::TableType) {
-      QObject *field = _frameWidget->child((*it)._name.latin1(), "VectorSelector");
+      QObject *field = _pluginInputOutputFrame->child((*it)._name.latin1(), "VectorSelector");
       assert(field);
       VectorSelector *vs = static_cast<VectorSelector*>(field);
       KstVectorPtr v = *KST::vectorList.findTag(vs->selectedVector());
@@ -402,7 +400,7 @@ bool KstPluginDialogI::saveInputs(KstPluginPtr plugin, KstSharedPtr<Plugin> p) {
         plugin->inputVectors().erase((*it)._name);
       }
     } else if ((*it)._type == Plugin::Data::IOValue::StringType) {
-      QObject *field = _frameWidget->child((*it)._name.latin1(), "StringSelector");
+      QObject *field = _pluginInputOutputFrame->child((*it)._name.latin1(), "StringSelector");
       assert(field);
       StringSelector *ss = static_cast<StringSelector*>(field);
       KstStringPtr s = *KST::stringList.findTag(ss->selectedString());
@@ -424,7 +422,7 @@ bool KstPluginDialogI::saveInputs(KstPluginPtr plugin, KstSharedPtr<Plugin> p) {
     } else if ((*it)._type == Plugin::Data::IOValue::PidType) {
       // Nothing
     } else if ((*it)._type == Plugin::Data::IOValue::FloatType) {
-      QObject *field = _frameWidget->child((*it)._name.latin1(), "ScalarSelector");
+      QObject *field = _pluginInputOutputFrame->child((*it)._name.latin1(), "ScalarSelector");
       assert(field);
       ScalarSelector *ss = static_cast<ScalarSelector*>(field);
       KstScalarPtr s = *KST::scalarList.findTag(ss->selectedScalar());
@@ -468,7 +466,7 @@ bool KstPluginDialogI::saveOutputs(KstPluginPtr plugin, KstSharedPtr<Plugin> p) 
   const QValueList<Plugin::Data::IOValue>& otable = p->data()._outputs;
 
   for (QValueList<Plugin::Data::IOValue>::ConstIterator it = otable.begin(); it != otable.end(); ++it) {
-    QObject *field = _frameWidget->child((*it)._name.latin1(), "QLineEdit");
+    QObject *field = _pluginInputOutputFrame->child((*it)._name.latin1(), "QLineEdit");
     if (!field) {
       continue; // Some are unsupported
     }
@@ -776,7 +774,12 @@ void KstPluginDialogI::generateEntries(bool input, int& cnt, QWidget *parent, QG
     }
 
     grid->addWidget(label, cnt, 0);
+    _pluginWidgets.push_back(label);
+    label->show();
+    
     grid->addWidget(widget, cnt, 1);
+    _pluginWidgets.push_back(widget);
+    widget->show();
 
     if (!(*it)._description.isEmpty()) {
       QWhatsThis::add(label, (*it)._description);
@@ -789,65 +792,79 @@ void KstPluginDialogI::generateEntries(bool input, int& cnt, QWidget *parent, QG
 
 
 void KstPluginDialogI::pluginChanged(int idx) {
-  // Get rid of the old widget
-  delete _frameWidget;
-  _frameWidget = 0L;
-
-  // Create a new one
-  QGridLayout *topGrid = dynamic_cast<QGridLayout*>(_pluginFrame->layout());
-  if (topGrid) {
-    topGrid->addWidget(_frameWidget = new QWidget(_pluginFrame, "Frame Widget"), 0, 0);
-  } else {
-    kdError() << "Somehow we lost the grid!" << endl;
-    return;
+  
+  // find all children and delete them and the grids
+  while (!_pluginWidgets.isEmpty())
+  {
+    QWidget* tempWidget = _pluginWidgets.back();
+    _pluginWidgets.pop_back();
+    delete tempWidget;
   }
+  delete _pluginInfoGrid;
+  delete _pluginInputOutputGrid;
 
-  // Refill it
+  // create new info grid
+  _pluginInfoGrid = new QGridLayout(_pluginInfoFrame, 2, 2, 0, 8);
+  _pluginInfoGrid->setColStretch(1,1); // stretch the right column
+  _pluginInfoGrid->setColStretch(0,0); // don't stretch the left column
+
   if (idx >= 0 && PluginCombo->count() > 0) {
+    
+    // get the plugin data
     const QString& pluginName = _pluginList[idx];
     const Plugin::Data& pluginData = PluginCollection::self()->pluginList()[PluginCollection::self()->pluginNameList()[pluginName]];
-    int cnt = 3;
 
     // Setup the grid and the "static" entries
-    int variables = pluginData._inputs.count() + pluginData._outputs.count();
-    QGridLayout *grid = new QGridLayout(_frameWidget, 4+variables, 2);
-    grid->setMargin(6);
-    grid->setSpacing(5);
-    grid->addWidget(new QLabel(i18n("Plugin name:"), _frameWidget), 0, 0);
-    grid->addWidget(new QLabel(pluginData._readableName, _frameWidget), 0, 1);
-    grid->addWidget(new QLabel(i18n("Description:"), _frameWidget), 1, 0);
-    QLabel *lab = new QLabel(pluginData._description, _frameWidget);
-    lab->setAlignment(lab->alignment() | Qt::WordBreak);
-    grid->addWidget(lab, 1, 1);
-
-    // Add a separator
-    QFrame* line = new QFrame(_frameWidget);
+    QLabel* infoLabel;
+    
+    infoLabel = new QLabel(i18n("Plugin name:"), _pluginInfoFrame);
+    _pluginInfoGrid->addWidget(infoLabel, 0, 0);
+    _pluginWidgets.push_back(infoLabel);
+    infoLabel->show();
+    
+    infoLabel = new QLabel(pluginData._readableName, _pluginInfoFrame);
+    _pluginInfoGrid->addWidget(infoLabel, 0, 1);
+    _pluginWidgets.push_back(infoLabel);
+    infoLabel->show();
+    
+    infoLabel = new QLabel(i18n("Description:"), _pluginInfoFrame);
+    infoLabel->setAlignment(Qt::AlignTop);
+    _pluginInfoGrid->addWidget(infoLabel, 1, 0);
+    _pluginWidgets.push_back(infoLabel);
+    infoLabel->show();
+    
+    infoLabel = new QLabel(pluginData._description,  _pluginInfoFrame);
+    _pluginInfoGrid->addWidget(infoLabel, 1, 1);
+    _pluginWidgets.push_back(infoLabel);
+    infoLabel->show();
+    
+    // create a new inputoutput grid
+    int cnt = 0;
+    int numInputOutputs = pluginData._inputs.count() + pluginData._outputs.count();
+    
+    // generate inputs
+    _pluginInputOutputGrid = new QGridLayout(_pluginInputOutputFrame, numInputOutputs + 1, 2, 0, 8);
+    _pluginInputOutputGrid->setColStretch(1,1);
+    _pluginInputOutputGrid->setColStretch(0,0); 
+    generateEntries(true, cnt, _pluginInputOutputFrame, _pluginInputOutputGrid, pluginData._inputs);
+    
+    // insert separator
+    cnt++;
+    QFrame* line = new QFrame(_pluginInputOutputFrame);
     line->setFrameShadow(QFrame::Sunken);
     line->setFrameShape(QFrame::HLine);
-    grid->addMultiCellWidget(line, 2, 2, 0, 1);
-
-    // Generate the input values
-    generateEntries(true, cnt, _frameWidget, grid, pluginData._inputs);
-
-    if (!pluginData._inputs.isEmpty() && !pluginData._outputs.isEmpty()) {
-      // Add a separator
-      line = new QFrame(_frameWidget);
-      line->setFrameShape(QFrame::HLine);
-      line->setFrameShadow(QFrame::Sunken);
-      line->setFrameShape(QFrame::HLine);
-      grid->addMultiCellWidget(line, cnt, cnt, 0, 1);
-      cnt++;
-    }
-
-    // Generate the output values
-    generateEntries(false, cnt, _frameWidget, grid, pluginData._outputs);
+    _pluginInputOutputGrid->addMultiCellWidget(line, cnt, cnt, 0, 1);
+    _pluginWidgets.push_back(line);
+    line->show();
+    cnt++;
+    
+    // generate outputs
+    _pluginInputOutputGrid->setColStretch(1,1);
+    _pluginInputOutputGrid->setColStretch(0,0); 
+    generateEntries(false, cnt, _pluginInputOutputFrame, _pluginInputOutputGrid, pluginData._outputs);
   }
-
-  // show it
-  _frameWidget->show();
-
   // resize everything
-  QTimer::singleShot(0, this, SLOT(fixupLayout()));
+  fixupLayout();
 }
 
 

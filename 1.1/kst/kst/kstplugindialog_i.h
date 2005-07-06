@@ -18,9 +18,13 @@
 #ifndef KSTPLUGINDIALOGI_H
 #define KSTPLUGINDIALOGI_H
 
+#include "kglobal.h"
+
 #include "kstplugin.h"
 
 #include "plugindialog.h"
+
+static const QString& plugin_defaultTag = KGlobal::staticQString("<Auto Name>");
 
 class KstPluginDialogI : public KstPluginDialog {
   Q_OBJECT
@@ -31,30 +35,30 @@ class KstPluginDialogI : public KstPluginDialog {
   public slots:
     /** update the entries in the plugin dialog to represent current plugins */
     void updateForm();
-    void update();
+    virtual void update();
 
-    bool new_I();
+    virtual bool new_I();
     bool edit_I();
 
-    void updatePluginList();
+    virtual void updatePluginList();
 
     static KstPluginDialogI *globalInstance();
 
-  private slots:
+  protected slots:
     void pluginChanged(int);
     void showPluginManager();
     void fixupLayout();
     void updateScalarTooltip(const QString& n);
     void updateStringTooltip(const QString& n);
 
-  private:
+  protected:
     QStringList _pluginList;
-    QWidget *_frameWidget;
-    static QGuardedPtr<KstPluginDialogI> _inst;
+    
+    
     void fillVectorScalarCombos(KstSharedPtr<Plugin> pPtr);
-    bool saveInputs(KstPluginPtr plugin, KstSharedPtr<Plugin> p);
+    virtual bool saveInputs(KstPluginPtr plugin, KstSharedPtr<Plugin> p);
     bool saveOutputs(KstPluginPtr plugin, KstSharedPtr<Plugin> p);
-    void generateEntries(bool input, int& cnt, QWidget *parent,
+    virtual void generateEntries(bool input, int& cnt, QWidget *parent,
         QGridLayout *grid, const QValueList<Plugin::Data::IOValue>& table);
 
     KstPluginPtr _getPtr(const QString &tagin);
@@ -64,6 +68,15 @@ class KstPluginDialogI : public KstPluginDialog {
 
     bool _newDialog;
     KstPluginPtr DP;
+    
+    // layout items
+    QGridLayout* _pluginInfoGrid;
+    QGridLayout* _pluginInputOutputGrid;
+    
+    QValueList<QWidget*> _pluginWidgets;
+    
+  private:
+    static QGuardedPtr<KstPluginDialogI> _inst;
 
     /***********************************/
     /** defined in dataobjectdialog.h **/
@@ -74,7 +87,7 @@ class KstPluginDialogI : public KstPluginDialog {
     void Init();
     void close();
     void reject();
-  private:
+  protected:
     void _fillFieldsForEdit();
     void _fillFieldsForNew();
 };

@@ -18,12 +18,9 @@
 #ifndef KSTFILTERDIALOGI_H
 #define KSTFILTERDIALOGI_H
 
-#include "filterdialog.h"
-#include "kstplugin.h"
+#include "kstplugindialog_i.h"
 
-class KstDoc;
-
-class KstFilterDialogI : public KstFilterDialog {
+class KstFilterDialogI : public KstPluginDialogI {
   Q_OBJECT
   public:
     KstFilterDialogI(QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
@@ -32,23 +29,12 @@ class KstFilterDialogI : public KstFilterDialog {
     static KstFilterDialogI *globalInstance();
 
   public slots:
-    void update();
     void show_setCurve(const QString& strCurve, const QString& strPlotName, const QString& strWindow);
     bool new_I();
     void updatePluginList();
-    void OK();
-    void Init();
-
-  private slots:
-    void pluginChanged(int);
-    void showPluginManager();
-    void fixupLayout();
-    void updateScalarTooltip(const QString& n);
-    void updateStringTooltip(const QString& n);
 
   private:
-    QStringList _pluginList;
-    QWidget *_frameWidget;
+
     QString _xvector;
     QString _yvector;
     QString _evector;
@@ -59,8 +45,7 @@ class KstFilterDialogI : public KstFilterDialog {
 
     bool createCurve(KstPluginPtr plugin);
     bool saveInputs(KstPluginPtr plugin, KstSharedPtr<Plugin> p);
-    bool saveOutputs(KstPluginPtr plugin, KstSharedPtr<Plugin> p);
-    void generateEntries(const QString& fixedVector, bool input, int& cnt, QWidget *parent, QGridLayout *grid, const QValueList<Plugin::Data::IOValue>& table);
+    void generateEntries(bool input, int& cnt, QWidget *parent, QGridLayout *grid, const QValueList<Plugin::Data::IOValue>& table);
 };
 
 #endif

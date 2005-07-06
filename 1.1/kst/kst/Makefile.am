@@ -165,8 +165,6 @@ libkstapp_la_SOURCES = \
 	kstsettings.cpp \
 	kstdoc.cpp \
 	kstviewwindow.cpp \
-	fitdialog.ui \
-	filterdialog.ui \
 	plotdialog.ui \
 	extensiondlg.ui \
 	kstdatadialog.ui \
