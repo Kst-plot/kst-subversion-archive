@@ -103,14 +103,15 @@ void DataWizard::testURL()
 }
 
 
-void DataWizard::sourceChanged(const QString& txt)
+void DataWizard::sourceChanged(const QString& text)
 {
     delete _configWidget;
     _configWidget = 0L;
     _configureSource->setEnabled(false);
     _file = QString::null;
-    if (!txt.isEmpty() && txt != "stdin" && txt != "-") {
+    if (!text.isEmpty() && text != "stdin" && text != "-") {
 	KURL url;
+	QString txt = _url->completionObject()->replacedPath(text);
 	if (QFile::exists(txt) && QFileInfo(txt).isRelative()) {
 	    url.setPath(txt);
 	} else {
