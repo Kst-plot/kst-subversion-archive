@@ -17,7 +17,9 @@
 
 #include "indirect.h"
 
+#include <qdir.h>
 #include <qfile.h>
+#include <qfileinfo.h>
  
 
 IndirectSource::IndirectSource(KConfig *cfg, const QString& filename, KstDataSourcePtr child)
@@ -45,6 +47,10 @@ KstObject::UpdateType IndirectSource::update(int u) {
   if (f.open(IO_ReadOnly)) {
     QString ifn;
     if (0 < f.readLine(ifn, 1000)) {
+      if (QFileInfo(ifn).isRelative()) {
+        ifn = QFileInfo(_filename).dirPath(true) + QDir::separator() + ifn;
+      }
+
       if (!_child || ifn.stripWhiteSpace() != _child->fileName()) {
         _child = 0L; // release
         KstDataSourcePtr p = KstDataSource::loadSource(ifn.stripWhiteSpace());
@@ -124,6 +130,10 @@ KstDataSource *create_indirect(KConfig *cfg, const QString& filename, const QStr
     return 0L;
   }
 
+  if (QFileInfo(ifn).isRelative()) {
+    ifn = QFileInfo(filename).dirPath(true) + QDir::separator() + ifn;
+  }
+
   KstDataSourcePtr p = KstDataSource::loadSource(ifn.stripWhiteSpace());
   f.close();
 
@@ -155,6 +165,10 @@ int understands_indirect(KConfig*, const QString& filename) {
     return 0;
   }
 
+  if (QFileInfo(ifn).isRelative()) {
+    ifn = QFileInfo(filename).dirPath(true) + QDir::separator() + ifn;
+  }
+
   return QFile::exists(ifn.stripWhiteSpace()) ? percent : 0;
 }
 
@@ -172,6 +186,10 @@ QStringList fieldList_indirect(KConfig *cfg, const QString& filename, const QStr
   QString ifn;
   if (0 >= f.readLine(ifn, 1000)) {
     return QStringList();
+  }
+
+  if (QFileInfo(ifn).isRelative()) {
+    ifn = QFileInfo(filename).dirPath(true) + QDir::separator() + ifn;
   }
 
   return KstDataSource::fieldListForSource(ifn.stripWhiteSpace(), type, typeSuggestion, complete);
