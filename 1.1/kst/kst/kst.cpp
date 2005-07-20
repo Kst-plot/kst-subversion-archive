@@ -1158,7 +1158,7 @@ void KstApp::slotFilePrint() {
       ks->printing.monochrome = printer.option("kst-plot-monochrome");
       ks->save();
 
-#if KDE_VERSION <= KDE_MAKE_VERSION(3,3,0)
+#if KDE_VERSION < KDE_MAKE_VERSION(3,3,0)
       int iFromPage = printer.fromPage();
       int iToPage = printer.toPage();
       
@@ -1176,7 +1176,7 @@ void KstApp::slotFilePrint() {
           win = dynamic_cast<KstViewWindow*>(it->currentItem());
           if (win && !win->view()->children().isEmpty()) {
             pages++;
-#if KDE_VERSION <= KDE_MAKE_VERSION(3,3,0)
+#if KDE_VERSION < KDE_MAKE_VERSION(3,3,0)
             if ((iFromPage == 0 && iToPage == 0) ||
                 (iFromPage <= pages && iToPage >= pages)) {
 #else
