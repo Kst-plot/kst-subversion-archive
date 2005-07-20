@@ -1100,15 +1100,20 @@ void KstApp::immediatePrintActiveWindowToPng(const QString& filename, const QStr
 }
 
 void KstApp::slotFilePrint() {
+  KstViewWindow *currentWin = dynamic_cast<KstViewWindow*>(activeWindow());
   KstViewWindow *win;
+  int currentPage = 0;  
   int pages = 0;
-
+  
   KMdiIterator<KMdiChildView*> *it = createIterator();
   if (it) {
     while (it->currentItem()) {
       win = dynamic_cast<KstViewWindow*>(it->currentItem());
       if (win && !win->view()->children().isEmpty()) {
         pages++;
+      }
+      if (win == currentWin) {
+        currentPage = pages;
       }
       it->next();
     }
@@ -1118,7 +1123,7 @@ void KstApp::slotFilePrint() {
   if (pages > 0) {
     KPrinter printer;
     KstSettings *ks = KstSettings::globalSettings();
-
+        
     printer.setOption("kde-pagesize", ks->printing.pageSize);
     printer.setOption("kde-orientation", ks->printing.orientation);
     printer.setOption("kst-plot-datetime-footer", ks->printing.plotDateTimeFooter);
@@ -1127,6 +1132,8 @@ void KstApp::slotFilePrint() {
     printer.setOption("kst-plot-monochrome", ks->printing.monochrome);
     printer.setFromTo(0, 0);
     printer.setMinMax(1, pages);
+    printer.setCurrentPage(currentPage);
+    printer.setPageSelection(KPrinter::ApplicationSide);
 
     pages = 0;
     printer.addDialogPage(new KstPrintOptionsPage);
@@ -1151,6 +1158,17 @@ void KstApp::slotFilePrint() {
       ks->printing.monochrome = printer.option("kst-plot-monochrome");
       ks->save();
 
+#if KDE_VERSION <= KDE_MAKE_VERSION(3,3,0)
+      int iFromPage = printer.fromPage();
+      int iToPage = printer.toPage();
+      
+      if (iFromPage == 0 && iToPage == 0) {
+        printer.setPageSelection(KPrinter::SystemSide);
+      }
+#else
+      QValueList<int> pageList = printer.pageList();
+#endif
+      
       it = createIterator();
       if (it) {
         bool firstPage = true;
@@ -1158,12 +1176,15 @@ void KstApp::slotFilePrint() {
           win = dynamic_cast<KstViewWindow*>(it->currentItem());
           if (win && !win->view()->children().isEmpty()) {
             pages++;
+#if KDE_VERSION <= KDE_MAKE_VERSION(3,3,0)
             if ((iFromPage == 0 && iToPage == 0) ||
                 (iFromPage <= pages && iToPage >= pages)) {
+#else
+            if (pageList.contains(pages)) {                   
+#endif
               if (!firstPage && !printer.newPage()) {
                 break;
               }
-
               KstTopLevelViewPtr tlv = kst_cast<KstTopLevelView>(win->view());
               if (tlv) {
                 if (lineAdjust != 0) {
