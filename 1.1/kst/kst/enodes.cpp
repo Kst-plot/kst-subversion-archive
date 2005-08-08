@@ -54,12 +54,13 @@ double Equation::interpret(const char *txt, bool *ok) {
     return 0.0;
   }
 
+  mutex().lock();
   yy_scan_string(txt);
   int rc = yyparse();
   if (rc == 0) {
-    QMutexLocker ml(&mutex());
     Equation::Node *eq = static_cast<Equation::Node*>(ParsedEquation);
     ParsedEquation = 0L;
+    mutex().unlock();
     Equation::Context ctx;
     ctx.sampleCount = 2;
     ctx.noPoint = KST::NOPOINT;
@@ -73,6 +74,8 @@ double Equation::interpret(const char *txt, bool *ok) {
     }
     return v;
   } else {
+    ParsedEquation = 0L;
+    mutex().unlock();
     if (ok) {
       *ok = false;
     }
