@@ -1585,13 +1585,10 @@ QString KstIfaceImpl::createImage(const QString &name,
     if (lowerZ > upperZ) {
       return QString::null;
     }
-    KPalette* pal = new KPalette(paletteName);
-    if (!pal) {
-      return QString::null;
-    }
     if (numContours < 1) {
       return QString::null;
     }
+    KPalette* pal = new KPalette(paletteName);
     matrix->readLock();
     image = new KstImage(imgtag, matrix, lowerZ, upperZ, false, pal,
                          numContours, contourColor.isValid() ? contourColor : QColor("darkBlue"), 0);
