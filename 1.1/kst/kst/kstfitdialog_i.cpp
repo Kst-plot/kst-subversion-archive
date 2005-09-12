@@ -376,6 +376,8 @@ void KstFitDialogI::generateEntries(bool input, int& cnt, QWidget *parent, QGrid
     widget->show();
     
     if (!(*it)._description.isEmpty()) {
+      QWhatsThis::remove(label);
+      QWhatsThis::remove(widget);
       QWhatsThis::add(label, (*it)._description);
       QWhatsThis::add(widget, (*it)._description);
     }

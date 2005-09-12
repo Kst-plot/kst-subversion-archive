@@ -746,6 +746,7 @@ void KstPluginDialogI::generateEntries(bool input, int& cnt, QWidget *parent, QG
         w->allowDirectEntry(true);
         if (p) {
           p->readLock();
+          QToolTip::remove(w->_scalar);
           QToolTip::add(w->_scalar, QString::number(p->value()));
           p->readUnlock();
         }
@@ -762,6 +763,7 @@ void KstPluginDialogI::generateEntries(bool input, int& cnt, QWidget *parent, QG
         w->allowDirectEntry(true);
         if (p) {
           p->readLock();
+          QToolTip::remove(w->_string);
           QToolTip::add(w->_string, p->value());
           p->readUnlock();
         }
@@ -782,6 +784,8 @@ void KstPluginDialogI::generateEntries(bool input, int& cnt, QWidget *parent, QG
     widget->show();
 
     if (!(*it)._description.isEmpty()) {
+      QWhatsThis::remove(label);
+      QWhatsThis::remove(widget);
       QWhatsThis::add(label, (*it)._description);
       QWhatsThis::add(widget, (*it)._description);
     }
