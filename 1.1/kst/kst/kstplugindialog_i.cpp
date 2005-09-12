@@ -157,8 +157,8 @@ void KstPluginDialogI::updateForm() {
 
 
 void KstPluginDialogI::_fillFieldsForEdit() {
-  if (DP == 0L) {
-    return; // shouldn't be needed
+  if (!DP || !DP->plugin()) {
+    return;
   }
   DP->readLock();
   _tagName->setText(DP->tagName());
