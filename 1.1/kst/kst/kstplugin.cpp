@@ -377,6 +377,9 @@ KstObject::UpdateType KstPlugin::update(int update_counter) {
         KstVectorPtr vp = _outputVectors[(*it)._name];
         vectorRealloced(vp, _outVectors[vitcnt], _outArrayLens[vitcnt]);
         vp->setDirty();
+        // Inefficient, but do we have any other choice?  We don't really know
+        // from the plugin how much of this vector is "new" or "shifted"
+        vp->setNewAndShift(vp->length(), vp->numShift());
         vp->update(update_counter);
         vitcnt++;
       } else if ((*it)._type == Plugin::Data::IOValue::FloatType) {

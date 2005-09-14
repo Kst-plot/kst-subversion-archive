@@ -226,7 +226,11 @@ void KstVector::updateScalars() {
 double* KstVector::realloced(double *memptr, int newSize) {
   double *old = _v;
   _v = memptr;
-  NumNew = newSize - _size;
+  if (newSize < _size) {
+    NumNew = newSize; // all new if we shrunk the vector
+  } else {
+    NumNew = newSize - _size;
+  }
   _size = newSize;
   updateScalars();
   return old;
