@@ -125,7 +125,7 @@ int PlanckSource::readField(double *v, const QString& field, int s, int n) {
 }
 
 
-int PlanckSource::readField(double *v, const QString &field, int s, int n, int skip, int *lastFrameRead) {
+int PlanckSource::readField(double *v, const QString& field, int s, int n, int skip, int *lastFrameRead) {
   if (*lastFrameRead) {
     *lastFrameRead = -1;
   }
@@ -163,8 +163,8 @@ int PlanckSource::readField(double *v, const QString &field, int s, int n, int s
     n = 1;
   }
 
-  if (s + (n + 1)*skip > count) { // trying to read past the end
-    n = -1 + (count - s) / skip;
+  if (s + n*skip > count) { // trying to read past the end
+    n = (count - s) / skip;
   }
 
   if (s + start > end) {
@@ -174,12 +174,13 @@ int PlanckSource::readField(double *v, const QString &field, int s, int n, int s
 
   // PIOLib doesn't have a mechanism to read with skip.  This needs to be added
   // later.  For now, we read into a temp buffer, then extract what we need.
-  double *tmp = new double[(n + 1) * skip];
-  int rc = _planckObject->readObject(field, tmp, start + s, start + s + (n + 1)*skip - 1);
+  double *tmp = new double[n * skip];
+  int rc = _planckObject->readObject(field, tmp, start + s, start + s + n*skip - 1);
   int i = 0;
   int rctmp = rc;
   while (rctmp >= skip) {
     rctmp -= skip;
+    assert(i < n);
     v[i] = tmp[i * skip];
     ++i;
   }
