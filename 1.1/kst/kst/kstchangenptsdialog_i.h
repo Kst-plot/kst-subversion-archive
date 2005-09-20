@@ -31,7 +31,7 @@ public:
 
 public slots:
   /** update the entries in changenptsDialog to represent current vectors */
-  void updateChangeNptsDialog();
+  bool updateChangeNptsDialog();
 
   /** calls updateChangeNptsDialog(), then shows and raises changeNptsDialog */
   void showChangeNptsDialog();

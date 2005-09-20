@@ -49,22 +49,34 @@ void KstChangeNptsDialogI::selectAll() {
   CurveList->selectAll(true);
 }
 
-void KstChangeNptsDialogI::updateChangeNptsDialog() {
-  CurveList->clear();
+bool KstChangeNptsDialogI::updateChangeNptsDialog() {
+  QStringList qsl;
 
+  for (uint i_vector = 0; i_vector < CurveList->count(); i_vector++) {
+    if (CurveList->isSelected(i_vector)) {
+      qsl.append(CurveList->text(i_vector));
+    }
+  }
+  CurveList->clear();
   KstRVectorList rvl = kstObjectSubList<KstVector,KstRVector>(KST::vectorList);
   /* insert vectors into ChangeNptsCurveList */
   for (uint i = 0; i < rvl.count(); i++) {
     rvl[i]->readLock();
     CurveList->insertItem(rvl[i]->tagName(), -1);
+    if (qsl.contains(rvl[i]->tagName())) {
+      CurveList->setSelected(i, true);
+    }
     rvl[i]->readUnlock();
   }
+  return !qsl.isEmpty();
 }
 
 void KstChangeNptsDialogI::showChangeNptsDialog() {
-  updateChangeNptsDialog();
+  bool some_slected = updateChangeNptsDialog();
   updateDefaults(0);
-  CurveList->selectAll(true);
+  if (!some_slected) {
+    CurveList->selectAll(true);
+  }
   show();
   raise();
 }
@@ -74,6 +86,7 @@ void KstChangeNptsDialogI::applyNptsChange() {
   for (uint i_vector = 0; i_vector < CurveList->count(); i_vector++) {
     if (CurveList->isSelected(i_vector)) {
       KstRVectorPtr vector = rvl[i_vector];
+      vector->readLock();
       int f0, n;
       if (_kstDataRange->isTime() && vector->dataSource()) {
         vector->dataSource()->readLock();
@@ -84,6 +97,7 @@ void KstChangeNptsDialogI::applyNptsChange() {
         f0 = _kstDataRange->f0Value();
         n = _kstDataRange->nValue();
       }
+      vector->readUnlock();
       vector->writeLock();
       vector->changeFrames(
         (_kstDataRange->CountFromEnd->isChecked() ? -1 : f0),
