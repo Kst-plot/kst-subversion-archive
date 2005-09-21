@@ -489,6 +489,8 @@ bool ObjectGroup::updateObjectList() {
   PIOErr e = PIOGetObjectList(&objNames, &objTypes, _group);
   if (e > 0) {
     _valid = true;
+    delete[] firstIndex;
+    delete[] lastIndex;
     firstIndex = new PIOLONG[e];
     lastIndex = new PIOLONG[e];
     objectListSize = e;
