@@ -462,16 +462,18 @@ void ObjectGroup::close() {
     _PIOFREE(objTypes);
     objTypes = 0L;
 
-    delete[] firstIndex;
-    firstIndex = 0L;
-    delete[] lastIndex;
-    lastIndex = 0L;
-
     objectListSize = 0;
+    _valid = false;
+  }
 
+  delete[] firstIndex;
+  firstIndex = 0L;
+  delete[] lastIndex;
+  lastIndex = 0L;
+
+  if (_group) {
     PIOCloseVoidGrp(&_group);
     _group = 0L;
-    _valid = false;
   }
 }
 
