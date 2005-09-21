@@ -429,7 +429,7 @@ KstObject::UpdateType KstRVector::update(int update_counter) {
 KstObject::UpdateType KstRVector::doUpdate(bool force) {
   int i, k, shift, n_read=0;
   int ave_nread;
-  int new_f0, new_nf, tmp_fn;
+  int new_f0, new_nf;
 
   checkIntegrity();
 
