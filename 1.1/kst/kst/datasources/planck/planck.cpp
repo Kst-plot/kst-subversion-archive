@@ -121,6 +121,7 @@ int PlanckSource::readField(double *v, const QString& field, int s, int n) {
     return 0;
   }
 
+  assert(n != 0);
   return _planckObject->readObject(field, v, start + s, start + s + n - 1);
 }
 

@@ -459,7 +459,9 @@ KstObject::UpdateType KstRVector::doUpdate(bool force) {
       new_nf = fc - new_f0;
     }
     if (new_nf <= 0) {
-      new_nf = new_f0 = 0;
+      // Tried to read starting past the end.
+      new_f0 = 0;
+      new_nf = 1;
     }
   }
 
@@ -489,6 +491,7 @@ KstObject::UpdateType KstRVector::doUpdate(bool force) {
       _numSamples = (NF-1)*SPF+1;
     }
 
+    // FIXME: use memmove()
     for (i = 0; i < _numSamples; i++) {
       _v[i] = _v[i+shift];
     }
@@ -563,6 +566,7 @@ KstObject::UpdateType KstRVector::doUpdate(bool force) {
       bool rc = resize((new_nf - 1)*SPF + 1);
       if (!rc) {
         // FIXME: handle failed resize
+        abort();
       }
     }
 
@@ -572,9 +576,15 @@ KstObject::UpdateType KstRVector::doUpdate(bool force) {
 
     // read the new data from file
     if (_file->samplesPerFrame(_field) > 1) {
+      assert(new_nf - NF - 1 > 0 || new_nf - NF - 1 == -1);
+      assert(new_f0 + NF >= 0);
+      assert(new_f0 + new_nf - 1 >= 0);
       n_read = _file->readField(_v+NF*SPF, _field, new_f0 + NF, new_nf - NF - 1);
-      n_read += _file->readField(_v+(new_nf-1)*SPF, _field, new_f0 + new_nf-1, -1);
+      n_read += _file->readField(_v+(new_nf-1)*SPF, _field, new_f0 + new_nf - 1, -1);
     } else {
+      //kdDebug() << "Reading into _v=" << (void*)_v << " which has size " << _size << " and starting at offset " << NF*SPF << " for s=" << new_f0 + NF << " and n=" << new_nf - NF << endl;
+      assert(new_f0 + NF >= 0);
+      assert(new_nf - NF > 0 || new_nf - NF == -1);
       n_read = _file->readField(_v+NF*SPF, _field, new_f0 + NF, new_nf - NF);
     }
   }
