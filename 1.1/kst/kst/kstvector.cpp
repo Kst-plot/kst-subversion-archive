@@ -249,7 +249,7 @@ void KstVector::zero() {
 
 bool KstVector::resize(int sz, bool reinit) {
   //kdDebug() << "resizing to: " << sz << endl;
-  if (sz > 1) {
+  if (sz > 0) {
     _v = static_cast<double*>(KST::realloc(_v, sz*sizeof(double)));
     if (!_v) {
       return false;
