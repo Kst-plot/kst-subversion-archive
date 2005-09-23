@@ -160,12 +160,18 @@ int PlanckSource::readField(double *v, const QString& field, int s, int n, int s
     return 0;
   }
 
+  if (skip > n || skip > count || skip > end) { // what are they thinking?
+    return 0;
+  }
+
   if (n < 0) { // reading less than 0 -> read only one sample!
     n = 1;
   }
 
-  if (s + n*skip > count) { // trying to read past the end
-    n = (count - s) / skip;
+  if (s + (n-1)*skip > count) { // trying to read past the end
+    kdDebug() << "TRYING TO READ PAST END.  n=" << n << endl;
+    n = (count - s) / skip + 1;
+    kdDebug() << "N IS NOW=" << n << endl;
   }
 
   if (s + start > end) {
@@ -175,13 +181,11 @@ int PlanckSource::readField(double *v, const QString& field, int s, int n, int s
 
   // PIOLib doesn't have a mechanism to read with skip.  This needs to be added
   // later.  For now, we read into a temp buffer, then extract what we need.
-  double *tmp = new double[n * skip];
-  int rc = _planckObject->readObject(field, tmp, start + s, start + s + n*skip - 1);
+  double *tmp = new double[(n + 1) * skip];
+  int rc = _planckObject->readObject(field, tmp, start + s, start + s + (n + 1)*skip - 1);
+  //kdDebug() << "readObject rc=" << rc << " from=" << start+s << " to=" << start + s + (n+1)*skip -1 << endl;
   int i = 0;
-  int rctmp = rc;
-  while (rctmp >= skip) {
-    rctmp -= skip;
-    assert(i < n);
+  while (i < n && i*skip < rc) {
     v[i] = tmp[i * skip];
     ++i;
   }
