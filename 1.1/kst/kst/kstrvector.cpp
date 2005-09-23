@@ -466,11 +466,11 @@ KstObject::UpdateType KstRVector::doUpdate(bool force) {
   }
 
   if (DoSkip) {
-      // change new_f0 and new_nf so they both lie on skip boundaries
-      if (new_f0 != 0) {
-        new_f0 = (((new_f0-1)/Skip)+1)*Skip;
-      }
-      new_nf = (new_nf/Skip)*Skip;
+    // change new_f0 and new_nf so they both lie on skip boundaries
+    if (new_f0 != 0) {
+      new_f0 = ((new_f0-1)/Skip+1)*Skip;
+    }
+    new_nf = (new_nf/Skip)*Skip;
   }
 
   if (NF == new_nf && F0 == new_f0 && !force) {
