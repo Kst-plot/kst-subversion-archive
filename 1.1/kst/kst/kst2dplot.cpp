@@ -898,7 +898,7 @@ void Kst2DPlot::updateScale() {
       if (_xLog && XMin <= 0.0) {
         XMin = pow(10.0, -350.0);
       }
-      if (_xScaleMode==AUTOBORDER) {
+      if (_xScaleMode == AUTOBORDER) {
         if (_xLog) {
           XMin = log10(XMin);
           XMax = (XMax > 0.0) ? log10(XMax): 0.0;

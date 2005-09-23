@@ -35,7 +35,7 @@ typedef KstSharedPtr<KstLegend> KstLegendPtr;
 class Kst2DPlot;
 typedef KstObjectList<KstSharedPtr<Kst2DPlot> > Kst2DPlotList;
 
-enum KstScaleModeType { AUTO, AC, FIXED, AUTOUP, NOSPIKE, AUTOBORDER };
+enum KstScaleModeType { AUTO = 0, AC = 1, FIXED = 2, AUTOUP = 3, NOSPIKE = 4, AUTOBORDER = 5 };
 
 struct KstPlotScale {
   double xmin;
