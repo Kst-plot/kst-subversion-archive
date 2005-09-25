@@ -385,7 +385,25 @@
         <slot>insert(const QString&amp;)</slot>
     </connection>
     <connection>
+        <sender>Operators</sender>
+        <signal>activated(const QString&amp;)</signal>
+        <receiver>Equation</receiver>
+        <slot>setFocus()</slot>
+    </connection>
+    <connection>
         <sender>_vectors</sender>
+        <signal>selectionChangedLabel(const QString&amp;)</signal>
+        <receiver>Equation</receiver>
+        <slot>insert(const QString&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>_vectors</sender>
+        <signal>selectionChangedLabel(const QString&amp;)</signal>
+        <receiver>Equation</receiver>
+        <slot>setFocus()</slot>
+    </connection>
+    <connection>
+        <sender>_scalars</sender>
         <signal>selectionChangedLabel(const QString&amp;)</signal>
         <receiver>Equation</receiver>
         <slot>insert(const QString&amp;)</slot>
@@ -394,7 +412,7 @@
         <sender>_scalars</sender>
         <signal>selectionChangedLabel(const QString&amp;)</signal>
         <receiver>Equation</receiver>
-        <slot>insert(const QString&amp;)</slot>
+        <slot>setFocus()</slot>
     </connection>
 </connections>
 <tabstops>

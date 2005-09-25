@@ -213,6 +213,14 @@ bool KstDoc::openDocument(const KURL& url, const QString& o_file,
   KstApp *app = KstApp::inst();
   QString readingDocument = i18n("Reading Kst file");
 
+  if (docElem.tagName() != "kstdoc") {
+    return false;
+  }
+
+  if (!docElem.attribute("version").isEmpty()) {
+    return false;
+  }
+
   QDomNode n = docElem.firstChild();
   count = docElem.childNodes().length();
   app->slotUpdateProgress(count, handled, readingDocument);
