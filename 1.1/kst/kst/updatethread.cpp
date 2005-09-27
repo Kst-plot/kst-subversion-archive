@@ -19,7 +19,7 @@
 
 #include <assert.h>
 
-#include <kdebug.h>
+#include "ksdebug.h"
 
 #include "kstdatacollection.h"
 #include "kstdoc.h"
@@ -56,7 +56,7 @@ void UpdateThread::run() {
 
     if (_waitCondition.wait(_updateTime)) {
 #if UPDATEDEBUG > 0
-      kdDebug() << "Update timer " << _updateTime << endl;
+      kstdDebug() << "Update timer " << _updateTime << endl;
 #endif
       if (!_force) {
         break;
@@ -74,7 +74,7 @@ void UpdateThread::run() {
 
     if (_paused && !force) {
 #if UPDATEDEBUG > 0
-      kdDebug() << "Update thread paused..." << endl;
+      kstdDebug() << "Update thread paused..." << endl;
 #endif
       continue;
     }
@@ -82,10 +82,10 @@ void UpdateThread::run() {
     bool gotData = false;
     if (doUpdates(force, &gotData) && !_done) {
 #if UPDATEDEBUG > 1
-      kdDebug() << "Update resulted in: TRUE!" << endl;
+      kstdDebug() << "Update resulted in: TRUE!" << endl;
 #endif
       if (gotData) {
-        kdDebug() << "Posting UpdateDataDialogs" << endl;
+        kstdDebug() << "Posting UpdateDataDialogs" << endl;
         ThreadEvent *e = new ThreadEvent(ThreadEvent::UpdateDataDialogs);
         e->_curves = _updatedCurves;
         QApplication::postEvent(_doc, e);
@@ -136,7 +136,7 @@ bool UpdateThread::doUpdates(bool force, bool *gotData) {
 
 #if UPDATEDEBUG > 0
   if (force) {
-    kdDebug() << "Forced update!" << endl;
+    kstdDebug() << "Forced update!" << endl;
   }
 #endif
 
@@ -146,7 +146,7 @@ bool UpdateThread::doUpdates(bool force, bool *gotData) {
   }
 
 #if UPDATEDEBUG > 2
-  kdDebug() << "UPDATE: counter=" << _updateCounter << endl;
+  kstdDebug() << "UPDATE: counter=" << _updateCounter << endl;
 #endif
 
   {
@@ -160,7 +160,7 @@ bool UpdateThread::doUpdates(bool force, bool *gotData) {
       KstBaseCurvePtr bcp = cl[i];
       assert(bcp.data());
 #if UPDATEDEBUG > 1
-      kdDebug() << "updating curve: " << (void*)bcp << " - " << bcp->tagName() << endl;
+      kstdDebug() << "updating curve: " << (void*)bcp << " - " << bcp->tagName() << endl;
 #endif
       bcp->writeLock();
       KstObject::UpdateType ut = bcp->update(_updateCounter);
@@ -174,14 +174,14 @@ bool UpdateThread::doUpdates(bool force, bool *gotData) {
         U = ut;
         if (U == KstObject::UPDATE) {
 #if UPDATEDEBUG > 0
-          kdDebug() << "Curve " << bcp->tagName() << " said UPDATE" << endl;
+          kstdDebug() << "Curve " << bcp->tagName() << " said UPDATE" << endl;
 #endif
         }
       }
 
       if (_done || (_paused && !force)) {
 #if UPDATEDEBUG > 1
-        kdDebug() << "5 Returning from scan with U=" << (int)U << endl;
+        kstdDebug() << "5 Returning from scan with U=" << (int)U << endl;
 #endif
         return U == KstObject::UPDATE;
       }
@@ -192,7 +192,7 @@ bool UpdateThread::doUpdates(bool force, bool *gotData) {
       KstDataObjectPtr dp = dol[i];
       assert(dp.data());
 #if UPDATEDEBUG > 1
-      kdDebug() << "updating data object: " << (void*)dp << " - " << dp->tagName() << endl;
+      kstdDebug() << "updating data object: " << (void*)dp << " - " << dp->tagName() << endl;
 #endif
       dp->writeLock();
       dp->update(_updateCounter);
@@ -200,7 +200,7 @@ bool UpdateThread::doUpdates(bool force, bool *gotData) {
 
       if (_done || (_paused && !force)) {
 #if UPDATEDEBUG > 1
-        kdDebug() << "5 Returning from scan with U=" << (int)U << endl;
+        kstdDebug() << "5 Returning from scan with U=" << (int)U << endl;
 #endif
         return U == KstObject::UPDATE;
       }
@@ -227,14 +227,14 @@ bool UpdateThread::doUpdates(bool force, bool *gotData) {
   }
 
   if (U == KstObject::UPDATE) {
-    kdDebug() << "Update plots" << endl;
+    kstdDebug() << "Update plots" << endl;
     if (gotData) { // FIXME: do we need to consider all the other exit points?
       *gotData = true;
     }
   }
 
 #if UPDATEDEBUG > 1
-  kdDebug() << "6 Returning from scan with U=" << (int)U << endl;
+  kstdDebug() << "6 Returning from scan with U=" << (int)U << endl;
 #endif
   return U == KstObject::UPDATE;
 }

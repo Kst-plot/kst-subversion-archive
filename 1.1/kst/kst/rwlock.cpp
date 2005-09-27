@@ -17,7 +17,7 @@
 
 #include "rwlock.h"
 
-#include <kdebug.h>
+#include "ksdebug.h"
 
 
 #define MAXREADERS 30
@@ -57,7 +57,7 @@ void KstRWLock::readUnlock() const {
 
 void KstRWLock::writeLock() const {
   #ifdef LOCKTRACE
-  kdDebug() << (void*) this << " Write lock " << _sem.available() << "/" << _sem.total() << " tid=" << (int)QThread::currentThread() << endl;
+  kstdDebug() << (void*) this << " Write lock " << _sem.available() << "/" << _sem.total() << " tid=" << (int)QThread::currentThread() << endl;
   #endif
   _writeLock.lock();
   if (_writeRecursion == 0) {
@@ -65,21 +65,21 @@ void KstRWLock::writeLock() const {
   }
   _writeRecursion++;
   #ifdef LOCKTRACE
-  kdDebug() << (void*) this << " Write locked " << _sem.available() << "/" << _sem.total() << " tid=" << (int)QThread::currentThread() << endl;
+  kstdDebug() << (void*) this << " Write locked " << _sem.available() << "/" << _sem.total() << " tid=" << (int)QThread::currentThread() << endl;
   #endif
 }
 
 
 void KstRWLock::writeUnlock() const {
   #ifdef LOCKTRACE
-  kdDebug() << (void*) this << " Write unlock " << _sem.available() << "/" << _sem.total() << " tid=" << (int)QThread::currentThread() << endl;
+  kstdDebug() << (void*) this << " Write unlock " << _sem.available() << "/" << _sem.total() << " tid=" << (int)QThread::currentThread() << endl;
   #endif
   _writeRecursion--;
   if (_writeRecursion == 0) {
     _sem -= MAXREADERS;
   }
   #ifdef LOCKTRACE
-  kdDebug() << (void*) this << " Write unlocked " << _sem.available() << "/" << _sem.total() << " tid=" << (int)QThread::currentThread() << endl;
+  kstdDebug() << (void*) this << " Write unlocked " << _sem.available() << "/" << _sem.total() << " tid=" << (int)QThread::currentThread() << endl;
   #endif
   _writeLock.unlock();
 }

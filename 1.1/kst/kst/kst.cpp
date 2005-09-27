@@ -27,7 +27,7 @@
 
 // include files for KDE
 #include <kaccel.h>
-#include <kdebug.h>
+#include "ksdebug.h"
 #include <kfiledialog.h>
 #include <kkeydialog.h>
 #include <kmessagebox.h>
@@ -1463,7 +1463,7 @@ void KstApp::paintAll(KstPaintType pt) {
   }
 #ifdef PAINTTIMER
   int x = t.elapsed();
-  kdDebug() << "paintAll with painttype " << (int)pt << " - " << x << "ms" << endl;
+  kstdDebug() << "paintAll with painttype " << (int)pt << " - " << x << "ms" << endl;
 #endif
 }
 
@@ -1610,7 +1610,7 @@ void KstApp::updateDialogs(bool onlyVisible) {
     if (!onlyVisible || dataManager->isShown()) {
       dataManager->update();
     }
-    kdDebug() << "Dialogs updated in " << t.elapsed() << "ms" << endl;
+    kstdDebug() << "Dialogs updated in " << t.elapsed() << "ms" << endl;
   }
 }
 
@@ -1658,7 +1658,7 @@ void KstApp::showDataWizard() {
 }
 
 void KstApp::registerDocChange() {
-  kdDebug() << "register doc changed" << endl;
+  kstdDebug() << "register doc changed" << endl;
   forceUpdate();
   updateVisibleDialogs();
   doc->setModified();

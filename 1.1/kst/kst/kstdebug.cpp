@@ -23,7 +23,7 @@
 #include "logevents.h"
 
 #include <kapplication.h>
-#include <kdebug.h>
+#include "ksdebug.h"
 #include <kglobal.h>
 #include <klocale.h>
 
@@ -53,9 +53,9 @@ KstDebug::KstDebug()
 
 KstDebug::~KstDebug() {
 #ifdef BENCHMARK
-  kdDebug() << "DRAW COUNTS ---------------------------------------" << endl;
+  kstdDebug() << "DRAW COUNTS ---------------------------------------" << endl;
   for (QMap<QString,int>::ConstIterator i = _drawCounter.begin(); i != _drawCounter.end(); ++i) {
-    kdDebug() << i.key() << ": " << i.data() << endl;
+    kstdDebug() << i.key() << ": " << i.data() << endl;
   }
 #endif
 }

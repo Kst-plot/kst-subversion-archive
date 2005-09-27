@@ -21,7 +21,7 @@
 // include files for Qt
 
 // include files for KDE
-#include <kdebug.h>
+#include "ksdebug.h"
 #include <klocale.h>
 
 // application specific includes
@@ -92,8 +92,8 @@ void KstTopLevelView::paint(KstPaintType type, QPainter& p) {
   }
 #ifdef BENCHMARK
   int x = t.elapsed();
-  kdDebug() << " -> Toplevelview internally took " << x << "ms" << endl;
-  kdDebug() << "      type was " << (int)type << endl;
+  kstdDebug() << " -> Toplevelview internally took " << x << "ms" << endl;
+  kstdDebug() << "      type was " << (int)type << endl;
   t.start();
 #endif
   QRegion clipRegion(geometry());
@@ -101,7 +101,7 @@ void KstTopLevelView::paint(KstPaintType type, QPainter& p) {
   KstViewObject::paint(type, p);
 #ifdef BENCHMARK
   x = t.elapsed();
-  kdDebug() << " -> Parent class took " << x << "ms" << endl;
+  kstdDebug() << " -> Parent class took " << x << "ms" << endl;
 #endif
 }
 
@@ -274,7 +274,7 @@ void KstTopLevelView::restartMove() {
 
 
 bool KstTopLevelView::handlePress(const QPoint& pos, bool shift) {
-  //kdDebug() << "HANDLE PRESS" << endl;
+  //kstdDebug() << "HANDLE PRESS" << endl;
   _pressDirection = -1;
 
   if (_mode != LayoutMode) {

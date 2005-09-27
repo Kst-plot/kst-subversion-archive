@@ -22,7 +22,7 @@
 
 #include <kaboutdata.h>
 #include <kcmdlineargs.h>
-#include <kdebug.h>
+#include "ksdebug.h"
 #include <kimageio.h>
 
 #include "kst.h"
@@ -103,12 +103,12 @@ static void CheckForCMDErrors(KCmdLineArgs *args) {
   bool nOK;
 
   if (args->getOption("n").toInt(&nOK) == 0) {
-    kdError() << i18n("Exiting because '-n 0' requests vectors with no data in them.") << endl;
+    kstdError() << i18n("Exiting because '-n 0' requests vectors with no data in them.") << endl;
     exit(0); // ugly but now safe
   }
   if (args->getOption("n").toInt(&nOK)>0) {
     if (args->getOption("n").toInt(&nOK) < 2*args->getOption("s").toInt(&nOK)) {
-      kdError() << i18n("Requested data skipping would leave vector with fewer than two points.") << endl;
+      kstdError() << i18n("Requested data skipping would leave vector with fewer than two points.") << endl;
       exit(0); // ugly but now safe
     }
   }
@@ -451,7 +451,7 @@ int main(int argc, char *argv[]) {
       }
 
       if (!tlv) {
-        kdError() << i18n("Can't create a view.") << endl;
+        kstdError() << i18n("Can't create a view.") << endl;
         return 0;
       }
 
@@ -511,7 +511,7 @@ int main(int argc, char *argv[]) {
         file = KstDataSource::loadSource(args->arg(i_file));
         if (file) {
           if (!file->isValid() || file->isEmpty()) {
-            kdError() << i18n("No data in file %1.  Trying to continue...").arg(args->arg(i_file)) << endl;
+            kstdError() << i18n("No data in file %1.  Trying to continue...").arg(args->arg(i_file)) << endl;
             // The file might get data later!
           }
 

@@ -23,19 +23,19 @@
 #include <qdeepcopy.h>
 #include <qtimer.h>
 
-#include <kdebug.h>
+#include "ksdebug.h"
 #include <klocale.h>
 
 //#define LOCKTRACE
 
 KstDataObject::KstDataObject() : KstObject() {
-  //kdDebug() << "+++ CREATING DATA OBJECT: " << (void*)this << endl;
+  //kstdDebug() << "+++ CREATING DATA OBJECT: " << (void*)this << endl;
   _curveHints = new KstCurveHintList;
 }
 
 KstDataObject::KstDataObject(const QDomElement& e) : KstObject() {
   Q_UNUSED(e)
-  //kdDebug() << "+++ CREATING DATA OBJECT: " << (void*)this << endl;
+  //kstdDebug() << "+++ CREATING DATA OBJECT: " << (void*)this << endl;
   _curveHints = new KstCurveHintList;
 }
 
@@ -167,7 +167,7 @@ void KstDataObject::showDialog() {
 void KstDataObject::readLock() const {
   KstObject::readLock();
   #ifdef LOCKTRACE
-  kdDebug() << "Read lock by tid=" << (int)QThread::currentThread() << endl;
+  kstdDebug() << "Read lock by tid=" << (int)QThread::currentThread() << endl;
   #endif
   for (KstStringMap::ConstIterator i = _inputStrings.begin(); i != _inputStrings.end(); ++i) {
     (*i)->readLock();
@@ -192,7 +192,7 @@ void KstDataObject::readLock() const {
 
 void KstDataObject::readUnlock() const {
   #ifdef LOCKTRACE
-  kdDebug() << "Read unlock by tid=" << (int)QThread::currentThread() << endl;
+  kstdDebug() << "Read unlock by tid=" << (int)QThread::currentThread() << endl;
   #endif
   for (KstVectorMap::ConstIterator i = _outputVectors.begin(); i != _outputVectors.end(); ++i) {
     (*i)->readUnlock();
@@ -221,7 +221,7 @@ void KstDataObject::readUnlock() const {
 // Might want to guard these with another lock yet.
 void KstDataObject::writeLock() const {
   #ifdef LOCKTRACE
-  kdDebug() << (void*) this << " Write lock by tid=" << (int)QThread::currentThread() << endl;
+  kstdDebug() << (void*) this << " Write lock by tid=" << (int)QThread::currentThread() << endl;
   #endif
   KstRWLock::writeLock();
   for (KstStringMap::ConstIterator i = _inputStrings.begin(); i != _inputStrings.end(); ++i) {
@@ -247,7 +247,7 @@ void KstDataObject::writeLock() const {
 
 void KstDataObject::writeUnlock() const {
   #ifdef LOCKTRACE
-  kdDebug() << (void*)this << "Write unlock by tid=" << (int)QThread::currentThread() << endl;
+  kstdDebug() << (void*)this << "Write unlock by tid=" << (int)QThread::currentThread() << endl;
   #endif
   for (KstVectorMap::ConstIterator i = _outputVectors.begin(); i != _outputVectors.end(); ++i) {
     (*i)->writeUnlock();

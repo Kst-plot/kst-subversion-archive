@@ -22,7 +22,7 @@
 #include <qstylesheet.h>
 
 // include files for KDE
-#include <kdebug.h>
+#include "ksdebug.h"
 #include <klocale.h>
 
 // application specific includes
@@ -115,7 +115,7 @@ void KstLabel::setText(const QString &in_text) {
     Width = -1; // invalidate the width
     LineSpacing = -1;
 #ifdef BENCHMARK
-    kdDebug() << "label: old text was [" << Text << "] new text is [" << in_text << "]" << endl;
+    kstdDebug() << "label: old text was [" << Text << "] new text is [" << in_text << "]" << endl;
 #endif
     setDirty();
   }
@@ -188,7 +188,7 @@ int KstLabel::width(QPainter &p) {
   if (Width < 0) {
     draw(p, 0, 0, true, false); // Do a dummy draw to evaluate the width
 #ifdef BENCHMARK
-    kdDebug() << "Did draw in width()" << endl;
+    kstdDebug() << "Did draw in width()" << endl;
 #endif
   }
   return int(Width);

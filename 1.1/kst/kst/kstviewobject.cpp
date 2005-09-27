@@ -25,7 +25,7 @@
 
 // include files for KDE
 #include <kdatastream.h>
-#include <kdebug.h>
+#include "ksdebug.h"
 
 // application specific includes
 #include "kst.h"
@@ -241,7 +241,7 @@ void KstViewObject::paint(KstPaintType type, QPainter& p) {
       (*i)->paint(type, p);
 #ifdef BENCHMARK
       int x = t.elapsed();
-      kdDebug() << "   -> object " << (*i)->tagName() << " took " << x << "ms" << endl;
+      kstdDebug() << "   -> object " << (*i)->tagName() << " took " << x << "ms" << endl;
 #endif
       if ((*i)->_maximized) {
         break;
@@ -1177,7 +1177,7 @@ void KstViewObject::readBinary(QDataStream& str) {
   QString tagName;
   str >> tagName;
   setTagName(tagName);
-  kdDebug() << "Decoding " << tagName << " from drag." << endl;
+  kstdDebug() << "Decoding " << tagName << " from drag." << endl;
   // FIXME: rename objects if they cause a namespace conflict
   str >> _geom >> _backgroundColor >> _foregroundColor;
   str >> _standardActions >> _layoutActions >> _aspect;

@@ -40,7 +40,7 @@
 #include <kurl.h>
 #include <kurldrag.h>
 
-#include <kdebug.h>
+#include "ksdebug.h"
 
 #include "kstcombobox.h"
 
@@ -165,13 +165,13 @@ void KstComboBox::makeCompletion( const QString& text )
 
     else // read-only combo completion
     {
-        kdDebug() << "make completion: [" << text << "]" << endl;
+        kstdDebug() << "make completion: [" << text << "]" << endl;
         if( text.isNull() || !listBox() )
             return;
 
-        kdDebug() << "                 has listbox" << endl;
+        kstdDebug() << "                 has listbox" << endl;
         int index = listBox()->index( listBox()->findItem( text ) );
-        kdDebug() << "                 index is " << index << endl;
+        kstdDebug() << "                 index is " << index << endl;
         if( index >= 0 )
             setCurrentItem( index );
     }

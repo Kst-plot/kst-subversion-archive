@@ -32,7 +32,7 @@
 #include <qstylesheet.h>
 
 // include files for KDE
-#include <kdebug.h>
+#include "ksdebug.h"
 
 // application specific includes
 #include "kst2dplot.h"
@@ -1050,7 +1050,7 @@ void Kst2DPlot::updateScale() {
       break;
 
     default:
-      kdWarning() << "Bug in Kst2DPlot::updateScale: bad scale mode" << endl;
+      kstdWarning() << "Bug in Kst2DPlot::updateScale: bad scale mode" << endl;
       break;
   }
 
@@ -1260,7 +1260,7 @@ void Kst2DPlot::updateScale() {
       break;
 
     default:
-      kdWarning() << "Bug in Kst2DPlot::updateScale: bad scale mode" << endl;
+      kstdWarning() << "Bug in Kst2DPlot::updateScale: bad scale mode" << endl;
       break;
   }
 }
@@ -1871,7 +1871,7 @@ void Kst2DPlot::internalAlignment(KstPaintType type, QPainter& p, QRect& plotReg
   setBorders(xleft_bdr_px, xright_bdr_px, ytop_bdr_px, ybot_bdr_px,
              tpx, tpy, p, offsetX, offsetY);
 #ifdef BENCHMARK
-  kdDebug() << "setBorders took: " << t.elapsed() << endl;
+  kstdDebug() << "setBorders took: " << t.elapsed() << endl;
 #endif
   p.setWindow(rectWindow);
 
@@ -2224,7 +2224,7 @@ void Kst2DPlot::draw(QPainter &p, KstPaintType type, double resolutionEnhancemen
 
 #ifdef BENCHMARK
   ++KstDebug::self()->drawCounter()[tagName()];
-  kdDebug() << ">>>>>>>>>>>>>>>>>>>> DRAWING PLOT " << tagName() << endl;
+  kstdDebug() << ">>>>>>>>>>>>>>>>>>>> DRAWING PLOT " << tagName() << endl;
   QTime bench_time;
   int i_bt=0, bt[15];
   QString bt_label[15];
@@ -2291,7 +2291,7 @@ void Kst2DPlot::draw(QPainter &p, KstPaintType type, double resolutionEnhancemen
   }
 
   // only attempt to draw if plot is big enough
-  kdDebug () << tagName() << ": x_px = " << x_px << " xright_bdr_px = " << xright_bdr_px << " xleft_bdr_px = " << xleft_bdr_px << " y_px = " << y_px << " ybot_bdr_px = " << ybot_bdr_px << " ytop_bdr_px = " << ytop_bdr_px << endl;
+  kstdDebug () << tagName() << ": x_px = " << x_px << " xright_bdr_px = " << xright_bdr_px << " xleft_bdr_px = " << xleft_bdr_px << " y_px = " << y_px << " ybot_bdr_px = " << ybot_bdr_px << " ytop_bdr_px = " << ytop_bdr_px << endl;
   if (x_px - xright_bdr_px - xleft_bdr_px >= 10.0 &&
       y_px - ybot_bdr_px - ytop_bdr_px + 1.0 - ytop_bdr_px >= 10.0) {
     Lx = RelPlotRegion.left();
@@ -2390,12 +2390,12 @@ void Kst2DPlot::draw(QPainter &p, KstPaintType type, double resolutionEnhancemen
     bt[i_bt++] = bench_time.elapsed();
 
     int j;
-    kdDebug() << "Plot Benchmark stats:" << endl;
-    kdDebug() << "   " << bt_label[0] << ": " << bt[0] << "ms" << endl;
+    kstdDebug() << "Plot Benchmark stats:" << endl;
+    kstdDebug() << "   " << bt_label[0] << ": " << bt[0] << "ms" << endl;
     for (j=1; j<i_bt; j++) {
-      kdDebug() << "   " << bt_label[j] << ": " << bt[j]-bt[j-1] << "ms" << endl;
+      kstdDebug() << "   " << bt_label[j] << ": " << bt[j]-bt[j-1] << "ms" << endl;
     }
-    kdDebug() << "Plot Total: " << bt[i_bt-1] << "ms" << endl;
+    kstdDebug() << "Plot Total: " << bt[i_bt-1] << "ms" << endl;
 #endif
   }
 
@@ -3800,7 +3800,7 @@ void Kst2DPlot::mousePressEvent(QWidget *view, QMouseEvent *e) {
     plot_rect = GetPlotRegion();
     tie_rect = GetTieBoxRegion();
     plot_and_axis_rect = GetPlotAndAxisRegion();
-    //kdDebug() << e->pos() << " " << win_rect << " " << plot_rect << endl;
+    //kstdDebug() << e->pos() << " " << win_rect << " " << plot_rect << endl;
     if (tie_rect.contains(e->pos())) {
       toggleTied();
       // So inefficient, but I have some sort of weird bug making it necessary
@@ -5847,7 +5847,7 @@ void Kst2DPlot::plotCurves(QPainter& p,
       } // end if c->hasLines()
 #ifdef BENCHMARK
       clock_t linesEnd = clock();
-      kdDebug() << "        Lines clocks: " << (linesEnd - linesStart) << endl;
+      kstdDebug() << "        Lines clocks: " << (linesEnd - linesStart) << endl;
       b_1 = benchtmp.elapsed();
 #endif
 
@@ -6203,12 +6203,12 @@ void Kst2DPlot::plotCurves(QPainter& p,
     c->readUnlock();
 #ifdef BENCHMARK
     int i = bench_time.elapsed();
-                       kdDebug() << "Plotting curve " << i_curve << ": " << i << "ms" << endl;
-                       kdDebug() << "    Without locks: " << b_4 << "ms" << endl;
-    if (b_1 > 0)       kdDebug() << "            Lines: " << b_1 << "ms" << endl;
-    if (b_2 - b_1 > 0) kdDebug() << "             Bars: " << (b_2 - b_1) << "ms" << endl;
-    if (b_3 - b_2 > 0) kdDebug() << "           Points: " << (b_3 - b_2) << "ms" << endl;
-    if (b_4 - b_3 > 0) kdDebug() << "           Errors: " << (b_4 - b_3) << "ms" << endl;
+                       kstdDebug() << "Plotting curve " << i_curve << ": " << i << "ms" << endl;
+                       kstdDebug() << "    Without locks: " << b_4 << "ms" << endl;
+    if (b_1 > 0)       kstdDebug() << "            Lines: " << b_1 << "ms" << endl;
+    if (b_2 - b_1 > 0) kstdDebug() << "             Bars: " << (b_2 - b_1) << "ms" << endl;
+    if (b_3 - b_2 > 0) kstdDebug() << "           Points: " << (b_3 - b_2) << "ms" << endl;
+    if (b_4 - b_3 > 0) kstdDebug() << "           Errors: " << (b_4 - b_3) << "ms" << endl;
 #endif
   } // next curve
 

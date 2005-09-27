@@ -20,7 +20,7 @@
 
 // includes for KDE
 #include <klocale.h>
-#include <kdebug.h>
+#include "ksdebug.h"
 
 // application specific includes
 #include "dialoglauncher.h"

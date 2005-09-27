@@ -20,7 +20,7 @@
 #include "kstdatacollection.h"
 #include "kstvcurve.h"
 
-#include <kdebug.h>
+#include "ksdebug.h"
 
 KstCurveHint::KstCurveHint(const QString& name, const QString& x, const QString& y)
 : KstShared(),  _curveName(name), _xVectorName(x), _yVectorName(y) {
@@ -55,7 +55,7 @@ KstBaseCurvePtr KstCurveHint::makeCurve(const QString& tag, const QColor& color)
   KstVectorPtr x = xVector();
   KstVectorPtr y = yVector();
   if (!x || !y) {
-    kdDebug() << "Couldn't find either " << _xVectorName << " or " << _yVectorName << endl;
+    kstdDebug() << "Couldn't find either " << _xVectorName << " or " << _yVectorName << endl;
     return 0L;
   }
 

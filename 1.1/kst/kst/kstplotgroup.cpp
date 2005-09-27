@@ -20,7 +20,7 @@
 // include files for Qt
 
 // include files for KDE
-#include <kdebug.h>
+#include "ksdebug.h"
 #include <klocale.h>
 
 // application specific includes
@@ -166,7 +166,7 @@ void KstPlotGroup::paint(KstPaintType type, QPainter& p) {
   KstMetaPlot::paint(type, p);
 #ifdef BENCHMARK
   int x = t.elapsed();
-  kdDebug() << "    -> metaplot parent took " << x << "ms" << endl;
+  kstdDebug() << "    -> metaplot parent took " << x << "ms" << endl;
 #endif
   p.setClipping(false);
 }
