@@ -18,6 +18,8 @@ bin_PROGRAMS = kst d2asc
 
 lib_LTLIBRARIES = libkst.la libkstmath.la libkstguiapp.la libkstapp.la
 libkst_la_SOURCES = \
+	kdebugdcopiface.cpp \
+	ksdebug.cpp \
 	kstobject.cpp \
 	kstdatasource.cpp \
 	stdinsource.cpp \
