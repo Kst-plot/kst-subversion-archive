@@ -584,8 +584,9 @@ KstObject::UpdateType KstRVector::doUpdate(bool force) {
     } else {
       //kdDebug() << "Reading into _v=" << (void*)_v << " which has size " << _size << " and starting at offset " << NF*SPF << " for s=" << new_f0 + NF << " and n=" << new_nf - NF << endl;
       assert(new_f0 + NF >= 0);
-      assert(new_nf - NF > 0 || new_nf - NF == -1);
-      n_read = _file->readField(_v+NF*SPF, _field, new_f0 + NF, new_nf - NF);
+      if (new_nf - NF > 0 || new_nf - NF == -1) {
+        n_read = _file->readField(_v+NF*SPF, _field, new_f0 + NF, new_nf - NF);
+      }
     }
   }
 
