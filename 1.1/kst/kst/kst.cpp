@@ -233,9 +233,11 @@ KstApp::KstApp(QWidget *parent, const char *name)
 
 
 KstApp::~KstApp() {
-  _updateThread->setFinished(true);
-  if (!_updateThread->wait(3000)) { // 3s
-    _updateThread->terminate();
+  if (_updateThread) {
+    _updateThread->setFinished(true);
+    if (!_updateThread->wait(3000)) { // 3s
+      _updateThread->terminate();
+    }
   }
 
   KstDataSource::cleanupForExit(); // must be before deletions
