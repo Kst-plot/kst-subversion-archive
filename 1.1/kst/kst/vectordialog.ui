@@ -511,6 +511,5 @@
     <includehint>kpushbutton.h</includehint>
     <includehint>kcombobox.h</includehint>
     <includehint>klineedit.h</includehint>
-    <includehint>kstdatarange.h</includehint>
 </includehints>
 </UI>

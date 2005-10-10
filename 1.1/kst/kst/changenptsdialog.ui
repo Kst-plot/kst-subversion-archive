@@ -198,7 +198,4 @@
     <tabstop>Cancel</tabstop>
 </tabstops>
 <layoutdefaults spacing="6" margin="11"/>
-<includehints>
-    <includehint>kstdatarange.h</includehint>
-</includehints>
 </UI>

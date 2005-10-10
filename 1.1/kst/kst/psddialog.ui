@@ -275,7 +275,6 @@
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
     <includehint>vectorselector.h</includehint>
-    <includehint>kstfftoptions.h</includehint>
     <includehint>curveplacementwidget.h</includehint>
     <includehint>curveappearancewidget.h</includehint>
 </includehints>
