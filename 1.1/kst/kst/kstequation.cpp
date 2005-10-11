@@ -82,6 +82,7 @@ KstEquation::KstEquation(const QDomElement &e)
   int ns = -1;
   double x0 = 0.0, x1 = 1.0;
   QString xvtag;
+  bool haveVector = false;
 
   _doInterp = false;
 
@@ -104,6 +105,7 @@ KstEquation::KstEquation(const QDomElement &e)
         xvtag = e.text();
       } else if (e.tagName() == "xvector") {
         _inputVectorLoadQueue.append(qMakePair(XVECTOR, e.text()));
+        haveVector = true;
       } else if (e.tagName() == "interpolate") {
         _doInterp = true;
       }
@@ -111,7 +113,7 @@ KstEquation::KstEquation(const QDomElement &e)
     n = n.nextSibling();
   }
 
-  if (_inputVectorLoadQueue.isEmpty()) {
+  if (!haveVector) {
     if (ns < 0) {
       ns = 2;
     }
@@ -119,12 +121,15 @@ KstEquation::KstEquation(const QDomElement &e)
       x1 = x0 + 2;
     }
 
-    KstVectorPtr xvector;
-    QString vtag = KST::suggestVectorName(
-      QString( "(%1..%2)" ).arg( x0 ).arg( x1 ) );
+    QString vtag;
+    if (xvtag.isEmpty()) {
+      vtag = KST::suggestVectorName(QString("(%1..%2)").arg(x0).arg(x1));
+    } else {
+      vtag = xvtag;
+    }
 
-    xvector = new KstSVector(x0, x1, ns, vtag);
-    KST::addVectorToList( xvector );
+    KstVectorPtr xvector = new KstSVector(x0, x1, ns, vtag);
+    KST::addVectorToList(xvector);
 
     _doInterp = false;
     _xVector = _inputVectors.insert(XVECTOR, xvector);
