@@ -214,10 +214,18 @@ bool KstDoc::openDocument(const KURL& url, const QString& o_file,
   QString readingDocument = i18n("Reading Kst file");
 
   if (docElem.tagName() != "kstdoc") {
+    f.close();
+    opening = false;
+    _updating = false;
+    KstApp::inst()->setPaused(false);
     return false;
   }
 
   if (!docElem.attribute("version").isEmpty()) {
+    f.close();
+    opening = false;
+    _updating = false;
+    KstApp::inst()->setPaused(false);
     return false;
   }
 
