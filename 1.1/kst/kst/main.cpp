@@ -548,6 +548,7 @@ int main(int argc, char *argv[]) {
                     evector = GetOrCreateVector(*(errorList.at(i_ycol)), file, in);
                     if (evector) {
                       curve->setYError(KstVectorPtr(evector));
+                      curve->setYMinusError(KstVectorPtr(evector)); 
                     }
                   }
 
