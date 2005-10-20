@@ -105,11 +105,13 @@ KstVector::~KstVector() {
 
 
 #define GENERATE_INTERPOLATION              \
-  double fj, fdj;                           \
-  int j;                                    \
+  assert(_size > 0);                        \
+  if (_size == 0) {                         \
+      return KST::NOPOINT;                  \
+  }                                         \
                                             \
   /** Limits checks - optional? **/         \
-  if (in_i < 0) {                           \
+  if (in_i < 0 || _size == 1) {             \
     return _v[0];                           \
   }                                         \
                                             \
@@ -122,10 +124,10 @@ KstVector::~KstVector() {
     return _v[in_i];                        \
   }                                         \
                                             \
-  fj = in_i * double(_size - 1) / double(ns_i-1); /* scaled index */ \
+  double fj = in_i * double(_size - 1) / double(ns_i-1); /* scaled index */ \
                                             \
-  j = int(floor(fj)); /* index of sample one lower */ \
-                                            \
+  int j = int(floor(fj)); /* index of sample one lower */ \
+  assert(j+1 < _size && j >= 0);            \
   /* This is optimized to avoid unnecessary isnan calls! */  \
   if (_v[j + 1] != _v[j + 1]) {             \
     if (KST_ISNAN(_v[j + 1])) {             \
@@ -138,7 +140,7 @@ KstVector::~KstVector() {
     }                                       \
   }                                         \
                                             \
-  fdj = fj - float(j); /* fdj is fraction between _v[j] and _v[j+1] */ \
+  double fdj = fj - float(j); /* fdj is fraction between _v[j] and _v[j+1] */ \
                                             \
   return _v[j + 1] * fdj + _v[j] * (1.0 - fdj);
 
