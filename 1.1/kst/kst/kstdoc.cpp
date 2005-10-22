@@ -713,7 +713,7 @@ void KstDoc::samplesUp() {
     doAve =  V->doAve();
     fileN = V->fileLength();
 
-    if (f0 + n > fileN) {
+    if (f0 + 2 * n > fileN) {
       f0 = fileN - n;
     } else {
       f0 += n;
