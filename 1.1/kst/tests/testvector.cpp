@@ -40,10 +40,10 @@ void doTests() {
   doTest(v1->value()[0] == -42);
 
   KstVectorPtr v2 = new KstVector(QString::null, 0);
-  doTest(v2->length() == 2);
+  doTest(v2->length() == 1);
   doTest(v2->tagName().startsWith("Anonymous")); // valid only in en_*
   v2 = new KstVector("V2", 1);
-  doTest(v2->length() == 2);
+  doTest(v2->length() == 1);
   v2 = new KstVector("V2", 2);
   doTest(v2->length() == 2);
 
