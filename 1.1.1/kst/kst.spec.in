@@ -38,7 +38,7 @@ make DESTDIR=$RPM_BUILD_ROOT SUID_ROOT="" install
 %prefix/bin/d2asc
 %prefix/bin/kstplugineditor
 #libraries
-%prefix/%_lib/libkst*.so.1.0.1
+%prefix/%_lib/libkst*.so*
 %prefix/%_lib/libkst*.la
 #headers
 %prefix/include/kstdatasource.h
