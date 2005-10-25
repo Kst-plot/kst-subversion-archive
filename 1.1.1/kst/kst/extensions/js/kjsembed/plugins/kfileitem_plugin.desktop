@@ -1,0 +1,8 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=KFileItem
+Name[hi]=के-फ़ाइल-आइटम
+Name[sv]=Filobjekt
+ServiceTypes=JSBindingPlugin/Binding
+Type=Service
+X-KDE-Library=libfileitemplugin

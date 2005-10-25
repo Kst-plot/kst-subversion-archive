@@ -1,0 +1,9 @@
+Known issues in 1.1.0:
+- If you experience crashes with the distributed fit and filter plugins, it is
+likely a problem with your GSL libraries and recent linker options.  The problem
+is resolved by removing -Wl,--as-needed from linking stages for these plugins,
+but there is no easy workaround available at this time.
+- ASCII time input has been disabled because it's not usable yet.
+- Input of time values only works in relative mode right now (offset from the
+first sample).
+
