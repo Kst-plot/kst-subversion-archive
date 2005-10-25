@@ -136,6 +136,25 @@
                     </widget>
                     <widget class="QCheckBox" row="4" column="0" rowspan="1" colspan="3">
                         <property name="name">
+                            <cstring>_utc</cstring>
+                        </property>
+                        <property name="sizePolicy">
+                            <sizepolicy>
+                                <hsizetype>0</hsizetype>
+                                <vsizetype>0</vsizetype>
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                            </sizepolicy>
+                        </property>
+                        <property name="text">
+                            <string>Display all times in UTC</string>
+                        </property>
+                        <property name="checked">
+                            <bool>true</bool>
+                        </property>
+                    </widget>
+                    <widget class="QCheckBox" row="5" column="0" rowspan="1" colspan="3">
+                        <property name="name">
                             <cstring>_promptWindowClose</cstring>
                         </property>
                         <property name="sizePolicy">
@@ -150,7 +169,7 @@
                             <string>Prompt before closing windows</string>
                         </property>
                     </widget>
-                    <widget class="QCheckBox" row="5" column="0" rowspan="1" colspan="4">
+                    <widget class="QCheckBox" row="6" column="0" rowspan="1" colspan="4">
                         <property name="name">
                             <cstring>_showQuickStart</cstring>
                         </property>
@@ -1049,6 +1068,12 @@
         <receiver>KstSettingsDlg</receiver>
         <slot>updateEMailSettings()</slot>
     </connection>
+    <connection>
+        <sender>_utc</sender>
+        <signal>clicked()</signal>
+        <receiver>KstSettingsDlg</receiver>
+        <slot>setDirty()</slot>
+    </connection>
 </connections>
 <tabstops>
     <tabstop>tabWidget2</tabstop>
@@ -1064,6 +1089,7 @@
     <tabstop>_checkBoxXInterpret</tabstop>
     <tabstop>_comboBoxXInterpret</tabstop>
     <tabstop>_comboBoxXDisplay</tabstop>
+    <tabstop>_utc</tabstop>
     <tabstop>_promptWindowClose</tabstop>
     <tabstop>_showQuickStart</tabstop>
     <tabstop>_source</tabstop>

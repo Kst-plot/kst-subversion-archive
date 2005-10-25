@@ -52,6 +52,8 @@ KstSettings::KstSettings() {
   emailEncryption = EMailEncryptionNone;
   emailAuthentication = EMailAuthenticationPLAIN;
 
+  useUTC = true;
+
   printing.pageSize = QString::number((int)KPrinter::Letter);
   printing.orientation = "Landscape";
   printing.plotDateTimeFooter = "0";
@@ -105,6 +107,8 @@ KstSettings& KstSettings::operator=(const KstSettings& x) {
   printing.curveWidthAdjust = x.printing.curveWidthAdjust;
   printing.monochrome = x.printing.monochrome;
 
+  useUTC = x.useUTC;
+
   return *this;
 }
 
@@ -138,6 +142,7 @@ void KstSettings::save() {
   cfg.writeEntry("Foreground Color", foregroundColor);
   cfg.writeEntry("Prompt on Window Close", promptWindowClose);
   cfg.writeEntry("Show QuickStart", showQuickStart);
+  cfg.writeEntry("Use UTC", useUTC);
 
   cfg.setGroup("Grid Lines");
   cfg.writeEntry("X Major", xMajor);
@@ -189,6 +194,7 @@ void KstSettings::reload() {
   foregroundColor = cfg.readColorEntry("Foreground Color", &foregroundColor);
   promptWindowClose = cfg.readBoolEntry("Prompt on Window Close", true);
   showQuickStart = cfg.readBoolEntry("Show QuickStart", true);
+  useUTC = cfg.readBoolEntry("Use UTC", true);
 
   cfg.setGroup("Grid Lines");
   xMajor = cfg.readBoolEntry("X Major", false);

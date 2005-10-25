@@ -64,6 +64,7 @@ class KstSettings {
     bool minorGridColorDefault : 1;
     bool xAxisInterpret : 1;
     bool yAxisInterpret : 1;
+    bool useUTC : 1;
 
     QColor majorColor;
     QColor minorColor;

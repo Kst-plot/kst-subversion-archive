@@ -56,6 +56,7 @@ void KstSettingsDlg::setSettings(const KstSettings *settings)
     _checkBoxAuthentication->setChecked(settings->emailRequiresAuthentication);
     _buttonGroupEncryption->setButton((int)settings->emailEncryption);
     _buttonGroupAuthentication->setButton((int)settings->emailAuthentication);
+    _utc->setChecked(settings->useUTC);
 }
 
 
@@ -106,6 +107,8 @@ void KstSettingsDlg::save()
     s.emailPassword = _lineEditPassword->text();
     s.emailSMTPPort = _kIntSpinBoxEMailPort->value();
     s.emailRequiresAuthentication = _checkBoxAuthentication->isChecked();
+
+    s.useUTC = _utc->isChecked();
 
     int value = _buttonGroupEncryption->id(_buttonGroupEncryption->selected());
     if (value >= 0 && value < EMailEncryptionMAXIMUM) {

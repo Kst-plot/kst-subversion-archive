@@ -1354,8 +1354,9 @@ void Kst2DPlot::convertJDToDateString(KstAxisInterpretation axisInterpretation, 
       accuracy = 0;
     }
   }
-    
-  if (axisTimezoneLocal) {
+
+  if (KstSettings::globalSettings()->useUTC) {
+  } else if (axisTimezoneLocal) {
     dJD += timezoneHrs() / 24.0;
   } else {
     dJD += axisTimezoneHrs / 24.0;  
