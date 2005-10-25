@@ -4,7 +4,7 @@
 
 Summary: A data viewing program for KDE.
 Name: kst
-Version: 1.1.1_devel
+Version: 1.1.2_devel
 Release: 1
 Source0: kst-%{version}.tar.gz
 Group: X11/Applications/Scientific
