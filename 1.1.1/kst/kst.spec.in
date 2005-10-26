@@ -30,6 +30,8 @@ make
 make DESTDIR=$RPM_BUILD_ROOT SUID_ROOT="" install
 
 %find_lang %{name}
+%find_lang kstplugineditor kstplugineditor.lang
+cat kstplugineditor.lang >> %{name}.lang
 
 %files -f %{name}.lang
 %defattr(-,root,root)
