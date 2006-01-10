@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Module SYSTEM "file:/Repository/Level2/Soft/ProC/moduledef.dtd">
+<module>
+<intro>
+<modulename name="convolve" readableName="Convolution"/>
+<author name="Andrew Walker"/>
+<description text="Generates the convolution of one vector with another."/>
+<version minor="1" major="0"/>
+<state devstate="release"/>
+</intro>
+
+<interface>
+<input>
+<table type="float" name="Array One" descr="The first array to be convolved." />
+</input>
+<input>
+<table type="float" name="Array Two" descr="The second array to be convolved." />
+</input>
+
+<output>
+<table type="float" name="Convolved" descr="The convolved array." />
+</output>
+</interface>
+</module>
+

@@ -1,0 +1,453 @@
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<class>ViewLegendWidget</class>
+<widget class="QWidget">
+    <property name="name">
+        <cstring>ViewLegendWidget</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>415</width>
+            <height>398</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Form1</string>
+    </property>
+    <vbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>layout246</cstring>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <spacer row="0" column="1">
+                    <property name="name">
+                        <cstring>spacer14_3</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Vertical</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>31</width>
+                            <height>30</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QLayoutWidget" row="0" column="0" rowspan="3" colspan="1">
+                    <property name="name">
+                        <cstring>layout25_3</cstring>
+                    </property>
+                    <vbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>TextLabel3_3_2_3</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>0</hsizetype>
+                                    <vsizetype>0</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="text">
+                                <string>Displayed objects:</string>
+                            </property>
+                            <property name="buddy" stdset="0">
+                                <cstring>DisplayedCurveList</cstring>
+                            </property>
+                        </widget>
+                        <widget class="PlotListBox">
+                            <property name="name">
+                                <cstring>DisplayedCurveList</cstring>
+                            </property>
+                        </widget>
+                    </vbox>
+                </widget>
+                <widget class="QLayoutWidget" row="0" column="2" rowspan="3" colspan="1">
+                    <property name="name">
+                        <cstring>layout26_3</cstring>
+                    </property>
+                    <vbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>TextLabel4_4_2_3</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>0</hsizetype>
+                                    <vsizetype>0</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="text">
+                                <string>Available objects:</string>
+                            </property>
+                            <property name="buddy" stdset="0">
+                                <cstring>AvailableCurveList</cstring>
+                            </property>
+                        </widget>
+                        <widget class="PlotListBox">
+                            <property name="name">
+                                <cstring>AvailableCurveList</cstring>
+                            </property>
+                        </widget>
+                    </vbox>
+                </widget>
+                <spacer row="2" column="1">
+                    <property name="name">
+                        <cstring>spacer15_3</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Vertical</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>31</width>
+                            <height>50</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QLayoutWidget" row="1" column="1">
+                    <property name="name">
+                        <cstring>layout27_3</cstring>
+                    </property>
+                    <vbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QPushButton">
+                            <property name="name">
+                                <cstring>CurveUnplot</cstring>
+                            </property>
+                            <property name="enabled">
+                                <bool>false</bool>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>0</hsizetype>
+                                    <vsizetype>0</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="text">
+                                <string></string>
+                            </property>
+                            <property name="pixmap">
+                                <pixmap>image0</pixmap>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>Pressing this button will cause all curves selected in the "Displayed Curves" list to be removed to the Available Curves list.</string>
+                            </property>
+                        </widget>
+                        <widget class="QPushButton">
+                            <property name="name">
+                                <cstring>CurvePlot</cstring>
+                            </property>
+                            <property name="enabled">
+                                <bool>false</bool>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>0</hsizetype>
+                                    <vsizetype>0</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="text">
+                                <string></string>
+                            </property>
+                            <property name="pixmap">
+                                <pixmap>image1</pixmap>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>Pressing this button will cause all curves selected in the "Available Curves" list to be moved to the Displayed Curves list and displayed.</string>
+                            </property>
+                        </widget>
+                    </vbox>
+                </widget>
+            </grid>
+        </widget>
+        <widget class="QGroupBox">
+            <property name="name">
+                <cstring>groupBox2</cstring>
+            </property>
+            <property name="title">
+                <string>Format</string>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QSpinBox" row="0" column="5">
+                    <property name="name">
+                        <cstring>_fontSize</cstring>
+                    </property>
+                    <property name="minValue">
+                        <number>-99</number>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="0" column="4">
+                    <property name="name">
+                        <cstring>textLabel4</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Size:</string>
+                    </property>
+                    <property name="alignment">
+                        <set>AlignVCenter|AlignRight</set>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="1" column="3" rowspan="1" colspan="2">
+                    <property name="name">
+                        <cstring>textLabel4_3_2</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>0</hsizetype>
+                            <vsizetype>5</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="text">
+                        <string>Font Color:</string>
+                    </property>
+                </widget>
+                <widget class="KColorButton" row="1" column="5">
+                    <property name="name">
+                        <cstring>_fontColor</cstring>
+                    </property>
+                    <property name="text">
+                        <string></string>
+                    </property>
+                </widget>
+                <widget class="QCheckBox" row="1" column="0" rowspan="1" colspan="2">
+                    <property name="name">
+                        <cstring>_vertical</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Vertical Layout</string>
+                    </property>
+                </widget>
+                <spacer row="1" column="2">
+                    <property name="name">
+                        <cstring>spacer6_2</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>131</width>
+                            <height>21</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QLabel" row="0" column="0">
+                    <property name="name">
+                        <cstring>textLabel3</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Font:</string>
+                    </property>
+                </widget>
+                <widget class="KFontCombo" row="0" column="1" rowspan="1" colspan="3">
+                    <property name="name">
+                        <cstring>_font</cstring>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
+        <widget class="QGroupBox">
+            <property name="name">
+                <cstring>groupBox1</cstring>
+            </property>
+            <property name="title">
+                <string>Box</string>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel" row="1" column="0">
+                    <property name="name">
+                        <cstring>textLabel4_4_2</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>0</hsizetype>
+                            <vsizetype>5</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="text">
+                        <string>Colors:</string>
+                    </property>
+                </widget>
+                <widget class="KDualColorButton" row="1" column="1">
+                    <property name="name">
+                        <cstring>_boxColors</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>0</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                </widget>
+                <spacer row="1" column="2" rowspan="1" colspan="4">
+                    <property name="name">
+                        <cstring>spacer6</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>141</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QCheckBox" row="0" column="0" rowspan="1" colspan="2">
+                    <property name="name">
+                        <cstring>_transparent</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Transparent</string>
+                    </property>
+                </widget>
+                <spacer row="0" column="2">
+                    <property name="name">
+                        <cstring>spacer8</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>31</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QLabel" row="0" column="3">
+                    <property name="name">
+                        <cstring>textLabel4_4_3</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>0</hsizetype>
+                            <vsizetype>5</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="text">
+                        <string>Margin:</string>
+                    </property>
+                </widget>
+                <widget class="QSpinBox" row="0" column="4">
+                    <property name="name">
+                        <cstring>_margin</cstring>
+                    </property>
+                    <property name="minValue">
+                        <number>-99</number>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="0" column="5">
+                    <property name="name">
+                        <cstring>textLabel4_4</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>0</hsizetype>
+                            <vsizetype>5</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="text">
+                        <string>Border Width:</string>
+                    </property>
+                </widget>
+                <widget class="QSpinBox" row="0" column="6">
+                    <property name="name">
+                        <cstring>_border</cstring>
+                    </property>
+                    <property name="minValue">
+                        <number>-99</number>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
+    </vbox>
+</widget>
+<customwidgets>
+</customwidgets>
+<images>
+    <image name="image0">
+        <data format="PNG" length="665">89504e470d0a1a0a0000000d4948445200000016000000160806000000c4b46c3b0000026049444154388db5d5bf6b13611cc7f177c353781e50b883080632a4a243952e314b020e222efe18a47f826347ddecd6960ee2185dd449ddea2271338b7837a424014b32b47005870b58b8030f9e070cd4e1c94faf69d3a10f1cdf7b8ee75e7cee7bbf163ccfe32286002897cbc7f32cf67d7fe15cf070747e410c4406948028b12b7a09d087e2391267863bb57d8be62e41250f4b0e540ab09c85bb05d07df861e6bbb229f8e10de81e8123c155b0e442ee32dcbc62b7a7253002becd896726278e80ea2e04517aa1ab60ad0406a82567e31918df94d515c058bcf3fb64fc590910508b4fc7478987f8fa7dd0433c04fd77b06050a51c2417f0e168363ed58a215e7d0cf4a1dab67d47038bb6aa45c88971f29d1978e6ff0393b819246f1e41f4478318572934cf4b10016f7b693c054fe2ef9ec083027c3e8030516803ae18d7ab729c7cf38b3e3e139e1cab2b50ce4310db7968f4545568a484084da55219e1224d4dbfe2f5005c60396f5be348853120a52248e07d5bd16a05f8db8f4e6fc514ba6f9f90e52cc4490442d34b221010c611af76a1de68e2bfb8960a2766a1b57decf721ab6d42e1628c460a49106baa7b2ead4687d6c6edd1f99ee78d3e529959a8319aa2a3898c6d6e64420082d8b0d556f87e93d6c6ad13d1113c89ee74214ea09885c8185ce1600c28e1102450dd73e9363a74b74f4e9a4a0cf0f127f4624d256b932a01a189073d8dd96a283cbf49777b76d2e118f578f33b8431ac5eb72f842b1d0203ae9404063e1de4e8b43b1cbe3c3d690a5ebf03c5d7f03550d007fa1a2514baaf018539acd37b736f2e740a0668adcdf7e7390b0558b8a89fe93f9f761f323637e6130000000049454e44ae426082</data>
+    </image>
+    <image name="image1">
+        <data format="PNG" length="697">89504e470d0a1a0a0000000d4948445200000016000000160806000000c4b46c3b0000028049444154388db5d5b16b13511cc0f1ef95137201211107032db4d082c10cb6b85c9c5ab7161c7413b70a8219fc07741287229d241491080e751387821d8476bb1b2c4986925b842bb4708106ef81a1ef410fcee1eed25c922675f02dbfbb7bef3eef778ff77ea75996c5ff68fa550699a6194e1a63dbb6f64f7082fa129c3628c057515fbb0b04e007f060401a0b27a87b0a2d014bb7400550d4c1efc2d2cd0875057cfd753bdc7c7803cbb2b4b1700ff5c1ebc2da42babf703dbef0e17b1b6a2fee4fceb81f6d75606d76f4e4ad53f8d284c6ee36e2c4190f0fa22bb3c0b5d1e8a726d4776aecbf7f06d05b862138415ba7e02668d2cea309e479d4576d82b353637f6b184dc1fda8d381d5593088b3954437121c01b52638bb97a30053fd68dd8bb6d4ca34a840820efe9f8b58ef40f5001adf467ffec88ce539344e60751e3280a11b4805f9383a1d836a13dc1fdbd81fc7a3bd8c01f68ea2a8020980a7d2b1d10671ec616f3d9d88a6e0b58568fdb60f0d441732ba8152908be39312988b051e7d9e78bad330c09b7b923d57f2ea003ce1832e69777dd041747d2a25c9e20c2cd742cae5f2d819a6e0a280187983fdf52c8e079bcd3c9e808c9e41294946cfa314ac9724e519589d80f7324ef0300cb19f6b348e25af9b06ae882a8eafbc380a2a2549b12031ab97e3a9a5e8c71b952cae07d5c33c5e170c3d87af14793d875250b90be53958fe301a9f1a7c90c6e3cc7f1a784260e8e02911ed6b25a8947c8a054971e36c081f820771e76516b70d9b8705ea9d0c42e5a877886386c7f330376db0f8f6770abfb46cdab6ad99a619866188a669c88d339c6303999cef4046872890d06971f4ee4eeafdb1853ec9dcb22ccae5ecd53670dcb4fff533fd0ba4765d291f364aee0000000049454e44ae426082</data>
+    </image>
+</images>
+<includes>
+    <include location="local" impldecl="in implementation">plotlistbox.h</include>
+    <include location="global" impldecl="in declaration">kst_export.h</include>
+    <include location="local" impldecl="in implementation">viewlegendwidget.ui.h</include>
+</includes>
+<slots>
+    <slot specifier="non virtual">updateButtons()</slot>
+    <slot specifier="non virtual">removeDisplayedCurve()</slot>
+    <slot specifier="non virtual">addDisplayedCurve()</slot>
+</slots>
+<functions>
+    <function access="private" specifier="non virtual">init()</function>
+</functions>
+<exportmacro>KST_EXPORT</exportmacro>
+<layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>kcolorbutton.h</includehint>
+    <includehint>kfontcombo.h</includehint>
+    <includehint>klineedit.h</includehint>
+    <includehint>kdualcolorbutton.h</includehint>
+</includehints>
+</UI>

@@ -1,0 +1,1 @@
+SUBDIRS = pics canvas editor 

@@ -1,0 +1,49 @@
+0.9.x TODO LIST
+------------------------------------------------------------------------------------
+
+* Image Properties SideBar:
+
+   - Added signal/slots control between IE and main interface about "comments & tags" tab.
+     Comments & tags set from main must be updated in IE and vis versa.
+
+* 16 bits/color/pixels support :
+   - Any Image plugins must be adapted.
+
+* Improving metadata support:
+   - Using Exiv2 lib instead libexif
+   - Add IPTC support ?
+   - Add RAW metadata support ?
+   - Add embbeded thumbnail support ?
+   - Improved PNG file format support ==> PNG vs DNG file format ==> PNG is the ultimate photographs data container ?
+
+* Add 'Zoom In/Out' capabilities with ImagePreviewWidget :
+
+* New CD/DVD album folders+database backup/restore tool :
+   - Take a look of music database backup in amarok.
+   - Take a look of image database backup in showimg.
+   
+* Image conversion tool included in camera interface
+   
+* New TimeLine tool :
+   - Take a look in kimdaba and f-spot.
+
+* post conversion to qlistview: allow selection of multiple
+  albums/tags/dates :
+
+   - instead of a "current album" there will a list of 
+     "current urls"
+   - will lead to widesweeping changes all over the core
+     and the kioslaves
+
+* Custom ordering of images
+
+* Showfoto improvements :
+
+   - Add DCOP interface.
+   - Add Support KURL for better konqueror interactions.
+   - Add canvas Exif autorotate with JPEG file like image editor.
+
+* Image Plugins improvement :
+
+   - Hot Pixels Tool : Add manual hot pixel selection.
+   - SuperImpose Tool : Complete rewrite of superimpose widget.

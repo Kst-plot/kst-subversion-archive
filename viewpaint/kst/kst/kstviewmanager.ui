@@ -1,0 +1,88 @@
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<class>KstViewManager</class>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>KstViewManager</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>877</width>
+            <height>514</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>View Manager</string>
+    </property>
+    <widget class="QPushButton">
+        <property name="name">
+            <cstring>Close</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>790</x>
+                <y>480</y>
+                <width>82</width>
+                <height>28</height>
+            </rect>
+        </property>
+        <property name="sizePolicy">
+            <sizepolicy>
+                <hsizetype>0</hsizetype>
+                <vsizetype>0</vsizetype>
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+            </sizepolicy>
+        </property>
+        <property name="text">
+            <string>&amp;Close</string>
+        </property>
+        <property name="accel">
+            <string>Alt+C</string>
+        </property>
+        <property name="whatsThis" stdset="0">
+            <string>Close window</string>
+        </property>
+    </widget>
+    <widget class="KListView">
+        <column>
+            <property name="text">
+                <string>Name</string>
+            </property>
+            <property name="clickable">
+                <bool>true</bool>
+            </property>
+            <property name="resizable">
+                <bool>true</bool>
+            </property>
+        </column>
+        <property name="name">
+            <cstring>DataView</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>10</x>
+                <y>10</y>
+                <width>860</width>
+                <height>456</height>
+            </rect>
+        </property>
+        <property name="allColumnsShowFocus">
+            <bool>true</bool>
+        </property>
+        <property name="showSortIndicator">
+            <bool>true</bool>
+        </property>
+        <property name="rootIsDecorated">
+            <bool>true</bool>
+        </property>
+    </widget>
+</widget>
+<customwidgets>
+</customwidgets>
+<layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>klistview.h</includehint>
+</includehints>
+</UI>

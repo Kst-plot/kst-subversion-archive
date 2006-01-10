@@ -1,0 +1,117 @@
+<chapter id="despeckle">
+
+<chapterinfo>
+<title>Noise Reduction</title>
+
+<authorgroup>
+    <author>
+        <firstname>Gilles</firstname><surname>Caulier</surname>
+        <affiliation><address><email>caulier dot gilles at free.fr</email></address></affiliation>
+    </author>
+    
+    <author>
+        <firstname>Gerhard</firstname><surname>Kulzer</surname>
+        <affiliation><address><email>gerhard at kulzer.net</email></address></affiliation>
+    </author>
+
+</authorgroup>
+
+<abstract>
+<para>
+The digiKam image plugin <emphasis>Noise Reduction</emphasis> is a tool to reduce the image noise. 
+It uses the <emphasis>Despeckle</emphasis> algorithm from the Gimp, and copyrighted by Michael Sweet.
+</para>
+</abstract>
+
+<keywordset>
+<keyword>KDE</keyword>
+<keyword>Digikam</keyword>
+</keywordset>
+
+</chapterinfo>
+
+<title>Introduction</title>
+
+<para>
+
+This plugin provides selectable image filters to remove specks or other artifacts caused by junk 
+such as dust or hair on the lens. It also can be used to remove sensor noise from the camera that maybe caused by high ISO settings, as well as the so-called <emphasis>Moire patterns</emphasis> on scanned images from books or magazines. The following filters are available:
+ 
+<itemizedlist>
+    <listitem><para>Non-recursive median.</para></listitem>
+    <listitem><para>Recursive median.</para></listitem>
+    <listitem><para>Non-recursize adaptive median.</para></listitem>
+    <listitem><para>Recursive adaptive median.</para></listitem>
+</itemizedlist>
+
+</para>
+
+<sect1 id="using-plugin-despeckle">
+<title>Using the plugin</title>
+
+<figure>
+    <title>The Noise Reduction Dialog</title>
+    <graphic srccredit="The Noise Reduction Dialog" fileref="despeckledialog.png"/>
+</figure>
+
+<para>
+The above screenshot shows a typical scene taken at nightfall. It shows sensor noise from high ISO camera setting which can be reduced with this plugin.
+</para>
+<para>
+The resizeable image panel with the original preview helps you to pan within the image. Move the red rectangle around to select the area that lets you judge on the optimal filter settings. The preview window
+shows the filter output using the current settings. It can be rearranged in four different combinations as depicted in the icons below the original preview. This screenshot shows the second arrangement where the same cutout is shown for comparison.
+</para>
+
+<para>
+The <guilabel>Radius</guilabel> control selects the gliding window size used for the filter, from 1 (3x3) 
+to 20 (41x41). Larger values increase the amount of time needed to filter each pixel in the image 
+and can cause blurring. This window moves across the image, and the color in it is smoothed to remove
+imperfections.
+</para>
+
+<para>
+The <guilabel>Black Level</guilabel> and <guilabel>White Level</guilabel> control the
+levels used by the adaptive filter to adjust the filter radius. <guilabel>Black Level</guilabel> 
+disregards pixels darker than set value from filtering, and <guilabel>White Level</guilabel> does the same for the brighter than threshold pixels.
+The effect of these thresholds is that the filter regards everything beyond it as one single value, smoothing it totally. This makes sense for the highlights and the dark values only.
+</para>
+
+<para>
+The <guilabel>Adaptive</guilabel> button selects the adaptive median filter. It varies 
+the gliding filter window size based upon the image content and sometimes improves the clarity of filtered images as it smooths less with fine structures and more with large structures. Thus the radius can be increased without loosing detail, and it renders smoother than with <guilabel>Radius</guilabel> alone.
+</para>
+
+<para>
+The <guilabel>Recursive</guilabel> button activates a recursive median filter for repeated filtering
+to make it stronger. This method generally provides smoother results, but may cause additional
+unwanted blurring.
+</para>
+
+</sect1>
+
+<sect1 id="inaction-plugin-despeckle">
+<title>The plugin in action</title>
+
+<para>
+This is an example of how the noise reduction can change your life. The original image is (1) 
+and the corrected image is (2). The noise reduction was applied with <guilabel>Adaptive</guilabel> 
+and <guilabel>Recursive</guilabel> filtering and a <guilabel>Radius</guilabel> of 3. 
+</para>
+
+<figure>
+    <title>The Noise Reduction Tool in Action</title>
+    <graphic srccredit="The Noise Reduction Tool in Action" fileref="despecklepreview.png"/>
+</figure>
+
+</sect1>
+
+</chapter>
+
+<!--
+Local Variables:
+mode: sgml
+sgml-omittag: nil
+sgml-shorttag: t
+End:
+-->
+

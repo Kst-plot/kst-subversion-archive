@@ -1,0 +1,71 @@
+Next release: 1.2.0		(RC1 ~Dec 23 2005, Final Jan 6)
+
+1.2 Release Plan - scripting and tools release
+----------------
+1) Fixes and polishing remaining:
+	- KstScript:
+		- Curve and images need reworking
+		- Additional plot bindings?
+		- Invalid child object creation
+		- QPoint issue (see FIXMEs)
+	- UI:
+		- plot children adjust relative to the plot region
+		- clipping of lines/arrows (1.2.1?)
+	- Saving works?
+	- Docs
+	- Speedup for planck time input
+	- margin/padding becomes tenths of font size(0)
+2) Review changes to .kst format
+
+1.3 Release Plan - data analysis release     (Apr 31 2006 :-))
+----------------
+1) Features remaining:
+	- Implement proper drag+drop, undo and copy/cut/paste
+	- Object templates and complex object construction (main focus)
+	- GL Renderer?
+	- New rendering subsystem from Ted + address Kst2DPlot
+	- Full healpix support (>= current IDL tools)
+	- KstScript session generator
+	- Ongoing KstScript enhancements
+	- Fast malloc
+	- New plugin mechanism? (or 2.0?)
+	- Label syntax validator
+
+<--- Consider branching at this point and starting porting work for v2.0 --->
+
+1.4 Release Plan
+----------------
+
+
+2.0 Release Plan - make_it_cool   (~Mid 2006)
+----------------
+1) Features remaining:
+	- Port to Qt4 / KDE4
+	- Rename rwlock if it's still needed.  Hopefully QAtomic instead.
+	- Rework threading model
+	- Extract plotting into a library for other C++ apps
+	- Fix all the issues in "devel-docs/Kst2"
+	- 3D
+	- Data sources can now be data sinks too
+	- View objects are clean enough to do web output too
+	- C++ Namespaces used, class names cleaned up
+	- DCOP interface goes away, possible reduced d-bus interface added
+	- New plugin system that uses C++ and is sane
+		- porting layer, or we do the grunt work, or back-compat system
+
+
+Minor Releases
+--------------
+
+1.2.1 Contains fixes for:
+	- Fix saving (object dependency order)
+	- Update dependency fixes (view objects get updates)
+	- kst: kstpsd.cpp:339: virtual KstObject::UpdateType KstPSD::update(int): Assertion `_last_n_new >= 0' failed.
+	- KMDI fixes?
+	- KstScript: .position, .size manipulation
+	- KstScript: delete support
+	- Target hotpoint too small
+	- Time should automatically set axis labels and choose proper index vector
+	- Selection points are clipped
+	- mutable collection entries (1.2.1?)
+	- deal with holes in data

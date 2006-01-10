@@ -1,0 +1,407 @@
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<class>KstDataManager</class>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>KstDataManager</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>879</width>
+            <height>514</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Data Manager</string>
+    </property>
+    <grid>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <property name="margin">
+            <number>11</number>
+        </property>
+        <property name="spacing">
+            <number>6</number>
+        </property>
+        <widget class="KListView" row="0" column="1">
+            <column>
+                <property name="text">
+                    <string>Name</string>
+                </property>
+                <property name="clickable">
+                    <bool>true</bool>
+                </property>
+                <property name="resizable">
+                    <bool>true</bool>
+                </property>
+            </column>
+            <column>
+                <property name="text">
+                    <string>Type</string>
+                </property>
+                <property name="clickable">
+                    <bool>true</bool>
+                </property>
+                <property name="resizable">
+                    <bool>true</bool>
+                </property>
+            </column>
+            <column>
+                <property name="text">
+                    <string>Used</string>
+                </property>
+                <property name="clickable">
+                    <bool>true</bool>
+                </property>
+                <property name="resizable">
+                    <bool>true</bool>
+                </property>
+            </column>
+            <column>
+                <property name="text">
+                    <string>Samples</string>
+                </property>
+                <property name="clickable">
+                    <bool>true</bool>
+                </property>
+                <property name="resizable">
+                    <bool>true</bool>
+                </property>
+            </column>
+            <column>
+                <property name="text">
+                    <string>Properties</string>
+                </property>
+                <property name="clickable">
+                    <bool>true</bool>
+                </property>
+                <property name="resizable">
+                    <bool>true</bool>
+                </property>
+            </column>
+            <property name="name">
+                <cstring>DataView</cstring>
+            </property>
+            <property name="allColumnsShowFocus">
+                <bool>true</bool>
+            </property>
+            <property name="showSortIndicator">
+                <bool>true</bool>
+            </property>
+            <property name="rootIsDecorated">
+                <bool>true</bool>
+            </property>
+        </widget>
+        <widget class="QGroupBox" row="0" column="0">
+            <property name="name">
+                <cstring>groupBox7</cstring>
+            </property>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>4</hsizetype>
+                    <vsizetype>5</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
+            <property name="title">
+                <string>New</string>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QPushButton" row="0" column="0">
+                    <property name="name">
+                        <cstring>NewVector</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Vector...</string>
+                    </property>
+                    <property name="iconSet">
+                        <iconset>image0</iconset>
+                    </property>
+                </widget>
+                <widget class="QPushButton" row="1" column="0">
+                    <property name="name">
+                        <cstring>NewCurve</cstring>
+                    </property>
+                    <property name="text">
+                        <string>C&amp;urve...</string>
+                    </property>
+                    <property name="iconSet">
+                        <iconset>image1</iconset>
+                    </property>
+                </widget>
+                <widget class="QPushButton" row="2" column="0">
+                    <property name="name">
+                        <cstring>NewEq</cstring>
+                    </property>
+                    <property name="text">
+                        <string>E&amp;quation...</string>
+                    </property>
+                    <property name="iconSet">
+                        <iconset>image2</iconset>
+                    </property>
+                </widget>
+                <widget class="QPushButton" row="3" column="0">
+                    <property name="name">
+                        <cstring>NewHs</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Histogram...</string>
+                    </property>
+                    <property name="iconSet">
+                        <iconset>image3</iconset>
+                    </property>
+                </widget>
+                <widget class="QPushButton" row="4" column="0">
+                    <property name="name">
+                        <cstring>NewPSD</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Po&amp;wer Spectrum...</string>
+                    </property>
+                    <property name="iconSet">
+                        <iconset>image4</iconset>
+                    </property>
+                </widget>
+                <widget class="QPushButton" row="5" column="0">
+                    <property name="name">
+                        <cstring>NewPlugin</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Plu&amp;gin...</string>
+                    </property>
+                    <property name="iconSet">
+                        <iconset>image5</iconset>
+                    </property>
+                </widget>
+                <widget class="QPushButton" row="6" column="0">
+                    <property name="name">
+                        <cstring>NewEvent</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Event &amp;Monitor...</string>
+                    </property>
+                    <property name="iconSet">
+                        <iconset>image6</iconset>
+                    </property>
+                </widget>
+                <widget class="QPushButton" row="7" column="0">
+                    <property name="name">
+                        <cstring>NewMatrix</cstring>
+                    </property>
+                    <property name="text">
+                        <string>M&amp;atrix...</string>
+                    </property>
+                    <property name="iconSet">
+                        <iconset>image7</iconset>
+                    </property>
+                </widget>
+                <widget class="QPushButton" row="8" column="0">
+                    <property name="name">
+                        <cstring>NewImage</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Image...</string>
+                    </property>
+                    <property name="iconSet">
+                        <iconset>image8</iconset>
+                    </property>
+                </widget>
+                <widget class="QPushButton" row="9" column="0">
+                    <property name="name">
+                        <cstring>NewCSD</cstring>
+                    </property>
+                    <property name="text">
+                        <string>C&amp;SD...</string>
+                    </property>
+                    <property name="iconSet">
+                        <iconset>image9</iconset>
+                    </property>
+                </widget>
+                <spacer row="10" column="0">
+                    <property name="name">
+                        <cstring>spacer7</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Vertical</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>20</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+            </grid>
+        </widget>
+        <widget class="QLayoutWidget" row="1" column="0" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>layout3</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>OpenPlotDialog</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Plot Dialo&amp;g...</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Open Plot Dialog</string>
+                    </property>
+                </widget>
+                <spacer>
+                    <property name="name">
+                        <cstring>Spacer14</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>120</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>Purge</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Purge</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Purge unused objects</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>Delete</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Delete</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Delete selected object</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>Edit</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>0</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Edit</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Edit selected object</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>Close</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>0</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Close</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Close window</string>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+    </grid>
+</widget>
+<images>
+    <image name="image0">
+        <data format="XPM.GZ" length="812">789ca590cd4ec3300c80ef7d8aa8be55285bba313a211e01b42312dac1cd4f7fa63109c601a1bd3b718ab7262b5cb05a355fbe38763d2bc4f3e65114b3ecfd88c74e0bdde29b28ccc77efff9b27df8caf2b214fe510ba1f29b2c97428ba7c3aba535fa3554730a42207477eba532847640a30634017d2824ac19172561c3781b0e6bc6d58ab065ac34a1635c57841d631d0ef78c3a1cde313a17fa9f8cff1918ede2d8400d380a36001234d027c90163c13aff1a48eb40d3767dd736830897711db0fdaeb7803f465e1b3c8bf4363c8bab0e5062dc01778d9c11ffe9a5fac474f092144fd46fff6664d2db288527101be4116062b83a46739b883fcce93efb069b78b136</data>
+    </image>
+    <image name="image1">
+        <data format="XPM.GZ" length="857">789ccdd0cb4e84301480e13d4fd17076c430140199181f41e3d2c4b8282da75c0a263a2e8cf1dded29d3b9746692595aae5f7e2e8555c25e9e1f59b28a3e3762d34b263bf1c112f5354ddfaf6f0f3f519ce7ccaebc623cbe89e29449f6f43eb7746eec3964596117e2bcb0b60b5113eb8c06118878b72eb822aa858a2f44472ccaa224ca85885c1085e76d4eec3c4b776fe35955c4deb396c4d6735d1307cfc65d3c7a4a77f1e489e83ef6ecb8a2c0a502224cae00a4d0001d820252816aed265d428dfb7bba7e1887be73411b63f4ee3da0c66954db607794c2e2824d274fdb86333330c773dbcffa201c7da93e0cbee8340cbe188d41d83d6d36f3853f7a3afe41f9bd8ffe00dd55b51f</data>
+    </image>
+    <image name="image2">
+        <data format="XPM.GZ" length="827">789cbd90cd4ec3300cc7ef7d8aa8be55285bca189d108f00e2888438a449d3a6f140827140887727cee6ae5d87b8e1a6897ffdfb2b5d14e2f1e14e148bec7da777de08d3e93751d88fedf6f3e9f9f62bcbcb52c4a55642e517592e8511f7af2f0df9187d5826230c84d5921e422074d79b95b284768f56edd1248ca634a166bc2c091de3550aae19d76bc296b132840de3a622ec18eb14ec194d0aee199d4bd7396b8302bf29a04fa5a40048a8818e13058c05dbc4d7c02cc7b59def5a37cb913d58df7b3bedf48702812c56c3c3573c4e106c13c613e03035f2d488b406257a2140aa11b7c3c10afd1d1c7a4c94e336c9416469d6478e0a8d679b497c1f79d6fe4df9bec97e00d34ab13e</data>
+    </image>
+    <image name="image3">
+        <data format="XPM.GZ" length="857">789c7d90db4e84301086ef798a06ee88995d58976563f611345e9a182f868172aec9ba5e18e3bbdb6929e1a4d301facddff9dbb20bc5cbf3a30877dec70d6f3509aaf02ac2fcb3efbf5edf2edf9e1fc742679488c8bff37c10249ede55c1f340cf83bd094665311d10190f7b1e8c19e331e5c1488cf274be8f72c6d2621e5994067544c8983b3cc48cb5c3a3595c384c12c6c6614a8c95c3b3d9b7759899c59d43328b7b87529acb061b015601844506d9a00010ccc2290894cf241c1422a082f8b3e821595259e947d2d28deaa6eddaa6a6955b4065d777e574a76d45a9bfdcb482db2798f698532ba2959bbd2917166efc77148155f47bda3316560a0e853171d933e6ca6dadfce7866a9663cf465805b28df07f1ebc5fba8ed18e</data>
+    </image>
+    <image name="image4">
+        <data format="XPM.GZ" length="887">789c85914d4ec3301085f7398595ec22346d525a52a11e01c41209b1702671feedaa940542dc1d8f5d83130c3cdbb2bfbc99b14759a5ecf1e18ea5abe8e5cccf1d326cf989a5d5eb34bd3d3d1fdea338cf999e59c1b2f82a8a8121bb57b2a673a2cfc9da8850392c0c4a8768f0e85008424eb859d3202c09b7050d42241437fbebac226c2c56994561502be38495c34d4ed839dc9ae0dae16e47d83b2c90b075b837f70e0e4b133c3a44133c39b42d4012105807382c66525e1c008499be1dac6616bf38888035d2b6c841d160d3ea2570590dbb7e1887bec31fd5126cc6696cfc9bfe757eadf6d70b50865fad3b55ba5319e8543b12c177bc1cfd39e8706dc9703500a5d4114ca209f11c6b5a49bfda4c4a7ad5e67f547de504641d28038a3f6ea34fa054cd7c</data>
+    </image>
+    <image name="image5">
+        <data format="XPM.GZ" length="1337">789cadd2496fda401806e03bbfc2626ea8221e8fedb155f5e0ec098190e550a9eac19e05705842304948d5ff5e7faf71544c22f5d011083fbcb37c33e3838ef37dd8773a07ad55911613e5a871fae474f47a36dbfcf8f9ed57abed794ef9f12387b7bfb4da5d473983c5dcd0735e3e33178d780af29af7a07485eb11fba07143d727f6883c2a298803a2b09cbb11714e0c0d37ae25be1153d70f05a6ba0385a77948bc25665c708eb143301282c7c40b30ad591055a03d85ce09180ac933e23168445c7146d4a1c8b8263e83a9920a47f14a34dcf73c5475bd65e0a1aa33d0f3230feb4e413f9002339f83516803495c81b194218e6e5dd11893126fc0549a10531d8159e44b745e802a92122779089a3888c047d0c63646e72ba2756d79d4c44b90a7598c0b65a08cfd6abf27159556b8325d51f32a5d82b18e35b6ffb2a5d2d8fe664babb18527303581c1ba0a2c1b479ad6aceed7d60cb0505633c4cca39a91229a9a312e745c3343e7494d85ce0f352ddeabee87ed1f12f659c2d2668484b12ecb18fd3412a634d3a6fc2ab637c68ec693f1c896419eefaec3f4e461a259f9ff74967f94cc178fcb599e57e376677b5a954951acf3fd0a56d598fc7d0c7b2eab5e32f6f2ba69acd37d2b779a248747c7274923c973969f2667e71797c94e05dbd6ab92a2b8ca1b497f703dbcb9dda9e0bdf57ad3bbc63a7f65f79f24fbf7f39f92df5f5b7f00663228b0</data>
+    </image>
+    <image name="image6">
+        <data format="XPM.GZ" length="902">789c6d91c16ec3200c86ef790a146ed59436eddaa69af6089b769c34ed008e699336096cdd619af6eeb321a4c95a13101f3fbf63603e13af2f4f62364f3ecfea5c818083fa10b3f2ab69bedfde1f7f9274b914f4e53b91a777499a0910cf5d8b3c9734970b1f8c2e60d1a3665c2db831968ceb821ba3652c06af62840537466434dbdd7d5e32d601cb3c60e59122578cfb88ab25e329e2da6f3e44dc6c189b8805301e23ee7c556d44ed379b88a1aa6e40ef8588c6f89b9137220b8ad2a074361e6519940c0001c080a48143454503ee59f22a8bba5710010fd4913d410e0a5635d647ea55ef0388d9f0d4b45ddb9c060fc46c12eb0eba7a70505c2912acb5246457d9c03ae7ec906d5481746470e49b54ed10adf33f21df7052e34f4a0bff6b53d6e1700393dafa2c5c9b999c94ee6d1c669cad5f32e409571a15987acc5536ff3e345e5e41aa4c2bd03c1a3fb964bb1141c9ca1b91fe3e247f25fefcae</data>
+    </image>
+    <image name="image7">
+        <data format="XPM.GZ" length="812">789cad91cb4ec3301045f7f90a2bde45951ba7a5a4427c02a8cb4a88c58d1f79540509ca02a1fe7b336e474d832942c272c63eb993f1cd789a89f5ea4164d3e47d875d6b8469f02632fbb1dd7e3e3ddf7f256951887eea99d0e924499530e2f1f5c5d15ef67b59e6795ee68420f4b7cbb9b684ee88561fd106ec870661c5382b086bc69b906c18170bc286b134849e715912b68c5548ee184d48de307a1ffc47c76f8a941214e4209c14850a92d673080aa0602081b102ebe07cff588caba16edaae6d6a7c7700d76d3a878883931271c0d5fee220b8a625d203fad3780f1454ac07e39743e5b2d0a0dad55bf8e19b2be7fc9783fd5d720069d3a62e</data>
+    </image>
+    <image name="image8">
+        <data format="XPM.GZ" length="977">789c6d8fdd6e83300c85effb1411dc55132df467a0698fb0699793a65d040c85b6504828d234eddd17c738ed182789f0e7131b67b514ef6f2f62b95ae85ef65526b2522ab1846b5d7f7d7c3e7f2fbc2812b8b722f41e165e2032f17a69728c7d13fb6b2b4445b82f087bc22421bc12a6116147083bc261c498501316632bc958148829e2668d0b3143dcc5b8102f88f11a172220168fc93604c48a1042c2d662c13f2a19438958306e22c413e3ced61e18f77bc433639c211e19133b55cd98dacb0d63662fe78cf4c0c09f51408e4ce564fbd9e848099294e7f6c34e2aa1f863a5a30320e1600e9bae06ca0aaaa339254c9c004ee7baa9cfa79bc1dd7ca89abca9e02265dbfea96127ef5a23a566bae9cee43ba554fa6f02ad3a2be5a6d6666a0dcee83af7526d5eaaf5cd70b399a431d4a8fb1acaf4a33076ddfa895cb7eba8bee7e8de192835d071dd86895c3713da3db8809d1991136433f27e9e16bfab89186b</data>
+    </image>
+    <image name="image9">
+        <data format="XPM.GZ" length="872">789c7591cd6e83300c80ef3c45043734b585ae7f9af6089b769c34ede0244e49f993b6ee304d7bf7e1041360d431229fbed872609d8ad7972791aea3cf2b5cad12aa800f91eaafbafe7e7b7ffc89e23c175d660791c57751bc124a3cb70dd23ee9f6c9c605217834c6a324dc6e68116ac2dd911621129ac3e93ed384d6a3ce3c2a87863b171e8dc980d0306e73c29271e76acf8cfb3d61c578548417c6931ba36694ee70c3a8dce196d11877f7642156de80548a128033d1bd0185aa0b1822183413257b83087846851894375858b497ee2982e29ab2aa9bba2a4343ee96a06ddac63ad1ab9981a0e6dd0625ff4d30a8c9d4d0bd80d5e4a6fdbccec8608045af4666146323e74a2ed790ba65e056b7d1770bffb2cfe13e0be1cd4a2f44fcfb10fd0140e8f6de</data>
+    </image>
+</images>
+<connections>
+    <connection>
+        <sender>Close</sender>
+        <signal>clicked()</signal>
+        <receiver>KstDataManager</receiver>
+        <slot>reject()</slot>
+    </connection>
+</connections>
+<tabstops>
+    <tabstop>DataView</tabstop>
+    <tabstop>NewVector</tabstop>
+    <tabstop>NewCurve</tabstop>
+    <tabstop>NewEq</tabstop>
+    <tabstop>NewHs</tabstop>
+    <tabstop>NewPSD</tabstop>
+    <tabstop>NewPlugin</tabstop>
+    <tabstop>NewEvent</tabstop>
+    <tabstop>NewMatrix</tabstop>
+    <tabstop>NewImage</tabstop>
+    <tabstop>NewCSD</tabstop>
+    <tabstop>OpenPlotDialog</tabstop>
+    <tabstop>Purge</tabstop>
+    <tabstop>Delete</tabstop>
+    <tabstop>Edit</tabstop>
+    <tabstop>Close</tabstop>
+</tabstops>
+<layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>klistview.h</includehint>
+</includehints>
+</UI>
