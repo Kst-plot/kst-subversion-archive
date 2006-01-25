@@ -458,13 +458,15 @@ void KstViewObject::prependChild(KstViewObjectPtr obj, bool keepAspect) {
 
 bool KstViewObject::removeChild(KstViewObjectPtr obj, bool recursive) {
   bool rc = _children.remove(obj) > 0;
+  
   if (recursive) {
     for (KstViewObjectList::Iterator i = _children.begin(); i != _children.end(); ++i) {
-      rc = rc && (*i)->removeChild(obj, true);
+      rc = (*i)->removeChild(obj, true) && rc;
     }
   }
 
   obj->_parent = 0L;
+  
   return rc;
 }
 
