@@ -236,7 +236,10 @@ class KST_EXPORT KstViewObject : public KstObject {
     virtual KstGfxMouseHandler *createHandler();
 
   public slots:
-    virtual void paint(KstPainter& p, const QRegion& bounds);
+    void paint(KstPainter& p, const QRegion& bounds);
+    virtual void paintSelf(KstPainter& p, const QRegion& bounds);
+    virtual void updateSelf();
+    virtual void paintUpdate();
     virtual void updateFromAspect();
     virtual void updateAspectSize();
     virtual void updateAspectPos();

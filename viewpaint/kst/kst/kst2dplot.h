@@ -355,7 +355,7 @@ public slots:
   virtual void copyObjectQuietly(KstViewObject& parent, const QString& name = QString::null) const;
   void draw(); // draw into back buffer
   void draw(KstPainter& p, double resolutionEnhancement = 1); // This actually does the drawing
-  void paint(KstPainter& p, const QRegion& bounds);
+  void paintSelf(KstPainter& p, const QRegion& bounds);
   void editCurve(int id);
   void editObject(int id);
   void editVector(int id);

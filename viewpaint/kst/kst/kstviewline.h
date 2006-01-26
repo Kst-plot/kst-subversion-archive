@@ -69,7 +69,7 @@ class KstViewLine : public KstViewObject {
     virtual QRect surroundingGeometry() const;
 
   public slots:
-    virtual void paint(KstPainter& p, const QRegion& bounds);
+    virtual void paintSelf(KstPainter& p, const QRegion& bounds);
 
   public:
     virtual void save(QTextStream& ts, const QString& indent = QString::null);

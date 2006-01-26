@@ -38,7 +38,7 @@ class KstViewArrow : public KstViewLine {
     
     QMap<QString, QVariant > widgetHints(const QString& propertyName) const;
 
-    void paint(KstPainter& p, const QRegion& bounds);
+    void paintSelf(KstPainter& p, const QRegion& bounds);
     void paintArrow(KstPainter& p, const QPoint& to, const QPoint &from, int w);
     // true if either end has an arrow 
     bool hasArrow() const;
@@ -51,6 +51,7 @@ class KstViewArrow : public KstViewLine {
     void setFromArrowScaling(double scaling);
     double toArrowScaling() const;
     void setToArrowScaling(double scaling);
+    QRegion clipRegion();
 
   public:
     void save(QTextStream& ts, const QString& indent = QString::null);
@@ -60,6 +61,7 @@ class KstViewArrow : public KstViewLine {
     bool _hasToArrow;
     double _fromArrowScaling;
     double _toArrowScaling;
+    QRegion _myClipMask;
 };
 
 typedef KstObjectList<KstViewArrowPtr> KstViewArrowList;

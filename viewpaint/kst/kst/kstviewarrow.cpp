@@ -24,6 +24,7 @@
 
 #include <klocale.h>
 
+#include <qbitmap.h>
 #include <qmetaobject.h>
 #include <qpainter.h>
 #include <qvariant.h>
@@ -78,12 +79,45 @@ void KstViewArrow::paintArrow(KstPainter& p, const QPoint& to, const QPoint &fro
 }
 
 
-void KstViewArrow::paint(KstPainter& p, const QRegion& bounds) {
-  p.save();
-  if (p.type() != KstPainter::P_PRINT && p.type() != KstPainter::P_EXPORT) {
-    if (p.makingMask()) {
-      p.setRasterOp(Qt::SetROP);
+QRegion KstViewArrow::clipRegion() {
+  if (_clipMask.isNull()) {
+    _myClipMask = QRegion();
+    QBitmap bm1(_geom.bottomRight().x(), _geom.bottomRight().y(), true);
+    if (!bm1.isNull()) {
+      KstPainter p;
+      p.setMakingMask(true);
+      p.begin(&bm1);
+      p.setViewXForm(true);
+      KstViewLine::paintSelf(p, QRegion());
+      p.flush();
+      p.end();
+      _clipMask = QRegion(bm1);
     }
+    QBitmap bm2(_geom.bottomRight().x(), _geom.bottomRight().y(), true);
+    if (!bm2.isNull()) {
+      KstPainter p;
+      p.setMakingMask(true);
+      p.begin(&bm2);
+      p.setViewXForm(true);
+      paintSelf(p, QRegion());
+      p.flush();
+      p.end();
+      _myClipMask = QRegion(bm2);
+    }
+  }
+
+  return _myClipMask | _clipMask;
+}
+
+
+void KstViewArrow::paintSelf(KstPainter& p, const QRegion& bounds) {
+  p.save();
+  if (p.makingMask()) {
+    p.setRasterOp(Qt::SetROP);
+  } else {
+    const QRegion clip(clipRegion());
+    KstViewLine::paintSelf(p, bounds - _myClipMask);
+    p.setClipRegion(bounds & clip);
   }
   
   if (hasArrow()) {
@@ -103,7 +137,6 @@ void KstViewArrow::paint(KstPainter& p, const QRegion& bounds) {
       paintArrow(p, from, to, w);
     }
   }
-  KstViewLine::paint(p, bounds);
   p.restore();
 }
 

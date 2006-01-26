@@ -239,6 +239,7 @@ KstObject::UpdateType KstViewObject::update(int counter) {
   return setLastUpdateResult(rc);
 }
 
+
 KstObject::UpdateType KstViewObject::updateChildren(int counter) {
   KstObject::UpdateType rc = NO_CHANGE;
   for (KstViewObjectList::Iterator i = _children.begin(); i != _children.end(); ++i) {
@@ -250,6 +251,7 @@ KstObject::UpdateType KstViewObject::updateChildren(int counter) {
   }
   return rc;
 }
+
 
 void KstViewObject::save(QTextStream& ts, const QString& indent) {
   KstAspectRatio aspect;
@@ -314,65 +316,92 @@ void KstViewObject::saveTagOnce(QTextStream& ts, const QString& indent) {
 
 
 void KstViewObject::paint(KstPainter& p, const QRegion& bounds) {
+  if (p.type() == KstPainter::P_EXPORT || p.type() == KstPainter::P_PRINT) {
+    paintSelf(p, bounds);
+    for (KstViewObjectList::Iterator i = _children.begin(); i != _children.end(); ++i) {
+      (*i)->paint(p, bounds);
+    }
+    return;
+  }
+
   p.save();
   p.setViewport(geometry());
   p.setWindow(geometry());
 
-  //update();
+  paintUpdate();
 
-  if (p.type() == KstPainter::P_EXPORT || p.type() == KstPainter::P_PRINT) {
-    for (KstViewObjectList::Iterator i = _children.begin(); i != _children.end(); ++i) {
+  bool maximized = false;
+  bool nullBounds = bounds.isNull();
+
+  // handle the case where we have maximized plots
+  for (KstViewObjectList::Iterator i = _children.begin(); i != _children.end(); ++i) {
+    if ((*i)->_maximized) {
       (*i)->paint(p, bounds);
+      maximized = true;
+      break;
     }
+  }
+
+  QRegion clipRegion;
+  if (nullBounds) {
+    clipRegion = geometry();
   } else {
-    bool maximized = false;
-    bool nullBounds = bounds.isNull();
-
-    // handle the case where we have maximized plots
-    for (KstViewObjectList::Iterator i = _children.begin(); i != _children.end(); ++i) {
-      if ((*i)->_maximized) {
-        (*i)->_lastClipRegion = (*i)->geometry();
-        (*i)->paint(p, bounds);
-        maximized = true;
-        break;
+    clipRegion = bounds;
+  }
+  if (!maximized && !_children.isEmpty()) {
+    KstViewObjectList::Iterator begin = _children.begin();
+    for (KstViewObjectList::Iterator i = _children.fromLast();; --i) {
+      const QRegion thisObjectGeometry((*i)->geometry());
+      if (nullBounds || !clipRegion.intersect(thisObjectGeometry).isEmpty()) {
+#ifdef BENCHMARK
+        QTime t;
+        t.start();
+#endif
+        (*i)->paint(p, clipRegion);
+        clipRegion -= (*i)->clipRegion();
+#ifdef BENCHMARK
+        int x = t.elapsed();
+        kstdDebug() << "   -> object " << (*i)->tagName() << " took " << x << "ms" << endl;
+#endif
       }
-    }
-
-    if (!maximized && !_children.isEmpty()) {
-      QRegion clipRegion = p.clipRegion();
-      KstViewObjectList::Iterator begin = _children.begin();
-      for (KstViewObjectList::Iterator i = _children.fromLast();; --i) {
-        if (nullBounds || !bounds.intersect(QRegion((*i)->geometry())).isEmpty()) {
-#ifdef BENCHMARK
-          QTime t;
-          t.start();
-#endif
-          (*i)->_lastClipRegion = clipRegion;
-          if (nullBounds) {
-            p.setClipRegion(clipRegion);
-          } else {
-            p.setClipRegion(clipRegion.intersect(bounds));
-          }
-          (*i)->paint(p, bounds);
-          clipRegion -= (*i)->clipRegion();
-#ifdef BENCHMARK
-          int x = t.elapsed();
-          kstdDebug() << "   -> object " << (*i)->tagName() << " took " << x << "ms" << endl;
-#endif
-        }
-        if (i == begin) {
-          break;
-        }
+      if (i == begin) {
+        break;
       }
     }
   }
 
+  // Paint ourself
+  paintSelf(p, clipRegion);
+
+  // Draw any inline UI items
   if (p.drawInlineUI() && isSelected()) {
     drawSelectRect(p);
   }
 
   p.restore();
   p.flush();
+}
+
+
+void KstViewObject::paintSelf(KstPainter& p, const QRegion& bounds) {
+  if (!bounds.isNull()) {
+    p.setClipRegion(bounds);
+  }
+  if (!_transparent) {
+    p.fillRect(geometry(), _backgroundColor);
+  }
+}
+
+
+void KstViewObject::updateSelf() {
+  if (dirty()) {
+    _clipMask = QRegion();
+  }
+}
+
+
+void KstViewObject::paintUpdate() {
+  updateSelf();
   setDirty(false);
 }
 

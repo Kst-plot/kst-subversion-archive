@@ -2204,7 +2204,7 @@ void Kst2DPlot::updateDirtyFromLabels() {
 }
 
 
-void Kst2DPlot::paint(KstPainter& p, const QRegion& bounds) {
+void Kst2DPlot::paintSelf(KstPainter& p, const QRegion& bounds) {
   bool wasDirty = dirty();
   if (p.type() == KstPainter::P_EXPORT || p.type() == KstPainter::P_PRINT) {
     p.save();
@@ -2223,16 +2223,13 @@ void Kst2DPlot::paint(KstPainter& p, const QRegion& bounds) {
     }
 
     if (p.makingMask()) {
-      KstPlotBase::paint(p, bounds);
+      p.setRasterOp(Qt::SetROP);
+      KstPlotBase::paintSelf(p, bounds);
     } else {
-      QRegion boundary = bounds & _lastClipRegion;
-      KstPlotBase::paint(p, boundary);
-      // FIXME: inefficient
-      for (KstViewObjectList::Iterator i = _children.begin(); i != _children.end(); ++i) {
-        boundary -= (*i)->clipRegion();
-      }
-      boundary -= p.uiMask();
-      p.setClipRegion(boundary);
+      const QRegion clip(clipRegion());
+      KstPlotBase::paintSelf(p, bounds - clip);
+      p.setClipRegion(bounds & clip);
+//      boundary -= p.uiMask();
     }
 
     // check for optimizations

@@ -84,14 +84,17 @@ KstViewLine::~KstViewLine() {
 }
 
 
-void KstViewLine::paint(KstPainter& p, const QRegion& bounds) {
+void KstViewLine::paintSelf(KstPainter& p, const QRegion& bounds) {
   p.save();
-  if (p.type() != KstPainter::P_PRINT && p.type() != KstPainter::P_EXPORT) {
-    if (p.makingMask()) {
-      p.setRasterOp(Qt::SetROP);
-    }
+  if (p.makingMask()) {
+    p.setRasterOp(Qt::SetROP);
+    KstViewObject::paintSelf(p, geometry());
+  } else {
+    const QRegion clip(clipRegion());
+    KstViewObject::paintSelf(p, bounds - clip);
+    p.setClipRegion(bounds & clip);
   }
-  
+
   // figure out which direction to draw the line
   QPen pen(_foregroundColor, _width);
   pen.setCapStyle(_capStyle);
@@ -125,8 +128,6 @@ void KstViewLine::paint(KstPainter& p, const QRegion& bounds) {
       p.drawLine(geom.bottomLeft() + QPoint(u, -v), geom.topRight() + QPoint(-u, v));
       break;
   }
-  // paint this last
-  KstViewObject::paint(p, bounds);
   p.restore();
 }
 

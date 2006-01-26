@@ -99,7 +99,7 @@ class KST_EXPORT KstBorderedViewObject : public KstViewObject {
     virtual void setBackgroundColor(const QColor& color);
     virtual QColor backgroundColor() const;
 
-    virtual void paint(KstPainter& p, const QRegion& bounds);
+    virtual void paintSelf(KstPainter& p, const QRegion& bounds);
 
   protected:
     virtual void readBinary(QDataStream& str);

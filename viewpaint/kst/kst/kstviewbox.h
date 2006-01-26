@@ -33,7 +33,7 @@ class KstViewBox : public KstBorderedViewObject {
   public:
     KstViewBox();
     KstViewBox(const QDomElement& e);
-    virtual ~KstViewBox();
+    ~KstViewBox();
 
     void setXRound(int rnd);
     int xRound() const;
@@ -45,12 +45,12 @@ class KstViewBox : public KstBorderedViewObject {
     bool transparentFill() const;
     void setTransparentFill(bool yes);
 
-    virtual void paint(KstPainter& p, const QRegion& bounds);
+    void paintSelf(KstPainter& p, const QRegion& bounds);
 
   public:
-    virtual void save(QTextStream& ts, const QString& indent = QString::null);
+    void save(QTextStream& ts, const QString& indent = QString::null);
     
-    virtual QMap<QString, QVariant > widgetHints(const QString& propertyName) const;
+    QMap<QString, QVariant > widgetHints(const QString& propertyName) const;
 
   private:
     int _xRound, _yRound;

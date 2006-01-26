@@ -85,7 +85,8 @@ class KstViewLabel : public KstBorderedViewObject {
     void setTransparent(bool transparent);
     bool transparent() const;
 
-    void paint(KstPainter& p, const QRegion& bounds);
+    void updateSelf();
+    void paintSelf(KstPainter& p, const QRegion& bounds);
     void resize(const QSize&);
     QRegion clipRegion();
 

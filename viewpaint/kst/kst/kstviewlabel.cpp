@@ -72,7 +72,6 @@ KstViewLabel::KstViewLabel(const QString& txt, KstLJustifyType justify, float ro
   _parsed = 0L;
   reparse();
   computeTextSize(_parsed);
-  setDirty(false);
   _autoResize = true;
 }
 
@@ -326,10 +325,24 @@ void KstViewLabel::computeTextSize(Label::Parsed *lp) {
 }
 
 
-void KstViewLabel::paint(KstPainter& p, const QRegion& bounds) {
+void KstViewLabel::updateSelf() {
+  if (dirty()) {
+    if (_autoResize) {
+      //adjustSizeForText(p.window());
+      drawToBuffer(_parsed);
+    } else {
+      computeTextSize(_parsed);
+      drawToBuffer(_parsed);
+    }
+  }
+  KstBorderedViewObject::updateSelf();
+}
+
+
+void KstViewLabel::paintSelf(KstPainter& p, const QRegion& bounds) {
   p.save();
-  if (p.type() == KstPainter::P_PRINT ||
-      p.type() == KstPainter::P_EXPORT) {
+  if (p.type() == KstPainter::P_PRINT || p.type() == KstPainter::P_EXPORT) {
+    KstBorderedViewObject::paintSelf(p, bounds);
     if (_autoResize) {
       adjustSizeForText(p.window());
     } else {
@@ -345,16 +358,14 @@ void KstViewLabel::paint(KstPainter& p, const QRegion& bounds) {
 
     drawToPainter(_parsed, p);
   } else {
-    if (p.type() == KstPainter::P_UPDATE) {
-      setDirty();
-    }
-    if (dirty()) {
-      if (_autoResize) {
-        adjustSizeForText(p.window());
-        drawToBuffer(_parsed);
-      } else {
-        computeTextSize(_parsed);
-        drawToBuffer(_parsed);
+    if (p.makingMask()) {
+      p.setRasterOp(Qt::SetROP);
+    } else {
+      const QRegion clip(clipRegion());
+      KstBorderedViewObject::paintSelf(p, bounds - QRegion(contentsRect()));
+      p.setClipRegion(bounds & clip);
+      if (p.type() == KstPainter::P_UPDATE) {
+        setDirty();
       }
     }
 
@@ -368,7 +379,6 @@ void KstViewLabel::paint(KstPainter& p, const QRegion& bounds) {
     }
   }
   p.restore();
-  KstBorderedViewObject::paint(p, bounds);
 }
 
 

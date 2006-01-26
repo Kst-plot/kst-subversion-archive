@@ -58,26 +58,17 @@ KstViewEllipse::~KstViewEllipse() {
 }
 
 
-void KstViewEllipse::paint(KstPainter& p, const QRegion& bounds) {
+void KstViewEllipse::paintSelf(KstPainter& p, const QRegion& bounds) {
   p.save();
   if (p.makingMask()) {
-    if (p.type() != KstPainter::P_PRINT && p.type() != KstPainter::P_EXPORT) {
-      p.setRasterOp(Qt::SetROP);
-    }
-    KstViewObject::paint(p, bounds);
+    p.setRasterOp(Qt::SetROP);
+    KstViewObject::paintSelf(p, geometry());
   } else {
-    KstViewObject::paint(p, bounds);
-    // FIXME: inefficient
-    if (p.type() != KstPainter::P_PRINT && p.type() != KstPainter::P_EXPORT) {
-      QRegion boundary = bounds & _lastClipRegion;
-      for (KstViewObjectList::Iterator i = _children.begin(); i != _children.end(); ++i) {
-        boundary -= (*i)->clipRegion();
-      }
-      boundary -= p.uiMask();
-      p.setClipRegion(boundary);
-    }
+    const QRegion clip(clipRegion());
+    KstViewObject::paintSelf(p, bounds - clip);
+    p.setClipRegion(bounds & clip);
   }
-  
+
   QPen pen(_borderColor, _borderWidth);
   p.setPen(pen);
   if (_transparentFill) {

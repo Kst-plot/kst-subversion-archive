@@ -32,9 +32,9 @@ KstBorderedViewObject::KstBorderedViewObject(const QString& type)
 KstBorderedViewObject::KstBorderedViewObject(const QDomElement& e)
 : KstViewObject(e), _borderColor(QColor(0, 0, 0)), _borderWidth(0), _padding(0), _margin(0) {
   QDomNode n = e.firstChild();
-  while( !n.isNull() ) {
+  while (!n.isNull()) {
     QDomElement el = n.toElement(); // try to convert the node to an element.
-    if( !el.isNull() ) { // the node was really an element.
+    if (!el.isNull()) { // the node was really an element.
       if (el.tagName() == "border") {
         _borderColor.setNamedColor(el.attribute( "color", "#7f0000" ));
         _borderWidth = el.attribute( "width", "0" ).toInt();
@@ -70,24 +70,28 @@ void KstBorderedViewObject::save(QTextStream& ts, const QString& indent) {
 }
 
 
-void KstBorderedViewObject::paint(KstPainter& p, const QRegion& bounds) {
+void KstBorderedViewObject::paintSelf(KstPainter& p, const QRegion& bounds) {
   p.save();
   if (p.makingMask()) {
     p.setRasterOp(Qt::SetROP);
+    KstViewObject::paintSelf(p, bounds);
+  } else {
+    const QRegion clip(clipRegion());
+    KstViewObject::paintSelf(p, bounds - clip);
+    p.setClipRegion(bounds & clip);
   }
   if (_borderWidth > 0) {
     QRect r;
     QPen pen(_borderColor, _borderWidth);
     p.setBrush(Qt::NoBrush);
     p.setPen(pen);
-    r.setX(_geom.left() + _margin + _borderWidth/2);
-    r.setY(_geom.top() + _margin + _borderWidth/2);
+    r.setX(_geom.left() + _margin + _borderWidth / 2);
+    r.setY(_geom.top() + _margin + _borderWidth / 2);
     r.setWidth(_geom.width() - 2 * _margin - _borderWidth + 1);
     r.setHeight(_geom.height() - 2 * _margin - _borderWidth + 1);
     p.drawRect(r);
   }
   p.restore();
-  KstViewObject::paint(p, bounds);
 }
 
 

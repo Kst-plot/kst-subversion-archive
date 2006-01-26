@@ -49,7 +49,7 @@ class KstViewEllipse : public KstViewObject {
     
     virtual void drawShadow(KstPainter& p, const QPoint& pos);
 
-    virtual void paint(KstPainter& p, const QRegion& bounds);
+    virtual void paintSelf(KstPainter& p, const QRegion& bounds);
 
   public:
     virtual void save(QTextStream& ts, const QString& indent = QString::null);

@@ -68,29 +68,16 @@ KstViewBox::~KstViewBox() {
 }
 
 
-// FIXME: this object is trying to paint its own borders for some reason, which
-// is very wrong.  It should be calling the proper base class and letting it do
-// the border (and margin and padding) calculations.
-void KstViewBox::paint(KstPainter& p, const QRegion& bounds) {
+void KstViewBox::paintSelf(KstPainter& p, const QRegion& bounds) {
   p.save();
   if (p.makingMask()) {
-    if (p.type() != KstPainter::P_PRINT && p.type() != KstPainter::P_EXPORT) {
-      p.setRasterOp(Qt::SetROP);
-    }
-    KstViewObject::paint(p, bounds);
+    p.setRasterOp(Qt::SetROP);
   } else {
-    KstViewObject::paint(p, bounds);
-    // FIXME: inefficient
-    if (p.type() != KstPainter::P_PRINT && p.type() != KstPainter::P_EXPORT) {
-      QRegion boundary = bounds & _lastClipRegion;
-      for (KstViewObjectList::Iterator i = _children.begin(); i != _children.end(); ++i) {
-        boundary -= (*i)->clipRegion();
-      }
-      boundary -= p.uiMask();
-      p.setClipRegion(boundary);
-    }
+    const QRegion clip(clipRegion());
+    KstViewObject::paintSelf(p, bounds - clip);
+    p.setClipRegion(bounds & clip);
   }
-  
+
   QPen pen(borderColor(), borderWidth());
   pen.setJoinStyle(_cornerStyle);
   if (borderWidth() == 0) {

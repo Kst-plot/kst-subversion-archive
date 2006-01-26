@@ -246,9 +246,18 @@ void KstViewLegend::computeTextSize() {
 }
 
 
-void KstViewLegend::paint(KstPainter& p, const QRegion& bounds) {
+void KstViewLegend::updateSelf() {
+  if (dirty()) {
+      drawToBuffer();
+  }
+  KstBorderedViewObject::updateSelf();
+}
+
+
+void KstViewLegend::paintSelf(KstPainter& p, const QRegion& bounds) {
   if (p.type() == KstPainter::P_PRINT) {
     p.save();
+    KstBorderedViewObject::paint(p, bounds);
     adjustSizeForText(p.window());
     p.setViewport(geometry());
     p.setWindow(0,0,geometry().width(), geometry().height());
@@ -256,9 +265,17 @@ void KstViewLegend::paint(KstPainter& p, const QRegion& bounds) {
     //setDirty();
     p.restore();
   } else {
-    if (p.type() == KstPainter::P_UPDATE) {
-      setDirty();
+    if (p.makingMask()) {
+      p.setRasterOp(Qt::SetROP);
+    } else {
+      const QRegion clip(clipRegion());
+      KstBorderedViewObject::paintSelf(p, bounds - QRegion(contentsRect()));
+      p.setClipRegion(bounds & clip);
+      if (p.type() == KstPainter::P_UPDATE) {
+        setDirty();
+      }
     }
+
     bool d = dirty();
     if (d) {
       adjustSizeForText(p.window()); // calls computeTextSize
@@ -273,7 +290,6 @@ void KstViewLegend::paint(KstPainter& p, const QRegion& bounds) {
       _backBuffer.paintInto(p, geometry());
     }
   }
-  KstBorderedViewObject::paint(p, bounds);
 }
 
 
