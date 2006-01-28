@@ -3580,7 +3580,8 @@ void Kst2DPlot::drawCursorPos(QPainter& p) {
 
 
 void Kst2DPlot::drawCursorPos(QWidget *view) {
-  QPainter p(view);
+  QPainter p(view); // FIXME: Broken, just prepare and then trigger a
+                    //  view->paint(GetPlotRegion());
   drawCursorPos(p);
 }
 
@@ -3746,7 +3747,8 @@ void Kst2DPlot::highlightNearestDataPoint(bool bRepaint, KstPainter *p, const QP
 
 void Kst2DPlot::updateXYGuideline(QWidget *view, const QPoint& oldPos, const QPoint& newPos, const QRect& pr, KstMouseModeType gzType) {
   //kstdDebug() << "update guideline for old=" << oldPos << " new=" << newPos << endl;
-  KstPainter p;
+  KstPainter p; // FIXME: Broken, just prepare and then trigger a
+                //  view->paint(GetPlotRegion());
   p.begin(view);
   QPen newPen(Qt::black, 1, Qt::DotLine);
   p.setPen(newPen);
@@ -3963,7 +3965,8 @@ void Kst2DPlot::mouseReleaseEvent(QWidget *view, QMouseEvent *e) {
   QRect newg = _mouse.mouseRect();
   if (_mouse.mode == XY_ZOOMBOX) {
     if (_mouse.rectBigEnough()) {
-      QPainter p(view);
+      QPainter p(view); // FIXME: Broken, just prepare and then trigger a
+                        //  view->paint(GetPlotRegion());
       p.setRasterOp(Qt::NotROP);
       p.drawWinFocusRect(newg);
 
@@ -4013,7 +4016,8 @@ void Kst2DPlot::mouseReleaseEvent(QWidget *view, QMouseEvent *e) {
     }
   } else if (_mouse.mode == Y_ZOOMBOX) {
     if (newg.height() >= _mouse.minMove) {
-      QPainter p(view);
+      QPainter p(view); // FIXME: Broken, just prepare and then trigger a
+                        //  view->paint(GetPlotRegion());
       p.setRasterOp(Qt::NotROP);
       p.drawWinFocusRect(newg);
 
@@ -4045,7 +4049,8 @@ void Kst2DPlot::mouseReleaseEvent(QWidget *view, QMouseEvent *e) {
     }
   } else if (_mouse.mode == X_ZOOMBOX) {
     if (newg.width() >= _mouse.minMove) {
-      QPainter p(view);
+      QPainter p(view); // FIXME: Broken, just prepare and then trigger a
+                        //  view->paint(GetPlotRegion());
       p.setRasterOp(Qt::NotROP);
       p.drawWinFocusRect(newg);
 
@@ -4143,7 +4148,8 @@ void Kst2DPlot::zoomRectUpdate(QWidget *view, KstMouseModeType t, int x, int y) 
   QPoint newp(x, y);
 
   if (_mouse.lastLocation != newp) {
-    QPainter p(view);
+    QPainter p(view); // FIXME: Broken, just prepare and then trigger a
+                      //  view->paint(GetPlotRegion());
     p.setRasterOp(Qt::NotROP);
     if (_mouse.rectBigEnough()) {
       p.drawWinFocusRect(_mouse.mouseRect());
@@ -4231,7 +4237,8 @@ void Kst2DPlot::keyReleaseEvent(QWidget *view, QKeyEvent *e) {
 
   if (_mouse.zooming()) {
     QPoint newp(x, y);
-    QPainter p(view);
+    QPainter p(view); // FIXME: Broken, just prepare and then trigger a
+                      //  view->paint(GetPlotRegion());
     p.setRasterOp(Qt::NotROP);
     if (_mouse.rectBigEnough()) {
       p.drawWinFocusRect(_mouse.mouseRect());
@@ -4249,7 +4256,8 @@ void Kst2DPlot::keyReleaseEvent(QWidget *view, QKeyEvent *e) {
 
 void Kst2DPlot::cancelZoom(QWidget *view) {
   if (_mouse.rectBigEnough()) {
-    QPainter p(view);
+    QPainter p(view); // FIXME: Broken, just prepare and then trigger a
+                      //  view->paint(GetPlotRegion());
     p.setRasterOp(Qt::NotROP);
     p.drawWinFocusRect(_mouse.mouseRect());
   }
@@ -5043,7 +5051,8 @@ void Kst2DPlot::keyPressEvent(QWidget *vw, QKeyEvent *e) {
     } else {
       QPoint newp = _mouse.lastLocation;
 
-      QPainter p(view);
+      QPainter p(view); // FIXME: Broken, just prepare and then trigger a
+                        //  view->paint(GetPlotRegion());
       p.setRasterOp(Qt::NotROP);
       if (_mouse.rectBigEnough()) {
         p.drawWinFocusRect(_mouse.mouseRect());
