@@ -129,26 +129,11 @@ void KstTopLevelView::resize(const QSize& size) {
 
 
 void KstTopLevelView::paint(KstPainter& p, const QRegion& bounds) {
-  if (p.type() == KstPainter::P_PRINT || p.type() == KstPainter::P_EXPORT) {
-    updateAlignment(p);
-    p.fillRect(geometry(), QBrush(KstSettings::globalSettings()->backgroundColor, SolidPattern));
-  } else {
-    // FIXME: this is inefficient, but it's so much faster than the old code
-    //        that it doesn't matter!!  Eventually we should get this from the
-    //        X11 triggered event in that case, since we already iterate.
-    //        Also this might break if a draw happens before this is called,
-    //        which was at least the case at one time in the past.
-    if (objectDirty()) {
-      updateAlignment(p);
-    }
-  }
+  updateAlignment(p);
 #ifdef BENCHMARK
   QTime t;
   t.start();
 #endif
-  if (p.type() != KstPainter::P_PRINT && p.type() != KstPainter::P_EXPORT) {
-    p.setClipRegion(clipRegion());
-  }
   KstViewObject::paint(p, bounds);
 #ifdef BENCHMARK
   int x = t.elapsed();
@@ -169,17 +154,6 @@ void KstTopLevelView::paint(KstPainter::PaintType type, const QRegion& bounds) {
   p.setViewXForm(true);
   // Paint everything else first so that geometries are properly updated.
   paint(p, bounds);
-
-  QRegion boundary = bounds;
-  for (KstViewObjectList::Iterator i = _children.begin(); i != _children.end(); ++i) {
-    boundary -= (*i)->clipRegion();
-  }
-  boundary -= p.uiMask();
-  if (!boundary.isEmpty()) {
-    p.setClipRegion(boundary);
-    p.fillRect(geometry(), QBrush(_backgroundColor));
-    p.setClipping(false);
-  }
 
   // now, check what has the focus and repaint the focus rect, as all focus rects are now lost
   if (_hoverFocus) {

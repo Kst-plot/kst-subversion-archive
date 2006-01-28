@@ -212,7 +212,6 @@ public:
   virtual void keyReleaseEvent(QWidget *view, QKeyEvent *e);
   virtual void wheelEvent(QWidget *view, QWheelEvent *e);
   virtual void setHasFocus(bool hasFocus);
-  virtual void removeFocus(KstPainter& p);
 
   void cancelZoom(QWidget *view);
   void zoomSelfYLocalMax(bool unused);
@@ -356,6 +355,7 @@ public slots:
   void draw(); // draw into back buffer
   void draw(KstPainter& p, double resolutionEnhancement = 1); // This actually does the drawing
   void paintSelf(KstPainter& p, const QRegion& bounds);
+  void updateSelf();
   void editCurve(int id);
   void editObject(int id);
   void editVector(int id);
@@ -410,7 +410,7 @@ private:
   void updateMousePos(const QPoint& pos);
   void getCursorPos(const QPoint& pos, double &xpos, double &ypos, double &xmin, double &xmax, double &ymin, double& ymax);
   bool getNearestDataPoint(const QPoint& pos, QString& name, double &newxpos, double &newypos, double xpos, double ypos, double xmin, double xmax);
-  void highlightNearestDataPoint(bool repaint, QWidget *view, const QPoint& pos);
+  void highlightNearestDataPoint(bool repaint, KstPainter *p, const QPoint& pos);
   void updateTieBox(QPainter&);
   bool legendUnder(QMouseEvent *e);
   KstMouseModeType globalZoomType() const;

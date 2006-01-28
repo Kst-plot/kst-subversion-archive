@@ -2204,8 +2204,15 @@ void Kst2DPlot::updateDirtyFromLabels() {
 }
 
 
+void Kst2DPlot::updateSelf() {
+  if (dirty()) {
+      draw();
+  }
+  KstPlotBase::updateSelf();
+}
+
+
 void Kst2DPlot::paintSelf(KstPainter& p, const QRegion& bounds) {
-  bool wasDirty = dirty();
   if (p.type() == KstPainter::P_EXPORT || p.type() == KstPainter::P_PRINT) {
     p.save();
 
@@ -2216,8 +2223,10 @@ void Kst2DPlot::paintSelf(KstPainter& p, const QRegion& bounds) {
       draw(p, 1.0);
     }
     p.restore();
-    KstPlotBase::paint(p, bounds);
+    KstPlotBase::paintSelf(p, bounds);
   } else {
+    bool wasDirty = dirty(); // should always be false unless another view
+                             // object sets this true during its paint
     if (_zoomPaused && wasDirty) {
       return;
     }
@@ -2229,7 +2238,6 @@ void Kst2DPlot::paintSelf(KstPainter& p, const QRegion& bounds) {
       const QRegion clip(clipRegion());
       KstPlotBase::paintSelf(p, bounds - clip);
       p.setClipRegion(bounds & clip);
-//      boundary -= p.uiMask();
     }
 
     // check for optimizations
@@ -2270,29 +2278,22 @@ void Kst2DPlot::paintSelf(KstPainter& p, const QRegion& bounds) {
     drawCursorPos(p);
     updateTieBox(p);
 
-    // FIXME: active view may not be us!
-    // we might need to redraw the datamode marker.
-    KstTopLevelViewPtr tlv = KstApp::inst()->activeView();
-    if (tlv) {
-      KstViewWidget *view = tlv->widget();
-      if (view) {
-        _copy_x = _copy_y = KST::NOPOINT;
-        if (GetPlotRegion().contains(_mouse.tracker)) {
-          updateMousePos(_mouse.tracker);
-          if (KstApp::inst()->dataMode()) {
-            highlightNearestDataPoint(false, view, _mouse.tracker);
-          }
+    KstViewWidget *view = dynamic_cast<KstViewWidget*>(p.device());
+    if (view) {
+      _copy_x = _copy_y = KST::NOPOINT;
+      if (GetPlotRegion().contains(_mouse.tracker)) {
+        updateMousePos(_mouse.tracker);
+        if (KstApp::inst()->dataMode()) {
+          highlightNearestDataPoint(false, &p, _mouse.tracker);
         }
       }
     }
 
-    // FIXME: this view code is -broken-
     KstMouseModeType gzType = globalZoomType();
-    if (gzType == X_ZOOMBOX || gzType == Y_ZOOMBOX) {
-      updateXYGuideline(KstApp::inst()->activeView()->widget(), QPoint(-1, -1), KstApp::inst()->activeView()->widget()->mapFromGlobal(QCursor::pos()), GetPlotRegion(), gzType);
-      _mouse.lastGuideline = KstApp::inst()->activeView()->widget()->mapFromGlobal(QCursor::pos());
+    if (view && (gzType == X_ZOOMBOX || gzType == Y_ZOOMBOX)) {
+      updateXYGuideline(view, QPoint(-1, -1), view->mapFromGlobal(QCursor::pos()), GetPlotRegion(), gzType);
+      _mouse.lastGuideline = view->mapFromGlobal(QCursor::pos());
     }
-    p.setClipping(false);
   }
 }
 
@@ -3371,15 +3372,10 @@ bool Kst2DPlot::mouseHandler() const {
 }
 
 
-void Kst2DPlot::removeFocus(KstPainter& p) {
-  _mouse.tracker = _mouse.lastLocation = QPoint(-1, -1);
-  p.setClipRegion(_lastClipRegion);
-  setHasFocus(false);
-  updateTieBox(p);
-}
-
-
 void Kst2DPlot::setHasFocus(bool has) {
+  if (!has) {
+    _mouse.tracker = _mouse.lastLocation = QPoint(-1, -1);
+  }
   _hasFocus = has;
 }
 
@@ -3597,7 +3593,7 @@ inline T kstClamp(const T& x, const T& low, const T& high) {
 }
 
 
-void Kst2DPlot::highlightNearestDataPoint(bool bRepaint, QWidget *view, const QPoint& pos) {
+void Kst2DPlot::highlightNearestDataPoint(bool bRepaint, KstPainter *p, const QPoint& pos) {
   QString msg;
 
   if (!Curves.isEmpty()) {
@@ -3622,15 +3618,12 @@ void Kst2DPlot::highlightNearestDataPoint(bool bRepaint, QWidget *view, const QP
 #endif
 
       if (_copy_x != newxpos || _copy_y != newypos) {
-        QPainter p(view);
-
-        p.setClipRegion(_lastClipRegion);
         if (bRepaint && _copy_x != KST::NOPOINT && _copy_y != KST::NOPOINT) {
-          drawDotAt(p, _copy_x, _copy_y);
+          drawDotAt(*p, _copy_x, _copy_y);
         }
         _copy_x = newxpos;
         _copy_y = newypos;
-        drawDotAt(p, newxpos, newypos);
+        drawDotAt(*p, newxpos, newypos);
       }
 
       if (_isXAxisInterpreted) {
@@ -3757,7 +3750,6 @@ void Kst2DPlot::updateXYGuideline(QWidget *view, const QPoint& oldPos, const QPo
   p.begin(view);
   QPen newPen(Qt::black, 1, Qt::DotLine);
   p.setPen(newPen);
-  p.setClipRegion(_lastClipRegion);
   p.setRasterOp(Qt::NotROP);
   if (gzType == X_ZOOMBOX) {
     if (pr.contains(oldPos)) {
@@ -3780,10 +3772,11 @@ void Kst2DPlot::updateXYGuideline(QWidget *view, const QPoint& oldPos, const QPo
 
 void Kst2DPlot::mouseMoveEvent(QWidget *view, QMouseEvent *e) {
   if (e->pos() == QPoint(-1, -1)) {
-    KstPainter p;
-    p.begin(view);
-    removeFocus(p);
-    p.end();
+    setHasFocus(false);
+    KstViewWidget *w = dynamic_cast<KstViewWidget*>(view);
+    if (w) {
+      w->paint();
+    }
     return;
   }
 
@@ -3806,22 +3799,23 @@ void Kst2DPlot::mouseMoveEvent(QWidget *view, QMouseEvent *e) {
   // somehow.  Removing it might cause painting to overlap other objects though.
   if (!_hasFocus) {
     KstViewWidget *w = dynamic_cast<KstViewWidget*>(view);
-    KstPainter p;
-    p.begin(view);
     if (w) {
-      w->viewObject()->recursively<KstPainter&>(&KstViewObject::removeFocus, p);
+      w->viewObject()->recursively<bool>(&KstViewObject::setHasFocus, false);
     }
     setHasFocus(true);
-    p.setClipRegion(_lastClipRegion);
-    updateTieBox(p);
-    p.end();
+    if (w) {
+      w->paint();
+    }
   }
 
   KstMouseModeType newType = _mouse.mode;
   if (e->state() & Qt::LeftButton && _mouse.zooming()) {
     // LEAVE BLANK
   } else if (KstApp::inst()->dataMode() && pr.contains(e->pos())) {
-    highlightNearestDataPoint(true, view, e->pos());
+    KstViewWidget *w = dynamic_cast<KstViewWidget*>(view);
+    if (w) {
+      w->paint(GetPlotRegion());
+    }
   } else if (pr.contains(e->pos())) {
     updateMousePos(e->pos());
   } else {
@@ -3970,7 +3964,6 @@ void Kst2DPlot::mouseReleaseEvent(QWidget *view, QMouseEvent *e) {
   if (_mouse.mode == XY_ZOOMBOX) {
     if (_mouse.rectBigEnough()) {
       QPainter p(view);
-      p.setClipRegion(_lastClipRegion);
       p.setRasterOp(Qt::NotROP);
       p.drawWinFocusRect(newg);
 
@@ -4021,7 +4014,6 @@ void Kst2DPlot::mouseReleaseEvent(QWidget *view, QMouseEvent *e) {
   } else if (_mouse.mode == Y_ZOOMBOX) {
     if (newg.height() >= _mouse.minMove) {
       QPainter p(view);
-      p.setClipRegion(_lastClipRegion);
       p.setRasterOp(Qt::NotROP);
       p.drawWinFocusRect(newg);
 
@@ -4054,7 +4046,6 @@ void Kst2DPlot::mouseReleaseEvent(QWidget *view, QMouseEvent *e) {
   } else if (_mouse.mode == X_ZOOMBOX) {
     if (newg.width() >= _mouse.minMove) {
       QPainter p(view);
-      p.setClipRegion(_lastClipRegion);
       p.setRasterOp(Qt::NotROP);
       p.drawWinFocusRect(newg);
 
@@ -4090,6 +4081,7 @@ void Kst2DPlot::mouseReleaseEvent(QWidget *view, QMouseEvent *e) {
   _mouse.mode = INACTIVE;
 
   if (doUpdate) {
+    kstdDebug() << "mouse release: do update" << endl;
     setDirty();
     static_cast<KstViewWidget*>(view)->paint();
   }
@@ -4152,7 +4144,6 @@ void Kst2DPlot::zoomRectUpdate(QWidget *view, KstMouseModeType t, int x, int y) 
 
   if (_mouse.lastLocation != newp) {
     QPainter p(view);
-    p.setClipRegion(_lastClipRegion);
     p.setRasterOp(Qt::NotROP);
     if (_mouse.rectBigEnough()) {
       p.drawWinFocusRect(_mouse.mouseRect());
@@ -4241,7 +4232,6 @@ void Kst2DPlot::keyReleaseEvent(QWidget *view, QKeyEvent *e) {
   if (_mouse.zooming()) {
     QPoint newp(x, y);
     QPainter p(view);
-    p.setClipRegion(_lastClipRegion);
     p.setRasterOp(Qt::NotROP);
     if (_mouse.rectBigEnough()) {
       p.drawWinFocusRect(_mouse.mouseRect());
@@ -4260,7 +4250,6 @@ void Kst2DPlot::keyReleaseEvent(QWidget *view, QKeyEvent *e) {
 void Kst2DPlot::cancelZoom(QWidget *view) {
   if (_mouse.rectBigEnough()) {
     QPainter p(view);
-    p.setClipRegion(_lastClipRegion);
     p.setRasterOp(Qt::NotROP);
     p.drawWinFocusRect(_mouse.mouseRect());
   }
@@ -5055,7 +5044,6 @@ void Kst2DPlot::keyPressEvent(QWidget *vw, QKeyEvent *e) {
       QPoint newp = _mouse.lastLocation;
 
       QPainter p(view);
-      p.setClipRegion(_lastClipRegion);
       p.setRasterOp(Qt::NotROP);
       if (_mouse.rectBigEnough()) {
         p.drawWinFocusRect(_mouse.mouseRect());

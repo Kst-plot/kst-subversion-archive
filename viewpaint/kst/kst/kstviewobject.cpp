@@ -18,6 +18,7 @@
 #include <assert.h>
 #include <math.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 // include files for Qt
 #include <qbitmap.h>
@@ -371,14 +372,22 @@ void KstViewObject::paint(KstPainter& p, const QRegion& bounds) {
   }
 
   // Paint ourself
-  paintSelf(p, clipRegion);
+  paintSelf(p, clipRegion - p.uiMask());
+
+  p.restore();
 
   // Draw any inline UI items
   if (p.drawInlineUI() && isSelected()) {
-    drawSelectRect(p);
+    if (_parent) {
+      p.save();
+      p.setViewport(_parent->geometry());
+      p.setWindow(_parent->geometry());
+      p.setClipping(false);
+      drawSelectRect(p);
+      p.restore();
+    }
   }
 
-  p.restore();
   p.flush();
 }
 

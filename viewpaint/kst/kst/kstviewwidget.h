@@ -39,6 +39,7 @@ class KstViewWidget : public QWidget {
     KstTopLevelViewPtr viewObject() const;
 
     void paint();
+    void paint(const QRegion& region);
 
     KstViewObjectPtr findChildFor(const QPoint& pos);
 

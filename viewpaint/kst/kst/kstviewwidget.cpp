@@ -340,6 +340,12 @@ void KstViewWidget::contextMenuEvent(QContextMenuEvent *e) {
 }
 
 
+void KstViewWidget::paint(const QRegion& region) {
+  QPaintEvent e(region);
+  paintEvent(&e);
+}
+
+
 void KstViewWidget::paint() {
   paintEvent(0L);
 }
