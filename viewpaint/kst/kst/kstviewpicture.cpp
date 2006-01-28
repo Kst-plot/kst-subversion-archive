@@ -27,6 +27,7 @@
 #include <kio/netaccess.h>
 #include <klocale.h>
 
+#include <qbitmap.h>
 #include <qfile.h>
 #include <qfileinfo.h>
 #include <qmetaobject.h>
@@ -67,28 +68,51 @@ KstViewPicture::~KstViewPicture() {
 }
 
 
-void KstViewPicture::paint(KstPainter& p, const QRegion& bounds) {
-  p.save();
-  if (p.makingMask()) {
-    p.setRasterOp(Qt::SetROP);
-    KstBorderedViewObject::paint(p, bounds);
-  } else {
-    KstBorderedViewObject::paint(p, bounds);
-    // FIXME: inefficient
-    if (p.type() != KstPainter::P_PRINT && p.type() != KstPainter::P_EXPORT) {
-      QRegion boundary = bounds & _lastClipRegion;
-      for (KstViewObjectList::Iterator i = _children.begin(); i != _children.end(); ++i) {
-        boundary -= (*i)->clipRegion();
-      }
-      boundary -= p.uiMask();
-      p.setClipRegion(boundary);
+QRegion KstViewPicture::clipRegion() {
+  if (_clipMask.isNull()) {
+    _myClipMask = QRegion();
+    QBitmap bm1(_geom.bottomRight().x(), _geom.bottomRight().y(), true);
+    if (!bm1.isNull()) {
+      KstPainter p;
+      p.setMakingMask(true);
+      p.begin(&bm1);
+      p.setViewXForm(true);
+      KstBorderedViewObject::paintSelf(p, QRegion());
+      p.flush();
+      p.end();
+      _clipMask = QRegion(bm1);
+    }
+    QBitmap bm2(_geom.bottomRight().x(), _geom.bottomRight().y(), true);
+    if (!bm2.isNull()) {
+      KstPainter p;
+      p.setMakingMask(true);
+      p.begin(&bm2);
+      p.setViewXForm(true);
+      paintSelf(p, QRegion());
+      p.flush();
+      p.end();
+      _myClipMask = QRegion(bm2);
     }
   }
 
+  return _myClipMask | _clipMask;
+}
+
+
+void KstViewPicture::paintSelf(KstPainter& p, const QRegion& bounds) {
+  p.save();
+  if (p.makingMask()) {
+    p.setRasterOp(Qt::SetROP);
+  } else {
+    const QRegion clip(clipRegion());
+    KstBorderedViewObject::paintSelf(p, bounds - _myClipMask);
+    p.setClipRegion(bounds & clip);
+  }
+
   if (_image.isNull()) {
-    QRect r(_geom);
-    r.setWidth(_geom.width() - 1);
-    r.setHeight(_geom.height() - 1);
+    QRect r(contentsRect()); //_geom);
+    r.setWidth(r.width() - 1);
+    r.setHeight(r.height() - 1);
 
     // fill with X
     p.setBrush(QBrush(Qt::gray, Qt::SolidPattern));
@@ -111,13 +135,13 @@ void KstViewPicture::paint(KstPainter& p, const QRegion& bounds) {
       if (p.makingMask()) {
         // which indicates clipping / BW mode
         if (_iCache.hasAlphaBuffer()) {
-          p.drawImage(contentsRect().topLeft(), _iCache.createAlphaMask());
+          p.drawImage(cr.topLeft(), _iCache.createAlphaMask());
         } else {
           p.setBrush(Qt::color1);
-          p.drawRect(contentsRect());
+          p.drawRect(cr);
         }
       } else {
-        p.drawImage(contentsRect().topLeft(), _iCache);
+        p.drawImage(cr.topLeft(), _iCache);
       }
     }
   }

@@ -49,9 +49,9 @@ class KstViewPicture : public KstBorderedViewObject {
     int refreshTimer() const;
     
     virtual QMap<QString, QVariant> widgetHints(const QString& propertyName) const;
+    QRegion clipRegion();
 
-  public slots:
-    void paint(KstPainter& p, const QRegion& bounds);
+    void paintSelf(KstPainter& p, const QRegion& bounds);
 
   protected slots:
     void doRefresh();
@@ -64,6 +64,7 @@ class KstViewPicture : public KstBorderedViewObject {
     QString _url;
     int _refresh;
     QTimer *_timer;
+    QRegion _myClipMask;
 };
 
 typedef KstObjectList<KstViewPicturePtr> KstViewPictureList;
