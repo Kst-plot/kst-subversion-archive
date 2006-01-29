@@ -158,7 +158,7 @@ void KstViewLegend::save(QTextStream &ts, const QString& indent) {
 void KstViewLegend::drawToBuffer() {
   setDirty(false);
 
-  _backBuffer.buffer().resize(size());
+  _backBuffer.buffer().resize(contentsRect().size());
   _backBuffer.buffer().fill(backgroundColor());
   QPainter p(&_backBuffer.buffer());
   QPen pen;
@@ -334,8 +334,8 @@ int KstViewLegend::fontSize() const {
 
 
 void KstViewLegend::adjustSizeForText(QRect w) {
-  double x_s, y_s, s;
-  int width, height;
+  double x_s, y_s;
+  int width;
 
   x_s = y_s = _fontSize + (double)KstSettings::globalSettings()->plotFontSize;
 
@@ -350,7 +350,7 @@ void KstViewLegend::adjustSizeForText(QRect w) {
     x_s *= x_pix/748.0;
   }
 
-  s = (x_s + y_s)/2.0;
+  double s = (x_s + y_s)/2.0;
 
   if (s < MIN_FONT_SIZE) {
     s = MIN_FONT_SIZE;
@@ -367,7 +367,7 @@ void KstViewLegend::adjustSizeForText(QRect w) {
   } else {
     width = _textWidth + 9*_ascent*_curves.count()/2 - _ascent;
   }
-  height = _textHeight;
+  double height = _textHeight;
 
   QSize sz(width, height);
 
@@ -376,7 +376,9 @@ void KstViewLegend::adjustSizeForText(QRect w) {
     sz = r.intersect(_parent->geometry()).size();
   }
 
-  resize(sz + QSize((borderWidth()+_legendMargin*_ascent/10)*2, (borderWidth()+_legendMargin*_ascent/10)*2));
+  QRect cr(contentsRect());
+  cr.setSize(sz + QSize(2 * _legendMargin + _ascent / 5, 2 * _legendMargin + _ascent / 5));
+  setContentsRect(cr);
 }
 
 

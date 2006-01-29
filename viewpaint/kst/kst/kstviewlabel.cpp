@@ -212,7 +212,7 @@ void KstViewLabel::setDoScalarReplacement(bool replace) {
 void KstViewLabel::drawToBuffer(Label::Parsed *lp) {
   setDirty(false);
 
-  _backBuffer.buffer().resize(size());
+  _backBuffer.buffer().resize(contentsRect().size());
   _backBuffer.buffer().fill(backgroundColor());
   QPainter p(&_backBuffer.buffer());
   drawToPainter(lp, p);
@@ -239,39 +239,40 @@ void KstViewLabel::drawToPainter(Label::Parsed *lp, QPainter& p) {
   double abcos = fabs(cos(rotationRadians));
 
   int tx = 0, ty = 0; // translation
+  const QRect cr(contentsRect());
 
   switch (hJust) {
     case KST_JUSTIFY_H_RIGHT:
       rc.x = -_textWidth / 2;
-      tx = size().width() - int(_textWidth * abcos + _textHeight * absin) / 2  - borderWidth() - _labelMargin*_ascent/10;
+      tx = cr.width() - int(_textWidth * abcos + _textHeight * absin) / 2 - _labelMargin*_ascent/10;
       break;
     case KST_JUSTIFY_H_CENTER:
       rc.x = -_textWidth / 2;
-      tx = size().width() / 2;
+      tx = cr.width() / 2;
       break;
     case KST_JUSTIFY_H_NONE:
       abort(); // should never be able to happen
     case KST_JUSTIFY_H_LEFT:
     default:
       rc.x = -_textWidth / 2;
-      tx = int(_textWidth * abcos + _textHeight * absin) / 2  + borderWidth() + _labelMargin*_ascent/10;
+      tx = int(_textWidth * abcos + _textHeight * absin) / 2  + _labelMargin*_ascent/10;
       break;
   }
 
   switch (KST_JUSTIFY_V(_justify)) {
     case KST_JUSTIFY_V_BOTTOM:
       rc.y = _ascent - _textHeight / 2;
-      ty = size().height() - int(_textHeight * abcos + _textWidth * absin) / 2  - borderWidth() - _labelMargin*_ascent/10;
+      ty = cr.height() - int(_textHeight * abcos + _textWidth * absin) / 2 - _labelMargin*_ascent/10;
       break;
     case KST_JUSTIFY_V_CENTER:
       rc.y = _ascent - _textHeight / 2;
-      ty = size().height() / 2;
+      ty = cr.height() / 2;
       break;
     case KST_JUSTIFY_V_NONE:
     case KST_JUSTIFY_V_TOP:
     default:
       rc.y = _ascent - _textHeight / 2;
-      ty = int(_textHeight * abcos + _textWidth * absin) / 2  + borderWidth() + _labelMargin*_ascent/10;
+      ty = int(_textHeight * abcos + _textWidth * absin) / 2 + _labelMargin*_ascent/10;
       break;
   }
 
