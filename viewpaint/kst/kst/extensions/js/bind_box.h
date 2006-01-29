@@ -18,7 +18,7 @@
 #ifndef BIND_BOX_H
 #define BIND_BOX_H
 
-#include "bind_borderedviewobject.h"
+#include "bind_viewobject.h"
 
 #include <kstviewbox.h>
 
@@ -26,11 +26,11 @@
 #include <kjs/object.h>
 
 /* @class Box
-   @inherits BorderedViewObject
+   @inherits ViewObject
    @collection ViewObjectCollection
    @description A customizable box graphic.
 */
-class KstBindBox : public KstBindBorderedViewObject {
+class KstBindBox : public KstBindViewObject {
   public:
     /* @constructor
        @arg ViewObject parent The parent to place the new box in.  May also

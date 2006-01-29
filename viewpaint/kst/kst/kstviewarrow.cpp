@@ -112,12 +112,16 @@ QRegion KstViewArrow::clipRegion() {
 
 void KstViewArrow::paintSelf(KstPainter& p, const QRegion& bounds) {
   p.save();
-  if (p.makingMask()) {
-    p.setRasterOp(Qt::SetROP);
+  if (p.type() != KstPainter::P_PRINT && p.type() != KstPainter::P_EXPORT) {
+    if (p.makingMask()) {
+      p.setRasterOp(Qt::SetROP);
+    } else {
+      const QRegion clip(clipRegion());
+      KstViewLine::paintSelf(p, bounds - _myClipMask);
+      p.setClipRegion(bounds & clip);
+    }
   } else {
-    const QRegion clip(clipRegion());
-    KstViewLine::paintSelf(p, bounds - _myClipMask);
-    p.setClipRegion(bounds & clip);
+      KstViewLine::paintSelf(p, bounds);
   }
   
   if (hasArrow()) {

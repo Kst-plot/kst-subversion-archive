@@ -24,14 +24,14 @@
 #include <kjsembed/jsbinding.h>
 
 KstBindBox::KstBindBox(KJS::ExecState *exec, KstViewBoxPtr d, const char *name)
-: KstBindBorderedViewObject(exec, d.data(), name ? name : "Box") {
+: KstBindViewObject(exec, d.data(), name ? name : "Box") {
   KJS::Object o(this);
   addBindings(exec, o);
 }
 
 
 KstBindBox::KstBindBox(KJS::ExecState *exec, KJS::Object *globalObject, const char *name)
-: KstBindBorderedViewObject(exec, globalObject, name ? name : "Box") {
+: KstBindViewObject(exec, globalObject, name ? name : "Box") {
   KJS::Object o(this);
   addBindings(exec, o);
   if (globalObject) {
@@ -50,7 +50,7 @@ KstBindViewObject *KstBindBox::bindFactory(KJS::ExecState *exec, KstViewObjectPt
 
 
 KstBindBox::KstBindBox(int id, const char *name)
-: KstBindBorderedViewObject(id, name ? name : "Box Method") {
+: KstBindViewObject(id, name ? name : "Box Method") {
 }
 
 
@@ -110,17 +110,17 @@ static BoxProperties boxProperties[] = {
 
 
 int KstBindBox::methodCount() const {
-  return sizeof boxBindings + KstBindBorderedViewObject::methodCount();
+  return sizeof boxBindings + KstBindViewObject::methodCount();
 }
 
 
 int KstBindBox::propertyCount() const {
-  return sizeof boxProperties + KstBindBorderedViewObject::propertyCount();
+  return sizeof boxProperties + KstBindViewObject::propertyCount();
 }
 
 
 KJS::ReferenceList KstBindBox::propList(KJS::ExecState *exec, bool recursive) {
-  KJS::ReferenceList rc = KstBindBorderedViewObject::propList(exec, recursive);
+  KJS::ReferenceList rc = KstBindViewObject::propList(exec, recursive);
 
   for (int i = 0; boxProperties[i].name; ++i) {
     rc.append(KJS::Reference(this, KJS::Identifier(boxProperties[i].name)));
@@ -138,13 +138,13 @@ bool KstBindBox::hasProperty(KJS::ExecState *exec, const KJS::Identifier& proper
     }
   }
 
-  return KstBindBorderedViewObject::hasProperty(exec, propertyName);
+  return KstBindViewObject::hasProperty(exec, propertyName);
 }
 
 
 void KstBindBox::put(KJS::ExecState *exec, const KJS::Identifier& propertyName, const KJS::Value& value, int attr) {
   if (!_d) {
-    KstBindBorderedViewObject::put(exec, propertyName, value, attr);
+    KstBindViewObject::put(exec, propertyName, value, attr);
     return;
   }
 
@@ -159,13 +159,13 @@ void KstBindBox::put(KJS::ExecState *exec, const KJS::Identifier& propertyName, 
     }
   }
 
-  KstBindBorderedViewObject::put(exec, propertyName, value, attr);
+  KstBindViewObject::put(exec, propertyName, value, attr);
 }
 
 
 KJS::Value KstBindBox::get(KJS::ExecState *exec, const KJS::Identifier& propertyName) const {
   if (!_d) {
-    return KstBindBorderedViewObject::get(exec, propertyName);
+    return KstBindViewObject::get(exec, propertyName);
   }
 
   QString prop = propertyName.qstring();
@@ -178,7 +178,7 @@ KJS::Value KstBindBox::get(KJS::ExecState *exec, const KJS::Identifier& property
     }
   }
   
-  return KstBindBorderedViewObject::get(exec, propertyName);
+  return KstBindViewObject::get(exec, propertyName);
 }
 
 
@@ -190,7 +190,7 @@ KJS::Value KstBindBox::call(KJS::ExecState *exec, KJS::Object& self, const KJS::
     return KJS::Undefined();
   }
 
-  int start = KstBindBorderedViewObject::methodCount();
+  int start = KstBindViewObject::methodCount();
   if (id > start) {
     KstBindBox *imp = dynamic_cast<KstBindBox*>(self.imp());
     if (!imp) {
@@ -202,12 +202,12 @@ KJS::Value KstBindBox::call(KJS::ExecState *exec, KJS::Object& self, const KJS::
     return (imp->*boxBindings[id - start - 1].method)(exec, args);
   } 
 
-  return KstBindBorderedViewObject::call(exec, self, args);
+  return KstBindViewObject::call(exec, self, args);
 }
 
 
 void KstBindBox::addBindings(KJS::ExecState *exec, KJS::Object& obj) {
-  int start = KstBindBorderedViewObject::methodCount();
+  int start = KstBindViewObject::methodCount();
   for (int i = 0; boxBindings[i].name != 0L; ++i) {
     KJS::Object o = KJS::Object(new KstBindBox(i + start + 1));
     obj.put(exec, boxBindings[i].name, o, KJS::Function);

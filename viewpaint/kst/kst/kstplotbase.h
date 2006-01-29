@@ -30,8 +30,6 @@ class KstPlotBase : public KstMetaPlot {
     virtual ~KstPlotBase();
 
     virtual void save(QTextStream& ts, const QString& indent = QString::null);
-
-    virtual void paint(KstPainter& p, const QRegion& bounds);
 };
 
 typedef KstSharedPtr<KstPlotBase> KstPlotBasePtr;

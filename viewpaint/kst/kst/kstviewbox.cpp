@@ -30,7 +30,7 @@
 #include <qpair.h>
 
 KstViewBox::KstViewBox()
-: KstBorderedViewObject("Box") {
+: KstViewObject("Box"), _borderColor(QColor(0, 0, 0)), _borderWidth(0) {
   _xRound = 0;
   _yRound = 0;
   _cornerStyle = Qt::MiterJoin;
@@ -42,7 +42,7 @@ KstViewBox::KstViewBox()
 
 
 KstViewBox::KstViewBox(const QDomElement& e)
-: KstBorderedViewObject(e) {
+: KstViewObject(e), _borderColor(QColor(0, 0, 0)), _borderWidth(0) {
   
   QDomNode n = e.firstChild();
   while (!n.isNull()) {
@@ -70,12 +70,14 @@ KstViewBox::~KstViewBox() {
 
 void KstViewBox::paintSelf(KstPainter& p, const QRegion& bounds) {
   p.save();
-  if (p.makingMask()) {
-    p.setRasterOp(Qt::SetROP);
-  } else {
-    const QRegion clip(clipRegion());
-    KstViewObject::paintSelf(p, bounds - clip);
-    p.setClipRegion(bounds & clip);
+  if (p.type() != KstPainter::P_PRINT && p.type() != KstPainter::P_EXPORT) {
+    if (p.makingMask()) {
+      p.setRasterOp(Qt::SetROP);
+    } else {
+      const QRegion clip(clipRegion());
+      KstViewObject::paintSelf(p, bounds - clip);
+      p.setClipRegion(bounds & clip);
+    }
   }
 
   QPen pen(borderColor(), borderWidth());
@@ -102,7 +104,7 @@ void KstViewBox::paintSelf(KstPainter& p, const QRegion& bounds) {
 
 void KstViewBox::save(QTextStream& ts, const QString& indent) {
   ts << indent << "<" << type() << ">" << endl;
-  KstBorderedViewObject::save(ts, indent + "  ");
+  KstViewObject::save(ts, indent + "  ");
   ts << indent << "</" << type() << ">" << endl;
 }
 
@@ -175,8 +177,55 @@ void KstViewBox::setTransparentFill(bool yes) {
 }
 
 
+void KstViewBox::setBorderColor(const QColor& c) {
+  if (_borderColor != c) {
+    setDirty();
+    _borderColor = c;
+  }
+}
+
+
+const QColor& KstViewBox::borderColor() const {
+  return _borderColor;
+}
+
+
+void KstViewBox::setBorderWidth(int w) {
+  int mw = kMax(0, w);
+  if (_borderWidth != mw) {
+    _borderWidth = mw;
+    setDirty();
+  }
+}
+
+
+int KstViewBox::borderWidth() const {
+  return _borderWidth;
+}
+
+
+void KstViewBox::setBackgroundColor(const QColor& color) {
+  KstViewObject::setBackgroundColor(color);
+}
+
+
+QColor KstViewBox::backgroundColor() const {
+  return KstViewObject::backgroundColor();
+}
+
+
+void KstViewBox::setForegroundColor(const QColor& color) {
+  KstViewObject::setForegroundColor(color);
+}
+
+
+QColor KstViewBox::foregroundColor() const {
+  return KstViewObject::foregroundColor();
+}
+
+
 QMap<QString, QVariant > KstViewBox::widgetHints(const QString& propertyName) const {
-  QMap<QString, QVariant> map = KstBorderedViewObject::widgetHints(propertyName);
+  QMap<QString, QVariant> map = KstViewObject::widgetHints(propertyName);
   if (!map.empty()) {
     return map;  
   }
@@ -195,6 +244,13 @@ QMap<QString, QVariant > KstViewBox::widgetHints(const QString& propertyName) co
     map.insert(QString("_kst_widgetType"), QString("QCheckBox"));
     map.insert(QString("_kst_label"), QString::null);
     map.insert(QString("text"), i18n("Transparent fill"));
+  } if (propertyName == "borderColor") {
+    map.insert(QString("_kst_widgetType"), QString("KColorButton"));
+    map.insert(QString("_kst_label"), i18n("Border color"));
+  } else if (propertyName == "borderWidth") {
+    map.insert(QString("_kst_widgetType"), QString("QSpinBox"));
+    map.insert(QString("_kst_label"), i18n("Border width"));
+    map.insert(QString("minValue"), 0);
   }
   return map;
 }

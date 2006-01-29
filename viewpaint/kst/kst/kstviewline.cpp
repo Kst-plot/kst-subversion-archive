@@ -86,13 +86,15 @@ KstViewLine::~KstViewLine() {
 
 void KstViewLine::paintSelf(KstPainter& p, const QRegion& bounds) {
   p.save();
-  if (p.makingMask()) {
-    p.setRasterOp(Qt::SetROP);
-    KstViewObject::paintSelf(p, geometry());
-  } else {
-    const QRegion clip(clipRegion());
-    KstViewObject::paintSelf(p, bounds - clip);
-    p.setClipRegion(bounds & clip);
+  if (p.type() != KstPainter::P_PRINT && p.type() != KstPainter::P_EXPORT) {
+    if (p.makingMask()) {
+      p.setRasterOp(Qt::SetROP);
+      KstViewObject::paintSelf(p, geometry());
+    } else {
+      const QRegion clip(clipRegion());
+      KstViewObject::paintSelf(p, bounds - clip);
+      p.setClipRegion(bounds & clip);
+    }
   }
 
   // figure out which direction to draw the line

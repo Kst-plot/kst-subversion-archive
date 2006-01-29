@@ -42,9 +42,5 @@ void KstPlotBase::save(QTextStream& ts, const QString& indent) {
 }
 
 
-void KstPlotBase::paint(KstPainter& p, const QRegion& bounds) {
-  KstMetaPlot::paint(p, bounds);
-}
-
 #include "kstplotbase.moc"
 // vim: ts=2 sw=2 et

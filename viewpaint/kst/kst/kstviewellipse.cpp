@@ -60,13 +60,15 @@ KstViewEllipse::~KstViewEllipse() {
 
 void KstViewEllipse::paintSelf(KstPainter& p, const QRegion& bounds) {
   p.save();
-  if (p.makingMask()) {
-    p.setRasterOp(Qt::SetROP);
-    KstViewObject::paintSelf(p, geometry());
-  } else {
-    const QRegion clip(clipRegion());
-    KstViewObject::paintSelf(p, bounds - clip);
-    p.setClipRegion(bounds & clip);
+  if (p.type() != KstPainter::P_PRINT && p.type() != KstPainter::P_EXPORT) {
+    if (p.makingMask()) {
+      p.setRasterOp(Qt::SetROP);
+      KstViewObject::paintSelf(p, geometry());
+    } else {
+      const QRegion clip(clipRegion());
+      KstViewObject::paintSelf(p, bounds - clip);
+      p.setClipRegion(bounds & clip);
+    }
   }
 
   QPen pen(_borderColor, _borderWidth);
