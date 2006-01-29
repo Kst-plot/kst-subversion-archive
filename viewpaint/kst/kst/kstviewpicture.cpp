@@ -251,7 +251,6 @@ void KstViewPicture::setRefreshTimer(int seconds) {
 
 
 bool KstViewPicture::transparent() const {
-  kstdDebug() << "transparent? " << _iCache.hasAlphaBuffer() << endl;
   return _iCache.hasAlphaBuffer();
 }
 
