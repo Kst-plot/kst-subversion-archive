@@ -1285,7 +1285,7 @@ void KstViewObject::copyTo(int id) {
 void KstViewObject::updateFromAspect() {
   setMinimumSize(minimumSize().expandedTo(QSize(_children.count(), _children.count())));
   if (_parent) {
-    const QRect geom(_parent->geometry());
+    const QRect geom(_parent->contentsRect());
     _geom.setLeft(geom.left() + int(_aspect.x * geom.width()));
     _geom.setTop(geom.top() + int(_aspect.y * geom.height()));
     _geom.setRight(geom.left() + int((_aspect.x + _aspect.w) * geom.width()) - 1);
@@ -1301,7 +1301,7 @@ void KstViewObject::updateFromAspect() {
 
 void KstViewObject::updateAspectPos() {
   if (_parent) {
-    const QRect geom(_parent->geometry());
+    const QRect geom(_parent->contentsRect());
     _aspect.x = double(geometry().left() - geom.left()) / double(geom.width());
     _aspect.y = double(geometry().top() - geom.top()) / double(geom.height());
   } else {
@@ -1313,7 +1313,7 @@ void KstViewObject::updateAspectPos() {
 
 void KstViewObject::updateAspectSize() {
   if (_parent) {
-    const QRect geom(_parent->geometry());
+    const QRect geom(_parent->contentsRect());
     _aspect.w = double(geometry().width()) / double(geom.width());
     _aspect.h = double(geometry().height()) / double(geom.height());
   } else {

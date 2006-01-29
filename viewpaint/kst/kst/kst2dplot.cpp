@@ -6550,10 +6550,7 @@ void Kst2DPlot::timezoneChanged(const QString& tz, int utcOffset) {
 
 
 QRect Kst2DPlot::contentsRect() const {
-  return QRect(PlotRegion.left() + geometry().left(),
-               PlotRegion.top() + geometry().top(),
-               PlotRegion.width(),
-               PlotRegion.height());
+  return PlotRegion;
 }
 
 namespace {
