@@ -113,19 +113,15 @@ void KstViewPicture::paintSelf(KstPainter& p, const QRegion& bounds) {
     KstBorderedViewObject::paintSelf(p, bounds);
   }
 
+  const QRect cr(contentsRect());
   if (_image.isNull()) {
-    QRect r(contentsRect()); //_geom);
-    r.setWidth(r.width() - 1);
-    r.setHeight(r.height() - 1);
-
     // fill with X
     p.setBrush(QBrush(Qt::gray, Qt::SolidPattern));
     p.setPen(QPen(Qt::black, 0, Qt::SolidLine));
-    p.drawRect(r);
-    p.drawLine(r.topLeft(), r.bottomRight());
-    p.drawLine(r.topRight(), r.bottomLeft());
+    p.drawRect(cr);
+    p.drawLine(cr.topLeft(), cr.bottomRight());
+    p.drawLine(cr.topRight(), cr.bottomLeft());
   } else {
-    QRect cr = contentsRect();
     assert(!cr.isNull()); // Null view objects are not allowed.  I want to see
                           // how this happens so it can be fixed.
 
@@ -260,7 +256,9 @@ int KstViewPicture::refreshTimer() const {
 
 
 void KstViewPicture::restoreSize() {
-  resize(_image.size());
+  QRect cr(contentsRect());
+  cr.setSize(_image.size());
+  setContentsRect(cr);
 }
 
 
