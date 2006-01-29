@@ -361,7 +361,7 @@ void KstViewLabel::paintSelf(KstPainter& p, const QRegion& bounds) {
       p.setClipRegion(bounds & clip);
     }
 
-    _backBuffer.paintInto(p, geometry());
+    _backBuffer.paintInto(p, contentsRect());
   }
   p.restore();
 }
