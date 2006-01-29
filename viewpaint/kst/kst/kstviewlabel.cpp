@@ -422,7 +422,7 @@ int KstViewLabel::fontSize() const {
 
 void KstViewLabel::adjustSizeForText(QRect w) {
   if (_autoResize) {
-    double x_s, y_s, s;
+    double x_s, y_s;
     
     x_s = y_s = _fontSize + (double)KstSettings::globalSettings()->plotFontSize;
 
@@ -437,7 +437,7 @@ void KstViewLabel::adjustSizeForText(QRect w) {
       x_s *= x_pix/748.0;
     }
 
-    s = (x_s + y_s)/2.0;
+    double s = (x_s + y_s)/2.0;
 
     if (s < MIN_FONT_SIZE) {
       s = MIN_FONT_SIZE;
@@ -483,7 +483,9 @@ void KstViewLabel::adjustSizeForText(QRect w) {
     }
   }
 
-  resize(sz + QSize((borderWidth()+_labelMargin*_ascent/10)*2, (borderWidth()+_labelMargin*_ascent/10)*2));
+  QRect cr(contentsRect());
+  cr.setSize(sz + QSize(2 * _labelMargin + _ascent / 5, 2 * _labelMargin + _ascent / 5));
+  setContentsRect(cr);
 }
 
 
