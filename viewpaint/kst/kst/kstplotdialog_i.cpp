@@ -604,7 +604,7 @@ void KstPlotDialogI::applyAppearance(Kst2DPlotPtr plot) {
       vl->setBorderColor(legendColors->foreground());
       vl->setTransparent(_transparent->isChecked());
       vl->setBorderWidth(_border->value());
-      vl->setPadding(_margin->value());
+      vl->setLegendMargin(_margin->value());
     } else {
       KstViewLegendPtr vl = plotExtra->legend();
       if (vl) {

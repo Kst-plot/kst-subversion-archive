@@ -63,7 +63,7 @@ KstViewLegend::KstViewLegend()
   setBorderColor(KstSettings::globalSettings()->foregroundColor);
   setBackgroundColor(KstSettings::globalSettings()->backgroundColor);
   setBorderWidth(2);
-  setPadding(5);
+  _legendMargin = 5;
   _absFontSize = _fontSize+KstSettings::globalSettings()->plotFontSize;
   _layoutActions &= ~(MoveTo | Copy | CopyTo);
   _standardActions |= Delete | Edit;
@@ -82,6 +82,7 @@ KstViewLegend::KstViewLegend(const QDomElement& e)
   _fontName = KstApp::inst()->defaultFont();
   _fontSize = 0;
   _vertical = true;
+  _legendMargin = 5;
   _absFontSize = _fontSize+KstSettings::globalSettings()->plotFontSize;
   _layoutActions &= ~(MoveTo | Copy | CopyTo);
   _standardActions |= Delete | Edit;
@@ -175,7 +176,7 @@ void KstViewLegend::drawToPainter(QPainter& p) {
     for (KstBaseCurveList::Iterator it = _curves.begin(); it != _curves.end(); ++it) {
       p.save();
       if ((*it)->parsedLegendTag()) {
-        p.translate(borderWidth() + padding()*_ascent/10, borderWidth() + padding()*_ascent/10 + (i)*(rc.fontHeight()+_ascent/4));
+        p.translate(borderWidth() + _legendMargin*_ascent/10, borderWidth() + _legendMargin*_ascent/10 + (i)*(rc.fontHeight()+_ascent/4));
         QRect symbolBound(QPoint(0,0),
                           QSize(16*_ascent/4, rc.fontHeight()));
 
@@ -191,7 +192,7 @@ void KstViewLegend::drawToPainter(QPainter& p) {
     }
   } else {
     p.save();
-    p.translate(borderWidth() + padding()*_ascent/10, borderWidth() + padding()*_ascent/10);
+    p.translate(borderWidth() + _legendMargin*_ascent/10, borderWidth() + _legendMargin*_ascent/10);
     for (KstBaseCurveList::Iterator it = _curves.begin(); it != _curves.end(); ++it) {
       if ((*it)->parsedLegendTag()) {
         QRect symbolBound(QPoint(0,0),
@@ -259,8 +260,8 @@ void KstViewLegend::paintSelf(KstPainter& p, const QRegion& bounds) {
     p.save();
     KstBorderedViewObject::paint(p, bounds);
     adjustSizeForText(p.window());
-    p.setViewport(geometry());
-    p.setWindow(0,0,geometry().width(), geometry().height());
+    p.setViewport(contentsRect());
+    p.setWindow(0, 0,contentsRect().width(), contentsRect().height());
     drawToPainter(p);
     //setDirty();
     p.restore();
@@ -276,7 +277,7 @@ void KstViewLegend::paintSelf(KstPainter& p, const QRegion& bounds) {
       }
     }
 
-    bool d = dirty();
+    bool d = dirty(); // FIXME: always false
     if (d) {
       adjustSizeForText(p.window()); // calls computeTextSize
     }
@@ -284,10 +285,10 @@ void KstViewLegend::paintSelf(KstPainter& p, const QRegion& bounds) {
     if (_transparent) {
       QRegion oldRegion = p.clipRegion();
       p.setClipRegion(oldRegion & clipRegion());
-      _backBuffer.paintInto(p, geometry());
+      _backBuffer.paintInto(p, contentsRect());
       p.setClipRegion(oldRegion);
     } else {
-      _backBuffer.paintInto(p, geometry());
+      _backBuffer.paintInto(p, contentsRect());
     }
   }
 }
@@ -301,7 +302,7 @@ QRegion KstViewLegend::clipRegion() {
   if (_clipMask.isNull()) {
     QBitmap bm = _backBuffer.buffer().createHeuristicMask(false); // slow but preserves antialiasing...
     _clipMask = QRegion(bm);
-    _clipMask.translate(geometry().topLeft().x(), geometry().topLeft().y());
+    _clipMask.translate(contentsRect().topLeft().x(), contentsRect().topLeft().y());
   }
 
   return _clipMask;
@@ -369,7 +370,7 @@ void KstViewLegend::adjustSizeForText(QRect w) {
     sz = r.intersect(_parent->geometry()).size();
   }
 
-  resize(sz + QSize((borderWidth()+padding()*_ascent/10)*2, (borderWidth()+padding()*_ascent/10)*2));
+  resize(sz + QSize((borderWidth()+_legendMargin*_ascent/10)*2, (borderWidth()+_legendMargin*_ascent/10)*2));
 }
 
 
@@ -472,7 +473,7 @@ bool KstViewLegend::fillConfigWidget(QWidget *w, bool isNew) const {
     widget->_border->setValue(borderWidth());
     widget->_boxColors->setForeground(borderColor());
     widget->_boxColors->setBackground(backgroundColor());
-    widget->_margin->setValue(padding());
+    widget->_margin->setValue(_legendMargin);
     widget->_vertical->setChecked(vertical());
     for (KstBaseCurveList::ConstIterator it = _curves.begin(); it != _curves.end(); ++it) {
       (*it)->readLock();
@@ -506,7 +507,7 @@ bool KstViewLegend::readConfigWidget(QWidget *w) {
   setBorderWidth(widget->_border->value());
   setBorderColor(widget->_boxColors->foreground());
   setBackgroundColor(widget->_boxColors->background());
-  setPadding(widget->_margin->value());
+  _legendMargin = widget->_margin->value();
   setVertical(widget->_vertical->isChecked());
 
   KstBaseCurveList allCurves = kstObjectSubList<KstDataObject, KstBaseCurve>(KST::dataObjectList);
@@ -538,6 +539,11 @@ void KstViewLegend::setVertical(bool vertical) {
     _vertical = vertical;
     setDirty();
   }
+}
+
+
+void KstViewLegend::setLegendMargin(int margin) {
+  _legendMargin = margin;
 }
 
 
