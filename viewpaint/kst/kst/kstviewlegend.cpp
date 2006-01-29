@@ -258,7 +258,7 @@ void KstViewLegend::updateSelf() {
 
 void KstViewLegend::paintSelf(KstPainter& p, const QRegion& bounds) {
   const QRect cr(contentsRect());
-  if (p.type() == KstPainter::P_PRINT) {
+  if (p.type() == KstPainter::P_PRINT || p.type() == KstPainter::P_EXPORT) {
     p.save();
     KstBorderedViewObject::paint(p, bounds);
     adjustSizeForText(p.window());
