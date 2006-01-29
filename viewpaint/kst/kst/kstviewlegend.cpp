@@ -249,47 +249,33 @@ void KstViewLegend::computeTextSize() {
 
 void KstViewLegend::updateSelf() {
   if (dirty()) {
-      drawToBuffer();
+    adjustSizeForText(contentsRect());
+    drawToBuffer();
   }
   KstBorderedViewObject::updateSelf();
 }
 
 
 void KstViewLegend::paintSelf(KstPainter& p, const QRegion& bounds) {
+  const QRect cr(contentsRect());
   if (p.type() == KstPainter::P_PRINT) {
     p.save();
     KstBorderedViewObject::paint(p, bounds);
     adjustSizeForText(p.window());
     p.setViewport(contentsRect());
-    p.setWindow(0, 0,contentsRect().width(), contentsRect().height());
+    p.setWindow(0, 0, cr.width(), cr.height());
     drawToPainter(p);
-    //setDirty();
     p.restore();
+    adjustSizeForText(cr);
   } else {
     if (p.makingMask()) {
       p.setRasterOp(Qt::SetROP);
     } else {
-      const QRegion clip(clipRegion());
-      KstBorderedViewObject::paintSelf(p, bounds - QRegion(contentsRect()));
-      p.setClipRegion(bounds & clip);
-      if (p.type() == KstPainter::P_UPDATE) {
-        setDirty();
-      }
+      KstBorderedViewObject::paintSelf(p, bounds - cr);
+      p.setClipRegion(bounds & cr);
     }
 
-    bool d = dirty(); // FIXME: always false
-    if (d) {
-      adjustSizeForText(p.window()); // calls computeTextSize
-    }
-
-    if (_transparent) {
-      QRegion oldRegion = p.clipRegion();
-      p.setClipRegion(oldRegion & clipRegion());
-      _backBuffer.paintInto(p, contentsRect());
-      p.setClipRegion(oldRegion);
-    } else {
-      _backBuffer.paintInto(p, contentsRect());
-    }
+    _backBuffer.paintInto(p, cr);
   }
 }
 
@@ -300,9 +286,11 @@ QRegion KstViewLegend::clipRegion() {
   }
 
   if (_clipMask.isNull()) {
+    const QRect cr(contentsRect());
+    // FIXME: include the border
     QBitmap bm = _backBuffer.buffer().createHeuristicMask(false); // slow but preserves antialiasing...
     _clipMask = QRegion(bm);
-    _clipMask.translate(contentsRect().topLeft().x(), contentsRect().topLeft().y());
+    _clipMask.translate(cr.topLeft().x(), cr.topLeft().y());
   }
 
   return _clipMask;
