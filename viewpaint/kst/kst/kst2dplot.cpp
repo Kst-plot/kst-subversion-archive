@@ -2164,8 +2164,21 @@ void Kst2DPlot::parentMoved(const QPoint& offset) {
 
 
 void Kst2DPlot::resize(const QSize& size) {
+  // FIXME
+  // Horribly inefficient, but we need to update contentsRect() somehow
+  // before the base class resize happens.
+  _buffer.buffer().resize(size);
+  assert(!_buffer.buffer().isNull()); // Want to find these crashes
+  if (!_buffer.buffer().isNull()) {    // Because this is garbage
+    _buffer.buffer().fill(backgroundColor());
+    KstPainter p;
+    p.begin(&_buffer.buffer());
+    p.setWindow(0, 0, size.width(), size.height());
+    draw(p);
+    p.end();
+  }
   KstPlotBase::resize(size);
-  setDirty();
+  setDirty(false);
 }
 
 
@@ -2581,6 +2594,7 @@ QRect Kst2DPlot::GetTieBoxRegion() const {
 
   return QRect(left, top, dim, dim);
 }
+
 
 void Kst2DPlot::setPixRect(const QRect& RelPlotRegion, const QRect& RelWinRegion, const QRect& RelPlotAndAxisRegion) {
   PlotRegion = RelPlotRegion;
