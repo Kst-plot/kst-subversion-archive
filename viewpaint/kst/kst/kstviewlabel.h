@@ -89,6 +89,10 @@ class KstViewLabel : public KstBorderedViewObject {
     void paintSelf(KstPainter& p, const QRegion& bounds);
     void resize(const QSize&);
     QRegion clipRegion();
+    void invalidateClipRegion();
+
+    void setLabelMargin(int margin);
+    int labelMargin() const;
 
     //virtual QMap<QString, QVariant> widgetHints(const QString& propertyName) const;
     QWidget *configWidget();
@@ -127,6 +131,8 @@ class KstViewLabel : public KstBorderedViewObject {
     KstLJustifyType _justify;
     KstBackBuffer _backBuffer;
     Label::Parsed *_parsed;
+    QRegion _myClipMask;
+    int _labelMargin;
 };
 
 typedef KstSharedPtr<KstViewLabel> KstViewLabelPtr;

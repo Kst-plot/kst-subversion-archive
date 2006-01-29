@@ -87,8 +87,8 @@ void KstBorderedViewObject::paintSelf(KstPainter& p, const QRegion& bounds) {
     p.setPen(pen);
     r.setX(_geom.left() + _margin + _borderWidth / 2);
     r.setY(_geom.top() + _margin + _borderWidth / 2);
-    r.setWidth(_geom.width() - 2 * _margin - _borderWidth + 1);
-    r.setHeight(_geom.height() - 2 * _margin - _borderWidth + 1);
+    r.setWidth(_geom.width() - 2 * _margin - _borderWidth);
+    r.setHeight(_geom.height() - 2 * _margin - _borderWidth);
     p.drawRect(r);
   }
   p.restore();
@@ -98,8 +98,8 @@ void KstBorderedViewObject::paintSelf(KstPainter& p, const QRegion& bounds) {
 void KstBorderedViewObject::setBorderColor(const QColor& c) {
   if (_borderColor != c) {
     setDirty();
+    _borderColor = c;
   }
-  _borderColor = c;
 }
 
 

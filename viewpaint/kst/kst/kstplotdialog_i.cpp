@@ -470,7 +470,7 @@ void KstPlotDialogI::update(int new_index) {
       ShowLegend->setChecked(true);
       checkBoxVerticalLayout->setChecked(vl->vertical());
       _border->setValue(vl->borderWidth());
-      _margin->setValue(vl->padding());
+      _margin->setValue(vl->legendMargin());
       _transparent->setChecked(vl->transparent());
       legendColors->setForeground(vl->foregroundColor());
       legendColors->setBackground(vl->backgroundColor());

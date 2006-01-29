@@ -70,6 +70,7 @@ KstViewLabel::KstViewLabel(const QString& txt, KstLJustifyType justify, float ro
   _layoutActions &= ~(MoveTo | Copy | CopyTo);
   _standardActions |= Delete | Edit;
   _parsed = 0L;
+  _labelMargin = 0;
   reparse();
   computeTextSize(_parsed);
   _autoResize = true;
@@ -87,6 +88,7 @@ KstViewLabel::KstViewLabel(const QDomElement& e)
   _interpret = true;
   _replace = true;
   _rotation = 0.0;
+  _labelMargin = 0;
   _justify = 0L;
   _fontName = KstApp::inst()->defaultFont();
   _fontSize = 0;
@@ -208,12 +210,6 @@ void KstViewLabel::setDoScalarReplacement(bool replace) {
 
 
 void KstViewLabel::drawToBuffer(Label::Parsed *lp) {
-#if 0
-  if (dirty()) {
-    computeTextSize(lp); // hmm this is inefficient
-  }
-#endif
-
   setDirty(false);
 
   _backBuffer.buffer().resize(size());
@@ -247,7 +243,7 @@ void KstViewLabel::drawToPainter(Label::Parsed *lp, QPainter& p) {
   switch (hJust) {
     case KST_JUSTIFY_H_RIGHT:
       rc.x = -_textWidth / 2;
-      tx = size().width() - int(_textWidth * abcos + _textHeight * absin) / 2  - borderWidth() - padding()*_ascent/10;
+      tx = size().width() - int(_textWidth * abcos + _textHeight * absin) / 2  - borderWidth() - _labelMargin*_ascent/10;
       break;
     case KST_JUSTIFY_H_CENTER:
       rc.x = -_textWidth / 2;
@@ -258,14 +254,14 @@ void KstViewLabel::drawToPainter(Label::Parsed *lp, QPainter& p) {
     case KST_JUSTIFY_H_LEFT:
     default:
       rc.x = -_textWidth / 2;
-      tx = int(_textWidth * abcos + _textHeight * absin) / 2  + borderWidth() + padding()*_ascent/10;
+      tx = int(_textWidth * abcos + _textHeight * absin) / 2  + borderWidth() + _labelMargin*_ascent/10;
       break;
   }
 
   switch (KST_JUSTIFY_V(_justify)) {
     case KST_JUSTIFY_V_BOTTOM:
       rc.y = _ascent - _textHeight / 2;
-      ty = size().height() - int(_textHeight * abcos + _textWidth * absin) / 2  - borderWidth() - padding()*_ascent/10;
+      ty = size().height() - int(_textHeight * abcos + _textWidth * absin) / 2  - borderWidth() - _labelMargin*_ascent/10;
       break;
     case KST_JUSTIFY_V_CENTER:
       rc.y = _ascent - _textHeight / 2;
@@ -275,7 +271,7 @@ void KstViewLabel::drawToPainter(Label::Parsed *lp, QPainter& p) {
     case KST_JUSTIFY_V_TOP:
     default:
       rc.y = _ascent - _textHeight / 2;
-      ty = int(_textHeight * abcos + _textWidth * absin) / 2  + borderWidth() + padding()*_ascent/10;
+      ty = int(_textHeight * abcos + _textWidth * absin) / 2  + borderWidth() + _labelMargin*_ascent/10;
       break;
   }
 
@@ -328,12 +324,11 @@ void KstViewLabel::computeTextSize(Label::Parsed *lp) {
 void KstViewLabel::updateSelf() {
   if (dirty()) {
     if (_autoResize) {
-      //adjustSizeForText(p.window());
-      drawToBuffer(_parsed);
+      adjustSizeForText(contentsRect());
     } else {
       computeTextSize(_parsed);
-      drawToBuffer(_parsed);
     }
+    drawToBuffer(_parsed);
   }
   KstBorderedViewObject::updateSelf();
 }
@@ -362,23 +357,19 @@ void KstViewLabel::paintSelf(KstPainter& p, const QRegion& bounds) {
       p.setRasterOp(Qt::SetROP);
     } else {
       const QRegion clip(clipRegion());
-      KstBorderedViewObject::paintSelf(p, bounds - QRegion(contentsRect()));
+      KstBorderedViewObject::paintSelf(p, bounds - _myClipMask);
       p.setClipRegion(bounds & clip);
-      if (p.type() == KstPainter::P_UPDATE) {
-        setDirty();
-      }
     }
 
-    if (_transparent) {
-      QRegion oldRegion = p.clipRegion();
-      p.setClipRegion(oldRegion & clipRegion());
-      _backBuffer.paintInto(p, geometry());
-      p.setClipRegion(oldRegion);
-    } else {
-      _backBuffer.paintInto(p, geometry());
-    }
+    _backBuffer.paintInto(p, geometry());
   }
   p.restore();
+}
+
+
+void KstViewLabel::invalidateClipRegion() {
+  KstBorderedViewObject::invalidateClipRegion();
+  _myClipMask = QRegion();
 }
 
 
@@ -387,13 +378,26 @@ QRegion KstViewLabel::clipRegion() {
     return KstBorderedViewObject::clipRegion();
   }
 
-  if (_clipMask.isNull()) {
+  if (_clipMask.isNull() && _myClipMask.isNull()) {
+    const QRect cr(contentsRect());
     QBitmap bm = _backBuffer.buffer().createHeuristicMask(false); // slow but preserves antialiasing...
-    _clipMask = QRegion(bm);
-    _clipMask.translate(geometry().topLeft().x(), geometry().topLeft().y());
+    _myClipMask = QRegion(bm);
+    _myClipMask.translate(cr.topLeft().x(), cr.topLeft().y());
+
+    QBitmap bm1(_geom.bottomRight().x(), _geom.bottomRight().y(), true);
+    if (!bm1.isNull()) {
+      KstPainter p;
+      p.setMakingMask(true);
+      p.begin(&bm1);
+      p.setViewXForm(true);
+      KstBorderedViewObject::paintSelf(p, QRegion());
+      p.flush();
+      p.end();
+      _clipMask = QRegion(bm1);
+    }
   }
 
-  return _clipMask;
+  return _clipMask | _myClipMask;
 }
 
 
@@ -478,7 +482,7 @@ void KstViewLabel::adjustSizeForText(QRect w) {
     }
   }
 
-  resize(sz + QSize((borderWidth()+padding()*_ascent/10)*2, (borderWidth()+padding()*_ascent/10)*2));
+  resize(sz + QSize((borderWidth()+_labelMargin*_ascent/10)*2, (borderWidth()+_labelMargin*_ascent/10)*2));
 }
 
 
@@ -594,7 +598,7 @@ bool KstViewLabel::fillConfigWidget(QWidget *w, bool isNew) const {
     widget->_border->setValue(borderWidth());
     widget->_boxColors->setForeground(borderColor());
     widget->_boxColors->setBackground(backgroundColor());
-    widget->_margin->setValue(padding());
+    widget->_margin->setValue(_labelMargin);
   }
   widget->_text->setFocus();
   return true;
@@ -625,7 +629,7 @@ bool KstViewLabel::readConfigWidget(QWidget *w) {
   setBorderWidth(widget->_border->value());
   setBorderColor(widget->_boxColors->foreground());
   setBackgroundColor(widget->_boxColors->background());
-  setPadding(widget->_margin->value());
+  setLabelMargin(widget->_margin->value());
   
   reparse(); // calls setDirty()
   return true;
@@ -740,6 +744,20 @@ void KstViewLabel::setVertJustifyWrap(int justify) {
   setJustification(SET_KST_JUSTIFY(KST_JUSTIFY_H(justification()), justifySet));
 }
     
+
+void KstViewLabel::setLabelMargin(int margin) {
+  int mm = kMax(0, margin);
+  if (mm != _labelMargin) {
+    _labelMargin = mm;
+    setDirty();
+  }
+}
+
+
+int KstViewLabel::labelMargin() const {
+  return _labelMargin;
+}
+
 
 QWidget *KstViewLabel::configWidget() {
   return new ViewLabelWidget;

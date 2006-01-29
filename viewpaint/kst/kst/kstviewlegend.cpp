@@ -271,12 +271,19 @@ void KstViewLegend::paintSelf(KstPainter& p, const QRegion& bounds) {
     if (p.makingMask()) {
       p.setRasterOp(Qt::SetROP);
     } else {
-      KstBorderedViewObject::paintSelf(p, bounds - cr);
-      p.setClipRegion(bounds & cr);
+      const QRegion clip(clipRegion());
+      KstBorderedViewObject::paintSelf(p, bounds - _myClipMask);
+      p.setClipRegion(bounds & clip);
     }
 
     _backBuffer.paintInto(p, cr);
   }
+}
+
+
+void KstViewLegend::invalidateClipRegion() {
+  KstBorderedViewObject::invalidateClipRegion();
+  _myClipMask = QRegion();
 }
 
 
@@ -285,15 +292,26 @@ QRegion KstViewLegend::clipRegion() {
     return KstBorderedViewObject::clipRegion();
   }
 
-  if (_clipMask.isNull()) {
+  if (_clipMask.isNull() && _myClipMask.isNull()) {
     const QRect cr(contentsRect());
-    // FIXME: include the border
     QBitmap bm = _backBuffer.buffer().createHeuristicMask(false); // slow but preserves antialiasing...
-    _clipMask = QRegion(bm);
-    _clipMask.translate(cr.topLeft().x(), cr.topLeft().y());
+    _myClipMask = QRegion(bm);
+    _myClipMask.translate(cr.topLeft().x(), cr.topLeft().y());
+
+    QBitmap bm1(_geom.bottomRight().x(), _geom.bottomRight().y(), true);
+    if (!bm1.isNull()) {
+      KstPainter p;
+      p.setMakingMask(true);
+      p.begin(&bm1);
+      p.setViewXForm(true);
+      KstBorderedViewObject::paintSelf(p, QRegion());
+      p.flush();
+      p.end();
+      _clipMask = QRegion(bm1);
+    }
   }
 
-  return _clipMask;
+  return _clipMask | _myClipMask;
 }
 
 
@@ -495,7 +513,7 @@ bool KstViewLegend::readConfigWidget(QWidget *w) {
   setBorderWidth(widget->_border->value());
   setBorderColor(widget->_boxColors->foreground());
   setBackgroundColor(widget->_boxColors->background());
-  _legendMargin = widget->_margin->value();
+  setLegendMargin(widget->_margin->value());
   setVertical(widget->_vertical->isChecked());
 
   KstBaseCurveList allCurves = kstObjectSubList<KstDataObject, KstBaseCurve>(KST::dataObjectList);
@@ -531,7 +549,16 @@ void KstViewLegend::setVertical(bool vertical) {
 
 
 void KstViewLegend::setLegendMargin(int margin) {
-  _legendMargin = margin;
+  int mm = kMax(0, margin);
+  if (_legendMargin != mm) {
+    _legendMargin = mm;
+    setDirty();
+  }
+}
+
+
+int KstViewLegend::legendMargin() const {
+  return _legendMargin;
 }
 
 

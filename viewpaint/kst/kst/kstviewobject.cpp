@@ -404,7 +404,7 @@ void KstViewObject::paintSelf(KstPainter& p, const QRegion& bounds) {
 
 void KstViewObject::updateSelf() {
   if (dirty()) {
-    _clipMask = QRegion();
+    invalidateClipRegion();
   }
 }
 
@@ -569,7 +569,7 @@ void KstViewObject::resize(const QSize& size) {
 void KstViewObject::resizeForPrint(const QSize& size) {
   _geomOld = _geom;
   _geom.setSize(size);
-  _clipMask = QRegion();
+  invalidateClipRegion();
   for (KstViewObjectList::Iterator i = _children.begin(); i != _children.end(); ++i) {
     (*i)->parentResizedForPrint();
   }
@@ -578,7 +578,7 @@ void KstViewObject::resizeForPrint(const QSize& size) {
 
 void KstViewObject::revertForPrint() {
   _geom = _geomOld;
-  _clipMask = QRegion();
+  invalidateClipRegion();
   for (KstViewObjectList::Iterator i = _children.begin(); i != _children.end(); ++i) {
     (*i)->parentRevertedForPrint();
   }
@@ -633,7 +633,7 @@ void KstViewObject::parentResizedForPrint() {
 
 void KstViewObject::parentRevertedForPrint() {
   _geom = _geomOld;
-  _clipMask = QRegion();
+  invalidateClipRegion();
   for (KstViewObjectList::Iterator i = _children.begin(); i != _children.end(); ++i) {
     (*i)->parentRevertedForPrint();
   }
@@ -800,7 +800,7 @@ void KstViewObject::move(const QPoint& pos) {
     }
   }
 
-  _clipMask = QRegion(); // not dirty, but need to rebuild
+  invalidateClipRegion(); // not dirty, but need to rebuild
 }
 
 
@@ -1628,7 +1628,7 @@ QRegion KstViewObject::clipRegion() {
         p.end();
         _clipMask = QRegion(bm);
       } else {
-        _clipMask = QRegion();
+        _clipMask = QRegion(); // only invalidate our own variable
       }
     } else {
       _clipMask = QRegion(_geom);
@@ -1654,7 +1654,7 @@ void KstViewObject::virtual_hook(int id, void *data) {
   switch (id) {
     case 0:
       if (data) {
-        _clipMask = QRegion();
+        invalidateClipRegion();
       }
       break;
     default:
@@ -1796,6 +1796,12 @@ bool KstViewObject::dialogLocked() const {
 bool KstViewObject::fallThroughTransparency() const {
   return _fallThroughTransparency;
 }
+
+
+void KstViewObject::invalidateClipRegion() {
+  _clipMask = QRegion();
+}
+
 
 #include "kstviewobject.moc"
 // vim: ts=2 sw=2 et

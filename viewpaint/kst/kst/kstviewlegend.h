@@ -77,8 +77,12 @@ class KstViewLegend : public KstBorderedViewObject {
     void setVertical(bool vertical);
 
     void setLegendMargin(int margin);
+    int legendMargin() const;
 
     KstBaseCurveList& curves();
+
+    void invalidateClipRegion();
+
   public slots:
     void adjustSizeForText(QRect w);
 
@@ -106,6 +110,7 @@ class KstViewLegend : public KstBorderedViewObject {
     int _legendMargin;
     KstBackBuffer _backBuffer;
     KstBaseCurveList _curves;
+    QRegion _myClipMask;
 };
 
 typedef KstSharedPtr<KstViewLegend> KstViewLegendPtr;
