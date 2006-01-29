@@ -260,13 +260,15 @@ void KstViewLegend::paintSelf(KstPainter& p, const QRegion& bounds) {
   const QRect cr(contentsRect());
   if (p.type() == KstPainter::P_PRINT || p.type() == KstPainter::P_EXPORT) {
     p.save();
+    adjustSizeForText(cr);
     KstBorderedViewObject::paintSelf(p, bounds);
-    adjustSizeForText(p.window());
     p.setViewport(contentsRect());
     p.setWindow(0, 0, cr.width(), cr.height());
+    if (!_transparent) {
+      p.fillRect(0, 0, cr.width(), cr.height(), _backgroundColor);
+    }
     drawToPainter(p);
     p.restore();
-    adjustSizeForText(cr);
   } else {
     if (p.makingMask()) {
       p.setRasterOp(Qt::SetROP);
