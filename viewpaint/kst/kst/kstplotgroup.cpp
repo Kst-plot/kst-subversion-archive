@@ -43,11 +43,13 @@ KstPlotGroup::KstPlotGroup()
   setBorderColor(Qt::blue);
   _container = false; // plot group is a container that doesn't behave like one
   setTransparent(true);
+  setBorderWidth(0);
 }
 
 
 KstPlotGroup::KstPlotGroup(const QDomElement& e)
 : KstMetaPlot(e) {
+  setBorderWidth(0);
   QDomNode n = e.firstChild();
   while (!n.isNull()) {
     QDomElement el = n.toElement();
@@ -141,27 +143,21 @@ void KstPlotGroup::save(QTextStream& ts, const QString& indent) {
 }
 
 
-void KstPlotGroup::paint(KstPainter& p, const QRegion& bounds) {
-  setBorderWidth(0);
-
+void KstPlotGroup::paintSelf(KstPainter& p, const QRegion& bounds) {
   if (!transparent()) {
+    p.save();
     // fill non-children areas with color
-    QRegion clipRegion(geometry());
+    QRegion clipRegion(contentsRect());
     QBrush brush(_backgroundColor);
-    bool hadClipping = p.hasClipping();
-    QRegion oldRegion = p.clipRegion();
     for (KstViewObjectList::Iterator i = _children.begin(); i != _children.end(); ++i) {
       clipRegion -= (*i)->clipRegion();
     }
     p.setClipRegion(clipRegion);
-    p.fillRect(geometry(), brush);
-
-    p.setClipRegion(oldRegion);
-    p.setClipping(hadClipping);
+    p.fillRect(contentsRect(), brush);
+    p.restore();
   }
 
-  KstMetaPlot::paint(p, bounds);
-  p.setClipping(false);
+  KstMetaPlot::paintSelf(p, bounds);
 }
 
 

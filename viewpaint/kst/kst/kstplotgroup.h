@@ -42,7 +42,7 @@ class KstPlotGroup : public KstMetaPlot {
 
     QMap<QString, QVariant> widgetHints(const QString& propertyName) const;
 
-    void paint(KstPainter& p, const QRegion& bounds);
+    void paintSelf(KstPainter& p, const QRegion& bounds);
   public slots:
     void copyObject();
     void copyObjectQuietly(KstViewObject& parent, const QString& name = QString::null) const;
