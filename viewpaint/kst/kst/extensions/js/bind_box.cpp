@@ -105,6 +105,8 @@ static BoxBindings boxBindings[] = {
 static BoxProperties boxProperties[] = {
   { "xRound", &KstBindBox::setXRound, &KstBindBox::xRound },
   { "yRound", &KstBindBox::setYRound, &KstBindBox::yRound },
+  { "borderWidth", &KstBindBox::setBorderWidth, &KstBindBox::borderWidth },
+  { "borderColor", &KstBindBox::setBorderColor, &KstBindBox::borderColor },
   { 0L, 0L, 0L }
 };
 
@@ -316,6 +318,59 @@ KJS::Value KstBindBox::cornerStyle(KJS::ExecState *exec) const {
     }
   }
   return KJS::Number(0);
+}
+
+
+void KstBindBox::setBorderWidth(KJS::ExecState *exec, const KJS::Value& value) {
+  unsigned borderWidth = 0;
+  if (value.type() != KJS::NumberType || !value.toUInt32(borderWidth)) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError);
+    exec->setException(eobj);
+    return;
+  }
+  KstViewBoxPtr d = makeBox(_d);
+  if (d) {
+    KstWriteLocker wl(d);
+    d->setBorderWidth(borderWidth);
+    KstApp::inst()->paintAll(KstPainter::P_PAINT);
+  }
+}
+
+
+KJS::Value KstBindBox::borderWidth(KJS::ExecState *exec) const {
+  Q_UNUSED(exec)
+  KstViewBoxPtr d = makeBox(_d);
+  if (d) {
+    KstReadLocker rl(d);
+    return KJS::Number(d->borderWidth());
+  }
+  return KJS::Number(0);
+}
+
+
+void KstBindBox::setBorderColor(KJS::ExecState *exec, const KJS::Value& value) {
+  QVariant cv = KJSEmbed::convertToVariant(exec, value);
+  if (!cv.canCast(QVariant::Color)) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError);
+    exec->setException(eobj);
+    return;
+  }
+  KstViewBoxPtr d = makeBox(_d);
+  if (d) {
+    KstWriteLocker rl(d);
+    d->setBorderColor(cv.toColor());
+    KstApp::inst()->paintAll(KstPainter::P_PAINT);
+  }
+}
+
+
+KJS::Value KstBindBox::borderColor(KJS::ExecState *exec) const {
+  KstViewBoxPtr d = makeBox(_d);
+  if (d) {
+    KstReadLocker rl(d);
+    return KJSEmbed::convertToValue(exec, d->borderColor());
+  }
+  return KJSEmbed::convertToValue(exec, QColor());
 }
 
 

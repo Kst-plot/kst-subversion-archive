@@ -79,6 +79,16 @@ class KstBindBox : public KstBindViewObject {
     */
     void setCornerStyle(KJS::ExecState *exec, const KJS::Value& value);
     KJS::Value cornerStyle(KJS::ExecState *exec) const;
+    /* @property int borderWidth
+       @description The width in pixels of the border.
+     */
+    void setBorderWidth(KJS::ExecState *exec, const KJS::Value& value);
+    KJS::Value borderWidth(KJS::ExecState *exec) const;
+    /* @property string borderColor
+       @description The border color for this object.
+     */
+    void setBorderColor(KJS::ExecState *exec, const KJS::Value& value);
+    KJS::Value borderColor(KJS::ExecState *exec) const;
 
   protected:
     KstBindBox(int id, const char *name = 0L);
