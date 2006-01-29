@@ -338,13 +338,13 @@ void KstViewLabel::updateSelf() {
 void KstViewLabel::paintSelf(KstPainter& p, const QRegion& bounds) {
   p.save();
   if (p.type() == KstPainter::P_PRINT || p.type() == KstPainter::P_EXPORT) {
-    KstBorderedViewObject::paintSelf(p, bounds);
     if (_autoResize) {
       adjustSizeForText(p.window());
     } else {
       computeTextSize(_parsed);
     }
-    const QRect geom(geometry());
+    KstBorderedViewObject::paintSelf(p, bounds);
+    const QRect geom(contentsRect());
     p.setViewport(geom);
     p.setWindow(0, 0, geom.width(), geom.height());
 

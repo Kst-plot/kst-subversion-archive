@@ -72,13 +72,15 @@ void KstBorderedViewObject::save(QTextStream& ts, const QString& indent) {
 
 void KstBorderedViewObject::paintSelf(KstPainter& p, const QRegion& bounds) {
   p.save();
-  if (p.makingMask()) {
-    p.setRasterOp(Qt::SetROP);
-    KstViewObject::paintSelf(p, bounds);
-  } else {
-    const QRegion clip(clipRegion());
-    KstViewObject::paintSelf(p, bounds - clip);
-    p.setClipRegion(bounds & clip);
+  if (p.type() != KstPainter::P_PRINT && p.type() != KstPainter::P_EXPORT) {
+    if (p.makingMask()) {
+      p.setRasterOp(Qt::SetROP);
+      KstViewObject::paintSelf(p, bounds);
+    } else {
+      const QRegion clip(clipRegion());
+      KstViewObject::paintSelf(p, bounds - clip);
+      p.setClipRegion(bounds & clip);
+    }
   }
   if (_borderWidth > 0) {
     QRect r;
