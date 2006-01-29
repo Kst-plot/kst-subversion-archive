@@ -367,7 +367,7 @@ void KstViewLegend::adjustSizeForText(QRect w) {
   } else {
     width = _textWidth + 9*_ascent*_curves.count()/2 - _ascent;
   }
-  double height = _textHeight;
+  int height = _textHeight;
 
   QSize sz(width, height);
 
