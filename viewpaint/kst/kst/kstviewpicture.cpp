@@ -103,7 +103,7 @@ void KstViewPicture::paintSelf(KstPainter& p, const QRegion& bounds) {
   p.save();
   if (p.type() != KstPainter::P_PRINT && p.type() != KstPainter::P_EXPORT) {
     if (p.makingMask()) {
-      p.setRasterOp(Qt::SetROP);
+      p.setRasterOp(Qt::OrROP);
     } else {
       const QRegion clip(clipRegion());
       KstBorderedViewObject::paintSelf(p, bounds - _myClipMask);
@@ -247,6 +247,12 @@ void KstViewPicture::setRefreshTimer(int seconds) {
     delete _timer;
     _timer = 0L;
   }
+}
+
+
+bool KstViewPicture::transparent() const {
+  kstdDebug() << "transparent? " << _iCache.hasAlphaBuffer() << endl;
+  return _iCache.hasAlphaBuffer();
 }
 
 

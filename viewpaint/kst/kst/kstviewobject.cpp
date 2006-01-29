@@ -263,7 +263,7 @@ void KstViewObject::save(QTextStream& ts, const QString& indent) {
     aspect = _aspect;
   }
 
-  if (_transparent) {
+  if (transparent()) {
     ts << indent << "<transparent/>" << endl;
   }
   ts << indent << "<tag>" << QStyleSheet::escape(tagName()) << "</tag>" << endl;
@@ -396,7 +396,7 @@ void KstViewObject::paintSelf(KstPainter& p, const QRegion& bounds) {
   if (!bounds.isNull()) {
     p.setClipRegion(bounds);
   }
-  if (!_transparent) {
+  if (!transparent()) {
     p.fillRect(geometry(), _backgroundColor);
   }
 }
@@ -1616,7 +1616,7 @@ bool KstViewObject::transparent() const {
 
 QRegion KstViewObject::clipRegion() {
   if (_clipMask.isNull()) {
-    if (_transparent) {
+    if (transparent()) {
       QBitmap bm(_geom.bottomRight().x(), _geom.bottomRight().y(), true);
       if (!bm.isNull()) {
         KstPainter p;

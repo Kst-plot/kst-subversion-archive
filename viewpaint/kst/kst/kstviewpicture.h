@@ -52,6 +52,7 @@ class KstViewPicture : public KstBorderedViewObject {
     QRegion clipRegion();
 
     void paintSelf(KstPainter& p, const QRegion& bounds);
+    bool transparent() const;
 
   protected slots:
     void doRefresh();
