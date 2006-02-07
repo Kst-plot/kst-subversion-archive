@@ -1,0 +1,24 @@
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Name=Butterworth high pass filter
+Name[da]=Butterworth højpasfilter
+Name[es]=Filtro de paso alto de Butterworth
+Name[et]=Butterworthi kõrgpääsfilter
+Name[it]=Filtro passa-alto di Butterworth
+Name[pt]=Filtro passa-alto de Butterworth
+Name[pt_BR]=Filtro passa-alto de Butterworth
+Name[sv]=Butterworth högpassfilter
+Type=Service
+ServiceTypes=Kst Plugin
+X-KDE-ModuleType=Plugin
+X-Kst-Plugin-Library=butterworth_highpass
+X-Kst-Plugin-Author=The University of British Columbia
+Comment=Implements support for a Butterworth high pass filter.
+Comment[da]=Implementerer støtte for et Butterworth højpasfilter.
+Comment[es]=Implementa soporte para un filtro de paso alto de Butterworth.
+Comment[et]=Butterworthi kõrgpääsfiltri toetus.
+Comment[it]=Implementa supporto per un filtro passa-alto di Butterworth.
+Comment[pt]=Implementa o suporte para fitro passa-alto de Butterworth.
+Comment[pt_BR]=Implementa o suporte para fitro passa-alto de Butterworth.
+Comment[sv]=Implementerar stöd för ett Butterworth högpassfilter.

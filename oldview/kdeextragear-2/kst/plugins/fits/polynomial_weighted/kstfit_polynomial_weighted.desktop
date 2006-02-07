@@ -1,0 +1,24 @@
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Name=Polynomial weighted fit
+Name[da]=Polynomiel belastet tilpasning
+Name[es]=Ajuste polinómico ponderado
+Name[et]=Kaalutud polünomiaaljaotus
+Name[it]=Interpolazione polinomiale pesata
+Name[pt]=Ajuste polinomial ponderado
+Name[pt_BR]=Preenchimento polinomial xom peso
+Name[sv]=Viktad polynomanpassning
+Type=Service
+ServiceTypes=Kst Plugin
+X-KDE-ModuleType=Plugin
+X-Kst-Plugin-Library=kstfit_polynomial_weighted
+X-Kst-Plugin-Author=The University of British Columbia
+Comment=Implements support for a polynomial weighted fit.
+Comment[da]=Implementerer støtte for polynomiel belastet tilpasning.
+Comment[es]=Implementa soporte para un ajuste polinómico ponderado.
+Comment[et]=Kaalutud polünomiaaljaotuse toetus.
+Comment[it]=Implementa supporto per un'interpolazione polinomiale pesata.
+Comment[pt]=Implementa o suporte para um ajuste polinomial ponderado.
+Comment[pt_BR]=Implementa o suporte a preenchimento polinomial com peso.
+Comment[sv]=Implementerar stöd för  en viktad polynomanpassning.

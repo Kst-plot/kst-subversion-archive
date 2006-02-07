@@ -1,0 +1,23 @@
+[Desktop Entry]
+Encoding=UTF-8
+Type=Service
+ServiceTypes=Kst Plugin
+X-KDE-ModuleType=Plugin
+X-Kst-Plugin-Library=kstinterp_akima_periodic
+X-Kst-Plugin-Author=The University of British Columbia
+Name=Periodic Akima spline interpolation
+Name[da]=Periodisk Akima spline-interpolation
+Name[es]=Interpolación por curva de Akima periódica
+Name[et]=Perioodilise Akima splaini interpoleerimine
+Name[it]=Interpolazione spline Akima periodica
+Name[pt]=Interpolação por curva de Akima periódica
+Name[pt_BR]=Interpolação Periódica spline Akima
+Name[sv]=Periodisk Akima-splineinterpolering
+Comment=Implements support for a non-rounded periodic Akima spline interpolation.
+Comment[da]=Implementerer støtte for ikke-afrundet periodisk Akima spline-interpolation.
+Comment[es]=Implementa soporte para una interpolación por curva de Akima no redondeada y periódica.
+Comment[et]=Ümardamata perioodilise Akima splaini interpoleerimise toetus.
+Comment[it]=Implementa supporto per un'interpolazione spline Akima non arrotondata periodica
+Comment[pt]=Implementa o suporte para uma interpolação por curva de Akima não arredondada e periódica.
+Comment[pt_BR]=Implementa o suporte a Interpolação periódica não-circular spline de Akima.
+Comment[sv]=Implementerar stöd för en icke avrundad periodisk Akima-splineinterpolering.

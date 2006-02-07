@@ -1,0 +1,27 @@
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<class>KstViewScalarsDialog</class>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>KstViewScalarsDialog</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>463</width>
+            <height>251</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>View Scalar Values</string>
+    </property>
+    <vbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+    </vbox>
+</widget>
+<connections>
+</connections>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>

@@ -1,0 +1,16 @@
+- save and load state
+- object browser GUI
+- better console
+- multiple consoles?
+- multiple interpreters?
+- dump list of loaded files
+- clear interpreter
+- bindings to more objects
+- ability to create plugins/filters
+- ability to create vectors/scalars <-- only via plugins?
+- KSharedPtr support
+- bridge to the dcop interface
+- many bindings lack good [or any] bindings (ComboBox, list{view,box}, etc)
+- no way to xmlgui merge (need a client basically)
+- need a standard way to create bindings that won't conflict
+

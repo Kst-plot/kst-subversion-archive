@@ -1,0 +1,42 @@
+---------------------------
+Bugs:
+
+Zooming in too far blows up the graphing algorithm, causes plotting of
+effective singularities and does weird things with the axis drawing.
+
+--------------------------
+Wishlist:
+
+Better Kst Help
+
+Functions:
+  Special Functions
+    De-spike
+    Coadd
+    RaDec
+    Convolve/Deconvolve
+    Fitting
+
+Move the graphing engine into a separate library
+
+Write files out with QDom instead of a text stream
+ - it may be slower, but it allows much more powerful manipulation.
+
+---------------------------
+Cleanup:
+
+- use signals instead of asking KstDoc to do everything
+- make naming schemes consistent
+- cleanup main()
+- cleanup kstdoc and kstapp to make things more modular
+
+
+---------------------------
+Threading:
+
+- make sure no updates happen in the wrong thread
+- redo the kstview/plot stuff and then put it in a separate thread
+- document it
+- try to make it a bit easier to work with
+- 100% code review again, also test with valgrind, helgrind, etc
+

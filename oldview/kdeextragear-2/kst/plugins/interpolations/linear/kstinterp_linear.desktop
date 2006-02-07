@@ -1,0 +1,23 @@
+[Desktop Entry]
+Encoding=UTF-8
+Type=Service
+ServiceTypes=Kst Plugin
+X-KDE-ModuleType=Plugin
+X-Kst-Plugin-Library=kstinterp_linear
+X-Kst-Plugin-Author=The University of British Columbia
+Name=Linear interpolation
+Name[da]=Lineær interpolation
+Name[es]=Interpolación lineal
+Name[et]=Lienaarne interpoleerimine
+Name[it]=Interpolazione lineare
+Name[pt]=Interpolação linear
+Name[pt_BR]=Interpolação Linear
+Name[sv]=Linjär interpolering
+Comment=Implements support for a linear interpolation.
+Comment[da]=Implementerer støtte for lineær interpolation.
+Comment[es]=Implementa soporte para una interpolación lineal.
+Comment[et]=Lineaarse interpoleerimise toetus.
+Comment[it]=Implementa supporto per un'interpolazione lineare.
+Comment[pt]=Implementa o suporte para uma interpolação linear.
+Comment[pt_BR]=Implementa o suporte a interpolação linear.
+Comment[sv]=Implementerar stöd för en linjär interpolering.

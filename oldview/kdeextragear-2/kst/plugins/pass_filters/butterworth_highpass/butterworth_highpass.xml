@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Module SYSTEM "file:/Repository/Level2/Soft/ProC/moduledef.dtd">
+<module>
+<intro>
+<modulename name="butterworth_highpass"/>
+<author name="Andrew Walker"/>
+<description text="Filters a set of data with a Butterworth high pass filter."/>
+<version minor="1" major="0"/>
+<state devstate="release"/>
+</intro>
+
+<interface>
+<input>
+<table type="float" name="X Array" descr="The array of data." />
+</input>
+<input>
+<float name="Order" descr="Order of the Butterworh high pass filter." />
+</input>
+<input>
+<float name="Cutoff frequency" descr="Cutoff frequency of the Butterworh high pass filter." />
+</input>
+
+<output>
+<table type="float" name="X Filtered" descr="The array of filtered data." />
+</output>
+</interface>
+</module>
+

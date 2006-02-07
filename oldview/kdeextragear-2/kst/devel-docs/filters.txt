@@ -1,0 +1,28 @@
+Filters are nothing more than special cases of plugins.  They have a reduced
+XML description schema and a reduced C interface.  See the scalarfilter demo
+module in the plugins directory.
+
+
+The implementation of the filters is as follows:
+
+KstFilter - KstDataObject that inherits from KstPlugin, restricts the interface
+
+KstFilterSet - A collection of filters, with order, that may be applied with
+               the apply() call to a given vector
+
+KstFilterSetList - A list of filtersets, with order.  Each data object has one
+               of these to organize its filters.
+
+
+
+Object -> FilterSetList
+               +
+               +-> FilterSet -> Filter, Filter, Filter
+               +-> FilterSet -> Filter, ...
+               +-> FilterSet -> Filter, ...
+               + ...
+
+There is a global filtersetlist to keep track of all defined filtersets.  All
+filters and filtersets are referenced by shared pointers (reference counted)
+and implicitly cleaned up.
+

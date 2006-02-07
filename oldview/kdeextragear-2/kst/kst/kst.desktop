@@ -1,0 +1,11 @@
+[KDE Desktop Entry]
+Type=Application
+Exec=kst -caption "%c" %i %m  
+Icon=kst
+DocPath=kst/index.html
+MimeType=application/x-kst
+Categories=QT;KDE;Science;Utility;X-KDE-More
+Name=Kst
+Name[hi]=केएसटी
+Name[ta]=KST
+Name[xx]=xxKstxx

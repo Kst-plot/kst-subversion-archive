@@ -1,0 +1,897 @@
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<class>DataWizard</class>
+<widget class="QWizard">
+    <property name="name">
+        <cstring>DataWizard</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>633</width>
+            <height>414</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Data Wizard</string>
+    </property>
+    <widget class="QWidget">
+        <property name="name">
+            <cstring>_pageDataSource</cstring>
+        </property>
+        <attribute name="title">
+            <string>Data source</string>
+        </attribute>
+        <grid>
+            <property name="name">
+                <cstring>unnamed</cstring>
+            </property>
+            <widget class="KURLRequester" row="2" column="1">
+                <property name="name">
+                    <cstring>_source</cstring>
+                </property>
+                <property name="sizePolicy">
+                    <sizepolicy>
+                        <hsizetype>5</hsizetype>
+                        <vsizetype>5</vsizetype>
+                        <horstretch>1</horstretch>
+                        <verstretch>0</verstretch>
+                    </sizepolicy>
+                </property>
+            </widget>
+            <spacer row="1" column="1">
+                <property name="name">
+                    <cstring>spacer1</cstring>
+                </property>
+                <property name="orientation">
+                    <enum>Vertical</enum>
+                </property>
+                <property name="sizeType">
+                    <enum>Expanding</enum>
+                </property>
+                <property name="sizeHint">
+                    <size>
+                        <width>31</width>
+                        <height>61</height>
+                    </size>
+                </property>
+            </spacer>
+            <spacer row="3" column="1">
+                <property name="name">
+                    <cstring>spacer2</cstring>
+                </property>
+                <property name="orientation">
+                    <enum>Vertical</enum>
+                </property>
+                <property name="sizeType">
+                    <enum>Expanding</enum>
+                </property>
+                <property name="sizeHint">
+                    <size>
+                        <width>31</width>
+                        <height>51</height>
+                    </size>
+                </property>
+            </spacer>
+            <widget class="QLabel" row="4" column="1">
+                <property name="name">
+                    <cstring>_sourceType</cstring>
+                </property>
+                <property name="text">
+                    <string></string>
+                </property>
+            </widget>
+            <spacer row="5" column="1">
+                <property name="name">
+                    <cstring>spacer3</cstring>
+                </property>
+                <property name="orientation">
+                    <enum>Vertical</enum>
+                </property>
+                <property name="sizeType">
+                    <enum>Expanding</enum>
+                </property>
+                <property name="sizeHint">
+                    <size>
+                        <width>31</width>
+                        <height>51</height>
+                    </size>
+                </property>
+            </spacer>
+            <spacer row="0" column="2" rowspan="5" colspan="1">
+                <property name="name">
+                    <cstring>spacer4</cstring>
+                </property>
+                <property name="orientation">
+                    <enum>Horizontal</enum>
+                </property>
+                <property name="sizeType">
+                    <enum>Expanding</enum>
+                </property>
+                <property name="sizeHint">
+                    <size>
+                        <width>90</width>
+                        <height>270</height>
+                    </size>
+                </property>
+            </spacer>
+            <spacer row="0" column="0" rowspan="5" colspan="1">
+                <property name="name">
+                    <cstring>spacer4_2</cstring>
+                </property>
+                <property name="orientation">
+                    <enum>Horizontal</enum>
+                </property>
+                <property name="sizeType">
+                    <enum>Expanding</enum>
+                </property>
+                <property name="sizeHint">
+                    <size>
+                        <width>90</width>
+                        <height>270</height>
+                    </size>
+                </property>
+            </spacer>
+            <widget class="QLabel" row="0" column="1">
+                <property name="name">
+                    <cstring>textLabel2</cstring>
+                </property>
+                <property name="text">
+                    <string>&lt;p&gt;Please select a &lt;i&gt;data source&lt;/i&gt; to work from.  This will typically be your file containing data points or vectors.&lt;/p&gt;</string>
+                </property>
+            </widget>
+        </grid>
+    </widget>
+    <widget class="QWidget">
+        <property name="name">
+            <cstring>_pageVectors</cstring>
+        </property>
+        <attribute name="title">
+            <string>All Vectors X, Y</string>
+        </attribute>
+        <grid>
+            <property name="name">
+                <cstring>unnamed</cstring>
+            </property>
+            <widget class="QLabel" row="0" column="0">
+                <property name="name">
+                    <cstring>textLabel3</cstring>
+                </property>
+                <property name="text">
+                    <string>&lt;p&gt;Please check all the fields you wish to work with.  You can search and reduce the list by typing into the entry field to the right; it will accept wildcards such as &lt;b&gt;*&lt;/b&gt; and &lt;b&gt;?&lt;/b&gt;.  You must also select a field to use as the X vector in the combobox below.&lt;/p&gt;</string>
+                </property>
+            </widget>
+            <widget class="QLayoutWidget" row="0" column="1" rowspan="6" colspan="1">
+                <property name="name">
+                    <cstring>layout3</cstring>
+                </property>
+                <grid>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <widget class="QListView" row="2" column="0" rowspan="1" colspan="2">
+                        <column>
+                            <property name="text">
+                                <string>Field</string>
+                            </property>
+                            <property name="clickable">
+                                <bool>true</bool>
+                            </property>
+                            <property name="resizable">
+                                <bool>true</bool>
+                            </property>
+                        </column>
+                        <property name="name">
+                            <cstring>_vectors</cstring>
+                        </property>
+                        <property name="resizePolicy">
+                            <enum>AutoOneFit</enum>
+                        </property>
+                        <property name="selectionMode">
+                            <enum>Extended</enum>
+                        </property>
+                        <property name="showSortIndicator">
+                            <bool>true</bool>
+                        </property>
+                    </widget>
+                    <widget class="QLineEdit" row="0" column="0" rowspan="1" colspan="2">
+                        <property name="name">
+                            <cstring>_vectorReduction</cstring>
+                        </property>
+                    </widget>
+                    <widget class="QPushButton" row="1" column="0">
+                        <property name="name">
+                            <cstring>_checkVectors</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Check Selected</string>
+                        </property>
+                    </widget>
+                    <widget class="QPushButton" row="1" column="1">
+                        <property name="name">
+                            <cstring>_uncheckAll</cstring>
+                        </property>
+                        <property name="enabled">
+                            <bool>false</bool>
+                        </property>
+                        <property name="text">
+                            <string>Uncheck All</string>
+                        </property>
+                    </widget>
+                </grid>
+            </widget>
+            <spacer row="1" column="0">
+                <property name="name">
+                    <cstring>spacer6</cstring>
+                </property>
+                <property name="orientation">
+                    <enum>Vertical</enum>
+                </property>
+                <property name="sizeType">
+                    <enum>Expanding</enum>
+                </property>
+                <property name="sizeHint">
+                    <size>
+                        <width>51</width>
+                        <height>80</height>
+                    </size>
+                </property>
+            </spacer>
+            <widget class="QLayoutWidget" row="2" column="0">
+                <property name="name">
+                    <cstring>layout5</cstring>
+                </property>
+                <hbox>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <widget class="QLabel">
+                        <property name="name">
+                            <cstring>textLabel1</cstring>
+                        </property>
+                        <property name="text">
+                            <string>X Vector:</string>
+                        </property>
+                        <property name="buddy" stdset="0">
+                            <cstring>_xVector</cstring>
+                        </property>
+                    </widget>
+                    <widget class="KComboBox">
+                        <property name="name">
+                            <cstring>_xVector</cstring>
+                        </property>
+                        <property name="sizePolicy">
+                            <sizepolicy>
+                                <hsizetype>1</hsizetype>
+                                <vsizetype>0</vsizetype>
+                                <horstretch>1</horstretch>
+                                <verstretch>0</verstretch>
+                            </sizepolicy>
+                        </property>
+                        <property name="editable">
+                            <bool>true</bool>
+                        </property>
+                        <property name="insertionPolicy">
+                            <enum>NoInsertion</enum>
+                        </property>
+                        <property name="autoCompletion">
+                            <bool>true</bool>
+                        </property>
+                        <property name="duplicatesEnabled">
+                            <bool>false</bool>
+                        </property>
+                        <property name="urlDropsEnabled" stdset="0">
+                            <bool>false</bool>
+                        </property>
+                    </widget>
+                </hbox>
+            </widget>
+            <widget class="QLayoutWidget" row="3" column="0">
+                <property name="name">
+                    <cstring>layout7</cstring>
+                </property>
+                <hbox>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <widget class="QLabel">
+                        <property name="name">
+                            <cstring>textLabel1_2</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Starting frame:</string>
+                        </property>
+                        <property name="buddy" stdset="0">
+                            <cstring>_startFrame</cstring>
+                        </property>
+                    </widget>
+                    <widget class="KIntSpinBox">
+                        <property name="name">
+                            <cstring>_startFrame</cstring>
+                        </property>
+                        <property name="maxValue">
+                            <number>999999999</number>
+                        </property>
+                    </widget>
+                    <widget class="QLabel">
+                        <property name="name">
+                            <cstring>textLabel2_2</cstring>
+                        </property>
+                        <property name="text">
+                            <string>or</string>
+                        </property>
+                        <property name="buddy" stdset="0">
+                            <cstring>_fromEnd</cstring>
+                        </property>
+                    </widget>
+                    <widget class="QCheckBox">
+                        <property name="name">
+                            <cstring>_fromEnd</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Count from end</string>
+                        </property>
+                    </widget>
+                </hbox>
+            </widget>
+            <widget class="QLayoutWidget" row="4" column="0">
+                <property name="name">
+                    <cstring>layout8</cstring>
+                </property>
+                <hbox>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <widget class="QLabel">
+                        <property name="name">
+                            <cstring>textLabel3_2</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Number of frames:</string>
+                        </property>
+                        <property name="buddy" stdset="0">
+                            <cstring>_numFrames</cstring>
+                        </property>
+                    </widget>
+                    <widget class="KIntSpinBox">
+                        <property name="name">
+                            <cstring>_numFrames</cstring>
+                        </property>
+                        <property name="enabled">
+                            <bool>false</bool>
+                        </property>
+                        <property name="maxValue">
+                            <number>999999999</number>
+                        </property>
+                        <property name="minValue">
+                            <number>2</number>
+                        </property>
+                    </widget>
+                    <widget class="QLabel">
+                        <property name="name">
+                            <cstring>textLabel2_2_2</cstring>
+                        </property>
+                        <property name="text">
+                            <string>or</string>
+                        </property>
+                        <property name="buddy" stdset="0">
+                            <cstring>_readToEnd</cstring>
+                        </property>
+                    </widget>
+                    <widget class="QCheckBox">
+                        <property name="name">
+                            <cstring>_readToEnd</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Read to end</string>
+                        </property>
+                        <property name="checked">
+                            <bool>true</bool>
+                        </property>
+                    </widget>
+                </hbox>
+            </widget>
+            <widget class="QLayoutWidget" row="5" column="0">
+                <property name="name">
+                    <cstring>layout9</cstring>
+                </property>
+                <hbox>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <widget class="QCheckBox">
+                        <property name="name">
+                            <cstring>_skipFrames</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Skip frames:</string>
+                        </property>
+                    </widget>
+                    <widget class="KIntSpinBox">
+                        <property name="name">
+                            <cstring>_framesToSkip</cstring>
+                        </property>
+                        <property name="enabled">
+                            <bool>false</bool>
+                        </property>
+                        <property name="maxValue">
+                            <number>999999999</number>
+                        </property>
+                    </widget>
+                    <widget class="QCheckBox">
+                        <property name="name">
+                            <cstring>_boxcar</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Boxcar filter first</string>
+                        </property>
+                    </widget>
+                </hbox>
+            </widget>
+        </grid>
+    </widget>
+    <widget class="QWidget">
+        <property name="name">
+            <cstring>_pageFilters</cstring>
+        </property>
+        <attribute name="title">
+            <string>Filters</string>
+        </attribute>
+        <grid>
+            <property name="name">
+                <cstring>unnamed</cstring>
+            </property>
+            <widget class="QLayoutWidget" row="0" column="1" rowspan="2" colspan="1">
+                <property name="name">
+                    <cstring>layout4</cstring>
+                </property>
+                <grid>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <widget class="QPushButton" row="1" column="1">
+                        <property name="name">
+                            <cstring>_newFilter</cstring>
+                        </property>
+                        <property name="text">
+                            <string>&amp;New Filter...</string>
+                        </property>
+                        <property name="accel">
+                            <string>Alt+N</string>
+                        </property>
+                    </widget>
+                    <spacer row="1" column="0">
+                        <property name="name">
+                            <cstring>spacer7</cstring>
+                        </property>
+                        <property name="orientation">
+                            <enum>Horizontal</enum>
+                        </property>
+                        <property name="sizeType">
+                            <enum>Expanding</enum>
+                        </property>
+                        <property name="sizeHint">
+                            <size>
+                                <width>121</width>
+                                <height>21</height>
+                            </size>
+                        </property>
+                    </spacer>
+                    <widget class="QListBox" row="0" column="0" rowspan="1" colspan="2">
+                        <property name="name">
+                            <cstring>_filterList</cstring>
+                        </property>
+                    </widget>
+                </grid>
+            </widget>
+            <widget class="QLabel" row="0" column="0">
+                <property name="name">
+                    <cstring>textLabel4</cstring>
+                </property>
+                <property name="text">
+                    <string>&lt;p&gt;If you wish, select a filter to apply to the fields that are read in.&lt;/p&gt;</string>
+                </property>
+            </widget>
+            <spacer row="1" column="0">
+                <property name="name">
+                    <cstring>spacer8</cstring>
+                </property>
+                <property name="orientation">
+                    <enum>Vertical</enum>
+                </property>
+                <property name="sizeType">
+                    <enum>Expanding</enum>
+                </property>
+                <property name="sizeHint">
+                    <size>
+                        <width>51</width>
+                        <height>151</height>
+                    </size>
+                </property>
+            </spacer>
+        </grid>
+    </widget>
+    <widget class="QWidget">
+        <property name="name">
+            <cstring>_pagePlot</cstring>
+        </property>
+        <attribute name="title">
+            <string>Plot</string>
+        </attribute>
+        <grid>
+            <property name="name">
+                <cstring>unnamed</cstring>
+            </property>
+            <widget class="QButtonGroup" row="2" column="0">
+                <property name="name">
+                    <cstring>buttonGroup2</cstring>
+                </property>
+                <property name="title">
+                    <string>Plot Generation</string>
+                </property>
+                <grid>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <widget class="QRadioButton" row="0" column="0">
+                        <property name="name">
+                            <cstring>_onePlot</cstring>
+                        </property>
+                        <property name="text">
+                            <string>One plot</string>
+                        </property>
+                        <property name="checked">
+                            <bool>true</bool>
+                        </property>
+                    </widget>
+                    <widget class="QRadioButton" row="1" column="0">
+                        <property name="name">
+                            <cstring>_multiplePlots</cstring>
+                        </property>
+                        <property name="text">
+                            <string>One plot per curve</string>
+                        </property>
+                    </widget>
+                    <widget class="QLayoutWidget" row="2" column="0">
+                        <property name="name">
+                            <cstring>layout5</cstring>
+                        </property>
+                        <hbox>
+                            <property name="name">
+                                <cstring>unnamed</cstring>
+                            </property>
+                            <widget class="QRadioButton">
+                                <property name="name">
+                                    <cstring>_cycleThrough</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>Cycle through</string>
+                                </property>
+                            </widget>
+                            <widget class="QSpinBox">
+                                <property name="name">
+                                    <cstring>_plotNumber</cstring>
+                                </property>
+                                <property name="enabled">
+                                    <bool>false</bool>
+                                </property>
+                                <property name="suffix">
+                                    <string> plots</string>
+                                </property>
+                                <property name="buttonSymbols">
+                                    <enum>PlusMinus</enum>
+                                </property>
+                                <property name="maxValue">
+                                    <number>20</number>
+                                </property>
+                                <property name="minValue">
+                                    <number>2</number>
+                                </property>
+                            </widget>
+                        </hbox>
+                    </widget>
+                    <widget class="QRadioButton" row="3" column="0">
+                        <property name="name">
+                            <cstring>_cycleExisting</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Cycle through existing plots</string>
+                        </property>
+                        <property name="checked">
+                            <bool>false</bool>
+                        </property>
+                    </widget>
+                    <widget class="QLayoutWidget" row="4" column="0">
+                        <property name="name">
+                            <cstring>layout5</cstring>
+                        </property>
+                        <hbox>
+                            <property name="name">
+                                <cstring>unnamed</cstring>
+                            </property>
+                            <widget class="QRadioButton">
+                                <property name="name">
+                                    <cstring>_existingPlot</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>Place in plot</string>
+                                </property>
+                            </widget>
+                            <widget class="KComboBox">
+                                <property name="name">
+                                    <cstring>_existingPlotName</cstring>
+                                </property>
+                                <property name="enabled">
+                                    <bool>false</bool>
+                                </property>
+                            </widget>
+                        </hbox>
+                    </widget>
+                </grid>
+            </widget>
+            <widget class="QButtonGroup" row="0" column="0">
+                <property name="name">
+                    <cstring>buttonGroup1</cstring>
+                </property>
+                <property name="title">
+                    <string>Plot Style</string>
+                </property>
+                <grid>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <widget class="QRadioButton" row="0" column="0">
+                        <property name="name">
+                            <cstring>_drawLines</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Only draw lines</string>
+                        </property>
+                        <property name="checked">
+                            <bool>true</bool>
+                        </property>
+                    </widget>
+                    <widget class="QRadioButton" row="2" column="0">
+                        <property name="name">
+                            <cstring>_drawBoth</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Draw lines and points</string>
+                        </property>
+                    </widget>
+                    <widget class="QRadioButton" row="1" column="0">
+                        <property name="name">
+                            <cstring>_drawPoints</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Only draw points</string>
+                        </property>
+                    </widget>
+                </grid>
+            </widget>
+            <widget class="QCheckBox" row="1" column="0">
+                <property name="name">
+                    <cstring>_legends</cstring>
+                </property>
+                <property name="text">
+                    <string>Draw legends</string>
+                </property>
+            </widget>
+            <widget class="QLayoutWidget" row="0" column="1">
+                <property name="name">
+                    <cstring>layout6</cstring>
+                </property>
+                <grid>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <widget class="QCheckBox" row="2" column="0">
+                        <property name="name">
+                            <cstring>_plotTitles</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Generate plot-title labels</string>
+                        </property>
+                        <property name="checked">
+                            <bool>true</bool>
+                        </property>
+                    </widget>
+                    <widget class="QCheckBox" row="1" column="0">
+                        <property name="name">
+                            <cstring>_yAxisLabels</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Generate y-axis labels</string>
+                        </property>
+                        <property name="checked">
+                            <bool>true</bool>
+                        </property>
+                    </widget>
+                    <widget class="QCheckBox" row="0" column="0">
+                        <property name="name">
+                            <cstring>_xAxisLabels</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Generate x-axis labels</string>
+                        </property>
+                        <property name="checked">
+                            <bool>true</bool>
+                        </property>
+                    </widget>
+                </grid>
+            </widget>
+            <spacer row="1" column="1" rowspan="3" colspan="1">
+                <property name="name">
+                    <cstring>spacer9</cstring>
+                </property>
+                <property name="orientation">
+                    <enum>Vertical</enum>
+                </property>
+                <property name="sizeType">
+                    <enum>Expanding</enum>
+                </property>
+                <property name="sizeHint">
+                    <size>
+                        <width>181</width>
+                        <height>181</height>
+                    </size>
+                </property>
+            </spacer>
+            <spacer row="3" column="0">
+                <property name="name">
+                    <cstring>spacer10</cstring>
+                </property>
+                <property name="orientation">
+                    <enum>Vertical</enum>
+                </property>
+                <property name="sizeType">
+                    <enum>Expanding</enum>
+                </property>
+                <property name="sizeHint">
+                    <size>
+                        <width>21</width>
+                        <height>21</height>
+                    </size>
+                </property>
+            </spacer>
+        </grid>
+    </widget>
+</widget>
+<customwidgets>
+</customwidgets>
+<connections>
+    <connection>
+        <sender>_cycleExisting</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>_legends</receiver>
+        <slot>setDisabled(bool)</slot>
+    </connection>
+    <connection>
+        <sender>_existingPlot</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>_legends</receiver>
+        <slot>setDisabled(bool)</slot>
+    </connection>
+    <connection>
+        <sender>_cycleThrough</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>_plotNumber</receiver>
+        <slot>setEnabled(bool)</slot>
+    </connection>
+    <connection>
+        <sender>_existingPlot</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>_existingPlotName</receiver>
+        <slot>setEnabled(bool)</slot>
+    </connection>
+    <connection>
+        <sender>_xVector</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>DataWizard</receiver>
+        <slot>xChanged(const QString&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>_source</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>DataWizard</receiver>
+        <slot>sourceChanged(const QString&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>_vectors</sender>
+        <signal>clicked(QListViewItem*)</signal>
+        <receiver>DataWizard</receiver>
+        <slot>fieldListChanged()</slot>
+    </connection>
+    <connection>
+        <sender>_uncheckAll</sender>
+        <signal>clicked()</signal>
+        <receiver>DataWizard</receiver>
+        <slot>uncheckAll()</slot>
+    </connection>
+    <connection>
+        <sender>_checkVectors</sender>
+        <signal>clicked()</signal>
+        <receiver>DataWizard</receiver>
+        <slot>fieldListChanged()</slot>
+    </connection>
+    <connection>
+        <sender>_vectorReduction</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>DataWizard</receiver>
+        <slot>vectorSubset(const QString&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>_checkVectors</sender>
+        <signal>clicked()</signal>
+        <receiver>DataWizard</receiver>
+        <slot>checkSelected()</slot>
+    </connection>
+    <connection>
+        <sender>_newFilter</sender>
+        <signal>clicked()</signal>
+        <receiver>DataWizard</receiver>
+        <slot>newFilter()</slot>
+    </connection>
+    <connection>
+        <sender>_fromEnd</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>_startFrame</receiver>
+        <slot>setDisabled(bool)</slot>
+    </connection>
+    <connection>
+        <sender>_readToEnd</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>_numFrames</receiver>
+        <slot>setDisabled(bool)</slot>
+    </connection>
+    <connection>
+        <sender>_skipFrames</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>_framesToSkip</receiver>
+        <slot>setEnabled(bool)</slot>
+    </connection>
+</connections>
+<includes>
+    <include location="local" impldecl="in implementation">kstcolorsequence.h</include>
+    <include location="local" impldecl="in implementation">kstvcurve.h</include>
+    <include location="local" impldecl="in implementation">kstplot.h</include>
+    <include location="local" impldecl="in implementation">kstplotlist.h</include>
+    <include location="local" impldecl="in implementation">kstrvector.h</include>
+    <include location="local" impldecl="in implementation">kstfilteredvector.h</include>
+    <include location="local" impldecl="in declaration">kstdatasource.h</include>
+    <include location="local" impldecl="in declaration">kstdatacollection.h</include>
+    <include location="global" impldecl="in implementation">kprogress.h</include>
+    <include location="global" impldecl="in implementation">kiconloader.h</include>
+    <include location="global" impldecl="in implementation">qregexp.h</include>
+    <include location="local" impldecl="in implementation">datawizard.ui.h</include>
+</includes>
+<variables>
+    <variable access="private">KstDataSourcePtr _ds;</variable>
+    <variable access="private">KstFilterSetPtr _filter;</variable>
+</variables>
+<slots>
+    <slot access="private">init()</slot>
+    <slot access="private">xChanged( const QString &amp; txt )</slot>
+    <slot access="private">sourceChanged( const QString &amp; txt )</slot>
+    <slot access="private">fieldListChanged()</slot>
+    <slot access="private">uncheckAll()</slot>
+    <slot access="private">vectorSubset( const QString &amp; filter )</slot>
+    <slot access="private">checkSelected()</slot>
+    <slot access="private">newFilter()</slot>
+    <slot access="private">finished()</slot>
+</slots>
+<functions>
+    <function returnType="bool">xVectorOk()</function>
+    <function returnType="bool">yVectorsOk()</function>
+    <function>showPage( QWidget * page )</function>
+</functions>
+<pixmapinproject/>
+<layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>kurlrequester.h</includehint>
+    <includehint>klineedit.h</includehint>
+    <includehint>kpushbutton.h</includehint>
+    <includehint>kcombobox.h</includehint>
+    <includehint>knuminput.h</includehint>
+</includehints>
+</UI>

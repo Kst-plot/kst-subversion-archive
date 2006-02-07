@@ -1,0 +1,23 @@
+[Desktop Entry]
+Encoding=UTF-8
+Type=Service
+ServiceTypes=Kst Plugin
+X-KDE-ModuleType=Plugin
+X-Kst-Plugin-Library=butterworth_lowpass
+X-Kst-Plugin-Author=The University of British Columbia
+Name=Butterworth low pass filter
+Name[da]=Butterworth lavpasfilter
+Name[es]=Filtro de paso bajo de Butterworth
+Name[et]=Butterworthi madalpääsfilter
+Name[it]=Filtro passa-basso di Butterworth
+Name[pt]=Filtro passa-baixo de Butterworth
+Name[pt_BR]=Filtro passa-baixo de Butterworth
+Name[sv]=Butterworth lågpassfilter
+Comment=Implements support for a Butterworth low pass filter.
+Comment[da]=Implementerer støtte for et Butterworth lavpasfilter.
+Comment[es]=Implementa soporte para un filtro de paso bajo de Butterworth.
+Comment[et]=Butterworthi madalpääsfiltri toetus.
+Comment[it]=Implementa supporto per un filtro passa-basso di Butterworth.
+Comment[pt]=Implementa o suporte para fitro passa-alto de Butterworth.
+Comment[pt_BR]=Implementa o suporte para fitro passa-alto de Butterworth.
+Comment[sv]=Implementerar stöd för ett Butterworth lågpassfilter.

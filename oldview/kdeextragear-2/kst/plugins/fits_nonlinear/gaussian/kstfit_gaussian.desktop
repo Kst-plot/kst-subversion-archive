@@ -1,0 +1,24 @@
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Name=Gaussian fit
+Name[da]=Gaussisk tilpasning
+Name[es]=Ajuste gaussiano
+Name[et]=Gaussi jaotus
+Name[it]=Interpolazione gaussiana
+Name[pt]=Ajuste Gaussiano
+Name[pt_BR]=Preenchimento Gaussiano
+Name[sv]=Gaussisk anpassning
+Type=Service
+ServiceTypes=Kst Plugin
+X-KDE-ModuleType=Plugin
+X-Kst-Plugin-Library=kstfit_gaussian
+X-Kst-Plugin-Author=The University of British Columbia
+Comment=Implements support for a Gaussian fit.
+Comment[da]=Implementerer støtte for Gaussisk tilpasning.
+Comment[es]=Implementa soporte para un ajuste gaussiano.
+Comment[et]=Gaussi jaotuse toetus.
+Comment[it]=Implementa supporto per un'interpolazione gaussiana.
+Comment[pt]=Implementa o suporte para um ajuste Gaussiano.
+Comment[pt_BR]=Implementa o suporte a preenchimento Gaussiano.
+Comment[sv]=Implementerar stöd för en gaussisk anpassning.

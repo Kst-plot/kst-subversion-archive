@@ -1,0 +1,12 @@
+<!DOCTYPE kpartgui>
+<kpartgui name="Kst JS Extension" version="4">
+<MenuBar>
+ <Menu name="file"><Text>&amp;File</Text>
+  <Action name="js_load"/>
+ </Menu>
+ <Menu name="data"><Text>&amp;Data</Text>
+  <Action name="js_console_show"/>
+ </Menu>
+</MenuBar>
+</kpartgui>
+

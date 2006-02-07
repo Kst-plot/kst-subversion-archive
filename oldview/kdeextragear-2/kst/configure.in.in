@@ -1,0 +1,49 @@
+# C linkage is default
+AC_C_BIGENDIAN
+AC_PROG_YACC
+AM_PROG_LEX
+dnl AC_OUTPUT(kst/kst.spec)
+
+
+KDE_CHECK_HEADER(HL2_PIOLIB/PIOLib.h, AC_DEFINE(HAVE_PIOLIB_H, 1, [If we have piolib headers]) have_piolib_h=yes, , )
+
+KDE_CHECK_LIB(piolib, PIOGetObjectList, PIOLIBS="-lpiolib $PIOLIBS", , )
+
+if test $ac_cv_lib_piolib_PIOGetObjectList = yes; then
+  if test $have_piolib_h = yes; then
+    AC_SUBST(PIOLIBS)
+    AC_DEFINE(KST_HAVE_PLANCK, 1, [If we have the PLANCK I/O libraries.])
+  fi
+fi
+
+AM_CONDITIONAL(include_piolib, test -n "$PIOLIBS")
+
+GSL_LIBS="-lgsl -lgslcblas -lm"
+AC_SUBST(GSL_LIBS)
+GSL_NOISE_SUBDIR="gsl"
+GSL_FITS_SUBDIR="gsl"
+GSL_FITSNONLINEAR_SUBDIR="gsl"
+GSL_INTERPOLATIONS_SUBDIR="gsl"
+GSL_PASS_FILTERS_SUBDIR="gsl"
+KDE_CHECK_HEADER(gsl/gsl_rng.h, ,[GSL_NOISE_SUBDIR=""] )
+KDE_CHECK_LIB(gsl, gsl_rng_alloc, ,[GSL_NOISE_SUBDIR=""], -lgslcblas -lm )
+KDE_CHECK_HEADER(gsl/gsl_fit.h, ,[GSL_FITS_SUBDIR=""] )
+KDE_CHECK_LIB(gsl, gsl_fit_linear, ,[GSL_FITS_SUBDIR=""], -lgslcblas -lm )
+KDE_CHECK_HEADER(gsl/gsl_multifit_nlin.h, ,[GSL_FITSNONLINEAR_SUBDIR=""] )
+KDE_CHECK_LIB(gsl, gsl_multifit_fdfsolver_alloc, ,[GSL_FITSNONLINEAR_SUBDIR=""], -lgslcblas -lm )
+KDE_CHECK_HEADER(gsl/gsl_spline.h, ,[GSL_INTERPOLATIONS_SUBDIR=""] )
+KDE_CHECK_LIB(gsl, gsl_interp_init, ,[GSL_INTERPOLATIONS_SUBDIR=""], -lgslcblas -lm )
+KDE_CHECK_HEADER(gsl/gsl_fft_real.h, ,[GSL_PASS_FILTERS_SUBDIR=""] )
+KDE_CHECK_LIB(gsl, gsl_fft_real_wavetable_alloc, ,[GSL_PASS_FILTERS_SUBDIR=""], -lgslcblas -lm )
+AM_CONDITIONAL(include_noise_plugins, test -n "$GSL_NOISE_SUBDIR")
+AM_CONDITIONAL(include_fits_plugins, test -n "$GSL_FITS_SUBDIR")
+AM_CONDITIONAL(include_fitsnonlinear_plugins, test -n "$GSL_FITSNONLINEAR_SUBDIR")
+AM_CONDITIONAL(include_interpolations_plugins, test -n "$GSL_INTERPOLATIONS_SUBDIR")
+AM_CONDITIONAL(include_pass_filters_plugins, test -n "$GSL_PASS_FILTERS_SUBDIR")
+
+FITSIO_LIBS="-lcfitsio -lm"
+AC_SUBST(FITSIO_LIBS)
+FITSIO_SUBDIR="fitsio"
+KDE_CHECK_HEADER(fitsio.h, ,[FITSIO_SUBDIR=""] )
+KDE_CHECK_LIB(cfitsio, main, ,[FITSIO_SUBDIR=""], -lm )
+AM_CONDITIONAL(include_fitsio_datasource, test -n "$FITSIO_SUBDIR")

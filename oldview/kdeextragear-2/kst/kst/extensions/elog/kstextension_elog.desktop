@@ -1,0 +1,24 @@
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Name=ELOG Extension
+Name[da]=ELOG-Udvidelse
+Name[es]=Extensión ELOG
+Name[et]=ELOG laiend
+Name[it]=Estensione ELOG
+Name[pt]=Extensão ELOG
+Name[pt_BR]=Extensão ELOG
+Name[sv]=Elog-utökning
+Type=Service
+ServiceTypes=Kst Extension
+X-KDE-ModuleType=Plugin
+X-KDE-Library=kstextension_elog
+X-Kst-Plugin-Author=The University of British Columbia
+Comment=Logging extension for Kst.
+Comment[da]=Logningsudvidelse for Kst.
+Comment[es]=Extensión de registro para Kst.
+Comment[et]=Kst logimislaiend.
+Comment[it]=Estensione di log per Kst.
+Comment[pt]=Extensão de registos paro Kst.
+Comment[pt_BR]=Extensão de registos paro Kst.
+Comment[sv]=Loggningsutökning för Kst.

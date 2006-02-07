@@ -1,0 +1,92 @@
+<!DOCTYPE kpartgui>
+<kpartgui version="7" name="kst">
+<MenuBar>
+  <Menu name="file"><text>&amp;File</text>
+    <Action name="tmp_file_new"/>
+    <Action name="graphfiledialog_action"/>
+    <Action name="vectorsavedialog_action"/>
+    <!-- Action name="file_new_window"/ -->
+    <Merge/>
+  </Menu>
+  <Menu name="edit"><text>&amp;Edit</text>
+  </Menu>
+  <Menu name="data"><text>&amp;Data</text>
+    <Action name="reload"/>
+    <Separator/>
+    <Action name="datawizard_action"/>
+    <Action name="datamanager_action"/>
+    <Separator/>
+    <Action name="vectordialog_action"/>
+    <Action name="curvedialog_action"/>
+    <Action name="eqdialog_action"/>
+    <Action name="hsdialog_action"/>
+    <Action name="psddialog_action"/>
+    <Action name="plugindialog_action"/>
+    <Action name="filterdialog_action"/>
+    <Action name="eventmonitor_action"/>
+    <Separator/>
+    <Action name="viewscalarsdialog_action"/>
+    <Action name="viewvectorsdialog_action"/>
+    <Separator/>
+    <Action name="quickcurvesdialog_action"/>
+    <Action name="quickpsddialog_action"/>
+    <Separator/>
+    <Merge/>
+    <Action name="changefiledialog_action"/>
+  </Menu>
+  <Menu name="range"><text>&amp;Range</text>
+    <Action name="samplesdown_action"/>
+    <Action name="samplesup_action"/>
+    <Separator/>
+    <Action name="samplesend_action"/>
+    <Action name="pause_action"/>
+    <Separator/>
+    <Action name="changenptsdialog_action"/>
+  </Menu>
+  <Menu name="plots"><text>&amp;Plots</text>
+    <Action name="plotdialog_action"/>
+    <Separator/>
+    <Action name="zoomxy_action"/>
+    <Action name="zoomx_action"/>
+    <Action name="zoomy_action"/>
+    <Action name="label_action"/>
+    <Separator/>
+    <Action name="zoomtie_action"/>
+    <Action name="datamode_action"/>
+  </Menu>
+  <Menu name="settings"><text>&amp;Settings</text>
+    <Separator/>
+    <Action name="pluginmanager_action"/>
+    <Action name="extensionmanager_action"/>
+  </Menu>
+  <Menu name="help"><text>&amp;Help</text>
+    <Action name="debug_action"/>
+  </Menu>
+</MenuBar>
+<ToolBar name="mainToolBar">
+  <Action name="graphfiledialog_action"/>
+  <Separator/>
+  <Action name="reload"/>
+  <Separator/>
+  <Action name="datawizard_action"/>
+  <Action name="datamanager_action"/>
+  <Action name="plotdialog_action"/>
+  <Action name="quickcurvesdialog_action"/>
+  <Action name="quickpsddialog_action"/>
+  <Action name="changefiledialog_action"/>
+  <Action name="changenptsdialog_action"/>
+  <Separator/>
+  <Action name="samplesdown_action"/>
+  <Action name="samplesup_action"/>
+  <Action name="pause_action"/>
+  <Action name="samplesend_action"/>
+  <Separator/>
+  <Action name="zoomxy_action"/>
+  <Action name="zoomx_action"/>
+  <Action name="zoomy_action"/>
+  <Action name="label_action"/>
+  <Separator/>
+  <Action name="zoomtie_action"/>
+  <Action name="datamode_action"/>
+</ToolBar>
+</kpartgui>

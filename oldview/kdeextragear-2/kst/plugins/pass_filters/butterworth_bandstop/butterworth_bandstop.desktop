@@ -1,0 +1,24 @@
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Name=Butterworth band stop filter
+Name[da]=Butterworth båndstopfilter
+Name[es]=Filtro de detención de banda de Butterworth
+Name[et]=Butterworthi ribatõkestusfilter
+Name[it]=Filtro ferma-banda di Butterworth
+Name[pt]=Filtro para-banda de Butterworth
+Name[pt_BR]=Filtro para-banda de Butterworth
+Name[sv]=Butterworth bandstoppfilter
+Type=Service
+ServiceTypes=Kst Plugin
+X-KDE-ModuleType=Plugin
+X-Kst-Plugin-Library=butterworth_bandstop
+X-Kst-Plugin-Author=The University of British Columbia
+Comment=Implements support for a Butterworth band stop filter.
+Comment[da]=Implementerer støtte for et Butterworth båndstopfilter.
+Comment[es]=Implementa soporte para un filtro de detención de banda de Butterworth.
+Comment[et]=Butterworthi ribatõkestufiltri toetus.
+Comment[it]=Implementa supporto per un filtro ferma-banda di Butterworth.
+Comment[pt]=Implementa o suporte para fitro para-banda de Butterworth.
+Comment[pt_BR]=Implementa o suporte para fitro para-banda de Butterworth.
+Comment[sv]=Implementerar stöd för ett Butterworth bandstoppfilter.

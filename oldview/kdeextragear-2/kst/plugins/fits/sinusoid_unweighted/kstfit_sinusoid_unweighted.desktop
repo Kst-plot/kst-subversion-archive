@@ -1,0 +1,24 @@
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Name=Sinusoid unweighted fit
+Name[da]=Sinusoid ubelastet tilpasning
+Name[es]=Ajuste sinusoidal no ponderado
+Name[et]=Kaalumata sinusoidjaotus
+Name[it]=Interpolazione sinusoidale non pesata
+Name[pt]=Ajuste sinusóidal não ponderado
+Name[pt_BR]=Preenchimento sinusioidal sem peso
+Name[sv]=Oviktad sinusformad anpassning
+Type=Service
+ServiceTypes=Kst Plugin
+X-KDE-ModuleType=Plugin
+X-Kst-Plugin-Library=kstfit_sinusoid_unweighted
+X-Kst-Plugin-Author=The University of British Columbia
+Comment=Implements support for a sinusoid unweighted fit.
+Comment[da]=Implementerer støtte for sinuoid ubelastet tilpasning.
+Comment[es]=Implementa soporte para un ajuste sinusoidal no ponderado.
+Comment[et]=Kaalumata sinusoidjaotuse toetus.
+Comment[it]=Implementa supporto per un'interpolazione sinusoidale non pesata.
+Comment[pt]=Implementa o suporte um ajuste sinusóidal não ponderado.
+Comment[pt_BR]=Implementa o suporte a preenchimento sinusioidal sem peso.
+Comment[sv]=Implementerar stöd för en oviktad sinusformad anpassning.

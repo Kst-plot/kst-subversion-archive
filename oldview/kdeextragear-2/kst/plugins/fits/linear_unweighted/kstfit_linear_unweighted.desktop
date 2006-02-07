@@ -1,0 +1,23 @@
+[Desktop Entry]
+Encoding=UTF-8
+Type=Service
+ServiceTypes=Kst Plugin
+X-KDE-ModuleType=Plugin
+X-Kst-Plugin-Library=kstfit_linear_unweighted
+X-Kst-Plugin-Author=The University of British Columbia
+Name=Linear unweighted fit
+Name[da]=Lineær ubelastet tilpasning
+Name[es]=Ajuste lineal no ponderado
+Name[et]=Kaalumata lineaarjaotus
+Name[it]=Interpolazione lineare non pesata
+Name[pt]=Ajuste linear não ponderado
+Name[pt_BR]=Preenchimento linear sem peso
+Name[sv]=Oviktad linjäranpassning
+Comment=Implements support for a linear unweighted fit.
+Comment[da]=Implementerer støtte for lineær ubelastet tilpasning.
+Comment[es]=Implementa soporte para un ajuste lineal no ponderado.
+Comment[et]=Kaalumata lineaarjaotuse toetus.
+Comment[it]=Implementa supporto per un'interpolazione lineare non pesata.
+Comment[pt]=Implementa o suporte um ajuste linear não ponderado.
+Comment[pt_BR]=Implementa o suporte a preenchimento linear sem peso.
+Comment[sv]=Implementerar stöd för en oviktad linjäranpassning.

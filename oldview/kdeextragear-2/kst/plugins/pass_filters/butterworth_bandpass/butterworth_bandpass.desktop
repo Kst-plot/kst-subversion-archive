@@ -1,0 +1,24 @@
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Name=Butterworth band pass filter
+Name[da]=Butterworth båndpasfilter
+Name[es]=Filtro de paso de banda de Butterworth
+Name[et]=Butterworthi ribapääsfilter
+Name[it]=Filtro passa-banda di Butterworth
+Name[pt]=Filtro passa-banda de Butterworth
+Name[pt_BR]=Filtro passa-banda de Butterworth
+Name[sv]=Butterworth bandpassfilter
+Type=Service
+ServiceTypes=Kst Plugin
+X-KDE-ModuleType=Plugin
+X-Kst-Plugin-Library=butterworth_bandpass
+X-Kst-Plugin-Author=The University of British Columbia
+Comment=Implements support for a Butterworth band pass filter.
+Comment[da]=Implementerer støtte for et Butterworth båndpasfilter.
+Comment[es]=Implementa soporte para un filtro de paso de banda de Butterworth.
+Comment[et]=Butterworthi ribapääsfiltri toetus.
+Comment[it]=Implementa supporto per un filtro passa-banda di Butterworth.
+Comment[pt]=Implementa o suporte para um fitro passa-banda de Butterworth.
+Comment[pt_BR]=Implementa o suporte para um fitro passa-banda de Butterworth.
+Comment[sv]=Implementerar stöd för ett Butterworth bandpassfilter.

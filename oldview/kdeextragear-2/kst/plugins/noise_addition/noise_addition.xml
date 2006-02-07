@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Module SYSTEM "file:/Repository/Level2/Soft/ProC/moduledef.dtd">
+<module>
+<intro>
+<modulename name="noise_addition"/>
+<author name="Andrew Walker"/>
+<description text="Adds Gaussian noise to a set of data, of a specified standard deviation."/>
+<version minor="1" major="0"/>
+<state devstate="release"/>
+</intro>
+
+<interface>
+<input>
+<table type="float" name="Array" descr="The array of data values." />
+</input>
+<input>
+<float name="Sigma" descr="The standard deviation of the noise." />
+</input>
+
+<output>
+<table type="float" name="Output Array" descr="The output data array." />
+</output>
+</interface>
+</module>
+

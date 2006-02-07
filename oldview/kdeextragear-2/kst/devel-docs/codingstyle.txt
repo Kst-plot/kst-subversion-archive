@@ -1,0 +1,82 @@
+- indenting is emacs style 2 space, no tabs
+
+- all files should have appropriate vim modelines at the end:
+// vim: ts=2 sw=2 et
+
+- bracing and structure style is as follows:
+
+    for (int x = 1; x < 10; ++x) {
+      val *= x;
+    }
+
+    if (x == y) {
+      z();
+    } else if (q < r) {
+    } else {
+    }
+
+    switch (expression) {
+      case 1:
+        foo();
+        break;
+      case 2:
+      default:
+    }
+
+    rettype Class::method(type var, type var, ...) {
+      type var;
+      type var2 = val, var3;
+
+      function();
+      etc
+
+      return var;
+    }
+
+
+- class layout example:
+
+    class X : public Y, private Z {
+      Q_OBJECT
+      public:
+        X();
+        virtual ~X();
+
+      private:
+
+      public slots:
+
+    };
+
+
+- all include files must be guarded:
+    #ifndef FILENAME_H
+    #define FILENAME_H
+    <contents>
+    #endif
+
+- avoid inline methods - it makes things difficult to modify later
+
+- designer .ui.h files use designer default indenting format
+
+- don't use superfluous semicolons.  It causes compile problems with some
+  compilers.
+
+- all .c, .cpp, .h files must have license and copyright headers
+
+- all files must be licensed *GPL* unless it derives from non-GPL compatible
+  code, in which case you must contact the Kst developers and maintainers
+  before integrating it
+
+- no C++ exceptions will be used
+
+- the present hard requirements for compilation are KDE 3.1.0 and Qt 3.1.0. No
+  new hard requirements may be added, though conditional compilation is fine.
+
+- be very sensitive of performance (both startup time and runtime) of all Kst
+  components.  profile often
+
+- don't make constant unnecessary changes as part of other commits since it
+  destroys cvs annotations
+
+

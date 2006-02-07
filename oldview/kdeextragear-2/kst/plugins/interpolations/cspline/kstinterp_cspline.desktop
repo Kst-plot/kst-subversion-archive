@@ -1,0 +1,23 @@
+[Desktop Entry]
+Encoding=UTF-8
+Type=Service
+ServiceTypes=Kst Plugin
+X-KDE-ModuleType=Plugin
+X-Kst-Plugin-Library=kstinterp_cspline
+X-Kst-Plugin-Author=The University of British Columbia
+Name=Cubic spline interpolation
+Name[da]=Kubisk spline-interpolation
+Name[es]=Interpolación por curva cúbica
+Name[et]=Kuupsplain-interpoleerimine
+Name[it]=Interpolazione spline cubica
+Name[pt]=Interpolação por curva cúbica
+Name[pt_BR]=Interpolação spline Cúbica
+Name[sv]=Kubisk splineinterpolering
+Comment=Implements support for a cubic spline interpolation.
+Comment[da]=Implementer støtte for en kubisk spline-interpolation.
+Comment[es]=Implementa soporte para una interpolación por curva cúbica.
+Comment[et]=Kuupsplain-interpoleerimise toetus.
+Comment[it]=Implementa supporto un'interpolazione spline cubica.
+Comment[pt]=Implementa o suporte para uma interpolação por curva cúbica.
+Comment[pt_BR]=Implementa o suporte a Interpolação spline Cúbica.
+Comment[sv]=Implementerar stöd för en kubisk splineinterpolering.

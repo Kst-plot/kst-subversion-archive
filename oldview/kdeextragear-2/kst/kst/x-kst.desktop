@@ -1,0 +1,15 @@
+[Desktop Entry]
+Type=MimeType
+MimeType=application/x-kst
+Icon=kst
+DefaultApp=kst
+Patterns=*.kst;*.KST;
+Comment=Kst Data File
+Comment[da]=Kst Datafil
+Comment[es]=Fichero de datos de Kst
+Comment[et]=Kst andmefail
+Comment[it]=File dati Kst
+Comment[pt]=Ficheiro de Dados do Kst
+Comment[pt_BR]=Ficheiro de Dados do Kst
+Comment[sv]=Kst-datafil
+

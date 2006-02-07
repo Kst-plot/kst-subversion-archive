@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Module SYSTEM "file:/Repository/Level2/Soft/ProC/moduledef.dtd">
+<module>
+<intro>
+<modulename name="autocorrelation"/>
+<author name="Andrew Walker"/>
+<description text="Takes the auto-correlation of a given data set. The data is assumed to be sampled at equal time intervals."/>
+<version minor="1" major="0"/>
+<state devstate="release"/>
+</intro>
+
+<interface>
+<input>
+<table type="float" name="X Array" descr="The array of X values." />
+</input>
+
+<output>
+<table type="float" name="Step number" descr="The array of step numbers." />
+</output>
+<output>
+<table type="float" name="Correlation value" descr="The array of correlation values." />
+</output>
+</interface>
+</module>
+

@@ -1,0 +1,126 @@
+# Installs in dir @prefix@
+
+%define prefix @prefix@
+
+Summary: A data viewing program for KDE.
+Name: kst
+Version: 0.98-devel
+Release: 1
+Source0: kst-%{version}.tar.gz
+Group: X11/Applications/Scientific
+License: GNU GENERAL PUBLIC LICENSE
+URL: http://omega.astro.utoronto.ca/kst/kst-%{version}.tar.gz
+Vendor: Barth Netterfield <netterfield@astro.utoronto.ca>
+BuildRoot: /var/tmp/kst-%{version}.root
+
+Requires(post,postun): /sbin/ldconfig
+
+%description
+A data viewing application for KDE.
+
+%prep
+%setup 
+./configure --with-install-root=$RPM_BUILD_ROOT --prefix=$RPM_BUILD_ROOT/%prefix --disable-debug
+
+%build
+make
+
+%install
+[ -n "$RPM_BUILD_ROOT" -a "$RPM_BUILD_ROOT" != / ] && rm -rf $RPM_BUILD_ROOT
+make R="$RPM_BUILD_ROOT" SUID_ROOT="" install
+
+%files
+%defattr(-,root,root)
+#binaries
+%prefix/bin/kst
+%prefix/bin/d2asc
+%prefix/bin/kstplugineditor
+#libraries
+%prefix/lib/libkst.so.1.0.0
+#plugins
+%prefix/share/services/kst/kstdata_ascii.desktop
+%prefix/lib/kde3/kstdata_ascii.so
+%prefix/share/services/kst/kstdata_indirect.desktop
+%prefix/lib/kde3/kstdata_indirect.so
+%prefix/share/services/kst/kstdata_dirfile.desktop
+%prefix/lib/kde3/kstdata_dirfile.so
+%prefix/share/services/kst/kstdata_frame.desktop
+%prefix/lib/kde3/kstdata_frame.so
+%prefix/include/kstdatasource.h
+%prefix/include/kstobject.h
+%prefix/lib/kde3/kstdata_ascii.la
+%prefix/lib/kde3/kstdata_dirfile.la
+%prefix/lib/kde3/kstdata_frame.la
+%prefix/lib/kde3/kstdata_indirect.la
+%prefix/lib/libkst.la
+%prefix/share/servicetypes/kst/kstdatasourceplugin.desktop
+%prefix/share/servicetypes/kst/kstplugin.desktop
+%prefix/share/servicetypes/kst/kstfilter.desktop
+%prefix/lib/kde3/kstplugins/linefit.xml
+%prefix/lib/kde3/kstplugins/linefit.so
+%prefix/lib/kde3/kstplugins/linefit.la
+%prefix/lib/kde3/kstplugins/autocorrelation.xml
+%prefix/lib/kde3/kstplugins/autocorrelation.so
+%prefix/lib/kde3/kstplugins/autocorrelation.la
+%prefix/lib/kde3/kstplugins/crosscorrelation.xml
+%prefix/lib/kde3/kstplugins/crosscorrelation.so
+%prefix/lib/kde3/kstplugins/crosscorrelation.la
+%prefix/lib/kde3/kstplugins/periodogram.xml
+%prefix/lib/kde3/kstplugins/periodogram.so
+%prefix/lib/kde3/kstplugins/periodogram.la
+%prefix/lib/kde3/kstplugins/phase.xml
+%prefix/lib/kde3/kstplugins/phase.so
+%prefix/lib/kde3/kstplugins/phase.la
+%prefix/lib/kde3/kstplugins/statistics.xml
+%prefix/lib/kde3/kstplugins/statistics.so
+%prefix/lib/kde3/kstplugins/statistics.la
+%prefix/lib/kde3/kstplugins/chop.xml
+%prefix/lib/kde3/kstplugins/chop.so
+%prefix/lib/kde3/kstplugins/chop.la
+#extensions
+%prefix/lib/kde3/kstextension_elog.la
+%prefix/lib/kde3/kstextension_elog.so
+%prefix/share/services/kst/kstextension_elog.desktop
+%prefix/share/servicetypes/kst/kstextension.desktop
+# UI file
+%prefix/share/apps/kst/kstui.rc
+#%prefix/share/apps/kst/kstui2.rc
+#desktop file
+%prefix/share/applnk/Applications/Sciences/kst.desktop
+%prefix/share/mimelnk/application/x-kst.desktop
+#icons
+%prefix/share/icons/hicolor/22x22/actions/kst_quickcurves.png
+%prefix/share/icons/hicolor/22x22/actions/kst_back.png
+%prefix/share/icons/hicolor/22x22/actions/kst_editplots.png
+%prefix/share/icons/hicolor/22x22/actions/kst_zoomx.png
+%prefix/share/icons/hicolor/22x22/actions/kst_zoomy.png
+%prefix/share/icons/hicolor/22x22/actions/kst_advance.png
+%prefix/share/icons/hicolor/22x22/actions/kst_datamanager.png
+%prefix/share/icons/hicolor/22x22/actions/kst_zoomtie.png
+%prefix/share/icons/hicolor/22x22/actions/kst_quickpsd.png
+%prefix/share/icons/hicolor/22x22/actions/kst_zoomxy.png
+%prefix/share/icons/hicolor/22x22/actions/kst_graphfile.png
+%prefix/share/icons/hicolor/22x22/actions/kst_changenpts.png
+%prefix/share/icons/hicolor/22x22/actions/kst_changefile.png
+%prefix/share/icons/hicolor/22x22/actions/kst_datamode.png
+%prefix/share/icons/locolor/16x16/apps/kst.png
+%prefix/share/icons/locolor/32x32/apps/kst.png
+%prefix/share/icons/hicolor/16x16/mimetypes/kst.png
+%prefix/share/icons/hicolor/22x22/actions/kst_datawizard.png
+%prefix/share/icons/hicolor/32x32/mimetypes/kst.png
+%prefix/share/icons/locolor/16x16/mimetypes/kst.png
+%prefix/share/icons/locolor/32x32/mimetypes/kst.png
+#docs
+%prefix/share/doc/HTML/en/kst/index.docbook
+%prefix/share/doc/HTML/en/kst/index.cache.bz2
+#other
+"%prefix/share/config/colors/Kst Colors"
+
+%doc ChangeLog INSTALL AUTHORS README COPYING
+
+%post
+/sbin/ldconfig
+
+%postun
+/sbin/ldconfig
+
