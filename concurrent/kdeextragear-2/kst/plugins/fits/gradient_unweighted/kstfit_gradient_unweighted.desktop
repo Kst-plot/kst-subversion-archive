@@ -1,0 +1,19 @@
+[Desktop Entry]
+Encoding=UTF-8
+Type=Service
+ServiceTypes=Kst Plugin
+X-KDE-ModuleType=Plugin
+X-Kst-Plugin-Library=kstfit_gradient_unweighted
+X-Kst-Plugin-Author=The University of British Columbia
+Name=Gradient unweighted fit
+Name[da]=Ubelastet overgangstilpasning
+Name[et]=Kaalumata gradientjaotus
+Name[pt]=Ajuste gradiente não ponderado
+Name[pt_BR]=Ajuste gradiente não ponderado
+Name[sv]=Oviktad gradientanpassning
+Comment=Implements support for a gradient unweighted fit.
+Comment[da]=Implementerer støtte for en ubelastet overgangstilpasning.
+Comment[et]=Kaalumata gradientjaotuse toetus.
+Comment[pt]=Implementa o suporte para um ajuste gradiente não ponderado.
+Comment[pt_BR]=Implementa o suporte para um ajuste gradiente não ponderado.
+Comment[sv]=Implementerar stöd för en oviktad gradientanpassning.

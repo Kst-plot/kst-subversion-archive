@@ -1,0 +1,9 @@
+[Desktop Entry]
+Encoding=UTF-8
+Type=Service
+ServiceTypes=Kst Extension
+X-KDE-ModuleType=Plugin
+X-KDE-Library=kstextension_js
+X-Kst-Plugin-Author=The University of Toronto
+Name=JavaScript Extension
+Comment=Allows the user to script Kst internally with JavaScript.

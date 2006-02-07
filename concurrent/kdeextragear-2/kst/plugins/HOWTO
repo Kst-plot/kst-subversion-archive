@@ -1,0 +1,83 @@
+How to write plugins.
+---------------------
+
+Kst plugins consist of two files, an XML file and a shared object.  The XML
+file describes the contents of the shared object file.  The shared object file
+contains the actual plugin code, and must export a C-style function.
+
+XML FILE
+--------
+
+See linefit/linefit.xml for an example of an XML file.
+Each XML file contains an <intro> node with the following information:
+<modulename name="linefit"/>    <!-- The name of the module -->
+<author name="George Staikos"/> <!-- The name of the author -->
+<description text="Generates a line of best fit for a set of data."/>
+                                <!-- A description of the module -->
+<version minor="1" major="0"/>  <!-- The version number of the module -->
+<state devstate="release"/>     <!-- The development state of the module -->
+
+All but <state> are required.
+
+The module also contains an <interface> node which describes the interface to
+the plugin.  This node has children of type <input> and <output> for inputs
+and outputs respectively.  It may contain any number of these, but they must
+be in the order that the plugin expects them.  They are considered to be
+sequential inputs and outputs respectively.
+
+Inputs and ouputs can be <table> or <float>.  No other data types are
+supported at this time.  All <table> nodes must be tables of floats.
+
+An array input looks like this:
+<input>
+<table type="float" name="X Array" descr="The array of X coordinates." />
+</input>
+A float (scalar) output looks like this:
+<output>
+<float name="a" descr="The a value in the interpolation equation y = a + b*x." />
+</output>
+
+
+SHARED OBJECT
+-------------
+
+The shared object must export a C linkage symbol:
+int symbol(const double *const inArrays[],
+           const int inArrayLens[],
+           const double inScalars[],
+           double *outArrays[],
+           int outArrayLens[],
+           double outScalars[])
+
+"symbol" would be the same as the attribute "name" of the node "modulename" in
+the XML file.  The plugin must return 0 on success, or -1 on error.  It must be
+prepared to deal with inputs that are not what it expects (empty arrays, etc).
+Just return an error if that is the case.
+
+If you return arrays, you must set outArrayLens[] appropriately.  You must
+always return the exact number of arrays and scalars as the XML file indicates.
+outArrayLens[] will be set when your plugin is called, but you may need to
+resize the arrays.  You must only do this with realloc().  Do not use any other
+memory allocator as it could cause internal memory problems in Kst.
+
+Finally, do not, ever, cast away the constness of input variables.  This will
+result in inconsistencies in Kst internally.  The input variables are const for
+a reason and must remain as such.
+
+For an example plugin, see linefit/linefit.c
+
+
+HOW TO BUILD THE PLUGIN
+-----------------------
+
+If you write your plugin in C with GNU-style tools, you can compile your
+plugin like this:
+
+cc -Wall -c -o myplugin.o myplugin.c -fPIC -DPIC
+ld -o myplugin.so -shared myplugin.o
+
+
+You should put the .so file and the .xml file in a common directory.  Then the
+plugin manager in Kst can be used to browse to that directory and install the
+plugin in Kst automatically.
+

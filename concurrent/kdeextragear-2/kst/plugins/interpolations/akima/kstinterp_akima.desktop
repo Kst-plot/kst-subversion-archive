@@ -1,0 +1,18 @@
+[Desktop Entry]
+Encoding=UTF-8
+Type=Service
+ServiceTypes=Kst Plugin
+X-KDE-ModuleType=Plugin
+X-Kst-Plugin-Library=kstinterp_akima
+X-Kst-Plugin-Author=The University of British Columbia
+Name=Akima spline interpolation
+Name[et]=Akima splaini interpoleerimine
+Name[pt]=Interpolação por curva de Akima
+Name[pt_BR]=Interpolação por curva de Akima
+Name[sv]=Akima-splineinterpolering
+Comment=Implements support for a non-rounded Akima spline interpolation.
+Comment[da]=Implementerer støtte for ikke-afrundet Akima spline-interpolation.
+Comment[et]=Ümardamata Akima splaini interpoleerimise toetus.
+Comment[pt]=Implementa o suporte para a interpolação por curva de Akima não arredondada.
+Comment[pt_BR]=Implementa o suporte para a interpolação por curva de Akima não arredondada.
+Comment[sv]=Implementerar stöd för en icke avrundad Akima-splineinterpolering.

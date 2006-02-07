@@ -1,0 +1,20 @@
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Name=Sinusoid weighted fit
+Name[da]=Sinusoid belastet tilpasning
+Name[et]=Kaalutud sinusoidjaotus
+Name[pt]=Ajuste sinusóidal ponderado
+Name[pt_BR]=Ajuste sinusóidal ponderado
+Name[sv]=Viktad sinusformad anpassning
+Type=Service
+ServiceTypes=Kst Plugin
+X-KDE-ModuleType=Plugin
+X-Kst-Plugin-Library=kstfit_sinusoid_weighted
+X-Kst-Plugin-Author=The University of British Columbia
+Comment=Implements support for a sinusoid weighted fit.
+Comment[da]=Implementerer støtte for sinusoid belastet tilpasning.
+Comment[et]=Kaalutud sinusoidjaotuse toetus.
+Comment[pt]=Implementa o suporte para um ajuste sinusóidal ponderado.
+Comment[pt_BR]=Implementa o suporte para um ajuste sinusóidal ponderado.
+Comment[sv]=Implementerar stöd för en viktad sinusformad anpassning.

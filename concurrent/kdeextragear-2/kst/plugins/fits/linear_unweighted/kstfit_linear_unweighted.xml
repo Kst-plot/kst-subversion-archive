@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Module SYSTEM "file:/Repository/Level2/Soft/ProC/moduledef.dtd">
+<module>
+<intro>
+<modulename name="kstfit_linear_unweighted"/>
+<author name="Andrew Walker"/>
+<description text="Generates a linear unweighted fit for a set of data."/>
+<version minor="1" major="0"/>
+<state devstate="release"/>
+</intro>
+
+<interface>
+<input>
+<table type="float" name="X Array" descr="The array of X coordinates." />
+</input>
+<input>
+<table type="float" name="Y Array" descr="The array of Y coordinates." />
+</input>
+
+<output>
+<table type="float" name="Y Fitted" descr="The array of fitted Y values." />
+</output>
+<output>
+<table type="float" name="Y Lo" descr="The array of +1 sigma fitted values." />
+</output>
+<output>
+<table type="float" name="Y Hi" descr="The array of -1 sigma fitted values." />
+</output>
+<output>
+<table type="float" name="Residuals" descr="The residuals of the fitted data." />
+</output>
+<output>
+<float name="a" descr="The a value in the fit to y = a + b*x." />
+</output>
+<output>
+<float name="b" descr="The b value in the fit to y = a + b*x." />
+</output>
+<output>
+<float name="cov00" descr="The 0,0 value of the covariance matrix." />
+</output>
+<output>
+<float name="cov01" descr="The 0,1 value of the covariance matrix." />
+</output>
+<output>
+<float name="cov11" descr="The 1,1 value of the covariance matrix." />
+</output>
+<output>
+<float name="sumsq" descr="The sum of squares of the residuals." />
+</output>
+</interface>
+</module>
+

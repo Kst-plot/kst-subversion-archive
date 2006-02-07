@@ -1,0 +1,562 @@
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<class>KstVectorDialog</class>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>KstVectorDialog</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>466</width>
+            <height>267</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Edit Vector</string>
+    </property>
+    <property name="icon">
+        <pixmap>image0</pixmap>
+    </property>
+    <property name="layoutMargin" stdset="0">
+    </property>
+    <vbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <property name="margin">
+            <number>6</number>
+        </property>
+        <property name="spacing">
+            <number>6</number>
+        </property>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>layout25</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>textLabel1</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>0</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="frameShape">
+                        <enum>NoFrame</enum>
+                    </property>
+                    <property name="frameShadow">
+                        <enum>Plain</enum>
+                    </property>
+                    <property name="text">
+                        <string>Unique name:</string>
+                    </property>
+                </widget>
+                <widget class="QComboBox">
+                    <property name="name">
+                        <cstring>Select</cstring>
+                    </property>
+                    <property name="editable">
+                        <bool>true</bool>
+                    </property>
+                    <property name="duplicatesEnabled">
+                        <bool>false</bool>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+        <widget class="QGroupBox">
+            <property name="name">
+                <cstring>GroupBox4</cstring>
+            </property>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>5</hsizetype>
+                    <vsizetype>0</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
+            <property name="title">
+                <string>Data Vector Parameters</string>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <property name="margin">
+                    <number>11</number>
+                </property>
+                <property name="spacing">
+                    <number>6</number>
+                </property>
+                <widget class="QLabel" row="2" column="0">
+                    <property name="name">
+                        <cstring>TextLabel7</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Starting frame:</string>
+                    </property>
+                    <property name="alignment">
+                        <set>AlignVCenter|AlignRight</set>
+                    </property>
+                    <property name="hAlign" stdset="0">
+                    </property>
+                </widget>
+                <widget class="QLabel" row="3" column="0">
+                    <property name="name">
+                        <cstring>TextLabel8_3</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Number of frames:</string>
+                    </property>
+                    <property name="alignment">
+                        <set>AlignVCenter|AlignRight</set>
+                    </property>
+                    <property name="hAlign" stdset="0">
+                    </property>
+                </widget>
+                <widget class="QCheckBox" row="2" column="2">
+                    <property name="name">
+                        <cstring>CountFromEnd</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Count from end</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Select this to read data from the end of the file.  This is useful for scrolling displays when the file is being appended by another application.</string>
+                    </property>
+                </widget>
+                <widget class="QLayoutWidget" row="2" column="1">
+                    <property name="name">
+                        <cstring>Layout60</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <property name="margin">
+                            <number>0</number>
+                        </property>
+                        <property name="spacing">
+                            <number>6</number>
+                        </property>
+                        <widget class="QSpinBox">
+                            <property name="name">
+                                <cstring>F0</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>3</hsizetype>
+                                    <vsizetype>0</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="maxValue">
+                                <number>1000000000</number>
+                            </property>
+                            <property name="lineStep">
+                                <number>10000</number>
+                            </property>
+                            <property name="value">
+                                <number>0</number>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>The index of the first data read.  For ASCII files, this is the data row number in the file.  For frame based files, this is the first frame.</string>
+                            </property>
+                        </widget>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>TextLabel1_5</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>0</hsizetype>
+                                    <vsizetype>5</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="text">
+                                <string>or</string>
+                            </property>
+                        </widget>
+                    </hbox>
+                </widget>
+                <widget class="QCheckBox" row="4" column="2">
+                    <property name="name">
+                        <cstring>DoFilter</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>1</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="text">
+                        <string>Boxcar filter first</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Select this to average the skipped frames together.  Provides simple low pass filtering.</string>
+                    </property>
+                </widget>
+                <widget class="QLayoutWidget" row="3" column="1">
+                    <property name="name">
+                        <cstring>Layout61</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <property name="margin">
+                            <number>0</number>
+                        </property>
+                        <property name="spacing">
+                            <number>6</number>
+                        </property>
+                        <widget class="QSpinBox">
+                            <property name="name">
+                                <cstring>N</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>3</hsizetype>
+                                    <vsizetype>0</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="maxValue">
+                                <number>1000000000</number>
+                            </property>
+                            <property name="minValue">
+                                <number>2</number>
+                            </property>
+                            <property name="lineStep">
+                                <number>10000</number>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>The amount of data to read into the vector.  For ASCII files, this is the number of data rows.  For frame files there may be more than one sample per frame.</string>
+                            </property>
+                        </widget>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>TextLabel2_4</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>0</hsizetype>
+                                    <vsizetype>5</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="text">
+                                <string>or</string>
+                            </property>
+                        </widget>
+                    </hbox>
+                </widget>
+                <widget class="QSpinBox" row="4" column="1">
+                    <property name="name">
+                        <cstring>Skip</cstring>
+                    </property>
+                    <property name="enabled">
+                        <bool>false</bool>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>3</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="maxValue">
+                        <number>1000000000</number>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Number of frame to skip, if "Skip Frames" is selected.</string>
+                    </property>
+                </widget>
+                <widget class="QLayoutWidget" row="4" column="0">
+                    <property name="name">
+                        <cstring>Layout9</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <property name="margin">
+                            <number>0</number>
+                        </property>
+                        <property name="spacing">
+                            <number>6</number>
+                        </property>
+                        <spacer>
+                            <property name="name">
+                                <cstring>Spacer7</cstring>
+                            </property>
+                            <property name="orientation">
+                                <enum>Horizontal</enum>
+                            </property>
+                            <property name="sizeType">
+                                <enum>Preferred</enum>
+                            </property>
+                            <property name="sizeHint">
+                                <size>
+                                    <width>20</width>
+                                    <height>20</height>
+                                </size>
+                            </property>
+                        </spacer>
+                        <widget class="QCheckBox">
+                            <property name="name">
+                                <cstring>DoSkip</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Skip frames:</string>
+                            </property>
+                            <property name="toolTip" stdset="0">
+                                <string>Save memory by sparsely sampling the data</string>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>Select this to skip frames, rather than reading all of the data.  This is useful for reading very long but slowly changing data files.</string>
+                            </property>
+                        </widget>
+                    </hbox>
+                </widget>
+                <widget class="QLabel" row="1" column="0">
+                    <property name="name">
+                        <cstring>TextLabel6</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Field or column:</string>
+                    </property>
+                    <property name="alignment">
+                        <set>AlignVCenter|AlignRight</set>
+                    </property>
+                    <property name="hAlign" stdset="0">
+                    </property>
+                </widget>
+                <widget class="KURLRequester" row="0" column="1" rowspan="1" colspan="2">
+                    <property name="name">
+                        <cstring>FileName</cstring>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="0" column="0">
+                    <property name="name">
+                        <cstring>TextLabel4_3</cstring>
+                    </property>
+                    <property name="text">
+                        <string>File name:</string>
+                    </property>
+                    <property name="alignment">
+                        <set>AlignVCenter|AlignRight</set>
+                    </property>
+                    <property name="hAlign" stdset="0">
+                    </property>
+                </widget>
+                <widget class="QCheckBox" row="3" column="2">
+                    <property name="name">
+                        <cstring>ReadToEnd</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>1</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="text">
+                        <string>Read to end</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Select this to read all of the data up to the end of the file.  </string>
+                    </property>
+                </widget>
+                <widget class="KComboBox" row="1" column="1" rowspan="1" colspan="2">
+                    <property name="name">
+                        <cstring>Field</cstring>
+                    </property>
+                    <property name="editable">
+                        <bool>true</bool>
+                    </property>
+                    <property name="duplicatesEnabled">
+                        <bool>false</bool>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>Layout5</cstring>
+            </property>
+            <property name="layoutSpacing" stdset="0">
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <property name="margin">
+                    <number>0</number>
+                </property>
+                <property name="spacing">
+                    <number>3</number>
+                </property>
+                <spacer>
+                    <property name="name">
+                        <cstring>Spacer1</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>20</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>Delete</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>0</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="text">
+                        <string>Delete</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>New</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>0</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="text">
+                        <string>Apply as New</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>Edit</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>0</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="text">
+                        <string>Apply Edits</string>
+                    </property>
+                    <property name="default">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>Close</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>0</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="text">
+                        <string>Close</string>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+    </vbox>
+</widget>
+<images>
+    <image name="image0">
+        <data format="XPM.GZ" length="1172">789c6dd1cb6edb301005d0bdbf42b07746e158cf4828ba50a2d8c9a24597058a2e280e692b91a8f8992845ff3d9c195246db5086c0e3cb1951d4d53cf8f1fd6b30bf9a1c8ee2d8c8406ec53e98c3a9eb869fbfbefc9e4ca328b0bff83a08a79f26d33a90c1b7de289c0b3b9f2d69207b66b24c682520e3305ec6c41b6412266e71834c455aa402699079ec5b95cc3ccc63e40c592469caad6e89d2f3cdb160564891885024c807640d3964f4a00352a6799a10ef1d5dba66ca48a6c8c13163ee88e06bef1c8b3442ae98763120378e82b945422a1550ab57a2ca8a658e544cbc907ba4ca7cfaec084ccd04a532e419a9b33abaae911d51e76ef123b3089947a65f7c72cc980b4f3e76c9844848e48b6356d3c1b64cadf9709e3cb5a65633f1ffa087c8857d530d5ac1660bdb0dcd45437bb5917ef2a3c5a138e93a1b8d8131a66dc1d5748f63d49abeefcda566acb281bdf7c670f2dc51d5cefe47818d5c37d853d5eec0418b112735b8aa63eff7e19e530baa3a9d1707bf79f089c0aae342be28b7c3b146d9aad7c5f9658cf4d86d10f076b03552ffd34d0da5b8b99dedc668acd14355364d33bbb3edf4df7b5bad4d5fd9e8fea1a168eca68de957555535004da9b4bd7c628f71b51eaaaaac6c84c1656f88c1569536c3f9656ff445ed7db5e6af3bd67c3038a99b0fc6f4cfe7c93bbf684ea9</data>
+    </image>
+</images>
+<connections>
+    <connection>
+        <sender>Close</sender>
+        <signal>clicked()</signal>
+        <receiver>KstVectorDialog</receiver>
+        <slot>reject()</slot>
+    </connection>
+    <connection>
+        <sender>CountFromEnd</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>F0</receiver>
+        <slot>setDisabled(bool)</slot>
+    </connection>
+    <connection>
+        <sender>ReadToEnd</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>N</receiver>
+        <slot>setDisabled(bool)</slot>
+    </connection>
+    <connection>
+        <sender>DoSkip</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>Skip</receiver>
+        <slot>setEnabled(bool)</slot>
+    </connection>
+</connections>
+<tabstops>
+    <tabstop>Select</tabstop>
+    <tabstop>FileName</tabstop>
+    <tabstop>Field</tabstop>
+    <tabstop>F0</tabstop>
+    <tabstop>CountFromEnd</tabstop>
+    <tabstop>N</tabstop>
+    <tabstop>ReadToEnd</tabstop>
+    <tabstop>DoSkip</tabstop>
+    <tabstop>Skip</tabstop>
+    <tabstop>DoFilter</tabstop>
+    <tabstop>Delete</tabstop>
+    <tabstop>New</tabstop>
+    <tabstop>Edit</tabstop>
+    <tabstop>Close</tabstop>
+</tabstops>
+<layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>kurlrequester.h</includehint>
+    <includehint>klineedit.h</includehint>
+    <includehint>kpushbutton.h</includehint>
+    <includehint>kcombobox.h</includehint>
+    <includehint>klineedit.h</includehint>
+</includehints>
+</UI>

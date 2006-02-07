@@ -1,0 +1,15 @@
+
+
+
+New Approach
+------------
+
+Locking is now explicit.  If you read from a KstObject, .lock().readLock() it
+and .readUnlock() it when you're done.  Likewise for lists.  You can lock
+for writing with .writeLock() and .writeUnlock().  Note that locking is not
+recursive!  If you lock and then recurse and try to lock again, you may run out
+of read handles, and you will certainly deadlock if you try to write
+anywhere in the recursion.
+
+KstReadLocker and KstWriteLocker provide mutex-monitor style locking support.
+

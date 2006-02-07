@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Module SYSTEM "file:/Repository/Level2/Soft/ProC/moduledef.dtd">
+<module>
+<intro>
+<modulename name="kstfit_sinusoid_weighted"/>
+<author name="Andrew Walker"/>
+<description text="Generates a sinusoid weighted fit for a set of data."/>
+<version minor="1" major="0"/>
+<state devstate="release"/>
+</intro>
+
+<interface>
+<input>
+<table type="float" name="X Array" descr="The array of X coordinates." />
+</input>
+<input>
+<table type="float" name="Y Array" descr="The array of Y coordinates." />
+</input>
+<input>
+<table type="float" name="Weights" descr="The array of weights." />
+</input>
+<input>
+<float name="Harmonics" descr="The number of harmonics of the sinusoid to fit." />
+</input>
+<input>
+<float name="Period" descr="The period of the sinusoid to fit." />
+</input>
+
+<output>
+<table type="float" name="Y Fitted" descr="The array of fitted Y values." />
+</output>
+<output>
+<table type="float" name="Residuals" descr="The residuals of the fitted data." />
+</output>
+<output>
+<table type="float" name="Parameters" descr="The best-fit parameters." />
+</output>
+<output>
+<table type="float" name="Covariance" descr="The covariance matrix." />
+</output>
+<output>
+<float name="chisq" descr="The weighted sum of sqaures of the residuals." />
+</output>
+</interface>
+</module>
+

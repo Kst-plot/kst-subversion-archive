@@ -1,0 +1,41 @@
+<!DOCTYPE kpartgui>
+<kpartgui name="kst">
+<MenuBar>
+  <Menu name="file"><text>&amp;File</text>
+    <Action name="tmp_file_new"/>
+    <Action name="tmp_file_open"/>
+    <Action name="tmp_file_save"/>
+    <Action name="tmp_file_saveas"/>
+    <Action name="tmp_file_print"/>
+    <Action name="file_new_window"/>
+  </Menu>
+  <Menu name="plots"><text>&amp;Plots</text>
+    <Action name="plotdialog_action"/>
+    <Separator/>
+    <Action name="pause_action"/>
+  </Menu>
+  <Menu name="zoom"><text>&amp;Zoom</text>
+    <Separator/>
+    <Action name="zoomxy_action"/>
+    <Action name="zoomx_action"/>
+    <Action name="zoomy_action"/>
+    <Separator/>
+    <Action name="zoomtie_action"/>
+  </Menu>
+</MenuBar>
+<ToolBar name="mainToolBar">
+    <Action name="tmp_file_new"/>
+    <Action name="tmp_file_open"/>
+    <Action name="tmp_file_save"/>
+    <Action name="tmp_file_saveas"/>
+  <Separator/>
+  <Action name="plotdialog_action"/>
+  <Separator/>
+  <Action name="zoomxy_action"/>
+  <Action name="zoomx_action"/>
+  <Action name="zoomy_action"/>
+  <Separator/>
+  <Action name="zoomtie_action"/>
+  <Action name="pause_action"/>
+</ToolBar>
+</kpartgui>

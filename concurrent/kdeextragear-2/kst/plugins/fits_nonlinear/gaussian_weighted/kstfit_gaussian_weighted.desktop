@@ -1,0 +1,19 @@
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Name=Gaussian weighted fit
+Name[da]=Baussisk belastet tilpasning
+Name[et]=Kaalutud Gaussi jaotus
+Name[pt]=Ajuste Gaussiano ponderado
+Name[pt_BR]=Ajuste Gaussiano ponderado
+Name[sv]=Viktad gaussisk anpassning
+Type=Service
+ServiceTypes=Kst Plugin
+X-KDE-ModuleType=Plugin
+X-Kst-Plugin-Library=kstfit_gaussian_weighted
+X-Kst-Plugin-Author=The University of British Columbia
+Comment=Implements support for a Gaussian weighted fit.
+Comment[et]=Kaalutud Gaussi jaotuse toetus.
+Comment[pt]=Implementa o suporte para um ajuste Gaussiano ponderado.
+Comment[pt_BR]=Implementa o suporte para um ajuste Gaussiano ponderado.
+Comment[sv]=Implementerar stöd för en viktad gaussisk anpassning.

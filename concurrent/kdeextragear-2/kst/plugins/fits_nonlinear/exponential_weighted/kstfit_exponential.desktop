@@ -1,0 +1,20 @@
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Name=Exponential weighted fit
+Name[da]=Eksponentiel belastet tilpasning
+Name[et]=Kaalutud eksponentjaotus
+Name[pt]=Ajuste exponencial ponderado
+Name[pt_BR]=Ajuste exponencial ponderado
+Name[sv]=Viktad exponentiell anpassning
+Type=Service
+ServiceTypes=Kst Plugin
+X-KDE-ModuleType=Plugin
+X-Kst-Plugin-Library=kstfit_exponential_weighted
+X-Kst-Plugin-Author=The University of British Columbia
+Comment=Implements support for an exponential weighted fit.
+Comment[da]=Implementerer støtte for eksponentiel belastet tilpasning.
+Comment[et]=Kaalutud eksponentjaotuse toetus.
+Comment[pt]=Implementa o suporte para um ajuste exponencial ponderado.
+Comment[pt_BR]=Implementa o suporte para um ajuste exponencial ponderado.
+Comment[sv]=Implementerar stöd för  en viktad exponentiell anpassning.
