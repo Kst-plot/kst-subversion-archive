@@ -1,0 +1,798 @@
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<class>KstQuickPSDDialog</class>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>KstQuickPSDDialog</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>511</width>
+            <height>546</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Quick PSD</string>
+    </property>
+    <property name="icon">
+        <pixmap>image0</pixmap>
+    </property>
+    <property name="layoutMargin" stdset="0">
+    </property>
+    <grid>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QButtonGroup" row="0" column="0">
+            <property name="name">
+                <cstring>PSDSource</cstring>
+            </property>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>5</hsizetype>
+                    <vsizetype>1</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
+            <property name="title">
+                <string>PSD Source</string>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QRadioButton" row="0" column="1">
+                    <property name="name">
+                        <cstring>SourceDataFile</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>0</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="text">
+                        <string>Data file</string>
+                    </property>
+                </widget>
+                <widget class="QRadioButton" row="0" column="0">
+                    <property name="name">
+                        <cstring>SourceVector</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>0</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="text">
+                        <string>Existing vector</string>
+                    </property>
+                    <property name="checked">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
+        <widget class="QFrame" row="1" column="0">
+            <property name="name">
+                <cstring>VectorEntry</cstring>
+            </property>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>5</hsizetype>
+                    <vsizetype>0</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
+            <property name="frameShape">
+                <enum>Box</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Sunken</enum>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <property name="margin">
+                    <number>11</number>
+                </property>
+                <property name="spacing">
+                    <number>6</number>
+                </property>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>TextLabel1_4</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>0</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="text">
+                        <string>Vector:</string>
+                    </property>
+                    <property name="alignment">
+                        <set>AlignVCenter|AlignRight</set>
+                    </property>
+                    <property name="hAlign" stdset="0">
+                    </property>
+                </widget>
+                <widget class="QComboBox">
+                    <property name="name">
+                        <cstring>Vectors</cstring>
+                    </property>
+                    <property name="enabled">
+                        <bool>true</bool>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>5</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+        <widget class="QFrame" row="2" column="0">
+            <property name="name">
+                <cstring>DataFileEntry</cstring>
+            </property>
+            <property name="enabled">
+                <bool>true</bool>
+            </property>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>5</hsizetype>
+                    <vsizetype>0</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
+            <property name="frameShape">
+                <enum>Box</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Sunken</enum>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <property name="margin">
+                    <number>11</number>
+                </property>
+                <property name="spacing">
+                    <number>6</number>
+                </property>
+                <widget class="QSpinBox" row="3" column="1">
+                    <property name="name">
+                        <cstring>N</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>1</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="maxValue">
+                        <number>1000000000</number>
+                    </property>
+                    <property name="minValue">
+                        <number>2</number>
+                    </property>
+                    <property name="lineStep">
+                        <number>10000</number>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Number of Frames to read, unless "Read to End" is selected.</string>
+                    </property>
+                </widget>
+                <widget class="QCheckBox" row="4" column="0">
+                    <property name="name">
+                        <cstring>DoSkip</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Skip frames</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Save memory by sparsely sampling the data.</string>
+                    </property>
+                </widget>
+                <widget class="QSpinBox" row="4" column="1">
+                    <property name="name">
+                        <cstring>Skip</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>1</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="maxValue">
+                        <number>1000000000</number>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Number of frames to skip between reads, if "Skip Frames" is selected.</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="1" column="0">
+                    <property name="name">
+                        <cstring>TextLabel1_2_3</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Field:</string>
+                    </property>
+                    <property name="alignment">
+                        <set>AlignVCenter|AlignRight</set>
+                    </property>
+                    <property name="hAlign" stdset="0">
+                    </property>
+                </widget>
+                <widget class="QLabel" row="0" column="0">
+                    <property name="name">
+                        <cstring>TextLabel4_3_2_2</cstring>
+                    </property>
+                    <property name="text">
+                        <string>File name:</string>
+                    </property>
+                    <property name="alignment">
+                        <set>AlignVCenter|AlignRight</set>
+                    </property>
+                    <property name="hAlign" stdset="0">
+                    </property>
+                </widget>
+                <widget class="QLineEdit" row="1" column="1" rowspan="1" colspan="3">
+                    <property name="name">
+                        <cstring>Field</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>5</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="2" column="2">
+                    <property name="name">
+                        <cstring>TextLabel1_5_2_2</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>0</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="text">
+                        <string>or</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="3" column="2">
+                    <property name="name">
+                        <cstring>TextLabel2_4_2_2</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>0</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="text">
+                        <string>or</string>
+                    </property>
+                </widget>
+                <widget class="QSpinBox" row="2" column="1">
+                    <property name="name">
+                        <cstring>F0</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>1</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="maxValue">
+                        <number>1000000000</number>
+                    </property>
+                    <property name="lineStep">
+                        <number>10000</number>
+                    </property>
+                    <property name="value">
+                        <number>0</number>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>The data read into the selected vectors will start at this index in the file, unless "Count from End" is selected.</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="2" column="0">
+                    <property name="name">
+                        <cstring>TextLabel7_2</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Starting frame:</string>
+                    </property>
+                    <property name="alignment">
+                        <set>AlignVCenter|AlignRight</set>
+                    </property>
+                    <property name="hAlign" stdset="0">
+                    </property>
+                </widget>
+                <widget class="QLabel" row="3" column="0">
+                    <property name="name">
+                        <cstring>TextLabel8_3_2_2</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Number of frames:</string>
+                    </property>
+                    <property name="alignment">
+                        <set>AlignVCenter|AlignRight</set>
+                    </property>
+                    <property name="hAlign" stdset="0">
+                    </property>
+                </widget>
+                <widget class="QCheckBox" row="2" column="3">
+                    <property name="name">
+                        <cstring>CountFromEnd</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Count from end</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Start reading at "Number of Frames" from the end of the file instead of starting at "Starting Frame"</string>
+                    </property>
+                </widget>
+                <widget class="QCheckBox" row="3" column="3">
+                    <property name="name">
+                        <cstring>ReadToEnd</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Read to end</string>
+                    </property>
+                </widget>
+                <widget class="QCheckBox" row="4" column="3">
+                    <property name="name">
+                        <cstring>DoFilter</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Boxcar filter first</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Average data using a boxcar (low pass) filter, before skipping frames.  </string>
+                    </property>
+                </widget>
+                <widget class="KURLRequester" row="0" column="1" rowspan="1" colspan="3">
+                    <property name="name">
+                        <cstring>FileName</cstring>
+                    </property>
+                    <property name="enabled">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
+        <widget class="QFrame" row="3" column="0">
+            <property name="name">
+                <cstring>Frame4</cstring>
+            </property>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>5</hsizetype>
+                    <vsizetype>0</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
+            <property name="frameShape">
+                <enum>Box</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Sunken</enum>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <property name="margin">
+                    <number>11</number>
+                </property>
+                <property name="spacing">
+                    <number>6</number>
+                </property>
+                <widget class="QLabel" row="0" column="0">
+                    <property name="name">
+                        <cstring>TextLabel1_9</cstring>
+                    </property>
+                    <property name="text">
+                        <string>FFT length: 2^</string>
+                    </property>
+                    <property name="alignment">
+                        <set>AlignVCenter|AlignRight</set>
+                    </property>
+                    <property name="hAlign" stdset="0">
+                    </property>
+                </widget>
+                <widget class="QLabel" row="1" column="0">
+                    <property name="name">
+                        <cstring>TextLabel1_9_2</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Sample rate:</string>
+                    </property>
+                    <property name="alignment">
+                        <set>AlignVCenter|AlignRight</set>
+                    </property>
+                    <property name="hAlign" stdset="0">
+                    </property>
+                </widget>
+                <widget class="QSpinBox" row="0" column="1">
+                    <property name="name">
+                        <cstring>PSDFFTLen</cstring>
+                    </property>
+                    <property name="maxValue">
+                        <number>24</number>
+                    </property>
+                    <property name="minValue">
+                        <number>4</number>
+                    </property>
+                    <property name="value">
+                        <number>10</number>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Sets the length of the FFTs in generating the power spectrum.  2^10 = 1024, etc.  The larger the number, the larger the noise and resolution.</string>
+                    </property>
+                </widget>
+                <widget class="QLineEdit" row="1" column="1">
+                    <property name="name">
+                        <cstring>PSDSampRate</cstring>
+                    </property>
+                    <property name="text">
+                        <string>100.0</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>The sample rate at which the measurements were acquired, for proper normalization.</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="0" column="2">
+                    <property name="name">
+                        <cstring>TextLabel1_9_3</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Vector units:</string>
+                    </property>
+                    <property name="alignment">
+                        <set>AlignVCenter|AlignRight</set>
+                    </property>
+                    <property name="hAlign" stdset="0">
+                    </property>
+                </widget>
+                <widget class="QLabel" row="1" column="2">
+                    <property name="name">
+                        <cstring>TextLabel1_9_2_2</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Rate units:</string>
+                    </property>
+                    <property name="alignment">
+                        <set>AlignVCenter|AlignRight</set>
+                    </property>
+                    <property name="hAlign" stdset="0">
+                    </property>
+                </widget>
+                <widget class="QLineEdit" row="1" column="3">
+                    <property name="name">
+                        <cstring>PSDRateUnits</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Hz</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>The units for the sample rate.  Used for automatic labels.</string>
+                    </property>
+                </widget>
+                <widget class="QLineEdit" row="0" column="3">
+                    <property name="name">
+                        <cstring>PSDVectorUnits</cstring>
+                    </property>
+                    <property name="text">
+                        <string>V</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>The units of the Data Vector - for automatic labels.</string>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
+        <widget class="QLayoutWidget" row="5" column="0">
+            <property name="name">
+                <cstring>Layout11</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <property name="margin">
+                    <number>0</number>
+                </property>
+                <property name="spacing">
+                    <number>6</number>
+                </property>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>Apply</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>0</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="text">
+                        <string>Apply</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Apply new data sample specifications to selected vectors.</string>
+                    </property>
+                </widget>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>TextLabel1_2_2</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>0</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="text">
+                        <string>In plot:</string>
+                    </property>
+                </widget>
+                <widget class="QComboBox">
+                    <property name="name">
+                        <cstring>PlotList</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>3</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="editable">
+                        <bool>false</bool>
+                    </property>
+                    <property name="insertionPolicy">
+                        <enum>AtTop</enum>
+                    </property>
+                    <property name="autoCompletion">
+                        <bool>true</bool>
+                    </property>
+                    <property name="duplicatesEnabled">
+                        <bool>false</bool>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>The name of the data file which will be read for this vector.</string>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+        <widget class="QLayoutWidget" row="7" column="0">
+            <property name="name">
+                <cstring>Layout13</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <property name="margin">
+                    <number>0</number>
+                </property>
+                <property name="spacing">
+                    <number>6</number>
+                </property>
+                <spacer>
+                    <property name="name">
+                        <cstring>Spacer3</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>20</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>Cancel</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>0</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="text">
+                        <string>Close</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Close dialog without applying further changes.</string>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+        <widget class="QLayoutWidget" row="6" column="0">
+            <property name="name">
+                <cstring>Layout12</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <property name="margin">
+                    <number>0</number>
+                </property>
+                <property name="spacing">
+                    <number>6</number>
+                </property>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>ApplyPlotCols</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>0</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="text">
+                        <string>Apply</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Arrange the plots in a grid.</string>
+                    </property>
+                </widget>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>TextLabel3</cstring>
+                    </property>
+                    <property name="text">
+                        <string>in new plot, number of columns:</string>
+                    </property>
+                </widget>
+                <widget class="QSpinBox">
+                    <property name="name">
+                        <cstring>PlotCols</cstring>
+                    </property>
+                    <property name="maxValue">
+                        <number>10</number>
+                    </property>
+                    <property name="minValue">
+                        <number>1</number>
+                    </property>
+                    <property name="value">
+                        <number>1</number>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>AutoLayout will place the plots in a grid with this many columns.</string>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+        <widget class="CurveAppearanceWidget" row="4" column="0">
+            <property name="name">
+                <cstring>_curveAppearance</cstring>
+            </property>
+        </widget>
+    </grid>
+</widget>
+<customwidgets>
+    <customwidget>
+        <class>CurveAppearanceWidget</class>
+        <header location="local">curveappearancewidget.h</header>
+        <sizehint>
+            <width>-1</width>
+            <height>-1</height>
+        </sizehint>
+        <container>0</container>
+        <sizepolicy>
+            <hordata>5</hordata>
+            <verdata>5</verdata>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+        </sizepolicy>
+        <pixmap>image1</pixmap>
+    </customwidget>
+</customwidgets>
+<images>
+    <image name="image0">
+        <data format="XPM.GZ" length="962">789c6d91cb6e83301045f77c05c2bba84a42802851d54f68d565a5aa0be3576230c4401655d57fafc7830d553bb11027877bcd63b749df5e9fd3cd2e19273a5d59ca2e744837fc6ecce7fbc7d357921d0e29ac22cdb38724ab5396bef49d8073eacec9de0fa00d782a00554056014e01a5041c10ab335a0e58e4c5bef0bbdc00cbbc9c9b196045ab7345017b444ab1aa033c15a71c2fde06c4dbb800d292e6b4046c3d322e306b0059c50e98bd07c4bb1a11a5c48baf1e393b320e4800b9801fa00614472ec411b001842436cb80d82c0262f396d0bf53fb4777aaaef9af45997ffba0841be90f30b3a951f9ff054a1e4c4c855ccccca939e68ed170b54ac1c4b65a117ab982227368317a560dd120576dad53dbc618e3d4ba4da85638654c874a8ac5f442eac674b7ce3450b7b459e52a74ccacdaac927220f33eeb4c0d994193a6f1c2bdb8d8a6ad526a1c49ef8496eb2715da5a3bf5ad9b5e29b164ee6e7bd2db304ec536782750e4cb5cf5d216bfa584256cccfc33686af6cf64df8fc90f8d5419ba</data>
+    </image>
+    <image name="image1">
+        <data format="XPM.GZ" length="4430">789cb597496f1d370cc7eff91446780b0a7636cd82a207ef8e1d2fcf8ed7a2076a166fef3def89eda2dfbd1af23f83c20e8af6d02807ffccbf284a22a9f1cf9f164ef6b6173efdfce1e1511e2feb85fa42ee173e354fb3d9cb6fbffffac7878f49b2d0ff8fca85e4e34f1f3e4e1e17ea859d9b79db033f05a048ff294f94937ef44ce72367ca3c72aefa6ae452f96c6451de1bb956de1fb9e9595e94b3613de191d53f7d1f59e7cb2b38b378c25607563b7523ab7f6e95f37ea87e4bb90c6cfeae9525fcc6e28f949ba88bf53ce8b9e7380ac3e2bb022771aa76a79cf443ed5f95d3d8c1ff74648d8776945d9c43ff0c2ec147e01041cf7eae9cc715ceff6160d3530aae2d1e362e07a65c59c2b0fd1f806becef58b98e1bb353619c246697cb912dbe43e53671e65fea9e833187ff2fca4952c44ee3390097c6b4aa5c260de6af1ba711ec7abe89249dd9bd18a7715428cf46b6fbda55f6698cf9dbe014bca45ca749acf9489f95bb60b7fc8cc159acfe48ef2f8dd3ca9813b0c495f2a37291c59171a35cf643e757e0cef4b239b2adbfdc7348cfdafc8be66b9664ade949f33173812d9f09dcc596cfea2fab5d857aca943be7cd2e6b3dbbc855e00d30ecb407aec13a5fd351efdbeb7dbac475967f5c18e711ea55cfcfa5791c6bfff00d18f5ecfdc86aa7b3819358f9169cda7cd6fc73d9a097136597a7c67e3ab0e5a3d77a76799e597cb20876163f693f7345ee503f7abeaeca4bece774609cafe69f93bc82bf66e044f3dd6bff733e17d44b3bb0d9691fec63db9ff60f570f767fa1dce4a847590637d8dfd5c0f01f8f6c7aed2fae1dd79b80bd9d9fccc143bfb81cd8e261bbcfae1faab7fbee823fab6f01b7a6f79a7f795cc4a8ff1d30fa0169bfcdb322b578e4019c25d66f36c039f25deb3f77c16eefcb3218f7c54b60e845cf33cf8bd04174fe05384decbdd1facc8b02f72377ca52e4c6acf99737fd502e95dba2c17a3b23eb7e45fb65919725ce370157b06bff2c8ab248acbed7c0a5ed576864b37f03633eaf8c6cfd70112cf0aff915a60f76bd8f42faa1acfdb4ece576be6a2fabaac67e4e8c25b2fecbcf235b3cfa9e94b50ce7a7ef69d904b6f85ec199e513dd0c6c7a317d27696ae75382b3d4e2d7fba9a2a0b77a3a01e789c5ff02ae10dff6c8f63eea7d55b1a05ff12a5810cfe2c0b81f3d8f2a910af11d837da2fdd3f3c8b6bede4f95f64359f3b5cac4a5567f66cf05fd951a631fd97d8ade5f55f808efc53a38467f3f1dd9ec1b60bc37520d8c78b47f56e5a0976d7092785d5fdfb7aaf219deaf17b0c37baffdbf121fa39f7a30faab68fe567e889fa6e0a15ecfc00ee7affdb8aa035b7c6b60d4231f810bd4b3be7f5513d6b7f8f7c00eefd72b7878efb7c015f87064ebffc6ad2f2dff690e16e47b3db2e9b5beaace4799dd7f0baeecfc24020bde3f7dbf240afead9fdc81c5f29573b0c77d6afe49ec338b4766e0cae6cb048cfa6507f6e8a77a3e92fa06f5b032b2c5a3fd5d42f9a25f6abf16a933e49bbe5fd2d41ef9aedf37d2d635fa83e93bdfe696cffa7ef8c877b97e1fb2f66f1f3ee88c45cfcb274d86fc3e1d18fd43ebd787cf91c2e2df053b67f5780fcec17a9fde0d7a9e821dd6d77ee68bf07963f77103ce61bf0517e0d9c8b6bf3b7009d6f7db97be163d7f367fe5689f832b63d1fee49ba6c5fde9fbe2dbc07a5e93c77f3ffeae676261ff835173c3ed5b3d777cce177cc9577ccd539ef19c6ff8368c3bbee7077ee4a7bfeb83ef73fec6dff9995ff89517798997798557798dd779833ff3e61bbdf056507fe16ddee15ddee34918fb7cc05ff9908fc2ace3377a1f223909ea533e0bea88634e380d3f9d71c68e732edee9af42242557c44424e4a9a6865aeae89c2ee8f207feaff995ae82f59aa634a339ddd02dddd17df0f0408ff4f44e3fa56ff49d9e83ef177aa5455a0aca655aa1d5e0638dd6dfe967b4112c9f6993b6e80b6d07f50eafd02eed85df4e68ff9dfe860e78425fe9908ed437d3319dd0299d057d44f13bfd9c12dea734ec320b6a4779985150191a2b4ba8cef7f188979af7a491563a39970bb9e4895cc9b54c6526f3b77ab9915bb90bfa7b79904779926ff25d9ee5455e65519664f907fe576455d6c2bd9ec9ba6cc867d994ada07e952fb22d3b6ff4b5ecf2baecc944f6e520447e1ef67e2e5f83ef433992633979a36ff8414ee54ca2f06761f8534ac26b28e1134a4aa9424a937fbbdf3664eca6f7bef68d6f7de7cffd85bff457b2ecaffdd4cffc9bfd86194fff3cded7d77fadc7ff45ffe72f1ffe02059d03ad</data>
+    </image>
+</images>
+<connections>
+    <connection>
+        <sender>Cancel</sender>
+        <signal>clicked()</signal>
+        <receiver>KstQuickPSDDialog</receiver>
+        <slot>reject()</slot>
+    </connection>
+</connections>
+<tabstops>
+    <tabstop>PSDSource</tabstop>
+    <tabstop>Vectors</tabstop>
+    <tabstop>FileName</tabstop>
+    <tabstop>Field</tabstop>
+    <tabstop>F0</tabstop>
+    <tabstop>CountFromEnd</tabstop>
+    <tabstop>N</tabstop>
+    <tabstop>ReadToEnd</tabstop>
+    <tabstop>DoSkip</tabstop>
+    <tabstop>Skip</tabstop>
+    <tabstop>DoFilter</tabstop>
+    <tabstop>PSDFFTLen</tabstop>
+    <tabstop>PSDVectorUnits</tabstop>
+    <tabstop>PSDSampRate</tabstop>
+    <tabstop>PSDRateUnits</tabstop>
+    <tabstop>Apply</tabstop>
+    <tabstop>PlotList</tabstop>
+    <tabstop>ApplyPlotCols</tabstop>
+    <tabstop>PlotCols</tabstop>
+    <tabstop>Cancel</tabstop>
+</tabstops>
+<includes>
+    <include location="local" impldecl="in implementation">kstsettings.h</include>
+    <include location="local" impldecl="in implementation">quickpsddialog.ui.h</include>
+</includes>
+<slots>
+    <slot access="private">init()</slot>
+</slots>
+<layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>kurlrequester.h</includehint>
+    <includehint>klineedit.h</includehint>
+    <includehint>kpushbutton.h</includehint>
+    <includehint>curveappearancewidget.h</includehint>
+</includehints>
+</UI>

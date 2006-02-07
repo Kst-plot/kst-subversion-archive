@@ -1,0 +1,309 @@
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<class>KstGraphFileDialog</class>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>KstGraphFileDialog</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>340</width>
+            <height>145</height>
+        </rect>
+    </property>
+    <property name="sizePolicy">
+        <sizepolicy>
+            <hsizetype>5</hsizetype>
+            <vsizetype>5</vsizetype>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+        </sizepolicy>
+    </property>
+    <property name="caption">
+        <string>Export to Graphics File</string>
+    </property>
+    <grid>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <property name="margin">
+            <number>11</number>
+        </property>
+        <property name="spacing">
+            <number>6</number>
+        </property>
+        <widget class="QLabel" row="1" column="0" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>TextLabel3</cstring>
+            </property>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>1</hsizetype>
+                    <vsizetype>0</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
+            <property name="text">
+                <string>Dimensions X:</string>
+            </property>
+            <property name="buddy" stdset="0">
+                <cstring>_xSize</cstring>
+            </property>
+        </widget>
+        <widget class="QLabel" row="1" column="4">
+            <property name="name">
+                <cstring>TextLabel4</cstring>
+            </property>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>0</hsizetype>
+                    <vsizetype>0</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
+            <property name="text">
+                <string>Y:</string>
+            </property>
+            <property name="buddy" stdset="0">
+                <cstring>_ySize</cstring>
+            </property>
+        </widget>
+        <widget class="QLabel" row="0" column="0">
+            <property name="name">
+                <cstring>TextLabel2</cstring>
+            </property>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>1</hsizetype>
+                    <vsizetype>0</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
+            <property name="text">
+                <string>Save Location:</string>
+            </property>
+            <property name="buddy" stdset="0">
+                <cstring>_url</cstring>
+            </property>
+        </widget>
+        <spacer row="4" column="0" rowspan="1" colspan="3">
+            <property name="name">
+                <cstring>Spacer27</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>117</width>
+                    <height>20</height>
+                </size>
+            </property>
+        </spacer>
+        <widget class="Line" row="3" column="0" rowspan="1" colspan="7">
+            <property name="name">
+                <cstring>line1</cstring>
+            </property>
+            <property name="frameShape">
+                <enum>HLine</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Sunken</enum>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+        </widget>
+        <widget class="QSpinBox" row="2" column="6">
+            <property name="name">
+                <cstring>_period</cstring>
+            </property>
+            <property name="enabled">
+                <bool>false</bool>
+            </property>
+            <property name="suffix">
+                <string>s</string>
+            </property>
+            <property name="maxValue">
+                <number>100000</number>
+            </property>
+            <property name="minValue">
+                <number>1</number>
+            </property>
+            <property name="value">
+                <number>15</number>
+            </property>
+        </widget>
+        <widget class="QCheckBox" row="2" column="0" rowspan="1" colspan="3">
+            <property name="name">
+                <cstring>_autosave</cstring>
+            </property>
+            <property name="text">
+                <string>Autosave</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="4" column="3" rowspan="1" colspan="3">
+            <property name="name">
+                <cstring>_save</cstring>
+            </property>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>0</hsizetype>
+                    <vsizetype>0</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
+            <property name="text">
+                <string>Save Once</string>
+            </property>
+            <property name="default">
+                <bool>true</bool>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="4" column="6">
+            <property name="name">
+                <cstring>_close</cstring>
+            </property>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>0</hsizetype>
+                    <vsizetype>0</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
+            <property name="text">
+                <string>Close</string>
+            </property>
+        </widget>
+        <widget class="QLabel" row="2" column="4" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>TextLabel1_2</cstring>
+            </property>
+            <property name="enabled">
+                <bool>false</bool>
+            </property>
+            <property name="text">
+                <string>Save interval:</string>
+            </property>
+            <property name="buddy" stdset="0">
+                <cstring>_period</cstring>
+            </property>
+        </widget>
+        <widget class="QCheckBox" row="1" column="6">
+            <property name="name">
+                <cstring>_square</cstring>
+            </property>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>0</hsizetype>
+                    <vsizetype>0</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
+            <property name="text">
+                <string>Square</string>
+            </property>
+            <property name="whatsThis" stdset="0">
+                <string>Lock the Height to the Width of the Image.</string>
+            </property>
+        </widget>
+        <widget class="QSpinBox" row="1" column="2" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>_xSize</cstring>
+            </property>
+            <property name="maxValue">
+                <number>10000</number>
+            </property>
+            <property name="minValue">
+                <number>5</number>
+            </property>
+            <property name="lineStep">
+                <number>20</number>
+            </property>
+            <property name="value">
+                <number>640</number>
+            </property>
+            <property name="whatsThis" stdset="0">
+                <string>Width (in Pixels) of the image.</string>
+            </property>
+        </widget>
+        <widget class="QSpinBox" row="1" column="5">
+            <property name="name">
+                <cstring>_ySize</cstring>
+            </property>
+            <property name="maxValue">
+                <number>10000</number>
+            </property>
+            <property name="minValue">
+                <number>5</number>
+            </property>
+            <property name="lineStep">
+                <number>20</number>
+            </property>
+            <property name="value">
+                <number>480</number>
+            </property>
+            <property name="whatsThis" stdset="0">
+                <string>Height of the image (in pixels).</string>
+            </property>
+        </widget>
+        <widget class="KURLRequester" row="0" column="1" rowspan="1" colspan="6">
+            <property name="name">
+                <cstring>_url</cstring>
+            </property>
+        </widget>
+    </grid>
+</widget>
+<connections>
+    <connection>
+        <sender>_close</sender>
+        <signal>clicked()</signal>
+        <receiver>KstGraphFileDialog</receiver>
+        <slot>reject()</slot>
+    </connection>
+    <connection>
+        <sender>_autosave</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>_period</receiver>
+        <slot>setEnabled(bool)</slot>
+    </connection>
+    <connection>
+        <sender>_autosave</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>TextLabel1_2</receiver>
+        <slot>setEnabled(bool)</slot>
+    </connection>
+    <connection>
+        <sender>_square</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>_ySize</receiver>
+        <slot>setDisabled(bool)</slot>
+    </connection>
+</connections>
+<tabstops>
+    <tabstop>_url</tabstop>
+    <tabstop>_xSize</tabstop>
+    <tabstop>_ySize</tabstop>
+    <tabstop>_square</tabstop>
+    <tabstop>_autosave</tabstop>
+    <tabstop>_period</tabstop>
+    <tabstop>_save</tabstop>
+    <tabstop>_close</tabstop>
+</tabstops>
+<layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>kurlrequester.h</includehint>
+    <includehint>klineedit.h</includehint>
+    <includehint>kpushbutton.h</includehint>
+</includehints>
+</UI>

@@ -1,0 +1,276 @@
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<class>CurveAppearanceWidget</class>
+<widget class="QWidget">
+    <property name="name">
+        <cstring>CurveAppearanceWidget</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>662</width>
+            <height>504</height>
+        </rect>
+    </property>
+    <property name="sizePolicy">
+        <sizepolicy>
+            <hsizetype>1</hsizetype>
+            <vsizetype>1</vsizetype>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+        </sizepolicy>
+    </property>
+    <property name="caption">
+        <string>CurveAppearanceWidget</string>
+    </property>
+    <vbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <property name="margin">
+            <number>0</number>
+        </property>
+        <property name="spacing">
+            <number>0</number>
+        </property>
+        <widget class="QGroupBox">
+            <property name="name">
+                <cstring>GroupBox9_2_2_2</cstring>
+            </property>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>5</hsizetype>
+                    <vsizetype>0</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
+            <property name="title">
+                <string>Curve Appearance</string>
+            </property>
+            <property name="whatsThis" stdset="0">
+                <string>Reset the dialog to reflect labels currently displayed on plot.</string>
+            </property>
+            <vbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <property name="margin">
+                    <number>5</number>
+                </property>
+                <property name="spacing">
+                    <number>2</number>
+                </property>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>Layout11</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <property name="margin">
+                            <number>0</number>
+                        </property>
+                        <property name="spacing">
+                            <number>6</number>
+                        </property>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>_label</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>3</hsizetype>
+                                    <vsizetype>5</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="frameShape">
+                                <enum>NoFrame</enum>
+                            </property>
+                            <property name="frameShadow">
+                                <enum>Plain</enum>
+                            </property>
+                            <property name="scaledContents">
+                                <bool>true</bool>
+                            </property>
+                        </widget>
+                        <widget class="KColorButton">
+                            <property name="name">
+                                <cstring>_color</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>0</hsizetype>
+                                    <vsizetype>0</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="text">
+                                <string>-</string>
+                            </property>
+                        </widget>
+                    </hbox>
+                </widget>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>Layout12</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <property name="margin">
+                            <number>0</number>
+                        </property>
+                        <property name="spacing">
+                            <number>6</number>
+                        </property>
+                        <widget class="QCheckBox">
+                            <property name="name">
+                                <cstring>_showLines</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>0</hsizetype>
+                                    <vsizetype>0</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="font">
+                                <font>
+                                </font>
+                            </property>
+                            <property name="text">
+                                <string>Show lines</string>
+                            </property>
+                            <property name="checked">
+                                <bool>true</bool>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>Check this to cause lines to be drawn between data points.</string>
+                            </property>
+                        </widget>
+                        <widget class="QCheckBox">
+                            <property name="name">
+                                <cstring>_showPoints</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>0</hsizetype>
+                                    <vsizetype>0</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="font">
+                                <font>
+                                </font>
+                            </property>
+                            <property name="text">
+                                <string>Show points</string>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>Check this to cause the selected points to be drawn at each data point.</string>
+                            </property>
+                        </widget>
+                        <widget class="QComboBox">
+                            <property name="name">
+                                <cstring>_combo</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>3</hsizetype>
+                                    <vsizetype>0</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="font">
+                                <font>
+                                </font>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>If "Show Points" is checked, the selected point type will be drawn at each data point.</string>
+                            </property>
+                        </widget>
+                    </hbox>
+                </widget>
+            </vbox>
+        </widget>
+    </vbox>
+</widget>
+<connections>
+    <connection>
+        <sender>_color</sender>
+        <signal>changed(const QColor&amp;)</signal>
+        <receiver>CurveAppearanceWidget</receiver>
+        <slot>fillCombo()</slot>
+    </connection>
+    <connection>
+        <sender>_color</sender>
+        <signal>changed(const QColor&amp;)</signal>
+        <receiver>CurveAppearanceWidget</receiver>
+        <slot>drawLine()</slot>
+    </connection>
+    <connection>
+        <sender>_showLines</sender>
+        <signal>clicked()</signal>
+        <receiver>CurveAppearanceWidget</receiver>
+        <slot>drawLine()</slot>
+    </connection>
+    <connection>
+        <sender>_showPoints</sender>
+        <signal>clicked()</signal>
+        <receiver>CurveAppearanceWidget</receiver>
+        <slot>drawLine()</slot>
+    </connection>
+    <connection>
+        <sender>_combo</sender>
+        <signal>activated(int)</signal>
+        <receiver>CurveAppearanceWidget</receiver>
+        <slot>drawLine()</slot>
+    </connection>
+    <connection>
+        <sender>_combo</sender>
+        <signal>activated(int)</signal>
+        <receiver>CurveAppearanceWidget</receiver>
+        <slot>comboChanged()</slot>
+    </connection>
+</connections>
+<includes>
+    <include location="global" impldecl="in implementation">qpixmap.h</include>
+    <include location="global" impldecl="in implementation">qpainter.h</include>
+    <include location="local" impldecl="in implementation">kstpoint.h</include>
+    <include location="local" impldecl="in implementation">kstcolorsequence.h</include>
+    <include location="global" impldecl="in implementation">qtimer.h</include>
+    <include location="local" impldecl="in implementation">curveappearancewidget.ui.h</include>
+</includes>
+<slots>
+    <slot>init()</slot>
+    <slot access="private">fillCombo()</slot>
+    <slot>setColor( QColor c )</slot>
+    <slot>drawLine()</slot>
+    <slot>reset( QColor newColor )</slot>
+    <slot>setValue( bool hasLines, bool hasPoints, const QColor &amp; c, int pointType )</slot>
+    <slot access="private">comboChanged()</slot>
+    <slot>reset()</slot>
+    <slot>setUsePoints( bool usePoints )</slot>
+    <slot>setMustUseLines( bool bMustUseLines )</slot>
+    <slot>redrawCombo()</slot>
+</slots>
+<functions>
+    <function returnType="bool">showLines()</function>
+    <function returnType="bool">showPoints()</function>
+    <function returnType="QColor">color()</function>
+    <function returnType="int">pointType()</function>
+</functions>
+<layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>kcolorbutton.h</includehint>
+</includehints>
+</UI>

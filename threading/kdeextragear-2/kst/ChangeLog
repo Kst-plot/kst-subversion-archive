@@ -1,0 +1,2800 @@
+2003-12-21 Sunday 03:21  staikos
+
+	* 	use the new KstScalar method
+
+2003-12-21 Sunday 03:17  staikos
+
+	* 	infrastructure for saving filters - not activated yet
+
+2003-12-21 Sunday 01:30  staikos
+
+	* 	store the file type
+	CCMAIL: 70923@bugs.kde.org
+
+2003-12-21 Sunday 01:26  staikos
+
+	* 	CVS_SILENT
+
+2003-12-21 Sunday 01:20  staikos
+
+	* 	rvectors should not crash if they cannot find the file they need.  It's not
+	pretty, but I would rather have null files than have files that are useless
+	in all ways except that they are not null.  Meanwhile we shouldn't return
+	null files for dirfiles that don't exist yet.  That will be fixed next.
+
+	CCMAIL: 70923-done@bugs.kde.org
+
+2003-12-21 Sunday 00:22  staikos
+
+	* 	Make scalars work by name, and make the filter create a scalar with a given
+	name if it is specified but it doesn't exist.  This may not be ideal but it's
+	the most convenient implementation right now.  For some reason when scalars
+	are changed for a plugin, the plugin doesn't update.
+
+2003-12-20 Saturday 22:41  staikos
+
+	* 	We really need a solution for this in designer.  Everytime I commit a .ui file
+	I have to remember to edit it by hand first and change 3.2->3.1.
+
+	Also add a missing i18n()
+
+2003-12-20 Saturday 22:33  staikos
+
+	* 	start editting on double click
+
+2003-12-20 Saturday 01:36  staikos
+
+	* 	bug fixes, a small change to the API for filters needed to make them work, and
+	add the code to support sets of > 1 filter.
+
+2003-12-20 Saturday 00:10  staikos
+
+	* 	revert last
+
+2003-12-20 Saturday 00:00  staikos
+
+	* 	Make filters work in the case of a filterset with exactly 1 filter defined,
+	and only constants for the input scalars.  Fixes to follow, including
+	save support.  Also seems that a bug in gcc 3.3-prerelease (suse) was
+	tripped by this code, but I was unable to make a good testcase so far.
+	Worked around until more can be determined.
+
+2003-12-19 Friday 18:39  arwalker
+
+	* 	Should have checked this in for the original fix.
+
+2003-12-19 Friday 18:16  arwalker
+
+	* 	Redraw the point selection combobox after the dialog
+	is initially drawn, so the geometry is correct.
+
+2003-12-19 Friday 17:47  arwalker
+
+	* 	As the histogram will draw lines regardless of the user selection
+	we simply disable the option and always select it. This avoids
+	potential user confusion.
+
+2003-12-19 Friday 09:17  staikos
+
+	* 	filters are almost functional right now.  just a few small FIXMEs to go...
+
+2003-12-19 Friday 06:29  staikos
+
+	* 	some UI fixes, and make doubleclick in the listbox apply a filter to the
+	current filterset
+
+2003-12-19 Friday 06:09  staikos
+
+	* 	- filter UI fixes for the data manager
+	- add a context menu to slave^W[insert politically correct term] vectors
+
+2003-12-19 Friday 01:31  scripty
+
+	* 	CVS_SILENT made messages
+
+2003-12-18 Thursday 22:53  staikos
+
+	* 	Remove unneeded checks, repair indenting
+
+2003-12-18 Thursday 21:11  arwalker
+
+	* 	In the Plot Dialog... Labels tab draw the sample labels to
+	the correct size, before the user makes some change to them.
+
+2003-12-18 Thursday 01:55  scripty
+
+	* 	CVS_SILENT made messages
+
+2003-12-17 Wednesday 23:09  netterfield
+
+	* 	Make it compile...
+
+2003-12-17 Wednesday 20:08  arwalker
+
+	* 	For better user interface consistency use the
+	curveAppearance widget in the Quick Curve
+	and Quick PSD dialogs
+
+2003-12-17 Wednesday 18:02  arwalker
+
+	* 	Provide a marginally nicer looking appearance of the point style
+	drawn in the edit field portion of the combobox by centering the
+	point style and painting the entire area in the same colour.
+
+2003-12-16 Tuesday 20:10  arwalker
+
+	* 	Do not modify the selected point style when the user selects a new colour.
+
+2003-12-16 Tuesday 20:09  arwalker
+
+	* 	Added triangular data point style
+
+2003-12-16 Tuesday 18:07  arwalker
+
+	* 	Removed compiler warnings
+
+2003-12-16 Tuesday 17:52  arwalker
+
+	* 	Do not call DataFileEntry->setEnabled( false ) in update( ... ) when we have
+	valid vectors as the user may have checked the SourceDataFile option,
+	in which case the DataFileEntry should be enabled.
+
+2003-12-15 Monday 20:48  staikos
+
+	* 	add the filtered vectors to the data manager, update the dialogs
+
+2003-12-15 Monday 19:21  arwalker
+
+	* 	Defined KST_UNUSED
+
+2003-12-15 Monday 19:20  arwalker
+
+	* 	Removed compiler warnings
+	Defined KST_UNUSED
+
+2003-12-15 Monday 19:09  arwalker
+
+	* 	Defined KST_UNUSED
+
+2003-12-15 Monday 18:57  arwalker
+
+	* 	Removed compiler warnings
+
+2003-12-15 Monday 18:12  staikos
+
+	* 	Basic plan for the filtered vector object, which is a vector that is filtered.
+
+2003-12-15 Monday 15:38  staikos
+
+	* 	removing filter code as I was reminded that we will take a different approach
+
+2003-12-15 Monday 14:30  arwalker
+
+	* 	Removed all compiler warnings
+
+2003-12-15 Monday 14:15  arwalker
+
+	* 	Removed all compiler warnings
+
+2003-12-15 Monday 14:12  arwalker
+
+	* 	Removed all compiler warnings
+
+2003-12-15 Monday 14:08  arwalker
+
+	* 	Remove compiler warnings and compile under strict C syntax
+
+2003-12-15 Monday 06:19  staikos
+
+	* 	relocate the filters to the proper place and add support for adding them to
+	vectors
+
+2003-12-15 Monday 03:49  staikos
+
+	* 	CVS_SILENT
+
+2003-12-15 Monday 03:47  staikos
+
+	* 	more implementation of filters, and many bug fixes
+
+2003-12-14 Sunday 12:38  staikos
+
+	* 	compile with 3.1
+
+2003-12-14 Sunday 01:43  scripty
+
+	* 	CVS_SILENT made messages
+
+2003-12-13 Saturday 12:53  mlaurent
+
+	* 	Fix compile
+
+2003-12-13 Saturday 11:29  binner
+
+	* 	CVS_SILENT Pssst....
+
+2003-12-12 Friday 17:56  arwalker
+
+	* 	Added chop plugin to build
+
+2003-12-12 Friday 17:55  arwalker
+
+	* 	Added plugin to chop data. This is useful when, for example, alternating data points are actually chopped from reference to sky.
+
+2003-12-12 Friday 17:23  staikos
+
+	* 	much more of the UI fixed and activated, but it still needs very much work
+
+2003-12-12 Friday 16:45  arwalker
+
+	* 	Added several new plugins to the build
+
+2003-12-12 Friday 14:47  staikos
+
+	* 	lots of GUI fixes and enhancements, and some minor filter fixes
+
+2003-12-12 Friday 01:37  staikos
+
+	* 	most of the filter editor gui is now functional, and the object structure is
+	adjusted to match the desired behaviour
+
+2003-12-12 Friday 01:36  scripty
+
+	* 	CVS_SILENT made messages
+
+2003-12-11 Thursday 22:40  staikos
+
+	* 	So I stop confusing myself
+
+2003-12-11 Thursday 01:39  scripty
+
+	* 	CVS_SILENT made messages
+
+2003-12-10 Wednesday 16:13  arwalker
+
+	* 	Plugin to determine statistics (mean, min, max, sd, and median) of a data set.
+
+2003-12-10 Wednesday 16:12  arwalker
+
+	* 	Corrected Makefile.am
+
+2003-12-10 Wednesday 14:10  arwalker
+
+	* 	Plugin to phase data to a specified period and zero phase.
+
+2003-12-10 Wednesday 12:53  arwalker
+
+	* 	Set the default return value from the plugin to -1, denoting failure.
+
+2003-12-09 Tuesday 09:42  mueller
+
+	* 	unbreak compilation (--enable-final)
+
+2003-12-08 Monday 12:07  staikos
+
+	* 	wrong version
+
+2003-12-08 Monday 05:30  staikos
+
+	* 	scan and load filters and integrate the filter dialog
+
+2003-12-08 Monday 03:39  staikos
+
+	* 	oops, compile
+
+2003-12-08 Monday 03:10  staikos
+
+	* 	sample filter
+
+2003-12-08 Monday 01:12  staikos
+
+	* 	committing initial filter files (incomplete)
+
+2003-12-07 Sunday 17:23  staikos
+
+	* 	draw the last point in graphs.  I'm not sure if this is entirely correct, but
+	it definitely fixes this bug.  The problem is that there might be unexpected
+	consequences, so this needs lots of testing before release.
+
+	CCMAIL: 69645-done@bugs.kde.org
+
+2003-12-07 Sunday 16:43  staikos
+
+	* 	reformat - no functional change
+
+2003-12-05 Friday 03:33  staikos
+
+	* 	Properly detect ascii files that use E instead of e for scientific notation.
+
+	CCMAIL: 69645@bugs.kde.org
+
+2003-12-01 Monday 21:19  mhunter
+
+	* 	CVS_SILENT Typographical corrections and changes
+
+2003-11-28 Friday 02:51  staikos
+
+	* 	Processing directive in Kst files so the parser knows it's encoded with UTF-8
+
+	CCMAIL: 67369-done@bugs.kde.org
+
+2003-11-24 Monday 01:44  scripty
+
+	* 	CVS_SILENT made messages
+
+2003-11-24 Monday 01:28  staikos
+
+	* 	Interpolate y axis manually in data mode
+
+	CCMAIL: 68040-done@bugs.kde.org
+
+2003-11-23 Sunday 22:37  staikos
+
+	* 	settings now work - two of them implemented
+
+2003-11-19 Wednesday 01:42  scripty
+
+	* 	CVS_SILENT made messages
+
+2003-11-18 Tuesday 01:30  scripty
+
+	* 	CVS_SILENT made messages
+
+2003-11-16 Sunday 01:43  scripty
+
+	* 	CVS_SILENT made messages
+
+2003-11-15 Saturday 01:39  scripty
+
+	* 	CVS_SILENT made messages
+
+2003-11-14 Friday 23:58  netterfield
+
+	* 	Inline some functions for the equation parser- slight (15%) speedup.
+
+2003-11-14 Friday 12:48  staikos
+
+	* 	of course I would do this
+
+2003-11-14 Friday 01:32  scripty
+
+	* 	CVS_SILENT made messages
+
+2003-11-13 Thursday 19:32  staikos
+
+	* 	added a settings dialog that doesn't change settings yet
+
+2003-11-13 Thursday 18:38  staikos
+
+	* 	CVS_SILENT
+
+2003-11-13 Thursday 16:52  staikos
+
+	* 	CVS_SILENT
+
+2003-11-13 Thursday 16:29  staikos
+
+	* 	Don't crash in data mode, do data mode properly in non-log mode
+	- took a chapter from the overcomplication book here it seems, resulting in a
+	  very difficult bug to track down
+
+	CCMAIL: 68041-done@bugs.kde.org
+
+2003-11-12 Wednesday 16:43  arwalker
+
+	* 	First draft of FITS data source...
+
+2003-11-12 Wednesday 15:40  staikos
+
+	* 	refactor
+
+2003-11-12 Wednesday 01:35  scripty
+
+	* 	CVS_SILENT made messages
+
+2003-11-11 Tuesday 22:24  staikos
+
+	* 	stat can fail here
+
+2003-11-11 Tuesday 21:00  staikos
+
+	* 	cleanup
+
+2003-11-11 Tuesday 20:16  staikos
+
+	* 	Plugin XML file editor - a start.  Please give it a try and comment.
+
+	to build: qmake plugineditor.pro ; make
+
+2003-11-11 Tuesday 19:41  staikos
+
+	* 	added much more editting support, and also write the DTD out properly
+
+2003-11-11 Tuesday 16:44  staikos
+
+	* 	add more files to the rpm
+
+	CCMAIL: 67607-done@bugs.kde.org
+
+2003-11-11 Tuesday 13:37  staikos
+
+	* 	Don't crash!
+	-> Signals should not be emitted here
+
+2003-11-10 Monday 18:07  netterfield
+
+	* 	Allow for more vectors in an equation.
+	The limits are still not checked, so it will fail silently after 26 vectors
+	in an equation.
+
+2003-11-09 Sunday 22:04  netterfield
+
+	* 	-Clean up histogram auto-binning - put it all in one place
+	-add command line equations in main
+	-some (minor) cleanups to main
+	-fix ref-counting bugs for command line objects:
+		???Ptr were used for some temporary variables which don't go
+		out of scope before app.exec(), so the reference stays forever.
+		One could
+			i) make sure they go out of scope
+			ii) make sure they are set to zero before app.exec
+			iii) use ???* instead of ???Ptr for temporary variables.
+		I have chosen iii
+
+2003-11-08 Saturday 01:41  scripty
+
+	* 	CVS_SILENT made messages
+
+2003-11-07 Friday 16:38  staikos
+
+	* 	CVS_SILENT
+
+2003-11-07 Friday 16:01  staikos
+
+	* 	This is 0.94
+
+2003-11-07 Friday 08:43  staikos
+
+	* 	- fixed d2asc - needs KInstance now
+	- equations now get escaped for XML writeout
+	    - we should consider writing out with QDom instead
+
+2003-11-07 Friday 08:21  staikos
+
+	* 	discovered and worked around the reason for crashes - the regression test was
+	generating orphan vectors, and issue unresolved in the DCOP interface since it's
+	so useful to be able to do, but completely unhandled in file handling and data
+	management
+
+2003-11-07 Friday 01:28  scripty
+
+	* 	CVS_SILENT made messages
+
+2003-11-06 Thursday 09:18  netterfield
+
+	* 	Fix for Bug 67371
+
+2003-11-05 Wednesday 21:55  staikos
+
+	* 	Implement more DCOP calls (file manipulation), and more testcases
+
+2003-11-05 Wednesday 17:33  staikos
+
+	* 	more regression tests
+
+2003-11-05 Wednesday 17:13  staikos
+
+	* 	Allow the reading of vectors from files via DCOP
+
+2003-11-05 Wednesday 04:17  coolo
+
+	* 	it might come as a suprise to the one or the other, but you can't simply
+	set the name of the module 4 times and then it will magically know what
+	to do.
+
+2003-11-05 Wednesday 01:47  staikos
+
+	* 	- fix saving of kstfiles
+	- allow - for stdin
+
+2003-11-04 Tuesday 23:35  staikos
+
+	* 	CVS_SILENT
+
+2003-11-04 Tuesday 23:33  staikos
+
+	* 	retag as 0.93
+
+2003-11-04 Tuesday 22:49  staikos
+
+	* 	Implement reload support.  Unfortunately it is not nearly as efficient as I
+	would prefer to see it.  It also results in rvectors detaching from shared
+	data sources (fragmenting).
+
+2003-11-04 Tuesday 19:06  staikos
+
+	* 	update the spec file for the plugins, add the stub for the reload action
+
+2003-11-04 Tuesday 01:15  staikos
+
+	* 	default to an existing vector if there is one instead of generating a new X
+	vector
+
+2003-11-01 Saturday 01:40  scripty
+
+	* 	CVS_SILENT made messages
+
+2003-10-31 Friday 18:58  staikos
+
+	* 	no need to complete stdin
+
+2003-10-31 Friday 18:53  staikos
+
+	* 	Added stdin support, fixed a couple of buglets.  Autocompletion population still
+	needs to be fixed because it conflicts with the stdin plugin now.
+
+2003-10-31 Friday 15:55  staikos
+
+	* 	Hack up piolib to make it barely functional with TOI objects for now.  Needs
+	many changes still though
+
+2003-10-31 Friday 09:17  staikos
+
+	* 	 another unused file.
+
+2003-10-31 Friday 09:14  staikos
+
+	* 	goodbye
+
+2003-10-31 Friday 09:07  staikos
+
+	* 	remove accidental commit
+
+2003-10-30 Thursday 00:23  staikos
+
+	* 	pio is almost working, if not for the crashing
+
+2003-10-29 Wednesday 23:15  staikos
+
+	* 	pio updates and fixes - almost working
+
+2003-10-29 Wednesday 16:22  netterfield
+
+	* 	Fix optimization for zooming into large vectors
+	Fix equation parser and multiple '['
+	Fix interpolation bug in equations
+
+2003-10-29 Wednesday 15:01  binner
+
+	* 	CVS_SILENT
+
+2003-10-28 Tuesday 04:17  staikos
+
+	* 	some reworking of the piolib implementation
+
+2003-10-28 Tuesday 02:31  scripty
+
+	* 	CVS_SILENT made messages
+
+2003-10-27 Monday 01:08  staikos
+
+	* 	make it support all attributes, bugfix
+
+2003-10-24 Friday 16:54  staikos
+
+	* 	updates from the road - allows saving
+
+2003-10-24 Friday 16:40  cullmann
+
+	* 	make unsermake happy, did terminate with error because this makefile.am is
+	missing and the child dir has one
+	this file is empty and just dummy
+	coolo: just misuse or unsermake bug ?
+
+	CCMAIL: coolo@kde.org
+
+2003-10-24 Friday 02:01  staikos
+
+	* 	add planck file detection.  The new method is that in order to access planck
+	data, the user must provide the xml filename.  The vectors are then considered
+	to be a group and an object.
+
+2003-10-24 Friday 01:13  staikos
+
+	* 	for now, let's do it like this
+
+2003-10-24 Friday 01:07  staikos
+
+	* 	fixed the XML
+
+2003-10-24 Friday 01:01  staikos
+
+	* 	The start of a tool to view and manipulate planck xml files
+
+2003-10-23 Thursday 22:00  staikos
+
+	* 	test stuff for pio
+
+2003-10-23 Thursday 19:31  staikos
+
+	* 	Implement auto completion immediately.
+	CCMAIL: 64893-done@bugs.kde.org
+
+2003-10-23 Thursday 17:09  staikos
+
+	* 	Well the dirfile plugin passes initial testing with this patch.
+
+2003-10-23 Thursday 14:38  staikos
+
+	* 	fix validity check.  Indirect files are confirmed working now
+
+2003-10-22 Wednesday 20:55  staikos
+
+	* 	fix linkage
+
+2003-10-22 Wednesday 20:37  staikos
+
+	* 	merging the planckio branch and creating the framework for the planck plugin
+
+2003-10-22 Wednesday 19:12  staikos
+
+	* 	- Implement indirect datasource as a plugin which contains another datasource!
+	- merge some more of kstfile - including dirfile and frame file detection
+	- remove unused methods
+	- make isValid() virtual for the indirect datasource plugin
+
+2003-10-22 Wednesday 16:47  staikos
+
+	* 	- move the data code into the proper plugins
+	- add the frame plugin, untested and not yet functional by any means
+
+2003-10-21 Tuesday 22:32  staikos
+
+	* 	- get rid of C++ compatibility headers, they're not needed now
+	- fix dirfile plugin build and enable it - it certainly doesn't work yet
+	though.
+
+2003-10-21 Tuesday 22:08  staikos
+
+	* 	- pushed some functionality from the plugins up into the base class
+	- added the beginning (uncompilable) of the dirfile plugin
+
+2003-10-21 Tuesday 21:06  staikos
+
+	* 	Nothing wrong with an empty file - it could get data later if it's generated
+	in realtime
+
+2003-10-21 Tuesday 20:00  staikos
+
+	* 	CVS_SILENT remove unneeded debug and update changelog
+
+2003-10-21 Tuesday 19:43  staikos
+
+	* 	Activated the new plugin code.  kstfile is now obsolete.
+
+	NOTE: Only ascii files work now, and I would prefer to write that as "work".
+	      The demo loads and seems to be minimally functional.  There is still
+	      much work left to do though.  Other plugins will be reimplemented over
+	      time.  If you need stable Kst, please update from the kst_0_93_release
+	      tag.
+
+2003-10-21 Tuesday 03:12  staikos
+
+	* 	forgot to commit
+	CVS_SILENT
+
+2003-10-20 Monday 22:52  staikos
+
+	* 	ascii plugin is nearly done, but still completely untested
+
+2003-10-20 Monday 21:18  staikos
+
+	* 	Don't leave invalid vectors in the list to be updated from.
+
+	CCMAIL: 66303-done@bugs.kde.org
+
+2003-10-20 Monday 19:29  staikos
+
+	* 	post-0.93 CVS_SILENT
+
+2003-10-20 Monday 19:27  staikos
+
+	* 	Bump version number for the 0.93 tag
+	CVS_SILENT
+
+2003-10-20 Monday 19:23  staikos
+
+	* 	Fix the spec file.  Thanks for the patch!
+
+	CCMAIL: 66302-done@bugs.kde.org
+
+2003-10-20 Monday 05:37  staikos
+
+	* 	*finally* straighten out the log-log graph coordinates in data mode.  I think
+	this is the last data mode bug to fix before 0.93
+
+2003-10-20 Monday 04:56  staikos
+
+	* 	- Only display data in data mode when we are actually inside a graph
+	- Init some variables
+	- Point out optimization points in the curve and vector code
+
+2003-10-17 Friday 03:56  staikos
+
+	* 	tab order fixes
+
+2003-10-17 Friday 03:34  staikos
+
+	* 	added ChangeLog and makefile target to generate it with cvs2cl.pl
+
+2003-10-17 Friday 03:29  staikos
+
+	* 	CVS_SILENT
+
+2003-10-17 Friday 03:23  staikos
+
+	* 	- install the datasource header and its dependencies
+	- note in those classes about binary compatibility
+	- move KstObject implementations out of the header file
+	- add virtual_hooks
+	- add d-pointers
+	- create datasource plugin template
+	- create ascii plugin that is completely non-functional right now
+
+	Plugins may change quite a bit still
+
+2003-10-17 Friday 02:40  staikos
+
+	* 	let's query the opposite way
+
+2003-10-17 Friday 02:23  staikos
+
+	* 	more datasource code implemented
+
+2003-10-17 Friday 00:10  staikos
+
+	* 	started the abstract data source object
+
+2003-10-16 Thursday 22:53  staikos
+
+	* 	minor changes - mostly whitespace and dead code removal - from planck branch
+	primarily
+
+2003-10-16 Thursday 22:25  staikos
+
+	* 	fix crash issues, apparently introduce another small bug
+
+2003-10-10 Friday 06:20  staikos
+
+	* 	non-planck compile fix
+
+2003-10-10 Friday 06:08  staikos
+
+	* 	Finally finish basic piolib TOI integration.  it's really not pretty, but it's
+	very basically functional (and slow).  Many problems with Kst design were
+	discovered that need to be addressed if we want to do a proper piolib
+	integration.  (It's fine for what it is, but it wasn't designed to do what
+	piolib wants to do.)  Also several API and documentation bugs were discovered
+	in PIOLib, as well as some design inefficiencies that we should try to address.
+
+2003-10-10 Friday 03:36  staikos
+
+	* 	crash fix
+
+2003-10-10 Friday 03:29  staikos
+
+	* 	tool to generate sample PLANCK TOI data based on the C document example
+
+2003-10-09 Thursday 23:19  staikos
+
+	* 	more minor fixes or hacks
+
+2003-10-09 Thursday 23:09  staikos
+
+	* 	apply crash fix from the branch into HEAD
+
+2003-10-09 Thursday 23:07  staikos
+
+	* 	some planck fixes and a crash fix for nonexistent files
+
+2003-10-09 Thursday 13:30  staikos
+
+	* 	make it clear which version we are referring to
+
+2003-10-09 Thursday 13:28  staikos
+
+	* 	integrate libpio and enable planckio builds.  also workaround some pio flaws.
+
+2003-10-09 Thursday 01:44  staikos
+
+	* 	new idea: let piolib handle type conversion and bail out, this way we don't
+	have to do string compares and we can support a large number of conversions
+
+2003-10-09 Thursday 01:24  staikos
+
+	* 	more implementation, some fixes, and some cleanup
+
+2003-10-09 Thursday 00:54  staikos
+
+	* 	A big chunk of PIOLib integration - TOI only so far, and completely untested
+	as the piolib linking is not done yet.  Code compiles without PIOLib still.
+
+2003-10-03 Friday 04:26  staikos
+
+	* 	decrease instantiation time of KstApp::KstApp by 20%
+
+2003-10-03 Friday 00:46  staikos
+
+	* 	statistical optimisations in the ascii file reading code - check the common
+	case before the uncommon case.
+
+2003-10-02 Thursday 21:31  staikos
+
+	* 	huge improvements in drawing performance - extremely noticeable.  drawing should
+	now be about 7 times faster.  I can still improve this by a factor of 4 or so
+	from where it is now by rewriting this code altogether.
+
+	other slow points are documented.
+
+2003-10-02 Thursday 20:14  staikos
+
+	* 	get rid of unnecessary isnan() calls.  cachegrind seems to indicate that they
+	are at least as expensive as floor() and we call it too often (hundreds of
+	thousands of times)
+
+2003-10-02 Thursday 17:59  staikos
+
+	* 	PSD optimizations: store iterators or pointers to avoid extra lookups.  Should
+	reduce cpu time on some inner loops by as much as 78% according to cachegrind!
+
+2003-10-02 Thursday 06:55  staikos
+
+	* 	Early results from profiling:
+	- cache the label width where possible to avoid recalculation (very expensive)
+	- don't update dialogs that aren't shown()
+	- cache the font families
+
+2003-10-02 Thursday 05:20  staikos
+
+	* 	more enabled/disabled fixes
+
+2003-10-02 Thursday 03:14  staikos
+
+	* 	fix datamanager button synchronization
+
+2003-10-02 Thursday 01:52  staikos
+
+	* 	Allow the removal of error bars
+
+	CCMAIL: 65340-done@bugs.kde.org
+
+2003-10-02 Thursday 01:02  staikos
+
+	* 	This was the result of a misguided patch.  Unfortunately KstMouse will make it
+	overly complicated to add more mouse modes in the future due to its concept of
+	"plotNum".  It might be a good idea to store more stateful information, and
+	actually have the plotNum reflect the plot it's actually in.  I think this
+	could simplify KstView somewhat too.  Anyways, something to think about for the
+	future.
+
+	CCMAIL: 65278-done@bugs.kde.org
+
+2003-09-30 Tuesday 19:57  staikos
+
+	* 	can't use a fixed widget here with datamode anymore.  this now flickers but
+	ideally we can fix this later with a more custom widget.
+
+2003-09-29 Monday 21:17  staikos
+
+	* 	Implement the rest of #64894.  There is still room for improvement (right now
+	it only handles integral x coordinates, it's probably not the most efficient,
+	etc), but it works.
+
+	CCMAIL: 64894-done@bugs.kde.org
+
+2003-09-29 Monday 17:07  staikos
+
+	* 	Add support for most of #64894.  It's not functional, but this removes much of
+	the code duplication in kstview and adds a stub "data mode" to be filled in
+	later.  Might require some minor semantic changes to kstbasecurve and/or kstplot.
+
+	CCMAIL: 64894@bugs.kde.org
+
+2003-09-27 Saturday 18:41  staikos
+
+	* 	Most of the implementation require for this feature.  Requires more design in
+	order to complete.
+
+	CCMAIL: 64894@bugs.kde.org
+
+2003-09-26 Friday 19:22  staikos
+
+	* 	On second thought, better be safe.
+
+2003-09-26 Friday 19:21  staikos
+
+	* 	This seems to update the mouse properly.
+	CCMAIL: 64891-done@bugs.kde.org
+
+2003-09-26 Friday 18:33  staikos
+
+	* 	Simple script to generate data in real time for testing
+
+2003-09-26 Friday 09:40  staikos
+
+	* 	Ah this could be the reason.  Does this patch help?
+
+	CCMAIL: 64977@bugs.kde.org
+
+2003-09-25 Thursday 17:49  netterfield
+
+	* 	Fix Bug 64890 - Zoomed graphs give wrong mouse data
+
+	Add a new (experimental) autoscale mode: spike insensitive autoscale
+	During a balloon flight, the telemtered data often has spikes and dropouts.
+	I have added an autoscale mode which ignores points near unusually large
+	transients.  kstvector calculates the limits, ns_min and ns_max.
+	It seems to work very well on archived data.
+
+2003-09-25 Thursday 16:29  staikos
+
+	* 	more notes
+
+2003-09-25 Thursday 15:55  staikos
+
+	* 	Fix the KstFile disappearance.
+
+	Also update the data manager and other dialogs when changes are made directly
+	on the plot.
+
+2003-09-25 Thursday 13:26  staikos
+
+	* 	lrint() not portable enough.  rint() should be sufficient here anyways.
+
+	CCMAIL: 64926-done@bugs.kde.org
+
+2003-09-25 Thursday 04:54  staikos
+
+	* 	I can't find an argument either way for this, so let's select all if the user
+	wants it.
+
+	CCMAIL: 64892-done@bugs.kde.org
+
+2003-09-24 Wednesday 20:53  staikos
+
+	* 	Changes default rate from 60.0 Hz -> 100 Hz
+
+	Thanks for the fix.
+
+	CCMAIL: 64888-done@bugs.kde.org
+
+2003-09-24 Wednesday 14:06  staikos
+
+	* 	open 0.93 development and remove a spurious semicolon
+
+2003-09-24 Wednesday 13:59  staikos
+
+	* 	CVS_SILENT bump version and retag
+
+2003-09-24 Wednesday 00:18  staikos
+
+	* 	CVS_SILENT warning--
+
+2003-09-22 Monday 22:49  staikos
+
+	* 	proposal for changes to Kst to support PIOLib and other similar systems in
+	the future
+
+2003-09-22 Monday 00:53  staikos
+
+	* 	Add an option to clean up the layout.
+
+	CCMAIL: 64686@bugs.kde.org
+
+2003-09-21 Sunday 17:02  staikos
+
+	* 	CVS_SILENT
+
+2003-09-21 Sunday 16:52  staikos
+
+	* 	CVS_SILENT
+
+2003-09-21 Sunday 16:45  staikos
+
+	* 	wow this was tricky to find.  Update the plot number in the mouse class so that
+	the proper labels are searched in label mode.  This might need to be expanded
+	but I haven't triggered such bugs elsewhere yet.
+
+2003-09-21 Sunday 07:52  netterfield
+
+	* 	bugfix for d2asc
+
+2003-09-20 Saturday 16:20  staikos
+
+	* 	This isn't necessary
+
+2003-09-20 Saturday 16:06  staikos
+
+	* 	Add "Edit Curve" to the context menu to quickly edit a curve in a plot.
+
+	Fix some minor label mode bugs.
+
+2003-09-20 Saturday 15:39  binner
+
+	* 	CVS_SILENT spelling fixes
+
+2003-09-20 Saturday 15:11  staikos
+
+	*
+	context menu reorganised.  it's not so overwhelming now, and shortforms were
+	all expanded (Prev->Previous, etc)
+
+2003-09-20 Saturday 14:14  netterfield
+
+	* 	Plot dialog needs to be updated after the plot is selected...
+	(related to "Plot/Label selection bug)
+
+2003-09-20 Saturday 14:04  staikos
+
+	* 	Make the plot label dialog work properly and some minor cleanups
+
+2003-09-20 Saturday 11:04  netterfield
+
+	* 	Fixed "Exiting Bug"
+
+2003-09-20 Saturday 10:03  netterfield
+
+	* 	Add License and copyright stuff to the c files
+
+2003-09-20 Saturday 09:34  netterfield
+
+	* 	Vector field name autocompletion in vector dialog and quick curves dialog
+	(only works for dirfile files.  Ascii files it doesn't make sense - just
+	a collumn number, and readdata files are obsolete, and no longer to be
+	updated)
+
+2003-09-20 Saturday 02:46  staikos
+
+	* 	various bugfixes for labels, the view, and mouse handling
+
+	enhance the context menu to allow the user to easily add and remove curves and
+	delete plots
+
+2003-09-17 Wednesday 21:31  staikos
+
+	* 	fixlets and exposing a function for use in datapush
+
+2003-09-17 Wednesday 16:36  staikos
+
+	* 	minor bug fix
+
+2003-09-15 Monday 21:40  staikos
+
+	* 	fix various label drag issues as discussed on the list, including:
+
+	- labels may only be dragged in label mode
+	- labels may be editted and deleted again
+
+2003-09-15 Monday 12:51  netterfield
+
+	* 	Common Case speedup: redraw of large vectors after zooming
+
+2003-09-12 Friday 18:54  staikos
+
+	* 	fix painting and add a small fudge factor to get the label to fall in the
+	"exact" right place without any offset
+
+2003-09-12 Friday 18:00  staikos
+
+	* 	minor glitch fixes and polishing for label drags
+
+	drags now work quite well I think
+
+2003-09-12 Friday 17:49  staikos
+
+	* 	hotspot changes as discussed - labels now drag from the point selected and drop
+	exactly where they appear to be dropping.
+
+2003-09-11 Thursday 22:37  staikos
+
+	* 	eliminate the garbage in the drag pixmap.  Unfortunately it still doesn't paint
+	into the pixmap properly so we get a blank pixmap, or a pixmap with tiny
+	writing in it now.  Will have to debug this later.
+
+2003-09-11 Thursday 22:24  staikos
+
+	* 	cleanups, and fix drag initiation detection.
+
+	Drag is re-enabled in non-label mode to see how the interaction is (and see if
+	it should be left in or reverted).  It seems to work well for me but it may or
+	may not be unexpected/interfere with zooming.  It is however convenient.
+
+2003-09-11 Thursday 21:53  staikos
+
+	* 	only allow label drags in label mode for now.  proper drag start should be
+	added later to avoid the problem of zoombox initiating a drag.
+
+2003-09-11 Thursday 21:47  staikos
+
+	* 	draggable labels - basically works, but still a bit buggy
+
+	problems:
+	 - the drag pixmap gets corrupted somehow
+	 - dragging to other plots causes the extents to be temporarily broken
+	 - the pixmap is centred around the hotspot, but drawn (top,left) at the
+	   hotspot after the drop.  (which should we change?)
+
+2003-09-11 Thursday 19:10  staikos
+
+	* 	A whackload of minor/insignificant cleanups, and make the label dialog clear
+	out the entry field when creating new labels in order to distinguish from the
+	case where the user clicked on an existing label in order to edit it.  This is
+	particularily important for cases where the user clicks close to an existing
+	label but accidentally misses it.
+
+2003-09-11 Thursday 18:31  staikos
+
+	* 	put a title on the context menu
+
+2003-09-11 Thursday 18:17  staikos
+
+	* 	Shift and Ctrl should not override label mode
+
+2003-09-11 Thursday 18:07  staikos
+
+	* 	Lots of code cleanup, and make the mouse pointer an arrow over labels (the
+	existing code was incorrect)
+
+2003-09-11 Thursday 17:13  staikos
+
+	* 	Add the rest of the context menu stuff requested in the TODO
+
+2003-09-11 Thursday 15:04  staikos
+
+	* 	Create the context menu requested in the TODO file.  Added "Edit" and "Delete"
+	so far.  Still need to add the more advanced items.
+
+2003-09-01 Monday 09:41  staikos
+
+	* 	revert last.  kst must compile with 3.1 also.
+
+2003-09-01 Monday 09:09  tokoe
+
+	* 	Make use of XDG
+
+2003-08-25 Monday 18:26  binner
+
+	* 	CVS_SILENT speling and i18n style guide fixes
+
+2003-08-17 Sunday 09:10  mlaurent
+
+	* 	Allow to change shortcut
+
+2003-08-13 Wednesday 17:14  staikos
+
+	* 	misc cleanups while preparing for file field detection
+
+2003-08-13 Wednesday 03:02  staikos
+
+	* 	parser for the format file, and return a list of all the filenames
+
+2003-08-13 Wednesday 02:34  staikos
+
+	* 	heavy reworkings:
+	- make the socket reusable
+	- make the connection state two phased:
+		- first phase is control and setup
+		- second phase is passive pull mode
+	- "go" triggers a move from phase one to phase two
+	- "format" in phase one dumps the format file
+	- prepare to parse the format file
+
+2003-08-12 Tuesday 18:42  staikos
+
+	* 	CVS_SILENT
+
+2003-08-12 Tuesday 18:39  staikos
+
+	* 	- Makefile for datapushd
+	- Hack for printing empty files to circumvent KDE/Qt problems
+	- TODO update
+	- Compile fixlets for datapushd
+
+2003-08-12 Tuesday 04:21  staikos
+
+	* 	some bugfixes and a quite command
+
+2003-08-12 Tuesday 04:04  staikos
+
+	* 	the server portion of the code to monitor a datafile and push changes over the
+	lan
+
+2003-08-11 Monday 12:24  mueller
+
+	* 	fix compilation
+
+2003-08-10 Sunday 21:34  staikos
+
+	* 	don't wipe out the entry fields if the plugin manager is opened
+
+2003-08-10 Sunday 20:45  staikos
+
+	* 	more GUI cleanups
+
+2003-08-10 Sunday 16:52  staikos
+
+	* 	UI enhancements (part 1)
+
+2003-08-10 Sunday 16:38  staikos
+
+	* 	Convert vectors to using a map.  It's still not what I would consider 'clean'
+	because we don't use this everywhere yet.  Infact, there are cases that still
+	using private members instead of the input lists for their vectors.
+	This is purely for performance reasons.  There is no harm now because we don't
+	even use the input lists for anything externally, but we might in the future.
+	For now, all is good.
+
+	Also fixes some crashes I stumbled across.  More uncovered bug fixes to follow.
+
+2003-08-08 Friday 16:01  staikos
+
+	* 	after a marathon regression testing, valgrinding, and debugging, I think I can
+	safely say that the list->map conversion of scalar inputs and outputs works and
+	vector conversion can be done too.
+
+2003-08-07 Thursday 15:22  staikos
+
+	* 	remove scalarlist.h - not needed
+
+2003-08-07 Thursday 14:52  staikos
+
+	* 	- fix a memory corruption problem in main due to double delete of the mainwindow
+	in some cases
+
+	- only update the necessary parts of the data manager.  this is implemented in a
+	rather slow way (the code is ~O(n^2)) but it is more reliable for now.  In the
+	future we should tell the datamanager what to do, as opposed to telling it to
+	update and having it determine what needs to be updated.
+
+2003-08-05 Tuesday 21:33  staikos
+
+	* 	by default, zero memory on resize().  uses memset() for now, but an alternative
+	method is also provided.
+
+2003-08-05 Tuesday 20:58  staikos
+
+	* 	We decided that this is the proper output for the test.
+
+2003-07-30 Wednesday 01:18  staikos
+
+	* 	notes about what remains CVS_SILENT
+
+2003-07-30 Wednesday 01:04  staikos
+
+	* 	Plenty of updates to the test suite.  Now generates plots and output.  Fixed
+	a couple of minor bugs from before, and added option -v to specify to run Kst
+	inside valgrind.
+
+	Latest results:
+	  - valgrind clean except for UMRs when accessing unset data inside vectors
+	    (not so bad, still not sure what to do)
+	  - printing empty plots fails (KPrinter mode)
+
+2003-07-30 Wednesday 00:57  staikos
+
+	* 	fix another crash found by regression tests, and implement printing images and
+	postscript from dcop.  Seems to have trouble with printing empty plots in
+	postscript, though printing empty plots to images works.  Could indicate a bug
+	in the printing code.
+
+2003-07-30 Wednesday 00:10  staikos
+
+	* 	fix testcases 169,170,172,174 and put in a compiled-out solution idea for
+	testcases 190,191
+
+2003-07-29 Tuesday 21:54  staikos
+
+	* 	a regression test script for Kst.  So far it seems to trigger approximately
+	half a dozen bugs.
+
+2003-07-29 Tuesday 20:58  staikos
+
+	* 	traced down a UMR, and a nasty bug that was resulting in complex crashes:
+	main() is far too complex.  It should do much less, or be refactored.  The
+	problem is that there are too many codepaths, and KstApp* was not being
+	deleted, resulting in kstdoc not being deleted, resulting in the global lists
+	being nonempty (and the static destruction trying to empty them, of course in
+	the wrong order!).
+
+	(this was found with the new regression testing scripts)
+
+2003-07-27 Sunday 09:18  mueller
+
+	* 	compile (gcc 3.4+)
+
+2003-07-25 Friday 22:58  netterfield
+
+	* 	Fix minor math error
+
+2003-07-22 Tuesday 16:37  staikos
+
+	* 	add ability to create vector curves, and fix plot creation slightly (it's still
+	a bit broken in that the newly created plots seem to take over the screen until
+	the plotlist is manipulated again.  will track this down later.)
+
+2003-07-22 Tuesday 16:02  staikos
+
+	* 	plot manipulation functions exposed to dcop.  can create, delete, list, and list
+	contents of plots.  can also add and remove curves.  extended plot manipulation
+	is still missing.
+
+2003-07-22 Tuesday 12:30  staikos
+
+	* 	vector manipulation dcop interface, and scalar creation support
+
+2003-07-22 Tuesday 11:58  staikos
+
+	* 	many new dcop methods added, and scalars can now be set by assignment of a
+	double.  It's now possible to generate equation plots of all sorts with dcop,
+	manipulate scalars, generate vectors, list vectors, list objects, list scalars,
+	list inputs and outputs, save vectors, and more!
+
+2003-07-21 Monday 14:07  staikos
+
+	* 	vector saving is complete, including progress dialog and error messages
+
+2003-07-18 Friday 18:32  staikos
+
+	* 	Allow vectors to be saved to disk.  UI doesn't keep sync with the vector list
+	at all times yet (needs at least one fix still), and there is no error reporting
+	in the saving code yet.  Also might switch the vector saving code to use
+	QTextStream instead of snprintf+write.
+
+2003-07-18 Friday 16:34  staikos
+
+	* 	bump version number to indicate post 0.91, add code for saving vectors (unused).
+	Also fill in the about data some.
+
+2003-07-17 Thursday 19:38  staikos
+
+	* 	spec file fixes
+
+2003-07-17 Thursday 18:43  staikos
+
+	* 	notes about how to make a Kst release (packaging)
+
+2003-07-17 Thursday 18:10  staikos
+
+	* 	bump version number CVS_SILENT
+
+2003-07-17 Thursday 12:28  netterfield
+
+	* 	Possibly reduce non noac nsf mounted dirfile concurrency pathologies
+
+2003-07-17 Thursday 11:15  staikos
+
+	* 	make sure all objects are updated (equations, plugins especially)
+
+2003-07-16 Wednesday 19:47  staikos
+
+	* 	untested spec file for kst, also updated the lsm a bit
+
+2003-07-16 Wednesday 09:17  netterfield
+
+	* 	Pause updates while mouse zooming
+	deleted obsolete static
+	Should be ready for 0.90 'release'.
+
+2003-07-15 Tuesday 21:34  netterfield
+
+	* 	Stick with ~clean interpolation with bounds checking.
+
+2003-07-15 Tuesday 19:17  staikos
+
+	* 	don't jump around in the dialogs when an update(-1) is triggered.  this is a bit
+	of a hack, but it works flawlessly so far and it's safer than changing the logic
+	of update() everywhere.
+
+2003-07-15 Tuesday 19:05  staikos
+
+	* 	drop the references before updating the plot dialog
+
+2003-07-15 Tuesday 18:46  staikos
+
+	* 	minor cleanups in the plot dialog, and put some assert()s and remove some
+	unneeded stuff in kstvector::interpolate
+
+2003-07-15 Tuesday 17:08  staikos
+
+	* 	fix the ref counting in the plot dialog
+
+2003-07-15 Tuesday 16:58  netterfield
+
+	* 	Use local variables for math in kstvector::update.
+	84% cpu to 30% cpu in one benchmark....
+
+2003-07-15 Tuesday 16:31  staikos
+
+	* 	refcounting fixes, and disable delete in the dialogs when it is not usable.
+
+2003-07-15 Tuesday 15:44  staikos
+
+	* 	don't access elements of the list that don't exist
+
+2003-07-15 Tuesday 15:21  staikos
+
+	* 	- fix equations which were rather broken
+	- fix a c&p copyright that was never editted
+
+2003-07-15 Tuesday 14:54  netterfield
+
+	* 	Adjustable update delay in the plot dialog.  Is saved
+	in kst file as well.
+
+2003-07-15 Tuesday 14:20  staikos
+
+	* 	- remove some unused stuff from kstequationcurve
+	- make kstvector explicitly ref count to be safe
+
+2003-07-15 Tuesday 14:10  staikos
+
+	*
+	switch to using a QDict for scalars, and make sure they are cleaned up when the
+	parent vector is done with them.  Unfortunately QDict<KSharedPtr<foo> > doesn't
+	seem to work too well so this may not last.
+
+2003-07-15 Tuesday 12:00  netterfield
+
+	* 	CPU usage bug in kstrvector fixed
+	rework menues
+
+2003-07-15 Tuesday 10:40  staikos
+
+	* 	various minor bugfixes, as well as making scalars and vectors use the same
+	namespace.
+
+2003-07-15 Tuesday 09:19  staikos
+
+	* 	The final ref counting bugs that I could find.
+
+2003-07-15 Tuesday 08:43  staikos
+
+	* 	more cleanups, vector removal works
+
+2003-07-15 Tuesday 08:13  staikos
+
+	* 	store data object names
+
+2003-07-14 Monday 21:03  staikos
+
+	* 	some cleanups, comments, and movements
+
+2003-07-14 Monday 20:44  staikos
+
+	* 	-very- close to perfect ref counting (and thus working purging) now.  the only
+	remaining problem is that the data manager doesn't display the ref count for
+	vectors quite correctly.
+
+2003-07-14 Monday 20:40  staikos
+
+	* 	almost there - only a few extra references are hanging around now!
+
+2003-07-14 Monday 20:08  staikos
+
+	* 	- repair the previous commit
+	- remove more stored curve lists.  the hide() trick doesn't work for obvious
+	  reasons
+
+2003-07-14 Monday 19:47  staikos
+
+	* 	clean some sprintf()
+
+2003-07-14 Monday 19:35  staikos
+
+	* 	some ref counting fixes, with purge of objects enabled.  still more to be done.
+
+2003-07-14 Monday 18:48  staikos
+
+	* 	- plot dialog doesn't need to keep the curve list around
+	- update the data manager last
+	- don't access the empty combobox in the curve placement widget
+
+2003-07-14 Monday 12:00  netterfield
+
+	* 	Vector and Rvector work
+		-fixed interpolation bugs
+		-only the first sample in the last frame is read to make
+			interplation with coarser vectors make sense
+		-refactored some stuff in RVector - use Vector methods more
+
+2003-07-11 Friday 14:09  staikos
+
+	* 	cleanup some unused stuff
+
+2003-07-11 Friday 14:00  staikos
+
+	* 	port data vectors to the new listview, and clean up after a visit from the
+	const police
+
+2003-07-11 Friday 13:35  staikos
+
+	* 	deleting some types of objects works now
+	(those ones also have proper usage counts)
+
+2003-07-11 Friday 03:44  staikos
+
+	* 	Kst provides its own palette now, and use KPalette in kstcolorsequence.
+
+2003-07-11 Friday 03:02  staikos
+
+	* 	palette file with the Kst colours
+
+2003-07-10 Thursday 20:20  netterfield
+
+	* 	psd's use output vectors instead of locally allocated arrays
+	output vectors now work from psd's
+	fixed 1 off bug in kstvector::interpolate()
+
+2003-07-10 Thursday 05:43  staikos
+
+	* 	some work towards getting the usage counts back in sync
+
+2003-07-10 Thursday 04:53  staikos
+
+	* 	- usage note for kstplugin
+	- only activate Edit and Delete buttons when they're meaningful
+
+2003-07-10 Thursday 04:41  staikos
+
+	* 	lots of cleanup, bug fixing, and error handling.  This stuff can now handle
+	all kinds of crazy errors like invalid input files, and recover with as much
+	information as possible.  For instance, it's now possible to load a plugin with
+	invalid input or no output vectors defined and it will notify the user, mark
+	the plugin, and wait for it to be repaired.
+
+2003-07-09 Wednesday 14:22  staikos
+
+	* 	lazy load input vectors
+
+2003-07-09 Wednesday 08:50  netterfield
+
+	* 	Fix modality bug in label dialog
+	Fix compilation bugs with --enable-final
+
+2003-07-07 Monday 17:51  staikos
+
+	* 	add licence and copyright (as best as could be determined)
+
+	Barth: you might want to change the years on some of these if you care about
+	       that.  I just put a generic copyright in place for now.
+
+2003-07-07 Monday 17:27  staikos
+
+	* 	fix bug: error bars were inverted - set none, it tries to use *end().  set one
+	  and it wipes out your setting
+
+	add license and copyright
+
+2003-07-07 Monday 16:58  staikos
+
+	* 	- use a static deleter
+	- convert the rest of the color stuff that I could find to use KstColorSequence
+
+2003-07-07 Monday 16:36  staikos
+
+	* 	convert to KstColorSequence
+
+2003-07-07 Monday 16:27  staikos
+
+	* 	re-add the color changer.  Could use some enhancement by the artistically
+	endowed.  Right now it has the old color list and uses those, along with the
+	QColor::dark() versions of those colors.
+
+2003-07-07 Monday 15:01  staikos
+
+	* 	allow Escape to break out of a zoom
+
+2003-07-07 Monday 14:41  netterfield
+
+	* 	Fix bug in psd's
+	some progress on real time dirfile vector reading...
+		dirfiles are separate files for each field.  They may not
+		appear sycronously over NFS unless mounted -o noac.
+
+2003-07-07 Monday 14:07  staikos
+
+	* 	just return garbage instead of crashing
+
+2003-07-07 Monday 13:42  staikos
+
+	* 	explain to the user why we are about to crash with an absolutely baffling
+	backtrace
+
+2003-07-07 Monday 11:57  staikos
+
+	* 	urgh this stuff is just too inconsistent in kdelibs :(
+
+	Let's be explicit and manually do what we want in each case.
+
+2003-07-07 Monday 09:50  netterfield
+
+	* 	Usable arbitrary labels (need UI feedback now)
+	Fixed vector problems:
+		-changing rvector ranges now works
+		-fixed sigma and rms scalars
+
+2003-07-07 Monday 03:36  staikos
+
+	* 	workaround for kmainwindow problem
+
+2003-07-06 Sunday 20:53  staikos
+
+	* 	slightly improve the hack and apply it to the statusbar too
+
+2003-07-06 Sunday 20:13  staikos
+
+	* 	CVS_SILENT warn--
+
+2003-07-06 Sunday 20:10  staikos
+
+	*
+	keep the toolbar action status in sync when restoring with session management.
+
+	Is this a kdelibs bug?  It seems to me that this should be automatic.
+
+2003-07-05 Saturday 16:41  netterfield
+
+	* 	Label saving, use scalarwidget in labeldialog.
+
+2003-07-04 Friday 20:51  staikos
+
+	* 	don't crash
+
+2003-07-04 Friday 12:34  netterfield
+
+	* 	added Saving/loading arbitrary labels.
+
+2003-07-04 Friday 11:53  netterfield
+
+	* 	More work on labels:
+		-label editing works
+		-mouse cursor indicates when you are over an editable label
+
+2003-07-03 Thursday 18:55  staikos
+
+	* 	an example of lazy loading input vectors
+
+2003-07-03 Thursday 17:59  staikos
+
+	* 	cleanup loads of warnings
+
+2003-07-03 Thursday 09:26  staikos
+
+	* 	fix connection
+
+2003-06-29 Sunday 17:22  sleiber
+
+	* 	Fix text
+
+2003-06-29 Sunday 16:31  mlaurent
+
+	* 	";;" -> ";"
+
+2003-06-28 Saturday 12:15  sleiber
+
+	* 	add a caption to the printingdialog
+
+2003-06-28 Saturday 10:07  netterfield
+
+	* 	label selection in process...
+
+2003-06-28 Saturday 07:29  mueller
+
+	* 	speling fixes
+
+2003-06-27 Friday 13:54  staikos
+
+	* 	compile with kdelibs 3.1.x
+
+2003-06-27 Friday 02:29  staikos
+
+	* 	setEnabled/Disabled cleanups
+
+2003-06-27 Friday 02:24  staikos
+
+	* 	KIO enable image saving
+
+2003-06-27 Friday 01:28  staikos
+
+	* 	completely rework the graphics file dialog.  Uses KURLRequester now, supports
+	KImageIO, and is far less code in general.  Still needs to be KIO enabled.
+
+2003-06-26 Thursday 02:04  staikos
+
+	* 	graphics.ui is unused, and fix the layouts on graphfiledialog a bit
+
+2003-06-26 Thursday 02:00  staikos
+
+	* 	- use scalarselector in eqdialog, and fix a small bug in scalar selector
+	- allow doubleclick in the data manager to bring up the editor dialog
+
+2003-06-26 Thursday 01:48  staikos
+
+	* 	Make sure Apply Edits is the default button on the dialogs.  Also get vector
+	lists with <None> working in the vector selector.  Works in the curve dialog
+	now.
+
+2003-06-26 Thursday 01:30  staikos
+
+	* 	leak fixes, and add <None> vector to the vectorselector
+
+2003-06-25 Wednesday 20:47  staikos
+
+	* 	layout fix for plugin dialog, as well as a bug fix.  minor fixes to the scalar
+	selector, including a double validator.
+
+2003-06-25 Wednesday 20:29  staikos
+
+	* 	add the scalar selector, which uses the scalar editor.  Integrate it with the
+	plugin dialog to start.  Also bugfixes in the plugin dialog, and in the vector
+	selector.
+
+2003-06-25 Wednesday 18:46  staikos
+
+	* 	The rest of the data manager dialogs use VectorSelector
+
+2003-06-25 Wednesday 18:23  staikos
+
+	* 	Use VectorSelector
+
+2003-06-25 Wednesday 18:08  staikos
+
+	* 	switch to the vectorselector
+
+2003-06-25 Wednesday 17:40  staikos
+
+	* 	Add the vector selector widget, along with implementing it in the equation
+	dialog.  Seems quite useful so far.
+	Also cleanup the vector dialog a bit.
+	Also fix that annoying bug where it wouldn't display on startup.  Unfortunately
+	it's nothing more than a hack, really.
+
+2003-06-25 Wednesday 15:39  staikos
+
+	* 	a scalar editor dialog for creating custom scalars.  presently unused.  the idea
+	is to go from comboboxes or lineedits to actually having a kstvectorselector
+	and a kstscalarselector, with a creator button where applicable.
+
+2003-06-25 Wednesday 11:37  staikos
+
+	* 	copy in the backup file code
+
+2003-06-25 Wednesday 09:33  staikos
+
+	* 	not in 3.1 I guess
+
+2003-06-25 Wednesday 00:29  staikos
+
+	* 	remove some code that has lost its usefulness
+
+2003-06-25 Wednesday 00:25  staikos
+
+	* 	vector dialog now uses globalInstance().  Reconnect it to hs, psd and curve
+	dialogs as it was before.
+
+2003-06-24 Tuesday 23:49  staikos
+
+	* 	A whole bunch of refactoring.  DataObjects now have a showDialog() method
+	which if implemented will show the proper dialog for that object.  KstApp no
+	long needs to store eq/plugin/hs/psd/curve dialogs.  Others may follow.  There
+	is also no need to do type identification on the object to determine which
+	dialog to show it in.
+
+	Dialogs now may emit "modified" to update kstdoc.
+
+	Pointer to KstDoc in dialogs is now deprecated, and hopefully will be fully
+	eliminated in the future.
+
+2003-06-24 Tuesday 21:28  staikos
+
+	* 	- clean up our slave vectors and scalars when data objects are deleted.
+	- clean up KstFiles when RVectors are removed
+	- start to add Purge code, but it doesn't seem to work right.  I think there are
+	  still stale references to objects around.  At least it won't crash now, but
+	  cleaning up just doesn't work right yet.
+
+2003-06-24 Tuesday 20:43  staikos
+
+	* 	1) I somehow reverted my fix, so restore it: must add to existing plots before
+	   adding new ones otherwise the combobox gets desynced.
+	2) rework the plugin handling a bit - should work better now
+	3) don't allow vectors/scalars to be created with existing labels
+	4) vectors/scalars created with blank tag get one automatically assigned.
+
+2003-06-24 Tuesday 16:03  staikos
+
+	* 	HOWTO write plugins
+
+2003-06-24 Tuesday 15:29  staikos
+
+	* 	revert a small part of the last patch, and add backup file support
+
+2003-06-24 Tuesday 15:18  staikos
+
+	* 	session management works now
+
+2003-06-23 Monday 17:25  staikos
+
+	* 	make it clear that there is no typo
+
+2003-06-22 Sunday 15:15  mueller
+
+	* 	speling fixes
+
+2003-06-21 Saturday 16:31  deller
+
+	* 	some cleanups and roaming user fixes: use readPathEntry/writePathEntry instead of readEntry/writeEntry where necessary
+
+2003-06-21 Saturday 00:21  netterfield
+
+	* 	Removed doc dependency from dialogs - use signals.
+	Fix hang bug in quick psd dialog
+	Fix nan/infinity bug in kstvector.
+
+2003-06-20 Friday 18:52  staikos
+
+	* 	beginnings of session code, not done though.
+
+2003-06-20 Friday 16:14  staikos
+
+	* 	Let kmainwindow store the toolbar/size/etc settings for us
+
+2003-06-20 Friday 14:54  staikos
+
+	* 	factor out more addPlot() code
+
+2003-06-20 Friday 14:41  staikos
+
+	* 	wipe out another copy of addPlot()
+
+2003-06-20 Friday 14:37  staikos
+
+	* 	enable placement in psds, and refactor addPlot as well as make it more
+	generally useful and robust
+
+2003-06-20 Friday 13:49  staikos
+
+	* 	moc doesn't like variables in the slots section
+
+2003-06-20 Friday 13:47  staikos
+
+	* 	bye bye quick equations.  they can now be done from the equation dialog, or
+	via dcop.
+
+	Also added a routine to create vectors via dcop.  However it makes regular
+	vectors which are therefore orphans.  If we decide that this is useful, I guess
+	we should make a governor/owner for these things.  In any case, it's useful
+	for testing purposes right now.
+
+2003-06-20 Friday 13:32  staikos
+
+	* 	set correct values for the vector's scalars
+
+2003-06-20 Friday 13:17  staikos
+
+	* 	make eqdialog have a curve placement widget and use it.  refactor a bit, with
+	much more to come.  a bit more dialog cleanup in place also.  Unfortunately
+	there is a bug in eqdialog that makes the plot not use the proper coordinates
+	to display with when creating a new plot.  I'll have to try to track this
+	down later.
+
+	kstvector now has a method to generate a vector - this didn't belong in
+	kstequationcurve.
+
+2003-06-20 Friday 10:11  netterfield
+
+	* 	Limited functionality Arbitrary lables. (Not editable)
+	Bug fix in kstplotdialog_i
+	some signal re-working
+
+2003-06-20 Friday 01:49  staikos
+
+	* 	CVS_SILENT
+
+2003-06-20 Friday 01:48  staikos
+
+	* 	- add a demo dcop interface.  has methods to list the scalars, list the vectors,
+	create an equation plot (basic, slightly incomplete, but usable), and show the
+	data manager dialog
+
+	- add a method to kstobjectlist to generate a list of the tagnames
+
+	- notes on refactoring
+
+	-
+
+2003-06-19 Thursday 23:45  staikos
+
+	* 	more conversion to curveplacementwidget
+
+2003-06-19 Thursday 23:18  staikos
+
+	* 	factor out the curve placement code.  Not much gained in terms of lines of code,
+	but the ability to change things centrally is nice, and the api is cleansed a
+	bit too.
+
+2003-06-19 Thursday 21:32  staikos
+
+	* 	more conversions to the new curve appearance widget, and add more features to it
+
+2003-06-19 Thursday 19:56  staikos
+
+	* 	CVS_SILENT for designer
+
+2003-06-19 Thursday 19:56  staikos
+
+	* 	convert to using the new factored out widget
+
+2003-06-19 Thursday 19:36  staikos
+
+	* 	the first refactoring in the dialogs.  This one pulls out curveappearance and
+	makes it a separate widget.  It is implemented presently using a "Custom
+	Widget" in designer.
+
+	The equation dialog was also enhanced with some setEnabled(bool) connections
+	to disable things that can't be used, a horizontal rule, some rearranging, etc
+
+2003-06-17 Tuesday 21:32  staikos
+
+	* 	some cleanup and bug fixes, get rid of null vectors (does this break rvector
+	at all? I would think that it does, but I can't see anything broken), and
+	put an explicit show() on the view after loading a document to make sure it
+	paints.
+
+2003-06-17 Tuesday 19:24  staikos
+
+	* 	fix memory corruption
+
+2003-06-17 Tuesday 19:02  staikos
+
+	* 	file saving and loading is mostly repaired, along with some memory corruption
+	in kstplot.
+
+2003-06-15 Sunday 12:58  staikos
+
+	* 	switch to using NaN for NOPOINT
+
+2003-06-13 Friday 22:21  netterfield
+
+	* 	Better label dialog
+	Fixed auto labels
+
+2003-06-13 Friday 19:20  netterfield
+
+	* 	minor cleanups:
+	  -remove commented out code
+	  -remove unused variable
+
+2003-06-13 Friday 19:15  netterfield
+
+	* 	Fixed scalar substitution in labels.
+	Labels now use the KST::scalarList global.
+	The scalar list no longer needs to be passed through kstplot.
+
+2003-06-13 Friday 18:49  netterfield
+
+	* 	Fix to symbol font in kstlabels
+
+2003-06-13 Friday 17:02  staikos
+
+	* 	updates from the meeting today
+
+2003-06-13 Friday 09:52  staikos
+
+	* 	CVS_SILENT
+
+2003-06-12 Thursday 21:50  netterfield
+
+	* 	Adding kstlabeldialog*
+	The dialog needs work (to make an understatement...)
+
+2003-06-12 Thursday 21:36  staikos
+
+	* 	not needed
+
+2003-06-12 Thursday 21:26  netterfield
+
+	* 	First steps in adding arbitrarily placable labels....
+	Reworked KstMouse in KstView
+	Added action
+
+2003-06-12 Thursday 18:31  staikos
+
+	* 	scatter some typenames throughout to make gcc3 happy
+
+2003-06-12 Thursday 03:48  staikos
+
+	* 	add an isNull accessor here, if kstrvector is going to make it null.
+
+2003-06-12 Thursday 03:34  staikos
+
+	* 	More of the refactoring done.  slave vectors are history, and shared pointers
+	are used almost everywhere now.  Only curves and plots are unshared.  Many
+	potential bugs were fixed, and memory doesn't seem to leak, though I haven't
+	checked the "reachables" yet according to valgrind.  There are no other
+	memory errors to my knowledge.  The only remaining problems are that "Purge"
+	doesn't work yet.  This is related to usage count being broken.  There is
+	still plenty of cleanup to do, including removing unused variables and member
+	variables, unused methods, and some renaming.  There is also some logic that
+	can be removed now because it duplicates existing logic.
+
+	The lists that were once in kstdoc are now in a KST:: namespace and global
+	in order to facilitate linking purposes and ease of use.  Now scalars and
+	vectors add themselves to the global lists automatically.
+
+	Full diff is ~4600 lines.
+
+2003-06-12 Thursday 03:22  staikos
+
+	* 	it helps to use the new variable
+
+2003-06-12 Thursday 03:19  staikos
+
+	* 	another access beyond the end of the array while interpolating.
+
+2003-06-12 Thursday 03:10  staikos
+
+	* 	don't access beyond the end of the array when scaling
+
+2003-06-10 Tuesday 14:19  staikos
+
+	* 	more cleanup, remove some debug, convert to typedefs instead of big template
+	expressions, etc.
+
+2003-06-10 Tuesday 12:50  staikos
+
+	* 	remove some debug, add a compile fix for the new RESTORE() macro
+
+2003-06-10 Tuesday 01:08  staikos
+
+	* 	some cleanup
+
+2003-06-10 Tuesday 01:03  staikos
+
+	* 	KstFile is now a KstObject.  Needs more work, but everything is functional
+	it seems, except perhaps purging.
+
+2003-06-09 Monday 19:36  staikos
+
+	* 	The next big round of changes - no more *vector*list classes anymore.  This is
+	basically as functional as before, but quick(psd|equation|*) may not quite
+	work right at the moment.  This is easily fixed later.
+
+	There are two known memory errors which will go away as KstFile becomes a
+	shared object, and as the Vector classes are reworked for the final time.
+	They don't appear to cause much of a problem right now.
+
+2003-06-03 Tuesday 01:42  staikos
+
+	* 	First major portion of the cleanup - refactor into KstDataObjects, not counting
+	KstFile.  Vectors are not changed.  This removes all kinds of code duplication
+	though much still remains.  Some things are still not ideal but they're
+	getting closer.  It is quite likely that this patch broke things, but the very
+	basics still seem to work fine.
+
+	Removes 1000-1500 lines of code.
+
+2003-06-02 Monday 20:08  staikos
+
+	* 	more reworking of the classes - dataObjectList is now used in kstdoc, though
+	the curves are still separate
+
+2003-06-02 Monday 15:35  staikos
+
+	* 	add debug temporarily to track usage
+
+2003-06-01 Sunday 18:12  staikos
+
+	* 	count()->length() for the vector
+
+2003-06-01 Sunday 18:11  staikos
+
+	* 	Some of the changes to the vectors are started.  I'm doing these incrementally,
+	and periodically somethings may break.  For instance, vector usage counts
+	probably do not work right now, though they will work again once the changes
+	are complete.  This change mostly changes method names, adds some new ones,
+	removes some that need to disappear, etc.  The next change will likely be
+	the use of KSharedPtr<> instead of the raw pointer (which will -mostly- fix
+	the usage count again).  There are probably memory leaks right now.
+
+2003-06-01 Sunday 17:20  staikos
+
+	* 	more cleanup
+
+2003-06-01 Sunday 16:44  staikos
+
+	* 	cleanups
+
+2003-06-01 Sunday 16:30  staikos
+
+	* 	- kstscalarlist.cpp is no longer needed
+	- fix a bug in kstcurvedialog where it didn't plot in an existing plot AND
+	  in a separate plot
+
+2003-06-01 Sunday 16:25  staikos
+
+	* 	Most finish the Scalar conversion to the new object model.  Seems to have
+	cleaned up many memory issues, as well as removed lots of code!  There is
+	still much more code to remove or change to using iterators too.
+
+2003-05-28 Wednesday 17:19  staikos
+
+	* 	compile fixes
+
+2003-05-28 Wednesday 17:16  staikos
+
+	* 	updates
+
+2003-05-28 Wednesday 16:27  staikos
+
+	* 	add the realloced methods
+
+2003-05-28 Wednesday 16:12  staikos
+
+	* 	First step in refactoring:
+	- move functions defined in the UML diagram up into parent classes
+	- redo the inheritence (mostly done)
+	- other minor cleanups
+
+2003-05-28 Wednesday 14:28  staikos
+
+	* 	init the variable
+
+2003-05-26 Monday 17:49  staikos
+
+	* 	updates from the meeting
+
+2003-05-26 Monday 11:21  netterfield
+
+	* 	Changes to kstview: better qpixmap handling.
+
+2003-05-25 Sunday 15:02  staikos
+
+	* 	misc cleanups
+
+2003-05-25 Sunday 14:53  staikos
+
+	* 	no use passing around static data
+
+2003-05-25 Sunday 14:40  staikos
+
+	* 	add samples for these two base classes.  kstdataobject was not touched because
+	it is in use already, but it's the next one to integrate.
+
+2003-05-25 Sunday 14:23  staikos
+
+	* 	this should not be in CVS
+
+2003-05-25 Sunday 13:04  staikos
+
+	* 	slight layout adjustments and resize the font for non-2560x1024 screens :)
+
+2003-05-25 Sunday 12:01  staikos
+
+	* 	remove the second METASOURCES line that was commented out anyways.
+
+2003-05-25 Sunday 09:54  mlaurent
+
+	* 	Use KCmdLineLastOption
+
+2003-05-24 Saturday 20:48  staikos
+
+	* 	version 0.89, update copyrights
+
+2003-05-23 Friday 22:10  staikos
+
+	* 	CVS_SILENT
+
+2003-05-23 Friday 21:52  staikos
+
+	* 	interpolate X as needed - not well tested, but seems to work
+
+2003-05-23 Friday 20:32  staikos
+
+	* 	spelling fix Lable->Label
+
+2003-05-23 Friday 17:51  staikos
+
+	* 	plugin loading and saving - as much as can be done
+
+2003-05-23 Friday 17:22  staikos
+
+	* 	edit works as advertised now, updating the data manager properly.
+
+2003-05-23 Friday 17:15  staikos
+
+	* 	edit fixes, still not fully working.  Data manager gets confused.
+
+2003-05-23 Friday 16:48  staikos
+
+	* 	clean up vectors when new plugin fails
+
+2003-05-23 Friday 16:15  staikos
+
+	* 	- avoid a crash by leaking memory until we can fix the architecture properly
+	- detect errors when trying to create a new plugin
+
+2003-05-23 Friday 15:53  staikos
+
+	* 	switch to using a lineedit for outputs
+
+2003-05-23 Friday 15:09  staikos
+
+	* 	pass in a, b, chi^2 as scalars
+
+2003-05-23 Friday 14:38  staikos
+
+	* 	typo => wrong results
+
+2003-05-23 Friday 14:17  staikos
+
+	* 	oops
+
+2003-05-23 Friday 13:46  staikos
+
+	* 	compiling with warning is better than erroring
+
+2003-05-23 Friday 13:35  staikos
+
+	* 	CVS_SILENT
+
+2003-05-23 Friday 13:35  staikos
+
+	* 	line fitting plugin example
+
+2003-05-22 Thursday 21:43  staikos
+
+	* 	update - more information, slight refactoring
+
+2003-05-22 Thursday 20:58  staikos
+
+	* 	UML for the redesigned data object hierarchy
+
+2003-05-22 Thursday 19:50  staikos
+
+	* 	compilation fixes
+
+2003-05-22 Thursday 19:25  netterfield
+
+	* 	Made kstvector a kstdataobject
+		this breaks d2asc compiles, but kst is still OK: Help
+	Made doc->scalarList a static member of kstvector, so that kstvectors
+		can insert their scalars into the list.
+
+	I think it would be better to add doc->scalarList to KstScalar
+		and doc->vectorList as static member of KstVector so things
+		can insert and delete themselves!
+
+2003-05-22 Thursday 19:17  staikos
+
+	* 	don't double delete
+
+2003-05-22 Thursday 19:07  staikos
+
+	* 	Fix vector leaks
+
+2003-05-22 Thursday 18:58  staikos
+
+	* 	plugin editting works, more crashes removed
+
+2003-05-22 Thursday 17:52  staikos
+
+	* 	make the dialog show the correct combobox values in edit mode.
+
+2003-05-22 Thursday 17:23  staikos
+
+	* 	Lots of plugin work.  Unfortunately the vector architecture is becoming a real
+	problem now.  I had to put in lots of hacks that could go away if we make all
+	vectors the same (or specialised) as discussed.  I think this has to happen
+	sooner rather than later.
+
+	The vector list classes need to be reworked too.
+
+2003-05-22 Thursday 11:39  staikos
+
+	* 	fix scalar parsing in the XML and add widget spacing to the generated dialog
+
+2003-05-22 Thursday 11:28  staikos
+
+	* 	a demo with scalars
+
+2003-05-22 Thursday 11:13  staikos
+
+	* 	This didn't work in HEAD for some reason, but worked in branch.  This patch
+	ensures it works everywhere.
+
+2003-05-22 Thursday 02:26  staikos
+
+	* 	pass in the input vectors to the plugin
+
+2003-05-22 Thursday 01:52  staikos
+
+	* 	show the associated vectors, increment their usage, etc
+
+2003-05-21 Wednesday 23:39  staikos
+
+	* 	update the plugins to reflect the new memory scheme
+
+2003-05-21 Wednesday 23:35  staikos
+
+	* 	call the plugins
+
+2003-05-21 Wednesday 23:26  staikos
+
+	* 	- change the default action in plugin dialog from delete to save
+	- make kstdataobject KShared because eventually all dataobjects will be
+	  KShared probably.
+	- return const QString& from accessor in kstdataobject
+	- note about vector and scalar lists moving into kstdataobject eventually
+
+2003-05-21 Wednesday 23:01  staikos
+
+	* 	- fix a bug in plugins since the change to KstDataObject
+	- make the plugin code generate unique names like the other objects
+	- add plugins to the data manager window (without the vectors currently)
+
+2003-05-21 Wednesday 21:57  staikos
+
+	* 	move "Loaded" over one column.  It looks better to select the plugin name, not
+	it's loaded state pixmap.
+
+2003-05-21 Wednesday 14:35  netterfield
+
+	* 	Fix update bug:
+		call update on all dependancies liberally
+		call update on all slaves
+		use a counter to avoid re-updates
+		note: recursion is not detected, will produce junk results, but
+			should not crash
+
+2003-05-20 Tuesday 09:35  staikos
+
+	* 	CVS_SILENT while you're at it, might as well make this "cannot" then.
+
+2003-05-20 Tuesday 04:19  binner
+
+	* 	CVS_SILENT i18n style guide fixes
+
+2003-05-16 Friday 11:28  staikos
+
+	* 	for now, just don't crash until the code is complete
+
+2003-05-16 Friday 04:21  staikos
+
+	* 	work on calling the plugin.  slightly incomplete pending discussion on
+	memory management
+
+2003-05-16 Friday 03:36  staikos
+
+	* 	lots of bug fixes
+
+2003-05-16 Friday 02:36  staikos
+
+	* 	add another deep and meaningful plugin for testing
+
+2003-05-16 Friday 02:33  staikos
+
+	* 	- missed a constructor initialisation
+	- add debug statements to show that refcounting is working
+
+2003-05-16 Friday 02:22  staikos
+
+	* 	make it do what the xml file says it does
+
+2003-05-16 Friday 02:14  staikos
+
+	* 	new, edit, delete of plugins works, though not all fields are saved yet.
+
+2003-05-16 Friday 00:01  staikos
+
+	* 	saving new plugins and deleting old ones now works partially
+
+2003-05-15 Thursday 23:39  staikos
+
+	* 	more plugin implementation
+
+2003-05-15 Thursday 23:07  staikos
+
+	* 	more plugin work.  starting to integrate them into the app.
+
+	Using KSharedPtr<> instead of homebrew ref counting.
+
+2003-05-15 Thursday 22:45  staikos
+
+	* 	some thoughts
+
+2003-05-15 Thursday 21:14  staikos
+
+	* 	- fix plugin removal
+	- minor UI fix
+
+2003-05-15 Thursday 20:47  staikos
+
+	* 	add some input and output that doesn't come close to matching the plugin yet :)
+
+2003-05-15 Thursday 19:39  staikos
+
+	* 	fill in the scalar and vector lists
+
+2003-05-15 Thursday 18:00  staikos
+
+	* 	The UI generator for plugins.  Parameters are not done.
+
+2003-05-15 Thursday 16:03  staikos
+
+	* 	rename
+
+2003-05-15 Thursday 13:56  staikos
+
+	* 	restore some of this code
+
+2003-05-14 Wednesday 12:35  staikos
+
+	* 	switch kstxml->xml
+
+2003-05-14 Wednesday 11:26  netterfield
+
+	* 	Rework of KstFile:
+		Use QFile (where possible) and KTempFile
+		Bug fix (massive speedup) in reading data from stdin
+	removed some warnings from readdata
+
+2003-05-14 Wednesday 01:17  staikos
+
+	* 	plugin installer
+
+2003-05-14 Wednesday 00:28  staikos
+
+	* 	Finish reworking the plugins to load on-demand only.  Fix some other minor
+	bugs, and optimize.
+
+2003-05-13 Tuesday 23:01  staikos
+
+	* 	plugin changes as discussed, including:
+	- Reference counting of plugins
+	- Load only on demand
+	- remove unnecessary UI elements
+
+2003-05-13 Tuesday 20:28  staikos
+
+	* 	Use a combobox instead of a listview
+
+2003-05-13 Tuesday 19:48  staikos
+
+	* 	unused args
+
+2003-05-13 Tuesday 19:38  staikos
+
+	* 	check endian
+
+2003-05-13 Tuesday 14:16  staikos
+
+	* 	API to call the plugin function
+
+2003-05-13 Tuesday 14:06  staikos
+
+	* 	can't use a map here since order is important
+
+2003-05-13 Tuesday 13:24  staikos
+
+	* 	simplify, and add two more
+
+2003-05-13 Tuesday 13:23  staikos
+
+	* 	The plugin dialog.
+
+2003-05-13 Tuesday 12:03  staikos
+
+	* 	extract the symbol from the plugin
+
+2003-05-13 Tuesday 00:19  staikos
+
+	* 	demo plugin, and some fixes to the plugin manager and loader
+
+2003-05-12 Monday 23:42  staikos
+
+	* 	bug fixes, ability to load and unload plugins on demand, gui enhancements,
+	and ability to remove plugins from the system
+
+2003-05-12 Monday 22:24  staikos
+
+	* 	CVS_SILENT ssh
+
+2003-05-12 Monday 22:24  staikos
+
+	* 	The beginning of the plugin manager, some bugfixes
+
+2003-05-12 Monday 18:47  staikos
+
+	* 	initialise the plugin code at startup
+
+2003-05-12 Monday 18:44  staikos
+
+	* 	slight refactoring, new method
+
+2003-05-12 Monday 18:34  staikos
+
+	* 	A static governor for the collection of plugins that are loaded at any given
+	time.
+
+2003-05-12 Monday 17:06  staikos
+
+	* 	plugin loader added (untested)
+
+2003-05-12 Monday 16:12  staikos
+
+	* 	layout fix
+
+2003-05-09 Friday 22:18  netterfield
+
+	* 	Partial re-write of kstfile:
+		uses KTempFile for temp file
+		increased use of QFiles
+		Increased use of QStrings
+
+	There is still work do be done in the ASCII data file parser.
+
+2003-05-09 Friday 12:49  fawcett
+
+	* 	malloc.h is dead, so it can go bye-bye
+
+	deprecated/obsoleted, use stdlib.h instead (and you already include that)
+
+2003-05-08 Thursday 15:12  binner
+
+	* 	CVS_SILENT i18n style guide fixes
+
+2003-05-07 Wednesday 19:15  staikos
+
+	* 	Convert all the forms:
+
+	const SomePrimitiveType& parameter
+
+	to just
+
+	SomePrimitiveType paramter
+
+	Especially in cases where the parameter had a default value.
+
+	Also some i18n() and other cleanup.
+
+2003-05-07 Wednesday 18:18  staikos
+
+	* 	- some i18n fixes
+	- get rid of unnecessary casts
+	- don't cast (QString)"foo".  Use QString("foo") if really needed, or better,
+	  rework it so it can be i18n("")
+	- (float)foo -> float(foo) etc
+	- const bool& is a bad idea and does nothing of benefit over bool.
+
+2003-05-07 Wednesday 18:03  staikos
+
+	* 	more const/inheritence cleanup
+
+2003-05-07 Wednesday 17:44  staikos
+
+	* 	better be safe with free()
+
+2003-05-07 Wednesday 17:42  staikos
+
+	* 	Let's use malloc/free here for now then.
+
+	Also cleanups, refactorizations, micro optimisations
+
+2003-05-07 Wednesday 16:29  staikos
+
+	* 	fix new[]/delete mismatch.  Still, this code also uses realloc().  Needs more
+	work.
+
+2003-05-07 Wednesday 16:08  staikos
+
+	* 	memleak fix
+
+2003-05-07 Wednesday 15:57  staikos
+
+	* 	note for future
+
+2003-05-07 Wednesday 15:53  staikos
+
+	* 	A huge number of memory corruption/leak bugfixes, i18n() fixes, constness
+	fixes, inheritence fixes, and more.
+
+2003-05-07 Wednesday 14:36  staikos
+
+	* 	The last uninitialised var (tricky to track this one down).
+	Also a few minor reformatting and setting freed variables to 0L.
+
+2003-05-07 Wednesday 13:21  staikos
+
+	* 	- Don't allow access to array[-1].
+	- Make the for(;;); a little more explicit
+
+2003-05-07 Wednesday 13:12  staikos
+
+	* 	last of the leaks for now, as well as some const fixes and cast changes
+
+2003-05-07 Wednesday 09:48  mlaurent
+
+	* 	Add const
+
+2003-05-07 Wednesday 08:02  netterfield
+
+	* 	Hack mitigation in converting filename_in to a char* - use again
+	encodeName.
+
+2003-05-07 Wednesday 05:57  netterfield
+
+	* 	Un-broke file reading.
+
+2003-05-07 Wednesday 04:50  coolo
+
+	* 	little cleanup (note though that the actions icons were better installed into
+	kde_datadir instead of kde_icondir. But that requires code changes)
+
+2003-05-06 Tuesday 18:22  staikos
+
+	* 	Don't leak, init variables
+
+2003-05-06 Tuesday 17:59  staikos
+
+	* 	Fix uninit variables.  This could cause crashes on non-GCC compilers.
+	(especially SIGFPE)
+
+2003-05-06 Tuesday 17:27  staikos
+
+	* 	Representation class for a plugin - presently empty until we get a plugin
+	example and can complete the plugin loader
+
+2003-05-06 Tuesday 17:20  staikos
+
+	* 	The rest of the plugin XML parser
+
+2003-05-06 Tuesday 15:41  staikos
+
+	* 	plugin XML file parser - 2/3 complete
+
+2003-05-06 Tuesday 13:46  netterfield
+
+	* 	Removed readdata subdir, readdata test programs, writedata, libRD;
+	Moved useful readdata files to source directory.
+
+2003-05-06 Tuesday 13:39  staikos
+
+	* 	add a couple missing i18n(), convert some malloc/free->new/delete, and convert
+	some casts to C++ style
+
+2003-05-06 Tuesday 12:58  staikos
+
+	* 	small doc updates
+
+2003-05-06 Tuesday 10:18  mkretz
+
+	* 	link
+
+2003-05-06 Tuesday 10:07  mkretz
+
+	* 	fix compilation
+
+2003-05-05 Monday 18:53  staikos
+
+	* 	don't warn
+
+2003-05-05 Monday 17:20  staikos
+
+	* 	deleakification
+
+2003-05-05 Monday 17:09  staikos
+
+	* 	remove another char* and get rid of a buffer overflow
+
+2003-05-05 Monday 16:53  staikos
+
+	* 	bye bye CVS_SILENT
+
+2003-05-05 Monday 16:53  staikos
+
+	* 	bye bye
+
+2003-05-05 Monday 16:49  staikos
+
+	* 	make virtual
+
+2003-05-05 Monday 16:42  staikos
+
+	* 	init the variable
+
+2003-05-05 Monday 16:38  staikos
+
+	* 	cvs history is better
+
+2003-05-05 Monday 16:37  waba
+
+	* 	Make it compile
+
+2003-05-05 Monday 15:46  waba
+
+	* 	Make it compile
+
+2003-05-05 Monday 15:06  george
+
+	* 	ssh
+
+2003-05-05 Monday 15:06  george
+
+	* 	more files don't belong here
+
+2003-05-05 Monday 14:58  george
+
+	* 	more build fixes
+
+2003-05-05 Monday 14:06  george
+
+	* 	more cleanups
+
+2003-05-05 Monday 14:02  george
+
+	* 	big build fix commit
+
+2003-05-05 Monday 12:15  cbn
+
+	* 	Version 0.88:
+	compared to 0.87
+	-background/forground color
+	-dialog improvements
+	-bug fixes.
+
+2003-05-02 Friday 18:06  cbn
+
+	* 	Improvements to dialogs.
+	Converted some char* to QStrings in kstfile
+	Added change plot background/foreground colors
+
+2003-04-23 Wednesday 09:08  cbn
+
+	* 	Removed some C Strings in KstFile (converted to QStrings)
+	Improvements to HsDialog
+
+2003-04-09 Wednesday 22:53  cbn
+
+	* 	0.87: Fixed critical bugs in loading kst files and in equation
+	updating.
+
+2003-04-09 Wednesday 16:51  cbn
+
+	* 	Version 0.86.  Version 0.85 (and lower) had bugs in the parser....
+	Fixed parser bugs....
+
+2003-04-09 Wednesday 12:13  cbn
+
+	* 	commiting version 0.85
+	-Added scalars
+	-Added vectors statistics scalars
+	-Improved dialogs
+	-bug fixes
+
+	cbn
+
+2003-03-19 Wednesday 18:34  cbn
+
+	* 	Updating to 0.84
+	Dialog changes (kurlpicker, add curve to plot)
+	Added 'z' option to zoom current plot.
+
+2003-03-07 Friday 21:42  cbn
+
+	* 	Initial revision
+
+2003-03-07 Friday 21:42  cbn
+
+	* 	Kst for kde3
+

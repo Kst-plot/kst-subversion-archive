@@ -1,0 +1,252 @@
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<class>KstChangeFileDialog</class>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>KstChangeFileDialog</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>442</width>
+            <height>261</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Change Data File</string>
+    </property>
+    <property name="icon">
+        <pixmap>image0</pixmap>
+    </property>
+    <vbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <property name="margin">
+            <number>11</number>
+        </property>
+        <property name="spacing">
+            <number>6</number>
+        </property>
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>TextLabel1</cstring>
+            </property>
+            <property name="frameShape">
+                <enum>MShape</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>MShadow</enum>
+            </property>
+            <property name="text">
+                <string>Vectors to change:</string>
+            </property>
+        </widget>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>Layout5</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <property name="margin">
+                    <number>0</number>
+                </property>
+                <property name="spacing">
+                    <number>6</number>
+                </property>
+                <widget class="QListBox">
+                    <property name="name">
+                        <cstring>ChangeFileCurveList</cstring>
+                    </property>
+                    <property name="selectionMode">
+                        <enum>Multi</enum>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>The source file for the vectors selected in this list will be changed.</string>
+                    </property>
+                </widget>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>Layout4</cstring>
+                    </property>
+                    <vbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <property name="margin">
+                            <number>0</number>
+                        </property>
+                        <property name="spacing">
+                            <number>6</number>
+                        </property>
+                        <widget class="QPushButton">
+                            <property name="name">
+                                <cstring>ChangeFileClear</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Clear</string>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>Unselect all vectors in the list.</string>
+                            </property>
+                        </widget>
+                        <widget class="QPushButton">
+                            <property name="name">
+                                <cstring>ChangeFileSelectAll</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Select All</string>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>Select all vectors in the list.</string>
+                            </property>
+                        </widget>
+                    </vbox>
+                </widget>
+            </hbox>
+        </widget>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>Layout32</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <property name="margin">
+                    <number>0</number>
+                </property>
+                <property name="spacing">
+                    <number>6</number>
+                </property>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>TextLabel4_3</cstring>
+                    </property>
+                    <property name="text">
+                        <string>New data file:</string>
+                    </property>
+                </widget>
+                <widget class="QComboBox">
+                    <property name="name">
+                        <cstring>ChangeFileName</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>3</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="editable">
+                        <bool>true</bool>
+                    </property>
+                    <property name="insertionPolicy">
+                        <enum>AtTop</enum>
+                    </property>
+                    <property name="autoCompletion">
+                        <bool>true</bool>
+                    </property>
+                    <property name="duplicatesEnabled">
+                        <bool>false</bool>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>The source file for all selected vectors will be changed to this.</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>VectorFileBrowse</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>1</hsizetype>
+                            <vsizetype>1</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="text">
+                        <string>Browse...</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Bring up file dialog box.</string>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>Layout33</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <property name="margin">
+                    <number>0</number>
+                </property>
+                <property name="spacing">
+                    <number>6</number>
+                </property>
+                <spacer>
+                    <property name="name">
+                        <cstring>Spacer15</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>20</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>ChangeFileApply</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Apply</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Apply new source file to selected vectors.</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>ChangeFileCancel</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Close</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Close dialog without applying further changes.</string>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+    </vbox>
+</widget>
+<images>
+    <image name="image0">
+        <data format="XPM.GZ" length="767">789c6d51c14ac43010bdf72b427b2bd26d362d54c44f503c0ae2613a9da41e5641d78388ffee4cb2ed4e4a1f69c97b2f6f32490eb5797e7a30f5a1f83ac3f90d0dcef069eae9fb74fa7979bdff2dcae3d1f0b0adb1e54d513606cde3c73bc9bce279d546080d89766d17578250675deb221d85f6d0dff620d40b1ddc929d121dece084ce42a1030b9d5012ea19d80bc5857a1f5baa76d024a7816633aaf1e260c2c41f095607a20e0c44de8208748655d627c0103ca96ab29aef4e7284c1ab6a6ccc33ebf2634b578b5bb1ce33622b77a21e43796f5968ad86b80d6527d5a16b3552a178e435c3ed904f37c1baea801df201165df726067774d1f5bd793168d155c687401974b51cd76adb475d333b484e33eea0fcbb2bfe01583cd10b</data>
+    </image>
+</images>
+<connections>
+    <connection>
+        <sender>ChangeFileCancel</sender>
+        <signal>clicked()</signal>
+        <receiver>KstChangeFileDialog</receiver>
+        <slot>reject()</slot>
+    </connection>
+</connections>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>

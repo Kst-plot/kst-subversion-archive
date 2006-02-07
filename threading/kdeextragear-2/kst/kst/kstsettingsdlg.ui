@@ -1,0 +1,281 @@
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<class>KstSettingsDlg</class>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>KstSettingsDlg</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>395</width>
+            <height>174</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Kst Settings</string>
+    </property>
+    <grid>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QPushButton" row="6" column="2">
+            <property name="name">
+                <cstring>_apply</cstring>
+            </property>
+            <property name="enabled">
+                <bool>false</bool>
+            </property>
+            <property name="text">
+                <string>&amp;Apply</string>
+            </property>
+            <property name="accel">
+                <string>Alt+A</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="6" column="3">
+            <property name="name">
+                <cstring>_close</cstring>
+            </property>
+            <property name="text">
+                <string>&amp;Close</string>
+            </property>
+            <property name="accel">
+                <string>Alt+C</string>
+            </property>
+        </widget>
+        <widget class="Line" row="3" column="0" rowspan="1" colspan="4">
+            <property name="name">
+                <cstring>line1</cstring>
+            </property>
+            <property name="frameShape">
+                <enum>HLine</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Sunken</enum>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="4" column="0" rowspan="3" colspan="1">
+            <property name="name">
+                <cstring>_defaults</cstring>
+            </property>
+            <property name="text">
+                <string>&amp;Defaults</string>
+            </property>
+            <property name="accel">
+                <string>Alt+D</string>
+            </property>
+        </widget>
+        <spacer row="5" column="1" rowspan="2" colspan="1">
+            <property name="name">
+                <cstring>spacer1</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>231</width>
+                    <height>21</height>
+                </size>
+            </property>
+        </spacer>
+        <widget class="QLayoutWidget" row="0" column="0" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>layout1</cstring>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel" row="1" column="0">
+                    <property name="name">
+                        <cstring>textLabel2</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Plot Update Timer:</string>
+                    </property>
+                    <property name="buddy" stdset="0">
+                        <cstring>_timer</cstring>
+                    </property>
+                </widget>
+                <widget class="QSpinBox" row="1" column="1">
+                    <property name="name">
+                        <cstring>_timer</cstring>
+                    </property>
+                    <property name="suffix">
+                        <string>ms</string>
+                    </property>
+                    <property name="buttonSymbols">
+                        <enum>PlusMinus</enum>
+                    </property>
+                    <property name="maxValue">
+                        <number>9999</number>
+                    </property>
+                    <property name="value">
+                        <number>50</number>
+                    </property>
+                </widget>
+                <widget class="QSpinBox" row="0" column="1">
+                    <property name="name">
+                        <cstring>_psdSampleRate</cstring>
+                    </property>
+                    <property name="suffix">
+                        <string>Hz</string>
+                    </property>
+                    <property name="buttonSymbols">
+                        <enum>PlusMinus</enum>
+                    </property>
+                    <property name="value">
+                        <number>1</number>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="0" column="0">
+                    <property name="name">
+                        <cstring>textLabel1</cstring>
+                    </property>
+                    <property name="text">
+                        <string>PSD Sample Rate:</string>
+                    </property>
+                    <property name="buddy" stdset="0">
+                        <cstring>_psdSampleRate</cstring>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
+        <spacer row="0" column="2" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>spacer4</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>271</width>
+                    <height>31</height>
+                </size>
+            </property>
+        </spacer>
+        <widget class="QLayoutWidget" row="1" column="0" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>layout3</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>textLabel1_2</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Background Color:</string>
+                    </property>
+                </widget>
+                <widget class="KColorButton">
+                    <property name="name">
+                        <cstring>_backgroundColor</cstring>
+                    </property>
+                    <property name="text">
+                        <string></string>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+        <spacer row="2" column="0">
+            <property name="name">
+                <cstring>spacer4_2</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Vertical</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>21</width>
+                    <height>31</height>
+                </size>
+            </property>
+        </spacer>
+    </grid>
+</widget>
+<customwidgets>
+</customwidgets>
+<connections>
+    <connection>
+        <sender>_close</sender>
+        <signal>clicked()</signal>
+        <receiver>KstSettingsDlg</receiver>
+        <slot>close()</slot>
+    </connection>
+    <connection>
+        <sender>_timer</sender>
+        <signal>valueChanged(int)</signal>
+        <receiver>KstSettingsDlg</receiver>
+        <slot>setDirty()</slot>
+    </connection>
+    <connection>
+        <sender>_psdSampleRate</sender>
+        <signal>valueChanged(int)</signal>
+        <receiver>KstSettingsDlg</receiver>
+        <slot>setDirty()</slot>
+    </connection>
+    <connection>
+        <sender>_backgroundColor</sender>
+        <signal>changed(const QColor&amp;)</signal>
+        <receiver>KstSettingsDlg</receiver>
+        <slot>setDirty()</slot>
+    </connection>
+    <connection>
+        <sender>_defaults</sender>
+        <signal>clicked()</signal>
+        <receiver>KstSettingsDlg</receiver>
+        <slot>defaults()</slot>
+    </connection>
+    <connection>
+        <sender>_apply</sender>
+        <signal>clicked()</signal>
+        <receiver>KstSettingsDlg</receiver>
+        <slot>save()</slot>
+    </connection>
+    <connection>
+        <sender>_apply</sender>
+        <signal>clicked()</signal>
+        <receiver>KstSettingsDlg</receiver>
+        <slot>setClean()</slot>
+    </connection>
+</connections>
+<includes>
+    <include location="global" impldecl="in declaration">kdialog.h</include>
+    <include location="local" impldecl="in declaration">kstsettings.h</include>
+    <include location="local" impldecl="in implementation">kstsettingsdlg.ui.h</include>
+</includes>
+<signals>
+    <signal>settingsChanged()</signal>
+</signals>
+<slots>
+    <slot access="private">init()</slot>
+    <slot>setSettings(const KstSettings *settings)</slot>
+    <slot access="private">defaults()</slot>
+    <slot access="private">setDirty()</slot>
+    <slot access="private">setClean()</slot>
+    <slot access="private">save()</slot>
+</slots>
+<layoutdefaults spacing="6" margin="11"/>
+<layoutfunctions spacing="KDialog::spacingHint" margin="KDialog::marginHint"/>
+<includehints>
+    <includehint>kcolorbutton.h</includehint>
+</includehints>
+</UI>

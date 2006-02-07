@@ -1,0 +1,190 @@
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<class>PlanckObjectEditor</class>
+<author>The University of Toronto</author>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>PlanckObjectEditor</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>545</width>
+            <height>368</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Object Editor</string>
+    </property>
+    <grid>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QListView" row="0" column="0" rowspan="1" colspan="5">
+            <column>
+                <property name="text">
+                    <string>Field</string>
+                </property>
+                <property name="clickable">
+                    <bool>true</bool>
+                </property>
+                <property name="resizable">
+                    <bool>true</bool>
+                </property>
+            </column>
+            <column>
+                <property name="text">
+                    <string>Value</string>
+                </property>
+                <property name="clickable">
+                    <bool>true</bool>
+                </property>
+                <property name="resizable">
+                    <bool>true</bool>
+                </property>
+            </column>
+            <property name="name">
+                <cstring>_fields</cstring>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="1" column="0">
+            <property name="name">
+                <cstring>_new</cstring>
+            </property>
+            <property name="text">
+                <string>&amp;New</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="1" column="3">
+            <property name="name">
+                <cstring>_save</cstring>
+            </property>
+            <property name="enabled">
+                <bool>false</bool>
+            </property>
+            <property name="text">
+                <string>&amp;Save</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="1" column="4">
+            <property name="name">
+                <cstring>_close</cstring>
+            </property>
+            <property name="text">
+                <string>&amp;Close</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="1" column="1">
+            <property name="name">
+                <cstring>_delete</cstring>
+            </property>
+            <property name="enabled">
+                <bool>false</bool>
+            </property>
+            <property name="text">
+                <string>&amp;Delete</string>
+            </property>
+        </widget>
+        <spacer row="1" column="2">
+            <property name="name">
+                <cstring>spacer1</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>161</width>
+                    <height>20</height>
+                </size>
+            </property>
+        </spacer>
+    </grid>
+</widget>
+<connections>
+    <connection>
+        <sender>_close</sender>
+        <signal>clicked()</signal>
+        <receiver>PlanckObjectEditor</receiver>
+        <slot>close()</slot>
+    </connection>
+    <connection>
+        <sender>_new</sender>
+        <signal>clicked()</signal>
+        <receiver>PlanckObjectEditor</receiver>
+        <slot>newItem()</slot>
+    </connection>
+    <connection>
+        <sender>_save</sender>
+        <signal>clicked()</signal>
+        <receiver>PlanckObjectEditor</receiver>
+        <slot>save()</slot>
+    </connection>
+    <connection>
+        <sender>_save</sender>
+        <signal>clicked()</signal>
+        <receiver>PlanckObjectEditor</receiver>
+        <slot>setClean()</slot>
+    </connection>
+    <connection>
+        <sender>_fields</sender>
+        <signal>itemRenamed(QListViewItem*,int)</signal>
+        <receiver>PlanckObjectEditor</receiver>
+        <slot>setDirty()</slot>
+    </connection>
+    <connection>
+        <sender>_new</sender>
+        <signal>clicked()</signal>
+        <receiver>PlanckObjectEditor</receiver>
+        <slot>setDirty()</slot>
+    </connection>
+    <connection>
+        <sender>_delete</sender>
+        <signal>clicked()</signal>
+        <receiver>PlanckObjectEditor</receiver>
+        <slot>setDirty()</slot>
+    </connection>
+    <connection>
+        <sender>_fields</sender>
+        <signal>selectionChanged()</signal>
+        <receiver>PlanckObjectEditor</receiver>
+        <slot>updateDelete()</slot>
+    </connection>
+    <connection>
+        <sender>_delete</sender>
+        <signal>clicked()</signal>
+        <receiver>PlanckObjectEditor</receiver>
+        <slot>deleteItem()</slot>
+    </connection>
+</connections>
+<tabstops>
+    <tabstop>_fields</tabstop>
+    <tabstop>_new</tabstop>
+    <tabstop>_delete</tabstop>
+    <tabstop>_save</tabstop>
+    <tabstop>_close</tabstop>
+</tabstops>
+<includes>
+    <include location="local" impldecl="in declaration">items.h</include>
+    <include location="local" impldecl="in implementation">planckobjecteditor.ui.h</include>
+</includes>
+<variables>
+    <variable access="private">ObjectItem *_oi;</variable>
+</variables>
+<slots>
+    <slot>newItem()</slot>
+    <slot>save()</slot>
+    <slot access="private">setDirty()</slot>
+    <slot access="private">setClean()</slot>
+    <slot access="private">updateDelete()</slot>
+    <slot access="private">deleteItem()</slot>
+</slots>
+<functions>
+    <function>setItem( ObjectItem * oi )</function>
+</functions>
+<pixmapinproject/>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>

@@ -1,0 +1,3 @@
+noinst_LTLIBRARIES=autocorrelation.la
+autocorrelation_la_SOURCES=autocorrelation.c
+autocorrelation_la_LDFLAGS=-module -avoid-version

@@ -1,0 +1,3 @@
+noinst_LTLIBRARIES=crosscorrelation.la
+crosscorrelation_la_SOURCES=crosscorrelation.c
+crosscorrelation_la_LDFLAGS=-module -avoid-version

@@ -1,0 +1,409 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE database SYSTEM "planckio.dtd">
+<database path="/Repository3/Level2/Data/Pipeline/Jun03">
+	<group  name="TOIreq2" type="TOI" date="Fri May 23 12:20:48 2003" creator="vibert">
+		<object name="Written" type="FLAG" date="Fri May 23 12:20:48 2003" creator="vibert" lastmodification="Fri May 23 12:20:48 2003" datatype="FLAG" begin="-1" end="-1" beginring="0" endring="0"/>
+		<object name="BEGINRINGINDEX" type="TOI" date="Fri May 23 12:20:48 2003" creator="vibert" lastmodification="Fri May 23 12:20:52 2003" datatype="PIOLONG" begin="0" end="12" beginring="0" endring="0"/>
+		<object name="ENDRINGINDEX" type="TOI" date="Fri May 23 12:20:49 2003" creator="vibert" lastmodification="Fri May 23 12:20:52 2003" datatype="PIOLONG" begin="0" end="12" beginring="0" endring="0"/>
+		<object name="spacecraft_pointing_theta_x" type="TOI" date="Fri May 23 12:20:53 2003" creator="vibert" lastmodification="Tue Jun 17 14:47:56 2003" datatype="PIODOUBLE" begin="0" end="8640000" beginring="0" endring="11"/>
+		<object name="spacecraft_pointing_phi_x" type="TOI" date="Fri May 23 12:20:54 2003" creator="vibert" lastmodification="Tue Jun 17 14:47:57 2003" datatype="PIODOUBLE" begin="0" end="8640000" beginring="0" endring="11"/>
+		<object name="spacecraft_pointing_theta_y" type="TOI" date="Fri May 23 12:20:54 2003" creator="vibert" lastmodification="Tue Jun 17 14:47:59 2003" datatype="PIODOUBLE" begin="0" end="8640000" beginring="0" endring="11"/>
+		<object name="spacecraft_pointing_phi_y" type="TOI" date="Fri May 23 12:20:55 2003" creator="vibert" lastmodification="Tue Jun 17 14:48:01 2003" datatype="PIODOUBLE" begin="0" end="8640000" beginring="0" endring="11"/>
+		<object name="spacecraft_pointing_theta_z" type="TOI" date="Fri May 23 12:20:56 2003" creator="vibert" lastmodification="Tue Jun 17 14:48:02 2003" datatype="PIODOUBLE" begin="0" end="8640000" beginring="0" endring="11"/>
+		<object name="spacecraft_pointing_phi_z" type="TOI" date="Fri May 23 12:20:57 2003" creator="vibert" lastmodification="Tue Jun 17 14:48:03 2003" datatype="PIODOUBLE" begin="0" end="8640000" beginring="0" endring="11"/>
+		<object name="857-1_Theta_of_Pointing" type="TOI" date="Fri May 23 12:21:37 2003" creator="vibert" lastmodification="Fri May 23 12:21:59 2003" datatype="PIODOUBLE" begin="0" end="8640000" beginring="0" endring="11"/>
+		<object name="857-1_Phi_of_Pointing" type="TOI" date="Fri May 23 12:21:37 2003" creator="vibert" lastmodification="Fri May 23 12:22:00 2003" datatype="PIODOUBLE" begin="0" end="8640000" beginring="0" endring="11"/>
+		<object name="857-1_Theta_of_Beam_Ori." type="TOI" date="Fri May 23 12:21:38 2003" creator="vibert" lastmodification="Fri May 23 12:22:00 2003" datatype="PIODOUBLE" begin="0" end="8640000" beginring="0" endring="11"/>
+		<object name="857-1_Phi_of_Beam_Ori." type="TOI" date="Fri May 23 12:21:39 2003" creator="vibert" lastmodification="Fri May 23 12:22:01 2003" datatype="PIODOUBLE" begin="0" end="8640000" beginring="0" endring="11"/>
+		<object name="857-2_Theta_of_Pointing" type="TOI" date="Fri May 23 12:22:02 2003" creator="vibert" lastmodification="Fri May 23 12:23:04 2003" datatype="PIODOUBLE" begin="0" end="8640000" beginring="0" endring="11"/>
+		<object name="857-2_Phi_of_Pointing" type="TOI" date="Fri May 23 12:22:03 2003" creator="vibert" lastmodification="Fri May 23 12:23:05 2003" datatype="PIODOUBLE" begin="0" end="8640000" beginring="0" endring="11"/>
+		<object name="857-2_Theta_of_Beam_Ori." type="TOI" date="Fri May 23 12:22:03 2003" creator="vibert" lastmodification="Fri May 23 12:23:06 2003" datatype="PIODOUBLE" begin="0" end="8640000" beginring="0" endring="11"/>
+		<object name="857-2_Phi_of_Beam_Ori." type="TOI" date="Fri May 23 12:22:04 2003" creator="vibert" lastmodification="Fri May 23 12:23:07 2003" datatype="PIODOUBLE" begin="0" end="8640000" beginring="0" endring="11"/>
+		<object name="Z_LOS_Theta_of_Pointing" type="TOI" date="Fri May 23 12:23:09 2003" creator="vibert" lastmodification="Fri May 23 12:23:55 2003" datatype="PIODOUBLE" begin="0" end="8640000" beginring="0" endring="11"/>
+		<object name="Z_LOS_Phi_of_Pointing" type="TOI" date="Fri May 23 12:23:10 2003" creator="vibert" lastmodification="Fri May 23 12:23:56 2003" datatype="PIODOUBLE" begin="0" end="8640000" beginring="0" endring="11"/>
+		<object name="Z_LOS_Theta_of_Beam_Ori." type="TOI" date="Fri May 23 12:23:11 2003" creator="vibert" lastmodification="Fri May 23 12:23:56 2003" datatype="PIODOUBLE" begin="0" end="8640000" beginring="0" endring="11"/>
+		<object name="Z_LOS_Phi_of_Beam_Ori." type="TOI" date="Fri May 23 12:23:12 2003" creator="vibert" lastmodification="Fri May 23 12:23:57 2003" datatype="PIODOUBLE" begin="0" end="8640000" beginring="0" endring="11"/>
+		<object name="857-1_SIGNAL_VALUE" type="TOI" date="Fri May 23 12:23:59 2003" creator="vibert" lastmodification="Fri May 23 12:24:00 2003" datatype="PIOFLOAT" begin="0" end="8640000" beginring="0" endring="11"/>
+		<object name="857-2_SIGNAL_VALUE" type="TOI" date="Fri May 23 12:24:03 2003" creator="vibert" lastmodification="Fri May 23 12:24:05 2003" datatype="PIOFLOAT" begin="0" end="8640000" beginring="0" endring="11"/>
+		<object name="857-1_noise" type="TOI" date="Fri May 23 12:24:08 2003" creator="vibert" lastmodification="Fri May 23 12:24:12 2003" datatype="PIOFLOAT" begin="0" end="8640000" beginring="0" endring="11"/>
+		<object name="857-2_noise" type="TOI" date="Fri May 23 12:24:15 2003" creator="vibert" lastmodification="Fri May 23 12:24:18 2003" datatype="PIOFLOAT" begin="0" end="8640000" beginring="0" endring="11"/>
+	</group>
+	<group  name="ROIreq2" type="ROI" date="Fri May 23 12:20:48 2003" creator="vibert">
+		<object name="Written" type="FLAG" date="Fri May 23 12:20:48 2003" creator="vibert" lastmodification="Fri May 23 12:20:48 2003" datatype="FLAG" begin="-1" end="-1" beginring="0" endring="0"/>
+		<object name="t_startpt_int" type="ROI" date="Fri May 23 12:20:50 2003" creator="vibert" lastmodification="Fri May 23 12:20:50 2003" datatype="PIODOUBLE" begin="0" end="12" beginring="0" endring="0"/>
+		<object name="t_startpt_frac" type="ROI" date="Fri May 23 12:20:50 2003" creator="vibert" lastmodification="Fri May 23 12:20:51 2003" datatype="PIODOUBLE" begin="0" end="12" beginring="0" endring="0"/>
+		<object name="satpos_x_startpt" type="ROI" date="Fri May 23 12:20:51 2003" creator="vibert" lastmodification="Tue Jun 17 14:37:07 2003" datatype="PIODOUBLE" begin="0" end="12" beginring="0" endring="0"/>
+		<object name="satpos_y_startpt" type="ROI" date="Fri May 23 12:20:51 2003" creator="vibert" lastmodification="Tue Jun 17 14:37:07 2003" datatype="PIODOUBLE" begin="0" end="12" beginring="0" endring="0"/>
+		<object name="satpos_z_startpt" type="ROI" date="Fri May 23 12:20:51 2003" creator="vibert" lastmodification="Tue Jun 17 14:37:07 2003" datatype="PIODOUBLE" begin="0" end="12" beginring="0" endring="0"/>
+		<object name="theta_x_startpt" type="ROI" date="Fri May 23 12:20:51 2003" creator="vibert" lastmodification="Tue Jun 17 14:37:16 2003" datatype="PIODOUBLE" begin="0" end="12" beginring="0" endring="0"/>
+		<object name="phi_x_startpt" type="ROI" date="Fri May 23 12:20:51 2003" creator="vibert" lastmodification="Tue Jun 17 14:37:16 2003" datatype="PIODOUBLE" begin="0" end="12" beginring="0" endring="0"/>
+		<object name="theta_y_startpt" type="ROI" date="Fri May 23 12:20:51 2003" creator="vibert" lastmodification="Tue Jun 17 14:37:16 2003" datatype="PIODOUBLE" begin="0" end="12" beginring="0" endring="0"/>
+		<object name="phi_y_startpt" type="ROI" date="Fri May 23 12:20:51 2003" creator="vibert" lastmodification="Tue Jun 17 14:37:16 2003" datatype="PIODOUBLE" begin="0" end="12" beginring="0" endring="0"/>
+		<object name="theta_z_startpt" type="ROI" date="Fri May 23 12:20:51 2003" creator="vibert" lastmodification="Tue Jun 17 14:37:16 2003" datatype="PIODOUBLE" begin="0" end="12" beginring="0" endring="0"/>
+		<object name="phi_z_startpt" type="ROI" date="Fri May 23 12:20:51 2003" creator="vibert" lastmodification="Tue Jun 17 14:37:16 2003" datatype="PIODOUBLE" begin="0" end="12" beginring="0" endring="0"/>
+		<object name="rate_rot_x_startpt" type="ROI" date="Fri May 23 12:20:52 2003" creator="vibert" lastmodification="Fri May 23 12:20:52 2003" datatype="PIODOUBLE" begin="0" end="12" beginring="0" endring="0"/>
+		<object name="t_endpt_int" type="ROI" date="Fri May 23 12:20:52 2003" creator="vibert" lastmodification="Fri May 23 12:20:52 2003" datatype="PIODOUBLE" begin="0" end="12" beginring="0" endring="0"/>
+		<object name="t_endpt_frac" type="ROI" date="Fri May 23 12:20:52 2003" creator="vibert" lastmodification="Fri May 23 12:20:52 2003" datatype="PIODOUBLE" begin="0" end="12" beginring="0" endring="0"/>
+		<object name="satpos_x_endpt" type="ROI" date="Fri May 23 12:20:52 2003" creator="vibert" lastmodification="Tue Jun 17 14:37:24 2003" datatype="PIODOUBLE" begin="0" end="12" beginring="0" endring="0"/>
+		<object name="satpos_y_endpt" type="ROI" date="Fri May 23 12:20:52 2003" creator="vibert" lastmodification="Tue Jun 17 14:37:24 2003" datatype="PIODOUBLE" begin="0" end="12" beginring="0" endring="0"/>
+		<object name="satpos_z_endpt" type="ROI" date="Fri May 23 12:20:52 2003" creator="vibert" lastmodification="Tue Jun 17 14:37:24 2003" datatype="PIODOUBLE" begin="0" end="12" beginring="0" endring="0"/>
+	</group>
+	<group  name="TOIreq1_to_unroll" type="TOI" date="Mon May 26 12:19:21 2003" creator="vibert">
+		<object name="Written" type="FLAG" date="Mon May 26 12:19:22 2003" creator="vibert" lastmodification="Mon May 26 12:19:22 2003" datatype="FLAG" begin="-1" end="-1" beginring="0" endring="0"/>
+		<object name="BEGINRINGINDEX" type="TOI" date="Mon May 26 12:19:22 2003" creator="vibert" lastmodification="Mon May 26 12:22:50 2003" datatype="PIOLONG" begin="0" end="744" beginring="0" endring="0"/>
+		<object name="ENDRINGINDEX" type="TOI" date="Mon May 26 12:19:22 2003" creator="vibert" lastmodification="Mon May 26 17:47:15 2003" datatype="PIOLONG" begin="0" end="744" beginring="0" endring="0"/>
+		<object name="545-1_Theta_of_Pointing" type="TOI" date="Mon May 26 12:23:07 2003" creator="vibert" lastmodification="Mon May 26 17:47:28 2003" datatype="PIODOUBLE" begin="0" end="8928000" beginring="0" endring="743"/>
+		<object name="545-1_Phi_of_Pointing" type="TOI" date="Mon May 26 12:23:17 2003" creator="vibert" lastmodification="Mon May 26 17:47:37 2003" datatype="PIODOUBLE" begin="0" end="8928000" beginring="0" endring="743"/>
+		<object name="545-1_Theta_of_Beam_Ori." type="TOI" date="Mon May 26 12:23:27 2003" creator="vibert" lastmodification="Mon May 26 17:47:45 2003" datatype="PIODOUBLE" begin="0" end="8928000" beginring="0" endring="743"/>
+		<object name="545-1_Phi_of_Beam_Ori." type="TOI" date="Mon May 26 12:23:36 2003" creator="vibert" lastmodification="Mon May 26 17:47:53 2003" datatype="PIODOUBLE" begin="0" end="8928000" beginring="0" endring="743"/>
+		<object name="545-2_Theta_of_Pointing" type="TOI" date="Mon May 26 12:24:00 2003" creator="vibert" lastmodification="Mon May 26 17:48:08 2003" datatype="PIODOUBLE" begin="0" end="8928000" beginring="0" endring="743"/>
+		<object name="545-2_Phi_of_Pointing" type="TOI" date="Mon May 26 12:24:11 2003" creator="vibert" lastmodification="Mon May 26 17:48:16 2003" datatype="PIODOUBLE" begin="0" end="8928000" beginring="0" endring="743"/>
+		<object name="545-2_Theta_of_Beam_Ori." type="TOI" date="Mon May 26 12:24:20 2003" creator="vibert" lastmodification="Mon May 26 17:48:24 2003" datatype="PIODOUBLE" begin="0" end="8928000" beginring="0" endring="743"/>
+		<object name="545-2_Phi_of_Beam_Ori." type="TOI" date="Mon May 26 12:24:29 2003" creator="vibert" lastmodification="Mon May 26 17:48:32 2003" datatype="PIODOUBLE" begin="0" end="8928000" beginring="0" endring="743"/>
+		<object name="857-1_Theta_of_Pointing" type="TOI" date="Mon May 26 12:24:52 2003" creator="vibert" lastmodification="Mon May 26 17:48:48 2003" datatype="PIODOUBLE" begin="0" end="8928000" beginring="0" endring="743"/>
+		<object name="857-1_Phi_of_Pointing" type="TOI" date="Mon May 26 12:25:02 2003" creator="vibert" lastmodification="Mon May 26 17:48:56 2003" datatype="PIODOUBLE" begin="0" end="8928000" beginring="0" endring="743"/>
+		<object name="857-1_Theta_of_Beam_Ori." type="TOI" date="Mon May 26 12:25:12 2003" creator="vibert" lastmodification="Mon May 26 17:49:03 2003" datatype="PIODOUBLE" begin="0" end="8928000" beginring="0" endring="743"/>
+		<object name="857-1_Phi_of_Beam_Ori." type="TOI" date="Mon May 26 12:25:22 2003" creator="vibert" lastmodification="Mon May 26 17:49:11 2003" datatype="PIODOUBLE" begin="0" end="8928000" beginring="0" endring="743"/>
+		<object name="857-2_Theta_of_Pointing" type="TOI" date="Mon May 26 12:25:43 2003" creator="vibert" lastmodification="Mon May 26 17:49:26 2003" datatype="PIODOUBLE" begin="0" end="8928000" beginring="0" endring="743"/>
+		<object name="857-2_Phi_of_Pointing" type="TOI" date="Mon May 26 12:25:52 2003" creator="vibert" lastmodification="Mon May 26 17:49:34 2003" datatype="PIODOUBLE" begin="0" end="8928000" beginring="0" endring="743"/>
+		<object name="857-2_Theta_of_Beam_Ori." type="TOI" date="Mon May 26 12:26:00 2003" creator="vibert" lastmodification="Mon May 26 17:49:42 2003" datatype="PIODOUBLE" begin="0" end="8928000" beginring="0" endring="743"/>
+		<object name="857-2_Phi_of_Beam_Ori." type="TOI" date="Mon May 26 12:26:10 2003" creator="vibert" lastmodification="Mon May 26 17:49:50 2003" datatype="PIODOUBLE" begin="0" end="8928000" beginring="0" endring="743"/>
+		<object name="545-1_SIGNAL_VALUE" type="TOI" date="Mon May 26 12:26:16 2003" creator="vibert" lastmodification="Mon May 26 17:49:54 2003" datatype="PIOFLOAT" begin="0" end="8928000" beginring="0" endring="743"/>
+		<object name="545-2_SIGNAL_VALUE" type="TOI" date="Mon May 26 12:26:21 2003" creator="vibert" lastmodification="Mon May 26 17:50:01 2003" datatype="PIOFLOAT" begin="0" end="8928000" beginring="0" endring="743"/>
+		<object name="857-1_SIGNAL_VALUE" type="TOI" date="Mon May 26 12:26:27 2003" creator="vibert" lastmodification="Mon May 26 17:50:07 2003" datatype="PIOFLOAT" begin="0" end="8928000" beginring="0" endring="743"/>
+		<object name="857-2_SIGNAL_VALUE" type="TOI" date="Mon May 26 12:26:33 2003" creator="vibert" lastmodification="Mon May 26 17:50:12 2003" datatype="PIOFLOAT" begin="0" end="8928000" beginring="0" endring="743"/>
+	</group>
+	<group  name="ROIreq1" type="ROI" date="Mon May 26 12:19:21 2003" creator="vibert">
+		<object name="Written" type="FLAG" date="Mon May 26 12:19:22 2003" creator="vibert" lastmodification="Mon May 26 12:19:22 2003" datatype="FLAG" begin="-1" end="-1" beginring="0" endring="0"/>
+		<object name="t_startpt_int" type="ROI" date="Mon May 26 12:22:48 2003" creator="vibert" lastmodification="Mon May 26 12:22:48 2003" datatype="PIODOUBLE" begin="0" end="744" beginring="0" endring="0"/>
+		<object name="t_startpt_frac" type="ROI" date="Mon May 26 12:22:48 2003" creator="vibert" lastmodification="Mon May 26 17:47:14 2003" datatype="PIODOUBLE" begin="0" end="744" beginring="0" endring="0"/>
+		<object name="satpos_x_startpt" type="ROI" date="Mon May 26 12:22:48 2003" creator="vibert" lastmodification="Tue Jun 17 13:04:02 2003" datatype="PIODOUBLE" begin="0" end="744" beginring="0" endring="0"/>
+		<object name="satpos_y_startpt" type="ROI" date="Mon May 26 12:22:49 2003" creator="vibert" lastmodification="Tue Jun 17 13:05:00 2003" datatype="PIODOUBLE" begin="0" end="744" beginring="0" endring="0"/>
+		<object name="satpos_z_startpt" type="ROI" date="Mon May 26 12:22:49 2003" creator="vibert" lastmodification="Tue Jun 17 13:05:00 2003" datatype="PIODOUBLE" begin="0" end="744" beginring="0" endring="0"/>
+		<object name="theta_x_startpt" type="ROI" date="Mon May 26 12:22:49 2003" creator="vibert" lastmodification="Tue Jun 17 13:16:05 2003" datatype="PIODOUBLE" begin="0" end="744" beginring="0" endring="0"/>
+		<object name="phi_x_startpt" type="ROI" date="Mon May 26 12:22:49 2003" creator="vibert" lastmodification="Tue Jun 17 13:16:05 2003" datatype="PIODOUBLE" begin="0" end="744" beginring="0" endring="0"/>
+		<object name="theta_y_startpt" type="ROI" date="Mon May 26 12:22:49 2003" creator="vibert" lastmodification="Tue Jun 17 13:16:05 2003" datatype="PIODOUBLE" begin="0" end="744" beginring="0" endring="0"/>
+		<object name="phi_y_startpt" type="ROI" date="Mon May 26 12:22:49 2003" creator="vibert" lastmodification="Tue Jun 17 13:16:05 2003" datatype="PIODOUBLE" begin="0" end="744" beginring="0" endring="0"/>
+		<object name="theta_z_startpt" type="ROI" date="Mon May 26 12:22:49 2003" creator="vibert" lastmodification="Tue Jun 17 13:16:05 2003" datatype="PIODOUBLE" begin="0" end="744" beginring="0" endring="0"/>
+		<object name="phi_z_startpt" type="ROI" date="Mon May 26 12:22:49 2003" creator="vibert" lastmodification="Tue Jun 17 13:16:05 2003" datatype="PIODOUBLE" begin="0" end="744" beginring="0" endring="0"/>
+		<object name="rate_rot_x_startpt" type="ROI" date="Mon May 26 12:22:49 2003" creator="vibert" lastmodification="Mon May 26 17:47:14 2003" datatype="PIODOUBLE" begin="0" end="744" beginring="0" endring="0"/>
+		<object name="t_endpt_int" type="ROI" date="Mon May 26 12:22:49 2003" creator="vibert" lastmodification="Mon May 26 17:47:14 2003" datatype="PIODOUBLE" begin="0" end="744" beginring="0" endring="0"/>
+		<object name="t_endpt_frac" type="ROI" date="Mon May 26 12:22:49 2003" creator="vibert" lastmodification="Mon May 26 17:47:15 2003" datatype="PIODOUBLE" begin="0" end="744" beginring="0" endring="0"/>
+		<object name="satpos_x_endpt" type="ROI" date="Mon May 26 12:22:49 2003" creator="vibert" lastmodification="Tue Jun 17 14:19:19 2003" datatype="PIODOUBLE" begin="0" end="744" beginring="0" endring="0"/>
+		<object name="satpos_y_endpt" type="ROI" date="Mon May 26 12:22:49 2003" creator="vibert" lastmodification="Tue Jun 17 14:19:19 2003" datatype="PIODOUBLE" begin="0" end="744" beginring="0" endring="0"/>
+		<object name="satpos_z_endpt" type="ROI" date="Mon May 26 12:22:50 2003" creator="vibert" lastmodification="Tue Jun 17 14:19:19 2003" datatype="PIODOUBLE" begin="0" end="744" beginring="0" endring="0"/>
+		<object name="545-1_mean" type="ROI" date="Fri Jul  4 17:48:07 2003" creator="moneti" lastmodification="Fri Jul  4 17:48:08 2003" datatype="PIODOUBLE" begin="0" end="744" beginring="0" endring="0"/>
+		<object name="545-1_galmean" type="ROI" date="Fri Jul  4 17:48:07 2003" creator="moneti" lastmodification="Fri Jul  4 17:48:08 2003" datatype="PIODOUBLE" begin="0" end="744" beginring="0" endring="0"/>
+		<object name="545-1_rms" type="ROI" date="Fri Jul  4 17:48:07 2003" creator="moneti" lastmodification="Fri Jul  4 17:48:08 2003" datatype="PIODOUBLE" begin="0" end="744" beginring="0" endring="0"/>
+		<object name="545-1_galrms" type="ROI" date="Fri Jul  4 17:48:08 2003" creator="moneti" lastmodification="Fri Jul  4 17:48:08 2003" datatype="PIODOUBLE" begin="0" end="744" beginring="0" endring="0"/>
+		<object name="545-1_sigma" type="ROI" date="Fri Jul  4 17:48:08 2003" creator="moneti" lastmodification="Fri Jul  4 17:48:08 2003" datatype="PIODOUBLE" begin="0" end="744" beginring="0" endring="0"/>
+		<object name="545-1_galsigma" type="ROI" date="Fri Jul  4 17:48:08 2003" creator="moneti" lastmodification="Fri Jul  4 17:48:08 2003" datatype="PIODOUBLE" begin="0" end="744" beginring="0" endring="0"/>
+	</group>
+	<group  name="TOIreq3_to_unroll" type="TOI" date="Mon May 26 13:00:58 2003" creator="vibert">
+		<object name="Written" type="FLAG" date="Mon May 26 13:00:58 2003" creator="vibert" lastmodification="Mon May 26 13:00:58 2003" datatype="FLAG" begin="-1" end="-1" beginring="0" endring="0"/>
+		<object name="BEGINRINGINDEX" type="TOI" date="Mon May 26 13:00:58 2003" creator="vibert" lastmodification="Mon May 26 13:01:19 2003" datatype="PIOLONG" begin="0" end="8784" beginring="0" endring="0"/>
+		<object name="ENDRINGINDEX" type="TOI" date="Mon May 26 13:00:58 2003" creator="vibert" lastmodification="Mon May 26 14:07:28 2003" datatype="PIOLONG" begin="0" end="8784" beginring="0" endring="0"/>
+		<object name="353-4_Theta_of_Pointing" type="TOI" date="Mon May 26 13:07:03 2003" creator="vibert" lastmodification="Mon May 26 14:10:10 2003" datatype="PIODOUBLE" begin="0" end="105408000" beginring="0" endring="8783"/>
+		<object name="353-4_Phi_of_Pointing" type="TOI" date="Mon May 26 13:08:53 2003" creator="vibert" lastmodification="Mon May 26 14:12:08 2003" datatype="PIODOUBLE" begin="0" end="105408000" beginring="0" endring="8783"/>
+		<object name="353-4_Theta_of_Beam_Ori." type="TOI" date="Mon May 26 13:10:30 2003" creator="vibert" lastmodification="Mon May 26 14:13:50 2003" datatype="PIODOUBLE" begin="0" end="105408000" beginring="0" endring="8783"/>
+		<object name="353-4_Phi_of_Beam_Ori." type="TOI" date="Mon May 26 13:12:00 2003" creator="vibert" lastmodification="Mon May 26 14:15:34 2003" datatype="PIODOUBLE" begin="0" end="105408000" beginring="0" endring="8783"/>
+		<object name="353-6_Theta_of_Pointing" type="TOI" date="Mon May 26 13:14:52 2003" creator="vibert" lastmodification="Mon May 26 14:19:21 2003" datatype="PIODOUBLE" begin="0" end="105408000" beginring="0" endring="8783"/>
+		<object name="353-6_Phi_of_Pointing" type="TOI" date="Mon May 26 13:16:54 2003" creator="vibert" lastmodification="Mon May 26 14:21:30 2003" datatype="PIODOUBLE" begin="0" end="105408000" beginring="0" endring="8783"/>
+		<object name="353-6_Theta_of_Beam_Ori." type="TOI" date="Mon May 26 13:18:28 2003" creator="vibert" lastmodification="Mon May 26 14:23:12 2003" datatype="PIODOUBLE" begin="0" end="105408000" beginring="0" endring="8783"/>
+		<object name="353-6_Phi_of_Beam_Ori." type="TOI" date="Mon May 26 13:20:14 2003" creator="vibert" lastmodification="Mon May 26 14:24:55 2003" datatype="PIODOUBLE" begin="0" end="105408000" beginring="0" endring="8783"/>
+		<object name="353-4_I_VALUE" type="TOI" date="Mon May 26 13:21:04 2003" creator="vibert" lastmodification="Mon May 26 14:25:58 2003" datatype="PIOFLOAT" begin="0" end="105408000" beginring="0" endring="8783"/>
+		<object name="353-4_PSB1_antenna_temp" type="TOI" date="Mon May 26 13:21:45 2003" creator="vibert" lastmodification="Mon May 26 14:27:05 2003" datatype="PIOFLOAT" begin="0" end="105408000" beginring="0" endring="8783"/>
+		<object name="353-4_PSB2_antenna_temp" type="TOI" date="Mon May 26 13:22:26 2003" creator="vibert" lastmodification="Mon May 26 14:28:15 2003" datatype="PIOFLOAT" begin="0" end="105408000" beginring="0" endring="8783"/>
+		<object name="353-4_Q_VALUE" type="TOI" date="Mon May 26 13:23:08 2003" creator="vibert" lastmodification="Mon May 26 14:29:21 2003" datatype="PIOFLOAT" begin="0" end="105408000" beginring="0" endring="8783"/>
+		<object name="353-4_U_VALUE" type="TOI" date="Mon May 26 13:23:50 2003" creator="vibert" lastmodification="Mon May 26 14:30:28 2003" datatype="PIOFLOAT" begin="0" end="105408000" beginring="0" endring="8783"/>
+		<object name="353-6_I_VALUE" type="TOI" date="Mon May 26 13:24:31 2003" creator="vibert" lastmodification="Mon May 26 14:31:35 2003" datatype="PIOFLOAT" begin="0" end="105408000" beginring="0" endring="8783"/>
+		<object name="353-6_PSB1_antenna_temp" type="TOI" date="Mon May 26 14:32:43 2003" creator="vibert" lastmodification="Mon May 26 14:32:50 2003" datatype="PIOFLOAT" begin="0" end="105408000" beginring="0" endring="8783"/>
+		<object name="353-6_PSB2_antenna_temp" type="TOI" date="Mon May 26 14:33:20 2003" creator="vibert" lastmodification="Mon May 26 14:33:29 2003" datatype="PIOFLOAT" begin="0" end="105408000" beginring="0" endring="8783"/>
+		<object name="353-6_Q_VALUE" type="TOI" date="Mon May 26 14:33:58 2003" creator="vibert" lastmodification="Mon May 26 14:34:06 2003" datatype="PIOFLOAT" begin="0" end="105408000" beginring="0" endring="8783"/>
+		<object name="353-6_U_VALUE" type="TOI" date="Mon May 26 14:34:35 2003" creator="vibert" lastmodification="Mon May 26 14:34:43 2003" datatype="PIOFLOAT" begin="0" end="105408000" beginring="0" endring="8783"/>
+	</group>
+	<group  name="ROIreq3" type="ROI" date="Mon May 26 13:00:58 2003" creator="vibert">
+		<object name="Written" type="FLAG" date="Mon May 26 13:00:58 2003" creator="vibert" lastmodification="Mon May 26 13:00:58 2003" datatype="FLAG" begin="-1" end="-1" beginring="0" endring="0"/>
+		<object name="t_startpt_int" type="ROI" date="Mon May 26 13:01:16 2003" creator="vibert" lastmodification="Mon May 26 13:01:16 2003" datatype="PIODOUBLE" begin="0" end="8784" beginring="0" endring="0"/>
+		<object name="t_startpt_frac" type="ROI" date="Mon May 26 13:01:16 2003" creator="vibert" lastmodification="Tue Jun 17 14:26:53 2003" datatype="PIODOUBLE" begin="0" end="8784" beginring="0" endring="0"/>
+		<object name="satpos_x_startpt" type="ROI" date="Mon May 26 13:01:17 2003" creator="vibert" lastmodification="Tue Jun 17 14:34:43 2003" datatype="PIODOUBLE" begin="0" end="8784" beginring="0" endring="0"/>
+		<object name="satpos_y_startpt" type="ROI" date="Mon May 26 13:01:17 2003" creator="vibert" lastmodification="Tue Jun 17 14:34:43 2003" datatype="PIODOUBLE" begin="0" end="8784" beginring="0" endring="0"/>
+		<object name="satpos_z_startpt" type="ROI" date="Mon May 26 13:01:17 2003" creator="vibert" lastmodification="Tue Jun 17 14:34:43 2003" datatype="PIODOUBLE" begin="0" end="8784" beginring="0" endring="0"/>
+		<object name="theta_x_startpt" type="ROI" date="Mon May 26 13:01:17 2003" creator="vibert" lastmodification="Tue Jun 17 14:34:55 2003" datatype="PIODOUBLE" begin="0" end="8784" beginring="0" endring="0"/>
+		<object name="phi_x_startpt" type="ROI" date="Mon May 26 13:01:17 2003" creator="vibert" lastmodification="Tue Jun 17 14:34:55 2003" datatype="PIODOUBLE" begin="0" end="8784" beginring="0" endring="0"/>
+		<object name="theta_y_startpt" type="ROI" date="Mon May 26 13:01:17 2003" creator="vibert" lastmodification="Tue Jun 17 14:34:55 2003" datatype="PIODOUBLE" begin="0" end="8784" beginring="0" endring="0"/>
+		<object name="phi_y_startpt" type="ROI" date="Mon May 26 13:01:18 2003" creator="vibert" lastmodification="Tue Jun 17 14:34:55 2003" datatype="PIODOUBLE" begin="0" end="8784" beginring="0" endring="0"/>
+		<object name="theta_z_startpt" type="ROI" date="Mon May 26 13:01:18 2003" creator="vibert" lastmodification="Tue Jun 17 14:34:55 2003" datatype="PIODOUBLE" begin="0" end="8784" beginring="0" endring="0"/>
+		<object name="phi_z_startpt" type="ROI" date="Mon May 26 13:01:18 2003" creator="vibert" lastmodification="Tue Jun 17 14:34:55 2003" datatype="PIODOUBLE" begin="0" end="8784" beginring="0" endring="0"/>
+		<object name="rate_rot_x_startpt" type="ROI" date="Mon May 26 13:01:18 2003" creator="vibert" lastmodification="Tue Jun 17 14:26:53 2003" datatype="PIODOUBLE" begin="0" end="8784" beginring="0" endring="0"/>
+		<object name="t_endpt_int" type="ROI" date="Mon May 26 13:01:18 2003" creator="vibert" lastmodification="Tue Jun 17 14:26:53 2003" datatype="PIODOUBLE" begin="0" end="8784" beginring="0" endring="0"/>
+		<object name="t_endpt_frac" type="ROI" date="Mon May 26 13:01:19 2003" creator="vibert" lastmodification="Tue Jun 17 14:26:53 2003" datatype="PIODOUBLE" begin="0" end="8784" beginring="0" endring="0"/>
+		<object name="satpos_x_endpt" type="ROI" date="Mon May 26 13:01:19 2003" creator="vibert" lastmodification="Tue Jun 17 14:35:07 2003" datatype="PIODOUBLE" begin="0" end="8784" beginring="0" endring="0"/>
+		<object name="satpos_y_endpt" type="ROI" date="Mon May 26 13:01:19 2003" creator="vibert" lastmodification="Tue Jun 17 14:35:07 2003" datatype="PIODOUBLE" begin="0" end="8784" beginring="0" endring="0"/>
+		<object name="satpos_z_endpt" type="ROI" date="Mon May 26 13:01:19 2003" creator="vibert" lastmodification="Tue Jun 17 14:35:07 2003" datatype="PIODOUBLE" begin="0" end="8784" beginring="0" endring="0"/>
+		<object name="353-Ioffset" type="ROI" date="Wed Aug 20 18:06:48 2003" creator="delouis" lastmodification="Thu Aug 21 08:45:48 2003" datatype="PIODOUBLE" begin="0" end="10" beginring="0" endring="0"/>
+		<object name="353-Qoffset" type="ROI" date="Wed Aug 20 18:06:48 2003" creator="delouis" lastmodification="Thu Aug 21 08:45:48 2003" datatype="PIODOUBLE" begin="0" end="10" beginring="0" endring="0"/>
+		<object name="353-Uoffset" type="ROI" date="Wed Aug 20 18:06:48 2003" creator="delouis" lastmodification="Thu Aug 21 08:45:48 2003" datatype="PIODOUBLE" begin="0" end="10" beginring="0" endring="0"/>
+	</group>
+	<group  name="TOIreq4_to_unroll" type="TOI" date="Mon May 26 17:02:18 2003" creator="vibert">
+		<object name="Written" type="FLAG" date="Mon May 26 17:02:18 2003" creator="vibert" lastmodification="Mon May 26 17:02:18 2003" datatype="FLAG" begin="-1" end="-1" beginring="0" endring="0"/>
+		<object name="BEGINRINGINDEX" type="TOI" date="Mon May 26 17:02:18 2003" creator="vibert" lastmodification="Mon May 26 17:02:27 2003" datatype="PIOLONG" begin="0" end="8784" beginring="0" endring="0"/>
+		<object name="ENDRINGINDEX" type="TOI" date="Mon May 26 17:02:18 2003" creator="vibert" lastmodification="Mon May 26 17:02:27 2003" datatype="PIOLONG" begin="0" end="8784" beginring="0" endring="0"/>
+		<object name="100-1_Theta_of_Pointing" type="TOI" date="Mon May 26 17:04:01 2003" creator="vibert" lastmodification="Mon May 26 17:04:16 2003" datatype="PIODOUBLE" begin="0" end="105408000" beginring="0" endring="8783"/>
+		<object name="100-1_Phi_of_Pointing" type="TOI" date="Mon May 26 17:05:20 2003" creator="vibert" lastmodification="Mon May 26 17:05:35 2003" datatype="PIODOUBLE" begin="0" end="105408000" beginring="0" endring="8783"/>
+		<object name="143-1_Theta_of_Pointing" type="TOI" date="Mon May 26 17:07:05 2003" creator="vibert" lastmodification="Mon May 26 17:07:20 2003" datatype="PIODOUBLE" begin="0" end="105408000" beginring="0" endring="8783"/>
+		<object name="143-1_Phi_of_Pointing" type="TOI" date="Mon May 26 17:08:25 2003" creator="vibert" lastmodification="Mon May 26 17:08:40 2003" datatype="PIODOUBLE" begin="0" end="105408000" beginring="0" endring="8783"/>
+		<object name="217-1_Theta_of_Pointing" type="TOI" date="Mon May 26 17:10:11 2003" creator="vibert" lastmodification="Mon May 26 17:10:27 2003" datatype="PIODOUBLE" begin="0" end="105408000" beginring="0" endring="8783"/>
+		<object name="217-1_Phi_of_Pointing" type="TOI" date="Mon May 26 17:11:29 2003" creator="vibert" lastmodification="Mon May 26 17:11:43 2003" datatype="PIODOUBLE" begin="0" end="105408000" beginring="0" endring="8783"/>
+		<object name="353-1_Theta_of_Pointing" type="TOI" date="Mon May 26 17:13:12 2003" creator="vibert" lastmodification="Mon May 26 17:13:28 2003" datatype="PIODOUBLE" begin="0" end="105408000" beginring="0" endring="8783"/>
+		<object name="353-1_Phi_of_Pointing" type="TOI" date="Mon May 26 17:14:33 2003" creator="vibert" lastmodification="Mon May 26 17:14:48 2003" datatype="PIODOUBLE" begin="0" end="105408000" beginring="0" endring="8783"/>
+		<object name="100-1_SIGNAL_VALUE" type="TOI" date="Tue Jun 17 01:38:29 2003" creator="vibert" lastmodification="Tue Jun 17 01:38:38 2003" datatype="PIOFLOAT" begin="0" end="105408000" beginring="0" endring="8783"/>
+		<object name="143-1_SIGNAL_VALUE" type="TOI" date="Tue Jun 17 01:39:10 2003" creator="vibert" lastmodification="Tue Jun 17 01:39:19 2003" datatype="PIOFLOAT" begin="0" end="105408000" beginring="0" endring="8783"/>
+		<object name="217-1_SIGNAL_VALUE" type="TOI" date="Tue Jun 17 01:39:53 2003" creator="vibert" lastmodification="Tue Jun 17 01:40:04 2003" datatype="PIOFLOAT" begin="0" end="105408000" beginring="0" endring="8783"/>
+		<object name="353-1_SIGNAL_VALUE" type="TOI" date="Tue Jun 17 01:40:38 2003" creator="vibert" lastmodification="Tue Jun 17 01:40:48 2003" datatype="PIOFLOAT" begin="0" end="105408000" beginring="0" endring="8783"/>
+		<object name="100-1_DIPOLE_VALUE" type="TOI" date="Tue Jun 17 01:47:13 2003" creator="vibert" lastmodification="Tue Jun 17 01:47:24 2003" datatype="PIOFLOAT" begin="0" end="105408000" beginring="0" endring="8783"/>
+		<object name="143-1_DIPOLE_VALUE" type="TOI" date="Tue Jun 17 01:48:06 2003" creator="vibert" lastmodification="Tue Jun 17 01:48:16 2003" datatype="PIOFLOAT" begin="0" end="105408000" beginring="0" endring="8783"/>
+		<object name="217-1_DIPOLE_VALUE" type="TOI" date="Tue Jun 17 01:48:52 2003" creator="vibert" lastmodification="Tue Jun 17 01:49:03 2003" datatype="PIOFLOAT" begin="0" end="105408000" beginring="0" endring="8783"/>
+		<object name="353-1_DIPOLE_VALUE" type="TOI" date="Tue Jun 17 01:49:46 2003" creator="vibert" lastmodification="Tue Jun 17 01:49:58 2003" datatype="PIOFLOAT" begin="0" end="105408000" beginring="0" endring="8783"/>
+	</group>
+	<group  name="ROIreq4" type="ROI" date="Mon May 26 17:02:18 2003" creator="vibert">
+		<object name="Written" type="FLAG" date="Mon May 26 17:02:18 2003" creator="vibert" lastmodification="Mon May 26 17:02:18 2003" datatype="FLAG" begin="-1" end="-1" beginring="0" endring="0"/>
+		<object name="t_startpt_int" type="ROI" date="Mon May 26 17:02:25 2003" creator="vibert" lastmodification="Mon May 26 17:02:25 2003" datatype="PIODOUBLE" begin="0" end="8784" beginring="0" endring="0"/>
+		<object name="t_startpt_frac" type="ROI" date="Mon May 26 17:02:25 2003" creator="vibert" lastmodification="Mon May 26 17:02:25 2003" datatype="PIODOUBLE" begin="0" end="8784" beginring="0" endring="0"/>
+		<object name="satpos_x_startpt" type="ROI" date="Mon May 26 17:02:25 2003" creator="vibert" lastmodification="Tue Jun 17 14:35:43 2003" datatype="PIODOUBLE" begin="0" end="8784" beginring="0" endring="0"/>
+		<object name="satpos_y_startpt" type="ROI" date="Mon May 26 17:02:25 2003" creator="vibert" lastmodification="Tue Jun 17 14:35:43 2003" datatype="PIODOUBLE" begin="0" end="8784" beginring="0" endring="0"/>
+		<object name="satpos_z_startpt" type="ROI" date="Mon May 26 17:02:25 2003" creator="vibert" lastmodification="Tue Jun 17 14:35:43 2003" datatype="PIODOUBLE" begin="0" end="8784" beginring="0" endring="0"/>
+		<object name="theta_x_startpt" type="ROI" date="Mon May 26 17:02:25 2003" creator="vibert" lastmodification="Tue Jun 17 14:35:52 2003" datatype="PIODOUBLE" begin="0" end="8784" beginring="0" endring="0"/>
+		<object name="phi_x_startpt" type="ROI" date="Mon May 26 17:02:26 2003" creator="vibert" lastmodification="Tue Jun 17 14:35:52 2003" datatype="PIODOUBLE" begin="0" end="8784" beginring="0" endring="0"/>
+		<object name="theta_y_startpt" type="ROI" date="Mon May 26 17:02:26 2003" creator="vibert" lastmodification="Tue Jun 17 14:35:52 2003" datatype="PIODOUBLE" begin="0" end="8784" beginring="0" endring="0"/>
+		<object name="phi_y_startpt" type="ROI" date="Mon May 26 17:02:26 2003" creator="vibert" lastmodification="Tue Jun 17 14:35:52 2003" datatype="PIODOUBLE" begin="0" end="8784" beginring="0" endring="0"/>
+		<object name="theta_z_startpt" type="ROI" date="Mon May 26 17:02:26 2003" creator="vibert" lastmodification="Tue Jun 17 14:35:52 2003" datatype="PIODOUBLE" begin="0" end="8784" beginring="0" endring="0"/>
+		<object name="phi_z_startpt" type="ROI" date="Mon May 26 17:02:26 2003" creator="vibert" lastmodification="Tue Jun 17 14:35:52 2003" datatype="PIODOUBLE" begin="0" end="8784" beginring="0" endring="0"/>
+		<object name="rate_rot_x_startpt" type="ROI" date="Mon May 26 17:02:26 2003" creator="vibert" lastmodification="Mon May 26 17:02:26 2003" datatype="PIODOUBLE" begin="0" end="8784" beginring="0" endring="0"/>
+		<object name="t_endpt_int" type="ROI" date="Mon May 26 17:02:26 2003" creator="vibert" lastmodification="Mon May 26 17:02:26 2003" datatype="PIODOUBLE" begin="0" end="8784" beginring="0" endring="0"/>
+		<object name="t_endpt_frac" type="ROI" date="Mon May 26 17:02:26 2003" creator="vibert" lastmodification="Mon May 26 17:02:26 2003" datatype="PIODOUBLE" begin="0" end="8784" beginring="0" endring="0"/>
+		<object name="satpos_x_endpt" type="ROI" date="Mon May 26 17:02:26 2003" creator="vibert" lastmodification="Tue Jun 17 14:36:00 2003" datatype="PIODOUBLE" begin="0" end="8784" beginring="0" endring="0"/>
+		<object name="satpos_y_endpt" type="ROI" date="Mon May 26 17:02:27 2003" creator="vibert" lastmodification="Tue Jun 17 14:36:00 2003" datatype="PIODOUBLE" begin="0" end="8784" beginring="0" endring="0"/>
+		<object name="satpos_z_endpt" type="ROI" date="Mon May 26 17:02:27 2003" creator="vibert" lastmodification="Tue Jun 17 14:36:00 2003" datatype="PIODOUBLE" begin="0" end="8784" beginring="0" endring="0"/>
+	</group>
+	<group  name="TOIreq1" type="TOI" date="Mon Jun 16 12:25:38 2003" creator="vibert">
+		<object name="Written" type="FLAG" date="Mon Jun 16 12:25:38 2003" creator="vibert" lastmodification="Mon Jun 16 12:25:38 2003" datatype="FLAG" begin="-1" end="-1" beginring="0" endring="0"/>
+		<object name="BEGINRINGINDEX" type="TOI" date="Mon Jun 16 12:25:38 2003" creator="vibert" lastmodification="Mon Jun 16 12:25:39 2003" datatype="PIOLONG" begin="0" end="744" beginring="0" endring="0"/>
+		<object name="ENDRINGINDEX" type="TOI" date="Mon Jun 16 12:25:39 2003" creator="vibert" lastmodification="Mon Jun 16 12:25:39 2003" datatype="PIOLONG" begin="0" end="744" beginring="0" endring="0"/>
+		<object name="857-1_SIGNAL_VALUE" type="TOI" date="Mon Jun 16 12:25:39 2003" creator="vibert" lastmodification="Mon Jun 16 20:22:30 2003" datatype="PIOFLOAT" begin="0" end="535680000" beginring="0" endring="743"/>
+		<object name="545-1_Theta_of_Pointing" type="TOI" date="Mon Jun 16 19:43:04 2003" creator="vibert" lastmodification="Mon Jun 16 19:45:42 2003" datatype="PIODOUBLE" begin="0" end="535680000" beginring="0" endring="743"/>
+		<object name="545-1_Phi_of_Pointing" type="TOI" date="Mon Jun 16 19:45:42 2003" creator="vibert" lastmodification="Mon Jun 16 19:47:55 2003" datatype="PIODOUBLE" begin="0" end="535680000" beginring="0" endring="743"/>
+		<object name="545-1_Theta_of_Beam_Ori." type="TOI" date="Mon Jun 16 19:47:55 2003" creator="vibert" lastmodification="Mon Jun 16 19:49:58 2003" datatype="PIODOUBLE" begin="0" end="535680000" beginring="0" endring="743"/>
+		<object name="545-1_Phi_of_Beam_Ori." type="TOI" date="Mon Jun 16 19:49:59 2003" creator="vibert" lastmodification="Mon Jun 16 19:52:00 2003" datatype="PIODOUBLE" begin="0" end="535680000" beginring="0" endring="743"/>
+		<object name="545-2_Theta_of_Pointing" type="TOI" date="Mon Jun 16 19:52:01 2003" creator="vibert" lastmodification="Mon Jun 16 19:54:01 2003" datatype="PIODOUBLE" begin="0" end="535680000" beginring="0" endring="743"/>
+		<object name="545-2_Phi_of_Pointing" type="TOI" date="Mon Jun 16 19:54:02 2003" creator="vibert" lastmodification="Mon Jun 16 19:56:13 2003" datatype="PIODOUBLE" begin="0" end="535680000" beginring="0" endring="743"/>
+		<object name="545-2_Theta_of_Beam_Ori." type="TOI" date="Mon Jun 16 19:56:14 2003" creator="vibert" lastmodification="Mon Jun 16 19:58:12 2003" datatype="PIODOUBLE" begin="0" end="535680000" beginring="0" endring="743"/>
+		<object name="545-2_Phi_of_Beam_Ori." type="TOI" date="Mon Jun 16 19:58:13 2003" creator="vibert" lastmodification="Mon Jun 16 20:00:14 2003" datatype="PIODOUBLE" begin="0" end="535680000" beginring="0" endring="743"/>
+		<object name="857-1_Theta_of_Pointing" type="TOI" date="Mon Jun 16 20:00:15 2003" creator="vibert" lastmodification="Mon Jun 16 20:02:17 2003" datatype="PIODOUBLE" begin="0" end="535680000" beginring="0" endring="743"/>
+		<object name="857-1_Phi_of_Pointing" type="TOI" date="Mon Jun 16 20:02:17 2003" creator="vibert" lastmodification="Mon Jun 16 20:04:19 2003" datatype="PIODOUBLE" begin="0" end="535680000" beginring="0" endring="743"/>
+		<object name="857-1_Theta_of_Beam_Ori." type="TOI" date="Mon Jun 16 20:04:19 2003" creator="vibert" lastmodification="Mon Jun 16 20:08:34 2003" datatype="PIODOUBLE" begin="0" end="535680000" beginring="0" endring="743"/>
+		<object name="857-1_Phi_of_Beam_Ori." type="TOI" date="Mon Jun 16 20:08:34 2003" creator="vibert" lastmodification="Mon Jun 16 20:10:40 2003" datatype="PIODOUBLE" begin="0" end="535680000" beginring="0" endring="743"/>
+		<object name="857-2_Theta_of_Pointing" type="TOI" date="Mon Jun 16 20:10:41 2003" creator="vibert" lastmodification="Mon Jun 16 20:12:49 2003" datatype="PIODOUBLE" begin="0" end="535680000" beginring="0" endring="743"/>
+		<object name="857-2_Phi_of_Pointing" type="TOI" date="Mon Jun 16 20:12:50 2003" creator="vibert" lastmodification="Mon Jun 16 20:14:57 2003" datatype="PIODOUBLE" begin="0" end="535680000" beginring="0" endring="743"/>
+		<object name="857-2_Theta_of_Beam_Ori." type="TOI" date="Mon Jun 16 20:14:58 2003" creator="vibert" lastmodification="Mon Jun 16 20:17:07 2003" datatype="PIODOUBLE" begin="0" end="535680000" beginring="0" endring="743"/>
+		<object name="857-2_Phi_of_Beam_Ori." type="TOI" date="Mon Jun 16 20:17:07 2003" creator="vibert" lastmodification="Mon Jun 16 20:19:22 2003" datatype="PIODOUBLE" begin="0" end="535680000" beginring="0" endring="743"/>
+		<object name="545-1_SIGNAL_VALUE" type="TOI" date="Mon Jun 16 20:19:22 2003" creator="vibert" lastmodification="Mon Jun 16 20:20:51 2003" datatype="PIOFLOAT" begin="0" end="535680000" beginring="0" endring="743"/>
+		<object name="545-2_SIGNAL_VALUE" type="TOI" date="Mon Jun 16 20:20:51 2003" creator="vibert" lastmodification="Mon Jun 16 20:22:29 2003" datatype="PIOFLOAT" begin="0" end="535680000" beginring="0" endring="743"/>
+		<object name="857-2_SIGNAL_VALUE" type="TOI" date="Mon Jun 16 20:29:11 2003" creator="vibert" lastmodification="Mon Jun 16 20:30:31 2003" datatype="PIOFLOAT" begin="0" end="535680000" beginring="0" endring="743"/>
+		<object name="545-1_galflag" type="FLAG" date="Fri Jul  4 17:43:46 2003" creator="moneti" lastmodification="Fri Jul  4 17:47:52 2003" datatype="FLAG" begin="3603814" end="5038109" beginring="0" endring="0"/>
+	</group>
+	<group  name="TOIreq3" type="TOI" date="Mon Jun 16 20:33:25 2003" creator="vibert">
+		<object name="Written" type="FLAG" date="Mon Jun 16 20:33:25 2003" creator="vibert" lastmodification="Mon Jun 16 20:33:25 2003" datatype="FLAG" begin="-1" end="-1" beginring="0" endring="0"/>
+		<object name="BEGINRINGINDEX" type="TOI" date="Mon Jun 16 20:33:25 2003" creator="vibert" lastmodification="Mon Jun 16 20:33:25 2003" datatype="PIOLONG" begin="0" end="5500" beginring="0" endring="0"/>
+		<object name="ENDRINGINDEX" type="TOI" date="Mon Jun 16 20:33:25 2003" creator="vibert" lastmodification="Mon Jun 16 20:33:25 2003" datatype="PIOLONG" begin="0" end="5500" beginring="0" endring="0"/>
+		<object name="353-4_Theta_of_Pointing" type="TOI" date="Mon Jun 16 20:33:26 2003" creator="vibert" lastmodification="Mon Jun 16 20:50:20 2003" datatype="PIODOUBLE" begin="0" end="3960000000" beginring="0" endring="5499"/>
+		<object name="353-4_Phi_of_Pointing" type="TOI" date="Mon Jun 16 20:50:21 2003" creator="vibert" lastmodification="Mon Jun 16 21:10:41 2003" datatype="PIODOUBLE" begin="0" end="3960000000" beginring="0" endring="5499"/>
+		<object name="353-4_Theta_of_Beam_Ori." type="TOI" date="Mon Jun 16 21:10:41 2003" creator="vibert" lastmodification="Mon Jun 16 21:27:49 2003" datatype="PIODOUBLE" begin="0" end="3960000000" beginring="0" endring="5499"/>
+		<object name="353-4_Phi_of_Beam_Ori." type="TOI" date="Mon Jun 16 21:27:50 2003" creator="vibert" lastmodification="Mon Jun 16 21:46:40 2003" datatype="PIODOUBLE" begin="0" end="3960000000" beginring="0" endring="5499"/>
+		<object name="353-6_Theta_of_Pointing" type="TOI" date="Mon Jun 16 21:46:41 2003" creator="vibert" lastmodification="Mon Jun 16 22:02:02 2003" datatype="PIODOUBLE" begin="0" end="3960000000" beginring="0" endring="5499"/>
+		<object name="353-6_Phi_of_Pointing" type="TOI" date="Mon Jun 16 22:02:03 2003" creator="vibert" lastmodification="Mon Jun 16 22:20:00 2003" datatype="PIODOUBLE" begin="0" end="3960000000" beginring="0" endring="5499"/>
+		<object name="353-6_Theta_of_Beam_Ori." type="TOI" date="Mon Jun 16 22:20:01 2003" creator="vibert" lastmodification="Mon Jun 16 22:35:39 2003" datatype="PIODOUBLE" begin="0" end="3960000000" beginring="0" endring="5499"/>
+		<object name="353-6_Phi_of_Beam_Ori." type="TOI" date="Mon Jun 16 22:35:40 2003" creator="vibert" lastmodification="Mon Jun 16 22:51:05 2003" datatype="PIODOUBLE" begin="0" end="3960000000" beginring="0" endring="5499"/>
+		<object name="353-4_I_VALUE" type="TOI" date="Mon Jun 16 22:51:06 2003" creator="vibert" lastmodification="Mon Jun 16 23:00:03 2003" datatype="PIOFLOAT" begin="0" end="3960000000" beginring="0" endring="5499"/>
+		<object name="353-4_PSB1_antenna_temp" type="TOI" date="Mon Jun 16 23:00:03 2003" creator="vibert" lastmodification="Mon Jun 16 23:10:49 2003" datatype="PIOFLOAT" begin="0" end="3960000000" beginring="0" endring="5499"/>
+		<object name="353-4_PSB2_antenna_temp" type="TOI" date="Mon Jun 16 23:10:49 2003" creator="vibert" lastmodification="Mon Jun 16 23:19:43 2003" datatype="PIOFLOAT" begin="0" end="3960000000" beginring="0" endring="5499"/>
+		<object name="353-4_Q_VALUE" type="TOI" date="Mon Jun 16 23:19:43 2003" creator="vibert" lastmodification="Mon Jun 16 23:28:27 2003" datatype="PIOFLOAT" begin="0" end="3960000000" beginring="0" endring="5499"/>
+		<object name="353-4_U_VALUE" type="TOI" date="Mon Jun 16 23:28:28 2003" creator="vibert" lastmodification="Mon Jun 16 23:37:19 2003" datatype="PIOFLOAT" begin="0" end="3960000000" beginring="0" endring="5499"/>
+		<object name="353-6_I_VALUE" type="TOI" date="Mon Jun 16 23:37:19 2003" creator="vibert" lastmodification="Mon Jun 16 23:46:42 2003" datatype="PIOFLOAT" begin="0" end="3960000000" beginring="0" endring="5499"/>
+		<object name="353-6_PSB1_antenna_temp" type="TOI" date="Mon Jun 16 23:46:42 2003" creator="vibert" lastmodification="Mon Jun 16 23:56:29 2003" datatype="PIOFLOAT" begin="0" end="3960000000" beginring="0" endring="5499"/>
+		<object name="353-6_PSB2_antenna_temp" type="TOI" date="Mon Jun 16 23:56:29 2003" creator="vibert" lastmodification="Tue Jun 17 00:06:09 2003" datatype="PIOFLOAT" begin="0" end="3960000000" beginring="0" endring="5499"/>
+		<object name="353-6_Q_VALUE" type="TOI" date="Tue Jun 17 00:06:09 2003" creator="vibert" lastmodification="Tue Jun 17 00:18:40 2003" datatype="PIOFLOAT" begin="0" end="3960000000" beginring="0" endring="5499"/>
+		<object name="353-6_U_VALUE" type="TOI" date="Tue Jun 17 00:18:40 2003" creator="vibert" lastmodification="Tue Jun 17 00:27:28 2003" datatype="PIOFLOAT" begin="0" end="3960000000" beginring="0" endring="5499"/>
+		<object name="353-4_galflag" type="FLAG" date="Thu Jul  3 19:19:29 2003" creator="moneti" lastmodification="Fri Jul  4 08:27:35 2003" datatype="FLAG" begin="3920" end="3959995576" beginring="0" endring="0"/>
+		<object name="353-6_galflag" type="FLAG" date="Thu Jul  3 19:22:11 2003" creator="moneti" lastmodification="Fri Jul  4 08:26:18 2003" datatype="FLAG" begin="3951" end="3959995607" beginring="0" endring="0"/>
+		<object name="debugPHASELUIS" type="TOI" date="Fri Jul  4 09:17:15 2003" creator="delouis" lastmodification="Fri Jul  4 21:17:21 2003" datatype="PIODOUBLE" begin="0" end="3960000000" beginring="0" endring="5499"/>
+		<object name="TOItoi_Q" type="TOI" date="Tue Jul  8 16:20:03 2003" creator="renault" lastmodification="Thu Jul 17 13:54:05 2003" datatype="PIODOUBLE" begin="0" end="1000001" beginring="0" endring="1"/>
+	</group>
+	<group  name="TOIreq4" type="TOI" date="Tue Jun 17 01:54:22 2003" creator="vibert">
+		<object name="Written" type="FLAG" date="Tue Jun 17 01:54:22 2003" creator="vibert" lastmodification="Tue Jun 17 01:54:22 2003" datatype="FLAG" begin="-1" end="-1" beginring="0" endring="0"/>
+		<object name="BEGINRINGINDEX" type="TOI" date="Tue Jun 17 01:54:22 2003" creator="vibert" lastmodification="Tue Jun 17 01:54:23 2003" datatype="PIOLONG" begin="0" end="5500" beginring="0" endring="0"/>
+		<object name="ENDRINGINDEX" type="TOI" date="Tue Jun 17 01:54:22 2003" creator="vibert" lastmodification="Tue Jun 17 01:54:23 2003" datatype="PIOLONG" begin="0" end="5500" beginring="0" endring="0"/>
+		<object name="100-1_Theta_of_Pointing" type="TOI" date="Tue Jun 17 01:54:23 2003" creator="vibert" lastmodification="Tue Jun 17 02:13:57 2003" datatype="PIODOUBLE" begin="0" end="3960000000" beginring="0" endring="5499"/>
+		<object name="100-1_Phi_of_Pointing" type="TOI" date="Tue Jun 17 02:13:58 2003" creator="vibert" lastmodification="Tue Jun 17 02:32:43 2003" datatype="PIODOUBLE" begin="0" end="3960000000" beginring="0" endring="5499"/>
+		<object name="143-1_Theta_of_Pointing" type="TOI" date="Tue Jun 17 02:32:44 2003" creator="vibert" lastmodification="Tue Jun 17 02:51:25 2003" datatype="PIODOUBLE" begin="0" end="3960000000" beginring="0" endring="5499"/>
+		<object name="143-1_Phi_of_Pointing" type="TOI" date="Tue Jun 17 02:51:26 2003" creator="vibert" lastmodification="Tue Jun 17 03:10:17 2003" datatype="PIODOUBLE" begin="0" end="3960000000" beginring="0" endring="5499"/>
+		<object name="217-1_Theta_of_Pointing" type="TOI" date="Tue Jun 17 03:10:18 2003" creator="vibert" lastmodification="Tue Jun 17 03:29:07 2003" datatype="PIODOUBLE" begin="0" end="3960000000" beginring="0" endring="5499"/>
+		<object name="217-1_Phi_of_Pointing" type="TOI" date="Tue Jun 17 03:29:07 2003" creator="vibert" lastmodification="Tue Jun 17 03:48:02 2003" datatype="PIODOUBLE" begin="0" end="3960000000" beginring="0" endring="5499"/>
+		<object name="353-1_Theta_of_Pointing" type="TOI" date="Tue Jun 17 03:48:03 2003" creator="vibert" lastmodification="Tue Jun 17 04:07:06 2003" datatype="PIODOUBLE" begin="0" end="3960000000" beginring="0" endring="5499"/>
+		<object name="353-1_Phi_of_Pointing" type="TOI" date="Tue Jun 17 04:07:07 2003" creator="vibert" lastmodification="Tue Jun 17 04:26:18 2003" datatype="PIODOUBLE" begin="0" end="3960000000" beginring="0" endring="5499"/>
+		<object name="100-1_SIGNAL_VALUE" type="TOI" date="Tue Jun 17 04:26:18 2003" creator="vibert" lastmodification="Tue Jun 17 04:37:51 2003" datatype="PIOFLOAT" begin="0" end="3960000000" beginring="0" endring="5499"/>
+		<object name="143-1_SIGNAL_VALUE" type="TOI" date="Tue Jun 17 04:37:52 2003" creator="vibert" lastmodification="Tue Jun 17 04:49:26 2003" datatype="PIOFLOAT" begin="0" end="3960000000" beginring="0" endring="5499"/>
+		<object name="217-1_SIGNAL_VALUE" type="TOI" date="Tue Jun 17 04:49:27 2003" creator="vibert" lastmodification="Tue Jun 17 05:01:14 2003" datatype="PIOFLOAT" begin="0" end="3960000000" beginring="0" endring="5499"/>
+		<object name="353-1_SIGNAL_VALUE" type="TOI" date="Tue Jun 17 05:01:15 2003" creator="vibert" lastmodification="Tue Jun 17 05:13:38 2003" datatype="PIOFLOAT" begin="0" end="3960000000" beginring="0" endring="5499"/>
+		<object name="100-1_DIPOLE_VALUE" type="TOI" date="Tue Jun 17 05:13:39 2003" creator="vibert" lastmodification="Tue Jun 17 05:25:58 2003" datatype="PIOFLOAT" begin="0" end="3960000000" beginring="0" endring="5499"/>
+		<object name="143-1_DIPOLE_VALUE" type="TOI" date="Tue Jun 17 05:25:59 2003" creator="vibert" lastmodification="Tue Jun 17 05:38:29 2003" datatype="PIOFLOAT" begin="0" end="3960000000" beginring="0" endring="5499"/>
+		<object name="217-1_DIPOLE_VALUE" type="TOI" date="Tue Jun 17 05:38:30 2003" creator="vibert" lastmodification="Tue Jun 17 05:50:52 2003" datatype="PIOFLOAT" begin="0" end="3960000000" beginring="0" endring="5499"/>
+		<object name="353-1_DIPOLE_VALUE" type="TOI" date="Tue Jun 17 05:50:52 2003" creator="vibert" lastmodification="Tue Jun 17 06:04:51 2003" datatype="PIOFLOAT" begin="0" end="3960000000" beginring="0" endring="5499"/>
+		<object name="debugPHASE" type="TOI" date="Sat Jun 21 02:26:01 2003" creator="vibert" lastmodification="Sat Jun 21 03:37:34 2003" datatype="PIODOUBLE" begin="0" end="1440000" beginring="0" endring="1"/>
+		<object name="galflag_100H01_Jun03" type="FLAG" date="Thu Jun 26 16:12:00 2003" creator="jaffe" lastmodification="Mon Jun 30 13:13:05 2003" datatype="FLAG" begin="85" end="2159989" beginring="0" endring="0"/>
+		<object name="debugPHASEJM" type="TOI" date="Mon Jun 30 16:51:26 2003" creator="delouis" lastmodification="Tue Jul  1 17:57:23 2003" datatype="PIODOUBLE" begin="0" end="7920000" beginring="0" endring="10"/>
+		<object name="galflag_amo" type="FLAG" date="Tue Jul  1 17:41:23 2003" creator="moneti" lastmodification="Tue Jul  1 17:59:52 2003" datatype="FLAG" begin="3847" end="2158132" beginring="0" endring="0"/>
+		<object name="debugPHASELUIS" type="TOI" date="Tue Jul  1 18:01:37 2003" creator="delouis" lastmodification="Thu Aug 14 09:06:03 2003" datatype="PIODOUBLE" begin="0" end="3960000000" beginring="0" endring="5499"/>
+		<object name="100-1_Galflag" type="FLAG" date="Tue Jul  1 18:32:33 2003" creator="moneti" lastmodification="Wed Jul  2 05:18:23 2003" datatype="FLAG" begin="3847" end="3959995429" beginring="0" endring="0"/>
+		<object name="100-1_healpix_2048_nest" type="TOI" date="Tue Aug 26 10:36:27 2003" creator="delouis" lastmodification="Tue Aug 26 14:04:58 2003" datatype="PIOINT" begin="0" end="3960000000" beginring="0" endring="5499"/>
+		<object name="100-1_healpix_2048_nest_Begin" type="TOI" date="Tue Aug 26 16:25:12 2003" creator="delouis" lastmodification="Tue Aug 26 16:25:38 2003" datatype="PIOLONG" begin="0" end="50331648" beginring="0" endring="69"/>
+		<object name="100-1_healpix_2048_nest_End" type="TOI" date="Tue Aug 26 16:25:39 2003" creator="delouis" lastmodification="Tue Aug 26 16:26:09 2003" datatype="PIOLONG" begin="0" end="50331648" beginring="0" endring="69"/>
+		<object name="100-1_healpix_2048_nest_sorted" type="TOI" date="Tue Aug 26 16:26:14 2003" creator="delouis" lastmodification="Tue Aug 26 18:26:46 2003" datatype="PIOLONG" begin="82260" end="2345507821" beginring="0" endring="3257"/>
+	</group>
+	<group  name="PBRreq4" type="PBR" date="Tue Jun 17 15:41:04 2003" creator="vibert">
+		<object name="Written" type="FLAG" date="Tue Jun 17 15:41:04 2003" creator="vibert" lastmodification="Tue Jun 17 15:41:04 2003" datatype="FLAG" begin="-1" end="-1" beginring="0" endring="0"/>
+		<object name="phase" type="PHI" date="Tue Jun 17 15:41:04 2003" creator="vibert" lastmodification="Tue Jun 17 15:41:04 2003" datatype="PIODOUBLE" begin="0" end="12000" beginring="0" endring="0"/>
+		<object name="100-1_SIGNAL_VALUE" type="POI" date="Tue Jun 17 15:41:05 2003" creator="vibert" lastmodification="Thu Jul  3 08:42:32 2003" datatype="PIODOUBLE" begin="0" end="66000000" beginring="0" endring="0"/>
+		<object name="143-1_SIGNAL_VALUE" type="POI" date="Tue Jun 17 15:52:27 2003" creator="vibert" lastmodification="Thu Jul  3 08:54:42 2003" datatype="PIODOUBLE" begin="0" end="66000000" beginring="0" endring="0"/>
+		<object name="100-1_DIPOLE_VALUE" type="POI" date="Tue Jun 17 17:21:35 2003" creator="vibert" lastmodification="Thu Jul  3 08:43:22 2003" datatype="PIODOUBLE" begin="0" end="66000000" beginring="0" endring="0"/>
+		<object name="143-1_DIPOLE_VALUE" type="POI" date="Tue Jun 17 18:36:19 2003" creator="vibert" lastmodification="Thu Jul  3 08:53:18 2003" datatype="PIODOUBLE" begin="0" end="66000000" beginring="0" endring="0"/>
+		<object name="217-1_DIPOLE_VALUE" type="POI" date="Tue Jun 17 19:47:40 2003" creator="vibert" lastmodification="Thu Jul  3 19:11:12 2003" datatype="PIODOUBLE" begin="0" end="66000000" beginring="0" endring="0"/>
+		<object name="217-1_SIGNAL_VALUE" type="POI" date="Tue Jun 17 20:23:21 2003" creator="vibert" lastmodification="Thu Jul  3 19:11:13 2003" datatype="PIODOUBLE" begin="0" end="66000000" beginring="0" endring="0"/>
+		<object name="353-1_DIPOLE_VALUE" type="POI" date="Tue Jun 17 21:04:57 2003" creator="vibert" lastmodification="Thu Jul  3 19:11:01 2003" datatype="PIODOUBLE" begin="0" end="66000000" beginring="0" endring="0"/>
+		<object name="353-1_SIGNAL_VALUE" type="POI" date="Tue Jun 17 21:36:34 2003" creator="vibert" lastmodification="Thu Jul  3 19:11:19 2003" datatype="PIODOUBLE" begin="0" end="66000000" beginring="0" endring="0"/>
+		<object name="testPHASE" type="PHI" date="Sat Jun 21 00:57:51 2003" creator="vibert" lastmodification="Sat Jun 21 04:04:35 2003" datatype="PIODOUBLE" begin="0" end="12000" beginring="0" endring="0"/>
+		<object name="testTOI2PBR" type="POI" date="Sat Jun 21 00:57:51 2003" creator="vibert" lastmodification="Sat Jun 21 04:04:53 2003" datatype="PIODOUBLE" begin="0" end="24000" beginring="0" endring="0"/>
+		<object name="100-1_Phi_of_Pointing" type="POI" date="Fri Jun 27 10:54:22 2003" creator="delouis" lastmodification="Tue Aug 12 14:13:01 2003" datatype="PIODOUBLE" begin="0" end="66000000" beginring="0" endring="0"/>
+		<object name="100-1_Theta_of_Pointing" type="POI" date="Fri Jun 27 11:15:33 2003" creator="delouis" lastmodification="Tue Aug 12 14:13:01 2003" datatype="PIODOUBLE" begin="0" end="66000000" beginring="0" endring="0"/>
+		<object name="100-1_SIGNAL_VALUE_CAL_ERR" type="POI" date="Fri Jun 27 12:57:02 2003" creator="lagache" lastmodification="Wed Jul  2 11:35:29 2003" datatype="PIOFLOAT" begin="0" end="60000" beginring="0" endring="0"/>
+		<object name="100-1_SIGNAL_VALUE_CAL" type="POI" date="Fri Jun 27 13:33:51 2003" creator="lagache" lastmodification="Tue Aug 19 13:40:55 2003" datatype="PIOFLOAT" begin="0" end="1272000" beginring="0" endring="0"/>
+		<object name="testPHASEJM" type="PHI" date="Mon Jun 30 15:54:55 2003" creator="delouis" lastmodification="Tue Jul  1 17:53:44 2003" datatype="PIODOUBLE" begin="0" end="12000" beginring="0" endring="0"/>
+		<object name="testTOI2PBRJM" type="POI" date="Mon Jun 30 15:54:55 2003" creator="delouis" lastmodification="Tue Aug 12 14:13:01 2003" datatype="PIODOUBLE" begin="0" end="8772000" beginring="0" endring="0"/>
+		<object name="testPHIJM" type="POI" date="Tue Jul  1 17:41:51 2003" creator="delouis" lastmodification="Tue Jul  1 17:53:56 2003" datatype="PIODOUBLE" begin="0" end="36000" beginring="0" endring="0"/>
+		<object name="testTHETAJM" type="POI" date="Tue Jul  1 17:41:51 2003" creator="delouis" lastmodification="Tue Jul  1 17:53:56 2003" datatype="PIODOUBLE" begin="0" end="36000" beginring="0" endring="0"/>
+		<object name="testPHASELUIS" type="PHI" date="Tue Jul  1 17:57:18 2003" creator="delouis" lastmodification="Wed Jul  2 09:28:35 2003" datatype="PIODOUBLE" begin="0" end="12000" beginring="0" endring="0"/>
+		<object name="testPHILUIS" type="POI" date="Tue Jul  1 17:57:18 2003" creator="delouis" lastmodification="Wed Jul  2 09:28:46 2003" datatype="PIODOUBLE" begin="0" end="36000" beginring="0" endring="0"/>
+		<object name="testTHETALUIS" type="POI" date="Tue Jul  1 17:57:18 2003" creator="delouis" lastmodification="Wed Jul  2 09:28:46 2003" datatype="PIODOUBLE" begin="0" end="36000" beginring="0" endring="0"/>
+		<object name="testTOI2PBRLUIS" type="POI" date="Tue Jul  1 17:57:18 2003" creator="delouis" lastmodification="Wed Jul  2 09:28:46 2003" datatype="PIODOUBLE" begin="0" end="36000" beginring="0" endring="0"/>
+		<object name="testPHASELUIS" type="PHI" date="Wed Jul  2 09:20:25 2003" creator="delouis" lastmodification="Wed Jul  2 09:20:25 2003" datatype="PIODOUBLE" begin="-1" end="-1" beginring="0" endring="0"/>
+		<object name="100-1_PHASE" type="PHI" date="Wed Jul  2 09:33:06 2003" creator="delouis" lastmodification="Mon Aug 11 14:44:58 2003" datatype="PIODOUBLE" begin="0" end="12000" beginring="0" endring="0"/>
+		<object name="BRreq4_100-1_PHASE" type="PHI" date="Wed Jul  2 16:10:41 2003" creator="delouis" lastmodification="Wed Jul  2 16:10:41 2003" datatype="PIODOUBLE" begin="-1" end="-1" beginring="0" endring="0"/>
+		<object name="PHASETest" type="PHI" date="Wed Jul  2 16:35:52 2003" creator="delouis" lastmodification="Wed Jul  2 16:35:53 2003" datatype="PIODOUBLE" begin="0" end="12000" beginring="0" endring="0"/>
+		<object name="PHITest" type="POI" date="Wed Jul  2 16:35:53 2003" creator="delouis" lastmodification="Thu Jul  3 01:40:24 2003" datatype="PIODOUBLE" begin="0" end="66000000" beginring="0" endring="0"/>
+		<object name="THETATest" type="POI" date="Wed Jul  2 16:35:53 2003" creator="delouis" lastmodification="Thu Jul  3 01:40:24 2003" datatype="PIODOUBLE" begin="0" end="66000000" beginring="0" endring="0"/>
+		<object name="POITest" type="POI" date="Wed Jul  2 16:35:53 2003" creator="delouis" lastmodification="Thu Jul  3 01:40:24 2003" datatype="PIODOUBLE" begin="0" end="66000000" beginring="0" endring="0"/>
+		<object name="PHASE_100-1" type="PHI" date="Thu Jul  3 08:41:31 2003" creator="delouis" lastmodification="Thu Jul  3 08:42:30 2003" datatype="PIODOUBLE" begin="0" end="12000" beginring="0" endring="0"/>
+		<object name="PHASE_143-1" type="PHI" date="Thu Jul  3 08:52:12 2003" creator="delouis" lastmodification="Thu Jul  3 08:53:49 2003" datatype="PIODOUBLE" begin="0" end="12000" beginring="0" endring="0"/>
+		<object name="143-1_Phi_of_Pointing" type="POI" date="Thu Jul  3 08:52:12 2003" creator="delouis" lastmodification="Thu Jul  3 18:43:01 2003" datatype="PIODOUBLE" begin="0" end="66000000" beginring="0" endring="0"/>
+		<object name="143-1_Theta_of_Pointing" type="POI" date="Thu Jul  3 08:52:12 2003" creator="delouis" lastmodification="Thu Jul  3 18:43:01 2003" datatype="PIODOUBLE" begin="0" end="66000000" beginring="0" endring="0"/>
+		<object name="PHASE_353-1" type="PHI" date="Thu Jul  3 19:09:46 2003" creator="delouis" lastmodification="Thu Jul  3 19:10:23 2003" datatype="PIODOUBLE" begin="0" end="12000" beginring="0" endring="0"/>
+		<object name="353-1_Phi_of_Pointing" type="POI" date="Thu Jul  3 19:09:46 2003" creator="delouis" lastmodification="Fri Jul  4 06:16:45 2003" datatype="PIODOUBLE" begin="0" end="66000000" beginring="0" endring="0"/>
+		<object name="353-1_Theta_of_Pointing" type="POI" date="Thu Jul  3 19:09:47 2003" creator="delouis" lastmodification="Fri Jul  4 06:16:45 2003" datatype="PIODOUBLE" begin="0" end="66000000" beginring="0" endring="0"/>
+		<object name="PHASE_217-1" type="PHI" date="Thu Jul  3 19:09:55 2003" creator="delouis" lastmodification="Thu Jul  3 19:10:04 2003" datatype="PIODOUBLE" begin="0" end="12000" beginring="0" endring="0"/>
+		<object name="217-1_Phi_of_Pointing" type="POI" date="Thu Jul  3 19:09:56 2003" creator="delouis" lastmodification="Fri Jul  4 06:16:48 2003" datatype="PIODOUBLE" begin="0" end="66000000" beginring="0" endring="0"/>
+		<object name="217-1_Theta_of_Pointing" type="POI" date="Thu Jul  3 19:09:56 2003" creator="delouis" lastmodification="Fri Jul  4 06:16:48 2003" datatype="PIODOUBLE" begin="0" end="66000000" beginring="0" endring="0"/>
+		<object name="100-1_SIGNAL_VALU_CAL" type="POI" date="Mon Jul  7 15:48:17 2003" creator="lagache" lastmodification="Mon Jul  7 16:43:25 2003" datatype="PIOFLOAT" begin="0" end="65988000" beginring="0" endring="0"/>
+		<object name="AMo_100H01_phase" type="PHI" date="Thu Jul 10 16:13:38 2003" creator="moneti" lastmodification="Thu Jul 10 16:20:14 2003" datatype="PIODOUBLE" begin="0" end="12000" beginring="0" endring="0"/>
+		<object name="AMo_100H01_poi" type="POI" date="Thu Jul 10 16:13:39 2003" creator="moneti" lastmodification="Thu Jul 10 16:40:49 2003" datatype="PIODOUBLE" begin="0" end="66000000" beginring="0" endring="0"/>
+		<object name="MyPOITest" type="POI" date="Mon Aug 11 14:40:49 2003" creator="delouis" lastmodification="Mon Aug 11 14:45:39 2003" datatype="PIODOUBLE" begin="0" end="132000" beginring="0" endring="0"/>
+		<object name="ThePhase" type="PHI" date="Mon Aug 11 18:04:14 2003" creator="delouis" lastmodification="Tue Aug 12 14:12:40 2003" datatype="PIODOUBLE" begin="0" end="12000" beginring="0" endring="0"/>
+	</group>
+	<group  name="PBRreq3" type="PBR" date="Wed Jun 18 02:19:46 2003" creator="vibert">
+		<object name="Written" type="FLAG" date="Wed Jun 18 02:19:46 2003" creator="vibert" lastmodification="Wed Jun 18 02:19:46 2003" datatype="FLAG" begin="-1" end="-1" beginring="0" endring="0"/>
+		<object name="phase" type="PHI" date="Wed Jun 18 02:19:46 2003" creator="vibert" lastmodification="Wed Jun 18 02:19:46 2003" datatype="PIODOUBLE" begin="0" end="12000" beginring="0" endring="0"/>
+		<object name="353-4_I_VALUE" type="POI" date="Wed Jun 18 02:31:53 2003" creator="vibert" lastmodification="Fri Jul  4 09:18:10 2003" datatype="PIODOUBLE" begin="0" end="66000000" beginring="0" endring="0"/>
+		<object name="353-4_PSB1_antenna_temp" type="POI" date="Wed Jun 18 03:02:31 2003" creator="vibert" lastmodification="Fri Jul  4 13:11:17 2003" datatype="PIODOUBLE" begin="0" end="66000000" beginring="0" endring="0"/>
+		<object name="353-4_PSB2_antenna_temp" type="POI" date="Wed Jun 18 03:35:40 2003" creator="vibert" lastmodification="Fri Jul  4 13:12:24 2003" datatype="PIODOUBLE" begin="0" end="66000000" beginring="0" endring="0"/>
+		<object name="353-4_Q_VALUE" type="POI" date="Wed Jun 18 04:08:02 2003" creator="vibert" lastmodification="Fri Jul  4 09:18:49 2003" datatype="PIODOUBLE" begin="0" end="66000000" beginring="0" endring="0"/>
+		<object name="353-6_I_VALUE" type="POI" date="Wed Jun 18 05:21:42 2003" creator="vibert" lastmodification="Fri Jul  4 09:22:01 2003" datatype="PIODOUBLE" begin="0" end="66000000" beginring="0" endring="0"/>
+		<object name="353-6_PSB1_antenna_temp" type="POI" date="Wed Jun 18 05:59:51 2003" creator="vibert" lastmodification="Fri Jul  4 13:14:06 2003" datatype="PIODOUBLE" begin="0" end="66000000" beginring="0" endring="0"/>
+		<object name="353-6_PSB2_antenna_temp" type="POI" date="Wed Jun 18 06:51:07 2003" creator="vibert" lastmodification="Fri Jul  4 13:14:06 2003" datatype="PIODOUBLE" begin="0" end="66000000" beginring="0" endring="0"/>
+		<object name="353-6_Q_VALUE" type="POI" date="Wed Jun 18 07:35:00 2003" creator="vibert" lastmodification="Fri Jul  4 09:22:21 2003" datatype="PIODOUBLE" begin="0" end="66000000" beginring="0" endring="0"/>
+		<object name="353-6_U_VALUE" type="POI" date="Wed Jun 18 08:18:47 2003" creator="vibert" lastmodification="Fri Jul  4 09:22:53 2003" datatype="PIODOUBLE" begin="0" end="66000000" beginring="0" endring="0"/>
+		<object name="353-4_U_VALUE" type="POI" date="Wed Jun 18 09:35:34 2003" creator="vibert" lastmodification="Fri Jul  4 09:20:05 2003" datatype="PIODOUBLE" begin="0" end="66000000" beginring="0" endring="0"/>
+		<object name="PHASE_353-4" type="PHI" date="Fri Jul  4 09:17:12 2003" creator="delouis" lastmodification="Fri Jul  4 13:11:13 2003" datatype="PIODOUBLE" begin="0" end="12000" beginring="0" endring="0"/>
+		<object name="353-4_Phi_of_Pointing" type="POI" date="Fri Jul  4 09:17:12 2003" creator="delouis" lastmodification="Fri Jul  4 21:17:24 2003" datatype="PIODOUBLE" begin="0" end="66000000" beginring="0" endring="0"/>
+		<object name="353-4_Theta_of_Pointing" type="POI" date="Fri Jul  4 09:17:12 2003" creator="delouis" lastmodification="Fri Jul  4 21:17:24 2003" datatype="PIODOUBLE" begin="0" end="66000000" beginring="0" endring="0"/>
+		<object name="PHASE_353-6" type="PHI" date="Fri Jul  4 09:20:55 2003" creator="delouis" lastmodification="Fri Jul  4 13:12:54 2003" datatype="PIODOUBLE" begin="0" end="12000" beginring="0" endring="0"/>
+		<object name="353-6_Phi_of_Pointing" type="POI" date="Fri Jul  4 09:20:55 2003" creator="delouis" lastmodification="Fri Jul  4 21:23:28 2003" datatype="PIODOUBLE" begin="0" end="66000000" beginring="0" endring="0"/>
+		<object name="353-6_Theta_of_Pointing" type="POI" date="Fri Jul  4 09:20:55 2003" creator="delouis" lastmodification="Fri Jul  4 21:23:28 2003" datatype="PIODOUBLE" begin="0" end="66000000" beginring="0" endring="0"/>
+		<object name="353-I" type="POI" date="Wed Aug 20 18:06:50 2003" creator="delouis" lastmodification="Thu Aug 21 08:45:51 2003" datatype="PIODOUBLE" begin="0" end="120000" beginring="0" endring="0"/>
+		<object name="353-Q" type="POI" date="Wed Aug 20 18:06:52 2003" creator="delouis" lastmodification="Thu Aug 21 08:45:53 2003" datatype="PIODOUBLE" begin="0" end="120000" beginring="0" endring="0"/>
+		<object name="353-U" type="POI" date="Wed Aug 20 18:06:55 2003" creator="delouis" lastmodification="Thu Aug 21 08:45:55 2003" datatype="PIODOUBLE" begin="0" end="120000" beginring="0" endring="0"/>
+	</group>
+	<group  name="PBRreq1" type="PBR" date="Wed Jun 18 12:01:03 2003" creator="vibert">
+		<object name="Written" type="FLAG" date="Wed Jun 18 12:01:03 2003" creator="vibert" lastmodification="Wed Jun 18 12:01:03 2003" datatype="FLAG" begin="-1" end="-1" beginring="0" endring="0"/>
+		<object name="phase" type="PHI" date="Wed Jun 18 12:01:03 2003" creator="vibert" lastmodification="Wed Jun 18 12:01:03 2003" datatype="PIODOUBLE" begin="0" end="12000" beginring="0" endring="0"/>
+		<object name="545-1_SIGNAL_VALUE" type="POI" date="Wed Jun 18 12:03:00 2003" creator="vibert" lastmodification="Wed Jun 18 12:09:44 2003" datatype="PIODOUBLE" begin="0" end="8928000" beginring="0" endring="0"/>
+		<object name="545-2_SIGNAL_VALUE" type="POI" date="Wed Jun 18 12:11:36 2003" creator="vibert" lastmodification="Wed Jun 18 12:20:21 2003" datatype="PIODOUBLE" begin="0" end="8928000" beginring="0" endring="0"/>
+		<object name="857-1_SIGNAL_VALUE" type="POI" date="Wed Jun 18 12:24:49 2003" creator="vibert" lastmodification="Wed Jun 18 12:33:58 2003" datatype="PIODOUBLE" begin="0" end="8928000" beginring="0" endring="0"/>
+		<object name="857-2_SIGNAL_VALUE" type="POI" date="Wed Jun 18 12:38:49 2003" creator="vibert" lastmodification="Wed Jun 18 12:46:13 2003" datatype="PIODOUBLE" begin="0" end="8928000" beginring="0" endring="0"/>
+	</group>
+	<group  name="MyPBR" type="PBR" date="Tue Jun 24 11:47:50 2003" creator="mendes">
+		<object name="Written" type="FLAG" date="Tue Jun 24 11:47:50 2003" creator="mendes" lastmodification="Tue Jun 24 11:47:50 2003" datatype="FLAG" begin="-1" end="-1" beginring="0" endring="0"/>
+		<object name="phase" type="PHI" date="Tue Jun 24 11:47:50 2003" creator="mendes" lastmodification="Tue Jun 24 11:47:50 2003" datatype="PIODOUBLE" begin="0" end="12000" beginring="0" endring="0"/>
+		<object name="100-1_DIPOLE_VALUE" type="POI" date="Tue Jun 24 11:47:58 2003" creator="mendes" lastmodification="Tue Jun 24 14:06:59 2003" datatype="PIODOUBLE" begin="0" end="6000000" beginring="0" endring="0"/>
+		<object name="testXML" type="POI" date="Fri Jul 11 10:47:26 2003" creator="delouis" lastmodification="Fri Jul 11 10:55:45 2003" datatype="PIODOUBLE" begin="0" end="60000" beginring="0" endring="0"/>
+		<object name="MYNEWPOI" type="POI" date="Fri Jul 11 11:48:31 2003" creator="delouis" lastmodification="Fri Jul 11 12:08:16 2003" datatype="PIODOUBLE" begin="0" end="120000" beginring="0" endring="0"/>
+		<object name="THISONE" type="POI" date="Fri Jul 11 15:46:53 2003" creator="delouis" lastmodification="Fri Jul 11 15:47:17 2003" datatype="PIODOUBLE" begin="0" end="48000" beginring="0" endring="0"/>
+		<object name="PhaseTemp" type="PHI" date="Fri Jul 11 17:20:48 2003" creator="delouis" lastmodification="Tue Jul 22 19:36:48 2003" datatype="PIODOUBLE" begin="0" end="12000" beginring="0" endring="0"/>
+		<object name="PhiTemp" type="POI" date="Fri Jul 11 17:20:48 2003" creator="delouis" lastmodification="Tue Jul 22 19:37:04 2003" datatype="PIODOUBLE" begin="0" end="1212000" beginring="0" endring="0"/>
+		<object name="ThetaTemp" type="POI" date="Fri Jul 11 17:20:48 2003" creator="delouis" lastmodification="Tue Jul 22 19:37:04 2003" datatype="PIODOUBLE" begin="0" end="1212000" beginring="0" endring="0"/>
+		<object name="SignalTemp" type="POI" date="Fri Jul 11 17:20:48 2003" creator="delouis" lastmodification="Tue Jul 22 19:37:04 2003" datatype="PIODOUBLE" begin="0" end="1212000" beginring="0" endring="0"/>
+	</group>
+	<group  name="Template_PBR4" type="PBR" date="Thu Jun 26 12:26:37 2003" creator="delouis">
+		<object name="Written" type="FLAG" date="Thu Jun 26 12:26:37 2003" creator="delouis" lastmodification="Thu Jun 26 12:26:37 2003" datatype="FLAG" begin="-1" end="-1" beginring="0" endring="0"/>
+		<object name="TryPHASE" type="PHI" date="Thu Jun 26 13:10:35 2003" creator="delouis" lastmodification="Thu Jun 26 13:10:35 2003" datatype="PIODOUBLE" begin="0" end="12000" beginring="0" endring="0"/>
+		<object name="TryPOI" type="POI" date="Fri Jun 27 09:15:30 2003" creator="delouis" lastmodification="Fri Jun 27 17:58:40 2003" datatype="PIODOUBLE" begin="0" end="132000" beginring="0" endring="0"/>
+		<object name="NEWPOI" type="POI" date="Fri Jun 27 14:30:19 2003" creator="delouis" lastmodification="Fri Jun 27 14:30:23 2003" datatype="PIODOUBLE" begin="0" end="132000" beginring="0" endring="0"/>
+		<object name="NEW2" type="POI" date="Fri Jun 27 14:33:53 2003" creator="delouis" lastmodification="Fri Jun 27 14:35:32 2003" datatype="PIODOUBLE" begin="0" end="132000" beginring="0" endring="0"/>
+		<object name="NEW3" type="POI" date="Fri Jun 27 14:56:00 2003" creator="delouis" lastmodification="Fri Jun 27 15:04:49 2003" datatype="PIODOUBLE" begin="0" end="48000" beginring="0" endring="0"/>
+		<object name="NEW4" type="POI" date="Fri Jun 27 15:05:46 2003" creator="delouis" lastmodification="Fri Jun 27 15:05:57 2003" datatype="PIODOUBLE" begin="0" end="252000" beginring="0" endring="0"/>
+	</group>
+	<group  name="PBRreq4New" type="PBR" date="Tue Jul  1 09:00:59 2003" creator="delouis">
+		<object name="Written" type="FLAG" date="Tue Jul  1 09:00:59 2003" creator="delouis" lastmodification="Tue Jul  1 09:00:59 2003" datatype="FLAG" begin="-1" end="-1" beginring="0" endring="0"/>
+		<object name="testPHASEJM" type="PHI" date="Tue Jul  1 09:00:59 2003" creator="delouis" lastmodification="Tue Jul  1 09:00:59 2003" datatype="PIODOUBLE" begin="0" end="8192" beginring="0" endring="0"/>
+		<object name="testTOI2PBRJM" type="POI" date="Tue Jul  1 09:00:59 2003" creator="delouis" lastmodification="Tue Jul  1 17:38:59 2003" datatype="PIODOUBLE" begin="0" end="90112" beginring="0" endring="0"/>
+		<object name="testPHASEJM" type="PHI" date="Tue Jul  1 09:21:47 2003" creator="delouis" lastmodification="Tue Jul  1 09:21:47 2003" datatype="PIODOUBLE" begin="-1" end="-1" beginring="0" endring="0"/>
+		<object name="testTOI2PHIJM" type="PHI" date="Tue Jul  1 09:43:37 2003" creator="delouis" lastmodification="Tue Jul  1 09:43:37 2003" datatype="PIODOUBLE" begin="-1" end="-1" beginring="0" endring="0"/>
+		<object name="testTOI2THETJM" type="PHI" date="Tue Jul  1 09:43:37 2003" creator="delouis" lastmodification="Tue Jul  1 09:43:37 2003" datatype="PIODOUBLE" begin="-1" end="-1" beginring="0" endring="0"/>
+		<object name="testPHIJM" type="POI" date="Tue Jul  1 10:17:53 2003" creator="delouis" lastmodification="Tue Jul  1 10:19:09 2003" datatype="PIODOUBLE" begin="0" end="90112" beginring="0" endring="0"/>
+		<object name="testTHETAJM" type="POI" date="Tue Jul  1 10:17:53 2003" creator="delouis" lastmodification="Tue Jul  1 17:38:59 2003" datatype="PIODOUBLE" begin="0" end="90112" beginring="0" endring="0"/>
+		<object name="100-1_PHASE" type="PHI" date="Wed Jul  2 16:11:16 2003" creator="delouis" lastmodification="Wed Jul  2 16:11:16 2003" datatype="PIODOUBLE" begin="-1" end="-1" beginring="0" endring="0"/>
+		<object name="Jun03:PBRreq4New:100-1_PHASE" type="PHI" date="Wed Jul  2 16:16:01 2003" creator="delouis" lastmodification="Wed Jul  2 16:16:01 2003" datatype="PIODOUBLE" begin="-1" end="-1" beginring="0" endring="0"/>
+		<object name="Jun03:PBRreq4New:PHASETest" type="PHI" date="Wed Jul  2 16:23:01 2003" creator="delouis" lastmodification="Wed Jul  2 16:23:01 2003" datatype="PIODOUBLE" begin="-1" end="-1" beginring="0" endring="0"/>
+		<object name="PHASETest" type="PHI" date="Wed Jul  2 16:32:23 2003" creator="delouis" lastmodification="Wed Jul  2 16:32:24 2003" datatype="PIODOUBLE" begin="0" end="8192" beginring="0" endring="0"/>
+		<object name="PHITest" type="POI" date="Wed Jul  2 16:32:23 2003" creator="delouis" lastmodification="Wed Jul  2 16:32:23 2003" datatype="PIODOUBLE" begin="-1" end="-1" beginring="0" endring="0"/>
+		<object name="THETATest" type="POI" date="Wed Jul  2 16:32:23 2003" creator="delouis" lastmodification="Wed Jul  2 16:32:23 2003" datatype="PIODOUBLE" begin="-1" end="-1" beginring="0" endring="0"/>
+		<object name="POITest" type="POI" date="Wed Jul  2 16:32:23 2003" creator="delouis" lastmodification="Tue Aug 19 13:18:49 2003" datatype="PIODOUBLE" begin="0" end="16392192" beginring="0" endring="0"/>
+		<object name="POITEST2" type="POI" date="Tue Aug 19 13:15:27 2003" creator="delouis" lastmodification="Tue Aug 19 13:22:39 2003" datatype="PIODOUBLE" begin="0" end="253952" beginring="0" endring="0"/>
+	</group>
+	<group  name="PBRreq4New2" type="PBR" date="Wed Jul  2 16:12:32 2003" creator="delouis">
+		<object name="Written" type="FLAG" date="Wed Jul  2 16:12:32 2003" creator="delouis" lastmodification="Wed Jul  2 16:12:32 2003" datatype="FLAG" begin="-1" end="-1" beginring="0" endring="0"/>
+		<object name="100-1_PHASE" type="PHI" date="Wed Jul  2 16:12:32 2003" creator="delouis" lastmodification="Wed Jul  2 16:12:32 2003" datatype="PIODOUBLE" begin="-1" end="-1" beginring="0" endring="0"/>
+		<object name="phase" type="PHI" date="Mon Jul  7 14:07:37 2003" creator="mendes" lastmodification="Mon Jul 14 16:53:53 2003" datatype="PIODOUBLE" begin="0" end="12000" beginring="0" endring="0"/>
+		<object name="Jun03:PBRreq4New2:143-1_DIPOLE_VALUE" type="POI" date="Mon Jul  7 14:13:09 2003" creator="mendes" lastmodification="Mon Jul  7 14:13:10 2003" datatype="PIODOUBLE" begin="-1" end="-1" beginring="0" endring="0"/>
+		<object name="143-1_DIPOLE_VALUE" type="POI" date="Mon Jul  7 16:55:09 2003" creator="mendes" lastmodification="Mon Jul 14 16:53:53 2003" datatype="PIODOUBLE" begin="0" end="39396000" beginring="0" endring="0"/>
+	</group>
+	<group  name="PBR_AMo" type="PBR" date="Thu Jul 10 15:47:26 2003" creator="moneti">
+		<object name="Written" type="FLAG" date="Thu Jul 10 15:47:27 2003" creator="moneti" lastmodification="Thu Jul 10 15:47:27 2003" datatype="FLAG" begin="-1" end="-1" beginring="0" endring="0"/>
+		<object name="100-1_phase" type="PHI" date="Thu Jul 10 15:47:27 2003" creator="moneti" lastmodification="Thu Jul 10 15:47:27 2003" datatype="PIODOUBLE" begin="0" end="12000" beginring="0" endring="0"/>
+		<object name="100-1_DIPOLE_VALUE" type="POI" date="Thu Jul 10 15:47:30 2003" creator="moneti" lastmodification="Thu Jul 10 15:47:35 2003" datatype="PIODOUBLE" begin="600000" end="732000" beginring="0" endring="0"/>
+	</group>
+	<group  name="MyTestPBR" type="PBR" date="Fri Jul 11 08:48:27 2003" creator="mendes">
+		<object name="Written" type="FLAG" date="Fri Jul 11 08:48:28 2003" creator="mendes" lastmodification="Fri Jul 11 08:48:28 2003" datatype="FLAG" begin="-1" end="-1" beginring="0" endring="0"/>
+	</group>
+	<group  name="ROIReq4" type="ROI" date="Fri Jul 11 08:48:28 2003" creator="mendes">
+		<object name="Written" type="FLAG" date="Fri Jul 11 08:48:28 2003" creator="mendes" lastmodification="Fri Jul 11 08:48:28 2003" datatype="FLAG" begin="-1" end="-1" beginring="0" endring="0"/>
+	</group>
+</database>
