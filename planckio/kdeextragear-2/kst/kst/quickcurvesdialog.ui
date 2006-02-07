@@ -1,0 +1,546 @@
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<class>KstQuickCurvesDialog</class>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>KstQuickCurvesDialog</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>489</width>
+            <height>417</height>
+        </rect>
+    </property>
+    <property name="sizePolicy">
+        <sizepolicy>
+            <hsizetype>1</hsizetype>
+            <vsizetype>1</vsizetype>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+        </sizepolicy>
+    </property>
+    <property name="caption">
+        <string>Quick Curve</string>
+    </property>
+    <property name="icon">
+        <pixmap>image0</pixmap>
+    </property>
+    <property name="layoutMargin" stdset="0">
+    </property>
+    <grid>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <property name="margin">
+            <number>6</number>
+        </property>
+        <property name="spacing">
+            <number>6</number>
+        </property>
+        <widget class="QGroupBox" row="0" column="0" rowspan="1" colspan="4">
+            <property name="name">
+                <cstring>GroupBox4</cstring>
+            </property>
+            <property name="title">
+                <string>Vector Properties</string>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <property name="margin">
+                    <number>11</number>
+                </property>
+                <property name="spacing">
+                    <number>6</number>
+                </property>
+                <widget class="QLabel" row="4" column="0" rowspan="1" colspan="2">
+                    <property name="name">
+                        <cstring>TextLabel8_3</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Number of frames:</string>
+                    </property>
+                    <property name="alignment">
+                        <set>AlignVCenter|AlignRight</set>
+                    </property>
+                    <property name="hAlign" stdset="0">
+                    </property>
+                </widget>
+                <widget class="QCheckBox" row="5" column="0" rowspan="1" colspan="2">
+                    <property name="name">
+                        <cstring>DoSkip</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Skip frames</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Save memory by sparsely sampling the data.</string>
+                    </property>
+                </widget>
+                <widget class="QCheckBox" row="3" column="4">
+                    <property name="name">
+                        <cstring>CountFromEnd</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Count from end</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Start reading at "Number of Frames" from the end of the file instead of starting at "Starting Frame"</string>
+                    </property>
+                </widget>
+                <widget class="QCheckBox" row="4" column="4">
+                    <property name="name">
+                        <cstring>ReadToEnd</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Read to end</string>
+                    </property>
+                </widget>
+                <widget class="QCheckBox" row="5" column="4">
+                    <property name="name">
+                        <cstring>DoFilter</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Boxcar filter first</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Average data using a boxcar (low pass) filter, before skipping frames.  </string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="4" column="3">
+                    <property name="name">
+                        <cstring>TextLabel2_4</cstring>
+                    </property>
+                    <property name="text">
+                        <string>or</string>
+                    </property>
+                </widget>
+                <widget class="QSpinBox" row="3" column="2">
+                    <property name="name">
+                        <cstring>F0</cstring>
+                    </property>
+                    <property name="maxValue">
+                        <number>1000000000</number>
+                    </property>
+                    <property name="lineStep">
+                        <number>10000</number>
+                    </property>
+                    <property name="value">
+                        <number>0</number>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>The data read into the selected vectors will start at this index in the file, unless "Count from End" is selected.</string>
+                    </property>
+                </widget>
+                <widget class="QSpinBox" row="4" column="2">
+                    <property name="name">
+                        <cstring>N</cstring>
+                    </property>
+                    <property name="maxValue">
+                        <number>1000000000</number>
+                    </property>
+                    <property name="minValue">
+                        <number>0</number>
+                    </property>
+                    <property name="lineStep">
+                        <number>10000</number>
+                    </property>
+                    <property name="value">
+                        <number>1000</number>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Number of Frames to read, unless "Read to End" is selected.</string>
+                    </property>
+                </widget>
+                <widget class="QSpinBox" row="5" column="2">
+                    <property name="name">
+                        <cstring>Skip</cstring>
+                    </property>
+                    <property name="maxValue">
+                        <number>1000000000</number>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Number of frames to skip between reads, if "Skip Frames" is selected.</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="0" column="0">
+                    <property name="name">
+                        <cstring>TextLabel4_3</cstring>
+                    </property>
+                    <property name="text">
+                        <string>File name:</string>
+                    </property>
+                    <property name="alignment">
+                        <set>AlignVCenter|AlignRight</set>
+                    </property>
+                    <property name="hAlign" stdset="0">
+                    </property>
+                </widget>
+                <widget class="QLabel" row="2" column="0">
+                    <property name="name">
+                        <cstring>TextLabel1_2</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Y axis field:</string>
+                    </property>
+                    <property name="alignment">
+                        <set>AlignVCenter|AlignRight</set>
+                    </property>
+                    <property name="hAlign" stdset="0">
+                    </property>
+                </widget>
+                <widget class="QLabel" row="3" column="0" rowspan="1" colspan="2">
+                    <property name="name">
+                        <cstring>TextLabel7</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Starting frame:</string>
+                    </property>
+                    <property name="alignment">
+                        <set>AlignVCenter|AlignRight</set>
+                    </property>
+                    <property name="hAlign" stdset="0">
+                    </property>
+                </widget>
+                <widget class="QLabel" row="1" column="0">
+                    <property name="name">
+                        <cstring>TextLabel1</cstring>
+                    </property>
+                    <property name="text">
+                        <string>X axis field:</string>
+                    </property>
+                    <property name="alignment">
+                        <set>AlignVCenter|AlignRight</set>
+                    </property>
+                    <property name="hAlign" stdset="0">
+                    </property>
+                </widget>
+                <widget class="KURLRequester" row="0" column="1" rowspan="1" colspan="4">
+                    <property name="name">
+                        <cstring>FileName</cstring>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="3" column="3">
+                    <property name="name">
+                        <cstring>TextLabel1_5</cstring>
+                    </property>
+                    <property name="text">
+                        <string>or</string>
+                    </property>
+                </widget>
+                <widget class="KComboBox" row="1" column="1" rowspan="1" colspan="4">
+                    <property name="name">
+                        <cstring>XAxis</cstring>
+                    </property>
+                    <property name="editable">
+                        <bool>true</bool>
+                    </property>
+                    <property name="duplicatesEnabled">
+                        <bool>false</bool>
+                    </property>
+                </widget>
+                <widget class="KComboBox" row="2" column="1" rowspan="1" colspan="4">
+                    <property name="name">
+                        <cstring>YAxis</cstring>
+                    </property>
+                    <property name="editable">
+                        <bool>true</bool>
+                    </property>
+                    <property name="duplicatesEnabled">
+                        <bool>false</bool>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
+        <widget class="QPushButton" row="3" column="0">
+            <property name="name">
+                <cstring>Apply</cstring>
+            </property>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>0</hsizetype>
+                    <vsizetype>0</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
+            <property name="text">
+                <string>Apply</string>
+            </property>
+            <property name="whatsThis" stdset="0">
+                <string>Apply new data sample specifications to selected vectors.</string>
+            </property>
+        </widget>
+        <widget class="QComboBox" row="3" column="2" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>PlotList</cstring>
+            </property>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>5</hsizetype>
+                    <vsizetype>0</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
+            <property name="editable">
+                <bool>false</bool>
+            </property>
+            <property name="insertionPolicy">
+                <enum>AtTop</enum>
+            </property>
+            <property name="autoCompletion">
+                <bool>true</bool>
+            </property>
+            <property name="duplicatesEnabled">
+                <bool>false</bool>
+            </property>
+            <property name="whatsThis" stdset="0">
+                <string>The name of the data file which will be read for this vector.</string>
+            </property>
+        </widget>
+        <widget class="QLabel" row="3" column="1">
+            <property name="name">
+                <cstring>TextLabel1_2_2</cstring>
+            </property>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>0</hsizetype>
+                    <vsizetype>0</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
+            <property name="text">
+                <string>in plot:</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="4" column="0">
+            <property name="name">
+                <cstring>ApplyPlotCols</cstring>
+            </property>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>0</hsizetype>
+                    <vsizetype>0</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
+            <property name="text">
+                <string>Apply</string>
+            </property>
+            <property name="toolTip" stdset="0">
+                <string>Arrange plots, and add one.</string>
+            </property>
+            <property name="whatsThis" stdset="0">
+                <string>Arrange the plots in a grid.</string>
+            </property>
+        </widget>
+        <widget class="QSpinBox" row="4" column="3">
+            <property name="name">
+                <cstring>PlotCols</cstring>
+            </property>
+            <property name="maxValue">
+                <number>10</number>
+            </property>
+            <property name="minValue">
+                <number>1</number>
+            </property>
+            <property name="value">
+                <number>1</number>
+            </property>
+            <property name="whatsThis" stdset="0">
+                <string>AutoLayout will place the plots in a grid with this many columns.</string>
+            </property>
+        </widget>
+        <widget class="QLabel" row="4" column="1" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>TextLabel3</cstring>
+            </property>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>0</hsizetype>
+                    <vsizetype>0</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
+            <property name="text">
+                <string>in new plot, number of columns:</string>
+            </property>
+        </widget>
+        <widget class="QLayoutWidget" row="5" column="0" rowspan="1" colspan="4">
+            <property name="name">
+                <cstring>Layout22</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <property name="margin">
+                    <number>0</number>
+                </property>
+                <property name="spacing">
+                    <number>6</number>
+                </property>
+                <spacer>
+                    <property name="name">
+                        <cstring>Spacer3</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>20</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>Cancel</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>0</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="text">
+                        <string>Close</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Close dialog without applying further changes.</string>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+        <widget class="QGroupBox" row="1" column="0" rowspan="1" colspan="4">
+            <property name="name">
+                <cstring>GroupBox3</cstring>
+            </property>
+            <property name="title">
+                <string>Curve Appearance</string>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <property name="margin">
+                    <number>11</number>
+                </property>
+                <property name="spacing">
+                    <number>6</number>
+                </property>
+                <widget class="KColorButton" row="0" column="1">
+                    <property name="name">
+                        <cstring>ColorButton</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>0</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="text">
+                        <string>-</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="0" column="0">
+                    <property name="name">
+                        <cstring>CurveAppearanceLabel</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>3</hsizetype>
+                            <vsizetype>5</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="scaledContents">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
+        <widget class="Line" row="2" column="0" rowspan="1" colspan="4">
+            <property name="name">
+                <cstring>line1</cstring>
+            </property>
+            <property name="frameShape">
+                <enum>HLine</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Sunken</enum>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+        </widget>
+    </grid>
+</widget>
+<images>
+    <image name="image0">
+        <data format="XPM.GZ" length="962">789c6d91cb6e83301045f77c05c2bba84a428088aaea27b4eab252d5855f63e3049ce7a2aafaeff57830216a070b717432d7137bb5c8dfdf5ef2c52a3b5ff8a593b9b4fc942fd4b5efbf3e3e9fbfb362b3c9715579593c6485c865feea078ddf3c7cb3752c444b58afebf8cb33615bb615a242acca6a5d457b44accb7aec95880d6f1e1b8e6810db2a251f08db9270999092f788bce625af114f88b249bd9e506e08af096583d81102105e120220f61195dc4a85c81095c607d121eaadd27a8bb8430c4163f2400840fb4242b23a216db464fc6f8978304109a1ee1697f1f451e950105f58a3119342618c0150c9dc14186badb9f54c5d41748e593319c548c1ce76c1333ba509c7f8be0fca588773303b193d2a3ed01cb7348d6a3978ef494d690841797f088ae11f9b1b70833f1c0f7e70ec3e4deb9d197bdc2ccd9a7028c6c67dd85d8fb0e6140666c3104538b8290dcef6ecd8f8c02c4d687d7138048a78dec95cf5bc0034dccd36de4f78cf6e21dd25085061cd26f8a7c808f94f153f4fd92ffd2a18b4</data>
+    </image>
+</images>
+<connections>
+    <connection>
+        <sender>Cancel</sender>
+        <signal>clicked()</signal>
+        <receiver>KstQuickCurvesDialog</receiver>
+        <slot>reject()</slot>
+    </connection>
+    <connection>
+        <sender>CountFromEnd</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>F0</receiver>
+        <slot>setDisabled(bool)</slot>
+    </connection>
+    <connection>
+        <sender>ReadToEnd</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>N</receiver>
+        <slot>setDisabled(bool)</slot>
+    </connection>
+</connections>
+<tabstops>
+    <tabstop>FileName</tabstop>
+    <tabstop>F0</tabstop>
+    <tabstop>CountFromEnd</tabstop>
+    <tabstop>N</tabstop>
+    <tabstop>ReadToEnd</tabstop>
+    <tabstop>DoSkip</tabstop>
+    <tabstop>Skip</tabstop>
+    <tabstop>DoFilter</tabstop>
+    <tabstop>ColorButton</tabstop>
+    <tabstop>Apply</tabstop>
+    <tabstop>PlotList</tabstop>
+    <tabstop>ApplyPlotCols</tabstop>
+    <tabstop>PlotCols</tabstop>
+    <tabstop>Cancel</tabstop>
+</tabstops>
+<layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>kurlrequester.h</includehint>
+    <includehint>klineedit.h</includehint>
+    <includehint>kpushbutton.h</includehint>
+    <includehint>kcombobox.h</includehint>
+    <includehint>klineedit.h</includehint>
+    <includehint>kcombobox.h</includehint>
+    <includehint>klineedit.h</includehint>
+    <includehint>kcolorbutton.h</includehint>
+</includehints>
+</UI>

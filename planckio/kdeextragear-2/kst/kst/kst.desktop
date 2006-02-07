@@ -1,0 +1,9 @@
+# KDE Config File  
+[KDE Desktop Entry]
+Type=Application
+Exec=kst -caption "%c" %i %m  
+Icon=kst
+DocPath=kst/index.html
+Terminal=0
+Name=Kst
+Name[xx]=xxKstxx

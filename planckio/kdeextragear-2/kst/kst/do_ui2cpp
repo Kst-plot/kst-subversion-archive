@@ -1,0 +1,5 @@
+#! /bin/csh
+# generate cpp and .h files from uifiles.  This is not part of the make 
+# process.  The files are distributed as .cpp and .h, not (normally) as .iu
+
+make -f dialogs.makefile

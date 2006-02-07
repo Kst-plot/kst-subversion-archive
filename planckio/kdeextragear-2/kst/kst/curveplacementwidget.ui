@@ -1,0 +1,143 @@
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<class>CurvePlacementWidget</class>
+<widget class="QWidget">
+    <property name="name">
+        <cstring>CurvePlacementWidget</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>381</width>
+            <height>88</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Form1</string>
+    </property>
+    <vbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <property name="margin">
+            <number>0</number>
+        </property>
+        <property name="spacing">
+            <number>0</number>
+        </property>
+        <widget class="QGroupBox">
+            <property name="name">
+                <cstring>groupBox5</cstring>
+            </property>
+            <property name="title">
+                <string>Curve Placement</string>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QComboBox" row="0" column="1" rowspan="1" colspan="2">
+                    <property name="name">
+                        <cstring>_plotList</cstring>
+                    </property>
+                    <property name="enabled">
+                        <bool>false</bool>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>5</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="editable">
+                        <bool>false</bool>
+                    </property>
+                    <property name="insertionPolicy">
+                        <enum>AtTop</enum>
+                    </property>
+                    <property name="autoCompletion">
+                        <bool>true</bool>
+                    </property>
+                    <property name="duplicatesEnabled">
+                        <bool>false</bool>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>The name of the data file which will be read for this vector.</string>
+                    </property>
+                </widget>
+                <widget class="QCheckBox" row="0" column="0">
+                    <property name="name">
+                        <cstring>_inPlot</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Place in existing plot:</string>
+                    </property>
+                </widget>
+                <widget class="QCheckBox" row="1" column="0" rowspan="1" colspan="2">
+                    <property name="name">
+                        <cstring>_newPlot</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Place in new plot, number of columns:</string>
+                    </property>
+                </widget>
+                <widget class="QSpinBox" row="1" column="2">
+                    <property name="name">
+                        <cstring>_plotColumns</cstring>
+                    </property>
+                    <property name="enabled">
+                        <bool>false</bool>
+                    </property>
+                    <property name="maxValue">
+                        <number>10</number>
+                    </property>
+                    <property name="minValue">
+                        <number>1</number>
+                    </property>
+                    <property name="value">
+                        <number>1</number>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>AutoLayout will place the plots in a grid with this many columns.</string>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
+    </vbox>
+</widget>
+<connections>
+    <connection>
+        <sender>_inPlot</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>_plotList</receiver>
+        <slot>setEnabled(bool)</slot>
+    </connection>
+    <connection>
+        <sender>_newPlot</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>_plotColumns</receiver>
+        <slot>setEnabled(bool)</slot>
+    </connection>
+</connections>
+<includes>
+    <include location="global" impldecl="in implementation">qstringlist.h</include>
+    <include location="local" impldecl="in implementation">curveplacementwidget.ui.h</include>
+</includes>
+<slots>
+    <slot>setExistingPlot( bool existingPlot )</slot>
+    <slot>setNewPlot( bool newPlot )</slot>
+    <slot>setPlotList( const QStringList &amp; plots, bool saveSelection )</slot>
+    <slot>setColumns( int c )</slot>
+    <slot>appendPlot( const QString &amp; plot, bool activate )</slot>
+    <slot>setCurrentPlot( const QString &amp; p )</slot>
+</slots>
+<functions>
+    <function returnType="bool">existingPlot()</function>
+    <function returnType="bool">newPlot()</function>
+    <function returnType="QString">plotName()</function>
+    <function returnType="int">columns()</function>
+</functions>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>

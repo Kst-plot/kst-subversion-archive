@@ -1,0 +1,62 @@
+# Installs in dir @prefix@
+
+%define prefix @prefix@
+
+Summary: A data viewing program for KDE.
+Name: kst
+Version: 0.93-devel
+Release: 1
+Source0: kst-%{version}.tar.gz
+Group: X11/Applications/Scientific
+Copyright: GNU GENERAL PUBLIC LICENSE
+URL: http://omega.astro.utoronto.ca/kst/kst-%{version}.tar.gz
+Vendor: Barth Netterfield <netterfield@astro.utoronto.ca>
+BuildRoot: /var/tmp/kst-%{version}.root
+
+%description
+A data viewing application for KDE.
+
+%prep
+%setup 
+./configure --with-install-root=$RPM_BUILD_ROOT --prefix=$RPM_BUILD_ROOT/%prefix --disable-debug
+
+%build
+make
+
+%install
+make R="$RPM_BUILD_ROOT" SUID_ROOT="" install
+
+%files
+#binaries
+%prefix/bin/kst
+# UI file
+%prefix/share/apps/kst/kstui.rc
+#%prefix/share/apps/kst/kstui2.rc
+#desktop file
+%prefix/share/applnk/Applications/Sciences/kst.desktop
+#icons
+%prefix/share/icons/hicolor/22x22/actions/kst_quickcurves.png
+%prefix/share/icons/hicolor/22x22/actions/kst_back.png
+%prefix/share/icons/hicolor/22x22/actions/kst_editplots.png
+%prefix/share/icons/hicolor/22x22/actions/kst_zoomx.png
+%prefix/share/icons/hicolor/22x22/actions/kst_zoomy.png
+%prefix/share/icons/hicolor/22x22/actions/kst_advance.png
+%prefix/share/icons/hicolor/22x22/actions/kst_datamanager.png
+%prefix/share/icons/hicolor/22x22/actions/kst_zoomtie.png
+%prefix/share/icons/hicolor/22x22/actions/kst_quickpsd.png
+%prefix/share/icons/hicolor/22x22/actions/kst_zoomxy.png
+%prefix/share/icons/hicolor/22x22/actions/kst_graphfile.png
+%prefix/share/icons/hicolor/22x22/actions/kst_changenpts.png
+%prefix/share/icons/hicolor/22x22/actions/kst_changefile.png
+#docs
+%prefix/share/doc/HTML/en/kst/index.docbook
+%prefix/share/doc/HTML/en/kst/index.cache.bz2
+#other
+"%prefix/share/config/colors/Kst Colors"
+
+%doc ChangeLog INSTALL AUTHORS README COPYING
+
+%post
+
+%postun
+

@@ -1,0 +1,38 @@
+---------------------------
+Bugs:
+
+--------------------------
+Wishlist:
+
+reloading state....
+
+Config options:
+	Background colour
+	Default sample rate for psds
+	Timer Period
+
+Availible Columns Pulldown in PlotDialog
+
+Curve Fitting
+
+Better Kst Help
+
+Functions:
+  Special Functions
+    De-spike
+    Coadd
+    RaDec
+    Convolve/Deconvolve
+    Fitting
+    UserDefined
+
+Move the graphing engine into a separate library
+
+---------------------------
+Cleanup:
+
+- use signals instead of asking KstDoc to do everything
+- make naming schemes consistent
+- cleanup main()
+- cleanup kstdoc and kstapp to make things more modular
+

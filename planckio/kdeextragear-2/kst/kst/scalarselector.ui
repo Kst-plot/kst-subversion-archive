@@ -1,0 +1,102 @@
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<class>ScalarSelector</class>
+<widget class="QWidget">
+    <property name="name">
+        <cstring>ScalarSelector</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>328</width>
+            <height>31</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Form1</string>
+    </property>
+    <property name="whatsThis" stdset="0">
+        <string>Select a scalar to utilize.  If you wish to create a new scalar, select the icon to the right.</string>
+    </property>
+    <hbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <property name="margin">
+            <number>0</number>
+        </property>
+        <widget class="QComboBox">
+            <property name="name">
+                <cstring>_scalar</cstring>
+            </property>
+        </widget>
+        <widget class="QPushButton">
+            <property name="name">
+                <cstring>_newScalar</cstring>
+            </property>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>0</hsizetype>
+                    <vsizetype>0</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
+            <property name="text">
+                <string></string>
+            </property>
+            <property name="pixmap">
+                <pixmap>image0</pixmap>
+            </property>
+            <property name="toolTip" stdset="0">
+                <string>Create a new scalar.</string>
+            </property>
+        </widget>
+    </hbox>
+</widget>
+<images>
+    <image name="image0">
+        <data format="XPM.GZ" length="454">789c6d90c10ac2300c40effd8ad0dc8a7416410ae227281e05f1d0b5821ea6a0f320e2bfdba45dd5ba642d798fa45bd728d86e56a01a71eb5d7ff2e08fee0a2adcbbeeb1db2f9f429a39c4276e7222a4060febcbf940b58b354e39085b46434918182d25a12734334a4224b471d2f2acae223bc4cc5424571497d97d4d66c76dcea585589c4bd11617db3c77716371341dd2813f4effb950bb7c96ff381c5e5b7f4b5a831bbbc7e87dabfff25a8837eb4358d8</data>
+    </image>
+</images>
+<connections>
+    <connection>
+        <sender>_newScalar</sender>
+        <signal>clicked()</signal>
+        <receiver>ScalarSelector</receiver>
+        <slot>createNewScalar()</slot>
+    </connection>
+    <connection>
+        <sender>_scalar</sender>
+        <signal>activated(const QString&amp;)</signal>
+        <receiver>ScalarSelector</receiver>
+        <slot>selectionWatcher(const QString&amp;)</slot>
+    </connection>
+</connections>
+<includes>
+    <include location="local" impldecl="in declaration">kstdatacollection.h</include>
+    <include location="local" impldecl="in implementation">scalareditor.h</include>
+    <include location="global" impldecl="in implementation">qlineedit.h</include>
+    <include location="global" impldecl="in implementation">qvalidator.h</include>
+    <include location="global" impldecl="in implementation">qmessagebox.h</include>
+    <include location="local" impldecl="in implementation">scalarselector.ui.h</include>
+</includes>
+<signals>
+    <signal>newScalarCreated()</signal>
+    <signal>selectionChanged(const QString&amp;)</signal>
+    <signal>selectionChangedLabel(const QString&amp;)</signal>
+</signals>
+<slots>
+    <slot>allowNewScalars( bool allowed )</slot>
+    <slot>update()</slot>
+    <slot>createNewScalar()</slot>
+    <slot>selectionWatcher( const QString &amp; tag )</slot>
+    <slot>setSelection( const QString &amp; tag )</slot>
+    <slot>setSelection( KstScalarPtr s )</slot>
+</slots>
+<functions>
+    <function access="private">init()</function>
+    <function returnType="QString">selectedScalar()</function>
+</functions>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>

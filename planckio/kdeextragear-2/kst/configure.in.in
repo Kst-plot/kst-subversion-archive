@@ -1,0 +1,20 @@
+AC_LANG_SAVE
+AC_LANG_C
+dnl AC_C_BIGENDIAN has a bug (one of its tests uses "main()" instead of
+dnl "int main()") so C++ compilers would break. Thats why we switch languages
+AC_C_BIGENDIAN
+AC_LANG_RESTORE
+dnl AC_OUTPUT(kst/kst.spec)
+
+
+KDE_CHECK_HEADER(HL2_PIOLIB/PIOLib.h, AC_DEFINE(HAVE_PIOLIB_H, 1, [If we have piolib headers]) have_piolib_h=yes, , )
+
+KDE_CHECK_LIB(piolib, PIOCloseTOI, KST_LIBS="-lpiolib $KST_LIBS", , )
+AC_SUBST(KST_LIBS)
+
+if test $ac_cv_lib_piolib_PIOCloseTOI = yes; then
+  if test $have_piolib_h = yes; then
+    AC_DEFINE(KST_HAVE_PLANCK, 1, [If we have the PLANCK I/O libraries.])
+  fi
+fi
+

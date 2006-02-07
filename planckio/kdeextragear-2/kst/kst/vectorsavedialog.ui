@@ -1,0 +1,130 @@
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<class>VectorSaveDialog</class>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>VectorSaveDialog</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>429</width>
+            <height>313</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Select a vector to save...</string>
+    </property>
+    <grid>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <property name="margin">
+            <number>3</number>
+        </property>
+        <property name="spacing">
+            <number>4</number>
+        </property>
+        <widget class="QListBox" row="1" column="0" rowspan="1" colspan="3">
+            <property name="name">
+                <cstring>_vectorList</cstring>
+            </property>
+        </widget>
+        <spacer row="2" column="0">
+            <property name="name">
+                <cstring>spacer1</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>321</width>
+                    <height>31</height>
+                </size>
+            </property>
+        </spacer>
+        <widget class="QPushButton" row="2" column="1">
+            <property name="name">
+                <cstring>_saveButton</cstring>
+            </property>
+            <property name="enabled">
+                <bool>false</bool>
+            </property>
+            <property name="text">
+                <string>&amp;Save...</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="2" column="2">
+            <property name="name">
+                <cstring>pushButton2</cstring>
+            </property>
+            <property name="text">
+                <string>&amp;Close</string>
+            </property>
+        </widget>
+        <widget class="QLabel" row="0" column="0" rowspan="1" colspan="3">
+            <property name="name">
+                <cstring>textLabel1</cstring>
+            </property>
+            <property name="text">
+                <string>Select a vector and click &lt;i&gt;Save&lt;/i&gt; to save that vector to disk in a text file.</string>
+            </property>
+            <property name="textFormat">
+                <enum>RichText</enum>
+            </property>
+            <property name="scaledContents">
+                <bool>true</bool>
+            </property>
+            <property name="alignment">
+                <set>WordBreak|AlignTop</set>
+            </property>
+        </widget>
+    </grid>
+</widget>
+<connections>
+    <connection>
+        <sender>pushButton2</sender>
+        <signal>clicked()</signal>
+        <receiver>VectorSaveDialog</receiver>
+        <slot>hide()</slot>
+    </connection>
+    <connection>
+        <sender>_saveButton</sender>
+        <signal>clicked()</signal>
+        <receiver>VectorSaveDialog</receiver>
+        <slot>save()</slot>
+    </connection>
+    <connection>
+        <sender>_vectorList</sender>
+        <signal>selectionChanged()</signal>
+        <receiver>VectorSaveDialog</receiver>
+        <slot>selectionChanged()</slot>
+    </connection>
+    <connection>
+        <sender>_vectorList</sender>
+        <signal>doubleClicked(QListBoxItem*)</signal>
+        <receiver>VectorSaveDialog</receiver>
+        <slot>save()</slot>
+    </connection>
+</connections>
+<includes>
+    <include location="global" impldecl="in implementation">kfiledialog.h</include>
+    <include location="global" impldecl="in implementation">kmessagebox.h</include>
+    <include location="global" impldecl="in implementation">klocale.h</include>
+    <include location="local" impldecl="in implementation">kstdatacollection.h</include>
+    <include location="local" impldecl="in implementation">kstvector.h</include>
+    <include location="local" impldecl="in implementation">kstdatacollection.h</include>
+    <include location="local" impldecl="in implementation">vectorsavedialog.ui.h</include>
+</includes>
+<slots>
+    <slot access="public">show()</slot>
+    <slot access="private">save()</slot>
+    <slot access="public">init()</slot>
+    <slot access="private">selectionChanged()</slot>
+</slots>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>

@@ -1,0 +1,23 @@
+How to make a Kst release:
+
+- update from CVS
+- run a regression test and make sure it completely passes
+- update kst/main.cpp to set the version number
+- set the version numbers in kst.lsm and kst.spec.in
+- tag CVS
+- make sure configure has been run so that the spec file is created (with the
+  appropriate prefix, otherwise it must be editted after)
+- cvs2dist /path/to/kdeextragear-2 kst -n kst -v <version_number> -d
+- generate the srpm: rpm -ts kst-version.tar.gz
+- generate rpms as needed: rpm -tb kst-version.tar.gz
+                        or rpm --rebuild kst-version.rpm
+     - SuSE and RedHat style are typically generated.
+
+- TEST
+
+- update www/areas/extragear/inc/appinfo.inc
+- upload packages and lsm to upload.kde.org
+- update omega.astro
+
+- update kst/main.cpp, kst.lsm, kst.spec.in to the next release 0.xx-devel
+
