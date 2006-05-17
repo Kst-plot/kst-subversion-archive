@@ -1,0 +1,105 @@
+FITS Datasource Design 
+============================
+Revision History
+----------------------------
+
+2006 05 04 : Ted K.  Added info about WCS
+2006 05 03 : Ted K.  Initial proposal
+----------------------------
+
+This is a proposal for a new general FITS datasource (called fitsfile).  There
+are some auxillary issues that also need to be dealt with in the healpix and
+LFIIO datasources.
+
+
+Utility library
+--------------------------------------------------------------------
+
+The cfitsio library has low level functions to access the FITS file.  It
+would be convenient to have a library of higher level functions that could be
+called from all datasources that deal with FITS files.  Examples of
+possible functions would be:  fetch all keys, build combined fieldlist from
+all extensions, build matrixlist from all extensions, etc.
+
+In order to be really useful, this utility library needs to be accessible from
+the understands_*, fieldList_* and matrixList_* functions.  I'm not sure of
+the best place to put such a library in the buildsystem- maybe
+kst/src/datasources/libkstfits/ ?
+
+
+Overview of the fitsfile datasource
+--------------------------------------------------------------------
+
+The overall behaviour of the datasource will be to offer up all data in the
+FITS file as both vectors and matrices.  The datasource will scan through all
+extensions in the FITS file and build up a list of available fields.
+
+A.  Vector List.  The datasource would call a function in libkstfits to build
+the fieldlist.  This function will compute the number of extensions and then
+scan through each one.  For each image extension, it will read the units and
+add 2 fields to the fieldlist that represent the pixel index (row major) and
+the flat-packed pixel values from the image.  For each table extension, it
+will read the names and units of the columns and combine them to create a
+field name to add to the fieldlist.
+
+B.  Matrix List.  The datasource would call a function in libkstfits to build
+the matrixlist.  This function will compute the number of extensions and then
+scan through each one.  For each image extension, it will read the units and
+add a field to the matrixlist which represents the rectangular image data. 
+For each table extension, it will read the names and units of all columns and
+combine them to create a field name to add to the matrixlist.  So for a table
+extension, the corresponding matrix field has the same dimensions as the
+table.
+
+C.  Dealing with corrupt or "poorly created" files.  Unfortunately, not all
+FITS files "in the wild" are of the same quality.  Sometimes files become
+truncated or the software creating the file has made a mistake.  In my
+experience, a more robust way of handling these issues is to use the very low
+level functions of cfitsio to read the file.  This makes it easier to handle
+errors with a subset of the data in the file, while keeping any data that is
+good. The higher level functions tend to just give up if they encounter a
+problem.
+
+D.  Configuration.  I don't think that the current desired features, if
+implemented correctly, require a custom config widget.  The user should be
+able to access all data in the file in every way that might be useful just by
+requesting the available vectors and matrices.
+
+
+WCS Extensions
+--------------------------------------------------------------------
+The WCS system provides a way of specifying the coordinates of each pixel
+value in a FITS image.  This can be done by specifying mapping parameters, or
+even by specifying every pixel's coordinates in a binary table extension. 
+This is great, but what can we do with this information?  The best we can do
+at this point is maybe support some limited types of coordinate mappings
+(rectangular ones).  Full support of WCS projections will not be possible
+with kst until we have a complete 3D display framework.
+
+Note that WCS is implemented as an external library.  It is small and GPL'd,
+so it may be easier to just include the files we wish within the fitsfile
+datasource.  This can be discussed more later.
+
+
+Healpix, LFIIO, and Miscellaneous
+--------------------------------------------------------------------
+
+A.  The healpix datasource needs to support the use case of reading the pixel
+values straight out of the binary table as vectors.  I will do this by adding
+some additional fields to the fieldlist that have the form "(RAW) <field
+name>", so that the user knows what they are getting.
+
+B.  The LFIIO datasource needs to support interleaved data in tables.  My hope
+is that it can make use of some of the existing utility functions in
+libkstfits. For example, it could call the function to read all keys and then
+check if there are special keys to indicate that the file is an LFIIO fits
+file.  Then it could call another function to build the fieldlist and simply
+add/remove a couple fields to deal with the interleaving.  So basically LFIIO
+would support all the functionality of the fitsfile datasource (through the
+use of libkstfits), with some "extra" functionality built on top.
+
+C.  Notes:  Need to properly handle null pixel values in images.
+
+
+
+

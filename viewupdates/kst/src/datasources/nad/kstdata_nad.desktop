@@ -1,0 +1,9 @@
+[Desktop Entry]
+Encoding=UTF-8
+Type=Service
+ServiceTypes=Kst Data Source
+X-KDE-ModuleType=Plugin
+X-Kst-Plugin-Library=nad
+X-Kst-Plugin-Author=Staikos Computing Services Inc.
+Name=NAD plugin
+Comment=Plugin for the NAD distributed data distribution service with local caching

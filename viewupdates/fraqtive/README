@@ -1,0 +1,46 @@
+Fraqtive, version 0.3.1 (September 7, 2005).
+Copyright (C) 2005 Michal Mecinski.
+This program is licensed under the GNU General Public License.
+
+Introduction
+============
+
+Fraqtive is a program for drawing Mandelbrot and Julia fractals.
+It uses a very fast algorithm and generates high quality, smooth images.
+It is fully interactive, allowing for real-time mouse navigation and
+dynamic generation of the Julia fractal preview. OpenGL-rendered 3D view
+of the fractals is also supported.
+
+Requirements
+============
+
+ * KDE version 3.2
+ * OpenGL and GLU libraries
+
+Installation
+============
+
+A typical configure/make system is used to build and install
+this package. See INSTALL for more details.
+
+Usage
+=====
+
+2D view navigation:
+
+   LMB           zoom in
+   RMB           pan
+   Shift + LMB   rotate
+   Ctrl + LMB    zoom in or out
+
+3D view navigation:
+
+   LMB           rotate in X and Y axes
+   RMB           rotate in Z axis
+
+Contact
+=======
+
+Report bugs to: mimec@users.sourceforge.net
+
+Author's website: http://www.mimec.w.pl
