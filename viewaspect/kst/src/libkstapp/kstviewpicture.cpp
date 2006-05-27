@@ -21,7 +21,6 @@
 #include "kstviewpicture.h"
 
 #include <assert.h>
-#include <math.h>
 
 #include "ksdebug.h"
 #include <kglobal.h>
@@ -40,7 +39,6 @@ KstViewPicture::KstViewPicture()
   _refresh = 0;
   _timer = 0L;
   setTransparent(true);
-  _maintainAspect = true;
 }
 
 
@@ -220,10 +218,6 @@ bool KstViewPicture::setImage(const QString& source) {
     success = false;
   }
 
-  if (_maintainAspect == true) {
-    restoreAspect();
-  }
-
   KIO::NetAccess::removeTempFile(tmpFile);
   return success;
 }
@@ -287,30 +281,9 @@ int KstViewPicture::refreshTimer() const {
 }
 
 
-bool KstViewPicture::maintainAspect() const {
-  return _maintainAspect;
-}
-
-
-void KstViewPicture::setMaintainAspect(bool maintain) {
-  _maintainAspect = maintain;
-}
-
-
 void KstViewPicture::restoreSize() {
   QRect cr(contentsRect());
   cr.setSize(_image.size());
-  setContentsRect(cr);
-}
-
-
-void KstViewPicture::restoreAspect() {
-  QRect cr(contentsRect());
-  QSize size = _image.size(); //start with original size.
-  
-  size.scale( cr.size().width(), cr.size().height(), QSize::ScaleMin ); //find largest rect. which will fit inside original and still preserve aspect.
-
-  cr.setSize(size);
   setContentsRect(cr);
 }
 
@@ -327,10 +300,6 @@ QMap<QString, QVariant> KstViewPicture::widgetHints(const QString& propertyName)
   } else if (propertyName == "refreshTimer") {
     map.insert(QString("_kst_widgetType"), QString("QSpinBox"));
     map.insert(QString("_kst_label"), i18n("Refresh timer"));
-  } else if (propertyName == "maintainAspect") {
-    map.insert(QString("_kst_widgetType"), QString("QCheckBox"));
-    map.insert(QString("_kst_label"), QString::null);    
-    map.insert(QString("text"), i18n("Maintain aspect ratio"));
   }
   // FIXME: uncomment once these are supported.
   /* else if (propertyName == "padding") {

@@ -105,10 +105,10 @@ class KstTopLevelView : public KstViewObject {
     void pressMoveLayoutMode(const QPoint& pos, bool shift = false);
     // helpers for pressMoveLayoutMode
     void pressMoveLayoutModeMove(const QPoint& pos, bool shift = false);
-    void pressMoveLayoutModeResize(const QPoint& pos, bool maintainAspect = false);
+    void pressMoveLayoutModeResize(const QPoint& pos, bool shift = false);
     void pressMoveLayoutModeSelect(const QPoint& pos, bool shift = false);
-    void pressMoveLayoutModeEndPoint(const QPoint& pos, bool maintainAspect = false);
-    void pressMoveLayoutModeCenteredResize(const QPoint& pos, bool maintainAspect = false);
+    void pressMoveLayoutModeEndPoint(const QPoint& pos, bool shift = false);
+    void pressMoveLayoutModeCenteredResize(const QPoint& pos, bool shift = false);
     
     // release press handlers 
     void releasePress(const QPoint& pos, bool shift = false);
@@ -123,8 +123,8 @@ class KstTopLevelView : public KstViewObject {
     void setCursorFor(const QPoint& pos, KstViewObjectPtr p);
     bool popupMenu(KPopupMenu *menu, const QPoint& pos);
     void correctPosition(KstViewObjectPtr pObject, QPoint point);
-    QRect newSize(const QRect& oldSize, int direction, const QPoint& pos, bool maintainAspect = false);
-    QRect newSizeCentered(const QRect& oldSize, int direction, const QPoint& pos, bool maintainAspect = false);
+    QRect newSize(const QRect& oldSize, int direction, const QPoint& pos, bool keepAspect = false);
+    QRect newSizeCentered(const QRect& oldSize, int direction, const QPoint& pos, bool keepAspect = false);
     QRect correctWidthForRatio(const QRect& oldRect, double ratio, int direction);
     QRect correctHeightForRatio(const QRect& oldRect, double ratio, int direction, int origRight, int origLeft);
     QRect resizeSnapToObjects(const QRect& objGeometry, int direction);

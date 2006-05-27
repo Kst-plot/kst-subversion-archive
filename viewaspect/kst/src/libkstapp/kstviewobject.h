@@ -115,9 +115,6 @@ class KST_EXPORT KstViewObject : public KstObject {
     virtual void setHasFocus(bool hasFocus);
     virtual void removeFocus(KstPainter& p);
 
-    virtual bool maintainAspect() const;
-    virtual void setMaintainAspect(bool maintain);
-
     virtual void appendChild(KstViewObjectPtr obj, bool keepAspect = false);
     virtual void prependChild(KstViewObjectPtr obj, bool keepAspect = false);
     virtual bool removeChild(KstViewObjectPtr obj, bool recursive = false);
@@ -321,7 +318,6 @@ class KST_EXPORT KstViewObject : public KstObject {
     bool _container : 1;
     bool _fallThroughTransparency : 1;
     bool _isResizable : 1;
-    bool _maintainAspect : 1;
     int _columns : 10;
     QGuardedPtr<KstViewObject> _topObjectForMenu;
     QGuardedPtr<KstViewObject> _parent; // danger!!

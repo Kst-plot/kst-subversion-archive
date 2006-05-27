@@ -66,7 +66,6 @@ class KST_EXPORT KstBorderedViewObject : public KstViewObject {
   Q_PROPERTY(QColor backgroundColor READ backgroundColor WRITE setBackgroundColor) 
   Q_PROPERTY(int margin READ margin WRITE setMargin) 
   Q_PROPERTY(int padding READ padding WRITE setPadding) 
-
   protected:
     KstBorderedViewObject(const QString& type);
   public:

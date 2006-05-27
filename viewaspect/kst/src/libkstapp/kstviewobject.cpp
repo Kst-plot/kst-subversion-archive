@@ -75,7 +75,6 @@ KstViewObject::KstViewObject(const QString& type)
   _dialogLock = false;
   _fallThroughTransparency = true;
   _isResizable = true;
-  _maintainAspect = false;
   setMinimumSize(DEFAULT_MINIMUM_SIZE);
 }
 
@@ -92,7 +91,6 @@ KstViewObject::KstViewObject(const QDomElement& e)
   _dialogLock = false;
   _fallThroughTransparency = true;
   _isResizable = true;
-  _maintainAspect = false;
   setMinimumSize(DEFAULT_MINIMUM_SIZE);
   load(e);
 }
@@ -115,7 +113,6 @@ KstViewObject::KstViewObject(const KstViewObject& viewObject)
   _selected = false;
   _fallThroughTransparency = true;
   _isResizable = viewObject._isResizable;
-  _maintainAspect = viewObject._maintainAspect;
   _geom = viewObject._geom;
   _transparent = viewObject._transparent;
   _followsFlow = viewObject._followsFlow;
@@ -896,16 +893,6 @@ bool KstViewObject::focused() const {
 }
 
 
-bool KstViewObject::maintainAspect() const {
-  return _maintainAspect;
-}
-
-
-void KstViewObject::setMaintainAspect(bool maintain) {
-  _maintainAspect = maintain;
-}
-
-
 void KstViewObject::recursively(void (KstViewObject::*method)(), bool self) {
   if (self) {
     (this->*method)();
@@ -1417,12 +1404,6 @@ void KstViewObject::updateFromAspect() {
     _geom.setTop(geom.top() + int(_aspect.y * geom.height()));
     _geom.setRight(geom.left() + int((_aspect.x + _aspect.w) * geom.width()) - 1);
     _geom.setBottom(geom.top() + int((_aspect.y + _aspect.h) * geom.height()) - 1);
-
-    if (_maintainAspect == true) {
-      QSize maintaining_size(myOldGeom.size());
-      maintaining_size.scale(_geom.size(),QSize::ScaleMin);
-      _geom.setSize(maintaining_size);
-    }
   }
   if (_geom.width() < _minimumSize.width() || _geom.height() < _minimumSize.height()) {
     _geom.setSize(_geom.size().expandedTo(_minimumSize));
