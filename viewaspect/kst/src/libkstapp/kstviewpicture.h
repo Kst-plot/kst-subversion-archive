@@ -29,8 +29,10 @@ typedef KstSharedPtr<KstViewPicture> KstViewPicturePtr;
 
 class KstViewPicture : public KstBorderedViewObject {
   Q_OBJECT
+  Q_PROPERTY(bool maintainAspect READ maintainAspect WRITE setMaintainAspect)
   Q_PROPERTY(QString path READ url WRITE setImage)
   Q_PROPERTY(int refreshTimer READ refreshTimer WRITE setRefreshTimer)
+
   public:
     KstViewPicture();
     KstViewPicture(const QDomElement& e);
@@ -45,6 +47,10 @@ class KstViewPicture : public KstBorderedViewObject {
     
     // resize picture to the image size
     void restoreSize();
+    void restoreAspect();
+
+    bool maintainAspect() const;
+    void setMaintainAspect(bool maintain);
 
     // 0 == no refresh (default)
     void setRefreshTimer(int seconds);

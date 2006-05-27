@@ -402,7 +402,7 @@ bool KstTopLevelView::handlePress(const QPoint& pos, bool shift) {
 }
 
 
-QRect KstTopLevelView::newSize(const QRect& oldSize, int direction, const QPoint& pos, bool keepAspect) {
+QRect KstTopLevelView::newSize(const QRect& oldSize, int direction, const QPoint& pos, bool maintainAspect) {
   QRect r = oldSize;
   double aspect = (double)oldSize.height()/(double)oldSize.width();
 
@@ -417,7 +417,7 @@ QRect KstTopLevelView::newSize(const QRect& oldSize, int direction, const QPoint
       break;
   }
  
-  if (keepAspect) {
+  if (maintainAspect) {
     r = correctWidthForRatio(r, aspect, direction);  
   }
   
@@ -435,7 +435,7 @@ QRect KstTopLevelView::newSize(const QRect& oldSize, int direction, const QPoint
       break;
   }
   
-  if (keepAspect) {
+  if (maintainAspect) {
     r = correctHeightForRatio(r, aspect, direction, tempRight, tempLeft);
   }
   
@@ -443,7 +443,7 @@ QRect KstTopLevelView::newSize(const QRect& oldSize, int direction, const QPoint
 }
 
 
-QRect KstTopLevelView::newSizeCentered(const QRect& oldSize, int direction, const QPoint& pos, bool keepAspect) {
+QRect KstTopLevelView::newSizeCentered(const QRect& oldSize, int direction, const QPoint& pos, bool maintainAspect) {
   const QPoint center((oldSize.left() + oldSize.right())/2, (oldSize.top() + oldSize.bottom())/2);
   QRect rect = oldSize;
   double aspect = (double)oldSize.height()/(double)oldSize.width();
@@ -469,7 +469,7 @@ QRect KstTopLevelView::newSizeCentered(const QRect& oldSize, int direction, cons
       break;
   }
   
-  if (keepAspect) {
+  if (maintainAspect) {
     rect = correctWidthForRatio(rect, aspect, direction);
     rect.moveCenter(center);
   }
@@ -497,7 +497,7 @@ QRect KstTopLevelView::newSizeCentered(const QRect& oldSize, int direction, cons
       }
       break;
   }
-  if (keepAspect) {
+  if (maintainAspect) {
     rect = correctHeightForRatio(rect, aspect, direction, tempRight, tempLeft);
     rect.moveCenter(center);
   }
@@ -669,16 +669,17 @@ void KstTopLevelView::pressMoveLayoutMode(const QPoint& pos, bool shift) {
       // moving an object
       pressMoveLayoutModeMove(pos, shift);
       KstApp::inst()->slotUpdateDataMsg(i18n("(x0,y0)-(x1,y1)", "(%1,%2)-(%3,%4)").arg(_prevBand.topLeft().x()).arg(_prevBand.topLeft().y()).arg(_prevBand.bottomRight().x()).arg(_prevBand.bottomRight().y()));
-    } else if (_pressTarget->isResizable()) { 
+    } else if (_pressTarget->isResizable()) {
+      bool maintainAspect = shift ^ _pressTarget->maintainAspect(); // if default behaviour is to maintainAspect on resize, then shift will now have opposite behaviour.
       if (_pressDirection & ENDPOINT) {
         // moving an endpoint of an object
-        pressMoveLayoutModeEndPoint(pos, shift);
+        pressMoveLayoutModeEndPoint(pos, maintainAspect);
       } else if (_pressDirection & CENTEREDRESIZE) {
         // resizing an object with fixed center
-        pressMoveLayoutModeCenteredResize(pos, shift);
+        pressMoveLayoutModeCenteredResize(pos, maintainAspect);
       } else {
         // resizing a rectangular object
-        pressMoveLayoutModeResize(pos, shift);
+        pressMoveLayoutModeResize(pos, maintainAspect);
       }
       KstApp::inst()->slotUpdateDataMsg(i18n("(x0,y0)-(x1,y1)", "(%1,%2)-(%3,%4)").arg(_prevBand.topLeft().x()).arg(_prevBand.topLeft().y()).arg(_prevBand.bottomRight().x()).arg(_prevBand.bottomRight().y()));
     }
@@ -747,9 +748,9 @@ void KstTopLevelView::pressMoveLayoutModeMove(const QPoint& pos, bool shift) {
 }
 
 
-void KstTopLevelView::pressMoveLayoutModeResize(const QPoint& pos, bool shift) {
+void KstTopLevelView::pressMoveLayoutModeResize(const QPoint& pos, bool maintainAspect) {
   const QRect old(_prevBand);
-  _prevBand = newSize(_pressTarget->geometry(), _pressDirection, pos, shift).intersect(_pressTarget->_parent->_geom);
+  _prevBand = newSize(_pressTarget->geometry(), _pressDirection, pos, maintainAspect).intersect(_pressTarget->_parent->_geom);
   if (_prevBand != old) {
     KstPainter p;
         
@@ -785,7 +786,7 @@ void KstTopLevelView::pressMoveLayoutModeSelect(const QPoint& pos, bool shift) {
 }
 
 
-void KstTopLevelView::pressMoveLayoutModeEndPoint(const QPoint& pos_in, bool shift) {
+void KstTopLevelView::pressMoveLayoutModeEndPoint(const QPoint& pos_in, bool maintainAspect) {
   // FIXME: remove this!!  Should not know about any specific type
   // for now we only know how to deal with lines 
 
@@ -798,50 +799,54 @@ void KstTopLevelView::pressMoveLayoutModeEndPoint(const QPoint& pos_in, bool shi
   pos.setY(QMAX(pos.y(), geometry().top()));
 
   if (KstViewLinePtr line = kst_cast<KstViewLine>(_pressTarget)) {
-    const QRect old(_prevBand);
-    double aspect;
-    if (line->to().x() != line->from().x()) {
-      aspect = double(line->to().y() - line->from().y()) / double(line->to().x() - line->from().x());
-    } else {
-      if (line->to().y() < line->from().y()) {
-        aspect = -1.0E300;
-      } else {
-        aspect = 1.0E300;  
-      }
-    }
-    QPoint fromPoint, toPoint;
+    QPoint movePoint, anchorPoint;
+    QPoint *fromPoint, *toPoint;
+
     if (_pressDirection & UP) {
       // UP means we are on the start endpoint
-      toPoint = line->to();
-      if (shift) {
-        double absAspect = fabs(aspect);
-        if (absAspect < 500 && (double(abs((pos.y() - toPoint.y())/(pos.x() - toPoint.x()))) < aspect || absAspect < 0.1)) {
-          fromPoint = QPoint(pos.x(), toPoint.y() + int(aspect*(pos.x() - toPoint.x())));
-        } else {
-          fromPoint = QPoint(toPoint.x() + int((pos.y() - toPoint.y())/aspect), pos.y());
-        }
-      } else {
-        fromPoint = pos;
-      }
-    } else if (_pressDirection & DOWN) {
+      movePoint = line->from();
+      anchorPoint = line->to();
+      fromPoint = &movePoint;
+      toPoint = &anchorPoint;
+    } else { // (_pressDirection & DOWN)
       // DOWN means we are on the end endpoint
-      fromPoint = line->from();
-      if (shift) {
-        double absAspect = fabs(aspect);
-        if (absAspect < 500 && (double(abs((pos.y() - toPoint.y())/(pos.x() - toPoint.x()))) < aspect || absAspect < 0.1)) {
-          toPoint = QPoint(pos.x(), fromPoint.y() + int(aspect*(pos.x() - fromPoint.x())));
-        } else {
-          toPoint = QPoint(fromPoint.x() + int((pos.y() - fromPoint.y())/aspect), pos.y());
-        }
-      } else {
-        toPoint = pos;
-      }
-    } else {
-      abort();
+      movePoint = line->to();
+      anchorPoint = line->from();
+      fromPoint = &anchorPoint;
+      toPoint = &movePoint;
     }
 
-    _prevBand.setTopLeft(fromPoint);
-    _prevBand.setBottomRight(toPoint);
+    if (maintainAspect) {
+      if (fromPoint->x() == toPoint->x()) {
+        // FIXME: implement. should not be necessary right now (because of the way lines are constructed).
+      } else if (fromPoint->y() == toPoint->y()) {
+        // FIXME: implement. should not be necessary right now (because of the way lines are constructed).
+      } else {
+        double slope = double(toPoint->y() - fromPoint->y()) / double(toPoint->x() - fromPoint->x());
+
+        double newxpos, newypos;
+
+        newxpos = (((double)pos.y()) + slope*((double)anchorPoint.x()) + ((double)pos.x())/slope -((double)anchorPoint.y())) / (slope + 1.0/slope); //we want the tip of our new line to be as close as possible to the original line (while still maintaining aspect). 
+
+        newxpos = QMIN(newxpos, geometry().right()); //ensure that our x is inside the tlv.
+        newxpos = QMAX(newxpos, geometry().left()); // ""
+        newypos = slope*(newxpos - ((double)anchorPoint.x())) + ((double)anchorPoint.y()); //consistency w/ x.
+
+        newypos = QMIN(newypos, geometry().bottom()); //ensure that our y is inside the tlv.
+        newypos = QMAX(newypos, geometry().top()); // ""
+        newxpos = ((double)anchorPoint.x()) + (newypos - ((double)anchorPoint.y()))/slope; // x will still be inside the tlv because we have just moved newypos closer to anchorPoint.y(), which will send newxpos closer to anchorPoint.x(), ie. in the direction further 'into' the tlv.
+
+        movePoint.setX((int)newxpos);
+        movePoint.setY((int)newypos);
+      }
+    } else {
+      movePoint = pos; // already enforced pos inside tlv.
+    }
+
+    const QRect old(_prevBand);
+    
+    _prevBand.setTopLeft(*fromPoint);
+    _prevBand.setBottomRight(*toPoint);
 
     if (old != _prevBand) {
       KstPainter p;
@@ -858,11 +863,11 @@ void KstTopLevelView::pressMoveLayoutModeEndPoint(const QPoint& pos_in, bool shi
 }
 
 
-void KstTopLevelView::pressMoveLayoutModeCenteredResize(const QPoint& pos, bool shift) {
+void KstTopLevelView::pressMoveLayoutModeCenteredResize(const QPoint& pos, bool maintainAspect) {
   //centered resize means that the center of the object stays constant
   const QRect old(_prevBand);
   
-  _prevBand = newSizeCentered(_pressTarget->geometry(), _pressDirection, pos, shift).intersect(_pressTarget->_parent->_geom);
+  _prevBand = newSizeCentered(_pressTarget->geometry(), _pressDirection, pos, maintainAspect).intersect(_pressTarget->_parent->_geom);
   if (_prevBand != old) {
     KstPainter p;
 
@@ -998,40 +1003,13 @@ void KstTopLevelView::releasePressLayoutModeSelect(const QPoint& pos, bool shift
 
 void KstTopLevelView::releasePressLayoutModeEndPoint(const QPoint& pos, bool shift) {
   Q_UNUSED(shift)
+  Q_UNUSED(pos)
 
   if (KstViewLinePtr line = kst_cast<KstViewLine>(_pressTarget)) {
     if (_prevBand.left() != -1 && _prevBand.top() != -1) {
-      if (_pressDirection & UP) {
-        // UP means we are on the start endpoint
-        const QPoint toPoint(line->to());
-        QRect band(pos, toPoint);
-        band = band.normalize().intersect(geometry());
-        if (toPoint == band.topLeft()) {
-          line->setFrom(band.bottomRight());
-        } else if (toPoint == band.bottomLeft()) {
-          line->setFrom(band.topRight());
-        } else if (toPoint == band.topRight()) {
-          line->setFrom(band.bottomLeft());
-        } else {
-          line->setFrom(band.topLeft());
-        }
-      } else if (_pressDirection & DOWN) {
-        // DOWN means we are on the end endpoint
-        const QPoint fromPoint(line->from());
-        QRect band(fromPoint, pos);
-        band = band.normalize().intersect(geometry());
-        if (fromPoint == band.topLeft()) {
-          line->setTo(band.bottomRight());
-        } else if (fromPoint == band.bottomLeft()) {
-          line->setTo(band.topRight());
-        } else if (fromPoint == band.topRight()) {
-          line->setTo(band.bottomLeft());
-        } else {
-          line->setTo(band.topLeft());
-        }
-      } else {
-        abort();
-      }
+      line->setFrom(_prevBand.topLeft());
+      line->setTo(_prevBand.bottomRight());
+
       _onGrid = false;
 
       // reparent
