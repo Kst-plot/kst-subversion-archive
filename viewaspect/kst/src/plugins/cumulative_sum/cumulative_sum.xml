@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Module SYSTEM "file:/Repository/Level2/Soft/ProC/moduledef.dtd">
+<module>
+<intro>
+<modulename name="cumulative_sum" readableName="Cumulative sum (integral)"/>
+<author name="Nicolas Brisset"/>
+<description text="Computes the cumulative sum (integral) of the input vector."/>
+<version minor="1" major="0"/>
+<state devstate="release"/>
+</intro>
+
+<interface>
+<input>
+<table type="float" name="InputVector" descr="The input vector"/>
+</input>
+<input>
+<float name="Scale factor (time step)" descr="Time step to scale the sum" default="1.0"/>
+</input>
+
+<output>
+<table type="float" name="Cumulative Sum" descr="The scaled summed input (integral)"/>
+</output>
+</interface>
+</module>

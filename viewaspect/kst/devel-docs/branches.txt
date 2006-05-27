@@ -1,0 +1,13 @@
+Branch: svn.kde.org/home/kde/branches/kst/1.1/
+Description: Stable branch for Kst 1.1.x
+
+Branch: svn.kde.org/home/kde/branches/kst/1.2/
+Description: Stable branch for Kst 1.2.x
+
+Branch: svn.kde.org/home/kde/branches/kst/hfi_calib/
+Description: Branch for use by HFI.  Restricted to George only for commits.
+
+Branch: svn.kde.org/home/kde/branches/kst/branches/work/kst/*
+Description: Branches for development of new features outside of trunk.
+
+

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Module SYSTEM "file:/Repository/Level2/Soft/ProC/moduledef.dtd">
+<module>
+<intro>
+<modulename name="crossspectrum" readableName="Cross-power-spectrum"/>
+<author name="Barth Netterfield"/>
+<description text="Generates the cross power spectrum of one vector with another."/>
+<version minor="1" major="0"/>
+<state devstate="release"/>
+</intro>
+
+<interface>
+<input>
+<table type="float" name="Vector One" descr="The first vector to be correlated." />
+</input>
+<input>
+<table type="float" name="Vector Two" descr="The second vector to be correlated." />
+</input>
+<input>
+<float name="FFT Length = 2^" descr="Length of FFTs used in cross spectra." />
+</input>
+<input>
+<float name="Sample Rate" descr="Sample rate, used for X axis" />
+</input>
+
+
+<output>
+<table type="float" name="Cross Spectrum: Real" descr="The cross power spectrum." />
+</output>
+<output>
+<table type="float" name="Cross Spectrum: Imaginary" descr="The cross power spectrum." />
+</output>
+<output>
+<table type="float" name="Frequency" descr="The cross power spectrum frequency" />
+</output>
+</interface>
+</module>
+
