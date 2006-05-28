@@ -83,6 +83,8 @@ EventMonitorEntry::EventMonitorEntry(const QDomElement &e) {
         _logELOG = e.text().toInt();
       } else if (e.tagName() == "emailRecipients") {
         _eMailRecipients = e.text();
+      } else if (e.tagName() == "script") {
+        _script = e.text();
       }
     }
     n = n.nextSibling();
@@ -152,6 +154,7 @@ void EventMonitorEntry::save(QTextStream &ts, const QString& indent) {
   ts << l2 << "<logemail>" << QString::number(_logEMail) << "</logemail>" << endl;
   ts << l2 << "<logelog>" << QString::number(_logELOG) << "</logelog>" << endl;
   ts << l2 << "<emailRecipients>" << QStyleSheet::escape(_eMailRecipients) << "</emailRecipients>" << endl;
+  ts << l2 << "<script>" << QStyleSheet::escape(_script) << "</script>" << endl;
   ts << indent << "</event>" << endl;
 }
 
