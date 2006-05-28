@@ -39,11 +39,11 @@ const QString EventMonitorEntry::OUTYVECTOR = "Y";
 
 EventMonitorEntry::EventMonitorEntry(const QString &in_tag) : KstDataObject() {
   _level = KstDebug::Warning;
-  _bLogKstDebug = true;
-  _bLogEMail = false;
-  _bLogELOG = false;
+  _logKstDebug = true;
+  _logEMail = false;
+  _logELOG = false;
 
-  commonConstructor( in_tag );
+  commonConstructor(in_tag);
   setDirty();
 }
 
@@ -52,48 +52,48 @@ EventMonitorEntry::EventMonitorEntry(const QDomElement &e) {
   QString strTag;
 
   _level = KstDebug::Warning;
-  _bLogKstDebug = true;
-  _bLogEMail = false;
-  _bLogELOG = false;
+  _logKstDebug = true;
+  _logEMail = false;
+  _logELOG = false;
 
   QDomNode n = e.firstChild();
-  while( !n.isNull() ) {
+  while (!n.isNull()) {
     QDomElement e = n.toElement(); // try to convert the node to an element.
-    if( !e.isNull() ) { // the node was really an element.
+    if (!e.isNull()) { // the node was really an element.
       if (e.tagName() == "tag") {
         strTag = e.text();
       } else if (e.tagName() == "equation") {
-        _strEvent = e.text();
+        _event = e.text();
       } else if (e.tagName() == "description") {
-        _strDescription = e.text();
+        _description = e.text();
       } else if (e.tagName() == "logdebug") {
-        _bLogKstDebug = e.text().toInt();
+        _logKstDebug = e.text().toInt();
       } else if (e.tagName() == "loglevel") {
         _level = (KstDebug::LogLevel)e.text().toInt();
       } else if (e.tagName() == "logemail") {
-        _bLogEMail = e.text().toInt();
+        _logEMail = e.text().toInt();
       } else if (e.tagName() == "logelog") {
-        _bLogELOG = e.text().toInt();
+        _logELOG = e.text().toInt();
       } else if (e.tagName() == "emailRecipients") {
-        _strEMailRecipients = e.text();
+        _eMailRecipients = e.text();
       }
     }
     n = n.nextSibling();
   }
 
-  commonConstructor( strTag );
+  commonConstructor(strTag);
 
   // wait for the initial update, as we don't want to trigger elog entries
-  //  until we are sure the document is open...
-  QTimer::singleShot( 500, this, SLOT(slotUpdate()));
+  // until we are sure the document is open.
+  QTimer::singleShot(500, this, SLOT(slotUpdate()));
 }
 
 
 void EventMonitorEntry::commonConstructor(const QString &in_tag) {
-  int NS = 1;
+  const int NS = 1;
 
-  _iNumDone = 0;
-  _bIsValid = false;
+  _numDone = 0;
+  _isValid = false;
   _pExpression = 0L;
 
   _typeString = i18n("Event");
@@ -112,10 +112,10 @@ void EventMonitorEntry::commonConstructor(const QString &in_tag) {
 
 
 bool EventMonitorEntry::reparse() {
-  _bIsValid = false;
-  if (!_strEvent.isEmpty()) {
+  _isValid = false;
+  if (!_event.isEmpty()) {
     QMutexLocker ml(&Equation::mutex());
-    yy_scan_string(_strEvent.latin1());
+    yy_scan_string(_event.latin1());
     int rc = yyparse();
     if (rc == 0) {
       _pExpression = static_cast<Equation::Node*>(ParsedEquation);
@@ -124,13 +124,13 @@ bool EventMonitorEntry::reparse() {
       KstStringMap stm;
       _pExpression->collectObjects(_vectorsUsed, _inputScalars, stm);
 
-      _bIsValid = true;
+      _isValid = true;
     } else {
       delete (Equation::Node*)ParsedEquation;
     }
     ParsedEquation = 0L;
   }
-  return _bIsValid;
+  return _isValid;
 }
 
 
@@ -138,13 +138,13 @@ void EventMonitorEntry::save(QTextStream &ts, const QString& indent) {
   QString l2 = indent + "  ";
   ts << indent << "<event>" << endl;
   ts << l2 << "<tag>" << QStyleSheet::escape(tagName()) << "</tag>" << endl;
-  ts << l2 << "<equation>" << QStyleSheet::escape(_strEvent) << "</equation>" << endl;
-  ts << l2 << "<description>" << QStyleSheet::escape(_strDescription) << "</description>" << endl;
-  ts << l2 << "<logdebug>" << QString::number(_bLogKstDebug) << "</logdebug>" << endl;
+  ts << l2 << "<equation>" << QStyleSheet::escape(_event) << "</equation>" << endl;
+  ts << l2 << "<description>" << QStyleSheet::escape(_description) << "</description>" << endl;
+  ts << l2 << "<logdebug>" << QString::number(_logKstDebug) << "</logdebug>" << endl;
   ts << l2 << "<loglevel>" << QString::number(_level) << "</loglevel>" << endl;
-  ts << l2 << "<logemail>" << QString::number(_bLogEMail) << "</logemail>" << endl;
-  ts << l2 << "<logelog>" << QString::number(_bLogELOG) << "</logelog>" << endl;
-  ts << l2 << "<emailRecipients>" << QStyleSheet::escape(_strEMailRecipients) << "</emailRecipients>" << endl;
+  ts << l2 << "<logemail>" << QString::number(_logEMail) << "</logemail>" << endl;
+  ts << l2 << "<logelog>" << QString::number(_logELOG) << "</logelog>" << endl;
+  ts << l2 << "<emailRecipients>" << QStyleSheet::escape(_eMailRecipients) << "</emailRecipients>" << endl;
   ts << indent << "</event>" << endl;
 }
 
@@ -171,18 +171,14 @@ KstObject::UpdateType EventMonitorEntry::update(int updateCounter) {
   if (KstObject::checkUpdateCounter(updateCounter) && !force) {
     return lastUpdateResult();
   }
-  
-  KstVectorPtr xv = *_xVector;
-  KstVectorPtr yv = *_yVector;
-  Equation::Context ctx;
-  double *pdRawValuesX = 0L;
-  double *pdRawValuesY = 0L;
-  double dValue;
-  int ns = 1;
 
   if (!_pExpression) {
     reparse();
   }
+
+  KstVectorPtr xv = *_xVector;
+  KstVectorPtr yv = *_yVector;
+  int ns = 1;
 
   if (_vectorsUsed.count() > 0) {
     for (KstVectorMap::ConstIterator i = _vectorsUsed.begin(); i != _vectorsUsed.end(); ++i) {
@@ -194,41 +190,44 @@ KstObject::UpdateType EventMonitorEntry::update(int updateCounter) {
     ns = 1;
   }
 
+  double *rawValuesX = 0L;
+  double *rawValuesY = 0L;
   if (xv && yv) {
     if (xv->resize(ns)) {
-      pdRawValuesX = xv->value();
+      rawValuesX = xv->value();
     }
 
     if (yv->resize(ns)) {
-      pdRawValuesY = yv->value();
+      rawValuesY = yv->value();
     }
   }
 
+  Equation::Context ctx;
   ctx.sampleCount = ns;
   ctx.x = 0.0;
 
   if (needToEvaluate()) {
     if (_pExpression) {
-      for (ctx.i = _iNumDone; ctx.i < ns; ++ctx.i) {
-        dValue = _pExpression->value(&ctx);
-        if (dValue) {
-          log( ctx.i );
-          if (pdRawValuesX && pdRawValuesY) {
-            pdRawValuesX[ctx.i] = ctx.i;
-            pdRawValuesY[ctx.i] = 1.0;
+      for (ctx.i = _numDone; ctx.i < ns; ++ctx.i) {
+        const double value = _pExpression->value(&ctx);
+        if (value != 0.0) { // The expression evaluates to true
+          log(ctx.i);
+          if (rawValuesX && rawValuesY) {
+            rawValuesX[ctx.i] = ctx.i;
+            rawValuesY[ctx.i] = 1.0;
           }
         } else {
-          if (pdRawValuesX && pdRawValuesY) {
-            pdRawValuesX[ctx.i] = ctx.i;
-            pdRawValuesY[ctx.i] = 0.0;
+          if (rawValuesX && rawValuesY) {
+            rawValuesX[ctx.i] = ctx.i;
+            rawValuesY[ctx.i] = 0.0;
           }
         }
       }
-      _iNumDone = ns;
+      _numDone = ns;
       logImmediately();
     }
   } else {
-    _iNumDone = ns;
+    _numDone = ns;
   }
 
   if (xv) {
@@ -246,13 +245,13 @@ KstObject::UpdateType EventMonitorEntry::update(int updateCounter) {
 
 
 void EventMonitorEntry::setEvent(const QString& strEvent) {
-  if (_strEvent != strEvent) {
-    _strEvent = strEvent;
+  if (_event != strEvent) {
+    _event = strEvent;
     _vectorsUsed.clear();
     _inputScalars.clear();
 
-    _iNumDone = 0;
-    _bIsValid = false;
+    _numDone = 0;
+    _isValid = false;
 
     delete _pExpression;
     _pExpression = 0L;
@@ -261,60 +260,58 @@ void EventMonitorEntry::setEvent(const QString& strEvent) {
 
 
 bool EventMonitorEntry::needToEvaluate() {
-  return _bLogKstDebug || _bLogEMail || _bLogELOG;
+  return _logKstDebug || _logEMail || _logELOG;
 }
 
 
-void EventMonitorEntry::logImmediately( ) {
-  bool bRange = false;
-  int iIndexOld = 0;
-  int iIndex = 0;
-  int iSize = _indexArray.size();
-  int i;
+void EventMonitorEntry::logImmediately() {
+  const int arraySize = _indexArray.size();
 
-  if( iSize > 0 ) {
-    QString str;
-    QString strRange;
+  if (arraySize > 0) {
+    QString logMessage;
+    QString rangeString;
+    bool makeRange = false;
+    int idx = 0;
+    int idxOld = 0;
 
-    for( i=0; i<iSize; i++ ) {
-      iIndex = *(_indexArray.at(i));
-      if( i == 0 ) {
-        strRange.setNum( iIndex );
-      } else if( !bRange && iIndex == iIndexOld+1 ) {
-        bRange = true;
-      } else if( bRange && iIndex != iIndexOld+1 ) {
-        strRange = i18n("%1-%2,%3").arg( strRange ).arg( iIndexOld ).arg( iIndex );
-        bRange = false;
-      } else if( iIndex != iIndexOld+1 ) {
-        strRange = i18n("%1,%2").arg( strRange ).arg( iIndex );
+    for (int i = 0; i < arraySize; ++i) {
+      idx = *_indexArray.at(i);
+      if (i == 0) {
+        rangeString.setNum(idx);
+      } else if (!makeRange && idx == idxOld + 1) {
+        makeRange = true;
+      } else if (makeRange && idx != idxOld + 1) {
+        rangeString = i18n("%1-%2,%3").arg(rangeString).arg(idxOld).arg(idx);
+        makeRange = false;
+      } else if (idx != idxOld + 1) {
+        rangeString = i18n("%1,%2").arg(rangeString).arg(idx);
       }
-      iIndexOld = iIndex;
+      idxOld = idx;
     }
 
-    if( bRange ) {
-      strRange = i18n("%1-%2").arg( strRange ).arg( iIndex );
+    if (makeRange) {
+      rangeString = i18n("%1-%2").arg(rangeString).arg(idx);
     }
 
-    if( _strDescription.isEmpty() ) {
-      str = i18n("Event Monitor: %1: %2").arg( _strEvent ).arg( strRange );
+    if (_description.isEmpty()) {
+      logMessage = i18n("Event Monitor: %1: %2").arg(_event).arg(rangeString);
     } else {
-      str = i18n("Event Monitor: %1: %2").arg( _strDescription ).arg( strRange );
+      logMessage = i18n("Event Monitor: %1: %2").arg(_description).arg(rangeString);
     }
 
-    if( _bLogKstDebug ) {
-      KstDebug::self()->log( str, _level );
+    if (_logKstDebug) {
+      KstDebug::self()->log(logMessage, _level);
     }
 
-    if( _bLogEMail && !_strEMailRecipients.isEmpty() ) {
+    if (_logEMail && !_eMailRecipients.isEmpty()) {
       // FIXME: wrong thread - can crash (QStrings unguarded, at best)
-      EMailThread* pThread = new EMailThread(_strEMailRecipients,
-                              i18n("Kst Event Monitoring Notification"), str);
-      pThread->send();
+      EMailThread* thread = new EMailThread(_eMailRecipients, i18n("Kst Event Monitoring Notification"), logMessage);
+      thread->send();
     }
 
-    if (_bLogELOG) {
+    if (_logELOG) {
       // FIXME: wrong thread - can crash
-      KstApp::inst()->EventELOGSubmitEntry(str);
+      KstApp::inst()->EventELOGSubmitEntry(logMessage);
     }
 
     _indexArray.clear();
@@ -322,8 +319,8 @@ void EventMonitorEntry::logImmediately( ) {
 }
 
 
-void EventMonitorEntry::log(int iIndex) {
-  _indexArray.append(iIndex);
+void EventMonitorEntry::log(int idx) {
+  _indexArray.append(idx);
   if (_indexArray.size() > 1000) {
     logImmediately();
   }
@@ -331,7 +328,7 @@ void EventMonitorEntry::log(int iIndex) {
 
 
 QString EventMonitorEntry::propertyString() const {
-  return _strEvent;
+  return _event;
 }
 
 
@@ -341,44 +338,58 @@ void EventMonitorEntry::_showDialog() {
 
 
 void EventMonitorEntry::setDescription(const QString& str) {
-  setDirty();
-  _strDescription = str;
+  if (_description != str) {
+    setDirty();
+    _description = str;
+  }
 }
 
 
 void EventMonitorEntry::setLevel(KstDebug::LogLevel level) {
-  setDirty();
-  _level = level;
+  if (_level != level) {
+    setDirty();
+    _level = level;
+  }
 }
 
 
 void EventMonitorEntry::setExpression(Equation::Node* pExpression) {
-  setDirty();
-  _pExpression = pExpression;
+  if (_pExpression != pExpression) {
+    setDirty();
+    _pExpression = pExpression;
+  }
 }
 
 
-void EventMonitorEntry::setLogKstDebug(bool bLogKstDebug) {
-  setDirty();
-  _bLogKstDebug = bLogKstDebug;
+void EventMonitorEntry::setLogKstDebug(bool logKstDebug) {
+  if (_logKstDebug != logKstDebug) {
+    setDirty();
+    _logKstDebug = logKstDebug;
+  }
 }
 
 
-void EventMonitorEntry::setLogEMail(bool bLogEMail) {
-  setDirty();
-  _bLogEMail = bLogEMail;
+void EventMonitorEntry::setLogEMail(bool logEMail) {
+  if (logEMail != _logEMail) {
+    setDirty();
+    _logEMail = logEMail;
+  }
 }
 
 
-void EventMonitorEntry::setLogELOG(bool bLogELOG) {
-  setDirty();
-  _bLogELOG = bLogELOG;
+void EventMonitorEntry::setLogELOG(bool logELOG) {
+  if (logELOG != _logELOG) {
+    setDirty();
+    _logELOG = logELOG;
+  }
 }
 
 
 void EventMonitorEntry::setEMailRecipients(const QString& str) {
-  setDirty();
-  _strEMailRecipients = str;
+  if (str != _eMailRecipients) {
+    setDirty();
+    _eMailRecipients = str;
+  }
 }
 
 
@@ -388,13 +399,13 @@ KstDataObjectPtr EventMonitorEntry::makeDuplicate(KstDataObjectDataObjectMap& du
     name += '\'';
   }
   EventMonitorEntryPtr event = new EventMonitorEntry(name);
-  event->setEvent(_strEvent);
-  event->setDescription(_strDescription);
+  event->setEvent(_event);
+  event->setDescription(_description);
   event->setLevel(_level);
-  event->setLogKstDebug(_bLogKstDebug);
-  event->setLogEMail(_bLogEMail);
-  event->setLogELOG(_bLogELOG);
-  event->setEMailRecipients(_strEMailRecipients); 
+  event->setLogKstDebug(_logKstDebug);
+  event->setLogEMail(_logEMail);
+  event->setLogELOG(_logELOG);
+  event->setEMailRecipients(_eMailRecipients);
 
   duplicatedMap.insert(this, KstDataObjectPtr(event));
   return KstDataObjectPtr(event);
@@ -402,64 +413,62 @@ KstDataObjectPtr EventMonitorEntry::makeDuplicate(KstDataObjectDataObjectMap& du
 
 
 void EventMonitorEntry::replaceDependency(KstDataObjectPtr oldObject, KstDataObjectPtr newObject) {
-  
-  QString newExp = _strEvent;
-  
+  QString newExp = _event;
+
   // replace all occurences of outputVectors, outputScalars from oldObject
   for (KstVectorMap::ConstIterator j = oldObject->outputVectors().begin(); j != oldObject->outputVectors().end(); ++j) {
-    QString oldTag = j.data()->tagName();
-    QString newTag = ((newObject->outputVectors())[j.key()])->tagName();
+    const QString oldTag = j.data()->tagName();
+    const QString newTag = newObject->outputVectors()[j.key()]->tagName();
     newExp = newExp.replace("[" + oldTag + "]", "[" + newTag + "]");
   }
-  
+
   for (KstScalarMap::ConstIterator j = oldObject->outputScalars().begin(); j != oldObject->outputScalars().end(); ++j) {
-    QString oldTag = j.data()->tagName();
-    QString newTag = ((newObject->outputScalars())[j.key()])->tagName();
+    const QString oldTag = j.data()->tagName();
+    const QString newTag = newObject->outputScalars()[j.key()]->tagName();
     newExp = newExp.replace("[" + oldTag + "]", "[" + newTag + "]");
   }
-  
+
   // and dependencies on vector stats
   for (KstVectorMap::ConstIterator j = oldObject->outputVectors().begin(); j != oldObject->outputVectors().end(); ++j) {
+    const QDict<KstScalar>& scalarMap(newObject->outputVectors()[j.key()]->scalars());
     QDictIterator<KstScalar> scalarDictIter(j.data()->scalars());
     for (; scalarDictIter.current(); ++scalarDictIter) {
-      QString oldTag = scalarDictIter.current()->tagName();
-      QString newTag = ((((newObject->outputVectors())[j.key()])->scalars())[scalarDictIter.currentKey()])->tagName();
-      newExp = newExp.replace("[" + oldTag + "]", "[" + newTag + "]"); 
+      const QString oldTag = scalarDictIter.current()->tagName();
+      const QString newTag = scalarMap[scalarDictIter.currentKey()]->tagName();
+      newExp = newExp.replace("[" + oldTag + "]", "[" + newTag + "]");
     }
   }
-  
+
   // and dependencies on matrix stats
   for (KstMatrixMap::ConstIterator j = oldObject->outputMatrices().begin(); j != oldObject->outputMatrices().end(); ++j) {
+    const QDict<KstScalar>& scalarMap(newObject->outputMatrices()[j.key()]->scalars());
     QDictIterator<KstScalar> scalarDictIter(j.data()->scalars());
     for (; scalarDictIter.current(); ++scalarDictIter) {
-      QString oldTag = scalarDictIter.current()->tagName();
-      QString newTag = ((((newObject->outputMatrices())[j.key()])->scalars())[scalarDictIter.currentKey()])->tagName();
-      newExp = newExp.replace("[" + oldTag + "]", "[" + newTag + "]"); 
+      const QString oldTag = scalarDictIter.current()->tagName();
+      const QString newTag = scalarMap[scalarDictIter.currentKey()]->tagName();
+      newExp = newExp.replace("[" + oldTag + "]", "[" + newTag + "]");
     }
   }
-  
+
   setEvent(newExp);
   setDirty();
-  
+
   // events have no _inputVectors
 }
 
 
 void EventMonitorEntry::replaceDependency(KstVectorPtr oldVector, KstVectorPtr newVector) {
-  QString oldTag = oldVector->tagName();
-  QString newTag = newVector->tagName();
-  
   // replace all occurences of oldTag with newTag
-  QString newExp = _strEvent.replace("["+oldTag+"]", "["+newTag+"]");
-  
+  QString newExp = _event.replace("[" + oldVector->tagName() + "]", "[" + newVector->tagName() + "]");
+
   // also replace all occurences of vector stats for the oldVector
   QDictIterator<KstScalar> scalarDictIter(oldVector->scalars());
   for (; scalarDictIter.current(); ++scalarDictIter) {
-    QString oldTag = scalarDictIter.current()->tagName();
-    QString newTag = ((newVector->scalars())[scalarDictIter.currentKey()])->tagName();
-    newExp = newExp.replace("[" + oldTag + "]", "[" + newTag + "]"); 
+    const QString oldTag = scalarDictIter.current()->tagName();
+    const QString newTag = newVector->scalars()[scalarDictIter.currentKey()]->tagName();
+    newExp = newExp.replace("[" + oldTag + "]", "[" + newTag + "]");
   }
-  
+
   setEvent(newExp);
   setDirty();
 
@@ -468,23 +477,22 @@ void EventMonitorEntry::replaceDependency(KstVectorPtr oldVector, KstVectorPtr n
 
 
 void EventMonitorEntry::replaceDependency(KstMatrixPtr oldMatrix, KstMatrixPtr newMatrix) {
-  QString newExp = _strEvent;
-  
+  QString newExp = _event;
+
   // also replace all occurences of scalar stats for the oldMatrix
   QDictIterator<KstScalar> scalarDictIter(oldMatrix->scalars());
   for (; scalarDictIter.current(); ++scalarDictIter) {
-    QString oldTag = scalarDictIter.current()->tagName();
-    QString newTag = ((newMatrix->scalars())[scalarDictIter.currentKey()])->tagName();
-    newExp = newExp.replace("[" + oldTag + "]", "[" + newTag + "]"); 
+    const QString oldTag = scalarDictIter.current()->tagName();
+    const QString newTag = newMatrix->scalars()[scalarDictIter.currentKey()]->tagName();
+    newExp = newExp.replace("[" + oldTag + "]", "[" + newTag + "]");
   }
-  
+
   setEvent(newExp);
   setDirty();
 }
 
 
 bool EventMonitorEntry::uses(KstObjectPtr p) const {
-  
   // check VectorsUsed in addition to _input*'s
   if (KstVectorPtr vect = kst_cast<KstVector>(p)) {
     for (KstVectorMap::ConstIterator j = _vectorsUsed.begin(); j != _vectorsUsed.end(); ++j) {

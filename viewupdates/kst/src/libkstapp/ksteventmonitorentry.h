@@ -41,17 +41,17 @@ class EventMonitorEntry : public KstDataObject {
     virtual void _showDialog();
 
     bool needToEvaluate();
-    bool isValid() const { return _bIsValid; }
+    bool isValid() const { return _isValid; }
 
-    void log(int iIndex);
-    const QString& event() const { return _strEvent; }
-    const QString& description() const { return _strDescription; }
+    void log(int idx);
+    const QString& event() const { return _event; }
+    const QString& description() const { return _description; }
     KstDebug::LogLevel level() const { return _level; }
     Equation::Node* expression() const { return _pExpression; }
-    bool logKstDebug() const { return _bLogKstDebug; }
-    bool logEMail() const { return _bLogEMail; }
-    bool logELOG() const { return _bLogELOG; }
-    const QString& eMailRecipients() const { return _strEMailRecipients; }
+    bool logKstDebug() const { return _logKstDebug; }
+    bool logEMail() const { return _logEMail; }
+    bool logELOG() const { return _logELOG; }
+    const QString& eMailRecipients() const { return _eMailRecipients; }
 
     void setEvent(const QString& str);
     void setDescription(const QString& str);
@@ -86,18 +86,18 @@ class EventMonitorEntry : public KstDataObject {
 
     KstVectorMap        _vectorsUsed;
     QValueList<int>     _indexArray;
-    QString             _strEvent;
-    QString             _strDescription;
-    QString             _strEMailRecipients;
+    QString             _event;
+    QString             _description;
+    QString             _eMailRecipients;
     KstDebug::LogLevel  _level;
     Equation::Node*     _pExpression;
     KstVectorMap::Iterator _xVector;
     KstVectorMap::Iterator _yVector;
-    bool                _bLogKstDebug;
-    bool                _bLogEMail;
-    bool                _bLogELOG;
-    bool                _bIsValid;
-    int                 _iNumDone;
+    bool                _logKstDebug;
+    bool                _logEMail;
+    bool                _logELOG;
+    bool                _isValid;
+    int                 _numDone;
 };
 
 typedef KstSharedPtr<EventMonitorEntry> EventMonitorEntryPtr;
