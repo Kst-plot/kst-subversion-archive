@@ -33,12 +33,12 @@ class EventMonitorEntry : public KstDataObject {
   public:
     EventMonitorEntry(const QString &in_tag);
     EventMonitorEntry(const QDomElement &e);
-    virtual ~EventMonitorEntry();
+    ~EventMonitorEntry();
 
-    virtual UpdateType update(int updateCounter = -1);
-    virtual void save(QTextStream &ts, const QString& indent = QString::null);
-    virtual QString propertyString() const;
-    virtual void _showDialog();
+    UpdateType update(int updateCounter = -1);
+    void save(QTextStream &ts, const QString& indent = QString::null);
+    QString propertyString() const;
+    void _showDialog();
 
     bool needToEvaluate();
     bool isValid() const { return _isValid; }
@@ -52,21 +52,21 @@ class EventMonitorEntry : public KstDataObject {
     bool logEMail() const { return _logEMail; }
     bool logELOG() const { return _logELOG; }
     const QString& eMailRecipients() const { return _eMailRecipients; }
+    const QString& scriptCode() const;
 
+    void setScriptCode(const QString& script);
     void setEvent(const QString& str);
     void setDescription(const QString& str);
     void setLevel(KstDebug::LogLevel level);
     void setExpression(Equation::Node* pExpression);
-    void setLogKstDebug(bool bLogKstDebug);
-    void setLogEMail(bool bLogEMail);
-    void setLogELOG(bool bLogELOG);
+    void setLogKstDebug(bool logKstDebug);
+    void setLogEMail(bool logEMail);
+    void setLogELOG(bool logELOG);
     void setEMailRecipients(const QString& str);
-
-    void logImmediately();
 
     bool reparse();
     
-    virtual KstDataObjectPtr makeDuplicate(KstDataObjectDataObjectMap& duplicatedMap);
+    KstDataObjectPtr makeDuplicate(KstDataObjectDataObjectMap& duplicatedMap);
     
     void replaceDependency(KstDataObjectPtr oldObject, KstDataObjectPtr newObject);
 
@@ -75,29 +75,35 @@ class EventMonitorEntry : public KstDataObject {
 
     bool uses(KstObjectPtr p) const;
 
+  protected:
+    bool event(QEvent *e);
+
   private slots:
-    void  slotUpdate();
+    void slotUpdate();
+    void doLog(const QString& logMessage) const;
 
   private:
+    void logImmediately(bool sendEvent = true);
     void commonConstructor(const QString &in_tag);
 
     static const QString OUTXVECTOR;
     static const QString OUTYVECTOR;
 
-    KstVectorMap        _vectorsUsed;
-    QValueList<int>     _indexArray;
-    QString             _event;
-    QString             _description;
-    QString             _eMailRecipients;
-    KstDebug::LogLevel  _level;
-    Equation::Node*     _pExpression;
+    KstVectorMap _vectorsUsed;
+    QValueList<int> _indexArray;
+    QString _event;
+    QString _description;
+    QString _eMailRecipients;
+    KstDebug::LogLevel _level;
+    Equation::Node* _pExpression;
     KstVectorMap::Iterator _xVector;
     KstVectorMap::Iterator _yVector;
-    bool                _logKstDebug;
-    bool                _logEMail;
-    bool                _logELOG;
-    bool                _isValid;
-    int                 _numDone;
+    bool _logKstDebug;
+    bool _logEMail;
+    bool _logELOG;
+    bool _isValid;
+    int _numDone;
+    QString _script;
 };
 
 typedef KstSharedPtr<EventMonitorEntry> EventMonitorEntryPtr;

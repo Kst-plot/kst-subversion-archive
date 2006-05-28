@@ -16,10 +16,14 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <config.h>
+
 // include files for Qt
 #include <qstylesheet.h>
+#include <qthread.h>
 
 // include files for KDE
+#include <dcopref.h>
 #include <klocale.h>
 
 // application specific includes
@@ -29,6 +33,9 @@
 #include "kstdatacollection.h"
 #include "ksteventmonitorentry.h"
 #include "ksteventmonitor_i.h"
+
+#include <assert.h>
+#include <unistd.h>
 
 extern "C" int yyparse();
 extern "C" void *ParsedEquation;
@@ -150,7 +157,7 @@ void EventMonitorEntry::save(QTextStream &ts, const QString& indent) {
 
 
 EventMonitorEntry::~EventMonitorEntry() {
-  logImmediately();
+  logImmediately(false);
 
   delete _pExpression;
   _pExpression = 0L;
@@ -180,14 +187,8 @@ KstObject::UpdateType EventMonitorEntry::update(int updateCounter) {
   KstVectorPtr yv = *_yVector;
   int ns = 1;
 
-  if (_vectorsUsed.count() > 0) {
-    for (KstVectorMap::ConstIterator i = _vectorsUsed.begin(); i != _vectorsUsed.end(); ++i) {
-      if (i.data()->length() > ns) {
-        ns = i.data()->length();
-      }
-    }
-  } else {
-    ns = 1;
+  for (KstVectorMap::ConstIterator i = _vectorsUsed.begin(); i != _vectorsUsed.end(); ++i) {
+    ns = kMax(ns, i.data()->length());
   }
 
   double *rawValuesX = 0L;
@@ -264,7 +265,17 @@ bool EventMonitorEntry::needToEvaluate() {
 }
 
 
-void EventMonitorEntry::logImmediately() {
+namespace {
+  const int EventMonitorEventType = int(QEvent::User) + 2931;
+  class EventMonitorEvent : public QEvent {
+    public:
+      EventMonitorEvent(const QString& msg) : QEvent(QEvent::Type(EventMonitorEventType)), logMessage(msg) {}
+      QString logMessage;
+  };
+}
+
+
+void EventMonitorEntry::logImmediately(bool sendEvent) {
   const int arraySize = _indexArray.size();
 
   if (arraySize > 0) {
@@ -299,22 +310,45 @@ void EventMonitorEntry::logImmediately() {
       logMessage = i18n("Event Monitor: %1: %2").arg(_description).arg(rangeString);
     }
 
-    if (_logKstDebug) {
-      KstDebug::self()->log(logMessage, _level);
-    }
-
-    if (_logEMail && !_eMailRecipients.isEmpty()) {
-      // FIXME: wrong thread - can crash (QStrings unguarded, at best)
-      EMailThread* thread = new EMailThread(_eMailRecipients, i18n("Kst Event Monitoring Notification"), logMessage);
-      thread->send();
-    }
-
-    if (_logELOG) {
-      // FIXME: wrong thread - can crash
-      KstApp::inst()->EventELOGSubmitEntry(logMessage);
-    }
-
     _indexArray.clear();
+
+    if (sendEvent) { // update thread
+      QApplication::postEvent(this, new EventMonitorEvent(logMessage));
+    } else { // GUI thread
+      doLog(logMessage);
+    }
+  }
+}
+
+
+bool EventMonitorEntry::event(QEvent *e) {
+    if (e->type() == EventMonitorEventType) {
+      writeLock();
+      doLog(static_cast<EventMonitorEvent*>(e)->logMessage);
+      writeUnlock();
+      return true;
+    }
+    return false;
+}
+
+
+void EventMonitorEntry::doLog(const QString& logMessage) const {
+  if (_logKstDebug) {
+    KstDebug::self()->log(logMessage, _level);
+  }
+
+  if (_logEMail && !_eMailRecipients.isEmpty()) {
+    EMailThread* thread = new EMailThread(_eMailRecipients, i18n("Kst Event Monitoring Notification"), logMessage);
+    thread->send();
+  }
+
+  if (_logELOG) {
+    KstApp::inst()->EventELOGSubmitEntry(logMessage);
+  }
+
+  if (!_script.isEmpty()) {
+    DCOPRef ref(QString("kst-%1").arg(getpid()).latin1(), "KstScript");
+    ref.call("evaluate", _script);
   }
 }
 
@@ -334,6 +368,19 @@ QString EventMonitorEntry::propertyString() const {
 
 void EventMonitorEntry::_showDialog() {
   KstEventMonitorI::globalInstance()->showEdit(tagName());
+}
+
+
+const QString& EventMonitorEntry::scriptCode() const {
+  return _script;
+}
+
+
+void EventMonitorEntry::setScriptCode(const QString& script) {
+  if (_script != script) {
+    setDirty();
+    _script = script;
+  }
 }
 
 
