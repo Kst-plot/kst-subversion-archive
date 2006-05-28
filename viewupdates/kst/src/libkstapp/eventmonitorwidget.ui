@@ -321,6 +321,32 @@
                 </widget>
             </grid>
         </widget>
+        <widget class="QGroupBox" row="4" column="0">
+            <property name="name">
+                <cstring>groupBoxScript</cstring>
+            </property>
+            <property name="title">
+                <string>KstScript</string>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QCheckBox">
+                    <property name="name">
+                        <cstring>_useScript</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Execute:</string>
+                    </property>
+                </widget>
+                <widget class="QTextEdit">
+                    <property name="name">
+                        <cstring>_script</cstring>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
         <widget class="QGroupBox" row="3" column="0">
             <property name="name">
                 <cstring>groupBoxELOG</cstring>

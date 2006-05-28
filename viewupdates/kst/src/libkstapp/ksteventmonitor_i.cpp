@@ -20,6 +20,7 @@
 #include <qlineedit.h>
 #include <qlistbox.h>
 #include <qradiobutton.h>
+#include <qtextedit.h>
 #include <qvbox.h>
 
 // include files for KDE
@@ -62,6 +63,8 @@ KstEventMonitorI::KstEventMonitorI(QWidget* parent, const char* name, bool modal
   connect(_w->checkBoxDebug, SIGNAL(clicked()), this, SLOT(setcheckBoxDebugDirty()));
   connect(_w->checkBoxEMailNotify, SIGNAL(clicked()), this, SLOT(setcheckBoxEMailNotifyDirty()));
   connect(_w->checkBoxELOGNotify, SIGNAL(clicked()), this, SLOT(setcheckBoxELOGNotifyDirty()));
+  connect(_w->_useScript, SIGNAL(clicked()), this, SLOT(setScriptDirty()));
+  connect(_w->_script, SIGNAL(textChanged()), this, SLOT(setScriptDirty()));
 
   setFixedHeight(height());
 }
@@ -85,6 +88,8 @@ void KstEventMonitorI::fillFieldsForEdit() {
   _w->checkBoxEMailNotify->setChecked(ep->logEMail());
   _w->checkBoxELOGNotify->setChecked(ep->logELOG());
   _w->lineEditEMailRecipients->setText(ep->eMailRecipients());
+  _w->_useScript->setEnabled(!ep->scriptCode().isEmpty());
+  _w->_script->setText(ep->scriptCode());
 
   switch (ep->level()) {
     case KstDebug::Notice:
@@ -121,6 +126,8 @@ void KstEventMonitorI::fillFieldsForNew() {
   _w->checkBoxEMailNotify->setChecked(false);
   _w->checkBoxELOGNotify->setChecked(false);
   _w->lineEditEMailRecipients->setText(QString::null);
+  _w->_useScript->setChecked(false);
+  _w->_script->setText(QString::null);
   adjustSize();
   resize(minimumSizeHint());
   setFixedHeight(height());
@@ -140,6 +147,7 @@ void KstEventMonitorI::fillEvent(EventMonitorEntryPtr& event) {
   event->setLogEMail(_w->checkBoxEMailNotify->isChecked());
   event->setLogELOG(_w->checkBoxELOGNotify->isChecked());
   event->setEMailRecipients(_w->lineEditEMailRecipients->text());
+  event->setScriptCode(_w->_useScript->isChecked() ? _w->_script->text() : QString::null);
 
   if (_w->radioButtonLogNotice->isChecked()) {
     event->setLevel(KstDebug::Notice);
@@ -228,7 +236,15 @@ bool KstEventMonitorI::editSingleObject(EventMonitorEntryPtr emPtr) {
   if (_lineEditEMailRecipientsDirty) {
     emPtr->setEMailRecipients(_w->lineEditEMailRecipients->text());
   }
-  
+
+  if (_scriptDirty) {
+    if (_w->_useScript->isChecked()) {
+      emPtr->setScriptCode(_w->_script->text());
+    } else {
+      emPtr->setScriptCode(QString::null);
+    }
+  }
+
   if (_w->radioButtonLogNotice->isChecked()) {
     emPtr->setLevel(KstDebug::Notice);
   } else if (_w->radioButtonLogWarning->isChecked()) {
@@ -300,6 +316,7 @@ bool KstEventMonitorI::editObject() {
     _checkBoxEMailNotifyDirty = true;
     _lineEditEMailRecipientsDirty = true;
     _checkBoxELOGNotifyDirty = true;
+    _scriptDirty = true;
     if (!editSingleObject(ep)) {
       return false;
     }
@@ -337,6 +354,12 @@ void KstEventMonitorI::populateEditMultiple() {
   _w->radioButtonLogNotice->setEnabled(true);
   _w->radioButtonLogWarning->setEnabled(true);
   _w->radioButtonLogError->setEnabled(true);
+
+  _w->_useScript->setTristate(true);
+  _w->_useScript->setNoChange();
+  _w->_useScript->setChecked(false);
+  _w->_script->setEnabled(false);
+  _w->_script->setText("");
   
   // and clean all the fields
   _lineEditEquationDirty = false;
@@ -348,6 +371,13 @@ void KstEventMonitorI::populateEditMultiple() {
   _checkBoxEMailNotifyDirty = false;
   _lineEditEMailRecipientsDirty = false;
   _checkBoxELOGNotifyDirty = false;
+  _scriptDirty = false;
+}
+
+
+void KstEventMonitorI::setScriptDirty() {
+  _w->_useScript->setTristate(false);
+  _scriptDirty = true; 
 }
 
 

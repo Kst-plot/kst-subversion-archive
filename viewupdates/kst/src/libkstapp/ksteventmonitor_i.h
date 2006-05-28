@@ -57,12 +57,14 @@ class KstEventMonitorI : public KstDataDialog {
     bool _checkBoxEMailNotifyDirty : 1;
     bool _lineEditEMailRecipientsDirty : 1;
     bool _checkBoxELOGNotifyDirty : 1;
+    bool _scriptDirty : 1;
     bool editSingleObject(EventMonitorEntryPtr emPtr);
     
   private slots:
     void setcheckBoxDebugDirty();
     void setcheckBoxEMailNotifyDirty();
     void setcheckBoxELOGNotifyDirty();
+    void setScriptDirty();
 
   private:
     void fillFieldsForEdit();

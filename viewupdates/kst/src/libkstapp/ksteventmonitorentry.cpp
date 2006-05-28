@@ -94,7 +94,7 @@ EventMonitorEntry::EventMonitorEntry(const QDomElement &e) {
 
   // wait for the initial update, as we don't want to trigger elog entries
   // until we are sure the document is open.
-  QTimer::singleShot(500, this, SLOT(slotUpdate()));
+  //QTimer::singleShot(500, this, SLOT(slotUpdate()));
 }
 
 
@@ -264,7 +264,7 @@ void EventMonitorEntry::setEvent(const QString& strEvent) {
 
 
 bool EventMonitorEntry::needToEvaluate() {
-  return _logKstDebug || _logEMail || _logELOG;
+  return _logKstDebug || _logEMail || _logELOG || !_script.isEmpty();
 }
 
 
@@ -326,9 +326,9 @@ void EventMonitorEntry::logImmediately(bool sendEvent) {
 
 bool EventMonitorEntry::event(QEvent *e) {
     if (e->type() == EventMonitorEventType) {
-      writeLock();
+      readLock();
       doLog(static_cast<EventMonitorEvent*>(e)->logMessage);
-      writeUnlock();
+      readUnlock();
       return true;
     }
     return false;
@@ -351,7 +351,7 @@ void EventMonitorEntry::doLog(const QString& logMessage) const {
 
   if (!_script.isEmpty()) {
     DCOPRef ref(QString("kst-%1").arg(getpid()).latin1(), "KstScript");
-    ref.call("evaluate", _script);
+    ref.send("evaluate", _script);
   }
 }
 
