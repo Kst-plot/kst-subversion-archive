@@ -962,7 +962,7 @@ void KstDoc::purge() {
     KST::dataObjectList.lock().writeLock();
     for (KstDataObjectList::Iterator it = KST::dataObjectList.begin(); it != KST::dataObjectList.end(); ++it) {
       //kstdDebug() << "OBJECT: " << (*it)->tagName() << " USAGE: " << (*it)->getUsage() << endl;
-      if ((*it)->getUsage() == 0) {
+      if ((*it)->getUsage() == 0 && !kst_cast<EventMonitorEntry>(*it)) {
         //kstdDebug() << "    -> REMOVED" << endl;
         KstDataObjectList::Iterator byebye = it;
         --it;
