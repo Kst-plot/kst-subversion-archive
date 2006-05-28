@@ -38,6 +38,11 @@ class KST_EXPORT KstScalar : public KstObject {
     KstScalar(const QDomElement& e);
     virtual ~KstScalar();
 
+    /* return true if any scalars are dirty at the moment */
+    static bool scalarsDirty();
+    /* For use by the update thread */
+    static void clearScalarsDirty();
+
     /* return a string representation of the scalar */
     QString label() const;
 

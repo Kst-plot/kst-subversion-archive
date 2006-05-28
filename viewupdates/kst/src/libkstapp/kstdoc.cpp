@@ -65,6 +65,7 @@
 #include "kstrmatrix.h"
 #include "kstamatrix.h"
 #include "kstsmatrix.h"
+#include "kstviewlabel.h"
 #include "kstviewwindow.h"
 #include "logevents.h"
 #include "threadevents.h"
@@ -1082,6 +1083,11 @@ bool KstDoc::event(QEvent *e) {
                   if (doBreak) {
                     break;
                   }
+                }
+
+                KstViewLabelList vl = view->view()->findChildrenType<KstViewLabel>(true);
+                for (KstViewLabelList::Iterator i = vl.begin(); i != vl.end(); ++i) {
+                  (*i)->update(-1);
                 }
               }
               it->next();

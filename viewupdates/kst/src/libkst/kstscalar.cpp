@@ -18,10 +18,24 @@
 #include "kstscalar.h"
 #include "kstdatacollection.h"
 #include <klocale.h>
+#include "ksdebug.h"
 
 #include <qstylesheet.h>
 
 static int iAnonymousScalarCounter = 0;
+
+static bool dirtyScalars = false;
+
+bool KstScalar::scalarsDirty() {
+  // Should use a mutex, but let's play with fire to be fast
+  return dirtyScalars;
+}
+
+
+void KstScalar::clearScalarsDirty() {
+  // Should use a mutex, but let's play with fire to be fast
+  dirtyScalars = false;
+}
 
 /** Create the base scalar */
 KstScalar::KstScalar(const QString& in_tag, double val, bool orphan, bool displayable, bool doLock, bool editable)
@@ -95,8 +109,10 @@ KstObject::UpdateType KstScalar::update(int updateCounter) {
   double v = value();
   if (_provider) {
     _provider->update(updateCounter);
+  } else if (force) {
+    return setLastUpdateResult(UPDATE);
   }
-  
+
   return setLastUpdateResult(v == value() ? NO_CHANGE : UPDATE);
 }
 
@@ -114,8 +130,7 @@ void KstScalar::save(QTextStream &ts, const QString& indent) {
 
 
 KstScalar& KstScalar::operator=(double v) {
-  _value = v;
-  emit trigger();
+  setValue(v);
   return *this;
 }
 
@@ -130,9 +145,12 @@ bool KstScalar::isGlobal() const {
 
 
 void KstScalar::setValue(double inV) {
-  setDirty();
-  _value = inV;
-  emit trigger();
+  if (_value != inV) {
+    setDirty();
+    dirtyScalars = true;
+    _value = inV;
+    emit trigger();
+  }
 }
 
 

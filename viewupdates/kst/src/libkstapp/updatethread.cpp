@@ -229,6 +229,29 @@ bool UpdateThread::doUpdates(bool force, bool *gotData) {
     KST::dataSourceList.lock().readUnlock();
   }
 
+  if (KstScalar::scalarsDirty()) {
+    KstScalar::clearScalarsDirty(); // Must do this first and take a risk of
+                                    // falling slightly behind
+    KST::scalarList.lock().readLock();
+    for (KstScalarList::ConstIterator i = KST::scalarList.begin(); i != KST::scalarList.end(); ++i) {
+      KstScalarPtr sp = *i;
+
+      sp->writeLock();
+      KstObject::UpdateType ut = sp->update(_updateCounter);
+      sp->writeUnlock();
+
+      if (ut == KstObject::UPDATE) {
+        U = KstObject::UPDATE;
+      }
+
+      if (_done) {
+        KST::scalarList.lock().readUnlock();
+        return false;
+      }
+    }
+    KST::scalarList.lock().readUnlock();
+  }
+
   if (U == KstObject::UPDATE) {
     kstdDebug() << "Update plots" << endl;
     if (gotData) { // FIXME: do we need to consider all the other exit points?

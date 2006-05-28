@@ -149,6 +149,7 @@ class KstViewLabel : public KstBorderedViewObject {
 };
 
 typedef KstSharedPtr<KstViewLabel> KstViewLabelPtr;
+typedef KstObjectList<KstSharedPtr<KstViewLabel> > KstViewLabelList;
 
 #endif
 // vim: ts=2 sw=2 et
