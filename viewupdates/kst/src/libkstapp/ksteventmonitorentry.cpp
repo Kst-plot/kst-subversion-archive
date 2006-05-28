@@ -322,7 +322,7 @@ void EventMonitorEntry::logImmediately( ) {
 }
 
 
-void EventMonitorEntry::log( const int& iIndex ) {
+void EventMonitorEntry::log(int iIndex) {
   _indexArray.append(iIndex);
   if (_indexArray.size() > 1000) {
     logImmediately();
@@ -406,20 +406,20 @@ void EventMonitorEntry::replaceDependency(KstDataObjectPtr oldObject, KstDataObj
   QString newExp = _strEvent;
   
   // replace all occurences of outputVectors, outputScalars from oldObject
-  for (KstVectorMap::Iterator j = oldObject->outputVectors().begin(); j != oldObject->outputVectors().end(); ++j) {
+  for (KstVectorMap::ConstIterator j = oldObject->outputVectors().begin(); j != oldObject->outputVectors().end(); ++j) {
     QString oldTag = j.data()->tagName();
     QString newTag = ((newObject->outputVectors())[j.key()])->tagName();
     newExp = newExp.replace("[" + oldTag + "]", "[" + newTag + "]");
   }
   
-  for (KstScalarMap::Iterator j = oldObject->outputScalars().begin(); j != oldObject->outputScalars().end(); ++j) {
+  for (KstScalarMap::ConstIterator j = oldObject->outputScalars().begin(); j != oldObject->outputScalars().end(); ++j) {
     QString oldTag = j.data()->tagName();
     QString newTag = ((newObject->outputScalars())[j.key()])->tagName();
     newExp = newExp.replace("[" + oldTag + "]", "[" + newTag + "]");
   }
   
   // and dependencies on vector stats
-  for (KstVectorMap::Iterator j = oldObject->outputVectors().begin(); j != oldObject->outputVectors().end(); ++j) {
+  for (KstVectorMap::ConstIterator j = oldObject->outputVectors().begin(); j != oldObject->outputVectors().end(); ++j) {
     QDictIterator<KstScalar> scalarDictIter(j.data()->scalars());
     for (; scalarDictIter.current(); ++scalarDictIter) {
       QString oldTag = scalarDictIter.current()->tagName();
@@ -429,7 +429,7 @@ void EventMonitorEntry::replaceDependency(KstDataObjectPtr oldObject, KstDataObj
   }
   
   // and dependencies on matrix stats
-  for (KstMatrixMap::Iterator j = oldObject->outputMatrices().begin(); j != oldObject->outputMatrices().end(); ++j) {
+  for (KstMatrixMap::ConstIterator j = oldObject->outputMatrices().begin(); j != oldObject->outputMatrices().end(); ++j) {
     QDictIterator<KstScalar> scalarDictIter(j.data()->scalars());
     for (; scalarDictIter.current(); ++scalarDictIter) {
       QString oldTag = scalarDictIter.current()->tagName();
@@ -494,7 +494,7 @@ bool EventMonitorEntry::uses(KstObjectPtr p) const {
     }
   } else if (KstDataObjectPtr obj = kst_cast<KstDataObject>(p) ) {
     // check all connections from this expression to p
-    for (KstVectorMap::Iterator j = obj->outputVectors().begin(); j != obj->outputVectors().end(); ++j) {
+    for (KstVectorMap::ConstIterator j = obj->outputVectors().begin(); j != obj->outputVectors().end(); ++j) {
       for (KstVectorMap::ConstIterator k = _vectorsUsed.begin(); k != _vectorsUsed.end(); ++k) {
         if (j.data() == k.data()) {
           return true;

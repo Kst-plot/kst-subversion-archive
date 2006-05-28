@@ -43,7 +43,7 @@ class EventMonitorEntry : public KstDataObject {
     bool needToEvaluate();
     bool isValid() const { return _bIsValid; }
 
-    void log(const int& iIndex);
+    void log(int iIndex);
     const QString& event() const { return _strEvent; }
     const QString& description() const { return _strDescription; }
     KstDebug::LogLevel level() const { return _level; }
