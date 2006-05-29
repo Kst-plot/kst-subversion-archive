@@ -150,26 +150,37 @@ double KstVector::value(int i) {
 void KstVector::CreateScalars() {
   if (!_isScalarList) {
     _min = _max = _mean = _minPos = 0.0;
-    _scalars.insert("max", new KstScalar(tagName() + "-Max"));
-    _scalars["max"]->_KShared_ref();
-    _scalars.insert("min", new KstScalar(tagName() + "-Min"));
-    _scalars["min"]->_KShared_ref();
-    _scalars.insert("last", new KstScalar(tagName() + "-Last"));
-    _scalars["last"]->_KShared_ref();
-    _scalars.insert("mean", new KstScalar(tagName() + "-Mean"));
-    _scalars["mean"]->_KShared_ref();
-    _scalars.insert("sigma", new KstScalar(tagName() + "-Sigma"));
-    _scalars["sigma"]->_KShared_ref();
-    _scalars.insert("rms", new KstScalar(tagName() + "-Rms"));
-    _scalars["rms"]->_KShared_ref();
-    _scalars.insert("ns", new KstScalar(tagName() + "-NS"));
-    _scalars["ns"]->_KShared_ref();
-    _scalars.insert("sum", new KstScalar(tagName() + "-Sum"));
-    _scalars["sum"]->_KShared_ref();
-    _scalars.insert("sumsquared", new KstScalar(tagName() + "-SumSquared"));
-    _scalars["sumsquared"]->_KShared_ref();
-    _scalars.insert("minpos", new KstScalar(tagName() + "-MinPos"));
-    _scalars["minpos"]->_KShared_ref();
+    KstScalarPtr sp;
+    _scalars.insert("max", sp = new KstScalar(tagName() + "-Max"));
+    sp->_KShared_ref();
+    sp->setProvider(this);
+    _scalars.insert("min", sp = new KstScalar(tagName() + "-Min"));
+    sp->_KShared_ref();
+    sp->setProvider(this);
+    _scalars.insert("last", sp = new KstScalar(tagName() + "-Last"));
+    sp->_KShared_ref();
+    sp->setProvider(this);
+    _scalars.insert("mean", sp = new KstScalar(tagName() + "-Mean"));
+    sp->_KShared_ref();
+    sp->setProvider(this);
+    _scalars.insert("sigma", sp = new KstScalar(tagName() + "-Sigma"));
+    sp->_KShared_ref();
+    sp->setProvider(this);
+    _scalars.insert("rms", sp = new KstScalar(tagName() + "-Rms"));
+    sp->_KShared_ref();
+    sp->setProvider(this);
+    _scalars.insert("ns", sp = new KstScalar(tagName() + "-NS"));
+    sp->_KShared_ref();
+    sp->setProvider(this);
+    _scalars.insert("sum", sp = new KstScalar(tagName() + "-Sum"));
+    sp->_KShared_ref();
+    sp->setProvider(this);
+    _scalars.insert("sumsquared", sp = new KstScalar(tagName() + "-SumSquared"));
+    sp->_KShared_ref();
+    sp->setProvider(this);
+    _scalars.insert("minpos", sp = new KstScalar(tagName() + "-MinPos"));
+    sp->_KShared_ref();
+    sp->setProvider(this);
   }
 }
 
