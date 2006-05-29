@@ -89,6 +89,7 @@ void UpdateThread::run() {
         kstdDebug() << "Posting UpdateDataDialogs" << endl;
         ThreadEvent *e = new ThreadEvent(ThreadEvent::UpdateDataDialogs);
         e->_curves = _updatedCurves;
+        e->_counter = _updateCounter;
         QApplication::postEvent(_doc, e);
         // this event also triggers an implicit repaint
       } else {

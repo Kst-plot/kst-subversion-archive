@@ -24,11 +24,12 @@ class ThreadEvent : public QEvent {
   public:
     enum ThreadEventType { Unknown = 0, UpdateDataDialogs, UpdateAllDialogs, Repaint, Done, NoUpdate };
 
-    ThreadEvent(ThreadEventType et) : QEvent(QEvent::Type(KstEventTypeThread)), _eventType(et) {}
+    ThreadEvent(ThreadEventType et) : QEvent(QEvent::Type(KstEventTypeThread)), _eventType(et), _counter(-1) {}
     virtual ~ThreadEvent() {}
 
     ThreadEventType _eventType;
     QValueList<KstBaseCurve*> _curves; // HACK: for temporary use in update reworking
+    int _counter;
 };
 
 

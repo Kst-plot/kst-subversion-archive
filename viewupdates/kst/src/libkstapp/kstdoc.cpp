@@ -1070,7 +1070,7 @@ bool KstDoc::event(QEvent *e) {
               Kst2DPlotList pl = view->view()->findChildrenType<Kst2DPlot>(true);
               for (Kst2DPlotList::Iterator i = pl.begin(); i != pl.end(); ++i) {
                 for (QValueList<KstBaseCurve*>::ConstIterator j = te->_curves.begin(); j != te->_curves.end(); ++j) {
-                  // race: if ((*i)->Curves.contains(*j)) {
+                  // race: if ((*i)->Curves.contains(*j)) 
                   const KstBaseCurveList& cl = (*i)->Curves;
                   bool doBreak = false;
                   for (KstBaseCurveList::ConstIterator k = cl.begin(); k != cl.end(); ++k) {
@@ -1085,10 +1085,14 @@ bool KstDoc::event(QEvent *e) {
                   }
                 }
 
+#if 0
                 KstViewLabelList vl = view->view()->findChildrenType<KstViewLabel>(true);
                 for (KstViewLabelList::Iterator i = vl.begin(); i != vl.end(); ++i) {
                   (*i)->update(-1);
                 }
+#else
+                view->view()->recursively<int, KstViewObject>((void (KstViewObject::*)(int))&KstViewObject::update, te->_counter);
+#endif
               }
               it->next();
             }

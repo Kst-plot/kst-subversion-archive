@@ -2633,12 +2633,6 @@ KstObject::UpdateType Kst2DPlot::update(int update_counter) {
   // TODO: check labels too
 
   bool updated = false;
-  for (KstBaseCurveList::Iterator i = Curves.begin(); i != Curves.end(); ++i) {
-    (*i)->writeLock();
-    updated = (UPDATE == (*i)->update(update_counter)) || updated;
-    (*i)->writeUnlock();
-  }
-
   update_state = updateChildren(update_counter);
 
   updated = (UPDATE == KstPlotBase::update(update_counter)) || updated;
