@@ -216,12 +216,10 @@ bool KstViewPicture::setImage(const QString& source) {
   if (ti.load(tmpFile)) {
     setImage(ti);
     _url = source;
+
+    if (_maintainAspect == true) { restoreAspect(); }
   } else {
     success = false;
-  }
-
-  if (_maintainAspect == true) {
-    restoreAspect();
   }
 
   KIO::NetAccess::removeTempFile(tmpFile);
@@ -307,13 +305,12 @@ void KstViewPicture::restoreSize() {
 void KstViewPicture::restoreAspect() {
   QRect cr(contentsRect());
   QSize size = _image.size(); //start with original size.
-  
+
   size.scale( cr.size().width(), cr.size().height(), QSize::ScaleMin ); //find largest rect. which will fit inside original and still preserve aspect.
 
   cr.setSize(size);
   setContentsRect(cr);
 }
-
 
 QMap<QString, QVariant> KstViewPicture::widgetHints(const QString& propertyName) const {
   QMap<QString, QVariant> map = KstBorderedViewObject::widgetHints(propertyName);
