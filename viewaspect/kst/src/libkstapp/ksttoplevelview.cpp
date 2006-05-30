@@ -45,6 +45,7 @@
 #include "kstviewline.h"
 #include "kstviewobjectfactory.h"
 #include "kstviewwidget.h"
+#include "kstgfxmousehandlerutils.h"
 
 #define STICKY_THRESHOLD 10
 
@@ -401,45 +402,41 @@ bool KstTopLevelView::handlePress(const QPoint& pos, bool shift) {
   return true;
 }
 
+QRect KstTopLevelView::newSize(const QRect& originalSize, const QRect& bounds, int direction, const QPoint& pos, bool maintainAspect) {
+  QRect newSize;
 
-QRect KstTopLevelView::newSize(const QRect& oldSize, int direction, const QPoint& pos, bool maintainAspect) {
-  QRect r = oldSize;
-  double aspect = (double)oldSize.height()/(double)oldSize.width();
+  QPoint anchor_pt, move_pt;
+  QPoint npos = pos;
 
-  switch (direction & (UP|DOWN)) {
-    case UP:
-      r.setTop(pos.y());
-      break;
-    case DOWN:
-      r.setBottom(pos.y());
-      break;
-    default:
-      break;
+  anchor_pt = move_pt = originalSize.center();
+
+  npos.setX(QMAX(npos.x(), bounds.left()));
+  npos.setX(QMIN(npos.x(), bounds.right()));
+  npos.setY(QMIN(npos.y(), bounds.bottom()));
+  npos.setY(QMAX(npos.y(), bounds.top()));
+
+  if ((direction & UP) != 0) {
+    move_pt.setY(originalSize.top());
+    anchor_pt.setY(originalSize.bottom());
+  } else if ((direction & DOWN) != 0) {
+    move_pt.setY(originalSize.bottom());
+    anchor_pt.setY(originalSize.top());
   }
- 
-  if (maintainAspect) {
-    r = correctWidthForRatio(r, aspect, direction);  
+
+  if ((direction & LEFT) != 0) {
+    move_pt.setX(originalSize.left());
+    anchor_pt.setX(originalSize.right());
+  } else if ((direction & RIGHT) != 0) {
+    move_pt.setX(originalSize.right());
+    anchor_pt.setX(originalSize.left());
   }
-  
-  int tempRight = r.right();
-  int tempLeft = r.left();
-  
-  switch (direction & (LEFT|RIGHT)) {  
-    case LEFT:
-      r.setLeft(pos.x());
-      break;
-    case RIGHT:
-      r.setRight(pos.x());
-      break;
-    default:
-      break;
+
+  if ( ((direction & (UP|DOWN)) == 0) || ((direction & (LEFT|RIGHT)) == 0) ) { //resizing from edge.
+    return KstGfxMouseHandlerUtils::resizeRectFromEdge(originalSize, anchor_pt, move_pt, npos, bounds, maintainAspect);
+  } else { //resizing from corner.
+    return KstGfxMouseHandlerUtils::resizeRectFromCorner(anchor_pt, move_pt, npos, bounds,maintainAspect);
   }
-  
-  if (maintainAspect) {
-    r = correctHeightForRatio(r, aspect, direction, tempRight, tempLeft);
-  }
-  
-  return resizeSnapToObjects(r, direction);
+
 }
 
 
@@ -750,7 +747,8 @@ void KstTopLevelView::pressMoveLayoutModeMove(const QPoint& pos, bool shift) {
 
 void KstTopLevelView::pressMoveLayoutModeResize(const QPoint& pos, bool maintainAspect) {
   const QRect old(_prevBand);
-  _prevBand = newSize(_pressTarget->geometry(), _pressDirection, pos, maintainAspect).intersect(_pressTarget->_parent->_geom);
+
+  _prevBand = newSize(_pressTarget->geometry(), _pressTarget->_parent->geometry(), _pressDirection, pos, maintainAspect);
   if (_prevBand != old) {
     KstPainter p;
         
@@ -786,17 +784,18 @@ void KstTopLevelView::pressMoveLayoutModeSelect(const QPoint& pos, bool shift) {
 }
 
 
-void KstTopLevelView::pressMoveLayoutModeEndPoint(const QPoint& pos_in, bool maintainAspect) {
+void KstTopLevelView::pressMoveLayoutModeEndPoint(const QPoint& pos, bool maintainAspect) {
   // FIXME: remove this!!  Should not know about any specific type
   // for now we only know how to deal with lines 
 
-  QPoint pos = pos_in;
+  QRect bounds = _pressTarget->_parent->geometry();
+  QPoint npos = pos;
 
-  //pos must be inside the tlv
-  pos.setX(QMAX(pos.x(), geometry().left()));
-  pos.setX(QMIN(pos.x(), geometry().right()));
-  pos.setY(QMIN(pos.y(), geometry().bottom()));
-  pos.setY(QMAX(pos.y(), geometry().top()));
+  //pos must be inside the parent
+  npos.setX(QMAX(npos.x(), bounds.left()));
+  npos.setX(QMIN(npos.x(), bounds.right()));
+  npos.setY(QMIN(npos.y(), bounds.bottom()));
+  npos.setY(QMAX(npos.y(), bounds.top()));
 
   if (KstViewLinePtr line = kst_cast<KstViewLine>(_pressTarget)) {
     QPoint movePoint, anchorPoint;
@@ -817,30 +816,9 @@ void KstTopLevelView::pressMoveLayoutModeEndPoint(const QPoint& pos_in, bool mai
     }
 
     if (maintainAspect) {
-      if (fromPoint->x() == toPoint->x()) {
-        // FIXME: implement. should not be necessary right now (because of the way lines are constructed).
-      } else if (fromPoint->y() == toPoint->y()) {
-        // FIXME: implement. should not be necessary right now (because of the way lines are constructed).
-      } else {
-        double slope = double(toPoint->y() - fromPoint->y()) / double(toPoint->x() - fromPoint->x());
-
-        double newxpos, newypos;
-
-        newxpos = (((double)pos.y()) + slope*((double)anchorPoint.x()) + ((double)pos.x())/slope -((double)anchorPoint.y())) / (slope + 1.0/slope); //we want the tip of our new line to be as close as possible to the original line (while still maintaining aspect). 
-
-        newxpos = QMIN(newxpos, geometry().right()); //ensure that our x is inside the tlv.
-        newxpos = QMAX(newxpos, geometry().left()); // ""
-        newypos = slope*(newxpos - ((double)anchorPoint.x())) + ((double)anchorPoint.y()); //consistency w/ x.
-
-        newypos = QMIN(newypos, geometry().bottom()); //ensure that our y is inside the tlv.
-        newypos = QMAX(newypos, geometry().top()); // ""
-        newxpos = ((double)anchorPoint.x()) + (newypos - ((double)anchorPoint.y()))/slope; // x will still be inside the tlv because we have just moved newypos closer to anchorPoint.y(), which will send newxpos closer to anchorPoint.x(), ie. in the direction further 'into' the tlv.
-
-        movePoint.setX((int)newxpos);
-        movePoint.setY((int)newypos);
-      }
+      movePoint = KstGfxMouseHandlerUtils::findNearestPtOnLine(anchorPoint, movePoint, npos, bounds);
     } else {
-      movePoint = pos; // already enforced pos inside tlv.
+      movePoint = npos; // already enforced pos inside parent.
     }
 
     const QRect old(_prevBand);

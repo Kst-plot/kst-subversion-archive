@@ -123,7 +123,7 @@ class KstTopLevelView : public KstViewObject {
     void setCursorFor(const QPoint& pos, KstViewObjectPtr p);
     bool popupMenu(KPopupMenu *menu, const QPoint& pos);
     void correctPosition(KstViewObjectPtr pObject, QPoint point);
-    QRect newSize(const QRect& oldSize, int direction, const QPoint& pos, bool maintainAspect = false);
+    QRect newSize(const QRect& originalSize, const QRect& bounds, int direction, const QPoint& pos, bool maintainAspect = false);
     QRect newSizeCentered(const QRect& oldSize, int direction, const QPoint& pos, bool maintainAspect = false);
     QRect correctWidthForRatio(const QRect& oldRect, double ratio, int direction);
     QRect correctHeightForRatio(const QRect& oldRect, double ratio, int direction, int origRight, int origLeft);

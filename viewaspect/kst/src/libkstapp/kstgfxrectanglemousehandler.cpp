@@ -50,8 +50,7 @@ void KstGfxRectangleMouseHandler::pressMove(KstTopLevelViewPtr view, const QPoin
   
   QRect old = _prevBand;
   
-  _prevBand = KstGfxMouseHandlerUtils::newRect(pos, _mouseOrigin, shift);
-  _prevBand = _prevBand.intersect(geom);
+  _prevBand = KstGfxMouseHandlerUtils::newRect(pos, _mouseOrigin, geom, shift);
 
   if (old != _prevBand) {
     QPainter p;
