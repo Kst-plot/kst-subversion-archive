@@ -27,7 +27,6 @@
 #include "kstgfxmousehandlerutils.h"
 
 QPoint KstGfxMouseHandlerUtils::findNearestPtOnLine(const QPoint& fromPoint, const QPoint& toPoint, const QPoint& pos, const QRect &bounds) {
-  // from the line described by fromPoint and toPoint, returns the point on the line (and inside bounds) with the shortest distance to pos. pos and fromPoint should be inside bounds.
   QPoint npos = pos;
   
   if (fromPoint.y() == toPoint.y() ) {
@@ -56,25 +55,14 @@ QPoint KstGfxMouseHandlerUtils::findNearestPtOnLine(const QPoint& fromPoint, con
 }
 
 
-QRect KstGfxMouseHandlerUtils::resizeRectFromCorner(const QPoint& anchorPoint, const QPoint& movePoint, const QPoint& pos, const QRect &bounds, bool maintainAspect) {
+QRect KstGfxMouseHandlerUtils::resizeRectFromCorner(const QPoint& anchorPoint, const QPoint& movePoint, const QPoint& pos, const QRect& bounds, bool maintainAspect) {
   QRect newSize;
   QPoint npos = pos;
 
   if (maintainAspect) {
-    double bestdistance;
-    QPoint bestnpos, tempnpos;
+    QPoint fakeMovePoint = anchorPoint + QPoint(quadrantSign(pos,anchorPoint)*abs((movePoint - anchorPoint).x()),abs((movePoint - anchorPoint).y())); // allow the rectangle to flip.
 
-    bestnpos = findNearestPtOnLine(anchorPoint,movePoint, pos, bounds);
-    bestdistance = pow((bestnpos - pos).x(),2)+pow((bestnpos - pos).y(),2);
-
-    // so the user can flip the rect around the anchorPoint.
-    QPoint fakeMovePoint = (anchorPoint + QPoint(-(movePoint - anchorPoint).x(),(movePoint - anchorPoint).y()));
-
-    tempnpos  = findNearestPtOnLine(anchorPoint, fakeMovePoint, pos, bounds);
-
-    if ( (pow((tempnpos - pos).x(),2)+pow((tempnpos - pos).y(),2)) < bestdistance ) { bestnpos = tempnpos; }
-
-    npos = bestnpos;
+    npos = findNearestPtOnLine(anchorPoint, fakeMovePoint, pos, bounds);
   }
 
   newSize.setTopLeft(anchorPoint);
@@ -82,6 +70,38 @@ QRect KstGfxMouseHandlerUtils::resizeRectFromCorner(const QPoint& anchorPoint, c
   newSize = newSize.normalize();
 
   return newSize;
+}
+
+
+QRect KstGfxMouseHandlerUtils::resizeRectFromCornerCentered(const QRect& originalRect, const QPoint& pos, const QRect& bounds, bool maintainAspect) {
+  QRect newRect;
+  QPoint anchorPoint = originalRect.center();
+
+  int newHalfWidth, newHalfHeight;
+
+  newHalfWidth = abs((pos - anchorPoint).x());
+  newHalfHeight = abs((pos - anchorPoint).y());
+
+  if (maintainAspect) {
+    newHalfWidth = QMIN(newHalfWidth,anchorPoint.x() - bounds.left());
+    newHalfWidth = QMIN(newHalfWidth,bounds.right() - anchorPoint.x());
+
+    newHalfHeight = QMIN(newHalfHeight,anchorPoint.y() - bounds.top());
+    newHalfHeight = QMIN(newHalfHeight,bounds.bottom() - anchorPoint.y());
+
+    QSize newSize;
+    newSize = originalRect.size();
+    newSize.scale(2*newHalfWidth,2*newHalfHeight,QSize::ScaleMin);
+
+    newRect.setSize(newSize);
+    newRect.moveCenter(anchorPoint);
+  } else {
+    newRect = QRect(0,0,2*newHalfWidth,2*newHalfHeight);
+    newRect.moveCenter(anchorPoint);
+    newRect = newRect.intersect(bounds);
+  }
+
+  return newRect;
 }
 
 
@@ -140,6 +160,13 @@ QRect KstGfxMouseHandlerUtils::newRect(const QPoint& pos, const QPoint& mouseOri
   return resizeRectFromCorner(mouseOrigin, mouseOrigin + QPoint(1,1), pos, bounds, squareAspect);
 }
 
+QRect KstGfxMouseHandlerUtils::newRectCentered(const QPoint& pos, const QPoint& mouseOrigin, const QRect& bounds, bool squareAspect) {
+  QRect originalRect;
+  originalRect.setSize(QSize(1,1));
+  originalRect.moveCenter(mouseOrigin);
+
+  return resizeRectFromCornerCentered(originalRect, pos, bounds, squareAspect);
+}
 
 QRect KstGfxMouseHandlerUtils::newLine(const QPoint& pos, const QPoint& mouseOrigin, bool specialAspect, const QRect& bounds) {
 
@@ -157,8 +184,8 @@ QRect KstGfxMouseHandlerUtils::newLine(const QPoint& pos, const QPoint& mouseOri
       int dx = (int)round(2.0*mouseDisplacement.x()/abs(mouseDisplacement.y()));
       int dy = (int)round(2.0*mouseDisplacement.y()/abs(mouseDisplacement.x()));
 
-      if (dx != 0) {dx /= fabs(dx);}
-      if (dy != 0) {dy /= fabs(dy);} // type of line picked.
+      if (dx != 0) {dx /= abs(dx);}
+      if (dy != 0) {dy /= abs(dy);} // type of line picked.
   
       npos = findNearestPtOnLine(mouseOrigin,mouseOrigin + QPoint(dx,dy), pos, bounds);
     }
@@ -166,7 +193,7 @@ QRect KstGfxMouseHandlerUtils::newLine(const QPoint& pos, const QPoint& mouseOri
   }
 }
 
-int KstGfxMouseHandlerUtils::negativeOne(const QPoint& pos, const QPoint& mouseOrigin) {
+int KstGfxMouseHandlerUtils::quadrantSign(const QPoint& pos, const QPoint& mouseOrigin) {
   if ((pos.y() < mouseOrigin.y() && pos.x() > mouseOrigin.x()) ||
        (pos.y() > mouseOrigin.y() && pos.x() < mouseOrigin.x())) {
     return -1;

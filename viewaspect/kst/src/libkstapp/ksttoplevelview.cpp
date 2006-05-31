@@ -440,66 +440,15 @@ QRect KstTopLevelView::newSize(const QRect& originalSize, const QRect& bounds, i
 }
 
 
-QRect KstTopLevelView::newSizeCentered(const QRect& oldSize, int direction, const QPoint& pos, bool maintainAspect) {
-  const QPoint center((oldSize.left() + oldSize.right())/2, (oldSize.top() + oldSize.bottom())/2);
-  QRect rect = oldSize;
-  double aspect = (double)oldSize.height()/(double)oldSize.width();
-  switch (_pressDirection & (UP|DOWN)) {
-    case UP:
-      if (pos.y() <= center.y()) {
-        rect.setTop(pos.y());
-        rect.setBottom(2*center.y() - pos.y());
-      } else {
-        rect.setTop(center.y());
-        rect.setBottom(center.y());  
-      }
-      break;
-    case DOWN:
-      if (pos.y() >= center.y()) {
-        rect.setBottom(pos.y());
-        rect.setTop(2*center.y() - pos.y());
-      } else {
-        rect.setTop(center.y());
-        rect.setBottom(center.y());  
-      }
-    default:
-      break;
-  }
-  
-  if (maintainAspect) {
-    rect = correctWidthForRatio(rect, aspect, direction);
-    rect.moveCenter(center);
-  }
-  
-  int tempLeft = rect.left();
-  int tempRight = rect.right();
-  
-  switch (direction & (LEFT|RIGHT)) {
-    case LEFT:
-      if (pos.x() <= center.x()) {
-        rect.setLeft(pos.x());
-        rect.setRight(2*center.x() - pos.x());
-      } else {
-        rect.setLeft(center.x());
-        rect.setRight(center.x());  
-      }
-      break;
-    case RIGHT:
-      if (pos.x() >= center.x()) {
-        rect.setRight(pos.x());
-        rect.setLeft(2*center.x() - pos.x());
-      } else {
-        rect.setRight(center.x());
-        rect.setLeft(center.x());  
-      }
-      break;
-  }
-  if (maintainAspect) {
-    rect = correctHeightForRatio(rect, aspect, direction, tempRight, tempLeft);
-    rect.moveCenter(center);
-  }
-  
-  return resizeSnapToObjects(rect, direction);
+QRect KstTopLevelView::newSizeCentered(const QRect& oldSize, const QRect& bounds, const QPoint& pos, bool maintainAspect) {
+  QPoint npos = pos;
+
+  npos.setX(QMAX(npos.x(), bounds.left()));
+  npos.setX(QMIN(npos.x(), bounds.right()));
+  npos.setY(QMIN(npos.y(), bounds.bottom()));
+  npos.setY(QMAX(npos.y(), bounds.top()));
+
+  return KstGfxMouseHandlerUtils::resizeRectFromCornerCentered(oldSize, npos, bounds, maintainAspect);
 }
 
 
@@ -845,7 +794,8 @@ void KstTopLevelView::pressMoveLayoutModeCenteredResize(const QPoint& pos, bool 
   //centered resize means that the center of the object stays constant
   const QRect old(_prevBand);
   
-  _prevBand = newSizeCentered(_pressTarget->geometry(), _pressDirection, pos, maintainAspect).intersect(_pressTarget->_parent->_geom);
+  _prevBand = newSizeCentered(_pressTarget->geometry(), _pressTarget->_parent->geometry(), pos, maintainAspect);
+
   if (_prevBand != old) {
     KstPainter p;
 

@@ -44,41 +44,12 @@ KstGfxEllipseMouseHandler::~KstGfxEllipseMouseHandler() {
 
 void KstGfxEllipseMouseHandler::pressMove(KstTopLevelViewPtr view, const QPoint& pos, bool shift, const QRect& geom) {
   if (_cancelled || !_mouseDown) {
-    return;
+    return;  
   }
-
+  
   QRect old = _prevBand;
-
-  // pretend mouse is in the perfect position to preserve 1:1 ratio if shift
-  QPoint fakePos = pos;
-  if (shift) {
-    int negOne = KstGfxMouseHandlerUtils::negativeOne(pos, _mouseOrigin);
-    if (abs(pos.x() - _mouseOrigin.x()) < abs(pos.y() - _mouseOrigin.y())) {
-      fakePos.setX(_mouseOrigin.x() + negOne*(pos.y() - _mouseOrigin.y()));
-    } else {
-      fakePos.setY(_mouseOrigin.y() + negOne*(pos.x() - _mouseOrigin.x()));
-    }
-  }
-
-  // set its corner point appropriately
-  QPoint newTopLeft;
-  if (_mouseOrigin.x() < fakePos.x()) {
-    newTopLeft.setX(2*_mouseOrigin.x() - fakePos.x());
-  } else {
-    newTopLeft.setX(fakePos.x());
-  }
-  if (_mouseOrigin.y() < pos.y()) {
-    newTopLeft.setY(2*_mouseOrigin.y() - fakePos.y());
-  } else {
-    newTopLeft.setY(fakePos.y());
-  }
-  QSize newSize(2*abs(fakePos.x() - _mouseOrigin.x()),
-                2*abs(fakePos.y() - _mouseOrigin.y()));
-
-  // do the move and resize
-  _prevBand.moveTopLeft(newTopLeft);
-  _prevBand.setSize(newSize);
-  _prevBand = _prevBand.intersect(geom);
+  
+  _prevBand = KstGfxMouseHandlerUtils::newRectCentered(pos, _mouseOrigin, geom, shift);
 
   if (old != _prevBand) {
     QPainter p;
