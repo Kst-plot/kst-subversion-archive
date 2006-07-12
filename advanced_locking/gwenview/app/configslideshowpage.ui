@@ -1,0 +1,131 @@
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
+<class>ConfigSlideshowPage</class>
+<widget class="QWidget">
+    <property name="name">
+        <cstring>ConfigSlideshowPage</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>494</width>
+            <height>148</height>
+        </rect>
+    </property>
+    <grid>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QCheckBox" row="2" column="0" rowspan="1" colspan="3">
+            <property name="name">
+                <cstring>kcfg_loop</cstring>
+            </property>
+            <property name="text">
+                <string>Loop</string>
+            </property>
+        </widget>
+        <widget class="QCheckBox" row="1" column="0" rowspan="1" colspan="3">
+            <property name="name">
+                <cstring>kcfg_random</cstring>
+            </property>
+            <property name="text">
+                <string>Show images in random order</string>
+            </property>
+        </widget>
+        <widget class="QCheckBox" row="0" column="0" rowspan="1" colspan="3">
+            <property name="name">
+                <cstring>kcfg_fullscreen</cstring>
+            </property>
+            <property name="text">
+                <string>Start in fullscreen mode</string>
+            </property>
+            <property name="checked">
+                <bool>true</bool>
+            </property>
+        </widget>
+        <widget class="QCheckBox" row="3" column="0" rowspan="1" colspan="3">
+            <property name="name">
+                <cstring>kcfg_stopAtEnd</cstring>
+            </property>
+            <property name="text">
+                <string>Stop on the last image of the folder</string>
+            </property>
+            <property name="whatsThis" stdset="0">
+                <string>By default, if you start the slideshow from the middle of a folder, the slideshow will show all images after the start image, then all images before the start image.
+
+When this option is enabled, the slideshow will stop on the last image of the folder.</string>
+            </property>
+        </widget>
+        <widget class="QLabel" row="4" column="0">
+            <property name="name">
+                <cstring>mDelayLabel</cstring>
+            </property>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>1</hsizetype>
+                    <vsizetype>1</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
+            <property name="text">
+                <string>Delay between images (in seconds):</string>
+            </property>
+            <property name="buddy" stdset="0">
+                <cstring></cstring>
+            </property>
+        </widget>
+        <spacer row="4" column="2">
+            <property name="name">
+                <cstring>Spacer7_2</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>180</width>
+                    <height>20</height>
+                </size>
+            </property>
+        </spacer>
+        <widget class="KDoubleSpinBox" row="4" column="1">
+            <property name="name">
+                <cstring>kcfg_delay</cstring>
+            </property>
+            <property name="maxValue">
+                <number>1000</number>
+            </property>
+            <property name="minValue">
+                <number>0.01</number>
+            </property>
+            <property name="lineStep">
+                <number>1</number>
+            </property>
+            <property name="acceptLocalizedNumbers">
+                <bool>false</bool>
+            </property>
+            <property name="precision">
+                <number>2</number>
+            </property>
+        </widget>
+    </grid>
+</widget>
+<customwidgets>
+</customwidgets>
+<connections>
+    <connection>
+        <sender>kcfg_loop</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>kcfg_stopAtEnd</receiver>
+        <slot>setDisabled(bool)</slot>
+    </connection>
+</connections>
+<layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>knuminput.h</includehint>
+</includehints>
+</UI>

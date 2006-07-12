@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Module SYSTEM "file:/Repository/Level2/Soft/ProC/moduledef.dtd">
+<module>
+<intro>
+<modulename name="kstfilter_generic" readableName="Generic filter"/>
+<author name="Nicolas Brisset"/>
+<description text="Generates a discrete filter from a continuous-time definition"/>
+<version minor="1" major="0"/>
+<filter/>
+<state devstate="beta"/>
+</intro>
+
+<interface>
+<input>
+<table type="float" name="Y" descr="The array of data." />
+</input>
+<input>
+<string name="Numerator (increasing order)" descr="The p polynom of the numerator" default="1"/>
+</input>
+<input>
+<string name="Denominator (increasing order)" descr="The p polynom of the denominator" default="1 ; 2"/>
+</input>
+<input>
+<float name="Sampling interval (s)" descr="Time step" default="0.02"/>
+</input>
+
+<output>
+<table type="float" name="Filtered" descr="The array of filtered data." />
+</output>
+</interface>
+</module>
+

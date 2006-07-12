@@ -1,0 +1,15 @@
+          License exceptions
+          ------------------
+          (c) 2004 by Richard Groult <rgroult@jalix.org>
+                      Simon Hausmann <hausmann@kde.org>
+                      Dominik Seichter <domseichter@web.de>
+                      GINO Tomonori <ogino@nn.iij4u.or.jp>
+                      Andrew Richards <richards.aj@gmail.com>
+                      Espen Sand <espen@opera.com>
+          
+In addition, as a special exception, authors give permission to 
+link the code of this program with the Trolltech's Commercial Qt library 
+(or with modified versions of Trolltech's Commercial Qt that use the same 
+license as Trolltech's Commercial Qt), and distribute linked combinations 
+including the two. You must obey the GNU General Public License in all 
+respects for all of the code used other than Trolltech's Commercial Qt.

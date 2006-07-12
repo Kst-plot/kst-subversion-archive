@@ -1,0 +1,270 @@
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<class>CategoriesConfig</class>
+<widget class="QWidget">
+    <property name="name">
+        <cstring>CategoriesConfig</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>368</width>
+            <height>354</height>
+        </rect>
+    </property>
+    <vbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QGroupBox">
+            <property name="name">
+                <cstring>categoriesGroupBox</cstring>
+            </property>
+            <property name="title">
+                <string>Categories</string>
+            </property>
+            <vbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QCheckBox">
+                    <property name="name">
+                        <cstring>enableCategoriesCheckBox</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Enable categories</string>
+                    </property>
+                    <property name="checked">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+                <widget class="QCheckBox">
+                    <property name="name">
+                        <cstring>addAllImageCheckBox</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Add all images while browsing</string>
+                    </property>
+                </widget>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>categoriesLayout2</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>categoriesTextLabel</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Choose engine</string>
+                            </property>
+                        </widget>
+                        <widget class="QComboBox">
+                            <item>
+                                <property name="text">
+                                    <string>SQLite (default)</string>
+                                </property>
+                            </item>
+                            <item>
+                                <property name="text">
+                                    <string>MySQL</string>
+                                </property>
+                            </item>
+                            <property name="name">
+                                <cstring>categoriesComboBox</cstring>
+                            </property>
+                        </widget>
+                        <spacer>
+                            <property name="name">
+                                <cstring>categoriesSpacer3</cstring>
+                            </property>
+                            <property name="orientation">
+                                <enum>Horizontal</enum>
+                            </property>
+                            <property name="sizeType">
+                                <enum>Expanding</enum>
+                            </property>
+                            <property name="sizeHint">
+                                <size>
+                                    <width>101</width>
+                                    <height>20</height>
+                                </size>
+                            </property>
+                        </spacer>
+                    </hbox>
+                </widget>
+                <widget class="QTabWidget">
+                    <property name="name">
+                        <cstring>categoriesOptionsTabWidget</cstring>
+                    </property>
+                    <property name="enabled">
+                        <bool>true</bool>
+                    </property>
+                    <widget class="QWidget">
+                        <property name="name">
+                            <cstring>tab</cstring>
+                        </property>
+                        <attribute name="title">
+                            <string>SQLite (default)</string>
+                        </attribute>
+                        <vbox>
+                            <property name="name">
+                                <cstring>unnamed</cstring>
+                            </property>
+                            <widget class="QGroupBox">
+                                <property name="name">
+                                    <cstring>categoriesSQLiteGroupBox</cstring>
+                                </property>
+                                <property name="title">
+                                    <string>Options</string>
+                                </property>
+                                <hbox>
+                                    <property name="name">
+                                        <cstring>unnamed</cstring>
+                                    </property>
+                                    <widget class="QLabel">
+                                        <property name="name">
+                                            <cstring>sqlitePathTextLabel</cstring>
+                                        </property>
+                                        <property name="text">
+                                            <string>Database Path:</string>
+                                        </property>
+                                    </widget>
+                                    <widget class="KURLRequester">
+                                        <property name="name">
+                                            <cstring>sqlitePathURL</cstring>
+                                        </property>
+                                    </widget>
+                                </hbox>
+                            </widget>
+                        </vbox>
+                    </widget>
+                    <widget class="QWidget">
+                        <property name="name">
+                            <cstring>tab</cstring>
+                        </property>
+                        <attribute name="title">
+                            <string>MySQL</string>
+                        </attribute>
+                        <hbox>
+                            <property name="name">
+                                <cstring>unnamed</cstring>
+                            </property>
+                            <widget class="QGroupBox">
+                                <property name="name">
+                                    <cstring>categoriesMySQLGroupBox</cstring>
+                                </property>
+                                <property name="title">
+                                    <string>Options</string>
+                                </property>
+                                <grid>
+                                    <property name="name">
+                                        <cstring>unnamed</cstring>
+                                    </property>
+                                    <widget class="QLabel" row="0" column="0">
+                                        <property name="name">
+                                            <cstring>mysqlUsernameTextLabel</cstring>
+                                        </property>
+                                        <property name="text">
+                                            <string>Username:</string>
+                                        </property>
+                                    </widget>
+                                    <widget class="KLineEdit" row="0" column="1">
+                                        <property name="name">
+                                            <cstring>mysqlUsernameLineEdit</cstring>
+                                        </property>
+                                    </widget>
+                                    <widget class="QLabel" row="1" column="0">
+                                        <property name="name">
+                                            <cstring>mysqlPasswordTextLabel</cstring>
+                                        </property>
+                                        <property name="text">
+                                            <string>Password:</string>
+                                        </property>
+                                    </widget>
+                                    <widget class="KLineEdit" row="1" column="1">
+                                        <property name="name">
+                                            <cstring>mysqlPasswordLineEdit</cstring>
+                                        </property>
+                                        <property name="echoMode">
+                                            <enum>Password</enum>
+                                        </property>
+                                    </widget>
+                                    <widget class="QLabel" row="2" column="0">
+                                        <property name="name">
+                                            <cstring>mysqlHostnameTextLabel</cstring>
+                                        </property>
+                                        <property name="text">
+                                            <string>Hostname:</string>
+                                        </property>
+                                    </widget>
+                                    <widget class="KLineEdit" row="2" column="1">
+                                        <property name="name">
+                                            <cstring>mysqlHostnameLineEdit</cstring>
+                                        </property>
+                                    </widget>
+                                </grid>
+                            </widget>
+                        </hbox>
+                    </widget>
+                </widget>
+            </vbox>
+        </widget>
+        <spacer>
+            <property name="name">
+                <cstring>categoriesSpacer</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Vertical</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>20</width>
+                    <height>40</height>
+                </size>
+            </property>
+        </spacer>
+    </vbox>
+</widget>
+<connections>
+    <connection>
+        <sender>enableCategoriesCheckBox</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>addAllImageCheckBox</receiver>
+        <slot>setEnabled(bool)</slot>
+    </connection>
+    <connection>
+        <sender>enableCategoriesCheckBox</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>categoriesOptionsTabWidget</receiver>
+        <slot>setEnabled(bool)</slot>
+    </connection>
+    <connection>
+        <sender>enableCategoriesCheckBox</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>categoriesTextLabel</receiver>
+        <slot>setEnabled(bool)</slot>
+    </connection>
+    <connection>
+        <sender>enableCategoriesCheckBox</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>categoriesComboBox</receiver>
+        <slot>setEnabled(bool)</slot>
+    </connection>
+</connections>
+<layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>kurlrequester.h</includehint>
+    <includehint>klineedit.h</includehint>
+    <includehint>kpushbutton.h</includehint>
+    <includehint>klineedit.h</includehint>
+    <includehint>klineedit.h</includehint>
+    <includehint>klineedit.h</includehint>
+</includehints>
+</UI>

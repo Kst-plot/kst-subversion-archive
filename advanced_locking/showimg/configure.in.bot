@@ -1,0 +1,39 @@
+echo ""
+echo ""
+echo "------"
+if test "x$showimg_enabled" = "xyes" ; then
+	if test "x$want_kipi" = "xyes" ; then
+		if test "x$have_libkipi" = "xyes"; then
+			echo "kipi plugin support for ShowImg:      yes"
+		else
+			echo "kipi plugin support for ShowImg:       no"
+			echo "    You are missing the kipi headers and libraries"
+			echo "    The kipi plugin support won't be compiled."
+		fi
+	else
+		echo "kipi plugin support for ShowImg:       no"
+	fi
+
+	if test "x$want_kexif" = "xyes" ; then
+		if test "x$have_libkexif" = "xyes"; then
+			echo "libkexif support for ShowImg:         yes ($libkexif_version)"
+		else
+			echo "libkexif support for ShowImg:          no"
+			echo "    You are missing the libkexif headers and libraries"
+			echo "    The libkexif support won't be compiled."
+		fi
+	else
+		echo "libkexif support for ShowImg:          no"
+	fi
+	
+	if test "x$want_showimgdb" = "xyes" ; then
+		echo "kexidb/showimgdb support for ShowImg: yes"
+	else
+		echo "kexidb/showimgdb support for ShowImg:  no"
+	fi
+else
+	echo "ShowImg will not be compiled (missing konq_operations.h)."
+fi
+echo ""
+echo "Installation direcory is $prefix"
+echo ""

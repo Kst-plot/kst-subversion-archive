@@ -1,0 +1,787 @@
+2006.xx.xx - v1.3.92
+- New features:
+ - When available, Gwenview now uses the shooting date instead of the file date
+   (Bug 98740).
+- Fixes:
+ - Fixed file renaming, which got broken in 1.3.91.
+ - Do not reset filters when configuring image list.
+ - Do not set keyboard focus on the location field on startup.
+ - In the status bar, show resolution of remote images, but don't show 0x0 for
+   files whose resolution is unknown.
+ - Correct of by one error in selection after files have been removed (Bug
+   111240).
+ - List of supported archive formats is no longer hard coded, so you can for
+   example add support for rar archives by installing kio_rar (Bug 120974).
+ - Some focus bugs have been fixed (Bugs 102852 and 130143).
+ - Do not apply lossless rotations until actual saving, this speeds up
+   rotations (Bug 130146).
+
+2006.06.24 - v1.3.91
+- New features:
+ - Gwenview can now play videos and display SVG files.
+ - It's now possible to create symbolic links from the main menu and from the
+   image contextual menu.
+   (Patch by Steffen Schoenwiese)
+ - Zoom has been improved: you can now zoom to to width or height, and a zoom
+   combobox has been added to the application and KPart toolbars.
+ - Read support for X cursors has been added.
+ - The slideshow now starts directly. Slideshow options like timing or
+   fullscreen can be set from the configuration dialog.
+   (Patch by Martin Filser)
+ - The slideshow now waits for the next image to be fully prefetched before
+   advancing.
+ - The main toolbar is much lighter now that the image specific buttons have
+   been moved to an image view toolbar.
+ - The file view from the folder KPart now features the same toolbar as in the
+   application.
+ - The file view toolbar can now show a filter bar to filter images by name
+   and/or date.
+ - The folder view has been reworked (this may not be definitive).
+- Fixes:
+ - Significantly improved redrawing speed for very large images.
+ - Fix MMX configure check with GCC 4.x.
+ - Removed internal libexif.
+ - Make sure Gwenview libs do not require an executable stack.
+   (Patch by Christopher Martin)
+ - Fix a bug which could lead to truncated images when saving to non-local
+   URLs.
+ - Only load KIPI plugins when the "Plugins" menu is opened, for faster startup
+   time and less memory usage.
+ - Added a confirmation dialog for the window reset menu and renamed the "File
+   Info" window to "Image Comment" (Bug 116791).
+ - Simplified configuration of OSD.
+ - The shadow around the thumbnails has been replaced with a light thin border.
+ - The history of the url bar is now remembered among sessions.
+ - In the print dialog, make it possible to enter rational values for width and
+   height.
+ - In the save dialog, always set a filename, even for remote urls (Bug 102008).
+ - In the image KPart, do not switch to another KPart when using the previous
+   and next buttons.
+ - In the image and folder KParts, make sure the context menu is adapted to the
+   mimetype.
+ - The folder KPart remembers the width of the file view and uses the same
+   configuration as the application (Bug 83343).
+ - In the folder KPart, the "trash/remove" context menu entry has been fixed.
+
+2005.09.11 - v1.3.0
+- Fixes:
+ - Keyboard shortcuts for file operations now work even if no image is selected.
+ - Pressing Enter to enter a folder works again.
+ - On the image view, the "hand" cursors have been replaced with standard
+   cursors.
+ - The click/double-click behaviour of the bookmark view has been changed to
+   match the behaviour of the folder view.
+ - Icons of the folder KPart have been enhanced.
+ - Authentication dialogs should now always appear over the main window.
+ - Folders are no longer included in the image list of KIPI albums.
+ - A crash which could happen when loading indexed XCF files produced by
+   recent versions of GIMP has been fixed.
+ - A bug introduced in the previous version which caused EXIF information to be
+   removed after editing a comment has been fixed.
+ - The external tool dialog has been made a bit easier to use by disabling the
+   detail widgets when no tool is selected.
+ - Avoid rare cases of the image KPart getting stuck.
+ - By popular demand (*): double clicking on a thumbnail or the image view now
+   toggles fullscreen instead of browse mode.
+   * http://gwenview.sourceforge.net/node/132
+
+2005.08.21 - v1.2.92
+- New features:
+ - The slide show can now display images in random order.
+ - New shortcuts have been introduced to browse the folder hierarchy: 
+   - Alt+Down goes to the first sub-folder
+   - Alt+Backspace goes to the previous folder
+   - Alt+Space goes to the next folder
+   (Patch by Michael Rolf)
+ - It is now possible to scroll images with the keyboard.
+   (Patch by Michael Rolf)
+ - A new view has been added to quickly access bookmarks.
+ - Images are now prefetched in advance also when browsing in the thumbnail
+   view using the cursor keys or keys for next/previous.
+ - In full screen mode, pressing Enter will toggle the full screen bar.
+ - KIPI plugins can now access JPEG comments.
+ - Zoom in and out actions have been added to the KParts.
+ - An "Other..." entry has been added to the external tools menu.
+ - The drag'n'drop popup menu now contains an entry to create a symbolic link.
+- Fixes:
+ - In the thumbnail view, folder and archive filenames are always shown, even
+   if the user choose to hide image filenames.
+ - When right clicking on files from the folder KPart, the Konqueror popup
+   menu will now appear, instead of Gwenview's menu.
+ - The context menu which appears when right clicking on the background of a
+   file view now shows information relative to the current folder, rather than
+   the current image.
+ - The destination URL is now set to the current URL in KIPI plugins.
+ - The folder name is used as the album name for KIPI plugins.
+ - The JPEG comment editor has been fixed to avoid adding a dummy character at
+   the end.
+ - Double click behaviour has been changed to always toggle browse mode.
+ 
+2005.07.17 - v1.2.91
+- New features:
+ - The file view now features three modes: details, thumbnail with info on the
+   right and thumbnail with info on bottom. In the "info on the right"
+   mode, the file name, date, image size and file size are displayed.
+   In the "info on bottom" mode, the user can choose what information should be
+   displayed.
+ - The thumbnail size can now be set with a slider.
+ - Thumbnail can now be as big as 256x256.
+ - Non-blocking image preloading in advance.
+ - With two-pass painting, turn off dithering in the first pass for a small
+   performance improvement with non-truecolor displays.
+ - Hints for mouse usage in the image view are shown in the status bar.
+ - In addition to the file count, the status bar now shows the current image
+   position.
+ - Two variables have been introduced for the On Screen Display: %n is the
+   current image position, %N is the image count.
+ - An option has been added to disable automatic rotation of images.
+- Fixes:
+ - Progressive JPEG files are really shown progressively.
+ - In the thumbnail view, make sure we report image sizes for JPEG with
+   embedded thumbnails.
+ - The JPEG loader has been fixed so that it doesn't crash on some broken
+   JPEGs.
+ - Fix premature end when decoding MNG images.
+ - Gwenview now dynamically links with installed version of libexif by default.
+   The included libexif copy is only used if libexif is not installed. Using it
+   is considered deprecated.
+ - The "best" smoothing algorithm has been tweaked to produce slightly less
+   blurry results.
+ - External tools are now sorted by name in the menu and the dialog.
+
+2005.04.03 - v1.2.0
+- Fixes:
+ - A crash which could happen when pressing the 'back' button has been fixed.
+
+2005.03.19 - v1.2.0pre4
+- New features:
+ - An item to open the "external tools" dialog has been added at the end of the
+   "external tools" menu.
+- Fixes:
+ - The layout of the "external tools" dialog has been reworked.
+ - The image was not correctly displayed after a manual rotation.
+ - When saving a file, its permissions are kept if it exists or set using umask
+   if not.
+ - The history and the back/forward/up buttons in the directory KPart has been
+   fixed.
+ 
+2005.02.27 - v1.2.0pre3
+- Fixes:
+ - Support for smb:/ and digikamtags:/ ioslaves has been fixed.
+ - The documentation now appears in KHelpCenter tree.
+ - When starting a slideshow from a picture in the middle of the list, Gwenview
+   now loops once to show all images before the start picture, even if the
+   "Loop" option is not activated.
+ - The On Screen Display totally hides itself after a while.
+
+2005.02.13 - v1.2.0pre2
+- New features:
+ - A documentation has been written.
+- Fixes:
+ - Mouse wheel zooming is now consistent with other KDE applications.
+ - Show rotation and mirroring buttons on main toolbar.
+ - Moved all navigation buttons (back, forward, up and home) to the location
+   toolbar.
+ - Items in the "Windows" menu are now disabled when Gwenview is in View mode.
+ - The slideshow has been reworked: it now starts from the current picture and
+   correctly handles manual image browsing.
+
+2005.01.23 - v1.2.0pre1
+- Fixes:
+ - Zoom step halved (100%->150%->200%).
+ - No image quality loss when printing large images.
+ - More explicit messages when an error occurs while saving.
+
+2005.01.08 - v1.1.8
+- New features:
+ - Zoom actions added to both KPart's.
+ - Support for animated pictures.
+ - Fast image scaling function from Imlib2/Mosfet (select 'fast' smoothing
+   in the configuration dialog).
+ - Added an item in the "Windows" menu to reset the window layout to the default
+   configuration.
+- Fixes:
+ - "Lock zoom"/"Auto zoom" options fixed
+ - Fixed "Clear location"/"Location" shortcuts.
+ - Make it impossible to undock the file view. It should be easier for new
+   users to use it this way.
+ - Fixed crash which could occur when copying multiple files.
+
+2004.12.19 - v1.1.7
+- New features:
+ - Double clicking the image view toggles the full screen mode (By Daniel
+   Thaler)
+ - It's now possible to select which KIPI plugins should be loaded.
+ - The On Screen Display now contains "Previous", "Next" and "Exit fullscreen"
+   buttons. These buttons automatically hide when the cursor hides
+   itself.
+ - Adjust brightness, contrast and gamma.
+ - Going to next/previous image in the image KPart.
+- Fixes:
+ - If the URL given as an argument is a directory, start in browse mode,
+   not in view mode.
+ - On Screen Display is back, it was broken in 1.1.6.
+ - Updated man page.
+ - KIPI Batch image processing tools now work again.
+ - Fixed a few bugs in image saving.
+ - Made the save error messages more explicit.
+ - Removed the "show toolbar/menubar/statusbar in fullscreen" options.
+ - When selecting multiple images with Ctrl or Shift, block the "double click
+   an image goes to fullscreen" feature.
+ - Removed the "Auto load image" option, it's useless since Gwenview does not
+   block anymore when loading images.
+ - Fix reloading in the image KPart.
+
+2004.10.24 - v1.1.6
+- New features:
+ - The application now has two modes: browse and view. Browse mode shows all
+   views: folder, file and image. View mode only shows the image. Gwenview
+   starts in browse mode except if an image URL is given as an argument. You
+   can switch between modes using the toolbar button, or with the "View/Browse
+   mode" menu item or with the Ctrl+Return shortcut.
+ - JPEGTran code has been integrated into Gwenview, there's no need to install
+   it separately anymore.
+- Fixes:
+ - Update the EXIF thumbnail when rotating a JPEG file.
+ - In the folder view, folders now open with a single click (By Daniel Thaler).
+ - Reworked image->widget coordinate conversions in order to avoid subtle
+   paint errors.
+ - Remember computed optimal repaint sizes in the config file, so they are
+   available immediately after next start.
+ - Remember shown URL after session restore.
+
+2004.09.19 - v1.1.5
+- New features:
+ - The thumbnail progress bar and stop buttons are now embedded in the
+   thumbnail view.
+ - The location bar now shows the file names instead of the folders.
+ - The thumbnails toolbar buttons have been moved to a specialized file view
+   toolbar.
+ - It's now possible to assign key shortcuts to KIPI plugins.
+ - New manpage by Christopher Martin.
+- Fixes:
+ - Do not display the folder name as an image in the status bar.
+ - Make sure the folder KPart starts in the right folder.
+ - Unbreak the saving of key shortcuts.
+ - Remote urls are correctly bookmarked.
+ - Do not try to overwrite the trash when trashing only one file.
+
+2004.07.31 - v1.1.4
+- New features:
+ - In the thumbnail view, It's now possible to sort images in reverse order.
+ - Use EXIF-stored thumbnail if available.
+ - Option to disable saving of generated thumbnails to cache.
+ - In fullscreen mode, it's now possible to display the image comment or size
+   in addition to the file path.
+ - The fullscreen On-Screen-Display is more readable now.
+ - The background color of the image view can be configured.
+ - When printing, it's now possible to enlarge images so that they fill the
+   page.
+- Fixes:
+ - In the folder view, pressing Enter now opens the selected folder.
+ - Use icon list for the configuration dialog.
+ - Avoid data loss if the JPEG images are saved while being rotated by
+   JPEGTran.
+ - The back button in Konqueror now works correctly with gvimagepart.
+ - The default layout is more user-friendly.
+ - Non-trivial URLs (e.g. http query URL) are correctly handled.
+ - You can now drop images on the image view.
+
+2004.06.11 - v1.1.3 - "Hurry up, I'm getting married tomorrow"
+- New features:
+ - You can now define custom branches in the dir view (By Craig Drummond)
+ - An image cache has been added to speedup image loading.
+ - Gwenview now uses freedesktop.org thumbnail spec to store thumbnails.
+ - A new option to automatically empty thumbnail cache on exit (By Angelo
+   Naselli).
+ - The image size is now displayed below file names in thumbnail view.
+- Fixes:
+ - Don't crash when switching to fullscreen while generating thumbnails and
+   coming back (By Lubos Lunak)
+ - Faster thumbnail generation (By Lubos Lunak)
+ - Faster image painting by dynamically determining suitable paint
+   size (By Lubos Lunak)
+ - Use the "Standard Background" color as the background for thumbnails and
+   folders (By Craig Drummond).
+ - Make sure the current image is reloaded if it has been modified outside
+   Gwenview. 
+
+2004.05.09 - v1.1.2
+- New features:
+ - Optional support for KIPI, KDE Image Plugin Interface.
+ - Incremental downloading of images.
+ - Image smoothing is much more configurable (By Lubos Lunak).
+ - KParts will now remember their settings.
+- Fixes:
+ - Fixed several image loading bugs.
+ - Make sure small and medium size thumbnails do not look jagged.
+ - Work-around a Qt bug which caused the window title to not come back after
+   leaving fullscreen mode and reduces flickering (By Lubos Lunak).
+ - Fixed several bugs in file saving.
+ - Make sure the loading cursor disappear when the image has finished to load
+   (By Lubos Lunak).
+ - Remember last used folder in "copy to" and "move to" dialogs (By Lubos
+   Lunak).
+ - Horizontal mouse wheels should work correctly now.
+ - Entering "~username" in location combo box works now.
+ - Selecting an URL in the location combo box opens it.
+ - When viewing an image from within a frame based web site in Konqueror, don't
+   crash when opening popup menu.
+ - Give higher priority to the loading of the image than to the generation of
+   thumbnails (By Lubos Lunak).
+
+2004.03.20 - v1.1.1
+- New features:
+ - Added KPart support, this installs in Konqueror a new file view mode and let
+   you view images in an embedded Gwenview (By Jonathan Riddell).
+ - Asynchronous JPEG loading, based on Khtml loader.
+ - Really asynchronous PNG loading (By Lubos Lunak).
+ - Mouse wheel will now scroll the image by default. Holding Ctrl will scroll
+   horizontally. An option has been added to the setting dialog to toggle
+   between scroll and browse (By Jeroen Peters).
+ - When holding shift over the image, right click will zoom out (By Jeroen
+   Peters).
+ - Image painting is now progressive (By Lubos Lunak).
+- Fixes:
+ - The rotate and mirror functions can now work on multiple selection.
+ - Make it possible to load another image or quit even if you can't save your
+   changes.
+ - Gwenview won't spawn multiple instances of jpegtran anymore.
+
+2004.02.01 - v1.1.0
+- New features:
+ - New settings in print dialog to specify how the image must be print.
+ - Big thumbnails are really BIG now :-).
+ - First implementation of asynchronous image loading. Only for PNG right now.
+ - Double-clicking an image in the file view will open it in fullscreen [*].
+- Fixes:
+ - The move and copy dialog now use a tree view.
+ - In the thumbnail view, create thumbnails for the visible images first
+   (Thanks to Lubos Lunak).
+ - Gwenview now uses its own thumbnail cache dir.
+ - Gave contributors the credit they deserve in the about box [*].
+ - Updated to libexif 0.5.12 and applied patches from libexif CVS [*].
+ - When going to the parent folder, make sure the folder we were in before is
+   selected [*].
+ - If there's no image in the current folder, select the first visible file [*].
+ - When holding down Shift to zoom, keep the same area of the image under the
+   cursor [*].
+ - Nicer drag cursor [*].
+ - Hopefully fixed every cases where the image was not centered in the view [*].
+*: Backported to 1.0.1.
+
+2003.12.07 - v1.0.0
+- New features:
+ - Show a wait icon for not-generated-yet thumbnails (inspired from Nautilus
+   thumbnail view).
+ - Show a broken icon for broken images.
+- Fixes:
+ - If auto-zoom is on, make sure the zoom is updated after rotating an image.
+ - Fixed crash when loading XCF images if Gwenview was compiled with gcc 3.3.1.
+ - Before running an external tool, change working directory to current folder.
+ - When switching images in fullscreen, don't show the cursor.
+ - Use standard KDE icons for zoom actions.
+ - New icons for slideshow and image operations.
+ - New magnifier cursor.
+
+2003.11.16 - v1.0.0pre4
+- New features:
+ - Added a new option to hide the busy pointer when loading an image in
+   fullscreen.
+ - Added a popup menu to select the sorting mode. Usefull in thumbnail view.
+- Fixes:
+ - Use a KDE dialog for the configuration dialog.
+ - Removed the image view mouse behavior configuration options. The behavior is
+   much simpler now: left button to drag image, middle button to toggle
+   auto-zoom and mouse-wheel to browse images. If you want to zoom hold Shift
+   and use either the mouse-wheel or the left button.
+
+2003.11.01 - v1.0.0pre3
+- New features:
+ - Added a "don't ask me again" check box to the save prompt dialog.
+ - Added a reload button.
+ - Added a "Go" button to the location toolbar.
+- Fixes:
+ - Really fixed saving of external tools.
+ - Make sure the folder view is updated when a folder is renamed.
+ - The mouse-wheel behaviors are not messed anymore by dialogs or by showing
+   the popup menu. 
+
+2003.10.11 - v1.0.0pre2
+- New features:
+ - Added Back/Forward history buttons (based on work from Tudor Calin).
+ - The parent button can now display a popup menu (by Tudor Calin).
+ - Simple printing support (by Angelo Naselli).
+- Fixes:
+ - The image comment editor shows more explicit messages when the comment is
+   empty and when the image can't be commented.
+ - The external tool dialog won't fail on fresh installation.
+ - The path to jpegtran is now stored correctly, even if it's not absolute.
+ - Fixed compilation failure on KDE 3.0.
+
+
+2003.09.27 - v1.0.0pre1
+- New features:
+ - Toolbars are now configurable and toolbar settings are remembered.
+ - New dock window to display Meta Info (thanks to Jos van den Oever).
+ - Cursor over image view changes to reflect the current behavior.
+ - When toggling autozoom off, restore the previous zoom and position (Based
+   on a patch by Jos van den Oever).
+ - It's now possible to define external tools associated with images or
+   directories.
+- Fixes:
+ - Exiting with Ctrl+Q from the fullscreen won't close the file view for
+   the next startup.
+ - Do not switch the file view to detailed mode when leaving the fullscreen
+   mode.
+ - Do not stop displaying images when browsing folders containing lots of JPEG
+   files (more than a thousand).
+
+2003.06.09 - v0.17.1a
+- Fixes:
+ - Fixed compilation failure on KDE 3.0.
+
+2003.03.29 - v0.17.1
+- Fixes:
+ - In the folder view, show the "+" sign in front of folders if they have
+   sub-folders.
+ - Lossless manipulations of JPEG images won't remove the EXIF information
+   anymore.
+ - Handling of the EXIF orientation tag should now work on KDE 3.0.
+ - When "auto-zoom" was on, pressing the "reset zoom" button would not
+   deactivate it.
+ - Added an "Edit" submenu to the popup menu of the image view, similar to the
+   main window "Edit" menu.
+ - Moved "Open with editor" in the "Edit" menu.
+ - Display the image file name in the window title.
+ - Fixed the bug which caused the window to grow up when entering folders with
+   long names (Thanks to Stefan Heinze for the tip).
+ - Rotating big JPEG images with JPEGTran won't hang anymore.
+ - Keep the fullscreen button activated to be able to go back to normal mode
+   when moving to a dir without images in fullscreen mode. 
+
+2003.05.04 - v0.17.0
+- New features:
+ - Added a cancel button to popup menus, like Konqueror does.
+ - Added support for dropping files to the file view.
+- Fixes:
+ - Fixed compilation failure on KDE 3.0.
+ - Clear the image view when the last image of the current folder is removed.
+ - Hopefully fixed the bug which caused Gwenview to sometimes crash when
+   invoked with a folder in the command line.
+
+2003.04.27 - v0.17.0pre3
+- Fixes:
+ - Really fixed the bug which caused the dock layout to be messed after going
+   fullscreen.
+ - Always display the location bar on a new line.
+ - Fixed the lock which could occur if you kept the go-to-previous or
+   go-to-next shortcut keys pressed for too long.
+
+2003.04.26 - v0.17.0pre2
+- New features:
+ - Support for EXIF orientation information.
+- Fixes:
+ - Don't alter the layout of the docks when toggling dir and file views or
+   going fullscreen.
+ - File name won't be cut anymore in the thumbnail view.
+ - Prompt to save a modified image before quitting.
+ - Fixed an inconsistency with JPEG lossless rotation.
+
+2003.04.21 - v0.17.0pre1
+- New features:
+ - Added bookmarks.
+ - Show/hide hidden files.
+ - Image rotation and mirroring (using jpegtran when working on JPEG files to
+   perform lossless manipulations).
+ - Image saving.
+ - You can now smooth scale images.
+ - New entry in the "View" menu: "Hide Folder And File Views".
+ - New option to enlarge smaller images when using auto zoom.
+ - New option to toggle scroll bars on image view.
+ - New option to select whether deleting files should send them to the trash or
+   not.
+- Fixes:
+ - Moved the slide show settings to a separate dialog shown before starting it.
+ - Image count in the status bar doesn't include archives anymore.
+ - Do not zoom the transparency checkerboard.
+
+2003.02.13 - v0.16.2
+- Fixes:
+ - Uses opaque resize for docked views.
+ - Resizing the window resizes the image view only.
+ - When using double click mode, double clicking a folder in the icon view
+   did not open the folder.
+
+2003.01.31 - v0.16.1
+- Fixes:
+ - Fixed compilation failure with KDE 3.0 (Thanks to GeniusR13).
+
+2003.01.30 - v0.16.0
+- New features:
+ - Support for zip IO slave.
+ - Added an "erase url" button.
+- Fixes:
+ - Corrected toolbar layout for RTL languages (Thanks to Meni Livne).
+ - Do not give focus to the address bar on start.
+ - Do not exit when trying to thumbnailing a broken JPEG (Thanks to Marco
+   Gazzetta).
+ - The previous/next shortcuts were wrong in 0.16.0pre1.
+
+2003.01.12 - v0.16.0pre1
+- New features:
+ - Support for IO slaves: you can browse FTP files, Windows shares, go into
+   tarballs...
+ - Multi-selection support (at last!).
+ - Added a "home folder" tree branch to the folder view.
+ - Added a simple slideshow feature.
+ - Now uses the trash to delete images.
+ - Added an address bar.
+ - Displays the filename of the current image in a different (configurable)
+   color.
+- Fixes:
+ - Do not start dragging folders in the folder view when not necessary.
+ - When dropping urls and selecting "Move", the drop item will become the
+   current one only if the item which was the current one was part of the
+   drop.
+
+2002.11.05 - v0.15.2
+- Fixes:
+ - Small jpeg images were getting a stretched thumbnail.
+ - Fixed the centering of image in scrollable view.
+ - Enabled the "show folders in file view" by default.
+
+2002.10.26 - v0.15.1
+- New features:
+ - Added an item to the popup menus to show the file properties.
+- Fixes:
+ - The selected thumbnail does not look strange anymore when changing the
+   thumbnail size.
+ - Always zoom on the center of the image.
+ - Do not reload the image every time when opening the context menu.
+
+2002.10.04 - v0.15.0
+- File count was also counting folders.
+- Integrated the updated man page by Michael Spanier.
+- Selected thumbnail looks nicer now.
+- Fixed automatic deselection of the selected thumbnail when using single-click
+  mode.
+
+2002.09.14 - v0.15.0pre1
+- New option to prevent Gwenview from loading the first image when it enters a
+  folder (Thanks to Andreas Pfaller for the patch).
+- You can now show the folders in the file view. By enabling this and hiding
+  the folder view, Gwenview won't have to open all parent folders on startup.
+- XCF file format support, thanks to the QXCFI library by Lignum Computing
+  (http://lignumcomputing.com).
+- Thumbnail generator now always saves the thumbnail at the biggest size :
+  for smaller sizes the big thumbnail is loaded and scaled. This uses less disk
+  space and make thumbnail size switching faster.
+- Reworked the zoom behavior so that it works like the zoom tool in the GIMP.
+
+2002.08.11 - v0.14.5
+- Fixed the horizontal one pixel lines which appeared in fullscreen mode when
+  the toolbar was hidden.
+- New command line option (-f) to start in fullscreen mode.
+
+2002.07.28 - v0.14.4
+- Updated thumbnail generation to store thumbnails in the same folder 
+  Konqueror 3 uses (Thanks to Andreas Pfaller and Renchi Raju for the patches).
+- Fixed a crash on exit under certain circumstances.
+- Should not crash anymore when loading big images.
+
+2002.07.15 - v0.14.3
+- Really fixed the bug which caused Gwenview to not display image file given as
+  an argument.
+- Fixed ugly look of file names in thumbnail view when word wrap was enabled. 
+- Fixed flickering and drawing artefacts remaining after zooming in and out.
+- Lock zoom state was not properly remembered.
+- Updated polish translation.
+- Updated german translation.
+
+2002.07.10 - v0.14.2
+- Fixed a crash if a directory contained URL-like encoded characters (Thanks to
+  Dario Abatianni for the bug report)
+- Do not reload all thumbnails if an image is removed.
+- When starting Gwenview with an image file as an argument, the image does
+  not hide anymore.
+- Gwenview won't crash anymore if started with a file that doesn't exist as an
+  argument.
+
+2002.06.17 - v0.14.1
+- Fixed a bug in recognition of progressive jpeg images.
+- Updated swedish translation by Anders Lindén.
+- Added a japanese translation by Ryota Simamoto.
+
+2002.06.15 - v0.14.0
+- Ported to KDE3
+- Gwenview uses KImageIO for file formats, bringing a few other file formats
+  such as ico, eps or g3.
+- Replaced my own dir widget with the new KDirView widget provided by KDE3.
+
+2002.05.04 - v0.13.0
+- Thumbnail selection buttons are always activated.
+- You can now choose between 'auto-zoom' or 'scroll-and-zoom' in fullscreen
+  mode.
+- You can now lock the zoom to keep the same zoom value during browsing.
+- Integrated a patch from Frank Becker to speed up JPEG thumbnail generation.
+- Swedish translation.
+- More personalizable wheel behavior.
+- Gwenview now remembers the 'auto-zoom' state.
+- You can now define what interface elements you want to hide in fullscreen
+  mode.
+- Fixed a bug in cache cleaning if the cache was already empty.
+
+
+2002.03.04 - v0.12.0
+- Navigation buttons are now enabled or disabled according to the
+  position of the file in the folder.
+- New zoom option : fit to window.
+- Zoom actions are disabled when there's no image.
+- No more ugly thumbnails when selected.
+- Images are now centered in main view.
+- Added popup menus to the file and image views.
+- Thumbnails aren't reloaded anymore when deleting a file.
+- Added support for external editor.
+
+
+2001.12.30 - v0.11.1
+- Added TIFF support.
+- Added drag'n drop support to folder view.
+- Bug fix when renaming folder containing folders.
+
+
+2001.12.15 - v0.11.0
+- Korean translation.
+- New folder view : more responsive, get automatically updated on
+  changes, features a popup menu.
+- Scrollbars are now reset on image change.
+- Should now installs itself in <appdir>/Graphics rather than in
+  <appdir>/Multimedia/Graphics.
+- New buttons in config dialog to get the cache size and to empty it.
+- Added a man page by Michael Spanier.
+
+
+2001.10.11 - v0.10.1
+- Dutch translation.
+- Hungarian translation.
+- Now uses Konqueror central thumbnail cache folder.
+
+
+2001.09.29 - v0.10.0
+- Italian translation.
+- Polish translation.
+- Redesigned the configuration dialog with Qt-Designer, now features
+  GUI for Avinash Chopde's patch.
+- Added a file/open menu item.
+- Added an option to hide file names in fullscreen mode.
+- Gwenview now displays an error message when it can't load an image.
+
+
+2001.09.01 - v0.9.2
+- German translation.
+- Fixed a bug which caused the fullscreen view to be updated even after
+  coming back to normal.
+- Merged a patch from Avinash Chopde to provide default folders for file
+  copy/move and bypass file operation confirmations (No GUI yet).
+
+
+2001.08.29 - v0.9.1
+- Spanish translation.
+- Fixed bad encoding in French translation (no more '?' instead of accent).
+- Dock icons were too big. Fixed.
+
+
+2001.08.20 - v0.9.0
+- Added support for alpha channel.
+- Gwenview now displays the image size in status bar.
+- Fixed wrong icon size for folders on some distributions (my mistake).
+
+
+2001.07.30 - v0.8.0
+- Replaced thumbnail generation with Konqueror code : don't freeze the
+  interface anymore and cache generated thumbnails on disk.
+- You can now select the size of the thumbnails from the menu/toolbar.
+
+
+2001.07.11 - v0.7.0
+- Added zoom in and out feature.
+- Thumbnail generation is now non-blocking.
+- Uses KIO for file operations.
+- Added "move" to file operations.
+- Selecting a folder which does not contain images will now empty the image
+  widget.
+- Added a status bar displaying folder and file information.
+- Opera-like previous-next mouse navigation.
+- Scroll the image by dragging it.
+- Fixed a bug which could prevent the toolbar from showing on the first launch.
+
+
+2001.05.23 - v0.6.1
+- Fixed a bug in file view that might not display files.
+- Added a Norwegian translation, thanks to Rune Nordvik.
+
+
+2001.05.16 - v0.6.0
+- Full screen support with keyboard, mouse button and mouse wheel navigation.
+- Added a toolbar.
+- Folder view uses standard folder icons.
+- Integration with Konqueror : right click on any folder and select "Browse
+  with Gwenview".
+
+
+2001.04.10 - v0.5.1
+- Fixed drag'n'drop for file detail view.
+
+
+2001.03.31 - v0.5.0
+- File view items can now be dragged to any KDE application (for example Konqueror).
+- French translation.
+- File copy dialog opens in current folder.
+- Fixed a bug on file copy cancel.
+- Fixed a crash on file deletion.
+- Shortcut keys are now configurable.
+- When using thumbnail view, files are all shown before thumbnail generation begins.
+- Added a configuration dialog.
+
+
+2001.03.09 - v0.4.1
+- Fixed crash on file manipulation using thumbnail view.
+- Added a progress gauge for thumbnail generation.
+
+
+2001.02.26 - v0.4.0
+- File list use a standard KDE detail view.
+- Added a configurable memory cache to speed up image loading.
+
+
+2001.01.28 - v0.3.0
+- Nicer window menu.
+- Removed FilePath module : use QT instead.
+- Some code cleaning.
+- New shortcut for first/previous/next/last image.
+- Icon for folders.
+- Removed folder column header.
+- Thumbnail view.
+
+
+2001.01.16 - v0.2.2
+- Added a window menu to toggle visibility of windows.
+- Changed the default button in delete dialog to "Yes".
+
+
+2001.01.15 - v0.2.1
+- Updated mail address and web site.
+
+
+2001.01.08 - v0.2.0
+- Uses docked windows.
+- Remember window sizes and configurations.
+- Added Help menu with about dialog.
+- Uses the KDE way to handle command line parameters.
+- Added ability to copy a file.
+
+
+2000.12.10 - v0.1.0
+- Initial release.
+
