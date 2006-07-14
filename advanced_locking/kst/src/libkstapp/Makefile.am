@@ -23,7 +23,6 @@ libkstapp_la_SOURCES = \
 	eventmonitorwidget.ui \
 	pluginmanager.ui \
 	curvedialogwidget.ui \
-	kstwaitcondition_unix.cpp \
 	kstiface.skel \
 	kstiface_impl.cpp \
 	statuslabel.cpp \

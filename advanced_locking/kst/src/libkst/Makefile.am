@@ -30,7 +30,8 @@ libkst_la_SOURCES = \
 	kstvectordefaults.cpp \
 	kstmatrixdefaults.cpp \
 	kstprimitive.cpp \
-	defaultprimitivenames.cpp
+	defaultprimitivenames.cpp \
+	kstwaitcondition_unix.cpp
 
 libkst_la_LDFLAGS = -version-info @KST_LIBKST_VERSION@ -no-undefined $(all_libraries)
 libkst_la_LIBADD = $(LIB_QT) $(LIB_KIO) $(LIB_KDECORE) ../extdate/libkstextdate.la
