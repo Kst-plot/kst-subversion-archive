@@ -110,7 +110,7 @@ KJS::Object KstBindHistogram::construct(KJS::ExecState *exec, const KJS::List& a
 
   KST::dataObjectList.lock().writeLock();
   KST::dataObjectList.append(d.data());
-  KST::dataObjectList.lock().writeUnlock();
+  KST::dataObjectList.lock().unlock();
 
   return KJS::Object(new KstBindHistogram(exec, d));
 }

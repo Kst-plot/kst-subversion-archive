@@ -171,7 +171,7 @@ bool KstFitDialogI::createCurve(KstPluginPtr plugin) {
 
   KST::dataObjectList.lock().writeLock();
   KST::dataObjectList.append(fit.data());
-  KST::dataObjectList.lock().writeUnlock();
+  KST::dataObjectList.lock().unlock();
 
   return true;
 }
@@ -208,23 +208,23 @@ bool KstFitDialogI::newObject() {
           if (plugin->isValid()) {
             if (!createCurve(plugin)) {
               KMessageBox::sorry(this, i18n("Could not create curve from fit, possibly due to a bad plugin."));
-              plugin->writeUnlock();
+              plugin->unlock();
               return false;
             }
-            plugin->writeUnlock();
+            plugin->unlock();
             KST::dataObjectList.lock().writeLock();
             KST::dataObjectList.append(plugin.data());
-            KST::dataObjectList.lock().writeUnlock();
+            KST::dataObjectList.lock().unlock();
           } else {
             KMessageBox::sorry(this, i18n("There is something wrong (i.e, there is a bug) with the creation of the fit plugin."));
-            plugin->writeUnlock();
+            plugin->unlock();
             return false;
           }
         } else {
-          plugin->writeUnlock();
+          plugin->unlock();
         }
       } else {
-        plugin->writeUnlock();
+        plugin->unlock();
       }
     } else {
       KMessageBox::sorry(this, i18n("There is something wrong (i.e, there is a bug) with"
@@ -388,7 +388,7 @@ bool KstFitDialogI::saveInputs(KstPluginPtr plugin, KstSharedPtr<Plugin> p) {
       if (v) {
         v->writeLock(); // to match with plugin->writeLock()
         if (plugin->inputVectors().contains((*it)._name) && plugin->inputVectors()[(*it)._name] != v) {
-          plugin->inputVectors()[(*it)._name]->writeUnlock();
+          plugin->inputVectors()[(*it)._name]->unlock();
         }
         plugin->inputVectors().insert((*it)._name, v);
       } else if (plugin->inputVectors().contains((*it)._name)) {
@@ -405,13 +405,13 @@ bool KstFitDialogI::saveInputs(KstPluginPtr plugin, KstSharedPtr<Plugin> p) {
         KstStringPtr newString = new KstString(ss->_string->currentText(), 0L, val, true, false);
         newString->writeLock(); // to match with plugin->writeLock()
         if (plugin->inputStrings().contains((*it)._name) && plugin->inputStrings()[(*it)._name] != s) {
-          plugin->inputStrings()[(*it)._name]->writeUnlock();
+          plugin->inputStrings()[(*it)._name]->unlock();
         }
         plugin->inputStrings().insert((*it)._name, newString);
       } else {
         s->writeLock(); // to match with plugin->writeLock()
         if (plugin->inputStrings().contains((*it)._name) && plugin->inputStrings()[(*it)._name] != s) {
-          plugin->inputStrings()[(*it)._name]->writeUnlock();
+          plugin->inputStrings()[(*it)._name]->unlock();
         }
         plugin->inputStrings().insert((*it)._name, s);
       }
@@ -430,29 +430,29 @@ bool KstFitDialogI::saveInputs(KstPluginPtr plugin, KstSharedPtr<Plugin> p) {
           KstScalarPtr newScalar = new KstScalar(ss->_scalar->currentText(), 0L, val, true, false, false);
           newScalar->writeLock(); // to match with plugin->writeLock()
           if (plugin->inputScalars().contains((*it)._name) && plugin->inputScalars()[(*it)._name] != s) {
-            plugin->inputScalars()[(*it)._name]->writeUnlock();
+            plugin->inputScalars()[(*it)._name]->unlock();
           }
           plugin->inputScalars().insert((*it)._name, newScalar);
         } else {
           s->writeLock(); // to match with plugin->writeLock()
           if (plugin->inputScalars().contains((*it)._name) && plugin->inputScalars()[(*it)._name] != s) {
-            plugin->inputScalars()[(*it)._name]->writeUnlock();
+            plugin->inputScalars()[(*it)._name]->unlock();
           }
           plugin->inputScalars().insert((*it)._name, s);
         }
       } else {
         s->writeLock(); // to match with plugin->writeLock()
         if (plugin->inputScalars().contains((*it)._name) && plugin->inputScalars()[(*it)._name] != s) {
-          plugin->inputScalars()[(*it)._name]->writeUnlock();
+          plugin->inputScalars()[(*it)._name]->unlock();
         }
         plugin->inputScalars().insert((*it)._name, s);
       }
     } else {
     }
   }
-  KST::stringList.lock().readUnlock();
-  KST::scalarList.lock().readUnlock();
-  KST::vectorList.lock().readUnlock();
+  KST::stringList.lock().unlock();
+  KST::scalarList.lock().unlock();
+  KST::vectorList.lock().unlock();
 
   return rc;
 }

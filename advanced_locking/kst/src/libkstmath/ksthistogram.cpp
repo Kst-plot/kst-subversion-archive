@@ -147,7 +147,7 @@ KstHistogram::~KstHistogram() {
   KST::vectorList.lock().writeLock();
   KST::vectorList.remove(_outputVectors[BINS]);
   KST::vectorList.remove(_outputVectors[HIST]);
-  KST::vectorList.lock().writeUnlock();
+  KST::vectorList.lock().unlock();
 
   delete[] _Bins;
   _Bins = 0L;

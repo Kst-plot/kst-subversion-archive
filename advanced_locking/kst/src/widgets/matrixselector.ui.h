@@ -42,13 +42,13 @@ void MatrixSelector::update()
     for (KstMatrixList::ConstIterator i = matrices.begin(); i != matrices.end(); ++i) {
 	(*i)->readLock();
 	QString tag = (*i)->tagName();
-	(*i)->readUnlock();
+	(*i)->unlock();
 	_matrix->insertItem(tag);
 	if (!found && tag == prev) {
 	    found = true;
 	}
     }
-    KST::matrixList.lock().readUnlock();
+    KST::matrixList.lock().unlock();
     if (found) {
 	_matrix->setCurrentText(prev);
     }
@@ -102,7 +102,7 @@ void MatrixSelector::newMatrixCreated( KstMatrixPtr v )
 {
     v->readLock();
     QString name = v->tagName();
-    v->readUnlock();
+    v->unlock();
     v = 0L; // deref
     emit newMatrixCreated(name);
 }
@@ -112,7 +112,7 @@ void MatrixSelector::setSelection( KstMatrixPtr v )
 {
     v->readLock();
     setSelection(v->tagName());
-    v->readUnlock();
+    v->unlock();
 }
 
 
@@ -135,7 +135,7 @@ void MatrixSelector::setEdit(const QString& tag)
 {
     KST::matrixList.lock().readLock();
     _editMatrix->setEnabled(KST::matrixList.findTag(tag) != KST::matrixList.end());
-    KST::matrixList.lock().readUnlock();
+    KST::matrixList.lock().unlock();
 }
 
 // vim: ts=8 sw=4 noet

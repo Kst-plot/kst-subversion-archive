@@ -66,7 +66,7 @@ void KstViewMatricesDialogI::updateViewMatricesDialog(const QString& matrixName)
   
   KST::matrixList.lock().readLock();
   KstMatrixPtr matrix = *KST::matrixList.findTag(matrixName);
-  KST::matrixList.lock().readUnlock();
+  KST::matrixList.lock().unlock();
   if (matrix) {
     matrix->readLock();
     
@@ -80,7 +80,7 @@ void KstViewMatricesDialogI::updateViewMatricesDialog(const QString& matrixName)
       _tableMatrices->setNumRows(needed);
     }  
         
-    matrix->readUnlock();
+    matrix->unlock();
   }
 }
 

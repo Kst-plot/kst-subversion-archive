@@ -84,7 +84,7 @@ KJS::Object KstBindJSDataObject::construct(KJS::ExecState *exec, const KJS::List
 
   KST::dataObjectList.lock().writeLock();
   KST::dataObjectList.append(d.data());
-  KST::dataObjectList.lock().writeUnlock();
+  KST::dataObjectList.lock().unlock();
 
   return KJS::Object(new KstBindJSDataObject(exec, d));
 }

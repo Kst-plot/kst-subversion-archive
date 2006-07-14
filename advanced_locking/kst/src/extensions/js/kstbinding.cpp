@@ -97,7 +97,7 @@ KstDataSourcePtr KstBinding::extractDataSource(KJS::ExecState *exec, const KJS::
       {
         KST::dataSourceList.lock().readLock();
         KstDataSourcePtr dp = *KST::dataSourceList.findFileName(value.toString(exec).qstring());
-        KST::dataSourceList.lock().readUnlock();
+        KST::dataSourceList.lock().unlock();
         if (dp) {
           return dp;
         }
@@ -164,7 +164,7 @@ KstDataObjectPtr KstBinding::extractDataObject(KJS::ExecState *exec, const KJS::
       {
         KST::dataObjectList.lock().readLock();
         KstDataObjectPtr dp = *KST::dataObjectList.findTag(value.toString(exec).qstring());
-        KST::dataObjectList.lock().readUnlock();
+        KST::dataObjectList.lock().unlock();
         if (dp) {
           return dp;
         }
@@ -204,7 +204,7 @@ KstVectorPtr KstBinding::extractVector(KJS::ExecState *exec, const KJS::Value& v
       {
         KST::vectorList.lock().readLock();
         KstVectorPtr vp = *KST::vectorList.findTag(value.toString(exec).qstring());
-        KST::vectorList.lock().readUnlock();
+        KST::vectorList.lock().unlock();
         if (vp) {
           return vp;
         }
@@ -239,7 +239,7 @@ KstVCurvePtr KstBinding::extractVCurve(KJS::ExecState *exec, const KJS::Value& v
       {
         KST::dataObjectList.lock().readLock();
         KstVCurvePtr vp = kst_cast<KstVCurve>(*KST::dataObjectList.findTag(value.toString(exec).qstring()));
-        KST::dataObjectList.lock().readUnlock();
+        KST::dataObjectList.lock().unlock();
         if (vp) {
           return vp;
         }
@@ -386,7 +386,7 @@ KstBaseCurveList KstBinding::extractCurveList(KJS::ExecState *exec, const KJS::V
             if (imp->_curves.contains((*i)->tagName())) {
                 rc += *i;
             }
-            (*i)->readUnlock();
+            (*i)->unlock();
           }
         }
         return rc;

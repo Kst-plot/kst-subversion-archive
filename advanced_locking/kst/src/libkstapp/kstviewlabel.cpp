@@ -857,13 +857,13 @@ void KstViewLabel::DataCache::update() {
         {
           KST::scalarList.lock().readLock();
           KstScalarPtr p = *KST::scalarList.findTag((*i).name);
-          KST::scalarList.lock().readUnlock();
+          KST::scalarList.lock().unlock();
           if (p) {
             p->readLock();
             if (QVariant(p->value()) != (*i).value) {
               valid = false;
             }
-            p->readUnlock();
+            p->unlock();
           }
         }
         break;
@@ -871,13 +871,13 @@ void KstViewLabel::DataCache::update() {
         {
           KST::stringList.lock().readLock();
           KstStringPtr p = *KST::stringList.findTag((*i).name);
-          KST::stringList.lock().readUnlock();
+          KST::stringList.lock().unlock();
           if (p) {
             p->readLock();
             if (QVariant(p->value()) != (*i).value) {
               valid = false;
             }
-            p->readUnlock();
+            p->unlock();
           }
         }
         break;
@@ -900,13 +900,13 @@ void KstViewLabel::DataCache::update() {
           }
           KST::vectorList.lock().readLock();
           KstVectorPtr p = *KST::vectorList.findTag((*i).name);
-          KST::vectorList.lock().readUnlock();
+          KST::vectorList.lock().unlock();
           if (p) {
             p->readLock();
             if (QVariant(p->value(int((*i).indexValue))) != (*i).value) {
               valid = false;
             }
-            p->readUnlock();
+            p->unlock();
           }
         }
         break;
@@ -914,7 +914,7 @@ void KstViewLabel::DataCache::update() {
         {
           KST::dataObjectList.lock().readLock();
           KstDataObjectList::Iterator oi = KST::dataObjectList.findTag((*i).name);
-          KST::dataObjectList.lock().readUnlock();
+          KST::dataObjectList.lock().unlock();
           if (oi != KST::dataObjectList.end()) {
             KstPluginPtr fit = kst_cast<KstPlugin>(*oi);
             if (fit) {
@@ -922,7 +922,7 @@ void KstViewLabel::DataCache::update() {
               if (fit->label((int)((*i).indexValue)) != (*i).index) {
                 valid = false;
               }
-              fit->readUnlock();     
+              fit->unlock();     
             }
           }
         }

@@ -27,14 +27,14 @@ namespace KST {
     bool deleteDependents(T objectFor) {
       KST::dataObjectList.lock().readLock();
       KstDataObjectList dol = QDeepCopy<KstDataObjectList>(KST::dataObjectList);
-      KST::dataObjectList.lock().readUnlock();
+      KST::dataObjectList.lock().unlock();
       for (KstDataObjectList::Iterator i = dol.begin(); i != dol.end(); ++i) {
         bool user = (*i)->uses(objectFor.data());
         if (user) {
           KstDataObjectPtr dop = *i;
           KST::dataObjectList.lock().writeLock();
           KST::dataObjectList.remove(dop);
-          KST::dataObjectList.lock().writeUnlock();
+          KST::dataObjectList.lock().unlock();
           dop->deleteDependents();
         }
       }
@@ -48,7 +48,7 @@ namespace KST {
       // work with a copy of the data object list
       KST::dataObjectList.lock().readLock();
       KstDataObjectList dol = QDeepCopy<KstDataObjectList>(KST::dataObjectList);
-      KST::dataObjectList.lock().readUnlock();
+      KST::dataObjectList.lock().unlock();
 
       for (KstDataObjectList::Iterator i = dol.begin(); i != dol.end(); ++i) {
         if ((*i)->uses(objectFor.data())) {
@@ -60,7 +60,7 @@ namespace KST {
             if (newObject) {
               KST::dataObjectList.lock().writeLock();
               KST::dataObjectList.append(newObject.data());
-              KST::dataObjectList.lock().writeUnlock();
+              KST::dataObjectList.lock().unlock();
               (*i)->duplicateDependents(duplicatedMap);
             }
           }

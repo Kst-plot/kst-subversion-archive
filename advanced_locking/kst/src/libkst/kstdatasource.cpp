@@ -617,7 +617,7 @@ KstDataSource::KstDataSource(KConfig *cfg, const QString& filename, const QStrin
 KstDataSource::~KstDataSource() {
   KST::scalarList.lock().writeLock();
   KST::scalarList.remove(_numFramesScalar);
-  KST::scalarList.lock().writeUnlock();
+  KST::scalarList.lock().unlock();
   _numFramesScalar = 0L;
 }
 

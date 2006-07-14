@@ -108,7 +108,7 @@ void KstEventMonitorI::fillFieldsForEdit() {
       break;
   }
 
-  ep->readUnlock();
+  ep->unlock();
   adjustSize();
   resize(minimumSizeHint());
   setFixedHeight(height());
@@ -197,7 +197,7 @@ bool KstEventMonitorI::newObject() {
 
   KST::dataObjectList.lock().writeLock();
   KST::dataObjectList.append(event.data());
-  KST::dataObjectList.lock().writeUnlock();
+  KST::dataObjectList.lock().unlock();
 
   event = 0L; // drop the reference before we update
   emit modified();
@@ -221,7 +221,7 @@ bool KstEventMonitorI::editSingleObject(EventMonitorEntryPtr emPtr) {
           _w->radioButtonLogWarning->isChecked() ||
           _w->radioButtonLogError->isChecked()) && _w->checkBoxDebug->isChecked()) {
       KMessageBox::sorry(this, i18n("Select a Debug Log type."));
-      emPtr->writeUnlock();
+      emPtr->unlock();
       return false;
     }
     emPtr->setLogKstDebug(_w->checkBoxDebug->isChecked());
@@ -256,7 +256,7 @@ bool KstEventMonitorI::editSingleObject(EventMonitorEntryPtr emPtr) {
   }
   
   emPtr->reparse();
-  emPtr->writeUnlock();
+  emPtr->unlock();
   
   return true;
 }
@@ -306,7 +306,7 @@ bool KstEventMonitorI::editObject() {
     
     ep->writeLock();
     ep->setTagName(tag_name);
-    ep->writeUnlock();
+    ep->unlock();
     
     // then edit the object
     _lineEditEquationDirty = true;

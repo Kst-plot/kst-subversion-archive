@@ -102,7 +102,7 @@ void KstImageDialogI::fillFieldsForEdit() {
   // set the matrix
   _w->_matrix->setSelection(ip->matrixTag());
 
-  ip->readUnlock();
+  ip->unlock();
 
   //update the groups and enables
   // won't call fillFieldsForEditNoUpdate again because
@@ -140,7 +140,7 @@ void KstImageDialogI::fillFieldsForEditNoUpdate() {
     _w->_contourWeight->setValue(tempWeight);
   }
 
-  ip->readUnlock();
+  ip->unlock();
 
   //don't place the image in edits
   _w->_curvePlacement->hide();
@@ -206,7 +206,7 @@ bool KstImageDialogI::newObject() {
 
   KST::matrixList.lock().readLock();
   KstMatrixPtr matrix = *KST::matrixList.findTag(_w->_matrix->selectedMatrix());
-  KST::matrixList.lock().readUnlock();
+  KST::matrixList.lock().unlock();
   if (!matrix) {
     KMessageBox::sorry(this, i18n("Matrix is a 2D grid of numbers, used to create image", "Could not find matrix."));
     return false;
@@ -218,8 +218,8 @@ bool KstImageDialogI::newObject() {
   QString tag_name = KST::suggestImageName(matrix->tagName());
   if (KstData::self()->dataTagNameNotUnique(tag_name)) {
     _tagName->setFocus();
-    matrix->readUnlock();
-    KST::dataObjectList.lock().readUnlock();
+    matrix->unlock();
+    KST::dataObjectList.lock().unlock();
     return false;
   }
 
@@ -243,12 +243,12 @@ bool KstImageDialogI::newObject() {
                          _w->_numContourLines->text().toInt(), tempColor,
                          _w->_useVariableWeight->isChecked() ? -1 : _w->_contourWeight->value());
   }
-  matrix->readUnlock();
-  KST::dataObjectList.lock().readUnlock();
+  matrix->unlock();
+  KST::dataObjectList.lock().unlock();
   placeInPlot(image);
   KST::dataObjectList.lock().writeLock();
   KST::dataObjectList.append(image.data());
-  KST::dataObjectList.lock().writeUnlock();
+  KST::dataObjectList.lock().unlock();
   image = 0L; // drop the reference
   emit modified();
   return true;
@@ -261,7 +261,7 @@ bool KstImageDialogI::editSingleObject(KstImagePtr imPtr) {
     //find the pMatrix
     KST::matrixList.lock().readLock();
     pMatrix = *KST::matrixList.findTag(_w->_matrix->selectedMatrix());
-    KST::matrixList.lock().readUnlock();
+    KST::matrixList.lock().unlock();
 
     if (!pMatrix) {
       KMessageBox::sorry(this, i18n("Matrix is a 2D grid of numbers, used to create image", "Could not find pMatrix."));
@@ -270,7 +270,7 @@ bool KstImageDialogI::editSingleObject(KstImagePtr imPtr) {
   } else {
     imPtr->readLock();
     pMatrix = imPtr->matrix();
-    imPtr->readUnlock();
+    imPtr->unlock();
   }
 
   imPtr->writeLock();
@@ -280,8 +280,8 @@ bool KstImageDialogI::editSingleObject(KstImagePtr imPtr) {
     double lowerZDouble, upperZDouble;
     if (!checkParameters(lowerZDouble, upperZDouble)) {
       KMessageBox::sorry(this, i18n("Image type was changed: Lower Z threshold cannot be higher than Upper Z threshold."));
-      pMatrix->readUnlock();
-      imPtr->writeUnlock();
+      pMatrix->unlock();
+      imPtr->unlock();
       return false;
     }
     if (_w->_contourOnly->isChecked()) {
@@ -356,8 +356,8 @@ bool KstImageDialogI::editSingleObject(KstImagePtr imPtr) {
     if (imPtr->hasColorMap()) {
       if (pLowerZ > pUpperZ) {
         KMessageBox::sorry(this, i18n("The Lower Z threshold cannot be higher than Upper Z threshold."));
-        pMatrix->readUnlock();
-        imPtr->writeUnlock();
+        pMatrix->unlock();
+        imPtr->unlock();
         return false;
       }
     }
@@ -389,7 +389,7 @@ bool KstImageDialogI::editSingleObject(KstImagePtr imPtr) {
   }
 
 
-  imPtr->writeUnlock();
+  imPtr->unlock();
 
   return true;
 }
@@ -439,7 +439,7 @@ bool KstImageDialogI::editObject() {
 
     ip->writeLock();
     ip->setTagName(tag_name);
-    ip->writeUnlock();
+    ip->unlock();
 
     // then edit the object
     _colorOnlyDirty = true;
@@ -467,12 +467,12 @@ void KstImageDialogI::calcAutoThreshold() {
   if (!_w->_matrix->selectedMatrix().isEmpty()){
     KST::matrixList.lock().readLock();
     KstMatrixPtr matrix = *KST::matrixList.findTag(_w->_matrix->selectedMatrix());
-    KST::matrixList.lock().readUnlock();
+    KST::matrixList.lock().unlock();
     if (matrix) {
       matrix->readLock();
       _w->_lowerZ->setText(QString::number(matrix->minValue()));
       _w->_upperZ->setText(QString::number(matrix->maxValue()));
-      matrix->readUnlock();
+      matrix->unlock();
     }
   }
 }

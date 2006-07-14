@@ -69,11 +69,11 @@ void KstViewVectorsDialogI::updateViewVectorsDialog(const QString& vectorName) {
   int needed = 0;
   KST::vectorList.lock().readLock();
   KstVectorPtr vector = *KST::vectorList.findTag(vectorName);
-  KST::vectorList.lock().readUnlock();
+  KST::vectorList.lock().unlock();
   if (vector) {
     vector->readLock();
     needed = vector->length();
-    vector->readUnlock();
+    vector->unlock();
   }
 
   if (needed != tableVectors->numRows()) {

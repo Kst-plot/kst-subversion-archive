@@ -156,14 +156,14 @@ void KstPluginDialogI::fillFieldsForEdit() {
   }
   pp->readLock();
   if (!pp->plugin()) { // plugin() can be null if the kst file is invalid
-    pp->readUnlock();
+    pp->unlock();
     return;
   }
   const QString pluginName(pp->tagName());
   const QString pluginObjectName(pp->plugin()->data()._name);
   const int usage = pp->getUsage();
   KstSharedPtr<Plugin> plug = pp->plugin();
-  pp->readUnlock();
+  pp->unlock();
 
   _tagName->setText(pluginName);
   updatePluginList();
@@ -194,7 +194,7 @@ void KstPluginDialogI::fillVectorScalarCombos(KstSharedPtr<Plugin> plugin) {
   if (pp) {
     pp->readLock();
     DPvalid = pp->isValid();
-    pp->readUnlock();
+    pp->unlock();
   }
 
   if (plugin) {
@@ -269,7 +269,7 @@ void KstPluginDialogI::fillVectorScalarCombos(KstSharedPtr<Plugin> plugin) {
           li->setText(ts);
         }
       }
-      pp->readUnlock();
+      pp->unlock();
     }
   } else { // invalid plugin
     PluginCollection *pc = PluginCollection::self();
@@ -397,7 +397,7 @@ bool KstPluginDialogI::saveInputs(KstPluginPtr plugin, KstSharedPtr<Plugin> p) {
       if (v) {
         v->writeLock(); // to match with plugin->writeLock()
         if (plugin->inputVectors().contains((*it)._name) && plugin->inputVectors()[(*it)._name] != v) {
-          plugin->inputVectors()[(*it)._name]->writeUnlock();
+          plugin->inputVectors()[(*it)._name]->unlock();
         }
         plugin->inputVectors().insert((*it)._name, v);
       } else if (plugin->inputVectors().contains((*it)._name)) {
@@ -414,13 +414,13 @@ bool KstPluginDialogI::saveInputs(KstPluginPtr plugin, KstSharedPtr<Plugin> p) {
         KstStringPtr newString = new KstString(ss->_string->currentText(), 0L, val, true, false);
         newString->writeLock(); // to match with plugin->writeLock()
         if (plugin->inputStrings().contains((*it)._name) && plugin->inputStrings()[(*it)._name] != s) {
-          plugin->inputStrings()[(*it)._name]->writeUnlock();
+          plugin->inputStrings()[(*it)._name]->unlock();
         }
         plugin->inputStrings().insert((*it)._name, newString);
       } else {
         s->writeLock(); // to match with plugin->writeLock()
         if (plugin->inputStrings().contains((*it)._name) && plugin->inputStrings()[(*it)._name] != s) {
-          plugin->inputStrings()[(*it)._name]->writeUnlock();
+          plugin->inputStrings()[(*it)._name]->unlock();
         }
         plugin->inputStrings().insert((*it)._name, s);
       }
@@ -439,29 +439,29 @@ bool KstPluginDialogI::saveInputs(KstPluginPtr plugin, KstSharedPtr<Plugin> p) {
           KstScalarPtr newScalar = new KstScalar(ss->_scalar->currentText(), 0L, val, true, false, false);
           newScalar->writeLock(); // to match with plugin->writeLock()
           if (plugin->inputScalars().contains((*it)._name) && plugin->inputScalars()[(*it)._name] != s) {
-            plugin->inputScalars()[(*it)._name]->writeUnlock();
+            plugin->inputScalars()[(*it)._name]->unlock();
           }
           plugin->inputScalars().insert((*it)._name, newScalar);
         } else {
           s->writeLock(); // to match with plugin->writeLock()
           if (plugin->inputScalars().contains((*it)._name) && plugin->inputScalars()[(*it)._name] != s) {
-            plugin->inputScalars()[(*it)._name]->writeUnlock();
+            plugin->inputScalars()[(*it)._name]->unlock();
           }
           plugin->inputScalars().insert((*it)._name, s);
         }
       } else {
         s->writeLock(); // to match with plugin->writeLock()
         if (plugin->inputScalars().contains((*it)._name) && plugin->inputScalars()[(*it)._name] != s) {
-          plugin->inputScalars()[(*it)._name]->writeUnlock();
+          plugin->inputScalars()[(*it)._name]->unlock();
         }
         plugin->inputScalars().insert((*it)._name, s);
       }
     } else {
     }
   }
-  KST::stringList.lock().readUnlock();
-  KST::scalarList.lock().readUnlock();
-  KST::vectorList.lock().readUnlock();
+  KST::stringList.lock().unlock();
+  KST::scalarList.lock().unlock();
+  KST::vectorList.lock().unlock();
 
   return rc;
 }
@@ -582,7 +582,7 @@ bool KstPluginDialogI::newObject() {
       plugin->writeLock();
       if (!saveInputs(plugin, pPtr)) {
         KMessageBox::sorry(this, i18n("One or more of the inputs was undefined."));
-        plugin->writeUnlock();
+        plugin->unlock();
         plugin = 0L;
         return false;
       }
@@ -595,11 +595,11 @@ bool KstPluginDialogI::newObject() {
       plugin->setTagName(tagName);
       if (!saveOutputs(plugin, pPtr)) {
         KMessageBox::sorry(this, i18n("One or more of the outputs was undefined."));
-        plugin->writeUnlock();
+        plugin->unlock();
         plugin = 0L;
         return false;
       }
-      plugin->writeUnlock();
+      plugin->unlock();
     }
   }
 
@@ -611,7 +611,7 @@ bool KstPluginDialogI::newObject() {
   plugin->setDirty();
   KST::dataObjectList.lock().writeLock();
   KST::dataObjectList.append(plugin.data());
-  KST::dataObjectList.lock().writeUnlock();
+  KST::dataObjectList.lock().unlock();
   plugin = 0L;
   emit modified();
 
@@ -628,7 +628,7 @@ bool KstPluginDialogI::editObject() {
   pp->writeLock();
   if (_tagName->text() != pp->tagName() && KstData::self()->dataTagNameNotUnique(_tagName->text())) {
     _tagName->setFocus();
-    pp->writeUnlock();
+    pp->unlock();
     return false;
   }
 
@@ -639,13 +639,13 @@ bool KstPluginDialogI::editObject() {
 
   // Must unlock before clear()
   for (KstVectorMap::Iterator i = pp->inputVectors().begin(); i != pp->inputVectors().end(); ++i) {
-    (*i)->writeUnlock();
+    (*i)->unlock();
   }
   for (KstScalarMap::Iterator i = pp->inputScalars().begin(); i != pp->inputScalars().end(); ++i) {
-    (*i)->writeUnlock();
+    (*i)->unlock();
   }
   for (KstStringMap::Iterator i = pp->inputStrings().begin(); i != pp->inputStrings().end(); ++i) {
-    (*i)->writeUnlock();
+    (*i)->unlock();
   }
   pp->inputVectors().clear();
   pp->inputScalars().clear();
@@ -654,7 +654,7 @@ bool KstPluginDialogI::editObject() {
   // Save the vectors and scalars
   if (!saveInputs(pp, pPtr)) {
     KMessageBox::sorry(this, i18n("There is an error in the plugin you entered."));
-    pp->writeUnlock();
+    pp->unlock();
     return false;
   }
 
@@ -664,17 +664,17 @@ bool KstPluginDialogI::editObject() {
 
   if (!saveOutputs(pp, pPtr)) {
     KMessageBox::sorry(this, i18n("There is an error in the plugin you entered."));
-    pp->writeUnlock();
+    pp->unlock();
     return false;
   }
 
   if (!pp->isValid()) {
     KMessageBox::sorry(this, i18n("There is an error in the plugin you entered."));
-    pp->writeUnlock();
+    pp->unlock();
     return false;
   }
   pp->setDirty();
-  pp->writeUnlock();
+  pp->unlock();
 
   emit modified();
   return true;
@@ -743,7 +743,7 @@ void KstPluginDialogI::generateEntries(bool input, int& cnt, QWidget *parent, QG
           p->readLock();
           QToolTip::remove(w->_scalar);
           QToolTip::add(w->_scalar, QString::number(p->value()));
-          p->readUnlock();
+          p->unlock();
         }
       } else if (string) {
         StringSelector *w = new StringSelector(parent, (*it)._name.latin1());
@@ -760,7 +760,7 @@ void KstPluginDialogI::generateEntries(bool input, int& cnt, QWidget *parent, QG
           p->readLock();
           QToolTip::remove(w->_string);
           QToolTip::add(w->_string, p->value());
-          p->readUnlock();
+          p->unlock();
         }
       } else {
         widget = new VectorSelector(parent, (*it)._name.latin1());
@@ -882,7 +882,7 @@ void KstPluginDialogI::updateScalarTooltip(const QString& n) {
     s->readLock();
     QToolTip::remove(w);
     QToolTip::add(w, QString::number(s->value()));
-    s->readUnlock();
+    s->unlock();
   } else {
     QToolTip::remove(w);
   }
@@ -896,7 +896,7 @@ void KstPluginDialogI::updateStringTooltip(const QString& n) {
     s->readLock();
     QToolTip::remove(w);
     QToolTip::add(w, s->value());
-    s->readUnlock();
+    s->unlock();
   } else {
     QToolTip::remove(w);
   }

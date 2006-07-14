@@ -89,35 +89,35 @@ void renderLabel(RenderContext& rc, Label::Chunk *fi) {
       } else {
         KST::scalarList.lock().readLock();
         KstScalarPtr scp = *KST::scalarList.findTag(fi->text);
-        KST::scalarList.lock().readUnlock();
+        KST::scalarList.lock().unlock();
         if (scp) {
           scp->readLock();
           txt = QString::number(scp->value(), 'g', rc.precision);
           if (rc._cache) {
             rc._cache->append(DataRef(DataRef::DRScalar, fi->text, QString::null, 0.0, QVariant(scp->value())));
           }
-          scp->readUnlock();
+          scp->unlock();
         } else {
           KST::stringList.lock().readLock();
           KstStringPtr stp = *KST::stringList.findTag(fi->text);
-          KST::stringList.lock().readUnlock();
+          KST::stringList.lock().unlock();
           if (stp) {
             stp->readLock();
             txt = stp->value();
             if (rc._cache) {
               rc._cache->append(DataRef(DataRef::DRString, fi->text, QString::null, 0.0, QVariant(stp->value())));
             }
-            stp->readUnlock();
+            stp->unlock();
           } else {
             KST::dataObjectList.lock().readLock();
             KstDataObjectList::Iterator oi = KST::dataObjectList.findTag(fi->text);
-            KST::dataObjectList.lock().readUnlock();
+            KST::dataObjectList.lock().unlock();
             if (oi != KST::dataObjectList.end()) {
               KstPluginPtr fit = kst_cast<KstPlugin>(*oi);
               if (fit) {
                 fit->readLock();
                 const QString txtAll = fit->label(rc.precision);
-                fit->readUnlock();
+                fit->unlock();
                 
                 const QValueList<QString> strList = QStringList::split('\n', txtAll);
                 QValueListConstIterator<QString> last = --(strList.end());
@@ -156,7 +156,7 @@ void renderLabel(RenderContext& rc, Label::Chunk *fi) {
       QString txt;
       KST::vectorList.lock().readLock();
       KstVectorPtr vp = *KST::vectorList.findTag(fi->text);
-      KST::vectorList.lock().readUnlock();
+      KST::vectorList.lock().unlock();
       if (vp) {
         if (!fi->expression.isEmpty()) {
           // Parse and evaluate as an equation
@@ -170,7 +170,7 @@ void renderLabel(RenderContext& rc, Label::Chunk *fi) {
             if (rc._cache) {
               rc._cache->append(DataRef(DataRef::DRVector, fi->text, fi->expression, idx, QVariant(vVal)));
             }
-            vp->readUnlock();
+            vp->unlock();
           } else {
             txt = "NAN";
           }

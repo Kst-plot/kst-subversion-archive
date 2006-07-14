@@ -137,7 +137,7 @@ KstObjectPtr KstDataDialog::findObject( const QString & name )
 {
     KST::dataObjectList.lock().readLock();
     KstObjectPtr o = (*KST::dataObjectList.findTag(name)).data();
-    KST::dataObjectList.lock().readUnlock();
+    KST::dataObjectList.lock().unlock();
     return o;
 }
 

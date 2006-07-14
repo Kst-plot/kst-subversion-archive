@@ -329,8 +329,8 @@ KJS::Value KstBindDataVector::changeFile(KJS::ExecState *exec, const KJS::List& 
   v->writeLock();
   s->writeLock();
   v->changeFile(s);
-  s->writeUnlock();
-  v->writeUnlock();
+  s->unlock();
+  v->unlock();
 #undef makeSource
 
   return KJS::Undefined();

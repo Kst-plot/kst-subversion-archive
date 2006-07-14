@@ -1003,7 +1003,7 @@ void Kst2DPlot::updateScale() {
           }
           first = false;
         }
-        c->readUnlock();
+        c->unlock();
       }
 
       if (XMax <= XMin) {  // if curves had no variation in them
@@ -1045,7 +1045,7 @@ void Kst2DPlot::updateScale() {
 
           first = false;
         }
-        c->readUnlock();
+        c->unlock();
       }
       if (XMax <= XMin) {  // if curves had no variation in them
         XMin -= 0.1;
@@ -1069,7 +1069,7 @@ void Kst2DPlot::updateScale() {
           mid += c->midX();
           ++count;
         }
-        c->readUnlock();
+        c->unlock();
       }
       if (count > 0) {
         if (XMax <= XMin) { // make sure that range is legal
@@ -1120,7 +1120,7 @@ void Kst2DPlot::updateScale() {
             XMax = c->maxX();
           }
         }
-        c->readUnlock();
+        c->unlock();
       }
 
       if (_xLog && XMin < 0.0) {
@@ -1202,7 +1202,7 @@ void Kst2DPlot::updateScale() {
           }
           first = false;
         }
-        c->readUnlock();
+        c->unlock();
       }
 
       if (YMax <= YMin) {  // if curves had no variation in them
@@ -1245,7 +1245,7 @@ void Kst2DPlot::updateScale() {
 
           first = false;
         }
-        c->readUnlock();
+        c->unlock();
       }
       if (YMax <= YMin) {  // if curves had no variation in them
         YMin -= 0.1;
@@ -1269,7 +1269,7 @@ void Kst2DPlot::updateScale() {
           mid += c->midY();
           ++count;
         }
-        c->readUnlock();
+        c->unlock();
       }
       if (count > 0) {
         if (YMax <= YMin) { // make sure that range is legal
@@ -1321,7 +1321,7 @@ void Kst2DPlot::updateScale() {
             YMax = c->maxY();
           }
         }
-        c->readUnlock();
+        c->unlock();
       }
 
       if (_yLog && YMin <= 0.0) {
@@ -2787,7 +2787,7 @@ void Kst2DPlot::saveAttributes(QTextStream& ts, const QString& indent) {
   for (KstBaseCurveList::Iterator j = Curves.begin(); j != Curves.end(); ++j) {
     (*j)->readLock();
     ts << indent << "<curvetag>" << QStyleSheet::escape((*j)->tagName()) << "</curvetag>" << endl;
-    (*j)->readUnlock();
+    (*j)->unlock();
   }
 
   // save the plot colors, but only if they are different from default
@@ -2950,7 +2950,7 @@ void Kst2DPlot::generateDefaultLabels(bool xl, bool yl, bool tl) {
     if (toplabels.findIndex((*i)->topLabel()) == -1) {
       toplabels.append((*i)->topLabel());
     }
-    (*i)->readUnlock();
+    (*i)->unlock();
   }
 
   // create the labels
@@ -3213,7 +3213,7 @@ void Kst2DPlot::editCurve(int id) {
   if (curve) {
     curve->readLock();
     curve->showDialog();
-    curve->readUnlock();
+    curve->unlock();
   }
 }
 
@@ -3223,7 +3223,7 @@ void Kst2DPlot::editObject(int id) {
   if (dop) {
     dop->readLock();
     dop->showDialog();
-    dop->readUnlock();
+    dop->unlock();
   }
 }
 
@@ -3519,7 +3519,7 @@ bool Kst2DPlot::popupMenu(KPopupMenu *menu, const QPoint& pos, KstViewObjectPtr 
     KstBaseCurvePtr c = Curves[i];
     c->readLock();
     const QString& tag = c->tagName();
-    c->readUnlock();
+    c->unlock();
     _curveEditMap[i] = tag;
     submenu->insertItem(i18n("Type: Name", "Plot Object: %1").arg(tag), i);
     submenu->connectItem(i, this, SLOT(editCurve(int)));
@@ -4764,7 +4764,7 @@ void Kst2DPlot::zoomSelfYLocalMax(bool unused) {
       }
       first = false;
     }
-    c->readUnlock();
+    c->unlock();
   }
 
   // if curves/images had no variation in them
@@ -5480,7 +5480,7 @@ void Kst2DPlot::updateMarkersFromCurve() {
         prevY = curY;
       }
     }
-    _curveToMarkers->readUnlock();
+    _curveToMarkers->unlock();
   }
 }
 
@@ -5528,7 +5528,7 @@ void Kst2DPlot::updateMarkersFromVector() {
       }
     }
     
-    _vectorToMarkers->readUnlock();
+    _vectorToMarkers->unlock();
   }
 }
 
@@ -6158,7 +6158,7 @@ void Kst2DPlot::pushAdjustLineWidth(int adjustment) {
   for (KstVCurveList::Iterator i = vcurves.begin(); i != vcurves.end(); ++i) {
     (*i)->writeLock();
     (*i)->pushLineWidth((*i)->lineWidth() + adjustment);
-    (*i)->writeUnlock();
+    (*i)->unlock();
   }
 }
 
@@ -6168,7 +6168,7 @@ void Kst2DPlot::popLineWidth() {
   for (KstVCurveList::Iterator i = vcurves.begin(); i != vcurves.end(); ++i) {
     (*i)->writeLock();
     (*i)->popLineWidth();
-    (*i)->writeUnlock();
+    (*i)->unlock();
   }
 }
 
@@ -6178,7 +6178,7 @@ void Kst2DPlot::pushCurveColor(const QColor& c) {
   for (KstVCurveList::Iterator i = vcurves.begin(); i != vcurves.end(); ++i) {
     (*i)->writeLock();
     (*i)->pushColor(c);
-    (*i)->writeUnlock();
+    (*i)->unlock();
   }
 }
 
@@ -6188,7 +6188,7 @@ void Kst2DPlot::popCurveColor() {
   for (KstVCurveList::Iterator i = vcurves.begin(); i != vcurves.end(); ++i) {
     (*i)->writeLock();
     (*i)->popColor();
-    (*i)->writeUnlock();
+    (*i)->unlock();
   }
 }
 
@@ -6251,7 +6251,7 @@ void Kst2DPlot::mouseDoubleClickEvent(QWidget *view, QMouseEvent *e) {
   for (KstBaseCurveList::Iterator i = Curves.begin(); i != Curves.end(); ++i) {
     (*i)->readLock();
     double distance = (*i)->distanceToPoint(xpos, dx, ypos);
-    (*i)->readUnlock();
+    (*i)->unlock();
 
     if (distance < best_distance || !curve) {
       best_distance = distance;
@@ -6263,13 +6263,13 @@ void Kst2DPlot::mouseDoubleClickEvent(QWidget *view, QMouseEvent *e) {
     curve->readLock();
     KstDataObjectPtr provider = curve->providerDataObject();
     if (provider) {
-      curve->readUnlock();
+      curve->unlock();
       provider->readLock();
       provider->showDialog();
-      provider->readUnlock();
+      provider->unlock();
     } else {
       curve->showDialog();
-      curve->readUnlock();
+      curve->unlock();
     }
   }
 
@@ -6495,7 +6495,7 @@ void Kst2DPlot::pushCurveHasPoints(bool yes) {
   for (KstVCurveList::Iterator i = vcurves.begin(); i != vcurves.end(); ++i) {
     (*i)->writeLock();
     (*i)->pushHasPoints(yes);
-    (*i)->writeUnlock();
+    (*i)->unlock();
   }
 }
 
@@ -6505,7 +6505,7 @@ void Kst2DPlot::popCurveHasPoints() {
   for (KstVCurveList::Iterator i = vcurves.begin(); i != vcurves.end(); ++i) {
     (*i)->writeLock();
     (*i)->popHasPoints();
-    (*i)->writeUnlock();
+    (*i)->unlock();
   }
 }
 
@@ -6515,7 +6515,7 @@ void Kst2DPlot::pushCurveHasLines(bool yes) {
   for (KstVCurveList::Iterator i = vcurves.begin(); i != vcurves.end(); ++i) {
     (*i)->writeLock();
     (*i)->pushHasLines(yes);
-    (*i)->writeUnlock();
+    (*i)->unlock();
   }
 }
 
@@ -6525,7 +6525,7 @@ void Kst2DPlot::popCurveHasLines() {
   for (KstVCurveList::Iterator i = vcurves.begin(); i != vcurves.end(); ++i) {
     (*i)->writeLock();
     (*i)->popHasLines();
-    (*i)->writeUnlock();
+    (*i)->unlock();
   }
 }
 
@@ -6535,7 +6535,7 @@ void Kst2DPlot::pushCurvePointDensity(int pointDensity) {
   for (KstVCurveList::Iterator i = vcurves.begin(); i != vcurves.end(); ++i) {
     (*i)->writeLock();
     (*i)->pushPointDensity(pointDensity);
-    (*i)->writeUnlock();
+    (*i)->unlock();
   }
 }
 
@@ -6545,7 +6545,7 @@ void Kst2DPlot::popCurvePointDensity() {
   for (KstVCurveList::Iterator i = vcurves.begin(); i != vcurves.end(); ++i) {
     (*i)->writeLock();
     (*i)->popPointDensity();
-    (*i)->writeUnlock();
+    (*i)->unlock();
   }
 }
 
@@ -6603,7 +6603,7 @@ void Kst2DPlot::changeToMonochrome(int pointStylePriority, int lineStylePriority
     if (lineWidthPriority > -1) {
       (*i)->pushLineWidth(5*lineWidthSeq.current());
     }
-    (*i)->writeUnlock();
+    (*i)->unlock();
     seqVect[0]->next();
   }
 }
@@ -6624,7 +6624,7 @@ bool Kst2DPlot::undoChangeToMonochrome(int pointStylePriority, int lineStylePrio
     if (lineWidthPriority > -1) {
       (*i)->popLineWidth();
     }
-    (*i)->writeUnlock();
+    (*i)->unlock();
   }
   popPlotColors();
   popCurveColor();

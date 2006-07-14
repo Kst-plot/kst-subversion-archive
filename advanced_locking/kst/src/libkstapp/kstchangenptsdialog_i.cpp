@@ -76,7 +76,7 @@ bool KstChangeNptsDialogI::updateChangeNptsDialog() {
       CurveList->setSelected(inserted, true);
     }
     ++inserted;
-    vector->readUnlock();
+    vector->unlock();
   }
   CurveList->blockSignals(false);
   return !qsl.isEmpty();
@@ -107,11 +107,11 @@ void KstChangeNptsDialogI::applyNptsChange() {
         if (_kstDataRange->isStartRelativeTime() && ds) {
           ds->readLock();
           f0 = ds->sampleForTime(_kstDataRange->f0Value());
-          ds->readUnlock();
+          ds->unlock();
         } else if (_kstDataRange->isStartAbsoluteTime() && ds) {
           ds->readLock();
           f0 = ds->sampleForTime(_kstDataRange->f0DateTimeValue());
-          ds->readUnlock();
+          ds->unlock();
         } else {
           f0 = int(_kstDataRange->f0Value());
         }
@@ -127,11 +127,11 @@ void KstChangeNptsDialogI::applyNptsChange() {
             double fTime = ds->relativeTimeForSample(f0);
             n = ds->sampleForTime(fTime + nValStored) - ds->sampleForTime(fTime);
           }
-          ds->readUnlock();
+          ds->unlock();
         } else {
           n = int(_kstDataRange->nValue());
         }
-        vector->readUnlock();
+        vector->unlock();
         
         vector->writeLock();
         vector->changeFrames(
@@ -140,7 +140,7 @@ void KstChangeNptsDialogI::applyNptsChange() {
           _kstDataRange->Skip->value(),
           _kstDataRange->DoSkip->isChecked(),
           _kstDataRange->DoFilter->isChecked());
-        vector->writeUnlock();
+        vector->unlock();
       }
     }
   }
@@ -181,7 +181,7 @@ void KstChangeNptsDialogI::updateDefaults(int index) {
   _kstDataRange->DoFilter->setChecked(vector->doAve());
   _kstDataRange->updateEnables();
 
-  vector->readUnlock();
+  vector->unlock();
 }
 
 
@@ -195,11 +195,11 @@ void KstChangeNptsDialogI::updateTimeCombo() {
       if (vector) {
         vector->readLock();
         KstDataSourcePtr ds = vector->dataSource();
-        vector->readUnlock();
+        vector->unlock();
         if (ds) {
           ds->readLock();
           supportsTime = ds->supportsTimeConversions();
-          ds->readUnlock();
+          ds->unlock();
           if (!supportsTime) {
             break;
           }

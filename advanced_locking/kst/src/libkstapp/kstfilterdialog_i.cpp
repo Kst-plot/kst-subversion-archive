@@ -79,7 +79,7 @@ void KstFilterDialogI::show_setCurve(const QString& curveName,
     curve->readLock();
     _xvector = curve->xVTag();
     _yvector = curve->yVTag();
-    curve->readUnlock();
+    curve->unlock();
   }
   show();
 }
@@ -129,7 +129,7 @@ bool KstFilterDialogI::saveInputs(KstPluginPtr plugin, KstSharedPtr<Plugin> p) {
           v->writeLock(); // to match with plugin->writeLock()
         }
         if (plugin->inputVectors().contains((*it)._name) && plugin->inputVectors()[(*it)._name] != v) {
-          plugin->inputVectors()[(*it)._name]->writeUnlock();
+          plugin->inputVectors()[(*it)._name]->unlock();
         }
         plugin->inputVectors().insert((*it)._name, v);
       } else {
@@ -141,7 +141,7 @@ bool KstFilterDialogI::saveInputs(KstPluginPtr plugin, KstSharedPtr<Plugin> p) {
             v->writeLock(); // to match with plugin->writeLock()
           }
           if (plugin->inputVectors().contains((*it)._name) && plugin->inputVectors()[(*it)._name] != v) {
-            plugin->inputVectors()[(*it)._name]->writeUnlock();
+            plugin->inputVectors()[(*it)._name]->unlock();
           }
           plugin->inputVectors().insert((*it)._name, v);
         }
@@ -156,13 +156,13 @@ bool KstFilterDialogI::saveInputs(KstPluginPtr plugin, KstSharedPtr<Plugin> p) {
           KstStringPtr newString = new KstString(ss->_string->currentText(), 0L, val, true, false);
           newString->writeLock(); // to match with plugin->writeLock()
           if (plugin->inputStrings().contains((*it)._name) && plugin->inputStrings()[(*it)._name] != newString) {
-            plugin->inputStrings()[(*it)._name]->writeUnlock();
+            plugin->inputStrings()[(*it)._name]->unlock();
           }
           plugin->inputStrings().insert((*it)._name, newString);
         } else {
           s->writeLock(); // to match with plugin->writeLock()
           if (plugin->inputStrings().contains((*it)._name) && plugin->inputStrings()[(*it)._name] != s) {
-            plugin->inputStrings()[(*it)._name]->writeUnlock();
+            plugin->inputStrings()[(*it)._name]->unlock();
           }
           plugin->inputStrings().insert((*it)._name, s);
         }
@@ -182,29 +182,29 @@ bool KstFilterDialogI::saveInputs(KstPluginPtr plugin, KstSharedPtr<Plugin> p) {
             KstScalarPtr newScalar = new KstScalar(ss->_scalar->currentText(), 0L, val, true, false, false);
             newScalar->writeLock(); // to match with plugin->writeLock()
             if (plugin->inputScalars().contains((*it)._name) && plugin->inputScalars()[(*it)._name] != newScalar) {
-              plugin->inputScalars()[(*it)._name]->writeUnlock();
+              plugin->inputScalars()[(*it)._name]->unlock();
             }
             plugin->inputScalars().insert((*it)._name, newScalar);
           } else {
             s->writeLock(); // to match with plugin->writeLock()
             if (plugin->inputScalars().contains((*it)._name) && plugin->inputScalars()[(*it)._name] != s) {
-              plugin->inputScalars()[(*it)._name]->writeUnlock();
+              plugin->inputScalars()[(*it)._name]->unlock();
             }
             plugin->inputScalars().insert((*it)._name, s);
           }
         } else {
           s->writeLock(); // to match with plugin->writeLock()
           if (plugin->inputScalars().contains((*it)._name) && plugin->inputScalars()[(*it)._name] != s) {
-            plugin->inputScalars()[(*it)._name]->writeUnlock();
+            plugin->inputScalars()[(*it)._name]->unlock();
           }
           plugin->inputScalars().insert((*it)._name, s);
         }
       }
     }
   }
-  KST::stringList.lock().readUnlock();
-  KST::scalarList.lock().readUnlock();
-  KST::vectorList.lock().readUnlock();
+  KST::stringList.lock().unlock();
+  KST::scalarList.lock().unlock();
+  KST::vectorList.lock().unlock();
 
   return true;
 }
@@ -219,7 +219,7 @@ bool KstFilterDialogI::createCurve(KstPluginPtr plugin) {
   if (it != KST::vectorList.end()) {
     xVector = *it;
   }
-  KST::vectorList.lock().readUnlock();
+  KST::vectorList.lock().unlock();
 
   if (plugin->outputVectors().contains(plugin->plugin()->data()._filterOutputVector)) {
     yVector = plugin->outputVectors()[plugin->plugin()->data()._filterOutputVector];
@@ -251,7 +251,7 @@ bool KstFilterDialogI::createCurve(KstPluginPtr plugin) {
 
   KST::dataObjectList.lock().writeLock();
   KST::dataObjectList.append(fit.data());
-  KST::dataObjectList.lock().writeUnlock();
+  KST::dataObjectList.lock().unlock();
   return true;
 }
 
@@ -287,14 +287,14 @@ bool KstFilterDialogI::newObject() {
               } else {
                 KST::dataObjectList.lock().writeLock();
                 KST::dataObjectList.append(plugin.data());
-                KST::dataObjectList.lock().writeUnlock();
+                KST::dataObjectList.lock().unlock();
               }
             } else {
               KMessageBox::sorry(this, i18n("There is an error in the plugin you entered."));
             }
           }
         }
-        plugin->writeUnlock();
+        plugin->unlock();
       }
     }
     emit modified();
@@ -379,7 +379,7 @@ void KstFilterDialogI::generateEntries(bool input, int& cnt, QWidget *parent, QG
           p->readLock();
           QToolTip::remove(w->_scalar);
           QToolTip::add(w->_scalar, QString::number(p->value()));
-          p->readUnlock();
+          p->unlock();
         }
       } else if (string) {
         StringSelector *w = new StringSelector(parent, (*it)._name.latin1());
@@ -396,7 +396,7 @@ void KstFilterDialogI::generateEntries(bool input, int& cnt, QWidget *parent, QG
           p->readLock();
           QToolTip::remove(w->_string);
           QToolTip::add(w->_string, p->value());
-          p->readUnlock();
+          p->unlock();
         }
       } else {
         if (fixed) {

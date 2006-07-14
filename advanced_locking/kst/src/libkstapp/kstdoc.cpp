@@ -512,13 +512,13 @@ bool KstDoc::openDocument(const KURL& url, const QString& o_file,
   {
     KST::dataObjectList.lock().readLock();
     KstDataObjectList dol = QDeepCopy<KstDataObjectList>(KST::dataObjectList);
-    KST::dataObjectList.lock().readUnlock();
+    KST::dataObjectList.lock().unlock();
     for (KstDataObjectList::Iterator i = dol.begin(); i != dol.end(); ++i) {
       assert(*i);
       //kstdDebug() << "Load inputs for " << (*i)->tagName() << " " << (void*)*i << endl;
       (*i)->KstRWLock::writeLock();
       bool rc = (*i)->loadInputs();
-      (*i)->KstRWLock::writeUnlock();
+      (*i)->KstRWLock::unlock();
       if (!rc) {
         // schedule for removal
         bitBucket.append(*i);
@@ -531,7 +531,7 @@ bool KstDoc::openDocument(const KURL& url, const QString& o_file,
   for (KstDataObjectList::Iterator i = bitBucket.begin(); i != bitBucket.end(); ++i) {
     KST::dataObjectList.remove(*i);
   }
-  KST::dataObjectList.lock().writeUnlock();
+  KST::dataObjectList.lock().unlock();
 
   if (!bitBucket.isEmpty()) {
     QStringList names;
@@ -643,7 +643,7 @@ void KstDoc::saveDocument(QTextStream& ts, bool saveAbsoluteVectorPositions) {
       }
     }
   }
-  KST::dataSourceList.lock().readUnlock();
+  KST::dataSourceList.lock().unlock();
 
   // save orphan scalars
   for (KstScalarList::Iterator it = KST::scalarList.begin(); it != KST::scalarList.end(); ++it) {
@@ -682,7 +682,7 @@ void KstDoc::saveDocument(QTextStream& ts, bool saveAbsoluteVectorPositions) {
   for (KstDataObjectList::Iterator it = KST::dataObjectList.begin(); it != KST::dataObjectList.end(); ++it) {
     (*it)->save(ts, "  ");
   }
-  KST::dataObjectList.lock().readUnlock();
+  KST::dataObjectList.lock().unlock();
   
   // save plots
   KMdiIterator<KMdiChildView*> *it = app->createIterator();
@@ -793,27 +793,27 @@ void KstDoc::deleteContents() {
 
   KST::vectorList.lock().writeLock();
   KST::vectorList.clear();
-  KST::vectorList.lock().writeUnlock();
+  KST::vectorList.lock().unlock();
   
   KST::matrixList.lock().writeLock();
   KST::matrixList.clear();
-  KST::matrixList.lock().writeUnlock();
+  KST::matrixList.lock().unlock();
 
   KST::scalarList.lock().writeLock();
   KST::scalarList.clear();
-  KST::scalarList.lock().writeUnlock();
+  KST::scalarList.lock().unlock();
 
   KST::stringList.lock().writeLock();
   KST::stringList.clear();
-  KST::stringList.lock().writeUnlock();
+  KST::stringList.lock().unlock();
 
   KST::dataSourceList.lock().writeLock();
   KST::dataSourceList.clear();
-  KST::dataSourceList.lock().writeUnlock();
+  KST::dataSourceList.lock().unlock();
 
   KST::dataObjectList.lock().writeLock();
   KST::dataObjectList.clear();
-  KST::dataObjectList.lock().writeUnlock();
+  KST::dataObjectList.lock().unlock();
 
   emit updateDialogs();
 }
@@ -845,7 +845,7 @@ void KstDoc::samplesUp() {
     if (didChange) {
       V->changeFrames(f0, n, skip, doSkip, doAve);
     }
-    V->writeUnlock();
+    V->unlock();
   }
 
   if (changed) {
@@ -884,7 +884,7 @@ void KstDoc::samplesDown() {
     if (didChange) {
       V->changeFrames(f0, n, skip, doSkip, doAve);
     }
-    V->writeUnlock();
+    V->unlock();
   }
 
   if (changed) {
@@ -903,7 +903,7 @@ void KstDoc::samplesEnd() {
     V = rvl[i];
     V->writeLock();
     V->setFromEnd();
-    V->writeUnlock();
+    V->unlock();
   }
 
   setModified();
@@ -923,7 +923,7 @@ void KstDoc::wasModified() {
 RemoveStatus KstDoc::removeDataObject(const QString& tag) {
   KST::dataObjectList.lock().writeLock();
   KST::dataObjectList.removeTag(tag);
-  KST::dataObjectList.lock().writeUnlock();
+  KST::dataObjectList.lock().unlock();
   setModified();
   forceUpdate();
   return OBJECT_DELETED;
@@ -941,9 +941,9 @@ void KstDoc::purge() {
     KST::matrixList.lock().readLock();
     KST::vectorList.lock().readLock();
     int cnt = KST::matrixList.count() + KST::vectorList.count() + KST::dataObjectList.count();
-    KST::vectorList.lock().readUnlock();
-    KST::matrixList.lock().readUnlock();
-    KST::dataObjectList.lock().readUnlock();
+    KST::vectorList.lock().unlock();
+    KST::matrixList.lock().unlock();
+    KST::dataObjectList.lock().unlock();
     
     int prg = 0;
     app->slotUpdateProgress(cnt, prg, purging);
@@ -964,11 +964,11 @@ void KstDoc::purge() {
       ++prg;
       app->slotUpdateProgress(cnt, prg, purging);
     }
-    KST::dataObjectList.lock().writeUnlock();
+    KST::dataObjectList.lock().unlock();
   
     KST::vectorList.lock().readLock();
     KstVectorList vectorList = QDeepCopy<KstVectorList>(KST::vectorList);
-    KST::vectorList.lock().readUnlock();
+    KST::vectorList.lock().unlock();
     
     // clear unused vectors that are editable 
     for (KstVectorList::ConstIterator it = vectorList.begin(); it != vectorList.end(); ++it) {
@@ -977,7 +977,7 @@ void KstDoc::purge() {
         //kstdDebug() << "    -> REMOVED" << endl;
         KST::vectorList.lock().writeLock();
         KST::vectorList.remove(const_cast<KstVector*>((*it).data()));
-        KST::vectorList.lock().writeUnlock();
+        KST::vectorList.lock().unlock();
         again = true;
         modified = true;
       }
@@ -987,7 +987,7 @@ void KstDoc::purge() {
     
     KST::matrixList.lock().readLock();
     KstMatrixList matrixList = QDeepCopy<KstMatrixList>(KST::matrixList);
-    KST::matrixList.lock().readUnlock();
+    KST::matrixList.lock().unlock();
 
     // clear unused matrices that are editable
     for (KstMatrixList::ConstIterator it = matrixList.begin(); it != matrixList.end(); ++it) {
@@ -995,7 +995,7 @@ void KstDoc::purge() {
         //kstdDebug() << "    -> REMOVED" << endl;
         KST::matrixList.lock().writeLock();
         KST::matrixList.remove(const_cast<KstMatrix*>((*it).data()));
-        KST::matrixList.lock().writeUnlock();
+        KST::matrixList.lock().unlock();
         again = true;
         modified = true;
       }
@@ -1013,12 +1013,12 @@ void KstDoc::purge() {
         modified = true;
       }
   }
-  KST::dataSourceList.lock().readUnlock();
+  KST::dataSourceList.lock().unlock();
   KST::dataSourceList.lock().writeLock();
   for (KstDataSourceList::ConstIterator it = dataList.begin(); it != dataList.end(); ++it) {
     KST::dataSourceList.remove(const_cast<KstDataSource*>((*it).data()));
   }
-  KST::dataSourceList.lock().writeUnlock();
+  KST::dataSourceList.lock().unlock();
  
   setModified(modified);
   emit updateDialogs();

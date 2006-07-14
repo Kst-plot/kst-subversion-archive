@@ -104,7 +104,7 @@ void KstPsdDialogI::fillFieldsForEdit() {
   _w->_kstFFTOptions->Output->setCurrentItem(pp->output());
   _w->_kstFFTOptions->InterpolateHoles->setChecked(pp->interpolateHoles());
 
-  pp->readUnlock();
+  pp->unlock();
 
   _w->_curveAppearance->hide();
   _w->_curvePlacement->hide();
@@ -161,7 +161,7 @@ bool KstPsdDialogI::newObject() {
 
   KST::vectorList.lock().readLock();
   KstVectorPtr p = *KST::vectorList.findTag(_w->_vector->selectedVector());
-  KST::vectorList.lock().readUnlock();
+  KST::vectorList.lock().unlock();
   if (!p) {
     kstdFatal() << "Bug in kst: the vector field in plotDialog (PSD) refers to "
                 << "a non existant vector...." << endl;
@@ -184,7 +184,7 @@ bool KstPsdDialogI::newObject() {
                             _w->_kstFFTOptions->Sigma->value(),
                             PSDType(_w->_kstFFTOptions->Output->currentItem()));
     psd->setInterpolateHoles(_w->_kstFFTOptions->InterpolateHoles->isChecked());
-    p->readUnlock();
+    p->unlock();
 
     KstVCurvePtr vc = new KstVCurve(KST::suggestCurveName(tag_name,true), psd->vX(), psd->vY(), 0L, 0L, 0L, 0L, _w->_curveAppearance->color());
     vc->setHasPoints(_w->_curveAppearance->showPoints());
@@ -238,7 +238,7 @@ bool KstPsdDialogI::newObject() {
     KST::dataObjectList.lock().writeLock();
     KST::dataObjectList.append(psd.data());
     KST::dataObjectList.append(vc.data());
-    KST::dataObjectList.lock().writeUnlock();
+    KST::dataObjectList.lock().unlock();
     psd = 0L;
     vc = 0L;
     emit modified();
@@ -252,7 +252,7 @@ bool KstPsdDialogI::editSingleObject(KstPSDPtr psPtr) {
 
   KST::vectorList.lock().readLock();
   KstVectorPtr v = *KST::vectorList.findTag(_w->_vector->selectedVector());
-  KST::vectorList.lock().readUnlock();
+  KST::vectorList.lock().unlock();
 
   if (v) { // Can be null if edit multiple and it wasn't changed
     psPtr->setVector(v);
@@ -275,7 +275,7 @@ bool KstPsdDialogI::editSingleObject(KstPSDPtr psPtr) {
   }
   
   if (!_w->_kstFFTOptions->checkGivenValues(pSampRate, pFFTLen)) {
-    psPtr->writeUnlock();
+    psPtr->unlock();
     return false;
   }
 
@@ -324,7 +324,7 @@ bool KstPsdDialogI::editSingleObject(KstPSDPtr psPtr) {
     psPtr->setInterpolateHoles(_w->_kstFFTOptions->InterpolateHoles->isChecked());
   }
 
-  psPtr->writeUnlock();
+  psPtr->unlock();
   return true;
 }
 
@@ -375,7 +375,7 @@ bool KstPsdDialogI::editObject() {
     
     pp->writeLock();
     pp->setTagName(tag_name);
-    pp->writeUnlock();
+    pp->unlock();
     
     // then edit the object
     _vectorDirty = true;

@@ -89,7 +89,7 @@ KstVector::~KstVector() {
     KST::scalarList.remove(it.current());
     it.current()->_KShared_unref();
   }
-  KST::scalarList.lock().writeUnlock();
+  KST::scalarList.lock().unlock();
 
   if (_v) {
     free(_v);

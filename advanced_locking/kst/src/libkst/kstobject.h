@@ -171,7 +171,7 @@ KstObjectList<KstSharedPtr<S> > kstObjectSubList(KstObjectList<KstSharedPtr<T> >
     }
   }
 
-  list.lock().readUnlock();
+  list.lock().unlock();
   return rc;
 }
 
@@ -191,7 +191,7 @@ void kstObjectSplitList(KstObjectList<KstSharedPtr<T> >& list, KstObjectList<Kst
     }
   }
 
-  list.lock().readUnlock();
+  list.lock().unlock();
 }
 
 

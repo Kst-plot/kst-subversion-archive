@@ -71,7 +71,7 @@ void KstViewFitsDialogI::fillComboBox(const QString& str) {
         fitChanged(fitName);
       }
     }
-    fit->readUnlock();
+    fit->unlock();
   }
 }
 
@@ -116,7 +116,7 @@ void KstViewFitsDialogI::fitChanged(const QString& strFit) {
     if (scalarChi2Nu) {
       scalarChi2Nu->readLock();
       chi2Nu = scalarChi2Nu->value();
-      scalarChi2Nu->readUnlock();
+      scalarChi2Nu->unlock();
     }
 
     const KstVectorMap& vectors = plugin->outputVectors();
@@ -141,11 +141,11 @@ void KstViewFitsDialogI::fitChanged(const QString& strFit) {
             covars[i] = vectorCovar->value(i);
           }
         }
-        vectorCovar->readUnlock();
+        vectorCovar->unlock();
       }
-      vectorParam->readUnlock();
+      vectorParam->unlock();
     }
-    plugin->readUnlock();
+    plugin->unlock();
   }
 
   tableFits->setParameters(params, numParams, covars, numCovars, chi2Nu);
@@ -168,7 +168,7 @@ void KstViewFitsDialogI::fitChanged(const QString& strFit) {
           tableFits->verticalHeader()->setLabel(i, parameterName);
         }
       }
-      plugin->readUnlock();
+      plugin->unlock();
     }
   }
 

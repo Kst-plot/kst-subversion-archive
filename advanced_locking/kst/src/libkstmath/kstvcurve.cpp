@@ -1615,12 +1615,12 @@ void KstVCurve::yRange(double xFrom, double xTo, double* yMin, double* yMax) {
 KstDataObjectPtr KstVCurve::providerDataObject() const {
   KST::vectorList.lock().readLock();
   KstVectorPtr vp = *KST::vectorList.findTag(yVTag());
-  KST::vectorList.lock().readUnlock();
+  KST::vectorList.lock().unlock();
   KstDataObjectPtr provider = 0L;
   if (vp) {
     vp->readLock();
     provider = kst_cast<KstDataObject>(vp->provider());
-    vp->readUnlock();
+    vp->unlock();
   }
   return provider;
 }

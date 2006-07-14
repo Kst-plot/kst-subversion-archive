@@ -112,7 +112,7 @@ void KstHsDialogI::fillFieldsForEdit() {
   }
 
 
-  hp->readUnlock();
+  hp->unlock();
   updateButtons();
 
   // can't edit curve props from here....
@@ -212,7 +212,7 @@ bool KstHsDialogI::newObject() {
 
   KST::vectorList.lock().readLock();
   KstVectorPtr vp = *KST::vectorList.findTag(_w->_vector->selectedVector());
-  KST::vectorList.lock().readUnlock();
+  KST::vectorList.lock().unlock();
   if (!vp) {
     kstdFatal() << "Bug in kst: the Vector field in plotDialog (Hs) refers to "
                 << " a non existant vector..." << endl;
@@ -221,7 +221,7 @@ bool KstHsDialogI::newObject() {
   vp->readLock();
   hs = new KstHistogram(tag_name, vp, new_min, new_max,
                         new_n_bins, new_norm_mode);
-  vp->readUnlock();
+  vp->unlock();
   hs->setRealTimeAutoBin(_w->_realTimeAutoBin->isChecked());
 
   KstVCurvePtr vc = new KstVCurve(KST::suggestCurveName(tag_name, true), hs->vX(), hs->vY(), 0L, 0L, 0L, 0L, _w->_curveAppearance->color());
@@ -276,7 +276,7 @@ bool KstHsDialogI::newObject() {
   KST::dataObjectList.lock().writeLock();
   KST::dataObjectList.append(hs.data());
   KST::dataObjectList.append(vc.data());
-  KST::dataObjectList.lock().writeUnlock();
+  KST::dataObjectList.lock().unlock();
 
   hs = 0L;
   vc = 0L;
@@ -294,7 +294,7 @@ bool KstHsDialogI::editSingleObject(KstHistogramPtr hsPtr) {
   hsPtr->readLock();
   new_min = hsPtr->xMin();
   new_max = hsPtr->xMax();
-  hsPtr->readUnlock();
+  hsPtr->unlock();
 
   if (_minDirty) {
     new_min = _w->Min->text().toDouble();
@@ -326,7 +326,7 @@ bool KstHsDialogI::editSingleObject(KstHistogramPtr hsPtr) {
   if (_vectorDirty) {
     KST::vectorList.lock().readLock();
     hsPtr->setVector(*KST::vectorList.findTag(_w->_vector->selectedVector()));
-    KST::vectorList.lock().readUnlock();
+    KST::vectorList.lock().unlock();
   }
 
   hsPtr->writeLock();
@@ -356,7 +356,7 @@ bool KstHsDialogI::editSingleObject(KstHistogramPtr hsPtr) {
   }
 
   hsPtr->setDirty();
-  hsPtr->writeUnlock();
+  hsPtr->unlock();
   return true;
 }
 
@@ -436,7 +436,7 @@ void KstHsDialogI::autoBin() {
     }
     (*i)->readLock(); // Hmm should we really lock here?  AutoBin should I think
     KstHistogram::AutoBin(KstVectorPtr(*i), &n, &max, &min);
-    (*i)->readUnlock();
+    (*i)->unlock();
 
     _w->N->setValue(n);
     _w->Min->setText(QString::number(min));

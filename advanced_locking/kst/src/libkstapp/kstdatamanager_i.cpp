@@ -185,7 +185,7 @@ void KstObjectItem::update(bool recursive, int localUseCount) {
           setText(4, field);
         }
         _removable = x->getUsage() == 2;
-        x->readUnlock();
+        x->unlock();
       }
       // Hmmm what happens if this if() fails??  We become inconsistent?
       break;
@@ -215,7 +215,7 @@ void KstObjectItem::update(bool recursive, int localUseCount) {
           setText(4, field);
         }
         _removable = x->getUsage() == 2;
-        x->readUnlock();
+        x->unlock();
       }
       // Hmmm what happens if this if() fails??  We become inconsistent?
       break;
@@ -240,7 +240,7 @@ void KstObjectItem::update(bool recursive, int localUseCount) {
         if (text(4) != field) {
           setText(4, field);
         }
-        x->readUnlock();
+        x->unlock();
         _removable = false;
       }
       break;
@@ -328,7 +328,7 @@ void KstObjectItem::update(bool recursive, int localUseCount) {
           }
         }
         _removable = x->getUsage() == 1;
-        x->readUnlock();
+        x->unlock();
       }
       break;
     }
@@ -354,7 +354,7 @@ void KstObjectItem::update(bool recursive, int localUseCount) {
           setText(4, field);
         }
         _removable = x->getUsage() == 2;
-        x->readUnlock();
+        x->unlock();
       } 
       break;
     }
@@ -378,7 +378,7 @@ void KstObjectItem::update(bool recursive, int localUseCount) {
           setText(4, field);
         }
         _removable = x->getUsage() == 2;
-        x->readUnlock();
+        x->unlock();
       }
       break;
     }
@@ -402,7 +402,7 @@ void KstObjectItem::update(bool recursive, int localUseCount) {
         if (text(4) != field) {
           setText(4, field);
         }
-        x->readUnlock();
+        x->unlock();
         _removable = false;
       }
       break;
@@ -428,7 +428,7 @@ void KstObjectItem::reload() {
       if (r) {
         r->writeLock();
         r->reload();
-        r->writeUnlock();
+        r->unlock();
       }
     }
   } else if (_rtti == RTTI_OBJ_DATA_MATRIX) {
@@ -439,7 +439,7 @@ void KstObjectItem::reload() {
       if (r) {
         r->writeLock();
         r->reload();
-        r->writeUnlock();
+        r->unlock();
       }
     }
   }
@@ -484,7 +484,7 @@ void KstObjectItem::showMetadata() {
     if (r) {
       r->readLock();
       dsp = r->dataSource();
-      r->readUnlock();
+      r->unlock();
     }
     dlg->setDataSource(dsp);
     dlg->show();
@@ -497,7 +497,7 @@ void KstObjectItem::showMetadata() {
     if (r) {
       r->readLock();
       dsp = r->dataSource();
-      r->readUnlock();
+      r->unlock();
     }
     dlg->setDataSource(dsp);
     dlg->show();
@@ -515,7 +515,7 @@ void KstObjectItem::activateHint(int id) {
       if (c) {
         KST::dataObjectList.lock().writeLock();
         KST::dataObjectList.append(c.data());
-        KST::dataObjectList.lock().writeUnlock();
+        KST::dataObjectList.lock().unlock();
         emit updated();
       } else {
         KMessageBox::sorry(KstApp::inst(), i18n("Unable to create quick curve."));
@@ -686,9 +686,9 @@ void KstDataManagerI::update() {
     }
   }
 
-  KST::matrixList.lock().writeUnlock();
-  KST::vectorList.lock().writeUnlock();
-  KST::dataObjectList.lock().writeUnlock();
+  KST::matrixList.lock().unlock();
+  KST::vectorList.lock().unlock();
+  KST::dataObjectList.lock().unlock();
 
   // update the data vectors
   KstRVectorList rvl = kstObjectSubList<KstVector,KstRVector>(KST::vectorList);
@@ -822,21 +822,21 @@ void KstDataManagerI::delete_I() {
     } else if (qi->rtti() == RTTI_OBJ_DATA_VECTOR) {
       KST::vectorList.lock().writeLock();
       KST::vectorList.removeTag(koi->tagName());
-      KST::vectorList.lock().writeUnlock();
+      KST::vectorList.lock().unlock();
       doUpdates();
     } else if (qi->rtti() == RTTI_OBJ_STATIC_VECTOR) {
       KST::vectorList.lock().writeLock();
       KST::vectorList.removeTag(koi->tagName());
-      KST::vectorList.lock().writeUnlock();
+      KST::vectorList.lock().unlock();
       doUpdates();
     } else if (qi->rtti() == RTTI_OBJ_DATA_MATRIX) {
       KST::matrixList.lock().writeLock();
       KST::matrixList.removeTag(koi->tagName());
-      KST::matrixList.lock().writeUnlock();  
+      KST::matrixList.lock().unlock();  
     } else if (qi->rtti() == RTTI_OBJ_STATIC_MATRIX) {
       KST::matrixList.lock().writeLock();
       KST::matrixList.removeTag(koi->tagName());
-      KST::matrixList.lock().writeUnlock();  
+      KST::matrixList.lock().unlock();  
     }
     update();
   } else {
@@ -854,7 +854,7 @@ void KstDataManagerI::delete_I() {
           x = 0L;
           KST::vectorList.lock().writeLock();
           KST::vectorList.removeTag(koi->tagName());
-          KST::vectorList.lock().writeUnlock();
+          KST::vectorList.lock().unlock();
           doUpdates();
         } else {
           KMessageBox::sorry(this, i18n("Unknown error deleting data vector."));
@@ -866,7 +866,7 @@ void KstDataManagerI::delete_I() {
           x = 0L;
           KST::vectorList.lock().writeLock();
           KST::vectorList.removeTag(koi->tagName());
-          KST::vectorList.lock().writeUnlock();
+          KST::vectorList.lock().unlock();
           doUpdates();
         } else {
           KMessageBox::sorry(this, i18n("Unknown error deleting static vector."));
@@ -878,7 +878,7 @@ void KstDataManagerI::delete_I() {
           x = 0L;
           KST::matrixList.lock().writeLock();
           KST::matrixList.removeTag(koi->tagName());
-          KST::matrixList.lock().writeUnlock();
+          KST::matrixList.lock().unlock();
           doUpdates();
         } else {
           KMessageBox::sorry(this, i18n("Unknown error deleting data matrix."));
@@ -890,7 +890,7 @@ void KstDataManagerI::delete_I() {
           x = 0L;
           KST::matrixList.lock().writeLock();
           KST::matrixList.removeTag(koi->tagName());
-          KST::matrixList.lock().writeUnlock();
+          KST::matrixList.lock().unlock();
           doUpdates();
         } else {
           KMessageBox::sorry(this, i18n("Unknown error deleting static matrix."));

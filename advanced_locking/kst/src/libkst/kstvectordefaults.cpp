@@ -82,14 +82,14 @@ int KstVectorDefaults::skip() const {
 void KstVectorDefaults::sync() {
   KST::vectorList.lock().readLock();
   KstRVectorList vl = kstObjectSubList<KstVector,KstRVector>(KST::vectorList);
-  KST::vectorList.lock().readUnlock();
+  KST::vectorList.lock().unlock();
   int j = vl.count() - 1;
 
   // Find a non-stdin source
   while (j >= 0) {
     vl[j]->readLock();
     KstDataSourcePtr dsp = vl[j]->dataSource();
-    vl[j]->readUnlock();
+    vl[j]->unlock();
     if (dsp && !kst_cast<KstStdinSource>(dsp)) {
       break;
     }
@@ -104,7 +104,7 @@ void KstVectorDefaults::sync() {
     _skip = vl[j]->skip();
     _doAve = vl[j]->doAve();
     _doSkip = vl[j]->doSkip();
-    vl[j]->readUnlock();
+    vl[j]->unlock();
   }
 }
 

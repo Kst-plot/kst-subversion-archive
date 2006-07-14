@@ -152,7 +152,7 @@ KstCSD::~KstCSD() {
   _outMatrix = _outputMatrices.end();
   KST::matrixList.lock().writeLock();
   KST::matrixList.remove(_outputMatrices[OUTMATRIX]);
-  KST::matrixList.lock().writeUnlock();
+  KST::matrixList.lock().unlock();
 }
 
 KstObject::UpdateType KstCSD::update(int update_counter) {
@@ -249,7 +249,7 @@ void KstCSD::setVector(KstVectorPtr new_v) {
     if (v == new_v) {
       return;
     }
-    v->writeUnlock();
+    v->unlock();
   }
 
   _inputVectors.erase(INVECTOR);

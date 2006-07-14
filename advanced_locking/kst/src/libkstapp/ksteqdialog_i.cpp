@@ -95,7 +95,7 @@ void KstEqDialogI::fillFieldsForEdit() {
     _w->_xVectors->setSelection(ep->vXIn()->tagName());
   }
 
-  ep->readUnlock();
+  ep->unlock();
 
   _w->_curveAppearance->hide();
   _w->_curvePlacement->hide();
@@ -171,12 +171,12 @@ bool KstEqDialogI::newObject() {
     kstdFatal() << "Bug in kst: the Vector field in plotDialog (Eq) "
                 << "refers to a non-existent vector..." << endl;
   }
-  KST::vectorList.lock().readUnlock();
+  KST::vectorList.lock().unlock();
 
   /** Create the equation here */
   vp->readLock();
   KstEquationPtr eq = new KstEquation(tag_name, _w->_equation->text(), vp, _w->_doInterpolation->isChecked());
-  vp->readUnlock();
+  vp->unlock();
 
   if (!eq->isValid()) {
     eq = 0L;
@@ -242,7 +242,7 @@ bool KstEqDialogI::newObject() {
   KST::dataObjectList.lock().writeLock();
   KST::dataObjectList.append(eq.data());
   KST::dataObjectList.append(vc.data());
-  KST::dataObjectList.lock().writeUnlock();
+  KST::dataObjectList.lock().unlock();
 
   eq = 0L; // drop the reference before we update
   vc = 0L;
@@ -263,7 +263,7 @@ bool KstEqDialogI::checkEntries() {
 bool KstEqDialogI::editSingleObject(KstEquationPtr eqPtr) {
   eqPtr->writeLock();
   if (!checkEntries()) {
-    eqPtr->writeUnlock();
+    eqPtr->unlock();
     return false;
   }
 
@@ -281,7 +281,7 @@ bool KstEqDialogI::editSingleObject(KstEquationPtr eqPtr) {
   } else {
     vp = eqPtr->vX();
   }
-  KST::vectorList.lock().readUnlock();
+  KST::vectorList.lock().unlock();
   
   // update the DoInterpolation only if it is dirty
   if (_doInterpolationDirty) {
@@ -299,11 +299,11 @@ bool KstEqDialogI::editSingleObject(KstEquationPtr eqPtr) {
         parseErrors += "\n";
       }
       KMessageBox::detailedSorry(this, i18n("There is an error in the equation you entered."), parseErrors);
-      eqPtr->writeUnlock();
+      eqPtr->unlock();
       return false;
     }
   }
-  eqPtr->writeUnlock();
+  eqPtr->unlock();
   return true;
 }
 
@@ -348,7 +348,7 @@ bool KstEqDialogI::editObject() {
     
     ep->writeLock();
     ep->setTagName(tag_name);
-    ep->writeUnlock();
+    ep->unlock();
     
     // then edit the object
     _equationDirty = true;

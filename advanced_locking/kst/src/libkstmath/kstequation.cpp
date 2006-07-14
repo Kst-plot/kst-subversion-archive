@@ -308,7 +308,7 @@ void KstEquation::setExistingXVector(KstVectorPtr in_xv, bool do_interp) {
     if (v == in_xv) {
       return;
     }
-    v->writeUnlock();
+    v->unlock();
   }
 
   setDirty();

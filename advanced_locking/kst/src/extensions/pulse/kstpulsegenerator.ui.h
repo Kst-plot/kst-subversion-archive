@@ -17,7 +17,7 @@ void KstPulseGenerator::accept()
     KST::vectorList.lock().writeLock();
     KstVectorPtr vp = *KST::vectorList.findTag(_vector->text());
     bool had = vp != 0L;
-    KST::vectorList.lock().writeUnlock();
+    KST::vectorList.lock().unlock();
     KstGVectorPtr gv = kst_cast<KstGVector>(vp);
     if (!gv) {
 	if (had) {
@@ -30,6 +30,6 @@ void KstPulseGenerator::accept()
     }
     gv->writeLock();
     gv->setFrequency(_freq->value());
-    gv->writeUnlock();
+    gv->unlock();
     close();
 }

@@ -75,7 +75,7 @@ KstRVector::KstRVector(const QDomElement &e, const QString &o_file,
         } else {
           in_file = *KST::dataSourceList.findFileName(o_file);
         }
-        KST::dataSourceList.lock().readUnlock();
+        KST::dataSourceList.lock().unlock();
       } else if (e.tagName() == "field") {
         in_field = e.text();
       } else if (e.tagName() == "start") {
@@ -182,7 +182,7 @@ void KstRVector::change(KstDataSourcePtr in_file, const QString &in_field,
   }
   reset();
   if (_file) {
-    _file->writeUnlock();
+    _file->unlock();
   }
 
   if (ReqNF <= 0 && ReqF0 < 0) {
@@ -202,7 +202,7 @@ void KstRVector::changeFile(KstDataSourcePtr in_file) {
   }
   reset();
   if (_file) {
-    _file->writeUnlock();
+    _file->unlock();
   }
 }
 
@@ -215,7 +215,7 @@ void KstRVector::changeFrames(int in_f0, int in_n,
   }
   reset();
   if (_file) {
-    _file->writeUnlock();
+    _file->unlock();
   }
   Skip = in_skip;
   DoSkip = in_DoSkip;
@@ -310,7 +310,7 @@ void KstRVector::save(QTextStream &ts, const QString& indent, bool saveAbsoluteP
     ts << indent << "  <tag>" << QStyleSheet::escape(tagName()) << "</tag>" << endl;
     _file->readLock();
     ts << indent << "  <filename>" << QStyleSheet::escape(_file->fileName()) << "</filename>" << endl;
-    _file->readUnlock();
+    _file->unlock();
     ts << indent << "  <field>" << _field << "</field>" << endl;
     if (saveAbsolutePosition) {
       ts << indent << "  <start>" << F0 << "</start>" << endl;
@@ -336,7 +336,7 @@ QString KstRVector::filename() const {
   if (_file) {
     _file->readLock();
     rc = _file->fileName();
-    _file->readUnlock();
+    _file->unlock();
   }
   return rc;
 }
@@ -360,7 +360,7 @@ QString KstRVector::label() const {
     } else {
       label = _field;
     }
-    _file->readUnlock();
+    _file->unlock();
   } else {
     label = _field;
   }
@@ -419,7 +419,7 @@ KstObject::UpdateType KstRVector::update(int update_counter) {
   }
   KstObject::UpdateType rc = doUpdate(force);
   if (_file) {
-    _file->writeUnlock();
+    _file->unlock();
   }
 
   setDirty(false);
@@ -639,7 +639,7 @@ bool KstRVector::isValid() const {
   if (_file) {
     _file->readLock();
     bool rc = _file->isValidField(_field);
-    _file->readUnlock();
+    _file->unlock();
     return rc;
   }
   return false;
@@ -650,7 +650,7 @@ int KstRVector::fileLength() const {
   if (_file) {
     _file->readLock();
     int rc = _file->frameCount(_field);
-    _file->readUnlock();
+    _file->unlock();
 
     return rc;
   }
@@ -668,18 +668,18 @@ void KstRVector::reload() {
       KstDataSourcePtr newsrc = KstDataSource::loadSource(_file->fileName(), _file->fileType());
       assert(newsrc != _file);
       if (newsrc) {
-        _file->writeUnlock();
+        _file->unlock();
         KST::dataSourceList.lock().writeLock();
         KST::dataSourceList.remove(_file);
         _dontUseSkipAccel = false;
         _file = newsrc;
         _file->writeLock();
         KST::dataSourceList.append(_file);
-        KST::dataSourceList.lock().writeUnlock();
+        KST::dataSourceList.lock().unlock();
         reset();
       }
     }
-    _file->writeUnlock();
+    _file->unlock();
   }
 }
 

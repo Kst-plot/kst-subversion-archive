@@ -104,7 +104,7 @@ void KstCsdDialogI::fillFieldsForEdit() {
   _w->_windowSize->setValue(cp->windowSize());
   _w->_kstFFTOptions->synch();
 
-  cp->readUnlock();
+  cp->unlock();
  
   _w->_imageOptionsGroup->hide();
   _w->_curvePlacement->hide();
@@ -158,7 +158,7 @@ bool KstCsdDialogI::newObject() {
 
   KST::vectorList.lock().readLock();
   KstVectorPtr p = *KST::vectorList.findTag(_w->_vector->selectedVector());
-  KST::vectorList.lock().readUnlock();
+  KST::vectorList.lock().unlock();
   if (!p) {
     kstdFatal() << "Bug in kst: the vector field in CSD dialog refers to "
                 << "a non existant vector...." << endl;
@@ -187,7 +187,7 @@ bool KstCsdDialogI::newObject() {
   KST::dataObjectList.lock().writeLock();
   KST::dataObjectList.append(csd.data());
   KST::dataObjectList.append(image.data());
-  KST::dataObjectList.lock().writeUnlock();
+  KST::dataObjectList.lock().unlock();
 
   csd = 0L;
   emit modified();
@@ -199,7 +199,7 @@ KstImagePtr KstCsdDialogI::createImage(KstCSDPtr csd) {
   KPalette* newPal = new KPalette(_w->_colorPalette->selectedPalette());
   csd->readLock();
   KstImagePtr image = new KstImage(csd->tagName()+"-I", csd->outputMatrix(), 0, 1, true, newPal);
-  csd->readUnlock();
+  csd->unlock();
 
   KstViewWindow *w = dynamic_cast<KstViewWindow*>(KstApp::inst()->findWindow(_w->_curvePlacement->_plotWindow->currentText()));
   if (!w) {
@@ -240,7 +240,7 @@ bool KstCsdDialogI::editSingleObject(KstCSDPtr csPtr) {
 
   KST::vectorList.lock().readLock();
   csPtr->setVector(*KST::vectorList.findTag(_w->_vector->selectedVector()));
-  KST::vectorList.lock().readUnlock();
+  KST::vectorList.lock().unlock();
 
   // get the values that need to be checked for consistency
   double pSampRate;
@@ -259,7 +259,7 @@ bool KstCsdDialogI::editSingleObject(KstCSDPtr csPtr) {
   }
  
   if (!_w->_kstFFTOptions->checkGivenValues(pSampRate, pFFTLen)) {
-    csPtr->writeUnlock();
+    csPtr->unlock();
     return false;
   }
 
@@ -308,7 +308,7 @@ bool KstCsdDialogI::editSingleObject(KstCSDPtr csPtr) {
     csPtr->setOutput(PSDType(_w->_kstFFTOptions->Output->currentItem()));
   }
     
-  csPtr->writeUnlock();
+  csPtr->unlock();
   return true;
 }
 
@@ -362,7 +362,7 @@ bool KstCsdDialogI::editObject() {
    
     cp->writeLock();
     cp->setTagName(tag_name);
-    cp->writeUnlock();
+    cp->unlock();
    
     // then edit the object
     _vectorDirty = true;

@@ -164,7 +164,7 @@ void ScalarSelector::selectionWatcher( const QString & tag )
     if (p && p->editable()) {
       editable = true;
     }
-    KST::scalarList.lock().readUnlock();
+    KST::scalarList.lock().unlock();
     _editScalar->setEnabled(editable);
 }
 

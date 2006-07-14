@@ -55,7 +55,7 @@ void KstObjectDefaults::sync() {
     _output = pl[j]->output();
     _interpolateHoles = pl[j]->interpolateHoles();
 
-    pl[j]->readUnlock();
+    pl[j]->unlock();
   }
 }
 

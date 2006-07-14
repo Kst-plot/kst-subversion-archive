@@ -326,7 +326,7 @@ bool EventMonitorEntry::event(QEvent *e) {
     if (e->type() == EventMonitorEventType) {
       readLock();
       doLog(static_cast<EventMonitorEvent*>(e)->logMessage);
-      readUnlock();
+      unlock();
       return true;
     }
     return false;

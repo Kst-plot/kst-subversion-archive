@@ -510,12 +510,12 @@ KstCurveType KstImage::curveType() const {
 KstDataObjectPtr KstImage::providerDataObject() const {
   KST::matrixList.lock().readLock();
   KstMatrixPtr mp = *KST::matrixList.findTag(matrixTag());
-  KST::matrixList.lock().readUnlock();
+  KST::matrixList.lock().unlock();
   KstDataObjectPtr provider = 0L;
   if (mp) {
     mp->readLock();
     provider = kst_cast<KstDataObject>(mp->provider());
-    mp->readUnlock();  
+    mp->unlock();  
   }
   return provider;
 }

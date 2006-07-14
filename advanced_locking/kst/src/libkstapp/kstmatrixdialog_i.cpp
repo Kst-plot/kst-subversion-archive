@@ -115,7 +115,7 @@ void KstMatrixDialogI::fillFieldsForEdit() {
   _w->_minY->setText(QString::number(mp->minY()));
   _w->_xStep->setText(QString::number(mp->xStepSize()));
   _w->_yStep->setText(QString::number(mp->yStepSize()));
-  mp->readUnlock();
+  mp->unlock();
 
   _w->_sourceGroup->hide();
 
@@ -167,7 +167,7 @@ void KstMatrixDialogI::fillFieldsForRMatrixEdit() {
       if (_fieldCompletion) {
         _fieldCompletion->insertItems(tf->matrixList());
       }
-      tf->readUnlock();
+      tf->unlock();
     } else {
       QStringList list = KstDataSource::matrixListForSource(_w->_fileName->url());
       _w->_field->insertStringList(list);
@@ -175,7 +175,7 @@ void KstMatrixDialogI::fillFieldsForRMatrixEdit() {
         _fieldCompletion->insertItems(list);
       }
     }
-    KST::dataSourceList.lock().readUnlock();
+    KST::dataSourceList.lock().unlock();
   }
   _w->_field->setEnabled(_w->_field->count() > 0);
   _ok->setEnabled(_w->_field->isEnabled());
@@ -198,7 +198,7 @@ void KstMatrixDialogI::fillFieldsForRMatrixEdit() {
   _w->_skip->setValue(rmp->skip());
   _w->_doAve->setChecked(rmp->doAverage());
 
-  rmp->readUnlock();
+  rmp->unlock();
 }
 
 
@@ -223,7 +223,7 @@ void KstMatrixDialogI::fillFieldsForSMatrixEdit() {
   _w->_gradientZAtMax->setText(QString::number(smp->gradZMax()));
   _w->_nX->setValue(smp->xNumSteps());
   _w->_nY->setValue(smp->yNumSteps());
-  smp->readUnlock();
+  smp->unlock();
 }
 
 
@@ -302,12 +302,12 @@ bool KstMatrixDialogI::new_IRMatrix() {
   if (it == KST::dataSourceList.end()) {
     file = KstDataSource::loadSource(_w->_fileName->url());
     if (!file || !file->isValid()) {
-      KST::dataSourceList.lock().writeUnlock();
+      KST::dataSourceList.lock().unlock();
       KMessageBox::sorry(this, i18n("The file could not be opened."));
       return false;
     }
     if (file->isEmpty()) {
-      KST::dataSourceList.lock().writeUnlock();
+      KST::dataSourceList.lock().unlock();
       KMessageBox::sorry(this, i18n("The file does not contain data."));
       return false;
     }
@@ -315,12 +315,12 @@ bool KstMatrixDialogI::new_IRMatrix() {
   } else {
     file = *it;
   }
-  KST::dataSourceList.lock().writeUnlock();
+  KST::dataSourceList.lock().unlock();
 
   pField = _w->_field->currentText();
   if (!file->isValidMatrix(pField)) {
     KMessageBox::sorry(this, i18n("The requested matrix is not defined for the requested file."));
-    file->writeUnlock();
+    file->unlock();
     return false;
   }
 
@@ -406,12 +406,12 @@ bool KstMatrixDialogI::editSingleRMatrix(KstRMatrixPtr rmp) {
     if (it == KST::dataSourceList.end()) {
       file = KstDataSource::loadSource(_w->_fileName->url());
       if (!file || !file->isValid()) {
-        KST::dataSourceList.lock().writeUnlock();
+        KST::dataSourceList.lock().unlock();
         KMessageBox::sorry(this, i18n("The file could not be opened."));
         return false;
       }
       if (file->isEmpty()) {
-        KST::dataSourceList.lock().writeUnlock();
+        KST::dataSourceList.lock().unlock();
         KMessageBox::sorry(this, i18n("The file does not contain data."));
         return false;
       }
@@ -419,19 +419,19 @@ bool KstMatrixDialogI::editSingleRMatrix(KstRMatrixPtr rmp) {
     } else {
       file = *it;
     }
-    KST::dataSourceList.lock().writeUnlock();
+    KST::dataSourceList.lock().unlock();
 
     pField = _w->_field->currentText();
     if (!file->isValidMatrix(pField)) {
       KMessageBox::sorry(this, i18n("The requested field is not defined for the requested file."));
-      file->writeUnlock();
+      file->unlock();
       return false;
     }
   } else {
     rmp->readLock();
     file = rmp->dataSource();
     pField = rmp->field();
-    rmp->readUnlock();
+    rmp->unlock();
   }
   int xStart, yStart, xNumSteps, yNumSteps;
   bool doSkip, doAve;
@@ -474,11 +474,11 @@ bool KstMatrixDialogI::editSingleRMatrix(KstRMatrixPtr rmp) {
     skip = rmp->skip();
   }
 
-  rmp->readUnlock();
+  rmp->unlock();
 
   rmp->writeLock();
   rmp->change(file, pField, rmp->tagName(), xStart, yStart, xNumSteps, yNumSteps, doAve, doSkip, skip);
-  rmp->writeUnlock();
+  rmp->unlock();
   return true;
 }
 
@@ -540,7 +540,7 @@ bool KstMatrixDialogI::editSingleSMatrix(KstSMatrixPtr smp) {
   } else {
     nY = smp->yNumSteps();
   }
-  smp->readUnlock();
+  smp->unlock();
   if (!ok5 || !ok6) {
     KMessageBox::sorry(this, i18n("Gradient values are invalid.  Ensure only decimal values are entered."));
     return false;
@@ -552,7 +552,7 @@ bool KstMatrixDialogI::editSingleSMatrix(KstSMatrixPtr smp) {
 
   smp->writeLock();
   smp->change(smp->tagName(), nX, nY, xMin, yMin, xStepSize, yStepSize, gradientZAtMin, gradientZAtMax, xDirection);
-  smp->writeUnlock();
+  smp->unlock();
 
   return true;
 }
@@ -601,7 +601,7 @@ bool KstMatrixDialogI::editObject() {
         // get the pointer to the object
         KST::matrixList.lock().readLock();
         KstMatrixPtr mxPtr = *KST::matrixList.findTag(_editMultipleWidget->_objectList->text(i));
-        KST::matrixList.lock().readUnlock();
+        KST::matrixList.lock().unlock();
         if (!mxPtr) {
           return false;
         }
@@ -627,7 +627,7 @@ bool KstMatrixDialogI::editObject() {
 
     mp->writeLock();
     mp->setTagName(tag_name);
-    mp->writeUnlock();
+    mp->unlock();
 
     // then edit the object
     _fileNameDirty = true;
@@ -804,7 +804,7 @@ void KstMatrixDialogI::updateCompletion() {
   /* update filename list and ll axes combo boxes */
   KST::dataSourceList.lock().readLock();
   KstDataSourcePtr ds = *KST::dataSourceList.findReusableFileName(_w->_fileName->url());
-  KST::dataSourceList.lock().readUnlock();
+  KST::dataSourceList.lock().unlock();
 
   delete _configWidget;
   _configWidget = 0L;
@@ -814,7 +814,7 @@ void KstMatrixDialogI::updateCompletion() {
     list = ds->matrixList();
     _w->_field->setEditable(!ds->fieldListIsComplete());
     _configWidget = ds->configWidget();
-    ds->readUnlock();
+    ds->unlock();
     _w->_field->setEnabled(true);
     _w->_connect->hide();
   //  _kstDataRange->setAllowTime(ds->supportsTimeConversions());
@@ -964,7 +964,7 @@ void KstMatrixDialogI::configureSource() {
   bool isNew = false;
   KST::dataSourceList.lock().readLock();
   KstDataSourcePtr ds = *KST::dataSourceList.findReusableFileName(_w->_fileName->url());
-  KST::dataSourceList.lock().readUnlock();
+  KST::dataSourceList.lock().unlock();
   if (!ds) {
     isNew = true;
     ds = KstDataSource::loadSource(_w->_fileName->url());
@@ -1013,7 +1013,7 @@ void KstMatrixDialogI::testURL() {
 KstObjectPtr KstMatrixDialogI::findObject(const QString& name) {
   KST::matrixList.lock().readLock();
   KstObjectPtr o = (*KST::matrixList.findTag(name)).data();
-  KST::matrixList.lock().readUnlock();
+  KST::matrixList.lock().unlock();
   return o;
 }
 

@@ -33,9 +33,8 @@ class KST_EXPORT KstPrimitive : public KstObject {
     inline KstObjectPtr provider() const { return KstObjectPtr(_provider); }
 
     void readLock() const;
-    void readUnlock() const;
     void writeLock() const;
-    void writeUnlock() const;
+    void unlock() const;
 
     /** Update the primitive via the provider and/or internalUpdate().
         Return true if there was new data. */
@@ -50,7 +49,7 @@ class KST_EXPORT KstPrimitive : public KstObject {
     QGuardedPtr<KstObject> _provider;
 
     mutable QMutex _lockMutex, _unlockMutex;
-    mutable bool _inReadLock, _inReadUnlock, _inWriteLock, _inWriteUnlock;
+    mutable bool _inReadLock, _inWriteLock, _inUnlock;
 };
 
 typedef KstSharedPtr<KstPrimitive> KstPrimitivePtr;

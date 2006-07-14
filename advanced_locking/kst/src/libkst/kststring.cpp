@@ -44,7 +44,7 @@ KstString::KstString(const QString& in_tag, KstObject *provider, const QString& 
   }
   KST::stringList.append(this);
   if (doLock) {
-    KST::stringList.lock().writeUnlock();
+    KST::stringList.lock().unlock();
   }
 }
 

@@ -59,7 +59,7 @@ KstViewScalarsDialogI::~KstViewScalarsDialogI() {
 void KstViewScalarsDialogI::updateViewScalarsDialog() {
   KST::scalarList.lock().readLock();
   int needed = KST::scalarList.count();
-  KST::scalarList.lock().readUnlock();
+  KST::scalarList.lock().unlock();
 
   tableScalars->setNumRows(needed);
   QRect rect = tableScalars->horizontalHeader()->rect();

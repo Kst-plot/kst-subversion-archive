@@ -175,7 +175,7 @@ KstPSD::~KstPSD() {
   KST::vectorList.lock().writeLock();
   KST::vectorList.remove(_outputVectors[SVECTOR]);
   KST::vectorList.remove(_outputVectors[FVECTOR]);
-  KST::vectorList.lock().writeUnlock();
+  KST::vectorList.lock().unlock();
 }
 
 
@@ -367,7 +367,7 @@ void KstPSD::setVector(KstVectorPtr new_v) {
     if (v == new_v) {
       return;
     }
-    v->writeUnlock();
+    v->unlock();
   }
 
   _inputVectors.erase(INVECTOR);

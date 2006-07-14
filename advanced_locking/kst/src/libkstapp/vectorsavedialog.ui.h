@@ -21,7 +21,7 @@ void VectorSaveDialog::save()
 	    }
 	}
     }
-    KST::vectorList.lock().readUnlock();
+    KST::vectorList.lock().unlock();
 
     KURL url = KFileDialog::getSaveURL(QString::null, QString::null, this, i18n("Save Vector As"));
     if (!url.isEmpty()) {
@@ -120,9 +120,9 @@ void VectorSaveDialog::init()
     for (KstVectorList::ConstIterator i = KST::vectorList.begin(); i != KST::vectorList.end(); ++i) {
 	(*i)->readLock();
 	_vectorList->insertItem((*i)->tagName());
-	(*i)->readUnlock();
+	(*i)->unlock();
     }
-    KST::vectorList.lock().readUnlock();
+    KST::vectorList.lock().unlock();
     _saveButton->setEnabled(false);
 }
 

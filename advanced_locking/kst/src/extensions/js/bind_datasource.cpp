@@ -72,7 +72,7 @@ KJS::Object KstBindDataSource::construct(KJS::ExecState *exec, const KJS::List& 
   bool newSource = false;
   KST::dataSourceList.lock().readLock();
   KstDataSourcePtr ds = *KST::dataSourceList.findFileName(file);
-  KST::dataSourceList.lock().readUnlock();
+  KST::dataSourceList.lock().unlock();
 
   if (!ds) {
     ds = KstDataSource::loadSource(file, type);
@@ -88,7 +88,7 @@ KJS::Object KstBindDataSource::construct(KJS::ExecState *exec, const KJS::List& 
   if (newSource) {
     KST::dataSourceList.lock().writeLock();
     KST::dataSourceList.append(ds);
-    KST::dataSourceList.lock().writeUnlock();
+    KST::dataSourceList.lock().unlock();
   }
 
   return KJS::Object(new KstBindDataSource(exec, ds));
@@ -219,7 +219,7 @@ KJS::Value KstBindDataSource::fieldList(KJS::ExecState *exec, const KJS::List& a
   }
   s->readLock();
   QStringList l = s->fieldList();
-  s->readUnlock();
+  s->unlock();
   for (QStringList::ConstIterator i = l.begin(); i != l.end(); ++i) {
     rc.append(KJS::String(*i));
   }
@@ -250,7 +250,7 @@ KJS::Value KstBindDataSource::isValidField(KJS::ExecState *exec, const KJS::List
 
   s->writeLock();
   bool rc = s->isValidField(args[0].toString(exec).qstring());
-  s->writeUnlock();
+  s->unlock();
 
   return KJS::Boolean(rc);
 }
@@ -281,7 +281,7 @@ KJS::Value KstBindDataSource::frameCount(KJS::ExecState *exec, const KJS::List& 
 
   s->writeLock();
   int rc = s->frameCount(field);
-  s->writeUnlock();
+  s->unlock();
 
   return KJS::Number(rc);
 }
@@ -309,7 +309,7 @@ KJS::Value KstBindDataSource::samplesPerFrame(KJS::ExecState *exec, const KJS::L
 
   s->writeLock();
   int rc = s->samplesPerFrame(args[0].toString(exec).qstring());
-  s->writeUnlock();
+  s->unlock();
 
   return KJS::Number(rc);
 }
@@ -388,7 +388,7 @@ KJS::Value KstBindDataSource::metaData(KJS::ExecState *exec) const {
   if (s) {
     s->readLock();
     QMap<QString,QString> data = s->metaData();
-    s->readUnlock();
+    s->unlock();
     for (QMap<QString,QString>::ConstIterator i = data.begin(); i != data.end(); ++i) {
       array.put(exec, KJS::Identifier(i.key().latin1()), KJS::String(i.data()));
     }

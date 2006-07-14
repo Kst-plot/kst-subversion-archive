@@ -75,9 +75,8 @@ class KST_EXPORT KstDataObject : public KstObject {
     virtual int getUsage() const;
 
     virtual void readLock() const;
-    virtual void readUnlock() const;
     virtual void writeLock() const;
-    virtual void writeUnlock() const;
+    virtual void unlock() const;
 
     virtual bool isValid() const;
 

@@ -130,7 +130,7 @@ KJS::Object KstBindPowerSpectrum::construct(KJS::ExecState *exec, const KJS::Lis
 
   KST::dataObjectList.lock().writeLock();
   KST::dataObjectList.append(d.data());
-  KST::dataObjectList.lock().writeUnlock();
+  KST::dataObjectList.lock().unlock();
 
   return KJS::Object(new KstBindPowerSpectrum(exec, d));
 }

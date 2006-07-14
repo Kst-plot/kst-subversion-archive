@@ -98,14 +98,14 @@ int KstMatrixDefaults::skip() const {
 void KstMatrixDefaults::sync() {
   KST::matrixList.lock().readLock();
   KstRMatrixList rmatrixList = kstObjectSubList<KstMatrix,KstRMatrix>(KST::matrixList);
-  KST::matrixList.lock().readUnlock();
+  KST::matrixList.lock().unlock();
   int j = rmatrixList.count() - 1;
 
   // Find a non-stdin source
   while (j >= 0) {
     rmatrixList[j]->readLock();
     KstDataSourcePtr dsp = rmatrixList[j]->dataSource();
-    rmatrixList[j]->readUnlock();
+    rmatrixList[j]->unlock();
     if (dsp && !kst_cast<KstStdinSource>(dsp)) {
       break;
     }
@@ -125,7 +125,7 @@ void KstMatrixDefaults::sync() {
     _doAve = rmatrixList[j]->doAverage();
     _doSkip = rmatrixList[j]->doSkip();
     
-    rmatrixList[j]->readUnlock();
+    rmatrixList[j]->unlock();
   }
 }
 

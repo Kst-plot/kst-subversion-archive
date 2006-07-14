@@ -208,7 +208,7 @@ void KstViewLegend::save(QTextStream &ts, const QString& indent) {
   for (KstBaseCurveList::ConstIterator j = _curves.begin(); j != _curves.end(); ++j) {
     (*j)->readLock();
     ts << indent+"  " << "<curvetag>" << QStyleSheet::escape((*j)->tagName()) << "</curvetag>" << endl;
-    (*j)->readUnlock();
+    (*j)->unlock();
   }
 
   ts << indent << "</" << type() << ">" << endl;
@@ -591,7 +591,7 @@ bool KstViewLegend::fillConfigWidget(QWidget *w, bool isNew) const {
     for (KstBaseCurveList::ConstIterator it = allCurves.begin(); it != allCurves.end(); ++it) {
       (*it)->readLock();
       widget->AvailableCurveList->insertItem((*it)->tagName());
-      (*it)->readUnlock();
+      (*it)->unlock();
     }
 
   } else { // fill legend properties into widget
@@ -609,14 +609,14 @@ bool KstViewLegend::fillConfigWidget(QWidget *w, bool isNew) const {
     for (KstBaseCurveList::ConstIterator it = _curves.begin(); it != _curves.end(); ++it) {
       (*it)->readLock();
       widget->DisplayedCurveList->insertItem((*it)->tagName());
-      (*it)->readUnlock();
+      (*it)->unlock();
     }
     for (KstBaseCurveList::ConstIterator it = allCurves.begin(); it != allCurves.end(); ++it) {
       (*it)->readLock();
       if (_curves.find(*it) == _curves.end()) {
         widget->AvailableCurveList->insertItem((*it)->tagName());
       }
-      (*it)->readUnlock();
+      (*it)->unlock();
     }
   }
   return false;

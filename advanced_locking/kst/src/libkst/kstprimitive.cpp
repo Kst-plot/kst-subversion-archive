@@ -24,7 +24,7 @@
 
 
 KstPrimitive::KstPrimitive(KstObject *provider)
-: KstObject(), _provider(provider), _lockMutex(true), _unlockMutex(true), _inReadLock(false), _inReadUnlock(false), _inWriteLock(false), _inWriteUnlock(false) {
+: KstObject(), _provider(provider), _lockMutex(true), _unlockMutex(true), _inReadLock(false), _inWriteLock(false), _inUnlock(false) {
 }
 
 
@@ -81,22 +81,6 @@ void KstPrimitive::readLock() const {
 }
 
 
-void KstPrimitive::readUnlock() const {
-  KstObjectPtr prov = KstObjectPtr(_provider);
-  if (prov) {
-    _unlockMutex.lock();
-    if (!_inReadUnlock) {
-      _inReadUnlock = true;
-      prov->readUnlock();
-      _inReadUnlock = false;
-    }
-    _unlockMutex.unlock();
-  } else {
-    KstObject::readUnlock();
-  }
-}
-
-
 void KstPrimitive::writeLock() const {
   KstObjectPtr prov = KstObjectPtr(_provider);
   if (prov) {
@@ -113,18 +97,18 @@ void KstPrimitive::writeLock() const {
 }
 
 
-void KstPrimitive::writeUnlock() const {
+void KstPrimitive::unlock() const {
   KstObjectPtr prov = KstObjectPtr(_provider);
   if (prov) {
     _unlockMutex.lock();
-    if (!_inWriteUnlock) {
-      _inWriteUnlock = true;
-      prov->writeUnlock();
-      _inWriteUnlock = false;
+    if (!_inUnlock) {
+      _inUnlock = true;
+      prov->unlock();
+      _inUnlock = false;
     }
     _unlockMutex.unlock();
   } else {
-    KstObject::writeUnlock();
+    KstObject::unlock();
   }
 }
 

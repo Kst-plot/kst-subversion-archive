@@ -265,7 +265,7 @@ KJS::Value KstBindMatrix::resize(KJS::ExecState *exec, const KJS::List& args) {
 
   m->writeLock();
   m->resize(rows, cols);
-  m->writeUnlock();
+  m->unlock();
 
   return KJS::Undefined();
 }

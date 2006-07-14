@@ -1061,7 +1061,7 @@ void KstPlotDialogI::updatePlotMarkers() {
       for (KstBaseCurveList::iterator curves_iter = curves.begin(); curves_iter != curves.end(); ++curves_iter) {
         (*curves_iter)->readLock();
         CurveCombo->insertItem((*curves_iter)->tagName());
-        (*curves_iter)->readUnlock();
+        (*curves_iter)->unlock();
       }
       
       if (plot->hasCurveToMarkers()) {
@@ -1255,21 +1255,21 @@ void KstPlotDialogI::updateCurveLists() {
       for (KstBaseCurveList::iterator it = plot->Curves.begin(); it != plot->Curves.end(); ++it) {
         (*it)->readLock();
         DisplayedCurveList->insertItem((*it)->tagName());
-        (*it)->readUnlock();
+        (*it)->unlock();
       }
       for (KstBaseCurveList::iterator it = curves.begin(); it != curves.end(); ++it) {
         (*it)->readLock();
         if (plot->Curves.find(*it) == plot->Curves.end()) {
           AvailableCurveList->insertItem((*it)->tagName());
         }
-        (*it)->readUnlock();
+        (*it)->unlock();
       }
     }
   } else {
     for (KstBaseCurveList::iterator it = curves.begin(); it != curves.end(); ++it) {
       (*it)->readLock();
       AvailableCurveList->insertItem((*it)->tagName());
-      (*it)->readUnlock();
+      (*it)->unlock();
     }
   }
 }
@@ -1289,9 +1289,9 @@ void KstPlotDialogI::updateScalarCombo() {
     scalarSelectorX2->insertItem(s->tagLabel());
     scalarSelectorY1->insertItem(s->tagLabel());
     scalarSelectorY2->insertItem(s->tagLabel());
-    s->readUnlock();
+    s->unlock();
   }
-  KST::scalarList.lock().readUnlock();
+  KST::scalarList.lock().unlock();
 }
 
 void KstPlotDialogI::updateWindowList() {

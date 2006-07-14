@@ -55,9 +55,9 @@ void VectorSelector::update()
 		found = true;
 	    }
 	}
-	(*i)->readUnlock();
+	(*i)->unlock();
     }
-    KST::vectorList.lock().readUnlock();
+    KST::vectorList.lock().unlock();
     qHeapSort(vectors);
     _vector->insertStringList(vectors);
     if (found) {
@@ -106,7 +106,7 @@ void VectorSelector::newVectorCreated( KstVectorPtr v )
 {
     v->readLock();
     QString name = v->tagName();
-    v->readUnlock();
+    v->unlock();
     v = 0L; // deref
     emit newVectorCreated(name);
 }
@@ -116,7 +116,7 @@ void VectorSelector::setSelection( KstVectorPtr v )
 {
     v->readLock();
     setSelection(v->tagName());
-    v->readUnlock();
+    v->unlock();
 }
 
 
@@ -140,7 +140,7 @@ void VectorSelector::setEdit( const QString& tag )
     KST::vectorList.lock().readLock();
     KstRVectorPtr rvp = kst_cast<KstRVector>(*KST::vectorList.findTag(tag));
     KstSVectorPtr svp = kst_cast<KstSVector>(*KST::vectorList.findTag(tag));
-    KST::vectorList.lock().readUnlock();
+    KST::vectorList.lock().unlock();
     _editVector->setEnabled(rvp||svp);
 }
 

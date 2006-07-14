@@ -63,7 +63,7 @@ KstRMatrix::KstRMatrix(const QDomElement &e) : KstMatrix(QString::null, 0L, 1,1,
       } else if (e.tagName() == "file") {
         KST::dataSourceList.lock().readLock();
         in_file = *KST::dataSourceList.findFileName(e.text());
-        KST::dataSourceList.lock().readUnlock();
+        KST::dataSourceList.lock().unlock();
       } else if (e.tagName() == "field") {
         in_field = e.text();
       } else if (e.tagName() == "reqxstart") {
@@ -101,7 +101,7 @@ void KstRMatrix::save(QTextStream &ts, const QString& indent) {
     ts << indent << indent2 << "<tag>" << QStyleSheet::escape(tagName()) << "</tag>" << endl;
     _file->readLock();
     ts << indent << indent2 << "<file>" << QStyleSheet::escape(_file->fileName()) << "</file>" << endl;
-    _file->readUnlock();
+    _file->unlock();
     ts << indent << indent2 << "<field>" << _field << "</field>" << endl;
     ts << indent << indent2 << "<reqxstart>" << _reqXStart << "</reqxstart>" << endl;
     ts << indent << indent2 << "<reqystart>" << _reqYStart << "</reqystart>" << endl;
@@ -195,7 +195,7 @@ QString KstRMatrix::label() const {
     } else {
       returnLabel = _field;
     }
-    _file->readUnlock();
+    _file->unlock();
   } else {
     returnLabel = _field;
   }
@@ -217,7 +217,7 @@ bool KstRMatrix::isValid() const {
   if (_file) {
     _file->readLock();
     bool fieldValid = _file->isValidMatrix(_field);
-    _file->readUnlock();
+    _file->unlock();
     return fieldValid;
   }
   return false;
@@ -236,7 +236,7 @@ KstObject::UpdateType KstRMatrix::update(int update_counter) {
   }
   KstObject::UpdateType rc = doUpdate(force);
   if (_file) {
-    _file->writeUnlock();
+    _file->unlock();
   }
 
   setDirty(false);
@@ -477,17 +477,17 @@ void KstRMatrix::reload() {
       KstDataSourcePtr newsrc = KstDataSource::loadSource(_file->fileName(), _file->fileType());
       assert(newsrc != _file);
       if (newsrc) {
-        _file->writeUnlock();
+        _file->unlock();
         KST::dataSourceList.lock().writeLock();
         KST::dataSourceList.remove(_file);
         _file = newsrc;
         _file->writeLock();
         KST::dataSourceList.append(_file);
-        KST::dataSourceList.lock().writeUnlock();
+        KST::dataSourceList.lock().unlock();
         reset();
       }
     }
-    _file->writeUnlock();
+    _file->unlock();
   }
 }
 
@@ -569,7 +569,7 @@ void KstRMatrix::changeFile(KstDataSourcePtr file) {
   }
   reset();
   if (_file) {
-    _file->writeUnlock();
+    _file->unlock();
   }
 }
 

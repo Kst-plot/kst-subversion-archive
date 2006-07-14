@@ -204,7 +204,7 @@ KJS::Value KstBindVector::getPropertyByIndex(KJS::ExecState *exec, unsigned prop
   } else {
     return KJS::Undefined();
   }
-  v->readUnlock();
+  v->unlock();
 
   return KJS::Number(rc);
 }
@@ -234,7 +234,7 @@ void KstBindVector::putPropertyByIndex(KJS::ExecState *exec, unsigned propertyNa
     exec->setException(eobj);
   }
 
-  v->writeUnlock();
+  v->unlock();
 }
 
 
@@ -279,7 +279,7 @@ KJS::Value KstBindVector::resize(KJS::ExecState *exec, const KJS::List& args) {
 
   v->writeLock();
   v->resize(sz);
-  v->writeUnlock();
+  v->unlock();
 
   return KJS::Undefined();
 }
@@ -353,7 +353,7 @@ KJS::Value KstBindVector::interpolate(KJS::ExecState *exec, const KJS::List& arg
   }
   v->writeLock();
   rc = v->interpolate(i, ns_i);
-  v->writeUnlock();
+  v->unlock();
 
   return KJS::Number(rc);
 }

@@ -480,7 +480,7 @@ int main(int argc, char *argv[]) {
                 KST::dataObjectList.lock().writeLock();
                 KST::dataObjectList.append(eq.data());
                 KST::dataObjectList.append(vc.data());
-                KST::dataObjectList.lock().writeUnlock();
+                KST::dataObjectList.lock().unlock();
                 plot->addCurve(vc.data());
 
                 if (in.sep_plots) {
@@ -519,7 +519,7 @@ int main(int argc, char *argv[]) {
 
           KST::dataObjectList.lock().writeLock();
           KST::dataSourceList.append(file);
-          KST::dataObjectList.lock().writeUnlock();
+          KST::dataObjectList.lock().unlock();
 
           KstRVectorPtr yvector;
           KstRVectorPtr evector;
@@ -556,7 +556,7 @@ int main(int argc, char *argv[]) {
 
                   KST::dataObjectList.lock().writeLock();
                   KST::dataObjectList.append(curve.data());
-                  KST::dataObjectList.lock().writeUnlock();
+                  KST::dataObjectList.lock().unlock();
                   plot->addCurve(curve.data());
 
                   if (in.sep_plots) {
@@ -602,7 +602,7 @@ int main(int argc, char *argv[]) {
                 KST::dataObjectList.lock().writeLock();
                 KST::dataObjectList.append(eq.data());
                 KST::dataObjectList.append(vc.data());
-                KST::dataObjectList.lock().writeUnlock();
+                KST::dataObjectList.lock().unlock();
                 plot->addCurve(vc.data());
 
                 if (in.sep_plots) {
@@ -637,7 +637,7 @@ int main(int argc, char *argv[]) {
                 KST::dataObjectList.lock().writeLock();
                 KST::dataObjectList.append(psd.data());
                 KST::dataObjectList.append(vc.data());
-                KST::dataObjectList.lock().writeUnlock();
+                KST::dataObjectList.lock().unlock();
                 plot->addCurve(vc.data());
 
                 if (in.sep_plots) {
@@ -677,7 +677,7 @@ int main(int argc, char *argv[]) {
                 KST::dataObjectList.lock().writeLock();
                 KST::dataObjectList.append(hs.data());
                 KST::dataObjectList.append(vc.data());
-                KST::dataObjectList.lock().writeUnlock();
+                KST::dataObjectList.lock().unlock();
                 plot->addCurve(vc.data());
 
                 if (in.sep_plots) {
@@ -719,7 +719,7 @@ int main(int argc, char *argv[]) {
               plot->addCurve(KstBaseCurvePtr(image));
               KST::dataObjectList.lock().writeLock();
               KST::dataObjectList.append(image.data());
-              KST::dataObjectList.lock().writeUnlock();
+              KST::dataObjectList.lock().unlock();
               image = 0L; // drop the reference
               
               if (in.sep_plots) {

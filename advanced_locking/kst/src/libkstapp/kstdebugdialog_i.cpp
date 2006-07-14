@@ -85,11 +85,11 @@ void KstDebugDialogI::show_I() {
       if ((*i)->sourceName() == it.current()->text(0)) {
         new QListViewItem(it.current(), QString::null, (*i)->fileName());
       }
-      (*i)->readUnlock();
+      (*i)->unlock();
     }
     ++it;
   }
-  KST::dataSourceList.lock().readUnlock();
+  KST::dataSourceList.lock().unlock();
 
   QDialog::show();
 }

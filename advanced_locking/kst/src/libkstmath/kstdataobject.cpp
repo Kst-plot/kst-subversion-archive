@@ -53,7 +53,7 @@ KstDataObject::~KstDataObject() {
                                                       ++it) {
     KST::stringList.remove(it.data());
   }
-  KST::stringList.lock().writeUnlock();
+  KST::stringList.lock().unlock();
 
   KST::scalarList.lock().writeLock();
   for (KstScalarMap::Iterator it = _outputScalars.begin();
@@ -61,7 +61,7 @@ KstDataObject::~KstDataObject() {
                                                       ++it) {
     KST::scalarList.remove(it.data());
   }
-  KST::scalarList.lock().writeUnlock();
+  KST::scalarList.lock().unlock();
 
   KST::vectorList.lock().writeLock();
   for (KstVectorMap::Iterator it = _outputVectors.begin();
@@ -69,7 +69,7 @@ KstDataObject::~KstDataObject() {
                                                       ++it) {
     KST::vectorList.remove(it.data());
   }
-  KST::vectorList.lock().writeUnlock();
+  KST::vectorList.lock().unlock();
   
   KST::matrixList.lock().writeLock();
   for (KstMatrixMap::Iterator it = _outputMatrices.begin();
@@ -77,7 +77,7 @@ KstDataObject::~KstDataObject() {
        ++it) {
     KST::matrixList.remove(it.data());       
   }
-  KST::matrixList.lock().writeUnlock();
+  KST::matrixList.lock().unlock();
   //kstdDebug() << "+++ DESTROYING DATA OBJECT: " << (void*)this << endl;
   delete _curveHints;
 }
@@ -114,7 +114,7 @@ bool KstDataObject::loadInputs() {
       rc = false;
     }
   }
-  KST::vectorList.lock().readUnlock();
+  KST::vectorList.lock().unlock();
 
   KST::scalarList.lock().readLock();
   for (i = _inputScalarLoadQueue.begin(); i != _inputScalarLoadQueue.end(); ++i) {
@@ -126,7 +126,7 @@ bool KstDataObject::loadInputs() {
       rc = false;
     }
   }
-  KST::scalarList.lock().readUnlock();
+  KST::scalarList.lock().unlock();
 
   KST::stringList.lock().readLock();
   for (i = _inputStringLoadQueue.begin(); i != _inputStringLoadQueue.end(); ++i) {
@@ -138,7 +138,7 @@ bool KstDataObject::loadInputs() {
       rc = false;
     }
   }
-  KST::stringList.lock().readUnlock();
+  KST::stringList.lock().unlock();
   
   KST::matrixList.lock().readLock();
   for (i = _inputMatrixLoadQueue.begin(); i != _inputMatrixLoadQueue.end(); ++i) {
@@ -150,7 +150,7 @@ bool KstDataObject::loadInputs() {
       rc = false;
     }
   }
-  KST::matrixList.lock().readUnlock();
+  KST::matrixList.lock().unlock();
 
   _inputVectorLoadQueue.clear();
   _inputScalarLoadQueue.clear();
@@ -199,115 +199,108 @@ void KstDataObject::showDialog() {
 
 
 void KstDataObject::readLock() const {
-  KstObject::readLock();
   #ifdef LOCKTRACE
-  kstdDebug() << "Read lock by tid=" << (int)QThread::currentThread() << endl;
+  kstdDebug() << (void*)this << " (" << this->type() << ") KstDataObject::readLock() by tid=" << (int)QThread::currentThread() << endl;
+  kstdDebug() << (void*)this << " (" << this->type() << ") KstDataObject::readLock() by tid=" << (int)QThread::currentThread() << ": read locking myself" << endl;
   #endif
+  KstObject::readLock();
+
   QValueList<KstStringPtr> sl = _inputStrings.values();
   qHeapSort(sl);
   for (QValueList<KstStringPtr>::ConstIterator i = sl.begin(); i != sl.end(); ++i) {
+    #ifdef LOCKTRACE
+    kstdDebug() << (void*)this << " (" << this->type() << ") KstDataObject::readLock() by tid=" << (int)QThread::currentThread() << ": read locking input string " << (void*)(*i) << endl;
+    #endif
     (*i)->readLock();
   }
   sl = _outputStrings.values();
   qHeapSort(sl);
   for (QValueList<KstStringPtr>::ConstIterator i = sl.begin(); i != sl.end(); ++i) {
     if ((*i)->provider() == this) {
+      #ifdef LOCKTRACE
+      kstdDebug() << (void*)this << " (" << this->type() << ") KstDataObject::readLock() by tid=" << (int)QThread::currentThread() << ": read locking output string " << (void*)(*i) << " (as provider)" << endl;
+      #endif
       (*i)->KstObject::readLock();
     } else {
+      #ifdef LOCKTRACE
+      kstdDebug() << (void*)this << " (" << this->type() << ") KstDataObject::readLock() by tid=" << (int)QThread::currentThread() << ": read locking output string " << (void*)(*i) << " (not provider) -- this is probably an error." << endl;
+      #endif
+      KstDebug::self()->log(i18n("(%1) KstDataObject::readLock() by tid=%2: read locking output string %3 (not provider) -- this is probably an error. Please email kst@kde.org with details.").arg(this->type()).arg((int)QThread::currentThread()).arg((*i)->tagName()), KstDebug::Error);
       (*i)->readLock();
     }
   }
   QValueList<KstScalarPtr> sc = _inputScalars.values();
   qHeapSort(sc);
   for (QValueList<KstScalarPtr>::ConstIterator i = sc.begin(); i != sc.end(); ++i) {
+    #ifdef LOCKTRACE
+    kstdDebug() << (void*)this << " (" << this->type() << ") KstDataObject::readLock() by tid=" << (int)QThread::currentThread() << ": read locking input scalar " << (void*)(*i) << endl;
+    #endif
     (*i)->readLock();
   }
   sc = _outputScalars.values();
   qHeapSort(sc);
   for (QValueList<KstScalarPtr>::ConstIterator i = sc.begin(); i != sc.end(); ++i) {
     if ((*i)->provider() == this) {
+      #ifdef LOCKTRACE
+      kstdDebug() << (void*)this << " (" << this->type() << ") KstDataObject::readLock() by tid=" << (int)QThread::currentThread() << ": read locking output scalar " << (void*)(*i) << " (as provider)" << endl;
+      #endif
       (*i)->KstObject::readLock();
     } else {
+      #ifdef LOCKTRACE
+      kstdDebug() << (void*)this << " (" << this->type() << ") KstDataObject::readLock() by tid=" << (int)QThread::currentThread() << ": read locking output scalar " << (void*)(*i) << " (not provider) -- this is probably an error." << endl;
+      #endif
+      KstDebug::self()->log(i18n("(%1) KstDataObject::readLock() by tid=%2: read locking output scalar %3 (not provider) -- this is probably an error. Please email kst@kde.org with details.").arg(this->type()).arg((int)QThread::currentThread()).arg((*i)->tagName()), KstDebug::Error);
       (*i)->readLock();
     }
   }
   QValueList<KstVectorPtr> vl = _inputVectors.values();
   qHeapSort(vl);
   for (QValueList<KstVectorPtr>::ConstIterator i = vl.begin(); i != vl.end(); ++i) {
+    #ifdef LOCKTRACE
+    kstdDebug() << (void*)this << " (" << this->type() << ") KstDataObject::readLock() by tid=" << (int)QThread::currentThread() << ": read locking input vector " << (void*)(*i) << endl;
+    #endif
     (*i)->readLock();
   }
   vl = _outputVectors.values();
   qHeapSort(vl);
   for (QValueList<KstVectorPtr>::ConstIterator i = vl.begin(); i != vl.end(); ++i) {
     if ((*i)->provider() == this) {
+      #ifdef LOCKTRACE
+      kstdDebug() << (void*)this << " (" << this->type() << ") KstDataObject::readLock() by tid=" << (int)QThread::currentThread() << ": read locking output vector " << (void*)(*i) << " (as provider)" << endl;
+      #endif
       (*i)->KstObject::readLock();
     } else {
+      #ifdef LOCKTRACE
+      kstdDebug() << (void*)this << " (" << this->type() << ") KstDataObject::readLock() by tid=" << (int)QThread::currentThread() << ": read locking output vector " << (void*)(*i) << " (not provider) -- this is probably an error." << endl;
+      #endif
+      KstDebug::self()->log(i18n("(%1) KstDataObject::readLock() by tid=%2: read locking output vector %3 (not provider) -- this is probably an error. Please email kst@kde.org with details.").arg(this->type()).arg((int)QThread::currentThread()).arg((*i)->tagName()), KstDebug::Error);
       (*i)->readLock();
     }
   }
   QValueList<KstMatrixPtr> ml = _inputMatrices.values();
   qHeapSort(ml);
   for (QValueList<KstMatrixPtr>::ConstIterator i = ml.begin(); i != ml.end(); ++i) {
+    #ifdef LOCKTRACE
+    kstdDebug() << (void*)this << " (" << this->type() << ") KstDataObject::readLock() by tid=" << (int)QThread::currentThread() << ": read locking input matrix " << (void*)(*i) << endl;
+    #endif
     (*i)->readLock();
   }
   ml = _outputMatrices.values();
   qHeapSort(ml);
   for (QValueList<KstMatrixPtr>::ConstIterator i = ml.begin(); i != ml.end(); ++i) {
     if ((*i)->provider() == this) {
+      #ifdef LOCKTRACE
+      kstdDebug() << (void*)this << " (" << this->type() << ") KstDataObject::readLock() by tid=" << (int)QThread::currentThread() << ": read locking output matrix " << (void*)(*i) << " (as provider)" << endl;
+      #endif
       (*i)->KstObject::readLock();
     } else {
+      #ifdef LOCKTRACE
+      kstdDebug() << (void*)this << " (" << this->type() << ") KstDataObject::readLock() by tid=" << (int)QThread::currentThread() << ": read locking output matrix " << (void*)(*i) << " (not provider) -- this is probably an error." << endl;
+      #endif
+      KstDebug::self()->log(i18n("(%1) KstDataObject::readLock() by tid=%2: read locking output matrix %3 (not provider) -- this is probably an error. Please email kst@kde.org with details.").arg(this->type()).arg((int)QThread::currentThread()).arg((*i)->tagName()), KstDebug::Error);
       (*i)->readLock();
     }
   }
-}
-
-
-void KstDataObject::readUnlock() const {
-  #ifdef LOCKTRACE
-  kstdDebug() << "Read unlock by tid=" << (int)QThread::currentThread() << endl;
-  #endif
-  for (KstMatrixMap::ConstIterator i = _outputMatrices.begin(); i != _outputMatrices.end(); ++i) {
-    if ((*i)->provider() == this) {
-      (*i)->KstObject::readUnlock();
-    } else {
-      (*i)->readUnlock();
-    }
-  }
-  for (KstMatrixMap::ConstIterator i = _inputMatrices.begin(); i != _inputMatrices.end(); ++i) {
-    (*i)->readUnlock();
-  }
-  for (KstVectorMap::ConstIterator i = _outputVectors.begin(); i != _outputVectors.end(); ++i) {
-    if ((*i)->provider() == this) {
-      (*i)->KstObject::readUnlock();
-    } else {
-      (*i)->readUnlock();
-    }
-  }
-  for (KstVectorMap::ConstIterator i = _inputVectors.begin(); i != _inputVectors.end(); ++i) {
-    (*i)->readUnlock();
-  }
-  for (KstScalarMap::ConstIterator i = _outputScalars.begin(); i != _outputScalars.end(); ++i) {
-    if ((*i)->provider() == this) {
-      (*i)->KstObject::readUnlock();
-    } else {
-      (*i)->readUnlock();
-    }
-  }
-  for (KstScalarMap::ConstIterator i = _inputScalars.begin(); i != _inputScalars.end(); ++i) {
-    (*i)->readUnlock();
-  }
-  for (KstStringMap::ConstIterator i = _outputStrings.begin(); i != _outputStrings.end(); ++i) {
-    if ((*i)->provider() == this) {
-      (*i)->KstObject::readUnlock();
-    } else {
-      (*i)->readUnlock();
-    }
-  }
-  for (KstStringMap::ConstIterator i = _inputStrings.begin(); i != _inputStrings.end(); ++i) {
-    (*i)->readUnlock();
-  }
-  
-  KstObject::readUnlock();
 }
 
 
@@ -316,113 +309,198 @@ void KstDataObject::readUnlock() const {
 // Might want to guard these with another lock yet.
 void KstDataObject::writeLock() const {
   #ifdef LOCKTRACE
-  kstdDebug() << (void*) this << " Write lock by tid=" << (int)QThread::currentThread() << endl;
+  kstdDebug() << (void*)this << " (" << this->type() << ") KstDataObject::writeLock() by tid=" << (int)QThread::currentThread() << endl;
+  kstdDebug() << (void*)this << " (" << this->type() << ") KstDataObject::writeLock() by tid=" << (int)QThread::currentThread() << ": write locking myself" << endl;
   #endif
   KstRWLock::writeLock();
+
   QValueList<KstStringPtr> sl = _inputStrings.values();
   qHeapSort(sl);
   for (QValueList<KstStringPtr>::ConstIterator i = sl.begin(); i != sl.end(); ++i) {
+    #ifdef LOCKTRACE
+    kstdDebug() << (void*)this << " (" << this->type() << ") KstDataObject::writeLock() by tid=" << (int)QThread::currentThread() << ": write locking input string " << (void*)(*i) << endl;
+    #endif
     (*i)->writeLock();
   }
   sl = _outputStrings.values();
   qHeapSort(sl);
   for (QValueList<KstStringPtr>::ConstIterator i = sl.begin(); i != sl.end(); ++i) {
     if ((*i)->provider() == this) {
+      #ifdef LOCKTRACE
+      kstdDebug() << (void*)this << " (" << this->type() << ") KstDataObject::writeLock() by tid=" << (int)QThread::currentThread() << ": write locking output string " << (void*)(*i) << " (as provider)" << endl;
+      #endif
       (*i)->KstObject::writeLock();
     } else {
+      #ifdef LOCKTRACE
+      kstdDebug() << (void*)this << " (" << this->type() << ") KstDataObject::writeLock() by tid=" << (int)QThread::currentThread() << ": write locking output string " << (void*)(*i) << " (not provider) -- this is probably an error." << endl;
+      #endif
+      KstDebug::self()->log(i18n("(%1) KstDataObject::writeLock() by tid=%2: write locking output string %3 (not provider) -- this is probably an error. Please email kst@kde.org with details.").arg(this->type()).arg((int)QThread::currentThread()).arg((*i)->tagName()), KstDebug::Error);
       (*i)->writeLock();
     }
   }
   QValueList<KstScalarPtr> sc = _inputScalars.values();
   qHeapSort(sc);
   for (QValueList<KstScalarPtr>::ConstIterator i = sc.begin(); i != sc.end(); ++i) {
+    #ifdef LOCKTRACE
+    kstdDebug() << (void*)this << " (" << this->type() << ") KstDataObject::writeLock() by tid=" << (int)QThread::currentThread() << ": write locking input scalar " << (void*)(*i) << endl;
+    #endif
     (*i)->writeLock();
   }
   sc = _outputScalars.values();
   qHeapSort(sc);
   for (QValueList<KstScalarPtr>::ConstIterator i = sc.begin(); i != sc.end(); ++i) {
     if ((*i)->provider() == this) {
+      #ifdef LOCKTRACE
+      kstdDebug() << (void*)this << " (" << this->type() << ") KstDataObject::writeLock() by tid=" << (int)QThread::currentThread() << ": write locking output scalar " << (void*)(*i) << " (as provider)" << endl;
+      #endif
       (*i)->KstObject::writeLock();
     } else {
+      #ifdef LOCKTRACE
+      kstdDebug() << (void*)this << " (" << this->type() << ") KstDataObject::writeLock() by tid=" << (int)QThread::currentThread() << ": write locking output scalar " << (void*)(*i) << " (not provider) -- this is probably an error." << endl;
+      #endif
+      KstDebug::self()->log(i18n("(%1) KstDataObject::writeLock() by tid=%2: write locking output scalar %3 (not provider) -- this is probably an error. Please email kst@kde.org with details.").arg(this->type()).arg((int)QThread::currentThread()).arg((*i)->tagName()), KstDebug::Error);
       (*i)->writeLock();
     }
   }
   QValueList<KstVectorPtr> vl = _inputVectors.values();
   qHeapSort(vl);
   for (QValueList<KstVectorPtr>::ConstIterator i = vl.begin(); i != vl.end(); ++i) {
+    #ifdef LOCKTRACE
+    kstdDebug() << (void*)this << " (" << this->type() << ") KstDataObject::writeLock() by tid=" << (int)QThread::currentThread() << ": write locking input vector " << (void*)(*i) << endl;
+    #endif
     (*i)->writeLock();
   }
   vl = _outputVectors.values();
   qHeapSort(vl);
   for (QValueList<KstVectorPtr>::ConstIterator i = vl.begin(); i != vl.end(); ++i) {
     if ((*i)->provider() == this) {
+      #ifdef LOCKTRACE
+      kstdDebug() << (void*)this << " (" << this->type() << ") KstDataObject::writeLock() by tid=" << (int)QThread::currentThread() << ": write locking output vector " << (void*)(*i) << " (as provider)" << endl;
+      #endif
       (*i)->KstObject::writeLock();
     } else {
+      #ifdef LOCKTRACE
+      kstdDebug() << (void*)this << " (" << this->type() << ") KstDataObject::writeLock() by tid=" << (int)QThread::currentThread() << ": write locking output vector " << (void*)(*i) << " (not provider) -- this is probably an error." << endl;
+      #endif
+      KstDebug::self()->log(i18n("(%1) KstDataObject::writeLock() by tid=%2: write locking output vector %3 (not provider) -- this is probably an error. Please email kst@kde.org with details.").arg(this->type()).arg((int)QThread::currentThread()).arg((*i)->tagName()), KstDebug::Error);
       (*i)->writeLock();
     }
   }
   QValueList<KstMatrixPtr> ml = _inputMatrices.values();
   qHeapSort(ml);
   for (QValueList<KstMatrixPtr>::ConstIterator i = ml.begin(); i != ml.end(); ++i) {
+    #ifdef LOCKTRACE
+    kstdDebug() << (void*)this << " (" << this->type() << ") KstDataObject::writeLock() by tid=" << (int)QThread::currentThread() << ": write locking input matrix " << (void*)(*i) << endl;
+    #endif
     (*i)->writeLock();
   }
   ml = _outputMatrices.values();
   qHeapSort(ml);
   for (QValueList<KstMatrixPtr>::ConstIterator i = ml.begin(); i != ml.end(); ++i) {
     if ((*i)->provider() == this) {
+      #ifdef LOCKTRACE
+      kstdDebug() << (void*)this << " (" << this->type() << ") KstDataObject::writeLock() by tid=" << (int)QThread::currentThread() << ": write locking output matrix " << (void*)(*i) << " (as provider)" << endl;
+      #endif
       (*i)->KstObject::writeLock();
     } else {
+      #ifdef LOCKTRACE
+      kstdDebug() << (void*)this << " (" << this->type() << ") KstDataObject::writeLock() by tid=" << (int)QThread::currentThread() << ": write locking output matrix " << (void*)(*i) << " (not provider) -- this is probably an error." << endl;
+      #endif
+      KstDebug::self()->log(i18n("(%1) KstDataObject::writeLock() by tid=%2: write locking output matrix %3 (not provider) -- this is probably an error. Please email kst@kde.org with details.").arg(this->type()).arg((int)QThread::currentThread()).arg((*i)->tagName()), KstDebug::Error);
       (*i)->writeLock();
     }
   }
 }
 
 
-void KstDataObject::writeUnlock() const {
+void KstDataObject::unlock() const {
   #ifdef LOCKTRACE
-  kstdDebug() << (void*)this << "Write unlock by tid=" << (int)QThread::currentThread() << endl;
+  kstdDebug() << (void*)this << " (" << this->type() << ") KstDataObject::unlock() by tid=" << (int)QThread::currentThread() << endl;
   #endif
   for (KstMatrixMap::ConstIterator i = _outputMatrices.begin(); i != _outputMatrices.end(); ++i) {
     if ((*i)->provider() == this) {
-      (*i)->KstObject::writeUnlock();
+      #ifdef LOCKTRACE
+      kstdDebug() << (void*)this << " (" << this->type() << ") KstDataObject::unlock() by tid=" << (int)QThread::currentThread() << ": unlocking output matrix " << (void*)(*i) << " (as provider)" << endl;
+      #endif
+      (*i)->KstObject::unlock();
     } else {
-      (*i)->writeUnlock();
+      #ifdef LOCKTRACE
+      kstdDebug() << (void*)this << " (" << this->type() << ") KstDataObject::unlock() by tid=" << (int)QThread::currentThread() << ": unlocking output matrix " << (void*)(*i) << " (not provider) -- this is probably an error." << endl;
+      #endif
+      KstDebug::self()->log(i18n("(%1) KstDataObject::unlock() by tid=%2: unlocking output matrix %3 (not provider) -- this is probably an error. Please email kst@kde.org with details.").arg(this->type()).arg((int)QThread::currentThread()).arg((*i)->tagName()), KstDebug::Error);
+      (*i)->unlock();
     }
   }
   for (KstMatrixMap::ConstIterator i = _inputMatrices.begin(); i != _inputMatrices.end(); ++i) {
-    (*i)->writeUnlock();
+    #ifdef LOCKTRACE
+    kstdDebug() << (void*)this << " (" << this->type() << ") KstDataObject::unlock() by tid=" << (int)QThread::currentThread() << ": unlocking input matrix " << (void*)(*i) << endl;
+    #endif
+    (*i)->unlock();
   }
   for (KstVectorMap::ConstIterator i = _outputVectors.begin(); i != _outputVectors.end(); ++i) {
     if ((*i)->provider() == this) {
-      (*i)->KstObject::writeUnlock();
+      #ifdef LOCKTRACE
+      kstdDebug() << (void*)this << " (" << this->type() << ") KstDataObject::unlock() by tid=" << (int)QThread::currentThread() << ": unlocking output vector " << (void*)(*i) << " (as provider)" << endl;
+      #endif
+      (*i)->KstObject::unlock();
     } else {
-      (*i)->writeUnlock();
+      #ifdef LOCKTRACE
+      kstdDebug() << (void*)this << " (" << this->type() << ") KstDataObject::unlock() by tid=" << (int)QThread::currentThread() << ": unlocking output vector " << (void*)(*i) << " (not provider) -- this is probably an error." << endl;
+      #endif
+      KstDebug::self()->log(i18n("(%1) KstDataObject::unlock() by tid=%2: unlocking output vector %3 (not provider) -- this is probably an error. Please email kst@kde.org with details.").arg(this->type()).arg((int)QThread::currentThread()).arg((*i)->tagName()), KstDebug::Error);
+      (*i)->unlock();
     }
   }
   for (KstVectorMap::ConstIterator i = _inputVectors.begin(); i != _inputVectors.end(); ++i) {
-    (*i)->writeUnlock();
+    #ifdef LOCKTRACE
+    kstdDebug() << (void*)this << " (" << this->type() << ") KstDataObject::unlock() by tid=" << (int)QThread::currentThread() << ": unlocking input vector " << (void*)(*i) << endl;
+    #endif
+    (*i)->unlock();
   }
   for (KstScalarMap::ConstIterator i = _outputScalars.begin(); i != _outputScalars.end(); ++i) {
     if ((*i)->provider() == this) {
-      (*i)->KstObject::writeUnlock();
+      #ifdef LOCKTRACE
+      kstdDebug() << (void*)this << " (" << this->type() << ") KstDataObject::unlock() by tid=" << (int)QThread::currentThread() << ": unlocking output scalar " << (void*)(*i) << " (as provider)" << endl;
+      #endif
+      (*i)->KstObject::unlock();
     } else {
-      (*i)->writeUnlock();
+      #ifdef LOCKTRACE
+      kstdDebug() << (void*)this << " (" << this->type() << ") KstDataObject::unlock() by tid=" << (int)QThread::currentThread() << ": unlocking output scalar " << (void*)(*i) << " (not provider) -- this is probably an error." << endl;
+      #endif
+      KstDebug::self()->log(i18n("(%1) KstDataObject::unlock() by tid=%2: unlocking output scalar %3 (not provider) -- this is probably an error. Please email kst@kde.org with details.").arg(this->type()).arg((int)QThread::currentThread()).arg((*i)->tagName()), KstDebug::Error);
+      (*i)->unlock();
     }
   }
   for (KstScalarMap::ConstIterator i = _inputScalars.begin(); i != _inputScalars.end(); ++i) {
-    (*i)->writeUnlock();
+    #ifdef LOCKTRACE
+    kstdDebug() << (void*)this << " (" << this->type() << ") KstDataObject::unlock() by tid=" << (int)QThread::currentThread() << ": unlocking input scalar " << (void*)(*i) << endl;
+    #endif
+    (*i)->unlock();
   }
   for (KstStringMap::ConstIterator i = _outputStrings.begin(); i != _outputStrings.end(); ++i) {
     if ((*i)->provider() == this) {
-      (*i)->KstObject::writeUnlock();
+      #ifdef LOCKTRACE
+      kstdDebug() << (void*)this << " (" << this->type() << ") KstDataObject::unlock() by tid=" << (int)QThread::currentThread() << ": unlocking output string " << (void*)(*i) << " (as provider)" << endl;
+      #endif
+      (*i)->KstObject::unlock();
     } else {
-      (*i)->writeUnlock();
+      #ifdef LOCKTRACE
+      kstdDebug() << (void*)this << " (" << this->type() << ") KstDataObject::unlock() by tid=" << (int)QThread::currentThread() << ": unlocking output string " << (void*)(*i) << " (not provider) -- this is probably an error." << endl;
+      #endif
+      KstDebug::self()->log(i18n("(%1) KstDataObject::unlock() by tid=%2: unlocking output string %3 (not provider) -- this is probably an error. Please email kst@kde.org with details.").arg(this->type()).arg((int)QThread::currentThread()).arg((*i)->tagName()), KstDebug::Error);
+      (*i)->unlock();
     }
   }
   for (KstStringMap::ConstIterator i = _inputStrings.begin(); i != _inputStrings.end(); ++i) {
-    (*i)->writeUnlock();
+    #ifdef LOCKTRACE
+    kstdDebug() << (void*)this << " (" << this->type() << ") KstDataObject::unlock() by tid=" << (int)QThread::currentThread() << ": unlocking input string " << (void*)(*i) << endl;
+    #endif
+    (*i)->unlock();
   }
-  KstRWLock::writeUnlock();
+  #ifdef LOCKTRACE
+  kstdDebug() << (void*)this << " (" << this->type() << ") KstDataObject::unlock() by tid=" << (int)QThread::currentThread() << ": unlocking myself" << endl;
+  #endif
+  KstRWLock::unlock();
 }
 
 
@@ -439,7 +517,7 @@ const KstCurveHintList* KstDataObject::curveHints() const {
 bool KstDataObject::deleteDependents() {
   KST::dataObjectList.lock().readLock();
   KstDataObjectList dol = QDeepCopy<KstDataObjectList>(KST::dataObjectList);
-  KST::dataObjectList.lock().readUnlock();
+  KST::dataObjectList.lock().unlock();
   for (KstDataObjectList::Iterator i = dol.begin(); i != dol.end(); ++i) {
     bool user = (*i)->uses(this);
     if (!user) {
@@ -457,7 +535,7 @@ bool KstDataObject::deleteDependents() {
       KstDataObjectPtr dop = *i;
       KST::dataObjectList.lock().writeLock();
       KST::dataObjectList.remove(dop);
-      KST::dataObjectList.lock().writeUnlock();
+      KST::dataObjectList.lock().unlock();
       dop->deleteDependents();
     }
   } 
@@ -470,7 +548,7 @@ bool KstDataObject::duplicateDependents(QMap<KstDataObjectPtr, KstDataObjectPtr>
   // work with a copy of the data object list
   KST::dataObjectList.lock().readLock();
   KstDataObjectList dol = QDeepCopy<KstDataObjectList>(KST::dataObjectList);
-  KST::dataObjectList.lock().readUnlock();
+  KST::dataObjectList.lock().unlock();
   
   for (KstDataObjectList::Iterator i = dol.begin(); i != dol.end(); ++i) { 
     if ((*i)->uses(this)) {
@@ -480,7 +558,7 @@ bool KstDataObject::duplicateDependents(QMap<KstDataObjectPtr, KstDataObjectPtr>
         KstDataObjectPtr newObject = (*i)->makeDuplicate(duplicatedMap);
         KST::dataObjectList.lock().writeLock();
         KST::dataObjectList.append(newObject.data());
-        KST::dataObjectList.lock().writeUnlock();
+        KST::dataObjectList.lock().unlock();
         (duplicatedMap[*i])->replaceDependency(this, duplicatedMap[this]);
         (*i)->duplicateDependents(duplicatedMap);
       }

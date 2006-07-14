@@ -60,7 +60,7 @@ KstScalar::KstScalar(const QString& in_tag, KstObject *provider, double val, boo
   }
   KST::scalarList.append(this);
   if (doLock) {
-    KST::scalarList.lock().writeUnlock();
+    KST::scalarList.lock().unlock();
   }
 }
 
@@ -139,7 +139,7 @@ bool KstScalar::isGlobal() const {
   KST::scalarList.lock().readLock();
   // can't use find() due to constness issues
   bool rc = KST::scalarList.findTag(tagName()) != KST::scalarList.end();
-  KST::scalarList.lock().readUnlock();
+  KST::scalarList.lock().unlock();
   return rc;
 }
 

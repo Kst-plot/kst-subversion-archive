@@ -35,7 +35,7 @@ KstBindCurveCollection::KstBindCurveCollection(KJS::ExecState *exec, KstViewLege
   _isPlot = false;
   p->readLock();
   _legend = p.data();
-  p->readUnlock();
+  p->unlock();
 }
 
 
@@ -44,7 +44,7 @@ KstBindCurveCollection::KstBindCurveCollection(KJS::ExecState *exec, Kst2DPlotPt
   _isPlot = true;
   p->readLock();
   _plot = p->tagName();
-  p->readUnlock();
+  p->unlock();
 }
 
 

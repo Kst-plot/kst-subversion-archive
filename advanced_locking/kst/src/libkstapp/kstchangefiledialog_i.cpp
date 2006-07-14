@@ -85,7 +85,7 @@ void KstChangeFileDialogI::updateChangeFileDialog() {
     rvl[i]->readLock();
     ChangeFileCurveList->insertItem(rvl[i]->tagName());
     filesUsed.insert(rvl[i]->filename(), rvl[i]->filename()); 
-    rvl[i]->readUnlock();
+    rvl[i]->unlock();
   }
   
   // then add matrices
@@ -93,7 +93,7 @@ void KstChangeFileDialogI::updateChangeFileDialog() {
     rml[i]->readLock();
     ChangeFileCurveList->insertItem(rml[i]->tagName());
     filesUsed.insert(rml[i]->filename(), rml[i]->filename()); 
-    rml[i]->readUnlock();  
+    rml[i]->unlock();  
   }
 
   QString currentFile = _files->currentText();
@@ -135,12 +135,12 @@ void KstChangeFileDialogI::applyFileChange() {
   if (it == KST::dataSourceList.end()) {
     file = KstDataSource::loadSource(_dataFile->url());
     if (!file || !file->isValid()) {
-      KST::dataSourceList.lock().writeUnlock();
+      KST::dataSourceList.lock().unlock();
       KMessageBox::sorry(this, i18n("The file could not be loaded."));
       return;
     }
     if (file->isEmpty()) {
-      KST::dataSourceList.lock().writeUnlock();
+      KST::dataSourceList.lock().unlock();
       KMessageBox::sorry(this, i18n("The file does not contain data."));
       return;
     }
@@ -148,7 +148,7 @@ void KstChangeFileDialogI::applyFileChange() {
   } else {
     file = *it;
   }
-  KST::dataSourceList.lock().writeUnlock();
+  KST::dataSourceList.lock().unlock();
 
   KstApp *app = KstApp::inst();
   KstRVectorList rvl = kstObjectSubList<KstVector,KstRVector>(KST::vectorList);
@@ -176,7 +176,7 @@ void KstChangeFileDialogI::applyFileChange() {
       vector->writeLock();
       file->readLock();
       bool valid = file->isValidField(vector->field());
-      file->readUnlock();
+      file->unlock();
       if (!valid) {
         if (invalid > 0) {
           // FIXME: invalid list construction for i18n
@@ -202,7 +202,7 @@ void KstChangeFileDialogI::applyFileChange() {
           vector->changeFile(file);
         }
       }
-      vector->writeUnlock();
+      vector->unlock();
       app->slotUpdateProgress(selected, ++handled, i18n("Updating vectors..."));
     }
   }
@@ -214,7 +214,7 @@ void KstChangeFileDialogI::applyFileChange() {
       matrix->writeLock();
       file->readLock();
       bool valid = file->isValidMatrix(matrix->field());
-      file->readUnlock();
+      file->unlock();
       if (!valid) {
         if (invalid > 0) {
           // FIXME: invalid list construction for i18n
@@ -240,7 +240,7 @@ void KstChangeFileDialogI::applyFileChange() {
           matrix->changeFile(file);
         }
       }
-      matrix->writeUnlock();
+      matrix->unlock();
       app->slotUpdateProgress(selected, ++handled, i18n("Updating matrices..."));
     }
   }

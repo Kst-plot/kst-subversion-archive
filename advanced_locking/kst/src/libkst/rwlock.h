@@ -19,7 +19,10 @@
 #define RWLOCK_H
 
 #include <qmutex.h>
-#include <qsemaphore.h>
+#include <qmap.h>
+#include <qthread.h>
+
+#include "kstwaitcondition.h"
 
 #include "kst_export.h"
 
@@ -29,15 +32,20 @@ class KST_EXPORT KstRWLock {
     virtual ~KstRWLock();
 
     virtual void readLock() const;
-    virtual void readUnlock() const;
-
     virtual void writeLock() const;
-    virtual void writeUnlock() const;
+
+    virtual void unlock() const;
 
   protected:
-    mutable QSemaphore _sem;
-    mutable QMutex _writeLock;
-    mutable int _writeRecursion;
+    mutable QMutex _mutex;
+    mutable KstWaitCondition _readerWait, _writerWait;
+
+    mutable int _readCount, _writeCount;
+    mutable int _waitingReaders, _waitingWriters;
+
+    mutable Qt::HANDLE _writeLocker;
+    mutable QMap<Qt::HANDLE, int> _readLockers;
+
     // NOTE: In order to preserve binary compatibility with plugins, you must
     //       not add, remove, or change member variables or virtual functions.
     //       You must also not remove or change non-virtual functions.
@@ -46,8 +54,8 @@ class KST_EXPORT KstRWLock {
 
 class KST_EXPORT KstReadLocker {
   public:
-    KstReadLocker(KstRWLock *l) : _l(l) { l->readLock(); }
-    ~KstReadLocker() { _l->readUnlock(); }
+    KstReadLocker(KstRWLock *l) : _l(l) { _l->readLock(); }
+    ~KstReadLocker() { _l->unlock(); }
   private:
     KstRWLock *_l;
     // NOTE: In order to preserve binary compatibility with plugins, you must
@@ -58,8 +66,8 @@ class KST_EXPORT KstReadLocker {
 
 class KST_EXPORT KstWriteLocker {
   public:
-    KstWriteLocker(KstRWLock *l) : _l(l) { l->writeLock(); }
-    ~KstWriteLocker() { _l->writeUnlock(); }
+    KstWriteLocker(KstRWLock *l) : _l(l) { _l->writeLock(); }
+    ~KstWriteLocker() { _l->unlock(); }
   private:
     KstRWLock *_l;
     // NOTE: In order to preserve binary compatibility with plugins, you must

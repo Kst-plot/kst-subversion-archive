@@ -160,7 +160,7 @@ void KstCurveDialogI::fillFieldsForEdit() {
 
   _w->_checkBoxIgnoreAutoscale->setChecked(cp->ignoreAutoScale());
 
-  cp->readUnlock();
+  cp->unlock();
 
   _w->_curvePlacement->hide();
   adjustSize();
@@ -222,7 +222,7 @@ bool KstCurveDialogI::newObject() {
   } else {
     EYMinus = *KST::vectorList.findTag(_w->_yMinusError->selectedVector());
   }
-  KST::vectorList.lock().readUnlock();
+  KST::vectorList.lock().unlock();
   if (!VX || !VY) {
     kstdFatal() << "Bug in kst: the XVector field in plotDialog refers to "
                 << "a non existent vector...." << endl;
@@ -260,20 +260,20 @@ bool KstCurveDialogI::newObject() {
   KstVCurvePtr curve = new KstVCurve(tag_name, VX, VY, EX, EY, EXMinus, EYMinus, _w->_curveAppearance->color());
 
   if (EX) {
-    EX->readUnlock();
+    EX->unlock();
   }
   if (EY) {
-    EY->readUnlock();
+    EY->unlock();
   }
   if (EXMinus) {
-    EXMinus->readUnlock();
+    EXMinus->unlock();
   }
   if (EYMinus) {
-    EYMinus->readUnlock();
+    EYMinus->unlock();
   }
 
-  VY->readUnlock();
-  VX->readUnlock();
+  VY->unlock();
+  VX->unlock();
 
   QString legend_text = _legendText->text();
   if (legend_text == defaultTag) {
@@ -327,7 +327,7 @@ bool KstCurveDialogI::newObject() {
 
   KST::dataObjectList.lock().writeLock();
   KST::dataObjectList.append(curve.data());
-  KST::dataObjectList.lock().writeUnlock();
+  KST::dataObjectList.lock().unlock();
 
   curve = 0L; // drop the reference
   emit modified();
@@ -420,7 +420,7 @@ bool KstCurveDialogI::editSingleObject(KstVCurvePtr cvPtr) {
     cvPtr->setIgnoreAutoScale(_w->_checkBoxIgnoreAutoscale->isChecked());
   }
 
-  cvPtr->writeUnlock();
+  cvPtr->unlock();
   return true;
 }
 
@@ -485,7 +485,7 @@ bool KstCurveDialogI::editObject() {
     } else {
       cp->setLegendText(legend_text);
     }
-    cp->writeUnlock();
+    cp->unlock();
 
     // then edit the object
     _xVectorDirty = true;

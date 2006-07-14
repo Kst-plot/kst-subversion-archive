@@ -23,7 +23,7 @@ KstDataObjectList KST::dataObjectList;
 void KST::addDataObjectToList(KstDataObjectPtr d) {
   KST::dataObjectList.lock().writeLock();
   KST::dataObjectList.append(d);
-  KST::dataObjectList.lock().writeUnlock();
+  KST::dataObjectList.lock().unlock();
 }
 
 #if 0

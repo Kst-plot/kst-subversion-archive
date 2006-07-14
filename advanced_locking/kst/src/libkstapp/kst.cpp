@@ -2276,20 +2276,20 @@ void KstApp::reload() {
     if (r) {
       r->writeLock();
       r->reload();
-      r->writeUnlock();
+      r->unlock();
     }
   }
-  KST::vectorList.lock().readUnlock();
+  KST::vectorList.lock().unlock();
   KST::matrixList.lock().readLock();
   for (KstMatrixList::ConstIterator i = KST::matrixList.begin(); i != KST::matrixList.end(); ++i) {
     KstRMatrixPtr r = kst_cast<KstRMatrix>(*i);
     if (r) {
       r->writeLock();
       r->reload();
-      r->writeUnlock();
+      r->unlock();
     }
   }
-  KST::matrixList.lock().readUnlock();
+  KST::matrixList.lock().unlock();
   QApplication::restoreOverrideCursor();
 }
 

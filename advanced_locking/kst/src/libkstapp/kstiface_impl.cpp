@@ -94,7 +94,7 @@ QStringList KstIfaceImpl::curveList() {
   for (KstBaseCurveList::Iterator it = bcl.begin(); it != bcl.end(); ++it) {
     (*it)->readLock();
     rc += (*it)->tagName();
-    (*it)->readUnlock();
+    (*it)->unlock();
   }
 
   return rc;
@@ -249,7 +249,7 @@ bool KstIfaceImpl::plotEquation(double start, double end, int numSamples, const 
   KST::dataObjectList.lock().writeLock();
   KST::dataObjectList.append(KstDataObjectPtr(eq));
   KST::dataObjectList.append(KstDataObjectPtr(vc));
-  KST::dataObjectList.lock().writeUnlock();
+  KST::dataObjectList.lock().unlock();
 
   plot->addCurve(KstBaseCurvePtr(vc));
 
@@ -276,7 +276,7 @@ bool KstIfaceImpl::plotEquation(const QString& xvector, const QString& equation,
   QString etag, ptag;
   KST::vectorList.lock().readLock();
   KstVectorList::Iterator it = KST::vectorList.findTag(xvector);
-  KST::vectorList.lock().readUnlock();
+  KST::vectorList.lock().unlock();
   KstApp *app = KstApp::inst();
 
   if (equation.isEmpty() || it == KST::vectorList.end()) {
@@ -343,7 +343,7 @@ bool KstIfaceImpl::plotEquation(const QString& xvector, const QString& equation,
   KST::dataObjectList.lock().writeLock();
   KST::dataObjectList.append(KstDataObjectPtr(eq));
   KST::dataObjectList.append(KstDataObjectPtr(vc));
-  KST::dataObjectList.lock().writeUnlock();
+  KST::dataObjectList.lock().unlock();
 
   plot->addCurve(KstBaseCurvePtr(vc));
 
@@ -395,7 +395,7 @@ QStringList KstIfaceImpl::inputVectors(const QString& objectName) {
   if (oi != KST::dataObjectList.end()) {
     (*oi)->readLock();
     rc = (*oi)->inputVectors().tagNames();
-    (*oi)->readUnlock();
+    (*oi)->unlock();
   }
 
   return rc;
@@ -410,7 +410,7 @@ QStringList KstIfaceImpl::inputScalars(const QString& objectName) {
   if (oi != KST::dataObjectList.end()) {
     (*oi)->readLock();
     rc = (*oi)->inputScalars().tagNames();
-    (*oi)->readUnlock();
+    (*oi)->unlock();
   }
 
   return rc;
@@ -425,7 +425,7 @@ QStringList KstIfaceImpl::outputVectors(const QString& objectName) {
   if (oi != KST::dataObjectList.end()) {
     (*oi)->readLock();
     rc = (*oi)->outputVectors().tagNames();
-    (*oi)->readUnlock();
+    (*oi)->unlock();
   }
 
   return rc;
@@ -440,7 +440,7 @@ QStringList KstIfaceImpl::outputScalars(const QString& objectName) {
   if (oi != KST::dataObjectList.end()) {
     (*oi)->readLock();
     rc = (*oi)->outputScalars().tagNames();
-    (*oi)->readUnlock();
+    (*oi)->unlock();
   }
 
   return rc;
@@ -483,7 +483,7 @@ int KstIfaceImpl::vectorSize(const QString& name) {
   if (it != KST::vectorList.end()) {
     (*it)->readLock();
     rc = (*it)->length();
-    (*it)->readUnlock();
+    (*it)->unlock();
   }
 
   return rc;
@@ -527,7 +527,7 @@ double KstIfaceImpl::vector(const QString& name, int index) {
     if (index < (*it)->length()) {
       rc = (*it)->value(index);
     }
-    (*it)->readUnlock();
+    (*it)->unlock();
   }
 
   return rc;
@@ -542,10 +542,10 @@ bool KstIfaceImpl::setVector(const QString& name, int index, double value) {
     (*it)->writeLock();
     if (index < (*it)->length()) {
       (*it)->value()[index] = value;
-      (*it)->writeUnlock();
+      (*it)->unlock();
       return true;
     }
-    (*it)->writeUnlock();
+    (*it)->unlock();
   }
 
   return false;
@@ -562,7 +562,7 @@ bool KstIfaceImpl::resizeVector(const QString& name, int newSize) {
     if (rc) {
       rc = (*it)->length() == newSize;
     }
-    (*it)->writeUnlock();
+    (*it)->unlock();
     return rc;
   }
 
@@ -577,7 +577,7 @@ bool KstIfaceImpl::clearVector(const QString& name) {
   if (it != KST::vectorList.end()) {
     (*it)->writeLock();
     (*it)->zero();
-    (*it)->writeUnlock();
+    (*it)->unlock();
     return true;
   }
 
@@ -748,7 +748,7 @@ const QString& KstIfaceImpl::createCurve(const QString& name, const QString& xVe
   KstVectorPtr vy = *KST::vectorList.findTag(yVector);
   KstVectorPtr ex = *KST::vectorList.findTag(xErrorVector);
   KstVectorPtr ey = *KST::vectorList.findTag(yErrorVector);
-  KST::vectorList.lock().readUnlock();
+  KST::vectorList.lock().unlock();
 
   KST::dataObjectList.lock().writeLock();
   while (KST::dataObjectList.findTag(n) != KST::dataObjectList.end()) {
@@ -757,7 +757,7 @@ const QString& KstIfaceImpl::createCurve(const QString& name, const QString& xVe
 
   KstVCurvePtr c = new KstVCurve(n, vx, vy, ex, ey, ex, ey, color);
   KST::dataObjectList.append(KstDataObjectPtr(c));
-  KST::dataObjectList.lock().writeUnlock();
+  KST::dataObjectList.lock().unlock();
   _doc->forceUpdate();
   _doc->setModified();
 
@@ -833,7 +833,7 @@ void KstIfaceImpl::reloadVector(const QString& vector) {
     if (r) {
       r->reload();
     }
-    (*v)->writeUnlock();
+    (*v)->unlock();
   }
 }
 
@@ -847,11 +847,11 @@ const QString& KstIfaceImpl::loadVector(const QString& file, const QString& fiel
   if (it == KST::dataSourceList.end()) {
     src = KstDataSource::loadSource(file);
     if (!src || !src->isValid()) {
-      KST::dataSourceList.lock().writeUnlock();
+      KST::dataSourceList.lock().unlock();
       return QString::null;
     }
     if (src->isEmpty()) {
-      KST::dataSourceList.lock().writeUnlock();
+      KST::dataSourceList.lock().unlock();
       return QString::null;
     }
     KST::dataSourceList.append(src);
@@ -859,7 +859,7 @@ const QString& KstIfaceImpl::loadVector(const QString& file, const QString& fiel
     src = *it;
   }
   src->writeLock();
-  KST::dataSourceList.lock().writeUnlock();
+  KST::dataSourceList.lock().unlock();
 
   KST::vectorList.lock().readLock();
   QString vname = "V" + QString::number(KST::vectorList.count() + 1);
@@ -867,12 +867,12 @@ const QString& KstIfaceImpl::loadVector(const QString& file, const QString& fiel
   while (KstData::self()->vectorTagNameNotUnique(vname, false)) {
     vname = "V" + QString::number(KST::vectorList.count() + 1);
   }
-  KST::vectorList.lock().readUnlock();
+  KST::vectorList.lock().unlock();
 
   KstVectorPtr p = new KstRVector(src, field, vname, 0, -1, 0, false, false);
   KST::addVectorToList(p);
 
-  src->writeUnlock();
+  src->unlock();
 
   if (p) {
     _doc->forceUpdate();
@@ -1142,13 +1142,13 @@ QString KstIfaceImpl::createHistogram(const QString& name,
   KST::vectorList.lock().readLock();
   KstVectorPtr vx = *KST::vectorList.findTag(objList[1]);
   KstVectorPtr vy = *KST::vectorList.findTag(objList[2]);
-  KST::vectorList.lock().readUnlock();
+  KST::vectorList.lock().unlock();
 
   KST::dataObjectList.lock().readLock();
   while (KST::dataObjectList.findTag(n) != KST::dataObjectList.end()) {
     n += "'";
   }
-  KST::dataObjectList.lock().readUnlock();
+  KST::dataObjectList.lock().unlock();
 
   KstVCurvePtr c = new KstVCurve(n, vx, vy, 0L, 0L, 0L, 0L, color);
   c->setHasPoints(false);
@@ -1158,7 +1158,7 @@ QString KstIfaceImpl::createHistogram(const QString& name,
   
   KST::dataObjectList.lock().writeLock();
   KST::dataObjectList.append(KstDataObjectPtr(c));
-  KST::dataObjectList.lock().writeUnlock();
+  KST::dataObjectList.lock().unlock();
 
   _doc->forceUpdate();
   _doc->setModified();
@@ -1175,7 +1175,7 @@ QStringList KstIfaceImpl::createHistogram(const QString& name,
   //get the vector
   KST::vectorList.lock().readLock();
   KstVectorList::Iterator iter = KST::vectorList.findTag(vector);
-  KST::vectorList.lock().readUnlock();
+  KST::vectorList.lock().unlock();
 
   if (iter == KST::vectorList.end()) {
     return QStringList();
@@ -1226,7 +1226,7 @@ QStringList KstIfaceImpl::createHistogram(const QString& name,
 
   KST::dataObjectList.lock().writeLock();
   KST::dataObjectList.append(KstDataObjectPtr(histogram));
-  KST::dataObjectList.lock().writeUnlock();
+  KST::dataObjectList.lock().unlock();
 
   QStringList returnList;
   returnList.push_back(histogram->tagName());
@@ -1260,14 +1260,14 @@ QString KstIfaceImpl::createPowerSpectrum(const QString & name,
   KST::vectorList.lock().readLock();
   KstVectorPtr vx = *KST::vectorList.findTag(objList[1]);
   KstVectorPtr vy = *KST::vectorList.findTag(objList[2]);
-  KST::vectorList.lock().readUnlock();
+  KST::vectorList.lock().unlock();
   
   QString n = objList[0] + "-C";
   KST::dataObjectList.lock().readLock();
   while (KST::dataObjectList.findTag(n) != KST::dataObjectList.end()) {
     n += "'";
   }
-  KST::dataObjectList.lock().readUnlock();
+  KST::dataObjectList.lock().unlock();
   
   // create curve as well (but don't plot the curve)
   KstVCurvePtr vc = new KstVCurve(n, vx, vy, 
@@ -1276,7 +1276,7 @@ QString KstIfaceImpl::createPowerSpectrum(const QString & name,
 
   KST::dataObjectList.lock().writeLock();
   KST::dataObjectList.append(KstDataObjectPtr(vc));
-  KST::dataObjectList.lock().writeUnlock();
+  KST::dataObjectList.lock().unlock();
 
   _doc->forceUpdate();
   _doc->setModified();
@@ -1296,7 +1296,7 @@ QStringList KstIfaceImpl::createPowerSpectrum(const QString& name,
   //get the vector
   KST::vectorList.lock().readLock();
   KstVectorList::Iterator iter = KST::vectorList.findTag(vector);
-  KST::vectorList.lock().readUnlock();
+  KST::vectorList.lock().unlock();
 
   if (iter == KST::vectorList.end()) {
     return QStringList();
@@ -1326,7 +1326,7 @@ QStringList KstIfaceImpl::createPowerSpectrum(const QString& name,
   
   KST::dataObjectList.lock().writeLock();
   KST::dataObjectList.append(KstDataObjectPtr(powerspectrum));
-  KST::dataObjectList.lock().writeUnlock();
+  KST::dataObjectList.lock().unlock();
   
   QStringList returnList;
   returnList.push_back(powerspectrum->tagName());
@@ -1400,7 +1400,7 @@ QString KstIfaceImpl::createEvent(const QString& name,
 
   KST::dataObjectList.lock().writeLock();
   KST::dataObjectList.append(KstDataObjectPtr(event));
-  KST::dataObjectList.lock().writeUnlock();
+  KST::dataObjectList.lock().unlock();
 
   _doc->forceUpdate();
   _doc->setModified();
@@ -1439,11 +1439,11 @@ QStringList KstIfaceImpl::createPlugin(const QString& pluginName,
       if (vectorParamIter != vectorInputs.end()) {
         KST::vectorList.lock().readLock();
         KstVectorList::Iterator iter = KST::vectorList.findTag(*vectorParamIter);
-        KST::vectorList.lock().readUnlock();
+        KST::vectorList.lock().unlock();
         if (iter != KST::vectorList.end()) {
           kstplug_ptr->writeLock();
           kstplug_ptr->inputVectors().insert((*IOIter)._name, *iter);
-          kstplug_ptr->writeUnlock();
+          kstplug_ptr->unlock();
         }
         else {
           return QStringList();
@@ -1458,11 +1458,11 @@ QStringList KstIfaceImpl::createPlugin(const QString& pluginName,
       if (scalarParamIter != scalarInputs.end()) {
         KST::scalarList.lock().readLock();
         KstScalarList::Iterator iter = KST::scalarList.findTag(*scalarParamIter);
-        KST::scalarList.lock().readUnlock();
+        KST::scalarList.lock().unlock();
         if (iter != KST::scalarList.end()) {
           kstplug_ptr->writeLock();
           kstplug_ptr->inputScalars().insert((*IOIter)._name, *iter);
-          kstplug_ptr->writeUnlock();
+          kstplug_ptr->unlock();
         }
         else {
           return QStringList();
@@ -1515,7 +1515,7 @@ QStringList KstIfaceImpl::createPlugin(const QString& pluginName,
         }
         kstplug_ptr->writeLock();
         (*kstVectorIter)->setTagName(vectorTag);
-        kstplug_ptr->writeUnlock();
+        kstplug_ptr->unlock();
         kstVectorIter++;
       }
     }
@@ -1527,7 +1527,7 @@ QStringList KstIfaceImpl::createPlugin(const QString& pluginName,
         }
         kstplug_ptr->writeLock();
         (*kstScalarIter)->setTagName(scalarTag);
-        kstplug_ptr->writeUnlock();
+        kstplug_ptr->unlock();
         kstScalarIter++;
       }
     }
@@ -1561,11 +1561,11 @@ QString KstIfaceImpl::loadMatrix(const QString& name, const QString& file, const
   if (it == KST::dataSourceList.end()) {
     src = KstDataSource::loadSource(file);
     if (!src || !src->isValid()) {
-      KST::dataSourceList.lock().writeUnlock();
+      KST::dataSourceList.lock().unlock();
       return QString::null;
     }
     if (src->isEmpty()) {
-      KST::dataSourceList.lock().writeUnlock();
+      KST::dataSourceList.lock().unlock();
       return QString::null;
     }
     KST::dataSourceList.append(src);
@@ -1573,11 +1573,11 @@ QString KstIfaceImpl::loadMatrix(const QString& name, const QString& file, const
     src = *it;
   }
   src->writeLock();
-  KST::dataSourceList.lock().writeUnlock();
+  KST::dataSourceList.lock().unlock();
 
   // make sure field is valid
   if (!src->isValidMatrix(field)) {
-    src->writeUnlock();
+    src->unlock();
     return QString::null;  
   }
   
@@ -1594,13 +1594,13 @@ QString KstIfaceImpl::loadMatrix(const QString& name, const QString& file, const
   while (KstData::self()->matrixTagNameNotUnique(matrixName, false)) {
     matrixName = "M" + QString::number(KST::matrixList.count() + 1);
   }
-  KST::matrixList.lock().readUnlock();
+  KST::matrixList.lock().unlock();
 
   KstMatrixPtr p = new KstRMatrix(src, field, matrixName, xStart, yStart, xNumSteps, yNumSteps, 
                                   boxcarFilter, skipFrames > 0, skipFrames);
   KST::addMatrixToList(p);
 
-  src->writeUnlock();
+  src->unlock();
 
   if (p) {
     _doc->forceUpdate();
@@ -1629,7 +1629,7 @@ QString KstIfaceImpl::createGradient(const QString& name, bool xDirection, doubl
   while (KstData::self()->matrixTagNameNotUnique(matrixName, false)) {
     matrixName = "M" + QString::number(KST::matrixList.count() + 1);
   }
-  KST::matrixList.lock().readUnlock();
+  KST::matrixList.lock().unlock();
   
   // create the gradient matrix
   KstMatrixPtr p = new KstSMatrix(matrixName, xNumSteps, yNumSteps, xMin, yMin, xStepSize, yStepSize, 
@@ -1686,7 +1686,7 @@ QString KstIfaceImpl::createImage(const QString &name,
     KPalette* pal = new KPalette(paletteName);
     matrix->readLock();
     image = new KstImage(imgtag, matrix, lowerZ, upperZ, false, pal);
-    matrix->readUnlock();
+    matrix->unlock();
   } else if (imageType == 1) {
     //need a contourmap
     if (numContours < 1) {
@@ -1694,7 +1694,7 @@ QString KstIfaceImpl::createImage(const QString &name,
     }
     matrix->readLock();
     image = new KstImage(imgtag, matrix, numContours, contourColor.isValid() ? contourColor : QColor("darkBlue"), 0);
-    matrix->readUnlock();
+    matrix->unlock();
   } else if (imageType == 2) {
     //need both contourmap and colormap
     if (lowerZ > upperZ) {
@@ -1707,14 +1707,14 @@ QString KstIfaceImpl::createImage(const QString &name,
     matrix->readLock();
     image = new KstImage(imgtag, matrix, lowerZ, upperZ, false, pal,
                          numContours, contourColor.isValid() ? contourColor : QColor("darkBlue"), 0);
-    matrix->readUnlock();
+    matrix->unlock();
   } else {
     return QString::null;
   }
 
   KST::dataObjectList.lock().writeLock();
   KST::dataObjectList.append(KstDataObjectPtr(image));
-  KST::dataObjectList.lock().writeUnlock();
+  KST::dataObjectList.lock().unlock();
 
   _doc->forceUpdate();
   _doc->setModified();
@@ -1766,7 +1766,7 @@ bool KstIfaceImpl::changeDataFile(const QString& vector, const QString& fileName
 bool KstIfaceImpl::changeDataFile(const QString& vector, const QString& fileName, bool update) {
   KST::vectorList.lock().readLock();
   KstRVectorPtr rvp = kst_cast<KstRVector>(*KST::vectorList.findTag(vector));
-  KST::vectorList.lock().readUnlock();
+  KST::vectorList.lock().unlock();
   if (!rvp) {
     return false;
   }
@@ -1779,7 +1779,7 @@ bool KstIfaceImpl::changeDataFile(const QString& vector, const QString& fileName
   if (it == KST::dataSourceList.end()) {
     file = KstDataSource::loadSource(fileName);
     if (!file || !file->isValid() || file->isEmpty()) {
-      KST::dataSourceList.lock().writeUnlock();
+      KST::dataSourceList.lock().unlock();
       return false;
     }
     KST::dataSourceList.append(file);
@@ -1787,22 +1787,22 @@ bool KstIfaceImpl::changeDataFile(const QString& vector, const QString& fileName
     file = *it;
   }
 
-  KST::dataSourceList.lock().writeUnlock();
+  KST::dataSourceList.lock().unlock();
 
   rvp->writeLock();
   file->writeLock();
 
   if (!file->isValidField(vector)) {
-    file->writeUnlock();
-    rvp->writeUnlock();
+    file->unlock();
+    rvp->unlock();
     return false;
   }
 
   rvp->changeFile(file);
   
-  file->writeUnlock();
+  file->unlock();
   bool rc = rvp->isValid();
-  rvp->writeUnlock();
+  rvp->unlock();
 
   if (update) {
     KstApp::inst()->forceUpdate();

@@ -75,7 +75,7 @@ KstMatrix::~KstMatrix() {
     KST::scalarList.remove(iter.current());
     iter.current()->_KShared_unref();  
   }
-  KST::scalarList.lock().writeUnlock();
+  KST::scalarList.lock().unlock();
 
   if (_z) {
     free(_z);

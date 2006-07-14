@@ -174,7 +174,7 @@ void DataWizard::sourceChanged(const QString& text)
 	    fl = ds->fieldList();
 	    fileType = ds->fileType();
 	    complete = ds->fieldListIsComplete();
-	    ds->readUnlock();
+	    ds->unlock();
 	    ds = 0L;
 	} else {
 	    fl = KstDataSource::fieldListForSource(file, QString::null, &fileType, &complete);
@@ -184,7 +184,7 @@ void DataWizard::sourceChanged(const QString& text)
 	    if (ds) {
 		ds->writeLock();
 		_configWidget = ds->configWidget();
-		ds->writeUnlock();
+		ds->unlock();
 	    } else {
 		_configWidget = KstDataSource::configWidgetForSource(file, fileType);
 	    }
@@ -275,7 +275,7 @@ void DataWizard::showPage( QWidget *page )
 	}
 	_kstDataRange->setAllowTime(ds && ds->supportsTimeConversions());
 	if (ds) {
-	    ds->readUnlock();
+	    ds->unlock();
 	}
 	_vectorReduction->setFocus();
     } else if (page == _pageFilters) {
@@ -488,7 +488,7 @@ void DataWizard::finished()
 	}
 	KST::dataSourceList.lock().writeLock();
 	KST::dataSourceList.append(ds);
-	KST::dataSourceList.lock().writeUnlock();
+	KST::dataSourceList.lock().unlock();
 	_sourceCache.clear();
     }
 
@@ -571,7 +571,7 @@ void DataWizard::finished()
     }
 
 
-    ds->writeUnlock();
+    ds->unlock();
     if (memoryRequested > memoryAvailable) {
 	KMessageBox::sorry(this, i18n("You requested to read in %1 MB of data but it seems that you only have approximately %2 MB of usable memory available.  You cannot load this much data.").arg(memoryRequested/(1024*1024)).arg(memoryAvailable/(1024*1024)));
 	return;
@@ -786,7 +786,7 @@ void DataWizard::finished()
 	    }
 	    KST::dataObjectList.lock().writeLock();
 	    KST::dataObjectList.append(KstDataObjectPtr(c));
-	    KST::dataObjectList.lock().writeUnlock();
+	    KST::dataObjectList.lock().unlock();
 	    if (plot) {
 		plot->addCurve(KstBaseCurvePtr(c));
 	    }
@@ -873,7 +873,7 @@ void DataWizard::finished()
 		KST::dataObjectList.lock().writeLock();
 		KST::dataObjectList.append(KstDataObjectPtr(p));
 		KST::dataObjectList.append(KstDataObjectPtr(c));
-		KST::dataObjectList.lock().writeUnlock();
+		KST::dataObjectList.lock().unlock();
 		plot->addCurve(c.data());
 	        plot->setLog(_psdLogX->isChecked(),_psdLogY->isChecked());
 		if (!_onePlot->isChecked()) { // change plots if we are not onePlot
@@ -1007,7 +1007,7 @@ void DataWizard::configureSource()
     bool isNew = false;
     KST::dataSourceList.lock().readLock();
     KstDataSourcePtr ds = *KST::dataSourceList.findReusableFileName(_file);
-    KST::dataSourceList.lock().readUnlock();
+    KST::dataSourceList.lock().unlock();
     if (!ds) {
 	isNew = true;
 	ds = KstDataSource::loadSource(_file);

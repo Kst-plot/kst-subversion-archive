@@ -42,13 +42,13 @@ KstStringList KST::stringList;
 void KST::addVectorToList(KstVectorPtr v) {
   KST::vectorList.lock().writeLock();
   KST::vectorList.append(v);
-  KST::vectorList.lock().writeUnlock();
+  KST::vectorList.lock().unlock();
 }
 
 void KST::addMatrixToList(KstMatrixPtr m) {
   KST::matrixList.lock().writeLock();
   KST::matrixList.append(m);
-  KST::matrixList.lock().writeUnlock();  
+  KST::matrixList.lock().unlock();  
 }
 
 static QMutex bigLock;
@@ -117,11 +117,11 @@ bool KstData::vectorTagNameNotUniqueInternal(const QString& tag) {
   /* verify that the tag name is not used by a data object */
   KST::vectorList.lock().readLock();
   bool vc = KST::vectorList.findTag(tag) != KST::vectorList.end();
-  KST::vectorList.lock().readUnlock();
+  KST::vectorList.lock().unlock();
   if (!vc) {
     KST::scalarList.lock().readLock();
     vc = KST::scalarList.findTag(tag) != KST::scalarList.end();
-    KST::scalarList.lock().readUnlock();
+    KST::scalarList.lock().unlock();
   }
   return vc;
 }

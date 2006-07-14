@@ -168,7 +168,7 @@ bool UpdateThread::doUpdates(bool force, bool *gotData) {
 #endif
       bcp->writeLock();
       KstObject::UpdateType ut = bcp->update(_updateCounter);
-      bcp->writeUnlock();
+      bcp->unlock();
 
       if (ut == KstObject::UPDATE) { // HACK
         _updatedCurves.append(bcp);
@@ -200,7 +200,7 @@ bool UpdateThread::doUpdates(bool force, bool *gotData) {
 #endif
       dp->writeLock();
       dp->update(_updateCounter);
-      dp->writeUnlock();
+      dp->unlock();
 
       if (_done || (_paused && !force)) {
 #if UPDATEDEBUG > 1
@@ -220,14 +220,14 @@ bool UpdateThread::doUpdates(bool force, bool *gotData) {
 
       dsp->writeLock();
       dsp->update(_updateCounter);
-      dsp->writeUnlock();
+      dsp->unlock();
 
       if (_done) {
-        KST::dataSourceList.lock().readUnlock();
+        KST::dataSourceList.lock().unlock();
         return false;
       }
     }
-    KST::dataSourceList.lock().readUnlock();
+    KST::dataSourceList.lock().unlock();
   }
 
   if (KstScalar::scalarsDirty()) {
@@ -239,18 +239,18 @@ bool UpdateThread::doUpdates(bool force, bool *gotData) {
 
       sp->writeLock();
       KstObject::UpdateType ut = sp->update(_updateCounter);
-      sp->writeUnlock();
+      sp->unlock();
 
       if (ut == KstObject::UPDATE) {
         U = KstObject::UPDATE;
       }
 
       if (_done) {
-        KST::scalarList.lock().readUnlock();
+        KST::scalarList.lock().unlock();
         return false;
       }
     }
-    KST::scalarList.lock().readUnlock();
+    KST::scalarList.lock().unlock();
   }
 
   if (U == KstObject::UPDATE) {

@@ -54,13 +54,13 @@ bool KstGuiData::dataTagNameNotUnique(const QString &tag, bool warn, void *p) {
   /* verify that the tag name is not used by a data object */
   KST::dataObjectList.lock().readLock();
   if (KST::dataObjectList.findTag(tag) != KST::dataObjectList.end()) {
-    KST::dataObjectList.lock().readUnlock();
+    KST::dataObjectList.lock().unlock();
       if (warn) {
         KMessageBox::sorry(static_cast<QWidget*>(p), i18n("%1: this name is already in use. Change it to a unique name.").arg(tag));
       }
       return true;
   }
-  KST::dataObjectList.lock().readUnlock();
+  KST::dataObjectList.lock().unlock();
 
   return false;
 }
@@ -79,16 +79,16 @@ bool KstGuiData::vectorTagNameNotUnique(const QString &tag, bool warn, void *p) 
   KST::scalarList.lock().readLock();
   if (KST::vectorList.findTag(tag) != KST::vectorList.end() ||
       KST::scalarList.findTag(tag) != KST::scalarList.end()) {
-    KST::scalarList.lock().readUnlock();
-    KST::vectorList.lock().readUnlock();
+    KST::scalarList.lock().unlock();
+    KST::vectorList.lock().unlock();
       if (warn) {
         KMessageBox::sorry(static_cast<QWidget*>(p), i18n("%1: this name is already in use. Change it to a unique name.").arg(tag));
       }
       return true;
   }
 
-  KST::scalarList.lock().readUnlock();
-  KST::vectorList.lock().readUnlock();
+  KST::scalarList.lock().unlock();
+  KST::vectorList.lock().unlock();
   return false;
 }
 
@@ -107,16 +107,16 @@ bool KstGuiData::matrixTagNameNotUnique(const QString &tag, bool warn, void *p) 
   KST::scalarList.lock().readLock();
   if (KST::matrixList.findTag(tag) != KST::matrixList.end() ||
       KST::scalarList.findTag(tag) != KST::scalarList.end()) {
-    KST::scalarList.lock().readUnlock();
-    KST::matrixList.lock().readUnlock();
+    KST::scalarList.lock().unlock();
+    KST::matrixList.lock().unlock();
     if (warn) {
       KMessageBox::sorry(static_cast<QWidget*>(p), i18n("%1: this name is already in use. Change it to a unique name.").arg(tag));
     }
     return true;
   }
 
-  KST::scalarList.lock().readUnlock();
-  KST::matrixList.lock().readUnlock();
+  KST::scalarList.lock().unlock();
+  KST::matrixList.lock().unlock();
   return false;
 }
 
@@ -153,7 +153,7 @@ int KstGuiData::vectorToFile(KstVectorPtr v, QFile *f) {
     }
   }
 
-  v->readUnlock();
+  v->unlock();
 
   app->slotUpdateProgress(0, 0, QString::null);
 
@@ -229,7 +229,7 @@ int KstGuiData::vectorsToFile(const KstVectorList& vl, QFile *f, bool interpolat
   }
 
   for (KstVectorList::ConstIterator v = vl.begin(); v != vl.end(); ++v) {
-    (*v)->readUnlock();
+    (*v)->unlock();
   }
 
   app->slotUpdateProgress(0, 0, QString::null);

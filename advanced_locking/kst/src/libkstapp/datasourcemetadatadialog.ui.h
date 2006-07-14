@@ -29,7 +29,7 @@ void DataSourceMetaDataDialog::setDataSource(KstDataSourcePtr dsp)
 	_source->setText(dsp->fileName());
 	_plugin->setText(dsp->fileType());
 	_value->setText(_dsp->metaData()[_name->currentText()]);
-	dsp->readUnlock();
+	dsp->unlock();
 	_name->setEnabled(_name->count() > 0);
 	_value->setEnabled(_name->count() > 0);
     } else {
@@ -43,7 +43,7 @@ void DataSourceMetaDataDialog::updateMetadata(const QString& tag)
 {
     _dsp->readLock();
     _value->setText(_dsp->metaData()[tag]);
-    _dsp->readUnlock();
+    _dsp->unlock();
 }
 
 
