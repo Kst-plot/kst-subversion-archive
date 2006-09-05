@@ -25,6 +25,7 @@
 #include <klistview.h>
 #include <kmessagebox.h>
 #include <kstandarddirs.h>
+#include <kcombobox.h>
 
 // application specific includes
 #include "datasourcemetadatadialog.h"
@@ -604,11 +605,20 @@ KstDataManagerI::KstDataManagerI(KstDoc *in_doc, QWidget* parent, const char* na
 
   connect(DataView, SIGNAL(contextMenuRequested(QListViewItem*, const QPoint&, int)), this, SLOT(contextMenu(QListViewItem*, const QPoint&, int)));
 
-  KstDataObject::pluginList();
+  NewPluginCombo->insertStringList( KstDataObject::pluginList() );
+  connect(NewPluginCombo, SIGNAL(activated(const QString &)), this, SLOT(newPluginConfigDialog(const QString &)));
 }
 
 
 KstDataManagerI::~KstDataManagerI() {
+}
+
+
+void KstDataManagerI::newPluginConfigDialog( const QString &name )
+{
+  KstDataObjectPtr ptr = KstDataObject::plugin( name );
+  Q_ASSERT( ptr );
+  ptr->showDialog();
 }
 
 

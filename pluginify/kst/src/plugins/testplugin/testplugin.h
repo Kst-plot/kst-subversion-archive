@@ -19,6 +19,8 @@
 
 #include <kstdataobject.h>
 
+#include <kmessagebox.h>
+
 class TestPlugin : public KstDataObject {
   Q_OBJECT
 public:
@@ -45,6 +47,7 @@ public:
 protected slots:
     virtual void _showDialog()
     {
+        KMessageBox::information( 0, "insert testplugin config widget here :)", "testpluginconfig" );
     }
 
 private:

@@ -23,7 +23,7 @@
 K_EXPORT_COMPONENT_FACTORY( kstobject_testplugin,
     KGenericFactory<TestPlugin>( "kstobject_testplugin" ) )
 
-TestPlugin::TestPlugin( QObject *parent, const char *name, const QStringList &args )
+TestPlugin::TestPlugin( QObject */*parent*/, const char */*name*/, const QStringList &/*args*/ )
     : KstDataObject() {
 
     _name = "testplugin";

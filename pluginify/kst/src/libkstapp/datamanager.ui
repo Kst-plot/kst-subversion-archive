@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <class>KstDataManager</class>
 <widget class="QDialog">
     <property name="name">
@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>879</width>
-            <height>514</height>
+            <width>883</width>
+            <height>527</height>
         </rect>
     </property>
     <property name="caption">
@@ -109,19 +109,22 @@
             <property name="title">
                 <string>New</string>
             </property>
-            <grid>
+            <vbox>
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <widget class="QPushButton" row="0" column="0">
+                <widget class="QPushButton">
                     <property name="name">
                         <cstring>NewVector</cstring>
                     </property>
                     <property name="text">
                         <string>&amp;Vector...</string>
                     </property>
+                    <property name="accel">
+                        <string>Alt+V</string>
+                    </property>
                 </widget>
-                <widget class="QPushButton" row="1" column="0">
+                <widget class="QPushButton">
                     <property name="name">
                         <cstring>NewCurve</cstring>
                     </property>
@@ -129,23 +132,29 @@
                         <string>C&amp;urve...</string>
                     </property>
                 </widget>
-                <widget class="QPushButton" row="2" column="0">
+                <widget class="QPushButton">
                     <property name="name">
                         <cstring>NewEq</cstring>
                     </property>
                     <property name="text">
                         <string>E&amp;quation...</string>
                     </property>
+                    <property name="accel">
+                        <string>Alt+Q</string>
+                    </property>
                 </widget>
-                <widget class="QPushButton" row="3" column="0">
+                <widget class="QPushButton">
                     <property name="name">
                         <cstring>NewHs</cstring>
                     </property>
                     <property name="text">
                         <string>&amp;Histogram...</string>
                     </property>
+                    <property name="accel">
+                        <string>Alt+H</string>
+                    </property>
                 </widget>
-                <widget class="QPushButton" row="4" column="0">
+                <widget class="QPushButton">
                     <property name="name">
                         <cstring>NewPSD</cstring>
                     </property>
@@ -153,15 +162,7 @@
                         <string>Po&amp;wer Spectrum...</string>
                     </property>
                 </widget>
-                <widget class="QPushButton" row="5" column="0">
-                    <property name="name">
-                        <cstring>NewPlugin</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Plu&amp;gin...</string>
-                    </property>
-                </widget>
-                <widget class="QPushButton" row="6" column="0">
+                <widget class="QPushButton">
                     <property name="name">
                         <cstring>NewEvent</cstring>
                     </property>
@@ -169,7 +170,7 @@
                         <string>Event &amp;Monitor...</string>
                     </property>
                 </widget>
-                <widget class="QPushButton" row="7" column="0">
+                <widget class="QPushButton">
                     <property name="name">
                         <cstring>NewMatrix</cstring>
                     </property>
@@ -177,7 +178,7 @@
                         <string>M&amp;atrix...</string>
                     </property>
                 </widget>
-                <widget class="QPushButton" row="8" column="0">
+                <widget class="QPushButton">
                     <property name="name">
                         <cstring>NewImage</cstring>
                     </property>
@@ -185,7 +186,7 @@
                         <string>&amp;Image...</string>
                     </property>
                 </widget>
-                <widget class="QPushButton" row="9" column="0">
+                <widget class="QPushButton">
                     <property name="name">
                         <cstring>NewCSD</cstring>
                     </property>
@@ -193,7 +194,23 @@
                         <string>C&amp;SD...</string>
                     </property>
                 </widget>
-                <spacer row="10" column="0">
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>NewPlugin</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Plu&amp;gin...</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+G</string>
+                    </property>
+                </widget>
+                <widget class="KComboBox">
+                    <property name="name">
+                        <cstring>NewPluginCombo</cstring>
+                    </property>
+                </widget>
+                <spacer>
                     <property name="name">
                         <cstring>spacer7</cstring>
                     </property>
@@ -206,11 +223,11 @@
                     <property name="sizeHint">
                         <size>
                             <width>20</width>
-                            <height>20</height>
+                            <height>100</height>
                         </size>
                     </property>
                 </spacer>
-            </grid>
+            </vbox>
         </widget>
         <widget class="QLayoutWidget" row="1" column="0" rowspan="1" colspan="2">
             <property name="name">

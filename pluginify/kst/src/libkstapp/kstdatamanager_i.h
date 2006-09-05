@@ -47,6 +47,7 @@ class KstDataManagerI : public KstDataManager {
     void doUpdates();
     void contextMenu(QListViewItem *i, const QPoint& p, int c);
     void currentChanged(QListViewItem *);
+    void newPluginConfigDialog( const QString &name );
 
   private:
     KstDoc *doc;

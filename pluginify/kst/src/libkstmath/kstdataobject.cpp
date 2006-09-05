@@ -121,7 +121,6 @@ QStringList KstDataObject::pluginList() {
   if (pluginInfo.isEmpty()) {
     scanPlugins();
   }
-  kdDebug() << pluginInfo.keys() << endl;
   return pluginInfo.keys();
 }
 
