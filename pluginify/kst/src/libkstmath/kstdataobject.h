@@ -32,10 +32,13 @@ typedef QMap<KstDataObjectPtr, KstDataObjectPtr> KstDataObjectDataObjectMap;
 class KST_EXPORT KstDataObject : public KstObject {
   Q_OBJECT
   public:
-    KstDataObject();
+    KstDataObject(QObject *parent=0, const char *name = "", const QStringList &args = QStringList());
     KstDataObject(const QDomElement& e);
     KstDataObject(const KstDataObject& object);
     virtual ~KstDataObject();
+
+    virtual QString name() const { return QString::null; }
+    virtual QString xmlFile() const { return QString::null; }
 
     virtual UpdateType update(int updateCounter = -1) = 0;
     virtual const QString& typeString() const { return _typeString; }

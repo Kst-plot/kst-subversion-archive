@@ -1,0 +1,10 @@
+[Desktop Entry]
+Encoding=UTF-8
+Type=Service
+ServiceTypes=Kst Data Object
+X-KDE-ModuleType=Plugin
+X-KDE-Library=kstobject_testplugin
+X-Kst-Plugin-Library=kstobject_testplugin
+X-Kst-Plugin-Author=The University of Toronto
+Name=Test Plugin
+Comment=A test of new data object plugin system.
