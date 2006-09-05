@@ -1,0 +1,15 @@
+[Desktop Entry]
+Comment=Graphviz dot graph file viewed by KGraphViewer
+Comment[da]=Graphviz dot grafikfil vist af Kgraphviewer
+Comment[et]=KGraphVieweri näidatud Graphviz dot-graafik
+Comment[gl]=Ficheiro de Graphviz mostrado por KGraphViewer
+Comment[it]=Un file dot di GraphViz visualizzato da KGraphViewer
+Comment[ja]=KGraphViewer で表示する Graphviz ドットグラフファイル
+Comment[nl]=Graphviz puntgrafiek bekeken met KGraphViewer
+Comment[pt]=Ficheiro de grafo pontual do Graphviz visto pelo KGraphViewer
+Comment[sv]=Graphviz dot grafikfil visad av Kgraphviewer
+Encoding=UTF-8
+Icon=kgraphviewer
+MimeType=application/kgraphviewer
+Patterns=*.dot
+Type=MimeType

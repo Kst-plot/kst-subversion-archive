@@ -1,0 +1,369 @@
+<?xml version="1.0" ?>
+<!DOCTYPE book PUBLIC "-//KDE//DTD DocBook XML V4.1.2-Based Variant V1.1//EN" "dtd/kdex.dtd" [
+  <!ENTITY fraqtive "<application>Fraqtive</application>">
+  <!ENTITY kappname "&fraqtive;">
+  <!ENTITY package "extragear-graphics">
+  <!ENTITY % addindex "IGNORE">
+  <!ENTITY % English "INCLUDE">
+]>
+<book lang="&language;">
+
+<bookinfo>
+<title>The &fraqtive; Handbook</title>
+
+<authorgroup>
+<author>
+<firstname>Michał</firstname>
+<surname>Męciński</surname>
+<affiliation>
+<address><email>mimec@users.sourceforge.net</email></address>
+</affiliation>
+</author>
+</authorgroup>
+
+<!-- TRANS:ROLES_OF_TRANSLATORS -->
+
+<copyright>
+<year>2005</year>
+<holder>Michał Męciński</holder>
+</copyright>
+
+<legalnotice>&FDLNotice;</legalnotice>
+
+<date>2005-07-04</date>
+<releaseinfo>0.3.0</releaseinfo>
+
+<abstract>
+<para>&fraqtive; is a program for drawing Mandelbrot and Julia fractals.</para>
+</abstract>
+
+<keywordset>
+<keyword>KDE</keyword>
+<keyword>fraqtive</keyword>
+<keyword>fractal</keyword>
+<keyword>Mandelbrot</keyword>
+<keyword>Julia</keyword>
+</keywordset>
+
+</bookinfo>
+
+<chapter id="introduction">
+
+	<title>Introduction</title>
+
+	<para>&fraqtive; is a program for drawing Mandelbrot and Julia fractals.
+	It uses a very fast algorithm and generates high quality, smooth images.
+	It is fully interactive, allowing for real-time mouse navigation and
+	dynamic generation of the Julia fractal preview. OpenGL-rendered 3D view
+	of the fractals is also supported.</para>
+
+</chapter>
+
+<chapter id="using-fraqtive">
+
+	<title>Using &fraqtive;</title>
+
+	<sect1 id="user-interface">
+
+		<title>User Interface</title>
+
+		<para>The main part of the window displays a view of the Mandelbrot fractal. The tabs
+		above the view can be used to switch between a normal, two-dimensional view and
+		a three-dimensional view. Use the mouse to zoom, move and rotate the view, as described
+		below.</para>
+
+		<para>As the mouse cursor is moved above the Mandelbrot fractal in the main view, a dynamic
+		preview of the Julia fractal is drawn in the bottom right part of the window.
+		The shape of the Julia fractal depends on the coordinates pointed by the cursor.
+		Double click the &LMB; to display the Julia fractal in the main view. Use the <menuchoice>
+		<shortcut><keycombo action="simul">&Alt;<keycap>Up</keycap></keycombo></shortcut>
+		<guimenu>Go</guimenu><guimenuitem>To Mandelbrot</guimenuitem></menuchoice> command
+		to return to the Mandelbrot view.</para>
+
+		<sect2 id="navigation-2d">
+
+			<title>2D Mode</title>
+
+			<variablelist>
+			<varlistentry>
+				<term><keycombo action="simul"><mousebutton>&LMB;</mousebutton></keycombo></term>
+				<listitem><para><action>Zooms the view into the selected point.</action></para></listitem>
+			</varlistentry>
+			<varlistentry>
+				<term><keycombo action="simul">&Ctrl;<mousebutton>&LMB;</mousebutton></keycombo></term>
+				<listitem><para><action>Zooms the view in or out.</action></para></listitem>
+			</varlistentry>
+			<varlistentry>
+				<term><keycombo action="simul">&Shift;<mousebutton>&LMB;</mousebutton></keycombo></term>
+				<listitem><para><action>Rotates the view around the center.</action></para></listitem>
+			</varlistentry>
+			<varlistentry>
+				<term><keycombo action="simul"><mousebutton>&RMB;</mousebutton></keycombo></term>
+				<listitem><para><action>Moves the view area.</action></para></listitem>
+			</varlistentry>
+			</variablelist>
+
+		</sect2>
+
+		<sect2 id="navigation-3d">
+
+			<title>3D Mode</title>
+
+			<variablelist>
+			<varlistentry>
+				<term><keycombo action="simul"><mousebutton>&LMB;</mousebutton></keycombo></term>
+				<listitem><para><action>Rotates the view around the X and Y axes.</action></para></listitem>
+			</varlistentry>
+			<varlistentry>
+				<term><keycombo action="simul"><mousebutton>&RMB;</mousebutton></keycombo></term>
+				<listitem><para><action>Rotates the view around the Z axis.</action></para></listitem>
+			</varlistentry>
+			</variablelist>
+
+		</sect2>
+
+	</sect1>
+
+</chapter>
+
+<chapter id="commands">
+
+	<title>Command Reference</title>
+
+	<sect1 id="fraqtive-mainwindow">
+
+		<title>Main Window</title>
+
+		<sect2>
+
+			<title>File Menu</title>
+
+			<variablelist>
+			<varlistentry>
+				<term><menuchoice><shortcut><keycombo action="simul">&Ctrl;<keycap>S</keycap></keycombo></shortcut><guimenu>File</guimenu><guimenuitem>Save Image...</guimenuitem></menuchoice></term>
+				<listitem><para><action>Generates and saves a 2D image. The resolution of the image and file format can be selected.</action></para></listitem>
+			</varlistentry>
+			<varlistentry>
+				<term><menuchoice><shortcut><keycombo action="simul">&Ctrl;<keycap>Q</keycap></keycombo></shortcut><guimenu>File</guimenu><guimenuitem>Quit</guimenuitem></menuchoice></term>
+				<listitem><para><action>Quits the application.</action></para></listitem>
+			</varlistentry>
+			</variablelist>
+
+		</sect2>
+
+		<sect2>
+
+			<title>Edit Menu</title>
+
+			<variablelist>
+			<varlistentry>
+				<term><menuchoice><shortcut><keycombo action="simul">&Ctrl;<keycap>C</keycap></keycombo></shortcut><guimenu>Edit</guimenu><guimenuitem>Copy</guimenuitem></menuchoice></term>
+				<listitem><para><action>Copies the currently viewed image (either 2D or 3D) to the clipboard.</action></para></listitem>
+			</varlistentry>
+			<varlistentry>
+				<term><menuchoice><shortcut><keycombo action="simul">&Ctrl;<keycap>E</keycap></keycombo></shortcut><guimenu>Edit</guimenu><guimenuitem>Edit Gradient...</guimenuitem></menuchoice></term>
+				<listitem><para><action>Opens the gradient editor which allows to select a gradient from a list of presets, edit existing gradients or create a new gradient. Gradients can be edited by moving, adding and removing points in the three spline areas using the mouse. The spline areas represent the red, green and blue components or the hue, saturation and value, depending on the type of the gradient.</action></para></listitem>
+			</varlistentry>
+			<varlistentry>
+				<term><menuchoice><shortcut><keycombo action="simul">&Ctrl;<keycap>X</keycap></keycombo></shortcut><guimenu>Edit</guimenu><guimenuitem>Invert Gradient</guimenuitem></menuchoice></term>
+				<listitem><para><action>Inverts the current gradient backwards.</action></para></listitem>
+			</varlistentry>
+			</variablelist>
+
+		</sect2>
+
+		<sect2>
+
+			<title>Go Menu</title>
+
+			<variablelist>
+			<varlistentry>
+				<term><menuchoice><shortcut><keycombo action="simul">&Alt;<keycap>Up</keycap></keycombo></shortcut><guimenu>Go</guimenu><guimenuitem>To Mandelbrot</guimenuitem></menuchoice></term>
+				<listitem><para><action>Returns from the Julia mode to the Mandelbrot mode.</action></para></listitem>
+			</varlistentry>
+			<varlistentry>
+				<term><menuchoice><shortcut><keycombo action="simul">&Alt;<keycap>Left</keycap></keycombo></shortcut><guimenu>Go</guimenu><guimenuitem>Back</guimenuitem></menuchoice></term>
+				<listitem><para><action>Moves one step back in the position history.</action></para></listitem>
+			</varlistentry>
+			<varlistentry>
+				<term><menuchoice><shortcut><keycombo action="simul">&Alt;<keycap>Right</keycap></keycombo></shortcut><guimenu>Go</guimenu><guimenuitem>Forward</guimenuitem></menuchoice></term>
+				<listitem><para><action>Moves one step forward in the position history.</action></para></listitem>
+			</varlistentry>
+			<varlistentry>
+				<term><menuchoice><shortcut><keycombo action="simul">&Alt;<keycap>Home</keycap></keycombo></shortcut><guimenu>Go</guimenu><guimenuitem>Home</guimenuitem></menuchoice></term>
+				<listitem><para><action>Sets the default view showing the whole fractal.</action></para></listitem>
+			</varlistentry>
+			</variablelist>
+
+		</sect2>
+
+		<sect2>
+
+			<title>Settings Menu</title>
+
+			<variablelist>
+			<varlistentry>
+				<term><menuchoice><guimenu>Settings</guimenu><guimenuitem>Show Toolbar</guimenuitem></menuchoice></term>
+				<listitem><para><action>Shows or hides the toolbar.</action></para></listitem>
+			</varlistentry>
+			<varlistentry>
+				<term><menuchoice><guimenu>Settings</guimenu><guimenuitem>Show Status bar</guimenuitem></menuchoice></term>
+				<listitem><para><action>Shows or hides the status bar.</action></para></listitem>
+			</varlistentry>
+			<varlistentry>
+				<term><menuchoice><guimenu>Settings</guimenu><guimenuitem>Show Parameters</guimenuitem></menuchoice></term>
+				<listitem><para><action>Shows or hides the parameters tab.</action></para></listitem>
+			</varlistentry>
+			<varlistentry>
+				<term><menuchoice><guimenu>Settings</guimenu><guimenuitem>Show Display</guimenuitem></menuchoice></term>
+				<listitem><para><action>Shows or hides the display tab.</action></para></listitem>
+			</varlistentry>
+			<varlistentry>
+				<term><menuchoice><guimenu>Settings</guimenu><guimenuitem>Show Preview</guimenuitem></menuchoice></term>
+				<listitem><para><action>Shows or hides the Julia preview.</action></para></listitem>
+			</varlistentry>
+			<varlistentry>
+				<term><menuchoice><guimenu>Settings</guimenu><guimenuitem>Configure Shortcuts</guimenuitem></menuchoice></term>
+				<listitem><para><action>Opens a dialog for configuring key bindings.</action></para></listitem>
+			</varlistentry>
+			<varlistentry>
+				<term><menuchoice><guimenu>Settings</guimenu><guimenuitem>Configure Toolbars...</guimenuitem></menuchoice></term>
+				<listitem><para><action>Opens a dialog for configuring the toolbar.</action></para></listitem>
+			</varlistentry>
+			</variablelist>
+
+		</sect2>
+
+		<sect2>
+
+			<title>Help Menu</title>
+				&help.menu.documentation;
+
+		</sect2>
+
+	</sect1>
+
+	<sect1 id="fraqtive-parameters">
+
+		<title>Parameters Tab</title>
+
+		<variablelist>
+		<varlistentry>
+			<term>X coordinate</term>
+			<listitem><para>The X coordinate of the center of the view.</para></listitem>
+		</varlistentry>
+		<varlistentry>
+			<term>Y coordinate</term>
+			<listitem><para>The Y coordinate of the center of the view.</para></listitem>
+		</varlistentry>
+		<varlistentry>
+			<term>Zoom magnitude</term>
+			<listitem><para>Order of magnitude of the view magnification. For example, <literal>1</literal> means <literal>10x</literal> magnification, <literal>2</literal> means <literal>100x</literal> magnification, &etc;.</para></listitem>
+		</varlistentry>
+		<varlistentry>
+			<term>Rotation angle</term>
+			<listitem><para>Rotation angle, measured in degrees, counter-clockwise.</para></listitem>
+		</varlistentry>
+		<varlistentry>
+			<term>Julia X param.</term>
+			<listitem><para>The X coordinate of the parameter of the Julia fractal.</para></listitem>
+		</varlistentry>
+		<varlistentry>
+			<term>Julia Y param.</term>
+			<listitem><para>The Y coordinate of the parameter of the Julia fractal.</para></listitem>
+		</varlistentry>
+		<varlistentry>
+			<term>Iterations limit</term>
+			<listitem><para>Maximum number of iterations to calculate. This limit also depends on the current zoom magnitude.</para></listitem>
+		</varlistentry>
+		<varlistentry>
+			<term>Detail level</term>
+			<listitem><para>Amount of details to calculate. Decreasing this value improves the calculation speed but decreases the quality of the image.</para></listitem>
+		</varlistentry>
+		</variablelist>
+
+	</sect1>
+
+	<sect1 id="fraqtive-display">
+
+		<title>Display Tab</title>
+
+		<variablelist>
+		<varlistentry>
+			<term>Color gradient</term>
+			<listitem><para>Gradient used to display the fractal. Click the button to open the gradient editor.</para></listitem>
+		</varlistentry>
+		<varlistentry>
+			<term>Color scale</term>
+			<listitem><para>Scale of the color gradient.</para></listitem>
+		</varlistentry>
+		<varlistentry>
+			<term>Color offset</term>
+			<listitem><para>Offset of the color gradient.</para></listitem>
+		</varlistentry>
+		<varlistentry>
+			<term>Scroll colors</term>
+			<listitem><para>The color scrolling direction and speed.</para></listitem>
+		</varlistentry>
+		<varlistentry>
+			<term>Background</term>
+			<listitem><para>Color of the background area. Click the button to open the color selection dialog.</para></listitem>
+		</varlistentry>
+		<varlistentry>
+			<term>3D grid size</term>
+			<listitem><para>Resolution of the mesh used to render the fractal in the 3D mode.</para></listitem>
+		</varlistentry>
+		<varlistentry>
+			<term>Height scale</term>
+			<listitem><para>Height scale of the mesh in the 3D mode.</para></listitem>
+		</varlistentry>
+		</variablelist>
+
+	</sect1>
+
+</chapter>
+
+<chapter id="credits">
+
+	<title>Credits and License</title>
+
+	<para>&fraqtive;</para>
+	<para>Program copyright 2005 Michał Męciński <email>mimec@users.sourceforge.net</email></para>
+
+	<para>Documentation copyright 2005 Michał Męciński <email>mimec@users.sourceforge.net</email></para>
+
+<!-- TRANS:CREDIT_FOR_TRANSLATORS -->
+
+	&underFDL;
+
+	&underGPL;
+
+</chapter>
+
+<appendix id="installation">
+
+	<title>Installation</title>
+
+	<sect1 id="requirements">
+		<title>Requirements</title>
+
+		<itemizedlist>
+			<listitem><para>&kde; version 3.2 or newer</para></listitem>
+			<listitem><para>OpenGL and GLU libraries</para></listitem>
+		</itemizedlist>
+
+	</sect1>
+
+	<sect1 id="compilation">
+
+		<title>Compilation and Installation</title>
+
+		&install.compile.documentation;
+
+	</sect1>
+
+</appendix>
+
+&documentation.index;
+
+</book>

@@ -1,0 +1,194 @@
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<class>thumbConfigWidget</class>
+<widget class="QWidget">
+    <property name="name">
+        <cstring>thumbConfigWidget</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>353</width>
+            <height>315</height>
+        </rect>
+    </property>
+    <vbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>layoutThumb</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QGroupBox">
+                    <property name="name">
+                        <cstring>groupboxThumbnails</cstring>
+                    </property>
+                    <property name="title">
+                        <string>Thumbnails</string>
+                    </property>
+                    <grid>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QCheckBox" row="0" column="1">
+                            <property name="name">
+                                <cstring>showFrame</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Show &amp;frame</string>
+                            </property>
+                        </widget>
+                        <widget class="QCheckBox" row="0" column="0">
+                            <property name="name">
+                                <cstring>storethCheck</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Store &amp;thumbnails</string>
+                            </property>
+                            <property name="tristate">
+                                <bool>true</bool>
+                            </property>
+                        </widget>
+                        <widget class="QCheckBox" row="1" column="0">
+                            <property name="name">
+                                <cstring>useEXIF</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Use EXIF &amp;header</string>
+                            </property>
+                            <property name="toolTip" stdset="0">
+                                <string>Load quick preview for images containing EXIF header, but not take into account modifications on the image</string>
+                            </property>
+                        </widget>
+                        <widget class="QCheckBox" row="1" column="1">
+                            <property name="name">
+                                <cstring>wrapIconText</cstring>
+                            </property>
+                            <property name="text">
+                                <string>&amp;Wrap icon text</string>
+                            </property>
+                        </widget>
+                    </grid>
+                </widget>
+            </hbox>
+        </widget>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>layoutDetails</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QGroupBox">
+                    <property name="name">
+                        <cstring>groupBoxDetails</cstring>
+                    </property>
+                    <property name="title">
+                        <string>Show details</string>
+                    </property>
+                    <grid>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QCheckBox" row="0" column="0">
+                            <property name="name">
+                                <cstring>showMimeType</cstring>
+                            </property>
+                            <property name="text">
+                                <string>&amp;Mime type</string>
+                            </property>
+                        </widget>
+                        <widget class="QCheckBox" row="1" column="0">
+                            <property name="name">
+                                <cstring>showSize</cstring>
+                            </property>
+                            <property name="text">
+                                <string>&amp;Size</string>
+                            </property>
+                        </widget>
+                        <widget class="QCheckBox" row="0" column="1">
+                            <property name="name">
+                                <cstring>showDate</cstring>
+                            </property>
+                            <property name="text">
+                                <string>&amp;Date</string>
+                            </property>
+                        </widget>
+                        <widget class="QCheckBox" row="1" column="1">
+                            <property name="name">
+                                <cstring>showDimension</cstring>
+                            </property>
+                            <property name="text">
+                                <string>D&amp;imension</string>
+                            </property>
+                        </widget>
+                        <widget class="QCheckBox" row="2" column="0">
+                            <property name="name">
+                                <cstring>showCategoryinfo</cstring>
+                            </property>
+                            <property name="text">
+                                <string>&amp;Category Info (experimental)</string>
+                            </property>
+                        </widget>
+                    </grid>
+                </widget>
+            </hbox>
+        </widget>
+        <widget class="QGroupBox">
+            <property name="name">
+                <cstring>tooltipGroupBox</cstring>
+            </property>
+            <property name="title">
+                <string>Tooltip</string>
+            </property>
+            <vbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QCheckBox">
+                    <property name="name">
+                        <cstring>showTooltip</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Show &amp;tooltip</string>
+                    </property>
+                </widget>
+            </vbox>
+        </widget>
+        <spacer>
+            <property name="name">
+                <cstring>thumbnailConfigSpacer</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Vertical</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>20</width>
+                    <height>30</height>
+                </size>
+            </property>
+        </spacer>
+    </vbox>
+</widget>
+<tabstops>
+    <tabstop>storethCheck</tabstop>
+    <tabstop>showFrame</tabstop>
+    <tabstop>useEXIF</tabstop>
+    <tabstop>wrapIconText</tabstop>
+    <tabstop>showMimeType</tabstop>
+    <tabstop>showDate</tabstop>
+    <tabstop>showSize</tabstop>
+    <tabstop>showDimension</tabstop>
+</tabstops>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>

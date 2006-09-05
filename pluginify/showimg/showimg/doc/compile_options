@@ -1,0 +1,10 @@
+ShowImg Compile-Time Options
+
+(define them to enable/disable features)
+
+-SHOWIMG_NO_CDARCHIVE
+ undefined by default, disables cd archive feature
+
+-SHOWIMG_NO_SCAN_IMAGE
+ undefined by default, disables "scan image" feature
+

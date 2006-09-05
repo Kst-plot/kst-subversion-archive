@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Module SYSTEM "file:/Repository/Level2/Soft/ProC/moduledef.dtd">
+<module>
+<intro>
+<modulename name="differentiate" readableName="Fixed-step differentiation"/>
+<author name="Dimitri Garbi"/>
+<description text="Computes the discrete derivative of an input vector"/>
+<version minor="1" major="0"/>
+<state devstate="release"/>
+</intro>
+
+<interface>
+<input>
+<table type="float" name="InputVector" descr="The input vector"/>
+<float name="Step" descr="Time step" default="1.0"/>
+</input>
+
+<output>
+<table type="float" name="Derivative" descr="The derived input"/>
+</output>
+</interface>
+</module>

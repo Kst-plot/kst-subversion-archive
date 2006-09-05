@@ -1,0 +1,17 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=kgraphviewer
+Exec=kgraphviewer %i %m -caption "%c"
+Icon=kgraphviewer
+Type=Application
+DocPath=kgraphviewer/kgraphviewer.html
+Comment=A Graphviz dot graph viewer for KDE
+Comment[da]=Et visningsprogram af Graphviz dot for KDE
+Comment[et]=KDE Graphviz dot-graafikute näitaja
+Comment[gl]=Un visor de gráficos de Graphviz para KDE
+Comment[it]=Un visore di grafi dot di GraphViz per KDE
+Comment[ja]=KDE のための Graphviz ドットグラフビューア
+Comment[nl]=Een Graphviz puntgrafiek-viewer voor KDE
+Comment[pt]=Um visualizador de grafos pontuais para o KDE
+Comment[sv]=Ett visningsprogram av Graphviz dot för KDE
+Terminal=false
