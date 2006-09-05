@@ -33,7 +33,7 @@
 
 //#define LOCKTRACE
 
-KstDataObject::KstDataObject(QObject *parent, const char *name, const QStringList &args) : KstObject() {
+KstDataObject::KstDataObject() : KstObject() {
   //kstdDebug() << "+++ CREATING DATA OBJECT: " << (void*)this << endl;
   _curveHints = new KstCurveHintList;
 }

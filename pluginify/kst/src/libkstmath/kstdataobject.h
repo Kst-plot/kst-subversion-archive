@@ -32,7 +32,7 @@ typedef QMap<KstDataObjectPtr, KstDataObjectPtr> KstDataObjectDataObjectMap;
 class KST_EXPORT KstDataObject : public KstObject {
   Q_OBJECT
   public:
-    KstDataObject(QObject *parent=0, const char *name = "", const QStringList &args = QStringList());
+    KstDataObject();
     KstDataObject(const QDomElement& e);
     KstDataObject(const KstDataObject& object);
     virtual ~KstDataObject();
