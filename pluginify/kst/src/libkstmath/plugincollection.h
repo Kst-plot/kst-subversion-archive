@@ -111,8 +111,6 @@ class KST_EXPORT PluginCollection : public QObject {
     mutable QMap<QString, QString> _installedPluginNames;
     void scanPlugins() ;
     void loadPluginsFor(const QString& path);
-
-    bool scanDataObjectPlugins();
 };
 
 

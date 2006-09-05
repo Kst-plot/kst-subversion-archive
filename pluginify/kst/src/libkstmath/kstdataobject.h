@@ -45,7 +45,6 @@ class KST_EXPORT KstDataObject : public KstObject {
     static KstDataObjectPtr plugin( const QString &name );
 
     virtual QString name() const { return QString::null; }
-    virtual QString xmlFile() const { return QString::null; }
 
     virtual UpdateType update(int updateCounter = -1) = 0;
     virtual const QString& typeString() const { return _typeString; }

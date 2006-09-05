@@ -17,7 +17,6 @@
 #include "testplugin.h"
 
 #include <kdebug.h>
-#include <kstandarddirs.h>
 #include <kgenericfactory.h>
 
 K_EXPORT_COMPONENT_FACTORY( kstobject_testplugin,
@@ -27,7 +26,6 @@ TestPlugin::TestPlugin( QObject */*parent*/, const char */*name*/, const QString
     : KstDataObject() {
 
     _name = "testplugin";
-    _xmlFile =  locate("data", "kstplugins/" + _name + ".xml");
 }
 
 TestPlugin::~TestPlugin() {

@@ -29,7 +29,6 @@ public:
     virtual ~TestPlugin();
 
     virtual QString name() const { return _name; }
-    virtual QString xmlFile() const { return _xmlFile; }
 
     virtual KstObject::UpdateType update(int)
     {
@@ -52,7 +51,6 @@ protected slots:
 
 private:
     QString _name;
-    QString _xmlFile;
 };
 
 #endif

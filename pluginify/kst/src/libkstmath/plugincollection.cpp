@@ -25,14 +25,6 @@
 #include <klocale.h>
 #include <kstandarddirs.h>
 
-#include <kdebug.h>
-
-#include <klibloader.h>
-#include <klocale.h>
-#include <kservicetype.h>
-#include <kstdataobject.h>
-#include <kparts/componentfactory.h>
-
 #include <qdir.h>
 #include <qregexp.h>
 
@@ -210,7 +202,7 @@ void PluginCollection::scanPlugins() {
   QMap<QString,QString> backup = _installedPluginNames;
   _installedPlugins.clear();
   _installedPluginNames.clear();
-  bool changed = /*scanDataObjectPlugins()*/ false;
+  bool changed = false;
 
   QStringList dirs = KGlobal::dirs()->resourceDirs("kstplugins");
   dirs += KGlobal::dirs()->resourceDirs("kstpluginlib");
@@ -264,47 +256,6 @@ void PluginCollection::scanPlugins() {
   if (changed) {
     emit pluginListChanged();
   }
-}
-
-// Scans for plugins and stores the information for them in "pluginInfo"
-bool PluginCollection::scanDataObjectPlugins() {
-
-  KstDebug::self()->log(i18n("Scanning for data-object plugins."));
-
-  QMap<QString,QString> backup = _installedPluginNames;
-  bool changed = false;
-
-  KService::List sl = KServiceType::offers("Kst Data Object");
-  for (KService::List::ConstIterator it = sl.begin(); it != sl.end(); ++it) {
-    int err = 0;
-    KService::Ptr service = ( *it );
-    KstDataObject *object =
-        KParts::ComponentFactory::createInstanceFromService<KstDataObject>( service, 0, "",
-                                                                            QStringList(), &err );
-    if ( object ) {
-        int status = _parser->parseFile( object->xmlFile() );
-        if (status == 0) {
-        // dupe? - prefer earlier installations
-        if (_installedPluginNames.contains(_parser->data()._name)) {
-          continue;
-        }
-        _installedPlugins[object->xmlFile()] = _parser->data();
-        _installedPluginNames[_parser->data()._name] = object->xmlFile();
-        if (!backup.contains(_parser->data()._name)) {
-          emit pluginInstalled(_parser->data()._name);
-          changed = true;
-        } else {
-          backup.remove(_parser->data()._name);
-        }
-      } else {
-        KstDebug::self()->log(i18n("Error [%2] parsing XML file '%1'; skipping.").arg(object->xmlFile()).arg(status), KstDebug::Warning);
-      }
-    }
-    else
-        kdDebug() << "FAILURE! " << k_funcinfo << " " << err << endl;
-
-  }
-  return changed; //changed
 }
 
 int PluginCollection::deletePlugin(const QString& xmlfile, const QString& object) {
