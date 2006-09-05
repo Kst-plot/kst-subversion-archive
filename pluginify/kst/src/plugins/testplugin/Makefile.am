@@ -8,7 +8,4 @@ kstobject_testplugin_la_SOURCES=testplugin.cpp
 services_DATA=kstobject_testplugin.desktop
 servicesdir=$(kde_servicesdir)/kst
 
-plugin_DATA=testplugin.xml
-plugindir=$(kde_datadir)/kstplugins
-
 METASOURCES=AUTO
