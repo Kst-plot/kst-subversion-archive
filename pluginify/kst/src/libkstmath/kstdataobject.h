@@ -37,6 +37,10 @@ class KST_EXPORT KstDataObject : public KstObject {
     KstDataObject(const KstDataObject& object);
     virtual ~KstDataObject();
 
+    // These static methods are not for plugins to use
+    /** Returns a list of object plugins found on the system. */
+    static QStringList pluginList();
+
     virtual QString name() const { return QString::null; }
     virtual QString xmlFile() const { return QString::null; }
 

@@ -25,7 +25,6 @@
 #include <klocale.h>
 #include <kstandarddirs.h>
 
-
 #include <kdebug.h>
 
 #include <klibloader.h>
@@ -211,7 +210,7 @@ void PluginCollection::scanPlugins() {
   QMap<QString,QString> backup = _installedPluginNames;
   _installedPlugins.clear();
   _installedPluginNames.clear();
-  bool changed = scanDataObjectPlugins();
+  bool changed = /*scanDataObjectPlugins()*/ false;
 
   QStringList dirs = KGlobal::dirs()->resourceDirs("kstplugins");
   dirs += KGlobal::dirs()->resourceDirs("kstpluginlib");

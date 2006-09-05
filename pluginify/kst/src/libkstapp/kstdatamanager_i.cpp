@@ -570,7 +570,6 @@ const QPixmap& KstDataManagerI::yesPixmap() const {
   return _yesPixmap;
 }
 
-
 KstDataManagerI::KstDataManagerI(KstDoc *in_doc, QWidget* parent, const char* name, bool modal, WFlags fl)
 : KstDataManager(parent, name, modal, fl) {
   doc = in_doc;
@@ -604,6 +603,8 @@ KstDataManagerI::KstDataManagerI(KstDoc *in_doc, QWidget* parent, const char* na
   connect(NewCSD, SIGNAL(clicked()), KstCsdDialogI::globalInstance(), SLOT(show()));
 
   connect(DataView, SIGNAL(contextMenuRequested(QListViewItem*, const QPoint&, int)), this, SLOT(contextMenu(QListViewItem*, const QPoint&, int)));
+
+  KstDataObject::pluginList();
 }
 
 

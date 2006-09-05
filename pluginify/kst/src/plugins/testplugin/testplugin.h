@@ -41,9 +41,10 @@ public:
     {
         return 0;
     }
+
+protected slots:
     virtual void _showDialog()
     {
-        //return 0;
     }
 
 private:

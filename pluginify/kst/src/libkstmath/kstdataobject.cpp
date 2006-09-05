@@ -28,6 +28,14 @@
 
 #include <assert.h>
 
+#include <kdebug.h>
+
+#include <klibloader.h>
+#include <klocale.h>
+#include <kservicetype.h>
+#include <kstdataobject.h>
+#include <kparts/componentfactory.h>
+
 #include "ksdebug.h"
 #include <klocale.h>
 
@@ -80,6 +88,37 @@ KstDataObject::~KstDataObject() {
   KST::matrixList.lock().unlock();
   //kstdDebug() << "+++ DESTROYING DATA OBJECT: " << (void*)this << endl;
   delete _curveHints;
+}
+
+static QStringList pluginInfo;
+
+// Scans for plugins and stores the information for them
+static void scanPlugins() {
+
+  KstDebug::self()->log(i18n("Scanning for data-object plugins."));
+
+  KService::List sl = KServiceType::offers("Kst Data Object");
+  for (KService::List::ConstIterator it = sl.begin(); it != sl.end(); ++it) {
+    int err = 0;
+    KService::Ptr service = ( *it );
+    KstDataObject *object =
+        KParts::ComponentFactory::createInstanceFromService<KstDataObject>( service, 0, "",
+                                                                            QStringList(), &err );
+    if ( object ) {
+        pluginInfo.append( object->name() );
+    }
+    else
+        kdDebug() << "FAILURE! " << k_funcinfo << " " << err << endl;
+
+  }
+}
+
+QStringList KstDataObject::pluginList() {
+  if (pluginInfo.isEmpty()) {
+    scanPlugins();
+  }
+  kdDebug() << pluginInfo << endl;
+  return pluginInfo;
 }
 
 double *KstDataObject::vectorRealloced(KstVectorPtr v, double *memptr, int newSize) const {
