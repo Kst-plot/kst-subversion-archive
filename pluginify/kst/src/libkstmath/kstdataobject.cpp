@@ -90,12 +90,17 @@ KstDataObject::~KstDataObject() {
   delete _curveHints;
 }
 
-static QStringList pluginInfo;
+static QMap<QString, KstDataObjectPtr> pluginInfo;
+void KstDataObject::cleanupForExit() {
+  pluginInfo.clear(); //FIXME?
+}
 
 // Scans for plugins and stores the information for them
 static void scanPlugins() {
 
   KstDebug::self()->log(i18n("Scanning for data-object plugins."));
+
+  pluginInfo.clear(); //FIXME?
 
   KService::List sl = KServiceType::offers("Kst Data Object");
   for (KService::List::ConstIterator it = sl.begin(); it != sl.end(); ++it) {
@@ -105,11 +110,10 @@ static void scanPlugins() {
         KParts::ComponentFactory::createInstanceFromService<KstDataObject>( service, 0, "",
                                                                             QStringList(), &err );
     if ( object ) {
-        pluginInfo.append( object->name() );
+        pluginInfo.insert( object->name(), KstDataObjectPtr( object ) );
     }
     else
         kdDebug() << "FAILURE! " << k_funcinfo << " " << err << endl;
-
   }
 }
 
@@ -117,8 +121,16 @@ QStringList KstDataObject::pluginList() {
   if (pluginInfo.isEmpty()) {
     scanPlugins();
   }
-  kdDebug() << pluginInfo << endl;
-  return pluginInfo;
+  kdDebug() << pluginInfo.keys() << endl;
+  return pluginInfo.keys();
+}
+
+KstDataObjectPtr KstDataObject::plugin( const QString &name )
+{
+    if ( pluginInfo.contains( name ) )
+        return pluginInfo[ name ];
+    else
+        return 0;
 }
 
 double *KstDataObject::vectorRealloced(KstVectorPtr v, double *memptr, int newSize) const {

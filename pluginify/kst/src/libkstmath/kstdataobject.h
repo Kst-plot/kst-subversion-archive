@@ -37,9 +37,12 @@ class KST_EXPORT KstDataObject : public KstObject {
     KstDataObject(const KstDataObject& object);
     virtual ~KstDataObject();
 
+    static void cleanupForExit();
+
     // These static methods are not for plugins to use
     /** Returns a list of object plugins found on the system. */
     static QStringList pluginList();
+    static KstDataObjectPtr plugin( const QString &name );
 
     virtual QString name() const { return QString::null; }
     virtual QString xmlFile() const { return QString::null; }

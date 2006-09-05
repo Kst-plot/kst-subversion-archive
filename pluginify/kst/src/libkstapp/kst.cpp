@@ -250,6 +250,7 @@ KstApp::~KstApp() {
   }
 
   KstDataSource::cleanupForExit(); // must be before deletions
+  KstDataObject::cleanupForExit(); // must be before deletions
   delete _updateThread;
   _updateThread = 0L;
   delete _dcopIface;
