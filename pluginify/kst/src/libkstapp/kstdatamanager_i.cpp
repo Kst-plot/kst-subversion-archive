@@ -24,6 +24,7 @@
 #include "ksdebug.h"
 #include <klistview.h>
 #include <kmessagebox.h>
+#include <kinputdialog.h>
 #include <kstandarddirs.h>
 #include <kcombobox.h>
 
@@ -47,6 +48,7 @@
 #include "kstviewwindow.h"
 #include "matrixselector.h"
 #include "vectorselector.h"
+#include "plugincollection.h"
 
 
 static QMap<int,Kst2DPlotPtr> PlotMap;
@@ -579,6 +581,7 @@ KstDataManagerI::KstDataManagerI(KstDoc *in_doc, QWidget* parent, const char* na
 
   connect(Edit, SIGNAL(clicked()), this, SLOT(edit_I()));
   connect(Delete, SIGNAL(clicked()), this, SLOT(delete_I()));
+  connect(New, SIGNAL(clicked()), this, SLOT(new_I()));
   connect(Purge, SIGNAL(clicked()), doc, SLOT(purge()));
   connect(DataView, SIGNAL(doubleClicked(QListViewItem *)),
       this, SLOT(edit_I()));
@@ -586,27 +589,9 @@ KstDataManagerI::KstDataManagerI(KstDoc *in_doc, QWidget* parent, const char* na
       this, SLOT(currentChanged(QListViewItem *)));
   connect(DataView, SIGNAL(selectionChanged(QListViewItem *)),
       this, SLOT(currentChanged(QListViewItem *)));
-
-  connect(NewCurve, SIGNAL(clicked()), KstCurveDialogI::globalInstance(), SLOT(show()));
-  connect(NewHs, SIGNAL(clicked()), KstHsDialogI::globalInstance(), SLOT(show()));
-  connect(NewEq, SIGNAL(clicked()), KstEqDialogI::globalInstance(), SLOT(show()));
-  connect(NewPlugin, SIGNAL(clicked()), KstPluginDialogI::globalInstance(), SLOT(show()));
-  connect(NewEvent, SIGNAL(clicked()), KstEventMonitorI::globalInstance(), SLOT(show()));
-  connect(NewPSD, SIGNAL(clicked()), KstPsdDialogI::globalInstance(), SLOT(show()));
-  connect(NewVector, SIGNAL(clicked()), KstVectorDialogI::globalInstance(), SLOT(show()));
   connect(OpenPlotDialog, SIGNAL(clicked()),
       KstApp::inst(), SLOT(showPlotDialog()));
-
-  connect(NewImage, SIGNAL(clicked()), KstImageDialogI::globalInstance(), SLOT(show()));
-
-  connect(NewMatrix, SIGNAL(clicked()), KstMatrixDialogI::globalInstance(), SLOT(show()));
-  
-  connect(NewCSD, SIGNAL(clicked()), KstCsdDialogI::globalInstance(), SLOT(show()));
-
   connect(DataView, SIGNAL(contextMenuRequested(QListViewItem*, const QPoint&, int)), this, SLOT(contextMenu(QListViewItem*, const QPoint&, int)));
-
-  NewPluginCombo->insertStringList( KstDataObject::pluginList() );
-  connect(NewPluginCombo, SIGNAL(activated(const QString &)), this, SLOT(newPluginConfigDialog(const QString &)));
 }
 
 
@@ -913,6 +898,62 @@ void KstDataManagerI::delete_I() {
       KMessageBox::sorry(this, i18n("Cannot delete objects with dependencies."));
     }
   }
+}
+
+void KstDataManagerI::new_I() {
+  QStringList l;
+
+  //The original KstDataObjects...
+  l << i18n( "Vector" );
+  l << i18n( "Curve" );
+  l << i18n( "Equation" );
+  l << i18n( "Histogram" );
+  l << i18n( "Power Spectrum" );
+  l << i18n( "Event Monitor" );
+  l << i18n( "Matrix" );
+  l << i18n( "Image" );
+  l << i18n( "CSD" );
+
+  //The new KstDataObject plugins...
+  const QStringList newPlugins = KstDataObject::pluginList();
+  l += newPlugins;
+
+  //The old C style plugins...
+  const QStringList oldPlugins = PluginCollection::self()->pluginNameList().keys();
+  l += oldPlugins;
+
+  bool ok = false;
+  QStringList plugin =
+      KInputDialog::getItemList( i18n( "Plugins" ), i18n( "Create..." ), l, 0, false, &ok, this );
+
+  if ( !ok || plugin.isEmpty() )
+    return;
+
+  const QString p = plugin.join("");
+
+  //Oh, wouldn't it be nice if C++ could switch strings...
+  if ( p == i18n( "Vector" ) )
+      KstVectorDialogI::globalInstance()->show();
+  else if ( p == i18n( "Curve" ) )
+      KstCurveDialogI::globalInstance()->show();
+  else if ( p == i18n( "Equation" ) )
+      KstEqDialogI::globalInstance()->show();
+  else if ( p == i18n( "Histogram" ) )
+      KstHsDialogI::globalInstance()->show();
+  else if ( p == i18n( "Power Spectrum" ) )
+      KstPsdDialogI::globalInstance()->show();
+  else if ( p == i18n( "Event Monitor" ) )
+      KstEventMonitorI::globalInstance()->show();
+  else if ( p == i18n( "Matrix" ) )
+      KstMatrixDialogI::globalInstance()->show();
+  else if ( p == i18n( "Image" ) )
+      KstImageDialogI::globalInstance()->show();
+  else if ( p == i18n( "CSD" ) )
+      KstCsdDialogI::globalInstance()->show();
+  else if ( newPlugins.contains( p ) )
+      newPluginConfigDialog( p );
+  else if ( oldPlugins.contains( p ) )
+      KstPluginDialogI::globalInstance()->show();
 }
 
 

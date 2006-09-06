@@ -8,7 +8,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>883</width>
+            <width>549</width>
             <height>527</height>
         </rect>
     </property>
@@ -25,7 +25,128 @@
         <property name="spacing">
             <number>6</number>
         </property>
-        <widget class="KListView" row="0" column="1">
+        <widget class="QLayoutWidget" row="1" column="0">
+            <property name="name">
+                <cstring>layout2</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>OpenPlotDialog</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Plot Dialo&amp;g...</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+G</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Open Plot Dialog</string>
+                    </property>
+                </widget>
+                <spacer>
+                    <property name="name">
+                        <cstring>Spacer14</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>350</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>Purge</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Purge</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+P</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Purge unused objects</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>New</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;New</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+N</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Delete selected object</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>Delete</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Delete</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+D</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Delete selected object</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>Edit</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>0</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Edit</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Edit selected object</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>Close</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>0</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Close</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Close window</string>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+        <widget class="KListView" row="0" column="0">
             <column>
                 <property name="text">
                     <string>Name</string>
@@ -94,239 +215,6 @@
                 <bool>true</bool>
             </property>
         </widget>
-        <widget class="QGroupBox" row="0" column="0">
-            <property name="name">
-                <cstring>groupBox7</cstring>
-            </property>
-            <property name="sizePolicy">
-                <sizepolicy>
-                    <hsizetype>4</hsizetype>
-                    <vsizetype>5</vsizetype>
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                </sizepolicy>
-            </property>
-            <property name="title">
-                <string>New</string>
-            </property>
-            <vbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>NewVector</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&amp;Vector...</string>
-                    </property>
-                    <property name="accel">
-                        <string>Alt+V</string>
-                    </property>
-                </widget>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>NewCurve</cstring>
-                    </property>
-                    <property name="text">
-                        <string>C&amp;urve...</string>
-                    </property>
-                </widget>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>NewEq</cstring>
-                    </property>
-                    <property name="text">
-                        <string>E&amp;quation...</string>
-                    </property>
-                    <property name="accel">
-                        <string>Alt+Q</string>
-                    </property>
-                </widget>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>NewHs</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&amp;Histogram...</string>
-                    </property>
-                    <property name="accel">
-                        <string>Alt+H</string>
-                    </property>
-                </widget>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>NewPSD</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Po&amp;wer Spectrum...</string>
-                    </property>
-                </widget>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>NewEvent</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Event &amp;Monitor...</string>
-                    </property>
-                </widget>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>NewMatrix</cstring>
-                    </property>
-                    <property name="text">
-                        <string>M&amp;atrix...</string>
-                    </property>
-                </widget>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>NewImage</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&amp;Image...</string>
-                    </property>
-                </widget>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>NewCSD</cstring>
-                    </property>
-                    <property name="text">
-                        <string>C&amp;SD...</string>
-                    </property>
-                </widget>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>NewPlugin</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Plu&amp;gin...</string>
-                    </property>
-                    <property name="accel">
-                        <string>Alt+G</string>
-                    </property>
-                </widget>
-                <widget class="KComboBox">
-                    <property name="name">
-                        <cstring>NewPluginCombo</cstring>
-                    </property>
-                </widget>
-                <spacer>
-                    <property name="name">
-                        <cstring>spacer7</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Vertical</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>20</width>
-                            <height>100</height>
-                        </size>
-                    </property>
-                </spacer>
-            </vbox>
-        </widget>
-        <widget class="QLayoutWidget" row="1" column="0" rowspan="1" colspan="2">
-            <property name="name">
-                <cstring>layout3</cstring>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>OpenPlotDialog</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Plot Dialo&amp;g...</string>
-                    </property>
-                    <property name="whatsThis" stdset="0">
-                        <string>Open Plot Dialog</string>
-                    </property>
-                </widget>
-                <spacer>
-                    <property name="name">
-                        <cstring>Spacer14</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>120</width>
-                            <height>20</height>
-                        </size>
-                    </property>
-                </spacer>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>Purge</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&amp;Purge</string>
-                    </property>
-                    <property name="whatsThis" stdset="0">
-                        <string>Purge unused objects</string>
-                    </property>
-                </widget>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>Delete</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&amp;Delete</string>
-                    </property>
-                    <property name="whatsThis" stdset="0">
-                        <string>Delete selected object</string>
-                    </property>
-                </widget>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>Edit</cstring>
-                    </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>0</hsizetype>
-                            <vsizetype>0</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                    <property name="text">
-                        <string>&amp;Edit</string>
-                    </property>
-                    <property name="whatsThis" stdset="0">
-                        <string>Edit selected object</string>
-                    </property>
-                </widget>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>Close</cstring>
-                    </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>0</hsizetype>
-                            <vsizetype>0</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                    <property name="text">
-                        <string>&amp;Close</string>
-                    </property>
-                    <property name="whatsThis" stdset="0">
-                        <string>Close window</string>
-                    </property>
-                </widget>
-            </hbox>
-        </widget>
     </grid>
 </widget>
 <customwidgets>
@@ -341,18 +229,9 @@
 </connections>
 <tabstops>
     <tabstop>DataView</tabstop>
-    <tabstop>NewVector</tabstop>
-    <tabstop>NewCurve</tabstop>
-    <tabstop>NewEq</tabstop>
-    <tabstop>NewHs</tabstop>
-    <tabstop>NewPSD</tabstop>
-    <tabstop>NewPlugin</tabstop>
-    <tabstop>NewEvent</tabstop>
-    <tabstop>NewMatrix</tabstop>
-    <tabstop>NewImage</tabstop>
-    <tabstop>NewCSD</tabstop>
     <tabstop>OpenPlotDialog</tabstop>
     <tabstop>Purge</tabstop>
+    <tabstop>New</tabstop>
     <tabstop>Delete</tabstop>
     <tabstop>Edit</tabstop>
     <tabstop>Close</tabstop>
