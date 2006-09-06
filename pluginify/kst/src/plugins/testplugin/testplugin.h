@@ -28,8 +28,6 @@ public:
     TestPlugin(QObject *parent, const char *name, const QStringList &args);
     virtual ~TestPlugin();
 
-    virtual QString name() const { return _name; }
-
     virtual KstObject::UpdateType update(int)
     {
         return UPDATE;
@@ -48,9 +46,6 @@ protected slots:
     {
         KMessageBox::information( 0, "insert testplugin config widget here :)", "testpluginconfig" );
     }
-
-private:
-    QString _name;
 };
 
 #endif

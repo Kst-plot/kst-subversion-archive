@@ -110,7 +110,7 @@ static void scanPlugins() {
         KParts::ComponentFactory::createInstanceFromService<KstDataObject>( service, 0, "",
                                                                             QStringList(), &err );
     if ( object ) {
-        pluginInfo.insert( object->name(), KstDataObjectPtr( object ) );
+      pluginInfo.insert( service->name(), KstDataObjectPtr( object ) );
     }
     else
         kdDebug() << "FAILURE! " << k_funcinfo << " " << err << endl;
