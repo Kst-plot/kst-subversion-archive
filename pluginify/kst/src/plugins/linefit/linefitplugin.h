@@ -52,7 +52,7 @@ public:
 //   virtual void writeLock() const;
 //   virtual void unlock() const;
 //
-//   virtual bool isValid() const;
+  virtual bool isValid() const;
 //
 //   virtual const KstCurveHintList* curveHints() const;
 //
@@ -67,6 +67,9 @@ public:
 protected slots:
   //Pure virtual slots from KstDataObject
   virtual void _showDialog();
+
+private:
+  bool m_init;
 
 };
 

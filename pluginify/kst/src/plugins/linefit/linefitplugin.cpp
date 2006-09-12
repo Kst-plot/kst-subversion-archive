@@ -37,12 +37,21 @@ K_EXPORT_COMPONENT_FACTORY( kst_linefit,
 
 LineFit::LineFit( QObject */*parent*/, const char */*name*/, const QStringList &/*args*/ )
     : KstDataObject() {
+  m_init = false;
 }
 
 LineFit::~LineFit() {
 }
 
+bool LineFit::isValid() const {
+  return m_init;
+}
+
 KstObject::UpdateType LineFit::update(int updateCounter) {
+  if (isValid()) {
+    return setLastUpdateResult(NO_CHANGE);
+  }
+
   bool force = dirty();
   setDirty(false);
 
@@ -63,6 +72,9 @@ KstObject::UpdateType LineFit::update(int updateCounter) {
   depUpdated = UPDATE == yIn->update(updateCounter) || depUpdated;
 
   linefit();
+
+  m_init = true;
+
   setLastUpdateResult(UPDATE); // make sure that provider callbacks work
 
   KstVectorPtr xOut = *_outputVectors.find(X_COORDINATES_OUT);
@@ -109,10 +121,10 @@ void LineFit::linefit() {
   }
 
   if (xOut->length() != 2) {
-    vectorRealloced(xOut, xOut->value(), 2);
+    xOut->resize( 2, false );
     }
   if (yOut->length() != 2) {
-    vectorRealloced(yOut, yOut->value(), 2);
+    yOut->resize( 2, false );
   }
 
   if (yIn->length() == 1) {
