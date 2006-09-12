@@ -95,8 +95,25 @@ void KstDataObject::cleanupForExit() {
   pluginInfo.clear(); //FIXME?
 }
 
+KstDataObjectPtr KstDataObject::createPlugin( KService::Ptr service )
+{
+  int err = 0;
+  KstDataObject *object =
+      KParts::ComponentFactory::createInstanceFromService<KstDataObject>( service, 0, "",
+      QStringList(), &err );
+  if ( object ) {
+    pluginInfo.insert( service->name(), KstDataObjectPtr( object ) );
+    kdDebug() << "SUCCESS! " << service->name() << endl;
+  }
+  else {
+    kdDebug() << "FAILURE! " << k_funcinfo << " " << service->name() << " error=" << err << endl;
+    kdDebug() << "KLibLoader::lastErrorMessage! " << KLibLoader::self()->lastErrorMessage() << endl;
+  }
+  return object;
+}
+
 // Scans for plugins and stores the information for them
-static void scanPlugins() {
+void KstDataObject::scanPlugins() {
 
   KstDebug::self()->log(i18n("Scanning for data-object plugins."));
 
@@ -104,19 +121,8 @@ static void scanPlugins() {
 
   KService::List sl = KServiceType::offers("Kst Data Object");
   for (KService::List::ConstIterator it = sl.begin(); it != sl.end(); ++it) {
-    int err = 0;
-    KService::Ptr service = ( *it );
-    KstDataObject *object =
-        KParts::ComponentFactory::createInstanceFromService<KstDataObject>( service, 0, "",
-                                                                            QStringList(), &err );
-    if ( object ) {
-      pluginInfo.insert( service->name(), KstDataObjectPtr( object ) );
-      kdDebug() << "SUCCESS! " << service->name() << endl;
-    }
-    else
-    {
-      kdDebug() << "FAILURE! " << k_funcinfo << " " << service->name() << " error=" << err << endl;
-      kdDebug() << "KLibLoader::lastErrorMessage! " << KLibLoader::self()->lastErrorMessage() << endl;
+    if ( KstDataObjectPtr object = createPlugin( *it ) ) {
+      pluginInfo.insert( ( *it) ->name(), KstDataObjectPtr( object ) );
     }
   }
 }
@@ -140,24 +146,13 @@ KstDataObjectPtr KstDataObject::createPlugin( const QString &name, const QDomEle
 {
   KService::List sl = KServiceType::offers("Kst Data Object");
   for (KService::List::ConstIterator it = sl.begin(); it != sl.end(); ++it) {
-    int err = 0;
-    KService::Ptr service = ( *it );
-    if ( service->name() != name )
+    if ( ( *it )->name() != name ) {
       continue;
-    KstDataObject *object =
-        KParts::ComponentFactory::createInstanceFromService<KstDataObject>( service, 0, "",
-        QStringList(), &err );
-    object->load( e );
-    if ( object ) {
-      pluginInfo.insert( service->name(), KstDataObjectPtr( object ) );
-      kdDebug() << "SUCCESS! " << service->name() << endl;
     }
-    else
-    {
-      kdDebug() << "FAILURE! " << k_funcinfo << " " << service->name() << " error=" << err << endl;
-      kdDebug() << "KLibLoader::lastErrorMessage! " << KLibLoader::self()->lastErrorMessage() << endl;
+    else if ( KstDataObjectPtr object = createPlugin( *it ) ) {
+        object->load( e );
+        return object;
     }
-    return object;
   }
   return 0;
 }
