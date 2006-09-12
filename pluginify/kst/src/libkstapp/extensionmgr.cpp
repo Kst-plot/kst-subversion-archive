@@ -77,6 +77,13 @@ ExtensionMgr::~ExtensionMgr() {
   // extensions as they are handled automatically...
 }
 
+KstExtension *ExtensionMgr::extension(const QString& name) const {
+  QMap<QString,KstExtension*>::const_iterator i = _registry.find(name);
+  if ( i != _registry.end() )
+    return *i;
+  else
+    return 0;
+}
 
 void ExtensionMgr::loadExtension(const QString& name) {
   KService::List sl = KServiceType::offers("Kst Extension");

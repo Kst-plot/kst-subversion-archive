@@ -38,7 +38,7 @@ class ExtensionMgr : QObject {
     bool enabled(const QString& extension) { return _extensions.contains(extension) && _extensions[extension]; }
     void updateExtensions();
 
-    KstExtension *extension(const QString& name) const { return *_registry.find(name); }
+    KstExtension *extension(const QString& name) const;
 
     void doRegister(const QString& name, KstExtension *inst);
     void unregister(KstExtension *inst);
