@@ -26,11 +26,11 @@
 
 #include "linefitdialog_i.h"
 
-static const QString& X_COORDINATES_IN = KGlobal::staticQString("X Array");
-static const QString& Y_COORDINATES_IN = KGlobal::staticQString("Y Array");
+static const QString& X_ARRAY = KGlobal::staticQString("X Array");
+static const QString& Y_ARRAY = KGlobal::staticQString("Y Array");
 
-static const QString& X_COORDINATES_OUT = KGlobal::staticQString("X Interpolated");
-static const QString& Y_COORDINATES_OUT = KGlobal::staticQString("Y Interpolated");
+static const QString& X_INTERPOLATED = KGlobal::staticQString("X Interpolated");
+static const QString& Y_INTERPOLATED = KGlobal::staticQString("Y Interpolated");
 
 static const QString& A = KGlobal::staticQString("a");
 static const QString& B = KGlobal::staticQString("b");
@@ -63,8 +63,8 @@ KstObject::UpdateType LineFit::update(int updateCounter) {
     return lastUpdateResult();
   }
 
-  KstVectorPtr xIn = *_inputVectors.find(X_COORDINATES_IN);
-  KstVectorPtr yIn = *_inputVectors.find(Y_COORDINATES_IN);
+  KstVectorPtr xIn = *_inputVectors.find(X_ARRAY);
+  KstVectorPtr yIn = *_inputVectors.find(Y_ARRAY);
 
   if (!xIn || !yIn) {
     return setLastUpdateResult(NO_CHANGE);
@@ -81,8 +81,8 @@ KstObject::UpdateType LineFit::update(int updateCounter) {
 
   setLastUpdateResult(UPDATE); // make sure that provider callbacks work
 
-  KstVectorPtr xOut = *_outputVectors.find(X_COORDINATES_OUT);
-  KstVectorPtr yOut = *_outputVectors.find(Y_COORDINATES_OUT);
+  KstVectorPtr xOut = *_outputVectors.find(X_INTERPOLATED);
+  KstVectorPtr yOut = *_outputVectors.find(Y_INTERPOLATED);
 
   vectorRealloced(xOut, xOut->value(), 2);
   xOut->setDirty();
@@ -110,11 +110,11 @@ void LineFit::linefit() {
   double a = 0.0, b = 0.0, sx = 0.0, sy = 0.0, sxoss = 0.0, st2 = 0.0, chi2 = 0.0;
   double xScale;
 
-  KstVectorPtr xIn = *_inputVectors.find(X_COORDINATES_IN);
-  KstVectorPtr yIn = *_inputVectors.find(Y_COORDINATES_IN);
+  KstVectorPtr xIn = *_inputVectors.find(X_ARRAY);
+  KstVectorPtr yIn = *_inputVectors.find(Y_ARRAY);
 
-  KstVectorPtr xOut = *_outputVectors.find(X_COORDINATES_OUT);
-  KstVectorPtr yOut = *_outputVectors.find(Y_COORDINATES_OUT);
+  KstVectorPtr xOut = *_outputVectors.find(X_INTERPOLATED);
+  KstVectorPtr yOut = *_outputVectors.find(Y_INTERPOLATED);
 
   KstScalarPtr _a = *_outputScalars.find(A);
   KstScalarPtr _b = *_outputScalars.find(B);
@@ -194,6 +194,90 @@ void LineFit::linefit() {
   _chi2->setValue( chi2 );
 }
 
+QString LineFit::xArrayTag() const {
+  KstVectorPtr v = xArray();
+  if (v) {
+    return v->tagName();
+  }
+  return QString::null;
+}
+
+QString LineFit::yArrayTag() const {
+  KstVectorPtr v = yArray();
+  if (v) {
+    return v->tagName();
+  }
+  return QString::null;
+}
+
+QString LineFit::xInterpolatedTag() const {
+  KstVectorPtr v = xInterpolated();
+  if (v) {
+    return v->tagName();
+  }
+  return QString::null;
+}
+
+QString LineFit::yInterpolatedTag() const {
+  KstVectorPtr v = yInterpolated();
+  if (v) {
+    return v->tagName();
+  }
+  return QString::null;
+}
+
+QString LineFit::aTag() const {
+  KstScalarPtr s = a();
+  if (s) {
+    return s->tagName();
+  }
+  return QString::null;
+}
+
+QString LineFit::bTag() const {
+  KstScalarPtr s = b();
+  if (s) {
+    return s->tagName();
+  }
+  return QString::null;
+}
+
+QString LineFit::chi2Tag() const {
+  KstScalarPtr s = chi2();
+  if (s) {
+    return s->tagName();
+  }
+  return QString::null;
+}
+
+KstVectorPtr LineFit::xArray() const {
+  return *_inputVectors.find(X_ARRAY);
+}
+
+KstVectorPtr LineFit::yArray() const {
+  return *_inputVectors.find(Y_ARRAY);
+}
+
+KstVectorPtr LineFit::xInterpolated() const {
+  return *_outputVectors.find(X_INTERPOLATED);
+}
+
+KstVectorPtr LineFit::yInterpolated() const {
+  return *_outputVectors.find(Y_INTERPOLATED);
+}
+
+KstScalarPtr LineFit::a() const {
+  return *_outputScalars.find(A);
+}
+
+KstScalarPtr LineFit::b() const {
+  return *_outputScalars.find(B);
+}
+
+KstScalarPtr LineFit::chi2() const {
+  return *_outputScalars.find(CHI2);
+}
+
 QString LineFit::propertyString() const {
   return "linefit";
 }
@@ -204,7 +288,7 @@ KstDataObjectPtr LineFit::makeDuplicate(KstDataObjectDataObjectMap&) {
 
 void LineFit::_showDialog() {
   LineFitDialogI *dialog = new LineFitDialogI;
-  dialog->show();
+  dialog->showEdit(tagName());
 }
 
 void LineFit::load(const QDomElement &e) {

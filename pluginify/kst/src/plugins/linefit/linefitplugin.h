@@ -28,7 +28,30 @@ public:
 
   //algorithm
   void linefit();
-  void createFitScalars();
+
+  QString xArrayTag() const;
+  QString yArrayTag() const;
+  QString xInterpolatedTag() const;
+  QString yInterpolatedTag() const;
+  QString aTag() const;
+  QString bTag() const;
+  QString chi2Tag() const;
+
+  KstVectorPtr xArray() const;
+  KstVectorPtr yArray() const;
+  KstVectorPtr xInterpolated() const;
+  KstVectorPtr yInterpolated() const;
+  KstScalarPtr a() const;
+  KstScalarPtr b() const;
+  KstScalarPtr chi2() const;
+
+//   void setXArray(KstVectorPtr new_xArray);
+//   void setYArray(KstVectorPtr new_yArray);
+//   void setXInterpolated(KstVectorPtr new_xInterpolated);
+//   void setYInterpolated(KstVectorPtr new_yInterpolated);
+//   void setA(KstScalarPtr new_a);
+//   void setB(KstScalarPtr new_b);
+//   void setChi2(KstScalarPtr new_chi2);
 
   //Pure virtual methods from KstDataObject
   virtual KstObject::UpdateType update(int updateCounter = -1);
@@ -70,7 +93,9 @@ protected slots:
 
 private:
   bool m_init;
-
 };
+
+typedef KstSharedPtr<LineFit> LineFitPtr;
+typedef KstObjectList<LineFitPtr> LineFitList;
 
 #endif

@@ -54,19 +54,46 @@ LineFitDialogI::LineFitDialogI(QWidget* parent, const char* name, bool modal, WF
 : KstDataDialog(parent, name, modal, fl) {
   _w = new LineFitDialogWidget(_contents);
   setMultiple(false);
-
-  adjustSize();
-  resize(minimumSizeHint());
-  setFixedHeight(height());
 }
 
 LineFitDialogI::~LineFitDialogI() {
 }
 
 void LineFitDialogI::fillFieldsForEdit() {
+  LineFitPtr lf = kst_cast<LineFit>(_dp);
+  if (!lf) {
+    return;
+  }
+
+  lf->readLock();
+
+  _tagName->setText(lf->tagName());
+  _legendText->setText(defaultTag); //FIXME?
+
+  _w->_xArray->setSelection( lf->xArrayTag() );
+  _w->_yArray->setSelection( lf->yArrayTag() );
+
+  _w->_xInterpolated->setText( lf->xInterpolatedTag() );
+  _w->_yInterpolated->setText( lf->yInterpolatedTag() );
+
+  _w->_a->setText( lf->aTag() );
+  _w->_b->setText( lf->bTag() );
+  _w->_chi2->setText( lf->chi2Tag() );
+
+  lf->unlock();
+
+  adjustSize();
+  resize(minimumSizeHint());
+  setFixedHeight(height());
 }
 
 void LineFitDialogI::fillFieldsForNew() {
+  _tagName->setText(defaultTag);
+  _legendText->setText(defaultTag);
+
+  adjustSize();
+  resize(minimumSizeHint());
+  setFixedHeight(height());
 }
 
 #include "linefitdialog_i.moc"
