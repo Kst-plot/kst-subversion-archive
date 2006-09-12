@@ -383,6 +383,12 @@ bool KstDoc::openDocument(const KURL& url, const QString& o_file,
         KstDataObjectPtr p = new KstPlugin(e);
         KstWriteLocker dowl(&KST::dataObjectList.lock());
         KST::dataObjectList.append(p);
+      } else if (e.tagName() == "newplugin") {
+        const QString name = e.attribute("name");
+        Q_ASSERT( !name.isEmpty() );
+        KstDataObjectPtr p = KstDataObject::createPlugin(name, e);
+        KstWriteLocker dowl(&KST::dataObjectList.lock());
+        KST::dataObjectList.append(p);
       } else if (e.tagName() == "curve") {
         KstDataObjectPtr p = new KstVCurve(e);
         KstWriteLocker dowl(&KST::dataObjectList.lock());

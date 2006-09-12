@@ -1,11 +1,11 @@
-installdir=$(kde_moduledir)/kstplugins
 INCLUDES=-I$(top_srcdir)/kst -I$(top_srcdir)/kst/src/libkst -I$(top_srcdir)/kst/src/libkstmath $(all_includes)
 
-install_LTLIBRARIES = crossspectrum.la
+kde_module_LTLIBRARIES=kst_crossspectrum.la
 
-crossspectrum_la_LDFLAGS = -module $(KDE_PLUGIN) $(all_libraries)
-crossspectrum_la_SOURCES = crossspectrum.cpp fftsg_h.c
+kst_crossspectrum_la_LDFLAGS=$(all_libraries) -module -avoid-version
+kst_crossspectrum_la_SOURCES=crosspowerspectrum.cpp crossspectrum.cpp fftsg_h.c
+
+services_DATA=kst_crossspectrum.desktop
+servicesdir=$(kde_servicesdir)/kst
 
 METASOURCES=AUTO
-
-install_DATA=crossspectrum.xml

@@ -111,9 +111,13 @@ static void scanPlugins() {
                                                                             QStringList(), &err );
     if ( object ) {
       pluginInfo.insert( service->name(), KstDataObjectPtr( object ) );
+      kdDebug() << "SUCCESS! " << service->name() << endl;
     }
     else
-        kdDebug() << "FAILURE! " << k_funcinfo << " " << err << endl;
+    {
+      kdDebug() << "FAILURE! " << k_funcinfo << " " << service->name() << " error=" << err << endl;
+      kdDebug() << "KLibLoader::lastErrorMessage! " << KLibLoader::self()->lastErrorMessage() << endl;
+    }
   }
 }
 
@@ -132,6 +136,32 @@ KstDataObjectPtr KstDataObject::plugin( const QString &name )
         return 0;
 }
 
+KstDataObjectPtr KstDataObject::createPlugin( const QString &name, const QDomElement &e )
+{
+  KService::List sl = KServiceType::offers("Kst Data Object");
+  for (KService::List::ConstIterator it = sl.begin(); it != sl.end(); ++it) {
+    int err = 0;
+    KService::Ptr service = ( *it );
+    if ( service->name() != name )
+      continue;
+    KstDataObject *object =
+        KParts::ComponentFactory::createInstanceFromService<KstDataObject>( service, 0, "",
+        QStringList(), &err );
+    object->load( e );
+    if ( object ) {
+      pluginInfo.insert( service->name(), KstDataObjectPtr( object ) );
+      kdDebug() << "SUCCESS! " << service->name() << endl;
+    }
+    else
+    {
+      kdDebug() << "FAILURE! " << k_funcinfo << " " << service->name() << " error=" << err << endl;
+      kdDebug() << "KLibLoader::lastErrorMessage! " << KLibLoader::self()->lastErrorMessage() << endl;
+    }
+    return object;
+  }
+  return 0;
+}
+
 double *KstDataObject::vectorRealloced(KstVectorPtr v, double *memptr, int newSize) const {
   if (!v) {
     return 0L;
@@ -144,6 +174,9 @@ double *KstDataObject::vectorRealloced(KstVectorPtr v, double *memptr, int newSi
   return v->realloced(memptr, newSize);
 }
 
+void KstDataObject::load(const QDomElement &e) {
+  Q_UNUSED(e)
+}
 void KstDataObject::save(QTextStream& ts, const QString& indent) {
   Q_UNUSED(ts)
   Q_UNUSED(indent)

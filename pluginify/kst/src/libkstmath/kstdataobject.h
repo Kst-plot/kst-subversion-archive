@@ -43,6 +43,7 @@ class KST_EXPORT KstDataObject : public KstObject {
     /** Returns a list of object plugins found on the system. */
     static QStringList pluginList();
     static KstDataObjectPtr plugin( const QString &name );
+    static KstDataObjectPtr createPlugin( const QString &name, const QDomElement& e );
 
     virtual UpdateType update(int updateCounter = -1) = 0;
     virtual const QString& typeString() const { return _typeString; }
@@ -73,6 +74,7 @@ class KST_EXPORT KstDataObject : public KstObject {
     KstMatrixMap& inputMatrices() { return _inputMatrices; }
     KstMatrixMap& outputMatrices() { return _outputMatrices; }
 
+    virtual void load(const QDomElement &e);
     virtual void save(QTextStream& ts, const QString& indent = QString::null);
 
     void showDialog();

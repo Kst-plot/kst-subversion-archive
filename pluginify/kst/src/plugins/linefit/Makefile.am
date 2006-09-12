@@ -1,11 +1,11 @@
-installdir=$(kde_moduledir)/kstplugins
-INCLUDES=-I$(srcdir)/../../../kst $(all_includes)
+INCLUDES=-I$(top_srcdir)/kst -I$(top_srcdir)/kst/src/libkst -I$(top_srcdir)/kst/src/libkstmath $(all_includes)
 
-install_LTLIBRARIES=linefit.la
+kde_module_LTLIBRARIES=kst_linefit.la
 
-linefit_la_LDFLAGS=-module $(KDE_PLUGIN)
-linefit_la_SOURCES=linefit.cpp
+kst_linefit_la_LDFLAGS=$(all_libraries) -module -avoid-version
+kst_linefit_la_SOURCES=linefitplugin.cpp
+
+services_DATA=kst_linefit.desktop
+servicesdir=$(kde_servicesdir)/kst
 
 METASOURCES=AUTO
-
-install_DATA=linefit.xml
