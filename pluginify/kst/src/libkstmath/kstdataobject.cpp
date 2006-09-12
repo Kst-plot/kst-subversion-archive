@@ -103,11 +103,11 @@ KstDataObjectPtr KstDataObject::createPlugin( KService::Ptr service )
       QStringList(), &err );
   if ( object ) {
     pluginInfo.insert( service->name(), KstDataObjectPtr( object ) );
-    kdDebug() << "SUCCESS! " << service->name() << endl;
+
+    KstDebug::self()->log(i18n("Loaded data-object plugin %1.").arg(service->name()));
   }
   else {
-    kdDebug() << "FAILURE! " << k_funcinfo << " " << service->name() << " error=" << err << endl;
-    kdDebug() << "KLibLoader::lastErrorMessage! " << KLibLoader::self()->lastErrorMessage() << endl;
+    KstDebug::self()->log(i18n("Could't load data-object plugin %1.").arg(service->name()), KstDebug::Error);
   }
   return object;
 }
