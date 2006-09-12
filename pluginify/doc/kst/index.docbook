@@ -18,7 +18,7 @@
  <!ENTITY saving-chapter SYSTEM "saving-chapter.docbook">
  <!ENTITY plotsandwindows-chapter SYSTEM "plotsandwindows-chapter.docbook">
  <!ENTITY additionalformats-chapter SYSTEM "additionalformats-chapter.docbook">
- <!ENTITY creatingplugins-chapter SYSTEM "creatingplugins-chapter.docbook">
+ <!ENTITY creatingplugins-chapter SYSTEM "creatingplugins-chapter-new.docbook">
  <!ENTITY miscfeatures-chapter SYSTEM "miscfeatures-chapter.docbook">
  <!ENTITY debuglog-chapter SYSTEM "debuglog-chapter.docbook">
  <!ENTITY dcop-chapter SYSTEM "dcop-chapter.docbook">
