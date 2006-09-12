@@ -380,13 +380,12 @@ bool KstDoc::openDocument(const KURL& url, const QString& o_file,
         avector = new KstAVector(e);
         KST::addVectorToList(KstVectorPtr(avector));
       } else if (e.tagName() == "plugin") {
-        KstDataObjectPtr p = new KstPlugin(e);
-        KstWriteLocker dowl(&KST::dataObjectList.lock());
-        KST::dataObjectList.append(p);
-      } else if (e.tagName() == "newplugin") {
         const QString name = e.attribute("name");
-        Q_ASSERT( !name.isEmpty() );
-        KstDataObjectPtr p = KstDataObject::createPlugin(name, e);
+        KstDataObjectPtr p;
+        if ( name.isEmpty() )
+          p = new KstPlugin(e);
+        else
+          p = KstDataObject::createPlugin(name, e);
         KstWriteLocker dowl(&KST::dataObjectList.lock());
         KST::dataObjectList.append(p);
       } else if (e.tagName() == "curve") {
