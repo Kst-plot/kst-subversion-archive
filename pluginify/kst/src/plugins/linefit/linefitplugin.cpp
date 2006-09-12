@@ -24,6 +24,8 @@
 
 #include <kstdatacollection.h>
 
+#include "linefitdialog_i.h"
+
 static const QString& X_COORDINATES_IN = KGlobal::staticQString("X Array");
 static const QString& Y_COORDINATES_IN = KGlobal::staticQString("Y Array");
 
@@ -201,7 +203,8 @@ KstDataObjectPtr LineFit::makeDuplicate(KstDataObjectDataObjectMap&) {
 }
 
 void LineFit::_showDialog() {
-  //KMessageBox::information( 0, "insert linefit config widget here :)", "linefitconfig" );
+  LineFitDialogI *dialog = new LineFitDialogI;
+  dialog->show();
 }
 
 void LineFit::load(const QDomElement &e) {
