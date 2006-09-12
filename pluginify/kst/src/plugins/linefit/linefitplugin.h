@@ -42,8 +42,8 @@ public:
 //   virtual int sampleCount() const { return 0; }
 //
   virtual void load(const QDomElement &e);
-//   virtual void save(QTextStream& ts, const QString& indent = QString::null);
-//
+  virtual void save(QTextStream& ts, const QString& indent = QString::null);
+
 //   virtual bool loadInputs();
 //
 //   virtual int getUsage() const;

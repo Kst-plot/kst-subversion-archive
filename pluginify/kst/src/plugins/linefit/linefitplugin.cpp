@@ -16,6 +16,8 @@
  ***************************************************************************/
 #include "linefitplugin.h"
 
+#include <qstylesheet.h>
+
 #include <kdebug.h>
 #include <kmessagebox.h>
 #include <kgenericfactory.h>
@@ -30,7 +32,7 @@ static const QString& Y_COORDINATES_OUT = KGlobal::staticQString("Y Interpolated
 
 static const QString& A = KGlobal::staticQString("a");
 static const QString& B = KGlobal::staticQString("b");
-static const QString& CHISQUARED = KGlobal::staticQString("chi^2");
+static const QString& CHI2 = KGlobal::staticQString("chi^2");
 
 K_EXPORT_COMPONENT_FACTORY( kst_linefit,
     KGenericFactory<LineFit>( "kst_linefit" ) )
@@ -92,7 +94,7 @@ KstObject::UpdateType LineFit::update(int updateCounter) {
 
   KstScalarPtr a = *_outputScalars.find(A);
   KstScalarPtr b = *_outputScalars.find(B);
-  KstScalarPtr chi2 = *_outputScalars.find(CHISQUARED);
+  KstScalarPtr chi2 = *_outputScalars.find(CHI2);
 
   a->update(updateCounter);
   b->update(updateCounter);
@@ -114,7 +116,7 @@ void LineFit::linefit() {
 
   KstScalarPtr _a = *_outputScalars.find(A);
   KstScalarPtr _b = *_outputScalars.find(B);
-  KstScalarPtr _chi2 = *_outputScalars.find(CHISQUARED);
+  KstScalarPtr _chi2 = *_outputScalars.find(CHI2);
 
   if (yIn->length() < 1 || xIn->length() < 1) {
     return /*-1*/;
@@ -202,7 +204,6 @@ void LineFit::_showDialog() {
   //KMessageBox::information( 0, "insert linefit config widget here :)", "linefitconfig" );
 }
 
-
 void LineFit::load(const QDomElement &e) {
   QDomNode n = e.firstChild();
 
@@ -211,8 +212,6 @@ void LineFit::load(const QDomElement &e) {
     if (!e.isNull()) {
       if (e.tagName() == "tag") {
         setTagName(e.text());
-      } else if (e.tagName() == "name") {
-        //ignore
       } else if (e.tagName() == "ivector") {
         _inputVectorLoadQueue.append(qMakePair(e.attribute("name"), e.text()));
       } else if (e.tagName() == "iscalar") {
@@ -238,6 +237,46 @@ void LineFit::load(const QDomElement &e) {
     }
     n = n.nextSibling();
   }
+}
+
+void LineFit::save(QTextStream& ts, const QString& indent) {
+  QString l2 = indent + "  ";
+  ts << indent << "<plugin name=\"Line Fit\"" << endl;
+  ts << l2 << "<tag>" << QStyleSheet::escape(tagName()) << "</tag>" << endl;
+  for (KstVectorMap::Iterator i = _inputVectors.begin(); i != _inputVectors.end(); ++i) {
+    ts << l2 << "<ivector name=\"" << QStyleSheet::escape(i.key()) << "\">"
+        << QStyleSheet::escape(i.data()->tagName())
+        << "</ivector>" << endl;
+  }
+  for (KstScalarMap::Iterator i = _inputScalars.begin(); i != _inputScalars.end(); ++i) {
+    ts << l2 << "<iscalar name=\"" << QStyleSheet::escape(i.key()) << "\">"
+        << QStyleSheet::escape(i.data()->tagName())
+        << "</iscalar>" << endl;
+  }
+  for (KstStringMap::Iterator i = _inputStrings.begin(); i != _inputStrings.end(); ++i) {
+    ts << l2 << "<istring name=\"" << QStyleSheet::escape(i.key()) << "\">"
+        << QStyleSheet::escape(i.data()->tagName())
+        << "</istring>" << endl;
+  }
+  for (KstVectorMap::Iterator i = _outputVectors.begin(); i != _outputVectors.end(); ++i) {
+    ts << l2 << "<ovector name=\"" << QStyleSheet::escape(i.key());
+    if (i.data()->isScalarList()) {
+      ts << "\" scalarList=\"1";
+    }
+    ts << "\">" << QStyleSheet::escape(i.data()->tagName())
+        << "</ovector>" << endl;
+  }
+  for (KstScalarMap::Iterator i = _outputScalars.begin(); i != _outputScalars.end(); ++i) {
+    ts << l2 << "<oscalar name=\"" << QStyleSheet::escape(i.key()) << "\">"
+        << QStyleSheet::escape(i.data()->tagName())
+        << "</oscalar>" << endl;
+  }
+  for (KstStringMap::Iterator i = _outputStrings.begin(); i != _outputStrings.end(); ++i) {
+    ts << l2 << "<ostring name=\"" << QStyleSheet::escape(i.key()) << "\">"
+        << QStyleSheet::escape(i.data()->tagName())
+        << "</ostring>" << endl;
+  }
+  ts << indent << "</plugin>" << endl;
 }
 
 #include "linefitplugin.moc"
