@@ -45,13 +45,13 @@ public:
   KstScalarPtr b() const;
   KstScalarPtr chi2() const;
 
-//   void setXArray(KstVectorPtr new_xArray);
-//   void setYArray(KstVectorPtr new_yArray);
-//   void setXInterpolated(KstVectorPtr new_xInterpolated);
-//   void setYInterpolated(KstVectorPtr new_yInterpolated);
-//   void setA(KstScalarPtr new_a);
-//   void setB(KstScalarPtr new_b);
-//   void setChi2(KstScalarPtr new_chi2);
+  void setXArray(KstVectorPtr new_xArray);
+  void setYArray(KstVectorPtr new_yArray);
+  void setXInterpolated(KstVectorPtr new_xInterpolated);
+  void setYInterpolated(KstVectorPtr new_yInterpolated);
+  void setA(KstScalarPtr new_a);
+  void setB(KstScalarPtr new_b);
+  void setChi2(KstScalarPtr new_chi2);
 
   //Pure virtual methods from KstDataObject
   virtual KstObject::UpdateType update(int updateCounter = -1);

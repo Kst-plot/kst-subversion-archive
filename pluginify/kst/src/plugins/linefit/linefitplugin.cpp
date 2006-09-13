@@ -278,6 +278,30 @@ KstScalarPtr LineFit::chi2() const {
   return *_outputScalars.find(CHI2);
 }
 
+void LineFit::setXArray(KstVectorPtr new_xArray) {
+  if (new_xArray) {
+    _inputVectors[X_ARRAY] = new_xArray;
+  } else {
+    _inputVectors.remove(X_ARRAY);
+  }
+  setDirty();
+}
+
+void LineFit::setYArray(KstVectorPtr new_yArray) {
+  if (new_yArray) {
+    _inputVectors[Y_ARRAY] = new_yArray;
+  } else {
+    _inputVectors.remove(Y_ARRAY);
+  }
+  setDirty();
+}
+
+// void setXInterpolated(KstVectorPtr new_xInterpolated);
+// void setYInterpolated(KstVectorPtr new_yInterpolated);
+// void setA(KstScalarPtr new_a);
+// void setB(KstScalarPtr new_b);
+// void setChi2(KstScalarPtr new_chi2);
+
 QString LineFit::propertyString() const {
   return "linefit";
 }

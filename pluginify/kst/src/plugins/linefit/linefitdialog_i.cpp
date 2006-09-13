@@ -105,26 +105,24 @@ bool LineFitDialogI::editObject()
   lf->inputScalars().clear();
   lf->inputStrings().clear();
 
+  lf->unlock();
+
   // Save the vectors and scalars
   if (!saveInputs(lf)) {
     KMessageBox::sorry(this, i18n("There is an error in the input you entered."));
-    lf->unlock();
     return false;
   }
 
   if (!saveOutputs(lf)) {
     KMessageBox::sorry(this, i18n("There is an error in the output you entered."));
-    lf->unlock();
     return false;
   }
 
   if (!lf->isValid()) {
     KMessageBox::sorry(this, i18n("There is an error in the values you entered."));
-    lf->unlock();
     return false;
   }
   lf->setDirty();
-  lf->unlock();
 
   emit modified();
   return true;
@@ -132,16 +130,31 @@ bool LineFitDialogI::editObject()
 
 bool LineFitDialogI::saveInputs(LineFitPtr lf)
 {
-  Q_UNUSED(lf);
-  //implement me
-  return false;
+  KST::vectorList.lock().readLock();
+
+  { // leave this scope here to destroy the iterator
+    KstVectorList::Iterator it;
+    it = KST::vectorList.findTag(_w->_xArray->selectedVector());
+    if (it != KST::vectorList.end()) {
+      lf->setXArray(*it);
+    }
+
+    it = KST::vectorList.findTag(_w->_yArray->selectedVector());
+    if (it != KST::vectorList.end()) {
+      lf->setYArray(*it);
+    }
+  }
+
+  KST::vectorList.lock().unlock();
+
+  return true;
 }
 
 bool LineFitDialogI::saveOutputs(LineFitPtr lf)
 {
   Q_UNUSED(lf);
   //implement me
-  return false;
+  return true;
 }
 
 void LineFitDialogI::fillFieldsForEdit() {
