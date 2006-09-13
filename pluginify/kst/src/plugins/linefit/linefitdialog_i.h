@@ -32,14 +32,25 @@ class KST_EXPORT LineFitDialogI : public KstDataDialog {
     virtual ~LineFitDialogI();
 
   public slots:
-//     void updateForm();
-//     void update();
-//     bool newObject();
-//     bool editObject();
+//     virtual void ok();
+//     virtual void close();
+//     virtual void reject();
+//     virtual void init();
+//     virtual void show();
+    virtual void update();
+//     virtual void showEdit( const QString & field );
+    virtual bool newObject();
+    virtual bool editObject();
+//     virtual bool multiple();
+//     virtual void toggleEditMultiple();
+
+  protected:
+    virtual void fillFieldsForEdit();
+    virtual void fillFieldsForNew();
 
   private:
-    void fillFieldsForEdit();
-    void fillFieldsForNew();
+    bool saveInputs(LineFitPtr lf);
+    bool saveOutputs(LineFitPtr lf);
     static const QString& defaultTag;
     static QGuardedPtr<LineFitDialogI> _inst;
     LineFitDialogWidget *_w;

@@ -59,6 +59,91 @@ LineFitDialogI::LineFitDialogI(QWidget* parent, const char* name, bool modal, WF
 LineFitDialogI::~LineFitDialogI() {
 }
 
+#include <kdebug.h>
+void LineFitDialogI::update()
+{
+  //called upon showing the dialog either in 'edit' mode or 'new' mode
+}
+
+bool LineFitDialogI::newObject()
+{
+  //called upon clicking 'ok' in 'new' mode
+  //return false if the specified objects can't be made, otherwise true
+  return false;
+}
+
+bool LineFitDialogI::editObject()
+{
+  //called upon clicking 'ok' in 'edit' mode
+  //return false if the specified objects can't be editted, otherwise true
+
+  LineFitPtr lf = kst_cast<LineFit>(_dp);
+  if (!lf) {
+    return false;
+  }
+
+  lf->writeLock();
+  if (_tagName->text() != lf->tagName() && KstData::self()->dataTagNameNotUnique(_tagName->text())) {
+    _tagName->setFocus();
+    lf->unlock();
+    return false;
+  }
+
+  lf->setTagName(_tagName->text());
+
+  // Must unlock before clear()
+  for (KstVectorMap::Iterator i = lf->inputVectors().begin(); i != lf->inputVectors().end(); ++i) {
+    (*i)->unlock();
+  }
+  for (KstScalarMap::Iterator i = lf->inputScalars().begin(); i != lf->inputScalars().end(); ++i) {
+    (*i)->unlock();
+  }
+  for (KstStringMap::Iterator i = lf->inputStrings().begin(); i != lf->inputStrings().end(); ++i) {
+    (*i)->unlock();
+  }
+  lf->inputVectors().clear();
+  lf->inputScalars().clear();
+  lf->inputStrings().clear();
+
+  // Save the vectors and scalars
+  if (!saveInputs(lf)) {
+    KMessageBox::sorry(this, i18n("There is an error in the input you entered."));
+    lf->unlock();
+    return false;
+  }
+
+  if (!saveOutputs(lf)) {
+    KMessageBox::sorry(this, i18n("There is an error in the output you entered."));
+    lf->unlock();
+    return false;
+  }
+
+  if (!lf->isValid()) {
+    KMessageBox::sorry(this, i18n("There is an error in the values you entered."));
+    lf->unlock();
+    return false;
+  }
+  lf->setDirty();
+  lf->unlock();
+
+  emit modified();
+  return true;
+}
+
+bool LineFitDialogI::saveInputs(LineFitPtr lf)
+{
+  Q_UNUSED(lf);
+  //implement me
+  return false;
+}
+
+bool LineFitDialogI::saveOutputs(LineFitPtr lf)
+{
+  Q_UNUSED(lf);
+  //implement me
+  return false;
+}
+
 void LineFitDialogI::fillFieldsForEdit() {
   LineFitPtr lf = kst_cast<LineFit>(_dp);
   if (!lf) {
