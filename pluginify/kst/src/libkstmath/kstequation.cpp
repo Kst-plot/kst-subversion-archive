@@ -467,7 +467,12 @@ QString KstEquation::propertyString() const {
 }
 
 
-void KstEquation::_showDialog() {
+void KstEquation::showNewDialog() {
+  KstDialogs::self()->showEquationDialog();
+}
+
+
+void KstEquation::showEditDialog() {
   KstDialogs::self()->showEquationDialog(tagName());
 }
 

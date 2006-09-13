@@ -598,7 +598,12 @@ KstSharedPtr<Plugin> KstPlugin::plugin() const {
 }
 
 
-void KstPlugin::_showDialog() {
+void KstPlugin::showNewDialog() {
+  KstDialogs::self()->showPluginDialog();
+}
+
+
+void KstPlugin::showEditDialog() {
   KstDialogs::self()->showPluginDialog(tagName());
 }
 

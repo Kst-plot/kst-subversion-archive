@@ -44,7 +44,8 @@ class JSDataObject : public KstDataObject {
     void setProperty(const QString& property);
 
   protected:
-    void _showDialog();
+    void showNewDialog();
+    void showEditDialog();
     QString _propertyString;
     QString _script;
 };

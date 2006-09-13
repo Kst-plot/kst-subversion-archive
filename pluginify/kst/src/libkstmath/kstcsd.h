@@ -45,7 +45,8 @@ class KST_EXPORT KstCSD : public KstDataObject {
 
     virtual bool slaveVectorsUsed() const;
 
-    virtual void _showDialog();
+    virtual void showNewDialog();
+    virtual void showEditDialog();
 
     bool apodize() const;
     void setApodize(bool in_apodize);

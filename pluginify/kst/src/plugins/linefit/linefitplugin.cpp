@@ -286,7 +286,12 @@ KstDataObjectPtr LineFit::makeDuplicate(KstDataObjectDataObjectMap&) {
   return 0;
 }
 
-void LineFit::_showDialog() {
+void LineFit::showNewDialog() {
+  LineFitDialogI *dialog = new LineFitDialogI;
+  dialog->show();
+}
+
+void LineFit::showEditDialog() {
   LineFitDialogI *dialog = new LineFitDialogI;
   dialog->showEdit(tagName());
 }

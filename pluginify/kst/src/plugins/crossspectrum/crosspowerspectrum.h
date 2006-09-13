@@ -31,7 +31,8 @@ public:
     virtual KstDataObjectPtr makeDuplicate(KstDataObjectDataObjectMap&);
 
 protected slots:
-  virtual void _showDialog();
+  virtual void showNewDialog();
+  virtual void showEditDialog();
 };
 
 #endif

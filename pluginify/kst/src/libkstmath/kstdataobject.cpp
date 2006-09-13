@@ -271,8 +271,11 @@ int KstDataObject::getUsage() const {
 }
 
 
-void KstDataObject::showDialog() {
-  QTimer::singleShot(0, this, SLOT(_showDialog()));
+void KstDataObject::showDialog( bool edit ) {
+  if (!edit)
+    QTimer::singleShot(0, this, SLOT(showNewDialog()));
+  else
+    QTimer::singleShot(0, this, SLOT(showEditDialog()));
 }
 
 

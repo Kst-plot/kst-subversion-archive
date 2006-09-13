@@ -367,7 +367,12 @@ QString EventMonitorEntry::propertyString() const {
 }
 
 
-void EventMonitorEntry::_showDialog() {
+void EventMonitorEntry::showNewDialog() {
+  KstEventMonitorI::globalInstance()->show();
+}
+
+
+void EventMonitorEntry::showEditDialog() {
   KstEventMonitorI::globalInstance()->showEdit(tagName());
 }
 

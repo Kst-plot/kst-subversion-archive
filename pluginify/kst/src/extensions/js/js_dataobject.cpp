@@ -84,7 +84,12 @@ QString JSDataObject::propertyString() const {
 }
 
 
-void JSDataObject::_showDialog() {
+void JSDataObject::showNewDialog() {
+  // FIXME
+}
+
+
+void JSDataObject::showEditDialog() {
   // FIXME
 }
 

@@ -47,11 +47,12 @@ class KST_EXPORT KstImage: public KstBaseCurve {
     KstImage(const QDomElement& e);
     virtual ~KstImage();
 
-    virtual void _showDialog();
+    virtual void showNewDialog();
+    virtual void showEditDialog();
     virtual void save(QTextStream &ts, const QString& indent = QString::null);
     virtual UpdateType update(int update_counter = -1);
     virtual QString propertyString() const;
-    
+
     virtual KstCurveType curveType() const;
 
     virtual bool getNearestZ(double x, double y, double& z);

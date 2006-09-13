@@ -79,7 +79,7 @@ class KST_EXPORT KstDataObject : public KstObject {
     virtual void load(const QDomElement &e);
     virtual void save(QTextStream& ts, const QString& indent = QString::null);
 
-    void showDialog();
+    void showDialog( bool edit = false );
 
     virtual bool loadInputs();
 
@@ -106,7 +106,8 @@ class KST_EXPORT KstDataObject : public KstObject {
     virtual bool uses(KstObjectPtr p) const;
 
   protected slots:
-    virtual void _showDialog() = 0;
+    virtual void showNewDialog() = 0;
+    virtual void showEditDialog() = 0;
 
   protected:
     

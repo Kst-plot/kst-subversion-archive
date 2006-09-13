@@ -42,9 +42,13 @@ public:
     }
 
 protected slots:
-    virtual void _showDialog()
+    virtual void showNewDialog()
     {
         KMessageBox::information( 0, "insert testplugin config widget here :)", "testpluginconfig" );
+    }
+    virtual void showEditDialog()
+    {
+      KMessageBox::information( 0, "insert testplugin config widget here :)", "testpluginconfig" );
     }
 };
 

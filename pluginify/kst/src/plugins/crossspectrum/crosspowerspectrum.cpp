@@ -45,7 +45,12 @@ KstDataObjectPtr CrossPowerSpectrum::makeDuplicate(KstDataObjectDataObjectMap&)
   return 0;
 }
 
-void CrossPowerSpectrum::_showDialog()
+void CrossPowerSpectrum::showNewDialog()
+{
+  KMessageBox::information( 0, "insert testplugin config widget here :)", "testpluginconfig" );
+}
+
+void CrossPowerSpectrum::showEditDialog()
 {
   KMessageBox::information( 0, "insert testplugin config widget here :)", "testpluginconfig" );
 }

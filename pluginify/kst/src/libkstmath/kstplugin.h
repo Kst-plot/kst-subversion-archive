@@ -58,7 +58,8 @@ class KST_EXPORT KstPlugin : public KstDataObject {
 
   protected:
     static void countScalarsAndVectors(const QValueList<Plugin::Data::IOValue>& table, unsigned& scalars, unsigned& vectors);
-    virtual void _showDialog();
+    virtual void showNewDialog();
+    virtual void showEditDialog();
     KstSharedPtr<Plugin> _plugin;
     unsigned _inScalarCnt, _inArrayCnt, _inStringCnt, _outScalarCnt;
     unsigned _inPid, _outArrayCnt, _outStringCnt;

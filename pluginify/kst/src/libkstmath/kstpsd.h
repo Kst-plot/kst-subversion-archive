@@ -78,7 +78,8 @@ class KST_EXPORT KstPSD : public KstDataObject {
 
     virtual bool slaveVectorsUsed() const;
 
-    virtual void _showDialog();
+    virtual void showNewDialog();
+    virtual void showEditDialog();
 
     virtual QString xVTag() const { return (*_fVector)->tagName(); }
     virtual QString yVTag() const { return (*_sVector)->tagName(); }

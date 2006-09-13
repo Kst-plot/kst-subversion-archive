@@ -795,7 +795,7 @@ void KstDataManagerI::edit_I() {
   }
 
   if (qi->rtti() == RTTI_OBJ_OBJECT) {
-    static_cast<KstObjectItem*>(qi)->dataObject()->showDialog();
+    static_cast<KstObjectItem*>(qi)->dataObject()->showDialog(true);
   }
   
   if (qi->rtti() == RTTI_OBJ_DATA_MATRIX) {

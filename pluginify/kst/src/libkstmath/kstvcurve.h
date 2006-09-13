@@ -89,7 +89,8 @@ class KST_EXPORT KstVCurve: public KstBaseCurve {
 
     virtual int samplesPerFrame() const;
 
-    virtual void _showDialog();
+    virtual void showNewDialog();
+    virtual void showEditDialog();
 
     KstVectorPtr xVector() const;
     KstVectorPtr yVector() const;

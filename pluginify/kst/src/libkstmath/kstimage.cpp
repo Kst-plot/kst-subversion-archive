@@ -287,7 +287,12 @@ void KstImage::setPalette(KPalette* pal) {
 }
 
 
-void KstImage::_showDialog() {
+void KstImage::showNewDialog() {
+  KstDialogs::self()->showImageDialog();
+}
+
+
+void KstImage::showEditDialog() {
   KstDialogs::self()->showImageDialog(tagName());
 }
 
