@@ -23,16 +23,36 @@ class CrossPowerSpectrum : public KstDataObject {
   Q_OBJECT
 public:
 
-    CrossPowerSpectrum(QObject *parent, const char *name, const QStringList &args);
-    virtual ~CrossPowerSpectrum();
+  CrossPowerSpectrum(QObject *parent, const char *name, const QStringList &args);
+  virtual ~CrossPowerSpectrum();
 
-    virtual KstObject::UpdateType update(int);
-    virtual QString propertyString() const;
-    virtual KstDataObjectPtr makeDuplicate(KstDataObjectDataObjectMap&);
+  //algorithm
+  void crossspectrum();
 
-protected slots:
+  KstVectorPtr v1() const;
+  KstVectorPtr v2() const;
+  KstScalarPtr fft() const;
+  KstScalarPtr sample() const;
+  KstVectorPtr real() const;
+  KstVectorPtr imaginary() const;
+  KstVectorPtr frequency() const;
+
+  //Pure virtual methods from KstDataObject
+  virtual KstObject::UpdateType update(int updateCounter = -1);
+  virtual QString propertyString() const;
+  virtual KstDataObjectPtr makeDuplicate(KstDataObjectDataObjectMap&);
+
+  //Regular virtual methods from KstDataObject
+  virtual void load(const QDomElement &e);
+  virtual void save(QTextStream& ts, const QString& indent = QString::null);
+
+  protected slots:
+  //Pure virtual slots from KstDataObject
   virtual void showNewDialog();
   virtual void showEditDialog();
 };
+
+typedef KstSharedPtr<CrossPowerSpectrum> CrossPowerSpectrumPtr;
+typedef KstObjectList<CrossPowerSpectrumPtr> CrossPowerSpectrumList;
 
 #endif
