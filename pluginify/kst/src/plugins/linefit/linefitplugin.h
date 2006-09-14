@@ -75,7 +75,7 @@ public:
 //   virtual void writeLock() const;
 //   virtual void unlock() const;
 //
-  virtual bool isValid() const;
+//   virtual bool isValid() const;
 //
 //   virtual const KstCurveHintList* curveHints() const;
 //

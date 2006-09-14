@@ -46,10 +46,6 @@ LineFit::LineFit( QObject */*parent*/, const char */*name*/, const QStringList &
 LineFit::~LineFit() {
 }
 
-bool LineFit::isValid() const {
-  return true; //FIXME this is very clearly wrong
-}
-
 KstObject::UpdateType LineFit::update(int updateCounter) {
   bool force = dirty();
   setDirty(false);
