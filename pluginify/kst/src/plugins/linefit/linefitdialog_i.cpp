@@ -61,9 +61,6 @@ LineFitDialogI::LineFitDialogI(QWidget* parent, const char* name, bool modal, WF
   connect(_w->_xArray, SIGNAL(newVectorCreated(const QString&)), this, SIGNAL(modified()));
   connect(_w->_xArray, SIGNAL(newVectorCreated(const QString&)), this, SIGNAL(modified()));
 
-  _w->_xArray->provideNoneVector(true);
-  _w->_xArray->provideNoneVector(true);
-
   connect(this, SIGNAL(modified()), KstApp::inst()->document(), SLOT(wasModified())); //FIXME this should be in KstDataDialog constructor...
 }
 
@@ -102,7 +99,7 @@ bool LineFitDialogI::newObject()
   lf->unlock();
 
   // Save the vectors and scalars
-  if (!editSingleObject(lf) /*|| !lf->isValid()*/) {
+  if (!editSingleObject(lf) || !lf->isValid()) {
     KMessageBox::sorry(this, i18n("There is an error in the values you entered."));
     return false;
   }
@@ -113,7 +110,7 @@ bool LineFitDialogI::newObject()
   lf->setB(_w->_b->text());
   lf->setChi2(_w->_chi2->text());
 
-  if (!lf /*|| !lf->isValid()*/) {
+  if (!lf || !lf->isValid()) {
     KMessageBox::sorry(this, i18n("There is an error in the linefit you entered."));
     return false;
   }

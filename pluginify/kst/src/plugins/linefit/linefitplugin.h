@@ -91,9 +91,6 @@ protected slots:
   //Pure virtual slots from KstDataObject
   virtual void showNewDialog();
   virtual void showEditDialog();
-
-private:
-  bool m_init;
 };
 
 typedef KstSharedPtr<LineFit> LineFitPtr;
