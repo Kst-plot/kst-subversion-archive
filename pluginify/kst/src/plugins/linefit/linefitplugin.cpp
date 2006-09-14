@@ -285,29 +285,29 @@ void LineFit::setYArray(KstVectorPtr new_yArray) {
 
 void LineFit::setXInterpolated(const QString &name) {
   KstVectorPtr v = new KstVector(name, 0, this, false);
-  _outputVectors.insert("X Interpolated", v);
+  _outputVectors.insert(X_INTERPOLATED, v);
   KST::addVectorToList(v);
 }
 
 void LineFit::setYInterpolated(const QString &name) {
   KstVectorPtr v = new KstVector(name, 0, this, false);
-  _outputVectors.insert("Y Interpolated", v);
+  _outputVectors.insert(Y_INTERPOLATED, v);
   KST::addVectorToList(v);
 }
 
 void LineFit::setA(const QString &name) {
   KstScalarPtr sp = new KstScalar(name, this);
-  _outputScalars.insert("a", sp);
+  _outputScalars.insert(A, sp);
 }
 
 void LineFit::setB(const QString &name) {
   KstScalarPtr sp = new KstScalar(name, this);
-  _outputScalars.insert("b", sp);
+  _outputScalars.insert(B, sp);
 }
 
 void LineFit::setChi2(const QString &name) {
   KstScalarPtr sp = new KstScalar(name, this);
-  _outputScalars.insert("chi^2", sp);
+  _outputScalars.insert(CHI2, sp);
 }
 
 QString LineFit::propertyString() const {

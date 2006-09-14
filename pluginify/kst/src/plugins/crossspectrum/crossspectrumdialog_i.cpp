@@ -173,6 +173,7 @@ bool CrossSpectrumDialogI::editObject()
   return true;
 }
 
+#include <kdebug.h>
 bool CrossSpectrumDialogI::editSingleObject(CrossPowerSpectrumPtr cps)
 {
   KST::vectorList.lock().readLock();
@@ -194,11 +195,33 @@ bool CrossSpectrumDialogI::editSingleObject(CrossPowerSpectrumPtr cps)
     it2 = KST::scalarList.findTag(_w->_fft->selectedScalar());
     if (it2 != KST::scalarList.end()) {
       cps->setFFT(*it2);
+    } else {
+      kdDebug() << "fft new" << endl;
+      //Deal with direct entry
+      bool ok;
+      double val = _w->_fft->_scalar->currentText().toDouble(&ok);
+      if (ok) {
+        cps->setFFT(new KstScalar(_w->_fft->_scalar->currentText(),
+                                  0L, val, true, false, false));
+      } else {
+        //deal with error...
+      }
     }
 
-    it = KST::vectorList.findTag(_w->_sample->selectedScalar());
-    if (it != KST::vectorList.end()) {
+    it2 = KST::scalarList.findTag(_w->_sample->selectedScalar());
+    if (it2 != KST::scalarList.end()) {
       cps->setSample(*it2);
+    } else {
+      kdDebug() << "sample new" << endl;
+      //Deal with direct entry
+      bool ok;
+      double val = _w->_sample->_scalar->currentText().toDouble(&ok);
+      if (ok) {
+        cps->setSample(new KstScalar(_w->_sample->_scalar->currentText(),
+                                  0L, val, true, false, false));
+      } else {
+        //deal with error...
+      }
     }
   }
 

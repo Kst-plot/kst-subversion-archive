@@ -173,19 +173,19 @@ void CrossPowerSpectrum::setSample(KstScalarPtr new_sample) {
 
 void CrossPowerSpectrum::setReal(const QString &name) {
   KstVectorPtr v = new KstVector(name, 0, this, false);
-  _outputVectors.insert("Cross Spectrum: Real", v);
+  _outputVectors.insert(REAL, v);
   KST::addVectorToList(v);
 }
 
 void CrossPowerSpectrum::setImaginary(const QString &name) {
   KstVectorPtr v = new KstVector(name, 0, this, false);
-  _outputVectors.insert("Cross Spectrum: Imaginary", v);
+  _outputVectors.insert(IMAGINARY, v);
   KST::addVectorToList(v);
 }
 
 void CrossPowerSpectrum::setFrequency(const QString &name) {
   KstVectorPtr v = new KstVector(name, 0, this, false);
-  _outputVectors.insert("Frequency", v);
+  _outputVectors.insert(FREQUENCY, v);
   KST::addVectorToList(v);
 }
 
@@ -198,7 +198,7 @@ KstObject::UpdateType CrossPowerSpectrum::update(int updateCounter)
     return lastUpdateResult();
   }
 
-  if (v1() || !v2() || !fft() || !sample()) {
+  if (!v1() || !v2() || !fft() || !sample()) {
     return setLastUpdateResult(NO_CHANGE);
   }
 
