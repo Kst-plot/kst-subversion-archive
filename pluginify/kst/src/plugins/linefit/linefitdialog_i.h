@@ -49,8 +49,7 @@ class KST_EXPORT LineFitDialogI : public KstDataDialog {
     virtual void fillFieldsForNew();
 
   private:
-    bool saveInputs(LineFitPtr lf);
-    bool saveOutputs(LineFitPtr lf);
+    bool editSingleObject(LineFitPtr lf);
     static const QString& defaultTag;
     static QGuardedPtr<LineFitDialogI> _inst;
     LineFitDialogWidget *_w;

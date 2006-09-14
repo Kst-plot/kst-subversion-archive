@@ -162,6 +162,7 @@ KstApp::KstApp(QWidget *parent, const char *name)
   _quickStartDialog = new KstQuickStartDialogI(this, 0 , true);
 #endif
 
+  //FIXME these should be in KstDataDialog constructor...
   connect(KstVectorDialogI::globalInstance(), SIGNAL(modified()), doc, SLOT(wasModified()));
   connect(KstCurveDialogI::globalInstance(), SIGNAL(modified()), doc, SLOT(wasModified()));
   connect(KstCsdDialogI::globalInstance(), SIGNAL(modified()), doc, SLOT(wasModified()));

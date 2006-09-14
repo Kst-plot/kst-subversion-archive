@@ -48,7 +48,7 @@ LineFit::~LineFit() {
 }
 
 bool LineFit::isValid() const {
-  return m_init;
+  return m_init; //FIXME this is very clearly wrong
 }
 
 KstObject::UpdateType LineFit::update(int updateCounter) {
@@ -296,11 +296,37 @@ void LineFit::setYArray(KstVectorPtr new_yArray) {
   setDirty();
 }
 
-// void setXInterpolated(KstVectorPtr new_xInterpolated);
-// void setYInterpolated(KstVectorPtr new_yInterpolated);
-// void setA(KstScalarPtr new_a);
-// void setB(KstScalarPtr new_b);
-// void setChi2(KstScalarPtr new_chi2);
+void LineFit::setXInterpolated(const QString &name)
+{
+  KstVectorPtr v = new KstVector(name, 0, this, false);
+  _outputVectors.insert("X Interpolated", v);
+  KST::addVectorToList(v);
+}
+
+void LineFit::setYInterpolated(const QString &name)
+{
+  KstVectorPtr v = new KstVector(name, 0, this, false);
+  _outputVectors.insert("Y Interpolated", v);
+  KST::addVectorToList(v);
+}
+
+void LineFit::setA(const QString &name)
+{
+  KstScalarPtr sp = new KstScalar(name, this);
+  _outputScalars.insert("a", sp);
+}
+
+void LineFit::setB(const QString &name)
+{
+  KstScalarPtr sp = new KstScalar(name, this);
+  _outputScalars.insert("b", sp);
+}
+
+void LineFit::setChi2(const QString &name)
+{
+  KstScalarPtr sp = new KstScalar(name, this);
+  _outputScalars.insert("chi^2", sp);
+}
 
 QString LineFit::propertyString() const {
   return "linefit";
@@ -357,7 +383,7 @@ void LineFit::load(const QDomElement &e) {
 
 void LineFit::save(QTextStream& ts, const QString& indent) {
   QString l2 = indent + "  ";
-  ts << indent << "<plugin name=\"Line Fit\"" << endl;
+  ts << indent << "<plugin name=\"Line Fit\">" << endl;
   ts << l2 << "<tag>" << QStyleSheet::escape(tagName()) << "</tag>" << endl;
   for (KstVectorMap::Iterator i = _inputVectors.begin(); i != _inputVectors.end(); ++i) {
     ts << l2 << "<ivector name=\"" << QStyleSheet::escape(i.key()) << "\">"

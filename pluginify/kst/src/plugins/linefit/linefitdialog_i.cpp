@@ -42,9 +42,12 @@
 
 // application specific includes
 #include <kst.h>
+#include <kstdoc.h>
 #include <scalarselector.h>
 #include <stringselector.h>
 #include <vectorselector.h>
+#include <kstdefaultnames.h>
+#include <kstdataobjectcollection.h>
 
 const QString& LineFitDialogI::defaultTag = KGlobal::staticQString("<Auto Name>");
 
@@ -54,6 +57,14 @@ LineFitDialogI::LineFitDialogI(QWidget* parent, const char* name, bool modal, WF
 : KstDataDialog(parent, name, modal, fl) {
   _w = new LineFitDialogWidget(_contents);
   setMultiple(false);
+
+  connect(_w->_xArray, SIGNAL(newVectorCreated(const QString&)), this, SIGNAL(modified()));
+  connect(_w->_xArray, SIGNAL(newVectorCreated(const QString&)), this, SIGNAL(modified()));
+
+  _w->_xArray->provideNoneVector(true);
+  _w->_xArray->provideNoneVector(true);
+
+  connect(this, SIGNAL(modified()), KstApp::inst()->document(), SLOT(wasModified())); //FIXME this should be in KstDataDialog constructor...
 }
 
 LineFitDialogI::~LineFitDialogI() {
@@ -69,7 +80,52 @@ bool LineFitDialogI::newObject()
 {
   //called upon clicking 'ok' in 'new' mode
   //return false if the specified objects can't be made, otherwise true
-  return false;
+
+  //Need to create a new object rather than use the one in KstDataObject pluginList
+  LineFitPtr lf = kst_cast<LineFit>(KstDataObject::createPlugin("Line Fit"));
+  Q_ASSERT(lf); //should never happen...
+
+  lf->writeLock();
+
+  QString tagName = _tagName->text();
+
+  if (tagName != defaultTag && KstData::self()->dataTagNameNotUnique(tagName, true, this)) {
+    _tagName->setFocus();
+    return false;
+  }
+
+  if (tagName == defaultTag) {
+    tagName = KST::suggestPluginName("linefit");
+  }
+  lf->setTagName(tagName);
+
+  lf->unlock();
+
+  // Save the vectors and scalars
+  if (!editSingleObject(lf) /*|| !lf->isValid()*/) {
+    KMessageBox::sorry(this, i18n("There is an error in the values you entered."));
+    return false;
+  }
+
+  lf->setXInterpolated(_w->_xInterpolated->text());
+  lf->setYInterpolated(_w->_yInterpolated->text());
+  lf->setA(_w->_a->text());
+  lf->setB(_w->_b->text());
+  lf->setChi2(_w->_chi2->text());
+
+  if (!lf /*|| !lf->isValid()*/) {
+    KMessageBox::sorry(this, i18n("There is an error in the linefit you entered."));
+    return false;
+  }
+
+  lf->setDirty();
+  KST::dataObjectList.lock().writeLock();
+  KST::dataObjectList.append(lf.data());
+  KST::dataObjectList.lock().unlock();
+  lf = 0L; // drop the reference
+  emit modified();
+
+  return true;
 }
 
 bool LineFitDialogI::editObject()
@@ -108,27 +164,18 @@ bool LineFitDialogI::editObject()
   lf->unlock();
 
   // Save the vectors and scalars
-  if (!saveInputs(lf)) {
-    KMessageBox::sorry(this, i18n("There is an error in the input you entered."));
-    return false;
-  }
-
-  if (!saveOutputs(lf)) {
-    KMessageBox::sorry(this, i18n("There is an error in the output you entered."));
-    return false;
-  }
-
-  if (!lf->isValid()) {
+  if (!editSingleObject(lf) || !lf->isValid()) {
     KMessageBox::sorry(this, i18n("There is an error in the values you entered."));
     return false;
   }
+
   lf->setDirty();
 
   emit modified();
   return true;
 }
 
-bool LineFitDialogI::saveInputs(LineFitPtr lf)
+bool LineFitDialogI::editSingleObject(LineFitPtr lf)
 {
   KST::vectorList.lock().readLock();
 
@@ -150,13 +197,6 @@ bool LineFitDialogI::saveInputs(LineFitPtr lf)
   return true;
 }
 
-bool LineFitDialogI::saveOutputs(LineFitPtr lf)
-{
-  Q_UNUSED(lf);
-  //implement me
-  return true;
-}
-
 void LineFitDialogI::fillFieldsForEdit() {
   LineFitPtr lf = kst_cast<LineFit>(_dp);
   if (!lf) {
@@ -172,11 +212,19 @@ void LineFitDialogI::fillFieldsForEdit() {
   _w->_yArray->setSelection( lf->yArrayTag() );
 
   _w->_xInterpolated->setText( lf->xInterpolatedTag() );
+  _w->_xInterpolated->setEnabled( false );
+
   _w->_yInterpolated->setText( lf->yInterpolatedTag() );
+  _w->_yInterpolated->setEnabled( false );
 
   _w->_a->setText( lf->aTag() );
+  _w->_a->setEnabled( false );
+
   _w->_b->setText( lf->bTag() );
+  _w->_b->setEnabled( false );
+
   _w->_chi2->setText( lf->chi2Tag() );
+  _w->_chi2->setEnabled( false );
 
   lf->unlock();
 

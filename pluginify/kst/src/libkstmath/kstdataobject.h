@@ -45,7 +45,7 @@ class KST_EXPORT KstDataObject : public KstObject {
     /** Returns a list of object plugins found on the system. */
     static QStringList pluginList();
     static KstDataObjectPtr plugin( const QString &name );
-    static KstDataObjectPtr createPlugin( const QString &name, const QDomElement& e );
+    static KstDataObjectPtr createPlugin( const QString &name );
 
     virtual UpdateType update(int updateCounter = -1) = 0;
     virtual const QString& typeString() const { return _typeString; }

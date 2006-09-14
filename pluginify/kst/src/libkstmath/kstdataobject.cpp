@@ -142,7 +142,7 @@ KstDataObjectPtr KstDataObject::plugin( const QString &name )
         return 0;
 }
 
-KstDataObjectPtr KstDataObject::createPlugin( const QString &name, const QDomElement &e )
+KstDataObjectPtr KstDataObject::createPlugin( const QString &name )
 {
   KService::List sl = KServiceType::offers("Kst Data Object");
   for (KService::List::ConstIterator it = sl.begin(); it != sl.end(); ++it) {
@@ -150,8 +150,7 @@ KstDataObjectPtr KstDataObject::createPlugin( const QString &name, const QDomEle
       continue;
     }
     else if ( KstDataObjectPtr object = createPlugin( *it ) ) {
-        object->load( e );
-        return object;
+      return object;
     }
   }
   return 0;

@@ -382,12 +382,16 @@ bool KstDoc::openDocument(const KURL& url, const QString& o_file,
       } else if (e.tagName() == "plugin") {
         const QString name = e.attribute("name");
         KstDataObjectPtr p;
-        if ( name.isEmpty() )
+        if (name.isEmpty()) {
           p = new KstPlugin(e);
-        else
-          p = KstDataObject::createPlugin(name, e);
-        KstWriteLocker dowl(&KST::dataObjectList.lock());
-        KST::dataObjectList.append(p);
+        } else {
+          if (p = KstDataObject::createPlugin(name))
+            p->load(e);
+        }
+        if (p) {
+          KstWriteLocker dowl(&KST::dataObjectList.lock());
+          KST::dataObjectList.append(p);
+        }
       } else if (e.tagName() == "curve") {
         KstDataObjectPtr p = new KstVCurve(e);
         KstWriteLocker dowl(&KST::dataObjectList.lock());
