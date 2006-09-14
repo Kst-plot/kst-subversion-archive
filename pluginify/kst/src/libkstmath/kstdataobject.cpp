@@ -102,8 +102,6 @@ KstDataObjectPtr KstDataObject::createPlugin( KService::Ptr service )
       KParts::ComponentFactory::createInstanceFromService<KstDataObject>( service, 0, "",
       QStringList(), &err );
   if ( object ) {
-    pluginInfo.insert( service->name(), KstDataObjectPtr( object ) );
-
     KstDebug::self()->log(i18n("Loaded data-object plugin %1.").arg(service->name()));
   }
   else {
