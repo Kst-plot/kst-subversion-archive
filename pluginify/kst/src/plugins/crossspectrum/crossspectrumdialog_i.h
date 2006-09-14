@@ -1,7 +1,7 @@
 /***************************************************************************
-                      linefitdialog_i.h  -  Part of KST
+                      crossspectrumdialog_i.h  -  Part of KST
                              -------------------
-    begin                : 09/12/06
+    begin                : 09/14/06
     copyright            : (C) 2006 The University of Toronto
     email                :
  ***************************************************************************/
@@ -15,43 +15,35 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef LINEFITDIALOGI_H
-#define LINEFITDIALOGI_H
+#ifndef CROSSSPECTRUMDIALOGI_H
+#define CROSSSPECTRUMDIALOGI_H
 
-#include "linefitplugin.h"
+#include "crosspowerspectrum.h"
 
 #include "kstdatadialog.h"
 #include "kst_export.h"
 
-class LineFitDialogWidget;
+class CrossSpectrumDialogWidget;
 
-class KST_EXPORT LineFitDialogI : public KstDataDialog {
+class KST_EXPORT CrossSpectrumDialogI : public KstDataDialog {
   Q_OBJECT
   public:
-    LineFitDialogI(QWidget* parent = 0, const char* name = 0, bool modal = false, WFlags fl = 0);
-    virtual ~LineFitDialogI();
+    CrossSpectrumDialogI(QWidget* parent = 0, const char* name = 0, bool modal = false, WFlags fl = 0);
+    virtual ~CrossSpectrumDialogI();
 
   public slots:
-//     virtual void ok();
-//     virtual void close();
-//     virtual void reject();
-//     virtual void init();
-//     virtual void show();
     virtual void update();
-//     virtual void showEdit( const QString & field );
     virtual bool newObject();
     virtual bool editObject();
-//     virtual bool multiple();
-//     virtual void toggleEditMultiple();
 
   protected:
     virtual void fillFieldsForEdit();
     virtual void fillFieldsForNew();
 
   private:
-    bool editSingleObject(LineFitPtr lf);
+    bool editSingleObject(CrossPowerSpectrumPtr cps);
     static const QString& defaultTag;
-    LineFitDialogWidget *_w;
+    CrossSpectrumDialogWidget *_w;
 };
 
 #endif

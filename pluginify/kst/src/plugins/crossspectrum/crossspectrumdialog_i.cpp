@@ -1,7 +1,7 @@
 /***************************************************************************
-                     linefitdialog_i.h  -  Part of KST
+                     crossspectrumdialog_i.h  -  Part of KST
                              -------------------
-    begin                : 09/12/06
+    begin                : 09/14/06
     copyright            : (C) 2006 The University of Toronto
     email                :
  ***************************************************************************/
@@ -17,7 +17,7 @@
 
 #include <assert.h>
 
-#include "linefitdialogwidget.h"
+#include "crossspectrumdialogwidget.h"
 
 // include files for Qt
 #include <qcombobox.h>
@@ -38,7 +38,7 @@
 #include <klocale.h>
 #include <kmessagebox.h>
 
-#include "linefitdialog_i.h"
+#include "crossspectrumdialog_i.h"
 
 // application specific includes
 #include <kst.h>
@@ -49,38 +49,43 @@
 #include <kstdefaultnames.h>
 #include <kstdataobjectcollection.h>
 
-const QString& LineFitDialogI::defaultTag = KGlobal::staticQString("<Auto Name>");
+const QString& CrossSpectrumDialogI::defaultTag = KGlobal::staticQString("<Auto Name>");
 
-LineFitDialogI::LineFitDialogI(QWidget* parent, const char* name, bool modal, WFlags fl)
+CrossSpectrumDialogI::CrossSpectrumDialogI(QWidget* parent, const char* name, bool modal, WFlags fl)
 : KstDataDialog(parent, name, modal, fl) {
-  _w = new LineFitDialogWidget(_contents);
+  _w = new CrossSpectrumDialogWidget(_contents);
   setMultiple(false);
 
-  connect(_w->_xArray, SIGNAL(newVectorCreated(const QString&)), this, SIGNAL(modified()));
-  connect(_w->_xArray, SIGNAL(newVectorCreated(const QString&)), this, SIGNAL(modified()));
+  connect(_w->_v1, SIGNAL(newVectorCreated(const QString&)), this, SIGNAL(modified()));
+  connect(_w->_v2, SIGNAL(newVectorCreated(const QString&)), this, SIGNAL(modified()));
+  connect(_w->_fft, SIGNAL(newScalarCreated()), this, SIGNAL(modified()));
+  connect(_w->_sample, SIGNAL(newScalarCreated()), this, SIGNAL(modified()));
+
+  _w->_fft->allowDirectEntry( true );
+  _w->_sample->allowDirectEntry( true );
 
   connect(this, SIGNAL(modified()), KstApp::inst()->document(), SLOT(wasModified())); //FIXME this should be in KstDataDialog constructor...
 }
 
-LineFitDialogI::~LineFitDialogI() {
+CrossSpectrumDialogI::~CrossSpectrumDialogI() {
 }
 
 #include <kdebug.h>
-void LineFitDialogI::update()
+void CrossSpectrumDialogI::update()
 {
   //called upon showing the dialog either in 'edit' mode or 'new' mode
 }
 
-bool LineFitDialogI::newObject()
+bool CrossSpectrumDialogI::newObject()
 {
   //called upon clicking 'ok' in 'new' mode
   //return false if the specified objects can't be made, otherwise true
 
   //Need to create a new object rather than use the one in KstDataObject pluginList
-  LineFitPtr lf = kst_cast<LineFit>(KstDataObject::createPlugin("Line Fit"));
-  Q_ASSERT(lf); //should never happen...
+  CrossPowerSpectrumPtr cps = kst_cast<CrossPowerSpectrum>(KstDataObject::createPlugin("Cross Power Spectrum"));
+  Q_ASSERT(cps); //should never happen...
 
-  lf->writeLock();
+  cps->writeLock();
 
   QString tagName = _tagName->text();
 
@@ -90,145 +95,153 @@ bool LineFitDialogI::newObject()
   }
 
   if (tagName == defaultTag) {
-    tagName = KST::suggestPluginName("linefit");
+    tagName = KST::suggestPluginName("crosspowerspectrum");
   }
-  lf->setTagName(tagName);
+  cps->setTagName(tagName);
 
-  lf->unlock();
+  cps->unlock();
 
   // Save the vectors and scalars
-  if (!editSingleObject(lf) || !lf->isValid()) {
+  if (!editSingleObject(cps) || !cps->isValid()) {
     KMessageBox::sorry(this, i18n("There is an error in the values you entered."));
     return false;
   }
 
-  lf->setXInterpolated(_w->_xInterpolated->text());
-  lf->setYInterpolated(_w->_yInterpolated->text());
-  lf->setA(_w->_a->text());
-  lf->setB(_w->_b->text());
-  lf->setChi2(_w->_chi2->text());
+  cps->setReal(_w->_real->text());
+  cps->setImaginary(_w->_imaginary->text());
+  cps->setFrequency(_w->_frequency->text());
 
-  if (!lf || !lf->isValid()) {
+  if (!cps || !cps->isValid()) {
     KMessageBox::sorry(this, i18n("There is an error in the linefit you entered."));
     return false;
   }
 
-  lf->setDirty();
+  cps->setDirty();
   KST::dataObjectList.lock().writeLock();
-  KST::dataObjectList.append(lf.data());
+  KST::dataObjectList.append(cps.data());
   KST::dataObjectList.lock().unlock();
-  lf = 0L; // drop the reference
+  cps = 0L; // drop the reference
   emit modified();
 
   return true;
 }
 
-bool LineFitDialogI::editObject()
+bool CrossSpectrumDialogI::editObject()
 {
   //called upon clicking 'ok' in 'edit' mode
   //return false if the specified objects can't be editted, otherwise true
 
-  LineFitPtr lf = kst_cast<LineFit>(_dp);
-  if (!lf) {
+  CrossPowerSpectrumPtr cps = kst_cast<CrossPowerSpectrum>(_dp);
+  if (!cps) {
     return false;
   }
 
-  lf->writeLock();
-  if (_tagName->text() != lf->tagName() && KstData::self()->dataTagNameNotUnique(_tagName->text())) {
+  cps->writeLock();
+  if (_tagName->text() != cps->tagName() && KstData::self()->dataTagNameNotUnique(_tagName->text())) {
     _tagName->setFocus();
-    lf->unlock();
+    cps->unlock();
     return false;
   }
 
-  lf->setTagName(_tagName->text());
+  cps->setTagName(_tagName->text());
 
   // Must unlock before clear()
-  for (KstVectorMap::Iterator i = lf->inputVectors().begin(); i != lf->inputVectors().end(); ++i) {
+  for (KstVectorMap::Iterator i = cps->inputVectors().begin(); i != cps->inputVectors().end(); ++i) {
     (*i)->unlock();
   }
-  for (KstScalarMap::Iterator i = lf->inputScalars().begin(); i != lf->inputScalars().end(); ++i) {
+  for (KstScalarMap::Iterator i = cps->inputScalars().begin(); i != cps->inputScalars().end(); ++i) {
     (*i)->unlock();
   }
-  for (KstStringMap::Iterator i = lf->inputStrings().begin(); i != lf->inputStrings().end(); ++i) {
+  for (KstStringMap::Iterator i = cps->inputStrings().begin(); i != cps->inputStrings().end(); ++i) {
     (*i)->unlock();
   }
-  lf->inputVectors().clear();
-  lf->inputScalars().clear();
-  lf->inputStrings().clear();
+  cps->inputVectors().clear();
+  cps->inputScalars().clear();
+  cps->inputStrings().clear();
 
-  lf->unlock();
+  cps->unlock();
 
   // Save the vectors and scalars
-  if (!editSingleObject(lf) || !lf->isValid()) {
+  if (!editSingleObject(cps) || !cps->isValid()) {
     KMessageBox::sorry(this, i18n("There is an error in the values you entered."));
     return false;
   }
 
-  lf->setDirty();
+  cps->setDirty();
 
   emit modified();
   return true;
 }
 
-bool LineFitDialogI::editSingleObject(LineFitPtr lf)
+bool CrossSpectrumDialogI::editSingleObject(CrossPowerSpectrumPtr cps)
 {
   KST::vectorList.lock().readLock();
+  KST::scalarList.lock().readLock();
 
   { // leave this scope here to destroy the iterator
     KstVectorList::Iterator it;
-    it = KST::vectorList.findTag(_w->_xArray->selectedVector());
+    it = KST::vectorList.findTag(_w->_v1->selectedVector());
     if (it != KST::vectorList.end()) {
-      lf->setXArray(*it);
+      cps->setV1(*it);
     }
 
-    it = KST::vectorList.findTag(_w->_yArray->selectedVector());
+    it = KST::vectorList.findTag(_w->_v2->selectedVector());
     if (it != KST::vectorList.end()) {
-      lf->setYArray(*it);
+      cps->setV2(*it);
+    }
+
+    KstScalarList::Iterator it2;
+    it2 = KST::scalarList.findTag(_w->_fft->selectedScalar());
+    if (it2 != KST::scalarList.end()) {
+      cps->setFFT(*it2);
+    }
+
+    it = KST::vectorList.findTag(_w->_sample->selectedScalar());
+    if (it != KST::vectorList.end()) {
+      cps->setSample(*it2);
     }
   }
 
+  KST::scalarList.lock().unlock();
   KST::vectorList.lock().unlock();
 
   return true;
 }
 
-void LineFitDialogI::fillFieldsForEdit() {
-  LineFitPtr lf = kst_cast<LineFit>(_dp);
-  if (!lf) {
+void CrossSpectrumDialogI::fillFieldsForEdit() {
+  CrossPowerSpectrumPtr cps = kst_cast<CrossPowerSpectrum>(_dp);
+  if (!cps) {
     return;
   }
 
-  lf->readLock();
+  cps->readLock();
 
-  _tagName->setText(lf->tagName());
+  _tagName->setText(cps->tagName());
   _legendText->setText(defaultTag); //FIXME?
 
-  _w->_xArray->setSelection( lf->xArrayTag() );
-  _w->_yArray->setSelection( lf->yArrayTag() );
+  _w->_v1->setSelection( cps->v1Tag() );
+  _w->_v2->setSelection( cps->v2Tag() );
 
-  _w->_xInterpolated->setText( lf->xInterpolatedTag() );
-  _w->_xInterpolated->setEnabled( false );
+  _w->_fft->setSelection( cps->fftTag() );
+  _w->_sample->setSelection( cps->sampleTag() );
 
-  _w->_yInterpolated->setText( lf->yInterpolatedTag() );
-  _w->_yInterpolated->setEnabled( false );
+  _w->_real->setText( cps->realTag() );
+  _w->_real->setEnabled( false );
 
-  _w->_a->setText( lf->aTag() );
-  _w->_a->setEnabled( false );
+  _w->_imaginary->setText( cps->imaginaryTag() );
+  _w->_imaginary->setEnabled( false );
 
-  _w->_b->setText( lf->bTag() );
-  _w->_b->setEnabled( false );
+  _w->_frequency->setText( cps->frequencyTag() );
+  _w->_frequency->setEnabled( false );
 
-  _w->_chi2->setText( lf->chi2Tag() );
-  _w->_chi2->setEnabled( false );
-
-  lf->unlock();
+  cps->unlock();
 
   adjustSize();
   resize(minimumSizeHint());
   setFixedHeight(height());
 }
 
-void LineFitDialogI::fillFieldsForNew() {
+void CrossSpectrumDialogI::fillFieldsForNew() {
   _tagName->setText(defaultTag);
   _legendText->setText(defaultTag);
 
@@ -237,6 +250,6 @@ void LineFitDialogI::fillFieldsForNew() {
   setFixedHeight(height());
 }
 
-#include "linefitdialog_i.moc"
+#include "crossspectrumdialog_i.moc"
 
 // vim: ts=2 sw=2 et

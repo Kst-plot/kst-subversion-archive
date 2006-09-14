@@ -24,6 +24,8 @@
 
 #include <kstdatacollection.h>
 
+#include "crossspectrumdialog_i.h"
+
 #define KSTPSDMAXLEN 27
 
 extern "C" void rdft(int n, int isgn, double *a); //fast fourier transform...
@@ -47,6 +49,62 @@ CrossPowerSpectrum::CrossPowerSpectrum( QObject */*parent*/, const char */*name*
 }
 
 CrossPowerSpectrum::~CrossPowerSpectrum() {
+}
+
+QString CrossPowerSpectrum::v1Tag() const {
+  KstVectorPtr v = v1();
+  if (v) {
+    return v->tagName();
+  }
+  return QString::null;
+}
+
+QString CrossPowerSpectrum::v2Tag() const {
+  KstVectorPtr v = v2();
+  if (v) {
+    return v->tagName();
+  }
+  return QString::null;
+}
+
+QString CrossPowerSpectrum::fftTag() const {
+  KstScalarPtr s = fft();
+  if (s) {
+    return s->tagName();
+  }
+  return QString::null;
+}
+
+QString CrossPowerSpectrum::sampleTag() const {
+  KstScalarPtr s = sample();
+  if (s) {
+    return s->tagName();
+  }
+  return QString::null;
+}
+
+QString CrossPowerSpectrum::realTag() const {
+  KstVectorPtr v = real();
+  if (v) {
+    return v->tagName();
+  }
+  return QString::null;
+}
+
+QString CrossPowerSpectrum::imaginaryTag() const {
+  KstVectorPtr v = imaginary();
+  if (v) {
+    return v->tagName();
+  }
+  return QString::null;
+}
+
+QString CrossPowerSpectrum::frequencyTag() const {
+  KstVectorPtr v = frequency();
+  if (v) {
+    return v->tagName();
+  }
+  return QString::null;
 }
 
 KstVectorPtr CrossPowerSpectrum::v1() const {
@@ -75,6 +133,60 @@ KstVectorPtr CrossPowerSpectrum::imaginary() const {
 
 KstVectorPtr CrossPowerSpectrum::frequency() const {
   return *_outputVectors.find(FREQUENCY);
+}
+
+void CrossPowerSpectrum::setV1(KstVectorPtr new_v1) {
+  if (new_v1) {
+    _inputVectors[VECTOR_ONE] = new_v1;
+  } else {
+    _inputVectors.remove(VECTOR_ONE);
+  }
+  setDirty();
+}
+
+void CrossPowerSpectrum::setV2(KstVectorPtr new_v2) {
+  if (new_v2) {
+    _inputVectors[VECTOR_TWO] = new_v2;
+  } else {
+    _inputVectors.remove(VECTOR_TWO);
+  }
+  setDirty();
+}
+
+void CrossPowerSpectrum::setFFT(KstScalarPtr new_fft) {
+  if (new_fft) {
+    _inputScalars[FFT_LENGTH] = new_fft;
+  } else {
+    _inputScalars.remove(FFT_LENGTH);
+  }
+  setDirty();
+}
+
+void CrossPowerSpectrum::setSample(KstScalarPtr new_sample) {
+  if (new_sample) {
+    _inputScalars[SAMPLE_RATE] = new_sample;
+  } else {
+    _inputScalars.remove(SAMPLE_RATE);
+  }
+  setDirty();
+}
+
+void CrossPowerSpectrum::setReal(const QString &name) {
+  KstVectorPtr v = new KstVector(name, 0, this, false);
+  _outputVectors.insert("Cross Spectrum: Real", v);
+  KST::addVectorToList(v);
+}
+
+void CrossPowerSpectrum::setImaginary(const QString &name) {
+  KstVectorPtr v = new KstVector(name, 0, this, false);
+  _outputVectors.insert("Cross Spectrum: Imaginary", v);
+  KST::addVectorToList(v);
+}
+
+void CrossPowerSpectrum::setFrequency(const QString &name) {
+  KstVectorPtr v = new KstVector(name, 0, this, false);
+  _outputVectors.insert("Frequency", v);
+  KST::addVectorToList(v);
 }
 
 KstObject::UpdateType CrossPowerSpectrum::update(int updateCounter)
@@ -237,11 +349,13 @@ KstDataObjectPtr CrossPowerSpectrum::makeDuplicate(KstDataObjectDataObjectMap&) 
 }
 
 void CrossPowerSpectrum::showNewDialog() {
-  KMessageBox::information( 0, "insert testplugin config widget here :)", "testpluginconfig" );
+  CrossSpectrumDialogI *dialog = new CrossSpectrumDialogI;
+  dialog->show();
 }
 
 void CrossPowerSpectrum::showEditDialog() {
-  KMessageBox::information( 0, "insert testplugin config widget here :)", "testpluginconfig" );
+  CrossSpectrumDialogI *dialog = new CrossSpectrumDialogI;
+  dialog->showEdit(tagName());
 }
 
 void CrossPowerSpectrum::load(const QDomElement &e) {

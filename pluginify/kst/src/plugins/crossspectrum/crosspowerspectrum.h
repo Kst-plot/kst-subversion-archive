@@ -29,6 +29,14 @@ public:
   //algorithm
   void crossspectrum();
 
+  QString v1Tag() const;
+  QString v2Tag() const;
+  QString fftTag() const;
+  QString sampleTag() const;
+  QString realTag() const;
+  QString imaginaryTag() const;
+  QString frequencyTag() const;
+
   KstVectorPtr v1() const;
   KstVectorPtr v2() const;
   KstScalarPtr fft() const;
@@ -36,6 +44,14 @@ public:
   KstVectorPtr real() const;
   KstVectorPtr imaginary() const;
   KstVectorPtr frequency() const;
+
+  void setV1(KstVectorPtr new_v1);
+  void setV2(KstVectorPtr new_v2);
+  void setFFT(KstScalarPtr new_fft);
+  void setSample(KstScalarPtr new_sample);
+  void setReal(const QString &name);
+  void setImaginary(const QString &name);
+  void setFrequency(const QString &name);
 
   //Pure virtual methods from KstDataObject
   virtual KstObject::UpdateType update(int updateCounter = -1);
