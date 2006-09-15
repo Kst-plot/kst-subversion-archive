@@ -212,17 +212,17 @@ KstObject::UpdateType CrossPowerSpectrum::update(int updateCounter)
 
   crossspectrum();
 
-  vectorRealloced(real(), real()->value(), 2);
+  vectorRealloced(real(), real()->value(), real()->length());
   real()->setDirty();
   real()->setNewAndShift(real()->length(), real()->numShift());
   real()->update(updateCounter);
 
-  vectorRealloced(imaginary(), imaginary()->value(), 2);
+  vectorRealloced(imaginary(), imaginary()->value(), imaginary()->length());
   imaginary()->setDirty();
   imaginary()->setNewAndShift(imaginary()->length(), imaginary()->numShift());
   imaginary()->update(updateCounter);
 
-  vectorRealloced(frequency(), frequency()->value(), 2);
+  vectorRealloced(frequency(), frequency()->value(), frequency()->length());
   frequency()->setDirty();
   frequency()->setNewAndShift(frequency()->length(), frequency()->numShift());
   frequency()->update(updateCounter);
@@ -231,7 +231,17 @@ KstObject::UpdateType CrossPowerSpectrum::update(int updateCounter)
 }
 
 void CrossPowerSpectrum::crossspectrum() {
-  double SR = sample()->value(); // sample rate
+  KstVectorPtr v1 = *_inputVectors.find(VECTOR_ONE);
+  KstVectorPtr v2 = *_inputVectors.find(VECTOR_TWO);
+
+  KstScalarPtr fft = *_inputScalars.find(FFT_LENGTH);
+  KstScalarPtr sample = *_inputScalars.find(SAMPLE_RATE);
+
+  KstVectorPtr real = *_outputVectors.find(REAL);
+  KstVectorPtr imaginary = *_outputVectors.find(IMAGINARY);
+  KstVectorPtr frequency = *_outputVectors.find(FREQUENCY);
+
+  double SR = sample->value(); // sample rate
   double df;
   int i,  xps_len;
   double *a,  *b;
@@ -242,32 +252,32 @@ void CrossPowerSpectrum::crossspectrum() {
   double norm_factor;
 
   /* parse fft length */
-  xps_len = int( fft()->value() - 0.99);
+  xps_len = int( fft->value() - 0.99);
   if ( xps_len > KSTPSDMAXLEN ) xps_len = KSTPSDMAXLEN;
   if ( xps_len<2 ) xps_len = 2;
   xps_len = int ( pow( 2,  xps_len ) );
 
   /* input vector lengths */
-  v_len = ( ( v1()->length() < v2()->length() ) ?
-      v1()->length() : v2()->length() );
-  dv0 = v_len/v1()->length();
-  dv1 = v_len/v2()->length();
+  v_len = ( ( v1->length() < v2->length() ) ?
+            v1->length() : v2->length() );
+  dv0 = v_len/v1->length();
+  dv1 = v_len/v2->length();
 
   while ( xps_len > v_len ) xps_len/=2;
 
   // allocate the lengths
-  if ( real()->length() != xps_len ) {
-    real()->resize( xps_len, false );
-    imaginary()->resize( xps_len, false );
-    frequency()->resize( xps_len, false );
+  if ( real->length() != xps_len ) {
+    real->resize( xps_len, false );
+    imaginary->resize( xps_len, false );
+    frequency->resize( xps_len, false );
   }
 
   /* Fill the frequency and zero the xps */
   df = SR/( 2.0*double( xps_len-1 ) );
   for ( i=0; i<xps_len; i++ ) {
-    frequency()->value()[i] = double( i ) * df;
-    real()->value()[i] = 0.0;
-    imaginary()->value()[i] = 0.0;
+    frequency->value()[i] = double( i ) * df;
+    real->value()[i] = 0.0;
+    imaginary->value()[i] = 0.0;
   }
 
   /* allocate input arrays */
@@ -279,7 +289,7 @@ void CrossPowerSpectrum::crossspectrum() {
   n_subsets = v_len/xps_len + 1;
 
   for ( i_subset=0; i_subset<n_subsets; i_subset++ ) {
-    /* copy each chunk into a[] and find mean */
+        /* copy each chunk into a[] and find mean */
     if (i_subset*xps_len + ALen <= v_len) {
       copyLen = ALen;
     } else {
@@ -289,12 +299,12 @@ void CrossPowerSpectrum::crossspectrum() {
     for (i_samp = 0; i_samp < copyLen; i_samp++) {
       i = ( i_samp + i_subset*xps_len )/dv0;
       mean_a += (
-          a[i_samp] = v1()->value()[i]
-                );
+        a[i_samp] = v1->value()[i]
+        );
       i = ( i_samp + i_subset*xps_len )/dv1;
       mean_b += (
-          b[i_samp] = v2()->value()[i]
-                );
+        b[i_samp] = v2->value()[i]
+        );
     }
     if (copyLen>1) {
       mean_a/=(double)copyLen;
@@ -317,21 +327,21 @@ void CrossPowerSpectrum::crossspectrum() {
     rdft(ALen, 1, b);
 
     /* sum each bin into psd[] */
-    real()->value()[0] += ( a[0]*b[0] );
-    real()->value()[xps_len-1] += ( a[1]*b[1] );
+    real->value()[0] += ( a[0]*b[0] );
+    real->value()[xps_len-1] += ( a[1]*b[1] );
     for (i_samp=1; i_samp<xps_len-1; i_samp++) {
-      real()->value()[i_samp]+= ( a[i_samp*2] * b[i_samp*2] -
-          a[i_samp*2+1] * b[i_samp*2+1] );
-      imaginary()->value()[i_samp]+= ( -a[i_samp*2] * b[i_samp*2+1] +
-          a[i_samp*2+1] * b[i_samp*2] );
+      real->value()[i_samp]+= ( a[i_samp*2] * b[i_samp*2] -
+                                   a[i_samp*2+1] * b[i_samp*2+1] );
+      imaginary->value()[i_samp]+= ( -a[i_samp*2] * b[i_samp*2+1] +
+                                   a[i_samp*2+1] * b[i_samp*2] );
     }// (a+ci)(b+di)* = ab+cd +i(-ad + cb)
   }
 
   /* renormalize */
   norm_factor = 1.0/((double(SR)*double(xps_len))*double(n_subsets));
   for ( i=0; i<xps_len; i++ ) {
-    real()->value()[i]*=norm_factor;
-    imaginary()->value()[i]*=norm_factor;
+    real->value()[i]*=norm_factor;
+    imaginary->value()[i]*=norm_factor;
   }
 
   /* free */

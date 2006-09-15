@@ -71,12 +71,12 @@ KstObject::UpdateType LineFit::update(int updateCounter) {
   KstVectorPtr xOut = *_outputVectors.find(X_INTERPOLATED);
   KstVectorPtr yOut = *_outputVectors.find(Y_INTERPOLATED);
 
-  vectorRealloced(xOut, xOut->value(), 2);
+  vectorRealloced(xOut, xOut->value(), xOut->length());
   xOut->setDirty();
   xOut->setNewAndShift(xOut->length(), xOut->numShift());
   xOut->update(updateCounter);
 
-  vectorRealloced(yOut, yOut->value(), 2);
+  vectorRealloced(yOut, yOut->value(), xOut->length());
   yOut->setDirty();
   yOut->setNewAndShift(yOut->length(), yOut->numShift());
   yOut->update(updateCounter);
