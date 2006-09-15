@@ -55,7 +55,7 @@
 #include "ksthistogram.h"
 #include "kstimage.h"
 #include "kstmatrixdefaults.h"
-#include "kstplugin.h"
+#include "kstcplugin.h"
 #include "kstpsd.h"
 #include "kstrvector.h"
 #include "kstvcurve.h"

@@ -23,7 +23,7 @@
 #include "kstdataobjectcollection.h"
 #include "kstgfxtextmousehandler.h"
 #include "kst.h"
-#include "kstplugin.h"
+#include "kstcplugin.h"
 #include "kstsettings.h"
 #include "ksttimers.h"
 #include "kstviewobjectfactory.h"

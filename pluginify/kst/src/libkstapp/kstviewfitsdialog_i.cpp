@@ -25,7 +25,7 @@
 
 #include <klocale.h>
 
-#include "kstplugin.h"
+#include "kstcplugin.h"
 #include "kstdatacollection.h"
 #include "kstdataobjectcollection.h"
 #include "kstviewfitsdialog_i.h"

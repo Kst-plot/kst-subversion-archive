@@ -29,7 +29,7 @@
 #include "dialoglauncher.h"
 #include "kstdatacollection.h"
 #include "kstdebug.h"
-#include "kstplugin.h"
+#include "kstcplugin.h"
 #include "plugincollection.h"
 
 

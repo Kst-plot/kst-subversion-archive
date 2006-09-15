@@ -18,7 +18,7 @@
 #ifndef KSTPLUGINDIALOGI_H
 #define KSTPLUGINDIALOGI_H
 
-#include "kstplugin.h"
+#include "kstcplugin.h"
 
 #include "kstdatadialog.h"
 #include "kst_export.h"

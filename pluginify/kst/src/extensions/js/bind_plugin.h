@@ -20,7 +20,7 @@
 
 #include "bind_dataobject.h"
 
-#include <kstplugin.h>
+#include <kstcplugin.h>
 
 #include <kjs/interpreter.h>
 #include <kjs/object.h>

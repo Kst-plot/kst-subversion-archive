@@ -20,7 +20,7 @@
 
 #include <kst.h>
 #include <kstdataobjectcollection.h>
-#include <kstplugin.h>
+#include <kstcplugin.h>
 
 #include <kdebug.h>
 

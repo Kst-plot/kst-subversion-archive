@@ -34,7 +34,7 @@
 #include "ksthistogram.h"
 #include "kstiface_impl.h"
 #include "kstimage.h"
-#include "kstplugin.h"
+#include "kstcplugin.h"
 #include "kstpsd.h"
 #include "psdcalculator.h"
 #include "kstrmatrix.h"
