@@ -70,7 +70,6 @@ CrossSpectrumDialogI::CrossSpectrumDialogI(QWidget* parent, const char* name, bo
 CrossSpectrumDialogI::~CrossSpectrumDialogI() {
 }
 
-#include <kdebug.h>
 void CrossSpectrumDialogI::update()
 {
   //called upon showing the dialog either in 'edit' mode or 'new' mode
@@ -173,7 +172,6 @@ bool CrossSpectrumDialogI::editObject()
   return true;
 }
 
-#include <kdebug.h>
 bool CrossSpectrumDialogI::editSingleObject(CrossPowerSpectrumPtr cps)
 {
   KST::vectorList.lock().readLock();
@@ -196,7 +194,6 @@ bool CrossSpectrumDialogI::editSingleObject(CrossPowerSpectrumPtr cps)
     if (it2 != KST::scalarList.end()) {
       cps->setFFT(*it2);
     } else {
-      kdDebug() << "fft new" << endl;
       //Deal with direct entry
       bool ok;
       double val = _w->_fft->_scalar->currentText().toDouble(&ok);
@@ -212,7 +209,6 @@ bool CrossSpectrumDialogI::editSingleObject(CrossPowerSpectrumPtr cps)
     if (it2 != KST::scalarList.end()) {
       cps->setSample(*it2);
     } else {
-      kdDebug() << "sample new" << endl;
       //Deal with direct entry
       bool ok;
       double val = _w->_sample->_scalar->currentText().toDouble(&ok);

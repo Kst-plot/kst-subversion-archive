@@ -103,6 +103,7 @@ libkstapp_la_SOURCES = \
 	plotdialog.ui \
 	extensiondlg.ui \
 	kstdatadialog.ui \
+	kstbasicdialog.cpp \
 	choosecolordialog.ui \
 	debugdialog.ui \
 	datawizard.ui \

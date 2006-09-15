@@ -65,7 +65,6 @@ LineFitDialogI::LineFitDialogI(QWidget* parent, const char* name, bool modal, WF
 LineFitDialogI::~LineFitDialogI() {
 }
 
-#include <kdebug.h>
 void LineFitDialogI::update()
 {
   //called upon showing the dialog either in 'edit' mode or 'new' mode
