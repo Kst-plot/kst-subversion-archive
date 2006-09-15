@@ -32,6 +32,7 @@ KstBindPluginIOCollection::~KstBindPluginIOCollection() {
 
 
 KJS::Value KstBindPluginIOCollection::length(KJS::ExecState *exec) const {
+  Q_UNUSED(exec)
   return KJS::Number(_d.count());
 }
 
