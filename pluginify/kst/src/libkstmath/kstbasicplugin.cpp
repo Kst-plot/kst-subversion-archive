@@ -123,8 +123,38 @@ KstObject::UpdateType KstBasicPlugin::update(int updateCounter) {
 
 
 void KstBasicPlugin::load(const QDomElement &e) {
-  //TODO
-  Q_UNUSED(e)
+  QDomNode n = e.firstChild();
+
+  while (!n.isNull()) {
+    QDomElement e = n.toElement();
+    if (!e.isNull()) {
+      if (e.tagName() == "tag") {
+        setTagName(e.text());
+      } else if (e.tagName() == "ivector") {
+        _inputVectorLoadQueue.append(qMakePair(e.attribute("name"), e.text()));
+      } else if (e.tagName() == "iscalar") {
+        _inputScalarLoadQueue.append(qMakePair(e.attribute("name"), e.text()));
+      } else if (e.tagName() == "istring") {
+        _inputStringLoadQueue.append(qMakePair(e.attribute("name"), e.text()));
+      } else if (e.tagName() == "ovector") {
+        KstVectorPtr v;
+        if (e.attribute("scalarList", "0").toInt()) {
+          v = new KstVector(e.text(), 0, this, true);
+        } else {
+          v = new KstVector(e.text(), 0, this, false);
+        }
+        _outputVectors.insert(e.attribute("name"), v);
+        KST::addVectorToList(v);
+      } else if (e.tagName() == "oscalar") {
+        KstScalarPtr sp = new KstScalar(e.text(), this);
+        _outputScalars.insert(e.attribute("name"), sp);
+      } else if (e.tagName() == "ostring") {
+        KstStringPtr sp = new KstString(e.text(), this);
+        _outputStrings.insert(e.attribute("name"), sp);
+      }
+    }
+    n = n.nextSibling();
+  }
 }
 
 
