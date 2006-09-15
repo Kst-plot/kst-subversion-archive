@@ -42,8 +42,11 @@ public:
   virtual QStringList outputStrings() const = 0;
 
   //Pure virtual methods inherited from KstDataObject
-  //Not sure how we'll handle these just yet...
+  //This _must_ equal the 'Name' entry in the .desktop file of
+  //the plugin
   virtual QString propertyString() const = 0;
+
+  //Not sure how we'll handle this just yet...
   virtual KstDataObjectPtr makeDuplicate(KstDataObjectDataObjectMap&) = 0;
 
   public slots:

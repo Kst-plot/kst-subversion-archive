@@ -159,9 +159,44 @@ void KstBasicPlugin::load(const QDomElement &e) {
 
 
 void KstBasicPlugin::save(QTextStream& ts, const QString& indent) {
-  //TODO
-  Q_UNUSED(ts)
-  Q_UNUSED(indent)
+  QString l2 = indent + "  ";
+  //The plugin name _must_ be the same as the entry in the .desktop file
+  ts << indent << "<plugin name=\"" << propertyString() << "\">" << endl;
+  ts << l2 << "<tag>" << QStyleSheet::escape(tagName()) << "</tag>" << endl;
+  for (KstVectorMap::Iterator i = _inputVectors.begin(); i != _inputVectors.end(); ++i) {
+    ts << l2 << "<ivector name=\"" << QStyleSheet::escape(i.key()) << "\">"
+        << QStyleSheet::escape(i.data()->tagName())
+        << "</ivector>" << endl;
+  }
+  for (KstScalarMap::Iterator i = _inputScalars.begin(); i != _inputScalars.end(); ++i) {
+    ts << l2 << "<iscalar name=\"" << QStyleSheet::escape(i.key()) << "\">"
+        << QStyleSheet::escape(i.data()->tagName())
+        << "</iscalar>" << endl;
+  }
+  for (KstStringMap::Iterator i = _inputStrings.begin(); i != _inputStrings.end(); ++i) {
+    ts << l2 << "<istring name=\"" << QStyleSheet::escape(i.key()) << "\">"
+        << QStyleSheet::escape(i.data()->tagName())
+        << "</istring>" << endl;
+  }
+  for (KstVectorMap::Iterator i = _outputVectors.begin(); i != _outputVectors.end(); ++i) {
+    ts << l2 << "<ovector name=\"" << QStyleSheet::escape(i.key());
+    if (i.data()->isScalarList()) {
+      ts << "\" scalarList=\"1";
+    }
+    ts << "\">" << QStyleSheet::escape(i.data()->tagName())
+        << "</ovector>" << endl;
+  }
+  for (KstScalarMap::Iterator i = _outputScalars.begin(); i != _outputScalars.end(); ++i) {
+    ts << l2 << "<oscalar name=\"" << QStyleSheet::escape(i.key()) << "\">"
+        << QStyleSheet::escape(i.data()->tagName())
+        << "</oscalar>" << endl;
+  }
+  for (KstStringMap::Iterator i = _outputStrings.begin(); i != _outputStrings.end(); ++i) {
+    ts << l2 << "<ostring name=\"" << QStyleSheet::escape(i.key()) << "\">"
+        << QStyleSheet::escape(i.data()->tagName())
+        << "</ostring>" << endl;
+  }
+  ts << indent << "</plugin>" << endl;
 }
 
 
