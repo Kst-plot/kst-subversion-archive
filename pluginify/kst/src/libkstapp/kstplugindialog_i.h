@@ -51,8 +51,8 @@ class KST_EXPORT KstPluginDialogI : public KstDataDialog {
     QStringList _pluginList;
 
     void fillVectorScalarCombos(KstSharedPtr<Plugin> pPtr);
-    virtual bool saveInputs(KstPluginPtr plugin, KstSharedPtr<Plugin> p);
-    bool saveOutputs(KstPluginPtr plugin, KstSharedPtr<Plugin> p);
+    virtual bool saveInputs(KstCPluginPtr plugin, KstSharedPtr<Plugin> p);
+    bool saveOutputs(KstCPluginPtr plugin, KstSharedPtr<Plugin> p);
     virtual void generateEntries(bool input, int& cnt, QWidget *parent,
         QGridLayout *grid, const QValueList<Plugin::Data::IOValue>& table);
 

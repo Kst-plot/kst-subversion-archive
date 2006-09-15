@@ -33,7 +33,7 @@
 #include "plugincollection.h"
 
 
-KstPlugin::KstPlugin()
+KstCPlugin::KstCPlugin()
 : KstDataObject() {
   _inStringCnt = 0;
   _outStringCnt = 0;
@@ -41,7 +41,7 @@ KstPlugin::KstPlugin()
 }
 
 
-KstPlugin::KstPlugin(const QDomElement& e)
+KstCPlugin::KstCPlugin(const QDomElement& e)
 : KstDataObject(e) {
   QString pluginName;
 
@@ -145,7 +145,7 @@ KstPlugin::KstPlugin(const QDomElement& e)
 }
 
 
-void KstPlugin::commonConstructor() {
+void KstCPlugin::commonConstructor() {
   _inArrayLens = 0L;
   _outArrayLens = 0L;
   _inScalars = 0L;
@@ -167,7 +167,7 @@ void KstPlugin::commonConstructor() {
 }
 
 
-KstPlugin::~KstPlugin() {
+KstCPlugin::~KstCPlugin() {
   freeParameters();
   if (_localData) {
     if (!_plugin || !_plugin->freeLocalData(&_localData)) {
@@ -180,7 +180,7 @@ KstPlugin::~KstPlugin() {
 
 
 
-void KstPlugin::allocateParameters() {
+void KstCPlugin::allocateParameters() {
   if (_inArrayCnt > 0) {
     _inArrayLens = new int[_inArrayCnt];
     _inVectors = new double*[_inArrayCnt];
@@ -211,7 +211,7 @@ void KstPlugin::allocateParameters() {
 }
 
 
-void KstPlugin::freeParameters() {
+void KstCPlugin::freeParameters() {
   delete[] _inVectors;
   _inVectors = 0L;
   delete[] _outVectors;
@@ -247,7 +247,7 @@ void KstPlugin::freeParameters() {
 }
 
 
-KstObject::UpdateType KstPlugin::update(int update_counter) {
+KstObject::UpdateType KstCPlugin::update(int update_counter) {
   if (!isValid()) {
     return setLastUpdateResult(NO_CHANGE);
   }
@@ -424,7 +424,7 @@ KstObject::UpdateType KstPlugin::update(int update_counter) {
   return setLastUpdateResult(UPDATE);
 }
 
-QString KstPlugin::label(int precision) const {
+QString KstCPlugin::label(int precision) const {
   QString label;
   
   label = i18n("%1: %2").arg(plugin()->data()._readableName).arg(tagName());
@@ -449,7 +449,7 @@ QString KstPlugin::label(int precision) const {
 }
 
 
-void KstPlugin::save(QTextStream &ts, const QString& indent) {
+void KstCPlugin::save(QTextStream &ts, const QString& indent) {
   if (!_plugin) {
     return;
   }
@@ -495,12 +495,12 @@ void KstPlugin::save(QTextStream &ts, const QString& indent) {
 }
 
 
-bool KstPlugin::slaveVectorsUsed() const {
+bool KstCPlugin::slaveVectorsUsed() const {
   return true;
 }
 
 
-bool KstPlugin::isValid() const {
+bool KstCPlugin::isValid() const {
   return _inputVectors.count() == _inArrayCnt &&
          _inputScalars.count() == _inScalarCnt - _inPid &&
          _inputStrings.count() == _inStringCnt &&
@@ -508,7 +508,7 @@ bool KstPlugin::isValid() const {
 }
 
 
-QString KstPlugin::propertyString() const {
+QString KstCPlugin::propertyString() const {
   if (!isValid()) {
     return i18n("Invalid plugin.");
   }
@@ -516,7 +516,7 @@ QString KstPlugin::propertyString() const {
 }
 
 
-bool KstPlugin::setPlugin(KstSharedPtr<Plugin> plugin) {
+bool KstCPlugin::setPlugin(KstSharedPtr<Plugin> plugin) {
   // Assumes that this is called with a write lock in place on this object
   if (plugin == _plugin) {
     return true;
@@ -593,22 +593,22 @@ bool KstPlugin::setPlugin(KstSharedPtr<Plugin> plugin) {
 }
 
 
-KstSharedPtr<Plugin> KstPlugin::plugin() const {
+KstSharedPtr<Plugin> KstCPlugin::plugin() const {
   return _plugin;
 }
 
 
-void KstPlugin::showNewDialog() {
+void KstCPlugin::showNewDialog() {
   KstDialogs::self()->showPluginDialog();
 }
 
 
-void KstPlugin::showEditDialog() {
+void KstCPlugin::showEditDialog() {
   KstDialogs::self()->showPluginDialog(tagName());
 }
 
 
-const KstCurveHintList* KstPlugin::curveHints() const {
+const KstCurveHintList* KstCPlugin::curveHints() const {
   _curveHints->clear();
   if (_plugin) {
     for (QValueList<Plugin::Data::CurveHint>::ConstIterator i = _plugin->data()._hints.begin(); i != _plugin->data()._hints.end(); ++i) {
@@ -624,13 +624,13 @@ const KstCurveHintList* KstPlugin::curveHints() const {
 }
 
 
-QString KstPlugin::lastError() const {
+QString KstCPlugin::lastError() const {
   return _lastError;
 }
 
 
-// FIXME: KstPlugin should not know about fit scalars!!
-void KstPlugin::createFitScalars() {
+// FIXME: KstCPlugin should not know about fit scalars!!
+void KstCPlugin::createFitScalars() {
   // Assumes that this is called with a write lock in place on this object
   if (_plugin->data()._isFit && _outputVectors.contains("Parameters")) {
     KstVectorPtr vectorParam = _outputVectors["Parameters"];
@@ -658,8 +658,8 @@ void KstPlugin::createFitScalars() {
 }
 
 
-KstDataObjectPtr KstPlugin::makeDuplicate(KstDataObjectDataObjectMap& duplicatedMap) {
-  KstPluginPtr plugin = new KstPlugin;
+KstDataObjectPtr KstCPlugin::makeDuplicate(KstDataObjectDataObjectMap& duplicatedMap) {
+  KstCPluginPtr plugin = new KstCPlugin;
 
   // use same inputs
   for (KstVectorMap::ConstIterator iter = _inputVectors.begin(); iter != _inputVectors.end(); ++iter) {

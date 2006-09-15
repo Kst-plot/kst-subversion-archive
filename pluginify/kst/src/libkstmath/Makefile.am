@@ -26,6 +26,7 @@ libkstmath_la_SOURCES = \
 	kstequation.cpp \
 	kstcurvehint.cpp \
 	kstplugin.cpp \
+	kstbasicplugin.cpp \
 	fftsg_h.c \
 	enodes.cpp \
 	enodefactory.cpp \

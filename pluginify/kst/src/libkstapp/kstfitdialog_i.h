@@ -42,11 +42,11 @@ class KstFitDialogI : public KstPluginDialogI {
     QString _strPlotName;
     QString _strCurve;
     
-    bool createCurve(KstPluginPtr plugin);
+    bool createCurve(KstCPluginPtr plugin);
     
     void generateEntries(bool input, int& cnt, QWidget *parent, QGridLayout *grid, const QValueList<Plugin::Data::IOValue>& table);
     
-    bool saveInputs(KstPluginPtr plugin, KstSharedPtr<Plugin> p);
+    bool saveInputs(KstCPluginPtr plugin, KstSharedPtr<Plugin> p);
 };
 
 #endif

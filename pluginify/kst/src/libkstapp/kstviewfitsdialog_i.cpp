@@ -57,9 +57,9 @@ void KstViewFitsDialogI::fillComboBox(const QString& str) {
   QString fitName = str;
 
   _comboBoxFits->clear();
-  KstPluginList fits = kstObjectSubList<KstDataObject,KstPlugin>(KST::dataObjectList);
+  KstCPluginList fits = kstObjectSubList<KstDataObject,KstCPlugin>(KST::dataObjectList);
   for (uint i = 0; i < fits.count(); i++) {
-    KstPluginPtr fit = fits[i];
+    KstCPluginPtr fit = fits[i];
     fit->readLock();
     if (fit->plugin()->data()._isFit) {
       _comboBoxFits->insertItem(fit->tagName());
@@ -107,8 +107,8 @@ void KstViewFitsDialogI::fitChanged(const QString& strFit) {
   int numParams = 0;
   int numCovars = 0;
 
-  KstPluginList fits = kstObjectSubList<KstDataObject,KstPlugin>(KST::dataObjectList);
-  KstPluginPtr plugin = *(fits.findTag(strFit));
+  KstCPluginList fits = kstObjectSubList<KstDataObject,KstCPlugin>(KST::dataObjectList);
+  KstCPluginPtr plugin = *(fits.findTag(strFit));
   if (plugin) {
     plugin->readLock();
     const KstScalarMap& scalars = plugin->outputScalars();

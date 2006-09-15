@@ -116,7 +116,7 @@ void KstFilterDialogI::updatePluginList() {
 }
 
 
-bool KstFilterDialogI::saveInputs(KstPluginPtr plugin, KstSharedPtr<Plugin> p) {
+bool KstFilterDialogI::saveInputs(KstCPluginPtr plugin, KstSharedPtr<Plugin> p) {
   KST::vectorList.lock().readLock();
   KST::scalarList.lock().readLock();
   KST::stringList.lock().readLock();
@@ -210,7 +210,7 @@ bool KstFilterDialogI::saveInputs(KstPluginPtr plugin, KstSharedPtr<Plugin> p) {
 }
 
 
-bool KstFilterDialogI::createCurve(KstPluginPtr plugin) {
+bool KstFilterDialogI::createCurve(KstCPluginPtr plugin) {
   KstVectorPtr xVector;
   KstVectorPtr yVector;
 
@@ -269,7 +269,7 @@ bool KstFilterDialogI::newObject() {
       KstSharedPtr<Plugin> pPtr = PluginCollection::self()->plugin(_pluginList[pitem]);
 
       if (pPtr) {
-        KstPluginPtr plugin = new KstPlugin;
+        KstCPluginPtr plugin = new KstCPlugin;
         plugin->writeLock();
         plugin->setDirty();
         if (saveInputs(plugin, pPtr)) {

@@ -71,7 +71,7 @@ void KstFitDialogI::show_setCurve(const QString& strCurve,
   KstVCurvePtr curve;
   KstBaseCurveList curves = kstObjectSubList<KstDataObject, KstBaseCurve>(KST::dataObjectList);
   KstVCurveList vcurves = kstObjectSubList<KstBaseCurve, KstVCurve>(curves);
-  KstPluginList c = kstObjectSubList<KstDataObject, KstPlugin>(KST::dataObjectList);
+  KstCPluginList c = kstObjectSubList<KstDataObject, KstCPlugin>(KST::dataObjectList);
   QString new_label;
 
   _strWindow   = strWindow;
@@ -123,7 +123,7 @@ void KstFitDialogI::updatePluginList() {
 }
 
 
-bool KstFitDialogI::createCurve(KstPluginPtr plugin) {
+bool KstFitDialogI::createCurve(KstCPluginPtr plugin) {
   KstVectorPtr xVector;
   KstVectorPtr yVector;
 
@@ -193,7 +193,7 @@ bool KstFitDialogI::newObject() {
     KstSharedPtr<Plugin> pPtr = PluginCollection::self()->plugin(_pluginList[pitem]);
 
     if (pPtr) {
-      KstPluginPtr plugin = new KstPlugin;
+      KstCPluginPtr plugin = new KstCPlugin;
       plugin->writeLock();
       plugin->setDirty();
       if (saveInputs(plugin, pPtr)) {
@@ -366,7 +366,7 @@ void KstFitDialogI::generateEntries(bool input, int& cnt, QWidget *parent, QGrid
 }
 
 
-bool KstFitDialogI::saveInputs(KstPluginPtr plugin, KstSharedPtr<Plugin> p) {
+bool KstFitDialogI::saveInputs(KstCPluginPtr plugin, KstSharedPtr<Plugin> p) {
   bool rc = true;
 
   KST::vectorList.lock().readLock();

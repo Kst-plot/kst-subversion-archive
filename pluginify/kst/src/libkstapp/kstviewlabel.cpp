@@ -916,7 +916,7 @@ void KstViewLabel::DataCache::update() {
           KstDataObjectList::Iterator oi = KST::dataObjectList.findTag((*i).name);
           KST::dataObjectList.lock().unlock();
           if (oi != KST::dataObjectList.end()) {
-            KstPluginPtr fit = kst_cast<KstPlugin>(*oi);
+            KstCPluginPtr fit = kst_cast<KstCPlugin>(*oi);
             if (fit) {
               fit->readLock(); 
               if (fit->label((int)((*i).indexValue)) != (*i).index) {

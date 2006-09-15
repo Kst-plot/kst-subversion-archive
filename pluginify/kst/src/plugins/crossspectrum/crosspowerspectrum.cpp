@@ -189,8 +189,7 @@ void CrossPowerSpectrum::setFrequency(const QString &name) {
   KST::addVectorToList(v);
 }
 
-KstObject::UpdateType CrossPowerSpectrum::update(int updateCounter)
-{
+KstObject::UpdateType CrossPowerSpectrum::update(int updateCounter) {
   bool force = dirty();
   setDirty(false);
 

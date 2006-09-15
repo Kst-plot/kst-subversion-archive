@@ -26,7 +26,7 @@
 
 KstBindPluginCollection::KstBindPluginCollection(KJS::ExecState *exec)
 : KstBindCollection(exec, "PluginCollection", true) {
-  _plugins = kstObjectSubList<KstDataObject,KstPlugin>(KST::dataObjectList).tagNames();
+  _plugins = kstObjectSubList<KstDataObject,KstCPlugin>(KST::dataObjectList).tagNames();
 }
 
 
@@ -47,8 +47,8 @@ QStringList KstBindPluginCollection::collection(KJS::ExecState *exec) const {
 
 
 KJS::Value KstBindPluginCollection::extract(KJS::ExecState *exec, const KJS::Identifier& item) const {
-  KstPluginList pl = kstObjectSubList<KstDataObject,KstPlugin>(KST::dataObjectList);
-  KstPluginPtr p = *pl.findTag(item.qstring());
+  KstCPluginList pl = kstObjectSubList<KstDataObject,KstCPlugin>(KST::dataObjectList);
+  KstCPluginPtr p = *pl.findTag(item.qstring());
   if (p) {
     return KJS::Object(new KstBindPlugin(exec, p));
   }
@@ -57,8 +57,8 @@ KJS::Value KstBindPluginCollection::extract(KJS::ExecState *exec, const KJS::Ide
 
 
 KJS::Value KstBindPluginCollection::extract(KJS::ExecState *exec, unsigned item) const {
-  KstPluginList pl = kstObjectSubList<KstDataObject,KstPlugin>(KST::dataObjectList);
-  KstPluginPtr p;
+  KstCPluginList pl = kstObjectSubList<KstDataObject,KstCPlugin>(KST::dataObjectList);
+  KstCPluginPtr p;
   if (item < pl.count()) {
     p = pl[item];
   }

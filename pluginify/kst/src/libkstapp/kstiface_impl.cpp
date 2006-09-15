@@ -1426,7 +1426,7 @@ QStringList KstIfaceImpl::createPlugin(const QString& pluginName,
   QStringList::ConstIterator scalarParamIter;
   QStringList::ConstIterator vectorParamIter;
 
-  KstPluginPtr kstplug_ptr = new KstPlugin;
+  KstCPluginPtr kstplug_ptr = new KstCPlugin;
 
   //iterate through inputs
   IOIter = plug_data._inputs.begin();
@@ -1486,7 +1486,7 @@ QStringList KstIfaceImpl::createPlugin(const QString& pluginName,
 
   //name the plugin
 
-  KstPluginList kstpluglist = kstObjectSubList<KstDataObject,KstPlugin>(KST::dataObjectList);
+  KstCPluginList kstpluglist = kstObjectSubList<KstDataObject,KstCPlugin>(KST::dataObjectList);
   int i = kstpluglist.count() + 1;
   QString stringnum;
   stringnum = stringnum.setNum(i);

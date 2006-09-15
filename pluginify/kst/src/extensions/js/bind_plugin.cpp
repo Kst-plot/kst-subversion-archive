@@ -22,7 +22,7 @@
 
 #include <kdebug.h>
 
-KstBindPlugin::KstBindPlugin(KJS::ExecState *exec, KstPluginPtr d)
+KstBindPlugin::KstBindPlugin(KJS::ExecState *exec, KstCPluginPtr d)
 : KstBindDataObject(exec, d.data(), "Plugin") {
   KJS::Object o(this);
   addBindings(exec, o);
@@ -40,7 +40,7 @@ KstBindPlugin::KstBindPlugin(KJS::ExecState *exec, KJS::Object *globalObject)
 
 
 KstBindDataObject *KstBindPlugin::bindFactory(KJS::ExecState *exec, KstDataObjectPtr obj) {
-  KstPluginPtr v = kst_cast<KstPlugin>(obj);
+  KstCPluginPtr v = kst_cast<KstCPlugin>(obj);
   if (v) {
     return new KstBindPlugin(exec, v);
   }
@@ -58,7 +58,7 @@ KstBindPlugin::~KstBindPlugin() {
 
 
 KJS::Object KstBindPlugin::construct(KJS::ExecState *exec, const KJS::List& args) {
-  KstPluginPtr p;
+  KstCPluginPtr p;
 
   if (args.size() > 1) {
     KJS::Object eobj = KJS::Error::create(exec, KJS::SyntaxError);
@@ -66,7 +66,7 @@ KJS::Object KstBindPlugin::construct(KJS::ExecState *exec, const KJS::List& args
     return KJS::Object();
   }
 
-  p = new KstPlugin;
+  p = new KstCPlugin;
 
   if (args.size() > 0) {
     KstSharedPtr<Plugin> m = extractPluginModule(exec, args[0]);
@@ -204,10 +204,10 @@ void KstBindPlugin::addBindings(KJS::ExecState *exec, KJS::Object& obj) {
 }
 
 
-#define makePlugin(X) dynamic_cast<KstPlugin*>(const_cast<KstObject*>(X.data()))
+#define makePlugin(X) dynamic_cast<KstCPlugin*>(const_cast<KstObject*>(X.data()))
 
 KJS::Value KstBindPlugin::module(KJS::ExecState *exec) const {
-  KstPluginPtr d = makePlugin(_d);
+  KstCPluginPtr d = makePlugin(_d);
   if (d) {
     KstReadLocker rl(d);
     return KJS::Object(new KstBindPluginModule(exec, d->plugin()->data()));
@@ -224,7 +224,7 @@ void KstBindPlugin::setModule(KJS::ExecState *exec, const KJS::Value& value) {
   }
   KstSharedPtr<Plugin> m = KstBinding::extractPluginModule(exec, value);
   if (m) {
-    KstPluginPtr d = makePlugin(_d);
+    KstCPluginPtr d = makePlugin(_d);
     if (d) {
       KstWriteLocker wl(d);
       d->setPlugin(m);
@@ -235,7 +235,7 @@ void KstBindPlugin::setModule(KJS::ExecState *exec, const KJS::Value& value) {
 
 KJS::Value KstBindPlugin::lastError(KJS::ExecState *exec) const {
   Q_UNUSED(exec)
-  KstPluginPtr d = makePlugin(_d);
+  KstCPluginPtr d = makePlugin(_d);
   if (d) {
     KstReadLocker rl(d);
     return KJS::String(d->lastError());
@@ -246,7 +246,7 @@ KJS::Value KstBindPlugin::lastError(KJS::ExecState *exec) const {
 
 KJS::Value KstBindPlugin::valid(KJS::ExecState *exec) const {
   Q_UNUSED(exec)
-  KstPluginPtr d = makePlugin(_d);
+  KstCPluginPtr d = makePlugin(_d);
   if (d) {
     KstReadLocker rl(d);
     return KJS::Boolean(d->isValid());

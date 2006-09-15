@@ -383,7 +383,7 @@ bool KstDoc::openDocument(const KURL& url, const QString& o_file,
         const QString name = e.attribute("name");
         KstDataObjectPtr p;
         if (name.isEmpty()) {
-          p = new KstPlugin(e);
+          p = new KstCPlugin(e);
         } else {
           if (p = KstDataObject::createPlugin(name))
             p->load(e);

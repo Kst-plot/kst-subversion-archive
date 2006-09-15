@@ -28,11 +28,11 @@
  *   - Input vectors must be set before setPlugin(), else it will fail.
  */
 
-class KST_EXPORT KstPlugin : public KstDataObject {
+class KST_EXPORT KstCPlugin : public KstDataObject {
   public:
-    KstPlugin();
-    KstPlugin(const QDomElement &e);
-    virtual ~KstPlugin();
+    KstCPlugin();
+    KstCPlugin(const QDomElement &e);
+    virtual ~KstCPlugin();
 
     virtual UpdateType update(int update_counter);
 
@@ -78,8 +78,8 @@ class KST_EXPORT KstPlugin : public KstDataObject {
     void freeParameters();
 };
 
-typedef KstSharedPtr<KstPlugin> KstPluginPtr;
-typedef KstObjectList<KstPluginPtr> KstPluginList;
+typedef KstSharedPtr<KstCPlugin> KstCPluginPtr;
+typedef KstObjectList<KstCPluginPtr> KstCPluginList;
 
 #endif
 

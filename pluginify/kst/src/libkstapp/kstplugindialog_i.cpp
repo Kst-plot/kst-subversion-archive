@@ -150,7 +150,7 @@ void KstPluginDialogI::updateForm() {
 
 
 void KstPluginDialogI::fillFieldsForEdit() {
-  KstPluginPtr pp = kst_cast<KstPlugin>(_dp);
+  KstCPluginPtr pp = kst_cast<KstCPlugin>(_dp);
   if (!pp) {
     return;
   }
@@ -189,7 +189,7 @@ void KstPluginDialogI::fillFieldsForNew() {
 
 void KstPluginDialogI::fillVectorScalarCombos(KstSharedPtr<Plugin> plugin) {
   bool DPvalid = false;
-  KstPluginPtr pp = kst_cast<KstPlugin>(_dp);
+  KstCPluginPtr pp = kst_cast<KstCPlugin>(_dp);
 
   if (pp) {
     pp->readLock();
@@ -381,7 +381,7 @@ void KstPluginDialogI::restoreInputs(const QValueList<Plugin::Data::IOValue>& ta
 }
 
 
-bool KstPluginDialogI::saveInputs(KstPluginPtr plugin, KstSharedPtr<Plugin> p) {
+bool KstPluginDialogI::saveInputs(KstCPluginPtr plugin, KstSharedPtr<Plugin> p) {
   bool rc = true;
 
   KST::vectorList.lock().readLock();
@@ -467,7 +467,7 @@ bool KstPluginDialogI::saveInputs(KstPluginPtr plugin, KstSharedPtr<Plugin> p) {
 }
 
 
-bool KstPluginDialogI::saveOutputs(KstPluginPtr plugin, KstSharedPtr<Plugin> p) {
+bool KstPluginDialogI::saveOutputs(KstCPluginPtr plugin, KstSharedPtr<Plugin> p) {
   const QValueList<Plugin::Data::IOValue>& otable = p->data()._outputs;
 
   for (QValueList<Plugin::Data::IOValue>::ConstIterator it = otable.begin(); it != otable.end(); ++it) {
@@ -573,12 +573,12 @@ bool KstPluginDialogI::newObject() {
     _tagName->setFocus();
     return false;
   }
-  KstPluginPtr plugin;
+  KstCPluginPtr plugin;
   int pitem = _w->PluginCombo->currentItem();
   if (pitem >= 0 && _w->PluginCombo->count() > 0) {
     KstSharedPtr<Plugin> pPtr = PluginCollection::self()->plugin(_pluginList[pitem]);
     if (pPtr) {
-      plugin = new KstPlugin;
+      plugin = new KstCPlugin;
       plugin->writeLock();
       if (!saveInputs(plugin, pPtr)) {
         KMessageBox::sorry(this, i18n("One or more of the inputs was undefined."));
@@ -620,7 +620,7 @@ bool KstPluginDialogI::newObject() {
 
 
 bool KstPluginDialogI::editObject() {
-  KstPluginPtr pp = kst_cast<KstPlugin>(_dp);
+  KstCPluginPtr pp = kst_cast<KstCPlugin>(_dp);
   if (!pp) { // something is dreadfully wrong - this should never happen
     return false;
   }
