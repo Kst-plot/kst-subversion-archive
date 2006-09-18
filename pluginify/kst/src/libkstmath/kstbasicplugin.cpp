@@ -110,41 +110,17 @@ KstObject::UpdateType KstBasicPlugin::update(int updateCounter) {
     return setLastUpdateResult(NO_CHANGE);
 
   //Update the dependent inputs
-  bool depUpdated = updateDependentInput(updateCounter, force);
+  bool depUpdated = updateInput(updateCounter, force);
 
   //Call the plugins algorithm to operate on the inputs
-  //to produce the outputs
+  //and produce the outputs
   algorithm();
 
-  //Perform any necessary operations on the outputs
-
-  //output vectors...
-  QStringList ov = outputVectors();
-  QStringList::ConstIterator ovI = ov.begin();
-  for (; ovI != ov.end(); ++ovI) {
-    if (KstVectorPtr o = outputVector(*ovI)) {
-      vectorRealloced(o, o->value(), o->length());
-      o->setDirty();
-      o->setNewAndShift(o->length(), o->numShift());
-      o->update(updateCounter);
-    }
-  }
-
-  //output scalars...
-  QStringList os = outputScalars();
-  QStringList::ConstIterator osI = os.begin();
-  for (; osI != os.end(); ++osI) {
-    if (KstScalarPtr o = outputScalar(*osI)) {
-      o->update(updateCounter);
-    }
-  }
-
-  //ouput strings...
-  //TODO
+  //Perform update on the outputs
+  updateOutput(updateCounter);
 
   return setLastUpdateResult(depUpdated ? UPDATE : NO_CHANGE);
 }
-
 
 void KstBasicPlugin::load(const QDomElement &e) {
   QDomNode n = e.firstChild();
@@ -253,7 +229,7 @@ bool KstBasicPlugin::inputsExist() const {
 }
 
 
-bool KstBasicPlugin::updateDependentInput(int updateCounter, bool force) const {
+bool KstBasicPlugin::updateInput(int updateCounter, bool force) const {
   bool depUpdated = force;
 
   //First, update the inputVectors...
@@ -280,6 +256,39 @@ bool KstBasicPlugin::updateDependentInput(int updateCounter, bool force) const {
         UPDATE == inputString(*istrI)->update(updateCounter) || depUpdated;
   }
   return depUpdated;
+}
+
+
+void KstBasicPlugin::updateOutput(int updateCounter) const {
+  //output vectors...
+  QStringList ov = outputVectors();
+  QStringList::ConstIterator ovI = ov.begin();
+  for (; ovI != ov.end(); ++ovI) {
+    if (KstVectorPtr o = outputVector(*ovI)) {
+      vectorRealloced(o, o->value(), o->length());
+      o->setDirty();
+      o->setNewAndShift(o->length(), o->numShift());
+      o->update(updateCounter);
+    }
+  }
+
+  //output scalars...
+  QStringList os = outputScalars();
+  QStringList::ConstIterator osI = os.begin();
+  for (; osI != os.end(); ++osI) {
+    if (KstScalarPtr o = outputScalar(*osI)) {
+      o->update(updateCounter);
+    }
+  }
+
+  //ouput strings...
+  QStringList ostr = outputStrings();
+  QStringList::ConstIterator ostrI = ostr.begin();
+  for (; ostrI != ostr.end(); ++ostrI) {
+    if (KstStringPtr o = outputString(*ostrI)) {
+      o->update(updateCounter);
+    }
+  }
 }
 
 // vim: ts=2 sw=2 et

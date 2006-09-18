@@ -76,7 +76,8 @@ public:
 
   private:
   bool inputsExist() const;
-  bool updateDependentInput(int updateCounter, bool force) const;
+  bool updateInput(int updateCounter, bool force) const;
+  void updateOutput(int updateCounter) const;
 };
 
 typedef KstSharedPtr<KstBasicPlugin> KstBasicPluginPtr;
