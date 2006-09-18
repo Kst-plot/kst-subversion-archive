@@ -16,25 +16,25 @@
  ***************************************************************************/
 
 // include files for Qt
+#include <qlineedit.h>
 
 // include files for KDE
 
 #include "kstbasicdialog.h"
 
 // application specific includes
-#include <kst.h>
-#include <kstdoc.h>
-#include <scalarselector.h>
-#include <stringselector.h>
-#include <vectorselector.h>
-#include <kstdefaultnames.h>
-#include <kstdataobjectcollection.h>
+#include "kst.h"
+#include "kstdoc.h"
+#include "scalarselector.h"
+#include "stringselector.h"
+#include "vectorselector.h"
+#include "kstdefaultnames.h"
+#include "kstdataobjectcollection.h"
 
 const QString& KstBasicDialog::defaultTag = KGlobal::staticQString("<Auto Name>");
 
 KstBasicDialog::KstBasicDialog(QWidget* parent, const char* name, bool modal, WFlags fl)
 : KstDataDialog(parent, name, modal, fl) {
-/*  _w = new QWidget(_contents);*/ //FIXME
   setMultiple(false);
 
   connect(this, SIGNAL(modified()), KstApp::inst()->document(), SLOT(wasModified())); //FIXME this should be in KstDataDialog constructor...
@@ -71,6 +71,21 @@ bool KstBasicDialog::editSingleObject(KstBasicPluginPtr ptr) {
 
 
 void KstBasicDialog::fillFieldsForEdit() {
+
+  KstBasicPluginPtr ptr = kst_cast<KstBasicPlugin>(_dp);
+  if (!ptr) {
+    return;
+  }
+
+  ptr->readLock();
+
+  _tagName->setText(ptr->tagName());
+  _legendText->setText(defaultTag); //FIXME?
+
+  //Update the various widgets...
+
+  ptr->unlock();
+
   adjustSize();
   resize(minimumSizeHint());
   setFixedHeight(height());
@@ -78,6 +93,9 @@ void KstBasicDialog::fillFieldsForEdit() {
 
 
 void KstBasicDialog::fillFieldsForNew() {
+  _tagName->setText(defaultTag);
+  _legendText->setText(defaultTag);
+
   adjustSize();
   resize(minimumSizeHint());
   setFixedHeight(height());

@@ -17,37 +17,34 @@
 #ifndef TESTPLUGIN_H
 #define TESTPLUGIN_H
 
-#include <kstdataobject.h>
+#include <kstbasicplugin.h>
 
 #include <kmessagebox.h>
 
-class TestPlugin : public KstDataObject {
+class TestPlugin : public KstBasicPlugin {
   Q_OBJECT
-public:
-
+  public:
     TestPlugin(QObject *parent, const char *name, const QStringList &args);
     virtual ~TestPlugin();
 
-    virtual KstObject::UpdateType update(int)
-    {
-        return UPDATE;
-    }
-    virtual QString propertyString() const
-    {
-        return "";
-    }
-    virtual KstDataObjectPtr makeDuplicate(KstDataObjectDataObjectMap&)
-    {
-        return 0;
-    }
+    virtual bool algorithm();
 
-protected slots:
-    virtual void showNewDialog()
-    {
+    virtual QStringList inputVectors() const;
+    virtual QStringList inputScalars() const;
+    virtual QStringList inputStrings() const;
+    virtual QStringList outputVectors() const;
+    virtual QStringList outputScalars() const;
+    virtual QStringList outputStrings() const;
+
+    virtual QString propertyString() const { return "Test Plugin"; }
+
+    virtual KstDataObjectPtr makeDuplicate(KstDataObjectDataObjectMap&) { return 0; }
+
+  protected slots:
+    virtual void showNewDialog() {
         KMessageBox::information( 0, "insert testplugin config widget here :)", "testpluginconfig" );
     }
-    virtual void showEditDialog()
-    {
+    virtual void showEditDialog() {
       KMessageBox::information( 0, "insert testplugin config widget here :)", "testpluginconfig" );
     }
 };

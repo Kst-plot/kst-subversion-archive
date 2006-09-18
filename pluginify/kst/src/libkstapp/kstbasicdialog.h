@@ -40,7 +40,6 @@ class KST_EXPORT KstBasicDialog : public KstDataDialog {
   private:
     bool editSingleObject(KstBasicPluginPtr ptr);
     static const QString& defaultTag;
-    QWidget *_w;
 };
 
 #endif
