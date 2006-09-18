@@ -1,5 +1,5 @@
 /***************************************************************************
-                      kstbasicdialog.h  -  Part of KST
+                      kstbasicdialog_i.h  -  Part of KST
                              -------------------
     begin                : 09/15/06
     copyright            : (C) 2006 The University of Toronto
@@ -15,18 +15,23 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef KSTBASICDIALOG_H
-#define KSTBASICDIALOG_H
+#ifndef KSTBASICDIALOGI_H
+#define KSTBASICDIALOGI_H
+
+#include <qguardedptr.h>
 
 #include "kst_export.h"
 #include "kstdatadialog.h"
 #include "kstbasicplugin.h"
 
-class KST_EXPORT KstBasicDialog : public KstDataDialog {
+class BasicDialogWidget;
+
+class KST_EXPORT KstBasicDialogI : public KstDataDialog {
   Q_OBJECT
   public:
-    KstBasicDialog(QWidget* parent = 0, const char* name = 0, bool modal = false, WFlags fl = 0);
-    virtual ~KstBasicDialog();
+    KstBasicDialogI(QWidget* parent = 0, const char* name = 0, bool modal = false, WFlags fl = 0);
+    virtual ~KstBasicDialogI();
+    static KstBasicDialogI *globalInstance();
 
   public slots:
     virtual void update();
@@ -40,6 +45,12 @@ class KST_EXPORT KstBasicDialog : public KstDataDialog {
   private:
     bool editSingleObject(KstBasicPluginPtr ptr);
     static const QString& defaultTag;
+    static QGuardedPtr<KstBasicDialogI> _inst;
+    BasicDialogWidget *_w;
+
+    // layout items
+    QGridLayout *_inputOutputGrid;
+    QValueList<QWidget*> _widgets;
 };
 
 #endif

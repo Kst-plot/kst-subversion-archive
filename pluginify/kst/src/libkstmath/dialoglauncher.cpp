@@ -48,7 +48,12 @@ void KstDialogs::showHistogramDialog(const QString& name) {
 }
 
 
-void KstDialogs::showPluginDialog(const QString& name) {
+void KstDialogs::showCPluginDialog(const QString& name) {
+  Q_UNUSED(name)
+}
+
+
+void KstDialogs::showBasicPluginDialog(const QString& name) {
   Q_UNUSED(name)
 }
 

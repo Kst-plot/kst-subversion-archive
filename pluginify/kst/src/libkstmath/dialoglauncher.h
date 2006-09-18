@@ -36,7 +36,9 @@ KST_EXPORT class KstDialogs {
 
     virtual void showHistogramDialog(const QString& name = QString::null);
 
-    virtual void showPluginDialog(const QString& name = QString::null);
+    virtual void showBasicPluginDialog(const QString& name = QString::null);
+
+    virtual void showCPluginDialog(const QString& name = QString::null);
 
     virtual void showEquationDialog(const QString& name = QString::null);
 

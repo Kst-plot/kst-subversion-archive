@@ -27,6 +27,7 @@
 // application specific includes
 #include "kstdebug.h"
 #include "kstbasicplugin.h"
+#include "dialoglauncher.h"
 #include "kstdatacollection.h"
 
 KstBasicPlugin::KstBasicPlugin()
@@ -42,6 +43,13 @@ KstBasicPlugin::KstBasicPlugin(const QDomElement& e)
 KstBasicPlugin::~KstBasicPlugin() {
 }
 
+void KstBasicPlugin::showNewDialog() {
+  KstDialogs::self()->showBasicPluginDialog();
+}
+
+void KstBasicPlugin::showEditDialog() {
+  KstDialogs::self()->showBasicPluginDialog(tagName());
+}
 
 KstVectorPtr KstBasicPlugin::inputVector(const QString& vector) const {
   KstVectorMap::ConstIterator i = _inputVectors.find(vector);

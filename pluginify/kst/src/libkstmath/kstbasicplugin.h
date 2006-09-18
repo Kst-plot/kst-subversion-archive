@@ -51,9 +51,9 @@ public:
 
   public slots:
   //Pure virtual slots from KstDataObject
-  //Each plugin will need to provide an implementation for each
-  virtual void showNewDialog() = 0;
-  virtual void showEditDialog() = 0;
+  //Each plugin can provide an implementation or use the default
+  virtual void showNewDialog();
+  virtual void showEditDialog();
 
   public:
   //Returns the respective input object for name

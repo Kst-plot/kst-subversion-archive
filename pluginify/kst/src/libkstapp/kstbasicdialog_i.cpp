@@ -1,5 +1,5 @@
 /***************************************************************************
-                     kstbasicdialog.cpp  -  Part of KST
+                     kstbasicdialog_i.cpp  -  Part of KST
                              -------------------
     begin                : 09/15/06
     copyright            : (C) 2006 The University of Toronto
@@ -17,10 +17,12 @@
 
 // include files for Qt
 #include <qlineedit.h>
+#include <qvbox.h>
 
 // include files for KDE
 
-#include "kstbasicdialog.h"
+#include "kstbasicdialog_i.h"
+#include "basicdialogwidget.h"
 
 // application specific includes
 #include "kst.h"
@@ -31,46 +33,58 @@
 #include "kstdefaultnames.h"
 #include "kstdataobjectcollection.h"
 
-const QString& KstBasicDialog::defaultTag = KGlobal::staticQString("<Auto Name>");
+const QString& KstBasicDialogI::defaultTag = KGlobal::staticQString("<Auto Name>");
 
-KstBasicDialog::KstBasicDialog(QWidget* parent, const char* name, bool modal, WFlags fl)
+QGuardedPtr<KstBasicDialogI> KstBasicDialogI::_inst;
+
+KstBasicDialogI *KstBasicDialogI::globalInstance() {
+  if (!_inst) {
+    _inst = new KstBasicDialogI(KstApp::inst());
+  }
+  return _inst;
+}
+
+
+KstBasicDialogI::KstBasicDialogI(QWidget* parent, const char* name, bool modal, WFlags fl)
 : KstDataDialog(parent, name, modal, fl) {
   setMultiple(false);
-
+  _w = new BasicDialogWidget(_contents);
   connect(this, SIGNAL(modified()), KstApp::inst()->document(), SLOT(wasModified())); //FIXME this should be in KstDataDialog constructor...
+
+  _inputOutputGrid = 0L;
 }
 
 
-KstBasicDialog::~KstBasicDialog() {
+KstBasicDialogI::~KstBasicDialogI() {
 }
 
 
-void KstBasicDialog::update() {
+void KstBasicDialogI::update() {
   //called upon showing the dialog either in 'edit' mode or 'new' mode
 }
 
 
-bool KstBasicDialog::newObject() {
+bool KstBasicDialogI::newObject() {
   //called upon clicking 'ok' in 'new' mode
   //return false if the specified objects can't be made, otherwise true
   return true;
 }
 
 
-bool KstBasicDialog::editObject() {
+bool KstBasicDialogI::editObject() {
   //called upon clicking 'ok' in 'edit' mode
   //return false if the specified objects can't be editted, otherwise true
   return true;
 }
 
 
-bool KstBasicDialog::editSingleObject(KstBasicPluginPtr ptr) {
+bool KstBasicDialogI::editSingleObject(KstBasicPluginPtr ptr) {
   Q_UNUSED(ptr)
   return true;
 }
 
 
-void KstBasicDialog::fillFieldsForEdit() {
+void KstBasicDialogI::fillFieldsForEdit() {
 
   KstBasicPluginPtr ptr = kst_cast<KstBasicPlugin>(_dp);
   if (!ptr) {
@@ -92,7 +106,7 @@ void KstBasicDialog::fillFieldsForEdit() {
 }
 
 
-void KstBasicDialog::fillFieldsForNew() {
+void KstBasicDialogI::fillFieldsForNew() {
   _tagName->setText(defaultTag);
   _legendText->setText(defaultTag);
 
@@ -101,6 +115,6 @@ void KstBasicDialog::fillFieldsForNew() {
   setFixedHeight(height());
 }
 
-#include "kstbasicdialog.moc"
+#include "kstbasicdialog_i.moc"
 
 // vim: ts=2 sw=2 et

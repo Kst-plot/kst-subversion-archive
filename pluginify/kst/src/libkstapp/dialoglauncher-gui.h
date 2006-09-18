@@ -26,7 +26,9 @@ class KstGuiDialogs : public KstDialogs {
 
     void showHistogramDialog(const QString& name = QString::null);
 
-    void showPluginDialog(const QString& name = QString::null);
+    void showCPluginDialog(const QString& name = QString::null);
+
+    void showBasicPluginDialog(const QString& name = QString::null);
 
     void showEquationDialog(const QString& name = QString::null);
 

@@ -19,8 +19,6 @@
 
 #include <kstbasicplugin.h>
 
-#include <kmessagebox.h>
-
 class TestPlugin : public KstBasicPlugin {
   Q_OBJECT
   public:
@@ -39,14 +37,6 @@ class TestPlugin : public KstBasicPlugin {
     virtual QString propertyString() const { return "Test Plugin"; }
 
     virtual KstDataObjectPtr makeDuplicate(KstDataObjectDataObjectMap&) { return 0; }
-
-  protected slots:
-    virtual void showNewDialog() {
-        KMessageBox::information( 0, "insert testplugin config widget here :)", "testpluginconfig" );
-    }
-    virtual void showEditDialog() {
-      KMessageBox::information( 0, "insert testplugin config widget here :)", "testpluginconfig" );
-    }
 };
 
 #endif
