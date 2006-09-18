@@ -253,6 +253,75 @@ void KstBasicDialogI::fillFieldsForEdit() {
 
   //Update the various widgets...
 
+  //input vectors...
+  QStringList iv = ptr->inputVectors();
+  QStringList::ConstIterator ivI = iv.begin();
+  for (; ivI != iv.end(); ++ivI) {
+    KstVectorPtr p = ptr->inputVector(*ivI);
+    QString t = p ? p->tagName() : QString::null;
+    if (VectorSelector *w = vector(*ivI)) {
+      w->setSelection(t);
+    }
+  }
+
+  //input scalars...
+  QStringList is = ptr->inputScalars();
+  QStringList::ConstIterator isI = is.begin();
+  for (; isI != is.end(); ++isI) {
+    KstScalarPtr p = ptr->inputScalar(*isI);
+    QString t = p ? p->tagName() : QString::null;
+    if (ScalarSelector *w = scalar(*isI)) {
+      w->setSelection(t);
+    }
+  }
+
+  //input strings...
+  QStringList istr = ptr->inputStrings();
+  QStringList::ConstIterator istrI = istr.begin();
+  for (; istrI != istr.end(); ++istrI) {
+    KstStringPtr p = ptr->inputString(*istrI);
+    QString t = p ? p->tagName() : QString::null;
+    if (StringSelector *w = string(*istrI)) {
+      w->setSelection(t);
+    }
+  }
+
+  //output vectors...
+  QStringList ov = ptr->outputVectors();
+  QStringList::ConstIterator ovI = ov.begin();
+  for (; ovI != ov.end(); ++ovI) {
+    KstVectorPtr p = ptr->outputVector(*ovI);
+    QString t = p ? p->tagName() : QString::null;
+    if (QLineEdit *w = output(*ovI)) {
+      w->setText(t);
+      w->setEnabled(false);
+    }
+  }
+
+  //output scalars...
+  QStringList os = ptr->outputScalars();
+  QStringList::ConstIterator osI = os.begin();
+  for (; osI != os.end(); ++osI) {
+    KstScalarPtr p = ptr->outputScalar(*osI);
+    QString t = p ? p->tagName() : QString::null;
+    if (QLineEdit *w = output(*osI)) {
+      w->setText(t);
+      w->setEnabled(false);
+    }
+  }
+
+  //ouput strings...
+  QStringList ostr = ptr->outputStrings();
+  QStringList::ConstIterator ostrI = ostr.begin();
+  for (; ostrI != ostr.end(); ++ostrI) {
+    KstStringPtr p = ptr->outputString(*ostrI);
+    QString t = p ? p->tagName() : QString::null;
+    if (QLineEdit *w = output(*ostrI)) {
+      w->setText(t);
+      w->setEnabled(false);
+    }
+  }
+
   ptr->unlock();
 
   adjustSize();
@@ -268,6 +337,26 @@ void KstBasicDialogI::fillFieldsForNew() {
   adjustSize();
   resize(minimumSizeHint());
   setFixedHeight(height());
+}
+
+
+VectorSelector *KstBasicDialogI::vector(const QString &name) const {
+  return ::qt_cast<VectorSelector*>(_w->_inputOutputFrame->child(name.latin1()));
+}
+
+
+ScalarSelector *KstBasicDialogI::scalar(const QString &name) const {
+  return ::qt_cast<ScalarSelector*>(_w->_inputOutputFrame->child(name.latin1()));
+}
+
+
+StringSelector *KstBasicDialogI::string(const QString &name) const {
+  return ::qt_cast<StringSelector*>(_w->_inputOutputFrame->child(name.latin1()));
+}
+
+
+QLineEdit *KstBasicDialogI::output(const QString &name) const {
+  return ::qt_cast<QLineEdit*>(_w->_inputOutputFrame->child(name.latin1()));
 }
 
 #include "kstbasicdialog_i.moc"

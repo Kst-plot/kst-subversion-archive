@@ -24,6 +24,11 @@
 #include "kstdatadialog.h"
 #include "kstbasicplugin.h"
 
+class VectorSelector;
+class ScalarSelector;
+class StringSelector;
+class QLineEdit;
+
 class BasicDialogWidget;
 
 class KST_EXPORT KstBasicDialogI : public KstDataDialog {
@@ -56,6 +61,11 @@ class KST_EXPORT KstBasicDialogI : public KstDataDialog {
     void createInputScalar(const QString &name, QWidget *parent, QGridLayout *grid, int row);
     void createInputString(const QString &name, QWidget *parent, QGridLayout *grid, int row);
     void createOutputWidget(const QString &name, QWidget *parent, QGridLayout *grid, int row);
+
+    VectorSelector *vector(const QString &name) const;
+    ScalarSelector *scalar(const QString &name) const;
+    StringSelector *string(const QString &name) const;
+    QLineEdit *output(const QString &name) const;
 
     static const QString& defaultTag;
     static QGuardedPtr<KstBasicDialogI> _inst;
