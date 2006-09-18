@@ -118,6 +118,30 @@ KstObject::UpdateType KstBasicPlugin::update(int updateCounter) {
 
   //Perform any necessary operations on the outputs
 
+  //output vectors...
+  QStringList ov = outputVectors();
+  QStringList::ConstIterator ovI = ov.begin();
+  for (; ovI != ov.end(); ++ovI) {
+    if (KstVectorPtr o = outputVector(*ovI)) {
+      vectorRealloced(o, o->value(), o->length());
+      o->setDirty();
+      o->setNewAndShift(o->length(), o->numShift());
+      o->update(updateCounter);
+    }
+  }
+
+  //output scalars...
+  QStringList os = outputScalars();
+  QStringList::ConstIterator osI = os.begin();
+  for (; osI != os.end(); ++osI) {
+    if (KstScalarPtr o = outputScalar(*osI)) {
+      o->update(updateCounter);
+    }
+  }
+
+  //ouput strings...
+  //TODO
+
   return setLastUpdateResult(depUpdated ? UPDATE : NO_CHANGE);
 }
 
@@ -205,8 +229,7 @@ bool KstBasicPlugin::inputsExist() const {
   //First, check the inputVectors...
   QStringList iv = inputVectors();
   QStringList::ConstIterator ivI = iv.begin();
-  for (; ivI != iv.end(); ++ivI)
-  {
+  for (; ivI != iv.end(); ++ivI) {
     if (!inputVector(*ivI))
       return false;
   }
@@ -214,8 +237,7 @@ bool KstBasicPlugin::inputsExist() const {
   //Now, check the inputScalars...
   QStringList is = inputScalars();
   QStringList::ConstIterator isI = is.begin();
-  for (; isI != is.end(); ++isI)
-  {
+  for (; isI != is.end(); ++isI) {
     if (!inputScalar(*isI))
       return false;
   }
@@ -223,8 +245,7 @@ bool KstBasicPlugin::inputsExist() const {
   //Finally, check the inputStrings...
   QStringList istr = inputStrings();
   QStringList::ConstIterator istrI = istr.begin();
-  for (; istrI != istr.end(); ++istrI)
-  {
+  for (; istrI != istr.end(); ++istrI) {
     if (!inputString(*istrI))
       return false;
   }
@@ -238,8 +259,7 @@ bool KstBasicPlugin::updateDependentInput(int updateCounter, bool force) const {
   //First, update the inputVectors...
   QStringList iv = inputVectors();
   QStringList::ConstIterator ivI = iv.begin();
-  for (; ivI != iv.end(); ++ivI)
-  {
+  for (; ivI != iv.end(); ++ivI) {
     depUpdated =
         UPDATE == inputVector(*ivI)->update(updateCounter) || depUpdated;
   }
@@ -247,8 +267,7 @@ bool KstBasicPlugin::updateDependentInput(int updateCounter, bool force) const {
   //Now, update the inputScalars...
   QStringList is = inputScalars();
   QStringList::ConstIterator isI = is.begin();
-  for (; isI != is.end(); ++isI)
-  {
+  for (; isI != is.end(); ++isI) {
     depUpdated =
         UPDATE == inputScalar(*isI)->update(updateCounter) || depUpdated;
   }
@@ -256,8 +275,7 @@ bool KstBasicPlugin::updateDependentInput(int updateCounter, bool force) const {
   //Finally, update the inputStrings...
   QStringList istr = inputStrings();
   QStringList::ConstIterator istrI = istr.begin();
-  for (; istrI != istr.end(); ++istrI)
-  {
+  for (; istrI != istr.end(); ++istrI) {
     depUpdated =
         UPDATE == inputString(*istrI)->update(updateCounter) || depUpdated;
   }
