@@ -95,13 +95,14 @@ void KstDataObject::cleanupForExit() {
   pluginInfo.clear(); //FIXME?
 }
 
-KstDataObjectPtr KstDataObject::createPlugin( KService::Ptr service )
+
+KstDataObjectPtr KstDataObject::createPlugin(KService::Ptr service)
 {
   int err = 0;
   KstDataObject *object =
-      KParts::ComponentFactory::createInstanceFromService<KstDataObject>( service, 0, "",
-      QStringList(), &err );
-  if ( object ) {
+      KParts::ComponentFactory::createInstanceFromService<KstDataObject>(service, 0, "",
+      QStringList(), &err);
+  if (object) {
     KstDebug::self()->log(i18n("Loaded data-object plugin %1.").arg(service->name()));
   }
   else {
@@ -109,6 +110,7 @@ KstDataObjectPtr KstDataObject::createPlugin( KService::Ptr service )
   }
   return object;
 }
+
 
 // Scans for plugins and stores the information for them
 void KstDataObject::scanPlugins() {
@@ -119,11 +121,12 @@ void KstDataObject::scanPlugins() {
 
   KService::List sl = KServiceType::offers("Kst Data Object");
   for (KService::List::ConstIterator it = sl.begin(); it != sl.end(); ++it) {
-    if ( KstDataObjectPtr object = createPlugin( *it ) ) {
-      pluginInfo.insert( ( *it) ->name(), KstDataObjectPtr( object ) );
+    if (KstDataObjectPtr object = createPlugin(*it)) {
+      pluginInfo.insert(( *it) ->name(), KstDataObjectPtr(object));
     }
   }
 }
+
 
 QStringList KstDataObject::pluginList() {
   if (pluginInfo.isEmpty()) {
@@ -132,22 +135,23 @@ QStringList KstDataObject::pluginList() {
   return pluginInfo.keys();
 }
 
-KstDataObjectPtr KstDataObject::plugin( const QString &name )
-{
-    if ( pluginInfo.contains( name ) )
-        return pluginInfo[ name ];
+
+KstDataObjectPtr KstDataObject::plugin(const QString &name) {
+    if ( pluginInfo.contains(name) )
+        return pluginInfo[name];
     else
         return 0;
 }
 
-KstDataObjectPtr KstDataObject::createPlugin( const QString &name )
+
+KstDataObjectPtr KstDataObject::createPlugin(const QString &name)
 {
   KService::List sl = KServiceType::offers("Kst Data Object");
   for (KService::List::ConstIterator it = sl.begin(); it != sl.end(); ++it) {
-    if ( ( *it )->name() != name ) {
+    if (( *it )->name() != name) {
       continue;
     }
-    else if ( KstDataObjectPtr object = createPlugin( *it ) ) {
+    else if (KstDataObjectPtr object = createPlugin( *it )) {
       return object;
     }
   }

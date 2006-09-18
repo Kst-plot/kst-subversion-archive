@@ -59,8 +59,20 @@ void KstDataDialog::init()
 }
 
 
+void KstDataDialog::update()
+{
+}
+
+
 void KstDataDialog::show()
 {
+    showNew(QString::null);
+}
+
+
+void KstDataDialog::showNew(const QString& field)
+{
+    Q_UNUSED(field) //used by plugin dialogs which inherit this class
     _newDialog = true;
     _dp = 0L;
 
@@ -78,11 +90,6 @@ void KstDataDialog::show()
     raise();
     _ok->setEnabled(true);
     _cancel->setEnabled(true);
-}
-
-
-void KstDataDialog::update()
-{
 }
 
 

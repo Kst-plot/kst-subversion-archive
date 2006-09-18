@@ -43,13 +43,17 @@ KstBasicPlugin::KstBasicPlugin(const QDomElement& e)
 KstBasicPlugin::~KstBasicPlugin() {
 }
 
+
 void KstBasicPlugin::showNewDialog() {
-  KstDialogs::self()->showBasicPluginDialog();
+  //FIXME shouldn't tagName() == propertyString() ??
+  KstDialogs::self()->showBasicPluginDialog(propertyString());
 }
+
 
 void KstBasicPlugin::showEditDialog() {
   KstDialogs::self()->showBasicPluginDialog(tagName());
 }
+
 
 KstVectorPtr KstBasicPlugin::inputVector(const QString& vector) const {
   KstVectorMap::ConstIterator i = _inputVectors.find(vector);

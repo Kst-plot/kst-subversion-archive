@@ -599,14 +599,6 @@ KstDataManagerI::~KstDataManagerI() {
 }
 
 
-void KstDataManagerI::newPluginConfigDialog( const QString &name )
-{
-  KstDataObjectPtr ptr = KstDataObject::plugin( name );
-  Q_ASSERT( ptr );
-  ptr->showDialog();
-}
-
-
 void KstDataManagerI::show_I() {
   show();
   raise();
@@ -950,9 +942,10 @@ void KstDataManagerI::new_I() {
       KstImageDialogI::globalInstance()->show();
   else if ( p == i18n( "CSD" ) )
       KstCsdDialogI::globalInstance()->show();
-  else if ( newPlugins.contains( p ) )
-      newPluginConfigDialog( p );
-  else if ( oldPlugins.contains( p ) )
+  else if ( newPlugins.contains( p ) ) {
+    KstDataObjectPtr ptr = KstDataObject::plugin(p);
+    ptr->showDialog();
+  } else if ( oldPlugins.contains( p ) )
       KstPluginDialogI::globalInstance()->show();
 }
 

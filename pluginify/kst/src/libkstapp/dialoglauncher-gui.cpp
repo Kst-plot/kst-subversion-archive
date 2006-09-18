@@ -37,49 +37,49 @@ KstGuiDialogs::~KstGuiDialogs() {
 }
 
 
-void KstGuiDialogs::showHistogramDialog(const QString& name) {
-  if ( name.isEmpty() )
-    KstHsDialogI::globalInstance()->show();
+void KstGuiDialogs::showHistogramDialog(const QString& name, bool edit) {
+  if (!edit)
+    KstHsDialogI::globalInstance()->showNew(name);
   else
     KstHsDialogI::globalInstance()->showEdit(name);
 }
 
 
-void KstGuiDialogs::showCPluginDialog(const QString& name) {
-  if ( name.isEmpty() )
-    KstPluginDialogI::globalInstance()->show();
+void KstGuiDialogs::showCPluginDialog(const QString& name, bool edit) {
+  if (!edit)
+    KstPluginDialogI::globalInstance()->showNew(name);
   else
     KstPluginDialogI::globalInstance()->showEdit(name);
 }
 
 
-void KstGuiDialogs::showBasicPluginDialog(const QString& name) {
-  if ( name.isEmpty() )
-    KstBasicDialogI::globalInstance()->show();
+void KstGuiDialogs::showBasicPluginDialog(const QString& name, bool edit) {
+  if (!edit)
+    KstBasicDialogI::globalInstance()->showNew(name);
   else
     KstBasicDialogI::globalInstance()->showEdit(name);
 }
 
 
-void KstGuiDialogs::showEquationDialog(const QString& name) {
-  if ( name.isEmpty() )
-    KstEqDialogI::globalInstance()->show();
+void KstGuiDialogs::showEquationDialog(const QString& name, bool edit) {
+  if (!edit)
+    KstEqDialogI::globalInstance()->showNew(name);
   else
     KstEqDialogI::globalInstance()->showEdit(name);
 }
 
 
-void KstGuiDialogs::showCSDDialog(const QString& name) {
-  if ( name.isEmpty() )
-    KstCsdDialogI::globalInstance()->show();
+void KstGuiDialogs::showCSDDialog(const QString& name, bool edit) {
+  if (!edit)
+    KstCsdDialogI::globalInstance()->showNew(name);
   else
     KstCsdDialogI::globalInstance()->showEdit(name);
 }
 
 
-void KstGuiDialogs::showPSDDialog(const QString& name) {
-  if ( name.isEmpty() )
-    KstPsdDialogI::globalInstance()->show();
+void KstGuiDialogs::showPSDDialog(const QString& name, bool edit) {
+  if (!edit)
+    KstPsdDialogI::globalInstance()->showNew(name);
   else
     KstPsdDialogI::globalInstance()->showEdit(name);
 }
@@ -102,9 +102,9 @@ void KstGuiDialogs::newVectorDialog(QWidget *parent, const char *createdSlot, co
 }
 
 
-void KstGuiDialogs::showVectorDialog(const QString& name) {
-  if ( name.isEmpty() )
-    KstVectorDialogI::globalInstance()->show();
+void KstGuiDialogs::showVectorDialog(const QString& name, bool edit) {
+  if (!edit)
+    KstVectorDialogI::globalInstance()->showNew(name);
   else
     KstVectorDialogI::globalInstance()->showEdit(name);
 }
@@ -127,25 +127,25 @@ void KstGuiDialogs::newMatrixDialog(QWidget *parent, const char *createdSlot, co
 }
 
 
-void KstGuiDialogs::showMatrixDialog(const QString& name) {
-  if ( name.isEmpty() )
-    KstMatrixDialogI::globalInstance()->show();
+void KstGuiDialogs::showMatrixDialog(const QString& name, bool edit) {
+  if (!edit)
+    KstMatrixDialogI::globalInstance()->showNew(name);
   else
     KstMatrixDialogI::globalInstance()->showEdit(name);
 }
 
 
-void KstGuiDialogs::showImageDialog(const QString& name) {
-  if ( name.isEmpty() )
-    KstImageDialogI::globalInstance()->show();
+void KstGuiDialogs::showImageDialog(const QString& name, bool edit) {
+  if (!edit)
+    KstImageDialogI::globalInstance()->showNew(name);
   else
     KstImageDialogI::globalInstance()->showEdit(name);
 }
 
 
-void KstGuiDialogs::showCurveDialog(const QString& name) {
-  if ( name.isEmpty() )
-    KstCurveDialogI::globalInstance()->show();
+void KstGuiDialogs::showCurveDialog(const QString& name, bool edit) {
+  if (!edit)
+    KstCurveDialogI::globalInstance()->showNew(name);
   else
     KstCurveDialogI::globalInstance()->showEdit(name);
 }

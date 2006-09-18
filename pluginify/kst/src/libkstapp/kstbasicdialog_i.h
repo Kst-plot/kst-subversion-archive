@@ -37,15 +37,30 @@ class KST_EXPORT KstBasicDialogI : public KstDataDialog {
     virtual void update();
     virtual bool newObject();
     virtual bool editObject();
+    virtual void showNew(const QString &field);
+
+  signals:
+    void pluginChanged();
 
   protected:
     virtual void fillFieldsForEdit();
     virtual void fillFieldsForNew();
 
+  private slots:
+    void init();
+
   private:
     bool editSingleObject(KstBasicPluginPtr ptr);
+
+    void createInputVector(const QString &name, QWidget *parent, QGridLayout *grid, int row);
+    void createInputScalar(const QString &name, QWidget *parent, QGridLayout *grid, int row);
+    void createInputString(const QString &name, QWidget *parent, QGridLayout *grid, int row);
+    void createOutputWidget(const QString &name, QWidget *parent, QGridLayout *grid, int row);
+
     static const QString& defaultTag;
     static QGuardedPtr<KstBasicDialogI> _inst;
+
+    QString _pluginName;
     BasicDialogWidget *_w;
 
     // layout items

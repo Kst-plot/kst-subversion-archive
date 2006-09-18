@@ -16,8 +16,9 @@
  ***************************************************************************/
 
 // include files for Qt
-#include <qlineedit.h>
 #include <qvbox.h>
+#include <qlayout.h>
+#include <qlineedit.h>
 
 // include files for KDE
 
@@ -49,13 +50,161 @@ KstBasicDialogI::KstBasicDialogI(QWidget* parent, const char* name, bool modal, 
 : KstDataDialog(parent, name, modal, fl) {
   setMultiple(false);
   _w = new BasicDialogWidget(_contents);
+  connect( this, SIGNAL(pluginChanged()), this, SLOT(init()));
   connect(this, SIGNAL(modified()), KstApp::inst()->document(), SLOT(wasModified())); //FIXME this should be in KstDataDialog constructor...
 
+  _pluginName = QString::null;
   _inputOutputGrid = 0L;
 }
 
 
 KstBasicDialogI::~KstBasicDialogI() {
+}
+
+
+void KstBasicDialogI::init() {
+
+  KstBasicPluginPtr ptr;
+  if (_newDialog)
+    ptr = kst_cast<KstBasicPlugin>(_dp);
+  else
+    ptr = kst_cast<KstBasicPlugin>(
+        KstDataObject::plugin(_pluginName));
+
+  Q_ASSERT(ptr); //shouldn't happen
+
+  int cnt = 0;
+  int numInputOutputs = ptr->inputVectors().count()
+                      + ptr->inputScalars().count()
+                      + ptr->inputStrings().count()
+                      + ptr->outputVectors().count()
+                      + ptr->outputScalars().count()
+                      + ptr->outputStrings().count();
+
+  _inputOutputGrid = new QGridLayout(_w->_inputOutputFrame, numInputOutputs + 1, 2, 0, 8);
+  _inputOutputGrid->setColStretch(1,1);
+  _inputOutputGrid->setColStretch(0,0);
+
+  //create input widgets
+  //First, the inputVectors...
+  QStringList iv = ptr->inputVectors();
+  QStringList::ConstIterator ivI = iv.begin();
+  for (; ivI != iv.end(); ++ivI) {
+      createInputVector(*ivI,
+                          _w->_inputOutputFrame,
+                          _inputOutputGrid, ++cnt);
+  }
+
+  //Now, the inputScalars...
+  QStringList is = ptr->inputScalars();
+  QStringList::ConstIterator isI = is.begin();
+  for (; isI != is.end(); ++isI) {
+      createInputScalar(*isI,
+                          _w->_inputOutputFrame,
+                          _inputOutputGrid, ++cnt);
+  }
+
+  //Finally, the inputStrings...
+  QStringList istr = ptr->inputStrings();
+  QStringList::ConstIterator istrI = istr.begin();
+  for (; istrI != istr.end(); ++istrI) {
+      createInputString(*istrI,
+                          _w->_inputOutputFrame,
+                          _inputOutputGrid, ++cnt);
+  }
+
+  //create sep
+  cnt++;
+  QFrame* line = new QFrame(_w->_inputOutputFrame);
+  line->setFrameShadow(QFrame::Sunken);
+  line->setFrameShape(QFrame::HLine);
+  _inputOutputGrid->addMultiCellWidget(line, cnt, cnt, 0, 1);
+  line->show();
+  cnt++;
+
+  //create output widgets
+  //output vectors...
+  QStringList ov = ptr->outputVectors();
+  QStringList::ConstIterator ovI = ov.begin();
+  for (; ovI != ov.end(); ++ovI) {
+      createOutputWidget(*ovI,
+                          _w->_inputOutputFrame,
+                          _inputOutputGrid, ++cnt);
+  }
+
+  //output scalars...
+  QStringList os = ptr->outputScalars();
+  QStringList::ConstIterator osI = os.begin();
+  for (; osI != os.end(); ++osI) {
+      createOutputWidget(*osI,
+                          _w->_inputOutputFrame,
+                          _inputOutputGrid, ++cnt);
+  }
+
+  //ouput strings...
+  QStringList ostr = ptr->outputStrings();
+  QStringList::ConstIterator ostrI = ostr.begin();
+  for (; ostrI != ostr.end(); ++ostrI) {
+      createOutputWidget(*ostrI,
+                          _w->_inputOutputFrame,
+                          _inputOutputGrid, ++cnt);
+  }
+}
+
+
+void KstBasicDialogI::createInputVector(const QString &name, QWidget *parent, QGridLayout *grid, int row) {
+  QLabel *label = new QLabel(name, parent);
+
+  VectorSelector *widget = new VectorSelector(parent,
+                                              name.latin1());
+  connect(widget, SIGNAL(newVectorCreated(const QString&)),
+          this, SIGNAL(modified()));
+
+  grid->addWidget(label, row, 0);
+  label->show();
+  grid->addWidget(widget, row, 1);
+  widget->show();
+}
+
+
+void KstBasicDialogI::createInputScalar(const QString &name, QWidget *parent, QGridLayout *grid, int row) {
+  QLabel *label = new QLabel(name, parent);
+
+  ScalarSelector *widget = new ScalarSelector(parent,
+                                              name.latin1());
+  connect(widget, SIGNAL(newScalarCreated()),
+          this, SIGNAL(modified()));
+  widget->allowDirectEntry(true);
+
+  grid->addWidget(label, row, 0);
+  label->show();
+  grid->addWidget(widget, row, 1);
+  widget->show();
+}
+
+
+void KstBasicDialogI::createInputString(const QString &name, QWidget *parent, QGridLayout *grid, int row) {
+  QLabel *label = new QLabel(name, parent);
+
+  StringSelector *widget = new StringSelector(parent,
+                                              name.latin1());
+  connect(widget, SIGNAL(newStringCreated()),
+          this, SIGNAL(modified()));
+
+  grid->addWidget(label, row, 0);
+  label->show();
+  grid->addWidget(widget, row, 1);
+  widget->show();
+}
+
+
+void KstBasicDialogI::createOutputWidget(const QString &name, QWidget *parent, QGridLayout *grid, int row) {
+  QLabel *label = new QLabel(name, parent);
+  QLineEdit *widget = new QLineEdit(parent, name.latin1());
+  grid->addWidget(label, row, 0);
+  label->show();
+  grid->addWidget(widget, row, 1);
+  widget->show();
 }
 
 
@@ -78,6 +227,13 @@ bool KstBasicDialogI::editObject() {
 }
 
 
+void KstBasicDialogI::showNew(const QString &field) {
+  _pluginName = field;
+  emit pluginChanged();
+  KstDataDialog::showNew(field);
+}
+
+
 bool KstBasicDialogI::editSingleObject(KstBasicPluginPtr ptr) {
   Q_UNUSED(ptr)
   return true;
@@ -87,9 +243,8 @@ bool KstBasicDialogI::editSingleObject(KstBasicPluginPtr ptr) {
 void KstBasicDialogI::fillFieldsForEdit() {
 
   KstBasicPluginPtr ptr = kst_cast<KstBasicPlugin>(_dp);
-  if (!ptr) {
-    return;
-  }
+  if (!ptr)
+    return; //shouldn't happen
 
   ptr->readLock();
 

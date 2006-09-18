@@ -209,8 +209,9 @@
     <slot>close()</slot>
     <slot>reject()</slot>
     <slot>init()</slot>
-    <slot>show()</slot>
     <slot>update()</slot>
+    <slot>show()</slot>
+    <slot>showNew( const QString &amp; field )</slot>
     <slot>showEdit( const QString &amp; field )</slot>
     <slot returnType="bool">newObject()</slot>
     <slot returnType="bool">editObject()</slot>
