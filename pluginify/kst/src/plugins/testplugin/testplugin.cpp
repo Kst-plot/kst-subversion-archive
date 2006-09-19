@@ -16,7 +16,6 @@
  ***************************************************************************/
 #include "testplugin.h"
 
-#include <kdebug.h>
 #include <kgenericfactory.h>
 
 static const QString& VECTOR_IN = KGlobal::staticQString("Vector In");

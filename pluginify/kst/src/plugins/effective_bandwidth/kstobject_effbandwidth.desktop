@@ -1,0 +1,10 @@
+[Desktop Entry]
+Encoding=UTF-8
+Type=Service
+ServiceTypes=Kst Data Object
+X-KDE-ModuleType=Plugin
+X-KDE-Library=kstobject_effbandwidth
+X-Kst-Plugin-Library=kstobject_effbandwidth
+X-Kst-Plugin-Author=Duncan Hanson
+Name=Effective Bandwidth
+Comment=Calculates effective bandwidth from an amplitude spectrum.

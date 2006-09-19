@@ -1,12 +1,11 @@
-installdir=$(kde_moduledir)/kstplugins
-INCLUDES=-I$(srcdir)/../../kst $(all_includes)
+INCLUDES=-I$(top_srcdir)/kst -I$(top_srcdir)/kst/src/libkst -I$(top_srcdir)/kst/src/libkstmath $(all_includes)
 
-install_LTLIBRARIES = effective_bandwidth.la
+kde_module_LTLIBRARIES=kstobject_effbandwidth.la
 
-effective_bandwidth_la_LDFLAGS = -module $(KDE_PLUGIN) $(all_libraries)
-effective_bandwidth_la_LIBADD = $(GSL_LIBS)
-effective_bandwidth_la_SOURCES = effective_bandwidth.cpp
+kstobject_effbandwidth_la_LDFLAGS=$(all_libraries) -module -avoid-version
+kstobject_effbandwidth_la_SOURCES=effective_bandwidth.cpp
+
+services_DATA=kstobject_effbandwidth.desktop
+servicesdir=$(kde_servicesdir)/kst
 
 METASOURCES=AUTO
-
-install_DATA=effective_bandwidth.xml
