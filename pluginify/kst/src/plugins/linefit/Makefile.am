@@ -3,7 +3,7 @@ INCLUDES=-I$(top_srcdir)/kst -I$(top_srcdir)/kst/src/widgets -I$(top_srcdir)/kst
 kde_module_LTLIBRARIES=kst_linefit.la
 
 kst_linefit_la_LDFLAGS=$(all_libraries) -module -avoid-version
-kst_linefit_la_SOURCES=linefitplugin.cpp linefitdialog_i.cpp linefitdialogwidget.ui
+kst_linefit_la_SOURCES=linefit.cpp
 
 services_DATA=kst_linefit.desktop
 servicesdir=$(kde_servicesdir)/kst

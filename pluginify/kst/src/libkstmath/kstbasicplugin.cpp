@@ -44,6 +44,12 @@ KstBasicPlugin::~KstBasicPlugin() {
 }
 
 
+KstDataObjectPtr KstBasicPlugin::makeDuplicate(KstDataObjectDataObjectMap &map) {
+  //FIXME I can't duplicate as this is an abstract class...
+  Q_UNUSED( map )
+  return 0;
+}
+
 void KstBasicPlugin::showNewDialog() {
   //FIXME shouldn't tagName() == propertyString() ??
   KstDialogs::self()->showBasicPluginDialog(propertyString());
@@ -175,7 +181,10 @@ KstObject::UpdateType KstBasicPlugin::update(int updateCounter) {
 
   //Call the plugins algorithm to operate on the inputs
   //and produce the outputs
-  algorithm();
+  if ( !algorithm() ) {
+    KstDebug::self()->log(i18n("There is an error in the %1 algorithm.").arg(propertyString()), KstDebug::Error);
+    return lastUpdateResult();
+  }
 
   //Perform update on the outputs
   updateOutput(updateCounter);

@@ -151,7 +151,7 @@ void KstBasicDialogI::init() {
 
 
 void KstBasicDialogI::createInputVector(const QString &name, int row) {
-  QLabel *label = new QLabel(name, _w->_frame);
+  QLabel *label = new QLabel(name + ":", _w->_frame);
 
   VectorSelector *widget = new VectorSelector(_w->_frame,
                                               name.latin1());
@@ -166,7 +166,7 @@ void KstBasicDialogI::createInputVector(const QString &name, int row) {
 
 
 void KstBasicDialogI::createInputScalar(const QString &name, int row) {
-  QLabel *label = new QLabel(name, _w->_frame);
+  QLabel *label = new QLabel(name + ":", _w->_frame);
 
   ScalarSelector *widget = new ScalarSelector(_w->_frame,
                                               name.latin1());
@@ -182,7 +182,7 @@ void KstBasicDialogI::createInputScalar(const QString &name, int row) {
 
 
 void KstBasicDialogI::createInputString(const QString &name, int row) {
-  QLabel *label = new QLabel(name, _w->_frame);
+  QLabel *label = new QLabel(name + ":", _w->_frame);
 
   StringSelector *widget = new StringSelector(_w->_frame,
                                               name.latin1());
@@ -197,7 +197,7 @@ void KstBasicDialogI::createInputString(const QString &name, int row) {
 
 
 void KstBasicDialogI::createOutputWidget(const QString &name, int row) {
-  QLabel *label = new QLabel(name, _w->_frame);
+  QLabel *label = new QLabel(name + ":", _w->_frame);
   QLineEdit *widget = new QLineEdit(_w->_frame, name.latin1());
   _grid->addWidget(label, row, 0);
   label->show();

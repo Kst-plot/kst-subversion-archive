@@ -35,8 +35,6 @@ class EffBandwidth : public KstBasicPlugin {
     virtual QStringList outputStringList() const;
 
     virtual QString propertyString() const { return "Effective Bandwidth"; }
-
-    virtual KstDataObjectPtr makeDuplicate(KstDataObjectDataObjectMap&) { return 0; }
 };
 
 #endif

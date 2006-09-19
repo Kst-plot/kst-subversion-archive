@@ -1,7 +1,7 @@
 /***************************************************************************
-                   testplugin.cpp
+                   linefit.h
                              -------------------
-    begin                : 09/04/06
+    begin                : 09/08/06
     copyright            : (C) 2006 The University of Toronto
     email                :
  ***************************************************************************/
@@ -14,27 +14,29 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef TESTPLUGIN_H
-#define TESTPLUGIN_H
+#ifndef LINEFIT_H
+#define LINEFIT_H
 
 #include <kstbasicplugin.h>
 
-class TestPlugin : public KstBasicPlugin {
+class LineFit : public KstBasicPlugin {
   Q_OBJECT
-  public:
-    TestPlugin(QObject *parent, const char *name, const QStringList &args);
-    virtual ~TestPlugin();
+public:
 
-    virtual bool algorithm();
+  LineFit(QObject *parent, const char *name, const QStringList &args);
+  virtual ~LineFit();
 
-    virtual QStringList inputVectorList() const;
-    virtual QStringList inputScalarList() const;
-    virtual QStringList inputStringList() const;
-    virtual QStringList outputVectorList() const;
-    virtual QStringList outputScalarList() const;
-    virtual QStringList outputStringList() const;
+  //algorithm
+  virtual bool algorithm();
 
-    virtual QString propertyString() const { return "Test Plugin"; }
+  virtual QStringList inputVectorList() const;
+  virtual QStringList inputScalarList() const;
+  virtual QStringList inputStringList() const;
+  virtual QStringList outputVectorList() const;
+  virtual QStringList outputScalarList() const;
+  virtual QStringList outputStringList() const;
+
+  virtual QString propertyString() const { return "Line Fit"; }
 };
 
 #endif
