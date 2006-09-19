@@ -21,6 +21,8 @@
 #include <qlineedit.h>
 
 // include files for KDE
+#include <klocale.h>
+#include <kmessagebox.h>
 
 #include "kstbasicdialog_i.h"
 #include "basicdialogwidget.h"
@@ -50,7 +52,6 @@ KstBasicDialogI::KstBasicDialogI(QWidget* parent, const char* name, bool modal, 
 : KstDataDialog(parent, name, modal, fl) {
   setMultiple(false);
   _w = new BasicDialogWidget(_contents);
-  connect( this, SIGNAL(pluginChanged()), this, SLOT(init()));
   connect(this, SIGNAL(modified()), KstApp::inst()->document(), SLOT(wasModified())); //FIXME this should be in KstDataDialog constructor...
 
   _pluginName = QString::null;
@@ -61,11 +62,10 @@ KstBasicDialogI::KstBasicDialogI(QWidget* parent, const char* name, bool modal, 
 KstBasicDialogI::~KstBasicDialogI() {
 }
 
-
 void KstBasicDialogI::init() {
 
   KstBasicPluginPtr ptr;
-  if (_newDialog)
+  if (!_newDialog)
     ptr = kst_cast<KstBasicPlugin>(_dp);
   else
     ptr = kst_cast<KstBasicPlugin>(
@@ -216,6 +216,74 @@ void KstBasicDialogI::update() {
 bool KstBasicDialogI::newObject() {
   //called upon clicking 'ok' in 'new' mode
   //return false if the specified objects can't be made, otherwise true
+
+  //Need to create a new object rather than use the one in KstDataObject pluginList
+  KstBasicPluginPtr ptr = kst_cast<KstBasicPlugin>(
+      KstDataObject::createPlugin(_pluginName));
+  Q_ASSERT(ptr); //should never happen...
+
+  ptr->writeLock();
+
+  QString tagName = _tagName->text();
+
+  if (tagName != defaultTag && KstData::self()->dataTagNameNotUnique(tagName, true, this)) {
+    _tagName->setFocus();
+    return false;
+  }
+
+  if (tagName == defaultTag) {
+    tagName = KST::suggestPluginName(ptr->propertyString());
+  }
+  ptr->setTagName(tagName);
+
+  ptr->unlock();
+
+  // Save the vectors and scalars
+  if (!editSingleObject(ptr) || !ptr->isValid()) {
+    KMessageBox::sorry(this, i18n("There is an error in the values you entered."));
+    return false;
+  }
+
+  //set the outputs
+  //output vectors...
+  QStringList ov = ptr->outputVectors();
+  QStringList::ConstIterator ovI = ov.begin();
+  for (; ovI != ov.end(); ++ovI) {
+    if (QLineEdit *w = output(*ovI)) {
+      ptr->setOutputVector(*ovI, w->text());
+    }
+  }
+
+  //output scalars...
+  QStringList os = ptr->outputScalars();
+  QStringList::ConstIterator osI = os.begin();
+  for (; osI != os.end(); ++osI) {
+    if (QLineEdit *w = output(*osI)) {
+      ptr->setOutputScalar(*ovI, w->text());
+    }
+  }
+
+  //ouput strings...
+  QStringList ostr = ptr->outputStrings();
+  QStringList::ConstIterator ostrI = ostr.begin();
+  for (; ostrI != ostr.end(); ++ostrI) {
+    if (QLineEdit *w = output(*ostrI)) {
+      ptr->setOutputString(*ovI, w->text());
+    }
+  }
+
+  if (!ptr || !ptr->isValid()) {
+    KMessageBox::sorry(this, i18n("There is an error in the plugin you entered."));
+    return false;
+  }
+
+  ptr->setDirty();
+  KST::dataObjectList.lock().writeLock();
+  KST::dataObjectList.append(ptr.data());
+  KST::dataObjectList.lock().unlock();
+  ptr = 0L; // drop the reference
+  emit modified();
+
   return true;
 }
 
@@ -228,9 +296,24 @@ bool KstBasicDialogI::editObject() {
 
 
 void KstBasicDialogI::showNew(const QString &field) {
-  _pluginName = field;
-  emit pluginChanged();
-  KstDataDialog::showNew(field);
+  if (_pluginName != field) {
+    _pluginName = field;
+    KstDataDialog::showNew(field);
+    init();
+  } else {
+    KstDataDialog::showNew(field);
+  }
+}
+
+
+void KstBasicDialogI::showEdit(const QString &field) {
+  if (_pluginName != field) {
+    _pluginName = field;
+    KstDataDialog::showEdit(field);
+    init();
+  } else {
+    KstDataDialog::showEdit(field);
+  }
 }
 
 

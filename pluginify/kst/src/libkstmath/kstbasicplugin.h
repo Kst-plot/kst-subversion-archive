@@ -66,6 +66,13 @@ public:
   KstScalarPtr outputScalar(const QString& name) const;
   KstStringPtr outputString(const QString& name) const;
 
+  void setInputVector(const QString &type, KstVectorPtr ptr);
+  void setInputScalar(const QString &type, KstScalarPtr ptr);
+  void setInputString(const QString &type, KstStringPtr ptr);
+  void setOutputVector(const QString &type, const QString &name);
+  void setOutputScalar(const QString &type, const QString &name);
+  void setOutputString(const QString &type, const QString &name);
+
   //Pure virtual methods inherited from KstDataObject
   //We do this one ourselves for benefit of all plugins...
   KstObject::UpdateType update(int updateCounter = -1);

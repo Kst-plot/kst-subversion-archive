@@ -51,7 +51,7 @@ void KstBasicPlugin::showNewDialog() {
 
 
 void KstBasicPlugin::showEditDialog() {
-  KstDialogs::self()->showBasicPluginDialog(tagName());
+  KstDialogs::self()->showBasicPluginDialog(tagName(), true);
 }
 
 
@@ -106,6 +106,55 @@ KstStringPtr KstBasicPlugin::outputString(const QString& string) const {
     return *i;
   else
     return 0;
+}
+
+
+void KstBasicPlugin::setInputVector(const QString &type, KstVectorPtr ptr) {
+  if (ptr) {
+    _inputVectors[type] = ptr;
+  } else {
+    _inputVectors.remove(type);
+  }
+  setDirty();
+}
+
+
+void KstBasicPlugin::setInputScalar(const QString &type, KstScalarPtr ptr) {
+  if (ptr) {
+    _inputScalars[type] = ptr;
+  } else {
+    _inputScalars.remove(type);
+  }
+  setDirty();
+}
+
+
+void KstBasicPlugin::setInputString(const QString &type, KstStringPtr ptr) {
+  if (ptr) {
+    _inputStrings[type] = ptr;
+  } else {
+    _inputStrings.remove(type);
+  }
+  setDirty();
+}
+
+
+void KstBasicPlugin::setOutputVector(const QString &type, const QString &name) {
+  KstVectorPtr v = new KstVector(name, 0, this, false);
+  _outputVectors.insert(type, v);
+  KST::addVectorToList(v);
+}
+
+
+void KstBasicPlugin::setOutputScalar(const QString &type, const QString &name) {
+  KstScalarPtr s = new KstScalar(name, this);
+  _outputScalars.insert(type, s);
+}
+
+
+void KstBasicPlugin::setOutputString(const QString &type, const QString &name) {
+  KstStringPtr s = new KstString(name, this);
+  _outputStrings.insert(type, s);
 }
 
 

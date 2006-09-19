@@ -43,9 +43,7 @@ class KST_EXPORT KstBasicDialogI : public KstDataDialog {
     virtual bool newObject();
     virtual bool editObject();
     virtual void showNew(const QString &field);
-
-  signals:
-    void pluginChanged();
+    virtual void showEdit(const QString &field);
 
   protected:
     virtual void fillFieldsForEdit();
