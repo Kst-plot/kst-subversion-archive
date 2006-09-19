@@ -313,7 +313,67 @@ void KstBasicDialogI::showEdit(const QString &field) {
 
 
 bool KstBasicDialogI::editSingleObject(KstBasicPluginPtr ptr) {
-  Q_UNUSED(ptr)
+
+  KST::vectorList.lock().readLock();
+  KST::scalarList.lock().readLock();
+  KST::stringList.lock().readLock();
+
+  { // leave this scope here to destroy the iterators
+
+    //input vectors...
+    KstVectorList::Iterator v;
+    QStringList iv = ptr->inputVectors();
+    QStringList::ConstIterator ivI = iv.begin();
+    for (; ivI != iv.end(); ++ivI) {
+      if (VectorSelector *w = vector(*ivI)) {
+        v = KST::vectorList.findTag(w->selectedVector());
+        if (v != KST::vectorList.end()) {
+          ptr->setInputVector(*ivI, *v);
+        }
+      }
+    }
+
+    //input scalars...
+    KstScalarList::Iterator s;
+    QStringList is = ptr->inputScalars();
+    QStringList::ConstIterator isI = is.begin();
+    for (; isI != is.end(); ++isI) {
+      if (ScalarSelector *w = scalar(*isI)) {
+        s = KST::scalarList.findTag(w->selectedScalar());
+        if (s != KST::scalarList.end()) {
+          ptr->setInputScalar(*isI, *s);
+        } else {
+          //Deal with direct entry
+          bool ok;
+          double val = w->_scalar->currentText().toDouble(&ok);
+          if (ok) {
+            ptr->setInputScalar(*isI, new KstScalar(w->_scalar->currentText(),
+                                                    0L, val, true, false, false));
+          } else {
+            //deal with error...
+          }
+        }
+      }
+    }
+
+    //input strings...
+    KstStringList::Iterator str;
+    QStringList istr = ptr->inputStrings();
+    QStringList::ConstIterator istrI = istr.begin();
+    for (; istrI != istr.end(); ++istrI) {
+      if (StringSelector *w = string(*istrI)) {
+        str = KST::stringList.findTag(w->selectedString());
+        if (str != KST::stringList.end()) {
+          ptr->setInputString(*istrI, *str);
+        }
+      }
+    }
+
+  }
+
+  KST::stringList.lock().unlock();
+  KST::scalarList.lock().unlock();
+  KST::vectorList.lock().unlock();
   return true;
 }
 
