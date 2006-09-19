@@ -24,10 +24,10 @@
 #include "kstdatadialog.h"
 #include "kstbasicplugin.h"
 
+class QLineEdit;
 class VectorSelector;
 class ScalarSelector;
 class StringSelector;
-class QLineEdit;
 
 class BasicDialogWidget;
 
@@ -55,10 +55,10 @@ class KST_EXPORT KstBasicDialogI : public KstDataDialog {
   private:
     bool editSingleObject(KstBasicPluginPtr ptr);
 
-    void createInputVector(const QString &name, QWidget *parent, QGridLayout *grid, int row);
-    void createInputScalar(const QString &name, QWidget *parent, QGridLayout *grid, int row);
-    void createInputString(const QString &name, QWidget *parent, QGridLayout *grid, int row);
-    void createOutputWidget(const QString &name, QWidget *parent, QGridLayout *grid, int row);
+    void createInputVector(const QString &name, int row);
+    void createInputScalar(const QString &name, int row);
+    void createInputString(const QString &name, int row);
+    void createOutputWidget(const QString &name, int row);
 
     VectorSelector *vector(const QString &name) const;
     ScalarSelector *scalar(const QString &name) const;
@@ -72,7 +72,7 @@ class KST_EXPORT KstBasicDialogI : public KstDataDialog {
     BasicDialogWidget *_w;
 
     // layout items
-    QGridLayout *_inputOutputGrid;
+    QGridLayout *_grid;
     QValueList<QWidget*> _widgets;
 };
 

@@ -83,8 +83,8 @@ KstStringPtr KstBasicPlugin::inputString(const QString& string) const {
 
 
 KstVectorPtr KstBasicPlugin::outputVector(const QString& vector) const {
-  KstVectorMap::ConstIterator i = _inputVectors.find(vector);
-  if (i != _inputVectors.end())
+  KstVectorMap::ConstIterator i = _outputVectors.find(vector);
+  if (i != _outputVectors.end())
     return *i;
   else
     return 0;
@@ -92,8 +92,8 @@ KstVectorPtr KstBasicPlugin::outputVector(const QString& vector) const {
 
 
 KstScalarPtr KstBasicPlugin::outputScalar(const QString& scalar) const {
-  KstScalarMap::ConstIterator i = _inputScalars.find(scalar);
-  if (i != _inputScalars.end())
+  KstScalarMap::ConstIterator i = _outputScalars.find(scalar);
+  if (i != _outputScalars.end())
     return *i;
   else
     return 0;
@@ -101,8 +101,8 @@ KstScalarPtr KstBasicPlugin::outputScalar(const QString& scalar) const {
 
 
 KstStringPtr KstBasicPlugin::outputString(const QString& string) const {
-  KstStringMap::ConstIterator i = _inputStrings.find(string);
-  if (i != _inputStrings.end())
+  KstStringMap::ConstIterator i = _outputStrings.find(string);
+  if (i != _outputStrings.end())
     return *i;
   else
     return 0;

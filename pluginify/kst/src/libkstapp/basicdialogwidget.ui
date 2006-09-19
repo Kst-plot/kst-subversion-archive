@@ -38,7 +38,7 @@
                 </property>
                 <widget class="QFrame" row="0" column="0">
                     <property name="name">
-                        <cstring>_inputOutputFrame</cstring>
+                        <cstring>_frame</cstring>
                     </property>
                     <property name="frameShape">
                         <enum>NoFrame</enum>

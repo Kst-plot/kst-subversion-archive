@@ -55,7 +55,7 @@ KstBasicDialogI::KstBasicDialogI(QWidget* parent, const char* name, bool modal, 
   connect(this, SIGNAL(modified()), KstApp::inst()->document(), SLOT(wasModified())); //FIXME this should be in KstDataDialog constructor...
 
   _pluginName = QString::null;
-  _inputOutputGrid = 0L;
+  _grid = 0L;
 }
 
 
@@ -73,6 +73,16 @@ void KstBasicDialogI::init() {
 
   Q_ASSERT(ptr); //shouldn't happen
 
+  if (_grid) { //reset
+    QLayoutIterator it = _grid->iterator();
+    while(QLayoutItem *item = it.takeCurrent()) {
+      delete item->widget();
+      delete item;
+    }
+    delete _grid;
+    _grid = 0;
+  }
+
   int cnt = 0;
   int numInputOutputs = ptr->inputVectors().count()
                       + ptr->inputScalars().count()
@@ -81,44 +91,38 @@ void KstBasicDialogI::init() {
                       + ptr->outputScalars().count()
                       + ptr->outputStrings().count();
 
-  _inputOutputGrid = new QGridLayout(_w->_inputOutputFrame, numInputOutputs + 1, 2, 0, 8);
-  _inputOutputGrid->setColStretch(1,1);
-  _inputOutputGrid->setColStretch(0,0);
+  _grid = new QGridLayout(_w->_frame, numInputOutputs + 1, 2, 0, 8);
+  _grid->setColStretch(1,1);
+  _grid->setColStretch(0,0);
 
   //create input widgets
   //First, the inputVectors...
   QStringList iv = ptr->inputVectors();
   QStringList::ConstIterator ivI = iv.begin();
   for (; ivI != iv.end(); ++ivI) {
-      createInputVector(*ivI,
-                          _w->_inputOutputFrame,
-                          _inputOutputGrid, ++cnt);
+      createInputVector(*ivI, ++cnt);
   }
 
   //Now, the inputScalars...
   QStringList is = ptr->inputScalars();
   QStringList::ConstIterator isI = is.begin();
   for (; isI != is.end(); ++isI) {
-      createInputScalar(*isI,
-                          _w->_inputOutputFrame,
-                          _inputOutputGrid, ++cnt);
+      createInputScalar(*isI, ++cnt);
   }
 
   //Finally, the inputStrings...
   QStringList istr = ptr->inputStrings();
   QStringList::ConstIterator istrI = istr.begin();
   for (; istrI != istr.end(); ++istrI) {
-      createInputString(*istrI,
-                          _w->_inputOutputFrame,
-                          _inputOutputGrid, ++cnt);
+      createInputString(*istrI, ++cnt);
   }
 
   //create sep
   cnt++;
-  QFrame* line = new QFrame(_w->_inputOutputFrame);
+  QFrame* line = new QFrame(_w->_frame);
   line->setFrameShadow(QFrame::Sunken);
   line->setFrameShape(QFrame::HLine);
-  _inputOutputGrid->addMultiCellWidget(line, cnt, cnt, 0, 1);
+  _grid->addMultiCellWidget(line, cnt, cnt, 0, 1);
   line->show();
   cnt++;
 
@@ -127,83 +131,77 @@ void KstBasicDialogI::init() {
   QStringList ov = ptr->outputVectors();
   QStringList::ConstIterator ovI = ov.begin();
   for (; ovI != ov.end(); ++ovI) {
-      createOutputWidget(*ovI,
-                          _w->_inputOutputFrame,
-                          _inputOutputGrid, ++cnt);
+      createOutputWidget(*ovI, ++cnt);
   }
 
   //output scalars...
   QStringList os = ptr->outputScalars();
   QStringList::ConstIterator osI = os.begin();
   for (; osI != os.end(); ++osI) {
-      createOutputWidget(*osI,
-                          _w->_inputOutputFrame,
-                          _inputOutputGrid, ++cnt);
+      createOutputWidget(*osI, ++cnt);
   }
 
   //ouput strings...
   QStringList ostr = ptr->outputStrings();
   QStringList::ConstIterator ostrI = ostr.begin();
   for (; ostrI != ostr.end(); ++ostrI) {
-      createOutputWidget(*ostrI,
-                          _w->_inputOutputFrame,
-                          _inputOutputGrid, ++cnt);
+      createOutputWidget(*ostrI, ++cnt);
   }
 }
 
 
-void KstBasicDialogI::createInputVector(const QString &name, QWidget *parent, QGridLayout *grid, int row) {
-  QLabel *label = new QLabel(name, parent);
+void KstBasicDialogI::createInputVector(const QString &name, int row) {
+  QLabel *label = new QLabel(name, _w->_frame);
 
-  VectorSelector *widget = new VectorSelector(parent,
+  VectorSelector *widget = new VectorSelector(_w->_frame,
                                               name.latin1());
   connect(widget, SIGNAL(newVectorCreated(const QString&)),
           this, SIGNAL(modified()));
 
-  grid->addWidget(label, row, 0);
+  _grid->addWidget(label, row, 0);
   label->show();
-  grid->addWidget(widget, row, 1);
+  _grid->addWidget(widget, row, 1);
   widget->show();
 }
 
 
-void KstBasicDialogI::createInputScalar(const QString &name, QWidget *parent, QGridLayout *grid, int row) {
-  QLabel *label = new QLabel(name, parent);
+void KstBasicDialogI::createInputScalar(const QString &name, int row) {
+  QLabel *label = new QLabel(name, _w->_frame);
 
-  ScalarSelector *widget = new ScalarSelector(parent,
+  ScalarSelector *widget = new ScalarSelector(_w->_frame,
                                               name.latin1());
   connect(widget, SIGNAL(newScalarCreated()),
           this, SIGNAL(modified()));
   widget->allowDirectEntry(true);
 
-  grid->addWidget(label, row, 0);
+  _grid->addWidget(label, row, 0);
   label->show();
-  grid->addWidget(widget, row, 1);
+  _grid->addWidget(widget, row, 1);
   widget->show();
 }
 
 
-void KstBasicDialogI::createInputString(const QString &name, QWidget *parent, QGridLayout *grid, int row) {
-  QLabel *label = new QLabel(name, parent);
+void KstBasicDialogI::createInputString(const QString &name, int row) {
+  QLabel *label = new QLabel(name, _w->_frame);
 
-  StringSelector *widget = new StringSelector(parent,
+  StringSelector *widget = new StringSelector(_w->_frame,
                                               name.latin1());
   connect(widget, SIGNAL(newStringCreated()),
           this, SIGNAL(modified()));
 
-  grid->addWidget(label, row, 0);
+  _grid->addWidget(label, row, 0);
   label->show();
-  grid->addWidget(widget, row, 1);
+  _grid->addWidget(widget, row, 1);
   widget->show();
 }
 
 
-void KstBasicDialogI::createOutputWidget(const QString &name, QWidget *parent, QGridLayout *grid, int row) {
-  QLabel *label = new QLabel(name, parent);
-  QLineEdit *widget = new QLineEdit(parent, name.latin1());
-  grid->addWidget(label, row, 0);
+void KstBasicDialogI::createOutputWidget(const QString &name, int row) {
+  QLabel *label = new QLabel(name, _w->_frame);
+  QLineEdit *widget = new QLineEdit(_w->_frame, name.latin1());
+  _grid->addWidget(label, row, 0);
   label->show();
-  grid->addWidget(widget, row, 1);
+  _grid->addWidget(widget, row, 1);
   widget->show();
 }
 
@@ -296,13 +294,13 @@ bool KstBasicDialogI::editObject() {
 
 
 void KstBasicDialogI::showNew(const QString &field) {
-  if (_pluginName != field) {
+//   if (_pluginName != field) {
     _pluginName = field;
     KstDataDialog::showNew(field);
     init();
-  } else {
-    KstDataDialog::showNew(field);
-  }
+//   } else {
+//     KstDataDialog::showNew(field);
+//   }
 }
 
 
@@ -424,22 +422,22 @@ void KstBasicDialogI::fillFieldsForNew() {
 
 
 VectorSelector *KstBasicDialogI::vector(const QString &name) const {
-  return ::qt_cast<VectorSelector*>(_w->_inputOutputFrame->child(name.latin1()));
+  return ::qt_cast<VectorSelector*>(_w->_frame->child(name.latin1()));
 }
 
 
 ScalarSelector *KstBasicDialogI::scalar(const QString &name) const {
-  return ::qt_cast<ScalarSelector*>(_w->_inputOutputFrame->child(name.latin1()));
+  return ::qt_cast<ScalarSelector*>(_w->_frame->child(name.latin1()));
 }
 
 
 StringSelector *KstBasicDialogI::string(const QString &name) const {
-  return ::qt_cast<StringSelector*>(_w->_inputOutputFrame->child(name.latin1()));
+  return ::qt_cast<StringSelector*>(_w->_frame->child(name.latin1()));
 }
 
 
 QLineEdit *KstBasicDialogI::output(const QString &name) const {
-  return ::qt_cast<QLineEdit*>(_w->_inputOutputFrame->child(name.latin1()));
+  return ::qt_cast<QLineEdit*>(_w->_frame->child(name.latin1()));
 }
 
 #include "kstbasicdialog_i.moc"
