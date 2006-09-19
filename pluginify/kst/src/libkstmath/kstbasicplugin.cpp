@@ -264,7 +264,7 @@ void KstBasicPlugin::save(QTextStream& ts, const QString& indent) {
 //TODO Could use some templates perhaps...
 bool KstBasicPlugin::inputsExist() const {
   //First, check the inputVectors...
-  QStringList iv = inputVectors();
+  QStringList iv = inputVectorList();
   QStringList::ConstIterator ivI = iv.begin();
   for (; ivI != iv.end(); ++ivI) {
     if (!inputVector(*ivI))
@@ -272,7 +272,7 @@ bool KstBasicPlugin::inputsExist() const {
   }
 
   //Now, check the inputScalars...
-  QStringList is = inputScalars();
+  QStringList is = inputScalarList();
   QStringList::ConstIterator isI = is.begin();
   for (; isI != is.end(); ++isI) {
     if (!inputScalar(*isI))
@@ -280,7 +280,7 @@ bool KstBasicPlugin::inputsExist() const {
   }
 
   //Finally, check the inputStrings...
-  QStringList istr = inputStrings();
+  QStringList istr = inputStringList();
   QStringList::ConstIterator istrI = istr.begin();
   for (; istrI != istr.end(); ++istrI) {
     if (!inputString(*istrI))
@@ -294,7 +294,7 @@ bool KstBasicPlugin::updateInput(int updateCounter, bool force) const {
   bool depUpdated = force;
 
   //First, update the inputVectors...
-  QStringList iv = inputVectors();
+  QStringList iv = inputVectorList();
   QStringList::ConstIterator ivI = iv.begin();
   for (; ivI != iv.end(); ++ivI) {
     depUpdated =
@@ -302,7 +302,7 @@ bool KstBasicPlugin::updateInput(int updateCounter, bool force) const {
   }
 
   //Now, update the inputScalars...
-  QStringList is = inputScalars();
+  QStringList is = inputScalarList();
   QStringList::ConstIterator isI = is.begin();
   for (; isI != is.end(); ++isI) {
     depUpdated =
@@ -310,7 +310,7 @@ bool KstBasicPlugin::updateInput(int updateCounter, bool force) const {
   }
 
   //Finally, update the inputStrings...
-  QStringList istr = inputStrings();
+  QStringList istr = inputStringList();
   QStringList::ConstIterator istrI = istr.begin();
   for (; istrI != istr.end(); ++istrI) {
     depUpdated =
@@ -322,7 +322,7 @@ bool KstBasicPlugin::updateInput(int updateCounter, bool force) const {
 
 void KstBasicPlugin::updateOutput(int updateCounter) const {
   //output vectors...
-  QStringList ov = outputVectors();
+  QStringList ov = outputVectorList();
   QStringList::ConstIterator ovI = ov.begin();
   for (; ovI != ov.end(); ++ovI) {
     if (KstVectorPtr o = outputVector(*ovI)) {
@@ -334,7 +334,7 @@ void KstBasicPlugin::updateOutput(int updateCounter) const {
   }
 
   //output scalars...
-  QStringList os = outputScalars();
+  QStringList os = outputScalarList();
   QStringList::ConstIterator osI = os.begin();
   for (; osI != os.end(); ++osI) {
     if (KstScalarPtr o = outputScalar(*osI)) {
@@ -343,7 +343,7 @@ void KstBasicPlugin::updateOutput(int updateCounter) const {
   }
 
   //ouput strings...
-  QStringList ostr = outputStrings();
+  QStringList ostr = outputStringList();
   QStringList::ConstIterator ostrI = ostr.begin();
   for (; ostrI != ostr.end(); ++ostrI) {
     if (KstStringPtr o = outputString(*ostrI)) {

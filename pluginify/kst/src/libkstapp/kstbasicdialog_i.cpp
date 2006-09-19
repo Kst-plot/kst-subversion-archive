@@ -84,12 +84,12 @@ void KstBasicDialogI::init() {
   }
 
   int cnt = 0;
-  int numInputOutputs = ptr->inputVectors().count()
-                      + ptr->inputScalars().count()
-                      + ptr->inputStrings().count()
-                      + ptr->outputVectors().count()
-                      + ptr->outputScalars().count()
-                      + ptr->outputStrings().count();
+  int numInputOutputs = ptr->inputVectorList().count()
+                      + ptr->inputScalarList().count()
+                      + ptr->inputStringList().count()
+                      + ptr->outputVectorList().count()
+                      + ptr->outputScalarList().count()
+                      + ptr->outputStringList().count();
 
   _grid = new QGridLayout(_w->_frame, numInputOutputs + 1, 2, 0, 8);
   _grid->setColStretch(1,1);
@@ -97,21 +97,21 @@ void KstBasicDialogI::init() {
 
   //create input widgets
   //First, the inputVectors...
-  QStringList iv = ptr->inputVectors();
+  QStringList iv = ptr->inputVectorList();
   QStringList::ConstIterator ivI = iv.begin();
   for (; ivI != iv.end(); ++ivI) {
       createInputVector(*ivI, ++cnt);
   }
 
   //Now, the inputScalars...
-  QStringList is = ptr->inputScalars();
+  QStringList is = ptr->inputScalarList();
   QStringList::ConstIterator isI = is.begin();
   for (; isI != is.end(); ++isI) {
       createInputScalar(*isI, ++cnt);
   }
 
   //Finally, the inputStrings...
-  QStringList istr = ptr->inputStrings();
+  QStringList istr = ptr->inputStringList();
   QStringList::ConstIterator istrI = istr.begin();
   for (; istrI != istr.end(); ++istrI) {
       createInputString(*istrI, ++cnt);
@@ -128,21 +128,21 @@ void KstBasicDialogI::init() {
 
   //create output widgets
   //output vectors...
-  QStringList ov = ptr->outputVectors();
+  QStringList ov = ptr->outputVectorList();
   QStringList::ConstIterator ovI = ov.begin();
   for (; ovI != ov.end(); ++ovI) {
       createOutputWidget(*ovI, ++cnt);
   }
 
   //output scalars...
-  QStringList os = ptr->outputScalars();
+  QStringList os = ptr->outputScalarList();
   QStringList::ConstIterator osI = os.begin();
   for (; osI != os.end(); ++osI) {
       createOutputWidget(*osI, ++cnt);
   }
 
   //ouput strings...
-  QStringList ostr = ptr->outputStrings();
+  QStringList ostr = ptr->outputStringList();
   QStringList::ConstIterator ostrI = ostr.begin();
   for (; ostrI != ostr.end(); ++ostrI) {
       createOutputWidget(*ostrI, ++cnt);
@@ -244,7 +244,7 @@ bool KstBasicDialogI::newObject() {
 
   //set the outputs
   //output vectors...
-  QStringList ov = ptr->outputVectors();
+  QStringList ov = ptr->outputVectorList();
   QStringList::ConstIterator ovI = ov.begin();
   for (; ovI != ov.end(); ++ovI) {
     if (QLineEdit *w = output(*ovI)) {
@@ -253,7 +253,7 @@ bool KstBasicDialogI::newObject() {
   }
 
   //output scalars...
-  QStringList os = ptr->outputScalars();
+  QStringList os = ptr->outputScalarList();
   QStringList::ConstIterator osI = os.begin();
   for (; osI != os.end(); ++osI) {
     if (QLineEdit *w = output(*osI)) {
@@ -262,7 +262,7 @@ bool KstBasicDialogI::newObject() {
   }
 
   //ouput strings...
-  QStringList ostr = ptr->outputStrings();
+  QStringList ostr = ptr->outputStringList();
   QStringList::ConstIterator ostrI = ostr.begin();
   for (; ostrI != ostr.end(); ++ostrI) {
     if (QLineEdit *w = output(*ostrI)) {
@@ -289,6 +289,44 @@ bool KstBasicDialogI::newObject() {
 bool KstBasicDialogI::editObject() {
   //called upon clicking 'ok' in 'edit' mode
   //return false if the specified objects can't be editted, otherwise true
+
+  KstBasicPluginPtr ptr = kst_cast<KstBasicPlugin>(_dp);
+  Q_ASSERT(ptr); //should never happen...
+
+  ptr->writeLock();
+  if (_tagName->text() != ptr->tagName() && KstData::self()->dataTagNameNotUnique(_tagName->text())) {
+    _tagName->setFocus();
+    ptr->unlock();
+    return false;
+  }
+
+  ptr->setTagName(_tagName->text());
+
+  // Must unlock before clear()
+  for (KstVectorMap::Iterator i = ptr->inputVectors().begin(); i != ptr->inputVectors().end(); ++i) {
+    (*i)->unlock();
+  }
+  for (KstScalarMap::Iterator i = ptr->inputScalars().begin(); i != ptr->inputScalars().end(); ++i) {
+    (*i)->unlock();
+  }
+  for (KstStringMap::Iterator i = ptr->inputStrings().begin(); i != ptr->inputStrings().end(); ++i) {
+    (*i)->unlock();
+  }
+  ptr->inputVectors().clear();
+  ptr->inputScalars().clear();
+  ptr->inputStrings().clear();
+
+  ptr->unlock();
+
+  // Save the vectors and scalars
+  if (!editSingleObject(ptr) || !ptr->isValid()) {
+    KMessageBox::sorry(this, i18n("There is an error in the values you entered."));
+    return false;
+  }
+
+  ptr->setDirty();
+
+  emit modified();
   return true;
 }
 
@@ -322,7 +360,7 @@ bool KstBasicDialogI::editSingleObject(KstBasicPluginPtr ptr) {
 
     //input vectors...
     KstVectorList::Iterator v;
-    QStringList iv = ptr->inputVectors();
+    QStringList iv = ptr->inputVectorList();
     QStringList::ConstIterator ivI = iv.begin();
     for (; ivI != iv.end(); ++ivI) {
       if (VectorSelector *w = vector(*ivI)) {
@@ -335,7 +373,7 @@ bool KstBasicDialogI::editSingleObject(KstBasicPluginPtr ptr) {
 
     //input scalars...
     KstScalarList::Iterator s;
-    QStringList is = ptr->inputScalars();
+    QStringList is = ptr->inputScalarList();
     QStringList::ConstIterator isI = is.begin();
     for (; isI != is.end(); ++isI) {
       if (ScalarSelector *w = scalar(*isI)) {
@@ -358,7 +396,7 @@ bool KstBasicDialogI::editSingleObject(KstBasicPluginPtr ptr) {
 
     //input strings...
     KstStringList::Iterator str;
-    QStringList istr = ptr->inputStrings();
+    QStringList istr = ptr->inputStringList();
     QStringList::ConstIterator istrI = istr.begin();
     for (; istrI != istr.end(); ++istrI) {
       if (StringSelector *w = string(*istrI)) {
@@ -392,7 +430,7 @@ void KstBasicDialogI::fillFieldsForEdit() {
   //Update the various widgets...
 
   //input vectors...
-  QStringList iv = ptr->inputVectors();
+  QStringList iv = ptr->inputVectorList();
   QStringList::ConstIterator ivI = iv.begin();
   for (; ivI != iv.end(); ++ivI) {
     KstVectorPtr p = ptr->inputVector(*ivI);
@@ -403,7 +441,7 @@ void KstBasicDialogI::fillFieldsForEdit() {
   }
 
   //input scalars...
-  QStringList is = ptr->inputScalars();
+  QStringList is = ptr->inputScalarList();
   QStringList::ConstIterator isI = is.begin();
   for (; isI != is.end(); ++isI) {
     KstScalarPtr p = ptr->inputScalar(*isI);
@@ -414,7 +452,7 @@ void KstBasicDialogI::fillFieldsForEdit() {
   }
 
   //input strings...
-  QStringList istr = ptr->inputStrings();
+  QStringList istr = ptr->inputStringList();
   QStringList::ConstIterator istrI = istr.begin();
   for (; istrI != istr.end(); ++istrI) {
     KstStringPtr p = ptr->inputString(*istrI);
@@ -425,7 +463,7 @@ void KstBasicDialogI::fillFieldsForEdit() {
   }
 
   //output vectors...
-  QStringList ov = ptr->outputVectors();
+  QStringList ov = ptr->outputVectorList();
   QStringList::ConstIterator ovI = ov.begin();
   for (; ovI != ov.end(); ++ovI) {
     KstVectorPtr p = ptr->outputVector(*ovI);
@@ -437,7 +475,7 @@ void KstBasicDialogI::fillFieldsForEdit() {
   }
 
   //output scalars...
-  QStringList os = ptr->outputScalars();
+  QStringList os = ptr->outputScalarList();
   QStringList::ConstIterator osI = os.begin();
   for (; osI != os.end(); ++osI) {
     KstScalarPtr p = ptr->outputScalar(*osI);
@@ -449,7 +487,7 @@ void KstBasicDialogI::fillFieldsForEdit() {
   }
 
   //ouput strings...
-  QStringList ostr = ptr->outputStrings();
+  QStringList ostr = ptr->outputStringList();
   QStringList::ConstIterator ostrI = ostr.begin();
   for (; ostrI != ostr.end(); ++ostrI) {
     KstStringPtr p = ptr->outputString(*ostrI);

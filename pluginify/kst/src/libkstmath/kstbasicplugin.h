@@ -33,13 +33,13 @@ public:
   virtual bool algorithm() = 0;
 
   //String lists of the names of the expected inputs.
-  virtual QStringList inputVectors() const = 0;
-  virtual QStringList inputScalars() const = 0;
-  virtual QStringList inputStrings() const = 0;
+  virtual QStringList inputVectorList() const = 0;
+  virtual QStringList inputScalarList() const = 0;
+  virtual QStringList inputStringList() const = 0;
   //String lists of the names of the expected outputs.
-  virtual QStringList outputVectors() const = 0;
-  virtual QStringList outputScalars() const = 0;
-  virtual QStringList outputStrings() const = 0;
+  virtual QStringList outputVectorList() const = 0;
+  virtual QStringList outputScalarList() const = 0;
+  virtual QStringList outputStringList() const = 0;
 
   //Pure virtual methods inherited from KstDataObject
   //This _must_ equal the 'Name' entry in the .desktop file of

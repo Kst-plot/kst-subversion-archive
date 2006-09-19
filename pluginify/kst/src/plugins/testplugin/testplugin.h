@@ -27,12 +27,12 @@ class TestPlugin : public KstBasicPlugin {
 
     virtual bool algorithm();
 
-    virtual QStringList inputVectors() const;
-    virtual QStringList inputScalars() const;
-    virtual QStringList inputStrings() const;
-    virtual QStringList outputVectors() const;
-    virtual QStringList outputScalars() const;
-    virtual QStringList outputStrings() const;
+    virtual QStringList inputVectorList() const;
+    virtual QStringList inputScalarList() const;
+    virtual QStringList inputStringList() const;
+    virtual QStringList outputVectorList() const;
+    virtual QStringList outputScalarList() const;
+    virtual QStringList outputStringList() const;
 
     virtual QString propertyString() const { return "Test Plugin"; }
 

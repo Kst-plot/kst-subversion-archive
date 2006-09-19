@@ -44,32 +44,32 @@ bool TestPlugin::algorithm() {
 }
 
 
-QStringList TestPlugin::inputVectors() const {
+QStringList TestPlugin::inputVectorList() const {
   return QStringList( VECTOR_IN );
 }
 
 
-QStringList TestPlugin::inputScalars() const {
+QStringList TestPlugin::inputScalarList() const {
   return QStringList( SCALAR_IN );
 }
 
 
-QStringList TestPlugin::inputStrings() const {
+QStringList TestPlugin::inputStringList() const {
   return QStringList( STRING_IN );
 }
 
 
-QStringList TestPlugin::outputVectors() const {
+QStringList TestPlugin::outputVectorList() const {
   return QStringList( VECTOR_OUT );
 }
 
 
-QStringList TestPlugin::outputScalars() const {
+QStringList TestPlugin::outputScalarList() const {
   return QStringList( SCALAR_OUT );
 }
 
 
-QStringList TestPlugin::outputStrings() const {
+QStringList TestPlugin::outputStringList() const {
   return QStringList( STRING_OUT );
 }
 
