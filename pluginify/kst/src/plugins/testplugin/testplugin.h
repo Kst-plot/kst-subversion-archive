@@ -33,8 +33,6 @@ class TestPlugin : public KstBasicPlugin {
     virtual QStringList outputVectorList() const;
     virtual QStringList outputScalarList() const;
     virtual QStringList outputStringList() const;
-
-    virtual QString propertyString() const { return "Test Plugin"; }
 };
 
 #endif

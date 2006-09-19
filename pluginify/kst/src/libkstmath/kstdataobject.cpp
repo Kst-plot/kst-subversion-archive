@@ -103,6 +103,19 @@ KstDataObjectPtr KstDataObject::createPlugin(KService::Ptr service)
       KParts::ComponentFactory::createInstanceFromService<KstDataObject>(service, 0, "",
       QStringList(), &err);
   if (object) {
+    const QString name = service->property("Name").toString();
+    const QString author = service->property("Author").toString();
+    const QString description = service->property("Comment").toString();
+    const QString version = service->property("X-Kst-Plugin-Version").toString();
+    const QString library = service->property("X-Kst-Plugin-Library").toString();
+    Q_ASSERT( !name.isEmpty() );
+    Q_ASSERT( !library.isEmpty() );
+    object->setName(name);
+    object->setAuthor(author);
+    object->setDescription(description);
+    object->setVersion(version);
+    object->setLibrary(library);
+
     KstDebug::self()->log(i18n("Loaded data-object plugin %1.").arg(service->name()));
   }
   else {

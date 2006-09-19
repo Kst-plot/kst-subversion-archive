@@ -105,6 +105,13 @@ class KST_EXPORT KstDataObject : public KstObject {
 
     virtual bool uses(KstObjectPtr p) const;
 
+    //These are generally only valid for plugins...
+    QString name() const { return _name; }
+    QString author() const { return _author; }
+    QString description() const { return _description; }
+    QString version() const { return _version; }
+    QString library() const { return _library; }
+
   protected slots:
     virtual void showNewDialog() = 0;
     virtual void showEditDialog() = 0;
@@ -112,6 +119,14 @@ class KST_EXPORT KstDataObject : public KstObject {
   protected:
     
     double *vectorRealloced(KstVectorPtr v, double *memptr, int newSize) const;
+
+    //The plugin infrastructure will read the desktop file and set these
+    //Other objects that inherit can set the ones that apply if desired...
+    void setName(const QString &str) { _name = str; }
+    void setAuthor(const QString &str) { _author = str; }
+    void setDescription(const QString &str) { _description = str; }
+    void setVersion(const QString &str) { _version = str; }
+    void setLibrary(const QString &str) { _library = str; }
 
     KstVectorMap _inputVectors;
     KstVectorMap _outputVectors;
@@ -129,6 +144,13 @@ class KST_EXPORT KstDataObject : public KstObject {
     QValueList<QPair<QString,QString> > _inputStringLoadQueue;
     QValueList<QPair<QString,QString> > _inputMatrixLoadQueue;
     KstCurveHintList *_curveHints;
+
+  private:
+    QString _name;
+    QString _author;
+    QString _description;
+    QString _version;
+    QString _library;
 
   private:
     static void scanPlugins();
