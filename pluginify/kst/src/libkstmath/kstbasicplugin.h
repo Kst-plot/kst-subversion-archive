@@ -46,7 +46,7 @@ public:
   //the plugin
   virtual QString propertyString() const = 0;
 
-  //Provide an impl that returns 0...
+  //Provide an impl...
   virtual KstDataObjectPtr makeDuplicate(KstDataObjectDataObjectMap&);
 
   public slots:

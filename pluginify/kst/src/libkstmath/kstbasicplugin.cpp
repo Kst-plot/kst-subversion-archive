@@ -45,9 +45,38 @@ KstBasicPlugin::~KstBasicPlugin() {
 
 
 KstDataObjectPtr KstBasicPlugin::makeDuplicate(KstDataObjectDataObjectMap &map) {
-  //FIXME I can't duplicate as this is an abstract class...
-  Q_UNUSED( map )
-  return 0;
+  KstBasicPluginPtr plugin = kst_cast<KstBasicPlugin>(KstDataObject::createPlugin(propertyString()));
+
+  // use same inputs
+  for (KstVectorMap::ConstIterator iter = _inputVectors.begin(); iter != _inputVectors.end(); ++iter) {
+    plugin->inputVectors().insert(iter.key(), iter.data());
+  }
+  for (KstScalarMap::ConstIterator iter = _inputScalars.begin(); iter != _inputScalars.end(); ++iter) {
+    plugin->inputScalars().insert(iter.key(), iter.data());
+  }
+  for (KstStringMap::ConstIterator iter = _inputStrings.begin(); iter != _inputStrings.end(); ++iter) {
+    plugin->inputStrings().insert(iter.key(), iter.data());
+  }
+
+  // create new outputs
+  for (KstVectorMap::ConstIterator iter = outputVectors().begin(); iter != outputVectors().end(); ++iter) {
+    KstVectorPtr v = new KstVector(iter.data()->tagName() + "'", 0, plugin.data());
+    plugin->outputVectors().insert(iter.key(), v);
+    KST::addVectorToList(v);
+  }
+  for (KstScalarMap::ConstIterator iter = outputScalars().begin(); iter != outputScalars().end(); ++iter) {
+    KstScalarPtr s = new KstScalar(iter.data()->tagName() + "'", plugin.data());
+    plugin->outputScalars().insert(iter.key(), s);
+  }
+  for (KstStringMap::ConstIterator iter = outputStrings().begin(); iter != outputStrings().end(); ++iter) {
+    KstStringPtr s = new KstString(iter.data()->tagName() + "'", plugin.data());
+    plugin->outputStrings().insert(iter.key(), s);
+  }
+
+  // set the same plugin
+  plugin->setTagName(tagName() + "'");
+  map.insert(this, KstDataObjectPtr(plugin));
+  return KstDataObjectPtr(plugin);
 }
 
 void KstBasicPlugin::showNewDialog() {
