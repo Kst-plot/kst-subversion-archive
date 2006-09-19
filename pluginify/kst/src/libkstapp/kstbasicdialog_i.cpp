@@ -65,11 +65,11 @@ KstBasicDialogI::~KstBasicDialogI() {
 void KstBasicDialogI::init() {
 
   KstBasicPluginPtr ptr;
-  if (!_newDialog)
-    ptr = kst_cast<KstBasicPlugin>(_dp);
-  else
-    ptr = kst_cast<KstBasicPlugin>(
-        KstDataObject::plugin(_pluginName));
+  if (_newDialog) {
+    ptr = kst_cast<KstBasicPlugin>(KstDataObject::plugin(_pluginName));
+  } else {
+    ptr = kst_cast<KstBasicPlugin>(findObject(_pluginName));
+  }
 
   Q_ASSERT(ptr); //shouldn't happen
 
@@ -257,7 +257,7 @@ bool KstBasicDialogI::newObject() {
   QStringList::ConstIterator osI = os.begin();
   for (; osI != os.end(); ++osI) {
     if (QLineEdit *w = output(*osI)) {
-      ptr->setOutputScalar(*ovI, w->text());
+      ptr->setOutputScalar(*osI, w->text());
     }
   }
 
@@ -266,7 +266,7 @@ bool KstBasicDialogI::newObject() {
   QStringList::ConstIterator ostrI = ostr.begin();
   for (; ostrI != ostr.end(); ++ostrI) {
     if (QLineEdit *w = output(*ostrI)) {
-      ptr->setOutputString(*ovI, w->text());
+      ptr->setOutputString(*ostrI, w->text());
     }
   }
 
@@ -294,24 +294,21 @@ bool KstBasicDialogI::editObject() {
 
 
 void KstBasicDialogI::showNew(const QString &field) {
-//   if (_pluginName != field) {
-    _pluginName = field;
-    KstDataDialog::showNew(field);
-    init();
-//   } else {
-//     KstDataDialog::showNew(field);
-//   }
+  //Call init every time on showNew, because the field might equal propertyString()...
+  _pluginName = field;
+  _newDialog = true;
+  init();
+  KstDataDialog::showNew(field);
 }
 
 
 void KstBasicDialogI::showEdit(const QString &field) {
   if (_pluginName != field) {
     _pluginName = field;
-    KstDataDialog::showEdit(field);
+    _newDialog = false;
     init();
-  } else {
-    KstDataDialog::showEdit(field);
   }
+  KstDataDialog::showEdit(field);
 }
 
 
