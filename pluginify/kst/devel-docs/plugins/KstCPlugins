@@ -1,86 +1,13 @@
-How To Make Kst Plugins
------------------------
+*****************************************************************************
+WARNING!!! These plugins are now deprecated. Plugin writers
+should instead consider writing such plugins by inheriting either
+KstDataObject or KstBasicPlugin.  See the KstPlugin file for more info.
+*****************************************************************************
 
-KstPlugins are modules that can be loaded into Kst to provide additional
-functionality.  This does not involve the plugins that provide additional
-data processing functionality (data objects).  Do not confuse the two.
-
-
-KstPlugins are presently implemented as:
-- KstDataSource plugins
-	+ These provide the ability to read in different file formats or data
-	  "sources".
-- Data plugins
-- Kst Extensions
-
-
-All KstPlugins except data plugins are KDE style plugins and therefore require
-a .desktop file and must be installed in the KDE standard plugins directories.
-They derive from the base servicetype "Kst/Plugin".  This base type includes
-two properties:
-
-X-Kst-Plugin-Author: A string containing the name of the author.
-X-Kst-Plugin-Library: The library name.  This is not the filename, but a name
-                      that is used to construct it.  For instance, it could
-                      be "myplugin" where the library might be named
-                      "kstdata_myplugin.so".  This must also be a legal C
-                      variable name as it is used to construct the function
-                      names inside the library.
-
-
-Each plugin type requires different symbols to be visible in the module.  A
-common one is "create_libname" which will be used to create an object.  All
-of these symbols must have C linkage, but can be written in any language that
-can provide the bindings for the objects you need to use.  In most cases this
-will mean KDE bindings must exist.
-
-
-KstDataSource Plugins
----------------------
-
-The purpose of a KstDataSource plugin is to provide an implementation of the
-virtual class "KstDataSource".  By default this class does nothing, which means
-that there is no direct way to load external data into Kst.  Such a plugin
-provides three symbols:
-
-extern "C" {
-// Create a data source.
-KstDataSource *create_<libname>(const QString& filename, const QString& type);
-
-// Does this plugin understand the file indicated by the argument?
-bool understands_<libname>(const QString& filename);
-
-// Which types of data does this plugin provide a data source for?
-QStringList provides_<libname>();
-}
-
-Generally you will have to create one or more derived classes of KstDataSource
-which implement your I/O system.
-
-Along with the shared object, you must also create a desktop file:
-
-=> kstdata_myplugin.desktop
-
-[Desktop Entry]
-Encoding=UTF-8
-Type=Service
-ServiceTypes=Kst Data Source
-X-KDE-ModuleType=Plugin
-X-Kst-Plugin-Library=myplugin
-X-Kst-Plugin-Author=Your Name
-Name=My Plugin
-Comment=A long description of what this thing actually does.
-
-
-You can find a template datasource plugin in kst/datasources/template/.  It
-includes a proper Makefile.am, source files, and a desktop service file.
-
-
-
-Data Plugins
+KstCPlugin Plugins
 ------------
 
-Kst data plugins consist of two files, an XML file and a shared object. The XML
+Kst C plugins consist of two files, an XML file and a shared object. The XML
 file describes the contents of the shared object file.  The shared object file
 contains the actual plugin code, and must export a C-style function.
 
@@ -144,10 +71,8 @@ Finally, do not, ever, cast away the constness of input variables.  This will
 result in inconsistencies in Kst internally.  The input variables are const for
 a reason and must remain as such.
 
-For an example plugin, see linefit/linefit.c
 
-
-HOW TO BUILD THE PLUGIN
+HOW TO BUILD THE C PLUGIN
 -----------------------
 
 If you write your plugin in C with GNU-style tools, you can compile your
@@ -166,7 +91,7 @@ plugin in Kst automatically.
 Matrices
 --------
 
-Plugins can manipulate matrices by putting this in the XML file.  In this case,
+C Plugins can manipulate matrices by putting this in the XML file.  In this case,
 two vectors will be exported in the vector lists, the first being the parameters
 of the matrix, the second being the entire matrix in a linear vector.
 
@@ -176,7 +101,7 @@ of the matrix, the second being the entire matrix in a linear vector.
 Curve Hints
 -----------
 
-Plugins can provide curve hints like this in the module node:
+C Plugins can provide curve hints like this in the module node:
 <curvehints>
 <hint name="foo" x="xvectorname" y="yvectorname"/>
 </curvehints>
@@ -209,7 +134,7 @@ is different than the one the plugin runs in.
 Localdata
 ---------
 
-Plugins that require the ability to store data across calls -cannot- use
+C Plugins that require the ability to store data across calls -cannot- use
 static memory.  This would lead to race conditions and inconsistency.  Instead,
 plugins must use a "localdata" facility.  Simply specify the node <localdata />
 in the intro node of the plugin XML file and change your plugin signature to
@@ -248,14 +173,3 @@ Error Codes
 -2    Input error (something is wrong with the inputs)
 -3    Memory error (such as malloc failure)
 < -3  RESERVED
-
-
-Kst Extensions
---------------
-
-These are presently private but will become public once the interface is fully
-defined.  They allow entire subsystems to be added to Kst without touching
-the Kst core.  These are optional subsystems so they do not affect the UI or
-performance if not enabled.
-
-
