@@ -21,51 +21,50 @@
 
 class CrossPowerSpectrum : public KstDataObject {
   Q_OBJECT
-public:
+  public:
+    CrossPowerSpectrum(QObject *parent, const char *name, const QStringList &args);
+    virtual ~CrossPowerSpectrum();
 
-  CrossPowerSpectrum(QObject *parent, const char *name, const QStringList &args);
-  virtual ~CrossPowerSpectrum();
+    //algorithm
+    void crossspectrum();
 
-  //algorithm
-  void crossspectrum();
+    QString v1Tag() const;
+    QString v2Tag() const;
+    QString fftTag() const;
+    QString sampleTag() const;
+    QString realTag() const;
+    QString imaginaryTag() const;
+    QString frequencyTag() const;
 
-  QString v1Tag() const;
-  QString v2Tag() const;
-  QString fftTag() const;
-  QString sampleTag() const;
-  QString realTag() const;
-  QString imaginaryTag() const;
-  QString frequencyTag() const;
+    KstVectorPtr v1() const;
+    KstVectorPtr v2() const;
+    KstScalarPtr fft() const;
+    KstScalarPtr sample() const;
+    KstVectorPtr real() const;
+    KstVectorPtr imaginary() const;
+    KstVectorPtr frequency() const;
 
-  KstVectorPtr v1() const;
-  KstVectorPtr v2() const;
-  KstScalarPtr fft() const;
-  KstScalarPtr sample() const;
-  KstVectorPtr real() const;
-  KstVectorPtr imaginary() const;
-  KstVectorPtr frequency() const;
+    void setV1(KstVectorPtr new_v1);
+    void setV2(KstVectorPtr new_v2);
+    void setFFT(KstScalarPtr new_fft);
+    void setSample(KstScalarPtr new_sample);
+    void setReal(const QString &name);
+    void setImaginary(const QString &name);
+    void setFrequency(const QString &name);
 
-  void setV1(KstVectorPtr new_v1);
-  void setV2(KstVectorPtr new_v2);
-  void setFFT(KstScalarPtr new_fft);
-  void setSample(KstScalarPtr new_sample);
-  void setReal(const QString &name);
-  void setImaginary(const QString &name);
-  void setFrequency(const QString &name);
+    //Pure virtual methods from KstDataObject
+    virtual KstObject::UpdateType update(int updateCounter = -1);
+    virtual QString propertyString() const;
+    virtual KstDataObjectPtr makeDuplicate(KstDataObjectDataObjectMap&);
 
-  //Pure virtual methods from KstDataObject
-  virtual KstObject::UpdateType update(int updateCounter = -1);
-  virtual QString propertyString() const;
-  virtual KstDataObjectPtr makeDuplicate(KstDataObjectDataObjectMap&);
-
-  //Regular virtual methods from KstDataObject
-  virtual void load(const QDomElement &e);
-  virtual void save(QTextStream& ts, const QString& indent = QString::null);
+    //Regular virtual methods from KstDataObject
+    virtual void load(const QDomElement &e);
+    virtual void save(QTextStream& ts, const QString& indent = QString::null);
 
   protected slots:
-  //Pure virtual slots from KstDataObject
-  virtual void showNewDialog();
-  virtual void showEditDialog();
+    //Pure virtual slots from KstDataObject
+    virtual void showNewDialog();
+    virtual void showEditDialog();
 };
 
 typedef KstSharedPtr<CrossPowerSpectrum> CrossPowerSpectrumPtr;

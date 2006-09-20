@@ -67,16 +67,17 @@ CrossSpectrumDialogI::CrossSpectrumDialogI(QWidget* parent, const char* name, bo
   connect(this, SIGNAL(modified()), KstApp::inst()->document(), SLOT(wasModified())); //FIXME this should be in KstDataDialog constructor...
 }
 
+
 CrossSpectrumDialogI::~CrossSpectrumDialogI() {
 }
 
-void CrossSpectrumDialogI::update()
-{
+
+void CrossSpectrumDialogI::update() {
   //called upon showing the dialog either in 'edit' mode or 'new' mode
 }
 
-bool CrossSpectrumDialogI::newObject()
-{
+
+bool CrossSpectrumDialogI::newObject() {
   //called upon clicking 'ok' in 'new' mode
   //return false if the specified objects can't be made, otherwise true
 
@@ -125,8 +126,8 @@ bool CrossSpectrumDialogI::newObject()
   return true;
 }
 
-bool CrossSpectrumDialogI::editObject()
-{
+
+bool CrossSpectrumDialogI::editObject() {
   //called upon clicking 'ok' in 'edit' mode
   //return false if the specified objects can't be editted, otherwise true
 
@@ -172,8 +173,8 @@ bool CrossSpectrumDialogI::editObject()
   return true;
 }
 
-bool CrossSpectrumDialogI::editSingleObject(CrossPowerSpectrumPtr cps)
-{
+
+bool CrossSpectrumDialogI::editSingleObject(CrossPowerSpectrumPtr cps) {
   KST::vectorList.lock().readLock();
   KST::scalarList.lock().readLock();
 
@@ -227,6 +228,7 @@ bool CrossSpectrumDialogI::editSingleObject(CrossPowerSpectrumPtr cps)
   return true;
 }
 
+
 void CrossSpectrumDialogI::fillFieldsForEdit() {
   CrossPowerSpectrumPtr cps = kst_cast<CrossPowerSpectrum>(_dp);
   if (!cps) {
@@ -238,20 +240,20 @@ void CrossSpectrumDialogI::fillFieldsForEdit() {
   _tagName->setText(cps->tagName());
   _legendText->setText(defaultTag); //FIXME?
 
-  _w->_v1->setSelection( cps->v1Tag() );
-  _w->_v2->setSelection( cps->v2Tag() );
+  _w->_v1->setSelection(cps->v1Tag());
+  _w->_v2->setSelection(cps->v2Tag());
 
-  _w->_fft->setSelection( cps->fftTag() );
-  _w->_sample->setSelection( cps->sampleTag() );
+  _w->_fft->setSelection(cps->fftTag());
+  _w->_sample->setSelection(cps->sampleTag());
 
-  _w->_real->setText( cps->realTag() );
+  _w->_real->setText(cps->realTag());
   _w->_real->setEnabled( false );
 
-  _w->_imaginary->setText( cps->imaginaryTag() );
+  _w->_imaginary->setText(cps->imaginaryTag());
   _w->_imaginary->setEnabled( false );
 
-  _w->_frequency->setText( cps->frequencyTag() );
-  _w->_frequency->setEnabled( false );
+  _w->_frequency->setText(cps->frequencyTag());
+  _w->_frequency->setEnabled(false);
 
   cps->unlock();
 
@@ -259,6 +261,7 @@ void CrossSpectrumDialogI::fillFieldsForEdit() {
   resize(minimumSizeHint());
   setFixedHeight(height());
 }
+
 
 void CrossSpectrumDialogI::fillFieldsForNew() {
   _tagName->setText(defaultTag);

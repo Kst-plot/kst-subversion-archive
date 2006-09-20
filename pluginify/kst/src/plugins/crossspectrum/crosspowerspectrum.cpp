@@ -48,8 +48,10 @@ CrossPowerSpectrum::CrossPowerSpectrum( QObject */*parent*/, const char */*name*
     : KstDataObject() {
 }
 
+
 CrossPowerSpectrum::~CrossPowerSpectrum() {
 }
+
 
 QString CrossPowerSpectrum::v1Tag() const {
   KstVectorPtr v = v1();
@@ -59,6 +61,7 @@ QString CrossPowerSpectrum::v1Tag() const {
   return QString::null;
 }
 
+
 QString CrossPowerSpectrum::v2Tag() const {
   KstVectorPtr v = v2();
   if (v) {
@@ -66,6 +69,7 @@ QString CrossPowerSpectrum::v2Tag() const {
   }
   return QString::null;
 }
+
 
 QString CrossPowerSpectrum::fftTag() const {
   KstScalarPtr s = fft();
@@ -75,6 +79,7 @@ QString CrossPowerSpectrum::fftTag() const {
   return QString::null;
 }
 
+
 QString CrossPowerSpectrum::sampleTag() const {
   KstScalarPtr s = sample();
   if (s) {
@@ -82,6 +87,7 @@ QString CrossPowerSpectrum::sampleTag() const {
   }
   return QString::null;
 }
+
 
 QString CrossPowerSpectrum::realTag() const {
   KstVectorPtr v = real();
@@ -91,6 +97,7 @@ QString CrossPowerSpectrum::realTag() const {
   return QString::null;
 }
 
+
 QString CrossPowerSpectrum::imaginaryTag() const {
   KstVectorPtr v = imaginary();
   if (v) {
@@ -98,6 +105,7 @@ QString CrossPowerSpectrum::imaginaryTag() const {
   }
   return QString::null;
 }
+
 
 QString CrossPowerSpectrum::frequencyTag() const {
   KstVectorPtr v = frequency();
@@ -107,33 +115,41 @@ QString CrossPowerSpectrum::frequencyTag() const {
   return QString::null;
 }
 
+
 KstVectorPtr CrossPowerSpectrum::v1() const {
   return *_inputVectors.find(VECTOR_ONE);
 }
+
 
 KstVectorPtr CrossPowerSpectrum::v2() const {
   return *_inputVectors.find(VECTOR_TWO);
 }
 
+
 KstScalarPtr CrossPowerSpectrum::fft() const {
   return *_inputScalars.find(FFT_LENGTH);
 }
+
 
 KstScalarPtr CrossPowerSpectrum::sample() const {
   return *_inputScalars.find(SAMPLE_RATE);
 }
 
+
 KstVectorPtr CrossPowerSpectrum::real() const {
   return *_outputVectors.find(REAL);
 }
+
 
 KstVectorPtr CrossPowerSpectrum::imaginary() const {
   return *_outputVectors.find(IMAGINARY);
 }
 
+
 KstVectorPtr CrossPowerSpectrum::frequency() const {
   return *_outputVectors.find(FREQUENCY);
 }
+
 
 void CrossPowerSpectrum::setV1(KstVectorPtr new_v1) {
   if (new_v1) {
@@ -144,6 +160,7 @@ void CrossPowerSpectrum::setV1(KstVectorPtr new_v1) {
   setDirty();
 }
 
+
 void CrossPowerSpectrum::setV2(KstVectorPtr new_v2) {
   if (new_v2) {
     _inputVectors[VECTOR_TWO] = new_v2;
@@ -152,6 +169,7 @@ void CrossPowerSpectrum::setV2(KstVectorPtr new_v2) {
   }
   setDirty();
 }
+
 
 void CrossPowerSpectrum::setFFT(KstScalarPtr new_fft) {
   if (new_fft) {
@@ -162,6 +180,7 @@ void CrossPowerSpectrum::setFFT(KstScalarPtr new_fft) {
   setDirty();
 }
 
+
 void CrossPowerSpectrum::setSample(KstScalarPtr new_sample) {
   if (new_sample) {
     _inputScalars[SAMPLE_RATE] = new_sample;
@@ -171,11 +190,13 @@ void CrossPowerSpectrum::setSample(KstScalarPtr new_sample) {
   setDirty();
 }
 
+
 void CrossPowerSpectrum::setReal(const QString &name) {
   KstVectorPtr v = new KstVector(name, 0, this, false);
   _outputVectors.insert(REAL, v);
   KST::addVectorToList(v);
 }
+
 
 void CrossPowerSpectrum::setImaginary(const QString &name) {
   KstVectorPtr v = new KstVector(name, 0, this, false);
@@ -183,11 +204,13 @@ void CrossPowerSpectrum::setImaginary(const QString &name) {
   KST::addVectorToList(v);
 }
 
+
 void CrossPowerSpectrum::setFrequency(const QString &name) {
   KstVectorPtr v = new KstVector(name, 0, this, false);
   _outputVectors.insert(FREQUENCY, v);
   KST::addVectorToList(v);
 }
+
 
 KstObject::UpdateType CrossPowerSpectrum::update(int updateCounter) {
   bool force = dirty();
@@ -228,6 +251,7 @@ KstObject::UpdateType CrossPowerSpectrum::update(int updateCounter) {
 
   return setLastUpdateResult(depUpdated ? UPDATE : NO_CHANGE);
 }
+
 
 void CrossPowerSpectrum::crossspectrum() {
   KstVectorPtr v1 = *_inputVectors.find(VECTOR_ONE);
@@ -349,23 +373,28 @@ void CrossPowerSpectrum::crossspectrum() {
 //   return 0;
 }
 
+
 QString CrossPowerSpectrum::propertyString() const {
   return "crosspowerspectrum";
 }
 
+
 KstDataObjectPtr CrossPowerSpectrum::makeDuplicate(KstDataObjectDataObjectMap&) {
   return 0;
 }
+
 
 void CrossPowerSpectrum::showNewDialog() {
   CrossSpectrumDialogI *dialog = new CrossSpectrumDialogI;
   dialog->show();
 }
 
+
 void CrossPowerSpectrum::showEditDialog() {
   CrossSpectrumDialogI *dialog = new CrossSpectrumDialogI;
   dialog->showEdit(tagName());
 }
+
 
 void CrossPowerSpectrum::load(const QDomElement &e) {
   QDomNode n = e.firstChild();
@@ -401,6 +430,7 @@ void CrossPowerSpectrum::load(const QDomElement &e) {
     n = n.nextSibling();
   }
 }
+
 
 void CrossPowerSpectrum::save(QTextStream& ts, const QString& indent) {
   QString l2 = indent + "  ";
