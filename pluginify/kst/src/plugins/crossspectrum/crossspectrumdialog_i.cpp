@@ -63,8 +63,6 @@ CrossSpectrumDialogI::CrossSpectrumDialogI(QWidget* parent, const char* name, bo
 
   _w->_fft->allowDirectEntry( true );
   _w->_sample->allowDirectEntry( true );
-
-  connect(this, SIGNAL(modified()), KstApp::inst()->document(), SLOT(wasModified())); //FIXME this should be in KstDataDialog constructor...
 }
 
 

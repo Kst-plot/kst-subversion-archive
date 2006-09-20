@@ -16,28 +16,21 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "kstvcurve.h"
-
-#include "kstdataobjectcollection.h"
-#include <kstdatacollection.h>
 #include "kstdataobject.h"
-#include "kstdebug.h"
 
-#include <qdeepcopy.h>
+#include "ksdebug.h"
+#include "kstdebug.h"
+#include "kstdatacollection.h"
+#include "kstdataobjectcollection.h"
+
 #include <qtimer.h>
+#include <qdeepcopy.h>
 
 #include <assert.h>
 
-#include <kdebug.h>
-
+#include <klocale.h>
 #include <klibloader.h>
-#include <klocale.h>
-#include <kservicetype.h>
-#include <kstdataobject.h>
 #include <kparts/componentfactory.h>
-
-#include "ksdebug.h"
-#include <klocale.h>
 
 //#define LOCKTRACE
 

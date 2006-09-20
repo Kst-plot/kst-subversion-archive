@@ -157,7 +157,9 @@ class PluginSortContainer {
 
 static QValueList<PluginSortContainer> bestPluginsForSource(const QString& filename, const QString& type) {
   QValueList<PluginSortContainer> bestPlugins;
-  scanPlugins();
+  if (pluginInfo.isEmpty()) {
+    scanPlugins();
+  }
 
   KST::PluginInfoList info = QDeepCopy<KST::PluginInfoList>(pluginInfo);
 

@@ -52,7 +52,6 @@ KstBasicDialogI::KstBasicDialogI(QWidget* parent, const char* name, bool modal, 
 : KstDataDialog(parent, name, modal, fl) {
   setMultiple(false);
   _w = new BasicDialogWidget(_contents);
-  connect(this, SIGNAL(modified()), KstApp::inst()->document(), SLOT(wasModified())); //FIXME this should be in KstDataDialog constructor...
 
   _pluginName = QString::null;
   _grid = 0L;

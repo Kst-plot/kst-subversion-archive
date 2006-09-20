@@ -162,19 +162,6 @@ KstApp::KstApp(QWidget *parent, const char *name)
   _quickStartDialog = new KstQuickStartDialogI(this, 0 , true);
 #endif
 
-  //FIXME these should be in KstDataDialog constructor...
-  connect(KstVectorDialogI::globalInstance(), SIGNAL(modified()), doc, SLOT(wasModified()));
-  connect(KstCurveDialogI::globalInstance(), SIGNAL(modified()), doc, SLOT(wasModified()));
-  connect(KstCsdDialogI::globalInstance(), SIGNAL(modified()), doc, SLOT(wasModified()));
-  connect(KstEqDialogI::globalInstance(), SIGNAL(modified()), doc, SLOT(wasModified()));
-  connect(KstHsDialogI::globalInstance(), SIGNAL(modified()), doc, SLOT(wasModified()));
-  connect(KstPsdDialogI::globalInstance(), SIGNAL(modified()), doc, SLOT(wasModified()));
-  connect(KstPluginDialogI::globalInstance(), SIGNAL(modified()), doc, SLOT(wasModified()));
-  connect(KstFitDialogI::globalInstance(), SIGNAL(modified()), doc, SLOT(wasModified()));
-  connect(KstFilterDialogI::globalInstance(), SIGNAL(modified()), doc, SLOT(wasModified()));
-  connect(KstEventMonitorI::globalInstance(), SIGNAL(modified()), doc, SLOT(wasModified()));
-  connect(KstImageDialogI::globalInstance(), SIGNAL(modified()), doc, SLOT(wasModified()));
-  connect(KstMatrixDialogI::globalInstance(), SIGNAL(modified()), doc, SLOT(wasModified()));
   connect(this, SIGNAL(mdiModeHasBeenChangedTo(KMdi::MdiMode)), SLOT(fixKMdi()));
 
   initActions();

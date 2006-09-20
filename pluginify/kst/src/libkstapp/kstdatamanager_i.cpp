@@ -892,6 +892,7 @@ void KstDataManagerI::delete_I() {
   }
 }
 
+
 void KstDataManagerI::new_I() {
   QStringList l;
 
