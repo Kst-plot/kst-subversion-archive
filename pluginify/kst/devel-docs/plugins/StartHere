@@ -39,7 +39,10 @@ X-KDE-Library: The library name.  This is not the filename, but a name
                be "kstobject_myplugin" where the library might be named
                "kstobject_myplugin.so".  This must also be a legal C
                variable name as it is used to construct the function
-               names inside the library.
+               names inside the library.  Note: for KstDataSource plugins the
+               name here is shortened even further: the actual library name is
+               kstdata_myplugin.so, but you should put "myplugin" as the value
+               for this property.
 
 Some other .desktop properties are also common to all plugins:
 
