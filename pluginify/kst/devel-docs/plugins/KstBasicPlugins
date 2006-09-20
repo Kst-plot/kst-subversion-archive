@@ -1,5 +1,5 @@
-KstBasicPlugin
-------------
+KstBasicPlugin Plugins
+----------------------
 
 The purpose of a KstBasicPlugin plugin is to provide an implementation of the
 virtual class "KstDataObject" via the abstract class "KstBasicPlugin."  Plugin
@@ -126,4 +126,4 @@ The KstBasicPlugin takes care of providing almost everything, including the
 configuration widget for your plugin.  The one thing it doesn't do is provide
 the actual algorithm or the names of the inputs/outputs.
 
-See the linefit plugin for an example implementation.
+See the Line Fit plugin for an example implementation.
