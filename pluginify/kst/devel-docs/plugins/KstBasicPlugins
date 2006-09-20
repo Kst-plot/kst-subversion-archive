@@ -14,8 +14,8 @@ Here is an example of the .desktop file named 'kstobject_myplugin.desktop':
     ServiceTypes=Kst Data Object
     X-KDE-ModuleType=Plugin
     X-KDE-Library=kstobject_fooplugin
-    X-Kst-Plugin-Library=kstobject_fooplugin
     X-Kst-Plugin-Author=Your Name
+    X-Kst-Plugin-Version=0.1
     Name=Foo
     Comment=A plugin that provides Foo algorithm.
 

@@ -24,25 +24,26 @@ KstPlugins are presently implemented as:
 All KstPlugins except KstCPlugins are KDE style plugins and therefore require
 a .desktop file and must be installed in the KDE standard plugins directories.
 They derive from the base servicetype "Kst/Plugin".  This base type includes
-three properties:
+two kst specific properties:
 
 X-Kst-Plugin-Author: A string containing the name of the author.
-X-Kst-Plugin-Library: The library name.  This is not the filename, but a name
-                      that is used to construct it.  For instance, it could
-                      be "myplugin" where the library might be named
-                      "kstdata_myplugin.so".  This must also be a legal C
-                      variable name as it is used to construct the function
-                      names inside the library.
 X-Kst-Plugin-Version: A string containing the version of the plugin.
 
-KstDataObject and KstBasicPlugin plugins have an additional required property:
+,desktop files also have additional properties.  Here are the required ones:
 
-X-KDE-Library: This should be the same as X-Kst-Plugin-Library.
+Name: A string containing the name of the plugin.  For instance, "My Plugin".
+ServiceTypes: For KstDataSource this is "Kst Data Source" and for KstDataObjects this is "Kst Data Object" etc, etc...
+X-KDE-ModuleType: This should be set to "Plugin".
+X-KDE-Library: The library name.  This is not the filename, but a name
+               that is used to construct it.  For instance, it could
+               be "kstobject_myplugin" where the library might be named
+               "kstobject_myplugin.so".  This must also be a legal C
+               variable name as it is used to construct the function
+               names inside the library.
 
-Some other desktop properties are also common to all plugins:
+Some other .desktop properties are also common to all plugins:
 
-Name: The name of the plugin.
 Comment: The description of the plugin.
 
-To find out more about creating these plugins look in the respect file of the
-same name.
+To find out more about creating these plugins look in the respective file for
+the type of plugin you are interested in creating.

@@ -41,8 +41,8 @@ static const QString& REAL = KGlobal::staticQString("Cross Spectrum: Real");
 static const QString& IMAGINARY = KGlobal::staticQString("Cross Spectrum: Imaginary");
 static const QString& FREQUENCY = KGlobal::staticQString("Frequency");
 
-K_EXPORT_COMPONENT_FACTORY( kst_crossspectrum,
-    KGenericFactory<CrossPowerSpectrum>( "kst_crossspectrum" ) )
+K_EXPORT_COMPONENT_FACTORY( kstobject_crossspectrum,
+    KGenericFactory<CrossPowerSpectrum>( "kstobject_crossspectrum" ) )
 
 CrossPowerSpectrum::CrossPowerSpectrum( QObject */*parent*/, const char */*name*/, const QStringList &/*args*/ )
     : KstDataObject() {

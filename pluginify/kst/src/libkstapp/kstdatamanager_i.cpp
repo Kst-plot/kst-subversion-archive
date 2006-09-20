@@ -916,7 +916,7 @@ void KstDataManagerI::new_I() {
 
   bool ok = false;
   QStringList plugin =
-      KInputDialog::getItemList( i18n( "Plugins" ), i18n( "Create..." ), l, 0, false, &ok, this );
+      KInputDialog::getItemList( i18n( "Data Objects" ), i18n( "Create..." ), l, 0, false, &ok, this );
 
   if ( !ok || plugin.isEmpty() )
     return;

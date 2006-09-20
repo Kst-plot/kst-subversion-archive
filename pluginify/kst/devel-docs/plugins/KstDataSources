@@ -29,8 +29,9 @@ Encoding=UTF-8
 Type=Service
 ServiceTypes=Kst Data Source
 X-KDE-ModuleType=Plugin
-X-Kst-Plugin-Library=myplugin
+X-KDE-Library=myplugin
 X-Kst-Plugin-Author=Your Name
+X-Kst-Plugin-Version=0.1
 Name=My Plugin
 Comment=A long description of what this thing actually does.
 

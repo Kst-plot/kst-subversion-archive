@@ -40,7 +40,7 @@ namespace KST {
     public:
       Plugin(KService::Ptr svc) : KstShared(), service(svc), _lib(0L) {
         assert(service);
-        _plugLib = service->property("X-Kst-Plugin-Library").toString();
+        _plugLib = service->library();
         //kstdDebug() << "Create plugin " << (void*)this << " " << service->property("Name").toString() << endl;
       }
 

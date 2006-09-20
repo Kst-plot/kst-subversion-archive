@@ -104,10 +104,10 @@ KstDataObjectPtr KstDataObject::createPlugin(KService::Ptr service)
       QStringList(), &err);
   if (object) {
     const QString name = service->property("Name").toString();
-    const QString author = service->property("Author").toString();
     const QString description = service->property("Comment").toString();
+    const QString author = service->property("X-Kst-Plugin-Author").toString();
     const QString version = service->property("X-Kst-Plugin-Version").toString();
-    const QString library = service->property("X-Kst-Plugin-Library").toString();
+    const QString library = service->library();
     Q_ASSERT( !name.isEmpty() );
     Q_ASSERT( !library.isEmpty() );
     object->setName(name);
