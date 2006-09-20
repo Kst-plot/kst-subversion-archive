@@ -393,7 +393,7 @@ void KstPSD::showNewDialog() {
 
 
 void KstPSD::showEditDialog() {
-  KstDialogs::self()->showPSDDialog(tagName());
+  KstDialogs::self()->showPSDDialog(tagName(), true);
 }
 
 

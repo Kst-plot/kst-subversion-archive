@@ -293,7 +293,7 @@ void KstImage::showNewDialog() {
 
 
 void KstImage::showEditDialog() {
-  KstDialogs::self()->showImageDialog(tagName());
+  KstDialogs::self()->showImageDialog(tagName(), true);
 }
 
 

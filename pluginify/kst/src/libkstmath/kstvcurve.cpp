@@ -593,7 +593,7 @@ void KstVCurve::showNewDialog() {
 
 
 void KstVCurve::showEditDialog() {
-  KstDialogs::self()->showCurveDialog(tagName());
+  KstDialogs::self()->showCurveDialog(tagName(), true);
 }
 
 

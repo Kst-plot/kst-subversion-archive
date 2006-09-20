@@ -604,7 +604,7 @@ void KstCPlugin::showNewDialog() {
 
 
 void KstCPlugin::showEditDialog() {
-  KstDialogs::self()->showCPluginDialog(tagName());
+  KstDialogs::self()->showCPluginDialog(tagName(), true);
 }
 
 

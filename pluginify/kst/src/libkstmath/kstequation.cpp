@@ -473,7 +473,7 @@ void KstEquation::showNewDialog() {
 
 
 void KstEquation::showEditDialog() {
-  KstDialogs::self()->showEquationDialog(tagName());
+  KstDialogs::self()->showEquationDialog(tagName(), true);
 }
 
 

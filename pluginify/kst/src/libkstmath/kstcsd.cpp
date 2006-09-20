@@ -275,7 +275,7 @@ void KstCSD::showNewDialog() {
 
 
 void KstCSD::showEditDialog() {
-  KstDialogs::self()->showCSDDialog(tagName());
+  KstDialogs::self()->showCSDDialog(tagName(), true);
 }
 
 

@@ -382,7 +382,7 @@ void KstHistogram::showNewDialog() {
 
 
 void KstHistogram::showEditDialog() {
-  KstDialogs::self()->showHistogramDialog(tagName());
+  KstDialogs::self()->showHistogramDialog(tagName(), true);
 }
 
 
