@@ -183,7 +183,7 @@ void KstSettingsDlg::updateAxesButtons()
 
 void KstSettingsDlg::updateAxesSettings()
 {
-    bool interpret = _checkBoxXInterpret->isChecked();
+  bool interpret = true; //_checkBoxXInterpret->isChecked();
 
     _comboBoxXInterpret->setEnabled(interpret);
     _comboBoxXDisplay->setEnabled(interpret);

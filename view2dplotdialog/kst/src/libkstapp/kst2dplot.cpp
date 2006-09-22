@@ -32,10 +32,18 @@
 #include <qdeepcopy.h>
 #include <qpointarray.h>
 #include <qstylesheet.h>
+#include <qlineedit.h>
+#include <qspinbox.h>
+#include <qcheckbox.h>
+#include <qradiobutton.h>
 
 // include files for KDE
 #include "ksdebug.h"
 #include <kglobal.h>
+#include <kdualcolorbutton.h>
+#include <kcolorbutton.h>
+#include <kcombobox.h>
+#include <kfontcombo.h>
 
 // application specific includes
 #include "dialoglauncher.h"
@@ -52,7 +60,6 @@
 #include "kstlinestyle.h"
 #include "kstmath.h"
 #include "kstnumbersequence.h"
-#include "kstplotdialog_i.h"
 #include "kstplotlabel.h"
 #include "kstrmatrix.h"
 #include "kstrvector.h"
@@ -65,6 +72,10 @@
 #include "kstviewlegend.h"
 #include "kstviewobjectfactory.h"
 #include "plotmimesource.h"
+#include "view2dplotwidget.h"
+#include "plotlistbox.h"
+#include "vectorselector.h"
+
 
 #define JD1900                  2415020.5
 #define JD1970                  2440587.5
@@ -81,6 +92,14 @@
 #else
   #define FULL_PRECISION        DBL_DIG
 #endif
+
+#define CONTENT_TAB     0
+#define APPEARANCE_TAB  1
+#define X_AXIS_TAB      2
+#define Y_AXIS_TAB      3
+#define RANGE_TAB       4
+#define MARKERS_TAB     5
+
 
 extern "C" int yyparse();
 extern "C" void *ParsedEquation;
@@ -596,6 +615,8 @@ void Kst2DPlot::commonConstructor(const QString &in_tag,
                                 double x_logbase,
                                 double y_logbase) {
   connect(KstApp::inst(), SIGNAL(timezoneChanged(const QString&, int)), this, SLOT(timezoneChanged(const QString&, int)));
+  
+  _tabToShow = CONTENT_TAB;
   _xLabel = new KstPlotLabel;
   _yLabel = new KstPlotLabel(270);
   _topLabel = new KstPlotLabel;
@@ -2261,9 +2282,10 @@ void Kst2DPlot::edit() {
   KMdiChildView *c = app->activeWindow();
 
   if (c) {
-    app->showPlotDialog(c->caption(), tagName());
+    KstTopLevelViewPtr tlv = kst_cast<KstTopLevelView>(topLevelParent());
+    showDialog(tlv, false);
   } else {
-    app->showPlotDialog();
+    //app->showPlotDialog();
   }
 }
 
@@ -4157,7 +4179,7 @@ void Kst2DPlot::mouseMoveEvent(QWidget *view, QMouseEvent *e) {
 
 void Kst2DPlot::mousePressEvent(QWidget *view, QMouseEvent *e) {
   QRect win_rect, plot_rect, tie_rect, plot_and_axis_rect;
-  KstApp *ParentApp = KstApp::inst();
+  //KstApp *ParentApp = KstApp::inst();
 
   static_cast<KstViewWidget*>(view)->viewObject()->grabMouse(this);
 
@@ -4187,18 +4209,24 @@ void Kst2DPlot::mousePressEvent(QWidget *view, QMouseEvent *e) {
       _zoomPaused = true;
       return;
     } else if (plot_and_axis_rect.contains(e->pos())) {
-      ParentApp->plotDialog()->show_I(static_cast<KstViewWidget*>(view)->viewObject()->tagName(), tagName());
       if (e->pos().y() > plot_rect.bottom() && e->pos().x() < plot_rect.left()) {
-        ParentApp->plotDialog()->TabWidget->setCurrentPage(RANGE_TAB);
+        _tabToShow = RANGE_TAB;
       } else if (e->pos().y() > plot_rect.bottom()) {
-        ParentApp->plotDialog()->TabWidget->setCurrentPage(X_AXIS_TAB);
+        _tabToShow = X_AXIS_TAB;
       } else {
-        ParentApp->plotDialog()->TabWidget->setCurrentPage(Y_AXIS_TAB);
+        _tabToShow = Y_AXIS_TAB;
       }
+      KstTopLevelViewPtr tlv = kst_cast<KstTopLevelView>(topLevelParent());
+      showDialog(tlv, false);
+      _tabToShow = CONTENT_TAB;
+
       return;
     } else if (win_rect.contains(e->pos())) {
-      ParentApp->plotDialog()->show_I(static_cast<KstViewWidget*>(view)->viewObject()->tagName(), tagName());
-      ParentApp->plotDialog()->TabWidget->setCurrentPage(APPEARANCE_TAB);
+      _tabToShow = APPEARANCE_TAB;
+      KstTopLevelViewPtr tlv = kst_cast<KstTopLevelView>(topLevelParent());
+      showDialog(tlv, false);
+      _tabToShow = CONTENT_TAB;
+
       return;
     }
   } else if (e->button() == Qt::RightButton) {
@@ -6722,16 +6750,6 @@ bool Kst2DPlot::yReversed() const {
   return _yReversed;
 }
 
-
-bool Kst2DPlot::showDialog(KstTopLevelViewPtr invoker, bool isNew) {
-  Q_UNUSED(invoker)
-  Q_UNUSED(isNew)
-  KstViewWidget *viewwidget = KstApp::inst()->activeView()->widget();
-  KstApp::inst()->plotDialog()->show_I(viewwidget->viewObject()->tagName(), tagName());
-  return false;
-}
-
-
 KstViewLabelPtr Kst2DPlot::convertLabelToViewLabel(const QDomElement &e) {
   KstViewLabelPtr label = new KstViewLabel("label");
   label->setRotation(0.0);
@@ -6877,6 +6895,159 @@ double Kst2DPlot::horizontalSizeFactor() {
   }
 
   return f;
+}
+
+/****************************
+ * 2dplot edit dialog stuff */
+
+/** fill the custom widget with current properties */
+/** Unlike most viewObject dialogs, here we let the dialog fill itself,
+    rather than having kst2dplot fill it - kst2dplot is already too big! */
+bool Kst2DPlot::fillConfigWidget(QWidget *w, bool isNew) const {
+  Q_UNUSED(isNew)
+  View2DPlotWidget *widget = dynamic_cast<View2DPlotWidget*>(w);
+  if (!widget) {
+    return false;
+  }
+  
+  // FIXME: there must be a better way to get a Kst2DPlotPtr to 'this'!
+  // or maybe not - fillConfigWidget is const, and we are breaking constness
+  // because we have to iterate through the 2dplot's lists....
+  // and, not only that, but the widget has to hold a pointer to
+  // this to allow 'default labels' to work...
+  // though some might argue it doesn't work right.
+  Kst2DPlotPtr thisPlot = findPlotByName(this->tagName());
+  widget->fillWidget(thisPlot);
+
+  widget->TabWidget->setCurrentPage(_tabToShow);
+  return false;
+}
+
+/** apply properties in the custom config widget to this */
+/** Unlike most viewObject dialogs, here we let the dialog fill its plot,
+    rather than having kst2dplot fill it - kst2dplot is already too big! */
+bool Kst2DPlot::readConfigWidget(QWidget *w) {
+  View2DPlotWidget *widget = dynamic_cast<View2DPlotWidget*>(w);
+  if (!widget) {
+    return false;
+  }
+  // FIXME: apply properties here
+
+  widget->fillPlot(this);
+  setDirty();
+  return true;
+}
+
+void Kst2DPlot::connectConfigWidget(QWidget *parent, QWidget *w) const {
+  View2DPlotWidget *widget = dynamic_cast<View2DPlotWidget*>(w);
+  if (!widget) {
+    return;
+  }
+  connect(widget, SIGNAL(changed()), parent, SLOT(modified()));
+  connect(widget->_title, SIGNAL( textChanged(const QString&) ), parent, SLOT( modified() ) );
+  connect(widget->plotColors, SIGNAL( bgChanged(const QColor&) ), parent, SLOT(modified()) );
+  connect(widget->plotColors, SIGNAL( fgChanged(const QColor&) ), parent, SLOT( modified() ) );
+  connect(widget->_axisPenWidth, SIGNAL( valueChanged(int) ), parent, SLOT( modified() ) );
+  connect(widget->_majorPenWidth, SIGNAL( valueChanged(int) ), parent, SLOT( modified() ) );
+  connect(widget->_minorPenWidth, SIGNAL( valueChanged(int) ), parent, SLOT( modified() ) );
+  connect(widget->_majorGridColor, SIGNAL( changed(const QColor&) ), parent, SLOT( modified() ) );
+  connect(widget->_minorGridColor, SIGNAL( changed(const QColor&) ), parent, SLOT( modified() ) );
+  connect(widget->_checkBoxDefaultMajorGridColor, SIGNAL( stateChanged(int) ), parent, SLOT( modified() ) );
+
+  connect( widget->ScalarList, SIGNAL( textChanged(const QString&) ), parent, SLOT(modified()));
+  connect( widget->TopLabelFontSize, SIGNAL( valueChanged(int) ), parent, SLOT(modified()));
+  connect( widget->TopLabelText, SIGNAL( textChanged(const QString&) ), parent, SLOT(modified()));
+  connect( widget->_comboBoxTopLabelJustify, SIGNAL( activated(int) ), parent, SLOT(modified()));
+  connect( widget->YLabelFontSize, SIGNAL( valueChanged(int) ), parent, SLOT(modified()));
+  connect( widget->YAxisText, SIGNAL( textChanged(const QString&) ), parent, SLOT(modified()));
+  connect( widget->XLabelFontSize, SIGNAL( valueChanged(int) ), parent, SLOT(modified()));
+  connect( widget->XAxisText, SIGNAL( textChanged(const QString&) ), parent, SLOT(modified()));
+  connect( widget->NumberFontSize, SIGNAL( valueChanged(int) ), parent, SLOT(modified()));
+  connect( widget->_spinBoxXAngle, SIGNAL( valueChanged(int) ), parent, SLOT(modified()));
+  connect( widget->_spinBoxYAngle, SIGNAL( valueChanged(int) ), parent, SLOT(modified()));
+  connect( widget->AutoLabel, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
+  connect( widget->FontComboBox, SIGNAL( activated(int) ), parent, SLOT(modified()));
+  connect( widget->ShowLegend, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
+  connect( widget->TrackContents, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
+  connect( widget->_pushButtonEditLegend, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
+  connect( widget->appearanceThisPlot, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
+  connect( widget->appearanceThisWindow, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
+
+  connect( widget->_suppressTop, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
+  connect( widget->_suppressBottom, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
+  connect( widget->XIsLog, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
+  connect( widget->_checkBoxXOffsetMode, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
+  connect( widget->_xReversed, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
+  connect( widget->_checkBoxXInterpret, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
+  connect( widget->_comboBoxXInterpret, SIGNAL( activated(int) ), parent, SLOT(modified()));
+  connect( widget->_comboBoxXDisplay, SIGNAL( activated(int) ), parent, SLOT(modified()));
+  connect( widget->_xTransformTop, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
+  connect( widget->_xMajorTickSpacing, SIGNAL( activated(int) ), parent, SLOT(modified()));
+  connect( widget->_xMinorTicks, SIGNAL( valueChanged(int) ), parent, SLOT(modified()));
+  connect( widget->_xMinorTicksAuto, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
+  connect( widget->_xMarksInsidePlot, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
+  connect( widget->_xMarksOutsidePlot, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
+  connect( widget->_xMarksInsideAndOutsidePlot, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
+  connect( widget->_xMajorGrid, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
+  connect( widget->_xMinorGrid, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
+  connect( widget->XAxisThisPlot, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
+  connect( widget->XAxisThisWindow, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
+  
+  connect( widget->_suppressLeft, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
+  connect( widget->_suppressRight, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
+  connect( widget->YIsLog, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
+  connect( widget->_checkBoxYOffsetMode, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
+  connect( widget->_yReversed, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
+  connect( widget->_checkBoxYInterpret, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
+  connect( widget->_comboBoxYInterpret, SIGNAL( activated(int) ), parent, SLOT(modified()));
+  connect( widget->_comboBoxYDisplay, SIGNAL( activated(int) ), parent, SLOT(modified()));
+  connect( widget->_yTransformRight, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
+  connect( widget->_yMajorTickSpacing, SIGNAL( activated(int) ), parent, SLOT(modified()));
+  connect( widget->_yMinorTicks, SIGNAL( valueChanged(int) ), parent, SLOT(modified()));
+  connect( widget->_yMinorTicksAuto, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
+  connect( widget->_yMarksInsidePlot, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
+  connect( widget->_yMarksOutsidePlot, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
+  connect( widget->_yMarksInsideAndOutsidePlot, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
+  connect( widget->_yMajorGrid, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
+  connect( widget->_yMinorGrid, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
+  connect( widget->YAxisThisPlot, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
+  connect( widget->YAxisThisWindow, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
+
+  connect( widget->XAuto, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
+  connect( widget->XAutoBorder, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
+  connect( widget->XAutoUp, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
+  connect( widget->XNoSpikes, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
+  connect( widget->XAC, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
+  connect( widget->XACRange, SIGNAL( textChanged(const QString&) ), parent, SLOT(modified()));
+  connect( widget->XExpression, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
+  connect( widget->XExpressionMin, SIGNAL( textChanged(const QString&) ), parent, SLOT(modified()));
+  connect( widget->XExpressionMax, SIGNAL( textChanged(const QString&) ), parent, SLOT(modified()));
+  connect( widget->YAuto, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
+  connect( widget->YAutoBorder, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
+  connect( widget->YAutoUp, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
+  connect( widget->YExpression, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
+  connect( widget->YAC, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
+  connect( widget->YACRange, SIGNAL( textChanged(const QString&) ), parent, SLOT(modified()));
+  connect( widget->YExpressionMin, SIGNAL( textChanged(const QString&) ), parent, SLOT(modified()));
+  connect( widget->YExpressionMax, SIGNAL( textChanged(const QString&) ), parent, SLOT(modified()));
+  connect( widget->AddPlotMarker, SIGNAL( clicked() ), parent, SLOT(modified()));
+  connect( widget->RemovePlotMarker, SIGNAL( clicked() ), parent, SLOT(modified()));
+  connect( widget->RemoveAllPlotMarkers, SIGNAL( clicked() ), parent, SLOT(modified()));
+  connect( widget->UseCurve, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
+  connect( widget->CurveCombo, SIGNAL( activated(int) ), parent, SLOT(modified()));
+  connect( widget->Rising, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
+  connect( widget->Falling, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
+  connect( widget->UseVector, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
+  connect( widget->_vectorForMarkers, SIGNAL( selectionChanged(const QString&) ), parent, SLOT(modified()));
+  connect( widget->_colorMarker, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
+  connect( widget->_checkBoxDefaultMarkerColor, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
+  connect( widget->_comboMarkerLineStyle, SIGNAL( activated(int) ), parent, SLOT(modified()));
+  connect( widget->_spinBoxMarkerLineWidth, SIGNAL( valueChanged(int) ), parent, SLOT(modified()));
+
+}
+
+QWidget *Kst2DPlot::configWidget() {
+  return new View2DPlotWidget;
 }
 
 namespace {

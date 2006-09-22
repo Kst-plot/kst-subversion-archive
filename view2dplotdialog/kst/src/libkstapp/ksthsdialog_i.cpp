@@ -214,7 +214,7 @@ bool KstHsDialogI::newObject() {
   KstVectorPtr vp = *KST::vectorList.findTag(_w->_vector->selectedVector());
   KST::vectorList.lock().unlock();
   if (!vp) {
-    kstdFatal() << "Bug in kst: the Vector field in plotDialog (Hs) refers to "
+    kstdFatal() << "Bug in kst: the Vector field (Hs) refers to "
                 << " a non existant vector..." << endl;
   }
 

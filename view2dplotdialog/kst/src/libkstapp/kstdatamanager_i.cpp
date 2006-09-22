@@ -594,8 +594,6 @@ KstDataManagerI::KstDataManagerI(KstDoc *in_doc, QWidget* parent, const char* na
   connect(NewEvent, SIGNAL(clicked()), KstEventMonitorI::globalInstance(), SLOT(show()));
   connect(NewPSD, SIGNAL(clicked()), KstPsdDialogI::globalInstance(), SLOT(show()));
   connect(NewVector, SIGNAL(clicked()), KstVectorDialogI::globalInstance(), SLOT(show()));
-  connect(OpenPlotDialog, SIGNAL(clicked()),
-      KstApp::inst(), SLOT(showPlotDialog()));
 
   connect(NewImage, SIGNAL(clicked()), KstImageDialogI::globalInstance(), SLOT(show()));
 

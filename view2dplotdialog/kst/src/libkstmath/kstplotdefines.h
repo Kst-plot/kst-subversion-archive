@@ -18,6 +18,8 @@
 #ifndef PLOTDEFINES_H
 #define PLOTDEFINES_H
 
+#define MARKER_LABEL_PRECISION        15
+
 #include <qstringlist.h>
 #include <klocale.h>
 
@@ -93,6 +95,7 @@ typedef struct TickParameters {
 
 const unsigned int numAxisInterpretations = sizeof( AxisInterpretations ) / sizeof( AxisInterpretation );
 const unsigned int numAxisDisplays = sizeof( AxisDisplays ) / sizeof( AxisDisplay );
+
 
 #endif
 // vim: ts=2 sw=2 et

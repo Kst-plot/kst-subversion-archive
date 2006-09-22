@@ -168,7 +168,7 @@ bool KstEqDialogI::newObject() {
   /* find *V */
   KstVectorPtr vp = *KST::vectorList.findTag(_w->_xVectors->selectedVector());
   if (!vp) {
-    kstdFatal() << "Bug in kst: the Vector field in plotDialog (Eq) "
+    kstdFatal() << "Bug in kst: the Vector field (Eq) "
                 << "refers to a non-existent vector..." << endl;
   }
   KST::vectorList.lock().unlock();
@@ -274,7 +274,7 @@ bool KstEqDialogI::editSingleObject(KstEquationPtr eqPtr) {
     /* find *V */
     KstVectorList::Iterator i = KST::vectorList.findTag(_w->_xVectors->selectedVector());
     if (i == KST::vectorList.end()) {
-      kstdFatal() << "Bug in kst: the Vector field in plotDialog (Eq) "
+      kstdFatal() << "Bug in kst: the Vector field (Eq) "
                   << "refers to a non existant vector..." << endl;
     }
     vp = *i;

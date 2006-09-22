@@ -116,9 +116,6 @@ class KST_EXPORT KstApp : public KMdiMainFrm {
      * the document object's methods */
     KstDoc *document() const;
 
-    /** returns a pointer to the plot dialog */
-    KstPlotDialogI *plotDialog() const;
-    
     /** returns a pointer to the monochrome settings dialog */
     KstMonochromeDialogI *monochromeDialog() const;
 
@@ -301,10 +298,6 @@ class KST_EXPORT KstApp : public KMdiMainFrm {
     /** creates a new plot in the current window */
     void newPlot();
 
-    /** just calls plotDialog->show_I(0) */
-    void showPlotDialog();
-    void showPlotDialog(const QString& strWindow, const QString& strPlot);
-
     /** just calls dataManager->show_I(0) */
     void showDataManager();
     void showViewManager();
@@ -445,9 +438,6 @@ class KST_EXPORT KstApp : public KMdiMainFrm {
     
     /* Dialog for looking at debug information */
     KstDebugDialogI *debugDialog;
-
-    /* Dialog for editing the document properties */
-    KstPlotDialogI *_plotDialog;
 
     GraphicEditorI *_graphicDialog;
     

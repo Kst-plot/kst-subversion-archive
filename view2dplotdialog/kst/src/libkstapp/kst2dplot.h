@@ -95,6 +95,13 @@ public:
   Kst2DPlot(const Kst2DPlot& plot, const QString& name);
   virtual ~Kst2DPlot();
 
+  QWidget *configWidget();
+
+  // handle custom widget, if any: is called by KstEditViewObjectDialogI
+  bool fillConfigWidget(QWidget *w, bool isNew) const;
+  bool readConfigWidget(QWidget *w);
+  void connectConfigWidget(QWidget *parent, QWidget *w) const;
+    
   static Kst2DPlotList globalPlotList();
   static Kst2DPlotPtr findPlotByName(const QString& name);
   static bool checkRange(double& min_in, double& max_in);
@@ -401,9 +408,6 @@ public slots:
   void filterCurve(int id);
   void removeCurve(int id);
 
-  // used in layout mode
-  bool showDialog(KstTopLevelViewPtr invoker, bool isNew = false);
-
 protected slots:
   void menuMoveUp();
   void menuMoveDown();
@@ -635,6 +639,8 @@ private:
 
   KstScaleModeType _xScaleModeDefault;
   KstScaleModeType _yScaleModeDefault;
+  
+  int _tabToShow;
 };
 
 typedef KstSharedPtr<Kst2DPlot> Kst2DPlotPtr;

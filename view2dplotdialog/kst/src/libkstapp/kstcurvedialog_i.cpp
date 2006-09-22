@@ -224,7 +224,7 @@ bool KstCurveDialogI::newObject() {
   }
   KST::vectorList.lock().unlock();
   if (!VX || !VY) {
-    kstdFatal() << "Bug in kst: the XVector field in plotDialog refers to "
+    kstdFatal() << "Bug in kst: the XVector field refers to "
                 << "a non existent vector...." << endl;
   }
 

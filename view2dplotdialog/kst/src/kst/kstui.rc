@@ -48,7 +48,6 @@
     <Action name="differentiatecurves_action"/>
   </Menu>
   <Menu name="plots"><text>&amp;Plots</text>
-    <Action name="plotdialog_action"/>
     <Action name="newplot_action"/>
     <Separator/>
     <Action name="zoomtie_action"/>

@@ -73,7 +73,6 @@
 #include "kstmatrixdialog_i.h"
 #include "kstmatrixdefaults.h"
 #include "kstmonochromedialog_i.h"
-#include "kstplotdialog_i.h"
 #include "kstplugindialog_i.h"
 #include "kstprintoptionspage.h"
 #include "kstpsddialog_i.h"
@@ -144,7 +143,6 @@ KstApp::KstApp(QWidget *parent, const char *name)
 
   /* create dialogs */
   debugDialog = new KstDebugDialogI(this);
-  _plotDialog = new KstPlotDialogI(doc, this);
   dataManager = new KstDataManagerI(doc, this);
   viewManager = new KstViewManagerI(doc, this);
   viewScalarsDialog = new KstViewScalarsDialogI(this);
@@ -194,9 +192,6 @@ KstApp::KstApp(QWidget *parent, const char *name)
           this,             SLOT(registerDocChange()));
   connect(graphFileDialog, SIGNAL(graphFileReq(const QString&,const QString&,int,int,bool,int)), this, SLOT(immediatePrintToPng(const QString&,const QString&,int,int,bool,int)));
   connect(graphFileDialog, SIGNAL(graphFileEpsReq(const QString&,int,int,bool,int)), this, SLOT(immediatePrintToEps(const QString&,int,int,bool,int)));
-
-  /*** plot dialog ***/
-  connect(_plotDialog, SIGNAL(docChanged()), this, SLOT(registerDocChange()));
 
   // data manager signals
   connect(dataManager, SIGNAL(docChanged()), this, SLOT(registerDocChange()));
@@ -499,13 +494,6 @@ void KstApp::initActions() {
                                  actionCollection(), "newplot_action");
   NewPlotAction->setWhatsThis(i18n("Create a new plot in the\n"
                                       "current window."));
-
-  /************/
-  PlotDialogAction = new KAction(i18n("Edit &Plot..."), "kst_editplots", 0,
-                                 this, SLOT(showPlotDialog()),
-                                 actionCollection(), "plotdialog_action");
-  PlotDialogAction->setWhatsThis(i18n("Bring up a dialog box\n"
-                                      "to edit plot settings."));
 
   /************/
   DataManagerAction = new KAction(i18n("&Data Manager"), "kst_datamanager", 0,
@@ -1051,12 +1039,6 @@ bool KstApp::openDocumentFile(const QString& in_filename,
   opening = false;
   return rc;
 }
-
-
-KstPlotDialogI *KstApp::plotDialog() const {
-  return _plotDialog;
-}
-
 
 KstMonochromeDialogI *KstApp::monochromeDialog() const {
   return _monochromeDialog;
@@ -1988,27 +1970,12 @@ void KstApp::paintAll(KstPainter::PaintType pt) {
 #endif
 }
 
-void KstApp::showPlotDialog() {
-  KMdiChildView *win = activeWindow();
-
-  if (win && _plotDialog->isHidden()) {
-    _plotDialog->show_I(win->caption(), QString::null);
-  } else {
-    _plotDialog->show_I();
-  }
-}
-
 void KstApp::newPlot() {
   KstViewWindow *w = dynamic_cast<KstViewWindow*>(activeWindow());
   if (w) {
     w->createObject<Kst2DPlot>(KST::suggestPlotName(), false);
   }
 }
-
-void KstApp::showPlotDialog(const QString& window, const QString& plot) {
-  _plotDialog->show_I(window, plot);
-}
-
 
 void KstApp::showDataManager() {
   dataManager->show_I();
@@ -2173,9 +2140,6 @@ void KstApp::updateDialogs(bool onlyVisible) {
     if (!onlyVisible || KstMatrixDialogI::globalInstance()->isShown()) {
       KstMatrixDialogI::globalInstance()->update();
     }
-    if (!onlyVisible || _plotDialog->isShown()) {
-      _plotDialog->update();
-    }
     if (!onlyVisible || changeFileDialog->isShown()) {
       changeFileDialog->updateChangeFileDialog();
     }
@@ -2213,7 +2177,6 @@ void KstApp::updateDialogsForWindow() {
     KstImageDialogI::globalInstance()->updateWindow();
     updateDataManager(false);
     updateViewManager(false);
-    _plotDialog->updateWindow();
   }
 }
 

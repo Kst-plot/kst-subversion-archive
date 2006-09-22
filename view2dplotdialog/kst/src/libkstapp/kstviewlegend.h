@@ -27,7 +27,6 @@
 
 #include <qguardedptr.h>
 
-class KstViewLegendDialogI;
 class Kst2DPlot;
 typedef KstSharedPtr<Kst2DPlot> Kst2DPlotPtr;
 
@@ -69,7 +68,6 @@ class KstViewLegend : public KstBorderedViewObject {
     void resize(const QSize&);
     QRegion clipRegion();
     
-    //virtual QMap<QString, QVariant> widgetHints(const QString& propertyName) const;
     QWidget *configWidget();
 
     // handle custom widget, if any: is called by KstEditViewObjectDialogI

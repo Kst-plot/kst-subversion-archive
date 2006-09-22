@@ -1,173 +1,41 @@
-<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
-<class>KstPlotDialog</class>
-<widget class="QDialog">
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<class>View2DPlotWidget</class>
+<widget class="QWidget">
     <property name="name">
-        <cstring>KstPlotDialog</cstring>
+        <cstring>View2DPlotWidget</cstring>
     </property>
     <property name="geometry">
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>710</width>
-            <height>703</height>
+            <width>732</width>
+            <height>571</height>
         </rect>
     </property>
     <property name="caption">
-        <string>Plot Dialog</string>
+        <string>Form1</string>
     </property>
-    <grid>
+    <vbox>
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <widget class="QLayoutWidget" row="0" column="0" rowspan="1" colspan="4">
+        <widget class="QLayoutWidget">
             <property name="name">
-                <cstring>layout175</cstring>
+                <cstring>Layout30</cstring>
             </property>
             <hbox>
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <widget class="KComboBox">
-                    <property name="name">
-                        <cstring>_window</cstring>
-                    </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>3</hsizetype>
-                            <vsizetype>0</vsizetype>
-                            <horstretch>2</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                </widget>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>_newWindow</cstring>
-                    </property>
-                    <property name="text">
-                        <string></string>
-                    </property>
-                </widget>
-                <widget class="QComboBox">
-                    <property name="name">
-                        <cstring>Select</cstring>
-                    </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>3</hsizetype>
-                            <vsizetype>0</vsizetype>
-                            <horstretch>3</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                    <property name="whatsThis" stdset="0">
-                        <string>Select a plot whose limits will be adjusted by this dialog.</string>
-                    </property>
-                </widget>
-            </hbox>
-        </widget>
-        <widget class="QLabel" row="1" column="1">
-            <property name="name">
-                <cstring>TextLabel4_2</cstring>
-            </property>
-            <property name="sizePolicy">
-                <sizepolicy>
-                    <hsizetype>0</hsizetype>
-                    <vsizetype>0</vsizetype>
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                </sizepolicy>
-            </property>
-            <property name="text">
-                <string>Columns:</string>
-            </property>
-            <property name="alignment">
-                <set>AlignVCenter|AlignRight</set>
-            </property>
-            <property name="buddy" stdset="0">
-                <cstring>_plotColumns</cstring>
-            </property>
-            <property name="hAlign" stdset="0">
-            </property>
-        </widget>
-        <widget class="QCheckBox" row="1" column="0">
-            <property name="name">
-                <cstring>_reGrid</cstring>
-            </property>
-            <property name="text">
-                <string>Re-&amp;grid window</string>
-            </property>
-        </widget>
-        <widget class="QSpinBox" row="1" column="2">
-            <property name="name">
-                <cstring>_plotColumns</cstring>
-            </property>
-            <property name="sizePolicy">
-                <sizepolicy>
-                    <hsizetype>1</hsizetype>
-                    <vsizetype>0</vsizetype>
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                </sizepolicy>
-            </property>
-            <property name="maxValue">
-                <number>10</number>
-            </property>
-            <property name="minValue">
-                <number>1</number>
-            </property>
-            <property name="value">
-                <number>1</number>
-            </property>
-            <property name="whatsThis" stdset="0">
-                <string>AutoLayout will place the plots in a grid with this many columns.</string>
-            </property>
-        </widget>
-        <spacer row="1" column="3">
-            <property name="name">
-                <cstring>spacer24</cstring>
-            </property>
-            <property name="orientation">
-                <enum>Horizontal</enum>
-            </property>
-            <property name="sizeType">
-                <enum>Expanding</enum>
-            </property>
-            <property name="sizeHint">
-                <size>
-                    <width>356</width>
-                    <height>20</height>
-                </size>
-            </property>
-        </spacer>
-        <widget class="QLayoutWidget" row="3" column="0" rowspan="1" colspan="4">
-            <property name="name">
-                <cstring>layout26</cstring>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
+                <property name="margin">
+                    <number>0</number>
                 </property>
-                <spacer>
+                <property name="spacing">
+                    <number>6</number>
+                </property>
+                <widget class="QLabel">
                     <property name="name">
-                        <cstring>Spacer1_2_2</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>40</width>
-                            <height>20</height>
-                        </size>
-                    </property>
-                </spacer>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>Delete</cstring>
+                        <cstring>TextLabel1_8_2_2_2</cstring>
                     </property>
                     <property name="sizePolicy">
                         <sizepolicy>
@@ -178,64 +46,23 @@
                         </sizepolicy>
                     </property>
                     <property name="text">
-                        <string>&amp;Delete</string>
+                        <string>Title:</string>
                     </property>
-                    <property name="whatsThis" stdset="0">
-                        <string>Deletes the selected Plot.</string>
-                    </property>
-                </widget>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>New</cstring>
-                    </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>0</hsizetype>
-                            <vsizetype>0</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                    <property name="text">
-                        <string>&amp;Apply as New</string>
-                    </property>
-                    <property name="whatsThis" stdset="0">
-                        <string>Apply settings to the creation of a new Plot.</string>
+                    <property name="buddy" stdset="0">
+                        <cstring>Name</cstring>
                     </property>
                 </widget>
-                <widget class="QPushButton">
+                <widget class="QLineEdit">
                     <property name="name">
-                        <cstring>Edit</cstring>
-                    </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>0</hsizetype>
-                            <vsizetype>0</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                    <property name="text">
-                        <string>A&amp;pply Edits</string>
+                        <cstring>_title</cstring>
                     </property>
                     <property name="whatsThis" stdset="0">
-                        <string>Apply settings to the selected Plot.</string>
-                    </property>
-                </widget>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>Close</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Close</string>
-                    </property>
-                    <property name="accel">
-                        <string>Esc, Ctrl+Q</string>
+                        <string>Each Plot must have a unique name.  To change the name of the selected Plot, change it here and press "Apply Edits".  To create a new Plot, change the name here to something unique, and press "Apply as New".</string>
                     </property>
                 </widget>
             </hbox>
         </widget>
-        <widget class="QTabWidget" row="2" column="0" rowspan="1" colspan="4">
+        <widget class="QTabWidget">
             <property name="name">
                 <cstring>TabWidget</cstring>
             </property>
@@ -250,50 +77,7 @@
                     <property name="name">
                         <cstring>unnamed</cstring>
                     </property>
-                    <widget class="QLayoutWidget" row="0" column="0" rowspan="1" colspan="3">
-                        <property name="name">
-                            <cstring>Layout30</cstring>
-                        </property>
-                        <hbox>
-                            <property name="name">
-                                <cstring>unnamed</cstring>
-                            </property>
-                            <property name="margin">
-                                <number>0</number>
-                            </property>
-                            <property name="spacing">
-                                <number>6</number>
-                            </property>
-                            <widget class="QLabel">
-                                <property name="name">
-                                    <cstring>TextLabel1_8_2_2_2</cstring>
-                                </property>
-                                <property name="sizePolicy">
-                                    <sizepolicy>
-                                        <hsizetype>0</hsizetype>
-                                        <vsizetype>0</vsizetype>
-                                        <horstretch>0</horstretch>
-                                        <verstretch>0</verstretch>
-                                    </sizepolicy>
-                                </property>
-                                <property name="text">
-                                    <string>Unique plot name:</string>
-                                </property>
-                                <property name="buddy" stdset="0">
-                                    <cstring>Name</cstring>
-                                </property>
-                            </widget>
-                            <widget class="QLineEdit">
-                                <property name="name">
-                                    <cstring>Name</cstring>
-                                </property>
-                                <property name="whatsThis" stdset="0">
-                                    <string>Each Plot must have a unique name.  To change the name of the selected Plot, change it here and press "Apply Edits".  To create a new Plot, change the name here to something unique, and press "Apply as New".</string>
-                                </property>
-                            </widget>
-                        </hbox>
-                    </widget>
-                    <spacer row="1" column="1">
+                    <spacer row="0" column="1">
                         <property name="name">
                             <cstring>spacer14</cstring>
                         </property>
@@ -310,7 +94,7 @@
                             </size>
                         </property>
                     </spacer>
-                    <spacer row="3" column="1">
+                    <spacer row="2" column="1">
                         <property name="name">
                             <cstring>spacer15</cstring>
                         </property>
@@ -327,7 +111,7 @@
                             </size>
                         </property>
                     </spacer>
-                    <widget class="QLayoutWidget" row="1" column="0" rowspan="3" colspan="1">
+                    <widget class="QLayoutWidget" row="0" column="0" rowspan="3" colspan="1">
                         <property name="name">
                             <cstring>layout26</cstring>
                         </property>
@@ -361,7 +145,7 @@
                             </widget>
                         </vbox>
                     </widget>
-                    <widget class="QLayoutWidget" row="1" column="2" rowspan="3" colspan="1">
+                    <widget class="QLayoutWidget" row="0" column="2" rowspan="3" colspan="1">
                         <property name="name">
                             <cstring>layout25</cstring>
                         </property>
@@ -395,7 +179,7 @@
                             </widget>
                         </vbox>
                     </widget>
-                    <widget class="QLayoutWidget" row="2" column="1">
+                    <widget class="QLayoutWidget" row="1" column="1">
                         <property name="name">
                             <cstring>layout19</cstring>
                         </property>
@@ -461,6 +245,9 @@
                                 </property>
                                 <property name="text">
                                     <string></string>
+                                </property>
+                                <property name="accel">
+                                    <string>Alt+S, Alt+F, Alt+F</string>
                                 </property>
                                 <property name="toolTip" stdset="0">
                                     <string>Select: Alt+s</string>
@@ -1918,6 +1705,9 @@
                                 <property name="text">
                                     <string>&amp;Logarithmic</string>
                                 </property>
+                                <property name="accel">
+                                    <string>Alt+L</string>
+                                </property>
                             </widget>
                             <widget class="QComboBox" row="1" column="6" rowspan="1" colspan="2">
                                 <property name="name">
@@ -3328,67 +3118,48 @@
                 </grid>
             </widget>
         </widget>
-    </grid>
+    </vbox>
 </widget>
 <customwidgets>
 </customwidgets>
-<connections>
-    <connection>
-        <sender>Close</sender>
-        <signal>clicked()</signal>
-        <receiver>KstPlotDialog</receiver>
-        <slot>reject()</slot>
-    </connection>
-</connections>
 <tabstops>
-    <tabstop>_window</tabstop>
-    <tabstop>_newWindow</tabstop>
-    <tabstop>Select</tabstop>
-    <tabstop>_reGrid</tabstop>
-    <tabstop>_plotColumns</tabstop>
+    <tabstop>_title</tabstop>
     <tabstop>TabWidget</tabstop>
-    <tabstop>Name</tabstop>
-    <tabstop>DisplayedCurveList</tabstop>
-    <tabstop>AvailableCurveList</tabstop>
-    <tabstop>_majorGridColor</tabstop>
-    <tabstop>_checkBoxDefaultMajorGridColor</tabstop>
-    <tabstop>_minorGridColor</tabstop>
-    <tabstop>_checkBoxDefaultMinorGridColor</tabstop>
-    <tabstop>ScalarList</tabstop>
-    <tabstop>TopLabelFontSize</tabstop>
-    <tabstop>TopLabelText</tabstop>
-    <tabstop>_comboBoxTopLabelJustify</tabstop>
-    <tabstop>YLabelFontSize</tabstop>
-    <tabstop>YAxisText</tabstop>
-    <tabstop>XLabelFontSize</tabstop>
-    <tabstop>XAxisText</tabstop>
-    <tabstop>NumberFontSize</tabstop>
-    <tabstop>_spinBoxXAngle</tabstop>
-    <tabstop>_spinBoxYAngle</tabstop>
-    <tabstop>AutoLabel</tabstop>
-    <tabstop>FontComboBox</tabstop>
-    <tabstop>ShowLegend</tabstop>
-    <tabstop>appearanceThisPlot</tabstop>
-    <tabstop>appearanceThisWindow</tabstop>
-    <tabstop>appearanceAll</tabstop>
-    <tabstop>_suppressTop</tabstop>
-    <tabstop>_suppressBottom</tabstop>
-    <tabstop>XIsLog</tabstop>
-    <tabstop>_checkBoxXOffsetMode</tabstop>
-    <tabstop>_xReversed</tabstop>
-    <tabstop>_checkBoxXInterpret</tabstop>
-    <tabstop>_comboBoxXInterpret</tabstop>
-    <tabstop>_comboBoxXDisplay</tabstop>
-    <tabstop>_xTransformTop</tabstop>
-    <tabstop>_xTransformTopExp</tabstop>
-    <tabstop>_xMajorTickSpacing</tabstop>
-    <tabstop>_xMinorTicks</tabstop>
-    <tabstop>_xMinorTicksAuto</tabstop>
-    <tabstop>_xMajorGrid</tabstop>
-    <tabstop>_xMinorGrid</tabstop>
-    <tabstop>XAxisThisPlot</tabstop>
-    <tabstop>XAxisThisWindow</tabstop>
-    <tabstop>XAxisAll</tabstop>
+    <tabstop>NewPlotMarker</tabstop>
+    <tabstop>AddPlotMarker</tabstop>
+    <tabstop>PlotMarkerList</tabstop>
+    <tabstop>RemovePlotMarker</tabstop>
+    <tabstop>RemoveAllPlotMarkers</tabstop>
+    <tabstop>UseCurve</tabstop>
+    <tabstop>CurveCombo</tabstop>
+    <tabstop>Rising</tabstop>
+    <tabstop>Falling</tabstop>
+    <tabstop>Both</tabstop>
+    <tabstop>UseVector</tabstop>
+    <tabstop>_colorMarker</tabstop>
+    <tabstop>_checkBoxDefaultMarkerColor</tabstop>
+    <tabstop>_comboMarkerLineStyle</tabstop>
+    <tabstop>_spinBoxMarkerLineWidth</tabstop>
+    <tabstop>markersThisPlot</tabstop>
+    <tabstop>markersThisWindow</tabstop>
+    <tabstop>markersAll</tabstop>
+    <tabstop>XAuto</tabstop>
+    <tabstop>XAC</tabstop>
+    <tabstop>XACRange</tabstop>
+    <tabstop>XExpressionMin</tabstop>
+    <tabstop>scalarSelectorX1</tabstop>
+    <tabstop>XExpressionMax</tabstop>
+    <tabstop>scalarSelectorX2</tabstop>
+    <tabstop>YAuto</tabstop>
+    <tabstop>YAC</tabstop>
+    <tabstop>YACRange</tabstop>
+    <tabstop>YExpressionMin</tabstop>
+    <tabstop>scalarSelectorY1</tabstop>
+    <tabstop>YExpressionMax</tabstop>
+    <tabstop>scalarSelectorY2</tabstop>
+    <tabstop>rangeThisPlot</tabstop>
+    <tabstop>rangeThisWindow</tabstop>
+    <tabstop>rangeAll</tabstop>
     <tabstop>_suppressLeft</tabstop>
     <tabstop>_suppressRight</tabstop>
     <tabstop>YIsLog</tabstop>
@@ -3407,46 +3178,99 @@
     <tabstop>YAxisThisPlot</tabstop>
     <tabstop>YAxisThisWindow</tabstop>
     <tabstop>YAxisAll</tabstop>
-    <tabstop>XAuto</tabstop>
-    <tabstop>XAC</tabstop>
-    <tabstop>XACRange</tabstop>
-    <tabstop>XExpressionMin</tabstop>
-    <tabstop>scalarSelectorX1</tabstop>
-    <tabstop>XExpressionMax</tabstop>
-    <tabstop>scalarSelectorX2</tabstop>
-    <tabstop>YAuto</tabstop>
-    <tabstop>YAC</tabstop>
-    <tabstop>YACRange</tabstop>
-    <tabstop>YExpressionMin</tabstop>
-    <tabstop>scalarSelectorY1</tabstop>
-    <tabstop>YExpressionMax</tabstop>
-    <tabstop>scalarSelectorY2</tabstop>
-    <tabstop>rangeThisPlot</tabstop>
-    <tabstop>rangeThisWindow</tabstop>
-    <tabstop>rangeAll</tabstop>
-    <tabstop>NewPlotMarker</tabstop>
-    <tabstop>AddPlotMarker</tabstop>
-    <tabstop>PlotMarkerList</tabstop>
-    <tabstop>RemovePlotMarker</tabstop>
-    <tabstop>RemoveAllPlotMarkers</tabstop>
-    <tabstop>UseCurve</tabstop>
-    <tabstop>CurveCombo</tabstop>
-    <tabstop>Rising</tabstop>
-    <tabstop>markersThisPlot</tabstop>
-    <tabstop>markersThisWindow</tabstop>
-    <tabstop>markersAll</tabstop>
-    <tabstop>Delete</tabstop>
-    <tabstop>New</tabstop>
-    <tabstop>Edit</tabstop>
-    <tabstop>Close</tabstop>
+    <tabstop>_suppressTop</tabstop>
+    <tabstop>_suppressBottom</tabstop>
+    <tabstop>XIsLog</tabstop>
+    <tabstop>_checkBoxXOffsetMode</tabstop>
+    <tabstop>_xReversed</tabstop>
+    <tabstop>_checkBoxXInterpret</tabstop>
+    <tabstop>_comboBoxXInterpret</tabstop>
+    <tabstop>_comboBoxXDisplay</tabstop>
+    <tabstop>_xTransformTop</tabstop>
+    <tabstop>_xTransformTopExp</tabstop>
+    <tabstop>_xMajorTickSpacing</tabstop>
+    <tabstop>_xMinorTicks</tabstop>
+    <tabstop>_xMinorTicksAuto</tabstop>
+    <tabstop>_xMajorGrid</tabstop>
+    <tabstop>_xMinorGrid</tabstop>
+    <tabstop>XAxisThisPlot</tabstop>
+    <tabstop>XAxisThisWindow</tabstop>
+    <tabstop>XAxisAll</tabstop>
+    <tabstop>_axisPenWidth</tabstop>
+    <tabstop>_majorGridColor</tabstop>
+    <tabstop>_checkBoxDefaultMajorGridColor</tabstop>
+    <tabstop>_majorPenWidth</tabstop>
+    <tabstop>_minorGridColor</tabstop>
+    <tabstop>_checkBoxDefaultMinorGridColor</tabstop>
+    <tabstop>_minorPenWidth</tabstop>
+    <tabstop>ScalarList</tabstop>
+    <tabstop>TopLabelFontSize</tabstop>
+    <tabstop>YLabelFontSize</tabstop>
+    <tabstop>XLabelFontSize</tabstop>
+    <tabstop>NumberFontSize</tabstop>
+    <tabstop>TopLabelText</tabstop>
+    <tabstop>_comboBoxTopLabelJustify</tabstop>
+    <tabstop>YAxisText</tabstop>
+    <tabstop>XAxisText</tabstop>
+    <tabstop>_spinBoxXAngle</tabstop>
+    <tabstop>_spinBoxYAngle</tabstop>
+    <tabstop>AutoLabel</tabstop>
+    <tabstop>FontComboBox</tabstop>
+    <tabstop>ShowLegend</tabstop>
+    <tabstop>TrackContents</tabstop>
+    <tabstop>_pushButtonEditLegend</tabstop>
+    <tabstop>appearanceThisPlot</tabstop>
+    <tabstop>appearanceThisWindow</tabstop>
+    <tabstop>appearanceAll</tabstop>
+    <tabstop>AvailableCurveList</tabstop>
+    <tabstop>_add</tabstop>
+    <tabstop>_remove</tabstop>
+    <tabstop>_up</tabstop>
+    <tabstop>_down</tabstop>
+    <tabstop>DisplayedCurveList</tabstop>
 </tabstops>
 <includes>
-    <include location="global" impldecl="in implementation">plotlistbox.h</include>
-    <include location="local" impldecl="in implementation">vectorselector.h</include>
+    <include location="local" impldecl="in declaration">kst2dplot.h</include>
+    <include location="local" impldecl="in implementation">view2dplotwidget.ui.h</include>
 </includes>
+<variables>
+    <variable access="private">Kst2DPlotPtr _plot;</variable>
+    <variable access="private">QLineEdit *ScalarDest;</variable>
+</variables>
+<signals>
+    <signal>changed()</signal>
+</signals>
+<slots>
+    <slot>generateDefaultLabels()</slot>
+    <slot>updateButtons()</slot>
+    <slot>addDisplayedCurve()</slot>
+    <slot>removeDisplayedCurve()</slot>
+    <slot>fillMarkerLineCombo()</slot>
+    <slot>updateAxesButtons()</slot>
+    <slot>updateScalarCombo()</slot>
+    <slot>updatePlotMarkers( Kst2DPlotPtr plot )</slot>
+    <slot>fillWidget( Kst2DPlotPtr plot )</slot>
+    <slot>applyAppearance( Kst2DPlotPtr plot )</slot>
+    <slot>applyXAxis( Kst2DPlotPtr plot )</slot>
+    <slot>applyYAxis( Kst2DPlotPtr plot )</slot>
+    <slot>applyRange( Kst2DPlotPtr plot )</slot>
+    <slot>addPlotMarker()</slot>
+    <slot>removePlotMarker()</slot>
+    <slot>removeAllPlotMarkers()</slot>
+    <slot>applyPlotMarkers( Kst2DPlotPtr plot )</slot>
+    <slot>fillPlot( Kst2DPlotPtr plot )</slot>
+    <slot>insertCurrentScalar()</slot>
+    <slot>setScalarDestXLabel()</slot>
+    <slot>setScalarDestYLabel()</slot>
+    <slot>setScalarDestTopLabel()</slot>
+    <slot>editLegend()</slot>
+</slots>
+<functions>
+    <function access="private" specifier="non virtual">init()</function>
+    <function returnType="bool">checkPlotName()</function>
+</functions>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
-    <includehint>kcombobox.h</includehint>
     <includehint>kdualcolorbutton.h</includehint>
     <includehint>kcolorbutton.h</includehint>
     <includehint>kcolorbutton.h</includehint>
@@ -3454,6 +3278,5 @@
     <includehint>klineedit.h</includehint>
     <includehint>kcombobox.h</includehint>
     <includehint>kcolorbutton.h</includehint>
-    <includehint>vectorselector.h</includehint>
 </includehints>
 </UI>

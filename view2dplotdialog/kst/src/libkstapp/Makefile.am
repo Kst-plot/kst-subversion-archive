@@ -37,6 +37,7 @@ libkstapp_la_SOURCES = \
 	kstplotbase.cpp \
 	viewlabelwidget.ui \
 	viewlegendwidget.ui \
+	view2dplotwidget.ui \
 	kstviewlabel.cpp \
 	kstplotlabel.cpp \
 	kst2dplot.cpp \
@@ -64,7 +65,6 @@ libkstapp_la_SOURCES = \
 	kstmetaplot.cpp \
 	kstdrag.cpp \
 	kstplugindialog_i.cpp \
-	kstplotdialog_i.cpp \
 	kstfitdialog_i.cpp \
 	kstfilterdialog_i.cpp \
 	extensionmgr.cpp \
@@ -100,7 +100,6 @@ libkstapp_la_SOURCES = \
 	kstdoc.cpp \
 	kstviewwindow.cpp \
 	ktimezonecombo.cpp \
-	plotdialog.ui \
 	extensiondlg.ui \
 	kstdatadialog.ui \
 	choosecolordialog.ui \
@@ -140,7 +139,7 @@ datawizard.lo: datawizard.ui.h datawizard.ui
 debugdialog.lo: debugdialog.ui.h debugdialog.ui
 editviewobjectdialog.lo: editviewobjectdialog.ui
 kst.lo: curvedifferentiate.h
-kst2dplot.lo: plugindialogwidget.h matrixdialogwidget.h vectordialogwidget.h
+kst2dplot.lo: editviewobjectdialog.h plugindialogwidget.h matrixdialogwidget.h vectordialogwidget.h
 kstcsddialog_i.lo: csddialogwidget.h
 kstdatadialog.lo: kstdatadialog.ui.h kstdatadialog.ui
 kstdatamanager_i.lo: curvedialogwidget.h histogramdialogwidget.h imagedialogwidget.h
