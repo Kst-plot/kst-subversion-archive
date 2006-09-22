@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE kcfg SYSTEM "http://www.kde.org/standards/kcfg/1.0/kcfg.dtd">
+<kcfg> 
+  <kcfgfile name="gwenviewrc"/> 
+  <group name="misc">
+    <entry name="autoRotateImages" type="Bool"> 
+      <label>Whether Gwenview should rotate images if orientation information is available.</label> 
+      <default>true</default>
+    </entry> 
+    <entry name="history" type="PathList">
+    </entry>
+    <entry name="rememberFilter" type="Bool"> 
+      <label>Whether Gwenview should remember the file filter.</label> 
+      <default>false</default>
+    </entry> 
+    <entry name="rememberURL" type="Bool"> 
+      <label>Whether Gwenview should remember the last URL.</label> 
+      <default>false</default>
+    </entry> 
+  </group> 
+  <!-- This is the group for KDialog don't-ask-again checkboxes -->
+  <group name="Notification Messages">
+    <entry name="modifiedBehavior" key="save automatically" type="Enum">
+      <choices>
+        <choice name="ask"/> <!-- == 'ask what to do' -->
+        <choice name="yes"/> <!-- == 'save' -->
+        <choice name="no"/>  <!-- == 'discard' -->
+      </choices>
+    </entry>
+  </group>
+</kcfg>

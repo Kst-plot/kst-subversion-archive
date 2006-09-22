@@ -1,0 +1,233 @@
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<class>Form2</class>
+<widget class="QWidget">
+    <property name="name">
+        <cstring>Form2</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>303</width>
+            <height>292</height>
+        </rect>
+    </property>
+    <vbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>layout10</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QButtonGroup">
+                    <property name="name">
+                        <cstring>ButtonGroup2</cstring>
+                    </property>
+                    <property name="title">
+                        <string>Layout</string>
+                    </property>
+                    <grid>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QRadioButton" row="2" column="1">
+                            <property name="name">
+                                <cstring>radioButton_4</cstring>
+                            </property>
+                            <property name="text">
+                                <string></string>
+                            </property>
+                            <property name="pixmap">
+                                <pixmap>image0</pixmap>
+                            </property>
+                        </widget>
+                        <widget class="QRadioButton" row="0" column="0">
+                            <property name="name">
+                                <cstring>radioButton_1</cstring>
+                            </property>
+                            <property name="text">
+                                <string></string>
+                            </property>
+                            <property name="pixmap">
+                                <pixmap>image1</pixmap>
+                            </property>
+                        </widget>
+                        <widget class="QRadioButton" row="2" column="0">
+                            <property name="name">
+                                <cstring>radioButton_3</cstring>
+                            </property>
+                            <property name="text">
+                                <string></string>
+                            </property>
+                            <property name="pixmap">
+                                <pixmap>image2</pixmap>
+                            </property>
+                        </widget>
+                        <spacer row="1" column="0">
+                            <property name="name">
+                                <cstring>spacer11</cstring>
+                            </property>
+                            <property name="orientation">
+                                <enum>Vertical</enum>
+                            </property>
+                            <property name="sizeType">
+                                <enum>Expanding</enum>
+                            </property>
+                            <property name="sizeHint">
+                                <size>
+                                    <width>20</width>
+                                    <height>41</height>
+                                </size>
+                            </property>
+                        </spacer>
+                        <widget class="QRadioButton" row="0" column="1">
+                            <property name="name">
+                                <cstring>radioButton_2</cstring>
+                            </property>
+                            <property name="text">
+                                <string></string>
+                            </property>
+                            <property name="pixmap">
+                                <pixmap>image3</pixmap>
+                            </property>
+                        </widget>
+                        <spacer row="1" column="1">
+                            <property name="name">
+                                <cstring>spacer12</cstring>
+                            </property>
+                            <property name="orientation">
+                                <enum>Vertical</enum>
+                            </property>
+                            <property name="sizeType">
+                                <enum>Expanding</enum>
+                            </property>
+                            <property name="sizeHint">
+                                <size>
+                                    <width>20</width>
+                                    <height>20</height>
+                                </size>
+                            </property>
+                        </spacer>
+                        <spacer row="4" column="0">
+                            <property name="name">
+                                <cstring>spacer10</cstring>
+                            </property>
+                            <property name="orientation">
+                                <enum>Horizontal</enum>
+                            </property>
+                            <property name="sizeType">
+                                <enum>Expanding</enum>
+                            </property>
+                            <property name="sizeHint">
+                                <size>
+                                    <width>41</width>
+                                    <height>20</height>
+                                </size>
+                            </property>
+                        </spacer>
+                        <widget class="QRadioButton" row="4" column="1">
+                            <property name="name">
+                                <cstring>RadioButton5</cstring>
+                            </property>
+                            <property name="text">
+                                <string>&amp;current</string>
+                            </property>
+                            <property name="checked">
+                                <bool>true</bool>
+                            </property>
+                        </widget>
+                        <spacer row="3" column="0">
+                            <property name="name">
+                                <cstring>spacer13</cstring>
+                            </property>
+                            <property name="orientation">
+                                <enum>Vertical</enum>
+                            </property>
+                            <property name="sizeType">
+                                <enum>Expanding</enum>
+                            </property>
+                            <property name="sizeHint">
+                                <size>
+                                    <width>20</width>
+                                    <height>21</height>
+                                </size>
+                            </property>
+                        </spacer>
+                        <spacer row="3" column="1">
+                            <property name="name">
+                                <cstring>spacer14</cstring>
+                            </property>
+                            <property name="orientation">
+                                <enum>Vertical</enum>
+                            </property>
+                            <property name="sizeType">
+                                <enum>Expanding</enum>
+                            </property>
+                            <property name="sizeHint">
+                                <size>
+                                    <width>20</width>
+                                    <height>31</height>
+                                </size>
+                            </property>
+                        </spacer>
+                    </grid>
+                </widget>
+                <spacer>
+                    <property name="name">
+                        <cstring>spacer17</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>51</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+            </hbox>
+        </widget>
+        <spacer>
+            <property name="name">
+                <cstring>spacer15</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Vertical</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>20</width>
+                    <height>61</height>
+                </size>
+            </property>
+        </spacer>
+    </vbox>
+</widget>
+<images>
+    <image name="image0">
+        <data format="XPM.GZ" length="6270">789ced98d96fda401087dff92b2cfc862a872384a0aa0fb94f1272aa52d5079f81107270242155fff77a063cd8cbcee275a1e4a1e328d287d79f7fdef56c8eb582f1bdd9300a6bb9fec01eb45dc36dd93da3e00dbbddd18f9fdf7ee5f2b5b2117e558b4629ff2597b70cd7308b58809d08372b802e60a50407a003b85e8303d006ac56e000bc07746af5fa860fd806f4cb6ead8ed842ac7a2507070788be5f7203400f3028c2017887588103d047b483928ff7bd450ccbad03de103a80d7842ee01521c6b824c4fb5e44e8e1033609cb80e784eb80678455c00621a63a25dc043c21b4018f0931e411a107784888210f22f47136f60931e41e2186dc25c4903b8418729b10436e1162c80f420c3922c490ef8418f28d1043be46385eb22121861c10e20af60931648f7003f08510433e13e2fa3e1162c847425cdf2e21867c20c49026212eb7b5a04297b9905a994bf57c332e76d8e4a4f23609173776f2f99cf4828b1f46df6d28c78dcec430e1523dc1d4e585e5d3d0180a2edb4ee1324d3f88b908e32ecbe45de819bbeefca0d59ebaa6a8ef72e0da7b72c550e612665770b989d7248e31976546aee4ec4e65e9df89982b31bbd95da12d748593604584452e9b0aaf8fa3d435599af188e83a6b32a1ac4afa8cc24ac59e31753f924b58a9a92bfd3e412e6e66e7d77fd7f25c1d45c95dd2de1ebb921f3d741f9f9e5f7afdc1f0f58d7371bd9dc9c5f4b6e08aabde652e556f677171bd9d742554a3591716dbdb095752f5c1b8f8ded677c94b7009aaadbf7089aaedcfe19a51ed30efeabf75cdaa76b3ba24aabdacfb848e6bce3e2153ed67dc2752bbe6ef1352d541a67d42ae3a649e51bd4fe8b994fb04a33acaf07e71aae3d5ba58d5c96a5dacea54dfc5aa1afabdadefe27b9b559de9f7b69e4bdddbacea5cbfb7595553ff77006d97a2b759d585fecf475675b93c975a86273bacea6ab52e56752db854b2f1a90eabba59a68b974d4e7458d5edac8b9159195ca6fa7f56e9ff1e5a407d6ed7822afffb6bee0f51d138e5</data>
+    </image>
+    <image name="image1">
+        <data format="XPM.GZ" length="6270">789cd598694fe2501486bff32b1afa8d4c90454432990fee2b8a6b2699cc87ae828a0b8b8a66fefbf4bcc899b6ded3726b67c29cab248f9487f7f672aea54b25e37ba76d94960ac39135ea3986d3b50646c91df7fb931f3fbfbd158acd9a11fc342a46b5f8a5502c1b8e61565084f60c57eb842e61bd4a83d0215c6ed220b4081b751a842f8476b3d55af1089f09bd9ad36c0147c0865bb571f010e87955c727f408fd0a0dc227609d06a10fb4fcaa87f7bd0406e5b4082f186dc2734687f08c11314e19f1be27337431c10e638df0987199f088b141d86644aa43c655c203468b709f1121f7185dc25d4684dc99a187b3b1cd88905b8c08b9c988901b8c08b9ce88906b8c08f9ca88901346841c3322e48011211f67385db2074684bc67c40ade3122649f7185f09611216f18b1bed78c08d963c4fa761911f28a11214d462c7739a782cbcca5fe0b97741ef45df26be6b4fd7125bd603e59c8659a96251ea6e5a25fd935974cc7652794da6551396e3eae600bf7fcf89ce08afee9aadbbbbeb9eddfdd3f3c0e449769fac31c5c812d70f9c351794628952bac1a4baea740f55c9e82f9aecae20a1e1c52bda4ce31a29a082e57d983d95cea8abba2aad74571c5546b0be28aabd6ff812ba1b745d546f6ded670a5f5f647d566d6de56a8b6b2f6f67c2e545a6fab54db822badb7755cea629752b5137525cbf0a4862bf5ffb62daa7663aef4eb090d57ea758e2daaf63eba522a5f97a4dacf30c7b95de9e75e541de87f26e677259daaa94b541daa7a28baa986a89cc115d954430497a86aab5de14d3544d95cd34d354e7089aa23a5eb7d5335e394c115dd54430497a83a56b9a29b6a88e012551dfd7d354f97a83a51b82cae3869bb64d5d425aa4ef5e798a74b549de9f7b6a62bb1b745d5b97e6f6bbb127a5b545de8f7b69e2bb9b745d5a57e6febb9c4824be73b72aeaee4de4eabd8bd8ecfa8fed23d983cef0d99a9d7395aae4fd662bb72aae2afaf85df9fb959de</data>
+    </image>
+    <image name="image2">
+        <data format="XPM.GZ" length="6270">789ce598596fda401080dff91516fb86aa0d470841551f729f24e454a5aa0fc6984008b9802424ea7faf67c0e35de331bbd45295763641f9349bcf63af67b1bc5270be371b4e6125371cb9a39ee7785df7d929b4c783c1e4c7cf6f1fb97cadec043fd5a253ca7fc9e5a5e339a28801d80f71bd02e801564a30005b80ab3518802e60b50203f016b055abd7d77cc01ea05ff66a75c41bc46abbd4c2c91d44df2f791dc03660a70803b08b588101e823ba9d928fc7bd460cc2ab035e11b6002f093dc00b422ce39c108f7b16621b4fb04958063c255c053c21ac023608b1aa63c275c0234217f090108b3c206c03ee1362917b21fa78357609b1c81d422c729b108bdc22c4223709b1c80d422cf29d108b9c1062916f8458e42b2116f912e274c9c68458e4881057704888453e13ae013e1162918f84b8be0f8458e43d21aeef80108bbc23c42205212eb7cc28d02532894fe1e2ae833a3f6582e2926c7952c6ff489c10b9785594e38f167309e1baa97379d534452ef8e55d42d24736aed4e596492e17a2e5312e3dab50b2ab1d841faf81a66859851897107e27c125c55c5625197705b620ef776e6448189a6b9a15714a747583744f4e41cc54916b969db9149a73051f2d48df72e7a867554a7279733da8baf4ac4a49aee4085d7cfc55974b21e264eb4a517daaebc5f6b614735995125d5c6fcf7a88e96dc6f54ff7364646bd8d91516fa784d5fdb5f05bc6ca9532576a5f430b7b7bf1f384796f4fff27f531c6fc1c17c67fe332da7384e8a744e432d97302975ec6dde0fee1f1e979381abfbcaa2e833d27ee52556f9a6bf19e137369aa89e232d9737497ae7a8f5c467b8ee68aa9362297d19ea3bae2aacdc8c547b26b4eb5b5b46b5eb54d2ed33da7cfaa764297f19ed36755bbcb9d63a26a6f2957b26a5fb9570d7b9b551d2cd1db9cead0beb759d5917d6fb3aa63fbde66550dfbde665527f6bdcdaa4eedef2f56d5b477b1aa33fbde6655e7fdd99153559a8b555d84aed453d45cacead2dec5aaaefa343f45a5b958d5b5bd6bc133409a6cfab067f5fecbf43d93a9cde8fdd71f47f6ae8c22ffeb6bee37704207b8</data>
+    </image>
+    <image name="image3">
+        <data format="XPM.GZ" length="6270">789ced96596fda501046dff915167e4315610921a8ea03fb12f64d95aa3e780d24ec3b54fdef65063cd8c2d7f605b76a958ea324070d67beebcb157e08095f9b3521f41058aea4d550119481b41042ea7a3cde7ffbfee54720988c09c79f444488063f0582614111c40816e0bb81cf714005301e850b50067c4cc205280126e27001be01cac954ea49031c026a312599427c454ca851199b75444d8b2a3aa00aa847e0021c20c6e102d410253daae1dc3ee2b19414608f5006ec122a801d428cd126c4b92d03555c60933006d8207c04ac1326006b8498aa4af80cf8422801560831649950052c1162c8a2811ade8d022186cc1362c81c2186cc1262c80c21864c1362c8032186dc1362c81d2186dc1262c88d81a72d5b1362c81521eee09210432e089f00e78418724688fb3b25c4901342dcdf3121861c1162489110b73bec53a14bf4a5fe0517eb3698ba1d3b2eae30331df5ba74908bdd48ad6e1d1797284a12b3957e3975182ef89fed12c3864a829295f3cb260adfe0528fa519114d64e7b20eb67189a2a65f5c44b62ecb603b97a6bf9a5c06d9bbcc83af5d83e39b87e4bad095eb68a35127c232b96478f39be13291adeb3ceae438ab2e2ec572144c64b746ebe0ab3532cbce651d7c9f8bdd299e6f83710fadc4ed62ab6ef9dcfbb8465f5dffcff6c73adb3683afd6c82c3b974f67dba513fe7a3adbeedf7e62d845f57bbeb7fd7c9ec057fc7aceb9bf3e9cebfdc6b277398d1d8dc6e3c9643a9dcde6f3c562b95cadd6ebcd66bbe577b14cbb1daf8b6ddaeff95c4ea6c381c7e56c4aa7bdbbdc4c998c5797bb299bf5e6f262cae5bcb8bc99f27977975753a1e0e6f26e2a169d5d3ca652c9c9c5672a97d92e5e53a5f2275cfca69717968bdf54adb25cfca65a8de5e237d5eb2c17bfa9d160b9f84dcd26cbc56f6ab5582e7e53bbcd72f19b3a1d968bdfd4edb25cfca65e8fe5e237f5fb2c977fcf1377d6dfedf2a9823f3f077e01b229807f</data>
+    </image>
+</images>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>
