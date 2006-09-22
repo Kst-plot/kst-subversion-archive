@@ -1,6 +1,0 @@
-if test "$ac_cv_have_gl" = "no"; then
-  echo ""
-  echo "The GL libraries are missing. Fraqtive cannot be compiled."
-  echo ""
-  all_tests=bad
-fi
