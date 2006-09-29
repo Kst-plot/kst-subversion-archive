@@ -411,7 +411,7 @@ void View2DPlotWidget::updateScalarCombo() {
   }
 }
 
-void View2DPlotWidget::updatePlotMarkers(Kst2DPlotPtr plot) {
+void View2DPlotWidget::updatePlotMarkers(const Kst2DPlot *plot) {
   for (KstMarkerList::ConstIterator it = plot->plotMarkers().begin(); it != plot->plotMarkers().end(); ++it) {
     if ((*it).isRising) {
       PlotMarkerList->insertItem(i18n("%1 [rising]").arg(QString::number((*it).value, 'g', MARKER_LABEL_PRECISION)));
@@ -427,7 +427,7 @@ void View2DPlotWidget::updatePlotMarkers(Kst2DPlotPtr plot) {
   // update the auto-generation settings
   KstBaseCurveList curves = kstObjectSubList<KstDataObject, KstBaseCurve>(KST::dataObjectList);
   CurveCombo->clear();
-  for (KstBaseCurveList::iterator curves_iter = curves.begin(); curves_iter != curves.end(); ++curves_iter) {
+  for (KstBaseCurveList::ConstIterator curves_iter = curves.begin(); curves_iter != curves.end(); ++curves_iter) {
     (*curves_iter)->readLock();
     CurveCombo->insertItem((*curves_iter)->tagName());
     (*curves_iter)->unlock();
@@ -447,13 +447,12 @@ void View2DPlotWidget::updatePlotMarkers(Kst2DPlotPtr plot) {
     } else {
       Rising->setChecked(true);
     }
-    int curveComboIndex;
-    for (curveComboIndex = 0; curveComboIndex < CurveCombo->count(); curveComboIndex++) {
+    for (int curveComboIndex = 0; curveComboIndex < CurveCombo->count(); curveComboIndex++) {
       if (CurveCombo->text(curveComboIndex) == plot->curveToMarkers()->tagName()) {
+        CurveCombo->setCurrentItem(curveComboIndex);
         break;
       }
     }
-    CurveCombo->setCurrentItem(curveComboIndex);
   } else {
     UseCurve->setChecked(false);
   }
@@ -467,9 +466,8 @@ void View2DPlotWidget::updatePlotMarkers(Kst2DPlotPtr plot) {
 
 }
 
-void View2DPlotWidget::fillWidget(Kst2DPlotPtr plot) {
-
-  _plot = plot;
+void View2DPlotWidget::fillWidget(const Kst2DPlot *plot) {
+  _plot = Kst2DPlot::findPlotByName(plot->tagName());
   _vectorForMarkers->update();
   scalarSelectorX1->update();
   scalarSelectorY1->update();
@@ -482,12 +480,12 @@ void View2DPlotWidget::fillWidget(Kst2DPlotPtr plot) {
   AvailableCurveList->clear();
 
   // add curves while retaining the order in the plot
-  for (KstBaseCurveList::iterator it = plot->Curves.begin(); it != plot->Curves.end(); ++it) {
+  for (KstBaseCurveList::ConstIterator it = plot->Curves.begin(); it != plot->Curves.end(); ++it) {
     (*it)->readLock();
     DisplayedCurveList->insertItem((*it)->tagName());
     (*it)->unlock();
   }
-  for (KstBaseCurveList::iterator it = curves.begin(); it != curves.end(); ++it) {
+  for (KstBaseCurveList::ConstIterator it = curves.begin(); it != curves.end(); ++it) {
     (*it)->readLock();
     if (plot->Curves.find(*it) == plot->Curves.end()) {
       AvailableCurveList->insertItem((*it)->tagName());

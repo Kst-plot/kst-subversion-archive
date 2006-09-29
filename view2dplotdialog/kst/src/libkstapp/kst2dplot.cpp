@@ -2278,15 +2278,8 @@ void Kst2DPlot::drawPlusAt(QPainter& p, double x, double y) {
 
 
 void Kst2DPlot::edit() {
-  KstApp *app = KstApp::inst();
-  KMdiChildView *c = app->activeWindow();
-
-  if (c) {
-    KstTopLevelViewPtr tlv = kst_cast<KstTopLevelView>(topLevelParent());
-    showDialog(tlv, false);
-  } else {
-    //app->showPlotDialog();
-  }
+  KstTopLevelViewPtr tlv = kst_cast<KstTopLevelView>(topLevelParent());
+  showDialog(tlv, false);
 }
 
 
@@ -5485,7 +5478,7 @@ bool Kst2DPlot::removePlotMarker(const double xValue) {
 }
 */
 
-const KstMarkerList Kst2DPlot::plotMarkers(const double minX, const double maxX) {
+const KstMarkerList Kst2DPlot::plotMarkers(const double minX, const double maxX) const {
   KstMarkerList foundMarkers;
   KstMarkerList::ConstIterator marks_iter = _plotMarkers.begin();
   while (marks_iter != _plotMarkers.end()) {
@@ -5498,7 +5491,7 @@ const KstMarkerList Kst2DPlot::plotMarkers(const double minX, const double maxX)
 }
 
 
-const KstMarkerList& Kst2DPlot::plotMarkers() {
+const KstMarkerList& Kst2DPlot::plotMarkers() const {
   return _plotMarkers;
 }
 
@@ -6392,13 +6385,13 @@ bool Kst2DPlot::setYExpressions(const QString& minExp, const QString& maxExp) {
 }
 
 
-void Kst2DPlot::getXScaleExps(QString& minExp, QString& maxExp) {
+void Kst2DPlot::getXScaleExps(QString& minExp, QString& maxExp) const {
   minExp = _xMinExp;
   maxExp = _xMaxExp;
 }
 
 
-void Kst2DPlot::getYScaleExps(QString& minExp, QString& maxExp) {
+void Kst2DPlot::getYScaleExps(QString& minExp, QString& maxExp) const {
   minExp = _yMinExp;
   maxExp = _yMaxExp;
 }
@@ -6830,7 +6823,7 @@ KstPlotLabel *Kst2DPlot::fullTickLabel() const {
 
 
 /** find the first legend owned by the plot, or return NULL if there is none */
-KstViewLegendPtr Kst2DPlot::legend() {
+KstViewLegendPtr Kst2DPlot::legend() const {
   for (KstViewObjectList::ConstIterator i = _children.begin(); i != _children.end(); ++i) {
     KstViewLegendPtr vl = kst_cast<KstViewLegend>(*i);
     if (vl) {
@@ -6910,15 +6903,7 @@ bool Kst2DPlot::fillConfigWidget(QWidget *w, bool isNew) const {
     return false;
   }
   
-  // FIXME: there must be a better way to get a Kst2DPlotPtr to 'this'!
-  // or maybe not - fillConfigWidget is const, and we are breaking constness
-  // because we have to iterate through the 2dplot's lists....
-  // and, not only that, but the widget has to hold a pointer to
-  // this to allow 'default labels' to work...
-  // though some might argue it doesn't work right.
-  Kst2DPlotPtr thisPlot = findPlotByName(this->tagName());
-  widget->fillWidget(thisPlot);
-
+  widget->fillWidget(this);
   widget->TabWidget->setCurrentPage(_tabToShow);
   return false;
 }

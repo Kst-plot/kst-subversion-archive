@@ -3261,8 +3261,8 @@
     <slot>fillMarkerLineCombo()</slot>
     <slot>updateAxesButtons()</slot>
     <slot>updateScalarCombo()</slot>
-    <slot>updatePlotMarkers( Kst2DPlotPtr plot )</slot>
-    <slot>fillWidget( Kst2DPlotPtr plot )</slot>
+    <slot>updatePlotMarkers( const Kst2DPlot *plot )</slot>
+    <slot>fillWidget( const Kst2DPlot *plot )</slot>
     <slot>applyAppearance( Kst2DPlotPtr plot )</slot>
     <slot>applyXAxis( Kst2DPlotPtr plot )</slot>
     <slot>applyYAxis( Kst2DPlotPtr plot )</slot>

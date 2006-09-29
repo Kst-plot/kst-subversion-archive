@@ -1970,12 +1970,17 @@ void KstApp::paintAll(KstPainter::PaintType pt) {
 #endif
 }
 
+
 void KstApp::newPlot() {
   KstViewWindow *w = dynamic_cast<KstViewWindow*>(activeWindow());
-  if (w) {
-    w->createObject<Kst2DPlot>(KST::suggestPlotName(), false);
+  if (!w) {
+    newWindow(false);
+    w = dynamic_cast<KstViewWindow*>(activeWindow());
+    assert(w);
   }
+  w->createObject<Kst2DPlot>(KST::suggestPlotName(), false);
 }
+
 
 void KstApp::showDataManager() {
   dataManager->show_I();

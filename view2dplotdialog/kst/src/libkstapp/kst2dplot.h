@@ -173,8 +173,8 @@ public:
   void getScale(double& xmin, double& ymin, double& xmax, double& ymax) const;
 
   // get expressions for the scale
-  void getXScaleExps(QString& minExp, QString& maxExp);
-  void getYScaleExps(QString& minExp, QString& maxExp);
+  void getXScaleExps(QString& minExp, QString& maxExp) const;
+  void getYScaleExps(QString& minExp, QString& maxExp) const;
 
   void getLScale(double& xmin, double& ymin, double& xmax, double& ymax) const;
 
@@ -258,8 +258,8 @@ public:
   bool setPlotMarker(const double xValue, bool isRisng = false, bool isFalling = false, bool isVectorValue = false);
   bool removePlotMarker(const double xValue);
   void setPlotMarkerList(const KstMarkerList& newMarkers);
-  const KstMarkerList plotMarkers(const double minX, const double maxX);
-  const KstMarkerList& plotMarkers();
+  const KstMarkerList plotMarkers(const double minX, const double maxX) const;
+  const KstMarkerList& plotMarkers() const;
   bool nextMarker(const double currentPosition, double& marker);
   bool prevMarker(const double currentPosition, double& marker);
   void moveToNextMarker(KstViewWidget*);
@@ -318,13 +318,13 @@ public:
   int axisPenWidth() const { return _axisPenWidth; }
 
   void setColorMarkers(QColor color) { _colorMarkers = color; }
-  QColor colorMarkers() { return _colorMarkers; }
+  QColor colorMarkers() const { return _colorMarkers; }
   void setLineWidthMarkers(int lineWidth) { _lineWidthMarkers = lineWidth; }
-  int lineWidthMarkers() { return _lineWidthMarkers; }
+  int lineWidthMarkers() const { return _lineWidthMarkers; }
   void setLineStyleMarkers(int lineStyle) { _lineStyleMarkers = lineStyle; }
-  int lineStyleMarkers() { return _lineStyleMarkers; }
+  int lineStyleMarkers() const { return _lineStyleMarkers; }
   void setDefaultColorMarker(bool defaultColor) { _defaultMarkerColor = defaultColor; }
-  bool defaultColorMarker( ) { return _defaultMarkerColor; }
+  bool defaultColorMarker() const { return _defaultMarkerColor; }
   
   // set and get tick mark display options
   void setXTicksInPlot(bool yes);
@@ -373,7 +373,7 @@ public:
   bool undoChangeToMonochrome(int pointStylePriority, int lineStylePriority, int lineWidthPriority);
 
   //convenience routines for working with viewLegends
-  KstViewLegendPtr legend();
+  KstViewLegendPtr legend() const;
 
   KstViewLegendPtr getOrCreateLegend();
   
