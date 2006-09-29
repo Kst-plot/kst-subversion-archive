@@ -166,7 +166,7 @@ int KstBorderedViewObject::padding() const {
 
 QRect KstBorderedViewObject::contentsRectForDevice(const KstPainter& painter) const {
   QRect rc;
-  const int mpb = (_margin + _padding + _borderWidth) * painter.lineWidthAdjustmentFactor();;
+  const int mpb = (_margin + _padding + _borderWidth) * painter.lineWidthAdjustmentFactor();
   rc.setX(_geom.left() + mpb);
   rc.setY(_geom.top() + mpb);
   rc.setWidth(_geom.width() - 2 * mpb);

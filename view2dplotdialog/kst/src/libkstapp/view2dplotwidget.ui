@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
 <class>View2DPlotWidget</class>
 <widget class="QWidget">
     <property name="name">
@@ -3232,6 +3232,19 @@
 <includes>
     <include location="local" impldecl="in declaration">kst2dplot.h</include>
     <include location="local" impldecl="in implementation">view2dplotwidget.ui.h</include>
+    <include location="global" impldecl="in implementation">qfontdatabase.h</include>
+    <include location="global" impldecl="in implementation">qstyle.h</include>
+    <include location="global" impldecl="in implementation">qpainter.h</include>
+    <include location="global" impldecl="in implementation">qdeepcopy.h</include>
+    <include location="global" impldecl="in implementation">kiconloader.h</include>
+    <include location="global" impldecl="in implementation">kmessagebox.h</include>
+    <include location="local" impldecl="in implementation">kstplotdefines.h</include>
+    <include location="local" impldecl="in implementation">kstsettings.h</include>
+    <include location="local" impldecl="in implementation">kstlinestyle.h</include>
+    <include location="local" impldecl="in implementation">kstdataobjectcollection.h</include>
+    <include location="local" impldecl="in implementation">kstplotlabel.h</include>
+    <include location="local" impldecl="in implementation">kstdebug.h</include>
+    <include location="local" impldecl="in implementation">kstdefaultnames.h</include>
 </includes>
 <variables>
     <variable access="private">Kst2DPlotPtr _plot;</variable>

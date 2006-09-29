@@ -9,21 +9,6 @@
 ** These will automatically be called by the form's constructor and
 ** destructor.
 *****************************************************************************/
-#include <qfontdatabase.h>
-#include <qstyle.h>
-#include <qpainter.h>
-#include <qdeepcopy.h>
-
-#include <kiconloader.h>
-#include <kmessagebox.h>
-
-#include "kstplotdefines.h"
-#include "kstsettings.h"
-#include "kstlinestyle.h"
-#include "kstdataobjectcollection.h"
-#include "kstplotlabel.h"
-#include "kstdebug.h"
-#include "kstdefaultnames.h"
 
 struct MajorTickSpacing {
   const char *label;
@@ -133,7 +118,7 @@ void View2DPlotWidget::init()
   connect(_yTransformRight, SIGNAL(toggled(bool)), _yTransformRightExp, SLOT(setEnabled(bool)));
   connect(_checkBoxDefaultMarkerColor, SIGNAL(toggled(bool)), _colorMarker, SLOT(setDisabled(bool)));
 
-  ScalarDest = TopLabelText;;
+  ScalarDest = TopLabelText;
 
   connect(_pushButtonEditLegend, SIGNAL(clicked()), this, SLOT(editLegend()));
 
@@ -757,7 +742,7 @@ void View2DPlotWidget::fillWidget(Kst2DPlotPtr plot) {
 
   updateButtons();
   updateAxesButtons();
-  ScalarDest = TopLabelText;;
+  ScalarDest = TopLabelText;
 
 }
 
@@ -1270,21 +1255,21 @@ void View2DPlotWidget::insertCurrentScalar() {
 }
 
 void View2DPlotWidget::setScalarDestXLabel() {
-  ScalarDest = XAxisText;;
+  ScalarDest = XAxisText;
 }
 
 void View2DPlotWidget::setScalarDestYLabel() {
-  ScalarDest = YAxisText;;
+  ScalarDest = YAxisText;
 }
 
 void View2DPlotWidget::setScalarDestTopLabel() {
-  ScalarDest = TopLabelText;;
+  ScalarDest = TopLabelText;
 }
 
 void View2DPlotWidget::editLegend() {
   KstTopLevelViewPtr tlv = kst_cast<KstTopLevelView>(_plot->topLevelParent());
 
- _plot->getOrCreateLegend()->showDialog(tlv, false);
- ShowLegend->setChecked(true);
+  _plot->getOrCreateLegend()->showDialog(tlv, false);
+  ShowLegend->setChecked(true);
 }
 
