@@ -19,7 +19,7 @@ Here is an example of the .desktop file named 'kstobject_myplugin.desktop':
     Name=Foo
     Comment=A plugin that provides Foo algorithm.
 
-You C++ class should inherit KstBasicPlugin and provide implementations of the
+Your C++ class should inherit KstBasicPlugin and provide implementations of the
 pure virtual methods found in KstBasicPlugin:
 
     //The implementation of the algorithm the plugin provides.
