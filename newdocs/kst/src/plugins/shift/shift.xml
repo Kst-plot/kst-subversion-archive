@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Module SYSTEM "file:/Repository/Level2/Soft/ProC/moduledef.dtd">
+<module>
+<intro>
+<modulename name="shift" readableName="Shift"/>
+<author name="Nicolas Brisset"/>
+<description text="Shifts (and truncates) a vector"/>
+<version minor="1" major="0"/>
+<state devstate="release"/>
+<filter/>
+</intro>
+
+<interface>
+<input>
+<table type="float" name="InputVector" descr="The input vector"/>
+<float name="Shift value (# points, negative allowed)" descr="Nb of points to shift" default="10"/>
+</input>
+
+<output>
+<table type="float" name="ShiftedVector" descr="Output = the shifted input"/>
+</output>
+</interface>
+</module>

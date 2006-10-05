@@ -1,0 +1,451 @@
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<class>ImagePosition</class>
+<widget class="QWidget">
+    <property name="name">
+        <cstring>ImagePosition</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>361</width>
+            <height>249</height>
+        </rect>
+    </property>
+    <vbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QButtonGroup">
+            <property name="name">
+                <cstring>ImagePositionGroup</cstring>
+            </property>
+            <property name="title">
+                <string>Image Position</string>
+            </property>
+            <vbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QRadioButton">
+                    <property name="name">
+                        <cstring>centeredRadioButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Centered</string>
+                    </property>
+                    <property name="checked">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+                <widget class="QRadioButton">
+                    <property name="name">
+                        <cstring>otherRadioButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Other...</string>
+                    </property>
+                </widget>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>choosePosLayout</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <spacer>
+                            <property name="name">
+                                <cstring>choosePosSpacer0</cstring>
+                            </property>
+                            <property name="orientation">
+                                <enum>Horizontal</enum>
+                            </property>
+                            <property name="sizeType">
+                                <enum>Minimum</enum>
+                            </property>
+                            <property name="sizeHint">
+                                <size>
+                                    <width>30</width>
+                                    <height>20</height>
+                                </size>
+                            </property>
+                        </spacer>
+                        <widget class="QButtonGroup">
+                            <property name="name">
+                                <cstring>chosePosButtonGroup</cstring>
+                            </property>
+                            <property name="enabled">
+                                <bool>false</bool>
+                            </property>
+                            <property name="frameShape">
+                                <enum>NoFrame</enum>
+                            </property>
+                            <property name="frameShadow">
+                                <enum>Raised</enum>
+                            </property>
+                            <property name="title">
+                                <string></string>
+                            </property>
+                            <property name="flat">
+                                <bool>false</bool>
+                            </property>
+                            <grid>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <widget class="QRadioButton" row="1" column="0">
+                                    <property name="name">
+                                        <cstring>leftBut</cstring>
+                                    </property>
+                                    <property name="minimumSize">
+                                        <size>
+                                            <width>16</width>
+                                            <height>16</height>
+                                        </size>
+                                    </property>
+                                    <property name="maximumSize">
+                                        <size>
+                                            <width>16</width>
+                                            <height>16</height>
+                                        </size>
+                                    </property>
+                                    <property name="text">
+                                        <string></string>
+                                    </property>
+                                    <property name="toolTip" stdset="0">
+                                        <string>Right centered</string>
+                                    </property>
+                                </widget>
+                                <widget class="QRadioButton" row="2" column="0">
+                                    <property name="name">
+                                        <cstring>bottomLeftBut</cstring>
+                                    </property>
+                                    <property name="minimumSize">
+                                        <size>
+                                            <width>16</width>
+                                            <height>16</height>
+                                        </size>
+                                    </property>
+                                    <property name="maximumSize">
+                                        <size>
+                                            <width>16</width>
+                                            <height>16</height>
+                                        </size>
+                                    </property>
+                                    <property name="text">
+                                        <string></string>
+                                    </property>
+                                    <property name="toolTip" stdset="0">
+                                        <string>Bottom Left</string>
+                                    </property>
+                                </widget>
+                                <widget class="QRadioButton" row="0" column="0">
+                                    <property name="name">
+                                        <cstring>topLeftBut</cstring>
+                                    </property>
+                                    <property name="minimumSize">
+                                        <size>
+                                            <width>16</width>
+                                            <height>16</height>
+                                        </size>
+                                    </property>
+                                    <property name="maximumSize">
+                                        <size>
+                                            <width>16</width>
+                                            <height>16</height>
+                                        </size>
+                                    </property>
+                                    <property name="text">
+                                        <string></string>
+                                    </property>
+                                    <property name="toolTip" stdset="0">
+                                        <string>Top Left</string>
+                                    </property>
+                                </widget>
+                                <widget class="QRadioButton" row="0" column="6">
+                                    <property name="name">
+                                        <cstring>topRightBut</cstring>
+                                    </property>
+                                    <property name="minimumSize">
+                                        <size>
+                                            <width>16</width>
+                                            <height>16</height>
+                                        </size>
+                                    </property>
+                                    <property name="maximumSize">
+                                        <size>
+                                            <width>16</width>
+                                            <height>16</height>
+                                        </size>
+                                    </property>
+                                    <property name="text">
+                                        <string></string>
+                                    </property>
+                                    <property name="toolTip" stdset="0">
+                                        <string>Top Right</string>
+                                    </property>
+                                </widget>
+                                <widget class="QRadioButton" row="1" column="6">
+                                    <property name="name">
+                                        <cstring>rightBut</cstring>
+                                    </property>
+                                    <property name="minimumSize">
+                                        <size>
+                                            <width>16</width>
+                                            <height>16</height>
+                                        </size>
+                                    </property>
+                                    <property name="maximumSize">
+                                        <size>
+                                            <width>16</width>
+                                            <height>16</height>
+                                        </size>
+                                    </property>
+                                    <property name="text">
+                                        <string></string>
+                                    </property>
+                                    <property name="toolTip" stdset="0">
+                                        <string>Left centered</string>
+                                    </property>
+                                </widget>
+                                <widget class="QRadioButton" row="2" column="6">
+                                    <property name="name">
+                                        <cstring>bottomRightBut</cstring>
+                                    </property>
+                                    <property name="minimumSize">
+                                        <size>
+                                            <width>16</width>
+                                            <height>16</height>
+                                        </size>
+                                    </property>
+                                    <property name="maximumSize">
+                                        <size>
+                                            <width>16</width>
+                                            <height>16</height>
+                                        </size>
+                                    </property>
+                                    <property name="text">
+                                        <string></string>
+                                    </property>
+                                    <property name="toolTip" stdset="0">
+                                        <string>Bottom Right</string>
+                                    </property>
+                                </widget>
+                                <widget class="QLabel" row="1" column="2" rowspan="1" colspan="3">
+                                    <property name="name">
+                                        <cstring>imagePreviewPosLabel</cstring>
+                                    </property>
+                                    <property name="minimumSize">
+                                        <size>
+                                            <width>64</width>
+                                            <height>64</height>
+                                        </size>
+                                    </property>
+                                    <property name="maximumSize">
+                                        <size>
+                                            <width>64</width>
+                                            <height>64</height>
+                                        </size>
+                                    </property>
+                                    <property name="text">
+                                        <string></string>
+                                    </property>
+                                    <property name="pixmap">
+                                        <pixmap>image0</pixmap>
+                                    </property>
+                                </widget>
+                                <spacer row="1" column="1">
+                                    <property name="name">
+                                        <cstring>choosePosSpacer1</cstring>
+                                    </property>
+                                    <property name="orientation">
+                                        <enum>Horizontal</enum>
+                                    </property>
+                                    <property name="sizeType">
+                                        <enum>Fixed</enum>
+                                    </property>
+                                    <property name="sizeHint">
+                                        <size>
+                                            <width>1</width>
+                                            <height>1</height>
+                                        </size>
+                                    </property>
+                                </spacer>
+                                <spacer row="1" column="5">
+                                    <property name="name">
+                                        <cstring>choosePosSpacer2</cstring>
+                                    </property>
+                                    <property name="orientation">
+                                        <enum>Horizontal</enum>
+                                    </property>
+                                    <property name="sizeType">
+                                        <enum>Fixed</enum>
+                                    </property>
+                                    <property name="sizeHint">
+                                        <size>
+                                            <width>1</width>
+                                            <height>1</height>
+                                        </size>
+                                    </property>
+                                </spacer>
+                                <spacer row="0" column="1" rowspan="1" colspan="2">
+                                    <property name="name">
+                                        <cstring>choosePosSpacer3</cstring>
+                                    </property>
+                                    <property name="orientation">
+                                        <enum>Horizontal</enum>
+                                    </property>
+                                    <property name="sizeType">
+                                        <enum>Expanding</enum>
+                                    </property>
+                                    <property name="sizeHint">
+                                        <size>
+                                            <width>1</width>
+                                            <height>1</height>
+                                        </size>
+                                    </property>
+                                </spacer>
+                                <spacer row="2" column="1" rowspan="1" colspan="2">
+                                    <property name="name">
+                                        <cstring>choosePosSpacer4</cstring>
+                                    </property>
+                                    <property name="orientation">
+                                        <enum>Horizontal</enum>
+                                    </property>
+                                    <property name="sizeType">
+                                        <enum>Expanding</enum>
+                                    </property>
+                                    <property name="sizeHint">
+                                        <size>
+                                            <width>1</width>
+                                            <height>1</height>
+                                        </size>
+                                    </property>
+                                </spacer>
+                                <widget class="QRadioButton" row="0" column="3">
+                                    <property name="name">
+                                        <cstring>topBut</cstring>
+                                    </property>
+                                    <property name="minimumSize">
+                                        <size>
+                                            <width>16</width>
+                                            <height>16</height>
+                                        </size>
+                                    </property>
+                                    <property name="maximumSize">
+                                        <size>
+                                            <width>16</width>
+                                            <height>16</height>
+                                        </size>
+                                    </property>
+                                    <property name="text">
+                                        <string></string>
+                                    </property>
+                                    <property name="toolTip" stdset="0">
+                                        <string>Top centered</string>
+                                    </property>
+                                </widget>
+                                <widget class="QRadioButton" row="2" column="3">
+                                    <property name="name">
+                                        <cstring>bottomBut</cstring>
+                                    </property>
+                                    <property name="minimumSize">
+                                        <size>
+                                            <width>16</width>
+                                            <height>16</height>
+                                        </size>
+                                    </property>
+                                    <property name="maximumSize">
+                                        <size>
+                                            <width>16</width>
+                                            <height>16</height>
+                                        </size>
+                                    </property>
+                                    <property name="text">
+                                        <string></string>
+                                    </property>
+                                    <property name="toolTip" stdset="0">
+                                        <string>Bottom centered</string>
+                                    </property>
+                                </widget>
+                                <spacer row="0" column="4" rowspan="1" colspan="2">
+                                    <property name="name">
+                                        <cstring>choosePosSpacer5</cstring>
+                                    </property>
+                                    <property name="orientation">
+                                        <enum>Horizontal</enum>
+                                    </property>
+                                    <property name="sizeType">
+                                        <enum>Expanding</enum>
+                                    </property>
+                                    <property name="sizeHint">
+                                        <size>
+                                            <width>1</width>
+                                            <height>1</height>
+                                        </size>
+                                    </property>
+                                </spacer>
+                                <spacer row="2" column="4" rowspan="1" colspan="2">
+                                    <property name="name">
+                                        <cstring>choosePosSpacer6</cstring>
+                                    </property>
+                                    <property name="orientation">
+                                        <enum>Horizontal</enum>
+                                    </property>
+                                    <property name="sizeType">
+                                        <enum>Expanding</enum>
+                                    </property>
+                                    <property name="sizeHint">
+                                        <size>
+                                            <width>1</width>
+                                            <height>1</height>
+                                        </size>
+                                    </property>
+                                </spacer>
+                            </grid>
+                        </widget>
+                        <spacer>
+                            <property name="name">
+                                <cstring>choosePosSpacer7</cstring>
+                            </property>
+                            <property name="orientation">
+                                <enum>Horizontal</enum>
+                            </property>
+                            <property name="sizeType">
+                                <enum>Expanding</enum>
+                            </property>
+                            <property name="sizeHint">
+                                <size>
+                                    <width>51</width>
+                                    <height>20</height>
+                                </size>
+                            </property>
+                        </spacer>
+                    </hbox>
+                </widget>
+            </vbox>
+        </widget>
+    </vbox>
+</widget>
+<images>
+    <image name="image0">
+        <data format="XPM.GZ" length="19729">789cc59ad96e1d497286effb291a9d7703a3e6d45e05c31714f77da7481abec8b5b2b8ef1469f8dd1d157fd411a511d91229d8ca19a03fe51619195bd6d13ffff1e7e1d6fa9ffff8e71fb777faaeb77fdaa86ffefc87bb3f3f7ffacffffa8ffffee3afaaf893fe574fb23fb3bffeed8fbf12ffa7fd534df8cfc0fdd694d381ed8e702afd7353e6fec4810b575403c70d70a94b5edfad82abac6c07f697c255e9b8ff56b82e3df7af83eba2d2bc3ed64bc7fdfacf5386fc0bc219585f4d391fb85b018ff2c4256153727fdc03d72401af7f2c5c5686d7437f36aeafba29f3fc500ae79382e579162ec00efacdea50a31ff2e54363f9e685657cf2245c4e589fae9c32cbe7ce846be8c3409e629cdfc52997dcff282ceb75d7c2d5a46156c2f584ef67fb0e4ce7b7dcbf20dcd67cff7a99b91cf7b38d7029fbdd09cb7a665db8017b9ca76c7cc3f3fb1adc8696f5e1d798ab713d7d2e5c41fef845b899b07da853e116dc1f0aeb09cb9fec33d743e3fb3a106e277cbf6175ca3cdec1deebb4c4fdb819e14aeccd82495edc17ced34ccc84ed373912b660eda61c58de09734b7fc3faf7ad700bfdd85b61991f3f4d99e7f707c23e857fee8253077913dc674bfec8e7b390474f5ccaf797cc08cb7c87f93ab5b84fa399cd284f970a1bd1d74458e6eb6be190b27e7a376596c7c29f4c6b71bfda0bbb96ef37813dd9a1713fe4b3e4e02c8fc6f96deb5bbe7fb5271c84619f6e68bc1efcdda5698af5e10f8ec6f3fd6be8c70f8d19f6ead33c857f613f9fb5e27f37cc6168ac8f59705aa47c7f16f717328bf181ed8782a58c37abe0a1b17eae85cb94ed355c085729ebd7b03da7e9781e8d7efec3f6e08565bc9f80f309ecdb60ffb4f605e26f0a6e5c097fe2f8916643e3f5ee859b14fa3b9832ebc7e6e0a6ada08f286c2a3e8fc179f2f1bcc917f0b89eda15d629f707d61769afc0fd864658fafb6d6193f1fa11e3cba171ffaab0c9581ffe189c5bf11fce17a41d6abcff8ab0cdf8bca103b7798978cff690d6e3787d295cc31ee2b6b0cb60bfb3c23e83bfe03e9aa1f1f91799dba1b17c47e0cacbf9705fedb001ebb306b7ba847fb1fd9136647ed812d6b01797815b8ffc18713f26cb33d813fb436a5303fbe8e7c1599121bef5e02a83bd2adcb71b1af79f80ab5ce2e5035817c88fba62f6a42ff8cbbdb0cc4f46f6b09f7e1f9c5519b3837d7b5a9ff5653e837555c2bf38fea5619c1f215fc89a9ced2140fe504abc30b0af50b7d08f87be826eb19e66fd72fa46fe9a08b739f26709ae46fb61fb22e790f1e64a3885bdc589b0ce91af96c0741ee8f711dcda1af7c3f928cbc6f97e119c4f703ebf023619ea0d9f09d715afdfb3bdd1ede6627f37c236677f88cbc22ee7fbb473e07a8278edbe08e7c88f8eeb8baca80bf4c7676157f37afe16ac33c48f60c0a6ac608f56b8aa58fe8ee37556d270f8c3863035de0feb97750dfdd833e106acb05f358e4fe6c1541e417f4753c679b6c17586f86d71feca68d49309fb4f5693bac01a4cfec6fa3195b091fbda043715ec47e33e9aacce104ff7c04d8e7819a04f0a7fa81f35db5fd6d20cd4533be0bc82fe34db7ba66904ebaf37c21afedadd81693ce201ec4beb49c3eb8547e150a0dec479b4c96a3e9f3f106e6af80feed70c8dfb61bf6694c76d819b52ea8902dc162deab503e190215e73bccf2ce987fdc1ce0bd7986fcf851bc98f98eff2a6407db429dc16b02fce1799cf5c86fb5912f6880f11f7e3738df78485fe7d5323ff995ad8401eb30f6e33c4dfbe14ae5be807f2796d73e46bce875918f753f0c730ee178e844d8178c7ebe713b26feeefaf84453ffe0cdc4a3e4d381fe5e950e0b33eb68465bd3e07b76d8bf3b27f93b5a68847fdbd3035beaf06dc96a8a71ce7c33c6f1ba9af36c13a6d104f3ab0691adc07fb635ee439e2955d00b7adccbf9832eaf14ad868e87b1bac2bd46f96ed252f2b0d7ff5a7e0da22bf19c85bb656d6cb46d6a837f8fef22a2f11bf7c026e3df2bb153615ce1ff9be287c55886f2a828bb2c4fb6a0fdc1ae4a37022ecc0bdcc6fbd46bde1c0a6867e14fb1f596b85f5ecda94219f06eb09d6f34a3843bdd0e17c2d3d98203ffa5b93a3beed70df3a6f73f6af2480c7fdba67e1b644fcc0fe9a020af219e4d3ba957c7b0876458178caf54a6eb416fbc7fdda4297882febc206f58581fd586d31dedf0b3ba967afc13683bdf4d0af2b6c897889fb716622f5cdb6b0867f04c8e77387f86b701e5f38c4e79ee3731e6804eaef5b70e1f1fe0fb3c201f5a57f009b42f23bdb273f77b9df05e1717d0da6e72ede3b1753467c3d071b89f7de4c19f17259b8065b8ec754ac8a7cfd23785cbfeb8453ac1fd8de2819a688e776114cee84f5ae844dcafaf48fc216acb8fe28f242f26f7f032e33d4032a152603e2f5f6c1e37c372becc181eda3e03f2cef29b82c51cf9b025c1b89370a6c27a8e77c2a9c82ed67b0cb735ecfef0b37c8cf1dd7074539ee97e07cc376a8f738bf16d5d81fcfc0658dfeb03d65b62f770d366d8b78bb03b6b9d44f56b800bb0be1126c385f53b95321be1bd84b3daedfaf0837a8a77522dc4a3d26f36d25ebef0bd752df62bd867660ff540fe071bebb9b32bea77c12d6e0f00436920f7af687a21d1aaf87fd5a1a0ffd2f81ad41bc7573c216f5aae2fc5568b23fbe4f0379746951af25e75346fe3e005b27f52eeec38cfbf777c206df1312f80bbddf35ce077f336e22f5ed93b0d4bb066cc7f9761d5cfa9ae5eb8c70003bdca735f420e2f576c1aec0fbad837db871bdf8206c110f1decddb912e335fae9350c7bd3b97085fb32bd7023fae67c5d048a40c8e77b60da01f14c09fb02f54309ae26f8bee71dd865888709fb5739a119c8c70d7868ccabe02aaf591e7b0a6e34e26338031b83fce5e6c1cee03de09f852dea6fbf27ecc01dfb6b998efbbb05b0af507f29f40f0f023e7f847cd9f0e0e67ec89f9143227f5d4e19ef0903f613d4038aefafcce93ef0fd620e3c3c08f87cd25fd535e21de617a44fd40f185f985ac3ffafc0be843e23fb7f59d28af8de350bae5ad4bf9aeb83b2a2fbc2fb64174c33201fe4af8b00fd2be8b7a611a8379d708def036602ae6c83fa9fed87a285b0aa842900f2fc1b30dd17ec93e34bd98eeba920dc20df1bdc27955b1af684f36b9207f54b22dce2fb79dc0257bec17972e100761b60f21fd497ec7fa529a51e4870dfa69e34f8bef1083639e40d4ad862be5b1cd9a03ee5f75e694ba927dc1ab84ef15e51b82f37caab9f84657ce0fa98bc3f6f9815c7833250c4427cebc0a5e4739d822940c3ff0ec1240fdef36c0fd5a494fc9cac81ab31ff1f8229bd401f33c252ff6996a74ac7f13d9fb7a207618bf9ab53c6f7ce20dcb6b007969fbcb745bfe2fa96828b96efd99fc0b61179397e53f167c5ff97c154dec29e5b706df17db33f1276609381edc4e0fed95eab6a9cdfef82c7f12a13f6f8fee92fc02618d82bc7d3aaae34ea8100f96b9acfe3bb4d308dc77b08f234b423e4eb846b7c1fb24fe03ae03d19387f556d3369f1bdfe44386d613f3998d6c77b01fb695a11f5e8bdb096ef5d06dce478df299cc78ce3f5bd708bfcde8dfd06f9b8c3fd1a0af78837d0bf1dfb9333f0b41ffb513a417ce82fc1e378330bb6a9413dccfe47de586bdce79c7003eed95ec9fb84bb2be116f15d733ead53f27fd4ef01dc483e4c38ded4596334e209d727753e7e4fb487609b1bc8c7f1908a930cf9d5dc831baba1df3b61af713fcd94a10f8e3714bce809c67c2d5ce27b9166ffa0cb2f90ffc21eb809124fd6c0ed44f37d755c7fd4f5c8fe064c0502f2f701981238de73e827ef433c4a4ea68cef1358afad6be4cf7e19dc66e877c5c8f0bffe41380727fd9451bf407f2dc983fceb854b037bc3fde9baa9f1deb2c25abef71d83db02eb058eb7f4dc6c913fe33eb82d0de2473165fc1e89fb20ef873f98e329e33da9855b83f722e477b403e229ce4fde6b902f399ed77e687c5e9cdfb70dfcd9413eefe5fbb3c27ae4bde84f4e8535f6eb97a68c7a89edbf19e22dbecf7bf0b89f5a028ff3553b65e86353981226efc7f164880e60b300b6b5853eb93e6eb266d2e07bd40c78ecefd9de9b7cf820cff73907b60dfa0ddb4f333c07909fe6c1e37883f54bda01f7b3229c23bffb5ab844be3539988e8778cbf743c1a8c0ef9b9ae32f198b8cf78d708dfcdb41be8666a0fea8855bc9cf6c1f44d4589e7bb06d2de481fe34cdc07b1efa303ea0bed75c1f36be2105f07ef7c21ef930e17cd184c621bf8639e180fc98b03cfc7306f4c3f1afcd4756ac3f4af619f2a1e17a85826f81df4715fb3f19bfb0efc1ae76b84fde9f0e57e27b89667f6a5b5a01f196e369ab6905e417b637b20e8bfddd11d8068b78c9f19bd4d322fff4bdb096fcc3fed4ba91ed1761877cd273be687d6b909f94172685b37c1c9ff4a496efadd6806904ea4d3ebf4e47369c9f755e1bd8976ec07aa2f17bc6b5708e7ce0599f9a1e4062ff1cff34d503b0c7e40e3c349ebf04769945bc627fa5f2b014fd733ed64d2df562ff0c1ee75bd68f36ce39f803df97765a231ff460ca0688e7fe3398ca33fcfb0fae1f74d056e3f7984f605739d4c7ac0f43d11ef13ee1f869289a239e07ce6786a235e275cffe69f2e107671ecff5373df65289cfb360b21fbc87f83e4d39b266792839e788a79ae387a1742bf5da3298cc1dfae0fa8d2ebb42bcb441b8457cd2908726409f9d0753b8453dc5fe49d56823f198edc9b8a1f17a25d84afd14b9fe309ed4897cb12b6c90afed83b047fe312998d487fcc6f98eaa25191fd95fa91a94fd5c0526843c6c1f549d48bf627bb319ad00ffbe010f8dd763ffa3ea41fafb53f0f0033dcbf7289c23fe982db0b3b09f9ecf4f8f7119dff1f96d39349ecff667ab717e722b4c8de5e3f35134a70724eb9ff301052f618bfde8f6b05ee4fac31a1a81fa8ffdd192ffe3fb75ccc0637f77294c7f58fe45b0f30efe0d79293ee07bb5e27ac0523c807f3a07a61da17ff6078a3ec23dc71f37b1a41066f63f978eacb6853dfc55b3fdb97cf8070c6c9fcf609f3a7cefe27c468f59e1b038b2c7f74fb667578edcb17ce47db9433c3901fbc2e1f76dd6dfe02df097ee41b8867d69b66747d529fc5db7e0717cd8102ee13f1ddb03874fe473be3fb2d60afb79ce8fcef8dce3fb0ece6bc7f121807de1f17d13eb3b2af7717ebe5fba1d32605e5f0b53637ba8c0be417f82fdc2383e64c216f76b313fd07311f515cbeb2763bfd914a63fcc47e0717ce07846b731f65f088ff244f0385e713cf499d68847dd0d781cef3a308dc7fb7d45b80207cee73ea713e03dc2fe4cda9ae0be2dc60ff78f7cba299c41df0afb5523873be1dae3f70bb60fa21cfad71bc205e4b7993035ee677ff08d0e52cf29f038de70fc207799207e9a67f078be580a53e3f520af2689f0ef4b9684a940e1fbe4f847c150f63733c2d26fa15f13ea80f730db233997f4bb0761d9afab85a9f178ecef4c86f7875e14cec111f7e3c6f5e2c294f13d2c1396f523f4ed070d33df0ad798ef1784e90fcbc3ef251f487fb88f8970090e5c0ff03f3fc2f7038e37213525e2735c07930720de5d83c93e10cfd93e4346f68df14ed8c17ebc0707ebe16f41d805cc677b0e397934e4dd1796f592063c34968fe37f288cd4db11eb151431507f1e0ab7f01f750f1e1a8fe7f81c2a8a37d0e79570e9902fb91e09543d225e45ae5f426303e2514cc0144f91cf4fc0545e20fe73bd105aeb10cfe2a9b097fa81ed871eaf16f92862beb606f54cc7f13050f929f52be41bd225e213eecb5206c3ef8b6cff148ebce49f024cf910faacc043e3fd711e32688b7f8f82fbf143e3f5d8fe43a0fc8a7af7483845fe49600ffc67e0edbb44fd64d389f9ed0dff06d325fe275b48badfdee28765e89393e4f417773d4bce938be492e67e2bc355729ddc24b7afb4bbe4fe5f6478481e932fc953f29ccc249f9259e29fd97f2e994f1692c56429594e5692d56f64584bd6df6c37c9c677326cd22a5bc976b293ec267bc97e72907cfe5b090e93a3e43899246992257952246552bd90a1fe1b199aef646893053252a5b432ca2aa7bc0aaa5351f5af4ba04ed4a93a53e7ea425daa2b75ad6ed4adbafb7919d47777a11e927bf5a8bea827f5ac66d42735abe6d4bc5a508b6ae9150996d58a5a556b6a5d6dd08c4db5a5b6d58eda557bef96615f1d900c9f69b5b11daa2375ac262a5599ca55a14afa7fa56ad5a87698a113ad925dad59666adaa81d7aad39f99ef60e1974483674a7a3eebf4aa14ff4a93e1bc6e9737da12fe9bff7e9bfaff4b5bed1b7fa4edfeb07fd381dfd453fe9673da33fbd5b0fad9ed5737a5e2fc88a8b7a492feb15bdaad7f4baded09b49aa37c95cb6f4369d7e47efea3d926c5f1f68d19d3ed447fa584fde6f0fa48954753aa35ab9a0f54aaa596bdda847b2f7579a6e29282ab540af3f63ac9a314ead19afd28fc89074947a3a134d6f4ecca93933e7afefffb5990b7369aeccb5b9d10fe6d6dc99fb8fc940523c9847f32559364fe699d69f319fccac9933f366c12cbe21c79259d67b66c5ac9ab56f62d4bb64a0b66ad6cd86d9a495b7ccb6d931bb66cfec9b03f3d91c9aa3d7e550c7c9bebe33c7bf22c3bfc4a8511393e48aac2e33295595b919fee94d656ad398d6265659fdba14d698ceda9732d0b3c4bf25830d3f9241b56ad776b45eb43d8f3ab1a7f6cc9edb0b7b69afecb5bd79d336a2bdb52fe2a4deb3f7f6c13ebed2be981fe64dfb44f3c812ec8cfd24b2ceda393b6f17488645bb6497cdd61b9a58b1ab76eda3b9dbaedb8d21ffd84dbb25326cdb1dbb6bf7e82ef6ed81fd6c0fdfd284d2f6c81e7f5086891d24c86c6e877f44555165d80ce3a8824cdcf05236cebe2503bd85f79cff980c2e5026ce5ce7a2ebdd893bb53b18e7cedcb9bb7097eeca5dbf192f5277e36e3f28c39dbb27191edca3fbe29edcb39b11193eb95937e7e6dd827b1127dc925b762bdfddc6815bfda00c6bb671ebb4fa86db745bf6dc6d3bd284db757b6edf1db8cfeed04d63843ba63744ea3297dbdf2b43e14a35dc46e56a7a15b5346478efd203815e919ecafc6edccf47dffb137feacffcb9bf984af06856fde5476b5a7fe5af95a23d6efcadbff3f7fec13ffa2ffec93ffb19ffc9cf8ebbf9393fef17fca25ff2cb7ec546f9db55bfe6d73f2cc386b9f39b834d90145b7edbefd825bfebf7fcbe3ff09fbfeadc1ffa237f9c787ad3a63ef3b9fc6d417f537e9581bf69343f6ef6deb73f9681a2f59add0809df7815e8a5472f397a4cd27b2b7c1313d3d08518fa70124ec3997bc0df86f370f1b5860997e1eaad581dae7f9c2f922edcd8db703bb5bc071bc3dd8ffc30dc8787f018be84a7f02c7f33133e85d9af7132ccbd9db3c2bcdefbb10c8326c202d54d6fc501ecb91896c2b25b9af24a580d6bbf21770f9a58a7336cfcbd0cdf49b419b67e53fd30c8b01d7606dff8451976cd5dd8fb3d3284fd70103effaa0424c36138e2153e2c43380e9390be430b995f0bf9c76508858aa1d44f61e61d5aa85447f5cb076508756842db256fd5f3afb7a108a3a7d78764e88c79ec6ce7deb33fcbe093852e7c4406fa13bb9e5ff0ef95e1847478fa6b3224cd0b19ce6dd39dbd7f7f347a155e77e72f65e82ede96a1bb1ce36477d55d7f8dcd1fd0c44d77dbddd19bfcab1ef6bbfbeea17b7ca57de99e463d74cfdd8c79feb80cd426a4cf4fefa9abbb59b5f35b24187431d7cd770bbf2a43b7986c744b1fdf7d2ac572b7f2cb32acaa9fca913fdbcc73b7f6cb32ac77bf9c21ff46139bbf2cc356b7fdff2ec34eb7fbdd1a7bdd3eb5bdff43190eba6ff27477d81de1fb5277dc4d3e2cc395ddf871d3975d3a9521ebf26f5628be7e97eb8af748f155068ade6557bd1a25eb4e62b52af5c5cb3cd1b52fbe50cec4e4233244f576ac8e1ab13a9a6423be784b4737de056ba2fdd05dfc74de8c3ef9e6bb064931bd8f187ebc4fec628c7d3c89a7dd61ec7e830c67fa2c9e7fb7c345bc8c57f195777ebc7979635d1b6f3f2cc35dbc8f0fbf122be3d54b9b2129bef936131fdf55c3b4f14b7cea4e7e5a86cbef64d8ffdaa71ee3f3fbeaa838133fc5d938f793563789f32f7ca78f0b2fe45b8c4befae27435c4eaee24a5cfd294ddc922df6dd715c8bebdff5acc48df7d7d571336ec56dd3c51dfbee8a26eeda26befb371491633f1e24de74dd6e7cf3fbdb2b127c8e87f1e8fdbf5f4ca5388e93c4db46efc5d4dcc6ec675f1b6629ace88b9827275f6bb958bc2d432c93ab1fc9c0be5a9165d4b189addeb3ab7da29fe3aeba797d7fe792ad5e85835ec7bb9775756f68975725e8aadefe580fd22e7b17dade27db5ddf5996a5311b7de8bb3ef67d7fd29fc6cffd597fde5ff497fd55b2d15ff737e146e6bea869f5657fdbdfbdd2eef92bcc1bbf35f70ffd63fca4cff47dff2549fba7feb9f7fd4cffa99fd50adf6ee99c73eab49fef17fac5fee56f7f1fffadf9a51ccbfd4abfaaf7f4a93e3297fd5abf1eaa7ea3df74f7fd56bf9d3cf63b6af907f37eab0c43536dbfdbeff5fbfd41ff99cf7e1873e2a3fe955f3d4719fa6392e2a75a3fe9d39f6c599ff7455ff6d5df8eacfffa9f7fffe37f01365352e5</data>
+    </image>
+</images>
+<connections>
+    <connection>
+        <sender>otherRadioButton</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>chosePosButtonGroup</receiver>
+        <slot>setEnabled(bool)</slot>
+    </connection>
+    <connection>
+        <sender>otherRadioButton</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>topBut</receiver>
+        <slot>setChecked(bool)</slot>
+    </connection>
+</connections>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>
