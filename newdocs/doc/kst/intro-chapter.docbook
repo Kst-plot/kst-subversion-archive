@@ -36,7 +36,7 @@ Let's start by seeing how raw data can be imported into &kst; as a data object u
 </para>
 
 <para>
-Begin by running &kst;. When you do this for the first time, a "QuickStart" Dialog should appear by default. 
+Begin by running &kst;. When you do this for the first time, a "QuickStart" Dialog should appear by default.
 </para>
 
 <screenshot>
@@ -463,7 +463,7 @@ Click the OK button of the New Equation dialog. Now a new curve has been added t
 </screenshot>
 
 <para>
-This concludes our basic introduction to &kst;. We encourage you to experiment with the program now, there is clearly a lot of functionality in &kst; which hasn't been covered in this tutorial. Most of it can be found intuitively. You may want to look at some of the entries in the <xref linkend="tutorial"/> section. Good luck!
+This concludes our basic introduction to &kst;. We encourage you to experiment with the program now, there is clearly a lot of functionality in &kst; which hasn't been covered in this tutorial. Most of it can be found intuitively. You may want to look at some of the entries in the <xref linkend="common-tasks"/> section. Good luck!
 </para>
 
 </sect2>

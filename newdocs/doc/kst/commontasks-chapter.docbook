@@ -9,73 +9,132 @@ information are also given.</para>
 <sect1 id="plotting-simple-graphs">
 <title>Plotting Simple Graphs</title>
 
-<para>How to plot a simple points-on-a-grid graph</para>
+<para>How to plot a simple points-on-a-grid graph.</para>
 
 <para>The first thing you'll want to do with &kst; is probably to plot
 a simple graph. Here's the procedure:</para>
 
 <orderedlist>
 
-<listitem><para>Choose your data file. &kst; will read many types of
+<listitem>
+<para>Choose your data file. &kst; will read many types of
 data file, the simplest being a plain text (<acronym>ASCII</acronym>)
-file with the data in columns. For definiteness, we'll use the data
-file from <xref linkend="gettingstarted"/>, with the filename <filename>simpledata.dat</filename>.</para>
+file with the data in columns. For this tutorial, we'll create a simple data file. Copy and paste this simple 40-line set of data into a text file,
+and save it as <filename>simpledata.dat</filename>:
+</para>
+
+<screen>
+-20 100
+-19 90.25
+-18 81
+-17 72.25
+-16 64
+-15 56.25
+-14 49
+-13 42.25
+-12 36
+-11 30.25
+-10 25
+-9 20.25
+-8 16
+-7 12.25
+-6 9
+-5 6.25
+-4 4
+-3 2.25
+-2 1
+-1 0.25
+0 0
+1 0.25
+2 1
+3 2.25
+4 4
+5 6.25
+6 9
+7 12.25
+8 16
+9 20.25
+10 25
+11 30.25
+12 36
+13 42.25
+14 49
+15 56.25
+16 64
+17 72.25
+18 81
+19 90.25
+20 100
+</screen>
+
+<para>
+<filename>simpledata.dat</filename> is an example of an ASCII data file, one of the many file types
+&kst; is capable of reading. For further details on file types, see
+<link linkend="fileformats">Supported File Formats</link>.
+</para>
 </listitem>
 
-<listitem><para>Open &kst;. You are presented with the
-<guilabel>QuickStart</guilabel> dialog:
+<listitem>
+<para>Open &kst;. If you are presented with the
+<guilabel>QuickStart</guilabel> dialog, then click on the <guibutton>Data Wizard</guibutton> button. If the QuickStart dialog does not appear, then you can click the <inlinemediaobject><imageobject><imagedata fileref="Icon-kst-datawizard.png" format="PNG"/></imageobject></inlinemediaobject> toolbar button to open the Data Wizard. In the wizard that appears, you can enter the pathname of the simpledata.dat file manually, or select it using the <guibutton>Open File</guibutton> button which appears next to the path entry textbox.
+</para>
+</listitem>
+
+<listitem>
+<para>
+The <guibutton>Next</guibutton> page is where you select which
+data to use. Column 2 in the data file contains the y-axis values, so move the entry '2' in the <guilabel>Available</guilabel> list on the left-hand side to the <guilabel>Selected</guilabel> list using the arrow buttons in the center of the window. The INDEX field is a special field created by &kst;, but we won't be using it for this demonstration.
+</para>
+</listitem>
+
+<listitem>
+<para>
+Clicking the <guibutton>Next</guibutton> button again allows you to select Data Presentation options. Under <guilabel>Plot Types</guilabel>, leave the default <guilabel>XY</guilabel> as it is, but change the <guilabel>X axis vector</guilabel> to Create From Field: 1.
+</para>
+</listitem>
+
+<listitem>
+<para>
+On the next page, 'Plot Layout', we'll just change one thing: under
+<guilabel>Curve Style</guilabel>, select <guilabel>Points
+only</guilabel> to draw just the data points, and not lines joining them.
+</para>
+</listitem>
+
+<listitem>
+<para>
+Click on <guibutton>Finish</guibutton> and you're done! The new
+plot appears in the main &kst; window.
+</para>
 
 <screenshot>
-<screeninfo>The QuickStart dialog</screeninfo>
+<screeninfo>Plotting Simple Graphs</screeninfo>
 <mediaobject>
 <imageobject>
-<imagedata fileref="Screenshot-kst-quickstart.png" format="PNG" />
+<imagedata fileref="Screenshot-kst-commontasks-plottingsimplegraphs.png" format="PNG" />
 </imageobject>
 <textobject>
-<phrase>The QuickStart dialog</phrase>
+<phrase>Plotting Simple Graphs</phrase>
 </textobject>
 </mediaobject>
 </screenshot>
-</para>
 
-<para>Click on <guibutton>Data Wizard</guibutton>, and, in the wizard
-that appears, select your data file using the <guibutton>Open
-File</guibutton> button:
-<inlinemediaobject>
-<imageobject>
-<imagedata fileref="Screenshot-kst-open-file-button.png" format="PNG"
-/>
-</imageobject>
-</inlinemediaobject>.
-</para>
 </listitem>
-
-<listitem>
-<para>The <guibutton>Next</guibutton> page is where you select which
-data to use. Column 2 in the data file contains the y-axis values, so
-tick the box next to 2 in the <guilabel>Field/Column</guilabel> list on the
-left-hand side. The INDEX field is a special field created by &kst;,
-but we won't be using it for this example.</para>
-</listitem>
-
-<listitem>
-<para>Under <guilabel>Plot Types</guilabel>, leave the default
-<guilabel>XY</guilabel> as it is, but change the <guilabel>X axis
-vector</guilabel> to 1.</para>
-</listitem>
-
-<listitem>
-<para>On the next page, we'll just change one thing: under
-<guilabel>Curve Style</guilabel>, select <guilabel>Points
-only</guilabel> to draw just the data points, and not lines joining them.</para>
-</listitem>
-
-<listitem>
-<para>Click on <guibutton>Finish</guibutton> and you're done! The new
-plot appears in the main &kst; window.</para>
-</listitem>
-
 </orderedlist>
+
+<tip>
+<para>
+It's also possible to quickly create plots from the command line using &kst;, similar to Gnuplot. In the case of the <filename>simpledata.dat</filename> file, we can produce a simple plot using the first column (or <quote>field</quote>) of the the file as the x vector, with the second column as a y vector, by entering the following at the command line:
+</para>
+
+<para>
+<userinput><command>kst -x 1 -y 2 simpledata.dat</command></userinput>
+</para>
+
+<para>
+Numerous other command-line options are available&mdash;using the command-line only, plots of data can be printed directly to files, and simple data manipulation such as creation of power spectra can be performed as well.  For a complete list of command-line options, see <link linkend="command-lineoptions">Command Line Usage and Examples</link>.
+</para>
+</tip>
 
 <!-- TODO: Link to other places in the handbook, perhaps with a little -->
 <!-- more description -->
@@ -85,9 +144,7 @@ plot appears in the main &kst; window.</para>
 <sect1 id="curve-fitting">
 <title>Curve Fitting</title>
 
-<para>&kst; also provides functions for many different types of curve
-fitting: linear, quadratic, sinusoidal, and more. As an example, we'll
-do a simple polynomial fit to the curve we plotted previously, in <xref linkend="plotting-simple-graphs"/>.</para>
+<para>&kst; also provides functions for many different types of curve fitting: linear, quadratic, sinusoidal, and more. As an example, we'll do a simple polynomial fit to the curve we plotted previously, in <xref linkend="plotting-simple-graphs"/>.</para>
 
 <orderedlist>
 
@@ -96,61 +153,117 @@ do a simple polynomial fit to the curve we plotted previously, in <xref linkend=
 </menuchoice>.</para>
 </listitem>
 
-<listitem><para>The <guilabel>Plot selection</guilabel> combo box
-contains all the &kst; fitting plugins, and more. Since the example
-data here are quadratic, we'll use the <guilabel>Fit
-polynomial</guilabel> plugin. Select the <guilabel>X Array</guilabel>
-and <guilabel>Y Array</guilabel> vectors for the fit &ndash; if you
-used the default names when producing the plot, select
-<guilabel>V0-1</guilabel> for the <guilabel>X Array</guilabel> and
-<guilabel>V1-2</guilabel> for the <guilabel>Y Array</guilabel>. </para>
+<listitem>
+<para>
+The <guilabel>Plugin selection</guilabel> combo box contains all the &kst; fitting plugins, and more. Since the example data here are quadratic, we'll use the <guilabel>Fit polynomial</guilabel> plugin. Select the <guilabel>X Array</guilabel> and <guilabel>Y Array</guilabel> vectors for the fit &ndash; if you used the default names when producing the plot, select <guilabel>1</guilabel> for the <guilabel>X Array</guilabel> and <guilabel>2</guilabel> for the <guilabel>Y Array</guilabel>. 
+</para>
 </listitem>
 
-<listitem><para>As it happens, the <guilabel>Order</guilabel> of the
-polynomial is set
-to 2 by default, which is what we want. You can set the
-<guilabel>Order</guilabel> to any integer, one of the predefined
-scalar quantities, or some statistical value based on one of the
-available vectors (for example, <guilabel>V1-2-Mean</guilabel>).</para>
+<listitem>
+<para>
+As it happens, the <guilabel>Order</guilabel> of the polynomial is set to 2 by default, which is what we want. You can set the <guilabel>Order</guilabel> to any integer, one of the predefined scalar quantities, or some statistical value based on one of the available vectors (for example, <guilabel>1-2-Mean</guilabel>).</para>
 </listitem>
 
-<listitem><para>Hit <guibutton>OK</guibutton> to generate the
-values.</para>
+<listitem>
+<para>
+Hit <guibutton>OK</guibutton> to generate the values.
+</para>
 </listitem>
-
 </orderedlist>
 
-<para>That's all we need to do to generate the values, so now we need
-to look at the output of the fitting process. Select
-<menuchoice><guimenu>Data</guimenu><guimenuitem>View Fit Results</guimenuitem>
-</menuchoice> from the menus, and the fit values are shown in the
-dialog which appears: the coefficients for x^2, x^1 and x^0 (the
-constant), along with the chi-squared value and the covariances
-between the coefficients.</para> 
+<para>
+That's all we need to do to generate the values, so now we need to look at the output of the fitting process. Select <menuchoice><guimenu>Data</guimenu><guimenuitem>View Fit Results</guimenuitem> </menuchoice> from the menus, and the fit values are shown in the dialog which appears: the coefficients for x^2, x^1 and x^0 (the constant), along with the chi-squared value and the covariances between the
+coefficients.
+</para> 
 
-<para>The curve generated by the fitting is not automatically
-superimposed on the data points. To do this, use the <guilabel>New
-Curve</guilabel> dialog by selecting
-<menuchoice><guimenu>Data</guimenu><guimenuitem>New Curve...</guimenuitem>
-</menuchoice>. For the <guilabel>X axis vector</guilabel>, select
-V0-1 (if you've been using the automatically generated names), and for
-the <guilabel>Y axis vector</guilabel>, choose
-<quote>P1-kstfit_polynomial_unweighted-Y Fitted</quote>. Click on
-<guibutton>OK</guibutton> once you've set any other options that you
-want. The curve is plotted in its own window: for this example, we
-don't want that, so delete the new plot by right-clicking on it and
-choosing <guimenuitem>Delete</guimenuitem> in the popup menu that
-appears.</para>
+<para>The curve generated by the fitting is not automatically superimposed on the data points. To do this, use the <guilabel>New Curve</guilabel> dialog by selecting <menuchoice><guimenu>Data</guimenu><guimenuitem>New Curve...</guimenuitem></menuchoice>. For the <guilabel>X axis vector</guilabel>, select V0-1 (if you've been using the automatically generated names), and for the <guilabel>Y axis vector</guilabel>, choose <quote>P1-kstfit_polynomial_unweighted-Y Fitted</quote>. Click on <guibutton>OK</guibutton> once you've set any other options that you want. The curve is plotted in its own window: for this example, we don't want that, so delete the new plot by right-clicking on it and choosing <guimenuitem>Delete</guimenuitem> in the popup menu that appears.</para>
 
-<para>Now, to add the curve fit to the data plot, open the Plot dialog
-from <menuchoice><guimenu>Plots</guimenu><guimenuitem>Edit
-Plot...</guimenuitem>
-</menuchoice>. On the <guilabel>Content</guilabel> tab that
-appears, the vector containing the fit data is shown under
-<guilabel>Available objects</guilabel>. Select this vector, and add it
-to the <guilabel>Displayed objects</guilabel> list by clicking on the
-left arrow button. Click on <guibutton>Apply Edits</guibutton>, and
-then <guibutton>Close</guibutton>, and you're finished.</para>
+<para>
+Now, to add the curve fit to the data plot, open the Plot dialog from <menuchoice><guimenu>Plots</guimenu><guimenuitem>Edit Plot...</guimenuitem></menuchoice>. On the <guilabel>Content</guilabel> tab that appears, the vector containing the fit data is shown under <guilabel>Available objects</guilabel>. Select this vector, and add it to the <guilabel>Displayed objects</guilabel> list by clicking on the left arrow button. Click on <guibutton>Apply Edits</guibutton>, and then <guibutton>Close</guibutton>, and you're finished.
+</para>
+</sect1>
+
+<sect1 id="generating-a-histogram">
+<title>Generating a Histogram</title>
+
+<para>
+&kst; contains built in routines to generate histograms from data. For this tutorial, we'll look at the histogram of a vector containing normally distributed numbers.
+</para>
+
+<para>
+We'll generate this vector using a perl script. Copy the following code into a file called gennormal.pl:
+</para>
+
+<para>
+<screen>
+sub gaussian_rand { # from the Perl Cookbook. (O'Reilly, 1998)
+    my ($u1, $u2);  # uniformly distributed random numbers
+    my $w;          # variance, then a weight
+    my ($g1, $g2);  # gaussian-distributed numbers
+
+    do {
+        $u1 = 2 * rand() - 1;
+        $u2 = 2 * rand() - 1;
+        $w = $u1*$u1 + $u2*$u2;
+    } while ( $w >= 1 );
+
+    $w = sqrt( (-2 * log($w))  / $w );
+    $g2 = $u1 * $w;
+    $g1 = $u2 * $w;
+    # return both if wanted, else just one
+    return wantarray ? ($g1, $g2) : $g1;
+}
+
+srand(time() ^($$ + ($$ &lt;&lt;15))) ; # initialize the RNG.
+for ($x=0;$x &lt; 10000;$x++) {
+        print gaussian_rand() . "\n";
+}
+</screen>
+</para>
+
+<para>
+Now execute the script with the command:
+</para>
+
+<para>
+<userinput><command>perl normal.pl &gt; normal.dat</command></userinput>
+</para>
+
+<para>
+This will generate an ASCII file <filename>normal.dat</filename> containing random numbers with a gaussian distribution centered at 0 with a standard deviation of 1. Import this data into &kst;, and plot it as points with INDEX as the x-axis vector (if this gives you trouble, you may want to see the Getting Started section on <link linkend="importingdata">Importing Data</link>. You should see something which resembles the following:
+</para>
+
+<screenshot>
+<screeninfo>Generating Histograms - Scatter Plot</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-commontasks-generatinghist-scatterplot.png" format="PNG" />
+</imageobject>
+<textobject>
+<phrase>Generating Histograms - Scatter Plot</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<para>
+Now we are ready to generate the histogram itself. Select <menuchoice><guimenu>Data</guimenu><guimenuitem>New Histogram...</guimenuitem></menuchoice>. Select the Data Vector which has just been created from the <filename>normal.dat</filename>. There are several options relating to bin choices. For quick generation of histograms, it is usually easiest to just press the "Auto-Bin" feature. This will select an optimal bin size and range for the given data.
+</para>
+
+<para>
+Click the <guibutton>OK</guibutton> button to generate the histogram.
+</para>
+
+<screenshot>
+<screeninfo>Generating Histograms - Histogram</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-commontasks-generatinghist-histogram.png" format="PNG" />
+</imageobject>
+<textobject>
+<phrase>Generating Histograms - Histogram</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
 
 </sect1>
 
@@ -204,8 +317,6 @@ plot appears in the main &kst; window.</para>
 </listitem>
 
 </orderedlist>
-
-
 </sect2>
 
 <sect2 id="power-spectra-existing-plot">
@@ -234,13 +345,6 @@ spectrum is displayed in a new plot.</para>
 </orderedlist>
 
 </sect2>
-
-</sect1>
-
-<sect1 id="using-kst-from-the-command-line">
-<title>Using &kst; from the Command Line</title>
-
-<para>The command line switches to perform the tasks above</para>
 
 </sect1>
 

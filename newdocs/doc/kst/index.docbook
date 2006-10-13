@@ -9,7 +9,6 @@
 
  <!-- Chapter Information -->
  <!ENTITY intro-chapter SYSTEM "intro-chapter.docbook">
- <!ENTITY tutorial SYSTEM "tutorial.docbook">
  <!ENTITY commontasks-chapter SYSTEM "commontasks-chapter.docbook">
  <!ENTITY data-chapter SYSTEM "data-chapter.docbook">
  <!ENTITY plugins-chapter SYSTEM "plugins-chapter.docbook">
@@ -103,8 +102,6 @@ Please at least include KDE, the KDE package it is in, the name
 the order. -->
 
 &intro-chapter;
-
-&tutorial;
 
 &commontasks-chapter;
 
