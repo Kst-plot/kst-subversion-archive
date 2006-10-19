@@ -191,7 +191,7 @@ Now, to add the curve fit to the data plot, open the Plot dialog from <menuchoic
 </para>
 
 <para>
-We'll generate this vector using a perl script. Copy the following code into a file called gennormal.pl:
+We'll generate this vector using a perl script. Copy the following code into a file called generate_normal.pl:
 </para>
 
 <para>
@@ -226,7 +226,7 @@ Now execute the script with the command:
 </para>
 
 <para>
-<userinput><command>perl normal.pl &gt; normal.dat</command></userinput>
+<userinput><command>perl generate_normal.pl &gt; normal.dat</command></userinput>
 </para>
 
 <para>
@@ -343,8 +343,158 @@ spectrum is displayed in a new plot.</para>
 </listitem>
 
 </orderedlist>
-
 </sect2>
+</sect1>
+
+<sect1 id="creating-an-event-monitor">
+<title>Creating an Event Monitor</title>
+
+<para>&kst; has many features which are oriented toward real-time data. One of the most useful of these features is the "Event Monitor" data object. Event monitors check conditions on data vectors. A common use for them is to provide warnings about unusual features in incoming data. They can provide feedback in a number of ways:</para>
+
+<itemizedlist>
+<listitem><para>Messages in the &kst; debug log.</para></listitem>
+<listitem><para>Automated <ulink url="http://midas.psi.ch/elog/">Electronic Logbook</ulink> (ELOG) entries.</para></listitem>
+<listitem><para>Email notification.</para></listitem>
+</itemizedlist>
+
+<para>In this tutorial, we will create an event monitor to provide debug log notification about statistically unlikely spikes in a data stream.</para>
+
+<para>First we'll need a script to generate some simulated realtime data. Copy the following into a file called <filename>simrealtime.pl</filename></para>
+
+<para>
+<screen>
+#!/usr/bin/perl
+
+open(OUTPUT, ">$ARGV[0]") || die "Can't open $ARGV[0]: $!";
+
+srand(1); # (badly) initialize the RNG.
+
+for ($x=0;;$x++) {
+        open(OUTPUT, ">>$ARGV[0]") || die "Can't open $ARGV[0]: $!";
+        $rn = rand();
+        if ($rn > .99) {
+                $rn = $rn + 5;
+        } else {
+                $rn = $rn - .5;
+        }
+        print OUTPUT $rn . "\n";
+        close(OUTPUT);
+        print "Created " . $x . " entries. Press Enter to Continue ...";
+        $dummy=&lt;STDIN&gt;
+}
+</screen>
+</para>
+
+<para>This perl script will generate random data, uniformly distributed in [-.5, .5], with occasional spikes. Make the script executable and run it using the commands...</para>
+
+<para>
+<userinput><command>chmod a+x simrealtime.pl</command></userinput>
+</para>
+<para>
+<userinput><command>./simrealtime.pl simulated.dat</command></userinput>
+</para>
+
+<para>
+In order to simulate 'realtime' data, the script will not generate all of its output at once, but will prompt the user before it outputs each entry. Press the enter key several times to get the data set started. Now, in a separate terminal, instruct &kst; to plot the data using the command...</para>
+
+<para>
+<userinput><command>kst -y 1 simulated.dat</command></userinput>
+</para>
+
+<para>Depending on the number of data points which you have generated so far, your plot should look something like the graph below, possibly without the large spike in the middle.
+</para>
+
+<screenshot>
+<screeninfo>Creating Event Monitor - Initial Plot</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-commontasks-creatingeventmonitor-initialplot.png" format="PNG" />
+</imageobject>
+<textobject>
+<phrase>Creating Event Monitor - Initial Plot</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<para>
+Now, return to the terminal where the <filename>simrealtime.pl</filename> script is running and press the enter key a few more times. You should see the plot you've made in &kst; update automatically as new data is added to the <filename>simulated.dat</filename> stream.
+</para>
+
+<para>
+Suppose that we would like to receive notification every time a large spike occurs in our incoming data stream. This can be done using an event monitor. Select the menu-item <menuchoice><guimenu>Data</guimenu><guimenuitem>New Event Monitor</guimenuitem></menuchoice>, and configure the new event monitor's settings as shown below.
+</para>
+
+<screenshot>
+<screeninfo>Creating Event Monitor - New Event Monitor</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-commontasks-creatingeventmonitor-neweventmonitor.png" format="PNG" />
+</imageobject>
+<textobject>
+<phrase>Creating Event Monitor - New Event Monitor</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<para>
+The settings in the 'Expression' grouping configure the event monitor to report elements of Vector [1] which are more than 5 standard deviations from its mean. This is a fairly simple event monitor. Much more powerful event monitors can be created using the large collection of scalars which &kst; maintains, and the many operators which can make comparisions between vectors.
+</para>
+
+<para>
+We will have our events logged as 'Warnings' in the &kst; Debug Log. As you can see, there are several other possible event reporting methods. These are explained in more detail in <xref linkend="eventmonitoring"/>. 
+</para>
+
+<para>
+Click the <guibutton>Ok</guibutton> button to create the new event monitor. Now, access the &kst; debug log by selecting the <menuchoice><guimenu>Help</guimenu><guimenuitem>Debug Kst...</guimenuitem></menuchoice> menu-item and clicking the <guibutton>Log</guibutton> tab. You may see that a spike has been detected. If not, return to the terminal where you are running the <filename>simrealtime.pl</filename> script and continue generating new data until a number of spikes are visible in your plot. About 1% of the data should be spikes. Spikes which occur near the beginning of the data stream may not have been detected, because &kst; didn't yet have enough data to establish a reliable estimate of the standard deviation of Vector [1]. After generating a few hundred data points, your Log may look something like this:
+</para>
+
+<screenshot>
+<screeninfo>Creating Event Monitor - Debug Log</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-commontasks-creatingeventmonitor-debuglog.png" format="PNG" />
+</imageobject>
+<textobject>
+<phrase>Creating Event Monitor - Debug Log</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<para>
+Once you have an event monitor up and running, it's sometimes useful to have &kst; indicate on your plots where events have occurred. This is best done using objects called "Plot Markers". To create plot markers for events, we need to have a Curve Data Object for the events in question. Create a curve data object now by selecting <menuchoice><guimenu>Data</guimenu><guimenuitem>New Curve</guimenuitem></menuchoice> and configure the new curve with the options shown below.
+</para>
+
+<screenshot>
+<screeninfo>Creating Event Monitor - New Curve</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-commontasks-creatingeventmonitor-newemoncurve.png" format="PNG" />
+</imageobject>
+<textobject>
+<phrase>Creating Event Monitor - New Curve</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<para>
+Now we are ready to create plot markers. Right click on the data plot, and on the context menu which appears select <menuchoice><guimenuitem>Edit...</guimenuitem></menuchoice>. Then select the 'Markers' tab and configure it to use our event monitor curve as shown below:
+</para>
+
+<screenshot>
+<screeninfo>Creating Event Monitor - Maker Settings</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-commontasks-creatingeventmonitor-markersettings.png" format="PNG" />
+</imageobject>
+<textobject>
+<phrase>Creating Event Monitor - Maker Settings</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<para>
+Click the <guibutton>Ok</guibutton> button to create the markers. Vertical lines will now appear on the data plot, indicating the position of the spikes. The usefulness of plot markers is that they will always stretch across the entire y-axis, regardless of the zoom level.
+</para>
 
 </sect1>
 
