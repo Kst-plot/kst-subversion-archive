@@ -4,10 +4,7 @@
 <sect1 id="fileformats">
 <title>Supported File Formats</title>
 <para>
-Currently, Kst supports ASCII text files, BOOMERANG frame files, and BLAST dirfile
-files as data sources, as well as PIOLib and FITS files with the appropriate libraries.
-This section describes basic data source concepts common to all file types, and
-specifically details the ASCII and BLAST dirfile file types.
+Currently, Kst supports <link linkend="creatingascii">ASCII</link> text files, BOOMERANG frame files, <link linkend="blasdirfiles">BLAST</link> dirfiles, PLANCK LFIIO files, and QImage files as data sources, as well as PIOLib, HEALPix, and FITS files if the appropriate libraries are present. This section describes basic data source concepts common to all file types, and specifically details the <link linkend="creatingascii">ASCII</link> and <link linkend="blasdirfiles">BLAST</link> dirfile file types.
 </para>
 
 <sect2 id="supportingadditionalfileformatsdatasourceconcepts">
@@ -50,6 +47,7 @@ illustration, the first 3 frames of an imaginary data file are shown.  In this p
 file, Field 1 has a ratio of 5 samples per frame, Field 2 has a ratio of 2 samples per frame,
 Field 3 has a ratio of 3 samples per frame, and Field 4 has a ratio of 1 sample per frame.
 </para>
+
 <para>
 <inlinemediaobject>
 <imageobject>
@@ -57,10 +55,9 @@ Field 3 has a ratio of 3 samples per frame, and Field 4 has a ratio of 1 sample 
 </imageobject>
 </inlinemediaobject>
 </para>
+
 <para>
-Depending on the specific data vector settings in &kst;, data from files may be read as
-frames instead of samples, with either the first sample in a frame or the mean of all the samples in a frame
-representing the value of the frame.
+Depending on the specific data vector settings in &kst;, data from files may be read as frames instead of samples, with either the first sample in a frame or the mean of all the samples in a frame representing the value of the frame. This capability can be useful for reducing extremely large data-sets to a more manageable size.
 </para>
 </sect3>
 
@@ -104,8 +101,8 @@ can be easily created by hand or simple scripts if desired.  The following is an
 Each column of this file represents a field, while each row represents one frame.
 Columns are separated by tabs or spaces, and rows are separated by carriage returns.
 Note that due to their structure, ASCII files cannot have multiple samples per frame.
-Also, since the columns do not have labels, field names are assigned by &kst; based on the
-order of the columns (the leftmost column has a field name of <literal>1</literal>).
+If the columns do not have labels, field names are assigned by &kst; based on the
+order of the columns (with the leftmost column having a field name of <literal>1</literal>).
 </para>
 
 <para>
@@ -142,7 +139,7 @@ the file is written in raw format, and the last number in each row is the number
 
 <para>
 When selecting a BLAST dirfile for use in &kst;, the directory containing the field files should be
-selected. &kst; will when automatically look for a <filename>format</filename> file, if it exists,
+selected. &kst; will then automatically look for a <filename>format</filename> file, if it exists,
 to determine the fields and their properties.
 </para>
 
@@ -152,33 +149,39 @@ to determine the fields and their properties.
 <sect1 id="datawizard">
 <title>The Data Wizard</title>
 <para>
-The Data Wizard provides a quick and easy way of creating vectors, curves, power spectra, and plots in &kst; from data files.
-  To launch the wizard,
-select <guimenuitem>Data Wizard...</guimenuitem> from the <guimenu>Data</guimenu> menu.  You will be
-prompted to select a data source.  Browse to a valid data file (or enter in the path to a data file) and
-click <guibutton>Next</guibutton>.  The following window will be displayed.
+The Data Wizard provides a graphical quick and easy way of importing data into &kst;- automatically creating vectors, curves, power spectra, and plots. To launch the wizard, select <guimenuitem>Data Wizard</guimenuitem> from the <guimenu>Tools</guimenu> menu.  You will be prompted to select a data source.  Browse to a valid data file (or enter in the path to a data file) and click <guibutton>Next</guibutton>.  The following window will be displayed.
 </para>
+
 <screenshot>
-<screeninfo>Data Wizard Screen 2</screeninfo>
+<screeninfo>Data Wizard Select Data Dialog</screeninfo>
 <mediaobject>
 <imageobject>
-<imagedata fileref="Screenshot-kst-datawizard2.png" format="PNG" />
+<imagedata fileref="Screenshot-kst-datawizardselectdatadialog.png" format="PNG" />
 </imageobject>
 <textobject>
-<phrase>Data Wizard Screen 2</phrase>
+<phrase>Data Wizard Select Data Dialog</phrase>
 </textobject>
 </mediaobject>
 </screenshot>
 
 <para>
-Select the fields you wish to import into &kst;.  You may filter the list of fields by entering a
-string to match (wildcards such as <literal>*</literal> are supported) into the text box above the list.
+Here you can select the fields you wish to import into &kst;.  You may filter the list of fields by entering a string to match (wildcards such as <literal>*</literal> are supported) into the text box above the list. Click the <guibutton>Next</guibutton> button to come to the Data Presentation pane.
 </para>
 
+<screenshot>
+<screeninfo>Data Wizard Data Presentation Pane</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-datawizarddatapresentationpane.png" format="PNG" />
+</imageobject>
+<textobject>
+<phrase>Data Wizard Data Presentation Pane</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
 <para>
-The <guilabel>Data Range</guilabel> section is used to specify the range of data to read from the selected
-vectors in the input file. The following discussion assumes knowledge of <quote>frames</quote>.  For a detailed
-description of this concept, see <link linkend="fileformats">File Formats</link>.
+The <guilabel>Data Range</guilabel> section is used to specify the range of data to read from the selected vectors in the input file. The following discussion assumes knowledge of <quote>frames</quote>.  For a detailed description of this concept, see <link linkend="fileformats">File Formats</link>.
 </para>
 <variablelist>
 <varlistentry>
@@ -220,8 +223,6 @@ is selected, the value is the mean (average) of all the samples in that particul
 </varlistentry>
 </variablelist>
 
-
-
 <para>
 Power Spectrum and X axis settings can be specified within the <guilabel>Plot Types</guilabel> section.
 These settings are described below.
@@ -260,86 +261,22 @@ data file.
 <para>
 The <guilabel>FFT Options</guilabel> subsection
  in the <guilabel>Plot Types</guilabel> section is available only if a power spectrum
-is to be plotted.  The below definitions assume basic knowledge of power spectra&mdash;for further details,
-refer to Numerical Recipes in C: The Art of Scientific Computing, published by Cambridge University Press.
+is to be plotted. Detailed information on these options can be found in the <link linkend="power-spectra">Power Spectra</link> section.
 </para>
 
-<variablelist>
-
-<varlistentry>
-<term>
-<guilabel>Interleaved average</guilabel> and <guilabel>FFT Length</guilabel>
-</term>
-<listitem>
 <para>
-The power spectrum is defined as <quote>the square root of the absolute value of the
-mean of the interleaved Fast Fourier Transforms of length <literal>2^x</literal></quote>, where x is the
-value entered in the <guilabel>FFT Length</guilabel> selection box.
-Selecting <guilabel>Interleaved average</guilabel> allows the length of the interleaved Fast Fourier
-Transforms to be specified.  If <guilabel>Interleaved average</guilabel> is unchecked, &kst;
-will determine the length based on the length of the vector.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term>
-<guilabel>Data units</guilabel> and <guilabel>Rate units</guilabel>
-</term>
-<listitem>
-<para>
-The units specified in these textboxes are used for the purpose of auto-generating axes labels for the plots.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term>
-<guibutton>Sample rate</guibutton>
-</term>
-<listitem>
-<para>
-The sample rate is used to generate the X axis of power spectrum plots.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term>
-<guilabel>Apodize</guilabel>
-</term>
-<listitem>
-<para>
-If this option is selected, the data is apodized using a Hanning window, to reduce bin-to-bin leakage.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term>
-<guilabel>Remove Mean</guilabel>
-</term>
-<listitem>
-<para>
-Select this option to remove the mean from the selected data (i.e. translate the data so that the mean is zero).
-</para>
-</listitem>
-</varlistentry>
-</variablelist>
-<para>
-Once you are satisfied with all the settings, click <guibutton>Next</guibutton> to advance to the next window.
-Select any filters you wish to apply to the data, and click <guibutton>Next</guibutton> to advance to the final
+Once you are satisfied with all the settings, click <guibutton>Next</guibutton> to advance to advance to the final
 window.
 </para>
 
 <screenshot>
-<screeninfo>Data Wizard Screen 3</screeninfo>
+<screeninfo>Data Wizard Configure Plot Layout</screeninfo>
 <mediaobject>
 <imageobject>
-<imagedata fileref="Screenshot-kst-datawizard3.png" format="PNG" />
+<imagedata fileref="Screenshot-kst-datawizardconfigureplotlayoutpane.png" format="PNG" />
 </imageobject>
 <textobject>
-<phrase>Data Wizard Screen 3</phrase>
+<phrase>Data Wizard Configure Plot Layout</phrase>
 </textobject>
 </mediaobject>
 </screenshot>
@@ -364,8 +301,6 @@ and XY plots.
 </para>
 </listitem>
 </varlistentry>
-
-
 
 <varlistentry>
 <term>
@@ -403,6 +338,17 @@ Select the desired window(s) to place the new plots on.  New windows can be crea
 </listitem>
 </varlistentry>
 
+<varlistentry>
+<term>
+<guilabel>Power Spectrum Axis Mode</guilabel>
+</term>
+<listitem>
+<para>
+Select these check-boxes if you would like the automatically created power spectra to have logarithmic X or Y axes.
+</para>
+</listitem>
+</varlistentry>
+
 </variablelist>
 
 <para>
@@ -423,31 +369,32 @@ It can be accessed by selecting <guimenuitem>Data Manager</guimenuitem> from the
 To create a new data object from the Data Manager, click on one of the buttons listed under <guilabel>New:</guilabel>.
 A new window will be displayed, allowing options and settings for the data object to be set.</para>
 
-<tip><para>You can also create new curves by right-clicking on a vector and choosing
-<guimenuitem>Make Curve...</guimenuitem></para></tip>
+<tip><para>You can also create new data objects which are based on vectors by right clicking on the corresponding vector and choosing one of the <guimenuitem>Make ...</guimenuitem> options</para></tip>
 
 <para>
-Since you are creating a new data object, you may enter a unique name to identify the object.  The default name
-can be used as well (if it is unique).
+Since you are creating a new data object, you may enter a unique name to identify the object.  If you do not enter a custom name then a unique name will be automatically generated.
 </para>
+
 <para>
 The settings for all plottable data objects except images have two common sections&mdash;Appearance and Placement
 (images only have the Placement section).
 These sections are described below.  For data-specific settings, see <link linkend="datatypes">Data Types</link>.
 </para>
-<screenshot>
-<mediaobject>
-<imageobject>
-<imagedata fileref="Screenshot-kst-curveoptions.png" format="PNG"/>
-</imageobject>
-</mediaobject>
-</screenshot>
+
 
 <sect3 id="curveappearance">
 <title>Appearance</title>
 <para>
 The Appearance section allows you to change the appearance of the data object when it is plotted.
 </para>
+
+<screenshot>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-curveappearance.png" format="PNG"/>
+</imageobject>
+</mediaobject>
+</screenshot>
 
 <variablelist>
 
@@ -498,6 +445,14 @@ as well as the line style can be changed.
 The Placement section specifies the plotting location of new plottable data objects.
 </para>
 
+<screenshot>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-curveplacement.png" format="PNG"/>
+</imageobject>
+</mediaobject>
+</screenshot>
+
 <variablelist>
 
 <varlistentry>
@@ -526,16 +481,6 @@ new layout grid.
 </listitem>
 </varlistentry>
 
-<varlistentry>
-<term>
-
-</term>
-<listitem>
-<para>
-</para>
-</listitem>
-</varlistentry>
-
 </variablelist>
 
 <para>
@@ -557,24 +502,20 @@ on the settings and options.
 </para>
 <para>
 To delete a data object, highlight it in the Data Manager window and click the <guibutton>Delete</guibutton> button.
-Note that the entry in the <guilabel># Used</guilabel> column for an object must be 0 before the object can be
-deleted.  The <guilabel># Used</guilabel> column indicates the number of times that a particular data object and its children
-(if any) are used by either other data objects or by plots.
-Listed below are some consequences of this restriction to keep in mind when attempting to delete data objects.
+Note that if the <guilabel>Used</guilabel> column for a data object has a check-mark then some other data or view object in &kst; has a dependency on it. Depending on the strength of these dependencies, &kst; will prompt before an object is deleted. If, for example, other objects have critical dependencies on the one which you are attempting to delete, &kst; will ask if you would like to delete these other objects as well, to prevent crashes from occuring. Listed below are some consequencies of these dependencies to keep in mind when attempting to delete data objects.
 </para>
 
 <itemizedlist>
 <listitem>
 <para>
-All plottable objects (curves, equations, histograms, power spectra, and images) must be removed from plots before they can be
-deleted.  An object can be removed from a plot by right-clicking on it in the Data Manager window and selecting the desired
-plot from the <guisubmenu>Remove From Plot</guisubmenu> submenu.
+Plots are not critically dependent on the plottable objects which they contain, so if a plotted object is deleted &kst; will automatically remove it from all plots, without prompting.
+</para>
 </para>
 </listitem>
 
 <listitem>
 <para>
-All data objects that use a particular data vector must be deleted before the data vector can be deleted.
+All data objects that use a particular data vector must be deleted before the data vector itself can be deleted.
 </para>
 </listitem>
 
@@ -586,11 +527,8 @@ All children of a parent data object must be unused before the parent data objec
 </itemizedlist>
 
 <para>
-After a sequence of deletions and removals of plottable data objects from plots, you may find that there are numerous unused data objects
-displayed in the Data Manager.  To quickly remove these objects, you can click the <guibutton>Purge</guibutton> button.
+After a sequence of deletions and removals of plottable data objects from plots, you may find that there are numerous unused data objects displayed in the Data Manager.  To quickly remove these objects, you can click the <guibutton>Purge</guibutton> button.
 </para>
-
-
 
 </sect2>
 
@@ -1116,6 +1054,9 @@ the y axis is normalized to 1.0.
 <sect2 id="power-spectra">
 <title>Power Spectra</title>
 <para>
+"The below definitions assume basic knowledge of power spectra&mdash;for further details,
+refer to Numerical Recipes in C: The Art of Scientific Computing, published by Cambridge University Press."
+
 A power spectrum data object represents the power spectrum of a vector, defined as
 <quote>the square root of the absolute value of the
 mean of the interleaved Fast Fourier Transforms of length <literal>2^x</literal> of the vector</quote>, where x is the
