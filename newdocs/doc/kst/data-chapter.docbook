@@ -4,7 +4,7 @@
 <sect1 id="fileformats">
 <title>Supported File Formats</title>
 <para>
-Currently, Kst supports <link linkend="creatingascii">ASCII</link> text files, BOOMERANG frame files, <link linkend="blasdirfiles">BLAST</link> dirfiles, PLANCK LFIIO files, and QImage files as data sources, as well as PIOLib, HEALPix, and FITS files if the appropriate libraries are present. This section describes basic data source concepts common to all file types, and specifically details the <link linkend="creatingascii">ASCII</link> and <link linkend="blasdirfiles">BLAST</link> dirfile file types.
+Currently, Kst supports <link linkend="creatingascii">ASCII</link> text files, BOOMERANG frame files, <link linkend="blastdirfiles">BLAST</link> dirfiles, PLANCK LFIIO files, and QImage files as data sources, as well as PIOLib, HEALPix, and FITS files if the appropriate libraries are present. This section describes basic data source concepts common to all file types, and specifically details the <link linkend="creatingascii">ASCII</link> and <link linkend="blastdirfiles">BLAST</link> dirfile file types.
 </para>
 
 <sect2 id="supportingadditionalfileformatsdatasourceconcepts">
@@ -510,7 +510,6 @@ Note that if the <guilabel>Used</guilabel> column for a data object has a check-
 <para>
 Plots are not critically dependent on the plottable objects which they contain, so if a plotted object is deleted &kst; will automatically remove it from all plots, without prompting.
 </para>
-</para>
 </listitem>
 
 <listitem>
@@ -538,9 +537,7 @@ After a sequence of deletions and removals of plottable data objects from plots,
 <title>Data Types</title>
 
 <para>
-There are nine main types of data objects in &kst;.  Data objects can contain other data objects,
-as represented by the tree structure view in the
-Data Manager.  The following diagram illustrates the relationships between the different data types.
+There are ten main types of data objects in &kst;.  Data objects can contain other data objects as 'slave objects', as represented by the tree structure view in the Data Manager.  The following diagram illustrates the relationships between the different data types.
 </para>
 
 <para>
@@ -555,9 +552,7 @@ Data Manager.  The following diagram illustrates the relationships between the d
 </para>
 
 <para>
-As can be seen from the above diagram, the curve, equation, histogram, power spectrum and image data objects
-are the only data objects that are plottable.  All data objects (other than vectors) have the capability of
-using vectors, while equations, power spectra, events, and plugins all contain slave vectors.
+As can be seen from the above diagram, the only truly 'plottable' data objects are curves and images. Curve objects are typically auto-created from the slave vector of many data objects, however- so these data objects are effectively plottable as well.  All data objects (other than vectors) have the capability of using vectors. Equations, power spectra, events, CSDs, and plugins all contain slave vectors in which they store their results.
 </para>
 
 <para>
@@ -642,20 +637,12 @@ This section specifies the range of data to use from the selected field for the 
 <variablelist>
 <varlistentry>
 <term>
-<guilabel>Starting frame</guilabel>, <guilabel>Count from end</guilabel>,
-<guilabel>Number of frames</guilabel>, and <guilabel>Read to end</guilabel>
+<guilabel>Start frame</guilabel>, <guilabel>Count from end</guilabel>,
+<guilabel>Range</guilabel>, and <guilabel>Read to end</guilabel>
 </term>
 <listitem>
 <para>
-Using these four settings, the lower and upper boundaries of
-the data range can be set. For example, to read from frame 10 to frame 900, enter <userinput>10</userinput> for
-<guilabel>Starting frame</guilabel> and <userinput>890</userinput> for <guilabel>Number of frames</guilabel>.
-To read from frame 500 to the end of the file, enter <userinput>500</userinput> for <guilabel>Starting frame</guilabel>
-and select the <guilabel>Read to end</guilabel> option. To read only the last 450 frames from the file, select the
-<guilabel>Count from end</guilabel> option and enter <userinput>450</userinput> for <guilabel>Number of frames</guilabel>.
-The combinations used in the previous two examples are often useful for reading data
-from a file that is being updated in real time.  Subsequent additions to the file are read, causing associated
-vectors to be updated as well.
+Using these four settings, the lower and upper boundaries of the data range can be set. For example, to read from frame 10 to frame 900, enter <userinput>10</userinput> for <guilabel>Start frame</guilabel> and <userinput>890</userinput> for <guilabel>Range</guilabel>. To read from frame 500 to the end of the file, enter <userinput>500</userinput> for <guilabel>Start frame</guilabel> and select the <guilabel>Read to end</guilabel> option. To read only the last 450 frames from the file, select the <guilabel>Count from end</guilabel> option and enter <userinput>450</userinput> for <guilabel>Range</guilabel>. The combinations used in the previous two examples are often useful for reading data from a file that is being updated in real time. Subsequent additions to the file are read, causing associated vectors to be updated as well.
 </para>
 </listitem>
 </varlistentry>
