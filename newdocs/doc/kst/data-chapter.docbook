@@ -762,9 +762,7 @@ error bars.</para>
 <para>
 An equation data object consists of a mathematical expression and an independent variable.  The expression
 is built using a combination of scalars, vectors, and operators, and usually represents the values of the
-dependent variable.  The independent variable can be an existing vector or it can be generated when the equation
-object is created or edited.  Since an equation ultimately consists of a set of data points, an equation object
-is plottable.
+dependent variable.  The independent variable is generated from an existing vector, and stored as a slave vector along with the evaluated results of the equation.
 </para>
 <para>
 The following is a screenshot of the window displayed when creating or editing equations.  Explanations of the
@@ -782,12 +780,6 @@ settings are listed below.
 </textobject>
 </mediaobject>
 </screenshot>
-
-<sect3 id="equation">
-<title>Equation</title>
-<para>
-The mathematical expression representing the dependent variable can be modified from this section.
-</para>
 
 <variablelist>
 <varlistentry>
@@ -838,27 +830,15 @@ you may select items to insert using the above drop-down lists.
 </para>
 </listitem>
 </varlistentry>
-</variablelist>
-</sect3>
-
-
-<sect3 id="independentvariable">
-<title>Independent Variable</title>
-<para>
-<!-- TODO: Note that the independent variable is x. Maybe give some -->
-<!-- simple examples -->
-This section is used to specify the source of the values for the independent variable.
-</para>
-<variablelist>
 
 <varlistentry>
 <term>
-<guilabel>Use</guilabel>
+<guilabel>X Vector</guilabel>
 </term>
 <listitem>
 <para>
 Select this option to use an existing vector as the independent variable. Select a vector from the
-drop-down list, or quickly create a new one by clicking the button to the right.
+drop-down list, or quickly create a new one by clicking the wizard button to the right.
 </para>
 </listitem>
 </varlistentry>
@@ -869,28 +849,12 @@ drop-down list, or quickly create a new one by clicking the button to the right.
 </term>
 <listitem>
 <para>
-Selecting this option interpolates the selected vector to the greatest number of samples possible.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term>
-<guilabel>Generate</guilabel>
-</term>
-<listitem>
-<para>
-Select this to generate a set of values to use as the independent variable. Specify the lowest value
-to generate in the <guilabel>From</guilabel> field, and the highest value to generate in the <guilabel>to</guilabel> field.
-Set the value for <guilabel>Number of samples</guilabel> to be the number of equally spaced values to generate between the
-lowest value and the highest value (inclusive).
+Selecting this option interpolates the selected X vector to the greatest number of samples possible, given the data used in the equation expression. For example, if the data expression acts on a vector Y which contains twice as many variables as the selected X vector, the equation object will create a slave vector of interpolated X values with the same # of points as Y.
 </para>
 </listitem>
 </varlistentry>
 
 </variablelist>
-</sect3>
-
 </sect2>
 
 <sect2 id="Histograms">
