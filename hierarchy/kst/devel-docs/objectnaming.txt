@@ -1,40 +1,66 @@
-All data objects (objects derived from KstPrimitive, maybe KstObject) should be
-globally accessible in a hierarchical namespace.
+All data objects (objects derived from KstObject) should be globally accessible
+in a hierarchical namespace. The general idea is to change tagNames to be a
+path instead of a simple name.
+
+The relationship of a KstObject being below another KstObject in the hierarchy
+means that the parent object CREATED the child object. Note that this is not
+the same thing as data PROVIDERS, which form a dependency graph (perhaps with
+cycles) rather than a tree. For example, a PSD created with the PSD button in
+the Data Manager is placed after its source vectors in the provider graph, but
+is a Level 1 object (i.e. not below its source vectors) in the naming
+hierarchy.
 
 Level 0
 -------
-A simple root "".
+An implied single root with no name. It may be better to show Level 1 objects
+as multiple roots and have no Level 0 object.
 
 Level 1
 -------
 - Providers/Data Sources (e.g. KstDataSource::tagName()).
-  This is not currently set to a useful value. By naming datasets, it could be
-  more straightforward to change which file is read for a particular dataset.
+  This tagName is not currently set to a useful value. By naming datasets, it
+  could be more straightforward to change which file is read for a particular
+  dataset.
 - Global constants. Perhaps a CONSTANTS namespace should be used (maybe with a
   full hierarchy of constant types).
+- Global (user-created) KstPrimitives
+  - e.g. generated KstVector, KstMatrix
+- user-created KstDataObjects
+  - curves, equations, power spectra, etc.
 
 Level 2
 -------
-- Data objects read from a data source (e.g. KstVector::tagName()). These names
+- Data vectors read from a data source (e.g. KstVector::tagName()). These names
   will not collide as long as there are unique names in each data source. 
-- Data source metadata (author, dataset description, etc.)
+- Data source metadata strings, scalars (author, dataset description, numFields, etc.)
 
 Level 3
 -------
-- Objects generated from level 2 objects (e.g. KstScalars for min, max, etc.).
-- Data object metadata (units, field description, etc.)
+- KstObjects generated from level 2 objects (e.g. KstScalars for min, max, etc.).
+- Data object metadata strings, scalars (units, field description, etc.)
 
 
 In labels, one can use the full path to specify a field (e.g.
-[DataSource1-Field1-max]), or start with any globally-unique name and go from
-there, which is compatible with the current model (e.g. [Field1''-max]).
+[DataSource1-Field1'-max]), or start with any globally-unique name and go from
+there, which is compatible with the current model (e.g. [Field1'-max]). Using
+'-' as a path separator allows compatibility with existing .kst files, but may
+cause conflicts with datasources using '-' within field names.
 
 
 In addition to the global lists of scalars, vectors, matrices, etc., we can view the data as a
-single tree of KstObjects. We can also use the tree to show only scalars (for example) in an organized way:
-DataSource1
+single tree of KstObjects:
+
+- DataSource1
  \
   + Field1
+  + Field2
+- DataSource2
+ \
+  + Field1
+  - Field1'
+   \
+    - min
+    - max         <========== [DataSource2-Field1'-max] or [Field1'-max]
   - Field2
    \
     - min
@@ -49,7 +75,5 @@ DataSource1
     - units
     - description
 
-
-ISSUES/ENHANCEMENTS
-===================
-- types for metadata fields (doubles - KstScalars, strings - KstStrings, others?...)
+We could also have separate trees (or filter the single tree) to show only
+scalars or strings (or whatever) in an organized way.
