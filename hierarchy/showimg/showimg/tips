@@ -1,0 +1,171 @@
+<tip category="showimg">
+<html>
+<h2>
+<img src="hicolor/32x32/apps/showimg.png">
+&nbsp;Welcome to ShowImg
+</h2>
+<p>
+You can check for a new version at the
+<center><a href="http://www.jalix.org/projects/showimg">ShowImg project page</a></center>
+</p>
+</html>
+</tip>
+
+<tip category="showimg">
+<html>
+<p>...that you can <b>rename</b> your images using 'Tools' -> <img src="../apps/showimg/icons/hicolor/16x16/actions/item_rename.png" width="16" height="16">&nbsp;'Batch&nbsp;rename'?</p>
+</html>
+</tip>
+
+<tip category="showimg">
+<html>
+<p>...that you can search <b>similar</b> images by using 'Tools' -> 'Find&nbsp;images' -> 'Similar&nbsp;images'?</p>
+</html>
+</tip>
+
+<tip category="showimg">
+<html>
+<p>...that you can <b>convert</b> image format by using 'Tools' -> 'Convert' -> 'Format'?</p>
+</html>
+</tip>
+
+<tip category="showimg">
+<html>
+<p>
+...that ShowImg can use the <b><a href="http://digikam.sourceforge.net/">digikam</a> plugins</b>?
+</p>
+<p>Use 'Setting' -> 'Configure&nbsp;showimg' -> 'Plugins' to choose plugins you want to enable.
+</p>
+<br>
+<p>
+You can see screenshots at the <a href="http://digikam.sourceforge.net/plugins.html">digikam plugins page</a>.
+</p>
+</html>
+</tip>
+
+<tip category="showimg">
+<html>
+<p>...that you can <b>extract images</b> in archives (<tt>.tar, .zip,...</tt>) using drag'n'drop?</p>
+</html>
+</tip>
+
+<tip category="showimg">
+<html>
+<p>...that you can <b>fit to screen</b> images using <img src="../apps/showimg/icons/hicolor/32x32/actions/viewmag_enlarge.png" width="16" height="16">&nbsp;'Shrink if bigger' and &nbsp;<img src="../apps/showimg/icons/hicolor/32x32/actions/viewmag_shrink.png" width="16" height="16">'Enlarge if smaller'?</p>
+</html>
+</tip>
+
+<tip category="showimg">
+<html>
+<p>...that you can <b>rotate</b> image files using 'Tools' -> 'Convert' -> <img src="../apps/showimg/icons/hicolor/16x16/actions/rotation_acw.png" width="16" height="16">&nbsp;'Rotate left' and <img src="../apps/showimg/icons/hicolor/16x16/actions/rotation_cw.png" width="16" height="16">&nbsp;'Rotate right'?</p>
+<p>Moreover, if the <tt>jpegtran</tt> program is installed then JPEG files rotations are lossless rotation.</p>
+</html>
+</tip>
+
+<tip category="showimg">
+<html>
+<p>...that using <b>albums</b> can drag'n'drop icons from the icon view to the album icon to select and manage images?</p>
+</html>
+</tip>
+
+<tip category="showimg">
+<html>
+<p>...that you can download and <b>display <tt>ftp/http</tt> URL files</b>? Just write the URL in the <img src="crystalsvg/22x22/actions/locationbar_erase.png" width="16" height="16">&nbsp;location&nbsp;toolbar and press enter.</p>
+</html>
+</tip>
+
+<tip category="showimg">
+<html>
+<p>...that you can <b>browse 'offline' your CD</b> with pictures by viewing the thumbnails?</p>
+<p>Choose the tab <img src="crystalsvg/16x16/mimetypes/cdimage.png"  width="16" height="16">
+&nbsp;'CD Archive View', click on 'New Archive CD' then select your CD-ROM path: your CD will be parsed and the thumbnails will be store on your hard drive and can be easily browsed.</p>
+</html>
+</tip>
+
+<tip category="showimg">
+<html>
+<p>...that you can <b>managed you images by using 'Categories'</b>?</p>
+<p>
+Choose the tab <img src="hicolor/16x16/apps/kexi.png" width="16" height="16">&nbsp;'Category View'.
+Categories allows to tag images in order to find then easily. One picture can have several tags.
+One category can have sub-categories, for example the category 'People' can have sub-categories 'Friends' and 'Familly'.
+</p>
+</html>
+</tip>
+
+<tip category="showimg">
+<html>
+<p>...that you can <b>mixed your category criteria</b>?</p>
+<p>For example if you want to display all pictures of you friend 'Robert' in 'Paris', then check both 'Robert' and 'Paris' category checkbox items.</p>
+</html>
+</tip>
+
+<tip category="showimg">
+<html>
+<p>...that you can <b>give a note</b> to your pictures?</p>
+<p>
+  Drag'n'drop your pictures over the <img src="crystalsvg/16x16/actions/flag.png" width="16" height="16">&nbsp;note you want to set.<br>
+  Click on the note to display  all  pictures having this note.<br>
+  Click on two notes to display all pictures having note setting between both these notes.
+</p>
+</html>
+</tip>
+
+<tip category="showimg">
+<html>
+<p>...that you can <b>search by name</b> images?</p>
+<p>
+Choose the tab <img src="hicolor/16x16/apps/kexi.png" width="16" height="16">&nbsp;'Category View' and click on <img src="crystalsvg/16x16/actions/filefind.png" width="16" height="16">&nbsp;'Search"'
+</p>
+</html>
+</tip>
+
+<tip category="showimg">
+<html>
+<p>...that you can <b>search by date</b> images?</p>
+<p>
+Choose the tab <img src="hicolor/16x16/apps/kexi.png">&nbsp;'Category View' and click on <img src="crystalsvg/16x16/apps/date.png" width="16" height="16">&nbsp;'Date'.
+</p>
+</html>
+</tip>
+
+<tip category="showimg">
+<html>
+<p>...that you can <b>mix all criteria</b> in <img src="hicolor/16x16/apps/kexi.png" width="16" height="16">&nbsp;'Category View'?</p>
+<p>
+Just check all checkboxes you want to add and choose between <img src="./hicolor/22x22/actions/raise.png" width="16" height="16">'Add' and <img src="./hicolor/22x22/actions/lower.png" width="16" height="16">'Or' in the toolbar to join them.
+</p>
+</html>
+</tip>
+
+<tip category="showimg">
+<html>
+<p>...that you can <b>copy</b> your selected files <b>into the last directory</b> you move files by pressing '<b>F12</b>' (default key)?</p>
+</html>
+</tip>
+
+<tip category="showimg">
+<html>
+<p>...that you can <b>play video file<b> into showimg?</p>
+<p>You can choose the embeded player in 'Configure'/'Configure Showimg'/'Video'.</p>
+</html>
+</tip>
+
+
+
+
+<tip category="showimg">
+<html>
+<p>...that you have read all the tooltips and you can contribute to ShowImg (add feature, write documention, ...) by <a href='mailto:rgroult@jalix.org'>contacting me</a> by email.</p>
+</html>
+</tip>
+
+
+
+
+
+
+
+
+
+
