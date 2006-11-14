@@ -30,12 +30,8 @@
 #include "kstobject.h"
 #include "kst_export.h"
 
-#define KST_CURRENT_DATASOURCE_KEY 0x00000006
-
-#define KST_KEY_DATASOURCE_PLUGIN(x) extern "C" Q_UINT32 key_##x() { return KST_CURRENT_DATASOURCE_KEY; }
-
 namespace KST {
-  class Plugin;
+  class DataSourcePlugin;
 }
 
 struct KstMatrixData {
@@ -216,7 +212,7 @@ class KST_EXPORT KstDataSource : public KstObject {
     /** The filename.  Populated by the base class constructor.  */
     QString _filename;
 
-    friend class KST::Plugin;
+    friend class KST::DataSourcePlugin;
 
     /** The source type name. */
     QString _source;

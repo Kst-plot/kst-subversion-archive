@@ -51,6 +51,72 @@ namespace KST {
         }
       }
 
+      Q_UINT32 key() const {
+        Q_UINT32 (*sym)() = (Q_UINT32(*)())symbol("key");
+        if (sym) {
+          return (sym)();
+        }
+
+        return Q_UINT32();
+      }
+
+      bool hasConfigWidget() const {
+        return 0L != symbol("widget");
+      }
+
+      KService::Ptr service;
+
+    protected:
+      void *symbol(const QString& sym) const {
+        if (!loadLibrary()) {
+          return 0L;
+        }
+
+        QString libname = _plugLib;
+        QCString s = QFile::encodeName(sym + "_" + libname.remove(QString("kstobject_")));
+        if (_lib->hasSymbol(s)) {
+          return _lib->symbol(s);
+        }
+        return 0L;
+      }
+
+      bool loadLibrary() const {
+        assert(service);
+        if (_lib) {
+          return true;
+        }
+
+        bool isDataObject = _plugLib.contains(QString("kstobject_"));
+
+        QCString libname = QFile::encodeName((!isDataObject ? QString("kstdata_") : QString()) + _plugLib);
+        _lib = KLibLoader::self()->library(libname);
+        if (!_lib) {
+          KstDebug::self()->log(i18n("Error loading data plugin [%1]: %2").arg(libname).arg(KLibLoader::self()->lastErrorMessage()), KstDebug::Error);
+          return false;
+        }
+
+        if (key() != (isDataObject ? KST_CURRENT_DATAOBJECT_KEY : KST_CURRENT_DATASOURCE_KEY)) {
+          KstDebug::self()->log(i18n("Error loading data plugin [%1]: %2").arg(libname).arg(i18n("Plugin is too old and needs to be recompiled.")), KstDebug::Error);
+          KstDebug::self()->log(i18n("Error loading data plugin key = [%1]: %2").arg(key()).arg(QFile::encodeName("key_" + _plugLib)), KstDebug::Error);
+          return false;
+        }
+        return true;
+      }
+
+      QString _plugLib;
+      // mutable so we can lazy load the library, but at the same time
+      // use const iterators and provide a nice const interface
+      mutable KLibrary *_lib;
+  };
+
+  class DataSourcePlugin : public Plugin {
+    public:
+      DataSourcePlugin(KService::Ptr svc) : Plugin(svc) {
+      }
+
+      virtual ~DataSourcePlugin() {
+      }
+
       KstDataSource *create(KConfig *cfg, const QString& filename, const QString& type = QString::null) const {
         KstDataSource *(*sym)(KConfig*, const QString&, const QString&) = (KstDataSource*(*)(KConfig*, const QString&, const QString&))symbol("create");
         if (sym) {
@@ -89,9 +155,8 @@ namespace KST {
 
         return 0L;
       }
-      
+
       QStringList matrixList(KConfig *cfg, const QString& filename, const QString& type = QString::null, QString *typeSuggestion = 0L, bool *complete = 0L) const {
-        
         QStringList (*sym)(KConfig*, const QString&, const QString&, QString*, bool*) = (QStringList(*)(KConfig*, const QString&, const QString&, QString*, bool*))symbol("matrixList");
         if (sym) {
           return (sym)(cfg, filename, type, typeSuggestion, complete);  
@@ -171,19 +236,6 @@ namespace KST {
         return QStringList();
       }
 
-      Q_UINT32 key() const {
-        Q_UINT32 (*sym)() = (Q_UINT32(*)())symbol("key");
-        if (sym) {
-          return (sym)();
-        }
-
-        return Q_UINT32();
-      }
-
-      bool hasConfigWidget() const {
-        return 0L != symbol("widget");
-      }
-
       KstDataSourceConfigWidget *configWidget(KConfig *cfg, const QString& filename) const {
         QWidget *(*sym)(const QString&) = (QWidget *(*)(const QString&))symbol("widget");
         if (sym) {
@@ -201,47 +253,105 @@ namespace KST {
 
         return 0L;
       }
+  };
 
-      KService::Ptr service;
+#if 0
+  class DataObjectPlugin : public Plugin {
+    public:
+      DataObjectPlugin(KService::Ptr svc) : Plugin(svc) {
+      }
 
-    private:
-      void *symbol(const QString& sym) const {
-        if (!loadLibrary()) {
-          return 0L;
-        }
+      virtual ~DataObjectPlugin() {
+      }
 
-        QCString s = QFile::encodeName(sym + "_" + _plugLib);
-        if (_lib->hasSymbol(s)) {
-          return _lib->symbol(s);
-        }
+      QWidget *configWidget(const QString& name) const {
+        Q_UNUSED(name);
+        return 0L;
+      }
+  };
+
+  class BasicPlugin : public DataObjectPlugin {
+    public:
+      BasicPlugin(KService::Ptr svc) : DataObjectPlugin(svc) {
+      }
+
+      virtual ~BasicPlugin() {
+      }
+
+      QWidget *configWidget(const QString& name) const {
+        Q_UNUSED(name);
         return 0L;
       }
 
-      bool loadLibrary() const {
-        assert(service);
-        if (_lib) {
-          return true;
+      QStringList inputVectorList() const {
+        QStringList (*sym)() = (QStringList(*)())symbol("inputVectorList");
+        if (sym) {
+          return (sym)();
         }
 
-        QCString libname = QFile::encodeName(QString("kstdata_") + _plugLib);
-        _lib = KLibLoader::self()->library(libname);
-        if (!_lib) {
-          KstDebug::self()->log(i18n("Error loading data-source plugin [%1]: %2").arg(libname).arg(KLibLoader::self()->lastErrorMessage()), KstDebug::Error);
-          return false;
-        }
-
-        if (key() != KST_CURRENT_DATASOURCE_KEY) {
-          KstDebug::self()->log(i18n("Error loading data-source plugin [%1]: %2").arg(libname).arg(i18n("Plugin is too old and needs to be recompiled.")), KstDebug::Error);
-          return false;
-        }
-        return true;
+        return QStringList();
       }
 
-      QString _plugLib;
-      // mutable so we can lazy load the library, but at the same time
-      // use const iterators and provide a nice const interface
-      mutable KLibrary *_lib;
+      QStringList inputScalarList() const {
+        QStringList (*sym)() = (QStringList(*)())symbol("inputScalarList");
+        if (sym) {
+          return (sym)();
+        }
+
+        return QStringList();
+      }
+
+      QStringList inputStringList() const {
+        QStringList (*sym)() = (QStringList(*)())symbol("inputStringList");
+        if (sym) {
+          return (sym)();
+        }
+
+        return QStringList();
+      }
+
+      QStringList outputVectorList() const {
+        QStringList (*sym)() = (QStringList(*)())symbol("outputVectorList");
+        if (sym) {
+          return (sym)();
+        }
+
+        return QStringList();
+      }
+
+      QStringList outputScalarList() const {
+        QStringList (*sym)() = (QStringList(*)())symbol("outputScalarList");
+        if (sym) {
+          return (sym)();
+        }
+
+        return QStringList();
+      }
+
+      QStringList outputStringList() const {
+        QStringList (*sym)() = (QStringList(*)())symbol("outputStringList");
+        if (sym) {
+          return (sym)();
+        }
+
+        return QStringList();
+      }
   };
+
+  class CPlugin : public DataObjectPlugin {
+    public:
+      CPlugin(KService::Ptr svc) : DataObjectPlugin(svc) {
+      }
+
+      virtual ~CPlugin() {
+      }
+
+      QWidget *configWidget(const QString& name) const {
+        Q_UNUSED(name);
+        return 0L;
+      }
+  };
+#endif
 
   typedef QValueList<KstSharedPtr<KST::Plugin> > PluginInfoList;
 }

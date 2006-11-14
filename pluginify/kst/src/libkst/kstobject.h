@@ -27,6 +27,18 @@
 #include "kstsharedptr.h"
 #include "rwlock.h"
 
+
+//We define two different keys for datasource VS dataobject plugins
+//so that if the API for one changes, the other doesn't have to be
+//updated also...
+#define KST_CURRENT_DATASOURCE_KEY 0x00000006
+
+#define KST_KEY_DATASOURCE_PLUGIN(x) extern "C" Q_UINT32 key_##x() { return KST_CURRENT_DATASOURCE_KEY; }
+
+#define KST_CURRENT_DATAOBJECT_KEY 0x00000006
+
+#define KST_KEY_DATAOBJECT_PLUGIN(x) extern "C" Q_UINT32 key_##x() { return KST_CURRENT_DATAOBJECT_KEY; }
+
 class KstObjectPrivate;
 
 class KST_EXPORT KstObject : public KstShared, public QObject, public KstRWLock {

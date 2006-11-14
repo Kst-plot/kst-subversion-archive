@@ -30,6 +30,8 @@ static const QString& A = KGlobal::staticQString("a");
 static const QString& B = KGlobal::staticQString("b");
 static const QString& CHI2 = KGlobal::staticQString("chi^2");
 
+KST_KEY_DATAOBJECT_PLUGIN( linefit )
+
 K_EXPORT_COMPONENT_FACTORY( kstobject_linefit,
     KGenericFactory<LineFit>( "kstobject_linefit" ) )
 

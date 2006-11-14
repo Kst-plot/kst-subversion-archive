@@ -114,7 +114,7 @@ static void scanPlugins() {
       }
     }
 
-    KstSharedPtr<KST::Plugin> p = new KST::Plugin(*it);
+    KstSharedPtr<KST::Plugin> p = new KST::DataSourcePlugin(*it);
     tmpList.append(p);
   }
 
@@ -143,7 +143,7 @@ QStringList KstDataSource::pluginList() {
 namespace {
 class PluginSortContainer {
   public:
-    KstSharedPtr<KST::Plugin> plugin;
+    KstSharedPtr<KST::DataSourcePlugin> plugin;
     int match;
     int operator<(const PluginSortContainer& x) const {
       return match > x.match; // yes, this is by design.  biggest go first
@@ -165,21 +165,25 @@ static QValueList<PluginSortContainer> bestPluginsForSource(const QString& filen
 
   if (!type.isEmpty()) {
     for (KST::PluginInfoList::ConstIterator it = info.begin(); it != info.end(); ++it) {
-      if ((*it)->provides(type)) {
-        PluginSortContainer psc;
-        psc.match = 100;
-        psc.plugin = *it;
-        bestPlugins.append(psc);
-        return bestPlugins;
+      if (KST::DataSourcePlugin *p = kst_cast<KST::DataSourcePlugin>(*it)) {
+        if (p->provides(type)) {
+          PluginSortContainer psc;
+          psc.match = 100;
+          psc.plugin = p;
+          bestPlugins.append(psc);
+          return bestPlugins;
+        }
       }
     }
   }
 
   for (KST::PluginInfoList::ConstIterator it = info.begin(); it != info.end(); ++it) {
     PluginSortContainer psc;
-    if ((psc.match = (*it)->understands(kConfigObject, filename)) > 0) {
-      psc.plugin = *it;
-      bestPlugins.append(psc);
+    if (KST::DataSourcePlugin *p = kst_cast<KST::DataSourcePlugin>(*it)) {
+      if ((psc.match = p->understands(kConfigObject, filename)) > 0) {
+        psc.plugin = p;
+        bestPlugins.append(psc);
+      }
     }
   }
 
@@ -254,8 +258,10 @@ KstDataSourceConfigWidget* KstDataSource::configWidgetForPlugin(const QString& p
   KST::PluginInfoList info = QDeepCopy<KST::PluginInfoList>(pluginInfo);
 
   for (KST::PluginInfoList::ConstIterator it = info.begin(); it != info.end(); ++it) {
-    if ((*it)->service->property("Name").toString() == plugin) {
-      return (*it)->configWidget(kConfigObject, QString::null);
+    if (KST::DataSourcePlugin *p = kst_cast<KST::DataSourcePlugin>(*it)) {
+      if (p->service->property("Name").toString() == plugin) {
+        return p->configWidget(kConfigObject, QString::null);
+      }
     }
   }
 
