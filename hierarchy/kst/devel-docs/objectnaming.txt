@@ -1,0 +1,55 @@
+All data objects (objects derived from KstPrimitive, maybe KstObject) should be
+globally accessible in a hierarchical namespace.
+
+Level 0
+-------
+A simple root "".
+
+Level 1
+-------
+- Providers/Data Sources (e.g. KstDataSource::tagName()).
+  This is not currently set to a useful value. By naming datasets, it could be
+  more straightforward to change which file is read for a particular dataset.
+- Global constants. Perhaps a CONSTANTS namespace should be used (maybe with a
+  full hierarchy of constant types).
+
+Level 2
+-------
+- Data objects read from a data source (e.g. KstVector::tagName()). These names
+  will not collide as long as there are unique names in each data source. 
+- Data source metadata (author, dataset description, etc.)
+
+Level 3
+-------
+- Objects generated from level 2 objects (e.g. KstScalars for min, max, etc.).
+- Data object metadata (units, field description, etc.)
+
+
+In labels, one can use the full path to specify a field (e.g.
+[DataSource1-Field1-max]), or start with any globally-unique name and go from
+there, which is compatible with the current model (e.g. [Field1''-max]).
+
+
+In addition to the global lists of scalars, vectors, matrices, etc., we can view the data as a
+single tree of KstObjects. We can also use the tree to show only scalars (for example) in an organized way:
+DataSource1
+ \
+  + Field1
+  - Field2
+   \
+    - min
+    - max
+    - units
+    - description
+  + Field3
+  - Field4
+   \
+    - min
+    - max
+    - units
+    - description
+
+
+ISSUES/ENHANCEMENTS
+===================
+- types for metadata fields (doubles - KstScalars, strings - KstStrings, others?...)
