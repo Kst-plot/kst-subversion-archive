@@ -255,7 +255,6 @@ namespace KST {
       }
   };
 
-#if 0
   class DataObjectPlugin : public Plugin {
     public:
       DataObjectPlugin(KService::Ptr svc) : Plugin(svc) {
@@ -270,6 +269,7 @@ namespace KST {
       }
   };
 
+#if 0
   class BasicPlugin : public DataObjectPlugin {
     public:
       BasicPlugin(KService::Ptr svc) : DataObjectPlugin(svc) {

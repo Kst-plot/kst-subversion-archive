@@ -81,6 +81,15 @@ class KST_EXPORT KstBasicPlugin : public KstDataObject {
     void load(const QDomElement &e);
     void save(QTextStream& ts, const QString& indent = QString::null);
 
+    bool isFit() const { return _isFit; }
+    // FIXME: remove this
+    void createFitScalars();
+    QString label(int precision) const;
+
+  protected:
+    virtual QString parameterName(int index) const;
+    bool _isFit;
+
   private:
     bool inputsExist() const;
     bool updateInput(int updateCounter, bool force) const;

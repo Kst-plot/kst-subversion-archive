@@ -25,6 +25,8 @@ static const QString& VECTOR_OUT = KGlobal::staticQString("Vector Out");
 static const QString& SCALAR_OUT = KGlobal::staticQString("Scalar Out");
 static const QString& STRING_OUT = KGlobal::staticQString("String Out");
 
+KST_KEY_DATAOBJECT_PLUGIN( testplugin )
+
 K_EXPORT_COMPONENT_FACTORY( kstobject_testplugin,
     KGenericFactory<TestPlugin>( "kstobject_testplugin" ) )
 

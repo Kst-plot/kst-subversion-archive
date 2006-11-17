@@ -31,6 +31,8 @@ static const QString& LIMIT = KGlobal::staticQString("White Noise Limit");
 static const QString& SIGMA = KGlobal::staticQString("White Noise Sigma");
 static const QString& EFF_BANDWIDTH = KGlobal::staticQString("Effective Bandwidth");
 
+KST_KEY_DATAOBJECT_PLUGIN( effbandwidth )
+
 K_EXPORT_COMPONENT_FACTORY( kstobject_effbandwidth,
     KGenericFactory<EffBandwidth>( "kstobject_effbandwidth" ) )
 

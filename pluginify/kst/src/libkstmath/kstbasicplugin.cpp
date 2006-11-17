@@ -31,12 +31,12 @@
 #include "kstdatacollection.h"
 
 KstBasicPlugin::KstBasicPlugin()
-: KstDataObject() {
+: KstDataObject(), _isFit(false) {
 }
 
 
 KstBasicPlugin::KstBasicPlugin(const QDomElement& e)
-: KstDataObject(e) {
+: KstDataObject(e), _isFit(false) {
 }
 
 
@@ -218,6 +218,8 @@ KstObject::UpdateType KstBasicPlugin::update(int updateCounter) {
   //Perform update on the outputs
   updateOutput(updateCounter);
 
+  createFitScalars();
+
   return setLastUpdateResult(depUpdated ? UPDATE : NO_CHANGE);
 }
 
@@ -254,6 +256,64 @@ void KstBasicPlugin::load(const QDomElement &e) {
     }
     n = n.nextSibling();
   }
+}
+
+
+// FIXME: KstBasicPlugin should not know about fit scalars!!
+void KstBasicPlugin::createFitScalars() {
+  // Assumes that this is called with a write lock in place on this object
+  if (_isFit && _outputVectors.contains("Parameters")) {
+    KstVectorPtr vectorParam = _outputVectors["Parameters"];
+    if (vectorParam) {
+      QString paramName;
+      int i = 0;
+      int length = vectorParam->length();
+
+      for (paramName = parameterName(i);
+          !paramName.isEmpty() && i < length;
+           paramName = parameterName(++i)) {
+        double scalarValue = vectorParam->value(i);
+        if (!_outputScalars.contains(paramName)) {
+          QString scalarName = i18n("%1-%2").arg(tagName()).arg(paramName);
+          KstScalarPtr s = new KstScalar(scalarName, this, scalarValue);
+          s->KstObject::writeLock();
+          _outputScalars.insert(paramName, s);
+        } else {
+          _outputScalars[paramName]->setValue(scalarValue);
+        }
+      }
+    }
+  }
+}
+
+
+QString KstBasicPlugin::parameterName(int /*index*/) const {
+    return QString::null;
+}
+
+
+QString KstBasicPlugin::label(int precision) const {
+  QString label;
+
+  label = i18n("%1: %2").arg(name()).arg(tagName());
+  if ((outputVectors())["Parameters"]) {
+    QString strParamName;
+    QString strValue;
+    int length = (outputVectors())["Parameters"]->length();
+    int i = 0;
+
+    for (strParamName = parameterName(0);
+        !strParamName.isEmpty() && i < length;
+        strParamName = parameterName(++i)) {
+      KstScalarPtr scalar = outputScalars()[strParamName];
+      if (scalar) {
+        strValue = QString::number(scalar->value(), 'g', precision);
+        label += i18n("\n%1: %2").arg(strParamName).arg(strValue);
+      }
+    }
+  }
+
+  return label;
 }
 
 

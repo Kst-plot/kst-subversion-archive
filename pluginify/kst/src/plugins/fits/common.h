@@ -18,14 +18,14 @@
 #include <string.h>
 #include <math.h>
 
-#define XVALUES			0
-#define YVALUES			1
-#define WEIGHTS	    2
+#define XVALUES 0
+#define YVALUES 1
+#define WEIGHTS 2
 
-#define	YFIT				0
-#define YRESIDUALS	1
-#define PARAMETERS	2
-#define COVARIANCE	3
+#define YFIT        0
+#define YRESIDUALS  1
+#define PARAMETERS  2
+#define COVARIANCE  3
 #define Y_LOW_VALS  4
 #define Y_HGH_VALS  5
 #define MAX_OUT     6
@@ -39,7 +39,7 @@ double interpolate(int iIndex, int iLengthDesired, const double* pArray, int iLe
   double fj;
   double fdj;
   int j;
-  
+
   if (iLengthDesired == iLengthActual) {
     value =  pArray[iIndex];
   } else {
@@ -48,7 +48,7 @@ double interpolate(int iIndex, int iLengthDesired, const double* pArray, int iLe
     fdj   = fj - (double)j;
     value = pArray[j+1] * fdj + pArray[j+0] * (1.0 - fdj);
   }
-  
+
   return value;
 }
 
@@ -78,7 +78,7 @@ bool precursor( const double *const inArrays[],
   bool bRetVal = false;
   int  iNumCovar = ( iNumParams * ( iNumParams + 1 ) ) / 2;
   int  i;
-  
+
   pInputs[XVALUES] = 0L;
   pInputs[YVALUES] = 0L;
   pInputs[WEIGHTS] = 0L;
@@ -122,7 +122,7 @@ bool precursor( const double *const inArrays[],
         }
       }
     }
-    
+
     if( *piLength > iNumParams + 1 ) {
       alloc( outArrays, outArrayLens, pResult, YFIT, *piLength );
       alloc( outArrays, outArrayLens, pResult, YRESIDUALS, *piLength );
@@ -153,7 +153,7 @@ bool precursor( const double *const inArrays[],
       }
     }
   }
-  
+
   return bRetVal;
 }
 
@@ -175,5 +175,5 @@ void postcursor( const double *const inArrays[],
         pInputs[WEIGHTS] != 0L ) {
       free( pInputs[WEIGHTS] );
     }
-  }  
+  }
 }

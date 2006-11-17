@@ -32,6 +32,8 @@
 #include <klibloader.h>
 #include <kparts/componentfactory.h>
 
+#include "kstdataplugin.h"
+
 //#define LOCKTRACE
 
 KstDataObject::KstDataObject() : KstObject() {
@@ -95,7 +97,10 @@ KstDataObjectPtr KstDataObject::createPlugin(KService::Ptr service)
   KstDataObject *object =
       KParts::ComponentFactory::createInstanceFromService<KstDataObject>(service, 0, "",
       QStringList(), &err);
-  if (object) {
+
+  KstSharedPtr<KST::Plugin> p = new KST::DataObjectPlugin(service);
+
+  if (object && p->key()) {
     const QString name = service->property("Name").toString();
     const QString description = service->property("Comment").toString();
     const QString author = service->property("X-Kst-Plugin-Author").toString();
@@ -110,11 +115,11 @@ KstDataObjectPtr KstDataObject::createPlugin(KService::Ptr service)
     object->setLibrary(library);
 
     KstDebug::self()->log(i18n("Loaded data-object plugin %1.").arg(service->name()));
-  }
-  else {
+    return object;
+  } else {
     KstDebug::self()->log(i18n("Could't load data-object plugin %1.").arg(service->name()), KstDebug::Error);
+    return 0;
   }
-  return object;
 }
 
 

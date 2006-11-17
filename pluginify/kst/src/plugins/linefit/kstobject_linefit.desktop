@@ -1,7 +1,7 @@
 [Desktop Entry]
 Encoding=UTF-8
 Type=Service
-ServiceTypes=Kst Basic Plugin
+ServiceTypes=Kst Data Object
 X-KDE-ModuleType=Plugin
 X-KDE-Library=kstobject_linefit
 X-Kst-Plugin-Author=George Staikos
