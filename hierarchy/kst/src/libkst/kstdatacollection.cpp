@@ -35,6 +35,8 @@ KstMatrixList KST::matrixList;
 
 /** The list of Scalars which have been generated */
 KstScalarList KST::scalarList;
+/** Root of Scalar naming tree */
+KstObjectTreeNode *KST::scalarTree = new KstObjectTreeNode();
 
 /** The list of Strings */
 KstStringList KST::stringList;
@@ -191,6 +193,23 @@ bool KstData::matrixTagNameNotUnique(const QString& tag, bool warn, void *p) {
   KstReadLocker ml2(&KST::scalarList.lock());
   if (KST::matrixList.findTag(tag) != KST::matrixList.end() ||
       KST::scalarList.findTag(tag) != KST::scalarList.end()) {
+    return true;
+  }
+  return false;
+}
+
+
+bool KstData::dataSourceTagNameNotUnique(const QString& tag, bool warn, void *p) {
+  Q_UNUSED(p)
+  Q_UNUSED(warn)
+  /* verify that the tag name is not empty */
+  if (tag.stripWhiteSpace().isEmpty()) {
+    return true;
+  }
+
+  /* verify that the tag name is not used by a data source */
+  KstReadLocker l(&KST::dataSourceList.lock());
+  if (KST::dataSourceList.findTag(tag) != KST::dataSourceList.end()) {
     return true;
   }
   return false;

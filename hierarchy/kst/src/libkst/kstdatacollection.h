@@ -46,6 +46,7 @@ KST_EXPORT class KstData {
     virtual bool vectorTagNameNotUniqueInternal(const QString& tag);
     virtual bool matrixTagNameNotUnique(const QString& tag, bool warn = true, void *parent = 0L);
     virtual bool matrixTagNameNotUniqueInternal(const QString& tag);
+    virtual bool dataSourceTagNameNotUnique(const QString& tag, bool warn = true, void *parent = 0L);
 
     virtual void removeCurveFromPlots(KstBaseCurve *c); // no sharedptr here
 
@@ -77,6 +78,7 @@ namespace KST {
 
     /** The list of Scalars which have been generated */
     KST_EXPORT extern KstScalarList scalarList;
+    KST_EXPORT extern KstObjectTreeNode *scalarTree;
 
     /** The list of Strings */
     KST_EXPORT extern KstStringList stringList;

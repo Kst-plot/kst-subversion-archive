@@ -18,6 +18,7 @@
 #ifndef KSTOBJECT_H
 #define KSTOBJECT_H
 
+#include <qguardedptr.h>
 #include <qmutex.h>
 #include <qobject.h>
 #include <qstring.h>
@@ -27,12 +28,58 @@
 #include "kstsharedptr.h"
 #include "rwlock.h"
 
-class KstObjectPrivate;
-
 // NOTE: In order to preserve binary compatibility with plugins, you must
 //       update the plugin keys whenever you add, remove, or change member
 //       variables or virtual functions, or when you remove or change
 //       non-virtual functions.
+
+
+class KstObjectTag {
+  public:
+    // default constructor (tag is in global context by default)
+    KstObjectTag(const QString& tag = QString::null,
+                 QStringList context = globalTagContext) :
+      _tag(tag), _context(context)
+    { }
+
+    // construct a tag in the context of another tag
+    KstObjectTag(const QString& tag,
+                 KstObjectTag contextTag) :
+      _tag(tag), _context(contextTag.fullTag())
+    { }
+
+    QString tag() const { return _tag; }
+    QStringList fullTag() const { return _context + QStringList(_tag); }
+    QStringList context() const { return _context; }
+
+    // change the tag, maintaining context
+    void setTag(const QString& tag) {
+      _tag = tag;
+    }
+
+    // change the tag and context
+    void setTag(const QString& tag, QStringList context) {
+      _tag = tag;
+      _context = context;
+    }
+
+    bool isValid() const { return !_tag.isEmpty(); }
+
+    QString tagString() const { return QStringList(_context + QStringList(_tag)).join(tagSeparator); }
+
+    bool operator==(const KstObjectTag& tag) {
+      return (_tag == tag._tag && _context == tag._context);
+    }
+
+    static const QString tagSeparator;
+    static const QStringList globalTagContext;
+    static const QStringList constantTagContext;
+
+  private:
+    QString _tag;
+    QStringList _context;
+};
+
 
 class KST_EXPORT KstObject : public KstShared, public QObject, public KstRWLock {
   public:
@@ -42,8 +89,11 @@ class KST_EXPORT KstObject : public KstShared, public QObject, public KstRWLock 
     enum UpdateType { NO_CHANGE = 0, UPDATE };
 
     virtual UpdateType update(int updateCounter = -1) = 0;
-    virtual const QString& tagName() const;
-    virtual void setTagName(const QString& newTag);
+
+    virtual QString tagName() const;
+    virtual KstObjectTag tag() const;
+    virtual void setTagName(KstObjectTag tag);
+    virtual void setTagName(const QString& tag, QStringList context);
 
     virtual QString tagLabel() const;
     // Returns count - 2 to account for "this" and the list pointer
@@ -71,7 +121,7 @@ class KST_EXPORT KstObject : public KstShared, public QObject, public KstRWLock 
     UpdateType lastUpdateResult() const;
 
   private:
-    QString _tag;
+    KstObjectTag _tag;
     bool _dirty;
     KstObject::UpdateType _lastUpdate;
 };
@@ -252,6 +302,33 @@ template <typename T, typename U>
 inline KstSharedPtr<T> kst_cast(KstSharedPtr<U> object) {
   return dynamic_cast<T*>(object.data());
 }
+
+
+/** KstObject Naming Tree */
+class KstObjectTreeNode {
+  public:
+    KstObjectTreeNode(const QString& tag = QString::null);
+
+    QString nodeTag() const { return _tag; }
+    QStringList fullTag() const;
+
+    KstObject *object() const { return _object; }
+
+    KstObjectTreeNode *parent() const { return _parent; }
+    KstObjectTreeNode *child(const QString& tag) const;
+    QMap<QString, KstObjectTreeNode *> children() const { return _children; }
+
+    KstObjectTreeNode *descendant(QStringList tag);
+    bool addDescendant(KstObject *o);
+    bool removeDescendant(KstObject *o);
+
+    // TODO: locking
+  private:
+    QString _tag;
+    QGuardedPtr<KstObject> _object;
+    KstObjectTreeNode *_parent;
+    QMap<QString, KstObjectTreeNode *> _children;
+};
 
 #endif
 // vim: ts=2 sw=2 et

@@ -28,7 +28,7 @@ class KST_EXPORT KstRMatrix : public KstMatrix {
   public:
     
     // constructor
-    KstRMatrix(KstDataSourcePtr file, const QString &field, const QString &tag,
+    KstRMatrix(KstDataSourcePtr file, const QString &field, KstObjectTag tag,
                int xStart, int yStart,
                int xNumSteps, int yNumSteps,
                bool doAve, bool doSkip, int skip);
@@ -42,7 +42,8 @@ class KST_EXPORT KstRMatrix : public KstMatrix {
     virtual ~KstRMatrix();
     
     // change properties of KstRMatrix
-    void change(KstDataSourcePtr file, const QString &field, const QString &tag,
+    void change(KstDataSourcePtr file, const QString &field,
+                KstObjectTag tag,
                 int xStart, int yStart,
                 int xNumSteps, int yNumSteps,
                 bool doAve, bool doSkip, int skip);

@@ -65,7 +65,7 @@ KJS::Object KstBindDataMatrix::construct(KJS::ExecState *exec, const KJS::List& 
 
     QString field = args[1].toString(exec).qstring();
 
-    v = new KstRMatrix(dp, field, QString::null, 0, 0, -1, -1, false, false, -1);
+    v = new KstRMatrix(dp, field, KstObjectTag(), 0, 0, -1, -1, false, false, -1);
     KST::addMatrixToList(KstMatrixPtr(v));
   }
 
@@ -87,7 +87,7 @@ KJS::Object KstBindDataMatrix::construct(KJS::ExecState *exec, const KJS::List& 
     int xCount = d2i(args[4].toNumber(exec));
     int yCount = d2i(args[5].toNumber(exec));
 
-    v = new KstRMatrix(dp, field, QString::null, xStart, yStart, xCount, yCount,false, false, -1);
+    v = new KstRMatrix(dp, field, KstObjectTag(), xStart, yStart, xCount, yCount,false, false, -1);
     KST::addMatrixToList(KstMatrixPtr(v));
   }
 
@@ -111,7 +111,7 @@ KJS::Object KstBindDataMatrix::construct(KJS::ExecState *exec, const KJS::List& 
     int yCount = d2i(args[5].toNumber(exec));
     int skip = d2i(args[6].toNumber(exec));
 
-    v = new KstRMatrix(dp, field, QString::null, xStart, yStart, xCount, yCount, false, true, skip);
+    v = new KstRMatrix(dp, field, KstObjectTag(), xStart, yStart, xCount, yCount, false, true, skip);
     KST::addMatrixToList(KstMatrixPtr(v));
   }
 
@@ -138,7 +138,7 @@ KJS::Object KstBindDataMatrix::construct(KJS::ExecState *exec, const KJS::List& 
     int skip = d2i(args[6].toNumber(exec));
     bool ave = d2i(args[7].toBoolean(exec));
 
-    v = new KstRMatrix(dp, field, QString::null, xStart, yStart, xCount, yCount, ave, true, skip);
+    v = new KstRMatrix(dp, field, KstObjectTag(), xStart, yStart, xCount, yCount, ave, true, skip);
     KST::addMatrixToList(KstMatrixPtr(v));
   }
 
@@ -390,7 +390,7 @@ KJS::Value KstBindDataMatrix::change(KJS::ExecState *exec, const KJS::List& args
       }
     }
 
-    v->change(v->dataSource(), v->field(), v->tagName(), xStart, yStart, xCount, yCount, skip, skip >= 0, ave);
+    v->change(v->dataSource(), v->field(), v->tag(), xStart, yStart, xCount, yCount, skip, skip >= 0, ave);
     return KJS::Undefined();
   }
 

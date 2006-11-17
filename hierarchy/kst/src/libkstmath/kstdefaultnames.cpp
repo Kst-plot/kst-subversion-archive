@@ -57,48 +57,48 @@ QString suggestDataObjectName(const QString& field,
 /* adding it would appear unique.  This is important because in many */
 /* dialogs, a curve is created from an object before the object has */
 /* been put on the list */
-QString KST::suggestCurveName( const QString& vector_name, bool add_c ) {
-  return suggestDataObjectName(vector_name, 
+QString KST::suggestCurveName( KstObjectTag vector_name, bool add_c ) {
+  return suggestDataObjectName(vector_name.tag(), 
                       i18n("Minimal abbreviation for 'Curve'", "C"), 
                       add_c);
 }
 
 
-QString KST::suggestPSDName( const QString& vector_name ) {
-  return suggestDataObjectName(vector_name, 
+QString KST::suggestPSDName( KstObjectTag vector_name ) {
+  return suggestDataObjectName(vector_name.tag(), 
                       i18n("Minimal abbreviation for 'Power spectrum'", "P"),
                       true);
 }
 
 
-QString KST::suggestCSDName( const QString& vector_name ) {
-  return suggestDataObjectName(vector_name,
+QString KST::suggestCSDName( KstObjectTag vector_name ) {
+  return suggestDataObjectName(vector_name.tag(),
                                i18n("Minimal abbreviation for 'Cumulative Spectral Decay'", "S"),
                                true);
 }
 
 
-QString KST::suggestHistogramName( const QString& vector_name ) {
-  return suggestDataObjectName(vector_name, 
+QString KST::suggestHistogramName( KstObjectTag vector_name ) {
+  return suggestDataObjectName(vector_name.tag(), 
                       i18n("Minimal abbreviation for 'Histogram'", "H"),
                       true);
 }
 
 
-QString KST::suggestEQName( const QString& name_in) {
-  return suggestDataObjectName(name_in, 
+QString KST::suggestEQName(KstObjectTag name_in) {
+  return suggestDataObjectName(name_in.tag(), 
                       i18n("Minimal abbreviation for 'Equation'", "E"),
                       false);
 }
 
 
-QString KST::suggestPluginName(const QString& pname, const QString &vname) {
+QString KST::suggestPluginName(const QString& pname, KstObjectTag vname) {
   QString tag;
   
-  if (vname.isEmpty()) {
+  if (!vname.isValid()) {
     tag = pname;
   } else {
-    tag = vname + "-" + pname;
+    tag = vname.tag() + "-" + pname;
   }
   return suggestDataObjectName(tag, 
                       i18n("Minimal abbreviation for 'pluGin'", "G"),
@@ -106,8 +106,8 @@ QString KST::suggestPluginName(const QString& pname, const QString &vname) {
 }
 
 
-QString KST::suggestImageName(const QString& matrix_name) {
-  return suggestDataObjectName(matrix_name, 
+QString KST::suggestImageName(KstObjectTag matrix_name) {
+  return suggestDataObjectName(matrix_name.tag(), 
                       i18n("Minimal abbreviation for 'Image'", "I"),
                       true);
 }

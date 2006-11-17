@@ -35,7 +35,7 @@ KstAVector::KstAVector(const QDomElement &e)
     QDomElement e = n.toElement();
     if (!e.isNull()) {
       if (e.tagName() == "tag") {
-        setTagName(e.text());
+        setTagName(e.text(), QStringList());  // FIXME: tag context
       } else if (e.tagName() == "N") {
         in_n = e.text().toInt();
       }
@@ -72,7 +72,7 @@ KstAVector::KstAVector(const QDomElement &e)
 }
 
 
-KstAVector::KstAVector(int n, const QString& tag)
+KstAVector::KstAVector(int n, KstObjectTag tag)
 : KstVector(tag, n) {
   _editable = true;
   _saveable = true;

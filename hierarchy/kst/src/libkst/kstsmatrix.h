@@ -24,12 +24,14 @@
 class KST_EXPORT KstSMatrix : public KstMatrix {
   public:
     KstSMatrix(const QDomElement &e);
-    KstSMatrix(const QString& tag, uint nX, uint nY, double minX, double minY, double stepX, double stepY, 
+    KstSMatrix(KstObjectTag tag, uint nX, uint nY,
+               double minX, double minY, double stepX, double stepY,
                double gradZMin, double gradZMax, bool xDirection);
 
     virtual void save(QTextStream &ts, const QString& indent = QString::null);
 
-    void change(const QString& tag, uint nX, uint nY, double minX, double minY, double stepX, double stepY, 
+    void change(KstObjectTag tag, uint nX, uint nY,
+                double minX, double minY, double stepX, double stepY,
                 double gradZMin, double gradZMax, bool xDirection);
     
     // return gradient min and maxes in order

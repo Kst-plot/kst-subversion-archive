@@ -194,7 +194,7 @@ void KstVCurve::commonConstructor(const QString &in_tag, const QColor &in_color)
   _typeString = i18n("Curve");
   _type = "Curve";
   Color = in_color;
-  setTagName(in_tag);
+  setTagName(in_tag, KstObjectTag::globalTagContext);  // FIXME: curves are not always top-level?
   updateParsedLegendTag();
 }
 
@@ -385,57 +385,57 @@ void KstVCurve::getEYPoints(int i, double &x, double &y, double &eyminus, double
 }
 
 
-QString KstVCurve::xVTag() const {
+KstObjectTag KstVCurve::xVTag() const {
   KstVectorPtr xv = xVector();
   if (xv) {
-    return xv->tagName();
+    return xv->tag();
   }
-  return QString::null;
+  return KstObjectTag();
 }
 
 
-QString KstVCurve::yVTag() const {
+KstObjectTag KstVCurve::yVTag() const {
   KstVectorPtr yv = yVector();
   if (yv) {
-    return yv->tagName();
+    return yv->tag();
   }
-  return QString::null;
+  return KstObjectTag();
 }
 
 
-QString KstVCurve::xETag() const {
+KstObjectTag KstVCurve::xETag() const {
   KstVectorPtr v = xErrorVector();
   if (v) {
-    return v->tagName();
+    return v->tag();
   }
-  return "<None>";
+  return KstObjectTag();
 }
 
 
-QString KstVCurve::yETag() const {
+KstObjectTag KstVCurve::yETag() const {
   KstVectorPtr v = yErrorVector();
   if (v) {
-    return v->tagName();
+    return v->tag();
   }
-  return "<None>";
+  return KstObjectTag();
 }
 
 
-QString KstVCurve::xEMinusTag() const {
+KstObjectTag KstVCurve::xEMinusTag() const {
   KstVectorPtr v = xMinusErrorVector();
   if (v) {
-    return v->tagName();
+    return v->tag();
   }
-  return "<None>";
+  return KstObjectTag();
 }
 
 
-QString KstVCurve::yEMinusTag() const {
+KstObjectTag KstVCurve::yEMinusTag() const {
   KstVectorPtr v = yMinusErrorVector();
   if (v) {
-    return v->tagName();
+    return v->tag();
   }
-  return "<None>";
+  return KstObjectTag();
 }
 
 
@@ -583,7 +583,7 @@ KstCurveType KstVCurve::curveType() const {
 
 
 QString KstVCurve::propertyString() const {
-  return i18n("%1 vs %2").arg(yVTag()).arg(xVTag());
+  return i18n("%1 vs %2").arg(yVTag().tagString()).arg(xVTag().tagString());
 }
 
 
@@ -1618,7 +1618,7 @@ void KstVCurve::yRange(double xFrom, double xTo, double* yMin, double* yMax) {
 
 KstDataObjectPtr KstVCurve::providerDataObject() const {
   KST::vectorList.lock().readLock();
-  KstVectorPtr vp = *KST::vectorList.findTag(yVTag());
+  KstVectorPtr vp = *KST::vectorList.findTag(yVTag().tag());  // FIXME: should use full tag
   KST::vectorList.lock().unlock();
   KstDataObjectPtr provider = 0L;
   if (vp) {

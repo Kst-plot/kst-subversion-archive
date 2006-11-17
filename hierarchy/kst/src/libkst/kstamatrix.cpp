@@ -38,7 +38,7 @@ KstAMatrix::KstAMatrix(const QDomElement &e) : KstMatrix() {
     QDomElement e = n.toElement();
     if (!e.isNull()) {
       if (e.tagName() == "tag") {
-        setTagName(e.text());
+        setTagName(e.text(), QStringList());  // FIXME: use correct tag context
       } else if (e.tagName() == "nx") {
         in_nX = e.text().toInt();
       } else if (e.tagName() == "ny") {
@@ -87,7 +87,7 @@ KstAMatrix::KstAMatrix(const QDomElement &e) : KstMatrix() {
 }
 
 
-KstAMatrix::KstAMatrix(const QString &in_tag, uint nX, uint nY, double minX, double minY, double stepX, double stepY)
+KstAMatrix::KstAMatrix(KstObjectTag in_tag, uint nX, uint nY, double minX, double minY, double stepX, double stepY)
 : KstMatrix(in_tag, 0L, nX, nY, minX, minY, stepX, stepY) {
   _editable = true;
   _saveable = true;

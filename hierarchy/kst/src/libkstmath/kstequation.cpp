@@ -54,7 +54,7 @@ KstEquation::KstEquation(const QString& in_tag, const QString& equation, double 
   KstVectorPtr xvector;
   QString vtag = KST::suggestVectorName(QString( "(%1..%2)" ).arg( x0 ).arg( x1 ) );
 
-  xvector = new KstSVector(x0, x1, nx, vtag);
+  xvector = new KstSVector(x0, x1, nx, KstObjectTag(vtag, QStringList(in_tag)));
   KST::addVectorToList( xvector );
 
   _doInterp = false;
@@ -128,7 +128,7 @@ KstEquation::KstEquation(const QDomElement &e)
       vtag = xvtag;
     }
 
-    KstVectorPtr xvector = new KstSVector(x0, x1, ns, vtag);
+    KstVectorPtr xvector = new KstSVector(x0, x1, ns, vtag);  // FIXME: tag context
     KST::addVectorToList(xvector);
 
     _doInterp = false;
@@ -150,13 +150,13 @@ void KstEquation::commonConstructor(const QString& in_tag, const QString& in_equ
   _pe = 0L;
   _typeString = i18n("Equation");
   _type = "Equation";
-  KstObject::setTagName(in_tag);
+  KstObject::setTagName(in_tag, KstObjectTag::globalTagContext); // FIXME: global tag context?
 
-  KstVectorPtr xv = new KstVector(tagName()+"-xsv", 2, this);
+  KstVectorPtr xv = new KstVector(KstObjectTag("xsv", tag()), 2, this);
   KST::addVectorToList(xv);
   _xOutVector = _outputVectors.insert(XOUTVECTOR, xv);
     
-  KstVectorPtr yv = new KstVector(tagName()+"-sv", 2, this);
+  KstVectorPtr yv = new KstVector(KstObjectTag("sv", tag()), 2, this);
   KST::addVectorToList(yv);
   _yOutVector = _outputVectors.insert(YOUTVECTOR, yv);
 
@@ -334,9 +334,9 @@ void KstEquation::setExistingXVector(KstVectorPtr in_xv, bool do_interp) {
 
 
 void KstEquation::setTagName(const QString &in_tag) {
-  KstObject::setTagName(in_tag);
-  (*_xOutVector)->setTagName(in_tag+"-xsv");
-  (*_yOutVector)->setTagName(in_tag+"-sv");
+  KstObject::setTagName(in_tag, tag().context());  // FIXME: always the same context?
+  (*_xOutVector)->setTagName(KstObjectTag("xsv", tag()));
+  (*_yOutVector)->setTagName(KstObjectTag("sv", tag()));
 }
 
 

@@ -26,6 +26,7 @@
 #include "kst2dplot.h"
 #include "kstviewwidget.h"
 #include "kstdefaultnames.h"
+#include "kstdatacollection.h"
 
 KstGfx2DPlotMouseHandler::KstGfx2DPlotMouseHandler()
 : KstGfxMouseHandler() {
@@ -80,7 +81,7 @@ void KstGfx2DPlotMouseHandler::releasePress(KstTopLevelViewPtr view, const QPoin
     // make a new 2dplot
     Kst2DPlotPtr plot = new Kst2DPlot;
     copyDefaults(KstViewObjectPtr(plot));
-    plot->setTagName(KST::suggestPlotName());
+    plot->setTagName(KST::suggestPlotName(), KstObjectTag::globalTagContext);  // FIXME: tag context
     plot->move(_prevBand.topLeft());
     plot->resize(_prevBand.size());
     KstViewObjectPtr container = view->findDeepestChild(_prevBand);

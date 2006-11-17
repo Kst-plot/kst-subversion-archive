@@ -35,7 +35,7 @@
 
 static int anonymousMatrixCounter = 1;
 
-KstMatrix::KstMatrix(const QString& in_tag, KstObject *provider, uint nX, uint nY, double minX, double minY, double stepX, double stepY)
+KstMatrix::KstMatrix(KstObjectTag in_tag, KstObject *provider, uint nX, uint nY, double minX, double minY, double stepX, double stepY)
 : KstPrimitive(provider) {
  
   _nX = nX;
@@ -50,18 +50,18 @@ KstMatrix::KstMatrix(const QString& in_tag, KstObject *provider, uint nX, uint n
   _editable = false;
   _saveable = false;
 
-  // must create scalars before setting tag name
+  // must create scalars before setting tag name // FIXME: why?
   createScalars();
   setTagName(in_tag);
-  if (in_tag.isEmpty()) {
+  if (!in_tag.isValid()) {
     QString nt = i18n("Anonymous Matrix %1");
 
     do {
-      KstObject::setTagName(nt.arg(anonymousMatrixCounter++));
+      KstObject::setTagName(nt.arg(anonymousMatrixCounter++), in_tag.context());
     } while (KstData::self()->matrixTagNameNotUnique(tagName(), false));
   } else {
     while (KstData::self()->matrixTagNameNotUnique(tagName(), false)) {
-      KstObject::setTagName(tagName() + '\'');
+      KstObject::setTagName(tag().tag() + '\'', in_tag.context());
     }
   }
   setDirty();
@@ -364,8 +364,14 @@ KstObject::UpdateType KstMatrix::internalUpdate(KstObject::UpdateType providerUp
 }
     
     
-void KstMatrix::setTagName(const QString& newTag) {
-  KstObject::setTagName(newTag);
+void KstMatrix::setTagName(KstObjectTag tag) {
+  KstObject::setTagName(tag);
+  renameScalars();
+}
+
+
+void KstMatrix::setTagName(const QString& newTag, QStringList context) {
+  KstObject::setTagName(newTag, context);
   renameScalars();
 }
     
@@ -411,37 +417,37 @@ void KstMatrix::setEditable(bool editable) {
 
 
 void KstMatrix::createScalars() {
-  _statScalars.insert("max", new KstScalar(tagName() + "-Max"));
+  _statScalars.insert("max", new KstScalar(KstObjectTag("Max", tag()), this));
   _statScalars["max"]->_KShared_ref();
-  _statScalars.insert("min", new KstScalar(tagName() + "-Min"));
+  _statScalars.insert("min", new KstScalar(KstObjectTag("Min", tag()), this));
   _statScalars["min"]->_KShared_ref();
-  _statScalars.insert("mean", new KstScalar(tagName() + "-Mean"));
+  _statScalars.insert("mean", new KstScalar(KstObjectTag("Mean", tag()), this));
   _statScalars["mean"]->_KShared_ref();
-  _statScalars.insert("sigma", new KstScalar(tagName() + "-Sigma"));
+  _statScalars.insert("sigma", new KstScalar(KstObjectTag("Sigma", tag()), this));
   _statScalars["sigma"]->_KShared_ref();
-  _statScalars.insert("rms", new KstScalar(tagName() + "-Rms"));
+  _statScalars.insert("rms", new KstScalar(KstObjectTag("Rms", tag()), this));
   _statScalars["rms"]->_KShared_ref();
-  _statScalars.insert("ns", new KstScalar(tagName() + "-NS"));
+  _statScalars.insert("ns", new KstScalar(KstObjectTag("NS", tag()), this));
   _statScalars["ns"]->_KShared_ref();
-  _statScalars.insert("sum", new KstScalar(tagName() + "-Sum"));
+  _statScalars.insert("sum", new KstScalar(KstObjectTag("Sum", tag()), this));
   _statScalars["sum"]->_KShared_ref();
-  _statScalars.insert("sumsquared", new KstScalar(tagName() + "-SumSquared"));
+  _statScalars.insert("sumsquared", new KstScalar(KstObjectTag("SumSquared", tag()), this));
   _statScalars["sumsquared"]->_KShared_ref();
-  _statScalars.insert("minpos", new KstScalar(tagName() + "-MinPos"));
+  _statScalars.insert("minpos", new KstScalar(KstObjectTag("MinPos", tag()), this));
   _statScalars["minpos"]->_KShared_ref();
 }
 
 
 void KstMatrix::renameScalars() {
-  _statScalars["max"]->setTagName(tagName() + "-Max");
-  _statScalars["min"]->setTagName(tagName() + "-Min");
-  _statScalars["mean"]->setTagName(tagName() + "-Mean");
-  _statScalars["sigma"]->setTagName(tagName() + "-Sigma");
-  _statScalars["rms"]->setTagName(tagName() + "-Rms");
-  _statScalars["ns"]->setTagName(tagName() + "-NS");
-  _statScalars["sum"]->setTagName(tagName() + "-Sum");
-  _statScalars["sumsquared"]->setTagName(tagName() + "-SumSquared");
-  _statScalars["minpos"]->setTagName(tagName() + "-MinPos");
+  _statScalars["max"]->setTagName(KstObjectTag("Max", tag()));
+  _statScalars["min"]->setTagName(KstObjectTag("Min", tag()));
+  _statScalars["mean"]->setTagName(KstObjectTag("Mean", tag()));
+  _statScalars["sigma"]->setTagName(KstObjectTag("Sigma", tag()));
+  _statScalars["rms"]->setTagName(KstObjectTag("Rms", tag()));
+  _statScalars["ns"]->setTagName(KstObjectTag("NS", tag()));
+  _statScalars["sum"]->setTagName(KstObjectTag("Sum", tag()));
+  _statScalars["sumsquared"]->setTagName(KstObjectTag("SumSquared", tag()));
+  _statScalars["minpos"]->setTagName(KstObjectTag("MinPos", tag()));
 }
 
 
@@ -518,7 +524,7 @@ bool KstMatrix::saveable() const {
 }
 
 
-void KstMatrix::change(const QString tag, uint nX, uint nY, double minX, double minY, double stepX, double stepY) {
+void KstMatrix::change(KstObjectTag tag, uint nX, uint nY, double minX, double minY, double stepX, double stepY) {
   setTagName(tag);
   _nX = nX;
   _nY = nY;

@@ -354,7 +354,7 @@ bool KstIfaceImpl::plotEquation(const QString& xvector, const QString& equation,
 }
 
 const QString& KstIfaceImpl::generateScalar(const QString& name, double value) {
-  KstScalarPtr s = new KstScalar(name, 0L, value);
+  KstScalarPtr s = new KstScalar(KstObjectTag(name), 0L, value); // FIXME: do tag context properly
   KstReadLocker rl(s);
   s->setOrphan(true);
   s->setEditable(true);
@@ -363,7 +363,7 @@ const QString& KstIfaceImpl::generateScalar(const QString& name, double value) {
 
 
 const QString& KstIfaceImpl::generateVector(const QString& name, double from, double to, int points) {
-  KstVectorPtr v = new KstSVector(from, to, points, name);
+  KstVectorPtr v = new KstSVector(from, to, points, KstObjectTag(name)); // FIXME: do tag context properly
   KST::addVectorToList(v);
   KstReadLocker rl(v);
   return v->tagName();
@@ -869,7 +869,7 @@ const QString& KstIfaceImpl::loadVector(const QString& file, const QString& fiel
   }
   KST::vectorList.lock().unlock();
 
-  KstVectorPtr p = new KstRVector(src, field, vname, 0, -1, 0, false, false);
+  KstVectorPtr p = new KstRVector(src, field, KstObjectTag(vname), 0, -1, 0, false, false); // FIXME: do tag context properly
   KST::addVectorToList(p);
 
   src->unlock();
@@ -1497,7 +1497,7 @@ QStringList KstIfaceImpl::createPlugin(const QString& pluginName,
     stringnum.setNum(++i);
     plugtag = "P" + stringnum + "-" + pluginName;
   }
-  kstplug_ptr->setTagName(plugtag);
+  kstplug_ptr->setTagName(plugtag, KstObjectTag::globalTagContext);  // FIXME: tag context
 
   //try to rename the outputs.  If something is inconsistent just ignore it and
   //leave default output names.
@@ -1514,7 +1514,7 @@ QStringList KstIfaceImpl::createPlugin(const QString& pluginName,
           vectorTag += '\'';
         }
         kstplug_ptr->writeLock();
-        (*kstVectorIter)->setTagName(vectorTag);
+        (*kstVectorIter)->setTagName(vectorTag, KstObjectTag::globalTagContext); // FIXME: tag context
         kstplug_ptr->unlock();
         kstVectorIter++;
       }
@@ -1526,7 +1526,7 @@ QStringList KstIfaceImpl::createPlugin(const QString& pluginName,
           scalarTag += '\'';
         }
         kstplug_ptr->writeLock();
-        (*kstScalarIter)->setTagName(scalarTag);
+        (*kstScalarIter)->setTagName(scalarTag, KstObjectTag::globalTagContext);  // FIXME: tag context
         kstplug_ptr->unlock();
         kstScalarIter++;
       }
@@ -1596,8 +1596,8 @@ QString KstIfaceImpl::loadMatrix(const QString& name, const QString& file, const
   }
   KST::matrixList.lock().unlock();
 
-  KstMatrixPtr p = new KstRMatrix(src, field, matrixName, xStart, yStart, xNumSteps, yNumSteps, 
-                                  boxcarFilter, skipFrames > 0, skipFrames);
+  KstMatrixPtr p = new KstRMatrix(src, field, KstObjectTag(matrixName), xStart, yStart, xNumSteps, yNumSteps, 
+                                  boxcarFilter, skipFrames > 0, skipFrames); // FIXME: do tag context properly
   KST::addMatrixToList(p);
 
   src->unlock();
@@ -1632,8 +1632,8 @@ QString KstIfaceImpl::createGradient(const QString& name, bool xDirection, doubl
   KST::matrixList.lock().unlock();
   
   // create the gradient matrix
-  KstMatrixPtr p = new KstSMatrix(matrixName, xNumSteps, yNumSteps, xMin, yMin, xStepSize, yStepSize, 
-                                  zAtMin, zAtMax, xDirection);
+  KstMatrixPtr p = new KstSMatrix(KstObjectTag(matrixName), xNumSteps, yNumSteps, xMin, yMin, xStepSize, yStepSize, 
+                                  zAtMin, zAtMax, xDirection);  // FIXME: do tag context properly
   
   KST::addMatrixToList(p);
 

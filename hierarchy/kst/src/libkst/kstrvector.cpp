@@ -42,8 +42,9 @@
 
 /** Create a KstRVector: raw data from a file */
 KstRVector::KstRVector(KstDataSourcePtr in_file, const QString &in_field,
-                       const QString &in_tag, int in_f0, int in_n,
-                       int skip, bool in_DoSkip, bool in_DoAve)
+                       KstObjectTag in_tag,
+                       int in_f0, int in_n, int skip, bool in_DoSkip,
+                       bool in_DoAve)
 : KstVector(in_tag) {
   commonRVConstructor(in_file, in_field, in_f0, in_n, skip,
       in_DoSkip, in_DoAve);
@@ -67,7 +68,7 @@ KstRVector::KstRVector(const QDomElement &e, const QString &o_file,
     QDomElement e = n.toElement();
     if (!e.isNull()) {
       if (e.tagName() == "tag") {
-        setTagName(e.text());
+        setTagName(e.text(), QStringList());  // FIXME: tag context
       } else if (e.tagName() == "filename") {
         KST::dataSourceList.lock().readLock();
         if (o_file == "|") {
@@ -158,7 +159,7 @@ void KstRVector::commonRVConstructor(KstDataSourcePtr in_file,
 
 
 void KstRVector::change(KstDataSourcePtr in_file, const QString &in_field,
-                        const QString &in_tag,
+                        const QString &in_tag, QStringList tagContext,
                         int in_f0, int in_n,
                         int in_skip, bool in_DoSkip,
                         bool in_DoAve) {
@@ -173,7 +174,7 @@ void KstRVector::change(KstDataSourcePtr in_file, const QString &in_field,
   ReqF0 = in_f0;
   ReqNF = in_n;
   _field = in_field;
-  setTagName(in_tag);
+  setTagName(in_tag, tagContext);
 
   if (_file) {
     _file->writeLock();
@@ -683,7 +684,8 @@ KstDataSourcePtr KstRVector::dataSource() const {
 
 
 KstRVectorPtr KstRVector::makeDuplicate() const {
-  return new KstRVector(_file, _field, tagName() + "'", ReqF0, ReqNF, Skip, DoSkip, DoAve);
+  QString newTag = tag().tag() + "'";
+  return new KstRVector(_file, _field, KstObjectTag(newTag, tag().context()), ReqF0, ReqNF, Skip, DoSkip, DoAve);
 }
 
 

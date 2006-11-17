@@ -54,7 +54,8 @@ class KST_EXPORT KstVector : public KstPrimitive {
     /**
      * Vectors do not automatically add themselves to the global vector list
      */
-    KstVector(const QString& name = QString::null, int size = 0, KstObject *provider = 0L, bool bIsScalarList = false);
+    KstVector(KstObjectTag in_tag = KstObjectTag(), int size = 0,
+        KstObject *provider = 0L, bool bIsScalarList = false);
 
     virtual ~KstVector();
 
@@ -125,9 +126,10 @@ class KST_EXPORT KstVector : public KstPrimitive {
 
     /** Generate a new vector [x0..x1] with n total points */
     // #### Remove
-    static KstVectorPtr generateVector(double x0, double x1, int n, const QString& tag);
+    static KstVectorPtr generateVector(double x0, double x1, int n, KstObjectTag tag);
 
-    virtual void setTagName(const QString& newTag);
+    virtual void setTagName(KstObjectTag newTag);
+    virtual void setTagName(const QString& newTag, QStringList context);
 
     /** Return a pointer to the raw vector */
     double *const value() const;

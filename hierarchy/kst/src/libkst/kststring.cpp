@@ -23,10 +23,10 @@
 
 static int anonymousStringCounter = 0;
 
-KstString::KstString(const QString& in_tag, KstObject *provider, const QString& val, bool orphan, bool doLock)
+KstString::KstString(KstObjectTag in_tag, KstObject *provider, const QString& val, bool orphan, bool doLock)
 : KstPrimitive(provider), _value(val), _orphan(orphan) {
-  QString _tag = in_tag;
-  if (_tag.isEmpty()) {
+  QString _tag = in_tag.tag();
+  if (!in_tag.isValid()) {
     QString nt = i18n("Anonymous String %1");
 
     do {
@@ -37,7 +37,7 @@ KstString::KstString(const QString& in_tag, KstObject *provider, const QString& 
       _tag += '\'';
     }
   }
-  setTagName(_tag);
+  setTagName(KstObjectTag(_tag, in_tag.context()));
 
   if (doLock) {
     KST::stringList.lock().writeLock();
@@ -57,7 +57,7 @@ KstString::KstString(QDomElement& e)
     QDomElement e = n.toElement();
     if (!e.isNull()) {
       if (e.tagName() == "tag") {
-        setTagName(e.text());
+        setTagName(e.text(), QStringList());  // FIXME: use proper tag context
       } else if (e.tagName() == "orphan") {
         _orphan = true;
       } else if (e.tagName() == "value") {

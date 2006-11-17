@@ -133,12 +133,12 @@ void KstCurveDialogI::fillFieldsForEdit() {
     _legendText->setText(cp->legendText());
   }
 
-  _w->_xVector->setSelection(cp->xVTag());
-  _w->_yVector->setSelection(cp->yVTag());
-  _w->_xError->setSelection(cp->xETag());
-  _w->_yError->setSelection(cp->yETag());
-  _w->_xMinusError->setSelection(cp->xEMinusTag());
-  _w->_yMinusError->setSelection(cp->yEMinusTag());
+  _w->_xVector->setSelection(cp->xVTag().tag());  // FIXME: is this the right tag?
+  _w->_yVector->setSelection(cp->yVTag().tag());
+  _w->_xError->setSelection(cp->xETag().tag());
+  _w->_yError->setSelection(cp->yETag().tag());
+  _w->_xMinusError->setSelection(cp->xEMinusTag().tag());
+  _w->_yMinusError->setSelection(cp->yEMinusTag().tag());
 
   if (cp->xEMinusTag() == cp->xETag()) {
     _w->_checkBoxXMinusSameAsPlus->setChecked(true);
@@ -179,7 +179,7 @@ void KstCurveDialogI::fillFieldsForNew() {
   // set the X Axis Vector to the X axis vector of 
   // the last curve on the global curve list...
   if (curves.count() >0) {
-    _w->_xVector->setSelection(curves.last()->xVTag());
+    _w->_xVector->setSelection(curves.last()->xVTag().tag());
   }
 
   // for some reason the lower widget needs to be shown first to prevent overlapping?
@@ -484,7 +484,7 @@ bool KstCurveDialogI::editObject() {
     }
 
     cp->writeLock();
-    cp->setTagName(tag_name);
+    cp->setTagName(KstObjectTag(tag_name, cp->tag().context())); // FIXME: doesn't allow changing tag context
     QString legend_text = _legendText->text();
     if (legend_text==defaultTag) {
       cp->setLegendText(QString(""));

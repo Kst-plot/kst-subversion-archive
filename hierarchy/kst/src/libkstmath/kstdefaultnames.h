@@ -24,13 +24,13 @@
 
 namespace KST {
   extern KST_EXPORT QString suggestPlotName();
-  extern KST_EXPORT QString suggestCurveName(const QString& vector_name, bool add_c=false);
-  extern KST_EXPORT QString suggestPSDName(const QString& vector_name);
-  extern KST_EXPORT QString suggestCSDName(const QString& vector_name);
-  extern KST_EXPORT QString suggestEQName(const QString& vector_name);
-  extern KST_EXPORT QString suggestHistogramName(const QString& vector_name);
-  extern KST_EXPORT QString suggestPluginName(const QString& pname, const QString& vname = QString::null);
-  extern KST_EXPORT QString suggestImageName(const QString& matrix_name);
+  extern KST_EXPORT QString suggestCurveName(KstObjectTag vector_name, bool add_c=false);
+  extern KST_EXPORT QString suggestPSDName(KstObjectTag vector_name);
+  extern KST_EXPORT QString suggestCSDName(KstObjectTag vector_name);
+  extern KST_EXPORT QString suggestEQName(KstObjectTag vector_name);
+  extern KST_EXPORT QString suggestHistogramName(KstObjectTag vector_name);
+  extern KST_EXPORT QString suggestPluginName(const QString& pname, KstObjectTag vname = KstObjectTag());
+  extern KST_EXPORT QString suggestImageName(KstObjectTag matrix_name);
 }
 
 #endif

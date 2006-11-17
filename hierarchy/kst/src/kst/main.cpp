@@ -269,7 +269,7 @@ static KstRVector *GetOrCreateVector(const QString& field, KstDataSourcePtr file
     }
   }
 
-  V = new KstRVector(file, field, KST::suggestVectorName(field), in.f, in.n, in.skip, in.doskip, in.doave);
+  V = new KstRVector(file, field, KstObjectTag(KST::suggestVectorName(field), file->tag()), in.f, in.n, in.skip, in.doskip, in.doave);
   if (!V->isValid()) {
     if (file->fileType() == "stdin") {
       startupErrors.append(i18n("Failed to create vector '%1' from file '%2'.  Trying again later.").arg(field).arg(file->fileName()));
@@ -564,7 +564,7 @@ int main(int argc, char *argv[]) {
                   plot->addCurve(curve.data());
 
                   if (in.sep_plots) {
-                    plot->setTagName(curve->tagName());
+                    plot->setTagName(curve->tag());
                     i_plot++;
                     if (i_plot < in.n_plots) {
                       plot = *plist.at(i_plot);
@@ -610,7 +610,7 @@ int main(int argc, char *argv[]) {
                 plot->addCurve(vc.data());
 
                 if (in.sep_plots) {
-                  plot->setTagName(eq->tagName());
+                  plot->setTagName(eq->tag());
                   i_plot++;
                   if (i_plot <in.n_plots) {
                     plot = *plist.at(i_plot);
@@ -645,7 +645,7 @@ int main(int argc, char *argv[]) {
                 plot->addCurve(vc.data());
 
                 if (in.sep_plots) {
-                  plot->setTagName(psd->tagName());
+                  plot->setTagName(psd->tag());
                   i_plot++;
                   if (i_plot <in.n_plots) {
                     plot = *plist.at(i_plot);
@@ -685,7 +685,7 @@ int main(int argc, char *argv[]) {
                 plot->addCurve(vc.data());
 
                 if (in.sep_plots) {
-                  plot->setTagName(hs->tagName());
+                  plot->setTagName(hs->tag());
                   i_plot++;
                   if (i_plot < in.n_plots) {
                     plot = *plist.at(i_plot);
@@ -701,7 +701,8 @@ int main(int argc, char *argv[]) {
               if (!file->isValidMatrix(*mat_i)) {
                 startupErrors.append(i18n("Failed to create matrix '%1' from file '%2'.").arg(*mat_i).arg(file->fileName()));
               }
-              KstRMatrixPtr matrix = new KstRMatrix(file, *mat_i, tag_name, 
+              KstRMatrixPtr matrix = new KstRMatrix(file, *mat_i,
+                  KstObjectTag(tag_name, file->tag()),
                   0,0,-1,-1,false,false,0);
                   // xStart, yStart, xNumSteps, yNumSteps, 
                   //doAve, doSkip, skip);
@@ -727,7 +728,7 @@ int main(int argc, char *argv[]) {
               image = 0L; // drop the reference
               
               if (in.sep_plots) {
-                plot->setTagName(matrix->tagName());
+                plot->setTagName(matrix->tag());
                 i_plot++;
                 if (i_plot < in.n_plots) {
                   plot = *plist.at(i_plot);

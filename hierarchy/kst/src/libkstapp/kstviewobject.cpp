@@ -146,7 +146,7 @@ void KstViewObject::load(const QDomElement& e) {
     QDomElement el = n.toElement(); // try to convert the node to an element.
     if (!el.isNull()) { // the node was really an element.
       if (el.tagName() == "tag") {
-        setTagName(el.text());
+        setTagName(el.text(), KstObjectTag::globalTagContext); // FIXME: tag context
       } else if (el.tagName() == "transparent") {
         _transparent = true;
       } else if (el.tagName() == "columns") {
@@ -1543,6 +1543,7 @@ void KstViewObject::detach() {
 }
 
 
+// FIXME: handle tag context
 void KstViewObject::rename() {
   bool ok = false;
 #if KDE_VERSION >= KDE_MAKE_VERSION(3,3,0)
@@ -1551,7 +1552,7 @@ void KstViewObject::rename() {
   QString newName = KLineEditDlg::getText(i18n("Enter a new name for %1:").arg(tagName()), tagName(), &ok, 0L);
 #endif
   if (ok) {
-    setTagName(newName);
+    setTagName(newName, KstObjectTag::globalTagContext);
   }
 }
 
@@ -1595,7 +1596,7 @@ QDataStream& operator>>(QDataStream& str, KstViewObjectPtr obj) {
 void KstViewObject::readBinary(QDataStream& str) {
   QString tagName;
   str >> tagName;
-  setTagName(tagName);
+  setTagName(tagName, KstObjectTag::globalTagContext); // FIXME: tag context
   kstdDebug() << "Decoding " << tagName << " from drag." << endl;
   // FIXME: rename objects if they cause a namespace conflict
   str >> _geom >> _backgroundColor >> _foregroundColor;

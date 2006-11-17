@@ -28,9 +28,9 @@ class KST_EXPORT KstScalar : public KstPrimitive {
   Q_PROPERTY(double value READ value WRITE setValue)
   Q_PROPERTY(bool displayable READ displayable WRITE setDisplayable)
   public:
-    KstScalar(const QString& in_tag = QString::null, KstObject *provider = 0L,
-              double val = 0.0, bool orphan = false, bool displayable = true, 
-              bool bLock = true, bool editable = false);
+    KstScalar(KstObjectTag tag = KstObjectTag(),
+              KstObject *provider = 0L, double val = 0.0, bool orphan = false,
+              bool displayable = true, bool bLock = true, bool editable = false);
     KstScalar(const QDomElement& e);
     virtual ~KstScalar();
 

@@ -58,11 +58,14 @@ KstSMatrix::KstSMatrix(const QDomElement &e) : KstMatrix() {
   _saveable = true;
   _editable = true;
   _zSize = 0;
-  change(in_tag, in_nX, in_nY, in_xMin, in_yMin, in_xStep, in_yStep, in_gradZMin, in_gradZMax, in_xDirection);
+  change(KstObjectTag(in_tag), in_nX, in_nY, in_xMin, in_yMin, in_xStep, in_yStep, in_gradZMin, in_gradZMax, in_xDirection); // FIXME: use correct tag context
 }
 
-KstSMatrix::KstSMatrix(const QString& tag, uint nX, uint nY, double minX, double minY, double stepX, double stepY,
-                       double gradZMin, double gradZMax, bool xDirection) : KstMatrix() {
+KstSMatrix::KstSMatrix(KstObjectTag tag,
+                       uint nX, uint nY, double minX, double minY,
+                       double stepX, double stepY,
+                       double gradZMin, double gradZMax,
+                       bool xDirection) : KstMatrix() {
   _saveable = true;
   _editable = true;
   _zSize = 0;
@@ -87,8 +90,10 @@ void KstSMatrix::save(QTextStream &ts, const QString& indent) {
   ts << indent << "</smatrix>" << endl;
 }
 
-void KstSMatrix::change(const QString& tag, uint nX, uint nY, double minX, double minY, double stepX, double stepY,
-                        double gradZMin, double gradZMax, bool xDirection) {
+void KstSMatrix::change(KstObjectTag tag, uint nX,
+                        uint nY, double minX, double minY, double stepX,
+                        double stepY, double gradZMin, double gradZMax,
+                        bool xDirection) {
   setTagName(tag);  
   
   // some checks on parameters

@@ -107,7 +107,7 @@ void KstHistogram::commonConstructor(const QString &in_tag, KstVectorPtr in_V,
   _Bins = 0L;
   _NBins = 0;
   
-  setTagName(in_tag);
+  setTagName(in_tag, KstObjectTag::globalTagContext);  // FIXME: tag context always global?
   _inputVectors[RAWVECTOR] = in_V;
 
   if (xmax_in>xmin_in) {
@@ -129,11 +129,11 @@ void KstHistogram::commonConstructor(const QString &in_tag, KstVectorPtr in_V,
   _Bins = new unsigned long[_NBins];
   _NS = 3 * _NBins + 1;
 
-  KstVectorPtr v = new KstVector(in_tag+"-bins", _NBins, this);
+  KstVectorPtr v = new KstVector(KstObjectTag("bins", tag()), _NBins, this);
   KST::addVectorToList(v);
   _bVector = _outputVectors.insert(BINS, v);
 
-  v = new KstVector(in_tag+"-sv", _NBins, this);
+  v = new KstVector(KstObjectTag("sv", tag()), _NBins, this);
   KST::addVectorToList(v);
   _hVector = _outputVectors.insert(HIST, v);
 

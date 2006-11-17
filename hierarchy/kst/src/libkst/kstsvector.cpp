@@ -29,7 +29,7 @@ KstSVector::KstSVector(const QDomElement &e) : KstVector() {
     QDomElement e = n.toElement();
     if (!e.isNull()) {
       if (e.tagName() == "tag") {
-        setTagName(e.text());
+        setTagName(e.text(), QStringList());  // FIXME: tag context
       } else if (e.tagName() == "N") {
         in_n = e.text().toInt();
       } else if (e.tagName() == "min") {
@@ -46,7 +46,8 @@ KstSVector::KstSVector(const QDomElement &e) : KstVector() {
 }
 
 
-KstSVector::KstSVector(double x0, double x1, int n, const QString &tag) : KstVector(tag, n) {
+KstSVector::KstSVector(double x0, double x1, int n, KstObjectTag tag) :
+    KstVector(tag, n) {
   _saveable = true;
   changeRange( x0, x1, n );
 }

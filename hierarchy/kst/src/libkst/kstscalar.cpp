@@ -38,9 +38,9 @@ void KstScalar::clearScalarsDirty() {
 }
 
 /** Create the base scalar */
-KstScalar::KstScalar(const QString& in_tag, KstObject *provider, double val, bool orphan, bool displayable, bool doLock, bool editable)
+KstScalar::KstScalar(KstObjectTag in_tag, KstObject *provider, double val, bool orphan, bool displayable, bool doLock, bool editable)
 : KstPrimitive(provider), _value(val), _orphan(orphan), _displayable(displayable), _editable(editable) {
-  QString _tag = in_tag;
+  QString _tag = in_tag.tag();
   if (_tag.isEmpty()) {
     QString nt = i18n("Anonymous Scalar %1");
 
@@ -52,13 +52,14 @@ KstScalar::KstScalar(const QString& in_tag, KstObject *provider, double val, boo
       _tag += '\'';
     }
   }
-  setTagName(_tag);
+  setTagName(_tag, in_tag.context());
 
   // FIXME: passing in a lock variable indicates a design problem
   if (doLock) {
     KST::scalarList.lock().writeLock();
   }
   KST::scalarList.append(this);
+  KST::scalarTree->addDescendant(this);
   if (doLock) {
     KST::scalarList.lock().unlock();
   }
@@ -76,7 +77,7 @@ KstScalar::KstScalar(const QDomElement& e)
     QDomElement e = n.toElement();
     if(!e.isNull()) {
       if (e.tagName() == "tag") {
-        setTagName(e.text());
+        setTagName(e.text(), QStringList());  // FIXME: use proper tag context
       } else if (e.tagName() == "orphan") {
         _orphan = true;
       } else if (e.tagName() == "value") {
@@ -93,6 +94,7 @@ KstScalar::KstScalar(const QDomElement& e)
   }
 
   KST::scalarList.append(this);
+  KST::scalarTree->addDescendant(this);
 }
 
 

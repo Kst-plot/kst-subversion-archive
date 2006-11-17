@@ -65,7 +65,7 @@ KJS::Object KstBindDataVector::construct(KJS::ExecState *exec, const KJS::List& 
 
     QString field = args[1].toString(exec).qstring();
 
-    v = new KstRVector(dp, field, QString::null, 0, -1, -1, false, false);
+    v = new KstRVector(dp, field, KstObjectTag(), 0, -1, -1, false, false);
     KST::addVectorToList(KstVectorPtr(v));
   }
 
@@ -83,7 +83,7 @@ KJS::Object KstBindDataVector::construct(KJS::ExecState *exec, const KJS::List& 
     int start = d2i(args[2].toNumber(exec));
     int count = d2i(args[3].toNumber(exec));
 
-    v = new KstRVector(dp, field, QString::null, start, count, -1, false, false);
+    v = new KstRVector(dp, field, KstObjectTag(), start, count, -1, false, false);
     KST::addVectorToList(KstVectorPtr(v));
   }
 
@@ -103,7 +103,7 @@ KJS::Object KstBindDataVector::construct(KJS::ExecState *exec, const KJS::List& 
     int count = d2i(args[3].toNumber(exec));
     int skip = d2i(args[4].toNumber(exec));
 
-    v = new KstRVector(dp, field, QString::null, start, count, skip, true, false);
+    v = new KstRVector(dp, field, KstObjectTag(), start, count, skip, true, false);
     KST::addVectorToList(KstVectorPtr(v));
   }
 
@@ -126,7 +126,7 @@ KJS::Object KstBindDataVector::construct(KJS::ExecState *exec, const KJS::List& 
     int skip = d2i(args[4].toNumber(exec));
     bool ave = d2i(args[5].toBoolean(exec));
 
-    v = new KstRVector(dp, field, QString::null, start, count, skip, true, ave);
+    v = new KstRVector(dp, field, KstObjectTag(), start, count, skip, true, ave);
     KST::addVectorToList(KstVectorPtr(v));
   }
 

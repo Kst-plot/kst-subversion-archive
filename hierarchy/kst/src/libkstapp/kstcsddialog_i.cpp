@@ -361,7 +361,7 @@ bool KstCsdDialogI::editObject() {
     }
    
     cp->writeLock();
-    cp->setTagName(tag_name);
+    cp->setTagName(tag_name, cp->tag().context()); // FIXME: doesn't allow changing tag context
     cp->unlock();
    
     // then edit the object

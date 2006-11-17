@@ -75,7 +75,7 @@ void ScalarSelector::createNewScalar()
 	}
 
         if (ok) {
-            KstScalarPtr s = new KstScalar(se->_name->text(), 0L, val);
+            KstScalarPtr s = new KstScalar(KstObjectTag(se->_name->text(), KstObjectTag::globalTagContext), 0L, val);
             
             s->setOrphan(true);
             s->setEditable(true);
@@ -136,7 +136,7 @@ void ScalarSelector::editScalar()
                 p->setValue(val);
                 setSelection(p);
             } else {
-                p = new KstScalar(se->_name->text(), 0L, val);
+                p = new KstScalar(KstObjectTag(se->_name->text(), KstObjectTag::globalTagContext), 0L, val);
                 
                 p->setOrphan(true);
                 p->setEditable(true);

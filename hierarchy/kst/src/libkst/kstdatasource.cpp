@@ -35,6 +35,7 @@
 #include "kstscalar.h"
 #include "stdinsource.h"
 
+static int dataSourceCounter = 1;
 
 // Eventually this will move to another file but I leave it here until then
 // to avoid confusion between the function plugins and Kst applicaton plugins.
@@ -609,7 +610,18 @@ KstDataSource::KstDataSource(KConfig *cfg, const QString& filename, const QStrin
   Q_UNUSED(type)
   _valid = false;
   _reusable = true;
-  _numFramesScalar = new KstScalar(QString("%1-frames").arg(filename));
+
+  QString shortFilename = filename;
+  while (shortFilename.at(shortFilename.length() - 1) == '/') {
+    shortFilename.truncate(shortFilename.length() - 1);
+  }
+  shortFilename = shortFilename.section('/', -1);
+  QString tn = i18n("DS%2-%1").arg(shortFilename);
+  do {
+    KstObject::setTagName(tn.arg(dataSourceCounter++), KstObjectTag::globalTagContext);  // are DataSources always top-level?
+  } while (KstData::self()->dataSourceTagNameNotUnique(tagName(), false));
+
+  _numFramesScalar = new KstScalar(KstObjectTag("frames", tag()));
   // Don't set provider - this is always up-to-date
 }
 
@@ -748,6 +760,7 @@ void KstDataSource::save(QTextStream &ts, const QString& indent) {
       break;
     }
   }
+  ts << indent << "<tag>" << QStyleSheet::escape(tagName()) << "</tag>" << endl;
   ts << indent << "<filename>" << name << "</filename>" << endl;
   ts << indent << "<type>" << QStyleSheet::escape(fileType()) << "</type>" << endl;
 }

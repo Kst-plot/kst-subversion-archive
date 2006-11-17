@@ -30,12 +30,14 @@ class KST_EXPORT KstMatrix: public KstPrimitive {
   Q_OBJECT
   public:
     // Matrices do not automatically add themselves to the global matrix list
-    KstMatrix(const QString& in_tag = QString::null, KstObject *provider = 0L,
-              uint nX = 1, uint nY = 0, double minX = 0, double minY = 0,
+    KstMatrix(KstObjectTag in_tag = KstObjectTag(),
+              KstObject *provider = 0L, uint nX = 1, uint nY = 0,
+              double minX = 0, double minY = 0,
               double stepX = 1, double stepY = 1);
     ~KstMatrix();
     
-    void change(const QString tag, uint nX, uint nY, double minX, double minY, double stepX, double stepY);
+    void change(KstObjectTag tag, uint nX, uint nY, double minX, double minY,
+        double stepX, double stepY);
 
     // Return the sample count (x times y) of the matrix
     virtual int sampleCount() const;
@@ -94,7 +96,8 @@ class KST_EXPORT KstMatrix: public KstPrimitive {
     virtual void save(QTextStream &ts, const QString& indent = QString::null);
 
     // set tag name of the matrix
-    virtual void setTagName(const QString& newTag);
+    virtual void setTagName(KstObjectTag tag);
+    virtual void setTagName(const QString& newTag, QStringList context);
 
     // the statistics scalars for this matrix
     const QDict<KstScalar>& scalars() const;

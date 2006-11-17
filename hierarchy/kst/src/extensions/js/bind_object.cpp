@@ -179,7 +179,7 @@ void KstBindObject::setTagName(KJS::ExecState *exec, const KJS::Value& value) {
     return;
   }
   KstWriteLocker wl(_d);
-  _d->setTagName(value.toString(exec).qstring());
+  _d->setTagName(value.toString(exec).qstring(), QStringList());  // FIXME: tag context
 }
 
 

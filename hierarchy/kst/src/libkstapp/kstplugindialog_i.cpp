@@ -411,7 +411,7 @@ bool KstPluginDialogI::saveInputs(KstPluginPtr plugin, KstSharedPtr<Plugin> p) {
       KstStringPtr s = *KST::stringList.findTag(ss->selectedString());
       if (s == *KST::stringList.end()) {
         QString val = ss->_string->currentText();
-        KstStringPtr newString = new KstString(ss->_string->currentText(), 0L, val, true, false);
+        KstStringPtr newString = new KstString(KstObjectTag(ss->_string->currentText(), plugin->tag()), 0L, val, true, false);
         newString->writeLock(); // to match with plugin->writeLock()
         if (plugin->inputStrings().contains((*it)._name) && plugin->inputStrings()[(*it)._name] != s) {
           plugin->inputStrings()[(*it)._name]->unlock();
@@ -436,7 +436,7 @@ bool KstPluginDialogI::saveInputs(KstPluginPtr plugin, KstSharedPtr<Plugin> p) {
         double val = ss->_scalar->currentText().toDouble(&ok);
 
         if (ok) {
-          KstScalarPtr newScalar = new KstScalar(ss->_scalar->currentText(), 0L, val, true, false, false);
+          KstScalarPtr newScalar = new KstScalar(KstObjectTag(ss->_scalar->currentText(), plugin->tag()), 0L, val, true, false, false);
           newScalar->writeLock(); // to match with plugin->writeLock()
           if (plugin->inputScalars().contains((*it)._name) && plugin->inputScalars()[(*it)._name] != s) {
             plugin->inputScalars()[(*it)._name]->unlock();
@@ -492,12 +492,12 @@ bool KstPluginDialogI::saveOutputs(KstPluginPtr plugin, KstSharedPtr<Plugin> p) 
         // Implicitly creates it if it doesn't exist
         KstVectorPtr v = plugin->outputVectors()[(*it)._name];
         if (!v) {
-          v = new KstVector(nt, 0, plugin.data());
+          v = new KstVector(KstObjectTag(nt, plugin->tag()), 0, plugin.data());
           v->writeLock();
           plugin->outputVectors().insert((*it)._name, v);
           KST::addVectorToList(v);
         }
-        v->setTagName(nt);
+        v->setTagName(KstObjectTag(nt, plugin->tag()));
       } else if (plugin->outputVectors()[(*it)._name]->tagName() != nt) {
         while (KstData::self()->vectorTagNameNotUnique(nt, false)) {
           nt += "'";
@@ -506,12 +506,12 @@ bool KstPluginDialogI::saveOutputs(KstPluginPtr plugin, KstSharedPtr<Plugin> p) 
         if (plugin->outputVectors().contains((*it)._name)) {
           v = plugin->outputVectors()[(*it)._name];
         } else {
-          v = new KstVector(nt, 0, plugin.data());
+          v = new KstVector(KstObjectTag(nt, plugin->tag()), 0, plugin.data());
           v->writeLock();
           plugin->outputVectors().insert((*it)._name, v);
           KST::addVectorToList(v);
         }
-        v->setTagName(nt);
+        v->setTagName(KstObjectTag(nt, plugin->tag()));
       }
     } else if ((*it)._type == Plugin::Data::IOValue::StringType) {
       if (!KstData::self()->vectorTagNameNotUnique(nt, false)) {
@@ -519,11 +519,11 @@ bool KstPluginDialogI::saveOutputs(KstPluginPtr plugin, KstSharedPtr<Plugin> p) 
         if (plugin->outputStrings().contains((*it)._name)) {
           s = plugin->outputStrings()[(*it)._name];
         } else {
-          s = new KstString(nt, plugin.data());
+          s = new KstString(KstObjectTag(nt, plugin->tag()), plugin.data());
           s->writeLock();
           plugin->outputStrings().insert((*it)._name, s);
         }
-        s->setTagName(nt);
+        s->setTagName(KstObjectTag(nt, plugin->tag()));
 
       } else if (plugin->outputStrings()[(*it)._name]->tagName() != nt) {
         while (KstData::self()->vectorTagNameNotUnique(nt, false)) {
@@ -533,11 +533,11 @@ bool KstPluginDialogI::saveOutputs(KstPluginPtr plugin, KstSharedPtr<Plugin> p) 
         if (plugin->outputStrings().contains((*it)._name)) {
           s = plugin->outputStrings()[(*it)._name];
         } else {
-          s = new KstString(nt, plugin.data());
+          s = new KstString(KstObjectTag(nt, plugin->tag()), plugin.data());
           s->writeLock();
           plugin->outputStrings().insert((*it)._name, s);
         }
-        s->setTagName(nt);
+        s->setTagName(KstObjectTag(nt, plugin->tag()));
       }
     } else if ((*it)._type == Plugin::Data::IOValue::PidType) {
       // Nothing
@@ -547,11 +547,11 @@ bool KstPluginDialogI::saveOutputs(KstPluginPtr plugin, KstSharedPtr<Plugin> p) 
         if (plugin->outputScalars().contains((*it)._name)) {
           s = plugin->outputScalars()[(*it)._name];
         } else {
-          s = new KstScalar(nt, plugin.data());
+          s = new KstScalar(KstObjectTag(nt, plugin->tag()), plugin.data());
           s->writeLock();
           plugin->outputScalars().insert((*it)._name, s);
         }
-        s->setTagName(nt);
+        s->setTagName(KstObjectTag(nt, plugin->tag()));
       } else if (plugin->outputScalars()[(*it)._name]->tagName() != nt) {
         while (KstData::self()->vectorTagNameNotUnique(nt, false)) {
           nt += "'";
@@ -560,11 +560,11 @@ bool KstPluginDialogI::saveOutputs(KstPluginPtr plugin, KstSharedPtr<Plugin> p) 
         if (plugin->outputScalars().contains((*it)._name)) {
           s = plugin->outputScalars()[(*it)._name];
         } else {
-          s = new KstScalar(nt, plugin.data());
+          s = new KstScalar(KstObjectTag(nt, plugin->tag()), plugin.data());
           s->writeLock();
           plugin->outputScalars().insert((*it)._name, s);
         }
-        s->setTagName(nt);
+        s->setTagName(KstObjectTag(nt, plugin->tag()));
       }
     }
   }
@@ -599,7 +599,7 @@ bool KstPluginDialogI::newObject() {
       if (tagName == plugin_defaultTag) {
         tagName = KST::suggestPluginName(_pluginList[pitem]);
       }
-      plugin->setTagName(tagName);
+      plugin->setTagName(tagName, KstObjectTag::globalTagContext); // FIXME: tag context?
       if (!saveOutputs(plugin, pPtr)) {
         KMessageBox::sorry(this, i18n("One or more of the outputs was undefined."));
         plugin->unlock();
@@ -639,7 +639,7 @@ bool KstPluginDialogI::editObject() {
     return false;
   }
 
-  pp->setTagName(_tagName->text());
+  pp->setTagName(_tagName->text(), KstObjectTag::globalTagContext);  // FIXME: tag context always global?
 
   int pitem = _w->PluginCombo->currentItem();
   KstSharedPtr<Plugin> pPtr = PluginCollection::self()->plugin(_pluginList[pitem]);

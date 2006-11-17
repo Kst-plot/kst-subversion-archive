@@ -1167,9 +1167,9 @@ void View2DPlotWidget::fillPlot( Kst2DPlotPtr plot )
 
   //_title->setText(plot->tagName());
   if (checkPlotName()) {
-    plot->setTagName(_title->text().stripWhiteSpace());
+    plot->setTagName(_title->text().stripWhiteSpace(), KstObjectTag::globalTagContext);	// FIXME: always global tag context?
   } else {
-    plot->setTagName(KST::suggestPlotName());
+    plot->setTagName(KST::suggestPlotName(), KstObjectTag::globalTagContext);	// FIXME: always global tag context?
   }
 
   plot->setDirty();

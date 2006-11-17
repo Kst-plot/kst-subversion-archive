@@ -34,7 +34,8 @@ namespace Equation {
 class KST_EXPORT KstRVector : public KstVector {
 public:
   /** Create an RVECTOR */
-  KstRVector(KstDataSourcePtr file, const QString &field, const QString &tag,
+  KstRVector(KstDataSourcePtr file, const QString &field,
+             KstObjectTag tag,
              int f0, int n,
              int skip, bool in_doSkip,
              bool in_doAve);
@@ -47,7 +48,8 @@ public:
   virtual ~KstRVector();
 
   /** change the properties of a kstrvector */
-  void change(KstDataSourcePtr file, const QString &field, const QString &tag,
+  void change(KstDataSourcePtr file, const QString &field,
+              const QString &tag, QStringList tagContext,
               int f0, int n, int skip,
               bool in_doSkip, bool in_doAve);
 

@@ -383,7 +383,7 @@ bool KstVectorDialogI::newObject() {
 
     /* create the vector */
     KstRVectorPtr vector = new KstRVector(
-        file, _w->Field->currentText(), tag_name,
+        file, _w->Field->currentText(), KstObjectTag(tag_name, file->tag()),
         _w->_kstDataRange->CountFromEnd->isChecked() ? -1 : f0,
         _w->_kstDataRange->ReadToEnd->isChecked() ? -1 : n,
         _w->_kstDataRange->Skip->value(),
@@ -404,7 +404,7 @@ bool KstVectorDialogI::newObject() {
       tagname = KST::suggestVectorName(QString("(%1..%2)").arg(x0).arg(x1));
     }
 
-    KstSVectorPtr svector = new KstSVector(x0, x1, n, tagname);
+    KstSVectorPtr svector = new KstSVector(x0, x1, n, KstObjectTag(tagname, KstObjectTag::globalTagContext));
     KST::addVectorToList(KstVectorPtr(svector));
     emit vectorCreated(KstVectorPtr(svector));
     svector = 0L;
@@ -572,13 +572,14 @@ bool KstVectorDialogI::editSingleObjectRV(KstVectorPtr vcPtr) {
       pDoFilter = rvp->doAve();
     }
 
-    QString pTagName = rvp->tagName();
+    QString pTagName = rvp->tag().tag();
+    QStringList pTagContext = rvp->tag().context();
     rvp->unlock();
 
     /* change the vector */
     rvp->writeLock();
 
-    rvp->change(file, pField, pTagName, pCountFromEnd ?  -1 : f0, pReadToEnd ?  -1 : n, pSkip, pDoSkip, pDoFilter);
+    rvp->change(file, pField, pTagName, pTagContext, pCountFromEnd ?  -1 : f0, pReadToEnd ?  -1 : n, pSkip, pDoSkip, pDoFilter);
 
     rvp->unlock();
   } else {
@@ -590,10 +591,10 @@ bool KstVectorDialogI::editSingleObjectRV(KstVectorPtr vcPtr) {
     double x0 = _w->_xMin->text().toDouble();
     double x1 = _w->_xMax->text().toDouble();
     int n = _w->_N->value();
-    QString tagname = _tagName->text();
+//    QString tagname = _tagName->text();
     svp->writeLock();
     svp->changeRange(x0, x1, n);
-    svp->setTagName(_tagName->text()); // FIXME: doesn't verify uniqueness
+    svp->setTagName(_tagName->text(), svp->tag().context()); // FIXME: doesn't verify uniqueness, doesn't allow changing tag context
     svp->unlock();
   }
   file->unlock();
@@ -646,7 +647,7 @@ bool KstVectorDialogI::editObject() {
       return false;
     }
 
-    _dp->setTagName(tag_name);
+    _dp->setTagName(tag_name, _dp->tag().context()); // FIXME: doesn't allow changing tag context
     _dp->unlock();
 
     // then edit the object

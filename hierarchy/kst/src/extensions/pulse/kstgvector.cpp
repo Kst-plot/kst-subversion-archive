@@ -18,7 +18,7 @@
 #include <ksdebug.h>
 
 KstGVector::KstGVector(const QString& tag)
-: KstVector(tag, 1) {
+: KstVector(KstObjectTag(tag), 1) {  // FIXME: do tag context properly
   _v[0] = 0;
   _cycles = 0;
   connect(&_t, SIGNAL(timeout()), SLOT(cycle()));

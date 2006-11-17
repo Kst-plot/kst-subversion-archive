@@ -23,7 +23,7 @@
 class KST_EXPORT KstAMatrix : public KstMatrix {
   public:
     KstAMatrix(const QDomElement &e);
-    KstAMatrix(const QString &in_tag, uint nX, uint nY, double minX, double minY, double stepX, double stepY);
+    KstAMatrix(KstObjectTag in_tag, uint nX, uint nY, double minX, double minY, double stepX, double stepY);
 
     virtual void save(QTextStream &ts, const QString& indent = QString::null);
 };

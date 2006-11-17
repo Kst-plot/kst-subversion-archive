@@ -46,13 +46,14 @@
 #include "kstviewobjectfactory.h"
 #include "kstviewwidget.h"
 #include "kstgfxmousehandlerutils.h"
+#include "kstdatacollection.h"
 
 #define STICKY_THRESHOLD 10
 
 KstTopLevelView::KstTopLevelView(QWidget *parent, const char *name, WFlags w)
 : KstViewObject("TopLevelView"), _w(new KstViewWidget(this, parent, name, w)) {
   _onGrid = true;
-  setTagName(name);
+  setTagName(name, KstObjectTag::globalTagContext);  // FIXME: tag context
   commonConstructor(); 
 }
 

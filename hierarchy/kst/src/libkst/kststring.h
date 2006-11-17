@@ -25,7 +25,7 @@ class KST_EXPORT KstString : public KstPrimitive {
   Q_OBJECT
   Q_PROPERTY(bool orphan READ orphan WRITE setOrphan)
   public:
-    KstString(const QString& in_tag = QString::null, KstObject *provider = 0L, const QString& val = QString::null, bool orphan = false, bool doLock = true);
+    KstString(KstObjectTag in_tag = KstObjectTag(), KstObject *provider = 0L, const QString& val = QString::null, bool orphan = false, bool doLock = true);
     KstString(QDomElement& e);
     ~KstString();
 

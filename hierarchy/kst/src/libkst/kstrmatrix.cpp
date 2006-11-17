@@ -32,7 +32,7 @@
 // xStart, yStart < 0             count from end
 // xNumSteps, yNumSteps < 1       read to end
 
-KstRMatrix::KstRMatrix(KstDataSourcePtr file, const QString &field, const QString &tag,
+KstRMatrix::KstRMatrix(KstDataSourcePtr file, const QString &field, KstObjectTag tag,
                        int xStart, int yStart,
                        int xNumSteps, int yNumSteps,
                        bool doAve, bool doSkip, int skip)
@@ -41,7 +41,7 @@ KstRMatrix::KstRMatrix(KstDataSourcePtr file, const QString &field, const QStrin
 }
 
 
-KstRMatrix::KstRMatrix(const QDomElement &e) : KstMatrix(QString::null, 0L, 1,1,0,0,1,1) {
+KstRMatrix::KstRMatrix(const QDomElement &e) : KstMatrix(KstObjectTag(), 0L, 1,1,0,0,1,1) {
   KstDataSourcePtr in_file = 0L;
   QString in_field;
   QString in_tag;
@@ -85,7 +85,7 @@ KstRMatrix::KstRMatrix(const QDomElement &e) : KstMatrix(QString::null, 0L, 1,1,
     n = n.nextSibling();
   }
 
-  setTagName(in_tag);
+  setTagName(in_tag, KstObjectTag::globalTagContext); // FIXME: use correct tag context
 
   // call common constructor
   commonConstructor(in_file, in_field, in_xStart, in_yStart, in_xNumSteps, in_yNumSteps, in_doAve, in_doSkip, in_skip);
@@ -119,7 +119,8 @@ KstRMatrix::~KstRMatrix() {
 }
 
 
-void KstRMatrix::change(KstDataSourcePtr file, const QString &field, const QString &tag,
+void KstRMatrix::change(KstDataSourcePtr file, const QString &field,
+                        KstObjectTag tag,
                         int xStart, int yStart,
                         int xNumSteps, int yNumSteps,
                         bool doAve, bool doSkip, int skip) {
@@ -493,8 +494,10 @@ void KstRMatrix::reload() {
 
 
 KstRMatrixPtr KstRMatrix::makeDuplicate() const {
-  return new KstRMatrix(_file, _field, tagName() + "'", _reqXStart, _reqYStart,
-                        _reqNX, _reqNY, _doAve, _doSkip, _skip);
+  QString newTag = tag().tag() + "'";
+  return new KstRMatrix(_file, _field, KstObjectTag(newTag, tag().context()),
+                        _reqXStart, _reqYStart, _reqNX, _reqNY,
+                        _doAve, _doSkip, _skip);
 }
 
 

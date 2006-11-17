@@ -329,7 +329,8 @@ bool KstMatrixDialogI::new_IRMatrix() {
   bool doAve = _w->_doAve->isChecked();
   int skip = _w->_skip->value();
 
-  KstRMatrixPtr matrix = new KstRMatrix(file, pField, tag_name,
+  KstRMatrixPtr matrix = new KstRMatrix(file, pField,
+                                        KstObjectTag(tag_name, file->tag()),
                                         xStart, yStart, xNumSteps, yNumSteps,
                                         doAve, doSkip, skip);
 
@@ -375,7 +376,8 @@ bool KstMatrixDialogI::new_ISMatrix() {
     return false;
   }
 
-  KstSMatrixPtr matrix = new KstSMatrix(tag_name, nX, nY, minX, minY, xStep, yStep, zMin, zMax, xDirection);
+  KstSMatrixPtr matrix = new KstSMatrix(KstObjectTag(tag_name, KstObjectTag::globalTagContext),
+      nX, nY, minX, minY, xStep, yStep, zMin, zMax, xDirection);
 
   KST::addMatrixToList(KstMatrixPtr(matrix));
 
@@ -477,7 +479,7 @@ bool KstMatrixDialogI::editSingleRMatrix(KstRMatrixPtr rmp) {
   rmp->unlock();
 
   rmp->writeLock();
-  rmp->change(file, pField, rmp->tagName(), xStart, yStart, xNumSteps, yNumSteps, doAve, doSkip, skip);
+  rmp->change(file, pField, KstObjectTag(rmp->tag().tag(), rmp->tag().context()), xStart, yStart, xNumSteps, yNumSteps, doAve, doSkip, skip);
   rmp->unlock();
   return true;
 }
@@ -551,7 +553,7 @@ bool KstMatrixDialogI::editSingleSMatrix(KstSMatrixPtr smp) {
   }
 
   smp->writeLock();
-  smp->change(smp->tagName(), nX, nY, xMin, yMin, xStepSize, yStepSize, gradientZAtMin, gradientZAtMax, xDirection);
+  smp->change(KstObjectTag(smp->tag().tag(), smp->tag().context()), nX, nY, xMin, yMin, xStepSize, yStepSize, gradientZAtMin, gradientZAtMax, xDirection);
   smp->unlock();
 
   return true;
@@ -626,7 +628,7 @@ bool KstMatrixDialogI::editObject() {
     }
 
     mp->writeLock();
-    mp->setTagName(tag_name);
+    mp->setTagName(KstObjectTag(tag_name, mp->tag().context())); // FIXME: can't change tag context
     mp->unlock();
 
     // then edit the object

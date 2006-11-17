@@ -119,7 +119,7 @@ void KstCSD::commonConstructor(const QString& in_tag, KstVectorPtr in_V,
                                const QString& in_rateUnits, PSDType in_outputType, const QString& vecName) {
   _typeString = i18n("Cumulative Spectral Decay");
   _inputVectors[INVECTOR] = in_V;
-  setTagName(in_tag);
+  setTagName(in_tag, KstObjectTag::globalTagContext);  // FIXME: CSDs are not always top-level?
   _frequency = in_freq;
   _average = in_average;
   _apodize = in_apodize;
@@ -136,7 +136,7 @@ void KstCSD::commonConstructor(const QString& in_tag, KstVectorPtr in_V,
     _frequency = 1.0;
   }
   
-  KstMatrixPtr outMatrix = new KstMatrix(in_tag+"-csd", this, 1, 1);
+  KstMatrixPtr outMatrix = new KstMatrix(KstObjectTag("csd", tag()), this, 1, 1);
   outMatrix->setLabel(i18n("Power [%1/%2^{1/2}]").arg(_vectorUnits).arg(_rateUnits));
   outMatrix->setXLabel(i18n("%1 [%2]").arg(vecName).arg(_vectorUnits));
   outMatrix->setYLabel(i18n("Frequency [%1]").arg(_rateUnits));
@@ -213,7 +213,7 @@ KstObject::UpdateType KstCSD::update(int update_counter) {
 
   double frequencyStep = .5*_frequency/(double)(tempOutputLen-1);
 
-  (*_outMatrix)->change((*_outMatrix)->tagName(), xSize, tempOutputLen, 0, 0, _windowSize, frequencyStep);
+  (*_outMatrix)->change((*_outMatrix)->tag(), xSize, tempOutputLen, 0, 0, _windowSize, frequencyStep);
   (*_outMatrix)->update(update_counter);
 
   return setLastUpdateResult(UPDATE);

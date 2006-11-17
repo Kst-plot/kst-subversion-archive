@@ -602,7 +602,8 @@ void DataWizard::finished()
 
 	// create the x-vector
 	xv = new KstRVector(ds, _xVector->currentText(),
-		name, _kstDataRange->CountFromEnd->isChecked() ? -1 : f0Value,
+		KstObjectTag(name, ds->tag()),  // FIXME: do tag context properly?
+		_kstDataRange->CountFromEnd->isChecked() ? -1 : f0Value,
 		_kstDataRange->ReadToEnd->isChecked() ? -1 : nValue,
 		_kstDataRange->DoSkip->isChecked() ? _kstDataRange->Skip->value() : 0, 
 		_kstDataRange->DoSkip->isChecked(),
@@ -627,7 +628,8 @@ void DataWizard::finished()
 	    QListViewItem *i = it.current();
 	    name = KST::suggestVectorName(i->text(0));
 
-	    KstVectorPtr v = new KstRVector(ds, i->text(0), name,
+	    KstVectorPtr v = new KstRVector(ds, i->text(0),
+		    KstObjectTag(name, ds->tag()),  // FIXME: do tag context properly?
 		    _kstDataRange->CountFromEnd->isChecked() ? -1 : f0Value,
 		    _kstDataRange->ReadToEnd->isChecked() ? -1 : nValue,
 		    _kstDataRange->DoSkip->isChecked() ? _kstDataRange->Skip->value() : 0, 

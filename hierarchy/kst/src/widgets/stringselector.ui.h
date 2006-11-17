@@ -42,7 +42,7 @@ void StringSelector::createNewString()
     StringEditor *se = new StringEditor(this, "string editor");
     int rc = se->exec();
     if (rc == QDialog::Accepted) {
-	KstStringPtr s = new KstString(se->_name->text(), 0L, se->_value->text());
+	KstStringPtr s = new KstString(KstObjectTag(se->_name->text(), KstObjectTag::globalTagContext), 0L, se->_value->text());
 	s->setOrphan(true);
 	emit newStringCreated();
 	update();

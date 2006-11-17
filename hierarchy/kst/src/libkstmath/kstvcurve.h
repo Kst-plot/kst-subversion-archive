@@ -56,12 +56,12 @@ class KST_EXPORT KstVCurve: public KstBaseCurve {
     virtual void getEXPoints(int i, double &x, double &y, double &ex, double &exminus);
     virtual void getEYPoints(int i, double &x, double &y, double &ey, double &eyminus);
 
-    QString xVTag() const;
-    QString yVTag() const;
-    QString xETag() const;
-    QString yETag() const;
-    QString xEMinusTag() const;
-    QString yEMinusTag() const;
+    KstObjectTag xVTag() const;
+    KstObjectTag yVTag() const;
+    KstObjectTag xETag() const;
+    KstObjectTag yETag() const;
+    KstObjectTag xEMinusTag() const;
+    KstObjectTag yEMinusTag() const;
 
     void setXVector(KstVectorPtr new_vx);
     void setYVector(KstVectorPtr new_vy);

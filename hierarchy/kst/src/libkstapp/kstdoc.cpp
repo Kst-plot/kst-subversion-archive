@@ -1180,10 +1180,10 @@ void KstDoc::createScalars() const {
   new KstScalar("CONST_MKSA_MOLAR_GAS", 8.314472e0, false);
   new KstScalar("CONST_MKSA_STANDARD_GAS_VOLUME", 2.2710981e-2, false);
 #endif
-  new KstScalar("CONST_PI", 0L, M_PI, false);
-  new KstScalar("C_PI", 0L, M_PI, false);
-  new KstScalar("C_R2D", 0L, 180.0/M_PI, false); // radians to degrees
-  new KstScalar("C_D2R", 0L, M_PI/180.0, false); // degrees to radians
+  new KstScalar(KstObjectTag("CONST_PI", KstObjectTag::constantTagContext), 0L, M_PI, false);
+  new KstScalar(KstObjectTag("C_PI", KstObjectTag::constantTagContext), 0L, M_PI, false);
+  new KstScalar(KstObjectTag("C_R2D", KstObjectTag::constantTagContext), 0L, 180.0/M_PI, false); // radians to degrees
+  new KstScalar(KstObjectTag("C_D2R", KstObjectTag::constantTagContext), 0L, M_PI/180.0, false); // degrees to radians
 }
 
 
