@@ -2,6 +2,10 @@ All data objects (objects derived from KstObject) should be globally accessible
 in a hierarchical namespace. The general idea is to change tagNames to be a
 path instead of a simple name.
 
+A full path should uniquely specify a particular object in the hierarchy. We
+may use separate hierarchies for different object types to allow, for example,
+a plot and a curve to have the same name.
+
 The relationship of a KstObject being below another KstObject in the hierarchy
 means that the parent object CREATED the child object. Note that this is not
 the same thing as data PROVIDERS, which form a dependency graph (perhaps with
@@ -32,11 +36,13 @@ Level 2
 -------
 - Data vectors read from a data source (e.g. KstVector::tagName()). These names
   will not collide as long as there are unique names in each data source. 
-- Data source metadata strings, scalars (author, dataset description, numFields, etc.)
+- Data source metadata strings, scalars (author, dataset description,
+  numFields, etc.)
 
 Level 3
 -------
-- KstObjects generated from level 2 objects (e.g. KstScalars for min, max, etc.).
+- KstObjects generated from level 2 objects (e.g. KstScalars for min, max,
+  etc.).
 - Data object metadata strings, scalars (units, field description, etc.)
 
 
@@ -47,8 +53,8 @@ there, which is compatible with the current model (e.g. [Field1'-max]). Using
 cause conflicts with datasources using '-' within field names.
 
 
-In addition to the global lists of scalars, vectors, matrices, etc., we can view the data as a
-single tree of KstObjects:
+In addition to the global lists of scalars, vectors, matrices, etc., we can
+view the data as a single tree of KstObjects:
 
 - DataSource1
  \
@@ -77,3 +83,14 @@ single tree of KstObjects:
 
 We could also have separate trees (or filter the single tree) to show only
 scalars or strings (or whatever) in an organized way.
+
+
+IMPLEMENTATION DETAILS
+======================
+Wherever tags can be set, a "QStringList tagContext" parameter is added to
+represent the context of the tag (e.g. KstObject::setTagName(const QString&
+tag, QStringList tagContext). A tagContext value of KstData::globalTagContext
+(or QStringList(), the empty string list) indicates a Level 1 object.
+
+A tag value of QString::null means that a globally-unique tag name
+should be automatically generated.
