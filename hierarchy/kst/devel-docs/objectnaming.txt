@@ -1,6 +1,6 @@
 All data objects (objects derived from KstObject) should be globally accessible
-in a hierarchical namespace. The general idea is to change tagNames to be a
-path instead of a simple name.
+in a hierarchical namespace. The general idea is to change tags to be a path
+instead of a simple name.
 
 A full path should uniquely specify a particular object in the hierarchy. We
 may use separate hierarchies for different object types to allow, for example,
@@ -87,10 +87,15 @@ scalars or strings (or whatever) in an organized way.
 
 IMPLEMENTATION DETAILS
 ======================
-Wherever tags can be set, a "QStringList tagContext" parameter is added to
-represent the context of the tag (e.g. KstObject::setTagName(const QString&
-tag, QStringList tagContext). A tagContext value of KstData::globalTagContext
-(or QStringList(), the empty string list) indicates a Level 1 object.
+Instead of tags being QString's, they are now KstObjectTag objects. These
+objects contain a QString tag (the lowest level part of the hierarchical tag)
+and a QStringList context. Static constant KstObjectTag::globalTagContext
+represents global tags (i.e. Level 1). KstObjectTag::constantTagContext represents a namespace
+for constants.
+
+The default constructor of KstObjectTag build an empty tag in the global
+namespace. Unless otherwise specified, the context is assumed to be the
+global context.
 
 A tag value of QString::null means that a globally-unique tag name
 should be automatically generated.
