@@ -653,7 +653,7 @@ void Kst2DPlot::commonConstructor(const QString &in_tag,
 
   _i_per = 0;
   
-  setTagName(in_tag, KstObjectTag::globalTagContext);  // FIXME: tag context
+  setTagName(KstObjectTag(in_tag, KstObjectTag::globalTagContext));  // FIXME: tag context
   _isTied = false;
 
   XMin = xmin_in;

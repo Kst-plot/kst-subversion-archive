@@ -38,7 +38,7 @@ KstAMatrix::KstAMatrix(const QDomElement &e) : KstMatrix() {
     QDomElement e = n.toElement();
     if (!e.isNull()) {
       if (e.tagName() == "tag") {
-        setTagName(e.text(), QStringList());  // FIXME: use correct tag context
+        setTagName(KstObjectTag::fromString(e.text()));
       } else if (e.tagName() == "nx") {
         in_nX = e.text().toInt();
       } else if (e.tagName() == "ny") {

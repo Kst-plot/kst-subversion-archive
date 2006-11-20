@@ -56,7 +56,7 @@ KstPlugin::KstPlugin(const QDomElement& e)
     QDomElement e = n.toElement();
     if (!e.isNull()) {
       if (e.tagName() == "tag") {
-        setTagName(e.text(), KstObjectTag::globalTagContext);  // FIXME: always global tag context?
+        setTagName(KstObjectTag::fromString(e.text()));
       } else if (e.tagName() == "name") {
         pluginName = e.text();
       } else if (e.tagName() == "ivector") {

@@ -60,11 +60,11 @@ KstVector::KstVector(KstObjectTag in_tag, int size, KstObject *provider, bool is
     QString nt = i18n("Anonymous Vector %1");
 
     do {
-      KstObject::setTagName(nt.arg(anonymousVectorCounter++), tag().context());
+      KstObject::setTagName(KstObjectTag(nt.arg(anonymousVectorCounter++), tag().context()));
     } while (KstData::self()->vectorTagNameNotUnique(tagName(), false));
   } else {
     while (KstData::self()->vectorTagNameNotUnique(tagName(), false)) {
-      KstObject::setTagName(tag().tag() + '\'', tag().context());
+      KstObject::setTagName(KstObjectTag(tag().tag() + '\'', tag().context()));
     }
   }
 
@@ -518,12 +518,6 @@ void KstVector::save(QTextStream &ts, const QString& indent, bool saveAbsolutePo
 
 void KstVector::setTagName(KstObjectTag newTag) {
   KstObject::setTagName(newTag);
-  RenameScalars();
-}
-
-
-void KstVector::setTagName(const QString& newTag, QStringList context) {
-  KstObject::setTagName(newTag, context);
   RenameScalars();
 }
 

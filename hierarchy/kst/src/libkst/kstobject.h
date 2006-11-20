@@ -67,6 +67,17 @@ class KstObjectTag {
 
     QString tagString() const { return QStringList(_context + QStringList(_tag)).join(tagSeparator); }
 
+    static KstObjectTag fromString(const QString& str) {
+      QStringList l = QStringList::split(tagSeparator, str);
+      if (l.isEmpty()) {
+        return KstObjectTag();
+      }
+
+      QString t = l.last();
+      l.pop_back();
+      return KstObjectTag(t, l);
+    }
+
     bool operator==(const KstObjectTag& tag) {
       return (_tag == tag._tag && _context == tag._context);
     }
@@ -93,7 +104,6 @@ class KST_EXPORT KstObject : public KstShared, public QObject, public KstRWLock 
     virtual QString tagName() const;
     virtual KstObjectTag tag() const;
     virtual void setTagName(KstObjectTag tag);
-    virtual void setTagName(const QString& tag, QStringList context);
 
     virtual QString tagLabel() const;
     // Returns count - 2 to account for "this" and the list pointer

@@ -618,7 +618,7 @@ KstDataSource::KstDataSource(KConfig *cfg, const QString& filename, const QStrin
   shortFilename = shortFilename.section('/', -1);
   QString tn = i18n("DS%2-%1").arg(shortFilename);
   do {
-    KstObject::setTagName(tn.arg(dataSourceCounter++), KstObjectTag::globalTagContext);  // are DataSources always top-level?
+    KstObject::setTagName(KstObjectTag(tn.arg(dataSourceCounter++), KstObjectTag::globalTagContext));  // are DataSources always top-level?
   } while (KstData::self()->dataSourceTagNameNotUnique(tagName(), false));
 
   _numFramesScalar = new KstScalar(KstObjectTag("frames", tag()));

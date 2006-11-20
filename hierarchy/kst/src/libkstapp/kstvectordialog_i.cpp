@@ -572,14 +572,12 @@ bool KstVectorDialogI::editSingleObjectRV(KstVectorPtr vcPtr) {
       pDoFilter = rvp->doAve();
     }
 
-    QString pTagName = rvp->tag().tag();
-    QStringList pTagContext = rvp->tag().context();
     rvp->unlock();
 
     /* change the vector */
     rvp->writeLock();
 
-    rvp->change(file, pField, pTagName, pTagContext, pCountFromEnd ?  -1 : f0, pReadToEnd ?  -1 : n, pSkip, pDoSkip, pDoFilter);
+    rvp->change(file, pField, rvp->tag(), pCountFromEnd ?  -1 : f0, pReadToEnd ?  -1 : n, pSkip, pDoSkip, pDoFilter);
 
     rvp->unlock();
   } else {
@@ -594,7 +592,7 @@ bool KstVectorDialogI::editSingleObjectRV(KstVectorPtr vcPtr) {
 //    QString tagname = _tagName->text();
     svp->writeLock();
     svp->changeRange(x0, x1, n);
-    svp->setTagName(_tagName->text(), svp->tag().context()); // FIXME: doesn't verify uniqueness, doesn't allow changing tag context
+    svp->setTagName(KstObjectTag(_tagName->text(), svp->tag().context())); // FIXME: doesn't verify uniqueness, doesn't allow changing tag context
     svp->unlock();
   }
   file->unlock();
@@ -647,7 +645,7 @@ bool KstVectorDialogI::editObject() {
       return false;
     }
 
-    _dp->setTagName(tag_name, _dp->tag().context()); // FIXME: doesn't allow changing tag context
+    _dp->setTagName(KstObjectTag(tag_name, _dp->tag().context())); // FIXME: doesn't allow changing tag context
     _dp->unlock();
 
     // then edit the object

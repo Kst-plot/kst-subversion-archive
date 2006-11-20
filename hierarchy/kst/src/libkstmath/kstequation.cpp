@@ -150,7 +150,7 @@ void KstEquation::commonConstructor(const QString& in_tag, const QString& in_equ
   _pe = 0L;
   _typeString = i18n("Equation");
   _type = "Equation";
-  KstObject::setTagName(in_tag, KstObjectTag::globalTagContext); // FIXME: global tag context?
+  KstObject::setTagName(KstObjectTag(in_tag, KstObjectTag::globalTagContext)); // FIXME: global tag context?
 
   KstVectorPtr xv = new KstVector(KstObjectTag("xsv", tag()), 2, this);
   KST::addVectorToList(xv);
@@ -334,7 +334,7 @@ void KstEquation::setExistingXVector(KstVectorPtr in_xv, bool do_interp) {
 
 
 void KstEquation::setTagName(const QString &in_tag) {
-  KstObject::setTagName(in_tag, tag().context());  // FIXME: always the same context?
+  KstObject::setTagName(KstObjectTag(in_tag, tag().context()));  // FIXME: always the same context?
   (*_xOutVector)->setTagName(KstObjectTag("xsv", tag()));
   (*_yOutVector)->setTagName(KstObjectTag("sv", tag()));
 }

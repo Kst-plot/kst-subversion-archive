@@ -75,7 +75,7 @@ KstImage::KstImage(const QDomElement& e) : KstBaseCurve(e){
 
   _inputMatrixLoadQueue.append(qMakePair(THEMATRIX, in_matrixName));
 
-  setTagName(in_tag, KstObjectTag::globalTagContext);  // FIXME: set tag context properly
+  setTagName(KstObjectTag::fromString(in_tag));
   _typeString = i18n("Image");
   _hasColorMap = in_hasColorMap;
   _hasContourMap = in_hasContourMap;
@@ -108,7 +108,7 @@ KstImage::KstImage(const QDomElement& e) : KstBaseCurve(e){
 KstImage::KstImage(const QString &in_tag, KstMatrixPtr in_matrix, double lowerZ, double upperZ, bool autoThreshold, KPalette* pal) : KstBaseCurve(){
 
   _inputMatrices[THEMATRIX] = in_matrix;
-  setTagName(in_tag, KstObjectTag::globalTagContext);  // FIXME: always top-level?
+  setTagName(KstObjectTag(in_tag, KstObjectTag::globalTagContext));  // FIXME: always top-level?
   _typeString = i18n("Image");
   _zLower = lowerZ;
   _zUpper = upperZ;
@@ -125,7 +125,7 @@ KstImage::KstImage(const QString &in_tag, KstMatrixPtr in_matrix, double lowerZ,
 //constructor for contour map only
 KstImage::KstImage(const QString &in_tag, KstMatrixPtr in_matrix, int numContours, const QColor& contourColor, int contourWeight) : KstBaseCurve(){
   _inputMatrices[THEMATRIX] = in_matrix;
-  setTagName(in_tag, KstObjectTag::globalTagContext);  // FIXME: always top-level?
+  setTagName(KstObjectTag(in_tag, KstObjectTag::globalTagContext));  // FIXME: always top-level?
   _typeString = i18n("Image");
   _contourColor = contourColor;
   _numContourLines = numContours;
@@ -150,7 +150,7 @@ KstImage::KstImage(const QString &in_tag,
                    const QColor& contourColor,
                    int contourWeight) {
   _inputMatrices[THEMATRIX] = in_matrix;
-  setTagName(in_tag, KstObjectTag::globalTagContext);  // FIXME: always top-level?
+  setTagName(KstObjectTag(in_tag, KstObjectTag::globalTagContext));  // FIXME: always top-level?
   _typeString = i18n("Image");
   _contourColor = contourColor;
   _numContourLines = numContours;
@@ -319,7 +319,7 @@ void KstImage::setThresholdToSpikeInsensitive(double per) {
 
 void KstImage::changeToColorOnly(const QString &in_tag, KstMatrixPtr in_matrix,
                                      double lowerZ, double upperZ, bool autoThreshold, KPalette* pal) {
-  setTagName(in_tag, KstObjectTag::globalTagContext);  // FIXME: always top-level?
+  setTagName(KstObjectTag(in_tag, KstObjectTag::globalTagContext));  // FIXME: always top-level?
   if (_inputMatrices.contains(THEMATRIX)) {
     _inputMatrices[THEMATRIX] = in_matrix;
   }
@@ -338,7 +338,7 @@ void KstImage::changeToColorOnly(const QString &in_tag, KstMatrixPtr in_matrix,
 
 void KstImage::changeToContourOnly(const QString &in_tag, KstMatrixPtr in_matrix,
                                        int numContours, const QColor& contourColor, int contourWeight) {
-  setTagName(in_tag, KstObjectTag::globalTagContext);  // FIXME: always top-level?
+  setTagName(KstObjectTag(in_tag, KstObjectTag::globalTagContext));  // FIXME: always top-level?
   if (_inputMatrices.contains(THEMATRIX)) {
     _inputMatrices[THEMATRIX] = in_matrix;
   }
@@ -359,7 +359,7 @@ void KstImage::changeToContourOnly(const QString &in_tag, KstMatrixPtr in_matrix
 void KstImage::changeToColorAndContour(const QString &in_tag, KstMatrixPtr in_matrix,
                                                double lowerZ, double upperZ, bool autoThreshold, KPalette* pal,
                                                int numContours, const QColor& contourColor, int contourWeight) {
-  setTagName(in_tag, KstObjectTag::globalTagContext);  // FIXME: always top-level?
+  setTagName(KstObjectTag(in_tag, KstObjectTag::globalTagContext));  // FIXME: always top-level?
   if (_inputMatrices.contains(THEMATRIX)) {
     _inputMatrices[THEMATRIX] = in_matrix;
   }

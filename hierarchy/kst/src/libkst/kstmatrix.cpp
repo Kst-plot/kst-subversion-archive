@@ -57,11 +57,11 @@ KstMatrix::KstMatrix(KstObjectTag in_tag, KstObject *provider, uint nX, uint nY,
     QString nt = i18n("Anonymous Matrix %1");
 
     do {
-      KstObject::setTagName(nt.arg(anonymousMatrixCounter++), in_tag.context());
+      KstObject::setTagName(KstObjectTag(nt.arg(anonymousMatrixCounter++), in_tag.context()));
     } while (KstData::self()->matrixTagNameNotUnique(tagName(), false));
   } else {
     while (KstData::self()->matrixTagNameNotUnique(tagName(), false)) {
-      KstObject::setTagName(tag().tag() + '\'', in_tag.context());
+      KstObject::setTagName(KstObjectTag(tag().tag() + '\'', in_tag.context()));
     }
   }
   setDirty();
@@ -370,12 +370,6 @@ void KstMatrix::setTagName(KstObjectTag tag) {
 }
 
 
-void KstMatrix::setTagName(const QString& newTag, QStringList context) {
-  KstObject::setTagName(newTag, context);
-  renameScalars();
-}
-    
- 
 const QDict<KstScalar>& KstMatrix::scalars() const {
   return _statScalars;
 }

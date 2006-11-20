@@ -194,7 +194,7 @@ void KstVCurve::commonConstructor(const QString &in_tag, const QColor &in_color)
   _typeString = i18n("Curve");
   _type = "Curve";
   Color = in_color;
-  setTagName(in_tag, KstObjectTag::globalTagContext);  // FIXME: curves are not always top-level?
+  setTagName(KstObjectTag(in_tag, KstObjectTag::globalTagContext));  // FIXME: curves are not always top-level?
   updateParsedLegendTag();
 }
 

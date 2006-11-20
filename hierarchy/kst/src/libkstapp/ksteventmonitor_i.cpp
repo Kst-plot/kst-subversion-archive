@@ -305,7 +305,7 @@ bool KstEventMonitorI::editObject() {
     }
     
     ep->writeLock();
-    ep->setTagName(tag_name, ep->tag().context()); // FIXME: doesn't allow changing tag context
+    ep->setTagName(KstObjectTag(tag_name, ep->tag().context())); // FIXME: doesn't allow changing tag context
     ep->unlock();
     
     // then edit the object

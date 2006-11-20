@@ -97,7 +97,6 @@ class KST_EXPORT KstMatrix: public KstPrimitive {
 
     // set tag name of the matrix
     virtual void setTagName(KstObjectTag tag);
-    virtual void setTagName(const QString& newTag, QStringList context);
 
     // the statistics scalars for this matrix
     const QDict<KstScalar>& scalars() const;

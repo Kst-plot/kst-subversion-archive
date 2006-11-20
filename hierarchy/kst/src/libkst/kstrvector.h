@@ -49,7 +49,7 @@ public:
 
   /** change the properties of a kstrvector */
   void change(KstDataSourcePtr file, const QString &field,
-              const QString &tag, QStringList tagContext,
+              KstObjectTag tag,
               int f0, int n, int skip,
               bool in_doSkip, bool in_doAve);
 

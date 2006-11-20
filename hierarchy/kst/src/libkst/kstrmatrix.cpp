@@ -85,7 +85,7 @@ KstRMatrix::KstRMatrix(const QDomElement &e) : KstMatrix(KstObjectTag(), 0L, 1,1
     n = n.nextSibling();
   }
 
-  setTagName(in_tag, KstObjectTag::globalTagContext); // FIXME: use correct tag context
+  setTagName(KstObjectTag::fromString(in_tag));
 
   // call common constructor
   commonConstructor(in_file, in_field, in_xStart, in_yStart, in_xNumSteps, in_yNumSteps, in_doAve, in_doSkip, in_skip);

@@ -58,7 +58,7 @@ KstSMatrix::KstSMatrix(const QDomElement &e) : KstMatrix() {
   _saveable = true;
   _editable = true;
   _zSize = 0;
-  change(KstObjectTag(in_tag), in_nX, in_nY, in_xMin, in_yMin, in_xStep, in_yStep, in_gradZMin, in_gradZMax, in_xDirection); // FIXME: use correct tag context
+  change(KstObjectTag::fromString(in_tag), in_nX, in_nY, in_xMin, in_yMin, in_xStep, in_yStep, in_gradZMin, in_gradZMax, in_xDirection);
 }
 
 KstSMatrix::KstSMatrix(KstObjectTag tag,

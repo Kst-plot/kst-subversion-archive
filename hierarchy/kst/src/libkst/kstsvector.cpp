@@ -29,7 +29,7 @@ KstSVector::KstSVector(const QDomElement &e) : KstVector() {
     QDomElement e = n.toElement();
     if (!e.isNull()) {
       if (e.tagName() == "tag") {
-        setTagName(e.text(), QStringList());  // FIXME: tag context
+        setTagName(KstObjectTag::fromString(e.text()));
       } else if (e.tagName() == "N") {
         in_n = e.text().toInt();
       } else if (e.tagName() == "min") {

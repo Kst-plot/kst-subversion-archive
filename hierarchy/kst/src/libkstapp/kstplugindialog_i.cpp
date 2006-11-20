@@ -599,7 +599,7 @@ bool KstPluginDialogI::newObject() {
       if (tagName == plugin_defaultTag) {
         tagName = KST::suggestPluginName(_pluginList[pitem]);
       }
-      plugin->setTagName(tagName, KstObjectTag::globalTagContext); // FIXME: tag context?
+      plugin->setTagName(KstObjectTag(tagName, KstObjectTag::globalTagContext)); // FIXME: tag context?
       if (!saveOutputs(plugin, pPtr)) {
         KMessageBox::sorry(this, i18n("One or more of the outputs was undefined."));
         plugin->unlock();
@@ -639,7 +639,7 @@ bool KstPluginDialogI::editObject() {
     return false;
   }
 
-  pp->setTagName(_tagName->text(), KstObjectTag::globalTagContext);  // FIXME: tag context always global?
+  pp->setTagName(KstObjectTag(_tagName->text(), KstObjectTag::globalTagContext));  // FIXME: tag context always global?
 
   int pitem = _w->PluginCombo->currentItem();
   KstSharedPtr<Plugin> pPtr = PluginCollection::self()->plugin(_pluginList[pitem]);

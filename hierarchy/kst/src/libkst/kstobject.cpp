@@ -75,18 +75,6 @@ void KstObject::setTagName(KstObjectTag tag) {
 }
 
 
-void KstObject::setTagName(const QString& tag, QStringList context) {
-  _tag.setTag(tag, context);
-
-  if (tag.contains(KstObjectTag::tagSeparator)) {
-    kstdWarning() << "WARNING: setting KstObject tag name containing " << KstObjectTag::tagSeparator << ":\"" << tag << "\"" << endl;
-    _tag.setTag(_tag.tag().replace(KstObjectTag::tagSeparator, "-"));
-  }
-
-  setName(_tag.tagString().local8Bit().data());
-}
-
-
 QString KstObject::tagLabel() const {
   return QString("[%1]").arg(_tag.tagString());
 }

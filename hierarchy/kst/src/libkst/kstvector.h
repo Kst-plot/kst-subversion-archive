@@ -129,7 +129,6 @@ class KST_EXPORT KstVector : public KstPrimitive {
     static KstVectorPtr generateVector(double x0, double x1, int n, KstObjectTag tag);
 
     virtual void setTagName(KstObjectTag newTag);
-    virtual void setTagName(const QString& newTag, QStringList context);
 
     /** Return a pointer to the raw vector */
     double *const value() const;

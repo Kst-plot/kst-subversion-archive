@@ -374,7 +374,7 @@ bool KstPsdDialogI::editObject() {
     }
     
     pp->writeLock();
-    pp->setTagName(tag_name, pp->tag().context()); // FIXME: doesn't allow changing tag context
+    pp->setTagName(KstObjectTag(tag_name, pp->tag().context())); // FIXME: doesn't allow changing tag context
     pp->unlock();
     
     // then edit the object

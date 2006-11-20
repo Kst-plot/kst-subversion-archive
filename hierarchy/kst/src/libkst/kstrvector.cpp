@@ -68,7 +68,7 @@ KstRVector::KstRVector(const QDomElement &e, const QString &o_file,
     QDomElement e = n.toElement();
     if (!e.isNull()) {
       if (e.tagName() == "tag") {
-        setTagName(e.text(), QStringList());  // FIXME: tag context
+        setTagName(KstObjectTag::fromString(e.text()));
       } else if (e.tagName() == "filename") {
         KST::dataSourceList.lock().readLock();
         if (o_file == "|") {
@@ -159,7 +159,7 @@ void KstRVector::commonRVConstructor(KstDataSourcePtr in_file,
 
 
 void KstRVector::change(KstDataSourcePtr in_file, const QString &in_field,
-                        const QString &in_tag, QStringList tagContext,
+                        KstObjectTag in_tag,
                         int in_f0, int in_n,
                         int in_skip, bool in_DoSkip,
                         bool in_DoAve) {
@@ -174,7 +174,7 @@ void KstRVector::change(KstDataSourcePtr in_file, const QString &in_field,
   ReqF0 = in_f0;
   ReqNF = in_n;
   _field = in_field;
-  setTagName(in_tag, tagContext);
+  setTagName(in_tag);
 
   if (_file) {
     _file->writeLock();
@@ -309,7 +309,9 @@ void KstRVector::save(QTextStream &ts, const QString& indent, bool saveAbsoluteP
     ts << indent << "  <tag>" << QStyleSheet::escape(tagName()) << "</tag>" << endl;
     _file->readLock();
     ts << indent << "  <filename>" << QStyleSheet::escape(_file->fileName()) << "</filename>" << endl;
+    ts << indent << "  <provider>" << QStyleSheet::escape(_file->tag().tagString()) << "</provider>" << endl;
     _file->unlock();
+
     ts << indent << "  <field>" << _field << "</field>" << endl;
     if (saveAbsolutePosition) {
       ts << indent << "  <start>" << F0 << "</start>" << endl;

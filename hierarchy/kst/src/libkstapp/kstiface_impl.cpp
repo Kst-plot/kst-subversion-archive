@@ -1497,7 +1497,7 @@ QStringList KstIfaceImpl::createPlugin(const QString& pluginName,
     stringnum.setNum(++i);
     plugtag = "P" + stringnum + "-" + pluginName;
   }
-  kstplug_ptr->setTagName(plugtag, KstObjectTag::globalTagContext);  // FIXME: tag context
+  kstplug_ptr->setTagName(KstObjectTag(plugtag, KstObjectTag::globalTagContext));  // FIXME: tag context
 
   //try to rename the outputs.  If something is inconsistent just ignore it and
   //leave default output names.
@@ -1514,7 +1514,7 @@ QStringList KstIfaceImpl::createPlugin(const QString& pluginName,
           vectorTag += '\'';
         }
         kstplug_ptr->writeLock();
-        (*kstVectorIter)->setTagName(vectorTag, KstObjectTag::globalTagContext); // FIXME: tag context
+        (*kstVectorIter)->setTagName(KstObjectTag(vectorTag, KstObjectTag::globalTagContext)); // FIXME: tag context
         kstplug_ptr->unlock();
         kstVectorIter++;
       }
@@ -1526,7 +1526,7 @@ QStringList KstIfaceImpl::createPlugin(const QString& pluginName,
           scalarTag += '\'';
         }
         kstplug_ptr->writeLock();
-        (*kstScalarIter)->setTagName(scalarTag, KstObjectTag::globalTagContext);  // FIXME: tag context
+        (*kstScalarIter)->setTagName(KstObjectTag(scalarTag, KstObjectTag::globalTagContext));  // FIXME: tag context
         kstplug_ptr->unlock();
         kstScalarIter++;
       }

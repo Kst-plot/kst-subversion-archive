@@ -57,7 +57,7 @@ KstString::KstString(QDomElement& e)
     QDomElement e = n.toElement();
     if (!e.isNull()) {
       if (e.tagName() == "tag") {
-        setTagName(KstObjectTag(e.text(), KstObjectTag::globalTagContext));  // FIXME: use proper tag context
+        setTagName(KstObjectTag::fromString(e.text()));
       } else if (e.tagName() == "orphan") {
         _orphan = true;
       } else if (e.tagName() == "value") {
