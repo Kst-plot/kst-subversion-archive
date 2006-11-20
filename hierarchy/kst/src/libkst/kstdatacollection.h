@@ -78,10 +78,11 @@ namespace KST {
 
     /** The list of Scalars which have been generated */
     KST_EXPORT extern KstScalarList scalarList;
-    KST_EXPORT extern KstObjectTreeNode *scalarTree;
+    KST_EXPORT extern KstObjectTree scalarNameTree;
 
     /** The list of Strings */
     KST_EXPORT extern KstStringList stringList;
+    KST_EXPORT extern KstObjectTree stringNameTree;
 
     /** The list of matrices that are being read */
     KST_EXPORT extern KstMatrixList matrixList;

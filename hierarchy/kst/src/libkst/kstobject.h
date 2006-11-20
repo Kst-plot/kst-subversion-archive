@@ -305,9 +305,13 @@ inline KstSharedPtr<T> kst_cast(KstSharedPtr<U> object) {
 
 
 /** KstObject Naming Tree */
+class KstObjectTreeNode;
+typedef QMap<QString, QValueList<KstObjectTreeNode *> > KstObjectNameIndex;
+
 class KstObjectTreeNode {
   public:
     KstObjectTreeNode(const QString& tag = QString::null);
+    ~KstObjectTreeNode();
 
     QString nodeTag() const { return _tag; }
     QStringList fullTag() const;
@@ -319,8 +323,8 @@ class KstObjectTreeNode {
     QMap<QString, KstObjectTreeNode *> children() const { return _children; }
 
     KstObjectTreeNode *descendant(QStringList tag);
-    bool addDescendant(KstObject *o);
-    bool removeDescendant(KstObject *o);
+    KstObjectTreeNode *addDescendant(KstObject *o, KstObjectNameIndex *index = NULL);
+    bool removeDescendant(KstObject *o, KstObjectNameIndex *index = NULL);
 
     // TODO: locking
   private:
@@ -328,6 +332,19 @@ class KstObjectTreeNode {
     QGuardedPtr<KstObject> _object;
     KstObjectTreeNode *_parent;
     QMap<QString, KstObjectTreeNode *> _children;
+};
+
+class KstObjectTree {
+  public:
+    bool addObject(KstObject *o);
+    bool removeObject(KstObject *o);
+
+    KstObject *retrieveObject(QStringList tag);
+    KstObject *retrieveObject(KstObjectTag tag);
+
+  private:
+    KstObjectTreeNode _root;
+    KstObjectNameIndex _index;
 };
 
 #endif

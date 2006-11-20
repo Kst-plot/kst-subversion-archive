@@ -57,7 +57,7 @@ KstString::KstString(QDomElement& e)
     QDomElement e = n.toElement();
     if (!e.isNull()) {
       if (e.tagName() == "tag") {
-        setTagName(e.text(), QStringList());  // FIXME: use proper tag context
+        setTagName(KstObjectTag(e.text(), KstObjectTag::globalTagContext));  // FIXME: use proper tag context
       } else if (e.tagName() == "orphan") {
         _orphan = true;
       } else if (e.tagName() == "value") {
@@ -71,6 +71,13 @@ KstString::KstString(QDomElement& e)
 
 
 KstString::~KstString() {
+}
+
+
+void KstString::setTagName(KstObjectTag tag) {
+  KST::stringNameTree.removeObject(this);
+  KstObject::setTagName(tag);
+  KST::stringNameTree.addObject(this);
 }
 
 

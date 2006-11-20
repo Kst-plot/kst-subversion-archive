@@ -29,6 +29,8 @@ class KST_EXPORT KstString : public KstPrimitive {
     KstString(QDomElement& e);
     ~KstString();
 
+    void setTagName(KstObjectTag tag);
+
     /** Save information */
     void save(QTextStream &ts, const QString& indent = QString::null);
 

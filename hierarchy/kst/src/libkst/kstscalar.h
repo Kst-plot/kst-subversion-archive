@@ -34,6 +34,8 @@ class KST_EXPORT KstScalar : public KstPrimitive {
     KstScalar(const QDomElement& e);
     virtual ~KstScalar();
 
+    void setTagName(KstObjectTag tag);
+
     /* return true if any scalars are dirty at the moment */
     static bool scalarsDirty();
     /* For use by the update thread */

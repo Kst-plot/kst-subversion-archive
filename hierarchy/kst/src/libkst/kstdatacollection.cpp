@@ -36,10 +36,12 @@ KstMatrixList KST::matrixList;
 /** The list of Scalars which have been generated */
 KstScalarList KST::scalarList;
 /** Root of Scalar naming tree */
-KstObjectTreeNode *KST::scalarTree = new KstObjectTreeNode();
+KstObjectTree KST::scalarNameTree;
 
 /** The list of Strings */
 KstStringList KST::stringList;
+/** Root of String naming tree */
+KstObjectTree KST::stringNameTree;
 
 void KST::addVectorToList(KstVectorPtr v) {
   KST::vectorList.lock().writeLock();

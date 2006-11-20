@@ -65,9 +65,9 @@ inline KstObjectTag KstObject::tag() const {
 
 
 void KstObject::setTagName(KstObjectTag tag) {
-  if (tag.tag().contains('/')) {
-    kstdWarning() << "WARNING: setting KstObject tag name containing '/':\"" << tag.tag() << "\"" << endl;
-    // TODO: parse out slashes
+  if (tag.tag().contains(KstObjectTag::tagSeparator)) {
+    kstdWarning() << "WARNING: setting KstObject tag name containing " << KstObjectTag::tagSeparator << ":\"" << tag.tag() << "\"" << endl;
+    tag.setTag(tag.tag().replace(KstObjectTag::tagSeparator, "-"));
   }
 
   _tag = tag;
@@ -76,12 +76,13 @@ void KstObject::setTagName(KstObjectTag tag) {
 
 
 void KstObject::setTagName(const QString& tag, QStringList context) {
-  if (tag.contains('/')) {
-    kstdWarning() << "WARNING: setting KstObject tag name containing '/':" << tag << endl;
-    // TODO: parse out slashes
+  _tag.setTag(tag, context);
+
+  if (tag.contains(KstObjectTag::tagSeparator)) {
+    kstdWarning() << "WARNING: setting KstObject tag name containing " << KstObjectTag::tagSeparator << ":\"" << tag << "\"" << endl;
+    _tag.setTag(_tag.tag().replace(KstObjectTag::tagSeparator, "-"));
   }
 
-  _tag.setTag(tag, context);
   setName(_tag.tagString().local8Bit().data());
 }
 
@@ -121,11 +122,20 @@ bool KstObject::dirty() const {
 }
 
 
+
 KstObjectTreeNode::KstObjectTreeNode(const QString& tag) : _tag(tag),
                                                            _object(NULL),
                                                            _parent(NULL)
 {
 }
+
+
+KstObjectTreeNode::~KstObjectTreeNode() {
+  for (QMapIterator<QString, KstObjectTreeNode*> i = _children.begin(); i != _children.end(); ++i) {
+    delete (i.data());
+  }
+}
+
 
 QStringList KstObjectTreeNode::fullTag() const {
   QStringList tag;
@@ -141,6 +151,7 @@ QStringList KstObjectTreeNode::fullTag() const {
   return tag;
 }
 
+
 KstObjectTreeNode *KstObjectTreeNode::child(const QString& tag) const {
   if (_children.contains(tag)) {
     return _children[tag];
@@ -148,6 +159,7 @@ KstObjectTreeNode *KstObjectTreeNode::child(const QString& tag) const {
     return NULL;
   }
 }
+
 
 KstObjectTreeNode *KstObjectTreeNode::descendant(QStringList tag) {
   KstObjectTreeNode *currNode = this;
@@ -161,9 +173,10 @@ KstObjectTreeNode *KstObjectTreeNode::descendant(QStringList tag) {
   return currNode;
 }
 
-bool KstObjectTreeNode::addDescendant(KstObject *o) {
+
+KstObjectTreeNode *KstObjectTreeNode::addDescendant(KstObject *o, KstObjectNameIndex *index) {
   if (!o) {
-    return false;
+    return NULL;
   }
 
   QStringList tag = o->tag().fullTag();
@@ -175,20 +188,25 @@ bool KstObjectTreeNode::addDescendant(KstObject *o) {
       nextNode = new KstObjectTreeNode(*i);
       nextNode->_parent = currNode;
       currNode->_children[*i] = nextNode;
+      if (index) {
+        (*index)[*i].append(nextNode);
+      }
     }
     currNode = nextNode;
   }
 
   if (currNode->_object) {
-    return false;
+    kstdDebug() << "Tried to add KstObject to naming tree:" << o->tag().tagString() << ", but there's already an object with that name" << endl;
+    return NULL;
   } else {
     currNode->_object = o;
     kstdDebug() << "Added KstObject to naming tree:" << o->tag().tagString() << endl;
-    return true;
+    return currNode;
   }
 }
 
-bool KstObjectTreeNode::removeDescendant(KstObject *o) {
+
+bool KstObjectTreeNode::removeDescendant(KstObject *o, KstObjectNameIndex *index) {
   if (!o) {
     return false;
   }
@@ -199,26 +217,91 @@ bool KstObjectTreeNode::removeDescendant(KstObject *o) {
   for (QStringList::ConstIterator i = tag.begin(); i != tag.end(); ++i) {
     KstObjectTreeNode *nextNode = currNode->child(*i);
     if (!nextNode) {
+//      kstdDebug() << "Tried to remove KstObject from naming tree:" << o->tag().tagString() << ", but the node is not in the tree" << endl;
       return false;
     }
     currNode = nextNode;
   }
 
   if (currNode->_object != QGuardedPtr<KstObject>(o)) {
+//    kstdDebug() << "Tried to remove KstObject from naming tree:" << o->tag().tagString() << ", but the object is not in the tree" << endl;
     return false;
   } else {
     currNode->_object = NULL;
     QStringList::ConstIterator i = tag.end();
-    while (i != tag.begin() && currNode->_object.isNull()) {
+    while (i != tag.begin() && currNode->_object.isNull() && currNode->_children.isEmpty()) {
       --i;
       KstObjectTreeNode *lastNode = currNode->_parent;
       lastNode->_children.remove(*i);
+      kstdDebug() << "Removed naming tree node:" << currNode->fullTag().join(KstObjectTag::tagSeparator) << endl;
+      if (index) {
+        (*index)[*i].remove(currNode);
+        if ((*index)[*i].isEmpty()) {
+          (*index).remove(*i);
+        }
+      }
       delete currNode;
       currNode = lastNode;
     }
+    kstdDebug() << "Removed KstObject from naming tree:" << o->tag().tagString() << endl;
     return true;
   }
 }
 
+
+bool KstObjectTree::addObject(KstObject *o) {
+  KstObjectTreeNode *n = _root.addDescendant(o, &_index);
+  return (n != NULL);
+}
+
+
+bool KstObjectTree::removeObject(KstObject *o) {
+  bool ok = _root.removeDescendant(o, &_index);
+
+  return ok;
+}
+
+
+KstObject * KstObjectTree::retrieveObject(QStringList tag) {
+  kstdDebug() << "Retrieving object with tag: " << tag.join(KstObjectTag::tagSeparator) << endl;
+
+  if (tag.isEmpty()) {
+    return NULL;
+  }
+
+  if (_index.contains(tag.first()) && _index[tag.first()].count() == 1) {
+    // the first tag element is unique, so use the index
+    kstdDebug() << "  first tag element (" << tag.first() << ") is unique in index" << endl;
+
+    KstObjectTreeNode *n = _index[tag.first()].first();
+    if (n) {
+      tag.pop_front();
+      n = n->descendant(tag);
+    }
+    if (n) {
+      kstdDebug() << "  found node, returning object " << (void*) n->object() << endl;
+      return n->object();
+    }
+  }
+
+  // search through the tree
+  KstObjectTreeNode *n = _root.descendant(tag);
+  if (n) {
+    kstdDebug() << "  found node, returning object " << (void*) n->object() << endl;
+    return n->object();
+  } else {
+    kstdDebug() << "  node not found" << endl;
+    return NULL;
+  }
+}
+
+
+KstObject * KstObjectTree::retrieveObject(KstObjectTag tag) {
+  if (!tag.isValid()) {
+    return NULL;
+  }
+
+  return retrieveObject(tag.fullTag());
+}
 
 // vim: ts=2 sw=2 et

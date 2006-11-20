@@ -52,14 +52,13 @@ KstScalar::KstScalar(KstObjectTag in_tag, KstObject *provider, double val, bool 
       _tag += '\'';
     }
   }
-  setTagName(_tag, in_tag.context());
+  setTagName(KstObjectTag(_tag, in_tag.context()));
 
   // FIXME: passing in a lock variable indicates a design problem
   if (doLock) {
     KST::scalarList.lock().writeLock();
   }
   KST::scalarList.append(this);
-  KST::scalarTree->addDescendant(this);
   if (doLock) {
     KST::scalarList.lock().unlock();
   }
@@ -77,7 +76,7 @@ KstScalar::KstScalar(const QDomElement& e)
     QDomElement e = n.toElement();
     if(!e.isNull()) {
       if (e.tagName() == "tag") {
-        setTagName(e.text(), QStringList());  // FIXME: use proper tag context
+        setTagName(KstObjectTag(e.text(), KstObjectTag::globalTagContext));  // FIXME: use proper tag context
       } else if (e.tagName() == "orphan") {
         _orphan = true;
       } else if (e.tagName() == "value") {
@@ -94,7 +93,6 @@ KstScalar::KstScalar(const QDomElement& e)
   }
 
   KST::scalarList.append(this);
-  KST::scalarTree->addDescendant(this);
 }
 
 
@@ -197,6 +195,12 @@ void KstScalar::setEditable(bool editable) {
   _editable = editable;
 }
 
+
+void KstScalar::setTagName(KstObjectTag newTag) {
+  KST::scalarNameTree.removeObject(this);
+  KstObject::setTagName(newTag);
+  KST::scalarNameTree.addObject(this);
+}
 
 #include "kstscalar.moc"
 // vim: et ts=2 sw=2
