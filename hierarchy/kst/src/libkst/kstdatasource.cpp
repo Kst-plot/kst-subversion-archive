@@ -407,6 +407,15 @@ static KstDataSourcePtr findPluginFor(const QString& filename, const QString& ty
   for (QValueList<PluginSortContainer>::Iterator i = bestPlugins.begin(); i != bestPlugins.end(); ++i) {
     KstDataSourcePtr plugin = (*i).plugin->create(kConfigObject, filename, QString::null, e);
     if (plugin) {
+      // restore tag if present
+      QDomNodeList l = e.elementsByTagName("tag");
+      if (l.count() > 0) {
+        QDomElement e2 = l.item(0).toElement();
+        if (!e2.isNull()) {
+          kstdDebug() << "Restoring tag " << e2.text() << " to KstDataSource" << endl;
+          plugin->setTagName(KstObjectTag::fromString(e2.text()));
+        }
+      }
       return plugin;
     }
   }
@@ -760,7 +769,7 @@ void KstDataSource::save(QTextStream &ts, const QString& indent) {
       break;
     }
   }
-  ts << indent << "<tag>" << QStyleSheet::escape(tagName()) << "</tag>" << endl;
+  ts << indent << "<tag>" << QStyleSheet::escape(tag().tagString()) << "</tag>" << endl;
   ts << indent << "<filename>" << name << "</filename>" << endl;
   ts << indent << "<type>" << QStyleSheet::escape(fileType()) << "</type>" << endl;
 }
