@@ -18,8 +18,11 @@
 #ifndef KSTVIEWSCALARSDIALOGI_H
 #define KSTVIEWSCALARSDIALOGI_H
 
+#include <klistviewsearchline.h>
+
 #include "viewscalarsdialog.h"
-#include "kstscalartable.h"
+//#include "kstscalartable.h"
+#include "kstscalarlistview.h"
 
 class KstViewScalarsDialogI : public KstViewScalarsDialog {
   Q_OBJECT
@@ -28,7 +31,8 @@ class KstViewScalarsDialogI : public KstViewScalarsDialog {
         const char* name = 0,
         bool modal = false, WFlags fl = 0 );
     virtual ~KstViewScalarsDialogI();
-    KstScalarTable* tableScalars;
+    KListViewSearchLineWidget *searchWidget;
+    KstScalarListView *listViewScalars;
 
     bool hasContent() const;
 

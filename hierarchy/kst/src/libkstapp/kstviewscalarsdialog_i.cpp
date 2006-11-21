@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <qheader.h>
 #include <qlayout.h>
 #include <qpushbutton.h>
 
@@ -28,23 +29,15 @@ KstViewScalarsDialogI::KstViewScalarsDialogI(QWidget* parent,
                                            bool modal,
                                            WFlags fl)
 : KstViewScalarsDialog(parent, name, modal, fl) {
-  tableScalars = new KstScalarTable(this, "tableScalars");
-  tableScalars->setNumRows(0);
-  tableScalars->setNumCols(2);
-  tableScalars->setReadOnly(true);
-  tableScalars->setSorting(false);
-  tableScalars->setSelectionMode(QTable::Single);
+  listViewScalars = new KstScalarListView(this, &KST::scalarNameTree);
+  listViewScalars->setShowSortIndicator(false);
+  listViewScalars->setSelectionMode(QListView::NoSelection);
+  searchWidget = new KListViewSearchLineWidget(listViewScalars, this);
   QBoxLayout *box = dynamic_cast<QBoxLayout*>(layout());
   if (box) {
-    box->insertWidget(0, tableScalars);
-    if (tableScalars->numCols() != 2) {
-      for (; 0 < tableScalars->numCols(); ) {
-        tableScalars->removeColumn(0);
-      }
-      tableScalars->insertColumns(0, 2);
-    }
+    box->insertWidget(0, searchWidget);
+    box->insertWidget(1, listViewScalars);
 
-    tableScalars->setReadOnly(true);
     languageChange();
   }
 
@@ -61,14 +54,16 @@ bool KstViewScalarsDialogI::hasContent() const {
 }
 
 void KstViewScalarsDialogI::updateViewScalarsDialog() {
-  KST::scalarList.lock().readLock();
-  int needed = KST::scalarList.count();
-  KST::scalarList.lock().unlock();
+  listViewScalars->update();
 
-  tableScalars->setNumRows(needed);
-  QRect rect = tableScalars->horizontalHeader()->rect();
-  tableScalars->setColumnWidth(0, rect.width()/2);
-  tableScalars->setColumnWidth(1, rect.width()/2);
+  // use whole width
+  int c0Width = listViewScalars->columnWidth(0);
+  int c1Width = listViewScalars->columnWidth(1);
+  int totalWidth = listViewScalars->header()->rect().width();
+  c0Width = totalWidth * c0Width/(c0Width + c1Width);
+  c1Width = totalWidth - c0Width;
+  listViewScalars->setColumnWidth(0, c0Width);
+  listViewScalars->setColumnWidth(1, c1Width);
 }
 
 
@@ -86,8 +81,8 @@ void KstViewScalarsDialogI::showViewScalarsDialog() {
  */
 void KstViewScalarsDialogI::languageChange() {
   setCaption(i18n("View Scalar Values"));
-  tableScalars->horizontalHeader()->setLabel(0, i18n("Scalar"));
-  tableScalars->horizontalHeader()->setLabel(1, i18n("Value"));
+  listViewScalars->header()->setLabel(0, i18n("Scalar"));
+  listViewScalars->header()->setLabel(1, i18n("Value"));
   KstViewScalarsDialog::languageChange();      
 }
 

@@ -29,7 +29,6 @@ libkstapp_la_SOURCES = \
 	plotmimesource.cpp \
 	kstplotdrag.cpp \
 	kstviewobjectimagedrag.cpp \
-	kstscalartable.cpp \
 	kstvectortable.cpp \
 	kstmatrixtable.cpp \
 	kstfittable.cpp \
@@ -121,6 +120,7 @@ libkstapp_la_SOURCES = \
 	monochromedialog.ui \
 	kstdebugnotifier.cpp \
 	kstdatanotifier.cpp \
+	kstscalarlistview.cpp \
 	kst.cpp
 
 
