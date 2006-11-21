@@ -71,10 +71,14 @@ KstString::KstString(QDomElement& e)
 
 
 KstString::~KstString() {
+  KstWriteLocker l(&KST::stringNameTree.lock());
+  KST::stringNameTree.removeObject(this);
 }
 
 
 void KstString::setTagName(KstObjectTag tag) {
+  KstWriteLocker l(&KST::stringNameTree.lock());
+
   KST::stringNameTree.removeObject(this);
   KstObject::setTagName(tag);
   KST::stringNameTree.addObject(this);

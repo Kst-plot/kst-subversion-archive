@@ -97,6 +97,9 @@ KstScalar::KstScalar(const QDomElement& e)
 
 
 KstScalar::~KstScalar() {
+  KstWriteLocker l(&KST::scalarNameTree.lock());
+
+  KST::scalarNameTree.removeObject(this);
 }
 
 
@@ -197,6 +200,8 @@ void KstScalar::setEditable(bool editable) {
 
 
 void KstScalar::setTagName(KstObjectTag newTag) {
+  KstWriteLocker l(&KST::scalarNameTree.lock());
+
   KST::scalarNameTree.removeObject(this);
   KstObject::setTagName(newTag);
   KST::scalarNameTree.addObject(this);

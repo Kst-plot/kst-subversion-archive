@@ -336,7 +336,6 @@ class KstObjectTreeNode {
     KstObjectTreeNode *addDescendant(KstObject *o, KstObjectNameIndex *index = NULL);
     bool removeDescendant(KstObject *o, KstObjectNameIndex *index = NULL);
 
-    // TODO: locking
   private:
     QString _tag;
     QGuardedPtr<KstObject> _object;
@@ -352,7 +351,11 @@ class KstObjectTree {
     KstObject *retrieveObject(QStringList tag);
     KstObject *retrieveObject(KstObjectTag tag);
 
+    KstRWLock& lock() const { return _lock; }
+
   private:
+    mutable KstRWLock _lock;
+
     KstObjectTreeNode _root;
     KstObjectNameIndex _index;
 };
