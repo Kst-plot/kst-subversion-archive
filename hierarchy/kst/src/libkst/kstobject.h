@@ -351,6 +351,8 @@ class KstObjectTree {
     KstObject *retrieveObject(QStringList tag);
     KstObject *retrieveObject(KstObjectTag tag);
 
+    KstObjectTreeNode *root() { return &_root; }
+
     KstRWLock& lock() const { return _lock; }
 
   private:
