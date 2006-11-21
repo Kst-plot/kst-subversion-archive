@@ -18,6 +18,8 @@
 #ifndef KSTMATRIXTABLE_H
 #define KSTMATRIXTABLE_H
 
+#include <qtable.h>
+
 class KstMatrixTable : public QTable {
   public:
     KstMatrixTable( QWidget * parent = 0, const char * name = 0 );

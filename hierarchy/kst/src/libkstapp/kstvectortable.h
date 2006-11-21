@@ -18,6 +18,8 @@
 #ifndef KSTVECTORTABLE_H
 #define KSTVECTORTABLE_H
 
+#include <qtable.h>
+
 class KstVectorTable : public QTable
 {
   public:

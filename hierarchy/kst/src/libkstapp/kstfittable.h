@@ -18,6 +18,8 @@
 #ifndef KSTFITTABLE_H
 #define KSTFITTABLE_H
 
+#include <qtable.h>
+
 class KstFitTable : public QTable
 {
 public:
