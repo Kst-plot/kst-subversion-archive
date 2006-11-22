@@ -652,7 +652,7 @@ void KstPlugin::createFitScalars() {
         double scalarValue = vectorParam->value(i);
         if (!_outputScalars.contains(paramName)) {
           KstScalarPtr s = new KstScalar(KstObjectTag(paramName, tag()), this, scalarValue);
-          //s->KstObject::writeLock();
+          s->KstObject::writeLock();
           _outputScalars.insert(paramName, s);
           ++_outScalarCnt;
         } else {
