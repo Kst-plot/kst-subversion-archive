@@ -55,6 +55,7 @@ bool KstViewScalarsDialogI::hasContent() const {
 
 void KstViewScalarsDialogI::updateViewScalarsDialog() {
   listViewScalars->update();
+  searchWidget->searchLine()->clear();
 
   // use whole width
   int c0Width = listViewScalars->columnWidth(0);

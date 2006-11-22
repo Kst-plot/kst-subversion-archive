@@ -55,6 +55,7 @@ bool KstViewStringsDialogI::hasContent() const {
 
 void KstViewStringsDialogI::updateViewStringsDialog() {
   listViewStrings->update();
+  searchWidget->searchLine()->clear();
 
   // use whole width
   int c0Width = listViewStrings->columnWidth(0);
