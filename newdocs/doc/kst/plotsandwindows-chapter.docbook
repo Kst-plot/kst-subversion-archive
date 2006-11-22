@@ -1668,11 +1668,15 @@ as curves, are not deleted.
 To move a plot from one window to another, you can use the <guimenuitem>Move To</guimenuitem> function of the
 <link linkend="manipulatingplotlayoutcontextmenu">layout mode context menu</link>.  
 </para>
-
-
 </sect2>
 </sect1>
 
+<sect1 id="viewmanager">
+<title>The View Manager</title>
+<para>
+<!-- FIXME: add documentation -->
+</para>
+</sect1>
 
 </chapter>
 
