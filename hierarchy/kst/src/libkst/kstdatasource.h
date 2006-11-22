@@ -18,6 +18,7 @@
 #ifndef KSTDATASOURCE_H
 #define KSTDATASOURCE_H
 
+#include <qdict.h>
 #include <qdom.h>
 #include <qguardedptr.h>
 #include <qstring.h>
@@ -47,6 +48,7 @@ struct KstMatrixData {
 };
 
 class KstScalar;
+class KstString;
 class KstDataSourceConfigWidget;
 typedef KstSharedPtr<KstScalar> KstScalarPtr;
 
@@ -179,7 +181,7 @@ class KST_EXPORT KstDataSource : public KstObject {
      */
     virtual bool reset();
 
-    virtual const QMap<QString, QString>& metaData() const;
+    virtual const QDict<KstString>& metaData() const;
 
     virtual const QString& metaData(const QString& key) const;
 
@@ -221,7 +223,7 @@ class KST_EXPORT KstDataSource : public KstObject {
     /** The source type name. */
     QString _source;
 
-    QMap<QString, QString> _metaData;
+    QDict<KstString> _metaData;
 
     KConfig *_cfg;
 

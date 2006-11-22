@@ -62,6 +62,7 @@ class KstViewFitsDialogI;
 class KstViewManagerI;
 class KstViewMatricesDialogI;
 class KstViewScalarsDialogI;
+class KstViewStringsDialogI;
 class KstViewVectorsDialogI;
 class KstViewWindow;
 class StatusLabel;
@@ -317,6 +318,9 @@ class KST_EXPORT KstApp : public KMdiMainFrm {
     /** just calls viewScalarsDialog->showViewScalarsDialog(0) */
     void showViewScalarsDialog();
 
+    /** just calls viewStringsDialog->showViewStringsDialog(0) */
+    void showViewStringsDialog();
+
     /** just calls viewVectorsDialog->showViewVectorsDialog(0) */
     void showViewVectorsDialog();
 
@@ -404,6 +408,9 @@ class KST_EXPORT KstApp : public KMdiMainFrm {
 
     /* Dialog for viewing the scalar values */
     KstViewScalarsDialogI *viewScalarsDialog;
+
+    /* Dialog for viewing the string values */
+    KstViewStringsDialogI *viewStringsDialog;
 
     /* Dialog for viewing the vector values */
     KstViewVectorsDialogI *viewVectorsDialog;
@@ -505,6 +512,8 @@ class KST_EXPORT KstApp : public KMdiMainFrm {
 
     /* View Scalars Action */
     KAction *ViewScalarsDialogAction;
+    /* View Strings Action */
+    KAction *ViewStringsDialogAction;
     /* View Vectors Action */
     KAction *ViewVectorsDialogAction;
     /* View Matrices Action */

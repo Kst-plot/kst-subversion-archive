@@ -84,6 +84,7 @@ libkstapp_la_SOURCES = \
 	emailthread.cpp \
 	kstprintoptionspage.cpp \
 	kstviewscalarsdialog_i.cpp \
+	kstviewstringsdialog_i.cpp \
 	kstviewvectorsdialog_i.cpp \
 	kstviewmatricesdialog_i.cpp \
 	kstviewfitsdialog_i.cpp \
@@ -108,6 +109,7 @@ libkstapp_la_SOURCES = \
 	changefiledialog.ui \
 	graphfiledialog.ui \
 	viewscalarsdialog.ui \
+	viewstringsdialog.ui \
 	viewvectorsdialog.ui \
 	viewmatricesdialog.ui \
 	viewfitsdialog.ui \
@@ -121,6 +123,7 @@ libkstapp_la_SOURCES = \
 	kstdebugnotifier.cpp \
 	kstdatanotifier.cpp \
 	kstscalarlistview.cpp \
+	kststringlistview.cpp \
 	kst.cpp
 
 

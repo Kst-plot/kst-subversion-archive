@@ -221,7 +221,7 @@ bool KstObjectTreeNode::removeDescendant(KstObject *o, KstObjectNameIndex *index
       --i;
       KstObjectTreeNode *lastNode = currNode->_parent;
       lastNode->_children.remove(*i);
-      kstdDebug() << "Removed naming tree node:" << currNode->fullTag().join(KstObjectTag::tagSeparator) << endl;
+//      kstdDebug() << "Removed naming tree node:" << currNode->fullTag().join(KstObjectTag::tagSeparator) << endl;
       if (index) {
         (*index)[*i].remove(currNode);
         if ((*index)[*i].isEmpty()) {

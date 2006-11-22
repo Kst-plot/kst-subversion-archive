@@ -1,5 +1,5 @@
 <!DOCTYPE kpartgui>
-<kpartgui version="12" name="kst">
+<kpartgui version="13" name="kst">
 <MenuBar>
   <Menu name="file"><text>&amp;File</text>
     <Action name="file_new_window"/>
@@ -30,6 +30,7 @@
     <Action name="viewvectorsdialog_action"/>
     <Action name="viewmatricesdialog_action"/>
     <Action name="viewfitsdialog_action"/>
+    <Action name="viewstringsdialog_action"/>
     <Separator/>
     <Merge/>
   </Menu>

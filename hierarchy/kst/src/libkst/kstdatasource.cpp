@@ -805,14 +805,14 @@ bool KstDataSource::reset() {
 }
 
 
-const QMap<QString, QString>& KstDataSource::metaData() const {
+const QDict<KstString>& KstDataSource::metaData() const {
   return _metaData;
 }
 
 
 const QString& KstDataSource::metaData(const QString& key) const {
-  if (_metaData.contains(key)) {
-    return _metaData[key];
+  if (_metaData[key]) {
+    return _metaData[key]->value();
   } else {
     return QString::null;
   }
@@ -825,7 +825,7 @@ bool KstDataSource::hasMetaData() const {
 
 
 bool KstDataSource::hasMetaData(const QString& key) const {
-  return _metaData.contains(key);
+  return (_metaData[key] != NULL);
 }
 
 

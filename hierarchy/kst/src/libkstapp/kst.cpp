@@ -83,6 +83,7 @@
 #include "kstvectordialog_i.h"
 #include "kstviewmanager_i.h"
 #include "kstviewscalarsdialog_i.h"
+#include "kstviewstringsdialog_i.h"
 #include "kstviewvectorsdialog_i.h"
 #include "kstviewmatricesdialog_i.h"
 #include "kstviewfitsdialog_i.h"
@@ -146,6 +147,7 @@ KstApp::KstApp(QWidget *parent, const char *name)
   dataManager = new KstDataManagerI(doc, this);
   viewManager = new KstViewManagerI(doc, this);
   viewScalarsDialog = new KstViewScalarsDialogI(this);
+  viewStringsDialog = new KstViewStringsDialogI(this);
   viewVectorsDialog = new KstViewVectorsDialogI(this);
   viewMatricesDialog = new KstViewMatricesDialogI(this);
   viewFitsDialog = new KstViewFitsDialogI(this);
@@ -623,6 +625,15 @@ void KstApp::initActions() {
                                        "viewscalarsdialog_action");
   ViewScalarsDialogAction->setWhatsThis(i18n("Bring up a dialog box\n"
                                             "to view scalar values."));
+
+  /************/
+  ViewStringsDialogAction = new KAction(i18n("View Strin&g Values"),
+                                       0, 0, this,
+                                       SLOT(showViewStringsDialog()),
+                                       actionCollection(),
+                                       "viewstringsdialog_action");
+  ViewStringsDialogAction->setWhatsThis(i18n("Bring up a dialog box\n"
+                                            "to view string values."));
 
   /************/
   ViewVectorsDialogAction = new KAction(i18n("View Vec&tor Values"),
@@ -2010,6 +2021,11 @@ void KstApp::showViewScalarsDialog() {
 }
 
 
+void KstApp::showViewStringsDialog() {
+  viewStringsDialog->showViewStringsDialog();
+}
+
+
 void KstApp::showViewVectorsDialog() {
   viewVectorsDialog->showViewVectorsDialog();
 }
@@ -2089,12 +2105,16 @@ void KstApp::updateDataNotifier() {
 void KstApp::updateDataDialogs(bool dm, bool vm) {
 
   ViewScalarsDialogAction->setEnabled(viewScalarsDialog->hasContent());
+  ViewStringsDialogAction->setEnabled(viewStringsDialog->hasContent());
   ViewVectorsDialogAction->setEnabled(viewVectorsDialog->hasContent());
   ViewMatricesDialogAction->setEnabled(viewMatricesDialog->hasContent());
   ViewFitsDialogAction->setEnabled(viewFitsDialog->hasContent());
 
   if (!viewScalarsDialog->isHidden()) {
     viewScalarsDialog->updateViewScalarsDialog();
+  }
+  if (!viewStringsDialog->isHidden()) {
+    viewStringsDialog->updateViewStringsDialog();
   }
   if (!viewVectorsDialog->isHidden()) {
     viewVectorsDialog->updateViewVectorsDialog();

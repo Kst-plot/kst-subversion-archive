@@ -29,6 +29,7 @@
 #include <knuminput.h>
 
 #include <ksdebug.h>
+#include "kststring.h"
 #include "healpix_source.h"
 #include "healpixconfig.h"
 
@@ -82,36 +83,67 @@ HealpixSource::HealpixSource(KConfig *cfg, const QString& filename, const QStrin
       // populate the metadata
       QString metaVal;
       QString metaName;
+      KstString *metaString;
+
+      metaName = "NSIDE";
       metaVal.sprintf("%lu", (long unsigned int)_mapNside);
-      _metaData["NSIDE"] = metaVal;
+      metaString = new KstString(KstObjectTag(metaName, tag()), this, metaVal);
+      _metaData.insert(metaName, metaString);
+      
+      metaName = "NPIX";
       metaVal.sprintf("%lu", (long unsigned int)_mapNpix);
-      _metaData["NPIX"] = metaVal;
+      metaString = new KstString(KstObjectTag(metaName, tag()), this, metaVal);
+      _metaData.insert(metaName, metaString);
+      
+      metaName = "ORDER";
       metaVal.sprintf("%d", _mapOrder);
-      _metaData["ORDER"] = metaVal;
+      metaString = new KstString(KstObjectTag(metaName, tag()), this, metaVal);
+      _metaData.insert(metaName, metaString);
+      
+      metaName = "COORD";
       metaVal.sprintf("%d", _mapCoord);
-      _metaData["COORD"] = metaVal;
+      metaString = new KstString(KstObjectTag(metaName, tag()), this, metaVal);
+      _metaData.insert(metaName, metaString);
+      
+      metaName = "TYPE";
       metaVal.sprintf("%d", _mapType);
-      _metaData["TYPE"] = metaVal;
+      metaString = new KstString(KstObjectTag(metaName, tag()), this, metaVal);
+      _metaData.insert(metaName, metaString);
+      
+      metaName = "NMAPS";
       metaVal.sprintf("%lu", (long unsigned int)_nMaps);
-      _metaData["NMAPS"] = metaVal;
+      metaString = new KstString(KstObjectTag(metaName, tag()), this, metaVal);
+      _metaData.insert(metaName, metaString);
+      
+      metaName = "CREATOR";
       metaVal.sprintf("%s", _creator);
-      _metaData["CREATOR"] = metaVal;
+      metaString = new KstString(KstObjectTag(metaName, tag()), this, metaVal);
+      _metaData.insert(metaName, metaString);
+      
+      metaName = "EXTNAME";
       metaVal.sprintf("%s", _extname);
-      _metaData["EXTNAME"] = metaVal;
+      metaString = new KstString(KstObjectTag(metaName, tag()), this, metaVal);
+      _metaData.insert(metaName, metaString);
+      
       for (size_t j = 0; j < _keys->nskeys; j++) {
         metaName.sprintf("%s", _keys->skeynames[j]);
         metaVal.sprintf("%s", _keys->skeyvals[j]);
-        _metaData[metaName] = metaVal;
+        metaString = new KstString(KstObjectTag(metaName, tag()), this, metaVal);
+        _metaData.insert(metaName, metaString);
       }
+
       for (size_t j = 0; j < _keys->nikeys; j++) {
         metaName.sprintf("%s", _keys->ikeynames[j]);
         metaVal.sprintf("%d", _keys->ikeyvals[j]);
-        _metaData[metaName] = metaVal;
+        metaString = new KstString(KstObjectTag(metaName, tag()), this, metaVal);
+        _metaData.insert(metaName, metaString);
       }
+
       for (size_t j = 0; j < _keys->nfkeys; j++) {
         metaName.sprintf("%s", _keys->fkeynames[j]);
         metaVal.sprintf("%e", _keys->fkeyvals[j]);
-        _metaData[metaName] = metaVal;
+        metaString = new KstString(KstObjectTag(metaName, tag()), this, metaVal);
+        _metaData.insert(metaName, metaString);
       }
       
       // populate the field list

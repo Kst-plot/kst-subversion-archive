@@ -26,6 +26,8 @@
 #include <ctype.h>
 #include <stdlib.h>
 
+#include "kststring.h"
+
 
 NetcdfSource::NetcdfSource(KConfig *cfg, const QString& filename, const QString& type)
 : KstDataSource(cfg, filename, type), _ncfile(0L) {
@@ -84,7 +86,10 @@ bool NetcdfSource::initFile() {
   int globalAttributesNb = _ncfile->num_atts();
   for (int i = 0; i < globalAttributesNb; ++i) {
     // Get only first value, should be enough for a start especially as strings are complete
-    _metaData[QString(_ncfile->get_att(i)->name())] = QString(_ncfile->get_att(i)->as_string(0));
+    QString attrName = QString(_ncfile->get_att(i)->name());
+    QString attrValue = QString(_ncfile->get_att(i)->as_string(0));
+    KstString *ms = new KstString(KstObjectTag(attrName, tag()), this, attrValue);
+    _metaData.insert(attrName, ms);
   }
   
   update(); // necessary?  slows down initial loading

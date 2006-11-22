@@ -308,8 +308,8 @@ void KstRVector::save(QTextStream &ts, const QString& indent, bool saveAbsoluteP
 
     ts << indent << "  <tag>" << QStyleSheet::escape(tagName()) << "</tag>" << endl;
     _file->readLock();
-    ts << indent << "  <filename>" << QStyleSheet::escape(_file->fileName()) << "</filename>" << endl;
     ts << indent << "  <provider>" << QStyleSheet::escape(_file->tag().tagString()) << "</provider>" << endl;
+    ts << indent << "  <filename>" << QStyleSheet::escape(_file->fileName()) << "</filename>" << endl;
     _file->unlock();
 
     ts << indent << "  <field>" << _field << "</field>" << endl;

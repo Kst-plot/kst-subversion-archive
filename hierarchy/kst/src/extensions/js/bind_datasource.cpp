@@ -387,10 +387,10 @@ KJS::Value KstBindDataSource::metaData(KJS::ExecState *exec) const {
   KstDataSourcePtr s = makeSource(_d);
   if (s) {
     s->readLock();
-    QMap<QString,QString> data = s->metaData();
+    QDict<KstString> data = s->metaData();
     s->unlock();
-    for (QMap<QString,QString>::ConstIterator i = data.begin(); i != data.end(); ++i) {
-      array.put(exec, KJS::Identifier(i.key().latin1()), KJS::String(i.data()));
+    for (QDictIterator<KstString> i(data); i.current(); ++i) {
+      array.put(exec, KJS::Identifier(i.currentKey().latin1()), KJS::String(i.current() ? i.current()->value() : QString::null));
     }
   }
   return array;

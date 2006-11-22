@@ -10,6 +10,7 @@
 ** destructor.
 *****************************************************************************/
 
+#include "kststring.h"
 
 void DataSourceMetaDataDialog::init()
 {
@@ -25,10 +26,12 @@ void DataSourceMetaDataDialog::setDataSource(KstDataSourcePtr dsp)
     _value->clear();
     if (_dsp) {
 	dsp->readLock();
-	_name->insertStringList(dsp->metaData().keys());
+	for (QDictIterator<KstString> i(dsp->metaData()); i.current(); ++i) {
+	    _name->insertItem(i.currentKey());
+	}
 	_source->setText(dsp->fileName());
 	_plugin->setText(dsp->fileType());
-	_value->setText(_dsp->metaData()[_name->currentText()]);
+	_value->setText(_dsp->metaData()[_name->currentText()]->value());
 	dsp->unlock();
 	_name->setEnabled(_name->count() > 0);
 	_value->setEnabled(_name->count() > 0);
@@ -42,7 +45,7 @@ void DataSourceMetaDataDialog::setDataSource(KstDataSourcePtr dsp)
 void DataSourceMetaDataDialog::updateMetadata(const QString& tag)
 {
     _dsp->readLock();
-    _value->setText(_dsp->metaData()[tag]);
+    _value->setText(_dsp->metaData()[tag]->value());
     _dsp->unlock();
 }
 
