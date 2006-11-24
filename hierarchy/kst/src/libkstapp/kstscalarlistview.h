@@ -21,31 +21,32 @@
 #include <klistview.h>
 
 #include "kstobject.h"
+#include "kstobjectcollection.h"
 
 class KstScalarListView : public KListView
 {
   public:
-    KstScalarListView(QWidget *parent = 0, KstObjectTree *tree = NULL);
+    KstScalarListView(QWidget *parent = 0, KstObjectCollection<KstScalar> *coll = NULL);
 
     void update();
 
   private:
-    KstObjectTree *_tree;
+    KstObjectCollection<KstScalar> *_coll;
 };
 
 
 class KstScalarListViewItem : public KListViewItem
 {
   public:
-    KstScalarListViewItem(KstScalarListView *parent, KstObjectTreeNode *node);
-    KstScalarListViewItem(KstScalarListViewItem *parent, KstObjectTreeNode *node);
+    KstScalarListViewItem(KstScalarListView *parent, KstObjectTreeNode<KstScalar> *node);
+    KstScalarListViewItem(KstScalarListViewItem *parent, KstObjectTreeNode<KstScalar> *node);
 
     QString text(int column) const;
 
-    KstObjectTreeNode *node() const { return _node; }
+    KstObjectTreeNode<KstScalar> *node() const { return _node; }
 
   private:
-    KstObjectTreeNode *_node;
+    KstObjectTreeNode<KstScalar> *_node;
 };
 
 #endif

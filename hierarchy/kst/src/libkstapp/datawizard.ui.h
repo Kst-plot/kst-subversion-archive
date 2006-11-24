@@ -608,7 +608,6 @@ void DataWizard::finished()
 		_kstDataRange->DoSkip->isChecked() ? _kstDataRange->Skip->value() : 0, 
 		_kstDataRange->DoSkip->isChecked(),
 		_kstDataRange->DoFilter->isChecked());
-	KST::addVectorToList(xv);
 
 	app->slotUpdateProgress(n_steps, ++prg, i18n("Creating vectors..."));
     } else {
@@ -635,7 +634,6 @@ void DataWizard::finished()
 		    _kstDataRange->DoSkip->isChecked() ? _kstDataRange->Skip->value() : 0, 
 		    _kstDataRange->DoSkip->isChecked(),
 		    _kstDataRange->DoFilter->isChecked());
-	    KST::addVectorToList(v);
 	    l.append(v);
 	    ++n_curves;
 	    app->slotUpdateProgress(n_steps, ++prg, i18n("Creating vectors..."));

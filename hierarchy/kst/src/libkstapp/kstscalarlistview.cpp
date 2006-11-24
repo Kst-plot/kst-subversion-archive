@@ -22,10 +22,10 @@
 
 #include "kstscalarlistview.h"
 
-KstScalarListViewItem::KstScalarListViewItem(KstScalarListView *parent, KstObjectTreeNode *node) : KListViewItem(parent), _node(node) {
+KstScalarListViewItem::KstScalarListViewItem(KstScalarListView *parent, KstObjectTreeNode<KstScalar> *node) : KListViewItem(parent), _node(node) {
 }
 
-KstScalarListViewItem::KstScalarListViewItem(KstScalarListViewItem *parent, KstObjectTreeNode *node) : KListViewItem(parent), _node(node) {
+KstScalarListViewItem::KstScalarListViewItem(KstScalarListViewItem *parent, KstObjectTreeNode<KstScalar> *node) : KListViewItem(parent), _node(node) {
 }
 
 QString KstScalarListViewItem::text(int column) const {
@@ -51,7 +51,7 @@ QString KstScalarListViewItem::text(int column) const {
 }
 
 
-KstScalarListView::KstScalarListView(QWidget *parent, KstObjectTree *tree) : KListView(parent), _tree(tree) {
+KstScalarListView::KstScalarListView(QWidget *parent, KstObjectCollection<KstScalar> *coll) : KListView(parent), _coll(coll) {
   addColumn(i18n("Scalar"));
   addColumn(i18n("Value"));
 
@@ -62,13 +62,13 @@ KstScalarListView::KstScalarListView(QWidget *parent, KstObjectTree *tree) : KLi
 }
 
 
-static void addChildItems(KstScalarListViewItem *parentItem, KstObjectTreeNode *parentNode) {
+static void addChildItems(KstScalarListViewItem *parentItem, KstObjectTreeNode<KstScalar> *parentNode) {
   if (!parentItem || !parentNode) {
     return;
   }
 
-  QValueList<KstObjectTreeNode*> children = parentNode->children().values();
-  for (QValueList<KstObjectTreeNode*>::ConstIterator i = children.begin(); i != children.end(); ++i) {
+  QValueList<KstObjectTreeNode<KstScalar>*> children = parentNode->children().values();
+  for (QValueList<KstObjectTreeNode<KstScalar>*>::ConstIterator i = children.begin(); i != children.end(); ++i) {
     KstScalarListViewItem *item = new KstScalarListViewItem(parentItem, *i);
     addChildItems(item, *i);
   }
@@ -77,10 +77,10 @@ static void addChildItems(KstScalarListViewItem *parentItem, KstObjectTreeNode *
 void KstScalarListView::update() {
   clear();
 
-  if (_tree) {
-    KstReadLocker(&_tree->lock());
-    QValueList<KstObjectTreeNode*> rootItems = _tree->root()->children().values();
-    for (QValueList<KstObjectTreeNode*>::ConstIterator i = rootItems.begin(); i != rootItems.end(); ++i) {
+  if (_coll) {
+    KstReadLocker(&_coll->lock());
+    QValueList<KstObjectTreeNode<KstScalar>*> rootItems = _coll->nameTreeRoot()->children().values();
+    for (QValueList<KstObjectTreeNode<KstScalar>*>::ConstIterator i = rootItems.begin(); i != rootItems.end(); ++i) {
       KstScalarListViewItem *item = new KstScalarListViewItem(this, *i);
       addChildItems(item, *i);
     }

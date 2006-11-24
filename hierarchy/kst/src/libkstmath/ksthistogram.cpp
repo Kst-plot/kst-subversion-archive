@@ -130,11 +130,9 @@ void KstHistogram::commonConstructor(const QString &in_tag, KstVectorPtr in_V,
   _NS = 3 * _NBins + 1;
 
   KstVectorPtr v = new KstVector(KstObjectTag("bins", tag()), _NBins, this);
-  KST::addVectorToList(v);
   _bVector = _outputVectors.insert(BINS, v);
 
   v = new KstVector(KstObjectTag("sv", tag()), _NBins, this);
-  KST::addVectorToList(v);
   _hVector = _outputVectors.insert(HIST, v);
 
   setDirty();

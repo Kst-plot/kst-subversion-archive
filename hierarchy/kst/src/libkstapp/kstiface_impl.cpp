@@ -364,7 +364,6 @@ const QString& KstIfaceImpl::generateScalar(const QString& name, double value) {
 
 const QString& KstIfaceImpl::generateVector(const QString& name, double from, double to, int points) {
   KstVectorPtr v = new KstSVector(from, to, points, KstObjectTag(name)); // FIXME: do tag context properly
-  KST::addVectorToList(v);
   KstReadLocker rl(v);
   return v->tagName();
 }
@@ -870,7 +869,6 @@ const QString& KstIfaceImpl::loadVector(const QString& file, const QString& fiel
   KST::vectorList.lock().unlock();
 
   KstVectorPtr p = new KstRVector(src, field, KstObjectTag(vname), 0, -1, 0, false, false); // FIXME: do tag context properly
-  KST::addVectorToList(p);
 
   src->unlock();
 
@@ -1598,7 +1596,6 @@ QString KstIfaceImpl::loadMatrix(const QString& name, const QString& file, const
 
   KstMatrixPtr p = new KstRMatrix(src, field, KstObjectTag(matrixName), xStart, yStart, xNumSteps, yNumSteps, 
                                   boxcarFilter, skipFrames > 0, skipFrames); // FIXME: do tag context properly
-  KST::addMatrixToList(p);
 
   src->unlock();
 
@@ -1635,7 +1632,6 @@ QString KstIfaceImpl::createGradient(const QString& name, bool xDirection, doubl
   KstMatrixPtr p = new KstSMatrix(KstObjectTag(matrixName), xNumSteps, yNumSteps, xMin, yMin, xStepSize, yStepSize, 
                                   zAtMin, zAtMax, xDirection);  // FIXME: do tag context properly
   
-  KST::addMatrixToList(p);
 
   if (p) {
     _doc->forceUpdate();

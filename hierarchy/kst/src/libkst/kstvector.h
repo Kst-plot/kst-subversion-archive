@@ -21,6 +21,7 @@
 #include <math.h>
 #include <qdict.h>
 #include <qguardedptr.h>
+#include "kstobjectcollection.h"
 #include "kstprimitive.h"
 #include "kstscalar.h"
 #include "kst_export.h"
@@ -57,6 +58,7 @@ class KST_EXPORT KstVector : public KstPrimitive {
     KstVector(KstObjectTag in_tag = KstObjectTag(), int size = 0,
         KstObject *provider = 0L, bool bIsScalarList = false);
 
+  protected:
     virtual ~KstVector();
 
   public:
@@ -202,6 +204,7 @@ class KST_EXPORT KstVector : public KstPrimitive {
 
 typedef KstObjectList<KstVectorPtr> KstVectorList;
 typedef KstObjectMap<KstVectorPtr> KstVectorMap;
+typedef KstObjectCollection<KstVector> KstVectorCollection;
 
 #endif
 // vim: ts=2 sw=2 et

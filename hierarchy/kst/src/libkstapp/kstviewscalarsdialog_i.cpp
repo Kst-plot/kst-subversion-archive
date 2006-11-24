@@ -29,7 +29,7 @@ KstViewScalarsDialogI::KstViewScalarsDialogI(QWidget* parent,
                                            bool modal,
                                            WFlags fl)
 : KstViewScalarsDialog(parent, name, modal, fl) {
-  listViewScalars = new KstScalarListView(this, &KST::scalarNameTree);
+  listViewScalars = new KstScalarListView(this, &KST::scalarList);
   listViewScalars->setShowSortIndicator(false);
   listViewScalars->setSelectionMode(QListView::NoSelection);
   searchWidget = new KListViewSearchLineWidget(listViewScalars, this);

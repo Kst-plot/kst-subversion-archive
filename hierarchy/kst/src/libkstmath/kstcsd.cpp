@@ -135,13 +135,16 @@ void KstCSD::commonConstructor(const QString& in_tag, KstVectorPtr in_V,
   if (_frequency <= 0.0) {
     _frequency = 1.0;
   }
-  
-  KstMatrixPtr outMatrix = new KstMatrix(KstObjectTag("csd", tag()), this, 1, 1);
-  outMatrix->setLabel(i18n("Power [%1/%2^{1/2}]").arg(_vectorUnits).arg(_rateUnits));
-  outMatrix->setXLabel(i18n("%1 [%2]").arg(vecName).arg(_vectorUnits));
-  outMatrix->setYLabel(i18n("Frequency [%1]").arg(_rateUnits));
-  _outMatrix = _outputMatrices.insert(OUTMATRIX, outMatrix);
-  KST::addMatrixToList(outMatrix);
+ 
+  {
+    KstWriteLocker blockMatrixUpdates(&KST::matrixList.lock());
+
+    KstMatrixPtr outMatrix = new KstMatrix(KstObjectTag("csd", tag()), this, 1, 1);
+    outMatrix->setLabel(i18n("Power [%1/%2^{1/2}]").arg(_vectorUnits).arg(_rateUnits));
+    outMatrix->setXLabel(i18n("%1 [%2]").arg(vecName).arg(_vectorUnits));
+    outMatrix->setYLabel(i18n("Frequency [%1]").arg(_rateUnits));
+    _outMatrix = _outputMatrices.insert(OUTMATRIX, outMatrix);
+  }
 
   updateMatrixLabels();
   (*_outMatrix)->setDirty();

@@ -333,8 +333,6 @@ bool KstMatrixDialogI::new_IRMatrix() {
                                         KstObjectTag(tag_name, file->tag()),
                                         xStart, yStart, xNumSteps, yNumSteps,
                                         doAve, doSkip, skip);
-
-  KST::addMatrixToList(KstMatrixPtr(matrix));
   emit matrixCreated(KstMatrixPtr(matrix));
   matrix = 0L; // drop the reference
   emit modified();
@@ -378,8 +376,6 @@ bool KstMatrixDialogI::new_ISMatrix() {
 
   KstSMatrixPtr matrix = new KstSMatrix(KstObjectTag(tag_name, KstObjectTag::globalTagContext),
       nX, nY, minX, minY, xStep, yStep, zMin, zMax, xDirection);
-
-  KST::addMatrixToList(KstMatrixPtr(matrix));
 
   emit matrixCreated(KstMatrixPtr(matrix));
   matrix = 0L; // drop the reference

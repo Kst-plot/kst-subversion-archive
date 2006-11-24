@@ -32,8 +32,7 @@ void KstMatrixTable::setMatrix(QString strMatrix) {
 }
 
 void KstMatrixTable::paintCell( QPainter* painter, int row, int col, const QRect& cr, bool selected, const QColorGroup& cg ) {
-  KstMatrixList matrices = KST::matrixList;
-  KstMatrixPtr matrix = *matrices.findTag(_strMatrix);
+  KstMatrixPtr matrix = *KST::matrixList.findTag(_strMatrix);
   QString str;
   double value;
   

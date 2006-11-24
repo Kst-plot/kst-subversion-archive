@@ -24,6 +24,7 @@
 #include "kstvector.h"
 #include "kstmatrix.h"
 #include "kst_export.h"
+#include "kstobjectcollection.h"
 
 class QFile;
 class KstBaseCurve;
@@ -74,21 +75,16 @@ namespace KST {
     KST_EXPORT extern KstDataSourceList dataSourceList;
 
     /** The list of vectors that are being read */
-    KST_EXPORT extern KstVectorList vectorList;
+    KST_EXPORT extern KstVectorCollection vectorList;
 
     /** The list of Scalars which have been generated */
-    KST_EXPORT extern KstScalarList scalarList;
-    KST_EXPORT extern KstObjectTree scalarNameTree;
+    KST_EXPORT extern KstScalarCollection scalarList;
 
     /** The list of Strings */
-    KST_EXPORT extern KstStringList stringList;
-    KST_EXPORT extern KstObjectTree stringNameTree;
+    KST_EXPORT extern KstStringCollection stringList;
 
     /** The list of matrices that are being read */
-    KST_EXPORT extern KstMatrixList matrixList;
-
-    KST_EXPORT extern void addMatrixToList(KstMatrixPtr m);
-    KST_EXPORT extern void addVectorToList(KstVectorPtr v);
+    KST_EXPORT extern KstMatrixCollection matrixList;
 
     /** Bad choice for location - maybe move it later */
     KST_EXPORT void *malloc(size_t size);

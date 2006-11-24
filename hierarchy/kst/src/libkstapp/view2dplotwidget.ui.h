@@ -396,7 +396,7 @@ void View2DPlotWidget::updateScalarCombo() {
   scalarSelectorY1->clear();
   scalarSelectorY2->clear();
   KST::scalarList.lock().readLock();
-  KstScalarList sl = QDeepCopy<KstScalarList>(KST::scalarList);
+  KstScalarList sl = QDeepCopy<KstScalarList>(KST::scalarList.list());
   KST::scalarList.lock().unlock();
   qHeapSort(sl);
   for (KstScalarList::ConstIterator i = sl.begin(); i != sl.end(); ++i) {

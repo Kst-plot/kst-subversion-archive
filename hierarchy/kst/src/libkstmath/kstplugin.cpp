@@ -66,6 +66,7 @@ KstPlugin::KstPlugin(const QDomElement& e)
       } else if (e.tagName() == "istring") {
         _inputStringLoadQueue.append(qMakePair(e.attribute("name"), e.text()));
       } else if (e.tagName() == "ovector") {
+        KstWriteLocker blockVectorUpdates(&KST::vectorList.lock());
         KstVectorPtr v;
         if (e.attribute("scalarList", "0").toInt()) {
           v = new KstVector(KstObjectTag(e.text(), tag()), 0, this, true);
@@ -73,7 +74,6 @@ KstPlugin::KstPlugin(const QDomElement& e)
           v = new KstVector(KstObjectTag(e.text(), tag()), 0, this, false);
         }
         _outputVectors.insert(e.attribute("name"), v);
-        KST::addVectorToList(v);
       } else if (e.tagName() == "oscalar") {
         KstScalarPtr sp = new KstScalar(KstObjectTag(e.text(), tag()), this);
         _outputScalars.insert(e.attribute("name"), sp);
@@ -100,6 +100,7 @@ KstPlugin::KstPlugin(const QDomElement& e)
       if ((*it)._type == Plugin::Data::IOValue::TableType) {
         _outArrayCnt++;
         if (!_outputVectors.contains((*it)._name)) {
+          KstWriteLocker blockVectorUpdates(&KST::vectorList.lock());
           KstVectorPtr v;
 
           if ((*it)._subType == Plugin::Data::IOValue::FloatNonVectorSubType) {
@@ -108,13 +109,13 @@ KstPlugin::KstPlugin(const QDomElement& e)
             v = new KstVector(KstObjectTag(tagName() + " vector - " + (*it)._name, tag()), 0, this, false); // FIXME: tag name?
           }
           _outputVectors.insert((*it)._name, v);
-          KST::addVectorToList(v);
         }
       } else if ((*it)._type == Plugin::Data::IOValue::MatrixType) {
           abort(); // FIXME:
 #if 0
         _outArrayCnt += 2;
         if (!_outputMatrices.contains((*it)._name)) {
+          KstWriteLocker blockMatrixUpdates(&KST::matrixList.lock());
           KstMatrixPtr m;
 
           if ((*it)._subType == Plugin::Data::IOValue::FloatNonVectorSubType) {
@@ -124,7 +125,6 @@ KstPlugin::KstPlugin(const QDomElement& e)
           }
           m->setProvider(this);
           _outputMatrices.insert((*it)._name, m);
-          KST::addVectorToList(v);
         }
 #endif
       } else if ((*it)._type == Plugin::Data::IOValue::FloatType) {
@@ -575,6 +575,7 @@ bool KstPlugin::setPlugin(KstSharedPtr<Plugin> plugin) {
                                                          it != otable.end();
                                                                         ++it) {
     if ((*it)._type == Plugin::Data::IOValue::TableType) {
+      KstWriteLocker blockVectorUpdates(&KST::vectorList.lock());
       KstVectorPtr v;
 
       if ((*it)._subType == Plugin::Data::IOValue::FloatNonVectorSubType) {
@@ -585,7 +586,6 @@ bool KstPlugin::setPlugin(KstSharedPtr<Plugin> plugin) {
       v->KstObject::writeLock();
       _outputVectors.insert((*it)._name, v);
       ++_outArrayCnt;
-      KST::addVectorToList(v);
     } else if ((*it)._type == Plugin::Data::IOValue::FloatType) {
       KstScalarPtr s = new KstScalar(KstObjectTag(), this);  // FIXME: do tag context properly
       s->KstObject::writeLock();
@@ -680,9 +680,9 @@ KstDataObjectPtr KstPlugin::makeDuplicate(KstDataObjectDataObjectMap& duplicated
   
   // create new outputs
   for (KstVectorMap::ConstIterator iter = outputVectors().begin(); iter != outputVectors().end(); ++iter) {
+    KstWriteLocker blockVectorUpdates(&KST::vectorList.lock());
     KstVectorPtr v = new KstVector(KstObjectTag(iter.data()->tag().tag() + "'", iter.data()->tag().context()), 0, plugin.data());
     plugin->outputVectors().insert(iter.key(), v);
-    KST::addVectorToList(v);
   }
   for (KstScalarMap::ConstIterator iter = outputScalars().begin(); iter != outputScalars().end(); ++iter) {
     KstScalarPtr s = new KstScalar(KstObjectTag(iter.data()->tag().tag() + "'", iter.data()->tag().context()), plugin.data());

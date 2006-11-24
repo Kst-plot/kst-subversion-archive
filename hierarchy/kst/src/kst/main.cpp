@@ -273,13 +273,11 @@ static KstRVector *GetOrCreateVector(const QString& field, KstDataSourcePtr file
   if (!V->isValid()) {
     if (file->fileType() == "stdin") {
       startupErrors.append(i18n("Failed to create vector '%1' from file '%2'.  Trying again later.").arg(field).arg(file->fileName()));
-      KST::addVectorToList(V);
     } else {
       startupErrors.append(i18n("Failed to create vector '%1' from file '%2'.").arg(field).arg(file->fileName()));
       V = 0L;
     }
   } else {
-    KST::addVectorToList(V);
   }
     
 
@@ -706,7 +704,6 @@ int main(int argc, char *argv[]) {
                   0,0,-1,-1,false,false,0);
                   // xStart, yStart, xNumSteps, yNumSteps, 
                   //doAve, doSkip, skip);
-              KST::addMatrixToList(KstMatrixPtr(matrix));
               
               // Time to create the image from the matrix
               tag_name = KST::suggestImageName(matrix->tagName());

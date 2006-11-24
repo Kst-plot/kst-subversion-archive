@@ -95,7 +95,6 @@ class KstObjectTag {
 class KST_EXPORT KstObject : public KstShared, public QObject, public KstRWLock {
   public:
     KstObject();
-    virtual ~KstObject();
 
     enum UpdateType { NO_CHANGE = 0, UPDATE };
 
@@ -122,6 +121,8 @@ class KST_EXPORT KstObject : public KstShared, public QObject, public KstRWLock 
     bool dirty() const;
 
   protected:
+    virtual ~KstObject();
+
     friend class UpdateThread;
     int _lastUpdateCounter;
 
@@ -314,6 +315,7 @@ inline KstSharedPtr<T> kst_cast(KstSharedPtr<U> object) {
 }
 
 
+#if 0
 /** KstObject Naming Tree */
 class KstObjectTreeNode;
 typedef QMap<QString, QValueList<KstObjectTreeNode *> > KstObjectNameIndex;
@@ -348,8 +350,8 @@ class KstObjectTree {
     bool addObject(KstObject *o);
     bool removeObject(KstObject *o);
 
-    KstObject *retrieveObject(QStringList tag);
-    KstObject *retrieveObject(KstObjectTag tag);
+    KstObjectPtr retrieveObject(QStringList tag);
+    KstObjectPtr retrieveObject(KstObjectTag tag);
 
     KstObjectTreeNode *root() { return &_root; }
 
@@ -361,6 +363,7 @@ class KstObjectTree {
     KstObjectTreeNode _root;
     KstObjectNameIndex _index;
 };
+#endif
 
 #endif
 // vim: ts=2 sw=2 et

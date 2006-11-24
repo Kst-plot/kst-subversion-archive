@@ -29,7 +29,7 @@ KstViewStringsDialogI::KstViewStringsDialogI(QWidget* parent,
                                            bool modal,
                                            WFlags fl)
 : KstViewStringsDialog(parent, name, modal, fl) {
-  listViewStrings = new KstStringListView(this, &KST::stringNameTree);
+  listViewStrings = new KstStringListView(this, &KST::stringList);
   listViewStrings->setShowSortIndicator(false);
   listViewStrings->setSelectionMode(QListView::NoSelection);
   searchWidget = new KListViewSearchLineWidget(listViewStrings, this);

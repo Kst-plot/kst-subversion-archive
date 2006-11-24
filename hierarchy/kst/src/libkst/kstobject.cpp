@@ -55,7 +55,7 @@ bool KstObject::checkUpdateCounter(int update_counter) {
 
 
 inline QString KstObject::tagName() const {
-  return _tag.tagString();
+  return _tag.tag();
 }
 
 
@@ -111,6 +111,7 @@ bool KstObject::dirty() const {
 
 
 
+#if 0
 KstObjectTreeNode::KstObjectTreeNode(const QString& tag) : _tag(tag),
                                                            _object(NULL),
                                                            _parent(NULL)
@@ -250,7 +251,7 @@ bool KstObjectTree::removeObject(KstObject *o) {
 }
 
 
-KstObject * KstObjectTree::retrieveObject(QStringList tag) {
+KstObjectPtr KstObjectTree::retrieveObject(QStringList tag) {
   kstdDebug() << "Retrieving object with tag: " << tag.join(KstObjectTag::tagSeparator) << endl;
 
   if (tag.isEmpty()) {
@@ -284,12 +285,13 @@ KstObject * KstObjectTree::retrieveObject(QStringList tag) {
 }
 
 
-KstObject * KstObjectTree::retrieveObject(KstObjectTag tag) {
+KstObjectPtr KstObjectTree::retrieveObject(KstObjectTag tag) {
   if (!tag.isValid()) {
     return NULL;
   }
 
   return retrieveObject(tag.fullTag());
 }
+#endif
 
 // vim: ts=2 sw=2 et

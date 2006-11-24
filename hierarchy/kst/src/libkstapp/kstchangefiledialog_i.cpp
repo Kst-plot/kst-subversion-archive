@@ -187,12 +187,15 @@ void KstChangeFileDialogI::applyFileChange() {
         ++invalid;
       } else {
         if (_duplicateSelected->isChecked()) {
-          
+          // block vector updates until vector is setup properly
+          KST::vectorList.lock().writeLock();
+
           // create a new vector
           KstRVectorPtr newVector = vector->makeDuplicate();
           newVector->changeFile(file);
-          KST::addVectorToList(KstVectorPtr(newVector));   
-          
+
+          KST::vectorList.lock().unlock();
+
           // duplicate dependents
           if (_duplicateDependents->isChecked()) {
             duplicatedVectors.insert(KstVectorPtr(vector), KstVectorPtr(newVector));
@@ -225,12 +228,15 @@ void KstChangeFileDialogI::applyFileChange() {
         ++invalid;
       } else {
         if (_duplicateSelected->isChecked()) {
-          
+          // block matrix updates until matrix is setup properly
+          KST::matrixList.lock().writeLock();
+
           // create a new matrix
           KstRMatrixPtr newMatrix = matrix->makeDuplicate();
           newMatrix->changeFile(file);
-          KST::addMatrixToList(KstMatrixPtr(newMatrix));   
-          
+
+          KST::matrixList.lock().unlock();
+
           // duplicate dependents
           if (_duplicateDependents->isChecked()) {
             duplicatedMatrices.insert(KstMatrixPtr(matrix), KstMatrixPtr(newMatrix));

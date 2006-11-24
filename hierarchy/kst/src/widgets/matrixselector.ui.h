@@ -37,7 +37,7 @@ void MatrixSelector::update()
 	_matrix->insertItem("<None>");
     }
 
-    KstMatrixList matrices = KST::matrixList;
+    KstMatrixList matrices = KST::matrixList.list();
     KST::matrixList.lock().readLock();
     for (KstMatrixList::ConstIterator i = matrices.begin(); i != matrices.end(); ++i) {
 	(*i)->readLock();

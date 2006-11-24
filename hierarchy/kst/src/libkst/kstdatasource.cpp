@@ -48,6 +48,7 @@ namespace KST {
         //kstdDebug() << "Create plugin " << (void*)this << " " << service->property("Name").toString() << endl;
       }
 
+    protected:
       virtual ~Plugin() {
         //kstdDebug() << "Destroy plugin " << (void*)this << " " << service->property("Name").toString() << endl;
         if (_lib) {
@@ -55,6 +56,7 @@ namespace KST {
         }
       }
 
+    public:
       KstDataSource *create(KConfig *cfg, const QString& filename, const QString& type = QString::null) const {
         KstDataSource *(*sym)(KConfig*, const QString&, const QString&) = (KstDataSource*(*)(KConfig*, const QString&, const QString&))symbol("create");
         if (sym) {

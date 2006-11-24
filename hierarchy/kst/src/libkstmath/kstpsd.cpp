@@ -158,11 +158,9 @@ void KstPSD::commonConstructor(const QString& in_tag, KstVectorPtr in_V,
 
   _PSDLen = 1;
   KstVectorPtr ov = new KstVector(KstObjectTag("freq", tag()), _PSDLen, this);
-  KST::addVectorToList(ov);
   _fVector = _outputVectors.insert(FVECTOR, ov);
 
   ov = new KstVector(KstObjectTag("sv", tag()), _PSDLen, this);
-  KST::addVectorToList(ov);
   _sVector = _outputVectors.insert(SVECTOR, ov);
 
   updateVectorLabels();

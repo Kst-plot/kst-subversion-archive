@@ -23,7 +23,7 @@
 
 static int anonymousStringCounter = 0;
 
-KstString::KstString(KstObjectTag in_tag, KstObject *provider, const QString& val, bool orphan, bool doLock)
+KstString::KstString(KstObjectTag in_tag, KstObject *provider, const QString& val, bool orphan)
 : KstPrimitive(provider), _value(val), _orphan(orphan) {
   QString _tag = in_tag.tag();
   if (!in_tag.isValid()) {
@@ -37,15 +37,11 @@ KstString::KstString(KstObjectTag in_tag, KstObject *provider, const QString& va
       _tag += '\'';
     }
   }
-  setTagName(KstObjectTag(_tag, in_tag.context()));
+  KstObject::setTagName(KstObjectTag(_tag, in_tag.context()));
 
-  if (doLock) {
-    KST::stringList.lock().writeLock();
-  }
+  KST::stringList.lock().writeLock();
   KST::stringList.append(this);
-  if (doLock) {
-    KST::stringList.lock().unlock();
-  }
+  KST::stringList.lock().unlock();
 }
 
 
@@ -71,17 +67,13 @@ KstString::KstString(QDomElement& e)
 
 
 KstString::~KstString() {
-  KstWriteLocker l(&KST::stringNameTree.lock());
-  KST::stringNameTree.removeObject(this);
 }
 
 
 void KstString::setTagName(KstObjectTag tag) {
-  KstWriteLocker l(&KST::stringNameTree.lock());
+  KstWriteLocker l(&KST::stringList.lock());
 
-  KST::stringNameTree.removeObject(this);
-  KstObject::setTagName(tag);
-  KST::stringNameTree.addObject(this);
+  KST::stringList.doRename(this, tag);
 }
 
 

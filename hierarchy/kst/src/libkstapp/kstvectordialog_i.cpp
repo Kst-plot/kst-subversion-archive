@@ -390,8 +390,6 @@ bool KstVectorDialogI::newObject() {
         _w->_kstDataRange->DoSkip->isChecked(),
         _w->_kstDataRange->DoFilter->isChecked());
 
-    KST::addVectorToList(KstVectorPtr(vector));
-
     emit vectorCreated(KstVectorPtr(vector));
     vector = 0L;
     emit modified();
@@ -405,7 +403,6 @@ bool KstVectorDialogI::newObject() {
     }
 
     KstSVectorPtr svector = new KstSVector(x0, x1, n, KstObjectTag(tagname, KstObjectTag::globalTagContext));
-    KST::addVectorToList(KstVectorPtr(svector));
     emit vectorCreated(KstVectorPtr(svector));
     svector = 0L;
     emit modified();
@@ -601,7 +598,7 @@ bool KstVectorDialogI::editSingleObjectRV(KstVectorPtr vcPtr) {
 
 
 bool KstVectorDialogI::editObject() {
-  KstVectorList vcList = KST::vectorList;
+  KstVectorCollection vcList = KST::vectorList;
 
   // if editing multiple objects, edit each one
   if (_editMultipleMode) {

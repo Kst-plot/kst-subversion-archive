@@ -36,7 +36,7 @@ libkst_la_SOURCES = \
 libkst_la_LDFLAGS = -version-info @KST_LIBKST_VERSION@ -no-undefined $(all_libraries)
 libkst_la_LIBADD = $(LIB_QT) $(LIB_KIO) $(LIB_KDECORE) ../extdate/libkstextdate.la
 
-include_HEADERS = kstdatasource.h kstobject.h kst_export.h kstsharedptr.h rwlock.h kstdateparser.h kstwaitcondition.h
+include_HEADERS = kstdatasource.h kstobject.h kst_export.h kstsharedptr.h rwlock.h kstdateparser.h kstwaitcondition.h kstobjectcollection.h
 
 INCLUDES=-I$(top_srcdir)/kst/src/extdate -I$(top_srcdir) $(all_includes)
 

@@ -109,11 +109,9 @@ void EventMonitorEntry::commonConstructor(const QString &in_tag) {
   KstObject::setTagName(KstObjectTag(in_tag, KstObjectTag::globalTagContext)); // FIXME: tag context
 
   KstVectorPtr xv = new KstVector(KstObjectTag("x", tag()), NS, this);
-  KST::addVectorToList(xv);
   _xVector = _outputVectors.insert(OUTXVECTOR, xv);
 
   KstVectorPtr yv = new KstVector(KstObjectTag("y", tag()), NS, this);
-  KST::addVectorToList(yv);
   _yVector = _outputVectors.insert(OUTYVECTOR, yv);
 }
 

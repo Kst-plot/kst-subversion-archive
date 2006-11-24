@@ -35,7 +35,6 @@ KstBindMatrix::KstBindMatrix(KJS::ExecState *exec, KJS::Object *globalObject, co
   addBindings(exec, o);
   if (!globalObject) {
     KstAMatrixPtr m = new KstAMatrix(KstObjectTag(), 1, 1, 0, 0, 1, 1);
-    KST::addMatrixToList(m.data());
     _d = m.data();
   }
 }

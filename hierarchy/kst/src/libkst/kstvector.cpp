@@ -79,6 +79,10 @@ KstVector::KstVector(KstObjectTag in_tag, int size, KstObject *provider, bool is
 
   CreateScalars();
   blank();
+
+  KST::vectorList.lock().writeLock();
+  KST::vectorList.append(this);
+  KST::vectorList.lock().unlock();
 }
 
 
@@ -517,7 +521,10 @@ void KstVector::save(QTextStream &ts, const QString& indent, bool saveAbsolutePo
 
 
 void KstVector::setTagName(KstObjectTag newTag) {
-  KstObject::setTagName(newTag);
+  KstWriteLocker l(&KST::vectorList.lock());
+
+  KST::vectorList.doRename(this, newTag);
+
   RenameScalars();
 }
 
@@ -570,7 +577,6 @@ KstVectorPtr KstVector::generateVector(double x0, double x1, int n, KstObjectTag
   }
 
   KstVectorPtr xv = new KstVector(KstObjectTag(t, tag.context()), n);
-  KST::addVectorToList(xv);
   xv->_saveable = false;
 
   for (int i = 0; i < n; i++) {

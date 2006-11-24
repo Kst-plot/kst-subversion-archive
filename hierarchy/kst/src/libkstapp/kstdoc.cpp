@@ -370,15 +370,11 @@ bool KstDoc::openDocument(const KURL& url, const QString& o_file,
         new KstString(e);
       } else if (e.tagName() == "vector") {
         vector = new KstRVector(e, o_file, o_n, o_f, o_s, o_ave);
-        KST::addVectorToList(KstVectorPtr(vector));
         // Vectors are automatically added to the global list.
       } else if (e.tagName() == "svector") {
         KstSVectorPtr svector = new KstSVector(e);
-        KST::addVectorToList(KstVectorPtr(svector));
       } else if (e.tagName() == "avector") {
         KstAVectorPtr avector = new KstAVector(e);
-        avector = new KstAVector(e);
-        KST::addVectorToList(KstVectorPtr(avector));
       } else if (e.tagName() == "plugin") {
         KstDataObjectPtr p = new KstPlugin(e);
         if (p->isValid()) {
@@ -425,13 +421,10 @@ bool KstDoc::openDocument(const KURL& url, const QString& o_file,
         app->plotHolderWhileOpeningDocument()->insert(plot->tagName(), plot);
       } else if (e.tagName() == "amatrix") {
         KstAMatrixPtr p = new KstAMatrix(e);
-        KST::addMatrixToList(KstMatrixPtr(p));
       } else if (e.tagName() == "smatrix") {
         KstSMatrixPtr p = new KstSMatrix(e);
-        KST::addMatrixToList(KstMatrixPtr(p));
       } else if (e.tagName() == "rmatrix") {
         KstRMatrixPtr p = new KstRMatrix(e);
-        KST::addMatrixToList(KstMatrixPtr(p));
       } else if (e.tagName() == "image") {
         KstDataObjectPtr p = new KstImage(e);
         KstWriteLocker dowl(&KST::dataObjectList.lock());
@@ -973,7 +966,7 @@ void KstDoc::purge() {
     KST::dataObjectList.lock().unlock();
   
     KST::vectorList.lock().readLock();
-    KstVectorList vectorList = QDeepCopy<KstVectorList>(KST::vectorList);
+    KstVectorList vectorList = QDeepCopy<KstVectorList>(KST::vectorList.list());
     KST::vectorList.lock().unlock();
     
     // clear unused vectors that are editable 
@@ -992,7 +985,7 @@ void KstDoc::purge() {
     }
     
     KST::matrixList.lock().readLock();
-    KstMatrixList matrixList = QDeepCopy<KstMatrixList>(KST::matrixList);
+    KstMatrixList matrixList = QDeepCopy<KstMatrixList>(KST::matrixList.list());
     KST::matrixList.lock().unlock();
 
     // clear unused matrices that are editable

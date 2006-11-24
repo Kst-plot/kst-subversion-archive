@@ -28,32 +28,16 @@
 KstDataSourceList KST::dataSourceList;
 
 /** The list of vectors that are being read */
-KstVectorList KST::vectorList;
+KstVectorCollection KST::vectorList;
 
 /** The list of matrices that are being read */
-KstMatrixList KST::matrixList;
+KstMatrixCollection KST::matrixList;
 
 /** The list of Scalars which have been generated */
-KstScalarList KST::scalarList;
-/** Root of Scalar naming tree */
-KstObjectTree KST::scalarNameTree;
+KstScalarCollection KST::scalarList;
 
 /** The list of Strings */
-KstStringList KST::stringList;
-/** Root of String naming tree */
-KstObjectTree KST::stringNameTree;
-
-void KST::addVectorToList(KstVectorPtr v) {
-  KST::vectorList.lock().writeLock();
-  KST::vectorList.append(v);
-  KST::vectorList.lock().unlock();
-}
-
-void KST::addMatrixToList(KstMatrixPtr m) {
-  KST::matrixList.lock().writeLock();
-  KST::matrixList.append(m);
-  KST::matrixList.lock().unlock();  
-}
+KstStringCollection KST::stringList;
 
 static QMutex bigLock;
 

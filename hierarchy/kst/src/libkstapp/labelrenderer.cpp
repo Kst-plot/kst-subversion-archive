@@ -87,9 +87,9 @@ void renderLabel(RenderContext& rc, Label::Chunk *fi) {
           rc._cache->append(DataRef(DataRef::DRExpression, fi->text, QString::null, 0.0, QVariant(eqResult)));
         }
       } else {
-        KST::scalarNameTree.lock().readLock();
-        KstScalarPtr scp = kst_cast<KstScalar>(KST::scalarNameTree.retrieveObject(KstObjectTag::fromString(fi->text)));
-        KST::scalarNameTree.lock().unlock();
+        KST::scalarList.lock().readLock();
+        KstScalarPtr scp = KST::scalarList.retrieveObject(KstObjectTag::fromString(fi->text));
+        KST::scalarList.lock().unlock();
         if (scp) {
           scp->readLock();
           txt = QString::number(scp->value(), 'g', rc.precision);
@@ -98,9 +98,9 @@ void renderLabel(RenderContext& rc, Label::Chunk *fi) {
           }
           scp->unlock();
         } else {
-          KST::stringNameTree.lock().readLock();
-          KstStringPtr stp = kst_cast<KstString>(KST::stringNameTree.retrieveObject(KstObjectTag::fromString(fi->text)));
-          KST::stringNameTree.lock().unlock();
+          KST::stringList.lock().readLock();
+          KstStringPtr stp = KST::stringList.retrieveObject(KstObjectTag::fromString(fi->text));
+          KST::stringList.lock().unlock();
           if (stp) {
             stp->readLock();
             txt = stp->value();

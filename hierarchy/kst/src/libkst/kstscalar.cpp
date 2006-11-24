@@ -38,7 +38,7 @@ void KstScalar::clearScalarsDirty() {
 }
 
 /** Create the base scalar */
-KstScalar::KstScalar(KstObjectTag in_tag, KstObject *provider, double val, bool orphan, bool displayable, bool doLock, bool editable)
+KstScalar::KstScalar(KstObjectTag in_tag, KstObject *provider, double val, bool orphan, bool displayable, bool editable)
 : KstPrimitive(provider), _value(val), _orphan(orphan), _displayable(displayable), _editable(editable) {
   QString _tag = in_tag.tag();
   if (_tag.isEmpty()) {
@@ -52,16 +52,12 @@ KstScalar::KstScalar(KstObjectTag in_tag, KstObject *provider, double val, bool 
       _tag += '\'';
     }
   }
-  setTagName(KstObjectTag(_tag, in_tag.context()));
+  KstObject::setTagName(KstObjectTag(_tag, in_tag.context()));
 
-  // FIXME: passing in a lock variable indicates a design problem
-  if (doLock) {
-    KST::scalarList.lock().writeLock();
-  }
+
+  KST::scalarList.lock().writeLock();
   KST::scalarList.append(this);
-  if (doLock) {
-    KST::scalarList.lock().unlock();
-  }
+  KST::scalarList.lock().unlock();
 }
 
 
@@ -97,9 +93,6 @@ KstScalar::KstScalar(const QDomElement& e)
 
 
 KstScalar::~KstScalar() {
-  KstWriteLocker l(&KST::scalarNameTree.lock());
-
-  KST::scalarNameTree.removeObject(this);
 }
 
 
@@ -137,15 +130,6 @@ void KstScalar::save(QTextStream &ts, const QString& indent) {
 KstScalar& KstScalar::operator=(double v) {
   setValue(v);
   return *this;
-}
-
-
-bool KstScalar::isGlobal() const {
-  KST::scalarList.lock().readLock();
-  // can't use find() due to constness issues
-  bool rc = KST::scalarList.findTag(tagName()) != KST::scalarList.end();
-  KST::scalarList.lock().unlock();
-  return rc;
 }
 
 
@@ -200,11 +184,9 @@ void KstScalar::setEditable(bool editable) {
 
 
 void KstScalar::setTagName(KstObjectTag newTag) {
-  KstWriteLocker l(&KST::scalarNameTree.lock());
+  KstWriteLocker l(&KST::scalarList.lock());
 
-  KST::scalarNameTree.removeObject(this);
-  KstObject::setTagName(newTag);
-  KST::scalarNameTree.addObject(this);
+  KST::scalarList.doRename(this, newTag);
 }
 
 #include "kstscalar.moc"

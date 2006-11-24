@@ -20,6 +20,7 @@
 
 #include <qdom.h>
 #include "kstprimitive.h"
+#include "kstobjectcollection.h"
 
 /** The base class for all scalars. */
 class KST_EXPORT KstScalar : public KstPrimitive {
@@ -30,10 +31,12 @@ class KST_EXPORT KstScalar : public KstPrimitive {
   public:
     KstScalar(KstObjectTag tag = KstObjectTag(),
               KstObject *provider = 0L, double val = 0.0, bool orphan = false,
-              bool displayable = true, bool bLock = true, bool editable = false);
+              bool displayable = true, bool editable = false);
     KstScalar(const QDomElement& e);
+
     virtual ~KstScalar();
 
+  public:
     void setTagName(KstObjectTag tag);
 
     /* return true if any scalars are dirty at the moment */
@@ -51,8 +54,6 @@ class KST_EXPORT KstScalar : public KstPrimitive {
     UpdateType update(int updateCounter = -1);
 
     KstScalar& operator=(double v);
-
-    bool isGlobal() const;
 
   public slots:
     double value() const;
@@ -82,6 +83,7 @@ class KST_EXPORT KstScalar : public KstPrimitive {
 typedef KstSharedPtr<KstScalar> KstScalarPtr;
 typedef KstObjectList<KstScalarPtr> KstScalarList;
 typedef KstObjectMap<KstScalarPtr> KstScalarMap;
+typedef KstObjectCollection<KstScalar> KstScalarCollection;
 
 #endif
 // vim: ts=2 sw=2 et

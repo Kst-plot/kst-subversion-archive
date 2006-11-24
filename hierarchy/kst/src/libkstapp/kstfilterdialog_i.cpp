@@ -153,7 +153,7 @@ bool KstFilterDialogI::saveInputs(KstPluginPtr plugin, KstSharedPtr<Plugin> p) {
         KstStringPtr s = *KST::stringList.findTag(ss->selectedString());
         if (s == *KST::stringList.end()) {
           QString val = ss->_string->currentText();
-          KstStringPtr newString = new KstString(KstObjectTag(ss->_string->currentText(), KstObjectTag::globalTagContext), 0L, val, true, false); // FIXME: do tag context properly
+          KstStringPtr newString = new KstString(KstObjectTag(ss->_string->currentText(), KstObjectTag::globalTagContext), 0L, val, true); // FIXME: do tag context properly
           newString->writeLock(); // to match with plugin->writeLock()
           if (plugin->inputStrings().contains((*it)._name) && plugin->inputStrings()[(*it)._name] != newString) {
             plugin->inputStrings()[(*it)._name]->unlock();
@@ -179,7 +179,7 @@ bool KstFilterDialogI::saveInputs(KstPluginPtr plugin, KstSharedPtr<Plugin> p) {
           double val = ss->_scalar->currentText().toDouble(&ok);
 
           if (ok) {
-            KstScalarPtr newScalar = new KstScalar(KstObjectTag(ss->_scalar->currentText(), KstObjectTag::globalTagContext), 0L, val, true, false, false); // FIXME: do tag context properly
+            KstScalarPtr newScalar = new KstScalar(KstObjectTag(ss->_scalar->currentText(), KstObjectTag::globalTagContext), 0L, val, true, false); // FIXME: do tag context properly
             newScalar->writeLock(); // to match with plugin->writeLock()
             if (plugin->inputScalars().contains((*it)._name) && plugin->inputScalars()[(*it)._name] != newScalar) {
               plugin->inputScalars()[(*it)._name]->unlock();

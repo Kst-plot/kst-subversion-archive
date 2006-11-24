@@ -34,8 +34,11 @@ class KST_EXPORT KstMatrix: public KstPrimitive {
               KstObject *provider = 0L, uint nX = 1, uint nY = 0,
               double minX = 0, double minY = 0,
               double stepX = 1, double stepY = 1);
+
+  protected:
     ~KstMatrix();
     
+  public:
     void change(KstObjectTag tag, uint nX, uint nY, double minX, double minY,
         double stepX, double stepY);
 
@@ -165,6 +168,7 @@ class KST_EXPORT KstMatrix: public KstPrimitive {
 
 typedef KstObjectList<KstMatrixPtr> KstMatrixList;
 typedef KstObjectMap<KstMatrixPtr> KstMatrixMap;
+typedef KstObjectCollection<KstMatrix> KstMatrixCollection;
 
 #endif
 // vim: ts=2 sw=2 et

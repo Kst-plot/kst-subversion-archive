@@ -52,7 +52,7 @@ KstMatrix::KstMatrix(KstObjectTag in_tag, KstObject *provider, uint nX, uint nY,
 
   // must create scalars before setting tag name // FIXME: why?
   createScalars();
-  setTagName(in_tag);
+  KstObject::setTagName(in_tag);
   if (!in_tag.isValid()) {
     QString nt = i18n("Anonymous Matrix %1");
 
@@ -65,6 +65,10 @@ KstMatrix::KstMatrix(KstObjectTag in_tag, KstObject *provider, uint nX, uint nY,
     }
   }
   setDirty();
+
+  KST::matrixList.lock().writeLock();
+  KST::matrixList.append(this);
+  KST::matrixList.lock().unlock();
 }
 
 
@@ -365,7 +369,10 @@ KstObject::UpdateType KstMatrix::internalUpdate(KstObject::UpdateType providerUp
     
     
 void KstMatrix::setTagName(KstObjectTag tag) {
-  KstObject::setTagName(tag);
+  KstWriteLocker l(&KST::matrixList.lock());
+
+  KST::matrixList.doRename(this, tag);
+
   renameScalars();
 }
 

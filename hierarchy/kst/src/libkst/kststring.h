@@ -20,15 +20,18 @@
 
 #include <qdom.h>
 #include "kstprimitive.h"
+#include "kstobjectcollection.h"
 
 class KST_EXPORT KstString : public KstPrimitive {
   Q_OBJECT
   Q_PROPERTY(bool orphan READ orphan WRITE setOrphan)
   public:
-    KstString(KstObjectTag in_tag = KstObjectTag(), KstObject *provider = 0L, const QString& val = QString::null, bool orphan = false, bool doLock = true);
+    KstString(KstObjectTag in_tag = KstObjectTag(), KstObject *provider = 0L, const QString& val = QString::null, bool orphan = false);
     KstString(QDomElement& e);
+
     ~KstString();
 
+  public:
     void setTagName(KstObjectTag tag);
 
     /** Save information */
@@ -61,6 +64,7 @@ class KST_EXPORT KstString : public KstPrimitive {
 typedef KstSharedPtr<KstString> KstStringPtr;
 typedef KstObjectList<KstStringPtr> KstStringList;
 typedef KstObjectMap<KstStringPtr> KstStringMap;
+typedef KstObjectCollection<KstString> KstStringCollection;
 
 #endif
 // vim: ts=2 sw=2 et

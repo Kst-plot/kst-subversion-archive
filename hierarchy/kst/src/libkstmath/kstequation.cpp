@@ -55,7 +55,6 @@ KstEquation::KstEquation(const QString& in_tag, const QString& equation, double 
   QString vtag = KST::suggestVectorName(QString( "(%1..%2)" ).arg( x0 ).arg( x1 ) );
 
   xvector = new KstSVector(x0, x1, nx, KstObjectTag(vtag, QStringList(in_tag)));
-  KST::addVectorToList( xvector );
 
   _doInterp = false;
   _xInVector = _inputVectors.insert(XINVECTOR, xvector);
@@ -129,7 +128,6 @@ KstEquation::KstEquation(const QDomElement &e)
     }
 
     KstVectorPtr xvector = new KstSVector(x0, x1, ns, vtag);  // FIXME: tag context
-    KST::addVectorToList(xvector);
 
     _doInterp = false;
     _xInVector = _inputVectors.insert(XINVECTOR, xvector);
@@ -153,11 +151,9 @@ void KstEquation::commonConstructor(const QString& in_tag, const QString& in_equ
   KstObject::setTagName(KstObjectTag(in_tag, KstObjectTag::globalTagContext)); // FIXME: global tag context?
 
   KstVectorPtr xv = new KstVector(KstObjectTag("xsv", tag()), 2, this);
-  KST::addVectorToList(xv);
   _xOutVector = _outputVectors.insert(XOUTVECTOR, xv);
     
   KstVectorPtr yv = new KstVector(KstObjectTag("sv", tag()), 2, this);
-  KST::addVectorToList(yv);
   _yOutVector = _outputVectors.insert(YOUTVECTOR, yv);
 
   _isValid = false;

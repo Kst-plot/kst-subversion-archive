@@ -112,7 +112,6 @@ int main(int argc, char *argv[]) {
       return -3;
     }
     KstRVectorPtr v = new KstRVector(file, field_list[i], KstObjectTag("tag"), start_frame, n_frames, n_skip, n_skip>0, do_ave);
-    KST::addVectorToList(KstVectorPtr(v));
     vlist.append(v);
   }
 

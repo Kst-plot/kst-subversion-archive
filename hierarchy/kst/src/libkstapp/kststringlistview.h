@@ -21,31 +21,32 @@
 #include <klistview.h>
 
 #include "kstobject.h"
+#include "kstobjectcollection.h"
 
 class KstStringListView : public KListView
 {
   public:
-    KstStringListView(QWidget *parent = 0, KstObjectTree *tree = NULL);
+    KstStringListView(QWidget *parent = 0, KstObjectCollection<KstString> *coll = NULL);
 
     void update();
 
   private:
-    KstObjectTree *_tree;
+    KstObjectCollection<KstString> *_coll;
 };
 
 
 class KstStringListViewItem : public KListViewItem
 {
   public:
-    KstStringListViewItem(KstStringListView *parent, KstObjectTreeNode *node);
-    KstStringListViewItem(KstStringListViewItem *parent, KstObjectTreeNode *node);
+    KstStringListViewItem(KstStringListView *parent, KstObjectTreeNode<KstString> *node);
+    KstStringListViewItem(KstStringListViewItem *parent, KstObjectTreeNode<KstString> *node);
 
     QString text(int column) const;
 
-    KstObjectTreeNode *node() const { return _node; }
+    KstObjectTreeNode<KstString> *node() const { return _node; }
 
   private:
-    KstObjectTreeNode *_node;
+    KstObjectTreeNode<KstString> *_node;
 };
 
 #endif
