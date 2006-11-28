@@ -111,7 +111,7 @@ int main(int argc, char *argv[]) {
               field_list[i], filename);
       return -3;
     }
-    KstRVectorPtr v = new KstRVector(file, field_list[i], KstObjectTag("tag"), start_frame, n_frames, n_skip, n_skip>0, do_ave);
+    KstRVectorPtr v = new KstRVector(file, field_list[i], KstObjectTag("tag", KstObjectTag::globalTagContext), start_frame, n_frames, n_skip, n_skip>0, do_ave);
     vlist.append(v);
   }
 

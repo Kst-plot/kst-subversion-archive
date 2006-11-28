@@ -32,6 +32,9 @@ class KstCsdDialogI : public KstDataDialog {
     virtual ~KstCsdDialogI();
     KST_EXPORT static KstCsdDialogI *globalInstance();
 
+  protected:
+    QString objectName() { return tr("Cumulative Spectral Decay"); }
+ 
   public slots:
     /** update the entries in the psd dialog to represent current psds */
     void update();
@@ -40,7 +43,7 @@ class KstCsdDialogI : public KstDataDialog {
     bool editObject();
     void populateEditMultiple();
     void setVector(const QString& name);
- 
+
   private:
     KstImagePtr createImage(KstCSDPtr csd);
     static QGuardedPtr<KstCsdDialogI> _inst;

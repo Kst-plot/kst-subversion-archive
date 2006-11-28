@@ -229,7 +229,7 @@ bool KstFilterDialogI::createCurve(KstPluginPtr plugin) {
     return false;
   }
   plugin->setDirty();
-  QString c_name = KST::suggestCurveName(plugin->tagName(), true);
+  QString c_name = KST::suggestCurveName(plugin->tag(), true);
   KstVCurvePtr fit = new KstVCurve(c_name, KstVectorPtr(xVector), KstVectorPtr(yVector), KstVectorPtr(0L), KstVectorPtr(0L), KstVectorPtr(0L), KstVectorPtr(0L), _w->_curveAppearance->color());
 
   fit->setHasPoints(_w->_curveAppearance->showPoints());
@@ -276,7 +276,7 @@ bool KstFilterDialogI::newObject() {
           plugin->setPlugin(pPtr);
 
           if (tagName == plugin_defaultTag) {
-            tagName = KST::suggestPluginName(_pluginList[pitem], _yvector);
+            tagName = KST::suggestPluginName(_pluginList[pitem], KstObjectTag::fromString(_yvector));
           }
 
           plugin->setTagName(KstObjectTag(tagName, KstObjectTag::globalTagContext)); // FIXME: tag context always global?

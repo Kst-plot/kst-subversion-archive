@@ -240,7 +240,7 @@ bool KstCurveDialogI::newObject() {
 
   QString tag_name = _tagName->text();
   if (tag_name == defaultTag) {
-    tag_name = KST::suggestCurveName(VY->tagName());
+    tag_name = KST::suggestCurveName(VY->tag());
   }
 
   // verify that the curve name is unique

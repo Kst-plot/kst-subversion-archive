@@ -390,7 +390,7 @@ KstObjectTag KstVCurve::xVTag() const {
   if (xv) {
     return xv->tag();
   }
-  return KstObjectTag();
+  return KstObjectTag::invalidTag;
 }
 
 
@@ -399,7 +399,7 @@ KstObjectTag KstVCurve::yVTag() const {
   if (yv) {
     return yv->tag();
   }
-  return KstObjectTag();
+  return KstObjectTag::invalidTag;
 }
 
 
@@ -408,7 +408,7 @@ KstObjectTag KstVCurve::xETag() const {
   if (v) {
     return v->tag();
   }
-  return KstObjectTag();
+  return KstObjectTag::invalidTag;
 }
 
 
@@ -417,7 +417,7 @@ KstObjectTag KstVCurve::yETag() const {
   if (v) {
     return v->tag();
   }
-  return KstObjectTag();
+  return KstObjectTag::invalidTag;
 }
 
 
@@ -426,7 +426,7 @@ KstObjectTag KstVCurve::xEMinusTag() const {
   if (v) {
     return v->tag();
   }
-  return KstObjectTag();
+  return KstObjectTag::invalidTag;
 }
 
 
@@ -435,7 +435,7 @@ KstObjectTag KstVCurve::yEMinusTag() const {
   if (v) {
     return v->tag();
   }
-  return KstObjectTag();
+  return KstObjectTag::invalidTag;
 }
 
 
@@ -463,21 +463,21 @@ void KstVCurve::save(QTextStream &ts, const QString& indent) {
   QString l2 = indent + "  ";
   ts << indent << "<curve>" << endl;
   ts << l2 << "<tag>" << QStyleSheet::escape(tagName()) << "</tag>" << endl;
-  ts << l2 << "<xvectag>" << QStyleSheet::escape(_inputVectors[COLOR_XVECTOR]->tagName()) << "</xvectag>" << endl;
-  ts << l2 << "<yvectag>" << QStyleSheet::escape(_inputVectors[COLOR_YVECTOR]->tagName()) << "</yvectag>" << endl;
+  ts << l2 << "<xvectag>" << QStyleSheet::escape(_inputVectors[COLOR_XVECTOR]->tag().tagString()) << "</xvectag>" << endl;
+  ts << l2 << "<yvectag>" << QStyleSheet::escape(_inputVectors[COLOR_YVECTOR]->tag().tagString()) << "</yvectag>" << endl;
   ts << l2 << "<legend>" << QStyleSheet::escape(legendText()) << "</legend>" << endl;
   ts << l2 << "<hasMinus/>" << endl;
   if (_inputVectors.contains(EXVECTOR)) {
-    ts << l2 << "<exVectag>" << QStyleSheet::escape(_inputVectors[EXVECTOR]->tagName()) << "</exVectag>" << endl;
+    ts << l2 << "<exVectag>" << QStyleSheet::escape(_inputVectors[EXVECTOR]->tag().tagString()) << "</exVectag>" << endl;
   }
   if (_inputVectors.contains(EYVECTOR)) {
-    ts << l2 << "<eyVectag>" << QStyleSheet::escape(_inputVectors[EYVECTOR]->tagName()) << "</eyVectag>" << endl;
+    ts << l2 << "<eyVectag>" << QStyleSheet::escape(_inputVectors[EYVECTOR]->tag().tagString()) << "</eyVectag>" << endl;
   }
   if (_inputVectors.contains(EXMINUSVECTOR)) {
-    ts << l2 << "<exMinusVectag>" << QStyleSheet::escape(_inputVectors[EXMINUSVECTOR]->tagName()) << "</exMinusVectag>" << endl;
+    ts << l2 << "<exMinusVectag>" << QStyleSheet::escape(_inputVectors[EXMINUSVECTOR]->tag().tagString()) << "</exMinusVectag>" << endl;
   }
   if (_inputVectors.contains(EYMINUSVECTOR)) {
-    ts << l2 << "<eyMinusVectag>" << QStyleSheet::escape(_inputVectors[EYMINUSVECTOR]->tagName()) << "</eyMinusVectag>" << endl;
+    ts << l2 << "<eyMinusVectag>" << QStyleSheet::escape(_inputVectors[EYMINUSVECTOR]->tag().tagString()) << "</eyMinusVectag>" << endl;
   }
   ts << l2 << "<color>" << Color.name() << "</color>" << endl;
   if (HasLines) {

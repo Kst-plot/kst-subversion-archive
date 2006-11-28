@@ -770,7 +770,7 @@ void DataWizard::finished()
     KstViewObjectList::Iterator pit = plots.begin();
     for (KstVectorList::Iterator it = l.begin(); it != l.end(); ++it) {
 	if (_radioButtonPlotData->isChecked() || _radioButtonPlotDataPSD->isChecked()) {
-	    name = KST::suggestCurveName((*it)->tagName(), false);
+	    name = KST::suggestCurveName((*it)->tag(), false);
 	    Kst2DPlotPtr plot = kst_cast<Kst2DPlot>(*pit);
 	    if (plot) {
 		KstVCurveList vcurves = kstObjectSubList<KstBaseCurve,KstVCurve>(plot->Curves);
@@ -845,7 +845,7 @@ void DataWizard::finished()
 			assert(pit != startPlot);
 		    }
 		}
-	        name = KST::suggestPSDName((*it)->tagName());
+	        name = KST::suggestPSDName((*it)->tag());
 
 		KstPSDPtr p = new KstPSD(name, *it,
 			_kstFFTOptions->SampRate->text().toDouble(),
@@ -861,9 +861,9 @@ void DataWizard::finished()
 		p->setInterpolateHoles(_kstFFTOptions->InterpolateHoles->isChecked());
 		if (_radioButtonPlotPSD->isChecked() || colors.count() <= (unsigned long)indexColor) {
 		    KstVCurveList vcurves = kstObjectSubList<KstBaseCurve,KstVCurve>(plot->Curves);
-		    c = new KstVCurve(KST::suggestCurveName(name, true), p->vX(), p->vY(), 0L, 0L, 0L, 0L, KstColorSequence::next(vcurves, plot->backgroundColor()));
+		    c = new KstVCurve(KST::suggestCurveName(p->tag(), true), p->vX(), p->vY(), 0L, 0L, 0L, 0L, KstColorSequence::next(vcurves, plot->backgroundColor()));
 		} else {
-		    c = new KstVCurve(KST::suggestCurveName(name, true), p->vX(), p->vY(), 0L, 0L, 0L, 0L, colors[indexColor]);
+		    c = new KstVCurve(KST::suggestCurveName(p->tag(), true), p->vX(), p->vY(), 0L, 0L, 0L, 0L, colors[indexColor]);
 		    indexColor++;
 		}
                 c->setLineWidth(KstSettings::globalSettings()->defaultLineWeight);

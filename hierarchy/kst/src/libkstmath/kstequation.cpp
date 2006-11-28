@@ -80,7 +80,7 @@ KstEquation::KstEquation(const QDomElement &e)
 
   int ns = -1;
   double x0 = 0.0, x1 = 1.0;
-  QString xvtag;
+  KstObjectTag xvtag = KstObjectTag::invalidTag;
   bool haveVector = false;
 
   _doInterp = false;
@@ -101,7 +101,7 @@ KstEquation::KstEquation(const QDomElement &e)
       } else if (e.tagName() == "ns") {
         ns = e.text().toInt();
       } else if (e.tagName() == "xvtag") {
-        xvtag = e.text();
+        xvtag = KstObjectTag::fromString(e.text());
       } else if (e.tagName() == "xvector") {
         _inputVectorLoadQueue.append(qMakePair(XINVECTOR, e.text()));
         haveVector = true;
@@ -120,14 +120,14 @@ KstEquation::KstEquation(const QDomElement &e)
       x1 = x0 + 2;
     }
 
-    QString vtag;
-    if (xvtag.isEmpty()) {
-      vtag = KST::suggestVectorName(QString("(%1..%2)").arg(x0).arg(x1));
+    KstObjectTag vtag = KstObjectTag::invalidTag;
+    if (!xvtag.isValid()) {
+      vtag = KST::suggestUniqueVectorTag(KstObjectTag(QString("(%1..%2)").arg(x0).arg(x1), KstObjectTag::globalTagContext));
     } else {
       vtag = xvtag;
     }
 
-    KstVectorPtr xvector = new KstSVector(x0, x1, ns, vtag);  // FIXME: tag context
+    KstVectorPtr xvector = new KstSVector(x0, x1, ns, vtag);
 
     _doInterp = false;
     _xInVector = _inputVectors.insert(XINVECTOR, xvector);
@@ -249,7 +249,7 @@ void KstEquation::save(QTextStream &ts, const QString& indent) {
     ParsedEquation = 0L;
   }
 
-  ts << l2 << "<xvector>" << QStyleSheet::escape((*_xInVector)->tagName()) << "</xvector>" << endl;
+  ts << l2 << "<xvector>" << QStyleSheet::escape((*_xInVector)->tag().tagString()) << "</xvector>" << endl;
   if (_doInterp) {
     ts << l2 << "<interpolate/>" << endl;
   }

@@ -346,7 +346,7 @@ void KstHistogram::save(QTextStream &ts, const QString& indent) {
   QString l2 = indent + "  ";
   ts << indent << "<histogram>" << endl;
   ts << l2 << "<tag>" << QStyleSheet::escape(tagName()) << "</tag>" << endl;
-  ts << l2 << "<vectag>" << QStyleSheet::escape(_inputVectors[RAWVECTOR]->tagName()) << "</vectag>" << endl;
+  ts << l2 << "<vectag>" << QStyleSheet::escape(_inputVectors[RAWVECTOR]->tag().tagString()) << "</vectag>" << endl;
   ts << l2 << "<numBins>"  << _NBins << "</numBins>" << endl;
   ts << l2 << "<realtimeautobin>" << _realTimeAutoBin << "</realtimeautobin>" << endl;
   ts << l2 << "<minX>" << _MinX << "</minX>" << endl;

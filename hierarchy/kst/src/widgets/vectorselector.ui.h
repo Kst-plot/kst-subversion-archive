@@ -50,8 +50,8 @@ void VectorSelector::update()
     for (KstVectorList::ConstIterator i = KST::vectorList.begin(); i != KST::vectorList.end(); ++i) {
 	(*i)->readLock();
 	if (!(*i)->isScalarList()){
-	    vectors << (*i)->tagName();
-	    if (!found && (*i)->tagName() == prev) {
+	    vectors << (*i)->tag().tagString();
+	    if (!found && (*i)->tag().tagString() == prev) {
 		found = true;
 	    }
 	}

@@ -41,9 +41,9 @@ void ScalarSelector::update()
     // FIXME: missing locking?
     for (KstScalarList::Iterator i = KST::scalarList.begin(); i != KST::scalarList.end(); ++i) {
         if ((*i)->displayable()) {
-            scalars << (*i)->tagName();
+            scalars << (*i)->tag().tagString();
         }
-        if ((*i)->tagName() == prev) {
+        if ((*i)->tag().tagString() == prev) {
             found = true;
         }
     }

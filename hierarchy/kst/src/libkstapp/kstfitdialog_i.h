@@ -40,7 +40,7 @@ class KstFitDialogI : public KstPluginDialogI {
     QString _evector;
     QString _strWindow;
     QString _strPlotName;
-    QString _strCurve;
+    KstVCurvePtr _curve;
     
     bool createCurve(KstPluginPtr plugin);
     

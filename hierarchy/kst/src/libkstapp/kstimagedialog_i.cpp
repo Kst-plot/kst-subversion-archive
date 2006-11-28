@@ -217,7 +217,7 @@ bool KstImageDialogI::newObject() {
   matrix->readLock();
 
   //create a unique name
-  QString tag_name = KST::suggestImageName(matrix->tagName());
+  QString tag_name = KST::suggestImageName(matrix->tag());
   if (KstData::self()->dataTagNameNotUnique(tag_name)) {
     _tagName->setFocus();
     matrix->unlock();

@@ -142,7 +142,7 @@ void KstCsdDialogI::update() {
 bool KstCsdDialogI::newObject() {
   QString tag_name = _tagName->text();
   if (tag_name == defaultTag) {
-    tag_name = KST::suggestCSDName(_w->_vector->selectedVector());
+    tag_name = KST::suggestCSDName(KstObjectTag::fromString(_w->_vector->selectedVector()));
   }
 
   // verify that the curve name is unique

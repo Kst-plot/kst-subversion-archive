@@ -186,14 +186,14 @@ QStringList KstIfaceImpl::filterList() {
 
 bool KstIfaceImpl::plotEquation(double start, double end, int numSamples, const QString& equation, const QString& plotName, const QColor& color) {
   Kst2DPlotPtr plot;
-  QString etag, ptag;
+  QString ptag;
   KstApp *app = KstApp::inst();
 
   if (equation.isEmpty()) {
     return false;
   }
 
-  etag = KST::suggestEQName(QString(equation).replace(QRegExp("[\\[\\]\\s]"), "_"));
+  QString etag = KST::suggestEQName(QString(equation).replace(QRegExp("[\\[\\]\\s]"), "_"));
   ptag = "P-" + plotName;
 
   if (!plotName.isEmpty()) {
@@ -245,7 +245,7 @@ bool KstIfaceImpl::plotEquation(double start, double end, int numSamples, const 
   
   KstVCurveList vcurves = kstObjectSubList<KstBaseCurve,KstVCurve>(plot->Curves);
 
-  KstVCurvePtr vc = new KstVCurve(KST::suggestCurveName(etag, true), eq->vX(), eq->vY(), 0L, 0L, 0L, 0L, color.isValid() ? color : KstColorSequence::next(vcurves,plot->backgroundColor()));
+  KstVCurvePtr vc = new KstVCurve(KST::suggestCurveName(eq->tag(), true), eq->vX(), eq->vY(), 0L, 0L, 0L, 0L, color.isValid() ? color : KstColorSequence::next(vcurves,plot->backgroundColor()));
   KST::dataObjectList.lock().writeLock();
   KST::dataObjectList.append(KstDataObjectPtr(eq));
   KST::dataObjectList.append(KstDataObjectPtr(vc));
@@ -339,7 +339,7 @@ bool KstIfaceImpl::plotEquation(const QString& xvector, const QString& equation,
 
   KstVCurveList vcurves = kstObjectSubList<KstBaseCurve,KstVCurve>(plot->Curves);
   
-  KstVCurvePtr vc = new KstVCurve(KST::suggestCurveName(etag, true), eq->vX(), eq->vY(), 0L, 0L, 0L, 0L, color.isValid() ? color : KstColorSequence::next(vcurves,plot->backgroundColor()));
+  KstVCurvePtr vc = new KstVCurve(KST::suggestCurveName(eq->tag(), true), eq->vX(), eq->vY(), 0L, 0L, 0L, 0L, color.isValid() ? color : KstColorSequence::next(vcurves,plot->backgroundColor()));
   KST::dataObjectList.lock().writeLock();
   KST::dataObjectList.append(KstDataObjectPtr(eq));
   KST::dataObjectList.append(KstDataObjectPtr(vc));
@@ -353,8 +353,8 @@ bool KstIfaceImpl::plotEquation(const QString& xvector, const QString& equation,
   return true;
 }
 
-const QString& KstIfaceImpl::generateScalar(const QString& name, double value) {
-  KstScalarPtr s = new KstScalar(KstObjectTag(name), 0L, value); // FIXME: do tag context properly
+QString KstIfaceImpl::generateScalar(const QString& name, double value) {
+  KstScalarPtr s = new KstScalar(KstObjectTag(name, KstObjectTag::globalTagContext), 0L, value); // FIXME: do tag context properly
   KstReadLocker rl(s);
   s->setOrphan(true);
   s->setEditable(true);
@@ -362,8 +362,8 @@ const QString& KstIfaceImpl::generateScalar(const QString& name, double value) {
 }
 
 
-const QString& KstIfaceImpl::generateVector(const QString& name, double from, double to, int points) {
-  KstVectorPtr v = new KstSVector(from, to, points, KstObjectTag(name)); // FIXME: do tag context properly
+QString KstIfaceImpl::generateVector(const QString& name, double from, double to, int points) {
+  KstVectorPtr v = new KstSVector(from, to, points, KstObjectTag(name, KstObjectTag::globalTagContext)); // FIXME: do tag context properly
   KstReadLocker rl(v);
   return v->tagName();
 }
@@ -735,12 +735,12 @@ bool KstIfaceImpl::removeCurveFromPlot(const QString& plot, const QString& curve
 }
 
 
-const QString& KstIfaceImpl::createCurve(const QString& name, const QString& xVector, const QString& yVector, const QString& xErrorVector, const QString& yErrorVector) {
+QString KstIfaceImpl::createCurve(const QString& name, const QString& xVector, const QString& yVector, const QString& xErrorVector, const QString& yErrorVector) {
   return createCurve(name, xVector, yVector, xErrorVector, yErrorVector, KstColorSequence::next());
 }
 
 
-const QString& KstIfaceImpl::createCurve(const QString& name, const QString& xVector, const QString& yVector, const QString& xErrorVector, const QString& yErrorVector, const QColor& color) {
+QString KstIfaceImpl::createCurve(const QString& name, const QString& xVector, const QString& yVector, const QString& xErrorVector, const QString& yErrorVector, const QColor& color) {
   QString n = name;
   KST::vectorList.lock().readLock();
   KstVectorPtr vx = *KST::vectorList.findTag(xVector);
@@ -837,7 +837,7 @@ void KstIfaceImpl::reloadVector(const QString& vector) {
 }
 
 
-const QString& KstIfaceImpl::loadVector(const QString& file, const QString& field) {
+QString KstIfaceImpl::loadVector(const QString& file, const QString& field) {
   KstDataSourcePtr src;
   /* generate or find the kstfile */
   KST::dataSourceList.lock().writeLock();
@@ -868,7 +868,7 @@ const QString& KstIfaceImpl::loadVector(const QString& file, const QString& fiel
   }
   KST::vectorList.lock().unlock();
 
-  KstVectorPtr p = new KstRVector(src, field, KstObjectTag(vname), 0, -1, 0, false, false); // FIXME: do tag context properly
+  KstVectorPtr p = new KstRVector(src, field, KstObjectTag(vname, KstObjectTag::globalTagContext), 0, -1, 0, false, false); // FIXME: do tag context properly
 
   src->unlock();
 
@@ -1594,8 +1594,9 @@ QString KstIfaceImpl::loadMatrix(const QString& name, const QString& file, const
   }
   KST::matrixList.lock().unlock();
 
-  KstMatrixPtr p = new KstRMatrix(src, field, KstObjectTag(matrixName), xStart, yStart, xNumSteps, yNumSteps, 
-                                  boxcarFilter, skipFrames > 0, skipFrames); // FIXME: do tag context properly
+  KstMatrixPtr p = new KstRMatrix(src, field,
+      KstObjectTag(matrixName, KstObjectTag::globalTagContext), xStart, yStart,
+      xNumSteps, yNumSteps, boxcarFilter, skipFrames > 0, skipFrames); // FIXME: do tag context properly
 
   src->unlock();
 
@@ -1629,8 +1630,9 @@ QString KstIfaceImpl::createGradient(const QString& name, bool xDirection, doubl
   KST::matrixList.lock().unlock();
   
   // create the gradient matrix
-  KstMatrixPtr p = new KstSMatrix(KstObjectTag(matrixName), xNumSteps, yNumSteps, xMin, yMin, xStepSize, yStepSize, 
-                                  zAtMin, zAtMax, xDirection);  // FIXME: do tag context properly
+  KstMatrixPtr p = new KstSMatrix(KstObjectTag(matrixName, KstObjectTag::globalTagContext),
+      xNumSteps, yNumSteps, xMin, yMin, xStepSize, yStepSize, zAtMin, zAtMax,
+      xDirection);  // FIXME: do tag context properly
   
 
   if (p) {
@@ -1661,7 +1663,7 @@ QString KstIfaceImpl::createImage(const QString &name,
   //make a name if necessary
   QString imgtag;
   if (name.isEmpty()) {
-    imgtag = KST::suggestImageName(in_matrix);
+    imgtag = KST::suggestImageName(matrix->tag());
   } else {
     QString imgtag_end = QString(name);
     //count number of data objects and make a unique name

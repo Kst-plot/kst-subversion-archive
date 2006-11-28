@@ -41,8 +41,8 @@ KstRMatrix::KstRMatrix(KstDataSourcePtr file, const QString &field, KstObjectTag
 }
 
 
-KstRMatrix::KstRMatrix(const QDomElement &e) : KstMatrix(KstObjectTag(), 0L, 1,1,0,0,1,1) {
-  KstDataSourcePtr in_file = 0L;
+KstRMatrix::KstRMatrix(const QDomElement &e) : KstMatrix(KstObjectTag::invalidTag, 0L, 1,1,0,0,1,1) {
+  KstDataSourcePtr in_file = 0L, in_provider = 0L;
   QString in_field;
   QString in_tag;
   int in_xStart = 0;
@@ -63,6 +63,10 @@ KstRMatrix::KstRMatrix(const QDomElement &e) : KstMatrix(KstObjectTag(), 0L, 1,1
       } else if (e.tagName() == "file") {
         KST::dataSourceList.lock().readLock();
         in_file = *KST::dataSourceList.findFileName(e.text());
+        KST::dataSourceList.lock().unlock();
+      } else if (e.tagName() == "provider") {
+        KST::dataSourceList.lock().readLock();
+        in_provider = *KST::dataSourceList.findTag(e.text());
         KST::dataSourceList.lock().unlock();
       } else if (e.tagName() == "field") {
         in_field = e.text();
@@ -85,7 +89,15 @@ KstRMatrix::KstRMatrix(const QDomElement &e) : KstMatrix(KstObjectTag(), 0L, 1,1
     n = n.nextSibling();
   }
 
-  setTagName(KstObjectTag::fromString(in_tag));
+  if (in_provider) {
+    // provider overrides filename
+    in_file = in_provider;
+  }
+  if (in_file) {
+    setTagName(KstObjectTag::fromString(in_file->tag().tagString() + KstObjectTag::tagSeparator + in_tag));
+  } else {
+    setTagName(KstObjectTag::fromString(in_tag));
+  }
 
   // call common constructor
   commonConstructor(in_file, in_field, in_xStart, in_yStart, in_xNumSteps, in_yNumSteps, in_doAve, in_doSkip, in_skip);
@@ -100,6 +112,7 @@ void KstRMatrix::save(QTextStream &ts, const QString& indent) {
     ts << indent << "<rmatrix>" << endl;
     ts << indent << indent2 << "<tag>" << QStyleSheet::escape(tagName()) << "</tag>" << endl;
     _file->readLock();
+    ts << indent << indent2 << "<provider>" << QStyleSheet::escape(_file->tag().tagString()) << "</provider>" << endl;
     ts << indent << indent2 << "<file>" << QStyleSheet::escape(_file->fileName()) << "</file>" << endl;
     _file->unlock();
     ts << indent << indent2 << "<field>" << _field << "</field>" << endl;

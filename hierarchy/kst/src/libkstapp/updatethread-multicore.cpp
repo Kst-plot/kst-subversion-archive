@@ -301,7 +301,7 @@ bool UpdateThread::doUpdates(bool force, bool *gotData) {
     KstScalar::clearScalarsDirty(); // Must do this first and take a risk of
                                     // falling slightly behind
     KST::scalarList.lock().readLock();
-    KstScalarList sl = QDeepCopy<KstScalarList>(KST::scalarList); // avoid deadlock on exit
+    KstScalarList sl = QDeepCopy<KstScalarList>(KST::scalarList.list()); // avoid deadlock on exit
     KST::scalarList.lock().unlock();
     for (KstScalarList::ConstIterator i = sl.begin(); i != sl.end(); ++i) {
       KstScalarPtr sp = *i;

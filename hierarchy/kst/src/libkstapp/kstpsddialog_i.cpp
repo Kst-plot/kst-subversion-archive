@@ -145,7 +145,7 @@ void KstPsdDialogI::update() {
 bool KstPsdDialogI::newObject() {
   QString tag_name = _tagName->text();
   if (tag_name == defaultTag) {
-    tag_name = KST::suggestPSDName(_w->_vector->selectedVector());
+    tag_name = KST::suggestPSDName(KstObjectTag::fromString(_w->_vector->selectedVector()));
   }
 
   // verify that the curve name is unique
@@ -186,7 +186,7 @@ bool KstPsdDialogI::newObject() {
     psd->setInterpolateHoles(_w->_kstFFTOptions->InterpolateHoles->isChecked());
     p->unlock();
 
-    KstVCurvePtr vc = new KstVCurve(KST::suggestCurveName(tag_name,true), psd->vX(), psd->vY(), 0L, 0L, 0L, 0L, _w->_curveAppearance->color());
+    KstVCurvePtr vc = new KstVCurve(KST::suggestCurveName(psd->tag(),true), psd->vX(), psd->vY(), 0L, 0L, 0L, 0L, _w->_curveAppearance->color());
     vc->setHasPoints(_w->_curveAppearance->showPoints());
     vc->setHasLines(_w->_curveAppearance->showLines());
     vc->setHasBars(_w->_curveAppearance->showBars());

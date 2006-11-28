@@ -16,6 +16,8 @@
  ***************************************************************************/
 
 #include "kstdatacollection.h"
+#include "kstobject.h"
+#include "kstobjectcollection.h"
 #include "defaultprimitivenames.h"
 
 #include <qregexp.h>
@@ -41,11 +43,49 @@ QString KST::suggestMatrixName(const QString& vectorName) {
   int i = 1;
   QString name(vectorName);
 
-  while (KST::matrixList.findTag(name) != KST::matrixList.end()) {
+  while (KST::matrixList.tagExists(name)) {
     name = QString("%1-%2").arg(vectorName).arg(++i);
   }
 
   return name;
+}
+
+
+template <class T>
+KstObjectTag suggestUniqueTag(const KstObjectTag& baseTag, const KstObjectCollection<T>& coll) {
+  int i = 0;
+  KstObjectTag tag = baseTag;
+
+  while (coll.tagExists(tag)) {
+    tag.setTag((QString("%1-%2").arg(baseTag.tag()).arg(++i)));
+  }
+
+  return tag;
+  /*
+  QString name(baseTag.tag());
+
+  while (coll.tagExists(name)) {
+    name = QString("%1-%2").arg(baseTag.tag()).arg(++i);
+  }
+
+  return KstObjectTag(name, baseTag.context());
+  */
+}
+
+KstObjectTag KST::suggestUniqueMatrixTag(KstObjectTag baseTag) {
+  return suggestUniqueTag(baseTag, KST::matrixList);
+}
+
+KstObjectTag KST::suggestUniqueScalarTag(KstObjectTag baseTag) {
+  return suggestUniqueTag(baseTag, KST::scalarList);
+}
+
+KstObjectTag KST::suggestUniqueStringTag(KstObjectTag baseTag) {
+  return suggestUniqueTag(baseTag, KST::stringList);
+}
+
+KstObjectTag KST::suggestUniqueVectorTag(KstObjectTag baseTag) {
+  return suggestUniqueTag(baseTag, KST::vectorList);
 }
 
 // vim: ts=2 sw=2 et

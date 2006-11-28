@@ -34,7 +34,7 @@ KstBindVector::KstBindVector(KJS::ExecState *exec, KJS::Object *globalObject, co
   KJS::Object o(this);
   addBindings(exec, o);
   if (!globalObject) {
-    KstAVectorPtr v = new KstAVector(1, KstObjectTag());  // FIXME: do tag context properly
+    KstAVectorPtr v = new KstAVector(1, KstObjectTag::invalidTag);  // FIXME: do tag context properly
     _d = v.data();
   }
 }

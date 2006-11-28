@@ -163,7 +163,7 @@ void KstHsDialogI::update() {
 bool KstHsDialogI::newObject() {
   QString tag_name = _tagName->text();
   if (tag_name == defaultTag) {
-    tag_name = KST::suggestHistogramName(_w->_vector->selectedVector());
+    tag_name = KST::suggestHistogramName(KstObjectTag::fromString(_w->_vector->selectedVector()));
   }
 
   // verify that the curve name is unique
@@ -224,7 +224,7 @@ bool KstHsDialogI::newObject() {
   vp->unlock();
   hs->setRealTimeAutoBin(_w->_realTimeAutoBin->isChecked());
 
-  KstVCurvePtr vc = new KstVCurve(KST::suggestCurveName(tag_name, true), hs->vX(), hs->vY(), 0L, 0L, 0L, 0L, _w->_curveAppearance->color());
+  KstVCurvePtr vc = new KstVCurve(KST::suggestCurveName(hs->tag(), true), hs->vX(), hs->vY(), 0L, 0L, 0L, 0L, _w->_curveAppearance->color());
 
   vc->setHasPoints(_w->_curveAppearance->showPoints());
   vc->setHasLines(_w->_curveAppearance->showLines());

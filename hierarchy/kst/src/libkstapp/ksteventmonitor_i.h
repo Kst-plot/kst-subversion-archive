@@ -30,6 +30,9 @@ class KstEventMonitorI : public KstDataDialog {
     virtual ~KstEventMonitorI();
     static KstEventMonitorI *globalInstance();
 
+  protected:
+    QString objectName() { return tr("Event Monitor"); }
+ 
   public slots:
     void update();
     bool newObject();

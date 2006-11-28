@@ -31,6 +31,9 @@ class KST_EXPORT KstVectorDialogI : public KstDataDialog {
     virtual ~KstVectorDialogI();
     static KstVectorDialogI *globalInstance();
 
+  protected:
+    QString objectName() { return tr("Vector"); }
+ 
   public slots:
     bool newObject();
     bool editObject();

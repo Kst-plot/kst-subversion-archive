@@ -43,7 +43,6 @@ static int anonymousVectorCounter = 1;
 KstVector::KstVector(KstObjectTag in_tag, int size, KstObject *provider, bool isScalarList)
 : KstPrimitive(provider), _nsum(0), _scalars(isScalarList ? 0 : 11) {
   //kstdDebug() << "+++ CREATING VECTOR: " << (void*) this << endl;
-  KstObject::setTagName(in_tag);
   _editable = false;
   NumShifted = 0;
   NumNew = 0;
@@ -56,16 +55,14 @@ KstVector::KstVector(KstObjectTag in_tag, int size, KstObject *provider, bool is
     size = INITSIZE;
   }
 
-  if (!tag().isValid()) {
+  if (!in_tag.isValid()) {
     QString nt = i18n("Anonymous Vector %1");
 
     do {
-      KstObject::setTagName(KstObjectTag(nt.arg(anonymousVectorCounter++), tag().context()));
+      KstObject::setTagName(KstObjectTag(nt.arg(anonymousVectorCounter++), in_tag.context()));
     } while (KstData::self()->vectorTagNameNotUnique(tagName(), false));
   } else {
-    while (KstData::self()->vectorTagNameNotUnique(tagName(), false)) {
-      KstObject::setTagName(KstObjectTag(tag().tag() + '\'', tag().context()));
-    }
+    KstObject::setTagName(KST::suggestUniqueVectorTag(in_tag));
   }
 
   _v = static_cast<double*>(KST::malloc(size * sizeof(double)));

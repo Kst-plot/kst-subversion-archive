@@ -32,6 +32,9 @@ class KST_EXPORT KstImageDialogI : public KstDataDialog {
     virtual ~KstImageDialogI();
     static KstImageDialogI *globalInstance();
 
+  protected:
+    QString objectName() { return tr("Image"); }
+ 
   public slots:
     void update();
     void updateWindow();

@@ -54,13 +54,14 @@ KstRVector::KstRVector(KstDataSourcePtr in_file, const QString &in_field,
 KstRVector::KstRVector(const QDomElement &e, const QString &o_file,
                        int o_n, int o_f, int o_s, bool o_ave)
 : KstVector() {
-  KstDataSourcePtr in_file;
+  KstDataSourcePtr in_file, in_provider;
   QString in_field;
   int in_f0 = 0;
   int in_n = -1;
   int in_skip = 0;
   bool in_DoSkip = false;
   bool in_DoAve = false;
+  QString in_tag;
 
   /* parse the DOM tree */
   QDomNode n = e.firstChild();
@@ -68,15 +69,21 @@ KstRVector::KstRVector(const QDomElement &e, const QString &o_file,
     QDomElement e = n.toElement();
     if (!e.isNull()) {
       if (e.tagName() == "tag") {
-        setTagName(KstObjectTag::fromString(e.text()));
-      } else if (e.tagName() == "filename") {
+        in_tag = e.text();
+      } else if (e.tagName() == "provider") {
         KST::dataSourceList.lock().readLock();
-        if (o_file == "|") {
-          in_file = *KST::dataSourceList.findFileName(e.text());
-        } else {
-          in_file = *KST::dataSourceList.findFileName(o_file);
-        }
+        in_provider = *KST::dataSourceList.findTag(e.text());
         KST::dataSourceList.lock().unlock();
+      } else if (e.tagName() == "filename") {
+        if (!in_provider) {
+          KST::dataSourceList.lock().readLock();
+          if (o_file == "|") {
+            in_file = *KST::dataSourceList.findFileName(e.text());
+          } else {
+            in_file = *KST::dataSourceList.findFileName(o_file);
+          }
+          KST::dataSourceList.lock().unlock();
+        }
       } else if (e.tagName() == "field") {
         in_field = e.text();
       } else if (e.tagName() == "start") {
@@ -95,6 +102,16 @@ KstRVector::KstRVector(const QDomElement &e, const QString &o_file,
       }
     }
     n = n.nextSibling();
+  }
+
+  if (in_provider) {
+    // provider overrides filename
+    in_file = in_provider;
+  }
+  if (in_file) {
+    setTagName(KstObjectTag::fromString(in_file->tag().tagString() + KstObjectTag::tagSeparator + in_tag));
+  } else {
+    setTagName(KstObjectTag::fromString(in_tag));
   }
 
   if (o_n > -2) {

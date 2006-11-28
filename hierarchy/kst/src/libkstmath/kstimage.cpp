@@ -176,7 +176,7 @@ void KstImage::save(QTextStream &ts, const QString& indent) {
   ts << indent << "<image>" << endl;
   ts << l2 << "<tag>" << QStyleSheet::escape(tagName()) << "</tag>" << endl;
   if (_inputMatrices.contains(THEMATRIX)) {
-    ts << l2 << "<matrixtag>" << QStyleSheet::escape(_inputMatrices[THEMATRIX]->tagName()) << "</matrixtag>" << endl;
+    ts << l2 << "<matrixtag>" << QStyleSheet::escape(_inputMatrices[THEMATRIX]->tag().tagString()) << "</matrixtag>" << endl;
   }
   ts << l2 << "<legend>" << QStyleSheet::escape(legendText()) << "</legend>" << endl;
   ts << l2 << "<hascolormap>" << _hasColorMap << "</hascolormap>" <<endl;

@@ -61,8 +61,8 @@ k_dcop:
   virtual bool clearVector(const QString& name) = 0;
   virtual int vectorSize(const QString& name) = 0;
 
-  virtual const QString& generateVector(const QString& name, double from, double to, int points) = 0;
-  virtual const QString& generateScalar(const QString& name, double value) = 0;
+  virtual QString generateVector(const QString& name, double from, double to, int points) = 0;
+  virtual QString generateScalar(const QString& name, double value) = 0;
 
   virtual bool plotEquation(const QString& xvector, const QString& equation, const QString& plotName, const QColor& color) = 0;
   virtual bool plotEquation(const QString& xvector, const QString& equation, const QString& plotName) = 0;
@@ -89,13 +89,13 @@ k_dcop:
   virtual bool removeCurveFromPlot(const QString& window, const QString& plot, const QString& curve) = 0;
   virtual bool removeCurveFromPlot(const QString& plot, const QString& curve) = 0;
 
-  virtual const QString& createCurve(const QString& name, const QString& xVector, const QString& yVector, const QString& xErrorVector, const QString& yErrorVector, const QColor& color) = 0; 
-  virtual const QString& createCurve(const QString& name, const QString& xVector, const QString& yVector, const QString& xErrorVector, const QString& yErrorVector) = 0; 
+  virtual QString createCurve(const QString& name, const QString& xVector, const QString& yVector, const QString& xErrorVector, const QString& yErrorVector, const QColor& color) = 0; 
+  virtual QString createCurve(const QString& name, const QString& xVector, const QString& yVector, const QString& xErrorVector, const QString& yErrorVector) = 0; 
 
   virtual void reloadVectors() = 0;
   virtual void reloadVector(const QString& vector) = 0;
 
-  virtual const QString& loadVector(const QString& file, const QString& field) = 0;
+  virtual QString loadVector(const QString& file, const QString& field) = 0;
 
   virtual const QString& fileName() = 0;
   virtual bool save() = 0;

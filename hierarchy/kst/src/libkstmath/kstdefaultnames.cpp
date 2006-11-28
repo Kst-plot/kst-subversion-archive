@@ -85,8 +85,8 @@ QString KST::suggestHistogramName( KstObjectTag vector_name ) {
 }
 
 
-QString KST::suggestEQName(KstObjectTag name_in) {
-  return suggestDataObjectName(name_in.tag(), 
+QString KST::suggestEQName(const QString& name_in) {
+  return suggestDataObjectName(name_in, 
                       i18n("Minimal abbreviation for 'Equation'", "E"),
                       false);
 }

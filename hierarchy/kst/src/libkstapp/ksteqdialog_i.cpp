@@ -190,7 +190,7 @@ bool KstEqDialogI::newObject() {
     return false;
   }
 
-  KstVCurvePtr vc = new KstVCurve(KST::suggestCurveName(tag_name, true), eq->vX(), eq->vY(), 0L, 0L, 0L, 0L, _w->_curveAppearance->color());
+  KstVCurvePtr vc = new KstVCurve(KST::suggestCurveName(eq->tag(), true), eq->vX(), eq->vY(), 0L, 0L, 0L, 0L, _w->_curveAppearance->color());
   vc->setHasPoints(_w->_curveAppearance->showPoints());
   vc->setHasLines(_w->_curveAppearance->showLines());
   vc->setHasBars(_w->_curveAppearance->showBars());

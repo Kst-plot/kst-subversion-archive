@@ -15,12 +15,15 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <qstylesheet.h>
+
+#include <klocale.h>
+
 #include "kstscalar.h"
 #include "kstdatacollection.h"
-#include <klocale.h>
+#include "defaultprimitivenames.h"
 #include "ksdebug.h"
 
-#include <qstylesheet.h>
 
 static int iAnonymousScalarCounter = 0;
 
@@ -46,13 +49,11 @@ KstScalar::KstScalar(KstObjectTag in_tag, KstObject *provider, double val, bool 
 
     do {
       _tag = nt.arg(iAnonymousScalarCounter++);
-    } while (KstData::self()->vectorTagNameNotUniqueInternal(_tag));
+    } while (KstData::self()->vectorTagNameNotUniqueInternal(_tag));  // FIXME: why vector?
+    KstObject::setTagName(KstObjectTag(_tag, in_tag.context()));
   } else {
-    while (KstData::self()->vectorTagNameNotUniqueInternal(_tag)) {
-      _tag += '\'';
-    }
+    KstObject::setTagName(KST::suggestUniqueScalarTag(in_tag));
   }
-  KstObject::setTagName(KstObjectTag(_tag, in_tag.context()));
 
 
   KST::scalarList.lock().writeLock();

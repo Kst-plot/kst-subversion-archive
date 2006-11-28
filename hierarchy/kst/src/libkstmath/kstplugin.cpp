@@ -465,17 +465,17 @@ void KstPlugin::save(QTextStream &ts, const QString& indent) {
   ts << l2 << "<name>" << QStyleSheet::escape(_plugin->data()._name) << "</name>" << endl;
   for (KstVectorMap::Iterator i = _inputVectors.begin(); i != _inputVectors.end(); ++i) {
     ts << l2 << "<ivector name=\"" << QStyleSheet::escape(i.key()) << "\">"
-      << QStyleSheet::escape(i.data()->tagName())
+      << QStyleSheet::escape(i.data()->tag().tagString())
       << "</ivector>" << endl;
   }
   for (KstScalarMap::Iterator i = _inputScalars.begin(); i != _inputScalars.end(); ++i) {
     ts << l2 << "<iscalar name=\"" << QStyleSheet::escape(i.key()) << "\">"
-      << QStyleSheet::escape(i.data()->tagName())
+      << QStyleSheet::escape(i.data()->tag().tagString())
       << "</iscalar>" << endl;
   }
   for (KstStringMap::Iterator i = _inputStrings.begin(); i != _inputStrings.end(); ++i) {
     ts << l2 << "<istring name=\"" << QStyleSheet::escape(i.key()) << "\">"
-      << QStyleSheet::escape(i.data()->tagName())
+      << QStyleSheet::escape(i.data()->tag().tagString())
       << "</istring>" << endl;
   }
   for (KstVectorMap::Iterator i = _outputVectors.begin(); i != _outputVectors.end(); ++i) {
@@ -483,17 +483,17 @@ void KstPlugin::save(QTextStream &ts, const QString& indent) {
     if (i.data()->isScalarList()) {
       ts << "\" scalarList=\"1";
     }
-    ts << "\">" << QStyleSheet::escape(i.data()->tagName())
+    ts << "\">" << QStyleSheet::escape(i.data()->tag().tag())
       << "</ovector>" << endl;
   }
   for (KstScalarMap::Iterator i = _outputScalars.begin(); i != _outputScalars.end(); ++i) {
     ts << l2 << "<oscalar name=\"" << QStyleSheet::escape(i.key()) << "\">"
-      << QStyleSheet::escape(i.data()->tagName())
+      << QStyleSheet::escape(i.data()->tag().tag())
       << "</oscalar>" << endl;
   }
   for (KstStringMap::Iterator i = _outputStrings.begin(); i != _outputStrings.end(); ++i) {
     ts << l2 << "<ostring name=\"" << QStyleSheet::escape(i.key()) << "\">"
-      << QStyleSheet::escape(i.data()->tagName())
+      << QStyleSheet::escape(i.data()->tag().tag())
       << "</ostring>" << endl;
   }
   ts << indent << "</plugin>" << endl;
@@ -579,20 +579,22 @@ bool KstPlugin::setPlugin(KstSharedPtr<Plugin> plugin) {
       KstVectorPtr v;
 
       if ((*it)._subType == Plugin::Data::IOValue::FloatNonVectorSubType) {
-        v = new KstVector(KstObjectTag(), 0, this, true);  // FIXME: do tag context properly
+        v = new KstVector(KstObjectTag((*it)._name, tag()), 0, this, true);
       } else {
-        v = new KstVector(KstObjectTag(), 0, this, false);  // FIXME: do tag context properly
+        v = new KstVector(KstObjectTag((*it)._name, tag()), 0, this, false);
       }
       v->KstObject::writeLock();
       _outputVectors.insert((*it)._name, v);
       ++_outArrayCnt;
     } else if ((*it)._type == Plugin::Data::IOValue::FloatType) {
-      KstScalarPtr s = new KstScalar(KstObjectTag(), this);  // FIXME: do tag context properly
+      KstWriteLocker blockScalarUpdates(&KST::scalarList.lock());
+      KstScalarPtr s = new KstScalar(KstObjectTag((*it)._name, tag()), this);
       s->KstObject::writeLock();
       _outputScalars.insert((*it)._name, s);
       ++_outScalarCnt;
     } else if ((*it)._type == Plugin::Data::IOValue::StringType) {
-      KstStringPtr s = new KstString(KstObjectTag(), this);  // FIXME: do tag context properly
+      KstWriteLocker blockStringUpdates(&KST::stringList.lock());
+      KstStringPtr s = new KstString(KstObjectTag((*it)._name, tag()), this);
       s->KstObject::writeLock();
       _outputStrings.insert((*it)._name, s);
       ++_outStringCnt;

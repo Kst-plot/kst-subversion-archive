@@ -35,8 +35,6 @@
 #include "kstscalar.h"
 #include "stdinsource.h"
 
-static int dataSourceCounter = 1;
-
 // Eventually this will move to another file but I leave it here until then
 // to avoid confusion between the function plugins and Kst applicaton plugins.
 namespace KST {
@@ -589,7 +587,7 @@ QStringList KstDataSource::matrixListForSource(const QString& filename, const QS
 
 
 KstDataSourcePtr KstDataSource::loadSource(QDomElement& e) {
-  QString filename, type;
+  QString filename, type, tag;
 
   QDomNode n = e.firstChild();
   while (!n.isNull()) {
@@ -599,6 +597,8 @@ KstDataSourcePtr KstDataSource::loadSource(QDomElement& e) {
         filename = obtainFile(e.text());
       } else if (e.tagName() == "type") {
         type = e.text();
+      } else if (e.tagName() == "tag") {
+        tag = e.text();
       }
     }
     n = n.nextSibling();
@@ -627,10 +627,13 @@ KstDataSource::KstDataSource(KConfig *cfg, const QString& filename, const QStrin
     shortFilename.truncate(shortFilename.length() - 1);
   }
   shortFilename = shortFilename.section('/', -1);
-  QString tn = i18n("DS%2-%1").arg(shortFilename);
-  do {
-    KstObject::setTagName(KstObjectTag(tn.arg(dataSourceCounter++), KstObjectTag::globalTagContext));  // are DataSources always top-level?
-  } while (KstData::self()->dataSourceTagNameNotUnique(tagName(), false));
+  QString tn = i18n("DS-%1").arg(shortFilename);
+  int count = 1;
+
+  KstObject::setTagName(KstObjectTag(tn, KstObjectTag::globalTagContext));  // are DataSources always top-level?
+  while (KstData::self()->dataSourceTagNameNotUnique(tagName(), false)) {
+    KstObject::setTagName(KstObjectTag(tn + QString("-%1").arg(count++), KstObjectTag::globalTagContext));  // are DataSources always top-level?
+  }
 
   _numFramesScalar = new KstScalar(KstObjectTag("frames", tag()));
   // Don't set provider - this is always up-to-date

@@ -21,10 +21,17 @@
 #include <qstring.h>
 
 #include "kst_export.h"
+#include "kstobject.h"
 
 namespace KST {
   extern KST_EXPORT QString suggestVectorName(const QString& field);
+
   extern KST_EXPORT QString suggestMatrixName(const QString& vectorName);
+
+  extern KST_EXPORT KstObjectTag suggestUniqueMatrixTag(KstObjectTag baseTag);
+  extern KST_EXPORT KstObjectTag suggestUniqueScalarTag(KstObjectTag baseTag);
+  extern KST_EXPORT KstObjectTag suggestUniqueStringTag(KstObjectTag baseTag);
+  extern KST_EXPORT KstObjectTag suggestUniqueVectorTag(KstObjectTag baseTag);
 }
 
 #endif

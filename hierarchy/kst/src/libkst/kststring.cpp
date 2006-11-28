@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "kstdatacollection.h"
+#include "defaultprimitivenames.h"
 
 #include <qstylesheet.h>
 
@@ -31,13 +32,11 @@ KstString::KstString(KstObjectTag in_tag, KstObject *provider, const QString& va
 
     do {
       _tag = nt.arg(anonymousStringCounter++);
-    } while (KstData::self()->vectorTagNameNotUniqueInternal(_tag));
+    } while (KstData::self()->vectorTagNameNotUniqueInternal(_tag));  // FIXME: why vector?
+    KstObject::setTagName(KstObjectTag(_tag, in_tag.context()));
   } else {
-    while (KstData::self()->vectorTagNameNotUniqueInternal(_tag)) {
-      _tag += '\'';
-    }
+    KstObject::setTagName(KST::suggestUniqueStringTag(in_tag));
   }
-  KstObject::setTagName(KstObjectTag(_tag, in_tag.context()));
 
   KST::stringList.lock().writeLock();
   KST::stringList.append(this);

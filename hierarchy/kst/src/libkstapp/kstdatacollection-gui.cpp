@@ -75,20 +75,15 @@ bool KstGuiData::vectorTagNameNotUnique(const QString &tag, bool warn, void *p) 
   }
 
   /* verify that the tag name is not used by a data object */
-  KST::vectorList.lock().readLock();
-  KST::scalarList.lock().readLock();
-  if (KST::vectorList.findTag(tag) != KST::vectorList.end() ||
-      KST::scalarList.findTag(tag) != KST::scalarList.end()) {
-    KST::scalarList.lock().unlock();
-    KST::vectorList.lock().unlock();
+  KstReadLocker vl(&KST::vectorList.lock());
+  KstReadLocker sl(&KST::scalarList.lock());
+  if (KST::vectorList.tagExists(tag) || KST::scalarList.tagExists(tag)) {
       if (warn) {
         KMessageBox::sorry(static_cast<QWidget*>(p), i18n("%1: this name is already in use. Change it to a unique name.").arg(tag));
       }
       return true;
   }
 
-  KST::scalarList.lock().unlock();
-  KST::vectorList.lock().unlock();
   return false;
 }
 
@@ -103,20 +98,15 @@ bool KstGuiData::matrixTagNameNotUnique(const QString &tag, bool warn, void *p) 
   }
 
   /* verify that the tag name is not used by a data object */
-  KST::matrixList.lock().readLock();
-  KST::scalarList.lock().readLock();
-  if (KST::matrixList.findTag(tag) != KST::matrixList.end() ||
-      KST::scalarList.findTag(tag) != KST::scalarList.end()) {
-    KST::scalarList.lock().unlock();
-    KST::matrixList.lock().unlock();
+  KstReadLocker ml(&KST::matrixList.lock());
+  KstReadLocker sl(&KST::scalarList.lock());
+  if (KST::matrixList.tagExists(tag) || KST::scalarList.tagExists(tag)) {
     if (warn) {
       KMessageBox::sorry(static_cast<QWidget*>(p), i18n("%1: this name is already in use. Change it to a unique name.").arg(tag));
     }
     return true;
   }
 
-  KST::scalarList.lock().unlock();
-  KST::matrixList.lock().unlock();
   return false;
 }
 

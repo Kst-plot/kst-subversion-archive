@@ -33,6 +33,9 @@ class KstPsdDialogI : public KstDataDialog {
     virtual ~KstPsdDialogI();
     KST_EXPORT static KstPsdDialogI *globalInstance();
 
+  protected:
+    QString objectName() { return tr("Power Spectrum"); }
+ 
   public slots:
     /** update the entries in the psd dialog to represent current psds */
     void update();

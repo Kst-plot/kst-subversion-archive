@@ -33,6 +33,9 @@ class KST_EXPORT KstPluginDialogI : public KstDataDialog {
     static KstPluginDialogI *globalInstance();
     static const QString& plugin_defaultTag;
 
+  protected:
+    QString objectName() { return tr("Plugin"); }
+ 
   public slots:
     void updateForm();
     void update();

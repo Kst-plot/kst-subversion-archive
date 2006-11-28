@@ -65,7 +65,7 @@ KJS::Object KstBindDataMatrix::construct(KJS::ExecState *exec, const KJS::List& 
 
     QString field = args[1].toString(exec).qstring();
 
-    v = new KstRMatrix(dp, field, KstObjectTag(), 0, 0, -1, -1, false, false, -1);
+    v = new KstRMatrix(dp, field, KstObjectTag::invalidTag, 0, 0, -1, -1, false, false, -1);
   }
 
   // Constructor: DataMatrix(DataSource, field, xStart, yStart, xCount, yCount)
@@ -86,7 +86,7 @@ KJS::Object KstBindDataMatrix::construct(KJS::ExecState *exec, const KJS::List& 
     int xCount = d2i(args[4].toNumber(exec));
     int yCount = d2i(args[5].toNumber(exec));
 
-    v = new KstRMatrix(dp, field, KstObjectTag(), xStart, yStart, xCount, yCount,false, false, -1);
+    v = new KstRMatrix(dp, field, KstObjectTag::invalidTag, xStart, yStart, xCount, yCount,false, false, -1);
   }
 
   // Constructor: DataMatrix(DataSource, field, xStart, yStart, xCount, yCount, skip)
@@ -109,7 +109,7 @@ KJS::Object KstBindDataMatrix::construct(KJS::ExecState *exec, const KJS::List& 
     int yCount = d2i(args[5].toNumber(exec));
     int skip = d2i(args[6].toNumber(exec));
 
-    v = new KstRMatrix(dp, field, KstObjectTag(), xStart, yStart, xCount, yCount, false, true, skip);
+    v = new KstRMatrix(dp, field, KstObjectTag::invalidTag, xStart, yStart, xCount, yCount, false, true, skip);
   }
 
 
@@ -135,7 +135,7 @@ KJS::Object KstBindDataMatrix::construct(KJS::ExecState *exec, const KJS::List& 
     int skip = d2i(args[6].toNumber(exec));
     bool ave = d2i(args[7].toBoolean(exec));
 
-    v = new KstRMatrix(dp, field, KstObjectTag(), xStart, yStart, xCount, yCount, ave, true, skip);
+    v = new KstRMatrix(dp, field, KstObjectTag::invalidTag, xStart, yStart, xCount, yCount, ave, true, skip);
   }
 
   if (!v) {

@@ -30,7 +30,7 @@ class KST_EXPORT KstMatrix: public KstPrimitive {
   Q_OBJECT
   public:
     // Matrices do not automatically add themselves to the global matrix list
-    KstMatrix(KstObjectTag in_tag = KstObjectTag(),
+    KstMatrix(KstObjectTag in_tag = KstObjectTag::invalidTag,
               KstObject *provider = 0L, uint nX = 1, uint nY = 0,
               double minX = 0, double minY = 0,
               double stepX = 1, double stepY = 1);

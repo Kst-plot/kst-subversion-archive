@@ -26,6 +26,7 @@
 
 #include "kst_export.h"
 #include "kstsharedptr.h"
+#include "ksdebug.h"
 #include "rwlock.h"
 
 // NOTE: In order to preserve binary compatibility with plugins, you must
@@ -36,17 +37,34 @@
 
 class KstObjectTag {
   public:
-    // default constructor (tag is in global context by default)
-    KstObjectTag(const QString& tag = QString::null,
-                 QStringList context = globalTagContext) :
-      _tag(tag), _context(context)
-    { }
+    static const KstObjectTag invalidTag;
+
+    static const QString tagSeparator;
+    static const QStringList globalTagContext;
+    static const QStringList constantTagContext;
+
+    // construct a tag in a given context
+    KstObjectTag(const QString& tag,
+                 QStringList context) : _tag(tag),
+                                                           _context(context)
+    {
+      if (_tag.contains(tagSeparator)) {
+        kstdWarning() << "WARNING: trying to build KstObject tag name containing " << tagSeparator << ":\"" << _tag << "\"" << endl;
+        _tag = _tag.replace(tagSeparator, "-");
+      }
+    }
 
     // construct a tag in the context of another tag
-    KstObjectTag(const QString& tag,
-                 KstObjectTag contextTag) :
-      _tag(tag), _context(contextTag.fullTag())
-    { }
+    KstObjectTag(const QString& tag, KstObjectTag contextTag) : _tag(tag),
+                                                                _context(contextTag.fullTag())
+    {
+      if (_tag.contains(tagSeparator)) {
+        kstdWarning() << "WARNING: trying to build KstObject tag name containing " << tagSeparator << ":\"" << _tag << "\"" << endl;
+        _tag = _tag.replace(tagSeparator, "-");
+      }
+
+      _tag = tag;
+    }
 
     QString tag() const { return _tag; }
     QStringList fullTag() const { return _context + QStringList(_tag); }
@@ -55,11 +73,16 @@ class KstObjectTag {
     // change the tag, maintaining context
     void setTag(const QString& tag) {
       _tag = tag;
+
+      if (_tag.contains(tagSeparator)) {
+        kstdWarning() << "WARNING: trying to set KstObject tag name containing " << tagSeparator << ":\"" << _tag << "\"" << endl;
+        _tag = _tag.replace(tagSeparator, "-");
+      }
     }
 
     // change the tag and context
     void setTag(const QString& tag, QStringList context) {
-      _tag = tag;
+      setTag(tag);
       _context = context;
     }
 
@@ -70,7 +93,7 @@ class KstObjectTag {
     static KstObjectTag fromString(const QString& str) {
       QStringList l = QStringList::split(tagSeparator, str);
       if (l.isEmpty()) {
-        return KstObjectTag();
+        return invalidTag;
       }
 
       QString t = l.last();
@@ -81,10 +104,6 @@ class KstObjectTag {
     bool operator==(const KstObjectTag& tag) {
       return (_tag == tag._tag && _context == tag._context);
     }
-
-    static const QString tagSeparator;
-    static const QStringList globalTagContext;
-    static const QStringList constantTagContext;
 
   private:
     QString _tag;
@@ -314,56 +333,6 @@ inline KstSharedPtr<T> kst_cast(KstSharedPtr<U> object) {
   return dynamic_cast<T*>(object.data());
 }
 
-
-#if 0
-/** KstObject Naming Tree */
-class KstObjectTreeNode;
-typedef QMap<QString, QValueList<KstObjectTreeNode *> > KstObjectNameIndex;
-
-class KstObjectTreeNode {
-  public:
-    KstObjectTreeNode(const QString& tag = QString::null);
-    ~KstObjectTreeNode();
-
-    QString nodeTag() const { return _tag; }
-    QStringList fullTag() const;
-
-    KstObject *object() const { return _object; }
-
-    KstObjectTreeNode *parent() const { return _parent; }
-    KstObjectTreeNode *child(const QString& tag) const;
-    QMap<QString, KstObjectTreeNode *> children() const { return _children; }
-
-    KstObjectTreeNode *descendant(QStringList tag);
-    KstObjectTreeNode *addDescendant(KstObject *o, KstObjectNameIndex *index = NULL);
-    bool removeDescendant(KstObject *o, KstObjectNameIndex *index = NULL);
-
-  private:
-    QString _tag;
-    QGuardedPtr<KstObject> _object;
-    KstObjectTreeNode *_parent;
-    QMap<QString, KstObjectTreeNode *> _children;
-};
-
-class KstObjectTree {
-  public:
-    bool addObject(KstObject *o);
-    bool removeObject(KstObject *o);
-
-    KstObjectPtr retrieveObject(QStringList tag);
-    KstObjectPtr retrieveObject(KstObjectTag tag);
-
-    KstObjectTreeNode *root() { return &_root; }
-
-    KstRWLock& lock() const { return _lock; }
-
-  private:
-    mutable KstRWLock _lock;
-
-    KstObjectTreeNode _root;
-    KstObjectNameIndex _index;
-};
-#endif
 
 #endif
 // vim: ts=2 sw=2 et

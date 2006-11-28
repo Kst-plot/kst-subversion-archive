@@ -53,6 +53,7 @@ class KstObjectTreeNode {
     QMap<QString, KstObjectTreeNode<T> *> children() const { return _children; }
 
     KstObjectTreeNode<T> *descendant(QStringList tag);
+    const KstObjectTreeNode<T> *descendant(QStringList tag) const;
     KstObjectTreeNode<T> *addDescendant(T *o, KstObjectNameIndex<T> *index = NULL);
     bool removeDescendant(T *o, KstObjectNameIndex<T> *index = NULL);
 
@@ -75,6 +76,8 @@ class KstObjectCollection {
 
     KstSharedPtr<T> retrieveObject(QStringList tag);
     KstSharedPtr<T> retrieveObject(KstObjectTag tag);
+    bool tagExists(const QString& tag) const;
+    bool tagExists(KstObjectTag tag) const;
 
     KstObjectTreeNode<T> *nameTreeRoot() { return &_root; }
 
@@ -172,6 +175,20 @@ KstObjectTreeNode<T> *KstObjectTreeNode<T>::child(const QString& tag) const {
 
 
 template <class T>
+const KstObjectTreeNode<T> *KstObjectTreeNode<T>::descendant(QStringList tag) const {
+  const KstObjectTreeNode<T> *currNode = this;
+  for (QStringList::ConstIterator i = tag.begin(); i != tag.end(); ++i) {
+    currNode = currNode->child(*i);
+    if (!currNode) {
+      return NULL;
+    }
+  }
+
+  return currNode;
+}
+
+
+template <class T>
 KstObjectTreeNode<T> *KstObjectTreeNode<T>::descendant(QStringList tag) {
   KstObjectTreeNode<T> *currNode = this;
   for (QStringList::ConstIterator i = tag.begin(); i != tag.end(); ++i) {
@@ -208,11 +225,11 @@ KstObjectTreeNode<T> *KstObjectTreeNode<T>::addDescendant(T *o, KstObjectNameInd
   }
 
   if (currNode->_object) {
-    kstdDebug() << "Tried to add KstObject to naming tree:" << o->tag().tagString() << ", but there's already an object with that name" << endl;
+    kstdDebug() << "Tried to add KstObject to naming tree " << (void*)this << ":" << o->tag().tagString() << ", but there's already an object with that name" << endl;
     return NULL;
   } else {
     currNode->_object = o;
-    kstdDebug() << "Added KstObject to naming tree:" << o->tag().tagString() << endl;
+    kstdDebug() << "Added KstObject to naming tree " << (void*)this << ":" << o->tag().tagString() << endl;
     return currNode;
   }
 }
@@ -342,6 +359,18 @@ KstSharedPtr<T> KstObjectCollection<T>::retrieveObject(KstObjectTag tag) {
   return retrieveObject(tag.fullTag());
 }
 
+template <class T>
+bool KstObjectCollection<T>::tagExists(const QString& tag) const {
+  return (_index.contains(tag) && _index[tag].count() > 0);
+}
+
+template <class T>
+bool KstObjectCollection<T>::tagExists(KstObjectTag tag) const {
+  const KstObjectTreeNode<T> *n = _root.descendant(tag.fullTag());
+  return (n != NULL);
+}
+
+
 // KstObjectList compatibility
 template <class T>
 void KstObjectCollection<T>::append(T *o) {
@@ -355,6 +384,7 @@ void KstObjectCollection<T>::remove(T *o) {
 
 template <class T>
 void KstObjectCollection<T>::clear() {
+  kstdDebug () << "Clearing object collection " << (void*) this << endl;
   _root.clear();
   _index.clear();
   _list.clear();
@@ -388,6 +418,16 @@ typename KstObjectList<KstSharedPtr<T> >::Iterator KstObjectCollection<T>::findT
   T *obj = retrieveObject(KstObjectTag::fromString(x));
   if (obj) {
     return _list.find(obj);
+  } else {
+    // For historical compatibility:
+    // previously, output vectors of equations, PSDs, etc. were named PSD1-ABCDE-freq
+    // now, they are PSD1-ABCDE/freq
+    QString newTag = x;
+    newTag.replace(newTag.findRev('-'), 1, '/');
+    obj = retrieveObject(KstObjectTag::fromString(newTag));
+    if (obj) {
+      return _list.find(obj);
+    }
   }
   return _list.end();
 }
@@ -397,6 +437,16 @@ typename KstObjectList<KstSharedPtr<T> >::ConstIterator KstObjectCollection<T>::
   T *obj = retrieveObject(KstObjectTag::fromString(x));
   if (obj) {
     return _list.find(obj);
+  } else {
+    // For historical compatibility:
+    // previously, output vectors of equations, PSDs, etc. were named PSD1-ABCDE-freq
+    // now, they are PSD1-ABCDE/freq
+    QString newTag = x;
+    newTag.replace(newTag.findRev('-'), 1, '/');
+    obj = retrieveObject(KstObjectTag::fromString(newTag));
+    if (obj) {
+      return _list.find(obj);
+    }
   }
   return _list.end();
 }

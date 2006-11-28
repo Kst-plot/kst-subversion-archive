@@ -48,8 +48,8 @@ class KstIfaceImpl : virtual public KstIface {
     virtual bool plotEquation(double start, double end, int numSamples, const QString& equation, const QString& plotName, const QColor& color);
     virtual bool plotEquation(double start, double end, int numSamples, const QString& equation, const QString& plotName);
 
-    virtual const QString& generateVector(const QString& name, double from, double to, int points);
-    virtual const QString& generateScalar(const QString& name, double value);
+    virtual QString generateVector(const QString& name, double from, double to, int points);
+    virtual QString generateScalar(const QString& name, double value);
 
     virtual bool saveVector(const QString& vector, const QString& filename);
     virtual QStringList inputVectors(const QString& objectName);
@@ -86,13 +86,13 @@ class KstIfaceImpl : virtual public KstIface {
     virtual bool removeCurveFromPlot(const QString& window, const QString& plot, const QString& curve);
     virtual bool removeCurveFromPlot(const QString& plot, const QString& curve);
 
-    virtual const QString& createCurve(const QString& name, const QString& xVector, const QString& yVector, const QString& xErrorVector, const QString& yErrorVector);
-    virtual const QString& createCurve(const QString& name, const QString& xVector, const QString& yVector, const QString& xErrorVector, const QString& yErrorVector, const QColor& color);
+    virtual QString createCurve(const QString& name, const QString& xVector, const QString& yVector, const QString& xErrorVector, const QString& yErrorVector);
+    virtual QString createCurve(const QString& name, const QString& xVector, const QString& yVector, const QString& xErrorVector, const QString& yErrorVector, const QColor& color);
 
     virtual void reloadVectors();
     virtual void reloadVector(const QString& vector);
 
-    virtual const QString& loadVector(const QString& file, const QString& field);
+    virtual QString loadVector(const QString& file, const QString& field);
 
     virtual const QString& fileName();
     virtual bool save();

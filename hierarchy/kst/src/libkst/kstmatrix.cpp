@@ -24,6 +24,7 @@
   
 #include <klocale.h>
 
+#include "defaultprimitivenames.h"
 #include "kstdatacollection.h"
 #include "kstdebug.h"
 #include "ksdebug.h"
@@ -52,17 +53,16 @@ KstMatrix::KstMatrix(KstObjectTag in_tag, KstObject *provider, uint nX, uint nY,
 
   // must create scalars before setting tag name // FIXME: why?
   createScalars();
-  KstObject::setTagName(in_tag);
+  QString _tag = in_tag.tag();
   if (!in_tag.isValid()) {
     QString nt = i18n("Anonymous Matrix %1");
 
     do {
-      KstObject::setTagName(KstObjectTag(nt.arg(anonymousMatrixCounter++), in_tag.context()));
-    } while (KstData::self()->matrixTagNameNotUnique(tagName(), false));
+      _tag = nt.arg(anonymousMatrixCounter++);
+    } while (KstData::self()->matrixTagNameNotUnique(_tag, false));
+    KstObject::setTagName(KstObjectTag(_tag, in_tag.context()));
   } else {
-    while (KstData::self()->matrixTagNameNotUnique(tagName(), false)) {
-      KstObject::setTagName(KstObjectTag(tag().tag() + '\'', in_tag.context()));
-    }
+    KstObject::setTagName(KST::suggestUniqueMatrixTag(in_tag));
   }
   setDirty();
 

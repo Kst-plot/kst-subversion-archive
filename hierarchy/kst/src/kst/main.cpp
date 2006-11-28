@@ -476,7 +476,7 @@ int main(int argc, char *argv[]) {
               eqS = *eq_i;
               if (NoVectorEq(eqS)) {
                 KstEquationPtr eq = new KstEquation(KST::suggestEQName(eqS), eqS, min, max, n);
-                KstVCurvePtr vc = new KstVCurve(KST::suggestCurveName(eq->tagName(), true),
+                KstVCurvePtr vc = new KstVCurve(KST::suggestCurveName(eq->tag(), true),
                                         eq->vX(), eq->vY(), 0L, 0L, 0L, 0L,
                                         KstColorSequence::next(vcurves,plot->backgroundColor()));
                 KST::dataObjectList.lock().writeLock();
@@ -540,7 +540,7 @@ int main(int argc, char *argv[]) {
                 if (yvector) {
                   // make the curves
                   color = KstColorSequence::next(vcurves,plot->backgroundColor());
-                  curve = new KstVCurve(KST::suggestCurveName(yvector->field(), false),
+                  curve = new KstVCurve(KST::suggestCurveName(yvector->tag(), false), // FIXME: this was yvector->field(), is this right?
                                       KstVectorPtr(xvector), KstVectorPtr(yvector),
                                       0L, 0L, 0L, 0L, color);
                   if (in.has_points) {
@@ -598,7 +598,7 @@ int main(int argc, char *argv[]) {
               }
 
               if (eq) {
-                KstVCurvePtr vc = new KstVCurve(KST::suggestCurveName(eq->tagName(), true),
+                KstVCurvePtr vc = new KstVCurve(KST::suggestCurveName(eq->tag(), true),
                                       eq->vX(), eq->vY(), 0L, 0L, 0L, 0L,
                                       KstColorSequence::next(vcurves,plot->backgroundColor()));
                 KST::dataObjectList.lock().writeLock();
@@ -626,10 +626,10 @@ int main(int argc, char *argv[]) {
               if (yvector) {
                 color = KstColorSequence::next(vcurves,plot->backgroundColor());
 
-                psd = new KstPSD( KST::suggestPSDName(yvector->field()),
+                psd = new KstPSD( KST::suggestPSDName(yvector->tag()), // FIXME: this was yvector->field(), is this right?
                     KstVectorPtr(yvector), in.rate, true, in.len,
                     true, true, in.VUnits, in.RUnits, WindowOriginal);
-                KstVCurvePtr vc = new KstVCurve(KST::suggestCurveName(psd->tagName(), true),
+                KstVCurvePtr vc = new KstVCurve(KST::suggestCurveName(psd->tag(), true),
                     psd->vX(), psd->vY(),
                     0L, 0L, 0L, 0L, color);
                 if (in.has_points) {
@@ -665,9 +665,9 @@ int main(int argc, char *argv[]) {
 
                 KstHistogram::AutoBin(KstVectorPtr(yvector), &N, &max, &min);
 
-                hs = new KstHistogram(KST::suggestHistogramName(yvector->field()),
+                hs = new KstHistogram(KST::suggestHistogramName(yvector->tag()), // FIXME: this was yvector->field(), is this right?
                     KstVectorPtr(yvector), min, max, N, KST_HS_NUMBER);
-                KstVCurvePtr vc = new KstVCurve(KST::suggestCurveName(hs->tagName(), true),
+                KstVCurvePtr vc = new KstVCurve(KST::suggestCurveName(hs->tag(), true),
                     hs->vX(), hs->vY(),
                     0L, 0L, 0L, 0L, color);
 
@@ -706,7 +706,7 @@ int main(int argc, char *argv[]) {
                   //doAve, doSkip, skip);
               
               // Time to create the image from the matrix
-              tag_name = KST::suggestImageName(matrix->tagName());
+              tag_name = KST::suggestImageName(matrix->tag());
               QStringList palList = KPalette::getPaletteList();
               QString pal;
               if (palList.contains("IDL 13 RAINBOW")) {

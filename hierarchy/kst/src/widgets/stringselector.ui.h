@@ -26,8 +26,8 @@ void StringSelector::update()
     _string->clear();
     // FIXME: missing locking?
     for (KstStringList::Iterator i = KST::stringList.begin(); i != KST::stringList.end(); ++i) {
-	_string->insertItem((*i)->tagName());
-	if ((*i)->tagName() == prev) {
+	_string->insertItem((*i)->tag().tagString());
+	if ((*i)->tag().tagString() == prev) {
 	    found = true;
 	}
     }

@@ -55,7 +55,7 @@ class KST_EXPORT KstVector : public KstPrimitive {
     /**
      * Vectors do not automatically add themselves to the global vector list
      */
-    KstVector(KstObjectTag in_tag = KstObjectTag(), int size = 0,
+    KstVector(KstObjectTag in_tag = KstObjectTag::invalidTag, int size = 0,
         KstObject *provider = 0L, bool bIsScalarList = false);
 
   protected:

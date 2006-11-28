@@ -511,7 +511,7 @@ void KstObjectItem::activateHint(int id) {
   int cnt = 0;
   for (KstCurveHintList::ConstIterator i = hints->begin(); i != hints->end(); ++i) {
     if (cnt == id) {
-      KstBaseCurvePtr c = (*i)->makeCurve(KST::suggestCurveName(d->tagName(), false), KstColorSequence::next());
+      KstBaseCurvePtr c = (*i)->makeCurve(KST::suggestCurveName(d->tag(), false), KstColorSequence::next());
       if (c) {
         KST::dataObjectList.lock().writeLock();
         KST::dataObjectList.append(c.data());
