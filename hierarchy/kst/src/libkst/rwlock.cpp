@@ -161,4 +161,30 @@ void KstRWLock::unlock() const {
 }
 
 
+bool KstRWLock::isLocked() const {
+#ifndef ONE_LOCK_TO_RULE_THEM_ALL
+  return (_readCount > 0 || _writeCount > 0);
+#else
+#error isLocked() not supported using the single lock
+#endif
+}
+
+
+bool KstRWLock::isLockedByMe() const {
+#ifndef ONE_LOCK_TO_RULE_THEM_ALL
+  QMutexLocker lock(&_mutex);
+
+  Qt::HANDLE me = QThread::currentThread();
+
+  if (_readCount > 0) {
+    return (_readLockers.find(me) != _readLockers.end());
+  } else if (_writeCount > 0) {
+    return (_writeLocker == me);
+  } else if (_readCount == 0 && _writeCount == 0) {
+    return false;
+  }
+#else
+#error isLockedByMe() not supported using the single lock
+#endif
+}
 // vim: ts=2 sw=2 et

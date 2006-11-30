@@ -42,6 +42,9 @@ class KST_EXPORT KstRWLock {
 
     virtual void unlock() const;
 
+    virtual bool isLocked() const;
+    virtual bool isLockedByMe() const;
+
   protected:
 #ifdef ONE_LOCK_TO_RULE_THEM_ALL
     static
