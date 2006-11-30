@@ -139,7 +139,7 @@ void KstPSD::commonConstructor(const QString& in_tag, KstVectorPtr in_V,
   if (in_V) {
     _inputVectors[INVECTOR] = in_V;
   }
-  setTagName(KstObjectTag(in_tag, KstObjectTag::globalTagContext));  // FIXME: PSDs are not always top-level?
+  setTagName(KstObjectTag::fromString(in_tag));
   _Freq = in_freq;
   _Average = in_average;
   _Apodize = in_apodize;

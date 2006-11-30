@@ -106,7 +106,8 @@ void EventMonitorEntry::commonConstructor(const QString &in_tag) {
   _pExpression = 0L;
 
   _typeString = i18n("Event");
-  KstObject::setTagName(KstObjectTag(in_tag, KstObjectTag::globalTagContext)); // FIXME: tag context
+  _type = "Event";
+  KstObject::setTagName(KstObjectTag::fromString(in_tag));
 
   KstVectorPtr xv = new KstVector(KstObjectTag("x", tag()), NS, this);
   _xVector = _outputVectors.insert(OUTXVECTOR, xv);
@@ -128,6 +129,12 @@ bool EventMonitorEntry::reparse() {
       Equation::FoldVisitor vis(&ctx, &_pExpression);
       KstStringMap stm;
       _pExpression->collectObjects(_vectorsUsed, _inputScalars, stm);
+
+      for (KstScalarMap::ConstIterator i = _inputScalars.begin(); i != _inputScalars.end(); ++i) {
+        if (!(*i)->isLockedByMe()) {
+          (*i)->readLock();
+        }
+      }
 
       _isValid = true;
     } else {

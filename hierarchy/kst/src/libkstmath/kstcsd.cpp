@@ -118,8 +118,9 @@ void KstCSD::commonConstructor(const QString& in_tag, KstVectorPtr in_V,
                                double in_gaussianSigma, const QString& in_vectorUnits, 
                                const QString& in_rateUnits, PSDType in_outputType, const QString& vecName) {
   _typeString = i18n("Cumulative Spectral Decay");
+  _type = "Cumulative Spectral Decay";
   _inputVectors[INVECTOR] = in_V;
-  setTagName(KstObjectTag(in_tag, KstObjectTag::globalTagContext));  // FIXME: CSDs are not always top-level?
+  setTagName(KstObjectTag::fromString(in_tag));
   _frequency = in_freq;
   _average = in_average;
   _apodize = in_apodize;

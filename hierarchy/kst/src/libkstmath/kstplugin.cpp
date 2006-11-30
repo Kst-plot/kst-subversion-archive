@@ -697,7 +697,7 @@ KstDataObjectPtr KstPlugin::makeDuplicate(KstDataObjectDataObjectMap& duplicated
   
   // set the same plugin
   plugin->setPlugin(_plugin);
-  plugin->setTagName(KstObjectTag(tag().tag() + "'", tag().context()));
+  plugin->setTagName(KstObjectTag(tag().tag() + "'", tag().context())); // FIXME: unique tag generation method
   duplicatedMap.insert(this, KstDataObjectPtr(plugin));  
   return KstDataObjectPtr(plugin);
 }

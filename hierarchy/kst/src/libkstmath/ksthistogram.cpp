@@ -107,7 +107,7 @@ void KstHistogram::commonConstructor(const QString &in_tag, KstVectorPtr in_V,
   _Bins = 0L;
   _NBins = 0;
   
-  setTagName(KstObjectTag(in_tag, KstObjectTag::globalTagContext));  // FIXME: always top-level?
+  setTagName(KstObjectTag::fromString(in_tag));
   _inputVectors[RAWVECTOR] = in_V;
 
   if (xmax_in>xmin_in) {

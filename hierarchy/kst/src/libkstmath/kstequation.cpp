@@ -148,7 +148,7 @@ void KstEquation::commonConstructor(const QString& in_tag, const QString& in_equ
   _pe = 0L;
   _typeString = i18n("Equation");
   _type = "Equation";
-  KstObject::setTagName(KstObjectTag(in_tag, KstObjectTag::globalTagContext)); // FIXME: global tag context?
+  KstObject::setTagName(KstObjectTag::fromString(in_tag));
 
   KstVectorPtr xv = new KstVector(KstObjectTag("xsv", tag()), 2, this);
   _xOutVector = _outputVectors.insert(XOUTVECTOR, xv);

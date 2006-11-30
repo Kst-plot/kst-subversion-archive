@@ -77,6 +77,7 @@ KstImage::KstImage(const QDomElement& e) : KstBaseCurve(e){
 
   setTagName(KstObjectTag::fromString(in_tag));
   _typeString = i18n("Image");
+  _type = "Image";
   _hasColorMap = in_hasColorMap;
   _hasContourMap = in_hasContourMap;
   _zLower = in_zLower;
@@ -110,6 +111,7 @@ KstImage::KstImage(const QString &in_tag, KstMatrixPtr in_matrix, double lowerZ,
   _inputMatrices[THEMATRIX] = in_matrix;
   setTagName(KstObjectTag(in_tag, KstObjectTag::globalTagContext));  // FIXME: always top-level?
   _typeString = i18n("Image");
+  _type = "Image";
   _zLower = lowerZ;
   _zUpper = upperZ;
   _autoThreshold = autoThreshold;
@@ -127,6 +129,7 @@ KstImage::KstImage(const QString &in_tag, KstMatrixPtr in_matrix, int numContour
   _inputMatrices[THEMATRIX] = in_matrix;
   setTagName(KstObjectTag(in_tag, KstObjectTag::globalTagContext));  // FIXME: always top-level?
   _typeString = i18n("Image");
+  _type = "Image";
   _contourColor = contourColor;
   _numContourLines = numContours;
   _contourWeight = contourWeight;
@@ -152,6 +155,7 @@ KstImage::KstImage(const QString &in_tag,
   _inputMatrices[THEMATRIX] = in_matrix;
   setTagName(KstObjectTag(in_tag, KstObjectTag::globalTagContext));  // FIXME: always top-level?
   _typeString = i18n("Image");
+  _type = "Image";
   _contourColor = contourColor;
   _numContourLines = numContours;
   _contourWeight = contourWeight;
