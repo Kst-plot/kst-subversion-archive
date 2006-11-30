@@ -41,6 +41,7 @@ KstMatrix::KstMatrix(KstObjectTag in_tag, KstObject *provider, uint nX, uint nY,
  
   _nX = nX;
   _nY = nY;
+  _NS = _nX * _nY;
   _minX = minX;
   _minY = minY;
   _stepX = stepX;
