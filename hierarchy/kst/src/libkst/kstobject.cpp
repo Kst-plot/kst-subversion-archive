@@ -62,7 +62,12 @@ inline QString KstObject::tagName() const {
 }
 
 
-inline KstObjectTag KstObject::tag() const {
+inline KstObjectTag& KstObject::tag() {
+  return _tag;
+}
+
+
+inline const KstObjectTag& KstObject::tag() const {
   return _tag;
 }
 

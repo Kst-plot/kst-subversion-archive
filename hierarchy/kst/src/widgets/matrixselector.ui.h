@@ -41,7 +41,7 @@ void MatrixSelector::update()
     KST::matrixList.lock().readLock();
     for (KstMatrixList::ConstIterator i = matrices.begin(); i != matrices.end(); ++i) {
 	(*i)->readLock();
-	QString tag = (*i)->tag().tagString();
+	QString tag = (*i)->tag().displayString();
 	(*i)->unlock();
 	_matrix->insertItem(tag);
 	if (!found && tag == prev) {

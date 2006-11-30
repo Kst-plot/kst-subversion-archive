@@ -38,15 +38,20 @@ void ScalarSelector::update()
     
     _scalar->clear();
     
-    // FIXME: missing locking?
+	KST::scalarList.lock().readLock();
     for (KstScalarList::Iterator i = KST::scalarList.begin(); i != KST::scalarList.end(); ++i) {
+		(*i)->readLock();
+	    QString tag = (*i)->tag().displayString();
         if ((*i)->displayable()) {
-            scalars << (*i)->tag().tagString();
+            scalars << tag;
         }
-        if ((*i)->tag().tagString() == prev) {
+		(*i)->unlock();
+
+        if (tag == prev) {
             found = true;
         }
     }
+	KST::scalarList.lock().unlock();
     
     qHeapSort(scalars);
     _scalar->insertStringList(scalars);

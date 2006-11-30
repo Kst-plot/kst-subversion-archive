@@ -24,6 +24,8 @@
 #include <qstring.h>
 #include <qstringlist.h>
 
+#include <kglobal.h>
+
 #include "kst_export.h"
 #include "kstsharedptr.h"
 #include "ksdebug.h"
@@ -40,30 +42,31 @@ class KstObjectTag {
     static const KstObjectTag invalidTag;
 
     static const QString tagSeparator;
+
     static const QStringList globalTagContext;
     static const QStringList constantTagContext;
 
     // construct a tag in a given context
-    KstObjectTag(const QString& tag,
-                 QStringList context) : _tag(tag),
-                                                           _context(context)
+    KstObjectTag(const QString& tag, QStringList context,
+        unsigned int minDisplayComponents = 1) : _tag(cleanTag(tag)),
+                                                 _context(context),
+                                                 _minDisplayComponents(minDisplayComponents),
+                                                 _uniqueDisplayComponents(UINT_MAX)
     {
-      if (_tag.contains(tagSeparator)) {
-        kstdWarning() << "WARNING: trying to build KstObject tag name containing " << tagSeparator << ":\"" << _tag << "\"" << endl;
-        _tag = _tag.replace(tagSeparator, "-");
-      }
     }
 
     // construct a tag in the context of another tag
-    KstObjectTag(const QString& tag, KstObjectTag contextTag) : _tag(tag),
-                                                                _context(contextTag.fullTag())
+    KstObjectTag(const QString& tag, KstObjectTag contextTag) :
+      _tag(cleanTag(tag)), _context(contextTag.fullTag()),
+      _minDisplayComponents(2), _uniqueDisplayComponents(UINT_MAX)
     {
-      if (_tag.contains(tagSeparator)) {
-        kstdWarning() << "WARNING: trying to build KstObject tag name containing " << tagSeparator << ":\"" << _tag << "\"" << endl;
-        _tag = _tag.replace(tagSeparator, "-");
-      }
+    }
 
-      _tag = tag;
+    // construct a tag from a fullTag representation
+    KstObjectTag(QStringList fullTag) : _minDisplayComponents(1), _uniqueDisplayComponents(UINT_MAX) {
+      _tag = cleanTag(fullTag.last());
+      fullTag.pop_back();
+      _context = fullTag;
     }
 
     QString tag() const { return _tag; }
@@ -72,24 +75,45 @@ class KstObjectTag {
 
     // change the tag, maintaining context
     void setTag(const QString& tag) {
-      _tag = tag;
-
-      if (_tag.contains(tagSeparator)) {
-        kstdWarning() << "WARNING: trying to set KstObject tag name containing " << tagSeparator << ":\"" << _tag << "\"" << endl;
-        _tag = _tag.replace(tagSeparator, "-");
-      }
+      _tag = cleanTag(tag);
+      _uniqueDisplayComponents = UINT_MAX;
     }
 
     // change the tag and context
     void setTag(const QString& tag, QStringList context) {
       setTag(tag);
       _context = context;
+      _uniqueDisplayComponents = UINT_MAX;
     }
 
     bool isValid() const { return !_tag.isEmpty(); }
 
-    QString tagString() const { return QStringList(_context + QStringList(_tag)).join(tagSeparator); }
+    QString tagString() const { return fullTag().join(tagSeparator); }
 
+    // display methods
+    void setUniqueDisplayComponents(unsigned int n) {
+      _uniqueDisplayComponents = n;
+    }
+    unsigned int uniqueDisplayComponents() const { return _uniqueDisplayComponents; }
+
+    void setMinDisplayComponents(unsigned int n) {
+      _minDisplayComponents = n;
+    }
+
+    QStringList displayFullTag() const { 
+      QStringList out_tag = _context + QStringList(_tag);
+      unsigned int componentsToDisplay = KMIN(KMAX(_uniqueDisplayComponents, _minDisplayComponents), 1 + _context.count());
+      while (out_tag.count() > componentsToDisplay) {
+        out_tag.pop_front();
+      }
+      return out_tag;
+    }
+
+    QString displayString() const { 
+      return displayFullTag().join(tagSeparator);
+    }
+
+    // factory for String representation
     static KstObjectTag fromString(const QString& str) {
       QStringList l = QStringList::split(tagSeparator, str);
       if (l.isEmpty()) {
@@ -106,8 +130,21 @@ class KstObjectTag {
     }
 
   private:
+    static QString cleanTag(const QString& in_tag) {
+      if (in_tag.contains(tagSeparator)) {
+        QString tag = in_tag;
+        tag.replace(tagSeparator, "-");
+        kstdWarning() << "cleaning tag name containing " << tagSeparator << ":\"" << in_tag << "\" -> \"" << tag << "\"" << endl;
+        return tag;
+      } else {
+        return in_tag;
+      }
+    }
+
     QString _tag;
     QStringList _context;
+    unsigned int _minDisplayComponents; // minimum number of components to use in display tag
+    unsigned int _uniqueDisplayComponents;  // number of components necessary for unique display tag
 };
 
 
@@ -120,7 +157,8 @@ class KST_EXPORT KstObject : public KstShared, public QObject, public KstRWLock 
     virtual UpdateType update(int updateCounter = -1) = 0;
 
     virtual QString tagName() const;
-    virtual KstObjectTag tag() const;
+    virtual KstObjectTag& tag();
+    virtual const KstObjectTag& tag() const;
     virtual void setTagName(KstObjectTag tag);
 
     virtual QString tagLabel() const;

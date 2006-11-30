@@ -24,16 +24,22 @@ void StringSelector::update()
     QString prev = _string->currentText();
     bool found = false;
     _string->clear();
-    // FIXME: missing locking?
+
+	KST::stringList.lock().readLock();
     for (KstStringList::Iterator i = KST::stringList.begin(); i != KST::stringList.end(); ++i) {
-	_string->insertItem((*i)->tag().tagString());
-	if ((*i)->tag().tagString() == prev) {
-	    found = true;
+		(*i)->readLock();
+		QString tag = (*i)->tag().displayString();
+		(*i)->unlock();
+		_string->insertItem(tag);
+		if (tag == prev) {
+			found = true;
+		}
 	}
-    }
-    if (found) {
-	_string->setCurrentText(prev);
-    }
+	KST::stringList.lock().unlock();
+
+	if (found) {
+		_string->setCurrentText(prev);
+	}
     blockSignals(false);
 }
 
