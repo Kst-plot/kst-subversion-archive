@@ -21,7 +21,7 @@
 /** Tag globals */
 const QString KstObjectTag::tagSeparator = QString("/");
 const QStringList KstObjectTag::globalTagContext = QStringList();
-const QStringList KstObjectTag::constantTagContext = KstObjectTag::globalTagContext;
+const QStringList KstObjectTag::constantTagContext = QStringList("CONSTANTS");
 
 const KstObjectTag KstObjectTag::invalidTag = KstObjectTag(QString::null, KstObjectTag::globalTagContext);
 
