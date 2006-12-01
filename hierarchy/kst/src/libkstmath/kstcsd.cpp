@@ -213,7 +213,7 @@ KstObject::UpdateType KstCSD::update(int update_counter) {
     xSize++;
   }
 
-  delete tempOutput;
+  delete[] tempOutput;
 
   double frequencyStep = .5*_frequency/(double)(tempOutputLen-1);
 
