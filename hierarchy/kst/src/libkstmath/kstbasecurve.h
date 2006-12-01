@@ -31,17 +31,27 @@
  */
 
 // context for rendering a curve in a plot
-struct KstCurveRenderContext {
-  KstPainter* p;
-  double Lx, Hx, Ly, Hy;
-  double m_X, m_Y, b_X, b_Y;
-  double x_max, y_max, x_min, y_min;
-  double XMin, YMin, XMax, YMax; // range and domain of plot
-  bool xLog, yLog;
-  double xLogBase, yLogBase;
-  QColor foregroundColor; // plot foreground color
-  QColor backgroundColor; // plot background color
-  int penWidth;
+class KstCurveRenderContext {
+  public:
+    // FIXME: use reasonable defaults
+    KstCurveRenderContext() : p(0L), Lx(0.0), Hx(0.0), Ly(0.0), Hy(0.0),
+                              m_X(0.0), m_Y(0.0), b_X(0.0), b_Y(0.0),
+                              x_max(0.0), y_max(0.0), x_min(0.0), y_min(0.0),
+                              XMin(0.0), YMin(0.0), XMax(0.0), YMax(0.0),
+                              xLog(false), yLog(false), xLogBase(0.0),
+                              yLogBase(0.0), penWidth(0)
+    {}
+
+    KstPainter* p;
+    double Lx, Hx, Ly, Hy;
+    double m_X, m_Y, b_X, b_Y;
+    double x_max, y_max, x_min, y_min;
+    double XMin, YMin, XMax, YMax; // range and domain of plot
+    bool xLog, yLog;
+    double xLogBase, yLogBase;
+    QColor foregroundColor; // plot foreground color
+    QColor backgroundColor; // plot background color
+    int penWidth;
 };
 
 enum KstCurveType { KST_VCURVE, KST_HISTOGRAM, KST_IMAGE };

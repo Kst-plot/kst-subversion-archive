@@ -30,6 +30,9 @@ KstBaseCurve::KstBaseCurve() : KstDataObject() {
 
 
 void KstBaseCurve::commonConstructor() {
+  _ns_maxx = _ns_minx = _ns_maxy = _ns_miny = MaxX = MinX = MinPosX = MeanX = MaxY = MinY = MinPosY = 0.0;
+  NS = 0;
+
   _ignoreAutoScale = false;
   _parsedLegendTag = 0L;
 }
