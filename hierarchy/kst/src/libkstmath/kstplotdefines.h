@@ -79,19 +79,26 @@ const AxisDisplay AxisDisplays[] = {
   { I18N_NOOP("<KDE Long Date and Time>"), AXIS_DISPLAY_KDE_LONGDATE }
 };
 
-typedef struct TickParameters {
-  double org;
-  double tick;
-  bool delta;
-  double maxWidth;
-  double maxHeight;
-  QStringList labels;
-  int iHi;
-  int iLo;
-  QStringList oppLabels; // labels for the opposite axis
-  double oppMaxWidth;
-  double oppMaxHeight;
-} TickParameters;
+class TickParameters {
+  public:
+    // FIXME: use reasonable defaults
+    TickParameters() : org(0.0), tick(0.0), delta(false), maxWidth(0.0),
+                       maxHeight(0.0), iHi(0), iLo(0), oppMaxWidth(0.0),
+                       oppMaxHeight(0.0)
+    {}
+
+    double org;
+    double tick;
+    bool delta;
+    double maxWidth;
+    double maxHeight;
+    QStringList labels;
+    int iHi;
+    int iLo;
+    QStringList oppLabels; // labels for the opposite axis
+    double oppMaxWidth;
+    double oppMaxHeight;
+};
 
 const unsigned int numAxisInterpretations = sizeof( AxisInterpretations ) / sizeof( AxisInterpretation );
 const unsigned int numAxisDisplays = sizeof( AxisDisplays ) / sizeof( AxisDisplay );
