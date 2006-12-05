@@ -1,12 +1,12 @@
-installdir=$(kde_moduledir)/kstplugins
-INCLUDES=-I$(srcdir)/../../../kst $(all_includes)
+INCLUDES=-I$(top_srcdir)/kst -I$(top_srcdir)/kst/src/libkst -I$(top_srcdir)/kst/src/libkstmath $(all_includes)
 
-install_LTLIBRARIES = convolve.la
+kde_module_LTLIBRARIES=kstobject_convolve.la
 
-convolve_la_LDFLAGS = -module $(KDE_PLUGIN) $(all_libraries)
-convolve_la_LIBADD = $(GSL_LIBS)
-convolve_la_SOURCES = convolve.cpp
+kstobject_convolve_la_LDFLAGS=$(all_libraries) -module -avoid-version
+kstobject_convolve_la_SOURCES=convolve.cpp
+kstobject_convolve_la_LIBADD = $(GSL_LIBS)
+
+services_DATA=kstobject_convolve.desktop
+servicesdir=$(kde_servicesdir)/kst
 
 METASOURCES=AUTO
-
-install_DATA=convolve.xml

@@ -2,7 +2,7 @@
 <!DOCTYPE Module SYSTEM "file:/Repository/Level2/Soft/ProC/moduledef.dtd">
 <module>
 <intro>
-<modulename name="kstfit_lorentzian" readableName="Fit Lorentzian"/>
+<modulename name="kstfit_lorentzian" readableName="Fit lorentzian"/>
 <author name="Andrew Walker"/>
 <description text="Generates a Lorentzian fit for a set of data."/>
 <version minor="1" major="0"/>

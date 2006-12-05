@@ -2,7 +2,7 @@
 <!DOCTYPE Module SYSTEM "file:/Repository/Level2/Soft/ProC/moduledef.dtd">
 <module>
 <intro>
-<modulename name="syncbin"/>    <!-- The name of the module -->
+<modulename name="syncbin" readableName="Syncbin"/>    <!-- The name of the module -->
 <author name="Barth Netterfield"/> <!-- The name of the author -->
 <description text="Synchronously coadd vector Y into bins defined by vector X.  Like a 1D map."/>
  <!-- A description of the module -->

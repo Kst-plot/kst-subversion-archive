@@ -1,0 +1,9 @@
+[Desktop Entry]
+Encoding=UTF-8
+Type=Service
+ServiceTypes=Kst Data Object
+X-KDE-ModuleType=Plugin
+X-KDE-Library=kstobject_convolve
+X-Kst-Plugin-Author=Andrew Walker
+Name=Convolution
+Comment=Generates the convolution of one vector with another.

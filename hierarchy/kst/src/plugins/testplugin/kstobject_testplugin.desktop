@@ -1,0 +1,24 @@
+[Desktop Entry]
+Encoding=UTF-8
+Type=Service
+ServiceTypes=Kst Data Object
+X-KDE-ModuleType=Plugin
+X-KDE-Library=kstobject_testplugin
+X-Kst-Plugin-Author=The University of Toronto
+Name=Test Plugin
+Name[da]=Testplugin
+Name[de]=Testmodul
+Name[ga]=Breiseán Tástála
+Name[it]=Plugin di prova
+Name[nl]=Testplugin
+Name[pt]='Plugin' de Teste
+Name[pt_BR]='Plugin' de Teste
+Name[sv]=Testinsticksprogram
+Comment=A test of new data object plugin system.
+Comment[da]=En test af det nye pluginsystem for dataobjekter.
+Comment[de]=Ein Test des neuen Datenobjekt-Modul Systems.
+Comment[it]=Una prova del nuovo sistema di plugin di oggetti di dati.
+Comment[nl]=Een test van een nieuw pluginsysteem voor een gegevensobject.
+Comment[pt]=Um teste do novo sistema de 'plugins' de objectos de dados.
+Comment[pt_BR]=Um teste do novo sistema de 'plugins' de objectos de dados.
+Comment[sv]=En test av det nya insticksprogramsystemet för dataobjekt.

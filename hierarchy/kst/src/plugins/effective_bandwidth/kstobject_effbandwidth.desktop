@@ -1,0 +1,23 @@
+[Desktop Entry]
+Encoding=UTF-8
+Type=Service
+ServiceTypes=Kst Data Object
+X-KDE-ModuleType=Plugin
+X-KDE-Library=kstobject_effbandwidth
+X-Kst-Plugin-Author=Duncan Hanson
+Name=Effective Bandwidth
+Name[da]=Effektiv båndbredde
+Name[de]=Effektive Bandbreite
+Name[it]=Ampiezza di banda effettiva
+Name[nl]=Effectieve bandbreedte
+Name[pt]=Largura de Banda Efectiva
+Name[pt_BR]=Largura de Banda Efectiva
+Name[sv]=Effektiv bandbredd
+Comment=Calculates effective bandwidth from an amplitude spectrum.
+Comment[da]=Beregner effektiv båndbredde for et amplitudespektrum.
+Comment[de]=Berechnet die effektive Bandbreite eines Amplitüden Spektrums.
+Comment[it]=Calcola l'ampiezza di banda effettiva di uno spettro di ampiezza.
+Comment[nl]=Berekent de effectieve bandbreedte uit een amplitudespectrum.
+Comment[pt]=Calcula a largura de banda efectiva de um espectro de amplitude.
+Comment[pt_BR]=Calcula a largura de banda efectiva de um espectro de amplitude.
+Comment[sv]=Beräknar effektiv bandbredd av ett amplitudspektrum.

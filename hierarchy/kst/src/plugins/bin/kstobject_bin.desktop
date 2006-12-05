@@ -1,0 +1,13 @@
+[Desktop Entry]
+Encoding=UTF-8
+Type=Service
+ServiceTypes=Kst Data Object
+X-KDE-ModuleType=Plugin
+X-KDE-Library=kstobject_bin
+X-Kst-Plugin-Author=Rick Chern
+Name=Bin
+Name[it]=Barra
+Name[sv]=Område
+Comment=Bins data into the given size bins.  Each bin contains the mean of the elements belonging to the bin.
+Comment[it]=Mette i dati in barre di dimensione data. Ogni barra contiene la media degli elementi appartenenti ad essa.
+Comment[sv]=Fördelar data i områden med given storlek. Varje område innehåller medelvärdet av elementen som hör till området.

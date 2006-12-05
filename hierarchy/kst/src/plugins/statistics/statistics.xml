@@ -2,7 +2,7 @@
 <!DOCTYPE Module SYSTEM "file:/Repository/Level2/Soft/ProC/moduledef.dtd">
 <module>
 <intro>
-<modulename name="statistics"/>
+<modulename name="statistics" readableName="Statistics"/>
 <author name="Andrew Walker"/>
 <description text="Determines statistics for a given data set."/>
 <version minor="1" major="0"/>

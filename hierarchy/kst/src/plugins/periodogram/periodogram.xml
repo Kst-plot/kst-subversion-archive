@@ -2,7 +2,7 @@
 <!DOCTYPE Module SYSTEM "file:/Repository/Level2/Soft/ProC/moduledef.dtd">
 <module>
 <intro>
-<modulename name="periodogram"/>
+<modulename name="periodogram" readableName="Periodogram"/>
 <author name="Andrew Walker"/>
 <description text="Takes the periodogram of a given data set. The data is not assumed to be sampled at equal time intervals."/>
 <version minor="1" major="0"/>

@@ -36,7 +36,12 @@ double interpolate(int iIndex, int iLengthDesired, const double* pArray, int iLe
     fj    = (double)(iIndex * (iLengthActual-1)) / (double)(iLengthDesired-1);
     j     = (int)floor(fj);
     fdj   = fj - (double)j;
-    value = pArray[j+1] * fdj + pArray[j+0] * (1.0 - fdj);
+
+    //Don't read an invalid index from pArray... found by valgrind
+    double A = j+1 < iLengthActual ? pArray[j+1] : 0;
+    double B = j < iLengthActual ? pArray[j] : 0;
+
+    value = A * fdj + B * (1.0 - fdj);
   }
   
   return value;

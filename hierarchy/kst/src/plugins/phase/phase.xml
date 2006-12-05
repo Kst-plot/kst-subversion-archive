@@ -2,7 +2,7 @@
 <!DOCTYPE Module SYSTEM "file:/Repository/Level2/Soft/ProC/moduledef.dtd">
 <module>
 <intro>
-<modulename name="phase"/>
+<modulename name="phase" readableName="Phase"/>
 <author name="Andrew Walker"/>
 <description text="Phases a given data set to the specified period and zero phase."/>
 <version minor="1" major="0"/>

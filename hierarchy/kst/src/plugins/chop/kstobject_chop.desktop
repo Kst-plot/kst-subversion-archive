@@ -1,0 +1,13 @@
+[Desktop Entry]
+Encoding=UTF-8
+Type=Service
+ServiceTypes=Kst Data Object
+X-KDE-ModuleType=Plugin
+X-KDE-Library=kstobject_chop
+X-Kst-Plugin-Author=Andrew Walker
+Name=Chop
+Name[it]=Dividi
+Name[sv]=Uppdelning
+Comment=Chops a given data set into odd, even, difference, and Index data sets.
+Comment[it]=Divide un insieme di dati in insiemi di dati pari, dispari, differenze e indici.
+Comment[sv]=Delar upp en given datamängd i udda, jämn, skillnad och index datamängder.

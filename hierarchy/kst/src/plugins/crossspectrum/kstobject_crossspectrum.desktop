@@ -1,0 +1,22 @@
+[Desktop Entry]
+Encoding=UTF-8
+Type=Service
+ServiceTypes=Kst Data Object
+X-KDE-ModuleType=Plugin
+X-KDE-Library=kstobject_crossspectrum
+X-Kst-Plugin-Author=Barth Netterfield
+Name=Cross Power Spectrum
+Name[da]=Krydskorreleret effektspektrum
+Name[it]=Spettro di potenza incrociato
+Name[nl]=Energiespectrum uitproduct
+Name[pt]=Espectro de Potência Cruzado
+Name[pt_BR]=Espectro de Potência Cruzado
+Name[sv]=Korskorrelerat effektspektrum
+Comment=Generates the cross power spectrum of one vector with another.
+Comment[da]=Opretter et krydskorreleret effektspektrum af to vektorer
+Comment[de]=Genriert das Cross Power Spectrum eines Vektors mit einem anderen.
+Comment[it]=Genera lo spettro di potenza incrociato di un vettore con un altro.
+Comment[nl]=Genereert het energiespectrum van het uitproduct van twee vectoren.
+Comment[pt]=Gera o espectro de potência cruzado de um vector com outro.
+Comment[pt_BR]=Gera o espectro de potência cruzado de um vector com outro.
+Comment[sv]=Skapar ett Korskorrelerat effektspektrum av två vektorer
