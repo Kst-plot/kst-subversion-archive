@@ -119,7 +119,7 @@ void VectorSaveDialog::init()
     KST::vectorList.lock().readLock();
     for (KstVectorList::ConstIterator i = KST::vectorList.begin(); i != KST::vectorList.end(); ++i) {
 	(*i)->readLock();
-	_vectorList->insertItem((*i)->tagName());
+	_vectorList->insertItem((*i)->tag().displayString());
 	(*i)->unlock();
     }
     KST::vectorList.lock().unlock();
