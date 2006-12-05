@@ -6,7 +6,8 @@ endif
 SUBDIRS=. kstXbench $(HEALPIX_DIR)
 
 check_PROGRAMS=testeqparser testhistogram testscalars testlabelparser \
-		testvector testrvector
+		testvector testrvector \
+		testmatrix testamatrix testcsd testpsd testsmatrix
 
 METASOURCES=AUTO
 
@@ -20,4 +21,8 @@ testscalars_SOURCES=testscalars.cpp
 testlabelparser_SOURCES=testlabelparser.cpp
 testvector_SOURCES=testvector.cpp
 testrvector_SOURCES=testrvector.cpp
-
+testmatrix_SOURCES=testmatrix.cpp
+testamatrix_SOURCES=testamatrix.cpp
+testcsd_SOURCES=testcsd.cpp
+testpsd_SOURCES=testpsd.cpp
+testsmatrix_SOURCES=testsmatrix.cpp

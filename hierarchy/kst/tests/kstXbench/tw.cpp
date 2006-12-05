@@ -189,4 +189,4 @@ void TW::testDrawImage() {
           WIDTH,  HEIGHT, 1000.0*double( j )/double( et ) );
 }
 
-#include "tw.moc"
+//#include "tw.moc"
