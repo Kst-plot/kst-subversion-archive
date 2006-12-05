@@ -6,12 +6,6 @@ Our current feature list and feature plan is as follows:
 
 Pending major changes:
 
-- pluginify branch will be merged
-	- for data objects only
-	- Open questions before merge:
-		- 1. Are we going to change the API to not have dummy objects?
-		- 2. Minor changes with fits and filters?
-
 - merge and activate multi-threaded updates
 
 
@@ -36,8 +30,6 @@ New work:
 
 - port loading to SAX depending on results of benchmarking
 	- Test with 500kb+ xml files and see how it compares to 
-
-- add the ability to draw a 2dplot the way other view objects are drawn
 
 - spreadsheet mode
 	- This is almost certainly dependent on a KDE4 port
@@ -104,6 +96,12 @@ can be used to add an entry to the operator list
 - Label syntax validator to make label writing easier
 
 - Ongoing doc updates
+
+- Fit and filter plugins share a number of common algorithms that are
+specific to the C plugin API.  Build parallel API for
+regular C++ plugins??
+
+- Get rid of fit/filter specific code in KstCPlugins
 
 
 Other possible ideas to consider but not approved:
