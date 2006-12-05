@@ -1,0 +1,23 @@
+[Desktop Entry]
+Encoding=UTF-8
+Type=Service
+ServiceTypes=Kst Data Object
+X-KDE-ModuleType=Plugin
+X-KDE-Library=kstobject_linefit
+X-Kst-Plugin-Author=George Staikos
+Name=Line Fit
+Name[da]=Lineær tilpasning
+Name[de]=Gerade Näherung
+Name[it]=Linea di regressione
+Name[nl]=Lijnaanpassing
+Name[pt]=Ajuste a uma Recta
+Name[pt_BR]=Ajuste a uma Recta
+Name[sv]=Linjäranpassning
+Comment=Generates a line of best fit for a set of data.
+Comment[da]=Opretter en bedste tilpasning til en linje for en datamængde.
+Comment[de]=Erzeugt eine Gerade die dem Datensatz am besten annähert.
+Comment[it]=Genera una linea di regressione per un insieme di dati.
+Comment[nl]=Genereert een (rechte) lijn die het best past bij een verzameling gegevens.
+Comment[pt]=Gera uma recta com o ajuste óptimo para um conjunto de dados.
+Comment[pt_BR]=Gera uma recta com o ajuste óptimo para um conjunto de dados.
+Comment[sv]=Skapar en bästa anpassning till en linje för en datamängd.
