@@ -20,55 +20,12 @@
 
 #include "kstavector.h"
 #include "kstdebug.h"
-#include <qcstring.h>
-#include <qstylesheet.h>
-#include <klocale.h>
-#include <kmdcodec.h>
 
 KstAVector::KstAVector(const QDomElement &e)
-: KstVector() {
+: KstVector(e) {
   _editable = true;
-  int in_n = 2;
-  /* parse the DOM tree */
-  QDomNode n = e.firstChild();
-  while (!n.isNull()) {
-    QDomElement e = n.toElement();
-    if (!e.isNull()) {
-      if (e.tagName() == "tag") {
-        setTagName(KstObjectTag::fromString(e.text()));
-      } else if (e.tagName() == "N") {
-        in_n = e.text().toInt();
-      }
-    }
-    n = n.nextSibling();
-  }
   _saveable = true;
-  resize(in_n, true);
-
-  if (in_n > 0) {
-    QDomNode n = e.firstChild();
-    while (!n.isNull()) {
-      QDomElement e = n.toElement();
-      if (!e.isNull()) {
-        if (e.tagName() == "data") {
-          QCString qcs(e.text().latin1());
-          QByteArray qbca;
-          KCodecs::base64Decode(qcs, qbca);
-          QByteArray qba = qUncompress(qbca);
-          QDataStream qds(qba, IO_ReadOnly);
-          int i;
-          for (i = 0; i < in_n && !qds.atEnd(); i++) {
-            qds >> _v[i];
-          }
-          if (i < in_n) {
-            KstDebug::self()->log(i18n("Saved vector contains less data than it claims."), KstDebug::Warning);
-            resize(i, false);
-          }
-        }
-      }
-      n = n.nextSibling();
-    }
-  }
+  _saveData = true;
 }
 
 
@@ -76,25 +33,13 @@ KstAVector::KstAVector(int n, KstObjectTag tag)
 : KstVector(tag, n) {
   _editable = true;
   _saveable = true;
-  resize(n, true);
+  _saveData = true;
 }
 
 
 void KstAVector::save(QTextStream &ts, const QString& indent, bool saveAbsolutePosition) {
-  Q_UNUSED(saveAbsolutePosition)
-
-  QByteArray qba(length()*sizeof(double));
-  QDataStream qds(qba, IO_WriteOnly);
-
-  for (int i = 0; i < length(); i++) {
-    qds << _v[i];
-  }
-
   ts << indent << "<avector>" << endl;
-
-  ts << indent << "  <tag>" << QStyleSheet::escape(tagName()) << "</tag>" << endl;
-  ts << indent << "  <N>" << length() << "</N>" << endl;
-  ts << indent << "  <data>" << KCodecs::base64Encode(qCompress(qba)) << "</data>" << endl;
+  KstVector::save(ts, indent + "  ", saveAbsolutePosition);
   ts << indent << "</avector>" << endl;
 }
 
@@ -114,5 +59,9 @@ KstObject::UpdateType KstAVector::update(int update_counter) {
   return baseRC;
 }
 
+
+void KstAVector::setSaveData(bool save) {
+  Q_UNUSED(save)
+}
 
 // vim: ts=2 sw=2 et

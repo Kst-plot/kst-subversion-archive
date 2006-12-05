@@ -96,6 +96,7 @@ int PluginCollection::loadPlugin(const QString& xmlfile) {
 
     _installedPlugins[xmlfile] = _parser->data();
     _installedPluginNames[_parser->data()._name] = xmlfile;
+    _installedReadablePluginNames[_parser->data()._readableName] = _parser->data()._name;
   }
 
   QString name = _installedPlugins[xmlfile]._name;
@@ -192,17 +193,23 @@ const QMap<QString, QString>& PluginCollection::pluginNameList() const {
 }
 
 
+const QMap<QString, QString>& PluginCollection::readableNameList() const {
+  return _installedReadablePluginNames;
+}
+
+
 void PluginCollection::rescan() {
   // Make me smarter
   scanPlugins();
 }
 
-
 void PluginCollection::scanPlugins() {
+
   QMap<QString,QString> backup = _installedPluginNames;
-  bool changed = false;
   _installedPlugins.clear();
   _installedPluginNames.clear();
+  _installedReadablePluginNames.clear();
+  bool changed = false;
 
   QStringList dirs = KGlobal::dirs()->resourceDirs("kstplugins");
   dirs += KGlobal::dirs()->resourceDirs("kstpluginlib");
@@ -233,6 +240,7 @@ void PluginCollection::scanPlugins() {
         }
         _installedPlugins[*it + fi->fileName()] = _parser->data();
         _installedPluginNames[_parser->data()._name] = *it + fi->fileName();
+        _installedReadablePluginNames[_parser->data()._readableName] = _parser->data()._name;
         if (!backup.contains(_parser->data()._name)) {
           emit pluginInstalled(_parser->data()._name);
           changed = true;
@@ -258,9 +266,9 @@ void PluginCollection::scanPlugins() {
   }
 }
 
-
 int PluginCollection::deletePlugin(const QString& xmlfile, const QString& object) {
   QString pname = _installedPlugins[xmlfile]._name;
+  QString rname = _installedPlugins[xmlfile]._readableName;
   QFile::remove(xmlfile);
   if (object.isEmpty()) {
     QString f = xmlfile;
@@ -272,6 +280,7 @@ int PluginCollection::deletePlugin(const QString& xmlfile, const QString& object
 
   _installedPlugins.remove(xmlfile);
   _installedPluginNames.remove(pname);
+  _installedReadablePluginNames.remove(rname);
   emit pluginRemoved(pname);
 
   return 0;

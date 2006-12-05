@@ -273,8 +273,13 @@ QString KstCSD::propertyString() const {
 }
 
 
-void KstCSD::_showDialog() {
-  KstDialogs::self()->showCSDDialog(tagName());
+void KstCSD::showNewDialog() {
+  KstDialogs::self()->showCSDDialog();
+}
+
+
+void KstCSD::showEditDialog() {
+  KstDialogs::self()->showCSDDialog(tagName(), true);
 }
 
 

@@ -57,6 +57,7 @@ class KST_EXPORT KstVector : public KstPrimitive {
      */
     KstVector(KstObjectTag in_tag = KstObjectTag::invalidTag, int size = 0,
         KstObject *provider = 0L, bool bIsScalarList = false);
+    KstVector(const QDomElement& e);
 
   protected:
     virtual ~KstVector();
@@ -147,12 +148,12 @@ class KST_EXPORT KstVector : public KstPrimitive {
     bool editable() const;
     void setEditable(bool editable);
 
+    bool saveData() const;
+    virtual void setSaveData(bool save);
+
   protected:
     /** current number of samples */
     int _size;
-
-    /** can/should the vector be saved... */
-    bool _saveable;
 
     /** number of valid points */
     int _nsum;
@@ -183,6 +184,12 @@ class KST_EXPORT KstVector : public KstPrimitive {
     /** The user should not be permitted to edit the contents of the vector if
     this is false. */
     bool _editable : 1;
+
+    /** can/should the vector be saved */
+    bool _saveable : 1;
+
+    /** should the vector data be saved? */
+    bool _saveData : 1;
 
     double _min, _max, _mean, _minPos;
 

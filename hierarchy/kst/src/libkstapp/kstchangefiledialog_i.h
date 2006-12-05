@@ -45,8 +45,8 @@ class KstChangeFileDialogI : public KstChangeFileDialog {
     bool _first;
 
   private slots:
-    void applyFileChange();
-
+    bool applyFileChange();
+    void OKFileChange();
     void updateSelection(const QString&);
 
   signals:

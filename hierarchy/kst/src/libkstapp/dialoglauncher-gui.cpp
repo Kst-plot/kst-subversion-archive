@@ -23,6 +23,7 @@
 #include "kstimagedialog_i.h"
 #include "kstmatrixdialog_i.h"
 #include "kstplugindialog_i.h"
+#include "kstbasicdialog_i.h"
 #include "kstpsddialog_i.h"
 #include "kstvectordialog_i.h"
 
@@ -36,28 +37,57 @@ KstGuiDialogs::~KstGuiDialogs() {
 }
 
 
-void KstGuiDialogs::showHistogramDialog(const QString& name) {
-  KstHsDialogI::globalInstance()->showEdit(name);
+void KstGuiDialogs::showHistogramDialog(const QString& name, bool edit) {
+  if (!edit) {
+    KstHsDialogI::globalInstance()->showNew(name);
+  } else {
+    KstHsDialogI::globalInstance()->showEdit(name);
+  }
 }
 
 
-void KstGuiDialogs::showPluginDialog(const QString& name) {
-  KstPluginDialogI::globalInstance()->showEdit(name);
+void KstGuiDialogs::showCPluginDialog(const QString& name, bool edit) {
+  if (!edit) {
+    KstPluginDialogI::globalInstance()->showNew(name);
+  } else {
+    KstPluginDialogI::globalInstance()->showEdit(name);
+  }
 }
 
 
-void KstGuiDialogs::showEquationDialog(const QString& name) {
-  KstEqDialogI::globalInstance()->showEdit(name);
+void KstGuiDialogs::showBasicPluginDialog(const QString& name, bool edit) {
+  if (!edit) {
+    KstBasicDialogI::globalInstance()->showNew(name);
+  } else {
+    KstBasicDialogI::globalInstance()->showEdit(name);
+  }
 }
 
 
-void KstGuiDialogs::showCSDDialog(const QString& name) {
-  KstCsdDialogI::globalInstance()->showEdit(name);
+void KstGuiDialogs::showEquationDialog(const QString& name, bool edit) {
+  if (!edit) {
+    KstEqDialogI::globalInstance()->showNew(name);
+  } else {
+    KstEqDialogI::globalInstance()->showEdit(name);
+  }
 }
 
 
-void KstGuiDialogs::showPSDDialog(const QString& name) {
-  KstPsdDialogI::globalInstance()->showEdit(name);
+void KstGuiDialogs::showCSDDialog(const QString& name, bool edit) {
+  if (!edit) {
+    KstCsdDialogI::globalInstance()->showNew(name);
+  } else {
+    KstCsdDialogI::globalInstance()->showEdit(name);
+  }
+}
+
+
+void KstGuiDialogs::showPSDDialog(const QString& name, bool edit) {
+  if (!edit) {
+    KstPsdDialogI::globalInstance()->showNew(name);
+  } else {
+    KstPsdDialogI::globalInstance()->showEdit(name);
+  }
 }
 
 
@@ -78,8 +108,12 @@ void KstGuiDialogs::newVectorDialog(QWidget *parent, const char *createdSlot, co
 }
 
 
-void KstGuiDialogs::showVectorDialog(const QString& name) {
-  KstVectorDialogI::globalInstance()->showEdit(name);
+void KstGuiDialogs::showVectorDialog(const QString& name, bool edit) {
+  if (!edit) {
+    KstVectorDialogI::globalInstance()->showNew(name);
+  } else {
+    KstVectorDialogI::globalInstance()->showEdit(name);
+  }
 }
 
 
@@ -100,18 +134,30 @@ void KstGuiDialogs::newMatrixDialog(QWidget *parent, const char *createdSlot, co
 }
 
 
-void KstGuiDialogs::showMatrixDialog(const QString& name) {
-  KstMatrixDialogI::globalInstance()->showEdit(name);
+void KstGuiDialogs::showMatrixDialog(const QString& name, bool edit) {
+  if (!edit) {
+    KstMatrixDialogI::globalInstance()->showNew(name);
+  } else {
+    KstMatrixDialogI::globalInstance()->showEdit(name);
+  }
 }
 
 
-void KstGuiDialogs::showImageDialog(const QString& name) {
-  KstImageDialogI::globalInstance()->showEdit(name);
+void KstGuiDialogs::showImageDialog(const QString& name, bool edit) {
+  if (!edit) {
+    KstImageDialogI::globalInstance()->showNew(name);
+  } else {
+    KstImageDialogI::globalInstance()->showEdit(name);
+  }
 }
 
 
-void KstGuiDialogs::showCurveDialog(const QString& name) {
-  KstCurveDialogI::globalInstance()->showEdit(name);
+void KstGuiDialogs::showCurveDialog(const QString& name, bool edit) {
+  if (!edit) {
+    KstCurveDialogI::globalInstance()->showNew(name);
+  } else {
+    KstCurveDialogI::globalInstance()->showEdit(name);
+  }
 }
 
 // vim: ts=2 sw=2 et

@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <class>ScalarSelector</class>
 <widget class="QWidget">
     <property name="name">
@@ -11,6 +11,9 @@
             <width>328</width>
             <height>38</height>
         </rect>
+    </property>
+    <property name="caption">
+        <string>ScalarSelector</string>
     </property>
     <property name="whatsThis" stdset="0">
         <string>Select a scalar to utilize.  If you wish to create a new scalar, select the icon to the right.</string>
@@ -40,9 +43,6 @@
             <property name="text">
                 <string></string>
             </property>
-            <property name="pixmap">
-                <pixmap>image0</pixmap>
-            </property>
             <property name="toolTip" stdset="0">
                 <string>Edit selected scalar.</string>
             </property>
@@ -66,9 +66,6 @@
             </property>
             <property name="text">
                 <string></string>
-            </property>
-            <property name="pixmap">
-                <pixmap>image1</pixmap>
             </property>
             <property name="toolTip" stdset="0">
                 <string>Create a new scalar.</string>
@@ -98,13 +95,6 @@
         </widget>
     </grid>
 </widget>
-<images>
-    <image name="image0">
- <data format="XPM.GZ" length="842">789c8d91cd4ec3300c80ef7d8aa8be55a823858d4e8847007144421cf2df9f6593601c10e2dd499c7934551158ad9aaf5f9cdaeeaa624f8ff7ac5a156f4771ec15539d7865957ef7fee3f9e5eeb3289b86858baf192f2f8ab2668a3d1cf626ae6558c32546444fd82242447bb3bde63aa249a8794287286c6b64448d18828b8882f0aa89d811ae3157116e36117bc25645b484db36e2402871f348a870f38ed05aec6e31fe61e0370362a2a42403204141784c154e4d1b3036dc7aaa7062d0f5c338f41dd473e3c08cbbd1800fefbcf7a89291993925e5a779122733a980c43927548c55bbb90995a44efd82a993987d070d9595d7e6647d3e2aef8792b299fe65e68a66ede6eae7ff2c06e62c9bafdbe21b19bdc24f</data>
-    </image>
-    <image name="image1">
-        <data format="XPM.GZ" length="857">789c7d91c14e84301040ef7c45033762665996c56e8c9fa0f168623cb41d0a6c01135d0fc6f8ef32d3425c64b7254d5f5fa733b49b543c3f3d8874137d9cd4a935c234ea5da4f8d9f75f2faff7df519ce762fcb6a5d8c637510cc288c7b7a1a2398ef324e346584f28195bc25d469df048586445d8dc13ee2575c281506632c426848762bfdf71d28e50a3c452111a423386168c0d2156e521e3a314a12d757eab091da3b2b262ac18ad44bf597bc45c1942ebd15ac308ab8d0bbc68d4aae25cca00e29f45062e4a1b8367fb49b1a9b452b054de28351e78c1686debba1ed7fc08de340d190dc184207eacc4b0a1d520828163921856b308c621b20270ff0d40d275fd94fedc40dbf6c3328f37a496b539c7a6aedbe5ff3887e7d736dfc135b354d35dbba59adf0756db15f37317fd02ccf6c3c4</data>    </image>
-</images>
 <tabstops>
     <tabstop>_scalar</tabstop>
     <tabstop>_selectScalar</tabstop>
@@ -118,13 +108,13 @@
     <include location="global" impldecl="in implementation">qlineedit.h</include>
     <include location="global" impldecl="in implementation">qvalidator.h</include>
     <include location="global" impldecl="in implementation">kmessagebox.h</include>
+    <include location="global" impldecl="in implementation">kiconloader.h</include>
     <include location="global" impldecl="in implementation">qlistbox.h</include>
     <include location="global" impldecl="in implementation">qtimer.h</include>
     <include location="local" impldecl="in implementation">enodes.h</include>
-    <include location="local" impldecl="in implementation">scalarselector.ui.h</include>
     <include location="global" impldecl="in declaration">kst_export.h</include>
+    <include location="local" impldecl="in implementation">scalarselector.ui.h</include>
 </includes>
-<exportmacro>KST_EXPORT</exportmacro>
 <signals>
     <signal>newScalarCreated()</signal>
     <signal>selectionChanged(const QString&amp;)</signal>
@@ -145,5 +135,6 @@
     <function access="private">init()</function>
     <function returnType="QString">selectedScalar()</function>
 </functions>
+<exportmacro>KST_EXPORT</exportmacro>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

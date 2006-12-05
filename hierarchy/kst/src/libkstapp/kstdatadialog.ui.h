@@ -10,6 +10,8 @@
 ** destructor.
 *****************************************************************************/
 
+#include "kst.h"
+#include "kstdoc.h"
 
 void KstDataDialog::ok()
 {
@@ -53,14 +55,27 @@ void KstDataDialog::init()
     _newDialog = false;
     _multiple = false;
     _editMultipleMode = false;
+    connect(this, SIGNAL(modified()), KstApp::inst()->document(), SLOT(wasModified()));
     connect(_editMultiple, SIGNAL(clicked()), this, SLOT(toggleEditMultiple()));
     _editMultiple->hide();
     _editMultipleWidget->hide();
 }
 
 
+void KstDataDialog::update()
+{
+}
+
+
 void KstDataDialog::show()
 {
+    showNew(QString::null);
+}
+
+
+void KstDataDialog::showNew(const QString& field)
+{
+    Q_UNUSED(field) //used by plugin dialogs which inherit this class
     _newDialog = true;
     _dp = 0L;
 
@@ -78,11 +93,6 @@ void KstDataDialog::show()
     raise();
     _ok->setEnabled(true);
     _cancel->setEnabled(true);
-}
-
-
-void KstDataDialog::update()
-{
 }
 
 

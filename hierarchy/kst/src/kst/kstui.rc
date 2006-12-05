@@ -5,6 +5,7 @@
     <Action name="file_new_window"/>
     <Action name="graphfiledialog_action"/>
     <Action name="vectorsavedialog_action"/>
+    <Action name="save_vector_data"/>
     <Merge/>
   </Menu>
   <Menu name="edit"><text>&amp;Edit</text>

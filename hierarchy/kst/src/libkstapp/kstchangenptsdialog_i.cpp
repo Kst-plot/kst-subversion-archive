@@ -40,6 +40,8 @@ KstChangeNptsDialogI::KstChangeNptsDialogI(QWidget* parent,
             this,      SLOT(selectAll()));
     connect(Apply,     SIGNAL(clicked()),
             this,      SLOT(applyNptsChange()));
+    connect(OK,        SIGNAL(clicked()),
+            this,      SLOT(OKNptsChange()));
     connect(CurveList, SIGNAL(selected ( int )),
             this,      SLOT(updateDefaults( int )));
 }
@@ -93,6 +95,10 @@ void KstChangeNptsDialogI::showChangeNptsDialog() {
   raise();
 }
 
+void KstChangeNptsDialogI::OKNptsChange() {
+  applyNptsChange();
+  reject();
+}
 
 void KstChangeNptsDialogI::applyNptsChange() {
   KstRVectorList rvl = kstObjectSubList<KstVector,KstRVector>(KST::vectorList);
@@ -101,7 +107,7 @@ void KstChangeNptsDialogI::applyNptsChange() {
       KstRVectorPtr vector = *(rvl.findTag(CurveList->text(i)));
       if (vector) {
         int f0, n;
-        
+
         vector->readLock();
         KstDataSourcePtr ds = vector->dataSource();
         if (_kstDataRange->isStartRelativeTime() && ds) {
@@ -115,7 +121,7 @@ void KstChangeNptsDialogI::applyNptsChange() {
         } else {
           f0 = int(_kstDataRange->f0Value());
         }
-      
+
         if (_kstDataRange->isRangeRelativeTime() && ds) {
           ds->readLock();
           double nValStored = _kstDataRange->nValue();
@@ -132,7 +138,7 @@ void KstChangeNptsDialogI::applyNptsChange() {
           n = int(_kstDataRange->nValue());
         }
         vector->unlock();
-        
+
         vector->writeLock();
         vector->changeFrames(
           (_kstDataRange->CountFromEnd->isChecked() ? -1 : f0),

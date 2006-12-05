@@ -10,6 +10,8 @@
 void ScalarSelector::init()
 {
     update();
+    _newScalar->setPixmap(BarIcon("kst_scalarnew"));
+    _editScalar->setPixmap(BarIcon("kst_scalaredit"));
     connect(_selectScalar, SIGNAL(clicked()), this, SLOT(selectScalar()));
     connect(_newScalar, SIGNAL(clicked()), this, SLOT(createNewScalar()));
     connect(_editScalar, SIGNAL(clicked()), this, SLOT(editScalar()));

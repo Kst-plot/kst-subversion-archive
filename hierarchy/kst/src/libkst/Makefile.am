@@ -61,3 +61,4 @@ kstrevision.h:
 	if (diff -N kstrevision.h.tmp kstrevision.h >/dev/null 2>&1); \
 	then rm kstrevision.h.tmp; else mv kstrevision.h.tmp kstrevision.h; fi
 
+noinst_HEADERS = kstdataplugin.h

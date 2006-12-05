@@ -55,7 +55,8 @@
 #include "ksthistogram.h"
 #include "kstimage.h"
 #include "kstmatrixdefaults.h"
-#include "kstplugin.h"
+#include "kstobjectdefaults.h"
+#include "kstcplugin.h"
 #include "kstpsd.h"
 #include "kstrvector.h"
 #include "kstvcurve.h"
@@ -376,8 +377,15 @@ bool KstDoc::openDocument(const KURL& url, const QString& o_file,
       } else if (e.tagName() == "avector") {
         KstAVectorPtr avector = new KstAVector(e);
       } else if (e.tagName() == "plugin") {
-        KstDataObjectPtr p = new KstPlugin(e);
-        if (p->isValid()) {
+        const QString name = e.attribute("name");
+        KstDataObjectPtr p;
+        if (name.isEmpty()) {
+          p = new KstCPlugin(e);
+        } else {
+          if (p = KstDataObject::createPlugin(name))
+            p->load(e);
+        }
+        if (p) {
           KstWriteLocker dowl(&KST::dataObjectList.lock());
           KST::dataObjectList.append(p);
         }
@@ -662,6 +670,7 @@ void KstDoc::saveDocument(QTextStream& ts, bool saveAbsoluteVectorPositions) {
   // save vectors
   for (KstVectorList::Iterator it = KST::vectorList.begin(); it != KST::vectorList.end(); ++it) {
     if ((*it)->saveable()) {
+      (*it)->setSaveData(KstApp::inst()->saveData());
       (*it)->save(ts, "  ", saveAbsoluteVectorPositions);
     }
   }
@@ -773,6 +782,7 @@ bool KstDoc::saveDocument(const QString& filename, bool saveAbsoluteVectorPositi
 void KstDoc::deleteContents() {
   KST::vectorDefaults.sync();
   KST::matrixDefaults.sync();
+  KST::objectDefaults.sync();
 
   KstApp *app = KstApp::inst();
   if (app) { // Can be null on application exit

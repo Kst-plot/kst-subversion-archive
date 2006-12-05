@@ -28,10 +28,11 @@ class KST_EXPORT KstSVector : public KstVector {
   KstSVector(const QDomElement &e);
   KstSVector(double x0, double x1, int n, KstObjectTag tag);
 
-  virtual void save(QTextStream &ts, const QString& indent = QString::null, bool saveAbsolutePosition = false);
+  void save(QTextStream &ts, const QString& indent = QString::null, bool saveAbsolutePosition = false);
 
   void changeRange(double x0, double x1, int n);
-  virtual KstObject::UpdateType update(int update_counter);
+  KstObject::UpdateType update(int update_counter);
+  void setSaveData(bool save);
 };
 
 typedef KstSharedPtr<KstSVector> KstSVectorPtr;

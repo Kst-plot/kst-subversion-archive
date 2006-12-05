@@ -35,6 +35,7 @@ KstViewArrow::KstViewArrow()
   _hasToArrow = true;
   _fromArrowScaling = 1.0;
   _toArrowScaling = 1.0;
+  _standardActions |= Delete | Edit;
 }
 
 
@@ -57,6 +58,7 @@ KstViewArrow::KstViewArrow(const QDomElement& e)
   
   // always has this value
   _type = "Arrow";
+  _standardActions |= Delete | Edit;
 }
 
 
@@ -69,6 +71,7 @@ KstViewArrow::KstViewArrow(const KstViewArrow& arrow)
   
   // these always have these values
   _type = "Arrow";
+  _standardActions |= Delete | Edit;
 }
 
 

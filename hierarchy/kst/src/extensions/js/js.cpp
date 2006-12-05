@@ -326,10 +326,13 @@ void KstJS::loadScript() {
 
 
 void KstJS::load(QDomElement& e) {
+  Q_UNUSED(e)
 }
 
 
 void KstJS::save(QTextStream& ts, const QString& indent) {
+  Q_UNUSED(ts)
+  Q_UNUSED(indent)
 }
 
 

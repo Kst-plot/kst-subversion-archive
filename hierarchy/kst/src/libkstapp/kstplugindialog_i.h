@@ -18,7 +18,7 @@
 #ifndef KSTPLUGINDIALOGI_H
 #define KSTPLUGINDIALOGI_H
 
-#include "kstplugin.h"
+#include "kstcplugin.h"
 
 #include "kstdatadialog.h"
 #include "kst_export.h"
@@ -41,6 +41,7 @@ class KST_EXPORT KstPluginDialogI : public KstDataDialog {
     void update();
     bool newObject();
     bool editObject();
+    virtual void showNew(const QString &field);
     virtual void updatePluginList();
 
   protected slots:
@@ -54,8 +55,8 @@ class KST_EXPORT KstPluginDialogI : public KstDataDialog {
     QStringList _pluginList;
 
     void fillVectorScalarCombos(KstSharedPtr<Plugin> pPtr);
-    virtual bool saveInputs(KstPluginPtr plugin, KstSharedPtr<Plugin> p);
-    bool saveOutputs(KstPluginPtr plugin, KstSharedPtr<Plugin> p);
+    virtual bool saveInputs(KstCPluginPtr plugin, KstSharedPtr<Plugin> p);
+    bool saveOutputs(KstCPluginPtr plugin, KstSharedPtr<Plugin> p);
     virtual void generateEntries(bool input, int& cnt, QWidget *parent,
         QGridLayout *grid, const QValueList<Plugin::Data::IOValue>& table);
 
@@ -68,6 +69,7 @@ class KST_EXPORT KstPluginDialogI : public KstDataDialog {
     QValueList<QWidget*> _pluginWidgets;
 
   private:
+    QString _pluginName;
     static QGuardedPtr<KstPluginDialogI> _inst;
 
   protected:

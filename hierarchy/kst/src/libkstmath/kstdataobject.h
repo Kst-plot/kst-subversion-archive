@@ -25,6 +25,8 @@
 #include "kstmatrix.h"
 #include "kst_export.h"
 
+#include <kservicetype.h>
+
 typedef KstSharedPtr<KstDataObject> KstDataObjectPtr;
 typedef KstObjectList<KstDataObjectPtr> KstDataObjectList;
 typedef QMap<KstDataObjectPtr, KstDataObjectPtr> KstDataObjectDataObjectMap;
@@ -36,6 +38,13 @@ class KST_EXPORT KstDataObject : public KstObject {
     KstDataObject(const QDomElement& e);
     KstDataObject(const KstDataObject& object);
     virtual ~KstDataObject();
+
+    // These static methods are not for plugins to use
+    static void cleanupForExit();
+    /** Returns a list of object plugins found on the system. */
+    static QStringList pluginList();
+    static KstDataObjectPtr plugin(const QString &name);
+    static KstDataObjectPtr createPlugin(const QString &name);
 
     virtual UpdateType update(int updateCounter = -1) = 0;
     virtual const QString& typeString() const { return _typeString; }
@@ -66,9 +75,10 @@ class KST_EXPORT KstDataObject : public KstObject {
     KstMatrixMap& inputMatrices() { return _inputMatrices; }
     KstMatrixMap& outputMatrices() { return _outputMatrices; }
 
+    virtual void load(const QDomElement &e);
     virtual void save(QTextStream& ts, const QString& indent = QString::null);
 
-    void showDialog();
+    void showDialog( bool edit = false );
 
     virtual bool loadInputs();
 
@@ -94,12 +104,28 @@ class KST_EXPORT KstDataObject : public KstObject {
 
     virtual bool uses(KstObjectPtr p) const;
 
+    //These are generally only valid for plugins...
+    QString name() const { return _name; }
+    QString author() const { return _author; }
+    QString description() const { return _description; }
+    QString version() const { return _version; }
+    QString library() const { return _library; }
+
   protected slots:
-    virtual void _showDialog() = 0;
+    virtual void showNewDialog() = 0;
+    virtual void showEditDialog() = 0;
 
   protected:
     
     double *vectorRealloced(KstVectorPtr v, double *memptr, int newSize) const;
+
+    //The plugin infrastructure will read the desktop file and set these
+    //Other objects that inherit can set the ones that apply if desired...
+    void setName(const QString &str) { _name = str; }
+    void setAuthor(const QString &str) { _author = str; }
+    void setDescription(const QString &str) { _description = str; }
+    void setVersion(const QString &str) { _version = str; }
+    void setLibrary(const QString &str) { _library = str; }
 
     KstVectorMap _inputVectors;
     KstVectorMap _outputVectors;
@@ -118,6 +144,17 @@ class KST_EXPORT KstDataObject : public KstObject {
     QValueList<QPair<QString,QString> > _inputStringLoadQueue;
     QValueList<QPair<QString,QString> > _inputMatrixLoadQueue;
     KstCurveHintList *_curveHints;
+
+  private:
+    QString _name;
+    QString _author;
+    QString _description;
+    QString _version;
+    QString _library;
+
+  private:
+    static void scanPlugins();
+    static KstDataObjectPtr createPlugin( KService::Ptr );
 };
 
 

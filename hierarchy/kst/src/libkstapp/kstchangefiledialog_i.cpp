@@ -51,6 +51,7 @@ KstChangeFileDialogI::KstChangeFileDialogI(QWidget* parent,
   connect(ChangeFileSelectAll, SIGNAL(clicked()), _filter, SLOT(clear()));
   connect(ChangeFileSelectAll, SIGNAL(clicked()), this, SLOT(selectAll()));
   connect(ChangeFileApply, SIGNAL(clicked()), this, SLOT(applyFileChange()));
+  connect(ChangeFileOK, SIGNAL(clicked()), this, SLOT(OKFileChange()));
   connect(_allFromFile, SIGNAL(clicked()), _filter, SLOT(clear()));
   connect(_allFromFile, SIGNAL(clicked()), this, SLOT(allFromFile()));
   connect(_duplicateSelected, SIGNAL(toggled(bool)), _duplicateDependents, SLOT(setEnabled(bool)));
@@ -124,8 +125,13 @@ void KstChangeFileDialogI::showChangeFileDialog() {
   raise();
 }
 
+void KstChangeFileDialogI::OKFileChange() {
+  if (applyFileChange()) {
+    reject();
+  }
+}
 
-void KstChangeFileDialogI::applyFileChange() {
+bool KstChangeFileDialogI::applyFileChange() {
   KstDataSourcePtr file;
   KST::dataSourceList.lock().writeLock();
   KstDataSourceList::Iterator it = KST::dataSourceList.findReusableFileName(_dataFile->url());
@@ -137,12 +143,12 @@ void KstChangeFileDialogI::applyFileChange() {
     if (!file || !file->isValid()) {
       KST::dataSourceList.lock().unlock();
       KMessageBox::sorry(this, i18n("The file could not be loaded."));
-      return;
+      return false;
     }
     if (file->isEmpty()) {
       KST::dataSourceList.lock().unlock();
       KMessageBox::sorry(this, i18n("The file does not contain data."));
-      return;
+      return false;
     }
     KST::dataSourceList.append(file);
   } else {
@@ -293,6 +299,7 @@ void KstChangeFileDialogI::applyFileChange() {
 
   // force an update in case we're in paused mode
   KstApp::inst()->forceUpdate();
+  return true;
 }
 
 

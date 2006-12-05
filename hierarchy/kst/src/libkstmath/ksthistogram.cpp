@@ -374,8 +374,13 @@ QString KstHistogram::propertyString() const {
 }
 
 
-void KstHistogram::_showDialog() {
-  KstDialogs::self()->showHistogramDialog(tagName());
+void KstHistogram::showNewDialog() {
+  KstDialogs::self()->showHistogramDialog();
+}
+
+
+void KstHistogram::showEditDialog() {
+  KstDialogs::self()->showHistogramDialog(tagName(), true);
 }
 
 

@@ -6,7 +6,9 @@ icons_DATA = kst_zoomtie.png kst_zoomxy.png kst_zoomx.png kst_zoomy.png \
 	kst_changefile.png kst_changenpts.png kst_editplots.png \
 	kst_datamanager.png kst_back.png kst_advance.png \
 	kst_graphfile.png kst_layoutmode.png kst_datamode.png \
-	kst_datawizard.png kst_vectornew.png kst_matrixnew.png \
+	kst_datawizard.png kst_vectornew.png kst_vectoredit.png \
+	kst_matrixedit.png kst_matrixnew.png \
+	kst_scalaredit.png kst_scalarnew.png \
 	kst_curvenew.png kst_psdnew.png kst_histogramnew.png\
 	kst_equationnew.png kst_imagenew.png kst_pluginnew.png \
 	kst_eventnew.png kst_graphics.png kst_gfx_line.png \

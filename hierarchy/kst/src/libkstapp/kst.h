@@ -130,7 +130,8 @@ class KST_EXPORT KstApp : public KMdiMainFrm {
     /** Get XY zoom radio button state */
     KstZoomType getZoomRadio();
     KstGraphicType getGraphicType();
-    
+    bool saveData() const { return _saveData->isChecked(); }
+
     KstTopLevelView::ViewMode currentViewMode();
     QString currentCreateType();
     
@@ -557,6 +558,8 @@ class KST_EXPORT KstApp : public KMdiMainFrm {
     KAction *filePreferences;
     KAction *fileCopy;
     KAction *filePaste;
+
+    KToggleAction *_saveData;
 
     KRadioAction *_gfxLineAction;
     KRadioAction *_gfxRectangleAction;

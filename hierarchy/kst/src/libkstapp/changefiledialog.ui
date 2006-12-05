@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <class>KstChangeFileDialog</class>
 <widget class="QDialog">
     <property name="name">
@@ -8,14 +8,14 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>481</width>
+            <width>487</width>
             <height>600</height>
         </rect>
     </property>
     <property name="caption">
         <string>Change Data File</string>
     </property>
-    <grid>
+    <vbox>
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
@@ -25,7 +25,7 @@
         <property name="spacing">
             <number>6</number>
         </property>
-        <widget class="QButtonGroup" row="0" column="0">
+        <widget class="QButtonGroup">
             <property name="name">
                 <cstring>buttonGroup1</cstring>
             </property>
@@ -168,7 +168,7 @@
                 </widget>
             </grid>
         </widget>
-        <widget class="QButtonGroup" row="1" column="0">
+        <widget class="QButtonGroup">
             <property name="name">
                 <cstring>buttonGroup2</cstring>
             </property>
@@ -301,19 +301,13 @@
                 </widget>
             </grid>
         </widget>
-        <widget class="QLayoutWidget" row="2" column="0">
+        <widget class="QLayoutWidget">
             <property name="name">
-                <cstring>Layout33</cstring>
+                <cstring>layout9</cstring>
             </property>
             <hbox>
                 <property name="name">
                     <cstring>unnamed</cstring>
-                </property>
-                <property name="margin">
-                    <number>0</number>
-                </property>
-                <property name="spacing">
-                    <number>6</number>
                 </property>
                 <spacer>
                     <property name="name">
@@ -327,7 +321,7 @@
                     </property>
                     <property name="sizeHint">
                         <size>
-                            <width>20</width>
+                            <width>180</width>
                             <height>20</height>
                         </size>
                     </property>
@@ -339,6 +333,26 @@
                     <property name="text">
                         <string>&amp;Apply</string>
                     </property>
+                    <property name="accel">
+                        <string>Alt+A</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Apply new source file to selected vectors.</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>ChangeFileOK</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;OK</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+O</string>
+                    </property>
+                    <property name="default">
+                        <bool>true</bool>
+                    </property>
                     <property name="whatsThis" stdset="0">
                         <string>Apply new source file to selected vectors.</string>
                     </property>
@@ -348,7 +362,10 @@
                         <cstring>ChangeFileCancel</cstring>
                     </property>
                     <property name="text">
-                        <string>&amp;Close</string>
+                        <string>&amp;Cancel</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+C</string>
                     </property>
                     <property name="whatsThis" stdset="0">
                         <string>Close dialog without applying further changes.</string>
@@ -356,8 +373,10 @@
                 </widget>
             </hbox>
         </widget>
-    </grid>
+    </vbox>
 </widget>
+<customwidgets>
+</customwidgets>
 <connections>
     <connection>
         <sender>ChangeFileCancel</sender>

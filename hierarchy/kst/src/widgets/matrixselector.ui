@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <class>MatrixSelector</class>
 <widget class="QWidget">
     <property name="name">
@@ -11,6 +11,9 @@
             <width>327</width>
             <height>40</height>
         </rect>
+    </property>
+    <property name="caption">
+        <string>MatrixSelector</string>
     </property>
     <property name="whatsThis" stdset="0">
         <string>Select a matrix to utilize.  If you wish to create a new matrix, click on the icon to the right.</string>
@@ -42,9 +45,6 @@
             <property name="text">
                 <string></string>
             </property>
-            <property name="pixmap">
-                <pixmap>image0</pixmap>
-            </property>
             <property name="toolTip" stdset="0">
                 <string>Create a new matrix</string>
             </property>
@@ -67,23 +67,12 @@
             <property name="text">
                 <string></string>
             </property>
-            <property name="pixmap">
-                <pixmap>image1</pixmap>
-            </property>
             <property name="toolTip" stdset="0">
                 <string>Edit selected matrix</string>
             </property>
         </widget>
     </grid>
 </widget>
-<images>
-    <image name="image0">
-        <data format="XPM.GZ" length="812">789cad91cb4ec3301045f7f90a2bde45951ba7a5a4427c02a8cb4a88c58d1f79540509ca02a1fe7b336e474d832942c272c63eb993f1cd789a89f5ea4164d3e47d875d6b8469f02632fbb1dd7e3e3ddf7f256951887eea99d0e924499530e2f1f5c5d15ef67b59e6795ee68420f4b7cbb9b684ee88561fd106ec870661c5382b086bc69b906c18170bc286b134849e715912b68c5548ee184d48de307a1ffc47c76f8a941214e4209c14850a92d673080aa0602081b102ebe07cff588caba16edaae6d6a7c7700d76d3a878883931271c0d5fee220b8a625d203fad3780f1454ac07e39743e5b2d0a0dad55bf8e19b2be7fc9783fd5d720069d3a62e</data>
-    </image>
-    <image name="image1">
-        <data format="XPM.GZ" length="824">789c7d91cf4e84301087ef3c45436fc4745916d86ecc3e82c6a389f130ccb4fcdb75135d0fc6f8ee76060f0ac59634fdf2d1df4c6193a9c7873b956d92b72b5c7b54d8c1abcae8fd7cfe787a3e7e266951a8f06c4bb54d6f92d42854f79717c7fbf1d7be0d7bbdcb7932768c655ee6b9e0c058599e8c0da30dce8a3d4d687f50331ecaaada49c59eb1214b3530122386a452d03392ab0fb92403a3af9b62df303a416f69b2382115807297e89016560de8260c335b241cc898c07f17e90289568c4380689a73001cb8ec800d62ec8cf76c3052a7d5b4624ca735b15aa48572a2961d187e49f7fdb038334a70db0ea7799dc998a02266ca6897696b7f619c5f7fd641ec5bff6b56d3a21d7cdd26df0e20ca0a</data>
-    </image>
-</images>
 <connections>
     <connection>
         <sender>MatrixSelector</sender>
@@ -110,10 +99,10 @@
     <include location="local" impldecl="in declaration">kstdatacollection.h</include>
     <include location="local" impldecl="in declaration">kstmatrix.h</include>
     <include location="local" impldecl="in implementation">dialoglauncher.h</include>
-    <include location="local" impldecl="in implementation">matrixselector.ui.h</include>
+    <include location="local" impldecl="in implementation">kiconloader.h</include>
     <include location="global" impldecl="in declaration">kst_export.h</include>
+    <include location="local" impldecl="in implementation">matrixselector.ui.h</include>
 </includes>
-<exportmacro>KST_EXPORT</exportmacro>
 <variables>
     <variable access="private">bool _provideNoneMatrix;</variable>
 </variables>
@@ -138,5 +127,6 @@
     <function returnType="QString">selectedMatrix()</function>
     <function access="private">init()</function>
 </functions>
+<exportmacro>KST_EXPORT</exportmacro>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

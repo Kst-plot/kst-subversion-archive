@@ -587,8 +587,13 @@ QString KstVCurve::propertyString() const {
 }
 
 
-void KstVCurve::_showDialog() {
-  KstDialogs::self()->showCurveDialog(tagName());
+void KstVCurve::showNewDialog() {
+  KstDialogs::self()->showCurveDialog();
+}
+
+
+void KstVCurve::showEditDialog() {
+  KstDialogs::self()->showCurveDialog(tagName(), true);
 }
 
 

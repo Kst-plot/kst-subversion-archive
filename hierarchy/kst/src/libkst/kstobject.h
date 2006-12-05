@@ -31,6 +31,19 @@
 #include "ksdebug.h"
 #include "rwlock.h"
 
+//We define two different keys for datasource VS dataobject plugins
+//so that if the API for one changes, the other doesn't have to be
+//updated also...
+#define KST_CURRENT_DATASOURCE_KEY 0x00000006
+
+#define KST_KEY_DATASOURCE_PLUGIN(x) extern "C" Q_UINT32 key_##x() { return KST_CURRENT_DATASOURCE_KEY; }
+
+#define KST_CURRENT_DATAOBJECT_KEY 0x00000006
+
+#define KST_KEY_DATAOBJECT_PLUGIN(x) extern "C" Q_UINT32 key_##x() { return KST_CURRENT_DATAOBJECT_KEY; }
+
+class KstObjectPrivate;
+
 // NOTE: In order to preserve binary compatibility with plugins, you must
 //       update the plugin keys whenever you add, remove, or change member
 //       variables or virtual functions, or when you remove or change
@@ -46,6 +59,7 @@ class KstObjectTag {
     static const QStringList globalTagContext;
     static const QStringList constantTagContext;
 
+
     // construct a tag in a given context
     KstObjectTag(const QString& tag, QStringList context,
         unsigned int minDisplayComponents = 1) : _tag(cleanTag(tag)),
@@ -56,10 +70,20 @@ class KstObjectTag {
     }
 
     // construct a tag in the context of another tag
-    KstObjectTag(const QString& tag, KstObjectTag contextTag) :
-      _tag(cleanTag(tag)), _context(contextTag.fullTag()),
-      _minDisplayComponents(2), _uniqueDisplayComponents(UINT_MAX)
+    KstObjectTag(const QString& tag, KstObjectTag contextTag,
+        unsigned int minDisplayComponents = 2) : _tag(cleanTag(tag)),
+                                                 _context(contextTag.fullTag()),
+                                                 _minDisplayComponents(minDisplayComponents),
+                                                 _uniqueDisplayComponents(UINT_MAX)
     {
+    }
+
+    KstObjectTag(KstObjectTag tag, KstObjectTag contextTag, unsigned int minDisplayComponentsFromContext = 1) :
+      _uniqueDisplayComponents(UINT_MAX)
+    {
+      _tag = tag._tag;
+      _context = contextTag.fullTag() + tag.context();
+      _minDisplayComponents = tag.components() + minDisplayComponentsFromContext;
     }
 
     // construct a tag from a fullTag representation
@@ -73,17 +97,30 @@ class KstObjectTag {
     QStringList fullTag() const { return _context + QStringList(_tag); }
     QStringList context() const { return _context; }
 
+    unsigned int components() const { 
+      if (!isValid()) {
+        return 0;
+      } else {
+        return 1 + _context.count();
+      }
+    }
+
     // change the tag, maintaining context
     void setTag(const QString& tag) {
       _tag = cleanTag(tag);
       _uniqueDisplayComponents = UINT_MAX;
     }
 
+    // change the context
+    void setContext(QStringList context) {
+      _context = context;
+      _uniqueDisplayComponents = UINT_MAX;
+    }
+
     // change the tag and context
     void setTag(const QString& tag, QStringList context) {
       setTag(tag);
-      _context = context;
-      _uniqueDisplayComponents = UINT_MAX;
+      setContext(context);
     }
 
     bool isValid() const { return !_tag.isEmpty(); }
@@ -102,7 +139,7 @@ class KstObjectTag {
 
     QStringList displayFullTag() const { 
       QStringList out_tag = _context + QStringList(_tag);
-      unsigned int componentsToDisplay = KMIN(KMAX(_uniqueDisplayComponents, _minDisplayComponents), 1 + _context.count());
+      unsigned int componentsToDisplay = KMIN(KMAX(_uniqueDisplayComponents, _minDisplayComponents), components());
       while (out_tag.count() > componentsToDisplay) {
         out_tag.pop_front();
       }

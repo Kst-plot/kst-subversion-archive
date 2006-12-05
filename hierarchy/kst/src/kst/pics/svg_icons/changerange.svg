@@ -2,35 +2,31 @@
 <!-- Generator: Adobe Illustrator 9.0, SVG Export Plug-In  -->
 <svg
    xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
-   xmlns:xml="http://www.w3.org/XML/1998/namespace"
    xmlns:dc="http://purl.org/dc/elements/1.1/"
    xmlns:cc="http://web.resource.org/cc/"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:xlink="http://www.w3.org/1999/xlink"
-   xmlns:sodipodi="http://inkscape.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   sodipodi:docbase="/home/cbn/programs/kst/graphics/kst/kst/svg_icons"
+   sodipodi:docbase="/home/cbn/programs/kst/graphics/kst/src/kst/pics/svg_icons"
    sodipodi:docname="changerange.svg"
-   inkscape:version="0.41"
+   inkscape:version="0.44"
    sodipodi:version="0.32"
    id="svg2"
    xml:space="preserve"
    viewBox="0 0 144 144"
    height="22.000000px"
    width="22.000000px"
-   inkscape:export-filename="/home/cbn/programs/kst/graphics/kst/kst/svg_icons/changerange.png"
+   inkscape:export-filename="/home/cbn/programs/kst/graphics/kst/src/kst/pics/svg_icons/changerange.png"
    inkscape:export-xdpi="90.000000"
    inkscape:export-ydpi="90.000000"><metadata
    id="metadata97">
-  <rdf:RDF
-   id="RDF99">
+  <rdf:RDF>
     <cc:Work
-   id="Work101"
    rdf:about="">
-      <dc:format
-   id="format103">image/svg+xml</dc:format>
+      <dc:format>image/svg+xml</dc:format>
 
 
 
@@ -38,8 +34,7 @@
 
 
       <dc:type
-   rdf:resource="http://purl.org/dc/dcmitype/StillImage"
-   id="type105" />
+   rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
 
 
 
@@ -455,7 +450,7 @@
    gradientTransform="matrix(0.912100,0.409900,-0.409900,0.912100,1486.123,-457.4578)">
 				<stop
    offset="0"
-   style="stop-color:#FFAE00"
+   style="stop-color:#bf8200;stop-opacity:1;"
    id="stop173" />
 
 
@@ -467,7 +462,7 @@
 
 				<stop
    offset="1"
-   style="stop-color:#BB4400"
+   style="stop-color:#812f00;stop-opacity:1;"
    id="stop175" />
 
 
@@ -657,13 +652,13 @@
 
   <linearGradient
    gradientUnits="userSpaceOnUse"
-   y2="145.39317"
-   x2="110.36192"
+   y2="117.25513"
+   x2="65.369957"
    y1="82.644012"
    x1="35.040684"
-   gradientTransform="matrix(1.216096,0.000000,0.000000,0.822303,-1.076225,3.272727)"
+   gradientTransform="matrix(1.216096,0,0,0.822303,-1.076225,3.272727)"
    id="linearGradient3061"
-   xlink:href="#linearGradient3063"
+   xlink:href="#XMLID_11_"
    inkscape:collect="always" />
 
 

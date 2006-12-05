@@ -69,6 +69,7 @@ KstPluginDialogI::KstPluginDialogI(QWidget* parent, const char* name, bool modal
 
   _pluginInfoGrid = 0L;
   _pluginInputOutputGrid = 0L;
+  _pluginName = QString::null;
 }
 
 
@@ -150,7 +151,7 @@ void KstPluginDialogI::updateForm() {
 
 
 void KstPluginDialogI::fillFieldsForEdit() {
-  KstPluginPtr pp = kst_cast<KstPlugin>(_dp);
+  KstCPluginPtr pp = kst_cast<KstCPlugin>(_dp);
   if (!pp) {
     return;
   }
@@ -181,7 +182,8 @@ void KstPluginDialogI::fillFieldsForEdit() {
 
 void KstPluginDialogI::fillFieldsForNew() {
   updatePluginList();
-  _w->PluginCombo->setCurrentItem(0);
+  int i = _pluginList.findIndex(_pluginName);
+  _w->PluginCombo->setCurrentItem(i);
   pluginChanged(_w->PluginCombo->currentItem());
   _tagName->setText(plugin_defaultTag);
 }
@@ -189,7 +191,7 @@ void KstPluginDialogI::fillFieldsForNew() {
 
 void KstPluginDialogI::fillVectorScalarCombos(KstSharedPtr<Plugin> plugin) {
   bool DPvalid = false;
-  KstPluginPtr pp = kst_cast<KstPlugin>(_dp);
+  KstCPluginPtr pp = kst_cast<KstCPlugin>(_dp);
 
   if (pp) {
     pp->readLock();
@@ -381,7 +383,7 @@ void KstPluginDialogI::restoreInputs(const QValueList<Plugin::Data::IOValue>& ta
 }
 
 
-bool KstPluginDialogI::saveInputs(KstPluginPtr plugin, KstSharedPtr<Plugin> p) {
+bool KstPluginDialogI::saveInputs(KstCPluginPtr plugin, KstSharedPtr<Plugin> p) {
   bool rc = true;
 
   KST::vectorList.lock().readLock();
@@ -467,7 +469,7 @@ bool KstPluginDialogI::saveInputs(KstPluginPtr plugin, KstSharedPtr<Plugin> p) {
 }
 
 
-bool KstPluginDialogI::saveOutputs(KstPluginPtr plugin, KstSharedPtr<Plugin> p) {
+bool KstPluginDialogI::saveOutputs(KstCPluginPtr plugin, KstSharedPtr<Plugin> p) {
   const QValueList<Plugin::Data::IOValue>& otable = p->data()._outputs;
 
   for (QValueList<Plugin::Data::IOValue>::ConstIterator it = otable.begin(); it != otable.end(); ++it) {
@@ -580,12 +582,12 @@ bool KstPluginDialogI::newObject() {
     _tagName->setFocus();
     return false;
   }
-  KstPluginPtr plugin;
+  KstCPluginPtr plugin;
   int pitem = _w->PluginCombo->currentItem();
   if (pitem >= 0 && _w->PluginCombo->count() > 0) {
     KstSharedPtr<Plugin> pPtr = PluginCollection::self()->plugin(_pluginList[pitem]);
     if (pPtr) {
-      plugin = new KstPlugin;
+      plugin = new KstCPlugin;
       plugin->writeLock();
       if (!saveInputs(plugin, pPtr)) {
         KMessageBox::sorry(this, i18n("One or more of the inputs was undefined."));
@@ -627,7 +629,7 @@ bool KstPluginDialogI::newObject() {
 
 
 bool KstPluginDialogI::editObject() {
-  KstPluginPtr pp = kst_cast<KstPlugin>(_dp);
+  KstCPluginPtr pp = kst_cast<KstCPlugin>(_dp);
   if (!pp) { // something is dreadfully wrong - this should never happen
     return false;
   }
@@ -685,6 +687,15 @@ bool KstPluginDialogI::editObject() {
 
   emit modified();
   return true;
+}
+
+
+void KstPluginDialogI::showNew(const QString &field) {
+  //Call init every time on showNew, because the field might equal propertyString()...
+  _pluginName = field;
+  _newDialog = true;
+  init();
+  KstDataDialog::showNew(field);
 }
 
 

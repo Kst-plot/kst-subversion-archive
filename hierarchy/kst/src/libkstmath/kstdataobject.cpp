@@ -16,20 +16,23 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "kstvcurve.h"
-
-#include "kstdataobjectcollection.h"
-#include <kstdatacollection.h>
 #include "kstdataobject.h"
-#include "kstdebug.h"
 
-#include <qdeepcopy.h>
+#include "ksdebug.h"
+#include "kstdebug.h"
+#include "kstdatacollection.h"
+#include "kstdataobjectcollection.h"
+
 #include <qtimer.h>
+#include <qdeepcopy.h>
 
 #include <assert.h>
 
-#include "ksdebug.h"
 #include <klocale.h>
+#include <klibloader.h>
+#include <kparts/componentfactory.h>
+
+#include "kstdataplugin.h"
 
 //#define LOCKTRACE
 
@@ -84,6 +87,90 @@ KstDataObject::~KstDataObject() {
   delete _curveHints;
 }
 
+static QMap<QString, KstDataObjectPtr> pluginInfo;
+void KstDataObject::cleanupForExit() {
+  pluginInfo.clear(); //FIXME?
+}
+
+
+KstDataObjectPtr KstDataObject::createPlugin(KService::Ptr service)
+{
+  int err = 0;
+  KstDataObject *object =
+      KParts::ComponentFactory::createInstanceFromService<KstDataObject>(service, 0, "",
+      QStringList(), &err);
+
+  KstSharedPtr<KST::Plugin> p = new KST::DataObjectPlugin(service);
+
+  if (object && p->key()) {
+    const QString name = service->property("Name").toString();
+    const QString description = service->property("Comment").toString();
+    const QString author = service->property("X-Kst-Plugin-Author").toString();
+    const QString version = service->property("X-Kst-Plugin-Version").toString();
+    const QString library = service->library();
+    Q_ASSERT( !name.isEmpty() );
+    Q_ASSERT( !library.isEmpty() );
+    object->setName(name);
+    object->setAuthor(author);
+    object->setDescription(description);
+    object->setVersion(version);
+    object->setLibrary(library);
+
+    KstDebug::self()->log(i18n("Loaded data-object plugin %1.").arg(service->name()));
+    return object;
+  } else {
+    KstDebug::self()->log(i18n("Could't load data-object plugin %1.").arg(service->name()), KstDebug::Error);
+    return 0;
+  }
+}
+
+
+// Scans for plugins and stores the information for them
+void KstDataObject::scanPlugins() {
+
+  KstDebug::self()->log(i18n("Scanning for data-object plugins."));
+
+  pluginInfo.clear(); //FIXME?
+
+  KService::List sl = KServiceType::offers("Kst Data Object");
+  for (KService::List::ConstIterator it = sl.begin(); it != sl.end(); ++it) {
+    if (KstDataObjectPtr object = createPlugin(*it)) {
+      pluginInfo.insert(( *it) ->name(), KstDataObjectPtr(object));
+    }
+  }
+}
+
+
+QStringList KstDataObject::pluginList() {
+  if (pluginInfo.isEmpty()) {
+    scanPlugins();
+  }
+  return pluginInfo.keys();
+}
+
+
+KstDataObjectPtr KstDataObject::plugin(const QString &name) {
+    if ( pluginInfo.contains(name) )
+        return pluginInfo[name];
+    else
+        return 0;
+}
+
+
+KstDataObjectPtr KstDataObject::createPlugin(const QString &name)
+{
+  KService::List sl = KServiceType::offers("Kst Data Object");
+  for (KService::List::ConstIterator it = sl.begin(); it != sl.end(); ++it) {
+    if (( *it )->name() != name) {
+      continue;
+    }
+    else if (KstDataObjectPtr object = createPlugin( *it )) {
+      return object;
+    }
+  }
+  return 0;
+}
+
 double *KstDataObject::vectorRealloced(KstVectorPtr v, double *memptr, int newSize) const {
   if (!v) {
     return 0L;
@@ -96,6 +183,9 @@ double *KstDataObject::vectorRealloced(KstVectorPtr v, double *memptr, int newSi
   return v->realloced(memptr, newSize);
 }
 
+void KstDataObject::load(const QDomElement &e) {
+  Q_UNUSED(e)
+}
 void KstDataObject::save(QTextStream& ts, const QString& indent) {
   Q_UNUSED(ts)
   Q_UNUSED(indent)
@@ -196,8 +286,11 @@ int KstDataObject::getUsage() const {
 }
 
 
-void KstDataObject::showDialog() {
-  QTimer::singleShot(0, this, SLOT(_showDialog()));
+void KstDataObject::showDialog( bool edit ) {
+  if (!edit)
+    QTimer::singleShot(0, this, SLOT(showNewDialog()));
+  else
+    QTimer::singleShot(0, this, SLOT(showEditDialog()));
 }
 
 

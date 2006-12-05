@@ -672,7 +672,7 @@ void DataWizard::finished()
 	return;
     }
 
-    fontSize = getFontSize(l.count());
+    fontSize = qRound(getFontSize(l.count()));
 
     // create the necessary plots
     app->slotUpdateProgress(n_steps, prg, i18n("Creating plots..."));

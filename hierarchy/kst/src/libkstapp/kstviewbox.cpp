@@ -38,6 +38,7 @@ KstViewBox::KstViewBox()
   setTransparent(true);
   _transparentFill = false;
   setFollowsFlow(true);
+  _standardActions |= Delete | Edit;
 }
 
 
@@ -57,6 +58,7 @@ KstViewBox::KstViewBox(const QDomElement& e)
   
   // these always have these values
   _type = "Box";
+  _standardActions |= Delete | Edit;
   _layoutActions |= Delete | Raise | Lower | RaiseToTop | LowerToBottom | Rename | MoveTo | Copy | CopyTo;
   _fallThroughTransparency = false;
   setTransparent(true);
@@ -66,6 +68,7 @@ KstViewBox::KstViewBox(const QDomElement& e)
 
 KstViewBox::KstViewBox(const KstViewBox& box)
 : KstViewObject(box) {
+  _standardActions |= Delete | Edit;
   _xRound = box._xRound;
   _yRound = box._xRound;
   _cornerStyle = box._cornerStyle;

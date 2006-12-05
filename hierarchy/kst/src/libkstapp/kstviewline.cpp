@@ -35,6 +35,7 @@ KstViewLine::KstViewLine(const QString& type)
   _capStyle = Qt::FlatCap; 
   _penStyle = Qt::SolidLine; 
   setMinimumSize(QSize(1, 1));
+  _standardActions |= Delete | Edit;
 }
 
 
@@ -77,6 +78,7 @@ KstViewLine::KstViewLine(const QDomElement& e)
   setTransparent(true);
   _type = "Line";
   setMinimumSize(QSize(1, 1));
+  _standardActions |= Delete | Edit;
 }
 
 
@@ -89,6 +91,7 @@ KstViewLine::KstViewLine(const KstViewLine& line)
   
   // these always have these values
   _type = "Line";
+  _standardActions |= Delete | Edit;
 }
 
 

@@ -20,6 +20,7 @@ libkstapp_la_SOURCES = \
 	imagedialogwidget.ui \
 	matrixdialogwidget.ui \
 	plugindialogwidget.ui \
+	basicdialogwidget.ui \
 	eventmonitorwidget.ui \
 	pluginmanager.ui \
 	curvedialogwidget.ui \
@@ -98,6 +99,7 @@ libkstapp_la_SOURCES = \
 	kstalignment.cpp \
 	ksteventmonitorentry.cpp \
 	kstcurvedialog_i.cpp \
+	kstbasicdialog_i.cpp \
 	kstdoc.cpp \
 	kstviewwindow.cpp \
 	ktimezonecombo.cpp \

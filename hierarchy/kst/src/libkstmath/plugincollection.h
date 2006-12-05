@@ -73,6 +73,12 @@ class KST_EXPORT PluginCollection : public QObject {
   const QMap<QString, QString>& pluginNameList() const;
 
   /**
+   *  Returns the map of all plugins available (cheap).
+   *  Map is <ReadableName, PluginName>
+   */
+  const QMap<QString, QString>& readableNameList() const;
+
+  /**
    *  Returns the list of all plugins loaded (cheap).
    */
   QStringList loadedPluginList() const;
@@ -109,6 +115,8 @@ class KST_EXPORT PluginCollection : public QObject {
     mutable QMap<QString, Plugin::Data> _installedPlugins;
     // Map: Plugin Name -> XMLFILE
     mutable QMap<QString, QString> _installedPluginNames;
+    // Map: Readable Name -> Plugin Name
+    mutable QMap<QString, QString> _installedReadablePluginNames;
     void scanPlugins() ;
     void loadPluginsFor(const QString& path);
 };

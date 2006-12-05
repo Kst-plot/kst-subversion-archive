@@ -23,7 +23,7 @@
 #include "kstdataobjectcollection.h"
 #include "kstgfxtextmousehandler.h"
 #include "kst.h"
-#include "kstplugin.h"
+#include "kstcplugin.h"
 #include "kstsettings.h"
 #include "ksttimers.h"
 #include "kstviewobjectfactory.h"
@@ -68,7 +68,7 @@ KstViewLabel::KstViewLabel(const QString& txt, KstLJustifyType justify, float ro
   _fontName = KstApp::inst()->defaultFont();
   _fontSize = -1;
   setFontSize(0);
-  _standardActions |= Delete | Edit;
+  _standardActions |= Delete | Edit | Rename;
   _parsed = 0L;
   _labelMargin = 0;
   _isResizable = false;
@@ -92,7 +92,7 @@ KstViewLabel::KstViewLabel(const QDomElement& e)
   _fontName = KstApp::inst()->defaultFont();
   _fontSize = -1;
   setFontSize(0);
-  _standardActions |= Delete | Edit;
+  _standardActions |= Delete | Edit | Rename;
   _parsed = 0L;
   _isResizable = false;
   reparse();
@@ -124,6 +124,7 @@ KstViewLabel::KstViewLabel(const KstViewLabel& label)
   _fontSize = label._fontSize;
   _absFontSize = label._absFontSize;
   _txt = label._txt;
+  _standardActions |= Delete | Edit | Rename;
 
   _parsed = 0L;
   reparse();
@@ -859,7 +860,7 @@ void KstViewLabel::DataCache::update() {
           KstDataObjectList::Iterator oi = KST::dataObjectList.findTag((*i).name);
           KST::dataObjectList.lock().unlock();
           if (oi != KST::dataObjectList.end()) {
-            KstPluginPtr fit = kst_cast<KstPlugin>(*oi);
+            KstCPluginPtr fit = kst_cast<KstCPlugin>(*oi);
             if (fit) {
               fit->readLock(); 
               if (fit->label((int)((*i).indexValue)) != (*i).index) {

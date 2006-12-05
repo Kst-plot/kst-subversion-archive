@@ -11,7 +11,7 @@ kst_LDFLAGS = $(all_libraries) $(KDE_RPATH) -no-undefined
 
 KDE_ICON = kst
 
-services_DATA = kstplugin.desktop kstdatasourceplugin.desktop kstfilter.desktop kstextension.desktop
+services_DATA = kstplugin.desktop kstdatasourceplugin.desktop kstdataobjectplugin.desktop kstbasicplugin.desktop kstfilter.desktop kstextension.desktop
 servicesdir = $(kde_servicetypesdir)/kst
 
 apps_DATA = kst.desktop

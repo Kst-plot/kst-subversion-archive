@@ -24,7 +24,9 @@
 #include "ksdebug.h"
 #include <klistview.h>
 #include <kmessagebox.h>
+#include <kinputdialog.h>
 #include <kstandarddirs.h>
+#include <kcombobox.h>
 
 // application specific includes
 #include "datasourcemetadatadialog.h"
@@ -46,6 +48,7 @@
 #include "kstviewwindow.h"
 #include "matrixselector.h"
 #include "vectorselector.h"
+#include "plugincollection.h"
 
 
 static QMap<int,Kst2DPlotPtr> PlotMap;
@@ -570,7 +573,6 @@ const QPixmap& KstDataManagerI::yesPixmap() const {
   return _yesPixmap;
 }
 
-
 KstDataManagerI::KstDataManagerI(KstDoc *in_doc, QWidget* parent, const char* name, bool modal, WFlags fl)
 : KstDataManager(parent, name, modal, fl) {
   doc = in_doc;
@@ -579,28 +581,14 @@ KstDataManagerI::KstDataManagerI(KstDoc *in_doc, QWidget* parent, const char* na
 
   connect(Edit, SIGNAL(clicked()), this, SLOT(edit_I()));
   connect(Delete, SIGNAL(clicked()), this, SLOT(delete_I()));
+  connect(New, SIGNAL(clicked()), this, SLOT(new_I()));
   connect(Purge, SIGNAL(clicked()), doc, SLOT(purge()));
   connect(DataView, SIGNAL(doubleClicked(QListViewItem *)),
       this, SLOT(edit_I()));
   connect(DataView, SIGNAL(currentChanged(QListViewItem *)),
       this, SLOT(currentChanged(QListViewItem *)));
-  connect(DataView, SIGNAL(selectionChanged(QListViewItem *)),
-      this, SLOT(currentChanged(QListViewItem *)));
-
-  connect(NewCurve, SIGNAL(clicked()), KstCurveDialogI::globalInstance(), SLOT(show()));
-  connect(NewHs, SIGNAL(clicked()), KstHsDialogI::globalInstance(), SLOT(show()));
-  connect(NewEq, SIGNAL(clicked()), KstEqDialogI::globalInstance(), SLOT(show()));
-  connect(NewPlugin, SIGNAL(clicked()), KstPluginDialogI::globalInstance(), SLOT(show()));
-  connect(NewEvent, SIGNAL(clicked()), KstEventMonitorI::globalInstance(), SLOT(show()));
-  connect(NewPSD, SIGNAL(clicked()), KstPsdDialogI::globalInstance(), SLOT(show()));
-  connect(NewVector, SIGNAL(clicked()), KstVectorDialogI::globalInstance(), SLOT(show()));
-
-  connect(NewImage, SIGNAL(clicked()), KstImageDialogI::globalInstance(), SLOT(show()));
-
-  connect(NewMatrix, SIGNAL(clicked()), KstMatrixDialogI::globalInstance(), SLOT(show()));
-  
-  connect(NewCSD, SIGNAL(clicked()), KstCsdDialogI::globalInstance(), SLOT(show()));
-
+  connect(DataView, SIGNAL(selectionChanged()),
+      this, SLOT(selectionChanged()));
   connect(DataView, SIGNAL(contextMenuRequested(QListViewItem*, const QPoint&, int)), this, SLOT(contextMenu(QListViewItem*, const QPoint&, int)));
 }
 
@@ -608,6 +596,12 @@ KstDataManagerI::KstDataManagerI(KstDoc *in_doc, QWidget* parent, const char* na
 KstDataManagerI::~KstDataManagerI() {
 }
 
+
+void KstDataManagerI::doubleClicked(QListViewItem *i) {
+  if (i && DataView->selectedItems().contains(i)) {
+    edit_I();
+  }
+}
 
 void KstDataManagerI::show_I() {
   show();
@@ -779,39 +773,43 @@ void KstDataManagerI::update() {
 
 
 void KstDataManagerI::edit_I() {
-  QListViewItem *qi;
+  QListViewItem *qi = 0;
 
-  if (DataView->selectedItems().count() > 0) {
+  if (!DataView->selectedItems().isEmpty()) {
     qi = DataView->selectedItems().at(0);
   } else {
-    KMessageBox::sorry(this, i18n("A data item must be selected to edit."));
+    // This error message is odd to say the least.
+    //KMessageBox::sorry(this, i18n("A data item must be selected to edit."));
     return;
   }
 
-  if (qi->rtti() == RTTI_OBJ_DATA_VECTOR) {
-    emit editDataVector(qi->text(0));
-  }
-
-  if (qi->rtti() == RTTI_OBJ_STATIC_VECTOR) {
-    emit editStaticVector(qi->text(0));
-  }
-
-  if (qi->rtti() == RTTI_OBJ_OBJECT) {
-    static_cast<KstObjectItem*>(qi)->dataObject()->showDialog();
-  }
-  
-  if (qi->rtti() == RTTI_OBJ_DATA_MATRIX) {
-    emit editDataMatrix(qi->text(0));  
-  }
-  
-  if (qi->rtti() == RTTI_OBJ_STATIC_MATRIX) {
-    emit editStaticMatrix(qi->text(0));  
+  switch (qi->rtti()) {
+    case RTTI_OBJ_DATA_VECTOR:
+      emit editDataVector(qi->text(0));
+      break;
+    case RTTI_OBJ_STATIC_VECTOR:
+      emit editStaticVector(qi->text(0));
+      break;
+    case RTTI_OBJ_OBJECT:
+      static_cast<KstObjectItem*>(qi)->dataObject()->showDialog(true);
+      break;
+    case RTTI_OBJ_DATA_MATRIX:
+      emit editDataMatrix(qi->text(0));  
+      break;
+    case RTTI_OBJ_STATIC_MATRIX:
+      emit editStaticMatrix(qi->text(0));  
+      break;
+  default:
+      break;
   }
 }
 
 
 void KstDataManagerI::delete_I() {
   QListViewItem *qi = DataView->selectedItems().at(0);
+  if (!qi) {
+    return;
+  }
   KstObjectItem *koi = static_cast<KstObjectItem*>(qi);
 
   if (koi->removable()) {
@@ -899,6 +897,73 @@ void KstDataManagerI::delete_I() {
     } else {
       KMessageBox::sorry(this, i18n("Cannot delete objects with dependencies."));
     }
+  }
+}
+
+
+void KstDataManagerI::new_I() {
+  QStringList l;
+
+  //The original KstDataObjects...
+  l << i18n( "Vector" );
+  l << i18n( "Curve" );
+  l << i18n( "Equation" );
+  l << i18n( "Histogram" );
+  l << i18n( "Power Spectrum" );
+  l << i18n( "Event Monitor" );
+  l << i18n( "Matrix" );
+  l << i18n( "Image" );
+  l << i18n( "CSD" );
+
+  //The new KstDataObject plugins...
+  const QStringList newPlugins = KstDataObject::pluginList();
+  l += newPlugins;
+
+  //The old C style plugins...
+  QStringList oldPlugins;
+
+  const QMap<QString,QString> readable =
+    PluginCollection::self()->readableNameList();
+  QMap<QString,QString>::const_iterator it = readable.begin();
+  for (; it != readable.end(); ++it) {
+    oldPlugins << it.key();
+  }
+
+  l += oldPlugins;
+
+  bool ok = false;
+  QStringList plugin =
+      KInputDialog::getItemList( i18n( "Data Objects" ), i18n( "Create..." ), l, 0, false, &ok, this );
+
+  if ( !ok || plugin.isEmpty() )
+    return;
+
+  const QString p = plugin.join("");
+
+  //Oh, wouldn't it be nice if C++ could switch strings...
+  if ( p == i18n( "Vector" ) )
+      KstVectorDialogI::globalInstance()->show();
+  else if ( p == i18n( "Curve" ) )
+      KstCurveDialogI::globalInstance()->show();
+  else if ( p == i18n( "Equation" ) )
+      KstEqDialogI::globalInstance()->show();
+  else if ( p == i18n( "Histogram" ) )
+      KstHsDialogI::globalInstance()->show();
+  else if ( p == i18n( "Power Spectrum" ) )
+      KstPsdDialogI::globalInstance()->show();
+  else if ( p == i18n( "Event Monitor" ) )
+      KstEventMonitorI::globalInstance()->show();
+  else if ( p == i18n( "Matrix" ) )
+      KstMatrixDialogI::globalInstance()->show();
+  else if ( p == i18n( "Image" ) )
+      KstImageDialogI::globalInstance()->show();
+  else if ( p == i18n( "CSD" ) )
+      KstCsdDialogI::globalInstance()->show();
+  else if ( newPlugins.contains( p ) ) {
+    KstDataObjectPtr ptr = KstDataObject::plugin(p);
+    ptr->showDialog();
+  } else if ( oldPlugins.contains( p ) ) {
+      KstPluginDialogI::globalInstance()->showNew(readable[p]);
   }
 }
 
@@ -1011,9 +1076,23 @@ void KstDataManagerI::doUpdates() {
 
 
 void KstDataManagerI::currentChanged(QListViewItem *i) {
-  if (i) {
+  if (i && !DataView->selectedItems().isEmpty()) {
     KstObjectItem *koi = static_cast<KstObjectItem*>(i);
     koi->updateButtons();
+  } else {
+    Edit->setEnabled(false);
+    Delete->setEnabled(false);
+  }
+}
+
+
+void KstDataManagerI::selectionChanged() {
+  if (!DataView->selectedItems().isEmpty()) {
+    KstObjectItem *koi = static_cast<KstObjectItem*>(DataView->selectedItems().first());
+    koi->updateButtons();
+  } else {
+    Edit->setEnabled(false);
+    Delete->setEnabled(false);
   }
 }
 

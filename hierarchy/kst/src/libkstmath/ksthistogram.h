@@ -63,7 +63,8 @@ public:
 
   static void AutoBin(const KstVectorPtr, int *n, double *max, double *min);
 
-  virtual void _showDialog();
+  virtual void showNewDialog();
+  virtual void showEditDialog();
 
   virtual bool slaveVectorsUsed() const;
 

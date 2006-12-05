@@ -53,7 +53,7 @@ KstRVector::KstRVector(KstDataSourcePtr in_file, const QString &in_field,
 
 KstRVector::KstRVector(const QDomElement &e, const QString &o_file,
                        int o_n, int o_f, int o_s, bool o_ave)
-: KstVector() {
+: KstVector(e) {
   KstDataSourcePtr in_file, in_provider;
   QString in_field;
   int in_f0 = 0;
@@ -61,16 +61,13 @@ KstRVector::KstRVector(const QDomElement &e, const QString &o_file,
   int in_skip = 0;
   bool in_DoSkip = false;
   bool in_DoAve = false;
-  QString in_tag;
 
   /* parse the DOM tree */
   QDomNode n = e.firstChild();
   while (!n.isNull()) {
     QDomElement e = n.toElement();
     if (!e.isNull()) {
-      if (e.tagName() == "tag") {
-        in_tag = e.text();
-      } else if (e.tagName() == "provider") {
+      if (e.tagName() == "provider") {
         KST::dataSourceList.lock().readLock();
         in_provider = *KST::dataSourceList.findTag(e.text());
         KST::dataSourceList.lock().unlock();
@@ -109,9 +106,7 @@ KstRVector::KstRVector(const QDomElement &e, const QString &o_file,
     in_file = in_provider;
   }
   if (in_file) {
-    setTagName(KstObjectTag::fromString(in_file->tag().tagString() + KstObjectTag::tagSeparator + in_tag));
-  } else {
-    setTagName(KstObjectTag::fromString(in_tag));
+    setTagName(KstObjectTag(tag(), in_file->tag(), 0));
   }
 
   if (o_n > -2) {
@@ -322,8 +317,7 @@ int KstRVector::reqStartFrame() const {
 void KstRVector::save(QTextStream &ts, const QString& indent, bool saveAbsolutePosition) {
   if (_file) {    
     ts << indent << "<vector>" << endl;
-
-    ts << indent << "  <tag>" << QStyleSheet::escape(tagName()) << "</tag>" << endl;
+    KstVector::save(ts, indent + "  ", saveAbsolutePosition);
     _file->readLock();
     ts << indent << "  <provider>" << QStyleSheet::escape(_file->tag().tagString()) << "</provider>" << endl;
     ts << indent << "  <filename>" << QStyleSheet::escape(_file->fileName()) << "</filename>" << endl;
@@ -596,7 +590,7 @@ KstObject::UpdateType KstRVector::doUpdate(bool force) {
       _v[0] = KST::NOPOINT;
       n_read = 1;
     } else if (_file->samplesPerFrame(_field) > 1) {
-      assert(new_nf - NF - 1 > 0 || new_nf - NF - 1 == -1);
+      assert(new_nf - NF - 1 > 0 || new_nf - NF - 1 == -1 || force);
       assert(new_f0 + NF >= 0);
       assert(new_f0 + new_nf - 1 >= 0);
       n_read = _file->readField(_v+NF*SPF, _field, new_f0 + NF, new_nf - NF - 1);

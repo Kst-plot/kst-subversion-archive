@@ -3245,7 +3245,7 @@ void Kst2DPlot::editObject(int id) {
   KstDataObjectPtr dop = *(KST::dataObjectList.findTag(_objectEditMap[id]));
   if (dop) {
     dop->readLock();
-    dop->showDialog();
+    dop->showDialog(true);
     dop->unlock();
   }
 }
@@ -6373,16 +6373,16 @@ void Kst2DPlot::mouseDoubleClickEvent(QWidget *view, QMouseEvent *e) {
 
   if (curve && fabs(best_distance) <= dy) {
     curve->readLock();
-    KstDataObjectPtr provider = curve->providerDataObject();
+/*    KstDataObjectPtr provider = curve->providerDataObject();
     if (provider) {
       curve->unlock();
       provider->readLock();
       provider->showDialog();
       provider->unlock();
-    } else {
-      curve->showDialog();
+    } else {*/
+      curve->showDialog(true);
       curve->unlock();
-    }
+//     }
   }
 
   e->accept();

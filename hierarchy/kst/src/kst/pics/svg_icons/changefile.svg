@@ -2,40 +2,35 @@
 <!-- Generator: Adobe Illustrator 9.0, SVG Export Plug-In  -->
 <svg
    xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
-   xmlns:xml="http://www.w3.org/XML/1998/namespace"
    xmlns:dc="http://purl.org/dc/elements/1.1/"
    xmlns:cc="http://web.resource.org/cc/"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:xlink="http://www.w3.org/1999/xlink"
-   xmlns:sodipodi="http://inkscape.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    inkscape:export-ydpi="90.000000"
    inkscape:export-xdpi="90.000000"
-   inkscape:export-filename="/home/cbn/programs/kst/graphics/kst/kst/svg_icons/changefile.png"
+   inkscape:export-filename="/home/cbn/programs/kst/graphics/kst/src/kst/pics/svg_icons/changefile.png"
    width="22.000000px"
    height="22.000000px"
    viewBox="0 0 144 144"
    xml:space="preserve"
    id="svg2"
    sodipodi:version="0.32"
-   inkscape:version="0.41"
+   inkscape:version="0.44"
    sodipodi:docname="changefile.svg"
-   sodipodi:docbase="/home/cbn/programs/kst/graphics/kst/kst/svg_icons"><metadata
+   sodipodi:docbase="/home/cbn/programs/kst/graphics/kst/src/kst/pics/svg_icons"><metadata
    id="metadata97">
-  <rdf:RDF
-   id="RDF99">
+  <rdf:RDF>
     <cc:Work
-   rdf:about=""
-   id="Work101">
-      <dc:format
-   id="format103">image/svg+xml</dc:format>
+   rdf:about="">
+      <dc:format>image/svg+xml</dc:format>
 
 
 
       <dc:type
-   id="type105"
    rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
 
 
@@ -287,7 +282,7 @@
    id="XMLID_11_">
 				<stop
    id="stop173"
-   style="stop-color:#FFAE00"
+   style="stop-color:#b37a00;stop-opacity:1;"
    offset="0" />
 
 
@@ -296,7 +291,7 @@
 
 				<stop
    id="stop175"
-   style="stop-color:#BB4400"
+   style="stop-color:#7a2c00;stop-opacity:1;"
    offset="1" />
 
 
@@ -444,13 +439,13 @@
 
   <linearGradient
    inkscape:collect="always"
-   xlink:href="#linearGradient3063"
+   xlink:href="#XMLID_11_"
    id="linearGradient3061"
-   gradientTransform="matrix(1.216096,0.000000,0.000000,0.822303,-1.076225,3.272727)"
+   gradientTransform="matrix(1.216096,0,0,0.822303,-1.076225,3.272727)"
    x1="35.040684"
    y1="82.644012"
-   x2="110.36192"
-   y2="145.39317"
+   x2="68.490105"
+   y2="110.43617"
    gradientUnits="userSpaceOnUse" />
 
 
@@ -466,11 +461,11 @@
    borderopacity="1.0"
    inkscape:pageopacity="0.0"
    inkscape:pageshadow="2"
-   inkscape:window-width="1392"
-   inkscape:window-height="954"
-   inkscape:cy="60.977825"
-   inkscape:cx="64.000000"
-   inkscape:zoom="6.0937500"
+   inkscape:window-width="1266"
+   inkscape:window-height="718"
+   inkscape:cy="11"
+   inkscape:cx="11"
+   inkscape:zoom="23.909091"
    inkscape:window-x="0"
    inkscape:window-y="0"
    inkscape:current-layer="svg2"
@@ -492,7 +487,9 @@
    width="137.45454"
    height="137.45454"
    x="6.5454545"
-   y="6.5454545" />
+   y="6.5454545"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90" />
 
 <rect
    y="3.2035112"
@@ -500,20 +497,29 @@
    height="131.04774"
    width="131.11493"
    id="rect8727"
-   style="fill:url(#linearGradient11809);fill-opacity:1.0000000;fill-rule:evenodd;stroke:#000000;stroke-width:6.4081950;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4.0000000;stroke-opacity:1.0000000" />
+   style="fill:url(#linearGradient11809);fill-opacity:1.0000000;fill-rule:evenodd;stroke:#000000;stroke-width:6.4081950;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4.0000000;stroke-opacity:1.0000000"
+   inkscape:export-filename="/home/cbn/programs/kst/graphics/kst/src/kst/pics/svg_icons/rect2956.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90" />
 
 
 
 <path
    id="path2946"
    d="M 35.874222,120.93842 C 35.847512,127.92075 35.847512,127.92075 35.847512,127.92075"
-   style="fill:none;fill-opacity:0.75000000;fill-rule:evenodd;stroke:#000000;stroke-width:6.2404795;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:0.0000000;stroke-opacity:1.0000000" />
+   style="fill:none;fill-opacity:0.75000000;fill-rule:evenodd;stroke:#000000;stroke-width:6.2404795;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:0.0000000;stroke-opacity:1.0000000"
+   inkscape:export-filename="/home/cbn/programs/kst/graphics/kst/src/kst/pics/svg_icons/rect2956.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90" />
 
 <path
    style="fill:none;fill-opacity:0.75000000;fill-rule:evenodd;stroke:url(#linearGradient3061);stroke-width:9.0000000;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4.0000000;stroke-opacity:1.0000000"
-   d="M 6.4930060,118.28811 C 81.631468,118.12657 50.616083,27.157342 130.92378,26.788111"
+   d="M 5.9454775,114.72917 C 81.083939,114.56763 50.889847,23.872171 131.19754,23.50294"
    id="path2295"
-   sodipodi:nodetypes="cc" />
+   sodipodi:nodetypes="cc"
+   inkscape:export-filename="/home/cbn/programs/kst/graphics/kst/src/kst/pics/svg_icons/rect2956.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90" />
 
 
 
@@ -524,7 +530,10 @@
 <path
    id="path2952"
    d="M 68.879760,9.5337970 C 68.853050,16.516124 68.853050,16.516124 68.853050,16.516124"
-   style="fill:none;fill-opacity:0.75000000;fill-rule:evenodd;stroke:#000000;stroke-width:6.2404795;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:0.0000000;stroke-opacity:1.0000000" />
+   style="fill:none;fill-opacity:0.75000000;fill-rule:evenodd;stroke:#000000;stroke-width:6.2404795;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:0.0000000;stroke-opacity:1.0000000"
+   inkscape:export-filename="/home/cbn/programs/kst/graphics/kst/src/kst/pics/svg_icons/rect2956.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90" />
 
 
 
@@ -561,57 +570,90 @@
 <path
    id="path2922"
    d="M 120.93841,35.942026 C 127.92011,35.847500 127.92011,35.847500 127.92011,35.847500"
-   style="fill:none;fill-opacity:0.75000000;fill-rule:evenodd;stroke:#000000;stroke-width:6.2404547;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:0.0000000;stroke-opacity:1.0000000" />
+   style="fill:none;fill-opacity:0.75000000;fill-rule:evenodd;stroke:#000000;stroke-width:6.2404547;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:0.0000000;stroke-opacity:1.0000000"
+   inkscape:export-filename="/home/cbn/programs/kst/graphics/kst/src/kst/pics/svg_icons/rect2956.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90" />
 
 <path
    id="path2928"
    d="M 9.5344268,35.942029 C 16.516133,35.847503 16.516133,35.847503 16.516133,35.847503"
-   style="fill:none;fill-opacity:0.75000000;fill-rule:evenodd;stroke:#000000;stroke-width:6.2404609;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:0.0000000;stroke-opacity:1.0000000" />
+   style="fill:none;fill-opacity:0.75000000;fill-rule:evenodd;stroke:#000000;stroke-width:6.2404609;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:0.0000000;stroke-opacity:1.0000000"
+   inkscape:export-filename="/home/cbn/programs/kst/graphics/kst/src/kst/pics/svg_icons/rect2956.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90" />
 
 <path
    id="path2930"
    d="M 9.5344262,68.669302 C 16.516133,68.574776 16.516133,68.574776 16.516133,68.574776"
-   style="fill:none;fill-opacity:0.75000000;fill-rule:evenodd;stroke:#000000;stroke-width:6.2404609;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:0.0000000;stroke-opacity:1.0000000" />
+   style="fill:none;fill-opacity:0.75000000;fill-rule:evenodd;stroke:#000000;stroke-width:6.2404609;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:0.0000000;stroke-opacity:1.0000000"
+   inkscape:export-filename="/home/cbn/programs/kst/graphics/kst/src/kst/pics/svg_icons/rect2956.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90" />
 
 <path
    id="path2926"
    d="M 9.5344163,101.60704 C 16.516130,101.51252 16.516130,101.51252 16.516130,101.51252"
-   style="fill:none;fill-opacity:0.75000000;fill-rule:evenodd;stroke:#000000;stroke-width:6.2404671;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:0.0000000;stroke-opacity:1.0000000" />
+   style="fill:none;fill-opacity:0.75000000;fill-rule:evenodd;stroke:#000000;stroke-width:6.2404671;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:0.0000000;stroke-opacity:1.0000000"
+   inkscape:export-filename="/home/cbn/programs/kst/graphics/kst/src/kst/pics/svg_icons/rect2956.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90" />
 
 <path
    id="path2924"
    d="M 120.93842,101.56966 C 127.92068,101.60704 127.92068,101.60704 127.92068,101.60704"
-   style="fill:none;fill-opacity:0.75000000;fill-rule:evenodd;stroke:#000000;stroke-width:6.2404671;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:0.0000000;stroke-opacity:1.0000000" />
+   style="fill:none;fill-opacity:0.75000000;fill-rule:evenodd;stroke:#000000;stroke-width:6.2404671;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:0.0000000;stroke-opacity:1.0000000"
+   inkscape:export-filename="/home/cbn/programs/kst/graphics/kst/src/kst/pics/svg_icons/rect2956.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90" />
 
 <path
    id="path2936"
    d="M 120.93842,68.879766 C 127.92014,68.785246 127.92014,68.785246 127.92014,68.785246"
-   style="fill:none;fill-opacity:0.75000000;fill-rule:evenodd;stroke:#000000;stroke-width:6.2404671;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:0.0000000;stroke-opacity:1.0000000" />
+   style="fill:none;fill-opacity:0.75000000;fill-rule:evenodd;stroke:#000000;stroke-width:6.2404671;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:0.0000000;stroke-opacity:1.0000000"
+   inkscape:export-filename="/home/cbn/programs/kst/graphics/kst/src/kst/pics/svg_icons/rect2956.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90" />
 
 <path
    id="path2940"
    d="M 101.60704,120.93842 C 101.58033,127.92074 101.58033,127.92074 101.58033,127.92074"
-   style="fill:none;fill-opacity:0.75000000;fill-rule:evenodd;stroke:#000000;stroke-width:6.2404733;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:0.0000000;stroke-opacity:1.0000000" />
+   style="fill:none;fill-opacity:0.75000000;fill-rule:evenodd;stroke:#000000;stroke-width:6.2404733;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:0.0000000;stroke-opacity:1.0000000"
+   inkscape:export-filename="/home/cbn/programs/kst/graphics/kst/src/kst/pics/svg_icons/rect2956.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90" />
 
 <path
    id="path2942"
    d="M 68.879760,120.93842 C 68.853050,127.92074 68.853050,127.92074 68.853050,127.92074"
-   style="fill:none;fill-opacity:0.75000000;fill-rule:evenodd;stroke:#000000;stroke-width:6.2404795;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:0.0000000;stroke-opacity:1.0000000" />
+   style="fill:none;fill-opacity:0.75000000;fill-rule:evenodd;stroke:#000000;stroke-width:6.2404795;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:0.0000000;stroke-opacity:1.0000000"
+   inkscape:export-filename="/home/cbn/programs/kst/graphics/kst/src/kst/pics/svg_icons/rect2956.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90" />
 
 <path
    id="path2948"
    d="M 35.874222,9.5337972 C 35.847512,16.516124 35.847512,16.516124 35.847512,16.516124"
-   style="fill:none;fill-opacity:0.75000000;fill-rule:evenodd;stroke:#000000;stroke-width:6.2404795;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:0.0000000;stroke-opacity:1.0000000" />
+   style="fill:none;fill-opacity:0.75000000;fill-rule:evenodd;stroke:#000000;stroke-width:6.2404795;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:0.0000000;stroke-opacity:1.0000000"
+   inkscape:export-filename="/home/cbn/programs/kst/graphics/kst/src/kst/pics/svg_icons/rect2956.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90" />
 
 <path
    id="path2954"
    d="M 101.60703,9.6656943 C 101.58032,16.648021 101.58032,16.648021 101.58032,16.648021"
-   style="fill:none;fill-opacity:0.75000000;fill-rule:evenodd;stroke:#000000;stroke-width:6.2404795;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:0.0000000;stroke-opacity:1.0000000" />
+   style="fill:none;fill-opacity:0.75000000;fill-rule:evenodd;stroke:#000000;stroke-width:6.2404795;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:0.0000000;stroke-opacity:1.0000000"
+   inkscape:export-filename="/home/cbn/programs/kst/graphics/kst/src/kst/pics/svg_icons/rect2956.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90" />
 
 <g
    id="Layer_x0020_2"
    style="fill:#ffffff;fill-rule:nonzero;stroke:#ffffff;stroke-width:0.0000000;stroke-miterlimit:4.0000000"
-   transform="matrix(0.856944,0.000000,0.000000,0.833928,7.509155,6.545455)">
+   transform="matrix(0.856944,0.000000,0.000000,0.833928,7.509155,6.545455)"
+   inkscape:export-filename="/home/cbn/programs/kst/graphics/kst/src/kst/pics/svg_icons/rect2956.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
 		<path
    style="fill:none;stroke:none"
    d="M 144.00000,144.00000 L 0.0000000,144.00000 L 0.0000000,0.0000000 L 144.00000,0.0000000 L 144.00000,144.00000 z "

@@ -1103,10 +1103,18 @@ bool KstViewObject::popupMenu(KPopupMenu *menu, const QPoint& pos, KstViewObject
     rc = true;
   }
 
-  if (_standardActions & Copy) {
-    menu->insertItem(i18n("&Copy"), this, SLOT(copyObject()));
+
+// Copy doesn't do anything yet, so don't put it in the UI...
+//   if (_standardActions & Copy) {
+//     menu->insertItem(i18n("&Copy"), this, SLOT(copyObject()));
+//     rc = true;
+//   }
+  
+  if (_layoutActions & Rename) {
+    menu->insertItem(i18n("Re&name..."), this, SLOT(rename()));
     rc = true;
   }
+
 
   if (_standardActions & Zoom) {
     id = menu->insertItem(i18n("Maximi&ze"), this, SLOT(zoomToggle()));
@@ -1147,16 +1155,16 @@ bool KstViewObject::layoutPopupMenu(KPopupMenu *menu, const QPoint& pos, KstView
     menu->insertItem(i18n("&Edit..."), this, SLOT(edit()));
     rc = true;
   }
-
-  if (_layoutActions & Copy) {
-    menu->insertItem(i18n("&Copy"), this, SLOT(copyObject()));
-    rc = true;
-  }
-
+  
   if (_layoutActions & Delete) {
     menu->insertItem(i18n("&Delete"), this, SLOT(deleteObject()));
     rc = true;
   }
+
+//   if (_layoutActions & Copy) {
+//     menu->insertItem(i18n("&Copy"), this, SLOT(copyObject()));
+//     rc = true;
+//   }
 
   if (_layoutActions & Rename) {
     menu->insertItem(i18n("Re&name..."), this, SLOT(rename()));

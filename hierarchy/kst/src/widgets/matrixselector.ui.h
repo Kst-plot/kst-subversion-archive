@@ -59,6 +59,8 @@ void MatrixSelector::update()
 
 void MatrixSelector::init()
 {
+    _newMatrix->setPixmap(BarIcon("kst_matrixnew"));
+    _editMatrix->setPixmap(BarIcon("kst_matrixedit"));
     _provideNoneMatrix = false;
     update();
     connect(_matrix, SIGNAL(activated(const QString&)), this, SIGNAL(selectionChanged(const QString&)));
@@ -127,7 +129,7 @@ void MatrixSelector::provideNoneMatrix( bool provide )
 
 void MatrixSelector::editMatrix()
 {
-    KstDialogs::self()->showMatrixDialog(_matrix->currentText());
+    KstDialogs::self()->showMatrixDialog(_matrix->currentText(), true);
 }
 
 

@@ -25,7 +25,7 @@
 
 #include <klocale.h>
 
-#include "kstplugin.h"
+#include "kstcplugin.h"
 #include "kstdatacollection.h"
 #include "kstdataobjectcollection.h"
 #include "kstviewfitsdialog_i.h"
@@ -56,8 +56,8 @@ KstViewFitsDialogI::~KstViewFitsDialogI() {
 
 bool KstViewFitsDialogI::hasContent() const {
   bool content = false;
-  KstPluginList fits = kstObjectSubList<KstDataObject,KstPlugin>(KST::dataObjectList);
-  KstPluginList::ConstIterator it = fits.begin();
+  KstCPluginList fits = kstObjectSubList<KstDataObject,KstCPlugin>(KST::dataObjectList);
+  KstCPluginList::ConstIterator it = fits.begin();
   for (; it != fits.end(); ++it) {
     (*it)->readLock();
     content = (*it)->plugin()->data()._isFit ? true : content;
@@ -71,9 +71,9 @@ void KstViewFitsDialogI::fillComboBox(const QString& str) {
   QString fitName = str;
 
   _comboBoxFits->clear();
-  KstPluginList fits = kstObjectSubList<KstDataObject,KstPlugin>(KST::dataObjectList);
+  KstCPluginList fits = kstObjectSubList<KstDataObject,KstCPlugin>(KST::dataObjectList);
   for (uint i = 0; i < fits.count(); i++) {
-    KstPluginPtr fit = fits[i];
+    KstCPluginPtr fit = fits[i];
     fit->readLock();
     if (fit->plugin()->data()._isFit) {
       _comboBoxFits->insertItem(fit->tagName());
@@ -121,8 +121,8 @@ void KstViewFitsDialogI::fitChanged(const QString& strFit) {
   int numParams = 0;
   int numCovars = 0;
 
-  KstPluginList fits = kstObjectSubList<KstDataObject,KstPlugin>(KST::dataObjectList);
-  KstPluginPtr plugin = *(fits.findTag(strFit));
+  KstCPluginList fits = kstObjectSubList<KstDataObject,KstCPlugin>(KST::dataObjectList);
+  KstCPluginPtr plugin = *(fits.findTag(strFit));
   if (plugin) {
     plugin->readLock();
     const KstScalarMap& scalars = plugin->outputScalars();

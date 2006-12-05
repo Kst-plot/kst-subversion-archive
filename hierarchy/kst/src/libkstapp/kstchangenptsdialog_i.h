@@ -45,6 +45,7 @@ public slots:
 private slots:
   void emitDocChanged();
   void applyNptsChange();
+  void OKNptsChange();
   void updateTimeCombo();
 
 signals:

@@ -385,8 +385,13 @@ QString KstPSD::propertyString() const {
 }
 
 
-void KstPSD::_showDialog() {
-  KstDialogs::self()->showPSDDialog(tagName());
+void KstPSD::showNewDialog() {
+  KstDialogs::self()->showPSDDialog();
+}
+
+
+void KstPSD::showEditDialog() {
+  KstDialogs::self()->showPSDDialog(tagName(), true);
 }
 
 

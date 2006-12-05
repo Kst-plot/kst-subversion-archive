@@ -96,7 +96,7 @@
 #include "sysinfo.h"
 #include "updatethread.h"
 #include "vectorsavedialog.h"
-
+#include "kstobjectdefaults.h"
 
 #define KST_STATUSBAR_DATA   1
 #define KST_STATUSBAR_STATUS 2
@@ -162,18 +162,6 @@ KstApp::KstApp(QWidget *parent, const char *name)
   _quickStartDialog = new KstQuickStartDialogI(this, 0 , true);
 #endif
 
-  connect(KstVectorDialogI::globalInstance(), SIGNAL(modified()), doc, SLOT(wasModified()));
-  connect(KstCurveDialogI::globalInstance(), SIGNAL(modified()), doc, SLOT(wasModified()));
-  connect(KstCsdDialogI::globalInstance(), SIGNAL(modified()), doc, SLOT(wasModified()));
-  connect(KstEqDialogI::globalInstance(), SIGNAL(modified()), doc, SLOT(wasModified()));
-  connect(KstHsDialogI::globalInstance(), SIGNAL(modified()), doc, SLOT(wasModified()));
-  connect(KstPsdDialogI::globalInstance(), SIGNAL(modified()), doc, SLOT(wasModified()));
-  connect(KstPluginDialogI::globalInstance(), SIGNAL(modified()), doc, SLOT(wasModified()));
-  connect(KstFitDialogI::globalInstance(), SIGNAL(modified()), doc, SLOT(wasModified()));
-  connect(KstFilterDialogI::globalInstance(), SIGNAL(modified()), doc, SLOT(wasModified()));
-  connect(KstEventMonitorI::globalInstance(), SIGNAL(modified()), doc, SLOT(wasModified()));
-  connect(KstImageDialogI::globalInstance(), SIGNAL(modified()), doc, SLOT(wasModified()));
-  connect(KstMatrixDialogI::globalInstance(), SIGNAL(modified()), doc, SLOT(wasModified()));
   connect(this, SIGNAL(mdiModeHasBeenChangedTo(KMdi::MdiMode)), SLOT(fixKMdi()));
 
   initActions();
@@ -247,6 +235,7 @@ KstApp::~KstApp() {
   }
 
   KstDataSource::cleanupForExit(); // must be before deletions
+  KstDataObject::cleanupForExit(); // must be before deletions
   delete _updateThread;
   _updateThread = 0L;
   delete _dcopIface;
@@ -447,6 +436,12 @@ void KstApp::initActions() {
   PauseAction->setToolTip(i18n("Pause"));
   PauseAction->setWhatsThis(i18n("When paused, new data will not be read."));
   connect(PauseAction, SIGNAL(toggled(bool)), this, SLOT(updatePausedState(bool)));
+
+  /************/
+  _saveData = new KToggleAction(i18n("Save Da&ta"),"save_vector_data", 0,
+                                  actionCollection(), "save_vector_data");
+  _saveData->setToolTip(i18n("Save Vector Data To Disk"));
+  _saveData->setWhatsThis(i18n("When selected, data in vectors will be saved into the Kst file."));
 
   /************/
   XYZoomAction = new KRadioAction(i18n("XY Mouse &Zoom"), "kst_zoomxy",
@@ -1078,7 +1073,7 @@ void KstApp::saveOptions() {
 
   KST::vectorDefaults.writeConfig(config);
   KST::matrixDefaults.writeConfig(config);
-
+  KST::objectDefaults.writeConfig(config);
   config->sync();
 }
 
@@ -1091,6 +1086,7 @@ void KstApp::readOptions() {
 
   KST::vectorDefaults.readConfig(config);
   KST::matrixDefaults.readConfig(config);
+  KST::objectDefaults.readConfig(config);
 
   switch (mdiMode) {
     case KMdi::ToplevelMode:

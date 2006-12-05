@@ -6,10 +6,12 @@
 ** init() function in place of a constructor, and a destroy() function in
 ** place of a destructor.
 *****************************************************************************/
-
+#include "kstdataobject.h"
 
 void VectorSelector::init()
 {
+    _newVector->setPixmap(BarIcon("kst_vectornew"));
+    _editVector->setPixmap(BarIcon("kst_vectoredit"));
     _provideNoneVector = false;
     update();
     connect(_vector, SIGNAL(activated(const QString&)), this, SIGNAL(selectionChanged(const QString&))); // annoying that signal->signal doesn't seem to work in .ui files
@@ -133,17 +135,35 @@ void VectorSelector::provideNoneVector( bool provide )
 
 void VectorSelector::editVector()
 {
-    KstDialogs::self()->showVectorDialog(_vector->currentText());
+    KST::vectorList.lock().readLock();
+    KstVectorPtr vec = *KST::vectorList.findTag(_vector->currentText());
+    KST::vectorList.lock().unlock();
+    KstDataObjectPtr pro = 0L;
+    if (vec) {
+      pro = kst_cast<KstDataObject>(vec->provider());
+    }
+    if (pro) {
+      pro->readLock();
+      pro->showDialog(true);
+      pro->unlock();
+    } else {
+      KstDialogs::self()->showVectorDialog(_vector->currentText(), true);
+    }
 }
 
 
 void VectorSelector::setEdit( const QString& tag )
 {
     KST::vectorList.lock().readLock();
-    KstRVectorPtr rvp = kst_cast<KstRVector>(*KST::vectorList.findTag(tag));
-    KstSVectorPtr svp = kst_cast<KstSVector>(*KST::vectorList.findTag(tag));
+    KstVectorPtr vec = *KST::vectorList.findTag(tag);
     KST::vectorList.lock().unlock();
-    _editVector->setEnabled(rvp||svp);
+    KstRVectorPtr rvp = kst_cast<KstRVector>(vec);
+    KstSVectorPtr svp = kst_cast<KstSVector>(vec);
+    KstDataObjectPtr pro = 0L;
+    if (vec) {
+      pro = kst_cast<KstDataObject>(vec->provider());
+    }
+    _editVector->setEnabled(rvp||svp||pro);
 }
 
 // vim: ts=8 sw=4 noet

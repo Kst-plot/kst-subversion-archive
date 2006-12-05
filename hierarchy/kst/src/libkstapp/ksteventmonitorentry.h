@@ -38,7 +38,8 @@ class EventMonitorEntry : public KstDataObject {
     UpdateType update(int updateCounter = -1);
     void save(QTextStream &ts, const QString& indent = QString::null);
     QString propertyString() const;
-    void _showDialog();
+    void showNewDialog();
+    void showEditDialog();
 
     bool needToEvaluate();
     bool isValid() const { return _isValid; }

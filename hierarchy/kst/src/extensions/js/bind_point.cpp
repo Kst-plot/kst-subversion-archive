@@ -203,6 +203,7 @@ KJS::Value KstBindPoint::y(KJS::ExecState *exec) const {
 
 
 KJS::UString KstBindPoint::toString(KJS::ExecState *exec) const {
+  Q_UNUSED(exec)
   return KJS::UString(QString("(%1, %2)").arg(_x).arg(_y));
 }
 

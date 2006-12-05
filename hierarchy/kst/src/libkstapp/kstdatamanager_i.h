@@ -42,11 +42,14 @@ class KstDataManagerI : public KstDataManager {
     void show_I();
     void edit_I();
     void delete_I();
+    void new_I();
 
   private slots:
     void doUpdates();
     void contextMenu(QListViewItem *i, const QPoint& p, int c);
     void currentChanged(QListViewItem *);
+    void selectionChanged();
+    void doubleClicked(QListViewItem *);
 
   private:
     KstDoc *doc;

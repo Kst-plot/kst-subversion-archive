@@ -57,7 +57,8 @@ class KST_EXPORT KstEquation : public KstDataObject {
 
     virtual void setTagName(const QString& tag);
 
-    virtual void _showDialog();
+    virtual void showNewDialog();
+    virtual void showEditDialog();
 
     virtual QString xVTag() const { return (*_xOutVector)->tagName(); }
     virtual QString yVTag() const { return (*_yOutVector)->tagName(); }

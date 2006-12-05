@@ -20,7 +20,7 @@
 #include "enodes.h"
 #include "kstdatacollection.h"
 #include "kstdataobjectcollection.h"
-#include "kstplugin.h"
+#include "kstcplugin.h"
 #include "ksttimers.h"
 #include "labelparser.h"
 
@@ -113,7 +113,7 @@ void renderLabel(RenderContext& rc, Label::Chunk *fi) {
             KstDataObjectList::Iterator oi = KST::dataObjectList.findTag(fi->text);
             KST::dataObjectList.lock().unlock();
             if (oi != KST::dataObjectList.end()) {
-              KstPluginPtr fit = kst_cast<KstPlugin>(*oi);
+              KstCPluginPtr fit = kst_cast<KstCPlugin>(*oi);
               if (fit) {
                 fit->readLock();
                 const QString txtAll = fit->label(rc.precision);

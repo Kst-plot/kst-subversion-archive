@@ -41,6 +41,7 @@ KstViewPicture::KstViewPicture()
   _timer = 0L;
   setTransparent(true);
   _maintainAspect = true;
+  _standardActions |= Delete | Edit;
 }
 
 
@@ -63,6 +64,7 @@ KstViewPicture::KstViewPicture(const QDomElement& e)
   // always have these values
   _type = "Picture";
   setTransparent(true);
+  _standardActions |= Delete | Edit;
 }
 
 
@@ -74,6 +76,7 @@ KstViewPicture::KstViewPicture(const KstViewPicture& picture)
   
   // always have these values
   _type = "Picture";
+  _standardActions |= Delete | Edit;
 }
 
 

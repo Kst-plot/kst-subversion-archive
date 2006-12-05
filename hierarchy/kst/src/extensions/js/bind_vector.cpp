@@ -200,10 +200,11 @@ KJS::Value KstBindVector::getPropertyByIndex(KJS::ExecState *exec, unsigned prop
   v->readLock();
   if (propertyName < unsigned(v->length())) {
     rc = v->value()[propertyName];
+    v->unlock();
   } else {
+    v->unlock();
     return KJS::Undefined();
   }
-  v->unlock();
 
   return KJS::Number(rc);
 }

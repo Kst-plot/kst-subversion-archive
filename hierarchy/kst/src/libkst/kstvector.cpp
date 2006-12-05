@@ -20,11 +20,15 @@
 #include <math.h>
 #include <stdlib.h>
 
+#include <qcstring.h>
 #include <qdeepcopy.h>
 #include <qstylesheet.h>
 
-#include "ksdebug.h"
+#include <kglobal.h>
 #include <klocale.h>
+#include <kmdcodec.h>
+
+#include "ksdebug.h"
 #include "kstdatacollection.h"
 #include "defaultprimitivenames.h"
 #include "kstmath.h"
@@ -46,8 +50,8 @@ KstVector::KstVector(KstObjectTag in_tag, int size, KstObject *provider, bool is
   _editable = false;
   NumShifted = 0;
   NumNew = 0;
+  _saveData = false;
   _isScalarList = isScalarList;
-  _label = QString::null;
 
   _saveable = false;
 
@@ -76,6 +80,68 @@ KstVector::KstVector(KstObjectTag in_tag, int size, KstObject *provider, bool is
 
   CreateScalars();
   blank();
+
+  KST::vectorList.lock().writeLock();
+  KST::vectorList.append(this);
+  KST::vectorList.lock().unlock();
+}
+
+
+KstVector::KstVector(const QDomElement& e)
+: KstPrimitive(), _nsum(0), _scalars(11) {
+  QByteArray qba;
+  _v = 0L;
+  _size = 0;
+  int sz = INITSIZE;
+  KstObjectTag in_tag = KstObjectTag::invalidTag;
+
+  _editable = false;
+  NumShifted = 0;
+  NumNew = 0;
+  _isScalarList = false;
+  _saveable = false;
+  _saveData = false;
+
+  QDomNode n = e.firstChild();
+  while (!n.isNull()) {
+    QDomElement e = n.toElement();
+    if (!e.isNull()) {
+      if (e.tagName() == "tag") {
+        in_tag = KstObjectTag::fromString(e.text());
+      } else if (e.tagName() == "data") {
+        QCString qcs(e.text().latin1());
+        QByteArray qbca;
+        KCodecs::base64Decode(qcs, qbca);
+        qba = qUncompress(qbca);
+        sz = kMax(unsigned(INITSIZE), qba.size()/sizeof(double));
+      }
+    }
+    n = n.nextSibling();
+  }
+
+  if (!in_tag.isValid()) {
+    QString nt = i18n("Anonymous Vector %1");
+
+    do {
+      KstObject::setTagName(KstObjectTag(nt.arg(anonymousVectorCounter++), in_tag.context()));
+    } while (KstData::self()->vectorTagNameNotUnique(tagName(), false));
+  } else {
+    KstObject::setTagName(KST::suggestUniqueVectorTag(in_tag));
+  }
+
+  CreateScalars();
+  resize(sz, true);
+
+  if (!qba.isEmpty()) {
+    _saveable = true;
+    _saveData = true;
+    QDataStream qds(qba, IO_ReadOnly);
+    for (int i = 0; !qds.atEnd(); ++i) {
+      qds >> _v[i];
+    }
+  }
+
+  _is_rising = false;
 
   KST::vectorList.lock().writeLock();
   KST::vectorList.append(this);
@@ -511,9 +577,17 @@ KstObject::UpdateType KstVector::internalUpdate(KstObject::UpdateType providerRC
 
 void KstVector::save(QTextStream &ts, const QString& indent, bool saveAbsolutePosition) {
   Q_UNUSED(saveAbsolutePosition)
-    Q_UNUSED(ts)
-    Q_UNUSED(indent)
-    abort();
+  ts << indent << "<tag>" << QStyleSheet::escape(tagName()) << "</tag>" << endl;
+  if (_saveData) {
+    QByteArray qba(length()*sizeof(double));
+    QDataStream qds(qba, IO_WriteOnly);
+
+    for (int i = 0; i < length(); i++) {
+      qds << _v[i];
+    }
+
+    ts << indent << "<data>" << KCodecs::base64Encode(qCompress(qba)) << "</data>" << endl;
+  }
 }
 
 
@@ -614,6 +688,16 @@ bool KstVector::editable() const {
 
 void KstVector::setEditable(bool editable) {
   _editable = editable;
+}
+
+
+bool KstVector::saveData() const {
+  return _saveData;
+}
+
+
+void KstVector::setSaveData(bool save) {
+  _saveData = save;
 }
 
 

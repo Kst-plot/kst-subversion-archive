@@ -18,7 +18,7 @@
 #include "ksdebug.h"
 #include <qstylesheet.h>
 
-KstSVector::KstSVector(const QDomElement &e) : KstVector() {
+KstSVector::KstSVector(const QDomElement &e) : KstVector(e) {
   double in_x0 = 0.0;
   double in_x1 = 1.0;
   int in_n = 2;
@@ -28,9 +28,7 @@ KstSVector::KstSVector(const QDomElement &e) : KstVector() {
   while (!n.isNull()) {
     QDomElement e = n.toElement();
     if (!e.isNull()) {
-      if (e.tagName() == "tag") {
-        setTagName(KstObjectTag::fromString(e.text()));
-      } else if (e.tagName() == "N") {
+      if (e.tagName() == "N") {
         in_n = e.text().toInt();
       } else if (e.tagName() == "min") {
         in_x0 = e.text().toDouble();
@@ -42,6 +40,7 @@ KstSVector::KstSVector(const QDomElement &e) : KstVector() {
   }
 
   _saveable = true;
+  _saveData = false;
   changeRange( in_x0,  in_x1,  in_n );
 }
 
@@ -49,16 +48,14 @@ KstSVector::KstSVector(const QDomElement &e) : KstVector() {
 KstSVector::KstSVector(double x0, double x1, int n, KstObjectTag tag) :
     KstVector(tag, n) {
   _saveable = true;
+  _saveData = false;
   changeRange( x0, x1, n );
 }
 
 
 void KstSVector::save(QTextStream &ts, const QString& indent, bool saveAbsolutePosition) {
-  Q_UNUSED( saveAbsolutePosition )
   ts << indent << "<svector>" << endl;
-
-  ts << indent << "  <tag>" << QStyleSheet::escape(tagName())
-    << "</tag>" << endl;
+  KstVector::save(ts, indent + "  ", saveAbsolutePosition);
   ts << indent << "  <min>" << min() << "</min>" << endl;
   ts << indent << "  <max>" << max() << "</max>" << endl;
   ts << indent << "  <N>" << length() << "</N>" << endl;
@@ -103,6 +100,11 @@ KstObject::UpdateType KstSVector::update(int update_counter) {
   }
 
   return baseRC;
+}
+
+
+void KstSVector::setSaveData(bool save) {
+  Q_UNUSED(save)
 }
 
 

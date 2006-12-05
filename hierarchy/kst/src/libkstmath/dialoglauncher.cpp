@@ -43,28 +43,39 @@ KstDialogs::~KstDialogs() {
 }
 
 
-void KstDialogs::showHistogramDialog(const QString& name) {
+void KstDialogs::showHistogramDialog(const QString& name, bool edit) {
   Q_UNUSED(name)
+  Q_UNUSED(edit)
 }
 
 
-void KstDialogs::showPluginDialog(const QString& name) {
+void KstDialogs::showCPluginDialog(const QString& name, bool edit) {
   Q_UNUSED(name)
+  Q_UNUSED(edit)
 }
 
 
-void KstDialogs::showEquationDialog(const QString& name) {
+void KstDialogs::showBasicPluginDialog(const QString& name, bool edit) {
   Q_UNUSED(name)
+  Q_UNUSED(edit)
 }
 
 
-void KstDialogs::showCSDDialog(const QString& name) {
+void KstDialogs::showEquationDialog(const QString& name, bool edit) {
   Q_UNUSED(name)
+  Q_UNUSED(edit)
 }
 
 
-void KstDialogs::showPSDDialog(const QString& name) {
+void KstDialogs::showCSDDialog(const QString& name, bool edit) {
   Q_UNUSED(name)
+  Q_UNUSED(edit)
+}
+
+
+void KstDialogs::showPSDDialog(const QString& name, bool edit) {
+  Q_UNUSED(name)
+  Q_UNUSED(edit)
 }
 
 
@@ -76,8 +87,9 @@ void KstDialogs::newVectorDialog(QWidget *parent, const char *createdSlot, const
 }
 
 
-void KstDialogs::showVectorDialog(const QString& name) {
+void KstDialogs::showVectorDialog(const QString& name, bool edit) {
   Q_UNUSED(name)
+  Q_UNUSED(edit)
 }
 
 
@@ -89,18 +101,21 @@ void KstDialogs::newMatrixDialog(QWidget *parent, const char *createdSlot, const
 }
 
 
-void KstDialogs::showMatrixDialog(const QString& name) {
+void KstDialogs::showMatrixDialog(const QString& name, bool edit) {
   Q_UNUSED(name)
+  Q_UNUSED(edit)
 }
 
 
-void KstDialogs::showImageDialog(const QString& name) {
+void KstDialogs::showImageDialog(const QString& name, bool edit) {
   Q_UNUSED(name)
+  Q_UNUSED(edit)
 }
 
 
-void KstDialogs::showCurveDialog(const QString& name) {
+void KstDialogs::showCurveDialog(const QString& name, bool edit) {
   Q_UNUSED(name)
+  Q_UNUSED(edit)
 }
 
 

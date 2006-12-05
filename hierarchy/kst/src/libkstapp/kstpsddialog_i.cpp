@@ -36,6 +36,7 @@
 #include "editmultiplewidget.h"
 #include "kst2dplot.h"
 #include "kstdataobjectcollection.h"
+#include "kstobjectdefaults.h"
 #include "kstpsddialog_i.h"
 #include "kstuinames.h"
 #include "kstvcurve.h"
@@ -121,6 +122,8 @@ void KstPsdDialogI::fillFieldsForNew() {
   _legendText->setText(defaultTag);
   _legendText->show();
   _legendLabel->show();
+  KST::objectDefaults.sync();
+
   _w->_curvePlacement->update();
   _w->_kstFFTOptions->update();
 
