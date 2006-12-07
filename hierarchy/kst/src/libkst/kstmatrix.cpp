@@ -527,8 +527,10 @@ bool KstMatrix::saveable() const {
 }
 
 
-void KstMatrix::change(KstObjectTag tag, uint nX, uint nY, double minX, double minY, double stepX, double stepY) {
-  setTagName(tag);
+void KstMatrix::change(const KstObjectTag& newTag, uint nX, uint nY, double minX, double minY, double stepX, double stepY) {
+  if (tag() != newTag) {
+    setTagName(newTag);
+  }
   _nX = nX;
   _nY = nY;
   _stepX = stepX;

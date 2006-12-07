@@ -39,7 +39,7 @@ class KST_EXPORT KstMatrix: public KstPrimitive {
     ~KstMatrix();
     
   public:
-    void change(KstObjectTag tag, uint nX, uint nY, double minX, double minY,
+    void change(const KstObjectTag& tag, uint nX, uint nY, double minX, double minY,
         double stepX, double stepY);
 
     // Return the sample count (x times y) of the matrix
