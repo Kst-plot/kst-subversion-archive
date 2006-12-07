@@ -30,7 +30,7 @@ KST_KEY_DATAOBJECT_PLUGIN( convolve )
 K_EXPORT_COMPONENT_FACTORY( kstobject_convolve,
     KGenericFactory<Convolve>( "kstobject_convolve" ) )
 
-Convolve::Convolve( QObject */*parent*/, const char */*name*/, const QStringList &/*args*/ )
+Convolve::Convolve( QObject * /*parent*/, const char * /*name*/, const QStringList &/*args*/ )
     : KstBasicPlugin() {
 }
 
