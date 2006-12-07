@@ -109,7 +109,7 @@ bool Convolve::algorithm() {
     // handle the case where the response function has an odd number of points...
     //
     if (iResponseMidpoint % 2 == 1) {
-      pdResponse[iResponseMidpoint]           = response->value()[response->length()];
+      pdResponse[iResponseMidpoint]           = response->value()[response->length()-1];
     }
 
     //
