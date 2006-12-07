@@ -1,12 +1,12 @@
-installdir=$(kde_moduledir)/kstplugins
-INCLUDES=-I$(srcdir)/../../../kst $(all_includes)
+INCLUDES=-I$(top_srcdir)/kst -I$(top_srcdir)/kst/src/libkst -I$(top_srcdir)/kst/src/libkstmath $(all_includes)
 
-install_LTLIBRARIES = autocorrelate.la
+kde_module_LTLIBRARIES=kstobject_autocorrelate.la
 
-autocorrelate_la_LDFLAGS = -module $(KDE_PLUGIN) $(all_libraries)
-autocorrelate_la_LIBADD = $(GSL_LIBS)
-autocorrelate_la_SOURCES = autocorrelate.cpp
+kstobject_autocorrelate_la_LDFLAGS=$(all_libraries) -module -avoid-version
+kstobject_autocorrelate_la_SOURCES=autocorrelate.cpp
+kstobject_autocorrelate_la_LIBADD = $(GSL_LIBS)
+
+services_DATA=kstobject_autocorrelate.desktop
+servicesdir=$(kde_servicesdir)/kst
 
 METASOURCES=AUTO
-
-install_DATA=autocorrelate.xml

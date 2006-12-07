@@ -20,6 +20,8 @@
 
 #include <stdio.h>
 #include <math.h>
+#include <ksdebug.h>
+
 
 FitsimageSource::FitsimageSource(KConfig *cfg, const QString& filename, const QString& type)
 : KstDataSource(cfg, filename, type) {
@@ -108,7 +110,8 @@ int FitsimageSource::readMatrix(KstMatrixData* data,
                                      int yStart, int xNumSteps,
                                      int yNumSteps) {
   long n_axes[2],  fpixel[2] = {1, 1};
-  double nullval = 0;
+  double nullval = NAN;
+  double blank = 0.0;
   long n_elements;
   int i,  px, py,  anynull,  ni;
   int y0, y1, x0, x1;
@@ -129,6 +132,22 @@ int FitsimageSource::readMatrix(KstMatrixData* data,
 
   fits_read_pix( _fptr,  TDOUBLE, fpixel, n_elements,
                  &nullval, buffer, &anynull,  &status );
+  
+  // Check to see if the file is using the BLANK keyword
+  // to indicate the NULL value for the image.  This is
+  // not correct useage for floating point images, but 
+  // it is used frequently nonetheless... 
+  fits_read_key(_fptr, TDOUBLE, "BLANK", &blank, NULL, &status );
+  if (status) { //keyword does not exist, ignore it
+    status = 0;
+  } else { //keyword is used, replace pixels with this value
+    double epsilon = fabs(1e-4 * blank);
+    for (long j = 0; j < n_elements; j++) {
+      if (fabs(buffer[j]-blank) < epsilon) {
+        buffer[j] = NAN;
+      }
+    }
+  }
 
   y0 = yStart;
   y1 = yStart+yNumSteps;

@@ -1,11 +1,11 @@
-installdir=$(kde_moduledir)/kstplugins
-INCLUDES=-I$(srcdir)/../../../kst $(all_includes)
+INCLUDES=-I$(top_srcdir)/kst -I$(top_srcdir)/kst/src/libkst -I$(top_srcdir)/kst/src/libkstmath $(all_includes)
 
-install_LTLIBRARIES=cumulative_sum.la
+kde_module_LTLIBRARIES=kstobject_cumulative_sum.la
 
-cumulative_sum_la_LDFLAGS=-module $(KDE_PLUGIN)
-cumulative_sum_la_SOURCES=cumulative_sum.c
+kstobject_cumulative_sum_la_LDFLAGS=$(all_libraries) -module -avoid-version
+kstobject_cumulative_sum_la_SOURCES=cumulative_sum.cpp
+
+services_DATA=kstobject_cumulative_sum.desktop
+servicesdir=$(kde_servicesdir)/kst
 
 METASOURCES=AUTO
-
-install_DATA=cumulative_sum.xml

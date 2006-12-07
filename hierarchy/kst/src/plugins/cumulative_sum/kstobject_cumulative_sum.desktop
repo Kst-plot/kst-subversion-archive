@@ -1,0 +1,9 @@
+[Desktop Entry]
+Encoding=UTF-8
+Type=Service
+ServiceTypes=Kst Data Object
+X-KDE-ModuleType=Plugin
+X-KDE-Library=kstobject_cumulative_sum
+X-Kst-Plugin-Author=Nicolas Brisset
+Name=Cumulative sum (integral)
+Comment=Computes the cumulative sum (integral) of the input vector.

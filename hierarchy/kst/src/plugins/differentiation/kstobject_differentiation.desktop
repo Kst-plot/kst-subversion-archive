@@ -1,0 +1,9 @@
+[Desktop Entry]
+Encoding=UTF-8
+Type=Service
+ServiceTypes=Kst Data Object
+X-KDE-ModuleType=Plugin
+X-KDE-Library=kstobject_differentiation
+X-Kst-Plugin-Author=Dimitri Garbi
+Name=Fixed-step differentiation
+Comment=Computes the discrete derivative of an input vector

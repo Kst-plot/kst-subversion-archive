@@ -89,80 +89,80 @@ bool Convolve::algorithm() {
   }
   iLength = iLengthNew;
 
-  if (iLength > 0) {
-    pdResponse = new double[iLength];
-    pdConvolve = new double[iLength];
-    if (pdResponse != NULL && pdConvolve != NULL) {
-      //
-      // sort the response function into wrap-around order...
-      //
-      memset( pdResponse, 0, iLength * sizeof( double ) );
+  if (iLength <= 0)
+    return false;
 
-      for (int i = 0; i < iResponseMidpoint; i++) {
-        pdResponse[i]                           = response->value()[iResponseMidpoint+i];
-        pdResponse[iLength-iResponseMidpoint+i] = response->value()[i];
-      }
+  pdResponse = new double[iLength];
+  pdConvolve = new double[iLength];
+  if (pdResponse != NULL && pdConvolve != NULL) {
+    //
+    // sort the response function into wrap-around order...
+    //
+    memset( pdResponse, 0, iLength * sizeof( double ) );
 
-      //
-      // handle the case where the response function has an odd number of points...
-      //
-      if (iResponseMidpoint % 2 == 1) {
-        pdResponse[iResponseMidpoint]           = response->value()[response->length()];
-      }
+    for (int i = 0; i < iResponseMidpoint; i++) {
+      pdResponse[i]                           = response->value()[iResponseMidpoint+i];
+      pdResponse[iLength-iResponseMidpoint+i] = response->value()[i];
+    }
 
-      //
-      // zero-pad the convolve array...
-      //
-      memset( pdConvolve, 0, iLength * sizeof( double ) );
-      memcpy( pdConvolve, convolve->value(), convolve->length() * sizeof( double ) );
+    //
+    // handle the case where the response function has an odd number of points...
+    //
+    if (iResponseMidpoint % 2 == 1) {
+      pdResponse[iResponseMidpoint]           = response->value()[response->length()];
+    }
 
-      //
-      // calculate the FFTs of the two functions...
-      //
-      if (gsl_fft_real_radix2_transform( pdResponse, 1, iLength ) == 0) {
-        if (gsl_fft_real_radix2_transform( pdConvolve, 1, iLength ) == 0) {
-          //
-          // multiply the FFTs together...
-          //
-          for (int i=0; i < iLength/2; i++) {
-            if (i==0 || i==(iLength/2)-1) {
-              pdResponse[i] = pdResponse[i] * pdConvolve[i];
-            } else {
-              dReal = pdResponse[i] * pdConvolve[i] - pdResponse[iLength-i] * pdConvolve[iLength-i];
-              dImag = pdResponse[i] * pdConvolve[iLength-i] + pdResponse[iLength-i] * pdConvolve[i];
+    //
+    // zero-pad the convolve array...
+    //
+    memset( pdConvolve, 0, iLength * sizeof( double ) );
+    memcpy( pdConvolve, convolve->value(), convolve->length() * sizeof( double ) );
 
-              pdResponse[i]         = dReal;
-              pdResponse[iLength-i] = dImag;
-            }
+    //
+    // calculate the FFTs of the two functions...
+    //
+    if (gsl_fft_real_radix2_transform( pdResponse, 1, iLength ) == 0) {
+      if (gsl_fft_real_radix2_transform( pdConvolve, 1, iLength ) == 0) {
+        //
+        // multiply the FFTs together...
+        //
+        for (int i=0; i < iLength/2; i++) {
+          if (i==0 || i==(iLength/2)-1) {
+            pdResponse[i] = pdResponse[i] * pdConvolve[i];
+          } else {
+            dReal = pdResponse[i] * pdConvolve[i] - pdResponse[iLength-i] * pdConvolve[iLength-i];
+            dImag = pdResponse[i] * pdConvolve[iLength-i] + pdResponse[iLength-i] * pdConvolve[i];
+
+            pdResponse[i]         = dReal;
+            pdResponse[iLength-i] = dImag;
+          }
+        }
+
+        //
+        // do the inverse FFT...
+        //
+        if (gsl_fft_halfcomplex_radix2_inverse( pdResponse, 1, iLength) == 0) {
+          if (convolved->length() != convolve->length()) {
+            pdResult = (double*)realloc( convolved->value(), convolve->length() * sizeof( double ) );
+          } else {
+            pdResult = convolved->value();
           }
 
-          //
-          // do the inverse FFT...
-          //
-          if (gsl_fft_halfcomplex_radix2_inverse( pdResponse, 1, iLength) == 0 ) {
-            if (convolved->length() != convolve->length()) {
-              pdResult = (double*)realloc( convolved->value(), convolve->length() * sizeof( double ) );
-            } else {
-              pdResult = convolved->value();
+          if (pdResult != NULL) {
+            for (int i = 0; i < convolve->length(); ++i) {
+              convolved->value()[i] = pdResult[i];
             }
 
-            if (pdResult != NULL) {
-              for (int i = 0; i < convolve->length(); ++i) {
-                convolved->value()[i] = pdResult[i];
-              }
+            memcpy( pdResult, pdResponse, convolve->length() * sizeof( double ) );
 
-              memcpy( pdResult, pdResponse, convolve->length() * sizeof( double ) );
-
-              iReturn = true;
-            }
+            iReturn = true;
           }
         }
       }
-
-      delete[] pdResponse;
-      delete[] pdConvolve;
     }
   }
+  delete[] pdResponse;
+  delete[] pdConvolve;
 
   return iReturn;
 }
