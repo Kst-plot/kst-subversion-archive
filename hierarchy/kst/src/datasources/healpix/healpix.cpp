@@ -661,8 +661,8 @@ int HealpixSource::readMatrix(KstMatrixData* data, const QString& matrix, int xS
     float *datavec;
     int *pixvec;
     float *mapdata;
-    float nullval;
-    int nnull;
+    float nullval = 0.0;
+    int nnull = 0;
     int keynpix;
     int keyfirst;
     int ischunk;

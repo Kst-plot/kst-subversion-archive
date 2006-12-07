@@ -86,10 +86,16 @@ bool NetcdfSource::initFile() {
   int globalAttributesNb = _ncfile->num_atts();
   for (int i = 0; i < globalAttributesNb; ++i) {
     // Get only first value, should be enough for a start especially as strings are complete
-    QString attrName = QString(_ncfile->get_att(i)->name());
-    QString attrValue = QString(_ncfile->get_att(i)->as_string(0));
-    KstString *ms = new KstString(KstObjectTag(attrName, tag()), this, attrValue);
-    _metaData.insert(attrName, ms);
+    NcAtt *att = _ncfile->get_att(i);
+    if (att) {
+      QString attrName = QString(att->name());
+      char *attString = att->as_string(0);
+      QString attrValue = QString(att->as_string(0));
+      delete[] attString;
+      KstString *ms = new KstString(KstObjectTag(attrName, tag()), this, attrValue);
+      _metaData.insert(attrName, ms);
+    }
+    delete att;
   }
   
   update(); // necessary?  slows down initial loading
@@ -124,7 +130,7 @@ KstObject::UpdateType NetcdfSource::update(int u) {
 int NetcdfSource::readField(double *v, const QString& field, int s, int n) {
   NcType dataType = ncNoType; /* netCDF data type */
   /* Values for one record */
-  NcValues *record;// = new NcValues(dataType,numFrameVals);
+  NcValues *record = 0;// = new NcValues(dataType,numFrameVals);
 
   // kstdDebug() << "Entering NetcdfSource::readField with params: " << field << ", from " << s << " for " << n << " frames" << endl;
 
@@ -141,7 +147,7 @@ int NetcdfSource::readField(double *v, const QString& field, int s, int n) {
   }
 
   /* For a variable from the netCDF file */
-  NcVar *var = _ncfile->get_var(field.latin1());
+  NcVar *var = _ncfile->get_var(field.latin1());  // var is owned by _ncfile
   if (!var) {
     kstdDebug() << "Queried field " << field << " which can't be read" << endl;
     return -1;
@@ -162,12 +168,14 @@ int NetcdfSource::readField(double *v, const QString& field, int s, int n) {
         if (oneSample) {
           record = var->get_rec(s);
           v[0] = record->as_short(0);
+          delete record;
         } else {
           for (int i = 0; i < n; i++) {
             record = var->get_rec(i+s);
             for (int j = 0; j < recSize; j++) {
               v[i*recSize + j] = record->as_short(j);
             }
+            delete record;
           }
         }
       }	
@@ -178,6 +186,7 @@ int NetcdfSource::readField(double *v, const QString& field, int s, int n) {
         if (oneSample) {
           record = var->get_rec(s);
           v[0] = record->as_int(0);
+          delete record;
         } else {
           for (int i = 0; i < n; i++) {
             record = var->get_rec(i+s);
@@ -185,6 +194,7 @@ int NetcdfSource::readField(double *v, const QString& field, int s, int n) {
             for (int j = 0; j < recSize; j++) {
               v[i*recSize + j] = record->as_int(j);
             }
+            delete record;
           }
         }
       }
@@ -195,12 +205,14 @@ int NetcdfSource::readField(double *v, const QString& field, int s, int n) {
         if (oneSample) {
           record = var->get_rec(s);
           v[0] = record->as_float(0);
+          delete record;
         } else {
           for (int i = 0; i < n; i++) {
             record = var->get_rec(i+s);
             for (int j = 0; j < recSize; j++) {
               v[i*recSize + j] = record->as_float(j);
             }
+            delete record;
           }
         }
       } 
@@ -211,12 +223,14 @@ int NetcdfSource::readField(double *v, const QString& field, int s, int n) {
         if (oneSample) {
           record = var->get_rec(s);
           v[0] = record->as_double(0);
+          delete record;
         } else {
           for (int i = 0; i < n; i++) {
             record = var->get_rec(i+s);
             for (int j = 0; j < recSize; j++) {
               v[i*recSize + j] = record->as_double(j);
             }
+            delete record;
           }
         }
       }
