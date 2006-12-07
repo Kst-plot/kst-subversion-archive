@@ -145,6 +145,7 @@ bool KstEqDialogI::newObject() {
   QString tag_name = _tagName->text();
   QString etext = _w->_equation->text();
   etext.remove(QRegExp("[^a-zA-Z0-9\\(\\)\\+\\-\\*/\\%\\^\\|\\&\\!<>=_.]"));
+  etext.replace(KstObjectTag::tagSeparator, "_");
   if (etext.length() > 12) {
     etext.truncate(12);
     etext += "...";
