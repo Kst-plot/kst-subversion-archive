@@ -41,15 +41,15 @@ KstCPlugin::KstCPlugin()
 }
 
 
-KstCPlugin::KstCPlugin(const QDomElement& e)
-: KstDataObject(e) {
+KstCPlugin::KstCPlugin(const QDomElement& pluginElement)
+: KstDataObject(pluginElement) {
   QString pluginName;
 
   _inStringCnt = 0;
   _outStringCnt = 0;
   commonConstructor();
 
-  QDomNode n = e.firstChild();
+  QDomNode n = pluginElement.firstChild();
 
   while (!n.isNull()) {
     QDomElement e = n.toElement();
