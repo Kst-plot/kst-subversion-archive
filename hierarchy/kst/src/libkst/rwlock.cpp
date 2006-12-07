@@ -166,6 +166,7 @@ bool KstRWLock::isLocked() const {
   return (_readCount > 0 || _writeCount > 0);
 #else
 #error isLocked() not supported using the single lock
+  return false;
 #endif
 }
 
@@ -185,6 +186,7 @@ bool KstRWLock::isLockedByMe() const {
   }
 #else
 #error isLockedByMe() not supported using the single lock
+  return false;
 #endif
 }
 // vim: ts=2 sw=2 et
