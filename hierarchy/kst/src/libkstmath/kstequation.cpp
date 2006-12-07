@@ -227,7 +227,7 @@ KstObject::UpdateType KstEquation::update(int update_counter) {
 void KstEquation::save(QTextStream &ts, const QString& indent) {
   QString l2 = indent + "  ";
   ts << indent << "<equationobject>" << endl;
-  ts << l2 << "<tag>" << QStyleSheet::escape(tagName()) << "</tag>" << endl;
+  ts << l2 << "<tag>" << QStyleSheet::escape(tag().tagString()) << "</tag>" << endl;
 
   // Reparse the equation, then write it back out in text so that we can update
   // any vectors or scalars that had name changes, but we don't get affected by
