@@ -70,15 +70,15 @@ class KstObjectTag {
     }
 
     // construct a tag in the context of another tag
-    KstObjectTag(const QString& tag, KstObjectTag contextTag,
-        unsigned int minDisplayComponents = 2) : _tag(cleanTag(tag)),
-                                                 _context(contextTag.fullTag()),
-                                                 _minDisplayComponents(minDisplayComponents),
-                                                 _uniqueDisplayComponents(UINT_MAX)
+    KstObjectTag(const QString& tag, const KstObjectTag& contextTag) :
+      _uniqueDisplayComponents(UINT_MAX)
     {
+      _tag = cleanTag(tag);
+      _context = contextTag.fullTag();
+      _minDisplayComponents = 1 + contextTag._minDisplayComponents;
     }
 
-    KstObjectTag(KstObjectTag tag, KstObjectTag contextTag, unsigned int minDisplayComponentsFromContext = 1) :
+    KstObjectTag(const KstObjectTag& tag, const KstObjectTag& contextTag, unsigned int minDisplayComponentsFromContext = 1) :
       _uniqueDisplayComponents(UINT_MAX)
     {
       _tag = tag._tag;
@@ -164,6 +164,10 @@ class KstObjectTag {
 
     bool operator==(const KstObjectTag& tag) {
       return (_tag == tag._tag && _context == tag._context);
+    }
+
+    bool operator!=(const KstObjectTag& tag) {
+      return (_tag != tag._tag || _context != tag._context);
     }
 
   private:
