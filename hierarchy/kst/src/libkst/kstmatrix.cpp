@@ -53,8 +53,6 @@ KstMatrix::KstMatrix(KstObjectTag in_tag, KstObject *provider, uint nX, uint nY,
   _editable = false;
   _saveable = false;
 
-  // must create scalars before setting tag name // FIXME: why?
-  createScalars();
   QString _tag = in_tag.tag();
   if (!in_tag.isValid()) {
     QString nt = i18n("Anonymous Matrix %1");
@@ -66,6 +64,8 @@ KstMatrix::KstMatrix(KstObjectTag in_tag, KstObject *provider, uint nX, uint nY,
   } else {
     KstObject::setTagName(KST::suggestUniqueMatrixTag(in_tag));
   }
+
+  createScalars();
   setDirty();
 
   KST::matrixList.lock().writeLock();
