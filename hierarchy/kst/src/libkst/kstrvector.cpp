@@ -106,7 +106,9 @@ KstRVector::KstRVector(const QDomElement &e, const QString &o_file,
     in_file = in_provider;
   }
   if (in_file) {
-    setTagName(KstObjectTag(tag(), in_file->tag(), 0));
+    // use datasource as tag context for this RVector
+    // allow unique vector names to be displayed at top-level
+    setTagName(KstObjectTag(tag().tag(), in_file->tag(), false));
   }
 
   if (o_n > -2) {

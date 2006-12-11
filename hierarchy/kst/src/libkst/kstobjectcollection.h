@@ -18,7 +18,7 @@
 #ifndef KSTOBJECTCOLLECTION_H
 #define KSTOBJECTCOLLECTION_H
 
-// NAMEDEBUG: 0 for no debug, 1 for some debug, 2 for all debug
+// NAMEDEBUG: 0 for no debug, 1 for some debug, 2 for more debug, 3 for all debug
 #define NAMEDEBUG 2
 
 #include "ksdebug.h"
@@ -628,7 +628,7 @@ QValueList<KstObjectTreeNode<T> *> KstObjectCollection<T>::relatedNodes(T *o) {
     return nodes;
   }
 
-#if NAMEDEBUG > 1
+#if NAMEDEBUG > 2
   kstdDebug() << "Looking for related nodes to \"" << o->tag().tagString() << "\"" << endl; 
 #endif
 
@@ -639,7 +639,7 @@ QValueList<KstObjectTreeNode<T> *> KstObjectCollection<T>::relatedNodes(T *o) {
       QValueList<KstObjectTreeNode<T> *> nodeList = _index[*i];
       for (typename QValueList<KstObjectTreeNode<T> *>::ConstIterator i2 = nodeList.begin(); i2 != nodeList.end(); ++i2) {
         if ((*i2)->object() && (*i2)->object() != o && !nodes.contains(*i2)) {
-#if NAMEDEBUG > 1
+#if NAMEDEBUG > 2
           kstdDebug() << "Found related node to \"" << o->tag().tagString() << "\": \"" << (*i2)->object()->tag().tagString() << "\"" << endl; 
 #endif
           nodes << (*i2);

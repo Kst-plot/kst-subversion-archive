@@ -178,7 +178,7 @@ void KstEventMonitorI::disableELOG() {
 bool KstEventMonitorI::newObject() {
   QString tag_name = _tagName->text();
   tag_name.replace("<New_Event>", _w->lineEditEquation->text());
-  tag_name.replace(KstObjectTag::tagSeparator, "_");
+  tag_name.replace(KstObjectTag::tagSeparator, KstObjectTag::tagSeparatorReplacement);
 
   // verify that the event name is unique
   if (KstData::self()->dataTagNameNotUnique(tag_name)) {

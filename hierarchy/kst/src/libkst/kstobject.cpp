@@ -19,7 +19,9 @@
 #include "kstobject.h"
 
 /** Tag globals */
-const QString KstObjectTag::tagSeparator = QString("/");
+const QChar KstObjectTag::tagSeparator = QChar('/');
+const QChar KstObjectTag::tagSeparatorReplacement = QChar('_');
+
 const QStringList KstObjectTag::globalTagContext = QStringList();
 const QStringList KstObjectTag::constantTagContext = QStringList("CONSTANTS");
 

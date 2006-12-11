@@ -54,7 +54,8 @@ class KstObjectTag {
   public:
     static const KstObjectTag invalidTag;
 
-    static const QString tagSeparator;
+    static const QChar tagSeparator;
+    static const QChar tagSeparatorReplacement;
 
     static const QStringList globalTagContext;
     static const QStringList constantTagContext;
@@ -70,20 +71,12 @@ class KstObjectTag {
     }
 
     // construct a tag in the context of another tag
-    KstObjectTag(const QString& tag, const KstObjectTag& contextTag) :
+    KstObjectTag(const QString& tag, const KstObjectTag& contextTag, bool alwaysShowContext = true) :
       _uniqueDisplayComponents(UINT_MAX)
     {
       _tag = cleanTag(tag);
       _context = contextTag.fullTag();
-      _minDisplayComponents = 1 + contextTag._minDisplayComponents;
-    }
-
-    KstObjectTag(const KstObjectTag& tag, const KstObjectTag& contextTag, unsigned int minDisplayComponentsFromContext = 1) :
-      _uniqueDisplayComponents(UINT_MAX)
-    {
-      _tag = tag._tag;
-      _context = contextTag.fullTag() + tag.context();
-      _minDisplayComponents = tag.components() + minDisplayComponentsFromContext;
+      _minDisplayComponents = 1 + (alwaysShowContext ? KMAX(contextTag._minDisplayComponents, (unsigned int)1) : 0);
     }
 
     // construct a tag from a fullTag representation
@@ -174,7 +167,7 @@ class KstObjectTag {
     static QString cleanTag(const QString& in_tag) {
       if (in_tag.contains(tagSeparator)) {
         QString tag = in_tag;
-        tag.replace(tagSeparator, "-");
+        tag.replace(tagSeparator, tagSeparatorReplacement);
         kstdWarning() << "cleaning tag name containing " << tagSeparator << ":\"" << in_tag << "\" -> \"" << tag << "\"" << endl;
         return tag;
       } else {
