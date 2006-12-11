@@ -520,6 +520,8 @@ QString KstCPlugin::propertyString() const {
 
 bool KstCPlugin::setPlugin(KstSharedPtr<Plugin> plugin) {
   // Assumes that this is called with a write lock in place on this object
+  Q_ASSERT(myLockStatus() == KstRWLock::WRITELOCKED);
+
   if (plugin == _plugin) {
     return true;
   }
@@ -593,6 +595,7 @@ bool KstCPlugin::setPlugin(KstSharedPtr<Plugin> plugin) {
 
   allocateParameters();
   _plugin = plugin;
+
   return true;
 }
 
@@ -650,7 +653,7 @@ void KstCPlugin::createFitScalars() {
         if (!_outputScalars.contains(paramName)) {
           KstWriteLocker blockScalarUpdates(&KST::scalarList.lock());
           KstScalarPtr s = new KstScalar(KstObjectTag(paramName, tag()), this, scalarValue);
-          s->KstObject::writeLock();
+          //s->KstObject::writeLock();  // causes a deadlock
           _outputScalars.insert(paramName, s);
           ++_outScalarCnt;
         } else {

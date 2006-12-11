@@ -131,7 +131,7 @@ bool EventMonitorEntry::reparse() {
       _pExpression->collectObjects(_vectorsUsed, _inputScalars, stm);
 
       for (KstScalarMap::ConstIterator i = _inputScalars.begin(); i != _inputScalars.end(); ++i) {
-        if (!(*i)->isLockedByMe()) {
+        if ((*i)->myLockStatus() == KstRWLock::UNLOCKED) {
           (*i)->readLock();
         }
       }

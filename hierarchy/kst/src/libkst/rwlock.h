@@ -42,8 +42,10 @@ class KST_EXPORT KstRWLock {
 
     virtual void unlock() const;
 
-    virtual bool isLocked() const;
-    virtual bool isLockedByMe() const;
+    enum LockStatus {UNLOCKED, READLOCKED, WRITELOCKED};
+
+    virtual LockStatus lockStatus() const;
+    virtual LockStatus myLockStatus() const;
 
   protected:
 #ifdef ONE_LOCK_TO_RULE_THEM_ALL

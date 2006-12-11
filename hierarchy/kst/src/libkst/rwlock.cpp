@@ -161,32 +161,41 @@ void KstRWLock::unlock() const {
 }
 
 
-bool KstRWLock::isLocked() const {
+KstRWLock::LockStatus KstRWLock::lockStatus() const {
 #ifndef ONE_LOCK_TO_RULE_THEM_ALL
-  return (_readCount > 0 || _writeCount > 0);
+  QMutexLocker lock(&_mutex);
+
+  if (_writeCount > 0) {
+    return WRITELOCKED;
+  } else if (_readCount > 0) {
+    return READLOCKED;
+  } else {
+    return UNLOCKED;
+  }
 #else
-#error isLocked() not supported using the single lock
-  return false;
+#error lockStatus() not supported using the single lock
+  return UNLOCKED;
 #endif
 }
 
 
-bool KstRWLock::isLockedByMe() const {
+KstRWLock::LockStatus KstRWLock::myLockStatus() const {
 #ifndef ONE_LOCK_TO_RULE_THEM_ALL
   QMutexLocker lock(&_mutex);
 
   Qt::HANDLE me = QThread::currentThread();
 
-  if (_readCount > 0) {
-    return (_readLockers.find(me) != _readLockers.end());
-  } else if (_writeCount > 0) {
-    return (_writeLocker == me);
-  } else if (_readCount == 0 && _writeCount == 0) {
-    return false;
+  if (_writeCount > 0 && _writeLocker == me) {
+    return WRITELOCKED;
+  } else if (_readCount > 0 && _readLockers.find(me) != _readLockers.end()) {
+    return READLOCKED;
+  } else {
+    return UNLOCKED;
   }
 #else
-#error isLockedByMe() not supported using the single lock
-  return false;
+#error myLockStatus() not supported using the single lock
+  return UNLOCKED;
 #endif
 }
+
 // vim: ts=2 sw=2 et
