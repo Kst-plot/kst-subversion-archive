@@ -49,11 +49,12 @@ void VectorSelector::update()
     }
     QStringList vectors;
     KST::vectorList.lock().readLock();
+    kstdDebug() << "Populating Vector Selector" << endl;
     for (KstVectorList::ConstIterator i = KST::vectorList.begin(); i != KST::vectorList.end(); ++i) {
 	(*i)->readLock();
 	if (!(*i)->isScalarList()){
 	    QString tag = (*i)->tag().displayString();
-	    kstdDebug() << "AAAAA: \"" << (*i)->tag().tagString() << "\": has display name \"" << (*i)->tag().displayString() << "\"" << endl;
+	    kstdDebug() << "vector \"" << (*i)->tag().tagString() << "\": has display name \"" << (*i)->tag().displayString() << "\"" << endl;
 	    vectors << tag;
 	    if (!found && tag == prev) {
 		found = true;

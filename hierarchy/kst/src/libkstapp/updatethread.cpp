@@ -54,6 +54,14 @@ void UpdateThread::run() {
   bool force;
   int  updateTime;
 
+#if UPDATEDEBUG > 0
+  kstdDebug() << "Update thread running, tid=" << (int)QThread::currentThread() << endl;
+#if UPDATEDEBUG > 2
+  kstdDebug() << "dataObjectList lock is at " << (void*)(&KST::dataObjectList.lock()) << endl;
+  kstdDebug() << "dataSourceList lock is at " << (void*)(&KST::dataSourceList.lock()) << endl;
+#endif
+#endif
+
   _done = false;
 
   while (!_done) {
@@ -168,11 +176,11 @@ bool UpdateThread::doUpdates(bool force, bool *gotData) {
     // Update all curves
     for (uint i = 0; i < cl.count(); ++i) {
       KstBaseCurvePtr bcp = cl[i];
+      bcp->writeLock();
       assert(bcp.data());
 #if UPDATEDEBUG > 1
       kstdDebug() << "updating curve: " << (void*)bcp << " - " << bcp->tagName() << endl;
 #endif
-      bcp->writeLock();
       KstObject::UpdateType ut = bcp->update(_updateCounter);
       bcp->unlock();
 
@@ -200,11 +208,11 @@ bool UpdateThread::doUpdates(bool force, bool *gotData) {
     // Update all data objects
     for (uint i = 0; i < dol.count(); ++i) {
       KstDataObjectPtr dp = dol[i];
+      dp->writeLock();
       assert(dp.data());
 #if UPDATEDEBUG > 1
       kstdDebug() << "updating data object: " << (void*)dp << " - " << dp->tagName() << endl;
 #endif
-      dp->writeLock();
       dp->update(_updateCounter);
       dp->unlock();
 

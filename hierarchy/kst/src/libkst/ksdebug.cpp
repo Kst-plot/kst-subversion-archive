@@ -18,6 +18,8 @@
     Boston, MA 02111-1307, USA.
 */
 
+//#define THREADDEBUG
+
 #include "ksdebug.h"
 
 #ifdef NDEBUG
@@ -44,6 +46,7 @@
 #include <qsize.h>
 #include <qstring.h>
 #include <qstringlist.h>
+#include <qthread.h>
 
 #include <kurl.h>
 
@@ -246,6 +249,11 @@ static void kstDebugBackend( unsigned short nLevel, unsigned int nArea, const ch
   char buf[BUFSIZE];
   if ( !kstDebug_data->aAreaName.isEmpty() ) {
       strlcpy( buf, kstDebug_data->aAreaName.data(), BUFSIZE );
+#ifdef THREADDEBUG
+      char tid[22];
+      snprintf(tid, 22, " %d", (int)QThread::currentThread());
+      strlcat( buf, tid, BUFSIZE );
+#endif
       strlcat( buf, ": ", BUFSIZE );
       strlcat( buf, data, BUFSIZE );
   }
