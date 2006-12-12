@@ -19,7 +19,7 @@
 #define KSTOBJECTCOLLECTION_H
 
 // NAMEDEBUG: 0 for no debug, 1 for some debug, 2 for more debug, 3 for all debug
-#define NAMEDEBUG 2
+#define NAMEDEBUG 0
 
 #include "ksdebug.h"
 #include "kstobject.h"
@@ -541,7 +541,7 @@ typename KstObjectList<KstSharedPtr<T> >::Iterator KstObjectCollection<T>::findT
     // previously, output vectors of equations, PSDs, etc. were named PSD1-ABCDE-freq
     // now, they are PSD1-ABCDE/freq
     QString newTag = x;
-    newTag.replace(newTag.findRev('-'), 1, '/');
+    newTag.replace(newTag.findRev(KstObjectTag::tagSeparatorReplacement), 1, KstObjectTag::tagSeparator);
     obj = retrieveObject(KstObjectTag::fromString(newTag));
     if (obj) {
       return _list.find(obj);
@@ -560,7 +560,7 @@ typename KstObjectList<KstSharedPtr<T> >::ConstIterator KstObjectCollection<T>::
     // previously, output vectors of equations, PSDs, etc. were named PSD1-ABCDE-freq
     // now, they are PSD1-ABCDE/freq
     QString newTag = x;
-    newTag.replace(newTag.findRev('-'), 1, '/');
+    newTag.replace(newTag.findRev(KstObjectTag::tagSeparatorReplacement), 1, KstObjectTag::tagSeparator);
     obj = retrieveObject(KstObjectTag::fromString(newTag));
     if (obj) {
       return _list.find(obj);
