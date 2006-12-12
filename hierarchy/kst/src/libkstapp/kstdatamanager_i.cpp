@@ -663,6 +663,7 @@ void KstDataManagerI::update() {
   for (KstDataObjectList::iterator it = KST::dataObjectList.begin();
                                     it != KST::dataObjectList.end();
                                                                ++it) {
+    KstReadLocker dol(*it);
     bool found = false;
     for (QListViewItem *i = DataView->firstChild(); i; i = i->nextSibling()) {
       KstObjectItem *oi = static_cast<KstObjectItem*>(i);
@@ -678,13 +679,12 @@ void KstDataManagerI::update() {
     }
   }
 
-  KST::matrixList.lock().unlock();
-  KST::vectorList.lock().unlock();
   KST::dataObjectList.lock().unlock();
 
   // update the data vectors
   KstRVectorList rvl = kstObjectSubList<KstVector,KstRVector>(KST::vectorList);
   for (KstRVectorList::iterator it = rvl.begin(); it != rvl.end(); ++it) {
+    KstReadLocker vl(*it);
     bool found = false;
     for (QListViewItem *i = DataView->firstChild(); i; i = i->nextSibling()) {
       KstObjectItem *oi = static_cast<KstObjectItem*>(i);
@@ -703,6 +703,7 @@ void KstDataManagerI::update() {
   // update the static vectors
   KstSVectorList svl = kstObjectSubList<KstVector,KstSVector>(KST::vectorList);
   for (KstSVectorList::iterator it = svl.begin(); it != svl.end(); ++it) {
+    KstReadLocker vl(*it);
     bool found = false;
     for (QListViewItem *i = DataView->firstChild(); i; i = i->nextSibling()) {
       KstObjectItem *oi = static_cast<KstObjectItem*>(i);
@@ -718,9 +719,12 @@ void KstDataManagerI::update() {
     }
   }
 
+  KST::vectorList.lock().unlock();
+
   // update the data matrices 
   KstRMatrixList rml = kstObjectSubList<KstMatrix,KstRMatrix>(KST::matrixList);
   for (KstRMatrixList::iterator it = rml.begin(); it != rml.end(); ++it) {
+    KstReadLocker ml(*it);
     bool found = false;
     for (QListViewItem *i = DataView->firstChild(); i; i = i->nextSibling()) {
       KstObjectItem *oi = static_cast<KstObjectItem*>(i);
@@ -739,6 +743,7 @@ void KstDataManagerI::update() {
   // update the static matrices
   KstSMatrixList sml = kstObjectSubList<KstMatrix,KstSMatrix>(KST::matrixList);
   for (KstSMatrixList::iterator it = sml.begin(); it != sml.end(); ++it) {
+    KstReadLocker ml(*it);
     bool found = false;
     for (QListViewItem *i = DataView->firstChild(); i; i = i->nextSibling()) {
       KstObjectItem *oi = static_cast<KstObjectItem*>(i);
@@ -753,6 +758,8 @@ void KstDataManagerI::update() {
       connect(i, SIGNAL(updated()), this, SLOT(doUpdates()));
     }
   }
+
+  KST::matrixList.lock().unlock();
 
   // is this really necessary?  I would think not...
   for (QListViewItem *i = DataView->firstChild(); i; i = i->nextSibling()) {

@@ -386,15 +386,15 @@ void KstPluginDialogI::restoreInputs(const QValueList<Plugin::Data::IOValue>& ta
 bool KstPluginDialogI::saveInputs(KstCPluginPtr plugin, KstSharedPtr<Plugin> p) {
   bool rc = true;
 
-  KST::vectorList.lock().readLock();
-  KST::scalarList.lock().readLock();
-  KST::stringList.lock().readLock();
+  KST::scalarList.lock().writeLock();
+  KST::stringList.lock().writeLock();
   const QValueList<Plugin::Data::IOValue>& itable = p->data()._inputs;
   for (QValueList<Plugin::Data::IOValue>::ConstIterator it = itable.begin(); it != itable.end(); ++it) {
     if ((*it)._type == Plugin::Data::IOValue::TableType) {
       QObject *field = _w->_pluginInputOutputFrame->child((*it)._name.latin1(), "VectorSelector");
       assert(field);
       VectorSelector *vs = static_cast<VectorSelector*>(field);
+      KstReadLocker vl(&KST::vectorList.lock());
       KstVectorPtr v = *KST::vectorList.findTag(vs->selectedVector());
       if (v) {
         v->writeLock(); // to match with plugin->writeLock()
@@ -410,6 +410,7 @@ bool KstPluginDialogI::saveInputs(KstCPluginPtr plugin, KstSharedPtr<Plugin> p) 
       QObject *field = _w->_pluginInputOutputFrame->child((*it)._name.latin1(), "StringSelector");
       assert(field);
       StringSelector *ss = static_cast<StringSelector*>(field);
+      KstWriteLocker sl(&KST::stringList.lock());
       KstStringPtr s = *KST::stringList.findTag(ss->selectedString());
       if (s == *KST::stringList.end()) {
         QString val = ss->_string->currentText();
@@ -432,6 +433,7 @@ bool KstPluginDialogI::saveInputs(KstCPluginPtr plugin, KstSharedPtr<Plugin> p) 
       QObject *field = _w->_pluginInputOutputFrame->child((*it)._name.latin1(), "ScalarSelector");
       assert(field);
       ScalarSelector *ss = static_cast<ScalarSelector*>(field);
+      KstWriteLocker sl(&KST::scalarList.lock());
       KstScalarPtr s = *KST::scalarList.findTag(ss->selectedScalar());
       if (s == *KST::scalarList.end()) {
         bool ok;
@@ -461,9 +463,6 @@ bool KstPluginDialogI::saveInputs(KstCPluginPtr plugin, KstSharedPtr<Plugin> p) 
     } else {
     }
   }
-  KST::stringList.lock().unlock();
-  KST::scalarList.lock().unlock();
-  KST::vectorList.lock().unlock();
 
   return rc;
 }
@@ -481,11 +480,7 @@ bool KstPluginDialogI::saveOutputs(KstCPluginPtr plugin, KstSharedPtr<Plugin> p)
     QLineEdit *li = static_cast<QLineEdit*>(field);
 
     if (li->text().isEmpty()) {
-      QString tagName = _tagName->text();
-      if (tagName==plugin_defaultTag) {
-        tagName = plugin->tagName();
-      }
-      li->setText(tagName + "-" + (*it)._name);
+      li->setText((*it)._name);
     }
 
     QString nt = li->text();
@@ -589,6 +584,13 @@ bool KstPluginDialogI::newObject() {
     if (pPtr) {
       plugin = new KstCPlugin;
       plugin->writeLock();
+
+      // set the tag name before any dependents are created
+      if (tagName == plugin_defaultTag) {
+        tagName = KST::suggestPluginName(_pluginList[pitem]);
+      }
+      plugin->setTagName(KstObjectTag(tagName, KstObjectTag::globalTagContext));
+
       if (!saveInputs(plugin, pPtr)) {
         KMessageBox::sorry(this, i18n("One or more of the inputs was undefined."));
         plugin->unlock();
@@ -598,10 +600,6 @@ bool KstPluginDialogI::newObject() {
 
       plugin->setPlugin(pPtr);
 
-      if (tagName == plugin_defaultTag) {
-        tagName = KST::suggestPluginName(_pluginList[pitem]);
-      }
-      plugin->setTagName(KstObjectTag(tagName, KstObjectTag::globalTagContext)); // FIXME: tag context?
       if (!saveOutputs(plugin, pPtr)) {
         KMessageBox::sorry(this, i18n("One or more of the outputs was undefined."));
         plugin->unlock();
