@@ -112,6 +112,7 @@ class KstObjectCollection {
 
   private:
     QValueList<KstObjectTreeNode<T> *> relatedNodes(T *obj);
+    void relatedNodesHelper(T *o, KstObjectTreeNode<T> *n, QValueList<KstObjectTreeNode<T> *>& nodes);
 
     // must be called AFTER the object is added to the index
     void updateDisplayComponents(T *obj);
@@ -357,6 +358,10 @@ bool KstObjectCollection<T>::removeObject(T *o) {
 }
 
 
+// Rename a KstObject in the collection.
+//
+// Updates the display components of all related objects. This can be somewhat
+// expensive, but it shouldn't happen very often.
 template <class T>
 void KstObjectCollection<T>::doRename(T *o, KstObjectTag newTag) {
   QValueList<KstObjectTreeNode<T> *> relNodes = relatedNodes(o);
@@ -618,8 +623,30 @@ void KstObjectCollection<T>::updateDisplayComponents(QValueList<KstObjectTreeNod
 }
 
 
-// Find the KstObjects which are affected by the addition or removal of an
-// object with the given tag.
+// recursion helper
+template <class T>
+void KstObjectCollection<T>::relatedNodesHelper(T *o, KstObjectTreeNode<T> *n, QValueList<KstObjectTreeNode<T> *>& nodes) {
+
+  if (n->object() && n->object() != o && !nodes.contains(n)) {
+#if NAMEDEBUG > 2
+          kstdDebug() << "Found related node to \"" << o->tag().tagString() << "\": \"" << n->object()->tag().tagString() << "\"" << endl; 
+#endif
+    nodes << n;
+  }
+
+  if (!n->children().isEmpty()) {
+    // non-leaf node, so recurse
+    QMap<QString, KstObjectTreeNode<T> *> children = n->children();
+    for (typename QMap<QString, KstObjectTreeNode<T> *>::ConstIterator i = children.begin(); i != children.end(); ++i) {
+      relatedNodesHelper(o, *i, nodes);
+    }
+  }
+}
+
+// Find the nodes with KstObjects which are affected by the addition or removal
+// of an object with the given tag.
+//
+// There should not be any duplicates in the returned list.
 template <class T>
 QValueList<KstObjectTreeNode<T> *> KstObjectCollection<T>::relatedNodes(T *o) {
   QValueList<KstObjectTreeNode<T> *> nodes;
@@ -638,12 +665,7 @@ QValueList<KstObjectTreeNode<T> *> KstObjectCollection<T>::relatedNodes(T *o) {
     if (_index.contains(*i)) {
       QValueList<KstObjectTreeNode<T> *> nodeList = _index[*i];
       for (typename QValueList<KstObjectTreeNode<T> *>::ConstIterator i2 = nodeList.begin(); i2 != nodeList.end(); ++i2) {
-        if ((*i2)->object() && (*i2)->object() != o && !nodes.contains(*i2)) {
-#if NAMEDEBUG > 2
-          kstdDebug() << "Found related node to \"" << o->tag().tagString() << "\": \"" << (*i2)->object()->tag().tagString() << "\"" << endl; 
-#endif
-          nodes << (*i2);
-        }
+        relatedNodesHelper(o, *i2, nodes);
       }
     }
   }
