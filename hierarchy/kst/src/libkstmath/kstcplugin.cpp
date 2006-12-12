@@ -653,7 +653,9 @@ void KstCPlugin::createFitScalars() {
         if (!_outputScalars.contains(paramName)) {
           KstWriteLocker blockScalarUpdates(&KST::scalarList.lock());
           KstScalarPtr s = new KstScalar(KstObjectTag(paramName, tag()), this, scalarValue);
-          //s->KstObject::writeLock();  // causes a deadlock
+          if (myLockStatus() == KstRWLock::READLOCKED) {
+            s->KstObject::writeLock();
+          }
           _outputScalars.insert(paramName, s);
           ++_outScalarCnt;
         } else {
