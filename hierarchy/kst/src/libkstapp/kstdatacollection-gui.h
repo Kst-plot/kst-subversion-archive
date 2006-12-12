@@ -30,6 +30,8 @@ class KstGuiData : public KstData {
     bool vectorTagNameNotUnique(const QString& tag, bool warn = true, void *parent = 0L);
     bool matrixTagNameNotUnique(const QString& tag, bool warn = true, void *parent = 0L);
 
+    bool viewObjectNameNotUnique(const QString& tag);
+
     void removeCurveFromPlots(KstBaseCurve *c); // no sharedptr here
 
     /** Save a vector to a file */

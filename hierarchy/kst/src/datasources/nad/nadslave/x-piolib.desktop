@@ -4,6 +4,7 @@ MimeType=application/x-piolib
 Icon=piolib
 DefaultApp=kst
 Comment=PIOlib database
+Comment[ca]=Base de dades PIOlib
 Comment[cs]=Databáze PIOlib
 Comment[da]=PIOlib-database
 Comment[de]=PIOlib Datenbank

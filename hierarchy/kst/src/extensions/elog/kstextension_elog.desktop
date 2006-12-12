@@ -2,6 +2,7 @@
 Version=1.0
 Encoding=UTF-8
 Name=ELOG Extension
+Name[ca]= Extensió ELOG
 Name[cs]=ELOG rozšíření
 Name[da]=ELOG-Udvidelse
 Name[de]=ELOG-Erweiterung
@@ -35,6 +36,7 @@ X-KDE-ModuleType=Plugin
 X-KDE-Library=kstextension_elog
 X-Kst-Plugin-Author=The University of British Columbia
 Comment=Logging extension for Kst.
+Comment[ca]=Extensió de bitàcola pel Kst.
 Comment[cs]=Logovací rozhraní Kst.
 Comment[da]=Logningsudvidelse for Kst.
 Comment[de]=Protokollierungs-Erweiterung für Kst

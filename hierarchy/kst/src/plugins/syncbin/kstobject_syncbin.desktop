@@ -1,0 +1,26 @@
+[Desktop Entry]
+Encoding=UTF-8
+Type=Service
+ServiceTypes=Kst Data Object
+X-KDE-ModuleType=Plugin
+X-KDE-Library=kstobject_syncbin
+X-Kst-Plugin-Author=Barth Netterfield
+Name=Syncbin
+Name[ca]=Caixes síncrones
+Name[da]=Synkrone områder
+Name[de]=SyncBehälter
+Name[et]=Sünkrolahter
+Name[it]=Barra sincronizzata
+Name[pt]=Cestos síncronos
+Name[pt_BR]=Cestos síncronos
+Name[sv]=Synkrona områden
+Comment=Synchronously coadd vector Y into bins defined by vector X.  Like a 1D map.
+Comment[ca]=Co-afegeix síncronament un vector Y dins de caixes definides pel vector X. Com un mapa 1D.
+Comment[da]=Læg vektoren Y sammen synkront i områder definerede af vektoren X. Som en endimensional afbilning.
+Comment[de]=Addiert den Vektor Y synchron in Behälter die durch den Vector X definiert sind.  Wie ein eindimensionale Abbildung.
+Comment[es]=Añadir el vector Y de forma síncrona en los contenedores definidos por el vector X.  Como un mapa 1D.
+Comment[et]=Lisab sünkrooniliselt vektori Y lahtritesse, mida määrab vektor X. Umbes nagu ühemõõtmeline kaart.
+Comment[it]=Co-aggiunge contemporaneamente il vettore Y in barre definite dal vettore X. Come una mappa monodimensionale.
+Comment[pt]=Co-adiciona de forma sincronizada o vector Y em cestos definidos pelo vector X. Como acontece num mapa 1D.
+Comment[pt_BR]=Co-adiciona de forma sincronizada o vector Y em cestos definidos pelo vector X. Como acontece num mapa 1D.
+Comment[sv]=Addera samman vektorn Y synkront i områden definierade av vektorn X. Som en endimensionell avbildning.

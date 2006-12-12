@@ -1,0 +1,26 @@
+[Desktop Entry]
+Encoding=UTF-8
+Type=Service
+ServiceTypes=Kst Data Object
+X-KDE-ModuleType=Plugin
+X-KDE-Library=kstobject_shift
+X-Kst-Plugin-Author=Nicolas Brisset
+Name=Shift
+Name[ca]=Canvi
+Name[da]=Forskyd
+Name[de]=Verschieben
+Name[et]=Nihe
+Name[it]=Sposta
+Name[pt]=Deslocamento
+Name[pt_BR]=Deslocamento
+Name[sv]=Förskjut
+Comment=Shifts (and truncates) a vector.
+Comment[ca]=Canvia (i trunca) un vector.
+Comment[da]=Forskyder (og afkorter) en vektor.
+Comment[de]=Verschiebt und schneidet einen Vektor ab.
+Comment[es]=Cambia (y trunca) un vector.
+Comment[et]=Nihutab (ja kärbib) vektorit.
+Comment[it]=Sposta gli elementi (e tronca) un vettore.
+Comment[pt]=Desloca (e trunca) um vector.
+Comment[pt_BR]=Desloca (e trunca) um vector.
+Comment[sv]=Förskjuter (och avkortar) en vektor.

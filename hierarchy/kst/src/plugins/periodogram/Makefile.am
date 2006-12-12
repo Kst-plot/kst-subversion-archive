@@ -1,11 +1,11 @@
-installdir=$(kde_moduledir)/kstplugins
-INCLUDES=-I$(srcdir)/../../../kst $(all_includes)
+INCLUDES=-I$(top_srcdir)/kst -I$(top_srcdir)/kst/src/libkst -I$(top_srcdir)/kst/src/libkstmath $(all_includes)
 
-install_LTLIBRARIES=periodogram.la
+kde_module_LTLIBRARIES=kstobject_periodogram.la
 
-periodogram_la_LDFLAGS=-module $(KDE_PLUGIN) $(all_libraries)
-periodogram_la_SOURCES=periodogram.cpp
+kstobject_periodogram_la_LDFLAGS=$(all_libraries) -module -avoid-version
+kstobject_periodogram_la_SOURCES=periodogram.cpp
+
+services_DATA=kstobject_periodogram.desktop
+servicesdir=$(kde_servicesdir)/kst
 
 METASOURCES=AUTO
-
-install_DATA=periodogram.xml

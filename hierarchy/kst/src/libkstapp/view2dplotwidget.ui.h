@@ -1166,10 +1166,19 @@ void View2DPlotWidget::fillPlot( Kst2DPlotPtr plot )
   applyPlotMarkers(plot);
 
   //_title->setText(plot->tagName());
-  if (checkPlotName()) {
-    plot->setTagName(KstObjectTag::fromString(_title->text().stripWhiteSpace()));
-  } else {
+  QString tag = _title->text().stripWhiteSpace();
+  if (tag.isEmpty()) {
     plot->setTagName(KstObjectTag(KST::suggestPlotName(), KstObjectTag::globalTagContext));	// FIXME: always global tag context?
+  } else {
+    plot->setTagName(KstObjectTag(tag+"randomtextasholdingpattern", KstObjectTag::globalTagContext)); // FIXME: always global tag context?
+    if (KstData::self()->viewObjectNameNotUnique(tag)) {
+      int j = 1;
+      while (KstData::self()->viewObjectNameNotUnique(tag+"-"+QString::number(j))) {
+        j++;
+      }
+      tag = tag + "-" + QString::number(j);
+    }
+    plot->setTagName(KstObjectTag(tag, KstObjectTag::globalTagContext));   // FIXME: always global tag context?
   }
 
   plot->setDirty();
@@ -1199,54 +1208,6 @@ void View2DPlotWidget::fillPlot( Kst2DPlotPtr plot )
   emit docChanged();
   */
 }
-
-
-bool View2DPlotWidget::checkPlotName() {
-  bool rc = true;
-
-  // first check if name is blank
-  if (!_title->text().stripWhiteSpace().isEmpty()) {
-    // FIXME: check if the name is a duplicate
-/*      KstApp *app = KstApp::inst();
-      KMdiIterator<KMdiChildView*> *iter;
-      QString name = Name->text().stripWhiteSpace();
-      KstViewObjectPtr viewObject;
-
-      iter = app->createIterator();
-      if (iter) {
-        while (iter->currentItem()) {
-          KMdiChildView *childview = iter->currentItem();
-          KstViewWindow *viewwindow = dynamic_cast<KstViewWindow*>(childview);
-          if (viewwindow) {
-            viewObject = viewwindow->view()->findChild(name);
-            if (viewObject) {
-              QString message = i18n("%1: not a unique plot name.\n"
-                  "Change it to a unique name.").arg(Name->text().stripWhiteSpace());
-              QWidget *page = TabWidget->page(0);
-
-              KMessageBox::sorry(this, message);
-
-              if (page) {
-                TabWidget->showPage(page);
-              }
-              Name->selectAll();
-              Name->setFocus();
-
-              rc = false;
-              break;
-            }
-          }
-          iter->next();
-        }
-        app->deleteIterator(iter);
-      }*/
-  } else {
-    rc = false;
-  }
-
-  return rc;
-}
-
 
 void View2DPlotWidget::insertCurrentScalar() {
   ScalarDest->insert(ScalarList->currentText());

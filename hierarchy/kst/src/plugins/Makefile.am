@@ -20,5 +20,5 @@ if include_correlation_plugins
 CORRELATION_SUBDIR=correlation
 endif
 
-SUBDIRS=bin linefit periodogram phase statistics chop crossspectrum syncbin effective_bandwidth $(NOISE_SUBDIR) $(FITS_SUBDIR) $(FITSNONLINEAR_SUBDIR) $(INTERPOLATIONS_SUBDIR) $(PASS_FILTERS_SUBDIR) $(CORRELATION_SUBDIR) $(CONVOLUTION_SUBDIR) cumulative_sum differentiation shift
+SUBDIRS=bin linefit periodogram phase statistics chop crossspectrum syncbin effective_bandwidth despike $(NOISE_SUBDIR) $(FITS_SUBDIR) $(FITSNONLINEAR_SUBDIR) $(INTERPOLATIONS_SUBDIR) $(PASS_FILTERS_SUBDIR) $(CORRELATION_SUBDIR) $(CONVOLUTION_SUBDIR) cumulative_sum differentiation shift discretizing_filters
 

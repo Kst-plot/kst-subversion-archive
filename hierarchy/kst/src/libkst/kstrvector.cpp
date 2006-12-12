@@ -136,6 +136,7 @@ void KstRVector::commonRVConstructor(KstDataSourcePtr in_file,
                                      int in_n, int in_skip, bool in_DoSkip,
                                      bool in_DoAve) {
   _saveable = true;
+  _dontUseSkipAccel = false;
   _numSamples = 0;
   _scalars["sum"]->setValue(0.0);
   _scalars["sumsquared"]->setValue(0.0);
@@ -184,6 +185,7 @@ void KstRVector::change(KstDataSourcePtr in_file, const QString &in_field,
     Skip = 1;
   }
 
+  _dontUseSkipAccel = false;
   _file = in_file;
   ReqF0 = in_f0;
   ReqNF = in_n;
@@ -384,6 +386,7 @@ QString KstRVector::label() const {
 
 
 void KstRVector::reset() { // must be called with a lock
+  _dontUseSkipAccel = false;
   if (_file) {
     SPF = _file->samplesPerFrame(_field);
   }
@@ -439,8 +442,34 @@ KstObject::UpdateType KstRVector::update(int update_counter) {
   return setLastUpdateResult(rc);
 }
 
+// Some things to consider about the following routine...
+// Frames:
+//    Some data sources have data devided into frames.  Each field
+//    has a fixed number of samples per frame.  For some (eg, ascii files)
+//    each frame has 1 sample.  For others (eg, dirfiles) you may have more.
+//    Different fields in the same data source may have different samples per frame.
+//    Within a data source, it is assumed that the first sample of each frame is
+//    simultaneous between fields.
+// Last Frame Read:
+//    Only read the first sample of the last frame read, in cases where there are more
+//    than one sample per frame.   This allows for more sensible association of vectors
+//    into curves, when the X and Y vectors have different numbers of samples per frame.
+//    The rule is that we assume is that the first sample of each frame is simultaneous.
+// Skip reading:  
+//    -'Skip' means read 1 sample each 'Skip' frames (not read one sample,
+//     then skip 'Skip' samples or something else).
+//    -In order that the data are not re-drawn each time a new sample arrives, and to
+//     ensure the re-usability (via shifting) of previously read data, and to make a
+//     region of data look the same regardless of the chouse of f0, all samples
+//     read with skip enabled are read on 'skip boundries'... ie, the first samples of
+//     frame 0, Skip, 2*Skip... N*skip, and never M*Skip+1.
 
 KstObject::UpdateType KstRVector::doUpdate(bool force) {
+  int i, k, shift, n_read=0;
+  int ave_nread;
+  int new_f0, new_nf;
+  bool start_past_eof = false;
+  
   checkIntegrity();
 
   if (DoSkip && Skip < 2 && SPF == 1) {
@@ -451,15 +480,12 @@ KstObject::UpdateType KstRVector::doUpdate(bool force) {
     return NO_CHANGE;
   }
 
-  int new_f0, new_nf, new_size;
-  bool start_past_eof = false;
-
   // set new_nf and new_f0
   int fc = _file->frameCount(_field);
-  if (readToEOF()) { // read to end of file
+  if (ReqNF < 1) { // read to end of file
     new_f0 = ReqF0;
     new_nf = fc - new_f0;
-  } else if (countFromEOF()) { // count back from end of file
+  } else if (ReqF0 < 0) { // count back from end of file
     new_nf = fc;
     if (new_nf > ReqNF) {
       new_nf = ReqNF;
@@ -480,12 +506,11 @@ KstObject::UpdateType KstRVector::doUpdate(bool force) {
   }
 
   if (DoSkip) {
-    // change new_nf so it lies on the skip boundary
+    // change new_f0 and new_nf so they both lie on skip boundaries
     if (new_f0 != 0) {
       new_f0 = ((new_f0-1)/Skip+1)*Skip;
     }
-    new_nf = int((floor(double(fc - (new_f0 + 1)) / (double)Skip) * (double)Skip) + 1);
-    new_size = new_nf / Skip + 1;
+    new_nf = (new_nf/Skip)*Skip;
   }
 
   if (NF == new_nf && F0 == new_f0 && !force) {
@@ -496,8 +521,6 @@ KstObject::UpdateType KstRVector::doUpdate(bool force) {
   if (new_f0 < F0 || new_f0 >= F0 + NF) { // No useful data around.
     reset();
   } else { // shift stuff rather than re-read
-    int shift = 0;
-
     if (DoSkip) {
       shift = (new_f0 - F0)/Skip;
       NF -= (new_f0 - F0);
@@ -509,43 +532,49 @@ KstObject::UpdateType KstRVector::doUpdate(bool force) {
     }
 
     // FIXME: use memmove()
-    for (int i = 0; i < _numSamples; ++i) {
+    for (i = 0; i < _numSamples; i++) {
       _v[i] = _v[i+shift];
     }
   }
 
-  int n_read=0;
-
   if (DoSkip) {
-
     // reallocate V if necessary
     //kstdDebug() << "new_nf = " << new_nf << " and skip = " << Skip << " so new_nf/Skip+1 = " << (new_nf / Skip + 1) << endl;
-    if (new_size != _size) {
-      if (!resize(new_size)) {
-        abort();
+    if (new_nf / Skip != _size) {
+      bool rc = resize(new_nf/Skip);
+      if (!rc) {
+        // FIXME: handle failed resize
       }
     }
-
-    // for debugging: useSkipAccel = false;
-    bool useSkipAccel = DoAve ? false : true;
-
-    if (useSkipAccel) {
+    // for debugging: _dontUseSkipAccel = true;
+    if (!_dontUseSkipAccel) {
+      int rc;
       int lastRead = -1;
-      int rc = _file->readField(_v + _numSamples, _field, new_f0, (new_nf - NF)/Skip, Skip, &lastRead);
-      if (rc == -9999) {
-        useSkipAccel = false;
+      if (DoAve) {
+        // We don't support boxcar inside data sources yet.
+        _dontUseSkipAccel = true;
       } else {
-        //kstdDebug() << "USED SKIP FOR READ - " << _field << " - rc=" << rc << " for Skip=" << Skip << " s=" << new_f0 << " n=" << (new_nf - NF)/Skip << endl;
-        n_read = rc > 0 ? rc : 0; //FIXME is rc ever less than zero at this point?
+        rc = _file->readField(_v + _numSamples, _field, new_f0, (new_nf - NF)/Skip, Skip, &lastRead);
+        if (rc != -9999) {
+          //kstdDebug() << "USED SKIP FOR READ - " << _field << " - rc=" << rc << " for Skip=" << Skip << " s=" << new_f0 << " n=" << (new_nf - NF)/Skip << endl;
+          if (rc >= 0) {
+            n_read = rc;
+          } else {
+            n_read = 0;
+          }
+        } else {
+          _dontUseSkipAccel = true;
+        }
       }
     }
-
-    if (!useSkipAccel) {
+    if (_dontUseSkipAccel) {
+      n_read = 0;
+      /** read each sample from the File */
       //kstdDebug() << "NF = " << NF << " numsamples = " << _numSamples << " new_f0 = " << new_f0 << endl;
       double *t = _v + _numSamples;
       int new_nf_Skip = new_nf - Skip;
       if (DoAve) {
-        for (int i = NF; new_nf_Skip >= i; i += Skip) {
+        for (i = NF; new_nf_Skip >= i; i += Skip) {
           /* enlarge AveReadBuf if necessary */
           if (N_AveReadBuf < Skip*SPF) {
             N_AveReadBuf = Skip*SPF;
@@ -554,8 +583,8 @@ KstObject::UpdateType KstRVector::doUpdate(bool force) {
               // FIXME: handle failed resize
             }
           }
-          int ave_nread = _file->readField(AveReadBuf, _field, new_f0+i, Skip);
-          for (int k = 1; k < ave_nread; k++) {
+          ave_nread = _file->readField(AveReadBuf, _field, new_f0+i, Skip);
+          for (k = 1; k < ave_nread; k++) {
             AveReadBuf[0] += AveReadBuf[k];
           }
           if (ave_nread > 0) {
@@ -565,20 +594,18 @@ KstObject::UpdateType KstRVector::doUpdate(bool force) {
           ++t;
         }
       } else {
-        int index = new_f0; //begin
-        for (int i = 0; i < new_size; ++i) {
-          //kstdDebug() << "readField " << _field << " start=" << index << " n=-1" << endl;
-          n_read += _file->readField(t++, _field, index, -1);
-          index += Skip;
+        for (i = NF; new_nf_Skip >= i; i += Skip) {
+          //kstdDebug() << "readField " << _field << " start=" << new_f0 + i << " n=-1" << endl;
+          n_read += _file->readField(t++, _field, new_f0 + i, -1);
         }
       }
     }
-
   } else {
-
     // reallocate V if necessary
     if ((new_nf - 1)*SPF + 1 != _size) {
-      if (!resize((new_nf - 1)*SPF + 1)) {
+      bool rc = resize((new_nf - 1)*SPF + 1);
+      if (!rc) {
+        // FIXME: handle failed resize
         abort();
       }
     }
@@ -622,7 +649,7 @@ KstObject::UpdateType KstRVector::doUpdate(bool force) {
   if (_numSamples != _size && !(_numSamples == 0 && _size == 1)) {
     //kstdDebug() << "SET DIRTY since _numSamples = " << _numSamples << " but _size = " << _size << endl;
     _dirty = true;
-    for (int i = _numSamples; i < _size; i++) {
+    for (i = _numSamples; i < _size; i++) {
       _v[i] = _v[0];
     }
   }
@@ -681,6 +708,7 @@ void KstRVector::reload() {
         _file->unlock();
         KST::dataSourceList.lock().writeLock();
         KST::dataSourceList.remove(_file);
+        _dontUseSkipAccel = false;
         _file = newsrc;
         _file->writeLock();
         KST::dataSourceList.append(_file);

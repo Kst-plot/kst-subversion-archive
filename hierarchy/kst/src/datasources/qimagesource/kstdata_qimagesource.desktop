@@ -15,6 +15,7 @@ Name[sv]=QImage-källa
 Name[tg]=манбаъи тасвир
 Name[xx]=xxqimagesourcexx
 Comment=Plugin to read a qimage compatible image.
+Comment[ca]=Connector per llegir una imatge compatible amb qimage.
 Comment[cs]=Modul pro čtení obrázků kompatibilních s qimage.
 Comment[da]=Plugin til at læse et qimage-kompatibelt billede.
 Comment[de]=Modul zum Lesen von QImage-kompatiblen Bildern

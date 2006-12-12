@@ -1,11 +1,11 @@
-installdir=$(kde_moduledir)/kstplugins
-INCLUDES=-I$(srcdir)/../../../kst $(all_includes)
+INCLUDES=-I$(top_srcdir)/kst -I$(top_srcdir)/kst/src/libkst -I$(top_srcdir)/kst/src/libkstmath $(all_includes)
 
-install_LTLIBRARIES=statistics.la
+kde_module_LTLIBRARIES=kstobject_statistics.la
 
-statistics_la_LDFLAGS=-module $(KDE_PLUGIN) $(all_libraries)
-statistics_la_SOURCES=statistics.cpp
+kstobject_statistics_la_LDFLAGS=$(all_libraries) -module -avoid-version
+kstobject_statistics_la_SOURCES=statistics.cpp
+
+services_DATA=kstobject_statistics.desktop
+servicesdir=$(kde_servicesdir)/kst
 
 METASOURCES=AUTO
-
-install_DATA=statistics.xml

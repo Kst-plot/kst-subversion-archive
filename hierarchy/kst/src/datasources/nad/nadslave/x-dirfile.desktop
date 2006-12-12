@@ -4,6 +4,7 @@ MimeType=application/x-dirfile
 Icon=dirfile
 DefaultApp=kst
 Comment=DirFile database
+Comment[ca]=Base de dades DirFile
 Comment[cs]=Databáze DirFile
 Comment[da]=DirFile-database
 Comment[de]=DirFile-Datenbank

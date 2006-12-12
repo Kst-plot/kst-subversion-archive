@@ -1,75 +1,61 @@
-/*
- *  Statistics plugin for KST.
- *  Copyright 2003, The University of British Columbia
- *  Released under the terms of the GPL.
- *
- */
+/***************************************************************************
+                   statistics.cpp
+                             -------------------
+    begin                : 12/07/06
+    copyright            : (C) 2006 The University of Toronto
+    email                :
+ ***************************************************************************/
 
-#include <stdlib.h>
-#include <math.h>
-#include <string.h>
-#define KST_UNUSED(x) if(x){};
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+#include "statistics.h"
 
-void swap( double* pData, int iOne, int iTwo );
-void quicksort( double* pData, int iLeft, int iRight );
-extern "C" int statistics( const double *const inArrays[], const int inArrayLens[],
-		const double inScalars[],
-		double *outArrays[], int outArrayLens[],
-		double outScalars[] );
+#include <kgenericfactory.h>
 
-void swap( double* pData, int iOne, int iTwo )
-{
-  double dTemp;
-    
-  dTemp = pData[iOne];
-  pData[iOne] = pData[iTwo];
-  pData[iTwo] = dTemp;
+static const QString& DATA = KGlobal::staticQString("Data Array");
+static const QString& MEAN = KGlobal::staticQString("Mean");
+static const QString& MINIMUM = KGlobal::staticQString("Minimum");
+static const QString& MAXIMUM = KGlobal::staticQString("Maximum");
+static const QString& VARIANCE = KGlobal::staticQString("Variance");
+static const QString& STANDARD_DEVIATION = KGlobal::staticQString("Standard deviation");
+static const QString& MEDIAN = KGlobal::staticQString("Median");
+static const QString& ABSOLUTE_DEVIATION = KGlobal::staticQString("Absolute deviation");
+static const QString& SKEWNESS = KGlobal::staticQString("Skewness");
+static const QString& KURTOSIS = KGlobal::staticQString("Kurtosis");
+
+KST_KEY_DATAOBJECT_PLUGIN( statistics )
+
+K_EXPORT_COMPONENT_FACTORY( kstobject_statistics,
+    KGenericFactory<Statistics>( "kstobject_statistics" ) )
+
+Statistics::Statistics( QObject */*parent*/, const char */*name*/, const QStringList &/*args*/ )
+    : KstBasicPlugin() {
 }
 
-void quicksort( double* pData, int iLeft, int iRight )
-{
-  double dVal = pData[iRight];
-  int i = iLeft - 1;
-  int j = iRight;
-    
-  if( iRight <= iLeft )
-  {
-    return;
-  }
-    
-  while( 1 )
-  {
-    while( pData[++i] < dVal )
-    {
-    }
-        
-    while( dVal < pData[--j] )
-    {
-      if( j == iLeft )
-      {
-        break;
-      }
-    }
-    if( i >= j )
-    {
-      break;
-    }
-    swap( pData, i, j );
-  }
-  swap( pData, i, iRight );
-  quicksort( pData, iLeft, i-1 );
-  quicksort( pData, i+1, iRight );
+
+Statistics::~Statistics() {
 }
 
-int statistics( const double *const inArrays[], const int inArrayLens[],
-                const double inScalars[],
-                double *outArrays[], int outArrayLens[],
-                double outScalars[] )
-{
-  KST_UNUSED( inScalars )
-  KST_UNUSED( outArrays )
-  KST_UNUSED( outArrayLens )
-    
+
+bool Statistics::algorithm() {
+
+  KstVectorPtr data               = inputVector(DATA);
+  KstScalarPtr mean               = outputScalar(MEAN);
+  KstScalarPtr minimum            = outputScalar(MINIMUM);
+  KstScalarPtr maximum            = outputScalar(MAXIMUM);
+  KstScalarPtr variance           = outputScalar(VARIANCE);
+  KstScalarPtr standard_deviation = outputScalar(STANDARD_DEVIATION);
+  KstScalarPtr median             = outputScalar(MEDIAN);
+  KstScalarPtr absolute_deviation = outputScalar(ABSOLUTE_DEVIATION);
+  KstScalarPtr skewness           = outputScalar(SKEWNESS);
+  KstScalarPtr kurtosis           = outputScalar(KURTOSIS);
+
   double* pCopy;
   double dMean = 0.0;
   double dMedian = 0.0;
@@ -83,78 +69,138 @@ int statistics( const double *const inArrays[], const int inArrayLens[],
   double dSkewness = 0.0;
   double dKurtosis = 0.0;
   int iLength;
-  int iRetVal = -1;
-  int i;
-  
-  if( inArrayLens[0] > 0 )
-  {
-    iLength = inArrayLens[0];
-    
-    for( i=0; i<iLength; i++ )
-    {
-      if( i == 0 || inArrays[0][i] < dMinimum )
-      {
-        dMinimum = inArrays[0][i];
+  int iRetVal = false;
+
+  if (data->length() > 0) {
+    iLength = data->length();
+
+    for (int i=0; i<iLength; i++) {
+      if (i == 0 || data->value()[i] < dMinimum) {
+        dMinimum = data->value()[i];
       }
-      if( i == 0 || inArrays[0][i] > dMaximum )
-      {
-        dMaximum = inArrays[0][i];
+      if (i == 0 || data->value()[i] > dMaximum) {
+        dMaximum = data->value()[i];
       }
-      dTotal += inArrays[0][i];
-      dSquaredTotal += inArrays[0][i] * inArrays[0][i];
+      dTotal += data->value()[i];
+      dSquaredTotal += data->value()[i] * data->value()[i];
     }
-    
+
     dMean = dTotal / (double)iLength;
-    if( iLength > 1 )
-    {
+    if (iLength > 1) {
       dVariance  = 1.0 / ( (double)iLength - 1.0 );
       dVariance *= dSquaredTotal - ( dTotal * dTotal / (double)iLength ); 
-      if( dVariance > 0.0 )
-      {
+      if (dVariance > 0.0) {
         dStandardDeviation = sqrt( dVariance );
-      }
-      else
-      {
+      } else {
         dVariance = 0.0;
         dStandardDeviation = 0.0;
       }
-    }            
-    
-    for( i=0; i<iLength; i++ ) {
-      dAbsoluteDeviation += fabs( inArrays[0][i] - dMean );
-      dSkewness				   += pow( inArrays[0][i] - dMean, 3.0 );
-      dKurtosis				   += pow( inArrays[0][i] - dMean, 4.0 );
+    }
+
+    for (int i=0; i<iLength; i++) {
+      dAbsoluteDeviation += fabs( data->value()[i] - dMean );
+      dSkewness               += pow( data->value()[i] - dMean, 3.0 );
+      dKurtosis               += pow( data->value()[i] - dMean, 4.0 );
     }
     dAbsoluteDeviation /= (double)iLength;
-    dSkewness				   /= (double)iLength * pow( dStandardDeviation, 3.0 );
-    dKurtosis				   /= (double)iLength * pow( dStandardDeviation, 4.0 );
-    dKurtosis				   -= 3.0;
-    
+    dSkewness                 /= (double)iLength * pow( dStandardDeviation, 3.0 );
+    dKurtosis                 /= (double)iLength * pow( dStandardDeviation, 4.0 );
+    dKurtosis                 -= 3.0;
+
     /*
     sort by phase...
     */
     pCopy = (double*)calloc( iLength, sizeof( double ) );
-    if( pCopy != NULL )
-    {
-      memcpy( pCopy, inArrays[0], iLength * sizeof( double ) );
+    if (pCopy != NULL) {
+      memcpy( pCopy, data->value(), iLength * sizeof( double ) );
       quicksort( pCopy, 0, iLength-1 );
       dMedian = pCopy[ iLength / 2 ];
-      
+
       free( pCopy );
     }
-    
-    outScalars[0] = dMean;
-    outScalars[1] = dMinimum;
-    outScalars[2] = dMaximum;
-    outScalars[3] = dVariance;
-    outScalars[4] = dStandardDeviation;
-    outScalars[5] = dMedian;
-    outScalars[6] = dAbsoluteDeviation;
-    outScalars[7] = dSkewness;
-    outScalars[8] = dKurtosis;
-    
-    iRetVal = 0;
-  }   
-  
+
+    mean->setValue(dMean);
+    minimum->setValue(dMinimum);
+    maximum->setValue(dMaximum);
+    variance->setValue(dVariance);
+    standard_deviation->setValue(dStandardDeviation);
+    median->setValue(dMedian);
+    absolute_deviation->setValue(dAbsoluteDeviation);
+    skewness->setValue(dSkewness);
+    kurtosis->setValue(dKurtosis);
+
+    iRetVal = true;
+  }
+
   return iRetVal;
 }
+
+
+QStringList Statistics::inputVectorList() const {
+  return QStringList( DATA );
+}
+
+
+QStringList Statistics::inputScalarList() const {
+  return QStringList();
+}
+
+
+QStringList Statistics::inputStringList() const {
+  return QStringList();
+}
+
+
+QStringList Statistics::outputVectorList() const {
+  return QStringList();
+}
+
+
+QStringList Statistics::outputScalarList() const {
+  return QStringList( MEAN ) << MINIMUM << MAXIMUM << VARIANCE << STANDARD_DEVIATION << MEDIAN << ABSOLUTE_DEVIATION << SKEWNESS << KURTOSIS;
+}
+
+
+QStringList Statistics::outputStringList() const {
+  return QStringList();
+}
+
+void Statistics::swap( double* pData, int iOne, int iTwo) {
+  double dTemp;
+
+  dTemp = pData[iOne];
+  pData[iOne] = pData[iTwo];
+  pData[iTwo] = dTemp;
+}
+
+
+void Statistics::quicksort( double* pData, int iLeft, int iRight) {
+
+  double dVal = pData[iRight];
+  int i = iLeft - 1;
+  int j = iRight;
+
+  if (iRight <= iLeft) {
+    return;
+  }
+
+  while (1) {
+    while (pData[++i] < dVal) {
+    }
+
+    while(dVal < pData[--j]) {
+      if (j == iLeft) {
+        break;
+      }
+    }
+    if (i >= j) {
+      break;
+    }
+    swap( pData, i, j );
+  }
+  swap( pData, i, iRight );
+  quicksort( pData, iLeft, i-1 );
+  quicksort( pData, i+1, iRight );
+}
+
+#include "statistics.moc"

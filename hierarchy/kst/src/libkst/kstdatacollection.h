@@ -49,6 +49,8 @@ KST_EXPORT class KstData {
     virtual bool matrixTagNameNotUniqueInternal(const QString& tag);
     virtual bool dataSourceTagNameNotUnique(const QString& tag, bool warn = true, void *parent = 0L);
 
+    virtual bool viewObjectNameNotUnique(const QString& tag);
+
     virtual void removeCurveFromPlots(KstBaseCurve *c); // no sharedptr here
 
     /** Save a vector to a file */

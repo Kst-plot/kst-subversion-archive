@@ -1,8 +1,8 @@
 /***************************************************************************
-                          syncbin.cpp  -  1D naive map plugin for kst
+                   syncbin.cpp
                              -------------------
-    begin                : Jan 9, 2005
-    copyright            : (C) 2005 by Barth Netterfield
+    begin                : 12/07/06
+    copyright            : (C) 2006 The University of Toronto
     email                :
  ***************************************************************************/
 
@@ -14,63 +14,78 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
+#include "syncbin.h"
 
-extern "C" int syncbin(const double *const inArrays[], const int inArrayLens[],
-                       const double is[],
-                       double *outArrays[], int outArrayLens[],
-                       double outScalars[]);
+#include <kgenericfactory.h>
 
 // macros to find the top, bottom, and middle of a bin
 #define BINMID(x) XMin+(XMax-XMin)*(double(x)+0.5)/double(nbins)
 
 #define BIN( x ) int(double(nbins)*(x-XMin)/(XMax-XMin))
 
-/***************************************************************************/
-/*                                                                         */
-/*   Synchronously bin vector Y into bins defined by vector X - like a     */
-/*   1d binned map.  This is useful for locking in a signal (eg, a         */
-/*   bolometer) synchronously with some other signal (eg, azimuth)         */
-/*                                                                         */
-/***************************************************************************/
-int syncbin(const double *const inArrays[], const int inArrayLens[],
-            const double is[],
-            double *outArrays[], int outArrayLens[],
-            double outScalars[]) {
+static const QString& X_IN = KGlobal::staticQString("X in");
+static const QString& Y_IN = KGlobal::staticQString("Y in");
+static const QString& BINS = KGlobal::staticQString("Number of Bins");
+static const QString& X_MIN = KGlobal::staticQString("X min");
+static const QString& X_MAX = KGlobal::staticQString("X max");
+static const QString& X_OUT = KGlobal::staticQString("X out");
+static const QString& Y_OUT = KGlobal::staticQString("Y out");
+static const QString& Y_ERROR = KGlobal::staticQString("Y error");
+static const QString& N = KGlobal::staticQString("N");
 
-  int nbins=int( is[0] );
+KST_KEY_DATAOBJECT_PLUGIN( syncbin )
+
+K_EXPORT_COMPONENT_FACTORY( kstobject_syncbin,
+    KGenericFactory<Syncbin>( "kstobject_syncbin" ) )
+
+Syncbin::Syncbin( QObject */*parent*/, const char */*name*/, const QStringList &/*args*/ )
+    : KstBasicPlugin() {
+}
+
+
+Syncbin::~Syncbin() {
+}
+
+
+bool Syncbin::algorithm() {
+
+  KstVectorPtr x_in     = inputVector(X_IN);
+  KstVectorPtr y_in     = inputVector(Y_IN);
+  KstScalarPtr bins     = inputScalar(BINS);
+  KstScalarPtr x_min    = inputScalar(X_MIN);
+  KstScalarPtr x_max    = inputScalar(X_MAX);
+  KstVectorPtr x_out    = outputVector(X_OUT);
+  KstVectorPtr y_out    = outputVector(Y_OUT);
+  KstVectorPtr y_error  = outputVector(Y_ERROR);
+  KstVectorPtr n        = outputVector(N);
+
+  int nbins=int( bins->value() );
   int n_in;
-  double XMin = is[1];
-  double XMax = is[2];
+  double XMin = x_min->value();
+  double XMax = x_max->value();
   double *Xout, *Yout, *Yerr, *N;
 
   // check for ill defined inputs...
-  if ((inArrayLens[0] < 1) ||
-      (inArrayLens[1] != inArrayLens[0] ) ||
+  if ((x_in->length() < 1) ||
+      (y_in->length() != x_in->length() ) ||
       (nbins < 2))  {
     return -1;
   }
 
-  //now set the outputs
-  outArrayLens[0] = outArrayLens[1] = outArrayLens[2] =
-    outArrayLens[3] = nbins;
-
   //resize the output arrays
-  outArrays[0]=(double*)realloc(outArrays[0], outArrayLens[0]*sizeof(double));
-  outArrays[1]=(double*)realloc(outArrays[1], outArrayLens[1]*sizeof(double));
-  outArrays[2]=(double*)realloc(outArrays[2], outArrayLens[2]*sizeof(double));
-  outArrays[3]=(double*)realloc(outArrays[3], outArrayLens[3]*sizeof(double));
+  x_out->resize(nbins, true);
+  y_out->resize(nbins, true);
+  y_error->resize(nbins, true);
+  n->resize(nbins, true);
 
   // convenience definitions
-  n_in = int( inArrayLens[0] );
-  const double *Xin = inArrays[0];
-  const double *Yin = inArrays[1];
-  Xout = outArrays[0];
-  Yout = outArrays[1];
-  Yerr = outArrays[2];
-  N    = outArrays[3];
+  n_in = int( x_in->length() );
+  const double *Xin = x_in->value();
+  const double *Yin = y_in->value();
+  Xout = x_out->value();
+  Yout = y_out->value();
+  Yerr = y_error->value();
+  N    = n->value();
 
   // set/check XMax and XMin
   if ( XMax <= XMin ) { // autobin
@@ -138,5 +153,37 @@ int syncbin(const double *const inArrays[], const int inArrayLens[],
     }
   }
 
-  return 0;
+  return true;
 }
+
+
+QStringList Syncbin::inputVectorList() const {
+  return QStringList( X_IN ) << Y_IN;
+}
+
+
+QStringList Syncbin::inputScalarList() const {
+  return QStringList( BINS ) << X_MIN << X_MAX;
+}
+
+
+QStringList Syncbin::inputStringList() const {
+  return QStringList();
+}
+
+
+QStringList Syncbin::outputVectorList() const {
+  return QStringList( X_OUT ) << Y_OUT << Y_ERROR << N;
+}
+
+
+QStringList Syncbin::outputScalarList() const {
+  return QStringList();
+}
+
+
+QStringList Syncbin::outputStringList() const {
+  return QStringList();
+}
+
+#include "syncbin.moc"

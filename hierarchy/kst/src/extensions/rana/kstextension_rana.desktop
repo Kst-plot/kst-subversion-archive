@@ -2,6 +2,7 @@
 Version=1.0
 Encoding=UTF-8
 Name=RaNA Extension
+Name[ca]=Extensió RaNA
 Name[cs]=RaNA rozšíření
 Name[da]=RaNA-Udvidelse
 Name[de]=RaNA-Erweiterung
@@ -32,6 +33,7 @@ X-KDE-ModuleType=Plugin
 X-KDE-Library=kstextension_rana
 X-Kst-Plugin-Author=The University of British Columbia
 Comment=RaNA extension for Kst.
+Comment[ca]=Extensió RaNA pel Kst.
 Comment[cs]=RaNA rozšíření pro Kst.
 Comment[da]=RaNAudvidelse for Kst.
 Comment[de]=RaNA-Erweiterung für Kst

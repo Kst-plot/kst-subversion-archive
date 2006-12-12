@@ -254,6 +254,23 @@ QStringList KstGuiData::plotList(const QString& window) {
   return rc;
 }
 
+bool KstGuiData::viewObjectNameNotUnique(const QString& tag) {
+  KstApp *app = KstApp::inst();
+  KMdiIterator<KMdiChildView*> *it = app->createIterator();
+  if (it) {
+    while (it->currentItem()) {
+      KstViewWindow *view = dynamic_cast<KstViewWindow*>(it->currentItem());
+      if (view) {
+        if (view->view()->findChild(tag, true)) {
+          return (true);
+        }
+      }
+      it->next();
+    }
+    app->deleteIterator(it);
+  }
+  return false;
+}
 
 int KstGuiData::columns(const QString& window) {
   KstViewWindow *w = dynamic_cast<KstViewWindow*>(KstApp::inst()->findWindow(window));

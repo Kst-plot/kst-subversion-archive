@@ -210,6 +210,11 @@ void KstData::removeCurveFromPlots(KstBaseCurve *c) {
   // meaningless in no GUI: no plots!
 }
 
+bool KstData::viewObjectNameNotUnique(const QString& tag) {
+  Q_UNUSED(tag)
+  // meaningless in no GUI: no view objects!
+  return false;
+}
 
 int KstData::vectorToFile(KstVectorPtr v, QFile *f) {
   // FIXME: implement me (non-gui)

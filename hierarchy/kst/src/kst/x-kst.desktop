@@ -6,6 +6,7 @@ DefaultApp=kst
 Patterns=*.kst;*.KST;
 Comment=Kst Data File
 Comment[br]=Restr roadoù Kst
+Comment[ca]=Fitxer de dades Kst
 Comment[cs]=Kst datový soubor
 Comment[da]=Kst Datafil
 Comment[de]=Kst Datendatei

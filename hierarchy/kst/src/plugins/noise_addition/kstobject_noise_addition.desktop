@@ -1,0 +1,26 @@
+[Desktop Entry]
+Encoding=UTF-8
+Type=Service
+ServiceTypes=Kst Data Object
+X-KDE-ModuleType=Plugin
+X-KDE-Library=kstobject_noise_addition
+X-Kst-Plugin-Author=Andrew Walker
+Name=Noise addition
+Name[da]=Tilføjelse af støj
+Name[de]=Gauß'schens Rauschen
+Name[es]=Adición de ruidos
+Name[et]=Müra lisamine
+Name[it]=Aggiunta di rumore
+Name[pt]=Adição de ruído
+Name[pt_BR]=Adição de ruído
+Name[sv]=Tillägg av brus
+Comment=Adds Gaussian noise to a set of data, of a specified standard deviation.
+Comment[ca]=Afegeix soroll Gaussià a una conjunt de dades, d'una desviació estàndard indicada.
+Comment[da]=Tilføjer Gaussisk støj til en datamængde med en angiven standardafvigelse
+Comment[de]=Fügt ein Gauß'sches Rauschen mit einer angegeben Standardabweichung der Datenmenge hinzu.
+Comment[es]=Añade ruido Gaussiano a usa serie de datos, con la desviación estándar específicada.
+Comment[et]=Lisab andmekogumile määratud standardhälbega Gaussi müra.
+Comment[it]=Aggiunge del rumore gaussiano a un insieme di dati, con una deviazione standard specifica.
+Comment[pt]=Adiciona ruído Gaussiano a um conjunto de dados, com um determinado desvio-padrão.
+Comment[pt_BR]=Adiciona ruído Gaussiano a um conjunto de dados, com um determinado desvio-padrão.
+Comment[sv]=Lägger till Gaussiskt brus till en datamängd med en angiven standardavvikelse

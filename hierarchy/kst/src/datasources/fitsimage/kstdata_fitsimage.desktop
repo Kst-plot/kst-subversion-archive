@@ -17,6 +17,7 @@ Name[tg]=fits-тасвир
 Name[xx]=xxfitsimagexx
 Comment=Plugin to read a FITS image.
 Comment[br]=Lugent evit lenn ur skeudenn FITS.
+Comment[ca]=Connector per llegir una imatge FITS.
 Comment[cs]=Modul pro čtení FITS obrázků.
 Comment[da]=Plugin til at læse et FITS-billede.
 Comment[de]=Modul zum Lesen von FITS-Bildern

@@ -1,0 +1,27 @@
+[Desktop Entry]
+Encoding=UTF-8
+Type=Service
+ServiceTypes=Kst Data Object
+X-KDE-ModuleType=Plugin
+X-KDE-Library=kstobject_discretizing_filters
+X-Kst-Plugin-Author=Nicolas Brisset
+Name=Generic filter
+Name[da]=Generisk filter
+Name[de]=Generischer Filter
+Name[es]=Filtro genérico
+Name[et]=Üldine filter
+Name[ga]=Scagaire ginearálta
+Name[it]=Filtro generico
+Name[pt]=Filtro genérico
+Name[pt_BR]=Filtro genérico
+Name[sv]=Generellt filter
+Comment=Generates a discrete filter from a continuous-time definition.
+Comment[ca]=Genera un filtre discret des d'una definició de temps contínua.
+Comment[da]=Genererer et diskret filter ud fra en kontinuert tidsdefinition.
+Comment[de]=Erzeugt einen diskreten Filter aus einer stetigen Zeitdefinition.
+Comment[es]=Genera un filtro discreto a partir de una definición continua de tiempo.
+Comment[et]=Genereerib pidevajadefinitsiooni põhjal diskreetse filtri.
+Comment[it]=Genera una filtro discreto da una definizione a tempo continuo.
+Comment[pt]=Gera um filtro discreto para uma definição contínua ao longo do tempo.
+Comment[pt_BR]=Gera um filtro discreto para uma definição contínua ao longo do tempo.
+Comment[sv]=Skapar ett diskret filter från en kontinuerlig tidsdefinition.

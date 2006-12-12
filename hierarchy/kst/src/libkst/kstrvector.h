@@ -165,6 +165,8 @@ private:
   void reset(); // must be called with a lock
 
   void checkIntegrity(); // must be called with a lock
+
+  bool _dontUseSkipAccel;
 };
 
 typedef KstSharedPtr<KstRVector> KstRVectorPtr;

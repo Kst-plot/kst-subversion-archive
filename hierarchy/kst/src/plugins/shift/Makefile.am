@@ -1,11 +1,11 @@
-installdir=$(kde_moduledir)/kstplugins
-INCLUDES=-I$(srcdir)/../../../kst $(all_includes)
+INCLUDES=-I$(top_srcdir)/kst -I$(top_srcdir)/kst/src/libkst -I$(top_srcdir)/kst/src/libkstmath $(all_includes)
 
-install_LTLIBRARIES=shift.la
+kde_module_LTLIBRARIES=kstobject_shift.la
 
-shift_la_LDFLAGS=-module $(KDE_PLUGIN) $(all_libraries)
-shift_la_SOURCES=shift.c
+kstobject_shift_la_LDFLAGS=$(all_libraries) -module -avoid-version
+kstobject_shift_la_SOURCES=shift.cpp
+
+services_DATA=kstobject_shift.desktop
+servicesdir=$(kde_servicesdir)/kst
 
 METASOURCES=AUTO
-
-install_DATA=shift.xml

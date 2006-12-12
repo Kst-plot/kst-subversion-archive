@@ -1553,13 +1553,32 @@ void KstViewObject::detach() {
 
 void KstViewObject::rename() {
   bool ok = false;
+  bool done;
+  QString oldName = tagName();
 #if KDE_VERSION >= KDE_MAKE_VERSION(3,3,0)
   QString newName = KInputDialog::getText(i18n("Kst"), i18n("Enter a new name for %1:").arg(tagName()), tagName(), &ok);
 #else
   QString newName = KLineEditDlg::getText(i18n("Enter a new name for %1:").arg(tagName()), tagName(), &ok, 0L);
 #endif
+  done = !ok;
+  while (!done) {
+    setTagName(KstObjectTag(newName+"tmpholdingstring", KstObjectTag::globalTagContext));
+    if (KstData::self()->viewObjectNameNotUnique(newName)) {
+#if KDE_VERSION >= KDE_MAKE_VERSION(3,3,0)
+      newName = KInputDialog::getText(i18n("Kst"), i18n("%1 is not a unique name: Enter a new name for %2:").arg(newName).arg(oldName), oldName, &ok);
+#else
+      newName = KLineEditDlg::getText(i18n("%1 is not a unique name: Enter a new name for %2:").arg(newName).arg(oldName), oldName, &ok, 0L);
+#endif
+      done = !ok;
+    } else {
+      done = ok = true;
+    }
+  }
+  
   if (ok) {
     setTagName(KstObjectTag(newName, KstObjectTag::globalTagContext)); // FIXME: handle tag context
+  } else {
+    setTagName(KstObjectTag(oldName, KstObjectTag::globalTagContext)); // FIXME: handle tag context
   }
 }
 
