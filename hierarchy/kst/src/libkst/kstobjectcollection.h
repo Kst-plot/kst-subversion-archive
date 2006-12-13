@@ -55,8 +55,8 @@ class KstObjectTreeNode {
     KstObjectTreeNode<T> *child(const QString& tag) const;
     QMap<QString, KstObjectTreeNode<T> *> children() const { return _children; }
 
-    KstObjectTreeNode<T> *descendant(QStringList tag);
-    const KstObjectTreeNode<T> *descendant(QStringList tag) const;
+    KstObjectTreeNode<T> *descendant(const QStringList& tag);
+    const KstObjectTreeNode<T> *descendant(const QStringList& tag) const;
     KstObjectTreeNode<T> *addDescendant(T *o, KstObjectNameIndex<T> *index = NULL);
     bool removeDescendant(T *o, KstObjectNameIndex<T> *index = NULL);
 
@@ -75,17 +75,17 @@ class KstObjectCollection {
   public:
     bool addObject(T *o);
     bool removeObject(T *o);
-    void doRename(T *o, KstObjectTag newTag);
+    void doRename(T *o, const KstObjectTag& newTag);
 
-    KstSharedPtr<T> retrieveObject(QStringList tag);
-    KstSharedPtr<T> retrieveObject(KstObjectTag tag);
+    KstSharedPtr<T> retrieveObject(QStringList tag) const;
+    KstSharedPtr<T> retrieveObject(const KstObjectTag& tag) const;
     bool tagExists(const QString& tag) const;
-    bool tagExists(KstObjectTag tag) const;
+    bool tagExists(const KstObjectTag& tag) const;
 
     // get the shortest unique tag in in_tag
-    KstObjectTag shortestUniqueTag(KstObjectTag in_tag) const;
+    KstObjectTag shortestUniqueTag(const KstObjectTag& in_tag) const;
     // get the minimum number of tag components of in_tag necessary for a unique tag
-    unsigned int componentsForUniqueTag(KstObjectTag in_tag) const;
+    unsigned int componentsForUniqueTag(const KstObjectTag& in_tag) const;
 
     KstObjectTreeNode<T> *nameTreeRoot() { return &_root; }
 
@@ -191,7 +191,7 @@ KstObjectTreeNode<T> *KstObjectTreeNode<T>::child(const QString& tag) const {
 
 
 template <class T>
-const KstObjectTreeNode<T> *KstObjectTreeNode<T>::descendant(QStringList tag) const {
+const KstObjectTreeNode<T> *KstObjectTreeNode<T>::descendant(const QStringList& tag) const {
   const KstObjectTreeNode<T> *currNode = this;
   for (QStringList::ConstIterator i = tag.begin(); i != tag.end(); ++i) {
     currNode = currNode->child(*i);
@@ -205,7 +205,7 @@ const KstObjectTreeNode<T> *KstObjectTreeNode<T>::descendant(QStringList tag) co
 
 
 template <class T>
-KstObjectTreeNode<T> *KstObjectTreeNode<T>::descendant(QStringList tag) {
+KstObjectTreeNode<T> *KstObjectTreeNode<T>::descendant(const QStringList& tag) {
   KstObjectTreeNode<T> *currNode = this;
   for (QStringList::ConstIterator i = tag.begin(); i != tag.end(); ++i) {
     currNode = currNode->child(*i);
@@ -363,7 +363,7 @@ bool KstObjectCollection<T>::removeObject(T *o) {
 // Updates the display components of all related objects. This can be somewhat
 // expensive, but it shouldn't happen very often.
 template <class T>
-void KstObjectCollection<T>::doRename(T *o, KstObjectTag newTag) {
+void KstObjectCollection<T>::doRename(T *o, const KstObjectTag& newTag) {
   QValueList<KstObjectTreeNode<T> *> relNodes = relatedNodes(o);
 
   _root.removeDescendant(o, &_index);
@@ -381,8 +381,8 @@ void KstObjectCollection<T>::doRename(T *o, KstObjectTag newTag) {
 
 
 template <class T>
-KstSharedPtr<T> KstObjectCollection<T>::retrieveObject(QStringList tag) {
-#if NAMEDEBUG > 0
+KstSharedPtr<T> KstObjectCollection<T>::retrieveObject(QStringList tag) const {
+#if NAMEDEBUG > 1
   kstdDebug() << "Retrieving object with tag: \"" << tag.join(KstObjectTag::tagSeparator) << "\"" << endl;
 #endif
 
@@ -392,7 +392,7 @@ KstSharedPtr<T> KstObjectCollection<T>::retrieveObject(QStringList tag) {
 
   if (_index.contains(tag.first()) && _index[tag.first()].count() == 1) {
     // the first tag element is unique, so use the index
-#if NAMEDEBUG > 1
+#if NAMEDEBUG > 2
     kstdDebug() << "  first tag element (\"" << tag.first() << "\") is unique in index" << endl;
 #endif
 
@@ -402,7 +402,7 @@ KstSharedPtr<T> KstObjectCollection<T>::retrieveObject(QStringList tag) {
       n = n->descendant(tag);
     }
     if (n) {
-#if NAMEDEBUG > 0
+#if NAMEDEBUG > 1
       kstdDebug() << "  found node, returning object " << (void*) n->object() << endl;
 #endif
       return n->object();
@@ -410,14 +410,14 @@ KstSharedPtr<T> KstObjectCollection<T>::retrieveObject(QStringList tag) {
   }
 
   // search through the tree
-  KstObjectTreeNode<T> *n = _root.descendant(tag);
+  const KstObjectTreeNode<T> *n = _root.descendant(tag);
   if (n) {
-#if NAMEDEBUG > 0
+#if NAMEDEBUG > 1
     kstdDebug() << "  found node, returning object " << (void*) n->object() << endl;
 #endif
     return n->object();
   } else {
-#if NAMEDEBUG > 0
+#if NAMEDEBUG > 1
     kstdDebug() << "  node not found" << endl;
 #endif
     return NULL;
@@ -425,7 +425,7 @@ KstSharedPtr<T> KstObjectCollection<T>::retrieveObject(QStringList tag) {
 }
 
 template <class T>
-KstSharedPtr<T> KstObjectCollection<T>::retrieveObject(KstObjectTag tag) {
+KstSharedPtr<T> KstObjectCollection<T>::retrieveObject(const KstObjectTag& tag) const {
   if (!tag.isValid()) {
     return NULL;
   }
@@ -439,13 +439,13 @@ bool KstObjectCollection<T>::tagExists(const QString& tag) const {
 }
 
 template <class T>
-bool KstObjectCollection<T>::tagExists(KstObjectTag tag) const {
+bool KstObjectCollection<T>::tagExists(const KstObjectTag& tag) const {
   const KstObjectTreeNode<T> *n = _root.descendant(tag.fullTag());
   return (n != NULL);
 }
 
 template <class T>
-KstObjectTag KstObjectCollection<T>::shortestUniqueTag(KstObjectTag tag) const {
+KstObjectTag KstObjectCollection<T>::shortestUniqueTag(const KstObjectTag& tag) const {
   QStringList in_tag = tag.fullTag();
   QStringList out_tag;
 
@@ -468,7 +468,7 @@ KstObjectTag KstObjectCollection<T>::shortestUniqueTag(KstObjectTag tag) const {
 }
 
 template <class T>
-unsigned int KstObjectCollection<T>::componentsForUniqueTag(KstObjectTag tag) const {
+unsigned int KstObjectCollection<T>::componentsForUniqueTag(const KstObjectTag& tag) const {
   QStringList in_tag = tag.fullTag();
   unsigned int components = 0;
 
@@ -609,7 +609,7 @@ void KstObjectCollection<T>::updateDisplayComponents(T *obj) {
   }
 
   unsigned int nc = componentsForUniqueTag(obj->tag());
-#if NAMEDEBUG > 1
+#if NAMEDEBUG > 2
   kstdDebug() << "Changing display components on \"" << obj->tag().tagString() << "\" from " << obj->tag().uniqueDisplayComponents() << " to " << nc << endl;
 #endif
   obj->tag().setUniqueDisplayComponents(nc);

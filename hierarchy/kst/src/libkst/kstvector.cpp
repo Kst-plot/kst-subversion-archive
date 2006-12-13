@@ -591,7 +591,7 @@ void KstVector::save(QTextStream &ts, const QString& indent, bool saveAbsolutePo
 }
 
 
-void KstVector::setTagName(KstObjectTag newTag) {
+void KstVector::setTagName(const KstObjectTag& newTag) {
   KstWriteLocker l(&KST::vectorList.lock());
 
   KST::vectorList.doRename(this, newTag);
@@ -626,7 +626,7 @@ void KstVector::newSync() {
 }
 
 
-KstVectorPtr KstVector::generateVector(double x0, double x1, int n, KstObjectTag tag) {
+KstVectorPtr KstVector::generateVector(double x0, double x1, int n, const KstObjectTag& tag) {
   if (n < 2) {
     n = 2;
   }

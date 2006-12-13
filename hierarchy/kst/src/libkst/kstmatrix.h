@@ -99,7 +99,7 @@ class KST_EXPORT KstMatrix: public KstPrimitive {
     virtual void save(QTextStream &ts, const QString& indent = QString::null);
 
     // set tag name of the matrix
-    virtual void setTagName(KstObjectTag tag);
+    virtual void setTagName(const KstObjectTag& tag);
 
     // the statistics scalars for this matrix
     const QDict<KstScalar>& scalars() const;

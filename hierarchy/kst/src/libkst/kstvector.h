@@ -129,9 +129,9 @@ class KST_EXPORT KstVector : public KstPrimitive {
 
     /** Generate a new vector [x0..x1] with n total points */
     // #### Remove
-    static KstVectorPtr generateVector(double x0, double x1, int n, KstObjectTag tag);
+    static KstVectorPtr generateVector(double x0, double x1, int n, const KstObjectTag& tag);
 
-    virtual void setTagName(KstObjectTag newTag);
+    virtual void setTagName(const KstObjectTag& newTag);
 
     /** Return a pointer to the raw vector */
     double *const value() const;

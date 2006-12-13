@@ -58,7 +58,7 @@ class KST_EXPORT KstDataSource : public KstObject {
   public:
     virtual ~KstDataSource();
 
-    void setTagName(KstObjectTag tag);
+    void setTagName(const KstObjectTag& tag);
 
     // These six static methods are not for plugins to use
     /** Returns a list of plugins found on the system. */

@@ -184,7 +184,7 @@ void KstScalar::setEditable(bool editable) {
 }
 
 
-void KstScalar::setTagName(KstObjectTag newTag) {
+void KstScalar::setTagName(const KstObjectTag& newTag) {
   KstWriteLocker l(&KST::scalarList.lock());
 
   KST::scalarList.doRename(this, newTag);

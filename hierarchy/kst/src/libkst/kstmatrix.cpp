@@ -370,7 +370,7 @@ KstObject::UpdateType KstMatrix::internalUpdate(KstObject::UpdateType providerUp
 }
     
     
-void KstMatrix::setTagName(KstObjectTag tag) {
+void KstMatrix::setTagName(const KstObjectTag& tag) {
   KstWriteLocker l(&KST::matrixList.lock());
 
   KST::matrixList.doRename(this, tag);

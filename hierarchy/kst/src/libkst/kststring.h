@@ -32,7 +32,7 @@ class KST_EXPORT KstString : public KstPrimitive {
     ~KstString();
 
   public:
-    void setTagName(KstObjectTag tag);
+    void setTagName(const KstObjectTag& tag);
 
     /** Save information */
     void save(QTextStream &ts, const QString& indent = QString::null);

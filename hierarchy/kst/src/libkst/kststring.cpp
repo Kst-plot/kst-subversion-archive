@@ -69,7 +69,7 @@ KstString::~KstString() {
 }
 
 
-void KstString::setTagName(KstObjectTag tag) {
+void KstString::setTagName(const KstObjectTag& tag) {
   KstWriteLocker l(&KST::stringList.lock());
 
   KST::stringList.doRename(this, tag);

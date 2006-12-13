@@ -62,7 +62,7 @@ class KstObjectTag {
 
 
     // construct a tag in a given context
-    KstObjectTag(const QString& tag, QStringList context,
+    KstObjectTag(const QString& tag, const QStringList& context,
         unsigned int minDisplayComponents = 1) : _tag(cleanTag(tag)),
                                                  _context(context),
                                                  _minDisplayComponents(minDisplayComponents),
@@ -105,13 +105,13 @@ class KstObjectTag {
     }
 
     // change the context
-    void setContext(QStringList context) {
+    void setContext(const QStringList& context) {
       _context = context;
       _uniqueDisplayComponents = UINT_MAX;
     }
 
     // change the tag and context
-    void setTag(const QString& tag, QStringList context) {
+    void setTag(const QString& tag, const QStringList& context) {
       setTag(tag);
       setContext(context);
     }
@@ -193,7 +193,7 @@ class KST_EXPORT KstObject : public KstShared, public QObject, public KstRWLock 
     virtual QString tagName() const;
     virtual KstObjectTag& tag();
     virtual const KstObjectTag& tag() const;
-    virtual void setTagName(KstObjectTag tag);
+    virtual void setTagName(const KstObjectTag& tag);
 
     virtual QString tagLabel() const;
     // Returns count - 2 to account for "this" and the list pointer

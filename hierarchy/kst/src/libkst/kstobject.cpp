@@ -74,7 +74,7 @@ inline const KstObjectTag& KstObject::tag() const {
 }
 
 
-void KstObject::setTagName(KstObjectTag tag) {
+void KstObject::setTagName(const KstObjectTag& tag) {
   _tag = tag;
   setName(_tag.tagString().local8Bit().data());
 }

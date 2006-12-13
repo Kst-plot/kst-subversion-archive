@@ -440,7 +440,7 @@ KstDataSource::~KstDataSource() {
 }
 
 
-void KstDataSource::setTagName(KstObjectTag in_tag) {
+void KstDataSource::setTagName(const KstObjectTag& in_tag) {
   KstObject::setTagName(in_tag);
   _numFramesScalar->setTagName(KstObjectTag("frames", tag()));
 }
