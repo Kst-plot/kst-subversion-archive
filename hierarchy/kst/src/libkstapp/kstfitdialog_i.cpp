@@ -76,12 +76,13 @@ void KstFitDialogI::show_setCurve(const QString& strCurve,
 
   _strWindow   = strWindow;
   _strPlotName = strPlotName;
-  _curve = *vcurves.findTag(strCurve);
-  if (!_curve) {
-    KstReadLocker rl(_curve);
-    _yvector = _curve->yVTag().tag();  // FIXME: is this right? I don't think so.
-    _xvector = _curve->xVTag().tag();
-    _evector = _curve->yETag().tag();
+  _strCurve    = strCurve;
+  curve = *vcurves.findTag(strCurve);
+  if (curve) {
+    KstReadLocker rl(curve);
+    _yvector = curve->yVTag().tag();  // FIXME: is this right? I don't think so.
+    _xvector = curve->xVTag().tag();
+    _evector = curve->yETag().tag();
   }
   if (_xvector == "<None>" || _yvector == "<None>") {
     return;
@@ -199,7 +200,7 @@ bool KstFitDialogI::newObject() {
         plugin->setPlugin(pPtr);
 
         if (tagName == plugin_defaultTag) {
-          tagName = KST::suggestPluginName(_pluginList[pitem], _curve->tag());
+          tagName = KST::suggestPluginName(_pluginList[pitem], KstObjectTag::fromString(_strCurve));
         }
 
         plugin->setTagName(KstObjectTag(tagName, KstObjectTag::globalTagContext)); // FIXME: tag context always global?
