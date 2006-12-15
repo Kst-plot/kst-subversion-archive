@@ -15,6 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
+//#define PURGEDEBUG
+
 #include <sys/types.h>
 
 #ifdef HAVE_SYS_STAT_H
@@ -940,6 +942,10 @@ RemoveStatus KstDoc::removeDataObject(const QString& tag) {
 
 
 void KstDoc::purge() {
+#ifdef PURGEDEBUG
+  kstdDebug() << "Purging unused objects" << endl;
+#endif
+
   QString purging = i18n("Purging unused objects");
   bool modified = false;
   bool again = true;
@@ -961,9 +967,13 @@ void KstDoc::purge() {
     // ASSUMPTION: this only gets called from the data manager!
     KST::dataObjectList.lock().writeLock();
     for (KstDataObjectList::Iterator it = KST::dataObjectList.begin(); it != KST::dataObjectList.end(); ++it) {
-      //kstdDebug() << "OBJECT: " << (*it)->tagName() << " USAGE: " << (*it)->getUsage() << endl;
+#ifdef PURGEDEBUG
+      kstdDebug() << "OBJECT: " << (*it)->tag().displayString() << " USAGE: " << (*it)->getUsage() << endl;
+#endif
       if ((*it)->getUsage() == 0 && !kst_cast<EventMonitorEntry>(*it)) {
-        //kstdDebug() << "    -> REMOVED" << endl;
+#ifdef PURGEDEBUG
+        kstdDebug() << "    -> REMOVED" << endl;
+#endif
         KstDataObjectList::Iterator byebye = it;
         --it;
         KST::dataObjectList.remove(byebye);
@@ -981,9 +991,20 @@ void KstDoc::purge() {
     
     // clear unused vectors that are editable 
     for (KstVectorList::ConstIterator it = vectorList.begin(); it != vectorList.end(); ++it) {
-      //kstdDebug() << "VECTOR: " << (*it)->tagName() << " USAGE: " << (*it)->getUsage() << endl;
+#ifdef PURGEDEBUG
+      kstdDebug() << "VECTOR: " << (*it)->tag().displayString() << " USAGE: " << (*it)->getUsage() << endl;
+      if ((*it)->provider())
+        kstdDebug() << "  provider=" << (*it)->provider()->tag().displayString() << endl;
+//      KstRVectorPtr rvp = kst_cast<KstRVector>(*it);
+//      if (rvp && rvp->_file) {
+//        KstDataSource *file = rvp->_file;
+//        kstdDebug() << "  file=" << file->tag().displayString() << " (" << (void*)(&(*file)) << "): " << file->getUsage() << endl;
+//      }
+#endif
       if ((*it)->getUsage() == 1) {
-        //kstdDebug() << "    -> REMOVED" << endl;
+#ifdef PURGEDEBUG
+        kstdDebug() << "    -> REMOVED" << endl;
+#endif
         KST::vectorList.lock().writeLock();
         KST::vectorList.remove(const_cast<KstVector*>((*it).data()));
         KST::vectorList.lock().unlock();
@@ -1000,8 +1021,20 @@ void KstDoc::purge() {
 
     // clear unused matrices that are editable
     for (KstMatrixList::ConstIterator it = matrixList.begin(); it != matrixList.end(); ++it) {
+#ifdef PURGEDEBUG
+      kstdDebug() << "MATRIX: " << (*it)->tag().displayString() << " USAGE: " << (*it)->getUsage() << endl;
+      if ((*it)->provider())
+        kstdDebug() << "  provider=" << (*it)->provider()->tag().displayString() << endl;
+//      KstRMatrixPtr rmp = kst_cast<KstRMatrix>(*it);
+//      if (rmp && rmp->_file) {
+//        KstDataSource *file = rmp->_file;
+//        kstdDebug() << "  file=" << file->tag().displayString() << " (" << (void*)(&(*file)) << "): " << file->getUsage() << endl;
+//      }
+#endif
       if ((*it)->getUsage() == 1) {
-        //kstdDebug() << "    -> REMOVED" << endl;
+#ifdef PURGEDEBUG
+        kstdDebug() << "    -> REMOVED" << endl;
+#endif
         KST::matrixList.lock().writeLock();
         KST::matrixList.remove(const_cast<KstMatrix*>((*it).data()));
         KST::matrixList.lock().unlock();
@@ -1016,8 +1049,14 @@ void KstDoc::purge() {
   KstDataSourceList dataList;
   KST::dataSourceList.lock().readLock();
   for (KstDataSourceList::ConstIterator it = KST::dataSourceList.begin(); it != KST::dataSourceList.end(); ++it) {
-      if ((*it)->getUsage() == 1) {
-        //kstdDebug() << "    -> REMOVED" << endl;
+      KstDataSourcePtr ds = *it; // MUST use a reference-counted pointer to call getUsage()
+#ifdef PURGEDEBUG
+      kstdDebug() << "DATA SOURCE: " << ds->tag().displayString() << " (" << (void*)ds << ") USAGE: " << ds->getUsage() << endl;
+#endif
+      if (ds->getUsage() == 1) {
+#ifdef PURGEDEBUG
+        kstdDebug() << "    -> REMOVED" << endl;
+#endif
         dataList.append(const_cast<KstDataSource*>((*it).data()));
         modified = true;
       }

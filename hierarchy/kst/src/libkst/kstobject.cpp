@@ -85,6 +85,8 @@ QString KstObject::tagLabel() const {
 }
 
 
+// Returns count - 2 to account for "this" and the list pointer, therefore
+// you MUST have a reference-counted pointer to call this function
 int KstObject::getUsage() const {
   return _KShared_count() - 1;
 }

@@ -21,6 +21,8 @@
 
 #include <qsemaphore.h>
 
+#include <ksdebug.h>
+
 // NOTE: In order to preserve binary compatibility with plugins, you must
 //       not add, remove, or change member variables or virtual functions.
 //       You must also not remove or change non-virtual functions.
@@ -49,13 +51,22 @@ public:
    /**
     * Increases the reference count by one.
     */
-   void _KShared_ref() const { sem++; }
+   void _KShared_ref() const {
+	   sem++;
+//	   kstdDebug() << "KShared_ref: " << (void*)this << " -> " << _KShared_count() << endl;
+//	   kstdDebug() << kstdBacktrace() << endl;
+   }
 
    /**
     * Releases a reference (decreases the reference count by one).  If
     * the count goes to 0, this object will delete itself.
     */
-   void _KShared_unref() const { sem--;  if (sem.total() == sem.available()) delete this; }
+   void _KShared_unref() const {
+	   sem--;
+//	   kstdDebug() << "KShared_unref: " << (void*)this << " -> " << _KShared_count() << endl;
+//	   kstdDebug() << kstdBacktrace() << endl;
+	   if (sem.total() == sem.available()) delete this;
+   }
 
    /**
     * Return the current number of references held.

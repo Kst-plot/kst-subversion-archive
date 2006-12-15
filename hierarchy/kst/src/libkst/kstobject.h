@@ -196,7 +196,8 @@ class KST_EXPORT KstObject : public KstShared, public QObject, public KstRWLock 
     virtual void setTagName(const KstObjectTag& tag);
 
     virtual QString tagLabel() const;
-    // Returns count - 2 to account for "this" and the list pointer
+    // Returns count - 2 to account for "this" and the list pointer, therefore
+    // you MUST have a reference-counted pointer to call this function
     virtual int getUsage() const;
 
     // Returns true if update has already been done
