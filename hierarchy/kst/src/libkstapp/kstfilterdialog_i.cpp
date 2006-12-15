@@ -141,7 +141,8 @@ bool KstFilterDialogI::saveInputs(KstCPluginPtr plugin, KstSharedPtr<Plugin> p) 
         KstStringPtr s = *KST::stringList.findTag(ss->selectedString());
         if (s == *KST::stringList.end()) {
           QString val = ss->_string->currentText();
-          KstStringPtr newString = new KstString(KstObjectTag(ss->_string->currentText(), KstObjectTag::globalTagContext), 0L, val, true); // FIXME: do tag context properly
+          // create orphan string
+          KstStringPtr newString = new KstString(KstObjectTag(ss->_string->currentText(), KstObjectTag::orphanTagContext), 0L, val, true);
           plugin->inputStrings().insert((*it)._name, newString);
         } else {
           plugin->inputStrings().insert((*it)._name, s);
@@ -159,7 +160,8 @@ bool KstFilterDialogI::saveInputs(KstCPluginPtr plugin, KstSharedPtr<Plugin> p) 
           double val = ss->_scalar->currentText().toDouble(&ok);
 
           if (ok) {
-            KstScalarPtr newScalar = new KstScalar(KstObjectTag(ss->_scalar->currentText(), KstObjectTag::globalTagContext), 0L, val, true, false); // FIXME: do tag context properly
+            // create orphan scalar
+            KstScalarPtr newScalar = new KstScalar(KstObjectTag(ss->_scalar->currentText(), KstObjectTag::orphanTagContext), 0L, val, true, false);
             plugin->inputScalars().insert((*it)._name, newScalar);
           } else {
             plugin->inputScalars().insert((*it)._name, s);
