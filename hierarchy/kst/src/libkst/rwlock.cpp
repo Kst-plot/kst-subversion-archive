@@ -51,10 +51,15 @@ void KstRWLock::readLock() const {
     kstdDebug() << "Thread " << (int)QThread::currentThread() << " has a write lock on KstRWLock " << (void*)this << ", getting a read lock" << endl;
 #endif
   } else {
-    while (_writeCount > 0 || _waitingWriters) {
-      ++_waitingReaders;
-      _readerWait.wait(&_mutex);
-      --_waitingReaders;
+    QMap<Qt::HANDLE, int>::Iterator it = _readLockers.find(me);
+    if (it != _readLockers.end() && it.data() > 0) {
+      // thread already has another read lock
+    } else {
+      while (_writeCount > 0 || _waitingWriters) {  // writer priority otherwise
+        ++_waitingReaders;
+        _readerWait.wait(&_mutex);
+        --_waitingReaders;
+      }
     }
   }
 
