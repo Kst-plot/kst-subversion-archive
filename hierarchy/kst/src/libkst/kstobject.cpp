@@ -24,6 +24,7 @@ const QChar KstObjectTag::tagSeparatorReplacement = QChar('_');
 
 const QStringList KstObjectTag::globalTagContext = QStringList();
 const QStringList KstObjectTag::constantTagContext = QStringList("CONSTANTS");
+const QStringList KstObjectTag::orphanTagContext = QStringList();
 
 const KstObjectTag KstObjectTag::invalidTag = KstObjectTag(QString::null, KstObjectTag::globalTagContext);
 

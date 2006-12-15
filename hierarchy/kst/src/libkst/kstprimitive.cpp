@@ -50,7 +50,7 @@ KstObject::UpdateType KstPrimitive::update(int update_counter) {
   KstObject::UpdateType providerRC = NO_CHANGE;
 
   if (update_counter > 0) {
-    KstObjectPtr prov = KstObjectPtr(_provider);
+    KstObjectPtr prov = KstObjectPtr(_provider);  // use a KstObjectPtr to prevent provider being deleted during update
     if (prov) {
       KstWriteLocker pl(prov);
 

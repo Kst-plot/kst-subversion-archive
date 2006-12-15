@@ -59,6 +59,7 @@ class KstObjectTag {
 
     static const QStringList globalTagContext;
     static const QStringList constantTagContext;
+    static const QStringList orphanTagContext;
 
 
     // construct a tag in a given context
