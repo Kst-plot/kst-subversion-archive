@@ -143,6 +143,7 @@ bool CrossSpectrumDialogI::editObject() {
 
   cps->setTagName(KstObjectTag::fromString(_tagName->text()));
 
+#if 0
   // Must unlock before clear()
   for (KstVectorMap::Iterator i = cps->inputVectors().begin(); i != cps->inputVectors().end(); ++i) {
     (*i)->unlock();
@@ -153,6 +154,8 @@ bool CrossSpectrumDialogI::editObject() {
   for (KstStringMap::Iterator i = cps->inputStrings().begin(); i != cps->inputStrings().end(); ++i) {
     (*i)->unlock();
   }
+#endif
+
   cps->inputVectors().clear();
   cps->inputScalars().clear();
   cps->inputStrings().clear();
@@ -173,10 +176,8 @@ bool CrossSpectrumDialogI::editObject() {
 
 
 bool CrossSpectrumDialogI::editSingleObject(CrossPowerSpectrumPtr cps) {
-  KST::vectorList.lock().readLock();
-  KST::scalarList.lock().readLock();
-
-  { // leave this scope here to destroy the iterator
+  {
+    KstReadLocker(&KST::vectorList.lock());
     KstVectorList::Iterator it;
     it = KST::vectorList.findTag(_w->_v1->selectedVector());
     if (it != KST::vectorList.end()) {
@@ -187,7 +188,10 @@ bool CrossSpectrumDialogI::editSingleObject(CrossPowerSpectrumPtr cps) {
     if (it != KST::vectorList.end()) {
       cps->setV2(*it);
     }
+  }
 
+  {
+    KstWriteLocker(&KST::scalarList.lock());
     KstScalarList::Iterator it2;
     it2 = KST::scalarList.findTag(_w->_fft->selectedScalar());
     if (it2 != KST::scalarList.end()) {
@@ -221,9 +225,6 @@ bool CrossSpectrumDialogI::editSingleObject(CrossPowerSpectrumPtr cps) {
       }
     }
   }
-
-  KST::scalarList.lock().unlock();
-  KST::vectorList.lock().unlock();
 
   return true;
 }
