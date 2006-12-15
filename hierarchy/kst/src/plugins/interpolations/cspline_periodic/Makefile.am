@@ -1,12 +1,12 @@
-installdir=$(kde_moduledir)/kstplugins
-INCLUDES=-I$(srcdir)/../../../kst $(all_includes)
+INCLUDES=-I$(top_srcdir)/kst -I$(top_srcdir)/kst/src/libkst -I$(top_srcdir)/kst/src/libkstmath $(all_includes)
 
-install_LTLIBRARIES = kstinterp_cspline_periodic.la
+kde_module_LTLIBRARIES=kstobject_cspline_periodic.la
 
-kstinterp_cspline_periodic_la_LDFLAGS = -module $(KDE_PLUGIN) $(all_libraries)
-kstinterp_cspline_periodic_la_LIBADD = $(GSL_LIBS)
-kstinterp_cspline_periodic_la_SOURCES = kstinterp_cspline_periodic.cpp
+kstobject_cspline_periodic_la_LDFLAGS=$(all_libraries) -module -avoid-version
+kstobject_cspline_periodic_la_SOURCES=cspline_periodic.cpp
+kstobject_cspline_periodic_la_LIBADD = $(GSL_LIBS)
+
+services_DATA=kstobject_cspline_periodic.desktop
+servicesdir=$(kde_servicesdir)/kst
 
 METASOURCES=AUTO
-
-install_DATA=kstinterp_cspline_periodic.xml

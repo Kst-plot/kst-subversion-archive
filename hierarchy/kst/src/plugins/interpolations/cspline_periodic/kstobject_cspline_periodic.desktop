@@ -1,0 +1,9 @@
+[Desktop Entry]
+Encoding=UTF-8
+Type=Service
+ServiceTypes=Kst Data Object
+X-KDE-ModuleType=Plugin
+X-KDE-Library=kstobject_cspline_periodic
+X-Kst-Plugin-Author=Andrew Walker
+Name=Interpolation cubic spline periodic
+Comment=Generates a cubic spline interpolation for a set of data.

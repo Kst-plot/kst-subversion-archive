@@ -4,75 +4,62 @@
  *  Released under the terms of the GPL.
  */
 
-#define KST_UNUSED(x) if(x){};
+#define X           0
+#define Y           1
+#define X_INTERP    2
 
-#define X 					0
-#define Y 					1
-#define X_INTERP 		2
+#include <kstvector.h>
 
-int interpolate(
-  const double *const inArrays[], 
-  const int inArrayLens[],
-  const double inScalars[],
-  double *outArrays[], 
-  int outArrayLens[],
-	double outScalars[],
-  const gsl_interp_type* pType);
+bool interpolate(KstVectorPtr x_array,
+                 KstVectorPtr y_array,
+                 KstVectorPtr x1_array,
+                 KstVectorPtr y_interpolated,
+                 const gsl_interp_type* pType) {
 
-int interpolate(
-  const double *const inArrays[], 
-  const int inArrayLens[],
-  const double inScalars[],
-  double *outArrays[], 
-  int outArrayLens[],
-	double outScalars[],
-  const gsl_interp_type* pType) {
-  
-  KST_UNUSED( inScalars )
-  KST_UNUSED( outScalars )
-  
-  gsl_interp_accel*	pAccel = NULL;
-  gsl_interp*				pInterp = NULL;
-  gsl_spline*				pSpline = NULL;
-  int i = 0;
+  gsl_interp_accel *pAccel = NULL;
+  gsl_interp *pInterp = NULL;
+  gsl_spline *pSpline = NULL;
   int iLengthData;
-  int	iLengthInterp;
-  int iReturn = -1;
+  int iLengthInterp;
+  bool iReturn = false;
   double* pResult[1];
-  
-  iLengthData = inArrayLens[X];
-  if( inArrayLens[Y] < iLengthData ) {
-    iLengthData = inArrayLens[Y];
+
+  iLengthData = x_array->length();
+  if (y_array->length() < iLengthData) {
+    iLengthData = y_array->length();
   }
-  
-  iLengthInterp = inArrayLens[X_INTERP];
-  if( iLengthInterp > 0 ) {
-    if( outArrayLens[0] != iLengthInterp ) {
-      pResult[0] = (double*)realloc( outArrays[0], iLengthInterp * sizeof( double ) );
+
+  iLengthInterp = x1_array->length();
+  if (iLengthInterp > 0) {
+    if (y_interpolated->length() != iLengthInterp) {
+      y_interpolated->resize(iLengthInterp, true);
+      pResult[0] = (double*)realloc( y_interpolated->value(), iLengthInterp * sizeof( double ) );
     } else {
-      pResult[0] = outArrays[0];
+      pResult[0] = y_interpolated->value();
     }
-    
-    if( pResult[0] != NULL ) {
-      outArrays[0] = pResult[0];
-      outArrayLens[0] = iLengthInterp;
-     
+
+    if (pResult[0] != NULL) {
+
+      for (int i = 0; i < iLengthInterp; ++i) {
+        y_interpolated->value()[i] = pResult[0][i];
+      }
+
       pInterp = gsl_interp_alloc( pType, iLengthData );
-      if( pInterp != NULL ) {
+      if (pInterp != NULL) {
         //
         // check that we have enough data points...
         //
-        if( (unsigned int)iLengthData > gsl_interp_min_size( pInterp ) ) {    
+        if ((unsigned int)iLengthData > gsl_interp_min_size( pInterp )) {
           pAccel  = gsl_interp_accel_alloc( );
-          if( pAccel != NULL ) {
+          if (pAccel != NULL) {
             pSpline = gsl_spline_alloc( pType, iLengthData );
-            if( pSpline != NULL ) {
-              if( !gsl_spline_init( pSpline, inArrays[X], inArrays[Y], iLengthData ) ) {
-                for( i=0; i<iLengthInterp; i++ ) {
-                  outArrays[0][i] = gsl_spline_eval( pSpline, inArrays[X_INTERP][i], pAccel );
+            if (pSpline != NULL) {
+              if (!gsl_spline_init( pSpline, x_array->value(), y_array->value(), iLengthData )) {
+                for( int i=0; i<iLengthInterp; i++) {
+                  y_interpolated->value()[i] = gsl_spline_eval( pSpline, x1_array->value()[i], pAccel );
                 }
-                
-                iReturn = 0;
+
+                iReturn = true;
               }
               gsl_spline_free( pSpline );
             }
@@ -83,6 +70,6 @@ int interpolate(
       }
     }
   }
-  
+
   return iReturn;
 }

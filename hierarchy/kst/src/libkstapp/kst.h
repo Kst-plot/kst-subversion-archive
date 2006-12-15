@@ -225,6 +225,7 @@ class KST_EXPORT KstApp : public KMdiMainFrm {
     void showContextMenu(QWidget *w, const QPoint& pos);
     void showContextMenu(const QPoint& pos);
     void delayedDocInit();
+    void selectDataPlugin();
 
   public slots:
     void fromEnd();

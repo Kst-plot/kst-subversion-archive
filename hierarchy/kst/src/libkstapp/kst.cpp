@@ -561,8 +561,7 @@ void KstApp::initActions() {
   /************/
   PluginDialogAction = new KAction(i18n("New &Plugin..."),
                                   "kst_pluginnew", 0,
-                                   KstPluginDialogI::globalInstance(),
-                                   SLOT(show()), actionCollection(),
+                                   this, SLOT(selectDataPlugin()), actionCollection(),
                                    "plugindialog_action");
   PluginDialogAction->setWhatsThis(i18n("Bring up a dialog box\n"
                                         "to create a new plugin instance."));
@@ -620,6 +619,7 @@ void KstApp::initActions() {
                                        "viewscalarsdialog_action");
   ViewScalarsDialogAction->setWhatsThis(i18n("Bring up a dialog box\n"
                                             "to view scalar values."));
+  ViewScalarsDialogAction->setEnabled(false);
 
   /************/
   ViewStringsDialogAction = new KAction(i18n("View Strin&g Values"),
@@ -638,6 +638,7 @@ void KstApp::initActions() {
                                        "viewvectorsdialog_action");
   ViewVectorsDialogAction->setWhatsThis(i18n("Bring up a dialog box\n"
                                             "to view vector values."));
+  ViewVectorsDialogAction->setEnabled(false);
 
   /************/
   ViewMatricesDialogAction = new KAction(i18n("View &Matrix Values"),
@@ -647,6 +648,7 @@ void KstApp::initActions() {
                                        "viewmatricesdialog_action");
   ViewMatricesDialogAction->setWhatsThis(i18n("Bring up a dialog box\n"
                                             "to view matrix values."));
+  ViewMatricesDialogAction->setEnabled(false);
 
   /************/
   ViewFitsDialogAction = new KAction(i18n("View &Fit Results"),
@@ -656,6 +658,7 @@ void KstApp::initActions() {
                                        "viewfitsdialog_action");
   ViewFitsDialogAction->setWhatsThis(i18n("Bring up a dialog box\n"
                                             "to view fit values."));
+  ViewFitsDialogAction->setEnabled(false);
 
   /************/
   ChangeNptsDialogAction = new KAction(i18n("Change Data Sample &Ranges..."),
@@ -971,6 +974,43 @@ void KstApp::initDocument() {
 void KstApp::delayedDocInit() {
   if (!activeWindow()) {
     doc->newDocument();
+  }
+}
+
+
+void KstApp::selectDataPlugin() {
+  QStringList l;
+
+  //The new KstDataObject plugins...
+  const QStringList newPlugins = KstDataObject::pluginList();
+  l += newPlugins;
+
+  //The old C style plugins...
+  QStringList oldPlugins;
+
+  const QMap<QString,QString> readable =
+    PluginCollection::self()->readableNameList();
+  QMap<QString,QString>::const_iterator it = readable.begin();
+  for (; it != readable.end(); ++it) {
+    oldPlugins << it.key();
+  }
+
+  l += oldPlugins;
+
+  bool ok = false;
+  QStringList plugin =
+      KInputDialog::getItemList( i18n( "Data Plugins" ), i18n( "Create..." ), l, 0, false, &ok, this );
+
+  if ( !ok || plugin.isEmpty() )
+    return;
+
+  const QString p = plugin.join("");
+
+  if ( newPlugins.contains( p ) ) {
+    KstDataObjectPtr ptr = KstDataObject::plugin(p);
+    ptr->showDialog();
+  } else if ( oldPlugins.contains( p ) ) {
+      KstPluginDialogI::globalInstance()->showNew(readable[p]);
   }
 }
 
@@ -2192,12 +2232,10 @@ void KstApp::updateDialogs(bool onlyVisible) {
     if (!onlyVisible || changeNptsDialog->isShown()) {
       changeNptsDialog->updateChangeNptsDialog();
     }
-    if (!onlyVisible) { // FIXME: might want to make this sensible one day
-      updateDataDialogs(false);
-    }
     if (!onlyVisible || vectorSaveDialog->isShown()) {
       vectorSaveDialog->init();
     }
+    updateDataDialogs(false);
     updateDataManager(onlyVisible);
     updateViewManager(onlyVisible);
 #ifdef BENCHMARK

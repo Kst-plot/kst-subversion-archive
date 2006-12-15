@@ -1,12 +1,12 @@
-installdir=$(kde_moduledir)/kstplugins
-INCLUDES=-I$(srcdir)/../../../kst $(all_includes)
+INCLUDES=-I$(top_srcdir)/kst -I$(top_srcdir)/kst/src/libkst -I$(top_srcdir)/kst/src/libkstmath $(all_includes)
 
-install_LTLIBRARIES = kstinterp_linear.la
+kde_module_LTLIBRARIES=kstobject_linear.la
 
-kstinterp_linear_la_LDFLAGS = -module $(KDE_PLUGIN) $(all_libraries)
-kstinterp_linear_la_LIBADD = $(GSL_LIBS)
-kstinterp_linear_la_SOURCES = kstinterp_linear.cpp
+kstobject_linear_la_LDFLAGS=$(all_libraries) -module -avoid-version
+kstobject_linear_la_SOURCES=linear.cpp
+kstobject_linear_la_LIBADD = $(GSL_LIBS)
+
+services_DATA=kstobject_linear.desktop
+servicesdir=$(kde_servicesdir)/kst
 
 METASOURCES=AUTO
-
-install_DATA=kstinterp_linear.xml
