@@ -160,6 +160,7 @@ KstCSD::~KstCSD() {
 }
 
 KstObject::UpdateType KstCSD::update(int update_counter) {
+  Q_ASSERT(myLockStatus() == KstRWLock::WRITELOCKED);
 
   KstVectorPtr inVector = _inputVectors[INVECTOR];
 
@@ -170,6 +171,8 @@ KstObject::UpdateType KstCSD::update(int update_counter) {
     return lastUpdateResult();
   }
 
+  writeLockInputsAndOutputs();
+
   if (update_counter <= 0) {
     assert(update_counter == 0);
     force = true;
@@ -178,6 +181,7 @@ KstObject::UpdateType KstCSD::update(int update_counter) {
   bool xUpdated = KstObject::UPDATE == inVector->update(update_counter);
   // if vector was not changed, don't update the CSD
   if (!xUpdated && !force) {
+    unlockInputsAndOutputs();
     return setLastUpdateResult(NO_CHANGE);
   }
 
@@ -219,6 +223,8 @@ KstObject::UpdateType KstCSD::update(int update_counter) {
 
   (*_outMatrix)->change((*_outMatrix)->tag(), xSize, tempOutputLen, 0, 0, _windowSize, frequencyStep);
   (*_outMatrix)->update(update_counter);
+
+  unlockInputsAndOutputs();
 
   return setLastUpdateResult(UPDATE);
 }

@@ -137,6 +137,8 @@ void KstRMatrix::change(KstDataSourcePtr file, const QString &field,
                         int xStart, int yStart,
                         int xNumSteps, int yNumSteps,
                         bool doAve, bool doSkip, int skip) {
+  Q_ASSERT(myLockStatus() == KstRWLock::WRITELOCKED);
+
   setTagName(tag);
   commonConstructor(file, field, xStart, yStart, xNumSteps, yNumSteps, doAve, doSkip, skip);
 
@@ -239,6 +241,8 @@ bool KstRMatrix::isValid() const {
 
 
 KstObject::UpdateType KstRMatrix::update(int update_counter) {
+  Q_ASSERT(myLockStatus() == KstRWLock::WRITELOCKED);
+
   bool force = dirty();
   setDirty(false);
   if (KstObject::checkUpdateCounter(update_counter) && !force) {
@@ -483,6 +487,8 @@ KstObject::UpdateType KstRMatrix::doUpdate(bool force) {
 
 
 void KstRMatrix::reload() {
+  Q_ASSERT(myLockStatus() == KstRWLock::WRITELOCKED);
+
   if (_file) {
     _file->writeLock();
     if (_file->reset()) { // try the efficient way first
@@ -549,6 +555,8 @@ void KstRMatrix::commonConstructor(KstDataSourcePtr file, const QString &field,
 
 
 void KstRMatrix::reset() { // must be called with a lock
+  Q_ASSERT(myLockStatus() == KstRWLock::WRITELOCKED);
+  
   if (_file) {
     _samplesPerFrameCache = _file->samplesPerFrame(_field);
   }
@@ -576,6 +584,8 @@ int KstRMatrix::skip() const {
 
 
 void KstRMatrix::changeFile(KstDataSourcePtr file) {
+  Q_ASSERT(myLockStatus() == KstRWLock::WRITELOCKED);
+
   if (!file) {
     KstDebug::self()->log(i18n("Data file for vector %1 was not opened.").arg(tagName()), KstDebug::Warning);
   }

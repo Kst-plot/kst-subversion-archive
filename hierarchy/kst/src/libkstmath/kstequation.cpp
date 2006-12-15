@@ -177,6 +177,8 @@ bool KstEquation::isValid() const {
 
 
 KstObject::UpdateType KstEquation::update(int update_counter) {
+  Q_ASSERT(myLockStatus() == KstRWLock::WRITELOCKED);
+
   bool force = dirty();
   setDirty(false);
 
@@ -200,6 +202,8 @@ KstObject::UpdateType KstEquation::update(int update_counter) {
     }
   }
 
+  writeLockInputsAndOutputs();
+
   KstVectorPtr v = *_xInVector;
 
   xUpdated = KstObject::UPDATE == v->update(update_counter);
@@ -219,6 +223,8 @@ KstObject::UpdateType KstEquation::update(int update_counter) {
     v->setDirty();
   }
   v->update(update_counter);
+
+  unlockInputsAndOutputs();
 
   return setLastUpdateResult(rc);
 }
@@ -311,17 +317,13 @@ void KstEquation::setEquation(const QString& in_fn) {
 
 void KstEquation::setExistingXVector(KstVectorPtr in_xv, bool do_interp) {
   KstVectorPtr v = _inputVectors[XINVECTOR];
-  if (v) {
-    if (v == in_xv) {
-      return;
-    }
-    v->unlock();
+  if (v == in_xv) {
+    return;
   }
 
   setDirty();
 
   _inputVectors.erase(XINVECTOR);
-  in_xv->writeLock();
   _xInVector = _inputVectors.insert(XINVECTOR, in_xv);
 
   _ns = 2; // reset the updating
@@ -346,6 +348,8 @@ bool KstEquation::FillY(bool force) {
   int i0=0;
   int ns;
 
+  writeLockInputsAndOutputs();
+
   // determine value of Interp
   if (_doInterp) {
     ns = (*_xInVector)->length();
@@ -366,10 +370,12 @@ bool KstEquation::FillY(bool force) {
     KstVectorPtr yv = *_yOutVector;
     if (!xv->resize(_ns)) {
       // FIXME: handle error?
+      unlockInputsAndOutputs();
       return false;    
     }
     if (!yv->resize(_ns)) {
       // FIXME: handle error?
+      unlockInputsAndOutputs();
       return false;
     }
     yv->zero();
@@ -430,6 +436,7 @@ bool KstEquation::FillY(bool force) {
 
   if (!_pe) {
     if (_equation.isEmpty()) {
+      unlockInputsAndOutputs();
       return true;
     }
 
@@ -446,6 +453,7 @@ bool KstEquation::FillY(bool force) {
       delete (Equation::Node*)ParsedEquation;
       ParsedEquation = 0L;
       _pe = 0L;
+      unlockInputsAndOutputs();
       return false;
     }
   }
@@ -458,8 +466,11 @@ bool KstEquation::FillY(bool force) {
 
   if (!(*_xOutVector)->resize(iv->length())) {
     // FIXME: handle error?
+    unlockInputsAndOutputs();
     return false;    
   }
+
+  unlockInputsAndOutputs();
   return true;
 }
 

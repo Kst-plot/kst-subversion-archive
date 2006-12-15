@@ -93,6 +93,8 @@ void KstSVector::changeRange(double x0, double x1, int n) {
 
 
 KstObject::UpdateType KstSVector::update(int update_counter) {
+  Q_ASSERT(myLockStatus() == KstRWLock::WRITELOCKED);
+
   bool force = dirty();
   KstObject::UpdateType baseRC = KstVector::update(update_counter);
   if (force) {

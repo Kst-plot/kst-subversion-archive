@@ -204,6 +204,8 @@ KstVCurve::~KstVCurve() {
 
 
 KstObject::UpdateType KstVCurve::update(int update_counter) {
+  Q_ASSERT(myLockStatus() == KstRWLock::WRITELOCKED);
+
   bool force = dirty();
   setDirty(false);
 
@@ -216,6 +218,8 @@ KstObject::UpdateType KstVCurve::update(int update_counter) {
   if (!cxV || !cyV) {
     return setLastUpdateResult(NO_CHANGE);
   }
+
+  writeLockInputsAndOutputs();
 
   bool depUpdated = force;
 
@@ -264,6 +268,8 @@ KstObject::UpdateType KstVCurve::update(int update_counter) {
   }
 
   NS = kMax(cxV->length(), cyV->length());
+
+  unlockInputsAndOutputs();
 
   return setLastUpdateResult(depUpdated ? UPDATE : NO_CHANGE);
 }

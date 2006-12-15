@@ -80,9 +80,9 @@ void KstFitDialogI::show_setCurve(const QString& strCurve,
   curve = *vcurves.findTag(strCurve);
   if (curve) {
     KstReadLocker rl(curve);
-    _yvector = curve->yVTag().tag();  // FIXME: is this right? I don't think so.
-    _xvector = curve->xVTag().tag();
-    _evector = curve->yETag().tag();
+    _yvector = curve->yVTag().displayString();
+    _xvector = curve->xVTag().displayString();
+    _evector = curve->yETag().displayString();
   }
   if (_xvector == "<None>" || _yvector == "<None>") {
     return;
@@ -369,14 +369,12 @@ void KstFitDialogI::generateEntries(bool input, int& cnt, QWidget *parent, QGrid
 bool KstFitDialogI::saveInputs(KstCPluginPtr plugin, KstSharedPtr<Plugin> p) {
   bool rc = true;
 
-  KST::vectorList.lock().readLock();
-  KST::scalarList.lock().readLock();
-  KST::stringList.lock().readLock();
   const QValueList<Plugin::Data::IOValue>& itable = p->data()._inputs;
   for (QValueList<Plugin::Data::IOValue>::ConstIterator it = itable.begin(); it != itable.end(); ++it) {
     if ((*it)._type == Plugin::Data::IOValue::TableType) {
       QObject *field = _w->_pluginInputOutputFrame->child((*it)._name.latin1(), "VectorSelector");
       KstVectorPtr v;
+      KstReadLocker vl(&KST::vectorList.lock());
       if (!field) {
         field = _w->_pluginInputOutputFrame->child((*it)._name.latin1(), "QLabel");
         assert(field);
@@ -386,10 +384,6 @@ bool KstFitDialogI::saveInputs(KstCPluginPtr plugin, KstSharedPtr<Plugin> p) {
         v = *KST::vectorList.findTag(vs->selectedVector());
       }
       if (v) {
-        v->writeLock(); // to match with plugin->writeLock()
-        if (plugin->inputVectors().contains((*it)._name) && plugin->inputVectors()[(*it)._name] != v) {
-          plugin->inputVectors()[(*it)._name]->unlock();
-        }
         plugin->inputVectors().insert((*it)._name, v);
       } else if (plugin->inputVectors().contains((*it)._name)) {
         plugin->inputVectors().erase((*it)._name);
@@ -399,20 +393,13 @@ bool KstFitDialogI::saveInputs(KstCPluginPtr plugin, KstSharedPtr<Plugin> p) {
       QObject *field = _w->_pluginInputOutputFrame->child((*it)._name.latin1(), "StringSelector");
       assert(field);
       StringSelector *ss = static_cast<StringSelector*>(field);
+      KstWriteLocker sl(&KST::stringList.lock());
       KstStringPtr s = *KST::stringList.findTag(ss->selectedString());
       if (s == *KST::stringList.end()) {
         QString val = ss->_string->currentText();
         KstStringPtr newString = new KstString(KstObjectTag(ss->_string->currentText(), plugin->tag()), 0L, val, true);
-        newString->writeLock(); // to match with plugin->writeLock()
-        if (plugin->inputStrings().contains((*it)._name) && plugin->inputStrings()[(*it)._name] != s) {
-          plugin->inputStrings()[(*it)._name]->unlock();
-        }
         plugin->inputStrings().insert((*it)._name, newString);
       } else {
-        s->writeLock(); // to match with plugin->writeLock()
-        if (plugin->inputStrings().contains((*it)._name) && plugin->inputStrings()[(*it)._name] != s) {
-          plugin->inputStrings()[(*it)._name]->unlock();
-        }
         plugin->inputStrings().insert((*it)._name, s);
       }
     } else if ((*it)._type == Plugin::Data::IOValue::PidType) {
@@ -421,6 +408,7 @@ bool KstFitDialogI::saveInputs(KstCPluginPtr plugin, KstSharedPtr<Plugin> p) {
       QObject *field = _w->_pluginInputOutputFrame->child((*it)._name.latin1(), "ScalarSelector");
       assert(field);
       ScalarSelector *ss = static_cast<ScalarSelector*>(field);
+      KstWriteLocker sl(&KST::scalarList.lock());
       KstScalarPtr s = *KST::scalarList.findTag(ss->selectedScalar());
       if (s == *KST::scalarList.end()) {
         bool ok;
@@ -428,31 +416,16 @@ bool KstFitDialogI::saveInputs(KstCPluginPtr plugin, KstSharedPtr<Plugin> p) {
 
         if (ok) {
           KstScalarPtr newScalar = new KstScalar(KstObjectTag(ss->_scalar->currentText(), plugin->tag()), 0L, val, true, false);
-          newScalar->writeLock(); // to match with plugin->writeLock()
-          if (plugin->inputScalars().contains((*it)._name) && plugin->inputScalars()[(*it)._name] != s) {
-            plugin->inputScalars()[(*it)._name]->unlock();
-          }
           plugin->inputScalars().insert((*it)._name, newScalar);
         } else {
-          s->writeLock(); // to match with plugin->writeLock()
-          if (plugin->inputScalars().contains((*it)._name) && plugin->inputScalars()[(*it)._name] != s) {
-            plugin->inputScalars()[(*it)._name]->unlock();
-          }
           plugin->inputScalars().insert((*it)._name, s);
         }
       } else {
-        s->writeLock(); // to match with plugin->writeLock()
-        if (plugin->inputScalars().contains((*it)._name) && plugin->inputScalars()[(*it)._name] != s) {
-          plugin->inputScalars()[(*it)._name]->unlock();
-        }
         plugin->inputScalars().insert((*it)._name, s);
       }
     } else {
     }
   }
-  KST::stringList.lock().unlock();
-  KST::scalarList.lock().unlock();
-  KST::vectorList.lock().unlock();
 
   return rc;
 }

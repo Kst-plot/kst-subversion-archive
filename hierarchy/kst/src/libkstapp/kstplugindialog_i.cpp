@@ -386,8 +386,6 @@ void KstPluginDialogI::restoreInputs(const QValueList<Plugin::Data::IOValue>& ta
 bool KstPluginDialogI::saveInputs(KstCPluginPtr plugin, KstSharedPtr<Plugin> p) {
   bool rc = true;
 
-  KST::scalarList.lock().writeLock();
-  KST::stringList.lock().writeLock();
   const QValueList<Plugin::Data::IOValue>& itable = p->data()._inputs;
   for (QValueList<Plugin::Data::IOValue>::ConstIterator it = itable.begin(); it != itable.end(); ++it) {
     if ((*it)._type == Plugin::Data::IOValue::TableType) {
@@ -397,10 +395,6 @@ bool KstPluginDialogI::saveInputs(KstCPluginPtr plugin, KstSharedPtr<Plugin> p) 
       KstReadLocker vl(&KST::vectorList.lock());
       KstVectorPtr v = *KST::vectorList.findTag(vs->selectedVector());
       if (v) {
-        v->writeLock(); // to match with plugin->writeLock()
-        if (plugin->inputVectors().contains((*it)._name) && plugin->inputVectors()[(*it)._name] != v) {
-          plugin->inputVectors()[(*it)._name]->unlock();
-        }
         plugin->inputVectors().insert((*it)._name, v);
       } else if (plugin->inputVectors().contains((*it)._name)) {
         plugin->inputVectors().erase((*it)._name);
@@ -415,16 +409,8 @@ bool KstPluginDialogI::saveInputs(KstCPluginPtr plugin, KstSharedPtr<Plugin> p) 
       if (s == *KST::stringList.end()) {
         QString val = ss->_string->currentText();
         KstStringPtr newString = new KstString(KstObjectTag(ss->_string->currentText(), plugin->tag()), 0L, val, true);
-        newString->writeLock(); // to match with plugin->writeLock()
-        if (plugin->inputStrings().contains((*it)._name) && plugin->inputStrings()[(*it)._name] != s) {
-          plugin->inputStrings()[(*it)._name]->unlock();
-        }
         plugin->inputStrings().insert((*it)._name, newString);
       } else {
-        s->writeLock(); // to match with plugin->writeLock()
-        if (plugin->inputStrings().contains((*it)._name) && plugin->inputStrings()[(*it)._name] != s) {
-          plugin->inputStrings()[(*it)._name]->unlock();
-        }
         plugin->inputStrings().insert((*it)._name, s);
       }
     } else if ((*it)._type == Plugin::Data::IOValue::PidType) {
@@ -441,23 +427,11 @@ bool KstPluginDialogI::saveInputs(KstCPluginPtr plugin, KstSharedPtr<Plugin> p) 
 
         if (ok) {
           KstScalarPtr newScalar = new KstScalar(KstObjectTag(ss->_scalar->currentText(), plugin->tag()), 0L, val, true, false);
-          newScalar->writeLock(); // to match with plugin->writeLock()
-          if (plugin->inputScalars().contains((*it)._name) && plugin->inputScalars()[(*it)._name] != s) {
-            plugin->inputScalars()[(*it)._name]->unlock();
-          }
           plugin->inputScalars().insert((*it)._name, newScalar);
         } else {
-          s->writeLock(); // to match with plugin->writeLock()
-          if (plugin->inputScalars().contains((*it)._name) && plugin->inputScalars()[(*it)._name] != s) {
-            plugin->inputScalars()[(*it)._name]->unlock();
-          }
           plugin->inputScalars().insert((*it)._name, s);
         }
       } else {
-        s->writeLock(); // to match with plugin->writeLock()
-        if (plugin->inputScalars().contains((*it)._name) && plugin->inputScalars()[(*it)._name] != s) {
-          plugin->inputScalars()[(*it)._name]->unlock();
-        }
         plugin->inputScalars().insert((*it)._name, s);
       }
     } else {
@@ -491,7 +465,6 @@ bool KstPluginDialogI::saveOutputs(KstCPluginPtr plugin, KstSharedPtr<Plugin> p)
         if (!v) {
           KstWriteLocker blockVectorUpdates(&KST::vectorList.lock());
           v = new KstVector(KstObjectTag(nt, plugin->tag()), 0, plugin.data());
-          v->writeLock();
           plugin->outputVectors().insert((*it)._name, v);
         }
         v->setTagName(KstObjectTag(nt, plugin->tag()));
@@ -505,7 +478,6 @@ bool KstPluginDialogI::saveOutputs(KstCPluginPtr plugin, KstSharedPtr<Plugin> p)
         } else {
           KstWriteLocker blockVectorUpdates(&KST::vectorList.lock());
           v = new KstVector(KstObjectTag(nt, plugin->tag()), 0, plugin.data());
-          v->writeLock();
           plugin->outputVectors().insert((*it)._name, v);
         }
         v->setTagName(KstObjectTag(nt, plugin->tag()));
@@ -516,8 +488,8 @@ bool KstPluginDialogI::saveOutputs(KstCPluginPtr plugin, KstSharedPtr<Plugin> p)
         if (plugin->outputStrings().contains((*it)._name)) {
           s = plugin->outputStrings()[(*it)._name];
         } else {
+          KstWriteLocker blockStringUpdates(&KST::stringList.lock());
           s = new KstString(KstObjectTag(nt, plugin->tag()), plugin.data());
-          s->writeLock();
           plugin->outputStrings().insert((*it)._name, s);
         }
         s->setTagName(KstObjectTag(nt, plugin->tag()));
@@ -530,8 +502,8 @@ bool KstPluginDialogI::saveOutputs(KstCPluginPtr plugin, KstSharedPtr<Plugin> p)
         if (plugin->outputStrings().contains((*it)._name)) {
           s = plugin->outputStrings()[(*it)._name];
         } else {
+          KstWriteLocker blockStringUpdates(&KST::stringList.lock());
           s = new KstString(KstObjectTag(nt, plugin->tag()), plugin.data());
-          s->writeLock();
           plugin->outputStrings().insert((*it)._name, s);
         }
         s->setTagName(KstObjectTag(nt, plugin->tag()));
@@ -544,8 +516,8 @@ bool KstPluginDialogI::saveOutputs(KstCPluginPtr plugin, KstSharedPtr<Plugin> p)
         if (plugin->outputScalars().contains((*it)._name)) {
           s = plugin->outputScalars()[(*it)._name];
         } else {
+          KstWriteLocker blockScalarUpdates(&KST::scalarList.lock());
           s = new KstScalar(KstObjectTag(nt, plugin->tag()), plugin.data());
-          s->writeLock();
           plugin->outputScalars().insert((*it)._name, s);
         }
         s->setTagName(KstObjectTag(nt, plugin->tag()));
@@ -557,8 +529,8 @@ bool KstPluginDialogI::saveOutputs(KstCPluginPtr plugin, KstSharedPtr<Plugin> p)
         if (plugin->outputScalars().contains((*it)._name)) {
           s = plugin->outputScalars()[(*it)._name];
         } else {
+          KstWriteLocker blockScalarUpdates(&KST::scalarList.lock());
           s = new KstScalar(KstObjectTag(nt, plugin->tag()), plugin.data());
-          s->writeLock();
           plugin->outputScalars().insert((*it)._name, s);
         }
         s->setTagName(KstObjectTag(nt, plugin->tag()));

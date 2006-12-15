@@ -153,12 +153,16 @@ KstHistogram::~KstHistogram() {
 
 
 KstObject::UpdateType KstHistogram::update(int update_counter) {
+  Q_ASSERT(myLockStatus() == KstRWLock::WRITELOCKED);
+
   bool force = dirty();
   setDirty(false);
 
   if (KstObject::checkUpdateCounter(update_counter) && !force) {
     return lastUpdateResult();
   }
+
+  writeLockInputsAndOutputs();
 
   if (update_counter <= 0) {
     assert(update_counter == 0);
@@ -167,6 +171,7 @@ KstObject::UpdateType KstHistogram::update(int update_counter) {
 
   bool xUpdated = KstObject::UPDATE == _inputVectors[RAWVECTOR]->update(update_counter);
   if (!xUpdated && !force) {
+    unlockInputsAndOutputs();
     return setLastUpdateResult(KstObject::NO_CHANGE);
   }
 
@@ -257,6 +262,8 @@ KstObject::UpdateType KstHistogram::update(int update_counter) {
   (*_bVector)->update(update_counter);
   (*_hVector)->setDirty();
   (*_hVector)->update(update_counter);
+
+  unlockInputsAndOutputs();
 
   return setLastUpdateResult(UPDATE);
 }

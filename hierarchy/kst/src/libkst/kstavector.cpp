@@ -45,6 +45,8 @@ void KstAVector::save(QTextStream &ts, const QString& indent, bool saveAbsoluteP
 
 
 KstObject::UpdateType KstAVector::update(int update_counter) {
+  Q_ASSERT(myLockStatus() == KstRWLock::WRITELOCKED);
+
   bool force = dirty();
 
   if (KstObject::checkUpdateCounter(update_counter) && !force) {

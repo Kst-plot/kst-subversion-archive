@@ -162,6 +162,7 @@ Node *& BinaryNode::right() {
 KstObject::UpdateType BinaryNode::update(int counter, Context *ctx) {
   KstObject::UpdateType l = _left->update(counter, ctx);
   KstObject::UpdateType r = _right->update(counter, ctx);
+
   return (l == KstObject::UPDATE || r == KstObject::UPDATE) ? KstObject::UPDATE : KstObject::NO_CHANGE;
 }
 
@@ -900,8 +901,10 @@ KstObject::UpdateType Data::update(int counter, Context *ctx) {
       return _equation->update(counter, ctx);
     }
   } else if (_vector) {
+    KstWriteLocker l(_vector);
     return _vector->update(counter);
   } else if (_scalar) {
+    KstWriteLocker l(_scalar);
     return _scalar->update(counter);
   }
   return KstObject::NO_CHANGE;

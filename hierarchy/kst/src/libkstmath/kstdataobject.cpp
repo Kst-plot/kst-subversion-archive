@@ -83,7 +83,7 @@ KstDataObject::~KstDataObject() {
     KST::matrixList.remove(it.data());       
   }
   KST::matrixList.lock().unlock();
-  //kstdDebug() << "+++ DESTROYING DATA OBJECT: " << (void*)this << endl;
+//  kstdDebug() << "Destroying Data Object: " << tag().displayString() << endl;
   delete _curveHints;
 }
 
@@ -296,90 +296,37 @@ void KstDataObject::showDialog( bool edit ) {
 
 void KstDataObject::readLock() const {
   #ifdef LOCKTRACE
-  kstdDebug() << (void*)this << " (" << this->type() << " - " << this->tag().tagString() << ") KstDataObject::readLock() by tid=" << (int)QThread::currentThread() << endl;
-  kstdDebug() << (void*)this << " (" << this->type() << " - " << this->tag().tagString() << ") KstDataObject::readLock() by tid=" << (int)QThread::currentThread() << ": read locking myself" << endl;
+  kstdDebug() << (void*)this << " (" << this->type() << ": " << this->tag().tagString() << ") KstDataObject::readLock() by tid=" << (int)QThread::currentThread() << ": read locking myself" << endl;
   #endif
+
   KstObject::readLock();
-
-  QValueList<KstPrimitivePtr> inputs;
-  QValueList<KstPrimitivePtr> outputs;
-
-  QValueList<KstStringPtr> sl = _inputStrings.values();
-  for (QValueList<KstStringPtr>::Iterator i = sl.begin(); i != sl.end(); ++i) {
-    inputs += (*i).data();
-  }
-  sl = _outputStrings.values();
-  for (QValueList<KstStringPtr>::Iterator i = sl.begin(); i != sl.end(); ++i) {
-    outputs += (*i).data();
-  }
-  
-  QValueList<KstScalarPtr> sc = _inputScalars.values();
-  for (QValueList<KstScalarPtr>::Iterator i = sc.begin(); i != sc.end(); ++i) {
-    inputs += (*i).data();
-  }
-  sc = _outputScalars.values();
-  for (QValueList<KstScalarPtr>::Iterator i = sc.begin(); i != sc.end(); ++i) {
-    outputs += (*i).data();
-  }
-  
-  QValueList<KstVectorPtr> vl = _inputVectors.values();
-  for (QValueList<KstVectorPtr>::Iterator i = vl.begin(); i != vl.end(); ++i) {
-    inputs += (*i).data();
-  }
-  vl = _outputVectors.values();
-  for (QValueList<KstVectorPtr>::Iterator i = vl.begin(); i != vl.end(); ++i) {
-    outputs += (*i).data();
-  }
-  
-  QValueList<KstMatrixPtr> ml = _inputMatrices.values();
-  for (QValueList<KstMatrixPtr>::Iterator i = ml.begin(); i != ml.end(); ++i) {
-    inputs += (*i).data();
-  }
-  ml = _outputMatrices.values();
-  for (QValueList<KstMatrixPtr>::Iterator i = ml.begin(); i != ml.end(); ++i) {
-    outputs += (*i).data();
-  }
-
-  qHeapSort(inputs);
-  qHeapSort(outputs);
-
-  QValueList<KstPrimitivePtr>::ConstIterator inputIt = inputs.begin();
-  QValueList<KstPrimitivePtr>::ConstIterator outputIt = outputs.begin();
-
-  while (inputIt != inputs.end() || outputIt != outputs.end()) {
-    if (inputIt != inputs.end() && (outputIt == outputs.end() || (void*)(*inputIt) < (void*)(*outputIt))) {
-      // do input
-      #ifdef LOCKTRACE
-//      kstdDebug() << (void*)this << " (" << this->type() << " - " << this->tag().tagString() << ") KstDataObject::readLock() by tid=" << (int)QThread::currentThread() << ": read locking input " << (*inputIt)->type() << " " << (void*)(*i) << endl;
-      kstdDebug() << (void*)this << " (" << this->type() << " - " << this->tag().tagString() << ") KstDataObject::readLock() by tid=" << (int)QThread::currentThread() << ": read locking input \"" << (*inputIt)->tag().tagString() << "\" (" << (void*)(*inputIt) << ")" << endl;
-      #endif
-      (*inputIt)->readLock();
-      ++inputIt;
-    } else {
-      // do output
-      #ifdef LOCKTRACE
-//      kstdDebug() << (void*)this << " (" << this->type() << " - " << this->tag().tagString() << ") KstDataObject::readLock() by tid=" << (int)QThread::currentThread() << ": read locking output " << (*outputIt)->type() << " " << (void*)(*i) << endl;
-      kstdDebug() << (void*)this << " (" << this->type() << " - " << this->tag().tagString() << ") KstDataObject::readLock() by tid=" << (int)QThread::currentThread() << ": read locking output \"" << (*outputIt)->tag().tagString() << "\" (" << (void*)(*outputIt) << ")" << endl;
-      #endif
-      if ((*outputIt)->provider() != this) {
-        KstDebug::self()->log(i18n("(%1) KstDataObject::readLock() by tid=%2: read locking output %3 (not provider) -- this is probably an error. Please email kst@kde.org with details.").arg(this->type()).arg((int)QThread::currentThread()).arg((*outputIt)->tagName()), KstDebug::Error);
-      }
-      (*outputIt)->readLock();
-      ++outputIt;
-    }
-  }
 }
 
 
-// Note to self, this is nasty.  Some objects may lock while others don't,
-// leading to very complex deadlocks or loss of consistency.
-// Might want to guard these with another lock yet.
 void KstDataObject::writeLock() const {
   #ifdef LOCKTRACE
-  kstdDebug() << (void*)this << " (" << this->type() << " - " << this->tag().tagString() << ") KstDataObject::writeLock() by tid=" << (int)QThread::currentThread() << endl;
-  kstdDebug() << (void*)this << " (" << this->type() << " - " << this->tag().tagString() << ") KstDataObject::writeLock() by tid=" << (int)QThread::currentThread() << ": write locking myself" << endl;
+  kstdDebug() << (void*)this << " (" << this->type() << ": " << this->tag().tagString() << ") KstDataObject::writeLock() by tid=" << (int)QThread::currentThread() << ": write locking myself" << endl;
   #endif
-  KstRWLock::writeLock();
+
+  KstObject::writeLock();
+}
+
+
+void KstDataObject::unlock() const {
+  #ifdef LOCKTRACE
+  kstdDebug() << (void*)this << " (" << this->type() << ": " << this->tag().tagString() << ") KstDataObject::unlock() by tid=" << (int)QThread::currentThread() << ": unlocking myself" << endl;
+  #endif
+
+  KstObject::unlock();
+}
+
+
+void KstDataObject::writeLockInputsAndOutputs() const {
+  Q_ASSERT(myLockStatus() == KstRWLock::WRITELOCKED);
+
+  #ifdef LOCKTRACE
+  kstdDebug() << (void*)this << " (" << this->type() << ": " << this->tag().tagString() << ") KstDataObject::writeLockInputsAndOutputs() by tid=" << (int)QThread::currentThread() << endl;
+  #endif
 
   QValueList<KstPrimitivePtr> inputs;
   QValueList<KstPrimitivePtr> outputs;
@@ -430,19 +377,17 @@ void KstDataObject::writeLock() const {
     if (inputIt != inputs.end() && (outputIt == outputs.end() || (void*)(*inputIt) < (void*)(*outputIt))) {
       // do input
       #ifdef LOCKTRACE
-//      kstdDebug() << (void*)this << " (" << this->type() << " - " << this->tag().tagString() << ") KstDataObject::writeLock() by tid=" << (int)QThread::currentThread() << ": read locking input " << (*inputIt)->type() << " " << (void*)(*i) << endl;
-      kstdDebug() << (void*)this << " (" << this->type() << " - " << this->tag().tagString() << ") KstDataObject::writeLock() by tid=" << (int)QThread::currentThread() << ": read locking input \"" << (*inputIt)->tag().tagString() << "\" (" << (void*)(*inputIt) << ")" << endl;
+      kstdDebug() << (void*)this << " (" << this->type() << ": " << this->tag().tagString() << ") KstDataObject::writeLockInputsAndOutputs() by tid=" << (int)QThread::currentThread() << ": write locking input \"" << (*inputIt)->tag().tagString() << "\" (" << (void*)((KstRWLock*)*inputIt) << ")" << endl;
       #endif
-      (*inputIt)->readLock();
+      (*inputIt)->writeLock();
       ++inputIt;
     } else {
       // do output
       #ifdef LOCKTRACE
-//      kstdDebug() << (void*)this << " (" << this->type() << " - " << this->tag().tagString() << ") KstDataObject::writeLock() by tid=" << (int)QThread::currentThread() << ": write locking output " << (*outputIt)->type() << " " << (void*)(*i) << endl;
-      kstdDebug() << (void*)this << " (" << this->type() << " - " << this->tag().tagString() << ") KstDataObject::writeLock() by tid=" << (int)QThread::currentThread() << ": write locking output \"" << (*outputIt)->tag().tagString() << "\" (" << (void*)(*outputIt) << ")" << endl;
+      kstdDebug() << (void*)this << " (" << this->type() << ": " << this->tag().tagString() << ") KstDataObject::writeLockInputsAndOutputs() by tid=" << (int)QThread::currentThread() << ": write locking output \"" << (*outputIt)->tag().tagString() << "\" (" << (void*)((KstRWLock*)*outputIt) << ")" << endl;
       #endif
       if ((*outputIt)->provider() != this) {
-        KstDebug::self()->log(i18n("(%1) KstDataObject::writeLock() by tid=%2: write locking output %3 (not provider) -- this is probably an error. Please email kst@kde.org with details.").arg(this->type()).arg((int)QThread::currentThread()).arg((*outputIt)->tagName()), KstDebug::Error);
+        KstDebug::self()->log(i18n("(%1) KstDataObject::writeLockInputsAndOutputs() by tid=%2: write locking output %3 (not provider) -- this is probably an error. Please email kst@kde.org with details.").arg(this->type()).arg((int)QThread::currentThread()).arg((*outputIt)->tagName()), KstDebug::Error);
       }
       (*outputIt)->writeLock();
       ++outputIt;
@@ -451,71 +396,66 @@ void KstDataObject::writeLock() const {
 }
 
 
-void KstDataObject::unlock() const {
+void KstDataObject::unlockInputsAndOutputs() const {
   #ifdef LOCKTRACE
-  kstdDebug() << (void*)this << " (" << this->type() << " - " << this->tag().tagString() << ") KstDataObject::unlock() by tid=" << (int)QThread::currentThread() << endl;
+  kstdDebug() << (void*)this << " (" << this->type() << ": " << this->tag().tagString() << ") KstDataObject::unlockInputsAndOutputs() by tid=" << (int)QThread::currentThread() << endl;
   #endif
 
   for (KstMatrixMap::ConstIterator i = _outputMatrices.begin(); i != _outputMatrices.end(); ++i) {
     #ifdef LOCKTRACE
-    kstdDebug() << (void*)this << " (" << this->type() << " - " << this->tag().tagString() << ") KstDataObject::unlock() by tid=" << (int)QThread::currentThread() << ": unlocking output matrix \"" << (*i)->tag().tagString() << "\" (" << (void*)(*i) << ")" << endl;
+    kstdDebug() << (void*)this << " (" << this->type() << ": " << this->tag().tagString() << ") KstDataObject::unlockInputsAndOutputs() by tid=" << (int)QThread::currentThread() << ": unlocking output matrix \"" << (*i)->tag().tagString() << "\" (" << (void*)((KstRWLock*)*i) << ")" << endl;
     #endif
     (*i)->unlock();
   }
 
   for (KstMatrixMap::ConstIterator i = _inputMatrices.begin(); i != _inputMatrices.end(); ++i) {
     #ifdef LOCKTRACE
-    kstdDebug() << (void*)this << " (" << this->type() << " - " << this->tag().tagString() << ") KstDataObject::unlock() by tid=" << (int)QThread::currentThread() << ": unlocking input matrix \"" << (*i)->tag().tagString() << "\" (" << (void*)(*i) << ")" << endl;
+    kstdDebug() << (void*)this << " (" << this->type() << ": " << this->tag().tagString() << ") KstDataObject::unlockInputsAndOutputs() by tid=" << (int)QThread::currentThread() << ": unlocking input matrix \"" << (*i)->tag().tagString() << "\" (" << (void*)((KstRWLock*)*i) << ")" << endl;
     #endif
     (*i)->unlock();
   }
 
   for (KstVectorMap::ConstIterator i = _outputVectors.begin(); i != _outputVectors.end(); ++i) {
     #ifdef LOCKTRACE
-    kstdDebug() << (void*)this << " (" << this->type() << " - " << this->tag().tagString() << ") KstDataObject::unlock() by tid=" << (int)QThread::currentThread() << ": unlocking output vector \"" << (*i)->tag().tagString() << "\" (" << (void*)(*i) << ")" << endl;
+    kstdDebug() << (void*)this << " (" << this->type() << ": " << this->tag().tagString() << ") KstDataObject::unlockInputsAndOutputs() by tid=" << (int)QThread::currentThread() << ": unlocking output vector \"" << (*i)->tag().tagString() << "\" (" << (void*)((KstRWLock*)*i) << ")" << endl;
     #endif
     (*i)->unlock();
   }
 
   for (KstVectorMap::ConstIterator i = _inputVectors.begin(); i != _inputVectors.end(); ++i) {
     #ifdef LOCKTRACE
-    kstdDebug() << (void*)this << " (" << this->type() << " - " << this->tag().tagString() << ") KstDataObject::unlock() by tid=" << (int)QThread::currentThread() << ": unlocking input vector \"" << (*i)->tag().tagString() << "\" (" << (void*)(*i) << ")" << endl;
+    kstdDebug() << (void*)this << " (" << this->type() << ": " << this->tag().tagString() << ") KstDataObject::unlockInputsAndOutputs() by tid=" << (int)QThread::currentThread() << ": unlocking input vector \"" << (*i)->tag().tagString() << "\" (" << (void*)((KstRWLock*)*i) << ")" << endl;
     #endif
     (*i)->unlock();
   }
 
   for (KstScalarMap::ConstIterator i = _outputScalars.begin(); i != _outputScalars.end(); ++i) {
     #ifdef LOCKTRACE
-    kstdDebug() << (void*)this << " (" << this->type() << " - " << this->tag().tagString() << ") KstDataObject::unlock() by tid=" << (int)QThread::currentThread() << ": unlocking output scalar \"" << (*i)->tag().tagString() << "\" (" << (void*)(*i) << ")" << endl;
+    kstdDebug() << (void*)this << " (" << this->type() << ": " << this->tag().tagString() << ") KstDataObject::unlockInputsAndOutputs() by tid=" << (int)QThread::currentThread() << ": unlocking output scalar \"" << (*i)->tag().tagString() << "\" (" << (void*)((KstRWLock*)*i) << ")" << endl;
     #endif
     (*i)->unlock();
   }
 
   for (KstScalarMap::ConstIterator i = _inputScalars.begin(); i != _inputScalars.end(); ++i) {
     #ifdef LOCKTRACE
-    kstdDebug() << (void*)this << " (" << this->type() << " - " << this->tag().tagString() << ") KstDataObject::unlock() by tid=" << (int)QThread::currentThread() << ": unlocking input scalar \"" << (*i)->tag().tagString() << "\" (" << (void*)(*i) << ")" << endl;
+    kstdDebug() << (void*)this << " (" << this->type() << ": " << this->tag().tagString() << ") KstDataObject::unlockInputsAndOutputs() by tid=" << (int)QThread::currentThread() << ": unlocking input scalar \"" << (*i)->tag().tagString() << "\" (" << (void*)((KstRWLock*)*i) << ")" << endl;
     #endif
     (*i)->unlock();
   }
 
   for (KstStringMap::ConstIterator i = _outputStrings.begin(); i != _outputStrings.end(); ++i) {
    #ifdef LOCKTRACE
-    kstdDebug() << (void*)this << " (" << this->type() << " - " << this->tag().tagString() << ") KstDataObject::unlock() by tid=" << (int)QThread::currentThread() << ": unlocking output string \"" << (*i)->tag().tagString() << "\" (" << (void*)(*i) << ")" << endl;
+    kstdDebug() << (void*)this << " (" << this->type() << ": " << this->tag().tagString() << ") KstDataObject::unlockInputsAndOutputs() by tid=" << (int)QThread::currentThread() << ": unlocking output string \"" << (*i)->tag().tagString() << "\" (" << (void*)((KstRWLock*)*i) << ")" << endl;
     #endif
     (*i)->unlock();
   }
 
   for (KstStringMap::ConstIterator i = _inputStrings.begin(); i != _inputStrings.end(); ++i) {
     #ifdef LOCKTRACE
-    kstdDebug() << (void*)this << " (" << this->type() << " - " << this->tag().tagString() << ") KstDataObject::unlock() by tid=" << (int)QThread::currentThread() << ": unlocking input string \"" << (*i)->tag().tagString() << "\" (" << (void*)(*i) << ")" << endl;
+    kstdDebug() << (void*)this << " (" << this->type() << ": " << this->tag().tagString() << ") KstDataObject::unlockInputsAndOutputs() by tid=" << (int)QThread::currentThread() << ": unlocking input string \"" << (*i)->tag().tagString() << "\" (" << (void*)((KstRWLock*)*i) << ")" << endl;
     #endif
     (*i)->unlock();
   }
-
-  #ifdef LOCKTRACE
-  kstdDebug() << (void*)this << " (" << this->type() << " - " << this->tag().tagString() << ") KstDataObject::unlock() by tid=" << (int)QThread::currentThread() << ": unlocking myself" << endl;
-  #endif
-  KstRWLock::unlock();
 }
 
 

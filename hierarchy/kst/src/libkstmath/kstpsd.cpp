@@ -185,12 +185,16 @@ const KstCurveHintList *KstPSD::curveHints() const {
 
 
 KstObject::UpdateType KstPSD::update(int update_counter) {
+  Q_ASSERT(myLockStatus() == KstRWLock::WRITELOCKED);
+
   bool force = dirty();
   setDirty(false);
 
   if (KstObject::checkUpdateCounter(update_counter) && !force) {
     return lastUpdateResult();
   }
+
+  writeLockInputsAndOutputs();
 
   KstVectorPtr iv = _inputVectors[INVECTOR];
 
@@ -205,6 +209,7 @@ KstObject::UpdateType KstPSD::update(int update_counter) {
 
   // Don't touch _last_n_new if !xUpdated since it will certainly be wrong.
   if (!xUpdated && !force) {
+    unlockInputsAndOutputs();
     return setLastUpdateResult(NO_CHANGE);
   }
 
@@ -215,6 +220,7 @@ KstObject::UpdateType KstPSD::update(int update_counter) {
 
   // determine if the PSD needs to be updated. if not using averaging, then we need at least _PSDLen/16 new data points. if averaging, then we want enough new data for a complete subset.
   if ( ((_last_n_new < _PSDLen/16) || (_Average && (n_subsets - _last_n_subsets < 1))) &&  iv->length() != iv->numNew() && !force) {
+    unlockInputsAndOutputs();
     return setLastUpdateResult(NO_CHANGE);
   }
 
@@ -238,6 +244,8 @@ KstObject::UpdateType KstPSD::update(int update_counter) {
   (*_sVector)->update(update_counter);
   (*_fVector)->setDirty();
   (*_fVector)->update(update_counter);
+
+  unlockInputsAndOutputs();
 
   return setLastUpdateResult(UPDATE);
 }
@@ -360,6 +368,8 @@ QString KstPSD::vTag() const {
 
 
 void KstPSD::setVector(KstVectorPtr new_v) {
+  Q_ASSERT(myLockStatus() == KstRWLock::WRITELOCKED);
+
   KstVectorPtr v = _inputVectors[INVECTOR];
   if (v) {
     if (v == new_v) {

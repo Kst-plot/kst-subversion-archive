@@ -98,6 +98,8 @@ KstScalar::~KstScalar() {
 
 
 KstObject::UpdateType KstScalar::update(int updateCounter) {
+  Q_ASSERT(myLockStatus() == KstRWLock::WRITELOCKED);
+
   bool force = dirty();
   setDirty(false);
 
@@ -107,6 +109,7 @@ KstObject::UpdateType KstScalar::update(int updateCounter) {
 
   double v = value();
   if (_provider) {
+    KstWriteLocker pl(_provider);
     _provider->update(updateCounter);
   } else if (force) {
     return setLastUpdateResult(UPDATE);

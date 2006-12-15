@@ -19,6 +19,7 @@
 */
 
 //#define THREADDEBUG
+//#define HAVE_BACKTRACE
 
 #include "ksdebug.h"
 

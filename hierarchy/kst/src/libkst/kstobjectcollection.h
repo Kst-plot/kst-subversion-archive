@@ -114,7 +114,7 @@ class KstObjectCollection {
     QValueList<KstObjectTreeNode<T> *> relatedNodes(T *obj);
     void relatedNodesHelper(T *o, KstObjectTreeNode<T> *n, QValueList<KstObjectTreeNode<T> *>& nodes);
 
-    // must be called AFTER the object is added to the index
+    // must be called AFTER the object is added to the index, while holding a write lock
     void updateDisplayComponents(T *obj);
     void updateDisplayComponents(QValueList<KstObjectTreeNode<T> *> nodes);
 
@@ -345,6 +345,10 @@ bool KstObjectCollection<T>::addObject(T *o) {
 
 template <class T>
 bool KstObjectCollection<T>::removeObject(T *o) {
+  if (!o) {
+    return false;
+  }
+
   QValueList<KstObjectTreeNode<T> *> relNodes = relatedNodes(o);
 
   _list.remove(o);
@@ -364,6 +368,10 @@ bool KstObjectCollection<T>::removeObject(T *o) {
 // expensive, but it shouldn't happen very often.
 template <class T>
 void KstObjectCollection<T>::doRename(T *o, const KstObjectTag& newTag) {
+  if (!o) {
+    return;
+  }
+
   QValueList<KstObjectTreeNode<T> *> relNodes = relatedNodes(o);
 
   _root.removeDescendant(o, &_index);
@@ -595,24 +603,27 @@ typename KstObjectList<KstSharedPtr<T> >::ConstIterator KstObjectCollection<T>::
 }
 
 
-// must be called AFTER the object is added to the index
+// must be called AFTER the object is added to the index, while holding a write lock
 template <class T>
 void KstObjectCollection<T>::updateDisplayComponents(T *obj) {
   if (!obj) {
     return;
   }
 
-  KstWriteLocker wl(obj);
+  KstObjectTag tag = obj->tag();
 
-  if (!_index.contains(obj->tag().tag())) {
+  if (!_index.contains(tag.tag())) {
     return;
   }
 
-  unsigned int nc = componentsForUniqueTag(obj->tag());
+  unsigned int nc = componentsForUniqueTag(tag);
+  if (tag.uniqueDisplayComponents() != nc) {
 #if NAMEDEBUG > 2
-  kstdDebug() << "Changing display components on \"" << obj->tag().tagString() << "\" from " << obj->tag().uniqueDisplayComponents() << " to " << nc << endl;
+    kstdDebug() << "Changing display components on \"" << tag.tagString() << "\" from " << tag.uniqueDisplayComponents() << " to " << nc << endl;
 #endif
-  obj->tag().setUniqueDisplayComponents(nc);
+//    KstWriteLocker l(obj);
+    obj->tag().setUniqueDisplayComponents(nc);
+  }
 }
 
 template <class T>

@@ -193,11 +193,6 @@ class KST_EXPORT KstVector : public KstPrimitive {
 
     double _min, _max, _mean, _minPos;
 
-    /** Possibly null.  Be careful, this is non-standard usage of a KstShared.
-     * The purpose of this is to trigger hierarchical updates properly.
-     */
-    QGuardedPtr<KstObject> _provider;
-
     /** Scalar Maintenance methods */
     void CreateScalars();
     void RenameScalars();

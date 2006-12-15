@@ -178,12 +178,16 @@ void EventMonitorEntry::slotUpdate() {
 
 
 KstObject::UpdateType EventMonitorEntry::update(int updateCounter) {
+  Q_ASSERT(myLockStatus() == KstRWLock::WRITELOCKED);
+
   bool force = dirty();
   setDirty(false);
 
   if (KstObject::checkUpdateCounter(updateCounter) && !force) {
     return lastUpdateResult();
   }
+
+  writeLockInputsAndOutputs();
 
   if (!_pExpression) {
     reparse();
@@ -246,6 +250,8 @@ KstObject::UpdateType EventMonitorEntry::update(int updateCounter) {
     yv->setDirty();
     yv->update(updateCounter);
   }
+
+  unlockInputsAndOutputs();
 
   return setLastUpdateResult(NO_CHANGE);
 }

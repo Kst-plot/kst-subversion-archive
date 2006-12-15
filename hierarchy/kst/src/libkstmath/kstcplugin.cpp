@@ -250,6 +250,8 @@ void KstCPlugin::freeParameters() {
 
 
 KstObject::UpdateType KstCPlugin::update(int update_counter) {
+  Q_ASSERT(myLockStatus() == KstRWLock::WRITELOCKED);
+
   if (!isValid()) {
     return setLastUpdateResult(NO_CHANGE);
   }
@@ -276,6 +278,8 @@ KstObject::UpdateType KstCPlugin::update(int update_counter) {
   } \
   } while(0)
 
+
+  writeLockInputsAndOutputs();
 
   const QValueList<Plugin::Data::IOValue>& itable = _plugin->data()._inputs;
   const QValueList<Plugin::Data::IOValue>& otable = _plugin->data()._outputs;
@@ -312,6 +316,7 @@ KstObject::UpdateType KstCPlugin::update(int update_counter) {
 
   if (!doUpdate) {
     CLEANUP();
+    unlockInputsAndOutputs();
     return setLastUpdateResult(NO_CHANGE);
   }
 
@@ -324,6 +329,7 @@ KstObject::UpdateType KstCPlugin::update(int update_counter) {
       if (!_outputVectors.contains((*it)._name)) {
         KstDebug::self()->log(i18n("Output vector [%1] for plugin %2 not found.  Unable to continue.").arg((*it)._name).arg(tagName()), KstDebug::Error);
         CLEANUP();
+        unlockInputsAndOutputs();
         return setLastUpdateResult(NO_CHANGE);
       }
       _outVectors[vitcnt] = _outputVectors[(*it)._name]->value();
@@ -420,6 +426,8 @@ KstObject::UpdateType KstCPlugin::update(int update_counter) {
       KstDebug::self()->log(i18n("Plugin %2 produced error: %1.").arg(_lastError).arg(tagName()), KstDebug::Error);
     }
   }
+
+  unlockInputsAndOutputs();
 
   CLEANUP();
 #undef CLEANUP
@@ -575,19 +583,16 @@ bool KstCPlugin::setPlugin(KstSharedPtr<Plugin> plugin) {
       } else {
         v = new KstVector(KstObjectTag((*it)._name, tag()), 0, this, false);
       }
-      v->KstObject::writeLock();
       _outputVectors.insert((*it)._name, v);
       ++_outArrayCnt;
     } else if ((*it)._type == Plugin::Data::IOValue::FloatType) {
       KstWriteLocker blockScalarUpdates(&KST::scalarList.lock());
       KstScalarPtr s = new KstScalar(KstObjectTag((*it)._name, tag()), this);
-      s->KstObject::writeLock();
       _outputScalars.insert((*it)._name, s);
       ++_outScalarCnt;
     } else if ((*it)._type == Plugin::Data::IOValue::StringType) {
       KstWriteLocker blockStringUpdates(&KST::stringList.lock());
       KstStringPtr s = new KstString(KstObjectTag((*it)._name, tag()), this);
-      s->KstObject::writeLock();
       _outputStrings.insert((*it)._name, s);
       ++_outStringCnt;
     }
@@ -638,7 +643,9 @@ QString KstCPlugin::lastError() const {
 
 // FIXME: KstCPlugin should not know about fit scalars!!
 void KstCPlugin::createFitScalars() {
+  Q_ASSERT(myLockStatus() == KstRWLock::WRITELOCKED);
   // Assumes that this is called with a write lock in place on this object
+
   if (_plugin->data()._isFit && _outputVectors.contains("Parameters")) {
     KstVectorPtr vectorParam = _outputVectors["Parameters"];
     if (vectorParam) {
@@ -653,9 +660,7 @@ void KstCPlugin::createFitScalars() {
         if (!_outputScalars.contains(paramName)) {
           KstWriteLocker blockScalarUpdates(&KST::scalarList.lock());
           KstScalarPtr s = new KstScalar(KstObjectTag(paramName, tag()), this, scalarValue);
-          if (myLockStatus() == KstRWLock::READLOCKED) {
-            s->KstObject::writeLock();
-          }
+          s->KstObject::writeLock();  // must write lock, since fit scalars are created from update()
           _outputScalars.insert(paramName, s);
           ++_outScalarCnt;
         } else {

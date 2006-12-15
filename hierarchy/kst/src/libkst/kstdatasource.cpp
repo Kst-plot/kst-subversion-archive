@@ -447,6 +447,8 @@ void KstDataSource::setTagName(const KstObjectTag& in_tag) {
 
 
 KstObject::UpdateType KstDataSource::update(int u) {
+  Q_ASSERT(myLockStatus() == KstRWLock::WRITELOCKED);
+
   Q_UNUSED(u)
   return KstObject::NO_CHANGE;
 }

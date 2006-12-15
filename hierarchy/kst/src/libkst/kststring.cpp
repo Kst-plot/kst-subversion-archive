@@ -86,6 +86,8 @@ void KstString::save(QTextStream &ts, const QString& indent) {
 
 
 KstObject::UpdateType KstString::update(int updateCounter) {
+  Q_ASSERT(myLockStatus() == KstRWLock::WRITELOCKED);
+
   bool force = dirty();
   setDirty(false);
 

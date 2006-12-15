@@ -16,6 +16,8 @@
  *                                                                         *
  ***************************************************************************/
 
+//#define UPDATEDEBUG
+
 #include "kstprimitive.h"
 
 #include <assert.h>
@@ -33,6 +35,11 @@ KstPrimitive::~KstPrimitive() {
 
 
 KstObject::UpdateType KstPrimitive::update(int update_counter) {
+#ifdef UPDATEDEBUG
+  kstdDebug() << "Updating Primitive " << tag().displayString() << endl;
+#endif
+  Q_ASSERT(myLockStatus() == KstRWLock::WRITELOCKED);
+
   bool force = dirty();
   setDirty(false);
 
@@ -45,7 +52,8 @@ KstObject::UpdateType KstPrimitive::update(int update_counter) {
   if (update_counter > 0) {
     KstObjectPtr prov = KstObjectPtr(_provider);
     if (prov) {
-      // provider is already locked
+      KstWriteLocker pl(prov);
+
       providerRC = prov->update(update_counter);
       if (!force && providerRC == KstObject::NO_CHANGE) {
         return setLastUpdateResult(providerRC);

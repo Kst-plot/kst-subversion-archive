@@ -40,6 +40,7 @@ void KstRWLock::readLock() const {
   
 #ifdef LOCKTRACE
   kstdDebug() << (void*)this << " KstRWLock::readLock() by tid=" << (int)QThread::currentThread() << endl;
+//  kstdDebug() << kstdBacktrace(6) << endl;
 #endif
 
   Qt::HANDLE me = QThread::currentThread();
@@ -75,6 +76,7 @@ void KstRWLock::writeLock() const {
 
 #ifdef LOCKTRACE
   kstdDebug() << (void*)this << " KstRWLock::writeLock() by tid=" << (int)QThread::currentThread() << endl;
+//  kstdDebug() << kstdBacktrace(6) << endl;
 #endif
 
   Qt::HANDLE me = QThread::currentThread();

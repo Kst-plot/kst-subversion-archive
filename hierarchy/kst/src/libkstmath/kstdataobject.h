@@ -127,6 +127,9 @@ class KST_EXPORT KstDataObject : public KstObject {
     void setVersion(const QString &str) { _version = str; }
     void setLibrary(const QString &str) { _library = str; }
 
+    virtual void writeLockInputsAndOutputs() const;
+    virtual void unlockInputsAndOutputs() const;
+
     KstVectorMap _inputVectors;
     KstVectorMap _outputVectors;
     KstScalarMap _inputScalars;

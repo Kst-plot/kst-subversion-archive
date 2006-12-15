@@ -203,6 +203,8 @@ void KstBasicPlugin::setOutputString(const QString &type, const QString &name) {
 
 
 KstObject::UpdateType KstBasicPlugin::update(int updateCounter) {
+  Q_ASSERT(myLockStatus() == KstRWLock::WRITELOCKED);
+
   bool force = dirty();
   setDirty(false);
 
@@ -214,6 +216,8 @@ KstObject::UpdateType KstBasicPlugin::update(int updateCounter) {
   if (!inputsExist())
     return setLastUpdateResult(NO_CHANGE);
 
+  writeLockInputsAndOutputs();
+
   //Update the dependent inputs
   bool depUpdated = updateInput(updateCounter, force);
 
@@ -221,6 +225,7 @@ KstObject::UpdateType KstBasicPlugin::update(int updateCounter) {
   //and produce the outputs
   if ( !algorithm() ) {
     KstDebug::self()->log(i18n("There is an error in the %1 algorithm.").arg(propertyString()), KstDebug::Error);
+    unlockInputsAndOutputs();
     return lastUpdateResult();
   }
 
@@ -228,6 +233,8 @@ KstObject::UpdateType KstBasicPlugin::update(int updateCounter) {
   updateOutput(updateCounter);
 
   createFitScalars();
+
+  unlockInputsAndOutputs();
 
   return setLastUpdateResult(depUpdated ? UPDATE : NO_CHANGE);
 }
@@ -273,6 +280,8 @@ void KstBasicPlugin::load(const QDomElement &e) {
 // FIXME: KstBasicPlugin should not know about fit scalars!!
 void KstBasicPlugin::createFitScalars() {
   // Assumes that this is called with a write lock in place on this object
+  Q_ASSERT(myLockStatus() == KstRWLock::WRITELOCKED);
+
   if (_isFit && _outputVectors.contains("Parameters")) {
     KstVectorPtr vectorParam = _outputVectors["Parameters"];
     if (vectorParam) {
@@ -287,7 +296,7 @@ void KstBasicPlugin::createFitScalars() {
         if (!_outputScalars.contains(paramName)) {
           KstWriteLocker blockScalarUpdates(&KST::scalarList.lock());
           KstScalarPtr s = new KstScalar(KstObjectTag(paramName, tag()), this, scalarValue);
-          s->KstObject::writeLock();
+          s->KstObject::writeLock();  // must write lock, since fit scalars are created from update()
           _outputScalars.insert(paramName, s);
         } else {
           _outputScalars[paramName]->setValue(scalarValue);
@@ -406,6 +415,7 @@ bool KstBasicPlugin::updateInput(int updateCounter, bool force) const {
   QStringList iv = inputVectorList();
   QStringList::ConstIterator ivI = iv.begin();
   for (; ivI != iv.end(); ++ivI) {
+    Q_ASSERT(inputVector(*ivI)->myLockStatus() == KstRWLock::WRITELOCKED);
     depUpdated =
         UPDATE == inputVector(*ivI)->update(updateCounter) || depUpdated;
   }
@@ -414,6 +424,7 @@ bool KstBasicPlugin::updateInput(int updateCounter, bool force) const {
   QStringList is = inputScalarList();
   QStringList::ConstIterator isI = is.begin();
   for (; isI != is.end(); ++isI) {
+    Q_ASSERT(inputScalar(*isI)->myLockStatus() == KstRWLock::WRITELOCKED);
     depUpdated =
         UPDATE == inputScalar(*isI)->update(updateCounter) || depUpdated;
   }
@@ -422,6 +433,7 @@ bool KstBasicPlugin::updateInput(int updateCounter, bool force) const {
   QStringList istr = inputStringList();
   QStringList::ConstIterator istrI = istr.begin();
   for (; istrI != istr.end(); ++istrI) {
+    Q_ASSERT(inputString(*istrI)->myLockStatus() == KstRWLock::WRITELOCKED);
     depUpdated =
         UPDATE == inputString(*istrI)->update(updateCounter) || depUpdated;
   }
@@ -435,6 +447,7 @@ void KstBasicPlugin::updateOutput(int updateCounter) const {
   QStringList::ConstIterator ovI = ov.begin();
   for (; ovI != ov.end(); ++ovI) {
     if (KstVectorPtr o = outputVector(*ovI)) {
+      Q_ASSERT(o->myLockStatus() == KstRWLock::WRITELOCKED);
       vectorRealloced(o, o->value(), o->length());
       o->setDirty();
       o->setNewAndShift(o->length(), o->numShift());
@@ -447,6 +460,7 @@ void KstBasicPlugin::updateOutput(int updateCounter) const {
   QStringList::ConstIterator osI = os.begin();
   for (; osI != os.end(); ++osI) {
     if (KstScalarPtr o = outputScalar(*osI)) {
+      Q_ASSERT(o->myLockStatus() == KstRWLock::WRITELOCKED);
       o->update(updateCounter);
     }
   }
@@ -456,6 +470,7 @@ void KstBasicPlugin::updateOutput(int updateCounter) const {
   QStringList::ConstIterator ostrI = ostr.begin();
   for (; ostrI != ostr.end(); ++ostrI) {
     if (KstStringPtr o = outputString(*ostrI)) {
+      Q_ASSERT(o->myLockStatus() == KstRWLock::WRITELOCKED);
       o->update(updateCounter);
     }
   }

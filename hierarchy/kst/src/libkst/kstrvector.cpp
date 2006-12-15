@@ -178,6 +178,8 @@ void KstRVector::change(KstDataSourcePtr in_file, const QString &in_field,
                         int in_f0, int in_n,
                         int in_skip, bool in_DoSkip,
                         bool in_DoAve) {
+  Q_ASSERT(myLockStatus() == KstRWLock::WRITELOCKED);
+
   Skip = in_skip;
   DoSkip = in_DoSkip;
   DoAve = in_DoAve;
@@ -208,6 +210,8 @@ void KstRVector::change(KstDataSourcePtr in_file, const QString &in_field,
 
 
 void KstRVector::changeFile(KstDataSourcePtr in_file) {
+  Q_ASSERT(myLockStatus() == KstRWLock::WRITELOCKED);
+
   if (!in_file) {
     KstDebug::self()->log(i18n("Data file for vector %1 was not opened.").arg(tagName()), KstDebug::Warning);
   }
@@ -225,6 +229,8 @@ void KstRVector::changeFile(KstDataSourcePtr in_file) {
 void KstRVector::changeFrames(int in_f0, int in_n,
                               int in_skip, bool in_DoSkip,
                               bool in_DoAve) {
+  Q_ASSERT(myLockStatus() == KstRWLock::WRITELOCKED);
+
   if (_file) {
     _file->writeLock();
   }
@@ -249,6 +255,8 @@ void KstRVector::changeFrames(int in_f0, int in_n,
 
 
 void KstRVector::setFromEnd() {
+  Q_ASSERT(myLockStatus() == KstRWLock::WRITELOCKED);
+
   ReqF0 = -1;
   if (ReqNF < 2) {
     ReqNF = numFrames();
@@ -386,6 +394,8 @@ QString KstRVector::label() const {
 
 
 void KstRVector::reset() { // must be called with a lock
+  Q_ASSERT(myLockStatus() == KstRWLock::WRITELOCKED);
+
   _dontUseSkipAccel = false;
   if (_file) {
     SPF = _file->samplesPerFrame(_field);
@@ -424,6 +434,8 @@ void KstRVector::checkIntegrity() {
 
 /** Update an RVECTOR */
 KstObject::UpdateType KstRVector::update(int update_counter) {
+  Q_ASSERT(myLockStatus() == KstRWLock::WRITELOCKED);
+
   bool force = dirty();
   setDirty(false);
   if (KstObject::checkUpdateCounter(update_counter) && !force) {
@@ -697,6 +709,8 @@ int KstRVector::fileLength() const {
 
 
 void KstRVector::reload() {
+  Q_ASSERT(myLockStatus() == KstRWLock::WRITELOCKED);
+
   if (_file) {
     _file->writeLock();
     if (_file->reset()) { // try the efficient way first

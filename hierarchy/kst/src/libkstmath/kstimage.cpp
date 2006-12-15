@@ -199,12 +199,16 @@ void KstImage::save(QTextStream &ts, const QString& indent) {
 
 
 KstObject::UpdateType KstImage::update(int update_counter) {
+  Q_ASSERT(myLockStatus() == KstRWLock::WRITELOCKED);
+
   bool force = dirty();
   setDirty(false);
 
   if (KstObject::checkUpdateCounter(update_counter) && !force) {
     return lastUpdateResult();
   }
+
+  writeLockInputsAndOutputs();
 
   if (_inputMatrices.contains(THEMATRIX)) {
     KstMatrixPtr mp = _inputMatrices[THEMATRIX];
@@ -246,9 +250,13 @@ KstObject::UpdateType KstImage::update(int update_counter) {
           }
         }
       }
+
+      unlockInputsAndOutputs();
       return setLastUpdateResult(UPDATE);
     }
   }
+
+  unlockInputsAndOutputs();
   return setLastUpdateResult(NO_CHANGE);
 }
 
