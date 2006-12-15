@@ -162,7 +162,9 @@ void KstObjectItem::update(bool recursive, int localUseCount) {
   switch (_rtti) {
     case RTTI_OBJ_DATA_VECTOR:
     {
+      KST::vectorList.lock().readLock();
       KstRVectorPtr x = kst_cast<KstRVector>(*KST::vectorList.findTag(_name));
+      KST::vectorList.lock().unlock();
       if (x) {
         x->readLock();
         // getUsage: subtract 1 for KstRVectorPtr x
@@ -195,7 +197,9 @@ void KstObjectItem::update(bool recursive, int localUseCount) {
     }
     case RTTI_OBJ_STATIC_VECTOR:
     {
+      KST::vectorList.lock().readLock();
       KstSVectorPtr x = kst_cast<KstSVector>(*KST::vectorList.findTag(_name));
+      KST::vectorList.lock().unlock();
       if (x) {
         x->readLock();
         // getUsage: subtract 1 for KstRVectorPtr x
@@ -225,7 +229,9 @@ void KstObjectItem::update(bool recursive, int localUseCount) {
     }
     case RTTI_OBJ_VECTOR:
     {
+      KST::vectorList.lock().readLock();
       KstVectorPtr x = *KST::vectorList.findTag(_name);
+      KST::vectorList.lock().unlock();
       if (x) {
         x->readLock();
         // getUsage:
@@ -250,7 +256,9 @@ void KstObjectItem::update(bool recursive, int localUseCount) {
     }
     case RTTI_OBJ_OBJECT:
     {
+      KST::dataObjectList.lock().readLock();
       KstDataObjectPtr x = *KST::dataObjectList.findTag(_name);
+      KST::dataObjectList.lock().unlock();
       if (x) {
         x->readLock();
         QString field = x->typeString();
@@ -337,7 +345,9 @@ void KstObjectItem::update(bool recursive, int localUseCount) {
     }
     case RTTI_OBJ_DATA_MATRIX:
     {
+      KST::matrixList.lock().readLock();
       KstRMatrixPtr x = kst_cast<KstRMatrix>(*KST::matrixList.findTag(_name));
+      KST::matrixList.lock().unlock();
       if (x) {
         x->readLock();
           // getUsage: subtract 1 for KstRMatrixPtr x
@@ -363,7 +373,9 @@ void KstObjectItem::update(bool recursive, int localUseCount) {
     }
     case RTTI_OBJ_STATIC_MATRIX:
     {
+      KST::matrixList.lock().readLock();
       KstSMatrixPtr x = kst_cast<KstSMatrix>(*KST::matrixList.findTag(_name));
+      KST::matrixList.lock().unlock();
       if (x) {
         x->readLock();
           // getUsage: subtract 1 for KstRMatrixPtr x
@@ -387,7 +399,9 @@ void KstObjectItem::update(bool recursive, int localUseCount) {
     }
     case RTTI_OBJ_MATRIX:
     {
+      KST::matrixList.lock().readLock();
       KstMatrixPtr x = *KST::matrixList.findTag(_name);
+      KST::matrixList.lock().unlock();
       if (x) {
         x->readLock();
           // getUsage:
