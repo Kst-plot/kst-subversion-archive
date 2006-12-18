@@ -330,7 +330,7 @@ bool KstMatrixDialogI::new_IRMatrix() {
   int skip = _w->_skip->value();
 
   KstRMatrixPtr matrix = new KstRMatrix(file, pField,
-                                        KstObjectTag(tag_name, file->tag()),
+                                        KstObjectTag(tag_name, file->tag(), false),
                                         xStart, yStart, xNumSteps, yNumSteps,
                                         doAve, doSkip, skip);
   emit matrixCreated(KstMatrixPtr(matrix));

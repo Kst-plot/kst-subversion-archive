@@ -383,7 +383,8 @@ bool KstVectorDialogI::newObject() {
 
     /* create the vector */
     KstRVectorPtr vector = new KstRVector(
-        file, _w->Field->currentText(), KstObjectTag(tag_name, file->tag()),
+        file, _w->Field->currentText(),
+        KstObjectTag(tag_name, file->tag(), false),
         _w->_kstDataRange->CountFromEnd->isChecked() ? -1 : f0,
         _w->_kstDataRange->ReadToEnd->isChecked() ? -1 : n,
         _w->_kstDataRange->Skip->value(),
