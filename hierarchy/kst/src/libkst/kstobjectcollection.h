@@ -99,6 +99,8 @@ class KstObjectCollection {
     typename KstObjectList<KstSharedPtr<T> >::Iterator removeTag(const QString& x);
     typename KstObjectList<KstSharedPtr<T> >::Iterator findTag(const QString& x);
     typename KstObjectList<KstSharedPtr<T> >::ConstIterator findTag(const QString& x) const;
+    typename KstObjectList<KstSharedPtr<T> >::Iterator findTag(const KstObjectTag& x);
+    typename KstObjectList<KstSharedPtr<T> >::ConstIterator findTag(const KstObjectTag& x) const;
     typename KstObjectList<KstSharedPtr<T> >::Iterator begin();
     typename KstObjectList<KstSharedPtr<T> >::ConstIterator begin() const;
     typename KstObjectList<KstSharedPtr<T> >::Iterator end();
@@ -545,15 +547,39 @@ typename KstObjectList<KstSharedPtr<T> >::Iterator KstObjectCollection<T>::remov
 }
 
 template <class T>
-typename KstObjectList<KstSharedPtr<T> >::Iterator KstObjectCollection<T>::findTag(const QString& x) {
-  T *obj = retrieveObject(KstObjectTag::fromString(x));
+typename KstObjectList<KstSharedPtr<T> >::Iterator KstObjectCollection<T>::findTag(const KstObjectTag& x) {
+  T *obj = retrieveObject(x);
   if (obj) {
     return _list.find(obj);
   } else {
     // For historical compatibility:
     // previously, output vectors of equations, PSDs, etc. were named PSD1-ABCDE-freq
     // now, they are PSD1-ABCDE/freq
-    QString newTag = x;
+    QString newTag = x.tagString();
+    newTag.replace(newTag.findRev('-'), 1, KstObjectTag::tagSeparator);
+    obj = retrieveObject(KstObjectTag::fromString(newTag));
+    if (obj) {
+      return _list.find(obj);
+    }
+  }
+  return _list.end();
+}
+
+template <class T>
+typename KstObjectList<KstSharedPtr<T> >::Iterator KstObjectCollection<T>::findTag(const QString& x) {
+  return findTag(KstObjectTag::fromString(x));
+}
+
+template <class T>
+typename KstObjectList<KstSharedPtr<T> >::ConstIterator KstObjectCollection<T>::findTag(const KstObjectTag& x) const {
+  T *obj = retrieveObject(x);
+  if (obj) {
+    return _list.find(obj);
+  } else {
+    // For historical compatibility:
+    // previously, output vectors of equations, PSDs, etc. were named PSD1-ABCDE-freq
+    // now, they are PSD1-ABCDE/freq
+    QString newTag = x.tagString();
     newTag.replace(newTag.findRev('-'), 1, KstObjectTag::tagSeparator);
     obj = retrieveObject(KstObjectTag::fromString(newTag));
     if (obj) {
@@ -565,21 +591,7 @@ typename KstObjectList<KstSharedPtr<T> >::Iterator KstObjectCollection<T>::findT
 
 template <class T>
 typename KstObjectList<KstSharedPtr<T> >::ConstIterator KstObjectCollection<T>::findTag(const QString& x) const {
-  T *obj = retrieveObject(KstObjectTag::fromString(x));
-  if (obj) {
-    return _list.find(obj);
-  } else {
-    // For historical compatibility:
-    // previously, output vectors of equations, PSDs, etc. were named PSD1-ABCDE-freq
-    // now, they are PSD1-ABCDE/freq
-    QString newTag = x;
-    newTag.replace(newTag.findRev('-'), 1, KstObjectTag::tagSeparator);
-    obj = retrieveObject(KstObjectTag::fromString(newTag));
-    if (obj) {
-      return _list.find(obj);
-    }
-  }
-  return _list.end();
+  return findTag(KstObjectTag::fromString(x));
 }
 
 template <class T>

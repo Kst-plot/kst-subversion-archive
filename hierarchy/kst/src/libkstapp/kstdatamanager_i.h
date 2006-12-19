@@ -80,7 +80,7 @@ class KstObjectItem : public QObject, public QListViewItem {
     void update(bool recursive = true, int localUseCount = 0);
     virtual int rtti() const { return _rtti; }
 
-    const QString& tagName() const { return _name; }
+    const KstObjectTag& tag() const { return _tag; }
     KstDataObjectPtr dataObject();
     bool removable() const { return _removable; }
     void updateButtons();
@@ -102,7 +102,7 @@ class KstObjectItem : public QObject, public QListViewItem {
 
   private:
     int _rtti;
-    QString _name;
+    KstObjectTag _tag;
     KstDataManagerI *_dm;
     bool _removable;
     bool _inUse;

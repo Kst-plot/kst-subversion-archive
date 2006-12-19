@@ -182,21 +182,21 @@ void KstBasicPlugin::setInputString(const QString &type, KstStringPtr ptr) {
 
 
 void KstBasicPlugin::setOutputVector(const QString &type, const QString &name) {
-  QString txt = !name.isEmpty() ? name : propertyString() + " " + type;
+  QString txt = !name.isEmpty() ? name : type;
   KstVectorPtr v = new KstVector(KstObjectTag(txt, tag()), 0, this, false);
   _outputVectors.insert(type, v);
 }
 
 
 void KstBasicPlugin::setOutputScalar(const QString &type, const QString &name) {
-  QString txt = !name.isEmpty() ? name : propertyString() + " " + type;
+  QString txt = !name.isEmpty() ? name : type;
   KstScalarPtr s = new KstScalar(KstObjectTag(txt, tag()), this);
   _outputScalars.insert(type, s);
 }
 
 
 void KstBasicPlugin::setOutputString(const QString &type, const QString &name) {
-  QString txt = !name.isEmpty() ? name : propertyString() + " " + type;
+  QString txt = !name.isEmpty() ? name : type;
   KstStringPtr s = new KstString(KstObjectTag(txt, tag()), this);
   _outputStrings.insert(type, s);
 }

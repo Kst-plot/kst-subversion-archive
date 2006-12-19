@@ -62,10 +62,10 @@ static QMap<int,Kst2DPlotPtr> PlotMap;
 #define RTTI_OBJ_STATIC_MATRIX   4207
 
 KstObjectItem::KstObjectItem(QListView *parent, KstRVectorPtr x, KstDataManagerI *dm, int localUseCount)
-: QObject(), QListViewItem(parent), _rtti(RTTI_OBJ_DATA_VECTOR), _name(x->tagName()), _dm(dm) {
+: QObject(), QListViewItem(parent), _rtti(RTTI_OBJ_DATA_VECTOR), _tag(x->tag()), _dm(dm) {
   assert(x);
   _inUse = false;
-  setText(0, x->tagName());
+  setText(0, x->tag().tag());
   setText(1, i18n("Data Vector"));
   x = 0L; // keep the counts in sync
   update(true, localUseCount);
@@ -73,10 +73,10 @@ KstObjectItem::KstObjectItem(QListView *parent, KstRVectorPtr x, KstDataManagerI
 
 
 KstObjectItem::KstObjectItem(QListView *parent, KstSVectorPtr x, KstDataManagerI *dm, int localUseCount)
-: QObject(), QListViewItem(parent), _rtti(RTTI_OBJ_STATIC_VECTOR), _name(x->tagName()), _dm(dm) {
+: QObject(), QListViewItem(parent), _rtti(RTTI_OBJ_STATIC_VECTOR), _tag(x->tag()), _dm(dm) {
   assert(x);
   _inUse = false;
-  setText(0, x->tagName());
+  setText(0, x->tag().tag());
   setText(1, i18n("Static Vector"));
   x = 0L; // keep the counts in sync
   update(true, localUseCount);
@@ -84,10 +84,10 @@ KstObjectItem::KstObjectItem(QListView *parent, KstSVectorPtr x, KstDataManagerI
 
 
 KstObjectItem::KstObjectItem(QListViewItem *parent, KstVectorPtr x, KstDataManagerI *dm, int localUseCount)
-: QObject(), QListViewItem(parent), _rtti(RTTI_OBJ_VECTOR), _name(x->tagName()), _dm(dm) {
+: QObject(), QListViewItem(parent), _rtti(RTTI_OBJ_VECTOR), _tag(x->tag()), _dm(dm) {
   assert(x);
   _inUse = false;
-  setText(0, x->tagName());
+  setText(0, x->tag().tag());
   setText(1, i18n("Slave Vector"));
   x = 0L; // keep the counts in sync
   update(true, localUseCount);
@@ -95,10 +95,10 @@ KstObjectItem::KstObjectItem(QListViewItem *parent, KstVectorPtr x, KstDataManag
 
 
 KstObjectItem::KstObjectItem(QListView *parent, KstDataObjectPtr x, KstDataManagerI *dm, int localUseCount)
-: QObject(), QListViewItem(parent), _rtti(RTTI_OBJ_OBJECT), _name(x->tagName()), _dm(dm) {
+: QObject(), QListViewItem(parent), _rtti(RTTI_OBJ_OBJECT), _tag(x->tag()), _dm(dm) {
   assert(x);
   _inUse = false;
-  setText(0, x->tagName());
+  setText(0, x->tag().tag());
   for (KstVectorMap::Iterator i = x->outputVectors().begin();
       i != x->outputVectors().end();
       ++i) {
@@ -117,10 +117,10 @@ KstObjectItem::KstObjectItem(QListView *parent, KstDataObjectPtr x, KstDataManag
 
 
 KstObjectItem::KstObjectItem(QListView *parent, KstRMatrixPtr x, KstDataManagerI *dm, int localUseCount) 
-: QObject(), QListViewItem(parent), _rtti(RTTI_OBJ_DATA_MATRIX), _name(x->tagName()), _dm(dm) {
+: QObject(), QListViewItem(parent), _rtti(RTTI_OBJ_DATA_MATRIX), _tag(x->tag()), _dm(dm) {
   assert(x);
   _inUse = false;
-  setText(0, x->tagName());
+  setText(0, x->tag().tag());
   setText(1, i18n("Data Matrix"));
   x = 0L; // keep the counts in sync
   update(true, localUseCount);
@@ -128,10 +128,10 @@ KstObjectItem::KstObjectItem(QListView *parent, KstRMatrixPtr x, KstDataManagerI
 
 
 KstObjectItem::KstObjectItem(QListView *parent, KstSMatrixPtr x, KstDataManagerI *dm, int localUseCount) 
-: QObject(), QListViewItem(parent), _rtti(RTTI_OBJ_STATIC_MATRIX), _name(x->tagName()), _dm(dm) {
+: QObject(), QListViewItem(parent), _rtti(RTTI_OBJ_STATIC_MATRIX), _tag(x->tag()), _dm(dm) {
   assert(x);
   _inUse = false;
-  setText(0, x->tagName());
+  setText(0, x->tag().tag());
   setText(1, i18n("Static Matrix"));
   x = 0L; // keep the counts in sync
   update(true, localUseCount);
@@ -139,10 +139,10 @@ KstObjectItem::KstObjectItem(QListView *parent, KstSMatrixPtr x, KstDataManagerI
 
 
 KstObjectItem::KstObjectItem(QListViewItem *parent, KstMatrixPtr x, KstDataManagerI *dm, int localUseCount) 
-: QObject(), QListViewItem(parent), _rtti(RTTI_OBJ_MATRIX), _name(x->tagName()), _dm(dm) {
+: QObject(), QListViewItem(parent), _rtti(RTTI_OBJ_MATRIX), _tag(x->tag()), _dm(dm) {
   assert(x);
   _inUse = false;
-  setText(0, x->tagName());
+  setText(0, x->tag().tag());
   setText(1, i18n("Slave Matrix"));
   x = 0L; // keep the counts in sync
   update(true, localUseCount);
@@ -154,7 +154,7 @@ KstObjectItem::~KstObjectItem() {
 
 
 KstDataObjectPtr KstObjectItem::dataObject() {
-  return *KST::dataObjectList.findTag(_name);
+  return *KST::dataObjectList.findTag(_tag.tag());
 }
 
 
@@ -163,7 +163,7 @@ void KstObjectItem::update(bool recursive, int localUseCount) {
     case RTTI_OBJ_DATA_VECTOR:
     {
       KST::vectorList.lock().readLock();
-      KstRVectorPtr x = kst_cast<KstRVector>(*KST::vectorList.findTag(_name));
+      KstRVectorPtr x = kst_cast<KstRVector>(*KST::vectorList.findTag(_tag));
       KST::vectorList.lock().unlock();
       if (x) {
         x->readLock();
@@ -198,7 +198,7 @@ void KstObjectItem::update(bool recursive, int localUseCount) {
     case RTTI_OBJ_STATIC_VECTOR:
     {
       KST::vectorList.lock().readLock();
-      KstSVectorPtr x = kst_cast<KstSVector>(*KST::vectorList.findTag(_name));
+      KstSVectorPtr x = kst_cast<KstSVector>(*KST::vectorList.findTag(_tag));
       KST::vectorList.lock().unlock();
       if (x) {
         x->readLock();
@@ -230,7 +230,7 @@ void KstObjectItem::update(bool recursive, int localUseCount) {
     case RTTI_OBJ_VECTOR:
     {
       KST::vectorList.lock().readLock();
-      KstVectorPtr x = *KST::vectorList.findTag(_name);
+      KstVectorPtr x = *KST::vectorList.findTag(_tag);
       KST::vectorList.lock().unlock();
       if (x) {
         x->readLock();
@@ -257,7 +257,7 @@ void KstObjectItem::update(bool recursive, int localUseCount) {
     case RTTI_OBJ_OBJECT:
     {
       KST::dataObjectList.lock().readLock();
-      KstDataObjectPtr x = *KST::dataObjectList.findTag(_name);
+      KstDataObjectPtr x = *KST::dataObjectList.findTag(_tag.tag());
       KST::dataObjectList.lock().unlock();
       if (x) {
         x->readLock();
@@ -293,7 +293,7 @@ void KstObjectItem::update(bool recursive, int localUseCount) {
 
           for (QListViewItem *i = firstChild(); i; i = i->nextSibling()) {
             KstObjectItem *oi = static_cast<KstObjectItem*>(i);
-            if (vl.findTag(oi->tagName()) == vlEnd) {
+            if (vl.findTag(oi->tag().tag()) == vlEnd) {
               trash.push(i);
             }
           }
@@ -303,10 +303,10 @@ void KstObjectItem::update(bool recursive, int localUseCount) {
           // get the output vectors
           for (KstVectorMap::Iterator p = vl.begin(); p != vlEnd; ++p) {
             bool found = false;
-            QString tn = p.data()->tagName();
+            QString tn = p.data()->tag().tag();
             for (QListViewItem *i = firstChild(); i; i = i->nextSibling()) {
               KstObjectItem *oi = static_cast<KstObjectItem*>(i);
-              if (oi->tagName() == tn) {
+              if (oi->tag().tag() == tn) {
                 oi->update();
                 found = true;
                 break;
@@ -323,10 +323,10 @@ void KstObjectItem::update(bool recursive, int localUseCount) {
           // also get the output matrices
           for (KstMatrixMap::Iterator p = ml.begin(); p != mlEnd; ++p) {
             bool found = false;
-            QString tn = p.data()->tagName();
+            QString tn = p.data()->tag().tag();
             for (QListViewItem *i = firstChild(); i; i = i->nextSibling()) {
               KstObjectItem *oi = static_cast<KstObjectItem*>(i);
-              if (oi->tagName() == tn) {
+              if (oi->tag().tag() == tn) {
                 oi->update();
                 found = true;
                 break;
@@ -346,7 +346,7 @@ void KstObjectItem::update(bool recursive, int localUseCount) {
     case RTTI_OBJ_DATA_MATRIX:
     {
       KST::matrixList.lock().readLock();
-      KstRMatrixPtr x = kst_cast<KstRMatrix>(*KST::matrixList.findTag(_name));
+      KstRMatrixPtr x = kst_cast<KstRMatrix>(*KST::matrixList.findTag(_tag));
       KST::matrixList.lock().unlock();
       if (x) {
         x->readLock();
@@ -374,7 +374,7 @@ void KstObjectItem::update(bool recursive, int localUseCount) {
     case RTTI_OBJ_STATIC_MATRIX:
     {
       KST::matrixList.lock().readLock();
-      KstSMatrixPtr x = kst_cast<KstSMatrix>(*KST::matrixList.findTag(_name));
+      KstSMatrixPtr x = kst_cast<KstSMatrix>(*KST::matrixList.findTag(_tag));
       KST::matrixList.lock().unlock();
       if (x) {
         x->readLock();
@@ -400,7 +400,7 @@ void KstObjectItem::update(bool recursive, int localUseCount) {
     case RTTI_OBJ_MATRIX:
     {
       KST::matrixList.lock().readLock();
-      KstMatrixPtr x = *KST::matrixList.findTag(_name);
+      KstMatrixPtr x = *KST::matrixList.findTag(_tag);
       KST::matrixList.lock().unlock();
       if (x) {
         x->readLock();
@@ -439,7 +439,7 @@ void KstObjectItem::updateButtons() {
 void KstObjectItem::reload() {
   if (_rtti == RTTI_OBJ_DATA_VECTOR) {
     KstReadLocker ml(&KST::vectorList.lock());
-    KstVectorList::Iterator v = KST::vectorList.findTag(_name);
+    KstVectorList::Iterator v = KST::vectorList.findTag(_tag);
     if (v != KST::vectorList.end()) {
       KstRVectorPtr r = kst_cast<KstRVector>(*v);
       if (r) {
@@ -450,7 +450,7 @@ void KstObjectItem::reload() {
     }
   } else if (_rtti == RTTI_OBJ_DATA_MATRIX) {
     KstReadLocker ml(&KST::matrixList.lock());
-    KstMatrixList::Iterator m = KST::matrixList.findTag(_name);
+    KstMatrixList::Iterator m = KST::matrixList.findTag(_tag);
     if (m != KST::matrixList.end()) {
       KstRMatrixPtr r = kst_cast<KstRMatrix>(*m);
       if (r) {
@@ -465,29 +465,29 @@ void KstObjectItem::reload() {
 
 void KstObjectItem::makeCurve() {
   KstCurveDialogI::globalInstance()->show();
-  KstCurveDialogI::globalInstance()->setVector(_name);
+  KstCurveDialogI::globalInstance()->setVector(_tag.tag());
 }
 
 void KstObjectItem::makeCSD() {
   KstCsdDialogI::globalInstance()->show();
-  KstCsdDialogI::globalInstance()->setVector(_name);
+  KstCsdDialogI::globalInstance()->setVector(_tag.tag());
 }
 
 void KstObjectItem::makePSD() {
   KstPsdDialogI::globalInstance()->show();
-  KstPsdDialogI::globalInstance()->setVector(_name);
+  KstPsdDialogI::globalInstance()->setVector(_tag.tag());
 }
 
 
 void KstObjectItem::makeHistogram() {
   KstHsDialogI::globalInstance()->show();
-  KstHsDialogI::globalInstance()->setVector(_name);
+  KstHsDialogI::globalInstance()->setVector(_tag.tag());
 }
 
 
 void KstObjectItem::makeImage() {
   KstImageDialogI::globalInstance()->show();
-  KstImageDialogI::globalInstance()->setMatrix(_name);
+  KstImageDialogI::globalInstance()->setMatrix(_tag.tag());
 }
 
 
@@ -495,7 +495,7 @@ void KstObjectItem::showMetadata() {
   if (_rtti == RTTI_OBJ_DATA_VECTOR) {
     DataSourceMetaDataDialog *dlg = new DataSourceMetaDataDialog(_dm, 0, false, WDestructiveClose);
     KstReadLocker vl(&KST::vectorList.lock());
-    KstVectorList::Iterator m = KST::vectorList.findTag(_name);
+    KstVectorList::Iterator m = KST::vectorList.findTag(_tag);
     KstRVectorPtr r = kst_cast<KstRVector>(*m);
     KstDataSourcePtr dsp;
     if (r) {
@@ -508,7 +508,7 @@ void KstObjectItem::showMetadata() {
   } else if (_rtti == RTTI_OBJ_DATA_MATRIX) {
     DataSourceMetaDataDialog *dlg = new DataSourceMetaDataDialog(_dm, 0, false, WDestructiveClose);
     KstReadLocker ml(&KST::matrixList.lock());
-    KstMatrixList::Iterator m = KST::matrixList.findTag(_name);
+    KstMatrixList::Iterator m = KST::matrixList.findTag(_tag);
     KstRMatrixPtr r = kst_cast<KstRMatrix>(*m);
     KstDataSourcePtr dsp;
     if (r) {
@@ -652,17 +652,17 @@ void KstDataManagerI::update() {
   for (QListViewItem *i = DataView->firstChild(); i; i = i->nextSibling()) {
     KstObjectItem *oi = static_cast<KstObjectItem*>(i);
     if (i->rtti() == RTTI_OBJ_OBJECT) {
-      if (KST::dataObjectList.findTag(oi->tagName()) == KST::dataObjectList.end()) {
+      if (KST::dataObjectList.findTag(oi->tag().tag()) == KST::dataObjectList.end()) {
         trash.push(i);
       }
     } else if (i->rtti() == RTTI_OBJ_DATA_MATRIX || 
                i->rtti() == RTTI_OBJ_MATRIX ||
                i->rtti() == RTTI_OBJ_STATIC_MATRIX) {
-      if (KST::matrixList.findTag(oi->tagName()) == KST::matrixList.end()) {
+      if (KST::matrixList.findTag(oi->tag().tag()) == KST::matrixList.end()) {
         trash.push(i);  
       }
     } else {
-      if (KST::vectorList.findTag(oi->tagName()) == KST::vectorList.end()) {
+      if (KST::vectorList.findTag(oi->tag().tag()) == KST::vectorList.end()) {
         trash.push(i);
       }
     }
@@ -681,7 +681,7 @@ void KstDataManagerI::update() {
     bool found = false;
     for (QListViewItem *i = DataView->firstChild(); i; i = i->nextSibling()) {
       KstObjectItem *oi = static_cast<KstObjectItem*>(i);
-      if (oi->rtti() == RTTI_OBJ_OBJECT && oi->tagName() == (*it)->tagName()) {
+      if (oi->rtti() == RTTI_OBJ_OBJECT && oi->tag().tag() == (*it)->tag().tag()) {
         oi->update();
         found = true;
         break;
@@ -702,7 +702,7 @@ void KstDataManagerI::update() {
     bool found = false;
     for (QListViewItem *i = DataView->firstChild(); i; i = i->nextSibling()) {
       KstObjectItem *oi = static_cast<KstObjectItem*>(i);
-      if (oi->rtti() == RTTI_OBJ_DATA_VECTOR && oi->tagName() == (*it)->tagName()) {
+      if (oi->rtti() == RTTI_OBJ_DATA_VECTOR && oi->tag().tag() == (*it)->tag().tag()) {
         oi->update(true, 1);
         found = true;
         break;
@@ -721,7 +721,7 @@ void KstDataManagerI::update() {
     bool found = false;
     for (QListViewItem *i = DataView->firstChild(); i; i = i->nextSibling()) {
       KstObjectItem *oi = static_cast<KstObjectItem*>(i);
-      if (oi->rtti() == RTTI_OBJ_STATIC_VECTOR && oi->tagName() == (*it)->tagName()) {
+      if (oi->rtti() == RTTI_OBJ_STATIC_VECTOR && oi->tag().tag() == (*it)->tag().tag()) {
         oi->update(true, 1);
         found = true;
         break;
@@ -742,7 +742,7 @@ void KstDataManagerI::update() {
     bool found = false;
     for (QListViewItem *i = DataView->firstChild(); i; i = i->nextSibling()) {
       KstObjectItem *oi = static_cast<KstObjectItem*>(i);
-      if (oi->rtti() == RTTI_OBJ_DATA_MATRIX && oi->tagName() == (*it)->tagName()) {
+      if (oi->rtti() == RTTI_OBJ_DATA_MATRIX && oi->tag().tag() == (*it)->tag().tag()) {
         oi->update(true, 1);
         found = true;
         break;
@@ -761,7 +761,7 @@ void KstDataManagerI::update() {
     bool found = false;
     for (QListViewItem *i = DataView->firstChild(); i; i = i->nextSibling()) {
       KstObjectItem *oi = static_cast<KstObjectItem*>(i);
-      if (oi->rtti() == RTTI_OBJ_STATIC_MATRIX && oi->tagName() == (*it)->tagName()) {
+      if (oi->rtti() == RTTI_OBJ_STATIC_MATRIX && oi->tag().tag() == (*it)->tag().tag()) {
         oi->update(true, 1);
         found = true;
         break;
@@ -835,78 +835,78 @@ void KstDataManagerI::delete_I() {
 
   if (koi->removable()) {
     if (qi->rtti() == RTTI_OBJ_OBJECT) {
-      doc->removeDataObject(koi->tagName());
+      doc->removeDataObject(koi->tag().tag());
     } else if (qi->rtti() == RTTI_OBJ_DATA_VECTOR) {
       KST::vectorList.lock().writeLock();
-      KST::vectorList.removeTag(koi->tagName());
+      KST::vectorList.removeTag(koi->tag().tag());
       KST::vectorList.lock().unlock();
       doUpdates();
     } else if (qi->rtti() == RTTI_OBJ_STATIC_VECTOR) {
       KST::vectorList.lock().writeLock();
-      KST::vectorList.removeTag(koi->tagName());
+      KST::vectorList.removeTag(koi->tag().tag());
       KST::vectorList.lock().unlock();
       doUpdates();
     } else if (qi->rtti() == RTTI_OBJ_DATA_MATRIX) {
       KST::matrixList.lock().writeLock();
-      KST::matrixList.removeTag(koi->tagName());
+      KST::matrixList.removeTag(koi->tag().tag());
       KST::matrixList.lock().unlock();  
     } else if (qi->rtti() == RTTI_OBJ_STATIC_MATRIX) {
       KST::matrixList.lock().writeLock();
-      KST::matrixList.removeTag(koi->tagName());
+      KST::matrixList.removeTag(koi->tag().tag());
       KST::matrixList.lock().unlock();  
     }
     update();
   } else {
     // Don't prompt for base curves
     KstBaseCurvePtr bc = kst_cast<KstBaseCurve>(koi->dataObject());
-    if (bc || KMessageBox::warningYesNo(this, i18n("There are other objects in memory that depend on %1.  Do you wish to delete them too?").arg(koi->tagName())) == KMessageBox::Yes) {
+    if (bc || KMessageBox::warningYesNo(this, i18n("There are other objects in memory that depend on %1.  Do you wish to delete them too?").arg(koi->tag().tag())) == KMessageBox::Yes) {
 
       if (qi->rtti() == RTTI_OBJ_OBJECT) {
         koi->dataObject()->deleteDependents();
-        doc->removeDataObject(koi->tagName());
+        doc->removeDataObject(koi->tag().tag());
       } else if (qi->rtti() == RTTI_OBJ_DATA_VECTOR) {
-        KstRVectorPtr x = kst_cast<KstRVector>(*KST::vectorList.findTag(koi->tagName()));
+        KstRVectorPtr x = kst_cast<KstRVector>(*KST::vectorList.findTag(koi->tag().tag()));
         if (x) {
           x->deleteDependents();
           x = 0L;
           KST::vectorList.lock().writeLock();
-          KST::vectorList.removeTag(koi->tagName());
+          KST::vectorList.removeTag(koi->tag().tag());
           KST::vectorList.lock().unlock();
           doUpdates();
         } else {
           KMessageBox::sorry(this, i18n("Unknown error deleting data vector."));
         }
       } else if (qi->rtti() == RTTI_OBJ_STATIC_VECTOR) {
-        KstSVectorPtr x = kst_cast<KstSVector>(*KST::vectorList.findTag(koi->tagName()));
+        KstSVectorPtr x = kst_cast<KstSVector>(*KST::vectorList.findTag(koi->tag().tag()));
         if (x) {
           x->deleteDependents();
           x = 0L;
           KST::vectorList.lock().writeLock();
-          KST::vectorList.removeTag(koi->tagName());
+          KST::vectorList.removeTag(koi->tag().tag());
           KST::vectorList.lock().unlock();
           doUpdates();
         } else {
           KMessageBox::sorry(this, i18n("Unknown error deleting static vector."));
         }
       } else if (qi->rtti() == RTTI_OBJ_DATA_MATRIX) {
-        KstRMatrixPtr x = kst_cast<KstRMatrix>(*KST::matrixList.findTag(koi->tagName()));
+        KstRMatrixPtr x = kst_cast<KstRMatrix>(*KST::matrixList.findTag(koi->tag().tag()));
         if (x) {
           x->deleteDependents();
           x = 0L;
           KST::matrixList.lock().writeLock();
-          KST::matrixList.removeTag(koi->tagName());
+          KST::matrixList.removeTag(koi->tag().tag());
           KST::matrixList.lock().unlock();
           doUpdates();
         } else {
           KMessageBox::sorry(this, i18n("Unknown error deleting data matrix."));
         }
       } else if (qi->rtti() == RTTI_OBJ_STATIC_MATRIX) {
-        KstSMatrixPtr x = kst_cast<KstSMatrix>(*KST::matrixList.findTag(koi->tagName()));
+        KstSMatrixPtr x = kst_cast<KstSMatrix>(*KST::matrixList.findTag(koi->tag().tag()));
         if (x) {
           x->deleteDependents();
           x = 0L;
           KST::matrixList.lock().writeLock();
-          KST::matrixList.removeTag(koi->tagName());
+          KST::matrixList.removeTag(koi->tag().tag());
           KST::matrixList.lock().unlock();
           doUpdates();
         } else {
@@ -1060,10 +1060,10 @@ void KstDataManagerI::contextMenu(QListViewItem *i, const QPoint& p, int col) {
         for (Kst2DPlotList::Iterator i = plots.begin(); i != plots.end(); ++i) {
           Kst2DPlotPtr plot = *i;
           if (!plot->Curves.contains(c)) {
-            addMenu->insertItem(i18n("%1 - %2").arg(v->caption()).arg(plot->tagName()), koi, SLOT(addToPlot(int)), 0, id);
+            addMenu->insertItem(i18n("%1 - %2").arg(v->caption()).arg(plot->tag().tag()), koi, SLOT(addToPlot(int)), 0, id);
             haveAdd = true;
           } else {
-            removeMenu->insertItem(i18n("%1 - %2").arg(v->caption()).arg(plot->tagName()), koi, SLOT(removeFromPlot(int)), 0, id);
+            removeMenu->insertItem(i18n("%1 - %2").arg(v->caption()).arg(plot->tag().tag()), koi, SLOT(removeFromPlot(int)), 0, id);
             haveRemove = true;
           }
           PlotMap[id++] = plot;
