@@ -599,8 +599,6 @@ bool KstVectorDialogI::editSingleObjectRV(KstVectorPtr vcPtr) {
 
 
 bool KstVectorDialogI::editObject() {
-  KstVectorCollection vcList = KST::vectorList;
-
   // if editing multiple objects, edit each one
   if (_editMultipleMode) {
     // get dirties first
@@ -617,11 +615,14 @@ bool KstVectorDialogI::editObject() {
     for (uint i = 0; i < _editMultipleWidget->_objectList->count(); i++) {
       if (_editMultipleWidget->_objectList->isSelected(i)) {
         // get the pointer to the object
-        KstVectorList::Iterator vcIter = vcList.findTag(_editMultipleWidget->_objectList->text(i));
-        if (vcIter == vcList.end()) {
+        KST::vectorList.lock().readLock();
+        KstVectorList::Iterator vcIter = KST::vectorList.findTag(_editMultipleWidget->_objectList->text(i));
+        if (vcIter == KST::vectorList.end()) {
+          KST::vectorList.lock().unlock();
           return false;
         }
         KstVectorPtr vcPtr = *vcIter;
+        KST::vectorList.lock().unlock();
 
         if (!editSingleObject(vcPtr)) {
           return false;
