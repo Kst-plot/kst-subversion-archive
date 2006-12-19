@@ -25,19 +25,21 @@ void DataSourceMetaDataDialog::setDataSource(KstDataSourcePtr dsp)
     _plugin->clear();
     _value->clear();
     if (_dsp) {
-	dsp->readLock();
-	for (QDictIterator<KstString> i(dsp->metaData()); i.current(); ++i) {
-	    _name->insertItem(i.currentKey());
-	}
-	_source->setText(dsp->fileName());
-	_plugin->setText(dsp->fileType());
-	_value->setText(_dsp->metaData()[_name->currentText()]->value());
-	dsp->unlock();
-	_name->setEnabled(_name->count() > 0);
-	_value->setEnabled(_name->count() > 0);
+      dsp->readLock();
+      for (QDictIterator<KstString> i(dsp->metaData()); i.current(); ++i) {
+          _name->insertItem(i.currentKey());
+      }
+      _source->setText(dsp->fileName());
+      _plugin->setText(dsp->fileType());
+      if (_dsp->hasMetaData(_name->currentText())) {
+        _value->setText(_dsp->metaData(_name->currentText()));
+      }
+      dsp->unlock();
+      _name->setEnabled(_name->count() > 0);
+      _value->setEnabled(_name->count() > 0);
     } else {
-	_name->setEnabled(false);
-	_value->setEnabled(false);
+      _name->setEnabled(false);
+      _value->setEnabled(false);
     }
 }
 
