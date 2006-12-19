@@ -968,7 +968,7 @@ void KstDoc::purge() {
     KST::dataObjectList.lock().writeLock();
     for (KstDataObjectList::Iterator it = KST::dataObjectList.begin(); it != KST::dataObjectList.end(); ++it) {
 #ifdef PURGEDEBUG
-      kstdDebug() << "OBJECT: " << (*it)->tag().displayString() << " USAGE: " << (*it)->getUsage() << endl;
+      kstdDebug() << "OBJECT: " << (*it)->tag().displayString() << " (" << (void*)(*it) << ") USAGE: " << (*it)->getUsage() << endl;
 #endif
       if ((*it)->getUsage() == 0 && !kst_cast<EventMonitorEntry>(*it)) {
 #ifdef PURGEDEBUG
@@ -992,9 +992,10 @@ void KstDoc::purge() {
     // clear unused vectors that are editable 
     for (KstVectorList::ConstIterator it = vectorList.begin(); it != vectorList.end(); ++it) {
 #ifdef PURGEDEBUG
-      kstdDebug() << "VECTOR: " << (*it)->tag().displayString() << " USAGE: " << (*it)->getUsage() << endl;
-      if ((*it)->provider())
-        kstdDebug() << "  provider=" << (*it)->provider()->tag().displayString() << endl;
+      kstdDebug() << "VECTOR: " << (*it)->tag().displayString() << " (" << (void*)(*it) << ") USAGE: " << (*it)->getUsage() << endl;
+//      if ((*it)->provider()) {
+//        kstdDebug() << "  provider=" << (*it)->provider()->tag().displayString() << endl;
+//      }
 //      KstRVectorPtr rvp = kst_cast<KstRVector>(*it);
 //      if (rvp && rvp->_file) {
 //        KstDataSource *file = rvp->_file;
@@ -1022,9 +1023,10 @@ void KstDoc::purge() {
     // clear unused matrices that are editable
     for (KstMatrixList::ConstIterator it = matrixList.begin(); it != matrixList.end(); ++it) {
 #ifdef PURGEDEBUG
-      kstdDebug() << "MATRIX: " << (*it)->tag().displayString() << " USAGE: " << (*it)->getUsage() << endl;
-      if ((*it)->provider())
-        kstdDebug() << "  provider=" << (*it)->provider()->tag().displayString() << endl;
+      kstdDebug() << "MATRIX: " << (*it)->tag().displayString() << " (" << (void*)(*it) << ") USAGE: " << (*it)->getUsage() << endl;
+//      if ((*it)->provider()) {
+//        kstdDebug() << "  provider=" << (*it)->provider()->tag().displayString() << endl;
+//      }
 //      KstRMatrixPtr rmp = kst_cast<KstRMatrix>(*it);
 //      if (rmp && rmp->_file) {
 //        KstDataSource *file = rmp->_file;
