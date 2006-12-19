@@ -554,7 +554,7 @@ typename KstObjectList<KstSharedPtr<T> >::Iterator KstObjectCollection<T>::findT
     // previously, output vectors of equations, PSDs, etc. were named PSD1-ABCDE-freq
     // now, they are PSD1-ABCDE/freq
     QString newTag = x;
-    newTag.replace(newTag.findRev(KstObjectTag::tagSeparatorReplacement), 1, KstObjectTag::tagSeparator);
+    newTag.replace(newTag.findRev('-'), 1, KstObjectTag::tagSeparator);
     obj = retrieveObject(KstObjectTag::fromString(newTag));
     if (obj) {
       return _list.find(obj);
@@ -573,7 +573,7 @@ typename KstObjectList<KstSharedPtr<T> >::ConstIterator KstObjectCollection<T>::
     // previously, output vectors of equations, PSDs, etc. were named PSD1-ABCDE-freq
     // now, they are PSD1-ABCDE/freq
     QString newTag = x;
-    newTag.replace(newTag.findRev(KstObjectTag::tagSeparatorReplacement), 1, KstObjectTag::tagSeparator);
+    newTag.replace(newTag.findRev('-'), 1, KstObjectTag::tagSeparator);
     obj = retrieveObject(KstObjectTag::fromString(newTag));
     if (obj) {
       return _list.find(obj);
