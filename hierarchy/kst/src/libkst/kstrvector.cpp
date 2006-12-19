@@ -192,7 +192,9 @@ void KstRVector::change(KstDataSourcePtr in_file, const QString &in_field,
   ReqF0 = in_f0;
   ReqNF = in_n;
   _field = in_field;
-  setTagName(in_tag);
+  if (in_tag != tag()) {
+    setTagName(in_tag);
+  }
 
   if (_file) {
     _file->writeLock();
