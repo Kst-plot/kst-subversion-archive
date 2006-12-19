@@ -602,7 +602,7 @@ void DataWizard::finished()
 
 	// create the x-vector
 	xv = new KstRVector(ds, _xVector->currentText(),
-		KstObjectTag(name, ds->tag()),  // FIXME: do tag context properly?
+		KstObjectTag(name, ds->tag(), false),
 		_kstDataRange->CountFromEnd->isChecked() ? -1 : f0Value,
 		_kstDataRange->ReadToEnd->isChecked() ? -1 : nValue,
 		_kstDataRange->DoSkip->isChecked() ? _kstDataRange->Skip->value() : 0, 
@@ -628,7 +628,7 @@ void DataWizard::finished()
 	    name = KST::suggestVectorName(i->text(0));
 
 	    KstVectorPtr v = new KstRVector(ds, i->text(0),
-		    KstObjectTag(name, ds->tag()),  // FIXME: do tag context properly?
+		    KstObjectTag(name, ds->tag(), false),
 		    _kstDataRange->CountFromEnd->isChecked() ? -1 : f0Value,
 		    _kstDataRange->ReadToEnd->isChecked() ? -1 : nValue,
 		    _kstDataRange->DoSkip->isChecked() ? _kstDataRange->Skip->value() : 0, 
