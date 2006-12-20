@@ -120,7 +120,7 @@ KstObject::UpdateType KstScalar::update(int updateCounter) {
 
 
 void KstScalar::save(QTextStream &ts, const QString& indent) {
-  ts << indent << "<tag>" << QStyleSheet::escape(tagName()) << "</tag>" << endl;
+  ts << indent << "<tag>" << QStyleSheet::escape(tag().tagString()) << "</tag>" << endl;
   if (_orphan) {
     ts << indent << "<orphan/>" << endl;
   }
