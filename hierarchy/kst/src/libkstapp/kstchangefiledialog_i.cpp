@@ -84,7 +84,7 @@ void KstChangeFileDialogI::updateChangeFileDialog() {
   // first add vectors
   for (i = 0; i < (int)rvl.count(); i++) {
     rvl[i]->readLock();
-    ChangeFileCurveList->insertItem(rvl[i]->tagName());
+    ChangeFileCurveList->insertItem(rvl[i]->tag().displayString());
     filesUsed.insert(rvl[i]->filename(), rvl[i]->filename()); 
     rvl[i]->unlock();
   }
@@ -92,7 +92,7 @@ void KstChangeFileDialogI::updateChangeFileDialog() {
   // then add matrices
   for (i = 0; i < (int)rml.count(); i++) {
     rml[i]->readLock();
-    ChangeFileCurveList->insertItem(rml[i]->tagName());
+    ChangeFileCurveList->insertItem(rml[i]->tag().displayString());
     filesUsed.insert(rml[i]->filename(), rml[i]->filename()); 
     rml[i]->unlock();  
   }

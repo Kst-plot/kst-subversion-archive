@@ -73,8 +73,9 @@ bool KstChangeNptsDialogI::updateChangeNptsDialog() {
   for (KstRVectorList::ConstIterator i = rvl.begin(); i != rvl.end(); ++i) {
     KstRVectorPtr vector = *i;
     vector->readLock();
-    CurveList->insertItem(vector->tagName(), -1);
-    if (qsl.contains(vector->tagName())) {
+    QString tag = vector->tag().displayString();
+    CurveList->insertItem(tag, -1);
+    if (qsl.contains(tag)) {
       CurveList->setSelected(inserted, true);
     }
     ++inserted;
