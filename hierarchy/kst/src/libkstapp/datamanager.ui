@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
 <class>KstDataManager</class>
 <widget class="QDialog">
     <property name="name">
@@ -57,9 +57,6 @@
                     <property name="text">
                         <string>&amp;Purge</string>
                     </property>
-                    <property name="accel">
-                        <string>Alt+P</string>
-                    </property>
                     <property name="whatsThis" stdset="0">
                         <string>Purge unused objects</string>
                     </property>
@@ -71,9 +68,6 @@
                     <property name="text">
                         <string>&amp;New...</string>
                     </property>
-                    <property name="accel">
-                        <string>Alt+N</string>
-                    </property>
                     <property name="whatsThis" stdset="0">
                         <string>Delete selected object</string>
                     </property>
@@ -84,9 +78,6 @@
                     </property>
                     <property name="text">
                         <string>&amp;Delete</string>
-                    </property>
-                    <property name="accel">
-                        <string>Alt+D</string>
                     </property>
                     <property name="whatsThis" stdset="0">
                         <string>Delete selected object</string>

@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
 <class>KstChangeFileDialog</class>
 <widget class="QDialog">
     <property name="name">
@@ -333,9 +333,6 @@
                     <property name="text">
                         <string>&amp;Apply</string>
                     </property>
-                    <property name="accel">
-                        <string>Alt+A</string>
-                    </property>
                     <property name="whatsThis" stdset="0">
                         <string>Apply new source file to selected vectors.</string>
                     </property>
@@ -346,9 +343,6 @@
                     </property>
                     <property name="text">
                         <string>&amp;OK</string>
-                    </property>
-                    <property name="accel">
-                        <string>Alt+O</string>
                     </property>
                     <property name="default">
                         <bool>true</bool>
@@ -363,9 +357,6 @@
                     </property>
                     <property name="text">
                         <string>&amp;Cancel</string>
-                    </property>
-                    <property name="accel">
-                        <string>Alt+C</string>
                     </property>
                     <property name="whatsThis" stdset="0">
                         <string>Close dialog without applying further changes.</string>

@@ -12,9 +12,6 @@
             <height>433</height>
         </rect>
     </property>
-    <property name="caption">
-        <string>ViewLegendWidget</string>
-    </property>
     <grid>
         <property name="name">
             <cstring>unnamed</cstring>
@@ -196,9 +193,6 @@
                     <property name="text">
                         <string></string>
                     </property>
-                    <property name="accel">
-                        <string>Alt+S</string>
-                    </property>
                 </widget>
                 <widget class="QPushButton" row="2" column="0">
                     <property name="name">
@@ -214,9 +208,6 @@
                     </property>
                     <property name="text">
                         <string></string>
-                    </property>
-                    <property name="accel">
-                        <string>Alt+R</string>
                     </property>
                 </widget>
             </grid>

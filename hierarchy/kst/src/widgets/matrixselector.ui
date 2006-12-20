@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
 <class>MatrixSelector</class>
 <widget class="QWidget">
     <property name="name">
@@ -11,9 +11,6 @@
             <width>327</width>
             <height>40</height>
         </rect>
-    </property>
-    <property name="caption">
-        <string>MatrixSelector</string>
     </property>
     <property name="whatsThis" stdset="0">
         <string>Select a matrix to utilize.  If you wish to create a new matrix, click on the icon to the right.</string>

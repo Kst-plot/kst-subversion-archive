@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
 <class>ScalarSelector</class>
 <widget class="QWidget">
     <property name="name">
@@ -11,9 +11,6 @@
             <width>328</width>
             <height>38</height>
         </rect>
-    </property>
-    <property name="caption">
-        <string>ScalarSelector</string>
     </property>
     <property name="whatsThis" stdset="0">
         <string>Select a scalar to utilize.  If you wish to create a new scalar, select the icon to the right.</string>
