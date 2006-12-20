@@ -93,11 +93,12 @@ KstRMatrix::KstRMatrix(const QDomElement &e) : KstMatrix(KstObjectTag::invalidTa
     // provider overrides filename
     in_file = in_provider;
   }
+
+  KstObjectTag tag = KstObjectTag::fromString(in_tag);
   if (in_file) {
-    setTagName(KstObjectTag::fromString(in_file->tag().tagString() + KstObjectTag::tagSeparator + in_tag));
-  } else {
-    setTagName(KstObjectTag::fromString(in_tag));
+    tag.setContext(in_file->tag().fullTag());
   }
+  setTagName(tag);
 
   // call common constructor
   commonConstructor(in_file, in_field, in_xStart, in_yStart, in_xNumSteps, in_yNumSteps, in_doAve, in_doSkip, in_skip);
@@ -110,7 +111,7 @@ void KstRMatrix::save(QTextStream &ts, const QString& indent) {
     QString indent2 = "  ";
 
     ts << indent << "<rmatrix>" << endl;
-    ts << indent << indent2 << "<tag>" << QStyleSheet::escape(tagName()) << "</tag>" << endl;
+    ts << indent << indent2 << "<tag>" << QStyleSheet::escape(tag().tagString()) << "</tag>" << endl;
     _file->readLock();
     ts << indent << indent2 << "<provider>" << QStyleSheet::escape(_file->tag().tagString()) << "</provider>" << endl;
     ts << indent << indent2 << "<file>" << QStyleSheet::escape(_file->fileName()) << "</file>" << endl;

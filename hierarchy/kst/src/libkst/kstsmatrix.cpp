@@ -77,7 +77,7 @@ void KstSMatrix::save(QTextStream &ts, const QString& indent) {
   QString indent2 = "  ";
   
   ts << indent << "<smatrix>" << endl;
-  ts << indent << indent2 << "<tag>" << QStyleSheet::escape(tagName()) << "</tag>" << endl;
+  ts << indent << indent2 << "<tag>" << QStyleSheet::escape(tag().tagString()) << "</tag>" << endl;
   ts << indent << indent2 << "<xmin>" << minX() << "</xmin>" << endl;
   ts << indent << indent2 << "<ymin>" << minY() << "</ymin>" << endl;
   ts << indent << indent2 << "<nx>" << xNumSteps() << "</nx>" << endl;

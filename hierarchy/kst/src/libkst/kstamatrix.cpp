@@ -107,7 +107,7 @@ void KstAMatrix::save(QTextStream &ts, const QString& indent) {
   }
 
   ts << indent << "<amatrix>" << endl;
-  ts << indent << indent2 << "<tag>" << QStyleSheet::escape(tagName()) << "</tag>" << endl;
+  ts << indent << indent2 << "<tag>" << QStyleSheet::escape(tag().tagString()) << "</tag>" << endl;
   ts << indent << indent2 << "<xmin>" << minX() << "</xmin>" << endl;
   ts << indent << indent2 << "<ymin>" << minY() << "</ymin>" << endl;
   ts << indent << indent2 << "<nx>" << xNumSteps() << "</nx>" << endl;

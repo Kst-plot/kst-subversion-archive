@@ -577,7 +577,7 @@ KstObject::UpdateType KstVector::internalUpdate(KstObject::UpdateType providerRC
 
 void KstVector::save(QTextStream &ts, const QString& indent, bool saveAbsolutePosition) {
   Q_UNUSED(saveAbsolutePosition)
-  ts << indent << "<tag>" << QStyleSheet::escape(tagName()) << "</tag>" << endl;
+  ts << indent << "<tag>" << QStyleSheet::escape(tag().tagString()) << "</tag>" << endl;
   if (_saveData) {
     QByteArray qba(length()*sizeof(double));
     QDataStream qds(qba, IO_WriteOnly);
