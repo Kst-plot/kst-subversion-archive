@@ -45,7 +45,7 @@ KstObject::~KstObject() {
 
 
 int KstObject::operator==(const QString& tag) const {
-  return (tag == _tag.tagString()) ? 1 : 0;
+  return (tag == _tag.tagString() || tag == _tag.displayString()) ? 1 : 0;
 }
 
 
