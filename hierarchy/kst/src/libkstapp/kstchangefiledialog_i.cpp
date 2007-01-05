@@ -174,6 +174,8 @@ bool KstChangeFileDialogI::applyFileChange() {
   KstDataObjectDataObjectMap duplicatedMap;
   QMap<KstVectorPtr, KstVectorPtr> duplicatedVectors;
   QMap<KstMatrixPtr, KstMatrixPtr> duplicatedMatrices;
+
+  KstDataSourceList oldSources;
   
   // go through the vectors
   for (int i = 0; i < (int)rvl.count(); i++) {
@@ -198,6 +200,9 @@ bool KstChangeFileDialogI::applyFileChange() {
 
           // create a new vector
           KstRVectorPtr newVector = vector->makeDuplicate();
+          if (!oldSources.contains(newVector->dataSource())) {
+            oldSources << newVector->dataSource();
+          }
           newVector->changeFile(file);
 
           KST::vectorList.lock().unlock();
@@ -208,6 +213,9 @@ bool KstChangeFileDialogI::applyFileChange() {
             KST::duplicateDependents(KstVectorPtr(vector), duplicatedMap, duplicatedVectors);
           }
         } else {
+          if (!oldSources.contains(vector->dataSource())) {
+            oldSources << vector->dataSource();
+          }
           vector->changeFile(file);
         }
       }
@@ -239,6 +247,9 @@ bool KstChangeFileDialogI::applyFileChange() {
 
           // create a new matrix
           KstRMatrixPtr newMatrix = matrix->makeDuplicate();
+          if (!oldSources.contains(newMatrix->dataSource())) {
+            oldSources << newMatrix->dataSource();
+          }
           newMatrix->changeFile(file);
 
           KST::matrixList.lock().unlock();
@@ -249,6 +260,9 @@ bool KstChangeFileDialogI::applyFileChange() {
             KST::duplicateDependents(KstMatrixPtr(matrix), duplicatedMap, duplicatedMatrices);
           }
         } else {
+          if (!oldSources.contains(matrix->dataSource())) {
+            oldSources << matrix->dataSource();
+          }
           matrix->changeFile(file);
         }
       }
@@ -286,6 +300,18 @@ bool KstChangeFileDialogI::applyFileChange() {
     }
     app->deleteIterator(it);
   }
+
+  // clean up unused data sources
+  kstdDebug() << "cleaning up data sources" << endl;
+  KST::dataSourceList.lock().writeLock();
+  for (KstDataSourceList::Iterator it = oldSources.begin(); it != oldSources.end(); ++it) {
+    kstdDebug() << "DATA SOURCE: " << (*it)->tag().displayString() << " (" << (void*)(*it) << ") USAGE: " << (*it)->getUsage() << endl;
+    if ((*it)->getUsage() == 1) {
+      kstdDebug() << "    -> REMOVED" << endl;
+      KST::dataSourceList.remove((*it).data());
+    }
+  }
+  KST::dataSourceList.lock().unlock();
   
   if (!invalidSources.isEmpty()) {
     if (invalid == 1) {
