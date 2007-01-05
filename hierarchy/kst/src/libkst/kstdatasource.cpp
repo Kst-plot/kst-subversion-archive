@@ -433,9 +433,20 @@ KstDataSource::KstDataSource(KConfig *cfg, const QString& filename, const QStrin
 
 
 KstDataSource::~KstDataSource() {
+//  kstdDebug() << "KstDataSource destructor: " << tag().tagString() << endl;
   KST::scalarList.lock().writeLock();
+//  kstdDebug() << "  removing numFrames scalar" << endl;
   KST::scalarList.remove(_numFramesScalar);
   KST::scalarList.lock().unlock();
+
+//  kstdDebug() << "  removing metadata strings" << endl;
+  KST::stringList.lock().writeLock();
+  for (QDictIterator<KstString> it(_metaData); it.current(); ++it) {
+//    kstdDebug() << "    removing " << it.current()->tag().tagString() << endl;
+    KST::stringList.remove(it.current());
+  }
+  KST::stringList.lock().unlock();
+
   _numFramesScalar = 0L;
 }
 
@@ -443,6 +454,11 @@ KstDataSource::~KstDataSource() {
 void KstDataSource::setTagName(const KstObjectTag& in_tag) {
   KstObject::setTagName(in_tag);
   _numFramesScalar->setTagName(KstObjectTag("frames", tag()));
+  for (QDictIterator<KstString> it(_metaData); it.current(); ++it) {
+    KstObjectTag stag = it.current()->tag();
+    stag.setContext(tag().fullTag());
+    it.current()->setTagName(stag);
+  }
 }
 
 
