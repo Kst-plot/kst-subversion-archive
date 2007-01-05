@@ -595,6 +595,7 @@ void KstRMatrix::changeFile(KstDataSourcePtr file) {
   if (_file) {
     _file->writeLock();
   }
+  setTagName(KstObjectTag(tag().tag(), _file->tag(), false));
   reset();
   if (_file) {
     _file->unlock();
