@@ -351,13 +351,37 @@ bool KstObjectCollection<T>::removeObject(T *o) {
     return false;
   }
 
+  if (!_list.contains(o)) {
+#if NAMEDEBUG > 1
+    kstdDebug() << "Trying to delete a non-existant object from the collection: " << o->tag().tagString() << endl;
+#endif
+    return false;
+  }
+
+#if NAMEDEBUG > 1
+    kstdDebug() << "Removing object from the collection: " << o->tag().tagString() << endl;
+#endif
+
+#if NAMEDEBUG > 2
+    kstdDebug() << "  fetching related nodes" << endl;
+#endif
   QValueList<KstObjectTreeNode<T> *> relNodes = relatedNodes(o);
 
-  _list.remove(o);
+#if NAMEDEBUG > 2
+    kstdDebug() << "  removing object from tree" << endl;
+#endif
   bool ok = _root.removeDescendant(o, &_index);
 
   if (ok) {
+#if NAMEDEBUG > 2
+    kstdDebug() << "  updating display components" << endl;
+#endif
     updateDisplayComponents(relNodes);
+
+#if NAMEDEBUG > 2
+    kstdDebug() << "  removing object from list" << endl;
+#endif
+    _list.remove(o);
   }
 
   return ok;
