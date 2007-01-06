@@ -24,6 +24,7 @@ Name[sr@Latn]=Proces
 Name[ta]=செயல்பாடு
 Name[tg]=Пардозиш
 Name[tr]=İşlem
+Name[vi]=Xử lý
 Name[xx]=xxProcessxx
 ServiceTypes=JSBindingPlugin/Binding
 Type=Service

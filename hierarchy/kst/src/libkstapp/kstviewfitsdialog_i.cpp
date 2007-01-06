@@ -69,7 +69,8 @@ bool KstViewFitsDialogI::hasContent() const {
 
 void KstViewFitsDialogI::fillComboBox(const QString& str) {
   QString fitName = str;
-
+  bool changed = false;
+  
   _comboBoxFits->clear();
   KstCPluginList fits = kstObjectSubList<KstDataObject,KstCPlugin>(KST::dataObjectList);
   for (uint i = 0; i < fits.count(); i++) {
@@ -82,10 +83,15 @@ void KstViewFitsDialogI::fillComboBox(const QString& str) {
         if (fitName.isEmpty()) {
           fitName = fit->tagName();
         }
+        changed = true;
         fitChanged(fitName);
       }
     }
     fit->unlock();
+  }
+
+  if (!changed) {
+    fitChanged(_comboBoxFits->currentText());
   }
 }
 

@@ -104,7 +104,8 @@ class KST_EXPORT KstBorderedViewObject : public KstViewObject {
     virtual void paintSelf(KstPainter& p, const QRegion& bounds);
 
     QRect contentsRectForDevice(const KstPainter& painter) const;
-
+    virtual void setContentsRectForDevice(const KstPainter& painter, QRect& rect);
+  
   protected:
     virtual void readBinary(QDataStream& str);
     virtual void writeBinary(QDataStream& str);

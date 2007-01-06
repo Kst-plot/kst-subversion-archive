@@ -850,10 +850,12 @@ void KstDataManagerI::delete_I() {
       KST::matrixList.lock().writeLock();
       KST::matrixList.removeTag(koi->tag().tag());
       KST::matrixList.lock().unlock();  
+      doUpdates();
     } else if (qi->rtti() == RTTI_OBJ_STATIC_MATRIX) {
       KST::matrixList.lock().writeLock();
       KST::matrixList.removeTag(koi->tag().tag());
       KST::matrixList.lock().unlock();  
+      doUpdates();
     }
     update();
   } else {

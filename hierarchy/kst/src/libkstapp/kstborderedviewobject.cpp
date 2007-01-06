@@ -186,6 +186,15 @@ QRect KstBorderedViewObject::contentsRect() const {
 }
 
 
+void KstBorderedViewObject::setContentsRectForDevice(const KstPainter& painter, QRect& rect) {
+  const int mpb = (_margin + _padding + _borderWidth) * painter.lineWidthAdjustmentFactor();
+  _geom.setX(rect.left() - mpb);
+  _geom.setY(rect.top() - mpb);
+  _geom.setWidth(rect.width() + 2 * mpb);
+  _geom.setHeight(rect.height() + 2 * mpb);
+}
+
+
 void KstBorderedViewObject::setContentsRect(QRect& rect) {
   const int mpb = _margin + _padding + _borderWidth;
   _geom.setX(rect.left() - mpb);

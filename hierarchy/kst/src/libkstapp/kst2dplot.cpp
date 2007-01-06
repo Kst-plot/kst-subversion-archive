@@ -1709,14 +1709,13 @@ void Kst2DPlot::convertDiffTimevalueToString(KstAxisInterpretation axisInterpret
     case AXIS_DISPLAY_KDE_SHORTDATE:
     case AXIS_DISPLAY_KDE_LONGDATE:
       zdiff *= 24.0 * 60.0 * 60.0;
+      zdiff *= scale;
       break;
     case AXIS_DISPLAY_JD:
     case AXIS_DISPLAY_MJD:
     case AXIS_DISPLAY_RJD:
       break;
   }
-
-  zdiff *= scale;
 }
 
 
@@ -1799,16 +1798,9 @@ void Kst2DPlot::genAxisTickLabel(QString& label, double z, bool isLog, double lo
 void Kst2DPlot::getPrefixUnitsScale(bool isInterpreted, KstAxisInterpretation axisInterpretation, KstAxisDisplay axisDisplay, bool bLog, double logBase, double Min, double Max, double& range, double& scale, int& base, QString& strPrefix, QString& strUnits) {
   range = 1.0;
   scale = 1.0;
-  base = 60;
+  base = 10;
 
   if (isInterpreted) {
-    // determine the time range
-    if (bLog) {
-      range = pow(logBase, Max) - pow(logBase, Min);
-    } else {
-      range = Max - Min;
-    }
-
     // convert time range to seconds
     switch (axisInterpretation) {
       case AXIS_INTERP_YEAR:
@@ -1829,6 +1821,7 @@ void Kst2DPlot::getPrefixUnitsScale(bool isInterpreted, KstAxisInterpretation ax
       case AXIS_DISPLAY_YEAR:
         strPrefix = i18n("Prefix for Julian Year", "J");
         strUnits  = i18n("years");
+        scale /= 365.25 * 24.0 * 60.0 * 60.0;
         break;
       case AXIS_DISPLAY_YYMMDDHHMMSS_SS:
       case AXIS_DISPLAY_DDMMYYHHMMSS_SS:
@@ -1836,14 +1829,21 @@ void Kst2DPlot::getPrefixUnitsScale(bool isInterpreted, KstAxisInterpretation ax
       case AXIS_DISPLAY_QTLOCALDATEHHMMSS_SS:
       case AXIS_DISPLAY_KDE_SHORTDATE:
       case AXIS_DISPLAY_KDE_LONGDATE:
-        if( range > 10.0 * 24.0 * 60.0 * 60.0 ) {
+        double value;
+        
+        if( bLog ) {
+          value = ( pow( logBase, Max ) - pow( logBase, Min ) ) * range;
+        } else {
+          value = ( Max - Min ) * range;
+        }
+        if( value > 10.0 * 24.0 * 60.0 * 60.0 ) {
           scale /= 24.0 * 60.0 * 60.0;
           strUnits  = i18n("days");
-        } else if( range > 10.0 * 24.0 * 60.0 ) {
+        } else if( value > 10.0 * 24.0 * 60.0 ) {
           scale /= 60.0 * 60.0;
           strUnits  = i18n("hours");
           base = 24;
-        } else if( range > 10.0 * 60.0 ) {
+        } else if( value > 10.0 * 60.0 ) {
           scale /= 60.0;
           strUnits  = i18n("minutes");
           base = 60;
@@ -1855,14 +1855,17 @@ void Kst2DPlot::getPrefixUnitsScale(bool isInterpreted, KstAxisInterpretation ax
       case AXIS_DISPLAY_JD:
         strPrefix = i18n("Prefix for Julian Date", "JD");
         strUnits  = i18n("days");
+        scale /= 24.0 * 60.0 * 60.0;
         break;
       case AXIS_DISPLAY_MJD:
         strPrefix = i18n("Prefix for Modified Julian Date", "MJD");
         strUnits  = i18n("days");
+        scale /= 24.0 * 60.0 * 60.0;
         break;
       case AXIS_DISPLAY_RJD:
         strPrefix = i18n("Prefix for Reduced Julian Date", "RJD");
         strUnits  = i18n("days");
+        scale /= 24.0 * 60.0 * 60.0;
         break;
     }
   }
@@ -1901,11 +1904,16 @@ void Kst2DPlot::genAxisTickLabels(TickParameters &tp,
   tp.labels.clear();
   tp.oppLabels.clear();
   tp.delta = false;
-
-  setTicks(tp.tick, tp.org, Max*scale, Min*scale, isLog, logBase, isX, base);
-  tp.tick /= scale;
-  tp.org  /= scale;
-
+  
+  if (isLog && isInterpreted) {
+    setTicks(tp.tick, tp.org, Max + log10(range) + log10(scale), Min + log10(range) + log10(scale), isLog, logBase, isX, base);
+    tp.org -= log10(range) + log10(scale);
+  } else {
+    setTicks(tp.tick, tp.org, Max*range*scale, Min*range*scale, isLog, logBase, isX, base);
+    tp.tick /= range*scale;
+    tp.org  /= range*scale;
+  }
+    
   tp.iLo = int((Min-tp.org)/tp.tick);
   tp.iHi = int((Max-tp.org)/tp.tick)+1;
   iShort = tp.iLo;

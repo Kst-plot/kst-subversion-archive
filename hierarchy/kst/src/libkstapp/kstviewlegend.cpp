@@ -363,14 +363,17 @@ void KstViewLegend::updateSelf() {
 void KstViewLegend::paintSelf(KstPainter& p, const QRegion& bounds) {
   if (p.type() == KstPainter::P_PRINT || p.type() == KstPainter::P_EXPORT) {
     p.save();
-    adjustSizeForText(_parent->geometry());
+    QRect cr(contentsRectForDevice(p));
+    cr.setSize(sizeForText(_parent->geometry()));
+    setContentsRectForDevice(p, cr);    
     KstBorderedViewObject::paintSelf(p, bounds);
-    const QRect cr(contentsRectForDevice(p));
+    
     p.translate(cr.left(), cr.top());
     if (!_transparent) {
       p.fillRect(0, 0, cr.width(), cr.height(), _backgroundColor);
     }
     drawToPainter(p);
+    
     p.restore();
   } else {
     const QRect cr(contentsRect());
@@ -440,6 +443,13 @@ int KstViewLegend::fontSize() const {
 
 
 void KstViewLegend::adjustSizeForText(QRect w) {
+  QRect cr(contentsRect());
+  cr.setSize(sizeForText(w));
+  setContentsRect(cr);
+}
+
+
+QSize KstViewLegend::sizeForText(QRect w) {
   double x_s, y_s;
 
   x_s = y_s = _fontSize + (double)KstSettings::globalSettings()->plotFontSize;
@@ -480,15 +490,15 @@ void KstViewLegend::adjustSizeForText(QRect w) {
   }
 
   QSize sz(width, height);
+  
+  sz += QSize(2 * _legendMargin * _ascent / 10, 2 * _legendMargin * _ascent / 10);
 
   if (_parent) {
     QRect r(position(), sz);
     sz = r.intersect(_parent->geometry()).size();
   }
-
-  QRect cr(contentsRect());
-  cr.setSize(sz + QSize(2 * _legendMargin * _ascent / 10, 2 * _legendMargin * _ascent / 10));
-  setContentsRect(cr);
+    
+  return sz;
 }
 
 void KstViewLegend::modifiedLegendEntry() {

@@ -234,7 +234,9 @@ void KstViewWindow::immediatePrintToEps(const QString &filename, const QSize& si
   if (!view()->children().isEmpty()) {
     QString filenameNew;
     QString filenameNewEps;
-
+    int right;
+    int bottom;
+    
     {
       QPrinter printer(QPrinter::HighResolution);
       QString dotFormat = QString(".eps");
@@ -251,13 +253,16 @@ void KstViewWindow::immediatePrintToEps(const QString &filename, const QSize& si
       if ( size.height() / 8 > resolution ) {
         resolution = size.height() / 8;
       }
-      
+      right = ( 72 * size.height() ) / resolution;
+      bottom = ( 72 * size.width() ) / resolution;
+            
+      printer.setMargins(0, 0, 0, 0);
       printer.setResolution(resolution);
       printer.setPageSize(QPrinter::Letter);
       printer.setOrientation(QPrinter::Landscape);
       printer.setOutputToFile(true);
       printer.setOutputFileName(filenameNew);
-      
+
       KstPainter paint(KstPainter::P_PRINT);
       paint.begin(&printer);
       QPaintDeviceMetrics metrics(&printer);
@@ -279,7 +284,7 @@ void KstViewWindow::immediatePrintToEps(const QString &filename, const QSize& si
       if (fileEPS.open(IO_WriteOnly | IO_Truncate)) {
         QTextStream streamPS(&filePS);
         QTextStream streamEPS(&fileEPS);
-
+                
         line = streamPS.readLine();
         if (!line.isNull()) {
           if (line.left(11) == "%!PS-Adobe-") {
@@ -287,6 +292,14 @@ void KstViewWindow::immediatePrintToEps(const QString &filename, const QSize& si
             // we have a ps file, so do the conversion...
             //
             streamEPS << "%!PS-Adobe-2.0 EPSF-2.0\n";
+            
+            line = streamPS.readLine();
+            if (!line.isNull() && line.left(14) == "%%BoundingBox:") {
+              streamEPS << "%%BoundingBox: 0 0 " << right << " " << bottom << "\n";            
+            } else {
+              streamEPS << line << "\n";
+            }
+            
             while (!streamPS.atEnd()) {
               line = streamPS.readLine();
               streamEPS << line << "\n";

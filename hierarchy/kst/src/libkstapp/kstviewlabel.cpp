@@ -382,16 +382,15 @@ void KstViewLabel::paintSelf(KstPainter& p, const QRegion& bounds) {
   if (p.type() == KstPainter::P_PRINT || p.type() == KstPainter::P_EXPORT) {
     int absFontSizeOld = _absFontSize;
     
-    adjustSizeForText(_parent->geometry());
+    QRect cr(contentsRectForDevice(p));
+    cr.setSize(sizeForText(_parent->geometry()));
+    setContentsRectForDevice(p, cr);    
     KstBorderedViewObject::paintSelf(p, bounds);
-    const QRect geom(contentsRectForDevice(p));
-    p.setViewport(geom);
-    p.setWindow(0, 0, geom.width(), geom.height());
-
+    
+    p.translate(cr.left(), cr.top());
     if (!_transparent) {
-      p.fillRect(0, 0, geom.width(), geom.height(), backgroundColor());
+      p.fillRect(0, 0, cr.width(), cr.height(), backgroundColor());
     }
-
     drawToPainter(_parsed, p);
     
     _absFontSize = absFontSizeOld;
@@ -463,6 +462,13 @@ int KstViewLabel::fontSize() const {
 
 
 void KstViewLabel::adjustSizeForText(QRect w) {
+  QRect cr(contentsRect());
+  cr.setSize(sizeForText(w));
+  setContentsRect(cr);
+}
+
+
+QSize KstViewLabel::sizeForText(QRect w) {
   double x_s, y_s;
   
   x_s = y_s = _fontSize + (double)KstSettings::globalSettings()->plotFontSize;
@@ -492,12 +498,13 @@ void KstViewLabel::adjustSizeForText(QRect w) {
   }
  
   QSize sz(kMax(1, _textWidth), kMax(1, _textHeight));
+
   if (int(_rotation) != 0 && int(_rotation) != 180) {
     QPointArray pts(4);
     pts[0] = QPoint(0, 0);
     pts[1] = QPoint(0, _textHeight);
-    pts[2] = QPoint(_textWidth, 0);
-    pts[3] = QPoint(_textWidth, _textHeight);
+    pts[2] = QPoint(_textWidth, _textHeight);
+    pts[3] = QPoint(_textWidth, 0);
     double theta = M_PI * (int(_rotation) % 360) / 180;
     double sina = sin(theta);
     double cosa = cos(theta);
@@ -507,26 +514,26 @@ void KstViewLabel::adjustSizeForText(QRect w) {
 
     if (_parent) {
       QRect r(position(), pts.boundingRect().size());
+      r.setSize(r.size() + QSize(2 * _labelMargin * _ascent / 10, 2 * _labelMargin * _ascent / 10));
       sz = r.intersect(_parent->geometry()).size();
     } else {
       sz = pts.boundingRect().size();
+      sz += QSize(2 * _labelMargin * _ascent / 10, 2 * _labelMargin * _ascent / 10);
     }
   } else {
     if (_parent) {
       QRect r(position(), sz);
+      r.setSize(r.size() + QSize(2 * _labelMargin * _ascent / 10, 2 * _labelMargin * _ascent / 10));
       sz = r.intersect(_parent->geometry()).size();
     }
   }
-
-  QRect cr(contentsRect());
-  cr.setSize(sz + QSize(2 * _labelMargin * _ascent / 10, 2 * _labelMargin * _ascent / 10));
-  setContentsRect(cr);
+    
+  return sz;
 }
 
 
 bool KstViewLabel::layoutPopupMenu(KPopupMenu *menu, const QPoint& pos, KstViewObjectPtr topLevelParent) {
   KstViewObject::layoutPopupMenu(menu, pos, topLevelParent);
-  //menu->insertItem(i18n("&Adjust Size"), this, SLOT(adjustSizeForText()));
   return true;
 }
 
@@ -587,7 +594,6 @@ bool KstViewLabel::fillConfigWidget(QWidget *w, bool isNew) const {
     widget->_precision->setValue(8);
     widget->_rotation->setValue(0);
     widget->_fontSize->setValue(0);
-    widget->_horizontal->setCurrentItem(0);
     widget->_fontColor->setColor(KstSettings::globalSettings()->foregroundColor);
     widget->_font->setCurrentFont(KstApp::inst()->defaultFont());
     widget->_margin->setValue(5);
@@ -617,7 +623,6 @@ bool KstViewLabel::fillConfigWidget(QWidget *w, bool isNew) const {
     widget->_precision->setValue(int(dataPrecision()));
     widget->_rotation->setValue(double(rotation()));
     widget->_fontSize->setValue(int(fontSize()));
-    widget->_horizontal->setCurrentItem(horizJustifyWrap());
     widget->_fontColor->setColor(foregroundColor());
     widget->_font->setCurrentFont(fontName());
 
@@ -649,7 +654,6 @@ bool KstViewLabel::readConfigWidget(QWidget *w) {
   setDataPrecision(widget->_precision->value());
   setRotation(widget->_rotation->value());
   setFontSize(widget->_fontSize->value());
-  setHorizJustifyWrap(widget->_horizontal->currentItem());
   setForegroundColor(widget->_fontColor->color());
   setFontName(widget->_font->currentFont());
 
@@ -674,7 +678,6 @@ void KstViewLabel::connectConfigWidget(QWidget *parent, QWidget *w) const {
   connect(widget->_font, SIGNAL(activated(int)), parent, SLOT(modified()));
   connect(widget->_fontSize, SIGNAL(valueChanged(int)), parent, SLOT(modified()));
   connect(widget->_fontSize->child("qt_spinbox_edit"), SIGNAL(textChanged(const QString&)), parent, SLOT(modified()));
-  connect(widget->_horizontal, SIGNAL(activated(int)), parent, SLOT(modified()));
   connect(widget->_fontColor, SIGNAL(changed(const QColor&)), parent, SLOT(modified()));  
   connect(widget->_precision, SIGNAL(valueChanged(int)), parent, SLOT(modified()));
   connect(widget->_precision->child("qt_spinbox_edit"), SIGNAL(textChanged(const QString&)), parent, SLOT(modified()));

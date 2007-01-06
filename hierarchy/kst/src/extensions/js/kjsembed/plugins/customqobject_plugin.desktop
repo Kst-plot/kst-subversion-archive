@@ -9,6 +9,7 @@ Name[nl]=MijnEigenQObject
 Name[pt_BR]=MeuObjetoQ
 Name[sv]=Mitt eget Qobject
 Name[tg]=ОбъектиОддииМан-Q
+Name[vi]=Đối tượng Q riêng tôi
 Name[xx]=xxMyCustomQObjectxx
 ServiceTypes=JSBindingPlugin/Binding
 Type=Service

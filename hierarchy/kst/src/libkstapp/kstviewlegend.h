@@ -101,6 +101,7 @@ class KstViewLegend : public KstBorderedViewObject {
 
   public slots:
     void adjustSizeForText(QRect w);
+    QSize sizeForText(QRect w);
     void modifiedLegendEntry(void);
 
   protected:
