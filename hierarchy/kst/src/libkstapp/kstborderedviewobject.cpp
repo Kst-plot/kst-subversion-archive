@@ -201,6 +201,10 @@ void KstBorderedViewObject::setContentsRect(QRect& rect) {
   _geom.setY(rect.top() - mpb);
   _geom.setWidth(rect.width() + 2 * mpb);
   _geom.setHeight(rect.height() + 2 * mpb);
+  
+  if(_parent) {
+    _geom = _geom.intersect(_parent->geometry());
+  }
 }
 
 
