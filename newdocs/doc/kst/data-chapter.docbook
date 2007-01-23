@@ -1280,7 +1280,7 @@ as color maps, contour maps, or both.
 </term>
 <listitem>
 <para>
-Select the matrix to use for this image.  New matrices can be created by clicking on the button to the right.
+Select the matrix to use for this image.  New matrices can be created or edited by clicking buttons to the right.
 </para>
 </listitem>
 </varlistentry>
@@ -1309,7 +1309,7 @@ as appropriate.
 <title>Color Map Parameters</title>
 <para>
 A color map represents the z value of each cell in the matrix using a color. This section is only available
-if <guilabel>Color Map</guilabel> or <guilabel>Color Map and Contour Map</guilabel> is selected under
+if either <guilabel>Color Map</guilabel> or <guilabel>Color Map and Contour Map</guilabel> is selected under
 <guilabel>Image Type</guilabel>.
 </para>
 
