@@ -1,0 +1,34 @@
+<!DOCTYPE kpartgui SYSTEM "kpartgui.dtd">
+<kpartgui version="1" name="fraqtive" >
+ <MenuBar>
+  <Menu name="edit" >
+   <text>&amp;Edit</text>
+   <Action name="grad_edit" />
+   <Action name="grad_inv" />
+  </Menu>
+  <Menu name="settings" >
+   <text>&amp;Settings</text>
+   <Action append="show_merge" name="show_params" />
+   <Action append="show_merge" name="show_display" />
+   <Action append="show_merge" name="show_preview" />
+  </Menu>
+ </MenuBar>
+ <ToolBar noMerge="1" name="mainToolBar" >
+  <text>Main Toolbar</text>
+  <Action name="file_save" />
+  <Action name="edit_copy" />
+  <Separator lineSeparator="false" name="separator_2" />
+  <Action name="grad_edit" />
+  <Action name="grad_inv" />
+  <Separator lineSeparator="false" name="separator_1" />
+  <Action name="go_up" />
+  <Action name="mandelbrot" />
+  <Action name="go_back" />
+  <Action name="go_forward" />
+  <Action name="go_home" />
+  <Action name="view_def" />
+  <Action name="view_back" />
+  <Action name="view_forward" />
+  <Separator lineSeparator="false" name="separator_0" />
+ </ToolBar>
+</kpartgui>

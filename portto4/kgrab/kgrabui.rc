@@ -1,0 +1,31 @@
+<!DOCTYPE kpartgui>
+<kpartgui version= "1" name="kgrab">
+<MenuBar>
+  <Menu name="file"><text>&amp;File</text>
+    <Action name="new_snapshot"/>
+    <Action name="file_openwith"/>
+    <Separator/>
+    <Action name="file_saveas"/>
+    <Separator/>
+    <Action name="file_print"/>
+    <Separator/>
+    <Action name="file_quit"/>
+  </Menu>
+  <Menu name="edit"><text>&amp;Edit</text>
+    <Action name="edit_copy"/>
+  </Menu>
+  <Menu name="settings"><text>&amp;Settings</text>
+    <Action name="settings_preferences"/>
+  </Menu>
+</MenuBar>
+
+<ToolBar noMerge="1" name="mainToolBar" >
+  <text>Main Toolbar</text>
+  <Action name="new_snapshot" />
+  <Action name="file_openwith"/>
+  <Action name="file_saveas"/>
+  <Action name="file_print"/>
+  <Action name="edit_copy"/>
+</ToolBar>
+
+</kpartgui>

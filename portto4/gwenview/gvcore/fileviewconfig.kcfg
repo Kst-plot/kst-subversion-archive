@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE kcfg SYSTEM "http://www.kde.org/standards/kcfg/1.0/kcfg.dtd">
+<kcfg>
+  <include>qiconview.h</include>
+  <kcfgfile name="gwenviewrc"/> 
+  <group name="file widget">
+    <entry name="showDirs" key="show dirs" type="Bool">
+      <default>true</default>
+    </entry>
+    <entry name="showDotFiles" key="show dot files" type="Bool">
+      <default>false</default>
+    </entry>
+    <entry name="startWithThumbnails" key="start with thumbnails" type="Bool">
+      <default>true</default>
+    </entry>
+    <entry name="thumbnailTextPos" key="item text pos" type="Int">
+      <default code="true">QIconView::Right</default>
+    </entry>
+    <entry name="thumbnailSize" key="thumbnail size" type="Int">
+      <default>48</default>
+    </entry>
+    <entry name="thumbnailMarginSize" key="margin size" type="Int">
+      <default>5</default>
+    </entry>
+    <entry name="thumbnailDetails" key="item details" type="Int">
+      <default>9</default>
+      <description>
+        This is a bit set of FileThumbnailView::ItemDetail:
+        enum ItemDetail { FILENAME=1, FILESIZE=2, FILEDATE=4, IMAGESIZE=8 };
+      </description>
+    </entry>
+    <entry name="filterMode" type="Enum">
+      <default>All</default>
+      <choices>
+        <choice name="All"/>
+        <choice name="ImagesOnly"/>
+        <choice name="VideosOnly"/>
+      </choices>
+    </entry>
+    <entry name="showFilterBar" type="Bool">
+      <default>false</default>
+    </entry>
+    <entry name="nameFilter" type="String"></entry>
+    <entry name="fromDateFilter" type="DateTime"></entry>
+    <entry name="toDateFilter" type="DateTime"></entry>
+  </group>
+
+
+  <!-- thumbnail cache keys are really a mess :-( -->
+  <group name="thumbnail loading">
+    <entry name="storeThumbnailsInCache" key="path" type="Bool"> 
+      <default>true</default>
+    </entry>
+  </group>
+  <group name="main window">
+    <entry name="deleteCacheOnExit" key="Delete Thumbnail Cache whe exit" type="Bool">
+      <default>false</default>
+    </entry>
+  </group>
+
+
+</kcfg>

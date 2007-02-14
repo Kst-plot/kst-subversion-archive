@@ -1,0 +1,171 @@
+<ui version="4.0" >
+ <class>SettingsDialog</class>
+ <widget class="QWidget" name="SettingsDialog" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>512</width>
+    <height>202</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>KGrab</string>
+  </property>
+  <property name="windowIcon" >
+   <iconset>hi48-app-kgrab.png</iconset>
+  </property>
+  <layout class="QVBoxLayout" >
+   <property name="margin" >
+    <number>9</number>
+   </property>
+   <property name="spacing" >
+    <number>6</number>
+   </property>
+   <item>
+    <widget class="QFrame" name="frame" >
+     <property name="frameShape" >
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow" >
+      <enum>QFrame::Raised</enum>
+     </property>
+     <layout class="QGridLayout" >
+      <property name="margin" >
+       <number>9</number>
+      </property>
+      <property name="spacing" >
+       <number>6</number>
+      </property>
+      <item row="0" column="0" >
+       <widget class="QLabel" name="textLabel1" >
+        <property name="text" >
+         <string>Cap&amp;ture mode:</string>
+        </property>
+        <property name="buddy" >
+         <cstring>comboMode</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1" >
+       <widget class="QSpinBox" name="spinDelay" >
+        <property name="toolTip" >
+         <string>Snapshot delay in seconds</string>
+        </property>
+        <property name="whatsThis" >
+         <string>&lt;qt>
+This is the number of seconds to wait after clicking the &lt;i>New Snapshot&lt;/i> button before taking the snapshot.
+&lt;p>
+This is very useful for getting windows, menus and other items on the screen set up just the way you want.
+&lt;p>
+If &lt;i>no delay&lt;/i> is set, the program will wait for a mouse click before taking a snapshot.
+&lt;/p>
+&lt;/qt></string>
+        </property>
+        <property name="specialValueText" >
+         <string>No delay</string>
+        </property>
+        <property name="suffix" >
+         <string> sec</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2" >
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="0" column="1" colspan="2" >
+       <widget class="QComboBox" name="comboMode" >
+        <property name="whatsThis" >
+         <string>&lt;qt>Using this menu, you can select from the four following snapshot modes:
+&lt;p>
+&lt;b>Full Screen&lt;/b> - captures the entire desktop.&lt;br>
+&lt;b>Window Under Cursor&lt;/b> - captures only the window (or menu) that is under the mouse cursor when the snapshot is taken.&lt;br>
+&lt;b>Region&lt;/b> - captures only the region of the desktop that you specify. When taking a new snapshot in this mode you will be able to select any area of the screen by clicking and dragging the mouse.&lt;/p>
+&lt;b>Section of Window&lt;/b> - captures only a section of the window. When taking a new snapshot in this mode you will be able to select any child window by moving the mouse over it.&lt;/p>&lt;/qt></string>
+        </property>
+        <item>
+         <property name="text" >
+          <string>Full Screen</string>
+         </property>
+        </item>
+        <item>
+         <property name="text" >
+          <string>Window Under Cursor</string>
+         </property>
+        </item>
+        <item>
+         <property name="text" >
+          <string>Region</string>
+         </property>
+        </item>
+        <item>
+         <property name="text" >
+          <string>Section of Window</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="1" column="0" >
+       <widget class="QLabel" name="lblDelay" >
+        <property name="text" >
+         <string>Snapshot &amp;delay:</string>
+        </property>
+        <property name="buddy" >
+         <cstring>spinDelay</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0" colspan="2" >
+       <widget class="QCheckBox" name="cbIncludeDecorations" >
+        <property name="whatsThis" >
+         <string>When enabled, snapshot of a window will also include the window decorations</string>
+        </property>
+        <property name="text" >
+         <string>Include &amp;window decorations</string>
+        </property>
+        <property name="checked" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2" >
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11" />
+ <layoutfunction spacing="KDialog::spacingHint" margin="KDialog::marginHint" />
+ <tabstops>
+  <tabstop>comboMode</tabstop>
+  <tabstop>spinDelay</tabstop>
+  <tabstop>cbIncludeDecorations</tabstop>
+ </tabstops>
+ <includes>
+  <include location="local" >kpushbutton.h</include>
+ </includes>
+ <resources/>
+ <connections/>
+</ui>

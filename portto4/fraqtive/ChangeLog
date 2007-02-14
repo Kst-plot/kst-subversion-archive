@@ -1,0 +1,64 @@
+2005-09-07 Michal Mecinski <mimec@users.sourceforge.net>
+
+	* version 0.3.1 released
+	* localization finished
+
+2005-07-29 Michal Mecinski <mimec@users.sourceforge.net>
+
+	* more KDE-like icons created
+
+2005-07-19 Michal Mecinski <mimec@users.sourceforge.net>
+
+	* storing parameters in the configuration
+	* created the user manual
+
+2005-07-18 Michal Mecinski <mimec@users.sourceforge.net>
+
+	* added tooltips for panel widgets
+	* added a copy to clipboard option
+	* increased image size limit
+	* fixed compilation under KDE3.2
+
+2005-07-13 Michal Mecinski <mimec@users.sourceforge.net>
+
+	* added to kdereview in the KDE repository
+
+2005-07-04 Michal Mecinski <mimec@users.sourceforge.net>
+
+	* version 0.3.0 released
+
+2005-06-27 Michal Mecinski <mimec@users.sourceforge.net>
+
+	* GUI redesigned to KDE standards
+
+2005-06-21 Michal Mecinski <mimec@users.sourceforge.net>
+
+	* porting to KDE started
+
+2005-02-11 Michal Mecinski <mimec@users.sourceforge.net>
+
+	* version 0.2.1 released
+	* allocation checks added
+	* minor bug fixes
+
+2005-02-10 Michal Mecinski <mimec@users.sourceforge.net>
+
+	* navigation help window added
+	* storing window position
+	* default presets created
+
+2005-01-28 Michal Mecinski <mimec@users.sourceforge.net>
+
+	* configure script created
+	* support for translation added
+	* Polish translation created
+	* default configuration file added
+	* program icons added
+
+2005-01-24 Michal Mecinski <mimec@users.sourceforge.net>
+
+	* initial version 0.2.0 created
+
+2004-12-22 Michal Mecinski <mimec@users.sourceforge.net>
+
+	* project started
