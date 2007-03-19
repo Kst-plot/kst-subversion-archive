@@ -18,11 +18,10 @@
  <!ENTITY plotsandwindows-chapter SYSTEM "plotsandwindows-chapter.docbook">
  <!ENTITY additionalformats-chapter SYSTEM "additionalformats-chapter.docbook">
  <!ENTITY creatingplugins-chapter SYSTEM "creatingplugins-chapter.docbook">
- <!ENTITY miscfeatures-chapter SYSTEM "miscfeatures-chapter.docbook">
- <!ENTITY debuglog-chapter SYSTEM "debuglog-chapter.docbook">
+ <!ENTITY settings-chapter SYSTEM "settings-chapter.docbook">
  <!ENTITY dcop-chapter SYSTEM "dcop-chapter.docbook">
  <!ENTITY commandline-chapter SYSTEM "commandline-chapter.docbook">
- <!ENTITY eventmonitoring-chapter SYSTEM "eventmonitoring-chapter.docbook">
+ <!ENTITY extensions-chapter SYSTEM "extensions-chapter.docbook">
  ]>
 
 <book lang="&language;">
@@ -111,11 +110,11 @@ the order. -->
 
 &saving-chapter;
 
-&eventmonitoring-chapter;
+&settings-chapter;
+
+&extensions-chapter;
 
 &plugins-chapter;
-
-&miscfeatures-chapter;
 
 &license-chapter;
 
@@ -127,8 +126,6 @@ the order. -->
 &additionalformats-chapter;
 
 &dcop-chapter;
-
-&debuglog-chapter;
 
 &install-chapter;
 

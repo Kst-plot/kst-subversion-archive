@@ -11,7 +11,7 @@
 <listitem><para>A large selection of built-in plotting and analysis functions, including: histograms, equations, curve fitting, filtering, and power spectra.</para></listitem>
 <listitem><para>Powerful graphical user interface, with unique view modes for easy plot manipulation.</para></listitem>
 <listitem><para>Color mapping and contour mapping capabilities for three-dimensional data.</para></listitem>
-<listitem><para>Support for several popular data formats including FITS, netCDF, and HEALPix, as well as delimited plaintext. Additional formats can be accomodated with plugins.</para></listitem>
+<listitem><para>Support for several popular data formats including FITS, netCDF, and HEALPix, as well as ASCII. Additional formats can be accomodated with plugins.</para></listitem>
 <listitem><para>KstScript, a JavaScript based scripting language which allows automation of complicated workflows.</para></listitem>
 </itemizedlist>
 </para>

@@ -4,8 +4,8 @@
 Plugins provide added functionality to &kst;.  By default, &kst; comes packaged with an
 extensive selection of built-in plugins.  In addition, a simple and consistent interface allows for easy creation
 of 3rd-party plugins.  Fits and Filters are simply subsets of the set of plugins, and thus behave identically to plugins,
-with the exception of additional convenience dialog functionality accessible from the
-<link linkend="theplotcontextmenu">plot context menu</link>.
+with the exception of additional convenient dialog functionality accessible from the
+<link linkend="thebasiccontextmenu">plot context menu</link>.
 </para>
 
 <sect1 id="addingandremovingplugins">

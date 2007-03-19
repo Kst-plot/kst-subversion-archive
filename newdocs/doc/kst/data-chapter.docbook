@@ -1149,9 +1149,116 @@ in the Data Manager.  For more information about plugins, please see <link linke
 <sect2 id="events">
 <title>Event Monitors</title>
 <para>
-An event monitor data object represents an instance of an event monitor.  For more information on monitoring of events, see
-<link linkend="eventmonitoring">Event Monitoring</link>.
+An event monitor data object essentially keeps track of one or more vectors
+or scalars, and performs a specified action when a specified condition involving the vectors or scalars is true.
+Event monitors are usually used in conjunction with <quote>live</quote>, or streaming data. For example, an event monitor
+could be created to monitor whether or not elements of a data vector representing temperature exceed a predefined value.
 </para>
+
+<para>
+You can create a new event monitor using the <guimenuitem>New Event Monitor...</guimenuitem> item in the <guimenu>Data</guimenu> menu, or by using the <link linkend="datamanager">Data Manager</link>.
+</para>
+
+<para>
+The following is a screenshot of the window displayed when creating or editing events. Explanations of the settings are given below.
+</para>
+
+<screenshot>
+<screeninfo>Event Monitor Window</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-eventmonitor.png" format="PNG" />
+</imageobject>
+<textobject>
+<phrase>Event Monitor Window</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<sect3 id="eventsexpression">
+<title>Expression</title>
+<para>
+The condition to monitor for, along with other event properties, can be modified in this section.
+</para>
+
+<!-- FIXME: remove this junk -->
+<variablelist>
+
+<varlistentry>
+<term>
+<guilabel>Expression</guilabel>
+</term>
+<listitem>
+<para>
+The expression to monitor.  You may type directly in this textbox, or select items to insert using the operator, vector, and scalar drop-down lists.  Ensure that the expression entered in this textbox is a boolean expression (i.e. it evaluates to either true or false).  This usually entails using an equality or inequality in the expression.  Note that vectors entered in the textbox will be monitored according to their individual elements.
+</para>
+<para>
+Whenever this expression is true (evaluates to 1), the event will be triggered.  The action taken upon an event trigger depends on the settings specified in the next two sections.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>
+<guilabel>Description</guilabel>
+</term>
+<listitem>
+<para>
+This textbox is used to store a short description of the event.  The description is primarily available as a method for keeping track of multiple events.  You can enter any text you wish in this textbox.
+</para>
+</listitem>
+</varlistentry>
+</variablelist>
+</sect3>
+
+<sect3 id="eventskstdebuglog">
+<title>Kst Debug Log</title>
+<para>
+This section specifies settings for entries added to the &kst; debug log when events are triggered.
+</para>
+<variablelist>
+<varlistentry>
+<term><guilabel>Log as:</guilabel></term>
+<listitem>
+<para>
+Enable this checkbox to have entries added to the &kst; debug log when this event is triggered.
+There are three types of entries in the debug log&mdash;notices, warnings, and errors.
+Select the desired type of entry using the corresponding radio button.
+</para>
+</listitem>
+</varlistentry>
+</variablelist>
+</sect3>
+
+<sect3 id="eventsemailnotification">
+<title>E-Mail Notification</title>
+<para>
+In this section, settings for sending e-mail notifications of event triggers can be specified.
+</para>
+
+<variablelist>
+<varlistentry>
+<term><guilabel>Notify</guilabel></term>
+<listitem>
+<para>
+Enable this checkbox to have &kst; send e-mail notifications to the specified address when this
+event is triggered. General E-mail configuration options are available in the &kst; Settings dialog.
+<!-- FIXME: document the settings dialog -->
+</para>
+</listitem>
+</varlistentry>
+</variablelist>
+</sect3>
+
+<sect3 id="eventselog">
+<title>E-Log</title>
+<para>
+&kst; supports adding entries to an ELOG logbook upon event triggers.  This can be useful for remotely
+monitoring live data, or for obtaining summaries of event activity. Please see the <xref linkend="elogextension"/> section for more information.
+<!-- FIXME: should this be disabled if ELOG isn't present? -->
+</para>
+</sect3>
+
 </sect2>
 
 
@@ -1523,8 +1630,39 @@ is updated dynamically if the values change.
 </listitem>
 </varlistentry>
 </variablelist>
-
 </sect1>
+
+<sect1 id="datamode">
+<title>Data View Mode</title>
+<para>Data mode allows precise viewing of the data points used in a plotted data object.  To toggle data mode,
+select <guimenuitem>Data Mode</guimenuitem> from the <guimenu>Plots</guimenu> menu. Now, when the cursor
+is moved over a plot, a coloured dot will indicate the closest data point to the cursor, as shown in the
+screenshot below.  The status bar will
+display the coordinates of the data point (in terms of the x and y vectors used to plot the data object) in status bar at the
+lower right corner of the &kst; window.
+The status bar will also display the x, y, and z coordinates of any visible image.  If images overlap, only the coordinates of the
+topmost image will be displayed.
+Note that all zooming functions are still available while in data mode.
+</para>
+<screenshot>
+<screeninfo>Top of Plot Dialog</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-datamode.png" format="PNG" />
+</imageobject>
+<textobject>
+<phrase>Top of Plot Dialog</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+<tip>
+<para>
+If the status bar is not visible, make sure <guimenuitem>Show Statusbar</guimenuitem> is checked in the
+<guimenu>Status</guimenu> menu.
+</para>
+</tip>
+</sect1>
+
 </chapter>
 
 

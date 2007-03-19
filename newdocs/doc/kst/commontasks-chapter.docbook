@@ -441,7 +441,7 @@ The settings in the 'Expression' grouping configure the event monitor to report 
 </para>
 
 <para>
-We will have our events logged as 'Warnings' in the &kst; Debug Log. As you can see, there are several other possible event reporting methods. These are explained in more detail in <xref linkend="eventmonitoring"/>. 
+We will have our events logged as 'Warnings' in the &kst; Debug Log. As you can see, there are several other possible event reporting methods. These are explained in more detail in <xref linkend="events"/>. 
 </para>
 
 <para>
