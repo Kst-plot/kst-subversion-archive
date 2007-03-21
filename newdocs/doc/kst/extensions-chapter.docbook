@@ -318,11 +318,8 @@ A screenshot of &kst; after executing these commands is shown below.
 <screeninfo>CallSubs Output</screeninfo>
 <mediaobject>
 <imageobject>
-<imagedata fileref="Screenshot-kst-kscscriptsubroutines.png" format="PNG"/>
+<imagedata fileref="Screenshot-kst-extensions-subroutinesexample.png" format="PNG"/>
 </imageobject>
-<textobject>
-<phrase></phrase>
-</textobject>
 </mediaobject>
 </screenshot>
 </para>

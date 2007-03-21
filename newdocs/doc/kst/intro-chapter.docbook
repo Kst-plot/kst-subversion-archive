@@ -106,7 +106,7 @@ range of data to read from the selected vectors in the input file. The
 following discussion assumes knowledge of <quote>frames</quote>.  In
 brief, a frame is simply a number of data samples, and each data file
 is composed of a number of frames.  For a detailed description of this
-concept, see <xref linkend="supportingadditionalfileformatsdatasourceconceptsframes"/>.
+concept, see the section on <link linkend="datasourceconceptsframes">Frames</link>.
 </para>
 
 <variablelist>

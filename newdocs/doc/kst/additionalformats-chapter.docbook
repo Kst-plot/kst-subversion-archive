@@ -5,10 +5,8 @@ This section describes
 how to create additional
 readers for unsupported file formats.  If you are not already familiar with data source
 concepts, please read
-<link linkend="supportingadditionalfileformatsdatasourceconcepts">Data Source Concepts</link>
+<link linkend="datasourceconcepts">Data Source Concepts</link>
 </para>
-
-
 
 <sect1 id="supportingadditionalfileformatscreatingdatasource">
 <title>Creating Datasource Readers</title>

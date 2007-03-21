@@ -1,43 +1,44 @@
 <chapter id="workingwithdata">
 <title>Working With Data</title>
 
-<sect1 id="fileformats">
-<title>Supported File Formats</title>
-<para>
-Currently, Kst supports <link linkend="creatingascii">ASCII</link> text files, BOOMERANG frame files, <link linkend="blastdirfiles">BLAST</link> dirfiles, PLANCK LFIIO files, and QImage files as data sources, as well as PIOLib, HEALPix, and FITS files if the appropriate libraries are present. This section describes basic data source concepts common to all file types, and specifically details the <link linkend="creatingascii">ASCII</link> and <link linkend="blastdirfiles">BLAST</link> dirfile file types.
-</para>
-
-<sect2 id="supportingadditionalfileformatsdatasourceconcepts">
+<sect1 id="datasourceconcepts">
 <title>Data Source Concepts</title>
 <para>
 A data source in &kst; is simply a supported data file.
 The following concepts are important in understanding how &kst; works with
-different data sources.
+data sources which provide vectors.
 Some terminology is also introduced in this section.
 </para>
 
-<sect3 id="supportingadditionalfileformatsdatasourceconceptssamples">
-<title>Samples</title>
+<variablelist>
+
+<varlistentry>
+<term>Samples</term>
+<listitem>
 <para>
 A sample is considered to be the fundamental unit with respect to data files.
 Each sample consists of one data value in the file.  Note, however, that one sample
 may not correspond to one value in a data vector in &kst;, due to the concept of
-<link linkend="supportingadditionalfileformatsdatasourceconceptsframes">frames</link>.
+<link linkend="datasourceconceptsframes">frames</link>.
 </para>
-</sect3>
+</listitem>
+</varlistentry>
 
-<sect3 id="supportingadditionalfileformatsdatasourceconceptsfields">
-<title>Fields</title>
+<varlistentry>
+<term>Fields</term>
+<listitem>
 <para>
 A field usually corresponds to one vector in &kst;.  For example, a column in an
 ASCII data file is considered to be one field.  Each field can have an explicit
 or implicit name.  Datasource readers provide functions for reading and obtaining
 fields and field names.
 </para>
-</sect3>
+</listitem>
+</varlistentry>
 
-<sect3 id="supportingadditionalfileformatsdatasourceconceptsframes">
-<title>Frames</title>
+<varlistentry>
+<term id="datasourceconceptsframes">Frames</term>
+<listitem>
 <para>
 A frame corresponds to a set number of samples, and each field in a data file
 can have its own ratio of samples per frame.  The size of a data file
@@ -59,98 +60,31 @@ Field 3 has a ratio of 3 samples per frame, and Field 4 has a ratio of 1 sample 
 <para>
 Depending on the specific data vector settings in &kst;, data from files may be read as frames instead of samples, with either the first sample in a frame or the mean of all the samples in a frame representing the value of the frame. This capability can be useful for reducing extremely large data-sets to a more manageable size.
 </para>
-</sect3>
+</listitem>
+</varlistentry>
 
-<sect3 id="supportingadditionalfileformatsdatasourceconceptsindex">
-<title>INDEX Field</title>
+<varlistentry>
+<term>INDEX field</term>
+<listitem>
 <para>
 Some data files may not have a field that represents the x axis of a plot. However, &kst;
 implicitly creates an INDEX field for all data sources.  The INDEX field simply contains
 integers from 0 to N-1, where N is the number of frames in the data file.
 </para>
-</sect3>
-
-</sect2>
-
-<sect2 id="creatingascii">
-<title>ASCII Input Files</title>
-<para>
-The simplest input file format is the ASCII text file.  These files are usually human-readable and
-can be easily created by hand or simple scripts if desired.  The following is an example of an ASCII input file.
-</para>
-
-<informalexample>
-<screen>
-112.5 3776 428
-187.5 5380 429
-262.5 5245 345
-337.5 2942 184
-412.5 1861 119
-487.5 2424 138
-567.5 2520 162
-637.5 1868 144
-712.5 1736 211
-787.5 1736 211
-862.5 2172 292
-937.5 1174 377
-1000.5 499 623
-</screen>
-</informalexample>
-
-<para>
-Each column of this file represents a field, while each row represents one frame.
-Columns are separated by tabs or spaces, and rows are separated by carriage returns.
-Note that due to their structure, ASCII files cannot have multiple samples per frame.
-If the columns do not have labels, field names are assigned by &kst; based on the
-order of the columns (with the leftmost column having a field name of <literal>1</literal>).
-</para>
-
-<para>
-Commented lines in ASCII files start with one of the characters in the set
-<literal>{#, !, /, ;, c}</literal>.  All commented lines and empty lines
-are ignored by &kst;.  Valid numbers include those with decimals, negative signs,
-or <literal>e</literal>, to indicate scientific notation. Invalid numbers (such as
-English words) are replaced with 0 by &kst;.
-</para>
-
-</sect2>
-
-
-<sect2 id="blastdirfiles">
-<title>BLAST Dirfiles</title>
-<para>
-BLAST dirfile data sources are actually directories of files.  Each directory represents
-one data source, and each file in the directory, with the exception of a file called
-<filename>format</filename>, represents a single field. The file named <filename>format</filename>
-lists each field and its properties.  Below is example of such a file:
-</para>
-<informalexample>
-<screen>scount RAW f 1
-fcount RAW f 20
-sine RAW f 20
-ssine RAW f 1
-cos RAW f 20</screen>
-</informalexample>
-<para>
-In this example, <literal>scount</literal>, <literal>fcount</literal>, <literal>sine</literal>,
-<literal>ssine</literal>, and <literal>cos</literal> are field names.  <literal>RAW</literal> indicates
-the file is written in raw format, and the last number in each row is the number of samples per frame.
-</para>
-
-<para>
-When selecting a BLAST dirfile for use in &kst;, the directory containing the field files should be
-selected. &kst; will then automatically look for a <filename>format</filename> file, if it exists,
-to determine the fields and their properties.
-</para>
-
-</sect2>
+</listitem>
+</varlistentry>
+</variablelist>
 </sect1>
 
 <sect1 id="datawizard">
 <title>The Data Wizard</title>
+
 <para>
 The Data Wizard provides a graphical quick and easy way of importing data into &kst;- automatically creating vectors, curves, power spectra, and plots. To launch the wizard, select <guimenuitem>Data Wizard</guimenuitem> from the <guimenu>Tools</guimenu> menu.  You will be prompted to select a data source.  Browse to a valid data file (or enter in the path to a data file) and click <guibutton>Next</guibutton>.  The following window will be displayed.
 </para>
+
+<sect2 id="datawizardselectdatafile">
+<title>Selecting Data</title>
 
 <screenshot>
 <screeninfo>Data Wizard Select Data Dialog</screeninfo>
@@ -167,6 +101,10 @@ The Data Wizard provides a graphical quick and easy way of importing data into &
 <para>
 Here you can select the fields you wish to import into &kst;.  You may filter the list of fields by entering a string to match (wildcards such as <literal>*</literal> are supported) into the text box above the list. Click the <guibutton>Next</guibutton> button to come to the Data Presentation pane.
 </para>
+
+</sect2>
+<sect2 id="datawizardpresentation">
+<title>Presentation</title>
 
 <screenshot>
 <screeninfo>Data Wizard Data Presentation Pane</screeninfo>
@@ -269,6 +207,10 @@ Once you are satisfied with all the settings, click <guibutton>Next</guibutton> 
 window.
 </para>
 
+</sect2>
+<sect2 id="datawizardconfigureplotlayout">
+<title>Configure Plot Layout</title>
+
 <screenshot>
 <screeninfo>Data Wizard Configure Plot Layout</screeninfo>
 <mediaobject>
@@ -354,183 +296,7 @@ Select these check-boxes if you would like the automatically created power spect
 <para>
 Once you are satisfied with all the settings, click <guibutton>Finish</guibutton> and the plots will be generated.
 </para>
-
-</sect1>
-
-<sect1 id="datamanager">
-<title>The Data Manager</title>
-<para>
-The Data Manager provides a central location for adding, deleting, and modifying all the data objects used in &kst;.
-It can be accessed by selecting <guimenuitem>Data Manager</guimenuitem> from the <guimenu>Data</guimenu> menu.
-</para>
-<sect2 id="creatingdata">
-<title>Creating New Data Objects</title>
-<para>
-To create a new data object from the Data Manager, click on one of the buttons listed under <guilabel>New:</guilabel>.
-A new window will be displayed, allowing options and settings for the data object to be set.</para>
-
-<tip><para>You can also create new data objects which are based on vectors by right clicking on the corresponding vector and choosing one of the <guimenuitem>Make ...</guimenuitem> options</para></tip>
-
-<para>
-Since you are creating a new data object, you may enter a unique name to identify the object.  If you do not enter a custom name then a unique name will be automatically generated.
-</para>
-
-<para>
-The settings for all plottable data objects except images have two common sections&mdash;Appearance and Placement
-(images only have the Placement section).
-These sections are described below.  For data-specific settings, see <link linkend="datatypes">Data Types</link>.
-</para>
-
-
-<sect3 id="curveappearance">
-<title>Appearance</title>
-<para>
-The Appearance section allows you to change the appearance of the data object when it is plotted.
-</para>
-
-<screenshot>
-<mediaobject>
-<imageobject>
-<imagedata fileref="Screenshot-kst-curveappearance.png" format="PNG"/>
-</imageobject>
-</mediaobject>
-</screenshot>
-
-<variablelist>
-
-<varlistentry>
-<term>
-<inlinemediaobject><imageobject><imagedata fileref="Widget-kst-colourchooser.png" format="PNG"/></imageobject></inlinemediaobject>
-</term>
-<listitem>
-<para>
-Clicking this button displays a colour chooser dialog box, which can be used to change the colour of
-both the lines and points.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term>
-<guilabel>Show points</guilabel>
-</term>
-<listitem>
-<para>
-Selecting this checkbox shows the data points used to plot the data object.  The drop-down list to the right
-allows the shape of the points to be changed.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term>
-<guilabel>Show lines</guilabel>
-</term>
-<listitem>
-<para>
-Selecting this checkbox shows the lines joining the data points for the data object.  The thickness of the line
-as well as the line style can be changed.
-</para>
-</listitem>
-</varlistentry>
-
-</variablelist>
-
-
-</sect3>
-
-<sect3 id="curveplacement">
-<title>Placement</title>
-<para>
-The Placement section specifies the plotting location of new plottable data objects.
-</para>
-
-<screenshot>
-<mediaobject>
-<imageobject>
-<imagedata fileref="Screenshot-kst-curveplacement.png" format="PNG"/>
-</imageobject>
-</mediaobject>
-</screenshot>
-
-<variablelist>
-
-<varlistentry>
-<term>
-<guilabel>Plot window</guilabel>
-</term>
-<listitem>
-<para>
-Specify the window in which to plot the data object.  You may create a new window by clicking the <guibutton>New...</guibutton> button.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term>
-<guilabel>Place in existing plot</guilabel>, <guilabel>Place in new plot</guilabel>
-and <guilabel>Do not place in any plot</guilabel>
-</term>
-<listitem>
-<para>
-You can choose whether or not to immediately plot the data object on a new or existing plot.  If
-<guilabel>Place in new plot</guilabel> is selected, you can also choose to re-arrange the layout of the
-plots by selecting <guilabel>re-grid</guilabel> and entering the number of columns to use for the
-new layout grid.
-</para>
-</listitem>
-</varlistentry>
-
-</variablelist>
-
-<para>
-Once all the desired settings for the new data object have been set, click the <guibutton>OK</guibutton>
-button to create the new data object.
-</para>
-
-</sect3>
-
 </sect2>
-
-<sect2 id="editinganddeletingdata">
-<title>Editing and Deleting Existing Data Objects</title>
-<para>
-To edit an existing data object, simply highlight it in the Data Manager window and click the <guibutton>Edit</guibutton>
-button.  The settings window for the selected object will be displayed.  This window is identical to the one displayed
-when creating new data objects (with the exception that the Placement section may be absent), so refer to <link linkend="creatingdata">Creating New Data Objects</link> for more information
-on the settings and options.
-</para>
-<para>
-To delete a data object, highlight it in the Data Manager window and click the <guibutton>Delete</guibutton> button.
-Note that if the <guilabel>Used</guilabel> column for a data object has a check-mark then some other data or view object in &kst; has a dependency on it. Depending on the strength of these dependencies, &kst; will prompt before an object is deleted. If, for example, other objects have critical dependencies on the one which you are attempting to delete, &kst; will ask if you would like to delete these other objects as well, to prevent crashes from occuring. Listed below are some consequencies of these dependencies to keep in mind when attempting to delete data objects.
-</para>
-
-<itemizedlist>
-<listitem>
-<para>
-Plots are not critically dependent on the plottable objects which they contain, so if a plotted object is deleted &kst; will automatically remove it from all plots, without prompting.
-</para>
-</listitem>
-
-<listitem>
-<para>
-All data objects that use a particular data vector must be deleted before the data vector itself can be deleted.
-</para>
-</listitem>
-
-<listitem>
-<para>
-All children of a parent data object must be unused before the parent data object can be deleted.
-</para>
-</listitem>
-</itemizedlist>
-
-<para>
-After a sequence of deletions and removals of plottable data objects from plots, you may find that there are numerous unused data objects displayed in the Data Manager.  To quickly remove these objects, you can click the <guibutton>Purge</guibutton> button.
-</para>
-
-</sect2>
-
 </sect1>
 
 <sect1 id="datatypes">
@@ -1535,13 +1301,187 @@ Use discretion when selecting this option, as images with high contour line dens
 </varlistentry>
 </variablelist>
 </sect3>
+</sect2>
+</sect1>
+
+<sect1 id="datamanager">
+<title>The Data Manager</title>
+<para>
+The Data Manager provides a central location for adding, deleting, and modifying all the data objects used in &kst;.
+It can be accessed by selecting <guimenuitem>Data Manager</guimenuitem> from the <guimenu>Data</guimenu> menu.
+</para>
+<sect2 id="creatingdata">
+<title>Creating New Data Objects</title>
+<para>
+To create a new data object from the Data Manager, click on one of the buttons listed under <guilabel>New:</guilabel>.
+A new window will be displayed, allowing options and settings for the data object to be set.</para>
+
+<tip><para>You can also create new data objects which are based on vectors by right clicking on the corresponding vector and choosing one of the <guimenuitem>Make ...</guimenuitem> options</para></tip>
+
+<para>
+Since you are creating a new data object, you may enter a unique name to identify the object.  If you do not enter a custom name then a unique name will be automatically generated.
+</para>
+
+<para>
+The settings for all plottable data objects except images have two common sections&mdash;Appearance and Placement
+(images only have the Placement section).
+These sections are described below.  For data-specific settings, see <link linkend="datatypes">Data Types</link>.
+</para>
+
+
+<sect3 id="curveappearance">
+<title>Appearance</title>
+<para>
+The Appearance section allows you to change the appearance of the data object when it is plotted.
+</para>
+
+<screenshot>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-curveappearance.png" format="PNG"/>
+</imageobject>
+</mediaobject>
+</screenshot>
+
+<variablelist>
+
+<varlistentry>
+<term>
+<inlinemediaobject><imageobject><imagedata fileref="Widget-kst-colourchooser.png" format="PNG"/></imageobject></inlinemediaobject>
+</term>
+<listitem>
+<para>
+Clicking this button displays a colour chooser dialog box, which can be used to change the colour of
+both the lines and points.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>
+<guilabel>Show points</guilabel>
+</term>
+<listitem>
+<para>
+Selecting this checkbox shows the data points used to plot the data object.  The drop-down list to the right
+allows the shape of the points to be changed.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>
+<guilabel>Show lines</guilabel>
+</term>
+<listitem>
+<para>
+Selecting this checkbox shows the lines joining the data points for the data object.  The thickness of the line
+as well as the line style can be changed.
+</para>
+</listitem>
+</varlistentry>
+
+</variablelist>
+
+
+</sect3>
+
+<sect3 id="curveplacement">
+<title>Placement</title>
+<para>
+The Placement section specifies the plotting location of new plottable data objects.
+</para>
+
+<screenshot>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-curveplacement.png" format="PNG"/>
+</imageobject>
+</mediaobject>
+</screenshot>
+
+<variablelist>
+
+<varlistentry>
+<term>
+<guilabel>Plot window</guilabel>
+</term>
+<listitem>
+<para>
+Specify the window in which to plot the data object.  You may create a new window by clicking the <guibutton>New...</guibutton> button.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>
+<guilabel>Place in existing plot</guilabel>, <guilabel>Place in new plot</guilabel>
+and <guilabel>Do not place in any plot</guilabel>
+</term>
+<listitem>
+<para>
+You can choose whether or not to immediately plot the data object on a new or existing plot.  If
+<guilabel>Place in new plot</guilabel> is selected, you can also choose to re-arrange the layout of the
+plots by selecting <guilabel>re-grid</guilabel> and entering the number of columns to use for the
+new layout grid.
+</para>
+</listitem>
+</varlistentry>
+
+</variablelist>
+
+<para>
+Once all the desired settings for the new data object have been set, click the <guibutton>OK</guibutton>
+button to create the new data object.
+</para>
+
+</sect3>
 
 </sect2>
 
+<sect2 id="editinganddeletingdata">
+<title>Editing and Deleting Existing Data Objects</title>
+<para>
+To edit an existing data object, simply highlight it in the Data Manager window and click the <guibutton>Edit</guibutton>
+button.  The settings window for the selected object will be displayed.  This window is identical to the one displayed
+when creating new data objects (with the exception that the Placement section may be absent), so refer to <link linkend="creatingdata">Creating New Data Objects</link> for more information
+on the settings and options.
+</para>
+<para>
+To delete a data object, highlight it in the Data Manager window and click the <guibutton>Delete</guibutton> button.
+Note that if the <guilabel>Used</guilabel> column for a data object has a check-mark then some other data or view object in &kst; has a dependency on it. Depending on the strength of these dependencies, &kst; will prompt before an object is deleted. If, for example, other objects have critical dependencies on the one which you are attempting to delete, &kst; will ask if you would like to delete these other objects as well, to prevent crashes from occuring. Listed below are some consequencies of these dependencies to keep in mind when attempting to delete data objects.
+</para>
+
+<itemizedlist>
+<listitem>
+<para>
+Plots are not critically dependent on the plottable objects which they contain, so if a plotted object is deleted &kst; will automatically remove it from all plots, without prompting.
+</para>
+</listitem>
+
+<listitem>
+<para>
+All data objects that use a particular data vector must be deleted before the data vector itself can be deleted.
+</para>
+</listitem>
+
+<listitem>
+<para>
+All children of a parent data object must be unused before the parent data object can be deleted.
+</para>
+</listitem>
+</itemizedlist>
+
+<para>
+After a sequence of deletions and removals of plottable data objects from plots, you may find that there are numerous unused data objects displayed in the Data Manager.  To quickly remove these objects, you can click the <guibutton>Purge</guibutton> button.
+</para>
+</sect2>
 </sect1>
 
+<sect1 id="datatools">
+<title>Data Tools</title>
 
-<sect1 id="thedatamenu">
+<sect2 id="thedatamenu">
 <title>The Data Menu</title>
 <para>
 The <guimenu>Data</guimenu> menu provides quick access to many features related to data objects in
@@ -1630,9 +1570,9 @@ is updated dynamically if the values change.
 </listitem>
 </varlistentry>
 </variablelist>
-</sect1>
+</sect2>
 
-<sect1 id="datamode">
+<sect2 id="datamode">
 <title>Data View Mode</title>
 <para>Data mode allows precise viewing of the data points used in a plotted data object.  To toggle data mode,
 select <guimenuitem>Data Mode</guimenuitem> from the <guimenu>Plots</guimenu> menu. Now, when the cursor
@@ -1661,7 +1601,124 @@ If the status bar is not visible, make sure <guimenuitem>Show Statusbar</guimenu
 <guimenu>Status</guimenu> menu.
 </para>
 </tip>
+</sect2>
+
+<sect2 id="changedatafile">
+<title>Change Data File</title>
+<para>
+One common mode of using &kst; is to create a 'session' of plots and analysis for a particular type of data. Then, the same plots and analyses can be performed easily on another set of similar data simply by changing the files from which &kst; pulls its data. This is easily done using the <guimenuitem>Change Data File</guimenuitem> menu item from the <guimenu>Tools</guimenu>, the dialog which appears is shown below:
+</para>
+
+<para>
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-data-changedatafile.png" format="PNG"/>
+</imageobject>
+</inlinemediaobject>
+</para>
+
+<para>
+To use this dialog, select the vectors which you would like to change the data file of using the list in the middle of the dialog. The All From, Clear, Select All, and search fields can help you to do this. Then, select a new data file. If the "Change selected vectors and matrices" radio button is selected, then when you press Apply or OK the selected data vectors will have their data file changed, and will be reloaded. If the "Duplicate selected vectors and matrices" option is selected, then new vectors will be created which have the same ranges and sampling rates as the ones selected, but pull their data from the new file. If some of the selected vectors have dependents (curves, spectra, histograms, etc.) then the "Duplicate dependents" option will allow you to duplicate these other objects as well.
+</para>
+</sect2>
+
+<sect2 id="changedatasampleranges">
+<title>Change Data Sample Ranges</title>
+<para>
+The <guimenuitem>Change Data Sample Ranges</guimenuitem> dialog can be accessed through the <guimenu>Tools</guimenu>. It allows you to modify how a set of vectors are read in from their associated files. The options are detailed in the <link linkend="datarange">Data Range</link> section of the <link linkend="datawizard">Data Wizard</link> documentation.
+</para>
+
+<para>
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-data-changesampleranges.png" format="PNG"/>
+</imageobject>
+</inlinemediaobject>
+</para>
+
+</sect2>
 </sect1>
+
+<sect1 id="fileformats">
+<title>Supported File Formats</title>
+<para>
+Currently, Kst supports <link linkend="creatingascii">ASCII</link> text files, BOOMERANG frame files, <link linkend="blastdirfiles">BLAST</link> dirfiles, PLANCK LFIIO files, and QImage files as data sources, as well as PIOLib, HEALPix, and FITS files if the appropriate libraries are present. This section describes basic data source concepts common to all file types, and specifically details the <link linkend="creatingascii">ASCII</link> and <link linkend="blastdirfiles">BLAST</link> dirfile file types.
+</para>
+
+<sect2 id="creatingascii">
+<title>ASCII Input Files</title>
+<para>
+The simplest input file format is the ASCII text file.  These files are usually human-readable and
+can be easily created by hand or simple scripts if desired.  The following is an example of an ASCII input file.
+</para>
+
+<informalexample>
+<screen>
+112.5 3776 428
+187.5 5380 429
+262.5 5245 345
+337.5 2942 184
+412.5 1861 119
+487.5 2424 138
+567.5 2520 162
+637.5 1868 144
+712.5 1736 211
+787.5 1736 211
+862.5 2172 292
+937.5 1174 377
+1000.5 499 623
+</screen>
+</informalexample>
+
+<para>
+Each column of this file represents a field, while each row represents one frame.
+Columns are separated by tabs or spaces, and rows are separated by carriage returns.
+Note that due to their structure, ASCII files cannot have multiple samples per frame.
+If the columns do not have labels, field names are assigned by &kst; based on the
+order of the columns (with the leftmost column having a field name of <literal>1</literal>).
+</para>
+
+<para>
+Commented lines in ASCII files start with one of the characters in the set
+<literal>{#, !, /, ;, c}</literal>.  All commented lines and empty lines
+are ignored by &kst;.  Valid numbers include those with decimals, negative signs,
+or <literal>e</literal>, to indicate scientific notation. Invalid numbers (such as
+English words) are replaced with 0 by &kst;.
+</para>
+
+</sect2>
+
+
+<sect2 id="blastdirfiles">
+<title>BLAST Dirfiles</title>
+<para>
+BLAST dirfile data sources are actually directories of files.  Each directory represents
+one data source, and each file in the directory, with the exception of a file called
+<filename>format</filename>, represents a single field. The file named <filename>format</filename>
+lists each field and its properties.  Below is example of such a file:
+</para>
+<informalexample>
+<screen>scount RAW f 1
+fcount RAW f 20
+sine RAW f 20
+ssine RAW f 1
+cos RAW f 20</screen>
+</informalexample>
+<para>
+In this example, <literal>scount</literal>, <literal>fcount</literal>, <literal>sine</literal>,
+<literal>ssine</literal>, and <literal>cos</literal> are field names.  <literal>RAW</literal> indicates
+the file is written in raw format, and the last number in each row is the number of samples per frame.
+</para>
+
+<para>
+When selecting a BLAST dirfile for use in &kst;, the directory containing the field files should be
+selected. &kst; will then automatically look for a <filename>format</filename> file, if it exists,
+to determine the fields and their properties.
+</para>
+
+</sect2>
+</sect1>
+
 
 </chapter>
 
