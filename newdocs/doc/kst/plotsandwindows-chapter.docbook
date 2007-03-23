@@ -1,8 +1,9 @@
 <chapter id="workingwithplotsandwindows">
 <title>Working with Plots, Windows, and Annotation Objects</title>
 
-<sect1 id="viewmanager">
-<title>The View Manager</title>
+<sect1 id="viewobjectsoverview">
+<title>View Objects Overview</title>
+
 <para>
 We will call &kst; objects which are painted onto the screen "View Objects". These include windows, annotations, plots, curves, and images. A diagram of the relationship between these objects is displayed below:
 </para>
@@ -19,8 +20,35 @@ We will call &kst; objects which are painted onto the screen "View Objects". The
 </para>
 
 <para>
-As can be seen from the diagram, the most fundamental view objects are windows, which act as containers for plots and annotation objects. <link linkend="annotationobjects">Annotation</link> objects are things like labels, arrows, etc. which can be used to display information about plots, or highlight areas of interest. Most view objects can be manipulated in the <link linkend="manipulatingplotlayout">Layout</link> mouse mode. View objects in &kst; are also hierarchically grouped- annotations, for example, are often deemed 'children' of a specfic plot based on their location. A good way to work directly with this hierarchy is to use the View Manager. It can be accessed by selecting <guimenuitem>View Manager</guimenuitem> from the <guimenu>Data</guimenu> menu.
+As can be seen from the diagram, the most fundamental views are windows, which act as containers for plots and annotation objects. Plots are the most important view objects of &kst;, they perform the chief function of &kst;,  displaying data.
 </para>
+
+<para>
+Most view objects can be manipulated in the <link linkend="manipulatingplotlayout">Layout</link> mouse mode. View objects in &kst; are also hierarchically grouped- annotations, for example, are often deemed 'children' of a specfic plot based on their location. A good way to work directly with this hierarchy is to use the View Manager. It can be accessed by selecting <link linkend="viewmanager">View Manager</link> from the <guimenu>Data</guimenu> menu.
+</para>
+
+<para>
+Annotations are View Objects are things like labels, arrows, etc. which can be used to display information about plots, or highlight areas of interest. The annotation objects currently implemented in &kst; are Labels, Rectangles, Ellipses, Lines, Arrows, and Pictures. They are very useful when preparing plots for presentation or publication. Here is an sample use of annotation objects in &kst;, where we have used Labels, Arrows, Lines, and a transparent PNG Picture to mark up a color magnitude diagram.
+</para>
+
+<screenshot>
+<screeninfo>Annotation objects example</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-plotsandwindows-HRexample.png" format="PNG" />
+</imageobject>
+<textobject>
+<phrase>Annotation objects example</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<para>
+All view objects can be created by selecting their corresponding draw tools in the <xref linkend="miscellaneousfeatures-toolbar"/>. You can edit their options by double clicking on them in <link linkend="manipulatingplotlayout">Layout</link> mode.
+</para>
+
+<sect2 id="viewmanager">
+<title>The View Manager</title>
 <para>
 The View Manager is a tree list view which allows you to copy and delete view objects. It also allows you to access their edit dialogs.
 </para>
@@ -50,6 +78,962 @@ Copy view objects: Select the view object which you would like to copy and click
 </para>
 </listitem>
 </itemizedlist>
+</sect2>
+
+<sect2 id="thebasiccontextmenu">
+<title>Context Menus</title>
+<para>
+When working with plots and other view objects, right-clicking will bring up a context menu which
+provides commonly used functions.  In general, the context menu which is presented depends on which mouse mode you are in and which object you are centered on, but there are 4 basic options common to all view objects. The title of the context menu which appears gives the name of the view object which you have clicked on.
+</para>
+<variablelist>
+<varlistentry>
+<term><guimenuitem>Edit...</guimenuitem></term>
+<listitem>
+<para>
+Brings up the edit dialog for the underlying view object.  See the
+<link linkend="viewobjecttypes">View Object Types</link> sections for more information on these settings.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guimenuitem>Delete</guimenuitem></term>
+<listitem>
+<para>
+Deletes the view object.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guimenuitem>Rename</guimenuitem></term>
+<listitem>
+<para>
+Presents a dialog to modify the unique name assigned to the view object.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guimenuitem>Cleanup Layout</guimenuitem></term>
+<listitem>
+<para>
+Arranges the plots in the current window in a tile type pattern, with no overlap between plots. Selecting <guimenuitem>Default Tile</guimenuitem> from this sub-menu rearranges the plots according to an aesthetically pleasing algorithm. Selecting the <guimenuitem>Custom</guimenuitem> option allows you to manually specify how many columns to tile the plots into. This action applies to all plots in the current window.
+</para>
+</listitem>
+</varlistentry>
+</variablelist>
+
+<para>
+There are additional context menu options specific to the <link linkend="zoomingandscrollingzoommodecontextmenu">Zoom</link> mouse modes and the <link linkend="manipulatingplotlayoutcontextmenu">Data Layout</link> mode.
+</para>
+</sect2>
+</sect1>
+
+<sect1 id="viewobjecttypes">
+<title>View Object Types</title>
+
+<sect2 id="plotsandplotdialog">
+<!-- FIXME: rename "editplotdialog" -->
+<title>The Edit Plot Dialog</title>
+<para>
+This dialog allows you to change the content, appearance, axes, and markers of a plot. To access it, right click on a plot and select <guimenuitem>Edit Plot...</guimenuitem> from the context menu which appears, or use the <link linkend="viewmanager">View Manager</link>. There are several possible tabs:
+
+<itemizedlist>
+<listitem><para><link linkend="editplot-content">Content</link></para></listitem>
+<listitem><para><link linkend="editplot-appearance">Appearance</link></para></listitem>
+<listitem><para><link linkend="editplot-xyaxis">X/Y Axis</link></para></listitem>
+<listitem><para><link linkend="editplot-range">Range</link></para></listitem>
+<listitem><para><link linkend="editplot-markers">Range</link></para></listitem>
+</itemizedlist>
+
+</para>
+
+<sect3 id="editplot-content">
+<title>Content Tab</title>
+<para>
+This tab allows you to select which of the available plot objects (curves, images, etc.) will be displayed in the plot. Shift objects between the 'Available' and 'Displayed' object lists using the left and right GUI arrow buttons. Change the order in which the objects are plotted with the vertical arrow buttons.
+</para>
+<screenshot>
+<screeninfo>Edit Plot - Content Tab</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-editplot-content.png" format="PNG" />
+</imageobject>
+<textobject>
+<phrase>Edit Plot - Content Tab</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+</sect3>
+
+<sect3 id="editplot-appearance">
+<title>Appearance Tab</title>
+<para>
+The appearance tab allows you to adjust the colours, fonts, legend, and labels of a plot.
+</para>
+
+<screenshot>
+<screeninfo>Edit Plot - Appearance Tab</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-editplot-appearance.png" format="PNG" />
+</imageobject>
+<textobject>
+<phrase>Edit Plot - Appearance Tab</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<sect4 id="editplotappearancecoloursandlineweights">
+<title>Colours and Line Weights</title>
+<para>
+
+</para>
+<variablelist>
+
+<varlistentry>
+<term>
+<guilabel>Axis and Background</guilabel>
+</term>
+<listitem>
+<para>
+The colours for the axes (foreground) and background of the plot.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>
+<guilabel>Line Weight</guilabel>
+</term>
+<listitem>
+<para>
+The line width in pixels.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>
+<guilabel>Major/Minor Grid</guilabel>
+</term>
+<listitem>
+<para>
+The line width and colour of the lines marking out the major/minor grid lines. To enable these grid lines for the axes, use the <link linkend="editplot-xyaxis">X/Y Axis</link> tabs.
+</para>
+</listitem>
+</varlistentry>
+</variablelist>
+</sect4>
+
+<sect4 id="editplotappearancelabels">
+<title>Labels</title>
+<para>
+
+</para>
+
+<variablelist>
+<varlistentry>
+<term><guilabel>Scalar list</guilabel></term>
+<listitem>
+<para>
+A list of the current scalars defined in &kst;. This list is primarily used to quickly insert
+values in the label texts.  Choosing an item from this list will insert the item at the current
+text cursor position.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Top label</guilabel></term>
+<listitem>
+<para>
+The label located at the top of the plot. Select a font size and enter the text for the label
+using the controls in this row.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Justification</guilabel></term>
+<listitem>
+<para>
+This drop-box controls whether the top label will be located at the Left, Right, or Center of the plot's title space. The justification for the X and Y axis labels of a plot is always the center.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>X/Y axis</guilabel></term>
+<listitem>
+<para>
+The label located vertically next to the X/Y axis of the plot. Select a font size and enter
+the text for the label using the controls in this row.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Numbers</guilabel>, <guilabel>Rotation X</guilabel> and <guilabel>Rotation Y</guilabel></term>
+<listitem>
+<para>
+The numbers used to label both the X axis and the Y axis of the plot. The size and angles of the
+numbers can be specified.  Positive angles rotate the text clockwise, while negative angles
+rotate the text counter-clockwise.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Auto Label</guilabel></term>
+<listitem>
+<para>
+Click this button to automatically generate label texts for all labels on the plot.
+The text for <guilabel>Top label</guilabel> will be a list of paths to the data files
+used in the plot.  The text for <guilabel>Y axis</guilabel> will be a list of the dependent
+variable descriptions (e.g. <quote>Number in Bin</quote> for a histogram).  The text for
+<guilabel>X axis</guilabel> will be the name of the vector used as the independent variable.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Font</guilabel></term>
+<listitem>
+<para>
+The font used for all labels of the plot.  Select an available font using the drop-down list.
+</para>
+</listitem>
+</varlistentry>
+</variablelist>
+</sect4>
+
+<sect4 id="editplotappearancelegend">
+<title>Legend</title>
+<para>
+
+</para>
+
+<variablelist>
+<varlistentry>
+<term><guilabel>Show</guilabel></term>
+<listitem>
+<para>
+Check this box if you would like the plot to display a legend.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Match Contents to Plot</guilabel></term>
+<listitem>
+<para>
+Check this box if you would like the plot to automatically adjust its legend to reflect its contents.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Edit...</guilabel></term>
+<listitem>
+<para>
+This button displays the <link linkend="editplot-appearance">Edit Legend</link> dialog.
+<!-- TODO: correct link -->
+</para>
+</listitem>
+</varlistentry>
+</variablelist>
+</sect4>
+
+<sect4 id="editplotappearanceapplysettingsto">
+<title>Apply Settings To:</title>
+<para>These radio buttons allow you to have your modifications of the selected plot applied to other plots as well.</para>
+</sect4>
+</sect3>
+
+<sect3 id="editplot-xyaxis">
+<title>X/Y Axis Tabs</title>
+<para>
+
+</para>
+<screenshot>
+<screeninfo>Edit Plot - X Axis Tab</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-editplot-xaxis.png" format="PNG" />
+</imageobject>
+<textobject>
+<phrase>Edit Plot - X Axis Tab</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<sect4 id="editplotxyaxisplacement">
+<title>Placement</title>
+<para>
+
+</para>
+
+<variablelist>
+<varlistentry>
+<term><guilabel>Suppress top/bottom border and label</guilabel></term>
+<listitem>
+<para>
+Check this box to remove the white space at the top/bottom of the plot.
+</para>
+</listitem>
+</varlistentry>
+</variablelist>
+</sect4>
+
+<sect4 id="editplotxyaxisscale">
+<title>Scale</title>
+<para>
+<!-- FIXME: does something go here? -->
+</para>
+
+<variablelist>
+<varlistentry>
+<term><guilabel>Logarithmic</guilabel></term>
+<listitem>
+<para>
+Enable this checkbox if you wish to use a logarithmic scale for the axis.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Base and offset mode</guilabel></term>
+<listitem>
+<para>
+Enabling this option causes the axis to be labelled by displacements from an initial position, where the initial position is displayed in the lower left of the plot. The displacement labels are printed inside square brackets to avoid confusion.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Reverse</guilabel></term>
+<listitem>
+<para>
+Causes the axis direction to be reversed.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Interpret as: / Display as:</guilabel></term>
+<listitem>
+<para>
+If your axis contains date/time information encoded in a difficult to read form (eg. Julian Date), this option allows you to have &kst; automatically convert it to something more legible.
+<!-- FIXME: add references for the specific formats -->
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Transform top axis</guilabel></term>
+<listitem>
+<para>
+Checking this box causes the top axis of the plot to be labelled following the contents of the expression field. The variable x can be used in the expression field to refer to the value on the lower X axis. To plot the top axis as the lower axis scaled by a factor of 2, for example, enter 2*x in the expression field.
+</para>
+</listitem>
+</varlistentry>
+
+</variablelist>
+</sect4>
+
+<sect4 id="editplotxyaxistickmarks">
+<title>Tick Marks</title>
+<para>
+
+</para>
+
+<variablelist>
+<varlistentry>
+<term><guilabel>Spacing</guilabel></term>
+<listitem>
+<para>
+Select Course, Default, Fine, or Very Fine from this drop down menu to determine which algorithm &kst; will use to determine the number of Major and Minor tick marks which will be plotted.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Minor Ticks / Auto Minor</guilabel></term>
+<listitem>
+<para>
+Unchecking Auto-Minor allows you to tell &kst; how many minor ticks to place between each pair of major ticks. The number of major ticks cannot be set manually.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Place marks:</guilabel></term>
+<listitem>
+<para>
+Select Inside, Outside, or both to determine the location of the tick marks with respect to the axes.
+</para>
+</listitem>
+</varlistentry>
+</variablelist>
+</sect4>
+
+<sect4 id="editplotxyaxisgridlines">
+<title>Grid Lines</title>
+<para>
+
+</para>
+
+<variablelist>
+<varlistentry>
+<term><guilabel>Show major/minor lines</guilabel></term>
+<listitem>
+<para>
+Select these boxes if you would like lines to be drawn through the plot connecting the major/minor tick marks on opposing axes.
+</para>
+</listitem>
+</varlistentry>
+</variablelist>
+</sect4>
+
+<sect4 id="editplotxyaxisapplysettingsto">
+<title><link linkend="editplotappearanceapplysettingsto">Apply settings to</link></title>
+<para>
+</para>
+</sect4>
+
+</sect3>
+
+<sect3 id="editplot-range">
+<title>Range Tab</title>
+<para>
+The settings for the plot axes are specified on this tab. The axis settings are split into
+two identical sections&mdash;an X axis section and a Y axis section.
+</para>
+<screenshot>
+<screeninfo>Edit Plot - Range Tab</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-editplot-range.png" format="PNG" />
+</imageobject>
+<textobject>
+<phrase>Edit Plot - Range Tab</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<sect4 id="editplotrangexyaxis">
+<title>X/Y Axis</title>
+
+<variablelist>
+<varlistentry>
+<term><guilabel>Auto</guilabel></term>
+<listitem>
+<para>
+Select this option to let &kst; automatically choose a scale for this axis based on the
+highest and lowest values for this axis found in the plotted objects.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Auto border</guilabel></term>
+<listitem>
+<para>
+This option behaves similarly to <guilabel>Auto</guilabel>, but axis is padded with a small amount of extra space.This can sometimes improve the appearance of plots, and make it easier to see features near the range limits.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Auto up</guilabel></term>
+<listitem>
+<para>
+This option behaves similarly to <guilabel>Auto</guilabel>, but the upper axis limit
+will only increase, and the lower axis limit will only decrease.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Spike insensitive auto scale</guilabel></term>
+<listitem>
+<para>
+Select this option to let &kst; automatically choose a scale for this axis that is
+based on the values found in the plotted objects. In general, <quote>spikes</quote>, or
+sudden short increases or decreases in the value, will be ignored when determining the scale. This option is usually for the dependent (Y) axis.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Mean-centered</guilabel></term>
+<listitem>
+<para>
+Select this option to center the axis around the mean of the values found in the plot (X values
+are used to calculate the mean for the X axis, and Y values are used to calculate
+the mean for the Y axis). Specify the length of the axis in the <guilabel>Range</guilabel> text box.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Expression</guilabel></term>
+<listitem>
+<para>
+Manually specify lower and upper limits for the axis. Enter the expression for the limits in the <guilabel>From:</guilabel> and <guilabel>To:</guilabel> textboxes. These can be numerical values, or equations based on the scalars maintained by &kst;. These scalars can be quickly added to the expressions by selecting them from the pull-down menus to the right of the textboxes.
+</para>
+</listitem>
+</varlistentry>
+</variablelist>
+</sect4>
+
+<sect4 id="editplotrangeapplysettingsto">
+<title><link linkend="editplotappearanceapplysettingsto">Apply settings to</link></title>
+<para>
+</para>
+</sect4>
+
+</sect3>
+
+<sect3 id="editplot-markers">
+<title>Markers</title>
+<para>
+Below is a screenshot of the <guilabel>Markers</guilabel> tab.
+</para>
+<screenshot>
+<screeninfo>Edit Plot - Markers Tab</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-editplot-markers.png" format="PNG" />
+</imageobject>
+<textobject>
+<phrase>Edit Plot - Markers Tab</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<para>
+Plot markers provide an easy means of flagging areas of interest on a plot.  The <guilabel>Markers</guilabel>
+tab provides full access to plot marker settings and options.  Navigation functions for plot markers are described
+in the <link linkend="zoomingandscrollingscrollmenu">Scroll Menu</link> section.
+</para>
+<tip>
+<para>
+To quickly create plot markers on a plot, place the mouse cursor over the plot and press the
+<keycap>Insert</keycap> key.  A vertical line should appear indicating the position of the
+plot marker.
+</para>
+</tip>
+
+<variablelist>
+<varlistentry>
+<term><guilabel>New</guilabel> and <guibutton>Add</guibutton></term>
+<listitem>
+<para>
+Use the <guilabel>New</guilabel> text field to manually enter a plot marker value.  Values can be
+entered in floating point or scientific notation.  Values in scientific notation must be entered in
+the form <literal>mEx</literal> or <literal>mex</literal>, where <literal>m</literal> is the
+mantissa and <literal>x</literal> is the exponent.  For example, one way to enter the value 15000 in scientific
+notation is by typing <userinput>1.5e4</userinput>. 
+</para>
+<para>
+Click the <guilabel>Add</guilabel> button to create a new plot marker with the specified value. You will be
+warned if duplicate plot markers already exist, or if the entered value is not valid.  Note that plot marker
+additions or removals made from the <guilabel>Markers</guilabel> tab are not applied unless
+the plot dialog settings are applied.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Defined plot markers</guilabel>, <guibutton>Remove</guibutton>, and <guibutton>Remove All</guibutton></term>
+<listitem>
+<para>
+The list of existing plot markers for this plot are listed under <guilabel>Defined plot markers</guilabel>.
+To remove plot markers, highlight the desired markers in the list and click the <guibutton>Remove</guibutton> button.
+Multiple markers can be selected for removal by clicking and dragging within the list, or by holding down the
+<keycap>Shift</keycap> or <keycap>Ctrl</keycap> key and clicking on items in the list. To remove all plot markers
+for this plot, click the <guilabel>Remove All</guilabel> button.  Note that plot marker
+additions or removals made from the <guilabel>Markers</guilabel> tab are not applied unless
+the plot dialog settings are applied.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Automatic Marker Generation</guilabel></term>
+<listitem>
+<para>
+In addition to individually defined plot markers, it is also possible to generate plot markers based on a curve. To use a curve object for plot marker generation, check the
+<guilabel>Use data object as marker source</guilabel> checkbox and select a curve from the drop down list.
+Then select the criteria to use for creating plot markers.
+Selecting <guilabel>Rising edge</guilabel> causes plot markers to be created when the Y value of the
+selected curve changes from zero to non-zero.  Selecting <guilabel>Falling edge</guilabel> causes
+plot markers to be created when the Y value of the selected data object changes from non-zero to zero.
+Selecting <guilabel>Both</guilabel> causes plot markers to be created on both rising edges and
+falling edges of the data object. In all cases, the X value of the point in the data object with the non-zero
+X value is used to create the new plot marker.
+</para>
+<para>
+If the selected curve is subsequently updated, additional plot markers will be created if necessary.
+However, plot markers will never be removed as a consequence of data object changes, so manually created
+plot markers will never be affected.
+</para>
+<para>
+It is also possible to create plot markers from a vector. Enable the
+<guilabel>Use vector as marker source</guilabel> checkbox and select a data vector from the drop down menu. The values of this vector will now be used as markers
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Appearance</guilabel></term>
+<listitem>
+<para>
+These options allow you to select the colour, line type, and weight (thickness) of the plot markers.
+</para>
+</listitem>
+</varlistentry>
+</variablelist>
+</sect3>
+</sect2>
+
+<sect2 id="labels">
+<title>Labels</title>
+<para>
+Custom labels to be placed in arbitrary locations in &kst; plot windows, in addition to the fixed labels created as part of plots.
+</para>
+
+<screenshot>
+<screeninfo>Edit Label</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-annotationobjects-editlabel.png" format="PNG" />
+</imageobject>
+<textobject>
+<phrase>Edit Label</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<para>
+The following are explanations of the dialog box elements.
+</para>
+<variablelist>
+<varlistentry>
+<term><guilabel>Scalars</guilabel></term>
+<listitem>
+<para>
+A list of scalars currently defined in &kst;. Selecting an item from the dropdown list inserts
+a reference to the scalar's value at the current cursor position in <guilabel>Label text</guilabel>.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Strings</guilabel></term>
+<listitem>
+<para>
+A list of strings currently defined in &kst;. Selecting an item from the dropdown list inserts
+a reference to the string's contents at the current cursor position in <guilabel>Label text</guilabel>.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Label text</guilabel></term>
+<listitem>
+<para>
+The text displayed by the label.  You may enter text manually in this dialog, or insert references into it using the scalar and string drop down menus.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Font</guilabel></term>
+<listitem>
+<para>
+The font to use for the label text.  Select a font from the dropdown list.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Size</guilabel></term>
+<listitem>
+<para>
+The size of the label text. 0 (the default value) roughly corresponds to a 12pt size.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Justification</guilabel></term>
+<listitem>
+<para>
+The horizontal alignment of the label.  Select one of <guilabel>Left</guilabel>, <guilabel>Center</guilabel>,
+or <guilabel>Right</guilabel>.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Rotation</guilabel></term>
+<listitem>
+<para>
+The number of degrees to rotate the label text.  Positive values rotate the label clockwise, while negative
+values rotate the text counter-clockwise.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Font Color</guilabel></term>
+<listitem>
+<para>
+Select the color to use for the label text.  Clicking the <inlinemediaobject><imageobject><imagedata fileref="Widget-kst-colourchooser.png" format="PNG"/></imageobject></inlinemediaobject> button displays
+the standard &kde; color chooser.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Precision</guilabel></term>
+<listitem>
+<para>
+When scalar variables are included in labels, precision dictates the number of digits which are displayed.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Box</guilabel></term>
+<listitem>
+<para>
+Select the color to use for the label text.  Clicking the <inlinemediaobject><imageobject><imagedata fileref="Widget-kst-colourchooser.png" format="PNG"/></imageobject></inlinemediaobject> button displays
+the standard &kde; color chooser.
+</para>
+</listitem>
+</varlistentry>
+</variablelist>
+
+<para>
+Once you are satisfied with the label settings, click <guibutton>Apply</guibutton> to apply the label settings
+without closing the label editor dialog.  Click <guibutton>OK</guibutton> to apply the label settings and close the
+dialog.  Alternatively, you can click <guibutton>Close</guibutton> to close the label editor dialog without
+applying any label settings.
+</para>
+</sect2>
+
+<sect2 id="rectanglesandellipses">
+<title>Rectangles / Ellipses</title>
+<para>
+Rectangle and ellipse annotation objects are usually used to outline important features on a plot.
+</para>
+
+<para>
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-plotsandwindows-editbox.png" format="PNG" />
+</imageobject>
+</inlinemediaobject>
+
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-plotsandwindows-editellipse.png" format="PNG" />
+</imageobject>
+</inlinemediaobject>
+</para>
+
+<para>
+The following are explanations of the dialog box elements.
+</para>
+
+<variablelist>
+<varlistentry>
+<term><guilabel>Border Color</guilabel></term>
+<listitem>
+<para>
+The color of the outline of the rectangle/ellipse object. Clicking the <inlinemediaobject><imageobject><imagedata fileref="Widget-kst-colourchooser.png" format="PNG"/></imageobject></inlinemediaobject> button displays the standard &kde; color chooser.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Border Width</guilabel></term>
+<listitem>
+<para>
+The width of the annotation's line/border (in pixels).
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Fill Color / Transparent Fill</guilabel></term>
+<listitem>
+<para>
+The color of the contents of the rectangle/ellipse. Clicking the <inlinemediaobject><imageobject><imagedata fileref="Widget-kst-colourchooser.png" format="PNG"/></imageobject></inlinemediaobject> button displays the standard &kde; color chooser. If you select "Transparent Fill" then the rectangle/ellipse will be see-through.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>X/Y Roundness</guilabel></term>
+<listitem>
+<para>
+These options are for rectangles only. They determine the fractional rounding of the rectangle's corners in a non-intuitive way. Values of 0 result in standard corners (right angles), while values of 99 result in a maximally rounded rectangle (an ellipse). For more information on these options, see the Qt documentation on QPainter::drawRoundRect.
+</para>
+</listitem>
+</varlistentry>
+</variablelist>
+</sect2>
+
+<sect2 id="linesandarrows">
+<title>Lines / Arrows</title>
+<para>
+Line and Arrow annotation objects are usually used to highlight important features on a plot (by pointing to a particular peak, for example.).
+</para>
+
+<para>
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-plotsandwindows-editline.png" format="PNG" />
+</imageobject>
+</inlinemediaobject>
+
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-plotsandwindows-editarrow.png" format="PNG" />
+</imageobject>
+</inlinemediaobject>
+</para>
+
+<para>
+The following are explanations of the dialog box elements.
+</para>
+
+<variablelist>
+<varlistentry>
+<term><guilabel>Line Color</guilabel></term>
+<listitem>
+<para>
+The color of the line/arrow object. Clicking the <inlinemediaobject><imageobject><imagedata fileref="Widget-kst-colourchooser.png" format="PNG"/></imageobject></inlinemediaobject> button displays the standard &kde; color chooser.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Line Style</guilabel></term>
+<listitem>
+<para>
+Here you can chose to make the line solid, dashed, dot-dashed, etc.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Line Width</guilabel></term>
+<listitem>
+<para>
+The width of the line (in pixels). This will also change the head size for an arrow object.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Arrow at start/end</guilabel></term>
+<listitem>
+<para>
+Determines where to place the arrow heads. The heads will always point away from the line.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Start arrow scaling</guilabel></term>
+<listitem>
+<para>
+A scaling factor for the arrow head sizes. This can be useful if your line width leads to a head size which is larger than you would like.
+</para>
+</listitem>
+</varlistentry>
+</variablelist>
+
+</sect2>
+
+<sect2 id="pictures">
+<title>Pictures</title>
+<para>
+Picture objects can be used to easily add an external graphic to your plot. Almost all popular image formats should be supported, depending on the libraries installed on your system.
+</para>
+
+<screenshot>
+<screeninfo>Edit Line</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-plotsandwindows-editpicture.png" format="PNG" />
+</imageobject>
+<textobject>
+<phrase>Edit Line</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<para>
+The following are explanations of the dialog box elements.
+</para>
+
+<variablelist>
+<varlistentry>
+<term><guilabel>Border Color</guilabel></term>
+<listitem>
+<para>
+The color of the outline of the rectangle/ellipse object. Clicking the <inlinemediaobject><imageobject><imagedata fileref="Widget-kst-colourchooser.png" format="PNG"/></imageobject></inlinemediaobject> button displays the standard &kde; color chooser.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Border Width</guilabel></term>
+<listitem>
+<para>
+The width of the annotation's line/border (in pixels).
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Maintain Aspect Ratio</guilabel></term>
+<listitem>
+<para>
+If this box is set, then when resizing the picture object &kst; will maintain the ratio between the width and height of the picture. You can temporarily disable (or enable) this option by holding down the <keycap>Shift</keycap> key as you resize the picture.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>File Path</guilabel></term>
+<listitem>
+<para>
+The location of the image you would like to display.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Refresh Timer</guilabel></term>
+<listitem>
+<para>
+Set this to the period (in seconds) with which you would like &kst; to check the image file for updates, and reload it if necessary. If refresh timer is set to 0 then the image will only be reloaded after restarting &kst; or opening and closing the picture object's edit dialog.
+</para>
+</listitem>
+</varlistentry>
+</variablelist>
+</sect2>
+
 </sect1>
 
 <sect1 id="zoomingandscrolling">
@@ -138,9 +1122,7 @@ to return the plot to its previous size.
 <listitem>
 <para>
 Pauses automatic update of live data.  This menu item duplicates the functionality
-of <guimenuitem>Pause</guimenuitem> from the <guimenu>Range</guimenu> menu.  See
-<link linkend="zoomingandscrollingworkingwithlivedata">Working with Live Data</link>
-for more information.
+of <guimenuitem>Pause</guimenuitem> from the <guimenu>Range</guimenu> menu.
 </para>
 </listitem>
 </varlistentry>
@@ -381,6 +1363,40 @@ used as well.
 </tip>
 </sect2>
 
+<sect2 id="zoomingandscrollingtiedzoom">
+<title>Tied Zoom</title>
+<para>
+When looking at two or more related plots (for example, two curves on separate plots
+both dependent on the same time vector), it can sometimes be useful to zoom or scroll the plots simultaneously.
+This is possible using &kst;'s tied zoom feature.  To activate tied zoom, click the small square
+at the top-right corner of the plots you wish to tie together.  The squares will change colour to indicate the plots are tied, as shown below.
+</para>
+<screenshot>
+<screeninfo>Top of Plot Dialog</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-tiedzoom.png" format="PNG" />
+</imageobject>
+<textobject>
+<phrase>Top of Plot Dialog</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+<para>
+Zooming and scrolling actions performed on one plot in a group of tied plots will be performed on
+ on all the plots in the group.
+ To remove a plot from the tied group,
+simply click on the small square at the top-right corner of the plot again.
+The square will become transparent to indicate that
+the plot is not tied.
+</para>
+<tip>
+<para>
+To quickly tie or untie all plots (including plots in other windows), select <guimenuitem>Tied Zoom</guimenuitem>
+from the <guimenu>Plots</guimenu> menu, or the corresponding icon on the &kst; toolbar.
+</para>
+</tip>
+</sect2>
 
 </sect1>
 
@@ -559,1018 +1575,8 @@ To dissociate a group, simply right-click on the group and select <guimenuitem>U
 
 </sect1>
 
-<sect1 id="plotsandplotdialog">
-<!-- FIXME: rename "editplotdialog" -->
-<title>The Edit Plot Dialog</title>
-<para>
-This dialog allows you to change the content, appearance, axes, and markers of a plot. To access it, right click on a plot and select <guimenuitem>Edit Plot...</guimenuitem> from the context menu which appears, or use the <link linkend="viewmanager">View Manager</link>. There are several possible tabs:
-
-<itemizedlist>
-<listitem><para><link linkend="editplot-content">Content</link></para></listitem>
-<listitem><para><link linkend="editplot-appearance">Appearance</link></para></listitem>
-<listitem><para><link linkend="editplot-xyaxis">X/Y Axis</link></para></listitem>
-<listitem><para><link linkend="editplot-range">Range</link></para></listitem>
-<listitem><para><link linkend="editplot-markers">Range</link></para></listitem>
-</itemizedlist>
-
-</para>
-
-<sect2 id="editplot-content">
-<title>Content Tab</title>
-<para>
-This tab allows you to select which of the available plot objects (curves, images, etc.) will be displayed in the plot. Shift objects between the 'Available' and 'Displayed' object lists using the left and right GUI arrow buttons. Change the order in which the objects are plotted with the vertical arrow buttons.
-</para>
-<screenshot>
-<screeninfo>Edit Plot - Content Tab</screeninfo>
-<mediaobject>
-<imageobject>
-<imagedata fileref="Screenshot-kst-editplot-content.png" format="PNG" />
-</imageobject>
-<textobject>
-<phrase>Edit Plot - Content Tab</phrase>
-</textobject>
-</mediaobject>
-</screenshot>
-</sect2>
-
-<sect2 id="editplot-appearance">
-<title>Appearance Tab</title>
-<para>
-The appearance tab allows you to adjust the colours, fonts, legend, and labels of a plot.
-</para>
-
-<screenshot>
-<screeninfo>Edit Plot - Appearance Tab</screeninfo>
-<mediaobject>
-<imageobject>
-<imagedata fileref="Screenshot-kst-editplot-appearance.png" format="PNG" />
-</imageobject>
-<textobject>
-<phrase>Edit Plot - Appearance Tab</phrase>
-</textobject>
-</mediaobject>
-</screenshot>
-
-<sect3 id="editplotappearancecoloursandlineweights">
-<title>Colours and Line Weights</title>
-<para>
-
-</para>
-<variablelist>
-
-<varlistentry>
-<term>
-<guilabel>Axis and Background</guilabel>
-</term>
-<listitem>
-<para>
-The colours for the axes (foreground) and background of the plot.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term>
-<guilabel>Line Weight</guilabel>
-</term>
-<listitem>
-<para>
-The line width in pixels.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term>
-<guilabel>Major/Minor Grid</guilabel>
-</term>
-<listitem>
-<para>
-The line width and colour of the lines marking out the major/minor grid lines. To enable these grid lines for the axes, use the <link linkend="editplot-xyaxis">X/Y Axis</link> tabs.
-</para>
-</listitem>
-</varlistentry>
-</variablelist>
-</sect3>
-
-<sect3 id="editplotappearancelabels">
-<title>Labels</title>
-<para>
-
-</para>
-
-<variablelist>
-<varlistentry>
-<term><guilabel>Scalar list</guilabel></term>
-<listitem>
-<para>
-A list of the current scalars defined in &kst;. This list is primarily used to quickly insert
-values in the label texts.  Choosing an item from this list will insert the item at the current
-text cursor position.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term><guilabel>Top label</guilabel></term>
-<listitem>
-<para>
-The label located at the top of the plot. Select a font size and enter the text for the label
-using the controls in this row.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term><guilabel>Justification</guilabel></term>
-<listitem>
-<para>
-This drop-box controls whether the top label will be located at the Left, Right, or Center of the plot's title space. The justification for the X and Y axis labels of a plot is always the center.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term><guilabel>X/Y axis</guilabel></term>
-<listitem>
-<para>
-The label located vertically next to the X/Y axis of the plot. Select a font size and enter
-the text for the label using the controls in this row.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term><guilabel>Numbers</guilabel>, <guilabel>Rotation X</guilabel> and <guilabel>Rotation Y</guilabel></term>
-<listitem>
-<para>
-The numbers used to label both the X axis and the Y axis of the plot. The size and angles of the
-numbers can be specified.  Positive angles rotate the text clockwise, while negative angles
-rotate the text counter-clockwise.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term><guilabel>Auto Label</guilabel></term>
-<listitem>
-<para>
-Click this button to automatically generate label texts for all labels on the plot.
-The text for <guilabel>Top label</guilabel> will be a list of paths to the data files
-used in the plot.  The text for <guilabel>Y axis</guilabel> will be a list of the dependent
-variable descriptions (e.g. <quote>Number in Bin</quote> for a histogram).  The text for
-<guilabel>X axis</guilabel> will be the name of the vector used as the independent variable.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term><guilabel>Font</guilabel></term>
-<listitem>
-<para>
-The font used for all labels of the plot.  Select an available font using the drop-down list.
-</para>
-</listitem>
-</varlistentry>
-</variablelist>
-</sect3>
-
-<sect3 id="editplotappearancelegend">
-<title>Legend</title>
-<para>
-
-</para>
-
-<variablelist>
-<varlistentry>
-<term><guilabel>Show</guilabel></term>
-<listitem>
-<para>
-Check this box if you would like the plot to display a legend.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term><guilabel>Match Contents to Plot</guilabel></term>
-<listitem>
-<para>
-Check this box if you would like the plot to automatically adjust its legend to reflect its contents.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term><guilabel>Edit...</guilabel></term>
-<listitem>
-<para>
-This button displays the <link linkend="editplot-appearance">Edit Legend</link> dialog.
-<!-- TODO: correct link -->
-</para>
-</listitem>
-</varlistentry>
-</variablelist>
-</sect3>
-
-<sect3 id="editplotappearanceapplysettingsto">
-<title>Apply Settings To:</title>
-<para>These radio buttons allow you to have your modifications of the selected plot applied to other plots as well.</para>
-</sect3>
-</sect2>
-
-<sect2 id="editplot-xyaxis">
-<title>X/Y Axis Tabs</title>
-<para>
-
-</para>
-<screenshot>
-<screeninfo>Edit Plot - X Axis Tab</screeninfo>
-<mediaobject>
-<imageobject>
-<imagedata fileref="Screenshot-kst-editplot-xaxis.png" format="PNG" />
-</imageobject>
-<textobject>
-<phrase>Edit Plot - X Axis Tab</phrase>
-</textobject>
-</mediaobject>
-</screenshot>
-
-<sect3 id="editplotxyaxisplacement">
-<title>Placement</title>
-<para>
-
-</para>
-
-<variablelist>
-<varlistentry>
-<term><guilabel>Suppress top/bottom border and label</guilabel></term>
-<listitem>
-<para>
-Check this box to remove the white space at the top/bottom of the plot.
-</para>
-</listitem>
-</varlistentry>
-</variablelist>
-</sect3>
-
-<sect3 id="editplotxyaxisscale">
-<title>Scale</title>
-<para>
-<!-- FIXME: does something go here? -->
-</para>
-
-<variablelist>
-<varlistentry>
-<term><guilabel>Logarithmic</guilabel></term>
-<listitem>
-<para>
-Enable this checkbox if you wish to use a logarithmic scale for the axis.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term><guilabel>Base and offset mode</guilabel></term>
-<listitem>
-<para>
-Enabling this option causes the axis to be labelled by displacements from an initial position, where the initial position is displayed in the lower left of the plot. The displacement labels are printed inside square brackets to avoid confusion.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term><guilabel>Reverse</guilabel></term>
-<listitem>
-<para>
-Causes the axis direction to be reversed.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term><guilabel>Interpret as: / Display as:</guilabel></term>
-<listitem>
-<para>
-If your axis contains date/time information encoded in a difficult to read form (eg. Julian Date), this option allows you to have &kst; automatically convert it to something more legible.
-<!-- FIXME: add references for the specific formats -->
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term><guilabel>Transform top axis</guilabel></term>
-<listitem>
-<para>
-Checking this box causes the top axis of the plot to be labelled following the contents of the expression field. The variable x can be used in the expression field to refer to the value on the lower X axis. To plot the top axis as the lower axis scaled by a factor of 2, for example, enter 2*x in the expression field.
-</para>
-</listitem>
-</varlistentry>
-
-</variablelist>
-</sect3>
-
-<sect3 id="editplotxyaxistickmarks">
-<title>Tick Marks</title>
-<para>
-
-</para>
-
-<variablelist>
-<varlistentry>
-<term><guilabel>Spacing</guilabel></term>
-<listitem>
-<para>
-Select Course, Default, Fine, or Very Fine from this drop down menu to determine which algorithm &kst; will use to determine the number of Major and Minor tick marks which will be plotted.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term><guilabel>Minor Ticks / Auto Minor</guilabel></term>
-<listitem>
-<para>
-Unchecking Auto-Minor allows you to tell &kst; how many minor ticks to place between each pair of major ticks. The number of major ticks cannot be set manually.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term><guilabel>Place marks:</guilabel></term>
-<listitem>
-<para>
-Select Inside, Outside, or both to determine the location of the tick marks with respect to the axes.
-</para>
-</listitem>
-</varlistentry>
-</variablelist>
-</sect3>
-
-<sect3 id="editplotxyaxisgridlines">
-<title>Grid Lines</title>
-<para>
-
-</para>
-
-<variablelist>
-<varlistentry>
-<term><guilabel>Show major/minor lines</guilabel></term>
-<listitem>
-<para>
-Select these boxes if you would like lines to be drawn through the plot connecting the major/minor tick marks on opposing axes.
-</para>
-</listitem>
-</varlistentry>
-</variablelist>
-</sect3>
-
-<sect3 id="editplotxyaxisapplysettingsto">
-<title><link linkend="editplotappearanceapplysettingsto">Apply settings to</link></title>
-<para>
-</para>
-</sect3>
-
-</sect2>
-
-<sect2 id="editplot-range">
-<title>Range Tab</title>
-<para>
-The settings for the plot axes are specified on this tab. The axis settings are split into
-two identical sections&mdash;an X axis section and a Y axis section.
-</para>
-<screenshot>
-<screeninfo>Edit Plot - Range Tab</screeninfo>
-<mediaobject>
-<imageobject>
-<imagedata fileref="Screenshot-kst-editplot-range.png" format="PNG" />
-</imageobject>
-<textobject>
-<phrase>Edit Plot - Range Tab</phrase>
-</textobject>
-</mediaobject>
-</screenshot>
-
-<sect3 id="editplotrangexyaxis">
-<title>X/Y Axis</title>
-
-<variablelist>
-<varlistentry>
-<term><guilabel>Auto</guilabel></term>
-<listitem>
-<para>
-Select this option to let &kst; automatically choose a scale for this axis based on the
-highest and lowest values for this axis found in the plotted objects.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term><guilabel>Auto border</guilabel></term>
-<listitem>
-<para>
-This option behaves similarly to <guilabel>Auto</guilabel>, but axis is padded with a small amount of extra space.This can sometimes improve the appearance of plots, and make it easier to see features near the range limits.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term><guilabel>Auto up</guilabel></term>
-<listitem>
-<para>
-This option behaves similarly to <guilabel>Auto</guilabel>, but the upper axis limit
-will only increase, and the lower axis limit will only decrease.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term><guilabel>Spike insensitive auto scale</guilabel></term>
-<listitem>
-<para>
-Select this option to let &kst; automatically choose a scale for this axis that is
-based on the values found in the plotted objects. In general, <quote>spikes</quote>, or
-sudden short increases or decreases in the value, will be ignored when determining the scale. This option is usually for the dependent (Y) axis.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term><guilabel>Mean-centered</guilabel></term>
-<listitem>
-<para>
-Select this option to center the axis around the mean of the values found in the plot (X values
-are used to calculate the mean for the X axis, and Y values are used to calculate
-the mean for the Y axis). Specify the length of the axis in the <guilabel>Range</guilabel> text box.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term><guilabel>Expression</guilabel></term>
-<listitem>
-<para>
-Manually specify lower and upper limits for the axis. Enter the expression for the limits in the <guilabel>From:</guilabel> and <guilabel>To:</guilabel> textboxes. These can be numerical values, or equations based on the scalars maintained by &kst;. These scalars can be quickly added to the expressions by selecting them from the pull-down menus to the right of the textboxes.
-</para>
-</listitem>
-</varlistentry>
-</variablelist>
-</sect3>
-
-<sect3 id="editplotrangeapplysettingsto">
-<title><link linkend="editplotappearanceapplysettingsto">Apply settings to</link></title>
-<para>
-</para>
-</sect3>
-
-</sect2>
-
-<sect2 id="editplot-markers">
-<title>Markers</title>
-<para>
-Below is a screenshot of the <guilabel>Markers</guilabel> tab.
-</para>
-<screenshot>
-<screeninfo>Edit Plot - Markers Tab</screeninfo>
-<mediaobject>
-<imageobject>
-<imagedata fileref="Screenshot-kst-editplot-markers.png" format="PNG" />
-</imageobject>
-<textobject>
-<phrase>Edit Plot - Markers Tab</phrase>
-</textobject>
-</mediaobject>
-</screenshot>
-
-<para>
-Plot markers provide an easy means of flagging areas of interest on a plot.  The <guilabel>Markers</guilabel>
-tab provides full access to plot marker settings and options.  Navigation functions for plot markers are described
-in the <link linkend="zoomingandscrollingscrollmenu">Scroll Menu</link> section.
-</para>
-<tip>
-<para>
-To quickly create plot markers on a plot, place the mouse cursor over the plot and press the
-<keycap>Insert</keycap> key.  A vertical line should appear indicating the position of the
-plot marker.
-</para>
-</tip>
-
-<variablelist>
-<varlistentry>
-<term><guilabel>New</guilabel> and <guibutton>Add</guibutton></term>
-<listitem>
-<para>
-Use the <guilabel>New</guilabel> text field to manually enter a plot marker value.  Values can be
-entered in floating point or scientific notation.  Values in scientific notation must be entered in
-the form <literal>mEx</literal> or <literal>mex</literal>, where <literal>m</literal> is the
-mantissa and <literal>x</literal> is the exponent.  For example, one way to enter the value 15000 in scientific
-notation is by typing <userinput>1.5e4</userinput>. 
-</para>
-<para>
-Click the <guilabel>Add</guilabel> button to create a new plot marker with the specified value. You will be
-warned if duplicate plot markers already exist, or if the entered value is not valid.  Note that plot marker
-additions or removals made from the <guilabel>Markers</guilabel> tab are not applied unless
-the plot dialog settings are applied.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term><guilabel>Defined plot markers</guilabel>, <guibutton>Remove</guibutton>, and <guibutton>Remove All</guibutton></term>
-<listitem>
-<para>
-The list of existing plot markers for this plot are listed under <guilabel>Defined plot markers</guilabel>.
-To remove plot markers, highlight the desired markers in the list and click the <guibutton>Remove</guibutton> button.
-Multiple markers can be selected for removal by clicking and dragging within the list, or by holding down the
-<keycap>Shift</keycap> or <keycap>Ctrl</keycap> key and clicking on items in the list. To remove all plot markers
-for this plot, click the <guilabel>Remove All</guilabel> button.  Note that plot marker
-additions or removals made from the <guilabel>Markers</guilabel> tab are not applied unless
-the plot dialog settings are applied.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term><guilabel>Automatic Marker Generation</guilabel></term>
-<listitem>
-<para>
-In addition to individually defined plot markers, it is also possible to generate plot markers based on a curve. To use a curve object for plot marker generation, check the
-<guilabel>Use data object as marker source</guilabel> checkbox and select a curve from the drop down list.
-Then select the criteria to use for creating plot markers.
-Selecting <guilabel>Rising edge</guilabel> causes plot markers to be created when the Y value of the
-selected curve changes from zero to non-zero.  Selecting <guilabel>Falling edge</guilabel> causes
-plot markers to be created when the Y value of the selected data object changes from non-zero to zero.
-Selecting <guilabel>Both</guilabel> causes plot markers to be created on both rising edges and
-falling edges of the data object. In all cases, the X value of the point in the data object with the non-zero
-X value is used to create the new plot marker.
-</para>
-<para>
-If the selected curve is subsequently updated, additional plot markers will be created if necessary.
-However, plot markers will never be removed as a consequence of data object changes, so manually created
-plot markers will never be affected.
-</para>
-<para>
-It is also possible to create plot markers from a vector. Enable the
-<guilabel>Use vector as marker source</guilabel> checkbox and select a data vector from the drop down menu. The values of this vector will now be used as markers
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term><guilabel>Appearance</guilabel></term>
-<listitem>
-<para>
-These options allow you to select the colour, line type, and weight (thickness) of the plot markers.
-</para>
-</listitem>
-</varlistentry>
-</variablelist>
-</sect2>
-</sect1>
-
-<sect1 id="annotationobjects">
-<title>Annotation Objects</title>
-<para>
-Annotations are View Objects which can be used to mark plots. The annotation objects currently implemented in &kst; are Labels, Rectangles, Ellipses, Lines, Arrows, and Pictures. They are sometimes useful when preparing plots for presentation or publication. Here is an sample use of annotation objects in &kst;, where we have used Labels, Arrows, Lines, and a transparent PNG Picture to mark up a color magnitude diagram.
-</para>
-
-<screenshot>
-<screeninfo>Annotation objects example</screeninfo>
-<mediaobject>
-<imageobject>
-<imagedata fileref="Screenshot-kst-plotsandwindows-HRexample.png" format="PNG" />
-</imageobject>
-<textobject>
-<phrase>Annotation objects example</phrase>
-</textobject>
-</mediaobject>
-</screenshot>
-
-<para>
-Annotation objects can be created by selecting their corresponding draw tools in the <xref linkend="miscellaneousfeatures-toolbar"/>. You can edit the options for annotation objects by double clicking on them in <link linkend="manipulatingplotlayout">Layout</link> mode. The options common to most annotation objects are fairly self-explanatory, for completeness they are listed below:
-</para>
-
-<sect2 id="labels">
-<title>Labels</title>
-<para>
-Custom labels to be placed in arbitrary locations in &kst; plot windows, in addition to the fixed labels created as part of plots.
-</para>
-
-<screenshot>
-<screeninfo>Edit Label</screeninfo>
-<mediaobject>
-<imageobject>
-<imagedata fileref="Screenshot-kst-annotationobjects-editlabel.png" format="PNG" />
-</imageobject>
-<textobject>
-<phrase>Edit Label</phrase>
-</textobject>
-</mediaobject>
-</screenshot>
-
-<para>
-The following are explanations of the dialog box elements.
-</para>
-<variablelist>
-<varlistentry>
-<term><guilabel>Scalars</guilabel></term>
-<listitem>
-<para>
-A list of scalars currently defined in &kst;. Selecting an item from the dropdown list inserts
-a reference to the scalar's value at the current cursor position in <guilabel>Label text</guilabel>.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term><guilabel>Strings</guilabel></term>
-<listitem>
-<para>
-A list of strings currently defined in &kst;. Selecting an item from the dropdown list inserts
-a reference to the string's contents at the current cursor position in <guilabel>Label text</guilabel>.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term><guilabel>Label text</guilabel></term>
-<listitem>
-<para>
-The text displayed by the label.  You may enter text manually in this dialog, or insert references into it using the scalar and string drop down menus.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term><guilabel>Font</guilabel></term>
-<listitem>
-<para>
-The font to use for the label text.  Select a font from the dropdown list.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term><guilabel>Size</guilabel></term>
-<listitem>
-<para>
-The size of the label text. 0 (the default value) roughly corresponds to a 12pt size.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term><guilabel>Justification</guilabel></term>
-<listitem>
-<para>
-The horizontal alignment of the label.  Select one of <guilabel>Left</guilabel>, <guilabel>Center</guilabel>,
-or <guilabel>Right</guilabel>.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term><guilabel>Rotation</guilabel></term>
-<listitem>
-<para>
-The number of degrees to rotate the label text.  Positive values rotate the label clockwise, while negative
-values rotate the text counter-clockwise.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term><guilabel>Font Color</guilabel></term>
-<listitem>
-<para>
-Select the color to use for the label text.  Clicking the <inlinemediaobject><imageobject><imagedata fileref="Widget-kst-colourchooser.png" format="PNG"/></imageobject></inlinemediaobject> button displays
-the standard &kde; color chooser.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term><guilabel>Precision</guilabel></term>
-<listitem>
-<para>
-When scalar variables are included in labels, precision dictates the number of digits which are displayed.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term><guilabel>Box</guilabel></term>
-<listitem>
-<para>
-Select the color to use for the label text.  Clicking the <inlinemediaobject><imageobject><imagedata fileref="Widget-kst-colourchooser.png" format="PNG"/></imageobject></inlinemediaobject> button displays
-the standard &kde; color chooser.
-</para>
-</listitem>
-</varlistentry>
-</variablelist>
-
-<para>
-Once you are satisfied with the label settings, click <guibutton>Apply</guibutton> to apply the label settings
-without closing the label editor dialog.  Click <guibutton>OK</guibutton> to apply the label settings and close the
-dialog.  Alternatively, you can click <guibutton>Close</guibutton> to close the label editor dialog without
-applying any label settings.
-</para>
-</sect2>
-
-<sect2 id="rectanglesandellipses">
-<title>Rectangles / Ellipses</title>
-<para>
-Rectangle and ellipse annotation objects are usually used to outline important features on a plot.
-</para>
-
-
-<para>
-<inlinemediaobject>
-<imageobject>
-<imagedata fileref="Screenshot-kst-plotsandwindows-editbox.png" format="PNG" />
-</imageobject>
-</inlinemediaobject>
-
-<inlinemediaobject>
-<imageobject>
-<imagedata fileref="Screenshot-kst-plotsandwindows-editellipse.png" format="PNG" />
-</imageobject>
-</inlinemediaobject>
-</para>
-
-<para>
-The following are explanations of the dialog box elements.
-</para>
-
-<variablelist>
-<varlistentry>
-<term><guilabel>Border Color</guilabel></term>
-<listitem>
-<para>
-The color of the outline of the rectangle/ellipse object. Clicking the <inlinemediaobject><imageobject><imagedata fileref="Widget-kst-colourchooser.png" format="PNG"/></imageobject></inlinemediaobject> button displays the standard &kde; color chooser.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term><guilabel>Border Width</guilabel></term>
-<listitem>
-<para>
-The width of the annotation's line/border (in pixels).
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term><guilabel>Fill Color / Transparent Fill</guilabel></term>
-<listitem>
-<para>
-The color of the contents of the rectangle/ellipse. Clicking the <inlinemediaobject><imageobject><imagedata fileref="Widget-kst-colourchooser.png" format="PNG"/></imageobject></inlinemediaobject> button displays the standard &kde; color chooser. If you select "Transparent Fill" then the rectangle/ellipse will be see-through.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term><guilabel>X/Y Roundness</guilabel></term>
-<listitem>
-<para>
-These options are for rectangles only. They determine the fractional rounding of the rectangle's corners in a non-intuitive way. Values of 0 result in standard corners (right angles), while values of 99 result in a maximally rounded rectangle (an ellipse). For more information on these options, see the Qt documentation on QPainter::drawRoundRect.
-</para>
-</listitem>
-</varlistentry>
-</variablelist>
-</sect2>
-
-<sect2 id="linesandarrows">
-<title>Lines / Arrows</title>
-<para>
-Line and Arrow annotation objects are usually used to highlight important features on a plot (by pointing to a particular peak, for example.).
-</para>
-
-<para>
-<inlinemediaobject>
-<imageobject>
-<imagedata fileref="Screenshot-kst-plotsandwindows-editline.png" format="PNG" />
-</imageobject>
-</inlinemediaobject>
-
-<inlinemediaobject>
-<imageobject>
-<imagedata fileref="Screenshot-kst-plotsandwindows-editarrow.png" format="PNG" />
-</imageobject>
-</inlinemediaobject>
-</para>
-
-<para>
-The following are explanations of the dialog box elements.
-</para>
-
-<variablelist>
-<varlistentry>
-<term><guilabel>Line Color</guilabel></term>
-<listitem>
-<para>
-The color of the line/arrow object. Clicking the <inlinemediaobject><imageobject><imagedata fileref="Widget-kst-colourchooser.png" format="PNG"/></imageobject></inlinemediaobject> button displays the standard &kde; color chooser.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term><guilabel>Line Style</guilabel></term>
-<listitem>
-<para>
-Here you can chose to make the line solid, dashed, dot-dashed, etc.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term><guilabel>Line Width</guilabel></term>
-<listitem>
-<para>
-The width of the line (in pixels). This will also change the head size for an arrow object.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term><guilabel>Arrow at start/end</guilabel></term>
-<listitem>
-<para>
-Determines where to place the arrow heads. The heads will always point away from the line.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term><guilabel>Start arrow scaling</guilabel></term>
-<listitem>
-<para>
-A scaling factor for the arrow head sizes. This can be useful if your line width leads to a head size which is larger than you would like.
-</para>
-</listitem>
-</varlistentry>
-</variablelist>
-
-</sect2>
-
-<sect2 id="pictures">
-<title>Pictures</title>
-<para>
-Picture objects can be used to easily add an external graphic to your plot. Almost all popular image formats should be supported, depending on the libraries installed on your system.
-</para>
-
-<screenshot>
-<screeninfo>Edit Line</screeninfo>
-<mediaobject>
-<imageobject>
-<imagedata fileref="Screenshot-kst-plotsandwindows-editpicture.png" format="PNG" />
-</imageobject>
-<textobject>
-<phrase>Edit Line</phrase>
-</textobject>
-</mediaobject>
-</screenshot>
-
-<para>
-The following are explanations of the dialog box elements.
-</para>
-
-<variablelist>
-<varlistentry>
-<term><guilabel>Border Color</guilabel></term>
-<listitem>
-<para>
-The color of the outline of the rectangle/ellipse object. Clicking the <inlinemediaobject><imageobject><imagedata fileref="Widget-kst-colourchooser.png" format="PNG"/></imageobject></inlinemediaobject> button displays the standard &kde; color chooser.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term><guilabel>Border Width</guilabel></term>
-<listitem>
-<para>
-The width of the annotation's line/border (in pixels).
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term><guilabel>Maintain Aspect Ratio</guilabel></term>
-<listitem>
-<para>
-If this box is set, then when resizing the picture object &kst; will maintain the ratio between the width and height of the picture. You can temporarily disable (or enable) this option by holding down the <keycap>Shift</keycap> key as you resize the picture.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term><guilabel>File Path</guilabel></term>
-<listitem>
-<para>
-The location of the image you would like to display.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term><guilabel>Refresh Timer</guilabel></term>
-<listitem>
-<para>
-Set this to the period (in seconds) with which you would like &kst; to check the image file for updates, and reload it if necessary. If refresh timer is set to 0 then the image will only be reloaded after restarting &kst; or opening and closing the picture object's edit dialog.
-</para>
-</listitem>
-</varlistentry>
-</variablelist>
-</sect2>
-
-</sect1>
-
 <sect1 id="plottools">
 <title>Plotting tools</title>
-
-<sect2 id="thebasiccontextmenu">
-<title>Context Menus</title>
-<para>
-When working with plots and other view objects, right-clicking will bring up a context menu which
-provides commonly used functions.  In general, the context menu which is presented depends on which mouse mode you are in and which object you are centered on, but there are 4 basic options common to all view objects. The title of the context menu which appears gives the name of the view object which you have clicked on.
-</para>
-<variablelist>
-<varlistentry>
-<term><guimenuitem>Edit...</guimenuitem></term>
-<listitem>
-<para>
-Brings up the edit dialog for the underlying view object.  See the
-<link linkend="plotsandplotdialog">Edit Plot Dialog</link> and <link linkend="annotationobjects">Annotation Objects</link> sections for more information on these settings.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term><guimenuitem>Delete</guimenuitem></term>
-<listitem>
-<para>
-Deletes the view object.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term><guimenuitem>Rename</guimenuitem></term>
-<listitem>
-<para>
-Presents a dialog to modify the unique name assigned to the view object.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term><guimenuitem>Cleanup Layout</guimenuitem></term>
-<listitem>
-<para>
-Arranges the plots in the current window in a tile type pattern, with no overlap between plots. Selecting <guimenuitem>Default Tile</guimenuitem> from this sub-menu rearranges the plots according to an aesthetically pleasing algorithm. Selecting the <guimenuitem>Custom</guimenuitem> option allows you to manually specify how many columns to tile the plots into. This action applies to all plots in the current window.
-</para>
-</listitem>
-</varlistentry>
-</variablelist>
-
-<para>
-There are additional context menu options specific to the <link linkend="zoomingandscrollingzoommodecontextmenu">Zoom</link> mouse modes and the <link linkend="manipulatingplotlayoutcontextmenu">Data Layout</link> mode.
-</para>
-</sect2>
-
-<sect2 id="zoomingandscrollingtiedzoom">
-<title>Tied Zoom</title>
-<para>
-When looking at two or more related plots (for example, two curves on separate plots
-both dependent on the same time vector), it can sometimes be useful to zoom or scroll the plots simultaneously.
-This is possible using &kst;'s tied zoom feature.  To activate tied zoom, click the small square
-at the top-right corner of the plots you wish to tie together.  The squares will change colour to indicate the plots are tied, as shown below.
-</para>
-<screenshot>
-<screeninfo>Top of Plot Dialog</screeninfo>
-<mediaobject>
-<imageobject>
-<imagedata fileref="Screenshot-kst-tiedzoom.png" format="PNG" />
-</imageobject>
-<textobject>
-<phrase>Top of Plot Dialog</phrase>
-</textobject>
-</mediaobject>
-</screenshot>
-<para>
-Zooming and scrolling actions performed on one plot in a group of tied plots will be performed on
- on all the plots in the group.
- To remove a plot from the tied group,
-simply click on the small square at the top-right corner of the plot again.
-The square will become transparent to indicate that
-the plot is not tied.
-</para>
-<tip>
-<para>
-To quickly tie or untie all plots (including plots in other windows), select <guimenuitem>Tied Zoom</guimenuitem>
-from the <guimenu>Plots</guimenu> menu, or the corresponding icon on the &kst; toolbar.
-</para>
-</tip>
-</sect2>
 
 <sect2 id="miscellaneousfeatures-toolbar">
 <title>The Toolbar</title>

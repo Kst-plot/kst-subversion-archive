@@ -904,6 +904,73 @@ The option selected from this drop-down menu determines which variant of the fun
 
 </sect2>
 
+<sect2 id="spectrogram">
+<title>Spectrogram</title>
+<para>
+A spectrogram is a way to plot the frequency spectrum of a data vector as a function of position within the data. It allows you to visualize, for example, how the frequencies of a signal change with time. In &kst; the spectrogram data object takes a data vector as an input and produces an image object which can be displayed as a 'waterfall' plot. An example is shown in the screenshot below. This is a spectrogram from one day of data from a channel of the WMAP satellite. The size of the intervals over which frequency has been chosen so that each interval corresponds to 1/2 hour of data. The 1h periodic precession of the satellite about its spin axis can be clearly seen. Also, at ~0.007Hz the red lines at the bottom of the image show the much faster (.5rpm) spin frequency of the satellite.
+</para>
+<screenshot>
+<screeninfo>Spectrogram Example</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-data-spectrogram.png" format="PNG" />
+</imageobject>
+</mediaobject>
+</screenshot>
+
+<para>
+Here is the edit dialog for the spectrogram object. 
+</para>
+
+<screenshot>
+<screeninfo>New Spectrogram Window</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-data-spectrogramnew.png" format="PNG" />
+</imageobject>
+</mediaobject>
+</screenshot>
+
+<para>
+An explanation of the spectrogram specific options is given below:
+</para>
+
+<variablelist>
+<varlistentry>
+<term>
+Window Size
+</term>
+<listitem>
+<para>
+The length of the data over which to take the spectra. The data vector will be subdivided into intervals of this length, and a spectrum will be computed for each one.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>
+FFT Options
+</term>
+<listitem>
+<para>
+These are the options for the individual spectra. See the <link linkend="powerspectrafftoptions">FFT Options</link> of the <link linkend="power-spectra">Spectrum</link> data object for more information.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>
+Color Palette
+</term>
+<listitem>
+<para>
+Here you can choose the color scheme to use for the spectrogram. The amplitudes of the spectra are color-coded according to the selected scheme.
+</para>
+</listitem>
+</varlistentry>
+</variablelist>
+</sect2>
+
 <sect2 id="plugins">
 <title>Plugins</title>
 <para>
@@ -1642,7 +1709,7 @@ The <guimenuitem>Change Data Sample Ranges</guimenuitem> dialog can be accessed 
 <sect1 id="fileformats">
 <title>Supported File Formats</title>
 <para>
-Currently, Kst supports <link linkend="creatingascii">ASCII</link> text files, BOOMERANG frame files, <link linkend="blastdirfiles">BLAST</link> dirfiles, PLANCK LFIIO files, and QImage files as data sources, as well as PIOLib, HEALPix, and FITS files if the appropriate libraries are present. This section describes basic data source concepts common to all file types, and specifically details the <link linkend="creatingascii">ASCII</link> and <link linkend="blastdirfiles">BLAST</link> dirfile file types.
+Currently, Kst supports <link linkend="creatingascii">ASCII</link> text files, BOOMERANG frame files, <link linkend="blastdirfiles">BLAST</link> dirfiles, PLANCK LFIIO files, and QImage files as data sources, as well as PIOLib, HEALPix, and FITS files if the appropriate libraries are present.
 </para>
 
 <sect2 id="creatingascii">
@@ -1715,8 +1782,92 @@ When selecting a BLAST dirfile for use in &kst;, the directory containing the fi
 selected. &kst; will then automatically look for a <filename>format</filename> file, if it exists,
 to determine the fields and their properties.
 </para>
+</sect2>
+
+<sect2 id="healpix">
+<title>HEALPix FITS files</title>
+<para>
+HEALPix is a pixelisation scheme for the sphere. More information can be found at <ulink url="http://healpix.jpl.nasa.gov/">http://healpix.jpl.nasa.gov/</ulink>. HEALPix data should typically be loaded into &kst; as a matrix. An image of a sample HEALPix matrix is shown below:
+</para>
+
+<screenshot>
+<screeninfo>HEALPix example</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-data-healpixexample.png" format="PNG" />
+</imageobject>
+</mediaobject>
+</screenshot>
+
+<para>
+Here is the configuration dialog for the HEALPix data source, an explanation of the possible options is given underneath:
+</para>
+
+<screenshot>
+<screeninfo>HEALPix example</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-data-healpixconfigure.png" format="PNG" />
+</imageobject>
+</mediaobject>
+</screenshot>
+
+<variablelist>
+
+<varlistentry>
+<term>Dimensions</term>
+<listitem>
+<para>
+The size of the matrix to create based on the HEALPix data. The larger the matrix, the higher the resolution. If you choose dimensions which are larger than the resolution of the data in the HEALPix file, you will be able to see the shape of the HEALPix pixels in the image of the matrix.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>Theta / Phi Range</term>
+<listitem>
+<para>
+The colatitude / azimuth range of data to extract.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>Theta / Phi Range</term>
+<listitem>
+<para>
+The colatitude / azimuth range of data to extract.
+</para>
+</listitem>
+</varlistentry>
+
+<!--FIXME: vectors don't work? -->
+</variablelist>
 
 </sect2>
+
+<sect2 id="qimage">
+<title>QImage</title>
+<para>
+The QImage datasource allows you to read image data into &kst; matrices from a variety of formats. The collection of supported formats depends on the libraries installed on your system, but most popular formats are generally readable. If you'd just like to add a picutre to a plot, then the <link linkend="pictures">Picture</link> annotation object is a better choice to use. An example of an image plotted from a QImage sourced matrix is shown below:
+</para>
+<screenshot>
+<screeninfo>QImage example</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-data-qimageexample.png" format="PNG" />
+</imageobject>
+</mediaobject>
+</screenshot>
+</sect2>
+
+<sect2 id="wmap">
+<title>WMAP Reader</title>
+<para>
+This datasource allows you to load vectors from WMAP Time Ordered Data (TOD) files. For more information, see <ulink url="http://lambda.gsfc.nasa.gov/">http://lambda.gsfc.nasa.gov/</ulink>. 
+</para>
+</sect2>
+
 </sect1>
 
 
