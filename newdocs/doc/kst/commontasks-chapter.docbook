@@ -1,4 +1,4 @@
-<chapter id="common-tasks">
+<chapter id="commontasks">
 <title>Common Tasks</title>
 
 <para>This chapter contains instructions for performing basic tasks
@@ -6,10 +6,8 @@ with &kst;. It runs through the method for performing each task in the
 simplest way. Links to the sections of the handbook with more in-depth
 information are also given.</para>
 
-<sect1 id="plotting-simple-graphs">
+<sect1 id="commontasks-plottingsimplegraphs">
 <title>Plotting Simple Graphs</title>
-
-<para>How to plot a simple points-on-a-grid graph.</para>
 
 <para>The first thing you'll want to do with &kst; is probably to plot
 a simple graph. Here's the procedure:</para>
@@ -69,8 +67,8 @@ and save it as <filename>simpledata.dat</filename>:
 
 <para>
 <filename>simpledata.dat</filename> is an example of an ASCII data file, one of the many file types
-&kst; is capable of reading. For further details on file types, see
-<link linkend="fileformats">Supported File Formats</link>.
+&kst; is capable of reading. For further details on file types, see the 
+<link linkend="data-sources">Datasources</link> section.
 </para>
 </listitem>
 
@@ -136,15 +134,12 @@ Numerous other command-line options are available&mdash;using the command-line o
 </para>
 </tip>
 
-<!-- TODO: Link to other places in the handbook, perhaps with a little -->
-<!-- more description -->
-
 </sect1>
 
-<sect1 id="curve-fitting">
+<sect1 id="commontasks-fitting">
 <title>Curve Fitting</title>
 
-<para>&kst; also provides functions for many different types of curve fitting: linear, quadratic, sinusoidal, and more. As an example, we'll do a simple polynomial fit to the curve we plotted previously, in <xref linkend="plotting-simple-graphs"/>.</para>
+<para>&kst; also provides functions for many different types of curve fitting: linear, quadratic, sinusoidal, and more. As an example, we'll do a simple polynomial fit to the curve we plotted previously, in the <link linkend="commontasks-plottingsimplegraphs">Plotting Simple Graphs</link> section.</para>
 
 <orderedlist>
 
@@ -183,8 +178,8 @@ Now, to add the curve fit to the data plot, open the Plot dialog from <menuchoic
 </para>
 </sect1>
 
-<sect1 id="generating-a-histogram">
-<title>Generating a Histogram</title>
+<sect1 id="commontasks-generatehistogram">
+<title>Generating a Histogram in realtime</title>
 
 <para>
 &kst; contains built in routines to generate histograms from data. For this tutorial, we'll look at the histogram of a vector containing normally distributed numbers.
@@ -230,7 +225,7 @@ Now execute the script with the command:
 </para>
 
 <para>
-This will generate an ASCII file <filename>normal.dat</filename> containing random numbers with a gaussian distribution centered at 0 with a standard deviation of 1. Import this data into &kst;, and plot it as points with INDEX as the x-axis vector (if this gives you trouble, you may want to see the Getting Started section on <link linkend="importingdata">Importing Data</link>. You should see something which resembles the following:
+This will generate an ASCII file <filename>normal.dat</filename> containing random numbers with a gaussian distribution centered at 0 with a standard deviation of 1. Import this data into &kst;, and plot it as points with INDEX as the x-axis vector (if this gives you trouble, you may want to see the Getting Started section on <link linkend="intro-gettingstarted-importingdata">Importing Data</link>. You should see something which resembles the following:
 </para>
 
 <screenshot>
@@ -267,86 +262,7 @@ Click the <guibutton>OK</guibutton> button to generate the histogram.
 
 </sect1>
 
-<sect1 id="plotting-a-power-spectrum">
-<title>Plotting a Power Spectrum</title>
-
-<para>&kst; makes plotting power spectra extremely easy. There are two
-ways to do this: with the Data Wizard, or by creating a power spectrum
-from an existing vector.</para>
-
-<sect2 id="power-spectra-data-wizard">
-<title>Power spectra with the Data Wizard</title>
-
-<para>This is almost the same as plotting a simple graph. Here are the
-full instructions:</para>
-
-<para>Open the <guibutton>Data Wizard</guibutton> and select your data
-file using the <guibutton>Open File</guibutton> button:
-
-<inlinemediaobject>
-<imageobject>
-<imagedata fileref="Screenshot-kst-open-file-button.png" format="PNG"
-/>
-</imageobject>
-</inlinemediaobject>.
-</para>
-
-<orderedlist>
-<listitem>
-<para>The <guibutton>Next</guibutton> page is where you select which
-data to plot the power spectrum of. Column 2 in the data file contains the y-axis values, so
-tick the box next to 2 in the <guilabel>Field/Column</guilabel> list on the
-left-hand side.</para>
-</listitem>
-
-<listitem>
-<para>Under <guilabel>Plot Types</guilabel>, select <guilabel>Power
-spectrum</guilabel>. There are also some options specifying how the
-power spectrum is calculated, which we'll leave as defaults in this example.</para>
-</listitem>
-
-<listitem>
-<para>On the <guilabel>Next</guilabel> page, the options specific to a
-power spectrum are found under <guilabel>Power Spectrum Axis
-Mode</guilabel>. The x and y axes can both be made logarithmic here.</para>
-</listitem>
-
-<listitem>
-<para>Click on <guibutton>Finish</guibutton> and you're done! The new
-plot appears in the main &kst; window.</para>
-</listitem>
-
-</orderedlist>
-</sect2>
-
-<sect2 id="power-spectra-existing-plot">
-<title>Power Spectra from an existing plot</title>
-<para>Using the <filename>simpledata.dat</filename> example from <xref
-linkend="plotting-simple-graphs"/>, we can do the following to produce
-its power spectrum:</para>
-
-<orderedlist>
-
-<listitem><para>Open the <guilabel>Power Spectrum dialog</guilabel>
-from <menuchoice><guimenu>Data</guimenu><guimenuitem>New Power
-Spectrum...</guimenuitem></menuchoice>.</para>
-</listitem>
-
-<listitem><para>From the <guilabel>Data vector</guilabel> combo box,
-choose the vector representing your data. In our
-<filename>simpledata.dat</filename> example, the required vector is
-called V1-2.</para>
-</listitem>
-
-<listitem><para>Click on <guibutton>OK</guibutton> and the power
-spectrum is displayed in a new plot.</para>
-</listitem>
-
-</orderedlist>
-</sect2>
-</sect1>
-
-<sect1 id="creating-an-event-monitor">
+<sect1 id="commontasks-eventmonitor">
 <title>Creating an Event Monitor</title>
 
 <para>&kst; has many features which are oriented toward real-time data. One of the most useful of these features is the "Event Monitor" data object. Event monitors check conditions on data vectors. A common use for them is to provide warnings about unusual features in incoming data. They can provide feedback in a number of ways:</para>
@@ -441,7 +357,7 @@ The settings in the 'Expression' grouping configure the event monitor to report 
 </para>
 
 <para>
-We will have our events logged as 'Warnings' in the &kst; Debug Log. As you can see, there are several other possible event reporting methods. These are explained in more detail in <xref linkend="events"/>. 
+We will have our events logged as 'Warnings' in the &kst; Debug Log. As you can see, there are several other possible event reporting methods. These are explained in more detail in the documentation for <link linkend="data-types-events">Event Monitors</link>. 
 </para>
 
 <para>

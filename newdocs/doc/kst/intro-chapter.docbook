@@ -1,7 +1,7 @@
-<chapter id="introduction">
+<chapter id="intro">
 <title>Introduction</title>
 
-<sect1 id="whatiskst">
+<sect1 id="intro-whatiskst">
 <title>What is &kst;?</title>
 <para>
 &kst; is a data plotting and analysis program.  Some of its features include:
@@ -17,22 +17,22 @@
 </para>
 </sect1>
 
-<sect1 id="gettingstarted">
+<sect1 id="intro-gettingstarted">
 <title>Getting Started</title>
 <para>
 This is a brief introductory tutorial to the fundamental features of &kst;. We will cover...
 <itemizedlist>
-<listitem><para>Importing and plotting raw data</para></listitem>
-<listitem><para>Plot manipulation</para></listitem>
-<listitem><para>Basic data analysis with &kst;</para></listitem>
+<listitem><para><link linkend="intro-gettingstarted-importingdata">Importing and plotting raw data</link></para></listitem>
+<listitem><para><link linkend="intro-gettingstarted-plotmanipulation">Plot manipulation</link></para></listitem>
+<listitem><para><link linkend="intro-gettingstarted-basicanalysis">Basic data analysis with &kst;</link></para></listitem>
 </itemizedlist>
 </para>
 
-<sect2 id="importingdata">
+<sect2 id="intro-gettingstarted-importingdata">
 <title>Importing Data</title>
 
 <para>
-Let's start by seeing how raw data can be imported into &kst; as a data object using the graphical interface (this can also be done using the command line, for details see the appendix on  <link linkend="command-lineoptions">Command Line Options</link>).
+Let's start by seeing how raw data can be imported into &kst; using the graphical interface (this can also be done using the command line, for details see the appendix on  <link linkend="command-lineoptions">Command Line Options</link>).
 </para>
 
 <para>
@@ -43,7 +43,7 @@ Begin by running &kst;. When you do this for the first time, a "QuickStart" Dial
 <screeninfo>QuickStart Dialog</screeninfo>
 <mediaobject>
 <imageobject>
-<imagedata fileref="Screenshot-kst-quickstartdialog.png" format="PNG" />
+<imagedata fileref="Screenshot-kst-intro-quickstartdialog.png" format="PNG" />
 </imageobject>
 <textobject>
 <phrase>QuickStart Dialog Screenshot</phrase>
@@ -52,11 +52,11 @@ Begin by running &kst;. When you do this for the first time, a "QuickStart" Dial
 </screenshot>
 
 <para>
-This dialog has a list of your recently opened &kst; sessions, as well as a link to the "Data Wizard". The Data Wizard allows data to be imported into &kst; using the graphical interface. We'll run through using it now. 
+This dialog has a list of your recently opened &kst; sessions, as well as a link to the "Data Wizard". The Data Wizard allows data to be imported into &kst; using the graphical interface. We'll run through using it now.
 </para>
 
 <para>
-Click the Data wizard button. A data source dialog will appear which allows you to select a file or network resource (e.g. HTTP address) to use as a data source. &kst; determines format of the source by its extension.
+Click the Data wizard button. A data source dialog will appear which allows you to select a file or network resource (e.g. HTTP address) to use as a data source. &kst; determines the format of the source by its extension and contents.
 </para>
 
 <para>
@@ -66,29 +66,26 @@ the location in which &kde; is installed on your system (you can find
 this using the command <command>kde-config --prefix</command>).
 </para>
 
-<para>Select 'gyrodata.dat' for opening. &kst; should report the data source as type ASCII, which means that the data is in delimited plain text format. More options can be seen by clicking the 'Configure' button. &kst; will usually autodetect these options. The options for the gyrodata.dat file should be as shown below:
+<para>Select 'gyrodata.dat' for opening. &kst; should report the data source as type ASCII, which means that the data is in delimited plain text format. More options can be seen by clicking the 'Configure' button. The options for the gyrodata.dat file should be as shown below:
 </para>
 
 <screenshot>
-<screeninfo>Data Wizard - Configure Data Source Dialog</screeninfo>
+<screeninfo>Datasources - Configure ASCII</screeninfo>
 <mediaobject>
 <imageobject>
-<imagedata fileref="Screenshot-kst-datawizardconfiguredatasourcedialog.png" format="PNG" />
+<imagedata fileref="Screenshot-kst-data-asciiconfig.png" format="PNG" />
 </imageobject>
-<textobject>
-<phrase>Data Wizard - Configure Data Source Dialog Screenshot</phrase>
-</textobject>
 </mediaobject>
 </screenshot>
 
-<para>Close the Configure Data Source Dialog and click the 'Next' button. This will lead to a pane where you can select the fields from the data source which you'd like to work with. In the case of ASCII data, each field is a column in the text file. Select the data from the 1st, 2nd, and 3rd fields. The INDEX field is a supplementary field created by &kst;. It contains integers from 0 to N-1, where N is the number of frames in the data file. Once you've selected the proper fields, the selection pane should look like this:
+<para>Close the Configure Data Source Dialog and click the 'Next' button. This will lead to a pane where you can select the fields from the data source which you'd like to work with. In the case of ASCII data, each field is a column in the text file. Select the data from the 1st, 2nd, and 3rd fields. The INDEX field is a supplementary field created by &kst;. It contains integers from 0 to N-1, where N is the number of <link linkend="data-sources-concepts-frames">frames</link> in the data file. Once you've selected the proper fields, the selection pane should look like this:
 </para>
 
 <screenshot>
 <screeninfo>Data Wizard - Select Data Dialog</screeninfo>
 <mediaobject>
 <imageobject>
-<imagedata fileref="Screenshot-kst-datawizardselectdatadialog.png" format="PNG" />
+<imagedata fileref="Screenshot-kst-data-wizardselectdata.png" format="PNG" />
 </imageobject>
 <textobject>
 <phrase>Data Wizard - Select Data Dialog Screenshot</phrase>
@@ -102,78 +99,28 @@ Click the 'Next' button again, to get to the 'Data Presentation Pane'. This allo
 
 <para>
 The <guilabel>Data Range</guilabel> section is used to specify the
-range of data to read from the selected vectors in the input file. The
-following discussion assumes knowledge of <quote>frames</quote>.  In
-brief, a frame is simply a number of data samples, and each data file
-is composed of a number of frames.  For a detailed description of this
-concept, see the section on <link linkend="datasourceconceptsframes">Frames</link>.
-</para>
-
-<variablelist>
-<varlistentry>
-<term>
-<guilabel>Start</guilabel>, <guilabel>Count from end</guilabel>,
-<guilabel>Range</guilabel>, and <guilabel>Read to end</guilabel>
-</term>
-<listitem>
-<para>
-Using these four settings, the lower and upper boundaries of the data
-range can be set. As an example, select <guilabel>Count from
-end</guilabel> and enter 10,000 for <guilabel>Range</guilabel> to read
-only the last 10,000 frames.  If <filename>gyrodata.dat</filename> was
-being updated in real-time, subsequent additions to the end of the
-file would be read.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term>
-<guilabel>Read 1 sample per N frames</guilabel> and <guilabel>Boxcar
-filter first</guilabel>
-</term>
-<listitem>
-<para>
-In addition to the lower and upper range boundaries, the samples to
-read from the selected range can be set.  If <guilabel>Read 1 sample
-per N frames</guilabel> (where N is the value entered) is not
-selected, all samples in the selected range will be read.
-Alternatively, frames in the data file can be skipped by selecting
-<guilabel>Read 1 sample per N frames</guilabel> For now, deselect
-<guilabel>Read 1 sample per N frames</guilabel>.
-</para>
-</listitem>
-</varlistentry>
-</variablelist>
-
-<para>
-The <guilabel>Plot Type</guilabel> radio buttons provide a quick way to automatically generate power spectra of the data which are being imported. We won't use this feature in the current tutorial, so leave the plot type as <guilabel>XY</guilabel>.
+subset of data to read from the selected vectors in the input file. For more information about this pane see the <link linkend="data-tools-wizard">Data Wizard</link> documentation.
 </para>
 
 <para>
-The <guilabel>X Axis Vector</guilabel> section lets you select the independent vector for to be used for the plots.  You may select a field from your data file, or the INDEX vector.  Since <filename>gyrodata.dat</filename> does not contain an X axis vector, leave the selection as INDEX.
-</para>
-
-<para>
-The <guilabel>FFT Options</guilabel> section is available only if a power spectrum is to be plotted.  This tutorial will not deal with the creation of power
-spectra, so this section should be disabled. For more information about it's options, you can see the section on <xref linkend="power-spectra"/>.
-</para>
-
-<para>
-When you're done, the Configure Data Source Pane should look like the following:
+Configure the Data Presentation Pane to look like the following:
 </para>
 
 <screenshot>
-<screeninfo>Data Wizard - Configure Data Source Pane</screeninfo>
+<screeninfo>Data Wizard Data Presentation Pane</screeninfo>
 <mediaobject>
 <imageobject>
-<imagedata fileref="Screenshot-kst-datawizarddatapresentationpane.png" format="PNG" />
+<imagedata fileref="Screenshot-kst-data-wizardpresentation.png" format="PNG" />
 </imageobject>
 <textobject>
-<phrase>Data Wizard - Configure Data Source Pane Screenshot</phrase>
+<phrase>Data Wizard Data Presentation Pane</phrase>
 </textobject>
 </mediaobject>
 </screenshot>
+
+<para>
+This tells &kst; that we would like to read all of the available data for our chosen fields, and that we would like to generate plots with the x-axis of the data as its INDEX. INDEX is an automatically generated vector which gives the position of the data elements within the file. 
+</para>
 
 <para>
 Clicking 'Next' again takes us to the final Data Wizard pane, where there are options to determine the appearance of the plotted data. We can select a curve style, decide whether labels and legends should be generated from the available field names, and decide which plots they the curves should be placed into. Again, the default options should be fine for now.
@@ -183,7 +130,7 @@ Clicking 'Next' again takes us to the final Data Wizard pane, where there are op
 <screeninfo>Data Wizard - Configure Plot Layout Plane</screeninfo>
 <mediaobject>
 <imageobject>
-<imagedata fileref="Screenshot-kst-datawizardconfigureplotlayoutpane.png" format="PNG" />
+<imagedata fileref="Screenshot-kst-data-wizardconfigurelayout.png" format="PNG" />
 </imageobject>
 <textobject>
 <phrase>Data Wizard - Configure Plot Layout Pane Screenshot</phrase>
@@ -199,7 +146,7 @@ Now, click the 'Finish' button to generate the plots. Your &kst; session should 
 <screeninfo>Getting Started - Initial Plots</screeninfo>
 <mediaobject>
 <imageobject>
-<imagedata fileref="Screenshot-kst-gettingstartedinitialplots.png" format="PNG" />
+<imagedata fileref="Screenshot-kst-intro-gsinitialplots.png" format="PNG" />
 </imageobject>
 <textobject>
 <phrase>Getting Started - Initial Plots</phrase>
@@ -216,7 +163,7 @@ Congratulations! You've just done some basic plotting in &kst;. Generating these
 <screeninfo>Saving a KST session</screeninfo>
 <mediaobject>
 <imageobject>
-<imagedata fileref="Screenshot-kst-saveasdialog.png" format="PNG" />
+<imagedata fileref="Screenshot-kst-saving-saveas.png" format="PNG" />
 </imageobject>
 <textobject>
 <phrase>Saving a KST session</phrase>
@@ -225,12 +172,11 @@ Congratulations! You've just done some basic plotting in &kst;. Generating these
 </screenshot>
 
 <para>
-Saving a &kst; session saves all the plots, data objects (you will learn about these later), and layouts that exist
-at the time of saving.
+Saving the &kst; session allows you to restore your plots later.
 </para>
 </sect2>
 
-<sect2 id="plotmanipulation">
+<sect2 id="intro-gettingstarted-plotmanipulation">
 <title>Plot Manipulation</title>
 <para>
 Now that you are comfortable with creating plots from imported data in &kst;, we can explore some of the plot manipulation features available through the graphical user interface.
@@ -239,13 +185,13 @@ Start &kst; from the command-line with the
 </para>
 <screen><userinput><command>kst mykstsession.kst</command></userinput></screen>
 <para>
-All the plots you created in the <xref linkend="importingdata"/> section should now be loaded in &kst;. Examine the plots with the y axis label of <literal>Column 1</literal>.  To take a closer look at the plot, right click on it and select the <guimenuitem>Maximize</guimenuitem> menu item, as shown below:
+All the plots you created in the <link linkend="intro-gettingstarted-importingdata">Importing Data</link> section should now be loaded in &kst;. Examine the plots with the y axis label of <literal>Column 1</literal>.  To take a closer look at the plot, right click on it and select the <guimenuitem>Maximize</guimenuitem> menu item, as shown below:
 </para>
 <screenshot>
 <screeninfo>Maximizing a plot</screeninfo>
 <mediaobject>
 <imageobject>
-<imagedata fileref="Screenshot-kst-zoom.png" format="PNG" />
+<imagedata fileref="Screenshot-kst-view-zoom.png" format="PNG" />
 </imageobject>
 <textobject>
 <phrase>Maximizing a plot</phrase>
@@ -255,9 +201,9 @@ All the plots you created in the <xref linkend="importingdata"/> section should 
 
 <para>
 The plot you selected will now be maximized within the current window. Note that the
-data is still very densely in this plot, so it would be useful to zoom in on an interesting area. To do so, make sure you are in <guimenuitem>XY Mouse ZoomM</guimenuitem> mode (select <guimenuitem>XY Mouse Zoom</guimenuitem> from the <guimenu>Plots</guimenu> menu, or
+data is still dense in this plot, so it would be useful to zoom in on an interesting area. To do so, make sure you are in <guimenuitem>XY Mouse Zoom</guimenuitem> mode (select <guimenuitem>XY Mouse Zoom</guimenuitem> from the <guimenu>Plots</guimenu> menu, or
 click the <inlinemediaobject><imageobject><imagedata
-fileref="Icon-kst-xymousezoom.png"
+fileref="Icon-kst-view-xymousezoom.png"
 format="PNG"/></imageobject></inlinemediaobject> toolbar
 button). Then, simply drag a rectangle around the area you're interested in.  Note that the coordinates of the mouse cursor are displayed in
 the lower right corner of the &kst; window (if they are not, ensure
@@ -270,7 +216,7 @@ The plot axes will change to <quote>zoom in</quote> on the selected area of the 
 </para>
 
 <para>
-Restore the size of the plot by right-clicking it and unchecking <guimenuitem>Maximize</guimenuitem>.
+Restore the size of the plot by right-clicking it and unchecking the <guimenuitem>Maximize</guimenuitem> option.
 </para>
 
 <para>
@@ -287,7 +233,7 @@ the two plots are now tied together:
 <screeninfo>Tied Zoom</screeninfo>
 <mediaobject>
 <imageobject>
-<imagedata fileref="Screenshot-kst-tiedzoom.png" format="PNG" />
+<imagedata fileref="Screenshot-kst-view-tiedzoom.png" format="PNG" />
 </imageobject>
 <textobject>
 <phrase>Tied Zoom</phrase>
@@ -300,7 +246,7 @@ Before we try zooming in, we should delete the "Column 1" plot, which we won't b
 </para>
 
 <para>
-Now try zooming in on any portion of the upper plot.  You will find that the lower plot will become blank.  This is because the lower plot axes have changed to match the upper plot axes, and there is no data in that particular region of the lower plot. Type <keycap>M</keycap> while the mouse cursor is over either plot to return to maximum zoom on both plots.  Now hold down <keycap>Ctrl</keycap> (this is
+Now try zooming in on any portion of the upper plot.  You will find that the lower plot becomes blank.  This is because the lower plot axes have changed to match the upper plot axes, and there is no data in that particular region of the lower plot. Type <keycap>M</keycap> while the mouse cursor is over either plot to return to maximum zoom on both plots.  Now hold down <keycap>Ctrl</keycap> (this is
 equivalent to selecting <guimenu>X Mouse Zoom Mode</guimenu> from the
 <guimenu>Plots</guimenu> menu or clicking the
 <inlinemediaobject><imageobject><imagedata
@@ -322,15 +268,15 @@ save the <filename>mykstsession.kst</filename> file again, with the changes whic
 </para>
 </sect2>
 
-<sect2 id="basicanalysis">
+<sect2 id="intro-gettingstarted-basicanalysis">
 <title>Basic Analysis and the Data Manager</title>
 
 <para>
-There is more to &kst; than simple plotting and viewing of data.  From the data wizard, you have already seen that &kst; has the ability to create power spectra of data. In fact, &kst; is also capable of creating other data objects such as histograms, equations, and plugins. A utility called the Data Manager can help you to do this.
+There is more to &kst; than simple plotting and viewing of data.  From the data wizard, you have already seen that &kst; has the ability to create power spectra of data. In fact, &kst; is also capable of creating other data objects such as histograms, equations, and plugins. A utility called the <link linkend="data-overview-datamanager">Data Manager</link> can help you to do this.
 </para>
 
 <para>
-Open the data manager now by clicking the <inlinemediaobject><imageobject><imagedata fileref="Icon-kst-datamanager.png"
+Open the data manager now by clicking the <inlinemediaobject><imageobject><imagedata fileref="Icon-kst-data-datamanager.png"
 format="PNG"/></imageobject></inlinemediaobject> toolbar button, or by selecting <guimenuitem>Data Manager</guimenuitem> from the <guimenu>Data</guimenu> menu.
 </para>
 
@@ -338,7 +284,7 @@ format="PNG"/></imageobject></inlinemediaobject> toolbar button, or by selecting
 <screeninfo>The Data Manager</screeninfo>
 <mediaobject>
 <imageobject>
-<imagedata fileref="Screenshot-kst-datamanager.png" format="PNG" />
+<imagedata fileref="Screenshot-kst-data-datamanager.png" format="PNG" />
 </imageobject>
 <textobject>
 <phrase>The Data Manager</phrase>
@@ -350,91 +296,22 @@ format="PNG"/></imageobject></inlinemediaobject> toolbar button, or by selecting
 The Data Manager contains the definitive list of data objects in the
 current &kst; session.  It also allows you edit or create new data
 objects.  As you can see, there are currently 3 curves (each created from a
-pair of vectors) and four data vectors listed. The Data Manager gives a summary of each data object:
+pair of vectors) and four data vectors listed. A summary is given for each object, see the <link linkend="data-overview-datamanager">Data Manager</link> section for more information.
 </para>
-
-<variablelist>
-<varlistentry>
-<term>
-<guilabel>Name</guilabel>
-</term>
-<listitem>
-<para>
-The name of the data object, unique among the set of data objects with the same type.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term>
-<guilabel>Type</guilabel>
-</term>
-<listitem>
-<para>
-The type of the data object determines how it is created and what its options are. Type can be: Data Vector, Curve, Equation, Histogram, Power Spectrum, Plugin, Event Monitor, Matrix, Image, or CSD.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term>
-<guilabel>Used</guilabel>
-</term>
-<listitem>
-<para>
-This field gives the status of the data object. If there is a check mark in the Used column of a data object then some other object in &kst; is dependent on it. For example, we can see that the Curve object '1' is unusued, because we deleted its plot earlier. Data Vector '1', however, is still in use because it is required by the Curve object. 
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term>
-<guilabel>Samples</guilabel>
-</term>
-<listitem>
-<para>
-The number of elements in the data object. This is proportional to the amount of memory which the data object requires.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term>
-<guilabel>Properties</guilabel>
-</term>
-<listitem>
-<para>
-A summary of the data object's key parameters, dependent on its type.
-</para>
-</listitem>
-</varlistentry>
-</variablelist>
 
 <para>
 We saw earlier when we attempted tied-zoom in XY-Zoom-Mode that the Column 2 and Column 3 data have different y-offsets. Suppose that we would like to compare them on the same graph. To do this, we will have to shift the mean of one of the plots. We can do this easily using an Equation Object.
 </para>
 
 <para>
-Begin the process of creating an Equation Object by clicking the corresponding button on the left hand side of the Data Manager. A dialog will appear to configure the new object.
-</para>
-
-<para>
-The <guilabel>Plot Type</guilabel> radio buttons provide a quick way to automatically generate power spectra of the data which are being imported. We won't use this feature in the current tutorial, so leave the plot type as <guilabel>XY</guilabel>.
-</para>
-
-<para>
-The <guilabel>Appearance</guilabel> and <guilabel>Placement</guilabel> sets of options allow you to choose settings for the curve which will be automatically created from the equation object. Set the curve to be placed in the existing plot, P3- this is the "Column 3" plot.
-</para>
-
-<para>
-The <guilabel>Equation</guilabel> group of options are unique to equation objects. Components of the equation can be typed in, or inserted from selections made in the drop-down menus above. Enter the equation shown below:
+Begin the process of creating an Equation Object by clicking the corresponding button under the <guibutton>Create Data Object</guibutton> tab on the left side of the Data Manager. A dialog will appear to configure the new object. Configure this dialog as shown below:
 </para>
 
 <screenshot>
 <screeninfo>New Equation</screeninfo>
 <mediaobject>
 <imageobject>
-<imagedata fileref="Screenshot-kst-newequation.png" format="PNG" />
+<imagedata fileref="Screenshot-kst-intro-equationnew.png" format="PNG" />
 </imageobject>
 <textobject>
 <phrase>New Equation</phrase>
@@ -451,19 +328,16 @@ Click the OK button of the New Equation dialog. Now a new curve has been added t
 </para>
 
 <screenshot>
-<screeninfo>New Equation</screeninfo>
+<screeninfo>Getting Started Final Plots</screeninfo>
 <mediaobject>
 <imageobject>
-<imagedata fileref="Screenshot-kst-gettingstartedfinalplots.png" format="PNG" />
+<imagedata fileref="Screenshot-kst-intro-gsfinalplots.png" format="PNG" />
 </imageobject>
-<textobject>
-<phrase>New Equation</phrase>
-</textobject>
 </mediaobject>
 </screenshot>
 
 <para>
-This concludes our basic introduction to &kst;. We encourage you to experiment with the program now, there is clearly a lot of functionality in &kst; which hasn't been covered in this tutorial. Most of it can be found intuitively. You may want to look at some of the entries in the <xref linkend="common-tasks"/> section. Good luck!
+This concludes our basic introduction to &kst;. We encourage you to experiment with the program now, there is clearly a lot of functionality in &kst; which hasn't been covered in this tutorial. Most of it can be found intuitively. You may want to look at some of the entries in the <link linkend="commontasks">Common Tasks</link> chapter. Good luck!
 </para>
 
 </sect2>

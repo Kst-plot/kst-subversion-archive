@@ -1,7 +1,7 @@
-<chapter id="settingsandlogs">
+<chapter id="settings">
 <title>Settings and Logs</title>
 
-<sect1 id="shortcuts">
+<sect1 id="settings-shortcuts">
 <title>Shortcuts</title>
 <para>You can create custom shortcut keys to make working in &kst; more efficient. To modify the shortcut keys, select <guimenuitem>Configure Shortcuts...</guimenuitem> from the <guimenu>Settings</guimenu> menu. The following dialog will be displayed.
 </para>
@@ -84,7 +84,7 @@ other multi-key shortcuts are defined, the action associated with the shortcut w
 </note>
 </sect1>
 
-<sect1 id="globalsettings">
+<sect1 id="settings-globalsettings">
 <title>Global Settings</title>
 <para>&kst;'s global settings can be accessed by selecting the <guimenuitem>Configure &kst;...</guimenuitem> option in the <guimenu>Settings</guimenu> menu. The following dialog will be displayed.
 </para>
@@ -100,10 +100,10 @@ other multi-key shortcuts are defined, the action associated with the shortcut w
 </mediaobject>
 </screenshot>
 
-<para>There are three available tabs. <link linkend="globalsettingsgeneral">General</link>, <link linkend="globalsettingsdatasources">Data Sources</link>, and <link linkend="globalsettingsemail">E-Mail</link>.
+<para>There are three available tabs. <link linkend="settings-globalsettings-general">General</link>, <link linkend="settings-globalsettings-datasources">Data Sources</link>, and <link linkend="settings-globalsettings-email">E-Mail</link>.
 </para>
 
-<sect2 id="globalsettingsgeneral">
+<sect2 id="settings-globalsettings-general">
 <title>General</title>
 
 <para>
@@ -172,7 +172,7 @@ The colours to cycle through as new curves are added to a plot. This should have
 </term>
 <listitem>
 <para>
-See the <xref linkend="editplotappearancecoloursandlineweights"/> section for <xref linkend="plotsandplotdialog"/>
+See the <link linkend="view-types-plot-appearance-coloursandlineweights">Colour and Line Weights</link> section for <link linkend="view-types-plot">Plots</link>.
 </para>
 </listitem>
 </varlistentry>
@@ -183,7 +183,7 @@ See the <xref linkend="editplotappearancecoloursandlineweights"/> section for <x
 </term>
 <listitem>
 <para>
-See the <xref linkend="editplotxyaxisscale"/> section for <xref linkend="plotsandplotdialog"/>
+See the <link linkend="view-types-plot-xyaxis-scale">X/Y Axis Scale</link> section for <link linkend="view-types-plot">Plots</link>.
 </para>
 </listitem>
 </varlistentry>
@@ -194,7 +194,7 @@ See the <xref linkend="editplotxyaxisscale"/> section for <xref linkend="plotsan
 </term>
 <listitem>
 <para>
-See the <xref linkend="editplotappearancecoloursandlineweights"/> section for <xref linkend="plotsandplotdialog"/>
+See the <link linkend="view-types-plot-appearance-coloursandlineweights">Colour and Line Weights</link> section for <link linkend="view-types-plot">Plots</link>.
 </para>
 </listitem>
 </varlistentry>
@@ -212,7 +212,7 @@ This allows &kst; to calculate the local time for data given in UTC.
 
 <varlistentry>
 <term>
-<guilabel>Promt before closing windows</guilabel>
+<guilabel>Prompt before closing windows</guilabel>
 </term>
 <listitem>
 <para>
@@ -227,7 +227,7 @@ This allows &kst; to calculate the local time for data given in UTC.
 </term>
 <listitem>
 <para>
-Enable if you would like the QuickStart Dialog (see <xref linkend="importingdata"/> for a screenshot) to appear every time &kst; starts up.
+Enable if you would like the QuickStart Dialog (see <link linkend="intro-gettingstarted-importingdata">Getting Started - Importing Data</link> for a screenshot) to appear every time &kst; starts up.
 </para>
 </listitem>
 </varlistentry>
@@ -246,14 +246,14 @@ If this setting is enabled, tied zoom is applied to all windows, rather than jus
 
 </sect2>
 
-<sect2 id="globalsettingsdatasources">
+<sect2 id="settings-globalsettings-datasources">
 <title>Data Sources</title>
 <para>
-This pane allows you to choose the default options for &kst;'s data sources. An explanation of the options available for the set of data sources included with &kst; can be found in <xref linkend="fileformats"/>
+This pane allows you to choose the default options for &kst;'s data sources. An explanation of the options available for the set of data sources included with &kst; can be found in the <link linkend="data-sources">Data Sources</link> documentation.
 </para>
 </sect2>
 
-<sect2 id="globalsettingsemail">
+<sect2 id="settings-globalsettings-email">
 <title>E-Mail</title>
 <para>
 &kst; can send E-Mail's for debugging and logging purposes. In this tab, you give &kst; the settings for the SMTP server which you would like to use to send mail.
@@ -273,7 +273,7 @@ This pane allows you to choose the default options for &kst;'s data sources. An 
 </sect2>
 </sect1>
 
-<sect1 id="debuglog">
+<sect1 id="settings-debuglog">
 <title>The Debug Dialog</title>
 <para>The Debug Dialog contains the &kst; message log, and information about loaded data sources. To access the debug dialog, select <guimenuitem>Debug &kst;...</guimenuitem> from the <guimenu>Help</guimenu> menu.
 </para>

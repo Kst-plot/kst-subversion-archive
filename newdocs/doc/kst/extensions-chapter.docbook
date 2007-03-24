@@ -31,7 +31,7 @@ Use the three checkboxes at the bottom to select the type of information to be l
 currently active window should be included in the entry.  <guilabel>Include Kst configuration file</guilabel>
 specifies that <filename>*.kst</filename> save file should be attached to the entry. Finally, if
 <guilabel>Include Kst debugging information</guilabel> is checked, a copy of the
-<link linkend="debuglog">debug log</link> will be attached to the entry as well.
+<link linkend="settings-debuglog">debug log</link> will be attached to the entry as well.
 </para>
 
 <para>

@@ -15,7 +15,7 @@
  <!ENTITY install-chapter SYSTEM "install-chapter.docbook">
  <!ENTITY license-chapter SYSTEM "license-chapter.docbook">
  <!ENTITY saving-chapter SYSTEM "saving-chapter.docbook">
- <!ENTITY plotsandwindows-chapter SYSTEM "plotsandwindows-chapter.docbook">
+ <!ENTITY views-chapter SYSTEM "views-chapter.docbook">
  <!ENTITY additionalformats-chapter SYSTEM "additionalformats-chapter.docbook">
  <!ENTITY creatingplugins-chapter SYSTEM "creatingplugins-chapter.docbook">
  <!ENTITY settings-chapter SYSTEM "settings-chapter.docbook">
@@ -106,7 +106,7 @@ the order. -->
 
 &data-chapter;
 
-&plotsandwindows-chapter;
+&views-chapter;
 
 &saving-chapter;
 

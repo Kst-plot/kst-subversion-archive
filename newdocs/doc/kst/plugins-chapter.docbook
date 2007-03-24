@@ -5,7 +5,7 @@ Plugins provide added functionality to &kst;.  By default, &kst; comes packaged 
 extensive selection of built-in plugins.  In addition, a simple and consistent interface allows for easy creation
 of 3rd-party plugins.  Fits and Filters are simply subsets of the set of plugins, and thus behave identically to plugins,
 with the exception of additional convenient dialog functionality accessible from the
-<link linkend="thebasiccontextmenu">plot context menu</link>.
+<link linkend="view-zoomingandscrolling-zoommodemenu">Zoom-Mode context menu</link>.
 </para>
 
 <sect1 id="addingandremovingplugins">
@@ -38,7 +38,7 @@ plugins directory.
 </sect1>
 
 
-<sect1 id="builtinplugins">
+<sect1 id="plugins-builtinplugins">
 <title>Built-in Plugins</title>
 <para>
 To date, there are more than 25 built-in plugins available in &kst; that perform functions from taking cross correlations
