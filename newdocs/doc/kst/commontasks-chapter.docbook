@@ -17,26 +17,12 @@ a simple graph. Here's the procedure:</para>
 <listitem>
 <para>Choose your data file. &kst; will read many types of
 data file, the simplest being a plain text (<acronym>ASCII</acronym>)
-file with the data in columns. For this tutorial, we'll create a simple data file. Copy and paste this simple 40-line set of data into a text file,
-and save it as <filename>simpledata.dat</filename>:
+file with the data in columns. For this tutorial, we'll create a simple data file. Copy and paste this simple 10-line set of data into a text file,
+and save it as <filename>simple.dat</filename>:
 </para>
 
 <screen>
--20 100
--19 90.25
--18 81
--17 72.25
--16 64
--15 56.25
--14 49
--13 42.25
--12 36
--11 30.25
--10 25
--9 20.25
--8 16
--7 12.25
--6 9
+x  y
 -5 6.25
 -4 4
 -3 2.25
@@ -48,25 +34,10 @@ and save it as <filename>simpledata.dat</filename>:
 3 2.25
 4 4
 5 6.25
-6 9
-7 12.25
-8 16
-9 20.25
-10 25
-11 30.25
-12 36
-13 42.25
-14 49
-15 56.25
-16 64
-17 72.25
-18 81
-19 90.25
-20 100
 </screen>
 
 <para>
-<filename>simpledata.dat</filename> is an example of an ASCII data file, one of the many file types
+ASCII is only one of the many file types
 &kst; is capable of reading. For further details on file types, see the 
 <link linkend="data-sources">Datasources</link> section.
 </para>
@@ -74,20 +45,30 @@ and save it as <filename>simpledata.dat</filename>:
 
 <listitem>
 <para>Open &kst;. If you are presented with the
-<guilabel>QuickStart</guilabel> dialog, then click on the <guibutton>Data Wizard</guibutton> button. If the QuickStart dialog does not appear, then you can click the <inlinemediaobject><imageobject><imagedata fileref="Icon-kst-datawizard.png" format="PNG"/></imageobject></inlinemediaobject> toolbar button to open the Data Wizard. In the wizard that appears, you can enter the pathname of the simpledata.dat file manually, or select it using the <guibutton>Open File</guibutton> button which appears next to the path entry textbox.
+<guilabel>QuickStart</guilabel> dialog, then click on the <guibutton>Data Wizard</guibutton> button. If the QuickStart dialog does not appear, then you can click the <inlinemediaobject><imageobject><imagedata fileref="Icon-kst-datawizard.png" format="PNG"/></imageobject></inlinemediaobject> toolbar button to open the Data Wizard. In the wizard that appears, you can enter the pathname of the simple.dat file manually, or select it using the <guibutton>Open File</guibutton> button which appears next to the path entry textbox. We have put x and y labels on the first line of our data file, so click the <guibutton>Configure...</guibutton> and set up the data source as shown below.
 </para>
+
+<screenshot>
+<screeninfo>Plotting Simple Graphs - Configure ASCII</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-commontasks-plottingsimplegraphs-configureascii.png" format="PNG" />
+</imageobject>
+</mediaobject>
+</screenshot>
+
 </listitem>
 
 <listitem>
 <para>
 The <guibutton>Next</guibutton> page is where you select which
-data to use. Column 2 in the data file contains the y-axis values, so move the entry '2' in the <guilabel>Available</guilabel> list on the left-hand side to the <guilabel>Selected</guilabel> list using the arrow buttons in the center of the window. The INDEX field is a special field created by &kst;, but we won't be using it for this demonstration.
+data to use. If you've configure the ASCII datasource correctly, the field names will have been read from the first entry of the datafile and 'x' and 'y' will be entries in the <guilabel>Available</guilabel> list on the left-hand side of the page. Move the 'y' field to the to the <guilabel>Selected</guilabel> list using the arrow buttons in the center of the window. The <link linkend="data-sources-concepts-index">INDEX</link> field is a special field created by &kst;, which is useful when you'd like to plot data without an x-axis, but we won't be using it right now.
 </para>
 </listitem>
 
 <listitem>
 <para>
-Clicking the <guibutton>Next</guibutton> button again allows you to select Data Presentation options. Under <guilabel>Plot Types</guilabel>, leave the default <guilabel>XY</guilabel> as it is, but change the <guilabel>X axis vector</guilabel> to Create From Field: 1.
+Clicking the <guibutton>Next</guibutton> button again allows you to select Data Presentation options. Under <guilabel>Plot Types</guilabel>, leave the default <guilabel>XY</guilabel> as it is, but change the <guilabel>X axis vector</guilabel> to Create From Field: x.
 </para>
 </listitem>
 
@@ -111,9 +92,6 @@ plot appears in the main &kst; window.
 <imageobject>
 <imagedata fileref="Screenshot-kst-commontasks-plottingsimplegraphs.png" format="PNG" />
 </imageobject>
-<textobject>
-<phrase>Plotting Simple Graphs</phrase>
-</textobject>
 </mediaobject>
 </screenshot>
 
@@ -122,11 +100,11 @@ plot appears in the main &kst; window.
 
 <tip>
 <para>
-It's also possible to quickly create plots from the command line using &kst;, similar to Gnuplot. In the case of the <filename>simpledata.dat</filename> file, we can produce a simple plot using the first column (or <quote>field</quote>) of the the file as the x vector, with the second column as a y vector, by entering the following at the command line:
+It's also possible to quickly create plots from the command line using &kst;, similar to Gnuplot. In the case of the <filename>simple.dat</filename> file, we can produce a simple plot using the first column (or <quote>field</quote>) of the the file as the x vector, with the second column as a y vector, by entering the following at the command line:
 </para>
 
 <para>
-<userinput><command>kst -x 1 -y 2 simpledata.dat</command></userinput>
+<userinput><command>kst -x 1 -y 2 simple.dat</command></userinput>
 </para>
 
 <para>
@@ -150,18 +128,32 @@ Numerous other command-line options are available&mdash;using the command-line o
 
 <listitem>
 <para>
-The <guilabel>Plugin selection</guilabel> combo box contains all the &kst; fitting plugins, and more. Since the example data here are quadratic, we'll use the <guilabel>Fit polynomial</guilabel> plugin. Select the <guilabel>X Array</guilabel> and <guilabel>Y Array</guilabel> vectors for the fit &ndash; if you used the default names when producing the plot, select <guilabel>1</guilabel> for the <guilabel>X Array</guilabel> and <guilabel>2</guilabel> for the <guilabel>Y Array</guilabel>. 
+The <guilabel>Data Plugins</guilabel> list which appears will contain all of the &kst; fitting plugins, and more. Since the example data here are quadratic, we'll use the <guilabel>Fit polynomial</guilabel> plugin. Click Ok.
+</para>
+
+<screenshot>
+<screeninfo>Curve Fitting - Select Plugin</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-commontasks-curvefitting-selectplugin.png" format="PNG" />
+</imageobject>
+</mediaobject>
+</screenshot>
+
+</listitem>
+
+<listitem>
+<para>
+Now a 'New Plugin' dialog will appear which allows you to configure the fit. Select <guilabel>x</guilabel> for the <guilabel>X Array</guilabel> and <guilabel>y</guilabel> for the <guilabel>Y Array</guilabel>. As it happens, the <guilabel>Order</guilabel> of the polynomial is set to 2 by default, which is what we want. You can set the <guilabel>Order</guilabel> to any integer, one of the predefined scalar quantities, or some statistical value based on one of the available vectors (eg. the Standard Deviation of x, <guilabel>x/Sigma</guilabel>).
+</para>
+<para>
+There are several Output fields where you can enter text to be used as the unique name for the vectors and scalars generated by this fit. For more information, you can read the section on the <link linkend="plugin-kstfit_polynomial_unweighted">Fit Polynomial</link> in the <link linkend="pluginsandfilters">Plugins</link> chapter.
 </para>
 </listitem>
 
 <listitem>
 <para>
-As it happens, the <guilabel>Order</guilabel> of the polynomial is set to 2 by default, which is what we want. You can set the <guilabel>Order</guilabel> to any integer, one of the predefined scalar quantities, or some statistical value based on one of the available vectors (for example, <guilabel>1-2-Mean</guilabel>).</para>
-</listitem>
-
-<listitem>
-<para>
-Hit <guibutton>OK</guibutton> to generate the values.
+Hit <guibutton>OK</guibutton> to generate the fit values.
 </para>
 </listitem>
 </orderedlist>
@@ -169,13 +161,29 @@ Hit <guibutton>OK</guibutton> to generate the values.
 <para>
 That's all we need to do to generate the values, so now we need to look at the output of the fitting process. Select <menuchoice><guimenu>Data</guimenu><guimenuitem>View Fit Results</guimenuitem> </menuchoice> from the menus, and the fit values are shown in the dialog which appears: the coefficients for x^2, x^1 and x^0 (the constant), along with the chi-squared value and the covariances between the
 coefficients.
-</para> 
-
-<para>The curve generated by the fitting is not automatically superimposed on the data points. To do this, use the <guilabel>New Curve</guilabel> dialog by selecting <menuchoice><guimenu>Data</guimenu><guimenuitem>New Curve...</guimenuitem></menuchoice>. For the <guilabel>X axis vector</guilabel>, select V0-1 (if you've been using the automatically generated names), and for the <guilabel>Y axis vector</guilabel>, choose <quote>P1-kstfit_polynomial_unweighted-Y Fitted</quote>. Click on <guibutton>OK</guibutton> once you've set any other options that you want. The curve is plotted in its own window: for this example, we don't want that, so delete the new plot by right-clicking on it and choosing <guimenuitem>Delete</guimenuitem> in the popup menu that appears.</para>
-
-<para>
-Now, to add the curve fit to the data plot, open the Plot dialog from <menuchoice><guimenu>Plots</guimenu><guimenuitem>Edit Plot...</guimenuitem></menuchoice>. On the <guilabel>Content</guilabel> tab that appears, the vector containing the fit data is shown under <guilabel>Available objects</guilabel>. Select this vector, and add it to the <guilabel>Displayed objects</guilabel> list by clicking on the left arrow button. Click on <guibutton>Apply Edits</guibutton>, and then <guibutton>Close</guibutton>, and you're finished.
 </para>
+
+<screenshot>
+<screeninfo>Curve Fitting - Fit Results</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-commontasks-curvefitting-fitresults.png" format="PNG" />
+</imageobject>
+</mediaobject>
+</screenshot> 
+
+<para>Now, suppose that we would like to see visually how well our fitted curve matches the data. The curve generated by the fitting is not automatically superimposed on the data points. To do this, use the <guilabel>New Curve</guilabel> dialog by selecting <menuchoice><guimenu>Data</guimenu><guimenuitem>New Curve...</guimenuitem></menuchoice>. For the <guilabel>X axis vector</guilabel>, select x, and for the <guilabel>Y axis vector</guilabel>, choose <quote>kstfit_polynomial_unweighted-Y Fitted</quote>. Additionally, you should select the "Place in Existing Plot" option for the Curve Placement. There should only be one existing plot available. You can also visual options for the new curve. Click on <guibutton>OK</guibutton> once you've set any other options that you want. You should now have a plot which looks similar to the following:
+</para>
+
+<screenshot>
+<screeninfo>Curve Fitting - Plotted Curve</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-commontasks-curvefitting-plottedcurve.png" format="PNG" />
+</imageobject>
+</mediaobject>
+</screenshot> 
+
 </sect1>
 
 <sect1 id="commontasks-generatehistogram">
@@ -241,7 +249,7 @@ This will generate an ASCII file <filename>normal.dat</filename> containing rand
 </screenshot>
 
 <para>
-Now we are ready to generate the histogram itself. Select <menuchoice><guimenu>Data</guimenu><guimenuitem>New Histogram...</guimenuitem></menuchoice>. Select the Data Vector which has just been created from the <filename>normal.dat</filename>. There are several options relating to bin choices. For quick generation of histograms, it is usually easiest to just press the "Auto-Bin" feature. This will select an optimal bin size and range for the given data.
+Now we are ready to generate the histogram itself. Select <menuchoice><guimenu>Data</guimenu><guimenuitem>New Histogram...</guimenuitem></menuchoice>. Select the Data Vector which has just been created from <filename>normal.dat</filename>. There are several options relating to bin choices. For quick generation of histograms, it is usually easiest to just press the "Auto-Bin" feature. This will select an optimal bin size and range for the given data.
 </para>
 
 <para>
@@ -265,15 +273,19 @@ Click the <guibutton>OK</guibutton> button to generate the histogram.
 <sect1 id="commontasks-eventmonitor">
 <title>Creating an Event Monitor</title>
 
-<para>&kst; has many features which are oriented toward real-time data. One of the most useful of these features is the "Event Monitor" data object. Event monitors check conditions on data vectors. A common use for them is to provide warnings about unusual features in incoming data. They can provide feedback in a number of ways:</para>
+<para>
+&kst; has many features which are oriented toward real-time data. One of the most useful of these features is the "Event Monitor" data object. Event monitors check conditions on data vectors. A common use for them is to provide warnings about unusual features in incoming data. They can provide feedback in a number of ways:
+</para>
 
 <itemizedlist>
 <listitem><para>Messages in the &kst; debug log.</para></listitem>
-<listitem><para>Automated <ulink url="http://midas.psi.ch/elog/">Electronic Logbook</ulink> (ELOG) entries.</para></listitem>
+<listitem><para>Automated <link linkend="extensions-elog">Electronic Logbook (ELOG)</link> entries.</para></listitem>
 <listitem><para>Email notification.</para></listitem>
 </itemizedlist>
 
-<para>In this tutorial, we will create an event monitor to provide debug log notification about statistically unlikely spikes in a data stream.</para>
+<para>
+In this tutorial, we will create an event monitor to provide debug log notification about statistically unlikely spikes in a data stream. More information about Event Monitor data objects can be found <link linkend="data-types-eventmonitors">here</link>
+</para>
 
 <para>First we'll need a script to generate some simulated realtime data. Copy the following into a file called <filename>simrealtime.pl</filename></para>
 
@@ -311,13 +323,15 @@ for ($x=0;;$x++) {
 </para>
 
 <para>
-In order to simulate 'realtime' data, the script will not generate all of its output at once, but will prompt the user before it outputs each entry. Press the enter key several times to get the data set started. Now, in a separate terminal, instruct &kst; to plot the data using the command...</para>
+In order to simulate 'realtime' data, the script will not generate all of its output at once, but will prompt the user before it outputs each entry. Press the enter key several times to get the data set started. Now, in a separate terminal, instruct &kst; to plot the data using the command...
+</para>
 
 <para>
 <userinput><command>kst -y 1 simulated.dat</command></userinput>
 </para>
 
-<para>Depending on the number of data points which you have generated so far, your plot should look something like the graph below, possibly without the large spike in the middle.
+<para>
+Depending on the number of data points which you have generated so far, your plot should look something like the graph below, possibly without the large spike in the middle.
 </para>
 
 <screenshot>
@@ -353,15 +367,15 @@ Suppose that we would like to receive notification every time a large spike occu
 </screenshot>
 
 <para>
-The settings in the 'Expression' grouping configure the event monitor to report elements of Vector [1] which are more than 5 standard deviations from its mean. This is a fairly simple event monitor. Much more powerful event monitors can be created using the large collection of scalars which &kst; maintains, and the many operators which can make comparisions between vectors.
+The settings in the 'Expression' text box configure the event monitor to report entries in Vector [1] which are more than 5 standard deviations from its mean. This is a fairly simple event monitor. Much more powerful event monitors can be created using the large collection of scalars which &kst; maintains, and the many operators which can make comparisions between vectors.
 </para>
 
 <para>
-We will have our events logged as 'Warnings' in the &kst; Debug Log. As you can see, there are several other possible event reporting methods. These are explained in more detail in the documentation for <link linkend="data-types-events">Event Monitors</link>. 
+We will have our events logged as 'Warnings' in the &kst; Debug Log. As you can see, there are several other possible event reporting methods. These are explained in more detail in the documentation for <link linkend="data-types-eventmonitors">Event Monitors</link>. 
 </para>
 
 <para>
-Click the <guibutton>Ok</guibutton> button to create the new event monitor. Now, access the &kst; debug log by selecting the <menuchoice><guimenu>Help</guimenu><guimenuitem>Debug Kst...</guimenuitem></menuchoice> menu-item and clicking the <guibutton>Log</guibutton> tab. You may see that a spike has been detected. If not, return to the terminal where you are running the <filename>simrealtime.pl</filename> script and continue generating new data until a number of spikes are visible in your plot. About 1% of the data should be spikes. Spikes which occur near the beginning of the data stream may not have been detected, because &kst; didn't yet have enough data to establish a reliable estimate of the standard deviation of Vector [1]. After generating a few hundred data points, your Log may look something like this:
+Click the <guibutton>Ok</guibutton> button to create the new event monitor. Now, access the &kst; <link linkend="settings-debuglog">Debug Log</link> by selecting the <menuchoice><guimenu>Help</guimenu><guimenuitem>Debug Kst...</guimenuitem></menuchoice> menu-item and clicking the <guibutton>Log</guibutton> tab. You may see that a spike has been detected. If not, return to the terminal where you are running the <filename>simrealtime.pl</filename> script and continue generating new data until a number of spikes are visible in your plot. About 1% of the data should be spikes. Spikes which occur near the beginning of the data stream may not have been detected, because &kst; didn't yet have enough data to establish a reliable estimate of the standard deviation of Vector [1]. After generating a few hundred data points, your Log may look something like this:
 </para>
 
 <screenshot>

@@ -1,14 +1,14 @@
 <chapter id="extensions">
 <title>Kst Extensions</title>
 
-<sect1 id="elogextension">
+<sect1 id="extensions-elog">
 <!-- FIXME: review ELOG documentation -->
 <title>The ELOG Extension</title>
 <para>
 The ELOG extension allows event monitors to create logbook entries on a server running the Electronic Logbook (ELOG) application. The created logbook entries can be used, for example, to remotely monitor &kst; events or to produce periodic data reports. For information on configuring and maintaining an ELOG server, please see the official <ulink url="http://midas.psi.ch/elog/">ELOG Homepage</ulink>. To enable the ELOG extension in &kst;, select <guimenuitem>Extensions...</guimenuitem> from the <guimenu>Settings</guimenu> menu and ensure that <quote>ELOG Extension</quote> is checked.
 </para>
 
-<sect2 id="elogextensionsettings">
+<sect2 id="extensions-elog-settings">
 <title>Server and Logging Settings</title>
 <para>
 Server and logging settings should be configured if ELOG functionality is enabled for an event monitor object. To configure logging settings, click the <guibutton>Configure...</guibutton> button in the <guilabel>ELOG</guilabel> section of the Event Monitor dialog. The ELOG Event Entry dialog should be displayed:
@@ -147,7 +147,7 @@ can be used to send a test logbook entry.  Click <guibutton>Close</guibutton> to
 </sect2>
 </sect1>
 
-<sect1 id="kstscript">
+<sect1 id="extensions-kstscript">
 <title>KstScript</title>
 <para>
 KstScript is a JavaScript binding for &kst;. It aims to offer full control over all aspects of &kst;.

@@ -7,7 +7,7 @@
 <sect2 id="data-overview-concepts">
 <title>Data Object Concepts</title>
 <para>
-There are ten main types of data objects in &kst;.  Data objects can contain other data objects as 'slave objects', as represented by the tree structure view in the Data Manager.  The following diagram illustrates the relationships between the different data types.
+We will call Data Objects in &kst; all objects which appear in the <link linkend="data-overview-datamanager">Data Manager</link>. There are ten main kinds of data object in &kst;. The following diagram illustrates the relationships between the different types:
 </para>
 
 <para>
@@ -22,21 +22,18 @@ There are ten main types of data objects in &kst;.  Data objects can contain oth
 </para>
 
 <para>
-As can be seen from the above diagram, the only truly 'plottable' data objects are curves and images. Curve objects are typically auto-created from the slave vector of many data objects, however- so these data objects are effectively plottable as well.  All data objects (other than vectors) have the capability of using vectors. Equations, power spectra, events, CSDs, and plugins all contain slave vectors in which they store their results.
+As can be seen in the diagram, the only truly 'plottable' data objects are curves and images. Many data objects contain slave vectors which can be plotted using curves, however- so these data objects are effectively plottable as well.
 </para>
 
 <para>
-Descriptions of each data type are provided below, along with overviews of the settings and options
-available when creating or editing each type of data object.  Settings common to almost all data types have been
-omitted&mdash;see <link linkend="data-overview-creating">Creating New Data Objects</link> for more information.
+The usefullness of the Data Objects concept in &kst; is that they can be tied together to create pipelines. An Event Monitor object, for instance, can take the output of another object as its input. Updates to objects in the pipeline propagate automatically. This is one of the key features which makes &kst; powerful for realtime plotting.
 </para>
 </sect2>
 
 <sect2 id="data-overview-datamanager">
 <title>The Data Manager</title>
 <para>
-The Data Manager provides a central location for adding, deleting, and modifying all the data objects used in &kst;.
-It can be accessed by selecting <guimenuitem>Data Manager</guimenuitem> from the <guimenu>Data</guimenu> menu.
+The Data Manager provides a central location for adding, deleting, and modifying all the data objects used in &kst;. It can be accessed by selecting <guimenuitem>Data Manager</guimenuitem> from the <guimenu>Data</guimenu> menu.
 </para>
 
 <screenshot>
@@ -52,7 +49,13 @@ It can be accessed by selecting <guimenuitem>Data Manager</guimenuitem> from the
 </screenshot>
 
 <para>
-Here is an explanation of the available information:
+The panel on the left side of the Data Manager can be used to quickly create new data objects. The <guibutton>Purge</guibutton> button automatically deletes Data Objects which are not <link linkend="data-overview-datamanager-used">Used</link> Data Objects. The <guibutton>Edit</guibutton> and <guibutton>Delete</guibutton> buttons allow you to selectively edit or remove particular objects. The <guibutton>Close</guibutton> exits the Data Manager. 
+</para>
+
+<tip><para>You can also create new data objects which are based on vectors by right clicking on the corresponding vector and choosing one of the <guimenuitem>Make ...</guimenuitem> options. If you select a curve, on the other hand, then you have the option to add it to an existing plot.</para></tip>
+
+<para>
+For its list of Data Objects, the Data Manager displays several pieces of information. These are described below:
 </para>
 
 <variablelist>
@@ -73,18 +76,18 @@ The name of the data object, unique among the set of data objects with the same 
 </term>
 <listitem>
 <para>
-The type of the data object determines how it is created and what its options are. Type can be: Data Vector, Curve, Equation, Histogram, Power Spectrum, Plugin, Event Monitor, Matrix, Image, or CSD.
+The type of the data object determines how it is created and what its options are. Type can be: Data Vector, Curve, Equation, Histogram, Spectrum, Plugin, Event Monitor, Matrix, Image, or Spectrogram.
 </para>
 </listitem>
 </varlistentry>
 
 <varlistentry>
-<term>
+<term id="data-overview-datamanager-used">
 <guilabel>Used</guilabel>
 </term>
 <listitem>
 <para>
-This field gives the status of the data object. If there is a check mark in the Used column of a data object then some other object in &kst; is dependent on it. For example, we can see that the Curve object '1' is unusued, because we deleted its plot earlier. Data Vector '1', however, is still in use because it is required by the Curve object. 
+This field gives the status of the data object. If there is a check mark in the Used column of a data object then some other object in &kst; is dependent on it.
 </para>
 </listitem>
 </varlistentry>
@@ -95,7 +98,7 @@ This field gives the status of the data object. If there is a check mark in the 
 </term>
 <listitem>
 <para>
-The number of elements in the data object. This is proportional to the amount of memory which the data object requires.
+The number of elements in the data object.
 </para>
 </listitem>
 </varlistentry>
@@ -106,153 +109,25 @@ The number of elements in the data object. This is proportional to the amount of
 </term>
 <listitem>
 <para>
-A summary of the data object's key parameters, dependent on its type.
+A summary of the data object's key parameters, dependent on its <link linkend="data-types">type</link>.
 </para>
 </listitem>
 </varlistentry>
 </variablelist>
 </sect2>
 
-<sect2 id="data-overview-creating">
-<title>Creating New Data Objects</title>
+<sect2 id="data-overview-creatingdeleting">
+<title>Creating and Deleting Data Objects</title>
 <para>
-To create a new data object from the Data Manager, click on one of the buttons listed under <guilabel>New:</guilabel>.
-A new window will be displayed, allowing options and settings for the data object to be set.</para>
-
-<tip><para>You can also create new data objects which are based on vectors by right clicking on the corresponding vector and choosing one of the <guimenuitem>Make ...</guimenuitem> options</para></tip>
-
-<para>
-Since you are creating a new data object, you may enter a unique name to identify the object.  If you do not enter a custom name then a unique name will be automatically generated.
+You can create new Data Objects using either the left panel in the <link linkend="data-overview-datamanager">Data Manager</link>, or the <guimenu>Data</guimenu> menu.
 </para>
 
 <para>
-The settings for all plottable data objects except images have two common sections&mdash;Appearance and Placement
-(images only have the Placement section).
-These sections are described below.  For data-specific settings, see <link linkend="data-types">Data Types</link>.
+When you are creating a new data object, you may enter a unique name to identify the object.  If you do not enter a custom name then a unique name will be automatically generated.
 </para>
 
-
-<sect3 id="data-overview-creating-appearance">
-<title>Appearance</title>
 <para>
-The Appearance section allows you to change the appearance of the data object when it is plotted.
-</para>
-
-<screenshot>
-<mediaobject>
-<imageobject>
-<imagedata fileref="Screenshot-kst-view-curve-appearance.png" format="PNG"/>
-</imageobject>
-</mediaobject>
-</screenshot>
-
-<variablelist>
-
-<varlistentry>
-<term>
-<inlinemediaobject><imageobject><imagedata fileref="Widget-kst-colorchooser.png" format="PNG"/></imageobject></inlinemediaobject>
-</term>
-<listitem>
-<para>
-Clicking this button displays a colour chooser dialog box, which can be used to change the colour of
-both the lines and points.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term>
-<guilabel>Show points</guilabel>
-</term>
-<listitem>
-<para>
-Selecting this checkbox shows the data points used to plot the data object.  The drop-down list to the right
-allows the shape of the points to be changed.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term>
-<guilabel>Show lines</guilabel>
-</term>
-<listitem>
-<para>
-Selecting this checkbox shows the lines joining the data points for the data object.  The thickness of the line
-as well as the line style can be changed.
-</para>
-</listitem>
-</varlistentry>
-
-</variablelist>
-
-
-</sect3>
-
-<sect3 id="data-overview-creating-placement">
-<title>Placement</title>
-<para>
-The Placement section specifies the plotting location of new plottable data objects.
-</para>
-
-<screenshot>
-<mediaobject>
-<imageobject>
-<imagedata fileref="Screenshot-kst-view-curve-placement.png" format="PNG"/>
-</imageobject>
-</mediaobject>
-</screenshot>
-
-<variablelist>
-
-<varlistentry>
-<term>
-<guilabel>Plot window</guilabel>
-</term>
-<listitem>
-<para>
-Specify the window in which to plot the data object.  You may create a new window by clicking the <guibutton>New...</guibutton> button.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term>
-<guilabel>Place in existing plot</guilabel>, <guilabel>Place in new plot</guilabel>
-and <guilabel>Do not place in any plot</guilabel>
-</term>
-<listitem>
-<para>
-You can choose whether or not to immediately plot the data object on a new or existing plot.  If
-<guilabel>Place in new plot</guilabel> is selected, you can also choose to re-arrange the layout of the
-plots by selecting <guilabel>re-grid</guilabel> and entering the number of columns to use for the
-new layout grid.
-</para>
-</listitem>
-</varlistentry>
-
-</variablelist>
-
-<para>
-Once all the desired settings for the new data object have been set, click the <guibutton>OK</guibutton>
-button to create the new data object.
-</para>
-
-</sect3>
-
-</sect2>
-
-<sect2 id="data-overview-deleting">
-<title>Editing and Deleting Existing Data Objects</title>
-<para>
-To edit an existing data object, simply highlight it in the Data Manager window and click the <guibutton>Edit</guibutton>
-button.  The settings window for the selected object will be displayed.  This window is identical to the one displayed
-when creating new data objects (with the exception that the Placement section may be absent), so refer to <link linkend="data-overview-creating">Creating New Data Objects</link> for more information
-on the settings and options.
-</para>
-<para>
-To delete a data object, highlight it in the Data Manager window and click the <guibutton>Delete</guibutton> button.
-Note that if the <guilabel>Used</guilabel> column for a data object has a check-mark then some other data or view object in &kst; has a dependency on it. Depending on the strength of these dependencies, &kst; will prompt before an object is deleted. If, for example, other objects have critical dependencies on the one which you are attempting to delete, &kst; will ask if you would like to delete these other objects as well, to prevent crashes from occuring. Listed below are some consequencies of these dependencies to keep in mind when attempting to delete data objects.
+To delete a data object you must use the <link linkend="data-overview-datamanager">Data Manager</link>. Note that if the <guilabel>Used</guilabel> column for a data object has a check-mark then some other data or view object in &kst; has a dependency on it. Depending on the strength of these dependencies, &kst; will prompt before an object is deleted. If, for example, other objects have critical dependencies on the one which you are attempting to delete, &kst; will ask if you would like to delete these other objects as well, to prevent crashes from occuring. Some dependencies are listed below:
 </para>
 
 <itemizedlist>
@@ -264,7 +139,7 @@ Plots are not critically dependent on the plottable objects which they contain, 
 
 <listitem>
 <para>
-All data objects that use a particular data vector must be deleted before the data vector itself can be deleted.
+All data objects which use a particular data vector must be deleted before the data vector itself can be deleted.
 </para>
 </listitem>
 
@@ -288,15 +163,15 @@ After a sequence of deletions and removals of plottable data objects from plots,
 <sect2 id="data-types-vectors">
 <title>Vectors</title>
 <para>
-Vectors are one of the most often-used data objects in &kst;.  As their name implies, vectors are simply ordered
-lists of numbers.  Most often they contain the x or y coordinates of a set of data points.
+Vectors are one of the most often-used data objects in &kst;.  As their name implies, vectors are simply ordered lists of numbers.  Usually they contain the x or y coordinates of a set of data points.
 </para>
-<!-- TODO: This doesn't seem to be the case here. Check -->
+
 <para>
-As vectors can be potentially quite large, it is a good idea to be aware of the amount of memory &kst; has
+As vectors can potentially be quite large, it is a good idea to be aware of the amount of memory &kst; has
 allocated for use.  The current available memory is displayed in the lower right corner of the status bar
 of the main &kst; window.
 </para>
+
 <tip>
 <para>
 If the status bar is not available, ensure that <guimenuitem>Show Statusbar</guimenuitem> is checked
@@ -313,7 +188,7 @@ settings are listed below.
 <screeninfo>Edit Vectors</screeninfo>
 <mediaobject>
 <imageobject>
-<imagedata fileref="Screenshot-kst-vectorwindow.png" format="PNG" />
+<imagedata fileref="Screenshot-kst-vectoredit.png" format="PNG" />
 </imageobject>
 <textobject>
 <phrase>Edit Vectors</phrase>
@@ -321,13 +196,7 @@ settings are listed below.
 </mediaobject>
 </screenshot>
 
-<sect3 id="data-types-vectors-parameters">
-<title>Data Vector Parameters</title>
-<para>
-The source file and field to read can be set using the following options.
-</para>
 <variablelist>
-
 <varlistentry>
 <term>
 <guilabel>File name</guilabel>
@@ -335,7 +204,7 @@ The source file and field to read can be set using the following options.
 <listitem>
 <para>
 The path to the desired data file.  Clicking the button to the right displays a file browser
-window that can be used to graphically browse to the file.
+window that can be used to graphically browse for the file.
 </para>
 </listitem>
 </varlistentry>
@@ -346,19 +215,11 @@ window that can be used to graphically browse to the file.
 </term>
 <listitem>
 <para>
-The field or column to create a vector from.
+The field or column to use for the vector.
 </para>
 </listitem>
 </varlistentry>
-</variablelist>
-</sect3>
 
-<sect3 id="data-types-vectors-range">
-<title>Data Range</title>
-<para>
-This section specifies the range of data to use from the selected field for the data vector.
-</para>
-<variablelist>
 <varlistentry>
 <term>
 <guilabel>Start frame</guilabel>, <guilabel>Count from end</guilabel>,
@@ -366,7 +227,7 @@ This section specifies the range of data to use from the selected field for the 
 </term>
 <listitem>
 <para>
-Using these four settings, the lower and upper boundaries of the data range can be set. For example, to read from frame 10 to frame 900, enter <userinput>10</userinput> for <guilabel>Start frame</guilabel> and <userinput>890</userinput> for <guilabel>Range</guilabel>. To read from frame 500 to the end of the file, enter <userinput>500</userinput> for <guilabel>Start frame</guilabel> and select the <guilabel>Read to end</guilabel> option. To read only the last 450 frames from the file, select the <guilabel>Count from end</guilabel> option and enter <userinput>450</userinput> for <guilabel>Range</guilabel>. The combinations used in the previous two examples are often useful for reading data from a file that is being updated in real time. Subsequent additions to the file are read, causing associated vectors to be updated as well.
+This section specifies the range of data to use from the selected field for the data vector. This discussion assumes a knowledge of the <link linkend="data-sources-concepts-frames">Frames</link> concept. Using these four settings, the lower and upper boundaries of the data range can be set. For example, to read from frame 10 to frame 900, enter <userinput>10</userinput> for <guilabel>Start frame</guilabel> and <userinput>890</userinput> for <guilabel>Range</guilabel>. To read from frame 500 to the end of the file, enter <userinput>500</userinput> for <guilabel>Start frame</guilabel> and select the <guilabel>Read to end</guilabel> option. To read only the last 450 frames from the file, select the <guilabel>Count from end</guilabel> option and enter <userinput>450</userinput> for <guilabel>Range</guilabel>. The combinations used in the previous two examples are often useful for reading data from a file that is being updated in real time. Subsequent additions to the file are read, causing associated vectors to be updated as well.
 </para>
 </listitem>
 </varlistentry>
@@ -379,18 +240,14 @@ Using these four settings, the lower and upper boundaries of the data range can 
 <para>
 In addition to the lower and upper range boundaries, the samples to read from the selected range can be set.
 If <guilabel>Read 1 sample per</guilabel> is not selected, all samples in the selected range will be read.
-If <guilabel>Read 1 sample per</guilabel> is selected, only 1 sample per <literal>N</literal> frames will be read,
-where <literal>N</literal> is the number entered in selection box to the right.
+If <guilabel>Read 1 sample per</guilabel> is selected, only 1 sample per <literal>N</literal> frames will be read, where <literal>N</literal> is the number entered in selection box to the right.
 The value of the 1 sample that is used to represent a frame depends on whether or not
-<guilabel>Boxcar filter first</guilabel> is selected.  If <guilabel>Boxcar filter first</guilabel> is not selected,
-the value is the same as the value of the 1st sample in the frame. If <guilabel>Boxcar filter first</guilabel>
-is selected, the value is the mean (average) of all the samples in that particular frame.
+<guilabel>Boxcar filter first</guilabel> is selected.  If <guilabel>Boxcar filter first</guilabel> is not selected, the value is the same as the value of the 1st sample in the frame. If <guilabel>Boxcar filter first</guilabel> is selected, the value is the average of all the samples in that particular frame.
 </para>
 </listitem>
 </varlistentry>
 </variablelist>
 
-</sect3>
 </sect2>
 
 <sect2 id="data-types-curves">
@@ -416,12 +273,19 @@ settings are listed below.
 </mediaobject>
 </screenshot>
 
-<sect3 id="data-types-curve-options-contents">
-<title>Curve Contents</title>
-<para>
-The contents of the curve can be set from this section.
-</para>
 <variablelist>
+
+<varlistentry>
+<term>
+<guilabel>Legend Text</guilabel>
+</term>
+<listitem>
+<para>
+The string to be used in Plot Legends to describe this curve.
+</para>
+</listitem>
+</varlistentry>
+
 <varlistentry>
 <term>
 <guilabel>X axis vector</guilabel>
@@ -431,7 +295,6 @@ The contents of the curve can be set from this section.
 The vector to use for the independent (horizontal) axis.
 </para>
 </listitem>
-
 </varlistentry>
 
 <varlistentry>
@@ -477,8 +340,31 @@ error bars.</para>
 </listitem>
 </varlistentry>
 
+<varlistentry>
+<term>Show Points</term>
+<listitem><para>Determines whether are not the data points will be indicated by the selected type of marker.</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>Density</term>
+<listitem><para>If Show Points is enabled, Density allows you to have &kst; only show occasional points if they will otherwise clutter the plot.</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>Show Lines / Weight</term>
+<listitem><para>The color and thickness (in pixels) of the curve.</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>Bargraph</term>
+<listitem><para>Draws lines or rectangles from the data points to the bottom of the plot.</para>
+</listitem>
+</varlistentry>
 </variablelist>
-</sect3>
+
 </sect2>
 
 <sect2 id="data-types-equations">
@@ -499,9 +385,6 @@ settings are listed below.
 <imageobject>
 <imagedata fileref="Screenshot-kst-data-equationedit.png" format="PNG" />
 </imageobject>
-<textobject>
-<phrase>Edit Equation</phrase>
-</textobject>
 </mediaobject>
 </screenshot>
 
@@ -512,8 +395,7 @@ settings are listed below.
 </term>
 <listitem>
 <para>
-A list of available operators.  Choosing an operator from the list inserts the operator at the current
-insertion point in the <guilabel>Equation</guilabel> text box.
+A list of available operators.  Choosing an operator from the list inserts the operator at the current insertion point in the <guilabel>Equation</guilabel> text box.
 </para>
 </listitem>
 </varlistentry>
@@ -573,7 +455,7 @@ drop-down list, or quickly create a new one by clicking the wizard button to the
 </term>
 <listitem>
 <para>
-Selecting this option interpolates the selected X vector to the greatest number of samples possible, given the data used in the equation expression. For example, if the data expression acts on a vector Y which contains twice as many variables as the selected X vector, the equation object will create a slave vector of interpolated X values with the same # of points as Y.
+Selecting this option interpolates the selected X vector to the greatest number of samples possible, given the data used in the equation expression. For example, if the data expression acts on a vector Y which contains twice as many variables as the selected X vector, the equation object will create a slave vector of interpolated X values with the same number of points as Y.
 </para>
 </listitem>
 </varlistentry>
@@ -597,18 +479,8 @@ settings are listed below.
 <imageobject>
 <imagedata fileref="Screenshot-kst-data-histogramedit.png" format="PNG" />
 </imageobject>
-<textobject>
-<phrase>Edit Equation</phrase>
-</textobject>
 </mediaobject>
 </screenshot>
-
-<sect3 id="data-types-histogram-properties">
-<title>Histogram Properties</title>
-<para>
-The source vector, as well as basic histogram properties, can be modified from this section.
-You can either manually specify settings or use the <guibutton>Auto Bin</guibutton> button.
-</para>
 
 <variablelist>
 <varlistentry>
@@ -617,8 +489,7 @@ You can either manually specify settings or use the <guibutton>Auto Bin</guibutt
 </term>
 <listitem>
 <para>
-The data vector to create the histogram from.  Although a vector is needed to create a histogram, the
-vector is treated as an unordered set for the purposes of creating a histogram.
+The data vector to create the histogram from.  Although a vector is needed to create a histogram, the vector is treated as an unordered set for the purposes of creating a histogram.
 </para>
 </listitem>
 </varlistentry>
@@ -642,7 +513,6 @@ The <guilabel>to</guilabel> field contains the right bound for the rightmost bin
 <listitem>
 <para>
 Enter the total number of bins to use in the <guilabel>Num bins</guilabel> field.
-
 </para>
 </listitem>
 </varlistentry>
@@ -655,22 +525,10 @@ Enter the total number of bins to use in the <guilabel>Num bins</guilabel> field
 <para>
 Instead of specifying values for <guilabel>From</guilabel>, <guilabel>to</guilabel>, and
 <guilabel>Num bins</guilabel>, you can click <guibutton>Auto Bin</guibutton> to automatically generate
-values for all three fields based based on the lowest and highest values, as well as the number
-of elements found in the source vector.
+values for all three fields based based on the length and lowest/highest values of the chosen the data vector.
 </para>
 </listitem>
 </varlistentry>
-
-</variablelist>
-</sect3>
-
-
-<sect3 id="data-types-histogram-ynormalization">
-<title>Y Axis Normalization</title>
-<para>
-This section is used to specify the type of normalization used for the y axis of the histogram.
-</para>
-<variablelist>
 
 <varlistentry>
 <term>
@@ -718,24 +576,13 @@ the number of elements in the largest bin (the bin with the greatest number of e
 </para>
 </listitem>
 </varlistentry>
-
 </variablelist>
-</sect3>
-
-
 </sect2>
 
 <sect2 id="data-types-spectrum">
-<title>Spectra</title>
+<title>Spectrum</title>
 <para>
-The below definitions assume basic knowledge of power spectra&mdash;for further details, refer to "Numerical Recipes in C: The Art of Scientific Computing", published by Cambridge University Press.
-</para>
-<para>
-A power spectrum data object represents the power spectrum of a vector, defined as
-<quote>the square root of the absolute value of the
-mean of the interleaved Fast Fourier Transforms of length <literal>2^x</literal> of the vector</quote>, where x is the
-value entered in the <guilabel>FFT Length</guilabel> selection box. 
-<!--- FIXME: we need a clearer definition of the power spectrum. this should be done after the code in PSDcalculator has been documented. -->
+The following definitions assume basic knowledge of power spectra&mdash;. We use the conventions and terminology of "Numerical Recipes in C: The Art of Scientific Computing", published by Cambridge University Press.
 </para>
 
 <screenshot>
@@ -750,12 +597,6 @@ value entered in the <guilabel>FFT Length</guilabel> selection box.
 </mediaobject>
 </screenshot>
 
-<sect3 id="data-types-spectrum-contents">
-<title>Curve Contents</title>
-<para>
-The source vector for the power spectrum can be modified from this section.
-</para>
-
 <variablelist>
 <varlistentry>
 <term>
@@ -763,27 +604,18 @@ The source vector for the power spectrum can be modified from this section.
 </term>
 <listitem>
 <para>
-The data vector to create a power spectrum from.
+The data vector to create the spectrum from.
 </para>
 </listitem>
 </varlistentry>
-</variablelist>
-</sect3>
 
-<sect3 id="data-types-spectrum-fftoptions">
-<title>FFT Options</title>
-<para>
-The basic settings for the FFT can be configured here.
-</para>
-
-<variablelist>
 <varlistentry>
 <term>
 <guilabel>Apodize, Function, and Sigma</guilabel>
 </term>
 <listitem>
 <para>
-If this option is selected, the data is apodized using a the window function selected from the drop-down menu at right. Apodization can be used to reduce bin-to-bin leakage. If a Gaussian apodization function is chosen, then a sigma value may also be entered to define its effective width.
+If the Apodize option is selected, the data is windowed using a the function chosen from the drop-down menu at right. Apodization can be used to reduce bin-to-bin leakage. If the Gaussian apodization function is chosen, then a sigma value may also be entered to define its effective width.
 </para>
 </listitem>
 </varlistentry>
@@ -794,7 +626,7 @@ If this option is selected, the data is apodized using a the window function sel
 </term>
 <listitem>
 <para>
-Select this option to remove the mean from the selected data (i.e. translate the data so that the mean is zero).
+Select this option to remove the mean from the data while calculating the transform.
 </para>
 </listitem>
 </varlistentry>
@@ -805,8 +637,7 @@ Select this option to remove the mean from the selected data (i.e. translate the
 </term>
 <listitem>
 <para>
-Selecting <guilabel>Interleaved average</guilabel> allows the length of the interleaved Fast Fourier
-Transforms to be specified.  The length is specified as a power of 2. If <guilabel>Interleaved average</guilabel> is unchecked, &kst; will choose the smallest possible FFT length which is greater than the data vector length.
+Selecting <guilabel>Interleaved average</guilabel> calculates the FFT over segments of the data, which increases the FFT speed and improves accuracy, at the result of less information about low frequency components. The length of the interleaved segments is specified as a power of 2. If <guilabel>Interleaved average</guilabel> is unchecked, &kst; will choose the smallest possible FFT length which is greater than the data vector length.
 </para>
 </listitem>
 </varlistentry>
@@ -829,7 +660,7 @@ If the data vector contains NaN values, then selecting this option will cause &k
 <listitem>
 <para>
 This is the number of data vector samples per unit time.
-The sample rate is used to generate the X axis of power spectrum plots.
+The sample rate is used to generate the X axis of the spectrum for plotting.
 </para>
 </listitem>
 </varlistentry>
@@ -851,21 +682,19 @@ The units specified in these textboxes are used for the purpose of auto-generati
 </term>
 <listitem>
 <para>
-The option selected from this drop-down menu determines which variant of the fundamental power spectrum should be computed. The amplitude spectrum is calculated by taking the square root of the power spectrum. Spectral densitites are calculated by multiplying the Power or Amplitude Spectra by the number of data samples divided by the sample rate entered above.
+The option selected from this drop-down menu determines which variant of the power spectrum should be computed. The amplitude spectrum is calculated by taking the square root of the power spectrum. Spectral densitites are calculated by multiplying the Power or Amplitude Spectra by the number of data samples divided by the sample rate entered above.
 <!--- FIXME: improve this once a clear definition of the power spectrum itself has been entered at the start of this section. -->
 </para>
 </listitem>
 </varlistentry>
-
 </variablelist>
-</sect3>
 
 </sect2>
 
 <sect2 id="data-types-spectrogram">
 <title>Spectrogram</title>
 <para>
-A spectrogram is a way to plot the frequency spectrum of a data vector as a function of position within the data. It allows you to visualize, for example, how the frequencies of a signal change with time. In &kst; the spectrogram data object takes a data vector as an input and produces an image object which can be displayed as a 'waterfall' plot. An example is shown in the screenshot below. This is a spectrogram from one day of data from a channel of the WMAP satellite. The size of the intervals over which frequency has been chosen so that each interval corresponds to 1/2 hour of data. The 1h periodic precession of the satellite about its spin axis can be clearly seen. Also, at ~0.007Hz the red lines at the bottom of the image show the much faster (.5rpm) spin frequency of the satellite.
+A spectrogram is a way to plot the frequency spectrum of a data vector as a function of position within the data. It allows you to visualize, for example, how the frequency distribution of a signal changes with time. In &kst; the spectrogram data object takes a data vector as an input and produces an image object which can be displayed as a 'waterfall' plot. An example is shown in the screenshot below. This is a spectrogram from one day of data from a channel of the WMAP satellite. The size of the intervals over which the component spectra are calculated has been chosen so that each interval corresponds to 1/2 hour of data. The 1h periodic precession of the satellite about its spin axis can be clearly seen. Also, at ~0.007Hz the red lines at the bottom of the image show the much faster (.5rpm) spin frequency of the satellite.
 </para>
 <screenshot>
 <screeninfo>Spectrogram Example</screeninfo>
@@ -911,7 +740,7 @@ FFT Options
 </term>
 <listitem>
 <para>
-These are the options for the individual spectra. See the <link linkend="data-types-spectrum-fftoptions">FFT Options</link> of the <link linkend="data-types-spectrum">Spectrum</link> data object for more information.
+These are the options for the individual spectra. See the <link linkend="data-types-spectrum">Spectrum</link> data object for more information.
 </para>
 </listitem>
 </varlistentry>
@@ -932,18 +761,16 @@ Here you can choose the color scheme to use for the spectrogram. The amplitudes 
 <sect2 id="data-types-plugins">
 <title>Plugins</title>
 <para>
-A plugin data object represents a &kst; plugin.  All plugins have a common format, and show up as type <quote>Plugin</quote>
-in the Data Manager.  For more information about the available plugins and their options, please see the <link linkend="pluginsandfilters">Plugins</link> chapter.
+A plugin data object represents a &kst; plugin.  All plugins have a common format, and show up as type <quote>Plugin</quote> in the Data Manager.  For more information about the available plugins and their options, please see the <link linkend="pluginsandfilters">Plugins</link> chapter.
 </para>
 </sect2>
 
-<sect2 id="data-types-events">
+<sect2 id="data-types-eventmonitors">
 <title>Event Monitors</title>
 <para>
 An event monitor data object essentially keeps track of one or more vectors
-or scalars, and performs a specified action when a specified condition involving the vectors or scalars is true.
-Event monitors are usually used in conjunction with <quote>live</quote>, or streaming data. For example, an event monitor
-could be created to monitor whether or not elements of a data vector representing temperature exceed a predefined value.
+or scalars, and performs an action when a specified condition involving the vectors and scalars is true.
+Event monitors are usually used in conjunction with <quote>live</quote>, or streaming data. For example, an event monitor could be created to monitor whether or not elements of a data vector representing temperature exceed a predefined value.
 </para>
 
 <para>
@@ -963,15 +790,7 @@ The following is a screenshot of the window displayed when creating or editing e
 </mediaobject>
 </screenshot>
 
-<sect3 id="data-types-event-expression">
-<title>Expression</title>
-<para>
-The condition to monitor for, along with other event properties, can be modified in this section.
-</para>
-
-<!-- FIXME: remove this junk -->
 <variablelist>
-
 <varlistentry>
 <term>
 <guilabel>Expression</guilabel>
@@ -996,15 +815,7 @@ This textbox is used to store a short description of the event.  The description
 </para>
 </listitem>
 </varlistentry>
-</variablelist>
-</sect3>
 
-<sect3 id="data-types-events-debuglog">
-<title>Kst Debug Log</title>
-<para>
-This section specifies settings for entries added to the &kst; debug log when events are triggered.
-</para>
-<variablelist>
 <varlistentry>
 <term><guilabel>Log as:</guilabel></term>
 <listitem>
@@ -1015,40 +826,37 @@ Select the desired type of entry using the corresponding radio button.
 </para>
 </listitem>
 </varlistentry>
-</variablelist>
-</sect3>
 
-<sect3 id="data-types-events-debuglog-emailnotification">
-<title>E-Mail Notification</title>
-<para>
-In this section, settings for sending e-mail notifications of event triggers can be specified.
-</para>
-
-<variablelist>
 <varlistentry>
-<term><guilabel>Notify</guilabel></term>
+<term><guilabel>E-Mail Notify</guilabel></term>
 <listitem>
 <para>
 Enable this checkbox to have &kst; send e-mail notifications to the specified address when this
-event is triggered. General E-mail configuration options are available in the &kst; Settings dialog.
-<!-- FIXME: document the settings dialog -->
+event is triggered. General E-mail configuration options are available in the &kst; <link linkend="settings-globalsettings">Settings</link> dialog.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>ELOG</guilabel></term>
+<listitem>
+<para>
+If the <link linkend="extensions-elog">ELOG Extension</link> is activated, then then Event Monitor can provide notification through ELOG. This can be useful for remotely monitoring live data, or for obtaining summaries of event activity. Please see the <link linkend="extensions-elog">ELOG</link> section for more information.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>KstScript</guilabel></term>
+<listitem>
+<para>
+If the  is activated, then then Event Monitor can provide execute a KstScript when it triggers. Please see the <link linkend="extensions-kstscript">KstScript</link> documentation for more information.
 </para>
 </listitem>
 </varlistentry>
 </variablelist>
-</sect3>
-
-<sect3 id="data-types-events-elog">
-<title>E-Log</title>
-<para>
-&kst; supports adding entries to an ELOG logbook upon event triggers.  This can be useful for remotely
-monitoring live data, or for obtaining summaries of event activity. Please see the <xref linkend="elogextension"/> section for more information.
-<!-- FIXME: should this be disabled if ELOG isn't present? -->
-</para>
-</sect3>
 
 </sect2>
-
 
 <sect2 id="data-types-matrix">
 <title>Matrix</title>
@@ -1058,16 +866,20 @@ The z values of the matrix are obtained from a vector, and the grid structure is
 the Edit or New Matrix dialog.  The descriptions below refer to the following diagram depicting
 &kst;'s matrix structure.
 </para>
-<para>
-<inlinemediaobject>
+
+<screenshot>
+<screeninfo>Matrix Structure</screeninfo>
+<mediaobject>
 <imageobject>
 <imagedata fileref="Diagram-kst-data-matrix.png" format="PNG"/>
 </imageobject>
-</inlinemediaobject>
-</para>
+</mediaobject>
+</screenshot>
+
 <para>
-A screenshot and explanation of the matrix dialog follow.
+A screenshot and explanation of the options in the Matrix edit dialog follow.
 </para>
+
 <screenshot>
 <screeninfo>Edit Matrix</screeninfo>
 <mediaobject>
@@ -1077,27 +889,30 @@ A screenshot and explanation of the matrix dialog follow.
 </mediaobject>
 </screenshot>
 
-<sect3 id="data-types-matrix-vector">
-<title>Vector Selection</title>
-
 <variablelist>
 <varlistentry>
 <term>
-<guilabel>Z Vector</guilabel>
+<guilabel>File name</guilabel>
 </term>
 <listitem>
 <para>
-The data vector to obtain the z values from.
+The path to the desired data file.  Clicking the button to the right displays a file browser
+window that can be used to graphically browse for the file.
 </para>
 </listitem>
 </varlistentry>
-</variablelist>
-</sect3>
 
-<sect3 id="data-types-matrix-gridparameters">
-<title>Grid Parameters</title>
+<varlistentry>
+<term>
+<guilabel>Field or column</guilabel>
+</term>
+<listitem>
+<para>
+The field or column from which to obtain the Z vector.
+</para>
+</listitem>
+</varlistentry>
 
-<variablelist>
 <varlistentry>
 <term>
 <guilabel>X Minimum</guilabel> and <guilabel>Y Minimum</guilabel>
@@ -1140,7 +955,6 @@ Note that the minimum allowed y dimension is 1, while the minimum allowed x dime
 </listitem>
 </varlistentry>
 </variablelist>
-</sect3>
 
 </sect2>
 
@@ -1162,8 +976,6 @@ as color maps, contour maps, or both.
 </mediaobject>
 </screenshot>
 
-<sect3 id="data-types-image-matrix">
-<title>Matrix Selection</title>
 
 <variablelist>
 <varlistentry>
@@ -1176,13 +988,7 @@ Select the matrix to use for this image.  New matrices can be created or edited 
 </para>
 </listitem>
 </varlistentry>
-</variablelist>
-</sect3>
 
-<sect3 id="data-types-image-type">
-<title>Image Type</title>
-
-<variablelist>
 <varlistentry>
 <term>
 <guilabel>Color Map</guilabel>, <guilabel>Contour Map</guilabel>, and <guilabel>Color Map and Contour Map</guilabel>
@@ -1190,22 +996,11 @@ Select the matrix to use for this image.  New matrices can be created or edited 
 <listitem>
 <para>
 Select the type of image to be plotted. Changing this selection enables or disables sections of the image dialog
-as appropriate.
+as appropriate. A color map represents the Z value of each cell in the matrix using a color. A contour map plots curves with lie on locations of constant Z.
 </para>
 </listitem>
 </varlistentry>
-</variablelist>
-</sect3>
 
-<sect3 id="data-types-image-colormap">
-<title>Color Map Parameters</title>
-<para>
-A color map represents the z value of each cell in the matrix using a color. This section is only available
-if either <guilabel>Color Map</guilabel> or <guilabel>Color Map and Contour Map</guilabel> is selected under
-<guilabel>Image Type</guilabel>.
-</para>
-
-<variablelist>
 <varlistentry>
 <term>
 <guilabel>Color palette</guilabel>
@@ -1270,18 +1065,7 @@ Selecting this option causes the lower and upper threshold values to be always s
 </para>
 </listitem>
 </varlistentry>
-</variablelist>
-</sect3>
 
-<sect3 id="data-types-image-contourmap">
-<title>Contour Map Parameters</title>
-<para>
-A contour map draws a set of lines, with each line representing a particular z value. This section is only available
-if <guilabel>Contour Map</guilabel> or <guilabel>Color Map and Contour Map</guilabel> is selected under
-<guilabel>Image Type</guilabel>.
-</para>
-
-<variablelist>
 <varlistentry>
 <term>
 <guilabel>Number of contour levels</guilabel>
@@ -1319,7 +1103,6 @@ Use discretion when selecting this option, as images with high contour line dens
 </listitem>
 </varlistentry>
 </variablelist>
-</sect3>
 </sect2>
 </sect1>
 
@@ -1370,47 +1153,8 @@ Here you can select the fields you wish to import into &kst;.  You may filter th
 
 <anchor id="data-tools-wizard-range"></anchor>
 <para>
-The <guilabel>Data Range</guilabel> section is used to specify the range of data to read from the selected vectors in the input file. The following discussion assumes knowledge of <quote>frames</quote>.  For a detailed description of this concept, see <link linkend="data-sources">Datasources</link>.
+The <guilabel>Data Range</guilabel> section is used to specify the range of data to read from the selected vectors in the input file. For information about these parameters, read the description of the <link linkend="data-types-vectors">Vector</link> data object.
 </para>
-<variablelist>
-<varlistentry>
-<term>
-<guilabel>Starting frame</guilabel>, <guilabel>Count from end</guilabel>,
-<guilabel>Number of frames</guilabel>, and <guilabel>Read to end</guilabel>
-</term>
-<listitem>
-<para>
-Using these four settings, the lower and upper boundaries of
-the data range can be set. For example, to read from frame 10 to frame 900, enter <userinput>10</userinput> for
-<guilabel>Starting frame</guilabel> and <userinput>890</userinput> for <guilabel>Number of frames</guilabel>.
-To read from frame 500 to the end of the file, enter <userinput>500</userinput> for <guilabel>Starting frame</guilabel>
-and select the <guilabel>Read to end</guilabel> option. To read only the last 450 frames from the file, select the
-<guilabel>Count from end</guilabel> option and enter <userinput>450</userinput> for <guilabel>Number of frames</guilabel>.
-The combinations used in the previous two examples are often useful for reading data
-from a file that is being updated in real time.  Subsequent additions to the file are read, causing associated
-vectors to be updated as well.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term>
-<guilabel>Read 1 sample per N frames</guilabel> and <guilabel>Boxcar filter first</guilabel>
-</term>
-<listitem>
-<para>
-In addition to the lower and upper range boundaries, the samples to read from the selected range can be set.
-If <guilabel>Read 1 sample per N frames</guilabel> (where N is the entered value) is not selected,
-all samples in the selected range will be read.
-Alternatively, frames in the data file can be skipped by selecting <guilabel>Read 1 sample per N frames</guilabel>
-The value of the 1 sample that is used to represent a frame depends on whether or not
-<guilabel>Boxcar filter first</guilabel> is selected.  If <guilabel>Boxcar filter first</guilabel> is not selected,
-the value is the same as the value of the 1st sample in the frame. If <guilabel>Boxcar filter first</guilabel>
-is selected, the value is the mean (average) of all the samples in that particular frame.
-</para>
-</listitem>
-</varlistentry>
-</variablelist>
 
 <para>
 Power Spectrum and X axis settings can be specified within the <guilabel>Plot Types</guilabel> section.
@@ -1457,8 +1201,8 @@ is to be plotted. Detailed information on these options can be found in the <lin
 Once you are satisfied with all the settings, click <guibutton>Next</guibutton> to advance to advance to the final
 window.
 </para>
-
 </sect3>
+
 <sect3 id="data-tools-wizard-configureplotlayout">
 <title>Configure Plot Layout</title>
 
@@ -1601,8 +1345,16 @@ each dialog.
 <listitem>
 <para>
 Displays a dialog from which the values of all the scalars in the current &kst; session
-can be viewed. The dialog is updated dynamically if the values change.
+can be viewed. The values are displayed hierarchically, based on which higher level data objects the scalars are determined for. The dialog is updated dynamically if the values change.
 </para>
+<screenshot>
+<screeninfo>View Scalar Values</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-data-viewscalarvalues.png" format="PNG" />
+</imageobject>
+</mediaobject>
+</screenshot>
 </listitem>
 </varlistentry>
 
@@ -1611,9 +1363,16 @@ can be viewed. The dialog is updated dynamically if the values change.
 <listitem>
 <para>
 Displays a dialog from which the values in all the current vectors can be viewed. Select
-a vector to view using the drop-down list. The dialog
-is updated dynamically if the values change.
+a vector to view using the drop-down list. The dialog is updated dynamically if the values change.
 </para>
+<screenshot>
+<screeninfo>View Vector Values</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-data-viewscalarvalues.png" format="PNG" />
+</imageobject>
+</mediaobject>
+</screenshot>
 </listitem>
 </varlistentry>
 
@@ -1625,6 +1384,14 @@ Displays a dialog from which the values in all the current matrices can be viewe
 a matrix to view using the drop-down list. The dialog
 is updated dynamically if the values change.
 </para>
+<screenshot>
+<screeninfo>View Vector Values</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-data-viewmatrixvalues.png" format="PNG" />
+</imageobject>
+</mediaobject>
+</screenshot>
 </listitem>
 </varlistentry>
 
@@ -1636,6 +1403,14 @@ Displays a dialog which shows all the resulting values from fit plugins. Select
 a fit result to view using the drop-down list. The dialog
 is updated dynamically if the values change.
 </para>
+<screenshot>
+<screeninfo>Curve Fitting - Fit Results</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-commontasks-curvefitting-fitresults.png" format="PNG" />
+</imageobject>
+</mediaobject>
+</screenshot> 
 </listitem>
 </varlistentry>
 </variablelist>
@@ -1644,24 +1419,21 @@ is updated dynamically if the values change.
 <sect2 id="data-tools-datamode">
 <title>Data View Mode</title>
 <para>Data mode allows precise viewing of the data points used in a plotted data object.  To toggle data mode,
-select <guimenuitem>Data Mode</guimenuitem> from the <guimenu>Plots</guimenu> menu. Now, when the cursor
+select <guimenuitem>Data Mode</guimenuitem> from the <guimenu>Plots</guimenu> menu, or click the <inlinemediaobject><imageobject><imagedata fileref="Icon-kst-datamode.png" format="PNG"/></imageobject></inlinemediaobject> Data Mode button on the <link linkend="view-tools-toolbar">Toolbar</link>. Now, when the cursor
 is moved over a plot, a coloured dot will indicate the closest data point to the cursor, as shown in the
 screenshot below.  The status bar will
 display the coordinates of the data point (in terms of the x and y vectors used to plot the data object) in status bar at the
-lower right corner of the &kst; window.
+lower left corner of the &kst; window.
 The status bar will also display the x, y, and z coordinates of any visible image.  If images overlap, only the coordinates of the
 topmost image will be displayed.
 Note that all zooming functions are still available while in data mode.
 </para>
 <screenshot>
-<screeninfo>Top of Plot Dialog</screeninfo>
+<screeninfo>Data Mode</screeninfo>
 <mediaobject>
 <imageobject>
 <imagedata fileref="Screenshot-kst-data-datamode.png" format="PNG" />
 </imageobject>
-<textobject>
-<phrase>Top of Plot Dialog</phrase>
-</textobject>
 </mediaobject>
 </screenshot>
 <tip>
@@ -1711,15 +1483,28 @@ The <guimenuitem>Change Data Sample Ranges</guimenuitem> dialog can be accessed 
 <sect1 id="data-sources">
 <title>Datasources</title>
 <para>
-Currently, Kst supports <link linkend="data-sources-ascii">ASCII</link> text files, BOOMERANG frame files, <link linkend="data-sources-blastdirfiles">BLAST</link> dirfiles, PLANCK LFIIO files, and QImage files as data sources, as well as PIOLib, HEALPix, and FITS files if the appropriate libraries are present.
+&kst; uses externally linked datasources to read from data files. This means that new data formats can be transparently added to the &kst; repertoire. 
+
+Currently, the &kst; distribution includes the following default datasources:
+<itemizedlist>
+<listitem><para><link linkend="data-sources-ascii">ASCII</link></para></listitem>
+<listitem><para><link linkend="data-sources-blastdirfiles">BLAST Dirfiles</link></para></listitem>
+<listitem><para><link linkend="data-sources-healpix">HEALPix</link></para></listitem>
+<listitem><para><link linkend="data-sources-qimage">QImage</link></para></listitem>
+<listitem><para><link linkend="data-sources-indirect">Indirect</link></para></listitem>
+<listitem><para><link linkend="data-sources-cdf">CDF</link></para></listitem>
+<listitem><para><link linkend="data-sources-netcdf">netCDF</link></para></listitem>
+<listitem><para><link linkend="data-sources-lfiio">LFIIO</link></para></listitem>
+<listitem><para><link linkend="data-sources-scuba">SCUBA</link></para></listitem>
+</itemizedlist>
+
+If you have a data format which you would like &kst; to read, it's easy to <link linkend="supportingadditionalfileformats">create</link> your own.
 </para>
 
 <anchor id="data-sources-concepts"></anchor>
 <para>
-A data source in &kst; is simply a supported data file.
 The following concepts are important in understanding how &kst; works with
-data sources which provide vectors.
-Some terminology is also introduced in this section.
+data sources. Some terminology is also introduced in this section.
 </para>
 
 <variablelist>
@@ -1764,7 +1549,7 @@ Field 3 has a ratio of 3 samples per frame, and Field 4 has a ratio of 1 sample 
 <para>
 <inlinemediaobject>
 <imageobject>
-<imagedata fileref="Diagram-kst-data-frames.png" format="PNG"/>
+<imagedata fileref="Diagram-kst-data-framesconcept.png" format="PNG"/>
 </imageobject>
 </inlinemediaobject>
 </para>
@@ -1776,7 +1561,7 @@ Depending on the specific data vector settings in &kst;, data from files may be 
 </varlistentry>
 
 <varlistentry>
-<term>INDEX field</term>
+<term id="data-sources-concepts-index">INDEX field</term>
 <listitem>
 <para>
 Some data files may not have a field that represents the x axis of a plot. However, &kst;
@@ -1812,39 +1597,84 @@ can be easily created by hand or simple scripts if desired.  The following is an
 </screen>
 </informalexample>
 
-<para>
-Each column of this file represents a field, while each row represents one frame.
-Columns are separated by tabs or spaces, and rows are separated by carriage returns.
-Note that due to their structure, ASCII files cannot have multiple samples per frame.
-If the columns do not have labels, field names are assigned by &kst; based on the
-order of the columns (with the leftmost column having a field name of <literal>1</literal>).
-</para>
+<screenshot>
+<screeninfo>Datasources - Configure ASCII</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-commontasks-plottingsimplegraphs-configureascii.png" format="PNG" />
+</imageobject>
+</mediaobject>
+</screenshot>
 
+<variablelist>
+<varlistentry>
+<term>Comment Indicators</term>
+<listitem>
 <para>
-Commented lines in ASCII files start with one of the characters in the set
+By default, commented lines in ASCII files start with one of the characters in this set
 <literal>{#, !, /, ;, c}</literal>.  All commented lines and empty lines
 are ignored by &kst;.  Valid numbers include those with decimals, negative signs,
 or <literal>e</literal>, to indicate scientific notation. Invalid numbers (such as
 English words) are replaced with 0 by &kst;.
 </para>
+</listitem>
+</varlistentry>
 
-<screenshot>
-<screeninfo>Datasources - Configure ASCII</screeninfo>
-<mediaobject>
-<imageobject>
-<imagedata fileref="Screenshot-kst-data-asciiconfig.png" format="PNG" />
-</imageobject>
-</mediaobject>
-</screenshot>
+<varlistentry>
+<term>Interpret ... As ...</term>
+<listitem>
+<para>
 
+</para>
+</listitem>
+</varlistentry>
 
+<varlistentry>
+<term>Always accept files matching:</term>
+<listitem>
+<para>
+Here you can enter an expression which you want to designate ASCII data files, in case they are being claimed by another data source.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>Data starts at line:</term>
+<listitem>
+<para>
+Data before this line will be ignored. Setting this value to zero ensures that all of the data will be read.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>Read field names from line:</term>
+<listitem>
+<para>
+If this option is selected, the field names for the file's vectors will be read from the specified line. If the columns do not have labels, field names are assigned by &kst; based on the
+order of the columns (with the leftmost column having a field name of <literal>1</literal>).
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>Data format</term>
+<listitem>
+<para>
+Choose the option which describes how the data is delimited (how the columns and rows are separated). Each column of this file represents a field, while each row represents one frame.
+Columns are typically separated by tabs or spaces, and rows are separated by carriage returns.
+</para>
+</listitem>
+</varlistentry>
+
+</variablelist>
 </sect2>
 
 
 <sect2 id="data-sources-blastdirfiles">
 <title>BLAST Dirfiles</title>
 <para>
-BLAST dirfile data sources are actually directories of files.  Each directory represents
+BLAST is a balloon flown telescope which does cosmology (<ulink url="http://chile1.physics.upenn.edu/blastpublic/">http://chile1.physics.upenn.edu/blastpublic/</ulink>). Dirfiles contain its data. BLAST dirfile data sources are actually directories of files.  Each directory represents
 one data source, and each file in the directory, with the exception of a file called
 <filename>format</filename>, represents a single field. The file named <filename>format</filename>
 lists each field and its properties.  Below is example of such a file:
@@ -1872,7 +1702,7 @@ to determine the fields and their properties.
 <sect2 id="data-sources-healpix">
 <title>HEALPix FITS files</title>
 <para>
-HEALPix is a pixelisation scheme for the sphere. More information can be found at <ulink url="http://healpix.jpl.nasa.gov/">http://healpix.jpl.nasa.gov/</ulink>. HEALPix data should typically be loaded into &kst; as a matrix. An image of a sample HEALPix matrix is shown below:
+HEALPix is a pixelisation scheme for the sphere. More information can be found at <ulink url="http://healpix.jpl.nasa.gov/">http://healpix.jpl.nasa.gov/</ulink>. HEALPix data is typically be loaded into &kst; as a matrix. For this data source to work you must have the HEALPix and CFITSIO libraries installed. An image of a sample HEALPix matrix is shown below:
 </para>
 
 <screenshot>
@@ -1926,7 +1756,7 @@ The colatitude / azimuth range of data to extract.
 </listitem>
 </varlistentry>
 
-<!--FIXME: vectors don't work? -->
+<!--FIXME: how do the polarization options work? -->
 </variablelist>
 
 </sect2>
@@ -1965,28 +1795,28 @@ This is a 'helper' data source, which allows you to access data which is stored 
 <sect2 id="data-sources-cdf">
 <title>CDF</title>
 <para>
-The <ulink url="http://cdf.gsfc.nasa.gov/">Common Data Format</ulink> (CDF) was developed by NASA. It is described as <quote>a self-describing data format for the storage and manipulation of scalar and multidimensional data in a platform- and discipline-independent fashion.</quote>. This means that it is a generalized file format for storing and retrieving data, similar to FITS and netCDF.
+The <ulink url="http://cdf.gsfc.nasa.gov/">Common Data Format</ulink> (CDF) was developed by NASA. It is described as <quote>a self-describing data format for the storage and manipulation of scalar and multidimensional data in a platform- and discipline-independent fashion.</quote>. This means that it is a generalized file format for storing and retrieving data, similar to FITS and netCDF. For this datasource to work you must have the CDF libraries installed.
 </para>
 </sect2>
 
 <sect2 id="data-sources-netcdf">
 <title>netCDF</title>
 <para>
-The <ulink url="http://www.unidata.ucar.edu/software/netcdf/">network Common Data Form</ulink> (netCDF) was developed by <ulink url="http://www.unidata.ucar.edu/">Unidata</ulink>. They describe it as <quote>a set of interfaces for array-oriented data access and a freely-distributed collection of data access libraries for C, Fortran, C++, Java, and other languages. The netCDF libraries support a machine-independent format for representing scientific data. Together, the interfaces, libraries, and format support the creation, access, and sharing of scientific data.</quote>. In practice, it is similar to the FITS and netCDF 'formats'.
+The <ulink url="http://www.unidata.ucar.edu/software/netcdf/">network Common Data Form</ulink> (netCDF) was developed by <ulink url="http://www.unidata.ucar.edu/">Unidata</ulink>. They describe it as <quote>a set of interfaces for array-oriented data access and a freely-distributed collection of data access libraries for C, Fortran, C++, Java, and other languages. The netCDF libraries support a machine-independent format for representing scientific data. Together, the interfaces, libraries, and format support the creation, access, and sharing of scientific data.</quote>. In practice, it is similar to the FITS and netCDF 'formats'. For this datasource to work you must have the netCDF libraries installed.
 </para>
 </sect2>
 
 <sect2 id="data-sources-lfiio">
 <title>LFIIO</title>
 <para>
-The LFIIO datasource reads FITS format data files created by the LFI component of the <ulink url="http://www.rssd.esa.int/Planck">Planck</ulink> satellite. It is currently the default reader for FITS files in &kst;. A generalized FITS datasource is currently under development.
+The LFIIO datasource reads FITS format data files created by the LFI component of the <ulink url="http://www.rssd.esa.int/Planck">Planck</ulink> satellite. It is currently the default reader for FITS files in &kst;. For this datasource to work you must have CFITSIO installed. A generalized FITS datasource is currently under development.
 </para>
 </sect2>
 
 <sect2 id="data-sources-wmap">
 <title>WMAP Reader</title>
 <para>
-This datasource allows you to load vectors from WMAP Time Ordered Data (TOD) files. For more information, see <ulink url="http://lambda.gsfc.nasa.gov/">http://lambda.gsfc.nasa.gov/</ulink>. 
+This datasource allows you to load vectors from WMAP Time Ordered Data (TOD) files. For more information, see <ulink url="http://lambda.gsfc.nasa.gov/">http://lambda.gsfc.nasa.gov/</ulink>. For this datasource to work you must have CFITSIO installed.
 </para>
 </sect2>
 

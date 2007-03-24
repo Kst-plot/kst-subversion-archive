@@ -1898,8 +1898,7 @@ IDEAl mode seems to be identical to tab page mode.
 New windows in &kst; can be created in a number of ways.  To create
 a new, empty, window, select <guimenuitem>New Window</guimenuitem> from the <guimenu>File</guimenu>
 menu.  You will be prompted for a unique name for the new window.  You can also create a new window
-while creating a new plottable data object.  See <link linkend="data-overview-creating-placement">Placement</link>
-for the specific details.
+while creating a new plottable data object using the <guilabel>Placement</guilabel> options.
 </para>
 
 <para>
