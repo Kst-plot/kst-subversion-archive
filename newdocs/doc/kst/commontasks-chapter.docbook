@@ -187,7 +187,7 @@ coefficients.
 </sect1>
 
 <sect1 id="commontasks-generatehistogram">
-<title>Generating a Histogram in realtime</title>
+<title>Generating a Histogram</title>
 
 <para>
 &kst; contains built in routines to generate histograms from data. For this tutorial, we'll look at the histogram of a vector containing normally distributed numbers.

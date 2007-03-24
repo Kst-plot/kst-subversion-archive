@@ -23,32 +23,36 @@ We will call &kst; objects which are painted onto the screen "View Objects". The
 </para>
 
 <para>
-As can be seen from the diagram, the most fundamental views are windows, which act as containers for plots and annotation objects. Plots are the most important view objects of &kst;, they perform the chief function of &kst;,  displaying data.
+As can be seen from the diagram, the most fundamental views are windows, which act as containers for plots and annotation objects. Plots are the most important view objects of &kst;, however. They perform its chief function,  displaying data.
 </para>
 
 <para>
-Most view objects can be manipulated in the <link linkend="view-layout">Layout</link> mouse mode. View objects in &kst; are also hierarchically grouped- annotations, for example, are often deemed 'children' of a specfic plot based on their location. A good way to work directly with this hierarchy is to use the View Manager. It can be accessed by selecting <link linkend="view-overview-viewmanager">View Manager</link> from the <guimenu>Data</guimenu> menu.
+Annotations things like labels, arrows, etc. which can be used to display information about plots, or highlight areas of interest. The annotation objects currently implemented in &kst; are Labels, Rectangles, Ellipses, Lines, Arrows, and Pictures. They are very useful when preparing plots for presentation or publication.
 </para>
 
 <para>
-Annotations are View Objects are things like labels, arrows, etc. which can be used to display information about plots, or highlight areas of interest. The annotation objects currently implemented in &kst; are Labels, Rectangles, Ellipses, Lines, Arrows, and Pictures. They are very useful when preparing plots for presentation or publication. Here is an sample use of annotation objects in &kst;, where we have used Labels, Arrows, Lines, and a transparent PNG Picture to mark up a color magnitude diagram.
+Instances of the various view objects in &kst; are hierarchically grouped- annotations, for example, are often deemed 'children' of a specfic plot based on their location. Moving and resizing a plot then resizes the annotation also. A good way to work directly with the view object hierarchy is to use the View Manager. It can be accessed by selecting <link linkend="view-overview-viewmanager">View Manager</link> from the <guimenu>Data</guimenu> menu.
+</para>
+
+<para>
+All view objects can be created by selecting their corresponding draw tools in the <xref linkend="view-tools-toolbar"/>. You can edit their options by double clicking on them in <link linkend="view-layout">Layout</link> mode.
+</para>
+
+<para>
+Here is an sample use of view objects in &kst;, where we have used a Plot, Labels, Arrows, Lines, and a transparent PNG Picture to mark up a color magnitude diagram.
 </para>
 
 <screenshot>
-<screeninfo>Annotation objects example</screeninfo>
+<screeninfo>View objects example</screeninfo>
 <mediaobject>
 <imageobject>
 <imagedata fileref="Screenshot-kst-view-HRexample.png" format="PNG" />
 </imageobject>
 <textobject>
-<phrase>Annotation objects example</phrase>
+<phrase>View objects example</phrase>
 </textobject>
 </mediaobject>
 </screenshot>
-
-<para>
-All view objects can be created by selecting their corresponding draw tools in the <xref linkend="view-tools-toolbar"/>. You can edit their options by double clicking on them in <link linkend="view-layout">Layout</link> mode.
-</para>
 </sect2>
 
 <sect2 id="view-overview-viewmanager">
@@ -139,10 +143,9 @@ There are additional context menu options specific to the <link linkend="view-zo
 <title>View Object Types</title>
 
 <sect2 id="view-types-plot">
-<!-- FIXME: rename "editplotdialog" -->
 <title>2D Plots</title>
 <para>
-This dialog allows you to change the content, appearance, axes, and markers of a plot. To access it, right click on a plot and select <guimenuitem>Edit Plot...</guimenuitem> from the context menu which appears, or use the <link linkend="view-overview-viewmanager">View Manager</link>. There are several possible tabs:
+2D Plots allow you to display curves and images in &kst;. The edit plot dialog to change the a plot's content, appearance, axes, and markers. To access it, right click on a plot and select <guimenuitem>Edit...</guimenuitem> from the context menu which appears, or use the <link linkend="view-overview-viewmanager">View Manager</link>. There are several possible tabs:
 
 <itemizedlist>
 <listitem><para><link linkend="view-types-plot-content">Content</link></para></listitem>
@@ -192,11 +195,8 @@ The appearance tab allows you to adjust the colours, fonts, legend, and labels o
 
 <sect4 id="view-types-plot-appearance-coloursandlineweights">
 <title>Colours and Line Weights</title>
-<para>
 
-</para>
 <variablelist>
-
 <varlistentry>
 <term>
 <guilabel>Axis and Background</guilabel>
@@ -234,9 +234,6 @@ The line width and colour of the lines marking out the major/minor grid lines. T
 
 <sect4 id="view-types-plot-appearance-labels">
 <title>Labels</title>
-<para>
-
-</para>
 
 <variablelist>
 <varlistentry>
@@ -255,7 +252,7 @@ text cursor position.
 <listitem>
 <para>
 The label located at the top of the plot. Select a font size and enter the text for the label
-using the controls in this row.
+using the controls in this row. These labels can use all of the formatting options of 'true' <link linkend="view-types-labels">label</link> objects.
 </para>
 </listitem>
 </varlistentry>
@@ -274,7 +271,7 @@ This drop-box controls whether the top label will be located at the Left, Right,
 <listitem>
 <para>
 The label located vertically next to the X/Y axis of the plot. Select a font size and enter
-the text for the label using the controls in this row.
+the text for the label using the controls in this row. These labels can use all of the formatting options of 'true' <link linkend="view-types-labels">label</link> objects.
 </para>
 </listitem>
 </varlistentry>
@@ -316,9 +313,6 @@ The font used for all labels of the plot.  Select an available font using the dr
 
 <sect4 id="view-types-plot-appearance-legend">
 <title>Legend</title>
-<para>
-
-</para>
 
 <variablelist>
 <varlistentry>
@@ -343,9 +337,69 @@ Check this box if you would like the plot to automatically adjust its legend to 
 <term><guilabel>Edit...</guilabel></term>
 <listitem>
 <para>
-This button displays the Edit Legend dialog.
-<!-- TODO: correct link -->
+This button displays the Edit Legend dialog, shown below.
 </para>
+
+<screenshot>
+<screeninfo>Legend Edit</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-view-legendedit.png" format="PNG" />
+</imageobject>
+</mediaobject>
+</screenshot>
+
+<para>
+The available options are:
+</para>
+
+<variablelist>
+<varlistentry>
+<term><guilabel>Title</guilabel></term>
+<listitem>
+<para>
+The text for the top of the legend.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Available / Displayed Objects</guilabel></term>
+<listitem>
+<para>
+This allows you to choose a set of objects to display in the legend which differs from the ones which are actually displayed.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Allow plot dialog to reset legend contents</guilabel></term>
+<listitem>
+<para>
+If "Match Contents to Plot" was not selected in the Edit Plot Dialog and this option is selected then the Plot can enforce that its legend matches its true contents.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Font / Size / Color</guilabel></term>
+<listitem>
+<para>
+The formatting options for the legend text.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Box (Transparent / Colors / Margin / Border Width)</guilabel></term>
+<listitem>
+<para>
+The properties of the legend outline and fill.
+</para>
+</listitem>
+</varlistentry>
+</variablelist>
+
 </listitem>
 </varlistentry>
 </variablelist>
@@ -427,7 +481,7 @@ Causes the axis direction to be reversed.
 </varlistentry>
 
 <varlistentry>
-<term><guilabel>Interpret as: / Display as:</guilabel></term>
+<term id="view-types-plot-interpretas"><guilabel>Interpret as: / Display as:</guilabel></term>
 <listitem>
 <para>
 If your axis contains date/time information encoded in a difficult to read form (eg. Julian Date), this option allows you to have &kst; automatically convert it to something more legible.
@@ -751,7 +805,7 @@ a reference to the string's contents at the current cursor position in <guilabel
 <term><guilabel>Label text</guilabel></term>
 <listitem>
 <para>
-The text displayed by the label.  You may enter text manually in this dialog, or insert references into it using the scalar and string drop down menus.
+The text displayed by the label.  You may enter text manually in this dialog, or insert references into it using the scalar and string drop down menus. &kst; labels support many LaTeX formatting and symbol commands.
 </para>
 </listitem>
 </varlistentry>
@@ -1500,7 +1554,6 @@ until the plot is the desired shape and size.
 
 <sect2 id="view-layout-grouping">
 <title>Selecting Multiple View Objects and Grouping</title>
-<!-- FIXME: does not happen if eg. a plot and an annotation object are selected. this is probably fine -->
 <para>
 Two or more view objects can be selected together in layout mode.  To select the objects,
 hold down the <keycap>Shift</keycap> key and either sequentially click on each you wish to
@@ -1518,7 +1571,6 @@ This option is available if the view objects which are selected are all plots. S
 </listitem>
 </varlistentry>
 
-<!-- FIXME: there's an awkward distinction between view objects and plots here -->
 <varlistentry>
 <term><guisubmenu>Make Same</guisubmenu></term>
 <listitem>
@@ -1576,11 +1628,10 @@ To dissociate a group, simply right-click on the group and select <guimenuitem>U
 </variablelist>
 
 </sect2>
-
 </sect1>
 
 <sect1 id="view-tools">
-<title>Plotting tools</title>
+<title>Plotting Tools</title>
 
 <sect2 id="view-tools-toolbar">
 <title>The Toolbar</title>

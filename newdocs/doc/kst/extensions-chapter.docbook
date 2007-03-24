@@ -17,7 +17,7 @@ Server and logging settings should be configured if ELOG functionality is enable
 <screeninfo>Event Monitor Logging Settings</screeninfo>
 <mediaobject>
 <imageobject>
-<imagedata fileref="Screenshot-kst-eventmonitor-loggingsettings.png" format="PNG" />
+<imagedata fileref="Screenshot-kst-extensions-elog-loggingsettings.png" format="PNG" />
 </imageobject>
 <textobject>
 <phrase>Event Monitor Logging Settings</phrase>
@@ -44,7 +44,7 @@ following dialog should be displayed:
 <screeninfo>Event Monitor Server Settings</screeninfo>
 <mediaobject>
 <imageobject>
-<imagedata fileref="Screenshot-kst-eventmonitor-serversettings.png" format="PNG" />
+<imagedata fileref="Screenshot-kst-extensions-elog-serversettings.png" format="PNG" />
 </imageobject>
 <textobject>
 <phrase>Event Monitor Server Settings</phrase>
@@ -240,7 +240,7 @@ This script can be run using any of the methods from <xref linkend="kstscriptrun
 <screeninfo>Simple Output</screeninfo>
 <mediaobject>
 <imageobject>
-<imagedata fileref="Screenshot-kst-kstscriptexample.png" format="PNG"/>
+<imagedata fileref="Screenshot-kst-extensions-kstscriptexample.png" format="PNG"/>
 </imageobject>
 <textobject>
 <phrase></phrase>
@@ -318,7 +318,7 @@ A screenshot of &kst; after executing these commands is shown below.
 <screeninfo>CallSubs Output</screeninfo>
 <mediaobject>
 <imageobject>
-<imagedata fileref="Screenshot-kst-extensions-subroutinesexample.png" format="PNG"/>
+<imagedata fileref="Screenshot-kst-extensions-kstscriptsubroutinesexample.png" format="PNG"/>
 </imageobject>
 </mediaobject>
 </screenshot>
@@ -330,7 +330,7 @@ A screenshot of &kst; after executing these commands is shown below.
 <sect2 id="kstscriptmoreinfo">
 <title>More KstScript Documentation</title>
 <para>
-KstScript is still under development, and not all bindings have been implemented, but most of the basic functionality is present. KstScript development is need driven, and if you would like to see something specific included then a good place to ask is the &kst; development mailing list. <!-- FIXME: reference -->. Documentation of the current KstScript bindings can be found in the <filename>js</filename> folder of the source distribution. <!-- FIXME: really? -->
+KstScript is still under development, and not all bindings have been implemented, but most of the basic functionality is present. KstScript development is need driven, and if you would like to see something specific included then a good place to ask is the &kst; development mailing list (see <ulink url="http://kst.kde.org">http://kst.kde.org</ulink>). Documentation of the current KstScript bindings can be found in the <filename>js</filename> folder of the source distribution.
 </para>
 </sect2>
 </sect1>

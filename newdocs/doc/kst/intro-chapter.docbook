@@ -73,7 +73,7 @@ this using the command <command>kde-config --prefix</command>).
 <screeninfo>Datasources - Configure ASCII</screeninfo>
 <mediaobject>
 <imageobject>
-<imagedata fileref="Screenshot-kst-data-asciiconfig.png" format="PNG" />
+<imagedata fileref="Screenshot-kst-commontasks-plottingsimplegraphs-configureascii.png" format="PNG" />
 </imageobject>
 </mediaobject>
 </screenshot>
@@ -85,11 +85,8 @@ this using the command <command>kde-config --prefix</command>).
 <screeninfo>Data Wizard - Select Data Dialog</screeninfo>
 <mediaobject>
 <imageobject>
-<imagedata fileref="Screenshot-kst-data-wizardselectdata.png" format="PNG" />
+<imagedata fileref="Screenshot-kst-data-wizard-selectdata.png" format="PNG" />
 </imageobject>
-<textobject>
-<phrase>Data Wizard - Select Data Dialog Screenshot</phrase>
-</textobject>
 </mediaobject>
 </screenshot>
 
@@ -110,11 +107,8 @@ Configure the Data Presentation Pane to look like the following:
 <screeninfo>Data Wizard Data Presentation Pane</screeninfo>
 <mediaobject>
 <imageobject>
-<imagedata fileref="Screenshot-kst-data-wizardpresentation.png" format="PNG" />
+<imagedata fileref="Screenshot-kst-data-wizard-presentation.png" format="PNG" />
 </imageobject>
-<textobject>
-<phrase>Data Wizard Data Presentation Pane</phrase>
-</textobject>
 </mediaobject>
 </screenshot>
 
@@ -130,11 +124,8 @@ Clicking 'Next' again takes us to the final Data Wizard pane, where there are op
 <screeninfo>Data Wizard - Configure Plot Layout Plane</screeninfo>
 <mediaobject>
 <imageobject>
-<imagedata fileref="Screenshot-kst-data-wizardconfigurelayout.png" format="PNG" />
+<imagedata fileref="Screenshot-kst-data-wizard-configurelayout.png" format="PNG" />
 </imageobject>
-<textobject>
-<phrase>Data Wizard - Configure Plot Layout Pane Screenshot</phrase>
-</textobject>
 </mediaobject>
 </screenshot>
 
@@ -203,7 +194,7 @@ All the plots you created in the <link linkend="intro-gettingstarted-importingda
 The plot you selected will now be maximized within the current window. Note that the
 data is still dense in this plot, so it would be useful to zoom in on an interesting area. To do so, make sure you are in <guimenuitem>XY Mouse Zoom</guimenuitem> mode (select <guimenuitem>XY Mouse Zoom</guimenuitem> from the <guimenu>Plots</guimenu> menu, or
 click the <inlinemediaobject><imageobject><imagedata
-fileref="Icon-kst-view-xymousezoom.png"
+fileref="Icon-kst-xymousezoom.png"
 format="PNG"/></imageobject></inlinemediaobject> toolbar
 button). Then, simply drag a rectangle around the area you're interested in.  Note that the coordinates of the mouse cursor are displayed in
 the lower right corner of the &kst; window (if they are not, ensure
@@ -249,9 +240,7 @@ Before we try zooming in, we should delete the "Column 1" plot, which we won't b
 Now try zooming in on any portion of the upper plot.  You will find that the lower plot becomes blank.  This is because the lower plot axes have changed to match the upper plot axes, and there is no data in that particular region of the lower plot. Type <keycap>M</keycap> while the mouse cursor is over either plot to return to maximum zoom on both plots.  Now hold down <keycap>Ctrl</keycap> (this is
 equivalent to selecting <guimenu>X Mouse Zoom Mode</guimenu> from the
 <guimenu>Plots</guimenu> menu or clicking the
-<inlinemediaobject><imageobject><imagedata
-fileref="Icon-kst-xmousezoom.png"
-format="PNG"/></imageobject></inlinemediaobject> toolbar button). The mouse cursor will change shape as visual feedback.  While keeping <keycap>Ctrl</keycap> held down, drag a rectangle in the upper plot. Note that the height of the dotted rectangle is restricted so that only the x axis will be zoomed.  Now both plots will display data when zoomed in, as the y axis for either plot was not changed.
+<inlinemediaobject><imageobject><imagedata fileref="Icon-kst-xmousezoom.png" format="PNG"/></imageobject></inlinemediaobject> toolbar button). The mouse cursor will change shape as visual feedback.  While keeping <keycap>Ctrl</keycap> held down, drag a rectangle in the upper plot. Note that the height of the dotted rectangle is restricted so that only the x axis will be zoomed.  Now both plots will display data when zoomed in, as the y axis for either plot was not changed.
 </para>
 <tip>
 <para>
@@ -276,7 +265,7 @@ There is more to &kst; than simple plotting and viewing of data.  From the data 
 </para>
 
 <para>
-Open the data manager now by clicking the <inlinemediaobject><imageobject><imagedata fileref="Icon-kst-data-datamanager.png"
+Open the data manager now by clicking the <inlinemediaobject><imageobject><imagedata fileref="Icon-kst-datamanager.png"
 format="PNG"/></imageobject></inlinemediaobject> toolbar button, or by selecting <guimenuitem>Data Manager</guimenuitem> from the <guimenu>Data</guimenu> menu.
 </para>
 

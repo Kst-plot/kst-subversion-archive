@@ -188,7 +188,7 @@ settings are listed below.
 <screeninfo>Edit Vectors</screeninfo>
 <mediaobject>
 <imageobject>
-<imagedata fileref="Screenshot-kst-vectoredit.png" format="PNG" />
+<imagedata fileref="Screenshot-kst-data-vectoredit.png" format="PNG" />
 </imageobject>
 <textobject>
 <phrase>Edit Vectors</phrase>
@@ -582,7 +582,7 @@ the number of elements in the largest bin (the bin with the greatest number of e
 <sect2 id="data-types-spectrum">
 <title>Spectrum</title>
 <para>
-The following definitions assume basic knowledge of power spectra&mdash;. We use the conventions and terminology of "Numerical Recipes in C: The Art of Scientific Computing", published by Cambridge University Press.
+The following definitions assume basic knowledge of power spectra&mdash; We use the conventions and terminology of "Numerical Recipes in C: The Art of Scientific Computing", published by Cambridge University Press.
 </para>
 
 <screenshot>
@@ -1601,7 +1601,7 @@ can be easily created by hand or simple scripts if desired.  The following is an
 <screeninfo>Datasources - Configure ASCII</screeninfo>
 <mediaobject>
 <imageobject>
-<imagedata fileref="Screenshot-kst-commontasks-plottingsimplegraphs-configureascii.png" format="PNG" />
+<imagedata fileref="Screenshot-kst-data-asciiconfig.png" format="PNG" />
 </imageobject>
 </mediaobject>
 </screenshot>
@@ -1624,7 +1624,7 @@ English words) are replaced with 0 by &kst;.
 <term>Interpret ... As ...</term>
 <listitem>
 <para>
-
+See the <link linkend="view-types-plot-interpretas">corresponding section</link> for the 2D Plot Dialog.
 </para>
 </listitem>
 </varlistentry>

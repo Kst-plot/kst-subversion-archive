@@ -205,6 +205,18 @@ menu.  A standard &kde; print dialog will be displayed. Some
 <guilabel>Kst Options</guilabel> tab. The options are:
 </para>
 
+<screenshot>
+<screeninfo>Export to Graphics File</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-saving-printkstoptions.png" format="PNG" />
+</imageobject>
+<textobject>
+<phrase>Export to Graphics File</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
 <variablelist>
 <varlistentry>
 <term><guilabel>Append plot information to each page</guilabel></term>

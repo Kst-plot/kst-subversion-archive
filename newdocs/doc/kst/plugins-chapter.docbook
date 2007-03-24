@@ -53,7 +53,7 @@ is the set of inputs and outputs, and the mechanism for deriving the outputs fro
 <screeninfo>Plugins Window</screeninfo>
 <mediaobject>
 <imageobject>
-<imagedata fileref="Screenshot-kst-pluginswindow.png" format="PNG" />
+<imagedata fileref="Screenshot-kst-plugins-examplewindow.png" format="PNG" />
 </imageobject>
 <textobject>
 <phrase>Plugins Windowpluginswindow</phrase>
