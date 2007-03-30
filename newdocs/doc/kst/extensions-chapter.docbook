@@ -186,8 +186,8 @@ Note that with the first two methods, any KstScript command, or collection of Ks
 
 </sect2>
 
-<sect2 id="kstscriptpower">
-<title>The Power of KstScript</title>
+<sect2 id="kstscriptexamples">
+<title>KstScript Examples</title>
 
 <para>
 KstScript gives &kst; a powerful programming interface. Chiefly, it can be used to construct 'smart' macro functions for common tasks. We will first look at a basic example illustrating how to control &kst; through KstScript, and then we will look at an example of a macro function.

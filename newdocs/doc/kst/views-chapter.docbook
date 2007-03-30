@@ -143,9 +143,9 @@ There are additional context menu options specific to the <link linkend="view-zo
 <title>View Object Types</title>
 
 <sect2 id="view-types-plot">
-<title>2D Plots</title>
+<title>Plots</title>
 <para>
-2D Plots allow you to display curves and images in &kst;. The edit plot dialog to change the a plot's content, appearance, axes, and markers. To access it, right click on a plot and select <guimenuitem>Edit...</guimenuitem> from the context menu which appears, or use the <link linkend="view-overview-viewmanager">View Manager</link>. There are several possible tabs:
+Plots allow you to display curves and images in &kst;. The edit plot dialog to change the a plot's content, appearance, axes, and markers. To access it, right click on a plot and select <guimenuitem>Edit...</guimenuitem> from the context menu which appears, or use the <link linkend="view-overview-viewmanager">View Manager</link>. There are several possible tabs:
 
 <itemizedlist>
 <listitem><para><link linkend="view-types-plot-content">Content</link></para></listitem>
