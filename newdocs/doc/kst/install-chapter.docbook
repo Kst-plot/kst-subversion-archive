@@ -7,19 +7,29 @@ it to install &kst; instead.
 </para>
 
 
-<sect1 id="obtainingkst">
+<sect1 id="installation-obtaining">
 <title>Obtaining &kst;</title>
 <para>
-&kst; is part of the kdeextragear-2 module of &kde;.  You can also download the latest version
-separately from the &kst; <ulink url="http://omega.astro.utoronto.ca/kst/">website
-</ulink>.  If you wish to download &kst; from CVS, it is available via anonymous CVS for &kde;
-or via the &kde;
-<ulink url="http://kdewebcvs.pandmservices.com/cgi-bin/cvsweb.cgi/">WebCVS</ulink> repository.
+&kst; is part of the extragear/graphics module of &kde;.  You can also download the latest version
+separately from the &kst; <ulink url="http://kst.kde.org/">website</ulink>.
+</para>
 
+<para>
+The current version of &kst; is also available via SVN. It can be downloaded anonymously with the following command:
+</para>
+
+<screen><userinput>svn co svn://anonsvn.kde.org/home/kde/trunk/extragear/graphics</userinput></screen>
+
+<para>
+You can also browse the &kst; source code using the KDE WebSVN repository at <ulink url="http://websvn.kde.org/trunk/extragear/graphics/kst/">http://websvn.kde.org/trunk/extragear/graphics/kst/</ulink>.
+</para>
+
+<para>
+More information about accessing KDE SVN repositories can be found at <ulink url="http://developer.kde.org/documentation/tutorials/subversion/">http://developer.kde.org/documentation/tutorials/subversion/</ulink>.
 </para>
 </sect1>
 
-<sect1 id="installingfromsource">
+<sect1 id="installation-fromsource">
 <title>Installing &kst; from Source</title>
 <para>
 The following sections detail how to compile and install &kst; from source code.
@@ -28,7 +38,7 @@ The following sections detail how to compile and install &kst; from source code.
 <sect2 id="installingrequirements">
 <title>Requirements</title>
 <para>
-&kst; v1.2.0 requires the &kde; 3.1 libraries and &Qt; 3.1.  Almost all major &Linux; distributions have packages
+&kst; v1.4.0 requires the &kde; 3.3 libraries and &Qt; 3.1.  Almost all major &Linux; distributions have packages
 for &kde; and &Qt;.  Since &Qt; is a dependency of &kde;, having the required version of &kde; should
 be sufficient.  It is recommended that you refer to your particular distribution's documentation for
 &kde; library installation.    Note that the entire &kde; desktop environment
@@ -40,8 +50,7 @@ is not required&mdash;in most cases, look for packages called <filename>kdebase-
 
 <sect2 id="optionallibrariesandpackages">
 <title>Optional Libraries and Packages</title>
-<para>The following libraries and packages are optional, but provide full plugin and data source functionality
-in &kst; if installed.  The installation instructions assume you have root access on your system.</para>
+<para>The following libraries and packages are optional, but provide full plugin and data source functionality in &kst; if installed.  The installation instructions assume you have root access on your system.</para>
 <note>
 <para>
 You may already have some or all of these libraries and packages installed, in which case there is no
@@ -85,8 +94,7 @@ For most systems, the following will work:
 <sect3 id="fitsiorequirement">
 <title>CFITSIO</title>
 <para>
-The CFITSIO library provides support for reading and writing to the FITS (Flexible Image Transport System) data
-format.  The libary can be found at
+The CFITSIO library provides support for reading and writing to the FITS (Flexible Image Transport System) data format.  The libary can be found at
 <ulink url="ftp://heasarc.gsfc.nasa.gov/software/fitsio/c/">ftp://heasarc.gsfc.nasa.gov/software/fitsio/c/</ulink>.
 You only need to install the library if you anticipate reading or writing to the FITS file format.
 </para>
@@ -149,12 +157,7 @@ You can read through the messages displayed by the <command>configure</command> 
 reports any missing libraries (such as GSL) that should not be missing, please go back and ensure
 that the libraries and header files have been correctly installed in the appropriate locations.
 </para>
-
-
-
 </sect2>
-
-
 
 </sect1>
 
