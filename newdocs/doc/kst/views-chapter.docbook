@@ -42,6 +42,7 @@ All view objects can be created by selecting their corresponding draw tools in t
 Here is an sample use of view objects in &kst;, where we have used a Plot, Labels, Arrows, Lines, and a transparent PNG Picture to mark up a color magnitude diagram.
 </para>
 
+<anchor id="view-overview-concepts-example"></anchor>
 <screenshot>
 <screeninfo>View objects example</screeninfo>
 <mediaobject>
