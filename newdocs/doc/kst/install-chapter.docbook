@@ -35,7 +35,7 @@ More information about accessing KDE SVN repositories can be found at <ulink url
 The following sections detail how to compile and install &kst; from source code.
 </para>
 
-<sect2 id="installingrequirements">
+<sect2 id="installation-fromsource-requirements">
 <title>Requirements</title>
 <para>
 &kst; v1.4.0 requires the &kde; 3.3 libraries and &Qt; 3.1.  Almost all major &Linux; distributions have packages
@@ -48,89 +48,55 @@ is not required&mdash;in most cases, look for packages called <filename>kdebase-
 </para>
 </sect2>
 
-<sect2 id="optionallibrariesandpackages">
+<sect2 id="installation-fromsource-optional">
 <title>Optional Libraries and Packages</title>
-<para>The following libraries and packages are optional, but provide full plugin and data source functionality in &kst; if installed.  The installation instructions assume you have root access on your system.</para>
+<para>The following libraries and packages are optional, but provide full plugin and data source functionality in &kst; if installed. Installation/Download instructions for the packages are given on the linked websites.</para>
 <note>
 <para>
 You may already have some or all of these libraries and packages installed, in which case there is no
 need to reinstall them.  Also, check first to see if pre-compiled binaries for the libraries and packages
-exist in your distribution's package management system, as it may be easier to install the binary packages.
+exist in your distribution's package management system, as it may be easier to install these packages.
 </para>
 </note>
 
-<sect3 id="gslrequirement">
-<title>&GNU; Scientific Library (GSL)</title>
-<para>
-The &GNU; Scientific Library provides a variety of mathematical operations for the built-in
-&kst; plugins.  Having GSL installed enables a variety of plugins such as linear and non-linear fitting,
- correlation, and interpolation plugins.  The library can be found at <ulink url="ftp://ftp.gnu.org/gnu/gsl/">ftp://ftp.gnu.org/gnu/gsl/</ulink>.
-Alternatively, you can find GSL under <filename>/gnu/gsl</filename> on the mirrors listed at
-<ulink url="http://www.gnu.org/prep/ftp.html">http://www.gnu.org/prep/ftp.html</ulink>.
-</para>
-
-<para>
-Download <filename>gsl-<replaceable>version</replaceable>.tar.gz</filename>, where <replaceable>version</replaceable> is the greatest version number found in the directory.
-</para>
-
-<para>
-Then unzip and untar the file:
-</para>
-<screen><userinput><command>tar -zxvf gsl-<replaceable>version</replaceable>.tar.gz</command></userinput></screen>
-<para>
-replacing <replaceable>version</replaceable> with the version number of the downloaded file.
-</para>
-<para>
-Read the <filename>INSTALL</filename> file in the resultant directory for detailed installation instructions.
-For most systems, the following will work:
-<screen><userinput><command>cd gsl-<replaceable>version</replaceable></command>
-<command>./configure</command>
-<command>make</command>
-<command>make install</command></userinput></screen>
-</para>
-
-</sect3>
-
-<sect3 id="fitsiorequirement">
-<title>CFITSIO</title>
-<para>
-The CFITSIO library provides support for reading and writing to the FITS (Flexible Image Transport System) data format.  The libary can be found at
-<ulink url="ftp://heasarc.gsfc.nasa.gov/software/fitsio/c/">ftp://heasarc.gsfc.nasa.gov/software/fitsio/c/</ulink>.
-You only need to install the library if you anticipate reading or writing to the FITS file format.
-</para>
-
-<para>
-Download <filename>cfitsio<replaceable>version</replaceable>.tar.gz</filename>, where <replaceable>version</replaceable> is the greatest version number found the directory.
-</para>
-
-<para>
-Then unzip and untar the file:
-<screen><userinput><command>tar -zxvf cfitsio<replaceable>version</replaceable>.tar.gz</command></userinput></screen>
-replacing <replaceable>version</replaceable> with the version number of the downloaded file.
-</para>
-
-<para>
-Read the <filename>README</filename> file in the resultant directory for installation instructions.  For most
-systems, the following will work:
-<screen><userinput><command>cd cfitsio</command>
-<command>./configure --prefix=/usr</command>
-<command>make</command>
-<command>make install</command></userinput></screen>
-</para>
-
-<para>
-You may need to change the directory specified for the <option>--prefix</option> option, but the most
-common directory is <filename>/usr</filename>
-</para>
-</sect3>
+<informaltable>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Library</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry><ulink url="http://www.gnu.org/software/gsl/">GSL</ulink></entry>
+<entry>The &GNU; Scientific Library (GSL) provides a variety of mathematical operations for the built-in
+&kst; plugins. Having GSL installed enables a variety of plugins such as linear and non-linear fitting,
+ correlation, and interpolation.</entry>
+</row>
+<row>
+<entry><ulink url="http://heasarc.gsfc.nasa.gov/fitsio/fitsio.html">CFITSIO</ulink></entry>
+<entry>CFITSIO provides support for reading and writing to the FITS (Flexible Image Transport System) data format. This is required by all of the datasources which use FITS (currently <link linkend="data-sources-healpix">HEALPix</link>, <link linkend="data-sources-lfiio">LFIIO</link>, and <link linkend="data-sources-wmap">WMAP</link>)</entry>
+</row>
+<row>
+<entry><ulink url="http://cdf.gsfc.nasa.gov/">CDF</ulink></entry>
+<entry>The Common Data Format (CDF) library is required to read files with the <link linkend="data-sources-cdf">CDF datasource</link></entry>
+</row>
+<row>
+<entry><ulink url="http://cdf.gsfc.nasa.gov/">netCDF</ulink></entry>
+<entry>The network Common Data Form (netCDF) library is required to read files with the <link linkend="data-sources-netcdf">netCDF datasource</link></entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
 </sect2>
 
-<sect2 id="compilingandinstalling">
+<sect2 id="installation-fromsource-compiling">
 <title>Compiling and Installing</title>
 <para>
 Once all of the prerequisites have been met on your system you can compile and install &kst;.  It
 is assumed that you have already downloaded the &kst; source package.  If not, please see
-<link linkend="obtainingkst">Obtaining &kst;</link>.
+<link linkend="installation-obtaining">Obtaining &kst;</link>.
 </para>
 
 <para>
@@ -160,7 +126,6 @@ that the libraries and header files have been correctly installed in the appropr
 </sect2>
 
 </sect1>
-
 </appendix>
 
 
