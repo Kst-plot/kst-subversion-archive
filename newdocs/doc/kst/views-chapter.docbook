@@ -1631,7 +1631,55 @@ To dissociate a group, simply right-click on the group and select <guimenuitem>U
 </sect1>
 
 <sect1 id="view-tools">
-<title>Plotting Tools</title>
+<title>View Tools</title>
+
+<sect2 id="view-tools-tabs">
+<title>Window Tabs</title>
+<para>
+&kst; allows the use of tabs to organize plots into separate windows for efficient viewing and manipulation.
+</para>
+
+<para>
+To switch between plot windows in tab page mode, you can click on the tabs corresponding to each
+window, as shown below.
+</para>
+
+<screenshot>
+<screeninfo>Switching windows in tab page mode</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-view-mditabpage.png" format="PNG" />
+</imageobject>
+<textobject>
+<phrase>Switching windows in tab page mode</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<itemizedlist>
+<listitem>
+<para>
+To create a new tab, select <guimenuitem>New Tab</guimenuitem> from the <guimenu>File</guimenu> menu, or right click on the tab bar and select <guimenuitem>New...</guimenuitem> from the tab context menu which appears.
+</para>
+</listitem>
+
+<listitem>
+<para>
+The tab context menu allows you to create, delete and rename tabs, as well as shift their order.
+</para>
+<para>
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-view-tabcontextmenu.png" format="PNG" align="center"/>
+</imageobject>
+<textobject>
+<phrase>Switching windows in tab page mode</phrase>
+</textobject>
+</inlinemediaobject>
+</para>
+</listitem>
+</itemizedlist>
+</sect2>
 
 <sect2 id="view-tools-toolbar">
 <title>The Toolbar</title>
@@ -1702,278 +1750,6 @@ To use this dialog, move some subset of the curve properties into the selected l
 </para>
 </sect2>
 
-</sect1>
-
-
-<sect1 id="view-windows">
-<title>Working with Windows</title>
-<para>
-&kst; has a flexible window layout that makes use of Kmdi.  Organizing plots into separate windows
-allows for efficient viewing and manipulation.
-</para>
-
-<sect2 id="view-window-mdimode">
-<title>MDI Modes</title>
-<para>
-There is a choice of four different MDI (Multi-Document Interface) modes available.
-To select a mode, choose one of the menu items from the <guisubmenu>MDI Mode...</guisubmenu>
-submenu of the <guimenu>Window</guimenu> menu.  The selected MDI mode will take effect
-immediately.
-The sections below provide more information on each mode.
-</para>
-
-<sect3 id="view-window-mdimode-toplevel">
-<title>Top Level Mode</title>
-<para>
-Top level mode is the mode traditionally used by other &kde; applications. In this mode, the
-parent window (the window containing all the main menus, toolbars, and status bars)
-is a separate window from the plot windows.  The plot windows, while still functionally
-tied to the main window, appear as separate windows on the desktop.
-</para>
-<para>
-To quickly switch between plot windows in top level mode, you can click the buttons on the
-parent window, as shown below.
-</para>
-<screenshot>
-<screeninfo>Switching windows in top level mode</screeninfo>
-<mediaobject>
-<imageobject>
-<imagedata fileref="Screenshot-kst-view-mditoplevel.png" format="PNG" />
-</imageobject>
-<textobject>
-<phrase>Switching windows in top level mode</phrase>
-</textobject>
-</mediaobject>
-</screenshot>
-
-</sect3>
-
-<sect3 id="iew-window-mdimode-childframe">
-<title>Childframe Mode</title>
-<para>
-In childframe mode, all the plot windows appear inside the main &kst; window and can be individually
-resized.  Each plot window contains buttons for minimizing, maximizing, closing, and docking themselves.
-The main &kst; window also contains functions for arranging the plot windows.
-The following lists the functionality
-of the buttons located in the top right corner of each plot window:
-</para>
-
-<variablelist>
-
-<varlistentry>
-<term><inlinemediaobject><imageobject>
-<imagedata fileref="Widget-kst-undock.png" format="PNG"/>
-</imageobject></inlinemediaobject></term>
-<listitem>
-<para>
-Undocks the plot window.  An undocked window is not contained within the main &kst; window,
-but is located directly on the desktop.
-</para>
-<tip>
-<para>
-You can also undock or dock a window by selecting its name from the <guisubmenu>Dock/Undock</guisubmenu>
-submenu of the <guimenu>Window</guimenu> menu.  This is also the only way to dock an undocked window.
-</para>
-</tip>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term><inlinemediaobject><imageobject>
-<imagedata fileref="Widget-kst-minimize.png" format="PNG"/>
-</imageobject></inlinemediaobject></term>
-<listitem>
-<para>
-Minimizes the plot window.  Since the plot window is contained within the main &kst; window,
-clicking this button will minimize the window to a titlebar within the &kst; window.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term><inlinemediaobject><imageobject>
-<imagedata fileref="Widget-kst-maximize.png" format="PNG"/>
-</imageobject></inlinemediaobject></term>
-<listitem>
-<para>
-Maximizes the plot window.  The plot window will take up the entirety of the main &kst;
-window.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term><inlinemediaobject><imageobject>
-<imagedata fileref="Widget-kst-close.png" format="PNG"/>
-</imageobject></inlinemediaobject></term>
-<listitem>
-<para>
-Closes the plot window.
-</para>
-</listitem>
-</varlistentry>
-
-</variablelist>
-
-<para>
-To quickly switch between plot windows in childframe mode, you can click the buttons on the
-parent window, as shown below.
-</para>
-<screenshot>
-<screeninfo>Switching windows in top level mode</screeninfo>
-<mediaobject>
-<imageobject>
-<imagedata fileref="Screenshot-kst-view-mditoplevel.png" format="PNG" />
-</imageobject>
-<textobject>
-<phrase>Switching windows in top level mode</phrase>
-</textobject>
-</mediaobject>
-</screenshot>
-
-<para>
-To easily organize the plot windows within the main &kst; window, you can choose one of the
-tiling functions from the <guisubmenu>Tile...</guisubmenu> submenu of the <guimenu>Window</guimenu>
-menu.  These functions are described below.
-</para>
-<variablelist>
-<varlistentry>
-<term><guimenuitem>Cascade Windows</guimenuitem></term>
-<listitem>
-<para>
-Cascades the windows starting from the top left corner, maintaining the original window sizes.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term><guimenuitem>Cascade Windows</guimenuitem></term>
-<listitem>
-<para>
-Cascades the windows starting from the top left corner, but resizes each window so that the
-bottom right corner of each window reaches the bottom right of the main &kst; window.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term><guimenuitem>Expand Vertically</guimenuitem></term>
-<listitem>
-<para>
-Resizes each window to its maximum height.  The widths of the windows are not changed.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term><guimenuitem>Expand Horizontally</guimenuitem></term>
-<listitem>
-<para>
-Resizes each window to its maximum width.  The heights of the windows are not changed.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term><guimenuitem>Tile Non-overlapped</guimenuitem></term>
-<listitem>
-<para>
-Arranges the windows in a tile pattern, with no windows overlapping and
-each window being as close to a square as possible.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term><guimenuitem>Tile Overlapped</guimenuitem></term>
-<listitem>
-<para>
-Arranges the windows in three or four stacks, depending on the number of windows and the main
-&kst; window size.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term><guimenuitem>Tile Vertically</guimenuitem></term>
-<listitem>
-<para>
-Arranges the windows in a tile pattern, with each window having maximum height
-and no windows overlapping.
-</para>
-</listitem>
-</varlistentry>
-
-</variablelist>
-</sect3>
-
-
-<sect3 id="view-window-mdimode-tabpage">
-<title>Tab Page Mode</title>
-<para>
-Tab page mode arranges each plot window on a separate tab within the main &kst; window.  In this
-mode, the plot windows are not independently resizeable or moveable&mdash;they conform to the size
-and shape of the main &kst; window.
-</para>
-<para>
-To switch between plot windows in tab page mode, you can click on the tabs corresponding to each
-window, as shown below.
-</para>
-
-<screenshot>
-<screeninfo>Switching windows in tab page mode</screeninfo>
-<mediaobject>
-<imageobject>
-<imagedata fileref="Screenshot-kst-view-mditabpage.png" format="PNG" />
-</imageobject>
-<textobject>
-<phrase>Switching windows in tab page mode</phrase>
-</textobject>
-</mediaobject>
-</screenshot>
-
-</sect3>
-
-<sect3 id="view-window-mdimode-ideal">
-<title>IDEAl Mode</title>
-<para>
-IDEAl mode seems to be identical to tab page mode.
-</para>
-</sect3>
-
-</sect2>
-
-<sect2 id="view-window-creatingdeleting">
-<title>Creating and Deleting Windows</title>
-<para>
-New windows in &kst; can be created in a number of ways.  To create
-a new, empty, window, select <guimenuitem>New Window</guimenuitem> from the <guimenu>File</guimenu>
-menu.  You will be prompted for a unique name for the new window.  You can also create a new window
-while creating a new plottable data object using the <guilabel>Placement</guilabel> options.
-</para>
-
-<para>
-To delete an existing window, simply select <guimenuitem>Close</guimenuitem> from the <guimenu>Window</guimenu>
-menu.  To delete all current windows in &kst;, select <guimenuitem>Close All</guimenuitem> from
-the <guimenu>Window</guimenu> menu.  By default, &kst; prompts for confirmation before closing any window. This
-behaviour can be changed by selecting <guimenuitem>Configure Kst...</guimenuitem> from the
-<guimenu>Settings</guimenu> menu and clicking on <guilabel>Prompt before closing windows</guilabel>.
-</para>
-<important>
-<para>
-When a window is deleted, all plots within that window are deleted as well.  However, data objects, such
-as curves, are not deleted.
-</para>
-</important>
-</sect2>
-
-<sect2 id="view-window-addingmoving">
-<title>Moving Plots Between Windows</title>
-<para>
-To move a plot from one window to another, you can use the <guimenuitem>Move To</guimenuitem> function of the
-<link linkend="view-layout-contextmenu">layout mode context menu</link>, or you can use the <link linkend="view-overview-viewmanager">View Manager</link>.
-</para>
-</sect2>
 </sect1>
 
 </chapter>
