@@ -1686,7 +1686,7 @@ to determine the fields and their properties.
 <sect2 id="data-sources-healpix">
 <title>HEALPix FITS files</title>
 <para>
-HEALPix is a pixelisation scheme for the sphere. More information can be found at <ulink url="http://healpix.jpl.nasa.gov/">http://healpix.jpl.nasa.gov/</ulink>. HEALPix data is typically be loaded into &kst; as a matrix. For this data source to work you must have the HEALPix and CFITSIO libraries installed. An image of a sample HEALPix matrix is shown below:
+HEALPix is a pixelisation scheme for the sphere. More information can be found at <ulink url="http://healpix.jpl.nasa.gov/">http://healpix.jpl.nasa.gov/</ulink>. HEALPix data is typically be loaded into &kst; as a matrix. For this data source to work you must have the CFITSIO libraries installed. An image of a sample HEALPix matrix is shown below:
 </para>
 
 <screenshot>

@@ -38,7 +38,7 @@ The following sections detail how to compile and install &kst; from source code.
 <sect2 id="installation-fromsource-requirements">
 <title>Requirements</title>
 <para>
-&kst; v1.4.0 requires the &kde; 3.3 libraries and &Qt; 3.1.  Almost all major &Linux; distributions have packages
+&kst; v1.4.0 requires the &kde; 3.4 libraries and &Qt; 3.3.  Almost all major &Linux; distributions have packages
 for &kde; and &Qt;.  Since &Qt; is a dependency of &kde;, having the required version of &kde; should
 be sufficient.  It is recommended that you refer to your particular distribution's documentation for
 &kde; library installation.    Note that the entire &kde; desktop environment

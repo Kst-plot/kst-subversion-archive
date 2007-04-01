@@ -27,7 +27,7 @@ As can be seen from the diagram, the most fundamental views are windows, which a
 </para>
 
 <para>
-Annotations things like labels, arrows, etc. which can be used to display information about plots, or highlight areas of interest. The annotation objects currently implemented in &kst; are Labels, Rectangles, Ellipses, Lines, Arrows, and Pictures. They are very useful when preparing plots for presentation or publication.
+Annotations things like labels, arrows, etc. which can be used to display information about plots, or highlight areas of interest. The annotation objects currently implemented in &kst; are Labels, Boxes, Ellipses, Lines, Arrows, and Pictures. They are very useful when preparing plots for presentation or publication.
 </para>
 
 <para>
@@ -888,9 +888,9 @@ applying any label settings.
 </sect2>
 
 <sect2 id="view-types-rectanglesandellipses">
-<title>Rectangles / Ellipses</title>
+<title>Boxes / Ellipses</title>
 <para>
-Rectangle and ellipse annotation objects are usually used to outline important features on a plot.
+Box and ellipse annotation objects are usually used to outline important features on a plot.
 </para>
 
 <para>
@@ -916,7 +916,7 @@ The following are explanations of the dialog box elements.
 <term><guilabel>Border Color</guilabel></term>
 <listitem>
 <para>
-The color of the outline of the rectangle/ellipse object. Clicking the <inlinemediaobject><imageobject><imagedata fileref="Widget-kst-colorchooser.png" format="PNG"/></imageobject></inlinemediaobject> button displays the standard &kde; color chooser.
+The color of the outline of the box/ellipse object. Clicking the <inlinemediaobject><imageobject><imagedata fileref="Widget-kst-colorchooser.png" format="PNG"/></imageobject></inlinemediaobject> button displays the standard &kde; color chooser.
 </para>
 </listitem>
 </varlistentry>
@@ -934,7 +934,7 @@ The width of the annotation's line/border (in pixels).
 <term><guilabel>Fill Color / Transparent Fill</guilabel></term>
 <listitem>
 <para>
-The color of the contents of the rectangle/ellipse. Clicking the <inlinemediaobject><imageobject><imagedata fileref="Widget-kst-colorchooser.png" format="PNG"/></imageobject></inlinemediaobject> button displays the standard &kde; color chooser. If you select "Transparent Fill" then the rectangle/ellipse will be see-through.
+The color of the contents of the box/ellipse. Clicking the <inlinemediaobject><imageobject><imagedata fileref="Widget-kst-colorchooser.png" format="PNG"/></imageobject></inlinemediaobject> button displays the standard &kde; color chooser. If you select "Transparent Fill" then the box/ellipse will be see-through.
 </para>
 </listitem>
 </varlistentry>
@@ -943,7 +943,7 @@ The color of the contents of the rectangle/ellipse. Clicking the <inlinemediaobj
 <term><guilabel>X/Y Roundness</guilabel></term>
 <listitem>
 <para>
-These options are for rectangles only. They determine the fractional rounding of the rectangle's corners in a non-intuitive way. Values of 0 result in standard corners (right angles), while values of 99 result in a maximally rounded rectangle (an ellipse). For more information on these options, see the Qt documentation on QPainter::drawRoundRect.
+These options are for boxes only. They determine the fractional rounding of the boxes's corners in a non-intuitive way. Values of 0 result in standard corners (right angles), while values of 99 result in a maximally rounded box (an ellipse). For more information on these options, see the Qt documentation on QPainter::drawRoundRect.
 </para>
 </listitem>
 </varlistentry>
@@ -1050,7 +1050,7 @@ The following are explanations of the dialog box elements.
 <term><guilabel>Border Color</guilabel></term>
 <listitem>
 <para>
-The color of the outline of the rectangle/ellipse object. Clicking the <inlinemediaobject><imageobject><imagedata fileref="Widget-kst-colorchooser.png" format="PNG"/></imageobject></inlinemediaobject> button displays the standard &kde; color chooser.
+The color of the outline of the box/ellipse object. Clicking the <inlinemediaobject><imageobject><imagedata fileref="Widget-kst-colorchooser.png" format="PNG"/></imageobject></inlinemediaobject> button displays the standard &kde; color chooser.
 </para>
 </listitem>
 </varlistentry>

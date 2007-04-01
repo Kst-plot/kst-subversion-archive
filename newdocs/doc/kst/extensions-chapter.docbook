@@ -1,11 +1,28 @@
 <chapter id="extensions">
 <title>Kst Extensions</title>
 
+<para>
+&kst; extensions are a powerful way to add functionality to &kst;. They can, for example, add elements to the &kst; user interface. They are usually designed to accomplish specific tasks which aren't of general use to the &kst; community.
+</para>
+
+<para>
+To load or unload extensions in &kst;, select the <guimenuitem>Extensions...</guimenuitem> item from the <guimenu>Settings</guimenu> menu. A dialog will be presented which allows you to load or unload installed plugins.
+</para>
+
+<screenshot>
+<screeninfo>Extensions Dialog</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-extensions-dialog.png" format="PNG" />
+</imageobject>
+</mediaobject>
+</screenshot>
+
 <sect1 id="extensions-elog">
 <!-- FIXME: review ELOG documentation -->
 <title>The ELOG Extension</title>
 <para>
-The ELOG extension allows event monitors to create logbook entries on a server running the Electronic Logbook (ELOG) application. The created logbook entries can be used, for example, to remotely monitor &kst; events or to produce periodic data reports. For information on configuring and maintaining an ELOG server, please see the official <ulink url="http://midas.psi.ch/elog/">ELOG Homepage</ulink>. To enable the ELOG extension in &kst;, select <guimenuitem>Extensions...</guimenuitem> from the <guimenu>Settings</guimenu> menu and ensure that <quote>ELOG Extension</quote> is checked.
+The ELOG extension allows <link linkend="data-types-eventmonitors">event monitors</link> to create logbook entries on a server running the Electronic Logbook (ELOG) application. The created logbook entries can be used, for example, to remotely monitor &kst; events or to produce periodic data reports. For information on configuring and maintaining an ELOG server, please see the official <ulink url="http://midas.psi.ch/elog/">ELOG Homepage</ulink>. To enable the ELOG extension in &kst;, select <guimenuitem>Extensions...</guimenuitem> from the <guimenu>Settings</guimenu> menu and ensure that <quote>ELOG Extension</quote> is checked.
 </para>
 
 <sect2 id="extensions-elog-settings">
@@ -150,7 +167,7 @@ can be used to send a test logbook entry.  Click <guibutton>Close</guibutton> to
 <sect1 id="extensions-kstscript">
 <title>KstScript</title>
 <para>
-KstScript is a JavaScript binding for &kst;. It aims to offer full control over all aspects of &kst;.
+KstScript is a JavaScript binding for &kst;. It aims to offer full control over all aspects of &kst;. To enable KstScript, select <guimenuitem>Extensions...</guimenuitem> from the <guimenu>Settings</guimenu> menu and ensure that <quote>JavaScript Extension</quote> is checked.
 </para>
 
 <sect2 id="kstscriptrunning">
@@ -162,17 +179,13 @@ There are three ways to to run a KstScript.
 <itemizedlist>
 <listitem> <para>
   from the command line when starting &kst;:
-<screen><userinput><command>
-kst -E js:"loadScript('myscript.js')"
-</command></userinput></screen>
+<screen><userinput><command>kst -E js:"loadScript('myscript.js')"</command></userinput></screen>
 
 </para> </listitem>
 <listitem> <para>
   using kstcmd. kstcmd is a JavaScript interpreter which connects to your &kst; session. It can be run from an external terminal, or from within &kst; itself by selecting <guimenuitem>Show JavaScript Console</guimenuitem> from the <guimenu>Tools</guimenu> menu.
-<screen><userinput><command>
-kstcmd
-</command></userinput>
-Attached to Kst session kst-17704
+<screen><userinput><command>kstcmd</command>
+</userinput>Attached to Kst session kst-17704
 kst> <command>loadScript(myscript.js)</command>
 </screen>
 </para> </listitem>
