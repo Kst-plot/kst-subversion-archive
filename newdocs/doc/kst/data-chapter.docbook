@@ -1763,7 +1763,15 @@ The QImage datasource allows you to read image data into &kst; matrices from a v
 <sect2 id="data-sources-indirect">
 <title>Indirect</title>
 <para>
-This is a 'helper' data source, which allows you to access data which is stored after an intermediate layer, such as a URL or file compression. The indirect data source uses KIO, which is usually configured to understand the most common file compression formats (eg. BZIP2, GZIP, ZIP, TAR) and most popular networking protocols (eg. HTTP, FTP, SFTP, SMB). For more information on which formats are supported on your system type <userinput><command>kinfocenter</command></userinput> at the command line and inspect the protocols tab. A common use of the Indirect data source comes when you have data data stored at a location given by a URL rather than on your computer. If &kst; detects that you have typed a URL into the filename of a vector or matrix, a '<guibutton>Connect</guibutton>' button will appear, provided by the Indirect data source. Clicking the <guibutton>Connect</guibutton> button instructs the Indirect datasource to load the indicated data, and channel it to a suitable data source. An example of the Indirect data source downloading a .fits file from a remote server is shown in the screenshot below.
+This is a 'helper' data source, which allows you to access data through an intermediate layer, such as file compression or an internet protocol.
+</para>
+
+<para>
+A common use of the Indirect data source is to create dynamic file pointers. If you put the path or URL of a data file on the first line of a text file, and give it the extension '.cur', then the Indirect data source is used to load the referenced file. The contents of the '.cur' file can then be externally modified to change the data files loaded by &kst;.
+</para>
+
+<para>
+The Indirect data source also supports all of the data types read KIO, which is usually configured to understand the most common file compression formats (eg. BZIP2, GZIP, ZIP, TAR) and most popular networking protocols (eg. HTTP, FTP, SFTP, SMB). For more information on which formats are supported on your system type <userinput><command>kinfocenter</command></userinput> at the command line and inspect the protocols tab. A sample use of the Indirect data source comes when you have data data stored at a location given by a URL rather than on your computer. If &kst; detects that you have typed a URL into the filename of a vector or matrix, a '<guibutton>Connect</guibutton>' button will appear, provided by the Indirect data source. Clicking the <guibutton>Connect</guibutton> button instructs the Indirect datasource to load the indicated data, and channel it to a suitable data source. An example of the Indirect data source downloading a .fits file from a remote server is shown in the screenshot below.
 </para>
 
 <screenshot>
