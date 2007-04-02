@@ -806,7 +806,132 @@ a reference to the string's contents at the current cursor position in <guilabel
 <term><guilabel>Label text</guilabel></term>
 <listitem>
 <para>
-The text displayed by the label.  You may enter text manually in this dialog, or insert references into it using the scalar and string drop down menus. &kst; labels support many LaTeX formatting and symbol commands.
+The text displayed by the label.  You may enter text manually in this dialog, or insert references into it using the scalar and string drop down menus. &kst; labels support many LaTeX formatting and symbol commands, prefixed with the usual '\'. A list of supported commands is given below:
+
+<informaltable>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Command</entry>
+<entry></entry>
+<entry>Result</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>\Greeklettername</entry>
+<entry><inlinemediaobject><imageobject><imagedata fileref="Screenshot-kst-view-label-latex-Gamma.png" format="PNG"/></imageobject></inlinemediaobject></entry>
+<entry>Uppercase Greek letters. E.g. \Gamma.</entry>
+</row>
+<row>
+<entry>\greeklettername</entry>
+<entry><inlinemediaobject><imageobject><imagedata fileref="Screenshot-kst-view-label-latex-gamma.png" format="PNG"/></imageobject></inlinemediaobject><inlinemediaobject><imageobject><imagedata fileref="Screenshot-kst-view-label-latex-delta.png" format="PNG"/></imageobject></inlinemediaobject></entry>
+<entry>Lowercase Greek letters. E.g. \gamma, \delta.</entry>
+</row>
+<row>
+<entry>\approx</entry>
+<entry><inlinemediaobject><imageobject><imagedata fileref="Screenshot-kst-view-label-latex-approx.png" format="PNG"/></imageobject></inlinemediaobject></entry>
+<entry>Approximately equal to.</entry>
+</row>
+<row>
+<entry>\cdot</entry>
+<entry><inlinemediaobject><imageobject><imagedata fileref="Screenshot-kst-view-label-latex-cdot.png" format="PNG"/></imageobject></inlinemediaobject></entry>
+<entry>Center dot- dot product.</entry>
+</row>
+<row>
+<entry>\geq, \ge</entry>
+<entry><inlinemediaobject><imageobject><imagedata fileref="Screenshot-kst-view-label-latex-geq.png" format="PNG"/></imageobject></inlinemediaobject></entry>
+<entry>Greater than or equal to.</entry>
+</row>
+<row>
+<entry>\leq, \le</entry>
+<entry><inlinemediaobject><imageobject><imagedata fileref="Screenshot-kst-view-label-latex-leq.png" format="PNG"/></imageobject></inlinemediaobject></entry>
+<entry>Greater than or equal to.</entry>
+</row>
+<row>
+<entry>\t</entry>
+<entry></entry>
+<entry>Tab space.</entry>
+</row>
+<row>
+<entry>\n</entry>
+<entry></entry>
+<entry>Newline.</entry>
+</row>
+<row>
+<entry>\partial</entry>
+<entry><inlinemediaobject><imageobject><imagedata fileref="Screenshot-kst-view-label-latex-partial.png" format="PNG"/></imageobject></inlinemediaobject></entry>
+<entry>Partial difference.</entry>
+</row>
+<row>
+<entry>\sqrt</entry>
+<entry><inlinemediaobject><imageobject><imagedata fileref="Screenshot-kst-view-label-latex-sqrt.png" format="PNG"/></imageobject></inlinemediaobject></entry>
+<entry>Square root.</entry>
+</row>
+<row>
+<entry>\inf</entry>
+<entry><inlinemediaobject><imageobject><imagedata fileref="Screenshot-kst-view-label-latex-inf.png" format="PNG"/></imageobject></inlinemediaobject></entry>
+<entry>Infinity.</entry>
+</row>
+<row>
+<entry>\int</entry>
+<entry><inlinemediaobject><imageobject><imagedata fileref="Screenshot-kst-view-label-latex-int.png" format="PNG"/></imageobject></inlinemediaobject></entry>
+<entry>Integral.</entry>
+</row>
+<row>
+<entry>\pm</entry>
+<entry><inlinemediaobject><imageobject><imagedata fileref="Screenshot-kst-view-label-latex-pm.png" format="PNG"/></imageobject></inlinemediaobject></entry>
+<entry>Plus-minus sign.</entry>
+</row>
+<row>
+<entry>\[, \]</entry>
+<entry><inlinemediaobject><imageobject><imagedata fileref="Screenshot-kst-view-label-latex-brackets.png" format="PNG"/></imageobject></inlinemediaobject></entry>
+<entry>Square-brackets.</entry>
+</row>
+<row>
+<entry>\sum</entry>
+<entry><inlinemediaobject><imageobject><imagedata fileref="Screenshot-kst-view-label-latex-sum.png" format="PNG"/></imageobject></inlinemediaobject></entry>
+<entry>Summation sign.</entry>
+</row>
+<row>
+<entry>\prod</entry>
+<entry><inlinemediaobject><imageobject><imagedata fileref="Screenshot-kst-view-label-latex-prod.png" format="PNG"/></imageobject></inlinemediaobject></entry>
+<entry>N-ary product.</entry>
+</row>
+<row>
+<entry>y^{x}</entry>
+<entry><inlinemediaobject><imageobject><imagedata fileref="Screenshot-kst-view-label-latex-superscript.png" format="PNG"/></imageobject></inlinemediaobject></entry>
+<entry>Write x as superscript.</entry>
+</row>
+<row>
+<entry>y_{x}</entry>
+<entry><inlinemediaobject><imageobject><imagedata fileref="Screenshot-kst-view-label-latex-subscript.png" format="PNG"/></imageobject></inlinemediaobject></entry>
+<entry>Write x as subscript.</entry>
+</row>
+<row>
+<entry>\textit{'text'}</entry>
+<entry><inlinemediaobject><imageobject><imagedata fileref="Screenshot-kst-view-label-latex-textit.png" format="PNG"/></imageobject></inlinemediaobject></entry>
+<entry>Write 'text' in italics.</entry>
+</row>
+<row>
+<entry>\textbf{'text'}</entry>
+<entry><inlinemediaobject><imageobject><imagedata fileref="Screenshot-kst-view-label-latex-textbf.png" format="PNG"/></imageobject></inlinemediaobject></entry>
+<entry>Write 'text' in bold font.</entry>
+</row>
+<row>
+<entry>\underline{'text'}</entry>
+<entry><inlinemediaobject><imageobject><imagedata fileref="Screenshot-kst-view-label-latex-underline.png" format="PNG"/></imageobject></inlinemediaobject></entry>
+<entry>Write 'text' with underline.</entry>
+</row>
+<row>
+<entry>\textcolor{'color'}{'text'}</entry>
+<entry><inlinemediaobject><imageobject><imagedata fileref="Screenshot-kst-view-label-latex-textcolor.png" format="PNG"/></imageobject></inlinemediaobject></entry>
+<entry>Write 'text' in 'color'.</entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+
 </para>
 </listitem>
 </varlistentry>
