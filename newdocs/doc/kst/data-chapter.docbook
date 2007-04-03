@@ -1472,7 +1472,7 @@ The <guimenuitem>Change Data Sample Ranges</guimenuitem> dialog can be accessed 
 Currently, the &kst; distribution includes the following default datasources:
 <itemizedlist>
 <listitem><para><link linkend="data-sources-ascii">ASCII</link></para></listitem>
-<listitem><para><link linkend="data-sources-blastdirfiles">BLAST Dirfiles</link></para></listitem>
+<listitem><para><link linkend="data-sources-dirfiles">Dirfiles</link></para></listitem>
 <listitem><para><link linkend="data-sources-healpix">HEALPix</link></para></listitem>
 <listitem><para><link linkend="data-sources-qimage">QImage</link></para></listitem>
 <listitem><para><link linkend="data-sources-indirect">Indirect</link></para></listitem>
@@ -1659,29 +1659,105 @@ Columns are typically separated by tabs or spaces, and rows are separated by car
 </sect2>
 
 
-<sect2 id="data-sources-blastdirfiles">
-<title>BLAST Dirfiles</title>
+<sect2 id="data-sources-dirfiles">
+<title>Dirfiles</title>
 <para>
-BLAST is a balloon flown telescope which does cosmology (<ulink url="http://chile1.physics.upenn.edu/blastpublic/">http://chile1.physics.upenn.edu/blastpublic/</ulink>). Dirfiles contain its data. BLAST dirfile data sources are actually directories of files.  Each directory represents
-one data source, and each file in the directory, with the exception of a file called
-<filename>format</filename>, represents a single field. The file named <filename>format</filename>
-lists each field and its properties.  Below is example of such a file:
+Dirfiles are a very simple data source designed to be read efficiently by &kst;.  The data
+source is a directory which contains each raw field in its own binary file.  Because the data
+for a given field are stored squentially on disk in a binary format, reading is very efficient,
+typically limited by hard disk speed.  Fixed and floating point binary formats are supported, as
+well as calibrations, bit fields and linear combinations of channels.
+</para>
+<para>
+The directory contains one file for each field.
+These files contain only the raw samples, written sequentially.  As in the rest of &kst;, each field in a
+datasource must have the 
+same number of frames, but each field may have a different (fixed) number of samples per frame.  Fomatting
+and calibration information is contained in a file in the Dirfile called
+<filename>format</filename>, which lists each field and its properties.  Below is example of such a file: In 
+this file, a '#' specifies a comment, and for all fields, the first column specifies the field name.
 </para>
 <informalexample>
-<screen>scount RAW f 1
-fcount RAW f 20
-sine RAW f 20
-ssine RAW f 1
-cos RAW f 20</screen>
+<screen>
+##### Raw fields ####
+# data types: 
+# c: 8 bit signed
+# u: 16 bit unsigned.  U: 32 bit unsigned
+# s: 16 bit signed     S: 32 bit signed
+# f: 32 bit float      d: 64 bit float
+# The fieldname is also the name of the raw binary file 
+# holding the data.
+# Fieldname  RAW    datatype   samples/frame
+sensor1      RAW       s         1
+sensor2      RAW       U         20
+sensor3      RAW       c         1
+#
+#### derived fields ####
+# LINCOM fields: (F_out = F1_in*m+b [+ F2_in*m+b [+ ...]])
+# Fieldname  LINCOM  N  Field1_in       gain        offset 
+S1V          LINCOM  1  sensor1    1.52587890625E-4 0.00
+#
+# LINTERP Fields: Calibrate using an ascii lookup table.
+# lookup table format: 
+#     2 whitespace separated columns
+#     The first colum is raw values, and the second is 
+#     a corresponding calibrated value.  The file must be
+#     sorted by column 1.
+# The table is linearly interpolated to the value of 
+# Field_in.
+# Fieldname  LINTERP  Field_in  Calibration_file
+S2K          LINTERP  sensor2   /data/etc/calibration/C2K.cal
+#
+# BIT values: the value of 1 bit of raw data: 0 or 1
+# Fieldname  BIT  Field_in  bit_num (0 to 7 for chars)
+RELAY1       BIT  sensor3   0
+RELAY2       BIT  sensor3   1 
+#
+# The next line includes the contents of another format file 
+# into this one.  Any fields refered to in this file will be 
+# looked for in ../work/, not in ./, so this is essentially 
+# including an entire other datasource.
+INCLUDE ../work/format
+
+</screen>
 </informalexample>
 <para>
-In this example, <literal>scount</literal>, <literal>fcount</literal>, <literal>sine</literal>,
-<literal>ssine</literal>, and <literal>cos</literal> are field names.  <literal>RAW</literal> indicates
-the file is written in raw format, and the last number in each row is the number of samples per frame.
+The following code fragment could (which foolishly ignores all pretences at error
+checking) be used to create this data source...
 </para>
+<informalexample>
+<screen>
+  char bits[1000];
+  short s1[1000];
+  unsigned int s2[20000];
+  int fp;
+
+  ......
+  /* fill bits, s1, and s2 with data...*/
+  ......
+
+  fp = open("/data/example/sensor3",  O_WRONLY|O_CREAT, 00644);
+  write(fp, bits, 1000*sizeof(char));
+  close(fp);
+
+  fp = open("/data/example/sensor2",  O_WRONLY|O_CREAT, 00644);
+  write(fp, bits, 1000*20*sizeof(unsigned int));
+  close(fp);
+
+  fp = open("/data/example/sensor1",  O_WRONLY|O_CREAT, 00644);
+  write(fp, bits, 1000*sizeof(short));
+  close(fp);
+
+  /* create the ascii file /data/example/format, listed above */
+  /* create the cal file, /data/etc/calibration/C2K.cal,
+     described above. */
+
+  ......
+</screen>
+</informalexample>
 
 <para>
-When selecting a BLAST dirfile for use in &kst;, the directory containing the field files should be
+When selecting a dirfile for use in &kst;, the directory containing the field files should be
 selected. &kst; will then automatically look for a <filename>format</filename> file, if it exists,
 to determine the fields and their properties.
 </para>
