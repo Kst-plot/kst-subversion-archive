@@ -73,7 +73,7 @@ this using the command <command>kde-config --prefix</command>).
 <screeninfo>Datasources - Configure ASCII</screeninfo>
 <mediaobject>
 <imageobject>
-<imagedata fileref="Screenshot-kst-commontasks-plottingsimplegraphs-configureascii.png" format="PNG" />
+<imagedata fileref="Screenshot-kst-intro-gs-configureascii.png" format="PNG" />
 </imageobject>
 </mediaobject>
 </screenshot>
@@ -85,7 +85,7 @@ this using the command <command>kde-config --prefix</command>).
 <screeninfo>Data Wizard - Select Data Dialog</screeninfo>
 <mediaobject>
 <imageobject>
-<imagedata fileref="Screenshot-kst-data-wizard-selectdata.png" format="PNG" />
+<imagedata fileref="Screenshot-kst-intro-gs-selectdata.png" format="PNG" />
 </imageobject>
 </mediaobject>
 </screenshot>
@@ -107,7 +107,7 @@ Configure the Data Presentation Pane to look like the following:
 <screeninfo>Data Wizard Data Presentation Pane</screeninfo>
 <mediaobject>
 <imageobject>
-<imagedata fileref="Screenshot-kst-data-wizard-presentation.png" format="PNG" />
+<imagedata fileref="Screenshot-kst-intro-gs-presentation.png" format="PNG" />
 </imageobject>
 </mediaobject>
 </screenshot>
@@ -124,7 +124,7 @@ Clicking 'Next' again takes us to the final Data Wizard pane, where there are op
 <screeninfo>Data Wizard - Configure Plot Layout Plane</screeninfo>
 <mediaobject>
 <imageobject>
-<imagedata fileref="Screenshot-kst-data-wizard-configurelayout.png" format="PNG" />
+<imagedata fileref="Screenshot-kst-intro-gs-configureascii.png" format="PNG" />
 </imageobject>
 </mediaobject>
 </screenshot>
@@ -137,7 +137,7 @@ Now, click the 'Finish' button to generate the plots. Your &kst; session should 
 <screeninfo>Getting Started - Initial Plots</screeninfo>
 <mediaobject>
 <imageobject>
-<imagedata fileref="Screenshot-kst-intro-gsinitialplots.png" format="PNG" />
+<imagedata fileref="Screenshot-kst-intro-gs-initialplots.png" format="PNG" />
 </imageobject>
 <textobject>
 <phrase>Getting Started - Initial Plots</phrase>
@@ -154,7 +154,7 @@ Congratulations! You've just done some basic plotting in &kst;. Generating these
 <screeninfo>Saving a KST session</screeninfo>
 <mediaobject>
 <imageobject>
-<imagedata fileref="Screenshot-kst-saving-saveas.png" format="PNG" />
+<imagedata fileref="Screenshot-kst-intro-gs-saveas.png" format="PNG" />
 </imageobject>
 <textobject>
 <phrase>Saving a KST session</phrase>
@@ -182,7 +182,7 @@ All the plots you created in the <link linkend="intro-gettingstarted-importingda
 <screeninfo>Maximizing a plot</screeninfo>
 <mediaobject>
 <imageobject>
-<imagedata fileref="Screenshot-kst-view-zoom.png" format="PNG" />
+<imagedata fileref="Screenshot-kst-intro-gs-maximize.png" format="PNG" />
 </imageobject>
 <textobject>
 <phrase>Maximizing a plot</phrase>
@@ -224,7 +224,7 @@ the two plots are now tied together:
 <screeninfo>Tied Zoom</screeninfo>
 <mediaobject>
 <imageobject>
-<imagedata fileref="Screenshot-kst-view-tiedzoom.png" format="PNG" />
+<imagedata fileref="Screenshot-kst-intro-gs-tiedzoom.png" format="PNG" />
 </imageobject>
 <textobject>
 <phrase>Tied Zoom</phrase>
@@ -273,7 +273,7 @@ format="PNG"/></imageobject></inlinemediaobject> toolbar button, or by selecting
 <screeninfo>The Data Manager</screeninfo>
 <mediaobject>
 <imageobject>
-<imagedata fileref="Screenshot-kst-data-datamanager.png" format="PNG" />
+<imagedata fileref="Screenshot-kst-intro-gs-datamanager.png" format="PNG" />
 </imageobject>
 <textobject>
 <phrase>The Data Manager</phrase>
@@ -293,14 +293,14 @@ We saw earlier when we attempted tied-zoom in XY-Zoom-Mode that the Column 2 and
 </para>
 
 <para>
-Begin the process of creating an Equation Object by clicking the corresponding button under the <guibutton>Create Data Object</guibutton> tab on the left side of the Data Manager. A dialog will appear to configure the new object. Configure this dialog as shown below:
+Begin the process of creating an Equation by clicking the corresponding button under the <guibutton>Create Data Object</guibutton> tab on the left side of the Data Manager. A dialog will appear to create the new object. Configure this dialog as shown below:
 </para>
 
 <screenshot>
 <screeninfo>New Equation</screeninfo>
 <mediaobject>
 <imageobject>
-<imagedata fileref="Screenshot-kst-intro-equationnew.png" format="PNG" />
+<imagedata fileref="Screenshot-kst-intro-gs-equationnew.png" format="PNG" />
 </imageobject>
 <textobject>
 <phrase>New Equation</phrase>
@@ -320,7 +320,7 @@ Click the OK button of the New Equation dialog. Now a new curve has been added t
 <screeninfo>Getting Started Final Plots</screeninfo>
 <mediaobject>
 <imageobject>
-<imagedata fileref="Screenshot-kst-intro-gsfinalplots.png" format="PNG" />
+<imagedata fileref="Screenshot-kst-intro-gs-finalplots.png" format="PNG" />
 </imageobject>
 </mediaobject>
 </screenshot>

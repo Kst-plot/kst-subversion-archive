@@ -808,6 +808,7 @@ a reference to the string's contents at the current cursor position in <guilabel
 <para>
 The text displayed by the label.  You may enter text manually in this dialog, or insert references into it using the scalar and string drop down menus. &kst; labels support many LaTeX formatting and symbol commands, prefixed with the usual '\'. A list of supported commands is given below:
 
+<!-- FFR: The symbol screenshots were taken for labels w/ font Luxi Sans size 10. Display resolution was 1280x1024.-->
 <informaltable>
 <tgroup cols="2">
 <thead>
@@ -950,16 +951,6 @@ The font to use for the label text.  Select a font from the dropdown list.
 <listitem>
 <para>
 The size of the label text. 0 (the default value) roughly corresponds to a 12pt size.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term><guilabel>Justification</guilabel></term>
-<listitem>
-<para>
-The horizontal alignment of the label.  Select one of <guilabel>Left</guilabel>, <guilabel>Center</guilabel>,
-or <guilabel>Right</guilabel>.
 </para>
 </listitem>
 </varlistentry>
