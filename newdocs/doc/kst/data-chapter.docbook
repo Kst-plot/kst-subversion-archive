@@ -1757,6 +1757,16 @@ checking) be used to create this data source...
 </informalexample>
 
 <para>
+Dirfiles can be used for real time data, but but as each field is written separately, this
+requires some extra care.  First of all, the writting application should avoid all buffering 
+or caching - raw writes as in the above example work fine.  Secondly, the order in which the
+fields are written need to be considered:  &kst; determines the number of frames avalible in
+the data source from the size of the file containing the first RAW field encountered in the
+format file.  So the first RAW field in <filename>format</filename> needs to be the last one
+written, as in the above example.  If the data source is being read over NFS, atribute caching
+needs to be turned off.
+</para>
+<para>
 When selecting a dirfile for use in &kst;, the directory containing the field files should be
 selected. &kst; will then automatically look for a <filename>format</filename> file, if it exists,
 to determine the fields and their properties.

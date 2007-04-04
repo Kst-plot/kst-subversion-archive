@@ -31,19 +31,25 @@
 
 <authorgroup>
 <author>
+<firstname>Duncan</firstname>
+<othername></othername>
+<surname>Hanson</surname>
+</author>
+<author>
 <firstname>Rick</firstname>
 <othername></othername>
 <surname>Chern</surname>
-<affiliation><address><email>kst@kde.org</email></address></affiliation>
 </author>
 <author>
 <firstname>Philip</firstname>
 <surname>Rodrigues</surname>
-<affiliation><address><email>phil@kde.org</email></address>
-</affiliation>
+</author>
+<author>
+<firstname>Barth</firstname>
+<othername></othername>
+<surname>Netterfield</surname>
 </author>
 </authorgroup>
-
 
 <!-- TRANS:ROLES_OF_TRANSLATORS -->
 
@@ -71,8 +77,8 @@ Please respect the format of the date (YYYY-MM-DD) and of the version
 (V.MM.LL), it could be used by automation scripts.
 Do NOT change these in the translation. -->
 
-<date>2005-04-14</date>
-<releaseinfo>1.2.0</releaseinfo>
+<date>2007-04-03</date>
+<releaseinfo>1.4.0</releaseinfo>
 
 <!-- Abstract about this handbook -->
 
