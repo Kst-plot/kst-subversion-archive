@@ -1,74 +1,31 @@
-<chapter id="pluginsandfilters">
+<chapter id="plugins">
 <title>Plugins, Fits, and Filters</title>
+
+<sect1 id="plugins-managing">
+<title>Managing Plugins</title>
 <para>
 Plugins provide added functionality to &kst;.  By default, &kst; comes packaged with an
-extensive selection of built-in plugins.  In addition, a simple and consistent interface allows for easy creation
-of 3rd-party plugins.  Fits and Filters are simply subsets of the set of plugins, and thus behave identically to plugins,
-with the exception of additional convenient dialog functionality accessible from the
-<link linkend="view-zoomingandscrolling-zoommodemenu">Zoom-Mode context menu</link>.
-</para>
-
-<sect1 id="addingandremovingplugins">
-<title>Adding and Removing Plugins</title>
-<para>
-By default, the built-in plugins are stored in <filename>/usr/lib/kde3/kstplugins/</filename> (this directory
-may vary, depending on where you installed &kst;). The Plugin Manager can be used to add
-and remove plugins.  It can be acccessed by selecting <guimenuitem>Plugins...</guimenuitem>
-from the <guimenu>Settings</guimenu> menu.  A list of the currently installed plugins is displayed in the
-Plugin Manager.
+extensive selection of built-in plugins.  In addition, a simple <link linkend="creatingplugins">plugin API</link> allows for easy creation of 3rd-party plugins.
 </para>
 
 <para>
-To add a plugin, click the <guibutton>Install...</guibutton> button.  Browse to the directory containing
-both the plugin specification file (<literal role="extension">*.xml</literal>) and the object file
-(<literal role="extension">*.o</literal>).  Click <guibutton>OK</guibutton>, and the plugin should be installed.
+&kst; plugins are usually comprised of an object file and a .desktop file. For plugins which are available system-wide the object and .desktop files should be stored in <filename>/usr/lib/kde3/</filename> and <filename>/usr/share/services/kst/</filename> respectively (this may vary depending on how your system is configured).
+<!--FIXME: where should user specific plugins be under the new scheme?-->
 </para>
-
-<para>
-To remove a plugin, simply highlight the plugin in the Plugin Manager and click <guibutton>Remove</guibutton>.
-You will be prompted for confirmation.
-</para>
-
-<para>
-To quickly refresh the list of plugins displayed in the Plugin Manager, click <guibutton>Rescan</guibutton>.  Doing
-so will remove any plugins no longer present in their specified paths, and add any new plugins in the default
-plugins directory.
-</para>
-
 </sect1>
 
-
-<sect1 id="plugins-builtinplugins">
+<sect1 id="plugins-builtindescriptions">
 <title>Built-in Plugins</title>
 <para>
-To date, there are more than 25 built-in plugins available in &kst; that perform functions from taking cross correlations
-of two vectors to producing periodograms of a data set.  The settings window for every plugin consists of two
-main sections&mdash;an input section and an output section. Each section is composed of a set of scalars and/or vectors.
-The following screenshot shows the settings window for a typical plugin.  The only difference between the different plugins
-is the set of inputs and outputs, and the mechanism for deriving the outputs from the inputs.
+There are over 25 built-in plugins available in &kst; that perform functions from taking cross correlations of two vectors to producing periodograms of a data set.
 </para>
-
-
-<screenshot>
-<screeninfo>Plugins Window</screeninfo>
-<mediaobject>
-<imageobject>
-<imagedata fileref="Screenshot-kst-plugins-examplewindow.png" format="PNG" />
-</imageobject>
-<textobject>
-<phrase>Plugins Windowpluginswindow</phrase>
-</textobject>
-</mediaobject>
-</screenshot>
 
 <para>
 The following sections describe the purpose, key algorithms or formulas used to perform calculations,
-and inputs and outputs for each plugin.  Note that fitting and filtering plugins are included in the following sections.
+and inputs and outputs for each plugin.
 </para>
 
-
-<!-- Begin the long plugins section.  -->
-<sect2 id="plugin-autocorrelation">
+<sect2 id="plugins-autocorrelation">
 <title>Autocorrelation</title>
 <para>
 The autocorrelation plugin calculates correlation values between a series (vector) and a lagged version
@@ -88,7 +45,16 @@ value <literal>r</literal> at lag <literal>k</literal> is:
 </inlinemediaobject>
 </para>
 
-<sect3 id="plugin-autocorrelation-inputs">
+<screenshot>
+<screeninfo>Plugins - Autocorrelation</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-plugins-autocorrelation.png" format="PNG" />
+</imageobject>
+</mediaobject>
+</screenshot> 
+
+<sect3 id="plugins-autocorrelation-inputs">
 <title>Inputs</title>
 <variablelist>
 
@@ -104,7 +70,7 @@ The array <literal>x</literal> of values to calculate correlation values for.
 </variablelist>
 </sect3>
 
-<sect3 id="plugin-autocorrelation-outputs">
+<sect3 id="plugins-autocorrelation-outputs">
 <title>Outputs</title>
 <variablelist>
 
@@ -131,16 +97,26 @@ The array of correlation values calculated using the corresponding step number i
 
 </sect2>
 
-<sect2 id="plugin-bin">
+<sect2 id="plugins-bin">
 <title>Bin</title>
 <para>
-The bin plugin bins elements of a single data vector into bins of a specified size.  The value of each bin is the mean
+The bin plugin group elements of a single data vector into bins of a specified size.  The value of each bin is the mean
 of the elements belonging to the bin. For example, if the bin size is <literal>3</literal>, and the input vector is
 <literal>[9,2,7,3,4,74,5,322,444,2,1]</literal>, then the outputted bins would be
 <literal>[6,27,257]</literal>.  Note that any elements remaining at the end of the input vector that do not form a complete
 bin (in this case, elements <literal>2</literal> and <literal>1</literal>), are simply discarded.
 </para>
-<sect3 id="plugin-bin-inputs">
+
+<screenshot>
+<screeninfo>plugins- - Bin</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-plugins-bin.png" format="PNG" />
+</imageobject>
+</mediaobject>
+</screenshot> 
+
+<sect3 id="plugins-bin-inputs">
 <title>Inputs</title>
 <variablelist>
 
@@ -157,7 +133,7 @@ The vector to bin.
 <term>Bin Size (scalar)</term>
 <listitem>
 <para>
-The size to use for each bin.
+The size (# of elements) to have in each bin.
 </para>
 </listitem>
 </varlistentry>
@@ -165,7 +141,7 @@ The size to use for each bin.
 </variablelist>
 </sect3>
 
-<sect3 id="plugin-bin-outputs">
+<sect3 id="plugins-bin-outputs">
 <title>Outputs</title>
 <variablelist>
 
@@ -182,12 +158,11 @@ The array of means for each bin.
 
 </sect2>
 
-<sect2 id="plugin-butterworth_bandpass">
-<title>Butterworth band-pass</title>
+<sect2 id="plugins-butterworth_bandpass">
+<title>Band-pass filter</title>
 <para>
 The Butterworth band-pass plugin filters a set of data by calculating
-the Fourier transform of the data and recalculating the
-the frequency responses using the following formula
+the Fourier transform of the data and scaling the spectral amplitudes using the following function G(f)
 </para>
 <para>
 <inlinemediaobject>
@@ -195,23 +170,32 @@ the frequency responses using the following formula
 <imagedata fileref="Formula-kst-bandpass.png" format="PNG" />
 </imageobject>
 <textobject>
-<phrase>Autocorrelation formula</phrase>
+<phrase>Bandpass formula</phrase>
 </textobject>
 </inlinemediaobject>
 </para>
 <para>
 where <literal>f</literal> is the frequency, <literal>f<subscript>c</subscript></literal> is
-the low frequency cutoff, <literal>b</literal> is the bandwidth of the band to pass, and
+the central frequency to filter around, <literal>b</literal> is the bandwidth to pass, and
 <literal>n</literal> is the order of the Butterworth filter.  The inverse Fourier transform
-is then calculated using the new filtered frequency responses.
+is then calculated using the scaled spectral amplitudes to give a filtered dataset.
 </para>
 
-<sect3 id="plugin-butterworth_bandpass-inputs">
+<screenshot>
+<screeninfo>Plugins - Bandpass Filter</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-plugins-bandpassfilter.png" format="PNG" />
+</imageobject>
+</mediaobject>
+</screenshot> 
+
+<sect3 id="plugins-butterworth_bandpass-inputs">
 <title>Inputs</title>
 <variablelist>
 
 <varlistentry>
-<term>X Array (vector)</term>
+<term>Y (vector)</term>
 <listitem>
 <para>
 The array of values to filter.
@@ -229,10 +213,10 @@ The order of the Butterworth filter to use.
 </varlistentry>
 
 <varlistentry>
-<term>Low cutoff frequency (scalar)</term>
+<term>Central frequency / sample rate(scalar)</term>
 <listitem>
 <para>
-The low cutoff frequency of the Butterworth band pass filter.
+The frequency to filter around.
 </para>
 </listitem>
 </varlistentry>
@@ -250,12 +234,12 @@ cutoff frequency and the low cutoff frequency.
 </variablelist>
 </sect3>
 
-<sect3 id="plugin-butterworth_bandpass-outputs">
+<sect3 id="plugins-butterworth_bandpass-outputs">
 <title>Outputs</title>
 <variablelist>
 
 <varlistentry>
-<term>X Filtered (vector)</term>
+<term>Filtered (vector)</term>
 <listitem>
 <para>
 The array of filtered data values.
@@ -268,12 +252,10 @@ The array of filtered data values.
 
 </sect2>
 
-<sect2 id="plugin-butterworth_bandstop">
-<title>Butterworth band-stop</title>
+<sect2 id="plugins-butterworth_bandstop">
+<title>Band-stop filter</title>
 <para>
-The Butterworth band-stop plugin filters a set of data by calculating
-the Fourier transform of the data and recalculating the
-the frequency responses using the following formula
+The Butterworth band-stop effectively removes signals in a given frequency range from an input vector. The options are the same as for the <link linkend="plugins-butterworth_bandpass">Band-pass filter</link> except that the scaling function G(f) which is used is now given by:
 </para>
 <para>
 <inlinemediaobject>
@@ -285,80 +267,13 @@ the frequency responses using the following formula
 </textobject>
 </inlinemediaobject>
 </para>
-<para>
-where <literal>f</literal> is the frequency, <literal>f<subscript>c</subscript></literal> is
-the low frequency cutoff, <literal>b</literal> is the bandwidth of the band to stop, and
-<literal>n</literal> is the order of the Butterworth filter.  The inverse Fourier transform
-is then calculated using the new filtered frequency responses.
-</para>
-<sect3 id="plugin-butterworth_bandstop-inputs">
-<title>Inputs</title>
-<variablelist>
-
-<varlistentry>
-<term>X Array (vector)</term>
-<listitem>
-<para>
-The array of values to filter.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term>Order (scalar)</term>
-<listitem>
-<para>
-The order of the Butterworth filter to use.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term>Low cutoff frequency (scalar)</term>
-<listitem>
-<para>
-The low cutoff frequency of the Butterworth band stop filter.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term>Band width (scalar)</term>
-<listitem>
-<para>
-The width of the band to stop.  This should be the difference between the desired high
-cutoff frequency and the low cutoff frequency.
-</para>
-</listitem>
-</varlistentry>
-
-</variablelist>
-</sect3>
-
-<sect3 id="plugin-butterworth_bandstop-outputs">
-<title>Outputs</title>
-<variablelist>
-
-<varlistentry>
-<term>X Filtered (vector)</term>
-<listitem>
-<para>
-The array of filtered data values.
-</para>
-</listitem>
-</varlistentry>
-
-</variablelist>
-</sect3>
-
 </sect2>
 
-<sect2 id="plugin-butterworth_highpass">
-<title>Butterworth high-pass</title>
+<sect2 id="plugins-butterworth_highpass">
+<title>High-pass filter</title>
 <para>
-The Butterworth high-pass plugin filters a set of data by calculating
-the Fourier transform of the data and recalculating the
-the frequency responses using the following formula
+The Butterworth high-pass plugin effectively removes signals below a given cutoff frequency from a data vector. It does this by by calculating the Fourier transform of the data and rescaling the
+the spectral amplitudes using the following following function G(f)
 </para>
 <para>
 <inlinemediaobject>
@@ -366,7 +281,7 @@ the frequency responses using the following formula
 <imagedata fileref="Formula-kst-highpass.png" format="PNG" />
 </imageobject>
 <textobject>
-<phrase>Autocorrelation formula</phrase>
+<phrase>Highpass formula</phrase>
 </textobject>
 </inlinemediaobject>
 </para>
@@ -376,12 +291,22 @@ the high frequency cutoff, and
 <literal>n</literal> is the order of the Butterworth filter.  The inverse Fourier transform
 is then calculated using the new filtered frequency responses.
 </para>
-<sect3 id="plugin-butterworth_highpass-inputs">
+
+<screenshot>
+<screeninfo>Plugins - High pass</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-plugins-highpassfilter.png" format="PNG" />
+</imageobject>
+</mediaobject>
+</screenshot> 
+
+<sect3 id="plugins-butterworth_highpass-inputs">
 <title>Inputs</title>
 <variablelist>
 
 <varlistentry>
-<term>X Array (vector)</term>
+<term>Y (vector)</term>
 <listitem>
 <para>
 The array of values to filter.
@@ -399,24 +324,22 @@ The order of the Butterworth filter to use.
 </varlistentry>
 
 <varlistentry>
-<term>Cutoff frequency (scalar)</term>
+<term>Cutoff frequency/sample rate (scalar)</term>
 <listitem>
 <para>
-The cutoff frequency of the Butterworth high pass filter.
+The cutoff frequency (<literal>f<subscript>c</subscript></literal>).
 </para>
 </listitem>
 </varlistentry>
-
-
 </variablelist>
 </sect3>
 
-<sect3 id="plugin-butterworth_highpass-outputs">
+<sect3 id="plugins-butterworth_highpass-outputs">
 <title>Outputs</title>
 <variablelist>
 
 <varlistentry>
-<term>X Filtered (vector)</term>
+<term>Filtered (vector)</term>
 <listitem>
 <para>
 The array of filtered data values.
@@ -429,12 +352,10 @@ The array of filtered data values.
 
 </sect2>
 
-<sect2 id="plugin-butterworth_lowpass">
-<title>Butterworth low-pass</title>
+<sect2 id="plugins-butterworth_lowpass">
+<title>Low-pass filter</title>
 <para>
-The Butterworth low-pass plugin filters a set of data by calculating
-the Fourier transform of the data and recalculating the
-the frequency responses using the following formula
+The Butterworth low-pass filter effectively removes signals above a given frequency cutoff from an input vector. The options are the same as for the <link linkend="plugins-butterworth_highpass">High-pass filter</link> except that the scaling function G(f) which is used is now given by:
 </para>
 <para>
 <inlinemediaobject>
@@ -446,68 +367,10 @@ the frequency responses using the following formula
 </textobject>
 </inlinemediaobject>
 </para>
-<para>
-where <literal>f</literal> is the frequency, <literal>f<subscript>c</subscript></literal> is
-the low frequency cutoff, and
-<literal>n</literal> is the order of the Butterworth filter.  The inverse Fourier transform
-is then calculated using the new filtered frequency responses.
-</para>
-<sect3 id="plugin-butterworth_lowpass-inputs">
-<title>Inputs</title>
-<variablelist>
-
-<varlistentry>
-<term>X Array (vector)</term>
-<listitem>
-<para>
-The array of values to filter.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term>Order (scalar)</term>
-<listitem>
-<para>
-The order of the Butterworth filter to use.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term>Cutoff frequency (scalar)</term>
-<listitem>
-<para>
-The cutoff frequency of the Butterworth low pass filter.
-</para>
-</listitem>
-</varlistentry>
-
-</variablelist>
-</sect3>
-
-<sect3 id="plugin-butterworth_lowpass-outputs">
-<title>Outputs</title>
-<variablelist>
-
-<varlistentry>
-<term>X Filtered (vector)</term>
-<listitem>
-<para>
-The array of filtered data values.
-</para>
-</listitem>
-</varlistentry>
-
-</variablelist>
-</sect3>
 
 </sect2>
 
-
-
-
-<sect2 id="plugin-chop">
+<sect2 id="plugins-chop">
 <title>Chop</title>
 <para>
 The chop plugin takes an input vector and divides it into two vectors.  Every second element in the
@@ -515,7 +378,16 @@ input vector is placed in one output vector, while all other elements from the i
 in another output vector.
 </para>
 
-<sect3 id="plugin-chop-inputs">
+<screenshot>
+<screeninfo>Plugins - Chop</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-plugins-chop.png" format="PNG" />
+</imageobject>
+</mediaobject>
+</screenshot> 
+
+<sect3 id="plugins-chop-inputs">
 <title>Inputs</title>
 <variablelist>
 
@@ -531,7 +403,7 @@ The array of values to perform the chop on.
 </variablelist>
 </sect3>
 
-<sect3 id="plugin-chop-outputs">
+<sect3 id="plugins-chop-outputs">
 <title>Outputs</title>
 <variablelist>
 
@@ -568,7 +440,7 @@ The array containing the elements of the odd array minus the respective elements
 <term>Index Array (vector)</term>
 <listitem>
 <para>
-An index array the same length as the other three output arrays.
+An <link linkend="data-sources-concepts-index">index array</link> the same length as the other three output arrays.
 </para>
 </listitem>
 </varlistentry>
@@ -577,7 +449,7 @@ An index array the same length as the other three output arrays.
 </sect3>
 </sect2>
 
-<sect2 id="plugin-convolution">
+<sect2 id="plugins-convolution">
 <title>Convolution</title>
 <para>
 The convolution plugin generates the convolution of one vector with another.  The convolution of two functions
@@ -593,9 +465,19 @@ The convolution plugin generates the convolution of one vector with another.  Th
 <para>
 The order of the vectors does not matter, since <literal>f*g=g*f</literal>.  In addition,
 the vectors do not need to be of the same size,
-as the plugin will automatically extrapolate the smaller vector.
+as the plugin will automatically interpolate smallest vector to the larger length.
 </para>
-<sect3 id="plugin-convolution-inputs">
+
+<screenshot>
+<screeninfo>Plugins - Convolution</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-plugins-convolution.png" format="PNG" />
+</imageobject>
+</mediaobject>
+</screenshot> 
+
+<sect3 id="plugins-convolution-inputs">
 <title>Inputs</title>
 <variablelist>
 
@@ -620,7 +502,7 @@ One of the pair of arrays to take the convolution of.
 </variablelist>
 </sect3>
 
-<sect3 id="plugin-convolution-outputs">
+<sect3 id="plugins-convolution-outputs">
 <title>Outputs</title>
 <variablelist>
 
@@ -634,13 +516,10 @@ The convolution of the two input vectors.
 </varlistentry>
 </variablelist>
 </sect3>
-
 </sect2>
 
 
-
-
-<sect2 id="plugin-crosscorrelation">
+<sect2 id="plugins-crosscorrelation">
 <title>Crosscorrelation</title>
 <para>
 The crosscorrelation plugin calculates correlation values between two series (vectors) <literal>x</literal> and
@@ -662,12 +541,21 @@ value <literal>r</literal> at lag <literal>k</literal> is:
 </inlinemediaobject>
 </para>
 
-<sect3 id="plugin-crosscorrelation-inputs">
+<screenshot>
+<screeninfo>Plugins - Cross-correlation</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-plugins-crosscorrelation.png" format="PNG" />
+</imageobject>
+</mediaobject>
+</screenshot> 
+
+<sect3 id="plugins-crosscorrelation-inputs">
 <title>Inputs</title>
 <variablelist>
 
 <varlistentry>
-<term>X Array (vector)</term>
+<term>Array One (vector)</term>
 <listitem>
 <para>
 The array <literal>x</literal> used in the cross-correlation formula.
@@ -676,7 +564,7 @@ The array <literal>x</literal> used in the cross-correlation formula.
 </varlistentry>
 
 <varlistentry>
-<term>Y Array (vector)</term>
+<term>Array Two (vector)</term>
 <listitem>
 <para>
 The array <literal>y</literal> used in the cross-correlation formula.
@@ -687,12 +575,12 @@ The array <literal>y</literal> used in the cross-correlation formula.
 </variablelist>
 </sect3>
 
-<sect3 id="plugin-crosscorrelation-outputs">
+<sect3 id="plugins-crosscorrelation-outputs">
 <title>Outputs</title>
 <variablelist>
 
 <varlistentry>
-<term>Step Number (vector)</term>
+<term>Step value (vector)</term>
 <listitem>
 <para>
 The array of step, or lag values.
@@ -704,7 +592,7 @@ The array of step, or lag values.
 <term>Correlation Value (vector)</term>
 <listitem>
 <para>
-The array of correlation values calculated using the corresponding step number in the Step Number vector.
+The array of correlation values calculated using the corresponding step number in the Step value vector.
 </para>
 </listitem>
 </varlistentry>
@@ -715,7 +603,7 @@ The array of correlation values calculated using the corresponding step number i
 </sect2>
 
 
-<sect2 id="plugin-deconvolution">
+<sect2 id="plugins-deconvolution">
 <title>Deconvolution</title>
 <para>
 The deconvolution plugin generates the deconvolution of one vector with another.  Deconvolution is the inverse of
@@ -734,6 +622,16 @@ The vectors do not need to be of the same size,
 as the plugin will automatically extrapolate the shorter vector.  The shorter vector is assumed to be the
 response function <literal>g</literal>.
 </para>
+
+<screenshot>
+<screeninfo>Plugins - Deconvolution</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-plugins-deconvolution.png" format="PNG" />
+</imageobject>
+</mediaobject>
+</screenshot> 
+
 <sect3 id="plugin-deconvolution-inputs">
 <title>Inputs</title>
 <variablelist>
@@ -759,7 +657,7 @@ One of the pair of arrays to take the deconvolution of.
 </variablelist>
 </sect3>
 
-<sect3 id="plugin-deconvolution-outputs">
+<sect3 id="plugins-deconvolution-outputs">
 <title>Outputs</title>
 <variablelist>
 
@@ -777,7 +675,7 @@ The deconvolution of the two input vectors.
 </sect2>
 
 
-<sect2 id="plugin-kstfit_exponential_weighted">
+<sect2 id="plugins-kstfit_exponential_weighted">
 <title>Fit exponential weighted</title>
 <para>
 The Fit exponential weighted plugin performs a weighted non-linear least-squares fit
@@ -804,7 +702,16 @@ An initial estimate of
 until a precision of <literal>1.0e-4</literal> is reached or 500 iterations have been performed.
 </para>
 
-<sect3 id="plugin-kstfit_exponential_weighted-inputs">
+<screenshot>
+<screeninfo>Plugins - Fit exponential weighted</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-plugins-fitexponential.png" format="PNG" />
+</imageobject>
+</mediaobject>
+</screenshot> 
+
+<sect3 id="plugins-kstfit_exponential_weighted-inputs">
 <title>Inputs</title>
 
 <variablelist>
@@ -838,7 +745,7 @@ The array of weights to use for the fit.
 </variablelist>
 </sect3>
 
-<sect3 id="plugin-kstfit_exponential_weighted-outputs">
+<sect3 id="plugins-kstfit_exponential_weighted-outputs">
 <title>Outputs</title>
 
 <variablelist>
@@ -899,18 +806,18 @@ The weighted sum of squares of the residuals, divided by the degrees of freedom.
 
 </sect2>
 
-<sect2 id="plugin-kstfit_exponential_unweighted">
+<sect2 id="plugins-kstfit_exponential_unweighted">
 <title>Fit exponential</title>
 <para>
 The Fit exponential plugin is identical in function to the
-<link linkend="plugin-kstfit_exponential_weighted">Fit exponential weighted</link>
+<link linkend="plugins-kstfit_exponential_weighted">Fit exponential weighted</link>
 plugin with the exception that the weight value <literal>w<subscript>i</subscript></literal>
-is equal to <literal>1</literal> for all index values <literal>i</literal>.  As a result, the
+is equal to <literal>1</literal> for all index values <literal>i</literal>. As a result, the
 Weights (vector) input does not exist.
 </para>
 </sect2>
 
-<sect2 id="plugin-kstfit_gaussian_weighted">
+<sect2 id="plugins-kstfit_gaussian_weighted">
 <title>Fit gaussian weighted</title>
 <para>
 The Fit gaussian weighted plugin performs a weighted non-linear least-squares fit
@@ -941,7 +848,16 @@ is used. The plugin subsequently iterates to the solution
 until a precision of <literal>1.0e-4</literal> is reached or 500 iterations have been performed.
 </para>
 
-<sect3 id="plugin-kstfit_gaussian_weighted-inputs">
+<screenshot>
+<screeninfo>Plugins - Fit gaussian</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-plugins-fitgaussian.png" format="PNG" />
+</imageobject>
+</mediaobject>
+</screenshot> 
+
+<sect3 id="plugins-kstfit_gaussian_weighted-inputs">
 <title>Inputs</title>
 
 <variablelist>
@@ -975,7 +891,7 @@ The array of weights to use for the fit.
 </variablelist>
 </sect3>
 
-<sect3 id="plugin-kstfit_gaussian_weighted-outputs">
+<sect3 id="plugins-kstfit_gaussian_weighted-outputs">
 <title>Outputs</title>
 
 <variablelist>
@@ -1041,11 +957,11 @@ The weighted sum of squares of the residuals, divided by the degrees of freedom.
 
 </sect2>
 
-<sect2 id="plugin-kstfit_gaussian_unweighted">
+<sect2 id="plugins-kstfit_gaussian_unweighted">
 <title>Fit gaussian</title>
 <para>
 The Fit gaussian plugin is identical in function to the
-<link linkend="plugin-kstfit_gaussian_weighted">Fit gaussian weighted</link>
+<link linkend="plugins-kstfit_gaussian_weighted">Fit gaussian weighted</link>
 plugin with the exception that the weight value <literal>w<subscript>i</subscript></literal>
 is equal to <literal>1</literal> for all index values <literal>i</literal>.  As a result, the
 Weights (vector) input does not exist.
@@ -1053,7 +969,7 @@ Weights (vector) input does not exist.
 </sect2>
 
 
-<sect2 id="plugin-kstfit_gradient_weighted">
+<sect2 id="plugins-kstfit_gradient_weighted">
 <title>Fit gradient weighted</title>
 <para>
 The gradient weighted plugin performs a weighted least-squares fit to a straight line
@@ -1080,7 +996,17 @@ The best-fit is found by minimizing the weighted sum of squared residuals:
 for <literal>b</literal>,
 where <literal>w<subscript>i</subscript></literal> is the weight at index <literal>i</literal>.
 </para>
-<sect3 id="plugin-kstfit_gradient_weighted-inputs">
+
+<screenshot>
+<screeninfo>Plugins - Fit Gradient</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-plugins-fitgradient.png" format="PNG" />
+</imageobject>
+</mediaobject>
+</screenshot> 
+
+<sect3 id="plugins-kstfit_gradient_weighted-inputs">
 <title>Inputs</title>
 <variablelist>
 
@@ -1114,7 +1040,7 @@ The array containing weights to be used for the fit.
 </variablelist>
 </sect3>
 
-<sect3 id="plugin-kstfit_gradient_weighted-outputs">
+<sect3 id="plugins-kstfit_gradient_weighted-outputs">
 <title>Outputs</title>
 <variablelist>
 <varlistentry>
@@ -1188,11 +1114,11 @@ The value of the sum of squares of the residuals, divided by the degrees of free
 </sect3>
 </sect2>
 
-<sect2 id="plugin-kstfit_gradient_unweighted">
+<sect2 id="plugins-kstfit_gradient_unweighted">
 <title>Fit gradient</title>
 <para>
 The Fit linear plugin is identical in function to the
-<link linkend="plugin-kstfit_gradient_weighted">Fit gradient weighted</link>
+<link linkend="plugins-kstfit_gradient_weighted">Fit gradient weighted</link>
 plugin with the exception that the weight value <literal>w<subscript>i</subscript></literal>
 is equal to <literal>1</literal> for all index values <literal>i</literal>.  As a result, the
 Weights (vector) input does not exist.
@@ -1201,7 +1127,7 @@ Weights (vector) input does not exist.
 
 
 
-<sect2 id="plugin-kstfit_linear_weighted">
+<sect2 id="plugins-kstfit_linear_weighted">
 <title>Fit linear weighted</title>
 <para>
 The Fit linear weighted plugin performs a weighted least-squares fit to a straight line model:
@@ -1227,7 +1153,17 @@ The best-fit is found by minimizing the weighted sum of squared residuals:
 for <literal>a</literal> and <literal>b</literal>,
 where <literal>w<subscript>i</subscript></literal> is the weight at index <literal>i</literal>.
 </para>
-<sect3 id="plugin-kstfit_linear_weighted-inputs">
+
+<screenshot>
+<screeninfo>Plugins - Fit linear</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-plugins-fitlinear.png" format="PNG" />
+</imageobject>
+</mediaobject>
+</screenshot> 
+
+<sect3 id="plugins-kstfit_linear_weighted-inputs">
 <title>Inputs</title>
 <variablelist>
 
@@ -1261,7 +1197,7 @@ The array containing weights to be used for the fit.
 </variablelist>
 </sect3>
 
-<sect3 id="plugin-kstfit_linear_weighted-outputs">
+<sect3 id="plugins-kstfit_linear_weighted-outputs">
 <title>Outputs</title>
 <variablelist>
 
@@ -1336,11 +1272,11 @@ The value of the sum of squares of the residuals, divided by the degrees of free
 </sect3>
 </sect2>
 
-<sect2 id="plugin-kstfit_linear_unweighted">
+<sect2 id="plugins-kstfit_linear_unweighted">
 <title>Fit linear</title>
 <para>
 The Fit linear plugin is identical in function to the
-<link linkend="plugin-kstfit_linear_weighted">Fit linear weighted</link>
+<link linkend="plugins-kstfit_linear_weighted">Fit linear weighted</link>
 plugin with the exception that the weight value <literal>w<subscript>i</subscript></literal>
 is equal to <literal>1</literal> for all index values <literal>i</literal>.  As a result, the
 Weights (vector) input does not exist.
@@ -1348,7 +1284,7 @@ Weights (vector) input does not exist.
 </sect2>
 
 
-<sect2 id="plugin-kstfit_lorentzian_weighted">
+<sect2 id="plugins-kstfit_lorentzian_weighted">
 <title>Fit lorentzian weighted</title>
 <para>
 The Fit lorentzian weighted plugin performs a weighted non-linear least-squares fit
@@ -1375,7 +1311,16 @@ is used. The plugin subsequently iterates to the solution
 until a precision of <literal>1.0e-4</literal> is reached or 500 iterations have been performed.
 </para>
 
-<sect3 id="plugin-kstfit_lorentzian_weighted-inputs">
+<screenshot>
+<screeninfo>Plugins - Fit Lorentzian</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-plugins-fitlorentzian.png" format="PNG" />
+</imageobject>
+</mediaobject>
+</screenshot> 
+
+<sect3 id="plugins-kstfit_lorentzian_weighted-inputs">
 <title>Inputs</title>
 
 <variablelist>
@@ -1409,7 +1354,7 @@ The array of weights to use for the fit.
 </variablelist>
 </sect3>
 
-<sect3 id="plugin-kstfit_lorentzian_weighted-outputs">
+<sect3 id="plugins-kstfit_lorentzian_weighted-outputs">
 <title>Outputs</title>
 
 <variablelist>
@@ -1471,11 +1416,11 @@ The weighted sum of squares of the residuals, divided by the degrees of freedom.
 
 </sect2>
 
-<sect2 id="plugin-kstfit_lorentzian_unweighted">
+<sect2 id="plugins-kstfit_lorentzian_unweighted">
 <title>Fit lorentzian</title>
 <para>
 The Fit lorentzian plugin is identical in function to the
-<link linkend="plugin-kstfit_lorentzian_weighted">Fit lorentzian weighted</link>
+<link linkend="plugins-kstfit_lorentzian_weighted">Fit lorentzian weighted</link>
 plugin with the exception that the weight value <literal>w<subscript>i</subscript></literal>
 is equal to <literal>1</literal> for all index values <literal>i</literal>.  As a result, the
 Weights (vector) input does not exist.
@@ -1483,7 +1428,7 @@ Weights (vector) input does not exist.
 </sect2>
 
 
-<sect2 id="plugin-kstfit_polynomial_weighted">
+<sect2 id="plugins-kstfit_polynomial_weighted">
 <title>Fit polynomial weighted</title>
 <para>
 The Fit polynomial weighted plugin performs a weighted least-squares fit to a polynomial model:
@@ -1499,7 +1444,16 @@ The Fit polynomial weighted plugin performs a weighted least-squares fit to a po
 where <literal>n</literal> is the degree of the polynomial model.
 </para>
 
-<sect3 id="plugin-kstfit_polynomial_weighted-inputs">
+<screenshot>
+<screeninfo>Plugins - Fit Polynomial</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-plugins-fitpolynomial.png" format="PNG" />
+</imageobject>
+</mediaobject>
+</screenshot> 
+
+<sect3 id="plugins-kstfit_polynomial_weighted-inputs">
 <title>Inputs</title>
 
 <variablelist>
@@ -1543,7 +1497,7 @@ The order, or degree, of the polynomial model to use.
 </variablelist>
 </sect3>
 
-<sect3 id="plugin-kstfit_polynomial_weighted-outputs">
+<sect3 id="plugins-kstfit_polynomial_weighted-outputs">
 <title>Outputs</title>
 
 <variablelist>
@@ -1599,11 +1553,11 @@ The weighted sum of squares of the residuals, divided by the degrees of freedom.
 </sect3>
 </sect2>
 
-<sect2 id="plugin-kstfit_polynomial_unweighted">
+<sect2 id="plugins-kstfit_polynomial_unweighted">
 <title>Fit polynomial</title>
 <para>
 The Fit polynomial plugin is identical in function to the
-<link linkend="plugin-kstfit_polynomial_weighted">Fit polynomial weighted</link>
+<link linkend="plugins-kstfit_polynomial_weighted">Fit polynomial weighted</link>
 plugin with the exception that the weight value <literal>w<subscript>i</subscript></literal>
 is equal to <literal>1</literal> for all index values <literal>i</literal>.  As a result, the
 Weights (vector) input does not exist.
@@ -1611,7 +1565,7 @@ Weights (vector) input does not exist.
 </sect2>
 
 
-<sect2 id="plugin-kstfit_sinusoid_weighted">
+<sect2 id="plugins-kstfit_sinusoid_weighted">
 <title>Fit sinusoid weighted</title>
 <para>
 The Fit sinusoid weighted plugin performs a least-squares fit to a sinusoid model:
@@ -1628,6 +1582,15 @@ where <literal>T</literal> is the specified period,
 and <literal>n=2+2H</literal>, where
 <literal>H</literal> is the specified number of harmonics.
 </para>
+
+<screenshot>
+<screeninfo>Plugins - Fit Sinusoid</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-plugins-fitsinusoid.png" format="PNG" />
+</imageobject>
+</mediaobject>
+</screenshot> 
 
 <sect3 id="plugin-kstfit_sinusoid_weighted-inputs">
 <title>Inputs</title>
@@ -1682,7 +1645,7 @@ The period of the sinusoid to fit.
 </variablelist>
 </sect3>
 
-<sect3 id="plugin-kstfit_sinusoid_weighted-outputs">
+<sect3 id="plugins-kstfit_sinusoid_weighted-outputs">
 <title>Outputs</title>
 
 <variablelist>
@@ -1738,30 +1701,34 @@ The weighted sum of squares of the residuals, divided by the degrees of freedom.
 </sect3>
 </sect2>
 
-<sect2 id="plugin-kstfit_sinusoid_unweighted">
+<sect2 id="plugins-kstfit_sinusoid_unweighted">
 <title>Fit sinusoid</title>
 <para>
 The Fit sinusoid plugin is identical in function to the
-<link linkend="plugin-kstfit_sinusoid_weighted">Fit sinusoid weighted</link>
+<link linkend="plugins-kstfit_sinusoid_weighted">Fit sinusoid weighted</link>
 plugin with the exception that the weight value <literal>w<subscript>i</subscript></literal>
 is equal to <literal>1</literal> for all index values <literal>i</literal>.  As a result, the
 Weights (vector) input does not exist.
 </para>
 </sect2>
 
-
-
-
-
-
-<sect2 id="plugin-kstinterp_akima">
+<sect2 id="plugins-kstinterp_akima">
 <title>Interpolation Akima spline</title>
 <para>
 The Interpolation Akima spline plugin generates a non-rounded Akima spline interpolation for the supplied data set,
 using natural boundary conditions.
 </para>
 
-<sect3 id="plugin-kstinterp_akima-inputs">
+<screenshot>
+<screeninfo>Plugins - Akima Spline</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-plugins-interpolationakimaspline.png" format="PNG" />
+</imageobject>
+</mediaobject>
+</screenshot> 
+
+<sect3 id="plugins-kstinterp_akima-inputs">
 <title>Inputs</title>
 <variablelist>
 
@@ -1796,7 +1763,7 @@ The array of x values for which interpolated y values are desired.
 </variablelist>
 </sect3>
 
-<sect3 id="plugin-kstinterp_akima-outputs">
+<sect3 id="plugins-kstinterp_akima-outputs">
 <title>Outputs</title>
 <variablelist>
 
@@ -1813,301 +1780,47 @@ The interpolated y values.
 </sect3>
 </sect2>
 
-<sect2 id="plugin-kstinterp_akima_periodic">
+<sect2 id="plugins-kstinterp_akima_periodic">
 <title>Interpolation Akima spline periodic</title>
 <para>
 The kstinterp akima periodic plugin generates a non-rounded Akima spline interpolation for the supplied data set,
-using periodic boundary conditions.
+using periodic boundary conditions. The input and output options are the same as those for <link linkend="plugins-kstinterp_akima">Interpolation Akima spline</link>.
 </para>
-
-<sect3 id="plugin-kstinterp_akima_periodic-inputs">
-<title>Inputs</title>
-<variablelist>
-
-<varlistentry>
-<term>X Array (vector)</term>
-<listitem>
-<para>
-The array of x values of the data points to generate the interpolation for.
-</para>
-</listitem>
-</varlistentry>
-
-
-<varlistentry>
-<term>Y Array (vector)</term>
-<listitem>
-<para>
-The array of y values of the data points to generate the interpolation for.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term>X' Array (vector)</term>
-<listitem>
-<para>
-The array of x values for which interpolated y values are desired.
-</para>
-</listitem>
-</varlistentry>
-
-</variablelist>
-</sect3>
-
-<sect3 id="plugin-kstinterp_akima_periodic-outputs">
-<title>Outputs</title>
-<variablelist>
-
-<varlistentry>
-<term>Y Interpolated (vector)</term>
-<listitem>
-<para>
-The interpolated y values.
-</para>
-</listitem>
-</varlistentry>
-
-</variablelist>
-</sect3>
 </sect2>
 
-<sect2 id="plugin-kstinterp_cspline">
+<sect2 id="plugins-kstinterp_cspline">
 <title>Interpolation cubic spline</title>
 <para>
 The Interpolation cubic spline plugin generates a cubic spline interpolation for the supplied data set,
-using natural boundary conditions.
+using natural boundary conditions. The input and output options are the same as those for <link linkend="plugins-kstinterp_akima">Interpolation Akima spline</link>.
 </para>
-
-<sect3 id="plugin-kstinterp_cspline-inputs">
-<title>Inputs</title>
-<variablelist>
-
-<varlistentry>
-<term>X Array (vector)</term>
-<listitem>
-<para>
-The array of x values of the data points to generate the interpolation for.
-</para>
-</listitem>
-</varlistentry>
-
-
-<varlistentry>
-<term>Y Array (vector)</term>
-<listitem>
-<para>
-The array of y values of the data points to generate the interpolation for.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term>X' Array (vector)</term>
-<listitem>
-<para>
-The array of x values for which interpolated y values are desired.
-</para>
-</listitem>
-</varlistentry>
-
-</variablelist>
-</sect3>
-
-<sect3 id="plugin-kstinterp_cspline-outputs">
-<title>Outputs</title>
-<variablelist>
-
-<varlistentry>
-<term>Y Interpolated (vector)</term>
-<listitem>
-<para>
-The interpolated y values.
-</para>
-</listitem>
-</varlistentry>
-
-</variablelist>
-</sect3>
 </sect2>
 
-<sect2 id="plugin-kstinterp_cspline_periodic">
+<sect2 id="plugins-kstinterp_cspline_periodic">
 <title>Interpolation cubic spline periodic</title>
 <para>
 The Interpolation cubic spline periodic plugin generates a cubic spline interpolation for the supplied data set,
-using periodic boundary conditions.
+using periodic boundary conditions. The input and output options are the same as those for <link linkend="plugins-kstinterp_akima">Interpolation Akima spline</link>.
 </para>
-
-<sect3 id="plugin-kstinterp_cspline_periodic-inputs">
-<title>Inputs</title>
-<variablelist>
-
-<varlistentry>
-<term>X Array (vector)</term>
-<listitem>
-<para>
-The array of x values of the data points to generate the interpolation for.
-</para>
-</listitem>
-</varlistentry>
-
-
-<varlistentry>
-<term>Y Array (vector)</term>
-<listitem>
-<para>
-The array of y values of the data points to generate the interpolation for.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term>X' Array (vector)</term>
-<listitem>
-<para>
-The array of x values for which interpolated y values are desired.
-</para>
-</listitem>
-</varlistentry>
-
-</variablelist>
-</sect3>
-
-<sect3 id="plugin-kstinterp_cspline_periodic-outputs">
-<title>Outputs</title>
-<variablelist>
-
-<varlistentry>
-<term>Y Interpolated (vector)</term>
-<listitem>
-<para>
-The interpolated y values.
-</para>
-</listitem>
-</varlistentry>
-
-</variablelist>
-</sect3>
 </sect2>
 
-<sect2 id="plugin-kstinterp_linear">
+<sect2 id="plugins-kstinterp_linear">
 <title>Interpolation linear</title>
 <para>
-The Interpolation linear plugin generates a linear interpolation for the supplied data set.
+The Interpolation linear plugin generates a linear interpolation for the supplied data set. The input and output options are the same as those for <link linkend="plugins-kstinterp_akima">Interpolation Akima spline</link>.
 </para>
-
-<sect3 id="plugin-kstinterp_linear-inputs">
-<title>Inputs</title>
-<variablelist>
-
-<varlistentry>
-<term>X Array (vector)</term>
-<listitem>
-<para>
-The array of x values of the data points to generate the interpolation for.
-</para>
-</listitem>
-</varlistentry>
-
-
-<varlistentry>
-<term>Y Array (vector)</term>
-<listitem>
-<para>
-The array of y values of the data points to generate the interpolation for.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term>X' Array (vector)</term>
-<listitem>
-<para>
-The array of x values for which interpolated y values are desired.
-</para>
-</listitem>
-</varlistentry>
-
-</variablelist>
-</sect3>
-
-<sect3 id="plugin-kstinterp_linear-outputs">
-<title>Outputs</title>
-<variablelist>
-
-<varlistentry>
-<term>Y Interpolated (vector)</term>
-<listitem>
-<para>
-The interpolated y values.
-</para>
-</listitem>
-</varlistentry>
-
-</variablelist>
-</sect3>
 </sect2>
 
-<sect2 id="plugin-kstinterp_polynomial">
+<sect2 id="plugins-kstinterp_polynomial">
 <title>Interpolation polynomial</title>
 <para>
 The Interpolation polynomial plugin generates a polynomial interpolation for the supplied data set.
 The number of terms in the polynomial used is equal to the number of points in the supplied
-data set.
+data set. The input and output options are the same as those for <link linkend="plugins-kstinterp_akima">Interpolation Akima spline</link>.
 </para>
-
-<sect3 id="plugin-kstinterp_polynomial-inputs">
-<title>Inputs</title>
-<variablelist>
-
-<varlistentry>
-<term>X Array (vector)</term>
-<listitem>
-<para>
-The array of x values of the data points to generate the interpolation for.
-</para>
-</listitem>
-</varlistentry>
-
-
-<varlistentry>
-<term>Y Array (vector)</term>
-<listitem>
-<para>
-The array of y values of the data points to generate the interpolation for.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term>X' Array (vector)</term>
-<listitem>
-<para>
-The array of x values for which interpolated y values are desired.
-</para>
-</listitem>
-</varlistentry>
-
-</variablelist>
-</sect3>
-
-<sect3 id="plugin-kstinterp_polynomial-outputs">
-<title>Outputs</title>
-<variablelist>
-
-<varlistentry>
-<term>Y Interpolated (vector)</term>
-<listitem>
-<para>
-The interpolated y values.
-</para>
-</listitem>
-</varlistentry>
-
-</variablelist>
-</sect3>
 </sect2>
-<sect2 id="plugin-noise-addition">
+
+<sect2 id="plugins-noise-addition">
 <title>Noise Addition</title>
 <para>
 The Noise addition plugin adds a Gaussian random variable to each element of the input vector.
@@ -2122,7 +1835,16 @@ standard deviation.  The probability density function of a Gaussian random varia
 </inlinemediaobject>
 </para>
 
-<sect3 id="plugin-noise-addition-inputs">
+<screenshot>
+<screeninfo>Plugins - Noise addition</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-plugins-noiseaddition.png" format="PNG" />
+</imageobject>
+</mediaobject>
+</screenshot> 
+
+<sect3 id="plugins-noise-addition-inputs">
 <title>Inputs</title>
 <variablelist>
 
@@ -2149,7 +1871,7 @@ The standard deviation to use for the Gaussian distribution.
 </variablelist>
 </sect3>
 
-<sect3 id="plugin-noiseaddition-outputs">
+<sect3 id="plugins-noiseaddition-outputs">
 <title>Outputs</title>
 <variablelist>
 
@@ -2166,15 +1888,23 @@ The array of elements with Gaussian noise added.
 </sect3>
 </sect2>
 
-<sect2 id="plugin-periodogram">
+<sect2 id="plugins-periodogram">
+<!-- FIXME: this description makes any sense. -->
 <title>Periodogram</title>
 <para>
-The periodogram plugin produces the periodogram of a given data set.  One of two algorithms is used depending on the
-size of the data set&mdash;a fast algorithm is used if there are greater than 100 data points, while a slower
-algorithm is used if there are less than or equal to 100 data points.
+The periodogram plugin produces the periodogram of a given data set.
 </para>
 
-<sect3 id="plugin-periodogram-inputs">
+<screenshot>
+<screeninfo>Plugins - Periodogram</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-plugins-periodogram.png" format="PNG" />
+</imageobject>
+</mediaobject>
+</screenshot> 
+
+<sect3 id="plugins-periodogram-inputs">
 <title>Inputs</title>
 <variablelist>
 
@@ -2219,7 +1949,7 @@ The average Nyquist frequency factor.
 </variablelist>
 </sect3>
 
-<sect3 id="plugin-periodogram-outputs">
+<sect3 id="plugins-periodogram-outputs">
 <title>Outputs</title>
 <variablelist>
 
@@ -2246,15 +1976,22 @@ The frequency response vector for the periodogram.
 </sect2>
 
 
-<sect2 id="plugin-statistics">
+<sect2 id="plugins-statistics">
 <title>Statistics</title>
 <para>
-The statistics plugin calculates statistics for a given data set.  Most of the output scalars
-are named such that the values they represent should be apparent.  Standard formulas are used
-to calculate the statistical values.
+The statistics plugin calculates statistics for a given data set beyond those automatically calculated by &kst;.  Most of the output scalars are named such that the values they represent should be apparent.  Standard formulas are used to calculate the statistical values.
 </para>
 
-<sect3 id="plugin-statistics-inputs">
+<screenshot>
+<screeninfo>Plugins - Statistics</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-plugins-statistics.png" format="PNG" />
+</imageobject>
+</mediaobject>
+</screenshot> 
+
+<sect3 id="plugins-statistics-inputs">
 <title>Inputs</title>
 <variablelist>
 
@@ -2270,7 +2007,7 @@ The array of data values to calculate statistics for.
 </variablelist>
 </sect3>
 
-<sect3 id="plugin-statistics-outputs">
+<sect3 id="plugins-statistics-outputs">
 <title>Outputs</title>
 <variablelist>
 <varlistentry>
@@ -2357,8 +2094,6 @@ The kurtosis of the data set.
 </variablelist>
 </sect3>
 </sect2>
-
-<!-- End the long plugins section -->
 </sect1>
 
 </chapter>

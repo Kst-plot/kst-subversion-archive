@@ -1359,9 +1359,7 @@ name from the submenu displays the Edit dialog for the object.
 <listitem>
 <para>
 This submenu displays a list of curves which can be fit. Selecting a name from
-the submenu displays the Fit Function dialog. This dialog is similar to the
-<link linkend="plugins-builtinplugins">plugins dialog</link>,
-but displays only those plugins that perform fits.  The input vectors are
+the submenu displays a New Plugin dialog which allows you to choose a fit plugin. The input vectors are
 prechosen based on the curve selected.
 </para>
 </listitem>
@@ -1372,9 +1370,7 @@ prechosen based on the curve selected.
 <listitem>
 <para>
 This submenu displays a list of data objects that can be filtered. Selecting a name from
-the submenu displays the Filter Function dialog.  This dialog is similar to the
-<link linkend="plugins-builtinplugins">plugins dialog</link>,
-but displays only those plugins that perform filtering.  The input vector to be filtered
+the submenu displays a New Plugin dialog which allows you to choose a filter plugin. The input vector to be filtered
 is selected based on the curve.  In addition, curve appearance properties can be changed,
 as the <guilabel>Filter</guilabel> function creates vectors, and curves based on the
 vectors.

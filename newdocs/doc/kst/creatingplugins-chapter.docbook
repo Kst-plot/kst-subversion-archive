@@ -1,9 +1,12 @@
 <appendix id="creatingplugins">
 <title>Creating Additional Plugins</title>
+
 <para>
-&kst; has a simple and standardized interface that facilitates easy creation of additional plugins.
-In addition to detailing basic requirements for plugins, the following sections describe how to make
-use of pre-written header files to create certain types of plugins.
+The &kst; plugin API is currently being revised. The latest documentation about the new plugin scheme can be found at <ulink url="http://websvn.kde.org/trunk/extragear/graphics/kst/devel-docs/plugins/">http://websvn.kde.org/trunk/extragear/graphics/kst/devel-docs/plugins/</ulink>
+</para>
+
+<para>
+For reference, the following sections describe the old plugin programming interface.
 </para>
 
 <sect1 id="creatingbasicplugin">

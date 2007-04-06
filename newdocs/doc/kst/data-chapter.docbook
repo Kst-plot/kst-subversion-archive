@@ -783,7 +783,7 @@ Here you can choose the color scheme to use for the spectrogram. The amplitudes 
 <sect2 id="data-types-plugins">
 <title>Plugins</title>
 <para>
-A plugin data object represents a &kst; plugin.  All plugins have a common format, and show up as type <quote>Plugin</quote> in the Data Manager.  For more information about the available plugins and their options, please see the <link linkend="pluginsandfilters">Plugins</link> chapter.
+A plugin data object represents a &kst; plugin.  All plugins have a common format, and show up as type <quote>Plugin</quote> in the Data Manager.  For more information about the available plugins and their options, please see the <link linkend="plugins">Plugins</link> chapter.
 </para>
 </sect2>
 
