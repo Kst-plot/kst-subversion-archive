@@ -1,0 +1,120 @@
+DIGIKAM PROJECT (http://www.digikam.org)
+
+
+-- AUTHORS -----------------------------------------------------------
+
+See AUTHORS file for details.
+
+
+-- ABOUT -------------------------------------------------------------
+
+ digiKam is an easy to use and powerful digital photo management
+ application, which makes importing, organizing and manipulating
+ digital photos a "snap".  An easy to use interface is provided
+ to connect to your digital camera, preview the images and download
+ and/or delete them.
+
+ digiKam builtin image editor makes the common photo correction
+ a simple task.  The image editor is extensible via plugins.
+ The digikamimageplugins package contains many useful image editor
+ plugins.
+
+ digiKam can also make use of the KIPI image handling plugins to
+ extend its capabilities even further for photo manipulations,
+ import and export, etc.  The kipi-plugins package contains many
+ very useful extentions.
+
+ digiKam is based in part on the work of the Independent JPEG Group.
+
+
+-- CONTACT ------------------------------------------------------------
+
+If you have questions, comments, suggestions to make do email at :
+
+digikam-users@kde.org
+
+If you want contribute to digiKam developments do email at :
+
+digikam-devel@kde.org
+
+
+-- BUG REPORTS --------------------------------------------------------
+
+IMPORTANT : the bug reports and wishlist entries are hosted by the KDE bug report
+system which can be reached from the standard KDE help menu of digiKam.
+A mail will automaticly be sent to the digikam development mailing list.
+There is no need to contact directly the digikam mailing list for a bug report 
+or a devel wish.
+
+The current bugs and devel wishes reported to the bugilla servers can be seen
+at these urls :
+
+* digiKam (KDE bugzilla):
+
+http://bugs.kde.org/buglist.cgi?product=digikam&bug_status=UNCONFIRMED&bug_status=NEW&bug_status=ASSIGNED&bug_status=REOPENED
+
+* DigikamImagePlugins (KDE bugzilla):
+
+http://bugs.kde.org/buglist.cgi?product=digikamimageplugins&bug_status=UNCONFIRMED&bug_status=NEW&bug_status=ASSIGNED&bug_status=REOPENED
+
+* Kipi-plugins (KDE bugzilla):
+
+http://bugs.kde.org/buglist.cgi?product=kipiplugins&bug_status=UNCONFIRMED&bug_status=NEW&bug_status=ASSIGNED&bug_status=REOPENED
+
+Extra Bugzilla servers for shared libs used by digiKam :
+
+* GPhoto2 library (sourceforge bugzilla):
+
+http://gphoto.org/bugs
+
+* Exiv2 library (robotbattle bugzilla):
+
+http://dev.robotbattle.com/bugs/main_page.php
+
+
+-- DEPENDENCIES -------------------------------------------------------
+
+AutoConf   >= 2.5.x                        http://www.gnu.org/software/autoconf
+AutoMake   >= 1.7.x                        http://www.gnu.org/software/automake
+libqt      >= 3.3.x                        http://www.trolltech.com
+libkde     >= 3.4.x (>=3.5.x recommended)  http://www.kde.org
+libsqlite  >= 3.x                          http://www.sqlite.org
+libexiv2   >= 0.12                         http://www.exiv2.org
+libgphoto2 >= 2.x   (>=2.2.x recommended)  http://www.gphoto.org
+libkipi    >= 0.1                          http://www.kipi-plugins.org
+libkexiv2  >= 0.1.2                        http://www.kipi-plugins.org
+libkdcraw  >= 0.1                          http://www.kipi-plugins.org
+liblcms    >= 1.14.x                       http://www.littlecms.com
+libtiff    >= 3.6.x (>=3.8.2 recommended)  http://www.remotesensing.org/libtiff
+libpng     >= 1.2.x                        http://www.libpng.org/pub/png/libpng.html
+libjasper  >= 1.7.x                        http://www.ece.uvic.ca/~mdadams/jasper
+
+Note : all library dependencies require development and binary packages installed on your
+computer to compile digiKam.
+
+
+-- INSTALLATION --------------------------------------------------------
+
+In the source directory do :
+
+1) export WANT_AUTOCONF_2_5=1
+2) export KDEDIR=KDE_installation_dir_on_your_system
+3) if you are installing libkipi in a non-standard location
+  let pkg-config know about their paths:
+  export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/path/to/installation/lib/pkgconfig
+4) make -f Makefile.cvs
+5) ./configure
+6) make
+7) su
+8) make install
+
+More specific compilation and installation options can be used with the 'configure' script.
+Get more information with the './configure --help' command line.
+
+Note : use the '--enable-debug=full' option with the configure script to provide
+all needed information in a bug report.
+
+
+-- DONATE MONEY --------------------------------------------------------
+
+Look at this url : http://www.digikam.org/?q=donation

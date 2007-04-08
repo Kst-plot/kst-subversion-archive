@@ -1,0 +1,21 @@
+[Desktop Entry]
+Encoding=UTF-8
+Type=Service
+ServiceTypes=Kst Data Source
+X-KDE-ModuleType=Plugin
+X-KDE-Library=wmap
+X-Kst-Plugin-Author=The University of British Columbia
+Name=WMAP Reader
+Name[da]=WMAP-læser
+Name[de]=WMAP-Leser
+Name[el]=Αναγνώστης WMAP
+Name[es]=Lector WMAP
+Name[is]=WMAP lesari
+Name[it]=Lettore WMAP
+Name[nds]=WMAP-Leser
+Name[nl]=WMAP-leesprogramma
+Name[pa]=WMAP ਰੀਡਰ
+Name[pt]=Leitor de WMAP
+Name[pt_BR]=Leitor WMAP
+Name[sv]=WMAP-läsare
+

@@ -1,0 +1,148 @@
+<appendix id="installation">
+<title>Installation</title>
+<para>
+The following sections contain detailed instructions for obtaining, compiling, and installing &kst;
+along with any optional libraries or packages.  If you use a package management system, you may use
+it to install &kst; instead.
+</para>
+
+
+<sect1 id="installation-obtaining">
+<title>Obtaining &kst;</title>
+<para>
+&kst; is part of the extragear/graphics module of &kde;.  You can also download the latest version
+separately from the &kst; <ulink url="http://kst.kde.org/">website</ulink>.
+</para>
+
+<para>
+The current version of &kst; is also available via SVN. It can be downloaded anonymously with the following command:
+</para>
+
+<screen><userinput>svn co svn://anonsvn.kde.org/home/kde/trunk/extragear/graphics</userinput></screen>
+
+<para>
+You can also browse the &kst; source code using the KDE WebSVN repository at <ulink url="http://websvn.kde.org/trunk/extragear/graphics/kst/">http://websvn.kde.org/trunk/extragear/graphics/kst/</ulink>.
+</para>
+
+<para>
+More information about accessing KDE SVN repositories can be found at <ulink url="http://developer.kde.org/documentation/tutorials/subversion/">http://developer.kde.org/documentation/tutorials/subversion/</ulink>.
+</para>
+</sect1>
+
+<sect1 id="installation-fromsource">
+<title>Installing &kst; from Source</title>
+<para>
+The following sections detail how to compile and install &kst; from source code.
+</para>
+
+<sect2 id="installation-fromsource-requirements">
+<title>Requirements</title>
+<para>
+&kst; v1.4.0 requires the &kde; 3.4 libraries and &Qt; 3.3.  Almost all major &Linux; distributions have packages
+for &kde; and &Qt;.  Since &Qt; is a dependency of &kde;, having the required version of &kde; should
+be sufficient.  It is recommended that you refer to your particular distribution's documentation for
+&kde; library installation.    Note that the entire &kde; desktop environment
+is not required&mdash;in most cases, look for packages called <filename>kdebase-*</filename> and
+<filename>kdelibs-*</filename>.  Alternatively, more information is available on the &kde;
+<ulink url="http://www.kde.org/download/">website</ulink>.
+</para>
+</sect2>
+
+<sect2 id="installation-fromsource-optional">
+<title>Optional Libraries and Packages</title>
+<para>The following libraries and packages are optional, but provide full plugin and data source functionality in &kst; if installed. Installation/Download instructions for the packages are given on the linked websites.</para>
+<note>
+<para>
+You may already have some or all of these libraries and packages installed, in which case there is no
+need to reinstall them.  Also, check first to see if pre-compiled binaries for the libraries and packages
+exist in your distribution's package management system, as it may be easier to install these packages.
+</para>
+</note>
+
+<informaltable>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Library</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry><ulink url="http://www.gnu.org/software/gsl/">GSL</ulink></entry>
+<entry>The &GNU; Scientific Library (GSL) provides a variety of mathematical operations for the built-in
+&kst; plugins. Having GSL installed enables a variety of plugins such as linear and non-linear fitting,
+ correlation, and interpolation.</entry>
+</row>
+<row>
+<entry><ulink url="http://heasarc.gsfc.nasa.gov/fitsio/fitsio.html">CFITSIO</ulink></entry>
+<entry>CFITSIO provides support for reading and writing to the FITS (Flexible Image Transport System) data format. This is required by all of the datasources which use FITS (currently <link linkend="data-sources-healpix">HEALPix</link>, <link linkend="data-sources-lfiio">LFIIO</link>, and <link linkend="data-sources-wmap">WMAP</link>)</entry>
+</row>
+<row>
+<entry><ulink url="http://cdf.gsfc.nasa.gov/">CDF</ulink></entry>
+<entry>The Common Data Format (CDF) library is required to read files with the <link linkend="data-sources-cdf">CDF datasource</link></entry>
+</row>
+<row>
+<entry><ulink url="http://cdf.gsfc.nasa.gov/">netCDF</ulink></entry>
+<entry>The network Common Data Form (netCDF) library is required to read files with the <link linkend="data-sources-netcdf">netCDF datasource</link></entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+</sect2>
+
+<sect2 id="installation-fromsource-compiling">
+<title>Compiling and Installing</title>
+<para>
+Once all of the prerequisites have been met on your system you can compile and install &kst;.  It
+is assumed that you have already downloaded the &kst; source package.  If not, please see
+<link linkend="installation-obtaining">Obtaining &kst;</link>.
+</para>
+
+<para>
+The simplest way to install &kst; is:
+<screen><userinput><command>tar -zxvf kst-<replaceable>version</replaceable>.tar.gz</command>
+<command>cd kst-<replaceable>version</replaceable></command>
+<command>./configure --prefix=`kde-config --prefix`</command>
+<command>make</command>
+<command>make install</command></userinput></screen>
+replacing <replaceable>version</replaceable> with the version of &kst; you have.
+</para>
+<important>
+<para>Note that <command>kde-config --prefix</command> is surrounded by backquotes.  It is very
+important that the <command>kde-config</command> utility returns the correct path (most likely
+<filename>/usr</filename>), otherwise &kst; will <emphasis>not</emphasis> install properly.
+You can double-check by running it directly:
+<screen><userinput><command>kde-config --prefix</command></userinput></screen>
+Ensure that a non-null path is displayed.
+</para>
+</important>
+
+<para>
+You can read through the messages displayed by the <command>configure</command> script&mdash;if it
+reports any missing libraries (such as GSL) that should not be missing, please go back and ensure
+that the libraries and header files have been correctly installed in the appropriate locations.
+</para>
+</sect2>
+
+</sect1>
+</appendix>
+
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: xml
+sgml-omittag:nil
+sgml-shorttag:nil
+sgml-namecase-general:nil
+sgml-general-insert-case:lower
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:0
+sgml-indent-data:true
+sgml-parent-document:("index.docbook" "book" "appendix")
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+-->

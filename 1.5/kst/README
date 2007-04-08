@@ -1,0 +1,31 @@
+
+This application is used to display scientific data.  More to come later.
+
+When installing, please be sure to use --prefix to point to the KDE install
+directory to ensure that the XML and desktop files are picked up.  Symptoms
+of an incorrect installation include missing menu entries and inability to
+load and display data.
+
+Package dependancies:
+Compiling kst depends on the following packages (listed for two popular
+distributions:)
+
+openSuse 10.2       Kubuntu Edgy          Notes
+qt3-devel           libqt3-mt-dev       
+kdelibs3-devel      kdelibs4-dev
+gsl-devel           libgsl0-dev           needed for plugins
+
+Libraries are needed for several of the data sources:
+FITS based data sources (LFIIO, HEALPix, WMAP) require
+  cfitsio.  The source can be found at
+  http://heasarc.nasa.gov/fitsio/fitsio.html
+  On ubuntu, you can install libcfitio-dev.
+  
+netCDF: http://www.unidata.ucar.edu/software/netcdf/
+  On ubuntu you can install netdcfg-dev
+
+CDF: http://cdf.gsfc.nasa.gov/
+
+
+Please direct questions or concerns to kst@kde.org.
+
