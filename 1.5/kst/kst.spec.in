@@ -30,8 +30,8 @@ make
 make DESTDIR=$RPM_BUILD_ROOT SUID_ROOT="" install
 
 %find_lang %{name}
-%find_lang kstplugineditor
-cat kstplugineditor.lang >> %{name}.lang
+#%find_lang kstplugineditor
+#cat kstplugineditor.lang >> %{name}.lang
 
 %files -f %{name}.lang
 %defattr(-,root,root)
@@ -57,6 +57,7 @@ cat kstplugineditor.lang >> %{name}.lang
 %prefix/include/kstextdatewidget.h
 %prefix/include/kstextdatetbl.h
 %prefix/include/kstwaitcondition.h
+%prefix/include/kstobjectcollection.h
 #update
 %prefix/share/apps/kconf_update/kstautosave11.upd
 %prefix/share/apps/kconf_update/kstrcmisc11.upd
@@ -66,10 +67,15 @@ cat kstplugineditor.lang >> %{name}.lang
 %prefix/%_lib/kde3/kstdata_*.la
 %prefix/%_lib/kde3/kstdata_*.so
 %prefix/share/services/kst/kstdata_*.desktop
+%prefix/%_lib/kde3/kstobject_*.la
+%prefix/%_lib/kde3/kstobject_*.so
+%prefix/share/services/kst/kstobject_*.desktop
 #plugins
 %prefix/%_lib/kde3/kstplugins/*.la
 %prefix/%_lib/kde3/kstplugins/*.so
 %prefix/%_lib/kde3/kstplugins/*.xml
+%prefix/share/servicetypes/kst/kstdataobjectplugin.desktop
+%prefix/share/servicetypes/kst/kstbasicplugin.desktop
 %prefix/share/servicetypes/kst/kstdatasourceplugin.desktop
 %prefix/share/servicetypes/kst/kstplugin.desktop
 %prefix/share/servicetypes/kst/kstfilter.desktop
