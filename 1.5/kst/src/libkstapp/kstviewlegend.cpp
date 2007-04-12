@@ -245,6 +245,9 @@ void KstViewLegend::drawToPainter(KstPainter& p) {
       rc.x = 0;
       rc.y = _ascent;
       rc.xStart = rc.x;
+      if (_parsedTitle->chunk) {
+        _parsedTitle->chunk->attributes.color = foregroundColor();
+      }
       renderLabel(rc, _parsedTitle->chunk, _vectorsUsed, _scalarsUsed, _stringsUsed);
       i = 1;
       p.restore();
@@ -260,6 +263,9 @@ void KstViewLegend::drawToPainter(KstPainter& p) {
         rc.x = 0;
         rc.y = _ascent;
         rc.xStart = rc.x;
+        if ((*it)->parsedLegendTag()->chunk) {
+          (*it)->parsedLegendTag()->chunk->attributes.color = foregroundColor();
+        }
         renderLabel(rc, (*it)->parsedLegendTag()->chunk, _vectorsUsed, _scalarsUsed, _stringsUsed);
       }
       p.restore();
@@ -272,6 +278,9 @@ void KstViewLegend::drawToPainter(KstPainter& p) {
       rc.x = 0;
       rc.y = _ascent;
       rc.xStart = rc.x;
+      if (_parsedTitle->chunk) {
+        _parsedTitle->chunk->attributes.color = foregroundColor();
+      }
       renderLabel(rc, _parsedTitle->chunk, _vectorsUsed, _scalarsUsed, _stringsUsed);
       p.translate(_titleWidth + _ascent,0);
     }
@@ -285,6 +294,9 @@ void KstViewLegend::drawToPainter(KstPainter& p) {
         rc.x = 0;
         rc.y = _ascent;
         rc.xStart = rc.x;
+        if ((*it)->parsedLegendTag()->chunk) {
+          (*it)->parsedLegendTag()->chunk->attributes.color = foregroundColor();
+        }
         renderLabel(rc, (*it)->parsedLegendTag()->chunk, _vectorsUsed, _scalarsUsed, _stringsUsed);
         p.translate((*it)->legendLabelSize().width() + _ascent,0);
       }
