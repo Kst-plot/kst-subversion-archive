@@ -889,7 +889,11 @@ void KstDoc::samplesUp() {
     int fileN = V->fileLength();
 
     bool didChange = false;
-    if (f0 + 2 * n > fileN) {
+
+    if (f0 == -1) {
+      didChange = true;
+      f0 = fileN - n;
+    } else if (f0 + 2 * n > fileN) {
       didChange = f0 != fileN - n;
       changed = changed || didChange;
       f0 = fileN - n;
