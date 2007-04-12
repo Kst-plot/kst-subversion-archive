@@ -41,6 +41,7 @@ void KstScalarListViewItem::commonConstructor() {
       setRenameEnabled(1, false);
     }
   }
+  _remove = false;
 }
 
 QString KstScalarListViewItem::text(int column) const {
@@ -78,6 +79,14 @@ void KstScalarListViewItem::setText(int column, const QString& text) {
   }
 }
 
+bool KstScalarListViewItem::remove() const {
+  return _remove;
+}
+
+void KstScalarListViewItem::setRemove(bool remove) {
+  _remove = remove;
+}
+
 /*----------------------------------------------------------------------------*/
 
 KstScalarListView::KstScalarListView(QWidget *parent, KstObjectCollection<KstScalar> *coll) : KListView(parent), _coll(coll) {
@@ -90,28 +99,97 @@ KstScalarListView::KstScalarListView(QWidget *parent, KstObjectCollection<KstSca
   update();
 }
 
-
-static void addChildItems(KstScalarListViewItem *parentItem, KstObjectTreeNode<KstScalar> *parentNode) {
+void KstScalarListView::addChildItems(KstScalarListViewItem *parentItem, KstObjectTreeNode<KstScalar> *parentNode) {
   if (!parentItem || !parentNode) {
     return;
   }
 
   QValueList<KstObjectTreeNode<KstScalar>*> children = parentNode->children().values();
   for (QValueList<KstObjectTreeNode<KstScalar>*>::ConstIterator i = children.begin(); i != children.end(); ++i) {
-    KstScalarListViewItem *item = new KstScalarListViewItem(parentItem, *i);
-    addChildItems(item, *i);
+    QListViewItem *item = parentItem->firstChild();
+    bool found = false;
+
+    while (item) {
+      if (item->text(0) == (*i)->nodeTag()) {
+        found = true;
+
+        KstScalarListViewItem *kItem = dynamic_cast<KstScalarListViewItem*>(item);
+        if (kItem) {
+          kItem->setRemove(false);
+          repaintItem(kItem);
+          addChildItems(kItem, *i);
+        }
+
+        break;
+      }
+      item = item->nextSibling();
+    }
+
+    if (!found) {
+      KstScalarListViewItem *item = new KstScalarListViewItem(parentItem, *i);
+      addChildItems(item, *i);
+    }
   }
 }
 
 void KstScalarListView::update() {
-  clear();
-
   if (_coll) {
     KstReadLocker(&_coll->lock());
+
+    {
+      QListViewItemIterator it(this);
+
+      while (it.current()) {
+        KstScalarListViewItem *kItem = dynamic_cast<KstScalarListViewItem*>(it.current());
+        if (kItem) {
+          kItem->setRemove(true);
+        }
+        ++it;
+      }
+    }
+
     QValueList<KstObjectTreeNode<KstScalar>*> rootItems = _coll->nameTreeRoot()->children().values();
     for (QValueList<KstObjectTreeNode<KstScalar>*>::ConstIterator i = rootItems.begin(); i != rootItems.end(); ++i) {
-      KstScalarListViewItem *item = new KstScalarListViewItem(this, *i);
-      addChildItems(item, *i);
+      QListViewItem *item = firstChild();
+      bool found = false;
+
+      while (item) {
+        if (item->text(0) == (*i)->nodeTag()) {
+          found = true;
+
+          KstScalarListViewItem *kItem = dynamic_cast<KstScalarListViewItem*>(item);
+          if (kItem) {
+            kItem->setRemove(false);
+            repaintItem(kItem);
+            addChildItems(kItem, *i);
+          }
+
+          break;
+        }
+        item = item->nextSibling();
+      }
+
+      if (!found) {
+        KstScalarListViewItem *item = new KstScalarListViewItem(this, *i);
+        addChildItems(item, *i);
+      }
+    }
+
+    {
+      QListViewItemIterator it(this);
+
+      while (it.current()) {
+        KstScalarListViewItem *kItem = dynamic_cast<KstScalarListViewItem*>(it.current());
+        if (kItem) {
+          if (kItem->remove()) {
+            delete it.current();
+          } else {
+            ++it;
+          }
+        } else {
+          ++it;
+        }
+      }
     }
   }
 

@@ -23,6 +23,8 @@
 #include "kstobject.h"
 #include "kstobjectcollection.h"
 
+class KstScalarListViewItem;
+
 class KstScalarListView : public KListView
 {
   public:
@@ -31,6 +33,8 @@ class KstScalarListView : public KListView
     void update();
 
   private:
+    void addChildItems(KstScalarListViewItem *parentItem, KstObjectTreeNode<KstScalar> *parentNode);
+    
     KstObjectCollection<KstScalar> *_coll;
 };
 
@@ -44,12 +48,16 @@ class KstScalarListViewItem : public KListViewItem
     QString text(int column) const;
     void setText(int column, const QString& text);
 
+    bool remove() const;
+    void setRemove(bool remove);
+
     KstObjectTreeNode<KstScalar> *node() const { return _node; }
 
   private:
     void commonConstructor();
 
     QGuardedPtr<KstObjectTreeNode<KstScalar> > _node;
+    bool _remove;
 };
 
 #endif
