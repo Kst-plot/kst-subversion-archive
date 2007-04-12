@@ -78,8 +78,6 @@ void KstColorSequence::createPalette( ) {
 QColor KstColorSequence::next(const KstVCurveList& curves, const QColor& badColor) {
   QColor color;
   int dark_factor;
-  int ptrMin;
-  int start;
 
   if (!_self) {
     _self = sdColorSequence.setObject(_self, new KstColorSequence);
@@ -98,7 +96,7 @@ QColor KstColorSequence::next(const KstVCurveList& curves, const QColor& badColo
   if (_self->_ptr >= _self->_count * 2) {
     _self->_ptr = 0;
   }
-  start = _self->_ptr;
+  int start = _self->_ptr;
 
   do {
     dark_factor = 100 + ( 50 * ( _self->_ptr / _self->_count ) );
@@ -129,7 +127,7 @@ QColor KstColorSequence::next(const KstVCurveList& curves, const QColor& badColo
   // if we are already using this color then use the least used color for all the curves.
   if (usage[_self->_ptr] != 0) {
     _self->_ptr = start;
-    ptrMin = _self->_ptr;
+    int ptrMin = _self->_ptr;
 
     do {
       if (usage[_self->_ptr] < usage[ptrMin]) {
