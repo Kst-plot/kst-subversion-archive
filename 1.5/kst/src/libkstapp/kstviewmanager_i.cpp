@@ -116,7 +116,7 @@ KstViewObjectItem::KstViewObjectItem(QListView *parent, KstTopLevelViewPtr x, Ks
     _inUse = false;
     _removable = true;
     setText(0, x->name());
-    setText(1, i18n("Window"));
+    setText(1, i18n("Tab"));
     setDragEnabled(false);
     setDropEnabled(true);
     update(KstViewObjectPtr(x), true, localUseCount);
