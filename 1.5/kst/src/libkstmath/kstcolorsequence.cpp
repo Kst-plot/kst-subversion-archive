@@ -95,16 +95,12 @@ QColor KstColorSequence::next(const KstVCurveList& curves, const QColor& badColo
   // check we are not already using this color, but if
   //  we are then count the number of usages of each color
   //  in the palette.
-  start = _self->_ptr;
-  if (start >= _self->_count * 2) {
-    start = 0;
+  if (_self->_ptr >= _self->_count * 2) {
+    _self->_ptr = 0;
   }
+  start = _self->_ptr;
 
-  while (_self->_ptr != start) {
-    if (_self->_ptr >= _self->_count * 2) {
-      _self->_ptr = 0;
-    }
-
+  do {
     dark_factor = 100 + ( 50 * ( _self->_ptr / _self->_count ) );
     color = _self->_pal->color( _self->_ptr % _self->_count).dark(dark_factor);
 
@@ -125,23 +121,26 @@ QColor KstColorSequence::next(const KstVCurveList& curves, const QColor& badColo
     }
 
     _self->_ptr++;
-  }
+    if (_self->_ptr >= _self->_count * 2) {
+      _self->_ptr = 0;
+    }
+  } while (_self->_ptr != start);
 
   // if we are already using this color then use the least used color for all the curves.
   if (usage[_self->_ptr] != 0) {
+    _self->_ptr = start;
     ptrMin = _self->_ptr;
 
-    while (_self->_ptr != start) {
-      if (_self->_ptr >= _self->_count * 2) {
-        _self->_ptr = 0;
-      }
-
+    do {
       if (usage[_self->_ptr] < usage[ptrMin]) {
         ptrMin = _self->_ptr;
       }
 
       _self->_ptr++;
-    }
+      if (_self->_ptr >= _self->_count * 2) {
+        _self->_ptr = 0;
+      }
+    } while (_self->_ptr != start);
 
     _self->_ptr = ptrMin;
   }
@@ -171,30 +170,31 @@ QColor KstColorSequence::next() {
 QColor KstColorSequence::next(const QColor& badColor) {
   QColor color;
   int dark_factor;
+  int start;
 
   if (!_self) {
     sdColorSequence.setObject(_self, new KstColorSequence);
   }
   _self->createPalette();
 
-  int start = _self->_ptr;
+  if (_self->_ptr >= _self->_count * 2) {
+    _self->_ptr = 0;
+  }
+  start = _self->_ptr;
 
   // find the next color in the sequence that it not too close to the bad color.
   if (badColor.isValid()) {
     do {
+      dark_factor = 100 + ( 50 * ( _self->_ptr / _self->_count ) );
+      color = _self->_pal->color( _self->_ptr++ % _self->_count).dark(dark_factor);
       if (_self->_ptr >= _self->_count * 2) {
         _self->_ptr = 0;
       }
-      dark_factor = 100 + ( 50 * ( _self->_ptr / _self->_count ) );
-      color = _self->_pal->color( _self->_ptr++ % _self->_count).dark(dark_factor);
     } while (colorsTooClose(color, badColor) && start != _self->_ptr);
   }
 
   // if we couldn't find one then just use the next color in the sequence.
   if (start == _self->_ptr) {
-    if (_self->_ptr >= _self->_count * 2) {
-      _self->_ptr = 0;
-    }
     dark_factor = 100 + ( 50 * ( _self->_ptr / _self->_count ) );
     color = _self->_pal->color( _self->_ptr++ % _self->_count).dark(dark_factor);
   }
