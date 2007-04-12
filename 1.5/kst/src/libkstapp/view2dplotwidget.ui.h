@@ -30,17 +30,6 @@ void View2DPlotWidget::init()
 
     _plot = 0L;
 
-    connect(DisplayedCurveList, SIGNAL(clicked(QListBoxItem*)), this, SLOT(updateButtons()));
-    connect(AvailableCurveList, SIGNAL(clicked(QListBoxItem*)), this, SLOT(updateButtons()));
-    connect(DisplayedCurveList, SIGNAL(doubleClicked(QListBoxItem*)), this, SLOT(removeDisplayedCurve()));
-    connect(AvailableCurveList, SIGNAL(doubleClicked(QListBoxItem*)), this, SLOT(addDisplayedCurve()));
-    connect(DisplayedCurveList, SIGNAL(selectionChanged()), this, SLOT(updateButtons()));
-    connect(AvailableCurveList, SIGNAL(selectionChanged()), this, SLOT(updateButtons()));
-    connect(_remove, SIGNAL(clicked()), this, SLOT(removeDisplayedCurve()));
-    connect(_add, SIGNAL(clicked()), this, SLOT(addDisplayedCurve()));
-    connect(_up, SIGNAL(clicked()), DisplayedCurveList, SLOT(up()));
-    connect(_down, SIGNAL(clicked()), DisplayedCurveList, SLOT(down()));
-
     _up->setPixmap(BarIcon("up"));
     _up->setEnabled(false);
     _up->setAccel(ALT+Key_Up);
