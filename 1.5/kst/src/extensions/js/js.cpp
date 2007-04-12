@@ -238,6 +238,7 @@ void KstJS::showConsole() {
     KLibFactory *f = KLibLoader::self()->factory("libkonsolepart");
     if (!f) {
       KMessageBox::sorry(app(), i18n("Could not load konsole part.  Please install kdebase."));
+      _showAction->setChecked(false);
       return;
     }
 
@@ -252,6 +253,7 @@ void KstJS::showConsole() {
     KParts::Part *p = dynamic_cast<KParts::Part*>(f->create(_splitter, "kstcmd"));
     if (!p) {
       KMessageBox::sorry(app(), i18n("Konsole part appears to be incompatible.  Please install kdebase correctly."));
+      _showAction->setChecked(false);
       return;
     }
 
