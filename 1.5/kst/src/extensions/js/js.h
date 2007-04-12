@@ -56,7 +56,6 @@ class KstJS : public KstExtension, public KXMLGUIClient {
 
   private slots:
     void shellExited();
-    void restoreUI();
     void doArgs();
 
   private:

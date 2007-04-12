@@ -240,23 +240,26 @@ void KstJS::showConsole() {
       KMessageBox::sorry(app(), i18n("Could not load konsole part.  Please install kdebase."));
       return;
     }
-    _splitter = new QSplitter(Qt::Vertical, app());
+
+    if (!_splitter) {
+      _splitter = new QSplitter(Qt::Vertical, app());
+      _oldCentralWidget = app()->centralWidget();
+      _oldCentralWidget->reparent(_splitter, QPoint(0, 0));
+      _splitter->show();
+      app()->setCentralWidget(_splitter);
+    }
+
     KParts::Part *p = dynamic_cast<KParts::Part*>(f->create(_splitter, "kstcmd"));
     if (!p) {
       KMessageBox::sorry(app(), i18n("Konsole part appears to be incompatible.  Please install kdebase correctly."));
-      delete _splitter;
       return;
     }
 
-    _oldCentralWidget = app()->centralWidget();
-    _oldCentralWidget->reparent(_splitter, QPoint(0, 0));
     _splitter->moveToLast(p->widget());
-    app()->setCentralWidget(_splitter);
-
     connect(p, SIGNAL(destroyed()), this, SLOT(shellExited()));
     _konsolePart = p;
   }
-  _splitter->show();
+
   _konsolePart->widget()->show();
 #endif
 }
@@ -266,18 +269,7 @@ void KstJS::shellExited() {
 #ifdef KST_HAVE_READLINE
   _showAction->setChecked(false);
   _konsolePart = 0L;
-  QTimer::singleShot(0, this, SLOT(restoreUI())); // konsole crashes otherwise
 #endif
-}
-
-
-void KstJS::restoreUI() {
-  if (_oldCentralWidget) {
-    _oldCentralWidget->reparent(app(), QPoint(0, 0));
-    app()->setCentralWidget(_oldCentralWidget);
-  }
-  delete _splitter;
-  _splitter = 0L;
 }
 
 
