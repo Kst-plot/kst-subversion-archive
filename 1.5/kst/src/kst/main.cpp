@@ -330,7 +330,7 @@ int main(int argc, char *argv[]) {
 
   KAboutData aboutData("kst", I18N_NOOP("Kst"),
                        KSTVERSION, description, KAboutData::License_GPL,
-                       I18N_NOOP("(c) 2000-2006 Barth Netterfield"),
+                       I18N_NOOP("(c) 2000-2007 Barth Netterfield"),
                        0,
                        "http://kst.kde.org/");
   aboutData.addAuthor("Barth Netterfield",
