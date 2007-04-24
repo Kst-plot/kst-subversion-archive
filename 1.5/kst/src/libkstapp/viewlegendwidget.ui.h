@@ -22,6 +22,8 @@ void ViewLegendWidget::init()
     connect(_add, SIGNAL(clicked()), this, SLOT(addDisplayedCurve()));
     connect(_up, SIGNAL(clicked()), DisplayedCurveList, SLOT(up()));
     connect(_down, SIGNAL(clicked()), DisplayedCurveList, SLOT(down()));
+    connect(_up, SIGNAL(clicked()), DisplayedCurveList, SIGNAL(changed()));
+    connect(_down, SIGNAL(clicked()), DisplayedCurveList, SIGNAL(changed()));
 
     _up->setPixmap(BarIcon("up"));
     _up->setEnabled(false);
