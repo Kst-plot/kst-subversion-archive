@@ -2,7 +2,7 @@
 <!DOCTYPE Module SYSTEM "file:/Repository/Level2/Soft/ProC/moduledef.dtd">
 <module>
 <intro>
-<modulename name="kstfit_kneefrequency_unweighted" readableName="Fit Knee Frequency"/>
+<modulename name="kstfit_kneefrequency_unweighted" readableName="Fit knee frequency"/>
 <author name="Duncan Hanson"/>
 <description text="Fits a power spectrum for the knee frequency by finding the 1/f^a power law and the white noise limit. The data must be ordered."/>
 <version minor="1" major="0"/>
