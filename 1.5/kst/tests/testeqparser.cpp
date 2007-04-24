@@ -154,9 +154,17 @@ int main(int argc, char **argv) {
 
   KApplication app(argc, argv, "testeqparser", false, false);
 
-  // Base cases
+  // Numbers
   test("0", 1.0, 0.0);
   test("1.0", 2.0, 1.0);
+  test(".2", 0.0, .2);
+  test("1e1", 0.0, 1e1);
+  test("1e+1", 0.0, 1e+1);
+  test("1e-1", 0.0, 1e-1);
+  test("1E1", 0.0, 1E1);
+  test("1E+1", 0.0, 1E+1);
+  test("1E-1", 0.0, 1E-1);
+  test("0.2e1", 0.0, 0.2e1);
 
   // Basics
   test("x", -1.0, -1.0);
@@ -479,7 +487,6 @@ int main(int argc, char **argv) {
   testParseFail("2<=<=2");
   testParseFail("2<==2");
   testParseFail(".");
-  testParseFail(".2");
   testParseFail("2.");
   testParseFail(",");
   testParseFail(",2");
