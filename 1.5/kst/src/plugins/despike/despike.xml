@@ -2,7 +2,7 @@
 <!DOCTYPE Module SYSTEM "file:/Repository/Level2/Soft/ProC/moduledef.dtd">
 <module>
 <intro>
-<modulename name="despike" readableName="despike"/>
+<modulename name="despike" readableName="Despike filter"/>
 <author name="Barth Netterfield"/>
 <description text="Finds and removes spikes using a 3 point difference."/>
 <version minor="1" major="0"/>
