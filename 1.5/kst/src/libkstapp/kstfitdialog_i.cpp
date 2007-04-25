@@ -274,7 +274,8 @@ void KstFitDialogI::generateEntries(bool input, int& cnt, QWidget *parent, QGrid
         string = true;
         break;
       case Plugin::Data::IOValue::TableType:
-        if (input && ( iInputVector < 2 || ( isWeighted && iInputVector < 3 ) ) ) {
+        if (input && ( iInputVector == 0 || iInputVector == 1 || 
+                     ( isWeighted && iInputVector == 2 && !_evector.isEmpty() ) ) ) {
           fixed = true;
         }
         if ((*it)._subType == Plugin::Data::IOValue::FloatSubType ||
