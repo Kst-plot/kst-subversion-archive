@@ -95,22 +95,15 @@ void KstViewEllipse::paintSelf(KstPainter& p, const QRegion& bounds) {
     }
   }
 
-  const QRect g(geometry());
-  int bw(_borderWidth * p.lineWidthAdjustmentFactor());
-  if (bw > g.width()/2) {
-    bw = g.width()/2;
-  }
-  if (bw > g.height()/2) {
-    bw = g.height()/2;
-  }
+  const int bw(_borderWidth * p.lineWidthAdjustmentFactor());
   QPen pen(bw > 0 ? _borderColor : _foregroundColor, bw);
   p.setPen(pen);
   if (_transparentFill) {
-    p.setBrush(Qt::NoBrush);
+    p.setBrush(Qt::NoBrush);  
   } else {
     p.setBrush(_foregroundColor);
   }
-
+  const QRect g(geometry());
   p.drawEllipse(g.x() + bw/2, g.y() + bw/2, g.width() - bw, g.height() - bw);
   p.restore();
 }
@@ -185,8 +178,8 @@ QMap<QString, QVariant> KstViewEllipse::widgetHints(const QString& propertyName)
 
 signed int KstViewEllipse::directionFor(const QPoint& pos) {
   signed int direction = KstViewObject::directionFor(pos);
-  if (direction != 0) {
-    // not moving, so in any resize direction, we want it centred
+  if (!(((direction & (UP|DOWN)) == 0) || ((direction & (LEFT|RIGHT)) == 0))) {
+    // not an edge.
     direction |= CENTEREDRESIZE;  
   }  
   return direction;
