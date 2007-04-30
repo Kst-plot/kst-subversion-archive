@@ -464,6 +464,15 @@ inline bool parseOutChar(const QString& txt, uint from, int *skip, Chunk **tail,
         *skip = 7;
         setNormalChar(QChar(0x3A5+x), tail);
         return true;
+      } else if (txt.mid(from + 1).startsWith("nichar{")) {
+        uint charStart = from + 8;
+        uint charEnd = txt.find('}',charStart);
+        if (charEnd == -1) {
+                return false;
+        }
+        setNormalChar(QChar( (txt.mid(charStart,charEnd - charStart)).toInt(0,0)), tail);
+        *skip = charEnd - from + 1;
+        return true;
       }
       break;
 
@@ -527,16 +536,20 @@ static Chunk *parseInternal(Chunk *ctail, const QString& txt, uint& start, uint 
       case 0x5e:   // ^
         dir = Chunk::Up;
       case 0x5f:   // _
-        if (ctail->vOffset != Chunk::None) {
-          if (ctail->vOffset != dir) {
-            ctail = new Chunk(ctail->prev, dir, false, true);
-          } else if (ctail->group) {
-            ctail = new Chunk(ctail, dir, false, true);
-          } else {
-            return 0L; // parse error - x^y^z etc
-          }
+        if (ctail->text.isEmpty() && !ctail->group) {
+          setNormalChar(c, &ctail);
         } else {
-          ctail = new Chunk(ctail, dir, false, true);
+          if (ctail->vOffset != Chunk::None) {
+            if (ctail->vOffset != dir) {
+              ctail = new Chunk(ctail->prev, dir, false, true);
+            } else if (ctail->group) {
+              ctail = new Chunk(ctail, dir, false, true);
+            } else {
+              return 0L; // parse error - x^y^z etc
+            }
+          } else {
+            ctail = new Chunk(ctail, dir, false, true);
+          }
         }
         break;
       case 0x7b:   // {
