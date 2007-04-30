@@ -69,6 +69,10 @@ void DataWizard::init()
     _remove->setPixmap(BarIcon("back"));
     _remove->setAccel(ALT+Key_R);
 
+    _plotColumns->setMinValue(0);
+    _plotColumns->setMaxValue(10);
+    _plotColumns->setSpecialValueText(i18n("default"));
+
     loadSettings();
 
     QToolTip::add(_up, i18n("Raise in plot order: Alt+Up"));
@@ -365,23 +369,11 @@ void DataWizard::updateColumns()
     }
 
     if (v) {
-	const KstViewObjectList& children(v->view()->children());
-	int cnt = 0;
-	for (KstViewObjectList::ConstIterator i = children.begin(); i != children.end(); ++i) {
-	    if ((*i)->followsFlow()) {
-		++cnt;
-	    }
-	}
-
 	if (v->view()->onGrid()) {
-	    _plotColumns->setValue(int(floor(sqrt(_vectorsToPlot->childCount() + cnt))));
 	    _reGrid->setChecked(true);
 	} else {
-	    _plotColumns->setValue(int(floor(sqrt(_vectorsToPlot->childCount() + cnt))));
 	    _reGrid->setChecked(false);
 	}
-    } else {
-	_plotColumns->setValue(int(floor(sqrt(_vectorsToPlot->childCount()))));
     }
 }
 
@@ -435,7 +427,6 @@ void DataWizard::updatePlotBox()
     if (_existingPlot->isEnabled() && _existingPlotName->listBox() && _existingPlotName->listBox()->findItem(psave)) {
 	_existingPlotName->setCurrentText(psave);
     }
-    updateColumns();
 }
 
 
@@ -682,7 +673,7 @@ void DataWizard::finished()
     // create the necessary plots
     app->slotUpdateProgress(n_steps, prg, i18n("Creating plots..."));
     KstViewObjectList plots;
-    bool relayout = true;
+
     if (_onePlot->isChecked()) {
 	Kst2DPlotPtr p = kst_cast<Kst2DPlot>(w->view()->findChild(w->createObject<Kst2DPlot>(KST::suggestPlotName(), false)));
 	plots.append(p.data());
@@ -720,13 +711,11 @@ void DataWizard::finished()
     } else if (_existingPlot->isChecked()) {
 	Kst2DPlotPtr p = kst_cast<Kst2DPlot>(w->view()->findChild(_existingPlotName->currentText()));
 	plots.append(p.data());
-	relayout = false;
     } else if (_cycleExisting->isChecked()) {
 	Kst2DPlotList pl = QDeepCopy<Kst2DPlotList>(w->view()->findChildrenType<Kst2DPlot>());
 	for (Kst2DPlotList::Iterator i = pl.begin(); i != pl.end(); ++i) {
 	    plots += (*i).data();
 	}
-	relayout = false;
     } else { /* cycle */
 	Kst2DPlotPtr p;
 	for (int i = 0; i < _plotNumber->value(); ++i) {
@@ -932,16 +921,25 @@ void DataWizard::finished()
     }
 
     if (_reGrid->isChecked()) {
-	w->view()->cleanup(_plotColumns->value());
-    } else if (relayout) {
-	if (_radioButtonPlotDataPSD->isChecked()) {
-	    w->view()->cleanup(signed(sqrt(plots.count()/2)));
+        int cols;
+
+        if (_plotColumns->value() == _plotColumns->minValue()) {
+            const KstViewObjectList& children(w->view()->children());
+            int cnt = 0;
+            for (KstViewObjectList::ConstIterator i = children.begin(); i != children.end(); ++i) {
+                if ((*i)->followsFlow()) {
+                    ++cnt;
+                }
+            }
+            cols = int(sqrt(cnt));
 	} else {
-	    w->view()->cleanup(signed(sqrt(plots.count())));
+	    cols = _plotColumns->value();
 	}
+	w->view()->cleanup(cols);
     } else if (w->view()->onGrid()) {
 	w->view()->cleanup(-1);
     }
+
     w->view()->paint(KstPainter::P_PAINT);
     app->slotUpdateProgress(0, 0, QString::null);
     if (!wasPaused) {
@@ -949,7 +947,6 @@ void DataWizard::finished()
     }
 
     saveSettings();
-
 }
 
 
@@ -1094,6 +1091,7 @@ void DataWizard::saveSettings()
     cfg.writeEntry("PlotNumber", _plotNumber->value());
 
     cfg.writeEntry("OrderInColumns", _orderInColumns->isChecked());
+    cfg.writeEntry("PlotColumns", _plotColumns->value());
 }
 
 
@@ -1161,6 +1159,7 @@ void DataWizard::loadSettings()
     _cycleExisting->setChecked(cfg.readBoolEntry("CycleExisting", false));
     _plotNumber->setValue(cfg.readNumEntry("PlotNumber", 2));
     _orderInColumns->setChecked(cfg.readBoolEntry("OrderInColumns", false));
+    _plotColumns->setValue(cfg.readNumEntry("PlotColumns", 0));
 }
 
 
@@ -1333,34 +1332,14 @@ void DataWizard::vectorsDroppedBack(QDropEvent *e)
 
 double DataWizard::getFontSize(int count, KstViewWindow *w) {
   double size;
-  double rows, cols;
 
   // if there are already plots in the window, use the the first one's font size.
   Kst2DPlotList plotList = w->view()->findChildrenType<Kst2DPlot>(false);
   if (!plotList.isEmpty()) {
-    return(plotList[0]->xTickLabel()->fontSize());
-  }
-
-  if (_cycleThrough->isChecked()) {
-    count = _plotNumber->value();
-  } else if (!_multiplePlots->isChecked()) {
-    count = 1;
-  }
-
-  size = (double)KstSettings::globalSettings()->plotFontSize;
-
-  if (_reGrid->isChecked()) {
-    cols = _plotColumns->value();
+    size = plotList[0]->xTickLabel()->fontSize();
   } else {
-    cols = floor(sqrt(double(count)));
+    size = (double)KstSettings::globalSettings()->plotFontSize;
   }
-  rows = cols + int(count - cols * cols) / int(cols);
-
-  size *= (rows + cols)/(cols/rows + rows/cols);
-  size -= (double)KstSettings::globalSettings()->plotFontSize;
-  size *=0.7;
-
-  if (size>22) size = 22;
 
   return size;
 }
