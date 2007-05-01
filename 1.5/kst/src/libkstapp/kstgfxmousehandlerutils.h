@@ -30,6 +30,8 @@ namespace KstGfxMouseHandlerUtils {
     QRect resizeRectFromCornerCentered(const QRect& originalRect, const QPoint& pos, const QRect& bounds, bool maintainAspect);
     // resizes a rect from an edge, keeping anchorPoint fixed. movePoint = center of edge being dragged. anchorPoint = center of opposite edge. anchorPoint and movePoint must be inside bounds already.
     QRect resizeRectFromEdge(const QRect& originalSize, const QPoint& anchorPoint, const QPoint& movePoint, const QPoint& pos, const QRect &bounds, bool maintainAspect);
+    // resizes a rect from an edge, keeping anchorPoint fixed. movePoint = center of edge being dragged. anchorPoint = center of opposite edge. anchorPoint and movePoint must be inside bounds already.
+    QRect resizeRectFromEdgeCentered(const QRect& originalRect, const QPoint& anchorPoint, const QPoint& movePoint, const QPoint& pos, const QRect& bounds, bool maintainAspect);
     // returns a new rectangle. mouseOrigin must be inside bounds already.
     QRect newRect(const QPoint& pos, const QPoint& mouseOrigin, const QRect& bounds, bool squareAspect);
     // returns a new rectangle, mouseOrigin must be inside bounds already.

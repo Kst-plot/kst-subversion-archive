@@ -185,8 +185,8 @@ QMap<QString, QVariant> KstViewEllipse::widgetHints(const QString& propertyName)
 
 signed int KstViewEllipse::directionFor(const QPoint& pos) {
   signed int direction = KstViewObject::directionFor(pos);
-  if (!(((direction & (UP|DOWN)) == 0) || ((direction & (LEFT|RIGHT)) == 0))) {    
-    // not an edge
+
+  if (direction != 0) {
     direction |= CENTEREDRESIZE;  
   }
   return direction;

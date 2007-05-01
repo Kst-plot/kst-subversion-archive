@@ -92,12 +92,12 @@ QRect KstGfxMouseHandlerUtils::resizeRectFromCornerCentered(const QRect& origina
     newHalfHeight = kMin(newHalfHeight,bounds.bottom() - anchorPoint.y());
 
     QSize newSize(originalRect.size());
-    newSize.scale(2*newHalfWidth,2*newHalfHeight,QSize::ScaleMin);
+    newSize.scale(2*newHalfWidth, 2*newHalfHeight, QSize::ScaleMin);
 
     newRect.setSize(newSize);
     newRect.moveCenter(anchorPoint);
   } else {
-    newRect = QRect(0,0,2*newHalfWidth,2*newHalfHeight);
+    newRect = QRect(0, 0, 2*newHalfWidth, 2*newHalfHeight);
     newRect.moveCenter(anchorPoint);
     newRect = newRect.intersect(bounds);
   }
@@ -110,51 +110,91 @@ QRect KstGfxMouseHandlerUtils::resizeRectFromEdge(const QRect& originalSize, con
   QRect newSize(originalSize);
 
   if (movePoint.y() == anchorPoint.y()) {
-      int newWidth = pos.x() - anchorPoint.x(); //defined differently than in QRect.
+    int newWidth = pos.x() - anchorPoint.x(); //defined differently than in QRect.
 
-      if (maintainAspect) {
-        double newHalfHeight = originalSize.height() * (abs(newWidth) + 1) / originalSize.width() / 2.0; //defined with the QRect convention (height = bot - top + 1)
+    if (maintainAspect) {
+      double newHalfHeight = originalSize.height() * (abs(newWidth) + 1) / originalSize.width() / 2.0; //defined with the QRect convention (height = bot - top + 1)
 
-        newHalfHeight = kMin(double(movePoint.y() - bounds.top()) + 1, newHalfHeight); // ensure we are still within the bounds.
-        newHalfHeight = kMin(double(bounds.bottom() - movePoint.y()) + 1, newHalfHeight);
+      newHalfHeight = kMin(double(movePoint.y() - bounds.top()) + 1, newHalfHeight); // ensure we are still within the bounds.
+      newHalfHeight = kMin(double(bounds.bottom() - movePoint.y()) + 1, newHalfHeight);
 
-        if (newWidth == 0) { // anything better to be done?
-          newWidth = 1;
-        }
-
-        newWidth = (int(originalSize.width() * (newHalfHeight * 2.0) / originalSize.height()) - 1)*newWidth/abs(newWidth); // consistency of width w/ the newly calculated height.
-
-        newSize.setTop(anchorPoint.y() + int(newHalfHeight - 0.5));
-        newSize.setBottom(anchorPoint.y() - int(newHalfHeight - 0.5));
+      if (newWidth == 0) { // anything better to be done?
+        newWidth = 1;
       }
 
-      newSize.setLeft(anchorPoint.x());
-      newSize.setRight(anchorPoint.x() + newWidth); // +1 for the way widths are defined in QRect.
+      newWidth = (int(originalSize.width() * (newHalfHeight * 2.0) / originalSize.height()) - 1)*newWidth/abs(newWidth); // consistency of width w/ the newly calculated height.
 
-    } else if (movePoint.x() == anchorPoint.x()) {
-      // mimic the case for (movePoint.y() == anchorPoint.y()). comments are there.
-      int newHeight = pos.y() - anchorPoint.y();
-
-      if (maintainAspect) {
-        double newHalfWidth = originalSize.width() * (abs(newHeight) + 1) / originalSize.height() / 2.0;
-
-        newHalfWidth = kMin(double(movePoint.x() - bounds.left() + 1), newHalfWidth);
-        newHalfWidth = kMin(double(bounds.right() - movePoint.x() + 1), newHalfWidth);
-
-        if (newHeight == 0) {
-          newHeight = 1;
-        }
-
-        newHeight = (int(originalSize.height() * newHalfWidth * 2.0 / originalSize.width()) - 1)*newHeight/abs(newHeight);
-        newSize.setLeft(anchorPoint.x() + int(newHalfWidth - .5));
-        newSize.setRight(anchorPoint.x() - int(newHalfWidth - .5));
-      }
-
-      newSize.setTop(anchorPoint.y());
-      newSize.setBottom(anchorPoint.y() + newHeight);
+      newSize.setTop(anchorPoint.y() + int(newHalfHeight - 0.5));
+      newSize.setBottom(anchorPoint.y() - int(newHalfHeight - 0.5));
     }
 
-    return newSize.normalize();
+    newSize.setLeft(anchorPoint.x());
+    newSize.setRight(anchorPoint.x() + newWidth); // +1 for the way widths are defined in QRect.
+  } else if (movePoint.x() == anchorPoint.x()) {
+    // mimic the case for (movePoint.y() == anchorPoint.y()). comments are there.
+    int newHeight = pos.y() - anchorPoint.y();
+
+    if (maintainAspect) {
+      double newHalfWidth = originalSize.width() * (abs(newHeight) + 1) / originalSize.height() / 2.0;
+
+      newHalfWidth = kMin(double(movePoint.x() - bounds.left() + 1), newHalfWidth);
+      newHalfWidth = kMin(double(bounds.right() - movePoint.x() + 1), newHalfWidth);
+
+      if (newHeight == 0) {
+        newHeight = 1;
+      }
+
+      newHeight = (int(originalSize.height() * newHalfWidth * 2.0 / originalSize.width()) - 1)*newHeight/abs(newHeight);
+      newSize.setLeft(anchorPoint.x() + int(newHalfWidth - 0.5));
+      newSize.setRight(anchorPoint.x() - int(newHalfWidth - 0.5));
+    }
+
+    newSize.setTop(anchorPoint.y());
+    newSize.setBottom(anchorPoint.y() + newHeight);
+  }
+
+  return newSize.normalize();
+}
+
+
+QRect KstGfxMouseHandlerUtils::resizeRectFromEdgeCentered(const QRect& originalRect, const QPoint& anchorPoint, const QPoint& movePoint, const QPoint& pos, const QRect& bounds, bool maintainAspect) {
+  QRect newRect;
+  bool vertical;
+  int newHalfWidth = abs((pos - anchorPoint).x());
+  int newHalfHeight = abs((pos - anchorPoint).y());
+
+  if (movePoint.x() == anchorPoint.x()) {
+    vertical = true;
+  } else {
+    vertical = false;
+  }
+
+  if (maintainAspect) {
+    QSize newSize(originalRect.size());
+
+    if (vertical) {
+      newHalfHeight = kMin(newHalfHeight, anchorPoint.y() - bounds.top());
+      newHalfHeight = kMin(newHalfHeight, bounds.bottom() - anchorPoint.y());
+      newSize.scale(originalRect.width(), 2*newHalfHeight, QSize::ScaleMin);
+    } else {
+      newHalfWidth = kMin(newHalfWidth, anchorPoint.x() - bounds.left());
+      newHalfWidth = kMin(newHalfWidth, bounds.right() - anchorPoint.x());
+      newSize.scale(2*newHalfWidth, originalRect.height(), QSize::ScaleMin);
+    }
+
+    newRect.setSize(newSize);
+    newRect.moveCenter(anchorPoint);
+  } else {
+    if (vertical) {
+      newRect = QRect(0, 0, originalRect.width(), 2*newHalfHeight);
+    } else {
+      newRect = QRect(0, 0, 2*newHalfWidth, originalRect.height());
+    }
+    newRect.moveCenter(anchorPoint);
+    newRect = newRect.intersect(bounds);
+  }
+
+  return newRect;
 }
 
 
