@@ -250,6 +250,28 @@ int ScubaSource::readFullLine(QFile &file, QString &str) {
   return read;
 }
 
+
+QString ScubaSource::runFile( const QString& filename ) {
+  QString runfile;
+
+  runfile = QString("%1.%2").arg(filename).arg("run");
+  if (!QFile::exists(runfile)) {
+    int index;
+
+    runfile.truncate(0);
+    index = filename.findRev(QChar('.'));
+    if (index != -1) {
+      runfile = QString("%1.%2").arg(filename.left(index)).arg("run");
+      if (!QFile::exists(runfile)) {
+        runfile.truncate(0);
+      }
+    }
+  }
+
+  return runfile;
+}
+
+
 void ScubaSource::setDataType(QFile& file) {
   int length = 200;
   int read;
@@ -283,13 +305,13 @@ bool ScubaSource::initFrameIndex() {
   _byteLength = 0;
   _numFrames = 0;
 
-  QString runFilename = QString("%1.%2").arg(_filename).arg("run");
+  QString runFilename = runFile(_filename);
   QFile file(_filename);
 
   //
   // check for the presence of a .run file
   //
-  if (QFile::exists(runFilename)) {
+  if (!runFilename.isEmpty()) {
     QFile frun(runFilename);
     KstString *metaString;
     QStringList entries;
@@ -330,7 +352,7 @@ bool ScubaSource::initFrameIndex() {
             index = s.find(QChar('>'));
             s.remove(0, index+1);
             s.stripWhiteSpace();
-            _datamode = s.toInt(&ok, 16);
+            _datamode = s.toInt(&ok, 10);
             // FIXME datamode set at rc level
             _datamode = 4;
 
@@ -341,7 +363,7 @@ bool ScubaSource::initFrameIndex() {
             index = s.find(QChar('>'));
             s.remove(0, index+1);
             s.stripWhiteSpace();
-            _rowLen = s.toInt(&ok, 16);
+            _rowLen = s.toInt(&ok, 10);
             if (!ok) {
               _rowLen = -1;
             }
@@ -350,7 +372,7 @@ bool ScubaSource::initFrameIndex() {
             index = s.find(QChar('>'));
             s.remove(0, index+1);
             s.stripWhiteSpace();
-            _numRows = s.toInt(&ok, 16);
+            _numRows = s.toInt(&ok, 10);
             if (!ok) {
               _numRows = -1;
             }
@@ -526,7 +548,6 @@ KstObject::UpdateType ScubaSource::update(int u) {
 
             while (read != -1) {
               checksum = 0;
-
               for (i=0; i<_numRows+1; i++) {
                 read = readFullLine(file, s);
 
@@ -546,7 +567,6 @@ KstObject::UpdateType ScubaSource::update(int u) {
                 read = readFullLine(file, s);
                 if (read != -1) {
                   value = s.toInt(&ok, 10);
-
                   if (value == checksum) {
                     if (_numFrames >= _numFrameIndexAlloc) {
                       _numFrameIndexAlloc += FRAMEINDEXBUFFERINCREMENT;
@@ -1112,8 +1132,8 @@ QStringList ScubaSource::fieldListFor(const QString& filename, ScubaSource::Conf
   //
   // check for the presence of a .run file
   //
-  runFilename = QString("%1.%2").arg(filename).arg("run");
-  if (QFile::exists(runFilename)) {
+  runFilename = runFile(filename);
+  if (!runFilename.isEmpty()) {
     QFile frun(runFilename);
 
     if (frun.open(IO_ReadOnly)) {
@@ -1293,8 +1313,8 @@ QStringList ScubaSource::matrixList() const {
         QFile file(_filename);
         QString runFilename;
 
-        runFilename = QString("%1.%2").arg(_filename).arg("run");
-        if (QFile::exists(runFilename)) {
+        runFilename = runFile(_filename);
+        if (!runFilename.isEmpty()) {
           QFile frun(runFilename);
 
           if (frun.open(IO_ReadOnly)) {
@@ -1320,7 +1340,7 @@ QStringList ScubaSource::matrixList() const {
                 index = s.find(QChar('>'));
                 s.remove(0, index+1);
                 s.stripWhiteSpace();
-                datamode = s.toInt(&ok, 16);
+                datamode = s.toInt(&ok, 10);
                 // FIXME datamode set at rc level
                 datamode = 4;
 
@@ -1331,7 +1351,7 @@ QStringList ScubaSource::matrixList() const {
                 index = s.find(QChar('>'));
                 s.remove(0, index+1);
                 s.stripWhiteSpace();
-                row_len = s.toInt(&ok, 16);
+                row_len = s.toInt(&ok, 10);
                 if (!ok) {
                   row_len = -1;
                 }
@@ -1340,7 +1360,7 @@ QStringList ScubaSource::matrixList() const {
                 index = s.find(QChar('>'));
                 s.remove(0, index+1);
                 s.stripWhiteSpace();
-                num_rows = s.toInt(&ok, 16);
+                num_rows = s.toInt(&ok, 10);
                 if (!ok) {
                   num_rows = -1;
                 }
@@ -1588,8 +1608,8 @@ extern "C" {
       //
       // check for the presence of a .run file
       //
-      runFilename = QString("%1.%2").arg(filename).arg("run");
-      if (QFile::exists(runFilename)) {
+      runFilename = ScubaSource::runFile(filename);
+      if (!runFilename.isEmpty()) {
         QFile frun(runFilename);
         QString s;
 

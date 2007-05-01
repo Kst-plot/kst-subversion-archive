@@ -30,6 +30,7 @@ class ScubaSource : public KstDataSource {
     ScubaSource(KConfig *cfg, const QString& filename, const QString& type, const QDomElement& e = QDomElement());
     ~ScubaSource();
 
+    static QString runFile( const QString& filename );
     static int readFullLine(QFile &file, QString &str);
 
     KstObject::UpdateType update(int = -1);
