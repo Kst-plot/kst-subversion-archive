@@ -24,6 +24,7 @@
 #include <kaboutdata.h>
 #include <kcmdlineargs.h>
 #include "ksdebug.h"
+#include <kglobalsettings.h>
 #include <kimageio.h>
 
 #include "dialoglauncher-gui.h"
@@ -415,6 +416,8 @@ int main(int argc, char *argv[]) {
 
     if (!print_and_exit) {
       app.setMainWidget(kst);
+      QRect rect = KGlobalSettings::desktopGeometry(kst);
+      kst->resize(5 * rect.width() / 6, 5 * rect.height() / 6);
       kst->show();
     }
 
@@ -542,7 +545,7 @@ int main(int argc, char *argv[]) {
                 if (yvector) {
                   // make the curves
                   color = KstColorSequence::next(vcurves,plot->backgroundColor());
-                  curve = new KstVCurve(KST::suggestCurveName(yvector->tag(), false), // FIXME: this was yvector->field(), is this right?
+                  curve = new KstVCurve(KST::suggestCurveName(yvector->tag(), false),
                                       KstVectorPtr(xvector), KstVectorPtr(yvector),
                                       0L, 0L, 0L, 0L, color);
                   if (in.has_points) {
@@ -667,7 +670,7 @@ int main(int argc, char *argv[]) {
 
                 KstHistogram::AutoBin(KstVectorPtr(yvector), &N, &max, &min);
 
-                hs = new KstHistogram(KST::suggestHistogramName(yvector->tag()), // FIXME: this was yvector->field(), is this right?
+                hs = new KstHistogram(KST::suggestHistogramName(yvector->tag()),
                     KstVectorPtr(yvector), min, max, N, KST_HS_NUMBER);
                 KstVCurvePtr vc = new KstVCurve(KST::suggestCurveName(hs->tag(), true),
                     hs->vX(), hs->vY(),
