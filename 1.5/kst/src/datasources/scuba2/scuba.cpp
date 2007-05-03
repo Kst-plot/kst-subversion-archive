@@ -1159,7 +1159,7 @@ QStringList ScubaSource::fieldListFor(const QString& filename, ScubaSource::Conf
           index = s.find(QChar('>'));
           s.remove(0, index+1);
           s.stripWhiteSpace();
-          datamode = s.toInt(&ok, 16);
+          datamode = s.toInt(&ok, 10);
            // FIXME datamode set at rc level
           datamode = 4;
 
@@ -1170,7 +1170,7 @@ QStringList ScubaSource::fieldListFor(const QString& filename, ScubaSource::Conf
           index = s.find(QChar('>'));
           s.remove(0, index+1);
           s.stripWhiteSpace();
-          row_len = s.toInt(&ok, 16);
+          row_len = s.toInt(&ok, 10);
           if (!ok) {
             row_len = -1;
           }
@@ -1179,7 +1179,7 @@ QStringList ScubaSource::fieldListFor(const QString& filename, ScubaSource::Conf
           index = s.find(QChar('>'));
           s.remove(0, index+1);
           s.stripWhiteSpace();
-          num_rows = s.toInt(&ok, 16);
+          num_rows = s.toInt(&ok, 10);
           if (!ok) {
             num_rows = -1;
           }
