@@ -103,14 +103,14 @@ class KstTopLevelView : public KstViewObject {
     bool handleDoubleClick(const QPoint& pos, bool shift = false);
     
     // press move handlers
-    void pressMove(const QPoint& pos, bool shift = false);
-    void pressMoveLayoutMode(const QPoint& pos, bool shift = false);
+    void pressMove(const QPoint& pos, bool shift = false, bool alt = false);
+    void pressMoveLayoutMode(const QPoint& pos, bool shift = false, bool alt = false);
     // helpers for pressMoveLayoutMode
-    void pressMoveLayoutModeMove(const QPoint& pos, bool shift = false);
-    void pressMoveLayoutModeResize(const QPoint& pos, bool maintainAspect = false);
-    void pressMoveLayoutModeSelect(const QPoint& pos, bool shift = false);
-    void pressMoveLayoutModeEndPoint(const QPoint& pos, bool maintainAspect = false);
-    void pressMoveLayoutModeCenteredResize(const QPoint& pos, bool maintainAspect = false);
+    void pressMoveLayoutModeMove(const QPoint& pos, bool shift = false, bool snapToBorder = true);
+    void pressMoveLayoutModeResize(const QPoint& pos, bool maintainAspect = false, bool snapToBorder = true);
+    void pressMoveLayoutModeSelect(const QPoint& pos);
+    void pressMoveLayoutModeEndPoint(const QPoint& pos, bool maintainAspect = false, bool snapToBorder = true);
+    void pressMoveLayoutModeCenteredResize(const QPoint& pos, bool maintainAspect = false, bool snapToBorder = true);
     
     // release press handlers 
     void releasePress(const QPoint& pos, bool shift = false);

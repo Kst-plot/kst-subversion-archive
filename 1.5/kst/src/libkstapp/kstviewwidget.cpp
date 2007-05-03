@@ -187,7 +187,7 @@ void KstViewWidget::mouseMoveEvent(QMouseEvent *e) {
       e->accept();
     } else if (e->state() & Qt::LeftButton) {
       //setCursor(QCursor(Qt::ArrowCursor));
-      _view->pressMove(e->pos(), e->state() & Qt::ShiftButton);
+      _view->pressMove(e->pos(), e->state() & Qt::ShiftButton, e->state() & Qt::AltButton);
       e->accept();
     }
   }

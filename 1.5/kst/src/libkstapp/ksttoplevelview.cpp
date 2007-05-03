@@ -517,9 +517,9 @@ void KstTopLevelView::moveSnapToBorders(int *xMin, int *yMin, const KstViewObjec
   for (KstViewObjectList::ConstIterator i = obj->children().begin(); i != obj->children().end(); ++i) {
     if (_selectionList.find(*i) == _selectionList.end() && _pressTarget != *i) {
       const QRect rect((*i)->geometry());
-      
+
       moveSnapToBorders(xMin, yMin, *i, r);
-            
+
       int overlapLo = r.top() > rect.top() ? r.top() : rect.top();
       int overlapHi = r.bottom() < rect.bottom() ? r.bottom() : rect.bottom();
       if (overlapHi - overlapLo > 0) {
@@ -533,7 +533,7 @@ void KstTopLevelView::moveSnapToBorders(int *xMin, int *yMin, const KstViewObjec
           *xMin = r.right() - rect.right();
         }
       }
-  
+
       overlapLo = r.left() > rect.left() ? r.left() : rect.left();
       overlapHi = r.right() < rect.right() ? r.right() : rect.right();
       if (overlapHi - overlapLo > 0) {
@@ -556,9 +556,9 @@ void KstTopLevelView::resizeSnapToBorders(int *xMin, int *yMin, const KstViewObj
   for (KstViewObjectList::ConstIterator i = obj->children().begin(); i != obj->children().end(); ++i) {
     if (_pressTarget != *i) {
       const QRect rect((*i)->geometry());
-      
+
       resizeSnapToBorders(xMin, yMin, *i, r, direction);
-      
+
       int overlapLo = r.top() > rect.top() ? r.top() : rect.top();
       int overlapHi = r.bottom() < rect.bottom() ? r.bottom() : rect.bottom();
       if (overlapHi - overlapLo > 0) {
@@ -566,7 +566,7 @@ void KstTopLevelView::resizeSnapToBorders(int *xMin, int *yMin, const KstViewObj
           if (labs(r.left() - rect.left()) < labs(*xMin)) {
             *xMin = r.left() - rect.left();
           } else if (labs(r.left() - rect.right()) < labs(*xMin)) {
-            *xMin = r.left() - rect.right();              
+            *xMin = r.left() - rect.right();
           }
         } else if (direction & RIGHT) {
           if (labs(r.right() - rect.left()) < labs(*xMin)) {
@@ -574,7 +574,7 @@ void KstTopLevelView::resizeSnapToBorders(int *xMin, int *yMin, const KstViewObj
           } else if (labs(r.right() - rect.right()) < labs(*xMin)) {
             *xMin = r.right() - rect.right();
           }
-        }                 
+        }
       }
 
       overlapLo = r.left() > rect.left() ? r.left() : rect.left();
@@ -584,7 +584,7 @@ void KstTopLevelView::resizeSnapToBorders(int *xMin, int *yMin, const KstViewObj
           if (labs(r.top() - rect.top()) < labs(*yMin)) {
             *yMin = r.top() - rect.top();
           } else if (labs(r.top() - rect.bottom()) < labs(*yMin)) {
-            *yMin = r.top() - rect.bottom();              
+            *yMin = r.top() - rect.bottom();
           }
         } else if (direction & DOWN) {
           if (labs(r.bottom() - rect.top()) < labs(*yMin)) {
@@ -603,25 +603,37 @@ QRect KstTopLevelView::resizeSnapToObjects(const QRect& r, int direction) {
   QRect rectNew = r;
   int xMin = STICKY_THRESHOLD;
   int yMin = STICKY_THRESHOLD;
-  
+
   resizeSnapToBorders(&xMin, &yMin, this, r, direction);
 
   if (labs(yMin) < STICKY_THRESHOLD) {
     if (direction & UP) {
       rectNew.setTop(r.top() - yMin);
+      if (direction & CENTEREDRESIZE) {
+        rectNew.setBottom(r.bottom() + yMin);
+      }
     } else if (direction & DOWN) {
       rectNew.setBottom(r.bottom() - yMin);
+      if (direction & CENTEREDRESIZE) {
+        rectNew.setTop(r.top() + yMin);
+      }
     }
   }
- 
+
   if (labs(xMin) < STICKY_THRESHOLD) {
     if (direction & LEFT) {
       rectNew.setLeft(r.left() - xMin);
-     } else if (direction & RIGHT) {
+      if (direction & CENTEREDRESIZE) {
+        rectNew.setRight(r.right() + xMin);
+      }
+    } else if (direction & RIGHT) {
       rectNew.setRight(r.right() - xMin);
+      if (direction & CENTEREDRESIZE) {
+        rectNew.setLeft(r.left() + xMin);
+      }
     }
   }
- 
+
   return rectNew.normalize();
 }
 
@@ -645,18 +657,18 @@ static void slideInto(const QRect& region, QRect& obj) {
 }
 
 
-void KstTopLevelView::pressMove(const QPoint& pos, bool shift) {
+void KstTopLevelView::pressMove(const QPoint& pos, bool shift, bool alt) {
   if (_activeHandler) {
     _activeHandler->pressMove(this, pos, shift, _geom);  
     return;
   }
-  
+
   // in these cases there is nothing to do         
   if (_mode == DisplayMode || _mode == Unknown) {
     _pressTarget = 0L;
     return;
   }
-  
+
   if (_pressDirection == -1 && _pressTarget) { // menu released
     return;
   }
@@ -664,44 +676,47 @@ void KstTopLevelView::pressMove(const QPoint& pos, bool shift) {
   if (shift && _moveOffset == QPoint(-1, -1) && _pressDirection < 1) {
     return;
   }
-  
+
   _mouseMoved = true;
-  
+
   // handle as in layout mode
-  pressMoveLayoutMode(pos, shift);
+  pressMoveLayoutMode(pos, shift, alt);
 }
 
 
-void KstTopLevelView::pressMoveLayoutMode(const QPoint& pos, bool shift) {
+void KstTopLevelView::pressMoveLayoutMode(const QPoint& pos, bool shift, bool alt) {
   if (_pressTarget) {
+    bool snapToBorder = !alt;
+
     if (_pressDirection == 0) {
       // moving an object
-      pressMoveLayoutModeMove(pos, shift);
+      pressMoveLayoutModeMove(pos, shift, snapToBorder);
       KstApp::inst()->slotUpdateDataMsg(i18n("(x0,y0)-(x1,y1)", "(%1,%2)-(%3,%4)").arg(_prevBand.topLeft().x()).arg(_prevBand.topLeft().y()).arg(_prevBand.bottomRight().x()).arg(_prevBand.bottomRight().y()));
     } else if (_pressTarget->isResizable()) {
       bool maintainAspect = shift ^ _pressTarget->maintainAspect(); // if default behaviour is to maintainAspect on resize, then shift will now have opposite behaviour.
+
       if (_pressDirection & ENDPOINT) {
         // moving an endpoint of an object
-        pressMoveLayoutModeEndPoint(pos, maintainAspect);
+        pressMoveLayoutModeEndPoint(pos, maintainAspect, snapToBorder);
       } else if (_pressDirection & CENTEREDRESIZE) {
         // resizing an object with fixed center
-        pressMoveLayoutModeCenteredResize(pos, maintainAspect);
+        pressMoveLayoutModeCenteredResize(pos, maintainAspect, snapToBorder);
       } else {
         // resizing a rectangular object
-        pressMoveLayoutModeResize(pos, maintainAspect);
+        pressMoveLayoutModeResize(pos, maintainAspect, snapToBorder);
       }
       KstApp::inst()->slotUpdateDataMsg(i18n("(x0,y0)-(x1,y1)", "(%1,%2)-(%3,%4)").arg(_prevBand.topLeft().x()).arg(_prevBand.topLeft().y()).arg(_prevBand.bottomRight().x()).arg(_prevBand.bottomRight().y()));
     }
   } else {
     // selecting objects
-    pressMoveLayoutModeSelect(pos, shift);
+    pressMoveLayoutModeSelect(pos);
   }  
 }
 
 
-void KstTopLevelView::pressMoveLayoutModeMove(const QPoint& pos, bool shift) {
+void KstTopLevelView::pressMoveLayoutModeMove(const QPoint& pos, bool shift, bool snapToBorder) {
   Q_UNUSED(shift)
-  
+
   const QRect old(_prevBand);
 
   QRect r(_pressTarget->geometry());
@@ -712,23 +727,24 @@ void KstTopLevelView::pressMoveLayoutModeMove(const QPoint& pos, bool shift) {
   QPoint topLeft(pos - _moveOffset - _pressTarget->geometry().topLeft() + r.topLeft());
   r.moveTopLeft(topLeft);
   _moveOffsetSticky = QPoint(0, 0);
-      
-  int xMin = STICKY_THRESHOLD;
-  int yMin = STICKY_THRESHOLD;
-  
-  moveSnapToBorders(&xMin, &yMin, this, r); 
-  
-  if (labs(xMin) < STICKY_THRESHOLD) {
-    _moveOffsetSticky.setX(xMin);
-    topLeft.setX(topLeft.x() - xMin);
-  }
-  
-  if (labs(yMin) < STICKY_THRESHOLD) {
-    _moveOffsetSticky.setY(yMin);
-    topLeft.setY(topLeft.y() - yMin);
-  } 
 
-  r.moveTopLeft(topLeft);      
+  if (snapToBorder) {
+    int xMin = STICKY_THRESHOLD;
+    int yMin = STICKY_THRESHOLD;
+
+    moveSnapToBorders(&xMin, &yMin, this, r); 
+
+    if (labs(xMin) < STICKY_THRESHOLD) {
+      _moveOffsetSticky.setX(xMin);
+      topLeft.setX(topLeft.x() - xMin);
+    }
+
+    if (labs(yMin) < STICKY_THRESHOLD) {
+      _moveOffsetSticky.setY(yMin);
+      topLeft.setY(topLeft.y() - yMin);
+    }
+    r.moveTopLeft(topLeft);
+  }
 
   if (!_geom.contains(r, true)) {
     slideInto(_geom, r);
@@ -736,7 +752,7 @@ void KstTopLevelView::pressMoveLayoutModeMove(const QPoint& pos, bool shift) {
   _prevBand = r;
   if (_prevBand != old) {
     KstPainter p;
-        
+
     p.begin(_w);
     p.setRasterOp(Qt::NotROP);
     p.setPen(QPen(Qt::black, 0, Qt::DotLine));
@@ -758,13 +774,18 @@ void KstTopLevelView::pressMoveLayoutModeMove(const QPoint& pos, bool shift) {
 }
 
 
-void KstTopLevelView::pressMoveLayoutModeResize(const QPoint& pos, bool maintainAspect) {
+void KstTopLevelView::pressMoveLayoutModeResize(const QPoint& pos, bool maintainAspect, bool snapToBorders) {
   const QRect old(_prevBand);
 
   _prevBand = newSize(_pressTarget->geometry(), _pressTarget->_parent->geometry(), _pressDirection, pos, maintainAspect);
+
+  if (snapToBorders) {
+    _prevBand = resizeSnapToObjects(_prevBand, _pressDirection); 
+  }
+
   if (_prevBand != old) {
     KstPainter p;
-        
+
     p.begin(_w);
     p.setRasterOp(Qt::NotROP);
     p.setPen(QPen(Qt::black, 0, Qt::DotLine));
@@ -777,9 +798,7 @@ void KstTopLevelView::pressMoveLayoutModeResize(const QPoint& pos, bool maintain
 }
 
 
-void KstTopLevelView::pressMoveLayoutModeSelect(const QPoint& pos, bool shift) {
-  Q_UNUSED(shift)
-  
+void KstTopLevelView::pressMoveLayoutModeSelect(const QPoint& pos) {
   const QRect old(_prevBand);
   QRect r;
   r.setTopLeft(_moveOffset);
@@ -797,7 +816,7 @@ void KstTopLevelView::pressMoveLayoutModeSelect(const QPoint& pos, bool shift) {
 }
 
 
-void KstTopLevelView::pressMoveLayoutModeEndPoint(const QPoint& pos, bool maintainAspect) {
+void KstTopLevelView::pressMoveLayoutModeEndPoint(const QPoint& pos, bool maintainAspect, bool snapToBorder) {
   // FIXME: remove this!!  Should not know about any specific type
   // for now we only know how to deal with lines 
 
@@ -821,7 +840,7 @@ void KstTopLevelView::pressMoveLayoutModeEndPoint(const QPoint& pos, bool mainta
     } else {
       return;
     }
-    
+
     if (maintainAspect) {
       movePoint = KstGfxMouseHandlerUtils::findNearestPtOnLine(anchorPoint, movePoint, pos, bounds);
     } else {
@@ -851,11 +870,15 @@ void KstTopLevelView::pressMoveLayoutModeEndPoint(const QPoint& pos, bool mainta
 }
 
 
-void KstTopLevelView::pressMoveLayoutModeCenteredResize(const QPoint& pos, bool maintainAspect) {
+void KstTopLevelView::pressMoveLayoutModeCenteredResize(const QPoint& pos, bool maintainAspect, bool snapToBorder) {
   //centered resize means that the center of the object stays constant
   const QRect old(_prevBand);
   
   _prevBand = newSizeCentered(_pressTarget->geometry(), _pressTarget->_parent->geometry(), _pressDirection, pos, maintainAspect);
+
+  if (snapToBorder) {
+    _prevBand = resizeSnapToObjects(_prevBand, _pressDirection); 
+  }
 
   if (_prevBand != old) {
     KstPainter p;
