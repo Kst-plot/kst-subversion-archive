@@ -175,15 +175,24 @@ QRect KstGfxMouseHandlerUtils::resizeRectFromEdgeCentered(const QRect& originalR
     if (vertical) {
       newHalfHeight = kMin(newHalfHeight, anchorPoint.y() - bounds.top());
       newHalfHeight = kMin(newHalfHeight, bounds.bottom() - anchorPoint.y());
-      newSize.scale(originalRect.width(), 2*newHalfHeight, QSize::ScaleMin);
+      if (newHalfHeight > originalRect.height()/2) {
+        newSize.scale(originalRect.width(), 2*newHalfHeight, QSize::ScaleMax);
+      } else {
+        newSize.scale(originalRect.width(), 2*newHalfHeight, QSize::ScaleMin);
+      }
     } else {
       newHalfWidth = kMin(newHalfWidth, anchorPoint.x() - bounds.left());
       newHalfWidth = kMin(newHalfWidth, bounds.right() - anchorPoint.x());
-      newSize.scale(2*newHalfWidth, originalRect.height(), QSize::ScaleMin);
+      if (newHalfWidth > originalRect.width()/2) {
+        newSize.scale(2*newHalfWidth, originalRect.height(), QSize::ScaleMax);
+      } else {
+        newSize.scale(2*newHalfWidth, originalRect.height(), QSize::ScaleMin);
+      }
     }
 
     newRect.setSize(newSize);
     newRect.moveCenter(anchorPoint);
+    newRect = newRect.intersect(bounds);
   } else {
     if (vertical) {
       newRect = QRect(0, 0, originalRect.width(), 2*newHalfHeight);

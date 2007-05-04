@@ -131,7 +131,10 @@ class KstTopLevelView : public KstViewObject {
     QRect correctHeightForRatio(const QRect& oldRect, double ratio, int direction, int origRight, int origLeft);
     void moveSnapToBorders(int *xMin, int *yMin, const KstViewObjectPtr &obj, const QRect &r) const;
     void resizeSnapToBorders(int *xMin, int *yMin, const KstViewObjectPtr& obj, const QRect &r, int direction) const;
+    QRect resizeCenteredSnapToObjects(const QRect& r, const QRect& bounds, int direction);
     QRect resizeSnapToObjects(const QRect& r, int direction);
+    void pointSnapToBorders(int *xMin, int *yMin, const KstViewObjectPtr &obj, const QPoint &p) const;
+    QPoint pointSnapToObjects(const QPoint& p);
     // Called as a response to drag re-entering widget()
     void restartMove();
     

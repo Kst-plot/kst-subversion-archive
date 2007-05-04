@@ -599,6 +599,91 @@ void KstTopLevelView::resizeSnapToBorders(int *xMin, int *yMin, const KstViewObj
 }
 
 
+void KstTopLevelView::pointSnapToBorders(int *xMin, int *yMin, const KstViewObjectPtr &obj, const QPoint &p) const {
+  for (KstViewObjectList::ConstIterator i = obj->children().begin(); i != obj->children().end(); ++i) {
+    if (_pressTarget != *i) {
+      const QRect rect((*i)->geometry());
+
+      pointSnapToBorders(xMin, yMin, *i, p);
+
+      if (rect.top() <= p.y() && rect.bottom() >= p.y()) {
+        if (labs(p.x() - rect.left()) < labs(*xMin)) {
+          *xMin = p.x() - rect.left();
+        } else if (labs(p.x() - rect.right()) < labs(*xMin)) {
+          *xMin = p.x() - rect.right();
+        }
+      }
+
+      if (rect.left() <= p.x() && rect.right() >= p.x()) {
+        if (labs(p.y() - rect.top()) < labs(*yMin)) {
+          *yMin = p.y() - rect.top();
+        } else if (labs(p.y() - rect.bottom()) < labs(*yMin)) {
+          *yMin = p.y() - rect.bottom();
+        }
+      }
+    }
+  }
+}
+
+
+QPoint KstTopLevelView::pointSnapToObjects(const QPoint& p) {
+  QRect rectNew;
+  QRect r;
+  int xMin = STICKY_THRESHOLD;
+  int yMin = STICKY_THRESHOLD;
+
+  r.setTopLeft(QPoint(0, 0));
+  r.setBottomRight(p);
+
+  pointSnapToBorders(&xMin, &yMin, this, p);
+
+  if (labs(yMin) < STICKY_THRESHOLD) {
+    r.setBottom(r.bottom() - yMin);
+  }
+
+  if (labs(xMin) < STICKY_THRESHOLD) {
+    r.setRight(r.right() - xMin);
+  }
+
+  return r.bottomRight();
+}
+
+
+QRect KstTopLevelView::resizeCenteredSnapToObjects(const QRect& r, const QRect& bounds, int direction) {
+  QRect rectNew = r;
+  int xMin = STICKY_THRESHOLD;
+  int yMin = STICKY_THRESHOLD;
+
+  resizeSnapToBorders(&xMin, &yMin, this, r, direction);
+
+  if (labs(yMin) < STICKY_THRESHOLD) {
+    if (direction & UP) {
+      rectNew.setTop(r.top() - yMin);
+      rectNew.setBottom(r.bottom() + yMin);
+    } else if (direction & DOWN) {
+      rectNew.setBottom(r.bottom() - yMin);
+      rectNew.setTop(r.top() + yMin);
+    }
+  }
+
+  if (labs(xMin) < STICKY_THRESHOLD) {
+    if (direction & LEFT) {
+      rectNew.setLeft(r.left() - xMin);
+      rectNew.setRight(r.right() + xMin);
+    } else if (direction & RIGHT) {
+      rectNew.setRight(r.right() - xMin);
+      rectNew.setLeft(r.left() + xMin);
+    }
+  }
+
+  if (!bounds.contains(rectNew)) {
+    rectNew = r;
+  }
+
+  return rectNew.normalize();
+}
+
+
 QRect KstTopLevelView::resizeSnapToObjects(const QRect& r, int direction) {
   QRect rectNew = r;
   int xMin = STICKY_THRESHOLD;
@@ -609,28 +694,16 @@ QRect KstTopLevelView::resizeSnapToObjects(const QRect& r, int direction) {
   if (labs(yMin) < STICKY_THRESHOLD) {
     if (direction & UP) {
       rectNew.setTop(r.top() - yMin);
-      if (direction & CENTEREDRESIZE) {
-        rectNew.setBottom(r.bottom() + yMin);
-      }
     } else if (direction & DOWN) {
       rectNew.setBottom(r.bottom() - yMin);
-      if (direction & CENTEREDRESIZE) {
-        rectNew.setTop(r.top() + yMin);
-      }
     }
   }
 
   if (labs(xMin) < STICKY_THRESHOLD) {
     if (direction & LEFT) {
       rectNew.setLeft(r.left() - xMin);
-      if (direction & CENTEREDRESIZE) {
-        rectNew.setRight(r.right() + xMin);
-      }
     } else if (direction & RIGHT) {
       rectNew.setRight(r.right() - xMin);
-      if (direction & CENTEREDRESIZE) {
-        rectNew.setLeft(r.left() + xMin);
-      }
     }
   }
 
@@ -851,6 +924,10 @@ void KstTopLevelView::pressMoveLayoutModeEndPoint(const QPoint& pos, bool mainta
       }
     }
 
+    if (snapToBorder) {
+      movePoint = pointSnapToObjects(movePoint); 
+    }
+
     const QRect old(_prevBand);
     _prevBand.setTopLeft(*fromPoint);
     _prevBand.setBottomRight(*toPoint);
@@ -873,11 +950,11 @@ void KstTopLevelView::pressMoveLayoutModeEndPoint(const QPoint& pos, bool mainta
 void KstTopLevelView::pressMoveLayoutModeCenteredResize(const QPoint& pos, bool maintainAspect, bool snapToBorder) {
   //centered resize means that the center of the object stays constant
   const QRect old(_prevBand);
-  
+
   _prevBand = newSizeCentered(_pressTarget->geometry(), _pressTarget->_parent->geometry(), _pressDirection, pos, maintainAspect);
 
   if (snapToBorder) {
-    _prevBand = resizeSnapToObjects(_prevBand, _pressDirection); 
+    _prevBand = resizeCenteredSnapToObjects(_prevBand, _pressTarget->_parent->geometry(), _pressDirection); 
   }
 
   if (_prevBand != old) {
@@ -933,7 +1010,7 @@ void KstTopLevelView::releasePressLayoutModeMove(const QPoint& pos, bool shift) 
   if (!_selectionList.isEmpty()) {
     for (KstViewObjectList::ConstIterator i = _selectionList.begin(); i != _selectionList.end(); ++i) {
       obj = obj.unite((*i)->geometry());
-    } 
+    }
   }
   const QPoint objOffset(old.topLeft() - obj.topLeft());
 
