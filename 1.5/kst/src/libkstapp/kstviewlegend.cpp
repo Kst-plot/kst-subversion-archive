@@ -23,6 +23,7 @@
 #include "kst2dplot.h"
 #include "kstdatacollection.h"
 #include "kstdataobjectcollection.h"
+#include "kstlegenddefaults.h"
 #include "kst.h"
 #include "kstsettings.h"
 #include "ksttimers.h"
@@ -57,23 +58,26 @@
 
 KstViewLegend::KstViewLegend()
 : KstBorderedViewObject("Legend") {
+  _fontName = KST::legendDefaults.font();
+  _vertical = KST::legendDefaults.vertical();
+  _legendMargin = KST::legendDefaults.margin();
+  _trackContents = KST::legendDefaults.trackContents();
+
+  _fontSize = -1;
+  setFontSize(KST::legendDefaults.fontSize());
+  setForegroundColor(KST::legendDefaults.fontColor());
+  setBorderColor(KST::legendDefaults.foregroundColor());
+  setBackgroundColor(KST::legendDefaults.backgroundColor());
+  setBorderWidth(KST::legendDefaults.border());
+  setTransparent(KST::legendDefaults.transparent());
+
   _fallThroughTransparency = false;
   _container = false;
   _rotation = 0;
-  _vertical = true;
-  _fontName = KstApp::inst()->defaultFont();
   _isResizable = false;
-  setForegroundColor(KstSettings::globalSettings()->foregroundColor);
-  setBorderColor(KstSettings::globalSettings()->foregroundColor);
-  setBackgroundColor(KstSettings::globalSettings()->backgroundColor);
-  setBorderWidth(2);
-  _legendMargin = 5;
-  _fontSize = -1;  
-  setFontSize(0);
   _layoutActions &= ~(MoveTo | Copy | CopyTo);
   _standardActions |= Delete | Edit;
   _parsedTitle = 0L;
-  _trackContents = true;
   reparseTitle();
   computeTextSize();
   setDirty(false);
@@ -83,22 +87,28 @@ KstViewLegend::KstViewLegend()
 KstViewLegend::KstViewLegend(const QDomElement& e)
 : KstBorderedViewObject(e) {
 
-  // some defaults and invariants
+  _fontName = KST::legendDefaults.font();
+  _vertical = KST::legendDefaults.vertical();
+  _legendMargin = KST::legendDefaults.margin();
+  _trackContents = KST::legendDefaults.trackContents();
+
+  _fontSize = -1;
+  setFontSize(KST::legendDefaults.fontSize());
+  setForegroundColor(KST::legendDefaults.fontColor());
+  setBorderColor(KST::legendDefaults.foregroundColor());
+  setBackgroundColor(KST::legendDefaults.backgroundColor());
+  setBorderWidth(KST::legendDefaults.border());
+  setTransparent(KST::legendDefaults.transparent());
+
   _fallThroughTransparency = false;
-  _container = false;
   _type = "Legend";
   _rotation = 0.0;
-  _fontName = KstApp::inst()->defaultFont();
-  _vertical = true;
+  _container = false;
   _isResizable = false;
-  _fontSize = -1;
-  setFontSize(0);
   _layoutActions &= ~(MoveTo | Copy | CopyTo);
   _standardActions |= Delete | Edit;
-  _legendMargin = 5;
   _parsedTitle = 0L;
-  _trackContents = true;
-  
+
   QStringList ctaglist;
 
   // read the properties
@@ -601,30 +611,30 @@ bool KstViewLegend::fillConfigWidget(QWidget *w, bool isNew) const {
   }
 
   KstBaseCurveList allCurves = kstObjectSubList<KstDataObject, KstBaseCurve>(KST::dataObjectList);
-  
+
   if (isNew) {
-    widget->_fontSize->setValue(0);
-    widget->_fontColor->setColor(KstSettings::globalSettings()->foregroundColor);
-    widget->_font->setCurrentFont(KstApp::inst()->defaultFont());
-    widget->_margin->setValue(5);
-    widget->_boxColors->setForeground(KstSettings::globalSettings()->foregroundColor);
-    widget->_boxColors->setBackground(KstSettings::globalSettings()->backgroundColor);
-    widget->_vertical->setChecked(true);
-    widget->_transparent->setChecked(false);
-    widget->_border->setValue(2);
+    widget->_fontSize->setValue(KST::legendDefaults.fontSize());
+    widget->_fontColor->setColor(KST::legendDefaults.fontColor());
+    widget->_font->setCurrentFont(KST::legendDefaults.font());
+    widget->_boxColors->setForeground(KST::legendDefaults.foregroundColor());
+    widget->_boxColors->setBackground(KST::legendDefaults.backgroundColor());
+    widget->_vertical->setChecked(KST::legendDefaults.vertical());
+    widget->_transparent->setChecked(KST::legendDefaults.transparent());
+    widget->_margin->setValue(KST::legendDefaults.margin());
+    widget->_border->setValue(KST::legendDefaults.border());
+    widget->TrackContents->setChecked(KST::legendDefaults.trackContents());
+
     widget->_title->setText("");
-    widget->TrackContents->setChecked(true);
- 
+
     for (KstBaseCurveList::ConstIterator it = allCurves.begin(); it != allCurves.end(); ++it) {
       (*it)->readLock();
       widget->AvailableCurveList->insertItem((*it)->tagName());
       (*it)->unlock();
     }
-
   } else { // fill legend properties into widget
     widget->TrackContents->setChecked(trackContents());
     widget->_title->setText(title());
-    widget->_fontSize->setValue(int(fontSize()));
+    widget->_fontSize->setValue(fontSize());
     widget->_fontColor->setColor(foregroundColor());
     widget->_font->setCurrentFont(fontName());
     widget->_transparent->setChecked(transparent());
@@ -694,6 +704,17 @@ bool KstViewLegend::readConfigWidget(QWidget *w) {
     legendExtra->setVertical(widget->_vertical->isChecked());
     legendExtra->setTrackContents(widget->TrackContents->isChecked());
   }
+
+  KST::legendDefaults.setFontSize(widget->_fontSize->value());
+  KST::legendDefaults.setFont(widget->_font->currentFont());
+  KST::legendDefaults.setTransparent(widget->_transparent->isChecked());
+  KST::legendDefaults.setBorder(widget->_border->value());
+  KST::legendDefaults.setFontColor(widget->_fontColor->color());
+  KST::legendDefaults.setForegroundColor(widget->_boxColors->foreground());
+  KST::legendDefaults.setBackgroundColor(widget->_boxColors->background());
+  KST::legendDefaults.setMargin(widget->_margin->value());
+  KST::legendDefaults.setVertical(widget->_vertical->isChecked());
+  KST::legendDefaults.setTrackContents(widget->TrackContents->isChecked());
 
   setDirty();
   return true;

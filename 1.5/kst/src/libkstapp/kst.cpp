@@ -69,6 +69,7 @@
 #include "ksthsdialog_i.h"
 #include "kstiface_impl.h"
 #include "kstimagedialog_i.h"
+#include "kstlegenddefaults.h"
 #include "kstlogwidget.h"
 #include "kstmatrixdialog_i.h"
 #include "kstmatrixdefaults.h"
@@ -1100,6 +1101,7 @@ void KstApp::saveOptions() {
   config->setGroup("General Options");
   _recent->saveEntries(config, "Recent Files");
 
+  KST::legendDefaults.writeConfig(config);
   KST::vectorDefaults.writeConfig(config);
   KST::matrixDefaults.writeConfig(config);
   KST::objectDefaults.writeConfig(config);
@@ -1111,6 +1113,7 @@ void KstApp::readOptions() {
   config->setGroup("General Options");
   _recent->loadEntries(config, "Recent Files");
 
+  KST::legendDefaults.readConfig(config);
   KST::vectorDefaults.readConfig(config);
   KST::matrixDefaults.readConfig(config);
   KST::objectDefaults.readConfig(config);

@@ -7,6 +7,7 @@ libkstapp_la_SOURCES = \
 	kstdatacollection-gui.cpp \
 	dialoglauncher-gui.cpp \
 	labelrenderer.cpp \
+	kstlegenddefaults.cpp \
 	kstnumbersequence.cpp \
 	kstuinames.cpp \
 	editviewobjectdialog.ui \

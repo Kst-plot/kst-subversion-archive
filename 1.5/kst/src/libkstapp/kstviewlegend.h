@@ -117,7 +117,6 @@ class KstViewLegend : public KstBorderedViewObject {
 
     double _rotation;
     QString _fontName;
-//    KstScalarList _scalarsUsed;
     KstScalarMap _scalarsUsed;
     KstStringMap _stringsUsed;
     KstVectorMap _vectorsUsed;
