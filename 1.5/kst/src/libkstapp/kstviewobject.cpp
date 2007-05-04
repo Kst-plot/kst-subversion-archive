@@ -464,8 +464,8 @@ void KstViewObject::drawFocusRect(KstPainter& p) {
 
 
 void KstViewObject::drawSelectRect(KstPainter& p) {
-  p.setBrush(QBrush(Qt::green));
-  p.setPen(QPen(Qt::black, 0));
+  p.setBrush(QBrush(foregroundColor()));
+  p.setPen(QPen(backgroundColor(), 0));
   drawFocusRect(p);
 }
 
