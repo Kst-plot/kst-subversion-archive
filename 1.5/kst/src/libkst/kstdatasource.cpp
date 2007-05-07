@@ -334,6 +334,24 @@ QStringList KstDataSource::fieldListForSource(const QString& filename, const QSt
     QString typeSuggestion;
     rc = (*i).plugin->fieldList(kConfigObject, fn, QString::null, &typeSuggestion, complete);
     if (!rc.isEmpty()) {
+      //
+      // check for duplicate field names and warn the user if necessary...
+      //
+      QStringList::const_iterator it = rc.begin();
+      QString str;
+
+      for (; it != rc.end(); ) {
+        str = (*it);
+        ++it;
+        if (it != rc.end()) {
+          if (rc.find(it, str) != rc.end()) {
+            KstDebug::self()->log(i18n( "The datasource has at least one duplicate field name; '%1'. As a result one or more fields will not be accessible." ).arg(str), KstDebug::Error);
+
+            break;
+          }
+        }
+      }
+
       if (outType) {
         if (typeSuggestion.isEmpty()) {
           *outType = (*i).plugin->provides()[0];
