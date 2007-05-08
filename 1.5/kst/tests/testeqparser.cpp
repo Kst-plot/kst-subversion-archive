@@ -109,10 +109,70 @@ bool doTest(const char *equation, double x, double result, const double tol = 0.
 }
 
 
+bool doTestNotEqual(const char *equation, double x, double result, const double tol = 0.00000000001) {
+  yy_scan_string(equation);
+  int rc = yyparse();
+  if (rc == 0) {
+    vectorsUsed.clear();
+    Equation::Node *eq = static_cast<Equation::Node*>(ParsedEquation);
+    assert(eq);
+    ParsedEquation = 0L;
+    Equation::Context ctx;
+    ctx.sampleCount = 2;
+    ctx.noPoint = NOPOINT;
+    ctx.x = x;
+    ctx.xVector = xVector;
+    if (xVector) {
+      ctx.sampleCount = xVector->length();
+    }
+    Equation::FoldVisitor vis(&ctx, &eq);
+    if (eq->isConst() && !dynamic_cast<Equation::Number*>(eq)) {
+      if (!optimizerFailed) {
+        optimizerFailed = true;
+        ::rc--;
+        printf("Optimizer bug: found an unoptimized const equation.  Optimizing for coverage purposes.\n");
+      }
+      double v = eq->value(&ctx);
+      delete eq;
+      eq = new Equation::Number(v);
+    }
+    KstScalarMap scm;
+    KstStringMap stm;
+    eq->collectObjects(vectorsUsed, scm, stm);
+    eq->update(-1, &ctx);
+    double v = eq->value(&ctx);
+    delete eq;
+    if (fabs(v - result) < tol || (result != result && v != v) || (result == INF && v == INF) || (result == -INF && v == -INF)) {
+      printf("Result: %.16f\n", v);
+      return false;
+    } else {
+      return true;
+    }
+  } else {
+    // Parse error
+    printf("Failures on [%s] -------------------------\n", equation);
+    for (QStringList::ConstIterator i = Equation::errorStack.constBegin(); i != Equation::errorStack.constEnd(); ++i) {
+      printf("%s\n", (*i).latin1());
+    }
+    printf("------------------------------------------\n");
+    delete (Equation::Node*)ParsedEquation;
+    ParsedEquation = 0L;
+    return false;
+  }
+}
+
 void test(const char *equation, double x, double result, const double tol = 0.00000000001) {
   if (!doTest(equation, x, result, tol)) {
     rc--;
     printf("Test of (%s)[%.16f] == %.16f failed.\n", equation, x, result);
+  }
+}
+
+
+void testNotEqual(const char *equation, double x, double result, const double tol = 0.00000000001) {
+  if (!doTestNotEqual(equation, x, result, tol)) {
+    rc--;
+    printf("Test of (%s)[%.16f] != %.16f failed.\n", equation, x, result);
   }
 }
 
@@ -165,6 +225,29 @@ int main(int argc, char **argv) {
   test("1E+1", 0.0, 1E+1);
   test("1E-1", 0.0, 1E-1);
   test("0.2e1", 0.0, 0.2e1);
+  test("01", 0.0, 1);
+  test("0.10", 0.0, 0.1);
+  test("01.", 0.0, 1);
+  test("1.", 0.0, 1.0);
+  test("1.0E5", 0.0, 1.0E5);
+  test("1.0E+5", 0.0, 1.0E+5);
+  test("1.0E-5", 0.0, 1.0E-5);
+  test("1.E5", 0.0, 1.0E5);
+  test("1.E+5", 0.0, 1.0E+5);
+  test("1.E-5", 0.0, 1.0E-5);
+  test("0.1000", 0.0, 0.1000);
+  test(".1000", 0.0, .1000);
+  testNotEqual("E+5", 0.0, 0e5);  // this will actually be 2.7128182846 + 5
+  testNotEqual("E+5", 0.0, 1e5);  // this will actually be 2.7182882846 + 5
+  testNotEqual("E-5", 0.0, 0e-5); // this will actually be 2.7182882846 - 5
+  testNotEqual("E-5", 0.0, 1e-5); // this will actually be 2.7182882846 - 5
+  testParseFail(".");
+  testParseFail("E5");
+  testParseFail(".E5");
+  testParseFail("1E5.0");
+  testParseFail("1E+5.0");
+  testParseFail("1E5.");
+  testParseFail("1E+5.");
 
   // Basics
   test("x", -1.0, -1.0);
@@ -486,8 +569,6 @@ int main(int argc, char **argv) {
   testParseFail("2<=");
   testParseFail("2<=<=2");
   testParseFail("2<==2");
-  testParseFail(".");
-  testParseFail("2.");
   testParseFail(",");
   testParseFail(",2");
   testParseFail("2,"); // Doesn't give a specific error - how to catch this?
