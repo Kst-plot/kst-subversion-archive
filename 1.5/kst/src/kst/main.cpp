@@ -383,7 +383,6 @@ int main(int argc, char *argv[]) {
     KstApp *kst = new KstApp;
     InType in;
     QColor color;
-    KstDataSourcePtr file;
     QCStringList ycolList;
     QCStringList matrixList;
     QCStringList yEqList;
@@ -517,7 +516,9 @@ int main(int argc, char *argv[]) {
         } else {
           fullPath = args->arg(i_file);
         }
-        file = KstDataSource::loadSource(fullPath);
+
+        KstDataSourcePtr file = KstDataSource::loadSource(fullPath);
+
         if (file) {
           if (!file->isValid() || file->isEmpty()) {
             kstdError() << i18n("No data in file %1.  Trying to continue...").arg(args->arg(i_file)) << endl;
