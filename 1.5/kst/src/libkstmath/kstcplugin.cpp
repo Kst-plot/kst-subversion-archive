@@ -528,10 +528,18 @@ bool KstCPlugin::isValid() const {
 
 
 QString KstCPlugin::propertyString() const {
+  QString str;
+
   if (!isValid()) {
-    return i18n("Invalid plugin.");
+    str = i18n("Invalid plugin.");
+  } else {
+    str = plugin()->data()._readableName;
+    if (str.isEmpty()) {
+      str = plugin()->data()._name;
+    }
   }
-  return plugin()->data()._name;
+
+  return str;
 }
 
 
