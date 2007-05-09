@@ -653,7 +653,7 @@ void Kst2DPlot::commonConstructor(const QString &in_tag,
 
   _i_per = 0;
   
-  setTagName(KstObjectTag(in_tag, KstObjectTag::globalTagContext));  // FIXME: tag context
+  KstObject::setTagName(KstObjectTag(in_tag, KstObjectTag::globalTagContext));  // FIXME: tag context
   _isTied = false;
 
   XMin = xmin_in;
@@ -692,6 +692,8 @@ void Kst2DPlot::commonConstructor(const QString &in_tag,
 
   // let this Kst2DPlot register doc changes.
   connect(this, SIGNAL(modified()), KstApp::inst(), SLOT(registerDocChange()));
+
+  CreateScalars();
 }
 
 
@@ -711,6 +713,15 @@ Kst2DPlot::~Kst2DPlot() {
 
   _curveToMarkers = 0L;
   _vectorToMarkers = 0L;
+
+  KST::scalarList.lock().writeLock();
+  KST::scalarList.setUpdateDisplayTags(false);
+  for (QDictIterator<KstScalar> it(_scalars); it.current(); ++it) {
+    KST::scalarList.remove(it.current());
+    it.current()->_KShared_unref();
+  }
+  KST::scalarList.setUpdateDisplayTags(true);
+  KST::scalarList.lock().unlock();
 }
 
 
@@ -1402,6 +1413,8 @@ void Kst2DPlot::updateScale() {
       kstdWarning() << "Bug in Kst2DPlot::updateScale: bad scale mode" << endl;
       break;
   }
+
+  updateScalears();
 }
 
 
@@ -7061,6 +7074,51 @@ void Kst2DPlot::connectConfigWidget(QWidget *parent, QWidget *w) const {
   connect( widget->_comboMarkerLineStyle, SIGNAL( activated(int) ), parent, SLOT(modified()));
   connect( widget->_spinBoxMarkerLineWidth, SIGNAL( valueChanged(int) ), parent, SLOT(modified()));
 
+}
+
+void Kst2DPlot::CreateScalars() {
+    KstWriteLocker sl(&KST::scalarList.lock());
+    KST::scalarList.setUpdateDisplayTags(false);
+
+    KstScalarPtr sp;
+    _scalars.insert("xmin", sp = new KstScalar(KstObjectTag("XMin", tag()), this));
+    sp->_KShared_ref();
+    _scalars.insert("xmax", sp = new KstScalar(KstObjectTag("XMax", tag()), this));
+    sp->_KShared_ref();
+    _scalars.insert("ymin", sp = new KstScalar(KstObjectTag("YMin", tag()), this));
+    sp->_KShared_ref();
+    _scalars.insert("ymax", sp = new KstScalar(KstObjectTag("YMax", tag()), this));
+    sp->_KShared_ref();
+
+    KST::scalarList.setUpdateDisplayTags(true);
+}
+
+void Kst2DPlot::RenameScalars() {
+  KstWriteLocker sl(&KST::scalarList.lock());
+  KST::scalarList.setUpdateDisplayTags(false);
+
+  _scalars["xmax"]->setTagName(KstObjectTag("XMax", tag()));
+  _scalars["xmin"]->setTagName(KstObjectTag("XMin", tag()));
+  _scalars["ymax"]->setTagName(KstObjectTag("YMax", tag()));
+  _scalars["ymin"]->setTagName(KstObjectTag("YMin", tag()));
+
+  KST::scalarList.setUpdateDisplayTags(true);
+}
+
+void Kst2DPlot::updateScalears() {
+  _scalars["xmax"]->setValue(XMax);
+  _scalars["xmin"]->setValue(XMin);
+  _scalars["ymax"]->setValue(YMax);
+  _scalars["ymin"]->setValue(YMin);
+}
+
+void Kst2DPlot::setTagName(const KstObjectTag& newTag) {
+  if (newTag == tag()) {
+    return;
+  }
+
+  this->KstObject::setTagName(newTag);
+  RenameScalars();
 }
 
 QWidget *Kst2DPlot::configWidget() {

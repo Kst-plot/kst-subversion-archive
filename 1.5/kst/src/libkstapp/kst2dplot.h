@@ -28,6 +28,7 @@
 #include "kstviewwidget.h"
 #include "kstviewlegend.h"
 #include "kst_export.h"
+#include "kstscalar.h"
 
 #include <qvaluestack.h>
 
@@ -138,6 +139,8 @@ public:
   void popCurvePointDensity();
   void pushPlotColors();
   void popPlotColors();
+
+  void updateScalears();
 
   /** Set the scale */
   void setScale(double xmin, double ymin, double xmax, double ymax);
@@ -383,9 +386,19 @@ public:
 
   double verticalSizeFactor();
   double horizontalSizeFactor();
-  
+
+  virtual void setTagName(const KstObjectTag& newTag);
+
+protected:
+  QDict<KstScalar> _scalars;
+
+  /** Scalar Maintenance methods */
+  void CreateScalars();
+  void RenameScalars();
+
 signals:
   void modified();
+  void scaleChanged();
 
 public slots:
   void copy();
