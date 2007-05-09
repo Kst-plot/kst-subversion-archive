@@ -769,6 +769,7 @@ bool Kst2DPlot::setXScale(double xmin_in, double xmax_in) {
   if (checkRange(xmin_in, xmax_in)) {
     XMax = xmax_in;
     XMin = xmin_in;
+    updateScalears();
     return true;
   }
 
@@ -780,6 +781,7 @@ bool Kst2DPlot::setYScale(double ymin_in, double ymax_in) {
   if (checkRange(ymin_in, ymax_in)) {
     YMax = ymax_in;
     YMin = ymin_in;
+    updateScalears();
     return true;
   }
 
@@ -788,6 +790,7 @@ bool Kst2DPlot::setYScale(double ymin_in, double ymax_in) {
 
 
 bool Kst2DPlot::setLXScale(double xmin_in, double xmax_in) {
+//this code is duplicated in setLScale.
   if (checkLRange(xmin_in, xmax_in, _xLog, _xLogBase)) {
     if (_xLog) {
       // don't do auto scale change... this is the wrong place to do it 
@@ -807,6 +810,7 @@ bool Kst2DPlot::setLXScale(double xmin_in, double xmax_in) {
       XMax = xmax_in;
       XMin = xmin_in;
     }
+    updateScalears();
     return true;
   }
 
@@ -815,6 +819,7 @@ bool Kst2DPlot::setLXScale(double xmin_in, double xmax_in) {
 
 
 bool Kst2DPlot::setLYScale(double ymin_in, double ymax_in) {
+// this code is duplicated in setLScale.
   if (checkLRange(ymin_in, ymax_in, _yLog, _yLogBase)) {
     if (_yLog) {
       // don't do auto scale change... this is the wrong place to do it 
@@ -830,6 +835,7 @@ bool Kst2DPlot::setLYScale(double ymin_in, double ymax_in) {
       YMax = ymax_in;
       YMin = ymin_in;
     }
+    updateScalears();
     return true;
   }
 
@@ -838,16 +844,60 @@ bool Kst2DPlot::setLYScale(double ymin_in, double ymax_in) {
 
 
 void Kst2DPlot::setScale(double xmin_in, double ymin_in, double xmax_in, double ymax_in) {
-  setXScale(xmin_in, xmax_in);
-  setYScale(ymin_in, ymax_in);
+  bool schange = false;
+
+  if (checkRange(xmin_in, xmax_in) && ((XMax != xmax_in) || (XMin != xmin_in))) {
+    XMax = xmax_in;
+    XMin = xmin_in;
+    schange = true;
+  }
+
+  if (checkRange(ymin_in, ymax_in) && ((YMax != ymax_in) || ( YMin != ymin_in))) {
+    YMax = ymax_in;
+    YMin = ymin_in;
+    schange = true;
+  }
+
+  if (schange == true) {
+    updateScalears();
+  }
 }
 
 
-// Odd, should we be returning true if only one of these works?  I think this
-// is a bit strange.
 bool Kst2DPlot::setLScale(double xmin_in, double ymin_in, double xmax_in, double ymax_in) {
-  bool rc = setLXScale(xmin_in, xmax_in);
-  return setLYScale(ymin_in, ymax_in) || rc;
+// this code is duplicated in setLXScale, setLYScale.
+
+  bool schange = false;
+
+  if (checkLRange(xmin_in, xmax_in, _xLog, _xLogBase)) {
+    if (_xLog) {
+      XMax = pow(_xLogBase, xmax_in);
+      XMin = pow(_xLogBase, xmin_in);
+    } else { //this is funny-- we should be doing checkRange() here. but.. i won't mess with it unless there are problems... dh.
+      XMax = xmax_in;
+      XMin = xmin_in;
+    }
+    schange = true;
+  }
+
+  if (checkLRange(ymin_in, ymax_in, _yLog, _yLogBase)) {
+    if (_yLog) {
+      YMax = pow(_yLogBase, ymax_in);
+      YMin = pow(_yLogBase, ymin_in);
+    } else { //this is funny-- we should be doing checkRange() here. but.. i won't mess with it unless there are problems... dh.
+      YMax = ymax_in;
+      YMin = ymin_in;
+    }
+    schange = true;
+  }
+
+  if (schange = true) {
+    updateScalears();
+    return true; // Odd, should we be returning true if only one of these works?  I think this
+                 // is a bit strange. (previous comment, author unknown -dh)
+  }
+
+  return false;
 }
 
 
@@ -999,6 +1049,11 @@ void Kst2DPlot::updateScale() {
   bool first;
   int count;
 
+  double nXMin = XMin;
+  double nXMax = XMax;
+  double nYMin = YMin;
+  double nYMax = YMax;
+
   KstScaleModeType t = _xScaleMode;
   if (t == EXPRESSION && _xMinParsedValid && _xMaxParsedValid && _xMinParsed->isConst() && _xMaxParsed->isConst()) {
     t = FIXED;
@@ -1007,8 +1062,8 @@ void Kst2DPlot::updateScale() {
   switch (t) {
     case AUTOBORDER:  // set scale so all of all curves fits
     case AUTO:  // set scale so all of all curves fits
-      XMin = 0.0;
-      XMax = 1.0;
+      nXMin = 0.0;
+      nXMax = 1.0;
       first = true;
 
       {
@@ -1019,16 +1074,16 @@ void Kst2DPlot::updateScale() {
           c->readLock();
           if (!c->ignoreAutoScale()) {
             if (_xLog) {
-              if (first || XMin > c->minPosX()) {
-                XMin = c->minPosX();
+              if (first || nXMin > c->minPosX()) {
+                nXMin = c->minPosX();
               }
             } else {
-              if (first || XMin > c->minX()) {
-                XMin = c->minX();
+              if (first || nXMin > c->minX()) {
+                nXMin = c->minX();
               }
             }
-            if (first || XMax < c->maxX()) {
-              XMax = c->maxX();
+            if (first || nXMax < c->maxX()) {
+              nXMax = c->maxX();
             }
             first = false;
           }
@@ -1036,24 +1091,24 @@ void Kst2DPlot::updateScale() {
         }
       }
 
-      if (XMax <= XMin) {  // if curves had no variation in them
-        XMin -= 0.1;
-        XMax  = XMin + 0.2;
+      if (nXMax <= nXMin) {  // if curves had no variation in them
+        nXMin -= 0.1;
+        nXMax  = nXMin + 0.2;
       }
 
-      if (_xLog && XMin <= 0.0) {
-        XMin = pow(_xLogBase, -350.0);
+      if (_xLog && nXMin <= 0.0) {
+        nXMin = pow(_xLogBase, -350.0);
       }
       if (_xScaleMode == AUTOBORDER) {
-        QPair<double, double> borders = computeAutoBorder(_xLog, _xLogBase, XMin, XMax);
-        XMin = borders.first;
-        XMax = borders.second;
+        QPair<double, double> borders = computeAutoBorder(_xLog, _xLogBase, nXMin, nXMax);
+        nXMin = borders.first;
+        nXMax = borders.second;
       }
       break;
 
     case NOSPIKE:  // set scale so all of all curves fits
-      XMin = 0.0;
-      XMax = 1.0;
+      nXMin = 0.0;
+      nXMax = 1.0;
       first = true;
 
       for (unsigned i = 0; i < Curves.count(); i++) {
@@ -1061,29 +1116,29 @@ void Kst2DPlot::updateScale() {
         c->readLock();
         if (!c->ignoreAutoScale()) {
           if (_xLog) {
-            if (first || XMin > c->minPosX()) {
-              XMin = c->minPosX();
+            if (first || nXMin > c->minPosX()) {
+              nXMin = c->minPosX();
             }
           } else {
-            if (first || XMin > c->ns_minX()) {
-              XMin = c->ns_minX();
+            if (first || nXMin > c->ns_minX()) {
+              nXMin = c->ns_minX();
             }
           }
-          if (first || XMax < c->ns_maxX()) {
-            XMax = c->ns_maxX();
+          if (first || nXMax < c->ns_maxX()) {
+            nXMax = c->ns_maxX();
           }
 
           first = false;
         }
         c->unlock();
       }
-      if (XMax <= XMin) {  // if curves had no variation in them
-        XMin -= 0.1;
-        XMax = XMin + 0.2;
+      if (nXMax <= nXMin) {  // if curves had no variation in them
+        nXMin -= 0.1;
+        nXMax = nXMin + 0.2;
       }
 
-      if (_xLog && XMin < 0.0) {
-        XMin = pow(_xLogBase, -350.0);
+      if (_xLog && nXMin < 0.0) {
+        nXMin = pow(_xLogBase, -350.0);
       }
       break;
 
@@ -1102,32 +1157,32 @@ void Kst2DPlot::updateScale() {
         c->unlock();
       }
       if (count > 0) {
-        if (XMax <= XMin) { // make sure that range is legal
-          XMin = 0.0;
-          XMax = 1.0;
+        if (nXMax <= nXMin) { // make sure that range is legal
+          nXMin = 0.0;
+          nXMax = 1.0;
         }
         mid /= double(count);
-        delta = XMax - XMin;
-        XMin = mid - delta / 2.0;
-        XMax = mid + delta / 2.0;
+        delta = nXMax - nXMin;
+        nXMin = mid - delta / 2.0;
+        nXMax = mid + delta / 2.0;
       } else {
-        XMin = -0.5;
-        XMax =  0.5;
+        nXMin = -0.5;
+        nXMax =  0.5;
       }
       break;
 
     case FIXED:  // don't change the range
-      if (XMin > XMax) {  // has to be legal, even for fixed scale...
-        double tmp = XMax;
-        XMax = XMin;
-        XMin = tmp;
-      } else if (XMin == XMax) {
-        if (XMin == 0.0) {
-          XMin = -0.5;
-          XMax =  0.5;
+      if (nXMin > nXMax) {  // has to be legal, even for fixed scale...
+        double tmp = nXMax;
+        nXMax = nXMin;
+        nXMin = tmp;
+      } else if (nXMin == nXMax) {
+        if (nXMin == 0.0) {
+          nXMin = -0.5;
+          nXMax =  0.5;
         } else {
-          XMax += fabs(XMax) * 0.01;
-          XMin -= fabs(XMin) * 0.01;
+          nXMax += fabs(nXMax) * 0.01;
+          nXMin -= fabs(nXMin) * 0.01;
         }
       }
       break;
@@ -1138,31 +1193,31 @@ void Kst2DPlot::updateScale() {
         c->readLock();
         if (!c->ignoreAutoScale()) {
           if (_xLog) {
-            if (XMin > c->minPosX()) {
-              XMin = c->minPosX();
+            if (nXMin > c->minPosX()) {
+              nXMin = c->minPosX();
             }
           } else {
-            if (XMin > c->minX()) {
-              XMin = c->minX();
+            if (nXMin > c->minX()) {
+              nXMin = c->minX();
             }
           }
-          if (XMax < c->maxX()) {
-            XMax = c->maxX();
+          if (nXMax < c->maxX()) {
+            nXMax = c->maxX();
           }
         }
         c->unlock();
       }
 
-      if (_xLog && XMin < 0.0) {
-        XMin = pow(_xLogBase, -350.0);
+      if (_xLog && nXMin < 0.0) {
+        nXMin = pow(_xLogBase, -350.0);
       }
-      if (XMin > XMax) {
-        double tmp = XMax;
-        XMax = XMin;
-        XMin = tmp;
-      } else if (XMin == XMax) {
-        XMax += fabs(XMax) * 0.01;
-        XMin -= fabs(XMin) * 0.01;
+      if (nXMin > nXMax) {
+        double tmp = nXMax;
+        nXMax = nXMin;
+        nXMin = tmp;
+      } else if (nXMin == nXMax) {
+        nXMax += fabs(nXMax) * 0.01;
+        nXMin -= fabs(nXMin) * 0.01;
       }
       break;
 
@@ -1180,24 +1235,24 @@ void Kst2DPlot::updateScale() {
 
         if (_xMinParsedValid) {
           _xMinParsed->update(-1, &ctx);
-          XMin = _xMinParsed->value(&ctx);
+          nXMin = _xMinParsed->value(&ctx);
         }
         if (_xMaxParsedValid) {
           _xMaxParsed->update(-1, &ctx);
-          XMax = _xMaxParsed->value(&ctx);
+          nXMax = _xMaxParsed->value(&ctx);
         }
       }
-      if (XMin > XMax) {
-        double tmp = XMax;
-        XMax = XMin;
-        XMin = tmp;
-      } else if (XMin == XMax) {
-        if (XMin == 0.0) {
-          XMin = -0.5;
-          XMax =  0.5;
+      if (nXMin > nXMax) {
+        double tmp = nXMax;
+        nXMax = nXMin;
+        nXMin = tmp;
+      } else if (nXMin == nXMax) {
+        if (nXMin == 0.0) {
+          nXMin = -0.5;
+          nXMax =  0.5;
         } else {
-          XMax += fabs(XMax) * 0.01;
-          XMin -= fabs(XMin) * 0.01;
+          nXMax += fabs(nXMax) * 0.01;
+          nXMin -= fabs(nXMin) * 0.01;
         }
       }
       break;
@@ -1215,8 +1270,8 @@ void Kst2DPlot::updateScale() {
   switch (t) {
     case AUTOBORDER:  // set scale so all of all curves fits
     case AUTO:  // set scale so all of all curves fits
-      YMin = 0.0;
-      YMax = 1.0;
+      nYMin = 0.0;
+      nYMax = 1.0;
       first = true;
 
       for (unsigned i = 0; i < Curves.count(); i++) {
@@ -1224,41 +1279,41 @@ void Kst2DPlot::updateScale() {
         c->readLock();
         if (!c->ignoreAutoScale()) {
           if (_yLog) {
-            if (first || YMin > c->minPosY()) {
-              YMin = c->minPosY();
+            if (first || nYMin > c->minPosY()) {
+              nYMin = c->minPosY();
             }
           } else {
-            if (first || YMin > c->minY()) {
-              YMin = c->minY();
+            if (first || nYMin > c->minY()) {
+              nYMin = c->minY();
             }
           }
-          if (first || YMax < c->maxY()) {
-            YMax = c->maxY();
+          if (first || nYMax < c->maxY()) {
+            nYMax = c->maxY();
           }
           first = false;
         }
         c->unlock();
       }
 
-      if (YMax <= YMin) {  // if curves had no variation in them
-        YMin -= 0.1;
-        YMax  = YMin + 0.2;
+      if (nYMax <= nYMin) {  // if curves had no variation in them
+        nYMin -= 0.1;
+        nYMax  = nYMin + 0.2;
       }
 
-      if (_yLog && YMin <= 0.0) {
-        YMin = pow(_yLogBase, -350.0);
+      if (_yLog && nYMin <= 0.0) {
+        nYMin = pow(_yLogBase, -350.0);
       }
       if (_yScaleMode == AUTOBORDER) {
-        QPair<double, double> borders = computeAutoBorder(_yLog, _yLogBase, YMin, YMax);
-        YMin = borders.first;
-        YMax = borders.second;
+        QPair<double, double> borders = computeAutoBorder(_yLog, _yLogBase, nYMin, nYMax);
+        nYMin = borders.first;
+        nYMax = borders.second;
       }
 
       break;
 
     case NOSPIKE:  // set scale so all of all curves fits
-      YMin = 0.0;
-      YMax = 1.0;
+      nYMin = 0.0;
+      nYMax = 1.0;
       first = true;
 
       for (unsigned i = 0; i < Curves.count(); i++) {
@@ -1266,29 +1321,29 @@ void Kst2DPlot::updateScale() {
         c->readLock();
         if (!c->ignoreAutoScale()) {
           if (_yLog) {
-            if (first || YMin > c->minPosY()) {
-              YMin = c->minPosY();
+            if (first || nYMin > c->minPosY()) {
+              nYMin = c->minPosY();
             }
           } else {
-            if (first || YMin > c->ns_minY()) {
-              YMin = c->ns_minY();
+            if (first || nYMin > c->ns_minY()) {
+              nYMin = c->ns_minY();
             }
           }
-          if (first || YMax < c->ns_maxY()) {
-            YMax = c->ns_maxY();
+          if (first || nYMax < c->ns_maxY()) {
+            nYMax = c->ns_maxY();
           }
 
           first = false;
         }
         c->unlock();
       }
-      if (YMax <= YMin) {  // if curves had no variation in them
-        YMin -= 0.1;
-        YMax = YMin + 0.2;
+      if (nYMax <= nYMin) {  // if curves had no variation in them
+        nYMin -= 0.1;
+        nYMax = nYMin + 0.2;
       }
 
-      if (_yLog && YMin <= 0.0) {
-        YMin = pow(_yLogBase, -350.0);
+      if (_yLog && nYMin <= 0.0) {
+        nYMin = pow(_yLogBase, -350.0);
       }
       break;
 
@@ -1307,33 +1362,33 @@ void Kst2DPlot::updateScale() {
         c->unlock();
       }
       if (count > 0) {
-        if (YMax <= YMin) { // make sure that range is legal
-          YMin = 0.0;
-          YMax = 1.0;
+        if (nYMax <= nYMin) { // make sure that range is legal
+          nYMin = 0.0;
+          nYMax = 1.0;
         }
         mid /= (double)count;
-        delta = YMax - YMin;
-        YMin = mid - delta / 2.0;
-        YMax = mid + delta / 2.0;
+        delta = nYMax - nYMin;
+        nYMin = mid - delta / 2.0;
+        nYMax = mid + delta / 2.0;
       } else {
-        YMin = -0.5;
-        YMax =  0.5;
+        nYMin = -0.5;
+        nYMax =  0.5;
       }
       break;
 
     case FIXED:  // don't change the range
 
-      if (YMin > YMax) {  // has to be legal, even for fixed scale...
-        double tmp = YMax;
-        YMax = YMin;
-        YMin = tmp;
-      } else if (YMin == YMax) {
-        if (YMin == 0.0) {
-          YMin = -0.5;
-          YMax =  0.5;
+      if (nYMin > nYMax) {  // has to be legal, even for fixed scale...
+        double tmp = nYMax;
+        nYMax = nYMin;
+        nYMin = tmp;
+      } else if (nYMin == nYMax) {
+        if (nYMin == 0.0) {
+          nYMin = -0.5;
+          nYMax =  0.5;
         } else {
-          YMax += fabs(YMax) * 0.01;
-          YMin -= fabs(YMin) * 0.01;
+          nYMax += fabs(nYMax) * 0.01;
+          nYMin -= fabs(nYMin) * 0.01;
         }
       }
       break;
@@ -1344,31 +1399,31 @@ void Kst2DPlot::updateScale() {
         c->readLock();
         if (!c->ignoreAutoScale()) {
           if (_yLog) {
-            if (YMin > c->minPosY()) {
-              YMin = c->minPosY();
+            if (nYMin > c->minPosY()) {
+              nYMin = c->minPosY();
             }
           } else {
-            if (YMin > c->minY()) {
-              YMin = c->minY();
+            if (nYMin > c->minY()) {
+              nYMin = c->minY();
             }
           }
-          if (YMax < c->maxY()) {
-            YMax = c->maxY();
+          if (nYMax < c->maxY()) {
+            nYMax = c->maxY();
           }
         }
         c->unlock();
       }
 
-      if (_yLog && YMin <= 0.0) {
-        YMin = pow(_yLogBase, -350.0);
+      if (_yLog && nYMin <= 0.0) {
+        nYMin = pow(_yLogBase, -350.0);
       }
-      if (YMin >= YMax) {  // has to be legal, even for autoup...
-        if (YMax == 0.0) {
-          YMin = -0.5;
-          YMax =  0.5;
+      if (nYMin >= nYMax) {  // has to be legal, even for autoup...
+        if (nYMax == 0.0) {
+          nYMin = -0.5;
+          nYMax =  0.5;
         } else {
-          YMax += YMax * 0.01;
-          YMin -= YMin * 0.01;
+          nYMax += nYMax * 0.01;
+          nYMin -= nYMin * 0.01;
         }
       }
       break;
@@ -1387,24 +1442,24 @@ void Kst2DPlot::updateScale() {
 
         if (_yMinParsedValid) {
           _yMinParsed->update(-1, &ctx);
-          YMin = _yMinParsed->value(&ctx);
+          nYMin = _yMinParsed->value(&ctx);
         }
         if (_yMaxParsedValid) {
           _yMaxParsed->update(-1, &ctx);
-          YMax = _yMaxParsed->value(&ctx);
+          nYMax = _yMaxParsed->value(&ctx);
         }
       }
-      if (YMin > YMax) {
-        double tmp = YMax;
-        YMax = YMin;
-        YMin = tmp;
-      } else if (YMin == YMax) {
-        if (YMin == 0.0) {
-          YMin = -0.5;
-          YMax =  0.5;
+      if (nYMin > nYMax) {
+        double tmp = nYMax;
+        nYMax = nYMin;
+        nYMin = tmp;
+      } else if (nYMin == nYMax) {
+        if (nYMin == 0.0) {
+          nYMin = -0.5;
+          nYMax =  0.5;
         } else {
-          YMax += fabs(YMax) * 0.01;
-          YMin -= fabs(YMin) * 0.01;
+          nYMax += fabs(nYMax) * 0.01;
+          nYMin -= fabs(nYMin) * 0.01;
         }
       }
       break;
@@ -1414,7 +1469,7 @@ void Kst2DPlot::updateScale() {
       break;
   }
 
-  updateScalears();
+  setScale(nXMin, nYMin, nXMax, nYMax);
 }
 
 
@@ -2950,10 +3005,7 @@ bool Kst2DPlot::popScale() {
   if (_plotScaleList.count() > 1) {
     _plotScaleList.removeLast();
     KstPlotScale *ps = _plotScaleList.last();
-    XMin = ps->xmin;
-    XMax = ps->xmax;
-    YMin = ps->ymin;
-    YMax = ps->ymax;
+    setScale(ps->xmin, ps->ymin, ps->xmax, ps->ymax);
     _xScaleMode = ps->xscalemode;
     _yScaleMode = ps->yscalemode;
     _xLog = ps->xlog;
