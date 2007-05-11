@@ -55,7 +55,6 @@ class KST_EXPORT KstDataObject : public KstObject {
     virtual QString propertyString() const = 0;
     virtual const QString& type() const { return _type; }
     virtual Kind kind() const { return Generic; }
-
     virtual int sampleCount() const { return 0; }
 
     // If you use these, you must lock() and unlock() the object as long as you
@@ -106,6 +105,8 @@ class KST_EXPORT KstDataObject : public KstObject {
     virtual void replaceDependency(KstMatrixPtr oldMatrix, KstMatrixPtr newMatrix);
 
     virtual bool uses(KstObjectPtr p) const;
+    virtual bool recursion(KstDataObjectDataObjectMap& objectsToCheck);
+    virtual bool recursion();
 
     //These are generally only valid for plugins...
     const QString& name() const { return _name; }

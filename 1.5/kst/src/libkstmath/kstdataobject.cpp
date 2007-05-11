@@ -723,11 +723,11 @@ bool KstDataObject::uses(KstObjectPtr p) const {
         for (; scalarDictIter.current(); ++scalarDictIter) {
           if (scalarDictIter.current() == k.data()) {
             return true;
-          }  
+          }
         }
       }
     }
-    
+
     for (KstScalarMap::Iterator j = obj->outputScalars().begin(); j != obj->outputScalars().end(); ++j) {
       for (KstScalarMap::ConstIterator k = _inputScalars.begin(); k != _inputScalars.end(); ++k) {
         if (j.data() == k.data()) {
@@ -735,7 +735,7 @@ bool KstDataObject::uses(KstObjectPtr p) const {
         }
       } 
     }
-  
+
     for (KstStringMap::Iterator j = obj->outputStrings().begin(); j != obj->outputStrings().end(); ++j) {
       for (KstStringMap::ConstIterator k = _inputStrings.begin(); k != _inputStrings.end(); ++k) {
         if (j.data() == k.data()) {
@@ -745,6 +745,54 @@ bool KstDataObject::uses(KstObjectPtr p) const {
     }
   }
   return false;
+}
+
+
+bool KstDataObject::recursion(KstDataObjectDataObjectMap& objectsToCheck) {
+  KstDataObjectDataObjectMap objectsToFollow;
+  bool recurses = false;
+
+  for (KstDataObjectList::ConstIterator it = KST::dataObjectList.begin(); it != KST::dataObjectList.end(); ++it) {
+    if ((*it)->uses(this)) {
+      if (objectsToCheck.find(*it) == objectsToCheck.end()) {
+        objectsToFollow.insert(*it, *it);
+      } else {
+        recurses = true;
+
+        break;
+      }
+    }
+  }
+
+  if (!recurses) {
+    for (KstDataObjectDataObjectMap::Iterator j = objectsToFollow.begin(); j != objectsToFollow.end(); ++j) {
+      if ((*j)->recursion(objectsToCheck)) {
+        recurses = true;
+
+        break;
+      }
+      objectsToCheck.insert(*j, *j);
+    }
+  }
+
+  return recurses;
+}
+
+
+bool KstDataObject::recursion() {
+  bool recurses = false;
+
+  if (uses(this)) {
+    recurses = true;
+  } else {
+    KstDataObjectDataObjectMap objectsToCheck;
+
+    objectsToCheck.insert(this, this);
+
+    recurses = recursion(objectsToCheck);
+  }
+
+  return recurses;
 }
 
 
