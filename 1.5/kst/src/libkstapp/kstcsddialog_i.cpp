@@ -245,19 +245,19 @@ bool KstCsdDialogI::editSingleObject(KstCSDPtr csPtr) {
   // get the values that need to be checked for consistency
   double pSampRate;
   int pFFTLen;
- 
+
   if (_sampRateDirty) {
     pSampRate = _w->_kstFFTOptions->SampRate->text().toDouble();
   } else {
     pSampRate = csPtr->freq();
   }
-   
+
   if (_fFTLenDirty) {
     pFFTLen = _w->_kstFFTOptions->FFTLen->text().toInt();
   } else {
     pFFTLen = csPtr->length();
   }
- 
+
   if (!_w->_kstFFTOptions->checkGivenValues(pSampRate, pFFTLen)) {
     csPtr->unlock();
     return false;
@@ -266,7 +266,7 @@ bool KstCsdDialogI::editSingleObject(KstCSDPtr csPtr) {
   if (_sampRateDirty) {
     csPtr->setFreq(_w->_kstFFTOptions->SampRate->text().toDouble());
   }
- 
+
   if (_fFTLenDirty) {
     csPtr->setLength(_w->_kstFFTOptions->FFTLen->text().toInt());
   }
@@ -274,40 +274,46 @@ bool KstCsdDialogI::editSingleObject(KstCSDPtr csPtr) {
   if (_apodizeDirty) {
     csPtr->setApodize(_w->_kstFFTOptions->Apodize->isChecked());
   }
- 
+
   if (_apodizeFxnDirty) {
     csPtr->setApodizeFxn(ApodizeFunction(_w->_kstFFTOptions->ApodizeFxn->currentItem()));
   }
- 
+
   if (_gaussianSigmaDirty) {
     csPtr->setGaussianSigma(_editMultipleMode ? _w->_kstFFTOptions->Sigma->value() - 1 :
                                                 _w->_kstFFTOptions->Sigma->value());
   }
- 
+
   if (_removeMeanDirty) {
     csPtr->setRemoveMean(_w->_kstFFTOptions->RemoveMean->isChecked());
   }
- 
+
   if (_interleavedDirty) {
     csPtr->setAverage(_w->_kstFFTOptions->Interleaved->isChecked());
   }
- 
+
   if (_windowSizeDirty) {
     csPtr->setWindowSize(_w->_windowSize->value());
   }
- 
+
   if (_rateUnitsDirty) {
     csPtr->setRateUnits(_w->_kstFFTOptions->RateUnits->text());
   }
- 
+
   if (_vectorUnitsDirty) {
     csPtr->setVectorUnits(_w->_kstFFTOptions->VectorUnits->text());
   }
- 
+
   if (_outputDirty) {
     csPtr->setOutput(PSDType(_w->_kstFFTOptions->Output->currentItem()));
   }
-    
+
+  if (csPtr->recursion()) {
+    KMessageBox::error(this, i18n("There is a recursion resulting from the spectrogram you entered."));
+    csPtr->unlock();
+    return false;
+  }
+
   csPtr->unlock();
   return true;
 }

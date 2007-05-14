@@ -331,6 +331,12 @@ bool KstHsDialogI::editSingleObject(KstHistogramPtr hsPtr) {
 
   hsPtr->writeLock();
 
+  if (hsPtr->recursion()) {
+    KMessageBox::error(this, i18n("There is a recursion resulting from the histogram you entered."));
+    hsPtr->unlock();
+    return false;
+  }
+
   if (_nDirty) {
     hsPtr->setNBins(new_n_bins);
   }

@@ -261,22 +261,28 @@ bool KstPsdDialogI::editSingleObject(KstPSDPtr psPtr) {
     psPtr->setVector(v);
   }
 
+  if (psPtr->recursion()) {
+    KMessageBox::error(this, i18n("There is a recursion resulting from the spectrum  you entered."));
+    psPtr->unlock();
+    return false;
+  }
+
   // get the values that need to be checked for consistency
   double pSampRate;
   int pFFTLen;
-  
+
   if (_sampRateDirty) {
     pSampRate = _w->_kstFFTOptions->SampRate->text().toDouble();
   } else {
     pSampRate = psPtr->freq();
   }
-    
+
   if (_fFTLenDirty) {
     pFFTLen = _w->_kstFFTOptions->FFTLen->text().toInt();
   } else {
     pFFTLen = psPtr->len();
   }
-  
+
   if (!_w->_kstFFTOptions->checkGivenValues(pSampRate, pFFTLen)) {
     psPtr->unlock();
     return false;
@@ -285,7 +291,7 @@ bool KstPsdDialogI::editSingleObject(KstPSDPtr psPtr) {
   if (_sampRateDirty) {
     psPtr->setFreq(_w->_kstFFTOptions->SampRate->text().toDouble());
   }
-  
+
   if (_fFTLenDirty) {
     psPtr->setLen(_w->_kstFFTOptions->FFTLen->text().toInt());
   }

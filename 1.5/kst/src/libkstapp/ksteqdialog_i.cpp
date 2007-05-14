@@ -293,14 +293,14 @@ bool KstEqDialogI::editSingleObject(KstEquationPtr eqPtr) {
     vp = eqPtr->vX();
   }
   KST::vectorList.lock().unlock();
-  
+
   // update the DoInterpolation only if it is dirty
   if (_doInterpolationDirty) {
     eqPtr->setExistingXVector(vp, _w->_doInterpolation->isChecked());
   } else {
     eqPtr->setExistingXVector(vp, eqPtr->doInterp());
   }
-  
+
   if (_equationDirty) {
     eqPtr->setEquation(_w->_equation->text());
     if (!eqPtr->isValid()) {
@@ -311,23 +311,29 @@ bool KstEqDialogI::editSingleObject(KstEquationPtr eqPtr) {
       }
       KMessageBox::detailedSorry(this, i18n("There is an error in the equation you entered."), parseErrors);
       eqPtr->unlock();
+      return true;
+    }
+    if (eqPtr->recursion()) {
+      KMessageBox::error(this, i18n("There is a recursion resulting from the equation you entered."));
+      eqPtr->unlock();
       return false;
     }
   }
   eqPtr->unlock();
+
   return true;
 }
 
 
 bool KstEqDialogI::editObject() {
   KstEquationList eqList = kstObjectSubList<KstDataObject,KstEquation>(KST::dataObjectList);
-  
+
   // if editing multiple objects, edit each one
   if (_editMultipleMode) { 
     // if the user selected no vector, treat it as non-dirty
     _xVectorsDirty = _w->_xVectors->_vector->currentItem() != 0;
     _equationDirty = !_w->_equation->text().isEmpty();
-  
+
     bool didEdit = false;
     for (uint i = 0; i < _editMultipleWidget->_objectList->count(); i++) {
       if (_editMultipleWidget->_objectList->isSelected(i)) {
@@ -336,7 +342,7 @@ bool KstEqDialogI::editObject() {
         if (eqIter == eqList.end()) {
           return false;
         }
-          
+
         KstEquationPtr eqPtr = *eqIter;
         if (!editSingleObject(eqPtr)) {
           return false;
@@ -356,11 +362,11 @@ bool KstEqDialogI::editObject() {
       _tagName->setFocus();
       return false;
     }
-    
+
     ep->writeLock();
     ep->setTagName(tag_name);
     ep->unlock();
-    
+
     // then edit the object
     _equationDirty = true;
     _xVectorsDirty = true;

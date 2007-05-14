@@ -639,6 +639,12 @@ bool KstPluginDialogI::editObject() {
     KMessageBox::sorry(this, i18n("There is an error in the plugin you entered."));
     return false;
   }
+
+  if (pp->recursion()) {
+    KMessageBox::sorry(this, i18n("There is a recursion resulting from the plugin you entered."));
+    return false;
+  }
+
   pp->setDirty();
 
   emit modified();

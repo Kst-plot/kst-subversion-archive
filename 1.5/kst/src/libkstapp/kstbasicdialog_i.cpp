@@ -311,6 +311,10 @@ bool KstBasicDialogI::editObject() {
     KMessageBox::sorry(this, i18n("There is an error in the values you entered."));
     return false;
   }
+  if (ptr->recursion()) {
+    KMessageBox::sorry(this, i18n("There is a recursion resulting from the plugin you entered."));
+    return false;
+  }
 
   ptr->setDirty();
 
@@ -394,7 +398,6 @@ bool KstBasicDialogI::editSingleObject(KstBasicPluginPtr ptr) {
         }
       }
     }
-
   }
 
   return true;
