@@ -401,8 +401,39 @@ bool KstBasicDialogI::editSingleObject(KstBasicPluginPtr ptr) {
 }
 
 
-void KstBasicDialogI::fillFieldsForEdit() {
+void KstBasicDialogI::updateForm() {
+  KstBasicPluginPtr ptr = kst_cast<KstBasicPlugin>(KstDataObject::plugin(_pluginName));
+  if (!ptr) {
+    return;
+  }
 
+  // input vectors...
+  QStringList iv = ptr->inputVectorList();
+  for (QStringList::ConstIterator ivI = iv.begin(); ivI != iv.end(); ++ivI) {
+    if (VectorSelector *w = vector(*ivI)) {
+      w->update();
+    }
+  }
+
+  // input scalars...
+  QStringList is = ptr->inputScalarList();
+  for (QStringList::ConstIterator isI = is.begin(); isI != is.end(); ++isI) {
+    if (ScalarSelector *w = scalar(*isI)) {
+      w->update();
+    }
+  }
+
+  // input strings...
+  QStringList istr = ptr->inputStringList();
+  for (QStringList::ConstIterator istrI = istr.begin(); istrI != istr.end(); ++istrI) {
+    if (StringSelector *w = string(*istrI)) {
+      w->update();
+    }
+  }
+}
+
+
+void KstBasicDialogI::fillFieldsForEdit() {
   KstBasicPluginPtr ptr = kst_cast<KstBasicPlugin>(_dp);
   if (!ptr)
     return; //shouldn't happen

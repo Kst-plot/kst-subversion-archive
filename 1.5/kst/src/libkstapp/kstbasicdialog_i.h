@@ -39,6 +39,7 @@ class KST_EXPORT KstBasicDialogI : public KstDataDialog {
     static KstBasicDialogI *globalInstance();
 
   public slots:
+    void updateForm();
     virtual void update();
     virtual bool newObject();
     virtual bool editObject();

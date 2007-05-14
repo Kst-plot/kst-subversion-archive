@@ -75,6 +75,7 @@
 #include "kstmatrixdefaults.h"
 #include "kstmonochromedialog_i.h"
 #include "kstplugindialog_i.h"
+#include "kstbasicdialog_i.h"
 #include "kstprintoptionspage.h"
 #include "kstpsddialog_i.h"
 #include "kstquickstartdialog_i.h"
@@ -2093,6 +2094,9 @@ void KstApp::updateDialogs(bool onlyVisible) {
 #endif
     if (!onlyVisible || KstVectorDialogI::globalInstance()->isShown()) {
       KstVectorDialogI::globalInstance()->update();
+    }
+    if (!onlyVisible || KstBasicDialogI::globalInstance()->isShown()) {
+      KstBasicDialogI::globalInstance()->updateForm();
     }
     if (!onlyVisible || KstPluginDialogI::globalInstance()->isShown()) {
       KstPluginDialogI::globalInstance()->updateForm();
