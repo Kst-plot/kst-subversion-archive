@@ -141,6 +141,7 @@ public:
   void popPlotColors();
 
   void updateScalears();
+  const QDict<KstScalar>& scalars() const;
 
   /** Set the scale */
   void setScale(double xmin, double ymin, double xmax, double ymax);
@@ -398,7 +399,6 @@ protected:
 
 signals:
   void modified();
-  void scaleChanged();
 
 public slots:
   void copy();

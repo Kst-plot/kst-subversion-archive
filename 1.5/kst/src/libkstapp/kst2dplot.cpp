@@ -7133,14 +7133,30 @@ void Kst2DPlot::CreateScalars() {
     KST::scalarList.setUpdateDisplayTags(false);
 
     KstScalarPtr sp;
-    _scalars.insert("xmin", sp = new KstScalar(KstObjectTag("XMin", tag()), this));
+
+    sp = *KST::scalarList.findTag(KstObjectTag("XMin", tag()));
+    if (!sp) { sp = new KstScalar(KstObjectTag("XMin", tag()), this); }
+    _scalars.insert("xmin", sp);
     sp->_KShared_ref();
-    _scalars.insert("xmax", sp = new KstScalar(KstObjectTag("XMax", tag()), this));
+    sp->setOrphan(true); //seems kind of funny, but is req'd for the scalar to be saved. this should be done so that these scalars are be produced before vectorviews (and other objects which might want to use them) when a .kst session is recreated.
+
+    sp = *KST::scalarList.findTag(KstObjectTag("XMax", tag()));
+    if (!sp) { sp = new KstScalar(KstObjectTag("XMax", tag()), this); }
+    _scalars.insert("xmax", sp);
     sp->_KShared_ref();
-    _scalars.insert("ymin", sp = new KstScalar(KstObjectTag("YMin", tag()), this));
+    sp->setOrphan(true);
+
+    sp = *KST::scalarList.findTag(KstObjectTag("YMin", tag()));
+    if (!sp) { sp = new KstScalar(KstObjectTag("YMin", tag()), this); }
+    _scalars.insert("ymin", sp);
     sp->_KShared_ref();
-    _scalars.insert("ymax", sp = new KstScalar(KstObjectTag("YMax", tag()), this));
+    sp->setOrphan(true);
+
+    sp = *KST::scalarList.findTag(KstObjectTag("YMax", tag()));
+    if (!sp) { sp = new KstScalar(KstObjectTag("YMax", tag()), this); }
+    _scalars.insert("ymax", sp);
     sp->_KShared_ref();
+    sp->setOrphan(true);
 
     KST::scalarList.setUpdateDisplayTags(true);
 }
@@ -7171,6 +7187,10 @@ void Kst2DPlot::setTagName(const KstObjectTag& newTag) {
 
   this->KstObject::setTagName(newTag);
   RenameScalars();
+}
+
+const QDict<KstScalar>& Kst2DPlot::scalars() const {  
+  return _scalars;
 }
 
 QWidget *Kst2DPlot::configWidget() {
