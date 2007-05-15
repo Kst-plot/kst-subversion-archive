@@ -717,6 +717,50 @@ void KstVector::setSaveData(bool save) {
   _saveData = save;
 }
 
+int KstVector::indexNearX(double x, int NS) {
+  if (isRising()) {
+    // monotonically rising: we can do a binary search
+    // should be reasonably fast
+    int i_top = NS - 1;
+    int i_bot = 0;
+
+    // don't pre-check for x outside of the curve since this is not
+    // the common case.  It will be correct - just slightly slower...
+    while (i_bot + 1 < i_top) {
+      int i0 = (i_top + i_bot)/2;
+      double rX = interpolate(i0, NS);
+      if (x < rX) {
+        i_top = i0;
+      } else {
+        i_bot = i0;
+      }
+    }
+    double xt = interpolate(i_top, NS);
+    double xb = interpolate(i_bot, NS);
+    if (xt - x < x - xb) {
+      return i_top;
+    } else {
+      return i_bot;
+    }
+  } else {
+    // Oh Oh... not monotonically rising - we have to search the entire curve!
+    // May be unbearably slow for large vectors
+    double rX = interpolate(0, NS);
+    double dx0 = fabs(x - rX);
+    int i0 = 0;
+
+    for (int i = 1; i < NS; ++i) {
+      rX = interpolate(i, NS);
+      double dx = fabs(x - rX);
+      if (dx < dx0) {
+        dx0 = dx;
+        i0 = i;
+      }
+    }
+    return i0;
+  }
+}
+
 
 #undef ZERO_MEMORY
 #undef INITSIZE

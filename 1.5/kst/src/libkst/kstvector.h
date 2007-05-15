@@ -151,6 +151,8 @@ class KST_EXPORT KstVector : public KstPrimitive {
     bool saveData() const;
     virtual void setSaveData(bool save);
 
+    int indexNearX(double x, int NS); //returns the index of the element w/ value closest to v.
+
   protected:
     /** current number of samples */
     int _size;
