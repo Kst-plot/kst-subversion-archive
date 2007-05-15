@@ -78,6 +78,10 @@ void KstDialogs::showPSDDialog(const QString& name, bool edit) {
   Q_UNUSED(edit)
 }
 
+void KstDialogs::showVectorViewDialog(const QString& name, bool edit) {
+  Q_UNUSED(name)
+  Q_UNUSED(edit)
+}
 
 void KstDialogs::newVectorDialog(QWidget *parent, const char *createdSlot, const char *selectedSlot, const char *updateSlot) {
   Q_UNUSED(parent)

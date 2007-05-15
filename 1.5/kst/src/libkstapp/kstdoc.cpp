@@ -54,6 +54,7 @@
 #include "kstgraphfiledialog_i.h"
 #include "kstequation.h"
 #include "ksteventmonitorentry.h"
+#include "kstvectorview.h"
 #include "ksthistogram.h"
 #include "kstimage.h"
 #include "kstmatrixdefaults.h"
@@ -439,6 +440,10 @@ bool KstDoc::openDocument(const KURL& url, const QString& o_file,
         KST::dataObjectList.append(p);
       } else if (e.tagName() == "csdobject") {
         KstDataObjectPtr p = new KstCSD(e);
+        KstWriteLocker dowl(&KST::dataObjectList.lock());
+        KST::dataObjectList.append(p);
+      } else if (e.tagName() == "vectorview") {
+        KstDataObjectPtr p = new KstVectorView(e);
         KstWriteLocker dowl(&KST::dataObjectList.lock());
         KST::dataObjectList.append(p);
       } else if (e.tagName() == "histogram") {

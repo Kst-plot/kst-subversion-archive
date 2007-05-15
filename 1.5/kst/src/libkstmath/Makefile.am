@@ -38,7 +38,8 @@ libkstmath_la_SOURCES = \
 	eparse-eh.cpp \
 	eparse.c \
 	psdcalculator.cpp \
-	escan.c
+	escan.c \
+	kstvectorview.cpp
 
 libkstmath_la_LDFLAGS = -version-info @KST_LIBKST_VERSION@ $(all_libraries) -no-undefined
 libkstmath_la_LIBADD = $(LIB_KDECORE) ../libkst/libkst.la

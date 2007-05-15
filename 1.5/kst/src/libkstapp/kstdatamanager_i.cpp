@@ -54,6 +54,7 @@ static QStyle *windowsStyle = 0;
 #include "kstplugindialog_i.h"
 #include "kstpsddialog_i.h"
 #include "kstvectordialog_i.h"
+#include "kstvvdialog_i.h"
 #include "kstviewwindow.h"
 #include "matrixselector.h"
 #include "vectorselector.h"
@@ -669,6 +670,7 @@ KstDataManagerI::KstDataManagerI(KstDoc *in_doc, QWidget* parent, const char* na
   createObjectAction(i18n("Event Monitor"), _data, KstEventMonitorI::globalInstance(), SLOT(show()));
   createObjectAction(i18n("Image"), _data, KstImageDialogI::globalInstance(), SLOT(show()));
   createObjectAction(i18n("Spectrogram"), _data, KstCsdDialogI::globalInstance(), SLOT(show()));
+  createObjectAction(i18n("VectorView"), _data, KstVvDialogI::globalInstance(), SLOT(show()));
 
   //Create plugin actions...
   setupPluginActions();

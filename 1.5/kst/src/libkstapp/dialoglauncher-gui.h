@@ -36,6 +36,8 @@ class KstGuiDialogs : public KstDialogs {
 
     void showPSDDialog(const QString& name = QString::null, bool edit = false);
 
+    void showVectorViewDialog(const QString& name = QString::null, bool edit = false);
+
     void newMatrixDialog(QWidget *parent, const char *createdSlot = 0L, const char *selectedSlot = 0L, const char *updateSlot = 0L);
     void showMatrixDialog(const QString& name = QString::null, bool edit = false);
 

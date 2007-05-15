@@ -143,7 +143,7 @@ void ScalarSelector::editScalar()
                 setSelection(p);
             } else {
                 p = new KstScalar(KstObjectTag(se->_name->text(), KstObjectTag::globalTagContext), 0L, val);
-                
+
                 p->setOrphan(true);
                 p->setEditable(true);
                 emit newScalarCreated();
@@ -193,10 +193,35 @@ void ScalarSelector::setSelection( KstScalarPtr s )
 QString ScalarSelector::selectedScalar()
 {
     KstScalarPtr ptr = *KST::scalarList.findTag(_scalar->currentText());
-    if (ptr)
+    if (ptr) {
         return _scalar->currentText();
-    else
+    } else {
         return QString::null;
+    }
+}
+
+KstScalarPtr ScalarSelector::selectedScalarPtr()
+//returns a pointer to the selected scalar.
+//if the scalar does not exist, but
+	//the text entered is a number and
+	//the selector is editable then
+//a new scalar is created with the given value and returned.
+{
+  KstScalarPtr ptr = *KST::scalarList.findTag(_scalar->currentText());
+  
+  if (!ptr) {
+    if (_scalar->editable()) {
+      KstWriteLocker sl(&KST::scalarList.lock());
+      bool ok;
+      double val = _scalar->currentText().toDouble(&ok);
+
+      if (ok) {
+        ptr = new KstScalar(KstObjectTag::fromString(_scalar->currentText()), 0L, val, true, false);
+      }
+    }
+  }
+
+  return ptr;
 }
 
 void ScalarSelector::allowDirectEntry( bool allowed )

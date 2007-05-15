@@ -502,6 +502,8 @@ class KST_EXPORT KstApp : public KMdiMainFrm {
     KAction *EqDialogAction;
     /* Histogram Edit Action */
     KAction *HsDialogAction;
+    /* VectorView Edit Action */
+    KAction *VvDialogAction;
     /* Spectrum Edit Action */
     KAction *PsdDialogAction;
     /* Data Manager Action */

@@ -25,6 +25,7 @@
 #include "kstplugindialog_i.h"
 #include "kstbasicdialog_i.h"
 #include "kstpsddialog_i.h"
+#include "kstvvdialog_i.h"
 #include "kstvectordialog_i.h"
 
 
@@ -87,6 +88,14 @@ void KstGuiDialogs::showPSDDialog(const QString& name, bool edit) {
     KstPsdDialogI::globalInstance()->showNew(name);
   } else {
     KstPsdDialogI::globalInstance()->showEdit(name);
+  }
+}
+
+void KstGuiDialogs::showVectorViewDialog(const QString& name, bool edit) {
+  if (!edit) {
+    KstVvDialogI::globalInstance()->showNew(name);
+  } else {
+    KstVvDialogI::globalInstance()->showEdit(name);
   }
 }
 

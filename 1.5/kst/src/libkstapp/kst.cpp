@@ -67,6 +67,7 @@
 #include "kstfilterdialog_i.h"
 #include "kstgraphfiledialog_i.h"
 #include "ksthsdialog_i.h"
+#include "kstvvdialog_i.h"
 #include "kstiface_impl.h"
 #include "kstimagedialog_i.h"
 #include "kstlegenddefaults.h"
@@ -2113,6 +2114,9 @@ void KstApp::updateDialogs(bool onlyVisible) {
     if (!onlyVisible || KstHsDialogI::globalInstance()->isShown()) {
       KstHsDialogI::globalInstance()->update();
     }
+    if (!onlyVisible || KstVvDialogI::globalInstance()->isShown()) {
+      KstVvDialogI::globalInstance()->update();
+    }
     if (!onlyVisible || KstPsdDialogI::globalInstance()->isShown()) {
       KstPsdDialogI::globalInstance()->update();
     }
@@ -2161,6 +2165,7 @@ void KstApp::updateDialogsForWindow() {
     KstCsdDialogI::globalInstance()->updateWindow();
     KstEqDialogI::globalInstance()->updateWindow();
     KstHsDialogI::globalInstance()->updateWindow();
+    KstVvDialogI::globalInstance()->updateWindow();
     KstPsdDialogI::globalInstance()->updateWindow();
     KstCurveDialogI::globalInstance()->updateWindow();
     KstImageDialogI::globalInstance()->updateWindow();

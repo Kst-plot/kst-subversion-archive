@@ -53,6 +53,8 @@ KST_EXPORT class KstDialogs {
 
     virtual void showCurveDialog(const QString& name = QString::null, bool edit = false);
 
+    virtual void showVectorViewDialog(const QString& name = QString::null, bool edit = false);
+
     virtual void newVectorDialog(QWidget *parent, const char *createdSlot = 0L, const char *selectedSlot = 0L, const char *updateSlot = 0L);
     virtual void showVectorDialog(const QString& name = QString::null, bool edit = false);
 };

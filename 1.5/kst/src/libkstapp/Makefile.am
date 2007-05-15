@@ -21,6 +21,7 @@ libkstapp_la_SOURCES = \
 	imagedialogwidget.ui \
 	matrixdialogwidget.ui \
 	plugindialogwidget.ui \
+	vectorviewdialogwidget.ui \
 	basicdialogwidget.ui \
 	eventmonitorwidget.ui \
 	pluginmanager.ui \
@@ -81,6 +82,7 @@ libkstapp_la_SOURCES = \
 	kstpsddialog_i.cpp \
 	kstgraphfiledialog_i.cpp \
 	kstimagedialog_i.cpp \
+	kstvvdialog_i.cpp \
 	kstquickstartdialog_i.cpp \
 	updatethread.cpp \
 	emailthread.cpp \

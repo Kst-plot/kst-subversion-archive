@@ -93,6 +93,12 @@ QString KST::suggestHistogramName( KstObjectTag vector_name ) {
                       true);
 }
 
+QString KST::suggestVectorViewName( KstObjectTag vector_name ) {
+  return suggestDataObjectName(vector_name.tag(), 
+                      i18n("Minimal abbreviation for 'VectorView'", "V"),
+                      true);
+}
+
 
 QString KST::suggestEQName(const QString& name_in) {
   return suggestDataObjectName(name_in, 

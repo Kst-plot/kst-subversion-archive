@@ -29,6 +29,7 @@ namespace KST {
   extern KST_EXPORT QString suggestCSDName(KstObjectTag vector_name);
   extern KST_EXPORT QString suggestEQName(const QString& name_in);
   extern KST_EXPORT QString suggestHistogramName(KstObjectTag vector_name);
+  extern KST_EXPORT QString suggestVectorViewName(KstObjectTag vector_name);
   extern KST_EXPORT QString suggestPluginName(const QString& pname, KstObjectTag vname = KstObjectTag::invalidTag);
   extern KST_EXPORT QString suggestImageName(KstObjectTag matrix_name);
 }
