@@ -39,17 +39,24 @@ static const QString& IN_FLAGVECTOR = KGlobal::staticQString("IN_FLAGVECTOR");
 static const QString& OUT_XVECTOR = KGlobal::staticQString("OUT_XVECTOR");
 static const QString& OUT_YVECTOR = KGlobal::staticQString("OUT_YVECTOR");
 
-KstVectorView::KstVectorView(const QString &in_tag, KstVectorPtr in_X, KstVectorPtr in_Y)
+KstVectorView::KstVectorView(const QString &in_tag, KstVectorPtr in_X, KstVectorPtr in_Y, KstVectorView::InterpType itype, bool useXmin, KstScalarPtr xmin, bool useXmax, KstScalarPtr xmax, bool useYmin, KstScalarPtr ymin, bool useYmax, KstScalarPtr ymax, KstVectorPtr flag )
 : KstDataObject() {
   _inputVectors[IN_XVECTOR] = in_X;
   _inputVectors[IN_YVECTOR] = in_Y;
 
-  _useXmin = false; //defaults
-  _useXmax = false;
-  _useYmin = false;
-  _useYmax = false;
+  setInterp(itype);
 
-  setInterp(KstVectorView::InterpType(0));
+  setUseXmin(useXmin);
+  setUseXmax(useXmax);
+  setUseYmin(useYmin);
+  setUseYmax(useYmax);
+
+  setXminScalar(xmin);
+  setXmaxScalar(xmax);
+  setYminScalar(ymin);
+  setYmaxScalar(ymax);
+
+  setFlagVector(flag);
 
   commonConstructor(in_tag);
 }
@@ -61,12 +68,15 @@ KstVectorView::KstVectorView(const QDomElement &e)
   QString xmintag, xmaxtag, ymintag, ymaxtag;
   QString in_tag;
 
-  _useXmin = false; //defaults.
+  _interp = (KstVectorView::InterpType(0)); //defaults. shouldn't be necessary.
+  _useXmin = false; 
   _useXmax = false;
   _useYmin = false;
   _useYmax = false;
-
-  setInterp(KstVectorView::InterpType(0));
+  _xmin = NULL;
+  _xmax = NULL;
+  _ymin = NULL;
+  _ymax = NULL;
 
   QDomNode n = e.firstChild();
   while( !n.isNull() ) {
@@ -437,7 +447,7 @@ KstDataObjectPtr KstVectorView::makeDuplicate(KstDataObjectDataObjectMap& duplic
   while (KstData::self()->dataTagNameNotUnique(name, false)) {
     name += '\'';
   }
-  KstVectorViewPtr vectorview = new KstVectorView(name, _inputVectors[IN_XVECTOR], _inputVectors[IN_YVECTOR]);
+  KstVectorViewPtr vectorview = new KstVectorView(name, _inputVectors[IN_XVECTOR], _inputVectors[IN_YVECTOR], interp(), _useXmin, xMinScalar(), _useXmax, xMaxScalar(), _useYmin, yMinScalar(), _useYmax, yMaxScalar(), _inputVectors[IN_FLAGVECTOR]);
   duplicatedMap.insert(this, KstDataObjectPtr(vectorview));
   return KstDataObjectPtr(vectorview);
 }

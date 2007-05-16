@@ -36,7 +36,12 @@ class KST_EXPORT KstVectorView: public KstDataObject {
     // vectorviewdialogwidget.ui
     enum AxesType {XYAxes=0, XAxis=1, YAxis=2};
 
-    KstVectorView(const QString &in_tag, KstVectorPtr in_X, KstVectorPtr in_Y);
+    KstVectorView(const QString &in_tag, KstVectorPtr in_X, KstVectorPtr in_Y, 
+                  KstVectorView::InterpType itype, 
+                  bool useXmin, KstScalarPtr xmin, 
+                  bool useXmax, KstScalarPtr xmax, 
+                  bool useYmin, KstScalarPtr ymin, 
+                  bool useYmax, KstScalarPtr ymax, KstVectorPtr flag);
     KstVectorView(const QDomElement &e);
     virtual ~KstVectorView();
 
@@ -105,12 +110,9 @@ class KST_EXPORT KstVectorView: public KstDataObject {
     KstVectorMap::Iterator _cxVector;
     KstVectorMap::Iterator _cyVector;
 
-    AxesType _plotaxes;
     InterpType _interp;
     bool _useXmin, _useXmax, _useYmin, _useYmax;
     KstScalarPtr _xmin, _xmax, _ymin, _ymax;
-
-    bool _useFlag;
 
     void commonConstructor(const QString &in_tag);
 };

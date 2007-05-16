@@ -70,7 +70,7 @@ KstVvDialogI::KstVvDialogI(QWidget* parent, const char* name, bool modal, WFlags
   connect(_w->_yMaxScalar, SIGNAL(newScalarCreated()), this, SIGNAL(modified()));
 
   _w->_FlagVector->provideNoneVector(true);
-  _w->_FlagVector->allowNewVectors(false);
+  _w->_FlagVector->allowNewVectors(true);
 
   connect(_w->_xMinCheckbox, SIGNAL(clicked()), this, SLOT(updateButtons()));
   connect(_w->_xMaxCheckbox, SIGNAL(clicked()), this, SLOT(updateButtons()));
@@ -226,6 +226,7 @@ bool KstVvDialogI::newObject() {
   KST::vectorList.lock().readLock();
   KstVectorPtr vx = *KST::vectorList.findTag(_w->_xVector->selectedVector());
   KstVectorPtr vy = *KST::vectorList.findTag(_w->_yVector->selectedVector());
+  KstVectorPtr flag = *KST::vectorList.findTag(_w->_FlagVector->selectedVector());
   KST::vectorList.lock().unlock();
   if (!vx) {
     kstdFatal() << "Bug in kst: the Vector field (Vx) refers to "
@@ -238,9 +239,21 @@ bool KstVvDialogI::newObject() {
 
   vx->readLock();
   vy->readLock();
-  vv = new KstVectorView(tag_name, vx, vy);
+  if (flag) {flag->readLock();}
+  vv = new KstVectorView(tag_name, vx, vy, 
+                        KstVectorView::InterpType(_w->_interp->currentItem()),
+                        _w->_xMinCheckbox->isChecked(),
+                        _w->_xMinScalar->selectedScalarPtr(),
+                        _w->_xMaxCheckbox->isChecked(),
+                        _w->_xMaxScalar->selectedScalarPtr(),
+                        _w->_yMinCheckbox->isChecked(),
+                        _w->_yMinScalar->selectedScalarPtr(),
+                        _w->_yMaxCheckbox->isChecked(),
+                        _w->_yMaxScalar->selectedScalarPtr(),
+                        flag );
   vx->unlock();
   vy->unlock();
+  if (flag) {flag->unlock();}
 
   KstVCurvePtr vc = new KstVCurve(KST::suggestCurveName(vv->tag(), true), vv->vX(), vv->vY(), 0L, 0L, 0L, 0L, _w->_curveAppearance->color());
 
