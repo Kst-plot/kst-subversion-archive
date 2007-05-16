@@ -31,6 +31,7 @@
 
 KstViewArrow::KstViewArrow()
 : KstViewLine("Arrow") {
+  _editTitle = i18n("Edit Arrow");
   _hasFromArrow = false;
   _hasToArrow = true;
   _fromArrowScaling = 1.0;
@@ -58,6 +59,7 @@ KstViewArrow::KstViewArrow(const QDomElement& e)
   
   // always has this value
   _type = "Arrow";
+  _editTitle = i18n("Edit Arrow");
   _standardActions |= Delete | Edit;
 }
 

@@ -33,7 +33,8 @@ class KstCurveDialogI : public KstDataDialog {
     KST_EXPORT static KstCurveDialogI *globalInstance();
 
   protected:
-    QString objectName() { return tr("Curve"); }
+    QString editTitle() { return tr("Edit Curve"); }
+    QString newTitle() { return tr("New Curve"); }
  
   public slots:
     void update();

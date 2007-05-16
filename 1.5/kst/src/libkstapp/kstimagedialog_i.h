@@ -33,7 +33,8 @@ class KST_EXPORT KstImageDialogI : public KstDataDialog {
     static KstImageDialogI *globalInstance();
 
   protected:
-    QString objectName() { return tr("Image"); }
+    QString editTitle() { return tr("Edit Image"); }
+    QString newTitle() { return tr("New Image"); }
  
   public slots:
     void update();

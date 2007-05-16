@@ -30,6 +30,7 @@
 
 KstViewLine::KstViewLine(const QString& type)
 : KstViewObject(type), _width(0) {
+  _editTitle = i18n("Edit Line");
   setTransparent(true);
   _container = false;
   _capStyle = Qt::FlatCap; 
@@ -77,6 +78,7 @@ KstViewLine::KstViewLine(const QDomElement& e)
   // always these values
   setTransparent(true);
   _type = "Line";
+  _editTitle = i18n("Edit Line");
   setMinimumSize(QSize(1, 1));
   _standardActions |= Delete | Edit;
 }

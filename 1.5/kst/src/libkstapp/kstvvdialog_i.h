@@ -32,7 +32,8 @@ class KST_EXPORT KstVvDialogI : public KstDataDialog {
     static KstVvDialogI *globalInstance();
 
   protected:
-    QString objectName() { return tr("Vector View"); }
+    QString editTitle() { return tr("Edit Vector View"); }
+    QString newTitle() { return tr("New Vector View"); }
  
   public slots:
     void update();

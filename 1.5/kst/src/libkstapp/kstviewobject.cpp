@@ -1824,6 +1824,10 @@ const QString& KstViewObject::type() const {
 }
 
 
+const QString& KstViewObject::editTitle() const {
+  return _editTitle;
+}
+
 void KstViewObject::setMinimumSize(const QSize& sz) {
   _minimumSize = sz.expandedTo(QSize(1, 1)); // 1,1 is the absolute minimum
 }

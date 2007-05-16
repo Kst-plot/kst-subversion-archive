@@ -33,7 +33,8 @@ class KST_EXPORT KstHsDialogI : public KstDataDialog {
     static KstHsDialogI *globalInstance();
 
   protected:
-    QString objectName() { return tr("Histogram"); }
+    QString editTitle() { return tr("Edit Histogram"); }
+    QString newTitle() { return tr("New Histogram"); }
  
   public slots:
     void update();

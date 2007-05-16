@@ -33,7 +33,8 @@ class KstCsdDialogI : public KstDataDialog {
     KST_EXPORT static KstCsdDialogI *globalInstance();
 
   protected:
-    QString objectName() { return tr("Spectrogram"); }
+    QString editTitle() { return tr("Edit Spectrogram"); }
+    QString newTitle() { return tr("New Spectrogram"); }
  
   public slots:
     /** update the entries in the psd dialog to represent current psds */

@@ -34,7 +34,8 @@ class KstPsdDialogI : public KstDataDialog {
     KST_EXPORT static KstPsdDialogI *globalInstance();
 
   protected:
-    QString objectName() { return tr("Spectrum"); }
+    QString editTitle() { return tr("Edit Spectrum"); }
+    QString newTitle() { return tr("New Spectrum"); }
  
   public slots:
     /** update the entries in the psd dialog to represent current psds */

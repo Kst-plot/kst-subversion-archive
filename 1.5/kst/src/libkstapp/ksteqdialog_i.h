@@ -33,7 +33,8 @@ class KST_EXPORT KstEqDialogI : public KstDataDialog {
     static KstEqDialogI *globalInstance();
 
   protected:
-    QString objectName() { return tr("Equation"); }
+    QString editTitle() { return tr("Edit Equation"); }
+    QString newTitle() { return tr("New Equation"); }
  
   public slots:
     void update();

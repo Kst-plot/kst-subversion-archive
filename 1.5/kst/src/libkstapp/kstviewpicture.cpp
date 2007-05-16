@@ -37,6 +37,7 @@
 
 KstViewPicture::KstViewPicture()
 : KstBorderedViewObject("Picture") {
+  _editTitle = i18n("Edit Picture");
   _refresh = 0;
   _timer = 0L;
   setTransparent(true);
@@ -63,6 +64,7 @@ KstViewPicture::KstViewPicture(const QDomElement& e)
 
   // always have these values
   _type = "Picture";
+  _editTitle = i18n("Edit Picture");
   setTransparent(true);
   _standardActions |= Delete | Edit;
 }

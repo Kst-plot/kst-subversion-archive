@@ -72,6 +72,7 @@ KstViewLabel::KstViewLabel(const QString& txt, KstLJustifyType justify, float ro
   _parsed = 0L;
   _labelMargin = 0;
   _isResizable = false;
+  _editTitle = i18n("Edit Label");
   reparse();
   computeTextSize(_parsed);
 }
@@ -83,6 +84,7 @@ KstViewLabel::KstViewLabel(const QDomElement& e)
   _fallThroughTransparency = false;
   _container = false;
   _type = "Label";
+  _editTitle = i18n("Edit Label");
   _dataPrecision = 8;
   _interpret = true;
   _replace = true;

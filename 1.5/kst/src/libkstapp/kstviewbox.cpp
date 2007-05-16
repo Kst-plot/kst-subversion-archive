@@ -31,6 +31,7 @@
 
 KstViewBox::KstViewBox()
 : KstViewObject("Box"), _borderColor(QColor(0, 0, 0)), _borderWidth(0) {
+  _editTitle = i18n("Edit Box");
   _xRound = 0;
   _yRound = 0;
   _cornerStyle = Qt::MiterJoin;
@@ -58,6 +59,7 @@ KstViewBox::KstViewBox(const QDomElement& e)
   
   // these always have these values
   _type = "Box";
+  _editTitle = i18n("Edit Box");
   _standardActions |= Delete | Edit;
   _layoutActions |= Delete | Raise | Lower | RaiseToTop | LowerToBottom | Rename | MoveTo | Copy | CopyTo;
   _fallThroughTransparency = false;

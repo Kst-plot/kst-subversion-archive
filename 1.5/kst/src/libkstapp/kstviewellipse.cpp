@@ -28,6 +28,7 @@
 
 KstViewEllipse::KstViewEllipse()
 : KstViewObject("Ellipse"), _borderWidth(1) {
+  _editTitle = i18n("Edit Ellipse");
   setTransparent(true);
   _transparentFill = false;
   _standardActions |= Delete | Edit;
@@ -50,6 +51,7 @@ KstViewEllipse::KstViewEllipse(const QDomElement& e)
   
   // always have these values
   _type = "Ellipse";
+  _editTitle = i18n("Edit Ellipse");
   setTransparent(true);
   _standardActions |= Delete | Edit;
   _layoutActions |= Delete | Raise | Lower | RaiseToTop | LowerToBottom | Rename | MoveTo | Copy | CopyTo;

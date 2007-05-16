@@ -80,7 +80,7 @@ void KstEditViewObjectDialogI::showEditViewObjectDialog(KstViewObjectPtr viewObj
   _top = top;
   updateWidgets();
   if (_viewObject) {
-    setCaption(i18n("Edit %1").arg(_viewObject->type()));
+    setCaption(_viewObject->editTitle());
   }
   _apply->setEnabled(false);
   show();

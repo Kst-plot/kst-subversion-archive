@@ -219,7 +219,8 @@
     <slot>toggleEditMultiple()</slot>
 </slots>
 <functions>
-    <function access="protected" returnType="QString">objectName()</function>
+    <function access="protected" returnType="QString">editTitle()</function>
+    <function access="protected" returnType="QString">newTitle()</function>
     <function access="protected">fillFieldsForEdit()</function>
     <function access="protected">fillFieldsForNew()</function>
     <function access="protected" returnType="KstObjectPtr">findObject( const QString &amp; name )</function>

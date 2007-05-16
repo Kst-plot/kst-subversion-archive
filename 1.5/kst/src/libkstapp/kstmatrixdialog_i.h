@@ -34,7 +34,8 @@ class KST_EXPORT KstMatrixDialogI : public KstDataDialog {
     static KstMatrixDialogI *globalInstance();
 
   protected:
-    QString objectName() { return tr("Matrix"); }
+    QString editTitle() { return tr("Edit Matrix"); }
+    QString newTitle() { return tr("New Matrix"); }
  
   public slots:
     void update();

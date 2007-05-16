@@ -204,6 +204,7 @@ class KST_EXPORT KstViewObject : public KstObject {
     virtual void detach(); // remove from its parent
 
     const QString& type() const;
+    const QString& editTitle() const;
 
     virtual bool mouseHandler() const;
     virtual void mouseMoveEvent(QWidget *view, QMouseEvent *e);
@@ -323,6 +324,7 @@ class KST_EXPORT KstViewObject : public KstObject {
     QSize _idealSize; //ideal size for object. useful when _maintainAspect==true
     KstAspectRatio _aspectOldZoomedObject;
     QString _type;
+    QString _editTitle;
     QRegion _clipMask; // The mask of this object
     QMap<int, QString> _moveToMap;
     QMap<int, QString> _copyToMap;
