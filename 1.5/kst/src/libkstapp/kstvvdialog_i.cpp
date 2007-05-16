@@ -438,17 +438,21 @@ void KstVvDialogI::updateButtons() {
 void KstVvDialogI::realtimeClicked() {
   Kst2DPlotPtr plot = Kst2DPlot::findPlotByName(_w->_plotList->currentText()); 
 
-  _w->_xMinCheckbox->setChecked(true);
-  _w->_xMinScalar->setSelection((plot->scalars())["xmin"]->tag().displayString());
+  if (_w->_plotAxes->currentText() == "XY Axes" || _w->_plotAxes->currentText() == "X Axis") {
+    _w->_xMinCheckbox->setChecked(true);
+    _w->_xMinScalar->setSelection((plot->scalars())["xmin"]->tag().displayString());
 
-  _w->_xMaxCheckbox->setChecked(true);
-  _w->_xMaxScalar->setSelection((plot->scalars())["xmax"]->tag().displayString());
+    _w->_xMaxCheckbox->setChecked(true);
+    _w->_xMaxScalar->setSelection((plot->scalars())["xmax"]->tag().displayString());
+  }
 
-  _w->_yMinCheckbox->setChecked(true);
-  _w->_yMinScalar->setSelection((plot->scalars())["ymin"]->tag().displayString());
+  if (_w->_plotAxes->currentText() == "XY Axes" || _w->_plotAxes->currentText() == "Y Axis") {
+    _w->_yMinCheckbox->setChecked(true);
+    _w->_yMinScalar->setSelection((plot->scalars())["ymin"]->tag().displayString());
 
-  _w->_yMaxCheckbox->setChecked(true);
-  _w->_yMaxScalar->setSelection((plot->scalars())["ymax"]->tag().displayString());
+    _w->_yMaxCheckbox->setChecked(true);
+    _w->_yMaxScalar->setSelection((plot->scalars())["ymax"]->tag().displayString());
+  }
 
   updateButtons();
 }
@@ -459,21 +463,25 @@ void KstVvDialogI::currentClicked() {
     KstScalarPtr sp;
     double v;
 
-    _w->_xMinCheckbox->setChecked(true);
-    v = (plot->scalars())["xmin"]->value();
-    _w->_xMinScalar->setSelection(QString::number(v));
+    if (_w->_plotAxes->currentText() == "XY Axes" || _w->_plotAxes->currentText() == "X Axis") {
+      _w->_xMinCheckbox->setChecked(true);
+      v = (plot->scalars())["xmin"]->value();
+      _w->_xMinScalar->setSelection(QString::number(v));
 
-    _w->_xMaxCheckbox->setChecked(true);
-    v = (plot->scalars())["xmax"]->value();
-    _w->_xMaxScalar->setSelection(QString::number(v));
+      _w->_xMaxCheckbox->setChecked(true);
+      v = (plot->scalars())["xmax"]->value();
+      _w->_xMaxScalar->setSelection(QString::number(v));
+    }
 
-    _w->_yMinCheckbox->setChecked(true);
-    v = (plot->scalars())["ymin"]->value();
-    _w->_yMinScalar->setSelection(QString::number(v));
+    if (_w->_plotAxes->currentText() == "XY Axes" || _w->_plotAxes->currentText() == "Y Axis") {
+      _w->_yMinCheckbox->setChecked(true);
+      v = (plot->scalars())["ymin"]->value();
+      _w->_yMinScalar->setSelection(QString::number(v));
 
-    _w->_yMaxCheckbox->setChecked(true);
-    v = (plot->scalars())["ymax"]->value();
-    _w->_yMaxScalar->setSelection(QString::number(v));
+      _w->_yMaxCheckbox->setChecked(true);
+      v = (plot->scalars())["ymax"]->value();
+      _w->_yMaxScalar->setSelection(QString::number(v));
+    }
 
     updateButtons();
 }

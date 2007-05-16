@@ -32,9 +32,6 @@ class KST_EXPORT KstVectorView: public KstDataObject {
     // InterpType order must match the order of entries of _interp in 
     // vectorviewdialogwidget.ui
     enum InterpType {InterpY=0, InterpX=1, InterpMax=2, InterpMin=3};
-    // AxesType order must match the order of entries of _plotAxes in 
-    // vectorviewdialogwidget.ui
-    enum AxesType {XYAxes=0, XAxis=1, YAxis=2};
 
     KstVectorView(const QString &in_tag, KstVectorPtr in_X, KstVectorPtr in_Y, 
                   KstVectorView::InterpType itype, 
