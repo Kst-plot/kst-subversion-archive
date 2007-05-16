@@ -54,10 +54,10 @@ class KST_EXPORT KstVectorView: public KstDataObject {
     void setYminScalar(KstScalarPtr ymin);
     void setYmaxScalar(KstScalarPtr ymax);
 
-    void setUseXmin(bool useXmin) { _useXmin = useXmin; }
-    void setUseXmax(bool useXmax) { _useXmax = useXmax; }
-    void setUseYmin(bool useYmin) { _useYmin = useYmin; }
-    void setUseYmax(bool useYmax) { _useYmax = useYmax; }
+    void setUseXmin(bool useXmin);
+    void setUseXmax(bool useXmax);
+    void setUseYmin(bool useYmin);
+    void setUseYmax(bool useYmax);
 
     KstScalarPtr xMinScalar() {return _xmin;}
     KstScalarPtr xMaxScalar() {return _xmax;}

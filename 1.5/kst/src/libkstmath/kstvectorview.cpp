@@ -313,35 +313,71 @@ KstObject::UpdateType KstVectorView::update(int update_counter) {
 }
 
 void KstVectorView::setXminScalar(KstScalarPtr xmin) {
-  disconnect( _xmin, SIGNAL(trigger()), this, SLOT(scalarChanged())); //should be fine even w/ null arguments.
-  _xmin = xmin;
-  if (xmin) {
-    connect( xmin, SIGNAL(trigger()), this, SLOT(scalarChanged()));
+  if (xmin != _xmin) {
+    disconnect( _xmin, SIGNAL(trigger()), this, SLOT(scalarChanged())); //should be fine even w/ null arguments.
+    _xmin = xmin;
+    if (xmin && _useXmin) {
+      connect( xmin, SIGNAL(trigger()), this, SLOT(scalarChanged()));
+    }
   }
 }
 
 void KstVectorView::setXmaxScalar(KstScalarPtr xmax) {
-  disconnect( _xmax, SIGNAL(trigger()), this, SLOT(scalarChanged())); //should be fine even w/ null arguments.
-  _xmax = xmax;
-  if (xmax) {
-    connect( xmax, SIGNAL(trigger()), this, SLOT(scalarChanged()));
+  if (xmax != _xmax) {
+    disconnect( _xmax, SIGNAL(trigger()), this, SLOT(scalarChanged())); //should be fine even w/ null arguments.
+    _xmax = xmax;
+    if (xmax && _useXmax) {
+      connect( xmax, SIGNAL(trigger()), this, SLOT(scalarChanged()));
+    }
   }
 }
 
 void KstVectorView::setYminScalar(KstScalarPtr ymin) {
-  disconnect( _ymin, SIGNAL(trigger()), this, SLOT(scalarChanged())); //should be fine even w/ null arguments.
-  _ymin = ymin;
-  if (ymin) {
-    connect( ymin, SIGNAL(trigger()), this, SLOT(scalarChanged()));
+  if (ymin != _ymin) {
+    disconnect( _ymin, SIGNAL(trigger()), this, SLOT(scalarChanged())); //should be fine even w/ null arguments.
+    _ymin = ymin;
+    if (ymin && _useYmin) {
+      connect( ymin, SIGNAL(trigger()), this, SLOT(scalarChanged()));
+    }
   }
 }
 
 void KstVectorView::setYmaxScalar(KstScalarPtr ymax) {
-  disconnect( _ymax, SIGNAL(trigger()), this, SLOT(scalarChanged())); //should be fine even w/ null arguments.
-  _ymax = ymax;
-  if (ymax) {
-    connect( ymax, SIGNAL(trigger()), this, SLOT(scalarChanged()));
+  if (ymax != _ymax) {
+    disconnect( _ymax, SIGNAL(trigger()), this, SLOT(scalarChanged())); //should be fine even w/ null arguments.
+    _ymax = ymax;
+    if (ymax && _useYmax) {
+      connect( ymax, SIGNAL(trigger()), this, SLOT(scalarChanged()));
+    }
   }
+}
+
+void KstVectorView::setUseXmin(bool useXmin) {
+  _useXmin = useXmin;
+
+  if (!_useXmin) { disconnect( _xmin, SIGNAL(trigger()), this, SLOT(scalarChanged())); }
+  if (_useXmin && _xmin) { connect( _xmin, SIGNAL(trigger()), this, SLOT(scalarChanged())); }
+}
+
+void KstVectorView::setUseXmax(bool useXmax) {
+  _useXmax = useXmax;
+
+  if (!_useXmax) { disconnect( _xmax, SIGNAL(trigger()), this, SLOT(scalarChanged())); }
+  if (_useXmax && _xmax) { connect( _xmax, SIGNAL(trigger()), this, SLOT(scalarChanged())); }
+}
+
+void KstVectorView::setUseYmin(bool useYmin) {
+  _useYmin = useYmin;
+
+  if (!_useYmin) { disconnect( _ymin, SIGNAL(trigger()), this, SLOT(scalarChanged())); }
+  if (_useYmin && _ymin) { connect( _ymin, SIGNAL(trigger()), this, SLOT(scalarChanged())); }
+}
+
+void KstVectorView::setUseYmax(bool useYmax) {
+  _useYmax = useYmax;
+
+  if (!_useYmax) { disconnect( _ymax, SIGNAL(trigger()), this, SLOT(scalarChanged())); }
+  if (_useYmax && _ymax) { connect( _ymax, SIGNAL(trigger()), this, SLOT(scalarChanged())); }
 }
 
 void KstVectorView::setXVector(KstVectorPtr new_v) {
