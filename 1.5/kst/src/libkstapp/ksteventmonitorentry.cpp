@@ -130,7 +130,11 @@ bool EventMonitorEntry::reparse() {
       Equation::FoldVisitor vis(&ctx, &_pExpression);
       KstStringMap stm;
       if (_pExpression->collectObjects(_vectorsUsed, _inputScalars, stm)) {
-      _isValid = true;
+        if (recursion()) {
+          KstDebug::self()->log( i18n("There is a recursion resulting from the event monitor entry you entered, '%s'").arg(_event), KstDebug::Warning);
+        } else {
+          _isValid = true;
+        }
       } else {
         //we have bad objects...
         delete (Equation::Node*)ParsedEquation;
@@ -190,63 +194,65 @@ KstObject::UpdateType EventMonitorEntry::update(int updateCounter) {
   if (!_pExpression) {
     reparse();
   }
+  if (_isValid) {
+    KstVectorPtr xv = *_xVector;
+    KstVectorPtr yv = *_yVector;
+    int ns = 1;
 
-  KstVectorPtr xv = *_xVector;
-  KstVectorPtr yv = *_yVector;
-  int ns = 1;
-
-  for (KstVectorMap::ConstIterator i = _vectorsUsed.begin(); i != _vectorsUsed.end(); ++i) {
-    ns = kMax(ns, i.data()->length());
-  }
-
-  double *rawValuesX = 0L;
-  double *rawValuesY = 0L;
-  if (xv && yv) {
-    if (xv->resize(ns)) {
-      rawValuesX = xv->value();
+    for (KstVectorMap::ConstIterator i = _vectorsUsed.begin(); i != _vectorsUsed.end(); ++i) {
+      ns = kMax(ns, i.data()->length());
     }
 
-    if (yv->resize(ns)) {
-      rawValuesY = yv->value();
+    double *rawValuesX = 0L;
+    double *rawValuesY = 0L;
+    if (xv && yv) {
+      if (xv->resize(ns)) {
+        rawValuesX = xv->value();
+      }
+
+      if (yv->resize(ns)) {
+        rawValuesY = yv->value();
+      }
     }
-  }
 
-  Equation::Context ctx;
-  ctx.sampleCount = ns;
-  ctx.x = 0.0;
+    Equation::Context ctx;
+    ctx.sampleCount = ns;
+    ctx.x = 0.0;
 
-  if (needToEvaluate()) {
-    if (_pExpression) {
-      for (ctx.i = _numDone; ctx.i < ns; ++ctx.i) {
-        const double value = _pExpression->value(&ctx);
-        if (value != 0.0) { // The expression evaluates to true
-          log(ctx.i);
-          if (rawValuesX && rawValuesY) {
-            rawValuesX[ctx.i] = ctx.i;
-            rawValuesY[ctx.i] = 1.0;
-          }
-        } else {
-          if (rawValuesX && rawValuesY) {
-            rawValuesX[ctx.i] = ctx.i;
-            rawValuesY[ctx.i] = 0.0;
+    if (needToEvaluate()) {
+      if (_pExpression) {
+        for (ctx.i = _numDone; ctx.i < ns; ++ctx.i) {
+          const double value = _pExpression->value(&ctx);
+
+          if (value != 0.0) { // The expression evaluates to true
+            log(ctx.i);
+            if (rawValuesX && rawValuesY) {
+              rawValuesX[ctx.i] = ctx.i;
+              rawValuesY[ctx.i] = 1.0;
+            }
+          } else {
+            if (rawValuesX && rawValuesY) {
+              rawValuesX[ctx.i] = ctx.i;
+              rawValuesY[ctx.i] = 0.0;
+            }
           }
         }
+        _numDone = ns;
+        logImmediately();
       }
+    } else {
       _numDone = ns;
-      logImmediately();
     }
-  } else {
-    _numDone = ns;
-  }
 
-  if (xv) {
-    xv->setDirty();
-    xv->update(updateCounter);
-  }
+    if (xv) {
+      xv->setDirty();
+      xv->update(updateCounter);
+    }
 
-  if (yv) {
-    yv->setDirty();
-    yv->update(updateCounter);
+    if (yv) {
+      yv->setDirty();
+      yv->update(updateCounter);
+    }
   }
 
   unlockInputsAndOutputs();
