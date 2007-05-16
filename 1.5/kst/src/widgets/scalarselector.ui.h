@@ -56,7 +56,12 @@ void ScalarSelector::update()
     
     qHeapSort(scalars);
     _scalar->insertStringList(scalars);
-    if (found) {
+
+    bool ok;
+    prev.toDouble(&ok);
+    ok = ok && _scalar->editable(); //if directentry is allowed, and if prev is a number, then we can put it back into the combobox.
+
+    if (found || ok) {
         _scalar->setCurrentText(prev);
     } else {
         _scalar->insertItem("0");

@@ -137,10 +137,43 @@ void KstVvDialogI::fillFieldsForEdit() {
   _w->_yMinCheckbox->setChecked(vp->useYmin());
   _w->_yMaxCheckbox->setChecked(vp->useYmax());
 
-  if (vp->xMinScalar()) { _w->_xMinScalar->setSelection(vp->xMinScalar()->tag().displayString()); }
-  if (vp->xMaxScalar()) { _w->_xMaxScalar->setSelection(vp->xMaxScalar()->tag().displayString()); }
-  if (vp->yMinScalar()) { _w->_yMinScalar->setSelection(vp->yMinScalar()->tag().displayString()); }
-  if (vp->yMaxScalar()) { _w->_yMaxScalar->setSelection(vp->yMaxScalar()->tag().displayString()); }
+  KstScalarPtr sc;
+
+  sc = vp->xMinScalar();
+  if (!sc) {
+    _w->_xMinScalar->setSelection("0");
+  } else if (*KST::scalarList.findTag(sc->tag().displayString())) {
+    _w->_xMinScalar->setSelection(sc->tag().displayString());
+  } else {
+    _w->_xMinScalar->setSelection(QString::number(sc->value())); //our scalar has been removed from the global list... just put its current value into the scalar selector. warning: after edit it won't be updated anymore! the motivation for putting this in is to not lose scale information when a plot is deleted.
+  }
+
+  sc = vp->xMaxScalar();
+  if (!sc) {
+    _w->_xMaxScalar->setSelection("0");
+  } else if (*KST::scalarList.findTag(sc->tag().displayString())) {
+    _w->_xMaxScalar->setSelection(sc->tag().displayString());
+  } else {
+    _w->_xMaxScalar->setSelection(QString::number(sc->value()));
+  }
+
+  sc = vp->yMinScalar();
+  if (!sc) {
+    _w->_yMinScalar->setSelection("0");
+  } else if (*KST::scalarList.findTag(sc->tag().displayString())) {
+    _w->_yMinScalar->setSelection(sc->tag().displayString());
+  } else {
+    _w->_yMinScalar->setSelection(QString::number(sc->value()));
+  }
+
+  sc = vp->yMaxScalar();
+  if (!sc) {
+    _w->_yMaxScalar->setSelection("0");
+  } else if (*KST::scalarList.findTag(sc->tag().displayString())) {
+    _w->_yMaxScalar->setSelection(sc->tag().displayString());
+  } else {
+    _w->_yMaxScalar->setSelection(QString::number(sc->value()));
+  }
 
   vp->unlock();
   updateButtons();
