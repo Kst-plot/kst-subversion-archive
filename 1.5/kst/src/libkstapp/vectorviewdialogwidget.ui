@@ -34,7 +34,7 @@
             <property name="title">
                 <string>Input Vectors</string>
             </property>
-            <grid>
+            <vbox>
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
@@ -44,65 +44,81 @@
                 <property name="spacing">
                     <number>6</number>
                 </property>
-                <widget class="QLabel" row="0" column="0">
+                <widget class="QLayoutWidget">
                     <property name="name">
-                        <cstring>TextLabel1_6_3</cstring>
+                        <cstring>layout7</cstring>
                     </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>0</hsizetype>
-                            <vsizetype>0</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                    <property name="text">
-                        <string>X axis vector:</string>
-                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>TextLabel1_6_3</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>0</hsizetype>
+                                    <vsizetype>0</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="text">
+                                <string>X axis vector:</string>
+                            </property>
+                        </widget>
+                        <widget class="VectorSelector">
+                            <property name="name">
+                                <cstring>_xVector</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>7</hsizetype>
+                                    <vsizetype>5</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="focusPolicy">
+                                <enum>TabFocus</enum>
+                            </property>
+                        </widget>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>TextLabel1_6_2_5</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>0</hsizetype>
+                                    <vsizetype>0</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="text">
+                                <string>Y axis vector:</string>
+                            </property>
+                        </widget>
+                        <widget class="VectorSelector">
+                            <property name="name">
+                                <cstring>_yVector</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>7</hsizetype>
+                                    <vsizetype>5</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="focusPolicy">
+                                <enum>TabFocus</enum>
+                            </property>
+                        </widget>
+                    </hbox>
                 </widget>
-                <widget class="QLabel" row="0" column="2">
-                    <property name="name">
-                        <cstring>TextLabel1_6_2_5</cstring>
-                    </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>0</hsizetype>
-                            <vsizetype>0</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                    <property name="text">
-                        <string>Y axis vector:</string>
-                    </property>
-                </widget>
-                <widget class="VectorSelector" row="0" column="3">
-                    <property name="name">
-                        <cstring>_yVector</cstring>
-                    </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>7</hsizetype>
-                            <vsizetype>5</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                </widget>
-                <widget class="VectorSelector" row="0" column="1">
-                    <property name="name">
-                        <cstring>_xVector</cstring>
-                    </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>7</hsizetype>
-                            <vsizetype>5</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                </widget>
-                <widget class="QLayoutWidget" row="1" column="0" rowspan="1" colspan="4">
+                <widget class="QLayoutWidget">
                     <property name="name">
                         <cstring>layout2</cstring>
                     </property>
@@ -142,6 +158,9 @@
                             <property name="name">
                                 <cstring>_interp</cstring>
                             </property>
+                            <property name="focusPolicy">
+                                <enum>TabFocus</enum>
+                            </property>
                             <property name="whatsThis" stdset="0">
                                 <string>Kst assumes that the first and last samples of the X &amp; Y axis vectors 
 are pairs.  Consequently, if the X &amp; Y axis vectors have different numbers
@@ -167,7 +186,7 @@ of points, interpolation of one or the other will be required.  This combo-box s
                         </spacer>
                     </hbox>
                 </widget>
-            </grid>
+            </vbox>
         </widget>
         <widget class="QButtonGroup">
             <property name="name">
@@ -196,13 +215,13 @@ of points, interpolation of one or the other will be required.  This combo-box s
                 </property>
                 <widget class="QLayoutWidget">
                     <property name="name">
-                        <cstring>layout21</cstring>
+                        <cstring>layout8</cstring>
                     </property>
                     <grid>
                         <property name="name">
                             <cstring>unnamed</cstring>
                         </property>
-                        <widget class="ScalarSelector" row="0" column="3">
+                        <widget class="ScalarSelector" row="1" column="1">
                             <property name="name">
                                 <cstring>_yMinScalar</cstring>
                             </property>
@@ -214,8 +233,51 @@ of points, interpolation of one or the other will be required.  This combo-box s
                                     <verstretch>0</verstretch>
                                 </sizepolicy>
                             </property>
+                            <property name="focusPolicy">
+                                <enum>TabFocus</enum>
+                            </property>
                         </widget>
-                        <widget class="QCheckBox" row="0" column="2">
+                        <widget class="ScalarSelector" row="0" column="1">
+                            <property name="name">
+                                <cstring>_xMinScalar</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>7</hsizetype>
+                                    <vsizetype>5</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="focusPolicy">
+                                <enum>TabFocus</enum>
+                            </property>
+                        </widget>
+                        <widget class="QCheckBox" row="0" column="0">
+                            <property name="name">
+                                <cstring>_xMinCheckbox</cstring>
+                            </property>
+                            <property name="text">
+                                <string>X Min</string>
+                            </property>
+                        </widget>
+                        <widget class="ScalarSelector" row="0" column="3">
+                            <property name="name">
+                                <cstring>_xMaxScalar</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>7</hsizetype>
+                                    <vsizetype>5</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="focusPolicy">
+                                <enum>TabFocus</enum>
+                            </property>
+                        </widget>
+                        <widget class="QCheckBox" row="1" column="0">
                             <property name="name">
                                 <cstring>_yMinCheckbox</cstring>
                             </property>
@@ -231,46 +293,12 @@ of points, interpolation of one or the other will be required.  This combo-box s
                                 <string>Y Max</string>
                             </property>
                         </widget>
-                        <widget class="QCheckBox" row="1" column="0">
+                        <widget class="QCheckBox" row="0" column="2">
                             <property name="name">
                                 <cstring>_xMaxCheckbox</cstring>
                             </property>
                             <property name="text">
                                 <string>X Max</string>
-                            </property>
-                        </widget>
-                        <widget class="ScalarSelector" row="0" column="1">
-                            <property name="name">
-                                <cstring>_xMinScalar</cstring>
-                            </property>
-                            <property name="sizePolicy">
-                                <sizepolicy>
-                                    <hsizetype>7</hsizetype>
-                                    <vsizetype>5</vsizetype>
-                                    <horstretch>0</horstretch>
-                                    <verstretch>0</verstretch>
-                                </sizepolicy>
-                            </property>
-                        </widget>
-                        <widget class="QCheckBox" row="0" column="0">
-                            <property name="name">
-                                <cstring>_xMinCheckbox</cstring>
-                            </property>
-                            <property name="text">
-                                <string>X Min</string>
-                            </property>
-                        </widget>
-                        <widget class="ScalarSelector" row="1" column="1">
-                            <property name="name">
-                                <cstring>_xMaxScalar</cstring>
-                            </property>
-                            <property name="sizePolicy">
-                                <sizepolicy>
-                                    <hsizetype>7</hsizetype>
-                                    <vsizetype>5</vsizetype>
-                                    <horstretch>0</horstretch>
-                                    <verstretch>0</verstretch>
-                                </sizepolicy>
                             </property>
                         </widget>
                         <widget class="ScalarSelector" row="1" column="3">
@@ -284,6 +312,9 @@ of points, interpolation of one or the other will be required.  This combo-box s
                                     <horstretch>0</horstretch>
                                     <verstretch>0</verstretch>
                                 </sizepolicy>
+                            </property>
+                            <property name="focusPolicy">
+                                <enum>TabFocus</enum>
                             </property>
                         </widget>
                     </grid>
@@ -362,6 +393,9 @@ of points, interpolation of one or the other will be required.  This combo-box s
                                     <height>32767</height>
                                 </size>
                             </property>
+                            <property name="focusPolicy">
+                                <enum>TabFocus</enum>
+                            </property>
                         </widget>
                         <widget class="QLabel">
                             <property name="name">
@@ -391,10 +425,16 @@ of points, interpolation of one or the other will be required.  This combo-box s
                                     <verstretch>0</verstretch>
                                 </sizepolicy>
                             </property>
+                            <property name="focusPolicy">
+                                <enum>TabFocus</enum>
+                            </property>
                         </widget>
                         <widget class="QPushButton">
                             <property name="name">
                                 <cstring>_realtimeButton</cstring>
+                            </property>
+                            <property name="focusPolicy">
+                                <enum>TabFocus</enum>
                             </property>
                             <property name="text">
                                 <string>Realtime</string>
@@ -403,6 +443,9 @@ of points, interpolation of one or the other will be required.  This combo-box s
                         <widget class="QPushButton">
                             <property name="name">
                                 <cstring>_currentButton</cstring>
+                            </property>
+                            <property name="focusPolicy">
+                                <enum>TabFocus</enum>
                             </property>
                             <property name="text">
                                 <string>Current</string>
@@ -438,6 +481,9 @@ of points, interpolation of one or the other will be required.  This combo-box s
                                     <verstretch>0</verstretch>
                                 </sizepolicy>
                             </property>
+                            <property name="focusPolicy">
+                                <enum>TabFocus</enum>
+                            </property>
                         </widget>
                         <spacer>
                             <property name="name">
@@ -472,6 +518,24 @@ of points, interpolation of one or the other will be required.  This combo-box s
         </widget>
     </vbox>
 </widget>
+<tabstops>
+    <tabstop>_xVector</tabstop>
+    <tabstop>_yVector</tabstop>
+    <tabstop>_interp</tabstop>
+    <tabstop>_xMinCheckbox</tabstop>
+    <tabstop>_xMinScalar</tabstop>
+    <tabstop>_xMaxCheckbox</tabstop>
+    <tabstop>_xMaxScalar</tabstop>
+    <tabstop>_yMinCheckbox</tabstop>
+    <tabstop>_yMinScalar</tabstop>
+    <tabstop>_yMaxCheckbox</tabstop>
+    <tabstop>_yMaxScalar</tabstop>
+    <tabstop>_plotAxes</tabstop>
+    <tabstop>_plotList</tabstop>
+    <tabstop>_realtimeButton</tabstop>
+    <tabstop>_currentButton</tabstop>
+    <tabstop>_FlagVector</tabstop>
+</tabstops>
 <includes>
     <include location="global" impldecl="in implementation">kstcombobox.h</include>
     <include location="global" impldecl="in implementation">datarangewidget.h</include>
