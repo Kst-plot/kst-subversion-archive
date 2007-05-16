@@ -261,12 +261,6 @@ bool KstPsdDialogI::editSingleObject(KstPSDPtr psPtr) {
     psPtr->setVector(v);
   }
 
-  if (psPtr->recursion()) {
-    KMessageBox::error(this, i18n("There is a recursion resulting from the spectrum  you entered."));
-    psPtr->unlock();
-    return false;
-  }
-
   // get the values that need to be checked for consistency
   double pSampRate;
   int pFFTLen;
@@ -331,6 +325,14 @@ bool KstPsdDialogI::editSingleObject(KstPSDPtr psPtr) {
 
   if (_interpolateHolesDirty) {
     psPtr->setInterpolateHoles(_w->_kstFFTOptions->InterpolateHoles->isChecked());
+  }
+
+  psPtr->setRecursed(false);
+  if (psPtr->recursion()) {
+    KMessageBox::error(this, i18n("There is a recursion resulting from the spectrum  you entered."));
+    psPtr->setRecursed(true);
+    psPtr->unlock();
+    return false;
   }
 
   psPtr->unlock();

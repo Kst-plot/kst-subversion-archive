@@ -194,6 +194,10 @@ KstObject::UpdateType KstPSD::update(int update_counter) {
     return lastUpdateResult();
   }
 
+  if (recursed()) {
+    return setLastUpdateResult(NO_CHANGE);
+  }
+
   writeLockInputsAndOutputs();
 
   KstVectorPtr iv = _inputVectors[INVECTOR];
@@ -369,6 +373,8 @@ QString KstPSD::vTag() const {
 
 void KstPSD::setVector(KstVectorPtr new_v) {
   Q_ASSERT(myLockStatus() == KstRWLock::WRITELOCKED);
+
+  setRecursed(false);
 
   KstVectorPtr v = _inputVectors[INVECTOR];
   if (v) {

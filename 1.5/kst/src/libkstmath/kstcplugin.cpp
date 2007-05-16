@@ -256,6 +256,10 @@ KstObject::UpdateType KstCPlugin::update(int update_counter) {
     return setLastUpdateResult(NO_CHANGE);
   }
 
+  if (recursed()) {
+    return setLastUpdateResult(NO_CHANGE);
+  }
+
   bool force = dirty();
   setDirty(false);
 

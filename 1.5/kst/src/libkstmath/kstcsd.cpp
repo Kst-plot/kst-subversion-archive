@@ -171,6 +171,10 @@ KstObject::UpdateType KstCSD::update(int update_counter) {
     return lastUpdateResult();
   }
 
+  if (recursed()) {
+    return setLastUpdateResult(NO_CHANGE);
+  }
+
   writeLockInputsAndOutputs();
 
   if (update_counter <= 0) {
@@ -255,6 +259,9 @@ QString KstCSD::vTag() const {
 
 void KstCSD::setVector(KstVectorPtr new_v) {
   KstVectorPtr v = _inputVectors[INVECTOR];
+
+  setRecursed(false);
+
   if (v) {
     if (v == new_v) {
       return;

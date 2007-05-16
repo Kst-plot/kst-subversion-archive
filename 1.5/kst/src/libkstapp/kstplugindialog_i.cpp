@@ -616,6 +616,7 @@ bool KstPluginDialogI::editObject() {
   int pitem = _w->PluginCombo->currentItem();
   KstSharedPtr<Plugin> pPtr = PluginCollection::self()->plugin(_pluginList[pitem]);
 
+  pp->setRecursed(false);
   pp->inputVectors().clear();
   pp->inputScalars().clear();
   pp->inputStrings().clear();
@@ -640,8 +641,10 @@ bool KstPluginDialogI::editObject() {
     return false;
   }
 
+  pp->setRecursed(false);
   if (pp->recursion()) {
     KMessageBox::sorry(this, i18n("There is a recursion resulting from the plugin you entered."));
+    pp->setRecursed(true);
     return false;
   }
 

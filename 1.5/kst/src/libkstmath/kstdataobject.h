@@ -57,6 +57,9 @@ class KST_EXPORT KstDataObject : public KstObject {
     virtual Kind kind() const { return Generic; }
     virtual int sampleCount() const { return 0; }
 
+    virtual bool recursed() const;
+    virtual void setRecursed(bool recursed);
+
     // If you use these, you must lock() and unlock() the object as long as you
     // hold the reference
     const KstVectorMap& inputVectors()  const { return _inputVectors;  }
@@ -148,6 +151,7 @@ class KST_EXPORT KstDataObject : public KstObject {
     QString _typeString, _type;
 
     bool _isInputLoaded;
+    bool _isRecursed : 1;
     QValueList<QPair<QString,QString> > _inputVectorLoadQueue;
     QValueList<QPair<QString,QString> > _inputScalarLoadQueue;
     QValueList<QPair<QString,QString> > _inputStringLoadQueue;

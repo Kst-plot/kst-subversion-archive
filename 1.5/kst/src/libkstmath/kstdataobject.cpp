@@ -40,6 +40,7 @@ KstDataObject::KstDataObject() : KstObject() {
   //kstdDebug() << "+++ CREATING DATA OBJECT: " << (void*)this << endl;
   _curveHints = new KstCurveHintList;
   _isInputLoaded = false;
+  _isRecursed = false;
 }
 
 KstDataObject::KstDataObject(const QDomElement& e) : KstObject() {
@@ -47,6 +48,7 @@ KstDataObject::KstDataObject(const QDomElement& e) : KstObject() {
   //kstdDebug() << "+++ CREATING DATA OBJECT: " << (void*)this << endl;
   _curveHints = new KstCurveHintList;
   _isInputLoaded = false;
+  _isRecursed = false;
 }
 
 
@@ -793,6 +795,16 @@ bool KstDataObject::recursion() {
   }
 
   return recurses;
+}
+
+
+void KstDataObject::setRecursed( bool isRecursed ) {
+  _isRecursed = isRecursed;
+}
+
+
+bool KstDataObject::recursed() const {
+  return _isRecursed;
 }
 
 

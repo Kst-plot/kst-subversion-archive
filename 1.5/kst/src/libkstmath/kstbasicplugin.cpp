@@ -205,6 +205,10 @@ void KstBasicPlugin::setOutputString(const QString &type, const QString &name) {
 KstObject::UpdateType KstBasicPlugin::update(int updateCounter) {
   Q_ASSERT(myLockStatus() == KstRWLock::WRITELOCKED);
 
+  if (recursed()) {
+    return setLastUpdateResult(NO_CHANGE);
+  }
+
   bool force = dirty();
   setDirty(false);
 

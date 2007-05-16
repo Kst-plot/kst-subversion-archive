@@ -193,6 +193,10 @@ KstObject::UpdateType KstEquation::update(int update_counter) {
     return setLastUpdateResult(NO_CHANGE);
   }
 
+  if (recursed()) {
+    return setLastUpdateResult(NO_CHANGE);
+  }
+
   assert(update_counter >= 0);
 
   if (_xInVector == _inputVectors.end()) {
@@ -295,6 +299,7 @@ void KstEquation::setEquation(const QString& in_fn) {
   // document loading with vector lazy-loading
   setDirty();
   _equation = in_fn;
+  setRecursed(false);
 
   VectorsUsed.clear();
   ScalarsUsed.clear();

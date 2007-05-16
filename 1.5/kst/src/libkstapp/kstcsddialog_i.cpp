@@ -308,8 +308,10 @@ bool KstCsdDialogI::editSingleObject(KstCSDPtr csPtr) {
     csPtr->setOutput(PSDType(_w->_kstFFTOptions->Output->currentItem()));
   }
 
+  csPtr->setRecursed(false);
   if (csPtr->recursion()) {
     KMessageBox::error(this, i18n("There is a recursion resulting from the spectrogram you entered."));
+    csPtr->setRecursed(true);
     csPtr->unlock();
     return false;
   }

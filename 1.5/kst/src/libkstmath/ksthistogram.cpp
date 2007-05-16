@@ -158,6 +158,10 @@ KstObject::UpdateType KstHistogram::update(int update_counter) {
   bool force = dirty();
   setDirty(false);
 
+  if (recursed()) {
+    return setLastUpdateResult(KstObject::NO_CHANGE);
+  }
+
   if (KstObject::checkUpdateCounter(update_counter) && !force) {
     return lastUpdateResult();
   }
@@ -320,6 +324,7 @@ QString KstHistogram::vTag() const {
 
 void KstHistogram::setVector(KstVectorPtr new_v) {
   _inputVectors[RAWVECTOR] = new_v;
+  setRecursed(false);
 }
 
 

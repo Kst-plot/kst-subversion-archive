@@ -313,12 +313,16 @@ bool KstEqDialogI::editSingleObject(KstEquationPtr eqPtr) {
       eqPtr->unlock();
       return true;
     }
+
+    eqPtr->setRecursed(false);
     if (eqPtr->recursion()) {
       KMessageBox::error(this, i18n("There is a recursion resulting from the equation you entered."));
+      eqPtr->setRecursed(true);
       eqPtr->unlock();
       return false;
     }
   }
+
   eqPtr->unlock();
 
   return true;
