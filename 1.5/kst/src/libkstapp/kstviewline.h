@@ -54,6 +54,7 @@ class KstViewLine : public KstViewObject {
     void setForegroundColor(const QColor& color);
     QColor foregroundColor() const;
 
+    QRegion clipRegion();
     void move(const QPoint& pos);
 
     virtual void setCapStyle(Qt::PenCapStyle style);

@@ -55,6 +55,7 @@ class KstViewArrow : public KstViewLine {
     double toArrowScaling() const;
     void setToArrowScaling(double scaling);
     QRegion clipRegion();
+    virtual QRect surroundingGeometry() const;
 
   public:
     void save(QTextStream& ts, const QString& indent = QString::null);

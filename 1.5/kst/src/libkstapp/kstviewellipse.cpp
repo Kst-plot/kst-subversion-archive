@@ -46,9 +46,9 @@ KstViewEllipse::KstViewEllipse(const QDomElement& e)
         setProperty(el.tagName().latin1(), QVariant(el.text()));  
       }  
     }
-    n = n.nextSibling();      
+    n = n.nextSibling();
   }
-  
+
   // always have these values
   _type = "Ellipse";
   _editTitle = i18n("Edit Ellipse");
@@ -63,7 +63,7 @@ KstViewEllipse::KstViewEllipse(const KstViewEllipse& ellipse)
   _transparentFill = ellipse._transparentFill;
   _borderWidth = ellipse._borderWidth;
   _borderColor = ellipse._borderColor;
-  
+
   // these always have these values
   _type = "Ellipse";
   _standardActions |= Delete | Edit;
@@ -79,7 +79,7 @@ KstViewObject* KstViewEllipse::copyObjectQuietly(KstViewObject& parent, const QS
 
   KstViewEllipse* viewEllipse = new KstViewEllipse(*this);
   parent.appendChild(viewEllipse, true);
-  
+
   return viewEllipse;
 }
 
@@ -201,7 +201,7 @@ void KstViewEllipse::drawShadow(KstPainter& p, const QPoint& pos) {
   p.drawEllipse(rect);  
 }
 
-    
+
 void KstViewEllipse::setTransparentFill(bool yes) {
   if (_transparentFill != yes) {
     _transparentFill = yes;

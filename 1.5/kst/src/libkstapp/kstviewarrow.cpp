@@ -29,6 +29,8 @@
 #include <qpainter.h>
 #include <qvariant.h>
 
+#define SIZE_ARROW (2.0 * sqrt(3.0))
+
 KstViewArrow::KstViewArrow()
 : KstViewLine("Arrow") {
   _editTitle = i18n("Edit Arrow");
@@ -54,9 +56,9 @@ KstViewArrow::KstViewArrow(const QDomElement& e)
         setProperty(el.tagName().latin1(), QVariant(el.text()));  
       }  
     }
-    n = n.nextSibling();      
+    n = n.nextSibling();
   }
-  
+
   // always has this value
   _type = "Arrow";
   _editTitle = i18n("Edit Arrow");
@@ -70,7 +72,7 @@ KstViewArrow::KstViewArrow(const KstViewArrow& arrow)
   _hasToArrow = arrow._hasToArrow;
   _fromArrowScaling = arrow._fromArrowScaling;
   _toArrowScaling = arrow._toArrowScaling;
-  
+
   // these always have these values
   _type = "Arrow";
   _standardActions |= Delete | Edit;
@@ -92,50 +94,48 @@ KstViewObject* KstViewArrow::copyObjectQuietly(KstViewObject& parent, const QStr
 
 
 void KstViewArrow::paintArrow(KstPainter& p, const QPoint& to, const QPoint &from, int w, double scaling) {
-  double deltax = scaling * 2.0 * double(w);
+  double deltax = scaling * double(w);
   double theta = atan2(double(from.y() - to.y()), double(from.x() - to.x())) - M_PI / 2.0;
   double sina = sin(theta);
   double cosa = cos(theta);
-  double yin = sqrt(3.0) * deltax;
+  double yin = SIZE_ARROW * deltax;
   double x1, y1, x2, y2;
   QWMatrix m(cosa, sina, -sina, cosa, 0.0, 0.0);
-  
+
   m.map( deltax, yin, &x1, &y1);
   m.map(-deltax, yin, &x2, &y2);
-  
+
   QPointArray pts(3);
   pts[0] = to;
   pts[1] = to + QPoint(d2i(x1), d2i(y1));
   pts[2] = to + QPoint(d2i(x2), d2i(y2));
-  
+
   p.drawPolygon(pts);
 }
 
 
 QRegion KstViewArrow::clipRegion() {
   if (_clipMask.isNull()) {
+    double scaling = kMax(_fromArrowScaling, _toArrowScaling);
+    int w = int(ceil(SIZE_ARROW * scaling * double(width())));
+    QRect rect(0, 0, _geom.bottomRight().x() + w + 1, _geom.bottomRight().y() + w + 1);
     _myClipMask = QRegion();
-    QBitmap bm1(_geom.bottomRight().x(), _geom.bottomRight().y(), true);
-    if (!bm1.isNull()) {
+    QBitmap bm(rect.size(), true);
+    if (!bm.isNull()) {
       KstPainter p;
+
       p.setMakingMask(true);
-      p.begin(&bm1);
+      p.begin(&bm);
       p.setViewXForm(true);
       KstViewLine::paintSelf(p, QRegion());
       p.flush();
-      p.end();
-      _clipMask = QRegion(bm1);
-    }
-    QBitmap bm2(_geom.bottomRight().x(), _geom.bottomRight().y(), true);
-    if (!bm2.isNull()) {
-      KstPainter p;
-      p.setMakingMask(true);
-      p.begin(&bm2);
-      p.setViewXForm(true);
+      _clipMask = QRegion(bm);
+
+      p.eraseRect(rect);
       paintSelf(p, QRegion());
       p.flush();
+      _myClipMask = QRegion(bm);
       p.end();
-      _myClipMask = QRegion(bm2);
     }
   }
 
@@ -154,23 +154,23 @@ void KstViewArrow::paintSelf(KstPainter& p, const QRegion& bounds) {
       p.setClipRegion(bounds & clip);
     }
   } else {
-      KstViewLine::paintSelf(p, bounds);
+    KstViewLine::paintSelf(p, bounds);
   }
-  
+
   if (hasArrow()) {
     QPoint to = KstViewLine::to();
-    QPoint from = KstViewLine::from();    
+    QPoint from = KstViewLine::from();
     const int w = width() * p.lineWidthAdjustmentFactor();
     QPen pen(_foregroundColor, w);
-    
+
     pen.setCapStyle(capStyle());
     p.setPen(pen);
     p.setBrush(_foregroundColor);
-    
-    if (_hasToArrow) {      
+
+    if (_hasToArrow) {
       paintArrow(p, to, from, w, _toArrowScaling);
     }
-    if (_hasFromArrow) {      
+    if (_hasFromArrow) {
       paintArrow(p, from, to, w, _fromArrowScaling);
     }
   }
@@ -220,40 +220,40 @@ QMap<QString, QVariant> KstViewArrow::widgetHints(const QString& propertyName) c
 
 
 bool KstViewArrow::hasFromArrow() const {
-  return _hasFromArrow;  
+  return _hasFromArrow;
 }
 
 
 void KstViewArrow::setHasFromArrow(bool yes) {
   if (_hasFromArrow != yes) {
-    _hasFromArrow = yes;  
+    _hasFromArrow = yes;
     setDirty();
   }
 }
 
 
 bool KstViewArrow::hasToArrow() const {
-  return _hasToArrow;  
+  return _hasToArrow;
 }
 
 
 void KstViewArrow::setHasToArrow(bool yes) {
   if (_hasToArrow != yes) {
-    _hasToArrow = yes;  
+    _hasToArrow = yes;
     setDirty();
   }
 }
 
 
 double KstViewArrow::fromArrowScaling() const {
-  return _fromArrowScaling;  
+  return _fromArrowScaling;
 }
 
 
 void KstViewArrow::setFromArrowScaling(double scaling) {
   if (scaling < 1.0) {
-    scaling = 1.0;  
-  }  
+    scaling = 1.0;
+  }
   if (_fromArrowScaling != scaling) {
     _fromArrowScaling = scaling;
     setDirty();
@@ -262,18 +262,42 @@ void KstViewArrow::setFromArrowScaling(double scaling) {
 
 
 double KstViewArrow::toArrowScaling() const {
-  return _toArrowScaling;  
+  return _toArrowScaling;
 }
 
 
 void KstViewArrow::setToArrowScaling(double scaling) {
   if (scaling < 1.0) {
-    scaling = 1.0;  
-  }  
+    scaling = 1.0;
+  }
   if (_toArrowScaling != scaling) {
     _toArrowScaling = scaling;
     setDirty();
   }
+}
+
+
+QRect KstViewArrow::surroundingGeometry() const {
+  QRect geom(geometry());
+
+  if (_hasFromArrow || _hasToArrow) {
+    double scaling;
+    if (_hasFromArrow && _hasToArrow) {
+      scaling = kMax(_fromArrowScaling, _toArrowScaling);
+    } else if (_hasFromArrow) {
+      scaling = _fromArrowScaling;
+    } else {
+      scaling = _toArrowScaling;
+    }
+    geom.setLeft(geom.left() - int( SIZE_ARROW * scaling * double(width()/2.0) ) - 1);
+    geom.setRight(geom.right() + int( SIZE_ARROW * scaling * double(width()/2.0) ) + 1);
+    geom.setTop(geom.top() - int( SIZE_ARROW * scaling * double(width()/2.0) ) - 1);
+    geom.setBottom(geom.bottom() + int( SIZE_ARROW * scaling * double(width()/2.0) ) + 1);
+  } else {
+    geom = KstViewLine::surroundingGeometry();
+  }
+
+  return geom;
 }
 
 

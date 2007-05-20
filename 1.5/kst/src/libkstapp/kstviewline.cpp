@@ -22,6 +22,7 @@
 
 #include <klocale.h>
 
+#include <qbitmap.h>
 #include <qmetaobject.h>
 #include <qpainter.h>
 #include <qvariant.h>
@@ -59,7 +60,7 @@ KstViewLine::KstViewLine(const QDomElement& e)
     }
     n = n.nextSibling();
   }
-  
+
   switch (orientationInt) {
     case 1:
       _orientation = UpRight;
@@ -90,7 +91,7 @@ KstViewLine::KstViewLine(const KstViewLine& line)
   _penStyle = line._penStyle;
   _orientation = line._orientation;
   _width = line._width;
-  
+
   // these always have these values
   _type = "Line";
   _standardActions |= Delete | Edit;
@@ -106,7 +107,7 @@ KstViewObject* KstViewLine::copyObjectQuietly(KstViewObject& parent, const QStri
 
   KstViewLine* viewLine = new KstViewLine(*this);
   parent.appendChild(viewLine, true);
-  
+
   return viewLine;
 }
 
@@ -116,7 +117,6 @@ void KstViewLine::paintSelf(KstPainter& p, const QRegion& bounds) {
   if (p.type() != KstPainter::P_PRINT && p.type() != KstPainter::P_EXPORT) {
     if (p.makingMask()) {
       p.setRasterOp(Qt::SetROP);
-      KstViewObject::paintSelf(p, geometry());
     } else {
       const QRegion clip(clipRegion());
       KstViewObject::paintSelf(p, bounds - clip);
@@ -132,29 +132,15 @@ void KstViewLine::paintSelf(KstPainter& p, const QRegion& bounds) {
   p.setPen(pen);
 
   const QRect geom(geometry());
-  int u = 0, v = 0;
-  
-  // Adjust for large widths.  We don't want the line clipped because it goes
-  // out of the bounding box.
-  if (w > 1 && geom.height() > 0) {
-    double theta = atan(geom.width()/geom.height());
-    if (theta >= 0 && theta <= M_PI/4) {
-      u = int(fabs((w / 2.0) * (sin(theta) + cos(theta))));
-      v = int(fabs((w / 2.0) * (1.5*sin(theta) + 0.5*cos(theta))));
-    } else {
-      u = int(fabs((w / 2.0) * (1.5*sin(theta) + 0.5*cos(theta))));
-      v = int(fabs((w / 2.0) * (sin(theta) + cos(theta))));
-    }
-  }
 
   switch (_orientation) {
     case UpLeft:
     case DownRight:
-      p.drawLine(geom.bottomRight() + QPoint(-u, -v), geom.topLeft() + QPoint(u, v));
+      p.drawLine(geom.bottomRight(), geom.topLeft());
       break;
     case UpRight:
     case DownLeft:
-      p.drawLine(geom.bottomLeft() + QPoint(u, -v), geom.topRight() + QPoint(-u, v));
+      p.drawLine(geom.bottomLeft(), geom.topRight());
       break;
   }
   p.restore();
@@ -260,6 +246,31 @@ Qt::PenStyle KstViewLine::penStyle() const {
 }
 
 
+QRegion KstViewLine::clipRegion() {
+  if (_clipMask.isNull()) {
+    int w = width();
+    QRect rect(0, 0, _geom.bottomRight().x() + w + 1, _geom.bottomRight().y() + w + 1);
+    QBitmap bm(rect.size(), true);
+
+    if (!bm.isNull()) {
+      KstPainter p;
+      p.setMakingMask(true);
+      p.begin(&bm);
+      p.setViewXForm(true);
+      p.eraseRect(rect);
+      paintSelf(p, QRegion());
+      p.flush();
+      p.end();
+      _clipMask = QRegion(bm);
+    } else {
+      _clipMask = QRegion(); // only invalidate our own variable
+    }
+  }
+
+  return _clipMask; 
+}
+
+
 void KstViewLine::move(const QPoint& pos) {
   KstViewObject::move(pos);
   if (_from.x() < _to.x()) {
@@ -287,21 +298,21 @@ void KstViewLine::updateOrientation() {
     if (_from.y() < _to.y()) {
       _orientation = DownRight;  
       KstViewObject::move(_from);
-      KstViewObject::resize(QSize(kMax(_width, _to.x() - _from.x() + 1), kMax(_width, _to.y() - _from.y() + 1)));
+      KstViewObject::resize(QSize(_to.x() - _from.x() + 1, _to.y() - _from.y() + 1));
     } else {
       _orientation = UpRight;  
       KstViewObject::move(QPoint(_from.x(), _to.y()));
-      KstViewObject::resize(QSize(kMax(_width, _to.x() - _from.x() + 1), kMax(_width, _from.y() - _to.y() + 1)));
+      KstViewObject::resize(QSize(_to.x() - _from.x() + 1, _from.y() - _to.y() + 1));
     }
   } else {
     if (_from.y() < _to.y()) {
       _orientation = DownLeft;  
       KstViewObject::move(QPoint(_to.x(), _from.y()));
-      KstViewObject::resize(QSize(kMax(_width, _from.x() - _to.x() + 1), kMax(_width, _to.y() - _from.y() + 1)));
+      KstViewObject::resize(QSize(_from.x() - _to.x() + 1, _to.y() - _from.y() + 1));
     } else {
       _orientation = UpLeft;  
       KstViewObject::move(_to);
-      KstViewObject::resize(QSize(kMax(_width, _from.x() - _to.x() + 1), kMax(_width, _from.y() - _to.y() + 1)));
+      KstViewObject::resize(QSize(_from.x() - _to.x() + 1, _from.y() - _to.y() + 1));
     }
   }
 }
@@ -310,7 +321,7 @@ void KstViewLine::updateOrientation() {
 void KstViewLine::drawFocusRect(KstPainter& p) {
   // draw the hotpoints
   QPoint point1, point2;
-  
+
   const int dx = KST_RESIZE_BORDER_W/2;
 
   const QRect geom(geometry());
@@ -348,9 +359,9 @@ inline bool linePointsCloseEnough(const QPoint& point1, const QPoint& point2) {
 
 signed int KstViewLine::directionFor(const QPoint& pos) {
   if (!isSelected()) {
-    return NONE;  
+    return NONE;
   }
-  
+
   const QRect geom(geometry());
   switch (_orientation) {
     case UpLeft:
@@ -393,7 +404,7 @@ QMap<QString, QVariant> KstViewLine::widgetHints(const QString& propertyName) co
   if (!map.empty()) {
     return map;  
   }
-  
+
   if (propertyName == "width") {
     map.insert(QString("_kst_widgetType"), QString("QSpinBox"));
     map.insert(QString("_kst_label"), i18n("Line width"));  
@@ -475,15 +486,14 @@ void KstViewLine::drawShadow(KstPainter& p, const QPoint& pos) {
 
 QRect KstViewLine::surroundingGeometry() const {
   QRect geom(geometry());
-  if (from().x() == to().x()) {
-    //vertical line
+
+  if (width() > 1) {
     geom.setLeft(geom.left() - width()/2 - 1);
     geom.setRight(geom.right() + width()/2 + 1);
-  } else if (from().y() == to().y()) {
-    //horizontal line
     geom.setTop(geom.top() - width()/2 - 1);
     geom.setBottom(geom.bottom() + width()/2 + 1);
   }
+
   return geom;
 }
 
