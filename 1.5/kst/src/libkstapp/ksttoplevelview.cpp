@@ -988,7 +988,7 @@ void KstTopLevelView::releasePressLayoutMode(const QPoint& pos, bool shift) {
       // we are resizing rectangular object(s)
       releasePressLayoutModeResize(pos, shift);
     }
-    _pressTarget->setFocus(true);   
+    _pressTarget->setFocus(true);
   } else { 
     // selecting objects using rubber band
     releasePressLayoutModeSelect(pos, shift);
@@ -1026,12 +1026,15 @@ void KstTopLevelView::releasePressLayoutModeMove(const QPoint& pos, bool shift) 
   // the returned object in that case.
   KstViewObjectPtr container = findDeepestChild(obj);
   bool updateViewManager = false;
-  
+
   if (!container) {
     container = this;
   }
   if (container != _pressTarget && !container->children().contains(_pressTarget)) {
-    _pressTarget->detach();
+    if (_pressTarget->parent()) {
+      _pressTarget->parent()->invalidateClipRegion();
+      _pressTarget->detach();
+    }
     container->appendChild(_pressTarget);
     updateViewManager = true;
   }
@@ -1047,10 +1050,12 @@ void KstTopLevelView::releasePressLayoutModeMove(const QPoint& pos, bool shift) 
       thisObj->move(_pressTarget->position() + thisObj->geometry().topLeft() - old.topLeft());
     }
   }
+  container->invalidateClipRegion();
   
   if (updateViewManager) {
     KstApp::inst()->updateViewManager(true);
   }
+
   _onGrid = false;
 }
 
