@@ -36,7 +36,7 @@ class KST_EXPORT KstDataObject : public KstObject {
   Q_OBJECT
 
   public:
-    enum Kind { Generic, Primitive, Fit, Filter };
+    enum Kind { Generic, Primitive, KstPlugin, Fit, Filter };
 
     KstDataObject();
     KstDataObject(const QDomElement& e);

@@ -633,6 +633,11 @@ KstDataManagerI::KstDataManagerI(KstDoc *in_doc, QWidget* parent, const char* na
   _data->setOrientation(Qt::Vertical);
   _data->setBackgroundMode(PaletteBase);
 
+  _plugins = new QToolBar(i18n("Create Plugin"), main, this);
+  _plugins->setFrameStyle(QFrame::NoFrame);
+  _plugins->setOrientation(Qt::Vertical);
+  _plugins->setBackgroundMode(PaletteBase);
+
   _fits = new QToolBar(i18n("Create Fit"), main, this);
   _fits->setFrameStyle(QFrame::NoFrame);
   _fits->setOrientation(Qt::Vertical);
@@ -650,6 +655,9 @@ KstDataManagerI::KstDataManagerI(KstDoc *in_doc, QWidget* parent, const char* na
 
   _data->setUpdatesEnabled(false);
   _data->clear();
+
+  _plugins->setUpdatesEnabled(false);
+  _plugins->clear();
 
   _fits->setUpdatesEnabled(false);
   _fits->clear();
@@ -685,6 +693,10 @@ KstDataManagerI::KstDataManagerI(KstDoc *in_doc, QWidget* parent, const char* na
   datw->setBackgroundMode(PaletteBase);
   _data->setStretchableWidget(datw);
 
+  QWidget *pluginw = new QWidget(_plugins);
+  pluginw->setBackgroundMode(PaletteBase);
+  _plugins->setStretchableWidget(pluginw);
+
   QWidget *fitw = new QWidget(_fits);
   fitw->setBackgroundMode(PaletteBase);
   _fits->setStretchableWidget(fitw);
@@ -697,11 +709,13 @@ KstDataManagerI::KstDataManagerI(KstDoc *in_doc, QWidget* parent, const char* na
 
   _primitive->setUpdatesEnabled(true);
   _data->setUpdatesEnabled(true);
+  _plugins->setUpdatesEnabled(true);
   _fits->setUpdatesEnabled(true);
   _filters->setUpdatesEnabled(true);
 
   ToolBox->addItem(_primitive, i18n("Create Primitive"));
   ToolBox->addItem(_data, i18n("Create Data Object"));
+  ToolBox->addItem(_plugins, i18n("Create Plugin"));
   ToolBox->addItem(_fits, i18n("Create Fit"));
   ToolBox->addItem(_filters, i18n("Create Filter"));
 }
@@ -744,12 +758,16 @@ void KstDataManagerI::setupPluginActions() {
     for (; it != newPlugins.end(); ++it) {
 
       KstDataObjectPtr ptr = KstDataObject::plugin(it.key());
-      if (!ptr)
+      if (!ptr) {
         continue;
+      }
 
       switch(it.data()) {
       case KstDataObject::Generic:
         createObjectAction(it.key(), _data, ptr, SLOT(showNewDialog()));
+        break;
+      case KstDataObject::KstPlugin:
+        createObjectAction(it.key(), _plugins, ptr, SLOT(showNewDialog()));
         break;
       case KstDataObject::Primitive:
         createObjectAction(it.key(), _primitive, ptr, SLOT(showNewDialog()));
@@ -779,12 +797,13 @@ void KstDataManagerI::setupPluginActions() {
     QStringList::ConstIterator it = oldPlugins.begin();
     for (; it != oldPlugins.end(); ++it) {
       if (KstSharedPtr<Plugin> p = PluginCollection::self()->plugin(readable[*it])) {
-        if (p->data()._isFit)
+        if (p->data()._isFit) {
           createObjectAction(*it, _fits, this, SLOT(showOldPlugin()));
-        else if (p->data()._isFilter)
+        } else if (p->data()._isFilter) {
           createObjectAction(*it, _filters, this, SLOT(showOldPlugin()));
-        else
-          createObjectAction(*it, _data, this, SLOT(showOldPlugin()));
+        } else {
+          createObjectAction(*it, _plugins, this, SLOT(showOldPlugin()));
+        }
       }
     }
   }

@@ -74,6 +74,7 @@ class KstDataManagerI : public KstDataManager {
     KstDoc *doc;
     QToolBar *_primitive;
     QToolBar *_data;
+    QToolBar *_plugins;
     QToolBar *_fits;
     QToolBar *_filters;
     KListViewSearchLineWidget *_searchWidget;

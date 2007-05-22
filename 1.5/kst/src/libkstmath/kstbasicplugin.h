@@ -31,6 +31,7 @@ class KST_EXPORT KstBasicPlugin : public KstDataObject {
     //Operates on the inputVectors, inputScalars, and inputStrings
     //to produce the outputVectors, outputScalars, and outputStrings.
     virtual bool algorithm() = 0;
+    virtual Kind kind() const { return KstPlugin; }
 
     //String lists of the names of the expected inputs.
     virtual QStringList inputVectorList() const = 0;

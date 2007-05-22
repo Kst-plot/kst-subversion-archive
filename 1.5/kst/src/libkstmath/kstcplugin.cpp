@@ -664,12 +664,13 @@ QString KstCPlugin::lastError() const {
 
 KstDataObject::Kind KstCPlugin::kind() const {
 
-  if (_plugin->data()._isFit)
+  if (_plugin->data()._isFit) {
     return Fit;
-  else if (_plugin->data()._isFilter)
+  } else if (_plugin->data()._isFilter) {
     return Filter;
-  else
-    return Generic;
+  }
+
+  return KstPlugin;
 }
 
 
