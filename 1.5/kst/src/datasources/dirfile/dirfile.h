@@ -50,6 +50,7 @@ class DirFileSource : public KstDataSource {
     bool reset();
 
   private:
+    QDict<int>  _errors;
     int _frameCount;
 };
 

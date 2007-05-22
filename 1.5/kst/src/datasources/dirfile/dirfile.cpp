@@ -18,7 +18,7 @@
 #include "dirfile.h"
 #include "getdata.h"
 #include "getdata_struct.h"
-
+#include "kstdebug.h"
 
 DirFileSource::DirFileSource(KConfig *cfg, const QString& filename, const QString& type)
 : KstDataSource(cfg, filename, type) {
@@ -72,7 +72,13 @@ bool DirFileSource::init() {
     }
 
     _writable = true;
+  } else {
+    char error[200];
+
+    GetDataErrorString(error, 200);
+    KstDebug::self()->log(error, KstDebug::Error);
   }
+
   return update() == KstObject::UPDATE;
 }
 
@@ -94,21 +100,35 @@ KstObject::UpdateType DirFileSource::update(int u) {
 
 
 int DirFileSource::readField(double *v, const QString& field, int s, int n) {
-  int err = 0;
+  int err = GD_E_OK;
+  int read;
 
   if (n < 0) {
-    return GetData(_filename.latin1(), field.left(FIELD_LENGTH).latin1(),
+    read = GetData(_filename.latin1(), field.left(FIELD_LENGTH).latin1(),
                    s, 0, /* 1st sframe, 1st samp */
                    0, 1, /* num sframes, num samps */
                    'd', (void*)v,
                    &err);
   } else {
-    return GetData(_filename.latin1(), field.left(FIELD_LENGTH).latin1(),
+    read = GetData(_filename.latin1(), field.left(FIELD_LENGTH).latin1(),
                    s, 0, /* 1st sframe, 1st samp */
                    n, 0, /* num sframes, num samps */
                    'd', (void*)v,
                    &err);
   }
+
+  if (err != GD_E_OK) {
+    if (_errors.find(field) == 0L) {
+      char error[200];
+
+      _errors.insert(field, (int*)1L);
+
+      GetDataErrorString(error, 200);
+      KstDebug::self()->log(error, KstDebug::Error);
+    }
+  }
+
+  return read;
 }
 
 
@@ -124,15 +144,34 @@ int DirFileSource::writeField(const double *v, const QString& field, int s, int 
 
 
 bool DirFileSource::isValidField(const QString& field) const {
-  int err = 0;
+  int err = GD_E_OK;
   GetSamplesPerFrame(_filename.latin1(), field.left(FIELD_LENGTH).latin1(), &err);
-  return err == 0;
+
+  if (err != GD_E_OK) {
+    char error[200];
+
+    GetDataErrorString(error, 200);
+    KstDebug::self()->log(error, KstDebug::Error);
+  }
+
+  return err == GD_E_OK;
 }
 
 
 int DirFileSource::samplesPerFrame(const QString &field) {
-  int err = 0;
-  return GetSamplesPerFrame(_filename.latin1(), field.left(FIELD_LENGTH).latin1(), &err);
+  int samples = 0;
+  int err = GD_E_OK;
+
+  samples = GetSamplesPerFrame(_filename.latin1(), field.left(FIELD_LENGTH).latin1(), &err);
+
+  if (err != GD_E_OK) {
+    char error[200];
+
+    GetDataErrorString(error, 200);
+    KstDebug::self()->log(error, KstDebug::Error);
+  }
+
+  return samples;
 }
 
 
@@ -222,7 +261,13 @@ QStringList fieldList_dirfile(KConfig*, const QString& filename, const QString& 
     for (int i = 0; i < ft->n_raw; i++) {
       fieldList.append(ft->rawEntries[i].field);
     }
+  } else {
+    char error[200];
+
+    GetDataErrorString(error, 200);
+    KstDebug::self()->log(error, KstDebug::Error);
   }
+
   return fieldList;
 }
 
