@@ -136,6 +136,7 @@ class KST_EXPORT KstViewObject : public KstObject {
     KstViewObjectPtr findChild(const QString& name, bool recursive = true);
     bool contains(const KstViewObjectPtr child) const;
     template<class T> KstObjectList<KstSharedPtr<T> > findChildrenType(bool recursive = false);
+    KstViewObjectList findChildrenType( const QString& type, bool recursive = false);
 
     // Finds a container that can hold this rect.  Only searches objects that
     // are containers.

@@ -31,9 +31,11 @@
 
 #include <kcolorbutton.h>
 #include <kfontcombo.h>
+#include <klineedit.h>
+#include <kmessagebox.h>
 #include <knuminput.h>
 #include <kurlrequester.h>
-  
+
 #include "kst.h"
 
 #include <klocale.h>
@@ -44,10 +46,17 @@ KstEditViewObjectDialogI::KstEditViewObjectDialogI(QWidget* parent, const char* 
   connect(_cancel, SIGNAL(clicked()), this, SLOT(close()));
   connect(_apply, SIGNAL(clicked()), this, SLOT(applyClicked()));
   connect(_OK, SIGNAL(clicked()), this, SLOT(okClicked()));
+  connect(_editMultiple, SIGNAL(clicked()), this, SLOT(toggleEditMultiple()));
 
   _grid = 0L;
   _viewObject = 0L;
   _isNew = false;
+
+  _editMultipleMode = false;
+  _editMultipleWidget->hide();
+  if (_customWidget) {
+    _editMultiple->setEnabled(false);
+  }
 
   resize(360, 200);
   setMinimumSize(360, 200);
@@ -88,6 +97,76 @@ void KstEditViewObjectDialogI::showEditViewObjectDialog(KstViewObjectPtr viewObj
 }
 
 
+void KstEditViewObjectDialogI::toggleEditMultiple()
+{
+  _editMultipleWidget->_objectList->clear();
+
+  if (_editMultipleMode) {
+    _editMultipleWidget->hide();
+    _editMultiple->setText(i18n("Edit Multiple >>"));
+
+    updateWidgets();
+  } else {
+    _editMultipleWidget->show();
+    _editMultiple->setText(i18n("Edit Multiple <<"));
+
+    populateEditMultiple();
+  }
+
+  _editMultipleMode = !_editMultipleMode;
+  adjustSize();
+  resize(minimumSizeHint());
+  setFixedHeight(height());
+}
+
+
+void KstEditViewObjectDialogI::populateEditMultiple()
+{
+  KstViewObjectList list;
+
+  KMdiIterator<KMdiChildView*>* it = KstApp::inst()->createIterator();
+  if (it) {
+    while (it->currentItem()) {
+      KstViewWindow *view = dynamic_cast<KstViewWindow*>(it->currentItem());
+      if (view) {
+        list += view->view()->findChildrenType(_viewObject->type(), true);
+      }
+      it->next();
+    }
+    KstApp::inst()->deleteIterator(it);
+  }
+
+  _editMultipleWidget->_objectList->insertStringList(list.tagNames());
+
+  QSpinBox *spinBoxWidget;
+  KColorButton *colorButtonWidget;
+  KURLRequester *urlRequester;
+  QLineEdit *lineEditWidget;
+  QCheckBox *checkBoxWidget;
+  QComboBox *comboWidget;
+
+  for (QValueList<QWidget*>::ConstIterator iter = _inputWidgets.begin(); iter != _inputWidgets.end(); ++iter) {
+    if ((spinBoxWidget = dynamic_cast<QSpinBox*>(*iter)) != 0L) {
+      spinBoxWidget->setMinValue(spinBoxWidget->minValue() - 1);
+      spinBoxWidget->setSpecialValueText(QString(" "));
+      spinBoxWidget->setValue(spinBoxWidget->minValue());
+    } else if ((colorButtonWidget = dynamic_cast<KColorButton*>(*iter)) != 0L) {
+      colorButtonWidget->setColor(QColor());
+    } else if ((urlRequester = dynamic_cast<KURLRequester*>(*iter)) != 0L) {
+      urlRequester->lineEdit()->setText(QString(" "));
+    } else if ((lineEditWidget = dynamic_cast<QLineEdit*>(*iter)) != 0L) {
+      lineEditWidget->setText(QString(" "));
+    } else if ((checkBoxWidget = dynamic_cast<QCheckBox*>(*iter)) != 0L) {
+      checkBoxWidget->setTristate();
+      checkBoxWidget->setNoChange();
+    } else if ((comboWidget = dynamic_cast<QComboBox*>(*iter)) != 0L) {
+      comboWidget->insertItem(QString(" "));
+      comboWidget->setCurrentItem(comboWidget->count()-1);
+    }
+  }
+}
+
+
 void KstEditViewObjectDialogI::clearWidgets() {
   // clear all the current widgets from the grid
   for (QValueList<QWidget*>::Iterator i = _inputWidgets.begin(); i != _inputWidgets.end(); ++i) {
@@ -123,7 +202,7 @@ void KstEditViewObjectDialogI::updateWidgets() {
       resize(minimumSizeHint());
       return;
     }
-    
+
     //---------------------------------------------------------------
     // NOTE: due to Early return, nothing after this line is executed
     // if the view object provides a custom widget.
@@ -132,31 +211,31 @@ void KstEditViewObjectDialogI::updateWidgets() {
 
     // create a new grid
     _grid = new QGridLayout(_propertiesFrame, numProperties, 2, 0, 8);
-    _grid->setColStretch(0,0);
-    _grid->setColStretch(1,1);
-    
+    _grid->setColStretch(0, 0);
+    _grid->setColStretch(1, 1);
+
     // get the property names and types
     for (int i = 0; i < numProperties; i++) {
       const QMetaProperty* property = _viewObject->metaObject()->property(i, true);
       QString propertyType(property->type());
       QString propertyName(property->name());
-     
+
       // for this property, get the meta-data map
       QMap<QString, QVariant> metaData = _viewObject->widgetHints(propertyName);
-      
+
       if (!metaData.empty()) {
         QString friendlyName = metaData["_kst_label"].toString();
         QString widgetType = metaData["_kst_widgetType"].toString();
         metaData.erase("_kst_label");
         metaData.erase("_kst_widgetType");
-        
+
         // use friendly name for label
         QLabel* propertyLabel = new QLabel(_propertiesFrame, "label-"+i);
         propertyLabel->setText(friendlyName);
         _grid->addWidget(propertyLabel,i,0);
         _widgets.append(propertyLabel);
         propertyLabel->show();
-        
+
         // display different types of widgets depending on what dialogData specifies
         QWidget* propertyWidget = 0L;
         if (widgetType == "QSpinBox") {
@@ -249,18 +328,18 @@ void KstEditViewObjectDialogI::updateWidgets() {
             connect(propertyWidget, SIGNAL(activated(int)), this, SLOT(modified()));
           }
         }
-        
+
         // also set any additional properties specified by metaData
         for (QMap<QString, QVariant>::ConstIterator it = metaData.begin(); it != metaData.end(); ++it) {
           propertyWidget->setProperty(it.key().latin1(), it.data());
         }
-        
+
         _grid->addWidget(propertyWidget, i, 1);
         _inputWidgets.append(propertyWidget);
         propertyWidget->show();
-      }   
+      }
     }
-    
+
     // geometry cleanup
     resize(minimumSizeHint());
     //setFixedHeight(height());
@@ -282,15 +361,15 @@ void KstEditViewObjectDialogI::fillPenStyleWidget(QComboBox* widget) {
   QPainter pp(&ppix);
   QPen pen(Qt::black, 0);
 
-  widget->clear(); 
-  
+  widget->clear();
+
   QValueList<Qt::PenStyle> styles;
   styles.append(Qt::SolidLine);
   styles.append(Qt::DashLine);
   styles.append(Qt::DotLine);
   styles.append(Qt::DashDotLine);
   styles.append(Qt::DashDotDotLine);
-  
+
   while (!styles.isEmpty()) {
     pen.setStyle(styles.front());
     pp.setPen(pen);
@@ -307,7 +386,7 @@ void KstEditViewObjectDialogI::fillHJustifyWidget(QComboBox* widget) {
   widget->insertItem(i18n("Right"));
   widget->insertItem(i18n("Center")); 
 }
-    
+
 
 void KstEditViewObjectDialogI::fillVJustifyWidget(QComboBox* widget) {
   widget->insertItem(i18n("Top"));
@@ -321,21 +400,66 @@ void KstEditViewObjectDialogI::modified() {
 }
 
 
-void KstEditViewObjectDialogI::applyClicked() {
+void KstEditViewObjectDialogI::applySettings(KstViewObjectPtr viewObject) {
   if (_customWidget) {
     // FILL ME IN TODO
-    _viewObject->readConfigWidget(_customWidget);
+    viewObject->readConfigWidget(_customWidget);
   } else {
     // get all the properties and set them
     for (QValueList<QWidget*>::ConstIterator iter = _inputWidgets.begin(); iter != _inputWidgets.end(); ++iter) {
-      
-      // get the widget type and property name
-      QString propertyName = QString((*iter)->name()).section(',', 0, 0);
-      QString widgetPropertyName = QString((*iter)->name()).section(',', 1, 1);
-      
-      // get the widget's property and set it on the viewObject
-      _viewObject->setProperty(propertyName.latin1(), (*iter)->property(widgetPropertyName.latin1()));
+      if (_editMultiple) {
+        QSpinBox *spinBoxWidget;
+        KColorButton *colorButtonWidget;
+        KURLRequester *urlRequester;
+        QLineEdit *lineEditWidget;
+        QCheckBox *checkBoxWidget;
+        QComboBox *comboWidget;
+        bool edited = false;
+
+        if ((spinBoxWidget = dynamic_cast<QSpinBox*>(*iter)) != 0L) {
+          if (spinBoxWidget->value() != spinBoxWidget->minValue()) {
+            edited = true;
+          }
+        } else if ((colorButtonWidget = dynamic_cast<KColorButton*>(*iter)) != 0L) {
+          if (colorButtonWidget->color() != QColor()) {
+            edited = true;
+          }
+        } else if ((urlRequester = dynamic_cast<KURLRequester*>(*iter)) != 0L) {
+          if (urlRequester->lineEdit()->text().compare(QString(" ")) != 0) {
+            edited = true;
+          }
+        } else if ((lineEditWidget = dynamic_cast<QLineEdit*>(*iter)) != 0L) {
+          if (lineEditWidget->text().compare(QString(" ")) != 0 ) {
+            edited = true;
+          }
+        } else if ((checkBoxWidget = dynamic_cast<QCheckBox*>(*iter)) != 0L) {
+          if (checkBoxWidget->state() != QButton::NoChange) {
+            edited = true;
+          }
+        } else if ((comboWidget = dynamic_cast<QComboBox*>(*iter)) != 0L) {
+          if (comboWidget->currentText().compare(QString(" ")) != 0) {
+            edited = true;
+          }
+        }
+
+        if (edited) {
+          // get the widget type and property name
+          QString propertyName = QString((*iter)->name()).section(',', 0, 0);
+          QString widgetPropertyName = QString((*iter)->name()).section(',', 1, 1);
+
+          // get the widget's property and set it on the viewObject
+          viewObject->setProperty(propertyName.latin1(), (*iter)->property(widgetPropertyName.latin1()));
+        }
+      } else {
+        // get the widget type and property name
+        QString propertyName = QString((*iter)->name()).section(',', 0, 0);
+        QString widgetPropertyName = QString((*iter)->name()).section(',', 1, 1);
+
+        // get the widget's property and set it on the viewObject
+        viewObject->setProperty(propertyName.latin1(), (*iter)->property(widgetPropertyName.latin1()));
+      }
     }
+
 #if 0
     // Removed by George.  This is very strange.  Some dialogs have 10+
     // properties, and when I change 8 of them, the next "new" object of the
@@ -343,28 +467,71 @@ void KstEditViewObjectDialogI::applyClicked() {
     // change them all back to what they were before.  I think this is too
     // confusing and annoying.  We could add a sticky flag or something like
     // that if this feature is really demanded.
-    
+
     // and then save this viewObject's properties as the default
     if (_top) {
-      _top->saveDefaults(_viewObject); 
+      _top->saveDefaults(_viewObject);
     }
 #endif
   }
-  
+}
+
+
+bool KstEditViewObjectDialogI::apply() {
+  bool applied = false;
+
+  if (_editMultipleMode) {
+    for (uint i = 0; i < _editMultipleWidget->_objectList->count(); i++) {
+      if (_editMultipleWidget->_objectList->isSelected(i)) {
+        KMdiIterator<KMdiChildView*>* it = KstApp::inst()->createIterator();
+
+        if (it) {
+          while (it->currentItem()) {
+            KstViewWindow *view = dynamic_cast<KstViewWindow*>(it->currentItem());
+            if (view) {
+              QString name = _editMultipleWidget->_objectList->text(i);
+
+              KstViewObjectPtr viewObject = kst_cast<KstViewObject>(view->view()->findChild(name));
+              if (viewObject) {
+                applySettings(viewObject);
+
+                break;
+              }
+            }
+            it->next();
+          }
+          KstApp::inst()->deleteIterator(it);
+        }
+        applied = true;
+      }
+    }
+
+    if (!applied) {
+      KMessageBox::sorry(this, i18n("Select one or more objects to edit."));
+    }
+  } else {
+    applied = true;
+    applySettings(_viewObject);
+  }
+
   _apply->setDisabled(true);
   KstApp::inst()->paintAll(KstPainter::P_PAINT);
+
+  return applied;
+}
+
+
+void KstEditViewObjectDialogI::applyClicked() {
+  apply();
 }
 
 
 void KstEditViewObjectDialogI::okClicked() {
-  if (!_viewObject) {
+  if (_viewObject && apply()) {
+    QDialog::accept();
+  } else {
     QDialog::reject();
-    return;
   }
-
-  applyClicked();
-
-  QDialog::accept();
 }
 
 

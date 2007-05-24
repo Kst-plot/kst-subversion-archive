@@ -18,8 +18,10 @@
 #ifndef KSTEDITVIEWOBJECTDIALOGI_H
 #define KSTEDITVIEWOBJECTDIALOGI_H
 
+#include "editmultiplewidget.h"
 #include "editviewobjectdialog.h"
 #include "kstviewobject.h"
+#include "kstviewwindow.h"
 #include "ksttoplevelview.h"
 #include "kst_export.h"
 #include <qguardedptr.h>
@@ -39,25 +41,30 @@ class KST_EXPORT KstEditViewObjectDialogI : public KstEditViewObjectDialog {
     void updateEditViewObjectDialog();
     void showEditViewObjectDialog(KstViewObjectPtr viewObject, KstTopLevelViewPtr top);
     void setNew();
-    
+    void toggleEditMultiple();
+
   private:
     void updateWidgets();
     void clearWidgets();
-    
+    void populateEditMultiple();
+    void applySettings(KstViewObjectPtr viewObject);
+    bool apply();
+
     void fillPenStyleWidget(QComboBox* widget);
     void fillHJustifyWidget(QComboBox* widget);
     void fillVJustifyWidget(QComboBox* widget);
-    
+
     KstViewObjectPtr _viewObject; // the view object we are currently editing
     KstTopLevelViewPtr _top; // the top level view that invoked this dialog
-    
+
     // for layout purposes
     QValueList<QWidget*> _inputWidgets; // the widgets used to change properties
     QValueList<QWidget*> _widgets; // all other widgets
     QGridLayout* _grid;
     QGuardedPtr<QWidget> _customWidget;
     bool _isNew;
-    
+    bool _editMultipleMode;
+
   private slots:
     void applyClicked();
     void okClicked();

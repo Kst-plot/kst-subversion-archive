@@ -544,6 +544,22 @@ void KstViewObject::insertChildAfter(const KstViewObjectPtr after, KstViewObject
 }
 
 
+KstViewObjectList KstViewObject::findChildrenType( const QString& type, bool recursive) {
+  KstViewObjectList rc;
+  for (KstViewObjectList::Iterator i = _children.begin(); i != _children.end(); ++i) {
+    if ((*i)->type().compare(type) == 0) {
+      rc.append(*i);
+    }
+
+    if (recursive) {
+      rc += (*i)->findChildrenType(type, recursive);
+    }
+  }
+
+  return rc;
+}
+
+
 void KstViewObject::clearChildren() {
   for (KstViewObjectList::Iterator i = _children.begin(); i != _children.end(); ++i) {
     (*i)->_parent = 0L;

@@ -1,55 +1,133 @@
-<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <class>KstEditViewObjectDialog</class>
 <widget class="QDialog">
     <property name="name">
         <cstring>KstEditViewObjectDialog</cstring>
     </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>782</width>
+            <height>426</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>KstEditViewObjectDialog</string>
+    </property>
     <grid>
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <spacer row="1" column="0">
+        <widget class="EditMultipleWidget" row="0" column="1" rowspan="3" colspan="1">
             <property name="name">
-                <cstring>spacer6</cstring>
+                <cstring>_editMultipleWidget</cstring>
             </property>
-            <property name="orientation">
-                <enum>Horizontal</enum>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>1</hsizetype>
+                    <vsizetype>5</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
             </property>
-            <property name="sizeType">
-                <enum>Expanding</enum>
-            </property>
-            <property name="sizeHint">
+            <property name="minimumSize">
                 <size>
-                    <width>142</width>
-                    <height>20</height>
+                    <width>300</width>
+                    <height>0</height>
                 </size>
             </property>
-        </spacer>
-        <widget class="QPushButton" row="1" column="1">
-            <property name="name">
-                <cstring>_OK</cstring>
-            </property>
-            <property name="text">
-                <string>&amp;OK</string>
-            </property>
         </widget>
-        <widget class="QPushButton" row="1" column="2">
+        <widget class="QLayoutWidget" row="0" column="0">
             <property name="name">
-                <cstring>_apply</cstring>
+                <cstring>layout5</cstring>
             </property>
-            <property name="text">
-                <string>&amp;Apply</string>
-            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <spacer>
+                    <property name="name">
+                        <cstring>spacer4</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>241</width>
+                            <height>31</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>_editMultiple</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Edit &amp;Multiple &gt;&gt;</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+M</string>
+                    </property>
+                </widget>
+            </hbox>
         </widget>
-        <widget class="QPushButton" row="1" column="3">
+        <widget class="QLayoutWidget" row="3" column="0" rowspan="1" colspan="2">
             <property name="name">
-                <cstring>_cancel</cstring>
+                <cstring>layout6</cstring>
             </property>
-            <property name="text">
-                <string>&amp;Cancel</string>
-            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <spacer>
+                    <property name="name">
+                        <cstring>spacer6</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>142</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>_OK</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;OK</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>_apply</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Apply</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>_cancel</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Cancel</string>
+                    </property>
+                </widget>
+            </hbox>
         </widget>
-        <widget class="QButtonGroup" row="0" column="0" rowspan="1" colspan="4">
+        <widget class="QButtonGroup" row="1" column="0">
             <property name="name">
                 <cstring>_propertiesGroup</cstring>
             </property>
@@ -76,17 +154,39 @@
                 </widget>
             </grid>
         </widget>
+        <spacer row="2" column="0">
+            <property name="name">
+                <cstring>spacer5</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Vertical</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>41</width>
+                    <height>241</height>
+                </size>
+            </property>
+        </spacer>
     </grid>
 </widget>
+<customwidgets>
+</customwidgets>
 <tabstops>
     <tabstop>_propertiesFrame</tabstop>
     <tabstop>_OK</tabstop>
     <tabstop>_apply</tabstop>
     <tabstop>_cancel</tabstop>
 </tabstops>
-<layoutdefaults spacing="6" margin="11"/>
 <includes>
-   <include location="global" impldecl="in declaration">kst_export.h</include>
+    <include location="global" impldecl="in declaration">kst_export.h</include>
 </includes>
 <exportmacro>KST_EXPORT</exportmacro>
+<layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>editmultiplewidget.h</includehint>
+</includehints>
 </UI>
