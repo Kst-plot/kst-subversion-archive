@@ -802,12 +802,14 @@ int main(int argc, char *argv[]) {
       kst->immediatePrintToPng(pngfile);
     }
 
+    kst->document()->setModified(false);
+
     if (print_and_exit) {
       delete kst;
       return 0;
     } else {
       kst->updateDialogs();
-      
+
       if (showQuickStart) {
         kst->showQuickStartDialog();
       }
