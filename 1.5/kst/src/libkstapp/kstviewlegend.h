@@ -73,20 +73,21 @@ class KstViewLegend : public KstBorderedViewObject {
     void paintSelf(KstPainter& p, const QRegion& bounds);
     void resize(const QSize&);
     QRegion clipRegion();
-    
-    QWidget *configWidget();
+
+    QWidget *configWidget(QWidget *parent);
 
     // handle custom widget, if any: is called by KstEditViewObjectDialogI
     bool fillConfigWidget(QWidget *w, bool isNew) const;
-    bool readConfigWidget(QWidget *w);
+    bool readConfigWidget(QWidget *w, bool editMultipleMode);
     void connectConfigWidget(QWidget *parent, QWidget *w) const;
-    
+    void populateEditMultiple(QWidget *w);
+
     void addCurve(KstBaseCurvePtr curve);
     void removeCurve(KstBaseCurvePtr curve);
     void clear();
 
     void setCurveList(Kst2DPlotPtr plot);
-    
+
     bool vertical() const;
     void setVertical(bool vertical);
 

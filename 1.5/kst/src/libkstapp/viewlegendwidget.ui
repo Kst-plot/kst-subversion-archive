@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <class>ViewLegendWidget</class>
 <widget class="QWidget">
     <property name="name">
@@ -11,6 +11,9 @@
             <width>714</width>
             <height>433</height>
         </rect>
+    </property>
+    <property name="caption">
+        <string>ViewLegendWidget</string>
     </property>
     <grid>
         <property name="name">
@@ -446,69 +449,6 @@
                 </widget>
             </hbox>
         </widget>
-        <widget class="QButtonGroup" row="7" column="0" rowspan="1" colspan="3">
-            <property name="name">
-                <cstring>buttonGroup3</cstring>
-            </property>
-            <property name="title">
-                <string>Apply Settings To</string>
-            </property>
-            <grid>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <spacer row="0" column="3">
-                    <property name="name">
-                        <cstring>spacer16</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>30</width>
-                            <height>21</height>
-                        </size>
-                    </property>
-                </spacer>
-                <widget class="QRadioButton" row="0" column="0">
-                    <property name="name">
-                        <cstring>_thisLegend</cstring>
-                    </property>
-                    <property name="text">
-                        <string>This legend</string>
-                    </property>
-                    <property name="accel">
-                        <string></string>
-                    </property>
-                </widget>
-                <widget class="QRadioButton" row="0" column="1">
-                    <property name="name">
-                        <cstring>_thisWindow</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Current window's legends</string>
-                    </property>
-                    <property name="accel">
-                        <string></string>
-                    </property>
-                </widget>
-                <widget class="QRadioButton" row="0" column="2">
-                    <property name="name">
-                        <cstring>_allLegends</cstring>
-                    </property>
-                    <property name="text">
-                        <string>All legends</string>
-                    </property>
-                    <property name="accel">
-                        <string></string>
-                    </property>
-                </widget>
-            </grid>
-        </widget>
     </grid>
 </widget>
 <customwidgets>
@@ -519,6 +459,10 @@
     <include location="global" impldecl="in implementation">kiconloader.h</include>
     <include location="local" impldecl="in implementation">viewlegendwidget.ui.h</include>
 </includes>
+<variables>
+    <variable access="public">bool _changedFgColor;</variable>
+    <variable access="public">bool _changedBgColor;</variable>
+</variables>
 <signals>
     <signal>changed()</signal>
 </signals>
@@ -526,6 +470,8 @@
     <slot specifier="non virtual">updateButtons()</slot>
     <slot specifier="non virtual">removeDisplayedCurve()</slot>
     <slot specifier="non virtual">addDisplayedCurve()</slot>
+    <slot>changedFgColor()</slot>
+    <slot>changedBgColor()</slot>
 </slots>
 <functions>
     <function access="private" specifier="non virtual">init()</function>
@@ -533,10 +479,11 @@
 <exportmacro>KST_EXPORT</exportmacro>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
+    <includehint>plotlistbox.h</includehint>
+    <includehint>plotlistbox.h</includehint>
     <includehint>kcolorbutton.h</includehint>
     <includehint>kfontcombo.h</includehint>
     <includehint>klineedit.h</includehint>
     <includehint>kdualcolorbutton.h</includehint>
-    <includehint>kiconloader.h</includehint>
 </includehints>
 </UI>

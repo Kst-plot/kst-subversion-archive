@@ -52,11 +52,9 @@ KstEditViewObjectDialogI::KstEditViewObjectDialogI(QWidget* parent, const char* 
   _viewObject = 0L;
   _isNew = false;
 
+  _customWidget = 0L;
   _editMultipleMode = false;
   _editMultipleWidget->hide();
-  if (_customWidget) {
-    _editMultiple->setEnabled(false);
-  }
 
   resize(360, 200);
   setMinimumSize(360, 200);
@@ -73,6 +71,7 @@ KstEditViewObjectDialogI::~KstEditViewObjectDialogI() {
 void KstEditViewObjectDialogI::setNew() {
   _isNew = true;
   _apply->setEnabled(false);
+  _editMultiple->setEnabled(false);
 }
 
 
@@ -110,18 +109,26 @@ void KstEditViewObjectDialogI::toggleEditMultiple()
     _editMultipleWidget->show();
     _editMultiple->setText(i18n("Edit Multiple <<"));
 
-    populateEditMultiple();
+    if (_customWidget) {
+      if (_viewObject) {
+        fillObjectList();
+        _viewObject->populateEditMultiple(_customWidget);
+      }
+    } else {
+      fillObjectList();
+      populateEditMultiple();
+    }
   }
 
   _editMultipleMode = !_editMultipleMode;
+
   adjustSize();
   resize(minimumSizeHint());
   setFixedHeight(height());
 }
 
 
-void KstEditViewObjectDialogI::populateEditMultiple()
-{
+void KstEditViewObjectDialogI::fillObjectList() {
   KstViewObjectList list;
 
   KMdiIterator<KMdiChildView*>* it = KstApp::inst()->createIterator();
@@ -137,7 +144,11 @@ void KstEditViewObjectDialogI::populateEditMultiple()
   }
 
   _editMultipleWidget->_objectList->insertStringList(list.tagNames());
+}
 
+
+void KstEditViewObjectDialogI::populateEditMultiple()
+{
   QSpinBox *spinBoxWidget;
   KColorButton *colorButtonWidget;
   KURLRequester *urlRequester;
@@ -173,40 +184,41 @@ void KstEditViewObjectDialogI::clearWidgets() {
     delete *i;
   }
   _inputWidgets.clear();
+
   for (QValueList<QWidget*>::Iterator i = _widgets.begin(); i != _widgets.end(); ++i) {
     delete *i;
   }
   _widgets.clear();
+
   delete _customWidget;
-  // and the delete the grid itself
+  _customWidget = 0L;
+
   delete _grid;
   _grid = 0L;
 }
 
 
 void KstEditViewObjectDialogI::updateWidgets() {
-  // clear all the current widgets from the grid
   clearWidgets();
 
   // get the qt properties of the viewobject
   if (_viewObject) {
-    _customWidget = _viewObject->configWidget();
+    _customWidget = _viewObject->configWidget(_propertiesFrame);
     if (_customWidget) {
       _grid = new QGridLayout(_propertiesFrame, 1, 1);
-      _customWidget->reparent(_propertiesFrame, QPoint(0, 0));
+      _customWidget->show();
       _grid->addWidget(_customWidget, 0, 0);
       _viewObject->fillConfigWidget(_customWidget, _isNew);
       if (!_isNew) {
         _viewObject->connectConfigWidget(this, _customWidget);
       }
-      resize(minimumSizeHint());
+
       return;
     }
 
     //---------------------------------------------------------------
     // NOTE: due to Early return, nothing after this line is executed
     // if the view object provides a custom widget.
-
     int numProperties = _viewObject->metaObject()->numProperties(true);
 
     // create a new grid
@@ -232,9 +244,9 @@ void KstEditViewObjectDialogI::updateWidgets() {
         // use friendly name for label
         QLabel* propertyLabel = new QLabel(_propertiesFrame, "label-"+i);
         propertyLabel->setText(friendlyName);
-        _grid->addWidget(propertyLabel,i,0);
-        _widgets.append(propertyLabel);
+        _grid->addWidget(propertyLabel, i, 0);
         propertyLabel->show();
+        _widgets.append(propertyLabel);
 
         // display different types of widgets depending on what dialogData specifies
         QWidget* propertyWidget = 0L;
@@ -329,6 +341,8 @@ void KstEditViewObjectDialogI::updateWidgets() {
           }
         }
 
+        propertyWidget->show();
+
         // also set any additional properties specified by metaData
         for (QMap<QString, QVariant>::ConstIterator it = metaData.begin(); it != metaData.end(); ++it) {
           propertyWidget->setProperty(it.key().latin1(), it.data());
@@ -336,13 +350,8 @@ void KstEditViewObjectDialogI::updateWidgets() {
 
         _grid->addWidget(propertyWidget, i, 1);
         _inputWidgets.append(propertyWidget);
-        propertyWidget->show();
       }
     }
-
-    // geometry cleanup
-    resize(minimumSizeHint());
-    //setFixedHeight(height());
   }
 }
 
@@ -403,11 +412,11 @@ void KstEditViewObjectDialogI::modified() {
 void KstEditViewObjectDialogI::applySettings(KstViewObjectPtr viewObject) {
   if (_customWidget) {
     // FILL ME IN TODO
-    viewObject->readConfigWidget(_customWidget);
+    viewObject->readConfigWidget(_customWidget, _editMultipleMode);
   } else {
     // get all the properties and set them
     for (QValueList<QWidget*>::ConstIterator iter = _inputWidgets.begin(); iter != _inputWidgets.end(); ++iter) {
-      if (_editMultiple) {
+      if (_editMultipleMode) {
         QSpinBox *spinBoxWidget;
         KColorButton *colorButtonWidget;
         KURLRequester *urlRequester;

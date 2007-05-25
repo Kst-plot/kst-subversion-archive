@@ -124,8 +124,8 @@ class KST_EXPORT KstViewObject : public KstObject {
     bool objectDirty() const; // true if this object or a child is dirty
     bool fallThroughTransparency() const;
     bool isResizable() const;
-    
-    virtual QWidget *configWidget();
+
+    virtual QWidget *configWidget(QWidget *parent);
 
     // can't be const due to KstViewObjectPtr?
     // I don't like this method at all, but for now it makes things work.  Maybe
@@ -249,11 +249,12 @@ class KST_EXPORT KstViewObject : public KstObject {
 
     // handle custom widget, if any: is called by KstEditViewObjectDialogI
     virtual bool fillConfigWidget(QWidget *w, bool isNew) const;
-    virtual bool readConfigWidget(QWidget *w);
+    virtual bool readConfigWidget(QWidget *w, bool editMultipleMode);
     virtual void connectConfigWidget(QWidget *parent, QWidget *w) const;
-    
+    virtual void populateEditMultiple(QWidget *w);
+
     virtual bool paste(QMimeSource* source, KstViewObjectList *list = 0L);
-    
+
     virtual KstGfxMouseHandler *createHandler();
     void setDirty(bool = true);
 

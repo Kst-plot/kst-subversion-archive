@@ -22,6 +22,9 @@ void ViewLabelWidget::init()
     _horizontal->hide();// FIXME: until implemented - bug 135437
     textLabel5_3->hide();
 
+    _changedFgColor = false;
+    _changedBgColor = false;
+
     connect(_strings, SIGNAL(selectionChanged(const QString &)),
 	    this, SLOT(insertStringInText(const QString &)));
 
@@ -37,6 +40,16 @@ void ViewLabelWidget::insertScalarInText(const QString &S)
 void ViewLabelWidget::insertStringInText(const QString &S)
 {
     _text->insert("["+S+"]");
+}
+
+void ViewLabelWidget::changedFgColor( )
+{
+  _changedFgColor = true;
+}
+
+void ViewLabelWidget::changedBgColor( )
+{
+  _changedBgColor = true;
 }
 
 // vim: ts=8 sw=4 noet

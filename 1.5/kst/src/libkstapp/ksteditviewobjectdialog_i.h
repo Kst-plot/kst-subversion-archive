@@ -46,6 +46,7 @@ class KST_EXPORT KstEditViewObjectDialogI : public KstEditViewObjectDialog {
   private:
     void updateWidgets();
     void clearWidgets();
+    void fillObjectList();
     void populateEditMultiple();
     void applySettings(KstViewObjectPtr viewObject);
     bool apply();

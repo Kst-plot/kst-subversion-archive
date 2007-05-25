@@ -365,9 +365,15 @@
     <include location="local" impldecl="in declaration">kst_export.h</include>
     <include location="local" impldecl="in implementation">viewlabelwidget.ui.h</include>
 </includes>
+<variables>
+    <variable access="public">bool _changedFgColor;</variable>
+    <variable access="public">bool _changedBgColor;</variable>
+</variables>
 <slots>
     <slot>insertScalarInText( const QString &amp; S )</slot>
     <slot>insertStringInText( const QString &amp; S )</slot>
+    <slot>changedFgColor()</slot>
+    <slot>changedBgColor()</slot>
 </slots>
 <functions>
     <function>init()</function>

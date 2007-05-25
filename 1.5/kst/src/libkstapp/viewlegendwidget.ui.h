@@ -38,8 +38,8 @@ void ViewLegendWidget::init()
     QToolTip::add(_add, i18n("Shortcut: Alt+s"));
     QToolTip::add(_remove, i18n("Shortcut: Alt+r"));
 
-    _thisLegend->setChecked(true);
-
+    _changedFgColor = false;
+    _changedBgColor = false;
 }
 
 void ViewLegendWidget::updateButtons()
@@ -113,6 +113,14 @@ void ViewLegendWidget::addDisplayedCurve()
     TrackContents->setChecked(false);
 }
 
+void ViewLegendWidget::changedFgColor( )
+{
+  _changedFgColor = true;
+}
 
+void ViewLegendWidget::changedBgColor( )
+{
+  _changedBgColor = true;
+}
 
 

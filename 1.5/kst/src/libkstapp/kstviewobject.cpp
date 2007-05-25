@@ -1962,7 +1962,7 @@ signed int KstViewObject::directionFor(const QPoint& pos) {
       direction |= RIGHT;
     }
   }
-  
+
   return direction;
 }
 
@@ -2008,7 +2008,7 @@ bool KstViewObject::objectDirty() const {
 }
 
 
-QWidget *KstViewObject::configWidget() {
+QWidget *KstViewObject::configWidget(QWidget *parent) {
   return 0L;
 }
 
@@ -2020,8 +2020,9 @@ bool KstViewObject::fillConfigWidget(QWidget *w, bool isNew) const {
 }
 
 
-bool KstViewObject::readConfigWidget(QWidget *w) {
+bool KstViewObject::readConfigWidget(QWidget *w, bool editMultipleMode) {
   Q_UNUSED(w)
+  Q_UNUSED(editMultipleMode)
   return false;
 }
 
@@ -2031,6 +2032,10 @@ void KstViewObject::connectConfigWidget(QWidget *parent, QWidget *w) const {
   Q_UNUSED(parent)
 }
 
+
+void KstViewObject::populateEditMultiple(QWidget *w) {
+  Q_UNUSED(w)
+}
 
 KstGfxMouseHandler *KstViewObject::createHandler() {
   return 0L;

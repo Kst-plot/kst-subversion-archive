@@ -98,7 +98,7 @@ KstViewLabel::KstViewLabel(const QDomElement& e)
   _parsed = 0L;
   _isResizable = false;
   reparse();
-  
+
   // read the properties
   QDomNode n = e.firstChild();
   while (!n.isNull()) {
@@ -115,7 +115,7 @@ KstViewLabel::KstViewLabel(const QDomElement& e)
 
 KstViewLabel::KstViewLabel(const KstViewLabel& label)
 : KstBorderedViewObject(label) {
-  
+
   _dataPrecision = label._dataPrecision;
   _interpret = label._interpret;
   _replace = label._replace;
@@ -130,7 +130,7 @@ KstViewLabel::KstViewLabel(const KstViewLabel& label)
 
   _parsed = 0L;
   reparse();
-  
+
   // these always have these values
   _type = "Label";
 }
@@ -417,7 +417,7 @@ void KstViewLabel::paintSelf(KstPainter& p, const QRegion& bounds) {
       p.fillRect(0, 0, cr.width(), cr.height(), backgroundColor());
     }
     drawToPainter(_parsed, p);
-    
+
     _absFontSize = absFontSizeOld;
   } else {
     if (p.makingMask()) {
@@ -474,7 +474,7 @@ void KstViewLabel::setFontSize(int size) {
     if (_absFontSize < KstSettings::globalSettings()->plotFontMinSize) {
       _absFontSize = KstSettings::globalSettings()->plotFontMinSize;
     }
-    
+
     _fontSize = size;
     setDirty();
   }
@@ -495,7 +495,7 @@ void KstViewLabel::adjustSizeForText(const QRect& w) {
 
 QSize KstViewLabel::sizeForText(const QRect& w) {
   double x_s, y_s;
-  
+
   x_s = y_s = _fontSize + (double)KstSettings::globalSettings()->plotFontSize;
 
   int x_pix = w.width();
@@ -513,7 +513,7 @@ QSize KstViewLabel::sizeForText(const QRect& w) {
   if (_absFontSize < KstSettings::globalSettings()->plotFontMinSize) {
     _absFontSize = KstSettings::globalSettings()->plotFontMinSize;
   }
- 
+
   if (!_parsed) {
     reparse();
   }
@@ -521,7 +521,7 @@ QSize KstViewLabel::sizeForText(const QRect& w) {
   if (_parsed) {
     computeTextSize(_parsed);
   }
- 
+
   QSize sz(kMax(1, _textWidth), kMax(1, _textHeight));
 
   if (int(_rotation) != 0 && int(_rotation) != 180) {
@@ -552,7 +552,7 @@ QSize KstViewLabel::sizeForText(const QRect& w) {
       sz = r.intersect(_parent->geometry()).size();
     }
   }
-    
+
   return sz;
 }
 
@@ -592,8 +592,7 @@ void KstViewLabel::writeBinary(QDataStream& str) {
 void KstViewLabel::readBinary(QDataStream& str) {
   KstBorderedViewObject::readBinary(str);
   bool b;
-  str >> _rotation >> _txt >> _fontName
-      >> b;
+  str >> _rotation >> _txt >> _fontName >> b;
   _replace = b;
   str >> b;
   _interpret = b;
@@ -605,7 +604,7 @@ void KstViewLabel::readBinary(QDataStream& str) {
 }
 
 
-double KstViewLabel::rotation() const { 
+double KstViewLabel::rotation() const {
   return _rotation; 
 }
 
@@ -614,7 +613,7 @@ bool KstViewLabel::fillConfigWidget(QWidget *w, bool isNew) const {
   if (!widget) {
     return false;
   }
-  
+
   if (isNew) { // probably a new label: set widget to defaults
     widget->_precision->setValue(8);
     widget->_rotation->setValue(0);
@@ -634,16 +633,7 @@ bool KstViewLabel::fillConfigWidget(QWidget *w, bool isNew) const {
       widget->_transparent->setChecked(false);
       widget->_border->setValue(2);
     }
-
   } else {
-    // No, this is broken.  It kills latex.
-#if 0
-    // replace \n & \t with tabs and newlines for the text edit box
-    QString tmpstr = text();
-    tmpstr.replace(QString("\\n"), "\n");
-    tmpstr.replace(QString("\\t"), "\t");
-    widget->_text->setText(tmpstr);
-#endif
     widget->_text->setText(text());
 
     widget->_precision->setValue(int(dataPrecision()));
@@ -659,38 +649,67 @@ bool KstViewLabel::fillConfigWidget(QWidget *w, bool isNew) const {
     widget->_boxColors->setBackground(backgroundColor());
     widget->_margin->setValue(_labelMargin);
   }
+
   widget->_text->setFocus();
+
   return true;
 }
 
 
-bool KstViewLabel::readConfigWidget(QWidget *w) {
+bool KstViewLabel::readConfigWidget(QWidget *w, bool editMultipleMode) {
   ViewLabelWidget *widget = dynamic_cast<ViewLabelWidget*>(w);
   if (!widget) {
     return false;
   }
 
-  _txt = widget->_text->text();
-  // No, this is broken.  It kills latex.
-#if 0
-  // Replace tabs and newlines in text edit box with \n and \t 
-  _txt.replace(QString("\n"), "\\n");
-  _txt.replace(QString("\t"), "\\t");
-#endif
+  if (!editMultipleMode || widget->_text->text().compare(QString(" ")) != 0) {
+    _txt = widget->_text->text();
+  }
 
-  setDataPrecision(widget->_precision->value());
-  setRotation(widget->_rotation->value());
-  setFontSize(widget->_fontSize->value());
-  setHorizJustifyWrap(widget->_horizontal->currentItem());
-  setForegroundColor(widget->_fontColor->color());
-  setFontName(widget->_font->currentFont());
+  if (!editMultipleMode || widget->_precision->value() != widget->_precision->minValue()) {
+    setDataPrecision(widget->_precision->value());
+  }
 
-  setTransparent(widget->_transparent->isChecked());
-  setBorderWidth(widget->_border->value());
-  setBorderColor(widget->_boxColors->foreground());
-  setBackgroundColor(widget->_boxColors->background());
-  setLabelMargin(widget->_margin->value());
- 
+  if (!editMultipleMode || widget->_rotation->value() != widget->_rotation->minValue()) {
+    setRotation(widget->_rotation->value());
+  }
+
+  if (!editMultipleMode || widget->_fontSize->value() != widget->_fontSize->minValue()) {
+    setFontSize(widget->_fontSize->value());
+  }
+
+  if (!editMultipleMode || widget->_horizontal->currentText().compare(QString(" ")) != 0) {
+    setHorizJustifyWrap(widget->_horizontal->currentItem());
+  }
+
+  if (!editMultipleMode || widget->_fontColor->color() != QColor()) {
+    setForegroundColor(widget->_fontColor->color());
+  }
+
+  if (!editMultipleMode || widget->_font->currentText().compare(QString(" ")) != 0) {
+    setFontName(widget->_font->currentFont());
+  }
+
+  if (!editMultipleMode || widget->_transparent->state() != QButton::NoChange) {
+    setTransparent(widget->_transparent->isChecked());
+  }
+
+  if (!editMultipleMode || widget->_border->value() != widget->_border->minValue()) {
+    setBorderWidth(widget->_border->value());
+  }
+
+  if (!editMultipleMode || widget->_changedFgColor) {
+    setBorderColor(widget->_boxColors->foreground());
+  }
+
+  if (!editMultipleMode || widget->_changedBgColor) {
+    setBackgroundColor(widget->_boxColors->background());
+  }
+
+  if (!editMultipleMode || widget->_margin->value() != widget->_margin->minValue()) {
+    setLabelMargin(widget->_margin->value());
+  }
+
   reparse(); // calls setDirty()
   return true;
 }
@@ -701,7 +720,7 @@ void KstViewLabel::connectConfigWidget(QWidget *parent, QWidget *w) const {
   if (!widget) {
     return;
   }
-  
+
   connect(widget->_text, SIGNAL(textChanged()), parent, SLOT(modified()));
   connect(widget->_font, SIGNAL(activated(int)), parent, SLOT(modified()));
   connect(widget->_fontSize, SIGNAL(valueChanged(int)), parent, SLOT(modified()));
@@ -712,10 +731,12 @@ void KstViewLabel::connectConfigWidget(QWidget *parent, QWidget *w) const {
   connect(widget->_precision->child("qt_spinbox_edit"), SIGNAL(textChanged(const QString&)), parent, SLOT(modified()));
   connect(widget->_rotation, SIGNAL(valueChanged(int)), parent, SLOT(modified()));
   connect(widget->_rotation, SIGNAL(valueChanged(double)), parent, SLOT(modified()));
-  connect(widget->_rotation->child("qt_spinbox_edit"), SIGNAL(textChanged(const QString&)), parent, SLOT(modified()));  
+  connect(widget->_rotation->child("qt_spinbox_edit"), SIGNAL(textChanged(const QString&)), parent, SLOT(modified()));
   connect(widget->_transparent, SIGNAL(pressed()), parent, SLOT(modified()));
   connect(widget->_boxColors, SIGNAL(fgChanged(const QColor&)), parent, SLOT(modified()));
   connect(widget->_boxColors, SIGNAL(bgChanged(const QColor&)), parent, SLOT(modified()));
+  connect(widget->_boxColors, SIGNAL(fgChanged(const QColor&)), widget, SLOT(changedFgColor()));
+  connect(widget->_boxColors, SIGNAL(bgChanged(const QColor&)), widget, SLOT(changedBgColor()));
   connect(widget->_margin, SIGNAL(valueChanged(int)), parent, SLOT(modified()));
   connect(widget->_margin->child("qt_spinbox_edit"), SIGNAL(textChanged(const QString&)), parent, SLOT(modified()));
   connect(widget->_border, SIGNAL(valueChanged(int)), parent, SLOT(modified()));
@@ -723,17 +744,64 @@ void KstViewLabel::connectConfigWidget(QWidget *parent, QWidget *w) const {
 }
 
 
+void KstViewLabel::populateEditMultiple(QWidget *w) {
+  ViewLabelWidget *widget = dynamic_cast<ViewLabelWidget*>(w);
+  if (!widget) {
+    return;
+  }
+
+  widget->_text->setText(QString(" "));
+
+  widget->_font->insertItem(QString(" "));
+  widget->_font->setCurrentItem(widget->_font->count()-1);
+
+  widget->_fontSize->setMinValue(widget->_fontSize->minValue() - 1);
+  widget->_fontSize->setSpecialValueText(QString(" "));
+  widget->_fontSize->setValue(widget->_fontSize->minValue());
+
+  widget->_horizontal->insertItem(QString(" "));
+  widget->_horizontal->setCurrentItem(widget->_horizontal->count()-1);
+
+  widget->_fontColor->setColor(QColor());
+
+  widget->_transparent->setTristate();
+  widget->_transparent->setNoChange();
+
+  widget->_boxColors->setForeground(QColor());
+  widget->_boxColors->setBackground(QColor());
+
+  widget->_precision->setMinValue(widget->_precision->minValue() - 1);
+  widget->_precision->setSpecialValueText(QString(" "));
+  widget->_precision->setValue(widget->_precision->minValue());
+
+  widget->_rotation->setMinValue(widget->_rotation->minValue() - 1);
+  widget->_rotation->setSpecialValueText(QString(" "));
+  widget->_rotation->setValue(widget->_rotation->minValue());
+
+  widget->_margin->setMinValue(widget->_margin->minValue() - 1);
+  widget->_margin->setSpecialValueText(QString(" "));
+  widget->_margin->setValue(widget->_margin->minValue());
+
+  widget->_border->setMinValue(widget->_border->minValue() - 1);
+  widget->_border->setSpecialValueText(QString(" "));
+  widget->_border->setValue(widget->_border->minValue());
+
+  widget->_changedFgColor = false;
+  widget->_changedBgColor = false;
+}
+
+
 void KstViewLabel::setDataPrecision(int prec) {
   int n;
-  
+
   if (prec < 0) {
-    n = 0;  
+    n = 0;
   } else if (prec > 16) {
-    n = 16;  
+    n = 16;
   } else {
-    n = prec;  
+    n = prec;
   }
-  
+
   if (n != _dataPrecision) {
     setDirty();
     _dataPrecision = n;
@@ -807,8 +875,8 @@ int KstViewLabel::labelMargin() const {
 }
 
 
-QWidget *KstViewLabel::configWidget() {
-  return new ViewLabelWidget;
+QWidget *KstViewLabel::configWidget(QWidget *parent) {
+  return new ViewLabelWidget(parent, "custom");
 }
 
 
@@ -898,7 +966,7 @@ void KstViewLabel::DataCache::update() {
               if (fit->label((int)((*i).indexValue)) != (*i).index) {
                 valid = false;
               }
-              fit->unlock();     
+              fit->unlock();
             }
           }
         }

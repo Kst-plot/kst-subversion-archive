@@ -390,13 +390,13 @@ void KstViewLegend::paintSelf(KstPainter& p, const QRegion& bounds) {
     cr.setSize(sizeForText(_parent->geometry()));
     setContentsRectForPainter(p, cr);    
     KstBorderedViewObject::paintSelf(p, bounds);
-    
+
     p.translate(cr.left(), cr.top());
     if (!_transparent) {
       p.fillRect(0, 0, cr.width(), cr.height(), _backgroundColor);
     }
     drawToPainter(p);
-    
+
     p.restore();
   } else {
     const QRect cr(contentsRect());
@@ -603,7 +603,6 @@ void KstViewLegend::reparseTitle() {
 }
 
 
-/** fill the custom widget with current properties */
 bool KstViewLegend::fillConfigWidget(QWidget *w, bool isNew) const {
   ViewLegendWidget *widget = dynamic_cast<ViewLegendWidget*>(w);
   if (!widget) {
@@ -660,61 +659,77 @@ bool KstViewLegend::fillConfigWidget(QWidget *w, bool isNew) const {
 }
 
 
-/** apply properties in the custom config widget to this */
-bool KstViewLegend::readConfigWidget(QWidget *w) {
-  KstViewLegendList legends;
-  KstViewLegendPtr legendExtra;
-
+bool KstViewLegend::readConfigWidget(QWidget *w, bool editMultipleMode) {
   ViewLegendWidget *widget = dynamic_cast<ViewLegendWidget*>(w);
   if (!widget) {
     return false;
   }
 
-  if (widget->_thisLegend->isChecked()) {
-    legends += this;
-  } else if (widget->_thisWindow->isChecked()) {
-    legends = topLevelParent()->findChildrenType<KstViewLegend>(true);
-  } else {
-    legends = globalLegendList();
-  }
-
-  // apply the curve list, but only to this legend!
-  KstBaseCurveList allCurves = kstObjectSubList<KstDataObject, KstBaseCurve>(KST::dataObjectList);
-  _curves.clear();
-  for (unsigned i = 0; i < widget->DisplayedCurveList->count(); i++) {
-    KstBaseCurveList::Iterator it = allCurves.findTag(widget->DisplayedCurveList->text(i));
-    if (it != allCurves.end()) {
-      _curves.append(*it);
+  if (!editMultipleMode) {
+    // apply the curve list, but only to this legend!
+    KstBaseCurveList allCurves = kstObjectSubList<KstDataObject, KstBaseCurve>(KST::dataObjectList);
+    _curves.clear();
+    for (unsigned i = 0; i < widget->DisplayedCurveList->count(); i++) {
+      KstBaseCurveList::Iterator it = allCurves.findTag(widget->DisplayedCurveList->text(i));
+      if (it != allCurves.end()) {
+        _curves.append(*it);
+      }
     }
   }
 
-  for (uint i = 0; i < legends.size(); i++) {
-    legendExtra = legends[i];
-
-    legendExtra->setFontSize(widget->_fontSize->value());
-    legendExtra->setForegroundColor(widget->_fontColor->color());
-    legendExtra->setFontName(widget->_font->currentFont());
-    legendExtra->setTitle(widget->_title->text());
-
-    legendExtra->setTransparent(widget->_transparent->isChecked());
-    legendExtra->setBorderWidth(widget->_border->value());
-    legendExtra->setBorderColor(widget->_boxColors->foreground());
-    legendExtra->setBackgroundColor(widget->_boxColors->background());
-    legendExtra->setLegendMargin(widget->_margin->value());
-    legendExtra->setVertical(widget->_vertical->isChecked());
-    legendExtra->setTrackContents(widget->TrackContents->isChecked());
+  if (!editMultipleMode || widget->_fontSize->value() != widget->_fontSize->minValue()) {
+    setFontSize(widget->_fontSize->value());
+    KST::legendDefaults.setFontSize(widget->_fontSize->value());
   }
 
-  KST::legendDefaults.setFontSize(widget->_fontSize->value());
-  KST::legendDefaults.setFont(widget->_font->currentFont());
-  KST::legendDefaults.setTransparent(widget->_transparent->isChecked());
-  KST::legendDefaults.setBorder(widget->_border->value());
-  KST::legendDefaults.setFontColor(widget->_fontColor->color());
-  KST::legendDefaults.setForegroundColor(widget->_boxColors->foreground());
-  KST::legendDefaults.setBackgroundColor(widget->_boxColors->background());
-  KST::legendDefaults.setMargin(widget->_margin->value());
-  KST::legendDefaults.setVertical(widget->_vertical->isChecked());
-  KST::legendDefaults.setTrackContents(widget->TrackContents->isChecked());
+  if (!editMultipleMode || widget->_fontColor->color() != QColor()) {
+    setForegroundColor(widget->_fontColor->color());
+    KST::legendDefaults.setFontColor(widget->_fontColor->color());
+  }
+
+  if (!editMultipleMode || widget->_font->currentText().compare(QString(" ")) != 0) {
+    setFontName(widget->_font->currentFont());
+    KST::legendDefaults.setFont(widget->_font->currentFont());
+  }
+
+  if (!editMultipleMode || widget->_title->text().compare(QString(" ")) != 0) {
+    setTitle(widget->_title->text());
+  }
+
+  if (!editMultipleMode || widget->_transparent->state() != QButton::NoChange) {
+    setTransparent(widget->_transparent->isChecked());
+    KST::legendDefaults.setTransparent(widget->_transparent->isChecked());
+  }
+
+  if (!editMultipleMode || widget->_border->value() != widget->_border->minValue()) {
+    setBorderWidth(widget->_border->value());
+    KST::legendDefaults.setBorder(widget->_border->value());
+  }
+
+  if (!editMultipleMode || widget->_changedFgColor) {
+    setBorderColor(widget->_boxColors->foreground());
+    KST::legendDefaults.setForegroundColor(widget->_boxColors->foreground());
+  }
+
+  if (!editMultipleMode || widget->_changedBgColor) {
+    setBackgroundColor(widget->_boxColors->background());
+    KST::legendDefaults.setBackgroundColor(widget->_boxColors->background());
+  }
+
+  if (!editMultipleMode || widget->_margin->value() != widget->_margin->minValue()) {
+    setLegendMargin(widget->_margin->value());
+    KST::legendDefaults.setMargin(widget->_margin->value());
+  }
+
+  if (!editMultipleMode || widget->_vertical->state() != QButton::NoChange) {
+    setVertical(widget->_vertical->isChecked());
+    KST::legendDefaults.setVertical(widget->_vertical->isChecked());
+  }
+
+  if (!editMultipleMode || widget->TrackContents->state() != QButton::NoChange) {
+    setTrackContents(widget->TrackContents->isChecked());
+    KST::legendDefaults.setTrackContents(widget->TrackContents->isChecked());
+  }
 
   setDirty();
   return true;
@@ -740,17 +755,63 @@ void KstViewLegend::connectConfigWidget(QWidget *parent, QWidget *w) const {
   connect(widget->_transparent, SIGNAL(pressed()), parent, SLOT(modified()));
   connect(widget->_boxColors, SIGNAL(fgChanged(const QColor&)), parent, SLOT(modified()));
   connect(widget->_boxColors, SIGNAL(bgChanged(const QColor&)), parent, SLOT(modified()));
+  connect(widget->_boxColors, SIGNAL(fgChanged(const QColor&)), widget, SLOT(changedFgColor()));
+  connect(widget->_boxColors, SIGNAL(bgChanged(const QColor&)), widget, SLOT(changedBgColor()));
   connect(widget->_margin, SIGNAL(valueChanged(int)), parent, SLOT(modified()));
   connect(widget->_margin->child("qt_spinbox_edit"), SIGNAL(textChanged(const QString&)), parent, SLOT(modified()));
   connect(widget->_border, SIGNAL(valueChanged(int)), parent, SLOT(modified()));
   connect(widget->_border->child("qt_spinbox_edit"), SIGNAL(textChanged(const QString&)), parent, SLOT(modified()));
-  connect(widget->_thisLegend, SIGNAL(stateChanged(int)), parent, SLOT(modified()));
-
 }
 
 
-QWidget *KstViewLegend::configWidget() {
-  return new ViewLegendWidget;
+QWidget *KstViewLegend::configWidget(QWidget *parent) {
+  return new ViewLegendWidget(parent, "custom");
+}
+
+
+void KstViewLegend::populateEditMultiple(QWidget *w) {
+  ViewLegendWidget *widget = dynamic_cast<ViewLegendWidget*>(w);
+  if (!widget) {
+    return;
+  }
+
+  widget->AvailableCurveList->setEnabled(false);
+  widget->DisplayedCurveList->setEnabled(false);
+  widget->_remove->setEnabled(false);
+  widget->_add->setEnabled(false);
+  widget->_up->setEnabled(false);
+  widget->_down->setEnabled(false);
+
+  widget->_title->setText(QString(" "));
+
+  widget->_font->insertItem(QString(" "));
+  widget->_font->setCurrentItem(widget->_font->count()-1);
+
+  widget->_fontSize->setMinValue(widget->_fontSize->minValue() - 1);
+  widget->_fontSize->setSpecialValueText(QString(" "));
+  widget->_fontSize->setValue(widget->_fontSize->minValue());
+
+  widget->_vertical->setTristate();
+  widget->_vertical->setNoChange();
+
+  widget->_fontColor->setColor(QColor());
+
+  widget->_transparent->setTristate();
+  widget->_transparent->setNoChange();
+
+  widget->_boxColors->setForeground(QColor());
+  widget->_boxColors->setBackground(QColor());
+
+  widget->_margin->setMinValue(widget->_margin->minValue() - 1);
+  widget->_margin->setSpecialValueText(QString(" "));
+  widget->_margin->setValue(widget->_margin->minValue());
+
+  widget->_border->setMinValue(widget->_border->minValue() - 1);
+  widget->_border->setSpecialValueText(QString(" "));
+  widget->_border->setValue(widget->_border->minValue());
+
+  widget->_changedFgColor = false;
+  widget->_changedBgColor = false;
 }
 
 
