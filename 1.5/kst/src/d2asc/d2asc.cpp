@@ -15,7 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <stdlib.h> // atoi
+#include <stdlib.h>
 #include <kconfig.h>
 #include <kinstance.h>
 
@@ -25,6 +25,11 @@
 #include "kstdatacollection.h"
 #include "kstdataobjectcollection.h"
 #undef protected
+
+struct fieldEntry {
+  QString field;
+  bool doHex;
+};
 
 void Usage() {
   fprintf(stderr, "usage: d2asc filename [-f <first frame>]\n");
@@ -44,28 +49,26 @@ int main(int argc, char *argv[]) {
   atexit(exitHelper);
   KInstance inst("d2asc");
   KstDataSourcePtr file;
-  int i;
 
   KConfig *kConfigObject = new KConfig("kstdatarc", false, false);
   KstDataSource::setupOnStartup(kConfigObject);
 
-  char field_list[40][120], filename[180];
-  bool do_hex[40];
-  int n_field=0;
-  int start_frame=0, n_frames=2000000;
+  fieldEntry field;
+  QValueList<fieldEntry> fieldList;
+  char *filename;
   bool do_ave = false, do_skip = false;
+  int start_frame=0, n_frames=2000000;
   int n_skip = 0;
   int NS=0, i_S;
+  int i;
 
   if (argc < 3 || argv[1][0] == '-') {
     Usage();
     return -1;
   }
 
-  for (i = 0; i < 40; i++)
-    do_hex[i] = false;
+  filename = argv[1];
 
-  strcpy(filename, argv[1]);
   for (i = 2; i < argc; i++) {
     if (argv[i][0] == '-') {
       if (argv[i][1] == 'f') {
@@ -82,19 +85,22 @@ int main(int argc, char *argv[]) {
         do_ave = true;
       } else if (argv[i][1] == 'x') {
         i++;
-        strcpy(field_list[n_field], argv[i]);
-        do_hex[n_field] = true;
-        n_field++;
+        field.field = argv[i];
+        field.doHex = true;
+        fieldList.append(field);
       } else {
         Usage();
       }
     } else {
-      strcpy(field_list[n_field], argv[i]);
-      n_field++;
+      field.field = argv[i];
+      field.doHex = false;
+      fieldList.append(field);
     }
   }
 
-  if (!do_skip) do_ave = false;
+  if (!do_skip) {
+    do_ave = false;
+  }
 
   file = KstDataSource::loadSource(filename);
   if (!file || !file->isValid() || file->isEmpty()) {
@@ -104,30 +110,28 @@ int main(int argc, char *argv[]) {
   /** make vectors and fill the list **/
   QPtrList<KstRVector> vlist;
 
-  for (i=0; i<n_field; i++) {
-
-    if (!file->isValidField(field_list[i])) {
+  for (i=0; i<int(fieldList.size()); i++) {
+    if (!file->isValidField(fieldList[i].field)) {
       fprintf(stderr, "d2asc error: field %s in file %s is not valid\n",
-              field_list[i], filename);
+              fieldList[i].field.latin1(), filename);
       return -3;
     }
-    KstRVectorPtr v = new KstRVector(file, field_list[i], KstObjectTag("tag", KstObjectTag::globalTagContext), start_frame, n_frames, n_skip, n_skip>0, do_ave);
+    KstRVectorPtr v = new KstRVector(file, fieldList[i].field, KstObjectTag("tag", KstObjectTag::globalTagContext), start_frame, n_frames, n_skip, n_skip>0, do_ave);
     vlist.append(v);
   }
 
   /* find NS */
-  for (i = 0; i < n_field; i++) {
-
+  for (i = 0; i < int(fieldList.size()); i++) {
     while (vlist.at(i)->update(-1) != KstObject::NO_CHANGE)
       ; // read vector
-
-    if (vlist.at(i)->length() > NS)
+    if (vlist.at(i)->length() > NS) {
       NS = vlist.at(i)->length();
+    }
   }
 
   for (i_S = 0; i_S < NS; i_S++) {
-    for (i = 0; i < n_field; i++) {
-      if (do_hex[i]) {
+    for (i = 0; i < int(fieldList.size()); i++) {
+      if (fieldList[i].doHex) {
         printf("%4x ",  (int)vlist.at(i)->interpolate(i_S, NS));
       } else {
         printf("%.16g ", vlist.at(i)->interpolate(i_S, NS));
