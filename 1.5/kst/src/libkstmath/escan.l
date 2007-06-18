@@ -111,7 +111,7 @@ Id	[A-Za-z]+
 
 "*"		return T_MULTIPLY;
 
-"/"		return T_DIVIDE;
+"/"		return T_DIVIDE_UNIQUE;
  
 "%"		return T_MOD;
  

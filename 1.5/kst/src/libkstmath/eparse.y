@@ -29,7 +29,7 @@ void *ParsedEquation = 0L;
 %left <operator> T_EQ T_NE
 %left <operator> T_LT T_LE T_GT T_GE
 %left <operator> T_ADD T_SUBTRACT
-%left <operator> T_MULTIPLY T_DIVIDE T_MOD
+%left <operator> T_MULTIPLY T_DIVIDE_UNIQUE T_MOD
 %left <operator> T_NOT
 %nonassoc U_SUBTRACT
 %right <operator> T_EXP
@@ -121,13 +121,13 @@ EQUATION	:	EQUATION T_ADD TERM
 
 TERM		:	TERM T_MULTIPLY NEG
 			{ $<n>$ = NewMultiplication($<n>1, $<n>3); }
-		|	TERM T_DIVIDE NEG
+		|	TERM T_DIVIDE_UNIQUE NEG
 			{ $<n>$ = NewDivision($<n>1, $<n>3); }
 		|	TERM T_MOD NEG
 			{ $<n>$ = NewModulo($<n>1, $<n>3); }
 		|	T_MULTIPLY error
 			{ yyerror(EParseErrorTwoOperands); $<n>$ = 0L; }
-		|	T_DIVIDE error
+		|	T_DIVIDE_UNIQUE error
 			{ yyerror(EParseErrorTwoOperands); $<n>$ = 0L; }
 		|	T_MOD error
 			{ yyerror(EParseErrorTwoOperands); $<n>$ = 0L; }
