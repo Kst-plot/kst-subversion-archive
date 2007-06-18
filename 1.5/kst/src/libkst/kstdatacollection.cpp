@@ -201,6 +201,7 @@ bool KstData::dataSourceTagNameNotUnique(const QString& tag, bool warn, void *p)
 
 QStringList KstData::plotList(const QString& window) {
   Q_UNUSED(window)
+
   return QStringList();
 }
 
@@ -213,23 +214,32 @@ void KstData::removeCurveFromPlots(KstBaseCurve *c) {
 bool KstData::viewObjectNameNotUnique(const QString& tag) {
   Q_UNUSED(tag)
   // meaningless in no GUI: no view objects!
+
   return false;
 }
 
 int KstData::vectorToFile(KstVectorPtr v, QFile *f) {
   // FIXME: implement me (non-gui)
+  Q_UNUSED(v);
+  Q_UNUSED(f);
+
   return 0;
 }
 
 
 int KstData::vectorsToFile(const KstVectorList& l, QFile *f, bool interpolate) {
   // FIXME: implement me (non-gui)
+  Q_UNUSED(l);
+  Q_UNUSED(f);
+  Q_UNUSED(interpolate);
+
   return 0;
 }
 
 
 int KstData::columns(const QString& window) {
   Q_UNUSED(window)
+
   return 0;
 }
 

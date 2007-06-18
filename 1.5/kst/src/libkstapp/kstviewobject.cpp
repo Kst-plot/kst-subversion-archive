@@ -761,7 +761,7 @@ void KstViewObject::cleanup(int cols) {
   QMemArray<int> plotLoc(rows * _columns); // what plot lives at each grid location
   QMemArray<int> unAssigned(cnt); // what plots haven't got a home yet?
   int n_unassigned = 0;
-  int r, c, CR;
+  int row, col, CR;
   for (int i = 0; i < rows * _columns; ++i) {
     plotLoc[i] = -1;
   }
@@ -776,16 +776,16 @@ void KstViewObject::cleanup(int cols) {
   // broken when supressed axis/labels are taken into account.  This
   // could have an effect if the plots are grown by >50%.
   for (int i = 0; i < cnt; ++i) {
-    r = int((childrenCopy[i]->aspectRatio().y+childrenCopy[i]->aspectRatio().h/2)*rows); // use center
-    c = int(childrenCopy[i]->aspectRatio().x*_columns+0.5);
+    row = int( ( childrenCopy[i]->aspectRatio().y + childrenCopy[i]->aspectRatio().h / 2 ) * rows );
+    col = int( childrenCopy[i]->aspectRatio().x * _columns + 0.5 );
 
-    if (c >= _columns) {
-      c = _columns-1;
+    if (col >= _columns) {
+      col = _columns-1;
     }
-    if (r >= rows) {
-      r = rows-1;
+    if (row >= rows) {
+      row = rows-1;
     }
-    CR = c + r*_columns;
+    CR = col + row*_columns;
     if (childrenCopy[i]->dirty()) { // newly added plots get no priority
       dirty = true;
       unAssigned[n_unassigned] = i;
@@ -796,12 +796,12 @@ void KstViewObject::cleanup(int cols) {
 
       double d1, d2;
       // put the further of the two in the unassigned list
-      // use Manhatten distance.
-      d1 = fabs(double(r) - childrenCopy[i]->aspectRatio().y*rows) + 
-          fabs(double(c) - childrenCopy[i]->aspectRatio().x*_columns);
-      d2 = fabs(double(r) - childrenCopy[plotLoc[CR]]->aspectRatio().y*rows) + 
-          fabs(double(c) - childrenCopy[plotLoc[CR]]->aspectRatio().x*_columns);      
-      if (d1 >= d2) { 
+      // use Manhattan distance.
+      d1 = fabs(double(row) - childrenCopy[i]->aspectRatio().y*rows) + 
+          fabs(double(col) - childrenCopy[i]->aspectRatio().x*_columns);
+      d2 = fabs(double(row) - childrenCopy[plotLoc[CR]]->aspectRatio().y*rows) + 
+          fabs(double(col) - childrenCopy[plotLoc[CR]]->aspectRatio().x*_columns);
+      if (d1 >= d2) {
         unAssigned[n_unassigned] = i;
       } else {
         unAssigned[n_unassigned] = plotLoc[CR];
@@ -823,50 +823,50 @@ void KstViewObject::cleanup(int cols) {
   KstViewObject *ob;
   double hr;
 
-  for (r=0; r<rows; r++) {
-    HR[r] = 10.0;
-    for (c=0; c<_columns; c++) {
-      CR = c + r*_columns;
+  for (row=0; row<rows; row++) {
+    HR[row] = 10.0;
+    for (col=0; col<_columns; col++) {
+      CR = col + row*_columns;
       if (plotLoc[CR] > -1) {
         hr = childrenCopy[plotLoc[CR]]->verticalSizeFactor();
-        if (hr < HR[r]) {
-          HR[r] = hr;
+        if (hr < HR[row]) {
+          HR[row] = hr;
         }
       }
     }
-    if (HR[r] > 9.0) {
-      HR[r] = 1.0;
+    if (HR[row] > 9.0) {
+      HR[row] = 1.0;
     }
-    sum_HR += HR[r];
+    sum_HR += HR[row];
   }
 
   // now actually move/resize the plots
   int w = _geom.width() / _columns;
   int h = 0;
   int y = 0;
-  for (r=0; r<rows; r++) {
+  for (row=0; row<rows; row++) {
     y += h;
-    h = int(double(_geom.height()) * HR[r]/sum_HR);
-    for (c=0; c<_columns; c++) {
-      CR = c + r*_columns;
+    h = int(double(_geom.height()) * HR[row]/sum_HR);
+    for (col=0; col<_columns; col++) {
+      CR = col + row*_columns;
       if (plotLoc[CR] >= 0) {
         QSize sz(w, h);
-        r = CR / _columns;
-        c = CR % _columns;
-        QPoint pt(w*c, y);
+        row = CR / _columns;
+        col = CR % _columns;
+        QPoint pt(w*col, y);
 
         // if necessary adjust the last column so that we don't spill over
-        if (c == _columns-1) {
+        if (col == _columns-1) {
           // only adjust the final width if necessary as we would rather have a gap
           // at the right edge of the window than a column of plots that is significantly 
           // wider than all the others
           if (w*_columns > _geom.width()) {
-            sz.setWidth(_geom.width() - w*c);
+            sz.setWidth(_geom.width() - w*col);
           }
         }
 
         // if necessary adjust the last row so that we don't spill over
-        if (r == rows - 1) {
+        if (row == rows - 1) {
           // only adjust the final height if necessary as we would rather have a gap
           // at the bottom edge of the window than a row of plots that is significantly 
           // taller than all the others
@@ -1598,7 +1598,7 @@ void KstViewObject::rename() {
       done = ok = true;
     }
   }
-  
+
   if (ok) {
     setTagName(KstObjectTag(newName, KstObjectTag::globalTagContext)); // FIXME: handle tag context
   } else {
@@ -2009,6 +2009,8 @@ bool KstViewObject::objectDirty() const {
 
 
 QWidget *KstViewObject::configWidget(QWidget *parent) {
+  Q_UNUSED(parent)
+
   return 0L;
 }
 
@@ -2016,6 +2018,7 @@ QWidget *KstViewObject::configWidget(QWidget *parent) {
 bool KstViewObject::fillConfigWidget(QWidget *w, bool isNew) const {
   Q_UNUSED(w)
   Q_UNUSED(isNew)
+
   return false;
 }
 
@@ -2023,6 +2026,7 @@ bool KstViewObject::fillConfigWidget(QWidget *w, bool isNew) const {
 bool KstViewObject::readConfigWidget(QWidget *w, bool editMultipleMode) {
   Q_UNUSED(w)
   Q_UNUSED(editMultipleMode)
+
   return false;
 }
 
@@ -2081,7 +2085,7 @@ KstViewObjectPtr KstViewObject::topLevelParent() const {
   while (p->_parent) {
     p = p->_parent;
   }
-    
+
   return static_cast<KstViewObject*>(p);
 }
 

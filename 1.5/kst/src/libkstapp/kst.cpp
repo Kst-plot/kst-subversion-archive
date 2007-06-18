@@ -55,7 +55,7 @@
 #include "kstcsddialog_i.h"
 #include "kstdatamanager_i.h"
 #include "kstdatanotifier.h"
-#include "datawizard.h"
+#include "kstdatawizard_i.h"
 #include "kstdebugdialog_i.h"
 #include "kstdebugnotifier.h"
 #include "kstdoc.h"
@@ -2206,7 +2206,7 @@ void KstApp::showExtensionManager() {
 
 
 void KstApp::showDataWizard() {
-  DataWizard *dw = new DataWizard(this, "DataWizard");
+  KstDataWizard *dw = new KstDataWizard(this, "DataWizard");
   dw->exec();
   if (dw->result() == QDialog::Accepted) {
     delete dw; // leave this here - releases references
@@ -2220,7 +2220,7 @@ void KstApp::showDataWizard() {
 
 
 void KstApp::showDataWizardWithFile(const QString &input) {
-  DataWizard *dw = new DataWizard(this, "DataWizard");
+  KstDataWizard *dw = new KstDataWizard(this, "DataWizard");
   dw->setInput(input);
   dw->exec();
   if (dw->result() == QDialog::Accepted) {

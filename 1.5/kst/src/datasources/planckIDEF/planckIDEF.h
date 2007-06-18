@@ -42,7 +42,7 @@ class PLANCKIDEFSource : public KstDataSource {
     QString fileType() const;
     void save(QTextStream &ts, const QString& indent = QString::null);
     bool isEmpty() const;
-
+    bool supportsHierarchy() const;
     bool reset();
 
   private:

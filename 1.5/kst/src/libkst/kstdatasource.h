@@ -75,7 +75,6 @@ class KST_EXPORT KstDataSource : public KstObject {
     // @since 1.1.0
     static bool supportsTime(const QString& plugin, const QString& type = QString::null);
 
-
     KstDataSourceConfigWidget *configWidget() const;
 
     // @since 1.1.0
@@ -209,6 +208,8 @@ class KST_EXPORT KstDataSource : public KstObject {
 
     // in (ms)
     virtual double relativeTimeForSample(int sample, bool *ok = 0L);
+
+    virtual bool supportsHierarchy() const;
 
   protected:
     void updateNumFramesScalar();

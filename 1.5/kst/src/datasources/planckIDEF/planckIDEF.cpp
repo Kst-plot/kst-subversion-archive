@@ -435,6 +435,12 @@ void PLANCKIDEFSource::save( QTextStream& ts, const QString& indent )
 }
 
 
+bool PLANCKIDEFSource::supportsHierarchy( ) const
+{
+  return true;
+}
+
+
 extern "C" {
   KstDataSource *create_planckIDEF( KConfig *cfg, const QString& filename, const QString& type )
   {
@@ -526,14 +532,14 @@ extern "C" {
                     if( fits_read_keyword( ffits, "EXTNAME", value, comment, &iStatus ) == 0 )
                     {
                       QString section = QString( value ).section( '-', 1, 1 );
-  
+
                       if( section.compare( "OBTT" ) == 0 ||
                           section.compare( "TOD." ) == 0 ||
                           section.compare( "OBTH" ) == 0 ||
                           section.compare( "HKP." ) == 0 )
                       {
                         bool okCols = false;
-  
+
                         if( fits_get_num_cols( ffits, &cols, &iStatus ) == 0 )
                         {
                           if( cols > 0 )
@@ -541,7 +547,7 @@ extern "C" {
                             okCols = true;
                           }
                         }
-  
+
                         if( okCols && fits_get_num_rows( ffits, &rows, &iStatus ) == 0 )
                         {
                           //
@@ -550,7 +556,7 @@ extern "C" {
                           if( i == 0 )
                           {
                             rowsCompare = rows;
-  
+
                             ok = true;
                           }
                           else if( rowsCompare == rows )

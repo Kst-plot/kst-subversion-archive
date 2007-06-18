@@ -691,40 +691,50 @@ bool KstDataSource::supportsTimeConversions() const {
 
 int KstDataSource::sampleForTime(const KST::ExtDateTime& time, bool *ok) {
   Q_UNUSED(time)
+
   if (ok) {
     *ok = false;
   }
+
   return 0;
 }
-
 
 
 int KstDataSource::sampleForTime(double ms, bool *ok) {
   Q_UNUSED(ms)
+
   if (ok) {
     *ok = false;
   }
+
   return 0;
 }
-
 
 
 KST::ExtDateTime KstDataSource::timeForSample(int sample, bool *ok) {
   Q_UNUSED(sample)
+
   if (ok) {
     *ok = false;
   }
+
   return KST::ExtDateTime::currentDateTime();
 }
 
 
-
 double KstDataSource::relativeTimeForSample(int sample, bool *ok) {
   Q_UNUSED(sample)
+
   if (ok) {
     *ok = false;
   }
-  return 0;
+
+  return 0.0;
+}
+
+
+bool KstDataSource::supportsHierarchy() const {
+  return false;
 }
 
 

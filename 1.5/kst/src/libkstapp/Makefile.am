@@ -103,6 +103,7 @@ libkstapp_la_SOURCES = \
 	ksteventmonitorentry.cpp \
 	kstcurvedialog_i.cpp \
 	kstbasicdialog_i.cpp \
+	kstdatawizard_i.cpp \
 	kstdoc.cpp \
 	kstviewwindow.cpp \
 	ktimezonecombo.cpp \
@@ -138,7 +139,7 @@ libkstapp_la_LDFLAGS = -version-info @KST_LIBKST_VERSION@ $(all_libraries) -no-u
 # set the include path for X, qt and KDE
 INCLUDES=-I$(top_srcdir)/kst/src/extdate -I$(top_srcdir)/kst/src/libkst -I$(top_srcdir)/kst/src/libkstmath -I../libkst -I$(top_srcdir)/kst/src/widgets -I../widgets -I$(top_srcdir) $(KMDI_INCLUDES) $(all_includes)
 
-datawizard.lo: datawizard.ui.h datawizard.ui
+datawizard.lo: datawizard.h
 debugdialog.lo: debugdialog.ui.h debugdialog.ui
 editviewobjectdialog.lo: editviewobjectdialog.ui
 kst.lo: curvedifferentiate.h
