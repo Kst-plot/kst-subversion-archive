@@ -618,7 +618,8 @@ void Kst2DPlot::commonConstructor(const QString &in_tag,
                                 double x_logbase,
                                 double y_logbase) {
   connect(KstApp::inst(), SIGNAL(timezoneChanged(const QString&, int)), this, SLOT(timezoneChanged(const QString&, int)));
-  
+
+  _editTitle = i18n("Edit Plot");
   _tabToShow = CONTENT_TAB;
   _xLabel = new KstPlotLabel;
   _yLabel = new KstPlotLabel(270);
@@ -626,12 +627,9 @@ void Kst2DPlot::commonConstructor(const QString &in_tag,
   _xTickLabel = new KstPlotLabel;
   _yTickLabel = new KstPlotLabel;
   _fullTickLabel = new KstPlotLabel;
-  //_fullTickLabel->setInterpreted(false); // much faster
-  //_xTickLabel->setInterpreted(false); // much faster
-  //_yTickLabel->setInterpreted(false); // much faster
-  _fullTickLabel->setDoScalarReplacement(false); // much faster
-  _xTickLabel->setDoScalarReplacement(false); // much faster
-  _yTickLabel->setDoScalarReplacement(false); // much faster
+  _fullTickLabel->setDoScalarReplacement(false);
+  _xTickLabel->setDoScalarReplacement(false);
+  _yTickLabel->setDoScalarReplacement(false);
   _zoomPaused = false;
   setDirty(true);
   _oldSize.setWidth(0);
@@ -652,7 +650,7 @@ void Kst2DPlot::commonConstructor(const QString &in_tag,
   _isLogLast = false;
 
   _i_per = 0;
-  
+
   KstObject::setTagName(KstObjectTag(in_tag, KstObjectTag::globalTagContext));  // FIXME: tag context
   _isTied = false;
 

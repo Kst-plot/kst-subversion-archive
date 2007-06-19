@@ -47,20 +47,6 @@
 #include "kstplotlabel.h"
 #include "kstsettings.h"
 
-struct MajorTickSpacing {
-  const char *label;
-  int majorTickDensity;
-};
-
-const MajorTickSpacing MajorTickSpacings[] = {
-  { "Coarse", 2 },
-  { "Default", 5 },
-  { "Fine", 10 },
-  { "Very fine", 15 }
-};
-
-const unsigned int numMajorTickSpacings = sizeof( MajorTickSpacings ) / sizeof( MajorTickSpacing );
-
 Kst2dPlotWidget::Kst2dPlotWidget(QWidget* parent, const char* name, WFlags fl) : View2DPlotWidget(parent, name, fl )
 {
   QFontDatabase qfd;
@@ -408,7 +394,7 @@ void Kst2dPlotWidget::updatePlotMarkers(const Kst2DPlot *plot) {
     } else if ((*it).isFalling) {
       PlotMarkerList->insertItem(i18n("%1 [falling]").arg(QString::number((*it).value, 'g', MARKER_LABEL_PRECISION)));
     } else if ((*it).isVectorValue) {
-      PlotMarkerList->insertItem(i18n("%1 [value]").arg(QString::number((*it).value, 'g', MARKER_LABEL_PRECISION)));        
+      PlotMarkerList->insertItem(i18n("%1 [value]").arg(QString::number((*it).value, 'g', MARKER_LABEL_PRECISION)));
     } else {
       PlotMarkerList->insertItem(QString::number((*it).value, 'g', MARKER_LABEL_PRECISION));
     }
@@ -455,6 +441,29 @@ void Kst2dPlotWidget::updatePlotMarkers(const Kst2DPlot *plot) {
   }
 }
 
+void Kst2dPlotWidget::populateEditMultiple(QRadioButton *radioButtonWidget) {
+  radioButtonWidget->setChecked(false);
+}
+
+void Kst2dPlotWidget::populateEditMultiple(QComboBox *comboWidget) {
+  comboWidget->insertItem(QString(" "));
+  comboWidget->setCurrentItem(comboWidget->count()-1);
+}
+
+void Kst2dPlotWidget::populateEditMultiple(KColorButton *colorButton) {
+  colorButton->setColor(QColor());
+}
+
+void Kst2dPlotWidget::populateEditMultiple(QLineEdit *lineEditWidget) {
+  lineEditWidget->setText(QString(" "));
+}
+
+void Kst2dPlotWidget::populateEditMultiple(QSpinBox *spinBoxWidget) {
+  spinBoxWidget->setMinValue(spinBoxWidget->minValue() - 1);
+  spinBoxWidget->setSpecialValueText(QString(" "));
+  spinBoxWidget->setValue(spinBoxWidget->minValue());
+}
+
 void Kst2dPlotWidget::populateEditMultiple(QCheckBox *checkBoxWidget) {
   checkBoxWidget->setTristate();
   checkBoxWidget->setNoChange();
@@ -468,6 +477,8 @@ void Kst2dPlotWidget::populateEditMultiple(const Kst2DPlot *plot) {
   //
   // Content tab...
   //
+  _title->setText(QString(""));
+  _title->setEnabled(false);
   _up->setEnabled(false);
   _down->setEnabled(false);
   _add->setEnabled(false);
@@ -484,6 +495,23 @@ void Kst2dPlotWidget::populateEditMultiple(const Kst2DPlot *plot) {
   populateEditMultiple(_checkBoxDefaultMinorGridColor);
   populateEditMultiple(ShowLegend);
   populateEditMultiple(TrackContents);
+  populateEditMultiple(_axisPenWidth);
+  populateEditMultiple(_majorPenWidth);
+  populateEditMultiple(_minorPenWidth);
+  populateEditMultiple(TopLabelFontSize);
+  populateEditMultiple(YLabelFontSize);
+  populateEditMultiple(XLabelFontSize);
+  populateEditMultiple(NumberFontSize);
+  populateEditMultiple(_spinBoxXAngle);
+  populateEditMultiple(_spinBoxYAngle);
+  populateEditMultiple(TopLabelText);
+  populateEditMultiple(YAxisText);
+  populateEditMultiple(XAxisText);
+  populateEditMultiple(TopLabelText);
+  populateEditMultiple(_majorGridColor);
+  populateEditMultiple(_minorGridColor);
+  populateEditMultiple(_comboBoxTopLabelJustify);
+  populateEditMultiple(FontComboBox);
 
   //
   // X Axis tab...
@@ -498,6 +526,14 @@ void Kst2dPlotWidget::populateEditMultiple(const Kst2DPlot *plot) {
   populateEditMultiple(_xMinorTicksAuto);
   populateEditMultiple(_xMajorGrid);
   populateEditMultiple(_xMinorGrid);
+  populateEditMultiple(_xMinorTicks);
+  populateEditMultiple(_xTransformTopExp);
+  populateEditMultiple(_comboBoxXInterpret);
+  populateEditMultiple(_comboBoxXDisplay);
+  populateEditMultiple(_xMajorTickSpacing);
+  populateEditMultiple(_xMarksInsidePlot);
+  populateEditMultiple(_xMarksOutsidePlot);
+  populateEditMultiple(_xMarksInsideAndOutsidePlot);
 
   //
   // Y Axis tab...
@@ -512,14 +548,41 @@ void Kst2dPlotWidget::populateEditMultiple(const Kst2DPlot *plot) {
   populateEditMultiple(_yMinorTicksAuto);
   populateEditMultiple(_yMajorGrid);
   populateEditMultiple(_yMinorGrid);
+  populateEditMultiple(_yMinorTicks);
+  populateEditMultiple(_yTransformRightExp);
+  populateEditMultiple(_comboBoxYInterpret);
+  populateEditMultiple(_comboBoxYDisplay);
+  populateEditMultiple(_yMajorTickSpacing);
+  populateEditMultiple(_yMarksInsidePlot);
+  populateEditMultiple(_yMarksOutsidePlot);
+  populateEditMultiple(_yMarksInsideAndOutsidePlot);
 
   //
   // Range tab...
   //
+  populateEditMultiple(XExpressionMin);
+  populateEditMultiple(XExpressionMax);
+  populateEditMultiple(YExpressionMin);
+  populateEditMultiple(YExpressionMax);
+  populateEditMultiple(XAuto);
+  populateEditMultiple(XAutoBorder);
+  populateEditMultiple(XAutoUp);
+  populateEditMultiple(XNoSpikes);
+  populateEditMultiple(XAC);
+  populateEditMultiple(XExpression);
+  populateEditMultiple(YAuto);
+  populateEditMultiple(YAutoBorder);
+  populateEditMultiple(YAutoUp);
+  populateEditMultiple(YNoSpikes);
+  populateEditMultiple(YAC);
+  populateEditMultiple(YExpression);
 
   //
   // Markers tab...
   //
+  populateEditMultiple(_checkBoxDefaultMarkerColor);
+  populateEditMultiple(_spinBoxMarkerLineWidth);
+  populateEditMultiple(_colorMarker);
 }
 
 void Kst2dPlotWidget::fillWidget(const Kst2DPlot *plot) {
@@ -762,7 +825,7 @@ void Kst2dPlotWidget::fillWidget(const Kst2DPlot *plot) {
 
   _axisPenWidth->setValue(plot->axisPenWidth());
 
-  //update the tick display options
+  // update the tick display options
   _xMarksInsidePlot->setChecked(plot->xTicksInPlot() && !plot->xTicksOutPlot());
   _xMarksOutsidePlot->setChecked(plot->xTicksOutPlot() && !plot->xTicksInPlot());
   _xMarksInsideAndOutsidePlot->setChecked(plot->xTicksOutPlot() && plot->xTicksInPlot());
@@ -771,13 +834,13 @@ void Kst2dPlotWidget::fillWidget(const Kst2DPlot *plot) {
   _yMarksOutsidePlot->setChecked(plot->yTicksOutPlot() && !plot->yTicksInPlot());
   _yMarksInsideAndOutsidePlot->setChecked(plot->yTicksOutPlot() && plot->yTicksInPlot());
 
-  //update axis suppression
+  // update axis suppression
   _suppressTop->setChecked(plot->suppressTop());
   _suppressBottom->setChecked(plot->suppressBottom());
   _suppressRight->setChecked(plot->suppressRight());
   _suppressLeft->setChecked(plot->suppressLeft());
 
-  //update axes transforms
+  // update axes transforms
   _yTransformRight->setChecked(!plot->yTransformedExp().isEmpty());
   _yTransformRightExp->setText(plot->yTransformedExp());
   _xTransformTop->setChecked(!plot->xTransformedExp().isEmpty());
@@ -812,42 +875,87 @@ void Kst2dPlotWidget::applyContents(Kst2DPlotPtr plot) {
 }
 
 void Kst2dPlotWidget::applyAppearance(Kst2DPlotPtr plot) {
-  plot->xLabel()->setText(XAxisText->text());
-  plot->yLabel()->setText(YAxisText->text());
-  plot->topLabel()->setText(TopLabelText->text());
-  switch (_comboBoxTopLabelJustify->currentItem()) {
-    case 0:
-      plot->topLabel()->setJustification(SET_KST_JUSTIFY(KST_JUSTIFY_H_LEFT, KST_JUSTIFY_V_NONE));
-      break;
-    case 1:
-      plot->topLabel()->setJustification(SET_KST_JUSTIFY(KST_JUSTIFY_H_RIGHT, KST_JUSTIFY_V_NONE));
-      break;
-    case 2:
-      plot->topLabel()->setJustification(SET_KST_JUSTIFY(KST_JUSTIFY_H_CENTER, KST_JUSTIFY_V_NONE));
-      break;
+  if (!_editMultipleMode || XAxisText->text().compare(QString(" ")) != 0) {
+    plot->xLabel()->setText(XAxisText->text());
+  }
+  if (!_editMultipleMode || YAxisText->text().compare(QString(" ")) != 0) {
+    plot->yLabel()->setText(YAxisText->text());
+  }
+  if (!_editMultipleMode || TopLabelText->text().compare(QString(" ")) != 0) {
+    plot->topLabel()->setText(TopLabelText->text());
+  }
+
+  if (!_editMultipleMode || _comboBoxTopLabelJustify->currentText().compare(QString(" ")) != 0) {
+    switch (_comboBoxTopLabelJustify->currentItem()) {
+      case 0:
+        plot->topLabel()->setJustification(SET_KST_JUSTIFY(KST_JUSTIFY_H_LEFT, KST_JUSTIFY_V_NONE));
+        break;
+      case 1:
+        plot->topLabel()->setJustification(SET_KST_JUSTIFY(KST_JUSTIFY_H_RIGHT, KST_JUSTIFY_V_NONE));
+        break;
+      case 2:
+        plot->topLabel()->setJustification(SET_KST_JUSTIFY(KST_JUSTIFY_H_CENTER, KST_JUSTIFY_V_NONE));
+        break;
+    }
   }
 
   plot->setForegroundColor(plotColors->foreground());
   plot->setBackgroundColor(plotColors->background());
 
-  // gridlines colors
-  plot->setGridLinesColor(_majorGridColor->color(),
-          _minorGridColor->color(),
-          _checkBoxDefaultMajorGridColor->isChecked(),
-          _checkBoxDefaultMinorGridColor->isChecked());
+  QColor majorGridColor = plot->majorGridColor();
+  QColor minorGridColor = plot->minorGridColor();
+  bool defaultMajorGridColor = plot->defaultMajorGridColor();
+  bool defaultMinorGridColor = plot->defaultMinorGridColor();
 
-  plot->setAxisPenWidth(_axisPenWidth->value());
-  plot->setMajorPenWidth(_majorPenWidth->value());
-  plot->setMinorPenWidth(_minorPenWidth->value());
+  if (_checkBoxDefaultMajorGridColor->state() == QButton::On) {
+    defaultMajorGridColor = true;
+  } else if (_checkBoxDefaultMajorGridColor->state() == QButton::Off) {
+    defaultMajorGridColor = false;
+  }
 
-  plot->xLabel()->setFontName(FontComboBox->currentText());
-  plot->xLabel()->setFontSize(XLabelFontSize->value());
+  if (_checkBoxDefaultMinorGridColor->state() == QButton::On) {
+    defaultMinorGridColor = true;
+  } else if (_checkBoxDefaultMinorGridColor->state() == QButton::Off) {
+    defaultMinorGridColor = false;
+  }
 
-  plot->yLabel()->setFontName(FontComboBox->currentText());
-  plot->yLabel()->setFontSize(YLabelFontSize->value());
+  if (_majorGridColor->color() != QColor()) {
+    majorGridColor = _majorGridColor->color();
+  }
+  if (_minorGridColor->color() != QColor()) {
+    minorGridColor = _minorGridColor->color();
+  }
 
-  plot->topLabel()->setFontName(FontComboBox->currentText());
-  plot->topLabel()->setFontSize(TopLabelFontSize->value());
+  plot->setGridLinesColor(majorGridColor, minorGridColor, defaultMajorGridColor, defaultMinorGridColor);
+
+  if (!_editMultipleMode || _axisPenWidth->value() != _axisPenWidth->minValue()) {
+    plot->setAxisPenWidth(_axisPenWidth->value());
+  }
+  if (!_editMultipleMode || _majorPenWidth->value() != _majorPenWidth->minValue()) {
+    plot->setMajorPenWidth(_majorPenWidth->value());
+  }
+  if (!_editMultipleMode || _minorPenWidth->value() != _minorPenWidth->minValue()) {
+    plot->setMinorPenWidth(_minorPenWidth->value());
+  }
+
+  if(FontComboBox->currentText().compare(QString(" ")) != 0) {
+    plot->xLabel()->setFontName(FontComboBox->currentText());
+    plot->yLabel()->setFontName(FontComboBox->currentText());
+    plot->topLabel()->setFontName(FontComboBox->currentText());
+  }
+
+  if (!_editMultipleMode || XLabelFontSize->value() != XLabelFontSize->minValue()) {
+    plot->xLabel()->setFontSize(XLabelFontSize->value());
+  }
+
+  if (!_editMultipleMode || YLabelFontSize->value() != YLabelFontSize->minValue()) {
+    plot->yLabel()->setFontSize(YLabelFontSize->value());
+  }
+
+  if (!_editMultipleMode || TopLabelFontSize->value() != TopLabelFontSize->minValue()) {
+    plot->topLabel()->setFontSize(TopLabelFontSize->value());
+  }
+
   switch (_comboBoxTopLabelJustify->currentItem()) {
     case 0:
       plot->topLabel()->setJustification(SET_KST_JUSTIFY(KST_JUSTIFY_H_LEFT, KST_JUSTIFY_V_NONE));
@@ -860,25 +968,39 @@ void Kst2dPlotWidget::applyAppearance(Kst2DPlotPtr plot) {
       break;
   }
 
-  plot->xTickLabel()->setFontName(FontComboBox->currentText());
-  plot->xTickLabel()->setFontSize(NumberFontSize->value());
-  plot->xTickLabel()->setRotation(_spinBoxXAngle->value());
-
   plot->fullTickLabel()->setFontName(FontComboBox->currentText());
-  plot->fullTickLabel()->setFontSize(NumberFontSize->value());
+  if (!_editMultipleMode || NumberFontSize->value() != NumberFontSize->minValue()) {
+    plot->fullTickLabel()->setFontSize(NumberFontSize->value());
+    plot->xTickLabel()->setFontSize(NumberFontSize->value());
+    plot->yTickLabel()->setFontSize(NumberFontSize->value());
+  }
+
+  plot->xTickLabel()->setFontName(FontComboBox->currentText());
+  if (!_editMultipleMode || _spinBoxXAngle->value() != _spinBoxXAngle->minValue()) {
+    plot->xTickLabel()->setRotation(_spinBoxXAngle->value());
+  }
 
   plot->yTickLabel()->setFontName(FontComboBox->currentText());
-  plot->yTickLabel()->setFontSize(NumberFontSize->value());
-  plot->yTickLabel()->setRotation(_spinBoxYAngle->value());
-  if (ShowLegend->isChecked()) {
+  if (!_editMultipleMode || _spinBoxYAngle->value() != _spinBoxYAngle->minValue()) {
+    plot->yTickLabel()->setRotation(_spinBoxYAngle->value());
+  }
+
+  if (ShowLegend->state() == QButton::On) {
     KstViewLegendPtr vl = plot->getOrCreateLegend();
-    vl->setTrackContents(TrackContents->isChecked());
-  } else {
+    if (vl) {
+      if (TrackContents->state() == QButton::On) {
+        vl->setTrackContents(true);
+      } else if (TrackContents->state() == QButton::Off) {
+        vl->setTrackContents(false);
+      }
+    }
+  } else if (ShowLegend->state() == QButton::Off) {
     KstViewLegendPtr vl = plot->legend();
     if (vl) {
       plot->removeChild(KstViewObjectPtr(vl));
     }
   }
+
   plot->setDirty();
 }
 
@@ -890,13 +1012,20 @@ void Kst2dPlotWidget::applyXAxis(Kst2DPlotPtr plot) {
   }
 
   if (_checkBoxXInterpret->state() == QButton::On) {
-    plot->setXAxisInterpretation(true,
-              AxisInterpretations[_comboBoxXInterpret->currentItem()].type,
-              AxisDisplays[_comboBoxXDisplay->currentItem()].type);
+    KstAxisInterpretation xAxisInterpretation;
+    KstAxisDisplay xAxisDisplay;
+    bool isXAxisInterpreted;
+
+    plot->getXAxisInterpretation(isXAxisInterpreted, xAxisInterpretation, xAxisDisplay);
+    if (_comboBoxXInterpret->currentText().compare(QString(" ")) != 0) {
+      xAxisInterpretation = AxisInterpretations[_comboBoxXInterpret->currentItem()].type;
+    }
+    if (_comboBoxXDisplay->currentText().compare(QString(" ")) != 0) {
+      xAxisDisplay = AxisDisplays[_comboBoxXDisplay->currentItem()].type;
+    }
+    plot->setXAxisInterpretation(true, xAxisInterpretation, xAxisDisplay);
   } else if (_checkBoxXInterpret->state() == QButton::Off) {
-    plot->setXAxisInterpretation(false,
-              AXIS_INTERP_CTIME,
-              AXIS_DISPLAY_YEAR);
+    plot->setXAxisInterpretation(false, AXIS_INTERP_CTIME, AXIS_DISPLAY_YEAR);
   }
 
   if (_xMinorTicksAuto->state() == QButton::On) {
@@ -905,9 +1034,13 @@ void Kst2dPlotWidget::applyXAxis(Kst2DPlotPtr plot) {
     plot->setXMinorTicks(_xMinorTicks->value());
   }
 
-  plot->setXMajorTicks(MajorTickSpacings[_xMajorTickSpacing->currentItem()].majorTickDensity);
-  plot->setXTicksInPlot(_xMarksInsidePlot->isChecked() || _xMarksInsideAndOutsidePlot->isChecked());
-  plot->setXTicksOutPlot(_xMarksOutsidePlot->isChecked() || _xMarksInsideAndOutsidePlot->isChecked());
+  if (!_editMultipleMode || _xMajorTickSpacing->currentText().compare(QString(" ")) != 0) {
+    plot->setXMajorTicks(MajorTickSpacings[_xMajorTickSpacing->currentItem()].majorTickDensity);
+  }
+  if (!_editMultipleMode || _xMarksInsidePlot->isChecked() || _xMarksOutsidePlot->isChecked() || _xMarksInsideAndOutsidePlot->isChecked()) {
+    plot->setXTicksInPlot(_xMarksInsidePlot->isChecked() || _xMarksInsideAndOutsidePlot->isChecked());
+    plot->setXTicksOutPlot(_xMarksOutsidePlot->isChecked() || _xMarksInsideAndOutsidePlot->isChecked());
+  }
 
   bool xmajorgrid = plot->hasXMajorGrid();
   bool xminorgrid = plot->hasXMinorGrid();
@@ -959,13 +1092,20 @@ void Kst2dPlotWidget::applyYAxis(Kst2DPlotPtr plot) {
   }
 
   if (_checkBoxYInterpret->state() == QButton::On) {
-    plot->setYAxisInterpretation(true,
-              AxisInterpretations[_comboBoxYInterpret->currentItem()].type,
-              AxisDisplays[_comboBoxYDisplay->currentItem()].type);
+    KstAxisInterpretation yAxisInterpretation;
+    KstAxisDisplay yAxisDisplay;
+    bool isYAxisInterpreted;
+
+    plot->getYAxisInterpretation(isYAxisInterpreted, yAxisInterpretation, yAxisDisplay);
+    if (_comboBoxYInterpret->currentText().compare(QString(" ")) != 0) {
+      yAxisInterpretation = AxisInterpretations[_comboBoxYInterpret->currentItem()].type;
+    }
+    if (_comboBoxYDisplay->currentText().compare(QString(" ")) != 0) {
+      yAxisDisplay = AxisDisplays[_comboBoxYDisplay->currentItem()].type;
+    }
+    plot->setXAxisInterpretation(true, yAxisInterpretation, yAxisDisplay);
   } else if (_checkBoxYInterpret->state() == QButton::Off) {
-    plot->setYAxisInterpretation(false,
-              AXIS_INTERP_CTIME,
-              AXIS_DISPLAY_YEAR);
+    plot->setYAxisInterpretation(false, AXIS_INTERP_CTIME, AXIS_DISPLAY_YEAR);
   }
 
   if (_yMinorTicksAuto->state() == QButton::On) {
@@ -974,9 +1114,14 @@ void Kst2dPlotWidget::applyYAxis(Kst2DPlotPtr plot) {
     plot->setYMinorTicks(_yMinorTicks->value());
   }
 
-  plot->setYMajorTicks(MajorTickSpacings[_yMajorTickSpacing->currentItem()].majorTickDensity);
-  plot->setYTicksInPlot(_yMarksInsidePlot->isChecked() || _yMarksInsideAndOutsidePlot->isChecked());
-  plot->setYTicksOutPlot(_yMarksOutsidePlot->isChecked() || _yMarksInsideAndOutsidePlot->isChecked());
+  if (!_editMultipleMode || _yMajorTickSpacing->currentText().compare(QString(" ")) != 0) {
+    plot->setYMajorTicks(MajorTickSpacings[_yMajorTickSpacing->currentItem()].majorTickDensity);
+  }
+
+  if (!_editMultipleMode || _yMarksInsidePlot->isChecked() || _yMarksOutsidePlot->isChecked() || _yMarksInsideAndOutsidePlot->isChecked()) {
+    plot->setYTicksInPlot(_yMarksInsidePlot->isChecked() || _yMarksInsideAndOutsidePlot->isChecked());
+    plot->setYTicksOutPlot(_yMarksOutsidePlot->isChecked() || _yMarksInsideAndOutsidePlot->isChecked());
+  }
 
   bool ymajorgrid = plot->hasYMajorGrid();
   bool yminorgrid = plot->hasYMinorGrid();
@@ -1021,55 +1166,62 @@ void Kst2dPlotWidget::applyYAxis(Kst2DPlotPtr plot) {
 }
 
 void Kst2dPlotWidget::applyRange(Kst2DPlotPtr plot) {
-  // do X Scale
-  if (XAC->isChecked()) {
-    plot->setXScaleMode(AC);
-    plot->setXScale(0, XACRange->text().toDouble());
-  } else if (XExpression->isChecked()) {
-    plot->setXScaleMode(EXPRESSION);
-    if (!plot->setXExpressions(XExpressionMin->text(), XExpressionMax->text()))
-    {
-        KMessageBox::sorry(this, i18n("There is a problem with the X range expressions."));
-        return;
+  if (!_editMultipleMode || XAC->isChecked() || XExpression->isChecked() || 
+      XAutoUp->isChecked() || XAuto->isChecked() || XAutoBorder->isChecked() || XNoSpikes->isChecked()) {
+    if (XAC->isChecked()) {
+      plot->setXScaleMode(AC);
+      plot->setXScale(0, XACRange->text().toDouble());
+    } else if (XExpression->isChecked()) {
+      plot->setXScaleMode(EXPRESSION);
+      if (!plot->setXExpressions(XExpressionMin->text(), XExpressionMax->text())) {
+        if (!_editMultipleMode) {
+          KMessageBox::sorry(this, i18n("There is a problem with the X range expressions."));
+          return;
+        }
+      }
+      // if expressions are constant, just use FIXED mode
+      plot->optimizeXExps();
+    } else if (XAutoUp->isChecked()) {
+      plot->setXScaleMode(AUTOUP);
+    } else if (XAuto->isChecked()) {
+      plot->setXScaleMode(AUTO);
+    } else if (XAutoBorder->isChecked()) {
+      plot->setXScaleMode(AUTOBORDER);
+    } else if (XNoSpikes->isChecked()) {
+      plot->setXScaleMode(NOSPIKE);
+    } else {
+      KstDebug::self()->log(i18n("Internal error: No X scale type checked in %1.").arg(_title->text()), KstDebug::Error);
     }
-    // if expressions are constant, just use FIXED mode
-    plot->optimizeXExps();
-  } else if (XAutoUp->isChecked()) {
-    plot->setXScaleMode(AUTOUP);
-  } else if (XAuto->isChecked()) {
-    plot->setXScaleMode(AUTO);
-  } else if (XAutoBorder->isChecked()) {
-    plot->setXScaleMode(AUTOBORDER);
-  } else if (XNoSpikes->isChecked()) {
-    plot->setXScaleMode(NOSPIKE);
-  } else {
-    KstDebug::self()->log(i18n("Internal error: No X scale type checked in %1.").arg(_title->text()), KstDebug::Error);
   }
 
-  // do Y Scale
-  if (YAC->isChecked()) {
-    plot->setYScaleMode(AC);
-    plot->setYScale(0, YACRange->text().toDouble());
-  } else if (YExpression->isChecked()) {
-    plot->setYScaleMode(EXPRESSION);
-    if (!plot->setYExpressions(YExpressionMin->text(), YExpressionMax->text()))
-    {
-      KMessageBox::sorry(this, i18n("There is a problem with the Y range expressions."));
-      return;
+  if (!_editMultipleMode || YAC->isChecked() || YExpression->isChecked() || 
+      YAutoUp->isChecked() || YAuto->isChecked() || YAutoBorder->isChecked() || YNoSpikes->isChecked()) {
+    if (YAC->isChecked()) {
+      plot->setYScaleMode(AC);
+      plot->setYScale(0, YACRange->text().toDouble());
+    } else if (YExpression->isChecked()) {
+      plot->setYScaleMode(EXPRESSION);
+      if (!plot->setYExpressions(YExpressionMin->text(), YExpressionMax->text())) {
+        if (!_editMultipleMode) {
+          KMessageBox::sorry(this, i18n("There is a problem with the Y range expressions."));
+          return;
+        }
+      }
+      // if expressions are constant, just use FIXED mode
+      plot->optimizeYExps();
+    } else if (YAutoUp->isChecked()) {
+      plot->setYScaleMode(AUTOUP);
+    } else if (YAuto->isChecked()) {
+      plot->setYScaleMode(AUTO);
+    } else if (YAutoBorder->isChecked()) {
+      plot->setYScaleMode(AUTOBORDER);
+    } else if (YNoSpikes->isChecked()) {
+      plot->setYScaleMode(NOSPIKE);
+    } else {
+      KstDebug::self()->log(i18n( "Internal error: No Y scale type checked in %1." ).arg(_title->text()), KstDebug::Error);
     }
-    // if expressions are constant, just use FIXED mode
-    plot->optimizeYExps();
-  } else if (YAutoUp->isChecked()) {
-    plot->setYScaleMode(AUTOUP);
-  } else if (YAuto->isChecked()) {
-    plot->setYScaleMode(AUTO);
-  } else if (YAutoBorder->isChecked()) {
-    plot->setYScaleMode(AUTOBORDER);
-  } else if (YNoSpikes->isChecked()) {
-    plot->setYScaleMode(NOSPIKE);
-  } else {
-    KstDebug::self()->log(i18n( "Internal error: No Y scale type checked in %1." ).arg(_title->text()), KstDebug::Error);
   }
+
   plot->setDirty();
 }
 
@@ -1175,9 +1327,19 @@ void Kst2dPlotWidget::applyPlotMarkers(Kst2DPlotPtr plot) {
   }
 
   plot->setLineStyleMarkers(_comboMarkerLineStyle->currentItem());
-  plot->setLineWidthMarkers(_spinBoxMarkerLineWidth->value());
-  plot->setColorMarkers(_colorMarker->color());
-  plot->setDefaultColorMarker(_checkBoxDefaultMarkerColor->isChecked());
+  if (!_editMultipleMode || _spinBoxMarkerLineWidth->value() != _spinBoxMarkerLineWidth->minValue()) {
+    plot->setLineWidthMarkers(_spinBoxMarkerLineWidth->value());
+  }
+
+  if (_colorMarker->color() != QColor()) {
+    plot->setColorMarkers(_colorMarker->color());
+  }
+  if (_checkBoxDefaultMarkerColor->state() == QButton::On) {
+    plot->setDefaultColorMarker(true);
+  } else if (_checkBoxDefaultMarkerColor->state() == QButton::Off) {
+    plot->setDefaultColorMarker(false);
+  }
+
   plot->setDirty();
 }
 
@@ -1205,20 +1367,22 @@ void Kst2dPlotWidget::fillPlot( Kst2DPlotPtr plot ) {
   applyRange(plot);
   applyPlotMarkers(plot);
 
-  //_title->setText(plot->tagName());
-  QString tag = _title->text().stripWhiteSpace();
-  if (tag.isEmpty()) {
-    plot->setTagName(KstObjectTag(KST::suggestPlotName(), KstObjectTag::globalTagContext));	// FIXME: always global tag context?
-  } else {
-    plot->setTagName(KstObjectTag(tag+"randomtextasholdingpattern", KstObjectTag::globalTagContext)); // FIXME: always global tag context?
-    if (KstData::self()->viewObjectNameNotUnique(tag)) {
-      int j = 1;
-      while (KstData::self()->viewObjectNameNotUnique(tag+"-"+QString::number(j))) {
-        j++;
+  if (!_editMultipleMode) {
+    QString tag = _title->text().stripWhiteSpace();
+    if (tag.isEmpty()) {
+      plot->setTagName(KstObjectTag(KST::suggestPlotName(), KstObjectTag::globalTagContext));
+    } else {
+      plot->setTagName(KstObjectTag(tag+"randomtextasholdingpattern", KstObjectTag::globalTagContext));
+      if (KstData::self()->viewObjectNameNotUnique(tag)) {
+        int j = 1;
+
+        while (KstData::self()->viewObjectNameNotUnique(tag+"-"+QString::number(j))) {
+          j++;
+        }
+        tag = tag + "-" + QString::number(j);
       }
-      tag = tag + "-" + QString::number(j);
+      plot->setTagName(KstObjectTag(tag, KstObjectTag::globalTagContext));
     }
-    plot->setTagName(KstObjectTag(tag, KstObjectTag::globalTagContext));   // FIXME: always global tag context?
   }
 
   plot->setDirty();

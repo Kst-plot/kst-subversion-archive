@@ -57,6 +57,11 @@ struct AxisDisplay {
   KstAxisDisplay type;
 };
 
+struct MajorTickSpacing {
+  const char *label;
+  int majorTickDensity;
+};
+
 const AxisInterpretation AxisInterpretations[] = {
   { I18N_NOOP("Julian Year"), AXIS_INTERP_YEAR },
   { I18N_NOOP("Standard C time"), AXIS_INTERP_CTIME },
@@ -64,7 +69,7 @@ const AxisInterpretation AxisInterpretations[] = {
   { I18N_NOOP2("Modified Julian Date", "MJD"), AXIS_INTERP_MJD },
   { I18N_NOOP2("Reduced Julian Date", "RJD"), AXIS_INTERP_RJD },
   { I18N_NOOP2("Temps Atomique International", "TAI"), AXIS_INTERP_AIT }
-};          
+};
 
 const AxisDisplay AxisDisplays[] = {
   { I18N_NOOP("Julian Year"), AXIS_DISPLAY_YEAR },
@@ -77,6 +82,13 @@ const AxisDisplay AxisDisplays[] = {
   { I18N_NOOP2("Reduced Julian Date", "RJD"), AXIS_DISPLAY_RJD },
   { I18N_NOOP("<KDE Short Date and Time>"), AXIS_DISPLAY_KDE_SHORTDATE },
   { I18N_NOOP("<KDE Long Date and Time>"), AXIS_DISPLAY_KDE_LONGDATE }
+};
+
+const MajorTickSpacing MajorTickSpacings[] = {
+  { I18N_NOOP("Coarse"), 2 },
+  { I18N_NOOP("Default"), 5 },
+  { I18N_NOOP("Fine"), 10 },
+  { I18N_NOOP("Very fine"), 15 }
 };
 
 class TickParameters {
@@ -102,7 +114,7 @@ class TickParameters {
 
 const unsigned int numAxisInterpretations = sizeof( AxisInterpretations ) / sizeof( AxisInterpretation );
 const unsigned int numAxisDisplays = sizeof( AxisDisplays ) / sizeof( AxisDisplay );
-
+const unsigned int numMajorTickSpacings = sizeof( MajorTickSpacings ) / sizeof( MajorTickSpacing );
 
 #endif
 // vim: ts=2 sw=2 et

@@ -59,6 +59,11 @@ class Kst2dPlotWidget: public View2DPlotWidget {
     void editLegend();
 
   private:
+    void populateEditMultiple(QRadioButton *radioButtonWidget);
+    void populateEditMultiple(QComboBox *comboWidget);
+    void populateEditMultiple(KColorButton *colorButton);
+    void populateEditMultiple(QLineEdit *lineEditWidget);
+    void populateEditMultiple(QSpinBox *spinBoxWidget);
     void populateEditMultiple(QCheckBox *checkBoxWidget);
 
     Kst2DPlotPtr _plot;
