@@ -72,7 +72,7 @@
 #include "kstviewlegend.h"
 #include "kstviewobjectfactory.h"
 #include "plotmimesource.h"
-#include "view2dplotwidget.h"
+#include "kst2dplotwidget_i.h"
 #include "plotlistbox.h"
 #include "vectorselector.h"
 #include "kstgfx2dplotmousehandler.h"
@@ -6964,13 +6964,25 @@ void Kst2DPlot::setPlotLabelFontSizes(int size){
   }
 }
 
+/** prepare the custom widget for multiple edit */
+/** Unlike most viewObject dialogs, here we let the dialog prepare itself,
+    rather than having kst2dplot prepare it - kst2dplot is already too big! */
+void Kst2DPlot::populateEditMultiple(QWidget *w) {
+  Kst2dPlotWidget *widget = dynamic_cast<Kst2dPlotWidget*>(w);
+  if (!widget) {
+    return;
+  }
+
+  widget->populateEditMultiple(this);
+}
+
 /** fill the custom widget with current properties */
 /** Unlike most viewObject dialogs, here we let the dialog fill itself,
     rather than having kst2dplot fill it - kst2dplot is already too big! */
 bool Kst2DPlot::fillConfigWidget(QWidget *w, bool isNew) const {
   Q_UNUSED(isNew)
 
-  View2DPlotWidget *widget = dynamic_cast<View2DPlotWidget*>(w);
+  Kst2dPlotWidget *widget = dynamic_cast<Kst2dPlotWidget*>(w);
   if (!widget) {
     return false;
   }
@@ -6986,7 +6998,7 @@ bool Kst2DPlot::fillConfigWidget(QWidget *w, bool isNew) const {
 bool Kst2DPlot::readConfigWidget(QWidget *w, bool editMultipleMode) {
   Q_UNUSED(editMultipleMode)
 
-  View2DPlotWidget *widget = dynamic_cast<View2DPlotWidget*>(w);
+  Kst2dPlotWidget *widget = dynamic_cast<Kst2dPlotWidget*>(w);
   if (!widget) {
     return false;
   }
@@ -6997,7 +7009,7 @@ bool Kst2DPlot::readConfigWidget(QWidget *w, bool editMultipleMode) {
 }
 
 void Kst2DPlot::connectConfigWidget(QWidget *parent, QWidget *w) const {
-  View2DPlotWidget *widget = dynamic_cast<View2DPlotWidget*>(w);
+  Kst2dPlotWidget *widget = dynamic_cast<Kst2dPlotWidget*>(w);
   if (!widget) {
     return;
   }
@@ -7165,7 +7177,7 @@ const QDict<KstScalar>& Kst2DPlot::scalars() const {
 }
 
 QWidget *Kst2DPlot::configWidget(QWidget *parent) {
-  return new View2DPlotWidget(parent, "custom");
+  return new Kst2dPlotWidget(parent, "custom");
 }
 
 namespace {

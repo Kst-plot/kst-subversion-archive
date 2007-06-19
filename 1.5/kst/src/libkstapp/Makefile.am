@@ -43,6 +43,7 @@ libkstapp_la_SOURCES = \
 	kstviewlabel.cpp \
 	kstplotlabel.cpp \
 	kst2dplot.cpp \
+	kst2dplotwidget_i.cpp \
 	kstviewlegend.cpp \
 	kstviewbox.cpp \
 	kstviewline.cpp \

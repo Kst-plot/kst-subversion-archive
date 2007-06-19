@@ -2925,54 +2925,23 @@
     <include location="local" impldecl="in implementation">kstplotlabel.h</include>
     <include location="local" impldecl="in implementation">kstdebug.h</include>
     <include location="local" impldecl="in implementation">kstdefaultnames.h</include>
-    <include location="local" impldecl="in implementation">view2dplotwidget.ui.h</include>
 </includes>
 <variables>
-    <variable access="private">Kst2DPlotPtr _plot;</variable>
-    <variable access="private">QLineEdit *ScalarDest;</variable>
 </variables>
 <signals>
-    <signal>changed()</signal>
 </signals>
 <slots>
-    <slot>generateDefaultLabels()</slot>
-    <slot>updateButtons()</slot>
-    <slot>addDisplayedCurve()</slot>
-    <slot>removeDisplayedCurve()</slot>
-    <slot>fillMarkerLineCombo()</slot>
-    <slot>updateAxesButtons()</slot>
-    <slot>updateScalarCombo()</slot>
-    <slot>updatePlotMarkers( const Kst2DPlot * plot )</slot>
-    <slot>fillWidget( const Kst2DPlot * plot )</slot>
-    <slot>applyAppearance( Kst2DPlotPtr plot )</slot>
-    <slot>applyXAxis( Kst2DPlotPtr plot )</slot>
-    <slot>applyYAxis( Kst2DPlotPtr plot )</slot>
-    <slot>applyRange( Kst2DPlotPtr plot )</slot>
-    <slot>addPlotMarker()</slot>
-    <slot>removePlotMarker()</slot>
-    <slot>removeAllPlotMarkers()</slot>
-    <slot>applyPlotMarkers( Kst2DPlotPtr plot )</slot>
-    <slot>fillPlot( Kst2DPlotPtr plot )</slot>
-    <slot>insertCurrentScalar()</slot>
-    <slot>setScalarDestXLabel()</slot>
-    <slot>setScalarDestYLabel()</slot>
-    <slot>setScalarDestTopLabel()</slot>
-    <slot>editLegend()</slot>
 </slots>
 <functions>
-    <function access="private" specifier="non virtual">init()</function>
 </functions>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
     <includehint>plotlistbox.h</includehint>
-    <includehint>plotlistbox.h</includehint>
     <includehint>kdualcolorbutton.h</includehint>
-    <includehint>kcolorbutton.h</includehint>
     <includehint>kcolorbutton.h</includehint>
     <includehint>kfontcombo.h</includehint>
     <includehint>klineedit.h</includehint>
     <includehint>kcombobox.h</includehint>
-    <includehint>kcolorbutton.h</includehint>
     <includehint>vectorselector.h</includehint>
     <includehint>kstcombobox.h</includehint>
 </includehints>

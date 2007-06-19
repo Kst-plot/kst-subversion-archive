@@ -102,6 +102,7 @@ public:
   bool fillConfigWidget(QWidget *w, bool isNew) const;
   bool readConfigWidget(QWidget *w, bool editMultipleMode);
   void connectConfigWidget(QWidget *parent, QWidget *w) const;
+  void populateEditMultiple(QWidget *w);
 
   static Kst2DPlotList globalPlotList();
   static Kst2DPlotPtr findPlotByName(const QString& name);
