@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <class>View2DPlotWidget</class>
 <widget class="QWidget">
     <property name="name">
@@ -9,8 +9,11 @@
             <x>0</x>
             <y>0</y>
             <width>732</width>
-            <height>571</height>
+            <height>565</height>
         </rect>
+    </property>
+    <property name="caption">
+        <string>View2DPlotWidget</string>
     </property>
     <vbox>
         <property name="name">
@@ -642,69 +645,6 @@
                             </spacer>
                         </hbox>
                     </widget>
-                    <widget class="QButtonGroup" row="3" column="0">
-                        <property name="name">
-                            <cstring>buttonGroup3</cstring>
-                        </property>
-                        <property name="title">
-                            <string>Apply Settings To</string>
-                        </property>
-                        <grid>
-                            <property name="name">
-                                <cstring>unnamed</cstring>
-                            </property>
-                            <spacer row="0" column="3">
-                                <property name="name">
-                                    <cstring>spacer16</cstring>
-                                </property>
-                                <property name="orientation">
-                                    <enum>Horizontal</enum>
-                                </property>
-                                <property name="sizeType">
-                                    <enum>Expanding</enum>
-                                </property>
-                                <property name="sizeHint">
-                                    <size>
-                                        <width>30</width>
-                                        <height>21</height>
-                                    </size>
-                                </property>
-                            </spacer>
-                            <widget class="QRadioButton" row="0" column="0">
-                                <property name="name">
-                                    <cstring>appearanceThisPlot</cstring>
-                                </property>
-                                <property name="text">
-                                    <string>This plot</string>
-                                </property>
-                                <property name="accel">
-                                    <string></string>
-                                </property>
-                            </widget>
-                            <widget class="QRadioButton" row="0" column="1">
-                                <property name="name">
-                                    <cstring>appearanceThisWindow</cstring>
-                                </property>
-                                <property name="text">
-                                    <string>Current window's plots</string>
-                                </property>
-                                <property name="accel">
-                                    <string></string>
-                                </property>
-                            </widget>
-                            <widget class="QRadioButton" row="0" column="2">
-                                <property name="name">
-                                    <cstring>appearanceAll</cstring>
-                                </property>
-                                <property name="text">
-                                    <string>All plots</string>
-                                </property>
-                                <property name="accel">
-                                    <string></string>
-                                </property>
-                            </widget>
-                        </grid>
-                    </widget>
                     <widget class="QGroupBox" row="1" column="0">
                         <property name="name">
                             <cstring>groupBox5</cstring>
@@ -1117,66 +1057,6 @@
                     <property name="name">
                         <cstring>unnamed</cstring>
                     </property>
-                    <widget class="QButtonGroup" row="5" column="0">
-                        <property name="name">
-                            <cstring>buttonGroup3_2</cstring>
-                        </property>
-                        <property name="title">
-                            <string>Apply Settings To</string>
-                        </property>
-                        <hbox>
-                            <property name="name">
-                                <cstring>unnamed</cstring>
-                            </property>
-                            <widget class="QRadioButton">
-                                <property name="name">
-                                    <cstring>XAxisThisPlot</cstring>
-                                </property>
-                                <property name="text">
-                                    <string>This plot</string>
-                                </property>
-                                <property name="accel">
-                                    <string></string>
-                                </property>
-                            </widget>
-                            <widget class="QRadioButton">
-                                <property name="name">
-                                    <cstring>XAxisThisWindow</cstring>
-                                </property>
-                                <property name="text">
-                                    <string>Current window's plots</string>
-                                </property>
-                                <property name="accel">
-                                    <string></string>
-                                </property>
-                            </widget>
-                            <widget class="QRadioButton">
-                                <property name="name">
-                                    <cstring>XAxisAll</cstring>
-                                </property>
-                                <property name="text">
-                                    <string>All plots</string>
-                                </property>
-                            </widget>
-                            <spacer>
-                                <property name="name">
-                                    <cstring>spacer16_2</cstring>
-                                </property>
-                                <property name="orientation">
-                                    <enum>Horizontal</enum>
-                                </property>
-                                <property name="sizeType">
-                                    <enum>Expanding</enum>
-                                </property>
-                                <property name="sizeHint">
-                                    <size>
-                                        <width>30</width>
-                                        <height>21</height>
-                                    </size>
-                                </property>
-                            </spacer>
-                        </hbox>
-                    </widget>
                     <widget class="QButtonGroup" row="0" column="0">
                         <property name="name">
                             <cstring>buttonGroup16</cstring>
@@ -1587,66 +1467,6 @@
                     <property name="name">
                         <cstring>unnamed</cstring>
                     </property>
-                    <widget class="QButtonGroup" row="5" column="0">
-                        <property name="name">
-                            <cstring>buttonGroup3_2_4</cstring>
-                        </property>
-                        <property name="title">
-                            <string>Apply Settings To</string>
-                        </property>
-                        <hbox>
-                            <property name="name">
-                                <cstring>unnamed</cstring>
-                            </property>
-                            <widget class="QRadioButton">
-                                <property name="name">
-                                    <cstring>YAxisThisPlot</cstring>
-                                </property>
-                                <property name="text">
-                                    <string>This plot</string>
-                                </property>
-                                <property name="accel">
-                                    <string></string>
-                                </property>
-                            </widget>
-                            <widget class="QRadioButton">
-                                <property name="name">
-                                    <cstring>YAxisThisWindow</cstring>
-                                </property>
-                                <property name="text">
-                                    <string>Current window's plots</string>
-                                </property>
-                                <property name="accel">
-                                    <string></string>
-                                </property>
-                            </widget>
-                            <widget class="QRadioButton">
-                                <property name="name">
-                                    <cstring>YAxisAll</cstring>
-                                </property>
-                                <property name="text">
-                                    <string>All plots</string>
-                                </property>
-                            </widget>
-                            <spacer>
-                                <property name="name">
-                                    <cstring>spacer16_2_4</cstring>
-                                </property>
-                                <property name="orientation">
-                                    <enum>Horizontal</enum>
-                                </property>
-                                <property name="sizeType">
-                                    <enum>Expanding</enum>
-                                </property>
-                                <property name="sizeHint">
-                                    <size>
-                                        <width>30</width>
-                                        <height>21</height>
-                                    </size>
-                                </property>
-                            </spacer>
-                        </hbox>
-                    </widget>
                     <widget class="QButtonGroup" row="1" column="0">
                         <property name="name">
                             <cstring>ButtonGroup1_2_2</cstring>
@@ -2059,66 +1879,6 @@
                     <property name="name">
                         <cstring>unnamed</cstring>
                     </property>
-                    <widget class="QButtonGroup" row="3" column="0">
-                        <property name="name">
-                            <cstring>buttonGroup3_2_2</cstring>
-                        </property>
-                        <property name="title">
-                            <string>Apply Settings To</string>
-                        </property>
-                        <hbox>
-                            <property name="name">
-                                <cstring>unnamed</cstring>
-                            </property>
-                            <widget class="QRadioButton">
-                                <property name="name">
-                                    <cstring>rangeThisPlot</cstring>
-                                </property>
-                                <property name="text">
-                                    <string>This plot</string>
-                                </property>
-                                <property name="accel">
-                                    <string></string>
-                                </property>
-                            </widget>
-                            <widget class="QRadioButton">
-                                <property name="name">
-                                    <cstring>rangeThisWindow</cstring>
-                                </property>
-                                <property name="text">
-                                    <string>Current window's plots</string>
-                                </property>
-                                <property name="accel">
-                                    <string></string>
-                                </property>
-                            </widget>
-                            <widget class="QRadioButton">
-                                <property name="name">
-                                    <cstring>rangeAll</cstring>
-                                </property>
-                                <property name="text">
-                                    <string>All plots</string>
-                                </property>
-                            </widget>
-                            <spacer>
-                                <property name="name">
-                                    <cstring>spacer16_2_2</cstring>
-                                </property>
-                                <property name="orientation">
-                                    <enum>Horizontal</enum>
-                                </property>
-                                <property name="sizeType">
-                                    <enum>Expanding</enum>
-                                </property>
-                                <property name="sizeHint">
-                                    <size>
-                                        <width>30</width>
-                                        <height>21</height>
-                                    </size>
-                                </property>
-                            </spacer>
-                        </hbox>
-                    </widget>
                     <spacer row="2" column="0">
                         <property name="name">
                             <cstring>spacer48</cstring>
@@ -2649,66 +2409,6 @@
                     <property name="name">
                         <cstring>unnamed</cstring>
                     </property>
-                    <widget class="QButtonGroup" row="4" column="0" rowspan="1" colspan="2">
-                        <property name="name">
-                            <cstring>buttonGroup3_2_3</cstring>
-                        </property>
-                        <property name="title">
-                            <string>Apply Settings To</string>
-                        </property>
-                        <hbox>
-                            <property name="name">
-                                <cstring>unnamed</cstring>
-                            </property>
-                            <widget class="QRadioButton">
-                                <property name="name">
-                                    <cstring>markersThisPlot</cstring>
-                                </property>
-                                <property name="text">
-                                    <string>This plot</string>
-                                </property>
-                                <property name="accel">
-                                    <string></string>
-                                </property>
-                            </widget>
-                            <widget class="QRadioButton">
-                                <property name="name">
-                                    <cstring>markersThisWindow</cstring>
-                                </property>
-                                <property name="text">
-                                    <string>Current window's plots</string>
-                                </property>
-                                <property name="accel">
-                                    <string></string>
-                                </property>
-                            </widget>
-                            <widget class="QRadioButton">
-                                <property name="name">
-                                    <cstring>markersAll</cstring>
-                                </property>
-                                <property name="text">
-                                    <string>All plots</string>
-                                </property>
-                            </widget>
-                            <spacer>
-                                <property name="name">
-                                    <cstring>spacer16_2_3</cstring>
-                                </property>
-                                <property name="orientation">
-                                    <enum>Horizontal</enum>
-                                </property>
-                                <property name="sizeType">
-                                    <enum>Expanding</enum>
-                                </property>
-                                <property name="sizeHint">
-                                    <size>
-                                        <width>30</width>
-                                        <height>21</height>
-                                    </size>
-                                </property>
-                            </spacer>
-                        </hbox>
-                    </widget>
                     <widget class="QButtonGroup" row="3" column="0">
                         <property name="name">
                             <cstring>buttonGroup17</cstring>
@@ -3134,9 +2834,6 @@
     <tabstop>_checkBoxDefaultMarkerColor</tabstop>
     <tabstop>_comboMarkerLineStyle</tabstop>
     <tabstop>_spinBoxMarkerLineWidth</tabstop>
-    <tabstop>markersThisPlot</tabstop>
-    <tabstop>markersThisWindow</tabstop>
-    <tabstop>markersAll</tabstop>
     <tabstop>XAuto</tabstop>
     <tabstop>XAC</tabstop>
     <tabstop>XACRange</tabstop>
@@ -3151,9 +2848,6 @@
     <tabstop>scalarSelectorY1</tabstop>
     <tabstop>YExpressionMax</tabstop>
     <tabstop>scalarSelectorY2</tabstop>
-    <tabstop>rangeThisPlot</tabstop>
-    <tabstop>rangeThisWindow</tabstop>
-    <tabstop>rangeAll</tabstop>
     <tabstop>_suppressLeft</tabstop>
     <tabstop>_suppressRight</tabstop>
     <tabstop>YIsLog</tabstop>
@@ -3169,9 +2863,6 @@
     <tabstop>_yMinorTicksAuto</tabstop>
     <tabstop>_yMajorGrid</tabstop>
     <tabstop>_yMinorGrid</tabstop>
-    <tabstop>YAxisThisPlot</tabstop>
-    <tabstop>YAxisThisWindow</tabstop>
-    <tabstop>YAxisAll</tabstop>
     <tabstop>_suppressTop</tabstop>
     <tabstop>_suppressBottom</tabstop>
     <tabstop>XIsLog</tabstop>
@@ -3187,9 +2878,6 @@
     <tabstop>_xMinorTicksAuto</tabstop>
     <tabstop>_xMajorGrid</tabstop>
     <tabstop>_xMinorGrid</tabstop>
-    <tabstop>XAxisThisPlot</tabstop>
-    <tabstop>XAxisThisWindow</tabstop>
-    <tabstop>XAxisAll</tabstop>
     <tabstop>_axisPenWidth</tabstop>
     <tabstop>_majorGridColor</tabstop>
     <tabstop>_checkBoxDefaultMajorGridColor</tabstop>
@@ -3213,9 +2901,6 @@
     <tabstop>ShowLegend</tabstop>
     <tabstop>TrackContents</tabstop>
     <tabstop>_pushButtonEditLegend</tabstop>
-    <tabstop>appearanceThisPlot</tabstop>
-    <tabstop>appearanceThisWindow</tabstop>
-    <tabstop>appearanceAll</tabstop>
     <tabstop>AvailableCurveList</tabstop>
     <tabstop>_add</tabstop>
     <tabstop>_remove</tabstop>
@@ -3257,8 +2942,8 @@
     <slot>fillMarkerLineCombo()</slot>
     <slot>updateAxesButtons()</slot>
     <slot>updateScalarCombo()</slot>
-    <slot>updatePlotMarkers( const Kst2DPlot *plot )</slot>
-    <slot>fillWidget( const Kst2DPlot *plot )</slot>
+    <slot>updatePlotMarkers( const Kst2DPlot * plot )</slot>
+    <slot>fillWidget( const Kst2DPlot * plot )</slot>
     <slot>applyAppearance( Kst2DPlotPtr plot )</slot>
     <slot>applyXAxis( Kst2DPlotPtr plot )</slot>
     <slot>applyYAxis( Kst2DPlotPtr plot )</slot>
@@ -3279,6 +2964,8 @@
 </functions>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
+    <includehint>plotlistbox.h</includehint>
+    <includehint>plotlistbox.h</includehint>
     <includehint>kdualcolorbutton.h</includehint>
     <includehint>kcolorbutton.h</includehint>
     <includehint>kcolorbutton.h</includehint>
@@ -3286,5 +2973,7 @@
     <includehint>klineedit.h</includehint>
     <includehint>kcombobox.h</includehint>
     <includehint>kcolorbutton.h</includehint>
+    <includehint>vectorselector.h</includehint>
+    <includehint>kstcombobox.h</includehint>
 </includehints>
 </UI>

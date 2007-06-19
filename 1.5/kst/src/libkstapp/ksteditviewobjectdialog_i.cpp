@@ -411,7 +411,6 @@ void KstEditViewObjectDialogI::modified() {
 
 void KstEditViewObjectDialogI::applySettings(KstViewObjectPtr viewObject) {
   if (_customWidget) {
-    // FILL ME IN TODO
     viewObject->readConfigWidget(_customWidget, _editMultipleMode);
   } else {
     // get all the properties and set them

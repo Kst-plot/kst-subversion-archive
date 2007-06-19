@@ -123,12 +123,6 @@ void View2DPlotWidget::init()
     _comboBoxYDisplay->setEnabled(false);
     textLabelYDisplayAs->setEnabled(false);
 
-    appearanceThisPlot->setChecked(true);
-    XAxisThisPlot->setChecked(true);
-    YAxisThisPlot->setChecked(true);
-    rangeThisPlot->setChecked(true);
-    markersThisPlot->setChecked(true);
-
     // plot markers
     connect(AddPlotMarker, SIGNAL(clicked()), this, SLOT(addPlotMarker()));
     connect(RemovePlotMarker, SIGNAL(clicked()), this, SLOT(removePlotMarker()));
@@ -706,10 +700,6 @@ void View2DPlotWidget::fillWidget(const Kst2DPlot *plot) {
 }
 
 void View2DPlotWidget::applyAppearance(Kst2DPlotPtr plot) {
-    Kst2DPlotList plots;
-    Kst2DPlotPtr plotExtra;
-
-    // only apply label text to this plot, despite radio button values
     plot->xLabel()->setText(XAxisText->text());
     plot->yLabel()->setText(YAxisText->text());
     plot->topLabel()->setText(TopLabelText->text());
@@ -722,266 +712,205 @@ void View2DPlotWidget::applyAppearance(Kst2DPlotPtr plot) {
 	    break;
 	case 2:
 	    plot->topLabel()->setJustification(SET_KST_JUSTIFY(KST_JUSTIFY_H_CENTER, KST_JUSTIFY_V_NONE));
-	    break;      
+	    break;
     }
 
-    if (appearanceThisPlot->isChecked()) {
-	plots += plot;
-    } else if (appearanceThisWindow->isChecked()) {
-	plots = plot->topLevelParent()->findChildrenType<Kst2DPlot>(true);
+    plot->setForegroundColor(plotColors->foreground());
+    plot->setBackgroundColor(plotColors->background());
+
+    // gridlines colors
+    plot->setGridLinesColor(_majorGridColor->color(),
+            _minorGridColor->color(),
+            _checkBoxDefaultMajorGridColor->isChecked(),
+            _checkBoxDefaultMinorGridColor->isChecked());
+
+    plot->setAxisPenWidth(_axisPenWidth->value());
+    plot->setMajorPenWidth(_majorPenWidth->value());
+    plot->setMinorPenWidth(_minorPenWidth->value());
+
+    plot->xLabel()->setFontName(FontComboBox->currentText());
+    plot->xLabel()->setFontSize(XLabelFontSize->value());
+
+    plot->yLabel()->setFontName(FontComboBox->currentText());
+    plot->yLabel()->setFontSize(YLabelFontSize->value());
+
+    plot->topLabel()->setFontName(FontComboBox->currentText());
+    plot->topLabel()->setFontSize(TopLabelFontSize->value());
+    switch (_comboBoxTopLabelJustify->currentItem()) {
+        case 0:
+            plot->topLabel()->setJustification(SET_KST_JUSTIFY(KST_JUSTIFY_H_LEFT, KST_JUSTIFY_V_NONE));
+            break;
+        case 1:
+            plot->topLabel()->setJustification(SET_KST_JUSTIFY(KST_JUSTIFY_H_RIGHT, KST_JUSTIFY_V_NONE));
+            break;
+        case 2:
+            plot->topLabel()->setJustification(SET_KST_JUSTIFY(KST_JUSTIFY_H_CENTER, KST_JUSTIFY_V_NONE));
+            break;
+    }
+
+    plot->xTickLabel()->setFontName(FontComboBox->currentText());
+    plot->xTickLabel()->setFontSize(NumberFontSize->value());
+    plot->xTickLabel()->setRotation(_spinBoxXAngle->value());
+
+    plot->fullTickLabel()->setFontName(FontComboBox->currentText());
+    plot->fullTickLabel()->setFontSize(NumberFontSize->value());
+
+    plot->yTickLabel()->setFontName(FontComboBox->currentText());
+    plot->yTickLabel()->setFontSize(NumberFontSize->value());
+    plot->yTickLabel()->setRotation(_spinBoxYAngle->value());
+    if (ShowLegend->isChecked()) {
+        KstViewLegendPtr vl = plot->getOrCreateLegend();
+        vl->setTrackContents(TrackContents->isChecked());
     } else {
-	plots = plot->globalPlotList();
+        KstViewLegendPtr vl = plot->legend();
+        if (vl) {
+            plot->removeChild(KstViewObjectPtr(vl));
+        }
     }
-
-    for (uint i = 0; i < plots.size(); ++i) {
-	plotExtra = plots[i];
-
-	plotExtra->setForegroundColor(plotColors->foreground());
-	plotExtra->setBackgroundColor(plotColors->background());
-
-	// gridlines colors
-	plotExtra->setGridLinesColor(_majorGridColor->color(),
-		_minorGridColor->color(),
-		_checkBoxDefaultMajorGridColor->isChecked(),
-		_checkBoxDefaultMinorGridColor->isChecked());
-
-	plotExtra->setAxisPenWidth(_axisPenWidth->value());
-	plotExtra->setMajorPenWidth(_majorPenWidth->value());
-	plotExtra->setMinorPenWidth(_minorPenWidth->value());
-
-	plotExtra->xLabel()->setFontName(FontComboBox->currentText());
-	plotExtra->xLabel()->setFontSize(XLabelFontSize->value());
-
-	plotExtra->yLabel()->setFontName(FontComboBox->currentText());
-	plotExtra->yLabel()->setFontSize(YLabelFontSize->value());
-
-	plotExtra->topLabel()->setFontName(FontComboBox->currentText());
-	plotExtra->topLabel()->setFontSize(TopLabelFontSize->value());
-	switch (_comboBoxTopLabelJustify->currentItem()) {
-	    case 0:
-		plotExtra->topLabel()->setJustification(SET_KST_JUSTIFY(KST_JUSTIFY_H_LEFT, KST_JUSTIFY_V_NONE));
-		break;
-	    case 1:
-		plotExtra->topLabel()->setJustification(SET_KST_JUSTIFY(KST_JUSTIFY_H_RIGHT, KST_JUSTIFY_V_NONE));
-		break;
-	    case 2:
-		plotExtra->topLabel()->setJustification(SET_KST_JUSTIFY(KST_JUSTIFY_H_CENTER, KST_JUSTIFY_V_NONE));
-		break;
-	}
-
-	plotExtra->xTickLabel()->setFontName(FontComboBox->currentText());
-	plotExtra->xTickLabel()->setFontSize(NumberFontSize->value());
-	plotExtra->xTickLabel()->setRotation(_spinBoxXAngle->value());
-
-	plotExtra->fullTickLabel()->setFontName(FontComboBox->currentText());
-	plotExtra->fullTickLabel()->setFontSize(NumberFontSize->value());
-
-	plotExtra->yTickLabel()->setFontName(FontComboBox->currentText());
-	plotExtra->yTickLabel()->setFontSize(NumberFontSize->value());
-	plotExtra->yTickLabel()->setRotation(_spinBoxYAngle->value());
-	if (ShowLegend->isChecked()) {
-	    KstViewLegendPtr vl = plotExtra->getOrCreateLegend();
-	    vl->setTrackContents(TrackContents->isChecked());
-	} else {
-	    KstViewLegendPtr vl = plotExtra->legend();
-	    if (vl) {
-		plotExtra->removeChild(KstViewObjectPtr(vl));
-	    }
-	}
-	plotExtra->setDirty();
-    }
+    plot->setDirty();
 }
 
 
 void View2DPlotWidget::applyXAxis(Kst2DPlotPtr plot) {
-    Kst2DPlotList plots;
-    Kst2DPlotPtr  plotExtra;
+    plot->setLog(XIsLog->isChecked(), YIsLog->isChecked());
 
-    if (XAxisThisPlot->isChecked()) {
-	plots += plot;
-    } else if (XAxisThisWindow->isChecked()) {
-	plots = plot->topLevelParent()->findChildrenType<Kst2DPlot>(true);
+    plot->setXOffsetMode(_checkBoxXOffsetMode->isChecked());
+
+    if (_checkBoxXInterpret->isChecked()) {
+        plot->setXAxisInterpretation(true,
+                AxisInterpretations[_comboBoxXInterpret->currentItem()].type,
+                AxisDisplays[_comboBoxXDisplay->currentItem()].type);
     } else {
-	plots = plot->globalPlotList();
+        plot->setXAxisInterpretation(false,
+                AXIS_INTERP_CTIME,
+                AXIS_DISPLAY_YEAR);
     }
 
-    for (uint i = 0; i < plots.size(); ++i) {
-	plotExtra = plots[i];
-
-	plotExtra->setLog(XIsLog->isChecked(), YIsLog->isChecked());
-
-	plotExtra->setXOffsetMode(_checkBoxXOffsetMode->isChecked());
-
-	if (_checkBoxXInterpret->isChecked()) {
-	    plotExtra->setXAxisInterpretation(true,
-		    AxisInterpretations[_comboBoxXInterpret->currentItem()].type,
-		    AxisDisplays[_comboBoxXDisplay->currentItem()].type);
-	} else {
-	    plotExtra->setXAxisInterpretation(false,
-		    AXIS_INTERP_CTIME,
-		    AXIS_DISPLAY_YEAR);
-	}
-	// minor tick settings.
-	if (_xMinorTicksAuto->isChecked()) {
-	    plotExtra->setXMinorTicks(-1);
-	} else {
-	    plotExtra->setXMinorTicks(_xMinorTicks->value());
-	}
-
-	// major tick settings.
-	plotExtra->setXMajorTicks(
-		MajorTickSpacings[_xMajorTickSpacing->currentItem()].majorTickDensity);
-
-	// tick display
-	plotExtra->setXTicksInPlot(_xMarksInsidePlot->isChecked() || _xMarksInsideAndOutsidePlot->isChecked());
-	plotExtra->setXTicksOutPlot(_xMarksOutsidePlot->isChecked() || _xMarksInsideAndOutsidePlot->isChecked());
-
-	// grid lines
-	plotExtra->setXGridLines(_xMajorGrid->isChecked(), _xMinorGrid->isChecked());
-
-	// axis suppression
-	plotExtra->setSuppressTop(_suppressTop->isChecked());
-	plotExtra->setSuppressBottom(_suppressBottom->isChecked());
-
-	// transformed opposite axis
-	if (_xTransformTop->isChecked()) {
-	    plotExtra->setXTransformedExp(_xTransformTopExp->text());
-	} else {
-	    plotExtra->setXTransformedExp(QString::null);
-	}
-
-	plotExtra->setXReversed(_xReversed->isChecked());
-	plotExtra->setDirty();
+    if (_xMinorTicksAuto->isChecked()) {
+        plot->setXMinorTicks(-1);
+    } else {
+        plot->setXMinorTicks(_xMinorTicks->value());
     }
+
+    plot->setXMajorTicks(MajorTickSpacings[_xMajorTickSpacing->currentItem()].majorTickDensity);
+
+    // tick display
+    plot->setXTicksInPlot(_xMarksInsidePlot->isChecked() || _xMarksInsideAndOutsidePlot->isChecked());
+    plot->setXTicksOutPlot(_xMarksOutsidePlot->isChecked() || _xMarksInsideAndOutsidePlot->isChecked());
+
+    // grid lines
+    plot->setXGridLines(_xMajorGrid->isChecked(), _xMinorGrid->isChecked());
+
+    // axis suppression
+    plot->setSuppressTop(_suppressTop->isChecked());
+    plot->setSuppressBottom(_suppressBottom->isChecked());
+
+    // transformed opposite axis
+    if (_xTransformTop->isChecked()) {
+        plot->setXTransformedExp(_xTransformTopExp->text());
+    } else {
+        plot->setXTransformedExp(QString::null);
+    }
+
+    plot->setXReversed(_xReversed->isChecked());
+    plot->setDirty();
 }
 
 void View2DPlotWidget::applyYAxis(Kst2DPlotPtr plot) {
+    plot->setYOffsetMode(_checkBoxYOffsetMode->isChecked());
 
-    Kst2DPlotList plots;
-    Kst2DPlotPtr  plotExtra;
-
-    if (YAxisThisPlot->isChecked()) {
-	plots += plot;
-    } else if (YAxisThisWindow->isChecked()) {
-	plots = plot->topLevelParent()->findChildrenType<Kst2DPlot>(true);
+    if (_checkBoxYInterpret->isChecked()) {
+        plot->setYAxisInterpretation(true,
+                AxisInterpretations[_comboBoxYInterpret->currentItem()].type,
+                AxisDisplays[_comboBoxYDisplay->currentItem()].type);
     } else {
-	plots = plot->globalPlotList();
+        plot->setYAxisInterpretation(false,
+                AXIS_INTERP_CTIME,
+                AXIS_DISPLAY_YEAR);
+    }
+    // minor ticks
+    if (_yMinorTicksAuto->isChecked()) {
+        plot->setYMinorTicks(-1);
+    } else {
+        plot->setYMinorTicks(_yMinorTicks->value());
+    }
+    // major ticks
+    plot->setYMajorTicks(MajorTickSpacings[_yMajorTickSpacing->currentItem()].majorTickDensity);
+
+    // tick display
+    plot->setYTicksInPlot(_yMarksInsidePlot->isChecked() || _yMarksInsideAndOutsidePlot->isChecked());
+    plot->setYTicksOutPlot(_yMarksOutsidePlot->isChecked() || _yMarksInsideAndOutsidePlot->isChecked());
+
+    // grid lines
+    plot->setYGridLines(_yMajorGrid->isChecked(), _yMinorGrid->isChecked());
+
+    // axis suppression
+    plot->setSuppressLeft(_suppressLeft->isChecked());
+    plot->setSuppressRight(_suppressRight->isChecked());
+
+    // transformed opposite axis
+    if (_yTransformRight->isChecked()) {
+        plot->setYTransformedExp(_yTransformRightExp->text());
+    } else {
+        plot->setYTransformedExp(QString::null);
     }
 
-    for (uint i = 0; i < plots.size(); ++i) {
-	plotExtra = plots[i];
-
-	plotExtra->setYOffsetMode(_checkBoxYOffsetMode->isChecked());
-
-	if (_checkBoxYInterpret->isChecked()) {
-	    plotExtra->setYAxisInterpretation(true,
-		    AxisInterpretations[_comboBoxYInterpret->currentItem()].type,
-		    AxisDisplays[_comboBoxYDisplay->currentItem()].type);
-	} else {
-	    plotExtra->setYAxisInterpretation(false,
-		    AXIS_INTERP_CTIME,
-		    AXIS_DISPLAY_YEAR);
-	}
-	// minor ticks
-	if (_yMinorTicksAuto->isChecked()) {
-	    plotExtra->setYMinorTicks(-1);
-	} else {
-	    plotExtra->setYMinorTicks(_yMinorTicks->value());
-	}
-	// major ticks
-	plotExtra->setYMajorTicks(
-		MajorTickSpacings[_yMajorTickSpacing->currentItem()].majorTickDensity);
-
-	// tick display
-	plotExtra->setYTicksInPlot(_yMarksInsidePlot->isChecked() || _yMarksInsideAndOutsidePlot->isChecked());
-	plotExtra->setYTicksOutPlot(_yMarksOutsidePlot->isChecked() || _yMarksInsideAndOutsidePlot->isChecked());
-
-	// grid lines
-	plotExtra->setYGridLines(_yMajorGrid->isChecked(), _yMinorGrid->isChecked());
-
-	// axis suppression
-	plotExtra->setSuppressLeft(_suppressLeft->isChecked());
-	plotExtra->setSuppressRight(_suppressRight->isChecked());
-
-	// transformed opposite axis
-	if (_yTransformRight->isChecked()) {
-	    plotExtra->setYTransformedExp(_yTransformRightExp->text());
-	} else {
-	    plotExtra->setYTransformedExp(QString::null);
-	}
-
-	// reversed
-	plotExtra->setYReversed(_yReversed->isChecked());
-	plotExtra->setDirty();
-    }
+    // reversed
+    plot->setYReversed(_yReversed->isChecked());
+    plot->setDirty();
 }
 
 void View2DPlotWidget::applyRange(Kst2DPlotPtr plot) {
-    Kst2DPlotList plots;
-    Kst2DPlotPtr  plotExtra;
-
-    if (rangeThisPlot->isChecked()) {
-	plots += plot;
-    } else if (rangeThisWindow->isChecked()) {
-	plots = plot->topLevelParent()->findChildrenType<Kst2DPlot>(true);
+    // do X Scale
+    if (XAC->isChecked()) {
+        plot->setXScaleMode(AC);
+        plot->setXScale(0, XACRange->text().toDouble());
+    } else if (XExpression->isChecked()) {
+        plot->setXScaleMode(EXPRESSION);
+        if (!plot->setXExpressions(XExpressionMin->text(), XExpressionMax->text()))
+        {
+            KMessageBox::sorry(this, i18n("There is a problem with the X range expressions."));
+            return;
+        }
+        //if expressions are constant, just use FIXED mode
+        plot->optimizeXExps();
+    } else if (XAutoUp->isChecked()) {
+        plot->setXScaleMode(AUTOUP);
+    } else if (XAuto->isChecked()) {
+        plot->setXScaleMode(AUTO);
+    } else if (XAutoBorder->isChecked()) {
+        plot->setXScaleMode(AUTOBORDER);
+    } else if (XNoSpikes->isChecked()) {
+        plot->setXScaleMode(NOSPIKE);
     } else {
-	plots = plot->globalPlotList();
+        KstDebug::self()->log(i18n("Internal error: No X scale type checked in %1.").arg(_title->text()), KstDebug::Error);
     }
 
-    for (uint i = 0; i < plots.size(); ++i) {
-	plotExtra = plots[i];
-
-	// do X Scale
-	if (XAC->isChecked()) {
-	    plotExtra->setXScaleMode(AC);
-	    plotExtra->setXScale(0, XACRange->text().toDouble());
-	} else if (XExpression->isChecked()) {
-	    plotExtra->setXScaleMode(EXPRESSION);
-	    if (!plotExtra->setXExpressions(XExpressionMin->text(), XExpressionMax->text()))
-	    {
-		KMessageBox::sorry(this, i18n("There is a problem with the X range expressions."));
-		return;
-	    }
-	    //if expressions are constant, just use FIXED mode
-	    plotExtra->optimizeXExps();
-	} else if (XAutoUp->isChecked()) {
-	    plotExtra->setXScaleMode(AUTOUP);
-	} else if (XAuto->isChecked()) {
-	    plotExtra->setXScaleMode(AUTO);
-	} else if (XAutoBorder->isChecked()) {
-	    plotExtra->setXScaleMode(AUTOBORDER);
-	} else if (XNoSpikes->isChecked()) {
-	    plotExtra->setXScaleMode(NOSPIKE);
-	} else {
-	    KstDebug::self()->log(i18n("Internal error: No X scale type checked in %1.").arg(_title->text()), KstDebug::Error);
-	}
-
-	// do Y Scale
-	if (YAC->isChecked()) {
-	    plotExtra->setYScaleMode(AC);
-	    plotExtra->setYScale(0, YACRange->text().toDouble());
-	} else if (YExpression->isChecked()) {
-	    plotExtra->setYScaleMode(EXPRESSION);
-	    if (!plotExtra->setYExpressions(YExpressionMin->text(), YExpressionMax->text()))
-	    {
-		KMessageBox::sorry(this, i18n("There is a problem with the Y range expressions."));
-		return;
-	    }
-	    //if expressions are constant, just use FIXED mode
-	    plotExtra->optimizeYExps();
-	} else if (YAutoUp->isChecked()) {
-	    plotExtra->setYScaleMode(AUTOUP);
-	} else if (YAuto->isChecked()) {
-	    plotExtra->setYScaleMode(AUTO);
-	} else if (YAutoBorder->isChecked()) {
-	    plotExtra->setYScaleMode(AUTOBORDER);
-	} else if (YNoSpikes->isChecked()) {
-	    plotExtra->setYScaleMode(NOSPIKE);
-	} else {
-	    KstDebug::self()->log(i18n( "Internal error: No Y scale type checked in %1." ).arg(_title->text()), KstDebug::Error);
-	}
-	plotExtra->setDirty();
+    // do Y Scale
+    if (YAC->isChecked()) {
+        plot->setYScaleMode(AC);
+        plot->setYScale(0, YACRange->text().toDouble());
+    } else if (YExpression->isChecked()) {
+        plot->setYScaleMode(EXPRESSION);
+        if (!plot->setYExpressions(YExpressionMin->text(), YExpressionMax->text()))
+        {
+            KMessageBox::sorry(this, i18n("There is a problem with the Y range expressions."));
+            return;
+        }
+        //if expressions are constant, just use FIXED mode
+        plot->optimizeYExps();
+    } else if (YAutoUp->isChecked()) {
+        plot->setYScaleMode(AUTOUP);
+    } else if (YAuto->isChecked()) {
+        plot->setYScaleMode(AUTO);
+    } else if (YAutoBorder->isChecked()) {
+        plot->setYScaleMode(AUTOBORDER);
+    } else if (YNoSpikes->isChecked()) {
+        plot->setYScaleMode(NOSPIKE);
+    } else {
+        KstDebug::self()->log(i18n( "Internal error: No Y scale type checked in %1." ).arg(_title->text()), KstDebug::Error);
     }
+    plot->setDirty();
 }
 
 void View2DPlotWidget::addPlotMarker() {
@@ -1043,18 +972,9 @@ void View2DPlotWidget::removeAllPlotMarkers() {
 }
 
 void View2DPlotWidget::applyPlotMarkers(Kst2DPlotPtr plot) {
-    Kst2DPlotList plots;
-
-    if (markersThisPlot->isChecked()) {
-	plots += plot;
-    } else if (markersThisWindow->isChecked()) {
-	plots = plot->topLevelParent()->findChildrenType<Kst2DPlot>(true);
-    } else {
-	plots = plot->globalPlotList();
-    }
-
     KstMarker marker;
     KstMarkerList newMarkers;
+
     marker.isRising = false;
     marker.isFalling = false;
     marker.isVectorValue = false;
@@ -1068,45 +988,41 @@ void View2DPlotWidget::applyPlotMarkers(Kst2DPlotPtr plot) {
 	}
     }
 
-    for (unsigned i = 0; i < plots.size(); ++i) {
-	Kst2DPlotPtr plotExtra = plots[i];
-	plotExtra->setPlotMarkerList(newMarkers);
+    plot->setPlotMarkerList(newMarkers);
 
-	// apply the auto-generation settings
-	if (UseCurve->isChecked()) {
-	    KstBaseCurveList curves = kstObjectSubList<KstDataObject, KstBaseCurve>(KST::dataObjectList);
-	    KstVCurveList vcurves = kstObjectSubList<KstBaseCurve, KstVCurve>(curves);
-	    KstVCurvePtr curve = *(vcurves.findTag(CurveCombo->currentText()));
-	    bool falling = Falling->isChecked();
-	    bool rising = Rising->isChecked();
+    // apply the auto-generation settings
+    if (UseCurve->isChecked()) {
+        KstBaseCurveList curves = kstObjectSubList<KstDataObject, KstBaseCurve>(KST::dataObjectList);
+        KstVCurveList vcurves = kstObjectSubList<KstBaseCurve, KstVCurve>(curves);
+        KstVCurvePtr curve = *(vcurves.findTag(CurveCombo->currentText()));
+        bool falling = Falling->isChecked();
+        bool rising = Rising->isChecked();
 
-	    if (Both->isChecked()) {
-		falling = true;
-		rising = true;
-	    }
-	    plotExtra->setCurveToMarkers(curve, rising, falling);
-	} else {
-	    plotExtra->removeCurveToMarkers();
-	}
-
-	if (UseVector->isChecked()) {
-	    KstVectorPtr vector = *(KST::vectorList.findTag(_vectorForMarkers->selectedVector()));
-	    plotExtra->setVectorToMarkers(vector);
-	} else {
-	    plotExtra->removeVectorToMarkers();
-	}
-
-	plotExtra->setLineStyleMarkers(_comboMarkerLineStyle->currentItem());
-	plotExtra->setLineWidthMarkers(_spinBoxMarkerLineWidth->value());
-	plotExtra->setColorMarkers(_colorMarker->color());
-	plotExtra->setDefaultColorMarker(_checkBoxDefaultMarkerColor->isChecked());
-	plotExtra->setDirty();
+        if (Both->isChecked()) {
+            falling = true;
+            rising = true;
+        }
+        plot->setCurveToMarkers(curve, rising, falling);
+    } else {
+        plot->removeCurveToMarkers();
     }
+
+    if (UseVector->isChecked()) {
+        KstVectorPtr vector = *(KST::vectorList.findTag(_vectorForMarkers->selectedVector()));
+        plot->setVectorToMarkers(vector);
+    } else {
+        plot->removeVectorToMarkers();
+    }
+
+    plot->setLineStyleMarkers(_comboMarkerLineStyle->currentItem());
+    plot->setLineWidthMarkers(_spinBoxMarkerLineWidth->value());
+    plot->setColorMarkers(_colorMarker->color());
+    plot->setDefaultColorMarker(_checkBoxDefaultMarkerColor->isChecked());
+    plot->setDirty();
 }
 
 void View2DPlotWidget::fillPlot( Kst2DPlotPtr plot )
 {
-
     applyAppearance(plot);
 
     // FIXME: be more efficient here.  Only remove the curves that we need, only

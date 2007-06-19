@@ -693,7 +693,7 @@ void Kst2DPlot::commonConstructor(const QString &in_tag,
   // let this Kst2DPlot register doc changes.
   connect(this, SIGNAL(modified()), KstApp::inst(), SLOT(registerDocChange()));
 
-  CreateScalars();
+  createScalars();
 }
 
 
@@ -769,7 +769,7 @@ bool Kst2DPlot::setXScale(double xmin_in, double xmax_in) {
   if (checkRange(xmin_in, xmax_in)) {
     XMax = xmax_in;
     XMin = xmin_in;
-    updateScalears();
+    updateScalars();
     return true;
   }
 
@@ -781,7 +781,7 @@ bool Kst2DPlot::setYScale(double ymin_in, double ymax_in) {
   if (checkRange(ymin_in, ymax_in)) {
     YMax = ymax_in;
     YMin = ymin_in;
-    updateScalears();
+    updateScalars();
     return true;
   }
 
@@ -790,27 +790,16 @@ bool Kst2DPlot::setYScale(double ymin_in, double ymax_in) {
 
 
 bool Kst2DPlot::setLXScale(double xmin_in, double xmax_in) {
-//this code is duplicated in setLScale.
+  // this code is duplicated in setLScale.
   if (checkLRange(xmin_in, xmax_in, _xLog, _xLogBase)) {
     if (_xLog) {
-      // don't do auto scale change... this is the wrong place to do it 
-      // and it acts spooky!
-/*      if (_xLogBase == 10.0 && xmax_in - xmin_in < 1.1) {
-        _xLogBase = 2.0;
-        xmin_in *= 1.0/log10(2.0);
-        xmax_in *= 1.0/log10(2.0);
-      } else if (_xLogBase == 2.0 && xmax_in - xmin_in > 1.5) {
-        _xLogBase = 10.0;
-        xmin_in *= log10(2.0);
-        xmax_in *= log10(2.0);
-      }*/
       XMax = pow(_xLogBase, xmax_in);
       XMin = pow(_xLogBase, xmin_in);
     } else {
       XMax = xmax_in;
       XMin = xmin_in;
     }
-    updateScalears();
+    updateScalars();
     return true;
   }
 
@@ -819,23 +808,16 @@ bool Kst2DPlot::setLXScale(double xmin_in, double xmax_in) {
 
 
 bool Kst2DPlot::setLYScale(double ymin_in, double ymax_in) {
-// this code is duplicated in setLScale.
+  // this code is duplicated in setLScale.
   if (checkLRange(ymin_in, ymax_in, _yLog, _yLogBase)) {
     if (_yLog) {
-      // don't do auto scale change... this is the wrong place to do it 
-      // and it acts spooky!
-/*      if (_yLogBase == 10.0 && ymax_in - ymin_in < 2.0) {
-        _yLogBase = 2.0;
-      } else if (_yLogBase == 2.0 && ymax_in - ymin_in > 3.0) {
-        _yLogBase = 10.0;
-      }*/
       YMax = pow(_yLogBase, ymax_in);
       YMin = pow(_yLogBase, ymin_in);
     } else {
       YMax = ymax_in;
       YMin = ymin_in;
     }
-    updateScalears();
+    updateScalars();
     return true;
   }
 
@@ -859,21 +841,20 @@ void Kst2DPlot::setScale(double xmin_in, double ymin_in, double xmax_in, double 
   }
 
   if (schange == true) {
-    updateScalears();
+    updateScalars();
   }
 }
 
 
 bool Kst2DPlot::setLScale(double xmin_in, double ymin_in, double xmax_in, double ymax_in) {
-// this code is duplicated in setLXScale, setLYScale.
-
+  // this code is duplicated in setLXScale, setLYScale.
   bool schange = false;
 
   if (checkLRange(xmin_in, xmax_in, _xLog, _xLogBase)) {
     if (_xLog) {
       XMax = pow(_xLogBase, xmax_in);
       XMin = pow(_xLogBase, xmin_in);
-    } else { //this is funny-- we should be doing checkRange() here. but.. i won't mess with it unless there are problems... dh.
+    } else {
       XMax = xmax_in;
       XMin = xmin_in;
     }
@@ -884,20 +865,18 @@ bool Kst2DPlot::setLScale(double xmin_in, double ymin_in, double xmax_in, double
     if (_yLog) {
       YMax = pow(_yLogBase, ymax_in);
       YMin = pow(_yLogBase, ymin_in);
-    } else { //this is funny-- we should be doing checkRange() here. but.. i won't mess with it unless there are problems... dh.
+    } else {
       YMax = ymax_in;
       YMin = ymin_in;
     }
     schange = true;
   }
 
-  if (schange = true) {
-    updateScalears();
-    return true; // Odd, should we be returning true if only one of these works?  I think this
-                 // is a bit strange. (previous comment, author unknown -dh)
+  if (schange) {
+    updateScalars();
   }
 
-  return false;
+  return schange;
 }
 
 
@@ -6985,20 +6964,17 @@ void Kst2DPlot::setPlotLabelFontSizes(int size){
   }
 }
 
-
-/****************************
- * 2dplot edit dialog stuff */
-
 /** fill the custom widget with current properties */
 /** Unlike most viewObject dialogs, here we let the dialog fill itself,
     rather than having kst2dplot fill it - kst2dplot is already too big! */
 bool Kst2DPlot::fillConfigWidget(QWidget *w, bool isNew) const {
   Q_UNUSED(isNew)
+
   View2DPlotWidget *widget = dynamic_cast<View2DPlotWidget*>(w);
   if (!widget) {
     return false;
   }
-  
+
   widget->fillWidget(this);
   widget->TabWidget->setCurrentPage(_tabToShow);
   return false;
@@ -7007,12 +6983,13 @@ bool Kst2DPlot::fillConfigWidget(QWidget *w, bool isNew) const {
 /** apply properties in the custom config widget to this */
 /** Unlike most viewObject dialogs, here we let the dialog fill its plot,
     rather than having kst2dplot fill it - kst2dplot is already too big! */
-bool Kst2DPlot::readConfigWidget(QWidget *w) {
+bool Kst2DPlot::readConfigWidget(QWidget *w, bool editMultipleMode) {
+  Q_UNUSED(editMultipleMode)
+
   View2DPlotWidget *widget = dynamic_cast<View2DPlotWidget*>(w);
   if (!widget) {
     return false;
   }
-  // FIXME: apply properties here
 
   widget->fillPlot(this);
   setDirty();
@@ -7051,8 +7028,6 @@ void Kst2DPlot::connectConfigWidget(QWidget *parent, QWidget *w) const {
   connect( widget->ShowLegend, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
   connect( widget->TrackContents, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
   connect( widget->_pushButtonEditLegend, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
-  connect( widget->appearanceThisPlot, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
-  connect( widget->appearanceThisWindow, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
 
   connect( widget->_suppressTop, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
   connect( widget->_suppressBottom, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
@@ -7072,9 +7047,7 @@ void Kst2DPlot::connectConfigWidget(QWidget *parent, QWidget *w) const {
   connect( widget->_xMarksInsideAndOutsidePlot, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
   connect( widget->_xMajorGrid, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
   connect( widget->_xMinorGrid, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
-  connect( widget->XAxisThisPlot, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
-  connect( widget->XAxisThisWindow, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
-  
+
   connect( widget->_suppressLeft, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
   connect( widget->_suppressRight, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
   connect( widget->YIsLog, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
@@ -7092,8 +7065,6 @@ void Kst2DPlot::connectConfigWidget(QWidget *parent, QWidget *w) const {
   connect( widget->_yMarksInsideAndOutsidePlot, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
   connect( widget->_yMajorGrid, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
   connect( widget->_yMinorGrid, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
-  connect( widget->YAxisThisPlot, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
-  connect( widget->YAxisThisWindow, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
 
   connect( widget->XAuto, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
   connect( widget->XAutoBorder, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
@@ -7128,7 +7099,7 @@ void Kst2DPlot::connectConfigWidget(QWidget *parent, QWidget *w) const {
 
 }
 
-void Kst2DPlot::CreateScalars() {
+void Kst2DPlot::createScalars() {
     KstWriteLocker sl(&KST::scalarList.lock());
     KST::scalarList.setUpdateDisplayTags(false);
 
@@ -7161,7 +7132,7 @@ void Kst2DPlot::CreateScalars() {
     KST::scalarList.setUpdateDisplayTags(true);
 }
 
-void Kst2DPlot::RenameScalars() {
+void Kst2DPlot::renameScalars() {
   KstWriteLocker sl(&KST::scalarList.lock());
   KST::scalarList.setUpdateDisplayTags(false);
 
@@ -7173,7 +7144,7 @@ void Kst2DPlot::RenameScalars() {
   KST::scalarList.setUpdateDisplayTags(true);
 }
 
-void Kst2DPlot::updateScalears() {
+void Kst2DPlot::updateScalars() {
   _scalars["xmax"]->setValue(XMax);
   _scalars["xmin"]->setValue(XMin);
   _scalars["ymax"]->setValue(YMax);
@@ -7186,15 +7157,15 @@ void Kst2DPlot::setTagName(const KstObjectTag& newTag) {
   }
 
   this->KstObject::setTagName(newTag);
-  RenameScalars();
+  renameScalars();
 }
 
 const QDict<KstScalar>& Kst2DPlot::scalars() const {  
   return _scalars;
 }
 
-QWidget *Kst2DPlot::configWidget() {
-  return new View2DPlotWidget;
+QWidget *Kst2DPlot::configWidget(QWidget *parent) {
+  return new View2DPlotWidget(parent, "custom");
 }
 
 namespace {

@@ -96,13 +96,13 @@ public:
   Kst2DPlot(const Kst2DPlot& plot, const QString& name);
   virtual ~Kst2DPlot();
 
-  QWidget *configWidget();
+  QWidget *configWidget(QWidget *parent);
 
   // handle custom widget, if any: is called by KstEditViewObjectDialogI
   bool fillConfigWidget(QWidget *w, bool isNew) const;
-  bool readConfigWidget(QWidget *w);
+  bool readConfigWidget(QWidget *w, bool editMultipleMode);
   void connectConfigWidget(QWidget *parent, QWidget *w) const;
-    
+
   static Kst2DPlotList globalPlotList();
   static Kst2DPlotPtr findPlotByName(const QString& name);
   static bool checkRange(double& min_in, double& max_in);
@@ -112,7 +112,7 @@ public:
   virtual UpdateType update(int update_counter);
   virtual void save(QTextStream& ts, const QString& indent = QString::null);
   virtual void saveAttributes(QTextStream& ts, const QString& indent = QString::null);
-  
+
   virtual bool popupMenu(KPopupMenu *menu, const QPoint& pos, KstViewObjectPtr topLevelParent);
   virtual bool layoutPopupMenu(KPopupMenu *menu, const QPoint& pos, KstViewObjectPtr topLevelParent);
 
@@ -140,7 +140,7 @@ public:
   void pushPlotColors();
   void popPlotColors();
 
-  void updateScalears();
+  void updateScalars();
   const QDict<KstScalar>& scalars() const;
 
   /** Set the scale */
@@ -382,7 +382,7 @@ public:
   KstViewLegendPtr legend() const;
 
   KstViewLegendPtr getOrCreateLegend();
-  
+
   virtual QRect contentsRect() const;
 
   double verticalSizeFactor();
@@ -393,9 +393,9 @@ public:
 protected:
   QDict<KstScalar> _scalars;
 
-  /** Scalar Maintenance methods */
-  void CreateScalars();
-  void RenameScalars();
+  /** scalar maintenance methods */
+  void createScalars();
+  void renameScalars();
 
 signals:
   void modified();
