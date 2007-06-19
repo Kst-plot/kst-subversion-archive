@@ -522,8 +522,10 @@ bool KstEditViewObjectDialogI::apply() {
     applySettings(_viewObject);
   }
 
-  _apply->setDisabled(true);
-  KstApp::inst()->paintAll(KstPainter::P_PAINT);
+  if (applied) {
+    _apply->setDisabled(true);
+    KstApp::inst()->paintAll(KstPainter::P_PAINT);
+  }
 
   return applied;
 }
@@ -537,8 +539,6 @@ void KstEditViewObjectDialogI::applyClicked() {
 void KstEditViewObjectDialogI::okClicked() {
   if (_viewObject && apply()) {
     QDialog::accept();
-  } else {
-    QDialog::reject();
   }
 }
 

@@ -5934,7 +5934,6 @@ void Kst2DPlot::plotAxes(QPainter& p, QRect& plotRegion,
       tpx.labels.pop_front();
     }
 
-    // FIXME: inefficient.  We keep reparsing and re-rendering tpx.labels[.]
     for (i = tpx.iLo; i < tpx.iHi; i++) {
       double xTickPos = x_orig_px + (double)i * xtick_px;
       if (_xReversed) {
@@ -5943,16 +5942,16 @@ void Kst2DPlot::plotAxes(QPainter& p, QRect& plotRegion,
 
       p.save();
       _xTickLabel->setText(tpx.labels[i - tpx.iLo]);
-      if (_xTickLabel->rotation() == 0) {
+      if (_xTickLabel->rotation() == 0.0) {
         if (!((_suppressLeft  && d2i(xTickPos) - _xTickLabel->size().width() / 2 < xleft_bdr_px ) ||
               (_suppressRight && d2i(xTickPos) - _xTickLabel->size().width() / 2 > x_px - xright_bdr_px ) ) ) {
           p.translate(d2i(xTickPos) - _xTickLabel->size().width() / 2, yTickPos);
           _xTickLabel->paint(p);
         }
-      } else if (_xTickLabel->rotation() > 0) {
+      } else if (_xTickLabel->rotation() > 0.0) {
         p.translate(xTickPos-0.5*_xTickLabel->lineSpacing()*sin(_xTickLabel->rotation()*M_PI/180.0), yTickPos);
         _xTickLabel->paint(p);
-      } else if (_xTickLabel->rotation() < 0) {
+      } else if (_xTickLabel->rotation() < 0.0) {
         p.translate(xTickPos - _xTickLabel->size().width()-0.5*_xTickLabel->lineSpacing()*sin(_xTickLabel->rotation()*M_PI/180.0), yTickPos);
         _xTickLabel->paint(p);
       }
@@ -5961,7 +5960,6 @@ void Kst2DPlot::plotAxes(QPainter& p, QRect& plotRegion,
   }
 
   // if top axis is transformed, plot top axis numbers as well
-  // FIXME: inefficient.  We keep reparsing and re-rendering tpx.oppLabels[.]
   if (_xTransformed && !_suppressTop) {
     int yTopTickPos = d2i(ytop_bdr_px);
     if (xTicksOutPlot()) {
@@ -6003,7 +6001,7 @@ void Kst2DPlot::plotAxes(QPainter& p, QRect& plotRegion,
     if (yTicksOutPlot()) {
       xTickPos -= d2i(2.0 * ytick_len_px);
     }
-    // FIXME: inefficient.  We keep reparsing and re-rendering tpy.labels[.]
+
     for (i = tpy.iLo; i < tpy.iHi; i++) {
       double yTickPos = y_orig_px - (double)i * ytick_px;
       if (_yReversed) {
@@ -6012,16 +6010,16 @@ void Kst2DPlot::plotAxes(QPainter& p, QRect& plotRegion,
       _yTickLabel->setText(tpy.labels[i - tpy.iLo]);
 
       p.save();
-      if (_yTickLabel->rotation() == 0 || _yTickLabel->rotation() <-89 || _yTickLabel->rotation() > 89) {
+      if (_yTickLabel->rotation() == 0.0 || fabs(_yTickLabel->rotation()) > 89.0) {
         if (!((_suppressBottom && d2i(yTickPos) + _yTickLabel->size().height() / 2 > y_px - ybot_bdr_px ) ||
               (_suppressTop    && d2i(yTickPos) - _yTickLabel->size().height() / 2 < ytop_bdr_px ) ) ) {
           p.translate(d2i(xTickPos) - _yTickLabel->size().width(), d2i(yTickPos) - _yTickLabel->size().height() / 2);
           _yTickLabel->paint(p);
         }
-      } else if (_yTickLabel->rotation() < 0) {
+      } else if (_yTickLabel->rotation() < 0.0) {
         p.translate(d2i(xTickPos) - _yTickLabel->size().width(), d2i(yTickPos) - _yTickLabel->lineSpacing()/2);
         _yTickLabel->paint(p);
-      } else if (_yTickLabel->rotation() > 0) {
+      } else if (_yTickLabel->rotation() > 0.0) {
         p.translate(d2i(xTickPos) - _yTickLabel->size().width(), d2i(yTickPos) - _yTickLabel->size().height() + _yTickLabel->lineSpacing()/2);
         _yTickLabel->paint(p);
       }
@@ -6035,7 +6033,7 @@ void Kst2DPlot::plotAxes(QPainter& p, QRect& plotRegion,
     if (yTicksOutPlot()) {
       xTopTickPos += d2i(2.0 * ytick_len_px);
     }
-    // FIXME: inefficient.  We keep reparsing and re-rendering tpy.oppLabels[.]
+
     for (i = tpy.iLo; i < tpy.iHi; i++) {
       double yTickPos = y_orig_px - (double)i * ytick_px;
       if (_yReversed) {
