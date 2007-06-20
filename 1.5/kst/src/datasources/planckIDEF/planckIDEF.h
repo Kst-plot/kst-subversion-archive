@@ -22,10 +22,16 @@
 #include <fitsio.h>
 
 typedef struct {
-    int table;
-    int column;
-    int entry;
-    int entries;
+  double dTimeZero;
+  double dTimeDelta;
+  long frameLo;
+  long frames;
+} folderFile;
+
+typedef struct {
+  QString file;
+  int table;
+  int column;
 } field;
 
 class PLANCKIDEFSource : public KstDataSource {
@@ -33,31 +39,39 @@ class PLANCKIDEFSource : public KstDataSource {
     PLANCKIDEFSource(KConfig *cfg, const QString& filename, const QString& type);
    ~PLANCKIDEFSource();
 
-    bool initFile();
     KstObject::UpdateType update(int = -1);
-    int readField(double *v, const QString &field, int s, int n);
-    bool isValidField(const QString &field) const;
-    int samplesPerFrame(const QString &field);
-    int frameCount(const QString& field = QString::null) const;
-    QString fileType() const;
-    void save(QTextStream &ts, const QString& indent = QString::null);
-    bool isEmpty() const;
-    bool supportsHierarchy() const;
-    bool reset();
+    int                   readField(double *v, const QString &field, int s, int n);
+    bool                  isValidField(const QString &field) const;
+    int                   samplesPerFrame(const QString &field);
+    int                   frameCount(const QString& field = QString::null) const;
+    QString               fileType() const;
+    void                  save(QTextStream &ts, const QString& indent = QString::null);
+    bool                  isEmpty() const;
+    bool                  supportsHierarchy() const;
+    bool                  reset();
+
+    static bool           checkValidPlanckIDEFFile( const QString& filename );
+    static bool           checkValidPlanckIDEFFolder( const QString& filename );
 
   private:
-    void addToMetadata( fitsfile *ffits, int &iStatus );
-    void addToFieldList( fitsfile *ffits, const int iNumCols, int &iStatus );
+    static bool           isValidFilename( const QString& filename );
+    static int            versionNumber( const QString& filename );
 
-    QDict<field> _fields;
-    double _dTimeZero;
-    double _dTimeDelta;
-    bool _bHasTime;
-    bool _first;
-    int _numFrames;
-    int _numCols;
+    void                  addToMetadata( fitsfile *ffits, int &iStatus );
+    void                  addToFieldList( fitsfile *ffits, const int iNumCols, int &iStatus );
+    bool                  initFile();
+    bool                  initFolder();
+    bool                  initialize();
+
+    QDict<field>          _fields;
+    double                _dTimeZero;
+    double                _dTimeDelta;
+    bool                  _bHasTime;
+    bool                  _first;
+    bool                  _isSingleFile;
+    int                   _numFrames;
+    int                   _numCols;
 };
 
-
 #endif
-// vim: ts=2 sw=2 et
+

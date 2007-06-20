@@ -17,10 +17,14 @@
 
 #include "planckIDEF.h"
 
-#include <kdebug.h>
-#include <qfile.h>
 #include <ctype.h>
 #include <stdlib.h>
+
+#include <qdir.h>
+#include <qfile.h>
+#include <qfileinfo.h>
+
+#include <kdebug.h>
 
 #include "kststring.h"
 
@@ -33,7 +37,7 @@ PLANCKIDEFSource::PLANCKIDEFSource( KConfig *cfg, const QString& filename, const
 
   if( type.isEmpty( ) || type == "PLANCKIDEF" )
   {
-    if( initFile( ) )
+    if( initialize( ) )
     {
       _valid = true;
     }
@@ -43,6 +47,81 @@ PLANCKIDEFSource::PLANCKIDEFSource( KConfig *cfg, const QString& filename, const
 
 PLANCKIDEFSource::~PLANCKIDEFSource( )
 {
+}
+
+
+bool PLANCKIDEFSource::isValidFilename( const QString& filename )
+{
+  bool ok = false;
+
+  //
+  // _yyyymmddhhmm_vv.fits
+  //  yyyy = four digits coding the start timeline year
+  //  mm = two digits coding the start timeline month
+  //  dd = two digits coding the start timeline day
+  //  hh = two digits coding the start timeline hour
+  //  mm = two digits coding the start timeline minute
+  //  vv = version number (to be used in case of regeneration of HK timelines, starting from 00)
+  //
+  if( filename.length() > 21 )
+  {
+    int year;
+    int month;
+    int day;
+    int hour;
+    int minute;
+    int version;
+
+    QString tail = filename.right( 21 );
+
+    if( sscanf( tail.latin1(), "_%4d%2d%2d%2d%2d_%2d.fits", &year, &month, &day, &hour, &minute, &version ) == 6 )
+    {
+      if( year > 0      &&
+          month >= 1    &&
+          month <= 12   &&
+          day >= 1      &&
+          day <= 31     &&
+          hour >= 0     &&
+          hour <= 24    &&
+          minute >= 0   &&
+          minute <= 60  &&
+          version >= 0  )
+      {
+        ok = true;
+      }
+    }
+  }
+
+  return ok;
+}
+
+
+int PLANCKIDEFSource::versionNumber( const QString& filename )
+{
+  int version = -1;
+
+  //
+  // _yyyymmddhhmm_vv.fits
+  //  yyyy = four digits coding the start timeline year
+  //  mm = two digits coding the start timeline month
+  //  dd = two digits coding the start timeline day
+  //  hh = two digits coding the start timeline hour
+  //  mm = two digits coding the start timeline minute
+  //  vv = version number (to be used in case of regeneration of HK timelines, starting from 00)
+  //
+  if( filename.length() > 21 )
+  {
+    char time[13];
+
+    QString tail = filename.right( 21 );
+
+    if( sscanf( tail.latin1(), "_%12s_%2d.fits", time, &version ) != 2 )
+    {
+      version = -1;
+    }
+  }
+
+  return version;
 }
 
 
@@ -112,7 +191,6 @@ void PLANCKIDEFSource::addToFieldList( fitsfile *ffits, const int iNumCols, int 
   char charName[ FLEN_CARD ];
   long lRepeat;
   long lWidth;
-  long l;
   int iHDUNumber;
   int iTypeCode;
   int iColNumber;
@@ -137,141 +215,158 @@ void PLANCKIDEFSource::addToFieldList( fitsfile *ffits, const int iNumCols, int 
 
           fld->table = table;
           fld->column = iColNumber;
-          fld->entry = 1;
-          fld->entries = 1;
 
           str = QString( "%1_%2" ).arg( charName ).arg( iHDUNumber-1 );
           _fields.insert( str, fld );
           _fieldList.append( str );
-        }
-        else
-        {
-          for( l=0; l<lRepeat; ++l )
-          {
-            field *fld = new field;
-
-            fld->table = table;
-            fld->column = iColNumber;
-            fld->entry = l+1;
-            fld->entries = lRepeat;
-
-            str = QString( "%1_%2_%3" ).arg( charName ).arg( iHDUNumber-1 ).arg( l );
-            _fields.insert( str, fld );
-            _fieldList.append( str );
-          }
         }
       }
     }
   }
 }
 
+
+bool PLANCKIDEFSource::initFolder( )
+{
+  QDir        folder( _filename, "*.fits", QDir::Name | QDir::IgnoreCase, QDir::Files | QDir::Readable );
+  QStringList files;
+  bool        bRetVal = true;
+
+  files = folder.entryList( );
+  if( files.size() > 0 )
+  {
+    for (QStringList::ConstIterator it = files.begin(); it != files.end(); ++it) {
+      
+    }
+  }
+
+
+  return bRetVal;
+}
+
 bool PLANCKIDEFSource::initFile( )
 {
-  bool bRetVal = true;
-  int iResult = 0;
+  QString   str;
+  fitsfile* ffits;
+  bool      bRetVal = true;
+  int       iResult = 0;
+  int       iStatus = 0;
 
-  _numFrames = 0;
-
-  if( !_filename.isNull( ) && !_filename.isEmpty( ) )
+  iResult = fits_open_file( &ffits, _filename.ascii( ), READONLY, &iStatus );
+  if( iResult == 0 )
   {
-    QString   str;
-    fitsfile* ffits;
-    int       iStatus = 0;
+    int iNumHeaderDataUnits;
 
-    iResult = fits_open_file( &ffits, _filename.ascii( ), READONLY, &iStatus );
-    if( iResult == 0 )
+    if( fits_get_num_hdus( ffits, &iNumHeaderDataUnits, &iStatus ) == 0 )
     {
-      int iNumHeaderDataUnits;
+      long lNumRows;
+      int iHDUType;
+      int i;
 
-      if( fits_get_num_hdus( ffits, &iNumHeaderDataUnits, &iStatus ) == 0 )
+      //
+      // determine the number of frames...
+      //
+      if( iNumHeaderDataUnits > 1 )
       {
-        long lNumRows;
-        int iHDUType;
-        int i;
-
-        //
-        // determine the number of frames...
-        //
-        if( iNumHeaderDataUnits > 1 )
+        if( fits_movabs_hdu( ffits, 2, &iHDUType, &iStatus ) == 0 )
         {
-          if( fits_movabs_hdu( ffits, 2, &iHDUType, &iStatus ) == 0 )
+          if( fits_get_hdu_type( ffits, &iHDUType, &iStatus ) == 0 )
           {
-            if( fits_get_hdu_type( ffits, &iHDUType, &iStatus ) == 0 )
+            if( iHDUType == BINARY_TBL )
             {
-              if( iHDUType == BINARY_TBL )
+              iResult = fits_get_num_rows( ffits, &lNumRows, &iStatus );
+              if( iResult == 0 )
               {
-                iResult = fits_get_num_rows( ffits, &lNumRows, &iStatus );
-                if( iResult == 0 )
-                {
-                  _numFrames = lNumRows;
-                }
+                _numFrames = lNumRows;
               }
-            }
-          }
-        }
-
-        if( _numFrames > 0 )
-        {
-          fits_movabs_hdu( ffits, 1, &iHDUType, &iStatus );
-
-          field *fld = new field;
-
-          fld->table = 0;
-          fld->column = 0;
-          fld->entry = 0;
-          fld->entries = 0;
-
-          _fields.insert( "INDEX", fld );
-          _fieldList.append( "INDEX" );
-
-          //
-          // add the fields and metadata...
-          //
-          for( i=0; i<iNumHeaderDataUnits; i++ )
-          {
-            if( iStatus == 0 )
-            {
-              addToMetadata( ffits, iStatus );
-
-              //
-              // the first table never contains data...
-              //
-              if( i > 0 )
-              {
-                //
-                // create the field entries...
-                //
-                fits_get_hdu_type( ffits, &iHDUType, &iStatus );
-                if( iStatus == 0 )
-                {
-                  if( iHDUType == BINARY_TBL )
-                  {
-                    int iNumCols;
-
-                    iResult = fits_get_num_cols( ffits, &iNumCols, &iStatus );
-                    if( iResult == 0 )
-                    {
-                      iResult = fits_get_num_rows( ffits, &lNumRows, &iStatus );
-                      if( iResult == 0 )
-                      {
-                        addToFieldList( ffits, iNumCols, iStatus );
-                      }
-                    }
-                  }
-                }
-              }
-
-              fits_movrel_hdu( ffits, 1, &iHDUType, &iStatus);
             }
           }
         }
       }
 
-      iStatus = 0;
+      if( _numFrames > 0 )
+      {
+        fits_movabs_hdu( ffits, 1, &iHDUType, &iStatus );
 
-      updateNumFramesScalar( );
+        field *fld = new field;
 
-      fits_close_file( ffits, &iStatus );
+        fld->table = 0;
+        fld->column = 0;
+
+        _fields.insert( "INDEX", fld );
+        _fieldList.append( "INDEX" );
+
+        //
+        // add the fields and metadata...
+        //
+        for( i=0; i<iNumHeaderDataUnits; i++ )
+        {
+          if( iStatus == 0 )
+          {
+            addToMetadata( ffits, iStatus );
+
+            //
+            // the first table never contains data...
+            //
+            if( i > 0 )
+            {
+              //
+              // create the field entries...
+              //
+              fits_get_hdu_type( ffits, &iHDUType, &iStatus );
+              if( iStatus == 0 )
+              {
+                if( iHDUType == BINARY_TBL )
+                {
+                  int iNumCols;
+
+                  iResult = fits_get_num_cols( ffits, &iNumCols, &iStatus );
+                  if( iResult == 0 )
+                  {
+                    iResult = fits_get_num_rows( ffits, &lNumRows, &iStatus );
+                    if( iResult == 0 )
+                    {
+                      addToFieldList( ffits, iNumCols, iStatus );
+                    }
+                  }
+                }
+              }
+            }
+
+            fits_movrel_hdu( ffits, 1, &iHDUType, &iStatus);
+          }
+        }
+      }
+    }
+
+    iStatus = 0;
+
+    updateNumFramesScalar( );
+
+    fits_close_file( ffits, &iStatus );
+  }
+
+  return bRetVal;
+}
+
+
+bool PLANCKIDEFSource::initialize( )
+{
+  bool bRetVal = true;
+
+  _numFrames = 0;
+
+  if( !_filename.isNull( ) && !_filename.isEmpty( ) )
+  {
+    QFileInfo fileInfo( _filename );
+
+    if( fileInfo.isFile( ) )
+    {
+      bRetVal = initFile( );
+    }
+    else if( fileInfo.isDir( ) )
+    {
+      bRetVal = initFolder( );
     }
   }
 
@@ -334,30 +429,15 @@ int PLANCKIDEFSource::readField( double *v, const QString& fieldName, int s, int
 
               if( n < 0 )
               {
-                iResult = fits_read_col( ffits, TDOUBLE, fld->column, s+1, fld->entry, 1, &dNan, v, &iAnyNull, &iStatus );
+                iResult = fits_read_col( ffits, TDOUBLE, fld->column, s+1, 1, 1, &dNan, v, &iAnyNull, &iStatus );
                 if( iResult == 0 )
                 {
                   iRead = 1;
                 }
               }
-              else if( fld->entries == 1 )
-              {
-                iResult = fits_read_col( ffits, TDOUBLE, fld->column, s+1, 1, n, &dNan, v, &iAnyNull, &iStatus );
-                if( iResult == 0 )
-                {
-                  iRead = n;
-                }
-              }
               else
               {
-                long naxes[] = { fld->entries, _numFrames };
-                long fpixels[] = { fld->entry, s + 1 };
-                long lpixels[] = { fld->entry, s + n };
-                long inc[] = { 1, 1 };
-
-                iResult = fits_read_subset_dbl( ffits, fld->column, 1,
-                          naxes, (long*)fpixels, (long*)lpixels, (long*)inc, dNan, v, &iAnyNull, &iStatus );
-
+                iResult = fits_read_col( ffits, TDOUBLE, fld->column, s+1, 1, n, &dNan, v, &iAnyNull, &iStatus );
                 if( iResult == 0 )
                 {
                   iRead = n;
@@ -441,30 +521,40 @@ bool PLANCKIDEFSource::supportsHierarchy( ) const
 }
 
 
-extern "C" {
-  KstDataSource *create_planckIDEF( KConfig *cfg, const QString& filename, const QString& type )
+bool PLANCKIDEFSource::checkValidPlanckIDEFFolder( const QString& filename )
+{
+  QDir folder( filename, "*.fits", QDir::Name | QDir::IgnoreCase, QDir::Files | QDir::Readable );
+  QStringList files;
+  bool ok = false;
+
+  files = folder.entryList( );
+  if( files.size() > 0 )
   {
-    return new PLANCKIDEFSource( cfg, filename, type );
+    for (QStringList::ConstIterator it = files.begin(); it != files.end(); ++it) {
+      if( checkValidPlanckIDEFFile( *it ) )
+      {
+        ok = true;
+
+        break;
+      }
+    }
   }
 
-  QStringList provides_planckIDEF( )
+  return ok;
+}
+
+
+bool PLANCKIDEFSource::checkValidPlanckIDEFFile( const QString& filename )
+{
+  bool ok = false;
+  fitsfile* ffits;
+  int iStatus = 0;
+
+  //
+  // determine if it is a Planck IDIS DMC Exchange Format file...
+  //
+  if( isValidFilename( filename ) )
   {
-    QStringList rc;
-
-    rc += "PLANCKIDEF";
-
-    return rc;
-  }
-
-  int understands_planckIDEF( KConfig*, const QString& filename )
-  {
-    fitsfile* ffits;
-    int       iStatus = 0;
-    int       iRetVal = 0;
-
-    //
-    // determine if it is a Planck IDIS DMC Exchange Format file...
-    //
     if( fits_open_file( &ffits, filename.ascii( ), READONLY, &iStatus ) == 0 )
     {
       int iNumHeaderDataUnits;
@@ -473,11 +563,10 @@ extern "C" {
       {
         char  value[FLEN_VALUE];
         char  comment[FLEN_COMMENT];
-        bool  ok = false;
         int   iHDUType;
         int   iValue;
         int   i;
-
+  
         //
         // the primary header should never have any data...
         //
@@ -506,7 +595,7 @@ extern "C" {
             }
           }
         }
-
+  
         //
         // the name of each binary table must conform to aaa-bbbb[-ccc]
         //  where bbbb is a member of {OBTT, TOD., OBTH, HKP.}...
@@ -517,53 +606,106 @@ extern "C" {
           {
             long rowsCompare = 0;
             long rows;
+            bool bAbsoluteTimes = false;
             int cols;
-
+  
             for( i=0; i<iNumHeaderDataUnits-1 && ok; i++ )
             {
               if( fits_movrel_hdu( ffits, 1, &iHDUType, &iStatus ) == 0 )
               {
+                bool bOBTHeader = false;
+
                 ok = false;
 
                 if( iStatus == 0 && iHDUType == BINARY_TBL )
                 {
-                  if( fits_read_keyword( ffits, "TIMEZERO", value, comment, &iStatus ) == 0 )
+                  if( fits_read_keyword( ffits, "EXTNAME", value, comment, &iStatus ) == 0 )
                   {
-                    if( fits_read_keyword( ffits, "EXTNAME", value, comment, &iStatus ) == 0 )
+                    QString section = QString( value ).section( '-', 1, 1 );
+
+                    if( section.compare( "OBTT" ) == 0 ||
+                        section.compare( "TOD." ) == 0 ||
+                        section.compare( "OBTH" ) == 0 ||
+                        section.compare( "HKP." ) == 0 )
                     {
-                      QString section = QString( value ).section( '-', 1, 1 );
-
-                      if( section.compare( "OBTT" ) == 0 ||
-                          section.compare( "TOD." ) == 0 ||
-                          section.compare( "OBTH" ) == 0 ||
-                          section.compare( "HKP." ) == 0 )
+                      if( section.compare( "OBTT" ) == 0)
                       {
-                        bool okCols = false;
+                        bOBTHeader = true;
+                      }
 
-                        if( fits_get_num_cols( ffits, &cols, &iStatus ) == 0 )
+                      ok = true;
+                    }
+                    else
+                    {
+                      ok = false;
+                    }
+                  }
+
+                  //
+                  // for OBT information the TIMEZERO flag is "UTC value corresponding to first OBT
+                  //  value (keyword omitted if times are only relative)"
+                  //
+                  // for channel information if the TIMEZERO flag is present then it must have the 
+                  //  "same meaning and value as in corresponding arrays of OBTs - the presence of 
+                  //  this keyword means that TOD is expressed with absolute times."
+                  //
+                  if( ok && fits_read_keyword( ffits, "TIMEZERO", value, comment, &iStatus ) == 0 )
+                  {
+                    if( bOBTHeader )
+                    {
+                      bAbsoluteTimes = true;
+                    }
+                    else if( !bAbsoluteTimes )
+                    {
+                      //
+                      // the channel information has the keyword TIMEZERO value but the OBT header does not...
+                      //
+                      ok = false;
+                    }
+                  }
+                  else if( bAbsoluteTimes )
+                  {
+                    //
+                    // the channel information does not have the keyword TIMEZERO value but the OBT header does...
+                    //
+                    ok = false;
+                  }
+
+                  //
+                  // all tables should have the same number of rows...
+                  //
+                  if( ok )
+                  {
+                    bool okCols = false;
+
+                    if( fits_get_num_cols( ffits, &cols, &iStatus ) == 0 )
+                    {
+                      if( cols > 0 )
+                      {
+                        okCols = true;
+                      }
+                    }
+
+                    if( okCols )
+                    {
+                      if( fits_get_num_rows( ffits, &rows, &iStatus ) == 0 )
+                      {
+                        if( i == 0 )
                         {
-                          if( cols > 0 )
-                          {
-                            okCols = true;
-                          }
+                          rowsCompare = rows;
                         }
-
-                        if( okCols && fits_get_num_rows( ffits, &rows, &iStatus ) == 0 )
+                        else if( rowsCompare == rows )
                         {
-                          //
-                          // all tables should have the same number of rows...
-                          //
-                          if( i == 0 )
-                          {
-                            rowsCompare = rows;
-
-                            ok = true;
-                          }
-                          else if( rowsCompare == rows )
-                          {
-                            ok = true;
-                          }
+                          ok = true;
                         }
+                        else
+                        {
+                          ok = false;
+                        }
+                      }
+                      else
+                      {
+                        ok = false;
                       }
                     }
                   }
@@ -580,22 +722,56 @@ extern "C" {
             ok = false;
           }
         }
+      }
 
-        if( ok && iStatus == 0 )
-        {
-          iRetVal = 99;
-        }
+      if( iStatus != 0 ) 
+      {
+        ok = false;
       }
 
       iStatus = 0;
 
       fits_close_file( ffits, &iStatus );
     }
-    else
+  }
+
+  return ok;
+}
+
+
+extern "C" {
+  KstDataSource *create_planckIDEF( KConfig *cfg, const QString& filename, const QString& type )
+  {
+    return new PLANCKIDEFSource( cfg, filename, type );
+  }
+
+  QStringList provides_planckIDEF( )
+  {
+    QStringList rc;
+
+    rc += "PLANCKIDEF";
+
+    return rc;
+  }
+
+  int understands_planckIDEF( KConfig*, const QString& filename )
+  {
+    QFileInfo fileinfo( filename );
+    int       iRetVal = 0;
+
+    if( fileinfo.isFile( ) )
     {
-      //
-      // failed to open the file, so we can't understand it...
-      //
+      if( PLANCKIDEFSource::checkValidPlanckIDEFFile( filename ) )
+      {
+        iRetVal = 99;
+      }
+    }
+    else if( fileinfo.isDir( ) )
+    {
+      if( PLANCKIDEFSource::checkValidPlanckIDEFFolder( filename ) )
+      {
+        iRetVal = 99;
+      }
     }
 
     return iRetVal;
@@ -604,4 +780,3 @@ extern "C" {
 
 KST_KEY_DATASOURCE_PLUGIN(planckIDEF)
 
-// vim: ts=2 sw=2 et
