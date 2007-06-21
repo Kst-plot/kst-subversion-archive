@@ -58,6 +58,7 @@
 
 KstViewLegend::KstViewLegend()
 : KstBorderedViewObject("Legend") {
+  _editTitle = i18n("Edit Legend");
   _fontName = KST::legendDefaults.font();
   _vertical = KST::legendDefaults.vertical();
   _legendMargin = KST::legendDefaults.margin();
@@ -78,6 +79,7 @@ KstViewLegend::KstViewLegend()
   _layoutActions &= ~(MoveTo | Copy | CopyTo);
   _standardActions |= Delete | Edit;
   _parsedTitle = 0L;
+
   reparseTitle();
   computeTextSize();
   setDirty(false);
@@ -86,7 +88,7 @@ KstViewLegend::KstViewLegend()
 
 KstViewLegend::KstViewLegend(const QDomElement& e)
 : KstBorderedViewObject(e) {
-
+  _editTitle = i18n("Edit Legend");
   _fontName = KST::legendDefaults.font();
   _vertical = KST::legendDefaults.vertical();
   _legendMargin = KST::legendDefaults.margin();
@@ -148,10 +150,11 @@ KstViewLegend::KstViewLegend(const QDomElement& e)
 
 KstViewLegend::KstViewLegend(const KstViewLegend& legend)
 : KstBorderedViewObject(legend) {
+  _editTitle = i18n("Edit Legend");
   _type = "Legend";
   _layoutActions &= ~(MoveTo | Copy | CopyTo);
   _standardActions |= Delete | Edit;
-  
+
   _fallThroughTransparency = legend._fallThroughTransparency;
   _container = legend._container;
   _rotation = legend._rotation;
@@ -165,7 +168,7 @@ KstViewLegend::KstViewLegend(const KstViewLegend& legend)
   _parsedTitle = 0L;
   _trackContents = legend._trackContents;
   _curves = QDeepCopy<KstBaseCurveList>(legend._curves);
-  
+
   reparseTitle();
   computeTextSize();
 }
@@ -545,11 +548,13 @@ KstViewObjectFactoryMethod KstViewLegend::factory() const {
 
 /* FIXME: not written for legends yet. */
 void KstViewLegend::writeBinary(QDataStream& str) {
+  Q_UNUSED(str)
 }
 
 
 /* FIXME: not written for legends yet. */
 void KstViewLegend::readBinary(QDataStream& str) {
+  Q_UNUSED(str)
 }
 
 

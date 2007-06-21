@@ -115,6 +115,7 @@ KstViewLabel::KstViewLabel(const QDomElement& e)
 
 KstViewLabel::KstViewLabel(const KstViewLabel& label)
 : KstBorderedViewObject(label) {
+  _editTitle = i18n("Edit Label");
 
   _dataPrecision = label._dataPrecision;
   _interpret = label._interpret;

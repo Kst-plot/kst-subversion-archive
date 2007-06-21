@@ -75,10 +75,10 @@ Kst2dPlotWidget::Kst2dPlotWidget(QWidget* parent, const char* name, WFlags fl) :
   FontComboBox->setEditable(false);
 
   // axes range
-  connect(XAC, SIGNAL(toggled(bool)), XACRange, SLOT(setEnabled(bool)));
-  connect(YAC, SIGNAL(toggled(bool)), YACRange, SLOT(setEnabled(bool)));
-  connect(YExpression, SIGNAL(toggled(bool)), this, SLOT(updateButtons()));
+  connect(XAC, SIGNAL(toggled(bool)), this, SLOT(updateButtons()));
+  connect(YAC, SIGNAL(toggled(bool)), this, SLOT(updateButtons()));
   connect(XExpression, SIGNAL(toggled(bool)), this, SLOT(updateButtons()));
+  connect(YExpression, SIGNAL(toggled(bool)), this, SLOT(updateButtons()));
 
   connect(scalarSelectorX1, SIGNAL(activated(const QString&)), XExpressionMin, SLOT(insert(const QString&)));
   connect(scalarSelectorY1, SIGNAL(activated(const QString&)), YExpressionMin, SLOT(insert(const QString&)));
@@ -116,7 +116,7 @@ Kst2dPlotWidget::Kst2dPlotWidget(QWidget* parent, const char* name, WFlags fl) :
   connect(_checkBoxYInterpret, SIGNAL(toggled(bool)), textLabelYDisplayAs, SLOT(setEnabled(bool)));
   connect(_xTransformTop, SIGNAL(toggled(bool)), _xTransformTopExp, SLOT(setEnabled(bool)));
   connect(_yTransformRight, SIGNAL(toggled(bool)), _yTransformRightExp, SLOT(setEnabled(bool)));
-  connect(_checkBoxDefaultMarkerColor, SIGNAL(toggled(bool)), _colorMarker, SLOT(setDisabled(bool)));
+  connect(_checkBoxDefaultMarkerColor, SIGNAL(toggled(bool)), this, SLOT(updateButtons()));
 
   _scalarDest = TopLabelText;
 
@@ -249,40 +249,44 @@ void Kst2dPlotWidget::updateButtons() {
     _down->setEnabled(false);
   }
 
-  // updates for Plot Markers tab
-  AddPlotMarker->setEnabled(!NewPlotMarker->text().isEmpty());
-
-  selected = false;
-  count = PlotMarkerList->count();
-  for (uint i = 0; i < count; ++i) {
-    if (PlotMarkerList->isSelected(i)) {
-      selected = true;
-      break;
-    }
-  }
-  RemovePlotMarker->setEnabled(selected);
-  RemoveAllPlotMarkers->setEnabled(count > 0);
-
-  // updates for auto-generation marker curve section
-  CurveCombo->setEnabled(UseCurve->isChecked());
-  Rising->setEnabled(UseCurve->isChecked());
-  Falling->setEnabled(UseCurve->isChecked());
-  Both->setEnabled(UseCurve->isChecked());
-  _textLabelCreateMarkersOn->setEnabled(UseCurve->isChecked());
-  _vectorForMarkers->setEnabled(UseVector->isChecked());
-
-  //updates for range tab
-  YExpressionMin->setEnabled(YExpression->isChecked());
-  YExpressionMax->setEnabled(YExpression->isChecked());
-  scalarSelectorY1->setEnabled(YExpression->isChecked());
-  scalarSelectorY2->setEnabled(YExpression->isChecked());
-  XExpressionMin->setEnabled(XExpression->isChecked());
-  XExpressionMax->setEnabled(XExpression->isChecked());
-  scalarSelectorX1->setEnabled(XExpression->isChecked());
-  scalarSelectorX2->setEnabled(XExpression->isChecked());
-
+  // updates for range tab X...
+  XACRange->setEnabled(_editMultipleMode || XAC->isChecked());
+  XExpressionMin->setEnabled(_editMultipleMode || XExpression->isChecked());
+  XExpressionMax->setEnabled(_editMultipleMode || XExpression->isChecked());
+  scalarSelectorX1->setEnabled(_editMultipleMode || XExpression->isChecked());
+  scalarSelectorX2->setEnabled(_editMultipleMode || XExpression->isChecked());
   _xTransformTopExp->setEnabled(_xTransformTop->isChecked());
+
+  // updates for range tab Y...
+  YACRange->setEnabled(_editMultipleMode || XAC->isChecked());
+  YExpressionMin->setEnabled(_editMultipleMode || YExpression->isChecked());
+  YExpressionMax->setEnabled(_editMultipleMode || YExpression->isChecked());
+  scalarSelectorY1->setEnabled(_editMultipleMode || YExpression->isChecked());
+  scalarSelectorY2->setEnabled(_editMultipleMode || YExpression->isChecked());
   _yTransformRightExp->setEnabled(_yTransformRight->isChecked());
+
+  // updates for Plot Markers tab
+  if (!_editMultipleMode) {
+    CurveCombo->setEnabled(UseCurve->isChecked());
+    Rising->setEnabled(UseCurve->isChecked());
+    Falling->setEnabled(UseCurve->isChecked());
+    Both->setEnabled(UseCurve->isChecked());
+    _textLabelCreateMarkersOn->setEnabled(UseCurve->isChecked());
+    _vectorForMarkers->setEnabled(UseVector->isChecked());
+    AddPlotMarker->setEnabled(!NewPlotMarker->text().isEmpty());
+
+    selected = false;
+    count = PlotMarkerList->count();
+    for (uint i = 0; i < count; ++i) {
+      if (PlotMarkerList->isSelected(i)) {
+        selected = true;
+        break;
+      }
+    }
+    RemovePlotMarker->setEnabled(selected);
+    RemoveAllPlotMarkers->setEnabled(count > 0);
+  }
+  _colorMarker->setEnabled(_checkBoxDefaultMarkerColor->state() != QButton::Off);
 }
 
 
@@ -354,14 +358,16 @@ void Kst2dPlotWidget::updateAxesButtons() {
 
   _checkBoxDefaultMajorGridColor->setEnabled(major);
   _checkBoxDefaultMinorGridColor->setEnabled(minor);
-  _majorGridColor->setEnabled(major && !_checkBoxDefaultMajorGridColor->isChecked());
-  _minorGridColor->setEnabled(minor && !_checkBoxDefaultMinorGridColor->isChecked());
+  _majorGridColor->setEnabled(major && _checkBoxDefaultMajorGridColor->state() != QButton::On);
+  _minorGridColor->setEnabled(minor && _checkBoxDefaultMinorGridColor->state() != QButton::On);
+
   _majorPenWidth->setEnabled(major);
   _minorPenWidth->setEnabled(minor);
   _majorPenWidthLabel->setEnabled(major);
   _minorPenWidthLabel->setEnabled(minor);
-  _xMinorTicks->setEnabled(!_xMinorTicksAuto->isChecked());
-  _yMinorTicks->setEnabled(!_yMinorTicksAuto->isChecked());
+
+  _xMinorTicks->setEnabled(_xMinorTicksAuto->state() != QButton::On);
+  _yMinorTicks->setEnabled(_yMinorTicksAuto->state() != QButton::On);
 }
 
 
@@ -583,6 +589,21 @@ void Kst2dPlotWidget::populateEditMultiple(const Kst2DPlot *plot) {
   populateEditMultiple(_checkBoxDefaultMarkerColor);
   populateEditMultiple(_spinBoxMarkerLineWidth);
   populateEditMultiple(_colorMarker);
+  populateEditMultiple(_comboMarkerLineStyle);
+  UseCurve->setEnabled(false);
+  UseVector->setEnabled(false);
+  CurveCombo->setEnabled(false);
+  _vectorForMarkers->setEnabled(false);
+  Rising->setEnabled(false);
+  Falling->setEnabled(false);
+  Both->setEnabled(false);
+  AddPlotMarker->setEnabled(false);
+  RemovePlotMarker->setEnabled(false);
+  RemoveAllPlotMarkers->setEnabled(false);
+  NewPlotMarker->setEnabled(false);
+  PlotMarkerList->setEnabled(false);
+
+  updateAxesButtons();
 }
 
 void Kst2dPlotWidget::fillWidget(const Kst2DPlot *plot) {
@@ -1011,12 +1032,12 @@ void Kst2dPlotWidget::applyXAxis(Kst2DPlotPtr plot) {
     plot->setXOffsetMode(false);
   }
 
-  if (_checkBoxXInterpret->state() == QButton::On) {
-    KstAxisInterpretation xAxisInterpretation;
-    KstAxisDisplay xAxisDisplay;
-    bool isXAxisInterpreted;
+  KstAxisInterpretation xAxisInterpretation;
+  KstAxisDisplay xAxisDisplay;
+  bool isXAxisInterpreted;
 
-    plot->getXAxisInterpretation(isXAxisInterpreted, xAxisInterpretation, xAxisDisplay);
+  plot->getXAxisInterpretation(isXAxisInterpreted, xAxisInterpretation, xAxisDisplay);
+  if (_checkBoxXInterpret->state() == QButton::On || isXAxisInterpreted) {
     if (_comboBoxXInterpret->currentText().compare(QString(" ")) != 0) {
       xAxisInterpretation = AxisInterpretations[_comboBoxXInterpret->currentItem()].type;
     }
@@ -1031,6 +1052,8 @@ void Kst2dPlotWidget::applyXAxis(Kst2DPlotPtr plot) {
   if (_xMinorTicksAuto->state() == QButton::On) {
     plot->setXMinorTicks(-1);
   } else if (_xMinorTicksAuto->state() == QButton::Off) {
+    plot->setXMinorTicks(_xMinorTicks->value());
+  } else if (_xMinorTicksAuto->state() == QButton::NoChange && !plot->xMinorTicksAuto()) {
     plot->setXMinorTicks(_xMinorTicks->value());
   }
 
@@ -1069,8 +1092,10 @@ void Kst2dPlotWidget::applyXAxis(Kst2DPlotPtr plot) {
     plot->setSuppressBottom(false);
   }
 
-  if (_xTransformTop->state() == QButton::On) {
-    plot->setXTransformedExp(_xTransformTopExp->text());
+  if (_xTransformTop->state() == QButton::On || !plot->xTransformedExp().isNull()) {
+    if (_xTransformTopExp->text() != QString(" ")) {
+      plot->setXTransformedExp(_xTransformTopExp->text());
+    }
   } else if (_xTransformTop->state() == QButton::Off) {
     plot->setXTransformedExp(QString::null);
   }
@@ -1091,19 +1116,19 @@ void Kst2dPlotWidget::applyYAxis(Kst2DPlotPtr plot) {
     plot->setYOffsetMode(false);
   }
 
-  if (_checkBoxYInterpret->state() == QButton::On) {
-    KstAxisInterpretation yAxisInterpretation;
-    KstAxisDisplay yAxisDisplay;
-    bool isYAxisInterpreted;
+  KstAxisInterpretation yAxisInterpretation;
+  KstAxisDisplay yAxisDisplay;
+  bool isYAxisInterpreted;
 
-    plot->getYAxisInterpretation(isYAxisInterpreted, yAxisInterpretation, yAxisDisplay);
+  plot->getYAxisInterpretation(isYAxisInterpreted, yAxisInterpretation, yAxisDisplay);
+  if (_checkBoxYInterpret->state() == QButton::On || isYAxisInterpreted) {
     if (_comboBoxYInterpret->currentText().compare(QString(" ")) != 0) {
       yAxisInterpretation = AxisInterpretations[_comboBoxYInterpret->currentItem()].type;
     }
     if (_comboBoxYDisplay->currentText().compare(QString(" ")) != 0) {
       yAxisDisplay = AxisDisplays[_comboBoxYDisplay->currentItem()].type;
     }
-    plot->setXAxisInterpretation(true, yAxisInterpretation, yAxisDisplay);
+    plot->setYAxisInterpretation(true, yAxisInterpretation, yAxisDisplay);
   } else if (_checkBoxYInterpret->state() == QButton::Off) {
     plot->setYAxisInterpretation(false, AXIS_INTERP_CTIME, AXIS_DISPLAY_YEAR);
   }
@@ -1111,6 +1136,8 @@ void Kst2dPlotWidget::applyYAxis(Kst2DPlotPtr plot) {
   if (_yMinorTicksAuto->state() == QButton::On) {
     plot->setYMinorTicks(-1);
   } else if (_yMinorTicksAuto->state() == QButton::Off) {
+    plot->setYMinorTicks(_yMinorTicks->value());
+  } else if (_yMinorTicksAuto->state() == QButton::NoChange && !plot->yMinorTicksAuto()) {
     plot->setYMinorTicks(_yMinorTicks->value());
   }
 
@@ -1150,8 +1177,10 @@ void Kst2dPlotWidget::applyYAxis(Kst2DPlotPtr plot) {
     plot->setSuppressRight(false);
   }
 
-  if (_yTransformRight->state() == QButton::On) {
-    plot->setYTransformedExp(_yTransformRightExp->text());
+  if (_yTransformRight->state() == QButton::On || !plot->yTransformedExp().isNull()) {
+    if (_yTransformRightExp->text() != QString(" ")) {
+      plot->setYTransformedExp(_yTransformRightExp->text());
+    }
   } else if (_yTransformRight->state() == QButton::Off) {
     plot->setYTransformedExp(QString::null);
   }
@@ -1166,60 +1195,62 @@ void Kst2dPlotWidget::applyYAxis(Kst2DPlotPtr plot) {
 }
 
 void Kst2dPlotWidget::applyRange(Kst2DPlotPtr plot) {
-  if (!_editMultipleMode || XAC->isChecked() || XExpression->isChecked() || 
-      XAutoUp->isChecked() || XAuto->isChecked() || XAutoBorder->isChecked() || XNoSpikes->isChecked()) {
-    if (XAC->isChecked()) {
-      plot->setXScaleMode(AC);
+  if (XAC->isChecked() || plot->xScaleMode() == AC) {
+    plot->setXScaleMode(AC);
+    if (!_editMultipleMode || XACRange->text() != QString(" ")) {
       plot->setXScale(0, XACRange->text().toDouble());
-    } else if (XExpression->isChecked()) {
-      plot->setXScaleMode(EXPRESSION);
+    }
+  } else if (XExpression->isChecked() || plot->xScaleMode() == EXPRESSION) {
+    plot->setXScaleMode(EXPRESSION);
+    if (!_editMultipleMode || (XExpressionMin->text() != QString(" ") && XExpressionMax->text() != QString(" "))) {
       if (!plot->setXExpressions(XExpressionMin->text(), XExpressionMax->text())) {
         if (!_editMultipleMode) {
           KMessageBox::sorry(this, i18n("There is a problem with the X range expressions."));
           return;
         }
       }
-      // if expressions are constant, just use FIXED mode
-      plot->optimizeXExps();
-    } else if (XAutoUp->isChecked()) {
-      plot->setXScaleMode(AUTOUP);
-    } else if (XAuto->isChecked()) {
-      plot->setXScaleMode(AUTO);
-    } else if (XAutoBorder->isChecked()) {
-      plot->setXScaleMode(AUTOBORDER);
-    } else if (XNoSpikes->isChecked()) {
-      plot->setXScaleMode(NOSPIKE);
-    } else {
-      KstDebug::self()->log(i18n("Internal error: No X scale type checked in %1.").arg(_title->text()), KstDebug::Error);
     }
+    // if expressions are constant, just use FIXED mode
+    plot->optimizeXExps();
+  } else if (XAutoUp->isChecked()) {
+    plot->setXScaleMode(AUTOUP);
+  } else if (XAuto->isChecked()) {
+    plot->setXScaleMode(AUTO);
+  } else if (XAutoBorder->isChecked()) {
+    plot->setXScaleMode(AUTOBORDER);
+  } else if (XNoSpikes->isChecked()) {
+    plot->setXScaleMode(NOSPIKE);
+  } else if (!_editMultipleMode) {
+    KstDebug::self()->log(i18n("Internal error: No X scale type checked in %1.").arg(_title->text()), KstDebug::Error);
   }
 
-  if (!_editMultipleMode || YAC->isChecked() || YExpression->isChecked() || 
-      YAutoUp->isChecked() || YAuto->isChecked() || YAutoBorder->isChecked() || YNoSpikes->isChecked()) {
-    if (YAC->isChecked()) {
-      plot->setYScaleMode(AC);
+  if (YAC->isChecked() || plot->yScaleMode() == AC) {
+    plot->setYScaleMode(AC);
+    if (!_editMultipleMode || YACRange->text() != QString(" ")) {
       plot->setYScale(0, YACRange->text().toDouble());
-    } else if (YExpression->isChecked()) {
-      plot->setYScaleMode(EXPRESSION);
+    }
+  } else if (YExpression->isChecked() || plot->yScaleMode() == EXPRESSION) {
+    plot->setYScaleMode(EXPRESSION);
+    if (!_editMultipleMode || (YExpressionMin->text() != QString(" ") && YExpressionMax->text() != QString(" "))) {
       if (!plot->setYExpressions(YExpressionMin->text(), YExpressionMax->text())) {
         if (!_editMultipleMode) {
           KMessageBox::sorry(this, i18n("There is a problem with the Y range expressions."));
           return;
         }
       }
-      // if expressions are constant, just use FIXED mode
-      plot->optimizeYExps();
-    } else if (YAutoUp->isChecked()) {
-      plot->setYScaleMode(AUTOUP);
-    } else if (YAuto->isChecked()) {
-      plot->setYScaleMode(AUTO);
-    } else if (YAutoBorder->isChecked()) {
-      plot->setYScaleMode(AUTOBORDER);
-    } else if (YNoSpikes->isChecked()) {
-      plot->setYScaleMode(NOSPIKE);
-    } else {
-      KstDebug::self()->log(i18n( "Internal error: No Y scale type checked in %1." ).arg(_title->text()), KstDebug::Error);
     }
+    // if expressions are constant, just use FIXED mode
+    plot->optimizeYExps();
+  } else if (YAutoUp->isChecked()) {
+    plot->setYScaleMode(AUTOUP);
+  } else if (YAuto->isChecked()) {
+    plot->setYScaleMode(AUTO);
+  } else if (YAutoBorder->isChecked()) {
+    plot->setYScaleMode(AUTOBORDER);
+  } else if (YNoSpikes->isChecked()) {
+    plot->setYScaleMode(NOSPIKE);
+  } else if (!_editMultipleMode) {
+    KstDebug::self()->log(i18n( "Internal error: No Y scale type checked in %1." ).arg(_title->text()), KstDebug::Error);
   }
 
   plot->setDirty();
@@ -1284,39 +1315,41 @@ void Kst2dPlotWidget::removeAllPlotMarkers() {
 }
 
 void Kst2dPlotWidget::applyPlotMarkers(Kst2DPlotPtr plot) {
-  KstMarker marker;
-  KstMarkerList newMarkers;
+  if (!_editMultipleMode) {
+    KstMarker marker;
+    KstMarkerList newMarkers;
 
-  marker.isRising = false;
-  marker.isFalling = false;
-  marker.isVectorValue = false;
-  for (unsigned i = 0; i < PlotMarkerList->count(); ++i) {
-    marker.value = PlotMarkerList->text(i).toDouble();
-    // FIXME: this is very broken.  you can't search for i18n() substrings!
-    if (PlotMarkerList->text(i).find( i18n("rising")) == -1 &&
-            PlotMarkerList->text(i).find( i18n("falling")) == -1 &&
-            PlotMarkerList->text(i).find( i18n("value")) == -1) {
-      newMarkers.append(marker);
+    marker.isRising = false;
+    marker.isFalling = false;
+    marker.isVectorValue = false;
+    for (unsigned i = 0; i < PlotMarkerList->count(); ++i) {
+      marker.value = PlotMarkerList->text(i).toDouble();
+      // FIXME: this is very broken.  you can't search for i18n() substrings!
+      if (PlotMarkerList->text(i).find( i18n("rising")) == -1 &&
+              PlotMarkerList->text(i).find( i18n("falling")) == -1 &&
+              PlotMarkerList->text(i).find( i18n("value")) == -1) {
+        newMarkers.append(marker);
+      }
     }
-  }
 
-  plot->setPlotMarkerList(newMarkers);
+    plot->setPlotMarkerList(newMarkers);
 
-  // apply the auto-generation settings
-  if (UseCurve->isChecked()) {
-    KstBaseCurveList curves = kstObjectSubList<KstDataObject, KstBaseCurve>(KST::dataObjectList);
-    KstVCurveList vcurves = kstObjectSubList<KstBaseCurve, KstVCurve>(curves);
-    KstVCurvePtr curve = *(vcurves.findTag(CurveCombo->currentText()));
-    bool falling = Falling->isChecked();
-    bool rising = Rising->isChecked();
+    // apply the auto-generation settings
+    if (UseCurve->isChecked()) {
+      KstBaseCurveList curves = kstObjectSubList<KstDataObject, KstBaseCurve>(KST::dataObjectList);
+      KstVCurveList vcurves = kstObjectSubList<KstBaseCurve, KstVCurve>(curves);
+      KstVCurvePtr curve = *(vcurves.findTag(CurveCombo->currentText()));
+      bool falling = Falling->isChecked();
+      bool rising = Rising->isChecked();
 
-    if (Both->isChecked()) {
-      falling = true;
-      rising = true;
+      if (Both->isChecked()) {
+        falling = true;
+        rising = true;
+      }
+      plot->setCurveToMarkers(curve, rising, falling);
+    } else {
+      plot->removeCurveToMarkers();
     }
-    plot->setCurveToMarkers(curve, rising, falling);
-  } else {
-    plot->removeCurveToMarkers();
   }
 
   if (UseVector->isChecked()) {
@@ -1334,6 +1367,7 @@ void Kst2dPlotWidget::applyPlotMarkers(Kst2DPlotPtr plot) {
   if (_colorMarker->color() != QColor()) {
     plot->setColorMarkers(_colorMarker->color());
   }
+
   if (_checkBoxDefaultMarkerColor->state() == QButton::On) {
     plot->setDefaultColorMarker(true);
   } else if (_checkBoxDefaultMarkerColor->state() == QButton::Off) {

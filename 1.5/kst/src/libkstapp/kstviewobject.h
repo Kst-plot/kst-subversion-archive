@@ -82,7 +82,6 @@ class KST_EXPORT KstViewObject : public KstObject {
     virtual void setOnGrid(bool on_grid);
 
     virtual void resize(const QSize& size);
-    // FIXME: this stuff has got to go.
     virtual void resizeForPrint(const QSize& size);
     virtual void revertForPrint();
     virtual void resizeFromAspect(double x, double y, double w, double h);
@@ -300,11 +299,11 @@ class KST_EXPORT KstViewObject : public KstObject {
     virtual void writeBinary(QDataStream& str);
     virtual void readBinary(QDataStream& str);
     KstObject::UpdateType updateChildren(int counter);
-    
+
     KstViewObjectList _children;
     QRect _geom;
     QRect _geomOld;
-    QColor _backgroundColor, _foregroundColor; // FIXME: use QColorGroup
+    QColor _backgroundColor, _foregroundColor;
     bool _hasFocus : 1;
     bool _focus : 1;
     bool _selected : 1;
