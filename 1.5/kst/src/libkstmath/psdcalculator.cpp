@@ -314,7 +314,7 @@ int PSDCalculator::calculatePowerSpectrum(
 int PSDCalculator::calculateOutputVectorLength(int inputLen, bool average, int averageLen) {
   int psdloglen;
 
-  if (average) {
+  if (average && pow(2.0, averageLen) < inputLen) {
     psdloglen = averageLen;
   } else {
     psdloglen = int(ceil(log(double(inputLen)) / log(2.0)));
