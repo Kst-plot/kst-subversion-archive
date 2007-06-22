@@ -80,7 +80,7 @@
 #include "kstprintoptionspage.h"
 #include "kstpsddialog_i.h"
 #include "kstquickstartdialog_i.h"
-#include "kstsettingsdlg.h"
+#include "kstsettingsdlg_i.h"
 #include "kstuinames.h"
 #include "kstvectordefaults.h"
 #include "kstvectordialog_i.h"
@@ -2269,7 +2269,7 @@ void KstApp::reload() {
 
 
 void KstApp::slotPreferences() {
-  KstSettingsDlg *ksd = new KstSettingsDlg(this, "Kst Settings Dialog");
+  KstSettingsDlgI *ksd = new KstSettingsDlgI(this, "Kst Settings Dialog");
   connect(ksd, SIGNAL(settingsChanged()), this, SIGNAL(settingsChanged()));
   ksd->exec();
   delete ksd;

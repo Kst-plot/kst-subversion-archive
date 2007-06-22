@@ -31,6 +31,7 @@ KstSettings::KstSettings() {
   plotFontMinSize = 5;
   backgroundColor = QColor(255, 255, 255); // white
   foregroundColor = QColor(0,0,0); // black
+  promptPlotDelete = false;
   promptWindowClose = true;
   showQuickStart = true;
   tiedZoomGlobal = false;
@@ -77,6 +78,7 @@ KstSettings& KstSettings::operator=(const KstSettings& x) {
   plotFontMinSize = x.plotFontMinSize;
   backgroundColor = x.backgroundColor;
   foregroundColor = x.foregroundColor;
+  promptPlotDelete = x.promptPlotDelete;
   promptWindowClose = x.promptWindowClose;
   showQuickStart = x.showQuickStart;
   tiedZoomGlobal = x.tiedZoomGlobal;
@@ -164,6 +166,7 @@ void KstSettings::save() {
   cfg.writeEntry("Plot Font Min Size", plotFontMinSize);
   cfg.writeEntry("Background Color", backgroundColor);
   cfg.writeEntry("Foreground Color", foregroundColor);
+  cfg.writeEntry("Prompt on Plot Delete", promptPlotDelete);
   cfg.writeEntry("Prompt on Window Close", promptWindowClose);
   cfg.writeEntry("Show QuickStart", showQuickStart);
   cfg.writeEntry("Tied-zoom Global", tiedZoomGlobal);
@@ -238,6 +241,7 @@ void KstSettings::reload() {
   plotFontMinSize = cfg.readNumEntry("Plot Font Min Size", 5);
   backgroundColor = cfg.readColorEntry("Background Color", &backgroundColor);
   foregroundColor = cfg.readColorEntry("Foreground Color", &foregroundColor);
+  promptPlotDelete = cfg.readBoolEntry("Prompt on Plot Delete", false);
   promptWindowClose = cfg.readBoolEntry("Prompt on Window Close", true);
   showQuickStart = cfg.readBoolEntry("Show QuickStart", true);
   tiedZoomGlobal = cfg.readBoolEntry("Tied-zoom Global", true);

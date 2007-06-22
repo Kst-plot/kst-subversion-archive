@@ -3428,6 +3428,25 @@ void Kst2DPlot::tiedZoom(bool x, double xmin, double xmax, bool y, double ymin, 
 }
 
 
+void Kst2DPlot::deleteObject() {
+  bool remove = false;
+
+  if (KstSettings::globalSettings()->promptPlotDelete) {
+    KstTopLevelViewPtr tlv = kst_cast<KstTopLevelView>(KstViewObjectPtr(_topObjectForMenu));
+    if (tlv) {
+      if (KMessageBox::warningYesNo(tlv->widget(), i18n("Are you sure you want to delete plot '%1'?").arg(tagName())) == KMessageBox::Yes) {
+        remove = true;
+      }
+    }
+  } else {
+    remove = true;
+  }
+
+  if (remove) {
+    KstViewObject::deleteObject();
+  }
+}
+
 void Kst2DPlot::copyObject() {
   if (_layoutMenuView) {
     KstTopLevelViewPtr tlv = _layoutMenuView->viewObject();

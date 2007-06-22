@@ -20,6 +20,10 @@
 
 #include <time.h>
 
+#include <qvaluestack.h>
+
+#include <kmessagebox.h>
+
 #include "kstbackbuffer.h"
 #include "kstbasecurve.h"
 #include "kstcolorsequence.h"
@@ -29,8 +33,6 @@
 #include "kstviewlegend.h"
 #include "kst_export.h"
 #include "kstscalar.h"
-
-#include <qvaluestack.h>
 
 namespace Equation {
   class Node;
@@ -405,6 +407,7 @@ public slots:
   void copy();
 
   virtual void edit();
+  virtual void deleteObject();
   virtual void copyObject();
   virtual KstViewObject* copyObjectQuietly(KstViewObject& parent, const QString& name = QString::null) const;
   void draw(); // draw into back buffer

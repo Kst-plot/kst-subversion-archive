@@ -85,6 +85,7 @@ libkstapp_la_SOURCES = \
 	kstimagedialog_i.cpp \
 	kstvvdialog_i.cpp \
 	kstquickstartdialog_i.cpp \
+	kstsettingsdlg_i.cpp \
 	updatethread.cpp \
 	emailthread.cpp \
 	kstprintoptionspage.cpp \
@@ -154,7 +155,6 @@ kstfilterdialog_i.lo: plugindialogwidget.h
 kstfitdialog_i.lo: plugindialogwidget.h
 kstplugindialog_i.lo: pluginmanager.h plugindialogwidget.h
 kstpsddialog_i.lo: psddialogwidget.h
-kstsettingsdlg.lo: kstsettingsdlg.ui.h kstsettingsdlg.ui
 kstviewbox.lo: editviewobjectdialog.h
 kstviewlegend.lo: editviewobjectdialog.h
 matrixselector.lo: matrixselector.ui.h

@@ -50,7 +50,7 @@ class KstSettings {
     KST_EXPORT static void checkUpdates();
     KST_EXPORT void save();
     void reload();
-    
+
     KST_EXPORT void setPrintingDefaults(); // set printing settings to default
 
     long plotUpdateTimer;
@@ -59,7 +59,8 @@ class KstSettings {
     QColor backgroundColor;
     QColor foregroundColor;
     QString curveColorSequencePalette;
-    
+
+    bool promptPlotDelete : 1;
     bool promptWindowClose : 1;
     bool showQuickStart : 1;
     bool tiedZoomGlobal : 1;
@@ -81,7 +82,7 @@ class KstSettings {
     KstAxisDisplay yAxisDisplay;
 
     int defaultLineWeight;
-    
+
     QString emailSender;
     QString emailSMTPServer;
     QString emailUsername;
@@ -96,12 +97,12 @@ class KstSettings {
 
     struct PrintingMonochrome {
       QString enhanceReadability;
-      
+
       // order of "-1" means property is not included in cycling
       QString pointStyleOrder;
       QString lineStyleOrder;
       QString lineWidthOrder;
-      
+
       QString maxLineWidth;
       QString pointDensity;
     };
