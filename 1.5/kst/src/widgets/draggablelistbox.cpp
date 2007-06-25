@@ -94,9 +94,12 @@ void DraggableListBox::startDrag() {
   }
 }
 
-void DraggableListBox::up() {
+bool DraggableListBox::up() {
+  bool bRetVal = false;
+
   if (count() > 1) {
     QString C;
+
     for (unsigned i=1; i<count(); i++) {
       if (isSelected(i)) {
         C = text(i);
@@ -104,13 +107,21 @@ void DraggableListBox::up() {
         --i;
         insertItem(C, i);
         setSelected(i, true);
-        while (isSelected(i) && (i<count())) ++i;
+        while (isSelected(i) && (i < count())) {
+          ++i;
+        }
+
+        bRetVal = true;
       }
     }
   }
+
+  return bRetVal;
 }
 
-void DraggableListBox::down() {
+bool DraggableListBox::down() {
+  bool bRetVal = false;
+
   if (count() > 1) {
     QString C;
     for (int i=int(count())-2; i>=0; i--) {
@@ -120,10 +131,16 @@ void DraggableListBox::down() {
         ++i;
         insertItem(C, i);
         setSelected(i, true);
-        while (isSelected(i) && (i>0)) --i;
+        while (isSelected(i) && (i > 0)) {
+          --i;
+        }
+
+        bRetVal = true;
       }
     }
   }
+
+  return bRetVal;
 }
 
 #include "draggablelistbox.moc"

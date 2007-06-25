@@ -35,9 +35,9 @@ class KST_EXPORT DraggableListBox : public QListBox {
     virtual void setDragEnabled(bool enabled);
 
   public slots:
-    virtual void up();
-    virtual void down();
-    
+    virtual bool up();
+    virtual bool down();
+
   protected:
     virtual void startDrag();
     virtual void mousePressEvent(QMouseEvent *e);
