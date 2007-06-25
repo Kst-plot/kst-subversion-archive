@@ -1953,7 +1953,7 @@ void Kst2DPlot::genAxisTickLabels(TickParameters &tp,
   tp.labels.clear();
   tp.oppLabels.clear();
   tp.delta = false;
-  
+
   if (isLog && isInterpreted) {
     setTicks(tp.tick, tp.org, Max + log10(range) + log10(scale), Min + log10(range) + log10(scale), isLog, logBase, isX, base);
     tp.org -= log10(range) + log10(scale);
@@ -1962,7 +1962,7 @@ void Kst2DPlot::genAxisTickLabels(TickParameters &tp,
     tp.tick /= range*scale;
     tp.org  /= range*scale;
   }
-    
+
   tp.iLo = int((Min-tp.org)/tp.tick);
   tp.iHi = int((Max-tp.org)/tp.tick)+1;
   iShort = tp.iLo;

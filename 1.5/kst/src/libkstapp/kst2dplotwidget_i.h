@@ -35,6 +35,8 @@ class Kst2dPlotWidget: public View2DPlotWidget {
   public slots:
     void generateDefaultLabels();
     void updateButtons();
+    void upDisplayedCurve();
+    void downDisplayedCurve();
     void addDisplayedCurve();
     void removeDisplayedCurve();
     void fillMarkerLineCombo();

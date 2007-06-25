@@ -63,7 +63,7 @@ bool collectObjects(Label::Parsed *lp, KstVectorMap& vm, KstScalarMap& scm, KstS
       // not an object reference
       continue;
     }
-    
+
 //    kstdWarning() << "Label references unknown object [" << fi->text << "]." << endl;
     return false;
   }

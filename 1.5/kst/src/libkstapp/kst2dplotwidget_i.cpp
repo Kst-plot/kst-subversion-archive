@@ -94,8 +94,8 @@ Kst2dPlotWidget::Kst2dPlotWidget(QWidget* parent, const char* name, WFlags fl) :
   connect(AvailableCurveList, SIGNAL(selectionChanged()), this, SLOT(updateButtons()));
   connect(_remove, SIGNAL(clicked()), this, SLOT(removeDisplayedCurve()));
   connect(_add, SIGNAL(clicked()), this, SLOT(addDisplayedCurve()));
-  connect(_up, SIGNAL(clicked()), DisplayedCurveList, SLOT(up()));
-  connect(_down, SIGNAL(clicked()), DisplayedCurveList, SLOT(down()));
+  connect(_up, SIGNAL(clicked()), this, SLOT(upDisplayedCurve()));
+  connect(_down, SIGNAL(clicked()), this, SLOT(downDisplayedCurve()));
 
   connect(AutoLabel, SIGNAL(clicked()), this, SLOT(generateDefaultLabels()));
 
@@ -315,7 +315,7 @@ void Kst2dPlotWidget::removeDisplayedCurve()
       if (DisplayedCurveList->isSelected(i)) {
         AvailableCurveList->insertItem(DisplayedCurveList->text(i));
         DisplayedCurveList->removeItem(i);
-    }
+      }
     }
     updateButtons();
     emit changed();
@@ -323,6 +323,21 @@ void Kst2dPlotWidget::removeDisplayedCurve()
   TrackContents->setChecked(false);
 }
 
+
+void Kst2dPlotWidget::upDisplayedCurve()
+{
+  if (DisplayedCurveList->up()) {
+    emit changed();
+  }
+}
+
+
+void Kst2dPlotWidget::downDisplayedCurve()
+{
+  if (DisplayedCurveList->down()) {
+    emit changed();
+  }
+}
 
 
 void Kst2dPlotWidget::fillMarkerLineCombo() {
