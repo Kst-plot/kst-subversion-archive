@@ -129,7 +129,7 @@ KstVectorView::KstVectorView(const QDomElement &e)
 
 
 void KstVectorView::commonConstructor(const QString &in_tag) {
-  _typeString = i18n("VectorView");
+  _typeString = i18n("Vector View");
   _type = "VectorView";
 
   setTagName(KstObjectTag::fromString(in_tag));
@@ -193,10 +193,18 @@ KstObject::UpdateType KstVectorView::update(int update_counter) {
   double ymin = inYVec->min();
   double ymax = inYVec->max();
 
-  if (_useXmin && _xmin) { xmin = _xmin->value(); }
-  if (_useXmax && _xmax) { xmax = _xmax->value(); }
-  if (_useYmin && _ymin) { ymin = _ymin->value(); }
-  if (_useYmax && _ymax) { ymax = _ymax->value(); }
+  if (_useXmin && _xmin) {
+    xmin = _xmin->value();
+  }
+  if (_useXmax && _xmax) {
+    xmax = _xmax->value();
+  }
+  if (_useYmin && _ymin) {
+    ymin = _ymin->value();
+  }
+  if (_useYmax && _ymax) {
+    ymax = _ymax->value();
+  }
 
   int NS;
   switch (interp()) {
@@ -439,7 +447,7 @@ void KstVectorView::save(QTextStream &ts, const QString& indent) {
   ts << l2 << "<useymax>" << _useYmax << "</useymax>" << endl;
   ts << l2 << "<ymaxtag>" << QStyleSheet::escape(_ymax->tag().displayString()) << "</ymaxtag>" << endl;
   if (_inputVectors.contains(IN_FLAGVECTOR)) { 
-      ts << l2 << "<flagtag>" << QStyleSheet::escape(_inputVectors[IN_FLAGVECTOR]->tag().displayString()) << "</flagtag>" << endl; 
+    ts << l2 << "<flagtag>" << QStyleSheet::escape(_inputVectors[IN_FLAGVECTOR]->tag().displayString()) << "</flagtag>" << endl; 
   }
   ts << indent << "</vectorview>" << endl;
 }

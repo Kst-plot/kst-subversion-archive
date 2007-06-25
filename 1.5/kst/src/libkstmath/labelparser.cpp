@@ -316,7 +316,7 @@ inline bool parseOutChar(const QString& txt, uint from, int *skip, Chunk **tail,
       } else {
         *skip = 1;
         setNormalChar(QChar(0x20), tail);  
-        return true;      
+        return true;
       }
       break;
 
