@@ -29,7 +29,7 @@ typedef struct {
 } folderFile;
 
 typedef struct {
-  QString file;
+  QString basefile;
   int table;
   int column;
 } field;
@@ -54,11 +54,16 @@ class PLANCKIDEFSource : public KstDataSource {
     static bool           checkValidPlanckIDEFFolder( const QString& filename );
 
   private:
+    int                   readFileFrames( field *fld, double *v, int s, int n );
+    int                   readFolderFrames( field *fld, double *v, int s, int n );
+
     static bool           isValidFilename( const QString& filename );
+    static QString        baseFilename( const QString& filename );
     static int            versionNumber( const QString& filename );
 
     void                  addToMetadata( fitsfile *ffits, int &iStatus );
-    void                  addToFieldList( fitsfile *ffits, const int iNumCols, int &iStatus );
+    void                  addToFieldList( fitsfile *ffits, const QString& prefix, const QString& baseName, const int iNumCols, int &iStatus );
+    bool                  initFile( const QString& filename, const QString& prefix, const QString& baseName, bool addMetadata );
     bool                  initFile();
     bool                  initFolder();
     bool                  initialize();
