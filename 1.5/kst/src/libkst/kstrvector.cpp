@@ -330,7 +330,12 @@ int KstRVector::reqStartFrame() const {
 
 /** Save vector information */
 void KstRVector::save(QTextStream &ts, const QString& indent, bool saveAbsolutePosition) {
-  if (_file) {    
+  if (_saveData) {
+    // This is ugly.  Really we need a way to change vector types at runtime.
+    ts << indent << "<avector>" << endl;
+    KstVector::save(ts, indent + "  ", saveAbsolutePosition);
+    ts << indent << "</avector>" << endl;
+  } else if (_file) {
     ts << indent << "<vector>" << endl;
     KstVector::save(ts, indent + "  ", saveAbsolutePosition);
     _file->readLock();
@@ -346,6 +351,7 @@ void KstRVector::save(QTextStream &ts, const QString& indent, bool saveAbsoluteP
       ts << indent << "  <start>" << ReqF0 << "</start>" << endl;
       ts << indent << "  <num>" << ReqNF << "</num>" << endl;
     }
+
     if (doSkip()) {
       ts << indent << "  <skip>" << Skip << "</skip>" << endl;
       if (doAve()) {
