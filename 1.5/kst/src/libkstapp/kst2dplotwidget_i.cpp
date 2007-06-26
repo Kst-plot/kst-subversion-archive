@@ -1052,7 +1052,8 @@ void Kst2dPlotWidget::applyXAxis(Kst2DPlotPtr plot) {
   bool isXAxisInterpreted;
 
   plot->getXAxisInterpretation(isXAxisInterpreted, xAxisInterpretation, xAxisDisplay);
-  if (_checkBoxXInterpret->state() == QButton::On || isXAxisInterpreted) {
+  if (_checkBoxXInterpret->state() == QButton::On || 
+      (_checkBoxXInterpret->state() == QButton::NoChange && isXAxisInterpreted)) {
     if (_comboBoxXInterpret->currentText().compare(QString(" ")) != 0) {
       xAxisInterpretation = AxisInterpretations[_comboBoxXInterpret->currentItem()].type;
     }
@@ -1107,7 +1108,8 @@ void Kst2dPlotWidget::applyXAxis(Kst2DPlotPtr plot) {
     plot->setSuppressBottom(false);
   }
 
-  if (_xTransformTop->state() == QButton::On || !plot->xTransformedExp().isNull()) {
+  if (_xTransformTop->state() == QButton::On || 
+      (_xTransformTop->state() == QButton::NoChange && !plot->xTransformedExp().isNull())) {
     if (_xTransformTopExp->text() != QString(" ")) {
       plot->setXTransformedExp(_xTransformTopExp->text());
     }
@@ -1136,7 +1138,8 @@ void Kst2dPlotWidget::applyYAxis(Kst2DPlotPtr plot) {
   bool isYAxisInterpreted;
 
   plot->getYAxisInterpretation(isYAxisInterpreted, yAxisInterpretation, yAxisDisplay);
-  if (_checkBoxYInterpret->state() == QButton::On || isYAxisInterpreted) {
+  if (_checkBoxYInterpret->state() == QButton::On ||
+      (_checkBoxYInterpret->state() == QButton::NoChange && isYAxisInterpreted)) {
     if (_comboBoxYInterpret->currentText().compare(QString(" ")) != 0) {
       yAxisInterpretation = AxisInterpretations[_comboBoxYInterpret->currentItem()].type;
     }
@@ -1192,7 +1195,8 @@ void Kst2dPlotWidget::applyYAxis(Kst2DPlotPtr plot) {
     plot->setSuppressRight(false);
   }
 
-  if (_yTransformRight->state() == QButton::On || !plot->yTransformedExp().isNull()) {
+  if (_yTransformRight->state() == QButton::On || 
+      (_yTransformRight->state() == QButton::NoChange && !plot->yTransformedExp().isNull())) {
     if (_yTransformRightExp->text() != QString(" ")) {
       plot->setYTransformedExp(_yTransformRightExp->text());
     }
