@@ -1931,21 +1931,21 @@ void Kst2DPlot::genAxisTickLabels(TickParameters &tp,
   QString strPrefix;
   double range;
   double scale = 1.0;
-  double value;
+  double value = 0.0;
   bool bDuplicate = false;
   uint uiShortestLength = 1000;
   uint length;
   int minorTicks;
   int iShort = 0;
   int base = 60;
-  KstPlotLabel *tick_label;
+  KstPlotLabel *tickLabel;
   TickLabelDescription labelDescr;
 
   if (isX) {
-    tick_label = _xTickLabel;
+    tickLabel = _xTickLabel;
     minorTicks = _xMinorTicks;
   } else {
-    tick_label = _yTickLabel;
+    tickLabel = _yTickLabel;
     minorTicks = _yMinorTicks;
   }
 
@@ -1979,8 +1979,8 @@ void Kst2DPlot::genAxisTickLabels(TickParameters &tp,
       value = (double)i * tp.tick + tp.org;
       if (value >= Min && value <= Max) {
         genAxisTickLabel(strTmp, value, isLog, logBase, false);
-        tick_label->setText(strTmp);
-        QSize lsize = tick_label->size();
+        tickLabel->setText(strTmp);
+        QSize lsize = tickLabel->size();
 
         tp.maxWidth = kMax(tp.maxWidth, double(lsize.width()));
         tp.maxHeight = kMax(tp.maxHeight, double(lsize.height()));
@@ -2004,9 +2004,32 @@ void Kst2DPlot::genAxisTickLabels(TickParameters &tp,
 
     if (isLog && tp.labelMinor) {
       double step = (pow(logBase, (double)(i+1) * tp.tick + tp.org) - pow(logBase, (double)i * tp.tick + tp.org)) / minorTicks;
+      bool labelFirst = false;
       int j;
 
       for (j = 1; j < minorTicks; j++) {
+        if (labelFirst) {
+          if (j == minorTicks - 1) {
+            // value of next major tick...
+            value = (double)(i+1) * tp.tick + tp.org;
+            if (value >= Min && value <= Max) {
+              // don't label the current minor tick if we're about to label the next minor tick
+              continue;
+            }
+          } else {
+            // value of next minor tick...
+            if (isX) {
+              value = logXLo(pow(logBase, (double)i * tp.tick + tp.org) + ((double)(j+1) * step));
+            } else {
+              value = logYLo(pow(logBase, (double)i * tp.tick + tp.org) + ((double)(j+1) * step));
+            }
+            if (value > Min && value < Max) {
+              // don't label the current minor tick if we're about to label the next minor tick
+              continue;
+            }
+          }
+        }
+
         if (isX) {
           value = logXLo(pow(logBase, (double)i * tp.tick + tp.org) + ((double)j * step));
         } else {
@@ -2015,8 +2038,8 @@ void Kst2DPlot::genAxisTickLabels(TickParameters &tp,
 
         if (value > Min && value < Max) {
           genAxisTickLabel(strTmp, value, true, logBase, true);
-          tick_label->setText(strTmp);
-          QSize lsize = tick_label->size();
+          tickLabel->setText(strTmp);
+          QSize lsize = tickLabel->size();
 
           tp.maxWidth = kMax(tp.maxWidth, double(lsize.width()));
           tp.maxHeight = kMax(tp.maxHeight, double(lsize.height()));
@@ -2025,6 +2048,8 @@ void Kst2DPlot::genAxisTickLabels(TickParameters &tp,
           labelDescr.position = value;
           labelDescr.minorTick = true;
           tp.labels.append(labelDescr);
+
+          labelFirst = true;
         }
       }
     }
@@ -2032,33 +2057,28 @@ void Kst2DPlot::genAxisTickLabels(TickParameters &tp,
 
   // also generate labels for opposite axis if needed
   if ((isX && _xTransformed) || (!isX && _yTransformed)) {
-    for (int i = tp.iLo; i < tp.iHi; i++) {
+    for (QValueList<TickLabelDescription>::ConstIterator iter = tp.labels.begin(); iter != tp.labels.end(); ++iter) {
       double transformedNumber;
       bool transformedOK = false;
-      double originalNumber = (double)i * tp.tick + tp.org;
+      double originalNumber = (*iter).position;
 
-      if (originalNumber > Min && originalNumber < Max) {
-        if (isLog) {
-          originalNumber = pow(logBase, originalNumber);
-        }
-        // case insensitive replace
-        QString replacedExp = isX ? _xTransformedExp : _yTransformedExp;
-        replacedExp.replace(isX ? "x" : "y", QString::number(originalNumber), false);
-        transformedNumber = Equation::interpret(replacedExp.latin1(), &transformedOK, replacedExp.length());
-        tick_label->setText(QString::number(transformedNumber, 'g', LABEL_PRECISION));
-        if (!transformedOK) {
-          tick_label->setText("NaN");
-        }
-        labelDescr.label = tick_label->text();
-        labelDescr.position = originalNumber;
-        labelDescr.minorTick = false;
-        tp.labelsOpposite.append(labelDescr);
-
-        // update the max height and width of opposite labels
-        QSize lsize = tick_label->size();
-        tp.oppMaxWidth = kMax(tp.oppMaxWidth, double(lsize.width()));
-        tp.oppMaxHeight = kMax(tp.oppMaxHeight, double(lsize.height()));
+      // case insensitive replace
+      QString replacedExp = isX ? _xTransformedExp : _yTransformedExp;
+      replacedExp.replace(isX ? "x" : "y", QString::number(originalNumber), false);
+      transformedNumber = Equation::interpret(replacedExp.latin1(), &transformedOK, replacedExp.length());
+      tickLabel->setText(QString::number(transformedNumber, 'g', LABEL_PRECISION));
+      if (!transformedOK) {
+        tickLabel->setText("NaN");
       }
+      labelDescr.label = tickLabel->text();
+      labelDescr.position = originalNumber;
+      labelDescr.minorTick = false;
+      tp.labelsOpposite.append(labelDescr);
+
+      // update the max height and width of opposite labels
+      QSize lsize = tickLabel->size();
+      tp.oppMaxWidth = kMax(tp.oppMaxWidth, double(lsize.width()));
+      tp.oppMaxHeight = kMax(tp.oppMaxHeight, double(lsize.height()));
     }
   }
 
@@ -2090,12 +2110,12 @@ void Kst2DPlot::genAxisTickLabels(TickParameters &tp,
       value = (double)i * tp.tick + tp.org;
       if (value > Min && value < Max) {
         labelDescr.label = strTmp;
-        labelDescr.position = (double)i * tp.tick + tp.org;
+        labelDescr.position = value;
         labelDescr.minorTick = false;
         tp.labels.append(labelDescr);
 
-        tick_label->setText(strTmp);
-        QSize lsize = tick_label->size();
+        tickLabel->setText(strTmp);
+        QSize lsize = tickLabel->size();
         tp.maxWidth = kMax(tp.maxWidth, double(lsize.width()));
         tp.maxHeight = kMax(tp.maxHeight, double(lsize.height()));
       }
