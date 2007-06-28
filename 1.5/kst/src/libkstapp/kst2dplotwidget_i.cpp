@@ -899,6 +899,7 @@ void Kst2dPlotWidget::fillWidget(const Kst2DPlot *plot) {
 
 void Kst2dPlotWidget::applyContents(Kst2DPlotPtr plot) {
   if (!_editMultipleMode) {
+    plot->clearCurves();
     KstBaseCurveList curves = kstObjectSubList<KstDataObject, KstBaseCurve>(KST::dataObjectList);
     for (unsigned i = 0; i < DisplayedCurveList->count(); ++i) {
       KstBaseCurveList::Iterator it = curves.findTag(DisplayedCurveList->text(i));
