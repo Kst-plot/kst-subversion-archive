@@ -252,6 +252,8 @@ bool KstCurveDialogI::newObject() {
   // verify that the curve name is unique
   if (KstData::self()->dataTagNameNotUnique(tag_name)) {
     _tagName->setFocus();
+    VY->unlock();
+    VX->unlock();
     return false;
   }
 
