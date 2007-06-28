@@ -638,7 +638,7 @@ bool KstVectorDialogI::editObject() {
     // verify that the curve name is unique
     QString tag_name = _tagName->text();
     _dp->writeLock();
-    if (tag_name != _dp->tagName() && KstData::self()->dataTagNameNotUnique(tag_name)) {
+    if (tag_name != _dp->tagName() && KstData::self()->vectorTagNameNotUnique(tag_name)) {
       _dp->unlock();
       _tagName->setFocus();
       return false;
