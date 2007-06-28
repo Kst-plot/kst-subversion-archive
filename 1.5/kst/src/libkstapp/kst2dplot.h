@@ -92,8 +92,8 @@ public:
   Kst2DPlot(const QString& in_tag = "SomePlot",
           KstScaleModeType yscale = AUTOBORDER,
           KstScaleModeType xscale = AUTO,
-          double xmin = 0, double ymin = 0,
-          double xmax = 1, double ymax = 1);
+          double xmin = 0.0, double ymin = 0.0,
+          double xmax = 1.0, double ymax = 1.0);
   Kst2DPlot(const QDomElement& e);
   Kst2DPlot(const Kst2DPlot& plot, const QString& name);
   virtual ~Kst2DPlot();
@@ -110,7 +110,7 @@ public:
   static Kst2DPlotPtr findPlotByName(const QString& name);
   static bool checkRange(double& min_in, double& max_in);
   static bool checkLRange(double& min_in, double& max_in, bool isLog, double logBase);
-  static void genAxisTickLabel(QString& label, double z, bool isLog, double logBase);
+  static void genAxisTickLabel(QString& label, double z, bool isLog, double logBase, bool minorTick);
 
   virtual UpdateType update(int update_counter);
   virtual void save(QTextStream& ts, const QString& indent = QString::null);
@@ -488,7 +488,7 @@ private:
                          TickParameters &tpx,  TickParameters &tpy,
                          QPainter& p, bool& bOffsetX, bool& bOffsetY,
                          double xtick_len_px, double ytick_len_px);
-  void setTicks(double& tick, double& org,
+  void setTicks(double& tick, double& org, bool& labelMinor,
                 double max, double min, bool is_log, double logBase, bool isX, int base);
   double convertTimeValueToJD(KstAxisInterpretation axisInterpretation, double valueIn);
   double convertTimeDiffValueToDays(KstAxisInterpretation axisInterpretation, double diffIn);
@@ -507,7 +507,7 @@ private:
   void updateXYGuideline(QWidget *view, const QPoint& oldPos, const QPoint& newPos, const QRect& pr, KstMouseModeType gzType);
 
   // range and domain of plot: not plot dimentions
-  double XMin, XMax, YMin, YMax;
+  double _XMin, _XMax, _YMin, _YMax;
 
   double _copy_x, _copy_y;
   double _cursor_x, _cursor_y;
@@ -595,6 +595,7 @@ private:
   QRect _oldAlignment;
   double _m_X, _b_X, _m_Y, _b_Y;
   double _tickYLast, _stLast;
+  bool _labelMinorLast;
   int _autoTickYLast;
 
   QColor _colorMarkers;
@@ -615,10 +616,8 @@ private:
   int _reqYMinorTicks; // -1 means use auto
   int _xMinorTicks;
   int _yMinorTicks;
-
   int _xMajorTicks;
   int _yMajorTicks;
-  
   int _i_per; // index for next image color range
 
   KstPlotLabel *_xLabel, *_yLabel, *_topLabel, *_xTickLabel, *_yTickLabel, *_fullTickLabel;

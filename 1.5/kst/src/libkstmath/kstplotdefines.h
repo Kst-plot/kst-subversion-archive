@@ -62,6 +62,12 @@ struct MajorTickSpacing {
   int majorTickDensity;
 };
 
+struct TickLabelDescription {
+  QString label;
+  double position;
+  bool minorTick;
+};
+
 const AxisInterpretation AxisInterpretations[] = {
   { I18N_NOOP("Julian Year"), AXIS_INTERP_YEAR },
   { I18N_NOOP("Standard C time"), AXIS_INTERP_CTIME },
@@ -94,20 +100,20 @@ const MajorTickSpacing MajorTickSpacings[] = {
 class TickParameters {
   public:
     // FIXME: use reasonable defaults
-    TickParameters() : org(0.0), tick(0.0), delta(false), maxWidth(0.0),
-                       maxHeight(0.0), iHi(0), iLo(0), oppMaxWidth(0.0),
-                       oppMaxHeight(0.0)
+    TickParameters() : org(0.0), tick(0.0), delta(false), labelMinor(false), maxWidth(0.0),
+                       maxHeight(0.0), iHi(0), iLo(0), oppMaxWidth(0.0), oppMaxHeight(0.0)
     {}
 
     double org;
     double tick;
     bool delta;
+    bool labelMinor;
     double maxWidth;
     double maxHeight;
-    QStringList labels;
+    QValueList<TickLabelDescription> labels;
+    QValueList<TickLabelDescription> labelsOpposite;
     int iHi;
     int iLo;
-    QStringList oppLabels; // labels for the opposite axis
     double oppMaxWidth;
     double oppMaxHeight;
 };

@@ -60,6 +60,7 @@
 #include "kstlinestyle.h"
 #include "kstmath.h"
 #include "kstnumbersequence.h"
+#include "kstplotdefines.h"
 #include "kstplotlabel.h"
 #include "kstrmatrix.h"
 #include "kstrvector.h"
@@ -173,7 +174,7 @@ Kst2DPlot::Kst2DPlot(const QDomElement& e)
 : KstPlotBase(e) {
   QString in_tag = "unknown";
   KstScaleModeType yscale_in = AUTOBORDER, xscale_in = AUTO;
-  double xmin_in = 0, ymin_in = 0, xmax_in = 1, ymax_in = 1;
+  double xmin_in = 0.0, ymin_in = 0.0, xmax_in = 1.0, ymax_in = 1.0;
   QString xminexp_in, xmaxexp_in, yminexp_in, ymaxexp_in;
   QStringList ctaglist;
   bool x_log = false, y_log = false;
@@ -478,8 +479,6 @@ Kst2DPlot::Kst2DPlot(const QDomElement& e)
 }
 
 
-// FIXME: broken copy constructor
-// what is broken?
 Kst2DPlot::Kst2DPlot(const Kst2DPlot& plot, const QString& name)
 : KstPlotBase(plot) {
   QString plotName;
@@ -525,10 +524,10 @@ Kst2DPlot::Kst2DPlot(const Kst2DPlot& plot, const QString& name)
   commonConstructor(plotName,
                     plot._xScaleMode,
                     plot._yScaleMode,
-                    plot.XMin,
-                    plot.YMin,
-                    plot.XMax,
-                    plot.YMax,
+                    plot._XMin,
+                    plot._YMin,
+                    plot._XMax,
+                    plot._YMax,
                     plot._xLog,
                     plot._yLog,
                     plot._xLogBase,
@@ -622,7 +621,7 @@ void Kst2DPlot::commonConstructor(const QString &in_tag,
   _editTitle = i18n("Edit Plot");
   _tabToShow = CONTENT_TAB;
   _xLabel = new KstPlotLabel;
-  _yLabel = new KstPlotLabel(270);
+  _yLabel = new KstPlotLabel(270.0);
   _topLabel = new KstPlotLabel;
   _xTickLabel = new KstPlotLabel;
   _yTickLabel = new KstPlotLabel;
@@ -647,6 +646,7 @@ void Kst2DPlot::commonConstructor(const QString &in_tag,
   _tickYLast = 0.0;
   _stLast = 0.0;
   _autoTickYLast = 0;
+  _labelMinorLast = false;
   _isLogLast = false;
 
   _i_per = 0;
@@ -654,10 +654,10 @@ void Kst2DPlot::commonConstructor(const QString &in_tag,
   KstObject::setTagName(KstObjectTag(in_tag, KstObjectTag::globalTagContext));  // FIXME: tag context
   _isTied = false;
 
-  XMin = xmin_in;
-  XMax = xmax_in;
-  YMin = ymin_in;
-  YMax = ymax_in;
+  _XMin = xmin_in;
+  _XMax = xmax_in;
+  _YMin = ymin_in;
+  _YMax = ymax_in;
 
   _xScaleMode = xscale_in;
   _yScaleMode = yscale_in;
@@ -670,16 +670,16 @@ void Kst2DPlot::commonConstructor(const QString &in_tag,
   }
 
   // verify that scale limits make sense.  If not, go to auto.
-  if (XMax <= XMin) { // not OK: ignore request
-    XMin = 0;
-    XMax = 1;
+  if (_XMax <= _XMin) { // not OK: ignore request
+    _XMin = 0.0;
+    _XMax = 1.0;
     if (_xScaleMode != AUTOUP) {
       _xScaleMode = AUTO;
     }
   }
-  if (YMax <= YMin) {
-    YMin = 0;
-    YMax = 1;
+  if (_YMax <= _YMin) {
+    _YMin = 0.0;
+    _YMax = 1.0;
     if (_yScaleMode != AUTOUP) {
       _yScaleMode = AUTO;
     }
@@ -765,8 +765,8 @@ bool Kst2DPlot::checkLRange(double &min_in, double &max_in, bool bIsLog, double 
 
 bool Kst2DPlot::setXScale(double xmin_in, double xmax_in) {
   if (checkRange(xmin_in, xmax_in)) {
-    XMax = xmax_in;
-    XMin = xmin_in;
+    _XMax = xmax_in;
+    _XMin = xmin_in;
     updateScalars();
     return true;
   }
@@ -777,8 +777,8 @@ bool Kst2DPlot::setXScale(double xmin_in, double xmax_in) {
 
 bool Kst2DPlot::setYScale(double ymin_in, double ymax_in) {
   if (checkRange(ymin_in, ymax_in)) {
-    YMax = ymax_in;
-    YMin = ymin_in;
+    _YMax = ymax_in;
+    _YMin = ymin_in;
     updateScalars();
     return true;
   }
@@ -791,11 +791,11 @@ bool Kst2DPlot::setLXScale(double xmin_in, double xmax_in) {
   // this code is duplicated in setLScale.
   if (checkLRange(xmin_in, xmax_in, _xLog, _xLogBase)) {
     if (_xLog) {
-      XMax = pow(_xLogBase, xmax_in);
-      XMin = pow(_xLogBase, xmin_in);
+      _XMax = pow(_xLogBase, xmax_in);
+      _XMin = pow(_xLogBase, xmin_in);
     } else {
-      XMax = xmax_in;
-      XMin = xmin_in;
+      _XMax = xmax_in;
+      _XMin = xmin_in;
     }
     updateScalars();
     return true;
@@ -809,11 +809,11 @@ bool Kst2DPlot::setLYScale(double ymin_in, double ymax_in) {
   // this code is duplicated in setLScale.
   if (checkLRange(ymin_in, ymax_in, _yLog, _yLogBase)) {
     if (_yLog) {
-      YMax = pow(_yLogBase, ymax_in);
-      YMin = pow(_yLogBase, ymin_in);
+      _YMax = pow(_yLogBase, ymax_in);
+      _YMin = pow(_yLogBase, ymin_in);
     } else {
-      YMax = ymax_in;
-      YMin = ymin_in;
+      _YMax = ymax_in;
+      _YMin = ymin_in;
     }
     updateScalars();
     return true;
@@ -826,15 +826,15 @@ bool Kst2DPlot::setLYScale(double ymin_in, double ymax_in) {
 void Kst2DPlot::setScale(double xmin_in, double ymin_in, double xmax_in, double ymax_in) {
   bool schange = false;
 
-  if (checkRange(xmin_in, xmax_in) && ((XMax != xmax_in) || (XMin != xmin_in))) {
-    XMax = xmax_in;
-    XMin = xmin_in;
+  if (checkRange(xmin_in, xmax_in) && ((_XMax != xmax_in) || (_XMin != xmin_in))) {
+    _XMax = xmax_in;
+    _XMin = xmin_in;
     schange = true;
   }
 
-  if (checkRange(ymin_in, ymax_in) && ((YMax != ymax_in) || ( YMin != ymin_in))) {
-    YMax = ymax_in;
-    YMin = ymin_in;
+  if (checkRange(ymin_in, ymax_in) && ((_YMax != ymax_in) || (_YMin != ymin_in))) {
+    _YMax = ymax_in;
+    _YMin = ymin_in;
     schange = true;
   }
 
@@ -850,22 +850,22 @@ bool Kst2DPlot::setLScale(double xmin_in, double ymin_in, double xmax_in, double
 
   if (checkLRange(xmin_in, xmax_in, _xLog, _xLogBase)) {
     if (_xLog) {
-      XMax = pow(_xLogBase, xmax_in);
-      XMin = pow(_xLogBase, xmin_in);
+      _XMax = pow(_xLogBase, xmax_in);
+      _XMin = pow(_xLogBase, xmin_in);
     } else {
-      XMax = xmax_in;
-      XMin = xmin_in;
+      _XMax = xmax_in;
+      _XMin = xmin_in;
     }
     schange = true;
   }
 
   if (checkLRange(ymin_in, ymax_in, _yLog, _yLogBase)) {
     if (_yLog) {
-      YMax = pow(_yLogBase, ymax_in);
-      YMin = pow(_yLogBase, ymin_in);
+      _YMax = pow(_yLogBase, ymax_in);
+      _YMin = pow(_yLogBase, ymin_in);
     } else {
-      YMax = ymax_in;
-      YMin = ymin_in;
+      _YMax = ymax_in;
+      _YMin = ymin_in;
     }
     schange = true;
   }
@@ -879,28 +879,28 @@ bool Kst2DPlot::setLScale(double xmin_in, double ymin_in, double xmax_in, double
 
 
 void Kst2DPlot::getScale(double& xmin, double& ymin, double& xmax, double& ymax) const {
-  xmin = XMin;
-  xmax = XMax;
-  ymin = YMin;
-  ymax = YMax;
+  xmin = _XMin;
+  xmax = _XMax;
+  ymin = _YMin;
+  ymax = _YMax;
 }
 
 
 void Kst2DPlot::getLScale(double& x_min, double& y_min, double& x_max, double& y_max) const {
   if (_xLog) {
-    x_min = logXLo(XMin, _xLogBase);
-    x_max = logXHi(XMax, _xLogBase);
+    x_min = logXLo(_XMin, _xLogBase);
+    x_max = logXHi(_XMax, _xLogBase);
   } else {
-    x_max = XMax;
-    x_min = XMin;
+    x_max = _XMax;
+    x_min = _XMin;
   }
 
   if (_yLog) {
-    y_min = logYLo(YMin, _yLogBase);
-    y_max = logYHi(YMax, _yLogBase);
+    y_min = logYLo(_YMin, _yLogBase);
+    y_max = logYHi(_YMax, _yLogBase);
   } else {
-    y_max = YMax;
-    y_min = YMin;
+    y_max = _YMax;
+    y_min = _YMin;
   }
 }
 
@@ -1026,10 +1026,10 @@ void Kst2DPlot::updateScale() {
   bool first;
   int count;
 
-  double nXMin = XMin;
-  double nXMax = XMax;
-  double nYMin = YMin;
-  double nYMax = YMax;
+  double nXMin = _XMin;
+  double nXMax = _XMax;
+  double nYMin = _YMin;
+  double nYMax = _YMax;
 
   KstScaleModeType t = _xScaleMode;
   if (t == EXPRESSION && _xMinParsedValid && _xMaxParsedValid && _xMinParsed->isConst() && _xMaxParsed->isConst()) {
@@ -1831,9 +1831,9 @@ void Kst2DPlot::genOffsetLabel(KstAxisInterpretation axisInterpretation, KstAxis
 }
 
 
-void Kst2DPlot::genAxisTickLabel(QString& label, double z, bool isLog, double logBase) {
+void Kst2DPlot::genAxisTickLabel(QString& label, double z, bool isLog, double logBase, bool minorTick) {
   if (isLog) {
-    if (z > -4 && z < 4) {
+    if (z > -4 && z < 4 || minorTick) {
       label = QString::number(pow(logBase, z), 'g', LABEL_PRECISION);
     } else {
       label = i18n("%2 to the power of %1", "%2^{%1}").arg(z, 0, 'f', 0).arg(logBase, 0, 'f', 0);
@@ -1879,7 +1879,7 @@ void Kst2DPlot::getPrefixUnitsScale(bool isInterpreted, KstAxisInterpretation ax
       case AXIS_DISPLAY_KDE_SHORTDATE:
       case AXIS_DISPLAY_KDE_LONGDATE:
         double value;
-        
+
         if( bLog ) {
           value = ( pow( logBase, Max ) - pow( logBase, Min ) ) * range;
         } else {
@@ -1931,17 +1931,22 @@ void Kst2DPlot::genAxisTickLabels(TickParameters &tp,
   QString strPrefix;
   double range;
   double scale = 1.0;
+  double value;
   bool bDuplicate = false;
   uint uiShortestLength = 1000;
   uint length;
+  int minorTicks;
   int iShort = 0;
   int base = 60;
   KstPlotLabel *tick_label;
+  TickLabelDescription labelDescr;
 
   if (isX) {
     tick_label = _xTickLabel;
+    minorTicks = _xMinorTicks;
   } else {
     tick_label = _yTickLabel;
+    minorTicks = _yMinorTicks;
   }
 
   getPrefixUnitsScale(isInterpreted, axisInterpretation, axisDisplay, isLog, logBase, Min, Max, range, scale, base, strPrefix, strUnits);
@@ -1950,15 +1955,16 @@ void Kst2DPlot::genAxisTickLabels(TickParameters &tp,
   tp.maxHeight = 0.0;
   tp.oppMaxWidth = 0.0;
   tp.oppMaxHeight = 0.0;
+  tp.labelMinor = false;
   tp.labels.clear();
-  tp.oppLabels.clear();
+  tp.labelsOpposite.clear();
   tp.delta = false;
 
   if (isLog && isInterpreted) {
-    setTicks(tp.tick, tp.org, Max + log10(range) + log10(scale), Min + log10(range) + log10(scale), isLog, logBase, isX, base);
+    setTicks(tp.tick, tp.org, tp.labelMinor, Max + log10(range) + log10(scale), Min + log10(range) + log10(scale), isLog, logBase, isX, base);
     tp.org -= log10(range) + log10(scale);
   } else {
-    setTicks(tp.tick, tp.org, Max*range*scale, Min*range*scale, isLog, logBase, isX, base);
+    setTicks(tp.tick, tp.org, tp.labelMinor, Max*range*scale, Min*range*scale, isLog, logBase, isX, base);
     tp.tick /= range*scale;
     tp.org  /= range*scale;
   }
@@ -1968,54 +1974,95 @@ void Kst2DPlot::genAxisTickLabels(TickParameters &tp,
   iShort = tp.iLo;
 
   // determine the values, and determine if we need to use delta values
-  for (int i = tp.iLo; i < tp.iHi; i++) {
-    genAxisTickLabel(strTmp, (double)i * tp.tick + tp.org, isLog, logBase);
-    tick_label->setText(strTmp);
-    QSize lsize = tick_label->size();
+  for (int i = tp.iLo-1; i < tp.iHi+1; i++) {
+    if (i >= tp.iLo && i < tp.iHi) {
+      value = (double)i * tp.tick + tp.org;
+      if (value >= Min && value <= Max) {
+        genAxisTickLabel(strTmp, value, isLog, logBase, false);
+        tick_label->setText(strTmp);
+        QSize lsize = tick_label->size();
 
-    tp.maxWidth = kMax(tp.maxWidth, double(lsize.width()));
-    tp.maxHeight = kMax(tp.maxHeight, double(lsize.height()));
-    if (strTmp == strTmpOld) {
-      bDuplicate = true;
-    } else {
-      strTmpOld = strTmp;
+        tp.maxWidth = kMax(tp.maxWidth, double(lsize.width()));
+        tp.maxHeight = kMax(tp.maxHeight, double(lsize.height()));
+        if (strTmp == strTmpOld) {
+          bDuplicate = true;
+        } else {
+          strTmpOld = strTmp;
+        }
+        labelDescr.label = strTmp;
+        labelDescr.position = value;
+        labelDescr.minorTick = false;
+        tp.labels.append(labelDescr);
+
+        genAxisTickLabelFullPrecision(axisInterpretation, axisDisplay, strTmp, length, (double)i * tp.tick + tp.org, isLog, logBase, isInterpreted);
+        if (length < uiShortestLength) {
+          iShort = i;
+          uiShortestLength = length;
+        }
+      }
     }
-    tp.labels.append(strTmp);
 
-    genAxisTickLabelFullPrecision(axisInterpretation, axisDisplay, strTmp, length, (double)i * tp.tick + tp.org, isLog, logBase, isInterpreted);
-    if (length < uiShortestLength) {
-      iShort = i;
-      uiShortestLength = length;
+    if (isLog && tp.labelMinor) {
+      double step = (pow(logBase, (double)(i+1) * tp.tick + tp.org) - pow(logBase, (double)i * tp.tick + tp.org)) / minorTicks;
+      int j;
+
+      for (j = 1; j < minorTicks; j++) {
+        if (isX) {
+          value = logXLo(pow(logBase, (double)i * tp.tick + tp.org) + ((double)j * step));
+        } else {
+          value = logYLo(pow(logBase, (double)i * tp.tick + tp.org) + ((double)j * step));
+        }
+
+        if (value > Min && value < Max) {
+          genAxisTickLabel(strTmp, value, true, logBase, true);
+          tick_label->setText(strTmp);
+          QSize lsize = tick_label->size();
+
+          tp.maxWidth = kMax(tp.maxWidth, double(lsize.width()));
+          tp.maxHeight = kMax(tp.maxHeight, double(lsize.height()));
+
+          labelDescr.label = strTmp;
+          labelDescr.position = value;
+          labelDescr.minorTick = true;
+          tp.labels.append(labelDescr);
+        }
+      }
     }
   }
 
   // also generate labels for opposite axis if needed
   if ((isX && _xTransformed) || (!isX && _yTransformed)) {
     for (int i = tp.iLo; i < tp.iHi; i++) {
-      // original tick number
-      double originalNumber = (double)i * tp.tick + tp.org;
-      if (isLog) {
-        originalNumber = pow(logBase, originalNumber);
-      }
-      // case insensitive replace
-      QString replacedExp = isX ? _xTransformedExp : _yTransformedExp;
-      replacedExp.replace(isX ? "x" : "y", QString::number(originalNumber), false);
+      double transformedNumber;
       bool transformedOK = false;
-      double transformedNumber = Equation::interpret(replacedExp.latin1(), &transformedOK, replacedExp.length());
-      tick_label->setText(QString::number(transformedNumber, 'g', LABEL_PRECISION));
-      if (!transformedOK) {
-        tick_label->setText("NaN");
-      }
-      tp.oppLabels.append(tick_label->text());
+      double originalNumber = (double)i * tp.tick + tp.org;
 
-      // update the max height and width of opposite labels
-      QSize lsize = tick_label->size();
-      tp.oppMaxWidth = kMax(tp.oppMaxWidth, double(lsize.width()));
-      tp.oppMaxHeight = kMax(tp.oppMaxHeight, double(lsize.height()));
+      if (originalNumber > Min && originalNumber < Max) {
+        if (isLog) {
+          originalNumber = pow(logBase, originalNumber);
+        }
+        // case insensitive replace
+        QString replacedExp = isX ? _xTransformedExp : _yTransformedExp;
+        replacedExp.replace(isX ? "x" : "y", QString::number(originalNumber), false);
+        transformedNumber = Equation::interpret(replacedExp.latin1(), &transformedOK, replacedExp.length());
+        tick_label->setText(QString::number(transformedNumber, 'g', LABEL_PRECISION));
+        if (!transformedOK) {
+          tick_label->setText("NaN");
+        }
+        labelDescr.label = tick_label->text();
+        labelDescr.position = originalNumber;
+        labelDescr.minorTick = false;
+        tp.labelsOpposite.append(labelDescr);
+
+        // update the max height and width of opposite labels
+        QSize lsize = tick_label->size();
+        tp.oppMaxWidth = kMax(tp.oppMaxWidth, double(lsize.width()));
+        tp.oppMaxHeight = kMax(tp.oppMaxHeight, double(lsize.height()));
+      }
     }
   }
 
-  // determine the values when using delta values.
+  // determine the values when using delta values
   if (bDuplicate || isInterpreted || isOffsetMode) {
     tp.maxWidth = 0.0;
     tp.maxHeight = 0.0;
@@ -2027,21 +2074,31 @@ void Kst2DPlot::genAxisTickLabels(TickParameters &tp,
         if (!strUnits.isEmpty()) {
           strTmp = i18n( "<Prefix e.g. JD><Value> [Units]", "%1%2 [%3]" ).arg(strPrefix).arg(strTmp).arg(strUnits);
         }
-        tp.labels.prepend(strTmp);
+        labelDescr.label = strTmp;
+        labelDescr.position = (double)iShort * tp.tick + tp.org;
+        tp.labels.prepend(labelDescr);
       }
       if (isLog) {
         genAxisTickLabelDifference(axisInterpretation, axisDisplay, strTmp,
                                   (double)iShort * tp.tick + tp.org, (double)i * tp.tick + tp.org,
                                   isLog, logBase, isInterpreted, scale);
       } else {
-        genAxisTickLabelDifference(axisInterpretation, axisDisplay, strTmp, (double)iShort * tp.tick,
-                                  (double)i * tp.tick, isLog, logBase, isInterpreted, scale);
+        genAxisTickLabelDifference(axisInterpretation, axisDisplay, strTmp, 
+                                  (double)iShort * tp.tick, (double)i * tp.tick, 
+                                  isLog, logBase, isInterpreted, scale);
       }
-      tp.labels.append(strTmp);
-      tick_label->setText(strTmp);
-      QSize lsize = tick_label->size();
-      tp.maxWidth = kMax(tp.maxWidth, double(lsize.width()));
-      tp.maxHeight = kMax(tp.maxHeight, double(lsize.height()));
+      value = (double)i * tp.tick + tp.org;
+      if (value > Min && value < Max) {
+        labelDescr.label = strTmp;
+        labelDescr.position = (double)i * tp.tick + tp.org;
+        labelDescr.minorTick = false;
+        tp.labels.append(labelDescr);
+
+        tick_label->setText(strTmp);
+        QSize lsize = tick_label->size();
+        tp.maxWidth = kMax(tp.maxWidth, double(lsize.width()));
+        tp.maxHeight = kMax(tp.maxHeight, double(lsize.height()));
+      }
     }
   }
 }
@@ -2158,7 +2215,6 @@ void Kst2DPlot::setBorders(double& xleft_bdr_px, double& xright_bdr_px,
     xleft_bdr_px  = tpy.maxWidth;
     xleft_bdr_px += 5.0 * _yLabel->lineSpacing() / 4.0;
     xleft_bdr_px += _yTickLabel->lineSpacing() / 4.0;
-    //printf("mw: %g yls: %d lfls: %d xlbp: %g\n", tpy.maxWidth, _yLabel->lineSpacing(), _tickLabel->lineSpacing(), xleft_bdr_px);
   }
 
   // calculate the right border
@@ -2181,17 +2237,17 @@ void Kst2DPlot::setBorders(double& xleft_bdr_px, double& xright_bdr_px,
   int xLabelWidth = 0;
   int yLabelHeight = 0;
 
-  _fullTickLabel->setRotation(0);
+  _fullTickLabel->setRotation(0.0);
 
   if (tpx.delta && tpxLabelCount) {
-    _fullTickLabel->setText(tpx.labels[0]);
+    _fullTickLabel->setText(tpx.labels[0].label);
     xFullTickLabelWidth = _fullTickLabel->size().width();
     xFullTickLabelLineSpacing = _fullTickLabel->lineSpacing();
     xLabelWidth = _xLabel->size().width();
-
   }
+
   if (tpy.delta && tpyLabelCount > 0) {
-    _fullTickLabel->setText(tpy.labels[0]);
+    _fullTickLabel->setText(tpy.labels[0].label);
     yFullTickLabelWidth = _fullTickLabel->size().width();
     yFullTickLabelLineSpacing = _fullTickLabel->lineSpacing();
     yLabelHeight = _yLabel->size().height();
@@ -2628,10 +2684,10 @@ void Kst2DPlot::draw(KstPainter& p) {
     context.y_max = y_max;
     context.x_min = x_min;
     context.y_min = y_min;
-    context.XMin = XMin;
-    context.YMin = YMin;
-    context.XMax = XMax;
-    context.YMax = YMax;
+    context.XMin = _XMin;
+    context.YMin = _YMin;
+    context.XMax = _XMax;
+    context.YMax = _YMax;
     context.xLog = _xLog;
     context.yLog = _yLog;
     context.xLogBase = _xLogBase;
@@ -2801,10 +2857,10 @@ void Kst2DPlot::saveAttributes(QTextStream& ts, const QString& indent) {
   ts << indent << "<xscalemodedefault>" << _xScaleModeDefault << "</xscalemodedefault>" << endl;
   ts << indent << "<yscalemodedefault>" << _yScaleModeDefault << "</yscalemodedefault>" << endl;
 
-  ts << indent << "<xmin>" << XMin << "</xmin>" << endl;
-  ts << indent << "<xmax>" << XMax << "</xmax>" << endl;
-  ts << indent << "<ymin>" << YMin << "</ymin>" << endl;
-  ts << indent << "<ymax>" << YMax << "</ymax>" << endl;
+  ts << indent << "<xmin>" << _XMin << "</xmin>" << endl;
+  ts << indent << "<xmax>" << _XMax << "</xmax>" << endl;
+  ts << indent << "<ymin>" << _YMin << "</ymin>" << endl;
+  ts << indent << "<ymax>" << _YMax << "</ymax>" << endl;
 
   ts << indent << "<xreversed>" << _xReversed << "</xreversed>" << endl;
   ts << indent << "<yreversed>" << _yReversed << "</yreversed>" << endl;
@@ -2961,10 +3017,10 @@ void Kst2DPlot::saveAttributes(QTextStream& ts, const QString& indent) {
 
 void Kst2DPlot::pushScale() {
   KstPlotScale *ps = new KstPlotScale;
-  ps->xmin = XMin;
-  ps->ymin = YMin;
-  ps->xmax = XMax;
-  ps->ymax = YMax;
+  ps->xmin = _XMin;
+  ps->ymin = _YMin;
+  ps->xmax = _XMax;
+  ps->ymax = _YMax;
   ps->xscalemode = _xScaleMode;
   ps->yscalemode = _yScaleMode;
   ps->xlog = _xLog;
@@ -3101,9 +3157,10 @@ void Kst2DPlot::generateDefaultLabels(bool xl, bool yl, bool tl) {
 }
 
 
-void Kst2DPlot::setTicks(double& tick, double& org, double max, double min, bool is_log, double logBase, bool isX, int base) {
-  double Exp;
-  int auto_tick;
+void Kst2DPlot::setTicks(double& tick, double& org, bool& labelMinor, double max, double min, bool isLog, double logBase, bool isX, int base) {
+  double expValue;
+  bool retained = false;
+  int autoTick;
   int majorDensity = isX ? _xMajorTicks : _yMajorTicks;
 
   static double b10_ticks[] = {1.0, 2.0, 5.0, 10.0};
@@ -3119,36 +3176,52 @@ void Kst2DPlot::setTicks(double& tick, double& org, double max, double min, bool
   static int n_b60_ticks = sizeof(b60_ticks) / sizeof(double);
 
   // check for hysteresis of y-axis tick spacing...
-  double St = (max - min) / (double)majorDensity;
-  if (!isX && is_log == _isLogLast && _stLast != 0.0 &&
-        St/_stLast < TICK_HYSTERESIS_FACTOR &&
-        St/_stLast > 1.0/TICK_HYSTERESIS_FACTOR) {
-    St = _stLast;
+  double st = (max - min) / (double)majorDensity;
+
+  labelMinor = false;
+
+  if (!isX && isLog == _isLogLast && _stLast != 0.0 &&
+        st/_stLast < TICK_HYSTERESIS_FACTOR &&
+        st/_stLast > 1.0/TICK_HYSTERESIS_FACTOR) {
+    st = _stLast;
     tick = _tickYLast;
-    auto_tick = _autoTickYLast;
-  } else if (is_log) {
-    if (max - min <= (double)majorDensity*1.5) {
+    autoTick = _autoTickYLast;
+    labelMinor = _labelMinorLast;
+    retained = true;
+  } else if (isLog) {
+    if (max - min <= 1.0) {
+      // show in logarithmic mode with major and minor ticks nicely labelled
+      if (logBase == 2.0) {
+        autoTick = 10;
+      } else if (logBase == 10.0) {
+        autoTick = 9;
+      } else {
+        autoTick = 5;
+      }
+      tick = 1.0;
+      labelMinor = true;
+    } else if (max - min <= (double)majorDensity*2.0) {
       // show in logarithmic mode with major ticks nicely labelled and the
       // specified number of minor ticks between each major label
       if (logBase == 2.0) {
-        auto_tick = 10;
+        autoTick = 10;
       } else if (logBase == 10.0) {
-        auto_tick = 9;
+        autoTick = 9;
       } else {
-        auto_tick = 5;
+        autoTick = 5;
       }
       tick = 1.0;
     } else {
       // show in logarithmic mode with major ticks nicely labelled and no minor ticks
-      auto_tick = 0;
+      autoTick = 0;
       tick = floor((max - min) / (double)majorDensity);
       if (tick == 1.0) {
         if (logBase == 2.0) {
-          auto_tick = 0; // used to be 10... why?  what is 1/11 of a log interval?
+          autoTick = 0; // used to be 10... why?  what is 1/11 of a log interval?
         } else if (logBase == 10.0) {
-          auto_tick = 9;
+          autoTick = 9;
         } else {
-          auto_tick = 5;
+          autoTick = 5;
         }
       }
     }
@@ -3158,41 +3231,41 @@ void Kst2DPlot::setTicks(double& tick, double& org, double max, double min, bool
     int *autominor = b10_autominor;
 
     // determine tick interval
-    Exp = 0.0;
+    expValue = 0.0;
     if (base == 60) {
-      if (b60_ticks[0]*0.7 < St && b60_ticks[n_b60_ticks-1] > St*0.7) {
-        Exp = 1.0;
+      if (b60_ticks[0]*0.7 < st && b60_ticks[n_b60_ticks-1] > st*0.7) {
+        expValue = 1.0;
         ticks = b60_ticks;
         autominor = b60_autominor;
         nt = n_b60_ticks;
       }
     } else if (base == 24) {
-      if (b24_ticks[0]*0.7 < St && b24_ticks[n_b24_ticks-1] > St*0.7) {
-        Exp = 1.0;
+      if (b24_ticks[0]*0.7 < st && b24_ticks[n_b24_ticks-1] > st*0.7) {
+        expValue = 1.0;
         ticks = b24_ticks;
         autominor = b24_autominor;
         nt = n_b24_ticks;
       }
     }
 
-    if (Exp < 0.5) {
-      Exp = pow(logBase, floor(log10(St)/log10(logBase)));
+    if (expValue < 0.5) {
+      expValue = pow(logBase, floor(log10(st)/log10(logBase)));
     }
 
-    tick = ticks[0] * Exp;
-    auto_tick = autominor[0];
+    tick = ticks[0] * expValue;
+    autoTick = autominor[0];
     for (int i = 1; i < nt; i++) {
-      if (fabs((ticks[i] * Exp) - St) < fabs(tick - St)) {
-        tick = ticks[i] * Exp;
-        auto_tick = autominor[i];
+      if (fabs((ticks[i] * expValue) - st) < fabs(tick - st)) {
+        tick = ticks[i] * expValue;
+        autoTick = autominor[i];
       }
     }
   }
 
   if (isX) {
-    _xMinorTicks = (_reqXMinorTicks < 0) ? auto_tick : _reqXMinorTicks;
+    _xMinorTicks = (_reqXMinorTicks < 0) ? autoTick : _reqXMinorTicks;
   } else {
-    _yMinorTicks = (_reqYMinorTicks < 0) ? auto_tick : _reqYMinorTicks;
+    _yMinorTicks = (_reqYMinorTicks < 0) ? autoTick : _reqYMinorTicks;
   }
 
   // determine location of the origin
@@ -3204,11 +3277,12 @@ void Kst2DPlot::setTicks(double& tick, double& org, double max, double min, bool
     org = 0.0;
   }
 
-  if (!isX) {
-    _stLast = St;
+  if (!isX && !retained) {
+    _stLast = st;
     _tickYLast = tick;
-    _autoTickYLast = auto_tick;
-    _isLogLast = is_log;
+    _autoTickYLast = autoTick;
+    _isLogLast = isLog;
+    _labelMinorLast = labelMinor;
   }
 }
 
@@ -4887,8 +4961,8 @@ void Kst2DPlot::zoomSelfYLocalMax(bool unused) {
   double YMinCurve, YMaxCurve;
 
   // find local minimum and maximum
-  YMin = 0.0;
-  YMax = 1.0;
+  _YMin = 0.0;
+  _YMax = 1.0;
   bool first = true;
 
   // first check all the curves
@@ -4896,12 +4970,12 @@ void Kst2DPlot::zoomSelfYLocalMax(bool unused) {
     KstBaseCurvePtr c = Curves[i];
     c->readLock();
     if (!c->ignoreAutoScale()) {
-      c->yRange(XMin, XMax, &YMinCurve, &YMaxCurve);
-      if (first || YMinCurve < YMin ) {
-        YMin = YMinCurve;
+      c->yRange(_XMin, _XMax, &YMinCurve, &YMaxCurve);
+      if (first || YMinCurve < _YMin) {
+        _YMin = YMinCurve;
       }
-      if (first || YMaxCurve > YMax ) {
-        YMax = YMaxCurve;
+      if (first || YMaxCurve > _YMax) {
+        _YMax = YMaxCurve;
       }
       first = false;
     }
@@ -4909,17 +4983,17 @@ void Kst2DPlot::zoomSelfYLocalMax(bool unused) {
   }
 
   // if curves/images had no variation in them
-  if (YMax <= YMin) {
-    YMin -= 0.1;
-    YMax  = YMin + 0.2;
+  if (_YMax <= _YMin) {
+    _YMin -= 0.1;
+    _YMax  = _YMin + 0.2;
   }
-  if (_yLog && YMin <= 0.0) {
-    YMin = pow(_yLogBase, -350.0);
+  if (_yLog && _YMin <= 0.0) {
+    _YMin = pow(_yLogBase, -350.0);
   }
 
-  QPair<double, double> borders = computeAutoBorder(_yLog, _yLogBase, YMin, YMax);
-  YMin = borders.first;
-  YMax = borders.second;
+  QPair<double, double> borders = computeAutoBorder(_yLog, _yLogBase, _YMin, _YMax);
+  _YMin = borders.first;
+  _YMax = borders.second;
 
   setYScaleMode(FIXED);
 }
@@ -5796,53 +5870,38 @@ void Kst2DPlot::plotAxes(QPainter& p, QRect& plotRegion,
   int yMajorLeftTickRight = _yTicksInPlot ? d2i(xleft_bdr_px + 2.0 * ytick_len_px - 1.0) : d2i(xleft_bdr_px);
   int yMajorRightTickLeft = _yTicksInPlot ? d2i(x_px - xright_bdr_px - 2.0 * ytick_len_px - 1.0) : d2i(x_px - xright_bdr_px);
   int yMajorRightTickRight = _yTicksOutPlot ? d2i(x_px - xright_bdr_px + 2.0 * ytick_len_px - 1.0) : d2i(x_px - xright_bdr_px);
-  int yMinorLeftTickLeft = _yTicksOutPlot ? d2i(xleft_bdr_px - ytick_len_px) :d2i(xleft_bdr_px);
-  int yMinorLeftTickRight = _yTicksInPlot ? d2i(xleft_bdr_px + ytick_len_px) :d2i(xleft_bdr_px);
+  int yMinorLeftTickLeft = _yTicksOutPlot ? d2i(xleft_bdr_px - ytick_len_px) : d2i(xleft_bdr_px);
+  int yMinorLeftTickRight = _yTicksInPlot ? d2i(xleft_bdr_px + ytick_len_px) : d2i(xleft_bdr_px);
   int yMinorRightTickLeft = _yTicksInPlot ? d2i(x_px - xright_bdr_px - ytick_len_px) : d2i(x_px - xright_bdr_px);
   int yMinorRightTickRight = _yTicksOutPlot ? d2i(x_px - xright_bdr_px + ytick_len_px) : d2i(x_px - xright_bdr_px);
-
 
   // draw x-ticks
   if (_xLog) {
     double XPos;
-
-    i = (int)floor((double)_xMajorTicks*(xleft_bdr_px - 1.0 - x_orig_px)/xtick_px);
-    for (;xtick_px * i + x_orig_px < x_px - xright_bdr_px + 1; i++) {
+    i = (int)floor( ( xleft_bdr_px - 1.0 - x_orig_px ) / xtick_px );
+    for (; x_orig_px + (double)i * xtick_px < (double)x_px - xright_bdr_px + 1.0; i++) {
       // draw major ticks
-      X1 = (x_orig_px + double(i) * xtick_px);
+      X1 = x_orig_px + (double)i * xtick_px;
       if (_xReversed) {
         XPos = x_px - xright_bdr_px - (X1 - xleft_bdr_px);
       } else {
         XPos = X1;
       }
       if (XPos > xleft_bdr_px && XPos < x_px - xright_bdr_px) {
-        p.drawLine(d2i(XPos),
-                   xMajorTopTickTop,
-                   d2i(XPos),
-                   xMajorTopTickBottom);
-
-        p.drawLine(d2i(XPos),
-                   xMajorBottomTickBottom,
-                   d2i(XPos),
-                   xMajorBottomTickTop);
+        p.drawLine(d2i(XPos), xMajorTopTickTop, d2i(XPos), xMajorTopTickBottom);
+        p.drawLine(d2i(XPos), xMajorBottomTickBottom, d2i(XPos), xMajorBottomTickTop);
       }
 
       // draw minor ticks
       for (j = 1; j < _xMinorTicks; j++) {
-        X2 = log10((double)j/((double)_xMinorTicks)*(pow(_xLogBase,tpx.tick)-1.0)+1.0)/log10(_xLogBase)/
-             tpx.tick * (double)xtick_px + X1;
+        X2 = X1 + log10((double)j/((double)_xMinorTicks)*(pow(_xLogBase,tpx.tick)-1.0)+1.0) /
+                  log10(_xLogBase)/tpx.tick * (double)xtick_px;
         if (_xReversed) {
           X2 = x_px - xright_bdr_px - (X2 - xleft_bdr_px);
         }
         if (X2 > xleft_bdr_px && X2 < x_px - xright_bdr_px) {
-          p.drawLine(d2i(X2),
-                     xMinorTopTickTop,
-                     d2i(X2),
-                     xMinorTopTickBottom);
-          p.drawLine(d2i(X2),
-                     xMinorBottomTickBottom,
-                     d2i(X2),
-                     xMinorBottomTickTop);
+          p.drawLine(d2i(X2), xMinorTopTickTop, d2i(X2), xMinorTopTickBottom);
+          p.drawLine(d2i(X2), xMinorBottomTickBottom, d2i(X2), xMinorBottomTickTop);
         }
       }
     }
@@ -5854,23 +5913,11 @@ void Kst2DPlot::plotAxes(QPainter& p, QRect& plotRegion,
         X1 = x_px - xright_bdr_px - (X1 - xleft_bdr_px);
       }
       if (i % _xMinorTicks == 0) {
-        p.drawLine(d2i(X1),
-                   xMajorTopTickTop,
-                   d2i(X1),
-                   xMajorTopTickBottom);
-        p.drawLine(d2i(X1),
-                   xMajorBottomTickBottom,
-                   d2i(X1),
-                   xMajorBottomTickTop);
+        p.drawLine(d2i(X1), xMajorTopTickTop, d2i(X1), xMajorTopTickBottom);
+        p.drawLine(d2i(X1), xMajorBottomTickBottom, d2i(X1), xMajorBottomTickTop);
       } else {
-        p.drawLine(d2i(X1),
-                   xMinorTopTickTop,
-                   d2i(X1),
-                   xMinorTopTickBottom);
-        p.drawLine(d2i(X1),
-                   xMinorBottomTickBottom,
-                   d2i(X1),
-                   xMinorBottomTickTop);
+        p.drawLine(d2i(X1), xMinorTopTickTop, d2i(X1), xMinorTopTickBottom);
+        p.drawLine(d2i(X1), xMinorBottomTickBottom, d2i(X1), xMinorBottomTickTop);
       }
     }
   }
@@ -5879,8 +5926,8 @@ void Kst2DPlot::plotAxes(QPainter& p, QRect& plotRegion,
   if (_yLog) {
     double YPos;
 
-    i = (int)floor( (double)_yMajorTicks * ( ytop_bdr_px - 1.0 - y_orig_px ) / ytick_px );
-    for (; ytick_px * i + y_orig_px < y_px - ybot_bdr_px + 1; i++) {
+    i = (int)floor( ( ytop_bdr_px - 1.0 - y_orig_px ) / ytick_px );
+    for (; y_orig_px + (double)i * ytick_px < (double)y_px - ybot_bdr_px + 1.0; i++) {
       // draw major ticks
       Y1 = y_orig_px + (double)i * ytick_px;
       if (_yReversed) {
@@ -5889,31 +5936,20 @@ void Kst2DPlot::plotAxes(QPainter& p, QRect& plotRegion,
         YPos = Y1;
       }
       if (YPos > ytop_bdr_px && YPos < y_px - ybot_bdr_px) {
-        p.drawLine(yMajorLeftTickLeft,
-                   d2i(YPos),
-                   yMajorLeftTickRight,
-                   d2i(YPos));
-        p.drawLine(yMajorRightTickRight,
-                   d2i(YPos),
-                   yMajorRightTickLeft,
-                   d2i(YPos));
+        p.drawLine(yMajorLeftTickLeft, d2i(YPos), yMajorLeftTickRight, d2i(YPos));
+        p.drawLine(yMajorRightTickRight, d2i(YPos), yMajorRightTickLeft, d2i(YPos));
       }
 
       // draw minor ticks
       for (j = 1; j < _yMinorTicks; j++) {
-        Y2 = (1.0 - log10((double)j/((double)_yMinorTicks)*(pow(_yLogBase,tpy.tick)-1.0)+1.0)/log10(_yLogBase)/tpy.tick) * (double)ytick_px + Y1;
+        Y2 = Y1 + (1.0 - log10((double)j/((double)_yMinorTicks)*(pow(_yLogBase,tpy.tick)-1.0)+1.0) /
+                  log10(_yLogBase)/tpy.tick) * (double)ytick_px;
         if (_yReversed) {
           Y2 = y_px - ybot_bdr_px - (Y2 - ytop_bdr_px);
         }
         if (Y2 > ytop_bdr_px && Y2 < y_px - ybot_bdr_px) {
-          p.drawLine(yMinorLeftTickLeft,
-                    d2i(Y2),
-                    yMinorLeftTickRight,
-                    d2i(Y2));
-          p.drawLine(yMinorRightTickRight,
-                    d2i(Y2),
-                    yMinorRightTickLeft,
-                    d2i(Y2));
+          p.drawLine(yMinorLeftTickLeft, d2i(Y2), yMinorLeftTickRight, d2i(Y2));
+          p.drawLine(yMinorRightTickRight, d2i(Y2), yMinorRightTickLeft, d2i(Y2));
         }
       }
     }
@@ -5942,23 +5978,28 @@ void Kst2DPlot::plotAxes(QPainter& p, QRect& plotRegion,
     }
 
     if (tpx.delta && !tpx.labels.isEmpty()) {
-      _fullTickLabel->setRotation(0);
-      _fullTickLabel->setText(tpx.labels[0]);
+      _fullTickLabel->setRotation(0.0);
+      _fullTickLabel->setText(tpx.labels[0].label);
       p.save();
-      p.translate(d2i(xleft_bdr_px), yTickPos+_xTickLabel->size().height());
+      p.translate(d2i(xleft_bdr_px), yTickPos + _xTickLabel->size().height());
       _fullTickLabel->paint(p);
       p.restore();
       tpx.labels.pop_front();
     }
 
-    for (i = tpx.iLo; i < tpx.iHi; i++) {
-      double xTickPos = x_orig_px + (double)i * xtick_px;
+    for (QValueList<TickLabelDescription>::ConstIterator iter = tpx.labels.begin(); iter != tpx.labels.end(); ++iter) {
+      _xTickLabel->setText((*iter).label);
+      double xTickPos = (*iter).position;
+      if(_xLog) {
+        xTickPos = xleft_bdr_px + ( ( xTickPos - logXLo(_XMin, _xLogBase) ) * ( x_px - xright_bdr_px - xleft_bdr_px ) / ( logXHi(_XMax, _xLogBase) - logXLo(_XMin, _xLogBase) ) );
+      } else {
+        xTickPos = xleft_bdr_px + ( ( xTickPos - _XMin ) * ( x_px - xright_bdr_px - xleft_bdr_px ) / ( _XMax - _XMin ) );
+      }
       if (_xReversed) {
         xTickPos = x_px - xright_bdr_px - (xTickPos - xleft_bdr_px);
       }
 
       p.save();
-      _xTickLabel->setText(tpx.labels[i - tpx.iLo]);
       if (_xTickLabel->rotation() == 0.0) {
         if (!((_suppressLeft  && d2i(xTickPos) - _xTickLabel->size().width() / 2 < xleft_bdr_px ) ||
               (_suppressRight && d2i(xTickPos) - _xTickLabel->size().width() / 2 > x_px - xright_bdr_px ) ) ) {
@@ -5979,15 +6020,24 @@ void Kst2DPlot::plotAxes(QPainter& p, QRect& plotRegion,
   // if top axis is transformed, plot top axis numbers as well
   if (_xTransformed && !_suppressTop) {
     int yTopTickPos = d2i(ytop_bdr_px);
+
     if (xTicksOutPlot()) {
       yTopTickPos -= d2i(2.0 * xtick_len_px);
     }
-    for (i = tpx.iLo; i < tpx.iHi; i++) {
-      double xTickPos = x_orig_px + (double)i * xtick_px;
+
+    for (QValueList<TickLabelDescription>::ConstIterator iter = tpx.labelsOpposite.begin(); iter != tpx.labelsOpposite.end(); ++iter) {
+      double xTickPos = (*iter).position;
+
+      if(_xLog) {
+        xTickPos = xleft_bdr_px + ( ( xTickPos - logXLo(_XMin, _xLogBase) ) * ( x_px - xright_bdr_px - xleft_bdr_px ) / ( logXHi(_XMax, _xLogBase) - logXLo(_XMin, _xLogBase) ) );
+      } else {
+        xTickPos = xleft_bdr_px + ( ( xTickPos - _XMin ) * ( x_px - xright_bdr_px - xleft_bdr_px ) / ( _XMax - _XMin ) );
+      }
       if (_xReversed) {
         xTickPos = x_px - xright_bdr_px - (xTickPos - xleft_bdr_px);
       }
-      _xTickLabel->setText(tpx.oppLabels[i - tpx.iLo]);
+
+      _xTickLabel->setText((*iter).label);
       if (!((_suppressLeft  && d2i(xTickPos) - _xTickLabel->size().width() / 2 < xleft_bdr_px ) ||
             (_suppressRight && d2i(xTickPos) - _xTickLabel->size().width() / 2 > x_px - xright_bdr_px ) ) ) {
         p.save();
@@ -6001,8 +6051,8 @@ void Kst2DPlot::plotAxes(QPainter& p, QRect& plotRegion,
   // y axis numbers
   if (!_suppressLeft) {
     if (tpy.delta && !tpy.labels.isEmpty()) {
-      _fullTickLabel->setRotation(270);
-      _fullTickLabel->setText(tpy.labels[0]);
+      _fullTickLabel->setRotation(270.0);
+      _fullTickLabel->setText(tpy.labels[0].label);
       p.save();
       if (offsetY && !_yLabel->text().isEmpty()) {
         p.translate(_yLabel->lineSpacing(), d2i(y_px - ybot_bdr_px) - _fullTickLabel->size().height());
@@ -6019,12 +6069,17 @@ void Kst2DPlot::plotAxes(QPainter& p, QRect& plotRegion,
       xTickPos -= d2i(2.0 * ytick_len_px);
     }
 
-    for (i = tpy.iLo; i < tpy.iHi; i++) {
-      double yTickPos = y_orig_px - (double)i * ytick_px;
+    for (QValueList<TickLabelDescription>::ConstIterator iter = tpy.labels.begin(); iter != tpy.labels.end(); ++iter) {
+      _yTickLabel->setText((*iter).label);
+      double yTickPos = (*iter).position;
+      if(_yLog) {
+        yTickPos = y_px - ybot_bdr_px - ( ( yTickPos - logYLo(_YMin, _yLogBase) ) * ( y_px - ybot_bdr_px - ytop_bdr_px ) / ( logYLo(_YMax, _yLogBase) - logYLo(_YMin, _yLogBase) ) );
+      } else {
+        yTickPos = y_px - ybot_bdr_px - ( ( yTickPos - _YMin ) * ( y_px - ybot_bdr_px - ytop_bdr_px ) / ( _YMax - _YMin ) );
+      }
       if (_yReversed) {
         yTickPos = y_px - ybot_bdr_px - (yTickPos - ytop_bdr_px);
       }
-      _yTickLabel->setText(tpy.labels[i - tpy.iLo]);
 
       p.save();
       if (_yTickLabel->rotation() == 0.0 || fabs(_yTickLabel->rotation()) > 89.0) {
@@ -6034,7 +6089,7 @@ void Kst2DPlot::plotAxes(QPainter& p, QRect& plotRegion,
           _yTickLabel->paint(p);
         }
       } else if (_yTickLabel->rotation() < 0.0) {
-        p.translate(d2i(xTickPos) - _yTickLabel->size().width(), d2i(yTickPos) - _yTickLabel->lineSpacing()/2);
+        p.translate(d2i(xTickPos) - _yTickLabel->size().width(), d2i(yTickPos) - _yTickLabel->lineSpacing() / 2);
         _yTickLabel->paint(p);
       } else if (_yTickLabel->rotation() > 0.0) {
         p.translate(d2i(xTickPos) - _yTickLabel->size().width(), d2i(yTickPos) - _yTickLabel->size().height() + _yTickLabel->lineSpacing()/2);
@@ -6051,12 +6106,19 @@ void Kst2DPlot::plotAxes(QPainter& p, QRect& plotRegion,
       xTopTickPos += d2i(2.0 * ytick_len_px);
     }
 
-    for (i = tpy.iLo; i < tpy.iHi; i++) {
-      double yTickPos = y_orig_px - (double)i * ytick_px;
+    for (QValueList<TickLabelDescription>::ConstIterator iter = tpy.labelsOpposite.begin(); iter != tpy.labelsOpposite.end(); ++iter) {
+      double yTickPos = (*iter).position;
+
+      if(_yLog) {
+        yTickPos = y_px - ybot_bdr_px - ( ( yTickPos - logYLo(_YMin, _yLogBase) ) * ( y_px - ybot_bdr_px - ytop_bdr_px ) / ( logYLo(_YMax, _yLogBase) - logYLo(_YMin, _yLogBase) ) );
+      } else {
+        yTickPos = y_px - ybot_bdr_px - ( ( yTickPos - _YMin ) * ( y_px - ybot_bdr_px - ytop_bdr_px ) / ( _YMax - _YMin ) );
+      }
       if (_yReversed) {
         yTickPos = y_px - ybot_bdr_px - (yTickPos - ytop_bdr_px);
       }
-      _yTickLabel->setText(tpy.oppLabels[i - tpy.iLo]);
+
+      _yTickLabel->setText((*iter).label);
       if (!((_suppressBottom && d2i(yTickPos) + _yTickLabel->size().height() / 2 > y_px - ybot_bdr_px ) ||
             (_suppressTop    && d2i(yTickPos) - _yTickLabel->size().height() / 2 < ytop_bdr_px ) ) ) {
         p.save();
@@ -6511,7 +6573,7 @@ void Kst2DPlot::optimizeXExps() {
       double tmp = max;
       max = min;
       min = tmp;
-    } else if (XMin == XMax) {
+    } else if (_XMin == _XMax) {
       if (min == 0.0) {
         min = -0.5;
         max =  0.5;
@@ -6534,7 +6596,7 @@ void Kst2DPlot::optimizeYExps() {
       double tmp = max;
       max = min;
       min = tmp;
-    } else if (XMin == XMax) {
+    } else if (_XMin == _XMax) {
       if (min == 0.0) {
         min = -0.5;
         max =  0.5;
@@ -7172,10 +7234,10 @@ void Kst2DPlot::renameScalars() {
 }
 
 void Kst2DPlot::updateScalars() {
-  _scalars["xmax"]->setValue(XMax);
-  _scalars["xmin"]->setValue(XMin);
-  _scalars["ymax"]->setValue(YMax);
-  _scalars["ymin"]->setValue(YMin);
+  _scalars["xmax"]->setValue(_XMax);
+  _scalars["xmin"]->setValue(_XMin);
+  _scalars["ymax"]->setValue(_YMax);
+  _scalars["ymin"]->setValue(_YMin);
 }
 
 void Kst2DPlot::setTagName(const KstObjectTag& newTag) {
