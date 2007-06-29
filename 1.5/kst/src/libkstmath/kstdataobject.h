@@ -76,7 +76,7 @@ class KST_EXPORT KstDataObject : public KstObject {
     const KstStringMap& outputStrings() const { return _outputStrings; }
     KstStringMap& inputStrings() { return _inputStrings;  }
     KstStringMap& outputStrings() { return _outputStrings; }
-    
+
     const KstMatrixMap& inputMatrices() const { return _inputMatrices; }
     const KstMatrixMap& outputMatrices() const { return _outputMatrices; }
     KstMatrixMap& inputMatrices() { return _inputMatrices; }
@@ -96,22 +96,22 @@ class KST_EXPORT KstDataObject : public KstObject {
     virtual bool isValid() const;
 
     virtual const KstCurveHintList* curveHints() const;
-    
+
     virtual bool deleteDependents();
-    
+
     bool duplicateDependents(KstDataObjectDataObjectMap& duplicatedMap);
-    
+
     virtual KstDataObjectPtr makeDuplicate(KstDataObjectDataObjectMap& duplicatedMap) = 0;
-    
+
     virtual void replaceDependency(KstDataObjectPtr oldObject, KstDataObjectPtr newObject);
     virtual void replaceDependency(KstVectorPtr oldVector, KstVectorPtr newVector);
     virtual void replaceDependency(KstMatrixPtr oldMatrix, KstMatrixPtr newMatrix);
 
     virtual bool uses(KstObjectPtr p) const;
-    virtual bool recursion(KstDataObjectDataObjectMap& objectsToCheck);
+    virtual bool recursion(KstDataObjectDataObjectMap& objectsInUse);
     virtual bool recursion();
 
-    //These are generally only valid for plugins...
+    // these are generally only valid for plugins...
     const QString& name() const { return _name; }
     const QString& author() const { return _author; }
     const QString& description() const { return _description; }
@@ -125,7 +125,6 @@ class KST_EXPORT KstDataObject : public KstObject {
     virtual void showEditDialog() = 0;
 
   protected:
-    
     double *vectorRealloced(KstVectorPtr v, double *memptr, int newSize) const;
 
     //The plugin infrastructure will read the desktop file and set these
@@ -170,6 +169,4 @@ class KST_EXPORT KstDataObject : public KstObject {
     static KstDataObjectPtr createPlugin(KService::Ptr);
 };
 
-
 #endif
-// vim: ts=2 sw=2 et

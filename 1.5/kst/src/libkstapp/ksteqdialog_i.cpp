@@ -316,9 +316,9 @@ bool KstEqDialogI::editSingleObject(KstEquationPtr eqPtr) {
 
     eqPtr->setRecursed(false);
     if (eqPtr->recursion()) {
-      KMessageBox::error(this, i18n("There is a recursion resulting from the equation you entered."));
       eqPtr->setRecursed(true);
       eqPtr->unlock();
+      KMessageBox::error(this, i18n("There is a recursion resulting from the equation you entered."));
       return false;
     }
   }

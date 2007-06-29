@@ -84,7 +84,7 @@ public:
   double vMax() const;
   double vMin() const;
   int vNumSamples() const;
-  
+
   virtual KstDataObjectPtr makeDuplicate(KstDataObjectDataObjectMap& duplicatedMap);
 
 private:
@@ -99,7 +99,7 @@ private:
   double _Normalization;
   double _W;
   bool _realTimeAutoBin;
-  
+
   void commonConstructor(const QString &in_tag, KstVectorPtr in_V,
                          double xmin_in, double xmax_in,
                          int in_n_bins,
@@ -111,4 +111,4 @@ typedef KstSharedPtr<KstHistogram> KstHistogramPtr;
 typedef KstObjectList<KstHistogramPtr> KstHistogramList;
 
 #endif
-// vim: ts=2 sw=2 et
+

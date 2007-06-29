@@ -676,8 +676,8 @@ bool KstDataObject::uses(KstObjectPtr p) const {
     for (KstScalarMap::ConstIterator j = _inputScalars.begin(); j != _inputScalars.end(); ++j) {
       for (; scalarDictIter.current(); ++scalarDictIter) {
         if (scalarDictIter.current() == j.data()) {
-          return true;  
-        }  
+          return true;
+        }
       }
     }
   } else if (KstMatrixPtr matrix = kst_cast<KstMatrix>(p)) {
@@ -690,8 +690,8 @@ bool KstDataObject::uses(KstObjectPtr p) const {
     for (KstScalarMap::ConstIterator j = _inputScalars.begin(); j != _inputScalars.end(); ++j) {
       for (; scalarDictIter.current(); ++scalarDictIter) {
         if (scalarDictIter.current() == j.data()) {
-          return true;  
-        }  
+          return true;
+        }
       }
     }
   } else if (KstDataObjectPtr obj = kst_cast<KstDataObject>(p) ) {
@@ -708,11 +708,11 @@ bool KstDataObject::uses(KstObjectPtr p) const {
         for (; scalarDictIter.current(); ++scalarDictIter) {
           if (scalarDictIter.current() == k.data()) {
             return true;
-          }  
+          }
         }
       }
     }
-  
+
     for (KstMatrixMap::Iterator j = obj->outputMatrices().begin(); j != obj->outputMatrices().end(); ++j) {
       for (KstMatrixMap::ConstIterator k = _inputMatrices.begin(); k != _inputMatrices.end(); ++k) {
         if (j.data() == k.data()) {
@@ -735,7 +735,7 @@ bool KstDataObject::uses(KstObjectPtr p) const {
         if (j.data() == k.data()) {
           return true;
         }
-      } 
+      }
     }
 
     for (KstStringMap::Iterator j = obj->outputStrings().begin(); j != obj->outputStrings().end(); ++j) {
@@ -746,18 +746,24 @@ bool KstDataObject::uses(KstObjectPtr p) const {
       }
     }
   }
+
   return false;
 }
 
 
-bool KstDataObject::recursion(KstDataObjectDataObjectMap& objectsToCheck) {
-  KstDataObjectDataObjectMap objectsToFollow;
+bool KstDataObject::recursion(KstDataObjectDataObjectMap& objectsInUse) {
   bool recurses = false;
 
-  for (KstDataObjectList::ConstIterator it = KST::dataObjectList.begin(); it != KST::dataObjectList.end(); ++it) {
+  objectsInUse.insert(this, this);
+
+  for (KstDataObjectList::Iterator it = KST::dataObjectList.begin(); it != KST::dataObjectList.end(); ++it) {
     if ((*it)->uses(this)) {
-      if (objectsToCheck.find(*it) == objectsToCheck.end()) {
-        objectsToFollow.insert(*it, *it);
+      if (objectsInUse.find(*it) == objectsInUse.end()) {
+        if ((*it)->recursion(objectsInUse)) {
+          recurses = true;
+
+          break;
+        }
       } else {
         recurses = true;
 
@@ -766,33 +772,17 @@ bool KstDataObject::recursion(KstDataObjectDataObjectMap& objectsToCheck) {
     }
   }
 
-  if (!recurses) {
-    for (KstDataObjectDataObjectMap::Iterator j = objectsToFollow.begin(); j != objectsToFollow.end(); ++j) {
-      if ((*j)->recursion(objectsToCheck)) {
-        recurses = true;
-
-        break;
-      }
-      objectsToCheck.insert(*j, *j);
-    }
-  }
+  objectsInUse.remove(this);
 
   return recurses;
 }
 
 
 bool KstDataObject::recursion() {
+  KstDataObjectDataObjectMap objectsInUse;
   bool recurses = false;
 
-  if (uses(this)) {
-    recurses = true;
-  } else {
-    KstDataObjectDataObjectMap objectsToCheck;
-
-    objectsToCheck.insert(this, this);
-
-    recurses = recursion(objectsToCheck);
-  }
+  recurses = recursion(objectsInUse);
 
   return recurses;
 }
@@ -809,4 +799,4 @@ bool KstDataObject::recursed() const {
 
 
 #include "kstdataobject.moc"
-// vim: ts=2 sw=2 et
+

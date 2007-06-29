@@ -329,9 +329,9 @@ bool KstPsdDialogI::editSingleObject(KstPSDPtr psPtr) {
 
   psPtr->setRecursed(false);
   if (psPtr->recursion()) {
-    KMessageBox::error(this, i18n("There is a recursion resulting from the spectrum  you entered."));
     psPtr->setRecursed(true);
     psPtr->unlock();
+    KMessageBox::error(this, i18n("There is a recursion resulting from the spectrum  you entered."));
     return false;
   }
 
