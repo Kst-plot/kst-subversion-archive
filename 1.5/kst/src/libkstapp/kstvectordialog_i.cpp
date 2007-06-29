@@ -26,6 +26,7 @@
 #include <qvbox.h>
 
 #include <kdialogbase.h>
+#include <kfiledialog.h>
 #include <klineedit.h>
 #include <klocale.h>
 #include <kmessagebox.h>
@@ -68,6 +69,7 @@ KstVectorDialogI::KstVectorDialogI(QWidget* parent, const char* name,
   _w->FileName->completionObject()->setDir(QDir::currentDirPath());
 
   _w->FileName->setMode(KFile::File | KFile::Directory | KFile::ExistingOnly);
+  connect(_w->FileName, SIGNAL(openFileDialog(KURLRequester *)), this, SLOT(selectFolder()));
   connect(_w->FileName, SIGNAL(textChanged(const QString&)), this, SLOT(updateCompletion()));
   connect(_w->_configure, SIGNAL(clicked()), this, SLOT(configureSource()));
   connect(_w->_readFromSource, SIGNAL(clicked()), this, SLOT(enableSource()));
@@ -95,6 +97,30 @@ KstVectorDialogI::KstVectorDialogI(QWidget* parent, const char* name,
 KstVectorDialogI::~KstVectorDialogI() {
   delete _configWidget;
   _configWidget = 0L;
+}
+
+
+void KstVectorDialogI::selectingFolder()
+{
+  QString strFolder = _w->FileName->url();
+  KFileDialog *fileDlg = _w->FileName->fileDialog();
+  QFileInfo fileInfo(strFolder);
+
+  if (fileDlg) {
+    if (fileInfo.isDir()) {
+      QDir dir(strFolder);
+
+      if (dir.cdUp()) {
+        fileDlg->setURL(KURL(dir.absPath()));
+      }
+    }
+  }
+}
+
+
+void KstVectorDialogI::selectFolder()
+{
+  QTimer::singleShot(0, this, SLOT(selectingFolder()));
 }
 
 

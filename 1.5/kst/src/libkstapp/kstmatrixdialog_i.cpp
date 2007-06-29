@@ -27,6 +27,7 @@
 
 // include files for KDE
 #include <kcombobox.h>
+#include <kfiledialog.h>
 #include <kmessagebox.h>
 #include <kurlcompletion.h>
 #include <kurlrequester.h>
@@ -66,6 +67,7 @@ KstMatrixDialogI::KstMatrixDialogI(QWidget* parent, const char* name, bool modal
   connect(_w->_doSkip, SIGNAL(clicked()), this, SLOT(updateEnables()));
 
   _w->_fileName->setMode(KFile::File | KFile::Directory | KFile::ExistingOnly);
+  connect(_w->_fileName, SIGNAL(openFileDialog(KURLRequester *)), this, SLOT(selectFolder()));
   connect(_w->_fileName, SIGNAL(textChanged(const QString&)), this, SLOT(updateCompletion()));
   connect(_w->_configure, SIGNAL(clicked()), this, SLOT(configureSource()));
   connect(_w->_readFromSource, SIGNAL(clicked()), this, SLOT(enableSource()));
@@ -95,6 +97,30 @@ KstMatrixDialogI::KstMatrixDialogI(QWidget* parent, const char* name, bool modal
 
 
 KstMatrixDialogI::~KstMatrixDialogI() {
+}
+
+
+void KstMatrixDialogI::selectingFolder()
+{
+  QString strFolder = _w->_fileName->url();
+  KFileDialog *fileDlg = _w->_fileName->fileDialog();
+  QFileInfo fileInfo(strFolder);
+
+  if (fileDlg) {
+    if (fileInfo.isDir()) {
+      QDir dir(strFolder);
+
+      if (dir.cdUp()) {
+        fileDlg->setURL(KURL(dir.absPath()));
+      }
+    }
+  }
+}
+
+
+void KstMatrixDialogI::selectFolder()
+{
+  QTimer::singleShot(0, this, SLOT(selectingFolder()));
 }
 
 

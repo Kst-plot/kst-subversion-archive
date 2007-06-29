@@ -26,8 +26,10 @@
 #include <qregexp.h>
 #include <qspinbox.h>
 #include <qstring.h>
+#include <qtimer.h>
 #include <qtooltip.h>
 
+#include <kfiledialog.h>
 #include <kiconloader.h>
 #include <kmessagebox.h>
 #include <knuminput.h>
@@ -81,6 +83,7 @@ DataWizard(parent, name, modal, fl )
   _vectors->setSorting(1);
   _vectorsToPlot->setSorting(-1);
 
+  connect(_url, SIGNAL(openFileDialog(KURLRequester *)), this, SLOT(selectFolder()));
   connect(_cycleThrough, SIGNAL(toggled(bool)), _plotNumber, SLOT(setEnabled(bool)));
   connect(_existingPlot, SIGNAL(toggled(bool)), _existingPlotName, SLOT(setEnabled(bool)));
   connect(_existingWindow, SIGNAL(toggled(bool)), _windowName, SLOT(setEnabled(bool)));
@@ -165,6 +168,30 @@ DataWizard(parent, name, modal, fl )
 KstDataWizard::~KstDataWizard()
 {
   delete _configWidget;
+}
+
+
+void KstDataWizard::selectingFolder()
+{
+  QString strFolder = _url->url();
+  KFileDialog *fileDlg = _url->fileDialog();
+  QFileInfo fileInfo(strFolder);
+
+  if (fileDlg) {
+    if (fileInfo.isDir()) {
+      QDir dir(strFolder);
+
+      if (dir.cdUp()) {
+        fileDlg->setURL(KURL(dir.absPath()));
+      }
+    }
+  }
+}
+
+
+void KstDataWizard::selectFolder()
+{
+  QTimer::singleShot(0, this, SLOT(selectingFolder()));
 }
 
 

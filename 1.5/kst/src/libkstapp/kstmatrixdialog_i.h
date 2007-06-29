@@ -36,8 +36,10 @@ class KST_EXPORT KstMatrixDialogI : public KstDataDialog {
   protected:
     QString editTitle() { return tr("Edit Matrix"); }
     QString newTitle() { return tr("New Matrix"); }
- 
+
   public slots:
+    void selectFolder();
+    void selectingFolder();
     void update();
     void updateWindow();
     void updateCompletion();

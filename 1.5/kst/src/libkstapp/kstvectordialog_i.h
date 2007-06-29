@@ -34,8 +34,10 @@ class KST_EXPORT KstVectorDialogI : public KstDataDialog {
   protected:
     QString editTitle() { return tr("Edit Vector"); }
     QString newTitle() { return tr("New Vector"); }
- 
+
   public slots:
+    void selectFolder();
+    void selectingFolder();
     bool newObject();
     bool editObject();
     void populateEditMultiple();

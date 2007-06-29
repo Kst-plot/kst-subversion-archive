@@ -40,6 +40,8 @@ class KstDataWizard: public DataWizard {
     void loadSettings();
 
   public slots:
+    void selectFolder();
+    void selectingFolder();
     void setInput( const QString &input );
     void plotColsChanged();
     void xChanged();
