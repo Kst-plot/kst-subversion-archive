@@ -219,7 +219,7 @@ KstObject::UpdateType KstEquation::update(int update_counter) {
 
   KstObject::UpdateType rc = NO_CHANGE; // if force, rc = UPDATE anyway.
   if (force || xUpdated || usedUpdated) {
-    _isValid = FillY(force);
+    _isValid = FillY(force, usedUpdated);
     rc = UPDATE;
   }
   v = *_yOutVector;
@@ -381,9 +381,10 @@ void KstEquation::setTagName(const QString &in_tag) {
 /*                      Fill Y: Evaluates the equation                  */
 /*                                                                      */
 /************************************************************************/
-bool KstEquation::FillY(bool force) {
-  int v_shift=0, v_new;
-  int i0=0;
+bool KstEquation::FillY(bool force, bool usedUpdated) {
+  int v_shift = 0;
+  int v_new;
+  int i0 = 0;
   int ns;
 
   writeLockInputsAndOutputs();
@@ -409,7 +410,7 @@ bool KstEquation::FillY(bool force) {
     if (!xv->resize(_ns)) {
       // FIXME: handle error?
       unlockInputsAndOutputs();
-      return false;    
+      return false;
     }
     if (!yv->resize(_ns)) {
       // FIXME: handle error?
@@ -418,6 +419,9 @@ bool KstEquation::FillY(bool force) {
     }
     yv->zero();
     i0 = 0; // other vectors may have diffent lengths, so start over
+    v_shift = _ns;
+  } else if (usedUpdated) {
+    i0 = 0;
     v_shift = _ns;
   } else {
     // calculate shift and new samples

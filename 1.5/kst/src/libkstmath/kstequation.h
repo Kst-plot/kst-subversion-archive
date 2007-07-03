@@ -67,9 +67,9 @@ class KST_EXPORT KstEquation : public KstDataObject {
     virtual QString yVTag() const { return (*_yOutVector)->tagName(); }
 
     const KstCurveHintList *curveHints() const;
-    
+
     virtual KstDataObjectPtr makeDuplicate(KstDataObjectDataObjectMap& duplicatedMap);
-    
+
     virtual void replaceDependency(KstDataObjectPtr oldObject, KstDataObjectPtr newObject);
 
     virtual void replaceDependency(KstVectorPtr oldVector, KstVectorPtr newVector);
@@ -81,25 +81,22 @@ class KST_EXPORT KstEquation : public KstDataObject {
     void reParse();
 
   private:
-    QString _equation;
-
+    KstVectorMap::Iterator _xInVector, _xOutVector, _yOutVector;
+    Equation::Node *_pe;
     KstVectorMap VectorsUsed;
     KstScalarMap ScalarsUsed;
-    void setupConnections();
-
-    void commonConstructor(const QString& in_tag, const QString& equation);
-
-    bool FillY(bool force = false);
+    QString _equation;
     bool _isValid : 1;
     bool _doInterp : 1;
-
     int _numNew, _numShifted, _interp, _ns;
+
+    void setupConnections();
+    void commonConstructor(const QString& in_tag, const QString& equation);
+    bool FillY(bool force, bool usedUpdated);
 
     static const QString XINVECTOR;
     static const QString XOUTVECTOR;
     static const QString YOUTVECTOR;
-    KstVectorMap::Iterator _xInVector, _xOutVector, _yOutVector;
-    Equation::Node *_pe;
 };
 
 typedef KstSharedPtr<KstEquation> KstEquationPtr;
