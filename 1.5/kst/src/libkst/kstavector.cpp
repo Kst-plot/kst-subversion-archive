@@ -14,9 +14,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-// use KCodecs::base64Encode() in kmdcodecs.h
-// Create QDataStream into a QByteArray
-// qCompress the bytearray
 
 #include "kstavector.h"
 #include "kstdebug.h"
@@ -66,4 +63,3 @@ void KstAVector::setSaveData(bool save) {
   Q_UNUSED(save)
 }
 
-// vim: ts=2 sw=2 et

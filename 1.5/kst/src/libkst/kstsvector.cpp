@@ -67,9 +67,11 @@ void KstSVector::changeRange(double x0, double x1, int n) {
   if (n < 2) {
     n = 2;
   }
+
   if (n != length()) {
     resize(n, false);
   }
+
   if (x0 > x1) {
     double tx;
     tx = x0;
@@ -85,9 +87,9 @@ void KstSVector::changeRange(double x0, double x1, int n) {
 
   _scalars["min"]->setValue(x0);
   _scalars["max"]->setValue(x1);
-  
+
   internalUpdate(KstObject::UPDATE);
-  
+
   setDirty(false);
 }
 
@@ -96,6 +98,7 @@ KstObject::UpdateType KstSVector::update(int update_counter) {
   Q_ASSERT(myLockStatus() == KstRWLock::WRITELOCKED);
 
   bool force = dirty();
+
   KstObject::UpdateType baseRC = KstVector::update(update_counter);
   if (force) {
     baseRC = UPDATE;
@@ -108,6 +111,3 @@ KstObject::UpdateType KstSVector::update(int update_counter) {
 void KstSVector::setSaveData(bool save) {
   Q_UNUSED(save)
 }
-
-
-// vim: ts=2 sw=2 et

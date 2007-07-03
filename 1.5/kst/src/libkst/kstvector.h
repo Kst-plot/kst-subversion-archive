@@ -138,7 +138,7 @@ class KST_EXPORT KstVector : public KstPrimitive {
 
     /** access functions for _isScalarList */
     bool isScalarList() const { return _isScalarList; }
-    
+
     const QDict<KstScalar>& scalars() const;
 
     void setLabel(const QString& label_in);
@@ -200,7 +200,7 @@ class KST_EXPORT KstVector : public KstPrimitive {
     void RenameScalars();
 
     QString _label;
-    
+
     friend class KstDataObject;
     virtual double* realloced(double *memptr, int newSize);
     KstObject::UpdateType internalUpdate(KstObject::UpdateType providerRC);

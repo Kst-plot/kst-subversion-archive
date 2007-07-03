@@ -114,13 +114,14 @@ public:
 
   /** Read from end */
   void setFromEnd();
-  
+
   // make a copy
   KstSharedPtr<KstRVector> makeDuplicate() const;
 
 private:
   KstObject::UpdateType doUpdate(bool force = false);
-
+  void reset(); // must be called with a lock
+  void checkIntegrity(); // must be called with a lock
   bool _dirty; // different from the KstObject dirty flag
 
   /** Common contructor for an RVector */
@@ -130,25 +131,18 @@ private:
       int skip, bool in_doSkip,
       bool in_doAve);
 
-  /** Samples Per Frame */
-  int SPF;
-
-  /** current number of frames */
-  int NF;
-
-  /** current starting frame */
-  int F0;
-
-  /** frames to skip per read */
-  bool DoSkip;
-  bool DoAve;
-  int Skip;
+  int _samplesPerFrame;
+  int _numberOfFrames;
+  int _startingFrame;
+  bool _doSkip;
+  bool _doAve;
+  int _skip;
 
   /** max number of frames */
-  int ReqNF;
+  int _reqNumberFrames;
 
   /** Requested Starting Frame */
-  int ReqF0;
+  int _reqStartingFrame;
 
   /** file to read for rvectors */
   KstDataSourcePtr _file;
@@ -159,13 +153,8 @@ private:
   /** Number of Samples allocated to the vector */
   int _numSamples;
 
-  int N_AveReadBuf;
-  double *AveReadBuf;
-
-  void reset(); // must be called with a lock
-
-  void checkIntegrity(); // must be called with a lock
-
+  int _nAveReadBuf;
+  double *_aveReadBuf;
   bool _dontUseSkipAccel;
 };
 
