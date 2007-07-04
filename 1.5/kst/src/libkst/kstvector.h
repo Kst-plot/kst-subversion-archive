@@ -74,11 +74,17 @@ class KST_EXPORT KstVector : public KstPrimitive {
     /** Return V[i] uninterpolated */
     double value(int i);
 
-    /** Return Minimum value in Vector */
+    /** Return minimum value in Vector */
     inline double min() const { return _min; }
 
-    /** Return max value in Vector */
+    /** Return maximum value in Vector */
     inline double max() const { return _max; }
+
+    /** Return index of minimum value in Vector */
+    inline double minIndex() const { return _minIndex; }
+
+    /** Return index of maximum value in Vector */
+    inline double maxIndex() const { return _maxIndex; }
 
     /** Return SpikeInsensitive max value in vector **/
     inline double ns_max() const { return _ns_max; }
@@ -194,10 +200,11 @@ class KST_EXPORT KstVector : public KstPrimitive {
     bool _saveData : 1;
 
     double _min, _max, _mean, _minPos;
+    int _minIndex, _maxIndex;
 
     /** Scalar Maintenance methods */
-    void CreateScalars();
-    void RenameScalars();
+    void createScalars();
+    void renameScalars();
 
     QString _label;
 

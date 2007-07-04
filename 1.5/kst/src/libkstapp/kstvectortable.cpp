@@ -28,7 +28,6 @@ void KstVectorTable::setVector(QString strVector) {
 }
 
 void KstVectorTable::paintCell( QPainter* painter, int row, int col, const QRect& cr, bool selected, const QColorGroup& cg ) {
-  KstVectorPtr vector = *KST::vectorList.findTag(_strVector);
   QString str;
 
   painter->eraseRect( 0, 0, cr.width(), cr.height() );
@@ -40,11 +39,16 @@ void KstVectorTable::paintCell( QPainter* painter, int row, int col, const QRect
     painter->setPen(cg.text());
   }
 
-  if( col == 0 && vector) {
-    str.setNum(vector->value(row), 'g', 16);
-  }
+  if (col == 0) {
+    str.setNum(row);
+    painter->drawText(0, 0, cr.width(), cr.height(), AlignLeft, str);
+  } else if (col == 1) {
+    KstVectorPtr vector = *KST::vectorList.findTag(_strVector);
 
-  painter->drawText(0, 0, cr.width(), cr.height(), AlignLeft, str);
+    if (vector) {
+      str.setNum(vector->value(row), 'g', 16);
+      painter->drawText(0, 0, cr.width(), cr.height(), AlignLeft, str);
+    }
+  }
 }
 
-// vim: ts=2 sw=2 et

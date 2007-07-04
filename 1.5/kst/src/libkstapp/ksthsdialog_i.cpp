@@ -357,7 +357,6 @@ bool KstHsDialogI::editSingleObject(KstHistogramPtr hsPtr) {
 
   hsPtr->setRecursed(false);
   if (hsPtr->recursion()) {
-    printf("5\n");
     hsPtr->setRecursed(true);
     hsPtr->unlock();
     KMessageBox::error(this, i18n("There is a recursion resulting from the histogram you entered."));

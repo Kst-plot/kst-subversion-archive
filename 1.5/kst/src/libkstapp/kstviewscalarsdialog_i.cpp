@@ -85,7 +85,7 @@ void KstViewScalarsDialogI::languageChange() {
   setCaption(i18n("View Scalar Values"));
   listViewScalars->header()->setLabel(0, i18n("Scalar"));
   listViewScalars->header()->setLabel(1, i18n("Value"));
-  KstViewScalarsDialog::languageChange();      
+  KstViewScalarsDialog::languageChange();
 }
 
 

@@ -464,7 +464,7 @@ KstObject::UpdateType KstRVector::update(int update_counter) {
 
 // Some things to consider about the following routine...
 // Frames:
-//    Some data sources have data devided into frames.  Each field
+//    Some data sources have data divided into frames.  Each field
 //    has a fixed number of samples per frame.  For some (eg, ascii files)
 //    each frame has 1 sample.  For others (eg, dirfiles) you may have more.
 //    Different fields in the same data source may have different samples per frame.

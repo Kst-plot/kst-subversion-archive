@@ -78,7 +78,7 @@ KstVector::KstVector(KstObjectTag in_tag, int size, KstObject *provider, bool is
   }
   _is_rising = false;
 
-  CreateScalars();
+  createScalars();
   blank();
 
   KST::vectorList.lock().writeLock();
@@ -129,7 +129,7 @@ KstVector::KstVector(const QDomElement& e)
     KstObject::setTagName(KST::suggestUniqueVectorTag(in_tag));
   }
 
-  CreateScalars();
+  createScalars();
   resize(sz, true);
 
   if (!qba.isEmpty()) {
@@ -309,9 +309,11 @@ double KstVector::value(int i) {
   return _v[i];
 }
 
-void KstVector::CreateScalars() {
+void KstVector::createScalars() {
   if (!_isScalarList) {
     _min = _max = _mean = _minPos = 0.0;
+    _minIndex = -1;
+    _maxIndex = -1;
 
     KstWriteLocker sl(&KST::scalarList.lock());
     KST::scalarList.setUpdateDisplayTags(false);
@@ -320,6 +322,10 @@ void KstVector::CreateScalars() {
     _scalars.insert("max", sp = new KstScalar(KstObjectTag("Max", tag()), this));
     sp->_KShared_ref();
     _scalars.insert("min", sp = new KstScalar(KstObjectTag("Min", tag()), this));
+    sp->_KShared_ref();
+    _scalars.insert("maxindex", sp = new KstScalar(KstObjectTag("MaxIndex", tag()), this));
+    sp->_KShared_ref();
+    _scalars.insert("minindex", sp = new KstScalar(KstObjectTag("MinIndex", tag()), this));
     sp->_KShared_ref();
     _scalars.insert("last", sp = new KstScalar(KstObjectTag("Last", tag()), this));
     sp->_KShared_ref();
@@ -344,13 +350,15 @@ void KstVector::CreateScalars() {
   }
 }
 
-void KstVector::RenameScalars() {
+void KstVector::renameScalars() {
   if (!_isScalarList) {
     KstWriteLocker sl(&KST::scalarList.lock());
     KST::scalarList.setUpdateDisplayTags(false);
 
     _scalars["max"]->setTagName(KstObjectTag("Max", tag()));
     _scalars["min"]->setTagName(KstObjectTag("Min", tag()));
+    _scalars["maxindex"]->setTagName(KstObjectTag("MaxIndex", tag()));
+    _scalars["minindex"]->setTagName(KstObjectTag("MinIndex", tag()));
     _scalars["last"]->setTagName(KstObjectTag("Last", tag()));
     _scalars["first"]->setTagName(KstObjectTag("First", tag()));
     _scalars["mean"]->setTagName(KstObjectTag("Mean", tag()));
@@ -461,10 +469,12 @@ KstObject::UpdateType KstVector::internalUpdate(KstObject::UpdateType providerRC
   double sum, sum2, last, first, v;
   double last_v;
   double dv2 = 0.0, dv, no_spike_max_dv;
-  
+
   _max = _min = sum = sum2 = _minPos = last = first = KST::NOPOINT;
+  _maxIndex = -1;
+  _minIndex = -1;
   _nsum = 0;
-  
+
   if (_size > 0) {
     _is_rising = true;
 
@@ -479,6 +489,8 @@ KstObject::UpdateType KstVector::internalUpdate(KstObject::UpdateType providerRC
         _scalars["sumsquared"]->setValue(sum2);
         _scalars["max"]->setValue(_max);
         _scalars["min"]->setValue(_min);
+        _scalars["maxindex"]->setValue(_maxIndex);
+        _scalars["minindex"]->setValue(_minIndex);
         _scalars["minpos"]->setValue(_minPos);
         _scalars["last"]->setValue(last);
         _scalars["first"]->setValue(first);
@@ -486,7 +498,7 @@ KstObject::UpdateType KstVector::internalUpdate(KstObject::UpdateType providerRC
       _ns_max = _ns_min = 0;
 
       updateScalars();
-      
+
       return setLastUpdateResult(providerRC);
     }
 
@@ -497,6 +509,8 @@ KstObject::UpdateType KstVector::internalUpdate(KstObject::UpdateType providerRC
     }
 
     _max = _min = _v[i0];
+    _maxIndex = i0;
+    _minIndex = i0;
     sum = sum2 = 0.0;
 
     if (_v[i0] > 0.0) {
@@ -506,7 +520,7 @@ KstObject::UpdateType KstVector::internalUpdate(KstObject::UpdateType providerRC
     }
 
     last_v = _v[i0];
-    
+
     for (i = i0; i < _size; i++) {
       v = _v[i]; // get rid of redirections
 
@@ -528,8 +542,10 @@ KstObject::UpdateType KstVector::internalUpdate(KstObject::UpdateType providerRC
 
         if (v > _max) {
           _max = v;
+          _maxIndex = i;
         } else if (v < _min) {
           _min = v;
+          _minIndex = i;
         }
         if (v < _minPos && v > 0.0) {
           _minPos = v;
@@ -568,11 +584,15 @@ KstObject::UpdateType KstVector::internalUpdate(KstObject::UpdateType providerRC
 
     if (_isScalarList) {
       _max = _min = _minPos = 0.0;
+      _maxIndex = 0;
+      _minIndex = 0;
     } else {
       _scalars["sum"]->setValue(sum);
       _scalars["sumsquared"]->setValue(sum2);
       _scalars["max"]->setValue(_max);
       _scalars["min"]->setValue(_min);
+      _scalars["maxindex"]->setValue(_maxIndex);
+      _scalars["minindex"]->setValue(_minIndex);
       _scalars["minpos"]->setValue(_minPos);
       _scalars["last"]->setValue(last);
       _scalars["first"]->setValue(first);
@@ -613,7 +633,7 @@ void KstVector::setTagName(const KstObjectTag& newTag) {
 
   KST::vectorList.doRename(this, newTag);
 
-  RenameScalars();
+  renameScalars();
 }
 
 
@@ -668,11 +688,13 @@ KstVectorPtr KstVector::generateVector(double x0, double x1, int n, const KstObj
   xv->_saveable = false;
 
   for (int i = 0; i < n; i++) {
-    xv->value()[i] = x0 + double(i) * (x1 - x0) / (n - 1);
+    xv->value()[i] = x0 + double(i) * (x1 - x0) / double(n - 1);
   }
 
   xv->_scalars["min"]->setValue(x0);
   xv->_scalars["max"]->setValue(x1);
+  xv->_scalars["minindex"]->setValue(0);
+  xv->_scalars["maxindex"]->setValue(n-1);
   xv->updateScalars();
 
   return xv;

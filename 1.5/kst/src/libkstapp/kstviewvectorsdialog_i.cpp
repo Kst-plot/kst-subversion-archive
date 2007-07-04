@@ -31,21 +31,25 @@ KstViewVectorsDialogI::KstViewVectorsDialogI(QWidget* parent,
 : KstViewVectorsDialog(parent, name, modal, fl) {
   tableVectors = new KstVectorTable(this, "tableVectors");
   tableVectors->setNumRows(0);
-  tableVectors->setNumCols(1);
+  tableVectors->setNumCols(2);
   tableVectors->setReadOnly(true);
   tableVectors->setSorting(false);
+  tableVectors->setLeftMargin(0);
   tableVectors->setSelectionMode(QTable::Single);
+  if (tableVectors->verticalHeader()) {
+    tableVectors->verticalHeader()->hide();
+  }
   layout2->insertWidget(1, tableVectors);
 
   connect(Cancel, SIGNAL(clicked()), this, SLOT(close()));
   connect(vectorSelector, SIGNAL(selectionChanged(const QString&)), this, SLOT( vectorChanged(const QString&)));
   connect(vectorSelector, SIGNAL(newVectorCreated(const QString&)), this, SLOT(vectorChanged(const QString&)));
 
-  if (tableVectors->numCols() != 1) {  
+  if (tableVectors->numCols() != 2) {
     for (; 0 < tableVectors->numCols(); ) {
       tableVectors->removeColumn(0);
     }
-    tableVectors->insertColumns(0, 1);
+    tableVectors->insertColumns(0, 2);
   }
 
   tableVectors->setReadOnly(true);
@@ -85,7 +89,8 @@ void KstViewVectorsDialogI::updateViewVectorsDialog(const QString& vectorName) {
     tableVectors->setNumRows(needed);
   }
   QRect rect = tableVectors->horizontalHeader()->rect();
-  tableVectors->setColumnWidth(0, rect.width());
+  tableVectors->setColumnWidth(0, rect.width() / 5);
+  tableVectors->setColumnWidth(1, rect.width() - (rect.width() / 5));
 }
 
 
@@ -110,7 +115,8 @@ void KstViewVectorsDialogI::vectorChanged(const QString& vector) {
  */
 void KstViewVectorsDialogI::languageChange() {
   setCaption(i18n("View Vector Values"));
-  tableVectors->horizontalHeader()->setLabel(0, i18n("Values"));
+  tableVectors->horizontalHeader()->setLabel(0, i18n("Index"));
+  tableVectors->horizontalHeader()->setLabel(1, i18n("Value"));
   KstViewVectorsDialog::languageChange();
 }
 
@@ -120,4 +126,4 @@ void KstViewVectorsDialogI::updateDefaults(int index) {
 }
 
 #include "kstviewvectorsdialog_i.moc"
-// vim: ts=2 sw=2 et
+
