@@ -1861,8 +1861,13 @@ void KstApp::toggleMouseMode() {
     mode = KstTopLevelView::DisplayMode;
   }
 
-  DataMode->setEnabled(!LayoutAction->isChecked());
-  _tiedZoomAction->setEnabled(!LayoutAction->isChecked());
+  if (XZoomAction->isChecked() ||
+      YZoomAction->isChecked() ||
+      XYZoomAction->isChecked()) {
+    DataMode->setEnabled(true);
+  } else {
+    DataMode->setEnabled(false);
+  }
 
   if (action) {
     KToolBarButton* button = toolBar()->getButton(5);
