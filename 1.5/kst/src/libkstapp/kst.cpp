@@ -101,6 +101,8 @@
 #include "vectorsavedialog.h"
 #include "kstobjectdefaults.h"
 
+#define MODE_BUTTON_ID       5
+
 #define KST_STATUSBAR_DATA   1
 #define KST_STATUSBAR_STATUS 2
 
@@ -852,7 +854,7 @@ void KstApp::initActions() {
   _gfxPictureAction->plug(mouseModeMenu);
   _gfx2DPlotAction->plug(mouseModeMenu);
 
-  toolBar()->insertButton("thumbnail", 5, mouseModeMenu, true, i18n("Select the desired mode"));
+  toolBar()->insertButton("thumbnail", MODE_BUTTON_ID, mouseModeMenu, true, i18n("Select the desired mode"));
   toggleMouseMode();
 
   createGUI(0L);
@@ -1870,7 +1872,7 @@ void KstApp::toggleMouseMode() {
   }
 
   if (action) {
-    KToolBarButton* button = toolBar()->getButton(5);
+    KToolBarButton* button = toolBar()->getButton(MODE_BUTTON_ID);
 
     if (button) {
       button->setText(action->toolTip());
