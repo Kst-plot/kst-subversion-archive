@@ -1,6 +1,0 @@
-.h.in-Files
-kst/src/libkst/ksttimers.h.in
-
-.in.in-Files
-configure.in.in
-kst/configure.in.in
