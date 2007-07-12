@@ -206,6 +206,50 @@ void PLANCKIDEFSource::addToMetadata( fitsfile *ffits, int &iStatus )
 }
 
 
+void PLANCKIDEFSource::addToFieldList( fitsfile *ffits, const int iNumCols, int &iStatus )
+{
+  QString str;
+  char charTemplate[ FLEN_CARD ];
+  char charName[ FLEN_CARD ];
+  long lRepeat;
+  long lWidth;
+  int iHDUNumber;
+  int iTypeCode;
+  int iColNumber;
+  int iResult;
+  int table;
+  int col;
+
+  table = fits_get_hdu_num( ffits, &iHDUNumber );
+
+  for( col=0; col<iNumCols; col++ )
+  {
+    iResult = fits_get_coltype( ffits, col+1, &iTypeCode, &lRepeat, &lWidth, &iStatus );
+    if( iResult == 0 )
+    {
+      sprintf( charTemplate, "%d", col+1 );
+
+      if( fits_get_colname( ffits, CASEINSEN, charTemplate, charName, &iColNumber, &iStatus ) == 0 )
+      {
+        if( lRepeat == 1 )
+        {
+          field *fld = new field;
+
+          str = QString( "%1_%2" ).arg( charName ).arg( iHDUNumber-1 );
+
+          fld->basefile = QString("");
+          fld->table = table;
+          fld->column = iColNumber;
+
+          _fields.insert( str, fld );
+          _fieldList.append( str );
+        }
+      }
+    }
+  }
+}
+
+
 void PLANCKIDEFSource::addToFieldList( fitsfile *ffits, const QString& prefix, const QString& baseName, const int iNumCols, int &iStatus )
 {
   QString str;
@@ -235,7 +279,7 @@ void PLANCKIDEFSource::addToFieldList( fitsfile *ffits, const QString& prefix, c
         {
           field *fld = new field;
 
-          if( prefix.isEmpty())
+          if( prefix.isEmpty() )
           {
             str = QString( "%1_%2" ).arg( charName ).arg( iHDUNumber-1 );
           }
@@ -257,7 +301,59 @@ void PLANCKIDEFSource::addToFieldList( fitsfile *ffits, const QString& prefix, c
 }
 
 
-bool PLANCKIDEFSource::initFile( const QString& filename, const QString& prefix, const QString& baseName, bool addMetadata )
+long PLANCKIDEFSource::getNumFrames( fitsfile* ffits, int iNumHeaderDataUnits )
+{
+  long lNumRows = 0;
+
+  if( iNumHeaderDataUnits > 1 )
+  {
+    int iHDUType;
+    int iResult = 0;
+    int iStatus = 0;
+
+    if( fits_movabs_hdu( ffits, 2, &iHDUType, &iStatus ) == 0 )
+    {
+      if( fits_get_hdu_type( ffits, &iHDUType, &iStatus ) == 0 )
+      {
+        if( iHDUType == BINARY_TBL )
+        {
+          iResult = fits_get_num_rows( ffits, &lNumRows, &iStatus );
+        }
+      }
+    }
+  }
+
+  return lNumRows;
+}
+
+
+long PLANCKIDEFSource::getNumFrames( const QString& filename )
+{
+  fitsfile* ffits;
+  int numFrames = 0;
+  int iResult = 0;
+  int iStatus = 0;
+
+  iResult = fits_open_file( &ffits, filename.ascii( ), READONLY, &iStatus );
+  if( iResult == 0 )
+  {
+    int iNumHeaderDataUnits;
+
+    if( fits_get_num_hdus( ffits, &iNumHeaderDataUnits, &iStatus ) == 0 )
+    {
+      numFrames = getNumFrames( ffits, iNumHeaderDataUnits );
+    }
+
+    iStatus = 0;
+
+    fits_close_file( ffits, &iStatus );
+  }
+
+  return numFrames;
+}
+
+
+bool PLANCKIDEFSource::initFile( const QString& filename )
 {
   QString   prefixNew;
   QString   str;
@@ -277,26 +373,7 @@ bool PLANCKIDEFSource::initFile( const QString& filename, const QString& prefix,
       int iHDUType;
       int i;
 
-      //
-      // determine the number of frames...
-      //
-      if( iNumHeaderDataUnits > 1 )
-      {
-        if( fits_movabs_hdu( ffits, 2, &iHDUType, &iStatus ) == 0 )
-        {
-          if( fits_get_hdu_type( ffits, &iHDUType, &iStatus ) == 0 )
-          {
-            if( iHDUType == BINARY_TBL )
-            {
-              iResult = fits_get_num_rows( ffits, &lNumRows, &iStatus );
-              if( iResult == 0 )
-              {
-                _numFrames = lNumRows;
-              }
-            }
-          }
-        }
-      }
+      _numFrames = getNumFrames( ffits, iNumHeaderDataUnits );
 
       if( _numFrames > 0 )
       {
@@ -309,10 +386,89 @@ bool PLANCKIDEFSource::initFile( const QString& filename, const QString& prefix,
         {
           if( iStatus == 0 )
           {
-            if( addMetadata )
+            addToMetadata( ffits, iStatus );
+
+            //
+            // the first table never contains data...
+            //
+            if( i > 0 )
             {
-              addToMetadata( ffits, iStatus );
+              //
+              // create the field entries...
+              //
+              fits_get_hdu_type( ffits, &iHDUType, &iStatus );
+              if( iStatus == 0 )
+              {
+                if( iHDUType == BINARY_TBL )
+                {
+                  int iNumCols;
+
+                  iResult = fits_get_num_cols( ffits, &iNumCols, &iStatus );
+                  if( iResult == 0 )
+                  {
+                    iResult = fits_get_num_rows( ffits, &lNumRows, &iStatus );
+                    if( iResult == 0 )
+                    {
+                      if( iResult == 0 )
+                      {
+                        addToFieldList( ffits, iNumCols, iStatus );
+                      }
+                    }
+                  }
+                }
+              }
             }
+
+            fits_movrel_hdu( ffits, 1, &iHDUType, &iStatus);
+          }
+        }
+
+        bRetVal = true;
+      }
+    }
+
+    iStatus = 0;
+
+    fits_close_file( ffits, &iStatus );
+  }
+
+  return bRetVal;
+}
+
+
+bool PLANCKIDEFSource::initFolderFile( const QString& filename, const QString& prefix, const QString& baseName )
+{
+  QString   prefixNew;
+  QString   str;
+  fitsfile* ffits;
+  bool      bRetVal = false;
+  int       iResult = 0;
+  int       iStatus = 0;
+
+  iResult = fits_open_file( &ffits, filename.ascii( ), READONLY, &iStatus );
+  if( iResult == 0 )
+  {
+    int iNumHeaderDataUnits;
+
+    if( fits_get_num_hdus( ffits, &iNumHeaderDataUnits, &iStatus ) == 0 )
+    {
+      long lNumRows;
+      int iHDUType;
+      int i;
+
+      _numFrames = getNumFrames( ffits, iNumHeaderDataUnits );
+      if( _numFrames > 0 )
+      {
+        fits_movabs_hdu( ffits, 1, &iHDUType, &iStatus );
+
+        //
+        // add the fields and metadata...
+        //
+        for( i=0; i<iNumHeaderDataUnits; i++ )
+        {
+          if( iStatus == 0 )
+          {
+         //   addToMetadata( ffits, iStatus );
 
             //
             // the first table never contains data...
@@ -340,7 +496,7 @@ bool PLANCKIDEFSource::initFile( const QString& filename, const QString& prefix,
                         char value[FLEN_VALUE];
                         char comment[FLEN_COMMENT];
 
-                        prefixNew.truncate(0);
+                        prefixNew.truncate( 0 );
 
                         iResult = fits_read_keyword( ffits, "EXTNAME", value, comment, &iStatus );
                         if( iResult == 0 )
@@ -386,37 +542,71 @@ bool PLANCKIDEFSource::initFolder( )
   QStringList filesBase;
   bool        bRetVal = true;
 
-  //
-  // first add the INDEX field...
-  //
-  field *fld = new field;
-
-  fld->table = 0;
-  fld->column = 0;
-
-  _fields.insert( "INDEX", fld );
-  _fieldList.append( "INDEX" );
+  _basefiles.setAutoDelete(false);
 
   files = folder.entryList( );
   if( files.size() > 0 )
   {
     for( QStringList::ConstIterator it = files.begin(); it != files.end(); ++it )
     {
-      if( isValidFilename(*it) )
+      if( isValidFilename( *it ) )
       {
-        QString baseName = baseFilename(*it);
+        fileList*   folderFields;
+        folderField folderField;
+        QString     baseName = baseFilename(*it);
+        QString     pathname = folder.path() + QDir::separator() + *it;
+        int         numFrames;
 
-        if( filesBase.find( baseName ) == filesBase.end( ) )
+        folderFields = _basefiles.find( baseName );
+        if( folderFields == 0L )
         {
-          QString pathname = folder.path() + QDir::separator() + *it;
+          fileList* folderFieldsNew = new fileList;
 
-          filesBase.append( baseName );
+          if( initFolderFile( pathname, baseName, baseName ) )
+          {
+            //
+            // first add the INDEX field...
+            //
+            QString strIndex;
+            field *fld = new field;
 
-          initFile( pathname, baseName, baseName, false );
+            fld->basefile = baseName;
+            fld->table = 0;
+            fld->column = 0;
+
+            strIndex = baseName + QDir::separator() + "INDEX";
+            _fields.insert( strIndex, fld );
+            _fieldList.append( strIndex );
+
+            //
+            // now add everything else...
+            //
+            folderField.frameLo = 0;
+            folderField.frames  = _numFrames;
+            folderField.file    = pathname;
+
+            folderFieldsNew->append( folderField );
+
+            _basefiles.replace( baseName, folderFieldsNew );
+          }
+        }
+        else
+        {
+          numFrames = getNumFrames( pathname );
+          if( numFrames > 0 )
+          {
+            folderField.frameLo  = folderFields->back().frameLo + folderFields->back().frames;
+            folderField.frames   = numFrames;
+            folderField.file     = pathname;
+
+            folderFields->append( folderField );
+          }
         }
       }
     }
   }
+
+  _basefiles.setAutoDelete(true);
 
   return bRetVal;
 }
@@ -426,7 +616,7 @@ bool PLANCKIDEFSource::initFile( )
 {
   bool bRetVal = false;
 
-  if( initFile( _filename, QString(""), QString(""), true ) )
+  if( initFile( _filename ) )
   {
     field *fld = new field;
 
@@ -489,7 +679,7 @@ KstObject::UpdateType PLANCKIDEFSource::update( int u )
 }
 
 
-int PLANCKIDEFSource::readFileFrames( field *fld, double *v, int s, int n )
+int PLANCKIDEFSource::readFileFrames( const QString& filename, field *fld, double *v, int s, int n )
 {
   double    dNan = strtod( "nan", NULL );
   fitsfile* ffits;
@@ -498,7 +688,7 @@ int PLANCKIDEFSource::readFileFrames( field *fld, double *v, int s, int n )
   int       iAnyNull;
   int       iResult = 0;
 
-  iResult = fits_open_file( &ffits, _filename.ascii( ), READONLY, &iStatus );
+  iResult = fits_open_file( &ffits, filename.ascii( ), READONLY, &iStatus );
   if( iResult == 0 )
   {
     int iHDUType;
@@ -541,8 +731,86 @@ int PLANCKIDEFSource::readFolderFrames( field *fld, double *v, int s, int n )
 {
   int iRead = -1;
 
+  if( !fld->basefile.isEmpty( ) )
+  {
+    fileList*   folderFields;
+    double*     vNew = v;
+    int         sNew = s;
+    int         nNew = n;
+    int         iReadSub = 0;
+
+    folderFields = _basefiles.find( fld->basefile );
+    if( folderFields != 0L )
+    {
+      for( fileList::ConstIterator it = folderFields->begin(); it != folderFields->end(); ++it )
+      {
+        //
+        // check if we need to read any frames from the current file...
+        //
+        if( n < 0 && (*it).frameLo + (*it).frames > s )
+        {
+          sNew = s - (*it).frameLo;
+          if( sNew < 0 )
+          {
+            sNew = 0;
+          }
+
+          nNew = -1;
+
+          vNew = v + (*it).frameLo + sNew;
+
+          iReadSub = readFileFrames( (*it).file, fld, vNew, sNew, nNew );
+          if( iReadSub > 0 )
+          {
+            if( iRead < 0 )
+            {
+              iRead = iReadSub;
+            }
+            else
+            {
+              iRead += iReadSub;
+            }
+          }
+        }
+        else if( (*it).frameLo < s + n && (*it).frameLo + (*it).frames > s )
+        {
+          sNew = s - (*it).frameLo;
+          if( sNew < 0 )
+          {
+            sNew = 0;
+          }
+
+          nNew = n;
+          if( sNew + nNew > (*it).frames )
+          {
+            nNew =  (*it).frames - sNew;
+          }
+
+          vNew = v + (*it).frameLo + sNew;
+
+          if( nNew > 0 )
+          {
+            iReadSub = readFileFrames( (*it).file, fld, vNew, sNew, nNew );
+            if( iReadSub > 0 )
+            {
+              if( iRead < 0 )
+              {
+                iRead = iReadSub;
+              }
+              else
+              {
+                iRead += iReadSub;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
   return iRead;
 }
+
 
 int PLANCKIDEFSource::readField( double *v, const QString& fieldName, int s, int n )
 {
@@ -565,17 +833,29 @@ int PLANCKIDEFSource::readField( double *v, const QString& fieldName, int s, int
     fld = _fields.find( fieldName );
     if( fld != 0L ) 
     {
-      _valid = false;
-
-      if( !_filename.isNull( ) && !_filename.isEmpty( ) )
+      if( fieldName == fld->basefile + QDir::separator() + QString("INDEX") )
       {
-        if( _isSingleFile )
+        for( i = 0; i < n; ++i )
         {
-          iRead = readFileFrames( fld, v, s, n );
+          v[i] = (double)( s + i );
         }
-        else
+
+        iRead =  n;
+      }
+      else
+      {
+        _valid = false;
+
+        if( !_filename.isNull( ) && !_filename.isEmpty( ) )
         {
-          iRead = readFolderFrames( fld, v, s, n );
+          if( _isSingleFile )
+          {
+            iRead = readFileFrames( _filename, fld, v, s, n );
+          }
+          else
+          {
+            iRead = readFolderFrames( fld, v, s, n );
+          }
         }
       }
     }
@@ -619,13 +899,38 @@ int PLANCKIDEFSource::frameCount( const QString& fieldName ) const
 {
   Q_UNUSED( fieldName )
 
-  int rc = _numFrames;
+  int rc = 0;
+
+  if( _isSingleFile )
+  {
+    rc = _numFrames;
+  }
+  else
+  {
+    field* fld;
+
+    fld = _fields.find( fieldName );
+    if( fld != 0L )
+    {
+      fileList* folderFields;
+
+      folderFields = _basefiles.find( fld->basefile );
+      if( folderFields != 0L )
+      {
+        for( fileList::ConstIterator it = folderFields->begin(); it != folderFields->end(); ++it )
+        {
+          rc += (*it).frames;
+        }
+      }
+    }
+  }
 
   return rc;
 }
 
 
-bool PLANCKIDEFSource::isEmpty( ) const {
+bool PLANCKIDEFSource::isEmpty( ) const 
+{
   return _fields.isEmpty();
 }
 
@@ -726,7 +1031,7 @@ bool PLANCKIDEFSource::checkValidPlanckIDEFFile( const QString& filename )
             }
           }
         }
-  
+
         //
         // the name of each binary table must conform to aaa-bbbb[-ccc]
         //  where bbbb is a member of {OBTT, TOD., OBTH, HKP.}...

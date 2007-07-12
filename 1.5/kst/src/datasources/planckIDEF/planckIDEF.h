@@ -22,11 +22,14 @@
 #include <fitsio.h>
 
 typedef struct {
+  QString file;
   double dTimeZero;
   double dTimeDelta;
   long frameLo;
   long frames;
-} folderFile;
+} folderField;
+
+typedef QValueList<folderField> fileList;
 
 typedef struct {
   QString basefile;
@@ -54,7 +57,9 @@ class PLANCKIDEFSource : public KstDataSource {
     static bool           checkValidPlanckIDEFFolder( const QString& filename );
 
   private:
-    int                   readFileFrames( field *fld, double *v, int s, int n );
+    long                  getNumFrames( const QString& filename );
+    long                  getNumFrames( fitsfile* ffits, int iNumHeaderDataUnits );
+    int                   readFileFrames( const QString& filename, field *fld, double *v, int s, int n );
     int                   readFolderFrames( field *fld, double *v, int s, int n );
 
     static bool           isValidFilename( const QString& filename );
@@ -62,13 +67,16 @@ class PLANCKIDEFSource : public KstDataSource {
     static int            versionNumber( const QString& filename );
 
     void                  addToMetadata( fitsfile *ffits, int &iStatus );
+    void                  addToFieldList( fitsfile *ffits, const int iNumCols, int &iStatus );
     void                  addToFieldList( fitsfile *ffits, const QString& prefix, const QString& baseName, const int iNumCols, int &iStatus );
-    bool                  initFile( const QString& filename, const QString& prefix, const QString& baseName, bool addMetadata );
+    bool                  initFile( const QString& filename );
     bool                  initFile();
+    bool                  initFolderFile( const QString& filename, const QString& prefix, const QString& baseName );
     bool                  initFolder();
     bool                  initialize();
 
     QDict<field>          _fields;
+    QDict<fileList>       _basefiles;
     double                _dTimeZero;
     double                _dTimeDelta;
     bool                  _bHasTime;
