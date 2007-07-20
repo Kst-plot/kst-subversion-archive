@@ -19,6 +19,7 @@
 #define KSTDATASOURCE_H
 
 #include <qdict.h>
+#include <qdir.h>
 #include <qdom.h>
 #include <qguardedptr.h>
 #include <qstring.h>
@@ -74,6 +75,8 @@ class KST_EXPORT KstDataSource : public KstObject {
     static bool pluginHasConfigWidget(const QString& plugin);
     // @since 1.1.0
     static bool supportsTime(const QString& plugin, const QString& type = QString::null);
+    static bool supportsHierarchy(const QString& filename, const QString& type = QString::null);
+    static char separator() { return QDir::separator(); }
 
     KstDataSourceConfigWidget *configWidget() const;
 

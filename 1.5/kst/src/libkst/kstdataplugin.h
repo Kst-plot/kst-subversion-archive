@@ -224,6 +224,17 @@ namespace KST {
         return false;
       }
 
+      bool supportsHierarchy() const {
+        bool (*sym)() = (bool(*)())symbol("supportsHierarchy");
+        if (sym) {
+          //kstdDebug() << "Checking if " << service->property("Name").toString() << " provides " << type << endl;
+          bool rc = (sym)();
+          return rc;
+        }
+
+        return false;
+      }
+
       bool provides(const QString& type) const {
         return provides().contains(type);
       }

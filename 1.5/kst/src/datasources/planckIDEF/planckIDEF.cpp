@@ -501,7 +501,7 @@ bool PLANCKIDEFSource::initFolderFile( const QString& filename, const QString& p
                         iResult = fits_read_keyword( ffits, "EXTNAME", value, comment, &iStatus );
                         if( iResult == 0 )
                         {
-                          prefixNew = prefix + QDir::separator() + QString( value ).remove( QChar( '\'' ) );
+                          prefixNew = prefix + separator() + QString( value ).remove( QChar( '\'' ) );
                         }
 
                         iResult = 0;
@@ -554,7 +554,7 @@ bool PLANCKIDEFSource::initFolder( )
         fileList*   folderFields;
         folderField folderField;
         QString     baseName = baseFilename(*it);
-        QString     pathname = folder.path() + QDir::separator() + *it;
+        QString     pathname = folder.path() + separator() + *it;
         int         numFrames;
 
         folderFields = _basefiles.find( baseName );
@@ -574,7 +574,7 @@ bool PLANCKIDEFSource::initFolder( )
             fld->table = 0;
             fld->column = 0;
 
-            strIndex = baseName + QDir::separator() + "INDEX";
+            strIndex = baseName + separator() + "INDEX";
             _fields.insert( strIndex, fld );
             _fieldList.append( strIndex );
 
@@ -833,7 +833,7 @@ int PLANCKIDEFSource::readField( double *v, const QString& fieldName, int s, int
     fld = _fields.find( fieldName );
     if( fld != 0L ) 
     {
-      if( fieldName == fld->basefile + QDir::separator() + QString("INDEX") )
+      if( fieldName == fld->basefile + separator() + QString("INDEX") )
       {
         for( i = 0; i < n; ++i )
         {
@@ -965,7 +965,7 @@ bool PLANCKIDEFSource::checkValidPlanckIDEFFolder( const QString& filename )
   {
     for (QStringList::ConstIterator it = files.begin(); it != files.end(); ++it) 
     {
-      pathname = folder.path() + QDir::separator() + *it;
+      pathname = folder.path() + separator() + *it;
 
       if( checkValidPlanckIDEFFile( pathname ) )
       {
@@ -1188,6 +1188,11 @@ extern "C" {
     rc += "PLANCKIDEF";
 
     return rc;
+  }
+
+  bool supportsHierarchy_planckIDEF( )
+  {
+    return true;
   }
 
   int understands_planckIDEF( KConfig*, const QString& filename )

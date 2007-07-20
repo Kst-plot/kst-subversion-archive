@@ -299,6 +299,7 @@ void KstDataWizard::sourceChanged(const QString& text)
       ds = 0L;
     } else {
       fl = KstDataSource::fieldListForSource(file, QString::null, &fileType, &complete);
+      hierarchy = KstDataSource::supportsHierarchy(file, QString::null);
     }
 
     if (!fl.isEmpty() && !fileType.isEmpty()) {
@@ -337,12 +338,14 @@ void KstDataWizard::sourceChanged(const QString& text)
 
     for (QStringList::ConstIterator it = fl.begin(); it != fl.end(); ++it) {
       QListViewItem *item = new QListViewItem(_vectors, *it);
-      item->setDragEnabled(true);
       QString str;
+
+      item->setDragEnabled(true);
       str.sprintf("%0*d", count, index++);
       item->setText(1, str);
       _countMap[*it] = str;
     }
+
     _vectors->sort();
 
     KST::vectorDefaults.sync();
@@ -548,6 +551,7 @@ void KstDataWizard::vectorSubset(const QString& filter)
   _vectors->setSorting(3, true); // Qt 3.1 compat
   QRegExp re(filter, true /* case insensitive */, true /* wildcard */);
   QListViewItemIterator it(_vectors);
+
   while (it.current()) {
     QListViewItem *i = it.current();
     ++it;

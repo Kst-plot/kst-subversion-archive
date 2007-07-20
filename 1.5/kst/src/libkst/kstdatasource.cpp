@@ -318,6 +318,24 @@ bool KstDataSource::supportsTime(const QString& filename, const QString& type) {
 }
 
 
+bool KstDataSource::supportsHierarchy(const QString& filename, const QString& type) {
+  if (filename.isEmpty() || filename == "stdin" || filename == "-") {
+    return false;
+  }
+
+  QString fn = obtainFile(filename);
+  if (fn.isEmpty()) {
+    return false;
+  }
+
+  QValueList<PluginSortContainer> bestPlugins = bestPluginsForSource(fn, type);
+  if (bestPlugins.isEmpty()) {
+    return false;
+  }
+  return (*bestPlugins.begin()).plugin->supportsHierarchy();
+}
+
+
 QStringList KstDataSource::fieldListForSource(const QString& filename, const QString& type, QString *outType, bool *complete) {
   if (filename == "stdin" || filename == "-") {
     return QStringList();
@@ -359,7 +377,6 @@ QStringList KstDataSource::fieldListForSource(const QString& filename, const QSt
       KstDebug::self()->log( i18n("The datasource '%1' has at least one duplicate field name. As a result one or more fields will not be accessible.").arg(filename), KstDebug::Error);
     }
   }
-
 
   return rc;
 }
