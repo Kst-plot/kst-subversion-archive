@@ -42,6 +42,8 @@ char *itoa(int num, char *str, int radix)
    int k;
    char c, flag, *ostr;
 
+   radix = 10;
+
    if (num < 0) {
       num = -num;
       *str++ = '-';

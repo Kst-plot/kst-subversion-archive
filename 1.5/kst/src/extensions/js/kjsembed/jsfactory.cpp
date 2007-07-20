@@ -459,6 +459,10 @@ namespace KJSEmbed {
     }
 
     KJS::Object JSFactory::createOpaque( KJS::ExecState *exec, const QString &cname, const KJS::List &args ) {
+        Q_UNUSED(exec)
+        Q_UNUSED(cname)
+        Q_UNUSED(args)
+
         return KJS::Object();
     }
 

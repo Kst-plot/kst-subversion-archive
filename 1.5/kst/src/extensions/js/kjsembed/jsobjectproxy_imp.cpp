@@ -385,7 +385,7 @@ KJS::Boolean JSObjectProxyImp::connect( QObject *sender, const char *sig,
 	return KJS::Boolean( false );
     }
 
-    bool ok;
+    bool ok = false;
     switch ( id ) {
 	case JSSlotUtils::SignatureNone:
 	    ok = JSSlotUtils::connect( sender, sig, slotp, "slot_void()" );
