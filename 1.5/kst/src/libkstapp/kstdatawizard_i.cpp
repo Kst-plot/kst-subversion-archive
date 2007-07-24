@@ -59,6 +59,7 @@ DataWizard(parent, name, modal, fl )
 {
   _configWidget = 0L;
   _inTest = false;
+  _hierarchy = false;
   KST::vectorDefaults.sync();
   QString default_source = KST::vectorDefaults.dataSource();
   _url->setMode(KFile::File | KFile::Directory | KFile::ExistingOnly);
@@ -284,22 +285,23 @@ void KstDataWizard::sourceChanged(const QString& text)
     KstDataSourcePtr ds = *KST::dataSourceList.findReusableFileName(file);
     QStringList fl;
     bool complete = false;
-    bool hierarchy = false;
     QString fileType;
     int index = 0;
     int count;
+
+    _hierarchy = false;
 
     if (ds) {
       ds->readLock();
       fl = ds->fieldList();
       fileType = ds->fileType();
       complete = ds->fieldListIsComplete();
-      hierarchy = ds->supportsHierarchy();
+      _hierarchy = ds->supportsHierarchy();
       ds->unlock();
       ds = 0L;
     } else {
       fl = KstDataSource::fieldListForSource(file, QString::null, &fileType, &complete);
-      hierarchy = KstDataSource::supportsHierarchy(file, QString::null);
+      _hierarchy = KstDataSource::supportsHierarchy(file, QString::null);
     }
 
     if (!fl.isEmpty() && !fileType.isEmpty()) {
@@ -336,14 +338,60 @@ void KstDataWizard::sourceChanged(const QString& text)
       count = 1;
     }
 
-    for (QStringList::ConstIterator it = fl.begin(); it != fl.end(); ++it) {
-      QListViewItem *item = new QListViewItem(_vectors, *it);
-      QString str;
+    _fields.clear();
 
-      item->setDragEnabled(true);
-      str.sprintf("%0*d", count, index++);
-      item->setText(1, str);
-      _countMap[*it] = str;
+    if (_hierarchy) {
+      for (QStringList::ConstIterator it = fl.begin(); it != fl.end(); ++it) {
+        QStringList     entries = QStringList::split(QDir::separator(), (*it), FALSE);
+        QString         item;
+        QListViewItem*  parent = 0L;
+        QListViewItem*  parentOld = 0L;
+
+        for (QStringList::ConstIterator itEntry = entries.begin(); itEntry != entries.end(); ++itEntry) {
+          item += (*itEntry);
+
+          if (item.compare(*it) != 0) {
+            parent = _fields.find(item);
+            if (parent == 0L) {
+              if (parentOld) {
+                QListViewItem *listItem = new QListViewItem(parentOld, *itEntry);
+
+                parentOld->setOpen(true);
+                _fields.insert(item, listItem);
+                parentOld = listItem;
+              } else {
+                QListViewItem *listItem = new QListViewItem(_vectors, *itEntry);
+
+                _fields.insert(item, listItem);
+                parentOld = listItem;
+              }
+            } else {
+              parentOld = parent;
+            }
+
+            item += QDir::separator();
+          } else if (parentOld) {
+            QListViewItem *listItem = new QListViewItem(parentOld, *itEntry);
+
+            parentOld->setOpen(true);
+            _fields.insert(item, listItem);
+          } else {
+            QListViewItem *listItem = new QListViewItem(_vectors, *itEntry);
+
+            _fields.insert(item, listItem);
+          }
+        }
+      }
+    } else {
+      for (QStringList::ConstIterator it = fl.begin(); it != fl.end(); ++it) {
+        QListViewItem *item = new QListViewItem(_vectors, *it);
+        QString str;
+
+        item->setDragEnabled(true);
+        str.sprintf("%0*d", count, index++);
+        item->setText(1, str);
+        _countMap[*it] = str;
+      }
     }
 
     _vectors->sort();
@@ -1375,7 +1423,9 @@ void KstDataWizard::add()
   QListViewItemIterator it(_vectors);
   while (it.current()) {
     if (it.current()->isSelected()) {
-      lst.append(it.current());
+      if (it.current()->childCount() == 0) {
+        lst.append(it.current());
+      }
     }
     ++it;
   }
@@ -1383,9 +1433,36 @@ void KstDataWizard::add()
   QListViewItem *last = _vectorsToPlot->lastItem();
   QPtrListIterator<QListViewItem> iter(lst);
   while (iter.current()) {
+    QListViewItem* parent;
     QListViewItem *item = iter.current();
-    _vectors->takeItem(item);
+    parent = item->parent();
+
+    while (parent) {
+      item->setText(0, parent->text(0) + QDir::separator() + item->text(0));
+      parent = parent->parent();
+    }
+
+    parent = item->parent();
+    if (parent) {
+      QListViewItem* parentNew;
+
+      parent->takeItem(item);
+      parentNew = parent;
+      while (parentNew) {
+        parent = parentNew;
+        if (parent->childCount() == 0) {
+          parentNew = parent->parent();
+          parent->setSelected(false);
+          parent->setVisible(false);
+        } else {
+          parentNew = 0L;
+        }
+      }
+    } else {
+      _vectors->takeItem(item);
+    }
     _vectorsToPlot->insertItem(item);
+
     item->moveItem(last);
     item->setSelected(false);
     last = item;
@@ -1415,7 +1492,34 @@ void KstDataWizard::remove()
   QPtrListIterator<QListViewItem> iter(lst);
   while (iter.current()) {
     _vectorsToPlot->takeItem(iter.current());
-    _vectors->insertItem(iter.current());
+    if (_hierarchy) {
+      QListViewItem* parent = 0L;
+      QStringList entries;
+      QString text = iter.current()->text(0);
+      QString item;
+
+      entries = QStringList::split(QDir::separator(), text, FALSE);
+      for (QStringList::ConstIterator itEntry = entries.begin(); itEntry != entries.end(); ++itEntry) {
+        item += (*itEntry);
+        if (text.compare(item) != 0) {
+          parent = _fields.find(item);
+          if (parent) {
+            parent->setVisible(true);
+          }
+          item += QDir::separator();
+        } else {
+          iter.current()->setText(0, entries.back());
+
+          if (parent) {
+            parent->insertItem(iter.current());
+          } else {
+            _vectors->insertItem(iter.current());
+          }
+        }
+      }
+    } else {
+      _vectors->insertItem(iter.current());
+    }
     iter.current()->setSelected(false);
     ++iter;
   }

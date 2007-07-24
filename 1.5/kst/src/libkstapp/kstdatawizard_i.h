@@ -75,6 +75,8 @@ class KstDataWizard: public DataWizard {
   private:
     static const QString &defaultTag;
     QString _file;
+    QDict<QListViewItem> _fields;
+    bool _hierarchy;
     bool _inTest;
     QGuardedPtr<QWidget> _configWidget;
     KstDataSourceList _sourceCache;
