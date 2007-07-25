@@ -173,6 +173,14 @@ class KstBindAxis : public QObject, public KstBinding {
                     displayed.
      */
     KJS::Value interpretation(KJS::ExecState *exec) const;
+    /* @property AxisLabel label
+       @description The label for this axis.
+    */
+    KJS::Value title(KJS::ExecState *exec) const;
+    /* @property AxisTickLabel label
+       @description The tick label for this axis.
+    */
+    KJS::Value tickLabel(KJS::ExecState *exec) const;
 
   protected:
     friend class KstBindTimeInterpretation;

@@ -84,6 +84,9 @@ kstextension_js_la_SOURCES= $(JSEXTERN) \
 			    bind_size.cpp \
 			    bind_box.cpp \
 			    bind_label.cpp \
+			    bind_axisticklabel.cpp \
+			    bind_axislabel.cpp \
+			    bind_plotlabel.cpp \
 			    bind_legend.cpp \
 			    bind_ellipse.cpp \
 			    bind_picture.cpp \

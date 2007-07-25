@@ -83,6 +83,11 @@ class KstBindPlot : public KstBindBorderedViewObject {
        @description The Y-axis for this plot.
     */
     KJS::Value yAxis(KJS::ExecState *exec) const;
+    /* @property PlotLabel title
+       @readonly
+       @description The title for this plot.
+    */
+    KJS::Value title(KJS::ExecState *exec) const;
     /* @property boolean tied
        @description True if the plot zoom state is tied.
     */

@@ -16,9 +16,12 @@
  ***************************************************************************/
 
 #include "bind_plot.h"
+#include "bind_plotlabel.h"
 #include "bind_axis.h"
 #include "bind_curvecollection.h"
+#include "bind_label.h"
 #include "bind_legend.h"
+#include "bind_axislabel.h"
 
 #include <kst2dplot.h>
 #include <kstplotlabel.h>
@@ -117,6 +120,7 @@ static PlotProperties plotProperties[] = {
   { "topLabel", &KstBindPlot::setTopLabel, &KstBindPlot::topLabel },
   { "xAxis", 0L, &KstBindPlot::xAxis },
   { "yAxis", 0L, &KstBindPlot::yAxis },
+  { "title", 0L, &KstBindPlot::title },
   { "tied", &KstBindPlot::setTied, &KstBindPlot::tied },
   { 0L, 0L, 0L }
 };
@@ -277,7 +281,6 @@ KJS::Value KstBindPlot::topLabel(KJS::ExecState *exec) const {
 
 
 KJS::Value KstBindPlot::xAxis(KJS::ExecState *exec) const {
-  Q_UNUSED(exec)
   Kst2DPlotPtr d = makePlot(_d);
   if (d) {
     KstReadLocker rl(d);
@@ -293,6 +296,17 @@ KJS::Value KstBindPlot::yAxis(KJS::ExecState *exec) const {
   if (d) {
     KstReadLocker rl(d);
     return KJS::Object(new KstBindAxis(exec, d, false));
+  }
+  return KJS::Object();
+}
+
+
+KJS::Value KstBindPlot::title(KJS::ExecState *exec) const {
+  Q_UNUSED(exec)
+  Kst2DPlotPtr d = makePlot(_d);
+  if (d) {
+    KstReadLocker rl(d);
+    return KJS::Object(new KstBindPlotLabel(exec, d));
   }
   return KJS::Object();
 }

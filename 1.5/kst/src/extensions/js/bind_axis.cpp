@@ -16,6 +16,8 @@
  ***************************************************************************/
 
 #include "bind_axis.h"
+#include "bind_axislabel.h"
+#include "bind_axisticklabel.h"
 #include "bind_timeinterpretation.h"
 
 #include <kst.h>
@@ -82,6 +84,8 @@ static AxisProperties axisProperties[] = {
   { "label", &KstBindAxis::setLabel, &KstBindAxis::label },
   { "type", 0L, &KstBindAxis::type },
   { "interpretation", 0L, &KstBindAxis::interpretation },
+  { "title", 0L, &KstBindAxis::title },
+  { "tickLabel", 0L, &KstBindAxis::tickLabel },
   { 0L, 0L, 0L }
 };
 
@@ -135,7 +139,7 @@ KJS::Value KstBindAxis::get(KJS::ExecState *exec, const KJS::Identifier& propert
       return (this->*axisProperties[i].get)(exec);
     }
   }
-  
+
   return KstBinding::get(exec, propertyName);
 }
 
@@ -170,6 +174,28 @@ void KstBindAxis::addBindings(KJS::ExecState *exec, KJS::Object& obj) {
 KJS::Value KstBindAxis::type(KJS::ExecState *exec) const {
   Q_UNUSED(exec)
   return KJS::String(_xAxis ? "X" : "Y");
+}
+
+
+KJS::Value KstBindAxis::title(KJS::ExecState *exec) const {
+  if (!_d) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::GeneralError);
+    exec->setException(eobj);
+    return KJS::Undefined();
+  }
+  KstReadLocker rl(_d);
+  return KJS::Object(new KstBindAxisLabel(exec, _d, _xAxis));
+}
+
+
+KJS::Value KstBindAxis::tickLabel(KJS::ExecState *exec) const {
+  if (!_d) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::GeneralError);
+    exec->setException(eobj);
+    return KJS::Undefined();
+  }
+  KstReadLocker rl(_d);
+  return KJS::Object(new KstBindAxisTickLabel(exec, _d, _xAxis));
 }
 
 
