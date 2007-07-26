@@ -68,7 +68,7 @@ KstVectorView::KstVectorView(const QDomElement &e)
   QString xmintag, xmaxtag, ymintag, ymaxtag;
   QString in_tag;
 
-  _interp = (KstVectorView::InterpType(0)); //defaults. shouldn't be necessary.
+  _interp = KstVectorView::InterpY;
   _useXmin = false; 
   _useXmax = false;
   _useYmin = false;
@@ -172,10 +172,12 @@ KstObject::UpdateType KstVectorView::update(int update_counter) {
   }
 
   bool vecsUpdated = (KstObject::UPDATE == _inputVectors[IN_XVECTOR]->update(update_counter)) ||
-                  (KstObject::UPDATE == _inputVectors[IN_YVECTOR]->update(update_counter));
+                     (KstObject::UPDATE == _inputVectors[IN_YVECTOR]->update(update_counter));
 
   KstVectorPtr flagVec = *_inputVectors.find(IN_FLAGVECTOR);
-  if (flagVec) { vecsUpdated = (vecsUpdated || (KstObject::UPDATE == flagVec->update(update_counter))); }
+  if (flagVec) {
+    vecsUpdated = (vecsUpdated || (KstObject::UPDATE == flagVec->update(update_counter)));
+  }
 
   if (!vecsUpdated && !force) {
     unlockInputsAndOutputs();
@@ -222,6 +224,7 @@ KstObject::UpdateType KstVectorView::update(int update_counter) {
       break;
     default:
       NS = kMax(inXVec->length(), inYVec->length());
+      break;
   }
 
   int NSm1 = NS-1;
@@ -230,14 +233,18 @@ KstObject::UpdateType KstVectorView::update(int update_counter) {
   double *outYArr;
 
   if (inXVec->length() == NS && inXVec->isRising()) { //good scenario.
-    int i_bot = inXVec->indexNearX(xmin,NS); //closest index to xmin
-    int i_top = inXVec->indexNearX(xmax,NS);
+    int i_bot = inXVec->indexNearX(xmin, NS); //closest index to xmin
+    int i_top = inXVec->indexNearX(xmax, NS);
 
-    if (inXVec->value(i_bot) < xmin && i_bot < NSm1) { i_bot++; } //closest index above xmin
-    if (inXVec->value(i_top) > xmax && i_top > 0) { i_top--; }
+    if (inXVec->value(i_bot) < xmin && i_bot < NSm1) { 
+      i_bot++;
+    }
+    if (inXVec->value(i_top) > xmax && i_top > 0) { 
+      i_top--;
+    }
 
-    outXVec->resize(i_top - i_bot + 1,true); //initial resize. will trim later.
-    outYVec->resize(i_top - i_bot + 1,true);
+    outXVec->resize(i_top - i_bot + 1, true); //initial resize. will trim later.
+    outYVec->resize(i_top - i_bot + 1, true);
 
     outXArr = outXVec->value();
     outYArr = outYVec->value();
@@ -247,9 +254,9 @@ KstObject::UpdateType KstVectorView::update(int update_counter) {
     int in = 0;
     double yv;
     for (long i=i_bot; i<=i_top; i++) {
-        if (!flagVec || !flagVec->interpolate(i,NS)) { //only the LHS should be evaluated !flagVec
+        if (!flagVec || !flagVec->interpolate(i, NS)) { //only the LHS should be evaluated !flagVec
           yv = inYVec->interpolate(i,NS);
-          if ( (ymin <= yv) && (ymax >= yv) ) {
+          if (ymin <= yv && ymax >= yv) {
             outXArr[in] = inXArr[i];
             outYArr[in] = yv;
             in++;
@@ -257,17 +264,28 @@ KstObject::UpdateType KstVectorView::update(int update_counter) {
         }
     }
 
-    outXVec->resize(in,false);
-    outYVec->resize(in,false);
+    if (in > 0) {
+      outXVec->resize(in, false);
+      outYVec->resize(in, false);
+    } else {
+      outXArr[0] = 0.0;
+      outYArr[0] = 0.0;
+      outXVec->resize(1, false);
+      outYVec->resize(1, false);
+    }
   } else if (inYVec->length() == NS && inYVec->isRising()) { //also good.
-    int i_bot = inYVec->indexNearX(ymin,NS); //closest index to xmin
-    int i_top = inYVec->indexNearX(ymax,NS);
+    int i_bot = inYVec->indexNearX(ymin, NS); //closest index to xmin
+    int i_top = inYVec->indexNearX(ymax, NS);
 
-    if (inYVec->value(i_bot) < ymin && i_bot < NSm1) { i_bot++; } //closest index above xmin
-    if (inYVec->value(i_top) > ymax && i_top > 0) { i_top--; }
+    if (inYVec->value(i_bot) < ymin && i_bot < NSm1) { 
+      i_bot++; 
+    } // closest index above xmin
+    if (inYVec->value(i_top) > ymax && i_top > 0) { 
+      i_top--;
+    }
 
-    outXVec->resize(i_top - i_bot + 1,true); //initial resize. will trim later.
-    outYVec->resize(i_top - i_bot + 1,true);
+    outXVec->resize(i_top - i_bot + 1, true); //initial resize. will trim later.
+    outYVec->resize(i_top - i_bot + 1, true);
 
     outXArr = outXVec->value();
     outYArr = outYVec->value();
@@ -287,11 +305,18 @@ KstObject::UpdateType KstVectorView::update(int update_counter) {
         }
     }
 
-    outXVec->resize(in,false);
-    outYVec->resize(in,false);
+    if (in > 0) {
+      outXVec->resize(in, false);
+      outYVec->resize(in, false);
+    } else {
+      outXArr[0] = 0.0;
+      outYArr[0] = 0.0;
+      outXVec->resize(1, false);
+      outYVec->resize(1, false);
+    }
   } else { //worst case scenario. could do more ifs on y->isRising();
-    outXVec->resize(NS,true); //initial resize. will trim later.
-    outYVec->resize(NS,true);
+    outXVec->resize(NS, true); // initial resize. will trim later.
+    outYVec->resize(NS, true);
 
     outXArr = outXVec->value();
     outYArr = outYVec->value();
@@ -301,9 +326,9 @@ KstObject::UpdateType KstVectorView::update(int update_counter) {
     for (long i=0; i<=NSm1; i++) {
       if (!flagVec || !flagVec->interpolate(i,NS)) { //only the LHS should be evaluated if !flagVec.
         double xv = inXVec->interpolate(i,NS);
-        if ( (xmin <= xv) && (xmax >= xv) ) {
+        if (xmin <= xv && xmax >= xv) {
           yv = inYVec->interpolate(i,NS);
-          if ( (ymin <= yv) && (ymax >= yv) ) {
+          if (ymin <= yv && ymax >= yv) {
             outXArr[in] = xv;
             outYArr[in] = yv;
             in++;
@@ -311,11 +336,20 @@ KstObject::UpdateType KstVectorView::update(int update_counter) {
         }
       }
     }
-    outXVec->resize(in, false);
-    outYVec->resize(in, false);
+
+    if (in > 0) {
+      outXVec->resize(in, false);
+      outYVec->resize(in, false);
+    } else {
+      outXArr[0] = 0.0;
+      outYArr[0] = 0.0;
+      outXVec->resize(1, false);
+      outYVec->resize(1, false);
+    }
   }
 
   unlockInputsAndOutputs();
+
   return setLastUpdateResult(UPDATE);
 }
 
@@ -541,5 +575,3 @@ void KstVectorView::setInterp(KstVectorView::InterpType itype) {
 }
 
 #include "kstvectorview.moc"
-
-// vim: ts=2 sw=2 et
