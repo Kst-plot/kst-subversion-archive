@@ -548,21 +548,6 @@ bool KstVectorView::slaveVectorsUsed() const {
   return true;
 }
 
-double KstVectorView::vMax() const {
-  return _inputVectors[IN_XVECTOR]->max();
-}
-
-
-double KstVectorView::vMin() const {
-  return _inputVectors[IN_YVECTOR]->min();
-}
-
-
-int KstVectorView::vNumSamples() const {
-  return _inputVectors[IN_XVECTOR]->length(); //??
-}
-
-
 KstDataObjectPtr KstVectorView::makeDuplicate(KstDataObjectDataObjectMap& duplicatedMap) {
   QString name(tagName() + '\'');
   while (KstData::self()->dataTagNameNotUnique(name, false)) {

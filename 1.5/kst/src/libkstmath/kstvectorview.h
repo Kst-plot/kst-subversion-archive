@@ -95,10 +95,6 @@ class KST_EXPORT KstVectorView: public KstDataObject {
     KstVectorPtr vX() const { return *_cxVector; }
     KstVectorPtr vY() const { return *_cyVector; }
 
-    double vMax() const;
-    double vMin() const;
-    int vNumSamples() const;
-
     virtual KstDataObjectPtr makeDuplicate(KstDataObjectDataObjectMap& duplicatedMap);
 
   protected slots:

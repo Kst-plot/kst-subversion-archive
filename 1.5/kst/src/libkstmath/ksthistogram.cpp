@@ -445,21 +445,6 @@ bool KstHistogram::realTimeAutoBin() const {
 }
 
 
-double KstHistogram::vMax() const {
-  return _inputVectors[RAWVECTOR]->max();
-}
-
-
-double KstHistogram::vMin() const {
-  return _inputVectors[RAWVECTOR]->min();
-}
-
-
-int KstHistogram::vNumSamples() const {
-  return _inputVectors[RAWVECTOR]->length();
-}
-
-
 KstDataObjectPtr KstHistogram::makeDuplicate(KstDataObjectDataObjectMap& duplicatedMap) {
   QString name(tagName() + '\'');
   while (KstData::self()->dataTagNameNotUnique(name, false)) {
@@ -471,5 +456,3 @@ KstDataObjectPtr KstHistogram::makeDuplicate(KstDataObjectDataObjectMap& duplica
   return KstDataObjectPtr(histogram);
 }
 
-
-// vim: ts=2 sw=2 et

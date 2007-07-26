@@ -15,10 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-/** A class for handling power spectra for kst
-
- *@author C. Barth Netterfield
- */
 #ifndef KSTHISTOGRAM_H
 #define KSTHISTOGRAM_H
 
@@ -80,10 +76,6 @@ public:
   double xMin() const { return _MinX; }
   double xMax() const { return _MaxX; }
   double width() const { return _W; }
-
-  double vMax() const;
-  double vMin() const;
-  int vNumSamples() const;
 
   virtual KstDataObjectPtr makeDuplicate(KstDataObjectDataObjectMap& duplicatedMap);
 
