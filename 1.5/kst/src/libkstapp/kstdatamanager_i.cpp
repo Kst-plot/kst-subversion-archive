@@ -327,7 +327,7 @@ void KstObjectItem::update(bool recursive, int localUseCount) {
               connect(item, SIGNAL(updated()), this, SIGNAL(updated()));
             }
           }
-          
+
           KstMatrixMap ml = x->outputMatrices();
           KstMatrixMap::Iterator mlEnd = ml.end();
           // also get the output matrices
@@ -678,7 +678,7 @@ KstDataManagerI::KstDataManagerI(KstDoc *in_doc, QWidget* parent, const char* na
   createObjectAction(i18n("Event Monitor"), _data, KstEventMonitorI::globalInstance(), SLOT(show()));
   createObjectAction(i18n("Image"), _data, KstImageDialogI::globalInstance(), SLOT(show()));
   createObjectAction(i18n("Spectrogram"), _data, KstCsdDialogI::globalInstance(), SLOT(show()));
-  createObjectAction(i18n("VectorView"), _data, KstVvDialogI::globalInstance(), SLOT(show()));
+  createObjectAction(i18n("Vector View"), _data, KstVvDialogI::globalInstance(), SLOT(show()));
 
   //Create plugin actions...
   setupPluginActions();
@@ -786,8 +786,7 @@ void KstDataManagerI::setupPluginActions() {
 
   //The old C style plugins...
   QStringList oldPlugins;
-  const QMap<QString,QString> readable =
-    PluginCollection::self()->readableNameList();
+  const QMap<QString,QString> readable = PluginCollection::self()->readableNameList();
   QMap<QString,QString>::const_iterator it = readable.begin();
   for (; it != readable.end(); ++it) {
     oldPlugins << it.key();
