@@ -243,8 +243,12 @@ KstObject::UpdateType KstVectorView::update(int update_counter) {
       i_top--;
     }
 
-    outXVec->resize(i_top - i_bot + 1, true); //initial resize. will trim later.
-    outYVec->resize(i_top - i_bot + 1, true);
+    if (i_top - i_bot + 1 > outXVec->length()) {
+      outXVec->resize(i_top - i_bot + 1, false); //initial resize. will trim later
+    }
+    if (i_top - i_bot + 1 > outYVec->length()) {
+      outYVec->resize(i_top - i_bot + 1, false);
+    }
 
     outXArr = outXVec->value();
     outYArr = outYVec->value();
@@ -255,7 +259,7 @@ KstObject::UpdateType KstVectorView::update(int update_counter) {
     double yv;
     for (long i=i_bot; i<=i_top; i++) {
         if (!flagVec || !flagVec->interpolate(i, NS)) { //only the LHS should be evaluated !flagVec
-          yv = inYVec->interpolate(i,NS);
+          yv = inYVec->interpolate(i, NS);
           if (ymin <= yv && ymax >= yv) {
             outXArr[in] = inXArr[i];
             outYArr[in] = yv;
@@ -278,14 +282,18 @@ KstObject::UpdateType KstVectorView::update(int update_counter) {
     int i_top = inYVec->indexNearX(ymax, NS);
 
     if (inYVec->value(i_bot) < ymin && i_bot < NSm1) { 
-      i_bot++; 
+      i_bot++;
     } // closest index above xmin
     if (inYVec->value(i_top) > ymax && i_top > 0) { 
       i_top--;
     }
 
-    outXVec->resize(i_top - i_bot + 1, true); //initial resize. will trim later.
-    outYVec->resize(i_top - i_bot + 1, true);
+    if (i_top - i_bot + 1 > outXVec->length()) {
+      outXVec->resize(i_top - i_bot + 1, false); //initial resize. will trim later.
+    }
+    if (i_top - i_bot + 1 > outYVec->length()) {
+      outYVec->resize(i_top - i_bot + 1, false);
+    }
 
     outXArr = outXVec->value();
     outYArr = outYVec->value();
@@ -295,8 +303,8 @@ KstObject::UpdateType KstVectorView::update(int update_counter) {
     int in = 0;
     double xv;
     for (long i=i_bot; i<=i_top; i++) {
-        if (!flagVec || !flagVec->interpolate(i,NS)) { //only the LHS should be evaluated !flagVec
-          xv = inXVec->interpolate(i,NS);
+        if (!flagVec || !flagVec->interpolate(i, NS)) { //only the LHS should be evaluated !flagVec
+          xv = inXVec->interpolate(i, NS);
           if ( (xmin <= xv) && (xmax >= xv) ) {
             outXArr[in] = inYArr[i];
             outYArr[in] = xv;
@@ -315,8 +323,12 @@ KstObject::UpdateType KstVectorView::update(int update_counter) {
       outYVec->resize(1, false);
     }
   } else { //worst case scenario. could do more ifs on y->isRising();
-    outXVec->resize(NS, true); // initial resize. will trim later.
-    outYVec->resize(NS, true);
+    if (NS > outXVec->length()) {
+      outXVec->resize(NS, false); // initial resize. will trim later.
+    }
+    if (NS > outYVec->length()) {
+      outYVec->resize(NS, false);
+    }
 
     outXArr = outXVec->value();
     outYArr = outYVec->value();
@@ -324,8 +336,8 @@ KstObject::UpdateType KstVectorView::update(int update_counter) {
     int in = 0;
     double yv;
     for (long i=0; i<=NSm1; i++) {
-      if (!flagVec || !flagVec->interpolate(i,NS)) { //only the LHS should be evaluated if !flagVec.
-        double xv = inXVec->interpolate(i,NS);
+      if (!flagVec || !flagVec->interpolate(i, NS)) { //only the LHS should be evaluated if !flagVec.
+        double xv = inXVec->interpolate(i, NS);
         if (xmin <= xv && xmax >= xv) {
           yv = inYVec->interpolate(i,NS);
           if (ymin <= yv && ymax >= yv) {
