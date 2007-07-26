@@ -15,10 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-/** A class for curve subsets in Kst
-
- *@author D. Hanson
- */
 #ifndef KSTVECTORVIEW_H
 #define KSTVECTORVIEW_H
 
@@ -31,13 +27,18 @@ class KST_EXPORT KstVectorView: public KstDataObject {
   public:
     // InterpType order must match the order of entries of _interp in 
     // vectorviewdialogwidget.ui
-    enum InterpType {InterpY=0, InterpX=1, InterpMax=2, InterpMin=3};
+    enum InterpType {
+      InterpY = 0,
+      InterpX = 1,
+      InterpMax = 2,
+      InterpMin = 3
+    };
 
-    KstVectorView(const QString &in_tag, KstVectorPtr in_X, KstVectorPtr in_Y, 
-                  KstVectorView::InterpType itype, 
-                  bool useXmin, KstScalarPtr xmin, 
-                  bool useXmax, KstScalarPtr xmax, 
-                  bool useYmin, KstScalarPtr ymin, 
+    KstVectorView(const QString &in_tag, KstVectorPtr in_X, KstVectorPtr in_Y,
+                  KstVectorView::InterpType itype,
+                  bool useXmin, KstScalarPtr xmin,
+                  bool useXmax, KstScalarPtr xmax,
+                  bool useYmin, KstScalarPtr ymin,
                   bool useYmax, KstScalarPtr ymax, KstVectorPtr flag);
     KstVectorView(const QDomElement &e);
     virtual ~KstVectorView();

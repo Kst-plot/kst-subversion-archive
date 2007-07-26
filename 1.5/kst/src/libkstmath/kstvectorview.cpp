@@ -259,7 +259,6 @@ KstObject::UpdateType KstVectorView::update(int update_counter) {
 
     outXVec->resize(in,false);
     outYVec->resize(in,false);
-
   } else if (inYVec->length() == NS && inYVec->isRising()) { //also good.
     int i_bot = inYVec->indexNearX(ymin,NS); //closest index to xmin
     int i_top = inYVec->indexNearX(ymax,NS);
@@ -301,19 +300,19 @@ KstObject::UpdateType KstVectorView::update(int update_counter) {
     double yv;
     for (long i=0; i<=NSm1; i++) {
       if (!flagVec || !flagVec->interpolate(i,NS)) { //only the LHS should be evaluated if !flagVec.
-	double xv = inXVec->interpolate(i,NS);
-	if ( (xmin <= xv) && (xmax >= xv) ) {
-	  yv = inYVec->interpolate(i,NS);
-	  if ( (ymin <= yv) && (ymax >= yv) ) {
-	    outXArr[in] = xv;
-	    outYArr[in] = yv;
-	    in++;
-	  }
-	}
+        double xv = inXVec->interpolate(i,NS);
+        if ( (xmin <= xv) && (xmax >= xv) ) {
+          yv = inYVec->interpolate(i,NS);
+          if ( (ymin <= yv) && (ymax >= yv) ) {
+            outXArr[in] = xv;
+            outYArr[in] = yv;
+            in++;
+          }
+        }
       }
     }
-    outXVec->resize(in,false);
-    outYVec->resize(in,false);
+    outXVec->resize(in, false);
+    outYVec->resize(in, false);
   }
 
   unlockInputsAndOutputs();
@@ -322,40 +321,48 @@ KstObject::UpdateType KstVectorView::update(int update_counter) {
 
 void KstVectorView::setXminScalar(KstScalarPtr xmin) {
   if (xmin != _xmin) {
-    disconnect( _xmin, SIGNAL(trigger()), this, SLOT(scalarChanged())); //should be fine even w/ null arguments.
+    if (_xmin != 0L) {
+      disconnect(_xmin, SIGNAL(trigger()), this, SLOT(scalarChanged()));
+    }
     _xmin = xmin;
     if (xmin && _useXmin) {
-      connect( xmin, SIGNAL(trigger()), this, SLOT(scalarChanged()));
+      connect(xmin, SIGNAL(trigger()), this, SLOT(scalarChanged()));
     }
   }
 }
 
 void KstVectorView::setXmaxScalar(KstScalarPtr xmax) {
   if (xmax != _xmax) {
-    disconnect( _xmax, SIGNAL(trigger()), this, SLOT(scalarChanged())); //should be fine even w/ null arguments.
+    if (_xmax != 0L) {
+      disconnect(_xmax, SIGNAL(trigger()), this, SLOT(scalarChanged()));
+    }
     _xmax = xmax;
     if (xmax && _useXmax) {
-      connect( xmax, SIGNAL(trigger()), this, SLOT(scalarChanged()));
+      connect(xmax, SIGNAL(trigger()), this, SLOT(scalarChanged()));
     }
   }
 }
 
 void KstVectorView::setYminScalar(KstScalarPtr ymin) {
   if (ymin != _ymin) {
-    disconnect( _ymin, SIGNAL(trigger()), this, SLOT(scalarChanged())); //should be fine even w/ null arguments.
+    if (_ymin != 0L) {
+      disconnect(_ymin, SIGNAL(trigger()), this, SLOT(scalarChanged()));
+    }
     _ymin = ymin;
     if (ymin && _useYmin) {
-      connect( ymin, SIGNAL(trigger()), this, SLOT(scalarChanged()));
+      connect(ymin, SIGNAL(trigger()), this, SLOT(scalarChanged()));
     }
   }
 }
 
 void KstVectorView::setYmaxScalar(KstScalarPtr ymax) {
   if (ymax != _ymax) {
-    disconnect( _ymax, SIGNAL(trigger()), this, SLOT(scalarChanged())); //should be fine even w/ null arguments.
+    if (_ymax != 0L) {
+      disconnect(_ymax, SIGNAL(trigger()), this, SLOT(scalarChanged()));
+    }
     _ymax = ymax;
     if (ymax && _useYmax) {
-      connect( ymax, SIGNAL(trigger()), this, SLOT(scalarChanged()));
+      connect(ymax, SIGNAL(trigger()), this, SLOT(scalarChanged()));
     }
   }
 }
@@ -363,29 +370,53 @@ void KstVectorView::setYmaxScalar(KstScalarPtr ymax) {
 void KstVectorView::setUseXmin(bool useXmin) {
   _useXmin = useXmin;
 
-  if (!_useXmin) { disconnect( _xmin, SIGNAL(trigger()), this, SLOT(scalarChanged())); }
-  if (_useXmin && _xmin) { connect( _xmin, SIGNAL(trigger()), this, SLOT(scalarChanged())); }
+  if (!_useXmin) {
+    if (_xmin != 0L) {
+      disconnect(_xmin, SIGNAL(trigger()), this, SLOT(scalarChanged()));
+    }
+  }
+  if (_useXmin && _xmin) { 
+    connect(_xmin, SIGNAL(trigger()), this, SLOT(scalarChanged())); 
+  }
 }
 
 void KstVectorView::setUseXmax(bool useXmax) {
   _useXmax = useXmax;
 
-  if (!_useXmax) { disconnect( _xmax, SIGNAL(trigger()), this, SLOT(scalarChanged())); }
-  if (_useXmax && _xmax) { connect( _xmax, SIGNAL(trigger()), this, SLOT(scalarChanged())); }
+  if (!_useXmax) { 
+    if (_xmax != 0L) {
+      disconnect(_xmax, SIGNAL(trigger()), this, SLOT(scalarChanged()));
+    }
+  }
+  if (_useXmax && _xmax) { 
+    connect(_xmax, SIGNAL(trigger()), this, SLOT(scalarChanged())); 
+  }
 }
 
 void KstVectorView::setUseYmin(bool useYmin) {
   _useYmin = useYmin;
 
-  if (!_useYmin) { disconnect( _ymin, SIGNAL(trigger()), this, SLOT(scalarChanged())); }
-  if (_useYmin && _ymin) { connect( _ymin, SIGNAL(trigger()), this, SLOT(scalarChanged())); }
+  if (!_useYmin) {
+    if (_ymin != 0L) {
+      disconnect(_ymin, SIGNAL(trigger()), this, SLOT(scalarChanged()));
+    }
+  }
+  if (_useYmin && _ymin) { 
+    connect(_ymin, SIGNAL(trigger()), this, SLOT(scalarChanged())); 
+  }
 }
 
 void KstVectorView::setUseYmax(bool useYmax) {
   _useYmax = useYmax;
 
-  if (!_useYmax) { disconnect( _ymax, SIGNAL(trigger()), this, SLOT(scalarChanged())); }
-  if (_useYmax && _ymax) { connect( _ymax, SIGNAL(trigger()), this, SLOT(scalarChanged())); }
+  if (!_useYmax) { 
+    if (_ymax != 0L) {
+      disconnect(_ymax, SIGNAL(trigger()), this, SLOT(scalarChanged()));
+    }
+  }
+  if (_useYmax && _ymax) { 
+    connect(_ymax, SIGNAL(trigger()), this, SLOT(scalarChanged())); 
+  }
 }
 
 void KstVectorView::setXVector(KstVectorPtr new_v) {
