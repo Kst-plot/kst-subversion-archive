@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <class>DataWizard</class>
 <widget class="QWizard">
     <property name="name">
@@ -34,7 +34,7 @@
             <property name="name">
                 <cstring>unnamed</cstring>
             </property>
-            <widget class="QLabel" row="0" column="0" rowspan="1" colspan="3">
+            <widget class="QLabel" row="0" column="0">
                 <property name="name">
                     <cstring>textLabel2</cstring>
                 </property>
@@ -45,71 +45,7 @@
                     <set>WordBreak|AlignTop</set>
                 </property>
             </widget>
-            <spacer row="2" column="2">
-                <property name="name">
-                    <cstring>spacer2</cstring>
-                </property>
-                <property name="orientation">
-                    <enum>Horizontal</enum>
-                </property>
-                <property name="sizeType">
-                    <enum>Expanding</enum>
-                </property>
-                <property name="sizeHint">
-                    <size>
-                        <width>71</width>
-                        <height>21</height>
-                    </size>
-                </property>
-            </spacer>
-            <spacer row="2" column="0">
-                <property name="name">
-                    <cstring>spacer1</cstring>
-                </property>
-                <property name="orientation">
-                    <enum>Horizontal</enum>
-                </property>
-                <property name="sizeType">
-                    <enum>Expanding</enum>
-                </property>
-                <property name="sizeHint">
-                    <size>
-                        <width>101</width>
-                        <height>21</height>
-                    </size>
-                </property>
-            </spacer>
-            <widget class="KURLRequester" row="2" column="1">
-                <property name="name">
-                    <cstring>_url</cstring>
-                </property>
-                <property name="sizePolicy">
-                    <sizepolicy>
-                        <hsizetype>5</hsizetype>
-                        <vsizetype>5</vsizetype>
-                        <horstretch>3</horstretch>
-                        <verstretch>0</verstretch>
-                    </sizepolicy>
-                </property>
-            </widget>
-            <spacer row="1" column="1" rowspan="1" colspan="2">
-                <property name="name">
-                    <cstring>spacer0</cstring>
-                </property>
-                <property name="orientation">
-                    <enum>Vertical</enum>
-                </property>
-                <property name="sizeType">
-                    <enum>Expanding</enum>
-                </property>
-                <property name="sizeHint">
-                    <size>
-                        <width>637</width>
-                        <height>151</height>
-                    </size>
-                </property>
-            </spacer>
-            <spacer row="4" column="1" rowspan="1" colspan="2">
+            <spacer row="3" column="0">
                 <property name="name">
                     <cstring>spacer0_2</cstring>
                 </property>
@@ -126,9 +62,9 @@
                     </size>
                 </property>
             </spacer>
-            <widget class="QLayoutWidget" row="3" column="1" rowspan="1" colspan="2">
+            <widget class="QLayoutWidget" row="2" column="0">
                 <property name="name">
-                    <cstring>layout22</cstring>
+                    <cstring>layout62</cstring>
                 </property>
                 <hbox>
                     <property name="name">
@@ -136,7 +72,7 @@
                     </property>
                     <spacer>
                         <property name="name">
-                            <cstring>spacer18</cstring>
+                            <cstring>spacer1</cstring>
                         </property>
                         <property name="orientation">
                             <enum>Horizontal</enum>
@@ -146,56 +82,140 @@
                         </property>
                         <property name="sizeHint">
                             <size>
-                                <width>408</width>
-                                <height>22</height>
+                                <width>34</width>
+                                <height>50</height>
                             </size>
                         </property>
                     </spacer>
-                    <widget class="QLabel">
+                    <widget class="QLayoutWidget">
                         <property name="name">
-                            <cstring>_fileType</cstring>
+                            <cstring>layout61</cstring>
                         </property>
-                        <property name="sizePolicy">
-                            <sizepolicy>
-                                <hsizetype>0</hsizetype>
-                                <vsizetype>0</vsizetype>
-                                <horstretch>10</horstretch>
-                                <verstretch>0</verstretch>
-                            </sizepolicy>
-                        </property>
+                        <vbox>
+                            <property name="name">
+                                <cstring>unnamed</cstring>
+                            </property>
+                            <widget class="KURLRequester">
+                                <property name="name">
+                                    <cstring>_url</cstring>
+                                </property>
+                                <property name="sizePolicy">
+                                    <sizepolicy>
+                                        <hsizetype>5</hsizetype>
+                                        <vsizetype>5</vsizetype>
+                                        <horstretch>3</horstretch>
+                                        <verstretch>0</verstretch>
+                                    </sizepolicy>
+                                </property>
+                            </widget>
+                            <widget class="QLayoutWidget">
+                                <property name="name">
+                                    <cstring>layout22</cstring>
+                                </property>
+                                <hbox>
+                                    <property name="name">
+                                        <cstring>unnamed</cstring>
+                                    </property>
+                                    <spacer>
+                                        <property name="name">
+                                            <cstring>spacer18</cstring>
+                                        </property>
+                                        <property name="orientation">
+                                            <enum>Horizontal</enum>
+                                        </property>
+                                        <property name="sizeType">
+                                            <enum>Expanding</enum>
+                                        </property>
+                                        <property name="sizeHint">
+                                            <size>
+                                                <width>408</width>
+                                                <height>22</height>
+                                            </size>
+                                        </property>
+                                    </spacer>
+                                    <widget class="QLabel">
+                                        <property name="name">
+                                            <cstring>_fileType</cstring>
+                                        </property>
+                                        <property name="sizePolicy">
+                                            <sizepolicy>
+                                                <hsizetype>0</hsizetype>
+                                                <vsizetype>0</vsizetype>
+                                                <horstretch>10</horstretch>
+                                                <verstretch>0</verstretch>
+                                            </sizepolicy>
+                                        </property>
+                                    </widget>
+                                    <widget class="QPushButton">
+                                        <property name="name">
+                                            <cstring>_testURL</cstring>
+                                        </property>
+                                        <property name="text">
+                                            <string>Connec&amp;t</string>
+                                        </property>
+                                    </widget>
+                                    <widget class="QPushButton">
+                                        <property name="name">
+                                            <cstring>_configureSource</cstring>
+                                        </property>
+                                        <property name="enabled">
+                                            <bool>false</bool>
+                                        </property>
+                                        <property name="sizePolicy">
+                                            <sizepolicy>
+                                                <hsizetype>1</hsizetype>
+                                                <vsizetype>5</vsizetype>
+                                                <horstretch>0</horstretch>
+                                                <verstretch>0</verstretch>
+                                            </sizepolicy>
+                                        </property>
+                                        <property name="text">
+                                            <string>Con&amp;figure...</string>
+                                        </property>
+                                        <property name="accel">
+                                            <string>Alt+F</string>
+                                        </property>
+                                    </widget>
+                                </hbox>
+                            </widget>
+                        </vbox>
                     </widget>
-                    <widget class="QPushButton">
+                    <spacer>
                         <property name="name">
-                            <cstring>_testURL</cstring>
+                            <cstring>spacer2</cstring>
                         </property>
-                        <property name="hidden">
-                            <bool>true</bool>
+                        <property name="orientation">
+                            <enum>Horizontal</enum>
                         </property>
-                        <property name="text">
-                            <string>Connec&amp;t</string>
+                        <property name="sizeType">
+                            <enum>Expanding</enum>
                         </property>
-                     </widget>
-                     <widget class="QPushButton">
-                        <property name="name">
-                            <cstring>_configureSource</cstring>
+                        <property name="sizeHint">
+                            <size>
+                                <width>30</width>
+                                <height>50</height>
+                            </size>
                         </property>
-                        <property name="enabled">
-                            <bool>false</bool>
-                        </property>
-                        <property name="sizePolicy">
-                            <sizepolicy>
-                                <hsizetype>1</hsizetype>
-                                <vsizetype>5</vsizetype>
-                                <horstretch>0</horstretch>
-                                <verstretch>0</verstretch>
-                            </sizepolicy>
-                        </property>
-                        <property name="text">
-                            <string>Con&amp;figure...</string>
-                        </property>
-                    </widget>
+                    </spacer>
                 </hbox>
             </widget>
+            <spacer row="1" column="0">
+                <property name="name">
+                    <cstring>spacer0</cstring>
+                </property>
+                <property name="orientation">
+                    <enum>Vertical</enum>
+                </property>
+                <property name="sizeType">
+                    <enum>Expanding</enum>
+                </property>
+                <property name="sizeHint">
+                    <size>
+                        <width>637</width>
+                        <height>190</height>
+                    </size>
+                </property>
+            </spacer>
         </grid>
     </widget>
     <widget class="QWidget">
@@ -1256,8 +1276,6 @@
 </widget>
 <customwidgets>
 </customwidgets>
-<connections>
-</connections>
 <tabstops>
     <tabstop>_url</tabstop>
     <tabstop>_configureSource</tabstop>
@@ -1343,13 +1361,8 @@
     <include location="global" impldecl="in implementation">kurlcompletion.h</include>
     <include location="global" impldecl="in implementation">kdebug.h</include>
     <include location="global" impldecl="in implementation">vectorlistview.h</include>
-    <include location="local" impldecl="in implementation">datawizard.ui.h</include>
     <include location="local" impldecl="in implementation">kstplotlabel.h</include>
 </includes>
-<variables>
-</variables>
-<functions>
-</functions>
 <pixmapinproject/>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
@@ -1357,6 +1370,16 @@
     <includehint>klineedit.h</includehint>
     <includehint>kpushbutton.h</includehint>
     <includehint>vectorlistview.h</includehint>
+    <includehint>vectorlistview.h</includehint>
+    <includehint>datarangewidget.h</includehint>
     <includehint>kstcombobox.h</includehint>
+    <includehint>klineedit.h</includehint>
+    <includehint>vectorselector.h</includehint>
+    <includehint>kstcombobox.h</includehint>
+    <includehint>fftoptionswidget.h</includehint>
+    <includehint>kstcombobox.h</includehint>
+    <includehint>klineedit.h</includehint>
+    <includehint>kstcombobox.h</includehint>
+    <includehint>klineedit.h</includehint>
 </includehints>
 </UI>

@@ -126,6 +126,7 @@ DataWizard(parent, name, modal, fl )
   setHelpEnabled(_pagePlot, false);
   _newFilter->setEnabled(false);
   _newFilter->hide(); // FIXME: implement this
+  _testURL->hide();
   _url->setURL(default_source);
   _url->completionObject()->setDir(QDir::currentDirPath());
   _url->setFocus();
