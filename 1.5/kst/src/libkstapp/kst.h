@@ -365,17 +365,18 @@ class KST_EXPORT KstApp : public KMdiMainFrm {
 
     /** calls doc->samplesUp */
     void samplesUp();
-    
+
     /** calls update on all the dialogs */
     void updateVisibleDialogs();
     // is there ever a reason to update hidden dialogs?
     void updateDialogs(bool onlyVisible = true);
     void updateDataDialogs(bool dataManager = true, bool viewManager = true);
     void updateDialogsForWindow();
+    void updateDialogsForPlot();
     void updateDataNotifier();
     void updateDataManager(bool onlyVisible);
     void updateViewManager(bool onlyVisible);
-    
+
     /*** shows doc as modified, updates doc and dialogs */
     void registerDocChange();
 
@@ -586,12 +587,12 @@ class KST_EXPORT KstApp : public KMdiMainFrm {
     KConfig *_dataSourceConfig;
     QValueList<KstOpen> _openQueue;
     KstGraphicType _graphicType;
-    
+
     KstTopLevelView::ViewMode _viewMode;
     QString _createType;
     QGuardedPtr<KstDebugNotifier> _debugNotifier;
     QGuardedPtr<KstDataNotifier> _dataNotifier;
 };
 
-#endif // KST_H
-// vim: ts=2 sw=2 et
+#endif
+

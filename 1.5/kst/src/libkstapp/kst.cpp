@@ -1955,6 +1955,7 @@ void KstApp::newPlot() {
     assert(w);
   }
   w->createPlot(KST::suggestPlotName(), false);
+  updateDialogsForPlot();
 }
 
 
@@ -2084,7 +2085,7 @@ void KstApp::updateDataDialogs(bool dm, bool vm) {
   if (vm) {
     viewManager->updateContents();
   }
-  
+
   updateMemoryStatus();
 }
 
@@ -2168,6 +2169,21 @@ void KstApp::updateDialogs(bool onlyVisible) {
 
 
 void KstApp::updateDialogsForWindow() {
+  if (!_stopping) {
+    KstCsdDialogI::globalInstance()->updateWindow();
+    KstEqDialogI::globalInstance()->updateWindow();
+    KstHsDialogI::globalInstance()->updateWindow();
+    KstVvDialogI::globalInstance()->updateWindow();
+    KstPsdDialogI::globalInstance()->updateWindow();
+    KstCurveDialogI::globalInstance()->updateWindow();
+    KstImageDialogI::globalInstance()->updateWindow();
+    updateDataManager(false);
+    updateViewManager(false);
+  }
+}
+
+
+void KstApp::updateDialogsForPlot() {
   if (!_stopping) {
     KstCsdDialogI::globalInstance()->updateWindow();
     KstEqDialogI::globalInstance()->updateWindow();
@@ -2624,4 +2640,4 @@ void KstApp::emitTimezoneChanged(const QString& tz, int utcOffset) {
 }
 
 #include "kst.moc"
-// vim: ts=2 sw=2 et
+
