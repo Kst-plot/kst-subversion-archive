@@ -350,6 +350,10 @@ int main(int argc, char *argv[]) {
                       I18N_NOOP("University of British Columbia"),
                       "",
                       "");
+  aboutData.addAuthor("Duncan Hanson",
+                      I18N_NOOP("University of British Columbia"),
+                      "",
+                      "");
   aboutData.addAuthor("Nicolas Brisset",
                       "",
                       "",
