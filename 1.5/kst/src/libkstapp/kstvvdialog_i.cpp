@@ -1,10 +1,11 @@
 /***************************************************************************
-                       kstvvdialog_i.h  -  Dialog for KstVectorView objects.
+                       kstvvdialog_i.cpp  -  Dialog for KstVectorView objects.
                              -------------------
-    begin                :
-    copyright            : (C) 2007 Kst
+    begin                : 2007
+    copyright            : (C) 2007 by The University of British Columbia
     email                :
  ***************************************************************************/
+
 /***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -57,13 +58,11 @@ KstVvDialogI *KstVvDialogI::globalInstance() {
 KstVvDialogI::KstVvDialogI(QWidget* parent, const char* name, bool modal, WFlags fl)
 : KstDataDialog(parent, name, modal, fl) {
   _w = new VectorViewDialogWidget(_contents);
-  setMultiple(false);
+  setMultiple(true);
 
   connect(_w->_xVector, SIGNAL(newVectorCreated(const QString&)), this, SIGNAL(modified()));
   connect(_w->_yVector, SIGNAL(newVectorCreated(const QString&)), this, SIGNAL(modified()));
-
   connect(_w->_FlagVector, SIGNAL(newVectorCreated(const QString&)), this, SIGNAL(modified()));
-
   connect(_w->_xMinScalar, SIGNAL(newScalarCreated()), this, SIGNAL(modified()));
   connect(_w->_xMaxScalar, SIGNAL(newScalarCreated()), this, SIGNAL(modified()));
   connect(_w->_yMinScalar, SIGNAL(newScalarCreated()), this, SIGNAL(modified()));
@@ -87,6 +86,12 @@ KstVvDialogI::KstVvDialogI(QWidget* parent, const char* name, bool modal, WFlags
 
   QColor qc = _w->_curveAppearance->color();
   _w->_curveAppearance->setValue(false, false, true, qc, 0, 0, 0, 1, 0);
+
+  // for multiple edit mode
+  connect(_w->_xMinCheckbox, SIGNAL(clicked()), this, SLOT(xMinCheckboxClicked()));
+  connect(_w->_xMaxCheckbox, SIGNAL(clicked()), this, SLOT(xMaxCheckboxClicked()));
+  connect(_w->_yMinCheckbox, SIGNAL(clicked()), this, SLOT(yMinCheckboxClicked()));
+  connect(_w->_yMaxCheckbox, SIGNAL(clicked()), this, SLOT(yMaxCheckboxClicked()));
 }
 
 
@@ -102,17 +107,17 @@ void KstVvDialogI::updatePlotList()
 {
     QString old;
     if (_w->_plotList->count()) {
-	old = _w->_plotList->currentText();
+      old = _w->_plotList->currentText();
     }
 
     QStringList plots = KstData::self()->plotList();
     _w->_plotList->clear();
     for (QStringList::ConstIterator i = plots.begin(); i != plots.end(); ++i) {
-	_w->_plotList->insertItem(*i);
+      _w->_plotList->insertItem(*i);
     }
 
     if (!old.isNull() && plots.contains(old)) {
-	_w->_plotList->setCurrentText(old);
+      _w->_plotList->setCurrentText(old);
     }
 }
 
@@ -130,7 +135,9 @@ void KstVvDialogI::fillFieldsForEdit() {
   _w->_xVector->setSelection(vp->in_xVTag());
   _w->_yVector->setSelection(vp->in_yVTag());
 
-  if (vp->hasFlag()) { _w->_FlagVector->setSelection(vp->FlagTag()); }
+  if (vp->hasFlag()) {
+    _w->_FlagVector->setSelection(vp->FlagTag()); 
+  }
 
   _w->_xMinCheckbox->setChecked(vp->useXmin());
   _w->_xMaxCheckbox->setChecked(vp->useXmax());
@@ -145,7 +152,11 @@ void KstVvDialogI::fillFieldsForEdit() {
   } else if (*KST::scalarList.findTag(sc->tag().displayString())) {
     _w->_xMinScalar->setSelection(sc->tag().displayString());
   } else {
-    _w->_xMinScalar->setSelection(QString::number(sc->value())); //our scalar has been removed from the global list... just put its current value into the scalar selector. warning: after edit it won't be updated anymore! the motivation for putting this in is to not lose scale information when a plot is deleted.
+    // our scalar has been removed from the global list...
+    // just put its current value into the scalar selector.
+    // warning: after edit it won't be updated anymore!
+    // the motivation for putting this in is to not lose scale information when a plot is deleted.
+    _w->_xMinScalar->setSelection(QString::number(sc->value())); 
   }
 
   sc = vp->xMaxScalar();
@@ -364,27 +375,39 @@ bool KstVvDialogI::editSingleObject(KstVectorViewPtr vvPtr) {
   }
 
   if (_interpTypeDirty) {
-    vvPtr->setInterp(KstVectorView::InterpType(_w->_interp->currentItem()));
+    if (_editMultipleMode) {
+      vvPtr->setInterp(KstVectorView::InterpType(_w->_interp->currentItem()-1));
+    } else {
+      vvPtr->setInterp(KstVectorView::InterpType(_w->_interp->currentItem()));
+    }
   }
 
   if (_xMinScalarDirty) {
     KstScalarPtr s = _w->_xMinScalar->selectedScalarPtr();
-    if (s) {vvPtr->setXminScalar(s); }
+    if (s) {
+      vvPtr->setXminScalar(s);
+    }
   }
 
   if (_xMaxScalarDirty) {
     KstScalarPtr s = _w->_xMaxScalar->selectedScalarPtr();
-    if (s) {vvPtr->setXmaxScalar(s); }
+    if (s) {
+      vvPtr->setXmaxScalar(s);
+    }
   }
 
   if (_yMinScalarDirty) {
     KstScalarPtr s = _w->_yMinScalar->selectedScalarPtr();
-    if (s) {vvPtr->setYminScalar(s); }
+    if (s) {
+      vvPtr->setYminScalar(s);
+    }
   }
 
   if (_yMaxScalarDirty) {
     KstScalarPtr s = _w->_yMaxScalar->selectedScalarPtr();
-    if (s) {vvPtr->setYmaxScalar(s); }
+    if (s) {
+      vvPtr->setYmaxScalar(s);
+    }
   }
 
   if (_FlagVectorDirty) {
@@ -418,11 +441,42 @@ bool KstVvDialogI::editSingleObject(KstVectorViewPtr vvPtr) {
 
 
 bool KstVvDialogI::editObject() {
-
+  _FlagVectorDirty = _w->_FlagVector->_vector->currentItem() != 0;
+  _xVectorDirty = _w->_xVector->_vector->currentItem() != 0;
+  _yVectorDirty = _w->_yVector->_vector->currentItem() != 0;
+  _useXminDirty = _w->_xMinCheckbox->state() != QButton::NoChange;
+  _useXmaxDirty = _w->_xMaxCheckbox->state() != QButton::NoChange;
+  _useYminDirty = _w->_yMinCheckbox->state() != QButton::NoChange;
+  _useYmaxDirty = _w->_yMaxCheckbox->state() != QButton::NoChange;
+  _xMinScalarDirty = _w->_xMinScalar->_scalar->currentItem() != 0;
+  _xMaxScalarDirty = _w->_xMaxScalar->_scalar->currentItem() != 0;
+  _yMinScalarDirty = _w->_yMinScalar->_scalar->currentItem() != 0;
+  _yMaxScalarDirty = _w->_yMaxScalar->_scalar->currentItem() != 0;
+  _interpTypeDirty = _w->_interp->currentItem() != 0;
   KstVectorViewList vvList = kstObjectSubList<KstDataObject,KstVectorView>(KST::dataObjectList);
 
   if (_editMultipleMode) {
-    //currently no edit multiple for vectorviews.
+    bool didEdit = false;
+    for (uint i = 0; i < _editMultipleWidget->_objectList->count(); i++) {
+      if (_editMultipleWidget->_objectList->isSelected(i)) {
+        // get the pointer to the object
+        KstVectorViewList::Iterator vvIter = vvList.findTag(_editMultipleWidget->_objectList->text(i));
+        if (vvIter == vvList.end()) {
+          return false;
+        }
+
+        KstVectorViewPtr vvPtr = *vvIter;
+
+        if (!editSingleObject(vvPtr)) {
+          return false;
+        }
+        didEdit = true;
+      }
+    }
+    if (!didEdit) {
+      KMessageBox::sorry(this, i18n("Select one or more objects to edit."));
+      return false;
+    }
   } else {
     KstVectorViewPtr vp = kst_cast<KstVectorView>(_dp);
     // verify that the curve name is unique
@@ -436,19 +490,14 @@ bool KstVvDialogI::editObject() {
     _xVectorDirty = true;
     _yVectorDirty = true;
     _interpTypeDirty = true;
-
     _useXminDirty = true;
     _xMinScalarDirty = true;
-
     _useXmaxDirty = true;
     _xMaxScalarDirty = true;
-
     _useYminDirty = true;
     _yMinScalarDirty = true;
-
     _useYmaxDirty = true;
     _yMaxScalarDirty = true;
-
     _FlagVectorDirty = true;
 
     // then edit the object
@@ -456,17 +505,20 @@ bool KstVvDialogI::editObject() {
       return false;
     }
   }
+
   emit modified();
 
   return true;
 }
 
+
 void KstVvDialogI::updateButtons() {
-  _w->_xMinScalar->setEnabled(_w->_xMinCheckbox->isChecked());
-  _w->_xMaxScalar->setEnabled(_w->_xMaxCheckbox->isChecked());
-  _w->_yMinScalar->setEnabled(_w->_yMinCheckbox->isChecked());
-  _w->_yMaxScalar->setEnabled(_w->_yMaxCheckbox->isChecked());
+  _w->_xMinScalar->setEnabled(_w->_xMinCheckbox->state() != QButton::Off);
+  _w->_xMaxScalar->setEnabled(_w->_xMaxCheckbox->state() != QButton::Off);
+  _w->_yMinScalar->setEnabled(_w->_yMinCheckbox->state() != QButton::Off);
+  _w->_yMaxScalar->setEnabled(_w->_yMaxCheckbox->state() != QButton::Off);
 }
+
 
 void KstVvDialogI::realtimeClicked() {
   Kst2DPlotPtr plot = Kst2DPlot::findPlotByName(_w->_plotList->currentText()); 
@@ -489,6 +541,7 @@ void KstVvDialogI::realtimeClicked() {
 
   updateButtons();
 }
+
 
 void KstVvDialogI::currentClicked() {
     Kst2DPlotPtr plot = Kst2DPlot::findPlotByName(_w->_plotList->currentText());
@@ -519,20 +572,94 @@ void KstVvDialogI::currentClicked() {
     updateButtons();
 }
 
-void KstVvDialogI::populateEditMultiple() {
-}
 
 void KstVvDialogI::cleanup() {
+  if (_editMultipleMode) {
+    _w->_xMinCheckbox->setTristate(false);
+    _w->_xMaxCheckbox->setTristate(false);
+    _w->_yMinCheckbox->setTristate(false);
+    _w->_yMaxCheckbox->setTristate(false);
+    _w->_interp->removeItem(0);
+  }
 }
+
+
+void KstVvDialogI::populateEditMultiple() {
+  KstVectorViewList vvlist = kstObjectSubList<KstDataObject,KstVectorView>(KST::dataObjectList);
+  _editMultipleWidget->_objectList->insertStringList(vvlist.tagNames());
+
+  // also intermediate state for multiple edit
+  _w->_xVector->_vector->insertItem("", 0);
+  _w->_xVector->_vector->setCurrentItem(0);
+  _w->_yVector->_vector->insertItem("", 0);
+  _w->_yVector->_vector->setCurrentItem(0);
+  _w->_interp->insertItem("", 0);
+  _w->_interp->setCurrentItem(0);
+  _w->_xMinCheckbox->setNoChange();
+  _w->_xMinScalar->_scalar->insertItem("", 0);
+  _w->_xMinScalar->_scalar->setCurrentItem(0);
+  _w->_xMaxCheckbox->setNoChange();
+  _w->_xMaxScalar->_scalar->insertItem("", 0);
+  _w->_xMaxScalar->_scalar->setCurrentItem(0);
+  _w->_yMinCheckbox->setNoChange();
+  _w->_yMinScalar->_scalar->insertItem("", 0);
+  _w->_yMinScalar->_scalar->setCurrentItem(0);
+  _w->_yMaxCheckbox->setNoChange();
+  _w->_yMaxScalar->_scalar->insertItem("", 0);
+  _w->_yMaxScalar->_scalar->setCurrentItem(0);
+  _w->_FlagVector->_vector->insertItem("", 0);
+  _w->_FlagVector->_vector->setCurrentItem(0);
+
+  _tagName->setText("");
+  _tagName->setEnabled(false);
+
+  // and clean all the fields
+  _xVectorDirty = false;
+  _yVectorDirty = false;
+  _interpTypeDirty = false;
+  _useXminDirty = false;
+  _useXmaxDirty = false;
+  _useYminDirty = false;
+  _useYmaxDirty = false;
+  _xMinScalarDirty = false;
+  _xMaxScalarDirty = false;
+  _yMinScalarDirty = false;
+  _yMaxScalarDirty = false;
+  _useFlagVectorDirty = false;
+  _FlagVectorDirty = false;
+
+  updateButtons();
+}
+
 
 void KstVvDialogI::setXVector(const QString& name) {
   _w->_xVector->setSelection(name);
 }
+
 
 void KstVvDialogI::setYVector(const QString& name) {
   _w->_xVector->setSelection(name);
 }
 
 
+void KstVvDialogI::xMinCheckboxClicked() {
+  _w->_xMinCheckbox->setTristate(FALSE);
+}
+
+
+void KstVvDialogI::xMaxCheckboxClicked() {
+  _w->_xMaxCheckbox->setTristate(FALSE);
+}
+
+
+void KstVvDialogI::yMinCheckboxClicked() {
+  _w->_yMinCheckbox->setTristate(FALSE);
+}
+
+
+void KstVvDialogI::yMaxCheckboxClicked() {
+  _w->_yMaxCheckbox->setTristate(FALSE);
+}
+
 #include "kstvvdialog_i.moc"
-// vim: ts=2 sw=2 et
+

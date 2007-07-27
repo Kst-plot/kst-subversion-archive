@@ -1,8 +1,8 @@
 /***************************************************************************
                        kstvvdialog_i.h  -  Dialog for KstVectorView objects.
                              -------------------
-    begin                :
-    copyright            : (C) 2007 Kst
+    begin                : 2007
+    copyright            : (C) 2007 by The University of British Columbia
     email                :
  ***************************************************************************/
 
@@ -47,15 +47,19 @@ class KST_EXPORT KstVvDialogI : public KstDataDialog {
 
   private:
     static QGuardedPtr<KstVvDialogI> _inst;
-    // the following are for the multiple edit mode
 
+    // the following are for the multiple edit mode
     bool _xVectorDirty;
     bool _yVectorDirty;
     bool _interpTypeDirty;
-
-    bool _useXminDirty, _useXmaxDirty, _useYminDirty, _useYmaxDirty;
-    bool _xMinScalarDirty, _xMaxScalarDirty, _yMinScalarDirty, _yMaxScalarDirty;
-
+    bool _useXminDirty;
+    bool _useXmaxDirty;
+    bool _useYminDirty;
+    bool _useYmaxDirty;
+    bool _xMinScalarDirty;
+    bool _xMaxScalarDirty;
+    bool _yMinScalarDirty;
+    bool _yMaxScalarDirty;
     bool _useFlagVectorDirty;
     bool _FlagVectorDirty;
 
@@ -65,9 +69,12 @@ class KST_EXPORT KstVvDialogI : public KstDataDialog {
     void updateButtons();
     void setXVectorDirty() { _xVectorDirty = true; }
     void setYVectorDirty() { _yVectorDirty = true; }
-
     void realtimeClicked();
     void currentClicked();
+    void xMinCheckboxClicked();
+    void xMaxCheckboxClicked();
+    void yMinCheckboxClicked();
+    void yMaxCheckboxClicked();
 
   private:
     static const QString& defaultTag;
@@ -78,4 +85,4 @@ class KST_EXPORT KstVvDialogI : public KstDataDialog {
 };
 
 #endif
-// vim: ts=2 sw=2 et
+
