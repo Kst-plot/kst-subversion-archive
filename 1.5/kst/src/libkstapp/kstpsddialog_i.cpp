@@ -61,7 +61,7 @@ KstPsdDialogI::KstPsdDialogI(QWidget* parent, const char* name, bool modal, WFla
   _w = new PSDDialogWidget(_contents);
   setMultiple(true);
   connect(_w->_vector, SIGNAL(newVectorCreated(const QString&)), this, SIGNAL(modified()));
-  
+
   //for multiple edit mode
   connect(_w->_kstFFTOptions->Apodize, SIGNAL(clicked()), this, SLOT(setApodizeDirty()));
   connect(_w->_kstFFTOptions->RemoveMean, SIGNAL(clicked()), this, SLOT(setRemoveMeanDirty()));
@@ -303,11 +303,15 @@ bool KstPsdDialogI::editSingleObject(KstPSDPtr psPtr) {
   }
 
   if (_apodizeFxnDirty) {
-    psPtr->setApodizeFxn(ApodizeFunction(_w->_kstFFTOptions->ApodizeFxn->currentItem()));
+    if (_editMultipleMode) {
+      psPtr->setApodizeFxn(ApodizeFunction(_w->_kstFFTOptions->ApodizeFxn->currentItem()-1));
+    } else {
+      psPtr->setApodizeFxn(ApodizeFunction(_w->_kstFFTOptions->ApodizeFxn->currentItem()));
+    }
   }
 
   if (_gaussianSigmaDirty) {
-    psPtr->setGaussianSigma(_editMultipleMode ? _w->_kstFFTOptions->Sigma->value() - 1 : 
+    psPtr->setGaussianSigma(_editMultipleMode ? _w->_kstFFTOptions->Sigma->value() - 1 :
                                                 _w->_kstFFTOptions->Sigma->value());
   }
 
@@ -320,7 +324,11 @@ bool KstPsdDialogI::editSingleObject(KstPSDPtr psPtr) {
   }
 
   if (_outputDirty) {
-    psPtr->setOutput(PSDType(_w->_kstFFTOptions->Output->currentItem()));
+    if (_editMultipleMode) {
+      psPtr->setOutput(PSDType(_w->_kstFFTOptions->Output->currentItem()-1));
+    } else {
+      psPtr->setOutput(PSDType(_w->_kstFFTOptions->Output->currentItem()));
+    }
   }
 
   if (_interpolateHolesDirty) {
@@ -344,14 +352,15 @@ bool KstPsdDialogI::editSingleObject(KstPSDPtr psPtr) {
 bool KstPsdDialogI::editObject() {
   // if the user selected no vector, treat it as non-dirty
   _vectorDirty = _w->_vector->_vector->currentItem() != 0;
-  _apodizeDirty = _w->_kstFFTOptions->ApodizeFxn->currentItem() != 0;
+  _apodizeDirty = _w->_kstFFTOptions->Apodize->state() != QButton::NoChange;
+  _apodizeFxnDirty = _w->_kstFFTOptions->ApodizeFxn->currentItem() != 0;
   _fFTLenDirty = _w->_kstFFTOptions->FFTLen->text() != " ";
   _sampRateDirty = !_w->_kstFFTOptions->SampRate->text().isEmpty();
   _vectorUnitsDirty = !_w->_kstFFTOptions->VectorUnits->text().isEmpty();
   _rateUnitsDirty = !_w->_kstFFTOptions->RateUnits->text().isEmpty();
-  _outputDirty = !_w->_kstFFTOptions->Output->currentItem() != 0;
+  _outputDirty = _w->_kstFFTOptions->Output->currentItem() != 0;
   KstPSDList psList = kstObjectSubList<KstDataObject,KstPSD>(KST::dataObjectList);
-  
+
   // if editing multiple objects, edit each one
   if (_editMultipleMode) { 
     bool didEdit = false;
@@ -362,9 +371,9 @@ bool KstPsdDialogI::editObject() {
         if (psIter == psList.end()) {
           return false;
         }
-          
+
         KstPSDPtr psPtr = *psIter;
-        
+
         if (!editSingleObject(psPtr)) {
           return false;
         }
@@ -383,11 +392,11 @@ bool KstPsdDialogI::editObject() {
       _tagName->setFocus();
       return false;
     }
-    
+
     pp->writeLock();
     pp->setTagName(KstObjectTag(tag_name, pp->tag().context())); // FIXME: doesn't allow changing tag context
     pp->unlock();
-    
+
     // then edit the object
     _vectorDirty = true;
     _apodizeDirty = true;
@@ -434,7 +443,7 @@ void KstPsdDialogI::populateEditMultiple() {
   _w->_kstFFTOptions->Sigma->setValue(_w->_kstFFTOptions->Sigma->minValue());
   _w->_kstFFTOptions->Output->insertItem("", 0);
   _w->_kstFFTOptions->Output->setCurrentItem(0);
-  
+
   _tagName->setText("");
   _tagName->setEnabled(false);
 
