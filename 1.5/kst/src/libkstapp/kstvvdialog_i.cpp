@@ -523,7 +523,11 @@ void KstVvDialogI::updateButtons() {
 void KstVvDialogI::realtimeClicked() {
   Kst2DPlotPtr plot = Kst2DPlot::findPlotByName(_w->_plotList->currentText()); 
 
-  if (_w->_plotAxes->currentText() == "XY Axes" || _w->_plotAxes->currentText() == "X Axis") {
+  //
+  // the following assumes that the combo box entries are as follows:
+  //  XY Axes, X Axis, Y Axis
+  //
+  if (_w->_plotAxes->currentItem() == 0 || _w->_plotAxes->currentItem() == 1) {
     _w->_xMinCheckbox->setChecked(true);
     _w->_xMinScalar->setSelection((plot->scalars())["xmin"]->tag().displayString());
 
@@ -531,7 +535,7 @@ void KstVvDialogI::realtimeClicked() {
     _w->_xMaxScalar->setSelection((plot->scalars())["xmax"]->tag().displayString());
   }
 
-  if (_w->_plotAxes->currentText() == "XY Axes" || _w->_plotAxes->currentText() == "Y Axis") {
+  if (_w->_plotAxes->currentItem() == 0 || _w->_plotAxes->currentItem() == 2) {
     _w->_yMinCheckbox->setChecked(true);
     _w->_yMinScalar->setSelection((plot->scalars())["ymin"]->tag().displayString());
 
@@ -545,11 +549,14 @@ void KstVvDialogI::realtimeClicked() {
 
 void KstVvDialogI::currentClicked() {
     Kst2DPlotPtr plot = Kst2DPlot::findPlotByName(_w->_plotList->currentText());
-
     KstScalarPtr sp;
     double v;
 
-    if (_w->_plotAxes->currentText() == "XY Axes" || _w->_plotAxes->currentText() == "X Axis") {
+    //
+    // the following assumes that the combo box entries are as follows:
+    //  XY Axes, X Axis, Y Axis
+    //
+    if (_w->_plotAxes->currentItem() == 0 || _w->_plotAxes->currentItem() == 1) {
       _w->_xMinCheckbox->setChecked(true);
       v = (plot->scalars())["xmin"]->value();
       _w->_xMinScalar->setSelection(QString::number(v));
@@ -559,7 +566,7 @@ void KstVvDialogI::currentClicked() {
       _w->_xMaxScalar->setSelection(QString::number(v));
     }
 
-    if (_w->_plotAxes->currentText() == "XY Axes" || _w->_plotAxes->currentText() == "Y Axis") {
+    if (_w->_plotAxes->currentItem() == 0 || _w->_plotAxes->currentItem() == 2) {
       _w->_yMinCheckbox->setChecked(true);
       v = (plot->scalars())["ymin"]->value();
       _w->_yMinScalar->setSelection(QString::number(v));
