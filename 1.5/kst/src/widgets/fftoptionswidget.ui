@@ -505,6 +505,7 @@
     <include location="global" impldecl="in implementation">kmessagebox.h</include>
     <include location="local" impldecl="in implementation">kstobjectdefaults.h</include>
     <include location="global" impldecl="in declaration">kst_export.h</include>
+    <include location="global" impldecl="in implementation">psdcalculator.h</include>
     <include location="local" impldecl="in implementation">fftoptionswidget.ui.h</include>
 </includes>
 <slots>

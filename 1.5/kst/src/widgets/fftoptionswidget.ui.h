@@ -34,10 +34,15 @@ void KstFFTOptions::update()
 }
 
 void KstFFTOptions::changedApodizeFxn() {
-    int gaussianIndex = 5;
+    int gaussianIndex = WindowGaussian;
+
+    //
+    // if the first entry is empty then we are in edit multiple mode...
+    //
     if (ApodizeFxn->text(0).isEmpty()) {
       ++gaussianIndex;
     }
+
     Sigma->setEnabled(ApodizeFxn->currentItem() == gaussianIndex && Apodize->isChecked());
 }
 
