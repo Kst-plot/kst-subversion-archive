@@ -47,14 +47,14 @@ KstCSD::KstCSD(const QString &in_tag, KstVectorPtr in_V,
 : KstDataObject() {
   commonConstructor(in_tag, in_V, in_freq, in_average, in_removeMean,
                     in_apodize, in_apodizeFxn, in_windowSize, in_averageLength, in_gaussianSigma, 
-                    in_vectorUnits, in_rateUnits, in_outputType, in_V->tagName());
+                    in_vectorUnits, in_rateUnits, in_outputType, false, in_V->tagName());
   setDirty();
 }
 
 
 KstCSD::KstCSD(const QDomElement &e)
 : KstDataObject(e) {
-  
+
     QString in_tag;
     QString vecName;
     QString in_vectorUnits, in_rateUnits;
@@ -68,7 +68,8 @@ KstCSD::KstCSD(const QDomElement &e)
     int in_windowSize = 5000;
     double in_gaussianSigma = 3.0;
     PSDType in_outputType = PSDAmplitudeSpectralDensity;
-    
+    bool interpolateHoles = false;
+
     QDomNode n = e.firstChild();
     while (!n.isNull()) {
       QDomElement e = n.toElement(); // try to convert the node to an element.
@@ -99,24 +100,26 @@ KstCSD::KstCSD(const QDomElement &e)
           in_rateUnits = e.text();
         } else if (e.tagName() == "output") {
           in_outputType = (PSDType)e.text().toInt();
+        } else if (e.tagName() == "interpolateHoles") {
+          interpolateHoles = e.text().toInt() != 0;
         }
       }
       n = n.nextSibling();
     }
-    
+
     _inputVectorLoadQueue.append(qMakePair(INVECTOR, vecName));
-    
+
     commonConstructor(in_tag, in_V, in_freq, in_average, in_removeMean,
                       in_apodize, in_apodizeFxn, in_windowSize, in_averageLength, in_gaussianSigma,
-                      in_vectorUnits, in_rateUnits, in_outputType, vecName);
+                      in_vectorUnits, in_rateUnits, in_outputType, interpolateHoles, vecName);
 }
 
 
-void KstCSD::commonConstructor(const QString& in_tag, KstVectorPtr in_V,
-                               double in_freq, bool in_average, bool in_removeMean, bool in_apodize, 
-                               ApodizeFunction in_apodizeFxn, int in_windowSize, int in_averageLength, 
-                               double in_gaussianSigma, const QString& in_vectorUnits, 
-                               const QString& in_rateUnits, PSDType in_outputType, const QString& vecName) {
+void KstCSD::commonConstructor(const QString& in_tag, KstVectorPtr in_V, double in_freq, bool in_average, 
+                                bool in_removeMean, bool in_apodize, ApodizeFunction in_apodizeFxn, int in_windowSize, 
+                                int in_averageLength, double in_gaussianSigma, const QString& in_vectorUnits,
+                                const QString& in_rateUnits, PSDType in_outputType, bool in_interpolateHoles,
+                                const QString& vecName) {
   _typeString = i18n("Spectrogram");
   _type = "Spectrogram";
   _inputVectors[INVECTOR] = in_V;
@@ -132,6 +135,7 @@ void KstCSD::commonConstructor(const QString& in_tag, KstVectorPtr in_V,
   _vectorUnits = in_vectorUnits;
   _rateUnits = in_rateUnits;
   _outputType = in_outputType;
+  _interpolateHoles = in_interpolateHoles;
 
   if (_frequency <= 0.0) {
     _frequency = 1.0;
@@ -203,8 +207,8 @@ KstObject::UpdateType KstCSD::update(int update_counter) {
         break; //If there isn't enough left for a complete window.
     }
 
-    _psdCalculator.calculatePowerSpectrum(input + i, _windowSize, tempOutput, tempOutputLen, _removeMean,  false, _average, _averageLength, _apodize, _apodizeFxn, _gaussianSigma, _outputType, _frequency);
-    
+    _psdCalculator.calculatePowerSpectrum(input + i, _windowSize, tempOutput, tempOutputLen, _removeMean,  _interpolateHoles, _average, _averageLength, _apodize, _apodizeFxn, _gaussianSigma, _outputType, _frequency);
+
     // resize output matrix
     (*_outMatrix)->resize(xSize+1, tempOutputLen);
 
@@ -242,6 +246,7 @@ void KstCSD::save(QTextStream &ts, const QString& indent) {
   ts << l2 << "<average>" << _average << "</average>" << endl;
   ts << l2 << "<fftLen>" << int(ceil(log(double(_PSDLen*2)) / log(2.0))) << "</fftLen>" << endl;
   ts << l2 << "<removeMean>" << _removeMean << "</removeMean>" << endl;
+  ts << l2 << "<interpolateHoles>" << _interpolateHoles << "</interpolateHoles>" << endl;
   ts << l2 << "<apodize>" << _apodize << "</apodize>" << endl;
   ts << l2 << "<apodizefxn>" << _apodizeFxn << "</apodizefxn>" << endl;
   ts << l2 << "<windowsize>" << _windowSize << "</windowsize>" << endl;
@@ -354,18 +359,35 @@ void KstCSD::setFreq(double in_freq) {
   }
 }
 
+
 ApodizeFunction KstCSD::apodizeFxn() const {
   return _apodizeFxn;
-} 
+}
+
 
 void KstCSD::setApodizeFxn(ApodizeFunction in_fxn) {
   setDirty();
   _apodizeFxn = in_fxn;
 }
 
+
+bool KstCSD::interpolateHoles() const {
+  return _interpolateHoles;
+}
+
+
+void KstCSD::setInterpolateHoles(bool interpolate) {
+  if (interpolate != _interpolateHoles) {
+    _interpolateHoles = interpolate;
+    setDirty();
+  }
+}
+
+
 int KstCSD::length() const { 
   return _averageLength;
 }
+
 
 void KstCSD::setLength(int in_length) {
   _averageLength = in_length;
@@ -382,9 +404,11 @@ void KstCSD::setWindowSize(int in_size) {
   _windowSize = in_size;  
 }
 
+
 double KstCSD::gaussianSigma() const {
   return _gaussianSigma;
 }
+
 
 void KstCSD::setGaussianSigma(double in_sigma) {
   setDirty();
@@ -393,12 +417,12 @@ void KstCSD::setGaussianSigma(double in_sigma) {
 
 
 KstMatrixPtr KstCSD::outputMatrix() const {
-  return *_outMatrix;  
+  return *_outMatrix;
 }
 
 
 const QString& KstCSD::vectorUnits() const {
-  return _vectorUnits;  
+  return _vectorUnits;
 }
 
 
