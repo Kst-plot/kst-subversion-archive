@@ -352,7 +352,6 @@ bool KstPsdDialogI::editSingleObject(KstPSDPtr psPtr) {
 bool KstPsdDialogI::editObject() {
   // if the user selected no vector, treat it as non-dirty
   _vectorDirty = _w->_vector->_vector->currentItem() != 0;
-  _apodizeDirty = _w->_kstFFTOptions->Apodize->state() != QButton::NoChange;
   _apodizeFxnDirty = _w->_kstFFTOptions->ApodizeFxn->currentItem() != 0;
   _fFTLenDirty = _w->_kstFFTOptions->FFTLen->text() != " ";
   _sampRateDirty = !_w->_kstFFTOptions->SampRate->text().isEmpty();
