@@ -62,13 +62,15 @@ class KstCsdDialogI : public KstDataDialog {
     bool _rateUnitsDirty : 1;
     bool _outputDirty : 1;
     bool _windowSizeDirty : 1;
+    bool _interpolateHolesDirty : 1;
     bool editSingleObject(KstCSDPtr csPtr);
 
   private slots:
     void setApodizeDirty();
     void setRemoveMeanDirty();
     void setInterleavedDirty();
-    
+    void setInterpolateHolesDirty();
+
   private:
     static const QString& defaultTag;
     void fillFieldsForEdit();

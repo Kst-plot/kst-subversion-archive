@@ -62,11 +62,12 @@ KstCsdDialogI::KstCsdDialogI(QWidget* parent, const char* name, bool modal, WFla
   _w = new CSDDialogWidget(_contents);
   setMultiple(true);
   connect(_w->_vector, SIGNAL(newVectorCreated(const QString&)), this, SIGNAL(modified()));
- 
+
   //for multiple edit mode
   connect(_w->_kstFFTOptions->Apodize, SIGNAL(clicked()), this, SLOT(setApodizeDirty()));
   connect(_w->_kstFFTOptions->RemoveMean, SIGNAL(clicked()), this, SLOT(setRemoveMeanDirty()));
   connect(_w->_kstFFTOptions->Interleaved, SIGNAL(clicked()), this, SLOT(setInterleavedDirty()));
+  connect(_w->_kstFFTOptions->InterpolateHoles, SIGNAL(clicked()), this, SLOT(setInterpolateHolesDirty()));
 }
 
 
@@ -101,11 +102,12 @@ void KstCsdDialogI::fillFieldsForEdit() {
   _w->_kstFFTOptions->RemoveMean->setChecked(cp->removeMean());
   _w->_kstFFTOptions->Interleaved->setChecked(cp->average());
   _w->_kstFFTOptions->Output->setCurrentItem(cp->output());
+  _w->_kstFFTOptions->InterpolateHoles->setChecked(cp->interpolateHoles());
   _w->_windowSize->setValue(cp->windowSize());
   _w->_kstFFTOptions->synch();
 
   cp->unlock();
- 
+
   _w->_imageOptionsGroup->hide();
   _w->_curvePlacement->hide();
 
@@ -118,15 +120,11 @@ void KstCsdDialogI::fillFieldsForEdit() {
 void KstCsdDialogI::fillFieldsForNew() {
   _tagName->setText(defaultTag);
   _w->_kstFFTOptions->update();
-  
   _w->_colorPalette->refresh();
- 
-  // update the curve placement widget
   _w->_curvePlacement->update();
-  
   _w->_imageOptionsGroup->show();
   _w->_curvePlacement->show();
- 
+
   adjustSize();
   resize(minimumSizeHint());
   setFixedHeight(height());
@@ -163,7 +161,7 @@ bool KstCsdDialogI::newObject() {
     kstdFatal() << "Bug in kst: the vector field in spectrogram dialog refers to "
                 << "a non existant vector...." << endl;
   }
- 
+
   ApodizeFunction apodizeFxn = ApodizeFunction(_w->_kstFFTOptions->ApodizeFxn->currentItem());
   bool apodize = _w->_kstFFTOptions->Apodize->isChecked();
   double gaussianSigma = _w->_kstFFTOptions->Sigma->value();
@@ -176,14 +174,14 @@ bool KstCsdDialogI::newObject() {
   QString vectorUnits = _w->_kstFFTOptions->VectorUnits->text();
   QString rateUnits = _w->_kstFFTOptions->RateUnits->text();
   _w->_kstFFTOptions->synch();
- 
+
   KstCSDPtr csd = new KstCSD(tag_name, p, freq, average, removeMean,
                              apodize, apodizeFxn, windowSize, length, gaussianSigma, output,
                              vectorUnits, rateUnits);
-  //csd->setInterpolateHoles(_w->_kstFFTOptions->InterpolateHoles->isChecked());
- 
+//  csd->setInterpolateHoles(_w->_kstFFTOptions->InterpolateHoles->isChecked());
+
   KstImagePtr image = createImage(csd);
- 
+
   KST::dataObjectList.lock().writeLock();
   KST::dataObjectList.append(csd.data());
   KST::dataObjectList.append(image.data());
@@ -231,6 +229,7 @@ KstImagePtr KstCsdDialogI::createImage(KstCSDPtr csd) {
       }
     }
   }
+
   return image;
 }
 
@@ -239,26 +238,30 @@ bool KstCsdDialogI::editSingleObject(KstCSDPtr csPtr) {
   csPtr->writeLock();
 
   KST::vectorList.lock().readLock();
-  csPtr->setVector(*KST::vectorList.findTag(_w->_vector->selectedVector()));
+  KstVectorPtr v = *KST::vectorList.findTag(_w->_vector->selectedVector());
   KST::vectorList.lock().unlock();
 
+  if (v) { // Can be null if edit multiple and it wasn't changed
+    csPtr->setVector(v);
+  }
+
   // get the values that need to be checked for consistency
-  double pSampRate;
-  int pFFTLen;
+  double sampRate;
+  int fFTLen;
 
   if (_sampRateDirty) {
-    pSampRate = _w->_kstFFTOptions->SampRate->text().toDouble();
+    sampRate = _w->_kstFFTOptions->SampRate->text().toDouble();
   } else {
-    pSampRate = csPtr->freq();
+    sampRate = csPtr->freq();
   }
 
   if (_fFTLenDirty) {
-    pFFTLen = _w->_kstFFTOptions->FFTLen->text().toInt();
+    fFTLen = _w->_kstFFTOptions->FFTLen->text().toInt();
   } else {
-    pFFTLen = csPtr->length();
+    fFTLen = csPtr->length();
   }
 
-  if (!_w->_kstFFTOptions->checkGivenValues(pSampRate, pFFTLen)) {
+  if (!_w->_kstFFTOptions->checkGivenValues(sampRate, fFTLen)) {
     csPtr->unlock();
     return false;
   }
@@ -276,11 +279,15 @@ bool KstCsdDialogI::editSingleObject(KstCSDPtr csPtr) {
   }
 
   if (_apodizeFxnDirty) {
-    csPtr->setApodizeFxn(ApodizeFunction(_w->_kstFFTOptions->ApodizeFxn->currentItem()));
+    if (_editMultipleMode) {
+      csPtr->setApodizeFxn(ApodizeFunction(_w->_kstFFTOptions->ApodizeFxn->currentItem()-1));
+    } else {
+      csPtr->setApodizeFxn(ApodizeFunction(_w->_kstFFTOptions->ApodizeFxn->currentItem()));
+    }
   }
 
   if (_gaussianSigmaDirty) {
-    csPtr->setGaussianSigma(_editMultipleMode ? _w->_kstFFTOptions->Sigma->value() - 1 :
+    csPtr->setGaussianSigma(_editMultipleMode ? _w->_kstFFTOptions->Sigma->value() - 1.0 :
                                                 _w->_kstFFTOptions->Sigma->value());
   }
 
@@ -305,7 +312,15 @@ bool KstCsdDialogI::editSingleObject(KstCSDPtr csPtr) {
   }
 
   if (_outputDirty) {
-    csPtr->setOutput(PSDType(_w->_kstFFTOptions->Output->currentItem()));
+    if (_editMultipleMode) {
+      csPtr->setOutput(PSDType(_w->_kstFFTOptions->Output->currentItem()-1));
+    } else {
+      csPtr->setOutput(PSDType(_w->_kstFFTOptions->Output->currentItem()));
+    }
+  }
+
+  if (_interpolateHolesDirty) {
+    csPtr->setInterpolateHoles(_w->_kstFFTOptions->InterpolateHoles->isChecked());
   }
 
   csPtr->setRecursed(false);
@@ -333,9 +348,9 @@ bool KstCsdDialogI::editObject() {
   _apodizeFxnDirty = _w->_kstFFTOptions->ApodizeFxn->currentItem() != 0;
   _gaussianSigmaDirty = _w->_kstFFTOptions->Sigma->value() != _w->_kstFFTOptions->Sigma->minValue();
   _outputDirty =  _w->_kstFFTOptions->Output->currentItem() != 0;
-  
+
   KstCSDList csList = kstObjectSubList<KstDataObject,KstCSD>(KST::dataObjectList);
- 
+
   // if editing multiple objects, edit each one
   if (_editMultipleMode) {
     bool didEdit = false;
@@ -346,9 +361,9 @@ bool KstCsdDialogI::editObject() {
         if (csIter == csList.end()) {
           return false;
         }
-         
+
         KstCSDPtr csPtr = *csIter;
-       
+
         if (!editSingleObject(csPtr)) {
           return false;
         }
@@ -367,11 +382,11 @@ bool KstCsdDialogI::editObject() {
       _tagName->setFocus();
       return false;
     }
-   
+
     cp->writeLock();
     cp->setTagName(KstObjectTag(tag_name, cp->tag().context())); // FIXME: doesn't allow changing tag context
     cp->unlock();
-   
+
     // then edit the object
     _vectorDirty = true;
     _apodizeDirty = true;
@@ -385,6 +400,7 @@ bool KstCsdDialogI::editObject() {
     _fFTLenDirty = true;
     _windowSizeDirty = true;
     _outputDirty = true;
+    _interpolateHolesDirty = true;
     if (!editSingleObject(cp)) {
       return false;
     }
@@ -409,6 +425,7 @@ void KstCsdDialogI::populateEditMultiple() {
   _w->_kstFFTOptions->Sigma->setValue(_w->_kstFFTOptions->Sigma->minValue());
   _w->_kstFFTOptions->RemoveMean->setNoChange();
   _w->_kstFFTOptions->Interleaved->setNoChange();
+  _w->_kstFFTOptions->InterpolateHoles->setNoChange();
   _w->_kstFFTOptions->SampRate->setText("");
   _w->_kstFFTOptions->VectorUnits->setText("");
   _w->_kstFFTOptions->RateUnits->setText("");
@@ -420,10 +437,10 @@ void KstCsdDialogI::populateEditMultiple() {
   _w->_windowSize->setMinValue(_w->_windowSize->minValue() - 1);
   _w->_windowSize->setSpecialValueText(" ");
   _w->_windowSize->setValue(_w->_windowSize->minValue());
- 
+
   _tagName->setText("");
   _tagName->setEnabled(false);
- 
+
   // and clean all the fields
   _vectorDirty = false;
   _apodizeDirty = false;
@@ -437,6 +454,7 @@ void KstCsdDialogI::populateEditMultiple() {
   _fFTLenDirty = false;
   _outputDirty = false;
   _windowSizeDirty = false;
+  _interpolateHolesDirty = false;
 }
 
 
@@ -459,16 +477,21 @@ void KstCsdDialogI::setApodizeDirty() {
 
 
 void KstCsdDialogI::setRemoveMeanDirty() {
-  _w->_kstFFTOptions->RemoveMean->setTristate(false);
   _removeMeanDirty = true;
+  _w->_kstFFTOptions->RemoveMean->setTristate(false);
+}
+
+
+void KstCsdDialogI::setInterpolateHolesDirty() {
+  _w->_kstFFTOptions->InterpolateHoles->setTristate(false);
+  _interpolateHolesDirty = true;
 }
 
 
 void KstCsdDialogI::setInterleavedDirty() {
   _w->_kstFFTOptions->Interleaved->setTristate(false);
   _interleavedDirty = true;
-  // also set the FFTLen to be dirty, as presumably the user will think it
-  // has been edited
+  // also set the FFTLen to be dirty, as presumably the user will think it has been edited
   _fFTLenDirty = true;
 }
 
@@ -478,4 +501,3 @@ void KstCsdDialogI::setVector(const QString& name) {
 }
 
 #include "kstcsddialog_i.moc"
-// vim: ts=2 sw=2 et
