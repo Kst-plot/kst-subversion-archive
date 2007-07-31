@@ -284,7 +284,7 @@ void ScubaSource::setDataType(QFile& file) {
     _format = FormatText2;
 
     for (i=0; i<read; i++) {
-      if ( !isdigit(text[i]) && !isspace(text[i]) && text[i] != '\n') {
+      if (!isdigit(text[i]) && !isspace(text[i]) && text[i] != '\n') {
         _format = FormatBinary;
 
         break;
@@ -319,6 +319,7 @@ bool ScubaSource::initFrameIndex() {
     QString s;
     bool done = false;
     bool ok;
+    bool foundDataMode = false;
     bool foundNumRows = false;
     bool foundRowLen = false;
     int index;
@@ -348,17 +349,16 @@ bool ScubaSource::initFrameIndex() {
           if (s.compare(END_HEADER_1) == 0) {
             done = true;
             rc = true;
-          } else if (s.contains("data_mode") == 1) {
+          } else if (!foundDataMode && s.contains("data_mode") == 1) {
             index = s.find(QChar('>'));
             s.remove(0, index+1);
             s.stripWhiteSpace();
             _datamode = s.toInt(&ok, 10);
             // FIXME datamode set at rc level
-            _datamode = 4;
-
             if (!ok) {
               _datamode = -1;
             }
+            foundDataMode = true;
           } else if (!foundRowLen && s.contains("row_len") == 1) {
             index = s.find(QChar('>'));
             s.remove(0, index+1);
@@ -443,7 +443,7 @@ bool ScubaSource::initFrameIndex() {
         ++line;
       }
     }
-    
+
     if (s.compare(END_HEADER_1) == 0) {
       setDataType(file);
     }
@@ -900,7 +900,6 @@ int ScubaSource::readField(double *v, const QString& field, int s, int n) {
                   v[i] = double(values[fieldIndex]);
                 }
               } else {
-
                 switch (_datamode) {
                   case DataError:
                   case DataPreScaleFeedback:
@@ -1140,6 +1139,7 @@ QStringList ScubaSource::fieldListFor(const QString& filename, ScubaSource::Conf
       QStringList entries;
       QValueList<int> rows;
       QString s;
+      bool foundDataMode = false;
       bool foundNumRows = false;
       bool foundRowLen = false;
       bool done = false;
@@ -1155,17 +1155,15 @@ QStringList ScubaSource::fieldListFor(const QString& filename, ScubaSource::Conf
           done = true;
         } else if (s.compare(END_HEADER_1) == 0) {
           done = true;
-        } else if (s.contains("data_mode") == 1) {
+        } else if (!foundDataMode && s.contains("data_mode") == 1) {
           index = s.find(QChar('>'));
           s.remove(0, index+1);
           s.stripWhiteSpace();
           datamode = s.toInt(&ok, 10);
-           // FIXME datamode set at rc level
-          datamode = 4;
-
           if (!ok) {
             datamode = -1;
           }
+          foundDataMode = true;
         } else if (!foundRowLen && s.contains("row_len") == 1) {
           index = s.find(QChar('>'));
           s.remove(0, index+1);
@@ -1321,6 +1319,7 @@ QStringList ScubaSource::matrixList() const {
             QStringList entries;
             QValueList<int> rows;
             QString s;
+            bool foundDataMode = false;
             bool foundNumRows = false;
             bool foundRowLen = false;
             bool done = false;
@@ -1336,17 +1335,15 @@ QStringList ScubaSource::matrixList() const {
                 done = true;
               } else if (s.compare(END_HEADER_1) == 0) {
                 done = true;
-              } else if (s.contains("data_mode") == 1) {
+              } else if (!foundDataMode && s.contains("data_mode") == 1) {
                 index = s.find(QChar('>'));
                 s.remove(0, index+1);
                 s.stripWhiteSpace();
                 datamode = s.toInt(&ok, 10);
-                // FIXME datamode set at rc level
-                datamode = 4;
-
                 if (!ok) {
                   datamode = -1;
                 }
+                foundDataMode = true;
               } else if (!foundRowLen && s.contains("row_len") == 1) {
                 index = s.find(QChar('>'));
                 s.remove(0, index+1);
