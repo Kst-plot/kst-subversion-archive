@@ -508,7 +508,7 @@ void KstViewObject::prependChild(KstViewObjectPtr obj, bool keepAspect) {
 
 bool KstViewObject::removeChild(KstViewObjectPtr obj, bool recursive) {
   bool rc = _children.remove(obj) > 0;
-  
+
   if (recursive) {
     for (KstViewObjectList::Iterator i = _children.begin(); i != _children.end(); ++i) {
       rc = (*i)->removeChild(obj, true) && rc;
@@ -516,7 +516,7 @@ bool KstViewObject::removeChild(KstViewObjectPtr obj, bool recursive) {
   }
 
   obj->_parent = 0L;
-  
+
   return rc;
 }
 
@@ -1168,7 +1168,7 @@ bool KstViewObject::layoutPopupMenu(KPopupMenu *menu, const QPoint& pos, KstView
   bool rc = false;
   int id;
   int index;
-  
+
   _moveToMap.clear();
 
   if (!tagName().isEmpty()) {
@@ -1179,7 +1179,7 @@ bool KstViewObject::layoutPopupMenu(KPopupMenu *menu, const QPoint& pos, KstView
     menu->insertItem(i18n("&Edit..."), this, SLOT(edit()));
     rc = true;
   }
-  
+
   if (_layoutActions & Delete) {
     menu->insertItem(i18n("&Delete"), this, SLOT(deleteObject()));
     rc = true;
@@ -1400,7 +1400,6 @@ void KstViewObject::lower() {
 }
 
 
-// FIXME: delete
 void KstViewObject::moveTo(int id) {
   QString windowName = _moveToMap[id];
 
@@ -1422,7 +1421,6 @@ void KstViewObject::moveTo(int id) {
 }
 
 
-// FIXME: delete
 void KstViewObject::copyTo(int id) {
   QString windowName = _copyToMap[id];
 
@@ -1767,7 +1765,7 @@ bool KstViewObject::paste(QMimeSource* source, KstViewObjectList* list) {
       for (size_t i=0; i<plotList.size(); i++) {
         KstViewObjectPtr copy = w->view()->findChild(plotList[i]);
         KstViewObject *created;
-        
+
         if (copy) {
           QString plotName;
           bool duplicate = true;
@@ -1984,6 +1982,7 @@ bool KstViewObject::showDialog(KstTopLevelViewPtr invoker, bool isNew) {
 void KstViewObject::drawShadow(KstPainter& p, const QPoint& pos) {
   // default is a rectangle
   QRect rect(geometry());
+
   rect.moveTopLeft(pos);
   p.drawRect(rect);
 }
@@ -2090,4 +2089,4 @@ KstViewObjectPtr KstViewObject::topLevelParent() const {
 }
 
 #include "kstviewobject.moc"
-// vim: ts=2 sw=2 et
+

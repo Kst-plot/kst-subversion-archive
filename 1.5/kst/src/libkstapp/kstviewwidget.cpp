@@ -46,7 +46,6 @@ KstViewWidget::~KstViewWidget() {
 
 QDragObject *KstViewWidget::dragObject() {
   KMultipleDrag *drag = new KMultipleDrag(this);
-#if 1
   QStringList plots;
   KstViewObjectList vol;
   QString window = static_cast<KstViewWindow*>(parent())->caption();
@@ -72,9 +71,6 @@ QDragObject *KstViewWidget::dragObject() {
   KstViewObjectImageDrag *imd = new KstViewObjectImageDrag(this);
   imd->setObjects(vol);
   drag->addDragObject(imd);
-#else
-  drag->addDragObject(new KstPlotDrag(...));
-#endif
 
   return drag;
 }
@@ -543,4 +539,4 @@ KstTopLevelViewPtr KstViewWidget::viewObject() const {
 
 
 #include "kstviewwidget.moc"
-// vim: ts=2 sw=2 et
+

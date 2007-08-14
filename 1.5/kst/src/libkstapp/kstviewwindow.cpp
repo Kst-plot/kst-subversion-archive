@@ -230,20 +230,18 @@ void KstViewWindow::immediatePrintToPng(const QString &filename, const QSize& si
 }
 
 
-// FIXME: don't write to disk like this.  write to a pipe or at least use
-// KTempFile
 void KstViewWindow::immediatePrintToEps(const QString &filename, const QSize& size) {
   if (!view()->children().isEmpty()) {
     QString filenameNew;
     QString filenameNewEps;
     int right;
     int bottom;
-    
+
     {
       QPrinter printer(QPrinter::HighResolution);
       QString dotFormat = QString(".eps");
       const int pos = filename.findRev(dotFormat, -1, false);
-      
+
       if (pos != -1 && pos == int(filename.length() - dotFormat.length())) {
         filenameNewEps = filename;
       } else {
@@ -335,7 +333,7 @@ void KstViewWindow::print(KstPainter& paint, const QSize& size, int pages, int l
         }
       }
     }
-  
+
     if (datetimeFooter) {
       QDateTime dateTime = QDateTime::currentDateTime();
       QString title = i18n("Page: %1  Name: %2  Date: %3").arg(pages).arg(caption()).arg(dateTime.toString(Qt::ISODate));
@@ -444,4 +442,4 @@ QString KstViewWindow::createPlot(const QString& suggestedName, bool prompt) {
 
 
 #include "kstviewwindow.moc"
-// vim: ts=2 sw=2 et
+
