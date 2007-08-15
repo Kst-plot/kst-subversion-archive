@@ -28,7 +28,7 @@
 
 QPoint KstGfxMouseHandlerUtils::findNearestPtOnLine(const QPoint& fromPoint, const QPoint& toPoint, const QPoint& pos, const QRect &bounds) {
   QPoint npos = pos;
-  
+
   if (fromPoint.y() == toPoint.y()) {
     npos.setY(fromPoint.y());
     npos.setX(kMax(npos.x(), bounds.left()));
@@ -67,7 +67,7 @@ QRect KstGfxMouseHandlerUtils::resizeRectFromCorner(const QPoint& anchorPoint, c
     QPoint fakeMovePoint = anchorPoint + QPoint(quadrantSign(pos,anchorPoint)*abs((movePoint - anchorPoint).x()),abs((movePoint - anchorPoint).y())); // allow the rectangle to flip.
     npos = findNearestPtOnLine(anchorPoint, fakeMovePoint, pos, bounds);
   }
-  
+
   newSize.setTopLeft(anchorPoint);
   newSize.setBottomRight(npos);
 
@@ -244,7 +244,7 @@ QRect KstGfxMouseHandlerUtils::newLine(const QPoint& pos, const QPoint& mouseOri
       if (dy != 0) { // type of line picked.
         dy /= abs(dy);
       }
-  
+
       npos = findNearestPtOnLine(mouseOrigin, mouseOrigin + QPoint(dx,dy), pos, bounds);
     }
     return QRect(mouseOrigin, npos);
@@ -261,5 +261,3 @@ int KstGfxMouseHandlerUtils::quadrantSign(const QPoint& pos, const QPoint& mouse
   }
 }
 
-
-// vim: ts=2 sw=2 et

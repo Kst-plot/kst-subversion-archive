@@ -28,7 +28,7 @@
 
 KstGfxPictureMouseHandler::KstGfxPictureMouseHandler()
 : KstGfxMouseHandler() {
-}  
+}
 
 
 KstGfxPictureMouseHandler::~KstGfxPictureMouseHandler() {
@@ -37,13 +37,13 @@ KstGfxPictureMouseHandler::~KstGfxPictureMouseHandler() {
 
 void KstGfxPictureMouseHandler::pressMove(KstTopLevelViewPtr view, const QPoint& pos, bool shift, const QRect& geom) {
   if (_cancelled || !_mouseDown) {
-    return;  
+    return;
   }
-  
+
   QRect old = _prevBand;
-  
+
   _prevBand = KstGfxMouseHandlerUtils::newRect(pos, _mouseOrigin, geom, shift);
-  
+
   if (old != _prevBand) {
     QPainter p;
     p.begin(view->widget());
@@ -70,7 +70,7 @@ void KstGfxPictureMouseHandler::releasePress(KstTopLevelViewPtr view, const QPoi
     return;
   }
   _mouseDown = false;
-      
+
   // once released, create a picture and popup the edit dialog
   if (!_cancelled && _mouseOrigin != pos) {
     KstViewPicturePtr pic = new KstViewPicture;
@@ -82,6 +82,7 @@ void KstGfxPictureMouseHandler::releasePress(KstTopLevelViewPtr view, const QPoi
         container = view;
       }
       container->appendChild(KstViewObjectPtr(pic));
+      container->invalidateClipRegion();
       KstApp::inst()->document()->setModified();
       KstApp::inst()->updateViewManager(true);
     }
@@ -89,4 +90,3 @@ void KstGfxPictureMouseHandler::releasePress(KstTopLevelViewPtr view, const QPoi
   _prevBand = QRect(-1,-1, 0, 0);
 }
 
-// vim: ts=2 sw=2 et

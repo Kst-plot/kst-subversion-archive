@@ -301,7 +301,7 @@ void KstViewObject::saveAttributes(QTextStream& ts, const QString& indent) {
     ts << indent << "<" << metaObject()->property(i, true)->name() << ">";
     ts << property(metaObject()->property(i, true)->name()).toString().latin1();
     ts << "</" << metaObject()->property(i, true)->name() << ">" << endl;
-  }  
+  }
 }
 
 
@@ -1133,7 +1133,7 @@ bool KstViewObject::popupMenu(KPopupMenu *menu, const QPoint& pos, KstViewObject
 //     menu->insertItem(i18n("&Copy"), this, SLOT(copyObject()));
 //     rc = true;
 //   }
-  
+
   if (_layoutActions & Rename) {
     menu->insertItem(i18n("Re&name..."), this, SLOT(rename()));
     rc = true;
@@ -1302,17 +1302,24 @@ void KstViewObject::edit() {
 void KstViewObject::deleteObject() {
   KstApp::inst()->document()->setModified();
   KstViewObjectPtr vop(this);
+
   if (_topObjectForMenu) {
     KstTopLevelViewPtr tlv = kst_cast<KstTopLevelView>(KstViewObjectPtr(_topObjectForMenu));
     if (tlv && vop == tlv->pressTarget()) {
       tlv->clearPressTarget();
     }
+    if (this->_parent) {
+      this->_parent->invalidateClipRegion();
+    }
     _topObjectForMenu->removeChild(this, true);
+
     _topObjectForMenu = 0L;
   }
+
   while (!_children.isEmpty()) {
     removeChild(_children.first());
   }
+
   vop = 0L; // basically "delete this;"
   QTimer::singleShot(0, KstApp::inst(), SLOT(updateDialogs()));
 }

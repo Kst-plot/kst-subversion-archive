@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 #include <stdlib.h>
- 
+
 #include <qpainter.h>
 
 #include "kst.h"
@@ -36,7 +36,7 @@ KstGfxRectangleMouseHandler::KstGfxRectangleMouseHandler()
   defaultBox->setXRound(0);
   defaultBox->setYRound(0);
   _defaultObject = KstViewObjectPtr(defaultBox);
-}  
+}
 
 
 KstGfxRectangleMouseHandler::~KstGfxRectangleMouseHandler() {
@@ -45,11 +45,11 @@ KstGfxRectangleMouseHandler::~KstGfxRectangleMouseHandler() {
 
 void KstGfxRectangleMouseHandler::pressMove(KstTopLevelViewPtr view, const QPoint& pos, bool shift, const QRect& geom) {
   if (_cancelled || !_mouseDown) {
-    return;  
+    return;
   }
-  
+
   QRect old = _prevBand;
-  
+
   _prevBand = KstGfxMouseHandlerUtils::newRect(pos, _mouseOrigin, geom, shift);
 
   if (old != _prevBand) {
@@ -68,13 +68,13 @@ void KstGfxRectangleMouseHandler::pressMove(KstTopLevelViewPtr view, const QPoin
 
 void KstGfxRectangleMouseHandler::releasePress(KstTopLevelViewPtr view, const QPoint& pos, bool shift) {
   Q_UNUSED(shift)
-      
+
   if (!_mouseDown) {
     // if mouse was never down, pretend it wasn't released
     return;
   }
   _mouseDown = false;
-      
+
   if (!_cancelled && _mouseOrigin != pos) {
     // make a new rectangle
     KstViewBoxPtr box = new KstViewBox;
@@ -86,6 +86,7 @@ void KstGfxRectangleMouseHandler::releasePress(KstTopLevelViewPtr view, const QP
       container = view;
     }
     container->appendChild(KstViewObjectPtr(box));
+    container->invalidateClipRegion();
     KstApp::inst()->document()->setModified();
     KstApp::inst()->updateViewManager(true);
     view->paint(KstPainter::P_PAINT);
@@ -93,5 +94,3 @@ void KstGfxRectangleMouseHandler::releasePress(KstTopLevelViewPtr view, const QP
   _prevBand = QRect(-1, -1, 0, 0);
 }
 
-
-// vim: ts=2 sw=2 et

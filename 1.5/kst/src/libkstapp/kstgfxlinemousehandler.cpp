@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 #include <stdlib.h> 
- 
+
 #include <qpainter.h>
 
 #include "kstgfxlinemousehandler.h"
@@ -35,7 +35,7 @@ KstGfxLineMouseHandler::KstGfxLineMouseHandler()
   defaultLine->setPenStyle(Qt::SolidLine);
   defaultLine->setForegroundColor(Qt::black);
   _defaultObject = KstViewObjectPtr(defaultLine);
-}  
+}
 
 
 KstGfxLineMouseHandler::~KstGfxLineMouseHandler() {
@@ -45,13 +45,13 @@ KstGfxLineMouseHandler::~KstGfxLineMouseHandler() {
 void KstGfxLineMouseHandler::pressMove(KstTopLevelViewPtr view, const QPoint& pos, bool shift, const QRect& geom) {
   Q_UNUSED(geom)
   if (_cancelled || !_mouseDown) {
-    return;  
+    return;
   }
 
   const QRect old(_prevBand);
 
   _prevBand = KstGfxMouseHandlerUtils::newLine(pos, _mouseOrigin, shift, view->geometry());
-  
+
   if (old != _prevBand) {
     QPainter p;
     p.begin(view->widget());
@@ -68,13 +68,13 @@ void KstGfxLineMouseHandler::pressMove(KstTopLevelViewPtr view, const QPoint& po
 
 void KstGfxLineMouseHandler::releasePress(KstTopLevelViewPtr view, const QPoint& pos, bool shift) {
   Q_UNUSED(shift)
-  
+
   if (!_mouseDown) {
     // if mouse was never down, pretend it wasn't released
     return;
   }
   _mouseDown = false;
-      
+
   if (!_cancelled && _mouseOrigin != pos) {
     // make a new line
     KstViewLinePtr line = new KstViewLine;
@@ -86,6 +86,7 @@ void KstGfxLineMouseHandler::releasePress(KstTopLevelViewPtr view, const QPoint&
       container = view;
     }
     container->appendChild(KstViewObjectPtr(line));
+    container->invalidateClipRegion();
     KstApp::inst()->document()->setModified();
     KstApp::inst()->updateViewManager(true);
     view->paint(KstPainter::P_PAINT);
@@ -93,4 +94,3 @@ void KstGfxLineMouseHandler::releasePress(KstTopLevelViewPtr view, const QPoint&
   _prevBand = QRect(-1, -1, 0, 0);
 }
 
-// vim: ts=2 sw=2 et

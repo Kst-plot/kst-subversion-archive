@@ -75,7 +75,7 @@ KstViewPicture::KstViewPicture(const KstViewPicture& picture)
   _refresh = picture._refresh;
   _url = picture._url;
   doRefresh();
-  
+
   // always have these values
   _type = "Picture";
   _standardActions |= Delete | Edit;
@@ -88,10 +88,10 @@ KstViewPicture::~KstViewPicture() {
 
 KstViewObject* KstViewPicture::copyObjectQuietly(KstViewObject& parent, const QString& name) const {
   Q_UNUSED(name)
-  
+
   KstViewPicture* viewPicture = new KstViewPicture(*this);
   parent.appendChild(viewPicture, true);
-  
+
   return viewPicture;
 }
 
@@ -99,27 +99,24 @@ KstViewObject* KstViewPicture::copyObjectQuietly(KstViewObject& parent, const QS
 QRegion KstViewPicture::clipRegion() {
   if (_clipMask.isNull()) {
     _myClipMask = QRegion();
-    QBitmap bm1(_geom.bottomRight().x() + 1, _geom.bottomRight().y() + 1, true);
-    if (!bm1.isNull()) {
+
+    QBitmap bm(_geom.bottomRight().x() + 1, _geom.bottomRight().y() + 1, true);
+    if (!bm.isNull()) {
       KstPainter p;
+
       p.setMakingMask(true);
-      p.begin(&bm1);
+      p.begin(&bm);
       p.setViewXForm(true);
       KstBorderedViewObject::paintSelf(p, QRegion());
+      paint(p, QRegion());
       p.flush();
-      p.end();
-      _clipMask = QRegion(bm1);
-    }
-    QBitmap bm2(_geom.bottomRight().x() + 1, _geom.bottomRight().y() + 1, true);
-    if (!bm2.isNull()) {
-      KstPainter p;
-      p.setMakingMask(true);
-      p.begin(&bm2);
-      p.setViewXForm(true);
+      _clipMask = QRegion(bm);
+
+      p.eraseRect(0, 0, _geom.bottomRight().x() + 1, _geom.bottomRight().y() + 1);
       paintSelf(p, QRegion());
       p.flush();
+      _myClipMask = QRegion(bm);
       p.end();
-      _myClipMask = QRegion(bm2);
     }
   }
 
@@ -149,16 +146,14 @@ void KstViewPicture::paintSelf(KstPainter& p, const QRegion& bounds) {
     p.drawRect(cr);
     p.drawLine(cr.topLeft(), cr.bottomRight());
     p.drawLine(cr.topRight(), cr.bottomLeft());
-  } else {
-    assert(!cr.isNull()); // Null view objects are not allowed.  I want to see
-                          // how this happens so it can be fixed.
-
+  } else if (!cr.isNull()) {
     if (_iCache.isNull() || _iCache.size() != cr.size()) {
       _iCache = _image.copy();
       if (!_iCache.isNull()) {
         _iCache = _iCache.smoothScale(cr.size());
       }
     }
+
     if (!_iCache.isNull()) {
       if (p.makingMask()) {
         // which indicates clipping / BW mode
@@ -169,10 +164,13 @@ void KstViewPicture::paintSelf(KstPainter& p, const QRegion& bounds) {
           p.drawRect(cr);
         }
       } else {
+        _iCache.setAlphaBuffer(false);
         p.drawImage(cr.topLeft(), _iCache);
+        _iCache.setAlphaBuffer(true);
       }
     }
   }
+
   p.restore();
 }
 
@@ -222,7 +220,9 @@ bool KstViewPicture::setImage(const QString& source) {
     setImage(ti);
     _url = source;
 
-    if (_maintainAspect == true) { restoreAspect(); }
+    if (_maintainAspect) { 
+      restoreAspect();
+    }
   } else {
     success = false;
   }
@@ -284,7 +284,7 @@ bool KstViewPicture::transparent() const {
   if (!_iCache.isNull()) {
     return _iCache.hasAlphaBuffer();
   }
-  
+
   return _image.hasAlphaBuffer();
 }
 
@@ -306,6 +306,7 @@ void KstViewPicture::setMaintainAspect(bool maintain) {
 
 void KstViewPicture::restoreSize() {
   QRect cr(contentsRect());
+
   cr.setSize(_image.size());
   setContentsRect(cr);
 }
@@ -315,7 +316,8 @@ void KstViewPicture::restoreAspect() {
   QRect cr(contentsRect());
   QSize size = _image.size(); //start with original size.
 
-  size.scale( cr.size().width(), cr.size().height(), QSize::ScaleMin ); //find largest rect. which will fit inside original and still preserve aspect.
+  // find largest rect. which will fit inside original and still preserve aspect
+  size.scale( cr.size().width(), cr.size().height(), QSize::ScaleMin ); 
 
   cr.setSize(size);
   setContentsRect(cr);
@@ -367,4 +369,4 @@ KST_REGISTER_VIEW_OBJECT(Picture, create_KstViewPicture, handler_KstViewPicture)
 
 
 #include "kstviewpicture.moc"
-// vim: ts=2 sw=2 et
+

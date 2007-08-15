@@ -38,17 +38,16 @@ KstGfxEllipseMouseHandler::KstGfxEllipseMouseHandler()
 
 
 KstGfxEllipseMouseHandler::~KstGfxEllipseMouseHandler() {
-
 }
 
 
 void KstGfxEllipseMouseHandler::pressMove(KstTopLevelViewPtr view, const QPoint& pos, bool shift, const QRect& geom) {
   if (_cancelled || !_mouseDown) {
-    return;  
+    return;
   }
-  
+
   QRect old = _prevBand;
-  
+
   _prevBand = KstGfxMouseHandlerUtils::newRectCentered(pos, _mouseOrigin, geom, shift);
 
   if (old != _prevBand) {
@@ -84,13 +83,10 @@ void KstGfxEllipseMouseHandler::releasePress(KstTopLevelViewPtr view, const QPoi
       container = view;
     }
     container->appendChild(KstViewObjectPtr(ellipse));
+    container->invalidateClipRegion();
     KstApp::inst()->document()->setModified();
     KstApp::inst()->updateViewManager(true);
     view->paint(KstPainter::P_PAINT);
   }
   _prevBand = QRect(-1, -1, 0, 0);
 }
-
-
-
-// vim: ts=2 sw=2 et

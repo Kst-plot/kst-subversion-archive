@@ -41,7 +41,6 @@ KstGfxArrowMouseHandler::KstGfxArrowMouseHandler()
 
 
 KstGfxArrowMouseHandler::~KstGfxArrowMouseHandler() {
-
 }
 
 
@@ -89,6 +88,7 @@ void KstGfxArrowMouseHandler::releasePress(KstTopLevelViewPtr view, const QPoint
       container = view;
     }
     container->appendChild(KstViewObjectPtr(arrow));
+    container->invalidateClipRegion();
     KstApp::inst()->document()->setModified();
     KstApp::inst()->updateViewManager(true);
     view->paint(KstPainter::P_PAINT);

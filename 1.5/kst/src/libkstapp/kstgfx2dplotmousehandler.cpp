@@ -38,7 +38,7 @@ KstGfx2DPlotMouseHandler::KstGfx2DPlotMouseHandler()
   defaultBox->setXRound(0);
   defaultBox->setYRound(0);*/
   _defaultObject = KstViewObjectPtr(default2DPlot);
-}  
+}
 
 
 KstGfx2DPlotMouseHandler::~KstGfx2DPlotMouseHandler() {
@@ -47,11 +47,11 @@ KstGfx2DPlotMouseHandler::~KstGfx2DPlotMouseHandler() {
 
 void KstGfx2DPlotMouseHandler::pressMove(KstTopLevelViewPtr view, const QPoint& pos, bool shift, const QRect& geom) {
   if (_cancelled || !_mouseDown) {
-    return;  
+    return;
   }
-  
+
   QRect old = _prevBand;
-  
+
   _prevBand = KstGfxMouseHandlerUtils::newRect(pos, _mouseOrigin, geom, shift);
 
   if (old != _prevBand) {
@@ -61,7 +61,7 @@ void KstGfx2DPlotMouseHandler::pressMove(KstTopLevelViewPtr view, const QPoint& 
     p.setRasterOp(Qt::NotROP);
     if (old.topLeft() != QPoint(-1, -1)) {
       p.drawRect(old);
-    } 
+    }
     p.drawRect(_prevBand);
     p.end();
   }
@@ -70,13 +70,13 @@ void KstGfx2DPlotMouseHandler::pressMove(KstTopLevelViewPtr view, const QPoint& 
 
 void KstGfx2DPlotMouseHandler::releasePress(KstTopLevelViewPtr view, const QPoint& pos, bool shift) {
   Q_UNUSED(shift)
-      
+
   if (!_mouseDown) {
     // if mouse was never down, pretend it wasn't released
     return;
   }
   _mouseDown = false;
-      
+
   if (!_cancelled && _mouseOrigin != pos) {
     // make a new 2dplot
     Kst2DPlotPtr plot = new Kst2DPlot;
@@ -89,12 +89,10 @@ void KstGfx2DPlotMouseHandler::releasePress(KstTopLevelViewPtr view, const QPoin
       container = view;
     }
     container->appendChild(KstViewObjectPtr(plot));
+    container->invalidateClipRegion();
     KstApp::inst()->document()->setModified();
     KstApp::inst()->updateViewManager(true);
     view->paint(KstPainter::P_PAINT);
   }
   _prevBand = QRect(-1, -1, 0, 0);
 }
-
-
-// vim: ts=2 sw=2 et

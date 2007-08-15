@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 #include <stdlib.h>
- 
+
 #include <qpainter.h>
 
 #include "kstgfxtextmousehandler.h"
@@ -36,7 +36,7 @@ KstGfxTextMouseHandler::KstGfxTextMouseHandler()
   defaultLabel->setTransparent(false);
   defaultLabel->setBorderWidth(2);
   _defaultObject = KstViewObjectPtr(defaultLabel); 
-}  
+}
 
 
 KstGfxTextMouseHandler::~KstGfxTextMouseHandler() {
@@ -47,9 +47,9 @@ void KstGfxTextMouseHandler::pressMove(KstTopLevelViewPtr view, const QPoint& po
   if (_cancelled || !_mouseDown) {
     return;  
   }
-  
+
   QRect old = _prevBand;
-  
+
   _prevBand = KstGfxMouseHandlerUtils::newRect(pos, _mouseOrigin, geom, shift);
 
   if (old != _prevBand) {
@@ -74,7 +74,7 @@ void KstGfxTextMouseHandler::releasePress(KstTopLevelViewPtr view, const QPoint&
     return;
   }
   _mouseDown = false;
-  
+
   // once released, create a new text object and popup the edit dialog
   if (!_cancelled) {
     KstViewLabelPtr label = new KstViewLabel;
@@ -110,6 +110,7 @@ void KstGfxTextMouseHandler::releasePress(KstTopLevelViewPtr view, const QPoint&
         label->adjustSizeForText(container->contentsRect());
       }
       container->appendChild(KstViewObjectPtr(label));
+      container->invalidateClipRegion();
       KstApp::inst()->document()->setModified();
       KstApp::inst()->updateViewManager(true);
     }

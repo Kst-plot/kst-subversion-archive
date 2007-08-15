@@ -70,4 +70,3 @@ void KstGfxMouseHandler::updateFocus(KstTopLevelViewPtr view, const QPoint& pos)
   Q_UNUSED(pos)
 }
 
-// vim: ts=2 sw=2 et
