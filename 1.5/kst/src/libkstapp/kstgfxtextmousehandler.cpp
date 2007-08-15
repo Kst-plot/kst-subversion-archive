@@ -118,5 +118,3 @@ void KstGfxTextMouseHandler::releasePress(KstTopLevelViewPtr view, const QPoint&
   _prevBand = QRect(-1, -1, 0, 0);
 }
 
-
-// vim: ts=2 sw=2 et
