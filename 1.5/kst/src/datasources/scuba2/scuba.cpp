@@ -51,6 +51,8 @@
 
 #define DEFAULT_COLUMN_WIDTH 16
 
+#define RAW_DATA_BUFFER_SIZE  8192
+
 static char* housekeepingFields[] = {
     "Status",                 // value  0 of housekeeping block
     "Sequence Number",        // value  1 of housekeeping block
@@ -109,21 +111,30 @@ class ScubaSource::Config {
     Config() {
       _readMatrices = true;
       _validateChecksum = true;
+      _rawDataBufferSize = RAW_DATA_BUFFER_SIZE;
+      _rawDataCurtailAtBufferSize = true;
     }
 
     void read(KConfig *cfg, const QString& fileName = QString::null) {
       cfg->setGroup("SCUBA General");
       _readMatrices = cfg->readBoolEntry("Read Matrices", false);
       _validateChecksum = cfg->readBoolEntry("Validate Checksum", false);
+      _rawDataBufferSize = cfg->readNumEntry("Raw Data Buffer Size", RAW_DATA_BUFFER_SIZE);
+      _rawDataCurtailAtBufferSize = cfg->readBoolEntry("Raw Data Curtail To Buffer", true);
+
       if (!fileName.isEmpty()) {
         cfg->setGroup(fileName);
         _readMatrices = cfg->readBoolEntry("Read Matrices", _readMatrices);
         _validateChecksum = cfg->readBoolEntry("Validate Checksum", _validateChecksum);
+        _rawDataBufferSize = cfg->readNumEntry("Raw Data Buffer Size", RAW_DATA_BUFFER_SIZE);
+        _rawDataCurtailAtBufferSize = cfg->readBoolEntry("Raw Data Curtail To Buffer", true);
       }
     }
 
     bool _readMatrices;
     bool _validateChecksum;
+    int _rawDataBufferSize;
+    bool _rawDataCurtailAtBufferSize;
 
     void save(QTextStream& str, const QString& indent) {
       if (_readMatrices) {
@@ -132,7 +143,11 @@ class ScubaSource::Config {
       if (_validateChecksum) {
         str << indent << "<checksum/>";
       }
-      str << endl;
+      str << indent << "<rawdata buffersize=\"" << _rawDataBufferSize << "\"";
+      if (_rawDataCurtailAtBufferSize) {
+        str << " curtail=\"1\"";
+      }
+      str << "/>" << endl;
     }
 
     void load(const QDomElement& e) {
@@ -144,8 +159,24 @@ class ScubaSource::Config {
             _readMatrices = true;
           } else if (e.tagName() == "checksum") {
             _validateChecksum = true;
-          }
+          } else if (e.tagName() == "rawdatacurtail") {
+            _rawDataCurtailAtBufferSize = true;
+          } else if (e.tagName() == "rawdata") {
+            if (e.hasAttribute("buffersize")) {
+              _rawDataBufferSize = e.attribute("buffersize").toInt();
+              if (_rawDataBufferSize <= 0 ) {
+                _rawDataBufferSize = RAW_DATA_BUFFER_SIZE;
+              }
+            } else {
+              _rawDataBufferSize = RAW_DATA_BUFFER_SIZE;
+            }
 
+            if (e.hasAttribute("curtail")) {
+              _rawDataCurtailAtBufferSize = true;
+            } else {
+              _rawDataCurtailAtBufferSize = false;
+            }
+          }
         }
         n = n.nextSibling();
       }
@@ -839,6 +870,7 @@ int ScubaSource::readMatrix(KstMatrixData* data, const QString& matrix, int xSta
 int ScubaSource::readField(double *v, const QString& field, int s, int n) {
   int rc = 0;
   int fieldIndex = -1;
+  int frameIndex = -1;
   int i = 0;
 
   if (n < 0) {
@@ -889,10 +921,10 @@ int ScubaSource::readField(double *v, const QString& field, int s, int n) {
             for (i = 0; i < n; ++i) {
               v[i] = KST::NOPOINT;
 
-              file.at(_frameIndex[(s + i)/iSamplesPerFrame]);
-
               if (fieldIndex < _numHousekeepingFieldsInUse) {
                 long values[_numHousekeepingFieldsInUse];
+
+                file.at(_frameIndex[(s + i)/iSamplesPerFrame]);
 
                 length = fieldIndex + 1;
                 read = file.readBlock((char*)values, length * sizeof( long ) );
@@ -904,12 +936,34 @@ int ScubaSource::readField(double *v, const QString& field, int s, int n) {
                   case DataError:
                   case DataPreScaleFeedback:
                   case DataFiltered:
-                  case DataRaw:
+                    file.at(_frameIndex[(s + i)/iSamplesPerFrame]);
                     valueIndex = fieldIndex - _numHousekeepingFieldsInUse;
-                    valueIndex += s + i - (((s + i)/iSamplesPerFrame) * iSamplesPerFrame ); 
+                    break;
+                  case DataRaw:
+                    {
+                      int burstOffset;
+                      int lineOffset;
+                      int rowOffset;
+
+                      //
+                      // first we must determine the following:
+                      //  burst offset:  which acoounts for the frame index contributon from the burst index
+                      //  row offset:    which accounts for the frame index contribution from the row
+                      //  line offset:   which accounts for the frame index contribution from the desired value
+                      //
+                      burstOffset = _rowLen * _numRows * ( (s + i) / _rowLen );
+                      rowOffset = _rowLen * ( ( fieldIndex - _numHousekeepingFieldsInUse ) / _numCols );
+                      lineOffset = ( s + i ) % _rowLen;
+                      frameIndex = ( burstOffset + rowOffset + lineOffset ) / _numRows;
+                      file.at(_frameIndex[frameIndex]);
+
+                      valueIndex = _numCols * ( ( burstOffset + rowOffset + lineOffset ) % _numRows );
+                      valueIndex += ( fieldIndex - _numHousekeepingFieldsInUse ) % _numCols;
+                    }
                     break;
                   case Data18_14:
                   case Data24_8:
+                    file.at(_frameIndex[(s + i)/iSamplesPerFrame]);
                     valueIndex = (fieldIndex - _numHousekeepingFieldsInUse) / 2;
                     break;
                 }
@@ -924,7 +978,9 @@ int ScubaSource::readField(double *v, const QString& field, int s, int n) {
                     case DataError:
                     case DataPreScaleFeedback:
                     case DataFiltered:
+                      break;
                     case DataRaw:
+                      lvalue &= 0xFF;
                       break;
                     case Data18_14:
                       if ( ( fieldIndex - _numHousekeepingFieldsInUse ) % 2 == 0) {
@@ -964,9 +1020,9 @@ int ScubaSource::readField(double *v, const QString& field, int s, int n) {
             for (i = 0; i < n; ++i) {
               v[i] = KST::NOPOINT;
 
-              file.at(_frameIndex[(s + i)/iSamplesPerFrame]);
-
               if (fieldIndex < _numHousekeepingFieldsInUse) {
+                file.at(_frameIndex[(s + i)/iSamplesPerFrame]);
+
                 if( readFullLine(file, str) != -1) {
                   values = QStringList::split(QChar(' '), str);
                   if (fieldIndex < int(values.size())) {
@@ -981,12 +1037,34 @@ int ScubaSource::readField(double *v, const QString& field, int s, int n) {
                   case DataError:
                   case DataPreScaleFeedback:
                   case DataFiltered:
-                  case DataRaw:
+                    file.at(_frameIndex[(s + i)/iSamplesPerFrame]);
                     valueIndex = fieldIndex - _numHousekeepingFieldsInUse;
-                    valueIndex += s + i - (((s + i)/iSamplesPerFrame) * iSamplesPerFrame ); 
+                    break;
+                  case DataRaw:
+                    {
+                      int burstOffset;
+                      int lineOffset;
+                      int rowOffset;
+
+                      //
+                      // first we must determine the following:
+                      //  burst offset:  which acoounts for the frame index contributon from the burst index
+                      //  row offset:    which accounts for the frame index contribution from the row
+                      //  line offset:   which accounts for the frame index contribution from the desired value
+                      //
+                      burstOffset = _rowLen * _numRows * ( (s + i) / _rowLen );
+                      rowOffset = _rowLen * ( ( fieldIndex - _numHousekeepingFieldsInUse ) / _numCols );
+                      lineOffset = ( s + i ) % _rowLen;
+                      frameIndex = ( burstOffset + rowOffset + lineOffset ) / _numRows;
+                      file.at(_frameIndex[frameIndex]);
+
+                      valueIndex = _numCols * ( ( burstOffset + rowOffset + lineOffset ) % _numRows );
+                      valueIndex += ( fieldIndex - _numHousekeepingFieldsInUse ) % _numCols;
+                    }
                     break;
                   case Data18_14:
                   case Data24_8:
+                    file.at(_frameIndex[(s + i)/iSamplesPerFrame]);
                     valueIndex = (fieldIndex - _numHousekeepingFieldsInUse) / 2;
                     break;
                 }
@@ -1002,7 +1080,7 @@ int ScubaSource::readField(double *v, const QString& field, int s, int n) {
                 }
 
                 if (read != -1) {
-                  if (readFullLine(file, str) != -1) { 
+                  if (readFullLine(file, str) != -1) {
                     values = QStringList::split(QChar(' '), str);
                     if (lineIndex < int(values.size())) {
                       lvalue = values[lineIndex].toInt(&ok, 10);
@@ -1010,7 +1088,9 @@ int ScubaSource::readField(double *v, const QString& field, int s, int n) {
                         case DataError:
                         case DataPreScaleFeedback:
                         case DataFiltered:
+                          break;
                         case DataRaw:
+                          lvalue &= 0xFF;
                           break;
                         case Data18_14:
                           if ( ( fieldIndex - _numHousekeepingFieldsInUse ) % 2 == 0) {
@@ -1069,41 +1149,52 @@ bool ScubaSource::isValidMatrix(const QString& matrix) const {
 
 int ScubaSource::samplesPerFrame(const QString &field) {
   //
-  // the samplesPerFrame may depend on the field...
+  // the number of samples per frame is the same for all fields...
   //
-  int i;
-  int rc = -1;
+  Q_UNUSED(field)
 
-  for (i=0; i<numHousekeepingFields; i++) {
-    if (field.compare(housekeepingFields[i]) == 0) {
-      rc = 1;
-
-      break;
-    }
-  }
-
-  if (rc == -1) {
-    //
-    // need to determine the number of samples per frame...
-    //
-    if (_datamode == 3) {
-      rc = _numCols * _numRows;
-    } else {
-      rc = 1;
-    }
-  }
+  int rc = 1;
 
   return rc;
 }
 
 
 int ScubaSource::frameCount(const QString& field) const {
-  Q_UNUSED(field)
+  int numFrames = -1;
 
-  //
-  // the number of frames is the same for all fields...
-  //
-  return _numFrames;
+  if (_datamode == DataRaw) {
+    int i;
+
+    //
+    // if we have a housekeeping field then all the frames are valid...
+    //
+    for (i=0; i<numHousekeepingFields; i++) {
+      if (field.compare(housekeepingFields[i]) == 0) {
+        numFrames = _numFrames;
+        break;
+      }
+    }
+
+    if (numFrames == -1) {
+      numFrames = _numFrames;
+
+      //
+      // allow for the limited buffer size...
+      //
+      if (_config->_rawDataCurtailAtBufferSize) {
+        if (_numFrames * _numRows * _numCols > _config->_rawDataBufferSize) {
+          int numBursts;
+
+          numBursts = _config->_rawDataBufferSize / ( _numRows * _numCols * _rowLen );
+          numFrames = numBursts * _rowLen;
+        }
+      }
+    }
+  } else {
+    numFrames = _numFrames;
+  }
+
+  return numFrames;
 }
 
 
@@ -1253,9 +1344,7 @@ QStringList ScubaSource::fieldListFor(const QString& filename, ScubaSource::Conf
       }
     }
 
-    if (datamode == DataRaw) {
-      rc += QString("Pixel(raw)");
-    } else if (datamode >= 0) {
+    if (datamode >= 0) {
       for (i=0; i<num_rows; i++) {
         for (j=0; j<num_cols; j++) {
           switch (datamode) {
@@ -1266,6 +1355,9 @@ QStringList ScubaSource::fieldListFor(const QString& filename, ScubaSource::Conf
               rc += QString("Pixel_%1_%2").arg(i).arg(j);
               break;
             case DataFiltered:
+              rc += QString("Pixel_%1_%2").arg(i).arg(j);
+              break;
+            case DataRaw:
               rc += QString("Pixel_%1_%2").arg(i).arg(j);
               break;
             case Data18_14:
@@ -1539,11 +1631,14 @@ class ConfigWidgetScuba : public KstDataSourceConfigWidget {
     }
 
     virtual void load() {
+      QString str;
       bool hasInstance = _instance != 0L;
 
       _cfg->setGroup("SCUBA General");
       _ac->_readMatrices->setChecked(_cfg->readBoolEntry("Read Matrices", false));
       _ac->_validateChecksum->setChecked(_cfg->readBoolEntry("Validate Checksum", false));
+      _ac->_curtailRawData->setChecked(_cfg->readBoolEntry("Raw Data Curtail To Buffer", false));
+      _ac->_rawDataBufferSize->setText(str.setNum(_cfg->readNumEntry("Raw Data Buffer Size", RAW_DATA_BUFFER_SIZE), 10));
 
       if (hasInstance) {
         KstSharedPtr<ScubaSource> src = kst_cast<ScubaSource>(_instance);
@@ -1551,6 +1646,8 @@ class ConfigWidgetScuba : public KstDataSourceConfigWidget {
           _cfg->setGroup(src->fileName());
           _ac->_readMatrices->setChecked(_cfg->readBoolEntry("Read Matrices", _ac->_readMatrices->isChecked()));
           _ac->_validateChecksum->setChecked(_cfg->readBoolEntry("Validate Checksum", _ac->_validateChecksum->isChecked()));
+          _ac->_curtailRawData->setChecked(_cfg->readBoolEntry("Raw Data Curtail To Buffer", _ac->_curtailRawData->isChecked()));
+          _ac->_rawDataBufferSize->setText(str.setNum(_cfg->readNumEntry("Raw Data Buffer Size", _ac->_rawDataBufferSize->text().toInt()), 10));
         }
       }
     }
@@ -1565,6 +1662,8 @@ class ConfigWidgetScuba : public KstDataSourceConfigWidget {
       }
       _cfg->writeEntry("Read Matrices", _ac->_readMatrices->isChecked());
       _cfg->writeEntry("Validate Checksum", _ac->_validateChecksum->isChecked());
+      _cfg->writeEntry("Raw Data Curtail To Buffer", _ac->_curtailRawData->isChecked());
+      _cfg->writeEntry("Raw Data Buffer Size", _ac->_rawDataBufferSize->text().toInt());
 
       //
       // update the instance from our new settings...
@@ -1680,4 +1779,3 @@ extern "C" {
 
 KST_KEY_DATASOURCE_PLUGIN(scuba)
 
-// vim: ts=2 sw=2 et

@@ -47,6 +47,34 @@
                 </size>
             </property>
         </spacer>
+        <spacer row="3" column="0" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>spacer1</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Vertical</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>320</width>
+                    <height>190</height>
+                </size>
+            </property>
+        </spacer>
+        <widget class="QCheckBox" row="1" column="0">
+            <property name="name">
+                <cstring>_validateChecksum</cstring>
+            </property>
+            <property name="text">
+                <string>&amp;Validate checksum</string>
+            </property>
+            <property name="accel">
+                <string>Alt+V</string>
+            </property>
+        </widget>
         <spacer row="1" column="1">
             <property name="name">
                 <cstring>spacer4_2_2</cstring>
@@ -64,33 +92,59 @@
                 </size>
             </property>
         </spacer>
-        <spacer row="2" column="0" rowspan="1" colspan="2">
+        <widget class="QButtonGroup" row="2" column="0" rowspan="1" colspan="2">
             <property name="name">
-                <cstring>spacer1</cstring>
+                <cstring>buttonGroup1</cstring>
             </property>
-            <property name="orientation">
-                <enum>Vertical</enum>
+            <property name="title">
+                <string>Raw data mode:</string>
             </property>
-            <property name="sizeType">
-                <enum>Expanding</enum>
-            </property>
-            <property name="sizeHint">
-                <size>
-                    <width>320</width>
-                    <height>290</height>
-                </size>
-            </property>
-        </spacer>
-        <widget class="QCheckBox" row="1" column="0">
-            <property name="name">
-                <cstring>_validateChecksum</cstring>
-            </property>
-            <property name="text">
-                <string>&amp;Validate checksum</string>
-            </property>
-            <property name="accel">
-                <string>Alt+V</string>
-            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel" row="0" column="0">
+                    <property name="name">
+                        <cstring>textLabel1</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Buffer size (values):</string>
+                    </property>
+                </widget>
+                <widget class="QLineEdit" row="0" column="1" rowspan="1" colspan="2">
+                    <property name="name">
+                        <cstring>_rawDataBufferSize</cstring>
+                    </property>
+                </widget>
+                <spacer row="1" column="2">
+                    <property name="name">
+                        <cstring>spacer4_2_2_2</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>190</width>
+                            <height>21</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QCheckBox" row="1" column="0" rowspan="1" colspan="2">
+                    <property name="name">
+                        <cstring>_curtailRawData</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Curtail raw data at buffer size</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+C</string>
+                    </property>
+                </widget>
+            </grid>
         </widget>
     </grid>
 </widget>
