@@ -36,6 +36,7 @@ KstGfxMouseHandler::~KstGfxMouseHandler() {
 void KstGfxMouseHandler::handlePress(KstTopLevelViewPtr view, const QPoint& pos, bool shift) {
   Q_UNUSED(view)
   Q_UNUSED(shift)
+
   _mouseOrigin = pos;
   _mouseMoved = false;
   _cancelled = false;
@@ -44,16 +45,21 @@ void KstGfxMouseHandler::handlePress(KstTopLevelViewPtr view, const QPoint& pos,
 
 
 void KstGfxMouseHandler::saveDefaults(KstViewObjectPtr obj) {
-  _defaultObject = obj;
+  _currentDefaultObject = obj;
+}
+
+
+void KstGfxMouseHandler::restoreDefaults() {
+  _currentDefaultObject = _defaultObject;
 }
 
 
 void KstGfxMouseHandler::copyDefaults(KstViewObjectPtr newObj) {
   if (_defaultObject) {
-    int numProperties = _defaultObject->metaObject()->numProperties(true);
+    int numProperties = _currentDefaultObject->metaObject()->numProperties(true);
     for (int i = 0; i < numProperties; i++) {
-      const QMetaProperty* property = _defaultObject->metaObject()->property(i, true);
-      newObj->setProperty(property->name(), _defaultObject->property(property->name()));
+      const QMetaProperty* property = _currentDefaultObject->metaObject()->property(i, true);
+      newObj->setProperty(property->name(), _currentDefaultObject->property(property->name()));
     }
   }
 }
