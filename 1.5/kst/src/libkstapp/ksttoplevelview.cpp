@@ -1860,7 +1860,9 @@ bool KstTopLevelView::handleDoubleClick(const QPoint& pos, bool shift) {
 void KstTopLevelView::deleteSelectedObjects() {
   for (KstViewObjectList::Iterator i = _selectionList.begin(); i != _selectionList.end(); ++i) {
     KstViewObjectPtr selection = *i;
+
     if (selection && selection->parent()) {
+      selection->parent()->invalidateClipRegion();
       selection->parent()->removeChild(selection);
     }
   }

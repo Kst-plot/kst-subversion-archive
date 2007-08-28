@@ -307,12 +307,14 @@ void KstViewObject::saveAttributes(QTextStream& ts, const QString& indent) {
 
 void KstViewObject::paint(KstPainter& p, const QRegion& bounds) {
   bool maximized = false;
+
   if (p.type() == KstPainter::P_EXPORT || p.type() == KstPainter::P_PRINT) {
     // handle the case where we have maximized plots
     for (KstViewObjectList::Iterator i = _children.begin(); i != _children.end(); ++i) {
       if ((*i)->_maximized) {
         (*i)->paint(p, bounds);
         maximized = true;
+
         break;
       }
     }
@@ -323,6 +325,7 @@ void KstViewObject::paint(KstPainter& p, const QRegion& bounds) {
         (*i)->paint(p, bounds);
       }
     }
+
     return;
   }
 
@@ -346,12 +349,14 @@ void KstViewObject::paint(KstPainter& p, const QRegion& bounds) {
     if ((*i)->_maximized) {
       (*i)->paint(p, bounds);
       maximized = true;
+
       break;
     }
   }
 
   if (!maximized) {
     QRegion clipRegion;
+
     if (nullBounds) {
       clipRegion = geometry();
     } else {
@@ -362,6 +367,7 @@ void KstViewObject::paint(KstPainter& p, const QRegion& bounds) {
       KstViewObjectList::Iterator begin = _children.begin();
       for (KstViewObjectList::Iterator i = _children.fromLast();; --i) {
         const QRegion thisObjectGeometry((*i)->geometry());
+
         if (nullBounds || !clipRegion.intersect(thisObjectGeometry).isEmpty()) {
 #ifdef BENCHMARK
           QTime t;
@@ -1305,14 +1311,16 @@ void KstViewObject::deleteObject() {
 
   if (_topObjectForMenu) {
     KstTopLevelViewPtr tlv = kst_cast<KstTopLevelView>(KstViewObjectPtr(_topObjectForMenu));
+
     if (tlv && vop == tlv->pressTarget()) {
       tlv->clearPressTarget();
     }
+
     if (this->_parent) {
       this->_parent->invalidateClipRegion();
     }
-    _topObjectForMenu->removeChild(this, true);
 
+    _topObjectForMenu->removeChild(this, true);
     _topObjectForMenu = 0L;
   }
 

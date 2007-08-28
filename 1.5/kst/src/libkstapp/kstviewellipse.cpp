@@ -230,4 +230,4 @@ KST_REGISTER_VIEW_OBJECT(Ellipse, create_KstViewEllipse, handler_KstViewEllipse)
 
 
 #include "kstviewellipse.moc"
-// vim: ts=2 sw=2 et
+
