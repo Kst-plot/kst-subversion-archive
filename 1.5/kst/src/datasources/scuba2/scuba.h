@@ -81,6 +81,7 @@ class ScubaSource : public KstDataSource {
     bool _haveHeader;
     bool _first;
     int _numFramesLastReadMatrix;
+    int _version;
     mutable bool _fieldListComplete;
 };
 

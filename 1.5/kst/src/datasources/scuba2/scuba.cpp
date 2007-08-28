@@ -200,6 +200,7 @@ ScubaSource::ScubaSource(KConfig *cfg, const QString& filename, const QString& t
   _numHousekeepingFieldsInUse = 0;
   _first = true;
   _numFramesLastReadMatrix = 0;
+  _version = -1;
 
   for (int i=0; i<numHousekeepingFields; i++) {
     if (strlen(housekeepingFields[i]) > 0) {
@@ -353,6 +354,7 @@ bool ScubaSource::initFrameIndex() {
     bool foundDataMode = false;
     bool foundNumRows = false;
     bool foundRowLen = false;
+    bool foundVersion = false;
     int index;
     int line = 0;
     int read;
@@ -408,6 +410,16 @@ bool ScubaSource::initFrameIndex() {
               _numRows = -1;
             }
             foundNumRows = true;
+          } else if (!foundVersion && s.contains("DAS_VERSION") == 1) {
+            index = s.find(QChar('>'));
+            s.remove(0, index+1);
+            s.stripWhiteSpace();
+            s.remove(5, s.length());
+            _version = s.toInt(&ok, 10);
+            if (!ok) {
+              _version = -1;
+            }
+            foundVersion = true;
           }
           ++line;
         }
@@ -1218,6 +1230,7 @@ QStringList ScubaSource::fieldListFor(const QString& filename, ScubaSource::Conf
   int num_rows = -1;
   int num_cols = -1;
   int row_len = -1;
+  int version = -1;
 
   //
   // check for the presence of a .run file
@@ -1233,6 +1246,7 @@ QStringList ScubaSource::fieldListFor(const QString& filename, ScubaSource::Conf
       bool foundDataMode = false;
       bool foundNumRows = false;
       bool foundRowLen = false;
+      bool foundVersion = false;
       bool done = false;
       bool ok;
       int index;
@@ -1273,6 +1287,16 @@ QStringList ScubaSource::fieldListFor(const QString& filename, ScubaSource::Conf
             num_rows = -1;
           }
           foundNumRows = true;
+        } else if (!foundVersion && s.contains("DAS_VERSION") == 1) {
+          index = s.find(QChar('>'));
+          s.remove(0, index+1);
+          s.stripWhiteSpace();
+          s.remove(5, s.length());
+          version = s.toInt(&ok, 10);
+          if (!ok) {
+            version = -1;
+          }
+          foundVersion = true;
         }
       }
 
@@ -1333,8 +1357,11 @@ QStringList ScubaSource::fieldListFor(const QString& filename, ScubaSource::Conf
     int i;
     int j;
 
-    // FIXME - should be configurable...
-    num_cols = 8;
+    if (version > 111) {
+      num_cols = 32;
+    } else {
+      num_cols = 8;
+    }
 
     rc += "INDEX";
 
@@ -1396,6 +1423,7 @@ QStringList ScubaSource::matrixList() const {
   int num_rows = -1;
   int num_cols = -1;
   int row_len = -1;
+  int version = -1;
 
   if (_matrixList.isEmpty()) {
     if (_config->_readMatrices) {
@@ -1414,6 +1442,7 @@ QStringList ScubaSource::matrixList() const {
             bool foundDataMode = false;
             bool foundNumRows = false;
             bool foundRowLen = false;
+            bool foundVersion = false;
             bool done = false;
             bool ok;
             int index;
@@ -1454,6 +1483,16 @@ QStringList ScubaSource::matrixList() const {
                   num_rows = -1;
                 }
                 foundNumRows = true;
+              } else if (!foundVersion && s.contains("DAS_VERSION") == 1) {
+                index = s.find(QChar('>'));
+                s.remove(0, index+1);
+                s.stripWhiteSpace();
+                s.remove(5, s.length());
+                version = s.toInt(&ok, 10);
+                if (!ok) {
+                  version = -1;
+                }
+                foundVersion = true;
               }
             }
 
@@ -1516,8 +1555,11 @@ QStringList ScubaSource::matrixList() const {
   if (populate) {
     int i;
 
-    // FIXME - should be configurable...
-    num_cols = 8;
+    if (version > 111) {
+      num_cols = 32;
+    } else {
+      num_cols = 8;
+    }
 
     for (i=0; i<_numFrames; i++) {
       switch (datamode) {
