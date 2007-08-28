@@ -34,6 +34,7 @@ KstGfxEllipseMouseHandler::KstGfxEllipseMouseHandler()
   defaultEllipse->setBorderColor(Qt::black);
   defaultEllipse->setForegroundColor(Qt::white);
   _defaultObject = KstViewObjectPtr(defaultEllipse);
+  _currentDefaultObject = KstViewObjectPtr(defaultEllipse);
 }
 
 

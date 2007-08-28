@@ -1847,6 +1847,14 @@ void KstTopLevelView::saveDefaults(KstViewObjectPtr object) {
 }
 
 
+void KstTopLevelView::restoreDefaults(KstViewObjectPtr object) {
+  KstGfxMouseHandler *handler = handlerForObject(object->type());
+  if (handler) {
+    handler->restoreDefaults();
+  }
+}
+
+
 bool KstTopLevelView::handleDoubleClick(const QPoint& pos, bool shift) {
   handlePress(pos, shift);
   if (_pressTarget) {

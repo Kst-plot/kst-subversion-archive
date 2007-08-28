@@ -42,6 +42,8 @@ class KST_EXPORT KstEditViewObjectDialogI : public KstEditViewObjectDialog {
     void showEditViewObjectDialog(KstViewObjectPtr viewObject, KstTopLevelViewPtr top);
     void setNew();
     void toggleEditMultiple();
+    void setDefaults();
+    void restoreDefaults();
 
   private:
     void updateWidgets();

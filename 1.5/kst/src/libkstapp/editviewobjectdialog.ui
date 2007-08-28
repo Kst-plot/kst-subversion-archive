@@ -19,7 +19,7 @@
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <widget class="EditMultipleWidget" row="0" column="1" rowspan="3" colspan="1">
+        <widget class="EditMultipleWidget" row="0" column="1" rowspan="4" colspan="1">
             <property name="name">
                 <cstring>_editMultipleWidget</cstring>
             </property>
@@ -76,7 +76,7 @@
                 </widget>
             </hbox>
         </widget>
-        <widget class="QLayoutWidget" row="3" column="0" rowspan="1" colspan="2">
+        <widget class="QLayoutWidget" row="4" column="0" rowspan="1" colspan="2">
             <property name="name">
                 <cstring>layout6</cstring>
             </property>
@@ -167,10 +167,56 @@
             <property name="sizeHint">
                 <size>
                     <width>41</width>
-                    <height>241</height>
+                    <height>210</height>
                 </size>
             </property>
         </spacer>
+        <widget class="QButtonGroup" row="3" column="0">
+            <property name="name">
+                <cstring>buttonGroup2</cstring>
+            </property>
+            <property name="title">
+                <string>Object defaults:</string>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>_pushButtonSetDefaults</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Set</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>_pushButtonRestoreDefaults</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Restore</string>
+                    </property>
+                </widget>
+                <spacer>
+                    <property name="name">
+                        <cstring>spacer4_2</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>181</width>
+                            <height>21</height>
+                        </size>
+                    </property>
+                </spacer>
+            </hbox>
+        </widget>
     </grid>
 </widget>
 <customwidgets>

@@ -39,12 +39,14 @@ class KstGfxMouseHandler {
     virtual void cancelMouseOperations(KstTopLevelViewPtr view);
 
     void saveDefaults(KstViewObjectPtr obj);
+    void restoreDefaults();
 
   protected:
     // copy defaults to newObj
     void copyDefaults(KstViewObjectPtr newObj);
 
     KstViewObjectPtr _defaultObject;
+    KstViewObjectPtr _currentDefaultObject;
     QPoint _mouseOrigin;
     QRect _prevBand;
     bool _mouseMoved;

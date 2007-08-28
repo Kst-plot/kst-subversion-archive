@@ -44,7 +44,7 @@ KstViewEllipse::KstViewEllipse(const QDomElement& e)
     if (!el.isNull()) {
       if (metaObject()->findProperty(el.tagName().latin1(), true) > -1) {
         setProperty(el.tagName().latin1(), QVariant(el.text()));  
-      }  
+      }
     }
     n = n.nextSibling();
   }

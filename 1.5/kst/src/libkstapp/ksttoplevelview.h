@@ -60,25 +60,26 @@ class KstTopLevelView : public KstViewObject {
     KstViewObjectList& selectionList() { return _selectionList; }
     KstViewObjectPtr pressTarget() const { return _pressTarget; }
     void clearPressTarget() { _pressTarget = 0L; }
-    
+
     template<class T> KstSharedPtr<T> createObject(const QString& name, bool doCleanup = true);
 
     bool mouseGrabbed() const { return _mouseGrabbed; }
     KstViewObjectPtr mouseGrabber() const { return _mouseGrabber; }
     bool grabMouse(KstViewObjectPtr me);
     void releaseMouse(KstViewObjectPtr me);
-    
+
     // save defaults for mouse mode from a given object
     void saveDefaults(KstViewObjectPtr object);
-  
+    void restoreDefaults(KstViewObjectPtr object);
+
     bool tiedZoomPrev(const QString& plotName);
     bool tiedZoomMode(int zoom, bool flag, double center, int mode, int modeExtra, const QString& plotName);
     bool tiedZoom(bool x, double xmin, double xmax, bool y, double ymin, double ymax, const QString& plotName);
 
   public slots:
     void cleanupDefault();
-    void cleanupCustom();      
-  
+    void cleanupCustom();
+
   private slots:
     void menuClosed();
     void condenseXAxis();

@@ -47,6 +47,8 @@ KstEditViewObjectDialogI::KstEditViewObjectDialogI(QWidget* parent, const char* 
   connect(_apply, SIGNAL(clicked()), this, SLOT(applyClicked()));
   connect(_OK, SIGNAL(clicked()), this, SLOT(okClicked()));
   connect(_editMultiple, SIGNAL(clicked()), this, SLOT(toggleEditMultiple()));
+  connect(_pushButtonSetDefaults, SIGNAL(clicked()), this, SLOT(setDefaults()));
+  connect(_pushButtonRestoreDefaults, SIGNAL(clicked()), this, SLOT(restoreDefaults()));
 
   _grid = 0L;
   _viewObject = 0L;
@@ -103,11 +105,14 @@ void KstEditViewObjectDialogI::toggleEditMultiple()
   if (_editMultipleMode) {
     _editMultipleWidget->hide();
     _editMultiple->setText(i18n("Edit Multiple >>"));
-
+    _pushButtonSetDefaults->setEnabled(true);
+    _pushButtonRestoreDefaults->setEnabled(true);
     updateWidgets();
   } else {
     _editMultipleWidget->show();
     _editMultiple->setText(i18n("Edit Multiple <<"));
+    _pushButtonSetDefaults->setEnabled(false);
+    _pushButtonRestoreDefaults->setEnabled(false);
 
     if (_customWidget) {
       if (_viewObject) {
@@ -467,20 +472,6 @@ void KstEditViewObjectDialogI::applySettings(KstViewObjectPtr viewObject) {
         viewObject->setProperty(propertyName.latin1(), (*iter)->property(widgetPropertyName.latin1()));
       }
     }
-
-#if 0
-    // Removed by George.  This is very strange.  Some dialogs have 10+
-    // properties, and when I change 8 of them, the next "new" object of the
-    // same type has all of these modified on me.  I have to go through and
-    // change them all back to what they were before.  I think this is too
-    // confusing and annoying.  We could add a sticky flag or something like
-    // that if this feature is really demanded.
-
-    // and then save this viewObject's properties as the default
-    if (_top) {
-      _top->saveDefaults(_viewObject);
-    }
-#endif
   }
 }
 
@@ -531,6 +522,26 @@ bool KstEditViewObjectDialogI::apply() {
 }
 
 
+void KstEditViewObjectDialogI::setDefaults() {
+  if (_top) {
+    KstViewObjectPtr viewObject = _viewObject->copyObjectQuietly(*_top, QString(""));
+    _top->removeChild(viewObject);
+
+    if (viewObject) {
+      applySettings(viewObject);
+      _top->saveDefaults(viewObject);
+    }
+  }
+}
+
+
+void KstEditViewObjectDialogI::restoreDefaults() {
+  if (_top) {
+    _top->restoreDefaults(_viewObject);
+  }
+}
+
+
 void KstEditViewObjectDialogI::applyClicked() {
   apply();
 }
@@ -544,4 +555,4 @@ void KstEditViewObjectDialogI::okClicked() {
 
 
 #include "ksteditviewobjectdialog_i.moc"
-// vim: ts=2 sw=2 et
+
