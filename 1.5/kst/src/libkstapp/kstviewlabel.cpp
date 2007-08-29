@@ -106,7 +106,7 @@ KstViewLabel::KstViewLabel(const QDomElement& e)
     if (!el.isNull()) {
       if (metaObject()->findProperty(el.tagName().latin1(), true) > -1) {
         setProperty(el.tagName().latin1(), QVariant(el.text()));  
-      }  
+      }
     }
     n = n.nextSibling();
   }
@@ -414,12 +414,12 @@ void KstViewLabel::paintSelf(KstPainter& p, const QRegion& bounds) {
   p.save();
   if (p.type() == KstPainter::P_PRINT || p.type() == KstPainter::P_EXPORT) {
     int absFontSizeOld = _absFontSize;
-    
+
     QRect cr(contentsRectForPainter(p));
     cr.setSize(sizeForText(_parent->geometry()));
     setContentsRectForPainter(p, cr);    
     KstBorderedViewObject::paintSelf(p, bounds);
-    
+
     p.translate(cr.left(), cr.top());
     if (!_transparent) {
       p.fillRect(0, 0, cr.width(), cr.height(), backgroundColor());
@@ -799,6 +799,11 @@ void KstViewLabel::populateEditMultiple(QWidget *w) {
 }
 
 
+bool KstViewLabel::supportsDefaults() {
+  return false;
+}
+
+
 void KstViewLabel::setDataPrecision(int prec) {
   int n;
 
@@ -852,11 +857,11 @@ int KstViewLabel::horizJustifyWrap() const {
 
 void KstViewLabel::setHorizJustifyWrap(int justify) {
   Q_UINT8 justifySet;
-  
+
   switch (justify) {
     case 0:
       justifySet = KST_JUSTIFY_H_LEFT;
-      break;  
+      break;
     case 1:
       justifySet = KST_JUSTIFY_H_RIGHT;
       break;
@@ -868,6 +873,7 @@ void KstViewLabel::setHorizJustifyWrap(int justify) {
   }
   setJustification(SET_KST_JUSTIFY(justifySet, KST_JUSTIFY_V(justification())));
 }
+
 
 void KstViewLabel::setLabelMargin(int margin) {
   int mm = kMax(0, margin);
@@ -919,6 +925,7 @@ void KstViewLabel::DataCache::update() {
           }
         }
         break;
+
       case DataRef::DRString:
         {
           KST::stringList.lock().readLock();
@@ -933,6 +940,7 @@ void KstViewLabel::DataCache::update() {
           }
         }
         break;
+
       case DataRef::DRExpression:
         {
           bool ok = false;
@@ -942,6 +950,7 @@ void KstViewLabel::DataCache::update() {
           }
         }
         break;
+
       case DataRef::DRVector:
         {
           bool ok = false;
@@ -962,6 +971,7 @@ void KstViewLabel::DataCache::update() {
           }
         }
         break;
+
       case DataRef::DataRef::DRFit:
         {
           KST::dataObjectList.lock().readLock();
@@ -984,4 +994,4 @@ void KstViewLabel::DataCache::update() {
 }
 
 #include "kstviewlabel.moc"
-// vim: ts=2 sw=2 et
+

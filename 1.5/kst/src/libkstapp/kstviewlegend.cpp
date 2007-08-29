@@ -827,6 +827,11 @@ void KstViewLegend::populateEditMultiple(QWidget *w) {
 }
 
 
+bool KstViewLegend::supportsDefaults() {
+  return false;
+}
+
+
 bool KstViewLegend::vertical() const {
   return _vertical;
 }

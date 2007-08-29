@@ -100,6 +100,7 @@ class KstViewLabel : public KstBorderedViewObject {
     bool readConfigWidget(QWidget *w, bool editMultipleMode);
     void connectConfigWidget(QWidget *parent, QWidget *w) const;
     void populateEditMultiple(QWidget *w);
+    bool supportsDefaults();
 
     KstObject::UpdateType update(int counter);
     void adjustSizeForText(const QRect& w);

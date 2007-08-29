@@ -78,9 +78,10 @@ void KstGfxTextMouseHandler::releasePress(KstTopLevelViewPtr view, const QPoint&
 
   // once released, create a new text object and popup the edit dialog
   if (!_cancelled) {
+    QSize size(0,0);
     KstViewLabelPtr label = new KstViewLabel;
     copyDefaults(KstViewObjectPtr(label));
-    QSize size(0,0);
+
     if (_mouseOrigin != pos) {
       label->move(_prevBand.topLeft());
       size = _prevBand.size();
@@ -89,6 +90,7 @@ void KstGfxTextMouseHandler::releasePress(KstTopLevelViewPtr view, const QPoint&
     }
 
     bool wasClick = size == QSize(0, 0);
+
     if (size.width() < 3) {
       size.setWidth(3);
     }
@@ -99,6 +101,7 @@ void KstGfxTextMouseHandler::releasePress(KstTopLevelViewPtr view, const QPoint&
 
     if (label->showDialog(view, true)) {
       KstViewObjectPtr container;
+
       if (wasClick) {
         container = view->findDeepestChild(pos);
       } else {

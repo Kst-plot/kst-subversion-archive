@@ -159,7 +159,7 @@ int KstViewEllipse::borderWidth() const {
 
 
 void KstViewEllipse::setForegroundColor(const QColor& color) {
-  KstViewObject::setForegroundColor(color);  
+  KstViewObject::setForegroundColor(color);
 }
 
 

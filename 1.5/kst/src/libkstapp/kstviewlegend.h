@@ -82,6 +82,7 @@ class KstViewLegend : public KstBorderedViewObject {
     bool readConfigWidget(QWidget *w, bool editMultipleMode);
     void connectConfigWidget(QWidget *parent, QWidget *w) const;
     void populateEditMultiple(QWidget *w);
+    bool supportsDefaults();
 
     void addCurve(KstBaseCurvePtr curve);
     void removeCurve(KstBaseCurvePtr curve);
