@@ -93,6 +93,13 @@ KstViewObject* KstViewArrow::copyObjectQuietly(KstViewObject& parent, const QStr
 }
 
 
+KstViewObject* KstViewArrow::copyObjectQuietly() const {
+  KstViewArrow *viewArrow = new KstViewArrow(*this);
+
+  return viewArrow;
+}
+
+
 void KstViewArrow::paintArrow(KstPainter& p, const QPoint& to, const QPoint &from, int w, double scaling) {
   double deltax = scaling * double(w);
   double theta = atan2(double(from.y() - to.y()), double(from.x() - to.x())) - M_PI / 2.0;

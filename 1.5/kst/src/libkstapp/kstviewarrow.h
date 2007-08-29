@@ -40,6 +40,7 @@ class KstViewArrow : public KstViewLine {
     QMap<QString, QVariant > widgetHints(const QString& propertyName) const;
 
     virtual KstViewObject* copyObjectQuietly(KstViewObject& parent, const QString& name = QString::null) const;
+    virtual KstViewObject* copyObjectQuietly() const;
 
     void paintSelf(KstPainter& p, const QRegion& bounds);
     void paintArrow(KstPainter& p, const QPoint& to, const QPoint &from, int w, double scaling);

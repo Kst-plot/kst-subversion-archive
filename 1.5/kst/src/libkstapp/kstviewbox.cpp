@@ -97,6 +97,13 @@ KstViewObject* KstViewBox::copyObjectQuietly(KstViewObject& parent, const QStrin
 }
 
 
+KstViewObject* KstViewBox::copyObjectQuietly() const {
+  KstViewBox *viewBox = new KstViewBox(*this);
+
+  return viewBox;
+}
+
+
 void KstViewBox::paintSelf(KstPainter& p, const QRegion& bounds) {
   p.save();
   if (p.type() != KstPainter::P_PRINT && p.type() != KstPainter::P_EXPORT) {

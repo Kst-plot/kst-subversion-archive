@@ -40,6 +40,7 @@ class KstViewPicture : public KstBorderedViewObject {
     ~KstViewPicture();
 
     virtual KstViewObject* copyObjectQuietly(KstViewObject& parent, const QString& name = QString::null) const;
+    virtual KstViewObject* copyObjectQuietly() const;
     bool setImage(const QString& url);
     void setImage(const QImage& image);
     const QString& url() const;

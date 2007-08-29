@@ -41,6 +41,7 @@ class KstViewBox : public KstViewObject {
     ~KstViewBox();
 
     virtual KstViewObject* copyObjectQuietly(KstViewObject& parent, const QString& name = QString::null) const;
+    virtual KstViewObject* copyObjectQuietly() const;
     void setXRound(int rnd);
     int xRound() const;
     void setYRound(int rnd);

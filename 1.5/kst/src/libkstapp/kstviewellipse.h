@@ -36,6 +36,7 @@ class KstViewEllipse : public KstViewObject {
     virtual ~KstViewEllipse();
 
     virtual KstViewObject* copyObjectQuietly(KstViewObject& parent, const QString& name = QString::null) const;
+    virtual KstViewObject* copyObjectQuietly() const;
     virtual void setBorderColor(const QColor& to);
     virtual QColor borderColor() const;
     virtual void setBorderWidth(int width);

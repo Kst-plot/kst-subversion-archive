@@ -173,7 +173,7 @@
         </spacer>
         <widget class="QButtonGroup" row="3" column="0">
             <property name="name">
-                <cstring>buttonGroup2</cstring>
+                <cstring>_buttonGroupDefaults</cstring>
             </property>
             <property name="title">
                 <string>Object defaults:</string>

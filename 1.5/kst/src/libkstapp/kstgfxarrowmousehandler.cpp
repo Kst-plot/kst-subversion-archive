@@ -37,6 +37,7 @@ KstGfxArrowMouseHandler::KstGfxArrowMouseHandler()
   defaultArrow->setPenStyle(Qt::SolidLine);
   defaultArrow->setForegroundColor(Qt::black);
   _defaultObject = KstViewObjectPtr(defaultArrow);
+  _currentDefaultObject = KstViewObjectPtr(defaultArrow);
 }
 
 
@@ -97,4 +98,3 @@ void KstGfxArrowMouseHandler::releasePress(KstTopLevelViewPtr view, const QPoint
 }
 
 
-// vim: ts=2 sw=2 et

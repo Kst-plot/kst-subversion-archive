@@ -1345,6 +1345,11 @@ KstViewObject* KstViewObject::copyObjectQuietly(KstViewObject &parent, const QSt
 }
 
 
+KstViewObject* KstViewObject::copyObjectQuietly() const {
+  return 0L;
+}
+
+
 void KstViewObject::raiseToTop() {
   if (_parent) {
     KstViewObjectPtr t = this;
@@ -2053,6 +2058,10 @@ void KstViewObject::connectConfigWidget(QWidget *parent, QWidget *w) const {
 
 void KstViewObject::populateEditMultiple(QWidget *w) {
   Q_UNUSED(w)
+}
+
+bool KstViewObject::supportsDefaults() {
+  return true;
 }
 
 KstGfxMouseHandler *KstViewObject::createHandler() {

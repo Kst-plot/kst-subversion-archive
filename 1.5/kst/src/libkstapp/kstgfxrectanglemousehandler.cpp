@@ -36,6 +36,7 @@ KstGfxRectangleMouseHandler::KstGfxRectangleMouseHandler()
   defaultBox->setXRound(0);
   defaultBox->setYRound(0);
   _defaultObject = KstViewObjectPtr(defaultBox);
+  _currentDefaultObject = KstViewObjectPtr(defaultBox);
 }
 
 

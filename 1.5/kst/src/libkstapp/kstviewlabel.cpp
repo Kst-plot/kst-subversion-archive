@@ -153,6 +153,13 @@ KstViewObject* KstViewLabel::copyObjectQuietly(KstViewObject& parent, const QStr
 }
 
 
+KstViewObject* KstViewLabel::copyObjectQuietly() const {
+  KstViewLabel* viewLabel = new KstViewLabel(*this);
+
+  return viewLabel;
+}
+
+
 void KstViewLabel::setupConnections() {
   for (KstScalarMap::iterator i = _scalarsUsed.begin(); i != _scalarsUsed.end(); ++i) {
     disconnect(i.data(), SIGNAL(tagChanged()), this, SLOT(reparse()));

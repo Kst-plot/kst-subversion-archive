@@ -190,6 +190,13 @@ KstViewObject* KstViewLegend::copyObjectQuietly(KstViewObject &parent, const QSt
 }
 
 
+KstViewObject* KstViewLegend::copyObjectQuietly() const { 
+  KstViewLegend* viewLegend = new KstViewLegend(*this);
+
+  return viewLegend;
+}
+
+
 void KstViewLegend::resize(const QSize& size) {
   KstBorderedViewObject::resize(size);
   if (!_parsedTitle) {

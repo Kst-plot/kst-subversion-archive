@@ -100,7 +100,7 @@ class KST_EXPORT KstViewObject : public KstObject {
     // in the row.  1.0 means that the dataRect = geometry.  >1 means dataRect < geometry.
     virtual double verticalSizeFactor();
     virtual double horizontalSizeFactor();
-    
+
     virtual void move(const QPoint& to);
 
     // Draw a focus highlight
@@ -157,7 +157,7 @@ class KST_EXPORT KstViewObject : public KstObject {
 
     virtual void updateSelection(const QRect& region);
     bool isContainer() const;
-    
+
     KstViewObjectPtr parent() const;
     KstViewObjectPtr topLevelParent() const;
 
@@ -227,7 +227,7 @@ class KST_EXPORT KstViewObject : public KstObject {
 
     void setMinimumSize(const QSize& sz);
     const QSize& minimumSize() const;
-    
+
     // returns the mouse direction for this position on this view object
     enum Direction {NONE = 0, 
                     UP = 1, 
@@ -237,7 +237,7 @@ class KST_EXPORT KstViewObject : public KstObject {
                     CENTEREDRESIZE = 16,
                     ENDPOINT = 32};
     virtual signed int directionFor(const QPoint& pos);
-    
+
     // returns instructions for the edit dialog of this view object
     // given a property name
     // FIXME: Don't use QMap.  We need to preserve order here.
@@ -251,6 +251,7 @@ class KST_EXPORT KstViewObject : public KstObject {
     virtual bool readConfigWidget(QWidget *w, bool editMultipleMode);
     virtual void connectConfigWidget(QWidget *parent, QWidget *w) const;
     virtual void populateEditMultiple(QWidget *w);
+    virtual bool supportsDefaults();
 
     virtual bool paste(QMimeSource* source, KstViewObjectList *list = 0L);
 
@@ -269,6 +270,7 @@ class KST_EXPORT KstViewObject : public KstObject {
     virtual void zoomToggle();
     virtual void copyObject();
     virtual KstViewObject* copyObjectQuietly(KstViewObject& parent, const QString& name = QString::null) const;
+    virtual KstViewObject* copyObjectQuietly() const;
     virtual bool showDialog(KstTopLevelViewPtr invoker, bool isNew);
 
   protected slots:
@@ -393,4 +395,4 @@ KstObjectList<KstSharedPtr<T> > KstViewObject::findChildrenType(bool recursive) 
 }
 
 #endif
-// vim: ts=2 sw=2 et
+

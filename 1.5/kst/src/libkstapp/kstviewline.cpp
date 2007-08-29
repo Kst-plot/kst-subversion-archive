@@ -112,6 +112,13 @@ KstViewObject* KstViewLine::copyObjectQuietly(KstViewObject& parent, const QStri
 }
 
 
+KstViewObject* KstViewLine::copyObjectQuietly() const {
+  KstViewLine* viewLine = new KstViewLine(*this);
+
+  return viewLine;
+}
+
+
 void KstViewLine::paintSelf(KstPainter& p, const QRegion& bounds) {
   p.save();
   if (p.type() != KstPainter::P_PRINT && p.type() != KstPainter::P_EXPORT) {

@@ -977,6 +977,34 @@ void Kst2DPlot::fitCurve(int id) {
 }
 
 
+void Kst2DPlot::fitCurveVisibleStatic(int id) {
+  KMdiChildView* c = KstApp::inst()->activeWindow();
+  if (c) {
+    KstBaseCurvePtr curve = *(Curves.findTag(_curveRemoveMap[id]));
+    if (curve) {
+      KstFitDialogI::globalInstance()->show_setCurve(_curveRemoveMap[id], tagName(), c->caption());
+      if (_menuView) {
+        _menuView->paint();
+      }
+    }
+  }
+}
+
+
+void Kst2DPlot::fitCurveVisibleDynamic(int id) {
+  KMdiChildView* c = KstApp::inst()->activeWindow();
+  if (c) {
+    KstBaseCurvePtr curve = *(Curves.findTag(_curveRemoveMap[id]));
+    if (curve) {
+      KstFitDialogI::globalInstance()->show_setCurve(_curveRemoveMap[id], tagName(), c->caption());
+      if (_menuView) {
+        _menuView->paint();
+      }
+    }
+  }
+}
+
+
 void Kst2DPlot::filterCurve(int id) {
   KMdiChildView* c = KstApp::inst()->activeWindow();
   if (c) {
@@ -3576,6 +3604,17 @@ KstViewObject* Kst2DPlot::copyObjectQuietly(KstViewObject& parent, const QString
 }
 
 
+KstViewObject* Kst2DPlot::copyObjectQuietly() const {
+  QString plotName;
+
+  plotName = i18n("%1-copy").arg(tagName());
+
+  Kst2DPlot *plot = new Kst2DPlot(*this, plotName);
+
+  return plot;
+}
+
+
 void Kst2DPlot::removeCurve(int id) {
   KstBaseCurvePtr curve = *(Curves.findTag(_curveRemoveMap[id]));
   if (curve) {
@@ -3601,6 +3640,7 @@ bool Kst2DPlot::popupMenu(KPopupMenu *menu, const QPoint& pos, KstViewObjectPtr 
   KPopupMenu *submenu2 = new KPopupMenu(menu);
   Kst2DPlotList pl = globalPlotList();
   int i = 0;
+
   _plotMap.clear();
   for (Kst2DPlotList::ConstIterator j = pl.begin(); j != pl.end(); ++j) {
     if ((*j).data() != this) {
@@ -3614,6 +3654,7 @@ bool Kst2DPlot::popupMenu(KPopupMenu *menu, const QPoint& pos, KstViewObjectPtr 
       hasEntry = true;
     }
   }
+
   int id = menu->insertItem(i18n("&Match Axes"), submenu);
   menu->setItemEnabled(id, hasEntry);
   id = menu->insertItem(i18n("&Match X Axis"), submenu2);
@@ -3654,7 +3695,7 @@ bool Kst2DPlot::popupMenu(KPopupMenu *menu, const QPoint& pos, KstViewObjectPtr 
   submenu->insertSeparator();
   submenu->insertItem(i18n("Next &Image Color Scale"),
                       this, SLOT(menuNextImageColorScale()), Key_I);
-  
+
   submenu = new KPopupMenu(menu);
   menu->insertItem(i18n("&Scroll"), submenu);
   submenu->insertItem(i18n("Left"), this, SLOT(menuMoveLeft()), Key_Left);
@@ -3671,6 +3712,7 @@ bool Kst2DPlot::popupMenu(KPopupMenu *menu, const QPoint& pos, KstViewObjectPtr 
   double tempVal;
   getLScale(xmin, tempVal, xmax, tempVal);
   double currCenter = ((xmax + xmin)/2.0) + (xmax - xmin)/MARKER_NUM_SEGS;
+
   if (_xLog) {
     currCenter = pow(_xLogBase, currCenter);
   }
@@ -3691,23 +3733,23 @@ bool Kst2DPlot::popupMenu(KPopupMenu *menu, const QPoint& pos, KstViewObjectPtr 
   _curveFitMap.clear();
   _curveRemoveMap.clear();
 
-  // Edit menu
-  submenu = new KPopupMenu(menu);
-  // Fit menu
-  KPopupMenu *submenu4 = new KPopupMenu(menu);
-  // Filter menu
-  submenu2 = new KPopupMenu(menu);
-  // Remove menu
-  KPopupMenu *submenu3 = new KPopupMenu(menu);
+  KPopupMenu *submenuEdit = new KPopupMenu(menu);
+  KPopupMenu *submenuFit = new KPopupMenu(menu);
+  KPopupMenu *submenuFitAll = new KPopupMenu(submenuFit);
+  KPopupMenu *submenuFitVisibleStatic = new KPopupMenu(submenuFit);
+  KPopupMenu *submenuFitVisibleDynamic = new KPopupMenu(submenuFit);
+  KPopupMenu *submenuFilter = new KPopupMenu(menu);
+  KPopupMenu *submenuRemove = new KPopupMenu(menu);
   hasEntry = false;
+
   for (i = 0; i < n_curves; i++) {
     KstBaseCurvePtr c = Curves[i];
     c->readLock();
     const QString& tag = c->tagName();
     c->unlock();
     _curveEditMap[i] = tag;
-    submenu->insertItem(i18n("Type: Name", "Plot Object: %1").arg(tag), i);
-    submenu->connectItem(i, this, SLOT(editCurve(int)));
+    submenuEdit->insertItem(i18n("Type: Name", "Plot Object: %1").arg(tag), i);
+    submenuEdit->connectItem(i, this, SLOT(editCurve(int)));
     KstVCurvePtr vc = kst_cast<KstVCurve>(c);
     if (vc && vc->yVector()) {
       KstObjectPtr provider = vc->yVector()->provider();
@@ -3715,15 +3757,15 @@ bool Kst2DPlot::popupMenu(KPopupMenu *menu, const QPoint& pos, KstViewObjectPtr 
         KstDataObjectPtr dop = kst_cast<KstDataObject>(provider);
         if (dop) {
           _objectEditMap[i + n_curves] = dop->tagName();
-          submenu->insertItem(i18n("Type: Name", "%1: %2").arg(dop->typeString()).arg(dop->tagName()), i + n_curves);
-          submenu->connectItem(i + n_curves, this, SLOT(editObject(int)));
+          submenuEdit->insertItem(i18n("Type: Name", "%1: %2").arg(dop->typeString()).arg(dop->tagName()), i + n_curves);
+          submenuEdit->connectItem(i + n_curves, this, SLOT(editObject(int)));
         }
       } else {
         KstRVectorPtr rv = kst_cast<KstRVector>(vc->yVector());
         if (rv) {
           _objectEditMap[i + n_curves] = rv->tagName();
-          submenu->insertItem(i18n("Type: Name", "Vector: %1").arg(rv->tagName()), i + n_curves);
-          submenu->connectItem(i + n_curves, this, SLOT(editVector(int)));
+          submenuEdit->insertItem(i18n("Type: Name", "Vector: %1").arg(rv->tagName()), i + n_curves);
+          submenuEdit->connectItem(i + n_curves, this, SLOT(editVector(int)));
         }
       }
     } else if (KstImagePtr img = kst_cast<KstImage>(c)) {
@@ -3732,36 +3774,46 @@ bool Kst2DPlot::popupMenu(KPopupMenu *menu, const QPoint& pos, KstViewObjectPtr 
         KstDataObjectPtr dop = kst_cast<KstDataObject>(provider);
         if (dop) {
           _objectEditMap[i + n_curves] = dop->tagName();
-          submenu->insertItem(i18n("Type: Name", "%1: %2").arg(dop->typeString()).arg(dop->tagName()), i + n_curves);
-          submenu->connectItem(i + n_curves, this, SLOT(editObject(int)));
+          submenuEdit->insertItem(i18n("Type: Name", "%1: %2").arg(dop->typeString()).arg(dop->tagName()), i + n_curves);
+          submenuEdit->connectItem(i + n_curves, this, SLOT(editObject(int)));
         }
       } else {
         KstRMatrixPtr rm = kst_cast<KstRMatrix>(img->matrix());
         if (rm) {
           _objectEditMap[i + n_curves] = rm->tagName();
-          submenu->insertItem(i18n("Type: Name", "Matrix: %1").arg(rm->tagName()), i + n_curves);
-          submenu->connectItem(i + n_curves, this, SLOT(editMatrix(int)));
+          submenuEdit->insertItem(i18n("Type: Name", "Matrix: %1").arg(rm->tagName()), i + n_curves);
+          submenuEdit->connectItem(i + n_curves, this, SLOT(editMatrix(int)));
         }
       }
     }
     _curveFitMap[i] = tag;
     _curveRemoveMap[i] = tag;
-    submenu4->insertItem(tag, i);
-    submenu2->insertItem(tag, i);
-    submenu3->insertItem(tag, i);
-    submenu4->connectItem(i, this, SLOT(fitCurve(int)));
-    submenu2->connectItem(i, this, SLOT(filterCurve(int)));
-    submenu3->connectItem(i, this, SLOT(removeCurve(int)));
+    submenuFitAll->insertItem(tag, i);
+    submenuFitVisibleStatic->insertItem(tag, i);
+    submenuFitVisibleDynamic->insertItem(tag, i);
+    submenuFilter->insertItem(tag, i);
+    submenuRemove->insertItem(tag, i);
+    submenuFitAll->connectItem(i, this, SLOT(fitCurve(int)));
+    submenuFitVisibleStatic->connectItem(i, this, SLOT(fitCurveVisibleStatic(int)));
+    submenuFitVisibleDynamic->connectItem(i, this, SLOT(fitCurveVisibleDynamic(int)));
+    submenuFilter->connectItem(i, this, SLOT(filterCurve(int)));
+    submenuRemove->connectItem(i, this, SLOT(removeCurve(int)));
     hasEntry = true;
   }
 
-  id = menu->insertItem(i18n("Edit"), submenu);
+  id = menu->insertItem(i18n("Edit"), submenuEdit);
   menu->setItemEnabled(id, hasEntry);
-  id = menu->insertItem(i18n("Fit"), submenu4);
+  id = menu->insertItem(i18n("Fit"), submenuFit);
   menu->setItemEnabled(id, hasEntry);
-  id = menu->insertItem(i18n("Filter"), submenu2);
+  id = submenuFit->insertItem(i18n("Entire curve"), submenuFitAll);
   menu->setItemEnabled(id, hasEntry);
-  id = menu->insertItem(i18n("Remove"), submenu3);
+  id = submenuFit->insertItem(i18n("Visible curve (static)"), submenuFitVisibleStatic);
+  menu->setItemEnabled(id, hasEntry);
+  id = submenuFit->insertItem(i18n("Visible curve (dynamic)"), submenuFitVisibleDynamic);
+  menu->setItemEnabled(id, hasEntry);
+  id = menu->insertItem(i18n("Filter"), submenuFilter);
+  menu->setItemEnabled(id, hasEntry);
+  id = menu->insertItem(i18n("Remove"), submenuRemove);
   menu->setItemEnabled(id, hasEntry);
 
   return true;
@@ -4516,12 +4568,12 @@ void Kst2DPlot::mouseReleaseEvent(QWidget *view, QMouseEvent *e) {
       }
     }
   }
- 
+
   _mouse.mode = INACTIVE;
   setCursorForMode(view, _mouse.mode, e->pos());
 
   if (doUpdate) {
-    kstdDebug() << "mouse release: do update" << endl;
+//  kstdDebug() << "mouse release: do update" << endl;
     setDirty();
     static_cast<KstViewWidget*>(view)->paint();
   }
@@ -7073,6 +7125,10 @@ void Kst2DPlot::populateEditMultiple(QWidget *w) {
   widget->populateEditMultiple(this);
 }
 
+bool Kst2DPlot::supportsDefaults() {
+  return false;
+}
+
 /** fill the custom widget with current properties */
 /** Unlike most viewObject dialogs, here we let the dialog fill itself,
     rather than having kst2dplot fill it - kst2dplot is already too big! */
@@ -7293,4 +7349,3 @@ KST_REGISTER_VIEW_OBJECT(Plot, create_Kst2DPlot, handler_Kst2DPlot)
 #undef LABEL_PRECISION
 #include "kst2dplot.moc"
 
-// vim: ts=2 sw=2 et

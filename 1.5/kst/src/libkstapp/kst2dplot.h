@@ -105,6 +105,7 @@ public:
   bool readConfigWidget(QWidget *w, bool editMultipleMode);
   void connectConfigWidget(QWidget *parent, QWidget *w) const;
   void populateEditMultiple(QWidget *w);
+  bool supportsDefaults();
 
   static Kst2DPlotList globalPlotList();
   static Kst2DPlotPtr findPlotByName(const QString& name);
@@ -410,6 +411,7 @@ public slots:
   virtual void deleteObject();
   virtual void copyObject();
   virtual KstViewObject* copyObjectQuietly(KstViewObject& parent, const QString& name = QString::null) const;
+  virtual KstViewObject* copyObjectQuietly() const;
   void draw(); // draw into back buffer
   void draw(KstPainter& p); // This actually does the drawing
   void paintSelf(KstPainter& p, const QRegion& bounds);
@@ -424,6 +426,8 @@ public slots:
   bool tiedZoomMode(ZoomType zoom, bool flag, double center, KstScaleModeType mode, KstScaleModeType modeExtra);
   void tiedZoom(bool x, double xmin, double xmax, bool y, double ymin, double ymax);
   void fitCurve(int id);
+  void fitCurveVisibleDynamic(int id);
+  void fitCurveVisibleStatic(int id);
   void filterCurve(int id);
   void removeCurve(int id);
 

@@ -84,6 +84,13 @@ KstViewObject* KstViewEllipse::copyObjectQuietly(KstViewObject& parent, const QS
 }
 
 
+KstViewObject* KstViewEllipse::copyObjectQuietly() const {
+  KstViewEllipse* viewEllipse = new KstViewEllipse(*this);
+
+  return viewEllipse;
+}
+
+
 void KstViewEllipse::paintSelf(KstPainter& p, const QRegion& bounds) {
   p.save();
   if (p.type() != KstPainter::P_PRINT && p.type() != KstPainter::P_EXPORT) {

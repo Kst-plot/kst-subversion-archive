@@ -45,6 +45,7 @@ class KstViewLabel : public KstBorderedViewObject {
     ~KstViewLabel();
 
     virtual KstViewObject* copyObjectQuietly(KstViewObject& parent, const QString& name = QString::null) const;
+    virtual KstViewObject* copyObjectQuietly() const;
     void setText(const QString& text);
     const QString& text() const;
 

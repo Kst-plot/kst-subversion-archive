@@ -35,6 +35,7 @@ KstGfxLineMouseHandler::KstGfxLineMouseHandler()
   defaultLine->setPenStyle(Qt::SolidLine);
   defaultLine->setForegroundColor(Qt::black);
   _defaultObject = KstViewObjectPtr(defaultLine);
+  _currentDefaultObject = KstViewObjectPtr(defaultLine);
 }
 
 

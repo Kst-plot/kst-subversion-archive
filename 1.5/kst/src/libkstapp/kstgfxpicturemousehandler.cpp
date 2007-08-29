@@ -28,6 +28,14 @@
 
 KstGfxPictureMouseHandler::KstGfxPictureMouseHandler()
 : KstGfxMouseHandler() {
+  // initial default settings before any sticky settings
+  KstViewPicturePtr defaultPicture = new KstViewPicture;
+  defaultPicture->setBorderWidth(0);
+  defaultPicture->setBorderColor(Qt::black);
+  defaultPicture->setRefreshTimer(0);
+  defaultPicture->setMaintainAspect(true);
+  _defaultObject = KstViewObjectPtr(defaultPicture);
+  _currentDefaultObject = KstViewObjectPtr(defaultPicture);
 }
 
 
@@ -74,6 +82,7 @@ void KstGfxPictureMouseHandler::releasePress(KstTopLevelViewPtr view, const QPoi
   // once released, create a picture and popup the edit dialog
   if (!_cancelled && _mouseOrigin != pos) {
     KstViewPicturePtr pic = new KstViewPicture;
+    copyDefaults(KstViewObjectPtr(pic));
     pic->move(_prevBand.topLeft());
     pic->resize(_prevBand.size());
     if (pic->showDialog(view, true)) {
@@ -87,6 +96,6 @@ void KstGfxPictureMouseHandler::releasePress(KstTopLevelViewPtr view, const QPoi
       KstApp::inst()->updateViewManager(true);
     }
   }
-  _prevBand = QRect(-1,-1, 0, 0);
+  _prevBand = QRect(-1, -1, 0, 0);
 }
 

@@ -91,6 +91,11 @@ void KstEditViewObjectDialogI::showEditViewObjectDialog(KstViewObjectPtr viewObj
   updateWidgets();
   if (_viewObject) {
     setCaption(_viewObject->editTitle());
+    if (_viewObject && !_viewObject->supportsDefaults()) {
+      _buttonGroupDefaults->hide();
+      _pushButtonSetDefaults->hide();
+      _pushButtonRestoreDefaults->hide();
+    }
   }
   _apply->setEnabled(false);
   show();
@@ -98,19 +103,22 @@ void KstEditViewObjectDialogI::showEditViewObjectDialog(KstViewObjectPtr viewObj
 }
 
 
-void KstEditViewObjectDialogI::toggleEditMultiple()
-{
+void KstEditViewObjectDialogI::toggleEditMultiple() {
   _editMultipleWidget->_objectList->clear();
 
   if (_editMultipleMode) {
     _editMultipleWidget->hide();
     _editMultiple->setText(i18n("Edit Multiple >>"));
-    _pushButtonSetDefaults->setEnabled(true);
-    _pushButtonRestoreDefaults->setEnabled(true);
+    if (_viewObject && _viewObject->supportsDefaults()) {
+      _buttonGroupDefaults->setEnabled(true);
+      _pushButtonSetDefaults->setEnabled(true);
+      _pushButtonRestoreDefaults->setEnabled(true);
+    }
     updateWidgets();
   } else {
     _editMultipleWidget->show();
     _editMultiple->setText(i18n("Edit Multiple <<"));
+    _buttonGroupDefaults->setEnabled(false);
     _pushButtonSetDefaults->setEnabled(false);
     _pushButtonRestoreDefaults->setEnabled(false);
 
@@ -524,9 +532,7 @@ bool KstEditViewObjectDialogI::apply() {
 
 void KstEditViewObjectDialogI::setDefaults() {
   if (_top) {
-    KstViewObjectPtr viewObject = _viewObject->copyObjectQuietly(*_top, QString(""));
-    _top->removeChild(viewObject);
-
+    KstViewObjectPtr viewObject = _viewObject->copyObjectQuietly();
     if (viewObject) {
       applySettings(viewObject);
       _top->saveDefaults(viewObject);

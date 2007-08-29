@@ -52,6 +52,7 @@ class KstViewLegend : public KstBorderedViewObject {
     static KstViewLegendList globalLegendList();
 
     virtual KstViewObject* copyObjectQuietly(KstViewObject &parent, const QString& name = QString::null) const;
+    virtual KstViewObject* copyObjectQuietly() const;
     void setTitle(const QString& title);
     const QString& title() const;
     void reparseTitle();

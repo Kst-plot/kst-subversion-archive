@@ -72,6 +72,8 @@ KstViewPicture::KstViewPicture(const QDomElement& e)
 
 KstViewPicture::KstViewPicture(const KstViewPicture& picture)
 : KstBorderedViewObject(picture) {
+  _timer = 0L;
+  _maintainAspect = picture._maintainAspect;
   _refresh = picture._refresh;
   _url = picture._url;
   doRefresh();
@@ -91,6 +93,13 @@ KstViewObject* KstViewPicture::copyObjectQuietly(KstViewObject& parent, const QS
 
   KstViewPicture* viewPicture = new KstViewPicture(*this);
   parent.appendChild(viewPicture, true);
+
+  return viewPicture;
+}
+
+
+KstViewObject* KstViewPicture::copyObjectQuietly() const {
+  KstViewPicture* viewPicture = new KstViewPicture(*this);
 
   return viewPicture;
 }

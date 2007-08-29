@@ -36,6 +36,7 @@ KstGfxTextMouseHandler::KstGfxTextMouseHandler()
   defaultLabel->setTransparent(false);
   defaultLabel->setBorderWidth(2);
   _defaultObject = KstViewObjectPtr(defaultLabel); 
+  _currentDefaultObject = KstViewObjectPtr(defaultLabel); 
 }
 
 
@@ -45,7 +46,7 @@ KstGfxTextMouseHandler::~KstGfxTextMouseHandler() {
 
 void KstGfxTextMouseHandler::pressMove(KstTopLevelViewPtr view, const QPoint& pos, bool shift, const QRect& geom) {
   if (_cancelled || !_mouseDown) {
-    return;  
+    return;
   }
 
   QRect old = _prevBand;

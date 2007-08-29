@@ -37,6 +37,7 @@ class KstViewLine : public KstViewObject {
     virtual ~KstViewLine();
 
     virtual KstViewObject* copyObjectQuietly(KstViewObject& parent, const QString& name = QString::null) const;
+    virtual KstViewObject* copyObjectQuietly() const;
     // sets the "from" point - geometry not updated until setTo() is called
     virtual void setFrom(const QPoint& from);
     virtual QPoint from() const;

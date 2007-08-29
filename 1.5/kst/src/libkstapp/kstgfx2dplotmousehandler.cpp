@@ -38,6 +38,7 @@ KstGfx2DPlotMouseHandler::KstGfx2DPlotMouseHandler()
   defaultBox->setXRound(0);
   defaultBox->setYRound(0);*/
   _defaultObject = KstViewObjectPtr(default2DPlot);
+  _currentDefaultObject = KstViewObjectPtr(default2DPlot);
 }
 
 

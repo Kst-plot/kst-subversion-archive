@@ -157,14 +157,14 @@ bool KstFitDialogI::createCurve(KstCPluginPtr plugin) {
     if (plot) {
       QString strLabel = QString("[%1]").arg(plugin->tagName());      
       KstViewLabelPtr label = new KstViewLabel();
-      
+
       label->setTransparent(true);
       label->resizeFromAspect(0.1, 0.1, 0.05, 0.05);
       label->setJustification(SET_KST_JUSTIFY(KST_JUSTIFY_H_CENTER, KST_JUSTIFY_V_CENTER));
-      
+
       plot->appendChild(KstViewObjectPtr(label), true);
       label->setText(strLabel);
-      
+
       plot->addCurve(KstBaseCurvePtr(fit));
     }
   }
@@ -239,7 +239,6 @@ bool KstFitDialogI::newObject() {
 
 
 void KstFitDialogI::generateEntries(bool input, int& cnt, QWidget *parent, QGridLayout *grid, const QValueList<Plugin::Data::IOValue>& table) {
-
   const QString& pluginName = _pluginList[_w->PluginCombo->currentItem()];
   const Plugin::Data& pluginData = PluginCollection::self()->pluginList()[PluginCollection::self()->pluginNameList()[pluginName]];
   bool isWeighted = pluginData._isFitWeighted;
@@ -436,4 +435,3 @@ bool KstFitDialogI::saveInputs(KstCPluginPtr plugin, KstSharedPtr<Plugin> p) {
 
 #include "kstfitdialog_i.moc"
 
-// vim: ts=2 sw=2 et
