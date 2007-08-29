@@ -616,47 +616,29 @@ double KstViewLabel::rotation() const {
   return _rotation; 
 }
 
+
 bool KstViewLabel::fillConfigWidget(QWidget *w, bool isNew) const {
   ViewLabelWidget *widget = dynamic_cast<ViewLabelWidget*>(w);
   if (!widget) {
     return false;
   }
 
-  if (isNew) { // probably a new label: set widget to defaults
-    widget->_precision->setValue(8);
-    widget->_rotation->setValue(0);
-    widget->_fontSize->setValue(0);
-    widget->_horizontal->setCurrentItem(0);
-    widget->_fontColor->setColor(KstSettings::globalSettings()->foregroundColor);
-    widget->_font->setCurrentFont(KstApp::inst()->defaultFont());
-    widget->_margin->setValue(5);
-
-    widget->_boxColors->setForeground(KstSettings::globalSettings()->foregroundColor);
-    widget->_boxColors->setBackground(KstSettings::globalSettings()->backgroundColor);
-
-    if (size().width() * size().height() < 25) { // assume a click, and default to just text
-      widget->_transparent->setChecked(true);
-      widget->_border->setValue(0);
-    } else { // someone drew a box, so assume that is what they wanted
-      widget->_transparent->setChecked(false);
-      widget->_border->setValue(2);
-    }
-  } else {
+  if (!isNew) {
     widget->_text->setText(text());
-
-    widget->_precision->setValue(int(dataPrecision()));
-    widget->_rotation->setValue(double(rotation()));
-    widget->_fontSize->setValue(int(fontSize()));
-    widget->_horizontal->setCurrentItem(horizJustifyWrap());
-    widget->_fontColor->setColor(foregroundColor());
-    widget->_font->setCurrentFont(fontName());
-
-    widget->_transparent->setChecked(transparent());
-    widget->_border->setValue(borderWidth());
-    widget->_boxColors->setForeground(borderColor());
-    widget->_boxColors->setBackground(backgroundColor());
-    widget->_margin->setValue(_labelMargin);
   }
+
+  widget->_precision->setValue(int(dataPrecision()));
+  widget->_rotation->setValue(double(rotation()));
+  widget->_fontSize->setValue(int(fontSize()));
+  widget->_horizontal->setCurrentItem(horizJustifyWrap());
+  widget->_fontColor->setColor(foregroundColor());
+  widget->_font->setCurrentFont(fontName());
+
+  widget->_transparent->setChecked(transparent());
+  widget->_border->setValue(borderWidth());
+  widget->_boxColors->setForeground(borderColor());
+  widget->_boxColors->setBackground(backgroundColor());
+  widget->_margin->setValue(labelMargin());
 
   widget->_text->setFocus();
 
@@ -799,11 +781,6 @@ void KstViewLabel::populateEditMultiple(QWidget *w) {
 }
 
 
-bool KstViewLabel::supportsDefaults() {
-  return false;
-}
-
-
 void KstViewLabel::setDataPrecision(int prec) {
   int n;
 
@@ -877,6 +854,7 @@ void KstViewLabel::setHorizJustifyWrap(int justify) {
 
 void KstViewLabel::setLabelMargin(int margin) {
   int mm = kMax(0, margin);
+
   if (mm != _labelMargin) {
     _labelMargin = mm;
     setDirty();

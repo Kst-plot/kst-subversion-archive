@@ -38,6 +38,7 @@ class KstViewLabel : public KstBorderedViewObject {
   Q_PROPERTY(int fontSize READ fontSize WRITE setFontSize)
   Q_PROPERTY(bool transparent READ transparent WRITE setTransparent)
   Q_PROPERTY(int horizontalJustification READ horizJustifyWrap WRITE setHorizJustifyWrap)
+  Q_PROPERTY(int labelMargin READ labelMargin WRITE setLabelMargin)
   public:
     KstViewLabel(const QString& txt = QString::null, KstLJustifyType justify = 0L, float rotation = 0.0);
     KstViewLabel(const QDomElement& e);
@@ -100,7 +101,6 @@ class KstViewLabel : public KstBorderedViewObject {
     bool readConfigWidget(QWidget *w, bool editMultipleMode);
     void connectConfigWidget(QWidget *parent, QWidget *w) const;
     void populateEditMultiple(QWidget *w);
-    bool supportsDefaults();
 
     KstObject::UpdateType update(int counter);
     void adjustSizeForText(const QRect& w);

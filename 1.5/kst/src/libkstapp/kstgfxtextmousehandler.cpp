@@ -21,6 +21,7 @@
 
 #include "kstgfxtextmousehandler.h"
 #include "kstgfxmousehandlerutils.h"
+#include "kstsettings.h"
 #include "kst.h"
 #include "ksdebug.h"
 #include "kstdoc.h"
@@ -31,10 +32,14 @@ KstGfxTextMouseHandler::KstGfxTextMouseHandler()
 : KstGfxMouseHandler() {
   // initial default settings before any sticky settings
   KstViewLabelPtr defaultLabel = new KstViewLabel;
-  defaultLabel->setForegroundColor(Qt::black);
-  defaultLabel->setBackgroundColor(Qt::white);
+  defaultLabel->setForegroundColor(KstSettings::globalSettings()->foregroundColor);
+  defaultLabel->setBackgroundColor(KstSettings::globalSettings()->backgroundColor);
   defaultLabel->setTransparent(false);
+  defaultLabel->setFontName(KstApp::inst()->defaultFont());
   defaultLabel->setBorderWidth(2);
+  defaultLabel->setLabelMargin(5);
+  defaultLabel->setRotation(0.0);
+  defaultLabel->setFontSize(0);
   _defaultObject = KstViewObjectPtr(defaultLabel); 
   _currentDefaultObject = KstViewObjectPtr(defaultLabel); 
 }

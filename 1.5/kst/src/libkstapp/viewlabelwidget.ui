@@ -323,7 +323,7 @@
                                 <cstring>_margin</cstring>
                             </property>
                             <property name="minValue">
-                                <number>-99</number>
+                                <number>0</number>
                             </property>
                         </widget>
                         <widget class="QLabel">
