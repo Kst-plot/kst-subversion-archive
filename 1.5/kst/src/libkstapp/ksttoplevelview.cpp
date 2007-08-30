@@ -988,8 +988,13 @@ void KstTopLevelView::releasePressLayoutMode(const QPoint& pos, bool shift) {
       // we are resizing rectangular object(s)
       releasePressLayoutModeResize(pos, shift);
     }
+
+    if (_pressTarget->parent()) {
+      _pressTarget->parent()->invalidateClipRegion();
+    }
+
     _pressTarget->setFocus(true);
-  } else { 
+  } else {
     // selecting objects using rubber band
     releasePressLayoutModeSelect(pos, shift);
   }
@@ -1050,7 +1055,6 @@ void KstTopLevelView::releasePressLayoutModeMove(const QPoint& pos, bool shift) 
       thisObj->move(_pressTarget->position() + thisObj->geometry().topLeft() - old.topLeft());
     }
   }
-  container->invalidateClipRegion();
 
   if (updateViewManager) {
     KstApp::inst()->updateViewManager(true);
