@@ -20,11 +20,11 @@
 #include "kstviewellipse.h"
 #include "kstviewobjectfactory.h"
 
-#include <klocale.h>
-
 #include <qmetaobject.h>
 #include <qpainter.h>
 #include <qvariant.h>
+
+#include <klocale.h>
 
 KstViewEllipse::KstViewEllipse()
 : KstViewObject("Ellipse"), _borderWidth(1) {
@@ -196,7 +196,7 @@ signed int KstViewEllipse::directionFor(const QPoint& pos) {
   signed int direction = KstViewObject::directionFor(pos);
 
   if (direction != 0) {
-    direction |= CENTEREDRESIZE;  
+    direction |= CENTEREDRESIZE;
   }
   return direction;
 }

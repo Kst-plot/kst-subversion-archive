@@ -68,7 +68,7 @@ class KstViewBox : public KstViewObject {
 
   public:
     void save(QTextStream& ts, const QString& indent = QString::null);
-    
+
     QMap<QString, QVariant > widgetHints(const QString& propertyName) const;
 
   private:
@@ -83,4 +83,4 @@ typedef KstObjectList<KstViewBoxPtr> KstViewBoxList;
 
 
 #endif
-// vim: ts=2 sw=2 et
+

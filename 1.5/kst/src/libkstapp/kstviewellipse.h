@@ -41,26 +41,19 @@ class KstViewEllipse : public KstViewObject {
     virtual QColor borderColor() const;
     virtual void setBorderWidth(int width);
     virtual int borderWidth() const;
-    
+    virtual void drawShadow(KstPainter& p, const QPoint& pos);
+    virtual void paintSelf(KstPainter& p, const QRegion& bounds);
+    virtual void save(QTextStream& ts, const QString& indent = QString::null);
+    virtual QMap<QString, QVariant> widgetHints(const QString& propertyName) const; 
+    virtual signed int directionFor(const QPoint& pos);
+
     // can't have Q_PROPERTY in KstViewObject?
     virtual void setForegroundColor(const QColor& color);
     virtual QColor foregroundColor() const;
-    
+
     bool transparentFill() const;
     void setTransparentFill(bool yes);
 
-    
-    virtual void drawShadow(KstPainter& p, const QPoint& pos);
-
-    virtual void paintSelf(KstPainter& p, const QRegion& bounds);
-
-  public:
-    virtual void save(QTextStream& ts, const QString& indent = QString::null);
-    
-    virtual QMap<QString, QVariant> widgetHints(const QString& propertyName) const; 
-    
-    virtual signed int directionFor(const QPoint& pos);
-    
   private:
     int _borderWidth;
     QColor _borderColor;
@@ -71,4 +64,4 @@ typedef KstObjectList<KstViewEllipsePtr> KstViewEllipseList;
 
 
 #endif
-// vim: ts=2 sw=2 et
+

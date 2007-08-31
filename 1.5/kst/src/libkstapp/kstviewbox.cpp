@@ -45,18 +45,18 @@ KstViewBox::KstViewBox()
 
 KstViewBox::KstViewBox(const QDomElement& e)
 : KstViewObject(e), _borderColor(QColor(0, 0, 0)), _borderWidth(0) {
-  
+
   QDomNode n = e.firstChild();
   while (!n.isNull()) {
     QDomElement el = n.toElement(); 
     if (!el.isNull()) {
       if (metaObject()->findProperty(el.tagName().latin1(), true) > -1) {
-        setProperty(el.tagName().latin1(), QVariant(el.text()));  
-      }  
+        setProperty(el.tagName().latin1(), QVariant(el.text()));
+      }
     }
-    n = n.nextSibling();      
+    n = n.nextSibling();
   }
-  
+
   // these always have these values
   _type = "Box";
   _editTitle = i18n("Edit Box");
@@ -77,7 +77,7 @@ KstViewBox::KstViewBox(const KstViewBox& box)
   _borderColor = box._borderColor;
   _borderWidth = box._borderWidth;
   _transparentFill = box._transparentFill;
-  
+
   // these always have these values
   _type = "Box";
 }
@@ -124,7 +124,7 @@ void KstViewBox::paintSelf(KstPainter& p, const QRegion& bounds) {
   if (bw > _geom.height()) {
     bw = _geom.height() / 2;
   }
-  
+
   QPen pen(borderColor(), bw);
   pen.setJoinStyle(_cornerStyle);
   if (bw == 0) {
@@ -132,7 +132,7 @@ void KstViewBox::paintSelf(KstPainter& p, const QRegion& bounds) {
   }
   p.setPen(pen);
   if (_transparentFill) {
-    p.setBrush(Qt::NoBrush);  
+    p.setBrush(Qt::NoBrush);
   } else {
     p.setBrush(_foregroundColor);
   }
@@ -156,13 +156,15 @@ void KstViewBox::save(QTextStream& ts, const QString& indent) {
 
 void KstViewBox::setXRound(int rnd) {
   int crnd;
+
   if (rnd < 0) {
-    crnd = 0;  
+    crnd = 0;
   } else if (rnd > 99) {
-    crnd = 99;  
+    crnd = 99;
   } else {
-    crnd = rnd;  
+    crnd = rnd;
   }
+
   if (_xRound != crnd) {
     setDirty();
     _xRound = crnd;
@@ -172,13 +174,15 @@ void KstViewBox::setXRound(int rnd) {
 
 void KstViewBox::setYRound(int rnd) {
   int crnd;
+
   if (rnd < 0) {
-    crnd = 0;  
+    crnd = 0;
   } else if (rnd > 99) {
-    crnd = 99;  
+    crnd = 99;
   } else {
-    crnd = rnd;  
+    crnd = rnd;
   }
+
   if (_yRound != crnd) {
     setDirty();
     _yRound = crnd;
@@ -316,4 +320,4 @@ KST_REGISTER_VIEW_OBJECT(Box, create_KstViewBox, handler_KstViewBox)
 
 
 #include "kstviewbox.moc"
-// vim: ts=2 sw=2 et
+
