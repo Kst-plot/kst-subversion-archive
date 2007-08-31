@@ -417,7 +417,7 @@ void KstViewLabel::paintSelf(KstPainter& p, const QRegion& bounds) {
 
     QRect cr(contentsRectForPainter(p));
     cr.setSize(sizeForText(_parent->geometry()));
-    setContentsRectForPainter(p, cr);    
+    setContentsRectForPainter(p, cr);
     KstBorderedViewObject::paintSelf(p, bounds);
 
     p.translate(cr.left(), cr.top());
@@ -429,50 +429,54 @@ void KstViewLabel::paintSelf(KstPainter& p, const QRegion& bounds) {
     _absFontSize = absFontSizeOld;
   } else {
     if (p.makingMask()) {
+      KstBorderedViewObject::paintSelf(p, bounds);
       p.setRasterOp(Qt::SetROP);
+      const QRect cr(contentsRect());
+      // slow but preserves antialiasing...
+      QBitmap bm = _backBuffer.buffer().createHeuristicMask(false);
+      bm.setMask(bm);
+      p.drawPixmap(cr.left(), cr.top(), bm, 0, 0, cr.width(), cr.height());
     } else {
       const QRegion clip(clipRegion());
-      KstBorderedViewObject::paintSelf(p, bounds - _myClipMask);
+      KstBorderedViewObject::paintSelf(p, bounds);
       p.setClipRegion(bounds & clip);
+      _backBuffer.paintInto(p, contentsRect());
     }
-
-    _backBuffer.paintInto(p, contentsRect());
   }
   p.restore();
 }
 
 
-void KstViewLabel::invalidateClipRegion() {
-  KstBorderedViewObject::invalidateClipRegion();
-  _myClipMask = QRegion();
-}
-
-
 QRegion KstViewLabel::clipRegion() {
-  if (!_transparent) {
-    return KstBorderedViewObject::clipRegion();
-  }
+  if (_clipMask.isNull()) {
+    if (_transparent) {
+      const QRect cr(contentsRect());
+      // slow but preserves antialiasing...
+      QBitmap bm = _backBuffer.buffer().createHeuristicMask(false);
 
-  if (_clipMask.isNull() && _myClipMask.isNull()) {
-    const QRect cr(contentsRect());
-    QBitmap bm = _backBuffer.buffer().createHeuristicMask(false); // slow but preserves antialiasing...
-    _myClipMask = QRegion(bm);
-    _myClipMask.translate(cr.topLeft().x(), cr.topLeft().y());
+      _clipMask = QRegion(bm);
+      _clipMask.translate(cr.topLeft().x(), cr.topLeft().y());
 
-    QBitmap bm1(_geom.bottomRight().x() + 1, _geom.bottomRight().y() + 1, true);
-    if (!bm1.isNull()) {
-      KstPainter p;
-      p.setMakingMask(true);
-      p.begin(&bm1);
-      p.setViewXForm(true);
-      KstBorderedViewObject::paintSelf(p, QRegion());
-      p.flush();
-      p.end();
-      _clipMask = QRegion(bm1);
+      QBitmap bm1(_geom.bottomRight().x() + 1, _geom.bottomRight().y() + 1, true);
+      if (!bm1.isNull()) {
+        KstPainter p;
+
+        p.setMakingMask(true);
+        p.begin(&bm1);
+        p.setViewXForm(true);
+        KstBorderedViewObject::paintSelf(p, QRegion());
+        paint(p, QRegion());
+        p.flush();
+        p.end();
+
+        _clipMask |= QRegion(bm1);
+      }
+    } else {
+      _clipMask = KstBorderedViewObject::clipRegion();
     }
   }
 
-  return _clipMask | _myClipMask;
+  return _clipMask;
 }
 
 

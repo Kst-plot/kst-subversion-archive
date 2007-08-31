@@ -45,7 +45,7 @@ class KstViewPicture : public KstBorderedViewObject {
     void setImage(const QImage& image);
     const QString& url() const;
     const QImage& image() const;
-    
+
     // resize picture to the image size
     void restoreSize();
     void restoreAspect();
@@ -56,7 +56,7 @@ class KstViewPicture : public KstBorderedViewObject {
     // 0 == no refresh (default)
     void setRefreshTimer(int seconds);
     int refreshTimer() const;
-    
+
     virtual QMap<QString, QVariant> widgetHints(const QString& propertyName) const;
     QRegion clipRegion();
 
@@ -74,11 +74,10 @@ class KstViewPicture : public KstBorderedViewObject {
     QString _url;
     int _refresh;
     QTimer *_timer;
-    QRegion _myClipMask;
 };
 
 typedef KstObjectList<KstViewPicturePtr> KstViewPictureList;
 
 
 #endif
-// vim: ts=2 sw=2 et
+

@@ -107,8 +107,6 @@ KstViewObject* KstViewPicture::copyObjectQuietly() const {
 
 QRegion KstViewPicture::clipRegion() {
   if (_clipMask.isNull()) {
-    _myClipMask = QRegion();
-
     QBitmap bm(_geom.bottomRight().x() + 1, _geom.bottomRight().y() + 1, true);
     if (!bm.isNull()) {
       KstPainter p;
@@ -124,12 +122,12 @@ QRegion KstViewPicture::clipRegion() {
       p.eraseRect(0, 0, _geom.bottomRight().x() + 1, _geom.bottomRight().y() + 1);
       paintSelf(p, QRegion());
       p.flush();
-      _myClipMask = QRegion(bm);
+      _clipMask |= QRegion(bm);
       p.end();
     }
   }
 
-  return _myClipMask | _clipMask;
+  return _clipMask;
 }
 
 
@@ -137,10 +135,11 @@ void KstViewPicture::paintSelf(KstPainter& p, const QRegion& bounds) {
   p.save();
   if (p.type() != KstPainter::P_PRINT && p.type() != KstPainter::P_EXPORT) {
     if (p.makingMask()) {
+      KstBorderedViewObject::paintSelf(p, bounds);
       p.setRasterOp(Qt::OrROP);
     } else {
       const QRegion clip(clipRegion());
-      KstBorderedViewObject::paintSelf(p, bounds - _myClipMask);
+      KstBorderedViewObject::paintSelf(p, bounds);
       p.setClipRegion(bounds & clip);
     }
   } else {

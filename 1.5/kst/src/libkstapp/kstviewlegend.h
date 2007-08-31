@@ -98,7 +98,6 @@ class KstViewLegend : public KstBorderedViewObject {
 
     KstBaseCurveList& curves();
 
-    void invalidateClipRegion();
     bool trackContents() const;
     void setTrackContents(bool track);
     void adjustSizeForText(const QRect& w);
@@ -133,7 +132,6 @@ class KstViewLegend : public KstBorderedViewObject {
     int _legendMargin;
     KstBackBuffer _backBuffer;
     KstBaseCurveList _curves;
-    QRegion _myClipMask;
     bool _trackContents;
 
     QString _title;
@@ -143,4 +141,4 @@ class KstViewLegend : public KstBorderedViewObject {
 typedef KstSharedPtr<KstViewLegend> KstViewLegendPtr;
 
 #endif
-// vim: ts=2 sw=2 et
+

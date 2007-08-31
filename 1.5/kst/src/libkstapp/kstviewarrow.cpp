@@ -54,7 +54,7 @@ KstViewArrow::KstViewArrow(const QDomElement& e)
     if (!el.isNull()) {
       if (metaObject()->findProperty(el.tagName().latin1(), true) > -1) {
         setProperty(el.tagName().latin1(), QVariant(el.text()));  
-      }  
+      }
     }
     n = n.nextSibling();
   }
@@ -126,7 +126,7 @@ QRegion KstViewArrow::clipRegion() {
     double scaling = kMax(_fromArrowScaling, _toArrowScaling);
     int w = int(ceil(SIZE_ARROW * scaling * double(width())));
     QRect rect(0, 0, _geom.bottomRight().x() + w + 1, _geom.bottomRight().y() + w + 1);
-    _myClipMask = QRegion();
+
     QBitmap bm(rect.size(), true);
     if (!bm.isNull()) {
       KstPainter p;
@@ -134,19 +134,14 @@ QRegion KstViewArrow::clipRegion() {
       p.setMakingMask(true);
       p.begin(&bm);
       p.setViewXForm(true);
-      KstViewLine::paintSelf(p, QRegion());
-      p.flush();
-      _clipMask = QRegion(bm);
-
       p.eraseRect(rect);
       paintSelf(p, QRegion());
       p.flush();
-      _myClipMask = QRegion(bm);
-      p.end();
+      _clipMask = QRegion(bm);
     }
   }
 
-  return _myClipMask | _clipMask;
+  return _clipMask;
 }
 
 
@@ -154,10 +149,11 @@ void KstViewArrow::paintSelf(KstPainter& p, const QRegion& bounds) {
   p.save();
   if (p.type() != KstPainter::P_PRINT && p.type() != KstPainter::P_EXPORT) {
     if (p.makingMask()) {
+      KstViewLine::paintSelf(p, bounds);
       p.setRasterOp(Qt::SetROP);
     } else {
       const QRegion clip(clipRegion());
-      KstViewLine::paintSelf(p, bounds - _myClipMask);
+      KstViewLine::paintSelf(p, bounds);
       p.setClipRegion(bounds & clip);
     }
   } else {
@@ -201,7 +197,7 @@ bool KstViewArrow::hasArrow() const {
 QMap<QString, QVariant> KstViewArrow::widgetHints(const QString& propertyName) const {
   QMap<QString, QVariant> map = KstViewLine::widgetHints(propertyName);
   if (!map.empty()) {
-    return map;  
+    return map;
   }
   if (propertyName == "hasFromArrow") {
     map.insert(QString("_kst_widgetType"), QString("QCheckBox"));
@@ -323,4 +319,4 @@ KST_REGISTER_VIEW_OBJECT(Arrow, create_KstViewArrow, handler_KstViewArrow)
 
 
 #include "kstviewarrow.moc"
-// vim: ts=2 sw=2 et
+

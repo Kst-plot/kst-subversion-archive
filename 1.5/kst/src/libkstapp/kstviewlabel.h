@@ -88,7 +88,6 @@ class KstViewLabel : public KstBorderedViewObject {
     void paintSelf(KstPainter& p, const QRegion& bounds);
     void resize(const QSize&);
     QRegion clipRegion();
-    void invalidateClipRegion();
 
     void setLabelMargin(int margin);
     int labelMargin() const;
@@ -133,7 +132,6 @@ class KstViewLabel : public KstBorderedViewObject {
     KstLJustifyType _justify;
     KstBackBuffer _backBuffer;
     Label::Parsed *_parsed;
-    QRegion _myClipMask;
     int _labelMargin;
 
     struct DataCache {
@@ -154,4 +152,4 @@ typedef KstSharedPtr<KstViewLabel> KstViewLabelPtr;
 typedef KstObjectList<KstSharedPtr<KstViewLabel> > KstViewLabelList;
 
 #endif
-// vim: ts=2 sw=2 et
+

@@ -380,12 +380,13 @@ void KstViewObject::paint(KstPainter& p, const QRegion& bounds) {
           kstdDebug() << "   -> object " << (*i)->tagName() << " took " << x << "ms" << endl;
 #endif
         }
+
         if (i == begin) {
           break;
         }
       }
     }
-    // Paint ourself
+
     paintSelf(p, clipRegion - p.uiMask());
   }
 
@@ -1891,8 +1892,9 @@ QRegion KstViewObject::clipRegion() {
       QBitmap bm(_geom.bottomRight().x(), _geom.bottomRight().y(), true);
       if (!bm.isNull()) {
         KstPainter p;
-        p.setMakingMask(true);
+
         p.begin(&bm);
+        p.setMakingMask(true);
         p.setViewXForm(true);
         paint(p, QRegion());
         p.flush();
@@ -2091,6 +2093,11 @@ bool KstViewObject::isResizable() const {
 
 void KstViewObject::invalidateClipRegion() {
   _clipMask = QRegion();
+  if (_parent) {
+    if (_parent->transparent()) {
+      _parent->invalidateClipRegion();
+    }
+  }
 }
 
 

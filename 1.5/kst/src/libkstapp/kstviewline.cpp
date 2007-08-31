@@ -87,6 +87,7 @@ KstViewLine::KstViewLine(const QDomElement& e)
 
 KstViewLine::KstViewLine(const KstViewLine& line)
 : KstViewObject(line) {
+  setTransparent(true);
   _capStyle = line._capStyle;
   _penStyle = line._penStyle;
   _orientation = line._orientation;
@@ -216,7 +217,6 @@ QPoint KstViewLine::to() const {
 void KstViewLine::setWidth(int width) {
   if (_width != width) {
     _width = width;
-    //updateOrientation();
     setDirty();
   }
 }
@@ -274,7 +274,7 @@ QRegion KstViewLine::clipRegion() {
     }
   }
 
-  return _clipMask; 
+  return _clipMask;
 }
 
 
