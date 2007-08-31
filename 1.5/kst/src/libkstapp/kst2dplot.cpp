@@ -3735,9 +3735,9 @@ bool Kst2DPlot::popupMenu(KPopupMenu *menu, const QPoint& pos, KstViewObjectPtr 
 
   KPopupMenu *submenuEdit = new KPopupMenu(menu);
   KPopupMenu *submenuFit = new KPopupMenu(menu);
-  KPopupMenu *submenuFitAll = new KPopupMenu(submenuFit);
-  KPopupMenu *submenuFitVisibleStatic = new KPopupMenu(submenuFit);
-  KPopupMenu *submenuFitVisibleDynamic = new KPopupMenu(submenuFit);
+//  KPopupMenu *submenuFitAll = new KPopupMenu(submenuFit);
+//  KPopupMenu *submenuFitVisibleStatic = new KPopupMenu(submenuFit);
+//  KPopupMenu *submenuFitVisibleDynamic = new KPopupMenu(submenuFit);
   KPopupMenu *submenuFilter = new KPopupMenu(menu);
   KPopupMenu *submenuRemove = new KPopupMenu(menu);
   hasEntry = false;
@@ -3788,14 +3788,16 @@ bool Kst2DPlot::popupMenu(KPopupMenu *menu, const QPoint& pos, KstViewObjectPtr 
     }
     _curveFitMap[i] = tag;
     _curveRemoveMap[i] = tag;
-    submenuFitAll->insertItem(tag, i);
-    submenuFitVisibleStatic->insertItem(tag, i);
-    submenuFitVisibleDynamic->insertItem(tag, i);
+    submenuFit->insertItem(tag, i);
+//    submenuFitAll->insertItem(tag, i);
+//    submenuFitVisibleStatic->insertItem(tag, i);
+//    submenuFitVisibleDynamic->insertItem(tag, i);
     submenuFilter->insertItem(tag, i);
     submenuRemove->insertItem(tag, i);
-    submenuFitAll->connectItem(i, this, SLOT(fitCurve(int)));
-    submenuFitVisibleStatic->connectItem(i, this, SLOT(fitCurveVisibleStatic(int)));
-    submenuFitVisibleDynamic->connectItem(i, this, SLOT(fitCurveVisibleDynamic(int)));
+    submenuFit->connectItem(i, this, SLOT(fitCurve(int)));
+//    submenuFitAll->connectItem(i, this, SLOT(fitCurve(int)));
+//    submenuFitVisibleStatic->connectItem(i, this, SLOT(fitCurveVisibleStatic(int)));
+//    submenuFitVisibleDynamic->connectItem(i, this, SLOT(fitCurveVisibleDynamic(int)));
     submenuFilter->connectItem(i, this, SLOT(filterCurve(int)));
     submenuRemove->connectItem(i, this, SLOT(removeCurve(int)));
     hasEntry = true;
@@ -3805,12 +3807,12 @@ bool Kst2DPlot::popupMenu(KPopupMenu *menu, const QPoint& pos, KstViewObjectPtr 
   menu->setItemEnabled(id, hasEntry);
   id = menu->insertItem(i18n("Fit"), submenuFit);
   menu->setItemEnabled(id, hasEntry);
-  id = submenuFit->insertItem(i18n("Entire curve"), submenuFitAll);
-  menu->setItemEnabled(id, hasEntry);
-  id = submenuFit->insertItem(i18n("Visible curve (static)"), submenuFitVisibleStatic);
-  menu->setItemEnabled(id, hasEntry);
-  id = submenuFit->insertItem(i18n("Visible curve (dynamic)"), submenuFitVisibleDynamic);
-  menu->setItemEnabled(id, hasEntry);
+//  id = submenuFit->insertItem(i18n("Entire curve"), submenuFitAll);
+//  menu->setItemEnabled(id, hasEntry);
+//  id = submenuFit->insertItem(i18n("Visible curve (static)"), submenuFitVisibleStatic);
+//  menu->setItemEnabled(id, hasEntry);
+//  id = submenuFit->insertItem(i18n("Visible curve (dynamic)"), submenuFitVisibleDynamic);
+//  menu->setItemEnabled(id, hasEntry);
   id = menu->insertItem(i18n("Filter"), submenuFilter);
   menu->setItemEnabled(id, hasEntry);
   id = menu->insertItem(i18n("Remove"), submenuRemove);
