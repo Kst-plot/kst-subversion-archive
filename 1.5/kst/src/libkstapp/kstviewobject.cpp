@@ -1012,7 +1012,7 @@ KstViewObjectPtr KstViewObject::findChild(const QPoint& pos, bool borderForTrans
         if ((*i)->transparent()) {
           if (!(*i)->fallThroughTransparency() && (*i)->geometry().contains(pos)) {
             obj = *i;
-          } else if ((*i)->clipRegion().contains(pos)) {
+          } else if ((*i)->region().contains(pos)) {
             obj = *i;
           } else if (borderForTransparent && (*i)->geometry().contains(pos)) {
             const QRect g((*i)->geometry());
@@ -1909,6 +1909,11 @@ QRegion KstViewObject::clipRegion() {
   }
 
   return _clipMask;
+}
+
+
+QRegion KstViewObject::region() {
+  return clipRegion();
 }
 
 

@@ -73,6 +73,7 @@ class KST_EXPORT KstViewObject : public KstObject {
 
     virtual void invalidateClipRegion();
     virtual QRegion clipRegion();
+    virtual QRegion region();
 
     // If cols <= 0, optimal is chosen automatically
     virtual void cleanup(int cols = -1);

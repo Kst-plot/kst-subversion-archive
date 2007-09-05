@@ -46,6 +46,7 @@ class KstViewEllipse : public KstViewObject {
     virtual void save(QTextStream& ts, const QString& indent = QString::null);
     virtual QMap<QString, QVariant> widgetHints(const QString& propertyName) const; 
     virtual signed int directionFor(const QPoint& pos);
+    virtual QRegion region();
 
     // can't have Q_PROPERTY in KstViewObject?
     virtual void setForegroundColor(const QColor& color);
