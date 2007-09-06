@@ -102,7 +102,7 @@ class KstTopLevelView : public KstViewObject {
     void updateFocus(const QPoint& pos);
     bool handlePress(const QPoint& pos, bool shift = false);
     bool handleDoubleClick(const QPoint& pos, bool shift = false);
-    
+
     // press move handlers
     void pressMove(const QPoint& pos, bool shift = false, bool alt = false);
     void pressMoveLayoutMode(const QPoint& pos, bool shift = false, bool alt = false);
@@ -112,7 +112,7 @@ class KstTopLevelView : public KstViewObject {
     void pressMoveLayoutModeSelect(const QPoint& pos);
     void pressMoveLayoutModeEndPoint(const QPoint& pos, bool maintainAspect = false, bool snapToBorder = true);
     void pressMoveLayoutModeCenteredResize(const QPoint& pos, bool maintainAspect = false, bool snapToBorder = true);
-    
+
     // release press handlers 
     void releasePress(const QPoint& pos, bool shift = false);
     void releasePressLayoutMode(const QPoint& pos, bool shift = false);
@@ -138,7 +138,7 @@ class KstTopLevelView : public KstViewObject {
     QPoint pointSnapToObjects(const QPoint& p);
     // Called as a response to drag re-entering widget()
     void restartMove();
-    
+
     KstGfxMouseHandler *handlerForObject(const QString& objType);
 
   private:
@@ -157,6 +157,7 @@ class KstTopLevelView : public KstViewObject {
     QPoint _moveOffset;
     QPoint _moveOffsetSticky;
     KstViewObjectPtr _pressTarget, _hoverFocus;
+    KstViewObjectPtr _prevContainer;
     QRect _prevBand;
     KstViewObjectList _selectionList;
     KstViewObjectPtr _mouseGrabber;
@@ -233,4 +234,4 @@ KstSharedPtr<T> KstTopLevelView::createObject(const QString& name, bool doCleanu
 
 
 #endif
-// vim: ts=2 sw=2 et
+

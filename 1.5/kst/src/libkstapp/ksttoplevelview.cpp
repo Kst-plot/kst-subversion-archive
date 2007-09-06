@@ -834,7 +834,7 @@ void KstTopLevelView::pressMoveLayoutModeMove(const QPoint& pos, bool shift, boo
     p.setPen(QPen(Qt::black, 0, Qt::DotLine));
     if (_selectionList.isEmpty()) {
       if (old.topLeft() != QPoint(-1, -1)) {
-        _pressTarget->drawShadow(p, old.topLeft());  
+        _pressTarget->drawShadow(p, old.topLeft());
       }
       _pressTarget->drawShadow(p, r.topLeft());
     } else {
@@ -845,6 +845,22 @@ void KstTopLevelView::pressMoveLayoutModeMove(const QPoint& pos, bool shift, boo
         (*iter)->drawShadow(p, r.topLeft() + (*iter)->geometry().topLeft() - originalTopLeft);
       }
     }
+
+    //
+    // draw a selection for the new parent if the _pressTarget is released now...
+    //
+    KstViewObjectPtr container = findDeepestChild(r);
+
+    if (container != _prevContainer) {
+      if (_prevContainer) {
+        _prevContainer->drawShadow(p, _prevContainer->geometry().topLeft());
+      }
+      if (container) {
+        container->drawShadow(p, container->geometry().topLeft());
+      }
+      _prevContainer = container;
+    }
+
     p.end();
   }
 }
@@ -998,6 +1014,7 @@ void KstTopLevelView::releasePressLayoutMode(const QPoint& pos, bool shift) {
     // selecting objects using rubber band
     releasePressLayoutModeSelect(pos, shift);
   }
+  _prevContainer = 0L;
   _pressTarget = 0L;
   _pressDirection = -1;
   _moveOffset = QPoint(-1, -1);
@@ -1742,6 +1759,7 @@ void KstTopLevelView::cancelMouseOperations() {
     }
     //_pressTarget = 0L;
     _prevBand = QRect(-1, -1, 0, 0);
+    _prevContainer = 0L;
     return;
   }
 
