@@ -53,6 +53,9 @@
 
 #define RAW_DATA_BUFFER_SIZE  8192
 
+#define COLUMNS_PER_READOUTCARD 8
+#define COLUMNS_PER_TEXTFORMAT  8
+
 static char* housekeepingFields[] = {
     "Status",                 // value  0 of housekeeping block
     "Sequence Number",        // value  1 of housekeeping block
@@ -191,12 +194,10 @@ ScubaSource::ScubaSource(KConfig *cfg, const QString& filename, const QString& t
   _fieldListComplete = false;
   _rowStart = 0;
   _colStart = 0;
-  _numCols = 8;
+  _numCols = COLUMNS_PER_READOUTCARD;
   _numRows = 41;
   _rowLen = 0;
   _format = FormatText2;
-  _numEntriesInFormatText2Line = 8;
-  _numEntriesInFormatBinaryLine = 8;
   _numHousekeepingFieldsInUse = 0;
   _first = true;
   _numFramesLastReadMatrix = 0;
@@ -336,6 +337,9 @@ bool ScubaSource::initFrameIndex() {
   _frameIndex[0] = 0;
   _byteLength = 0;
   _numFrames = 0;
+  _readoutCards.clear();
+  _datamodes.clear();
+  _version = -1;
 
   QString runFilename = runFile(_filename);
   QFile file(_filename);
@@ -346,15 +350,17 @@ bool ScubaSource::initFrameIndex() {
   if (!runFilename.isEmpty()) {
     QFile frun(runFilename);
     KstString *metaString;
+    QStringList readoutCardStrs;
     QStringList entries;
     QString metaName;
+    QString scopy;
     QString s;
     bool done = false;
     bool ok;
-    bool foundDataMode = false;
     bool foundNumRows = false;
     bool foundRowLen = false;
     bool foundVersion = false;
+    int readoutCard;
     int index;
     int line = 0;
     int read;
@@ -382,16 +388,26 @@ bool ScubaSource::initFrameIndex() {
           if (s.compare(END_HEADER_1) == 0) {
             done = true;
             rc = true;
-          } else if (!foundDataMode && s.contains("data_mode") == 1) {
+          } else if (s.contains("data_mode") == 1) {
             index = s.find(QChar('>'));
+            scopy = s;
             s.remove(0, index+1);
             s.stripWhiteSpace();
             _datamode = s.toInt(&ok, 10);
-            // FIXME datamode set at rc level
             if (!ok) {
               _datamode = -1;
+            } else {
+              if (scopy.contains(" rc") == 1) {
+                index = scopy.find(QString(" rc"));
+                scopy.remove(0, index+strlen(" rc"));
+                index = scopy.find(QChar(' '));
+                scopy.truncate(index);
+                readoutCard = scopy.toInt(&ok, 10);
+                if (ok) {
+                  _datamodes[readoutCard] = (DataMode)_datamode;
+                }
+              }
             }
-            foundDataMode = true;
           } else if (!foundRowLen && s.contains("row_len") == 1) {
             index = s.find(QChar('>'));
             s.remove(0, index+1);
@@ -420,7 +436,19 @@ bool ScubaSource::initFrameIndex() {
               _version = -1;
             }
             foundVersion = true;
+          } else if (s.contains("<RC>") == 1) {
+            index = s.find(QChar('>'));
+            s.remove(0, index+1);
+            s.stripWhiteSpace();
+            readoutCardStrs = QStringList::split(QChar(' '), s);
+            for (QStringList::ConstIterator it = readoutCardStrs.begin(); it != readoutCardStrs.end(); ++it) {
+              readoutCard = (*it).toInt(&ok, 16);
+              if (ok) {
+                _readoutCards.append(readoutCard);
+              }
+            }
           }
+
           ++line;
         }
       }
@@ -496,6 +524,10 @@ bool ScubaSource::initFrameIndex() {
     file.close();
   }
 
+  if (_readoutCards.size() > 0) {
+    _numCols = _readoutCards.size() * 8;
+  }
+
   return rc;
 }
 
@@ -541,7 +573,7 @@ KstObject::UpdateType ScubaSource::update(int u) {
             // currently not operational...
             //
           } else if (_format == FormatBinary) {
-            long length = numHousekeepingFields + ( _numRows * _numEntriesInFormatBinaryLine );
+            long length = numHousekeepingFields + ( _numRows * _numCols );
             long values[length];
             long value;
             long checksum;
@@ -553,8 +585,10 @@ KstObject::UpdateType ScubaSource::update(int u) {
 
               read = file.readBlock((char*)values, length * sizeof( long ) );
               if (read == length * (long)sizeof( long ) ) {
-                for (i=0; i<length; i++) {
-                  checksum ^= values[i];
+                if (_config->_validateChecksum) {
+                  for (i=0; i<length; i++) {
+                    checksum ^= values[i];
+                  }
                 }
               } else {
                 read = -1;
@@ -566,11 +600,12 @@ KstObject::UpdateType ScubaSource::update(int u) {
                 //
                 read = file.readBlock((char*)(&value), sizeof( long ) );
                 if (read == sizeof( long ) ) {
-                  if (value == checksum) {
+                  if (!_config->_validateChecksum || value == checksum) {
                     if (_numFrames >= _numFrameIndexAlloc) {
                       _numFrameIndexAlloc += FRAMEINDEXBUFFERINCREMENT;
                       _frameIndex = (QIODevice::Offset*)realloc(_frameIndex, _numFrameIndexAlloc*sizeof(QIODevice::Offset));
                     }
+
                     new_data = true;
                     ++_numFrames;
                     _frameIndex[_numFrames] = file.at();
@@ -597,11 +632,14 @@ KstObject::UpdateType ScubaSource::update(int u) {
                 if (read == -1) {
                   break;
                 }
-                entries = QStringList::split(QChar(' '), s);
-                for (QStringList::ConstIterator it = entries.begin(); it != entries.end(); ++it) {
-                  value = (*it).toInt(&ok, 10);
-                  if (ok) {
-                    checksum ^= value;
+
+                if (_config->_validateChecksum) {
+                  entries = QStringList::split(QChar(' '), s);
+                  for (QStringList::ConstIterator it = entries.begin(); it != entries.end(); ++it) {
+                    value = (*it).toInt(&ok, 10);
+                    if (ok) {
+                      checksum ^= value;
+                    }
                   }
                 }
               }
@@ -610,7 +648,7 @@ KstObject::UpdateType ScubaSource::update(int u) {
                 read = readFullLine(file, s);
                 if (read != -1) {
                   value = s.toInt(&ok, 10);
-                  if (value == checksum) {
+                  if (!_config->_validateChecksum || value == checksum) {
                     if (_numFrames >= _numFrameIndexAlloc) {
                       _numFrameIndexAlloc += FRAMEINDEXBUFFERINCREMENT;
                       _frameIndex = (QIODevice::Offset*)realloc(_frameIndex, _numFrameIndexAlloc*sizeof(QIODevice::Offset));
@@ -661,8 +699,8 @@ bool ScubaSource::matrixDimensions(const QString& matrix, int* xDim, int* yDim) 
   if (isValidMatrix(matrix)) {
     rc = true;
 
-    *yDim = _numRows;
     *xDim = _numCols;
+    *yDim = _numRows;
   }
 
   return rc;
@@ -683,6 +721,7 @@ int ScubaSource::readMatrix(KstMatrixData* data, const QString& matrix, int xSta
           bool ok;
           bool error = false;
           bool max = false;
+          bool min = false;
           bool avg = false;
           int read = 0;
           int frameStart = _numFrames;
@@ -691,14 +730,32 @@ int ScubaSource::readMatrix(KstMatrixData* data, const QString& matrix, int xSta
           int i;
           int j;
 
+          if (matrix.contains("_") > 0) {
+            QString str = matrix;
+            int index = str.find(QChar('_'));
+
+            str.remove(0, index+1);
+            frameStart = str.toInt(&ok, 10);
+            if (ok) {
+              frameStart++;
+              frameEnd = frameStart;
+            } else {
+              frameStart = _numFrames;
+              frameEnd = _numFrames;
+            }
+          }
+
           if (matrix.contains("Error") > 0) {
             error = true;
           }
+
           if (matrix.contains("Max") > 0) {
            frameStart = _numFramesLastReadMatrix;
            max = true;
-          }
-          if (matrix.contains("Avg") > 0) {
+          } else if (matrix.contains("Min") > 0) {
+           frameStart = _numFramesLastReadMatrix;
+           min = true;
+          } else if (matrix.contains("Avg") > 0) {
             frameStart = _numFramesLastReadMatrix;
             avg = true;
           }
@@ -714,17 +771,25 @@ int ScubaSource::readMatrix(KstMatrixData* data, const QString& matrix, int xSta
               //
               // always need to skip the housekeeping fields...
               //
-              int length = numHousekeepingFields + ( _numRows * _numEntriesInFormatBinaryLine );
+              int length = numHousekeepingFields + ( _numRows * _numCols );
               long rawValues[length];
               long read;
 
               read = file.readBlock((char*)rawValues, length * sizeof( long ));
               if( read == length * (long)sizeof( long )) {
                 for (i=0; i<xNumSteps; ++i) {
-                  if (i < _numEntriesInFormatBinaryLine) {
+                  if (i < _numCols) {
                     for (j=0; j<yNumSteps; ++j) {
                       if (j < _numRows) {
-                        lvalue = rawValues[numHousekeepingFields + ( j * _numEntriesInFormatBinaryLine ) + i];
+                        int rowIndex = j;
+                        int colIndex = i;
+
+                        if (_version <= 111) {
+                          rowIndex += _numRows * ( colIndex / COLUMNS_PER_READOUTCARD );
+                          colIndex %= COLUMNS_PER_READOUTCARD;
+                        }
+
+                        lvalue = rawValues[numHousekeepingFields + ( rowIndex * _numCols ) + colIndex];
                         switch (_datamode) {
                           case DataError:
                           case DataPreScaleFeedback:
@@ -757,6 +822,10 @@ int ScubaSource::readMatrix(KstMatrixData* data, const QString& matrix, int xSta
                           if (frame > frameStart && double(lvalue) > *values) {
                             *values = double(lvalue);
                           }
+                        } else if (min) {
+                          if (frame > frameStart && double(lvalue) < *values) {
+                            *values = double(lvalue);
+                          }
                         } else if (avg) {
                           *values += double(lvalue);
                         } else {
@@ -768,6 +837,7 @@ int ScubaSource::readMatrix(KstMatrixData* data, const QString& matrix, int xSta
                     }
                   }
                 }
+
               }
             } else if (_format == FormatText2) {
               QStringList lines;
@@ -801,7 +871,7 @@ int ScubaSource::readMatrix(KstMatrixData* data, const QString& matrix, int xSta
               }
 
               for (i=0; i<xNumSteps; ++i) {
-                for (j=0; j<yNumSteps; j++) {
+                for (j=0; j<yNumSteps; ++j) {
                   if ((j * xNumSteps) + i < length) {
                     lvalue = rawValues[(j * xNumSteps) + i];
 
@@ -832,7 +902,7 @@ int ScubaSource::readMatrix(KstMatrixData* data, const QString& matrix, int xSta
                         }
                         break;
                     }
-  
+
                     if (max) {
                       if (frame > frameStart && double(lvalue) > *values) {
                         *values = double(lvalue);
@@ -856,6 +926,7 @@ int ScubaSource::readMatrix(KstMatrixData* data, const QString& matrix, int xSta
             for (i=0; i<yNumSteps; ++i) {
               for (j=0; j<xNumSteps; j++) {
                 *values /= double(frameEnd - frameStart);
+                ++values;
               }
             }
           }
@@ -880,15 +951,22 @@ int ScubaSource::readMatrix(KstMatrixData* data, const QString& matrix, int xSta
 
 
 int ScubaSource::readField(double *v, const QString& field, int s, int n) {
-  int rc = 0;
+  DataMode datamode = DataInvalid;
+  bool isError = false;
   int fieldIndex = -1;
   int frameIndex = -1;
+  int rowIndex = -1;
+  int colIndex = -1;
+  int rc = 0;
   int i = 0;
 
   if (n < 0) {
     n = 1;
   }
 
+  //
+  // check if the field is the INDEX...
+  //
   if (field == "INDEX") {
     for (i = 0; i < n; i++) {
       v[i] = double(s + i);
@@ -896,23 +974,86 @@ int ScubaSource::readField(double *v, const QString& field, int s, int n) {
       rc = n;
     }
   } else {
-    QStringList fieldList = this->fieldList();
-
-    for (QStringList::ConstIterator it = fieldList.begin(); it != fieldList.end(); ++it, ++i) {
-      if (*it == field) {
+    //
+    // check if the field is a housekeeping field...
+    //
+    for (i=0; i < _numHousekeepingFieldsInUse; i++) {
+      if (field.compare(housekeepingFields[i]) == 0) {
         fieldIndex = i;
 
         break;
       }
     }
 
-    if (fieldIndex != -1) {
-      int iSamplesPerFrame = samplesPerFrame(field);
+    //
+    // check if the field is a Pixel_i_j or Error_i_j entry...
+    //
+    if (fieldIndex == -1) {
+      QMap<int, DataMode>::Iterator datamodeIt;
+      QString str = field;
+      QString strRowCol;
+      bool ok;
+      int readoutCard;
+      int index;
+
+      if (str.find("Error") != -1) {
+        str.remove("Error");
+        isError = true;
+      } else {
+        str.remove("Pixel");
+      }
+
+      str.remove(0,1);
+      index = str.find(QChar('_'));
 
       //
-      // allow for the existence of the INDEX field...
+      // find the column index, the second value...
       //
-      fieldIndex--;
+      strRowCol = str;
+      strRowCol.remove(0, index+1);
+      colIndex = strRowCol.toInt(&ok, 10);
+
+      if (ok) {
+      //
+      // find the row index, the first value...
+      //
+        strRowCol = str;
+        strRowCol.remove(index, str.length());
+        rowIndex = strRowCol.toInt(&ok, 10);
+      }
+
+      //
+      // determine the data mode for the readout card asoicated with the field...
+      //
+      if (rowIndex != -1 && colIndex != -1) {
+        readoutCard = (colIndex / COLUMNS_PER_READOUTCARD)+1;
+        datamodeIt = _datamodes.find(readoutCard);
+        if (datamodeIt != _datamodes.end()) {
+          datamode = *datamodeIt;
+        }
+
+        //
+        // determine the field index...
+        //
+        if (_version > 111 && _format == FormatBinary) {
+          fieldIndex  = rowIndex * _datamodes.size() * COLUMNS_PER_READOUTCARD;
+          fieldIndex += colIndex;
+        } else {
+          fieldIndex  = _numRows * ( colIndex / COLUMNS_PER_READOUTCARD );
+          fieldIndex += rowIndex * COLUMNS_PER_READOUTCARD;
+          fieldIndex += colIndex % COLUMNS_PER_READOUTCARD;
+        }
+
+        fieldIndex += _numHousekeepingFieldsInUse;
+      }
+    }
+
+    if (datamode == DataInvalid) {
+      datamode = (DataMode)_datamode;
+    }
+
+    if (fieldIndex != -1) {
+      int iSamplesPerFrame = samplesPerFrame(field);
 
       QIODevice::Offset bufread = _frameIndex[(s + n)/iSamplesPerFrame] - _frameIndex[s/iSamplesPerFrame];
 
@@ -976,7 +1117,7 @@ int ScubaSource::readField(double *v, const QString& field, int s, int n) {
                   case Data18_14:
                   case Data24_8:
                     file.at(_frameIndex[(s + i)/iSamplesPerFrame]);
-                    valueIndex = (fieldIndex - _numHousekeepingFieldsInUse) / 2;
+                    valueIndex = fieldIndex - _numHousekeepingFieldsInUse;
                     break;
                 }
 
@@ -995,7 +1136,7 @@ int ScubaSource::readField(double *v, const QString& field, int s, int n) {
                       lvalue &= 0xFF;
                       break;
                     case Data18_14:
-                      if ( ( fieldIndex - _numHousekeepingFieldsInUse ) % 2 == 0) {
+                      if (!isError) {
                         lvalue /= 0x4000;
                       } else {
                         lvalue &= 0x3FFF;
@@ -1005,7 +1146,7 @@ int ScubaSource::readField(double *v, const QString& field, int s, int n) {
                       }
                       break;
                     case Data24_8:
-                      if ( ( fieldIndex - _numHousekeepingFieldsInUse ) % 2 == 0) {
+                      if (!isError) {
                         lvalue /= 0x100;
                       } else {
                         lvalue &= 0xFF;
@@ -1077,12 +1218,12 @@ int ScubaSource::readField(double *v, const QString& field, int s, int n) {
                   case Data18_14:
                   case Data24_8:
                     file.at(_frameIndex[(s + i)/iSamplesPerFrame]);
-                    valueIndex = (fieldIndex - _numHousekeepingFieldsInUse) / 2;
+                    valueIndex = fieldIndex - _numHousekeepingFieldsInUse;
                     break;
                 }
 
-                lines = valueIndex / _numEntriesInFormatText2Line;
-                lineIndex = valueIndex - ( lines * _numEntriesInFormatText2Line );
+                lines = valueIndex / COLUMNS_PER_TEXTFORMAT;
+                lineIndex = valueIndex - ( lines * COLUMNS_PER_TEXTFORMAT );
 
                 //
                 // always need to skip the first line as it is the header...
@@ -1105,7 +1246,7 @@ int ScubaSource::readField(double *v, const QString& field, int s, int n) {
                           lvalue &= 0xFF;
                           break;
                         case Data18_14:
-                          if ( ( fieldIndex - _numHousekeepingFieldsInUse ) % 2 == 0) {
+                          if (!isError) {
                             lvalue /= 0x4000;
                           } else {
                             lvalue &= 0x3FFF;
@@ -1115,7 +1256,7 @@ int ScubaSource::readField(double *v, const QString& field, int s, int n) {
                           }
                           break;
                         case Data24_8:
-                          if ( ( fieldIndex - _numHousekeepingFieldsInUse ) % 2 == 0) {
+                          if (!isError) {
                             lvalue /= 0x100;
                           } else {
                             lvalue &= 0xFF;
@@ -1222,14 +1363,16 @@ bool ScubaSource::isEmpty() const {
 QStringList ScubaSource::fieldListFor(const QString& filename, ScubaSource::Config *cfg) {
   Q_UNUSED(cfg)
 
+  QStringList readoutCardStrs;
+  QValueList<int> readoutCards;
   QStringList rc;
   QFile file(filename);
   QString runFilename;
+  QMap<int, DataMode> datamodes;
   bool populate = false;
   int datamode = -1;
   int num_rows = -1;
   int num_cols = -1;
-  int row_len = -1;
   int version = -1;
 
   //
@@ -1240,15 +1383,13 @@ QStringList ScubaSource::fieldListFor(const QString& filename, ScubaSource::Conf
     QFile frun(runFilename);
 
     if (frun.open(IO_ReadOnly)) {
-      QStringList entries;
-      QValueList<int> rows;
+      QString scopy;
       QString s;
-      bool foundDataMode = false;
       bool foundNumRows = false;
-      bool foundRowLen = false;
       bool foundVersion = false;
       bool done = false;
       bool ok;
+      int readoutCard;
       int index;
       int read;
 
@@ -1260,24 +1401,24 @@ QStringList ScubaSource::fieldListFor(const QString& filename, ScubaSource::Conf
           done = true;
         } else if (s.compare(END_HEADER_1) == 0) {
           done = true;
-        } else if (!foundDataMode && s.contains("data_mode") == 1) {
+        } else if (s.contains("data_mode") == 1) {
+          scopy = s;
           index = s.find(QChar('>'));
           s.remove(0, index+1);
           s.stripWhiteSpace();
           datamode = s.toInt(&ok, 10);
           if (!ok) {
             datamode = -1;
+          } else if (scopy.contains(" rc") == 1) {
+            index = scopy.find(QString(" rc"));
+            scopy.remove(0, index+strlen(" rc"));
+            index = scopy.find(QChar(' '));
+            scopy.truncate(index);
+            readoutCard = scopy.toInt(&ok, 10);
+            if (ok) {
+              datamodes.insert(readoutCard, (DataMode)datamode);
+            }
           }
-          foundDataMode = true;
-        } else if (!foundRowLen && s.contains("row_len") == 1) {
-          index = s.find(QChar('>'));
-          s.remove(0, index+1);
-          s.stripWhiteSpace();
-          row_len = s.toInt(&ok, 10);
-          if (!ok) {
-            row_len = -1;
-          }
-          foundRowLen = true;
         } else if (!foundNumRows && s.contains("num_rows") == 1) {
           index = s.find(QChar('>'));
           s.remove(0, index+1);
@@ -1297,6 +1438,18 @@ QStringList ScubaSource::fieldListFor(const QString& filename, ScubaSource::Conf
             version = -1;
           }
           foundVersion = true;
+        } else if (s.contains("<RC>") == 1) {
+          readoutCards.clear();
+          index = s.find(QChar('>'));
+          s.remove(0, index+1);
+          s.stripWhiteSpace();
+          readoutCardStrs = QStringList::split(QChar(' '), s);
+          for (QStringList::ConstIterator it = readoutCardStrs.begin(); it != readoutCardStrs.end(); ++it) {
+            readoutCard = (*it).toInt(&ok, 10);
+            if (ok) {
+              readoutCards.append(readoutCard);
+            }
+          }
         }
       }
 
@@ -1309,7 +1462,6 @@ QStringList ScubaSource::fieldListFor(const QString& filename, ScubaSource::Conf
     bool done = false;
     bool ok;
     int read;
-    int row;
 
     populate = true;
 
@@ -1325,27 +1477,10 @@ QStringList ScubaSource::fieldListFor(const QString& filename, ScubaSource::Conf
         if (!ok) {
           datamode = -1;
         }
-      } else if (s.contains("row_len") == 1) {
-        row_len = s.right(8).toInt(&ok, 16);
-        if (!ok) {
-          row_len = -1;
-        }
       } else if (s.contains("num_rows") == 1) {
         num_rows = s.right(8).toInt(&ok, 16);
         if (!ok) {
           num_rows = -1;
-        }
-      } else if (s.contains("row_order") == 1) {
-        entries = QStringList::split( QChar('\t'), s);
-        if (!entries.empty()) {
-          s = entries.last();
-          entries = QStringList::split( QChar(' '), s);
-          for (QStringList::ConstIterator it = entries.begin(); it != entries.end(); ++it) {
-            row = (*it).toInt(&ok, 16);
-            if (ok) {
-              rows.append(row);
-            }
-          }
         }
       }
     }
@@ -1356,12 +1491,16 @@ QStringList ScubaSource::fieldListFor(const QString& filename, ScubaSource::Conf
   if (populate) {
     int i;
     int j;
+    int k;
 
-    if (version > 111) {
-      num_cols = 32;
-    } else {
-      num_cols = 8;
+    //
+    // if we didn't find any <RC> entries then assume that only readout card 1 is active...
+    //
+    if (readoutCards.size() == 0) {
+      readoutCards.append(1);
     }
+
+    num_cols = readoutCards.size() * COLUMNS_PER_READOUTCARD;
 
     rc += "INDEX";
 
@@ -1371,7 +1510,49 @@ QStringList ScubaSource::fieldListFor(const QString& filename, ScubaSource::Conf
       }
     }
 
-    if (datamode >= 0) {
+    if (datamodes.size() > 0 && readoutCards.size() > 0) {
+      for (i=0; i<num_rows; i++) {
+        for (j=0; j<(int)readoutCards.size(); j++) {
+          int readoutCard = readoutCards[j];
+          QMap<int, DataMode>::Iterator datamodesIt = datamodes.find(readoutCard);
+
+          if (datamodesIt != datamodes.end()) {
+            datamode = *datamodesIt;
+            if (datamode >= DataError && datamode < DataInvalid) {
+              for (k=0; k<COLUMNS_PER_READOUTCARD; k++) {
+                int row = i;
+                int col = ((readoutCard-1)*COLUMNS_PER_READOUTCARD)+k;
+
+                switch (datamode) {
+                  case DataError:
+                    rc += QString("Error_%1_%2").arg(row).arg(col);
+                    break;
+                  case DataPreScaleFeedback: 
+                    rc += QString("Pixel_%1_%2").arg(row).arg(col);
+                    break;
+                  case DataFiltered:
+                    rc += QString("Pixel_%1_%2").arg(row).arg(col);
+                    break;
+                  case DataRaw:
+                    rc += QString("Pixel_%1_%2").arg(row).arg(col);
+                    break;
+                  case Data18_14:
+                    rc += QString("Pixel_%1_%2").arg(row).arg(col);
+                    rc += QString("Error_%1_%2").arg(row).arg(col);
+                    break;
+                  case Data24_8: 
+                    rc += QString("Pixel_%1_%2").arg(row).arg(col);
+                    rc += QString("Error_%1_%2").arg(row).arg(col);
+                    break;
+                  default:
+                    break;
+                }
+              }
+            }
+          }
+        }
+      }
+    } else if (datamode >= DataError) {
       for (i=0; i<num_rows; i++) {
         for (j=0; j<num_cols; j++) {
           switch (datamode) {
@@ -1418,217 +1599,258 @@ QStringList ScubaSource::fieldList() const {
 
 
 QStringList ScubaSource::matrixList() const {
+  QStringList readoutCardStrs;
+  QValueList<int> readoutCards;
+  QMap<int, DataMode> datamodes;
   bool populate = false;
   int datamode = -1;
   int num_rows = -1;
-  int num_cols = -1;
   int row_len = -1;
   int version = -1;
 
-  if (_matrixList.isEmpty()) {
-    if (_config->_readMatrices) {
-      if (_datamode != DataRaw) {
-        QFile file(_filename);
-        QString runFilename;
+  _matrixList.clear();
 
-        runFilename = runFile(_filename);
-        if (!runFilename.isEmpty()) {
-          QFile frun(runFilename);
+  if (_config->_readMatrices) {
+    if (_datamode != DataRaw) {
+      QFile file(_filename);
+      QString runFilename;
 
-          if (frun.open(IO_ReadOnly)) {
-            QStringList entries;
-            QValueList<int> rows;
-            QString s;
-            bool foundDataMode = false;
-            bool foundNumRows = false;
-            bool foundRowLen = false;
-            bool foundVersion = false;
-            bool done = false;
-            bool ok;
-            int index;
-            int read;
+      runFilename = runFile(_filename);
+      if (!runFilename.isEmpty()) {
+        QFile frun(runFilename);
 
-            populate = true;
-
-            while (!done) {
-              read = frun.readLine(s, 1000);
-              if (read < 0) {
-                done = true;
-              } else if (s.compare(END_HEADER_1) == 0) {
-                done = true;
-              } else if (!foundDataMode && s.contains("data_mode") == 1) {
-                index = s.find(QChar('>'));
-                s.remove(0, index+1);
-                s.stripWhiteSpace();
-                datamode = s.toInt(&ok, 10);
-                if (!ok) {
-                  datamode = -1;
-                }
-                foundDataMode = true;
-              } else if (!foundRowLen && s.contains("row_len") == 1) {
-                index = s.find(QChar('>'));
-                s.remove(0, index+1);
-                s.stripWhiteSpace();
-                row_len = s.toInt(&ok, 10);
-                if (!ok) {
-                  row_len = -1;
-                }
-                foundRowLen = true;
-              } else if (!foundNumRows && s.contains("num_rows") == 1) {
-                index = s.find(QChar('>'));
-                s.remove(0, index+1);
-                s.stripWhiteSpace();
-                num_rows = s.toInt(&ok, 10);
-                if (!ok) {
-                  num_rows = -1;
-                }
-                foundNumRows = true;
-              } else if (!foundVersion && s.contains("DAS_VERSION") == 1) {
-                index = s.find(QChar('>'));
-                s.remove(0, index+1);
-                s.stripWhiteSpace();
-                s.remove(5, s.length());
-                version = s.toInt(&ok, 10);
-                if (!ok) {
-                  version = -1;
-                }
-                foundVersion = true;
-              }
-            }
-
-            frun.close();
-          }
-        } else if (file.open(IO_ReadOnly)) {
-          QStringList entries;
-          QStringList rc;
-          QValueList<int> rows;
+        if (frun.open(IO_ReadOnly)) {
+          QString scopy;
           QString s;
+          bool foundNumRows = false;
+          bool foundRowLen = false;
+          bool foundVersion = false;
           bool done = false;
           bool ok;
+          int readoutCard;
+          int index;
           int read;
-          int row;
 
           populate = true;
 
           while (!done) {
-            read = file.readLine(s, 1000);
+            read = frun.readLine(s, 1000);
             if (read < 0) {
               done = true;
             } else if (s.compare(END_HEADER_1) == 0) {
               done = true;
             } else if (s.contains("data_mode") == 1) {
-              datamode = s.right(8).toInt(&ok, 16);
+              index = s.find(QChar('>'));
+              scopy = s;
+              s.remove(0, index+1);
+              s.stripWhiteSpace();
+              datamode = s.toInt(&ok, 10);
               if (!ok) {
                 datamode = -1;
+              } else if (scopy.contains(" rc") == 1) {
+                index = scopy.find(QString(" rc"));
+                scopy.remove(0, index+strlen(" rc"));
+                index = scopy.find(QChar(' '));
+                scopy.truncate(index);
+                readoutCard = scopy.toInt(&ok, 10);
+                if (ok) {
+                  datamodes.insert(readoutCard, (DataMode)datamode);
+                }
               }
-            } else if (s.contains("row_len") == 1) {
-              row_len = s.right(8).toInt(&ok, 16);
+            } else if (!foundRowLen && s.contains("row_len") == 1) {
+              index = s.find(QChar('>'));
+              s.remove(0, index+1);
+              s.stripWhiteSpace();
+              row_len = s.toInt(&ok, 10);
               if (!ok) {
                 row_len = -1;
               }
-            } else if (s.contains("num_rows") == 1) {
-              num_rows = s.right(8).toInt(&ok, 16);
+              foundRowLen = true;
+            } else if (!foundNumRows && s.contains("num_rows") == 1) {
+              index = s.find(QChar('>'));
+              s.remove(0, index+1);
+              s.stripWhiteSpace();
+              num_rows = s.toInt(&ok, 10);
               if (!ok) {
                 num_rows = -1;
               }
-            } else if (s.contains("row_order") == 1) {
-              entries = QStringList::split( QChar('\t'), s);
-              if (!entries.empty()) {
-                s = entries.last();
-                entries = QStringList::split( QChar(' '), s);
-                for (QStringList::ConstIterator it = entries.begin(); it != entries.end(); ++it) {
-                  row = (*it).toInt(&ok, 16);
-                  if (ok) {
-                    rows.append(row);
-                  }
+              foundNumRows = true;
+            } else if (!foundVersion && s.contains("DAS_VERSION") == 1) {
+              index = s.find(QChar('>'));
+              s.remove(0, index+1);
+              s.stripWhiteSpace();
+              s.remove(5, s.length());
+              version = s.toInt(&ok, 10);
+              if (!ok) {
+                version = -1;
+              }
+              foundVersion = true;
+            } else if (s.contains("<RC>") == 1) {
+              index = s.find(QChar('>'));
+              s.remove(0, index+1);
+              s.stripWhiteSpace();
+              readoutCardStrs = QStringList::split(QChar(' '), s);
+              for (QStringList::ConstIterator it = readoutCardStrs.begin(); it != readoutCardStrs.end(); ++it) {
+                readoutCard = (*it).toInt(&ok, 16);
+                if (ok) {
+                  readoutCards.append(readoutCard);
                 }
               }
             }
           }
 
-          file.close();
+          frun.close();
         }
+      } else if (file.open(IO_ReadOnly)) {
+        QStringList entries;
+        QStringList rc;
+        QValueList<int> rows;
+        QString s;
+        bool done = false;
+        bool ok;
+        int read;
+        int row;
+
+        populate = true;
+
+        while (!done) {
+          read = file.readLine(s, 1000);
+          if (read < 0) {
+            done = true;
+          } else if (s.compare(END_HEADER_1) == 0) {
+            done = true;
+          } else if (s.contains("data_mode") == 1) {
+            datamode = s.right(8).toInt(&ok, 16);
+            if (!ok) {
+              datamode = -1;
+            }
+          } else if (s.contains("row_len") == 1) {
+            row_len = s.right(8).toInt(&ok, 16);
+            if (!ok) {
+              row_len = -1;
+            }
+          } else if (s.contains("num_rows") == 1) {
+            num_rows = s.right(8).toInt(&ok, 16);
+            if (!ok) {
+              num_rows = -1;
+            }
+          } else if (s.contains("row_order") == 1) {
+            entries = QStringList::split( QChar('\t'), s);
+            if (!entries.empty()) {
+              s = entries.last();
+              entries = QStringList::split( QChar(' '), s);
+              for (QStringList::ConstIterator it = entries.begin(); it != entries.end(); ++it) {
+                row = (*it).toInt(&ok, 16);
+                if (ok) {
+                  rows.append(row);
+                }
+              }
+            }
+          }
+        }
+
+        file.close();
       }
     }
   }
 
   if (populate) {
+    bool sameDataMode = true;
     int i;
 
-    if (version > 111) {
-      num_cols = 32;
-    } else {
-      num_cols = 8;
+    //
+    // if we didn't find any <RC> entries then assume that only readout card 1 is active...
+    //
+    if (readoutCards.size() == 0) {
+      readoutCards.append(1);
     }
 
-    for (i=0; i<_numFrames; i++) {
+    //
+    // check that all the active cards are in the same mode...
+    //
+    for (i=0; i<(int)readoutCards.size(); i++) {
+      int readoutCard = readoutCards[i];
+      QMap<int, DataMode>::Iterator datamodesIt = datamodes.find(readoutCard);
+
+      if (datamodesIt != datamodes.end()) {
+        if (i == 0) {
+          datamode = *datamodesIt;
+        } else if (datamode != *datamodesIt) {
+          sameDataMode = false;
+        }
+      }
+    }
+
+    if (sameDataMode) {
       switch (datamode) {
         case DataError:
-          _matrixList += QString("FrameError_%d").arg(i);
+          _matrixList += QString("FrameErrorLast");
+          _matrixList += QString("FrameErrorRecentAvg");
+          _matrixList += QString("FrameErrorRecentMax");
           break;
-        case DataPreScaleFeedback: 
-          _matrixList += QString("FramePixel_%d").arg(i);
+        case DataPreScaleFeedback:
+          _matrixList += QString("FramePixelLast");
+          _matrixList += QString("FramePixelRecentAvg");
+          _matrixList += QString("FramePixelRecentMax");
+          _matrixList += QString("FramePixelRecentMin");
+
+          _matrixList += QString("FrameErrorLast");
+          _matrixList += QString("FrameErrorRecentAvg");
+          _matrixList += QString("FrameErrorRecentMax");
           break;
         case DataFiltered:
-          _matrixList += QString("FramePixel_%d").arg(i);
+          _matrixList += QString("FramePixelLast");
+          _matrixList += QString("FramePixelRecentAvg");
+          _matrixList += QString("FramePixelRecentMax");
+          _matrixList += QString("FramePixelRecentMin");
           break;
         case Data18_14:
-          _matrixList += QString("FramePixel_%d").arg(i);
-          _matrixList += QString("FrameError_%d").arg(i);
+          _matrixList += QString("FramePixelLast");
+          _matrixList += QString("FramePixelRecentAvg");
+          _matrixList += QString("FramePixelRecentMax");
+          _matrixList += QString("FramePixelRecentMin");
+
+          _matrixList += QString("FrameErrorLast");
+          _matrixList += QString("FrameErrorRecentAvg");
+          _matrixList += QString("FrameErrorRecentMax");
           break;
         case Data24_8:
-          _matrixList += QString("FramePixel_%d").arg(i);
-          _matrixList += QString("FrameError_%d").arg(i);
+          _matrixList += QString("FramePixelLast");
+          _matrixList += QString("FramePixelRecentAvg");
+          _matrixList += QString("FramePixelRecentMax");
+          _matrixList += QString("FramePixelRecentMin");
+
+          _matrixList += QString("FrameErrorLast");
+          _matrixList += QString("FrameErrorRecentAvg");
+          _matrixList += QString("FrameErrorRecentMax");
           break;
         default:
           break;
       }
-    }
 
-    switch (datamode) {
-      case DataError:
-        _matrixList += QString("FrameErrorLast");
-        _matrixList += QString("FrameErrorRecentAvg");
-        _matrixList += QString("FrameErrorRecentMax");
-        break;
-      case DataPreScaleFeedback:
-        _matrixList += QString("FramePixelLast");
-        _matrixList += QString("FramePixelRecentAvg");
-        _matrixList += QString("FramePixelRecentMax");
-        _matrixList += QString("FramePixelRecentMin");
-
-        _matrixList += QString("FrameErrorLast");
-        _matrixList += QString("FrameErrorRecentAvg");
-        _matrixList += QString("FrameErrorRecentMax");
-        break;
-      case DataFiltered:
-        _matrixList += QString("FramePixelLast");
-        _matrixList += QString("FramePixelRecentAvg");
-        _matrixList += QString("FramePixelRecentMax");
-        _matrixList += QString("FramePixelRecentMin");
-        break;
-      case Data18_14:
-        _matrixList += QString("FramePixelLast");
-        _matrixList += QString("FramePixelRecentAvg");
-        _matrixList += QString("FramePixelRecentMax");
-        _matrixList += QString("FramePixelRecentMin");
-
-        _matrixList += QString("FrameErrorLast");
-        _matrixList += QString("FrameErrorRecentAvg");
-        _matrixList += QString("FrameErrorRecentMax");
-        break;
-      case Data24_8:
-        _matrixList += QString("FramePixelLast");
-        _matrixList += QString("FramePixelRecentAvg");
-        _matrixList += QString("FramePixelRecentMax");
-        _matrixList += QString("FramePixelRecentMin");
-
-        _matrixList += QString("FrameErrorLast");
-        _matrixList += QString("FrameErrorRecentAvg");
-        _matrixList += QString("FrameErrorRecentMax");
-        break;
-      default:
-        break;
+      for (i=0; i<_numFrames; i++) {
+        switch (datamode) {
+          case DataError:
+            _matrixList += QString("FrameError_%1").arg(i);
+            break;
+          case DataPreScaleFeedback: 
+            _matrixList += QString("FramePixel_%1").arg(i);
+            break;
+          case DataFiltered:
+            _matrixList += QString("FramePixel_%1").arg(i);
+            break;
+          case Data18_14:
+            _matrixList += QString("FramePixel_%1").arg(i);
+            _matrixList += QString("FrameError_%1").arg(i);
+            break;
+          case Data24_8:
+            _matrixList += QString("FramePixel_%1").arg(i);
+            _matrixList += QString("FrameError_%1").arg(i);
+            break;
+          default:
+            break;
+        }
+      }
     }
   }
 
@@ -1643,7 +1865,7 @@ void ScubaSource::save(QTextStream &ts, const QString& indent) {
 
 
 bool ScubaSource::supportsTimeConversions() const {
-  return false; //fieldList().contains(_config->_indexVector) && _config->_indexInterpretation != ScubaSource::Config::Unknown && _config->_indexInterpretation != ScubaSource::Config::INDEX;
+  return false;
 }
 
 

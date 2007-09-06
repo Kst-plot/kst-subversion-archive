@@ -23,7 +23,7 @@
 #include <kstdatasource.h>
 
 enum DataFormat { FormatText = 0, FormatBinary, FormatText2 };
-enum DataMode { DataError = 0, DataPreScaleFeedback, DataFiltered, DataRaw, Data18_14, Data24_8 };
+enum DataMode { DataError = 0, DataPreScaleFeedback, DataFiltered, DataRaw, Data18_14, Data24_8, DataInvalid };
 
 class ScubaSource : public KstDataSource {
   public:
@@ -64,11 +64,11 @@ class ScubaSource : public KstDataSource {
     int _numRows;
     int _rowStart;
     int _colStart;
-    int _numEntriesInFormatText2Line;
-    int _numEntriesInFormatBinaryLine;
     int _numHousekeepingFieldsInUse;
     QIODevice::Offset *_frameIndex;
     QValueList<int> _rows;
+    QMap<int, DataMode> _datamodes;
+    QValueList<int> _readoutCards;
     DataFormat _format;
     int _numFrameIndexAlloc;
     int _numFrames;
