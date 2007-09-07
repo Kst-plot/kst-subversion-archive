@@ -1026,6 +1026,15 @@ int ScubaSource::readField(double *v, const QString& field, int s, int n) {
         }
 
         //
+        // we may need to change the colIndex if we are missing readout cards...
+        //
+        for (i=readoutCard-1; i>0 ; i--) {
+          if (_readoutCards.find(i) == _readoutCards.end()) {
+            colIndex -= COLUMNS_PER_READOUTCARD;
+          }
+        }
+
+        //
         // determine the field index...
         //
         if (_version > 111 && _format == FormatBinary) {
