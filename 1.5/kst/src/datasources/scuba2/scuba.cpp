@@ -423,7 +423,7 @@ bool ScubaSource::initFrameIndex() {
               _numRows = -1;
             }
             foundNumRows = true;
-          } else if (!foundVersion && s.contains("DAS_VERSION") == 1) {
+          } else if (!foundVersion && s.contains("<DAS_VERSION>") == 1) {
             _version = readVersionNumber(s);
             foundVersion = true;
           } else if (s.contains("<RC>") == 1) {
@@ -1672,7 +1672,7 @@ QStringList ScubaSource::matrixList() const {
                 num_rows = -1;
               }
               foundNumRows = true;
-            } else if (!foundVersion && s.contains("DAS_VERSION") == 1) {
+            } else if (!foundVersion && s.contains("<DAS_VERSION>") == 1) {
               version = readVersionNumber(s);
               foundVersion = true;
             } else if (s.contains("<RC>") == 1) {
