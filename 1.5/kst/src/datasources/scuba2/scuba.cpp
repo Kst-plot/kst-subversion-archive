@@ -385,10 +385,7 @@ bool ScubaSource::initFrameIndex() {
             _metaData.insert(metaName, metaString);
           }
 
-          if (s.compare(END_HEADER_1) == 0) {
-            done = true;
-            rc = true;
-          } else if (s.contains("data_mode") == 1) {
+          if (s.contains("data_mode") == 1) {
             index = s.find(QChar('>'));
             scopy = s;
             s.remove(0, index+1);
@@ -427,14 +424,7 @@ bool ScubaSource::initFrameIndex() {
             }
             foundNumRows = true;
           } else if (!foundVersion && s.contains("DAS_VERSION") == 1) {
-            index = s.find(QChar('>'));
-            s.remove(0, index+1);
-            s.stripWhiteSpace();
-            s.remove(5, s.length());
-            _version = s.toInt(&ok, 10);
-            if (!ok) {
-              _version = -1;
-            }
+            _version = readVersionNumber(s);
             foundVersion = true;
           } else if (s.contains("<RC>") == 1) {
             index = s.find(QChar('>'));
@@ -797,6 +787,7 @@ int ScubaSource::readMatrix(KstMatrixData* data, const QString& matrix, int xSta
                           case DataRaw:
                             break;
                           case Data18_14:
+                          case DataFiltered18_14:
                             if (!error) {
                               lvalue /= 0x4000;
                             } else {
@@ -882,6 +873,7 @@ int ScubaSource::readMatrix(KstMatrixData* data, const QString& matrix, int xSta
                       case DataRaw:
                         break;
                       case Data18_14:
+                      case DataFiltered18_14:
                         if (!error) {
                           lvalue /= 0x4000;
                         } else {
@@ -997,29 +989,30 @@ int ScubaSource::readField(double *v, const QString& field, int s, int n) {
       int index;
 
       if (str.find("Error") != -1) {
-        str.remove("Error");
         isError = true;
-      } else {
-        str.remove("Pixel");
       }
 
-      str.remove(0,1);
       index = str.find(QChar('_'));
+      if (index != -1) {
+        str.remove(0, index+1);
+        index = str.find(QChar('_'));
+        if (index != -1) {
+          //
+          // find the column index, the second value...
+          //
+          strRowCol = str;
+          strRowCol.remove(0, index+1);
+          colIndex = strRowCol.toInt(&ok, 10);
 
-      //
-      // find the column index, the second value...
-      //
-      strRowCol = str;
-      strRowCol.remove(0, index+1);
-      colIndex = strRowCol.toInt(&ok, 10);
-
-      if (ok) {
-      //
-      // find the row index, the first value...
-      //
-        strRowCol = str;
-        strRowCol.remove(index, str.length());
-        rowIndex = strRowCol.toInt(&ok, 10);
+          if (ok) {
+            //
+            // find the row index, the first value...
+            //
+            strRowCol = str;
+            strRowCol.remove(index, str.length());
+            rowIndex = strRowCol.toInt(&ok, 10);
+          }
+        }
       }
 
       //
@@ -1036,14 +1029,13 @@ int ScubaSource::readField(double *v, const QString& field, int s, int n) {
         // determine the field index...
         //
         if (_version > 111 && _format == FormatBinary) {
-          fieldIndex  = rowIndex * _datamodes.size() * COLUMNS_PER_READOUTCARD;
+          fieldIndex  = rowIndex * _readoutCards.size() * COLUMNS_PER_READOUTCARD;
           fieldIndex += colIndex;
         } else {
           fieldIndex  = _numRows * ( colIndex / COLUMNS_PER_READOUTCARD );
           fieldIndex += rowIndex * COLUMNS_PER_READOUTCARD;
           fieldIndex += colIndex % COLUMNS_PER_READOUTCARD;
         }
-
         fieldIndex += _numHousekeepingFieldsInUse;
       }
     }
@@ -1116,6 +1108,7 @@ int ScubaSource::readField(double *v, const QString& field, int s, int n) {
                     break;
                   case Data18_14:
                   case Data24_8:
+                  case DataFiltered18_14:
                     file.at(_frameIndex[(s + i)/iSamplesPerFrame]);
                     valueIndex = fieldIndex - _numHousekeepingFieldsInUse;
                     break;
@@ -1136,6 +1129,7 @@ int ScubaSource::readField(double *v, const QString& field, int s, int n) {
                       lvalue &= 0xFF;
                       break;
                     case Data18_14:
+                    case DataFiltered18_14:
                       if (!isError) {
                         lvalue /= 0x4000;
                       } else {
@@ -1217,6 +1211,7 @@ int ScubaSource::readField(double *v, const QString& field, int s, int n) {
                     break;
                   case Data18_14:
                   case Data24_8:
+                  case DataFiltered18_14:
                     file.at(_frameIndex[(s + i)/iSamplesPerFrame]);
                     valueIndex = fieldIndex - _numHousekeepingFieldsInUse;
                     break;
@@ -1246,6 +1241,7 @@ int ScubaSource::readField(double *v, const QString& field, int s, int n) {
                           lvalue &= 0xFF;
                           break;
                         case Data18_14:
+                        case DataFiltered18_14:
                           if (!isError) {
                             lvalue /= 0x4000;
                           } else {
@@ -1429,14 +1425,7 @@ QStringList ScubaSource::fieldListFor(const QString& filename, ScubaSource::Conf
           }
           foundNumRows = true;
         } else if (!foundVersion && s.contains("DAS_VERSION") == 1) {
-          index = s.find(QChar('>'));
-          s.remove(0, index+1);
-          s.stripWhiteSpace();
-          s.remove(5, s.length());
-          version = s.toInt(&ok, 10);
-          if (!ok) {
-            version = -1;
-          }
+          version = readVersionNumber(s);
           foundVersion = true;
         } else if (s.contains("<RC>") == 1) {
           readoutCards.clear();
@@ -1544,6 +1533,10 @@ QStringList ScubaSource::fieldListFor(const QString& filename, ScubaSource::Conf
                     rc += QString("Pixel_%1_%2").arg(row).arg(col);
                     rc += QString("Error_%1_%2").arg(row).arg(col);
                     break;
+                  case DataFiltered18_14:
+                    rc += QString("Pixel_%1_%2").arg(row).arg(col);
+                    rc += QString("Error_%1_%2").arg(row).arg(col);
+                    break;
                   default:
                     break;
                 }
@@ -1573,6 +1566,10 @@ QStringList ScubaSource::fieldListFor(const QString& filename, ScubaSource::Conf
               rc += QString("Error_%1_%2").arg(i).arg(j);
               break;
             case Data24_8: 
+              rc += QString("Pixel_%1_%2").arg(i).arg(j);
+              rc += QString("Error_%1_%2").arg(i).arg(j);
+              break;
+            case DataFiltered18_14: 
               rc += QString("Pixel_%1_%2").arg(i).arg(j);
               rc += QString("Error_%1_%2").arg(i).arg(j);
               break;
@@ -1676,14 +1673,7 @@ QStringList ScubaSource::matrixList() const {
               }
               foundNumRows = true;
             } else if (!foundVersion && s.contains("DAS_VERSION") == 1) {
-              index = s.find(QChar('>'));
-              s.remove(0, index+1);
-              s.stripWhiteSpace();
-              s.remove(5, s.length());
-              version = s.toInt(&ok, 10);
-              if (!ok) {
-                version = -1;
-              }
+              version = readVersionNumber(s);
               foundVersion = true;
             } else if (s.contains("<RC>") == 1) {
               index = s.find(QChar('>'));
@@ -1824,6 +1814,16 @@ QStringList ScubaSource::matrixList() const {
           _matrixList += QString("FrameErrorRecentAvg");
           _matrixList += QString("FrameErrorRecentMax");
           break;
+        case DataFiltered18_14:
+          _matrixList += QString("FramePixelLast");
+          _matrixList += QString("FramePixelRecentAvg");
+          _matrixList += QString("FramePixelRecentMax");
+          _matrixList += QString("FramePixelRecentMin");
+
+          _matrixList += QString("FrameErrorLast");
+          _matrixList += QString("FrameErrorRecentAvg");
+          _matrixList += QString("FrameErrorRecentMax");
+          break;
         default:
           break;
       }
@@ -1844,6 +1844,10 @@ QStringList ScubaSource::matrixList() const {
             _matrixList += QString("FrameError_%1").arg(i);
             break;
           case Data24_8:
+            _matrixList += QString("FramePixel_%1").arg(i);
+            _matrixList += QString("FrameError_%1").arg(i);
+            break;
+          case DataFiltered18_14:
             _matrixList += QString("FramePixel_%1").arg(i);
             _matrixList += QString("FrameError_%1").arg(i);
             break;
@@ -1878,6 +1882,21 @@ int ScubaSource::sampleForTime(const KST::ExtDateTime& time, bool *ok) {
   return 0;
 }
 
+int ScubaSource::readVersionNumber(QString& s) {
+  int index = s.find(QChar('>'));
+  int version = -1;
+  bool ok;
+
+  s.remove(0, index+1);
+  s = s.stripWhiteSpace();
+  s.remove(4, s.length());
+  version = s.toInt(&ok, 10);
+  if (!ok) {
+    version = -1;
+  }
+
+  return version;
+}
 
 class ConfigWidgetScuba : public KstDataSourceConfigWidget {
   public:

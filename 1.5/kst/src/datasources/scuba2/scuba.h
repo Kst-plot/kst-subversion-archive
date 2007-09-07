@@ -23,7 +23,14 @@
 #include <kstdatasource.h>
 
 enum DataFormat { FormatText = 0, FormatBinary, FormatText2 };
-enum DataMode { DataError = 0, DataPreScaleFeedback, DataFiltered, DataRaw, Data18_14, Data24_8, DataInvalid };
+enum DataMode { DataError = 0,
+                DataPreScaleFeedback,
+                DataFiltered,
+                DataRaw,
+                Data18_14,
+                Data24_8,
+                DataFiltered18_14,
+                DataInvalid };
 
 class ScubaSource : public KstDataSource {
   public:
@@ -57,6 +64,7 @@ class ScubaSource : public KstDataSource {
   private:
     bool initFrameIndex();
     void setDataType(QFile& file);
+    static int readVersionNumber(QString& s);
 
     int _datamode;
     int _rowLen;
