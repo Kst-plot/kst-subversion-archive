@@ -2562,7 +2562,7 @@ void Kst2DPlot::paintSelf(KstPainter& p, const QRegion& bounds) {
         }
       }
     }
-    
+
     KstMouseModeType gzType = globalZoomType();
     if (view && GetPlotRegion().contains(_mouse.tracker)) {
       if (gzType == X_ZOOMBOX || gzType == Y_ZOOMBOX) {
@@ -2570,10 +2570,10 @@ void Kst2DPlot::paintSelf(KstPainter& p, const QRegion& bounds) {
       } else if (gzType == XY_ZOOMBOX) {
         updateXYGuideline(view, QPoint(-1, -1), view->mapFromGlobal(QCursor::pos()), GetPlotRegion(), _mouse.mode);
       } else {
-        _mouse.lastGuideline = QPoint(-1, -1);        
+        _mouse.lastGuideline = QPoint(-1, -1);
       }
     } else {
-      _mouse.lastGuideline = QPoint(-1, -1);        
+      _mouse.lastGuideline = QPoint(-1, -1);
     }
   }
 }
@@ -4263,15 +4263,30 @@ void Kst2DPlot::mouseMoveEvent(QWidget *view, QMouseEvent *e) {
   QRect pr = GetPlotRegion();
 
   KstMouseModeType gzType = globalZoomType();
-  // Draw a helper guide in X or Y zoom modes
+
+  //
+  // draw a helper guide in X or Y zoom modes
+  //
   if (gzType == X_ZOOMBOX || gzType == Y_ZOOMBOX) {
     ButtonState s = e->stateAfter();
     if (s == 0) {
-      updateXYGuideline(view, _mouse.lastGuideline, _mouse.tracker, pr, gzType);
+      if (e->state() & Qt::LeftButton && _mouse.zooming()) {
+        updateXYGuideline(view, _mouse.lastGuideline, QPoint(-1, -1), pr, gzType);
+      } else {
+        updateXYGuideline(view, _mouse.lastGuideline, _mouse.tracker, pr, gzType);
+      }
     } else if (s & Qt::ShiftButton) {
-      updateXYGuideline(view, _mouse.lastGuideline, _mouse.tracker, pr, Y_ZOOMBOX);
+      if (e->state() & Qt::LeftButton && _mouse.zooming()) {
+        updateXYGuideline(view, _mouse.lastGuideline, QPoint(-1, -1), pr, Y_ZOOMBOX);
+      } else {
+        updateXYGuideline(view, _mouse.lastGuideline, _mouse.tracker, pr, Y_ZOOMBOX);
+      }
     } else if (s & Qt::ControlButton) {
-      updateXYGuideline(view, _mouse.lastGuideline, _mouse.tracker, pr, X_ZOOMBOX);
+      if (e->state() & Qt::LeftButton && _mouse.zooming()) {
+        updateXYGuideline(view, _mouse.lastGuideline, QPoint(-1, -1), pr, X_ZOOMBOX);
+      } else {
+        updateXYGuideline(view, _mouse.lastGuideline, _mouse.tracker, pr, X_ZOOMBOX);
+      }
     } else {
       updateXYGuideline(view, _mouse.lastGuideline, QPoint(-1, -1), pr, gzType);
     }
@@ -4322,6 +4337,7 @@ void Kst2DPlot::mouseMoveEvent(QWidget *view, QMouseEvent *e) {
   }
 
   int x, y;
+
   if (_mouse.mode == XY_ZOOMBOX) {
     if (e->x() > pr.right()) {
       x = pr.right() + 1;
@@ -4686,44 +4702,44 @@ void Kst2DPlot::keyReleaseEvent(QWidget *view, QKeyEvent *e) {
   int x = _mouse.pressLocation.x();
   int y = _mouse.pressLocation.y();
 
-  if (newType == Y_ZOOMBOX) {
-    if (c.y() > pr.bottom()) {
-      y = pr.bottom() + 1;
-    } else if (c.y() < pr.top()) {
-      y = pr.top();
-    } else {
-      y = c.y();
-    }
-  } else if (newType == X_ZOOMBOX) {
-    if (c.x() > pr.right()) {
-      x = pr.right() + 1;
-    } else if (c.x() < pr.left()) {
-      x = pr.left();
-    } else {
-      x = c.x();
-    }
-  } else {
-    if (c.x() > pr.right()) {
-      x = pr.right() + 1;
-    } else if (c.x() < pr.left()) {
-      x = pr.left();
-    } else {
-      x = c.x();
-    }
-
-    if (c.y() > pr.bottom()) {
-      y = pr.bottom() + 1;
-    } else if (c.y() < pr.top()) {
-      y = pr.top();
-    } else {
-      y = c.y();
-    }
-  }
-
   if (_mouse.zooming()) {
+    if (newType == Y_ZOOMBOX) {
+      if (c.y() > pr.bottom()) {
+        y = pr.bottom() + 1;
+      } else if (c.y() < pr.top()) {
+        y = pr.top();
+      } else {
+        y = c.y();
+      }
+    } else if (newType == X_ZOOMBOX) {
+      if (c.x() > pr.right()) {
+        x = pr.right() + 1;
+      } else if (c.x() < pr.left()) {
+        x = pr.left();
+      } else {
+        x = c.x();
+      }
+    } else {
+      if (c.x() > pr.right()) {
+        x = pr.right() + 1;
+      } else if (c.x() < pr.left()) {
+        x = pr.left();
+      } else {
+        x = c.x();
+      }
+
+      if (c.y() > pr.bottom()) {
+        y = pr.bottom() + 1;
+      } else if (c.y() < pr.top()) {
+        y = pr.top();
+      } else {
+        y = c.y();
+      }
+    }
+
     QPoint newp(x, y);
-    QPainter p(view); // FIXME: Broken, just prepare and then trigger a
-                      //  view->paint(GetPlotRegion());
+    QPainter p(view);
+
     p.setRasterOp(Qt::NotROP);
     if (_mouse.rectBigEnough()) {
       p.drawWinFocusRect(_mouse.mouseRect());
@@ -4742,6 +4758,13 @@ void Kst2DPlot::keyReleaseEvent(QWidget *view, QKeyEvent *e) {
   }
 
   setCursorForMode(view, newType, c);
+
+  if (newType == X_ZOOMBOX) {
+    updateXYGuideline(view, _mouse.lastGuideline, _mouse.tracker, GetPlotRegion(), X_ZOOMBOX);
+  } else if (newType == Y_ZOOMBOX) {
+    updateXYGuideline(view, _mouse.lastGuideline, _mouse.tracker, GetPlotRegion(), Y_ZOOMBOX);
+  }
+
   e->accept();
 }
 
@@ -5480,13 +5503,17 @@ void Kst2DPlot::keyPressEvent(QWidget *vw, QKeyEvent *e) {
       }
       break;
     case Key_Shift:
-      updateXYGuideline(view, _mouse.lastGuideline, _mouse.tracker, GetPlotRegion(), Y_ZOOMBOX);
-      setCursorForMode(view, Y_ZOOMBOX, _mouse.tracker);
+      if (!_mouse.zooming()) {
+        updateXYGuideline(view, _mouse.lastGuideline, _mouse.tracker, GetPlotRegion(), Y_ZOOMBOX);
+        setCursorForMode(view, Y_ZOOMBOX, _mouse.tracker);
+      }
       paint = false;
       break;
     case Key_Control:
-      updateXYGuideline(view, _mouse.lastGuideline, _mouse.tracker, GetPlotRegion(), X_ZOOMBOX);
-      setCursorForMode(view, X_ZOOMBOX, _mouse.tracker);
+      if (!_mouse.zooming()) {
+        updateXYGuideline(view, _mouse.lastGuideline, _mouse.tracker, GetPlotRegion(), X_ZOOMBOX);
+        setCursorForMode(view, X_ZOOMBOX, _mouse.tracker);
+      }
       paint = false;
       break;
     default:
