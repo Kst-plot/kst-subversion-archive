@@ -741,8 +741,8 @@ void KstViewObject::cleanup(int cols) {
   // FIXME: don't allow regrid to a number of columns that will result in
   //        >= height() plots in a column
   if (cols <= 0) {
-    if (ave_w > 0 ) { // guess current column alignment based on the average width of existing plots
-      cols = int(1.0 / ave_w + 0.5); 
+    if (ave_w > 0.0) { // guess current column alignment based on the average width of existing plots
+      cols = int(1.0 / ave_w + 0.5);
       if (cols > cnt) {
         cols = int(sqrt(cnt));
       }
@@ -758,7 +758,7 @@ void KstViewObject::cleanup(int cols) {
     if (cols > 0) {
       _columns = cols;
       assert(_columns > 0);
-    } else if (cols <= 0){
+    } else if (cols <= 0) {
       _columns = kMax(1, int(sqrt(cnt)));
     }
   }

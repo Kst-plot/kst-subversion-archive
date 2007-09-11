@@ -466,14 +466,14 @@ void KstDataWizard::showPage( QWidget *page )
     }
 
     // count the vectors we are about to make, so we can guess defaults
-    int n_curves = _vectorsToPlot->childCount();
+    int nCurves = _vectorsToPlot->childCount();
 
     _psdAxisGroup->setEnabled(_radioButtonPlotDataPSD->isChecked() || _radioButtonPlotPSD->isChecked());
 
     // set window and plot defaults based on some guesses.
     if (_radioButtonPlotDataPSD->isChecked()) { // plotting both psds and XY plots
       _newWindows->setEnabled(true);
-      if (n_curves > 1) {
+      if (nCurves > 1) {
         _newWindows->setChecked(true);
       } else {
         _newWindow->setChecked(true);
@@ -521,10 +521,12 @@ void KstDataWizard::updateColumns()
 {
   if (_newWindow->isChecked() || _newWindows->isChecked()) {
     _reGrid->setChecked(false);
+
     return;
   }
 
   KstViewWindow *v;
+
   if (_currentWindow->isChecked()) {
     v = static_cast<KstViewWindow*>(KstApp::inst()->activeWindow());
   } else {
@@ -623,71 +625,19 @@ void KstDataWizard::newFilter()
 }
 
 
-void KstDataWizard::finished()
+bool KstDataWizard::checkAvailableMemory(KstDataSourcePtr &ds, int f0Value, int nValue)
 {
-  KstApp *app = KstApp::inst();
-  KstVectorList vlist;
-  QString name = KST::suggestVectorName(_xVector->currentText());
-  QValueList<QColor> colors;
-  QColor color;
-  uint n_curves = 0;
-  uint n_steps = 0;
-  int ptype = 0;
-  int prg = 0;
-  int fontSize;
-
-  KstDataSourcePtr ds = *KST::dataSourceList.findReusableFileName(_file);
-  if (!ds) {
-    for (KstDataSourceList::Iterator i = _sourceCache.begin(); i != _sourceCache.end(); ++i) {
-      if ((*i)->fileName() == _file) {
-        ds = *i;
-        break;
-      }
-    }
-    if (!ds) {
-      ds = KstDataSource::loadSource(_file);
-    }
-    if (!ds) {
-      KMessageBox::sorry(this, i18n("<qt>Sorry, unable to load the data file '<b>%1</b>'.").arg(_file));
-      return;
-    }
-    KST::dataSourceList.lock().writeLock();
-    KST::dataSourceList.append(ds);
-    KST::dataSourceList.lock().unlock();
-    _sourceCache.clear();
-  }
-
-  // check for sufficient memory
-  unsigned long memoryRequested = 0, memoryAvailable = 1024*1024*1024; // 1GB
+  unsigned long memoryRequested = 0;
+  unsigned long memoryAvailable = 1024*1024*1024; // 1GB
   unsigned long frames;
+  bool rc = true;
+
 #ifdef HAVE_LINUX
   meminfo();
   memoryAvailable = S(kb_main_free + kb_main_buffers + kb_main_cached);
 #endif
 
   ds->writeLock();
-  int f0Value, nValue;
-  if (_kstDataRange->isStartAbsoluteTime()) {
-    f0Value = ds->sampleForTime(_kstDataRange->f0DateTimeValue());
-  } else if (_kstDataRange->isStartRelativeTime()) {
-    f0Value = ds->sampleForTime(_kstDataRange->f0Value());
-  } else {
-    f0Value = int(_kstDataRange->f0Value());
-  }
-
-  if (_kstDataRange->isRangeRelativeTime()) {
-    double nValStored = _kstDataRange->nValue();
-    if (_kstDataRange->CountFromEnd->isChecked()) {
-      int frameCount = ds->frameCount(_xVector->currentText());
-      double msCount = ds->relativeTimeForSample(frameCount - 1);
-      nValue = frameCount - 1 - ds->sampleForTime(msCount - nValStored);
-    } else {
-      double fTime = ds->relativeTimeForSample(f0Value);
-      nValue = ds->sampleForTime(fTime + nValStored) - ds->sampleForTime(fTime);
-    }
-  } else {
-    nValue = int(_kstDataRange->nValue());
-  }
 
   // only add to memory requirement if xVector is to be created 
   if (_xAxisCreateFromField->isChecked()) {
@@ -708,372 +658,59 @@ void KstDataWizard::finished()
   {
     QListViewItemIterator it(_vectorsToPlot);
     int fftLen = int(pow(2.0, double(_kstFFTOptions->FFTLen->text().toInt() - 1)));
-    while (it.current()) {
-        QListViewItem *i = it.current();
-        QString field = i->text(0);
 
-        if (_kstDataRange->ReadToEnd->isChecked() || nValue < 0) {
-          frames = ds->frameCount(field) - f0Value;
-        } else {
-          frames = nValue;
-          if (frames > (unsigned long)ds->frameCount(field)) {
-            frames = ds->frameCount();
-          }
-        }
-
-        if (_kstDataRange->DoSkip->isChecked() && _kstDataRange->Skip->value() > 0) {
-          memoryRequested += frames / _kstDataRange->Skip->value()*sizeof(double);
-        } else {
-          memoryRequested += frames * ds->samplesPerFrame(field)*sizeof(double);
-        }
-        if (_radioButtonPlotPSD->isChecked() || _radioButtonPlotDataPSD->isChecked()) {
-          memoryRequested += fftLen * 6;
-        }
-        ++it;
-    }
-  }
-
-  ds->unlock();
-  if (memoryRequested > memoryAvailable) {
-      KMessageBox::sorry(this, i18n("You requested to read in %1 MB of data but it seems that you only have approximately %2 MB of usable memory available.  You cannot load this much data.").arg(memoryRequested/(1024*1024)).arg(memoryAvailable/(1024*1024)));
-      return;
-  }
-
-  accept();
-
-  // Pause updates to avoid event storms
-  bool wasPaused = app->paused();
-  if (!wasPaused) {
-    app->setPaused(true);
-  }
-
-  n_steps += _vectorsToPlot->childCount();
-  if (_radioButtonPlotPSD->isChecked() || _radioButtonPlotDataPSD->isChecked()) {
-    n_steps += _vectorsToPlot->childCount();
-  }
-
-  KstVectorPtr xv;
-
-  // only create x vector if needed
-  if (_xAxisCreateFromField->isChecked()) {
-    n_steps += 1; // for the creation of the x-vector
-    prg = 0;
-    app->slotUpdateProgress(n_steps, prg, i18n("Creating vectors..."));
-
-    // create the x-vector
-    xv = new KstRVector(ds, _xVector->currentText(),
-            KstObjectTag(name, ds->tag(), false),
-            _kstDataRange->CountFromEnd->isChecked() ? -1 : f0Value,
-            _kstDataRange->ReadToEnd->isChecked() ? -1 : nValue,
-            _kstDataRange->DoSkip->isChecked() ? _kstDataRange->Skip->value() : 0, 
-            _kstDataRange->DoSkip->isChecked(),
-            _kstDataRange->DoFilter->isChecked());
-
-    app->slotUpdateProgress(n_steps, ++prg, i18n("Creating vectors..."));
-  } else {
-    xv = *(KST::vectorList.findTag(_xVectorExisting->selectedVector()));
-    app->slotUpdateProgress(n_steps, prg, i18n("Creating vectors..."));
-  }
-  // Next time we use the wizard this session, we probably will want to use the
-  // same X vector, so... lets set that as the default.
-  _xAxisUseExisting->setChecked(true);
-  _xVectorExisting->update();
-  _xVectorExisting->setSelection(xv->tag().displayString());
-
-  // create the y-vectors
-  {
-    QListViewItemIterator it(_vectorsToPlot);
     while (it.current()) {
       QListViewItem *i = it.current();
-      name = KST::suggestVectorName(i->text(0));
+      QString field = i->text(0);
 
-      KstVectorPtr v = new KstRVector(ds, i->text(0),
-              KstObjectTag(name, ds->tag(), false),
-              _kstDataRange->CountFromEnd->isChecked() ? -1 : f0Value,
-              _kstDataRange->ReadToEnd->isChecked() ? -1 : nValue,
-              _kstDataRange->DoSkip->isChecked() ? _kstDataRange->Skip->value() : 0, 
-              _kstDataRange->DoSkip->isChecked(),
-              _kstDataRange->DoFilter->isChecked());
-      vlist.append(v);
-      ++n_curves;
-      app->slotUpdateProgress(n_steps, ++prg, i18n("Creating vectors..."));
+      if (_kstDataRange->ReadToEnd->isChecked() || nValue < 0) {
+        frames = ds->frameCount(field) - f0Value;
+      } else {
+        frames = nValue;
+        if (frames > (unsigned long)ds->frameCount(field)) {
+          frames = ds->frameCount();
+        }
+      }
+
+      if (_kstDataRange->DoSkip->isChecked() && _kstDataRange->Skip->value() > 0) {
+        memoryRequested += frames / _kstDataRange->Skip->value()*sizeof(double);
+      } else {
+        memoryRequested += frames * ds->samplesPerFrame(field)*sizeof(double);
+      }
+      if (_radioButtonPlotPSD->isChecked() || _radioButtonPlotDataPSD->isChecked()) {
+        memoryRequested += fftLen * 6;
+      }
       ++it;
     }
   }
 
-  // get a pointer to the first window
-  QString newName;
-  KstViewWindow *w;
-  if (_newWindow->isChecked() || _newWindows->isChecked()) {
-    w = dynamic_cast<KstViewWindow*>(app->activeWindow());
-    if (w && w->view()->children().isEmpty()) {
-      // Use the existing view
-      newName = w->caption();
-      if (newName.isEmpty()) {
-        newName = w->tabCaption();
-      }
-    } else {
-      newName = _newWindowName->text();
-      if (newName == defaultTag) {
-        newName = KST::suggestWinName();
-      }
-      w = static_cast<KstViewWindow*>(app->findWindow(app->newWindow(newName)));
-    }
-  } else if (_currentWindow->isChecked()) {
-    w = static_cast<KstViewWindow*>(app->activeWindow());
-  } else {
-    w = static_cast<KstViewWindow*>(app->findWindow(_windowName->currentText()));
+  ds->unlock();
+
+  if (memoryRequested > memoryAvailable) {
+    KMessageBox::sorry(this, i18n("You requested to read in %1 MB of data but it seems that you only have approximately %2 MB of usable memory available.  You cannot load this much data.").arg(memoryRequested/(1024*1024)).arg(memoryAvailable/(1024*1024)));
+    rc = false;
   }
 
-  if (!w) {
-    if (!wasPaused) {
-      app->setPaused(false);
-    }
-    return;
-  }
+  return rc;
+}
 
-  fontSize = qRound(getFontSize(w));
 
-  // create the necessary plots
-  app->slotUpdateProgress(n_steps, prg, i18n("Creating plots..."));
-  KstViewObjectList plots;
-
-  if (_onePlot->isChecked()) {
-    Kst2DPlotPtr p = kst_cast<Kst2DPlot>(w->view()->findChild(w->createObject<Kst2DPlot>(KST::suggestPlotName(), false)));
-    plots.append(p.data());
-    if (_radioButtonPlotDataPSD->isChecked()) {
-      if (_newWindows->isChecked()) {
-        newName += i18n("-Spectra");
-        QString n = app->newWindow(newName);
-        w = static_cast<KstViewWindow*>(app->findWindow(n));
-      }
-      Kst2DPlotPtr p = kst_cast<Kst2DPlot>(w->view()->findChild(w->createObject<Kst2DPlot>(KST::suggestPlotName(), false)));
-      plots.append(p.data());
-      p->setXAxisInterpretation(false, KstAxisInterpretation(), KstAxisDisplay());
-      p->setYAxisInterpretation(false, KstAxisInterpretation(), KstAxisDisplay());
-    }
-  } else if (_multiplePlots->isChecked()) {
-    Kst2DPlotPtr p;
-    for (uint i = 0; i < vlist.count(); ++i) {
-      p = kst_cast<Kst2DPlot>(w->view()->findChild(w->createObject<Kst2DPlot>(KST::suggestPlotName(), false)));
-      plots.append(p.data());
-    }
-    if (_radioButtonPlotDataPSD->isChecked()) {
-      if (_newWindows->isChecked()) {
-        w->view()->cleanup(signed(sqrt(plots.count())));
-        newName += i18n("-Spectra");
-        QString n = app->newWindow(newName);
-        w = static_cast<KstViewWindow*>(app->findWindow(n));
-      }
-      for (uint i = 0; i < vlist.count(); ++i) {
-        p = kst_cast<Kst2DPlot>(w->view()->findChild(w->createObject<Kst2DPlot>(KST::suggestPlotName(), false)));
-        plots.append(p.data());
-        p->setXAxisInterpretation(false, KstAxisInterpretation(), KstAxisDisplay());
-        p->setYAxisInterpretation(false, KstAxisInterpretation(), KstAxisDisplay());
-      }
-    }
-  } else if (_existingPlot->isChecked()) {
-    Kst2DPlotPtr p = kst_cast<Kst2DPlot>(w->view()->findChild(_existingPlotName->currentText()));
-    plots.append(p.data());
-  } else if (_cycleExisting->isChecked()) {
-    Kst2DPlotList pl = QDeepCopy<Kst2DPlotList>(w->view()->findChildrenType<Kst2DPlot>());
-    for (Kst2DPlotList::Iterator i = pl.begin(); i != pl.end(); ++i) {
-      plots += (*i).data();
-    }
-  } else { /* cycle */
-    Kst2DPlotPtr p;
-    for (int i = 0; i < _plotNumber->value(); ++i) {
-      p = kst_cast<Kst2DPlot>(w->view()->findChild(w->createObject<Kst2DPlot>(KST::suggestPlotName(), false)));
-      plots.append(p.data());
-    }
-    if (_radioButtonPlotDataPSD->isChecked()) {
-      if (_newWindows->isChecked()) {
-        w->view()->cleanup(signed(sqrt(plots.count())));
-        QString n = app->newWindow(newName + i18n("-Spectra"));
-        w = static_cast<KstViewWindow*>(app->findWindow(n));
-      }
-      for (int i = 0; i < _plotNumber->value(); ++i) {
-        p = kst_cast<Kst2DPlot>(w->view()->findChild(w->createObject<Kst2DPlot>(KST::suggestPlotName(), false)));
-        plots.append(p.data());
-        p->setXAxisInterpretation(false, KstAxisInterpretation(), KstAxisDisplay());
-        p->setYAxisInterpretation(false, KstAxisInterpretation(), KstAxisDisplay());
-      }
-    }
-  }
-
-  // Reorder the vectors if the user wants it
-  if (_orderInColumns->isChecked()) {
-    const KstVectorList lOld = vlist;
-    const int count = lOld.count();
-    const int cols = signed(sqrt(plots.count()));
-    const int rows = cols + (count - cols * cols) / cols;
-    int overflow = count % cols;
-    int row = 0, col = 0;
-    for (int i = 0; i < count; ++i) {
-      vlist[row * cols + col] = lOld[i];
-      ++row;
-      if (row >= rows) {
-        if (overflow > 0) {
-          --overflow;
-        } else {
-          ++col;
-          row = 0;
-        }
-      }
-    }
-  }
-
-  // create the data curves
-  app->slotUpdateProgress(n_steps, prg, i18n("Creating curves..."));
+void KstDataWizard::createLegendsAndLabels(KstViewObjectList &plots, bool xLabels, bool yLabels, bool titleLabel, bool legend, bool legendAuto, int fontSize)
+{
   KstViewObjectList::Iterator pit = plots.begin();
-  for (KstVectorList::Iterator it = vlist.begin(); it != vlist.end(); ++it) {
-    if (_radioButtonPlotData->isChecked() || _radioButtonPlotDataPSD->isChecked()) {
-      name = KST::suggestCurveName((*it)->tag(), false);
-      Kst2DPlotPtr plot = kst_cast<Kst2DPlot>(*pit);
-      if (plot) {
-        KstVCurveList vcurves = kstObjectSubList<KstBaseCurve,KstVCurve>(plot->Curves);
-        color = KstColorSequence::next(vcurves, plot->backgroundColor());
-      } else {
-        color = KstColorSequence::next();
-      }
-      colors.append(color);
-      KstVCurvePtr c = new KstVCurve(name, xv, *it, 0L, 0L, 0L, 0L, color);
-      c->setLineWidth(KstSettings::globalSettings()->defaultLineWeight);
-      if (_drawBoth->isChecked()) {
-        c->setHasPoints(true);
-        c->pointType = ptype++ % KSTPOINT_MAXTYPE;
-        c->setHasLines(true);
-      } else if (_drawLines->isChecked()) {
-        c->setHasPoints(false);
-        c->setHasLines(true);
-      } else {
-        c->setHasPoints(true);
-        c->pointType = ptype++ % KSTPOINT_MAXTYPE;
-        c->setHasLines(false);
-      }
-      KST::dataObjectList.lock().writeLock();
-      KST::dataObjectList.append(KstDataObjectPtr(c));
-      KST::dataObjectList.lock().unlock();
-      if (plot) {
-        plot->addCurve(KstBaseCurvePtr(c));
-      }
-      if (!_onePlot->isChecked()) { // change plots if we are not onePlot
-        if (_radioButtonPlotDataPSD->isChecked()) { // if xy and psd
-          ++pit;
-          if (plots.findIndex(*pit) >= (int)plots.count()/2) {
-            pit = plots.begin();
-          }
-        } else if (++pit == plots.end()) {
-          pit = plots.begin();
-        }
-      }
-    }
-  }
 
-  if (_onePlot->isChecked()) {
-    // if we are one plot, now we can move to the psd plot
-    if (++pit == plots.end()) {
-      // if _newWindows is not checked, there will not be another.
-      pit = plots.begin();
-    }
-  } else if (_radioButtonPlotDataPSD->isChecked()) {
-    pit = plots.at(plots.count()/2);
-  }
-
-  // create the PSDs
-  if (_radioButtonPlotPSD->isChecked() || _radioButtonPlotDataPSD->isChecked()) {
-    KstVCurvePtr c;
-    int indexColor = 0;
-    ptype = 0;
-    app->slotUpdateProgress(n_steps, prg, i18n("Creating spectra..."));
-
-    for (KstVectorList::Iterator it = vlist.begin(); it != vlist.end(); ++it) {
-      if ((*it)->length() > 0) {
-        Kst2DPlotPtr plot;
-        KstViewObjectList::Iterator startPlot = pit;
-        while (!plot) {
-          plot = kst_cast<Kst2DPlot>(*pit);
-          if (!plot) {
-            if (++pit == plots.end()) {
-              pit = plots.begin();
-            }
-            // If this is ever false, we have no valid 2D plots
-            // which means that someone wrote some incomplete code
-            // or something is really broken
-            assert(pit != startPlot);
-          }
-        }
-        name = KST::suggestPSDName((*it)->tag());
-
-        KstPSDPtr p = new KstPSD(name, *it,
-                _kstFFTOptions->SampRate->text().toDouble(),
-                _kstFFTOptions->Interleaved->isChecked(),
-                _kstFFTOptions->FFTLen->text().toInt(),
-                _kstFFTOptions->Apodize->isChecked(),
-                _kstFFTOptions->RemoveMean->isChecked(),
-                _kstFFTOptions->VectorUnits->text(),
-                _kstFFTOptions->RateUnits->text(), 
-                ApodizeFunction(_kstFFTOptions->ApodizeFxn->currentItem()),
-                _kstFFTOptions->Sigma->value(),
-                PSDType(_kstFFTOptions->Output->currentItem()));
-        p->setInterpolateHoles(_kstFFTOptions->InterpolateHoles->isChecked());
-        if (_radioButtonPlotPSD->isChecked() || colors.count() <= (unsigned long)indexColor) {
-          KstVCurveList vcurves = kstObjectSubList<KstBaseCurve,KstVCurve>(plot->Curves);
-          c = new KstVCurve(KST::suggestCurveName(p->tag(), true), p->vX(), p->vY(), 0L, 0L, 0L, 0L, KstColorSequence::next(vcurves, plot->backgroundColor()));
-        } else {
-          c = new KstVCurve(KST::suggestCurveName(p->tag(), true), p->vX(), p->vY(), 0L, 0L, 0L, 0L, colors[indexColor]);
-          indexColor++;
-        }
-        c->setLineWidth(KstSettings::globalSettings()->defaultLineWeight);
-        if (_drawBoth->isChecked()) {
-          c->setHasPoints(true);
-          c->pointType = ptype++ % KSTPOINT_MAXTYPE;
-          c->setHasLines(true);
-        } else if (_drawLines->isChecked()) {
-          c->setHasPoints(false);
-          c->setHasLines(true);
-        } else {
-          c->setHasPoints(true);
-          c->pointType = ptype++ % KSTPOINT_MAXTYPE;
-          c->setHasLines(false);
-        }
-        KST::dataObjectList.lock().writeLock();
-        KST::dataObjectList.append(KstDataObjectPtr(p));
-        KST::dataObjectList.append(KstDataObjectPtr(c));
-        KST::dataObjectList.lock().unlock();
-        plot->addCurve(c.data());
-        plot->setLog(_psdLogX->isChecked(),_psdLogY->isChecked());
-        if (!_onePlot->isChecked()) { // change plots if we are not onePlot
-          if (++pit == plots.end()) {
-            if (_radioButtonPlotDataPSD->isChecked()) { // if xy and psd
-              pit = plots.at(plots.count()/2);
-            } else {
-              pit = plots.begin();
-            }
-          }
-        }
-      }
-    }
-    app->slotUpdateProgress(n_steps, ++prg, i18n("Creating spectra..."));
-  }
-
-  // legends and labels
-  bool xl = _xAxisLabels->isChecked();
-  bool yl = _yAxisLabels->isChecked();
-  bool tl = _plotTitles->isChecked();
-
-  pit = plots.begin();
   while (pit != plots.end()) {
     Kst2DPlotPtr pp = kst_cast<Kst2DPlot>(*pit);
     if (!pp) {
       ++pit;
+
       continue;
     }
-    pp->generateDefaultLabels(xl, yl, tl);
+    pp->generateDefaultLabels(xLabels, yLabels, titleLabel);
 
-    if (_legendsOn->isChecked()) {
+    if (legend) {
       pp->getOrCreateLegend();
-    } else if (_legendsAuto->isChecked()) {
+    } else if (legendAuto) {
       if (pp->Curves.count() > 1) {
         pp->getOrCreateLegend();
       }
@@ -1083,34 +720,435 @@ void KstDataWizard::finished()
 
     ++pit;
   }
+}
 
-  if (_reGrid->isChecked()) {
-    int cols;
 
-    if (_plotColumns->value() == _plotColumns->minValue()) {
-      const KstViewObjectList& children(w->view()->children());
-      int cnt = 0;
-      for (KstViewObjectList::ConstIterator i = children.begin(); i != children.end(); ++i) {
-        if ((*i)->followsFlow()) {
-          ++cnt;
+void KstDataWizard::finished()
+{
+  KstDataSourcePtr ds = *KST::dataSourceList.findReusableFileName(_file);
+
+  if (!ds) {
+    for (KstDataSourceList::Iterator i = _sourceCache.begin(); i != _sourceCache.end(); ++i) {
+      if ((*i)->fileName() == _file) {
+        ds = *i;
+
+        break;
+      }
+    }
+    if (!ds) {
+      ds = KstDataSource::loadSource(_file);
+    }
+    if (!ds) {
+      KMessageBox::sorry(this, i18n("<qt>Sorry, unable to load the data file '<b>%1</b>'.").arg(_file));
+
+      return;
+    }
+    KST::dataSourceList.lock().writeLock();
+    KST::dataSourceList.append(ds);
+    KST::dataSourceList.lock().unlock();
+    _sourceCache.clear();
+  }
+
+  int f0Value;
+  int nValue;
+
+  if (_kstDataRange->isStartAbsoluteTime()) {
+    f0Value = ds->sampleForTime(_kstDataRange->f0DateTimeValue());
+  } else if (_kstDataRange->isStartRelativeTime()) {
+    f0Value = ds->sampleForTime(_kstDataRange->f0Value());
+  } else {
+    f0Value = int(_kstDataRange->f0Value());
+  }
+
+  if (_kstDataRange->isRangeRelativeTime()) {
+    double nValStored = _kstDataRange->nValue();
+
+    if (_kstDataRange->CountFromEnd->isChecked()) {
+      int frameCount = ds->frameCount(_xVector->currentText());
+      double msCount = ds->relativeTimeForSample(frameCount - 1);
+
+      nValue = frameCount - 1 - ds->sampleForTime(msCount - nValStored);
+    } else {
+      double fTime = ds->relativeTimeForSample(f0Value);
+
+      nValue = ds->sampleForTime(fTime + nValStored) - ds->sampleForTime(fTime);
+    }
+  } else {
+    nValue = int(_kstDataRange->nValue());
+  }
+
+  if (checkAvailableMemory(ds, f0Value, nValue)) {
+    KstApp *app = KstApp::inst();
+    KstVectorList vectorList;
+    QString name = KST::suggestVectorName(_xVector->currentText());
+    QValueList<QColor> colors;
+    QColor color;
+    KstVectorPtr xVector;
+    uint nCurves = 0;
+    uint nSteps = 0;
+    int progress = 0;
+    int fontSize;
+    int pointType = 0;
+
+    accept();
+
+    //
+    // pause updates to avoid event storms
+    //
+    bool wasPaused = app->paused();
+    if (!wasPaused) {
+      app->setPaused(true);
+    }
+
+    nSteps += _vectorsToPlot->childCount();
+    if (_radioButtonPlotPSD->isChecked() || _radioButtonPlotDataPSD->isChecked()) {
+      nSteps += _vectorsToPlot->childCount();
+    }
+
+    // only create x vector if needed
+    if (_xAxisCreateFromField->isChecked()) {
+      nSteps += 1; // for the creation of the x-vector
+      progress = 0;
+      app->slotUpdateProgress(nSteps, progress, i18n("Creating vectors..."));
+
+      // create the x-vector
+      xVector = new KstRVector(ds, _xVector->currentText(),
+              KstObjectTag(name, ds->tag(), false),
+              _kstDataRange->CountFromEnd->isChecked() ? -1 : f0Value,
+              _kstDataRange->ReadToEnd->isChecked() ? -1 : nValue,
+              _kstDataRange->DoSkip->isChecked() ? _kstDataRange->Skip->value() : 0, 
+              _kstDataRange->DoSkip->isChecked(),
+              _kstDataRange->DoFilter->isChecked());
+
+      app->slotUpdateProgress(nSteps, ++progress, i18n("Creating vectors..."));
+    } else {
+      xVector = *(KST::vectorList.findTag(_xVectorExisting->selectedVector()));
+      app->slotUpdateProgress(nSteps, progress, i18n("Creating vectors..."));
+    }
+
+    // next time we use the wizard this session, we probably will want to use the
+    // same X vector, so... lets set that as the default.
+    _xAxisUseExisting->setChecked(true);
+    _xVectorExisting->update();
+    _xVectorExisting->setSelection(xVector->tag().displayString());
+
+    // create the y-vectors
+    {
+      QListViewItemIterator it(_vectorsToPlot);
+      while (it.current()) {
+        QListViewItem *i = it.current();
+        name = KST::suggestVectorName(i->text(0));
+
+        KstVectorPtr v = new KstRVector(ds, i->text(0),
+                KstObjectTag(name, ds->tag(), false),
+                _kstDataRange->CountFromEnd->isChecked() ? -1 : f0Value,
+                _kstDataRange->ReadToEnd->isChecked() ? -1 : nValue,
+                _kstDataRange->DoSkip->isChecked() ? _kstDataRange->Skip->value() : 0, 
+                _kstDataRange->DoSkip->isChecked(),
+                _kstDataRange->DoFilter->isChecked());
+        vectorList.append(v);
+        ++nCurves;
+        app->slotUpdateProgress(nSteps, ++progress, i18n("Creating vectors..."));
+        ++it;
+      }
+    }
+
+    // get a pointer to the first window
+    QString newName;
+    KstViewWindow *w;
+
+    if (_newWindow->isChecked() || _newWindows->isChecked()) {
+      w = dynamic_cast<KstViewWindow*>(app->activeWindow());
+      if (w && w->view()->children().isEmpty()) {
+        // Use the existing view
+        newName = w->caption();
+        if (newName.isEmpty()) {
+          newName = w->tabCaption();
+        }
+      } else {
+        newName = _newWindowName->text();
+        if (newName == defaultTag) {
+          newName = KST::suggestWinName();
+        }
+        w = static_cast<KstViewWindow*>(app->findWindow(app->newWindow(newName)));
+      }
+    } else if (_currentWindow->isChecked()) {
+      w = static_cast<KstViewWindow*>(app->activeWindow());
+    } else {
+      w = static_cast<KstViewWindow*>(app->findWindow(_windowName->currentText()));
+    }
+
+    if (!w) {
+      if (!wasPaused) {
+        app->setPaused(false);
+      }
+      return;
+    }
+
+    fontSize = qRound(getFontSize(w));
+
+    // create the necessary plots
+    app->slotUpdateProgress(nSteps, progress, i18n("Creating plots..."));
+    KstViewObjectList plots;
+
+    if (_onePlot->isChecked()) {
+      Kst2DPlotPtr p = kst_cast<Kst2DPlot>(w->view()->findChild(w->createObject<Kst2DPlot>(KST::suggestPlotName(), false)));
+      plots.append(p.data());
+      if (_radioButtonPlotDataPSD->isChecked()) {
+        if (_newWindows->isChecked()) {
+          newName += i18n("-Spectra");
+          QString n = app->newWindow(newName);
+          w = static_cast<KstViewWindow*>(app->findWindow(n));
+        }
+        Kst2DPlotPtr p = kst_cast<Kst2DPlot>(w->view()->findChild(w->createObject<Kst2DPlot>(KST::suggestPlotName(), false)));
+        plots.append(p.data());
+        p->setXAxisInterpretation(false, KstAxisInterpretation(), KstAxisDisplay());
+        p->setYAxisInterpretation(false, KstAxisInterpretation(), KstAxisDisplay());
+      }
+    } else if (_multiplePlots->isChecked()) {
+      Kst2DPlotPtr p;
+      for (uint i = 0; i < vectorList.count(); ++i) {
+        p = kst_cast<Kst2DPlot>(w->view()->findChild(w->createObject<Kst2DPlot>(KST::suggestPlotName(), false)));
+        plots.append(p.data());
+      }
+      if (_radioButtonPlotDataPSD->isChecked()) {
+        if (_newWindows->isChecked()) {
+          w->view()->cleanup(signed(sqrt(plots.count())));
+          newName += i18n("-Spectra");
+          QString n = app->newWindow(newName);
+          w = static_cast<KstViewWindow*>(app->findWindow(n));
+        }
+        for (uint i = 0; i < vectorList.count(); ++i) {
+          p = kst_cast<Kst2DPlot>(w->view()->findChild(w->createObject<Kst2DPlot>(KST::suggestPlotName(), false)));
+          plots.append(p.data());
+          p->setXAxisInterpretation(false, KstAxisInterpretation(), KstAxisDisplay());
+          p->setYAxisInterpretation(false, KstAxisInterpretation(), KstAxisDisplay());
         }
       }
-      cols = int(sqrt(cnt));
-    } else {
-      cols = _plotColumns->value();
+    } else if (_existingPlot->isChecked()) {
+      Kst2DPlotPtr p = kst_cast<Kst2DPlot>(w->view()->findChild(_existingPlotName->currentText()));
+      plots.append(p.data());
+    } else if (_cycleExisting->isChecked()) {
+      Kst2DPlotList pl = QDeepCopy<Kst2DPlotList>(w->view()->findChildrenType<Kst2DPlot>());
+      for (Kst2DPlotList::Iterator i = pl.begin(); i != pl.end(); ++i) {
+        plots += (*i).data();
+      }
+    } else { /* cycle */
+      Kst2DPlotPtr p;
+      for (int i = 0; i < _plotNumber->value(); ++i) {
+        p = kst_cast<Kst2DPlot>(w->view()->findChild(w->createObject<Kst2DPlot>(KST::suggestPlotName(), false)));
+        plots.append(p.data());
+      }
+      if (_radioButtonPlotDataPSD->isChecked()) {
+        if (_newWindows->isChecked()) {
+          w->view()->cleanup(signed(sqrt(plots.count())));
+          QString n = app->newWindow(newName + i18n("-Spectra"));
+          w = static_cast<KstViewWindow*>(app->findWindow(n));
+        }
+        for (int i = 0; i < _plotNumber->value(); ++i) {
+          p = kst_cast<Kst2DPlot>(w->view()->findChild(w->createObject<Kst2DPlot>(KST::suggestPlotName(), false)));
+          plots.append(p.data());
+          p->setXAxisInterpretation(false, KstAxisInterpretation(), KstAxisDisplay());
+          p->setYAxisInterpretation(false, KstAxisInterpretation(), KstAxisDisplay());
+        }
+      }
     }
-    w->view()->cleanup(cols);
-  } else if (w->view()->onGrid()) {
-    w->view()->cleanup(-1);
-  }
 
-  w->view()->paint(KstPainter::P_PAINT);
-  app->slotUpdateProgress(0, 0, QString::null);
-  if (!wasPaused) {
-    app->setPaused(false);
-  }
+    // re-order the vectors if the user wants it
+    if (_orderInColumns->isChecked()) {
+      const KstVectorList lOld = vectorList;
+      const int count = lOld.count();
+      const int cols = signed(sqrt(plots.count()));
+      const int rows = cols + (count - cols * cols) / cols;
+      int overflow = count % cols;
+      int row = 0, col = 0;
 
-  saveSettings();
+      for (int i = 0; i < count; ++i) {
+        vectorList[row * cols + col] = lOld[i];
+        ++row;
+        if (row >= rows) {
+          if (overflow > 0) {
+            --overflow;
+          } else {
+            ++col;
+            row = 0;
+          }
+        }
+      }
+    }
+
+    // create the data curves
+    app->slotUpdateProgress(nSteps, progress, i18n("Creating curves..."));
+    KstViewObjectList::Iterator pit = plots.begin();
+    for (KstVectorList::Iterator it = vectorList.begin(); it != vectorList.end(); ++it) {
+      if (_radioButtonPlotData->isChecked() || _radioButtonPlotDataPSD->isChecked()) {
+        name = KST::suggestCurveName((*it)->tag(), false);
+        Kst2DPlotPtr plot = kst_cast<Kst2DPlot>(*pit);
+        if (plot) {
+          KstVCurveList vcurves = kstObjectSubList<KstBaseCurve,KstVCurve>(plot->Curves);
+          color = KstColorSequence::next(vcurves, plot->backgroundColor());
+        } else {
+          color = KstColorSequence::next();
+        }
+        colors.append(color);
+        KstVCurvePtr c = new KstVCurve(name, xVector, *it, 0L, 0L, 0L, 0L, color);
+        c->setLineWidth(KstSettings::globalSettings()->defaultLineWeight);
+        if (_drawBoth->isChecked()) {
+          c->setHasPoints(true);
+          c->pointType = pointType++ % KSTPOINT_MAXTYPE;
+          c->setHasLines(true);
+        } else if (_drawLines->isChecked()) {
+          c->setHasPoints(false);
+          c->setHasLines(true);
+        } else {
+          c->setHasPoints(true);
+          c->pointType = pointType++ % KSTPOINT_MAXTYPE;
+          c->setHasLines(false);
+        }
+        KST::dataObjectList.lock().writeLock();
+        KST::dataObjectList.append(KstDataObjectPtr(c));
+        KST::dataObjectList.lock().unlock();
+        if (plot) {
+          plot->addCurve(KstBaseCurvePtr(c));
+        }
+        if (!_onePlot->isChecked()) { // change plots if we are not onePlot
+          if (_radioButtonPlotDataPSD->isChecked()) { // if xy and psd
+            ++pit;
+            if (plots.findIndex(*pit) >= (int)plots.count()/2) {
+              pit = plots.begin();
+            }
+          } else if (++pit == plots.end()) {
+            pit = plots.begin();
+          }
+        }
+      }
+    }
+
+    if (_onePlot->isChecked()) {
+      // if we are one plot, now we can move to the psd plot
+      if (++pit == plots.end()) {
+        // if _newWindows is not checked, there will not be another.
+        pit = plots.begin();
+      }
+    } else if (_radioButtonPlotDataPSD->isChecked()) {
+      pit = plots.at(plots.count()/2);
+    }
+
+    // create the PSDs
+    if (_radioButtonPlotPSD->isChecked() || _radioButtonPlotDataPSD->isChecked()) {
+      KstVCurvePtr c;
+      int indexColor = 0;
+
+      pointType = 0;
+      app->slotUpdateProgress(nSteps, progress, i18n("Creating spectra..."));
+
+      for (KstVectorList::Iterator it = vectorList.begin(); it != vectorList.end(); ++it) {
+        if ((*it)->length() > 0) {
+          Kst2DPlotPtr plot;
+          KstViewObjectList::Iterator startPlot = pit;
+
+          while (!plot) {
+            plot = kst_cast<Kst2DPlot>(*pit);
+            if (!plot) {
+              if (++pit == plots.end()) {
+                pit = plots.begin();
+              }
+              // If this is ever false, we have no valid 2D plots
+              // which means that someone wrote some incomplete code
+              // or something is really broken
+              assert(pit != startPlot);
+            }
+          }
+          name = KST::suggestPSDName((*it)->tag());
+
+          KstPSDPtr p = new KstPSD(name, *it,
+                  _kstFFTOptions->SampRate->text().toDouble(),
+                  _kstFFTOptions->Interleaved->isChecked(),
+                  _kstFFTOptions->FFTLen->text().toInt(),
+                  _kstFFTOptions->Apodize->isChecked(),
+                  _kstFFTOptions->RemoveMean->isChecked(),
+                  _kstFFTOptions->VectorUnits->text(),
+                  _kstFFTOptions->RateUnits->text(), 
+                  ApodizeFunction(_kstFFTOptions->ApodizeFxn->currentItem()),
+                  _kstFFTOptions->Sigma->value(),
+                  PSDType(_kstFFTOptions->Output->currentItem()));
+          p->setInterpolateHoles(_kstFFTOptions->InterpolateHoles->isChecked());
+          if (_radioButtonPlotPSD->isChecked() || colors.count() <= (unsigned long)indexColor) {
+            KstVCurveList vcurves = kstObjectSubList<KstBaseCurve,KstVCurve>(plot->Curves);
+            c = new KstVCurve(KST::suggestCurveName(p->tag(), true), p->vX(), p->vY(), 0L, 0L, 0L, 0L, KstColorSequence::next(vcurves, plot->backgroundColor()));
+          } else {
+            c = new KstVCurve(KST::suggestCurveName(p->tag(), true), p->vX(), p->vY(), 0L, 0L, 0L, 0L, colors[indexColor]);
+            indexColor++;
+          }
+          c->setLineWidth(KstSettings::globalSettings()->defaultLineWeight);
+          if (_drawBoth->isChecked()) {
+            c->setHasPoints(true);
+            c->pointType = pointType++ % KSTPOINT_MAXTYPE;
+            c->setHasLines(true);
+          } else if (_drawLines->isChecked()) {
+            c->setHasPoints(false);
+            c->setHasLines(true);
+          } else {
+            c->setHasPoints(true);
+            c->pointType = pointType++ % KSTPOINT_MAXTYPE;
+            c->setHasLines(false);
+          }
+          KST::dataObjectList.lock().writeLock();
+          KST::dataObjectList.append(KstDataObjectPtr(p));
+          KST::dataObjectList.append(KstDataObjectPtr(c));
+          KST::dataObjectList.lock().unlock();
+          plot->addCurve(c.data());
+          plot->setLog(_psdLogX->isChecked(),_psdLogY->isChecked());
+          if (!_onePlot->isChecked()) { // change plots if we are not onePlot
+            if (++pit == plots.end()) {
+              if (_radioButtonPlotDataPSD->isChecked()) { // if xy and psd
+                pit = plots.at(plots.count()/2);
+              } else {
+                pit = plots.begin();
+              }
+            }
+          }
+        }
+      }
+      app->slotUpdateProgress(nSteps, ++progress, i18n("Creating spectra..."));
+    }
+
+    createLegendsAndLabels(plots, _xAxisLabels->isChecked(), _yAxisLabels->isChecked(), _plotTitles->isChecked(), _legendsOn->isChecked(), _legendsAuto->isChecked(), fontSize);
+
+    //
+    // we want to layout the plots in a window in a grid if:
+    //  the user requested it or
+    //  the window is a new one (see bug report 149740)
+    //
+    if (_reGrid->isChecked() || _newWindow->isChecked() || _newWindows->isChecked()) {
+      int cols;
+
+      if (_plotColumns->value() == _plotColumns->minValue()) {
+        const KstViewObjectList& children(w->view()->children());
+        int cnt = 0;
+
+        for (KstViewObjectList::ConstIterator i = children.begin(); i != children.end(); ++i) {
+          if ((*i)->followsFlow()) {
+            ++cnt;
+          }
+        }
+        cols = int(sqrt(cnt));
+      } else {
+        cols = _plotColumns->value();
+      }
+      w->view()->cleanup(cols);
+    } else if (w->view()->onGrid()) {
+      w->view()->cleanup(-1);
+    }
+
+    w->view()->paint(KstPainter::P_PAINT);
+    app->slotUpdateProgress(0, 0, QString::null);
+    if (!wasPaused) {
+      app->setPaused(false);
+    }
+
+    saveSettings();
+  }
 }
 
 

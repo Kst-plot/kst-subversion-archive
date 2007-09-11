@@ -73,6 +73,9 @@ class KstDataWizard: public DataWizard {
     void vectorsDroppedBack(QDropEvent *e);
 
   private:
+    bool checkAvailableMemory(KstDataSourcePtr &ds, int f0Value, int nValue);
+    void createLegendsAndLabels(KstViewObjectList &plots, bool xLabels, bool yLabels, bool titleLabel, bool legend, bool legendAuto, int fontSize);
+
     static const QString &defaultTag;
     QString _file;
     QDict<QListViewItem> _fields;
