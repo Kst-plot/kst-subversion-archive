@@ -719,177 +719,219 @@ void KstViewObject::setOnGrid(bool on_grid) {
 }
 
 
-void KstViewObject::cleanup(int cols, KstViewObjectList &plotsCreated) {
+void KstViewObject::cleanup(int cols) {
+  //
+  // if cols <= 0, the optimal value is chosen automatically
+  //
+
   KstViewObjectList childrenCopy;
-  double ave_w = 0.0;
-  bool dirty = false;
+  double widthTotal = 0.0;
+  double widthAverage = 0.0;
 
   for (KstViewObjectList::ConstIterator i = _children.begin(); i != _children.end(); ++i) {
     if ((*i)->followsFlow()) {
       childrenCopy.append(*i);
-      ave_w += (*i)->aspectRatio().w;
+      widthTotal += (*i)->aspectRatio().w;
     }
   }
 
   int cnt = childrenCopy.count();
 
-  if (cnt < 1) {
-    return;
-  }
-  ave_w /= double(cnt);
+  if (cnt > 0) {
+    widthAverage = widthTotal / double(cnt);
 
-  // FIXME: don't allow regrid to a number of columns that will result in
-  //        >= height() plots in a column
-  if (cols <= 0) {
-    if (ave_w > 0.0) { // guess current column alignment based on the average width of existing plots
-      cols = int(1.0 / ave_w + 0.5);
-      if (cols > cnt) {
+    // FIXME: don't allow regrid to a number of columns that will result in
+    //        >= height() plots in a column
+    if (cols <= 0) {
+      if (widthAverage > 0.0) { // guess current column alignment based on the average width of existing plots
+        cols = int(1.0 / widthAverage + 0.5);
+        if (cols > cnt) {
+          cols = int(sqrt(cnt));
+        }
+      } else {
         cols = int(sqrt(cnt));
       }
+    }
+
+    if (!_onGrid) {
+      _onGrid = true;
+      _columns = kMax(1, cols);
+      cleanupRandomLayout(_columns, childrenCopy);
     } else {
-      cols = int(sqrt(cnt));
+      if (cols > 0) {
+        _columns = cols;
+      } else if (cols <= 0) {
+        _columns = kMax(1, int(sqrt(cnt)));
+      }
+      cleanupGridLayout(_columns, childrenCopy);
     }
   }
+}
 
-  if (!_onGrid) {
-    _onGrid = true;
-    _columns = kMax(1, cols);
-  } else {
-    if (cols > 0) {
-      _columns = cols;
-      assert(_columns > 0);
-    } else if (cols <= 0) {
-      _columns = kMax(1, int(sqrt(cnt)));
+
+void KstViewObject::cleanupGridLayout(int cols, KstViewObjectList &childrenCopy) {
+  int cnt = childrenCopy.count();
+
+  if (cols > 0 && cnt > 0) {
+    int row;
+    int col;
+    int rows = ( cnt + cols - 1 ) / cols;
+    QSize sz(_geom.width() / cols, _geom.height() / rows);
+
+    for (col=0; col<cols; ++col) {
+      for (row=0; row<rows; ++row) {
+        if (col + (row * cols) < cnt) {
+          KstViewObjectPtr plot = childrenCopy[col + (row * cols)];
+          QPoint pt(sz.width() * col, sz.height() * row);
+
+          plot->move(pt);
+          plot->resize(sz);
+          plot->setDirty();
+        } else {
+          break;
+        }
+      }
     }
   }
+}
 
-  int rows = ( cnt + _columns - 1 ) / _columns;
 
-  QMemArray<int> plotLoc(rows * _columns); // what plot lives at each grid location
-  QMemArray<int> unAssigned(cnt); // what plots haven't got a home yet?
-  int n_unassigned = 0;
-  int row, col, CR;
-  for (int i = 0; i < rows * _columns; ++i) {
-    plotLoc[i] = -1;
-  }
+void KstViewObject::cleanupRandomLayout(int cols, KstViewObjectList &childrenCopy) {
+  int cnt = childrenCopy.count();
 
-  // put the plots on a grid.  Each plot goes to the closest grid location
-  // unless there is another plot which is closer, in which case the 
-  // plot gets dumped into an un-assigned list for placement into a
-  // random un-filled grid space.
-  // the location is defined relative to the left-middle.
-  // QUESTION: should we use the middle-middle instead?
-  // NOTE: the choice of grid location assumes a regular grid, which is
-  // broken when supressed axis/labels are taken into account.  This
-  // could have an effect if the plots are grown by >50%.
-  for (int i = 0; i < cnt; ++i) {
-    row = int( ( childrenCopy[i]->aspectRatio().y + childrenCopy[i]->aspectRatio().h / 2 ) * rows );
-    col = int( childrenCopy[i]->aspectRatio().x * _columns + 0.5 );
+  if (cols > 0 && cnt > 0) {
+    int rows = ( cnt + cols - 1 ) / cols;
 
-    if (col >= _columns) {
-      col = _columns-1;
+    QMemArray<int> plotLoc(rows * cols); // what plot lives at each grid location
+    QMemArray<int> unAssigned(cnt); // what plots haven't got a home yet?
+    int n_unassigned = 0;
+    int row, col, CR;
+    for (int i = 0; i < rows * cols; ++i) {
+      plotLoc[i] = -1;
     }
-    if (row >= rows) {
-      row = rows-1;
-    }
-    CR = col + row*_columns;
-    if (childrenCopy[i]->dirty()) { // newly added plots get no priority
-      dirty = true;
-      unAssigned[n_unassigned] = i;
-      n_unassigned++;
-    } else if (plotLoc[CR] < 0) {
-      plotLoc[CR] = i;
-    } else { // another plot is already at this grid point
 
-      double d1, d2;
-      // put the further of the two in the unassigned list
-      // use Manhattan distance.
-      d1 = fabs(double(row) - childrenCopy[i]->aspectRatio().y*rows) + 
-          fabs(double(col) - childrenCopy[i]->aspectRatio().x*_columns);
-      d2 = fabs(double(row) - childrenCopy[plotLoc[CR]]->aspectRatio().y*rows) + 
-          fabs(double(col) - childrenCopy[plotLoc[CR]]->aspectRatio().x*_columns);
-      if (d1 >= d2) {
+    // put the plots on a grid.  Each plot goes to the closest grid location
+    // unless there is another plot which is closer, in which case the 
+    // plot gets dumped into an un-assigned list for placement into a
+    // random un-filled grid space.
+    // the location is defined relative to the left-middle.
+    // QUESTION: should we use the middle-middle instead?
+    // NOTE: the choice of grid location assumes a regular grid, which is
+    // broken when supressed axis/labels are taken into account.  This
+    // could have an effect if the plots are grown by >50%.
+    for (int i = 0; i < cnt; ++i) {
+      row = int( ( childrenCopy[i]->aspectRatio().y + childrenCopy[i]->aspectRatio().h / 2 ) * rows );
+      col = int( childrenCopy[i]->aspectRatio().x * cols + 0.5 );
+
+      if (col >= cols) {
+        col = cols-1;
+      }
+      if (row >= rows) {
+        row = rows-1;
+      }
+      CR = col + row * cols;
+      if (childrenCopy[i]->dirty()) { // newly added plots get no priority
         unAssigned[n_unassigned] = i;
-      } else {
-        unAssigned[n_unassigned] = plotLoc[CR];
+        n_unassigned++;
+      } else if (plotLoc[CR] < 0) {
         plotLoc[CR] = i;
-      }
-      n_unassigned++;
-    }
-  }
-  // now dump the unassigned plots in random holes.
-  // Question: should we dump them in the closest holes?
-  CR = 0;
-  for (int i = 0; i < n_unassigned; ++i) {
-    for (; plotLoc[CR] != -1; ++CR) { }
-    plotLoc[CR] = unAssigned[i];
-  }
-
-  QMemArray<double> HR(rows);
-  double sum_HR = 0.0;
-  KstViewObject *ob;
-  double hr;
-
-  for (row=0; row<rows; row++) {
-    HR[row] = 10.0;
-    for (col=0; col<_columns; col++) {
-      CR = col + row*_columns;
-      if (plotLoc[CR] > -1) {
-        hr = childrenCopy[plotLoc[CR]]->verticalSizeFactor();
-        if (hr < HR[row]) {
-          HR[row] = hr;
+      } else { // another plot is already at this grid point
+        //
+        // put the further of the two in the unassigned list using Manhattan distance.
+        //
+        double d1 = fabs(double(row) - childrenCopy[i]->aspectRatio().y*rows) + 
+            fabs(double(col) - childrenCopy[i]->aspectRatio().x*cols);
+        double d2 = fabs(double(row) - childrenCopy[plotLoc[CR]]->aspectRatio().y*rows) + 
+            fabs(double(col) - childrenCopy[plotLoc[CR]]->aspectRatio().x*cols);
+        if (d1 >= d2) {
+          unAssigned[n_unassigned] = i;
+        } else {
+          unAssigned[n_unassigned] = plotLoc[CR];
+          plotLoc[CR] = i;
         }
+        n_unassigned++;
       }
     }
-    if (HR[row] > 9.0) {
-      HR[row] = 1.0;
+
+    //
+    // now dump the unassigned plots in random holes.
+    // Question: should we dump them in the closest holes?
+    //
+    CR = 0;
+    for (int i = 0; i < n_unassigned; ++i) {
+      for (; plotLoc[CR] != -1; ++CR) { }
+      plotLoc[CR] = unAssigned[i];
     }
-    sum_HR += HR[row];
-  }
 
-  // now actually move/resize the plots
-  int w = _geom.width() / _columns;
-  int h = 0;
-  int y = 0;
-  for (row=0; row<rows; row++) {
-    y += h;
-    h = int(double(_geom.height()) * HR[row]/sum_HR);
-    for (col=0; col<_columns; col++) {
-      CR = col + row*_columns;
-      if (plotLoc[CR] >= 0) {
-        QSize sz(w, h);
-        row = CR / _columns;
-        col = CR % _columns;
-        QPoint pt(w*col, y);
+    QMemArray<double> HR(rows);
+    double sum_HR = 0.0;
+    KstViewObject *ob;
+    double hr;
 
-        // if necessary adjust the last column so that we don't spill over
-        if (col == _columns-1) {
-          // only adjust the final width if necessary as we would rather have a gap
-          // at the right edge of the window than a column of plots that is significantly 
-          // wider than all the others
-          if (w*_columns > _geom.width()) {
-            sz.setWidth(_geom.width() - w*col);
+    for (row=0; row<rows; row++) {
+      HR[row] = 10.0;
+      for (col=0; col<cols; col++) {
+        CR = col + row*cols;
+        if (plotLoc[CR] > -1) {
+          hr = childrenCopy[plotLoc[CR]]->verticalSizeFactor();
+          if (hr < HR[row]) {
+            HR[row] = hr;
           }
         }
+      }
+      if (HR[row] > 9.0) {
+        HR[row] = 1.0;
+      }
+      sum_HR += HR[row];
+    }
 
-        // if necessary adjust the last row so that we don't spill over
-        if (row == rows - 1) {
-          // only adjust the final height if necessary as we would rather have a gap
-          // at the bottom edge of the window than a row of plots that is significantly 
-          // taller than all the others
-          if (y + h > _geom.height()) {
-            sz.setHeight(_geom.height() - y);
+    //
+    // now actually move/resize the plots
+    //
+    int w = _geom.width() / cols;
+    int h = 0;
+    int y = 0;
+
+    for (row=0; row<rows; row++) {
+      y += h;
+      h = int(double(_geom.height()) * HR[row]/sum_HR);
+      for (col=0; col<cols; col++) {
+        CR = col + row*cols;
+        if (plotLoc[CR] >= 0) {
+          QSize sz(w, h);
+          row = CR / cols;
+          col = CR % cols;
+          QPoint pt(w*col, y);
+
+          // if necessary adjust the last column so that we don't spill over
+          if (col == cols-1) {
+            // only adjust the final width if necessary as we would rather have a gap
+            // at the right edge of the window than a column of plots that is significantly 
+            // wider than all the others
+            if (w*cols > _geom.width()) {
+              sz.setWidth(_geom.width() - w*col);
+            }
           }
-        }
 
-        ob = childrenCopy[plotLoc[CR]];
-        ob->move(pt);
-        ob->resize(sz);
-        // FIXME: This is here to trigger axis alignment updates when cleanup
-        // happens.  Remove this once we can trigger an axis alignment update
-        // without setting dirty since this is a performance penalty.
-        // (It even causes non-plots to redraw)
-        ob->setDirty();
+          // if necessary adjust the last row so that we don't spill over
+          if (row == rows - 1) {
+            // only adjust the final height if necessary as we would rather have a gap
+            // at the bottom edge of the window than a row of plots that is significantly 
+            // taller than all the others
+            if (y + h > _geom.height()) {
+              sz.setHeight(_geom.height() - y);
+            }
+          }
+
+          ob = childrenCopy[plotLoc[CR]];
+          ob->move(pt);
+          ob->resize(sz);
+          // FIXME: This is here to trigger axis alignment updates when cleanup
+          // happens.  Remove this once we can trigger an axis alignment update
+          // without setting dirty since this is a performance penalty.
+          // (It even causes non-plots to redraw)
+          ob->setDirty();
+        }
       }
     }
   }

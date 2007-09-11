@@ -761,9 +761,9 @@ void KstDataWizard::cleanupWindowLayout(KstViewObjectList &plots, KstViewWindow 
       } else {
         cols = _plotColumns->value();
       }
-      window->view()->cleanup(cols, plots);
+      window->view()->cleanup(cols);
     } else if (window->view()->onGrid()) {
-      window->view()->cleanup(-1, plots);
+      window->view()->cleanup(-1);
     }
 
     window->view()->paint(KstPainter::P_PAINT);

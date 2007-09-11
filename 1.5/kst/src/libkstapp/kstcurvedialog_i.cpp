@@ -329,11 +329,7 @@ bool KstCurveDialogI::newObject() {
         QString name = w->createPlot(KST::suggestPlotName());
         plot = kst_cast<Kst2DPlot>(w->view()->findChild(name));
         if (_w->_curvePlacement->reGrid()) {
-          KstViewObjectList plots;
-
-          plots.append(KstViewObjectPtr(plot));
-
-          w->view()->cleanup(_w->_curvePlacement->columns(), plots);
+          w->view()->cleanup(_w->_curvePlacement->columns());
         }
         if (plot) {
           _w->_curvePlacement->update();

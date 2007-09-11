@@ -1794,24 +1794,21 @@ KstViewWidget *KstTopLevelView::widget() const {
 
 
 void KstTopLevelView::cleanupDefault() {
-  KstViewObjectList list;
-
   // roughly layout in a square
-  cleanup(-1, list);
+  cleanup(-1);
 }
 
 
 void KstTopLevelView::cleanupCustom() {
   bool ok = false;
+
 #if KDE_VERSION >= KDE_MAKE_VERSION(3,3,0)
   int numCols = KInputDialog::getInteger(i18n("Number of Columns"), 
                                          i18n("Select number of columns:"), 
                                          int(sqrt(_children.count())), 
                                          1, _children.count(), 1, &ok, 0L);
   if (ok) {
-    KstViewObjectList list;
-
-    cleanup(numCols, list);
+    cleanup(numCols);
   }
 #else
   for (;;) {
@@ -1821,9 +1818,7 @@ void KstTopLevelView::cleanupCustom() {
       if (numCols < 1 || numCols > _children.count()) {
         KMessageBox::sorry(KstApp::inst(), i18n("Enter a number of columns between 1 and %d").arg(_selectionList.count()));
       } else {
-        KstViewObjectList list;
-
-        cleanup(numCols, list);
+        cleanup(numCols);
 
         break;
       }

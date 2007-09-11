@@ -208,7 +208,7 @@ KstImagePtr KstCsdDialogI::createImage(KstCSDPtr csd) {
     Kst2DPlotPtr plot;
 
     if (_w->_curvePlacement->existingPlot()) {
-      /* assign image to plot */
+      // assign image to plot
       plot = kst_cast<Kst2DPlot>(w->view()->findChild(_w->_curvePlacement->plotName()));
       if (plot) {
         plot->addCurve(KstBaseCurvePtr(image));
@@ -216,14 +216,10 @@ KstImagePtr KstCsdDialogI::createImage(KstCSDPtr csd) {
     }
 
     if (_w->_curvePlacement->newPlot()) {
-      /* assign image to plot */
+      // assign image to plot
       QString name = w->createPlot(KST::suggestPlotName());
       if (_w->_curvePlacement->reGrid()) {
-        KstViewObjectList plots;
-
-        plots.append(KstViewObjectPtr(plot));
-
-        w->view()->cleanup(_w->_curvePlacement->columns(), plots);
+        w->view()->cleanup(_w->_curvePlacement->columns());
       }
       plot = kst_cast<Kst2DPlot>(w->view()->findChild(name));
       if (plot) {

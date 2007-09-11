@@ -75,8 +75,7 @@ class KST_EXPORT KstViewObject : public KstObject {
     virtual QRegion clipRegion();
     virtual QRegion region();
 
-    // If cols <= 0, optimal is chosen automatically
-    virtual void cleanup(int cols, KstViewObjectList &plotsCreated);
+    virtual void cleanup(int cols = -1);
     virtual int columns() const;
     virtual void setColumns(int cols);
     virtual bool onGrid() const;
@@ -302,6 +301,8 @@ class KST_EXPORT KstViewObject : public KstObject {
     virtual void writeBinary(QDataStream& str);
     virtual void readBinary(QDataStream& str);
     KstObject::UpdateType updateChildren(int counter);
+    void cleanupGridLayout(int cols, KstViewObjectList &childrenCopy);
+    void cleanupRandomLayout(int cols, KstViewObjectList &childrenCopy);
 
     KstViewObjectList _children;
     QRect _geom;

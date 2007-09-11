@@ -175,11 +175,7 @@ KstSharedPtr<T> KstTopLevelView::createObject(const QString& name, bool doCleanu
     // FIXME: make this more powerful, preserve columns
     appendChild(plot);
     if (doCleanup) {
-      KstViewObjectList plots;
-
-      plots.append(plot);
-
-      this->cleanup(-1, plots); // GCC 2.95/ppc bug.  Don't touch!!!
+      this->cleanup(-1); // GCC 2.95/ppc bug.  Don't touch!!!
     }
   } else {
     QSize sz = averageChildSize();
