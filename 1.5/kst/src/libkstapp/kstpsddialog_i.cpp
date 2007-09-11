@@ -225,7 +225,11 @@ bool KstPsdDialogI::newObject() {
         // assign curve to plot
         QString name = w->createPlot(KST::suggestPlotName());
         if (_w->_curvePlacement->reGrid()) {
-          w->view()->cleanup(_w->_curvePlacement->columns());
+          KstViewObjectList plots;
+
+          plots.append(KstViewObjectPtr(plot));
+
+          w->view()->cleanup(_w->_curvePlacement->columns(), plots);
         }
         plot = kst_cast<Kst2DPlot>(w->view()->findChild(name));
         if (plot) {
@@ -506,4 +510,4 @@ void KstPsdDialogI::setVector(const QString& name) {
 }
 
 #include "kstpsddialog_i.moc"
-// vim: ts=2 sw=2 et
+

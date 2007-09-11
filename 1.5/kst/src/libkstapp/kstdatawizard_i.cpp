@@ -654,10 +654,17 @@ bool KstDataWizard::checkAvailableMemory(KstDataSourcePtr &ds, int f0Value, int 
     }
   }
 
+  //
   // memory estimate for the y vectors
+  //
   {
     QListViewItemIterator it(_vectorsToPlot);
-    int fftLen = int(pow(2.0, double(_kstFFTOptions->FFTLen->text().toInt() - 1)));
+    unsigned long memoryForVector = 0;
+    int fftLen = -1;
+
+    if (_kstFFTOptions->Interleaved->isChecked()) {
+       fftLen = int(pow(2.0, double(_kstFFTOptions->FFTLen->text().toInt() - 1)));
+    }
 
     while (it.current()) {
       QListViewItem *i = it.current();
@@ -673,13 +680,20 @@ bool KstDataWizard::checkAvailableMemory(KstDataSourcePtr &ds, int f0Value, int 
       }
 
       if (_kstDataRange->DoSkip->isChecked() && _kstDataRange->Skip->value() > 0) {
-        memoryRequested += frames / _kstDataRange->Skip->value()*sizeof(double);
+        memoryForVector = frames / _kstDataRange->Skip->value()*sizeof(double);
       } else {
-        memoryRequested += frames * ds->samplesPerFrame(field)*sizeof(double);
+        memoryForVector = frames * ds->samplesPerFrame(field)*sizeof(double);
       }
+      memoryRequested += memoryForVector;
+
       if (_radioButtonPlotPSD->isChecked() || _radioButtonPlotDataPSD->isChecked()) {
-        memoryRequested += fftLen * 6;
+        if (_kstFFTOptions->Interleaved->isChecked()) {
+          memoryRequested += fftLen * 6;
+        } else {
+          memoryRequested += memoryForVector * 2;
+        }
       }
+
       ++it;
     }
   }
@@ -722,6 +736,39 @@ void KstDataWizard::createLegendsAndLabels(KstViewObjectList &plots, bool xLabel
   }
 }
 
+
+void KstDataWizard::cleanupWindowLayout(KstViewObjectList &plots, KstViewWindow *window)
+{
+  if (window) {
+    //
+    // we want to layout the plots in a window in a grid if:
+    //  the user requested it or
+    //  the window is a new one (see bug report 149740)
+    //
+    if (_reGrid->isChecked() || _newWindow->isChecked() || _newWindows->isChecked()) {
+      int cols;
+
+      if (_plotColumns->value() == _plotColumns->minValue()) {
+        const KstViewObjectList& children(window->view()->children());
+        int cnt = 0;
+
+        for (KstViewObjectList::ConstIterator i = children.begin(); i != children.end(); ++i) {
+          if ((*i)->followsFlow()) {
+            ++cnt;
+          }
+        }
+        cols = int(sqrt(cnt));
+      } else {
+        cols = _plotColumns->value();
+      }
+      window->view()->cleanup(cols, plots);
+    } else if (window->view()->onGrid()) {
+      window->view()->cleanup(-1, plots);
+    }
+
+    window->view()->paint(KstPainter::P_PAINT);
+  }
+}
 
 void KstDataWizard::finished()
 {
@@ -855,98 +902,108 @@ void KstDataWizard::finished()
 
     // get a pointer to the first window
     QString newName;
-    KstViewWindow *w;
+    KstViewWindow *window = 0L;
+    KstViewWindow *windowPSD = 0L;
 
     if (_newWindow->isChecked() || _newWindows->isChecked()) {
-      w = dynamic_cast<KstViewWindow*>(app->activeWindow());
-      if (w && w->view()->children().isEmpty()) {
-        // Use the existing view
-        newName = w->caption();
+      window = dynamic_cast<KstViewWindow*>(app->activeWindow());
+      if (window && window->view()->children().isEmpty()) {
+        //
+        // use the existing view
+        //
+        newName = window->caption();
         if (newName.isEmpty()) {
-          newName = w->tabCaption();
+          newName = window->tabCaption();
         }
       } else {
         newName = _newWindowName->text();
         if (newName == defaultTag) {
           newName = KST::suggestWinName();
         }
-        w = static_cast<KstViewWindow*>(app->findWindow(app->newWindow(newName)));
+        window = static_cast<KstViewWindow*>(app->findWindow(app->newWindow(newName)));
+      }
+
+      if (_radioButtonPlotDataPSD->isChecked()) {
+        if (_newWindows->isChecked()) {
+          newName += i18n("-Spectra");
+          QString n = app->newWindow(newName);
+          windowPSD = static_cast<KstViewWindow*>(app->findWindow(n));
+        }
       }
     } else if (_currentWindow->isChecked()) {
-      w = static_cast<KstViewWindow*>(app->activeWindow());
+      window = static_cast<KstViewWindow*>(app->activeWindow());
     } else {
-      w = static_cast<KstViewWindow*>(app->findWindow(_windowName->currentText()));
+      window = static_cast<KstViewWindow*>(app->findWindow(_windowName->currentText()));
     }
 
-    if (!w) {
+    if (!window) {
       if (!wasPaused) {
         app->setPaused(false);
       }
       return;
     }
 
-    fontSize = qRound(getFontSize(w));
+    fontSize = qRound(getFontSize(window));
 
     // create the necessary plots
     app->slotUpdateProgress(nSteps, progress, i18n("Creating plots..."));
     KstViewObjectList plots;
 
     if (_onePlot->isChecked()) {
-      Kst2DPlotPtr p = kst_cast<Kst2DPlot>(w->view()->findChild(w->createObject<Kst2DPlot>(KST::suggestPlotName(), false)));
+      Kst2DPlotPtr p = kst_cast<Kst2DPlot>(window->view()->findChild(window->createObject<Kst2DPlot>(KST::suggestPlotName(), false)));
       plots.append(p.data());
       if (_radioButtonPlotDataPSD->isChecked()) {
-        if (_newWindows->isChecked()) {
-          newName += i18n("-Spectra");
-          QString n = app->newWindow(newName);
-          w = static_cast<KstViewWindow*>(app->findWindow(n));
+        Kst2DPlotPtr p;
+
+        if (windowPSD) {
+          p = kst_cast<Kst2DPlot>(windowPSD->view()->findChild(windowPSD->createObject<Kst2DPlot>(KST::suggestPlotName(), false)));
+        } else {
+           p = kst_cast<Kst2DPlot>(window->view()->findChild(window->createObject<Kst2DPlot>(KST::suggestPlotName(), false)));
         }
-        Kst2DPlotPtr p = kst_cast<Kst2DPlot>(w->view()->findChild(w->createObject<Kst2DPlot>(KST::suggestPlotName(), false)));
         plots.append(p.data());
         p->setXAxisInterpretation(false, KstAxisInterpretation(), KstAxisDisplay());
         p->setYAxisInterpretation(false, KstAxisInterpretation(), KstAxisDisplay());
       }
     } else if (_multiplePlots->isChecked()) {
       Kst2DPlotPtr p;
+
       for (uint i = 0; i < vectorList.count(); ++i) {
-        p = kst_cast<Kst2DPlot>(w->view()->findChild(w->createObject<Kst2DPlot>(KST::suggestPlotName(), false)));
+        p = kst_cast<Kst2DPlot>(window->view()->findChild(window->createObject<Kst2DPlot>(KST::suggestPlotName(), false)));
         plots.append(p.data());
       }
       if (_radioButtonPlotDataPSD->isChecked()) {
-        if (_newWindows->isChecked()) {
-          w->view()->cleanup(signed(sqrt(plots.count())));
-          newName += i18n("-Spectra");
-          QString n = app->newWindow(newName);
-          w = static_cast<KstViewWindow*>(app->findWindow(n));
-        }
         for (uint i = 0; i < vectorList.count(); ++i) {
-          p = kst_cast<Kst2DPlot>(w->view()->findChild(w->createObject<Kst2DPlot>(KST::suggestPlotName(), false)));
+          if (windowPSD) {
+            p = kst_cast<Kst2DPlot>(windowPSD->view()->findChild(windowPSD->createObject<Kst2DPlot>(KST::suggestPlotName(), false)));
+          } else {
+            p = kst_cast<Kst2DPlot>(window->view()->findChild(window->createObject<Kst2DPlot>(KST::suggestPlotName(), false)));
+          }
           plots.append(p.data());
           p->setXAxisInterpretation(false, KstAxisInterpretation(), KstAxisDisplay());
           p->setYAxisInterpretation(false, KstAxisInterpretation(), KstAxisDisplay());
         }
       }
     } else if (_existingPlot->isChecked()) {
-      Kst2DPlotPtr p = kst_cast<Kst2DPlot>(w->view()->findChild(_existingPlotName->currentText()));
+      Kst2DPlotPtr p = kst_cast<Kst2DPlot>(window->view()->findChild(_existingPlotName->currentText()));
       plots.append(p.data());
     } else if (_cycleExisting->isChecked()) {
-      Kst2DPlotList pl = QDeepCopy<Kst2DPlotList>(w->view()->findChildrenType<Kst2DPlot>());
+      Kst2DPlotList pl = QDeepCopy<Kst2DPlotList>(window->view()->findChildrenType<Kst2DPlot>());
       for (Kst2DPlotList::Iterator i = pl.begin(); i != pl.end(); ++i) {
         plots += (*i).data();
       }
     } else { /* cycle */
       Kst2DPlotPtr p;
       for (int i = 0; i < _plotNumber->value(); ++i) {
-        p = kst_cast<Kst2DPlot>(w->view()->findChild(w->createObject<Kst2DPlot>(KST::suggestPlotName(), false)));
+        p = kst_cast<Kst2DPlot>(window->view()->findChild(window->createObject<Kst2DPlot>(KST::suggestPlotName(), false)));
         plots.append(p.data());
       }
       if (_radioButtonPlotDataPSD->isChecked()) {
-        if (_newWindows->isChecked()) {
-          w->view()->cleanup(signed(sqrt(plots.count())));
-          QString n = app->newWindow(newName + i18n("-Spectra"));
-          w = static_cast<KstViewWindow*>(app->findWindow(n));
-        }
         for (int i = 0; i < _plotNumber->value(); ++i) {
-          p = kst_cast<Kst2DPlot>(w->view()->findChild(w->createObject<Kst2DPlot>(KST::suggestPlotName(), false)));
+          if (windowPSD) {
+            p = kst_cast<Kst2DPlot>(windowPSD->view()->findChild(windowPSD->createObject<Kst2DPlot>(KST::suggestPlotName(), false)));
+          } else {
+            p = kst_cast<Kst2DPlot>(window->view()->findChild(window->createObject<Kst2DPlot>(KST::suggestPlotName(), false)));
+          }
           plots.append(p.data());
           p->setXAxisInterpretation(false, KstAxisInterpretation(), KstAxisDisplay());
           p->setYAxisInterpretation(false, KstAxisInterpretation(), KstAxisDisplay());
@@ -1115,33 +1172,9 @@ void KstDataWizard::finished()
 
     createLegendsAndLabels(plots, _xAxisLabels->isChecked(), _yAxisLabels->isChecked(), _plotTitles->isChecked(), _legendsOn->isChecked(), _legendsAuto->isChecked(), fontSize);
 
-    //
-    // we want to layout the plots in a window in a grid if:
-    //  the user requested it or
-    //  the window is a new one (see bug report 149740)
-    //
-    if (_reGrid->isChecked() || _newWindow->isChecked() || _newWindows->isChecked()) {
-      int cols;
+    cleanupWindowLayout(plots, window);
+    cleanupWindowLayout(plots, windowPSD);
 
-      if (_plotColumns->value() == _plotColumns->minValue()) {
-        const KstViewObjectList& children(w->view()->children());
-        int cnt = 0;
-
-        for (KstViewObjectList::ConstIterator i = children.begin(); i != children.end(); ++i) {
-          if ((*i)->followsFlow()) {
-            ++cnt;
-          }
-        }
-        cols = int(sqrt(cnt));
-      } else {
-        cols = _plotColumns->value();
-      }
-      w->view()->cleanup(cols);
-    } else if (w->view()->onGrid()) {
-      w->view()->cleanup(-1);
-    }
-
-    w->view()->paint(KstPainter::P_PAINT);
     app->slotUpdateProgress(0, 0, QString::null);
     if (!wasPaused) {
       app->setPaused(false);

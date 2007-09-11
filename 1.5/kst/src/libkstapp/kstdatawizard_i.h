@@ -75,18 +75,19 @@ class KstDataWizard: public DataWizard {
   private:
     bool checkAvailableMemory(KstDataSourcePtr &ds, int f0Value, int nValue);
     void createLegendsAndLabels(KstViewObjectList &plots, bool xLabels, bool yLabels, bool titleLabel, bool legend, bool legendAuto, int fontSize);
+    void cleanupWindowLayout(KstViewObjectList &plots, KstViewWindow *window);
 
     static const QString &defaultTag;
-    QString _file;
-    QDict<QListViewItem> _fields;
-    bool _hierarchy;
-    bool _inTest;
     QGuardedPtr<QWidget> _configWidget;
     KstDataSourceList _sourceCache;
     QMap<QString,QString> _countMap;
+    QDict<QListViewItem> _fields;
+    QString _file;
+    bool _hierarchy;
+    bool _inTest;
 
   protected:
 };
 
 #endif
-// vim: ts=2 sw=2 et
+

@@ -719,7 +719,7 @@ void KstViewObject::setOnGrid(bool on_grid) {
 }
 
 
-void KstViewObject::cleanup(int cols) {
+void KstViewObject::cleanup(int cols, KstViewObjectList &plotsCreated) {
   KstViewObjectList childrenCopy;
   double ave_w = 0.0;
   bool dirty = false;

@@ -76,7 +76,7 @@ class KST_EXPORT KstViewObject : public KstObject {
     virtual QRegion region();
 
     // If cols <= 0, optimal is chosen automatically
-    virtual void cleanup(int cols = -1);
+    virtual void cleanup(int cols, KstViewObjectList &plotsCreated);
     virtual int columns() const;
     virtual void setColumns(int cols);
     virtual bool onGrid() const;

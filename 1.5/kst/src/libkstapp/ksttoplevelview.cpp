@@ -1794,8 +1794,10 @@ KstViewWidget *KstTopLevelView::widget() const {
 
 
 void KstTopLevelView::cleanupDefault() {
+  KstViewObjectList list;
+
   // roughly layout in a square
-  cleanup();
+  cleanup(-1, list);
 }
 
 
@@ -1805,14 +1807,12 @@ void KstTopLevelView::cleanupCustom() {
   int numCols = KInputDialog::getInteger(i18n("Number of Columns"), 
                                          i18n("Select number of columns:"), 
                                          int(sqrt(_children.count())), 
-                                         1, 
-                                         _children.count(), 
-                                         1, 
-                                         &ok, 
-                                         0L);
+                                         1, _children.count(), 1, &ok, 0L);
   if (ok) {
-    cleanup(numCols);
-  } 
+    KstViewObjectList list;
+
+    cleanup(numCols, list);
+  }
 #else
   for (;;) {
     QString numColsString = KLineEditDlg::getText(i18n("Enter number of columns:"), i18n("Number of Columns"), &ok, 0L);
@@ -1821,7 +1821,10 @@ void KstTopLevelView::cleanupCustom() {
       if (numCols < 1 || numCols > _children.count()) {
         KMessageBox::sorry(KstApp::inst(), i18n("Enter a number of columns between 1 and %d").arg(_selectionList.count()));
       } else {
-        cleanup(numCols);
+        KstViewObjectList list;
+
+        cleanup(numCols, list);
+
         break;
       }
     } else {
