@@ -28,4 +28,4 @@ KST_EXPORT extern Qt::PenStyle KstLineStyle[];
 #define KSTLINEWIDTH_MAX        5
 
 #endif
-// vim: ts=2 sw=2 et
+

@@ -796,9 +796,11 @@ void KstVCurve::setLineWidth(int in_LineWidth) {
 
 
 void KstVCurve::setLineStyle(int in_LineStyle) {
-  LineStyle = in_LineStyle;
-  setDirty();
-  emit modifiedLegendEntry();
+  if (in_LineStyle >= 0 && (unsigned int)in_LineStyle < KSTLINESTYLE_MAXTYPE) {
+    LineStyle = in_LineStyle;
+    setDirty();
+    emit modifiedLegendEntry();
+  }
 }
 
 

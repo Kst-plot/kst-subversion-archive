@@ -17,9 +17,7 @@
 
 #include "kstlinestyle.h"
 
-const unsigned int KSTLINESTYLE_MAXTYPE = 5;
-
-Qt::PenStyle KstLineStyle[KSTLINESTYLE_MAXTYPE] = { 
+Qt::PenStyle KstLineStyle[] = { 
   Qt::SolidLine, 
   Qt::DashLine, 
   Qt::DotLine, 
@@ -27,4 +25,5 @@ Qt::PenStyle KstLineStyle[KSTLINESTYLE_MAXTYPE] = {
   Qt::DashDotDotLine
 };
 
-// vim: ts=2 sw=2 et
+const unsigned int KSTLINESTYLE_MAXTYPE = sizeof(KstLineStyle) / sizeof (Qt::PenStyle);
+
