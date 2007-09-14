@@ -812,14 +812,15 @@ void KstVCurve::setBarStyle(int in_BarStyle) {
 
 
 void KstVCurve::setPointDensity(int in_PointDensity) {
-  PointDensity = in_PointDensity;
-  setDirty();
-  emit modifiedLegendEntry();
+  if (in_PointDensity >= 0 && (unsigned int)in_PointDensity < KSTPOINTDENSITY_MAXTYPE) {
+    PointDensity = in_PointDensity;
+    setDirty();
+  }
 }
 
 
 void KstVCurve::setPointStyle(int in_PointStyle) {
-  if (in_PointStyle >= 0 && (unsigned int)in_PointStyle <KSTPOINT_MAXTYPE)
+  if (in_PointStyle >= 0 && (unsigned int)in_PointStyle < KSTPOINT_MAXTYPE)
   {
     PointStyle = in_PointStyle;
     setDirty();
@@ -1370,12 +1371,14 @@ void KstVCurve::paint(const KstCurveRenderContext& context) {
 
     // draw the points, if any...
     if (hasPoints()) {
-      if (hasLines() && pointDensity() != 0) {
+      if (hasLines() && pointDensity() > 0 && 
+          (unsigned int)pointDensity() < KSTPOINTDENSITY_MAXTYPE) {
         const double w = Hx - Lx;
         const double h = Hy - Ly;
-        QRegion rgn((int)Lx, (int)Ly, (int)w, (int)h);
         const int size = int(kMax(w, h)) / int(pow(3.0, KSTPOINTDENSITY_MAXTYPE - pointDensity()));
+        QRegion rgn((int)Lx, (int)Ly, (int)w, (int)h);
         QPoint pt;
+
         for (i_pt = i0; i_pt <= iN; ++i_pt) {
           rX = xv->interpolate(i_pt, NS);
           rY = yv->interpolate(i_pt, NS);
