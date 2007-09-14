@@ -176,6 +176,7 @@ static CurveProperties curveProperties[] = {
   { "hasLines", &KstBindCurve::setHasLines, &KstBindCurve::hasLines },
   { "hasBars", &KstBindCurve::setHasBars, &KstBindCurve::hasBars },
   { "lineWidth", &KstBindCurve::setLineWidth, &KstBindCurve::lineWidth },
+  { "pointStyle", &KstBindCurve::setPointStyle, &KstBindCurve::pointStyle },
   { "lineStyle", &KstBindCurve::setLineStyle, &KstBindCurve::lineStyle },
   { "barStyle", &KstBindCurve::setBarStyle, &KstBindCurve::barStyle },
   { "pointDensity", &KstBindCurve::setPointDensity, &KstBindCurve::pointDensity },
@@ -763,6 +764,32 @@ KJS::Value KstBindCurve::pointDensity(KJS::ExecState *exec) const {
 }
 
 
+void KstBindCurve::setPointStyle(KJS::ExecState *exec, const KJS::Value& value) {
+  unsigned i = 0;
+  if (value.type() != KJS::NumberType || !value.toUInt32(i)) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError);
+    exec->setException(eobj);
+    return;
+  }
+  KstVCurvePtr d = makeCurve(_d);
+  if (d) {
+    KstWriteLocker wl(d);
+    d->setPointStyle(i);
+  }
+}
+
+
+KJS::Value KstBindCurve::pointStyle(KJS::ExecState *exec) const {
+  Q_UNUSED(exec)
+  KstVCurvePtr d = makeCurve(_d);
+  if (d) {
+    KstReadLocker rl(d);
+    return KJS::Number(d->pointStyle());
+  }
+  return KJS::Number(0);
+}
+
+
 void KstBindCurve::setLineStyle(KJS::ExecState *exec, const KJS::Value& value) {
   unsigned i = 0;
   if (value.type() != KJS::NumberType || !value.toUInt32(i)) {
@@ -850,4 +877,3 @@ KJS::Value KstBindCurve::yLabel(KJS::ExecState *exec) const {
 
 #undef makeCurve
 
-// vim: ts=2 sw=2 et

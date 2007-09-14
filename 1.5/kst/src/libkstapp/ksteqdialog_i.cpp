@@ -207,10 +207,10 @@ bool KstEqDialogI::newObject() {
   vc->setHasBars(_w->_curveAppearance->showBars());
   vc->setLineWidth(_w->_curveAppearance->lineWidth());
   vc->setLineStyle(_w->_curveAppearance->lineStyle());
-  vc->pointType = _w->_curveAppearance->pointType();
+  vc->setPointStyle(_w->_curveAppearance->pointType());
   vc->setPointDensity(_w->_curveAppearance->pointDensity());
   vc->setBarStyle(_w->_curveAppearance->barStyle());
-  
+
   QString legend_text = _legendText->text();
   if (legend_text == defaultTag) {
     vc->setLegendText(QString(""));
@@ -453,4 +453,4 @@ void KstEqDialogI::setDoInterpolationDirty() {
 }
 
 #include "ksteqdialog_i.moc"
-// vim: ts=2 sw=2 et
+

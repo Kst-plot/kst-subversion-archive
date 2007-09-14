@@ -1052,14 +1052,14 @@ void KstDataWizard::finished()
         c->setLineWidth(KstSettings::globalSettings()->defaultLineWeight);
         if (_drawBoth->isChecked()) {
           c->setHasPoints(true);
-          c->pointType = pointType++ % KSTPOINT_MAXTYPE;
+          c->setPointStyle(pointType++ % KSTPOINT_MAXTYPE);
           c->setHasLines(true);
         } else if (_drawLines->isChecked()) {
           c->setHasPoints(false);
           c->setHasLines(true);
         } else {
           c->setHasPoints(true);
-          c->pointType = pointType++ % KSTPOINT_MAXTYPE;
+          c->setPointStyle(pointType++ % KSTPOINT_MAXTYPE);
           c->setHasLines(false);
         }
         KST::dataObjectList.lock().writeLock();
@@ -1140,14 +1140,14 @@ void KstDataWizard::finished()
           c->setLineWidth(KstSettings::globalSettings()->defaultLineWeight);
           if (_drawBoth->isChecked()) {
             c->setHasPoints(true);
-            c->pointType = pointType++ % KSTPOINT_MAXTYPE;
+            c->setPointStyle(pointType++ % KSTPOINT_MAXTYPE);
             c->setHasLines(true);
           } else if (_drawLines->isChecked()) {
             c->setHasPoints(false);
             c->setHasLines(true);
           } else {
             c->setHasPoints(true);
-            c->pointType = pointType++ % KSTPOINT_MAXTYPE;
+            c->setPointStyle(pointType++ % KSTPOINT_MAXTYPE);
             c->setHasLines(false);
           }
           KST::dataObjectList.lock().writeLock();

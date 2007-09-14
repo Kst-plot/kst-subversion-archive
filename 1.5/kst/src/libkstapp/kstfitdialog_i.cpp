@@ -146,7 +146,7 @@ bool KstFitDialogI::createCurve(KstCPluginPtr plugin) {
   fit->setHasBars(_w->_curveAppearance->showBars());
   fit->setLineWidth(_w->_curveAppearance->lineWidth());
   fit->setLineStyle(_w->_curveAppearance->lineStyle());
-  fit->pointType = _w->_curveAppearance->pointType();
+  fit->setPointStyle(_w->_curveAppearance->pointType());
   fit->setBarStyle(_w->_curveAppearance->barStyle());
   fit->setPointDensity(_w->_curveAppearance->pointDensity());
 

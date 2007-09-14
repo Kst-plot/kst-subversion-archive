@@ -157,7 +157,7 @@ void KstCurveDialogI::fillFieldsForEdit() {
 
   _w->_curveAppearance->setValue(cp->hasLines(), cp->hasPoints(),
       cp->hasBars(), cp->color(),
-      cp->pointType, cp->lineWidth(),
+      cp->pointStyle(), cp->lineWidth(),
       cp->lineStyle(), cp->barStyle(), cp->pointDensity());
 
   _w->_checkBoxIgnoreAutoscale->setChecked(cp->ignoreAutoScale());
@@ -295,13 +295,13 @@ bool KstCurveDialogI::newObject() {
   } else {
     curve->setLegendText(legend_text);
   }
-  
+
   curve->setHasPoints(_w->_curveAppearance->showPoints());
   curve->setHasLines(_w->_curveAppearance->showLines());
   curve->setHasBars(_w->_curveAppearance->showBars());
   curve->setLineWidth(_w->_curveAppearance->lineWidth());
   curve->setLineStyle(_w->_curveAppearance->lineStyle());
-  curve->pointType = _w->_curveAppearance->pointType();
+  curve->setPointStyle(_w->_curveAppearance->pointType());
   curve->setBarStyle(_w->_curveAppearance->barStyle());
   curve->setPointDensity(_w->_curveAppearance->pointDensity());
   curve->setIgnoreAutoScale(_w->_checkBoxIgnoreAutoscale->isChecked());
@@ -421,7 +421,7 @@ bool KstCurveDialogI::editSingleObject(KstVCurvePtr cvPtr) {
   }
 
   if (_comboDirty) {
-    cvPtr->pointType = _w->_curveAppearance->pointType();
+    cvPtr->setPointStyle(_w->_curveAppearance->pointType());
   }
 
   if (_barStyleDirty) {

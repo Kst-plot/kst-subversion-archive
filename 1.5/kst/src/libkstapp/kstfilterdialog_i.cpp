@@ -210,7 +210,7 @@ bool KstFilterDialogI::createCurve(KstCPluginPtr plugin) {
   fit->setHasBars(_w->_curveAppearance->showBars());
   fit->setLineWidth(_w->_curveAppearance->lineWidth());
   fit->setLineStyle(_w->_curveAppearance->lineStyle());
-  fit->pointType = _w->_curveAppearance->pointType();
+  fit->setPointStyle(_w->_curveAppearance->pointType());
   fit->setBarStyle(_w->_curveAppearance->barStyle());
   fit->setPointDensity(_w->_curveAppearance->pointDensity());
 
@@ -225,6 +225,7 @@ bool KstFilterDialogI::createCurve(KstCPluginPtr plugin) {
   KST::dataObjectList.lock().writeLock();
   KST::dataObjectList.append(fit.data());
   KST::dataObjectList.lock().unlock();
+
   return true;
 }
 
@@ -411,7 +412,5 @@ void KstFilterDialogI::generateEntries(bool input, int& cnt, QWidget *parent, QG
   }
 }
 
-
 #include "kstfilterdialog_i.moc"
 
-// vim: ts=2 sw=2 et

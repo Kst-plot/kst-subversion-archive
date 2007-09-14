@@ -180,8 +180,8 @@ class KstBindCurve : public KstBindDataObject {
     */
     void setLineWidth(KJS::ExecState *exec, const KJS::Value& value);
     KJS::Value lineWidth(KJS::ExecState *exec) const;
-    /* @property number lineStyle
-       @description Sets the line style for this curve when lines are drawn.
+    /* @property number pointStyle
+       @description Sets the point style for this curve when points are drawn.
                     <ul>
                     <li>0 - Cross</li>
                     <li>1 - Hollow box</li>
@@ -196,6 +196,19 @@ class KstBindCurve : public KstBindDataObject {
                     <li>10 - Filled triangle</li>
                     <li>11 - Hollow diamond</li>
                     <li>12 - Filled diamond</li>
+                    <li>13 - Point</li>
+                    </ul>
+    */
+    void setPointStyle(KJS::ExecState *exec, const KJS::Value& value);
+    KJS::Value pointStyle(KJS::ExecState *exec) const;
+    /* @property number lineStyle
+       @description Sets the line style for this curve when lines are drawn.
+                    <ul>
+                    <li>0 - Soild</li>
+                    <li>1 - Dash</li>
+                    <li>2 - Dot</li>
+                    <li>3 - Dash Dot</li>
+                    <li>4 - Dash Dot Dot</li>
                     </ul>
     */
     void setLineStyle(KJS::ExecState *exec, const KJS::Value& value);

@@ -267,7 +267,7 @@ void KstCurveDifferentiateI::cycleWindow(KstViewWindow *window) {
           (*i)->setColor(KstColorSequence::entry(_lineColorSeq.current()));
         }
         if (_pointStyleOrder > -1) {
-          (*i)->pointType = _pointStyleSeq.current();
+          (*i)->setPointStyle(_pointStyleSeq.current());
           (*i)->setHasPoints(true);
           (*i)->setPointDensity(_pointDensity);
         }
@@ -278,7 +278,7 @@ void KstCurveDifferentiateI::cycleWindow(KstViewWindow *window) {
           (*i)->setLineWidth(_lineWidthSeq.current());
         }
 
-        (_seqVect[0])->next();        
+        (_seqVect[0])->next();
       }
     }
   }
@@ -356,4 +356,4 @@ void KstCurveDifferentiateI::apply() {
 }
 
 #include "kstcurvedifferentiate_i.moc"
-// vim: ts=2 sw=2 et
+

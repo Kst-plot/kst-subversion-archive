@@ -105,7 +105,7 @@ class KST_EXPORT KstVCurve: public KstBaseCurve {
     KstVectorPtr yErrorVector() const;
     KstVectorPtr xMinusErrorVector() const;
     KstVectorPtr yMinusErrorVector() const;
-    
+
     virtual bool hasPoints()    const { return HasPoints; }
     virtual bool hasLines()     const { return HasLines; }
     virtual bool hasBars()      const { return HasBars; }
@@ -116,44 +116,39 @@ class KST_EXPORT KstVCurve: public KstBaseCurve {
     virtual void setLineStyle(int in_LineStyle);
     virtual void setBarStyle( int in_BarStyle);
     virtual void setPointDensity(int in_PointDensity);
-    
+    virtual void setPointStyle(int in_PointStyle);
+
     virtual int lineWidth()     const { return LineWidth; }
     virtual int lineStyle()     const { return LineStyle; }
     virtual int barStyle()      const { return BarStyle; }
     virtual int pointDensity()  const { return PointDensity; }
+    virtual int pointStyle()    const { return PointStyle; }
 
     virtual QColor color() const { return Color; }
     virtual void setColor(const QColor& new_c);
-    
-    
+
     void pushColor(const QColor& c) { _colorStack.push(color()); setColor(c); }
     void popColor() { setColor(_colorStack.pop()); }
     void pushLineWidth(int w) { _widthStack.push(lineWidth()); setLineWidth(w); }
     void popLineWidth() { setLineWidth(_widthStack.pop()); }
     void pushLineStyle(int s) { _lineStyleStack.push(lineStyle()); setLineStyle(s); }
     void popLineStyle() { setLineStyle(_lineStyleStack.pop()); }
-    void pushPointStyle(int s) { _pointStyleStack.push(pointType); pointType = s; }
-    void popPointStyle() { pointType = _pointStyleStack.pop(); }
+    void pushPointStyle(int s) { _pointStyleStack.push(pointStyle()); setPointStyle(s); }
+    void popPointStyle() { setPointStyle(_pointStyleStack.pop()); }
     void pushHasPoints(bool h) { _hasPointsStack.push(hasPoints()); setHasPoints(h); }
     void popHasPoints() { setHasPoints(_hasPointsStack.pop()); }
     void pushHasLines(bool h) { _hasLinesStack.push(hasLines()); setHasLines(h); }
     void popHasLines() { setHasLines(_hasLinesStack.pop()); }
     void pushPointDensity(int d) { _pointDensityStack.push(pointDensity()); setPointDensity(d); }
     void popPointDensity() { setPointDensity(_pointDensityStack.pop()); } 
-    
-    int pointType;
-    
+
     virtual KstDataObjectPtr makeDuplicate(KstDataObjectDataObjectMap& duplicatedMap);
-    
-    // render this vcurve
     virtual void paint(const KstCurveRenderContext& context);
-    
-    // render the legend symbol for this curve
     virtual void paintLegendSymbol(KstPainter *p, const QRect& bound);
-    
+
     // see KstBaseCurve::distanceToPoint
     virtual double distanceToPoint(double xpos, double dx, double ypos) const;
-    
+
     // see KstBaseCurve::providerDataObject
     virtual KstDataObjectPtr providerDataObject() const;
 
@@ -161,16 +156,17 @@ class KST_EXPORT KstVCurve: public KstBaseCurve {
     inline void commonConstructor(const QString& in_tag, const QColor& in_color);
 
     double MeanY;
-    
+
     int BarStyle;
     int LineWidth;
     int LineStyle;
     int PointDensity;
-    
+    int PointStyle;
+
     bool HasPoints;
     bool HasLines;
     bool HasBars;
-    
+
     QColor Color;
     QValueStack<int> _widthStack;
     QValueStack<QColor> _colorStack;
@@ -186,4 +182,4 @@ typedef KstSharedPtr<KstVCurve> KstVCurvePtr;
 typedef KstObjectList<KstVCurvePtr> KstVCurveList;
 
 #endif
-// vim: ts=2 sw=2 et
+

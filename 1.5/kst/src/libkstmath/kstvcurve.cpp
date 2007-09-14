@@ -152,7 +152,7 @@ KstVCurve::KstVCurve(QDomElement &e)
       } else if (e.tagName() == "hasBars") {
         HasBars = e.text() != "0";
       } else if (e.tagName() == "pointType") {
-        pointType = e.text().toInt();
+        PointStyle = e.text().toInt();
       } else if (e.tagName() == "lineWidth") {
         LineWidth = e.text().toInt();
       } else if (e.tagName() == "lineStyle") {
@@ -514,7 +514,7 @@ void KstVCurve::save(QTextStream &ts, const QString& indent) {
   if (HasPoints) {
     ts << l2 << "<hasPoints/>" << endl;
   }
-  ts << l2 << "<pointType>" << pointType << "</pointType>" << endl;
+  ts << l2 << "<pointType>" << PointStyle << "</pointType>" << endl;
   ts << l2 << "<pointDensity>" << PointDensity << "</pointDensity>" << endl;
   if (HasBars) {
     ts << l2 << "<hasBars/>" << endl;
@@ -815,6 +815,16 @@ void KstVCurve::setPointDensity(int in_PointDensity) {
   PointDensity = in_PointDensity;
   setDirty();
   emit modifiedLegendEntry();
+}
+
+
+void KstVCurve::setPointStyle(int in_PointStyle) {
+  if (in_PointStyle >= 0 && (unsigned int)in_PointStyle <KSTPOINT_MAXTYPE)
+  {
+    PointStyle = in_PointStyle;
+    setDirty();
+    emit modifiedLegendEntry();
+  }
 }
 
 
@@ -1379,7 +1389,7 @@ void KstVCurve::paint(const KstCurveRenderContext& context) {
           pt.setX(d2i(m_X * rX + b_X));
           pt.setY(d2i(m_Y * rY + b_Y));
           if (rgn.contains(pt)) {
-            KstCurvePointSymbol::draw(pointType, p, pt.x(), pt.y(), width);
+            KstCurvePointSymbol::draw(PointStyle, p, pt.x(), pt.y(), width);
             rgn -= QRegion(pt.x()-(size/2), pt.y()-(size/2), size, size, QRegion::Ellipse);
           }
         }
@@ -1397,7 +1407,7 @@ void KstVCurve::paint(const KstCurveRenderContext& context) {
           X1 = m_X * rX + b_X;
           Y1 = m_Y * rY + b_Y;
           if (X1 >= Lx && X1 <= Hx && Y1 >= Ly && Y1 <= Hy) {
-            KstCurvePointSymbol::draw(pointType, p, d2i(X1), d2i(Y1), width);
+            KstCurvePointSymbol::draw(PointStyle, p, d2i(X1), d2i(Y1), width);
           }
         }
       }
@@ -1719,13 +1729,13 @@ double KstVCurve::distanceToPoint(double xpos, double dx, double ypos) const {
 
 void KstVCurve::paintLegendSymbol(KstPainter *p, const QRect& bound) {
   int width;
-  
+
   if (lineWidth() == 0) {
     width = p->lineWidthAdjustmentFactor();
-  } else {  
+  } else {
     width = lineWidth() * p->lineWidthAdjustmentFactor();
   }
-  
+
   p->save();
   if (hasLines()) {
     // draw a line from left to right centered vertically
@@ -1736,7 +1746,7 @@ void KstVCurve::paintLegendSymbol(KstPainter *p, const QRect& bound) {
   if (hasPoints()) {
     // draw a point in the middle
     p->setPen(QPen(color(), width));
-    KstCurvePointSymbol::draw(pointType, p, bound.left() + bound.width()/2, bound.top() + bound.height()/2, width, 600);
+    KstCurvePointSymbol::draw(PointStyle, p, bound.left() + bound.width()/2, bound.top() + bound.height()/2, width, 600);
   }
   p->restore();
 }
@@ -1746,10 +1756,9 @@ KstVCurve::InterpType KstVCurve::interp() const {
   return (_interp);
 }
 
+
 void KstVCurve::setInterp(KstVCurve::InterpType itype) {
   _interp = itype;
   setDirty();
 }
 
-
-// vim: ts=2 sw=2 et

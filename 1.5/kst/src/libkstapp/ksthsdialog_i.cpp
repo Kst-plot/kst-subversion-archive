@@ -229,7 +229,7 @@ bool KstHsDialogI::newObject() {
   vc->setHasPoints(_w->_curveAppearance->showPoints());
   vc->setHasLines(_w->_curveAppearance->showLines());
   vc->setHasBars(_w->_curveAppearance->showBars());
-  vc->pointType = _w->_curveAppearance->pointType();
+  vc->setPointStyle(_w->_curveAppearance->pointType());
   vc->setLineWidth(_w->_curveAppearance->lineWidth());
   vc->setLineStyle(_w->_curveAppearance->lineStyle());
   vc->setBarStyle(_w->_curveAppearance->barStyle());
