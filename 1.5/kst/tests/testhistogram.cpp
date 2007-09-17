@@ -28,7 +28,7 @@ void testAssert(bool result, const QString& text = "Unknown") {
   }
 }
 
-    
+
 #define dumpPoints(histogram, n) do { \
   for (int i = 0; i < n*4; ++i) { \
     printf("%.15f, %.15f\n", histogram->vX()->value(i), histogram->vY()->value(i)); \
@@ -42,7 +42,7 @@ void doTests() {
   doTest(!h1->realTimeAutoBin()); // should be false by default
   doTest(h1->nBins() == 10);
   h1->update(0);
-  printf("%f %f %d\n", h1->vX()->min(), h1->vX()->max(), h1->vX()->length());
+
   doTest(h1->inputVectors()["I"]->min() == 0.0);
   doTest(h1->inputVectors()["I"]->max() == 10.0);
   doTest(h1->inputVectors()["I"]->length() == 100);
@@ -52,6 +52,7 @@ void doTests() {
   }
   h1->setRealTimeAutoBin(true);
   doTest(h1->realTimeAutoBin());
+
   //dumpPoints(h1, 10);
   doTest(count == 100); // should account for the whole vector
   h1->setNBins(11);
@@ -65,6 +66,7 @@ void doTests() {
   for (int i=0; i<11; i++) {
     count += int(h1->vY()->value(i));
   }
+
   //dumpPoints(h1, 11);
   doTest(count == 100); // should still account for the whole vector
   h1->setNBins(9);
@@ -77,8 +79,10 @@ void doTests() {
   for (int i=0; i<9; i++) {
     count += int(h1->vY()->value(i));
   }
+
   //dumpPoints(h1, 9);
   doTest(count == 100); // should still account for the whole vector
+
   // min > max
   h1 = new KstHistogram("H2", vp, 10, 0, 10, KST_HS_NUMBER);
   doTest(h1->nBins() == 10);
@@ -87,6 +91,7 @@ void doTests() {
   doTest(h1->inputVectors()["I"]->min() == 0.0);
   doTest(h1->inputVectors()["I"]->max() == 10.0);
   doTest(h1->inputVectors()["I"]->length() == 100);
+
   // min == max
   h1 = new KstHistogram("H3", vp, 10, 10, 2, KST_HS_NUMBER);
   doTest(h1->nBins() == 2);
@@ -95,6 +100,7 @@ void doTests() {
   doTest(h1->inputVectors()["I"]->min() == 0.0);
   doTest(h1->inputVectors()["I"]->max() == 10.0);
   doTest(h1->inputVectors()["I"]->length() == 100);
+
   // max < min
   h1 = new KstHistogram("H4", vp, 11, 9, 1, KST_HS_NUMBER);
   doTest(h1->nBins() == 2);
@@ -103,13 +109,15 @@ void doTests() {
   doTest(h1->inputVectors()["I"]->min() == 0.0);
   doTest(h1->inputVectors()["I"]->max() == 10.0);
   doTest(h1->inputVectors()["I"]->length() == 100);
+
   // set to max == min
   h1->setXRange(10, 10);
   doTest(h1->xMin() == 9.0);
   doTest(h1->xMax() == 11.0);
+
   // set to max > min
   h1->setXRange(1,2);
-  doTest(h1->xMax() - h1->xMin() ==1.0);
+  doTest(h1->xMax() - h1->xMin() == 1.0);
   h1->setXRange(8, 10);
   doTest(h1->xMin() == 8.0);
   doTest(h1->xMax() == 10.0);
@@ -127,7 +135,7 @@ int main(int argc, char **argv) {
   if (rc == KstTestSuccess) {
     printf("All tests passed!\n");
   }
+
   return -rc;
 }
 
-// vim: ts=2 sw=2 et
