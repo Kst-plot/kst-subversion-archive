@@ -282,10 +282,10 @@ $DCOP vector "Vector Test 1" 2 >$TMPFILE
 checkStringResponse 189 "42.424200"
 
 $DCOP vector "Vector Test 1" 3 >$TMPFILE
-checkStringResponse 190 "0.000000"
+checkStringResponse 190 "nan"
 
 $DCOP vector "Vector Test 1" 4 >$TMPFILE
-checkStringResponse 191 "0.000000"
+checkStringResponse 191 "nan"
 
 $DCOP setVector "Vector Test 1" 3 42.424242 >$TMPFILE
 checkStringResponse 192 "true"
