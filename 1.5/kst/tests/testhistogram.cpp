@@ -42,9 +42,10 @@ void doTests() {
   doTest(!h1->realTimeAutoBin()); // should be false by default
   doTest(h1->nBins() == 10);
   h1->update(0);
-  doTest(h1->vMin() == 0.0);
-  doTest(h1->vMax() == 10.0);
-  doTest(h1->vNumSamples() == 100);
+  printf("%f %f %d\n", h1->vX()->min(), h1->vX()->max(), h1->vX()->length());
+  doTest(h1->inputVectors()["I"]->min() == 0.0);
+  doTest(h1->inputVectors()["I"]->max() == 10.0);
+  doTest(h1->inputVectors()["I"]->length() == 100);
   int count = 0;
   for (int i=0; i<10; i++) {
     count += int(h1->vY()->value(i));
@@ -56,9 +57,9 @@ void doTests() {
   h1->setNBins(11);
   doTest(!h1->realTimeAutoBin());
   doTest(h1->nBins() == 11);
-  doTest(h1->vMin() == 0.0);
-  doTest(h1->vMax() == 10.0);
-  doTest(h1->vNumSamples() == 100);
+  doTest(h1->inputVectors()["I"]->min() == 0.0);
+  doTest(h1->inputVectors()["I"]->max() == 10.0);
+  doTest(h1->inputVectors()["I"]->length() == 100);
   h1->update(0);
   count = 0;
   for (int i=0; i<11; i++) {
@@ -68,9 +69,9 @@ void doTests() {
   doTest(count == 100); // should still account for the whole vector
   h1->setNBins(9);
   doTest(h1->nBins() == 9);
-  doTest(h1->vMin() == 0.0);
-  doTest(h1->vMax() == 10.0);
-  doTest(h1->vNumSamples() == 100);
+  doTest(h1->inputVectors()["I"]->min() == 0.0);
+  doTest(h1->inputVectors()["I"]->max() == 10.0);
+  doTest(h1->inputVectors()["I"]->length() == 100);
   h1->update(0);
   count = 0;
   for (int i=0; i<9; i++) {
@@ -83,25 +84,25 @@ void doTests() {
   doTest(h1->nBins() == 10);
   doTest(h1->xMin() == 0.0);
   doTest(h1->xMax() == 10.0);
-  doTest(h1->vMin() == 0.0);
-  doTest(h1->vMax() == 10.0);
-  doTest(h1->vNumSamples() == 100);
+  doTest(h1->inputVectors()["I"]->min() == 0.0);
+  doTest(h1->inputVectors()["I"]->max() == 10.0);
+  doTest(h1->inputVectors()["I"]->length() == 100);
   // min == max
   h1 = new KstHistogram("H3", vp, 10, 10, 2, KST_HS_NUMBER);
   doTest(h1->nBins() == 2);
   doTest(h1->xMin() == 9.0);
   doTest(h1->xMax() == 11.0);
-  doTest(h1->vMin() == 0.0);
-  doTest(h1->vMax() == 10.0);
-  doTest(h1->vNumSamples() == 100);
+  doTest(h1->inputVectors()["I"]->min() == 0.0);
+  doTest(h1->inputVectors()["I"]->max() == 10.0);
+  doTest(h1->inputVectors()["I"]->length() == 100);
   // max < min
   h1 = new KstHistogram("H4", vp, 11, 9, 1, KST_HS_NUMBER);
   doTest(h1->nBins() == 2);
   doTest(h1->xMax()==11);
   doTest(h1->xMin()==9);
-  doTest(h1->vMin() == 0.0);
-  doTest(h1->vMax() == 10.0);
-  doTest(h1->vNumSamples() == 100);
+  doTest(h1->inputVectors()["I"]->min() == 0.0);
+  doTest(h1->inputVectors()["I"]->max() == 10.0);
+  doTest(h1->inputVectors()["I"]->length() == 100);
   // set to max == min
   h1->setXRange(10, 10);
   doTest(h1->xMin() == 9.0);
