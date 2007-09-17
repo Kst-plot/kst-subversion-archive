@@ -304,16 +304,15 @@ void testDirfile(const char *srcfile) {
     KstRVectorPtr rvp = new KstRVector(dsp, "INDEX", KstObjectTag("RVTestDirfile"), 0, -1, 5, true, false);
     rvp->update(0);
 
-    //We should have length equal to three...  items {0, 5, 10}
-    //NOTE: The last item, index #14, does not fit in the skip boundary...
+    // we have requested 1 value for every five frames, starting at frame 0. 
+    // As we have 15 frames in the data we should effectively read 15 frames 
+    // and return 3 values...
     doTestV("length", 3, rvp->length());
     doTestV("item #0", 0, rvp->value(0));
     doTestV("item #1", 5, rvp->value(1));
     doTestV("item #2", 10, rvp->value(2));
 
-    //The numFrames should report 11 as it lies on the skip boundary
-    doTestV("numFrames", 11, rvp->numFrames());
-    //The startFrame should report 0 as it lies on the skip boundary
+    doTestV("numFrames", 15, rvp->numFrames());
     doTestV("startFrame", 0, rvp->startFrame());
 
     doTestV("reqNumFrames", -1, rvp->reqNumFrames());
@@ -330,15 +329,15 @@ void testDirfile(const char *srcfile) {
     KstRVectorPtr rvp = new KstRVector(dsp, "INDEX", KstObjectTag("RVTestDirfile"), 3, -1, 5, true, false);
     rvp->update(0);
 
-    //We should have length equal to three...  items {5, 10}
+    // we have requested 1 value for every five frames, starting at frame 3.
+    // As we read data only at skip boundaries we will actually read starting
+    // at frame 5. As we have 10 frames left in the data we should effectively 
+    // read 10 frames and return 2 values...
     doTestV("length", 2, rvp->length());
     doTestV("item #0", 5, rvp->value(0));
     doTestV("item #1", 10, rvp->value(1));
-    //doTestV("item #2", 13, rvp->value(2));
 
-    //The numFrames should still report 11 as it lies on the skip boundary
-    doTestV("numFrames", 6, rvp->numFrames());
-    //The startFrame should report 3 as it lies on the skip boundary and was requested
+    doTestV("numFrames", 10, rvp->numFrames());
     doTestV("startFrame", 5, rvp->startFrame());
 
     doTestV("reqNumFrames", -1, rvp->reqNumFrames());
@@ -355,15 +354,15 @@ void testDirfile(const char *srcfile) {
     KstRVectorPtr rvp = new KstRVector(dsp, "INDEX", KstObjectTag("RVTestDirfile"), 0, 11, 5, true, false);
     rvp->update(0);
 
-    //We should have length equal to three...  items {0, 5, 10}
-    doTestV("length", 3, rvp->length());
+    // we have requested 1 value for every five frames, starting at frame 0
+    // and reading to frame 11. As we read data only at skip boundaries we will 
+    // actually read starting at frame 0 and ending at frame 9. So we have effectively
+    // read 10 frames and return 2 values...
+    doTestV("length", 2, rvp->length());
     doTestV("item #0", 0, rvp->value(0));
     doTestV("item #1", 5, rvp->value(1));
-    doTestV("item #2", 10, rvp->value(2));
 
-    //The numFrames should still report 11 as it lies on the skip boundary
-    doTestV("numFrames", 11, rvp->numFrames());
-    //The startFrame should still report 0 as it lies on the skip boundary
+    doTestV("numFrames", 10, rvp->numFrames());
     doTestV("startFrame", 0, rvp->startFrame());
 
     doTestV("reqNumFrames", 11, rvp->reqNumFrames());
@@ -380,14 +379,15 @@ void testDirfile(const char *srcfile) {
     KstRVectorPtr rvp = new KstRVector(dsp, "INDEX", KstObjectTag("RVTestDirfile"), -1, 10, 5, true, false);
     rvp->update(0);
 
-    //We should have length equal to two...  items {5, 10}
+    // we have requested 1 value for every five frames, reading 10 frames
+    // from the end of the file. As we read data only at skip boundaries we will 
+    // actually read starting at frame 5 and ending at frame 14. So we have effectively
+    // read 10 frames and return 2 values...
     doTestV("length", 2, rvp->length());
     doTestV("item #0", 5, rvp->value(0));
     doTestV("item #1", 10, rvp->value(1));
 
-    //The numFrames should report 6 as it lies on the skip boundary
-    doTestV("numFrames", 6, rvp->numFrames());
-    //The startFrame should report 5 as it lies on the skip boundary
+    doTestV("numFrames", 10, rvp->numFrames());
     doTestV("startFrame", 5, rvp->startFrame());
 
     doTestV("reqNumFrames", 10, rvp->reqNumFrames());
