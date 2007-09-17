@@ -302,9 +302,9 @@ int main(int argc, char **argv) {
   test("cos(0.0)", 0.0, 1.0);
   test("cos(3.14159265358979323)", 0.0, -1.0);
   test("cos(3.14159265358979323/2.00000000000000000000000000)", 0.0, 0.0);
-  test("sec(x) == 1/cos(x)", 0.2332744, 1.0);
-  test("csc(x) == 1/sin(x)", 0.2332744, 1.0);
-  test("cot(x) == 1/tan(x)", 0.2332744, 1.0);
+  test("abs(sec(x) - 1/cos(x)) < 0.000000001", 0.2332744, 1.0);
+  test("abs(csc(x) - 1/sin(x)) < 0.000000001", 0.2332744, 1.0);
+  test("abs(cot(x) - 1/tan(x)) < 0.000000001", 0.2332744, 1.0);
 
   test("abs(0.0)", 0.0, 0.0);
   test("abs(x)", 1.0, 1.0);
@@ -471,8 +471,7 @@ int main(int argc, char **argv) {
   test("-([V1]*sin([V1]*[V2])+[V3]*cos([V3]*[V3]))", 0.0, 0.0);
   test("[V3] * -1", 0.0, 0.0);
 
-  /*  Wrap a testcase with this and run bison with -t in order to get a trace
-   *  of the parse stack */
+  // Wrap a testcase with this and run bison with -t in order to get a trace of the parse stack
 #if 0
   yydebug = 1;
   yydebug = 0;
