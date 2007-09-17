@@ -104,7 +104,7 @@ checkStringResponse 31 "3.141593"
 $DCOP generateScalar "Scalar Test 1" 0.000000000 >$TMPFILE
 checkStringResponse 32 "Scalar Test 1-1"
 
-$DCOP scalar "Scalar Test 1'" >$TMPFILE
+$DCOP scalar "Scalar Test 1-1" >$TMPFILE
 checkStringResponse 33 "0.000000"
 
 $DCOP generateScalar "Scalar Test 1" "-33.5e+23" >$TMPFILE
@@ -114,7 +114,7 @@ $DCOP scalar "Scalar Test 1-2" >$TMPFILE
 checkStringResponse 35 "-3349999999999999970639872.000000"
 
 $DCOP scalarList >$TMPFILE
-checkArraySize 36 25 
+checkArraySize 36 7 
 
 #####  Vectors
 $DCOP generateVector "Vector Test 1" -10 10 21 >$TMPFILE
