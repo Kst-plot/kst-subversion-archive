@@ -3,7 +3,8 @@ How to make a Kst release:
 - update from SVN
 - svn copy to a branch
 - edit RELEASE.NOTES
-- run a regression test and make sure it completely passes
+- run a regression test and make sure it completely passes 
+  (kst/tests/runregression.sh)
 - update configure.in.in to set the version number and the libkst interface
   version
 - update ../doc
