@@ -132,16 +132,16 @@ void doTests() {
   KstVectorPtr vpVX = psd->vX();
   KstVectorPtr vpVY = psd->vY();
 
-  for(int j = 0; j < vpVX->length(); j++){
-      doTestV(QString("vpVX->value()[") + QString::number(j) + "]", j, vpVX->value()[j]);
-  }
-
-  for(int j = 0; j < vpVX->length(); j++){
-      doTestV((QString("vpVY->value()[") + QString::number(j) + "]"), j, vpVY->value()[j]);
-  }
+  // until we call update the x and y vectors will be uninitialised and
+  // and so they should be of length 1 and the value of vpVX[0] and 
+  // vpVX[0] should be NAN...
+  doTestV(QString("vpVX->length()"), vpVX->length(), 1);
+  doTestV(QString("vpVY->length()"), vpVY->length(), 1);
+  doTestV(QString("vpVX->length()"), isnan(vpVX->value()[0]), 1);
+  doTestV(QString("vpVY->length()"), isnan(vpVY->value()[0]), 1);
 
   doTest(psd->update(0) == KstObject::UPDATE);
- 
+
   for(int j = 0; j < vpVX->length(); j++){
       doTest(vpVX->value()[j] == 0);
   }
