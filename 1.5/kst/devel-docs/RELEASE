@@ -11,7 +11,7 @@ How to make a Kst release:
 - make sure documentation has correct version for the <releaseinfo> tag
   of index.docbook and correct version of KST, QT, and KDE in the installation
   instructions of install-chapter.docbook
-- update the manpage
+- update the manpage (refer to kst/devel-docs/manpage.txt)
 - prepare for a KDE 3.3 install!  Set min config appropriately
 - svn copy to a tag
 - make sure configure has been run so that the spec file is created (with the
