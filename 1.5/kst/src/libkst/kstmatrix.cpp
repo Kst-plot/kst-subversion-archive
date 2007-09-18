@@ -21,7 +21,7 @@
 
 #include <qdeepcopy.h>
 #include <qstylesheet.h>
-  
+
 #include <klocale.h>
 
 #include "defaultprimitivenames.h"
@@ -38,11 +38,11 @@ static int anonymousMatrixCounter = 1;
 
 KstMatrix::KstMatrix(KstObjectTag in_tag, KstObject *provider, uint nX, uint nY, double minX, double minY, double stepX, double stepY)
 : KstPrimitive(provider) {
- 
+
   _nX = nX;
   _nY = nY;
   _NS = _nX * _nY;
-  _NRealS = 0;    
+  _NRealS = 0;
   _minX = minX;
   _minY = minY;
   _stepX = stepX;
@@ -87,15 +87,15 @@ KstMatrix::~KstMatrix() {
 
   if (_z) {
     free(_z);
-    _z = 0L;  
-  }  
+    _z = 0L;
+  }
 }
 
 
 int KstMatrix::sampleCount() const {
-  return _nX*_nY;  
+  return _nX*_nY;
 }
-    
+
 
 double KstMatrix::value(double x, double y, bool* ok) {
   int x_index = (int)floor((x - _minX) / (double)_stepX);
@@ -103,7 +103,7 @@ double KstMatrix::value(double x, double y, bool* ok) {
 
   return valueRaw(x_index, y_index, ok);
 }
-    
+
 
 double KstMatrix::valueRaw(int x, int y, bool* ok) {
   int index = zIndex(x,y);
@@ -142,19 +142,19 @@ bool KstMatrix::setValue(double x, double y, double z) {
 bool KstMatrix::setValueRaw(int x, int y, double z) {
   int index = zIndex(x,y);
   if (index < 0) {
-    return false;  
+    return false;
   }
   _z[index] = z;
   return true;
 }
 
 double KstMatrix::minValue() const {
-  return _statScalars["min"]->value();  
+  return _statScalars["min"]->value();
 }
 
 
 double KstMatrix::maxValue() const {
-  return _statScalars["max"]->value();  
+  return _statScalars["max"]->value();
 }
 
 double KstMatrix::minValueNoSpike() const {
@@ -275,24 +275,24 @@ double KstMatrix::meanValue() const {
 }
 
 double KstMatrix::minValuePositive() const {
-  return _statScalars["minpos"]->value();  
+  return _statScalars["minpos"]->value();
 }
 
 int KstMatrix::numNew() const {
-  return _numNew;  
+  return _numNew;
 }
 
 
 void KstMatrix::resetNumNew() {
-  _numNew = 0;  
+  _numNew = 0;
 }
 
-    
+
 QString KstMatrix::label() const {
   return _label;
 }
 
-    
+
 void KstMatrix::zero() {
   for (int i = 0; i < _zSize; i++) {
     _z[i] = 0.0;  
@@ -300,7 +300,7 @@ void KstMatrix::zero() {
   setDirty();
   updateScalars();
 }
-    
+
 
 void KstMatrix::blank() {
   for (int i = 0; i < _zSize; ++i) {
@@ -309,7 +309,7 @@ void KstMatrix::blank() {
   setDirty();
   updateScalars();
 }
-    
+
 
 int KstMatrix::getUsage() const {
   int scalarUsage = 0;
@@ -331,7 +331,7 @@ KstObject::UpdateType KstMatrix::internalUpdate(KstObject::UpdateType providerUp
     double sum = 0.0, sumsquared = 0.0;
     bool initialized = false;
 
-    _NRealS = 0;    
+    _NRealS = 0;
 
     for (int i = 0; i < _zSize; i++) {
       if (finite(_z[i]) && !KST_ISNAN(_z[i])) {
@@ -353,7 +353,7 @@ KstObject::UpdateType KstMatrix::internalUpdate(KstObject::UpdateType providerUp
           }
           sum += _z[i];
           sumsquared += _z[i] * _z[i];
-        
+
           _NRealS++;
         }
       }
@@ -363,15 +363,15 @@ KstObject::UpdateType KstMatrix::internalUpdate(KstObject::UpdateType providerUp
     _statScalars["max"]->setValue(max);
     _statScalars["min"]->setValue(min);
     _statScalars["minpos"]->setValue(minpos);
-    
+
     updateScalars();
-    
+
     return setLastUpdateResult(providerUpdateType);
-  } 
+  }
   return setLastUpdateResult(NO_CHANGE);
 }
-    
-    
+
+
 void KstMatrix::setTagName(const KstObjectTag& tag) {
   if (tag == this->tag()) {
     return;
@@ -388,8 +388,8 @@ void KstMatrix::setTagName(const KstObjectTag& tag) {
 const QDict<KstScalar>& KstMatrix::scalars() const {
   return _statScalars;
 }
-    
-    
+
+
 void KstMatrix::setLabel(const QString& newLabel) {
   _label = newLabel;
 }
@@ -496,7 +496,6 @@ bool KstMatrix::resizeZ(int sz, bool reinit) {
     if (reinit && _zSize < sz) {
 #if ZERO_MEMORY == 2
       memset(&_z[_zSize], 0, (sz - _zSize)*sizeof(double));
-      
 #else
       for (int i = _zSize; i < sz; i++) {
         _z[i] = 0.0;
@@ -518,14 +517,15 @@ bool KstMatrix::resizeZ(int sz, bool reinit) {
 bool KstMatrix::resize(int xSize, int ySize, bool reinit) {
   int oldNX = _nX;
   int oldNY = _nY;
+
   _nX = xSize;
   _nY = ySize;
   if (resizeZ(xSize*ySize, reinit)) {
-    return true;  
+    return true;
   } else {
     _nX = oldNX;
     _nY = oldNY;
-    return false;  
+    return false;
   }
 }
 
@@ -539,7 +539,7 @@ void KstMatrix::save(QTextStream &ts, const QString& indent) {
 
 
 bool KstMatrix::saveable() const {
-  return _saveable;  
+  return _saveable;
 }
 
 
@@ -553,10 +553,9 @@ void KstMatrix::change(const KstObjectTag& newTag, uint nX, uint nY, double minX
   _stepY = stepY;
   _minX = minX;
   _minY = minY;
-  
-  setDirty();  
+
+  setDirty();
 }
 
 
 #include "kstmatrix.moc"
-// vim: ts=2 sw=2 et
