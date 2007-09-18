@@ -192,7 +192,7 @@ KstObject::UpdateType KstCSD::update(int update_counter) {
     return setLastUpdateResult(NO_CHANGE);
   }
 
-  double *tempOutput
+  double *tempOutput;
   double *input;
   int tempOutputLen = PSDCalculator::calculateOutputVectorLength(_windowSize, _average, _averageLength);
   int xSize = 0;
