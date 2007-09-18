@@ -17,20 +17,23 @@ How to make a Kst release:
 - make sure configure has been run so that the spec file is created (with the
   appropriate prefix, or you edit kst.spec afterwards)
 - disable unsermake
-- svn2dist /path/to/extragear/graphics kst -b -n kst -v <version_number> --svn-root https://svn.kde.org/home/kde/trunk/ -l svn2dist.log --i18n-module extragear-graphics
+- svn2dist /path/to/extragear/graphics kst -b -n kst -v <version_number> --svn-root https://svn.kde.org/home/kde/trunk/ -l svn2dist.log --i18n-module extragear-graphics (if you are not including translations then use svn2dist /path/to/extragear/graphics kst -b -n kst -v <version_number> -l svn2dist.log --no-i18n)
 - unpack, remove any files that shouldn't be there, make sure docs and i18n
   are packaged properly, and edit any paths necessary (ex: spec file)
-- generate the srpm: rpm -ts kst-version.tar.gz
-- generate rpms as needed: rpm -tb kst-version.tar.gz
+- generate the srpm: rpm -ts kst-version.tar.gz 
+  (or rpmbuild -ts kst-version.tar.gz --- e.g. rpmbuild -ts kst-1.5.0.tar)
+- generate rpms as needed: rpm -tb kst-version.tar.gz 
+  (or rpmbuild -tb kst-version.tar.gz --- e.g. rpmbuild -tb kst-1.5.0.tar)
                         or rpm --rebuild kst-version.rpm
+			(or rpmbuild --rebuild kst-version.rpm --- e.g. rpmbuild --rebuild kst-1.5.0.rpm)
      - SuSE and RedHat style are typically generated.
 
 - TEST
 
-- update www/areas/extragear/inc/appinfo.inc
-- update www/areas/extragear/apps/kst/
+- update www/areas/extragear/inc/appinfo.inc (http://websvn.kde.org/trunk/www/areas/extragear/inc/appinfo.inc)
+- update www/areas/extragear/apps/kst/ (http://websvn.kde.org/trunk/www/areas/extragear/apps/kst/)
 - upload packages and lsm to upload.kde.org (ftp://upload.kde.org/incoming/stable/KDE3.x/)
 - mail ftpadmin@kde.org to notify them
 - update kde-apps.org (http://kde-apps.org/)
-- add version number to bugs.kde.org product
+- add version number to bugs.kde.org product (http://bugs.kde.org/editversions.cgi?product=kst)
 
