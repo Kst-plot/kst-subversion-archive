@@ -115,7 +115,7 @@ void doTests() {
   doTest(sm1->meanValue() == 0);
 
   //basic symetrical matrix
-  n = makeDOMElem("Symetrical", 3, 3, 0, 0, 1, 1, 1, 1, true).firstChild();
+  n = makeDOMElem("Symmetrical", 3, 3, 0, 0, 1, 1, 1, 1, true).firstChild();
   e = n.toElement();
 
   //basic default constructor values
