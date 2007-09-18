@@ -114,13 +114,14 @@ QDomDocument makeDOMElement(const QString& tag, const QString& val) {
 }
 
 void doTests() {
-
   KstVectorPtr vp = new KstVector(KstObjectTag("tempVector"), 10);
+
   for (int i = 0; i < 10; i++){
     vp->value()[i] = i;
   }
 
   KstCSDPtr csd = new KstCSD("csdTest", vp, 0.0, false, false, false, WindowUndefined, 0, 0, 0.0, PSDUndefined, QString::null, QString::null);
+
   doTest(csd->tagName() == "csdTest");
   doTest(csd->vTag() == "tempVector");
   doTest(csd->output() == PSDUndefined);
@@ -141,7 +142,7 @@ void doTests() {
   csd->setAverage(true);
   csd->setFreq(0.1);
   csd->setApodizeFxn(WindowOriginal);
-  csd->setLength(3);
+  csd->setLength(4);
   csd->setWindowSize(50);
   csd->setGaussianSigma(0.2);
 
@@ -183,46 +184,46 @@ void doTests() {
   doTest(csdDOM->vTag() == "tempVector2");
   csdDOM->setWindowSize(9);
   KstMatrixPtr outMatrix = csdDOM->outputMatrix();
-  
+
   doTest(outMatrix->resize(3, 3, false)); // very odd thing to do?
-  doTest(outMatrix->setValue(0, 0, 1.716299));
+  doTest(outMatrix->setValue(0, 0,  1.716299));
   doTest(outMatrix->setValue(0, 1, -0.485527));
   doTest(outMatrix->setValue(0, 2, -0.288690));
-  doTest(outMatrix->setValue(1, 0, 1.716299));
+  doTest(outMatrix->setValue(1, 0,  1.716299));
   doTest(outMatrix->setValue(1, 1, NAN));
   doTest(outMatrix->setValue(1, 2, -0.274957));
-  doTest(outMatrix->setValue(2, 0, 1.711721));
+  doTest(outMatrix->setValue(2, 0,  1.711721));
   doTest(outMatrix->setValue(2, 1, -0.485527));
   doTest(outMatrix->setValue(2, 2, -0.293267));
 
   doTest(outMatrix->sampleCount() == 9);
-  doTest(outMatrix->value(0, 0) == 1.716299);
-  doTest(outMatrix->value(0, 1) ==  -0.485527);
+  doTest(outMatrix->value(0, 0) ==  1.716299);
+  doTest(outMatrix->value(0, 1) == -0.485527);
   doTest(outMatrix->value(0, 2) == -0.288690);
-  doTest(outMatrix->value(1, 0) == 1.716299);
-  doTest(outMatrix->value(1, 1) == 0);
+  doTest(outMatrix->value(1, 0) ==  1.716299);
+  doTest(outMatrix->value(1, 1) ==  0.000000);
   doTest(outMatrix->value(1, 2) == -0.274957);
-  doTest(outMatrix->value(2, 0) == 1.711721);
+  doTest(outMatrix->value(2, 0) ==  1.711721);
   doTest(outMatrix->value(2, 1) == -0.485527);
   doTest(outMatrix->value(2, 2) == -0.293267);
 
+  // input vector length = 10
+  // window size = 9
+  // interleaved average length = 2^4
+  // so the output matrix should be 1x8 in size, as the fourier transform
+  //  will be of length 8 and there will be 1 window
   doTest(csdDOM->update(0) == KstObject::UPDATE);
   outMatrix = csdDOM->outputMatrix();
-  doTest(outMatrix->sampleCount() == 128);
+  doTestV("outMatrix->sampleCount()", 8, outMatrix->sampleCount());
 
+  // input vector length = 10
+  // window size = 11
+  // interleaved average length = 2^4
+  // so the output matrix should be empty as the desired window length is
+  //  greater than the input vector length
   csdDOM->setWindowSize(11);
-  doTest(outMatrix->sampleCount() == 128);
-
-  doTestV("outMatrix->value(0, 0)", 1.716299, outMatrix->value(0, 0));
-  doTestV("outMatrix->value(0, 1)",  -0.485527, outMatrix->value(0, 1));
-  doTestV("outMatrix->value(0, 2)", -0.288690, outMatrix->value(0, 2));
-  doTestV("outMatrix->value(1, 0)", 1.716299, outMatrix->value(1, 0));
-  doTestV("outMatrix->value(1, 1)", 0, outMatrix->value(1, 1));
-  doTestV("outMatrix->value(1, 2)", -0.274957, outMatrix->value(1, 2));
-  doTestV("outMatrix->value(2, 0)", 1.711721, outMatrix->value(2, 0));
-  doTestV("outMatrix->value(2, 1)", -0.485527, outMatrix->value(2, 1));
-  doTestV("outMatrix->value(2, 2)", -0.293267, outMatrix->value(2, 2));
-
+  doTest(csdDOM->update(0) == KstObject::UPDATE);
+  doTestV("outMatrix->sampleCount()", 0, outMatrix->sampleCount());
 }
 
 
@@ -239,5 +240,6 @@ int main(int argc, char **argv) {
   if (rc == KstTestSuccess) {
     printf("All tests passed!\n");
   }
+
   return -rc;
 }
