@@ -229,10 +229,8 @@
 </tabstops>
 <includes>
     <include location="global" impldecl="in declaration">kst_export.h</include>
+    <include location="local" impldecl="in implementation">editmultiplewidget.h</include>
 </includes>
 <exportmacro>KST_EXPORT</exportmacro>
 <layoutdefaults spacing="6" margin="11"/>
-<includehints>
-    <includehint>editmultiplewidget.h</includehint>
-</includehints>
 </UI>
