@@ -55,63 +55,63 @@ KstCSD::KstCSD(const QString &in_tag, KstVectorPtr in_V,
 KstCSD::KstCSD(const QDomElement &e)
 : KstDataObject(e) {
 
-    QString in_tag;
-    QString vecName;
-    QString in_vectorUnits, in_rateUnits;
-    KstVectorPtr in_V;
-    double in_freq = 60.0;
-    bool in_average = true;
-    int in_averageLength = 8;
-    bool in_removeMean = true;
-    bool in_apodize = true;
-    ApodizeFunction in_apodizeFxn = WindowOriginal;
-    int in_windowSize = 5000;
-    double in_gaussianSigma = 3.0;
-    PSDType in_outputType = PSDAmplitudeSpectralDensity;
-    bool interpolateHoles = false;
+  QString in_tag;
+  QString vecName;
+  QString in_vectorUnits, in_rateUnits;
+  KstVectorPtr in_V;
+  double in_freq = 60.0;
+  bool in_average = true;
+  int in_averageLength = 8;
+  bool in_removeMean = true;
+  bool in_apodize = true;
+  ApodizeFunction in_apodizeFxn = WindowOriginal;
+  int in_windowSize = 5000;
+  double in_gaussianSigma = 3.0;
+  PSDType in_outputType = PSDAmplitudeSpectralDensity;
+  bool interpolateHoles = false;
 
-    QDomNode n = e.firstChild();
-    while (!n.isNull()) {
-      QDomElement e = n.toElement(); // try to convert the node to an element.
-      if (!e.isNull()) { // the node was really an element.
-        if (e.tagName() == "tag") {
-          in_tag = e.text();
-        } else if (e.tagName() == "vectag") {
-          vecName = e.text();
-        } else if (e.tagName() == "sampRate") {
-          in_freq = e.text().toDouble();
-        } else if (e.tagName() == "average") {
-          in_average = (e.text() != "0");
-        } else if (e.tagName() == "fftLen") {
-          in_averageLength = e.text().toInt();
-        } else if (e.tagName() == "apodize") {
-          in_apodize = (e.text() != "0");
-        } else if (e.tagName() == "apodizefxn") {
-          in_apodizeFxn = ApodizeFunction(e.text().toInt());
-        } else if (e.tagName() == "gaussiansigma") {
-          in_gaussianSigma = e.text().toDouble();
-        } else if (e.tagName() == "removeMean") {
-          in_removeMean = (e.text() != "0");
-        } else if (e.tagName() == "windowsize") {
-          in_windowSize = e.text().toInt();
-        } else if (e.tagName() == "vectorunits") {
-          in_vectorUnits = e.text();
-        } else if (e.tagName() == "rateunits") {
-          in_rateUnits = e.text();
-        } else if (e.tagName() == "output") {
-          in_outputType = (PSDType)e.text().toInt();
-        } else if (e.tagName() == "interpolateHoles") {
-          interpolateHoles = e.text().toInt() != 0;
-        }
+  QDomNode n = e.firstChild();
+  while (!n.isNull()) {
+    QDomElement e = n.toElement(); // try to convert the node to an element.
+    if (!e.isNull()) { // the node was really an element.
+      if (e.tagName() == "tag") {
+        in_tag = e.text();
+      } else if (e.tagName() == "vectag") {
+        vecName = e.text();
+      } else if (e.tagName() == "sampRate") {
+        in_freq = e.text().toDouble();
+      } else if (e.tagName() == "average") {
+        in_average = (e.text() != "0");
+      } else if (e.tagName() == "fftLen") {
+        in_averageLength = e.text().toInt();
+      } else if (e.tagName() == "apodize") {
+        in_apodize = (e.text() != "0");
+      } else if (e.tagName() == "apodizefxn") {
+        in_apodizeFxn = ApodizeFunction(e.text().toInt());
+      } else if (e.tagName() == "gaussiansigma") {
+        in_gaussianSigma = e.text().toDouble();
+      } else if (e.tagName() == "removeMean") {
+        in_removeMean = (e.text() != "0");
+      } else if (e.tagName() == "windowsize") {
+        in_windowSize = e.text().toInt();
+      } else if (e.tagName() == "vectorunits") {
+        in_vectorUnits = e.text();
+      } else if (e.tagName() == "rateunits") {
+        in_rateUnits = e.text();
+      } else if (e.tagName() == "output") {
+        in_outputType = (PSDType)e.text().toInt();
+      } else if (e.tagName() == "interpolateHoles") {
+        interpolateHoles = e.text().toInt() != 0;
       }
-      n = n.nextSibling();
     }
+    n = n.nextSibling();
+  }
 
-    _inputVectorLoadQueue.append(qMakePair(INVECTOR, vecName));
+  _inputVectorLoadQueue.append(qMakePair(INVECTOR, vecName));
 
-    commonConstructor(in_tag, in_V, in_freq, in_average, in_removeMean,
-                      in_apodize, in_apodizeFxn, in_windowSize, in_averageLength, in_gaussianSigma,
-                      in_vectorUnits, in_rateUnits, in_outputType, interpolateHoles, vecName);
+  commonConstructor(in_tag, in_V, in_freq, in_average, in_removeMean,
+                    in_apodize, in_apodizeFxn, in_windowSize, in_averageLength, in_gaussianSigma,
+                    in_vectorUnits, in_rateUnits, in_outputType, interpolateHoles, vecName);
 }
 
 
@@ -140,7 +140,7 @@ void KstCSD::commonConstructor(const QString& in_tag, KstVectorPtr in_V, double 
   if (_frequency <= 0.0) {
     _frequency = 1.0;
   }
- 
+
   {
     KstWriteLocker blockMatrixUpdates(&KST::matrixList.lock());
 
@@ -167,7 +167,6 @@ KstObject::UpdateType KstCSD::update(int update_counter) {
   Q_ASSERT(myLockStatus() == KstRWLock::WRITELOCKED);
 
   KstVectorPtr inVector = _inputVectors[INVECTOR];
-
   bool force = dirty();
   setDirty(false);
 
@@ -193,26 +192,31 @@ KstObject::UpdateType KstCSD::update(int update_counter) {
     return setLastUpdateResult(NO_CHANGE);
   }
 
-  double *tempOutput, *input;
+  double *tempOutput
+  double *input;
   int tempOutputLen = PSDCalculator::calculateOutputVectorLength(_windowSize, _average, _averageLength);
+  int xSize = 0;
+
   _PSDLen = tempOutputLen;
   tempOutput = new double[tempOutputLen];
-
   input = inVector->value();
 
-  int xSize = 0;
   for (int i=0; i < inVector->length(); i+= _windowSize) {
-    //ensure there is enough data left.
+    // ensure there is enough data left
     if (i + _windowSize >= inVector->length()) {
-        break; //If there isn't enough left for a complete window.
+      // if there isn't enough left for a complete window
+      break;
     }
 
-    _psdCalculator.calculatePowerSpectrum(input + i, _windowSize, tempOutput, tempOutputLen, _removeMean,  _interpolateHoles, _average, _averageLength, _apodize, _apodizeFxn, _gaussianSigma, _outputType, _frequency);
+    _psdCalculator.calculatePowerSpectrum(input + i, _windowSize, tempOutput, 
+                                          tempOutputLen, _removeMean,  _interpolateHoles, 
+                                          _average, _averageLength, _apodize, _apodizeFxn, 
+                                          _gaussianSigma, _outputType, _frequency);
 
     // resize output matrix
     (*_outMatrix)->resize(xSize+1, tempOutputLen);
 
-    if ((*_outMatrix)->sampleCount() == (xSize+1)*tempOutputLen) { // all is well.
+    if ((*_outMatrix)->sampleCount() == (xSize+1)*tempOutputLen) {
       // copy elements to output matrix
       for (int j=0; j < tempOutputLen; j++) {
         (*_outMatrix)->setValueRaw(xSize, j, tempOutput[j]);
@@ -227,7 +231,7 @@ KstObject::UpdateType KstCSD::update(int update_counter) {
 
   delete[] tempOutput;
 
-  double frequencyStep = .5*_frequency/(double)(tempOutputLen-1);
+  double frequencyStep = 0.5 * _frequency / (double)( tempOutputLen - 1 );
 
   (*_outMatrix)->change((*_outMatrix)->tag(), xSize, tempOutputLen, 0, 0, _windowSize, frequencyStep);
   (*_outMatrix)->update(update_counter);
@@ -401,7 +405,7 @@ int KstCSD::windowSize() const {
 
 void KstCSD::setWindowSize(int in_size) {
   setDirty();
-  _windowSize = in_size;  
+  _windowSize = in_size;
 }
 
 
@@ -454,21 +458,20 @@ KstDataObjectPtr KstCSD::makeDuplicate(KstDataObjectDataObjectMap& duplicatedMap
 }
 
 void KstCSD::updateMatrixLabels(void) {
-    switch (_outputType) {
+  switch (_outputType) {
     default:
     case 0: // amplitude spectral density (default) [V/Hz^1/2]
       (*_outMatrix)->setLabel(i18n("ASD [%1/%2^{1/2}]").arg(_vectorUnits).arg(_rateUnits));
       break;
     case 1: // power spectral density [V^2/Hz]
-      (*_outMatrix)->setLabel(i18n("PSD [%1^2/%2]").arg(_vectorUnits).arg(_rateUnits));    
+      (*_outMatrix)->setLabel(i18n("PSD [%1^2/%2]").arg(_vectorUnits).arg(_rateUnits));
       break;
     case 2: // amplitude spectrum [V]
       (*_outMatrix)->setLabel(i18n("Amplitude Spectrum [%1]").arg(_vectorUnits));
       break;
     case 3: // power spectrum [V^2]
-      (*_outMatrix)->setLabel(i18n("Power Spectrum [%1^2]").arg(_vectorUnits));    
+      (*_outMatrix)->setLabel(i18n("Power Spectrum [%1^2]").arg(_vectorUnits));
       break;
   }
 }
 
-// vim: ts=2 sw=2 et
