@@ -212,6 +212,11 @@ void doTests() {
   doTest(um1->setValue(1, 1, 1));
   doTest(um1->setValue(2, 2, 1));
 
+  // calling resize on a matrix does not retain the correct values
+  // for matrix entries. i.e. taking a 3x3 matrix and resizing
+  // to a 2x2 matrix does not mean matrix[0][0], matrix[0][1],
+  // matrix[1][0], matrix[1][1] are the same before and after the resize.
+  // The resulting values should properly be undefined...
   doTest(um1->resize(2, 2, false));
   doTest(um1->sampleCount() == 4); 
 
@@ -223,7 +228,7 @@ void doTests() {
   doTest(!ok);
   doTest(um1->value(1, 0, &ok) == 0);
   doTest(ok);
-  doTest(um1->value(1, 1, &ok) == 1);
+  doTest(um1->value(1, 1, &ok) == 0);
   doTest(ok);
   doTest(um1->value(1, 2, &ok) == 0);
   doTest(!ok);
@@ -239,7 +244,7 @@ void doTests() {
   doTest(ok);
   doTest(um1->value(1, 0, &ok) == 0);
   doTest(ok);
-  doTest(um1->value(1, 1, &ok) == 1);
+  doTest(um1->value(1, 1, &ok) == 0);
   doTest(ok);
   doTest(um1->value(1, 2, &ok) == 0);
   doTest(ok);
