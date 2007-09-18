@@ -1,8 +1,8 @@
 How to make a Kst release:
 
-- update from SVN
-- svn copy to a branch
-- edit RELEASE.NOTES
+- update from SVN (svn update)
+- svn copy to a branch (svn cp)
+- edit RELEASE.NOTES (kst/RELEASE.NOTES)
 - run a regression test and make sure it completely passes 
   (kst/tests/runregression.sh)
 - update configure.in.in to set the version number and the libkst interface
@@ -15,7 +15,7 @@ How to make a Kst release:
 - prepare for a KDE 3.3 install!  Set min config appropriately
 - svn copy to a tag
 - make sure configure has been run so that the spec file is created (with the
-  appropriate prefix, otherwise it must be editted after)
+  appropriate prefix, or you edit kst.spec afterwards)
 - disable unsermake
 - svn2dist /path/to/extragear/graphics kst -b -n kst -v <version_number> --svn-root https://svn.kde.org/home/kde/trunk/ -l svn2dist.log --i18n-module extragear-graphics
 - unpack, remove any files that shouldn't be there, make sure docs and i18n
@@ -29,8 +29,8 @@ How to make a Kst release:
 
 - update www/areas/extragear/inc/appinfo.inc
 - update www/areas/extragear/apps/kst/
-- upload packages and lsm to upload.kde.org
+- upload packages and lsm to upload.kde.org (ftp://upload.kde.org/incoming/stable/KDE3.x/)
 - mail ftpadmin@kde.org to notify them
-- update kde-apps.org
+- update kde-apps.org (http://kde-apps.org/)
 - add version number to bugs.kde.org product
 
