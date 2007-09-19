@@ -1,0 +1,39 @@
+How to make a Kst release:
+
+- update from SVN (svn update)
+- svn copy to a branch (svn cp)
+- edit RELEASE.NOTES (kst/RELEASE.NOTES)
+- run a regression test and make sure it completely passes 
+  (kst/tests/runregression.sh)
+- update configure.in.in to set the version number and the libkst interface
+  version
+- update ../doc
+- make sure documentation has correct version for the <releaseinfo> tag
+  of index.docbook and correct version of KST, QT, and KDE in the installation
+  instructions of install-chapter.docbook
+- update the manpage (refer to kst/devel-docs/manpage.txt)
+- prepare for a KDE 3.3 install!  Set min config appropriately
+- svn copy to a tag
+- make sure configure has been run so that the spec file is created (with the
+  appropriate prefix, or you edit kst.spec afterwards)
+- disable unsermake
+- svn2dist /path/to/extragear/graphics kst -b -n kst -v <version_number> --svn-root https://svn.kde.org/home/kde/trunk/ -l svn2dist.log --i18n-module extragear-graphics (if you are not including translations then use svn2dist /path/to/extragear/graphics kst -b -n kst -v <version_number> -l svn2dist.log --no-i18n)
+- unpack, remove any files that shouldn't be there, make sure docs and i18n
+  are packaged properly, and edit any paths necessary (ex: spec file)
+- generate the srpm: rpm -ts kst-version.tar.gz 
+  (or rpmbuild -ts kst-version.tar.gz --- e.g. rpmbuild -ts kst-1.5.0.tar)
+- generate rpms as needed: rpm -tb kst-version.tar.gz 
+  (or rpmbuild -tb kst-version.tar.gz --- e.g. rpmbuild -tb kst-1.5.0.tar)
+                        or rpm --rebuild kst-version.rpm
+			(or rpmbuild --rebuild kst-version.rpm --- e.g. rpmbuild --rebuild kst-1.5.0.rpm)
+     - SuSE and RedHat style are typically generated.
+
+- TEST
+
+- update www/areas/extragear/inc/appinfo.inc (http://websvn.kde.org/trunk/www/areas/extragear/inc/appinfo.inc)
+- update www/areas/extragear/apps/kst/ (http://websvn.kde.org/trunk/www/areas/extragear/apps/kst/)
+- upload packages and lsm to upload.kde.org (ftp://upload.kde.org/incoming/stable/KDE3.x/)
+- mail ftpadmin@kde.org to notify them
+- update kde-apps.org (http://kde-apps.org/)
+- add version number to bugs.kde.org product (http://bugs.kde.org/editversions.cgi?product=kst)
+

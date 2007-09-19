@@ -1,0 +1,451 @@
+<chapter id="commontasks">
+<title>Common Tasks</title>
+
+<para>This chapter contains instructions for performing basic tasks
+with &kst;. It runs through the method for performing each task in the
+simplest way. Links to the sections of the handbook with more in-depth
+information are also given.</para>
+
+<sect1 id="commontasks-plottingsimplegraphs">
+<title>Plotting Simple Graphs</title>
+
+<para>The first thing you'll want to do with &kst; is probably to plot
+a simple graph. Here's the procedure:</para>
+
+<orderedlist>
+
+<listitem>
+<para>Choose your data file. &kst; will read many types of
+data file, the simplest being a plain text (<acronym>ASCII</acronym>)
+file with the data in columns. For this tutorial, we'll create a simple data file. Copy and paste this simple 10-line set of data into a text file,
+and save it as <filename>simple.dat</filename>:
+</para>
+
+<screen>
+x  y
+-5 6.25
+-4 4
+-3 2.25
+-2 1
+-1 0.25
+0 0
+1 0.25
+2 1
+3 2.25
+4 4
+5 6.25
+</screen>
+
+<para>
+ASCII is only one of the many file types
+&kst; is capable of reading. For further details on file types, see the 
+<link linkend="data-sources">Datasources</link> section.
+</para>
+</listitem>
+
+<listitem>
+<para>Open &kst;. If you are presented with the
+<guilabel>QuickStart</guilabel> dialog, then click on the <guibutton>Data Wizard</guibutton> button. If the QuickStart dialog does not appear, then you can click the <inlinemediaobject><imageobject><imagedata fileref="Icon-kst-datawizard.png" format="PNG"/></imageobject></inlinemediaobject> toolbar button to open the Data Wizard. In the wizard that appears, you can enter the pathname of the simple.dat file manually, or select it using the <guibutton>Open File</guibutton> button which appears next to the path entry textbox. We have put x and y labels on the first line of our data file, so click the <guibutton>Configure...</guibutton> and set up the data source as shown below.
+</para>
+
+<screenshot>
+<screeninfo>Plotting Simple Graphs - Configure ASCII</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-commontasks-plottingsimplegraphs-configureascii.png" format="PNG" />
+</imageobject>
+</mediaobject>
+</screenshot>
+
+</listitem>
+
+<listitem>
+<para>
+The <guibutton>Next</guibutton> page is where you select which
+data to use. If you've configure the ASCII datasource correctly, the field names will have been read from the first entry of the datafile and 'x' and 'y' will be entries in the <guilabel>Available</guilabel> list on the left-hand side of the page. Move the 'y' field to the to the <guilabel>Selected</guilabel> list using the arrow buttons in the center of the window. The <link linkend="data-sources-concepts-index">INDEX</link> field is a special field created by &kst;, which is useful when you'd like to plot data without an x-axis, but we won't be using it right now.
+</para>
+</listitem>
+
+<listitem>
+<para>
+Clicking the <guibutton>Next</guibutton> button again allows you to select Data Presentation options. Under <guilabel>Plot Types</guilabel>, leave the default <guilabel>XY</guilabel> as it is, but change the <guilabel>X axis vector</guilabel> to Create From Field: x.
+</para>
+</listitem>
+
+<listitem>
+<para>
+On the next page, 'Plot Layout', we'll just change one thing: under
+<guilabel>Curve Style</guilabel>, select <guilabel>Points
+only</guilabel> to draw just the data points, and not lines joining them.
+</para>
+</listitem>
+
+<listitem>
+<para>
+Click on <guibutton>Finish</guibutton> and you're done! The new
+plot appears in the main &kst; window.
+</para>
+
+<screenshot>
+<screeninfo>Plotting Simple Graphs</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-commontasks-plottingsimplegraphs-finalplot.png" format="PNG" />
+</imageobject>
+</mediaobject>
+</screenshot>
+
+</listitem>
+</orderedlist>
+
+<tip>
+<para>
+It's also possible to quickly create plots from the command line using &kst;, similar to Gnuplot. In the case of the <filename>simple.dat</filename> file, we can produce a simple plot using the first column (or <quote>field</quote>) of the the file as the x vector, with the second column as a y vector, by entering the following at the command line:
+</para>
+
+<para>
+<userinput><command>kst -x 1 -y 2 simple.dat</command></userinput>
+</para>
+
+<para>
+Numerous other command-line options are available&mdash;using the command-line only, plots of data can be printed directly to files, and simple data manipulation such as creation of power spectra can be performed as well.  For a complete list of command-line options, see <link linkend="command-lineoptions">Command Line Usage and Examples</link>.
+</para>
+</tip>
+
+</sect1>
+
+<sect1 id="commontasks-fitting">
+<title>Curve Fitting</title>
+
+<para>&kst; also provides functions for many different types of curve fitting: linear, quadratic, sinusoidal, and more. As an example, we'll do a simple polynomial fit to the curve we plotted previously, in the <link linkend="commontasks-plottingsimplegraphs">Plotting Simple Graphs</link> section.</para>
+
+<orderedlist>
+
+<listitem>
+<para>
+Right click on the 'simple graphs' plot which you've created and select 'y' from the <guimenu>Fit</guimenu> submenu in the context menu which appears.
+</para>
+
+<screenshot>
+<screeninfo>Curve Fitting - Fit Context Menu</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-commontasks-curvefitting-fitcontext.png" format="PNG" />
+</imageobject>
+</mediaobject>
+</screenshot>
+</listitem>
+
+<listitem>
+<para>
+Now a 'New Plugin' dialog will appear which allows you to configure the fit. Since the example data here are quadratic, we'll use the <guilabel>Fit polynomial</guilabel> plugin. Choose this from the Plugin Selection drop-list. As it happens, the <guilabel>Order</guilabel> of the polynomial is set to 2 by default, which is what we want. You can set the <guilabel>Order</guilabel> to any integer, one of the predefined scalar quantities, or some statistical value based on one of the available vectors (eg. the Standard Deviation of x, <guilabel>[x/Sigma]</guilabel>).
+</para>
+<para>
+There are several Output fields where you can enter text to be used as the unique name for the vectors and scalars generated by this fit. For more information, you can read the section on the <link linkend="plugins-kstfit_polynomial_unweighted">Fit Polynomial</link> in the <link linkend="plugins">Plugins</link> chapter.
+</para>
+</listitem>
+
+<listitem>
+<para>
+Hit <guibutton>OK</guibutton> to perform the fit. A new curve showing the best fit polynomial will be automatically added to the plot containing the original curve. A new <link linkend="view-types-labels">label</link> object is also added to the plot containing the fitted coefficients for x^2, x^1 and x^0 (the constant).
+</para>
+
+<screenshot>
+<screeninfo>Curve Fitting - Plotted Curve</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-commontasks-curvefitting-plottedcurve.png" format="PNG" />
+</imageobject>
+</mediaobject>
+</screenshot>
+</listitem>
+</orderedlist>
+
+<tip>
+<para>
+Not all of the fit results are shown in the new label. The covariances for the fit coefficients, as well as the Chi-Square value for the fit can be accessed from the View Fit Results dialog. Select <menuchoice><guimenu>Data</guimenu><guimenuitem>View Fit Results</guimenuitem></menuchoice> from the main menu, and choose the fit which you are interested in from the drop down list. The results are shown in a table:
+</para>
+
+<screenshot>
+<screeninfo>Curve Fitting - Fit Results</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-commontasks-curvefitting-fitresults.png" format="PNG" />
+</imageobject>
+</mediaobject>
+</screenshot> 
+</tip>
+
+</sect1>
+
+<sect1 id="commontasks-generatehistogram">
+<title>Generating a Histogram</title>
+
+<para>
+&kst; contains built in routines to generate histograms from data. For this tutorial, we'll look at the histogram of a vector containing normally distributed numbers.
+</para>
+
+<para>
+We'll generate this vector using a perl script. Copy the following code into a file called generate_normal.pl:
+</para>
+
+<para>
+<screen>
+sub gaussian_rand { # from the Perl Cookbook. (O'Reilly, 1998)
+    my ($u1, $u2);  # uniformly distributed random numbers
+    my $w;          # variance, then a weight
+    my ($g1, $g2);  # gaussian-distributed numbers
+
+    do {
+        $u1 = 2 * rand() - 1;
+        $u2 = 2 * rand() - 1;
+        $w = $u1*$u1 + $u2*$u2;
+    } while ( $w >= 1 );
+
+    $w = sqrt( (-2 * log($w))  / $w );
+    $g2 = $u1 * $w;
+    $g1 = $u2 * $w;
+    # return both if wanted, else just one
+    return wantarray ? ($g1, $g2) : $g1;
+}
+
+srand(time() ^($$ + ($$ &lt;&lt;15))) ; # initialize the RNG.
+for ($x=0;$x &lt; 10000;$x++) {
+        print gaussian_rand() . "\n";
+}
+</screen>
+</para>
+
+<para>
+Now execute the script with the command:
+</para>
+
+<para>
+<userinput><command>perl generate_normal.pl &gt; normal.dat</command></userinput>
+</para>
+
+<para>
+This will generate an ASCII file <filename>normal.dat</filename> containing random numbers with a gaussian distribution centered at 0 with a standard deviation of 1. Import this data into &kst;, and plot it as points with INDEX as the x-axis vector (if this gives you trouble, you may want to see the Getting Started section on <link linkend="intro-gettingstarted-importingdata">Importing Data</link>. You should see something which resembles the following:
+</para>
+
+<screenshot>
+<screeninfo>Generating Histograms - Scatter Plot</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-commontasks-generatinghist-scatterplot.png" format="PNG" />
+</imageobject>
+<textobject>
+<phrase>Generating Histograms - Scatter Plot</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<para>
+Now we are ready to generate the histogram itself. Select <menuchoice><guimenu>Data</guimenu><guimenuitem>New Histogram...</guimenuitem></menuchoice>. Select the Data Vector which has just been created from <filename>normal.dat</filename>. There are several options relating to bin choices. For quick generation of histograms, it is usually easiest to just press the "Auto-Bin" feature. This will select an optimal bin size and range for the given data.
+</para>
+
+<para>
+Click the <guibutton>OK</guibutton> button to generate the histogram.
+</para>
+
+<screenshot>
+<screeninfo>Generating Histograms - Histogram</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-commontasks-generatinghist-histogram.png" format="PNG" />
+</imageobject>
+<textobject>
+<phrase>Generating Histograms - Histogram</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+</sect1>
+
+<sect1 id="commontasks-eventmonitor">
+<title>Creating an Event Monitor</title>
+
+<para>
+&kst; has many features which are oriented toward real-time data. One of the most useful of these features is the "Event Monitor" data object. Event monitors check conditions on data vectors. A common use for them is to provide warnings about unusual features in incoming data. They can provide feedback in a number of ways:
+</para>
+
+<itemizedlist>
+<listitem><para>Messages in the &kst; debug log.</para></listitem>
+<listitem><para>Automated <link linkend="extensions-elog">Electronic Logbook (ELOG)</link> entries.</para></listitem>
+<listitem><para>Email notification.</para></listitem>
+</itemizedlist>
+
+<para>
+In this tutorial, we will create an event monitor to provide debug log notification about statistically unlikely spikes in a data stream. More information about Event Monitor data objects can be found <link linkend="data-types-eventmonitors">here</link>
+</para>
+
+<para>First we'll need a script to generate some simulated realtime data. Copy the following into a file called <filename>simrealtime.pl</filename></para>
+
+<para>
+<screen>
+#!/usr/bin/perl
+
+open(OUTPUT, ">$ARGV[0]") || die "Can't open $ARGV[0]: $!";
+
+srand(1); # (badly) initialize the RNG.
+
+for ($x=0;;$x++) {
+        open(OUTPUT, ">>$ARGV[0]") || die "Can't open $ARGV[0]: $!";
+        $rn = rand();
+        if ($rn > .99) {
+                $rn = $rn + 5;
+        } else {
+                $rn = $rn - .5;
+        }
+        print OUTPUT $rn . "\n";
+        close(OUTPUT);
+        print "Created " . $x . " entries. Press Enter to Continue ...";
+        $dummy=&lt;STDIN&gt;
+}
+</screen>
+</para>
+
+<para>This perl script will generate random data, uniformly distributed in [-.5, .5], with occasional spikes. Make the script executable and run it using the commands...</para>
+
+<para>
+<userinput><command>chmod a+x simrealtime.pl</command></userinput>
+</para>
+<para>
+<userinput><command>./simrealtime.pl simulated.dat</command></userinput>
+</para>
+
+<para>
+In order to simulate 'realtime' data, the script will not generate all of its output at once, but will prompt the user before it outputs each entry. Press the enter key several times to get the data set started. Now, in a separate terminal, instruct &kst; to plot the data using the command...
+</para>
+
+<para>
+<userinput><command>kst -y 1 simulated.dat</command></userinput>
+</para>
+
+<para>
+Depending on the number of data points which you have generated so far, your plot should look something like the graph below, possibly without the large spike in the middle.
+</para>
+
+<screenshot>
+<screeninfo>Creating Event Monitor - Initial Plot</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-commontasks-creatingeventmonitor-initialplot.png" format="PNG" />
+</imageobject>
+<textobject>
+<phrase>Creating Event Monitor - Initial Plot</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<para>
+Now, return to the terminal where the <filename>simrealtime.pl</filename> script is running and press the enter key a few more times. You should see the plot you've made in &kst; update automatically as new data is added to the <filename>simulated.dat</filename> stream.
+</para>
+
+<para>
+Suppose that we would like to receive notification every time a large spike occurs in our incoming data stream. This can be done using an event monitor. Select the menu-item <menuchoice><guimenu>Data</guimenu><guimenuitem>New Event Monitor</guimenuitem></menuchoice>, and configure the new event monitor's settings as shown below.
+</para>
+
+<screenshot>
+<screeninfo>Creating Event Monitor - New Event Monitor</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-commontasks-creatingeventmonitor-neweventmonitor.png" format="PNG" />
+</imageobject>
+<textobject>
+<phrase>Creating Event Monitor - New Event Monitor</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<para>
+The settings in the 'Expression' text box configure the event monitor to report entries in Vector [1] which are more than 5 standard deviations from its mean. This is a fairly simple event monitor. Much more powerful event monitors can be created using the large collection of scalars which &kst; maintains, and the many operators which can make comparisions between vectors.
+</para>
+
+<para>
+We will have our events logged as 'Warnings' in the &kst; Debug Log. As you can see, there are several other possible event reporting methods. These are explained in more detail in the documentation for <link linkend="data-types-eventmonitors">Event Monitors</link>. 
+</para>
+
+<para>
+Click the <guibutton>Ok</guibutton> button to create the new event monitor. Now, access the &kst; <link linkend="settings-debuglog">Debug Log</link> by selecting the <menuchoice><guimenu>Help</guimenu><guimenuitem>Debug Kst...</guimenuitem></menuchoice> menu-item and clicking the <guibutton>Log</guibutton> tab. You may see that a spike has been detected. If not, return to the terminal where you are running the <filename>simrealtime.pl</filename> script and continue generating new data until a number of spikes are visible in your plot. About 1% of the data should be spikes. Spikes which occur near the beginning of the data stream may not have been detected, because &kst; didn't yet have enough data to establish a reliable estimate of the standard deviation of Vector [1]. After generating a few hundred data points, your Log may look something like this:
+</para>
+
+<screenshot>
+<screeninfo>Creating Event Monitor - Debug Log</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-commontasks-creatingeventmonitor-debuglog.png" format="PNG" />
+</imageobject>
+<textobject>
+<phrase>Creating Event Monitor - Debug Log</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<para>
+Once you have an event monitor up and running, it's sometimes useful to have &kst; indicate on your plots where events have occurred. This is best done using objects called "Plot Markers". To create plot markers for events, we need to have a Curve Data Object for the events in question. Create a curve data object now by selecting <menuchoice><guimenu>Data</guimenu><guimenuitem>New Curve</guimenuitem></menuchoice> and configure the new curve with the options shown below.
+</para>
+
+<screenshot>
+<screeninfo>Creating Event Monitor - New Curve</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-commontasks-creatingeventmonitor-newemoncurve.png" format="PNG" />
+</imageobject>
+<textobject>
+<phrase>Creating Event Monitor - New Curve</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<para>
+Now we are ready to create plot markers. Right click on the data plot, and on the context menu which appears select <menuchoice><guimenuitem>Edit...</guimenuitem></menuchoice>. Then select the 'Markers' tab and configure it to use our event monitor curve as shown below:
+</para>
+
+<screenshot>
+<screeninfo>Creating Event Monitor - Maker Settings</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-commontasks-creatingeventmonitor-markersettings.png" format="PNG" />
+</imageobject>
+<textobject>
+<phrase>Creating Event Monitor - Maker Settings</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<para>
+Click the <guibutton>Ok</guibutton> button to create the markers. Vertical lines will now appear on the data plot, indicating the position of the spikes. The usefulness of plot markers is that they will always stretch across the entire y-axis, regardless of the zoom level.
+</para>
+
+</sect1>
+
+<!--
+The interface for this is not finalized, so it's commented out for -->
+<!--now, but definitely something useful to have in the future -->
+
+<!--
+<sect1 id="making-a-color-map">
+<title>Making a Color Map</title>
+<para>How to make a color map, since the interface isn't very intuitive</para>
+</sect1>
+-->
+
+</chapter>
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: xml
+sgml-omittag:nil
+sgml-shorttag:nil
+sgml-namecase-general:nil
+sgml-general-insert-case:lower
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:0
+sgml-indent-data:true
+sgml-parent-document:("index.docbook" "book" "chapter")
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+-->

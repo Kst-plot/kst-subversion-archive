@@ -1,0 +1,80 @@
+For 1.4
+  140518   Data manager "Search:" text is incorrectly placed 
+  141597   Change data file tool does not perform some updates 
+  141662   Plot font size is not updated after hitting Apply in Kst ... 
+  141709   Plugin manager does not display all plugins 
+  141710   Plugin manager shows all plugins as loaded 
+  141711   Plugin manager install... button not useful 
+  141715   View Scalar Values dialog not useful
+  141808   [SVN 633671]: Crash creating equation f(x) vs. x
+  141811   Error reported loading "Test Plugin"
+
+maybe for 1.5
+  115665   More meaningful default plot names 
+  107481   additional interface for image plot (wishlist) 
+  111114   Ability to apply only settings that were changed in plot ... 
+  115451   Ability to characterise power spectrum 
+  120747   Kst should properly display fits images with reversed axes. 
+  121328   UI improvement: focus/selection indicators 
+  123699   fails to create INDEX from .fits file binary extention 
+  124558   Sticky "Color per file" 
+  124573   Customizable page header/footer for printing 
+  124942   multi-file datawizard for datafile comparison 
+  125329   FITS blank pixel value ignored 
+  126758   Easy way to set plot range as function of ctime 
+  128733   improve markers definition and properties 
+  129489   Auto-update for axis labels 
+  129706   plot deletion confirmation (until Undo is implemented) 
+  130195   Datasources should enforce field uniquity 
+  130278   Optionally remember settings for view object creation 
+  131739   Snap to behaviour does not operate during a resize 
+  132954   Can't use datasource metadata in labels 
+  134360   kst documentation needs to be updated. 
+  135038   Add support for units in vectors 
+  135437   Text view object justification not working 
+  140625   New plot is created in non-intuitive location 
+  141612   Kst starts with smallest possible window size 
+
+For KST for QT4
+  86915   ability to operate only on what is visible shown in plot 
+  93168   Undo support not implemented 
+  110734   Ability to mask datapoints for fits and other operations ... 
+  111117   Implement drag and drop for all view objects 
+  111177   when using axes supression make all graphs the same size 
+  111574   Request for interactive fitting 
+  121068   Arrow view objects not always clipped correctly 
+  121163   The square root symbol is truncated 
+  123561   ellipse fails to clip child objects 
+  126743   Enable more than one y-axis 
+  129068   Can select slave vector of object for object's input 
+  129268   When in tied zoom, show zoom rectangle/lines in all tied ... 
+  129606   Problem creating label close to edge of plot 
+  136780   Add quick curve creation dialog to plot RMB 
+  137957   Add -MinIndex and -MaxIndex automatic scalars 
+  140512   Automatic datasource detection is not sufficient 
+  140627   Data manager Data Objects list unclear 
+  141448   No numbers on axes when zooming a log-scale plot 
+
+Needs Followup (may be needed for 1.4, may be closeable)
+  115670   Reload needs to be more efficient 
+  120772   kst should maintain a list of strings 
+  130286   kst javascript console does not work on Solaris (alarm) 
+  134567   Reload button doesn't fully reload 
+  134987   Skipping frames sometimes misses the last point 
+  135173   datamode marker is flickery 
+  140521   NetCDF data source crashes 
+
+Not currently on any plan
+  73673   Reversed Arabic Letter in the plot window 
+  92147   Using filters in equations is difficult 
+  111571   dirfile data source poorly handles error conditions. 
+  115452   Error propagation when error bars are present 
+  117822   double click on a curve only works if you are near an act... 
+  117838   difficult to determine new parent during drag 
+  128510   Feature request: dependancy tree 
+  128748   use of scalar in definition of static vectors 
+  129281   Need a way to simultaneously edit the properties of multi... 
+  134343   Automatically create labels from ELOG events 
+  140470   The range tab of the 'Edit Plot' dialog should be incorpo... 
+  140788   Having square brackets in the names of data objects, scal... 
+

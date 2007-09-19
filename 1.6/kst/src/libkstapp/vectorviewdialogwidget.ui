@@ -1,0 +1,567 @@
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<class>VectorViewDialogWidget</class>
+<widget class="QWidget">
+    <property name="name">
+        <cstring>VectorViewDialogWidget</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>892</width>
+            <height>664</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>VectorViewDialogWidget</string>
+    </property>
+    <vbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QGroupBox">
+            <property name="name">
+                <cstring>GroupBox9_4</cstring>
+            </property>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>5</hsizetype>
+                    <vsizetype>0</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
+            <property name="title">
+                <string>Input Vectors</string>
+            </property>
+            <vbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <property name="margin">
+                    <number>11</number>
+                </property>
+                <property name="spacing">
+                    <number>6</number>
+                </property>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>layout7</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>TextLabel1_6_3</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>0</hsizetype>
+                                    <vsizetype>0</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="text">
+                                <string>X axis vector:</string>
+                            </property>
+                        </widget>
+                        <widget class="VectorSelector">
+                            <property name="name">
+                                <cstring>_xVector</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>7</hsizetype>
+                                    <vsizetype>5</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="focusPolicy">
+                                <enum>TabFocus</enum>
+                            </property>
+                        </widget>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>TextLabel1_6_2_5</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>0</hsizetype>
+                                    <vsizetype>0</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="text">
+                                <string>Y axis vector:</string>
+                            </property>
+                        </widget>
+                        <widget class="VectorSelector">
+                            <property name="name">
+                                <cstring>_yVector</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>7</hsizetype>
+                                    <vsizetype>5</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="focusPolicy">
+                                <enum>TabFocus</enum>
+                            </property>
+                        </widget>
+                    </hbox>
+                </widget>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>layout2</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>textLabel1_2_2</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Interpolate to:</string>
+                            </property>
+                        </widget>
+                        <widget class="KComboBox">
+                            <item>
+                                <property name="text">
+                                    <string>Y Axis Vector</string>
+                                </property>
+                            </item>
+                            <item>
+                                <property name="text">
+                                    <string>X Axis Vector</string>
+                                </property>
+                            </item>
+                            <item>
+                                <property name="text">
+                                    <string>High Resolution Vector</string>
+                                </property>
+                            </item>
+                            <item>
+                                <property name="text">
+                                    <string>Low Resolution Vector</string>
+                                </property>
+                            </item>
+                            <property name="name">
+                                <cstring>_interp</cstring>
+                            </property>
+                            <property name="focusPolicy">
+                                <enum>TabFocus</enum>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>Kst assumes that the first and last samples of the X &amp; Y axis vectors 
+are pairs.  Consequently, if the X &amp; Y axis vectors have different numbers
+of points, interpolation of one or the other will be required.  This combo-box set the policy for which vector will be used to set the resolution of the curve.</string>
+                            </property>
+                        </widget>
+                        <spacer>
+                            <property name="name">
+                                <cstring>spacer3</cstring>
+                            </property>
+                            <property name="orientation">
+                                <enum>Horizontal</enum>
+                            </property>
+                            <property name="sizeType">
+                                <enum>Expanding</enum>
+                            </property>
+                            <property name="sizeHint">
+                                <size>
+                                    <width>111</width>
+                                    <height>20</height>
+                                </size>
+                            </property>
+                        </spacer>
+                    </hbox>
+                </widget>
+            </vbox>
+        </widget>
+        <widget class="QButtonGroup">
+            <property name="name">
+                <cstring>buttonGroup4</cstring>
+            </property>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>5</hsizetype>
+                    <vsizetype>0</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
+            <property name="title">
+                <string>View Range</string>
+            </property>
+            <property name="checkable">
+                <bool>false</bool>
+            </property>
+            <vbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <property name="spacing">
+                    <number>6</number>
+                </property>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>layout8</cstring>
+                    </property>
+                    <grid>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="ScalarSelector" row="1" column="1">
+                            <property name="name">
+                                <cstring>_yMinScalar</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>7</hsizetype>
+                                    <vsizetype>5</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="focusPolicy">
+                                <enum>TabFocus</enum>
+                            </property>
+                        </widget>
+                        <widget class="ScalarSelector" row="0" column="1">
+                            <property name="name">
+                                <cstring>_xMinScalar</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>7</hsizetype>
+                                    <vsizetype>5</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="focusPolicy">
+                                <enum>TabFocus</enum>
+                            </property>
+                        </widget>
+                        <widget class="QCheckBox" row="0" column="0">
+                            <property name="name">
+                                <cstring>_xMinCheckbox</cstring>
+                            </property>
+                            <property name="text">
+                                <string>X Min</string>
+                            </property>
+                        </widget>
+                        <widget class="ScalarSelector" row="0" column="3">
+                            <property name="name">
+                                <cstring>_xMaxScalar</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>7</hsizetype>
+                                    <vsizetype>5</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="focusPolicy">
+                                <enum>TabFocus</enum>
+                            </property>
+                        </widget>
+                        <widget class="QCheckBox" row="1" column="0">
+                            <property name="name">
+                                <cstring>_yMinCheckbox</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Y Min</string>
+                            </property>
+                        </widget>
+                        <widget class="QCheckBox" row="1" column="2">
+                            <property name="name">
+                                <cstring>_yMaxCheckbox</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Y Max</string>
+                            </property>
+                        </widget>
+                        <widget class="QCheckBox" row="0" column="2">
+                            <property name="name">
+                                <cstring>_xMaxCheckbox</cstring>
+                            </property>
+                            <property name="text">
+                                <string>X Max</string>
+                            </property>
+                        </widget>
+                        <widget class="ScalarSelector" row="1" column="3">
+                            <property name="name">
+                                <cstring>_yMaxScalar</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>7</hsizetype>
+                                    <vsizetype>5</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="focusPolicy">
+                                <enum>TabFocus</enum>
+                            </property>
+                        </widget>
+                    </grid>
+                </widget>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>layout19</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <spacer>
+                            <property name="name">
+                                <cstring>spacer11</cstring>
+                            </property>
+                            <property name="orientation">
+                                <enum>Horizontal</enum>
+                            </property>
+                            <property name="sizeType">
+                                <enum>Expanding</enum>
+                            </property>
+                            <property name="sizeHint">
+                                <size>
+                                    <width>60</width>
+                                    <height>20</height>
+                                </size>
+                            </property>
+                        </spacer>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>textLabel1_2</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>1</hsizetype>
+                                    <vsizetype>1</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="text">
+                                <string>Set to:</string>
+                            </property>
+                        </widget>
+                        <widget class="KComboBox">
+                            <item>
+                                <property name="text">
+                                    <string>XY Axes</string>
+                                </property>
+                            </item>
+                            <item>
+                                <property name="text">
+                                    <string>X Axis</string>
+                                </property>
+                            </item>
+                            <item>
+                                <property name="text">
+                                    <string>Y Axis</string>
+                                </property>
+                            </item>
+                            <property name="name">
+                                <cstring>_plotAxes</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>0</hsizetype>
+                                    <vsizetype>0</vsizetype>
+                                    <horstretch>1</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="maximumSize">
+                                <size>
+                                    <width>90</width>
+                                    <height>32767</height>
+                                </size>
+                            </property>
+                            <property name="focusPolicy">
+                                <enum>TabFocus</enum>
+                            </property>
+                        </widget>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>textLabel1</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>1</hsizetype>
+                                    <vsizetype>1</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="text">
+                                <string>from plot:</string>
+                            </property>
+                        </widget>
+                        <widget class="KComboBox">
+                            <property name="name">
+                                <cstring>_plotList</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>7</hsizetype>
+                                    <vsizetype>0</vsizetype>
+                                    <horstretch>1</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="focusPolicy">
+                                <enum>TabFocus</enum>
+                            </property>
+                        </widget>
+                        <widget class="QPushButton">
+                            <property name="name">
+                                <cstring>_realtimeButton</cstring>
+                            </property>
+                            <property name="focusPolicy">
+                                <enum>TabFocus</enum>
+                            </property>
+                            <property name="text">
+                                <string>Realtime</string>
+                            </property>
+                        </widget>
+                        <widget class="QPushButton">
+                            <property name="name">
+                                <cstring>_currentButton</cstring>
+                            </property>
+                            <property name="focusPolicy">
+                                <enum>TabFocus</enum>
+                            </property>
+                            <property name="text">
+                                <string>Current</string>
+                            </property>
+                        </widget>
+                    </hbox>
+                </widget>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>layout6</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>textLabel1_3</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Flag Vector:</string>
+                            </property>
+                        </widget>
+                        <widget class="VectorSelector">
+                            <property name="name">
+                                <cstring>_FlagVector</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>7</hsizetype>
+                                    <vsizetype>5</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="focusPolicy">
+                                <enum>TabFocus</enum>
+                            </property>
+                        </widget>
+                        <spacer>
+                            <property name="name">
+                                <cstring>spacer3_2</cstring>
+                            </property>
+                            <property name="orientation">
+                                <enum>Horizontal</enum>
+                            </property>
+                            <property name="sizeType">
+                                <enum>Fixed</enum>
+                            </property>
+                            <property name="sizeHint">
+                                <size>
+                                    <width>200</width>
+                                    <height>20</height>
+                                </size>
+                            </property>
+                        </spacer>
+                    </hbox>
+                </widget>
+            </vbox>
+        </widget>
+        <widget class="CurveAppearanceWidget">
+            <property name="name">
+                <cstring>_curveAppearance</cstring>
+            </property>
+        </widget>
+        <widget class="CurvePlacementWidget">
+            <property name="name">
+                <cstring>_curvePlacement</cstring>
+            </property>
+        </widget>
+    </vbox>
+</widget>
+<tabstops>
+    <tabstop>_xVector</tabstop>
+    <tabstop>_yVector</tabstop>
+    <tabstop>_interp</tabstop>
+    <tabstop>_xMinCheckbox</tabstop>
+    <tabstop>_xMinScalar</tabstop>
+    <tabstop>_xMaxCheckbox</tabstop>
+    <tabstop>_xMaxScalar</tabstop>
+    <tabstop>_yMinCheckbox</tabstop>
+    <tabstop>_yMinScalar</tabstop>
+    <tabstop>_yMaxCheckbox</tabstop>
+    <tabstop>_yMaxScalar</tabstop>
+    <tabstop>_plotAxes</tabstop>
+    <tabstop>_plotList</tabstop>
+    <tabstop>_realtimeButton</tabstop>
+    <tabstop>_currentButton</tabstop>
+    <tabstop>_FlagVector</tabstop>
+</tabstops>
+<includes>
+    <include location="global" impldecl="in implementation">kstcombobox.h</include>
+    <include location="global" impldecl="in implementation">datarangewidget.h</include>
+    <include location="global" impldecl="in declaration">kst_export.h</include>
+</includes>
+<exportmacro>KST_EXPORT</exportmacro>
+<layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>vectorselector.h</includehint>
+    <includehint>kstcombobox.h</includehint>
+    <includehint>vectorselector.h</includehint>
+    <includehint>kstcombobox.h</includehint>
+    <includehint>kcombobox.h</includehint>
+    <includehint>scalarselector.h</includehint>
+    <includehint>kstcombobox.h</includehint>
+    <includehint>scalarselector.h</includehint>
+    <includehint>kstcombobox.h</includehint>
+    <includehint>scalarselector.h</includehint>
+    <includehint>kstcombobox.h</includehint>
+    <includehint>scalarselector.h</includehint>
+    <includehint>kstcombobox.h</includehint>
+    <includehint>kcombobox.h</includehint>
+    <includehint>kcombobox.h</includehint>
+    <includehint>vectorselector.h</includehint>
+    <includehint>kstcombobox.h</includehint>
+    <includehint>curveappearancewidget.h</includehint>
+    <includehint>curveplacementwidget.h</includehint>
+</includehints>
+</UI>

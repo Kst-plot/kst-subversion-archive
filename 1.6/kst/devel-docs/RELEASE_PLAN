@@ -1,0 +1,48 @@
+March 30: 
+  hard string freeze, except for docs.
+Before April 6: 
+  Docs merged and reviewed.
+April 6: 
+  1.4.0 is cut, for review over the weekend
+  1.5.0 branch is formed, 1.4 remains as HEAD
+April 9: 
+  1.4.0 released to great fanfare.
+  Docs frozen
+May 4: 
+  1.4.1 is cut for review over the weekend
+May 7:
+  1.4.1 is released.
+  1.4.2_devel moved to a branch
+  1.5.0_devel moved to head
+
+So:
+-the string freeze for the 1.4 series starts March 30 and is never lifted.
+-after April 6, new features, and string modifications are allowed in the
+ 1.5.0 branch (which will become HEAD on May 7)
+-the docs freeze for the 1.4 series starts April 9 and is never lifted.
+-the requirement for review for all submissions to 1.4.0 remains
+ permenantly.
+
+ 
+1.4.0: (these can get moved to 1.4.1, schedule dependant)
+fix write asserts (eg, 142701)
+do something about tag names with [ in them... (140788)
+English docs.
+
+1.4.1: (these can get moved to 1.4.0 if schedule permits, and if approved)
+copy of equations doesn't fix scalars
+general least squares (maybe) (111574)
+Resolve skip issues (134987)
+Fix Scalar dialog w/ real time data (141715)
+Translated docs
+
+1.5
+data subsets (eg, 110734, 86915)
+using meta info from data sources (eg, 142898, 120747)
+ascii datasource sub-types
+data sources with multiple groups (142897)
+re-evaluate datasource detection (140512)
+curve addition UI/rmb (eg, 136780)
+improve d2d and re-enable
+scalars are like vectors (creation in menu, shown in data manager...)
+

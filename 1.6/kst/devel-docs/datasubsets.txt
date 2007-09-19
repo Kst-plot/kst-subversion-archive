@@ -1,0 +1,41 @@
+Types of subsets:
+  X View: all points from a curve, within a specified X range
+  Y View: all points from a curve, within a specified X range
+  XY View: all points from a curve, within a specified X and Y range
+  Flaged: all points which have not been flaged by a flag vector.
+
+Example situations:
+  Fitting to a data subset
+  statistics scalars on a data subset
+  FFT type anaysis on a data subset
+
+Update requirements:
+  May want to keep locked to current plot view
+  May want to stay fixed once set.
+
+So: 
+1) create a KstView which 
+  inputs: Vx, Vy, Uneven Vector interpolation rules
+  outputs: two vectors, Vxout, Vyout
+KstView is inherited by KstXView which takes
+    Sxmin, Sxmax
+KstView is inherited by KstYView which takes
+    Symin, Symax
+KstView is inherited by KstXYView which takes
+    Sxmin, Sxmax, Symin, Symax
+KstView is inherited by KstFlagView which takes
+    Vflag
+
+2) let plots output scalars (xmin, xmax, ymin, ymax)
+
+With these additions, given the correct UI, we can create any object
+that we might need.
+
+UI:
+A general NewView Dialog which can create any of the above views.
+Appropriate options in the fit dialog to create one of the above views.
+rmb options in 2dPlots which create X, Y, or XY views with sensible options.
+The dialogs need easy access to the Plot Range scalars (and should default
+appropriately).
+
+
