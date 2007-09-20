@@ -969,7 +969,7 @@ void KstApp::delayedDocInit() {
 void KstApp::selectDataPlugin() {
   QStringList l;
 
-  //The new KstDataObject plugins...
+  // the new KstDataObject plugins...
   QStringList newPlugins;
   const KstPluginInfoList pluginInfo = KstDataObject::pluginInfoList();
   {
@@ -981,7 +981,7 @@ void KstApp::selectDataPlugin() {
 
   l += newPlugins;
 
-  //The old C style plugins...
+  // the old C style plugins...
   QStringList oldPlugins;
   const QMap<QString,QString> readable = PluginCollection::self()->readableNameList();
   {
@@ -993,20 +993,21 @@ void KstApp::selectDataPlugin() {
 
   l += oldPlugins;
 
+  // list the old and new stlye plugins together in ascending alphabetical order...
+  l.sort();
+
   bool ok = false;
   QStringList plugin = KInputDialog::getItemList(i18n("Data Plugins"), i18n("Create..."), l, 0, false, &ok, this);
 
-  if (!ok || plugin.isEmpty()) {
-    return;
-  }
+  if (ok && !plugin.isEmpty()) {
+    const QString p = plugin.join("");
 
-  const QString p = plugin.join("");
-
-  if (newPlugins.contains(p)) {
-    KstDataObjectPtr ptr = KstDataObject::plugin(p);
-    ptr->showDialog(true);
-  } else if (oldPlugins.contains(p)) {
-    KstPluginDialogI::globalInstance()->showNew(readable[p]);
+    if (newPlugins.contains(p)) {
+      KstDataObjectPtr ptr = KstDataObject::plugin(p);
+      ptr->showDialog(true);
+    } else if (oldPlugins.contains(p)) {
+      KstPluginDialogI::globalInstance()->showNew(readable[p]);
+    }
   }
 }
 
