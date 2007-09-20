@@ -539,6 +539,10 @@ of points, interpolation of one or the other will be required.  This combo-box s
 <includes>
     <include location="global" impldecl="in implementation">kstcombobox.h</include>
     <include location="global" impldecl="in implementation">datarangewidget.h</include>
+    <include location="global" impldecl="in implementation">vectorselector.h</include>
+    <include location="global" impldecl="in implementation">scalarselector.h</include>
+    <include location="global" impldecl="in implementation">curveappearancewidget.h</include>
+    <include location="global" impldecl="in implementation">curveplacementwidget.h</include>
     <include location="global" impldecl="in declaration">kst_export.h</include>
 </includes>
 <exportmacro>KST_EXPORT</exportmacro>
