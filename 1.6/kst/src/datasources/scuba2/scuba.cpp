@@ -2002,9 +2002,15 @@ extern "C" {
         QString s;
 
         if (frun.open(IO_ReadOnly)) {
-          if (frun.readLine(s, 10) >= 0) {
+          //
+          // we are not guaranteed that the HEADER tag is the first entry so
+          //  search the entire file for it...
+          //
+          while (frun.readLine(s, 10) >= 0) {
             if (s.stripWhiteSpace().upper().compare(BEGIN_HEADER_2) == 0) {
               retVal = 100;
+
+              break;
             }
           }
           frun.close();
