@@ -89,7 +89,11 @@ KstObject::UpdateType DirFileSource::update(int u) {
   }
 
   int err = 0;
-  int newNF = GetNFrames(_filename.latin1(), &err, 0L);
+  // The magic minus two here has been extracted from GetNFrames in
+  // getdata where it doesn't belong.
+  int newNF = GetNFrames(_filename.latin1(), &err, 0L) - 2;
+  if (newNF < 0)
+    newNF = 0;
   bool isnew = newNF != _frameCount;
 
   _frameCount = newNF;

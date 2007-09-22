@@ -2,36 +2,6 @@
 #ifndef GETDATA_H
 #define GETDATA_H
 
-#include <config.h>
-
-/* The following has been extracted from internal.cpp from kjs */
-
-/*
-** For systems without NAN, this is a NAN in IEEE double format.
-*/
-
-#if !defined(NAN)
-static double __NAN()
-{
-  /* work around some strict alignment requirements
-     for double variables on some architectures (e.g. PA-RISC) */
-  typedef union { unsigned char b[8]; double d; } kjs_double_t;
-#ifdef WORDS_BIGENDIAN
-  static const kjs_double_t NaN_Bytes = { { 0x7f, 0xf8, 0, 0, 0, 0, 0, 0 } };
-#elif defined(arm)
-  static const kjs_double_t NaN_Bytes = { { 0, 0, 0xf8, 0x7f, 0, 0, 0, 0 } };
-#else
-  static const kjs_double_t NaN_Bytes = { { 0, 0, 0, 0, 0, 0, 0xf8, 0x7f } };
-#endif
-
-  const double NaN = NaN_Bytes.d;
-  return NaN;
-}
-#define NAN __NAN()
-#endif /* !defined(NAN) */
-
-
-
 extern const char *GD_ERROR_CODES[23];
 
 #define GD_E_OK                0
@@ -43,6 +13,7 @@ extern const char *GD_ERROR_CODES[23];
 #define GD_E_OPEN_RAWFIELD     7
 #define GD_E_OPEN_INCLUDE      8
 #define GD_E_INTERNAL_ERROR    9
+#define GD_E_NO_RAW_FIELDS    10
 #define GD_E_ALLOC            11
 #define GD_E_SIZE_MISMATCH    12
 #define GD_E_OPEN_LINFILE     13

@@ -23,6 +23,34 @@
 
 #define DIRFILE_DEBUG 0
 
+#include <config.h>
+
+/* The following has been extracted from internal.cpp from kjs */
+
+/*
+** For systems without NAN, this is a NAN in IEEE double format.
+*/
+
+#if !defined(NAN)
+static double __NAN()
+{
+  /* work around some strict alignment requirements
+     for double variables on some architectures (e.g. PA-RISC) */
+  typedef union { unsigned char b[8]; double d; } kjs_double_t;
+#ifdef WORDS_BIGENDIAN
+  static const kjs_double_t NaN_Bytes = { { 0x7f, 0xf8, 0, 0, 0, 0, 0, 0 } };
+#elif defined(arm)
+  static const kjs_double_t NaN_Bytes = { { 0, 0, 0xf8, 0x7f, 0, 0, 0, 0 } };
+#else
+  static const kjs_double_t NaN_Bytes = { { 0, 0, 0, 0, 0, 0, 0xf8, 0x7f } };
+#endif
+
+  const double NaN = NaN_Bytes.d;
+  return NaN;
+}
+#define NAN __NAN()
+#endif /* !defined(NAN) */
+
 const char *GD_ERROR_CODES[23] = {"OK",
                             "Could not open Format file",
                             "Error in Format file",
@@ -33,7 +61,7 @@ const char *GD_ERROR_CODES[23] = {"OK",
                             "Could not open field file",
                             "Could not open included Format file",
                             "Internal error",
-                            " ",
+                            "No RAW fields available",
                             "Memory allocation failed",
                             "Size mismatch in linear combination",
                             "Could not open interpolation file",
@@ -63,6 +91,9 @@ const char *GD_ERROR_CODES[23] = {"OK",
 #define GD_E_LINFILE_SE_OPEN      0
 #define GD_E_LINFILE_SE_LENGTH    1
 
+#define GD_E_NORAW_SE_NORAW       0
+#define GD_E_NORAW_SE_STATFAILED  1
+
 static struct {
   int n;
   struct FormatType *F;
@@ -85,7 +116,7 @@ static int DoField(struct FormatType *F, const char *field_code,
 
 static int DoFieldOut(struct FormatType *F, const char *field_code,
       int first_frame, int first_samp,
-      int num_frames, int num_samp, 
+      int num_frames, int num_samp,
       char data_type, void *data_in,
       int *error_code);
 
@@ -263,6 +294,11 @@ char* GetDataErrorString(char* buffer, size_t buflen)
           (getdata_suberror == GD_E_LINFILE_SE_OPEN) ? "open failed"
           : "file too short");
       break;
+    case GD_E_NO_RAW_FIELDS: /* couldn't find the first RAW file */
+      snprintf(ptr, buflen, ": %s", (getdata_suberror == GD_E_NORAW_SE_NORAW) ?
+          "no RAW fields defined in Format file" :
+          "unable to access fields on disk");
+      break;
   }
 
   return buffer;
@@ -288,10 +324,14 @@ static void FreeF(struct FormatType *F) {
 /*   ParseRaw: parse a RAW data type in the formats file                   */
 /*                                                                         */
 /***************************************************************************/
-static int ParseRaw(char in_cols[MAX_IN_COLS][MAX_LINE_LENGTH],
+static int ParseRaw(char in_cols[MAX_IN_COLS][MAX_LINE_LENGTH], int n_cols,
     struct RawEntryType *R, const char* subdir, const char* format_file,
     int line)
 {
+  if (n_cols < 4)
+    return SetGetDataError(GD_E_FORMAT, GD_E_FORMAT_SE_N_COLS, format_file,
+        line, NULL);
+
   strcpy(R->field, in_cols[0]); /* field */
   snprintf(R->file, MAX_FILENAME_LENGTH + FIELD_LENGTH + 2, "%s/%s", subdir,
       in_cols[0]); /* path and filename */
@@ -332,13 +372,23 @@ static int ParseLincom(char in_cols[MAX_IN_COLS][MAX_LINE_LENGTH], int n_cols,
     struct LincomEntryType *L, const char* format_file, int line)
 {
   int i;
+
+  if (n_cols < 3)
+    return SetGetDataError(GD_E_FORMAT, GD_E_FORMAT_SE_N_COLS, format_file,
+        line, NULL);
+
   strcpy(L->field, in_cols[0]); /* field */
   L->n_infields = atoi(in_cols[2]);
+
   if ((L->n_infields<1) || (L->n_infields>MAX_LINCOM) ||
       (n_cols < L->n_infields*3 + 3)) {
     return SetGetDataError(GD_E_FORMAT, GD_E_FORMAT_SE_N_FIELDS, format_file,
         line, in_cols[2]);
   }
+
+  if (n_cols < L->n_infields * 3 + 3)
+    return SetGetDataError(GD_E_FORMAT, GD_E_FORMAT_SE_N_COLS, format_file,
+        line, NULL);
 
   for (i=0; i<L->n_infields; i++) {
     strncpy(L->in_fields[i], in_cols[i*3+3], FIELD_LENGTH);
@@ -353,9 +403,13 @@ static int ParseLincom(char in_cols[MAX_IN_COLS][MAX_LINE_LENGTH], int n_cols,
 /*  ParseLinterp: parse a LINTERP data type in the formats file            */
 /*                                                                         */
 /***************************************************************************/
-static int ParseLinterp(char in_cols[MAX_IN_COLS][MAX_LINE_LENGTH],
-    struct LinterpEntryType *L)
+static int ParseLinterp(char in_cols[MAX_IN_COLS][MAX_LINE_LENGTH], int n_cols,
+    struct LinterpEntryType *L, const char* format_file, int line)
 {
+  if (n_cols < 4)
+    return SetGetDataError(GD_E_FORMAT, GD_E_FORMAT_SE_N_COLS, format_file,
+        line, NULL);
+
   strcpy(L->field, in_cols[0]); /* field */
   strncpy(L->raw_field, in_cols[2], FIELD_LENGTH);
   strcpy(L->linterp_file, in_cols[3]);
@@ -416,6 +470,9 @@ static int ParseMplex(char in_cols[MAX_IN_COLS][MAX_LINE_LENGTH], int n_cols,
 static int ParseBit(char in_cols[MAX_IN_COLS][MAX_LINE_LENGTH], int n_cols,
     struct BitEntryType *B, const char* format_file, int line)
 {
+  if (n_cols < 4)
+    return SetGetDataError(GD_E_FORMAT, GD_E_FORMAT_SE_N_COLS, format_file,
+        line, NULL);
 
   strcpy(B->field, in_cols[0]); /* field */
   strncpy(B->raw_field, in_cols[2], FIELD_LENGTH); /* field */
@@ -448,6 +505,10 @@ static int ParseBit(char in_cols[MAX_IN_COLS][MAX_LINE_LENGTH], int n_cols,
 static int ParsePhase(char in_cols[MAX_IN_COLS][MAX_LINE_LENGTH], int n_cols,
     struct PhaseEntryType *P, const char* format_file, int line)
 {
+  if (n_cols < 4)
+    return SetGetDataError(GD_E_FORMAT, GD_E_FORMAT_SE_N_COLS, format_file,
+        line, NULL);
+
   strcpy(P->field, in_cols[0]); /* field */
   strncpy(P->raw_field, in_cols[2], FIELD_LENGTH); /* field */
 
@@ -532,7 +593,7 @@ static int ParseFormatFile(FILE* fp, struct FormatType *F, const char* filedir,
       F->n_raw++;
       F->rawEntries =
         realloc(F->rawEntries, F->n_raw*sizeof(struct RawEntryType));
-      error_code = ParseRaw(in_cols, F->rawEntries+F->n_raw - 1, subdir,
+      error_code = ParseRaw(in_cols, n_cols, F->rawEntries+F->n_raw - 1, subdir,
           format_file, linenum);
     } else if (strcmp(in_cols[1], "LINCOM")==0) {
       F->n_lincom++;
@@ -546,7 +607,8 @@ static int ParseFormatFile(FILE* fp, struct FormatType *F, const char* filedir,
       F->linterpEntries =
         realloc(F->linterpEntries,
             F->n_linterp*sizeof(struct LinterpEntryType));
-      error_code = ParseLinterp(in_cols, F->linterpEntries+F->n_linterp - 1);
+      error_code = ParseLinterp(in_cols, n_cols, F->linterpEntries +
+          F->n_linterp - 1, format_file, linenum);
     } else if (strcmp(in_cols[1], "MULTIPLY")==0) {
       F->n_multiply++;
       F->multiplyEntries =
@@ -689,6 +751,7 @@ struct FormatType *GetFormat(const char *filedir, int *error_code) {
   F->mplexEntries = NULL;
   F->bitEntries = NULL;
   F->phaseEntries = NULL;
+  F->first_field.field[0] = 0;
 
   /* Parse the file.  This will take care of any necessary inclusions */
   i_include = 1;
@@ -710,12 +773,23 @@ struct FormatType *GetFormat(const char *filedir, int *error_code) {
   }
 
   for (i=0; i<F->n_raw; i++) {
-    snprintf(raw_data_filename, MAX_FILENAME_LENGTH+FIELD_LENGTH+2, 
+    snprintf(raw_data_filename, MAX_FILENAME_LENGTH+FIELD_LENGTH+2,
         "%s/%s", filedir, F->rawEntries[i].file);
     if (stat(raw_data_filename, &statbuf) >=0) {
       F->first_field = F->rawEntries[i];
       break;
     }
+  }
+
+  /* If we haven't found first_field, it means there are either no RAW fields
+   * defined in the format file, or else none of the raw fields defined passed
+   * the stat check above.  Parsing fails: forget about this dirfile. */
+  if (F->first_field.field[0] == 0) {
+    FreeF(F);
+    Formats.n--;
+    *error_code = SetGetDataError(GD_E_NO_RAW_FIELDS, (F->n_raw > 0) ?
+        GD_E_NORAW_SE_STATFAILED : GD_E_NORAW_SE_NORAW, NULL, 0, NULL);
+    return NULL;
   }
 
   /** Now sort the lists */
@@ -1016,8 +1090,7 @@ static int ConvertType(const unsigned char *data_in, char in_type,
       }
       break;
     default:
-      return SetGetDataError(GD_E_INTERNAL_ERROR, in_type, __FILE__, __LINE__,
-          NULL);
+      return SetGetDataError(GD_E_BAD_RETURN_TYPE, in_type, NULL, 0, NULL);
   }
 
   return SetGetDataError(GD_E_OK, 0, NULL, 0, NULL);
@@ -1226,7 +1299,7 @@ static int DoIfRaw(struct FormatType *F, const char *field_code,
 
   /** open the file (and cache the fp) if it hasn't been opened yet. */
   if (R->fp <0) {
-    snprintf(datafilename, 2 * MAX_FILENAME_LENGTH + FIELD_LENGTH + 2, 
+    snprintf(datafilename, 2 * MAX_FILENAME_LENGTH + FIELD_LENGTH + 2,
         "%s/%s", F->FileDirName, R->file);
     R->fp = open(datafilename, O_RDONLY);
     if (R->fp<0) {
@@ -1266,7 +1339,7 @@ static int DoIfRaw(struct FormatType *F, const char *field_code,
 /*            AllocTmpbuff: allocate a buffer of the right type and size   */
 /*                                                                         */
 /***************************************************************************/
-static void *AllocTmpbuff(char type, int n) {
+static void *AllocTmpbuff(char type, int n, int* error_code) {
   assert(n > 0);
   void *buff=NULL;
   switch(type) {
@@ -1292,12 +1365,11 @@ static void *AllocTmpbuff(char type, int n) {
       buff = malloc(n*sizeof(double));
       break;
     default:
-      printf("Unexpected bad type error in AllocTmpbuff (%c)\n",type);
-      abort();
-      break;
+      *error_code = SetGetDataError(GD_E_BAD_RETURN_TYPE, type, NULL, 0, NULL);
+      return(buff);
   }
   if ((type != 'n') && (buff==NULL)) {
-    printf("Memory Allocation error in AllocTmpbuff\n");
+    *error_code = SetGetDataError(GD_E_ALLOC, 0, NULL, 0, NULL);
   }
   return(buff);
 }
@@ -1307,7 +1379,8 @@ static void *AllocTmpbuff(char type, int n) {
 /*   ScaleData: out = m*in+b                                               */
 /*                                                                         */
 /***************************************************************************/
-static void ScaleData(void *data, char type, int npts, double m, double b) {
+static int ScaleData(void *data, char type, int npts, double m, double b)
+{
   unsigned char *data_c;
   short *data_s;
   unsigned short *data_u;
@@ -1364,10 +1437,10 @@ static void ScaleData(void *data, char type, int npts, double m, double b) {
       }
       break;
     default:
-      printf("Another impossible error\n");
-      abort();
-      break;
+      return SetGetDataError(GD_E_BAD_RETURN_TYPE, type, NULL, 0, NULL);
   }
+
+  return SetGetDataError(GD_E_OK, 0, NULL, 0, NULL);
 }
 
 /***************************************************************************/
@@ -1375,7 +1448,8 @@ static void ScaleData(void *data, char type, int npts, double m, double b) {
 /*            AddData: add B to A.  B is unchanged                         */
 /*                                                                         */
 /***************************************************************************/
-static void AddData(void *A, int spfA, void *B, int spfB, char type, int n) {
+static int AddData(void *A, int spfA, void *B, int spfB, char type, int n)
+{
   int i;
 
   switch(type) {
@@ -1417,10 +1491,10 @@ static void AddData(void *A, int spfA, void *B, int spfB, char type, int n) {
       }
       break;
     default:
-      printf("Unexpected bad type error in AddData\n");
-      abort();
-      break;
+      return SetGetDataError(GD_E_BAD_RETURN_TYPE, type, NULL, 0, NULL);
   }
+
+  return SetGetDataError(GD_E_OK, 0, NULL, 0, NULL);
 }
 
 /***************************************************************************/
@@ -1428,7 +1502,7 @@ static void AddData(void *A, int spfA, void *B, int spfB, char type, int n) {
 /*            MultiplyData: multiply B by A.  B is unchanged               */
 /*                                                                         */
 /***************************************************************************/
-static void MultiplyData(void *A, int spfA, void *B, int spfB, char type, int n)
+static int MultiplyData(void *A, int spfA, void *B, int spfB, char type, int n)
 {
   int i;
 
@@ -1471,10 +1545,10 @@ static void MultiplyData(void *A, int spfA, void *B, int spfB, char type, int n)
       }
       break;
     default:
-      printf("Unexpected bad type error in MultiplyData\n");
-      abort();
-      break;
+      return SetGetDataError(GD_E_BAD_RETURN_TYPE, type, NULL, 0, NULL);
   }
+
+  return SetGetDataError(GD_E_OK, 0, NULL, 0, NULL);
 }
 
 
@@ -1526,8 +1600,8 @@ static int DoIfLincom(struct FormatType *F, const char *field_code,
   /* Nothing to lincomise */
   if (*n_read == 0)
     return 1;
-  
-  ScaleData(data_out, return_type, *n_read, L->m[0], L->b[0]);
+
+  *error_code = ScaleData(data_out, return_type, *n_read, L->m[0], L->b[0]);
 
   if (L->n_infields > 1) {
     for (i=1; i<L->n_infields; i++) {
@@ -1543,10 +1617,10 @@ static int DoIfLincom(struct FormatType *F, const char *field_code,
       first_samp2 = (first_frame * spf2 + first_samp * spf2 / spf1);
 
       /* Allocate a temporary buffer for the next field */
-      tmpbuf = AllocTmpbuff(return_type, num_samp2);
-      if (!tmpbuf && return_type != 'n') {
+      tmpbuf = AllocTmpbuff(return_type, num_samp2, error_code);
+
+      if (*error_code != GD_E_OK)
         return(0);
-      }
 
       /* read the next field */
       n_read2 = DoField(F, L->in_fields[i],
@@ -1555,18 +1629,24 @@ static int DoIfLincom(struct FormatType *F, const char *field_code,
           return_type, tmpbuf,
           error_code);
       recurse_level--;
+
       if (*error_code != GD_E_OK) {
         free(tmpbuf);
         return(1);
       }
 
-      ScaleData(tmpbuf, return_type, n_read2, L->m[i], L->b[i]);
+      *error_code = ScaleData(tmpbuf, return_type, n_read2, L->m[i], L->b[i]);
+
+      if (*error_code != GD_E_OK) {
+        free(tmpbuf);
+        return(1);
+      }
 
       if (n_read2 > 0 && n_read2 * spf1 != *n_read * spf2) {
         *n_read = n_read2 * spf1 / spf2;
       }
 
-      AddData(data_out, spf1, tmpbuf, spf2, return_type, *n_read);
+      *error_code = AddData(data_out, spf1, tmpbuf, spf2, return_type, *n_read);
 
       free(tmpbuf);
     }
@@ -1637,10 +1717,10 @@ static int DoIfMultiply(struct FormatType *F, const char *field_code,
   first_samp2 = (first_frame * spf2 + first_samp * spf2 / spf1);
 
   /* Allocate a temporary buffer for the second field */
-  tmpbuf = AllocTmpbuff(return_type, num_samp2);
-  if (!tmpbuf && return_type != 'n') {
+  tmpbuf = AllocTmpbuff(return_type, num_samp2, error_code);
+
+  if (*error_code != GD_E_OK)
     return(0);
-  }
 
   /* read the second field */
   n_read2 = DoField(F, M->in_fields[1],
@@ -1657,7 +1737,10 @@ static int DoIfMultiply(struct FormatType *F, const char *field_code,
   if (n_read2 > 0 && n_read2 * spf1 < *n_read * spf2) {
     *n_read = n_read2 * spf1 / spf2;
   }
-  MultiplyData(data_out, spf1, tmpbuf, spf2, return_type, *n_read);
+
+  *error_code = MultiplyData(data_out, spf1, tmpbuf, spf2, return_type,
+      *n_read);
+
   free(tmpbuf);
 
   return(1);
@@ -1757,7 +1840,7 @@ static int DoIfPhase(struct FormatType *F, const char *field_code,
       num_frames, num_samp,
       return_type, data_out,
       error_code);
-  recurse_level--; 
+  recurse_level--;
 
   return(1);
 }
@@ -1837,67 +1920,80 @@ static int GetIndex(double x, double lx[], int idx, int n) {
 /*   LinterpData: calibrate data using lookup table lx and ly              */
 /*                                                                         */
 /***************************************************************************/
-static void LinterpData(const void *data, char type, int npts,
-    double *lx, double *ly, int n_ln) {
+static int LinterpData(const void *data, char type, int npts, double *lx,
+    double *ly, int n_ln)
+{
   int i, idx=0;
   double x;
 
-  for (i=0; i<npts; i++) {
-    switch(type) {
-      case 'n':
-        return;
-        break;
-      case 'c':
+  switch(type) {
+    case 'n':
+      break;
+    case 'c':
+      for (i = 0; i < npts; i++) {
         x = ((unsigned char *)data)[i];
         idx = GetIndex(x, lx, idx, n_ln);
         ((unsigned char *)data)[i] =
           (unsigned char)(ly[idx] + (ly[idx+1]-ly[idx])/
-                          (lx[idx+1]-lx[idx]) * (x-lx[idx]));
-        break;
-      case 's':
+              (lx[idx+1]-lx[idx]) * (x-lx[idx]));
+      }
+      break;
+    case 's':
+      for (i = 0; i < npts; i++) {
         x = ((short *)data)[i];
         idx = GetIndex(x, lx, idx, n_ln);
         ((short *)data)[i] = (short)(ly[idx] + (ly[idx+1]-ly[idx])/
-                                     (lx[idx+1]-lx[idx]) * (x-lx[idx]));
-        break;
-      case 'u':
+          (lx[idx+1]-lx[idx]) * (x-lx[idx]));
+      }
+      break;
+    case 'u':
+      for (i = 0; i < npts; i++) {
         x = ((unsigned short *)data)[i];
         idx = GetIndex(x, lx, idx,n_ln);
         ((unsigned short *)data)[i] =
           (unsigned short)(ly[idx] + (ly[idx+1]-ly[idx])/
-                           (lx[idx+1]-lx[idx]) * (x-lx[idx]));
-        break;
-      case 'S': case 'i':
+              (lx[idx+1]-lx[idx]) * (x-lx[idx]));
+      }
+      break;
+    case 'S':
+    case 'i':
+      for (i = 0; i < npts; i++) {
         x = ((int *)data)[i];
         idx = GetIndex(x, lx, idx, n_ln);
         ((int *)data)[i] = (int)(ly[idx] + (ly[idx+1]-ly[idx])/
-                                 (lx[idx+1]-lx[idx]) * (x-lx[idx]));
-        break;
-      case 'U':
+          (lx[idx+1]-lx[idx]) * (x-lx[idx]));
+      }
+      break;
+    case 'U':
+      for (i = 0; i < npts; i++) {
         x = ((unsigned *)data)[i];
         idx = GetIndex(x, lx, idx, n_ln);
         ((unsigned *)data)[i] =
           (unsigned)(ly[idx] + (ly[idx+1]-ly[idx])/
-                     (lx[idx+1]-lx[idx]) * (x-lx[idx]));
-        break;
-      case 'f':
+              (lx[idx+1]-lx[idx]) * (x-lx[idx]));
+      }
+      break;
+    case 'f':
+      for (i = 0; i < npts; i++) {
         x = ((float *)data)[i];
         idx = GetIndex(x, lx, idx, n_ln);
         ((float *)data)[i] = (float)(ly[idx] + (ly[idx+1]-ly[idx])/
-                                     (lx[idx+1]-lx[idx]) * (x-lx[idx]));
-        break;
-      case 'd':
+          (lx[idx+1]-lx[idx]) * (x-lx[idx]));
+      }
+      break;
+    case 'd':
+      for (i = 0; i < npts; i++) {
         x = ((double *)data)[i];
         idx = GetIndex(x, lx, idx, n_ln);
         ((double *)data)[i] = (double)(ly[idx] + (ly[idx+1]-ly[idx])/
-                                       (lx[idx+1]-lx[idx]) * (x-lx[idx]));
-        break;
-      default:
-        printf("Another impossible error\n");
-        abort();
-        break;
-    }
+          (lx[idx+1]-lx[idx]) * (x-lx[idx]));
+      }
+      break;
+    default:
+      return SetGetDataError(GD_E_BAD_RETURN_TYPE, type, NULL, 0, NULL);
   }
+
+  return SetGetDataError(GD_E_OK, 0, NULL, 0, NULL);
 }
 
 /***************************************************************************/
@@ -1938,9 +2034,11 @@ static int DoIfLinterp(struct FormatType *F, const char *field_code,
       error_code);
   recurse_level--;
   if (*error_code!=GD_E_OK) return(1);
-  LinterpData(data_out, return_type, *n_read, I->x, I->y, I->n_interp);
-  return(1);
 
+  *error_code = LinterpData(data_out, return_type, *n_read, I->x, I->y,
+      I->n_interp);
+
+  return(1);
 }
 
 /***************************************************************************/
@@ -2103,7 +2201,7 @@ int GetNFrames(const char *filename_in, int *error_code, const char *in_field) {
   }
 
   /* load the first valid raw field */
-  snprintf(raw_data_filename, 2 * MAX_FILENAME_LENGTH + FIELD_LENGTH + 2, 
+  snprintf(raw_data_filename, 2 * MAX_FILENAME_LENGTH + FIELD_LENGTH + 2,
       "%s/%s", filename, F->first_field.file);
   if (stat(raw_data_filename, &statbuf) < 0) {
     return(0);
@@ -2113,9 +2211,6 @@ int GetNFrames(const char *filename_in, int *error_code, const char *in_field) {
     (F->first_field.size*F->first_field.samples_per_frame);
   nf += F->frame_offset;
 
-  nf -= 2;
-  if (nf < 0)
-    nf = 0;
   return(nf);
 }
 
@@ -2160,7 +2255,7 @@ int GetSamplesPerFrame(const char *filename_in, const char *field_name, int *err
 
 static int DoIfRawOut(struct FormatType *F, const char *field_code,
     int first_frame, int first_samp,
-    int num_frames, int num_samp, 
+    int num_frames, int num_samp,
     char data_type, const void *data_in,
     int *error_code, int *n_write) {
 
@@ -2171,7 +2266,7 @@ static int DoIfRawOut(struct FormatType *F, const char *field_code,
   void *databuffer;
   struct stat statbuf;
 
-  strncpy(tR.field, field_code, FIELD_LENGTH); 
+  strncpy(tR.field, field_code, FIELD_LENGTH);
   R = bsearch(&tR, F->rawEntries, F->n_raw,
       sizeof(struct RawEntryType), RawCmp);
   if (DIRFILE_DEBUG) {
@@ -2188,14 +2283,14 @@ static int DoIfRawOut(struct FormatType *F, const char *field_code,
 
   if (DIRFILE_DEBUG) {
     fprintf(stdout,"DoIfRawOut:  file pointer for field %s = %d\n",field_code,R->fp);
-  } 
+  }
   if (R->fp < 0) {
     /* open file for reading / writing if not already opened */
 
     sprintf(datafilename, "%s/%s", F->FileDirName, field_code);
     if (DIRFILE_DEBUG) {
       fprintf(stdout,"DoIfRawOut:  stat(%s) = %d\n",datafilename,stat(datafilename,&statbuf));
-    } 
+    }
     if(stat(datafilename, &statbuf) == 0){
       R->fp = open(datafilename, O_RDWR);
       if (R->fp < 0) {
@@ -2204,7 +2299,7 @@ static int DoIfRawOut(struct FormatType *F, const char *field_code,
         return(1);
       }
     }else{
-      R->fp = open(datafilename, O_RDWR | O_CREAT);
+      R->fp = open(datafilename, O_RDWR | O_CREAT, 0644);
       if (R->fp < 0) {
         *n_write = 0;
         *error_code = PD_E_OPEN_RAWFIELD;
@@ -2263,7 +2358,7 @@ static int DoIfRawOut(struct FormatType *F, const char *field_code,
 /***************************************************************************/
 static int DoIfLinterpOut(struct FormatType *F, const char *field_code,
     int first_frame, int first_samp,
-    int num_frames, int num_samp, 
+    int num_frames, int num_samp,
     char data_type, void *data_in,
     int *error_code, int *n_write) {
   struct LinterpEntryType tI;
@@ -2276,7 +2371,7 @@ static int DoIfLinterpOut(struct FormatType *F, const char *field_code,
   if (DIRFILE_DEBUG) {
     fprintf(stdout,"DoIfLinterp:  field = %s\n",field_code);
   }
-  strncpy(tI.field, field_code, FIELD_LENGTH); 
+  strncpy(tI.field, field_code, FIELD_LENGTH);
   /** use the stdlib binary search */
   I = bsearch(&tI, F->linterpEntries, F->n_linterp,
       sizeof(struct LinterpEntryType), LinterpCmp);
@@ -2299,7 +2394,10 @@ static int DoIfLinterpOut(struct FormatType *F, const char *field_code,
   recurse_level--;
   ns = num_samp + num_frames * (int)spf;
 
-  LinterpData(data_in, data_type, ns, I->y, I->x, I->n_interp);
+  *error_code = LinterpData(data_in, data_type, ns, I->y, I->x, I->n_interp);
+
+  if (*error_code != GD_E_OK)
+    return(1);
 
   recurse_level++;
   *n_write = DoFieldOut(F, I->raw_field,
@@ -2321,7 +2419,7 @@ static int DoIfLinterpOut(struct FormatType *F, const char *field_code,
 /***************************************************************************/
 static int DoIfLincomOut(struct FormatType *F, const char *field_code,
     int first_frame, int first_samp,
-    int num_frames, int num_samp, 
+    int num_frames, int num_samp,
     char data_type, void *data_in,
     int *error_code, int *n_write) {
   struct LincomEntryType tL;
@@ -2331,7 +2429,7 @@ static int DoIfLincomOut(struct FormatType *F, const char *field_code,
 
   /******* binary search for the field *******/
   /* make a LincomEntry we can compare to */
-  strncpy(tL.field, field_code, FIELD_LENGTH); 
+  strncpy(tL.field, field_code, FIELD_LENGTH);
   /** use the stdlib binary search */
   L = bsearch(&tL, F->lincomEntries, F->n_lincom,
       sizeof(struct LincomEntryType), LincomCmp);
@@ -2358,7 +2456,12 @@ static int DoIfLincomOut(struct FormatType *F, const char *field_code,
   recurse_level--;
   ns = num_samp + num_frames * (int)spf;
 
-  ScaleData(data_in, data_type, ns, (1/(L->m[0])), (-(L->b[0])/(L->m[0])));
+  *error_code = ScaleData(data_in, data_type, ns, 1 / L->m[0],
+      -L->b[0] / L->m[0]);
+
+  if (*error_code != GD_E_OK)
+    return(1);
+
   *n_write = DoFieldOut(F, L->in_fields[0],
       first_frame, first_samp,
       num_frames, num_samp,
@@ -2378,7 +2481,7 @@ static int DoIfLincomOut(struct FormatType *F, const char *field_code,
 /***************************************************************************/
 static int DoIfBitOut(struct FormatType *F, const char *field_code,
     int first_frame, int first_samp,
-    int num_frames, int num_samp, 
+    int num_frames, int num_samp,
     char data_type, const void *data_in,
     int *error_code, int *n_write) {
 
@@ -2395,7 +2498,7 @@ static int DoIfBitOut(struct FormatType *F, const char *field_code,
 
   /******* binary search for the field *******/
   /* make a BitEntry we can compare to */
-  strncpy(tB.field, field_code, FIELD_LENGTH); 
+  strncpy(tB.field, field_code, FIELD_LENGTH);
   /** use the stdlib binary search */
   B = bsearch(&tB, F->bitEntries, F->n_bit,
       sizeof(struct BitEntryType), BitCmp);
@@ -2468,7 +2571,7 @@ static int DoIfBitOut(struct FormatType *F, const char *field_code,
 
 static int DoFieldOut(struct FormatType *F, const char *field_code,
     int first_frame, int first_samp,
-    int num_frames, int num_samp, 
+    int num_frames, int num_samp,
     char data_type, void *data_in,
     int *error_code) {
   int n_write;
