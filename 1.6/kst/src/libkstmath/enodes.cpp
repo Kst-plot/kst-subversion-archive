@@ -17,7 +17,6 @@
 
 #include <assert.h>
 #include <math.h>
-//#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
@@ -179,7 +178,6 @@ KstObject::UpdateType BinaryNode::update(int counter, Context *ctx) {
 /////////////////////////////////////////////////////////////////
 Addition::Addition(Node *left, Node *right)
 : BinaryNode(left, right) {
-  //printf("%p: New Addition: %p + %p\n", (void*)this, (void*)left, (void*)right);
 }
 
 
@@ -209,7 +207,6 @@ QString Addition::text() const {
 /////////////////////////////////////////////////////////////////
 Subtraction::Subtraction(Node *left, Node *right)
 : BinaryNode(left, right) {
-  //printf("%p: New Subtraction: %p - %p\n", (void*)this, (void*)left, (void*)right);
 }
 
 
@@ -239,7 +236,6 @@ QString Subtraction::text() const {
 /////////////////////////////////////////////////////////////////
 Multiplication::Multiplication(Node *left, Node *right)
 : BinaryNode(left, right) {
-  //printf("%p: New Multiplication: %p - %p\n", (void*)this, (void*)left, (void*)right);
 }
 
 
@@ -269,7 +265,6 @@ QString Multiplication::text() const {
 /////////////////////////////////////////////////////////////////
 Division::Division(Node *left, Node *right)
 : BinaryNode(left, right) {
-  //printf("%p: New Division: %p - %p\n", (void*)this, (void*)left, (void*)right);
 }
 
 
@@ -299,7 +294,6 @@ QString Division::text() const {
 /////////////////////////////////////////////////////////////////
 Modulo::Modulo(Node *left, Node *right)
 : BinaryNode(left, right) {
-  //printf("%p: New Modulo: %p - %p\n", (void*)this, (void*)left, (void*)right);
 }
 
 
@@ -329,7 +323,6 @@ QString Modulo::text() const {
 /////////////////////////////////////////////////////////////////
 Power::Power(Node *left, Node *right)
 : BinaryNode(left, right) {
-  //printf("%p: New Power: %p - %p\n", (void*)this, (void*)left, (void*)right);
 }
 
 
@@ -400,7 +393,7 @@ static struct {
 
 
 Function::Function(char *name, ArgumentList *args)
-: Node(), _name(name), _args(args), _f(0L), _plugin(0L) {
+: Node(), _name(name), _args(args), _f(0L), _cStylePlugin(0L), _dataObjectPlugin(0L) {
   _argCount = 1; // Presently no functions take != 1 argument
   _inPid = 0L;
   _inScalars = 0L;
@@ -413,16 +406,21 @@ Function::Function(char *name, ArgumentList *args)
   _localData = 0L;
   _outputVectorCnt = 0;
   _inputVectorCnt = 0;
-  //printf("%p: New Function: %s - %p\n", (void*)this, name, (void*)args);
+
   if (strcasecmp("plugin", name) == 0) {
     Identifier *pn = dynamic_cast<Identifier*>(_args->node(0));
+
     if (pn) {
-      _plugin = PluginCollection::self()->plugin(pn->name());
-      if (_plugin) {
-        const QValueList<Plugin::Data::IOValue>& itable = _plugin->data()._inputs;
-        const QValueList<Plugin::Data::IOValue>& otable = _plugin->data()._outputs;
-        Plugin::countScalarsVectorsAndStrings(itable, _inputScalarCnt, _inputVectorCnt, _inputStringCnt, _inPid);
+      //
+      // first check for the C-style plugins...
+      //
+      _cStylePlugin = PluginCollection::self()->plugin(pn->name());
+      if (_cStylePlugin) {
+        const QValueList<Plugin::Data::IOValue>& itable = _cStylePlugin->data()._inputs;
+        const QValueList<Plugin::Data::IOValue>& otable = _cStylePlugin->data()._outputs;
         unsigned ignore;
+
+        Plugin::countScalarsVectorsAndStrings(itable, _inputScalarCnt, _inputVectorCnt, _inputStringCnt, _inPid);
         Plugin::countScalarsVectorsAndStrings(otable, _outputScalarCnt, _outputVectorCnt, _outputStringCnt, ignore);
         assert(_inputStringCnt == 0 && _outputStringCnt == 0); // FIXME: implement support for strings
         _inScalars = new double[_inputScalarCnt];
@@ -433,7 +431,30 @@ Function::Function(char *name, ArgumentList *args)
         _outArrayLens = new int[_outputVectorCnt];
         memset(_outVectors, 0, _outputVectorCnt*sizeof(double*));
         memset(_outArrayLens, 0, _outputVectorCnt*sizeof(int));
-      } else {
+      }
+
+      //
+      // now check for the KstDataObject plugins...
+      //
+      if (!_cStylePlugin) {
+        _dataObjectPlugin = kst_cast<KstBasicPlugin>(KstDataObject::createPlugin(pn->name()));
+        if (_dataObjectPlugin) {
+          QStringList vectors = _dataObjectPlugin->outputVectorList();
+          QStringList scalars = _dataObjectPlugin->outputScalarList();
+
+          KstWriteLocker pl(_dataObjectPlugin);
+
+          for (QStringList::ConstIterator it = vectors.begin(); it != vectors.end(); ++it) {
+            _dataObjectPlugin->setOutputVector(*it, QString::null);
+          }
+
+          for (QStringList::ConstIterator it = scalars.begin(); it != scalars.end(); ++it) {
+            _dataObjectPlugin->setOutputScalar(*it, QString::null);
+          }
+        }
+      }
+
+      if (!_cStylePlugin && !_dataObjectPlugin) {
         KstDebug::self()->log(i18n("Equation was unable to load plugin %1.").arg(pn->name()), KstDebug::Warning);
       }
     } else {
@@ -457,12 +478,15 @@ Function::~Function() {
   _args = 0L;
   _f = 0L;
   if (_localData) {
-    if (!_plugin->freeLocalData(&_localData)) {
+    if (!_cStylePlugin->freeLocalData(&_localData)) {
       free(_localData);
     }
     _localData = 0L;
   }
-  _plugin = 0L;
+
+  _cStylePlugin = 0L;
+  _dataObjectPlugin = 0L;
+
   delete[] _inScalars;
   delete[] _inVectors;
   delete[] _outScalars;
@@ -475,19 +499,11 @@ Function::~Function() {
 }
 
 
-KstObject::UpdateType Function::update(int counter, Context *ctx) {
-  KstObject::UpdateType ut = _args->update(counter, ctx);
-  if (ut == KstObject::NO_CHANGE && counter != -1) {
-    return KstObject::NO_CHANGE;
-  }
-
-  if (!_plugin) {
-    return KstObject::NO_CHANGE;
-  }
-
-  const QValueList<Plugin::Data::IOValue>& itable = _plugin->data()._inputs;
+KstObject::UpdateType Function::updateCStylePlugin(Context *ctx) {
+  const QValueList<Plugin::Data::IOValue>& itable = _cStylePlugin->data()._inputs;
   uint itcnt = 0, vitcnt = 0, cnt = 0;
-  // Populate the input scalars and vectors
+
+  // populate the input scalars and vectors
   for (QValueList<Plugin::Data::IOValue>::ConstIterator it = itable.begin(); it != itable.end(); ++it) {
     if ((*it)._type == Plugin::Data::IOValue::TableType) {
       Data *d = dynamic_cast<Data*>(_args->node(cnt + 1));
@@ -499,14 +515,14 @@ KstObject::UpdateType Function::update(int counter, Context *ctx) {
         if (pn && 0 == strcmp(pn->name(), "x")) {
           if (!ctx->xVector) {
             _outputIndex = -424242;
-            // Hope we recover later
+            // hope we recover later
             return KstObject::NO_CHANGE;
           }
           _inVectors[vitcnt] = ctx->xVector->value();
           _inArrayLens[vitcnt++] = ctx->xVector->length();
         } else {
           _outputIndex = -424242;
-          KstDebug::self()->log(i18n("Plugin %2 failed when called from equation.  Argument %1 was not found.").arg(cnt + 1).arg(_plugin->data()._name), KstDebug::Warning);
+          KstDebug::self()->log(i18n("Plugin %2 failed when called from equation.  Argument %1 was not found.").arg(cnt + 1).arg(_cStylePlugin->data()._name), KstDebug::Warning);
           return KstObject::NO_CHANGE;
         }
       }
@@ -521,25 +537,27 @@ KstObject::UpdateType Function::update(int counter, Context *ctx) {
   }
 
   int rc;
-  if (_plugin->data()._localdata) {
-    rc = _plugin->call(_inVectors, _inArrayLens, _inScalars, _outVectors, _outArrayLens, _outScalars, &_localData);
+
+  if (_cStylePlugin->data()._localdata) {
+    rc = _cStylePlugin->call(_inVectors, _inArrayLens, _inScalars, _outVectors, _outArrayLens, _outScalars, &_localData);
   } else {
-    rc = _plugin->call(_inVectors, _inArrayLens, _inScalars, _outVectors, _outArrayLens, _outScalars);
+    rc = _cStylePlugin->call(_inVectors, _inArrayLens, _inScalars, _outVectors, _outArrayLens, _outScalars);
   }
 
   _outputIndex = -424242;
   if (rc != 0) {
-    KstDebug::self()->log(i18n("Plugin %1 failed when called from equation.").arg(_plugin->data()._name), KstDebug::Warning);
+    KstDebug::self()->log(i18n("Plugin %1 failed when called from equation.").arg(_cStylePlugin->data()._name), KstDebug::Warning);
     return KstObject::NO_CHANGE;
   }
 
-  if (!_plugin->data()._filterOutputVector.isEmpty()) {
+  if (!_cStylePlugin->data()._filterOutputVector.isEmpty()) {
     int loc = 0;
     bool found = false;
-    const QValueList<Plugin::Data::IOValue>& otable = _plugin->data()._outputs;
+    const QValueList<Plugin::Data::IOValue>& otable = _cStylePlugin->data()._outputs;
+
     for (QValueList<Plugin::Data::IOValue>::ConstIterator it = otable.begin(); it != otable.end(); ++it) {
       if ((*it)._type == Plugin::Data::IOValue::TableType) {
-        if ((*it)._name == _plugin->data()._filterOutputVector) {
+        if ((*it)._name == _cStylePlugin->data()._filterOutputVector) {
           found = true;
           break;
         }
@@ -565,7 +583,99 @@ KstObject::UpdateType Function::update(int counter, Context *ctx) {
 }
 
 
-double Function::evaluatePlugin(Context *ctx) {
+KstObject::UpdateType Function::updateDataObjectPlugin(int counter, Context *ctx) {
+  KstObject::UpdateType ut = KstObject::UPDATE;
+  QStringList vectors;
+  QStringList scalars;
+  QStringList outVectors;
+  QStringList outScalars;
+  uint cnt = 0;
+
+  // populate the input scalars and vectors
+  vectors = _dataObjectPlugin->inputVectorList();
+  for (QStringList::ConstIterator it = vectors.begin(); it != vectors.end(); ++it) {
+    Data *d = dynamic_cast<Data*>(_args->node(cnt + 1));
+    if (d && d->_vector) {
+      _dataObjectPlugin->setInputVector(*it, d->_vector);
+    } else {
+      Identifier *pn = dynamic_cast<Identifier*>(_args->node(cnt + 1));
+      if (pn && 0 == strcmp(pn->name(), "x")) {
+        if (!ctx->xVector) {
+          _outputIndex = -424242;
+          // hope we recover later
+          return KstObject::NO_CHANGE;
+        }
+        _dataObjectPlugin->setInputVector(*it, ctx->xVector);
+      } else {
+        _outputIndex = -424242;
+        KstDebug::self()->log(i18n("Plugin %2 failed when called from equation.  Argument %1 was not found.").arg(cnt + 1).arg(_dataObjectPlugin->tagName()), KstDebug::Warning);
+        return KstObject::NO_CHANGE;
+      }
+    }
+    ++cnt;
+  }
+
+  scalars = _dataObjectPlugin->inputScalarList();
+  for (QStringList::ConstIterator it = scalars.begin(); it != scalars.end(); ++it) {
+    Data *d = dynamic_cast<Data*>(_args->node(cnt + 1));
+    if (d && d->_scalar) {
+      _dataObjectPlugin->setInputScalar(*it, d->_scalar);
+    } else {
+      Node *n = _args->node(cnt + 1);
+      if (n) {
+        KstScalarPtr sp = new KstScalar(KstObjectTag::fromString(*it), 0L, n->value(ctx), true, false, false);
+        if (sp) {
+          _dataObjectPlugin->setInputScalar(*it, sp);
+        }
+      }
+    }
+    ++cnt;
+  }
+
+  {
+    KstWriteLocker pl(_dataObjectPlugin);
+
+    _dataObjectPlugin->update(counter);
+  }
+
+  _outputIndex = -424242;
+  outVectors = _dataObjectPlugin->outputVectorList();
+
+  if (_outputIndex == -424242) {
+    if (outVectors.count() > 0) {
+      KstVectorPtr vectorOut = _dataObjectPlugin->outputVector(outVectors.first());
+
+      if (vectorOut && vectorOut->length() > 1) {
+        _outputIndex = 0;
+      }
+    } else if (_dataObjectPlugin->outputScalarList().count() > 0) {
+      _outputIndex = -1;
+    }
+  }
+  return ut;
+}
+
+
+KstObject::UpdateType Function::update(int counter, Context *ctx) {
+  KstObject::UpdateType ut = _args->update(counter, ctx);
+
+  if (ut != KstObject::NO_CHANGE || counter != -1) {
+    if (_cStylePlugin) {
+      ut = updateCStylePlugin(ctx);
+    } else if (_dataObjectPlugin) {
+      ut = updateDataObjectPlugin(counter, ctx);
+    } else {
+      ut = KstObject::NO_CHANGE;
+    }
+  } else {
+    ut = KstObject::NO_CHANGE;
+  }
+
+  return ut;
+}
+
+
+double Function::evaluateCStylePlugin(Context *ctx) {
   if (_outputIndex >= 0) {
     return ::kstInterpolate(_outVectors[_outputIndex], _outArrayLens[_outputIndex], ctx->i, ctx->sampleCount);
   } else if (_outputIndex == -424242) {
@@ -578,9 +688,40 @@ double Function::evaluatePlugin(Context *ctx) {
 }
 
 
+double Function::evaluateDataObjectPlugin(Context *ctx) {
+  if (_outputIndex == -424242) {
+    return ctx->noPoint;
+  } else if (_outputIndex >= 0) {
+    if (int(_dataObjectPlugin->outputVectorList().count()) > _outputIndex) {
+      KstVectorPtr vector;
+
+      vector = _dataObjectPlugin->outputVector(_dataObjectPlugin->outputVectorList()[_outputIndex]);
+      if (vector) {
+        return vector->interpolate(ctx->i, ctx->sampleCount);
+      }
+    }
+  } else {
+    int index = abs(_outputIndex) - 1;
+
+    if (int(_dataObjectPlugin->outputScalarList().count()) > index) {
+      KstScalarPtr scalar;
+
+      scalar = _dataObjectPlugin->outputScalar(_dataObjectPlugin->outputScalarList()[index]);
+      if (scalar) {
+        return scalar->value();
+      }
+    }
+  }
+
+  return ctx->noPoint;
+}
+
+
 double Function::value(Context *ctx) {
-  if (_plugin) {
-    return evaluatePlugin(ctx);
+  if (_cStylePlugin) {
+    return evaluateCStylePlugin(ctx);
+  } else if (_dataObjectPlugin) {
+    return evaluateDataObjectPlugin(ctx);
   }
 
   if (!_f) {
@@ -609,7 +750,7 @@ bool Function::isConst() {
 
 
 bool Function::isPlugin() const {
-  return _plugin != 0L;
+  return _cStylePlugin != 0L;
 }
 
 
@@ -631,7 +772,6 @@ QString Function::text() const {
 /////////////////////////////////////////////////////////////////
 ArgumentList::ArgumentList()
 : Node() {
-  //printf("%p: New Argument List\n", (void*)this);
   _args.setAutoDelete(true);
 }
 
@@ -726,7 +866,6 @@ static struct {
 
 Identifier::Identifier(char *name)
 : Node(), _name(name), _const(0L) {
-  //printf("%p: New Identifier: %s\n", (void*)this, name);
   for (int i = 0; ITable[i].name; ++i) {
     if (strcasecmp(ITable[i].name, name) == 0) {
       _const = &ITable[i].value;
@@ -771,7 +910,6 @@ QString Identifier::text() const {
 /////////////////////////////////////////////////////////////////
 Data::Data(char *name)
 : Node(), _isEquation(false), _equation(0L) {
-  //printf("%p: New Data Object: [%s]\n", (void*)this, name);
   if (name[0] == '=') {
     _tagName = QString(&name[1]).stripWhiteSpace();
     _isEquation = true;
@@ -951,7 +1089,6 @@ QString Data::text() const {
 /////////////////////////////////////////////////////////////////
 Number::Number(double n)
 : Node(), _n(n) {
-  //printf("%p: New Number: %lf\n", (void*)this, n);
 }
 
 
@@ -981,7 +1118,6 @@ QString Number::text() const {
 /////////////////////////////////////////////////////////////////
 Negation::Negation(Node *node)
 : Node(), _n(node) {
-  //printf("%p: New Negation: %p\n", (void*)this, (void*)n);
 }
 
 
@@ -1014,7 +1150,6 @@ QString Negation::text() const {
 /////////////////////////////////////////////////////////////////
 LogicalNot::LogicalNot(Node *node)
 : Node(), _n(node) {
-  //printf("%p: New LogicalNot: %p\n", (void*)this, (void*)n);
 }
 
 
@@ -1047,7 +1182,6 @@ QString LogicalNot::text() const {
 /////////////////////////////////////////////////////////////////
 BitwiseAnd::BitwiseAnd(Node *left, Node *right)
 : BinaryNode(left, right) {
-  //printf("%p: New And: %p & %p\n", (void*)this, (void*)left, (void*)right);
 }
 
 
@@ -1077,7 +1211,6 @@ QString BitwiseAnd::text() const {
 /////////////////////////////////////////////////////////////////
 BitwiseOr::BitwiseOr(Node *left, Node *right)
 : BinaryNode(left, right) {
-  //printf("%p: New Or: %p | %p\n", (void*)this, (void*)left, (void*)right);
 }
 
 
@@ -1107,7 +1240,6 @@ QString BitwiseOr::text() const {
 /////////////////////////////////////////////////////////////////
 LogicalAnd::LogicalAnd(Node *left, Node *right)
 : BinaryNode(left, right) {
-  //printf("%p: New And: %p && %p\n", (void*)this, (void*)left, (void*)right);
 }
 
 
@@ -1137,7 +1269,6 @@ QString LogicalAnd::text() const {
 /////////////////////////////////////////////////////////////////
 LogicalOr::LogicalOr(Node *left, Node *right)
 : BinaryNode(left, right) {
-  //printf("%p: New Or: %p || %p\n", (void*)this, (void*)left, (void*)right);
 }
 
 
@@ -1167,7 +1298,6 @@ QString LogicalOr::text() const {
 /////////////////////////////////////////////////////////////////
 LessThan::LessThan(Node *left, Node *right)
 : BinaryNode(left, right) {
-  //printf("%p: New LessThan: %p < %p\n", (void*)this, (void*)left, (void*)right);
 }
 
 
@@ -1197,7 +1327,6 @@ QString LessThan::text() const {
 /////////////////////////////////////////////////////////////////
 LessThanEqual::LessThanEqual(Node *left, Node *right)
 : BinaryNode(left, right) {
-  //printf("%p: New LessThanEqual: %p <= %p\n", (void*)this, (void*)left, (void*)right);
 }
 
 
@@ -1227,7 +1356,6 @@ QString LessThanEqual::text() const {
 /////////////////////////////////////////////////////////////////
 GreaterThan::GreaterThan(Node *left, Node *right)
 : BinaryNode(left, right) {
-  //printf("%p: New GreaterThan: %p > %p\n", (void*)this, (void*)left, (void*)right);
 }
 
 
@@ -1257,7 +1385,6 @@ QString GreaterThan::text() const {
 /////////////////////////////////////////////////////////////////
 GreaterThanEqual::GreaterThanEqual(Node *left, Node *right)
 : BinaryNode(left, right) {
-  //printf("%p: New GreaterThanEqual: %p >= %p\n", (void*)this, (void*)left, (void*)right);
 }
 
 
@@ -1287,7 +1414,6 @@ QString GreaterThanEqual::text() const {
 /////////////////////////////////////////////////////////////////
 EqualTo::EqualTo(Node *left, Node *right)
 : BinaryNode(left, right) {
-  //printf("%p: New EqualTo: %p == %p\n", (void*)this, (void*)left, (void*)right);
 }
 
 
@@ -1317,8 +1443,7 @@ QString EqualTo::text() const {
 /////////////////////////////////////////////////////////////////
 NotEqualTo::NotEqualTo(Node *left, Node *right)
 : BinaryNode(left, right) {
-  //printf("%p: New NotEqualTo: %p != %p\n", (void*)this, (void*)left, (void*)right);
-}
+ }
 
 
 NotEqualTo::~NotEqualTo() {
@@ -1395,4 +1520,3 @@ void FoldVisitor::visitBinaryNode(BinaryNode *n) {
   }
 }
 
-// vim: ts=2 sw=2 et

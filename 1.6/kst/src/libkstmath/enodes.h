@@ -18,6 +18,7 @@
 #ifndef ENODES_H
 #define ENODES_H
 
+#include "kstbasicplugin.h"
 #include "kststring.h"
 #include "kstvector.h"
 #include "kst_export.h"
@@ -133,10 +134,14 @@ namespace Equation {
       char *_name;
       ArgumentList *_args;
       void *_f;
-      KstSharedPtr<Plugin> _plugin;
+      KstSharedPtr<Plugin> _cStylePlugin;
+      KstBasicPluginPtr _dataObjectPlugin;
 
     private:
-      double evaluatePlugin(Context *ctx);
+      KstObject::UpdateType updateCStylePlugin(Context *ctx);
+      KstObject::UpdateType updateDataObjectPlugin(int counter, Context *ctx);
+      double evaluateCStylePlugin(Context *ctx);
+      double evaluateDataObjectPlugin(Context *ctx);
       unsigned _inputScalarCnt, _inputVectorCnt, _inputStringCnt;
       unsigned _inPid, _outputScalarCnt, _outputVectorCnt, _outputStringCnt;
       int *_inArrayLens, *_outArrayLens;
@@ -279,4 +284,3 @@ CreateNode(NotEqualTo)
 
 #endif
 
-// vim: ts=2 sw=2 et
