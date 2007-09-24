@@ -75,7 +75,7 @@ class KstDataWizard: public DataWizard {
   private:
     bool checkAvailableMemory(KstDataSourcePtr &ds, int f0Value, int nValue);
     void createLegendsAndLabels(KstViewObjectList &plots, bool xLabels, bool yLabels, bool titleLabel, bool legend, bool legendAuto, int fontSize);
-    void cleanupWindowLayout(KstViewObjectList &plots, KstViewWindow *window);
+    void cleanupWindowLayout(KstViewWindow *window);
 
     static const QString &defaultTag;
     QGuardedPtr<QWidget> _configWidget;

@@ -774,7 +774,7 @@ void KstDataWizard::createLegendsAndLabels(KstViewObjectList &plots, bool xLabel
 }
 
 
-void KstDataWizard::cleanupWindowLayout(KstViewObjectList &plots, KstViewWindow *window)
+void KstDataWizard::cleanupWindowLayout(KstViewWindow *window)
 {
   if (window) {
     //
@@ -1209,8 +1209,8 @@ void KstDataWizard::finished()
 
     createLegendsAndLabels(plots, _xAxisLabels->isChecked(), _yAxisLabels->isChecked(), _plotTitles->isChecked(), _legendsOn->isChecked(), _legendsAuto->isChecked(), fontSize);
 
-    cleanupWindowLayout(plots, window);
-    cleanupWindowLayout(plots, windowPSD);
+    cleanupWindowLayout(window);
+    cleanupWindowLayout(windowPSD);
 
     app->slotUpdateProgress(0, 0, QString::null);
     if (!wasPaused) {
