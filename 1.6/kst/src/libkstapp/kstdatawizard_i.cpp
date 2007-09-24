@@ -701,8 +701,45 @@ bool KstDataWizard::checkAvailableMemory(KstDataSourcePtr &ds, int f0Value, int 
   ds->unlock();
 
   if (memoryRequested > memoryAvailable) {
-    KMessageBox::sorry(this, i18n("You requested to read in %1 MB of data but it seems that you only have approximately %2 MB of usable memory available.  You cannot load this much data.").arg(memoryRequested/(1024*1024)).arg(memoryAvailable/(1024*1024)));
-    rc = false;
+    QString strMemoryRequested;
+    QString strMemoryAvailable;
+
+    memoryRequested /= 1024;
+    memoryAvailable /= 1024;
+    if (memoryRequested < 10 * 1024) {
+      strMemoryRequested = i18n("abbreviation for kilobytes", "%1 kB").arg(memoryRequested);
+      strMemoryAvailable = i18n("abbreviation for kilobytes", "%1 kB").arg(memoryAvailable);
+    } else {
+      memoryRequested /= 1024;
+      memoryAvailable /= 1024;
+      if (memoryRequested < 10 * 1024) {
+        strMemoryRequested = i18n("abbreviation for megabytes", "%1 MB").arg(memoryRequested);
+        strMemoryAvailable = i18n("abbreviation for megabytes", "%1 MB").arg(memoryAvailable);
+      } else {
+        memoryRequested /= 1024;
+        memoryAvailable /= 1024;
+        if (memoryRequested < 10 * 1024) {
+          strMemoryRequested = i18n("abbreviation for gigabytes", "%1 GB").arg(memoryRequested);
+          strMemoryAvailable = i18n("abbreviation for gigabytes", "%1 GB").arg(memoryAvailable);
+        } else {
+          memoryRequested /= 1024;
+          memoryAvailable /= 1024;
+          strMemoryRequested = i18n("abbreviation for terabytes", "%1 TB").arg(memoryRequested);
+          strMemoryAvailable = i18n("abbreviation for terabytes", "%1 TB").arg(memoryAvailable);
+        }
+      }
+    }
+
+    if (strMemoryRequested != strMemoryAvailable) {
+      KMessageBox::sorry(this, i18n("You requested to read in over %1 of data but it seems that you have approximately only %2 of usable memory available. You cannot load this much data.").arg(strMemoryRequested).arg(strMemoryAvailable));
+      rc = false;
+    } else {
+      if (KMessageBox::questionYesNo(this, i18n("You requested to read in approximately %1 of data but it seems that you have slightly less usable memory than this available. Would you like to try and load the data anyway?").arg(strMemoryRequested)) == KMessageBox::Yes) {
+        rc = true;
+      } else {
+        rc = false;
+      }
+    }
   }
 
   return rc;

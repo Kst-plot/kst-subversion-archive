@@ -969,31 +969,33 @@ void KstApp::delayedDocInit() {
 void KstApp::selectDataPlugin() {
   QStringList l;
 
-  // the new KstDataObject plugins...
-  QStringList newPlugins;
+  // the KstDataObject plugins...
+  QStringList dataObjectPlugins;
   const KstPluginInfoList pluginInfo = KstDataObject::pluginInfoList();
   {
     KstPluginInfoList::ConstIterator it = pluginInfo.begin();
     for (; it != pluginInfo.end(); ++it) {
-      newPlugins << it.key();
+      dataObjectPlugins << it.key();
     }
   }
 
-  l += newPlugins;
+  l += dataObjectPlugins;
 
-  // the old C style plugins...
-  QStringList oldPlugins;
+  // the C-style plugins...
+  QStringList cPlugins;
   const QMap<QString,QString> readable = PluginCollection::self()->readableNameList();
   {
     QMap<QString,QString>::const_iterator it = readable.begin();
     for (; it != readable.end(); ++it) {
-      oldPlugins << it.key();
+      cPlugins << it.key();
     }
   }
 
-  l += oldPlugins;
+  l += cPlugins;
 
-  // list the old and new stlye plugins together in ascending alphabetical order...
+  //
+  // list the KstDataObject and C-style plugins together in ascending alphabetical order...
+  //
   l.sort();
 
   bool ok = false;
@@ -1002,10 +1004,10 @@ void KstApp::selectDataPlugin() {
   if (ok && !plugin.isEmpty()) {
     const QString p = plugin.join("");
 
-    if (newPlugins.contains(p)) {
+    if (dataObjectPlugins.contains(p)) {
       KstDataObjectPtr ptr = KstDataObject::plugin(p);
       ptr->showDialog(true);
-    } else if (oldPlugins.contains(p)) {
+    } else if (cPlugins.contains(p)) {
       KstPluginDialogI::globalInstance()->showNew(readable[p]);
     }
   }
@@ -2533,8 +2535,29 @@ void KstApp::fromEnd() {
 void KstApp::updateMemoryStatus() {
 #ifdef HAVE_LINUX
   meminfo();
+
+  QString memoryAvailable;
   unsigned long mi = S(kb_main_free + kb_main_buffers + kb_main_cached);
-  slotUpdateMemoryMsg(i18n("%1 MB available").arg(mi / (1024 * 1024)));
+
+  mi /= 1024;
+  if (mi < 1024) {
+    memoryAvailable = i18n("abbreviation for kilobytes", "%1 kB").arg(mi);
+  } else {
+    mi /= 1024;
+    if (mi < 1024) {
+      memoryAvailable = i18n("abbreviation for megabytes", "%1 MB").arg(mi);
+    } else {
+      mi /= 1024;
+      if (mi < 1024) {
+        memoryAvailable = i18n("abbreviation for gigabytes", "%1 GB").arg(mi);
+      } else {
+        mi /= 1024;
+        memoryAvailable = i18n("abbreviation for terabytes", "%1 TB").arg(mi);
+      }
+    }
+  }
+
+  slotUpdateMemoryMsg(i18n("%1 available").arg(memoryAvailable));
 #endif
 }
 
