@@ -402,7 +402,7 @@ Function::Function(char *name, ArgumentList *args)
   _outVectors = 0L;
   _inArrayLens = 0L;
   _outArrayLens = 0L;
-  _outputIndex = -424242;
+  _outputIndex = EQ_INDEX_ERROR;
   _localData = 0L;
   _outputVectorCnt = 0;
   _inputVectorCnt = 0;
@@ -415,6 +415,19 @@ Function::Function(char *name, ArgumentList *args)
       // first check for the C-style plugins...
       //
       _cStylePlugin = PluginCollection::self()->plugin(pn->name());
+      if (!_cStylePlugin) {
+        //
+        // the user may be using the readable name -
+        //  we should certainly support this as it is the only name the user ever sees...
+        //
+        QMap<QString,QString>::ConstIterator rc;
+
+        rc = PluginCollection::self()->readableNameList().find(pn->name());
+        if (rc != PluginCollection::self()->readableNameList().end()) {
+          _cStylePlugin = PluginCollection::self()->plugin(*rc);
+        }
+      }
+
       if (_cStylePlugin) {
         const QValueList<Plugin::Data::IOValue>& itable = _cStylePlugin->data()._inputs;
         const QValueList<Plugin::Data::IOValue>& otable = _cStylePlugin->data()._outputs;
@@ -514,14 +527,14 @@ KstObject::UpdateType Function::updateCStylePlugin(Context *ctx) {
         Identifier *pn = dynamic_cast<Identifier*>(_args->node(cnt + 1));
         if (pn && 0 == strcmp(pn->name(), "x")) {
           if (!ctx->xVector) {
-            _outputIndex = -424242;
+            _outputIndex = EQ_INDEX_ERROR;
             // hope we recover later
             return KstObject::NO_CHANGE;
           }
           _inVectors[vitcnt] = ctx->xVector->value();
           _inArrayLens[vitcnt++] = ctx->xVector->length();
         } else {
-          _outputIndex = -424242;
+          _outputIndex = EQ_INDEX_ERROR;
           KstDebug::self()->log(i18n("Plugin %2 failed when called from equation.  Argument %1 was not found.").arg(cnt + 1).arg(_cStylePlugin->data()._name), KstDebug::Warning);
           return KstObject::NO_CHANGE;
         }
@@ -544,7 +557,7 @@ KstObject::UpdateType Function::updateCStylePlugin(Context *ctx) {
     rc = _cStylePlugin->call(_inVectors, _inArrayLens, _inScalars, _outVectors, _outArrayLens, _outScalars);
   }
 
-  _outputIndex = -424242;
+  _outputIndex = EQ_INDEX_ERROR;
   if (rc != 0) {
     KstDebug::self()->log(i18n("Plugin %1 failed when called from equation.").arg(_cStylePlugin->data()._name), KstDebug::Warning);
     return KstObject::NO_CHANGE;
@@ -569,7 +582,7 @@ KstObject::UpdateType Function::updateCStylePlugin(Context *ctx) {
     }
   }
 
-  if (_outputIndex == -424242) {
+  if (_outputIndex == EQ_INDEX_ERROR) {
     if (_outputVectorCnt > 0) {
       if (_outVectors[0] && _outArrayLens[0] > 1) {
         _outputIndex = 0;
@@ -601,13 +614,13 @@ KstObject::UpdateType Function::updateDataObjectPlugin(int counter, Context *ctx
       Identifier *pn = dynamic_cast<Identifier*>(_args->node(cnt + 1));
       if (pn && 0 == strcmp(pn->name(), "x")) {
         if (!ctx->xVector) {
-          _outputIndex = -424242;
+          _outputIndex = EQ_INDEX_ERROR;
           // hope we recover later
           return KstObject::NO_CHANGE;
         }
         _dataObjectPlugin->setInputVector(*it, ctx->xVector);
       } else {
-        _outputIndex = -424242;
+        _outputIndex = EQ_INDEX_ERROR;
         KstDebug::self()->log(i18n("Plugin %2 failed when called from equation.  Argument %1 was not found.").arg(cnt + 1).arg(_dataObjectPlugin->tagName()), KstDebug::Warning);
         return KstObject::NO_CHANGE;
       }
@@ -638,10 +651,10 @@ KstObject::UpdateType Function::updateDataObjectPlugin(int counter, Context *ctx
     _dataObjectPlugin->update(counter);
   }
 
-  _outputIndex = -424242;
+  _outputIndex = EQ_INDEX_ERROR;
   outVectors = _dataObjectPlugin->outputVectorList();
 
-  if (_outputIndex == -424242) {
+  if (_outputIndex == EQ_INDEX_ERROR) {
     if (outVectors.count() > 0) {
       KstVectorPtr vectorOut = _dataObjectPlugin->outputVector(outVectors.first());
 
@@ -678,7 +691,7 @@ KstObject::UpdateType Function::update(int counter, Context *ctx) {
 double Function::evaluateCStylePlugin(Context *ctx) {
   if (_outputIndex >= 0) {
     return ::kstInterpolate(_outVectors[_outputIndex], _outArrayLens[_outputIndex], ctx->i, ctx->sampleCount);
-  } else if (_outputIndex == -424242) {
+  } else if (_outputIndex == EQ_INDEX_ERROR) {
     return ctx->noPoint;
   } else { // make sense?
     return _outScalars[abs(_outputIndex) - 1];
@@ -689,7 +702,7 @@ double Function::evaluateCStylePlugin(Context *ctx) {
 
 
 double Function::evaluateDataObjectPlugin(Context *ctx) {
-  if (_outputIndex == -424242) {
+  if (_outputIndex == EQ_INDEX_ERROR) {
     return ctx->noPoint;
   } else if (_outputIndex >= 0) {
     if (int(_dataObjectPlugin->outputVectorList().count()) > _outputIndex) {
@@ -786,9 +799,11 @@ void ArgumentList::appendArgument(Node *arg) {
 
 
 double ArgumentList::at(int arg, Context *ctx) {
-  Node *n = _args.at(arg);
-  if (n) {
-    return n->value(ctx);
+  if (arg < (int)_args.count()) {
+    Node *n = _args.at(arg);
+    if (n) {
+      return n->value(ctx);
+    }
   }
   return ctx->noPoint;
 }
@@ -823,7 +838,11 @@ bool ArgumentList::takeVectorsAndScalars(const KstVectorMap& vm, const KstScalar
 
 
 Node *ArgumentList::node(int idx) {
-  return _args.at(idx);
+  if (idx < (int)_args.count()) {
+    return _args.at(idx);
+  } else {
+    return 0L;
+  }
 }
 
 

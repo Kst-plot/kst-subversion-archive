@@ -25,9 +25,9 @@
 
 class Plugin;
 
-#define EQ_FALSE 0.0
-#define EQ_TRUE  1.0
-
+#define EQ_FALSE        0.0
+#define EQ_TRUE         1.0
+#define EQ_INDEX_ERROR -424242
 namespace Equation {
 
   /* Global lock for the parser */
@@ -147,7 +147,7 @@ namespace Equation {
       int *_inArrayLens, *_outArrayLens;
       double *_inScalars, *_outScalars;
       double **_inVectors, **_outVectors;
-      int _outputIndex; // -1 = scalar 0, -424242 = none/error, +0...n = vector
+      int _outputIndex; // -1 = scalar 0, EQ_INDEX_ERROR = none/error, +0...n = vector
       void *_localData;
       int _argCount;
   };

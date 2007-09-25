@@ -14,7 +14,7 @@ void yyerror(const char *s);
 %}
 
 Number	([0-9]*\.?[0-9]+|[0-9]+\.)([eE][-+]?[0-9]+)?
-Id	[A-Za-z]+
+Id	[A-Za-z]([A-Za-z ]*[A-Za-z])?
 
 %%
 
