@@ -52,8 +52,8 @@ bool Bin::algorithm() {
   if (input->length() > 0) {
     int binSize = (int)size->value();
 
-    if (binSize < 1.0) {
-      binSize = 1.0;
+    if (binSize < 1) {
+      binSize = 1;
     }
     if (binSize > input->length()) {
       binSize = input->length();
