@@ -1503,24 +1503,31 @@ void KstViewObject::copyTo(int id) {
 void KstViewObject::updateFromAspect() {
   // FIXME: also take into account the maximum minimum child size in our children
   setMinimumSize(minimumSize().expandedTo(QSize(_children.count(), _children.count())));
+
   const QRect myOldGeom(_geom);
+
   if (_parent) {
     const QRect geom(_parent->contentsRect());
-    _geom.setLeft(geom.left() + int(_aspect.x * geom.width()));
-    _geom.setTop(geom.top() + int(_aspect.y * geom.height()));
-    _geom.setRight(geom.left() + int((_aspect.x + _aspect.w) * geom.width()) - 1);
-    _geom.setBottom(geom.top() + int((_aspect.y + _aspect.h) * geom.height()) - 1);
+
+    _geom.setLeft(geom.left() + int((_aspect.x * (double)geom.width())+0.5));
+    _geom.setTop(geom.top() + int((_aspect.y * (double)geom.height())+0.5));
+    _geom.setRight(geom.left() + int(((_aspect.x + _aspect.w) * (double)geom.width()) - 0.5));
+    _geom.setBottom(geom.top() + int(((_aspect.y + _aspect.h) * (double)geom.height()) - 0.5));
 
     if (_maintainAspect == true) {
       QSize maintaining_size(_idealSize);
-      maintaining_size.scale(_geom.size(),QSize::ScaleMin);
+
+      maintaining_size.scale(_geom.size(), QSize::ScaleMin);
       _geom.setSize(maintaining_size);
     }
   }
+
   if (_geom.width() < _minimumSize.width() || _geom.height() < _minimumSize.height()) {
     _geom.setSize(_geom.size().expandedTo(_minimumSize));
   }
+
   assert(_geom.left() >= 0 && _geom.top() >= 0 && !_geom.size().isNull());
+
   if (myOldGeom != _geom) {
     setDirty();
   }
@@ -1530,6 +1537,7 @@ void KstViewObject::updateFromAspect() {
 void KstViewObject::updateAspectPos() {
   if (_parent) {
     const QRect geom(_parent->contentsRect());
+
     _aspect.x = double(geometry().left() - geom.left()) / double(geom.width());
     _aspect.y = double(geometry().top() - geom.top()) / double(geom.height());
   } else {
@@ -1542,6 +1550,7 @@ void KstViewObject::updateAspectPos() {
 void KstViewObject::updateAspectSize() {
   if (_parent) {
     const QRect geom(_parent->contentsRect());
+
     _aspect.w = double(geometry().width()) / double(geom.width());
     _aspect.h = double(geometry().height()) / double(geom.height());
   } else {
