@@ -35,6 +35,7 @@ class KstViewEllipse : public KstViewObject {
     KstViewEllipse(const KstViewEllipse& ellipse);
     virtual ~KstViewEllipse();
 
+    virtual void invalidateClipRegion();
     virtual QRegion clipRegion();
     virtual KstViewObject* copyObjectQuietly(KstViewObject& parent, const QString& name = QString::null) const;
     virtual KstViewObject* copyObjectQuietly() const;
@@ -50,6 +51,7 @@ class KstViewEllipse : public KstViewObject {
     virtual QRegion region();
     virtual bool transparent() const;
     virtual void setTransparent(bool transparent);
+    virtual bool complexObject() const;
 
     // can't have Q_PROPERTY in KstViewObject?
     virtual void setForegroundColor(const QColor& color);

@@ -47,6 +47,7 @@ class KstTopLevelView : public KstViewObject {
     void updateAlignment(KstPainter& p);
     void paint(KstPainter::PaintType type);
     void paint(KstPainter::PaintType type, const QRegion& boundry);
+    void paintSelf(KstPainter& p, const QRegion& bounds);
 
     void clearFocus();
     enum ViewMode { LayoutMode = 0, DisplayMode, CreateMode, LabelMode, Unknown = 15 };

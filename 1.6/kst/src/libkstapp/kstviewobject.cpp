@@ -412,9 +412,6 @@ void KstViewObject::paintSelf(KstPainter& p, const QRegion& bounds) {
   if (!bounds.isNull()) {
     p.setClipRegion(bounds);
   }
-  if (!transparent()) {
-    p.fillRect(geometry(), _backgroundColor);
-  }
 }
 
 
@@ -1937,6 +1934,11 @@ bool KstViewObject::transparent() const {
 }
 
 
+bool KstViewObject::complexObject() const {
+  return false;
+}
+
+
 QRegion KstViewObject::clipRegion() {
   if (_clipMask.isNull()) {
     if (transparent()) {
@@ -2150,7 +2152,7 @@ bool KstViewObject::isResizable() const {
 void KstViewObject::invalidateClipRegion() {
   _clipMask = QRegion();
   if (_parent) {
-    if (_parent->transparent()) {
+    if (_parent->complexObject() || _parent->transparent()) {
       _parent->invalidateClipRegion();
     }
   }

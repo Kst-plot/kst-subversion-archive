@@ -148,9 +148,9 @@ class KST_EXPORT KstViewObject : public KstObject {
     virtual void setForegroundColor(const QColor& color);
     virtual QColor foregroundColor() const;
 
-    // One day maybe we'll even have translucency available!
     virtual void setTransparent(bool transparent);
     virtual bool transparent() const;
+    virtual bool complexObject() const;
 
     virtual void setFollowsFlow(bool follow);
     virtual bool followsFlow() const;

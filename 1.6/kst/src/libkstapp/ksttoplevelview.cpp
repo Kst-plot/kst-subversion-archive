@@ -165,6 +165,14 @@ void KstTopLevelView::paint(KstPainter::PaintType type, const QRegion& bounds) {
 }
 
 
+void KstTopLevelView::paintSelf(KstPainter& p, const QRegion& bounds) {
+  if (!bounds.isNull()) {
+    p.setClipRegion(bounds);
+  }
+  p.fillRect(geometry(), _backgroundColor);
+}
+
+
 void KstTopLevelView::clearFocus() {
   if (_focusOn) {
     _pressDirection = -1;

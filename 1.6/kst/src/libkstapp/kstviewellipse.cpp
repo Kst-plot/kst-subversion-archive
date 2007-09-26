@@ -125,6 +125,14 @@ void KstViewEllipse::paintSelf(KstPainter& p, const QRegion& bounds) {
 }
 
 
+void KstViewEllipse::invalidateClipRegion() {
+  _clipMask = QRegion();
+  if (_parent) {
+    _parent->invalidateClipRegion();
+  }
+}
+
+
 QRegion KstViewEllipse::clipRegion() {
   if (_clipMask.isNull()) {
     if (transparent() || !_children.isEmpty()) {
@@ -249,6 +257,11 @@ void KstViewEllipse::setTransparent(bool transparent) {
 
 bool KstViewEllipse::transparent() const {
   return KstViewObject::transparent();
+}
+
+
+bool KstViewEllipse::complexObject() const {
+  return true;
 }
 
 
