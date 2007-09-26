@@ -32,6 +32,7 @@ K_EXPORT_COMPONENT_FACTORY( kstobject_bin,
 
 Bin::Bin( QObject */*parent*/, const char */*name*/, const QStringList &/*args*/ )
     : KstBasicPlugin() {
+  _inputScalarDefaults.insert(SIZE, 10.0);
 }
 
 
@@ -50,7 +51,7 @@ bool Bin::algorithm() {
 
   //Make sure there is at least 1 element in the input vector
   //Make sure the bin size is at least 1
-  if (input->length() < 1 || size->value() < 1) {
+  if (input->length() < 1 || size->value() < 1.0) {
     return -1;
   }
 
@@ -58,16 +59,15 @@ bool Bin::algorithm() {
   bins->resize(int(input->length() / size->value()), false);
 
   //now bin the data
-  for (int i=0; i<bins->length(); i++)
-  {
-      bins->value()[i]=0;
-      //add up the elements for this bin
-      for (int j=0; j<size->value(); j++)
-      {
-          bins->value()[i]+=input->value()[int(i*size->value()+j)];
-      }
-      //find the mean
-      bins->value()[i]/=size->value();
+  for (int i=0; i<bins->length(); i++) {
+    bins->value()[i] = 0.0;
+
+    //add up the elements for this bin
+    for (int j=0; j<size->value(); j++) {
+      bins->value()[i] += input->value()[int(i*size->value()+j)];
+    }
+    //find the mean
+    bins->value()[i] /= size->value();
   }
   return true;
 }

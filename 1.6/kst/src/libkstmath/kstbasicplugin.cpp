@@ -96,55 +96,61 @@ void KstBasicPlugin::showEditDialog() {
 
 KstVectorPtr KstBasicPlugin::inputVector(const QString& vector) const {
   KstVectorMap::ConstIterator i = _inputVectors.find(vector);
-  if (i != _inputVectors.end())
+  if (i != _inputVectors.end()) {
     return *i;
-  else
+  } else {
     return 0;
+  }
 }
 
 
 KstScalarPtr KstBasicPlugin::inputScalar(const QString& scalar) const {
   KstScalarMap::ConstIterator i = _inputScalars.find(scalar);
-  if (i != _inputScalars.end())
+  if (i != _inputScalars.end()) {
     return *i;
-  else
+  } else {
     return 0;
+  }
 }
 
 
 KstStringPtr KstBasicPlugin::inputString(const QString& string) const {
   KstStringMap::ConstIterator i = _inputStrings.find(string);
-  if (i != _inputStrings.end())
+  if (i != _inputStrings.end()) {
     return *i;
-  else
+  } else {
     return 0;
+  }
 }
 
 
 KstVectorPtr KstBasicPlugin::outputVector(const QString& vector) const {
   KstVectorMap::ConstIterator i = _outputVectors.find(vector);
-  if (i != _outputVectors.end())
+  if (i != _outputVectors.end()) {
     return *i;
-  else
+  } else {
     return 0;
+  }
 }
 
 
 KstScalarPtr KstBasicPlugin::outputScalar(const QString& scalar) const {
   KstScalarMap::ConstIterator i = _outputScalars.find(scalar);
-  if (i != _outputScalars.end())
+  if (i != _outputScalars.end()) {
     return *i;
-  else
+  } else {
     return 0;
+  }
 }
 
 
 KstStringPtr KstBasicPlugin::outputString(const QString& string) const {
   KstStringMap::ConstIterator i = _outputStrings.find(string);
-  if (i != _outputStrings.end())
+  if (i != _outputStrings.end()) {
     return *i;
-  else
+  } else {
     return 0;
+  }
 }
 
 
@@ -217,8 +223,9 @@ KstObject::UpdateType KstBasicPlugin::update(int updateCounter) {
   }
 
   //Make sure we have all the necessary inputs
-  if (!inputsExist())
+  if (!inputsExist()) {
     return setLastUpdateResult(NO_CHANGE);
+  }
 
   writeLockInputsAndOutputs();
 
@@ -313,8 +320,10 @@ void KstBasicPlugin::createFitScalars() {
 }
 
 
-QString KstBasicPlugin::parameterName(int /*index*/) const {
-    return QString::null;
+QString KstBasicPlugin::parameterName(int index) const {
+  Q_UNUSED(index)
+
+  return QString::null;
 }
 
 
@@ -345,6 +354,7 @@ QString KstBasicPlugin::label(int precision) const {
 
 void KstBasicPlugin::save(QTextStream& ts, const QString& indent) {
   QString l2 = indent + "  ";
+
   //The plugin name _must_ be the same as the entry in the .desktop file
   ts << indent << "<plugin name=\"" << propertyString() << "\">" << endl;
   ts << l2 << "<tag>" << QStyleSheet::escape(tagName()) << "</tag>" << endl;
@@ -391,25 +401,29 @@ bool KstBasicPlugin::inputsExist() const {
   QStringList iv = inputVectorList();
   QStringList::ConstIterator ivI = iv.begin();
   for (; ivI != iv.end(); ++ivI) {
-    if (!inputVector(*ivI))
+    if (!inputVector(*ivI)) {
       return false;
+    }
   }
 
   //Now, check the inputScalars...
   QStringList is = inputScalarList();
   QStringList::ConstIterator isI = is.begin();
   for (; isI != is.end(); ++isI) {
-    if (!inputScalar(*isI))
+    if (!inputScalar(*isI)) {
       return false;
+    }
   }
 
   //Finally, check the inputStrings...
   QStringList istr = inputStringList();
   QStringList::ConstIterator istrI = istr.begin();
   for (; istrI != istr.end(); ++istrI) {
-    if (!inputString(*istrI))
+    if (!inputString(*istrI)) {
       return false;
+    }
   }
+
   return true;
 }
 
@@ -422,8 +436,7 @@ bool KstBasicPlugin::updateInput(int updateCounter, bool force) const {
   QStringList::ConstIterator ivI = iv.begin();
   for (; ivI != iv.end(); ++ivI) {
     Q_ASSERT(inputVector(*ivI)->myLockStatus() == KstRWLock::WRITELOCKED);
-    depUpdated =
-        UPDATE == inputVector(*ivI)->update(updateCounter) || depUpdated;
+    depUpdated = UPDATE == inputVector(*ivI)->update(updateCounter) || depUpdated;
   }
 
   //Now, update the inputScalars...
@@ -431,8 +444,7 @@ bool KstBasicPlugin::updateInput(int updateCounter, bool force) const {
   QStringList::ConstIterator isI = is.begin();
   for (; isI != is.end(); ++isI) {
     Q_ASSERT(inputScalar(*isI)->myLockStatus() == KstRWLock::WRITELOCKED);
-    depUpdated =
-        UPDATE == inputScalar(*isI)->update(updateCounter) || depUpdated;
+    depUpdated = UPDATE == inputScalar(*isI)->update(updateCounter) || depUpdated;
   }
 
   //Finally, update the inputStrings...
@@ -440,9 +452,9 @@ bool KstBasicPlugin::updateInput(int updateCounter, bool force) const {
   QStringList::ConstIterator istrI = istr.begin();
   for (; istrI != istr.end(); ++istrI) {
     Q_ASSERT(inputString(*istrI)->myLockStatus() == KstRWLock::WRITELOCKED);
-    depUpdated =
-        UPDATE == inputString(*istrI)->update(updateCounter) || depUpdated;
+    depUpdated = UPDATE == inputString(*istrI)->update(updateCounter) || depUpdated;
   }
+
   return depUpdated;
 }
 
@@ -482,4 +494,16 @@ void KstBasicPlugin::updateOutput(int updateCounter) const {
   }
 }
 
-// vim: ts=2 sw=2 et
+double KstBasicPlugin::defaultScalarValue(const QString& name) const {
+  double value = 0.0;
+
+  QMap<QString, double>::ConstIterator it;
+
+  it = _inputScalarDefaults.find(name);
+  if (it != _inputScalarDefaults.end()) {
+    value = *it;
+  }
+
+  return value;
+}
+

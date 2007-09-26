@@ -57,7 +57,7 @@ class KST_EXPORT KstBasicDialogI : public KstDataDialog {
     bool editSingleObject(KstBasicPluginPtr ptr);
 
     void createInputVector(const QString &name, int row);
-    void createInputScalar(const QString &name, int row);
+    void createInputScalar(const QString &name, int row, double value);
     void createInputString(const QString &name, int row);
     void createOutputWidget(const QString &name, int row);
 

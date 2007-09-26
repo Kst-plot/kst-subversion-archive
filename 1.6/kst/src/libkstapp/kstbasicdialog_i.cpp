@@ -99,21 +99,21 @@ void KstBasicDialogI::init() {
   QStringList iv = ptr->inputVectorList();
   QStringList::ConstIterator ivI = iv.begin();
   for (; ivI != iv.end(); ++ivI) {
-      createInputVector(*ivI, ++cnt);
+    createInputVector(*ivI, ++cnt);
   }
 
   //Now, the inputScalars...
   QStringList is = ptr->inputScalarList();
   QStringList::ConstIterator isI = is.begin();
   for (; isI != is.end(); ++isI) {
-      createInputScalar(*isI, ++cnt);
+    createInputScalar(*isI, ++cnt, ptr->defaultScalarValue(*isI));
   }
 
   //Finally, the inputStrings...
   QStringList istr = ptr->inputStringList();
   QStringList::ConstIterator istrI = istr.begin();
   for (; istrI != istr.end(); ++istrI) {
-      createInputString(*istrI, ++cnt);
+    createInputString(*istrI, ++cnt);
   }
 
   //create sep
@@ -154,8 +154,7 @@ void KstBasicDialogI::createInputVector(const QString &name, int row) {
 
   VectorSelector *widget = new VectorSelector(_w->_frame,
                                               name.latin1());
-  connect(widget, SIGNAL(newVectorCreated(const QString&)),
-          this, SIGNAL(modified()));
+  connect(widget, SIGNAL(newVectorCreated(const QString&)), this, SIGNAL(modified()));
 
   _grid->addWidget(label, row, 0);
   label->show();
@@ -164,14 +163,16 @@ void KstBasicDialogI::createInputVector(const QString &name, int row) {
 }
 
 
-void KstBasicDialogI::createInputScalar(const QString &name, int row) {
+void KstBasicDialogI::createInputScalar(const QString &name, int row, double value) {
   QLabel *label = new QLabel(name + ":", _w->_frame);
 
   ScalarSelector *widget = new ScalarSelector(_w->_frame,
                                               name.latin1());
-  connect(widget, SIGNAL(newScalarCreated()),
-          this, SIGNAL(modified()));
+  connect(widget, SIGNAL(newScalarCreated()), this, SIGNAL(modified()));
   widget->allowDirectEntry(true);
+  if (widget->_scalar->lineEdit()) {
+    widget->_scalar->lineEdit()->setText(QString::number(value));
+  }
 
   _grid->addWidget(label, row, 0);
   label->show();

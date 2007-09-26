@@ -67,6 +67,8 @@ class KST_EXPORT KstBasicPlugin : public KstDataObject {
     KstScalarPtr outputScalar(const QString& name) const;
     KstStringPtr outputString(const QString& name) const;
 
+    double defaultScalarValue(const QString& name) const;
+
     void setInputVector(const QString &type, KstVectorPtr ptr);
     void setInputScalar(const QString &type, KstScalarPtr ptr);
     void setInputString(const QString &type, KstStringPtr ptr);
@@ -89,6 +91,8 @@ class KST_EXPORT KstBasicPlugin : public KstDataObject {
 
   protected:
     virtual QString parameterName(int index) const;
+
+    QMap<QString, double> _inputScalarDefaults;
     bool _isFit;
 
   private:
