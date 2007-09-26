@@ -29,7 +29,7 @@ class KstViewBox : public KstViewObject {
   Q_OBJECT
   Q_PROPERTY(int xRound READ xRound WRITE setXRound)
   Q_PROPERTY(int yRound READ yRound WRITE setYRound)
-  Q_PROPERTY(bool transparentFill READ transparentFill WRITE setTransparentFill)
+  Q_PROPERTY(bool transparentFill READ transparent WRITE setTransparent)
   Q_PROPERTY(QColor borderColor READ borderColor WRITE setBorderColor)
   Q_PROPERTY(int borderWidth READ borderWidth WRITE setBorderWidth)
   Q_PROPERTY(QColor foregroundColor READ foregroundColor WRITE setForegroundColor)
@@ -42,18 +42,16 @@ class KstViewBox : public KstViewObject {
 
     virtual KstViewObject* copyObjectQuietly(KstViewObject& parent, const QString& name = QString::null) const;
     virtual KstViewObject* copyObjectQuietly() const;
+    virtual QRegion clipRegion();
+
     void setXRound(int rnd);
     int xRound() const;
     void setYRound(int rnd);
     int yRound() const;
     void setCornerStyle(Qt::PenJoinStyle style);
     Qt::PenJoinStyle cornerStyle() const;
-    
-    bool transparentFill() const;
-    void setTransparentFill(bool yes);
 
     void paintSelf(KstPainter& p, const QRegion& bounds);
-
     void setBorderColor(const QColor& c);
     const QColor& borderColor() const;
 
@@ -65,6 +63,8 @@ class KstViewBox : public KstViewObject {
     virtual QColor foregroundColor() const;
     virtual void setBackgroundColor(const QColor& color);
     virtual QColor backgroundColor() const;
+    virtual bool transparent() const;
+    virtual void setTransparent(bool transparent);
 
   public:
     void save(QTextStream& ts, const QString& indent = QString::null);
@@ -76,7 +76,6 @@ class KstViewBox : public KstViewObject {
     int _borderWidth;
     int _xRound, _yRound;
     Qt::PenJoinStyle _cornerStyle;
-    bool _transparentFill;
 };
 
 typedef KstObjectList<KstViewBoxPtr> KstViewBoxList;

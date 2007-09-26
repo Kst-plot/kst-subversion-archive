@@ -24,6 +24,7 @@
 #include <kglobal.h>
 #include <klocale.h>
 
+#include <qbitmap.h>
 #include <qmetaobject.h>
 #include <qpainter.h>
 #include <qmap.h>
@@ -36,8 +37,7 @@ KstViewBox::KstViewBox()
   _yRound = 0;
   _cornerStyle = Qt::MiterJoin;
   _fallThroughTransparency = false;
-  setTransparent(true);
-  _transparentFill = false;
+  setTransparent(false);
   setFollowsFlow(true);
   _standardActions |= Delete | Edit;
 }
@@ -45,6 +45,10 @@ KstViewBox::KstViewBox()
 
 KstViewBox::KstViewBox(const QDomElement& e)
 : KstViewObject(e), _borderColor(QColor(0, 0, 0)), _borderWidth(0) {
+  _xRound = 0;
+  _yRound = 0;
+  _cornerStyle = Qt::MiterJoin;
+  setTransparent(false);
 
   QDomNode n = e.firstChild();
   while (!n.isNull()) {
@@ -63,7 +67,6 @@ KstViewBox::KstViewBox(const QDomElement& e)
   _standardActions |= Delete | Edit;
   _layoutActions |= Delete | Raise | Lower | RaiseToTop | LowerToBottom | Rename | MoveTo | Copy | CopyTo;
   _fallThroughTransparency = false;
-  setTransparent(true);
   setFollowsFlow(true);
 }
 
@@ -76,7 +79,6 @@ KstViewBox::KstViewBox(const KstViewBox& box)
   _cornerStyle = box._cornerStyle;
   _borderColor = box._borderColor;
   _borderWidth = box._borderWidth;
-  _transparentFill = box._transparentFill;
 
   // these always have these values
   _type = "Box";
@@ -117,33 +119,62 @@ void KstViewBox::paintSelf(KstPainter& p, const QRegion& bounds) {
   }
 
   // restrict the border width so we do not draw outside of the rectangle itself
-  int bw(borderWidth() * p.lineWidthAdjustmentFactor());
-  if (bw > _geom.width() / 2) {
-    bw = _geom.width() / 2;
+  int borderWidthAdjusted(borderWidth() * p.lineWidthAdjustmentFactor());
+  if (borderWidthAdjusted > _geom.width() / 2) {
+    borderWidthAdjusted = _geom.width() / 2;
   }
-  if (bw > _geom.height()) {
-    bw = _geom.height() / 2;
+  if (borderWidthAdjusted > _geom.height()) {
+    borderWidthAdjusted = _geom.height() / 2;
   }
 
-  QPen pen(borderColor(), bw);
+  QRect r;
+  QPen pen(borderColor(), borderWidthAdjusted);
+
   pen.setJoinStyle(_cornerStyle);
-  if (bw == 0) {
+  if (borderWidthAdjusted == 0) {
     pen.setStyle(Qt::NoPen);
   }
   p.setPen(pen);
-  if (_transparentFill) {
+
+  if (_transparent) {
     p.setBrush(Qt::NoBrush);
   } else {
     p.setBrush(_foregroundColor);
   }
-  QRect r;
-  r.setX(_geom.left() + bw / 2);
-  r.setY(_geom.top() + bw / 2);
-  r.setWidth(_geom.width() - bw);
-  r.setHeight(_geom.height() - bw);
+
+  r.setX(_geom.left() + ( borderWidthAdjusted / 2 ));
+  r.setY(_geom.top() + ( borderWidthAdjusted / 2 ));
+  r.setWidth(_geom.width() - borderWidthAdjusted + 1);
+  r.setHeight(_geom.height() - borderWidthAdjusted + 1);
 
   p.drawRoundRect(r, _xRound, _yRound);
   p.restore();
+}
+
+
+QRegion KstViewBox::clipRegion() {
+  if (_clipMask.isNull()) {
+    if (transparent() || _xRound != 0 || _yRound != 0) {
+      QBitmap bm(_geom.bottomRight().x() + 1, _geom.bottomRight().y() + 1, true);
+      if (!bm.isNull()) {
+        KstPainter p;
+
+        p.begin(&bm);
+        p.setMakingMask(true);
+        p.setViewXForm(true);
+        paint(p, QRegion());
+        p.flush();
+        p.end();
+        _clipMask = QRegion(bm);
+      } else {
+        _clipMask = QRegion(); // only invalidate our own variable
+      }
+    } else {
+      _clipMask = QRegion(_geom);
+    }
+  }
+
+  return _clipMask;
 }
 
 
@@ -213,16 +244,13 @@ Qt::PenJoinStyle KstViewBox::cornerStyle() const {
 }
 
 
-bool KstViewBox::transparentFill() const {
-  return _transparentFill;
+bool KstViewBox::transparent() const {
+  return KstViewObject::transparent();
 }
 
 
-void KstViewBox::setTransparentFill(bool yes) {
-  if (_transparentFill != yes) {
-    setDirty();
-    _transparentFill = yes;
-  }
+void KstViewBox::setTransparent(bool transparent) {
+  KstViewObject::setTransparent(transparent);
 }
 
 
@@ -276,16 +304,17 @@ QColor KstViewBox::foregroundColor() const {
 QMap<QString, QVariant > KstViewBox::widgetHints(const QString& propertyName) const {
   QMap<QString, QVariant> map = KstViewObject::widgetHints(propertyName);
   if (!map.empty()) {
-    return map;  
+    return map;
   }
+
   if (propertyName == "xRound") {
     map.insert(QString("_kst_widgetType"), QString("QSpinBox"));
     map.insert(QString("_kst_label"), i18n("X Roundness"));
-    map.insert(QString("minValue"), 0);   
+    map.insert(QString("minValue"), 0);
   } else if (propertyName == "yRound") {
     map.insert(QString("_kst_widgetType"), QString("QSpinBox"));
     map.insert(QString("_kst_label"), i18n("Y Roundness"));
-    map.insert(QString("minValue"), 0);  
+    map.insert(QString("minValue"), 0);
   } else if (propertyName == "foregroundColor") {
     map.insert(QString("_kst_widgetType"), QString("KColorButton"));
     map.insert(QString("_kst_label"), i18n("Fill Color"));
@@ -301,6 +330,7 @@ QMap<QString, QVariant > KstViewBox::widgetHints(const QString& propertyName) co
     map.insert(QString("_kst_label"), i18n("Border width"));
     map.insert(QString("minValue"), 0);
   }
+
   return map;
 }
 

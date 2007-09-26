@@ -20,6 +20,7 @@
 #include "kstviewellipse.h"
 #include "kstviewobjectfactory.h"
 
+#include <qbitmap.h>
 #include <qmetaobject.h>
 #include <qpainter.h>
 #include <qvariant.h>
@@ -29,21 +30,20 @@
 KstViewEllipse::KstViewEllipse()
 : KstViewObject("Ellipse"), _borderWidth(1) {
   _editTitle = i18n("Edit Ellipse");
-  setTransparent(true);
-  _transparentFill = false;
+  setTransparent(false);
   _standardActions |= Delete | Edit;
 }
 
 
 KstViewEllipse::KstViewEllipse(const QDomElement& e)
 : KstViewObject(e) {
-  _transparentFill = false;
+  setTransparent(false);
   QDomNode n = e.firstChild();
   while (!n.isNull()) {
-    QDomElement el = n.toElement(); 
+    QDomElement el = n.toElement();
     if (!el.isNull()) {
       if (metaObject()->findProperty(el.tagName().latin1(), true) > -1) {
-        setProperty(el.tagName().latin1(), QVariant(el.text()));  
+        setProperty(el.tagName().latin1(), QVariant(el.text()));
       }
     }
     n = n.nextSibling();
@@ -52,7 +52,6 @@ KstViewEllipse::KstViewEllipse(const QDomElement& e)
   // always have these values
   _type = "Ellipse";
   _editTitle = i18n("Edit Ellipse");
-  setTransparent(true);
   _standardActions |= Delete | Edit;
   _layoutActions |= Delete | Raise | Lower | RaiseToTop | LowerToBottom | Rename | MoveTo | Copy | CopyTo;
 }
@@ -60,7 +59,6 @@ KstViewEllipse::KstViewEllipse(const QDomElement& e)
 
 KstViewEllipse::KstViewEllipse(const KstViewEllipse& ellipse)
 : KstViewObject(ellipse) {
-  _transparentFill = ellipse._transparentFill;
   _borderWidth = ellipse._borderWidth;
   _borderColor = ellipse._borderColor;
 
@@ -115,13 +113,41 @@ void KstViewEllipse::paintSelf(KstPainter& p, const QRegion& bounds) {
   }
   QPen pen(bw > 0 ? _borderColor : _foregroundColor, bw);
   p.setPen(pen);
-  if (_transparentFill) {
+
+  if (_transparent) {
     p.setBrush(Qt::NoBrush);
   } else {
     p.setBrush(_foregroundColor);
   }
+
   p.drawEllipse(g.x() + bw/2, g.y() + bw/2, g.width() - bw, g.height() - bw);
   p.restore();
+}
+
+
+QRegion KstViewEllipse::clipRegion() {
+  if (_clipMask.isNull()) {
+    if (transparent() || !_children.isEmpty()) {
+      QBitmap bm(_geom.bottomRight().x() + 1, _geom.bottomRight().y() + 1, true);
+      if (!bm.isNull()) {
+        KstPainter p;
+
+        p.begin(&bm);
+        p.setMakingMask(true);
+        p.setViewXForm(true);
+        paint(p, QRegion());
+        p.flush();
+        p.end();
+        _clipMask = QRegion(bm);
+      } else {
+        _clipMask = QRegion(); // only invalidate our own variable
+      }
+    } else {
+      _clipMask = QRegion(_geom, QRegion::Ellipse);
+    }
+  }
+
+  return _clipMask;
 }
 
 
@@ -176,23 +202,25 @@ QColor KstViewEllipse::foregroundColor() const {
 QMap<QString, QVariant> KstViewEllipse::widgetHints(const QString& propertyName) const {
   QMap<QString, QVariant> map = KstViewObject::widgetHints(propertyName);
   if (!map.empty()) {
-    return map;  
+    return map;
   }
+
   if (propertyName == "borderColor") {
     map.insert(QString("_kst_widgetType"), QString("KColorButton"));
-    map.insert(QString("_kst_label"), i18n("Border color"));  
+    map.insert(QString("_kst_label"), i18n("Border color"));
   } else if (propertyName == "borderWidth") {
     map.insert(QString("_kst_widgetType"), QString("QSpinBox"));
-    map.insert(QString("_kst_label"), i18n("Border width"));    
+    map.insert(QString("_kst_label"), i18n("Border width"));
     map.insert(QString("minValue"), 0);
   } else if (propertyName == "fillColor") {
     map.insert(QString("_kst_widgetType"), QString("KColorButton"));
-    map.insert(QString("_kst_label"), i18n("Fill Color"));    
+    map.insert(QString("_kst_label"), i18n("Fill Color"));
   } else if (propertyName == "transparentFill") {
     map.insert(QString("_kst_widgetType"), QString("QCheckBox"));
-    map.insert(QString("_kst_label"), QString::null);   
-    map.insert(QString("text"), i18n("Transparent fill")); 
-  }  
+    map.insert(QString("_kst_label"), QString::null);
+    map.insert(QString("text"), i18n("Transparent fill"));
+  }
+
   return map;
 }
 
@@ -210,20 +238,17 @@ signed int KstViewEllipse::directionFor(const QPoint& pos) {
 void KstViewEllipse::drawShadow(KstPainter& p, const QPoint& pos) {
   QRect rect(geometry());
   rect.moveTopLeft(pos);
-  p.drawEllipse(rect);  
+  p.drawEllipse(rect);
 }
 
 
-void KstViewEllipse::setTransparentFill(bool yes) {
-  if (_transparentFill != yes) {
-    _transparentFill = yes;
-    setDirty();
-  }
+void KstViewEllipse::setTransparent(bool transparent) {
+  KstViewObject::setTransparent(transparent);
 }
 
 
-bool KstViewEllipse::transparentFill() const {
-  return _transparentFill;
+bool KstViewEllipse::transparent() const {
+  return KstViewObject::transparent();
 }
 
 

@@ -28,13 +28,14 @@ class KstViewEllipse : public KstViewObject {
   Q_PROPERTY(QColor borderColor READ borderColor WRITE setBorderColor)
   Q_PROPERTY(int borderWidth READ borderWidth WRITE setBorderWidth)
   Q_PROPERTY(QColor fillColor READ foregroundColor WRITE setForegroundColor)
-  Q_PROPERTY(bool transparentFill READ transparentFill WRITE setTransparentFill)
+  Q_PROPERTY(bool transparentFill READ transparent WRITE setTransparent)
   public:
     KstViewEllipse();
     KstViewEllipse(const QDomElement& e);
     KstViewEllipse(const KstViewEllipse& ellipse);
     virtual ~KstViewEllipse();
 
+    virtual QRegion clipRegion();
     virtual KstViewObject* copyObjectQuietly(KstViewObject& parent, const QString& name = QString::null) const;
     virtual KstViewObject* copyObjectQuietly() const;
     virtual void setBorderColor(const QColor& to);
@@ -47,18 +48,17 @@ class KstViewEllipse : public KstViewObject {
     virtual QMap<QString, QVariant> widgetHints(const QString& propertyName) const; 
     virtual signed int directionFor(const QPoint& pos);
     virtual QRegion region();
+    virtual bool transparent() const;
+    virtual void setTransparent(bool transparent);
 
     // can't have Q_PROPERTY in KstViewObject?
     virtual void setForegroundColor(const QColor& color);
     virtual QColor foregroundColor() const;
 
-    bool transparentFill() const;
-    void setTransparentFill(bool yes);
 
   private:
     int _borderWidth;
     QColor _borderColor;
-    bool _transparentFill;
 };
 
 typedef KstObjectList<KstViewEllipsePtr> KstViewEllipseList;
