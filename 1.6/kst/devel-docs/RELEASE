@@ -7,9 +7,9 @@ How to make a Kst release:
   (kst/tests/runregression.sh)
 - update configure.in.in to set the version number and the libkst interface
   version
-- update ../doc
-- make sure documentation has correct version for the <releaseinfo> tag
-  of index.docbook and correct version of KST, QT, and KDE in the installation
+- update ../doc (svn update)
+- make sure documentation has correct version for the <releaseinfo> tag of index.docbook 
+- make sure documentation has correct version of KST, QT, and KDE in the installation
   instructions of install-chapter.docbook
 - update the manpage (refer to kst/devel-docs/manpage.txt)
 - prepare for a KDE 3.3 install!  Set min config appropriately
