@@ -40,36 +40,45 @@ Bin::~Bin() {
 }
 
 
-//Bin the elements into the given size bins, additional elements at the end of the
-//input vector are ignored.
-//Returns -1 on error, 0 on success.
+// bin the elements into the given size bins
+//  additional elements at the end of the input vector are ignored
 bool Bin::algorithm() {
 
-  KstVectorPtr input    = inputVector(INPUT);
-  KstScalarPtr size     = inputScalar(SIZE);
-  KstVectorPtr bins     = outputVector(BINS);
+  KstVectorPtr input = inputVector(INPUT);
+  KstScalarPtr size = inputScalar(SIZE);
+  KstVectorPtr bins = outputVector(BINS);
+  bool rc = false;
 
-  //Make sure there is at least 1 element in the input vector
-  //Make sure the bin size is at least 1
-  if (input->length() < 1 || size->value() < 1.0) {
-    return -1;
-  }
+  if (input->length() > 0) {
+    int binSize = (int)size->value();
 
-  // allocate the lengths
-  bins->resize(int(input->length() / size->value()), false);
-
-  //now bin the data
-  for (int i=0; i<bins->length(); i++) {
-    bins->value()[i] = 0.0;
-
-    //add up the elements for this bin
-    for (int j=0; j<size->value(); j++) {
-      bins->value()[i] += input->value()[int(i*size->value()+j)];
+    if (binSize < 1.0) {
+      binSize = 1.0;
     }
-    //find the mean
-    bins->value()[i] /= size->value();
+    if (binSize > input->length()) {
+      binSize = input->length();
+    }
+
+    // allocate the lengths
+    bins->resize(input->length() / binSize, false);
+
+    // now bin the data
+    for (int i=0; i<bins->length(); i++) {
+      bins->value()[i] = 0.0;
+
+      // add up the elements for this bin
+      for (int j=0; j<binSize; j++) {
+        bins->value()[i] += input->value()[i*binSize+j];
+      }
+
+      // find the mean
+      bins->value()[i] /= (double)binSize;
+    }
+
+    rc = true;
   }
-  return true;
+
+  return rc;
 }
 
 
