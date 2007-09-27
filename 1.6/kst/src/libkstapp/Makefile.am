@@ -49,7 +49,6 @@ libkstapp_la_SOURCES = \
 	kstviewline.cpp \
 	kstviewellipse.cpp \
 	kstviewpicture.cpp \
-	kstviewbezier.cpp \
 	kstviewarrow.cpp \
 	kstviewwidget.cpp \
 	kstviewobjectfactory.cpp \
