@@ -43,15 +43,15 @@ double interpolate(int iIndex, int iLengthDesired, const double* pArray, int iLe
   if (iLengthDesired == iLengthActual) {
     value =  pArray[iIndex];
   } else {
-    fj    = (double)(iIndex * (iLengthActual-1)) / (double)(iLengthDesired-1);
+    fj    = (double)iIndex * ((double)iLengthActual-1.0) / ((double)iLengthDesired-1.0);
     j     = (int)floor(fj);
     fdj   = fj - (double)j;
 
-    //Don't read an invalid index from pArray... found by valgrind
-    double A = j+1 < iLengthActual ? pArray[j+1] : 0;
-    double B = j < iLengthActual ? pArray[j] : 0;
-
-    value = A * fdj + B * (1.0 - fdj);
+    if (j+1 < iLengthActual && j >= 0) {
+      value = pArray[j+1] * fdj + pArray[j] * (1.0 - fdj);
+    } else {
+      value = 0.0;
+    }
   }
 
   return value;
