@@ -747,7 +747,14 @@ void KstPluginDialogI::generateEntries(bool input, int& cnt, QWidget *parent, QG
           p->unlock();
         }
       } else {
-        widget = new VectorSelector(parent, (*it)._name.latin1());
+        VectorSelector *vectorSelector = new VectorSelector(parent, (*it)._name.latin1());
+        widget = dynamic_cast<QWidget*>(vectorSelector);
+        if ((*it)._optional) {
+          KstVectorPtr vector;
+
+          vectorSelector->provideNoneVector(true);
+          vectorSelector->setSelection(vector);
+        }
         connect(widget, SIGNAL(newVectorCreated(const QString&)), this, SIGNAL(modified()));
       }
     } else {

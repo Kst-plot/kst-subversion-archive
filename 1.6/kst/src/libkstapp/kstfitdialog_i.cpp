@@ -227,8 +227,7 @@ bool KstFitDialogI::newObject() {
         return false;
       }
     } else {
-      KMessageBox::sorry(this, i18n("There is something wrong (i.e, there is a bug) with"
-                                    " the selected plugin.\n"));
+      KMessageBox::sorry(this, i18n("There is something wrong (i.e, there is a bug) with the selected plugin.\n"));
       return false;
     }
 
@@ -261,6 +260,7 @@ void KstFitDialogI::generateEntries(bool input, int& cnt, QWidget *parent, QGrid
     bool string = false;
     bool scalar = false;
     bool fixed = false;
+
     switch ((*it)._type) {
       case Plugin::Data::IOValue::PidType:
         continue;
@@ -338,7 +338,14 @@ void KstFitDialogI::generateEntries(bool input, int& cnt, QWidget *parent, QGrid
           }
           iInputVector++;
         } else {
-          widget = new VectorSelector(parent, (*it)._name.latin1());
+          VectorSelector *vectorSelector = new VectorSelector(parent, (*it)._name.latin1());
+          widget = dynamic_cast<QWidget*>(vectorSelector);
+          if ((*it)._optional) {
+            KstVectorPtr vector;
+
+            vectorSelector->provideNoneVector(true);
+            vectorSelector->setSelection(vector);
+          }
           connect(widget, SIGNAL(newVectorCreated(const QString&)), this, SIGNAL(modified()));
         }
       }
@@ -375,6 +382,7 @@ bool KstFitDialogI::saveInputs(KstCPluginPtr plugin, KstSharedPtr<Plugin> p) {
       QObject *field = _w->_pluginInputOutputFrame->child((*it)._name.latin1(), "VectorSelector");
       KstVectorPtr v;
       KstReadLocker vl(&KST::vectorList.lock());
+
       if (!field) {
         field = _w->_pluginInputOutputFrame->child((*it)._name.latin1(), "QLabel");
         assert(field);
@@ -383,7 +391,10 @@ bool KstFitDialogI::saveInputs(KstCPluginPtr plugin, KstSharedPtr<Plugin> p) {
         VectorSelector *vs = static_cast<VectorSelector*>(field);
         v = *KST::vectorList.findTag(vs->selectedVector());
       }
-      if (v) {
+
+      if (!v && (*it)._optional) {
+        plugin->inputVectors().insert((*it)._name, v);
+      } else if (v) {
         plugin->inputVectors().insert((*it)._name, v);
       } else if (plugin->inputVectors().contains((*it)._name)) {
         plugin->inputVectors().erase((*it)._name);
@@ -395,6 +406,7 @@ bool KstFitDialogI::saveInputs(KstCPluginPtr plugin, KstSharedPtr<Plugin> p) {
       StringSelector *ss = static_cast<StringSelector*>(field);
       KstWriteLocker sl(&KST::stringList.lock());
       KstStringPtr s = *KST::stringList.findTag(ss->selectedString());
+
       if (s == *KST::stringList.end()) {
         QString val = ss->_string->currentText();
         // create orphan string
@@ -411,6 +423,7 @@ bool KstFitDialogI::saveInputs(KstCPluginPtr plugin, KstSharedPtr<Plugin> p) {
       ScalarSelector *ss = static_cast<ScalarSelector*>(field);
       KstWriteLocker sl(&KST::scalarList.lock());
       KstScalarPtr s = *KST::scalarList.findTag(ss->selectedScalar());
+
       if (s == *KST::scalarList.end()) {
         bool ok;
         double val = ss->_scalar->currentText().toDouble(&ok);

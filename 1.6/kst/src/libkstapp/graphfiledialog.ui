@@ -421,7 +421,7 @@
                 <cstring>buttonGroup1</cstring>
             </property>
             <property name="title">
-                <string>Windows</string>
+                <string>Tabs</string>
             </property>
             <hbox>
                 <property name="name">
