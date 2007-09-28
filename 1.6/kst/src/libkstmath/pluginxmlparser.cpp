@@ -99,6 +99,7 @@ static const QString& QS_localdata = KGlobal::staticQString("localdata");
 static const QString& QS_pid = KGlobal::staticQString("pid");
 static const QString& QS_curvehints = KGlobal::staticQString("curvehints");
 static const QString& QS_hint = KGlobal::staticQString("hint");
+static const QString& QS_optional = KGlobal::staticQString("optional");
 
 int PluginXMLParser::parseDOM(const QDomDocument& doc) {
 QDomElement topElem = doc.documentElement();
@@ -127,7 +128,7 @@ QDomElement topElem = doc.documentElement();
 
       if (rc < 0) {  // error occurred
         return rc;
-      }      
+      }
       n = n.nextSibling();
     }
 
@@ -335,6 +336,7 @@ QDomNode n = element.firstChild();
       iov._name = e.attribute(QS_name);
       iov._description = e.attribute(QS_descr);
       iov._default = e.attribute(QS_default);
+      iov._optional = (bool)e.attribute(QS_optional).toInt();
       QString subtype = e.attribute(QS_type).lower();
       if (subtype == QS_float) {
         iov._subType = Plugin::Data::IOValue::FloatSubType;
@@ -434,5 +436,3 @@ int PluginXMLParser::parseParalist(const QDomElement& element) {
 }
 #endif
 
-
-// vim: ts=2 sw=2 et

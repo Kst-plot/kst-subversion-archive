@@ -207,4 +207,3 @@ const char *Plugin::errorCode(int code) const {
   return 0L;
 }
 
-// vim: ts=2 sw=2 et

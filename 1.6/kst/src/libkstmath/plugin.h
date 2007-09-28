@@ -88,6 +88,7 @@ class KST_EXPORT Plugin : public KstShared {
               PidType,
               MatrixType
             };
+
             enum ValueSubType { UnknownSubType,
               AnySubType,
               FloatSubType,
@@ -101,6 +102,7 @@ class KST_EXPORT Plugin : public KstShared {
             ValueSubType _subType;
             QString _description;
             QString _default;
+            bool _optional : 1;
         };
 
         // Intro
