@@ -1,5 +1,5 @@
 /***************************************************************************
-                     kstgraphdialog_i.cpp  -  Part of KST
+                     kstgraphfiledialog_i.cpp  -  Part of KST
                              -------------------
     begin                :
     copyright            : (C) 2003 The University of Toronto
@@ -45,7 +45,7 @@ KstGraphFileDialogI::KstGraphFileDialogI(QWidget* parent, const char* name,
   connect(_Apply,         SIGNAL(clicked()),      this, SLOT(apply_I()));
   connect(_comboBoxSizeOption, SIGNAL(activated(int)), this, SLOT(enableWidthHeight()));
   connect(_comboBoxFormats, SIGNAL(activated(const QString&)), this, SLOT(enableEPSVector(const QString&)));
-  
+
   _saveLocation->setFilter(KImageIO::mimeTypes().join(" "));
   _saveLocation->setMode(KFile::File);
 
@@ -87,7 +87,7 @@ void KstGraphFileDialogI::apply_I() {
   _savePeriod = _period->value();
   _saveEPSAsVector = _saveEPSVector->isChecked();
   applyAutosave();
-  
+
   if (!_autoSave) {
     if (_format == "EPS" && _saveEPSAsVector) {
       reqEpsGraphFile();
@@ -147,7 +147,7 @@ void KstGraphFileDialogI::saveProperties() {
   cfg.writeEntry("All", _allWindows);
   cfg.writeEntry("Format", _format);
   cfg.writeEntry("EPSVector", _saveEPSAsVector);
-  
+
   cfg.sync();
 }
 
@@ -179,7 +179,6 @@ void KstGraphFileDialogI::loadProperties() {
 
 
 void KstGraphFileDialogI::enableEPSVector(const QString &format) {
-  // FIXME: i18n
   _saveEPSVector->setEnabled(format == "EPS");
 }
 
@@ -233,10 +232,10 @@ void KstGraphFileDialogI::updateDialog() {
   _period->setValue(_savePeriod);
   _period->setEnabled(_autoSave);
   _saveEPSVector->setChecked(_saveEPSAsVector);
-  
+
   enableEPSVector(_comboBoxFormats->currentText());
   enableWidthHeight();
 }
 
 #include "kstgraphfiledialog_i.moc"
-// vim: ts=2 sw=2 et
+
