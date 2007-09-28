@@ -27,10 +27,11 @@ void VectorSelector::allowNewVectors( bool allowed )
 QString VectorSelector::selectedVector()
 {
     KstVectorPtr ptr = *KST::vectorList.findTag(_vector->currentText());
-    if (!ptr || (_provideNoneVector && _vector->currentItem() == 0))
+    if (!ptr || (_provideNoneVector && _vector->currentItem() == 0)) {
         return QString::null;
-    else
+    } else {
         return _vector->currentText();
+    }
 }
 
 
@@ -120,9 +121,13 @@ void VectorSelector::newVectorCreated( KstVectorPtr v )
 
 void VectorSelector::setSelection( KstVectorPtr v )
 {
-    v->readLock();
-    setSelection(v->tagName());
-    v->unlock();
+    if (v) {
+      v->readLock();
+      setSelection(v->tagName());
+      v->unlock();
+    } else if (_provideNoneVector) {
+      setSelection(tr("<None>"));
+    }
 }
 
 
