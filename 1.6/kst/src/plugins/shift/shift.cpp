@@ -18,6 +18,12 @@
 
 #include <kgenericfactory.h>
 
+#ifdef NAN
+const double NOPOINT = NAN;
+#else
+const double NOPOINT = 0.0/0.0; // NaN
+#endif
+
 static const QString& INPUTVECTOR = KGlobal::staticQString("InputVector");
 static const QString& SHIFT_VALUE = KGlobal::staticQString("Shift value (# points, negative allowed)");
 static const QString& SHIFTEDVECTOR = KGlobal::staticQString("ShiftedVector");
@@ -27,8 +33,11 @@ KST_KEY_DATAOBJECT_PLUGIN( shift )
 K_EXPORT_COMPONENT_FACTORY( kstobject_shift,
     KGenericFactory<Shift>( "kstobject_shift" ) )
 
-Shift::Shift( QObject */*parent*/, const char */*name*/, const QStringList &/*args*/ )
+Shift::Shift( QObject *parent, const char *name, const QStringList &args )
     : KstBasicPlugin() {
+  Q_UNUSED(parent)
+  Q_UNUSED(name)
+  Q_UNUSED(args)
 }
 
 
@@ -43,41 +52,45 @@ bool Shift::algorithm() {
   KstVectorPtr shiftedvector  = outputVector(SHIFTEDVECTOR);
 
   int delay = 0;
-  const double nan = 0.0 / 0.0;
 
   /* Memory allocation */
   if (shiftedvector->length() != inputvector->length()) {
     shiftedvector->resize(inputvector->length(), false);
   }
 
-  delay=(int)shift_value->value();
+  delay = (int)shift_value->value();
   /* Protect against invalid inputs */
-  if (delay > inputvector->length()) delay = inputvector->length();
-  if (delay < -inputvector->length()) delay = -inputvector->length();
+  if (delay > inputvector->length()) {
+    delay = inputvector->length();
+  }
+  if (delay < -inputvector->length()) {
+    delay = -inputvector->length();
+  }
 
-  /* First case: positive shift (forwards/right shift)*/
   if (delay >= 0) {
+    /* First case: positive shift (forwards/right shift)*/
+
     /* Pad beginning with zeros */
-    for (int i = 0; i < delay; i++)
-    {
-      shiftedvector->value()[i] = nan;
+    for (int i = 0; i < delay; i++) {
+      shiftedvector->value()[i] = NOPOINT;
     }
+
     /* Then, copy values with the right offset */
     for (int i = delay; i < inputvector->length(); i++) {
       shiftedvector->value()[i] = inputvector->value()[i-delay];
     }
-  }
+  } else if (delay < 0) {
+    /* Second case: negative shift (backwards/left shift)*/
 
-  /* Second case: negative shift (backwards/left shift)*/
-  else if (delay < 0) {
     delay = -delay; /* Easier to visualize :-) */
     /* Copy values with the right offset */
     for (int i = 0; i < inputvector->length()-delay; i++) {
       shiftedvector->value()[i] = inputvector->value()[i+delay];
     }
+
     /* Pad end with zeros */
     for (int i = inputvector->length()-delay; i < inputvector->length(); i++) {
-      shiftedvector->value()[i] = nan;
+      shiftedvector->value()[i] = NOPOINT;
     }
   }
 
