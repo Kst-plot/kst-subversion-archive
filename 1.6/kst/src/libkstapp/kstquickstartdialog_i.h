@@ -35,6 +35,7 @@ class KstQuickStartDialogI : public KstQuickStartDialog {
   private slots:
     void wizard_I();
     void open_I();
+    void fileChanged(const QString& name);
     void changeURL(const QString& name);
     void updateSettings();
     void deselectRecentFile();
@@ -48,4 +49,3 @@ class KstQuickStartDialogI : public KstQuickStartDialog {
 };
 
 #endif
-// vim: ts=2 sw=2 et

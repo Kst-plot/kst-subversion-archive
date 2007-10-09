@@ -34,11 +34,14 @@ KstQuickStartDialogI::KstQuickStartDialogI(QWidget *parent, const char *name, bo
   _fileName->completionObject()->setDir(QDir::currentDirPath());
   _app = KstApp::inst();
   _isRecentFile = false;
+  _openFile->setEnabled(false);
+
   connect(_startDataWizard, SIGNAL(clicked()), this, SLOT(wizard_I()));
   connect(_openFile, SIGNAL(clicked()), this, SLOT(open_I()));
   connect(_recentFileList, SIGNAL(highlighted(const QString&)), this, SLOT(changeURL(const QString&)));
   connect(_showAtStartup, SIGNAL(clicked()), this, SLOT(updateSettings()));
   connect(_fileName, SIGNAL(textChanged(const QString&)), this, SLOT(deselectRecentFile()));
+  connect(_fileName, SIGNAL(textChanged(const QString&)), this, SLOT(fileChanged(const QString&)));
   connect(_recentFileList, SIGNAL(selected(const QString&)), this, SLOT(open_I()));
 }
 
@@ -88,10 +91,26 @@ void KstQuickStartDialogI::show_I() {
 }
 
 
+void KstQuickStartDialogI::fileChanged(const QString& name) {
+  QString file;
+
+  file = name;
+  file = file.stripWhiteSpace();
+  if (!file.isEmpty()) {
+    _openFile->setEnabled(true);
+  } else {
+    _openFile->setEnabled(false);
+  }
+}
+
+
 void KstQuickStartDialogI::changeURL(const QString& name) {
   _fileName->blockSignals(true);
   _fileName->setURL(name);
   _fileName->blockSignals(false);
+
+  fileChanged(name);
+
   _isRecentFile = true;
 }
 
@@ -109,4 +128,4 @@ void KstQuickStartDialogI::deselectRecentFile() {
 }
 
 #include "kstquickstartdialog_i.moc"
-// vim: et ts=2 sw=2
+

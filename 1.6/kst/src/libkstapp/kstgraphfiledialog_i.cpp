@@ -158,10 +158,20 @@ void KstGraphFileDialogI::loadProperties() {
 
   cfg.setGroup("AutoSaveImages");
 
-  _url = cfg.readEntry("Location", "");
+  if (_url.isEmpty()) {
+    _url = cfg.readEntry("Location", "");
+  }
   if (_url.isEmpty()) {
     _url = QDir::currentDirPath();
+    if (_url.length() > 0) {
+      if (_url.endsWith("/", FALSE)) {
+        _url += QString("export");
+      } else {
+        _url += QString("/export");
+      }
+    }
   }
+
   _format = cfg.readEntry("Format", "PNG");
   _w = cfg.readNumEntry("XSize", 640);
   _h = cfg.readNumEntry("YSize", 480);

@@ -1068,6 +1068,7 @@ bool KstApp::openDocumentFile(const QString& in_filename,
   }
 
   opening = true;
+
   KURL url;
   bool rc = false;
 
@@ -1083,14 +1084,24 @@ bool KstApp::openDocumentFile(const QString& in_filename,
     setCaption(doc->title());
     if (url.isLocalFile()) {
       QFileInfo finfo(in_filename);
-      addRecentFile(finfo.absFilePath());
+      QString fileExport;
+
+      fileExport = finfo.absFilePath();
+      addRecentFile(fileExport);
+      if (fileExport.endsWith(QString(".kst"), FALSE)) {
+        fileExport.truncate(fileExport.length() - QString(".kst").length());
+      }
+      graphFileDlg()->setURL(fileExport);
     } else {
       addRecentFile(url);
     }
+
     rc = true;
   }
+
   slotUpdateStatusMsg(i18n("Ready"));
   opening = false;
+
   return rc;
 }
 
