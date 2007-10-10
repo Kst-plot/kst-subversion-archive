@@ -35,6 +35,7 @@
 #include "editmultiplewidget.h"
 #include "vectorviewdialogwidget.h"
 #include "kst2dplot.h"
+#include "kstchoosecolordialog_i.h"
 #include "kstdataobjectcollection.h"
 #include "kstsettings.h"
 #include "kstuinames.h"
@@ -299,7 +300,11 @@ bool KstVvDialogI::newObject() {
   vy->unlock();
   if (flag) {flag->unlock();}
 
-  KstVCurvePtr vc = new KstVCurve(KST::suggestCurveName(vv->tag(), true), vv->vX(), vv->vY(), 0L, 0L, 0L, 0L, _w->_curveAppearance->color());
+  QColor color = KstApp::inst()->chooseColorDlg()->getColorForCurve(vv->vX(), vv->vY());
+  if (!color.isValid()) {
+    color = _w->_curveAppearance->color();
+  }
+  KstVCurvePtr vc = new KstVCurve(KST::suggestCurveName(vv->tag(), true), vv->vX(), vv->vY(), 0L, 0L, 0L, 0L, color);
 
   vc->setHasPoints(_w->_curveAppearance->showPoints());
   vc->setHasLines(_w->_curveAppearance->showLines());

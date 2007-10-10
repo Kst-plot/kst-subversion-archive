@@ -32,6 +32,7 @@
 // application specific includes
 #include "curveappearancewidget.h"
 #include "kst2dplot.h"
+#include "kstchoosecolordialog_i.h"
 #include "kstdataobjectcollection.h"
 #include "kstfitdialog_i.h"
 #include "kstvcurve.h"
@@ -139,8 +140,11 @@ bool KstFitDialogI::createCurve(KstCPluginPtr plugin) {
   }
 
   QString c_name = KST::suggestCurveName(plugin->tag(), true);
-
-  KstVCurvePtr fit = new KstVCurve(c_name, KstVectorPtr(xVector), KstVectorPtr(yVector), KstVectorPtr(0L), KstVectorPtr(0L), KstVectorPtr(0L), KstVectorPtr(0L), _w->_curveAppearance->color());
+  QColor color = KstApp::inst()->chooseColorDlg()->getColorForCurve(KstVectorPtr(xVector), KstVectorPtr(yVector));
+  if (!color.isValid()) {
+    color = _w->_curveAppearance->color();
+  }
+  KstVCurvePtr fit = new KstVCurve(c_name, KstVectorPtr(xVector), KstVectorPtr(yVector), KstVectorPtr(0L), KstVectorPtr(0L), KstVectorPtr(0L), KstVectorPtr(0L), color);
   fit->setHasPoints(_w->_curveAppearance->showPoints());
   fit->setHasLines(_w->_curveAppearance->showLines());
   fit->setHasBars(_w->_curveAppearance->showBars());

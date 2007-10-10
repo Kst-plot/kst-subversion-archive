@@ -40,6 +40,7 @@
 #include "defaultprimitivenames.h"
 #include "fftoptionswidget.h"
 #include "kst2dplot.h"
+#include "kstchoosecolordialog_i.h"
 #include "kstdatacollection.h"
 #include "kstdataobject.h"
 #include "kstdataobjectcollection.h"
@@ -1078,11 +1079,14 @@ void KstDataWizard::finished()
       if (_radioButtonPlotData->isChecked() || _radioButtonPlotDataPSD->isChecked()) {
         name = KST::suggestCurveName((*it)->tag(), false);
         Kst2DPlotPtr plot = kst_cast<Kst2DPlot>(*pit);
-        if (plot) {
-          KstVCurveList vcurves = kstObjectSubList<KstBaseCurve,KstVCurve>(plot->Curves);
-          color = KstColorSequence::next(vcurves, plot->backgroundColor());
-        } else {
-          color = KstColorSequence::next();
+        color = KstApp::inst()->chooseColorDlg()->getColorForCurve(xVector, *it);
+        if (!color.isValid()) {
+          if (plot) {
+            KstVCurveList vcurves = kstObjectSubList<KstBaseCurve,KstVCurve>(plot->Curves);
+            color = KstColorSequence::next(vcurves, plot->backgroundColor());
+          } else {
+            color = KstColorSequence::next();
+          }
         }
         colors.append(color);
         KstVCurvePtr c = new KstVCurve(name, xVector, *it, 0L, 0L, 0L, 0L, color);
@@ -1167,13 +1171,17 @@ void KstDataWizard::finished()
                   _kstFFTOptions->Sigma->value(),
                   PSDType(_kstFFTOptions->Output->currentItem()));
           p->setInterpolateHoles(_kstFFTOptions->InterpolateHoles->isChecked());
-          if (_radioButtonPlotPSD->isChecked() || colors.count() <= (unsigned long)indexColor) {
-            KstVCurveList vcurves = kstObjectSubList<KstBaseCurve,KstVCurve>(plot->Curves);
-            c = new KstVCurve(KST::suggestCurveName(p->tag(), true), p->vX(), p->vY(), 0L, 0L, 0L, 0L, KstColorSequence::next(vcurves, plot->backgroundColor()));
-          } else {
-            c = new KstVCurve(KST::suggestCurveName(p->tag(), true), p->vX(), p->vY(), 0L, 0L, 0L, 0L, colors[indexColor]);
-            indexColor++;
+          color = KstApp::inst()->chooseColorDlg()->getColorForCurve(p->vX(), p->vY());
+          if (!color.isValid()) {
+            if (_radioButtonPlotPSD->isChecked() || colors.count() <= (unsigned long)indexColor) {
+              KstVCurveList vcurves = kstObjectSubList<KstBaseCurve,KstVCurve>(plot->Curves);
+              color = KstColorSequence::next(vcurves, plot->backgroundColor());
+            } else {
+              color = colors[indexColor];
+              indexColor++;
+            }
           }
+          c = new KstVCurve(KST::suggestCurveName(p->tag(), true), p->vX(), p->vY(), 0L, 0L, 0L, 0L, color);
           c->setLineWidth(KstSettings::globalSettings()->defaultLineWeight);
           if (_drawBoth->isChecked()) {
             c->setHasPoints(true);

@@ -35,6 +35,7 @@
 #include "curveplacementwidget.h"
 #include "editmultiplewidget.h"
 #include "kst2dplot.h"
+#include "kstchoosecolordialog_i.h"
 #include "kstcurvedialog_i.h"
 #include "kstdataobjectcollection.h"
 #include "kstviewwindow.h"
@@ -270,8 +271,11 @@ bool KstCurveDialogI::newObject() {
     EYMinus->readLock();
   }
 
-  // create the curve
-  KstVCurvePtr curve = new KstVCurve(tag_name, VX, VY, EX, EY, EXMinus, EYMinus, _w->_curveAppearance->color());
+  QColor color = KstApp::inst()->chooseColorDlg()->getColorForCurve(VX, VY);
+  if (!color.isValid()) {
+    color = _w->_curveAppearance->color();
+  }
+  KstVCurvePtr curve = new KstVCurve(tag_name, VX, VY, EX, EY, EXMinus, EYMinus, color);
 
   if (EX) {
     EX->unlock();

@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <class>KstChooseColorDialog</class>
 <widget class="QDialog">
     <property name="name">
@@ -9,17 +9,46 @@
             <x>0</x>
             <y>0</y>
             <width>413</width>
-            <height>154</height>
+            <height>200</height>
         </rect>
     </property>
     <property name="caption">
-        <string>Assign Curve Color From File</string>
+        <string>Assign Curve Color Per File</string>
     </property>
     <grid>
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <widget class="QLayoutWidget" row="2" column="0">
+        <widget class="QButtonGroup" row="1" column="0">
+            <property name="name">
+                <cstring>vectorGroup</cstring>
+            </property>
+            <property name="title">
+                <string>Base Curve Color On</string>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QRadioButton" row="0" column="0">
+                    <property name="name">
+                        <cstring>xVector</cstring>
+                    </property>
+                    <property name="text">
+                        <string>X Vector</string>
+                    </property>
+                </widget>
+                <widget class="QRadioButton" row="0" column="1">
+                    <property name="name">
+                        <cstring>yVector</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Y Vector</string>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
+        <widget class="QLayoutWidget" row="3" column="0">
             <property name="name">
                 <cstring>layout9</cstring>
             </property>
@@ -62,6 +91,14 @@
                 </spacer>
             </grid>
         </widget>
+        <widget class="QCheckBox" row="2" column="0">
+            <property name="name">
+                <cstring>_applyToNewCurves</cstring>
+            </property>
+            <property name="text">
+                <string>Apply to new curves</string>
+            </property>
+        </widget>
         <widget class="QGroupBox" row="0" column="0">
             <property name="name">
                 <cstring>colorGroup</cstring>
@@ -89,35 +126,6 @@
                 </widget>
             </grid>
         </widget>
-        <widget class="QButtonGroup" row="1" column="0">
-            <property name="name">
-                <cstring>vectorGroup</cstring>
-            </property>
-            <property name="title">
-                <string>Base Curve Color On</string>
-            </property>
-            <grid>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QRadioButton" row="0" column="0">
-                    <property name="name">
-                        <cstring>xVector</cstring>
-                    </property>
-                    <property name="text">
-                        <string>X Vector</string>
-                    </property>
-                </widget>
-                <widget class="QRadioButton" row="0" column="1">
-                    <property name="name">
-                        <cstring>yVector</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Y Vector</string>
-                    </property>
-                </widget>
-            </grid>
-        </widget>
     </grid>
 </widget>
 <connections>
@@ -131,6 +139,7 @@
 <tabstops>
     <tabstop>xVector</tabstop>
     <tabstop>yVector</tabstop>
+    <tabstop>_applyToNewCurves</tabstop>
     <tabstop>OK</tabstop>
     <tabstop>Cancel</tabstop>
 </tabstops>

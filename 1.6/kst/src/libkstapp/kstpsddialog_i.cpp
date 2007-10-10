@@ -35,6 +35,7 @@
 #include "curveplacementwidget.h"
 #include "editmultiplewidget.h"
 #include "kst2dplot.h"
+#include "kstchoosecolordialog_i.h"
 #include "kstdataobjectcollection.h"
 #include "kstobjectdefaults.h"
 #include "kstpsddialog_i.h"
@@ -189,7 +190,11 @@ bool KstPsdDialogI::newObject() {
     psd->setInterpolateHoles(_w->_kstFFTOptions->InterpolateHoles->isChecked());
     p->unlock();
 
-    KstVCurvePtr vc = new KstVCurve(KST::suggestCurveName(psd->tag(),true), psd->vX(), psd->vY(), 0L, 0L, 0L, 0L, _w->_curveAppearance->color());
+    QColor color = KstApp::inst()->chooseColorDlg()->getColorForCurve(psd->vX(), psd->vY());
+    if (!color.isValid()) {
+      color = _w->_curveAppearance->color();
+    }
+    KstVCurvePtr vc = new KstVCurve(KST::suggestCurveName(psd->tag(),true), psd->vX(), psd->vY(), 0L, 0L, 0L, 0L, color);
     vc->setHasPoints(_w->_curveAppearance->showPoints());
     vc->setHasLines(_w->_curveAppearance->showLines());
     vc->setHasBars(_w->_curveAppearance->showBars());

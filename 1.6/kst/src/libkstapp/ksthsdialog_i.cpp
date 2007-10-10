@@ -36,6 +36,7 @@
 #include "editmultiplewidget.h"
 #include "histogramdialogwidget.h"
 #include "kst2dplot.h"
+#include "kstchoosecolordialog_i.h"
 #include "kstdataobjectcollection.h"
 #include "kstsettings.h"
 #include "kstuinames.h"
@@ -224,7 +225,11 @@ bool KstHsDialogI::newObject() {
   vp->unlock();
   hs->setRealTimeAutoBin(_w->_realTimeAutoBin->isChecked());
 
-  KstVCurvePtr vc = new KstVCurve(KST::suggestCurveName(hs->tag(), true), hs->vX(), hs->vY(), 0L, 0L, 0L, 0L, _w->_curveAppearance->color());
+  QColor color = KstApp::inst()->chooseColorDlg()->getColorForCurve(hs->vX(), hs->vY());
+  if (!color.isValid()) {
+    color = _w->_curveAppearance->color();
+  }
+  KstVCurvePtr vc = new KstVCurve(KST::suggestCurveName(hs->tag(), true), hs->vX(), hs->vY(), 0L, 0L, 0L, 0L, color);
 
   vc->setHasPoints(_w->_curveAppearance->showPoints());
   vc->setHasLines(_w->_curveAppearance->showLines());
@@ -235,11 +240,11 @@ bool KstHsDialogI::newObject() {
   vc->setBarStyle(_w->_curveAppearance->barStyle());
   vc->setPointDensity(_w->_curveAppearance->pointDensity());
 
-  QString legend_text = _legendText->text();
-  if (legend_text == defaultTag) {
+  QString legendText = _legendText->text();
+  if (legendText == defaultTag) {
     vc->setLegendText(QString(""));
   } else {
-    vc->setLegendText(legend_text);
+    vc->setLegendText(legendText);
   }
 
   KstViewWindow *w = dynamic_cast<KstViewWindow*>(KstApp::inst()->findWindow(_w->_curvePlacement->_plotWindow->currentText()));
@@ -281,7 +286,6 @@ bool KstHsDialogI::newObject() {
   hs = 0L;
   vc = 0L;
   emit modified();
-
   return true;
 }
 

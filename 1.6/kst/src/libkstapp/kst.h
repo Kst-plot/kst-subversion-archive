@@ -136,7 +136,7 @@ class KST_EXPORT KstApp : public KMdiMainFrm {
 
     KstTopLevelView::ViewMode currentViewMode();
     QString currentCreateType();
-    
+
     KstTopLevelViewPtr activeView();
     Kst2DPlotMap* plotHolderWhileOpeningDocument();
 
@@ -147,7 +147,7 @@ class KST_EXPORT KstApp : public KMdiMainFrm {
     void tiedZoomPrev(KstViewWidget* view, const QString& plotName);
     void tiedZoomMode(int zoom, bool flag, double center, int mode, int modeExtra, KstViewWidget* view, const QString& plotName);
     void tiedZoom(bool x, double xmin, double xmax, bool y, double ymin, double ymax, KstViewWidget* view, const QString& plotName);
-    
+
     bool dataMode() const;
 
     void paintAll(KstPainter::PaintType = KstPainter::P_PAINT);
@@ -160,6 +160,7 @@ class KST_EXPORT KstApp : public KMdiMainFrm {
     KConfig *dataSourceConfig() const { return _dataSourceConfig; }
 
     KstGraphFileDialogI *graphFileDlg() const { return graphFileDialog; }
+    KstChooseColorDialogI* chooseColorDlg() const { return chooseColorDialog; }
 
     bool paused() const;
 
@@ -215,13 +216,9 @@ class KST_EXPORT KstApp : public KMdiMainFrm {
     // Hack to update KStdActions
     void updateActions();
     void loadExtensions();
-
-    // for the kaction
     void toggleDataMode();
     void toggleMouseMode();
-
     void slotSettingsChanged();
-
     void fixKMdi();
     void showContextMenu(QWidget *w, const QPoint& pos);
     void showContextMenu(const QPoint& pos);
@@ -230,13 +227,9 @@ class KST_EXPORT KstApp : public KMdiMainFrm {
 
   public slots:
     void fromEnd();
-
     void updatePausedState(bool);
-
     void tieAll();
-
     void forceUpdate();
-
     void slotConfigureKeys();
 
     /** open a new application window */
@@ -280,11 +273,11 @@ class KST_EXPORT KstApp : public KMdiMainFrm {
     void immediatePrintWindowToPng(KMdiChildView *window, const QString& filename, const QString& format = "PNG", int width = 640, int height = 480, int display = 0);
     void immediatePrintActiveWindowToPng(const QString& filename, const QString& format = "PNG", int width = 640, int height = 480, int display = 0);
 
-    /** export to eps without querying */    
+    /** export to eps without querying */
     void immediatePrintToEps(const QString& filename, int width = 640, int height = 480, bool all=false, int display = 0);
     void immediatePrintWindowToEps(KMdiChildView *win, const QString& filename, int width, int height, int display);    
     void immediatePrintActiveWindowToEps(const QString& filename, int width, int height, int display);
-    
+
     //void slotCut() {}
     void slotCopy();
     void slotPaste();
@@ -305,19 +298,19 @@ class KST_EXPORT KstApp : public KMdiMainFrm {
     /** just calls dataManager->show_I(0) */
     void showDataManager();
     void showViewManager();
-    
+
     /** just calls changeFileDialog->showChangeFileDialog(0) */
     void showChangeFileDialog();
-    
+
     /** just calls monochromeDialog->showMonochromeDialog(0) */
     void showMonochromeDialog();
-    
+
     /** just calls chooseColorDialog->showChooseColorDialog(0) */
     void showChooseColorDialog();
 
     /** just calls chooseColorDialog->showChooseColorDialog(0) */
     void showDifferentiateCurvesDialog();
-    
+
     /** just calls viewScalarsDialog->showViewScalarsDialog(0) */
     void showViewScalarsDialog();
 
@@ -329,7 +322,7 @@ class KST_EXPORT KstApp : public KMdiMainFrm {
 
     /** just calls viewMatricesDialog->showViewMatricesDialog(0) */
     void showViewMatricesDialog();
-    
+
     /** just calls viewFitsDialog->showViewFitsDialog(0) */
     void showViewFitsDialog();
 
@@ -338,7 +331,7 @@ class KST_EXPORT KstApp : public KMdiMainFrm {
 
     /** just calls graphFileDialog->showGraphFileDialog(0) */
     void showGraphFileDialog();
-    
+
     /** just calls filterListEditor->show() */
 //    void showFilterListEditor();
 
@@ -421,19 +414,19 @@ class KST_EXPORT KstApp : public KMdiMainFrm {
 
     /* Dialog for viewing the vector values */
     KstViewMatricesDialogI *viewMatricesDialog;
-    
+
     /* Dialog for viewing the fit values */
     KstViewFitsDialogI *viewFitsDialog;
 
     /* Dialog for changing the data files from Vectors */
     KstChangeFileDialogI *changeFileDialog;
-    
+
     /* Dialog for choosing curve color per file */
     KstChooseColorDialogI *chooseColorDialog;
 
     /* Dialog for differentiating between curves */
     KstCurveDifferentiateI *differentiateCurvesDialog;
-    
+
     /* Dialog for changing the Sample ranges for Vectors */
     KstChangeNptsDialogI *changeNptsDialog;
 
@@ -442,16 +435,16 @@ class KST_EXPORT KstApp : public KMdiMainFrm {
 
     /* Dialog for exporting to a text file */
     VectorSaveDialog *vectorSaveDialog;
-    
+
     /* Dialog for looking at data */
     KstDataManagerI *dataManager;
     KstViewManagerI *viewManager;
-    
+
     /* Dialog for looking at debug information */
     KstDebugDialogI *debugDialog;
 
     GraphicEditorI *_graphicDialog;
-    
+
     /* Dialog for setting monochrome settings for plots */
     KstMonochromeDialogI *_monochromeDialog; 
 

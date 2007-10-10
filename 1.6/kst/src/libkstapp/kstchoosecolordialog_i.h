@@ -18,36 +18,45 @@
 #ifndef KSTCHOOSECOLORDIALOGI_H
 #define KSTCHOOSECOLORDIALOGI_H
 
+#include <qcolor.h>
 #include <qlineedit.h>
+#include <qmap.h>
+#include <qstring.h>
+#include <qvaluelist.h>
 
 #include <kcolorcombo.h>
 
 #include "choosecolordialog.h"
+#include "kstvcurve.h"
 
 class KstChooseColorDialogI : public KstChooseColorDialog {
-  Q_OBJECT
-  public:
-    KstChooseColorDialogI(QWidget* parent = 0,
-                         const char* name = 0,
-                         bool modal = FALSE, WFlags fl = 0 );
-    virtual ~KstChooseColorDialogI();
-    
-    void updateChooseColorDialog();
-    void showChooseColorDialog();
-    
-  public slots:
-    void applyColors();
-    
-  private:
-    QGridLayout* grid;
-    
-    // list of the current textfields and colorcombos
-    QValueList<QLineEdit*> lineEdits;
-    QValueList<KColorCombo*> colorCombos;
-    QColor getColorForFile(const QString &fileName);
-    
-    void cleanColorGroup();
+Q_OBJECT
+public:
+  KstChooseColorDialogI(QWidget* parent = 0,
+                        const char* name = 0,
+                        bool modal = FALSE, WFlags fl = 0 );
+  virtual ~KstChooseColorDialogI();
+
+  void updateChooseColorDialog();
+  void showChooseColorDialog();
+  QColor getColorForCurve(const KstVCurvePtr curve);
+  QColor getColorForCurve(const KstVectorPtr xVector, const KstVectorPtr yVector);
+  bool override();
+
+public slots:
+  void applyColors();
+
+private:
+  QColor getColorForFile(const QString &fileName);
+  void cleanColorGroup();
+
+  QGridLayout* _grid;
+  QValueList<QLineEdit*> _lineEdits;
+  QValueList<KColorCombo*> _colorCombos;
+  QMap<QString, QColor> _fileColors;
+  bool _xSelected;
+  bool _override;
 };
 
 #endif
-// vim: ts=2 sw=2 et
+
