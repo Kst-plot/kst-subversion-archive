@@ -15,7 +15,7 @@ How to make a Kst release:
 - prepare for a KDE 3.3 install!  Set min config appropriately
 - svn copy to a tag
 - make sure configure has been run so that the spec file is created (with the
-  appropriate prefix, or you edit kst.spec afterwards)
+  appropriate prefix - currently /opt/kde3 - or you edit kst.spec afterwards)
 - disable unsermake
 - svn2dist /path/to/extragear/graphics kst -b -n kst -v <version_number> --svn-root https://svn.kde.org/home/kde/trunk/ -l svn2dist.log --i18n-module extragear-graphics (if you are not including translations then use svn2dist /path/to/extragear/graphics kst -b -n kst -v <version_number> -l svn2dist.log --no-i18n)
 - unpack, remove any files that shouldn't be there, make sure docs and i18n
