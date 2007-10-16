@@ -549,13 +549,17 @@ KstDataObjectPtr KstImage::providerDataObject() const {
 }
 
 
-double KstImage::distanceToPoint(double xpos, double dx, double ypos) const {
-  Q_UNUSED(dx)
-  // dx is not relevant for double clicks on images - clicks must be inside the image
+double KstImage::distanceToPoint(double xpos, double ypos, double distanceMax, const KstCurveRenderContext& context) {
+  Q_UNUSED(context)
+  Q_UNUSED(distanceMax);
+
+  double distance = -1.0;
+
   if (xpos <= MaxX && xpos >= MinX && ypos <= MaxY && ypos >= MinY) {
-    return 0;
+    distance = 0.0;
   }
-  return 1.0E300;
+
+  return distance;
 }
 
 

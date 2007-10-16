@@ -6558,45 +6558,57 @@ QString Kst2DPlot::menuTitle() const {
 void Kst2DPlot::mouseDoubleClickEvent(QWidget *view, QMouseEvent *e) {
   // allow user to edit a curve if click was close enough.
   Q_UNUSED(view)
+
+  KstCurveRenderContext context;
   KstBaseCurvePtr curve;
   QRect pr = GetPlotRegion();
   QPoint pos = e->pos();
-  double best_distance = 1.0E300;
-  double xmin, ymin, xmax, ymax;
+  double bestDistance = 1.0E300;
+  double maxDistance = 5.0;
+  double x_min, y_min, x_max, y_max;
   double xpos, ypos;
+  double Lx, Hx, Ly, Hy;
 
-  getCursorPos(pos, xpos, ypos, xmin, xmax, ymin, ymax);
+  getCursorPos(pos, xpos, ypos, x_min, x_max, y_min, y_max);
 
-  // calculate max x distance.
-  double dx_per_pix;
-  if (!isXLog()) {
-    dx_per_pix = (xmax - xmin)/pr.width();
-  } else {
-    dx_per_pix = xpos*log(_xLogBase)*(xmax - xmin)/pr.width();
-  }
-  double dx = fabs(5.0*dx_per_pix); //~5 pixels.
+  Lx = PlotRegion.left();
+  Hx = PlotRegion.right();
+  Ly = PlotRegion.top();
+  Hy = PlotRegion.bottom();
 
-  // calculate max y distance.
-  double dy_per_pix;
-  if (!isYLog()) {
-    dy_per_pix = (ymin - ymax)/pr.height();
-  } else {
-    dy_per_pix = ypos*log(_yLogBase)*(ymin - ymax)/pr.height();
-  }
-  double dy = fabs(5.0*dy_per_pix); //~5 pixels.
+  context.Lx = Lx;
+  context.Hx = Hx;
+  context.Ly = Ly;
+  context.Hy = Hy;
+  context.m_X = _m_X;
+  context.m_Y = _m_Y;
+  context.b_X = _b_X;
+  context.b_Y = _b_Y;
+  context.x_max = x_max;
+  context.y_max = y_max;
+  context.x_min = x_min;
+  context.y_min = y_min;
+  context.XMin = _XMin;
+  context.YMin = _YMin;
+  context.XMax = _XMax;
+  context.YMax = _YMax;
+  context.xLog = _xLog;
+  context.yLog = _yLog;
+  context.xLogBase = _xLogBase;
+  context.yLogBase = _yLogBase;
 
   for (KstBaseCurveList::Iterator i = Curves.begin(); i != Curves.end(); ++i) {
     (*i)->readLock();
-    double distance = (*i)->distanceToPoint(xpos, dx, ypos);
+    double distance = (*i)->distanceToPoint(xpos, ypos, maxDistance, context);
     (*i)->unlock();
 
-    if (distance < best_distance || !curve) {
-      best_distance = distance;
+    if (distance >= 0.0 && (distance < bestDistance || !curve)) {
+      bestDistance = distance;
       curve = *i;
     }
   }
 
-  if (curve && fabs(best_distance) <= dy) {
+  if (curve && fabs(bestDistance) <= maxDistance) {
     curve->readLock();
     curve->showDialog(false);
     curve->unlock();

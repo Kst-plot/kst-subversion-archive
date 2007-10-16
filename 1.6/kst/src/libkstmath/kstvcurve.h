@@ -147,7 +147,7 @@ class KST_EXPORT KstVCurve: public KstBaseCurve {
     virtual void paintLegendSymbol(KstPainter *p, const QRect& bound);
 
     // see KstBaseCurve::distanceToPoint
-    virtual double distanceToPoint(double xpos, double dx, double ypos) const;
+    virtual double distanceToPoint(double xpos, double ypos, double distanceMax, const KstCurveRenderContext& context);
 
     // see KstBaseCurve::providerDataObject
     virtual KstDataObjectPtr providerDataObject() const;

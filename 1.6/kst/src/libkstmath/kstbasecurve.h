@@ -105,7 +105,7 @@ class KST_EXPORT KstBaseCurve : public KstDataObject {
     
     // return closest distance to the given point
     // images always return a rating >= 5
-    virtual double distanceToPoint(double xpos, double dx, double ypos) const = 0;
+    virtual double distanceToPoint(double xpos, double ypos, double distanceMax, const KstCurveRenderContext& context) = 0;
     
     // render this curve 
     virtual void paint(const KstCurveRenderContext& context) = 0;

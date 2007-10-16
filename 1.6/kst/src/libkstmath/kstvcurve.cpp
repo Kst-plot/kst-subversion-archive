@@ -67,6 +67,7 @@ KstVCurve::KstVCurve(const QString &in_tag, KstVectorPtr in_X, KstVectorPtr in_Y
   setLineStyle(0);
   setBarStyle(0);
   setPointDensity(0);
+  setPointStyle(0);
   setInterp(InterpY);
 
   commonConstructor(in_tag, in_color);
@@ -101,8 +102,7 @@ KstVCurve::KstVCurve(const QString &in_tag, KstVectorPtr in_X, KstVectorPtr in_Y
 KstVCurve::KstVCurve(QDomElement &e)
 : KstBaseCurve(e) {
   QString in_tag, xname, yname, exname, eyname, exminusname, eyminusname;
-  // QColor in_color(KstColorSequence::next(-1));
-  QColor in_color("red"); // the above line is invalid.
+  QColor in_color("red");
   bool hasMinus = false;
 
   setHasPoints(false);
@@ -763,6 +763,7 @@ int KstVCurve::getIndexNearXY(double x, double dx_per_pix, double y) const {
       index = i;
     }
   }
+
   return index;
 }
 
@@ -820,8 +821,7 @@ void KstVCurve::setPointDensity(int in_PointDensity) {
 
 
 void KstVCurve::setPointStyle(int in_PointStyle) {
-  if (in_PointStyle >= 0 && (unsigned int)in_PointStyle < KSTPOINT_MAXTYPE)
-  {
+  if (in_PointStyle >= 0 && (unsigned int)in_PointStyle < KSTPOINT_MAXTYPE) {
     PointStyle = in_PointStyle;
     setDirty();
     emit modifiedLegendEntry();
@@ -916,13 +916,13 @@ void KstVCurve::paint(const KstCurveRenderContext& context) {
     Qt::PenStyle style = KstLineStyle[lineStyle()];
     int i0, iN;
     int width;
-    
+
     if (lineWidth() == 0) {
       width = penWidth;
     } else {
       width = lineWidth() * penWidth;
     }
-    
+
     if (xv->isRising()) {
       i0 = indexNearX(XMin, xv, NS);
       if (i0 > 0) {
@@ -1248,26 +1248,26 @@ void KstVCurve::paint(const KstCurveRenderContext& context) {
         p->setPen(QPen(color(), width, style));
       }
 
-      if (!exv) {        
+      if (!exv) {
         // determine the bar position width. NOTE: This is done
         //  only if xv->isRising() as in this case the calculation
         //  is simple...
         drX = (maxX() - minX())/double(sampleCount());
-        if (xv->isRising()) {       
+        if (xv->isRising()) {
           double oldX = 0.0;
 
           for (i_pt = i0; i_pt <= iN; i_pt++) {
             rX = xv->interpolate(i_pt, NS);
-            if (i_pt > i0) {                      
+            if (i_pt > i0) {
               if (rX - oldX < drX) {
-                drX = rX - oldX;                      
+                drX = rX - oldX;
               }
             }
             oldX = rX; 
           }
         }
       }
-      
+
       for (i_pt = i0; i_pt <= iN; i_pt++) {
         visible = has_bot = has_top = has_left = has_right = true;
 
@@ -1626,7 +1626,7 @@ void KstVCurve::yRange(double xFrom, double xTo, double* yMin, double* yMax) {
   KstVectorPtr xv = *_inputVectors.find(COLOR_XVECTOR);
   KstVectorPtr yv = *_inputVectors.find(COLOR_YVECTOR);
   if (!xv || !yv) {
-    *yMin = *yMax = 0;
+    *yMin = *yMax = 0.0;
     return;
   }
 
@@ -1639,12 +1639,16 @@ void KstVCurve::yRange(double xFrom, double xTo, double* yMin, double* yMax) {
     i0 = 0;
     iN = sampleCount() - 1;
   }
+
   // search for min/max
   bool first = true;
-  double newYMax = 0, newYMin = 0;
+  double newYMax = 0.0;
+  double newYMin = 0.0;
+
   for (int i_pt = i0; i_pt <= iN; i_pt++) {
     double rX = xv->interpolate(i_pt, NS);
     double rY = yv->interpolate(i_pt, NS);
+
     // make sure this point is visible
     if (rX >= xFrom && rX <= xTo) {
       // update min/max
@@ -1676,52 +1680,237 @@ KstDataObjectPtr KstVCurve::providerDataObject() const {
 }
 
 
-double KstVCurve::distanceToPoint(double xpos, double dx, double ypos) const {
-// find the y distance between the curve and a point. return 1.0E300 if this distance is undefined. i don't want to use -1 because it will make the code which uses this function messy.
-  KstVectorPtr xv = *_inputVectors.find(COLOR_XVECTOR);
-  if (!xv) {
-    return 1.0E300; // anything better we can do?
-  }
+double KstVCurve::distanceToPoint(double xpos, double ypos, double distanceMax, const KstCurveRenderContext& context) {
+  //
+  // xpos, ypos are values rather than pixel position...
+  //
+  double distance = -1.0;
 
-  double distance = 1.0E300;
+  if (hasLines() || hasPoints()) {
+    KstVectorPtr xv = *_inputVectors.find(COLOR_XVECTOR);
+    double distanceNew;
+    double xposPixel;
+    double yposPixel;
+    double xposPoint;
+    double yposPoint;
+    double yOffset;
+    double xNear;
+    double yNear;
+    double yMin;
+    double yMax;
+    double xLo;
+    double xHi;
+    bool doneLine = false;
+    int iNearX;
+    int i;
 
-  int i_near_x = getIndexNearXY(xpos, dx, ypos);
-  double near_x, near_y;
-  point(i_near_x, near_x, near_y);
-
-  if (fabs(near_x - xpos) < dx) {
-    distance = fabs(ypos - near_y); // initial estimate.
-  }
-
-  if (hasLines() && xv->isRising()) {
-    // if hasLines then we should find the distance between the curve and the point, not the data and 
-    //  the point. if isRising because it is (probably) to slow to use this technique if the data is 
-    //  unordered. borrowed from indexNearX. use binary search to find the indices immediately above 
-    //  and below our xpos.
-    int i_top = NS - 1;
-    int i_bot = 0;
-
-    while (i_bot + 1 < i_top) {
-      int i0 = (i_top + i_bot)/2;
-
-      double rX = xv->interpolate(i0, NS);
-      if (xpos < rX) {
-        i_top = i0;
-      } else {
-        i_bot = i0;
-      }
+    if (context.xLog) {
+      xposPixel = logXLo(xpos, context.xLogBase);
+      xposPixel = context.m_X*xposPixel + context.b_X;
+    } else {
+      xposPixel = context.m_X*xpos + context.b_X;
     }
-    // end borrowed
 
-    double x_bot, y_bot, x_top, y_top;
-    point(i_bot, x_bot, y_bot);
-    point(i_top, x_top, y_top);
+    if (context.yLog) {
+      yposPixel = logYLo(ypos, context.yLogBase);
+      yposPixel = context.m_Y*yposPixel + context.b_Y;
+    } else {
+      yposPixel = context.m_Y*ypos + context.b_Y;
+    }
 
-    if (x_bot <= xpos && x_top >= xpos) {
-      near_y = (y_top - y_bot) / (x_top - x_bot) * (xpos - x_bot) + y_bot; // calculate y value for line segment between x_bot and x_top.
-      
-      if (fabs(ypos - near_y) < distance) {
-        distance = fabs(ypos - near_y);
+    iNearX = getIndexNearXY(xpos, distanceMax, ypos);
+    if (iNearX != -1) {
+      point(iNearX, xNear, yNear);
+      if (context.xLog) {
+        xposPoint = logXLo(xNear, context.xLogBase);
+        xposPoint = context.m_X*xposPoint + context.b_X;
+      } else {
+        xposPoint = context.m_X*xNear + context.b_X;
+      }
+
+      if (context.yLog) {
+        yposPoint = logYLo(yNear, context.yLogBase);
+        yposPoint = context.m_Y*yposPoint + context.b_Y;
+      } else {
+        yposPoint = context.m_Y*yNear + context.b_Y;
+      }
+
+      distance = sqrt(((xposPoint - xposPixel)*(xposPoint - xposPixel)) + ((yposPoint - yposPixel)*(yposPoint - yposPixel)));
+    }
+
+    if (xv && xv->isRising()) {
+      if (hasLines()) {
+        //
+        // check how far the closest line is from -5 to +5 pixels from our current x-position...
+        //
+        for (i=-5; i<5; ++i) {
+          if (context.xLog) {
+            xLo = pow(context.xLogBase, logXLo(xpos) + ((double)i / context.m_X));
+            xHi = pow(context.xLogBase, logXLo(xpos) + (((double)i+1.0) / context.m_X));
+          } else {
+            xLo = xpos + ((double)i / context.m_X);
+            xHi = xpos + (((double)i+1.0) / context.m_X);
+          }
+
+          if (xLo >= minX() && xHi <= maxX()) {
+            yRange(xLo, xHi, &yMin, &yMax);
+
+            if (yMin == 0.0 && yMax == 0.0 && !doneLine) {
+              //
+              // we are probably on a line, in between two points...
+              //
+              KstVectorPtr xv = *_inputVectors.find(COLOR_XVECTOR);
+
+              if (xv && xv->isRising()) {
+                // if hasLines then we should find the distance between the curve and the point, not the data and 
+                //  the point. if isRising because it is (probably) to slow to use this technique if the data is 
+                //  unordered. borrowed from indexNearX. use binary search to find the indices immediately above 
+                //  and below our xpos.
+                double xBottom;
+                double yBottom;
+                double xTop;
+                double yTop;
+                int iTop = NS - 1;
+                int iBottom = 0;
+
+                while (iBottom + 1 < iTop) {
+                  int i0 = (iTop + iBottom)/2;
+                  double rX = xv->interpolate(i0, NS);
+
+                  if (xpos < rX) {
+                    iTop = i0;
+                  } else {
+                    iBottom = i0;
+                  }
+                }
+
+                point(iBottom, xBottom, yBottom);
+                point(iTop, xTop, yTop);
+
+                if (xBottom <= xpos && xTop >= xpos) {
+                  if (context.xLog) {
+                    xTop = logXLo(xTop, context.xLogBase);
+                    xTop = context.m_X*xTop + context.b_X;
+                    xBottom = logXLo(xBottom, context.xLogBase);
+                    xBottom = context.m_X*xBottom + context.b_X;
+                  } else {
+                    xTop = context.m_X*xTop + context.b_X;
+                    xBottom = context.m_X*xBottom + context.b_X;
+                  }
+
+                  if (context.yLog) {
+                    yTop = logYLo(yTop, context.yLogBase);
+                    yTop = context.m_Y*yTop + context.b_Y;
+                    yBottom = logYLo(yBottom, context.yLogBase);
+                    yBottom = context.m_Y*yBottom + context.b_Y;
+                  } else {
+                    yTop = context.m_Y*yTop + context.b_Y;
+                    yBottom = context.m_Y*yBottom + context.b_Y;
+                  }
+
+                  distanceNew = fabs(((xTop-xBottom)*(yBottom-yposPixel)) - ((xBottom-xposPixel)*(yTop-yBottom)));
+                  distanceNew /= sqrt(((xTop-xBottom)*(xTop-xBottom)) + ((yTop-yBottom)*(yTop-yBottom)));
+
+                  if (distance == -1.0 || distanceNew < distance) {
+                    distance = distanceNew;
+                  }
+                }
+              }
+              doneLine = true;
+            } else {
+              //
+              // we are probably in an area of very dense lines...
+              //
+              if (context.yLog) {
+                yMin = logYLo(yMin, context.yLogBase);
+                yMax = logYLo(yMax, context.yLogBase);
+              }
+              yMin = context.m_Y*yMin + context.b_Y;
+              yMax = context.m_Y*yMax + context.b_Y;
+
+              if ((yMin <= yposPixel && yposPixel <= yMax) || 
+                  (yMax <= yposPixel && yposPixel <= yMin)) {
+                yOffset = 0.0;
+              } else if (fabs(yMin - yposPixel) < fabs(yMax - yposPixel)) {
+                yOffset = fabs(yMin - yposPixel);
+              } else {
+                yOffset = fabs(yMax - yposPixel);
+              }
+              distanceNew = ((double)i * (double)i) + (yOffset * yOffset);
+              distanceNew = sqrt(distanceNew);
+              if (distance == -1.0 || distanceNew < distance) {
+                distance = distanceNew;
+              }
+            }
+          }
+        }
+      } else {
+        //
+        // we have points only and need to check more carefully if we are close to a point...
+        //
+        KstVectorPtr xv = xVector();
+        KstVectorPtr yv = yVector();
+        double xPixel;
+        double yPixel;
+        double x;
+        double y;
+        int iNearXLoop;
+
+        if (xv && yv) {
+          iNearXLoop = iNearX;
+          xPixel = context.Hx;
+          while (iNearXLoop > 0 && xPixel > context.Lx && xPixel > xposPixel - distanceMax) {
+            x = xv->interpolate(iNearXLoop, NS);
+            y = yv->interpolate(iNearXLoop, NS);
+            if (context.xLog) {
+              xPixel = logXLo(x, context.xLogBase);
+              xPixel = context.m_X*xPixel + context.b_X;
+            } else {
+              xPixel = context.m_X*x + context.b_X;
+            }
+
+            if (context.yLog) {
+              yPixel = logYLo(y, context.yLogBase);
+              yPixel = context.m_Y*yPixel + context.b_Y;
+            } else {
+              yPixel = context.m_Y*y + context.b_Y;
+            }
+
+            distanceNew = sqrt(((xPixel - xposPixel)*(xPixel - xposPixel)) + 
+                               ((yPixel - yposPixel)*(yPixel - yposPixel)));
+            if (distanceNew < distance || distance == -1.0) {
+              distance = distanceNew;
+            }
+            iNearXLoop--;
+          }
+
+          iNearXLoop = iNearX;
+          xPixel = context.Lx;
+          while (iNearXLoop < NS && xPixel < context.Hx && xPixel < xposPixel + distanceMax) {
+            x = xv->interpolate(iNearXLoop, NS);
+            y = yv->interpolate(iNearXLoop, NS);
+            if (context.xLog) {
+              xPixel = logXLo(x, context.xLogBase);
+              xPixel = context.m_X*xPixel + context.b_X;
+            } else {
+              xPixel = context.m_X*x + context.b_X;
+            }
+
+            if (context.yLog) {
+              yPixel = logYLo(y, context.yLogBase);
+              yPixel = context.m_Y*yPixel + context.b_Y;
+            } else {
+              yPixel = context.m_Y*y + context.b_Y;
+            }
+
+            distanceNew = sqrt(((xPixel - xposPixel)*(xPixel - xposPixel)) + 
+                               ((yPixel - yposPixel)*(yPixel - yposPixel)));
+            if (distanceNew < distance || distance == -1.0) {
+              distance = distanceNew;
+            }
+            iNearXLoop++;
+          }
+        }
       }
     }
   }

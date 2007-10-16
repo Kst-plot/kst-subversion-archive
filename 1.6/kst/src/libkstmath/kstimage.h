@@ -107,7 +107,7 @@ class KST_EXPORT KstImage: public KstBaseCurve {
     virtual KstDataObjectPtr providerDataObject() const;
     
     // see KstBaseCurve::distanceToPoint
-    virtual double distanceToPoint(double xpos, double dx, double ypos) const;
+    virtual double distanceToPoint(double xpos, double ypos, double distanceMax, const KstCurveRenderContext& context);
     
     // see KstBaseCurve::paint
     virtual void paint(const KstCurveRenderContext& context);
