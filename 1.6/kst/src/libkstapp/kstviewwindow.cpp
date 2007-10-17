@@ -428,15 +428,90 @@ void KstViewWindow::closeEvent(QCloseEvent *e) {
   KMdiChildView::closeEvent(e);
 }
 
+
+QString KstViewWindow::createPlotObject(const QString& suggestedName, bool prompt) {
+  KstApp *app = KstApp::inst();
+  KMdiIterator<KMdiChildView*> *iter;
+
+  QString name = suggestedName;
+  bool duplicate = true;
+  while (duplicate) {
+    duplicate = false;
+    KstViewObjectPtr rc;
+    //check the name
+    iter = app->createIterator();
+    while (iter->currentItem() && !duplicate) {
+      KMdiChildView *childview = iter->currentItem();
+      KstViewWindow *viewwindow = dynamic_cast<KstViewWindow*>(childview);
+      if (viewwindow) {
+        rc = viewwindow->view()->findChild(name);
+        if (rc) {
+          duplicate = true;
+          name = KST::suggestPlotName();
+        }
+      }
+      iter->next();
+    }
+    app->deleteIterator(iter);
+  }
+
+  if (prompt) {
+    bool ok = false;
+#if KDE_VERSION >= KDE_MAKE_VERSION(3,3,0)
+    name = KInputDialog::getText(i18n("Kst"), i18n("Enter a name for the new plot:"), name, &ok);
+#else
+    name = KLineEditDlg::getText(i18n("Enter a name for the new plot:"), name, &ok, 0L);
+#endif
+    if (!ok) {
+      return QString::null;
+    }
+    //check the name
+    duplicate = true;
+    while (duplicate) {
+      duplicate = false;
+      KstViewObjectPtr rc;
+      //check the name
+      iter = app->createIterator();
+      while (iter->currentItem() && !duplicate) {
+        KMdiChildView *childview = iter->currentItem();
+        KstViewWindow *viewwindow = dynamic_cast<KstViewWindow*>(childview);
+        if (viewwindow) {
+          rc = viewwindow->view()->findChild(name);
+          if (rc) {
+            duplicate = true;
+#if KDE_VERSION >= KDE_MAKE_VERSION(3,3,0)
+            name = KInputDialog::getText(i18n("Kst"), i18n("Enter a name for the new plot:"), name, &ok);
+#else
+            name = KLineEditDlg::getText(i18n("Enter a name for the new plot:"), name, &ok, 0L);
+#endif
+            if (!ok) {
+              app->deleteIterator(iter);
+              return QString::null;
+            }
+          }
+        }
+        iter->next();
+      }
+      app->deleteIterator(iter);
+    }
+  }
+
+  _view->createObject<Kst2DPlot>(name);
+
+  return name;
+}
+
+
 QString KstViewWindow::createPlot(const QString& suggestedName, bool prompt) {
   Kst2DPlotList plotList = view()->findChildrenType<Kst2DPlot>(false);
-  QString name = createObject<Kst2DPlot>(suggestedName, prompt);
+  QString name = createPlotObject(suggestedName, prompt);
   Kst2DPlotPtr plot = kst_cast<Kst2DPlot>(view()->findChild(name));
 
   // if there are already plots in the window, use the the first one's font size.
   if (!plotList.isEmpty()) {
     plot->setPlotLabelFontSizes(plotList[0]->xTickLabel()->fontSize());
   }
+
   return (name);
 }
 

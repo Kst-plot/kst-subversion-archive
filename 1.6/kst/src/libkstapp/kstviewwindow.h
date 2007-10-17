@@ -98,7 +98,7 @@ class KST_EXPORT KstViewWindow : public KMdiChildView {
     void immediatePrintToPng(const QString& filename, const QSize& size, const QString& format = "PNG");
 
   public:
-    template<class T> QString createObject(const QString& suggestedName = QString::null, bool prompt = false);
+    QString createPlotObject(const QString& suggestedName = QString::null, bool prompt = false);
     QString createPlot(const QString& suggestedName = QString::null, bool prompt = false);
 
 
@@ -111,83 +111,5 @@ class KST_EXPORT KstViewWindow : public KMdiChildView {
 };
 
 
-//FIXME: while this purports to be a general createObject, it presumes
-// in a couple cases that it is creating a plot, As, afaikt it is currently only
-// used to create plots, doing anything about it is not urgent, but if
-// you decide to use this to create anything else, keep it in mind.
-template<class T>
-QString KstViewWindow::createObject(const QString& suggestedName, bool prompt) {
-
-  KstApp *app = KstApp::inst();
-  KMdiIterator<KMdiChildView*> *iter;
-
-  QString name = suggestedName;
-  bool duplicate = true;
-  while (duplicate) {
-    duplicate = false;
-    KstViewObjectPtr rc;
-    //check the name
-    iter = app->createIterator();
-    while (iter->currentItem() && !duplicate) {
-      KMdiChildView *childview = iter->currentItem();
-      KstViewWindow *viewwindow = dynamic_cast<KstViewWindow*>(childview);
-      if (viewwindow) {
-        rc = viewwindow->view()->findChild(name);
-        if (rc) {
-          duplicate = true;
-          name = KST::suggestPlotName();
-        }
-      }
-      iter->next();
-    }
-    app->deleteIterator(iter);
-  }
-
-  if (prompt) {
-    bool ok = false;
-#if KDE_VERSION >= KDE_MAKE_VERSION(3,3,0)
-    name = KInputDialog::getText(i18n("Kst"), i18n("Enter a name for the new plot:"), name, &ok);
-#else
-    name = KLineEditDlg::getText(i18n("Enter a name for the new plot:"), name, &ok, 0L);
 #endif
-    if (!ok) {
-      return QString::null;
-    }
-    //check the name
-    duplicate = true;
-    while (duplicate) {
-      duplicate = false;
-      KstViewObjectPtr rc;
-      //check the name
-      iter = app->createIterator();
-      while (iter->currentItem() && !duplicate) {
-        KMdiChildView *childview = iter->currentItem();
-        KstViewWindow *viewwindow = dynamic_cast<KstViewWindow*>(childview);
-        if (viewwindow) {
-          rc = viewwindow->view()->findChild(name);
-          if (rc) {
-            duplicate = true;
-#if KDE_VERSION >= KDE_MAKE_VERSION(3,3,0)
-            name = KInputDialog::getText(i18n("Kst"), i18n("Enter a name for the new plot:"), name, &ok);
-#else
-            name = KLineEditDlg::getText(i18n("Enter a name for the new plot:"), name, &ok, 0L);
-#endif
-            if (!ok) {
-              app->deleteIterator(iter);
-              return QString::null;
-            }
-          }
-        }
-        iter->next();
-      }
-      app->deleteIterator(iter);
-    }
-  }
-  //create the plot now
-  _view->createObject<T>(name);
-  return name;
-}
 
-
-#endif
-// vim: ts=2 sw=2 et

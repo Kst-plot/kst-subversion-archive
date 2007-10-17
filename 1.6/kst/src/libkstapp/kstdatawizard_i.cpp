@@ -988,15 +988,15 @@ void KstDataWizard::finished()
     KstViewObjectList plots;
 
     if (_onePlot->isChecked()) {
-      Kst2DPlotPtr p = kst_cast<Kst2DPlot>(window->view()->findChild(window->createObject<Kst2DPlot>(KST::suggestPlotName(), false)));
+      Kst2DPlotPtr p = kst_cast<Kst2DPlot>(window->view()->findChild(window->createPlotObject(KST::suggestPlotName(), false)));
       plots.append(p.data());
       if (_radioButtonPlotDataPSD->isChecked()) {
         Kst2DPlotPtr p;
 
         if (windowPSD) {
-          p = kst_cast<Kst2DPlot>(windowPSD->view()->findChild(windowPSD->createObject<Kst2DPlot>(KST::suggestPlotName(), false)));
+          p = kst_cast<Kst2DPlot>(windowPSD->view()->findChild(windowPSD->createPlotObject(KST::suggestPlotName(), false)));
         } else {
-           p = kst_cast<Kst2DPlot>(window->view()->findChild(window->createObject<Kst2DPlot>(KST::suggestPlotName(), false)));
+           p = kst_cast<Kst2DPlot>(window->view()->findChild(window->createPlotObject(KST::suggestPlotName(), false)));
         }
         plots.append(p.data());
         p->setXAxisInterpretation(false, KstAxisInterpretation(), KstAxisDisplay());
@@ -1006,15 +1006,15 @@ void KstDataWizard::finished()
       Kst2DPlotPtr p;
 
       for (uint i = 0; i < vectorList.count(); ++i) {
-        p = kst_cast<Kst2DPlot>(window->view()->findChild(window->createObject<Kst2DPlot>(KST::suggestPlotName(), false)));
+        p = kst_cast<Kst2DPlot>(window->view()->findChild(window->createPlotObject(KST::suggestPlotName(), false)));
         plots.append(p.data());
       }
       if (_radioButtonPlotDataPSD->isChecked()) {
         for (uint i = 0; i < vectorList.count(); ++i) {
           if (windowPSD) {
-            p = kst_cast<Kst2DPlot>(windowPSD->view()->findChild(windowPSD->createObject<Kst2DPlot>(KST::suggestPlotName(), false)));
+            p = kst_cast<Kst2DPlot>(windowPSD->view()->findChild(windowPSD->createPlotObject(KST::suggestPlotName(), false)));
           } else {
-            p = kst_cast<Kst2DPlot>(window->view()->findChild(window->createObject<Kst2DPlot>(KST::suggestPlotName(), false)));
+            p = kst_cast<Kst2DPlot>(window->view()->findChild(window->createPlotObject(KST::suggestPlotName(), false)));
           }
           plots.append(p.data());
           p->setXAxisInterpretation(false, KstAxisInterpretation(), KstAxisDisplay());
@@ -1032,15 +1032,15 @@ void KstDataWizard::finished()
     } else { /* cycle */
       Kst2DPlotPtr p;
       for (int i = 0; i < _plotNumber->value(); ++i) {
-        p = kst_cast<Kst2DPlot>(window->view()->findChild(window->createObject<Kst2DPlot>(KST::suggestPlotName(), false)));
+        p = kst_cast<Kst2DPlot>(window->view()->findChild(window->createPlotObject(KST::suggestPlotName(), false)));
         plots.append(p.data());
       }
       if (_radioButtonPlotDataPSD->isChecked()) {
         for (int i = 0; i < _plotNumber->value(); ++i) {
           if (windowPSD) {
-            p = kst_cast<Kst2DPlot>(windowPSD->view()->findChild(windowPSD->createObject<Kst2DPlot>(KST::suggestPlotName(), false)));
+            p = kst_cast<Kst2DPlot>(windowPSD->view()->findChild(windowPSD->createPlotObject(KST::suggestPlotName(), false)));
           } else {
-            p = kst_cast<Kst2DPlot>(window->view()->findChild(window->createObject<Kst2DPlot>(KST::suggestPlotName(), false)));
+            p = kst_cast<Kst2DPlot>(window->view()->findChild(window->createPlotObject(KST::suggestPlotName(), false)));
           }
           plots.append(p.data());
           p->setXAxisInterpretation(false, KstAxisInterpretation(), KstAxisDisplay());

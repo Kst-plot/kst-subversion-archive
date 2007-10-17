@@ -242,7 +242,7 @@ bool KstIfaceImpl::plotEquation(double start, double end, int numSamples, const 
   if (!eq->isValid()) {
     return false;
   }
-  
+
   KstVCurveList vcurves = kstObjectSubList<KstBaseCurve,KstVCurve>(plot->Curves);
 
   KstVCurvePtr vc = new KstVCurve(KST::suggestCurveName(eq->tag(), true), eq->vX(), eq->vY(), 0L, 0L, 0L, 0L, color.isValid() ? color : KstColorSequence::next(vcurves,plot->backgroundColor()));
@@ -606,7 +606,7 @@ QString KstIfaceImpl::createPlot(const QString& window, const QString& name) {
 
   KstViewWindow *pView = dynamic_cast<KstViewWindow*>(KstApp::inst()->findWindow(window));
   if (pView) {
-    plotName = pView->createObject<Kst2DPlot>(name, false);
+    plotName = pView->createPlotObject(name, false);
     _doc->forceUpdate();
     _doc->setModified();
   }
@@ -1102,12 +1102,11 @@ bool KstIfaceImpl::setPlotAxes(const QString& plotName,
       Kst2DPlotList::Iterator plot_iter=plotlist.findTag(plotName);
       if (plot_iter != plotlist.end()) {
         app->deleteIterator(iter);
-      
+
         (*plot_iter)->setXScaleMode(FIXED);
         (*plot_iter)->setYScaleMode(FIXED);
-        (*plot_iter)->setScale(XLower, YLower,
-                              XUpper, YUpper);  //set the scale
-        
+        (*plot_iter)->setScale(XLower, YLower, XUpper, YUpper);  //set the scale
+
         // repaint the plot 
         (*plot_iter)->setDirty();
         viewwindow->view()->paint(KstPainter::P_PLOT);
@@ -1134,7 +1133,7 @@ QString KstIfaceImpl::createHistogram(const QString& name,
   {
     return QString::null;
   }
-  
+
   // also create the curve for the histogram
   QString n = objList[0] + "-C";
   KST::vectorList.lock().readLock();
@@ -1153,7 +1152,7 @@ QString KstIfaceImpl::createHistogram(const QString& name,
   c->setHasLines(false);
   c->setHasBars(true);
   c->setBarStyle(1);
-  
+
   KST::dataObjectList.lock().writeLock();
   KST::dataObjectList.append(KstDataObjectPtr(c));
   KST::dataObjectList.lock().unlock();
@@ -1230,10 +1229,10 @@ QStringList KstIfaceImpl::createHistogram(const QString& name,
   returnList.push_back(histogram->tagName());
   returnList.push_back(histogram->xVTag());
   returnList.push_back(histogram->yVTag());
-  
+
   _doc->forceUpdate();
   _doc->setModified();
-  
+
   return returnList;
 }
 
@@ -1254,19 +1253,19 @@ QString KstIfaceImpl::createPowerSpectrum(const QString & name,
   {
     return QString::null;
   }
-  
+
   KST::vectorList.lock().readLock();
   KstVectorPtr vx = *KST::vectorList.findTag(objList[1]);
   KstVectorPtr vy = *KST::vectorList.findTag(objList[2]);
   KST::vectorList.lock().unlock();
-  
+
   QString n = objList[0] + "-C";
   KST::dataObjectList.lock().readLock();
   while (KST::dataObjectList.findTag(n) != KST::dataObjectList.end()) {
     n += "'";
   }
   KST::dataObjectList.lock().unlock();
-  
+
   // create curve as well (but don't plot the curve)
   KstVCurvePtr vc = new KstVCurve(n, vx, vy, 
                                   0L, 0L, 0L, 0L, 
@@ -1281,7 +1280,8 @@ QString KstIfaceImpl::createPowerSpectrum(const QString & name,
 
   return vc->tagName(); //return the curve name so user can plot it
 }
-                                       
+
+
 QStringList KstIfaceImpl::createPowerSpectrum(const QString& name,
                                               const QString& vector,
                                               bool appodize,
@@ -1302,10 +1302,11 @@ QStringList KstIfaceImpl::createPowerSpectrum(const QString& name,
 
   //suggest a name if not supplied
   QString pstag_end;
-  if (name.isEmpty())
+  if (name.isEmpty()) {
     pstag_end = vector;
-  else
+  } else {
     pstag_end = name;
+  }
 
   //count number of power spectra and make a unique name
   KstPSDList pslist = kstObjectSubList<KstDataObject,KstPSD>(KST::dataObjectList);
@@ -1321,19 +1322,19 @@ QStringList KstIfaceImpl::createPowerSpectrum(const QString& name,
 
   KstPSDPtr powerspectrum = new KstPSD(pstag, *iter, sampleRate, true, fftLength,
                                        appodize, removeMean, vectorUnits, rateUnits, WindowOriginal);
-  
+
   KST::dataObjectList.lock().writeLock();
   KST::dataObjectList.append(KstDataObjectPtr(powerspectrum));
   KST::dataObjectList.lock().unlock();
-  
+
   QStringList returnList;
   returnList.push_back(powerspectrum->tagName());
   returnList.push_back(powerspectrum->xVTag());
   returnList.push_back(powerspectrum->yVTag());
-  
+
   _doc->forceUpdate();
   _doc->setModified();
-  
+
   return returnList;
 }
 
@@ -1442,17 +1443,14 @@ QStringList KstIfaceImpl::createPlugin(const QString& pluginName,
           kstplug_ptr->writeLock();
           kstplug_ptr->inputVectors().insert((*IOIter)._name, *iter);
           kstplug_ptr->unlock();
-        }
-        else {
+        } else {
           return QStringList();
         }
         vectorParamIter++;
-      }
-      else {
+      } else {
         return QStringList();
       }
-    }
-    else if ((*IOIter)._type == Plugin::Data::IOValue::FloatType) {
+    } else if ((*IOIter)._type == Plugin::Data::IOValue::FloatType) {
       if (scalarParamIter != scalarInputs.end()) {
         KST::scalarList.lock().readLock();
         KstScalarList::Iterator iter = KST::scalarList.findTag(*scalarParamIter);
@@ -1461,17 +1459,14 @@ QStringList KstIfaceImpl::createPlugin(const QString& pluginName,
           kstplug_ptr->writeLock();
           kstplug_ptr->inputScalars().insert((*IOIter)._name, *iter);
           kstplug_ptr->unlock();
-        }
-        else {
+        } else {
           return QStringList();
         }
         scalarParamIter++;
-      }
-      else {
+      } else {
         return QStringList();
       }
-    }
-    else {
+    } else {
       return QStringList();
     }
     IOIter++;
@@ -1544,6 +1539,7 @@ QStringList KstIfaceImpl::createPlugin(const QString& pluginName,
   while (kstScalarIter != kstplug_ptr->outputScalars().end()) {
     outputList += (*kstScalarIter)->tagName();
   }
+
   return outputList;
 }
 
@@ -1576,12 +1572,12 @@ QString KstIfaceImpl::loadMatrix(const QString& name, const QString& file, const
   // make sure field is valid
   if (!src->isValidMatrix(field)) {
     src->unlock();
-    return QString::null;  
+    return QString::null;
   }
-  
+
   // make sure name is unique, else generate a unique one
   KST::matrixList.lock().readLock();
- 
+
   QString matrixName;
   if (name.isEmpty()) {
     matrixName = "M" + QString::number(KST::matrixList.count() + 1); 
@@ -1609,7 +1605,7 @@ QString KstIfaceImpl::loadMatrix(const QString& name, const QString& file, const
   return QString::null;
 }
 
-  
+
 QString KstIfaceImpl::createGradient(const QString& name, bool xDirection, double zAtMin, double zAtMax, 
                                      int xNumSteps, int yNumSteps, double xMin, double yMin, 
                                      double xStepSize, double yStepSize) {
@@ -1628,12 +1624,12 @@ QString KstIfaceImpl::createGradient(const QString& name, bool xDirection, doubl
     matrixName = "M" + QString::number(KST::matrixList.count() + 1);
   }
   KST::matrixList.lock().unlock();
-  
+
   // create the gradient matrix
   KstMatrixPtr p = new KstSMatrix(KstObjectTag(matrixName, KstObjectTag::globalTagContext),
       xNumSteps, yNumSteps, xMin, yMin, xStepSize, yStepSize, zAtMin, zAtMax,
       xDirection);  // FIXME: do tag context properly
-  
+
 
   if (p) {
     _doc->forceUpdate();
@@ -1643,7 +1639,7 @@ QString KstIfaceImpl::createGradient(const QString& name, bool xDirection, doubl
 
   return QString::null;
 }
-                
+
 
 QString KstIfaceImpl::createImage(const QString &name,
                                   const QString &in_matrix,
@@ -1797,7 +1793,7 @@ bool KstIfaceImpl::changeDataFile(const QString& vector, const QString& fileName
   }
 
   rvp->changeFile(file);
-  
+
   file->unlock();
   bool rc = rvp->isValid();
   rvp->unlock();
@@ -1824,5 +1820,3 @@ bool KstIfaceImpl::changeDataFiles(const QStringList& vectors, const QString& fi
   return rc;
 }
 
-
-// vim: ts=2 sw=2 et

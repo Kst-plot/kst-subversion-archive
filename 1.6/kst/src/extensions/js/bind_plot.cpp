@@ -81,7 +81,7 @@ KJS::Object KstBindPlot::construct(KJS::ExecState *exec, const KJS::List& args) 
     return KJS::Object();
   }
 
-  QString n = w->createObject<Kst2DPlot>(KST::suggestPlotName(), false);
+  QString n = w->createPlotObject(KST::suggestPlotName(), false);
   Kst2DPlotPtr p = *w->view()->findChildrenType<Kst2DPlot>(true).findTag(n);
   if (!p) {
     KJS::Object eobj = KJS::Error::create(exec, KJS::GeneralError);
