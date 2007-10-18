@@ -561,10 +561,10 @@ QList<ObjectTreeNode *> ObjectStore::relatedNodes(Object *o) {
     }
   }
 
-  QHashIterator<int, ObjectTreeNode*> i(nodes);
-  while (i.hasNext()) {
-    i.next();
-    outNodes << i.value();
+  QHashIterator<int, ObjectTreeNode*> hi(nodes);
+  while (hi.hasNext()) {
+    hi.next();
+    outNodes << hi.value();
   }
   return outNodes;
 }
