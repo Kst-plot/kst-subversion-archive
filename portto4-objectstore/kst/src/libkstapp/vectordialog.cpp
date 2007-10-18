@@ -253,7 +253,7 @@ ObjectPtr VectorDialog::createNewDataVector() const {
 //            << endl;
 
   DataVectorPtr vector = _document->objectStore()->createObject<DataVector>(tag);
-  vector->change(dataSource, field, tag,
+  vector->change(dataSource, field,
       dataRange->countFromEnd() ? -1 : int(dataRange->start()),
       dataRange->readToEnd() ? -1 : int(dataRange->range()),
       dataRange->skip(),

@@ -42,7 +42,6 @@ class KST_EXPORT DataVector : public Vector {
 
     /** change the properties of a DataVector */
     void change(DataSourcePtr file, const QString &field,
-                ObjectTag tag,
                 int f0, int n, int skip,
                 bool in_doSkip, bool in_doAve);
 

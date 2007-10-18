@@ -18,14 +18,11 @@
 #include <stdlib.h> // atoi
 #include <qsettings.h>
 
-// hack to make main() a friend of kstdatasource
-#define protected public
 #include "datavector.h"
 #include "datacollection.h"
 #include "dataobjectcollection.h"
 #include "coredocument.h"
 #include "objectstore.h"
-#undef protected
 
 static Kst::CoreDocument _document;
 
@@ -110,7 +107,9 @@ int main(int argc, char *argv[]) {
               field_list[i], filename);
       return -3;
     }
-    Kst::DataVectorPtr v = new Kst::DataVector(_document.objectStore(), Kst::ObjectTag("tag", Kst::ObjectTag::globalTagContext), file, field_list[i], start_frame, n_frames, n_skip, n_skip>0, do_ave);
+    Kst::DataVectorPtr v = _document.objectStore()->createObject<Kst::DataVector>(Kst::ObjectTag("tag", Kst::ObjectTag::globalTagContext));
+    Q_ASSERT(v);
+    v->change(file, field_list[i], start_frame, n_frames, n_skip, n_skip>0, do_ave);
     vlist.append(v);
   }
 

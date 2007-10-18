@@ -194,7 +194,6 @@ void DataVector::commonRVConstructor(DataSourcePtr in_file,
 
 
 void DataVector::change(DataSourcePtr in_file, const QString &in_field,
-                        ObjectTag in_tag,
                         int in_f0, int in_n,
                         int in_skip, bool in_DoSkip,
                         bool in_DoAve) {
@@ -212,9 +211,6 @@ void DataVector::change(DataSourcePtr in_file, const QString &in_field,
   ReqF0 = in_f0;
   ReqNF = in_n;
   _field = in_field;
-  if (in_tag != tag()) {
-    setTagName(in_tag);
-  }
 
   if (_file) {
     _file->writeLock();
