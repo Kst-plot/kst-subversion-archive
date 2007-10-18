@@ -71,14 +71,19 @@ KJS::Object KstBindPowerSpectrum::construct(KJS::ExecState *exec, const KJS::Lis
     return KJS::Object();
   }
 
+  double gaussianSigma = 0.0;
   double freq = args[1].toNumber(exec);
   bool average = true;
   unsigned len = 16;
   bool apodize = true;
   bool removeMean = true;
+  int apodizeFxn = 0;
+  int output = 0;
+  QString vunits;
+  QString runits;
 
   KstVectorPtr v = extractVector(exec, args[0]);
-  
+
   if (!v) {
     KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError);
     exec->setException(eobj);
@@ -121,12 +126,59 @@ KJS::Object KstBindPowerSpectrum::construct(KJS::ExecState *exec, const KJS::Lis
   }
 
   if (args.size() > 6) {
+    if (args[6].type() != KJS::StringType) {
+      KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError);
+      exec->setException(eobj);
+      return KJS::Object();
+    }
+    vunits = args[6].toString(exec).qstring();
+  }
+
+  if (args.size() > 7) {
+    if (args[7].type() != KJS::StringType) {
+      KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError);
+      exec->setException(eobj);
+      return KJS::Object();
+    }
+    runits = args[7].toString(exec).qstring();
+  }
+
+  if (args.size() > 8) {
+    if (args[8].type() != KJS::NumberType) {
+      KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError);
+      exec->setException(eobj);
+      return KJS::Object();
+    }
+    apodizeFxn = args[8].toInt32(exec);
+  }
+
+  if (args.size() > 9) {
+    if (args[9].type() != KJS::NumberType) {
+      KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError);
+      exec->setException(eobj);
+      return KJS::Object();
+    }
+    gaussianSigma = args[9].toNumber(exec);
+  }
+
+  if (args.size() > 10) {
+    if (args[10].type() != KJS::NumberType) {
+      KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError);
+      exec->setException(eobj);
+      return KJS::Object();
+    }
+    output = args[10].toInt32(exec);
+  }
+
+  if (args.size() > 11) {
     KJS::Object eobj = KJS::Error::create(exec, KJS::SyntaxError);
     exec->setException(eobj);
     return KJS::Object();
   }
 
-  KstPSDPtr d = new KstPSD(QString::null, v, freq, average, len, apodize, removeMean, "V", "Hz");
+  KstPSDPtr d = new KstPSD(QString::null, v, freq, average, len, apodize, removeMean, 
+                          vunits, runits, (ApodizeFunction)apodizeFxn, gaussianSigma, 
+                          (PSDType)output);
 
   KST::dataObjectList.lock().writeLock();
   KST::dataObjectList.append(d.data());
