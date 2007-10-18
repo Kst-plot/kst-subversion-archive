@@ -66,6 +66,7 @@
 #include "kstrvector.h"
 #include "kstsettings.h"
 #include "ksttimers.h"
+#include "kstviewwidget.h"
 #include "kstviewwindow.h"
 #include "kstviewlabel.h"
 #include "kstvcurve.h"

@@ -26,23 +26,34 @@
 class KPopupMenu;
 class KstGfxMouseHandler;
 class KstViewWidget;
+class Kst2DPlot;
+typedef KstSharedPtr<Kst2DPlot> Kst2DPlotPtr;
 
 class KstTopLevelView : public KstViewObject {
   friend class KstViewWidget;
   Q_OBJECT
+  Q_PROPERTY(QColor backgroundColor READ backgroundColor WRITE setBackgroundColor)
+
   public:
     KstTopLevelView(QWidget *parent = 0L, const char *name = 0L, WFlags w = 0);
     KstTopLevelView(const QDomElement& e, QWidget *parent = 0L, const char *name = 0L, WFlags w = 0);
+    KstTopLevelView(const KstTopLevelView& tlv);
     virtual ~KstTopLevelView();
 
-    virtual void save(QTextStream& ts, const QString& indent = QString::null);
+    virtual KstViewObject* copyObjectQuietly() const;
 
+    virtual void save(QTextStream& ts, const QString& indent = QString::null);
+    QMap<QString, QVariant > widgetHints(const QString& propertyName) const;
+
+    void applyDefaults();
     void release(); // Release this from it's window/view.  When you call this,
                     // you'd better be deleting this object in the next line.
     KstViewWidget *widget() const;
 
     virtual void resize(const QSize& size);
     virtual void paint(KstPainter& p, const QRegion& bounds);
+    virtual void setBackgroundColor(const QColor& color);
+    virtual QColor backgroundColor() const;
 
     void updateAlignment(KstPainter& p);
     void paint(KstPainter::PaintType type);
@@ -62,7 +73,7 @@ class KstTopLevelView : public KstViewObject {
     KstViewObjectPtr pressTarget() const { return _pressTarget; }
     void clearPressTarget() { _pressTarget = 0L; }
 
-    template<class T> KstSharedPtr<T> createObject(const QString& name, bool doCleanup = true);
+    Kst2DPlotPtr createPlotObject(const QString& name, bool doCleanup = true);
 
     bool mouseGrabbed() const { return _mouseGrabbed; }
     KstViewObjectPtr mouseGrabber() const { return _mouseGrabber; }
@@ -157,7 +168,8 @@ class KstTopLevelView : public KstViewObject {
     QCursor _endpointCursor; // for storage of the custom hotpoint cursor
     QPoint _moveOffset;
     QPoint _moveOffsetSticky;
-    KstViewObjectPtr _pressTarget, _hoverFocus;
+    KstViewObjectPtr _pressTarget;
+    KstViewObjectPtr _hoverFocus;
     KstViewObjectPtr _prevContainer;
     QRect _prevBand;
     KstViewObjectList _selectionList;
@@ -168,70 +180,6 @@ class KstTopLevelView : public KstViewObject {
 
 typedef KstSharedPtr<KstTopLevelView> KstTopLevelViewPtr;
 typedef KstObjectList<KstTopLevelViewPtr> KstTopLevelViewList;
-
-template<class T>
-KstSharedPtr<T> KstTopLevelView::createObject(const QString& name, bool doCleanup) {
-  T *plot = new T(name);
-  if (_onGrid) {
-    // FIXME: make this more powerful, preserve columns
-    appendChild(plot);
-    if (doCleanup) {
-      this->cleanup(-1); // GCC 2.95/ppc bug.  Don't touch!!!
-    }
-  } else {
-    QSize sz = averageChildSize();
-    if (sz != QSize(0, 0)) {
-      plot->resize(sz);
-    } else {
-      plot->resize(size());
-    }
-    // First look at the overall clip mask.  If there are gaps, take the
-    // biggest one and use that location.
-    QRegion r = clipRegion();
-    QMemArray<QRect> rects = r.rects();
-    if (!rects.isEmpty()) {
-      QRect maxRect(0, 0, 0, 0);
-      for (QMemArray<QRect>::ConstIterator i = rects.begin(); i != rects.end(); ++i) {
-        if ((*i).width() * (*i).height() > maxRect.width() * maxRect.height()) {
-          maxRect = *i;
-        }
-      }
-      if (maxRect.left() + plot->geometry().width() > geometry().width()) {
-        maxRect.moveLeft(geometry().width() - plot->geometry().width());
-      }
-      if (maxRect.top() + plot->geometry().height() > geometry().height()) {
-        maxRect.moveTop(geometry().height() - plot->geometry().height());
-      }
-      plot->move(maxRect.topLeft());
-    } else {
-      // If no gaps, then look at the top object and place relative to it.  It
-      // would probably be better to iterate back->front with complete masks
-      // but that's more complicated and not worth the effort at this time.
-      r = QRegion(geometry());
-      r -= QRegion(_children.last()->geometry());
-      rects = r.rects();
-      if (rects.isEmpty()) {
-        plot->move(QPoint(0, 0));
-      } else {
-        QRect maxRect(0, 0, 0, 0);
-        for (QMemArray<QRect>::ConstIterator i = rects.begin(); i != rects.end(); ++i) {
-          if ((*i).width() * (*i).height() > maxRect.width() * maxRect.height()) {
-            maxRect = *i;
-          }
-        }
-        if (maxRect.left() + plot->geometry().width() > geometry().width()) {
-          maxRect.moveLeft(geometry().width() - plot->geometry().width());
-        }
-        if (maxRect.top() + plot->geometry().height() > geometry().height()) {
-          maxRect.moveTop(geometry().height() - plot->geometry().height());
-        }
-        plot->move(maxRect.topLeft());
-      }
-    }
-    appendChild(plot);
-  }
-  return plot;
-}
 
 
 #endif

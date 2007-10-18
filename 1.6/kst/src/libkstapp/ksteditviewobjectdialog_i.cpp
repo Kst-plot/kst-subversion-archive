@@ -97,6 +97,11 @@ void KstEditViewObjectDialogI::showEditViewObjectDialog(KstViewObjectPtr viewObj
       _pushButtonRestoreDefaults->hide();
     }
   }
+  if (!_top) {
+    _pushButtonSetDefaults->setEnabled(false);
+    _pushButtonRestoreDefaults->setEnabled(false);
+  }
+
   _apply->setEnabled(false);
   show();
   raise();
@@ -149,7 +154,11 @@ void KstEditViewObjectDialogI::fillObjectList() {
     while (it->currentItem()) {
       KstViewWindow *view = dynamic_cast<KstViewWindow*>(it->currentItem());
       if (view) {
-        list += view->view()->findChildrenType(_viewObject->type(), true);
+        if (_viewObject->type() == "TopLevelView") {
+          list.append(view->view().data());
+        } else {
+          list += view->view()->findChildrenType(_viewObject->type(), true);
+        }
       }
       it->next();
     }
@@ -423,47 +432,56 @@ void KstEditViewObjectDialogI::modified() {
 
 
 void KstEditViewObjectDialogI::applySettings(KstViewObjectPtr viewObject) {
-  if (_customWidget) {
-    viewObject->readConfigWidget(_customWidget, _editMultipleMode);
-  } else {
-    // get all the properties and set them
-    for (QValueList<QWidget*>::ConstIterator iter = _inputWidgets.begin(); iter != _inputWidgets.end(); ++iter) {
-      if (_editMultipleMode) {
-        QSpinBox *spinBoxWidget;
-        KColorButton *colorButtonWidget;
-        KURLRequester *urlRequester;
-        QLineEdit *lineEditWidget;
-        QCheckBox *checkBoxWidget;
-        QComboBox *comboWidget;
-        bool edited = false;
+  if (viewObject && viewObject.data()) {
+    if (_customWidget) {
+      viewObject->readConfigWidget(_customWidget, _editMultipleMode);
+    } else {
+      // get all the properties and set them
+      for (QValueList<QWidget*>::ConstIterator iter = _inputWidgets.begin(); iter != _inputWidgets.end(); ++iter) {
+        if (_editMultipleMode) {
+          QSpinBox *spinBoxWidget;
+          KColorButton *colorButtonWidget;
+          KURLRequester *urlRequester;
+          QLineEdit *lineEditWidget;
+          QCheckBox *checkBoxWidget;
+          QComboBox *comboWidget;
+          bool edited = false;
 
-        if ((spinBoxWidget = dynamic_cast<QSpinBox*>(*iter)) != 0L) {
-          if (spinBoxWidget->value() != spinBoxWidget->minValue()) {
-            edited = true;
+          if ((spinBoxWidget = dynamic_cast<QSpinBox*>(*iter)) != 0L) {
+            if (spinBoxWidget->value() != spinBoxWidget->minValue()) {
+              edited = true;
+            }
+          } else if ((colorButtonWidget = dynamic_cast<KColorButton*>(*iter)) != 0L) {
+            if (colorButtonWidget->color() != QColor()) {
+              edited = true;
+            }
+          } else if ((urlRequester = dynamic_cast<KURLRequester*>(*iter)) != 0L) {
+            if (urlRequester->lineEdit()->text().compare(QString(" ")) != 0) {
+              edited = true;
+            }
+          } else if ((lineEditWidget = dynamic_cast<QLineEdit*>(*iter)) != 0L) {
+            if (lineEditWidget->text().compare(QString(" ")) != 0 ) {
+              edited = true;
+            }
+          } else if ((checkBoxWidget = dynamic_cast<QCheckBox*>(*iter)) != 0L) {
+            if (checkBoxWidget->state() != QButton::NoChange) {
+              edited = true;
+            }
+          } else if ((comboWidget = dynamic_cast<QComboBox*>(*iter)) != 0L) {
+            if (comboWidget->currentText().compare(QString(" ")) != 0) {
+              edited = true;
+            }
           }
-        } else if ((colorButtonWidget = dynamic_cast<KColorButton*>(*iter)) != 0L) {
-          if (colorButtonWidget->color() != QColor()) {
-            edited = true;
-          }
-        } else if ((urlRequester = dynamic_cast<KURLRequester*>(*iter)) != 0L) {
-          if (urlRequester->lineEdit()->text().compare(QString(" ")) != 0) {
-            edited = true;
-          }
-        } else if ((lineEditWidget = dynamic_cast<QLineEdit*>(*iter)) != 0L) {
-          if (lineEditWidget->text().compare(QString(" ")) != 0 ) {
-            edited = true;
-          }
-        } else if ((checkBoxWidget = dynamic_cast<QCheckBox*>(*iter)) != 0L) {
-          if (checkBoxWidget->state() != QButton::NoChange) {
-            edited = true;
-          }
-        } else if ((comboWidget = dynamic_cast<QComboBox*>(*iter)) != 0L) {
-          if (comboWidget->currentText().compare(QString(" ")) != 0) {
-            edited = true;
-          }
-        }
 
-        if (edited) {
+          if (edited) {
+            // get the widget type and property name
+            QString propertyName = QString((*iter)->name()).section(',', 0, 0);
+            QString widgetPropertyName = QString((*iter)->name()).section(',', 1, 1);
+
+            // get the widget's property and set it on the viewObject
+            viewObject->setProperty(propertyName.latin1(), (*iter)->property(widgetPropertyName.latin1()));
+          }
+        } else {
           // get the widget type and property name
           QString propertyName = QString((*iter)->name()).section(',', 0, 0);
           QString widgetPropertyName = QString((*iter)->name()).section(',', 1, 1);
@@ -471,13 +489,6 @@ void KstEditViewObjectDialogI::applySettings(KstViewObjectPtr viewObject) {
           // get the widget's property and set it on the viewObject
           viewObject->setProperty(propertyName.latin1(), (*iter)->property(widgetPropertyName.latin1()));
         }
-      } else {
-        // get the widget type and property name
-        QString propertyName = QString((*iter)->name()).section(',', 0, 0);
-        QString widgetPropertyName = QString((*iter)->name()).section(',', 1, 1);
-
-        // get the widget's property and set it on the viewObject
-        viewObject->setProperty(propertyName.latin1(), (*iter)->property(widgetPropertyName.latin1()));
       }
     }
   }
@@ -489,6 +500,8 @@ bool KstEditViewObjectDialogI::apply() {
 
   if (_editMultipleMode) {
     for (uint i = 0; i < _editMultipleWidget->_objectList->count(); i++) {
+      QString name = _editMultipleWidget->_objectList->text(i);
+
       if (_editMultipleWidget->_objectList->isSelected(i)) {
         KMdiIterator<KMdiChildView*>* it = KstApp::inst()->createIterator();
 
@@ -496,13 +509,22 @@ bool KstEditViewObjectDialogI::apply() {
           while (it->currentItem()) {
             KstViewWindow *view = dynamic_cast<KstViewWindow*>(it->currentItem());
             if (view) {
-              QString name = _editMultipleWidget->_objectList->text(i);
+              KstViewObjectPtr viewObject;
 
-              KstViewObjectPtr viewObject = kst_cast<KstViewObject>(view->view()->findChild(name));
-              if (viewObject) {
-                applySettings(viewObject);
+              if (_viewObject->type() == "TopLevelView") {
+                viewObject = view->view();
+                if (viewObject->name() == name) {
+                  applySettings(viewObject);
 
-                break;
+                  break;
+                }
+              } else {
+                viewObject = kst_cast<KstViewObject>(view->view()->findChild(name));
+                if (viewObject) {
+                  applySettings(viewObject);
+
+                  break;
+                }
               }
             }
             it->next();

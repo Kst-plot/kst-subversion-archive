@@ -90,6 +90,7 @@
 #include "kstviewvectorsdialog_i.h"
 #include "kstviewmatricesdialog_i.h"
 #include "kstviewfitsdialog_i.h"
+#include "kstviewwidget.h"
 #include "kstviewwindow.h"
 #include "plotmimesource.h"
 #include "plugincollection.h"

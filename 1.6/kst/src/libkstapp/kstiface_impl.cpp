@@ -233,7 +233,7 @@ bool KstIfaceImpl::plotEquation(double start, double end, int numSamples, const 
     KstViewWindow *viewwindow = dynamic_cast<KstViewWindow*>(activewin);
     if (viewwindow) {
       KstTopLevelViewPtr pTLV = viewwindow->view();
-      plot = pTLV->createObject<Kst2DPlot>(ptag);
+      plot = pTLV->createPlotObject(ptag);
     }
   }
 
@@ -326,7 +326,7 @@ bool KstIfaceImpl::plotEquation(const QString& xvector, const QString& equation,
     KstViewWindow *viewwindow = dynamic_cast<KstViewWindow*>(activewin);
     if (viewwindow) {
       KstTopLevelViewPtr pTLV = viewwindow->view();
-      plot = pTLV->createObject<Kst2DPlot>(ptag);
+      plot = pTLV->createPlotObject(ptag);
     }
   }
 

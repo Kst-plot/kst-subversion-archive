@@ -18,13 +18,13 @@
 #ifndef KSTVIEWWIDGET_H
 #define KSTVIEWWIDGET_H
 
+#include <qdragobject.h>
 #include <qguardedptr.h>
 #include <qwidget.h>
 
 #include <kpopupmenu.h>
-#include "ksttoplevelview.h"
 
-class QDragObject;
+#include "ksttoplevelview.h"
 
 class KstViewWidget : public QWidget {
   Q_OBJECT
@@ -43,7 +43,7 @@ class KstViewWidget : public QWidget {
 
     KstViewObjectPtr findChildFor(const QPoint& pos);
     void dropped(QDropEvent *e);
-    
+
   protected:
     virtual void enterEvent(QEvent *e);
     virtual void leaveEvent(QEvent *e);

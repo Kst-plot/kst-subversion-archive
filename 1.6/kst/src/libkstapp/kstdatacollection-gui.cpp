@@ -30,6 +30,7 @@
 #include "kst2dplot.h"
 #include "kstdatacollection-gui.h"
 #include "kstdataobjectcollection.h"
+//#include "ksttoplevelview.h"
 #include "kstviewwindow.h"
 
 

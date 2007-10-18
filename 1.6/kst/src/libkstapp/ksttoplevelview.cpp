@@ -38,6 +38,7 @@
 #include "kstaccessibility.h"
 #include "kstdoc.h"
 #include "kstgfxmousehandler.h"
+#include "kstgfxtlvmousehandler.h"
 #include "kstplotgroup.h"
 #include "kstsettings.h"
 #include "ksttimers.h"
@@ -54,28 +55,51 @@ KstTopLevelView::KstTopLevelView(QWidget *parent, const char *name, WFlags w)
 : KstViewObject("TopLevelView"), _w(new KstViewWidget(this, parent, name, w)) {
   _onGrid = true;
   setTagName(KstObjectTag(name, KstObjectTag::globalTagContext));  // FIXME: tag context
-  commonConstructor(); 
+  commonConstructor();
 }
 
 
 KstTopLevelView::KstTopLevelView(const QDomElement& e, QWidget *parent, const char *name, WFlags w)
 : KstViewObject(e), _w(new KstViewWidget(this, parent, name, w)) {
   commonConstructor();
+
+  QDomNode n = e.firstChild();
+  while (!n.isNull()) {
+    QDomElement el = n.toElement(); 
+    if (!el.isNull()) {
+      if (metaObject()->findProperty(el.tagName().latin1(), true) > -1) {
+        setProperty(el.tagName().latin1(), QVariant(el.text()));
+      }
+    }
+    n = n.nextSibling();
+  }
+
   loadChildren(e);
 }
 
 
 void KstTopLevelView::commonConstructor() {
   _type = "TopLevelView";
+  _editTitle = i18n("Edit View");
   _focusOn = false;
   _pressDirection = -1;
   _moveOffset = QPoint(-1, -1);
   _moveOffsetSticky = QPoint(0, 0);
-  _backgroundColor = _w->backgroundColor();
+  _backgroundColor = KstApp::inst()->paletteBackgroundColor();
   _mouseGrabbed = false;
   _activeHandler = 0L;
   _mode = Unknown;
   setViewMode(KstApp::inst()->currentViewMode(), KstApp::inst()->currentCreateType());
+}
+
+
+KstTopLevelView::KstTopLevelView(const KstTopLevelView& tlv)
+: KstViewObject(tlv) {
+  _standardActions |= Edit;
+  _backgroundColor = tlv._backgroundColor;
+
+  // these always have these values
+  _type = "TopLevelView";
 }
 
 
@@ -86,16 +110,45 @@ KstTopLevelView::~KstTopLevelView() {
 }
 
 
-void KstTopLevelView::save(QTextStream& ts, const QString& indent) {
-  bool temp_onGrid;
-  if (_maximized) {
-    temp_onGrid = _prevOnGrid;
-  } else {
-    temp_onGrid = _onGrid;
+KstViewObject* KstTopLevelView::copyObjectQuietly() const {
+  KstTopLevelView *tlv = new KstTopLevelView(*this);
+
+  return tlv;
+}
+
+
+void KstTopLevelView::applyDefaults() {
+  KstGfxMouseHandler *handler = handlerForObject(type());
+  if (handler) {
+    KstGfxTLVMouseHandler* tlvHandler;
+
+    tlvHandler = dynamic_cast<KstGfxTLVMouseHandler*>(handler);
+    if (tlvHandler) {
+      tlvHandler->applyDefaults(this);
+    }
   }
-  if (temp_onGrid && _columns > 0) { // only if on a grid and we have contents
+}
+
+
+void KstTopLevelView::save(QTextStream& ts, const QString& indent) {
+  bool onGridTemp;
+
+  if (_maximized) {
+    onGridTemp = _prevOnGrid;
+  } else {
+    onGridTemp = _onGrid;
+  }
+
+  if (onGridTemp && _columns > 0) { // only if on a grid and we have contents
     ts << indent << "<columns>" << _columns << "</columns>" << endl;
   }
+
+  for (int i = 0; i < metaObject()->numProperties(true); i++) {
+    ts << indent << "<" << metaObject()->property(i, true)->name() << ">";
+    ts << property(metaObject()->property(i, true)->name()).toString().latin1();
+    ts << "</" << metaObject()->property(i, true)->name() << ">" << endl;
+  }
+
   for (KstViewObjectList::Iterator i = _children.begin(); i != _children.end(); ++i) {
     (*i)->save(ts, indent);
   }
@@ -110,7 +163,7 @@ void KstTopLevelView::resized(const QSize& size) {
 void KstTopLevelView::updateAlignment(KstPainter& p) {
   QRect plotRegion;
 
-  KST::alignment.reset();  
+  KST::alignment.reset();
   for (KstViewObjectList::Iterator i = _children.begin(); i != _children.end(); ++i) {
     (*i)->internalAlignment(p, plotRegion);
     if (!plotRegion.isNull()) {
@@ -170,6 +223,16 @@ void KstTopLevelView::paintSelf(KstPainter& p, const QRegion& bounds) {
     p.setClipRegion(bounds);
   }
   p.fillRect(geometry(), _backgroundColor);
+}
+
+
+void KstTopLevelView::setBackgroundColor(const QColor& color) {
+  KstViewObject::setBackgroundColor(color);
+}
+
+
+QColor KstTopLevelView::backgroundColor() const {
+  return KstViewObject::backgroundColor();
 }
 
 
@@ -256,7 +319,7 @@ void KstTopLevelView::setViewMode(ViewMode v, const QString& objectType) {
   paint(KstPainter::P_PAINT);
 
   _mode = v;
-  
+
   // change the mouse handler
   if (_mode == CreateMode || _mode == LabelMode) {
     _activeHandler = handlerForObject(objectType);
@@ -1237,6 +1300,12 @@ bool KstTopLevelView::popupMenu(KPopupMenu *menu, const QPoint& pos) {
     } else {
       rc = _pressTarget->popupMenu(menu, pos - _pressTarget->position(), this) || rc;
     }
+  } else {
+    QString title = menuTitle();
+
+    if (!title.isEmpty()) {
+      menu->insertTitle(title);
+    }
   }
 
   if (_selectionList.count() > 1) {
@@ -1291,7 +1360,10 @@ bool KstTopLevelView::popupMenu(KPopupMenu *menu, const QPoint& pos) {
 
   if (rc) {
     menu->insertSeparator();
+  } else {
+    menu->insertItem(i18n("&Edit..."), this, SLOT(edit()));
   }
+
   KPopupMenu *subMenu = new KPopupMenu(menu);
   subMenu->insertItem(i18n("Default Tile"), this, SLOT(cleanupDefault()));
   subMenu->insertItem(i18n("Custom..."), this, SLOT(cleanupCustom()));
@@ -2014,6 +2086,99 @@ KstGfxMouseHandler *KstTopLevelView::handlerForObject(const QString& objType) {
 
   return rc;
 }
+
+
+Kst2DPlotPtr KstTopLevelView::createPlotObject(const QString& name, bool doCleanup) {
+  Kst2DPlot *plot = new Kst2DPlot(name);
+  if (_onGrid) {
+    // FIXME: make this more powerful, preserve columns
+    appendChild(plot);
+    if (doCleanup) {
+      this->cleanup(-1); // GCC 2.95/ppc bug.  Don't touch!!!
+    }
+  } else {
+    QSize sz = averageChildSize();
+    if (sz != QSize(0, 0)) {
+      plot->resize(sz);
+    } else {
+      plot->resize(size());
+    }
+    // First look at the overall clip mask.  If there are gaps, take the
+    // biggest one and use that location.
+    QRegion r = clipRegion();
+    QMemArray<QRect> rects = r.rects();
+    if (!rects.isEmpty()) {
+      QRect maxRect(0, 0, 0, 0);
+      for (QMemArray<QRect>::ConstIterator i = rects.begin(); i != rects.end(); ++i) {
+        if ((*i).width() * (*i).height() > maxRect.width() * maxRect.height()) {
+          maxRect = *i;
+        }
+      }
+      if (maxRect.left() + plot->geometry().width() > geometry().width()) {
+        maxRect.moveLeft(geometry().width() - plot->geometry().width());
+      }
+      if (maxRect.top() + plot->geometry().height() > geometry().height()) {
+        maxRect.moveTop(geometry().height() - plot->geometry().height());
+      }
+      plot->move(maxRect.topLeft());
+    } else {
+      // If no gaps, then look at the top object and place relative to it.  It
+      // would probably be better to iterate back->front with complete masks
+      // but that's more complicated and not worth the effort at this time.
+      r = QRegion(geometry());
+      r -= QRegion(_children.last()->geometry());
+      rects = r.rects();
+      if (rects.isEmpty()) {
+        plot->move(QPoint(0, 0));
+      } else {
+        QRect maxRect(0, 0, 0, 0);
+        for (QMemArray<QRect>::ConstIterator i = rects.begin(); i != rects.end(); ++i) {
+          if ((*i).width() * (*i).height() > maxRect.width() * maxRect.height()) {
+            maxRect = *i;
+          }
+        }
+        if (maxRect.left() + plot->geometry().width() > geometry().width()) {
+          maxRect.moveLeft(geometry().width() - plot->geometry().width());
+        }
+        if (maxRect.top() + plot->geometry().height() > geometry().height()) {
+          maxRect.moveTop(geometry().height() - plot->geometry().height());
+        }
+        plot->move(maxRect.topLeft());
+      }
+    }
+    appendChild(plot);
+  }
+  return plot;
+}
+
+
+QMap<QString, QVariant > KstTopLevelView::widgetHints(const QString& propertyName) const {
+  QMap<QString, QVariant> map = KstViewObject::widgetHints(propertyName);
+  if (!map.empty()) {
+    return map;
+  }
+
+  if (propertyName == "backgroundColor") {
+    map.insert(QString("_kst_widgetType"), QString("KColorButton"));
+    map.insert(QString("_kst_label"), i18n("Background color"));
+  }
+
+  return map;
+}
+
+
+namespace {
+KstViewObject *create_KstTopLevelView() {
+  return 0L;
+}
+
+KstGfxMouseHandler *handler_KstTopLevelView() {
+  return new KstGfxTLVMouseHandler;
+}
+
+KST_REGISTER_VIEW_OBJECT(TopLevelView, create_KstTopLevelView, handler_KstTopLevelView)
+}
+
 
 #include "ksttoplevelview.moc"
 

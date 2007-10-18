@@ -46,6 +46,7 @@
 #include "kstlinestyle.h"
 #include "kstplotlabel.h"
 #include "kstsettings.h"
+#include "ksttoplevelview.h"
 
 Kst2dPlotWidget::Kst2dPlotWidget(QWidget* parent, const char* name, WFlags fl) : View2DPlotWidget(parent, name, fl )
 {

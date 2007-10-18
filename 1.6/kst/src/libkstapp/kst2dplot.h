@@ -29,7 +29,6 @@
 #include "kstcolorsequence.h"
 #include "kstplotbase.h"
 #include "kstplotdefines.h"
-#include "kstviewwidget.h"
 #include "kstviewlegend.h"
 #include "kst_export.h"
 #include "kstscalar.h"
@@ -38,6 +37,7 @@ namespace Equation {
   class Node;
 }
 
+class KstViewWidget;
 class Kst2DPlot;
 typedef KstObjectList<KstSharedPtr<Kst2DPlot> > Kst2DPlotList;
 class KstViewLabel;

@@ -37,6 +37,7 @@
 #include "kstobject.h"
 #include "kstviewmanager_i.h"
 #include "kstviewobjectimagedrag.h"
+#include "kstviewwidget.h"
 #include "kstviewwindow.h"
 #include "plotmimesource.h"
 

@@ -57,7 +57,6 @@ class KstIfaceImpl;
 class KstMonochromeDialogI;
 class KstPlotDialogI;
 class KstQuickStartDialogI;
-class KstTopLevelView;
 class KstViewFitsDialogI;
 class KstViewManagerI;
 class KstViewMatricesDialogI;

@@ -40,6 +40,7 @@ KstViewWindow::KstViewWindow(QWidget *parent, const char* name)
 : KMdiChildView(QString::null, parent, name) {
   commonConstructor();
   _view = new KstTopLevelView(this, name);
+  _view->applyDefaults();
 }
 
 
@@ -496,7 +497,7 @@ QString KstViewWindow::createPlotObject(const QString& suggestedName, bool promp
     }
   }
 
-  _view->createObject<Kst2DPlot>(name);
+  _view->createPlotObject(name);
 
   return name;
 }

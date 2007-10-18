@@ -25,7 +25,7 @@
 #define KST_REGISTER_VIEW_OBJECT(name, factory, handler)                      \
   class KstRegister##name##Factory {                                          \
     KstRegister##name##Factory() {                                            \
-      KstViewObjectFactory::self()->registerType(#name, &factory, &handler); \
+      KstViewObjectFactory::self()->registerType(#name, &factory, &handler);  \
     }                                                                         \
     static KstRegister##name##Factory i;                                      \
   }; KstRegister##name##Factory KstRegister##name##Factory::i;
