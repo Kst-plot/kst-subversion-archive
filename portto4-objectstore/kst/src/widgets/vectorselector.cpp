@@ -124,7 +124,7 @@ void VectorSelector::fillVectors() {
   }
 
   if (_allowEmptySelection) //reset the <None>
-    setAllowEmptySelection(_allowEmptySelection);
+    setAllowEmptySelection(true);
 
   if (current)
     setSelectedVector(current);
