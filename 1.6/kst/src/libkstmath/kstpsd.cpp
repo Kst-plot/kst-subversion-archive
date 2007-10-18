@@ -72,7 +72,7 @@ KstPSD::KstPSD(const QDomElement &e)
   int in_averageLen = 12;
   PSDType in_output = PSDAmplitudeSpectralDensity;
   bool interpolateHoles = false;
-  
+
   QDomNode n = e.firstChild();
   while (!n.isNull()) {
     QDomElement e = n.toElement(); // try to convert the node to an element.
@@ -483,21 +483,19 @@ void KstPSD::setInterpolateHoles(bool interpolate) {
 void KstPSD::updateVectorLabels() {
   switch (_Output) {
     default:
-    case 0: // amplitude spectral density (default) [V/Hz^1/2]
+    case PSDAmplitudeSpectralDensity: // amplitude spectral density (default) [V/Hz^1/2]
       (*_sVector)->setLabel(i18n("ASD \\[%1/%2^{1/2} \\]").arg(_vUnits).arg(_rUnits));
       break;
-    case 1: // power spectral density [V^2/Hz]
+    case PSDPowerSpectralDensity: // power spectral density [V^2/Hz]
       (*_sVector)->setLabel(i18n("PSD \\[%1^2/%2\\]").arg(_vUnits).arg(_rUnits));
       break;
-    case 2: // amplitude spectrum [V]
+    case PSDAmplitudeSpectrum: // amplitude spectrum [V]
       (*_sVector)->setLabel(i18n("Amplitude Spectrum\\[%1\\]").arg(_vUnits));
       break;
-    case 3: // power spectrum [V^2]
+    case PSDPowerSpectrum: // power spectrum [V^2]
       (*_sVector)->setLabel(i18n("Power Spectrum \\[%1^2\\]").arg(_vUnits));
       break;
   }
   (*_fVector)->setLabel(i18n("Frequency \\[%1\\]").arg(_rUnits));
 }
 
-
-// vim: ts=2 sw=2 et
