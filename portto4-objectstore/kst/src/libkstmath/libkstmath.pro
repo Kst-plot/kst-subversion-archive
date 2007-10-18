@@ -46,9 +46,9 @@ SOURCES += \
     enodefactory.cpp \
     dialoglauncher.cpp \
     eparse-eh.cpp \
-    eparse.c \
+    eparse.cpp \
     psdcalculator.cpp \
-    escan.c \
+    escan.cpp \
     objectfactory.cpp \
     relationfactory.cpp \
     builtinobjects.cpp \
@@ -85,3 +85,6 @@ HEADERS += \
     psdcalculator.h \
     relationfactory.h \
     equationfactory.h
+
+#LEXSOURCES += escan.l
+#YACCSOURCES += eparse.y

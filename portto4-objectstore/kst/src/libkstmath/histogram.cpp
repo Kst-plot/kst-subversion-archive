@@ -26,25 +26,28 @@
 #include "datacollection.h"
 #include "defaultnames.h"
 #include "histogram.h"
+#include "objectstore.h"
 
 namespace Kst {
+
+const QString Histogram::staticTypeString = I18N_NOOP("Histogram");
 
 static const QLatin1String& RAWVECTOR  = QLatin1String("I");
 static const QLatin1String& BINS = QLatin1String("B");
 static const QLatin1String& HIST = QLatin1String("H");
 
-Histogram::Histogram(const QString &in_tag, VectorPtr in_V,
+Histogram::Histogram(ObjectStore *store, const ObjectTag &in_tag, VectorPtr in_V,
                            double xmin_in, double xmax_in,
                            int in_n_bins,
                            HsNormType in_norm_mode)
-: DataObject() {
+: DataObject(store, in_tag) {
   setRealTimeAutoBin(false);
 
-  commonConstructor(in_tag, in_V, xmin_in, xmax_in, in_n_bins, in_norm_mode);
+  commonConstructor(store, in_V, xmin_in, xmax_in, in_n_bins, in_norm_mode);
 }
 
-Histogram::Histogram(const QDomElement &e)
-: DataObject(e) {
+Histogram::Histogram(ObjectStore *store, const QDomElement &e)
+: DataObject(store, e) {
   HsNormType in_norm_mode;
   VectorPtr in_V;
   QString rawName;
@@ -89,22 +92,22 @@ Histogram::Histogram(const QDomElement &e)
   }
 
   _inputVectorLoadQueue.append(qMakePair(QString(RAWVECTOR), rawName));
-  commonConstructor(in_tag, in_V, xmin_in, xmax_in, in_n_bins, in_norm_mode);
+  commonConstructor(store, in_V, xmin_in, xmax_in, in_n_bins, in_norm_mode);
 }
 
 
-void Histogram::commonConstructor(const QString &in_tag, VectorPtr in_V,
-                                     double xmin_in,
-                                     double xmax_in,
-                                     int in_n_bins,
-                                     HsNormType in_norm_mode) {
+void Histogram::commonConstructor(ObjectStore *store,
+                                  VectorPtr in_V,
+                                  double xmin_in,
+                                  double xmax_in,
+                                  int in_n_bins,
+                                  HsNormType in_norm_mode) {
   _typeString = i18n("Histogram");
   _type = "Histogram";
   _NormMode = in_norm_mode;
   _Bins = 0L;
   _NBins = 0;
-  
-  setTagName(ObjectTag::fromString(in_tag));
+
   _inputVectors[RAWVECTOR] = in_V;
 
   if (xmax_in>xmin_in) {
@@ -126,23 +129,24 @@ void Histogram::commonConstructor(const QString &in_tag, VectorPtr in_V,
   _Bins = new unsigned long[_NBins];
   _NS = 3 * _NBins + 1;
 
-  VectorPtr v = new Vector(ObjectTag("bins", tag()), _NBins, this);
-  _bVector = _outputVectors.insert(BINS, v);
+  Q_ASSERT(store);
+  VectorPtr v = store->createObject<Vector>(ObjectTag("bins", tag()));
+  v->setProvider(this);
+  v->resize(_NBins);
+  _bVector = _outputVectors.insert(BINS, v).value();
 
-  v = new Vector(ObjectTag("sv", tag()), _NBins, this);
-  _hVector = _outputVectors.insert(HIST, v);
+  v = store->createObject<Vector>(ObjectTag("sv", tag()));
+  v->setProvider(this);
+  v->resize(_NBins);
+  _hVector = _outputVectors.insert(HIST, v).value();
 
   setDirty();
 }
 
 
 Histogram::~Histogram() {
-  _bVector = _outputVectors.end();
-  _hVector = _outputVectors.end();
-  vectorList.lock().writeLock();
-  vectorList.remove(_outputVectors[BINS]);
-  vectorList.remove(_outputVectors[HIST]);
-  vectorList.lock().unlock();
+  _bVector = 0L;
+  _hVector = 0L;
 
   delete[] _Bins;
   _Bins = 0L;
@@ -214,7 +218,7 @@ Object::UpdateType Histogram::update(int update_counter) {
   switch (_NormMode) {
     case KST_HS_NUMBER:
       _Normalization = 1.0;
-      (*_hVector)->setLabel(i18n("Number in bin"));
+      _hVector->setLabel(i18n("Number in bin"));
       break;
     case KST_HS_PERCENT:
       if (ns > 0) {
@@ -222,7 +226,7 @@ Object::UpdateType Histogram::update(int update_counter) {
       } else {
         _Normalization = 1.0;
       }
-      (*_hVector)->setLabel(i18n("Percent in bin"));
+      _hVector->setLabel(i18n("Percent in bin"));
       break;
     case KST_HS_FRACTION:
       if (ns > 0) {
@@ -230,7 +234,7 @@ Object::UpdateType Histogram::update(int update_counter) {
       } else {
         _Normalization = 1.0;
       }
-      (*_hVector)->setLabel(i18n("Fraction in bin"));
+      _hVector->setLabel(i18n("Fraction in bin"));
       break;
     case KST_HS_MAX_ONE:
       if (MaxY > 0) {
@@ -238,27 +242,27 @@ Object::UpdateType Histogram::update(int update_counter) {
       } else {
         _Normalization = 1.0;
       }
-      (*_hVector)->setLabel("");
+      _hVector->setLabel("");
       break;
     default:
       _Normalization = 1.0;
       break;
   }
 
-  (*_bVector)->setLabel(_inputVectors[RAWVECTOR]->tagName());
+  _bVector->setLabel(_inputVectors[RAWVECTOR]->tag().displayString());
 
-  double *bins = (*_bVector)->value();
-  double *hist = (*_hVector)->value();
+  double *bins = _bVector->value();
+  double *hist = _hVector->value();
 
   for ( i_bin = 0; i_bin<_NBins; i_bin++ ) {
     bins[i_bin] = ( double( i_bin ) + 0.5 )*_W + _MinX;
     hist[i_bin] = _Bins[i_bin]*_Normalization;
   }
-  
-  (*_bVector)->setDirty();
-  (*_bVector)->update(update_counter);
-  (*_hVector)->setDirty();
-  (*_hVector)->update(update_counter);
+
+  _bVector->setDirty();
+  _bVector->update(update_counter);
+  _hVector->setDirty();
+  _hVector->update(update_counter);
 
   unlockInputsAndOutputs();
 
@@ -295,9 +299,9 @@ void Histogram::internalSetNBins(int in_n_bins) {
     delete[] _Bins;
     _Bins = new unsigned long[_NBins];
     memset(_Bins, 0, _NBins*sizeof(*_Bins));
-    (*_bVector)->resize(_NBins);
-    (*_hVector)->resize(_NBins);
-  }  
+    _bVector->resize(_NBins);
+    _hVector->resize(_NBins);
+  }
   _W = (_MaxX - _MinX)/double(_NBins);
   _NS = 3 * _NBins + 1;
 }
@@ -349,7 +353,7 @@ void Histogram::save(QTextStream &ts, const QString& indent) {
   // point class itself, etc
   QString l2 = indent + "  ";
   ts << indent << "<histogram>" << endl;
-  ts << l2 << "<tag>" << Qt::escape(tagName()) << "</tag>" << endl;
+  ts << l2 << "<tag>" << Qt::escape(tag().tagString()) << "</tag>" << endl;
   ts << l2 << "<vectag>" << Qt::escape(_inputVectors[RAWVECTOR]->tag().tagString()) << "</vectag>" << endl;
   ts << l2 << "<numBins>"  << _NBins << "</numBins>" << endl;
   ts << l2 << "<realtimeautobin>" << _realTimeAutoBin << "</realtimeautobin>" << endl;
@@ -400,7 +404,7 @@ void Histogram::AutoBin(VectorPtr V, int *n, double *max, double *min) {
     *max = *min;
     *min = m;
   }
-  
+
   if (*max == *min) {
     *max += 1.0;
     *min -= 1.0;
@@ -453,6 +457,7 @@ int Histogram::vNumSamples() const {
 
 
 DataObjectPtr Histogram::makeDuplicate(DataObjectDataObjectMap& duplicatedMap) {
+#if 0
   QString name(tagName() + '\'');
   while (Data::self()->dataTagNameNotUnique(name, false)) {
     name += '\'';
@@ -461,6 +466,9 @@ DataObjectPtr Histogram::makeDuplicate(DataObjectDataObjectMap& duplicatedMap) {
                                                _MinX, _MaxX, _NBins, _NormMode);
   duplicatedMap.insert(this, DataObjectPtr(histogram));
   return DataObjectPtr(histogram);
+#endif
+  // FIXME: implement this
+  return 0L;
 }
 
 }

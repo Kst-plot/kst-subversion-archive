@@ -11,10 +11,12 @@
 
 #include "matrixselector.h"
 
+#include "objectstore.h"
+
 namespace Kst {
 
-MatrixSelector::MatrixSelector(QWidget *parent)
-  : QWidget(parent) {
+MatrixSelector::MatrixSelector(QWidget *parent, ObjectStore *store)
+  : QWidget(parent), _store(store) {
 
   setupUi(this);
 
@@ -29,6 +31,11 @@ MatrixSelector::MatrixSelector(QWidget *parent)
 
 
 MatrixSelector::~MatrixSelector() {
+}
+
+
+void MatrixSelector::setObjectStore(ObjectStore *store) {
+  _store = store;
 }
 
 

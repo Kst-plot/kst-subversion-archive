@@ -9,39 +9,20 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef MATRIXSELECTOR_H
-#define MATRIXSELECTOR_H
+#ifndef TESTOBJECTSTORE_H
+#define TESTOBJECTSTORE_H
 
-#include <QWidget>
-#include "ui_matrixselector.h"
+#include <QObject>
 
-#include <matrix.h>
-
-#include "kst_export.h"
-
-namespace Kst {
-
-class ObjectStore;
-
-class KST_EXPORT MatrixSelector : public QWidget, public Ui::MatrixSelector {
+class TestObjectStore : public QObject
+{
   Q_OBJECT
-  public:
-    MatrixSelector(QWidget *parent = 0, ObjectStore *store = 0);
-    virtual ~MatrixSelector();
 
-    void setObjectStore(ObjectStore *store);
+  private Q_SLOTS:
+    void cleanupTestCase();
 
-    MatrixPtr selectedMatrix() const;
-    void setSelectedMatrix(MatrixPtr selectedMatrix);
-
-  Q_SIGNALS:
-    void selectionChanged();
-
-  private:
-    ObjectStore *_store;
+    void testObjectStore();
 };
-
-}
 
 #endif
 

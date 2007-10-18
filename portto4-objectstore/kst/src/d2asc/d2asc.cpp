@@ -23,7 +23,11 @@
 #include "datavector.h"
 #include "datacollection.h"
 #include "dataobjectcollection.h"
+#include "coredocument.h"
+#include "objectstore.h"
 #undef protected
+
+static Kst::CoreDocument _document;
 
 void Usage() {
   fprintf(stderr, "usage: d2asc filename [-f <first frame>]\n");
@@ -34,9 +38,7 @@ void Usage() {
 
 
 static void exitHelper() {
-  Kst::vectorList.clear();
-  Kst::scalarList.clear();
-  Kst::dataObjectList.clear();
+  _document.objectStore()->clear();
 }
 
 int main(int argc, char *argv[]) {
@@ -94,7 +96,7 @@ int main(int argc, char *argv[]) {
 
   if (!do_skip) do_ave = false;
 
-  file = Kst::DataSource::loadSource(filename);
+  file = Kst::DataSource::loadSource(_document.objectStore(), filename);
   if (!file || !file->isValid() || file->isEmpty()) {
     fprintf(stderr, "d2asc error: file %s has no data\n", filename);
     return -2;
@@ -108,7 +110,7 @@ int main(int argc, char *argv[]) {
               field_list[i], filename);
       return -3;
     }
-    Kst::DataVectorPtr v = new Kst::DataVector(file, field_list[i], Kst::ObjectTag("tag", Kst::ObjectTag::globalTagContext), start_frame, n_frames, n_skip, n_skip>0, do_ave);
+    Kst::DataVectorPtr v = new Kst::DataVector(_document.objectStore(), Kst::ObjectTag("tag", Kst::ObjectTag::globalTagContext), file, field_list[i], start_frame, n_frames, n_skip, n_skip>0, do_ave);
     vlist.append(v);
   }
 
@@ -132,3 +134,5 @@ int main(int argc, char *argv[]) {
     printf("\n");
   }
 }
+
+// vim: ts=2 sw=2 et

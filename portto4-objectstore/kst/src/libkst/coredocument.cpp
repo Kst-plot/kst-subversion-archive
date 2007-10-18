@@ -1,4 +1,12 @@
 /***************************************************************************
+                              coredocument.cpp
+                             -------------------
+    begin                : October 3, 2007
+    copyright            : (C) 2007 by The University of Toronto
+    email                :
+ ***************************************************************************/
+
+/***************************************************************************
  *                                                                         *
  *   copyright : (C) 2007 The University of Toronto                        *
  *                                                                         *
@@ -9,49 +17,37 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "document.h"
-#include "mainwindow.h"
-#include "sessionmodel.h"
-#include "tabwidget.h"
-#include <datasourcefactory.h>
-#include <graphicsfactory.h>
-#include <datacollection.h>
-#include <dataobjectcollection.h>
-#include <objectfactory.h>
-#include <primitivefactory.h>
-#include <relationfactory.h>
-#include <viewitem.h>
-#include "objectstore.h"
+#include "coredocument.h"
 
 #include <QDebug>
 #include <QFile>
 #include <QXmlStreamReader>
 
+#include "objectstore.h"
+
 namespace Kst {
 
-Document::Document(MainWindow *window)
-: CoreDocument(), _win(window), _dirty(false), _isOpen(false), _fileName(QString::null) {
-  _session = new SessionModel(objectStore());
+CoreDocument::CoreDocument()
+: _objectStore(new ObjectStore()), _dirty(false), _isOpen(false), _fileName(QString::null) {
 }
 
 
-Document::~Document() {
-  delete _session;
-  _session = 0;
+CoreDocument::~CoreDocument() {
 }
 
 
-SessionModel* Document::session() const {
-  return _session;
-}
-
-
-QString Document::fileName() const {
+QString CoreDocument::fileName() const {
   return _fileName;
 }
 
 
-bool Document::save(const QString& to) {
+ObjectStore* CoreDocument::objectStore() const {
+  return _objectStore;
+}
+
+
+bool CoreDocument::save(const QString& to) {
+#if 0
   // TODO:
   // - KSaveFile-ish behavior
   // - only save if changed
@@ -65,8 +61,6 @@ bool Document::save(const QString& to) {
     return false;
   }
 
-  Q_ASSERT(objectStore());
-
   _fileName = file;
 
   QXmlStreamWriter xml;
@@ -77,35 +71,35 @@ bool Document::save(const QString& to) {
   xml.writeAttribute("version", "2.0");
 
   xml.writeStartElement("data");
-  foreach (DataSourcePtr s, objectStore()->getObjects<DataSource>()) {
+  foreach (KstDataSourcePtr s, dataSourceList) {
     s->saveSource(xml);
   }
   xml.writeEndElement();
 
   xml.writeStartElement("variables");
 
-  foreach (VectorPtr s, objectStore()->getObjects<Vector>()) {
+  foreach (VectorPtr s, vectorList.list()) {
     s->save(xml);
   }
-  foreach (MatrixPtr s, objectStore()->getObjects<Matrix>()) {
+  foreach (KstMatrixPtr s, matrixList.list()) {
     s->save(xml);
   }
-  foreach (ScalarPtr s, objectStore()->getObjects<Scalar>()) {
+  foreach (ScalarPtr s, scalarList.list()) {
     s->save(xml);
   }
-  foreach (StringPtr s, objectStore()->getObjects<String>()) {
+  foreach (KstStringPtr s, stringList.list()) {
     s->save(xml);
   }
   xml.writeEndElement();
 
   xml.writeStartElement("objects");
-  foreach (DataObjectPtr s, objectStore()->getObjects<DataObject>()) {
+  foreach (DataObjectPtr s, KST::dataObjectList) {
     s->save(xml);
   }
   xml.writeEndElement();
 
   xml.writeStartElement("relations");
-  foreach (RelationPtr s, objectStore()->getObjects<Relation>()) {
+  foreach (KstRelationPtr s, KST::relationList) {
     s->save(xml);
   }
   xml.writeEndElement();
@@ -115,21 +109,20 @@ bool Document::save(const QString& to) {
     View *v = qobject_cast<View*>(_win->tabWidget()->widget(i));
     xml.writeStartElement("view");
     xml.writeAttribute("name", _win->tabWidget()->tabText(i));
-
-    v->save(xml);
-
+    // TODO: save each item
     xml.writeEndElement();
   }
   xml.writeEndElement();
 
-  xml.writeEndDocument();
-
+  xml.writeEndCoreDocument();
+#endif
   return true;
 }
 
 
-bool Document::open(const QString& file) {
+bool CoreDocument::open(const QString& file) {
   _isOpen = false;
+#if 0
   QFile f(file);
   if (!f.open(QIODevice::ReadOnly)) {
     _lastError = QObject::tr("File could not be opened for reading.");
@@ -137,11 +130,6 @@ bool Document::open(const QString& file) {
   }
 
   _fileName = file;
-
-  // If we move this into the <graphics> block then we could, if desired, open
-  // .kst files that contained only data and basically "merge" that data into
-  // the current session
-  _win->tabWidget()->clear();
 
   View *currentView = 0;
 
@@ -181,12 +169,11 @@ bool Document::open(const QString& file) {
         switch (state) {
           case Objects:
             {
-              DataObjectPtr object = ObjectFactory::parse(objectStore(), xml);
-              if (object) {
-//                addDataObjectToList(object);
-              } else {
+              DataObjectPtr object = ObjectFactory::parse(xml);
+              if (object)
+                KST::addDataObjectToList(object);
+              else
                 malformed();
-              }
               break;
             }
           case Graphics:
@@ -214,13 +201,13 @@ bool Document::open(const QString& file) {
             }
             break;
           case Data:
-            DataSourceFactory::parse(objectStore(), xml);
+            DataSourceFactory::parse(xml);
             break;
           case Variables:
-            PrimitiveFactory::parse(objectStore(), xml);
+            PrimitiveFactory::parse(xml);
             break;
           case Relations:
-            RelationFactory::parse(objectStore(), xml);
+            RelationFactory::parse(xml);
             break;
           case Unknown:
             malformed();
@@ -256,26 +243,28 @@ bool Document::open(const QString& file) {
     return false;
   }
 
+#endif
+
   return _isOpen = true;
 }
 
 
-QString Document::lastError() const {
+QString CoreDocument::lastError() const {
   return _lastError;
 }
 
 
-bool Document::isChanged() const {
+bool CoreDocument::isChanged() const {
   return _dirty;
 }
 
 
-bool Document::isOpen() const {
+bool CoreDocument::isOpen() const {
   return _isOpen;
 }
 
 
-void Document::setChanged(bool dirty) {
+void CoreDocument::setChanged(bool dirty) {
   _dirty = dirty;
 }
 

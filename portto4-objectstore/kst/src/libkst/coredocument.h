@@ -1,4 +1,12 @@
 /***************************************************************************
+                              coredocument.h
+                             -------------------
+    begin                : October 3, 2007
+    copyright            : (C) 2007 by The University of Toronto
+    email                :
+ ***************************************************************************/
+
+/***************************************************************************
  *                                                                         *
  *   copyright : (C) 2007 The University of Toronto                        *
  *                                                                         *
@@ -9,40 +17,36 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef DOCUMENT_H
-#define DOCUMENT_H
+#ifndef COREDOCUMENT_H
+#define COREDOCUMENT_H
 
 #include <QPointer>
 #include <QString>
 
-#include "coredocument.h"
-
 namespace Kst {
 
-class MainWindow;
-class SessionModel;
+class ObjectStore;
 
-class Document : public CoreDocument {
+class CoreDocument {
   public:
-    Document(MainWindow *win);
-    ~Document();
+    CoreDocument();
+    virtual ~CoreDocument();
 
-    SessionModel* session() const;
+    virtual QString fileName() const;
 
-    QString fileName() const;
+    virtual ObjectStore *objectStore() const;
 
-    bool open(const QString& file);
-    bool save(const QString& to = QString::null);
+    virtual bool open(const QString& file);
+    virtual bool save(const QString& to = QString::null);
 
-    bool isChanged() const;
-    void setChanged(bool changed);
-    bool isOpen() const;
+    virtual bool isChanged() const;
+    virtual void setChanged(bool changed);
+    virtual bool isOpen() const;
 
-    QString lastError() const;
+    virtual QString lastError() const;
 
   private:
-    QPointer<MainWindow> _win;
-    SessionModel *_session;
+    ObjectStore *_objectStore;
     bool _dirty;
     bool _isOpen;
     QString _fileName;

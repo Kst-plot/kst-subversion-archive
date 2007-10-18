@@ -21,6 +21,7 @@
 #include "datacollection.h"
 #include "debug.h"
 #include "datamatrix.h"
+#include "objectstore.h"
 
 
 // xStart, yStart < 0             count from end
@@ -28,16 +29,19 @@
 
 namespace Kst {
 
-DataMatrix::DataMatrix(DataSourcePtr file, const QString &field, ObjectTag tag,
+const QString DataMatrix::staticTypeString = I18N_NOOP("Data Matrix");
+
+DataMatrix::DataMatrix(ObjectStore *store, DataSourcePtr file, const QString& field, const ObjectTag& tag,
                        int xStart, int yStart,
                        int xNumSteps, int yNumSteps,
                        bool doAve, bool doSkip, int skip)
-: Matrix(tag, 0L, 1, 1, 0,0,1,1) {
+    : Matrix(store, tag, 0L, 1, 1, 0,0,1,1) {
   commonConstructor(file, field, xStart, yStart, xNumSteps, yNumSteps, doAve, doSkip, skip);
 }
 
 
-DataMatrix::DataMatrix(const QDomElement &e) : Matrix(ObjectTag::invalidTag, 0L, 1,1,0,0,1,1) {
+DataMatrix::DataMatrix(ObjectStore *store, const QDomElement &e)
+    : Matrix(store, ObjectTag::invalidTag, 0L, 1,1,0,0,1,1) {
   DataSourcePtr in_file = 0L, in_provider = 0L;
   QString in_field;
   QString in_tag;
@@ -49,6 +53,11 @@ DataMatrix::DataMatrix(const QDomElement &e) : Matrix(ObjectTag::invalidTag, 0L,
   bool in_doSkip = false;
   int in_skip = 1;
 
+  DataSourceList dsList;
+  if (this->store()) {
+    dsList = this->store()->dataSourceList();
+  }
+
   /* parse the DOM tree */
   QDomNode n = e.firstChild();
   while (!n.isNull()) {
@@ -57,13 +66,9 @@ DataMatrix::DataMatrix(const QDomElement &e) : Matrix(ObjectTag::invalidTag, 0L,
       if (e.tagName() == "tag") {
         in_tag = e.text();
       } else if (e.tagName() == "file") {
-        dataSourceList.lock().readLock();
-        in_file = dataSourceList.findFileName(e.text());
-        dataSourceList.lock().unlock();
+        in_file = dsList.findFileName(e.text());
       } else if (e.tagName() == "provider") {
-        dataSourceList.lock().readLock();
-        in_provider = *dataSourceList.findTag(e.text());
-        dataSourceList.lock().unlock();
+        in_provider = dsList.findTag(ObjectTag::fromString(e.text()));
       } else if (e.tagName() == "field") {
         in_field = e.text();
       } else if (e.tagName() == "reqxstart") {
@@ -98,6 +103,11 @@ DataMatrix::DataMatrix(const QDomElement &e) : Matrix(ObjectTag::invalidTag, 0L,
 
   // call common constructor
   commonConstructor(in_file, in_field, in_xStart, in_yStart, in_xNumSteps, in_yNumSteps, in_doAve, in_doSkip, in_skip);
+}
+
+
+const QString& DataMatrix::typeString() const {
+  return staticTypeString;
 }
 
 
@@ -491,16 +501,19 @@ void DataMatrix::reload() {
     if (_file->reset()) { // try the efficient way first
       reset();
     } else { // the inefficient way
-      DataSourcePtr newsrc = DataSource::loadSource(_file->fileName(), _file->fileType());
+      DataSourcePtr newsrc = DataSource::loadSource(store(), _file->fileName(), _file->fileType());
       assert(newsrc != _file);
       if (newsrc) {
         _file->unlock();
-        dataSourceList.lock().writeLock();
-        dataSourceList.removeAll(_file);
+        // FIXME: need to writelock store?
+        if (store()) {
+          store()->removeObject(_file);
+        }
         _file = newsrc;
         _file->writeLock();
-        dataSourceList.append(_file);
-        dataSourceList.lock().unlock();
+        if (store()) {
+          store()->addObject<DataSource>(_file);
+        }
         reset();
       }
     }
@@ -510,8 +523,8 @@ void DataMatrix::reload() {
 
 
 DataMatrixPtr DataMatrix::makeDuplicate() const {
-  QString newTag = tag().tag() + "'";
-  return new DataMatrix(_file, _field, ObjectTag(newTag, tag().context()),
+  QString newTag = tag().name() + "'";
+  return new DataMatrix(store(), _file, _field, ObjectTag(newTag, tag().context()),
                         _reqXStart, _reqYStart, _reqNX, _reqNY,
                         _doAve, _doSkip, _skip);
 }
@@ -535,7 +548,7 @@ void DataMatrix::commonConstructor(DataSourcePtr file, const QString &field,
   _editable = true;
 
   if (!_file) {
-    Debug::self()->log(i18n("Data file for matrix %1 was not opened.", tagName()), Debug::Warning);
+    Debug::self()->log(i18n("Data file for matrix %1 was not opened.", tag().tagString()), Debug::Warning);
   } else {
     _samplesPerFrameCache = _file->samplesPerFrame(_field);
   }
@@ -554,7 +567,7 @@ void DataMatrix::commonConstructor(DataSourcePtr file, const QString &field,
 
 void DataMatrix::reset() { // must be called with a lock
   Q_ASSERT(myLockStatus() == KstRWLock::WRITELOCKED);
-  
+
   if (_file) {
     _samplesPerFrameCache = _file->samplesPerFrame(_field);
   }
@@ -585,13 +598,13 @@ void DataMatrix::changeFile(DataSourcePtr file) {
   Q_ASSERT(myLockStatus() == KstRWLock::WRITELOCKED);
 
   if (!file) {
-    Debug::self()->log(i18n("Data file for vector %1 was not opened.", tagName()), Debug::Warning);
+    Debug::self()->log(i18n("Data file for vector %1 was not opened.", tag().tagString()), Debug::Warning);
   }
   _file = file;
   if (_file) {
     _file->writeLock();
   }
-  setTagName(ObjectTag(tag().tag(), _file->tag(), false));
+  setTagName(ObjectTag(tag().name(), _file->tag(), false));
   reset();
   if (_file) {
     _file->unlock();
