@@ -123,6 +123,9 @@ void VectorSelector::fillVectors() {
     _vector->addItem(string, qVariantFromValue(v.data()));
   }
 
+  if (_allowEmptySelection) //reset the <None>
+    setAllowEmptySelection(_allowEmptySelection);
+
   if (current)
     setSelectedVector(current);
 }
