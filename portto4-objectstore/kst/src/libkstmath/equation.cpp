@@ -37,7 +37,7 @@
 #include "objectstore.h"
 
 /*extern "C"*/ int yyparse(Kst::ObjectStore *store);
-extern "C" void *ParsedEquation;
+extern void *ParsedEquation;
 /*extern "C"*/ struct yy_buffer_state *yy_scan_string(const char*);
 
 namespace Kst {
