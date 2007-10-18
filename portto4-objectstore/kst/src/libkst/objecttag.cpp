@@ -51,10 +51,14 @@ ObjectTag::ObjectTag(const QString& name, const ObjectTag& contextTag,
 ObjectTag::ObjectTag(const QStringList &fullTag)
   : _minDisplayComponents(1), _uniqueDisplayComponents(UINT_MAX) {
 
-  QStringList context = fullTag;
-  _name = cleanTagComponent(context.last());
-  context.pop_back();
-  _context = context;
+  if (fullTag.isEmpty()) {
+    _minDisplayComponents = 0;
+  } else {
+    QStringList context = fullTag;
+    _name = cleanTagComponent(context.last());
+    context.pop_back();
+    _context = context;
+  }
 }
 
 
