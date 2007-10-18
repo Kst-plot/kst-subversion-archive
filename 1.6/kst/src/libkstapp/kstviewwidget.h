@@ -66,6 +66,10 @@ class KstViewWidget : public QWidget {
     friend class KstTopLevelView;
     void release() { _view = 0L; }
 
+  protected slots:
+    void menuHiding();
+    void menuHidden();
+
   private:
     KstTopLevelViewPtr _view;
     KstTopLevelView::ViewMode _lastViewMode;

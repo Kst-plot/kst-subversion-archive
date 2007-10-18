@@ -41,6 +41,9 @@ KstViewWidget::KstViewWidget(KstTopLevelViewPtr view, QWidget *parent, const cha
 
 
 KstViewWidget::~KstViewWidget() {
+  if (_menu) {
+    delete _menu;
+  }
 }
 
 
@@ -320,23 +323,19 @@ void KstViewWidget::contextMenuEvent(QContextMenuEvent *e) {
   if (_view->mouseGrabber()) {
     _view->releaseMouse(_view->mouseGrabber());
   }
+
   if (_menu) { // Do not allow recursive menus
     e->ignore();
     return;
   }
+
   _menu = new KPopupMenu(this);
   //kstdDebug() << "Querying for the popup" << endl;
   bool rc = _view->popupMenu(_menu, e->pos());
   if (rc && _menu->count() > 0) {
-    _menu->popup(mapToGlobal(e->pos()));
     //kstdDebug() << "Showing the popup." << endl;
-    _menu->exec();
-    delete _menu;
-    if (_view->viewMode() != KstTopLevelView::DisplayMode) {
-      _view->updateFocus(mapFromGlobal(QCursor::pos()));
-    }
-    // for convenience, let's update the dialogs
-    QTimer::singleShot(0, KstApp::inst(), SLOT(updateVisibleDialogs()));
+    _menu->popup(mapToGlobal(e->pos()));
+    connect(_menu, SIGNAL(aboutToHide()), this, SLOT(menuHiding()));
   } else {
     delete _menu;
   }
@@ -535,6 +534,23 @@ void KstViewWidget::setDragEnabled(bool en) {
 
 KstTopLevelViewPtr KstViewWidget::viewObject() const {
   return _view;
+}
+
+
+void KstViewWidget::menuHiding() {
+  QTimer::singleShot(0, this, SLOT(menuHidden()));
+
+  if (_view->viewMode() != KstTopLevelView::DisplayMode) {
+    _view->updateFocus(mapFromGlobal(QCursor::pos()));
+  }
+
+  // for convenience, let's update the dialogs
+  QTimer::singleShot(0, KstApp::inst(), SLOT(updateVisibleDialogs()));
+}
+
+
+void KstViewWidget::menuHidden() {
+  delete _menu;
 }
 
 
