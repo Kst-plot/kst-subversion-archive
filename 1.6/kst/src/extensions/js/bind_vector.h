@@ -72,6 +72,11 @@ class KstBindVector : public KstBindObject {
        @exception GeneralError Throws this exception if the vector is not editable.
     */
     KJS::Value zero(KJS::ExecState *exec, const KJS::List& args);
+    /* @method update
+       @description Updates the statistical values associated with a vector.
+       @exception GeneralError Throws this exception if the vector is not editable.
+    */
+    KJS::Value update(KJS::ExecState *exec, const KJS::List& args);    
     /* @property number length
        @readonly
        @description The number of samples in the vector.

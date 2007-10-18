@@ -71,6 +71,7 @@ struct MatrixProperties {
 static MatrixBindings matrixBindings[] = {
   { "resize", &KstBindMatrix::resize },
   { "zero", &KstBindMatrix::zero },
+  { "update", &KstBindMatrix::update },
   { 0L, 0L }
 };
 
@@ -187,24 +188,45 @@ KJS::Value KstBindMatrix::editable(KJS::ExecState *exec) const {
 
 
 KJS::Value KstBindMatrix::min(KJS::ExecState *exec) const {
-  Q_UNUSED(exec)
   KstMatrixPtr m = makeMatrix(_d);
+  if (!m) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::GeneralError);
+    exec->setException(eobj);
+    return KJS::Undefined();
+  }
+  if (m->dirty()) {
+    m->update();
+  }
   KstReadLocker rl(m);
   return KJS::Number(m->minValue());
 }
 
 
 KJS::Value KstBindMatrix::max(KJS::ExecState *exec) const {
-  Q_UNUSED(exec)
   KstMatrixPtr m = makeMatrix(_d);
+  if (!m) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::GeneralError);
+    exec->setException(eobj);
+    return KJS::Undefined();
+  }
+  if (m->dirty()) {
+    m->update();
+  }
   KstReadLocker rl(m);
   return KJS::Number(m->maxValue());
 }
 
 
 KJS::Value KstBindMatrix::mean(KJS::ExecState *exec) const {
-  Q_UNUSED(exec)
   KstMatrixPtr m = makeMatrix(_d);
+  if (!m) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::GeneralError);
+    exec->setException(eobj);
+    return KJS::Undefined();
+  }
+  if (m->dirty()) {
+    m->update();
+  }
   KstReadLocker rl(m);
   return KJS::Number(m->meanValue());
 }
@@ -280,6 +302,20 @@ KJS::Value KstBindMatrix::zero(KJS::ExecState *exec, const KJS::List& args) {
   }
   KstWriteLocker wl(m);
   m->zero();
+  return KJS::Undefined();
+}
+
+
+KJS::Value KstBindMatrix::update(KJS::ExecState *exec, const KJS::List& args) {
+  Q_UNUSED(args)
+  KstMatrixPtr m = makeMatrix(_d);
+  if (!m || !m->editable()) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::GeneralError);
+    exec->setException(eobj);
+    return KJS::Undefined();
+  }
+  KstWriteLocker wl(m);
+  m->update();
   return KJS::Undefined();
 }
 

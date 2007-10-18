@@ -73,6 +73,7 @@ static VectorBindings vectorBindings[] = {
   { "resize", &KstBindVector::resize },
   { "interpolate", &KstBindVector::interpolate },
   { "zero", &KstBindVector::zero },
+  { "update", &KstBindVector::update },
   { 0L, 0L }
 };
 
@@ -286,24 +287,45 @@ KJS::Value KstBindVector::resize(KJS::ExecState *exec, const KJS::List& args) {
 
 
 KJS::Value KstBindVector::min(KJS::ExecState *exec) const {
-  Q_UNUSED(exec)
   KstVectorPtr v = makeVector(_d);
+  if (!v) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::GeneralError);
+    exec->setException(eobj);
+    return KJS::Undefined();
+  }
+  if (v->dirty()) {
+    v->update();
+  }
   KstReadLocker rl(v);
   return KJS::Number(v->min());
 }
 
 
 KJS::Value KstBindVector::max(KJS::ExecState *exec) const {
-  Q_UNUSED(exec)
   KstVectorPtr v = makeVector(_d);
+  if (!v) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::GeneralError);
+    exec->setException(eobj);
+    return KJS::Undefined();
+  }
+  if (v->dirty()) {
+    v->update();
+  }
   KstReadLocker rl(v);
   return KJS::Number(v->max());
 }
 
 
 KJS::Value KstBindVector::mean(KJS::ExecState *exec) const {
-  Q_UNUSED(exec)
   KstVectorPtr v = makeVector(_d);
+  if (!v) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::GeneralError);
+    exec->setException(eobj);
+    return KJS::Undefined();
+  }
+  if (v->dirty()) {
+    v->update();
+  }
   KstReadLocker rl(v);
   return KJS::Number(v->mean());
 }
@@ -373,6 +395,20 @@ KJS::Value KstBindVector::zero(KJS::ExecState *exec, const KJS::List& args) {
 }
 
 
+KJS::Value KstBindVector::update(KJS::ExecState *exec, const KJS::List& args) {
+  Q_UNUSED(args)
+  KstVectorPtr v = makeVector(_d);
+  if (!v || !v->editable()) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::GeneralError);
+    exec->setException(eobj);
+    return KJS::Undefined();
+  }
+  KstWriteLocker wl(v);
+  v->update();
+  return KJS::Undefined();
+}
+
+
 KJS::Value KstBindVector::editable(KJS::ExecState *exec) const {
   Q_UNUSED(exec)
   KstVectorPtr v = makeVector(_d);
@@ -383,4 +419,3 @@ KJS::Value KstBindVector::editable(KJS::ExecState *exec) const {
 
 #undef makeVector
 
-// vim: ts=2 sw=2 et

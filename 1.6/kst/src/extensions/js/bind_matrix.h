@@ -60,6 +60,11 @@ class KstBindMatrix : public KstBindObject {
        @exception GeneralError Throws this exception if the matrix is not editable.
      */
     KJS::Value zero(KJS::ExecState *exec, const KJS::List& args);
+    /* @method update
+       @description Updates the statistical values associated with a matrix.
+       @exception GeneralError Throws this exception if the matrix is not editable.
+     */
+    KJS::Value update(KJS::ExecState *exec, const KJS::List& args);
 
     /* @property number editable
        @readonly
