@@ -53,6 +53,7 @@
 #include "bind_debug.h"
 #include "bind_equation.h"
 #include "bind_ellipse.h"
+#include "bind_file.h"
 #include "bind_histogram.h"
 #include "bind_jsdataobject.h"
 #include "bind_kst.h"
@@ -209,6 +210,8 @@ void KstJS::createBindings() {
   new KstBindWindow(exec, &globalObj);
   new KstBindDebug(exec, &globalObj);
   new KstBindKst(exec, &globalObj, this);
+
+  new KstBindFile(exec, &globalObj);
 
   globalObj.put(exec, "loadScript", KJS::Object(new LoadScript(this)));
 
@@ -404,4 +407,4 @@ KstJSUIBuilder *KstUIMerge::loadGUI(const QString& ui) {
 
 
 #include "js.moc"
-// vim: ts=2 sw=2 et
+

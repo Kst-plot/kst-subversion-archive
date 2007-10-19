@@ -91,7 +91,8 @@ kstextension_js_la_SOURCES= $(JSEXTERN) \
 			    bind_ellipse.cpp \
 			    bind_picture.cpp \
 			    bind_arrow.cpp \
-			    bind_line.cpp
+			    bind_line.cpp \
+			    bind_file.cpp
 
 #			    js_dataobject.cpp \
 #			    bind_cubicbezier.cpp \
