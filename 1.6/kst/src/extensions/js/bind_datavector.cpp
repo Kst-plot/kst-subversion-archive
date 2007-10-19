@@ -494,4 +494,3 @@ KJS::Value KstBindDataVector::dataSource(KJS::ExecState *exec) const {
 
 #undef makeDataVector
 
-// vim: ts=2 sw=2 et

@@ -96,6 +96,7 @@ struct WindowProperties {
 
 static WindowBindings windowBindings[] = {
   { "close", &KstBindWindow::close },
+  { "repaint", &KstBindWindow::repaint },
   { 0L, 0L }
 };
 
@@ -214,6 +215,18 @@ KJS::Value KstBindWindow::windowName(KJS::ExecState *exec) const {
 }
 
 
+KJS::Value KstBindWindow::repaint(KJS::ExecState *exec, const KJS::List& args) {
+  Q_UNUSED(args)
+  if (!_d) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::GeneralError);
+    exec->setException(eobj);
+    return KJS::Undefined();
+  }
+  _d->view()->paint(KstPainter::P_PAINT);
+  return KJS::Undefined();
+}
+
+
 KJS::Value KstBindWindow::close(KJS::ExecState *exec, const KJS::List& args) {
   Q_UNUSED(args)
   if (!_d) {
@@ -236,5 +249,3 @@ KJS::Value KstBindWindow::view(KJS::ExecState *exec) const {
   return KJS::Object(KstBindViewObject::bind(exec, _d->view().data()));
 }
 
-
-// vim: ts=2 sw=2 et

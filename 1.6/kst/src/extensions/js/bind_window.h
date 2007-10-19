@@ -46,6 +46,11 @@ class KstBindWindow : public KstBinding {
     KJS::ReferenceList propList(KJS::ExecState *exec, bool recursive = true);
     bool hasProperty(KJS::ExecState *exec, const KJS::Identifier& propertyName) const;
 
+    /* @method repaint
+       @description Repaints the window.
+    */
+    KJS::Value repaint(KJS::ExecState *exec, const KJS::List& args);
+
     /* @method close
        @description Closes the window.
     */
@@ -77,5 +82,3 @@ class KstBindWindow : public KstBinding {
 
 
 #endif
-
-// vim: ts=2 sw=2 et

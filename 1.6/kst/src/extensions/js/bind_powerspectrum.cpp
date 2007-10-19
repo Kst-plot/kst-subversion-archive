@@ -77,10 +77,10 @@ KJS::Object KstBindPowerSpectrum::construct(KJS::ExecState *exec, const KJS::Lis
   unsigned len = 16;
   bool apodize = true;
   bool removeMean = true;
-  int apodizeFxn = 0;
-  int output = 0;
-  QString vunits;
-  QString runits;
+  int apodizeFxn = WindowOriginal;
+  int output = PSDAmplitudeSpectralDensity;
+  QString vunits = "V";
+  QString runits = "Hz";
 
   KstVectorPtr v = extractVector(exec, args[0]);
 
@@ -522,4 +522,3 @@ KJS::Value KstBindPowerSpectrum::length(KJS::ExecState *exec) const {
 
 #undef makePSD
 
-// vim: ts=2 sw=2 et

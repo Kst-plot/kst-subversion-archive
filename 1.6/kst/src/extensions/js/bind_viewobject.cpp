@@ -449,8 +449,16 @@ KJS::Value KstBindViewObject::resize(KJS::ExecState *exec, const KJS::List& args
   if (d) {
     KstWriteLocker rl(d);
     d->resize(QSize(x, y));
+
+    KstViewObjectPtr vo = d->topLevelParent();
+    if (vo) {
+      KstTopLevelViewPtr tlv =  kst_cast<KstTopLevelView>(vo);
+      if (tlv) {
+        tlv->paint(KstPainter::P_PAINT);
+      }
+    }
   }
-  
+
   return KJS::Undefined();
 }
 
@@ -483,8 +491,16 @@ KJS::Value KstBindViewObject::move(KJS::ExecState *exec, const KJS::List& args) 
   if (d) {
     KstWriteLocker rl(d);
     d->move(QPoint(x, y));
+
+    KstViewObjectPtr vo = d->topLevelParent();
+    if (vo) {
+      KstTopLevelViewPtr tlv =  kst_cast<KstTopLevelView>(vo);
+      if (tlv) {
+        tlv->paint(KstPainter::P_PAINT);
+      }
+    }
   }
-  
+
   return KJS::Undefined();
 }
 
@@ -590,5 +606,3 @@ QMap<QString, KstBindViewObject*(*)(KJS::ExecState*, KstViewObjectPtr)> KstBindV
 
 #undef makeViewObject
 
-
-// vim: ts=2 sw=2 et
