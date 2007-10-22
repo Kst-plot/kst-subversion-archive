@@ -111,7 +111,11 @@ class KstBindVector : public KstBindObject {
                     checked before attempting to modify a vector in any way.
     */
     KJS::Value editable(KJS::ExecState *exec) const;
-
+    /* @property number numNaN
+       @readonly
+       @description The number of NaN values in the vector.
+    */
+    KJS::Value numNaN(KJS::ExecState *exec) const;
   protected:
     KstBindVector(int id, const char *name = 0L);
     void addBindings(KJS::ExecState *exec, KJS::Object& obj);

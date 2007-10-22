@@ -105,6 +105,9 @@ class KST_EXPORT KstVector : public KstPrimitive {
     inline int numShift() const { return NumShifted; }
 
     inline bool isRising() const { return _is_rising; }
+    inline bool hasNaN() const { return _nsum < _size; }
+    inline int numNaN() const { return _size - _nsum; }
+
 
     /** reset New Samples and Shifted samples */
     void newSync();
@@ -121,9 +124,6 @@ class KST_EXPORT KstVector : public KstPrimitive {
 
     /** Make the vector truly empty.  All values set to NOPOINT (NaN). */
     void blank();
-
-    /* Generally you don't need to call this */
-    void updateScalars();
 
     /** return a sensible label for this vector */
     virtual QString label() const;
@@ -160,6 +160,8 @@ class KST_EXPORT KstVector : public KstPrimitive {
     int indexNearX(double x, int NS); //returns the index of the element w/ value closest to v.
 
   protected:
+    QString _label;
+
     /** current number of samples */
     int _size;
 
@@ -202,11 +204,9 @@ class KST_EXPORT KstVector : public KstPrimitive {
     double _min, _max, _mean, _minPos;
     int _minIndex, _maxIndex;
 
-    /** Scalar Maintenance methods */
     void createScalars();
     void renameScalars();
-
-    QString _label;
+    void updateScalars();
 
     friend class KstDataObject;
     virtual double* realloced(double *memptr, int newSize);
@@ -218,4 +218,4 @@ typedef KstObjectMap<KstVectorPtr> KstVectorMap;
 typedef KstObjectCollection<KstVector> KstVectorCollection;
 
 #endif
-// vim: ts=2 sw=2 et
+

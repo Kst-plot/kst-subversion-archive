@@ -86,6 +86,7 @@ static VectorProperties vectorProperties[] = {
   { "newSamples", 0L, &KstBindVector::numNew },
   { "shiftedSamples", 0L, &KstBindVector::numShifted },
   { "editable", 0L, &KstBindVector::editable },
+  { "numNaN", 0L, &KstBindVector::numNaN },
   { 0L, 0L, 0L }
 };
 
@@ -412,8 +413,26 @@ KJS::Value KstBindVector::update(KJS::ExecState *exec, const KJS::List& args) {
 KJS::Value KstBindVector::editable(KJS::ExecState *exec) const {
   Q_UNUSED(exec)
   KstVectorPtr v = makeVector(_d);
+  if (!v) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::GeneralError);
+    exec->setException(eobj);
+    return KJS::Undefined();
+  }
   KstReadLocker rl(v);
   return KJS::Boolean(v->editable());
+}
+
+
+KJS::Value KstBindVector::numNaN(KJS::ExecState *exec) const {
+  Q_UNUSED(exec)
+  KstVectorPtr v = makeVector(_d);
+  if (!v) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::GeneralError);
+    exec->setException(eobj);
+    return KJS::Undefined();
+  }
+  KstReadLocker rl(v);
+  return KJS::Number(v->numNaN());
 }
 
 
