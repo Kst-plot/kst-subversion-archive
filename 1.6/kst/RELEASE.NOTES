@@ -1,5 +1,4 @@
 Known issues in 1.6.0:
-- Translations are not available in this release.
 - If you experience crashes with the distributed fit and filter plugins, it is
 likely a problem with your GSL libraries and recent linker options.  The problem
 is resolved by removing -Wl,--as-needed from linking stages for these plugins,
