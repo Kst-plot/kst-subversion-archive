@@ -15,15 +15,15 @@ How to make a Kst release:
 - prepare for a KDE 3.3 install!  Set min config appropriately
 - svn copy to a tag
 - make sure configure has been run so that the spec file is created (with the
-  appropriate prefix - currently /opt/kde3 - or you edit kst.spec afterwards)
+  appropriate prefix - e.g. /usr, /opt/kde3 - or you can edit kst.spec afterwards)
 - disable unsermake
 - svn2dist /path/to/extragear/graphics kst -b -n kst -v <version_number> --svn-root https://svn.kde.org/home/kde/trunk/ -l svn2dist.log --i18n-module extragear-graphics (if you are not including translations then use svn2dist /path/to/extragear/graphics kst -b -n kst -v <version_number> -l svn2dist.log --no-i18n)
 - unpack, remove any files that shouldn't be there, make sure docs and i18n
   are packaged properly, and edit any paths necessary (ex: spec file)
 - generate the srpm: rpm -ts kst-version.tar.gz 
-  (or rpmbuild -ts kst-version.tar.gz --- e.g. rpmbuild -ts kst-1.5.0.tar)
+  (or rpmbuild -ts kst-version.tar.gz --- e.g. rpmbuild -ts kst-1.5.0.tar.gz)
 - generate rpms as needed: rpm -tb kst-version.tar.gz 
-  (or rpmbuild -tb kst-version.tar.gz --- e.g. rpmbuild -tb kst-1.5.0.tar)
+  (or rpmbuild -tb kst-version.tar.gz --- e.g. rpmbuild -tb kst-1.5.0.tar.gz)
                         or rpm --rebuild kst-version.rpm
 			(or rpmbuild --rebuild kst-version.rpm --- e.g. rpmbuild --rebuild kst-1.5.0.rpm)
      - SuSE and RedHat style are typically generated.
