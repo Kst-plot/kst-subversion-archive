@@ -1,7 +1,7 @@
 picsdir = $(kde_datadir)/kst/pics
 pics_DATA = yes.png no.png kst_error_1.png kst_error_2.png
 
-iconsdir = $(kde_icondir)/hicolor/22x22/actions/
+iconsdir = $(kde_icondir)/hicolor/22x22/actions
 icons_DATA = kst_zoomtie.png kst_zoomxy.png kst_zoomx.png kst_zoomy.png \
 	kst_changefile.png kst_changenpts.png kst_editplots.png \
 	kst_datamanager.png kst_back.png kst_advance.png \

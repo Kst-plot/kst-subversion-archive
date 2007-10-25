@@ -14,8 +14,11 @@ KDE_ICON = kst
 services_DATA = kstplugin.desktop kstdatasourceplugin.desktop kstdataobjectplugin.desktop kstbasicplugin.desktop kstfilter.desktop kstextension.desktop
 servicesdir = $(kde_servicetypesdir)/kst
 
+appsright_DATA = kst.desktop
+appsrightdir = $(xdg_appsdir)
+
 apps_DATA = kst.desktop
-appsdir = $(kde_appsdir)/Applications/Sciences
+appsdir = $(kde_appsdir)/Graphics
 
 mimedir = $(kde_mimedir)/application
 mime_DATA = x-kst.desktop
