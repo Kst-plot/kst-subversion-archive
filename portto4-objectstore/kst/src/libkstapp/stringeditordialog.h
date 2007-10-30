@@ -9,10 +9,37 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <application.h>
+#ifndef STRINGVIEWDIALOG_H
+#define STRINGVIEWDIALOG_H
 
-int main(int argc, char *argv[])
+#include <QDialog>
+
+#include "ui_stringeditordialog.h"
+
+#include "kst_export.h"
+
+namespace Kst {
+
+class StringTableModel;
+
+class KST_EXPORT StringEditorDialog : public QDialog, Ui::StringEditorDialog
 {
-    Kst::Application app(argc, argv);
-    return app.exec();
+  Q_OBJECT
+  public:
+    StringEditorDialog(QWidget *parent);
+    virtual ~StringEditorDialog();
+
+    virtual void show();
+
+  private:
+    void refreshStrings();
+
+    StringTableModel *_model;
+
+};
+
 }
+
+#endif
+
+// vim: ts=2 sw=2 et
