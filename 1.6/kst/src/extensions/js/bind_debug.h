@@ -43,25 +43,34 @@ class KstBindDebug : public KstBinding {
        @description Logs a warning message to the Kst log.
     */
     KJS::Value warning(KJS::ExecState *exec, const KJS::List& args);
+
     /* @method error
        @arg string message
        @description Logs an error message to the Kst log.
     */
     KJS::Value error(KJS::ExecState *exec, const KJS::List& args);
+
     /* @method notice
        @arg string message
        @description Logs a notice to the Kst log.
     */
     KJS::Value notice(KJS::ExecState *exec, const KJS::List& args);
+
     /* @method debug
        @arg string message
        @description Logs a debug message to the Kst log.
     */
     KJS::Value debug(KJS::ExecState *exec, const KJS::List& args);
+
     /* @method clear
        @description Clears the Kst log.
     */
     KJS::Value clear(KJS::ExecState *exec, const KJS::List& args);
+
+    /* @method clearNewError
+       @description Clears the new error flag.
+    */
+    KJS::Value clearNewError(KJS::ExecState *exec, const KJS::List& args);
 
     /* @property DebugLog log
        @readonly
@@ -69,12 +78,28 @@ class KstBindDebug : public KstBinding {
     */
     KJS::Value log(KJS::ExecState *exec) const;
 
+    /* @property boolean newError
+       @readonly
+       @description Return the value of the new error flag.
+    */
+    KJS::Value newError(KJS::ExecState *exec) const;
+
+    /* @property string version
+       @readonly
+       @description Return the version of Kst.
+    */
+    KJS::Value version(KJS::ExecState *exec) const;
+
+    /* @property string revision
+       @readonly
+       @description Return the revision of Kst.
+    */
+    KJS::Value revision(KJS::ExecState *exec) const;
+
   protected:
     KstBindDebug(int id);
     void addBindings(KJS::ExecState *exec, KJS::Object& obj);
 };
 
-
 #endif
 
-// vim: ts=2 sw=2 et

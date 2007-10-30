@@ -47,6 +47,7 @@ KstDebug::KstDebug()
   _applyLimit = false;
   _limit = 10000;
   _kstRevision = QString::fromLatin1(KSTREVISION);
+  _kstVersion = QString::fromLatin1(KSTVERSION);
   _hasNewError = false;
 }
 
@@ -179,6 +180,12 @@ KstDebug::LogMessage KstDebug::message(unsigned n) const {
 int KstDebug::logLength() const {
   QMutexLocker ml(&_lock);
   return _messages.size();
+}
+
+
+const QString& KstDebug::kstVersion() const {
+  QMutexLocker ml(&_lock);
+  return _kstVersion;
 }
 
 

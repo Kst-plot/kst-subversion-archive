@@ -54,6 +54,7 @@ class KST_EXPORT KstDebug : public QObject {
     KstDebug::LogMessage message(unsigned n) const;
     QStringList dataSourcePlugins() const;
     QString label(LogLevel level) const;
+    const QString& kstVersion() const;
     const QString& kstRevision() const;
 
     int limit() const;
@@ -84,6 +85,7 @@ class KST_EXPORT KstDebug : public QObject {
     QMap<QString,int> _drawCounter;
 #endif
     QGuardedPtr<QObject> _handler;
+    QString _kstVersion;
     QString _kstRevision;
 };
 

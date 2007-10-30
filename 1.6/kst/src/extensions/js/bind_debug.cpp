@@ -60,12 +60,16 @@ static DebugBindings debugBindings[] = {
   { "error", &KstBindDebug::error },
   { "notice", &KstBindDebug::notice },
   { "debug", &KstBindDebug::debug },
+  { "clearNewError", &KstBindDebug::clearNewError },
   { 0L, 0L }
 };
 
 
 static DebugProperties debugProperties[] = {
   { "log", 0L, &KstBindDebug::log },
+  { "newError", 0L, &KstBindDebug::newError },
+  { "version", 0L, &KstBindDebug::version },
+  { "revision", 0L, &KstBindDebug::revision },
   { 0L, 0L, 0L }
 };
 
@@ -103,7 +107,7 @@ KJS::Value KstBindDebug::get(KJS::ExecState *exec, const KJS::Identifier& proper
       return (this->*debugProperties[i].get)(exec);
     }
   }
-  
+
   return KstBinding::get(exec, propertyName);
 }
 
@@ -219,9 +223,39 @@ KJS::Value KstBindDebug::clear(KJS::ExecState *exec, const KJS::List& args) {
 }
 
 
+KJS::Value KstBindDebug::clearNewError(KJS::ExecState *exec, const KJS::List& args) {
+  if (args.size() != 0) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::SyntaxError);
+    exec->setException(eobj);
+    return KJS::Undefined();
+  }
+
+  KstDebug::self()->clearHasNewError();
+  return KJS::Undefined();
+}
+
+
 KJS::Value KstBindDebug::log(KJS::ExecState *exec) const {
   return KJS::Object(new KstBindDebugLog(exec));
 }
 
 
-// vim: ts=2 sw=2 et
+KJS::Value KstBindDebug::newError(KJS::ExecState *exec) const {
+  Q_UNUSED(exec)
+
+  return KJS::Boolean(KstDebug::self()->hasNewError());
+}
+
+
+KJS::Value KstBindDebug::version(KJS::ExecState *exec) const {
+  Q_UNUSED(exec)
+
+  return KJS::String(KstDebug::self()->kstVersion());
+}
+
+
+KJS::Value KstBindDebug::revision(KJS::ExecState *exec) const {
+  Q_UNUSED(exec)
+
+  return KJS::String(KstDebug::self()->kstRevision());
+}

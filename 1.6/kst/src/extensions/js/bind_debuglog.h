@@ -46,12 +46,12 @@ class KstBindDebugLog : public KstBinding {
     KJS::ReferenceList propList(KJS::ExecState *exec, bool recursive = true);
     bool hasProperty(KJS::ExecState *exec, const KJS::Identifier& propertyName) const;
 
-    // properties
     /* @property number length
        @readonly
        @description The number of entries in the log.
     */
     KJS::Value length(KJS::ExecState *exec) const;
+
     /* @property string text
        @readonly
        @description The text contents of the log as a single large string with
@@ -64,7 +64,5 @@ class KstBindDebugLog : public KstBinding {
     void addBindings(KJS::ExecState *exec, KJS::Object& obj);
 };
 
-
 #endif
 
-// vim: ts=2 sw=2 et

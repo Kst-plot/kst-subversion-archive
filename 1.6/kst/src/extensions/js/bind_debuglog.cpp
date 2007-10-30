@@ -195,5 +195,3 @@ KJS::Value KstBindDebugLog::text(KJS::ExecState *exec) const {
 
   return KJS::String(log);
 }
-
-// vim: ts=2 sw=2 et
