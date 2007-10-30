@@ -58,9 +58,11 @@ class KST_EXPORT DialogLauncher : public QObject {
 
     virtual void showHistogramDialog(ObjectPtr objectPtr = 0);
 
-    virtual void showPSDDialog(ObjectPtr objectPtr = 0);
+    virtual void showPowerSpectrumDialog(ObjectPtr objectPtr = 0);
 
     virtual void showCSDDialog(ObjectPtr objectPtr = 0);
+
+    virtual void showEventMonitorDialog(ObjectPtr objectPtr = 0);
 
     //plugins
     virtual void showBasicPluginDialog(ObjectPtr objectPtr = 0);

@@ -13,6 +13,7 @@
 #define LAYOUTBOXITEM_H
 
 #include "viewitem.h"
+#include "graphicsfactory.h"
 
 namespace Kst {
 
@@ -24,7 +25,9 @@ class LayoutBoxItem : public ViewItem
     virtual ~LayoutBoxItem();
 
     void appendItem(ViewItem *item);
+    bool appendItemFromXml(QXmlStreamReader &xml);
 
+    virtual void save(QXmlStreamWriter &xml);
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
   public Q_SLOTS:
@@ -33,6 +36,13 @@ class LayoutBoxItem : public ViewItem
   protected:
     virtual void contextMenuEvent(QGraphicsSceneContextMenuEvent *event);
     virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
+};
+
+class LayoutBoxItemFactory : public GraphicsFactory {
+  public:
+    LayoutBoxItemFactory();
+    ~LayoutBoxItemFactory();
+    ViewItem* generateGraphics(QXmlStreamReader& stream, View *view, ViewItem *parent = 0);
 };
 
 }

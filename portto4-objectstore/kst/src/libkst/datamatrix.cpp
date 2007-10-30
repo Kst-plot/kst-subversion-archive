@@ -14,7 +14,8 @@
 #include <math.h>
 #include <stdlib.h>
 
-#include <qtextdocument.h>
+#include <QTextDocument>
+#include <QXmlStreamWriter>
 
 #include "kst_i18n.h"
 
@@ -30,6 +31,10 @@
 namespace Kst {
 
 const QString DataMatrix::staticTypeString = I18N_NOOP("Data Matrix");
+
+DataMatrix::DataMatrix(ObjectStore *store, const ObjectTag& tag)
+  : Matrix(store, tag) {
+}
 
 DataMatrix::DataMatrix(ObjectStore *store, DataSourcePtr file, const QString& field, const ObjectTag& tag,
                        int xStart, int yStart,
@@ -111,26 +116,25 @@ const QString& DataMatrix::typeString() const {
 }
 
 
-void DataMatrix::save(QTextStream &ts, const QString& indent) {
+void DataMatrix::save(QXmlStreamWriter &xml) {
   if (_file) {
+    xml.writeStartElement("datamatrix");
+    xml.writeAttribute("tag", tag().tagString());
 
-    QString indent2 = "  ";
-
-    ts << indent << "<rmatrix>" << endl;
-    ts << indent << indent2 << "<tag>" << Qt::escape(tag().tagString()) << "</tag>" << endl;
     _file->readLock();
-    ts << indent << indent2 << "<provider>" << Qt::escape(_file->tag().tagString()) << "</provider>" << endl;
-    ts << indent << indent2 << "<file>" << Qt::escape(_file->fileName()) << "</file>" << endl;
+    xml.writeAttribute("provider", _file->tag().tagString());
+    xml.writeAttribute("file", _file->fileName());
     _file->unlock();
-    ts << indent << indent2 << "<field>" << _field << "</field>" << endl;
-    ts << indent << indent2 << "<reqxstart>" << _reqXStart << "</reqxstart>" << endl;
-    ts << indent << indent2 << "<reqystart>" << _reqYStart << "</reqystart>" << endl;
-    ts << indent << indent2 << "<reqnx>" << _reqNX << "</reqnx>" << endl;
-    ts << indent << indent2 << "<reqny>" << _reqNY << "</reqny>" << endl;
-    ts << indent << indent2 << "<doave>" << _doAve << "</doave>" << endl;
-    ts << indent << indent2 << "<doskip>" << _doSkip << "</doskip>" << endl;
-    ts << indent << indent2 << "<skip>" << _skip << "</skip>" << endl;
-    ts << indent << "</rmatrix>" << endl;
+
+    xml.writeAttribute("field", _field);
+    xml.writeAttribute("reqxstart", QString::number(_reqXStart));
+    xml.writeAttribute("reqystart", QString::number(_reqYStart));
+    xml.writeAttribute("reqnx", QString::number(_reqNX));
+    xml.writeAttribute("reqny", QString::number(_reqNY));
+    xml.writeAttribute("doave", QVariant(_doAve).toString());
+    xml.writeAttribute("doskip", QVariant(_doSkip).toString());
+    xml.writeAttribute("skip", QString::number(_skip));
+    xml.writeEndElement();
   }
 }
 
@@ -140,13 +144,11 @@ DataMatrix::~DataMatrix() {
 
 
 void DataMatrix::change(DataSourcePtr file, const QString &field,
-                        ObjectTag tag,
                         int xStart, int yStart,
                         int xNumSteps, int yNumSteps,
                         bool doAve, bool doSkip, int skip) {
   Q_ASSERT(myLockStatus() == KstRWLock::WRITELOCKED);
 
-  setTagName(tag);
   commonConstructor(file, field, xStart, yStart, xNumSteps, yNumSteps, doAve, doSkip, skip);
 
   setDirty(true);

@@ -275,7 +275,8 @@ ObjectPtr VectorDialog::createNewDataVector() const {
   vector->update(0);
   vector->unlock();
 
-  return static_cast<ObjectPtr>(vector);
+//  return static_cast<ObjectPtr>(vector);
+  return vector;
 }
 
 
@@ -296,7 +297,8 @@ ObjectPtr VectorDialog::createNewGeneratedVector() const {
   Q_ASSERT(_document && _document->objectStore());
   GeneratedVectorPtr vector = _document->objectStore()->createObject<GeneratedVector>(tag);
   vector->changeRange(from, to, numberOfSamples);
-  return static_cast<ObjectPtr>(vector);
+//  return static_cast<ObjectPtr>(vector);
+  return vector;
 }
 
 

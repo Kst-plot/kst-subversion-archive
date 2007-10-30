@@ -1,7 +1,7 @@
 /***************************************************************************
  *                                                                         *
  *   copyright : (C) 2007 The University of Toronto                        *
- *   copyright : (C) 2005  University of British Columbia                        *
+ *   copyright : (C) 2005 University of British Columbia                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -16,6 +16,8 @@
 #include "kst_i18n.h"
 
 #include "generatedmatrix.h"
+#include <QXmlStreamWriter>
+#include <QVariant>
 
 namespace Kst {
 
@@ -81,22 +83,19 @@ const QString& GeneratedMatrix::typeString() const {
   return staticTypeString;
 }
 
-void GeneratedMatrix::save(QTextStream &ts, const QString& indent) {
-
-  QString indent2 = "  ";
-
-  ts << indent << "<smatrix>" << endl;
-  ts << indent << indent2 << "<tag>" << Qt::escape(tag().tagString()) << "</tag>" << endl;
-  ts << indent << indent2 << "<xmin>" << minX() << "</xmin>" << endl;
-  ts << indent << indent2 << "<ymin>" << minY() << "</ymin>" << endl;
-  ts << indent << indent2 << "<nx>" << xNumSteps() << "</nx>" << endl;
-  ts << indent << indent2 << "<ny>" << yNumSteps() << "</ny>" << endl;
-  ts << indent << indent2 << "<xstep>" << xStepSize() << "</xstep>" << endl;
-  ts << indent << indent2 << "<ystep>" << xStepSize() << "</ystep>" << endl;
-  ts << indent << indent2 << "<gradzmin>" << _gradZMin << "</gradzmin>" << endl;
-  ts << indent << indent2 << "<gradzmax>" << _gradZMax << "</gradzmax>" << endl;
-  ts << indent << indent2 << "<xdirection>" << _xDirection << "</xdirection>" << endl;
-  ts << indent << "</smatrix>" << endl;
+void GeneratedMatrix::save(QXmlStreamWriter &xml) {
+  xml.writeStartElement("generatedmatrix");
+  xml.writeAttribute("tag", tag().tagString());
+  xml.writeAttribute("xmin", QString::number(minX()));
+  xml.writeAttribute("ymin", QString::number(minY()));
+  xml.writeAttribute("nx", QString::number(xNumSteps()));
+  xml.writeAttribute("ny", QString::number(yNumSteps()));
+  xml.writeAttribute("xstep", QString::number(xStepSize()));
+  xml.writeAttribute("ystep", QString::number(yStepSize()));
+  xml.writeAttribute("gradzmin", QString::number(_gradZMin));
+  xml.writeAttribute("gradzmax", QString::number(_gradZMax));
+  xml.writeAttribute("xdirection", QVariant(_xDirection).toString());
+  xml.writeEndElement();
 }
 
 void GeneratedMatrix::change(uint nX, uint nY, double minX, double minY,

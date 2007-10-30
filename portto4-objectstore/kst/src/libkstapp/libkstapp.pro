@@ -24,9 +24,14 @@ SOURCES += \
     applicationsettings.cpp \
     applicationsettingsdialog.cpp \
     axis.cpp \
+    basicplugindialog.cpp \
     boxitem.cpp \
     builtingraphics.cpp \
     cartesianrenderitem.cpp \
+    changedatasampledialog.cpp \
+    changefiledialog.cpp \
+    choosecolordialog.cpp \
+    csddialog.cpp \
     curvedialog.cpp \
     databutton.cpp \
     databuttonaction.cpp \
@@ -41,34 +46,47 @@ SOURCES += \
     dialoglaunchergui.cpp \
     dialogpage.cpp \
     dialogtab.cpp \
+    differentiatecurvesdialog.cpp \
     document.cpp \
     editmultiplewidget.cpp \
+    emailthread.cpp \
     ellipseitem.cpp \
     equationdialog.cpp \
+    eventmonitordialog.cpp \
+    eventmonitorentry.cpp \
     exportgraphicsdialog.cpp \
     filltab.cpp \
     generaltab.cpp \
     graphicsfactory.cpp \
     gridlayouthelper.cpp \
     gridtab.cpp \
+    histogramdialog.cpp \
+    imagedialog.cpp \
     labelitem.cpp \
     labelrenderer.cpp \
     layoutboxitem.cpp \
     layouttab.cpp \
     lineitem.cpp \
     mainwindow.cpp \
+    matrixdialog.cpp \
+    matrixeditordialog.cpp \
     matrixmodel.cpp \
     memorywidget.cpp \
     pictureitem.cpp \
     plotaxisitem.cpp \
     plotitem.cpp \
+    plotrenderitemdialog.cpp \
     plotitemmanager.cpp \
     plotrenderitem.cpp \
+    powerspectrumdialog.cpp \
     qgetoptions.cpp \
+    scalardialog.cpp \
+    scalareditordialog.cpp \
+    scalarmodel.cpp \
+    scalartablemodel.cpp \
     scene.cpp \
     selectionrect.cpp \
     sessionmodel.cpp \
-    scalardialog.cpp \
     stroketab.cpp \
     svgitem.cpp \
     tabwidget.cpp \
@@ -88,9 +106,14 @@ HEADERS += \
     applicationsettings.h \
     applicationsettingsdialog.h \
     axis.h \
+    basicplugindialog.h \
     boxitem.h \
     builtingraphics.h \
     cartesianrenderitem.h \
+    changedatasampledialog.h \
+    changefiledialog.h \
+    choosecolordialog.h \
+    csddialog.h \
     curvedialog.h \
     databutton.h \
     databuttonaction.h \
@@ -106,34 +129,47 @@ HEADERS += \
     dialoglaunchergui.h \
     dialogpage.h \
     dialogtab.h \
+    differentiatecurvesdialog.h \
     document.h \
     editmultiplewidget.h \
     ellipseitem.h \
+    emailthread.h \
     equationdialog.h \
+    eventmonitordialog.h \
+    eventmonitorentry.h \
     exportgraphicsdialog.h \
     filltab.h \
     generaltab.h \
     graphicsfactory.h \
     gridlayouthelper.h \
     gridtab.h \
+    histogramdialog.h \
+    imagedialog.h \
     labelitem.h \
     labelrenderer.h \
     layoutboxitem.h \
     layouttab.h \
     lineitem.h \
     mainwindow.h \
+    matrixdialog.h \
+    matrixeditordialog.h \
     matrixmodel.h \
     memorywidget.h \
     pictureitem.h \
     plotaxisitem.h \
     plotitem.h \
+    plotrenderitemdialog.h \
     plotitemmanager.h \
     plotrenderitem.h \
+    powerspectrumdialog.h \
     qgetoptions.h \
+    scalardialog.h \
+    scalareditordialog.h \
+    scalarmodel.h \
+    scalartablemodel.h \
     scene.h \
     selectionrect.h \
     sessionmodel.h \
-    scalardialog.h \
     svgitem.h \
     stroketab.h \
     tabwidget.h \
@@ -151,17 +187,31 @@ HEADERS += \
 
 FORMS += \
     aboutdialog.ui \
+    basicplugintab.ui \
+    changedatasampledialog.ui \
+    changefiledialog.ui \
+    choosecolordialog.ui \
+    csdtab.ui \
     curvetab.ui \
     datamanager.ui \
     debugdialog.ui \
     dialog.ui \
+    differentiatecurvesdialog.ui \
     editmultiplewidget.ui \
     equationtab.ui \
+    eventmonitortab.ui \
     exportgraphicsdialog.ui \
     filltab.ui \
     generaltab.ui \
     gridtab.ui \
+    histogramtab.ui \
+    imagetab.ui \
     layouttab.ui \
+    matrixeditordialog.ui \
+    matrixtab.ui \
+    plotrenderitemdialog.ui \
+    powerspectrumtab.ui \
+    scalareditordialog.ui \
     scalartab.ui \
     stroketab.ui \
     vectoreditordialog.ui \

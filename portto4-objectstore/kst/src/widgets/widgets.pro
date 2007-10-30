@@ -24,10 +24,12 @@ LIBS += -lkst -lkstmath
 
 SOURCES += \
     colorbutton.cpp \
+    colorpalette.cpp \
     combobox.cpp \
     curveappearance.cpp \
     curveplacement.cpp \
     datarange.cpp \
+    fftoptions.cpp \
     filerequester.cpp \
     gradienteditor.cpp \
     matrixselector.cpp \
@@ -38,10 +40,12 @@ SOURCES += \
 
 HEADERS += \
     colorbutton.h \
+    colorpalette.h \
     combobox.h \
     curveappearance.h \
     curveplacement.h \
     datarange.h \
+    fftoptions.h \
     filerequester.h \
     gradienteditor.h \
     matrixselector.h \
@@ -51,9 +55,11 @@ HEADERS += \
     widgets.h
 
 FORMS += \
-    datarange.ui \
+    colorpalette.ui \
     curveappearance.ui \
     curveplacement.ui \
+    datarange.ui \
+    fftoptions.ui \
     matrixselector.ui \
     scalarselector.ui \
     stringselector.ui \

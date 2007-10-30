@@ -37,8 +37,18 @@ class KST_EXPORT MatrixSelector : public QWidget, public Ui::MatrixSelector {
   Q_SIGNALS:
     void selectionChanged();
 
+  public Q_SLOTS:
+    void updateMatrices();
+    void matrixSelected(int index);
+
+  private Q_SLOTS:
+    void newMatrix();
+    void editMatrix();
+
   private:
     ObjectStore *_store;
+
+    void fillMatrices();
 };
 
 }

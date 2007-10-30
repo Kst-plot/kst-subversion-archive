@@ -114,6 +114,14 @@ void CurveAppearance::enableSettings() {
 
 bool CurveAppearance::showLines() const {
   return _showLines->isChecked();
+
+}
+
+
+void CurveAppearance::setShowLines(const bool showLines) {
+  _showLines->setChecked(showLines);
+  enableSettings();
+  drawSampleLine();
 }
 
 
@@ -122,13 +130,33 @@ bool CurveAppearance::showPoints() const {
 }
 
 
+void CurveAppearance::setShowPoints(const bool showPoints) {
+  _showPoints->setChecked(showPoints);
+  enableSettings();
+  drawSampleLine();
+}
+
+
 bool CurveAppearance::showBars() const {
   return _showBars->isChecked();
 }
 
 
+void CurveAppearance::setShowBars(const bool showBars) {
+  _showBars->setChecked(showBars);
+  enableSettings();
+  drawSampleLine();
+}
+
 QColor CurveAppearance::color() const {
   return _color->color();
+}
+
+
+void CurveAppearance::setColor(const QColor & c) {
+  _color->setColor(c);
+  enableSettings();
+  drawSampleLine();
 }
 
 
@@ -137,8 +165,25 @@ int CurveAppearance::pointType() const {
 }
 
 
+void CurveAppearance::setPointType(const int pointType) {
+  _comboPointSymbol->setCurrentIndex(pointType);
+  enableSettings();
+  drawSampleLine();
+}
+
+
 int CurveAppearance::lineStyle() const {
   return _comboLineStyle->currentIndex();
+}
+
+
+void CurveAppearance::setLineStyle(int lineStyle) {
+  if (lineStyle < 0 || lineStyle >= (int)LINESTYLE_MAXTYPE) {
+    lineStyle = 0;
+  }
+  _comboLineStyle->setCurrentIndex(lineStyle);
+  enableSettings();
+  drawSampleLine();
 }
 
 
@@ -147,8 +192,25 @@ int CurveAppearance::barStyle() const {
 }
 
 
+void CurveAppearance::setBarStyle(const int barStyle) {
+  _barStyle->setCurrentIndex(barStyle);
+  enableSettings();
+  drawSampleLine();
+}
+
+
 int CurveAppearance::pointDensity() const {
   return _comboPointDensity->currentIndex();
+}
+
+
+void CurveAppearance::setPointDensity(int pointDensity) {
+  if (pointDensity < 0 || pointDensity >= POINTDENSITY_MAXTYPE) {
+    pointDensity = 0;
+  }
+  _comboPointDensity->setCurrentIndex(pointDensity);
+  enableSettings();
+  drawSampleLine();
 }
 
 
@@ -158,6 +220,13 @@ int CurveAppearance::lineWidth() const {
   } else {
     return _spinBoxLineWidth->value();
   }
+}
+
+
+void CurveAppearance::setLineWidth(const int lineWidth) {
+  _spinBoxLineWidth->setValue(lineWidth);
+  enableSettings();
+  drawSampleLine();
 }
 
 

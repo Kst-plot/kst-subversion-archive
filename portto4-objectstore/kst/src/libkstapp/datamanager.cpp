@@ -61,10 +61,10 @@ DataManager::DataManager(QWidget *parent, Document *doc)
   connect(action, SIGNAL(triggered()), DialogLauncher::self(), SLOT(showVectorDialog()));
   _primitives->addAction(action);
 
-//   action = new DataButtonAction(tr("Matrix"));
-//   connect(action, SIGNAL(triggered()), this, SLOT(showMatrixDialog()));
-//   _primitives->addAction(action);
-// 
+   action = new DataButtonAction(tr("Matrix"));
+   connect(action, SIGNAL(triggered()), DialogLauncher::self(), SLOT(showMatrixDialog()));
+   _primitives->addAction(action);
+ 
    action = new DataButtonAction(tr("Scalar"));
    connect(action, SIGNAL(triggered()), DialogLauncher::self(), SLOT(showScalarDialog()));
    _primitives->addAction(action);
@@ -81,25 +81,25 @@ DataManager::DataManager(QWidget *parent, Document *doc)
   connect(action, SIGNAL(triggered()), DialogLauncher::self(), SLOT(showEquationDialog()));
   _dataObjects->addAction(action);
 
-//   action = new DataButtonAction(tr("Histogram"));
-//   connect(action, SIGNAL(triggered()), DialogLauncher::self(), SLOT(showHistogramDialog()));
-//   _dataObjects->addAction(action);
-// 
-//   action = new DataButtonAction(tr("Power Spectrum"));
-//   connect(action, SIGNAL(triggered()), DialogLauncher::self(), SLOT(showPowerSpectrumDialog()));
-//   _dataObjects->addAction(action);
-// 
-//   action = new DataButtonAction(tr("Event Monitor")));
-//   connect(action, SIGNAL(triggered()), DialogLauncher::self(), SLOT(showEventMonitorDialog()));
-//   _dataObjects->addAction(action);
-// 
-//   action = new DataButtonAction(tr("Image"));
-//   connect(action, SIGNAL(triggered()), DialogLauncher::self(), SLOT(showImageDialog()));
-//   _dataObjects->addAction(action);
-// 
-//   action = new DataButtonAction(tr("CSD"));
-//   connect(action, SIGNAL(triggered()), DialogLauncher::self(), SLOT(showCSDDialog()));
-//   _dataObjects->addAction(action);
+   action = new DataButtonAction(tr("Histogram"));
+   connect(action, SIGNAL(triggered()), DialogLauncher::self(), SLOT(showHistogramDialog()));
+   _dataObjects->addAction(action);
+ 
+   action = new DataButtonAction(tr("Power Spectrum"));
+   connect(action, SIGNAL(triggered()), DialogLauncher::self(), SLOT(showPowerSpectrumDialog()));
+   _dataObjects->addAction(action);
+ 
+   action = new DataButtonAction(tr("Event Monitor"));
+   connect(action, SIGNAL(triggered()), DialogLauncher::self(), SLOT(showEventMonitorDialog()));
+   _dataObjects->addAction(action);
+ 
+   action = new DataButtonAction(tr("Image"));
+   connect(action, SIGNAL(triggered()), DialogLauncher::self(), SLOT(showImageDialog()));
+   _dataObjects->addAction(action);
+ 
+   action = new DataButtonAction(tr("Spectrogram"));
+   connect(action, SIGNAL(triggered()), DialogLauncher::self(), SLOT(showCSDDialog()));
+   _dataObjects->addAction(action);
 }
 
 

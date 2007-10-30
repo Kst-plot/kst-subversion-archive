@@ -14,8 +14,15 @@
 #include "application.h"
 #include "curvedialog.h"
 #include "equationdialog.h"
+#include "histogramdialog.h"
 #include "vectordialog.h"
 #include "scalardialog.h"
+#include "matrixdialog.h"
+#include "powerspectrumdialog.h"
+#include "csddialog.h"
+#include "imagedialog.h"
+#include "eventmonitordialog.h"
+#include "basicplugindialog.h"
 
 namespace Kst {
 
@@ -34,7 +41,8 @@ void DialogLauncherGui::showVectorDialog(ObjectPtr objectPtr) {
 
 
 void DialogLauncherGui::showMatrixDialog(ObjectPtr objectPtr) {
-  Q_UNUSED(objectPtr);
+  MatrixDialog dialog(objectPtr, kstApp->mainWindow());
+  dialog.exec();
 }
 
 
@@ -56,7 +64,8 @@ void DialogLauncherGui::showCurveDialog(ObjectPtr objectPtr) {
 
 
 void DialogLauncherGui::showImageDialog(ObjectPtr objectPtr) {
-  Q_UNUSED(objectPtr);
+  ImageDialog dialog(objectPtr, kstApp->mainWindow());
+  dialog.exec();
 }
 
 
@@ -66,22 +75,32 @@ void DialogLauncherGui::showEquationDialog(ObjectPtr objectPtr) {
 
 
 void DialogLauncherGui::showHistogramDialog(ObjectPtr objectPtr) {
-  Q_UNUSED(objectPtr);
+  HistogramDialog dialog(objectPtr, kstApp->mainWindow());
+  dialog.exec();
 }
 
 
-void DialogLauncherGui::showPSDDialog(ObjectPtr objectPtr) {
-  Q_UNUSED(objectPtr);
+void DialogLauncherGui::showPowerSpectrumDialog(ObjectPtr objectPtr) {
+  PowerSpectrumDialog dialog(objectPtr, kstApp->mainWindow());
+  dialog.exec();
 }
 
 
 void DialogLauncherGui::showCSDDialog(ObjectPtr objectPtr) {
-  Q_UNUSED(objectPtr);
+  CSDDialog dialog(objectPtr, kstApp->mainWindow());
+  dialog.exec();
+}
+
+
+void DialogLauncherGui::showEventMonitorDialog(ObjectPtr objectPtr) {
+  EventMonitorDialog dialog(objectPtr, kstApp->mainWindow());
+  dialog.exec();
 }
 
 
 void DialogLauncherGui::showBasicPluginDialog(ObjectPtr objectPtr) {
-  Q_UNUSED(objectPtr);
+  BasicPluginDialog dialog(objectPtr, kstApp->mainWindow());
+  dialog.exec();
 }
 
 }

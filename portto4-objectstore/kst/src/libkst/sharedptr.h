@@ -102,7 +102,10 @@ public:
    * @param p the pointer to copy
    */
   SharedPtr( const SharedPtr& p )
-    : ptr(p.ptr) { if ( ptr ) ptr->_KShared_ref(); }
+	  : ptr(p.ptr) { if ( ptr ) ptr->_KShared_ref(); }
+
+  template<class Y> explicit SharedPtr(SharedPtr<Y>& p)
+	  : ptr(p.data()) { if (ptr) ptr->_KShared_ref(); }
 
   /**
    * Unreferences the object that this pointer points to. If it was

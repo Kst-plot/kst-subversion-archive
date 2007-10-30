@@ -39,6 +39,11 @@ static const QLatin1String INVECTOR = QLatin1String("I");
 static const QLatin1String& OUTMATRIX = QLatin1String("M");
 
 #define KSTCSDMAXLEN 27
+CSD::CSD(ObjectStore *store, const ObjectTag &in_tag)
+  : DataObject(store, in_tag) {
+
+}
+
 CSD::CSD(ObjectStore *store, const ObjectTag &in_tag, VectorPtr in_V,
                double in_freq, bool in_average, bool in_removeMean, bool in_apodize,
                ApodizeFunction in_apodizeFxn, int in_windowSize, int in_averageLength, double in_gaussianSigma,
@@ -112,12 +117,48 @@ CSD::CSD(ObjectStore *store, const QDomElement &e)
 }
 
 
+void CSD::change(VectorPtr in_V, double in_freq, bool in_average,
+    bool in_removeMean, bool in_apodize, ApodizeFunction in_apodizeFxn,
+    int in_windowSize, int in_length, double in_gaussianSigma,
+    PSDType in_outputType, const QString& in_vectorUnits,
+    const QString& in_rateUnits) {
+  _inputVectors[INVECTOR] = in_V;
+  QString vecName = in_V ? in_V->tag().displayString() : QString::null;
+  _frequency = in_freq;
+  _average = in_average;
+  _apodize = in_apodize;
+  _windowSize = in_windowSize;
+  _apodizeFxn = in_apodizeFxn;
+  _gaussianSigma = in_gaussianSigma;
+  _removeMean = in_removeMean;
+  _averageLength = in_length;
+  _vectorUnits = in_vectorUnits;
+  _rateUnits = in_rateUnits;
+  _outputType = in_outputType;
+
+  if (_frequency <= 0.0) {
+    _frequency = 1.0;
+  }
+
+  Q_ASSERT(store());
+  MatrixPtr outMatrix = store()->createObject<Matrix>(ObjectTag("csd", tag()));
+  outMatrix->setProvider(this);
+  outMatrix->change(1, 1);
+  outMatrix->setLabel(i18n("Power [%1/%2^{1/2}]").arg(_vectorUnits).arg(_rateUnits));
+  outMatrix->setXLabel(i18n("%1 [%2]").arg(vecName).arg(_vectorUnits));
+  outMatrix->setYLabel(i18n("Frequency [%1]").arg(_rateUnits));
+  _outMatrix = _outputMatrices.insert(OUTMATRIX, outMatrix).value();
+
+  updateMatrixLabels();
+  _outMatrix->setDirty();
+}
+
 void CSD::commonConstructor(ObjectStore *store, VectorPtr in_V,
                             double in_freq, bool in_average, bool in_removeMean, bool in_apodize,
                             ApodizeFunction in_apodizeFxn, int in_windowSize, int in_averageLength,
                             double in_gaussianSigma, const QString& in_vectorUnits,
                             const QString& in_rateUnits, PSDType in_outputType, const QString& vecName) {
-  _typeString = i18n("Cumulative Spectral Decay");
+  _typeString = staticTypeString;
   _type = "Cumulative Spectral Decay";
   _inputVectors[INVECTOR] = in_V;
   _frequency = in_freq;

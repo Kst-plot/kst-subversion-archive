@@ -26,6 +26,8 @@ Widgets::Widgets(QObject *parent)
   _plugins.append(new StringSelectorPlugin(this));
   _plugins.append(new CurvePlacementPlugin(this));
   _plugins.append(new CurveAppearancePlugin(this));
+  _plugins.append(new FFTOptionsPlugin(this));
+  _plugins.append(new ColorPalettePlugin(this));
 }
 
 

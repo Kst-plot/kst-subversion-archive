@@ -46,10 +46,17 @@ const QLatin1String& SVECTOR = QLatin1String("S");
 const QLatin1String& FVECTOR = QLatin1String("F");
 
 #define KSTPSDMAXLEN 27
+
+PSD::PSD(ObjectStore *store, const ObjectTag& in_tag)
+: DataObject(store, in_tag) {
+  commonConstructor(store, 0, 0, false, 0, false, false, QString::null, QString::null, WindowUndefined, 0, PSDUndefined, false);
+}
+
+
 PSD::PSD(ObjectStore *store, const ObjectTag &in_tag, VectorPtr in_V,
                          double in_freq, bool in_average, int in_averageLen,
                          bool in_apodize, bool in_removeMean,
-                         const QString &in_VUnits, const QString &in_RUnits, ApodizeFunction in_apodizeFxn, 
+                         const QString &in_VUnits, const QString &in_RUnits, ApodizeFunction in_apodizeFxn,
                          double in_gaussianSigma, PSDType in_output)
 : DataObject(store, in_tag) {
   commonConstructor(store, in_V, in_freq, in_average, in_averageLen,
@@ -136,12 +143,12 @@ PSD::PSD(ObjectStore *store, const QDomElement &e)
 
 
 void PSD::commonConstructor(ObjectStore *store, VectorPtr in_V,
-                               double in_freq, bool in_average, int in_averageLen, bool in_apodize, 
-                               bool in_removeMean, const QString& in_VUnits, const QString& in_RUnits, 
+                               double in_freq, bool in_average, int in_averageLen, bool in_apodize,
+                               bool in_removeMean, const QString& in_VUnits, const QString& in_RUnits,
                                ApodizeFunction in_apodizeFxn, double in_gaussianSigma, PSDType in_output,
                                bool interpolateHoles) {
 
-  _typeString = i18n("Power Spectrum");
+  _typeString = staticTypeString;
   _type = "PowerSpectrum";
   if (in_V) {
     _inputVectors[INVECTOR] = in_V;
@@ -404,12 +411,12 @@ QString PSD::propertyString() const {
 
 
 void PSD::showNewDialog() {
-  DialogLauncher::self()->showPSDDialog();
+  DialogLauncher::self()->showPowerSpectrumDialog();
 }
 
 
 void PSD::showEditDialog() {
-  DialogLauncher::self()->showPSDDialog(this);
+  DialogLauncher::self()->showPowerSpectrumDialog(this);
 }
 
 

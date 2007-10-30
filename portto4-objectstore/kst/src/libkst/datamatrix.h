@@ -28,11 +28,10 @@ class KST_EXPORT DataMatrix : public Matrix {
     static const QString staticTypeString;
 
     // save DataMatrix
-    virtual void save(QTextStream &ts, const QString& indent = QString::null);
+    virtual void save(QXmlStreamWriter &xml);
 
     // change properties of DataMatrix
     void change(DataSourcePtr file, const QString &field,
-                ObjectTag tag,
                 int xStart, int yStart,
                 int xNumSteps, int yNumSteps,
                 bool doAve, bool doSkip, int skip);
@@ -75,6 +74,7 @@ class KST_EXPORT DataMatrix : public Matrix {
     SharedPtr<DataMatrix> makeDuplicate() const;
 
   protected:
+    DataMatrix(ObjectStore *store, const ObjectTag& tag);
     // constructor
     DataMatrix(ObjectStore *store, DataSourcePtr file, const QString &field,
         const ObjectTag& tag, int xStart, int yStart,

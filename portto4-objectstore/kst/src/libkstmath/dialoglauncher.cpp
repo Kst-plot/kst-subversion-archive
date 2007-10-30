@@ -87,12 +87,17 @@ void DialogLauncher::showEquationDialog(ObjectPtr objectPtr) {
 }
 
 
+void DialogLauncher::showEventMonitorDialog(ObjectPtr objectPtr) {
+  Q_UNUSED(objectPtr);
+}
+
+
 void DialogLauncher::showHistogramDialog(ObjectPtr objectPtr) {
   Q_UNUSED(objectPtr);
 }
 
 
-void DialogLauncher::showPSDDialog(ObjectPtr objectPtr) {
+void DialogLauncher::showPowerSpectrumDialog(ObjectPtr objectPtr) {
   Q_UNUSED(objectPtr);
 }
 

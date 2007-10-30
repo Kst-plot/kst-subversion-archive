@@ -28,6 +28,8 @@
 #include "stringselector.h"
 #include "curveappearance.h"
 #include "curveplacement.h"
+#include "fftoptions.h"
+#include "colorpalette.h"
 
 namespace Kst {
 
@@ -205,6 +207,33 @@ class CurvePlacementPlugin : public WidgetPlugin {
     } //do not translate
     QWidget *createWidget(QWidget *parent) {
       return new CurvePlacement(parent);
+    }
+};
+
+class FFTOptionsPlugin : public WidgetPlugin {
+  Q_OBJECT
+  Q_INTERFACES(QDesignerCustomWidgetInterface)
+  public:
+    FFTOptionsPlugin(QObject *parent = 0) : WidgetPlugin(parent) {}
+    QString name() const {
+      return QLatin1String("FFTOptions");
+    } //do not translate
+    QWidget *createWidget(QWidget *parent) {
+      return new FFTOptions(parent);
+    }
+};
+
+
+class ColorPalettePlugin : public WidgetPlugin {
+  Q_OBJECT
+  Q_INTERFACES(QDesignerCustomWidgetInterface)
+  public:
+    ColorPalettePlugin(QObject *parent = 0) : WidgetPlugin(parent) {}
+    QString name() const {
+      return QLatin1String("ColorPalette");
+    } //do not translate
+    QWidget *createWidget(QWidget *parent) {
+      return new ColorPalette(parent);
     }
 };
 

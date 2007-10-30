@@ -26,6 +26,8 @@ class DataManager;
 class DebugDialog;
 class Document;
 class ExportGraphicsDialog;
+class MatrixEditorDialog;
+class ScalarEditorDialog;
 class TabWidget;
 class VectorEditorDialog;
 class View;
@@ -48,8 +50,14 @@ class MainWindow : public QMainWindow
     void showDebugDialog();
     void showExportGraphicsDialog();
     void showVectorEditor();
+    void showScalarEditor();
+    void showMatrixEditor();
     void showViewManager();
     void showSettingsDialog();
+    void showDifferentiateCurvesDialog();
+    void showChooseColorDialog();
+    void showChangeDataSampleDialog();
+    void showChangeFileDialog();
 
     void save();
     void saveAs();
@@ -102,6 +110,8 @@ class MainWindow : public QMainWindow
     DebugDialog *_debugDialog;
     ExportGraphicsDialog *_exportGraphics;
     VectorEditorDialog *_vectorEditor;
+    ScalarEditorDialog *_scalarEditor;
+    MatrixEditorDialog *_matrixEditor;
     ViewManager *_viewManager;
 
     QPointer<QProgressBar> _progressBar;
@@ -112,6 +122,7 @@ class MainWindow : public QMainWindow
     QMenu *_dataMenu;
     QMenu *_viewMenu;
     QMenu *_layoutMenu;
+    QMenu *_toolsMenu;
     QMenu *_settingsMenu;
     QMenu *_helpMenu;
 
@@ -144,13 +155,21 @@ class MainWindow : public QMainWindow
     QAction *_printAct;
     QAction *_saveAct;
     QAction *_saveAsAct;
+    QAction *_scalarEditorAct;
     QAction *_vectorEditorAct;
+    QAction *_matrixEditorAct;
 
     QAction *_viewManagerAct;
     QAction *_layoutModeAct;
     QAction *_tiedZoomAct;
 
     QAction *_settingsDialogAct;
+
+    QAction *_differentiateCurvesDialogAct;
+    QAction *_chooseColorDialogAct;
+    QAction *_changeDataSampleDialogAct;
+    QAction *_changeFileDialogAct;
+
 };
 
 }

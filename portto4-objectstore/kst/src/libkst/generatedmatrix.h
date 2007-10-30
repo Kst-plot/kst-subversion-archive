@@ -25,7 +25,7 @@ class KST_EXPORT GeneratedMatrix : public Matrix {
     virtual const QString& typeString() const;
     static const QString staticTypeString;
 
-    virtual void save(QTextStream &ts, const QString& indent = QString::null);
+    virtual void save(QXmlStreamWriter &xml);
 
     void change(uint nX, uint nY,
                 double minX, double minY, double stepX, double stepY,

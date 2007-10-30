@@ -30,10 +30,16 @@
 #include "tabwidget.h"
 #include "ui_aboutdialog.h"
 #include "vectoreditordialog.h"
+#include "scalareditordialog.h"
+#include "matrixeditordialog.h"
 #include "view.h"
 #include "viewmanager.h"
 
 #include "applicationsettingsdialog.h"
+#include "differentiatecurvesdialog.h"
+#include "choosecolordialog.h"
+#include "changedatasampledialog.h"
+#include "changefiledialog.h"
 
 #include <QtGui>
 
@@ -50,6 +56,7 @@ MainWindow::MainWindow() {
   _dataManager = 0;
   _exportGraphics = 0;
   _vectorEditor = 0;
+  _scalarEditor = 0;
   _viewManager = 0;
   _doc = new Document(this);
   _tabWidget = new TabWidget(this);
@@ -501,6 +508,14 @@ void MainWindow::createActions() {
   _vectorEditorAct->setStatusTip(tr("Show all vectors in a spreadsheet"));
   connect(_vectorEditorAct, SIGNAL(triggered()), this, SLOT(showVectorEditor()));
 
+  _scalarEditorAct = new QAction(tr("Edit &Scalars..."), this);
+  _scalarEditorAct->setStatusTip(tr("Show all scalars in a spreadsheet"));
+  connect(_scalarEditorAct, SIGNAL(triggered()), this, SLOT(showScalarEditor()));
+
+  _matrixEditorAct = new QAction(tr("Edit &Matrix..."), this);
+  _matrixEditorAct->setStatusTip(tr("Show all matrix in a spreadsheet"));
+  connect(_matrixEditorAct, SIGNAL(triggered()), this, SLOT(showMatrixEditor()));
+
   _exportGraphicsAct = new QAction(tr("&Export..."), this);
   _exportGraphicsAct->setStatusTip(tr("Export graphics to disk"));
   connect(_exportGraphicsAct, SIGNAL(triggered()), this, SLOT(showExportGraphicsDialog()));
@@ -516,6 +531,23 @@ void MainWindow::createActions() {
   _settingsDialogAct = new QAction(tr("&Configure Kst"), this);
   _settingsDialogAct->setStatusTip(tr("Show Kst's Configuration Dialog"));
   connect(_settingsDialogAct, SIGNAL(triggered()), this, SLOT(showSettingsDialog()));
+
+  _differentiateCurvesDialogAct = new QAction(tr("&Differentiate Curves"), this);
+  _differentiateCurvesDialogAct->setStatusTip(tr("Show Kst's Differentiate Curves Dialog"));
+  connect(_differentiateCurvesDialogAct, SIGNAL(triggered()), this, SLOT(showDifferentiateCurvesDialog()));
+
+  _chooseColorDialogAct = new QAction(tr("Assign &Curve Color per File"), this);
+  _chooseColorDialogAct->setStatusTip(tr("Show Kst's Choose Color Dialog"));
+  connect(_chooseColorDialogAct, SIGNAL(triggered()), this, SLOT(showChooseColorDialog()));
+
+  _changeDataSampleDialogAct = new QAction(tr("Change Data Sample Range"), this);
+  _changeDataSampleDialogAct->setStatusTip(tr("Show Kst's Change Data Sample Range Dialog"));
+  connect(_changeDataSampleDialogAct, SIGNAL(triggered()), this, SLOT(showChangeDataSampleDialog()));
+
+  _changeFileDialogAct = new QAction(tr("Change Data &File"), this);
+  _changeFileDialogAct->setStatusTip(tr("Show Kst's Change Data File Dialog"));
+  connect(_changeFileDialogAct, SIGNAL(triggered()), this, SLOT(showChangeFileDialog()));
+
 }
 
 
@@ -540,6 +572,8 @@ void MainWindow::createMenus() {
   _dataMenu->addAction(_dataManagerAct);
   _dataMenu->addSeparator();
   _dataMenu->addAction(_vectorEditorAct);
+  _dataMenu->addAction(_scalarEditorAct);
+  _dataMenu->addAction(_matrixEditorAct);
 
   _viewMenu = menuBar()->addMenu(tr("&View"));
   _viewMenu->addAction(_viewManagerAct);
@@ -559,6 +593,12 @@ void MainWindow::createMenus() {
   _layoutMenu->addAction(_createPictureAct);
   _layoutMenu->addAction(_createPlotAct);
   _layoutMenu->addAction(_createSvgAct);
+
+  _toolsMenu = menuBar()->addMenu(tr("&Tools"));
+  _toolsMenu->addAction(_changeFileDialogAct);
+  _toolsMenu->addAction(_changeDataSampleDialogAct);
+  _toolsMenu->addAction(_chooseColorDialogAct);
+  _toolsMenu->addAction(_differentiateCurvesDialogAct);
 
   _settingsMenu = menuBar()->addMenu(tr("&Settings"));
   _settingsMenu->addAction(_settingsDialogAct);
@@ -584,6 +624,8 @@ void MainWindow::createToolBars() {
   _dataToolBar = addToolBar(tr("Data"));
   _dataToolBar->addAction(_dataManagerAct);
 //   _dataToolBar->addAction(_vectorEditorAct); //no icon
+//   _dataToolBar->addAction(_scalarEditorAct); //no icon
+//   _dataToolBar->addAction(_matrixEditorAct); //no icon
 
   _viewToolBar = addToolBar(tr("View"));
   _viewToolBar->addAction(_viewManagerAct);
@@ -653,6 +695,22 @@ void MainWindow::showVectorEditor() {
 }
 
 
+void MainWindow::showScalarEditor() {
+  if (!_scalarEditor) {
+    _scalarEditor = new ScalarEditorDialog(this, _doc);
+  }
+  _scalarEditor->show();
+}
+
+
+void MainWindow::showMatrixEditor() {
+  if (!_matrixEditor) {
+    _matrixEditor = new MatrixEditorDialog(this, _doc);
+  }
+  _matrixEditor->show();
+}
+
+
 void MainWindow::showDebugDialog() {
   if (!_debugDialog) {
     _debugDialog = new DebugDialog(this);
@@ -672,6 +730,30 @@ void MainWindow::showExportGraphicsDialog() {
 void MainWindow::showSettingsDialog() {
   ApplicationSettingsDialog settingsDialog(this);
   settingsDialog.exec();
+}
+
+
+void MainWindow::showDifferentiateCurvesDialog() {
+  DifferentiateCurvesDialog differentiateCurvesDialog(this);
+  differentiateCurvesDialog.exec();
+}
+
+
+void MainWindow::showChooseColorDialog() {
+  ChooseColorDialog chooseColorDialog(this);
+  chooseColorDialog.exec();
+}
+
+
+void MainWindow::showChangeDataSampleDialog() {
+  ChangeDataSampleDialog changeDataSampleDialog(this);
+  changeDataSampleDialog.exec();
+}
+
+
+void MainWindow::showChangeFileDialog() {
+  ChangeFileDialog changeFileDialog(this);
+  changeFileDialog.exec();
 }
 
 
