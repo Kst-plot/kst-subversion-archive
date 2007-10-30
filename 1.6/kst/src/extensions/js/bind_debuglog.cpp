@@ -65,6 +65,14 @@ static DebugLogBindings debugLogBindings[] = {
 static DebugLogProperties debugLogProperties[] = {
   { "length", 0L, &KstBindDebugLog::length },
   { "text", 0L, &KstBindDebugLog::text },
+  { "lengthNotices", 0L, &KstBindDebugLog::lengthNotices },
+  { "textNotices", 0L, &KstBindDebugLog::textNotices },
+  { "lengthWarnings", 0L, &KstBindDebugLog::lengthWarnings },
+  { "textWarnings", 0L, &KstBindDebugLog::textWarnings },
+  { "lengthErrors", 0L, &KstBindDebugLog::lengthErrors },
+  { "textErrors", 0L, &KstBindDebugLog::textErrors },
+  { "lengthDebugs", 0L, &KstBindDebugLog::lengthDebugs },
+  { "textDebugs", 0L, &KstBindDebugLog::textDebugs },
   { 0L, 0L, 0L }
 };
 
@@ -163,12 +171,14 @@ void KstBindDebugLog::addBindings(KJS::ExecState *exec, KJS::Object& obj) {
 
 KJS::Value KstBindDebugLog::length(KJS::ExecState *exec) const {
   Q_UNUSED(exec)
+
   return KJS::Number(KstDebug::self()->logLength());
 }
 
 
 KJS::Value KstBindDebugLog::text(KJS::ExecState *exec) const {
   Q_UNUSED(exec)
+
   QString log;
   QValueList<KstDebug::LogMessage> msgs = KstDebug::self()->messages();
 
@@ -191,6 +201,133 @@ KJS::Value KstBindDebugLog::text(KJS::ExecState *exec) const {
         lev = " ";
     }
     log += i18n("date loglevel logtext", "%1 %2 %3\n").arg(KGlobal::locale()->formatDateTime((*i).date)).arg(lev).arg((*i).msg);
+  }
+
+  return KJS::String(log);
+}
+
+
+KJS::Value KstBindDebugLog::lengthNotices(KJS::ExecState *exec) const {
+  Q_UNUSED(exec)
+
+  QValueList<KstDebug::LogMessage> msgs = KstDebug::self()->messages();
+  int num = 0;
+
+  for (QValueList<KstDebug::LogMessage>::ConstIterator i = msgs.begin(); i != msgs.end(); ++i) {
+    if ((*i).level == KstDebug::Notice) {
+      num++;
+    }
+  }
+
+  return KJS::Number(num);
+}
+
+KJS::Value KstBindDebugLog::textNotices(KJS::ExecState *exec) const {
+  Q_UNUSED(exec)
+
+  QString log;
+  QValueList<KstDebug::LogMessage> msgs = KstDebug::self()->messages();
+
+  for (QValueList<KstDebug::LogMessage>::ConstIterator i = msgs.begin(); i != msgs.end(); ++i) {
+    if ((*i).level == KstDebug::Notice) {
+      log += i18n("date logtext", "%1 %2\n").arg(KGlobal::locale()->formatDateTime((*i).date)).arg((*i).msg);
+    }
+  }
+
+  return KJS::String(log);
+}
+
+
+KJS::Value KstBindDebugLog::lengthWarnings(KJS::ExecState *exec) const {
+  Q_UNUSED(exec)
+
+  QValueList<KstDebug::LogMessage> msgs = KstDebug::self()->messages();
+  int num = 0;
+
+  for (QValueList<KstDebug::LogMessage>::ConstIterator i = msgs.begin(); i != msgs.end(); ++i) {
+    if ((*i).level == KstDebug::Warning) {
+      num++;
+    }
+  }
+
+  return KJS::Number(num);
+}
+
+
+KJS::Value KstBindDebugLog::textWarnings(KJS::ExecState *exec) const {
+  Q_UNUSED(exec)
+
+  QString log;
+  QValueList<KstDebug::LogMessage> msgs = KstDebug::self()->messages();
+
+  for (QValueList<KstDebug::LogMessage>::ConstIterator i = msgs.begin(); i != msgs.end(); ++i) {
+    if ((*i).level == KstDebug::Warning) {
+      log += i18n("date logtext", "%1 %2\n").arg(KGlobal::locale()->formatDateTime((*i).date)).arg((*i).msg);
+    }
+  }
+
+  return KJS::String(log);
+}
+
+
+KJS::Value KstBindDebugLog::lengthErrors(KJS::ExecState *exec) const {
+  Q_UNUSED(exec)
+
+  QValueList<KstDebug::LogMessage> msgs = KstDebug::self()->messages();
+  int num = 0;
+
+  for (QValueList<KstDebug::LogMessage>::ConstIterator i = msgs.begin(); i != msgs.end(); ++i) {
+    if ((*i).level == KstDebug::Error) {
+      num++;
+    }
+  }
+
+  return KJS::Number(num);
+}
+
+
+KJS::Value KstBindDebugLog::textErrors(KJS::ExecState *exec) const {
+  Q_UNUSED(exec)
+
+  QString log;
+  QValueList<KstDebug::LogMessage> msgs = KstDebug::self()->messages();
+
+  for (QValueList<KstDebug::LogMessage>::ConstIterator i = msgs.begin(); i != msgs.end(); ++i) {
+    if ((*i).level == KstDebug::Error) {
+      log += i18n("date logtext", "%1 %2\n").arg(KGlobal::locale()->formatDateTime((*i).date)).arg((*i).msg);
+    }
+  }
+
+  return KJS::String(log);
+}
+
+
+KJS::Value KstBindDebugLog::lengthDebugs(KJS::ExecState *exec) const {
+  Q_UNUSED(exec)
+
+  QValueList<KstDebug::LogMessage> msgs = KstDebug::self()->messages();
+  int num = 0;
+
+  for (QValueList<KstDebug::LogMessage>::ConstIterator i = msgs.begin(); i != msgs.end(); ++i) {
+    if ((*i).level == KstDebug::Debug) {
+      num++;
+    }
+  }
+
+  return KJS::Number(num);
+}
+
+
+KJS::Value KstBindDebugLog::textDebugs(KJS::ExecState *exec) const {
+  Q_UNUSED(exec)
+
+  QString log;
+  QValueList<KstDebug::LogMessage> msgs = KstDebug::self()->messages();
+
+  for (QValueList<KstDebug::LogMessage>::ConstIterator i = msgs.begin(); i != msgs.end(); ++i) {
+    if ((*i).level == KstDebug::Debug) {
+      log += i18n("date logtext", "%1 %2\n").arg(KGlobal::locale()->formatDateTime((*i).date)).arg((*i).msg);
+    }
   }
 
   return KJS::String(log);

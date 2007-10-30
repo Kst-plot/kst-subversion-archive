@@ -59,6 +59,58 @@ class KstBindDebugLog : public KstBinding {
     */
     KJS::Value text(KJS::ExecState *exec) const;
 
+    /* @property string lengthNotices
+       @readonly
+       @description The number of notices in the log.
+    */
+    KJS::Value lengthNotices(KJS::ExecState *exec) const;
+
+    /* @property string textNotices
+       @readonly
+       @description The text contents of the log notices as a single large string with
+                    carriage returns between entries.
+    */
+    KJS::Value textNotices(KJS::ExecState *exec) const;
+
+    /* @property string lengthWarnings
+       @readonly
+       @description The number of warnings in the log.
+    */
+    KJS::Value lengthWarnings(KJS::ExecState *exec) const;
+
+    /* @property string textWarnings
+       @readonly
+       @description The text contents of the log warnings as a single large string with
+                    carriage returns between entries.
+    */
+    KJS::Value textWarnings(KJS::ExecState *exec) const;
+
+    /* @property string lengthErrors
+       @readonly
+       @description The number of errors in the log.
+    */
+    KJS::Value lengthErrors(KJS::ExecState *exec) const;
+
+    /* @property string textErrors
+       @readonly
+       @description The text contents of the log errors as a single large string with
+                    carriage returns between entries.
+    */
+    KJS::Value textErrors(KJS::ExecState *exec) const;
+
+    /* @property string lengthDebugs
+       @readonly
+       @description The number of debug messages in the log.
+    */
+    KJS::Value lengthDebugs(KJS::ExecState *exec) const;
+
+    /* @property string textDebugs
+       @readonly
+       @description The text contents of the log debug messages as a single large string with
+                    carriage returns between entries.
+    */
+    KJS::Value textDebugs(KJS::ExecState *exec) const;
+
   protected:
     KstBindDebugLog(int id);
     void addBindings(KJS::ExecState *exec, KJS::Object& obj);
