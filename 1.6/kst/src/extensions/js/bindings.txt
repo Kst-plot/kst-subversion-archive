@@ -2,7 +2,7 @@
 Classes to be bound or created in JS:
 
 Kst		General Kst object (static global) - effectively "document"
-Debug		DONE (.log property unfinished)
+Debug		DONE
 Vector		DONE
 DataVector	DONE
 Scalar		DONE
@@ -19,8 +19,8 @@ PowerSpectrum	DONE
 Fit
 Filter
 Plugin		DONE (needs work)
-Histogram	DONE (issue with the type of histogram remains)
-Curve		DONE (maybe still do some minX etc stuff)
+Histogram	DONE 
+Curve		DONE 
 Image		Name?
 Plot		DONE (needs many more functions/properties)
 Window		DONE (needs more functions/properties)
@@ -35,11 +35,7 @@ ViewObject	DONE
 -> Line		DONE
 -> Label	DONE
 -> Arrow	DONE
--> Polygon
--> ViewObjectGroup
--> ViewCurve       (Bezier, etc)
--> HTML            (Embedded KHTML)
-
+-> Group
 
 KstUIMerge
 	- Global object used to load XMLUI files for merging.

@@ -69,7 +69,7 @@ KJS::Object KstBindHistogram::construct(KJS::ExecState *exec, const KJS::List& a
   unsigned bins = 60;
 
   KstVectorPtr v = extractVector(exec, args[0]);
-  
+
   if (!v) {
     KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError);
     exec->setException(eobj);
@@ -143,6 +143,7 @@ static HistogramProperties histogramProperties[] = {
   { "yVector", 0L, &KstBindHistogram::yVector },
   { "xMin", 0L, &KstBindHistogram::xMin },
   { "xMax", 0L, &KstBindHistogram::xMax },
+  { "normalization", &KstBindHistogram::setNormalization, &KstBindHistogram::normalization },
   { 0L, 0L, 0L }
 };
 
@@ -205,7 +206,7 @@ KJS::Value KstBindHistogram::get(KJS::ExecState *exec, const KJS::Identifier& pr
       return (this->*histogramProperties[i].get)(exec);
     }
   }
-  
+
   return KstBindDataObject::get(exec, propertyName);
 }
 
@@ -261,12 +262,69 @@ void KstBindHistogram::setRealTimeAutoBin(KJS::ExecState *exec, const KJS::Value
 
 KJS::Value KstBindHistogram::realTimeAutoBin(KJS::ExecState *exec) const {
   Q_UNUSED(exec)
+
   KstHistogramPtr d = makeHistogram(_d);
   if (d) {
     KstReadLocker rl(d);
     return KJS::Boolean(d->realTimeAutoBin());
   }
   return KJS::Boolean(false);
+}
+
+
+void KstBindHistogram::setNormalization(KJS::ExecState *exec, const KJS::Value& value) {
+  if (value.type() != KJS::NumberType) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError);
+    exec->setException(eobj);
+    return;
+  }
+  KstHistogramPtr d = makeHistogram(_d);
+  if (d) {
+    KstWriteLocker wl(d);
+    switch (value.toInt32(exec)) {
+      case KST_HS_NUMBER:
+        d->setIsNormNum();
+        d->setDirty();
+        break;
+      case KST_HS_PERCENT:
+        d->setIsNormPercent();
+        d->setDirty();
+        break;
+      case KST_HS_FRACTION:
+        d->setIsNormFraction();
+        d->setDirty();
+        break;
+      case KST_HS_MAX_ONE:
+        d->setIsNormOne();
+        d->setDirty();
+        break;
+      default:
+        KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError);
+        exec->setException(eobj);
+        return;
+    }
+  }
+}
+
+
+KJS::Value KstBindHistogram::normalization(KJS::ExecState *exec) const {
+ Q_UNUSED(exec)
+
+  KstHistogramPtr d = makeHistogram(_d);
+  if (d) {
+    KstReadLocker rl(d);
+
+    if (d->isNormNum()) {
+      return KJS::Number(KST_HS_NUMBER);
+    } else if (d->isNormPercent()) {
+      return KJS::Number(KST_HS_PERCENT);
+    } else if (d->isNormFraction()) {
+      return KJS::Number(KST_HS_FRACTION);
+    } else if (d->isNormOne()) {
+      return KJS::Number(KST_HS_MAX_ONE);
+    }
+  }
+  return KJS::Number(-1);
 }
 
 
@@ -398,7 +456,5 @@ KJS::Value KstBindHistogram::xMax(KJS::ExecState *exec) const {
   return KJS::Number(0);
 }
 
-
 #undef makeHistogram
 
-// vim: ts=2 sw=2 et

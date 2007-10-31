@@ -55,49 +55,55 @@ class KstBindPowerSpectrum : public KstBindDataObject {
     KJS::ReferenceList propList(KJS::ExecState *exec, bool recursive = true);
     bool hasProperty(KJS::ExecState *exec, const KJS::Identifier& propertyName) const;
 
-    // member functions
-
     /* @property number length
        @description Contains the base 2 logarithm of the length of the power
                     spectrum.  Should be an integer &gt;= 4.
     */
     void setLength(KJS::ExecState *exec, const KJS::Value& value);
     KJS::Value length(KJS::ExecState *exec) const;
+
     /* @property boolean removeMean
        @description True if the mean should be removed before performing the
                     transform.
     */
     void setRemoveMean(KJS::ExecState *exec, const KJS::Value& value);
     KJS::Value removeMean(KJS::ExecState *exec) const;
+
     /* @property number average
     */
     void setAverage(KJS::ExecState *exec, const KJS::Value& value);
     KJS::Value average(KJS::ExecState *exec) const;
+
     /* @property boolean apodize
        @description If true, sharp discontinuities are removed.
     */
     void setApodize(KJS::ExecState *exec, const KJS::Value& value);
     KJS::Value apodize(KJS::ExecState *exec) const;
+
     /* @property number frequency
        @description Contains the sampling rate of the power spectrum.
     */
     void setFrequency(KJS::ExecState *exec, const KJS::Value& value);
     KJS::Value frequency(KJS::ExecState *exec) const;
+
     /* @property Vector xVector
        @readonly
        @description The X-axis vector for the power spectrum.
     */
     KJS::Value xVector(KJS::ExecState *exec) const;
+
     /* @property Vector yVector
        @readonly
        @description The Y-axi vector for the power spectrum.
     */
     KJS::Value yVector(KJS::ExecState *exec) const;
+
     /* @property string vUnits
        @description A string containing the units for the vector.
     */
     void setVUnits(KJS::ExecState *exec, const KJS::Value& value);
     KJS::Value vUnits(KJS::ExecState *exec) const;
+
     /* @property string rUnits
        @description A string containing the units for the rate.
     */
@@ -110,7 +116,5 @@ class KstBindPowerSpectrum : public KstBindDataObject {
     static KstBindDataObject *bindFactory(KJS::ExecState *exec, KstDataObjectPtr obj);
 };
 
-
 #endif
 
-// vim: ts=2 sw=2 et
