@@ -166,7 +166,7 @@ KJS::Value KstBindPlugin::get(KJS::ExecState *exec, const KJS::Identifier& prope
       return (this->*pluginProperties[i].get)(exec);
     }
   }
-  
+
   return KstBindDataObject::get(exec, propertyName);
 }
 
@@ -210,7 +210,9 @@ KJS::Value KstBindPlugin::module(KJS::ExecState *exec) const {
   KstCPluginPtr d = makePlugin(_d);
   if (d) {
     KstReadLocker rl(d);
-    return KJS::Object(new KstBindPluginModule(exec, d->plugin()->data()));
+    if (d->plugin()) {
+      return KJS::Object(new KstBindPluginModule(exec, d->plugin()->data()));
+    }
   }
   return KJS::Null();
 }
@@ -256,4 +258,3 @@ KJS::Value KstBindPlugin::valid(KJS::ExecState *exec) const {
 
 #undef makePlugin
 
-// vim: ts=2 sw=2 et

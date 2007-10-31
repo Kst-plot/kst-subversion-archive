@@ -118,7 +118,7 @@ KJS::Value KstBindPluginModule::get(KJS::ExecState *exec, const KJS::Identifier&
       return (this->*pluginModuleProperties[i].get)(exec);
     }
   }
-  
+
   return KstBinding::get(exec, propertyName);
 }
 
@@ -207,5 +207,3 @@ KJS::Value KstBindPluginModule::outputs(KJS::ExecState *exec) const {
   return KJS::Object(new KstBindPluginIOCollection(exec, _d._outputs, false));
 }
 
-
-// vim: ts=2 sw=2 et
