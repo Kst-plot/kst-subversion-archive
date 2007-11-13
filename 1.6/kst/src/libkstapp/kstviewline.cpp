@@ -30,7 +30,7 @@
 #include <math.h>
 
 KstViewLine::KstViewLine(const QString& type)
-: KstViewObject(type), _width(0) {
+: KstViewObject(type), _width(1) {
   _editTitle = i18n("Edit Line");
   setTransparent(true);
   _container = false;
@@ -518,6 +518,5 @@ KstGfxMouseHandler *handler_KstViewLine() {
 KST_REGISTER_VIEW_OBJECT(Line, create_KstViewLine, handler_KstViewLine)
 }
 
-
 #include "kstviewline.moc"
-// vim: ts=2 sw=2 et
+

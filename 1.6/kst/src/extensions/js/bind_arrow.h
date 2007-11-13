@@ -57,13 +57,35 @@ class KstBindArrow : public KstBindLine {
     int methodCount() const;
     int propertyCount() const;
 
+    /* @property boolean fromArrow
+       @description True if the arrow has an arrow at the start point.
+    */
+    void setFromArrow(KJS::ExecState *exec, const KJS::Value& value);
+    KJS::Value fromArrow(KJS::ExecState *exec) const;
+
+    /* @property boolean toArrow
+       @description True if the arrow has an arrow at the end point.
+    */
+    void setToArrow(KJS::ExecState *exec, const KJS::Value& value);
+    KJS::Value toArrow(KJS::ExecState *exec) const;
+
+    /* @property number fromArrowScaling
+       @description Scale size of the arrow at the start point.
+    */
+    void setFromArrowScaling(KJS::ExecState *exec, const KJS::Value& value);
+    KJS::Value fromArrowScaling(KJS::ExecState *exec) const;
+
+    /* @property number toArrowScaling
+       @description Scale size of the arrow at the end point.
+    */
+    void setToArrowScaling(KJS::ExecState *exec, const KJS::Value& value);
+    KJS::Value toArrowScaling(KJS::ExecState *exec) const;
+
   protected:
     KstBindArrow(int id, const char *name = 0L);
     void addBindings(KJS::ExecState *exec, KJS::Object& obj);
     static KstBindViewObject *bindFactory(KJS::ExecState *exec, KstViewObjectPtr obj);
 };
 
-
 #endif
 
-// vim: ts=2 sw=2 et

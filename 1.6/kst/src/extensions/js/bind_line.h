@@ -101,7 +101,5 @@ class KstBindLine : public KstBindViewObject {
     static KstBindViewObject *bindFactory(KJS::ExecState *exec, KstViewObjectPtr obj);
 };
 
-
 #endif
 
-// vim: ts=2 sw=2 et

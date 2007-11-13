@@ -320,6 +320,8 @@ void KstBindLine::setCapStyle(KJS::ExecState *exec, const KJS::Value& value) {
         d->setCapStyle(Qt::RoundCap);
         break;
       default:
+        KJS::Object eobj = KJS::Error::create(exec, KJS::SyntaxError, "Value is out of range.");
+        exec->setException(eobj);
         return;
     }
     KstApp::inst()->paintAll(KstPainter::P_PAINT);
@@ -404,7 +406,5 @@ KJS::Value KstBindLine::lineStyle(KJS::ExecState *exec) const {
   return KJS::Number(0);
 }
 
-
 #undef makeLine
 
-// vim: ts=2 sw=2 et

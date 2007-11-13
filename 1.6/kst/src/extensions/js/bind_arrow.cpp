@@ -102,6 +102,10 @@ static ArrowBindings arrowBindings[] = {
 
 
 static ArrowProperties arrowProperties[] = {
+  { "fromArrow", &KstBindArrow::setFromArrow, &KstBindArrow::fromArrow },
+  { "toArrow", &KstBindArrow::setToArrow, &KstBindArrow::toArrow },
+  { "fromArrowScaling", &KstBindArrow::setFromArrowScaling, &KstBindArrow::fromArrowScaling },
+  { "toArrowScaling", &KstBindArrow::setToArrowScaling, &KstBindArrow::toArrowScaling },
   { 0L, 0L, 0L }
 };
 
@@ -211,4 +215,169 @@ void KstBindArrow::addBindings(KJS::ExecState *exec, KJS::Object& obj) {
   }
 }
 
-// vim: ts=2 sw=2 et
+#define makeArrow(X) dynamic_cast<KstViewArrow*>(const_cast<KstObject*>(X.data()))
+
+void KstBindArrow::setFromArrow(KJS::ExecState *exec, const KJS::Value& value) {
+  if (!_d) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::GeneralError);
+    exec->setException(eobj);
+    return;
+  }
+
+  if (value.type() != KJS::BooleanType) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError);
+    exec->setException(eobj);
+    return;
+  }
+
+  KstViewArrowPtr d = makeArrow(_d);
+  if (d) {
+    KstWriteLocker wl(d);
+
+    d->setHasFromArrow(value.toBoolean(exec));
+    _d->setDirty();
+    KstApp::inst()->paintAll(KstPainter::P_PAINT);
+  }
+}
+
+
+KJS::Value KstBindArrow::fromArrow(KJS::ExecState *exec) const {
+  if (!_d) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::GeneralError);
+    exec->setException(eobj);
+    return KJS::Undefined();
+  }
+
+  KstViewArrowPtr d = makeArrow(_d);
+  if (d) {
+    KstReadLocker rl(d);
+    return KJS::Boolean(d->hasFromArrow());
+  }
+
+  return KJS::Undefined();
+}
+
+
+void KstBindArrow::setToArrow(KJS::ExecState *exec, const KJS::Value& value) {
+  if (!_d) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::GeneralError);
+    exec->setException(eobj);
+    return;
+  }
+
+  if (value.type() != KJS::BooleanType) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError);
+    exec->setException(eobj);
+    return;
+  }
+
+  KstViewArrowPtr d = makeArrow(_d);
+  if (d) {
+    KstWriteLocker wl(d);
+
+    d->setHasToArrow(value.toBoolean(exec));
+    _d->setDirty();
+    KstApp::inst()->paintAll(KstPainter::P_PAINT);
+  }
+}
+
+
+KJS::Value KstBindArrow::toArrow(KJS::ExecState *exec) const {
+  if (!_d) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::GeneralError);
+    exec->setException(eobj);
+    return KJS::Undefined();
+  }
+
+  KstViewArrowPtr d = makeArrow(_d);
+  if (d) {
+    KstReadLocker rl(d);
+    return KJS::Boolean(d->hasToArrow());
+  }
+
+  return KJS::Undefined();
+}
+
+
+void KstBindArrow::setFromArrowScaling(KJS::ExecState *exec, const KJS::Value& value) {
+  if (!_d) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::GeneralError);
+    exec->setException(eobj);
+    return;
+  }
+
+  if (value.type() !=  KJS::NumberType) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError);
+    exec->setException(eobj);
+    return;
+  }
+
+  KstViewArrowPtr d = makeArrow(_d);
+  if (d) {
+    KstWriteLocker wl(d);
+
+    d->setFromArrowScaling(value.toNumber(exec));
+    _d->setDirty();
+    KstApp::inst()->paintAll(KstPainter::P_PAINT);
+  }
+}
+
+
+KJS::Value KstBindArrow::fromArrowScaling(KJS::ExecState *exec) const {
+  if (!_d) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::GeneralError);
+    exec->setException(eobj);
+    return KJS::Undefined();
+  }
+
+  KstViewArrowPtr d = makeArrow(_d);
+  if (d) {
+    KstReadLocker rl(d);
+    return KJS::Number(d->fromArrowScaling());
+  }
+
+  return KJS::Undefined();
+}
+
+
+void KstBindArrow::setToArrowScaling(KJS::ExecState *exec, const KJS::Value& value) {
+  if (!_d) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::GeneralError);
+    exec->setException(eobj);
+    return;
+  }
+
+  if (value.type() !=  KJS::NumberType) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError);
+    exec->setException(eobj);
+    return;
+  }
+
+  KstViewArrowPtr d = makeArrow(_d);
+  if (d) {
+    KstWriteLocker wl(d);
+
+    d->setToArrowScaling(value.toNumber(exec));
+    _d->setDirty();
+    KstApp::inst()->paintAll(KstPainter::P_PAINT);
+  }
+}
+
+
+KJS::Value KstBindArrow::toArrowScaling(KJS::ExecState *exec) const {
+  if (!_d) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::GeneralError);
+    exec->setException(eobj);
+    return KJS::Undefined();
+  }
+
+  KstViewArrowPtr d = makeArrow(_d);
+  if (d) {
+    KstReadLocker rl(d);
+    return KJS::Number(d->toArrowScaling());
+  }
+
+  return KJS::Undefined();
+}
+
+#undef makeArrow
