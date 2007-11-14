@@ -376,6 +376,8 @@ void KstBindLine::setLineStyle(KJS::ExecState *exec, const KJS::Value& value) {
         d->setPenStyle(Qt::DashDotDotLine);
         break;
       default:
+        KJS::Object eobj = KJS::Error::create(exec, KJS::SyntaxError, "Value is out of range.");
+        exec->setException(eobj);
         return;
     }
     KstApp::inst()->paintAll(KstPainter::P_PAINT);

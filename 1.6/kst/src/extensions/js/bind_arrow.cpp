@@ -178,7 +178,7 @@ KJS::Value KstBindArrow::get(KJS::ExecState *exec, const KJS::Identifier& proper
       return (this->*arrowProperties[i].get)(exec);
     }
   }
-  
+
   return KstBindLine::get(exec, propertyName);
 }
 

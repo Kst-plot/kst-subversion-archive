@@ -60,6 +60,7 @@ class KstBinding : public KJS::ObjectImp {
     static KstBaseCurveList extractCurveList(KJS::ExecState*, const KJS::Value&, bool doThrow = true);
 
   protected:
+    QString name() const { return _name; }
     KstBinding(const QString& name, int id);
 
   private:

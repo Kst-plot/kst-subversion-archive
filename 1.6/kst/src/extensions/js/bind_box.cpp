@@ -294,6 +294,8 @@ void KstBindBox::setCornerStyle(KJS::ExecState *exec, const KJS::Value& value) {
         d->setCornerStyle(Qt::RoundJoin);
         break;
       default:
+        KJS::Object eobj = KJS::Error::create(exec, KJS::SyntaxError, "Value is out of range.");
+        exec->setException(eobj);
         return;
     }
     KstApp::inst()->paintAll(KstPainter::P_PAINT);
