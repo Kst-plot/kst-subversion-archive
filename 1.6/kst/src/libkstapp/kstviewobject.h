@@ -272,6 +272,10 @@ class KST_EXPORT KstViewObject : public KstObject {
     virtual KstViewObject* copyObjectQuietly(KstViewObject& parent, const QString& name = QString::null) const;
     virtual KstViewObject* copyObjectQuietly() const;
     virtual bool showDialog(KstTopLevelViewPtr invoker, bool isNew);
+    virtual void raiseToTop();
+    virtual void lowerToBottom();
+    virtual void raise();
+    virtual void lower();
 
   protected slots:
     virtual void parentResized();
@@ -281,10 +285,6 @@ class KST_EXPORT KstViewObject : public KstObject {
 
     /***********  Actions ************/
     virtual void deleteObject();
-    virtual void raiseToTop();
-    virtual void lowerToBottom();
-    virtual void raise();
-    virtual void lower();
     virtual void moveTo(int);
     virtual void copyTo(int);
     virtual void rename();

@@ -73,6 +73,10 @@ static ViewObjectBindings viewObjectBindings[] = {
   { "resize", &KstBindViewObject::resize },
   { "move", &KstBindViewObject::move },
   { "convertTo", &KstBindViewObject::convertTo },
+  { "raiseToTop", &KstBindViewObject::raiseToTop },
+  { "lowerToBottom", &KstBindViewObject::lowerToBottom },
+  { "raise", &KstBindViewObject::raise },
+  { "lower", &KstBindViewObject::lower },
   { 0L, 0L }
 };
 
@@ -522,7 +526,7 @@ KJS::Value KstBindViewObject::convertTo(KJS::ExecState *exec, const KJS::List& a
   if (type == "ViewObject") {
     return KJS::Object(new KstBindViewObject(exec, kst_cast<KstViewObject>(_d)));
   }
-  
+
   if (_factoryMap.contains(type)) {
     KstBindViewObject *o = (_factoryMap[type])(exec, kst_cast<KstViewObject>(_d));
     if (o) {
@@ -531,6 +535,106 @@ KJS::Value KstBindViewObject::convertTo(KJS::ExecState *exec, const KJS::List& a
   }
 
   return KJS::Null();
+}
+
+
+KJS::Value KstBindViewObject::raiseToTop(KJS::ExecState *exec, const KJS::List& args) {
+  if (args.size() != 0) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::SyntaxError, "Requires no arguments.");
+    exec->setException(eobj);
+    return KJS::Null();
+  }
+
+  KstViewObjectPtr d = makeViewObject(_d);
+  if (d) {
+    KstReadLocker rl(d);
+
+    d->raiseToTop();
+    KstViewObjectPtr vo = d->topLevelParent();
+    if (vo) {
+      KstTopLevelViewPtr tlv =  kst_cast<KstTopLevelView>(vo);
+      if (tlv) {
+        tlv->paint(KstPainter::P_PAINT);
+      }
+    }
+  }
+
+  return KJS::Undefined();
+}
+
+
+KJS::Value KstBindViewObject::lowerToBottom(KJS::ExecState *exec, const KJS::List& args) {
+  if (args.size() != 0) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::SyntaxError, "Requires no arguments.");
+    exec->setException(eobj);
+    return KJS::Null();
+  }
+
+  KstViewObjectPtr d = makeViewObject(_d);
+  if (d) {
+    KstReadLocker rl(d);
+
+    d->lowerToBottom();
+    KstViewObjectPtr vo = d->topLevelParent();
+    if (vo) {
+      KstTopLevelViewPtr tlv =  kst_cast<KstTopLevelView>(vo);
+      if (tlv) {
+        tlv->paint(KstPainter::P_PAINT);
+      }
+    }
+  }
+
+  return KJS::Undefined();
+}
+
+
+KJS::Value KstBindViewObject::raise(KJS::ExecState *exec, const KJS::List& args) {
+  if (args.size() != 0) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::SyntaxError, "Requires no arguments.");
+    exec->setException(eobj);
+    return KJS::Null();
+  }
+
+  KstViewObjectPtr d = makeViewObject(_d);
+  if (d) {
+    KstReadLocker rl(d);
+
+    d->raise();
+    KstViewObjectPtr vo = d->topLevelParent();
+    if (vo) {
+      KstTopLevelViewPtr tlv =  kst_cast<KstTopLevelView>(vo);
+      if (tlv) {
+        tlv->paint(KstPainter::P_PAINT);
+      }
+    }
+  }
+
+  return KJS::Undefined();
+}
+
+
+KJS::Value KstBindViewObject::lower(KJS::ExecState *exec, const KJS::List& args) {
+  if (args.size() != 0) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::SyntaxError, "Requires no arguments.");
+    exec->setException(eobj);
+    return KJS::Null();
+  }
+
+  KstViewObjectPtr d = makeViewObject(_d);
+  if (d) {
+    KstReadLocker rl(d);
+
+    d->lower();
+    KstViewObjectPtr vo = d->topLevelParent();
+    if (vo) {
+      KstTopLevelViewPtr tlv =  kst_cast<KstTopLevelView>(vo);
+      if (tlv) {
+        tlv->paint(KstPainter::P_PAINT);
+      }
+    }
+  }
+
+  return KJS::Undefined();
 }
 
 
@@ -556,7 +660,7 @@ KJS::Value KstBindViewObject::findChild(KJS::ExecState *exec, const KJS::List& a
       return KJS::Object(KstBindViewObject::bind(exec, vop));
     }
   }
-  
+
   return KJS::Null();
 }
 
@@ -586,7 +690,7 @@ KstBindViewObject *KstBindViewObject::bind(KJS::ExecState *exec, KstViewObjectPt
   if (!obj) {
     return 0L;
   }
-  
+
   if (_factoryMap.contains(obj->type())) {
     KstBindViewObject *o = (_factoryMap[obj->type()])(exec, obj);
     if (o) {

@@ -591,6 +591,9 @@ void KstEditViewObjectDialogI::resizeEvent(QResizeEvent *event) {
         if (combo != 0L) {
           int currentItem = combo->currentItem();
           fillPenStyleWidget(combo);
+          if (_editMultipleMode) {
+            combo->insertItem(QString(" "));
+          }
           combo->setCurrentItem(currentItem);
         }
       }
@@ -599,4 +602,3 @@ void KstEditViewObjectDialogI::resizeEvent(QResizeEvent *event) {
 }
 
 #include "ksteditviewobjectdialog_i.moc"
-
