@@ -169,8 +169,7 @@ void KstEditViewObjectDialogI::fillObjectList() {
 }
 
 
-void KstEditViewObjectDialogI::populateEditMultiple()
-{
+void KstEditViewObjectDialogI::populateEditMultiple() {
   QSpinBox *spinBoxWidget;
   KColorButton *colorButtonWidget;
   KURLRequester *urlRequester;
@@ -405,7 +404,7 @@ void KstEditViewObjectDialogI::fillPenStyleWidget(QComboBox* widget) {
     pen.setStyle(styles.front());
     pp.setPen(pen);
     pp.fillRect( pp.window(), QColor("white"));
-    pp.drawLine(1,ppix.height()/2,ppix.width()-1, ppix.height()/2);
+    pp.drawLine(1, ppix.height()/2, ppix.width()-1, ppix.height()/2);
     widget->insertItem(ppix);
     styles.pop_front();
   }
@@ -581,6 +580,23 @@ void KstEditViewObjectDialogI::okClicked() {
   }
 }
 
+
+void KstEditViewObjectDialogI::resizeEvent(QResizeEvent *event) {
+  Q_UNUSED(event)
+
+  if (!_customWidget) {
+    for (QValueList<QWidget*>::ConstIterator iter = _inputWidgets.begin(); iter != _inputWidgets.end(); ++iter) {
+      if (strcmp((*iter)->name(), "lineStyle,currentItem") == 0) {
+        QComboBox* combo = dynamic_cast<QComboBox*>(*iter);
+        if (combo != 0L) {
+          int currentItem = combo->currentItem();
+          fillPenStyleWidget(combo);
+          combo->setCurrentItem(currentItem);
+        }
+      }
+    }
+  }
+}
 
 #include "ksteditviewobjectdialog_i.moc"
 

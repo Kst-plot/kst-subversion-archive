@@ -45,6 +45,9 @@ class KST_EXPORT KstEditViewObjectDialogI : public KstEditViewObjectDialog {
     void setDefaults();
     void restoreDefaults();
 
+  protected:
+   virtual void resizeEvent(QResizeEvent *e);
+
   private:
     void updateWidgets();
     void clearWidgets();
