@@ -95,7 +95,6 @@ kstextension_js_la_SOURCES= $(JSEXTERN) \
 			    bind_file.cpp
 
 #			    js_dataobject.cpp \
-#			    bind_cubicbezier.cpp \
 #			    bind_jsdataobject.cpp
 
 METASOURCES=AUTO
