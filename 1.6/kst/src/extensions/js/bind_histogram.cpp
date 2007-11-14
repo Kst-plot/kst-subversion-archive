@@ -299,7 +299,7 @@ void KstBindHistogram::setNormalization(KJS::ExecState *exec, const KJS::Value& 
         d->setDirty();
         break;
       default:
-        KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError);
+        KJS::Object eobj = KJS::Error::create(exec, KJS::SyntaxError, "Value is out of range.");
         exec->setException(eobj);
         return;
     }
