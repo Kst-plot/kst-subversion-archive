@@ -274,14 +274,16 @@ KstPlotLabel& KstPlotLabel::operator=(const KstPlotLabel& l) {
   _rotation = l._rotation;
   _interpret = l._interpret;
   _replace = l._replace;
+  _justify = l._justify;
   setText(l._txt); // calls computeTextSize()
   return *this;
 }
 
 
 void KstPlotLabel::updateAbsFontSize(int x_pix, int y_pix) {
-  double x_s, y_s;
-  
+  double x_s;
+  double y_s;
+
   x_s = y_s = _fontSize + (double)KstSettings::globalSettings()->plotFontSize;
 
   if (x_pix < y_pix) {
@@ -295,9 +297,7 @@ void KstPlotLabel::updateAbsFontSize(int x_pix, int y_pix) {
   _absFontSize = int((x_s + y_s)/2);
   if (_absFontSize < KstSettings::globalSettings()->plotFontMinSize) {
     _absFontSize = KstSettings::globalSettings()->plotFontMinSize;
-  }  
-    
+  }
+
   computeTextSize();
 }
-
-// vim: ts=2 sw=2 et

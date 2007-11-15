@@ -71,7 +71,8 @@ class KstPlotLabel {
     void reparse();
 
     float _rotation;
-    double _cosr, _sinr; // absolute cos and sin of the rotation angle
+    double _cosr; // absolute cos of the rotation angle
+    double _sinr; // absolute sin of the rotation angle
     QString _txt;
     QString _fontName;
 
@@ -79,8 +80,10 @@ class KstPlotLabel {
     bool _interpret : 1;
     int _fontSize;
     int _absFontSize;
-    int _textWidth, _textHeight, _ascent;
-    
+    int _textWidth;
+    int _textHeight;
+    int _ascent;
+
     KstLJustifyType _justify;
     Label::Parsed *_parsed;
     int _lineSpacing;
@@ -91,4 +94,3 @@ class KstPlotLabel {
 };
 
 #endif
-// vim: ts=2 sw=2 et
