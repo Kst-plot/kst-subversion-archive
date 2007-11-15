@@ -7,8 +7,8 @@ DataVector	DONE
 Scalar		DONE
 String		DONE
 DataSource	DONE
-Point		DONE (simply x,y)
-Size		DONE (simply w,h)
+Point		DONE
+Size		DONE
 Document	DONE
 Matrix		DONE
 DataMatrix	DONE
@@ -20,9 +20,9 @@ Filter
 Plugin		
 Histogram	DONE 
 Curve		DONE 
-Image		Name?
-Plot		DONE (needs many more functions/properties)
-Window		DONE (needs more functions/properties)
+Image		
+Plot		needs many more functions/properties
+Window		needs many more functions/properties
 
 PlotLabel	DONE
 PlotLegend	DONE
@@ -88,6 +88,5 @@ Docs:
 1.2.0 issues:
 - Curves are stale in concept - split them?
 - No image binding
-- line and arrow orientations don't fully work
 - "delete" support - in order drop references?
 - Make .position and .size directly manipulated?
