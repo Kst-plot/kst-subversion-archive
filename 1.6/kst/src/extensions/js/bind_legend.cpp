@@ -19,6 +19,7 @@
 #include "bind_curvecollection.h"
 
 #include <kst.h>
+#include <kstbasecurve.h>
 #include <kstviewwindow.h>
 
 #include <kdebug.h>
@@ -109,6 +110,8 @@ struct LegendProperties {
 
 
 static LegendBindings legendBindings[] = {
+  { "addCurve", &KstBindLegend::addCurve },
+  { "removeCurve", &KstBindLegend::removeCurve },
   { 0L, 0L }
 };
 
@@ -119,6 +122,7 @@ static LegendProperties legendProperties[] = {
   { "textColor", &KstBindLegend::setTextColor, &KstBindLegend::textColor },
   { "vertical", &KstBindLegend::setVertical, &KstBindLegend::vertical },
   { "curves", 0L, &KstBindLegend::curves },
+  { "title", &KstBindLegend::setTitle, &KstBindLegend::title },
   { 0L, 0L, 0L }
 };
 
@@ -191,7 +195,7 @@ KJS::Value KstBindLegend::get(KJS::ExecState *exec, const KJS::Identifier& prope
       return (this->*legendProperties[i].get)(exec);
     }
   }
-  
+
   return KstBindBorderedViewObject::get(exec, propertyName);
 }
 
@@ -230,6 +234,56 @@ void KstBindLegend::addBindings(KJS::ExecState *exec, KJS::Object& obj) {
 
 
 #define makeLegend(X) dynamic_cast<KstViewLegend*>(const_cast<KstObject*>(X.data()))
+
+KJS::Value KstBindLegend::addCurve(KJS::ExecState *exec, const KJS::List& args) {
+  if (args.size() != 1) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::SyntaxError, "Requires exactly one argument.");
+    exec->setException(eobj);
+    return KJS::Undefined();
+  }
+
+  KstBaseCurvePtr curve;
+  curve = extractVCurve(exec, args[0], false);
+  if (curve) {
+    KstViewLegendPtr d = makeLegend(_d);
+    if (d) {
+      KstWriteLocker wl(d);
+      d->addCurve(curve);
+      KstApp::inst()->paintAll(KstPainter::P_PAINT);
+    }
+  } else {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::GeneralError);
+    exec->setException(eobj);
+  }
+
+  return KJS::Undefined();
+}
+
+
+KJS::Value KstBindLegend::removeCurve(KJS::ExecState *exec, const KJS::List& args) {
+  if (args.size() != 1) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::SyntaxError, "Requires exactly one argument.");
+    exec->setException(eobj);
+    return KJS::Undefined();
+  }
+
+  KstBaseCurvePtr curve;
+  curve = extractVCurve(exec, args[0], false);
+  if (curve) {
+    KstViewLegendPtr d = makeLegend(_d);
+    if (d) {
+      KstWriteLocker wl(d);
+      d->removeCurve(curve);
+      KstApp::inst()->paintAll(KstPainter::P_PAINT);
+    }
+  } else {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::GeneralError);
+    exec->setException(eobj);
+  }
+
+  return KJS::Undefined();
+}
+
 
 void KstBindLegend::setFont(KJS::ExecState *exec, const KJS::Value& value) {
   if (value.type() != KJS::StringType) {
@@ -346,6 +400,29 @@ KJS::Value KstBindLegend::curves(KJS::ExecState *exec) const {
 }
 
 
-#undef makeLegend
+void KstBindLegend::setTitle(KJS::ExecState *exec, const KJS::Value& value) {
+  if (value.type() != KJS::StringType) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError);
+    exec->setException(eobj);
+    return;
+  }
+  KstViewLegendPtr d = makeLegend(_d);
+  if (d) {
+    KstWriteLocker wl(d);
+    d->setTitle(value.toString(exec).qstring());
+    KstApp::inst()->paintAll(KstPainter::P_PAINT);
+  }
+}
 
-// vim: ts=2 sw=2 et
+
+KJS::Value KstBindLegend::title(KJS::ExecState *exec) const {
+  Q_UNUSED(exec)
+  KstViewLegendPtr d = makeLegend(_d);
+  if (d) {
+    KstReadLocker rl(d);
+    return KJS::String(d->title());
+  }
+  return KJS::Undefined();
+}
+
+#undef makeLegend

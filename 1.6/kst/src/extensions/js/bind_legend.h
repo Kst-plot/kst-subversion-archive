@@ -57,31 +57,55 @@ class KstBindLegend : public KstBindBorderedViewObject {
     int methodCount() const;
     int propertyCount() const;
 
+    /* @method addCurve
+       @description Adds the curve to the legend.
+       @arg string curve The curve to be added. This can be either the name of the curve or a reference to the curve.
+       @exception GeneralError Throws this exception if the curve could not be found.
+    */
+    KJS::Value addCurve(KJS::ExecState *exec, const KJS::List& args);
+
+    /* @method removeCurve
+       @description Removes the curve from the legend.
+       @arg string curve The curve to be removed. This can be either the name of the curve or a reference to the curve.
+       @exception GeneralError Throws this exception if the curve could not be found.
+    */
+    KJS::Value removeCurve(KJS::ExecState *exec, const KJS::List& args);
+
     /* @property string font
        @description Used to set or get the current font used for the legend.
     */
     void setFont(KJS::ExecState *exec, const KJS::Value& value);
     KJS::Value font(KJS::ExecState *exec) const;
+
     /* @property number fontSize
        @description Contains the size of the font used to draw the legend.
     */
     void setFontSize(KJS::ExecState *exec, const KJS::Value& value);
     KJS::Value fontSize(KJS::ExecState *exec) const;
+
     /* @property string textColor
        @description Contains the color of the text used to draw the legend.
     */
     void setTextColor(KJS::ExecState *exec, const KJS::Value& value);
     KJS::Value textColor(KJS::ExecState *exec) const;
+
     /* @property boolean vertical
        @description True if the legend entries are stacked vertically.
     */
     void setVertical(KJS::ExecState *exec, const KJS::Value& value);
     KJS::Value vertical(KJS::ExecState *exec) const;
+
     /* @property CurveCollection curves
        @description The list of curves shown in the legend.
        @readonly
     */
     KJS::Value curves(KJS::ExecState *exec) const;
+
+    /* @property string title
+       @description The title of the legend.
+    */
+    void setTitle(KJS::ExecState *exec, const KJS::Value& value);
+    KJS::Value title(KJS::ExecState *exec) const;
 
   protected:
     KstBindLegend(int id, const char *name = 0L);
@@ -89,7 +113,5 @@ class KstBindLegend : public KstBindBorderedViewObject {
     static KstBindViewObject *bindFactory(KJS::ExecState *exec, KstViewObjectPtr obj);
 };
 
-
 #endif
 
-// vim: ts=2 sw=2 et

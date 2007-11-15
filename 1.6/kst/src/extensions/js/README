@@ -25,7 +25,7 @@ Plot		DONE (needs many more functions/properties)
 Window		DONE (needs more functions/properties)
 
 PlotLabel	DONE
-PlotLegend	DONE (needs more functions/properties)
+PlotLegend	DONE
 ViewObject	DONE
    Plot		DONE
    Box		DONE
