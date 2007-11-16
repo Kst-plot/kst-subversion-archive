@@ -30,15 +30,20 @@ class KST_EXPORT KstSMatrix : public KstMatrix {
 
     virtual void save(QTextStream &ts, const QString& indent = QString::null);
 
+    // spike insensitive values
+    virtual void calcNoSpikeRange(double per = 0.005);
+    virtual double maxValueNoSpike() const;
+    virtual double minValueNoSpike() const;
+
     void change(KstObjectTag tag, uint nX, uint nY,
                 double minX, double minY, double stepX, double stepY,
                 double gradZMin, double gradZMax, bool xDirection);
-    
+
     // return gradient min and maxes in order
     double gradZMin() { return _gradZMin; }
     double gradZMax() { return _gradZMax; }
     bool xDirection() { return _xDirection; }
-    
+
   private:
     double _gradZMin;
     double _gradZMax;
@@ -49,4 +54,4 @@ typedef KstSharedPtr<KstSMatrix> KstSMatrixPtr;
 typedef KstObjectList<KstSMatrixPtr> KstSMatrixList;
 
 #endif
-// vim: ts=2 sw=2 et
+

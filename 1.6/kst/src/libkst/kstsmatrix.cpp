@@ -19,8 +19,8 @@
 #include <qstylesheet.h>
 
 KstSMatrix::KstSMatrix(const QDomElement &e) : KstMatrix() {
-  double in_xMin = 0, in_yMin = 0, in_xStep = 1, in_yStep = 1;
-  double in_gradZMin = 0, in_gradZMax = 1;
+  double in_xMin = 0.0, in_yMin = 0.0, in_xStep = 1.0, in_yStep = 1.0;
+  double in_gradZMin = 0.0, in_gradZMax = 1.0;
   bool in_xDirection = true;
   int in_nX = 2, in_nY = 2;
   QString in_tag = QString::null;
@@ -73,9 +73,8 @@ KstSMatrix::KstSMatrix(KstObjectTag tag,
 }
 
 void KstSMatrix::save(QTextStream &ts, const QString& indent) {
-      
   QString indent2 = "  ";
-  
+
   ts << indent << "<smatrix>" << endl;
   ts << indent << indent2 << "<tag>" << QStyleSheet::escape(tag().tagString()) << "</tag>" << endl;
   ts << indent << indent2 << "<xmin>" << minX() << "</xmin>" << endl;
@@ -94,22 +93,22 @@ void KstSMatrix::change(KstObjectTag tag, uint nX,
                         uint nY, double minX, double minY, double stepX,
                         double stepY, double gradZMin, double gradZMax,
                         bool xDirection) {
-  setTagName(tag);  
-  
+  setTagName(tag);
+
   // some checks on parameters
   if (nX < 1) {
-    nX = 1;  
+    nX = 1;
   }
   if (nY < 1) {
-    nY = 1;  
+    nY = 1;
   }
-  if (stepX <= 0) {
+  if (stepX <= 0.0) {
     stepX = 0.1;
   }
-  if (stepY <= 0) {
+  if (stepY <= 0.0) {
     stepY = 0.1;
   }
-  
+
   _nX = nX;
   _nY = nY;
   _minX = minX;
@@ -119,7 +118,7 @@ void KstSMatrix::change(KstObjectTag tag, uint nX,
   _gradZMin = gradZMin;
   _gradZMax = gradZMax;
   _xDirection = xDirection;
-  
+
   if (_nX*_nY != _zSize) {
     resizeZ(_nX*_nY, false);
   }
@@ -130,16 +129,19 @@ void KstSMatrix::change(KstObjectTag tag, uint nX,
     if (_nX > 1) {
       zIncrement = (_gradZMax - _gradZMin) / (_nX - 1);
     } else {
-      zIncrement = 0; 
+      zIncrement = 0.0;
     }
   } else {
     if (_nY > 1) {
       zIncrement = (_gradZMax - _gradZMin) / (_nY - 1);  
     } else {
-      zIncrement = 0;
-    }  
+      zIncrement = 0.0;
+    }
   }
-  
+
+  double sum = 0.0;
+  double sumsquared = 0.0;
+
   // fill in the matrix with the gradient
   for (int i = 0; i < _nX; i++) {
     for (int j = 0; j < _nY; j++) {
@@ -148,10 +150,38 @@ void KstSMatrix::change(KstObjectTag tag, uint nX,
       } else {
         _z[i*nY + j] = _gradZMin + j*zIncrement;
       }
-    }  
+      sum += _z[i];
+      sumsquared += _z[i] * _z[i];
+    }
   }
+
+  _statScalars["sum"]->setValue(sum);
+  _statScalars["sumsquared"]->setValue(sumsquared);
+  _statScalars["max"]->setValue(gradZMin);
+  _statScalars["min"]->setValue(gradZMax);
+  _statScalars["minpos"]->setValue(0.0);
+  _statScalars["mean"]->setValue((gradZMax-gradZMin)/2.0);
+  _statScalars["ns"]->setValue(_nX*_nY);
+  _statScalars["rms"]->setValue(0.0);
+  _statScalars["sigma"]->setValue(0.0);
+
   setDirty(true);
 }
 
 
-// vim: ts=2 sw=2 et
+double KstSMatrix::minValueNoSpike() const {
+  return _minNoSpike;
+}
+
+
+double KstSMatrix::maxValueNoSpike() const {
+  return _maxNoSpike;
+}
+
+
+void KstSMatrix::calcNoSpikeRange(double per) {
+  Q_UNUSED(per)
+
+  _minNoSpike = _gradZMin;
+  _maxNoSpike = _gradZMax;
+}

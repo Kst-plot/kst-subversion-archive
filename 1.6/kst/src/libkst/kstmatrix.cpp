@@ -180,25 +180,25 @@ double KstMatrix::maxValueNoSpike() const {
 
 
 void KstMatrix::calcNoSpikeRange(double per) {
-  double *min_list, *max_list, min_of_max, max_of_min;
+  double *min_list, *max_list;
+  double min_of_max, max_of_min;
+  double n_skip;
+  double x = 0.0;
   int n_list;
   int max_n = 50000; // the most samples we will look at...
-  double n_skip;
-  double x=0;
-  int n_notnan;
-
-  int i,j, k;
+  int n_notnan = 0;
+  int i, j, k;
 
   // count number of points which aren't nans.
-  for (i=n_notnan=0; i<_NS; i++) {
+  for (i=0; i<_NS; i++) {
     if (!KST_ISNAN(_z[i])) {
       n_notnan++;
     }
   }
 
-  if (n_notnan==0) {
-    _minNoSpike = 0;
-    _maxNoSpike = 0;
+  if (n_notnan == 0) {
+    _minNoSpike = 0.0;
+    _maxNoSpike = 0.0;
 
     return;
   }
@@ -207,13 +207,13 @@ void KstMatrix::calcNoSpikeRange(double per) {
   max_n *= int((double)_NS/(double)n_notnan);
 
   n_skip = (double)_NS/max_n;
-  if (n_skip<1.0) n_skip = 1.0;
+  if (n_skip < 1.0) {
+    n_skip = 1.0;
+  }
 
   n_list = int(double(_NS)*per/n_skip);
-
   min_list = (double *)malloc(n_list * sizeof(double));
   max_list = (double *)malloc(n_list * sizeof(double));
-
 
   // prefill the list
   for (i=0; i<n_list; i++) {
@@ -242,8 +242,8 @@ void KstMatrix::calcNoSpikeRange(double per) {
         }
       }
     }
+
     if (_z[j] > min_of_max) { // member for the max list
-      //printf("******** z: %g  min_of_max: %g\n", _z[j], min_of_max);
       // replace min of max with the new value
       for (k=0; k<n_list; k++) {
         if (max_list[k]==min_of_max) {

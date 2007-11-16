@@ -31,7 +31,7 @@ KstAMatrix::KstAMatrix(const QDomElement &e) : KstMatrix() {
   double in_xMin = 0, in_yMin = 0, in_xStep = 1, in_yStep = 1;
   int in_nX = 2, in_nY = 2;
   QString in_tag = QString::null; 
-  
+
   // must get the grid dimensions before the data
   QDomNode n = e.firstChild();
   while (!n.isNull()) {
@@ -51,7 +51,7 @@ KstAMatrix::KstAMatrix(const QDomElement &e) : KstMatrix() {
         in_xStep = e.text().toDouble();
       } else if (e.tagName() == "ystep") {
         in_yStep = e.text().toDouble();
-      } 
+      }
     }
     n = n.nextSibling();
   }
@@ -96,9 +96,7 @@ KstAMatrix::KstAMatrix(KstObjectTag in_tag, uint nX, uint nY, double minX, doubl
 
 
 void KstAMatrix::save(QTextStream &ts, const QString& indent) {
-
   QString indent2 = "  ";
-  
   QByteArray qba(_zSize*sizeof(double));
   QDataStream qds(qba, IO_WriteOnly);
 
@@ -118,5 +116,3 @@ void KstAMatrix::save(QTextStream &ts, const QString& indent) {
   ts << indent << "</amatrix>" << endl;
 }
 
-
-// vim: ts=2 sw=2 et

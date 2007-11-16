@@ -37,7 +37,7 @@ class KST_EXPORT KstMatrix: public KstPrimitive {
 
   protected:
     ~KstMatrix();
-    
+
   public:
     void change(const KstObjectTag& tag, uint nX, uint nY, double minX, double minY,
         double stepX, double stepY);
@@ -45,10 +45,15 @@ class KST_EXPORT KstMatrix: public KstPrimitive {
     // Return the sample count (x times y) of the matrix
     virtual int sampleCount() const;
 
+    // spike insensitive values 
+    virtual void calcNoSpikeRange(double per = 0.005);
+    virtual double maxValueNoSpike() const;
+    virtual double minValueNoSpike() const;
+
     // return the z value of the rectangle in which the specified point lies
     // ok is false if the point is out of bounds
     double value(double x, double y, bool *ok = 0L);
-    
+
     // set the z value of the rectangle in which the specified point lies
     // return false if the point is out of bounds
     bool setValue(double x, double y, double z);
@@ -56,7 +61,7 @@ class KST_EXPORT KstMatrix: public KstPrimitive {
     // return the value of the specified rectangle 
     // ok is false if the rectangle does not exist
     double valueRaw(int x, int y, bool *ok = 0L);
-    
+
     // set the value of the specified rectangle
     // return false if the rectangle does not exist
     bool setValueRaw(int x, int y, double z);
@@ -64,11 +69,6 @@ class KST_EXPORT KstMatrix: public KstPrimitive {
     // return some stats on the z values
     double minValue() const;
     double maxValue() const;
-
-    // spike insensitive values 
-    void calcNoSpikeRange(double per = 0.005);
-    double maxValueNoSpike() const;
-    double minValueNoSpike() const;
 
     // return mean of the z values
     double meanValue() const;
@@ -156,7 +156,7 @@ class KST_EXPORT KstMatrix: public KstPrimitive {
     // the flat-packed array in row-major order
     double *_z;
     int _zSize; // internally keep track of real _z size
-    
+
     // for resizing the internal array _z only
     virtual bool resizeZ(int sz, bool reinit = true);
 

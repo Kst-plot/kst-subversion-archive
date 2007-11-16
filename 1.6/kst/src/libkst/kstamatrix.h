@@ -31,7 +31,5 @@ class KST_EXPORT KstAMatrix : public KstMatrix {
 typedef KstSharedPtr<KstAMatrix> KstAMatrixPtr;
 typedef KstObjectList<KstAMatrixPtr> KstAMatrixList;
 
-
-
 #endif
-// vim: ts=2 sw=2 et
+
