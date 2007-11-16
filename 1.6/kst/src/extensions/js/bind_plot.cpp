@@ -128,7 +128,7 @@ static PlotProperties plotProperties[] = {
 
 KJS::ReferenceList KstBindPlot::propList(KJS::ExecState *exec, bool recursive) {
   KJS::ReferenceList rc = KstBindBorderedViewObject::propList(exec, recursive);
-  
+
   for (int i = 0; plotProperties[i].name; ++i) {
     rc.append(KJS::Reference(this, KJS::Identifier(plotProperties[i].name)));
   }
@@ -219,6 +219,7 @@ void KstBindPlot::addBindings(KJS::ExecState *exec, KJS::Object& obj) {
     obj.put(exec, plotBindings[i].name, o, KJS::Function);
   }
 }
+
 
 int KstBindPlot::methodCount() const {
   return sizeof plotBindings + KstBindBorderedViewObject::methodCount();
@@ -358,7 +359,5 @@ KJS::Value KstBindPlot::tied(KJS::ExecState *exec) const {
   return KJS::Boolean(false);
 }
 
-
 #undef makePlot
 
-// vim: ts=2 sw=2 et

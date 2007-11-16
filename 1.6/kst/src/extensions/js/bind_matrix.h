@@ -55,11 +55,13 @@ class KstBindMatrix : public KstBindObject {
                                editable.
      */
     KJS::Value resize(KJS::ExecState *exec, const KJS::List& args);
+
     /* @method zero
        @description Sets all values in the matrix to zero.
        @exception GeneralError Throws this exception if the matrix is not editable.
      */
     KJS::Value zero(KJS::ExecState *exec, const KJS::List& args);
+
     /* @method update
        @description Updates the statistical values associated with a matrix.
        @exception GeneralError Throws this exception if the matrix is not editable.
@@ -72,41 +74,43 @@ class KstBindMatrix : public KstBindObject {
        checked before attempting to modify a matrix in any way.
      */
     KJS::Value editable(KJS::ExecState *exec) const;
+
     /* @property number min
        @readonly
        @description The value of the smallest sample in the matrix.
      */
     KJS::Value min(KJS::ExecState *exec) const;
+
     /* @property number max
        @readonly
        @description The value of the largest sample in the matrix.
      */
     KJS::Value max(KJS::ExecState *exec) const;
+
     /* @property number mean
        @readonly
        @description The mean value of all samples in the matrix.
      */
     KJS::Value mean(KJS::ExecState *exec) const;
+
     /* @property number numNew
        @readonly
      */
     KJS::Value numNew(KJS::ExecState *exec) const;
+
     /* @property number rows
        @readonly
      */
     KJS::Value rows(KJS::ExecState *exec) const;
+
     /* @property number columns
        @readonly
      */
     KJS::Value columns(KJS::ExecState *exec) const;
-
 
   protected:
     KstBindMatrix(int id, const char *name = 0L);
     void addBindings(KJS::ExecState *exec, KJS::Object& obj);
 };
 
-
 #endif
-
-// vim: ts=2 sw=2 et

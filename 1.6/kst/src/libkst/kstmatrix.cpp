@@ -80,7 +80,7 @@ KstMatrix::~KstMatrix() {
   KST::scalarList.setUpdateDisplayTags(false);
   for (QDictIterator<KstScalar> iter(_statScalars); iter.current(); ++iter) {
     KST::scalarList.remove(iter.current());
-    iter.current()->_KShared_unref();  
+    iter.current()->_KShared_unref();
   }
   KST::scalarList.setUpdateDisplayTags(true);
   KST::scalarList.lock().unlock();
@@ -114,7 +114,7 @@ double KstMatrix::valueRaw(int x, int y, bool* ok) {
     return 0.0;
   }
   if (ok) {
-    (*ok) = true;  
+    (*ok) = true;
   }
   return _z[index];
 }
@@ -148,6 +148,7 @@ bool KstMatrix::setValueRaw(int x, int y, double z) {
   return true;
 }
 
+
 double KstMatrix::minValue() const {
   return _statScalars["min"]->value();
 }
@@ -156,6 +157,7 @@ double KstMatrix::minValue() const {
 double KstMatrix::maxValue() const {
   return _statScalars["max"]->value();
 }
+
 
 double KstMatrix::minValueNoSpike() const {
   // FIXME: it is expensive to calcNoSpikeRange
@@ -166,15 +168,16 @@ double KstMatrix::minValueNoSpike() const {
   return _minNoSpike;
 }
 
+
 double KstMatrix::maxValueNoSpike() const {
   // FIXME: it is expensive to calcNoSpikeRange
   // so we have chosen here to only call it expicitly
   // and no attempt is made to check if it is still up to date...
   // It would be better to have these calls call 
   // calcNoSpikeRange iff the values were obsolete.
-
   return _maxNoSpike;
 }
+
 
 void KstMatrix::calcNoSpikeRange(double per) {
   double *min_list, *max_list, min_of_max, max_of_min;
@@ -270,13 +273,16 @@ void KstMatrix::calcNoSpikeRange(double per) {
   free(max_list);
 }
 
+
 double KstMatrix::meanValue() const {
   return _statScalars["mean"]->value();
 }
 
+
 double KstMatrix::minValuePositive() const {
   return _statScalars["minpos"]->value();
 }
+
 
 int KstMatrix::numNew() const {
   return _numNew;
@@ -556,6 +562,5 @@ void KstMatrix::change(const KstObjectTag& newTag, uint nX, uint nY, double minX
 
   setDirty();
 }
-
 
 #include "kstmatrix.moc"

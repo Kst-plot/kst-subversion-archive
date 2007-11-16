@@ -62,6 +62,7 @@ KstBindCurve::~KstBindCurve() {
 
 KJS::Object KstBindCurve::construct(KJS::ExecState *exec, const KJS::List& args) {
   KstVectorPtr x, y, ex, ey, exm, eym;
+
   if (args.size() > 0) {
     x = extractVector(exec, args[0]);
     if (!x) {

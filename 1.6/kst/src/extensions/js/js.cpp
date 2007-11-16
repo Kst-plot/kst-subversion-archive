@@ -55,6 +55,7 @@
 #include "bind_ellipse.h"
 #include "bind_file.h"
 #include "bind_histogram.h"
+#include "bind_image.h"
 #include "bind_jsdataobject.h"
 #include "bind_kst.h"
 #include "bind_label.h"
@@ -181,12 +182,13 @@ void KstJS::createBindings() {
 
   new KstBindPoint(exec, &globalObj);
   new KstBindSize(exec, &globalObj);
-  
+
   new KstBindVector(exec, &globalObj);
   new KstBindScalar(exec, &globalObj);
   new KstBindString(exec, &globalObj);
   new KstBindDataSource(exec, &globalObj);
   new KstBindDataVector(exec, &globalObj);
+  new KstBindImage(exec, &globalObj);
   new KstBindMatrix(exec, &globalObj);
   new KstBindDataMatrix(exec, &globalObj);
 
@@ -405,6 +407,4 @@ KstJSUIBuilder *KstUIMerge::loadGUI(const QString& ui) {
   return b;
 }
 
-
 #include "js.moc"
-

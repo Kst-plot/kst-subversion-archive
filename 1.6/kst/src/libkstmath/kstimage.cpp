@@ -212,7 +212,7 @@ KstObject::UpdateType KstImage::update(int update_counter) {
   if (_inputMatrices.contains(THEMATRIX)) {
     KstMatrixPtr mp = _inputMatrices[THEMATRIX];
     bool updated = UPDATE == mp->update(update_counter);
-  
+
     if (updated || force) {
       // stats
       NS = mp->sampleCount();
@@ -270,8 +270,9 @@ QString KstImage::propertyString() const {
 
 QColor KstImage::getMappedColor(double x, double y) {
   bool ok;
-  
-  double z = _inputMatrices[THEMATRIX]->value(x, y, &ok);
+  double z;
+
+  z = _inputMatrices[THEMATRIX]->value(x, y, &ok);
   if (ok) {
     int index;
     if (_zUpper - _zLower != 0) {
@@ -280,7 +281,7 @@ QColor KstImage::getMappedColor(double x, double y) {
       } else if (z < _zLower) {
         index = 0;
       } else {
-          index = (int)floor(((z - _zLower) * (_pal->nrColors() - 1)) / (_zUpper - _zLower));
+        index = (int)floor(((z - _zLower) * (_pal->nrColors() - 1)) / (_zUpper - _zLower));
       }
     } else {
       index = 0;
@@ -318,8 +319,9 @@ void KstImage::setLowerThreshold(double z) {
   _zLower = z;
 }
 
+
 void KstImage::setThresholdToSpikeInsensitive(double per) {
-  if (per==0) {
+  if (per == 0.0) {
     setAutoThreshold(true);
   } else {
     matrix()->writeLock();
@@ -474,7 +476,7 @@ KstDataObjectPtr KstImage::makeDuplicate(KstDataObjectDataObjectMap& duplicatedM
   if (_pal) {
     newPalette = new KPalette(*_pal);
   }
-  
+
   QString name(tagName() + '\'');
   while (KstData::self()->dataTagNameNotUnique(name, false)) {
     name += '\'';
@@ -564,20 +566,18 @@ double KstImage::distanceToPoint(double xpos, double ypos, double distanceMax, c
 
 
 void KstImage::paint(const KstCurveRenderContext& context) {
+  KstImagePtr image = this;
+  KstPainter* p = context.p;
+  QColor invalid = context.backgroundColor;
   double Lx = context.Lx, Hx = context.Hx, Ly = context.Ly, Hy = context.Hy;
   double m_X = context.m_X, m_Y = context.m_Y, b_X = context.b_X, b_Y = context.b_Y;
   double x_max = context.x_max, y_max = context.y_max, x_min = context.x_min, y_min = context.y_min;
-  bool xLog = context.xLog, yLog = context.yLog;
   double xLogBase = context.xLogBase;
   double yLogBase = context.yLogBase;
-  KstPainter* p = context.p;
-  QColor invalid = context.backgroundColor;
-  
   double x, y, width, height;
-  double img_Lx_pix = 0, img_Ly_pix = 0, img_Hx_pix = 0, img_Hy_pix = 0;
+  double img_Lx_pix = 0.0, img_Ly_pix = 0.0, img_Hx_pix = 0.0, img_Hy_pix = 0.0;
+  bool xLog = context.xLog, yLog = context.yLog;
 
-  KstImagePtr image = this;
-  
   if (_inputMatrices.contains(THEMATRIX)) { // don't paint if we have no matrix
     image->matrixDimensions(x, y, width, height);
 
@@ -629,7 +629,7 @@ void KstImage::paint(const KstCurveRenderContext& context) {
           img_Ly_pix = (y + height) * m_Y + b_Y;
         }
       }
-  
+
       // color map
       QColor thisPixel;
       if (image->hasColorMap()) {
@@ -702,17 +702,17 @@ void KstImage::paint(const KstCurveRenderContext& context) {
                 new_y_small = pow(yLogBase, new_y_small);
                 new_y_large = pow(yLogBase, new_y_large);
               }
-    
+
               zTL = mp->value(new_x_small, new_y_small, 0L);
               zTR = mp->value(new_x_large, new_y_small, 0L);
               zBL = mp->value(new_x_small, new_y_large, 0L);
               zBR = mp->value(new_x_large, new_y_large, 0L);
-    
+
               // determine the lines to draw
               int numPoints = 0;
               bool passTop = false, passBottom = false, passLeft = false, passRight = false;
               QPoint topPoint, bottomPoint, leftPoint, rightPoint;
-    
+
               // passes through the top
               if (hasPrevBottom) {
                 topPoint = lastPoint;
@@ -725,7 +725,7 @@ void KstImage::paint(const KstCurveRenderContext& context) {
                 topPoint.setY(j);
               }
               hasPrevBottom = false;
-    
+
               // passes through the bottom
               if ((lineK < zBR && lineK > zBL) || (lineK < zBL && lineK > zBR)) {
                 ++numPoints;
@@ -737,7 +737,7 @@ void KstImage::paint(const KstCurveRenderContext& context) {
                   hasPrevBottom = true;
                 }
               }
-    
+
               // passes through the left
               if ((lineK < zBL && lineK > zTL) || (lineK < zTL && lineK > zBL)) {
                 ++numPoints;
@@ -753,7 +753,7 @@ void KstImage::paint(const KstCurveRenderContext& context) {
                 rightPoint.setY(int(((lineK - zTR)*CONTOUR_STEP + (zBR - zTR)*j) / (zBR - zTR)));
                 rightPoint.setX(i + CONTOUR_STEP);
               }
-    
+
               if (numPoints == 4) {
                 // draw a cross
                 p->drawLine(topPoint, bottomPoint);
@@ -777,7 +777,7 @@ void KstImage::paint(const KstCurveRenderContext& context) {
                 // two points - connect them
                 QPoint point1, point2;
                 bool true1 = false;
-    
+
                 if (passTop) {
                   point1 = topPoint;
                   true1 = true;
@@ -813,7 +813,7 @@ void KstImage::paint(const KstCurveRenderContext& context) {
 
 void KstImage::yRange(double xFrom, double xTo, double* yMin, double* yMax) {
   if (!yMin || !yMax) {
-    return;  
+    return;
   }
   // if x range overlaps with image x range, just return image y range
   if ((xFrom <= MinX && xTo >= MinX) ||
@@ -824,8 +824,9 @@ void KstImage::yRange(double xFrom, double xTo, double* yMin, double* yMax) {
     *yMax = MaxY;
     return;
   }
-  *yMin = 0;
-  *yMax = 0;
+  *yMin = 0.0;
+  *yMax = 0.0;
+
   return;
 }
 
@@ -833,6 +834,7 @@ void KstImage::yRange(double xFrom, double xTo, double* yMin, double* yMax) {
 void KstImage::paintLegendSymbol(KstPainter *p, const QRect& bound) {
   if (hasColorMap() && _pal) {
     int l = bound.left(), r = bound.right(), t = bound.top(), b = bound.bottom();
+
     // draw the color palette
     for (int i = l; i <= r; i++) {
       int index = (int)floor(((i - l) * (_pal->nrColors() - 1)) / (r - l));
@@ -847,6 +849,3 @@ void KstImage::paintLegendSymbol(KstPainter *p, const QRect& bound) {
     p->drawRect(bound.left(), bound.top(), bound.width(), bound.height());
   }
 }
-
-
-// vim: ts=2 sw=2 et

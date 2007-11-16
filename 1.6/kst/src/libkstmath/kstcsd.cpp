@@ -16,9 +16,6 @@
  *                                                                         *
  ***************************************************************************/
 
-/** A class for handling spectrograms for kst
- */
-
 #include <assert.h>
 #include <math.h>
 
@@ -40,6 +37,7 @@ static const QString& INVECTOR = KGlobal::staticQString("I");
 static const QString& OUTMATRIX = KGlobal::staticQString("M");
 
 #define KSTCSDMAXLEN 27
+
 KstCSD::KstCSD(const QString &in_tag, KstVectorPtr in_V,
                double in_freq, bool in_average, bool in_removeMean, bool in_apodize, 
                ApodizeFunction in_apodizeFxn, int in_windowSize, int in_averageLength, double in_gaussianSigma, 
@@ -57,7 +55,8 @@ KstCSD::KstCSD(const QDomElement &e)
 
   QString in_tag;
   QString vecName;
-  QString in_vectorUnits, in_rateUnits;
+  QString in_vectorUnits;
+  QString in_rateUnits;
   KstVectorPtr in_V;
   double in_freq = 60.0;
   bool in_average = true;

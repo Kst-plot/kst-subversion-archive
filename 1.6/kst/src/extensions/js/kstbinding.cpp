@@ -3,6 +3,7 @@
                              -------------------
     begin                : Mar 23 2005
     copyright            : (C) 2005 The University of Toronto
+                           (C) 2007 The University of British Columbia
     email                :
  ***************************************************************************/
 
@@ -21,6 +22,7 @@
 #include "bind_curvecollection.h"
 #include "bind_datasource.h"
 #include "bind_datavector.h"
+#include "bind_matrix.h"
 #include "bind_object.h"
 #include "bind_plot.h"
 #include "bind_pluginmodule.h"
@@ -255,6 +257,46 @@ KstVCurvePtr KstBinding::extractVCurve(KJS::ExecState *exec, const KJS::Value& v
 }
 
 
+KstMatrixPtr KstBinding::extractMatrix(KJS::ExecState *exec, const KJS::Value& value, bool doThrow) {
+  switch (value.type()) {
+    case KJS::ObjectType:
+      {
+        KstMatrixPtr mp;
+        KstBindMatrix *imp = dynamic_cast<KstBindMatrix*>(value.toObject(exec).imp());
+        if (imp) {
+          mp = kst_cast<KstMatrix>(imp->_d);
+        } else {
+          KstBindMatrix *imp = dynamic_cast<KstBindMatrix*>(value.toObject(exec).imp());
+          if (imp) {
+            mp = kst_cast<KstMatrix>(imp->_d);
+          }
+        }
+        if (!mp && doThrow) {
+          KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError);
+          exec->setException(eobj);
+        }
+        return mp;
+      }
+    case KJS::StringType:
+      {
+        KST::matrixList.lock().readLock();
+        KstMatrixPtr mp = *KST::matrixList.findTag(value.toString(exec).qstring());
+        KST::matrixList.lock().unlock();
+        if (mp) {
+          return mp;
+        }
+      }
+      // fall through and throw
+    default:
+      if (doThrow) {
+        KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError);
+        exec->setException(eobj);
+      }
+      return 0L;
+  }
+}
+
+
 KstViewWindow *KstBinding::extractWindow(KJS::ExecState *exec, const KJS::Value& value, bool doThrow) {
   switch (value.type()) {
     case KJS::ObjectType:
@@ -411,5 +453,3 @@ int KstBinding::propertyCount() const {
   return 0;
 }
 
-
-// vim: ts=2 sw=2 et

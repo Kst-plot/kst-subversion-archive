@@ -57,6 +57,7 @@ kstextension_js_la_SOURCES= $(JSEXTERN) \
 			    bind_datasourcecollection.cpp \
 			    bind_histogram.cpp \
 			    bind_matrix.cpp \
+			    bind_image.cpp \
 			    bind_datamatrix.cpp \
 			    bind_debug.cpp \
 			    bind_debuglog.cpp \

@@ -291,8 +291,7 @@ void Kst2dPlotWidget::updateButtons() {
 }
 
 
-void Kst2dPlotWidget::addDisplayedCurve()
-{
+void Kst2dPlotWidget::addDisplayedCurve() {
   uint count = AvailableCurveList->count();
   if (count > 0) {
     for (int i = count-1; i >= 0; i--) {
@@ -308,8 +307,7 @@ void Kst2dPlotWidget::addDisplayedCurve()
 }
 
 
-void Kst2dPlotWidget::removeDisplayedCurve()
-{
+void Kst2dPlotWidget::removeDisplayedCurve() {
   uint count = DisplayedCurveList->count();
   if (count > 0) {
     for (int i = count-1; i >= 0; i--) {
@@ -325,16 +323,14 @@ void Kst2dPlotWidget::removeDisplayedCurve()
 }
 
 
-void Kst2dPlotWidget::upDisplayedCurve()
-{
+void Kst2dPlotWidget::upDisplayedCurve() {
   if (DisplayedCurveList->up()) {
     emit changed();
   }
 }
 
 
-void Kst2dPlotWidget::downDisplayedCurve()
-{
+void Kst2dPlotWidget::downDisplayedCurve() {
   if (DisplayedCurveList->down()) {
     emit changed();
   }

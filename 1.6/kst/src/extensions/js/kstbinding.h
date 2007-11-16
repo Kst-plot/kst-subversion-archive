@@ -3,6 +3,7 @@
                              -------------------
     begin                : Mar 23 2005
     copyright            : (C) 2005 The University of Toronto
+                           (C) 2007 The University of British Columbia
     email                :
  ***************************************************************************/
 
@@ -54,6 +55,7 @@ class KstBinding : public KJS::ObjectImp {
     static KstSharedPtr<Plugin> extractPluginModule(KJS::ExecState*, const KJS::Value&, bool doThrow = true);
     static KstVectorPtr extractVector(KJS::ExecState*, const KJS::Value&, bool doThrow = true);
     static KstVCurvePtr extractVCurve(KJS::ExecState*, const KJS::Value&, bool doThrow = true);
+    static KstMatrixPtr extractMatrix(KJS::ExecState*, const KJS::Value&, bool doThrow = true);
     static KstViewWindow *extractWindow(KJS::ExecState*, const KJS::Value&, bool doThrow = true);
     static Kst2DPlotPtr extractPlot(KJS::ExecState*, const KJS::Value&, bool doThrow = true);
     static KstViewObjectPtr extractViewObject(KJS::ExecState*, const KJS::Value&, bool doThrow = true);
@@ -68,7 +70,4 @@ class KstBinding : public KJS::ObjectImp {
     int _id;
 };
 
-
 #endif
-
-// vim: ts=2 sw=2 et
