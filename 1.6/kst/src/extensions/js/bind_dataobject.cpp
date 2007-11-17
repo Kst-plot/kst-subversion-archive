@@ -127,7 +127,7 @@ KJS::Value KstBindDataObject::get(KJS::ExecState *exec, const KJS::Identifier& p
       return (this->*dataObjectProperties[i].get)(exec);
     }
   }
-  
+
   return KstBindObject::get(exec, propertyName);
 }
 
@@ -212,7 +212,7 @@ KstBindDataObject *KstBindDataObject::bind(KJS::ExecState *exec, KstDataObjectPt
   if (!obj) {
     return 0L;
   }
-  
+
   if (_factoryMap.contains(obj->type())) {
     KstBindDataObject *o = (_factoryMap[obj->type()])(exec, obj);
     if (o) {
@@ -232,4 +232,3 @@ QMap<QString, KstBindDataObject*(*)(KJS::ExecState*, KstDataObjectPtr)> KstBindD
 
 #undef makeDataObject
 
-// vim: ts=2 sw=2 et

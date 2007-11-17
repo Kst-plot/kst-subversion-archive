@@ -75,6 +75,7 @@ class KstBindCurve : public KstBindDataObject {
                          for. Starts at 0.
     */
     KJS::Value point(KJS::ExecState *exec, const KJS::List& args);
+
     /* @method xErrorPoint
        @returns Point
        @description Retrieve the coordinates for a given point in the X error
@@ -84,6 +85,7 @@ class KstBindCurve : public KstBindDataObject {
                          for. Starts at 0.
     */
     KJS::Value xErrorPoint(KJS::ExecState *exec, const KJS::List& args);
+
     /* @method yErrorPoint
        @returns Point
        @description Retrieve the coordinates for a given point in the Y error
@@ -93,6 +95,7 @@ class KstBindCurve : public KstBindDataObject {
                          for. Starts at 0.
     */
     KJS::Value yErrorPoint(KJS::ExecState *exec, const KJS::List& args);
+
     /* @method xMinusErrorPoint
        @returns Point
        @description Retrieve the coordinates for a given point in the X minus
@@ -102,6 +105,7 @@ class KstBindCurve : public KstBindDataObject {
                          for. Starts at 0.
     */
     KJS::Value xMinusErrorPoint(KJS::ExecState *exec, const KJS::List& args);
+
     /* @method yMinusErrorPoint
        @returns Point
        @description Retrieve the coordinates for a given point in the Y minus
@@ -120,66 +124,79 @@ class KstBindCurve : public KstBindDataObject {
     */
     void setColor(KJS::ExecState *exec, const KJS::Value& value);
     KJS::Value color(KJS::ExecState *exec) const;
+
     /* @property Vector xVector
        @description The X axis vector for the curve.
     */
     void setXVector(KJS::ExecState *exec, const KJS::Value& value);
     KJS::Value xVector(KJS::ExecState *exec) const;
+
     /* @property Vector yVector
        @description The Y axis vector for the curve.
     */
     void setYVector(KJS::ExecState *exec, const KJS::Value& value);
     KJS::Value yVector(KJS::ExecState *exec) const;
+
     /* @property Vector xErrorVector
        @description The X axis error vector for the curve.
     */
     void setXErrorVector(KJS::ExecState *exec, const KJS::Value& value);
     KJS::Value xErrorVector(KJS::ExecState *exec) const;
+
     /* @property Vector yErrorVector
        @description The Y axis error vector for the curve.
     */
     void setYErrorVector(KJS::ExecState *exec, const KJS::Value& value);
     KJS::Value yErrorVector(KJS::ExecState *exec) const;
+
     /* @property Vector xMinusErrorVector
        @description The X axis negative error vector for the curve.
     */
     void setXMinusErrorVector(KJS::ExecState *exec, const KJS::Value& value);
     KJS::Value xMinusErrorVector(KJS::ExecState *exec) const;
+
     /* @property Vector xMinusErrorVector
        @description The X axis negative error vector for the curve.
     */
     void setYMinusErrorVector(KJS::ExecState *exec, const KJS::Value& value);
     KJS::Value yMinusErrorVector(KJS::ExecState *exec) const;
+
     /* @property number samplesPerFrame
        @readonly
        @description The number of samples per frame for the curve.
     */
     KJS::Value samplesPerFrame(KJS::ExecState *exec) const;
+
     /* @property boolean ignoreAutoScale
        @description If true, this curve ignores auto scale.
     */
     void setIgnoreAutoScale(KJS::ExecState *exec, const KJS::Value& value);
     KJS::Value ignoreAutoScale(KJS::ExecState *exec) const;
+
     /* @property boolean hasPoints
        @description If true, points are plotted for this curve.
     */
     void setHasPoints(KJS::ExecState *exec, const KJS::Value& value);
     KJS::Value hasPoints(KJS::ExecState *exec) const;
+
     /* @property boolean hasLines
        @description If true, lines are drawn for this curve.
     */
     void setHasLines(KJS::ExecState *exec, const KJS::Value& value);
     KJS::Value hasLines(KJS::ExecState *exec) const;
+
     /* @property boolean hasBars
        @description If true, bars are drawn for this curve.
     */
     void setHasBars(KJS::ExecState *exec, const KJS::Value& value);
     KJS::Value hasBars(KJS::ExecState *exec) const;
+
     /* @property number lineWidth
        @description Sets the line width for this curve when lines are drawn.
     */
     void setLineWidth(KJS::ExecState *exec, const KJS::Value& value);
     KJS::Value lineWidth(KJS::ExecState *exec) const;
+
     /* @property number pointStyle
        @description Sets the point style for this curve when points are drawn.
                     <ul>
@@ -201,6 +218,7 @@ class KstBindCurve : public KstBindDataObject {
     */
     void setPointStyle(KJS::ExecState *exec, const KJS::Value& value);
     KJS::Value pointStyle(KJS::ExecState *exec) const;
+
     /* @property number lineStyle
        @description Sets the line style for this curve when lines are drawn.
                     <ul>
@@ -213,6 +231,7 @@ class KstBindCurve : public KstBindDataObject {
     */
     void setLineStyle(KJS::ExecState *exec, const KJS::Value& value);
     KJS::Value lineStyle(KJS::ExecState *exec) const;
+
     /* @property number barStyle
        @description Sets the bar style for this curve when bars are drawn.
                     <ul>
@@ -222,6 +241,7 @@ class KstBindCurve : public KstBindDataObject {
     */
     void setBarStyle(KJS::ExecState *exec, const KJS::Value& value);
     KJS::Value barStyle(KJS::ExecState *exec) const;
+
     /* @property number pointDensity
        @description Sets the point density for this curve when points are plotted.
                     <ul>
@@ -233,16 +253,19 @@ class KstBindCurve : public KstBindDataObject {
     */
     void setPointDensity(KJS::ExecState *exec, const KJS::Value& value);
     KJS::Value pointDensity(KJS::ExecState *exec) const;
+
     /* @property string topLabel
        @readonly
        @description The top label suggestion for this curve.
     */
     KJS::Value topLabel(KJS::ExecState *exec) const;
+
     /* @property string xLabel
        @readonly
        @description The X-axis label suggestion for this curve.
     */
     KJS::Value xLabel(KJS::ExecState *exec) const;
+
     /* @property string yLabel
        @readonly
        @description The Y-axis label suggestion for this curve.
@@ -255,7 +278,5 @@ class KstBindCurve : public KstBindDataObject {
     static KstBindDataObject *bindFactory(KJS::ExecState *exec, KstDataObjectPtr obj);
 };
 
-
 #endif
 
-// vim: ts=2 sw=2 et

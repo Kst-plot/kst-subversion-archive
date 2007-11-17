@@ -24,9 +24,6 @@
 #include "kstbasecurve.h"
 #include "kst_export.h"
 
-/**A class for handling images for Kst
- *@author University of British Columbia
- */
 class KST_EXPORT KstImage: public KstBaseCurve {
   public:
     //constructor for colormap only
@@ -61,6 +58,7 @@ class KST_EXPORT KstImage: public KstBaseCurve {
     virtual void setUpperThreshold(double z);
     virtual void setLowerThreshold(double z);
     virtual void setAutoThreshold(bool yes);
+    virtual void setThresholdToMinMax();
     virtual void setThresholdToSpikeInsensitive(double per = 0.005);
 
 
@@ -85,36 +83,41 @@ class KST_EXPORT KstImage: public KstBaseCurve {
 
     //contour lines
     virtual int numContourLines() const { return _numContourLines; }
+    virtual void setNumContourLines(int numContourLines) { _numContourLines = numContourLines; }
+    virtual const QColor& contourColor() const { return _contourColor; }
+    virtual int contourWeight() const { return _contourWeight; } // a contour weight of -1 means variable weight
+    virtual void setContourWeight(int contourWeight) { _contourWeight = contourWeight; } // a contour weight of -1 means 
+
     virtual QValueList<double> contourLines() const { return _contourLines; }
     virtual bool addContourLine(double line);
     virtual bool removeContourLine(double line);
     virtual void clearContourLines();
-    virtual const QColor& contourColor() const { return _contourColor; }
-    virtual int contourWeight() const { return _contourWeight; } // a contour weight of -1 means variable weight
 
     //other properties
     virtual bool hasContourMap() const { return _hasContourMap; }
     virtual bool hasColorMap() const { return _hasColorMap; }
-    
+    virtual void setHasContourMap(bool hasContourMap) { _hasContourMap = hasContourMap; }
+    virtual void setHasColorMap(bool hasColorMap) { _hasColorMap = hasColorMap; }
+
     // labels for plots
     virtual QString xLabel() const;
     virtual QString yLabel() const;
     virtual QString topLabel() const;
-    
+
     virtual KstDataObjectPtr makeDuplicate(KstDataObjectDataObjectMap& duplicatedMap);
 
     // see KstBaseCurve::providerDataObject
     virtual KstDataObjectPtr providerDataObject() const;
-    
+
     // see KstBaseCurve::distanceToPoint
     virtual double distanceToPoint(double xpos, double ypos, double distanceMax, const KstCurveRenderContext& context);
-    
+
     // see KstBaseCurve::paint
     virtual void paint(const KstCurveRenderContext& context);
-    
+
     // see KstBaseCurve::yRange
     virtual void yRange(double xFrom, double xTo, double* yMin, double* yMax);
-    
+
     // see KstBaseCurve::paintLegendSymbol
     virtual void paintLegendSymbol(KstPainter *p, const QRect& bound);
 
@@ -143,4 +146,4 @@ typedef KstSharedPtr<KstImage> KstImagePtr;
 typedef KstObjectList<KstImagePtr> KstImageList;
 
 #endif
-// vim: ts=2 sw=2 et
+

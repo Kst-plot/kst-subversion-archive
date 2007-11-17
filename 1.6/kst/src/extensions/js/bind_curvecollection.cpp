@@ -276,5 +276,3 @@ KJS::Value KstBindCurveCollection::clear(KJS::ExecState *exec, const KJS::List& 
   return KstBindCollection::clear(exec, args);
 }
 
-
-// vim: ts=2 sw=2 et

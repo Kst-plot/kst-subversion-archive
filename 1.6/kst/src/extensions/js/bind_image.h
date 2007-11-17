@@ -47,6 +47,71 @@ class KstBindImage : public KstBindDataObject {
     int methodCount() const;
     int propertyCount() const;
 
+    /* @method minMaxThreshold
+       @returns 
+       @description Set the thresholding to the current minimum and maximum of the 
+                    associated matrix.
+    */
+    KJS::Value minMaxThreshold(KJS::ExecState *exec, const KJS::List& args);
+
+    /* @method smartThreshold
+       @returns 
+       @description Set the thresholding to automatically calculated smart values based
+                    on the current values of the the associated matrix.
+    */
+    KJS::Value smartThreshold(KJS::ExecState *exec, const KJS::List& args);
+
+    /* @property Matrix matrix
+       @description The matrix associated with the image.
+    */
+    void setMatrix(KJS::ExecState *exec, const KJS::Value& value);
+    KJS::Value matrix(KJS::ExecState *exec) const;
+
+    /* @property number map
+       @description The map type of the image.
+                    <ul>
+                    <li>0 - Color map</li>
+                    <li>1 - Contour map</li>
+                    <li>2 - Color map and contour map</li>
+                    </ul>
+    */
+    void setMap(KJS::ExecState *exec, const KJS::Value& value);
+    KJS::Value map(KJS::ExecState *exec) const;
+
+//  { "palette", &KstBindImage::setPalette, &KstBindImage::palette },
+
+    /* @property number lowerThreshold
+       @description The lower threshold associated with the map.
+    */
+    void setLowerThreshold(KJS::ExecState *exec, const KJS::Value& value);
+    KJS::Value lowerThreshold(KJS::ExecState *exec) const;
+
+    /* @property number upperThreshold
+       @description The upper threshold associated with the map.
+    */
+    void setUpperThreshold(KJS::ExecState *exec, const KJS::Value& value);
+    KJS::Value upperThreshold(KJS::ExecState *exec) const;
+
+    /* @property boolean autoThreshold
+       @description If true, automatic thresholding is enabled.
+    */
+    void setAutoThreshold(KJS::ExecState *exec, const KJS::Value& value);
+    KJS::Value autoThreshold(KJS::ExecState *exec) const;
+
+    /* @property number numContours
+       @description The number of contour levels if the contour map is enabled.
+    */
+    void setNumContours(KJS::ExecState *exec, const KJS::Value& value);
+    KJS::Value numContours(KJS::ExecState *exec) const;
+
+    /* @property number contourWeight
+       @description The weight of the lines used to draw the contour map, 
+                    if the contour map is enabled. A value of -1 can be
+                    used for a variable contour weight.
+    */
+    void setContourWeight(KJS::ExecState *exec, const KJS::Value& value);
+    KJS::Value contourWeight(KJS::ExecState *exec) const;
+
   protected:
     KstBindImage(int id, const char *name = 0L);
     void addBindings(KJS::ExecState *exec, KJS::Object& obj);

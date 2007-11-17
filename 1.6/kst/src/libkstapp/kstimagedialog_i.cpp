@@ -67,7 +67,7 @@ KstImageDialogI::KstImageDialogI(QWidget* parent,
   connect(_w->_colorAndContour, SIGNAL(clicked()), this, SLOT(updateGroups()));
   connect(_w->_useVariableWeight, SIGNAL(clicked()), this, SLOT(updateEnables()));
   connect(_w->_realTimeAutoThreshold, SIGNAL(clicked()), this, SLOT(updateEnables()));
-  
+
   // for multiple edit mode
   connect(_w->_colorOnly, SIGNAL(clicked()), this, SLOT(setColorOnlyDirty()));
   connect(_w->_contourOnly, SIGNAL(clicked()), this, SLOT(setContourOnlyDirty()));
@@ -92,10 +92,10 @@ void KstImageDialogI::fillFieldsForEdit() {
 
   KstImagePtr ip = kst_cast<KstImage>(_dp);
   if (!ip) {
-    return; // shouldn't be needed
+    return;
   }
   ip->readLock();
-  
+
   // set the type of image
   _w->_colorOnly->setChecked(ip->hasColorMap() && !ip->hasContourMap());
   _w->_contourOnly->setChecked(ip->hasContourMap() && !ip->hasColorMap());
@@ -398,7 +398,7 @@ bool KstImageDialogI::editSingleObject(KstImagePtr imPtr) {
 
 bool KstImageDialogI::editObject() {
   KstImageList imList = kstObjectSubList<KstDataObject,KstImage>(KST::dataObjectList);
-  
+
   // if editing multiple objects, edit each one
   if (_editMultipleMode) {
     _numContourLinesDirty = _w->_numContourLines->text() != " ";
@@ -498,6 +498,7 @@ void KstImageDialogI::calcSmartThreshold() {
     }
   }
 }
+
 
 void KstImageDialogI::placeInPlot(KstImagePtr image) {
   KstViewWindow *w = dynamic_cast<KstViewWindow*>(KstApp::inst()->findWindow(_w->_curvePlacement->_plotWindow->currentText()));

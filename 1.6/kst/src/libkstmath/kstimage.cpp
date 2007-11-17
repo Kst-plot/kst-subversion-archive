@@ -320,6 +320,13 @@ void KstImage::setLowerThreshold(double z) {
 }
 
 
+void KstImage::setThresholdToMinMax() {
+  setLowerThreshold(matrix()->minValue());
+  setUpperThreshold(matrix()->maxValue());
+  setAutoThreshold(false);
+}
+
+
 void KstImage::setThresholdToSpikeInsensitive(double per) {
   if (per == 0.0) {
     setAutoThreshold(true);

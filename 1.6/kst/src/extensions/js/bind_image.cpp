@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "bind_image.h"
+#include "bind_matrix.h"
 
 #include <kstamatrix.h>
 #include <kstdatacollection.h>
@@ -96,11 +97,21 @@ struct ImageProperties {
 
 
 static ImageBindings imageBindings[] = {
+  { "minMaxThreshold", &KstBindImage::minMaxThreshold },
+  { "smartThreshold", &KstBindImage::smartThreshold },
   { 0L, 0L }
 };
 
 
 static ImageProperties imageProperties[] = {
+  { "matrix", &KstBindImage::setMatrix, &KstBindImage::matrix },
+  { "map", &KstBindImage::setMap, &KstBindImage::map },
+//  { "palette", &KstBindImage::setPalette, &KstBindImage::palette },
+  { "lowerThreshold", &KstBindImage::setLowerThreshold, &KstBindImage::lowerThreshold },
+  { "upperThreshold", &KstBindImage::setUpperThreshold, &KstBindImage::upperThreshold },
+  { "autoThreshold", &KstBindImage::setAutoThreshold, &KstBindImage::autoThreshold },
+  { "numContours", &KstBindImage::setNumContours, &KstBindImage::numContours },
+  { "contourWeight", &KstBindImage::setContourWeight, &KstBindImage::contourWeight },
   { 0L, 0L, 0L }
 };
 
@@ -203,6 +214,282 @@ int KstBindImage::methodCount() const {
 
 int KstBindImage::propertyCount() const {
   return sizeof imageProperties + KstBindObject::propertyCount();
+}
+
+
+KJS::Value KstBindImage::minMaxThreshold(KJS::ExecState *exec, const KJS::List& args) {
+  Q_UNUSED(args)
+
+  KstImagePtr d = makeImage(_d);
+  if (!d) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::GeneralError);
+    exec->setException(eobj);
+    return KJS::Undefined();
+  }
+
+  if (args.size() != 0) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::SyntaxError, "Requires no arguments.");
+    exec->setException(eobj);
+    return KJS::Undefined();
+  }
+
+  KstReadLocker rl(d);
+
+  d->setThresholdToMinMax();
+  return KJS::Undefined();
+}
+
+
+KJS::Value KstBindImage::smartThreshold(KJS::ExecState *exec, const KJS::List& args) {
+  KstImagePtr d = makeImage(_d);
+  if (!d) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::GeneralError);
+    exec->setException(eobj);
+    return KJS::Undefined();
+  }
+
+  if (args.size() != 1) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::SyntaxError, "Requires exactly one argument.");
+    exec->setException(eobj);
+    return KJS::Undefined();
+  }
+
+  if (args[0].type() != KJS::NumberType) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError);
+    exec->setException(eobj);
+    return KJS::Undefined();
+  }
+
+  double per = args[0].toNumber(exec);
+  KstReadLocker rl(d);
+
+  d->setThresholdToSpikeInsensitive(per);
+  return KJS::Undefined();
+}
+
+
+void KstBindImage::setMatrix(KJS::ExecState *exec, const KJS::Value& value) {
+  KstMatrixPtr mp = extractMatrix(exec, value);
+  if (mp) {
+    KstImagePtr d = makeImage(_d);
+    if (d) {
+      KstWriteLocker wl(d);
+//      d->setMatrix(mp);
+    }
+  }
+}
+
+
+KJS::Value KstBindImage::matrix(KJS::ExecState *exec) const {
+  KstImagePtr d = makeImage(_d);
+  if (d) {
+    KstReadLocker rl(d);
+    KstMatrixPtr mp = d->matrix();
+    if (mp) {
+      return KJS::Object(new KstBindMatrix(exec, mp));
+    }
+  }
+  return KJS::Null();
+}
+
+
+void KstBindImage::setMap(KJS::ExecState *exec, const KJS::Value& value) {
+  unsigned i = 0;
+
+  if (value.type() != KJS::NumberType || !value.toUInt32(i)) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError);
+    exec->setException(eobj);
+    return;
+  }
+
+  if (i < 0 || i > 2) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::SyntaxError, "Value is out of range.");
+    exec->setException(eobj);
+    return;
+  }
+
+  KstImagePtr d = makeImage(_d);
+  if (d) {
+    KstWriteLocker wl(d);
+    switch (i) {
+      case 0:
+        d->setHasContourMap(false);
+        d->setHasColorMap(true);
+        break;
+      case 1:
+        d->setHasContourMap(true);
+        d->setHasColorMap(false);
+        break;
+      case 2:
+        d->setHasContourMap(true);
+        d->setHasColorMap(true);
+        break;
+    }
+  }
+}
+
+
+KJS::Value KstBindImage::map(KJS::ExecState *exec) const {
+  Q_UNUSED(exec)
+
+  int val = 0;
+  KstImagePtr d = makeImage(_d);
+  if (d) {
+    if (d->hasContourMap() && d->hasColorMap()) {
+      val = 2;
+    } else if (d->hasContourMap()) {
+      val = 1;
+    } else if (d->hasColorMap()) {
+      val = 0;
+    }
+  }
+
+  return KJS::Number(val);
+}
+
+/*
+void KstBindImage::setPalette(KJS::ExecState *exec, const KJS::Value& value) {
+}
+
+
+KJS::Value KstBindImage::palette(KJS::ExecState *exec) const {
+}
+*/
+
+void KstBindImage::setLowerThreshold(KJS::ExecState *exec, const KJS::Value& value) {
+  if (value.type() != KJS::NumberType) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError);
+    exec->setException(eobj);
+    return;
+  }
+  double val = value.toNumber(exec);
+  KstImagePtr d = makeImage(_d);
+  if (d) {
+    KstWriteLocker wl(d);
+    d->setLowerThreshold(val);
+  }
+}
+
+
+KJS::Value KstBindImage::lowerThreshold(KJS::ExecState *exec) const {
+  Q_UNUSED(exec)
+  KstImagePtr d = makeImage(_d);
+  if (d) {
+    KstReadLocker rl(d);
+    return KJS::Number(d->lowerThreshold());
+  }
+  return KJS::Number(0.0);
+}
+
+
+void KstBindImage::setUpperThreshold(KJS::ExecState *exec, const KJS::Value& value) {
+  if (value.type() != KJS::NumberType) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError);
+    exec->setException(eobj);
+    return;
+  }
+  double val = value.toNumber(exec);
+  KstImagePtr d = makeImage(_d);
+  if (d) {
+    KstWriteLocker wl(d);
+    d->setUpperThreshold(val);
+  }
+}
+
+
+KJS::Value KstBindImage::upperThreshold(KJS::ExecState *exec) const {
+  Q_UNUSED(exec)
+  KstImagePtr d = makeImage(_d);
+  if (d) {
+    KstReadLocker rl(d);
+    return KJS::Number(d->upperThreshold());
+  }
+  return KJS::Number(0.0);
+}
+
+
+void KstBindImage::setAutoThreshold(KJS::ExecState *exec, const KJS::Value& value) {
+  if (value.type() != KJS::NumberType) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError);
+    exec->setException(eobj);
+    return;
+  }
+  bool val = value.toBoolean(exec);
+  KstImagePtr d = makeImage(_d);
+  if (d) {
+    KstWriteLocker wl(d);
+    d->setAutoThreshold(val);
+  }
+}
+
+
+KJS::Value KstBindImage::autoThreshold(KJS::ExecState *exec) const {
+  Q_UNUSED(exec)
+  KstImagePtr d = makeImage(_d);
+  if (d) {
+    KstReadLocker rl(d);
+    return KJS::Boolean(d->upperThreshold());
+  }
+  return KJS::Boolean(false);
+}
+
+
+void KstBindImage::setNumContours(KJS::ExecState *exec, const KJS::Value& value) {
+  if (value.type() != KJS::NumberType) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError);
+    exec->setException(eobj);
+    return;
+  }
+
+  int val = value.toInt32(exec);
+  if (val <= 0) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::SyntaxError, "Value is out of range.");
+    exec->setException(eobj);
+    return;
+  }
+
+  KstImagePtr d = makeImage(_d);
+  if (d) {
+    KstWriteLocker wl(d);
+    d->setNumContourLines(val);
+  }
+}
+
+
+KJS::Value KstBindImage::numContours(KJS::ExecState *exec) const {
+  Q_UNUSED(exec)
+  KstImagePtr d = makeImage(_d);
+  if (d) {
+    KstReadLocker rl(d);
+    return KJS::Number(d->numContourLines());
+  }
+  return KJS::Number(0);
+}
+
+
+void KstBindImage::setContourWeight(KJS::ExecState *exec, const KJS::Value& value) {
+  if (value.type() != KJS::NumberType) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError);
+    exec->setException(eobj);
+    return;
+  }
+  int val = value.toInt32(exec);
+  KstImagePtr d = makeImage(_d);
+  if (d) {
+    KstWriteLocker wl(d);
+    d->setContourWeight(val);
+  }
+}
+
+
+KJS::Value KstBindImage::contourWeight(KJS::ExecState *exec) const {
+  Q_UNUSED(exec)
+  KstImagePtr d = makeImage(_d);
+  if (d) {
+    KstReadLocker rl(d);
+    return KJS::Number(d->contourWeight());
+  }
+  return KJS::Number(0);
 }
 
 #undef makeImage
