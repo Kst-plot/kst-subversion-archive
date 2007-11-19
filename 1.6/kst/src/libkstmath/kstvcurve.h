@@ -23,11 +23,6 @@
 #include "kstcurvepointsymbol.h"
 #include "kst_export.h"
 
-/**A class for handling curves for kst
- *@author C. Barth Netterfield
- */
-
-
 class KST_EXPORT KstVCurve: public KstBaseCurve {
   public:
     // InterpType order must match the order of entries of _interp in 

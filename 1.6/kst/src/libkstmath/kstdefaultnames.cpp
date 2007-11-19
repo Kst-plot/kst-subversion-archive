@@ -109,7 +109,7 @@ QString KST::suggestEQName(const QString& name_in) {
 
 QString KST::suggestPluginName(const QString& pname, KstObjectTag vname) {
   QString tag;
-  
+
   if (!vname.isValid()) {
     tag = pname;
   } else {
@@ -126,4 +126,4 @@ QString KST::suggestImageName(KstObjectTag matrix_name) {
                       i18n("Minimal abbreviation for 'Image'", "I"),
                       true);
 }
-// vim: ts=2 sw=2 et
+

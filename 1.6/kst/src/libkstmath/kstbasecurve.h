@@ -26,10 +26,6 @@
 #include "kst_export.h"
 #include "labelparser.h"
 
-/**A class for handling curves for kst
- *@author C. Barth Netterfield
- */
-
 // context for rendering a curve in a plot
 class KstCurveRenderContext {
   public:

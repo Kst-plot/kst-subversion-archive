@@ -80,7 +80,10 @@ class KstBindImage : public KstBindDataObject {
     void setMap(KJS::ExecState *exec, const KJS::Value& value);
     KJS::Value map(KJS::ExecState *exec) const;
 
-//  { "palette", &KstBindImage::setPalette, &KstBindImage::palette },
+    /* @property string palette
+       @description The name of the palette associated with the image color map.
+    */    void setPalette(KJS::ExecState *exec, const KJS::Value& value);
+    KJS::Value palette(KJS::ExecState *exec) const;
 
     /* @property number lowerThreshold
        @description The lower threshold associated with the map.

@@ -55,12 +55,12 @@ class KST_EXPORT KstImage: public KstBaseCurve {
     virtual bool getNearestZ(double x, double y, double& z);
     virtual QColor getMappedColor(double x, double y);
     virtual void setPalette(KPalette* pal);
+    virtual void setPalette(const QString& strPalette);
     virtual void setUpperThreshold(double z);
     virtual void setLowerThreshold(double z);
     virtual void setAutoThreshold(bool yes);
     virtual void setThresholdToMinMax();
     virtual void setThresholdToSpikeInsensitive(double per = 0.005);
-
 
     virtual double upperThreshold() const { return _zUpper; }
     virtual double lowerThreshold() const { return _zLower; }
@@ -68,6 +68,7 @@ class KST_EXPORT KstImage: public KstBaseCurve {
 
     virtual QString matrixTag() const;
     virtual KstMatrixPtr matrix() const;
+    virtual void setMatrix(const KstMatrixPtr& matrix);
     virtual QString paletteName() const;
     virtual KPalette* palette() const { return _pal; }
 

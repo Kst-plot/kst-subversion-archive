@@ -106,7 +106,7 @@ static ImageBindings imageBindings[] = {
 static ImageProperties imageProperties[] = {
   { "matrix", &KstBindImage::setMatrix, &KstBindImage::matrix },
   { "map", &KstBindImage::setMap, &KstBindImage::map },
-//  { "palette", &KstBindImage::setPalette, &KstBindImage::palette },
+  { "palette", &KstBindImage::setPalette, &KstBindImage::palette },
   { "lowerThreshold", &KstBindImage::setLowerThreshold, &KstBindImage::lowerThreshold },
   { "upperThreshold", &KstBindImage::setUpperThreshold, &KstBindImage::upperThreshold },
   { "autoThreshold", &KstBindImage::setAutoThreshold, &KstBindImage::autoThreshold },
@@ -275,7 +275,7 @@ void KstBindImage::setMatrix(KJS::ExecState *exec, const KJS::Value& value) {
     KstImagePtr d = makeImage(_d);
     if (d) {
       KstWriteLocker wl(d);
-//      d->setMatrix(mp);
+      d->setMatrix(mp);
     }
   }
 }
@@ -348,14 +348,32 @@ KJS::Value KstBindImage::map(KJS::ExecState *exec) const {
   return KJS::Number(val);
 }
 
-/*
+
 void KstBindImage::setPalette(KJS::ExecState *exec, const KJS::Value& value) {
+  if (value.type() != KJS::StringType) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError);
+    exec->setException(eobj);
+    return;
+  }
+  QString pal = value.toString(exec).qstring();
+  KstImagePtr d = makeImage(_d);
+  if (d) {
+    KstWriteLocker wl(d);
+    d->setPalette(pal);
+  }
 }
 
 
 KJS::Value KstBindImage::palette(KJS::ExecState *exec) const {
+  Q_UNUSED(exec)
+  KstImagePtr d = makeImage(_d);
+  if (d) {
+    KstReadLocker rl(d);
+    return KJS::String(d->paletteName());
+  }
+  return KJS::Undefined();
 }
-*/
+
 
 void KstBindImage::setLowerThreshold(KJS::ExecState *exec, const KJS::Value& value) {
   if (value.type() != KJS::NumberType) {

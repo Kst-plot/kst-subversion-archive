@@ -27,6 +27,7 @@
 #include "kstcolorsequence.h"
 #include "kstdatacollection.h"
 #include "kstdebug.h"
+#include "kstdefaultnames.h"
 #include "kstlinestyle.h"
 #include "kstmath.h"
 #include "kstrvector.h"
@@ -70,7 +71,6 @@ KstVCurve::KstVCurve(const QString &in_tag, KstVectorPtr in_X, KstVectorPtr in_Y
   setPointStyle(0);
   setInterp(InterpY);
 
-  commonConstructor(in_tag, in_color);
   if (in_X) {
     _inputVectors[COLOR_XVECTOR] = in_X;
   }
@@ -95,6 +95,7 @@ KstVCurve::KstVCurve(const QString &in_tag, KstVectorPtr in_X, KstVectorPtr in_Y
     _inputVectors[EYMINUSVECTOR] = in_EYMinus;
   }
 
+  commonConstructor(in_tag, in_color);
   setDirty();
 }
 
@@ -164,7 +165,7 @@ KstVCurve::KstVCurve(QDomElement &e)
       } else if (e.tagName() == "ignoreAutoScale") {
         _ignoreAutoScale = true;
       } else if (e.tagName() == "interp") {
-	_interp = KstVCurve::InterpType(e.text().toInt());
+        _interp = KstVCurve::InterpType(e.text().toInt());
       }
     }
     n = n.nextSibling();
@@ -198,7 +199,12 @@ void KstVCurve::commonConstructor(const QString &in_tag, const QColor &in_color)
   _typeString = i18n("Curve");
   _type = "Curve";
   _color = in_color;
-  setTagName(KstObjectTag::fromString(in_tag));
+  if (in_tag == QString::null) {
+    QString tag_name = KST::suggestCurveName(yVTag());
+    setTagName(KstObjectTag::fromString(tag_name));
+  } else {
+    setTagName(KstObjectTag::fromString(in_tag));
+  }
   updateParsedLegendTag();
 }
 
