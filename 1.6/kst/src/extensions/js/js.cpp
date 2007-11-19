@@ -188,7 +188,6 @@ void KstJS::createBindings() {
   new KstBindString(exec, &globalObj);
   new KstBindDataSource(exec, &globalObj);
   new KstBindDataVector(exec, &globalObj);
-  new KstBindImage(exec, &globalObj);
   new KstBindMatrix(exec, &globalObj);
   new KstBindDataMatrix(exec, &globalObj);
 
@@ -199,6 +198,7 @@ void KstJS::createBindings() {
   //new KstBindJSDataObject(exec, &globalObj);
 
   new KstBindCurve(exec, &globalObj);
+  new KstBindImage(exec, &globalObj);
 
   new KstBindPlot(exec, &globalObj);
   new KstBindLine(exec, &globalObj);

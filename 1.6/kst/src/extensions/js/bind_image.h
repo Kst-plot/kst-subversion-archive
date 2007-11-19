@@ -30,12 +30,14 @@
 class KstBindImage : public KstBindDataObject {
   public:
     /* @constructor
-       @arg type name description
-       @optarg type name description
-       @description ....
+       @description Main constructor for Image class.  Constructing a new
+                    image automatically adds it to the data collection of Kst.
+       @arg Matrix matrix The matrix for the image.  Can be specified as a string
+                     containing the tag name of an existing matrix, or as a
+                     matrix object.
     */
-    KstBindImage(KJS::ExecState *exec, KstImagePtr d, const char *name = 0L);
-    KstBindImage(KJS::ExecState *exec, KJS::Object *globalObject = 0L, const char *name = 0L);
+    KstBindImage(KJS::ExecState *exec, KstImagePtr d);
+    KstBindImage(KJS::ExecState *exec, KJS::Object *globalObject = 0L);
     ~KstBindImage();
 
     KJS::Object construct(KJS::ExecState *exec, const KJS::List& args);
@@ -112,8 +114,16 @@ class KstBindImage : public KstBindDataObject {
     void setContourWeight(KJS::ExecState *exec, const KJS::Value& value);
     KJS::Value contourWeight(KJS::ExecState *exec) const;
 
+    /* @property string color
+       @description The color of the contours.  Stored in the form "#RRGGBB" as
+                    hex values.  This property can also be set with English
+                    strings such as "blue".
+    */
+    void setContourColor(KJS::ExecState *exec, const KJS::Value& value);
+    KJS::Value contourColor(KJS::ExecState *exec) const;
+
   protected:
-    KstBindImage(int id, const char *name = 0L);
+    KstBindImage(int id);
     void addBindings(KJS::ExecState *exec, KJS::Object& obj);
     static KstBindDataObject *bindFactory(KJS::ExecState *exec, KstDataObjectPtr obj);
 };

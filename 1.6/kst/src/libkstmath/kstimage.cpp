@@ -216,20 +216,20 @@ KstObject::UpdateType KstImage::update(int update_counter) {
     if (updated || force) {
       // stats
       NS = mp->sampleCount();
-      MinX = mp->minX();
+      _minX = mp->minX();
       int xNumSteps = mp->xNumSteps();
       double xStepSize = mp->xStepSize();
-      MaxX = xNumSteps*xStepSize + MinX;
-      MinY = mp->minY();
+      _maxX = xNumSteps*xStepSize + _minX;
+      _minY = mp->minY();
       int yNumSteps = mp->yNumSteps();
       double yStepSize = mp->yStepSize();
-      MaxY = yNumSteps*yStepSize + MinY;
-      _ns_maxx = MaxX;
-      _ns_minx = MinX;
-      _ns_maxy = MaxY;
-      _ns_miny = MinY;
-      MinPosY = MinY > 0 ? MinY : yStepSize;
-      MinPosX = MinX > 0 ? MinX : xStepSize;
+      _maxY = yNumSteps*yStepSize + _minY;
+      _ns_maxx = _maxX;
+      _ns_minx = _minX;
+      _ns_maxy = _maxY;
+      _ns_miny = _minY;
+      _minPosY = _minY > 0.0 ? _minY : yStepSize;
+      _minPosX = _minX > 0.0 ? _minX : xStepSize;
 
       //recalculate the thresholds if necessary
       if (_autoThreshold) {
@@ -564,7 +564,7 @@ double KstImage::distanceToPoint(double xpos, double ypos, double distanceMax, c
 
   double distance = -1.0;
 
-  if (xpos <= MaxX && xpos >= MinX && ypos <= MaxY && ypos >= MinY) {
+  if (xpos <= _maxX && xpos >= _minX && ypos <= _maxY && ypos >= _minY) {
     distance = 0.0;
   }
 
@@ -823,12 +823,12 @@ void KstImage::yRange(double xFrom, double xTo, double* yMin, double* yMax) {
     return;
   }
   // if x range overlaps with image x range, just return image y range
-  if ((xFrom <= MinX && xTo >= MinX) ||
-      (xTo >= MaxX && xFrom <= MaxX) ||
-      (xFrom > MinX && xFrom < MaxX) ||
-      (xTo > MinX && xTo < MaxX)) {
-    *yMin = MinY;
-    *yMax = MaxY;
+  if ((xFrom <= _minX && xTo >= _minX) ||
+      (xTo >= _maxX && xFrom <= _maxX) ||
+      (xFrom > _minX && xFrom < _maxX) ||
+      (xTo > _minX && xTo < _maxX)) {
+    *yMin = _minY;
+    *yMax = _maxY;
     return;
   }
   *yMin = 0.0;

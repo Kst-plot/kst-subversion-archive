@@ -88,7 +88,7 @@ KJS::Value KstBindDataObjectCollection::get(KJS::ExecState *exec, const KJS::Ide
       return (this->*dataObjectCollectionProperties[i].get)(exec);
     }
   }
-  
+
   return KstBindCollection::get(exec, propertyName);
 }
 
@@ -159,5 +159,3 @@ int KstBindDataObject::propertyCount() const {
   return KstBindObject::propertyCount();
 }
 
-
-// vim: ts=2 sw=2 et

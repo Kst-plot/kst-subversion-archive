@@ -82,31 +82,31 @@ class KST_EXPORT KstBaseCurve : public KstDataObject {
     virtual int samplesPerFrame() const { return 1; }
 
     virtual bool deleteDependents();
-    
-    virtual double maxX() const { return MaxX; }
-    virtual double minX() const { return MinX; }
-    virtual double maxY() const { return MaxY; }
-    virtual double minY() const { return MinY; }
-    virtual double minPosY() const { return MinPosY; }
+
+    virtual double maxX() const { return _maxX; }
+    virtual double minX() const { return _minX; }
+    virtual double maxY() const { return _maxY; }
+    virtual double minY() const { return _minY; }
+    virtual double minPosY() const { return _minPosY; }
     virtual double ns_maxX()    const { return _ns_maxx; }
     virtual double ns_minX()    const { return _ns_minx; }
     virtual double ns_maxY()    const { return _ns_maxy; }
     virtual double ns_minY()    const { return _ns_miny; }
-    virtual double minPosX() const { return MinPosX; }
-    virtual double midX() const { return (MaxX+MinX)*0.5; }
-    virtual double midY() const { return (MaxY+MinY)*0.5; }
+    virtual double minPosX() const { return _minPosX; }
+    virtual double midX() const { return (_maxX+_minX)*0.5; }
+    virtual double midY() const { return (_maxY+_minY)*0.5; }
     virtual void yRange(double xFrom, double xTo, double* yMin, double* yMax) = 0;
-    
+
     // this returns the data object providing the data for this basecurve.  
     // E.g. for VCurves, it returns the data object providing the y vector
     // E.g. for Images, it returns the data object providing the matrix
     // Null is returned if no provider exists
     virtual KstDataObjectPtr providerDataObject() const = 0;
-    
+
     // return closest distance to the given point
     // images always return a rating >= 5
     virtual double distanceToPoint(double xpos, double ypos, double distanceMax, const KstCurveRenderContext& context) = 0;
-    
+
     // render this curve 
     virtual void paint(const KstCurveRenderContext& context) = 0;
     
@@ -124,30 +124,26 @@ class KST_EXPORT KstBaseCurve : public KstDataObject {
     // The label is parsed every time the legend text is changed.
     virtual Label::Parsed *parsedLegendTag();
     virtual void updateParsedLegendTag();
-    
+
     void setLegendText(const QString& theValue);
     QString legendText() const { return _legendText;}
 
   protected:
- 
+    Label::Parsed *_parsedLegendTag;
+    QSize _legendLabelSize;
     double _ns_maxx;
     double _ns_minx;
     double _ns_maxy;
     double _ns_miny;
-    double MaxX;
-    double MinX;
-    double MinPosX;
-    double MeanX;
-    double MaxY;
-    double MinY;
-    double MinPosY;
-    
-    int NS;
-
+    double _maxX;
+    double _minX;
+    double _minPosX;
+    double _meanX;
+    double _maxY;
+    double _minY;
+    double _minPosY;
     bool _ignoreAutoScale;
-
-    Label::Parsed *_parsedLegendTag;
-    QSize _legendLabelSize;
+    int NS;
 
   private:
     void commonConstructor();
@@ -162,4 +158,4 @@ typedef KstSharedPtr<KstBaseCurve> KstBaseCurvePtr;
 typedef KstObjectList<KstBaseCurvePtr> KstBaseCurveList;
 
 #endif
-// vim: ts=2 sw=2 et
+

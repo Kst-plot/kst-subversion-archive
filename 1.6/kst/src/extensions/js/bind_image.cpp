@@ -26,18 +26,18 @@
 #include <kdebug.h>
 #include <kjsembed/jsbinding.h>
 
-KstBindImage::KstBindImage(KJS::ExecState *exec, KstImagePtr d, const char *name)
-: KstBindDataObject(exec, d.data(), name ? name : "Image") {
+KstBindImage::KstBindImage(KJS::ExecState *exec, KstImagePtr d)
+: KstBindDataObject(exec, d.data(), "Image") {
   KJS::Object o(this);
   addBindings(exec, o);
 }
 
 
-KstBindImage::KstBindImage(KJS::ExecState *exec, KJS::Object *globalObject, const char *name)
-: KstBindDataObject(exec, globalObject, name ? name : "Image") {
+KstBindImage::KstBindImage(KJS::ExecState *exec, KJS::Object *globalObject)
+: KstBindDataObject(exec, globalObject, "Image") {
   KJS::Object o(this);
   addBindings(exec, o);
-  if (!globalObject) {
+  if (globalObject) {
     KstBindDataObject::addFactory("Image", KstBindImage::bindFactory);
   }
 }
@@ -52,8 +52,8 @@ KstBindDataObject *KstBindImage::bindFactory(KJS::ExecState *exec, KstDataObject
 }
 
 
-KstBindImage::KstBindImage(int id, const char *name)
-: KstBindDataObject(id, name ? name : "Image Method") {
+KstBindImage::KstBindImage(int id)
+: KstBindDataObject(id, "Image Method") {
 }
 
 
@@ -112,6 +112,7 @@ static ImageProperties imageProperties[] = {
   { "autoThreshold", &KstBindImage::setAutoThreshold, &KstBindImage::autoThreshold },
   { "numContours", &KstBindImage::setNumContours, &KstBindImage::numContours },
   { "contourWeight", &KstBindImage::setContourWeight, &KstBindImage::contourWeight },
+  { "contourColor", &KstBindImage::setContourColor, &KstBindImage::contourColor },
   { 0L, 0L, 0L }
 };
 
@@ -302,7 +303,7 @@ void KstBindImage::setMap(KJS::ExecState *exec, const KJS::Value& value) {
     return;
   }
 
-  if (i < 0 || i > 2) {
+  if (i > 2) {
     KJS::Object eobj = KJS::Error::create(exec, KJS::SyntaxError, "Value is out of range.");
     exec->setException(eobj);
     return;
@@ -490,6 +491,32 @@ KJS::Value KstBindImage::contourWeight(KJS::ExecState *exec) const {
     return KJS::Number(d->contourWeight());
   }
   return KJS::Number(0);
+}
+
+
+void KstBindImage::setContourColor(KJS::ExecState *exec, const KJS::Value& value) {
+  QVariant cv = KJSEmbed::convertToVariant(exec, value);
+  if (!cv.canCast(QVariant::Color)) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError);
+    exec->setException(eobj);
+    return;
+  }
+  KstImagePtr d = makeImage(_d);
+  if (d) {
+    KstWriteLocker rl(d);
+    d->setContourColor(cv.toColor());
+  }
+}
+
+
+KJS::Value KstBindImage::contourColor(KJS::ExecState *exec) const {
+  KstImagePtr d = makeImage(_d);
+  if (d) {
+    KstReadLocker rl(d);
+    return KJSEmbed::convertToValue(exec, d->contourColor());
+  }
+
+  return KJSEmbed::convertToValue(exec, QColor());
 }
 
 #undef makeImage

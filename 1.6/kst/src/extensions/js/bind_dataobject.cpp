@@ -185,7 +185,7 @@ KJS::Value KstBindDataObject::convertTo(KJS::ExecState *exec, const KJS::List& a
   if (type == "DataObject") {
     return KJS::Object(new KstBindDataObject(exec, kst_cast<KstDataObject>(_d)));
   }
-  
+
   if (_factoryMap.contains(type)) {
     KstBindDataObject *o = (_factoryMap[type])(exec, kst_cast<KstDataObject>(_d));
     if (o) {

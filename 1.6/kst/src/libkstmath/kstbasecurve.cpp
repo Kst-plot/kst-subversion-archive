@@ -30,7 +30,8 @@ KstBaseCurve::KstBaseCurve() : KstDataObject() {
 
 
 void KstBaseCurve::commonConstructor() {
-  _ns_maxx = _ns_minx = _ns_maxy = _ns_miny = MaxX = MinX = MinPosX = MeanX = MaxY = MinY = MinPosY = 0.0;
+  _ns_maxx = _ns_minx = _ns_maxy = _ns_miny = 0.0;
+  _maxX = _minX = _minPosX = _meanX = _maxY = _minY = _minPosY = 0.0;
   NS = 0;
 
   _ignoreAutoScale = false;
@@ -79,4 +80,4 @@ void KstBaseCurve::setLegendText(const QString& theValue) {
 }
 
 #include "kstbasecurve.moc"
-// vim: ts=2 sw=2 et
+

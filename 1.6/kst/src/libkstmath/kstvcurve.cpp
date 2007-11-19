@@ -146,21 +146,21 @@ KstVCurve::KstVCurve(QDomElement &e)
         setLegendText(e.text());
       // the following options are only needed to change from the default
       } else if (e.tagName() == "hasLines") {
-        HasLines = e.text() != "0";
+        _hasLines = e.text() != "0";
       } else if (e.tagName() == "hasPoints") {
-        HasPoints = e.text() != "0";
+        _hasPoints = e.text() != "0";
       } else if (e.tagName() == "hasBars") {
-        HasBars = e.text() != "0";
+        _hasBars = e.text() != "0";
       } else if (e.tagName() == "pointType") {
-        PointStyle = e.text().toInt();
+        _pointStyle = e.text().toInt();
       } else if (e.tagName() == "lineWidth") {
-        LineWidth = e.text().toInt();
+        _lineWidth = e.text().toInt();
       } else if (e.tagName() == "lineStyle") {
-        LineStyle = e.text().toInt();
+        _lineStyle = e.text().toInt();
       } else if (e.tagName() == "barStyle") {
-        BarStyle = e.text().toInt();
+        _barStyle = e.text().toInt();
       } else if (e.tagName() == "pointDensity") {
-        PointDensity = e.text().toInt();
+        _pointDensity = e.text().toInt();
       } else if (e.tagName() == "ignoreAutoScale") {
         _ignoreAutoScale = true;
       } else if (e.tagName() == "interp") {
@@ -193,11 +193,11 @@ KstVCurve::KstVCurve(QDomElement &e)
 
 
 void KstVCurve::commonConstructor(const QString &in_tag, const QColor &in_color) {
-  MaxX = MinX = MeanX = MaxY = MinY = MeanY = MinPosX = MinPosY = 0;
+  _maxX = _minX = _meanX = _maxY = _minY = _meanY = _minPosX = _minPosY = 0.0;
   NS = 0;
   _typeString = i18n("Curve");
   _type = "Curve";
-  Color = in_color;
+  _color = in_color;
   setTagName(KstObjectTag::fromString(in_tag));
   updateParsedLegendTag();
 }
@@ -250,25 +250,25 @@ KstObject::UpdateType KstVCurve::update(int update_counter) {
     depUpdated = UPDATE == eymV->update(update_counter) || depUpdated;
   }
 
-  MaxX = cxV->max();
-  MinX = cxV->min();
-  MeanX = cxV->mean();
-  MinPosX = cxV->minPos();
+  _maxX = cxV->max();
+  _minX = cxV->min();
+  _meanX = cxV->mean();
+  _minPosX = cxV->minPos();
   _ns_maxx = cxV->ns_max();
   _ns_minx = cxV->ns_min();
 
-  if (MinPosX > MaxX) {
-    MinPosX = 0;
+  if (_minPosX > _maxX) {
+    _minPosX = 0.0;
   }
-  MaxY = cyV->max();
-  MinY = cyV->min();
-  MeanY = cyV->mean();
-  MinPosY = cyV->minPos();
+  _maxY = cyV->max();
+  _minY = cyV->min();
+  _meanY = cyV->mean();
+  _minPosY = cyV->minPos();
   _ns_maxy = cyV->ns_max();
   _ns_miny = cyV->ns_min();
 
-  if (MinPosY > MaxY) {
-    MinPosY = 0;
+  if (_minPosY > _maxY) {
+    _minPosY = 0;
   }
 
   switch (interp()) {
@@ -505,21 +505,21 @@ void KstVCurve::save(QTextStream &ts, const QString& indent) {
   if (_inputVectors.contains(EYMINUSVECTOR)) {
     ts << l2 << "<eyMinusVectag>" << QStyleSheet::escape(_inputVectors[EYMINUSVECTOR]->tag().tagString()) << "</eyMinusVectag>" << endl;
   }
-  ts << l2 << "<color>" << Color.name() << "</color>" << endl;
-  if (HasLines) {
+  ts << l2 << "<color>" << _color.name() << "</color>" << endl;
+  if (_hasLines) {
     ts << l2 << "<hasLines/>" << endl;
   }
-  ts << l2 << "<lineWidth>" << LineWidth << "</lineWidth>" << endl;
-  ts << l2 << "<lineStyle>" << LineStyle << "</lineStyle>" << endl;
-  if (HasPoints) {
+  ts << l2 << "<lineWidth>" << _lineWidth << "</lineWidth>" << endl;
+  ts << l2 << "<lineStyle>" << _lineStyle << "</lineStyle>" << endl;
+  if (_hasPoints) {
     ts << l2 << "<hasPoints/>" << endl;
   }
-  ts << l2 << "<pointType>" << PointStyle << "</pointType>" << endl;
-  ts << l2 << "<pointDensity>" << PointDensity << "</pointDensity>" << endl;
-  if (HasBars) {
+  ts << l2 << "<pointType>" << _pointStyle << "</pointType>" << endl;
+  ts << l2 << "<pointDensity>" << _pointDensity << "</pointDensity>" << endl;
+  if (_hasBars) {
     ts << l2 << "<hasBars/>" << endl;
   }
-  ts << l2 << "<barStyle>" << BarStyle << "</barStyle>" << endl;
+  ts << l2 << "<barStyle>" << _barStyle << "</barStyle>" << endl;
   if (_ignoreAutoScale) {
     ts << l2 << "<ignoreAutoScale/>" << endl;
   }
@@ -769,28 +769,28 @@ int KstVCurve::getIndexNearXY(double x, double dx_per_pix, double y) const {
 
 
 void KstVCurve::setHasPoints(bool in_HasPoints) {
-  HasPoints = in_HasPoints;
+  _hasPoints = in_HasPoints;
   setDirty();
   emit modifiedLegendEntry();
 }
 
 
 void KstVCurve::setHasLines(bool in_HasLines) {
-  HasLines = in_HasLines;
+  _hasLines = in_HasLines;
   setDirty();
   emit modifiedLegendEntry();
 }
 
 
 void KstVCurve::setHasBars(bool in_HasBars) {
-  HasBars = in_HasBars;
+  _hasBars = in_HasBars;
   setDirty();
   emit modifiedLegendEntry();
 }
 
 
 void KstVCurve::setLineWidth(int in_LineWidth) {
-  LineWidth = in_LineWidth;
+  _lineWidth = in_LineWidth;
   setDirty();
   emit modifiedLegendEntry();
 }
@@ -798,7 +798,7 @@ void KstVCurve::setLineWidth(int in_LineWidth) {
 
 void KstVCurve::setLineStyle(int in_LineStyle) {
   if (in_LineStyle >= 0 && (unsigned int)in_LineStyle < KSTLINESTYLE_MAXTYPE) {
-    LineStyle = in_LineStyle;
+    _lineStyle = in_LineStyle;
     setDirty();
     emit modifiedLegendEntry();
   }
@@ -806,7 +806,7 @@ void KstVCurve::setLineStyle(int in_LineStyle) {
 
 
 void KstVCurve::setBarStyle(int in_BarStyle) {
-  BarStyle = in_BarStyle;
+  _barStyle = in_BarStyle;
   setDirty();
   emit modifiedLegendEntry();
 }
@@ -814,7 +814,7 @@ void KstVCurve::setBarStyle(int in_BarStyle) {
 
 void KstVCurve::setPointDensity(int in_PointDensity) {
   if (in_PointDensity >= 0 && (unsigned int)in_PointDensity < KSTPOINTDENSITY_MAXTYPE) {
-    PointDensity = in_PointDensity;
+    _pointDensity = in_PointDensity;
     setDirty();
   }
 }
@@ -822,7 +822,7 @@ void KstVCurve::setPointDensity(int in_PointDensity) {
 
 void KstVCurve::setPointStyle(int in_PointStyle) {
   if (in_PointStyle >= 0 && (unsigned int)in_PointStyle < KSTPOINT_MAXTYPE) {
-    PointStyle = in_PointStyle;
+    _pointStyle = in_PointStyle;
     setDirty();
     emit modifiedLegendEntry();
   }
@@ -831,24 +831,24 @@ void KstVCurve::setPointStyle(int in_PointStyle) {
 
 void KstVCurve::setColor(const QColor& new_c) {
   setDirty();
-  Color = new_c;
+  _color = new_c;
   emit modifiedLegendEntry();
 }
 
 
 double KstVCurve::maxX() const {
   if (hasBars() && sampleCount() > 0) {
-    return MaxX + (MaxX - MinX)/(2*(sampleCount()-1));
+    return _maxX + (_maxX - _minX)/(2*(sampleCount()-1));
   }
-  return MaxX;
+  return _maxX;
 }
 
 
 double KstVCurve::minX() const {
   if (hasBars() && sampleCount() > 0) {
-    return MinX - (MaxX - MinX)/(2*(sampleCount()-1));
+    return _minX - (_maxX - _minX)/(2*(sampleCount()-1));
   }
-  return MinX;
+  return _minX;
 }
 
 
@@ -864,15 +864,15 @@ KstDataObjectPtr KstVCurve::makeDuplicate(KstDataObjectDataObjectMap& duplicated
   while (KstData::self()->dataTagNameNotUnique(name, false)) {
     name += '\'';
   }
-  KstVCurvePtr vcurve = new KstVCurve(name, VX, VY, EX, EY, EXMinus, EYMinus, Color);
+  KstVCurvePtr vcurve = new KstVCurve(name, VX, VY, EX, EY, EXMinus, EYMinus, _color);
   // copy some other properties as well
-  vcurve->setHasPoints(HasPoints);
-  vcurve->setHasLines(HasLines);
-  vcurve->setHasBars(HasBars);
-  vcurve->setBarStyle(BarStyle);
-  vcurve->setLineWidth(LineWidth);
-  vcurve->setLineStyle(LineStyle);
-  vcurve->setPointDensity(PointDensity);
+  vcurve->setHasPoints(_hasPoints);
+  vcurve->setHasLines(_hasLines);
+  vcurve->setHasBars(_hasBars);
+  vcurve->setBarStyle(_barStyle);
+  vcurve->setLineWidth(_lineWidth);
+  vcurve->setLineStyle(_lineStyle);
+  vcurve->setPointDensity(_pointDensity);
 
   duplicatedMap.insert(this, KstDataObjectPtr(vcurve));
   return KstDataObjectPtr(vcurve);
@@ -1392,7 +1392,7 @@ void KstVCurve::paint(const KstCurveRenderContext& context) {
           pt.setX(d2i(m_X * rX + b_X));
           pt.setY(d2i(m_Y * rY + b_Y));
           if (rgn.contains(pt)) {
-            KstCurvePointSymbol::draw(PointStyle, p, pt.x(), pt.y(), width);
+            KstCurvePointSymbol::draw(_pointStyle, p, pt.x(), pt.y(), width);
             rgn -= QRegion(pt.x()-(size/2), pt.y()-(size/2), size, size, QRegion::Ellipse);
           }
         }
@@ -1410,7 +1410,7 @@ void KstVCurve::paint(const KstCurveRenderContext& context) {
           X1 = m_X * rX + b_X;
           Y1 = m_Y * rY + b_Y;
           if (X1 >= Lx && X1 <= Hx && Y1 >= Ly && Y1 <= Hy) {
-            KstCurvePointSymbol::draw(PointStyle, p, d2i(X1), d2i(Y1), width);
+            KstCurvePointSymbol::draw(_pointStyle, p, d2i(X1), d2i(Y1), width);
           }
         }
       }
@@ -1938,7 +1938,7 @@ void KstVCurve::paintLegendSymbol(KstPainter *p, const QRect& bound) {
   if (hasPoints()) {
     // draw a point in the middle
     p->setPen(QPen(color(), width));
-    KstCurvePointSymbol::draw(PointStyle, p, bound.left() + bound.width()/2, bound.top() + bound.height()/2, width, 600);
+    KstCurvePointSymbol::draw(_pointStyle, p, bound.left() + bound.width()/2, bound.top() + bound.height()/2, width, 600);
   }
   p->restore();
 }

@@ -85,6 +85,7 @@ class KST_EXPORT KstImage: public KstBaseCurve {
     virtual int numContourLines() const { return _numContourLines; }
     virtual void setNumContourLines(int numContourLines) { _numContourLines = numContourLines; }
     virtual const QColor& contourColor() const { return _contourColor; }
+    virtual void setContourColor(const QColor& contourColor) { _contourColor = contourColor; }
     virtual int contourWeight() const { return _contourWeight; } // a contour weight of -1 means variable weight
     virtual void setContourWeight(int contourWeight) { _contourWeight = contourWeight; } // a contour weight of -1 means 
 

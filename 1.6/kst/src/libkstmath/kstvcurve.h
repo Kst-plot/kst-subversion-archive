@@ -90,8 +90,8 @@ class KST_EXPORT KstVCurve: public KstBaseCurve {
 
     virtual double maxX() const;
     virtual double minX() const;
-    virtual double meanX() const { return MeanX; } 
-    virtual double meanY() const { return MeanY; }
+    virtual double meanX() const { return _meanX; } 
+    virtual double meanY() const { return _meanY; }
     virtual void yRange(double xFrom, double xTo, double* yMin, double* yMax);
 
     virtual int samplesPerFrame() const;
@@ -106,9 +106,9 @@ class KST_EXPORT KstVCurve: public KstBaseCurve {
     KstVectorPtr xMinusErrorVector() const;
     KstVectorPtr yMinusErrorVector() const;
 
-    virtual bool hasPoints()    const { return HasPoints; }
-    virtual bool hasLines()     const { return HasLines; }
-    virtual bool hasBars()      const { return HasBars; }
+    virtual bool hasPoints()    const { return _hasPoints; }
+    virtual bool hasLines()     const { return _hasLines; }
+    virtual bool hasBars()      const { return _hasBars; }
     virtual void setHasPoints(bool in_HasPoints);
     virtual void setHasLines(bool in_HasLines);
     virtual void setHasBars(bool in_HasBars);
@@ -118,13 +118,13 @@ class KST_EXPORT KstVCurve: public KstBaseCurve {
     virtual void setPointDensity(int in_PointDensity);
     virtual void setPointStyle(int in_PointStyle);
 
-    virtual int lineWidth()     const { return LineWidth; }
-    virtual int lineStyle()     const { return LineStyle; }
-    virtual int barStyle()      const { return BarStyle; }
-    virtual int pointDensity()  const { return PointDensity; }
-    virtual int pointStyle()    const { return PointStyle; }
+    virtual int lineWidth()     const { return _lineWidth; }
+    virtual int lineStyle()     const { return _lineStyle; }
+    virtual int barStyle()      const { return _barStyle; }
+    virtual int pointDensity()  const { return _pointDensity; }
+    virtual int pointStyle()    const { return _pointStyle; }
 
-    virtual QColor color() const { return Color; }
+    virtual QColor color() const { return _color; }
     virtual void setColor(const QColor& new_c);
 
     void pushColor(const QColor& c) { _colorStack.push(color()); setColor(c); }
@@ -155,19 +155,19 @@ class KST_EXPORT KstVCurve: public KstBaseCurve {
   private:
     inline void commonConstructor(const QString& in_tag, const QColor& in_color);
 
-    double MeanY;
+    double _meanY;
 
-    int BarStyle;
-    int LineWidth;
-    int LineStyle;
-    int PointDensity;
-    int PointStyle;
+    int _barStyle;
+    int _lineWidth;
+    int _lineStyle;
+    int _pointDensity;
+    int _pointStyle;
 
-    bool HasPoints;
-    bool HasLines;
-    bool HasBars;
+    bool _hasPoints;
+    bool _hasLines;
+    bool _hasBars;
 
-    QColor Color;
+    QColor _color;
     QValueStack<int> _widthStack;
     QValueStack<QColor> _colorStack;
     QValueStack<int> _pointStyleStack;
@@ -182,4 +182,3 @@ typedef KstSharedPtr<KstVCurve> KstVCurvePtr;
 typedef KstObjectList<KstVCurvePtr> KstVCurveList;
 
 #endif
-
