@@ -93,7 +93,8 @@ kstextension_js_la_SOURCES= $(JSEXTERN) \
 			    bind_picture.cpp \
 			    bind_arrow.cpp \
 			    bind_line.cpp \
-			    bind_file.cpp
+			    bind_file.cpp \
+			    bind_elog.cpp
 
 #			    js_dataobject.cpp \
 #			    bind_jsdataobject.cpp

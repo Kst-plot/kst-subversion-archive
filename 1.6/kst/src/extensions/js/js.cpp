@@ -53,6 +53,7 @@
 #include "bind_debug.h"
 #include "bind_equation.h"
 #include "bind_ellipse.h"
+#include "bind_elog.h"
 #include "bind_file.h"
 #include "bind_histogram.h"
 #include "bind_image.h"
@@ -214,6 +215,7 @@ void KstJS::createBindings() {
   new KstBindKst(exec, &globalObj, this);
 
   new KstBindFile(exec, &globalObj);
+  new KstBindELOG(exec, &globalObj);
 
   globalObj.put(exec, "loadScript", KJS::Object(new LoadScript(this)));
 

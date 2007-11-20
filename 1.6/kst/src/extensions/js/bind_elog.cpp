@@ -1,0 +1,377 @@
+/***************************************************************************
+                              bind_elog.cpp
+                             -------------------
+    begin                : Nov 20 2007
+    copyright            : (C) 2007 The University of British Columbia
+    email                :
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+#include "bind_elog.h"
+
+#include <kdebug.h>
+
+KstBindELOG::KstBindELOG(KJS::ExecState *exec, KJS::Object *globalObject)
+: KstBinding("ELOG") {
+  KJS::Object o(this);
+  addBindings(exec, o);
+  if (globalObject) {
+    globalObject->put(exec, "ELOG", o);
+  }
+}
+
+
+KstBindELOG::KstBindELOG(int id)
+: KstBinding("ELOG Method", id) {
+}
+
+
+KstBindELOG::~KstBindELOG() {
+}
+
+
+KJS::Object KstBindELOG::construct(KJS::ExecState *exec, const KJS::List& args) {
+  if (args.size() != 0) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::SyntaxError);
+    exec->setException(eobj);
+    return KJS::Object();
+  }
+
+  return KJS::Object(new KstBindELOG(exec));
+}
+
+
+struct ELOGBindings {
+  const char *name;
+  KJS::Value (KstBindELOG::*method)(KJS::ExecState*, const KJS::List&);
+};
+
+
+struct ELOGProperties {
+  const char *name;
+  void (KstBindELOG::*set)(KJS::ExecState*, const KJS::Value&);
+  KJS::Value (KstBindELOG::*get)(KJS::ExecState*) const;
+};
+
+
+static ELOGBindings elogBindings[] = {
+  { "submit", &KstBindELOG::submit },
+  { "addAttribute", &KstBindELOG::addAttribute },
+  { "removeAttribute", &KstBindELOG::removeAttribute },
+  { "clearAttributes", &KstBindELOG::clearAttributes },
+  { "addAttachment", &KstBindELOG::addAttachment },
+  { "clearAttachments", &KstBindELOG::clearAttachments },
+  { 0L, 0L }
+};
+
+
+static ELOGProperties elogProperties[] = {
+  { "hostname", &KstBindELOG::setHostname , &KstBindELOG::hostname },
+  { "port", &KstBindELOG::setPort , &KstBindELOG::port },
+  { "logbook", &KstBindELOG::setLogbook , &KstBindELOG::logbook },
+  { "username", &KstBindELOG::setUsername , &KstBindELOG::username },
+  { "password", &KstBindELOG::setPassword , &KstBindELOG::password },
+  { "text", &KstBindELOG::setText , &KstBindELOG::text },
+  { 0L, 0L, 0L }
+};
+
+
+KJS::ReferenceList KstBindELOG::propList(KJS::ExecState *exec, bool recursive) {
+  KJS::ReferenceList rc = KstBinding::propList(exec, recursive);
+
+  for (int i = 0; elogProperties[i].name; ++i) {
+    rc.append(KJS::Reference(this, KJS::Identifier(elogProperties[i].name)));
+  }
+
+  return rc;
+}
+
+
+bool KstBindELOG::hasProperty(KJS::ExecState *exec, const KJS::Identifier& propertyName) const {
+  QString prop = propertyName.qstring();
+  for (int i = 0; elogProperties[i].name; ++i) {
+    if (prop == elogProperties[i].name) {
+      return true;
+    }
+  }
+
+  return KstBinding::hasProperty(exec, propertyName);
+}
+
+
+void KstBindELOG::put(KJS::ExecState *exec, const KJS::Identifier& propertyName, const KJS::Value& value, int attr) {
+/*  if (!_f) {
+    KstBinding::put(exec, propertyName, value, attr);
+    return;
+  }
+*/
+  QString prop = propertyName.qstring();
+  for (int i = 0; elogProperties[i].name; ++i) {
+    if (prop == elogProperties[i].name) {
+      if (!elogProperties[i].set) {
+        break;
+      }
+      (this->*elogProperties[i].set)(exec, value);
+      return;
+    }
+  }
+
+  KstBinding::put(exec, propertyName, value, attr);
+}
+
+
+KJS::Value KstBindELOG::get(KJS::ExecState *exec, const KJS::Identifier& propertyName) const {
+/*
+  if (!_f) {
+    return KstBinding::get(exec, propertyName);
+  }
+*/
+  QString prop = propertyName.qstring();
+  for (int i = 0; elogProperties[i].name; ++i) {
+    if (prop == elogProperties[i].name) {
+      if (!elogProperties[i].get) {
+        break;
+      }
+      return (this->*elogProperties[i].get)(exec);
+    }
+  }
+
+  return KstBinding::get(exec, propertyName);
+}
+
+
+KJS::Value KstBindELOG::call(KJS::ExecState *exec, KJS::Object& self, const KJS::List& args) {
+  int id = this->id();
+  if (id <= 0) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::GeneralError);
+    exec->setException(eobj);
+    return KJS::Undefined();
+  }
+
+  KstBindELOG *imp = dynamic_cast<KstBindELOG*>(self.imp());
+  if (!imp) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::GeneralError);
+    exec->setException(eobj);
+    return KJS::Undefined();
+  }
+
+  return (imp->*elogBindings[id - 1].method)(exec, args);
+}
+
+
+void KstBindELOG::addBindings(KJS::ExecState *exec, KJS::Object& obj) {
+  for (int i = 0; elogBindings[i].name != 0L; ++i) {
+    KJS::Object o = KJS::Object(new KstBindELOG(i + 1));
+    obj.put(exec, elogBindings[i].name, o, KJS::Function);
+  }
+}
+
+
+KJS::Value KstBindELOG::submit(KJS::ExecState *exec, const KJS::List& args) {
+  if (args.size() != 0) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::SyntaxError, "Requires no arguments.");
+    exec->setException(eobj);
+    return KJS::Undefined();
+  }
+
+  if (_hostname.isEmpty()) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::SyntaxError, "No hostname yet defined.");
+    exec->setException(eobj);
+    return KJS::Undefined();
+  }
+
+  return KJS::Boolean(true);
+}
+
+
+KJS::Value KstBindELOG::addAttachment(KJS::ExecState *exec, const KJS::List& args) {
+  if (args.size() != 1) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::SyntaxError, "Requires exactly one argument.");
+    exec->setException(eobj);
+    return KJS::Undefined();
+  }
+
+  if (args[0].type() != KJS::StringType) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError);
+    exec->setException(eobj);
+    return KJS::Boolean(false);
+  }
+
+  _attachments.append(args[0].toString(exec).qstring());
+  return KJS::Boolean(true);
+}
+
+
+KJS::Value KstBindELOG::clearAttachments(KJS::ExecState *exec, const KJS::List& args) {
+  if (args.size() != 0) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::SyntaxError, "Requires no arguments.");
+    exec->setException(eobj);
+    return KJS::Undefined();
+  }
+
+  _attachments.clear();
+  return KJS::Undefined();
+}
+
+
+KJS::Value KstBindELOG::addAttribute(KJS::ExecState *exec, const KJS::List& args) {
+  if (args.size() != 2) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::SyntaxError, "Requires exactly one argument.");
+    exec->setException(eobj);
+    return KJS::Undefined();
+  }
+
+  if (args[0].type() != KJS::StringType) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError);
+    exec->setException(eobj);
+    return KJS::Boolean(false);
+  }
+
+  if (args[1].type() != KJS::StringType) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError);
+    exec->setException(eobj);
+    return KJS::Boolean(false);
+  }
+
+  _attributes.insert(args[0].toString(exec).qstring(), args[1].toString(exec).qstring());
+  return KJS::Boolean(true);
+}
+
+
+KJS::Value KstBindELOG::removeAttribute(KJS::ExecState *exec, const KJS::List& args) {
+  if (args.size() != 1) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::SyntaxError, "Requires exactly one argument.");
+    exec->setException(eobj);
+    return KJS::Undefined();
+  }
+
+  if (args[0].type() != KJS::StringType) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError);
+    exec->setException(eobj);
+    return KJS::Boolean(false);
+  }
+
+  _attributes.remove(args[0].toString(exec).qstring());
+  return KJS::Boolean(false);
+}
+
+
+KJS::Value KstBindELOG::clearAttributes(KJS::ExecState *exec, const KJS::List& args) {
+  if (args.size() != 0) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::SyntaxError, "Requires no arguments.");
+    exec->setException(eobj);
+    return KJS::Undefined();
+  }
+  _attributes.clear();
+  return KJS::Undefined();
+}
+
+
+KJS::Value KstBindELOG::hostname(KJS::ExecState *exec) const {
+  Q_UNUSED(exec)
+
+  return KJS::String(_hostname);
+}
+
+
+void KstBindELOG::setHostname(KJS::ExecState *exec, const KJS::Value& value) {
+  if (value.type() != KJS::StringType) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError);
+    exec->setException(eobj);
+    return;
+  }
+  _hostname = value.toString(exec).qstring();
+}
+
+
+KJS::Value KstBindELOG::port(KJS::ExecState *exec) const {
+  Q_UNUSED(exec)
+
+  return KJS::Number(_port);
+}
+
+
+void KstBindELOG::setPort(KJS::ExecState *exec, const KJS::Value& value) {
+  if (value.type() != KJS::NumberType) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError);
+    exec->setException(eobj);
+    return;
+  }
+  _port = value.toUInt32(exec);
+}
+
+
+KJS::Value KstBindELOG::logbook(KJS::ExecState *exec) const {
+  Q_UNUSED(exec)
+
+  return KJS::String(_logbook);
+}
+
+
+void KstBindELOG::setLogbook(KJS::ExecState *exec, const KJS::Value& value) {
+  if (value.type() != KJS::StringType) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError);
+    exec->setException(eobj);
+    return;
+  }
+  _logbook = value.toString(exec).qstring();
+}
+
+
+KJS::Value KstBindELOG::username(KJS::ExecState *exec) const {
+  Q_UNUSED(exec)
+
+  return KJS::String(_username);
+}
+
+
+void KstBindELOG::setUsername(KJS::ExecState *exec, const KJS::Value& value) {
+  if (value.type() != KJS::StringType) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError);
+    exec->setException(eobj);
+    return;
+  }
+  _username = value.toString(exec).qstring();
+}
+
+
+KJS::Value KstBindELOG::password(KJS::ExecState *exec) const {
+  Q_UNUSED(exec)
+
+  return KJS::String(_password);
+}
+
+
+void KstBindELOG::setPassword(KJS::ExecState *exec, const KJS::Value& value) {
+  if (value.type() != KJS::StringType) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError);
+    exec->setException(eobj);
+    return;
+  }
+  _password = value.toString(exec).qstring();
+}
+
+
+KJS::Value KstBindELOG::text(KJS::ExecState *exec) const {
+  Q_UNUSED(exec)
+
+  return KJS::String(_text);
+}
+
+
+void KstBindELOG::setText(KJS::ExecState *exec, const KJS::Value& value) {
+  if (value.type() != KJS::StringType) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError);
+    exec->setException(eobj);
+    return;
+  }
+  _text = value.toString(exec).qstring();
+}

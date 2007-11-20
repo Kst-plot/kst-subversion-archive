@@ -2,7 +2,7 @@
                                bind_file.h
                              -------------------
     begin                : Oct 18 2007
-    copyright            : (C) 2005 The University of British Columbia
+    copyright            : (C) 2007 The University of British Columbia
     email                :
  ***************************************************************************/
 
