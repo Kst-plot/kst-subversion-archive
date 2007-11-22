@@ -259,7 +259,7 @@ void Kst2dPlotWidget::updateButtons() {
   _xTransformTopExp->setEnabled(_xTransformTop->isChecked());
 
   // updates for range tab Y...
-  YACRange->setEnabled(_editMultipleMode || XAC->isChecked());
+  YACRange->setEnabled(_editMultipleMode || YAC->isChecked());
   YExpressionMin->setEnabled(_editMultipleMode || YExpression->isChecked());
   YExpressionMax->setEnabled(_editMultipleMode || YExpression->isChecked());
   scalarSelectorY1->setEnabled(_editMultipleMode || YExpression->isChecked());
