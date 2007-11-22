@@ -2407,9 +2407,20 @@ void Kst2DPlot::drawDotAt(QPainter& p, double x, double y) {
 void Kst2DPlot::drawPlusAt(QPainter& p, double x, double y) {
   if (_xLog) {
     x = logXLo(x);
+    if (_xReversed) {
+      x = logXLo(_XMax) - (x - logXLo(_XMin));
+    }
+  } else if (_xReversed) {
+    x = _XMax - (x - _XMin);
   }
+
   if (_yLog) {
     y = logYLo(y);
+    if (_yReversed) {
+      y = logYLo(_YMax) - (y - logYLo(_YMin));
+    }
+  } else if (_yReversed) {
+    y = _YMax - (y - _YMin);
   }
 
   int X1 = d2i(_m_X * x + _b_X) + position().x();
