@@ -643,7 +643,7 @@ private:
   QString _xTransformedExp, _yTransformedExp;
 
   // helper functions for draw(...)
-  void plotLabels(QPainter& p, int x_px, int y_px, double xleft_bdr_px, double xright_bdr_px, double ytop_bdr_px);
+  void plotLabels(QPainter& p, int x_px, int y_px, double xleft_bdr_px, double xright_bdr_px, double ytop_bdr_px, double ybot_bdr_px);
   void plotAxes(QPainter& p, QRect& plotRegion,
       TickParameters tpx,
       double xleft_bdr_px, double xright_bdr_px,

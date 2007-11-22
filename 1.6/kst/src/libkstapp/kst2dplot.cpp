@@ -2710,7 +2710,7 @@ void Kst2DPlot::draw(KstPainter& p) {
     bt_label[i_bt] = "Initialization";
     bt[i_bt++] = benchTime.elapsed();
 #endif
-    plotLabels(p, x_px, y_px, xleft_bdr_px, xright_bdr_px, ytop_bdr_px);
+    plotLabels(p, x_px, y_px, xleft_bdr_px, xright_bdr_px, ytop_bdr_px, ybot_bdr_px);
     p.flush();
 #ifdef BENCHMARK
     bt_label[i_bt] = "Plot Labels";
@@ -6233,17 +6233,19 @@ void Kst2DPlot::plotAxes(QPainter& p, QRect& plotRegion,
 }
 
 
-void Kst2DPlot::plotLabels(QPainter &p, int x_px, int y_px, double xleft_bdr_px, double xright_bdr_px,  double ytop_bdr_px) {
+void Kst2DPlot::plotLabels(QPainter &p, int x_px, int y_px, double xleft_bdr_px, double xright_bdr_px,  double ytop_bdr_px, double ybot_bdr_px) {
   if (!_suppressBottom) {
     p.save();
-    p.translate((x_px - _xLabel->size().width() + xleft_bdr_px) / 2, y_px - _xLabel->size().height());
+    p.translate((x_px + xleft_bdr_px - xright_bdr_px - _xLabel->size().width()) / 2, 
+                 y_px - _xLabel->size().height());
     _xLabel->paint(p);
     p.restore();
   }
 
   if (!_suppressLeft) {
     p.save();
-    p.translate((_yLabel->lineSpacing() - _yLabel->ascent())/2, (y_px - _yLabel->size().height()) / 2 - ytop_bdr_px/2);
+    p.translate((_yLabel->lineSpacing() - _yLabel->ascent())/2, 
+                (y_px + ytop_bdr_px - ybot_bdr_px - _yLabel->size().height()) / 2);
     _yLabel->paint(p);
     p.restore();
   }
