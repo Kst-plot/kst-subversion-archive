@@ -81,10 +81,10 @@ Kst2dPlotWidget::Kst2dPlotWidget(QWidget* parent, const char* name, WFlags fl) :
   connect(XExpression, SIGNAL(toggled(bool)), this, SLOT(updateButtons()));
   connect(YExpression, SIGNAL(toggled(bool)), this, SLOT(updateButtons()));
 
-  connect(scalarSelectorX1, SIGNAL(activated(const QString&)), XExpressionMin, SLOT(insert(const QString&)));
-  connect(scalarSelectorY1, SIGNAL(activated(const QString&)), YExpressionMin, SLOT(insert(const QString&)));
-  connect(scalarSelectorX2, SIGNAL(activated(const QString&)), XExpressionMax, SLOT(insert(const QString&)));
-  connect(scalarSelectorY2, SIGNAL(activated(const QString&)), YExpressionMax, SLOT(insert(const QString&)));
+  connect(scalarSelectorX1, SIGNAL(activated(const QString&)), this, SLOT(insertXExpressionMin(const QString&)));
+  connect(scalarSelectorY1, SIGNAL(activated(const QString&)), this, SLOT(insertYExpressionMin(const QString&)));
+  connect(scalarSelectorX2, SIGNAL(activated(const QString&)), this, SLOT(insertXExpressionMax(const QString&)));
+  connect(scalarSelectorY2, SIGNAL(activated(const QString&)), this, SLOT(insertYExpressionMax(const QString&)));
 
   // adding/removing curves
   connect(DisplayedCurveList, SIGNAL(clicked(QListBoxItem*)), this, SLOT(updateButtons()));
@@ -1460,5 +1460,38 @@ void Kst2dPlotWidget::editLegend() {
   _plot->getOrCreateLegend()->showDialog(tlv, false);
   ShowLegend->setChecked(true);
 }
+
+void Kst2dPlotWidget::insertXExpressionMin(const QString& strIn) {
+  QString str;
+
+  str = "["+strIn+"]";
+
+  XExpressionMin->insert(str);
+}
+
+void Kst2dPlotWidget::insertYExpressionMin(const QString& strIn) {
+  QString str;
+
+  str = "["+strIn+"]";
+
+  YExpressionMin->insert(str);
+}
+
+void Kst2dPlotWidget::insertXExpressionMax(const QString& strIn) {
+  QString str;
+
+  str = "["+strIn+"]";
+
+  XExpressionMax->insert(str);
+}
+
+void Kst2dPlotWidget::insertYExpressionMax(const QString& strIn) {
+  QString str;
+
+  str = "["+strIn+"]";
+
+  YExpressionMax->insert(str);
+}
+
 
 #include "kst2dplotwidget_i.moc"

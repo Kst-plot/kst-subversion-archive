@@ -59,6 +59,10 @@ class Kst2dPlotWidget: public View2DPlotWidget {
     void setScalarDestYLabel();
     void setScalarDestTopLabel();
     void editLegend();
+    void insertXExpressionMin(const QString&);
+    void insertYExpressionMin(const QString&);
+    void insertXExpressionMax(const QString&);
+    void insertYExpressionMax(const QString&);
 
   private:
     void populateEditMultiple(QRadioButton *radioButtonWidget);
