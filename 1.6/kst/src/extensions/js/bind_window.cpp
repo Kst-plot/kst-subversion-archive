@@ -105,6 +105,7 @@ static WindowProperties windowProperties[] = {
   { "name", &KstBindWindow::setWindowName, &KstBindWindow::windowName },
   { "plots", 0L, &KstBindWindow::plots },
   { "view", 0L, &KstBindWindow::view },
+  { "columns", &KstBindWindow::setColumns, &KstBindWindow::columns },
   { 0L, 0L, 0L }
 };
 
@@ -237,6 +238,54 @@ KJS::Value KstBindWindow::close(KJS::ExecState *exec, const KJS::List& args) {
   _d->view()->children().clear();
   _d->close();
   return KJS::Undefined();
+}
+
+
+void KstBindWindow::setColumns(KJS::ExecState *exec, const KJS::Value& value) {
+  unsigned cols = 1;
+  if (value.type() != KJS::NumberType || !value.toUInt32(cols)) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError);
+    exec->setException(eobj);
+    return;
+  }
+
+  if (!_d) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::GeneralError);
+    exec->setException(eobj);
+    return;
+  }
+
+  KstTopLevelViewPtr tlv = _d->view();
+  if( !tlv) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::GeneralError);
+    exec->setException(eobj);
+    return;
+  }
+
+  KstWriteLocker wl(tlv);
+  tlv->setOnGrid(true);
+  tlv->setColumns(cols);
+  tlv->cleanup(cols);
+  tlv->paint(KstPainter::P_PAINT);
+}
+
+
+KJS::Value KstBindWindow::columns(KJS::ExecState *exec) const {
+  if (!_d) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::GeneralError);
+    exec->setException(eobj);
+    return KJS::Undefined();
+  }
+
+  KstTopLevelViewPtr tlv = _d->view();
+  if( !tlv) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::GeneralError);
+    exec->setException(eobj);
+    return KJS::Undefined();
+  }
+
+  KstReadLocker rl(tlv);
+  return KJS::Number(tlv->columns());
 }
 
 

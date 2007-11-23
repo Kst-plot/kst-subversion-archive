@@ -19,11 +19,11 @@ Spectrogram
 Fit
 Filter
 Plugin		
-Histogram	DONE 
-Curve		DONE 
-Image		
-Plot		needs many more functions/properties
-Window		needs many more functions/properties
+Histogram	DONE
+Curve		DONE
+Image		DONE
+Plot		
+Window		DONE
 
 PlotLabel	DONE
 PlotLegend	DONE
@@ -36,6 +36,8 @@ ViewObject	DONE
    Label	DONE
    Arrow	DONE
    Group
+
+ELOG		DONE
 
 KstUIMerge
 	- Global object used to load XMLUI files for merging.
@@ -88,6 +90,5 @@ Docs:
 
 1.2.0 issues:
 - Curves are stale in concept - split them?
-- No image binding
 - "delete" support - in order drop references?
 - Make .position and .size directly manipulated?

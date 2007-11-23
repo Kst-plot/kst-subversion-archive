@@ -61,16 +61,25 @@ class KstBindWindow : public KstBinding {
     */
     void setWindowName(KJS::ExecState *exec, const KJS::Value& value);
     KJS::Value windowName(KJS::ExecState *exec) const;
+
     /* @property PlotCollection plots
        @description The list of plots contained in this window, flattened.
                     This property is subject to change!  Do not rely on it for
                     production code yet!
     */
     KJS::Value plots(KJS::ExecState *exec) const;
+
     /* @property ViewObject view
        @description The view object for this window.
     */
     KJS::Value view(KJS::ExecState *exec) const;
+
+    /* @property number columns
+       @description The number of columns the children are organized into.  If
+                    this value is modified, <i>onGrid</i> is set to true.
+     */
+    void setColumns(KJS::ExecState *exec, const KJS::Value& value);
+    KJS::Value columns(KJS::ExecState *exec) const;
 
   protected:
     KstBindWindow(int id);
