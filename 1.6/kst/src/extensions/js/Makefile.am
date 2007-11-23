@@ -30,6 +30,7 @@ kstextension_js_la_SOURCES= $(JSEXTERN) \
 			    js.cpp \
 			    jsiface.skel \
 			    jsiface_impl.cpp \
+			    elogthreadsubmit.cpp \
 			    kstbinding.cpp \
 			    bind_object.cpp \
 			    bind_objectcollection.cpp \

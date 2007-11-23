@@ -23,6 +23,9 @@
 #include <kjs/interpreter.h>
 #include <kjs/object.h>
 
+#define MAX_ATTACHMENTS  50
+#define MAX_N_ATTR       50
+
 /* @class ELOG
    @description An object that represents the interface to an ELOG server.
 */
@@ -105,11 +108,59 @@ class KstBindELOG : public KstBinding {
     KJS::Value password(KJS::ExecState *exec) const;
     void setPassword(KJS::ExecState *exec, const KJS::Value& value);
 
+    /* @property string writePassword
+       @description The write password.
+    */
+    KJS::Value writePassword(KJS::ExecState *exec) const;
+    void setWritePassword(KJS::ExecState *exec, const KJS::Value& value);
+
     /* @property string text
        @description Text.
     */
     KJS::Value text(KJS::ExecState *exec) const;
     void setText(KJS::ExecState *exec, const KJS::Value& value);
+
+    /* @property boolean encodedHTML
+       @description The message is HTML encoded.
+    */
+    KJS::Value encodedHTML(KJS::ExecState *exec) const;
+    void setEncodedHTML(KJS::ExecState *exec, const KJS::Value& value);
+
+    /* @property boolean suppressEmailNotification
+       @description If true email notification is suppressed.
+    */
+    KJS::Value suppressEmailNotification(KJS::ExecState *exec) const;
+    void setSuppressEmailNotification(KJS::ExecState *exec, const KJS::Value& value);
+
+    /* @property boolean includeCapture
+       @description If true an image capture of the Kst session is included in the ELOG entry.
+    */
+    KJS::Value includeCapture(KJS::ExecState *exec) const;
+    void setIncludeCapture(KJS::ExecState *exec, const KJS::Value& value);
+
+    /* @property number captureWidth
+       @description The width of the image capture to be included in the ELOG entry.
+    */
+    KJS::Value captureWidth(KJS::ExecState *exec) const;
+    void setCaptureWidth(KJS::ExecState *exec, const KJS::Value& value);
+
+    /* @property number captureHeight
+       @description The height of the image capture to be included in the ELOG entry.
+    */
+    KJS::Value captureHeight(KJS::ExecState *exec) const;
+    void setCaptureHeight(KJS::ExecState *exec, const KJS::Value& value);
+
+    /* @property boolean includeConfiguration
+       @description If true a capture of the Kst session is included in the ELOG entry.
+    */
+    KJS::Value includeConfiguration(KJS::ExecState *exec) const;
+    void setIncludeConfiguration(KJS::ExecState *exec, const KJS::Value& value);
+
+    /* @property boolean includeDebugInfo
+       @description If true a capture of the Kst debug information is included in the ELOG entry.
+    */
+    KJS::Value includeDebugInfo(KJS::ExecState *exec) const;
+    void setIncludeDebugInfo(KJS::ExecState *exec, const KJS::Value& value);
 
   protected:
     KstBindELOG(int id);
@@ -121,11 +172,20 @@ class KstBindELOG : public KstBinding {
     QString _hostname;
     int _port;
     QString _logbook;
+    QString _writePassword;
     QString _password;
     QString _username;
     QString _text;
     QStringList _attachments;
     QMap<QString, QString> _attributes;
+
+    bool _suppressEmailNotification;
+    bool _encodedHTML;
+    bool _includeCapture;
+    bool _includeConfiguration;
+    bool _includeDebugInfo;
+    int _captureWidth;
+    int _captureHeight;
 };
 
 #endif

@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "bind_elog.h"
+#include "elogthreadsubmit.h"
 
 #include <kdebug.h>
 
@@ -79,7 +80,14 @@ static ELOGProperties elogProperties[] = {
   { "logbook", &KstBindELOG::setLogbook , &KstBindELOG::logbook },
   { "username", &KstBindELOG::setUsername , &KstBindELOG::username },
   { "password", &KstBindELOG::setPassword , &KstBindELOG::password },
+  { "writePassword", &KstBindELOG::setWritePassword , &KstBindELOG::writePassword },
+  { "encodedHTML", &KstBindELOG::setEncodedHTML , &KstBindELOG::encodedHTML },
   { "text", &KstBindELOG::setText , &KstBindELOG::text },
+  { "includeCapture", &KstBindELOG::setIncludeCapture , &KstBindELOG::includeCapture },
+  { "captureWidth", &KstBindELOG::setCaptureWidth , &KstBindELOG::captureWidth },
+  { "captureHeight", &KstBindELOG::setCaptureHeight , &KstBindELOG::captureHeight },
+  { "includeConfiguration", &KstBindELOG::setIncludeConfiguration , &KstBindELOG::includeConfiguration },
+  { "includeDebugInfo", &KstBindELOG::setIncludeDebugInfo , &KstBindELOG::includeDebugInfo },
   { 0L, 0L, 0L }
 };
 
@@ -108,11 +116,6 @@ bool KstBindELOG::hasProperty(KJS::ExecState *exec, const KJS::Identifier& prope
 
 
 void KstBindELOG::put(KJS::ExecState *exec, const KJS::Identifier& propertyName, const KJS::Value& value, int attr) {
-/*  if (!_f) {
-    KstBinding::put(exec, propertyName, value, attr);
-    return;
-  }
-*/
   QString prop = propertyName.qstring();
   for (int i = 0; elogProperties[i].name; ++i) {
     if (prop == elogProperties[i].name) {
@@ -129,11 +132,6 @@ void KstBindELOG::put(KJS::ExecState *exec, const KJS::Identifier& propertyName,
 
 
 KJS::Value KstBindELOG::get(KJS::ExecState *exec, const KJS::Identifier& propertyName) const {
-/*
-  if (!_f) {
-    return KstBinding::get(exec, propertyName);
-  }
-*/
   QString prop = propertyName.qstring();
   for (int i = 0; elogProperties[i].name; ++i) {
     if (prop == elogProperties[i].name) {
@@ -176,6 +174,9 @@ void KstBindELOG::addBindings(KJS::ExecState *exec, KJS::Object& obj) {
 
 
 KJS::Value KstBindELOG::submit(KJS::ExecState *exec, const KJS::List& args) {
+  ElogThreadSubmit* pThread;
+  QByteArray byteArrayCapture;
+
   if (args.size() != 0) {
     KJS::Object eobj = KJS::Error::create(exec, KJS::SyntaxError, "Requires no arguments.");
     exec->setException(eobj);
@@ -187,6 +188,23 @@ KJS::Value KstBindELOG::submit(KJS::ExecState *exec, const KJS::List& args) {
     exec->setException(eobj);
     return KJS::Undefined();
   }
+
+  pThread = new ElogThreadSubmit(_hostname,
+                                 _port,
+                                 false,
+                                 false,
+                                 false,
+                                 &byteArrayCapture,
+                                 _text,
+                                 _username,
+                                 _password,
+                                 _writePassword,
+                                 _logbook,
+                                 _attributes,
+                                 _attachments,
+                                 _encodedHTML,
+                                 _suppressEmailNotification);
+  pThread->doTransmit();
 
   return KJS::Boolean(true);
 }
@@ -203,6 +221,12 @@ KJS::Value KstBindELOG::addAttachment(KJS::ExecState *exec, const KJS::List& arg
     KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError);
     exec->setException(eobj);
     return KJS::Boolean(false);
+  }
+
+  if (_attachments.count()+1 >= MAX_ATTACHMENTS) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::GeneralError, "Maximum number of attachments has been reached.");
+    exec->setException(eobj);
+    return KJS::Undefined();
   }
 
   _attachments.append(args[0].toString(exec).qstring());
@@ -239,6 +263,12 @@ KJS::Value KstBindELOG::addAttribute(KJS::ExecState *exec, const KJS::List& args
     KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError);
     exec->setException(eobj);
     return KJS::Boolean(false);
+  }
+
+  if (_attributes.count()+1 >= MAX_N_ATTR) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::GeneralError, "Maximum number of attributes has been reached.");
+    exec->setException(eobj);
+    return KJS::Undefined();
   }
 
   _attributes.insert(args[0].toString(exec).qstring(), args[1].toString(exec).qstring());
@@ -360,6 +390,23 @@ void KstBindELOG::setPassword(KJS::ExecState *exec, const KJS::Value& value) {
 }
 
 
+KJS::Value KstBindELOG::writePassword(KJS::ExecState *exec) const {
+  Q_UNUSED(exec)
+
+  return KJS::String(_writePassword);
+}
+
+
+void KstBindELOG::setWritePassword(KJS::ExecState *exec, const KJS::Value& value) {
+  if (value.type() != KJS::StringType) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError);
+    exec->setException(eobj);
+    return;
+  }
+  _writePassword = value.toString(exec).qstring();
+}
+
+
 KJS::Value KstBindELOG::text(KJS::ExecState *exec) const {
   Q_UNUSED(exec)
 
@@ -374,4 +421,143 @@ void KstBindELOG::setText(KJS::ExecState *exec, const KJS::Value& value) {
     return;
   }
   _text = value.toString(exec).qstring();
+}
+
+
+KJS::Value KstBindELOG::suppressEmailNotification(KJS::ExecState *exec) const {
+  Q_UNUSED(exec)
+
+  return KJS::Boolean(_suppressEmailNotification);
+}
+
+
+void KstBindELOG::setSuppressEmailNotification(KJS::ExecState *exec, const KJS::Value& value) {
+  if (value.type() != KJS::BooleanType) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError);
+    exec->setException(eobj);
+    return;
+  }
+  _suppressEmailNotification = value.toBoolean(exec);
+}
+
+
+KJS::Value KstBindELOG::encodedHTML(KJS::ExecState *exec) const {
+  Q_UNUSED(exec)
+
+  return KJS::Boolean(_encodedHTML);
+}
+
+
+void KstBindELOG::setEncodedHTML(KJS::ExecState *exec, const KJS::Value& value) {
+  if (value.type() != KJS::BooleanType) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError);
+    exec->setException(eobj);
+    return;
+  }
+  _encodedHTML = value.toBoolean(exec);
+}
+
+
+KJS::Value KstBindELOG::includeCapture(KJS::ExecState *exec) const {
+  Q_UNUSED(exec)
+
+  return KJS::Boolean(_includeCapture);
+}
+
+
+void KstBindELOG::setIncludeCapture(KJS::ExecState *exec, const KJS::Value& value) {
+  if (value.type() != KJS::BooleanType) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError);
+    exec->setException(eobj);
+    return;
+  }
+  _includeCapture = value.toBoolean(exec);
+}
+
+
+KJS::Value KstBindELOG::captureWidth(KJS::ExecState *exec) const {
+  Q_UNUSED(exec)
+
+  return KJS::Number(_captureWidth);
+}
+
+
+void KstBindELOG::setCaptureWidth(KJS::ExecState *exec, const KJS::Value& value) {
+  int val;
+
+  if (value.type() != KJS::BooleanType) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError);
+    exec->setException(eobj);
+    return;
+  }
+
+  val = value.toInt32(exec);
+  if (val <= 0 || val > 10000) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::RangeError, "Value is out of range" );
+    exec->setException(eobj);
+    return;
+  }
+
+  _captureWidth = val;
+}
+
+
+KJS::Value KstBindELOG::captureHeight(KJS::ExecState *exec) const {
+  Q_UNUSED(exec)
+
+  return KJS::Number(_captureHeight);
+}
+
+
+void KstBindELOG::setCaptureHeight(KJS::ExecState *exec, const KJS::Value& value) {
+  int val;
+
+  if (value.type() != KJS::BooleanType) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError);
+    exec->setException(eobj);
+    return;
+  }
+
+  val = value.toInt32(exec);
+  if (val <= 0 || val > 10000) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::RangeError, "Value is out of range" );
+    exec->setException(eobj);
+    return;
+  }
+
+  _captureHeight = val;
+}
+
+
+KJS::Value KstBindELOG::includeConfiguration(KJS::ExecState *exec) const {
+  Q_UNUSED(exec)
+
+  return KJS::Boolean(_includeConfiguration);
+}
+
+
+void KstBindELOG::setIncludeConfiguration(KJS::ExecState *exec, const KJS::Value& value) {
+  if (value.type() != KJS::BooleanType) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError);
+    exec->setException(eobj);
+    return;
+  }
+  _includeConfiguration = value.toBoolean(exec);
+}
+
+
+KJS::Value KstBindELOG::includeDebugInfo(KJS::ExecState *exec) const {
+  Q_UNUSED(exec)
+
+  return KJS::Boolean(_includeDebugInfo);
+}
+
+
+void KstBindELOG::setIncludeDebugInfo(KJS::ExecState *exec, const KJS::Value& value) {
+  if (value.type() != KJS::BooleanType) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError);
+    exec->setException(eobj);
+    return;
+  }
+  _includeDebugInfo = value.toBoolean(exec);
 }
