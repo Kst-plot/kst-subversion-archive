@@ -77,6 +77,7 @@
 
 K_EXPORT_COMPONENT_FACTORY(kstextension_js, KGenericFactory<KstJS>)
 
+static KstJS *inst = 0L;
 
 class Function : public KJS::ObjectImp {
   public:
@@ -115,6 +116,7 @@ KstJS::KstJS(QObject *parent, const char *name, const QStringList& l) : KstExten
   KJSEmbed::JSSecurityPolicy::setDefaultPolicy(KJSEmbed::JSSecurityPolicy::CapabilityAll);
   _jsPart = new KJSEmbed::KJSEmbedPart(0L, "javascript", this, "kjsembedpart");
   createBindings();
+  ::inst = this;
 
 #ifdef KST_HAVE_READLINE
   _showAction = new KToggleAction(i18n("Show &JavaScript Console"), 0, 0, 0, 0, actionCollection(), "js_console_show");
@@ -141,11 +143,17 @@ KstJS::~KstJS() {
   _konsolePart = 0L;
   delete _iface;
   _iface = 0L;
+  ::inst = 0L;
   destroyRegistry();
   KstApp *app = dynamic_cast<KstApp*>(this->app());
   if (app && app->guiFactory()) {
     app->guiFactory()->removeClient(this);
   }
+}
+
+
+KstJS* KstJS::inst() {
+  return ::inst;
 }
 
 

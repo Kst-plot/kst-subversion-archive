@@ -27,7 +27,17 @@ KstBindELOG::KstBindELOG(KJS::ExecState *exec, KJS::Object *globalObject)
   if (globalObject) {
     globalObject->put(exec, "ELOG", o);
   }
+
+  _port = 80;
+  _suppressEmailNotification = false;
+  _encodedHTML = false;
+  _includeCapture = false;
+  _includeConfiguration = false;
+  _includeDebugInfo = false;
+  _captureWidth = 640;
+  _captureHeight = 480;
 }
+
 
 
 KstBindELOG::KstBindELOG(int id)
@@ -84,10 +94,10 @@ static ELOGProperties elogProperties[] = {
   { "encodedHTML", &KstBindELOG::setEncodedHTML , &KstBindELOG::encodedHTML },
   { "text", &KstBindELOG::setText , &KstBindELOG::text },
   { "includeCapture", &KstBindELOG::setIncludeCapture , &KstBindELOG::includeCapture },
-  { "captureWidth", &KstBindELOG::setCaptureWidth , &KstBindELOG::captureWidth },
-  { "captureHeight", &KstBindELOG::setCaptureHeight , &KstBindELOG::captureHeight },
   { "includeConfiguration", &KstBindELOG::setIncludeConfiguration , &KstBindELOG::includeConfiguration },
   { "includeDebugInfo", &KstBindELOG::setIncludeDebugInfo , &KstBindELOG::includeDebugInfo },
+  { "captureWidth", &KstBindELOG::setCaptureWidth , &KstBindELOG::captureWidth },
+  { "captureHeight", &KstBindELOG::setCaptureHeight , &KstBindELOG::captureHeight },
   { 0L, 0L, 0L }
 };
 
@@ -175,7 +185,6 @@ void KstBindELOG::addBindings(KJS::ExecState *exec, KJS::Object& obj) {
 
 KJS::Value KstBindELOG::submit(KJS::ExecState *exec, const KJS::List& args) {
   ElogThreadSubmit* pThread;
-  QByteArray byteArrayCapture;
 
   if (args.size() != 0) {
     KJS::Object eobj = KJS::Error::create(exec, KJS::SyntaxError, "Requires no arguments.");
@@ -191,10 +200,9 @@ KJS::Value KstBindELOG::submit(KJS::ExecState *exec, const KJS::List& args) {
 
   pThread = new ElogThreadSubmit(_hostname,
                                  _port,
-                                 false,
-                                 false,
-                                 false,
-                                 &byteArrayCapture,
+                                 _includeCapture,
+                                 _includeConfiguration,
+                                 _includeDebugInfo,
                                  _text,
                                  _username,
                                  _password,
@@ -203,7 +211,9 @@ KJS::Value KstBindELOG::submit(KJS::ExecState *exec, const KJS::List& args) {
                                  _attributes,
                                  _attachments,
                                  _encodedHTML,
-                                 _suppressEmailNotification);
+                                 _suppressEmailNotification,
+                                 _captureWidth,
+                                 _captureHeight);
   pThread->doTransmit();
 
   return KJS::Boolean(true);

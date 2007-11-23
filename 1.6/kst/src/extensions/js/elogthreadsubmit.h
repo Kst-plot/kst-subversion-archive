@@ -32,7 +32,6 @@ class ElogThreadSubmit : public QObject {
                      bool bIncludeCapture,
                      bool bIncludeConfiguration,
                      bool bIncludeDebugInfo,
-                     QByteArray* pByteArrayCapture,
                      const QString& strMessage,
                      const QString& strUserName,
                      const QString& strUserPassword,
@@ -41,7 +40,9 @@ class ElogThreadSubmit : public QObject {
                      const QMap<QString, QString>& attributes,
                      const QStringList& attachments,
                      bool bSubmitAsHTML,
-                     bool bSuppressEmail);
+                     bool bSuppressEmail,
+                     int iCaptureWidth,
+                     int iCaptureHeight);
 
     virtual ~ElogThreadSubmit();
     virtual void doTransmit( );
@@ -68,7 +69,6 @@ class ElogThreadSubmit : public QObject {
 
     QByteArray              _byteArrayAll;
     QDataStream             _dataStreamAll;
-    QByteArray              _byteArrayCapture;
     QString                 _strHostname;
     QString                 _strType;
     QString                 _strMessage;

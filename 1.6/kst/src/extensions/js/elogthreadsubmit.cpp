@@ -24,6 +24,15 @@
 #include <kmdcodec.h>
 
 #include "elogthreadsubmit.h"
+
+#define private public
+#define protected public
+#include <kjsembed/kjsembedpart.h>
+#undef protected
+#undef private
+
+#include "js.h"
+
 #include <kst.h>
 #include <kstevents.h>
 
@@ -33,7 +42,6 @@ ElogThreadSubmit::ElogThreadSubmit(
                                   bool bIncludeCapture,
                                   bool bIncludeConfiguration,
                                   bool bIncludeDebugInfo,
-                                  QByteArray* pByteArrayCapture,
                                   const QString& strMessage,
                                   const QString& strUserName,
                                   const QString& strUserPassword,
@@ -42,9 +50,10 @@ ElogThreadSubmit::ElogThreadSubmit(
                                   const QMap<QString, QString>& attributes,
                                   const QStringList& attachments,
                                   bool bSubmitAsHTML,
-                                  bool bSuppressEmail)
+                                  bool bSuppressEmail,
+                                  int iCaptureWidth,
+                                  int iCaptureHeight)
 : _textStreamResult(_byteArrayResult, IO_ReadWrite), _dataStreamAll(_byteArrayAll, IO_ReadWrite) {
-  _byteArrayCapture.duplicate( *pByteArrayCapture );
   _bIncludeCapture        = bIncludeCapture;
   _bIncludeConfiguration  = bIncludeConfiguration;
   _bIncludeDebugInfo      = bIncludeDebugInfo;
@@ -59,6 +68,8 @@ ElogThreadSubmit::ElogThreadSubmit(
   _attachments            = attachments;
   _bSubmitAsHTML          = bSubmitAsHTML;
   _bSuppressEmail         = bSuppressEmail;
+  _iCaptureWidth          = iCaptureWidth;
+  _iCaptureHeight         = iCaptureHeight;
   _strType                = i18n("script entry");
 }
 
@@ -114,28 +125,54 @@ void ElogThreadSubmit::doTransmit( ) {
   // add the attachments...
   //
   if( _bIncludeCapture ) {
+    KstELOGCaptureStruct captureStruct;
+    QByteArray byteArrayCapture;
+    QDataStream dataStreamCapture( byteArrayCapture, IO_ReadWrite );
+    QCustomEvent eventCapture( KstELOGCaptureEvent );
+
+    captureStruct.pBuffer = &dataStreamCapture;
+    captureStruct.iWidth = _iCaptureWidth;
+    captureStruct.iHeight = _iCaptureHeight;
+
+    eventCapture.setData( &captureStruct );
+    QApplication::sendEvent( (QObject*)KstJS::inst()->app(), (QEvent*)&eventCapture );
     iAttachment++;
-    addAttachment( _dataStreamAll, boundary, _byteArrayCapture, iAttachment, "Capture.png" );
+    addAttachment( _dataStreamAll, boundary, byteArrayCapture, iAttachment, "Capture.png" );
   }
+
   if( _bIncludeConfiguration ) {
     QByteArray byteArrayConfigure;
     QTextStream textStreamConfigure( byteArrayConfigure, IO_ReadWrite );
-    QCustomEvent eventConfigure(KstELOGConfigureEvent);
+    QCustomEvent eventConfigure( KstELOGConfigureEvent );
 
     eventConfigure.setData( &textStreamConfigure );
-//    QApplication::sendEvent( (QObject*)_elog->app(), (QEvent*)&eventConfigure );
+    QApplication::sendEvent( (QObject*)KstJS::inst()->app(), (QEvent*)&eventConfigure );
     iAttachment++;
     addAttachment( _dataStreamAll, boundary, byteArrayConfigure, iAttachment, "Configure.kst" );
   }
+
   if( _bIncludeDebugInfo ) {
     QByteArray byteArrayDebugInfo;
     QTextStream textStreamDebugInfo( byteArrayDebugInfo, IO_ReadWrite );
-    QCustomEvent eventDebugInfo(KstELOGDebugInfoEvent);
+    QCustomEvent eventDebugInfo( KstELOGDebugInfoEvent );
 
     eventDebugInfo.setData( &textStreamDebugInfo );
-//    QApplication::sendEvent( (QObject*)_elog->app(), (QEvent*)&eventDebugInfo );
+    QApplication::sendEvent( (QObject*)KstJS::inst()->app(), (QEvent*)&eventDebugInfo );
     iAttachment++;
     addAttachment( _dataStreamAll, boundary, byteArrayDebugInfo, iAttachment, "DebugInfo.txt" );
+  }
+
+  for ( QStringList::iterator itList = _attachments.begin(); itList != _attachments.end(); ++itList ) {
+    QByteArray byteArrayAttachment;
+    QFile file(*itList);
+
+    if (file.open( IO_ReadOnly )) {
+      byteArrayAttachment = file.readAll();
+      iAttachment++;
+      addAttachment( _dataStreamAll, boundary, byteArrayAttachment, iAttachment, *itList );
+    } else {
+      doError( i18n("%1: unable to open attachment '%2'").arg(_strType).arg(*itList), KstDebug::Warning );
+    }
   }
 
   _job = KIO::http_post(destination, _byteArrayAll, false);
@@ -266,7 +303,7 @@ void ElogThreadSubmit::addAttachment( QDataStream& stream,
                                 const QString& name ) {
   if (byteArray.count() > 0) {
     QString strStart = QString("Content-Disposition: form-data; name=\"attfile%1\"; filename=\"%2\"\r\n\r\n").arg(iFileNumber).arg(name);
-    QString strEnd   = QString("%1\r\n").arg(boundary);
+    QString strEnd = QString("%1\r\n").arg(boundary);
 
     stream.writeRawBytes(strStart.ascii(), strStart.length());
     stream.writeRawBytes(byteArray.data(), byteArray.count());

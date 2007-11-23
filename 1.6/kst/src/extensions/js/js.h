@@ -38,6 +38,8 @@ class KstJS : public KstExtension, public KXMLGUIClient {
     KstJS(QObject *parent, const char *name, const QStringList&);
     virtual ~KstJS();
 
+    static KstJS* inst();
+
     // To save state
     virtual void load(QDomElement& e);
     virtual void save(QTextStream& ts, const QString& indent = QString::null);
