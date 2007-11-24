@@ -276,6 +276,7 @@ class KST_EXPORT KstViewObject : public KstObject {
     virtual void lowerToBottom();
     virtual void raise();
     virtual void lower();
+    virtual void remove();
 
   protected slots:
     virtual void parentResized();

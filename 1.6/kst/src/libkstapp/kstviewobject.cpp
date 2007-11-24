@@ -640,7 +640,7 @@ void KstViewObject::internalAlignment(KstPainter& p, QRect& plotRegion) {
       KST::alignment.setPosition((*i)->geometry(), plotRegion);
     }
   }
-  
+
   plotRegion = x;
 }
 
@@ -1457,6 +1457,35 @@ void KstViewObject::lower() {
       setDirty();
     }
   }
+}
+
+
+void KstViewObject::remove() {
+  KstApp::inst()->document()->setModified();
+  KstViewObjectPtr vop(this);
+  KstViewObjectPtr tlp = topLevelParent();
+
+  if (tlp) {
+    KstTopLevelViewPtr tlv = kst_cast<KstTopLevelView>(tlp);
+
+    if (tlv && vop == tlv->pressTarget()) {
+      tlv->clearPressTarget();
+    }
+
+    if (this->_parent) {
+      this->_parent->invalidateClipRegion();
+    }
+
+    tlp->removeChild(this, true);
+    tlp = 0L;
+  }
+
+  while (!_children.isEmpty()) {
+    removeChild(_children.first());
+  }
+
+  vop = 0L; // basically "delete this;"
+  QTimer::singleShot(0, KstApp::inst(), SLOT(updateDialogs()));
 }
 
 

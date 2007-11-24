@@ -90,5 +90,4 @@ Docs:
 
 1.2.0 issues:
 - Curves are stale in concept - split them?
-- "delete" support - in order drop references?
 - Make .position and .size directly manipulated?

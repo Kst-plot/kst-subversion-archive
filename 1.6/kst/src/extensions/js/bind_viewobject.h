@@ -80,32 +80,39 @@ class KstBindViewObject : public KstBindObject {
     KJS::Value convertTo(KJS::ExecState *exec, const KJS::List& args);
 
     /* @method raiseToTop
-       @returns ViewObject
+       @returns
        @arg
        @description Raises the object to the top of the z-order.
     */
     KJS::Value raiseToTop(KJS::ExecState *exec, const KJS::List& args);
 
     /* @method lowerToBottom
-       @returns ViewObject
+       @returns
        @arg
        @description Lowers the object to the bottom of the z-order.
     */
     KJS::Value lowerToBottom(KJS::ExecState *exec, const KJS::List& args);
 
     /* @method raise
-       @returns ViewObject
+       @returns
        @arg
        @description Raises the object one place in the z-order.
     */
     KJS::Value raise(KJS::ExecState *exec, const KJS::List& args);
 
     /* @method lower
-       @returns ViewObject
+       @returns
        @arg
        @description Lowers the object one place in the z-order.
     */
     KJS::Value lower(KJS::ExecState *exec, const KJS::List& args);
+
+    /* @method remove
+       @returns
+       @arg
+       @description Deletes the object.
+    */
+    KJS::Value remove(KJS::ExecState *exec, const KJS::List& args);
 
     /* @property Point position
        @description The location of the object relative to its parent.

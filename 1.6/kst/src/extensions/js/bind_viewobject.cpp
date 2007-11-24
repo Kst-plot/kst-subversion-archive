@@ -77,6 +77,7 @@ static ViewObjectBindings viewObjectBindings[] = {
   { "lowerToBottom", &KstBindViewObject::lowerToBottom },
   { "raise", &KstBindViewObject::raise },
   { "lower", &KstBindViewObject::lower },
+  { "remove", &KstBindViewObject::remove },
   { 0L, 0L }
 };
 
@@ -633,6 +634,46 @@ KJS::Value KstBindViewObject::lower(KJS::ExecState *exec, const KJS::List& args)
       }
     }
   }
+
+  return KJS::Undefined();
+}
+
+
+KJS::Value KstBindViewObject::remove(KJS::ExecState *exec, const KJS::List& args) {
+  if (args.size() != 0) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::SyntaxError, "Requires no arguments.");
+    exec->setException(eobj);
+    return KJS::Null();
+  }
+
+  {
+    KstViewObjectPtr d = makeViewObject(_d);
+    KstTopLevelViewPtr tlvTest =  kst_cast<KstTopLevelView>(_d);
+
+    if (tlvTest) {
+      KJS::Object eobj = KJS::Error::create(exec, KJS::GeneralError, "Unable to delete the view.");
+      exec->setException(eobj);
+      return KJS::Null();
+    }
+
+    KstViewObjectPtr vo;
+
+    if (d) {
+      KstReadLocker rl(d);
+
+      vo = d->topLevelParent();
+      d->remove();
+    }
+
+    if (vo) {
+      KstTopLevelViewPtr tlv =  kst_cast<KstTopLevelView>(vo);
+      if (tlv) {
+        tlv->paint(KstPainter::P_PAINT);
+      }
+    }
+  }
+
+  delete this;
 
   return KJS::Undefined();
 }
