@@ -1367,16 +1367,18 @@ void Kst2dPlotWidget::applyPlotMarkers(Kst2DPlotPtr plot) {
     } else {
       plot->removeCurveToMarkers();
     }
+
+    if (UseVector->isChecked()) {
+      KstVectorPtr vector = *(KST::vectorList.findTag(_vectorForMarkers->selectedVector()));
+      plot->setVectorToMarkers(vector);
+    } else {
+      plot->removeVectorToMarkers();
+    }
   }
 
-  if (UseVector->isChecked()) {
-    KstVectorPtr vector = *(KST::vectorList.findTag(_vectorForMarkers->selectedVector()));
-    plot->setVectorToMarkers(vector);
-  } else {
-    plot->removeVectorToMarkers();
+  if (!_editMultipleMode || _comboMarkerLineStyle->currentText().compare(QString(" ")) != 0) {
+    plot->setLineStyleMarkers(_comboMarkerLineStyle->currentItem());
   }
-
-  plot->setLineStyleMarkers(_comboMarkerLineStyle->currentItem());
   if (!_editMultipleMode || _spinBoxMarkerLineWidth->value() != _spinBoxMarkerLineWidth->minValue()) {
     plot->setLineWidthMarkers(_spinBoxMarkerLineWidth->value());
   }
