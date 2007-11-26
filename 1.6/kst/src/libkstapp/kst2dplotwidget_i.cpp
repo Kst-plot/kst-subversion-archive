@@ -287,7 +287,7 @@ void Kst2dPlotWidget::updateButtons() {
     RemovePlotMarker->setEnabled(selected);
     RemoveAllPlotMarkers->setEnabled(count > 0);
   }
-  _colorMarker->setEnabled(_checkBoxDefaultMarkerColor->state() != QButton::Off);
+  _colorMarker->setEnabled(_checkBoxDefaultMarkerColor->state() != QButton::On);
 }
 
 
