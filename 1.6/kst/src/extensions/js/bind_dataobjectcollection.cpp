@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "bind_csdcollection.h"
 #include "bind_dataobjectcollection.h"
 #include "bind_dataobject.h"
 #include "bind_equationcollection.h"
@@ -47,6 +48,7 @@ static DataObjectCollectionProperties dataObjectCollectionProperties[] = {
   { "equations", 0, &KstBindDataObjectCollection::equations },
   { "histograms", 0, &KstBindDataObjectCollection::histograms },
   { "plugins", 0, &KstBindDataObjectCollection::plugins },
+  { "spectrograms", 0, &KstBindDataObjectCollection::spectrograms },
   { 0L, 0L, 0L }
 };
 
@@ -147,6 +149,11 @@ KJS::Value KstBindDataObjectCollection::histograms(KJS::ExecState *exec) const {
 
 KJS::Value KstBindDataObjectCollection::plugins(KJS::ExecState *exec) const {
   return KJS::Object(new KstBindPluginCollection(exec));
+}
+
+
+KJS::Value KstBindDataObjectCollection::spectrograms(KJS::ExecState *exec) const {
+  return KJS::Object(new KstBindCSDCollection(exec));
 }
 
 

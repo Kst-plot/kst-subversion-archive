@@ -45,9 +45,7 @@ class KstBindDataObjectCollection : public KstBindCollection {
     KJS::Value powerSpectrums(KJS::ExecState *exec) const;
     KJS::Value equations(KJS::ExecState *exec) const;
     KJS::Value histograms(KJS::ExecState *exec) const;
+    KJS::Value spectrograms(KJS::ExecState *exec) const;
 };
 
-
 #endif
-
-// vim: ts=2 sw=2 et
