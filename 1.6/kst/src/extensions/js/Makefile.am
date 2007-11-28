@@ -42,6 +42,7 @@ kstextension_js_la_SOURCES= $(JSEXTERN) \
 			    bind_datavector.cpp \
 			    bind_equation.cpp \
 			    bind_powerspectrum.cpp \
+			    bind_csd.cpp \
 			    bind_curve.cpp \
 			    bind_point.cpp \
 			    bind_window.cpp \
@@ -66,6 +67,7 @@ kstextension_js_la_SOURCES= $(JSEXTERN) \
 			    bind_histogramcollection.cpp \
 			    bind_equationcollection.cpp \
 			    bind_powerspectrumcollection.cpp \
+			    bind_csdcollection.cpp \
 			    bind_matrixcollection.cpp \
 			    bind_dataobject.cpp \
 			    bind_dataobjectcollection.cpp \

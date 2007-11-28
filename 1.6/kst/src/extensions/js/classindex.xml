@@ -50,6 +50,8 @@
   <class name="ScalarCollection" file="bind_scalarcollection"/>
   <class name="Scalar" file="bind_scalar"/>
   <class name="Size" file="bind_size"/>
+  <class name="SpectrogramCollection" file="bind_csdcollection"/>
+  <class name="Spectrogram" file="bind_csd"/>
   <class name="StringCollection" file="bind_stringcollection"/>
   <class name="String" file="bind_string"/>
   <class name="TimeInterpretation" file="bind_timeinterpretation"/>

@@ -46,6 +46,7 @@
 
 #include "bind_arrow.h"
 #include "bind_box.h"
+#include "bind_csd.h"
 #include "bind_curve.h"
 #include "bind_datamatrix.h"
 #include "bind_datasource.h"
@@ -201,6 +202,7 @@ void KstJS::createBindings() {
   new KstBindMatrix(exec, &globalObj);
   new KstBindDataMatrix(exec, &globalObj);
 
+  new KstBindCSD(exec, &globalObj);
   new KstBindEquation(exec, &globalObj);
   new KstBindPlugin(exec, &globalObj);
   new KstBindPowerSpectrum(exec, &globalObj);

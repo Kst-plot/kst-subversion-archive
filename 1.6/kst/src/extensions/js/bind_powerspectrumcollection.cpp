@@ -35,12 +35,14 @@ KstBindPowerSpectrumCollection::~KstBindPowerSpectrumCollection() {
 
 KJS::Value KstBindPowerSpectrumCollection::length(KJS::ExecState *exec) const {
   Q_UNUSED(exec)
+
   return KJS::Number(_psds.count());
 }
 
 
 QStringList KstBindPowerSpectrumCollection::collection(KJS::ExecState *exec) const {
   Q_UNUSED(exec)
+
   return _psds;
 }
 
@@ -48,6 +50,7 @@ QStringList KstBindPowerSpectrumCollection::collection(KJS::ExecState *exec) con
 KJS::Value KstBindPowerSpectrumCollection::extract(KJS::ExecState *exec, const KJS::Identifier& item) const {
   KstPSDList pl = kstObjectSubList<KstDataObject,KstPSD>(KST::dataObjectList);
   KstPSDPtr p = *pl.findTag(item.qstring());
+
   if (p) {
     return KJS::Object(new KstBindPowerSpectrum(exec, p));
   }
@@ -58,6 +61,7 @@ KJS::Value KstBindPowerSpectrumCollection::extract(KJS::ExecState *exec, const K
 KJS::Value KstBindPowerSpectrumCollection::extract(KJS::ExecState *exec, unsigned item) const {
   KstPSDList pl = kstObjectSubList<KstDataObject,KstPSD>(KST::dataObjectList);
   KstPSDPtr p;
+
   if (item < pl.count()) {
     p = pl[item];
   }
@@ -66,6 +70,3 @@ KJS::Value KstBindPowerSpectrumCollection::extract(KJS::ExecState *exec, unsigne
   }
   return KJS::Undefined();
 }
-
-
-// vim: ts=2 sw=2 et
