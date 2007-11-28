@@ -135,7 +135,7 @@ KJS::Value KstBindCollection::get(KJS::ExecState *exec, const KJS::Identifier& p
       return (this->*collectionProperties[i].get)(exec);
     }
   }
-  
+
   KJS::Value v = extract(exec, propertyName);
   if (v.type() != KJS::UndefinedType) {
     return v;

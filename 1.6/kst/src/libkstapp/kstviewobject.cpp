@@ -963,6 +963,17 @@ void KstViewObject::move(const QPoint& pos) {
 }
 
 
+void KstViewObject::modifyGeometry(const QRect& rect) {
+  QRect geomOld = _geom;
+
+  _geom = rect;
+  updateAspectPos();
+  for (KstViewObjectList::Iterator i = _children.begin(); i != _children.end(); ++i) {
+    (*i)->updateAspect();
+  }
+}
+
+
 void KstViewObject::setFocus(bool focus) {
   _focus = focus;
 }

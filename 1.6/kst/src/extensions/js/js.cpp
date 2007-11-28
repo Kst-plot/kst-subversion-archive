@@ -55,6 +55,7 @@
 #include "bind_ellipse.h"
 #include "bind_elog.h"
 #include "bind_file.h"
+#include "bind_group.h"
 #include "bind_histogram.h"
 #include "bind_image.h"
 #include "bind_jsdataobject.h"
@@ -209,6 +210,7 @@ void KstJS::createBindings() {
   new KstBindCurve(exec, &globalObj);
   new KstBindImage(exec, &globalObj);
 
+  new KstBindGroup(exec, &globalObj);
   new KstBindPlot(exec, &globalObj);
   new KstBindLine(exec, &globalObj);
   new KstBindLabel(exec, &globalObj);

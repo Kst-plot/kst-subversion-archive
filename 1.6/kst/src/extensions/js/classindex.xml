@@ -5,7 +5,6 @@
   <class name="Box" file="bind_box"/>
   <class name="Collection" file="bind_collection"/>
   <class name="ColorSequence" file="bind_colorsequence"/>
-  <!--class name="CubicBezier" file="bind_cubicbezier"/-->
   <class name="CurveCollection" file="bind_curvecollection"/>
   <class name="Curve" file="bind_curve"/>
   <class name="DataMatrix" file="bind_datamatrix"/>
@@ -23,8 +22,10 @@
   <class name="Equation" file="bind_equation"/>
   <class name="ExtensionCollection" file="bind_extensioncollection"/>
   <class name="Extension" file="bind_extension"/>
+  <class name="Group" file="bind_group"/>
   <class name="HistogramCollection" file="bind_histogramcollection"/>
   <class name="Histogram" file="bind_histogram"/>
+  <class name="Image" file="bind_image"/>
   <class name="Kst" file="bind_kst"/>
   <class name="Label" file="bind_label"/>
   <class name="Legend" file="bind_legend"/>

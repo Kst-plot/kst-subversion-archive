@@ -81,18 +81,20 @@ class KST_EXPORT KstViewObject : public KstObject {
     virtual bool onGrid() const;
     virtual void setOnGrid(bool on_grid);
 
+    virtual void move(const QPoint& to);
+    virtual QPoint position() const;
     virtual void resize(const QSize& size);
+    virtual QSize size() const;
+    virtual void modifyGeometry(const QRect& rect);
+
     virtual void resizeForPrint(const QSize& size);
     virtual void revertForPrint();
     virtual void resizeFromAspect(double x, double y, double w, double h);
-    virtual QSize size() const;
     virtual void internalAlignment(KstPainter& p, QRect& plotRegion);
-    virtual QPoint position() const;
     virtual const QRect& geometry() const;
     const KstAspectRatio& aspectRatio() const;
     virtual QRect surroundingGeometry() const;
-    // This is, by definition, the contents not including decoration. (borders
-    // etc)
+    // This is, by definition, the contents not including decoration. (borders etc.)
     virtual QRect contentsRect() const;
     virtual void setContentsRect(const QRect& rect);
 
@@ -100,8 +102,6 @@ class KST_EXPORT KstViewObject : public KstObject {
     // in the row.  1.0 means that the dataRect = geometry.  >1 means dataRect < geometry.
     virtual double verticalSizeFactor();
     virtual double horizontalSizeFactor();
-
-    virtual void move(const QPoint& to);
 
     // Draw a focus highlight
     virtual void setFocus(bool focus);
