@@ -105,13 +105,16 @@ void KstPsdDialogI::fillFieldsForEdit() {
   _w->_kstFFTOptions->Interleaved->setChecked(pp->average());
   _w->_kstFFTOptions->Output->setCurrentItem(pp->output());
   _w->_kstFFTOptions->InterpolateHoles->setChecked(pp->interpolateHoles());
+  _w->_kstFFTOptions->synch();
 
   pp->unlock();
 
   _w->_curveAppearance->hide();
   _w->_curvePlacement->hide();
+
   _legendText->hide();
   _legendLabel->hide();
+
   adjustSize();
   resize(minimumSizeHint());
   setFixedHeight(height());
