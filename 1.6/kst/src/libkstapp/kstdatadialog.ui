@@ -66,6 +66,20 @@
                 </widget>
                 <widget class="QPushButton">
                     <property name="name">
+                        <cstring>_apply</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Apply</string>
+                    </property>
+                    <property name="accel">
+                        <string></string>
+                    </property>
+                    <property name="autoDefault">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
                         <cstring>_cancel</cstring>
                     </property>
                     <property name="text">
@@ -180,6 +194,12 @@
         <slot>ok()</slot>
     </connection>
     <connection>
+        <sender>_apply</sender>
+        <signal>clicked()</signal>
+        <receiver>KstDataDialog</receiver>
+        <slot>apply()</slot>
+    </connection>
+    <connection>
         <sender>_cancel</sender>
         <signal>clicked()</signal>
         <receiver>KstDataDialog</receiver>
@@ -206,7 +226,9 @@
 </signals>
 <slots>
     <slot>ok()</slot>
+    <slot>apply()</slot>
     <slot>close()</slot>
+    <slot>wasModifiedApply()</slot>
     <slot>reject()</slot>
     <slot>init()</slot>
     <slot>update()</slot>

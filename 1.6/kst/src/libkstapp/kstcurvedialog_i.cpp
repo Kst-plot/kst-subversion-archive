@@ -77,6 +77,29 @@ KstCurveDialogI::KstCurveDialogI(QWidget* parent, const char* name, bool modal, 
   connect(_w->_curveAppearance->_showBars, SIGNAL(clicked()), this, SLOT(setShowBarsDirty()));
   connect(_w->_checkBoxIgnoreAutoscale, SIGNAL(clicked()), this, SLOT(setCheckBoxIgnoreAutoscaleDirty()));
 
+  // for apply button
+  connect(_w->_xVector, SIGNAL(selectionChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_yVector, SIGNAL(selectionChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_xError, SIGNAL(selectionChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_xMinusError, SIGNAL(selectionChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_yError, SIGNAL(selectionChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_yMinusError, SIGNAL(selectionChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_xVector, SIGNAL(selectionChangedLabel(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_yVector, SIGNAL(selectionChangedLabel(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_xError, SIGNAL(selectionChangedLabel(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_xMinusError, SIGNAL(selectionChangedLabel(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_yError, SIGNAL(selectionChangedLabel(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_yMinusError, SIGNAL(selectionChangedLabel(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_xVector->_vector, SIGNAL(completion(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_yVector->_vector, SIGNAL(completion(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_xError->_vector, SIGNAL(completion(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_xMinusError->_vector, SIGNAL(completion(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_yError->_vector, SIGNAL(completion(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_yMinusError->_vector, SIGNAL(completion(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_interp, SIGNAL(highlighted(int)), this, SLOT(wasModifiedApply()));
+  connect(_w->_checkBoxXMinusSameAsPlus, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
+  connect(_w->_checkBoxYMinusSameAsPlus, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
+
   _w->_xError->provideNoneVector(true);
   _w->_yError->provideNoneVector(true);
   _w->_xMinusError->provideNoneVector(true);

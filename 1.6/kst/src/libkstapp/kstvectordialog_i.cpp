@@ -82,6 +82,27 @@ KstVectorDialogI::KstVectorDialogI(QWidget* parent, const char* name,
   connect(_w->_kstDataRange->DoFilter, SIGNAL(clicked()), this, SLOT(setDoFilterDirty()));
   connect(_w->_kstDataRange->DoSkip, SIGNAL(clicked()), this, SLOT(setDoSkipDirty()));
 
+  // for apply button
+  connect(_w->_readFromSource, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
+  connect(_w->_generateX, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
+  connect(_w->_configure, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
+  connect(_w->FileName, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->Field, SIGNAL(highlighted(int)), this, SLOT(wasModifiedApply()));
+  connect(_w->Field, SIGNAL(completion(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_N, SIGNAL(valueChanged(int)), this, SLOT(wasModifiedApply()));
+  connect(_w->_N->child("qt_spinbox_edit"), SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_xMin, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_xMax, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_kstDataRange->F0, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_kstDataRange->_startUnits, SIGNAL(highlighted(int)), this, SLOT(wasModifiedApply()));
+  connect(_w->_kstDataRange->N, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_kstDataRange->_rangeUnits, SIGNAL(highlighted(int)), this, SLOT(wasModifiedApply()));
+  connect(_w->_kstDataRange->CountFromEnd, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
+  connect(_w->_kstDataRange->ReadToEnd, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
+  connect(_w->_kstDataRange->DoSkip, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
+  connect(_w->_kstDataRange->Skip, SIGNAL(valueChanged(int)), this, SLOT(wasModifiedApply()));
+  connect(_w->_kstDataRange->DoFilter, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
+
   _w->_configure->setEnabled(false);
   _fieldCompletion = _w->Field->completionObject();
   _w->Field->setAutoDeleteCompletionObject(true);

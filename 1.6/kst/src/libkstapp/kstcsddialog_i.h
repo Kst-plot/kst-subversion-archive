@@ -35,7 +35,7 @@ class KstCsdDialogI : public KstDataDialog {
   protected:
     QString editTitle() { return tr("Edit Spectrogram"); }
     QString newTitle() { return tr("New Spectrogram"); }
- 
+
   public slots:
     /** update the entries in the psd dialog to represent current psds */
     void update();
@@ -80,4 +80,4 @@ class KstCsdDialogI : public KstDataDialog {
 };
 
 #endif
-// vim: ts=2 sw=2 et
+

@@ -68,6 +68,25 @@ KstCsdDialogI::KstCsdDialogI(QWidget* parent, const char* name, bool modal, WFla
   connect(_w->_kstFFTOptions->RemoveMean, SIGNAL(clicked()), this, SLOT(setRemoveMeanDirty()));
   connect(_w->_kstFFTOptions->Interleaved, SIGNAL(clicked()), this, SLOT(setInterleavedDirty()));
   connect(_w->_kstFFTOptions->InterpolateHoles, SIGNAL(clicked()), this, SLOT(setInterpolateHolesDirty()));
+
+  // for apply button
+  connect(_w->_vector, SIGNAL(selectionChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_vector, SIGNAL(selectionChangedLabel(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_windowSize, SIGNAL(valueChanged(int)), this, SLOT(wasModifiedApply()));
+  connect(_w->_windowSize->child("qt_spinbox_edit"), SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_kstFFTOptions->ApodizeFxn, SIGNAL(highlighted(int)), this, SLOT(wasModifiedApply()));
+  connect(_w->_kstFFTOptions->FFTLen, SIGNAL(valueChanged(int)), this, SLOT(wasModifiedApply()));
+  connect(_w->_kstFFTOptions->FFTLen->child("qt_spinbox_edit"), SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_kstFFTOptions->Sigma, SIGNAL(valueChanged(double)), this, SLOT(wasModifiedApply()));
+  connect(_w->_kstFFTOptions->Sigma->child("qt_spinbox_edit"), SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_kstFFTOptions->Apodize, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
+  connect(_w->_kstFFTOptions->RemoveMean, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
+  connect(_w->_kstFFTOptions->Interleaved, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
+  connect(_w->_kstFFTOptions->InterpolateHoles, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
+  connect(_w->_kstFFTOptions->SampRate, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_kstFFTOptions->VectorUnits, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_kstFFTOptions->RateUnits, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_kstFFTOptions->Output, SIGNAL(highlighted(int)), this, SLOT(wasModifiedApply()));
 }
 
 

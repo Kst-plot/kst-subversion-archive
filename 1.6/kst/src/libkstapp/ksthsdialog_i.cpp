@@ -71,6 +71,18 @@ KstHsDialogI::KstHsDialogI(QWidget* parent, const char* name, bool modal, WFlags
   connect(_w->PeakIs1, SIGNAL(clicked()), this, SLOT(setPeakIs1Dirty()));
   connect(_w->NormIsNumber, SIGNAL(clicked()), this, SLOT(setNormIsNumberDirty()));
 
+  // for apply button
+  connect(_w->_vector, SIGNAL(selectionChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_vector, SIGNAL(selectionChangedLabel(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->Min, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->Max, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->AutoBin, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
+  connect(_w->_realTimeAutoBin, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
+  connect(_w->NormIsPercent, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
+  connect(_w->NormIsFraction, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
+  connect(_w->NormIsNumber, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
+  connect(_w->PeakIs1, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
+
   QColor qc = _w->_curveAppearance->color();
   _w->_curveAppearance->setValue(false, false, true, qc, 0, 0, 0, 1, 0);
 }
@@ -527,7 +539,6 @@ void KstHsDialogI::cleanup() {
 void KstHsDialogI::setVector(const QString& name) {
   _w->_vector->setSelection(name);
 }
-
 
 #include "ksthsdialog_i.moc"
 

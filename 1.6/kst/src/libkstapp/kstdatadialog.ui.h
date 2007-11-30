@@ -16,6 +16,7 @@
 void KstDataDialog::ok()
 {
     _ok->setEnabled(false);
+    _apply->setEnabled(false);
     _cancel->setEnabled(false);
     if (_newDialog || _dp == 0L) {
 	if (newObject()) {
@@ -29,8 +30,19 @@ void KstDataDialog::ok()
 	    close();
 	} else {
 	    _ok->setEnabled(true);
+	    _apply->setEnabled(true);
 	    _cancel->setEnabled(true);
 	}
+    }
+}
+
+
+void KstDataDialog::apply()
+{
+    if (!_newDialog && _dp != 0L) {
+        if (editObject()) {
+	    _apply->setEnabled(false);
+        }
     }
 }
 
@@ -39,6 +51,14 @@ void KstDataDialog::close()
 {
     _dp = 0L;
     QDialog::close();
+}
+
+
+void KstDataDialog::wasModifiedApply()
+{
+    if (!_newDialog && _dp != 0L) {
+        _apply->setEnabled(true);
+    }
 }
 
 
@@ -57,6 +77,7 @@ void KstDataDialog::init()
     _editMultipleMode = false;
     connect(this, SIGNAL(modified()), KstApp::inst()->document(), SLOT(wasModified()));
     connect(_editMultiple, SIGNAL(clicked()), this, SLOT(toggleEditMultiple()));
+    connect(_tagName, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
     _editMultiple->hide();
     _editMultipleWidget->hide();
 }
@@ -92,6 +113,7 @@ void KstDataDialog::showNew(const QString& field)
     QDialog::show();
     raise();
     _ok->setEnabled(true);
+    _apply->setEnabled(false);
     _cancel->setEnabled(true);
 }
 
@@ -123,6 +145,7 @@ void KstDataDialog::showEdit(const QString& field)
     QDialog::show();
     raise();
     _ok->setEnabled(true);
+    _apply->setEnabled(false);
     _cancel->setEnabled(true);
 }
 
@@ -219,4 +242,3 @@ void KstDataDialog::cleanup()
 {
 }
 
-// vim: ts=8 sw=4 noet

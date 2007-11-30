@@ -65,10 +65,16 @@ KstEqDialogI::KstEqDialogI(QWidget* parent, const char* name, bool modal, WFlags
   connect(_w->_vectors, SIGNAL(newVectorCreated(const QString&)), this, SIGNAL(modified()));
   connect(_w->_xVectors, SIGNAL(newVectorCreated(const QString&)), this, SIGNAL(modified()));
   connect(_w->_scalars, SIGNAL(newScalarCreated()), this, SIGNAL(modified()));
-  
+
   // for edit multiple mode
   connect(_w->_doInterpolation, SIGNAL(clicked()), this, SLOT(setDoInterpolationDirty()));
   populateFunctionList();
+
+  // for apply button
+  connect(_w->_equation, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_xVectors, SIGNAL(selectionChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_xVectors, SIGNAL(selectionChangedLabel(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_doInterpolation, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
 }
 
 

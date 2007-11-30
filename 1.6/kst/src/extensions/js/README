@@ -1,43 +1,43 @@
 Classes to be bound or created in JS:
 
-Kst		General Kst object (static global) - effectively "document"
-Debug		DONE
-Vector		DONE
-DataVector	DONE
-Scalar		DONE
-String		DONE
-DataSource	DONE
-Point		DONE
-Size		DONE
-Document	DONE
-Matrix		DONE
-DataMatrix	DONE
+Kst             General Kst object (static global) - effectively "document"
+Debug           DONE
+Vector          DONE
+DataVector      DONE
+Scalar          DONE
+String          DONE
+DataSource      DONE
+Point           DONE
+Size            DONE
+Document        DONE
+Matrix          DONE
+DataMatrix      DONE
 
-Equation	DONE
-PowerSpectrum	DONE
-Spectrogram
+Equation        DONE
+PowerSpectrum   DONE
+Spectrogram     DONE
 Fit
 Filter
-Plugin		
-Histogram	DONE
-Curve		DONE
-Image		DONE
-Plot		
-Window		DONE
+Plugin
+Histogram       DONE
+Curve           DONE
+Image           DONE
+Plot
+Window          DONE
 
-PlotLabel	DONE
-PlotLegend	DONE
-ViewObject	DONE
-   Plot		DONE
-   Box		DONE
-   Ellipse	DONE
-   Picture	DONE
-   Line		DONE
-   Label	DONE
-   Arrow	DONE
-   Group
+PlotLabel       DONE
+PlotLegend      DONE
+ViewObject      DONE
+   Plot         DONE
+   Box          DONE
+   Ellipse      DONE
+   Picture      DONE
+   Line         DONE
+   Label        DONE
+   Arrow        DONE
+   Group        DONE
 
-ELOG		DONE
+ELOG            DONE
 
 KstUIMerge
 	- Global object used to load XMLUI files for merging.
@@ -90,4 +90,4 @@ Docs:
 
 1.2.0 issues:
 - Curves are stale in concept - split them?
-- Make .position and .size directly manipulated?
+- Make .position and .size directly manipulable?
