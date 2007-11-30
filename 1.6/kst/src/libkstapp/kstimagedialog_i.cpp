@@ -75,6 +75,27 @@ KstImageDialogI::KstImageDialogI(QWidget* parent,
   connect(_w->_realTimeAutoThreshold, SIGNAL(clicked()), this, SLOT(setRealTimeAutoThresholdDirty()));
   connect(_w->_useVariableWeight, SIGNAL(clicked()), this, SLOT(setUseVariableWeightDirty()));
   connect(_w->_contourColor, SIGNAL(clicked()), this, SLOT(setContourColorDirty()));
+
+  // for apply button
+  connect(_w->_matrix, SIGNAL(selectionChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_matrix, SIGNAL(selectionChangedLabel(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_colorOnly, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
+  connect(_w->_contourOnly, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
+  connect(_w->_colorAndContour, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
+  connect(_w->_colorPalette->_palette, SIGNAL(highlighted(int)), this, SLOT(wasModifiedApply()));
+  connect(_w->_lowerZ, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_upperZ, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_autoThreshold, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
+  connect(_w->_smartThreshold, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
+  connect(_w->_smartThresholdValue, SIGNAL(valueChanged(double)), this, SLOT(wasModifiedApply()));
+  connect(_w->_smartThresholdValue->child("qt_spinbox_edit"), SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_realTimeAutoThreshold, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
+  connect(_w->_numContourLines, SIGNAL(valueChanged(int)), this, SLOT(wasModifiedApply()));
+  connect(_w->_numContourLines->child("qt_spinbox_edit"), SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_contourColor, SIGNAL(changed(const QColor&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_contourWeight, SIGNAL(valueChanged(int)), this, SLOT(wasModifiedApply()));
+  connect(_w->_contourWeight->child("qt_spinbox_edit"), SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_useVariableWeight, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
 }
 
 

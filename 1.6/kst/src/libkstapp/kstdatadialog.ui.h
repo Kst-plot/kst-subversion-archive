@@ -78,6 +78,7 @@ void KstDataDialog::init()
     connect(this, SIGNAL(modified()), KstApp::inst()->document(), SLOT(wasModified()));
     connect(_editMultiple, SIGNAL(clicked()), this, SLOT(toggleEditMultiple()));
     connect(_tagName, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
+    connect(_legendText, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
     _editMultiple->hide();
     _editMultipleWidget->hide();
 }

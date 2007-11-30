@@ -33,7 +33,7 @@ class KstEventMonitorI : public KstDataDialog {
   protected:
     QString editTitle() { return tr("Edit Event Monitor"); }
     QString newTitle() { return tr("New Event Monitor"); }
- 
+
   public slots:
     void update();
     bool newObject();
@@ -63,7 +63,7 @@ class KstEventMonitorI : public KstDataDialog {
     bool _checkBoxELOGNotifyDirty : 1;
     bool _scriptDirty : 1;
     bool editSingleObject(EventMonitorEntryPtr emPtr);
-    
+
   private slots:
     void setcheckBoxDebugDirty();
     void setcheckBoxEMailNotifyDirty();
@@ -76,6 +76,4 @@ class KstEventMonitorI : public KstDataDialog {
     EventMonitorWidget *_w;
 };
 
-
 #endif
-// vim: ts=2 sw=2 et

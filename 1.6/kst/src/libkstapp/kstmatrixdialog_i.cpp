@@ -90,6 +90,37 @@ KstMatrixDialogI::KstMatrixDialogI(QWidget* parent, const char* name, bool modal
   connect(_w->_doSkip, SIGNAL(clicked()), this, SLOT(setDoSkipDirty()));
   connect(_w->_doAve, SIGNAL(clicked()), this, SLOT(setDoAveDirty()));
 
+  // for apply button
+  connect(_w->_fileName, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_field, SIGNAL(highlighted(int)), this, SLOT(wasModifiedApply()));
+  connect(_w->_configure, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
+  connect(_w->_xStart, SIGNAL(valueChanged(int)), this, SLOT(wasModifiedApply()));
+  connect(_w->_yStart, SIGNAL(valueChanged(int)), this, SLOT(wasModifiedApply()));
+  connect(_w->_xNumSteps, SIGNAL(valueChanged(int)), this, SLOT(wasModifiedApply()));
+  connect(_w->_yNumSteps, SIGNAL(valueChanged(int)), this, SLOT(wasModifiedApply()));
+  connect(_w->_xStart->child("qt_spinbox_edit"), SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_yStart->child("qt_spinbox_edit"), SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_xNumSteps->child("qt_spinbox_edit"), SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_yNumSteps->child("qt_spinbox_edit"), SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_xStartCountFromEnd, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
+  connect(_w->_yStartCountFromEnd, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
+  connect(_w->_xNumStepsReadToEnd, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
+  connect(_w->_yNumStepsReadToEnd, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
+  connect(_w->_doSkip, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
+  connect(_w->_skip, SIGNAL(valueChanged(int)), this, SLOT(wasModifiedApply()));
+  connect(_w->_skip->child("qt_spinbox_edit"), SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_doAve, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
+  connect(_w->_gradientX, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
+  connect(_w->_gradientY, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
+  connect(_w->_gradientZAtMin, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_gradientZAtMax, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_nX, SIGNAL(valueChanged(int)), this, SLOT(wasModifiedApply()));
+  connect(_w->_nY, SIGNAL(valueChanged(int)), this, SLOT(wasModifiedApply()));
+  connect(_w->_minX, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_minY, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_xStep, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_yStep, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
+
   adjustSize();
   resize(minimumSizeHint());
   setFixedHeight(height());

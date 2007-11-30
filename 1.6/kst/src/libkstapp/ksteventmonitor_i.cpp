@@ -60,13 +60,27 @@ KstEventMonitorI::KstEventMonitorI(QWidget* parent, const char* name, bool modal
   connect(_w->_scalarSelectorEq, SIGNAL(selectionChangedLabel(const QString&)), _w->lineEditEquation, SLOT(insert(const QString&)));
   connect(_w->_scalarSelectorEq, SIGNAL(selectionChangedLabel(const QString&)), _w->lineEditEquation, SLOT(setFocus()));
   connect(_w->_pushButtonELOGConfigure, SIGNAL(clicked()), KstApp::inst(), SLOT(EventELOGConfigure()));
-  
+
   // more multiple edit mode
   connect(_w->checkBoxDebug, SIGNAL(clicked()), this, SLOT(setcheckBoxDebugDirty()));
   connect(_w->checkBoxEMailNotify, SIGNAL(clicked()), this, SLOT(setcheckBoxEMailNotifyDirty()));
   connect(_w->checkBoxELOGNotify, SIGNAL(clicked()), this, SLOT(setcheckBoxELOGNotifyDirty()));
   connect(_w->_useScript, SIGNAL(clicked()), this, SLOT(setScriptDirty()));
   connect(_w->_script, SIGNAL(textChanged()), this, SLOT(setScriptDirty()));
+
+  // for apply button
+  connect(_w->lineEditEquation, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->lineEditDescription, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->checkBoxDebug, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
+  connect(_w->radioButtonLogNotice, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
+  connect(_w->radioButtonLogWarning, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
+  connect(_w->radioButtonLogError, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
+  connect(_w->checkBoxEMailNotify, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
+  connect(_w->lineEditEMailRecipients, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->checkBoxELOGNotify, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
+  connect(_w->_pushButtonELOGConfigure, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
+  connect(_w->_useScript, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
+  connect(_w->_script, SIGNAL(textChanged()), this, SLOT(wasModifiedApply()));
 
   setFixedHeight(height());
 }
@@ -406,4 +420,4 @@ void KstEventMonitorI::setcheckBoxELOGNotifyDirty() {
 }
 
 #include "ksteventmonitor_i.moc"
-// vim: ts=2 sw=2 et
+

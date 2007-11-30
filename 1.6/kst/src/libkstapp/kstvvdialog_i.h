@@ -34,7 +34,7 @@ class KST_EXPORT KstVvDialogI : public KstDataDialog {
   protected:
     QString editTitle() { return tr("Edit Vector View"); }
     QString newTitle() { return tr("New Vector View"); }
- 
+
   public slots:
     void update();
     void updateWindow();

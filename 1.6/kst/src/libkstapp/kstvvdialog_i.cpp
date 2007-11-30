@@ -93,6 +93,37 @@ KstVvDialogI::KstVvDialogI(QWidget* parent, const char* name, bool modal, WFlags
   connect(_w->_xMaxCheckbox, SIGNAL(clicked()), this, SLOT(xMaxCheckboxClicked()));
   connect(_w->_yMinCheckbox, SIGNAL(clicked()), this, SLOT(yMinCheckboxClicked()));
   connect(_w->_yMaxCheckbox, SIGNAL(clicked()), this, SLOT(yMaxCheckboxClicked()));
+
+  // for apply button
+  connect(_w->_xVector, SIGNAL(selectionChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_xVector, SIGNAL(selectionChangedLabel(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_xVector->_vector, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_yVector, SIGNAL(selectionChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_yVector, SIGNAL(selectionChangedLabel(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_yVector->_vector, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_interp, SIGNAL(highlighted(int)), this, SLOT(wasModifiedApply()));
+  connect(_w->_xMinCheckbox, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
+  connect(_w->_xMinScalar, SIGNAL(selectionChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_xMinScalar, SIGNAL(selectionChangedLabel(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_xMinScalar->_scalar, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_xMaxCheckbox, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
+  connect(_w->_xMaxScalar, SIGNAL(selectionChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_xMaxScalar, SIGNAL(selectionChangedLabel(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_xMaxScalar->_scalar, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_yMinCheckbox, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
+  connect(_w->_yMinScalar, SIGNAL(selectionChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_yMinScalar, SIGNAL(selectionChangedLabel(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_yMinScalar->_scalar, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_yMaxCheckbox, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
+  connect(_w->_yMaxScalar, SIGNAL(selectionChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_yMaxScalar, SIGNAL(selectionChangedLabel(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_yMaxScalar->_scalar, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_plotAxes, SIGNAL(highlighted(int)), this, SLOT(wasModifiedApply()));
+  connect(_w->_plotList, SIGNAL(highlighted(int)), this, SLOT(wasModifiedApply()));
+  connect(_w->_realtimeButton, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
+  connect(_w->_currentButton, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
+  connect(_w->_FlagVector, SIGNAL(selectionChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_FlagVector, SIGNAL(selectionChangedLabel(const QString&)), this, SLOT(wasModifiedApply()));
 }
 
 
@@ -146,6 +177,7 @@ void KstVvDialogI::fillFieldsForEdit() {
   _w->_yMaxCheckbox->setChecked(vp->useYmax());
 
   KstScalarPtr sc;
+  QString str;
 
   sc = vp->xMinScalar();
   if (!sc) {
@@ -157,7 +189,7 @@ void KstVvDialogI::fillFieldsForEdit() {
     // just put its current value into the scalar selector.
     // warning: after edit it won't be updated anymore!
     // the motivation for putting this in is to not lose scale information when a plot is deleted.
-    _w->_xMinScalar->setSelection(QString::number(sc->value())); 
+    _w->_xMinScalar->setSelection(QString::number(sc->value()));
   }
 
   sc = vp->xMaxScalar();
