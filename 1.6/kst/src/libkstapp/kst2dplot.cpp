@@ -2661,18 +2661,22 @@ void Kst2DPlot::draw(KstPainter& p) {
   // use a common plot region for plots that are aligned and of the same
   //  dimension, in either the horizontal or vertical sense...
   KST::alignment.limits(geometry(), in_xleft_bdr_px, in_xright_bdr_px, in_ytop_bdr_px, in_ybot_bdr_px, 1);
+
+  // only override if not maximized
+  if (!maximized()) {
     // only override if borders are not suppressed
-  if (!_suppressLeft && in_xleft_bdr_px > 0.001) { // x-left border overridden
-    xleft_bdr_px = in_xleft_bdr_px;
-  }
-  if (!_suppressRight && in_xright_bdr_px > 0.001) { // x-right border overridden
-    xright_bdr_px = in_xright_bdr_px;
-  }
-  if (!_suppressBottom && in_ybot_bdr_px > 0.001) { // y-bottom border overridden
-    ybot_bdr_px = in_ybot_bdr_px;
-  }
-  if (!_suppressTop && in_ytop_bdr_px > 0.001) { // y-top border overridden
-    ytop_bdr_px = in_ytop_bdr_px;
+    if (!_suppressLeft && in_xleft_bdr_px > 0.001) { // x-left border overridden
+      xleft_bdr_px = in_xleft_bdr_px;
+    }
+    if (!_suppressRight && in_xright_bdr_px > 0.001) { // x-right border overridden
+      xright_bdr_px = in_xright_bdr_px;
+    }
+    if (!_suppressBottom && in_ybot_bdr_px > 0.001) { // y-bottom border overridden
+      ybot_bdr_px = in_ybot_bdr_px;
+    }
+    if (!_suppressTop && in_ytop_bdr_px > 0.001) { // y-top border overridden
+      ytop_bdr_px = in_ytop_bdr_px;
+    }
   }
 
   QRect RelPlotRegion(d2i(xleft_bdr_px),

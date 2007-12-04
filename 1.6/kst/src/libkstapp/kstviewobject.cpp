@@ -724,7 +724,12 @@ void KstViewObject::cleanup(int cols) {
   double widthTotal = 0.0;
   double widthAverage = 0.0;
 
-  for (KstViewObjectList::ConstIterator i = _children.begin(); i != _children.end(); ++i) {
+  for (KstViewObjectList::Iterator i = _children.begin(); i != _children.end(); ++i) {
+    if ((*i)->maximized()) {
+      (*i)->setMaximized(false);
+      (*i)->recursively<bool>(&KstViewObject::setMaximized, false);
+    }
+
     if ((*i)->followsFlow()) {
       childrenCopy.append(*i);
       widthTotal += (*i)->aspectRatio().w;
