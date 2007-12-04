@@ -632,7 +632,7 @@ QSize KstViewObject::size() const {
 
 
 void KstViewObject::internalAlignment(KstPainter& p, QRect& plotRegion) {
-  static const QRect x(0,0,0,0);
+  static const QRect x(0, 0, 0, 0);
 
   for (KstViewObjectList::Iterator i = _children.begin(); i != _children.end(); ++i) {
     (*i)->internalAlignment(p, plotRegion);
@@ -720,7 +720,6 @@ void KstViewObject::cleanup(int cols) {
   //
   // if cols <= 0, the optimal value is chosen automatically
   //
-
   KstViewObjectList childrenCopy;
   double widthTotal = 0.0;
   double widthAverage = 0.0;
@@ -1531,7 +1530,7 @@ void KstViewObject::copyTo(int id) {
       setDirty();
       KstApp::inst()->document()->setModified();
       copyObjectQuietly(*(window->view().data()));
-      window->view()->paint(KstPainter::P_PAINT);    
+      window->view()->paint(KstPainter::P_PAINT);
     }
   }
 }
@@ -1544,7 +1543,7 @@ void KstViewObject::updateFromAspect() {
   const QRect myOldGeom(_geom);
 
   if (_parent) {
-    const QRect geom(_parent->contentsRect());
+    const QRect geom(_parent->geometry());
 
     _geom.setLeft(geom.left() + int((_aspect.x * (double)geom.width())+0.5));
     _geom.setTop(geom.top() + int((_aspect.y * (double)geom.height())+0.5));
@@ -1573,7 +1572,7 @@ void KstViewObject::updateFromAspect() {
 
 void KstViewObject::updateAspectPos() {
   if (_parent) {
-    const QRect geom(_parent->contentsRect());
+    const QRect geom(_parent->geometry());
 
     _aspect.x = double(geometry().left() - geom.left()) / double(geom.width());
     _aspect.y = double(geometry().top() - geom.top()) / double(geom.height());
@@ -1586,7 +1585,7 @@ void KstViewObject::updateAspectPos() {
 
 void KstViewObject::updateAspectSize() {
   if (_parent) {
-    const QRect geom(_parent->contentsRect());
+    const QRect geom(_parent->geometry());
 
     _aspect.w = double(geometry().width()) / double(geom.width());
     _aspect.h = double(geometry().height()) / double(geom.height());
