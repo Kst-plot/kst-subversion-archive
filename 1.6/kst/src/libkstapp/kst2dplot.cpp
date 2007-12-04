@@ -7221,6 +7221,7 @@ void Kst2DPlot::connectConfigWidget(QWidget *parent, QWidget *w) const {
   if (!widget) {
     return;
   }
+
   connect(widget, SIGNAL(changed()), parent, SLOT(modified()));
   connect(widget->_title, SIGNAL( textChanged(const QString&) ), parent, SLOT( modified() ) );
   connect(widget->plotColors, SIGNAL( bgChanged(const QColor&) ), parent, SLOT(modified()) );
@@ -7277,6 +7278,7 @@ void Kst2DPlot::connectConfigWidget(QWidget *parent, QWidget *w) const {
   connect( widget->_comboBoxYInterpret, SIGNAL( activated(int) ), parent, SLOT(modified()));
   connect( widget->_comboBoxYDisplay, SIGNAL( activated(int) ), parent, SLOT(modified()));
   connect( widget->_yTransformRight, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
+  connect( widget->_yTransformRightExp, SIGNAL( textChanged(const QString&) ), parent, SLOT(modified()));
   connect( widget->_yMajorTickSpacing, SIGNAL( activated(int) ), parent, SLOT(modified()));
   connect( widget->_yMinorTicks, SIGNAL( valueChanged(int) ), parent, SLOT(modified()));
   connect( widget->_yMinorTicksAuto, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
@@ -7399,7 +7401,6 @@ KstGfxMouseHandler *handler_Kst2DPlot() {
 
 KST_REGISTER_VIEW_OBJECT(Plot, create_Kst2DPlot, handler_Kst2DPlot)
 }
-
 
 #undef LABEL_PRECISION
 #include "kst2dplot.moc"
