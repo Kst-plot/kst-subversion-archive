@@ -15,25 +15,25 @@
  *                                                                         *
  ***************************************************************************/
 
-/** A class for handling power spectra for kst
- *@author C. Barth Netterfield
- */
-
 #include <assert.h>
 #include <math.h>
 
+// include files for Qt
 #include <qstylesheet.h>
 
+// include files for KDE
 #include <kglobal.h>
 #include <klocale.h>
 #include "ksdebug.h"
 
+// application specific includes
 #include "dialoglauncher.h"
 #include "kstdatacollection.h"
 #include "kstdebug.h"
+#include "kstobjectdefaults.h"
 #include "kstpsd.h"
 #include "psdcalculator.h"
-#include "kstobjectdefaults.h"
+
 
 extern "C" void rdft(int n, int isgn, double *a);
 
@@ -139,7 +139,7 @@ void KstPSD::commonConstructor(const QString& in_tag, KstVectorPtr in_V,
   if (in_V) {
     _inputVectors[INVECTOR] = in_V;
   }
-  setTagName(KstObjectTag::fromString(in_tag));
+  KstObject::setTagName(KstObjectTag::fromString(in_tag));
   _Freq = in_freq;
   _Average = in_average;
   _Apodize = in_apodize;
@@ -454,7 +454,7 @@ void KstPSD::setGaussianSigma(double in_gaussianSigma) {
   }
 }
 
- 
+
 KstDataObjectPtr KstPSD::makeDuplicate(KstDataObjectDataObjectMap& duplicatedMap) {
   QString name(tagName() + '\'');
   while (KstData::self()->dataTagNameNotUnique(name, false)) {
@@ -499,3 +499,15 @@ void KstPSD::updateVectorLabels() {
   (*_fVector)->setLabel(i18n("Frequency \\[%1\\]").arg(_rUnits));
 }
 
+
+void KstPSD::setTagName(const QString &in_tag) {
+  KstObjectTag newTag(in_tag, tag().context());
+
+  if (newTag == tag()) {
+    return;
+  }
+
+  KstObject::setTagName(newTag);
+  (*_sVector)->setTagName(KstObjectTag("sv", tag()));
+  (*_fVector)->setTagName(KstObjectTag("freq", tag()));
+}

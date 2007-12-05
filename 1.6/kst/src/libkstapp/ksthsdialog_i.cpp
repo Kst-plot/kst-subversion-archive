@@ -425,7 +425,10 @@ bool KstHsDialogI::editObject() {
       _tagName->setFocus();
       return false;
     }
-    hp->setTagName(KstObjectTag(tag_name, hp->tag().context())); // FIXME: doesn't allow changing tag context
+
+    hp->writeLock();
+    hp->setTagName(tag_name);
+    hp->unlock();
 
     // then edit the object
     _vectorDirty = true;

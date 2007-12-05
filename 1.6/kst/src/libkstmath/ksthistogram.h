@@ -59,6 +59,8 @@ public:
 
   static void AutoBin(const KstVectorPtr, int *n, double *max, double *min);
 
+  virtual void setTagName(const QString& tag);
+
   virtual void showNewDialog();
   virtual void showEditDialog();
 

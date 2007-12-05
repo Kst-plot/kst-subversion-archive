@@ -39,13 +39,13 @@ class KST_EXPORT KstPSD : public KstDataObject {
 
     virtual void save(QTextStream& ts, const QString& indent = QString::null);
     virtual QString propertyString() const;
-    
+
     bool apodize() const;
     void setApodize(bool in_apodize);
-    
+
     ApodizeFunction apodizeFxn() const;
     void setApodizeFxn(ApodizeFunction in_apodizeFxn);
-    
+
     double gaussianSigma() const;
     void setGaussianSigma(double in_gaussianSigma);
 
@@ -66,7 +66,7 @@ class KST_EXPORT KstPSD : public KstDataObject {
 
     const QString& vUnits() const;
     void setVUnits(const QString& units);
-    
+
     const QString& rUnits() const;
     void setRUnits(const QString& units);
 
@@ -78,6 +78,8 @@ class KST_EXPORT KstPSD : public KstDataObject {
 
     virtual bool slaveVectorsUsed() const;
 
+    virtual void setTagName(const QString& tag);
+
     virtual void showNewDialog();
     virtual void showEditDialog();
 
@@ -88,7 +90,7 @@ class KST_EXPORT KstPSD : public KstDataObject {
     KstVectorPtr vY() const { return *_sVector; }
 
     const KstCurveHintList *curveHints() const;
-    
+
     virtual KstDataObjectPtr makeDuplicate(KstDataObjectDataObjectMap& duplicatedMap);
 
   private:
@@ -129,4 +131,4 @@ typedef KstSharedPtr<KstPSD> KstPSDPtr;
 typedef KstObjectList<KstPSDPtr> KstPSDList;
 
 #endif
-// vim: ts=2 sw=2 et
+

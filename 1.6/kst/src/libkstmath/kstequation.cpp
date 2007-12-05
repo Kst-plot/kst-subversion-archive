@@ -15,10 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-/** A class for handling equations for kst
- *@author C. Barth Netterfield
- */
-
 #include <assert.h>
 #include <math.h>
 #include <stdlib.h>
@@ -30,11 +26,11 @@
 #include <klocale.h>
 
 // application specific includes
+#include "defaultprimitivenames.h"
 #include "dialoglauncher.h"
 #include "enodes.h"
 #include "eparse-eh.h"
 #include "kstdatacollection.h"
-#include "defaultprimitivenames.h"
 #include "kstdebug.h"
 #include "kstequation.h"
 #include "kstsvector.h"
@@ -76,12 +72,12 @@ KstEquation::KstEquation(const QString& in_tag, const QString& equation, KstVect
 
 KstEquation::KstEquation(const QDomElement &e)
 : KstDataObject(e) {
-  QString in_tag, equation;
-
-  int ns = -1;
-  double x0 = 0.0, x1 = 1.0;
   KstObjectTag xvtag = KstObjectTag::invalidTag;
+  QString in_tag, equation;
+  double x0 = 0.0;
+  double x1 = 1.0;
   bool haveVector = false;
+  int ns = -1;
 
   _doInterp = false;
 
@@ -117,7 +113,7 @@ KstEquation::KstEquation(const QDomElement &e)
       ns = 2;
     }
     if (x0 == x1) {
-      x1 = x0 + 2;
+      x1 = x0 + 2.0;
     }
 
     KstObjectTag vtag = KstObjectTag::invalidTag;
@@ -152,7 +148,7 @@ void KstEquation::commonConstructor(const QString& in_tag, const QString& in_equ
 
   KstVectorPtr xv = new KstVector(KstObjectTag("xsv", tag()), 2, this);
   _xOutVector = _outputVectors.insert(XOUTVECTOR, xv);
-    
+
   KstVectorPtr yv = new KstVector(KstObjectTag("sv", tag()), 2, this);
   _yOutVector = _outputVectors.insert(YOUTVECTOR, yv);
 
@@ -545,22 +541,21 @@ KstDataObjectPtr KstEquation::makeDuplicate(KstDataObjectDataObjectMap& duplicat
 
 
 void KstEquation::replaceDependency(KstDataObjectPtr oldObject, KstDataObjectPtr newObject) {
-  
   QString newExp = _equation;
-  
+
   // replace all occurences of outputVectors, outputScalars from oldObject
   for (KstVectorMap::Iterator j = oldObject->outputVectors().begin(); j != oldObject->outputVectors().end(); ++j) {
     QString oldTag = j.data()->tagName();
     QString newTag = ((newObject->outputVectors())[j.key()])->tagName();
     newExp = newExp.replace("[" + oldTag + "]", "[" + newTag + "]");
   }
-  
+
   for (KstScalarMap::Iterator j = oldObject->outputScalars().begin(); j != oldObject->outputScalars().end(); ++j) {
     QString oldTag = j.data()->tagName();
     QString newTag = ((newObject->outputScalars())[j.key()])->tagName();
     newExp = newExp.replace("[" + oldTag + "]", "[" + newTag + "]");
   }
-  
+
   // and dependencies on matrix stats (there won't be matrices themselves in the expression)
   for (KstMatrixMap::Iterator j = oldObject->outputMatrices().begin(); j != oldObject->outputMatrices().end(); ++j) {
     QDictIterator<KstScalar> scalarDictIter(j.data()->scalars());
@@ -570,7 +565,7 @@ void KstEquation::replaceDependency(KstDataObjectPtr oldObject, KstDataObjectPtr
       newExp = newExp.replace("[" + oldTag + "]", "[" + newTag + "]"); 
     }
   }
-  
+
   // only replace _inputVectors
   for (KstVectorMap::Iterator j = oldObject->outputVectors().begin(); j != oldObject->outputVectors().end(); ++j) {
     for (KstVectorMap::Iterator k = _inputVectors.begin(); k != _inputVectors.end(); ++k) {
@@ -587,7 +582,7 @@ void KstEquation::replaceDependency(KstDataObjectPtr oldObject, KstDataObjectPtr
       newExp = newExp.replace("[" + oldTag + "]", "[" + newTag + "]"); 
     }
   }
-  
+
   setEquation(newExp);
 }
 
@@ -595,10 +590,10 @@ void KstEquation::replaceDependency(KstDataObjectPtr oldObject, KstDataObjectPtr
 void KstEquation::replaceDependency(KstVectorPtr oldVector, KstVectorPtr newVector) {
   QString oldTag = oldVector->tagName();
   QString newTag = newVector->tagName();
-  
+
   // replace all occurences of oldTag with newTag
   QString newExp = _equation.replace("["+oldTag+"]", "["+newTag+"]");
-  
+
   // also replace all occurences of scalar stats for the oldVector
   QDictIterator<KstScalar> scalarDictIter(oldVector->scalars());
   for (; scalarDictIter.current(); ++scalarDictIter) {
@@ -606,7 +601,7 @@ void KstEquation::replaceDependency(KstVectorPtr oldVector, KstVectorPtr newVect
     QString newTag = ((newVector->scalars())[scalarDictIter.currentKey()])->tagName();
     newExp = newExp.replace("[" + oldTag + "]", "[" + newTag + "]"); 
   }
-  
+
   setEquation(newExp);
 
   // do the dependency replacements for _inputVectors, but don't call parent function as it
@@ -614,15 +609,14 @@ void KstEquation::replaceDependency(KstVectorPtr oldVector, KstVectorPtr newVect
   for (KstVectorMap::Iterator j = _inputVectors.begin(); j != _inputVectors.end(); ++j) {
     if (j.data() == oldVector) {
       _inputVectors[j.key()] = newVector;  
-    }      
+    }
   }
 }
 
 
 void KstEquation::replaceDependency(KstMatrixPtr oldMatrix, KstMatrixPtr newMatrix) {
-
   QString newExp = _equation;
-  
+
   // also replace all occurences of scalar stats for the oldMatrix
   QDictIterator<KstScalar> scalarDictIter(oldMatrix->scalars());
   for (; scalarDictIter.current(); ++scalarDictIter) {
@@ -630,13 +624,12 @@ void KstEquation::replaceDependency(KstMatrixPtr oldMatrix, KstMatrixPtr newMatr
     QString newTag = ((newMatrix->scalars())[scalarDictIter.currentKey()])->tagName();
     newExp = newExp.replace("[" + oldTag + "]", "[" + newTag + "]"); 
   }
-  
+
   setEquation(newExp);
 }
 
 
 bool KstEquation::uses(KstObjectPtr p) const {
-  
   // check VectorsUsed in addition to _input*'s
   if (KstVectorPtr vect = kst_cast<KstVector>(p)) {
     for (KstVectorMap::ConstIterator j = VectorsUsed.begin(); j != VectorsUsed.end(); ++j) {
@@ -662,12 +655,12 @@ void KstEquation::setupConnections() {
   for (KstScalarMap::iterator i = ScalarsUsed.begin(); i != ScalarsUsed.end(); ++i) {
     disconnect(i.data(), SIGNAL(tagChanged()), this, SLOT(reParse()));
     connect(i.data(), SIGNAL(tagChanged()), this, SLOT(reParse()));
-  } 
+  }
   for (KstVectorMap::iterator i = VectorsUsed.begin(); i != VectorsUsed.end(); ++i) {
     disconnect(i.data(), SIGNAL(tagChanged()), this, SLOT(reParse()));
     connect(i.data(), SIGNAL(tagChanged()), this, SLOT(reParse()));
-  } 
+  }
 }
 
 #include "kstequation.moc"
-// vim: ts=2 sw=2 et
+

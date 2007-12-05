@@ -106,8 +106,8 @@ void KstHistogram::commonConstructor(const QString &in_tag, KstVectorPtr in_V,
   _NormMode = in_norm_mode;
   _Bins = 0L;
   _NBins = 0;
-  
-  setTagName(KstObjectTag::fromString(in_tag));
+
+  KstObject::setTagName(KstObjectTag::fromString(in_tag));
   _inputVectors[RAWVECTOR] = in_V;
 
   if (xmax_in>xmin_in) {
@@ -456,3 +456,15 @@ KstDataObjectPtr KstHistogram::makeDuplicate(KstDataObjectDataObjectMap& duplica
   return KstDataObjectPtr(histogram);
 }
 
+
+void KstHistogram::setTagName(const QString &in_tag) {
+  KstObjectTag newTag(in_tag, tag().context());
+
+  if (newTag == tag()) {
+    return;
+  }
+
+  KstObject::setTagName(newTag);
+  (*_bVector)->setTagName(KstObjectTag("bins", tag()));
+  (*_hVector)->setTagName(KstObjectTag("sv", tag()));
+}

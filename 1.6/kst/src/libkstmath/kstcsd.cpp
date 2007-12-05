@@ -122,7 +122,7 @@ void KstCSD::commonConstructor(const QString& in_tag, KstVectorPtr in_V, double 
   _typeString = i18n("Spectrogram");
   _type = "Spectrogram";
   _inputVectors[INVECTOR] = in_V;
-  setTagName(KstObjectTag::fromString(in_tag));
+  KstObject::setTagName(KstObjectTag::fromString(in_tag));
   _frequency = in_freq;
   _average = in_average;
   _apodize = in_apodize;
@@ -161,6 +161,7 @@ KstCSD::~KstCSD() {
   KST::matrixList.remove(_outputMatrices[OUTMATRIX]);
   KST::matrixList.lock().unlock();
 }
+
 
 KstObject::UpdateType KstCSD::update(int update_counter) {
   Q_ASSERT(myLockStatus() == KstRWLock::WRITELOCKED);
@@ -239,6 +240,7 @@ KstObject::UpdateType KstCSD::update(int update_counter) {
 
   return setLastUpdateResult(UPDATE);
 }
+
 
 void KstCSD::save(QTextStream &ts, const QString& indent) {
   QString l2 = indent + "  ";
@@ -474,3 +476,14 @@ void KstCSD::updateMatrixLabels(void) {
   }
 }
 
+
+void KstCSD::setTagName(const QString &in_tag) {
+  KstObjectTag newTag(in_tag, tag().context());
+
+  if (newTag == tag()) {
+    return;
+  }
+
+  KstObject::setTagName(newTag);
+  (*_outMatrix)->setTagName(KstObjectTag("csd", tag()));
+}

@@ -42,6 +42,8 @@ class KST_EXPORT KstCSD : public KstDataObject {
 
     virtual bool slaveVectorsUsed() const;
 
+    virtual void setTagName(const QString& tag);
+
     virtual void showNewDialog();
     virtual void showEditDialog();
 

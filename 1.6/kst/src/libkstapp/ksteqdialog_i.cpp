@@ -113,7 +113,7 @@ void KstEqDialogI::fillFieldsForEdit() {
   _w->_curvePlacement->hide();
   _legendText->hide();
   _legendLabel->hide();
-  
+
   adjustSize();
   resize(minimumSizeHint());
   setFixedHeight(height());
@@ -135,7 +135,7 @@ void KstEqDialogI::fillFieldsForNew() {
 
   // set the X Axis Vector to the X axis vector of 
   // the last curve on the global curve list...
-  if (curves.count() >0) {
+  if (curves.count() > 0) {
     _w->_xVectors->setSelection(curves.last()->xVTag().displayString());
   }
 
@@ -450,7 +450,7 @@ void KstEqDialogI::populateEditMultiple() {
   _w->_doInterpolation->setTristate(true);
   _w->_doInterpolation->setNoChange();
   _w->_equation->setText("");
-  
+
   // and clean all the fields
   _equationDirty = false;
   _xVectorsDirty = false;
