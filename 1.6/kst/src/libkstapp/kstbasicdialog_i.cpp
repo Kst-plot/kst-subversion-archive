@@ -289,7 +289,6 @@ bool KstBasicDialogI::newObject() {
 bool KstBasicDialogI::editObject() {
   //called upon clicking 'ok' in 'edit' mode
   //return false if the specified objects can't be edited, otherwise true
-
   KstBasicPluginPtr ptr = kst_cast<KstBasicPlugin>(_dp);
   Q_ASSERT(ptr); //should never happen...
 
@@ -323,7 +322,6 @@ bool KstBasicDialogI::editObject() {
   }
 
   ptr->setDirty();
-
   emit modified();
   return true;
 }
@@ -420,7 +418,11 @@ void KstBasicDialogI::updateForm() {
   QStringList iv = ptr->inputVectorList();
   for (QStringList::ConstIterator ivI = iv.begin(); ivI != iv.end(); ++ivI) {
     if (VectorSelector *w = vector(*ivI)) {
+      disconnect(w->_vector, SIGNAL(highlighted(int)), this, SLOT(wasModifiedApply()));
+      disconnect(w->_vector, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
       w->update();
+      connect(w->_vector, SIGNAL(highlighted(int)), this, SLOT(wasModifiedApply()));
+      connect(w->_vector, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
     }
   }
 
@@ -428,7 +430,11 @@ void KstBasicDialogI::updateForm() {
   QStringList is = ptr->inputScalarList();
   for (QStringList::ConstIterator isI = is.begin(); isI != is.end(); ++isI) {
     if (ScalarSelector *w = scalar(*isI)) {
+      disconnect(w->_scalar, SIGNAL(highlighted(int)), this, SLOT(wasModifiedApply()));
+      disconnect(w->_scalar, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
       w->update();
+      connect(w->_scalar, SIGNAL(highlighted(int)), this, SLOT(wasModifiedApply()));
+      connect(w->_scalar, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
     }
   }
 
@@ -436,7 +442,11 @@ void KstBasicDialogI::updateForm() {
   QStringList istr = ptr->inputStringList();
   for (QStringList::ConstIterator istrI = istr.begin(); istrI != istr.end(); ++istrI) {
     if (StringSelector *w = string(*istrI)) {
+      disconnect(w->_string, SIGNAL(highlighted(int)), this, SLOT(wasModifiedApply()));
+      disconnect(w->_string, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
       w->update();
+      connect(w->_string, SIGNAL(highlighted(int)), this, SLOT(wasModifiedApply()));
+      connect(w->_string, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
     }
   }
 }

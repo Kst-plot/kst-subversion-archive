@@ -261,6 +261,28 @@ void KstVvDialogI::fillFieldsForNew() {
 
 
 void KstVvDialogI::update() {
+  disconnect(_w->_xVector, SIGNAL(selectionChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  disconnect(_w->_xVector, SIGNAL(selectionChangedLabel(const QString&)), this, SLOT(wasModifiedApply()));
+  disconnect(_w->_xVector->_vector, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  disconnect(_w->_yVector, SIGNAL(selectionChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  disconnect(_w->_yVector, SIGNAL(selectionChangedLabel(const QString&)), this, SLOT(wasModifiedApply()));
+  disconnect(_w->_yVector->_vector, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  disconnect(_w->_xMinScalar, SIGNAL(selectionChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  disconnect(_w->_xMinScalar, SIGNAL(selectionChangedLabel(const QString&)), this, SLOT(wasModifiedApply()));
+  disconnect(_w->_xMinScalar->_scalar, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  disconnect(_w->_xMaxScalar, SIGNAL(selectionChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  disconnect(_w->_xMaxScalar, SIGNAL(selectionChangedLabel(const QString&)), this, SLOT(wasModifiedApply()));
+  disconnect(_w->_xMaxScalar->_scalar, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  disconnect(_w->_yMinScalar, SIGNAL(selectionChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  disconnect(_w->_yMinScalar, SIGNAL(selectionChangedLabel(const QString&)), this, SLOT(wasModifiedApply()));
+  disconnect(_w->_yMinScalar->_scalar, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  disconnect(_w->_yMaxScalar, SIGNAL(selectionChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  disconnect(_w->_yMaxScalar, SIGNAL(selectionChangedLabel(const QString&)), this, SLOT(wasModifiedApply()));
+  disconnect(_w->_yMaxScalar->_scalar, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  disconnect(_w->_FlagVector, SIGNAL(selectionChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  disconnect(_w->_FlagVector, SIGNAL(selectionChangedLabel(const QString&)), this, SLOT(wasModifiedApply()));
+  disconnect(_w->_plotList, SIGNAL(highlighted(int)), this, SLOT(wasModifiedApply()));
+
   _w->_curvePlacement->update();
   _w->_xVector->update();
   _w->_yVector->update();
@@ -273,6 +295,28 @@ void KstVvDialogI::update() {
   _w->_yMaxScalar->update();
 
   updatePlotList();
+
+  connect(_w->_xVector, SIGNAL(selectionChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_xVector, SIGNAL(selectionChangedLabel(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_xVector->_vector, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_yVector, SIGNAL(selectionChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_yVector, SIGNAL(selectionChangedLabel(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_yVector->_vector, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_xMinScalar, SIGNAL(selectionChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_xMinScalar, SIGNAL(selectionChangedLabel(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_xMinScalar->_scalar, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_xMaxScalar, SIGNAL(selectionChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_xMaxScalar, SIGNAL(selectionChangedLabel(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_xMaxScalar->_scalar, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_yMinScalar, SIGNAL(selectionChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_yMinScalar, SIGNAL(selectionChangedLabel(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_yMinScalar->_scalar, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_yMaxScalar, SIGNAL(selectionChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_yMaxScalar, SIGNAL(selectionChangedLabel(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_yMaxScalar->_scalar, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_FlagVector, SIGNAL(selectionChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_FlagVector, SIGNAL(selectionChangedLabel(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_plotList, SIGNAL(highlighted(int)), this, SLOT(wasModifiedApply()));
 }
 
 
