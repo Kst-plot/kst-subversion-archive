@@ -47,12 +47,15 @@ private slots:
   void applyNptsChange();
   void OKNptsChange();
   void updateTimeCombo();
+  void modifiedRange();
+  void changedSelection();
 
 signals:
   /** signal that vectors have changed */
   void docChanged();
+
+private:
+  bool _modifiedRange;
 };
 
-
 #endif
-// vim: ts=2 sw=2 et

@@ -29,21 +29,17 @@
 #include "kstdatacollection.h"
 #include "kstrvector.h"
 
-KstChangeNptsDialogI::KstChangeNptsDialogI(QWidget* parent,
-                                           const char* name,
-                                           bool modal,
-                                           WFlags fl)
+KstChangeNptsDialogI::KstChangeNptsDialogI(
+  QWidget* parent, const char* name, bool modal, WFlags fl)
 : KstChangeNptsDialog(parent, name, modal, fl) {
-    connect(Clear,     SIGNAL(clicked()),
-            CurveList, SLOT(clearSelection()));
-    connect(SelectAll, SIGNAL(clicked()),
-            this,      SLOT(selectAll()));
-    connect(Apply,     SIGNAL(clicked()),
-            this,      SLOT(applyNptsChange()));
-    connect(OK,        SIGNAL(clicked()),
-            this,      SLOT(OKNptsChange()));
-    connect(CurveList, SIGNAL(selected ( int )),
-            this,      SLOT(updateDefaults( int )));
+  connect(Clear, SIGNAL(clicked()), CurveList, SLOT(clearSelection()));
+  connect(SelectAll, SIGNAL(clicked()), this, SLOT(selectAll()));
+  connect(Apply, SIGNAL(clicked()), this, SLOT(applyNptsChange()));
+  connect(OK, SIGNAL(clicked()), this, SLOT(OKNptsChange()));
+  connect(CurveList, SIGNAL(selectionChanged()), this, SLOT(changedSelection()));
+  connect(_kstDataRange, SIGNAL(changed()), this, SLOT(modifiedRange()));
+
+  _modifiedRange = false;
 }
 
 
@@ -59,14 +55,14 @@ void KstChangeNptsDialogI::selectAll() {
 bool KstChangeNptsDialogI::updateChangeNptsDialog() {
   QStringList qsl;
   int inserted = 0;
-  
+
   for (uint i_vector = 0; i_vector < CurveList->count(); i_vector++) {
     if (CurveList->isSelected(i_vector)) {
       qsl.append(CurveList->text(i_vector));
     }
   }
   CurveList->clear();
-  
+
   KstRVectorList rvl = kstObjectSubList<KstVector,KstRVector>(KST::vectorList);
   // insert vectors into ChangeNptsCurveList
   CurveList->blockSignals(true); // avoid deadlock
@@ -82,24 +78,28 @@ bool KstChangeNptsDialogI::updateChangeNptsDialog() {
     vector->unlock();
   }
   CurveList->blockSignals(false);
+
   return !qsl.isEmpty();
 }
 
 
 void KstChangeNptsDialogI::showChangeNptsDialog() {
-  bool some_slected = updateChangeNptsDialog();
+  bool selected = updateChangeNptsDialog();
   updateDefaults(0);
-  if (!some_slected) {
+  _modifiedRange = false;
+  if (!selected) {
     CurveList->selectAll(true);
   }
   show();
   raise();
 }
 
+
 void KstChangeNptsDialogI::OKNptsChange() {
   applyNptsChange();
   reject();
 }
+
 
 void KstChangeNptsDialogI::applyNptsChange() {
   KstRVectorList rvl = kstObjectSubList<KstVector,KstRVector>(KST::vectorList);
@@ -152,6 +152,8 @@ void KstChangeNptsDialogI::applyNptsChange() {
     }
   }
 
+  _modifiedRange = false;
+
   // avoid re-entering the dialog
   QTimer::singleShot(0, this, SLOT(emitDocChanged()));
 }
@@ -171,6 +173,8 @@ void KstChangeNptsDialogI::updateDefaults(int index) {
   KstRVectorPtr vector = rvl[index];
   vector->readLock();
 
+  disconnect(_kstDataRange, SIGNAL(changed()), this, SLOT(modifiedRange()));
+
   _kstDataRange->_startUnits->setCurrentItem(0);
   _kstDataRange->_rangeUnits->setCurrentItem(0);
 
@@ -188,7 +192,32 @@ void KstChangeNptsDialogI::updateDefaults(int index) {
   _kstDataRange->DoFilter->setChecked(vector->doAve());
   _kstDataRange->updateEnables();
 
+  connect(_kstDataRange, SIGNAL(changed()), this, SLOT(modifiedRange()));
+
   vector->unlock();
+}
+
+
+void KstChangeNptsDialogI::changedSelection() {
+  int index = -1;
+  unsigned int i;
+
+  if (!_modifiedRange) {
+    for (i=0; i<CurveList->count(); ++i) {
+      if (CurveList->isSelected(i)) {
+        if (index == -1) {
+          index = i;
+        } else {
+          index = -1;
+          break;
+        }
+      }
+    }
+
+    if (index != -1) {
+      updateDefaults(index);
+    }
+  }
 }
 
 
@@ -218,5 +247,8 @@ void KstChangeNptsDialogI::updateTimeCombo() {
 }
 
 
+void KstChangeNptsDialogI::modifiedRange() {
+  _modifiedRange = true;
+}
+
 #include "kstchangenptsdialog_i.moc"
-// vim: ts=2 sw=2 et

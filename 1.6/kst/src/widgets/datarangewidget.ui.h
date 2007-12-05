@@ -10,8 +10,23 @@
 
 void KstDataRange::init()
 {
+    connect(F0, SIGNAL(textChanged(const QString&)), this, SLOT(modified()));
+    connect(N, SIGNAL(textChanged(const QString&)), this, SLOT(modified()));
+    connect(_startUnits, SIGNAL(activated(int)), this, SLOT(modified()));
+    connect(_rangeUnits, SIGNAL(activated(int)), this, SLOT(modified()));
+    connect(CountFromEnd, SIGNAL(clicked()), this, SLOT(modified()));
+    connect(ReadToEnd, SIGNAL(clicked()), this, SLOT(modified()));
+    connect(DoSkip, SIGNAL(clicked()), this, SLOT(modified()));
+    connect(DoFilter, SIGNAL(clicked()), this, SLOT(modified()));
+    connect(Skip, SIGNAL(valueChanged(int)), this, SLOT(modified()));
+
     _time = false;
     update();
+}
+
+void KstDataRange::modified()
+{
+    emit changed();
 }
 
 void KstDataRange::clickedCountFromEnd()
@@ -185,4 +200,3 @@ bool KstDataRange::isRangeRelativeTime()
     return _rangeUnits->currentItem() > KST::dateTimeEntry;
 }
 
-// vim: ts=8 sw=4 noet

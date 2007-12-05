@@ -300,7 +300,11 @@
 <variables>
     <variable access="private">bool _time;</variable>
 </variables>
+<signals>
+    <signal>changed()</signal>
+</signals>
 <slots>
+    <slot>modified()</slot>
     <slot>clickedCountFromEnd()</slot>
     <slot>ClickedReadToEnd()</slot>
     <slot>clickedDoSkip()</slot>
