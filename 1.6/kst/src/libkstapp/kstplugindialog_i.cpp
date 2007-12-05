@@ -64,6 +64,7 @@ KstPluginDialogI::KstPluginDialogI(QWidget* parent, const char* name, bool modal
 : KstDataDialog(parent, name, modal, fl) {
   _w = new PluginDialogWidget(_contents);
   setMultiple(false);
+  connect(_w->PluginCombo, SIGNAL(highlighted(int)), this, SLOT(wasModifiedApply()));
   connect(_w->PluginCombo, SIGNAL(activated(int)), this, SLOT(pluginChanged(int)));
   connect(_w->_pluginManager, SIGNAL(clicked()), this, SLOT(showPluginManager()));
 
@@ -715,6 +716,8 @@ void KstPluginDialogI::generateEntries(bool input, int& cnt, QWidget *parent, QG
       if (scalar) {
         ScalarSelector *w = new ScalarSelector(parent, (*it)._name.latin1());
         widget = w;
+        connect(w->_scalar, SIGNAL(highlighted(int)), this, SLOT(wasModifiedApply()));
+        connect(w->_scalar, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
         connect(w->_scalar, SIGNAL(activated(const QString&)), this, SLOT(updateScalarTooltip(const QString&)));
         connect(widget, SIGNAL(newScalarCreated()), this, SIGNAL(modified()));
         if (!(*it)._default.isEmpty()) {
@@ -732,6 +735,8 @@ void KstPluginDialogI::generateEntries(bool input, int& cnt, QWidget *parent, QG
       } else if (string) {
         StringSelector *w = new StringSelector(parent, (*it)._name.latin1());
         widget = w;
+        connect(w->_string, SIGNAL(highlighted(int)), this, SLOT(wasModifiedApply()));
+        connect(w->_string, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
         connect(w->_string, SIGNAL(activated(const QString&)), this, SLOT(updateStringTooltip(const QString&)));
         connect(widget, SIGNAL(newStringCreated()), this, SIGNAL(modified()));
         if (!(*it)._default.isEmpty()) {
@@ -755,6 +760,8 @@ void KstPluginDialogI::generateEntries(bool input, int& cnt, QWidget *parent, QG
           vectorSelector->provideNoneVector(true);
           vectorSelector->setSelection(vector);
         }
+        connect(vectorSelector->_vector, SIGNAL(highlighted(int)), this, SLOT(wasModifiedApply()));
+        connect(vectorSelector->_vector, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
         connect(widget, SIGNAL(newVectorCreated(const QString&)), this, SIGNAL(modified()));
       }
     } else {

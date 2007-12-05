@@ -152,9 +152,10 @@ void KstBasicDialogI::init() {
 void KstBasicDialogI::createInputVector(const QString &name, int row) {
   QLabel *label = new QLabel(name + ":", _w->_frame);
 
-  VectorSelector *widget = new VectorSelector(_w->_frame,
-                                              name.latin1());
+  VectorSelector *widget = new VectorSelector(_w->_frame, name.latin1());
   connect(widget, SIGNAL(newVectorCreated(const QString&)), this, SIGNAL(modified()));
+  connect(widget->_vector, SIGNAL(highlighted(int)), this, SLOT(wasModifiedApply()));
+  connect(widget->_vector, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
 
   _grid->addWidget(label, row, 0);
   label->show();
@@ -166,9 +167,11 @@ void KstBasicDialogI::createInputVector(const QString &name, int row) {
 void KstBasicDialogI::createInputScalar(const QString &name, int row, double value) {
   QLabel *label = new QLabel(name + ":", _w->_frame);
 
-  ScalarSelector *widget = new ScalarSelector(_w->_frame,
-                                              name.latin1());
+  ScalarSelector *widget = new ScalarSelector(_w->_frame, name.latin1());
   connect(widget, SIGNAL(newScalarCreated()), this, SIGNAL(modified()));
+  connect(widget->_scalar, SIGNAL(highlighted(int)), this, SLOT(wasModifiedApply()));
+  connect(widget->_scalar, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
+
   widget->allowDirectEntry(true);
   if (widget->_scalar->lineEdit()) {
     widget->_scalar->lineEdit()->setText(QString::number(value));
@@ -184,10 +187,10 @@ void KstBasicDialogI::createInputScalar(const QString &name, int row, double val
 void KstBasicDialogI::createInputString(const QString &name, int row) {
   QLabel *label = new QLabel(name + ":", _w->_frame);
 
-  StringSelector *widget = new StringSelector(_w->_frame,
-                                              name.latin1());
-  connect(widget, SIGNAL(newStringCreated()),
-          this, SIGNAL(modified()));
+  StringSelector *widget = new StringSelector(_w->_frame, name.latin1());
+  connect(widget, SIGNAL(newStringCreated()), this, SIGNAL(modified()));
+  connect(widget->_string, SIGNAL(highlighted(int)), this, SLOT(wasModifiedApply()));
+  connect(widget->_string, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
 
   _grid->addWidget(label, row, 0);
   label->show();
@@ -216,9 +219,8 @@ bool KstBasicDialogI::newObject() {
   //return false if the specified objects can't be made, otherwise true
 
   //Need to create a new object rather than use the one in KstDataObject pluginList
-  KstBasicPluginPtr ptr = kst_cast<KstBasicPlugin>(
-      KstDataObject::createPlugin(_pluginName));
-  Q_ASSERT(ptr); //should never happen...
+  KstBasicPluginPtr ptr = kst_cast<KstBasicPlugin>(KstDataObject::createPlugin(_pluginName));
+  Q_ASSERT(ptr);
 
   KstWriteLocker pl(ptr);
 
@@ -286,7 +288,7 @@ bool KstBasicDialogI::newObject() {
 
 bool KstBasicDialogI::editObject() {
   //called upon clicking 'ok' in 'edit' mode
-  //return false if the specified objects can't be editted, otherwise true
+  //return false if the specified objects can't be edited, otherwise true
 
   KstBasicPluginPtr ptr = kst_cast<KstBasicPlugin>(_dp);
   Q_ASSERT(ptr); //should never happen...
@@ -560,4 +562,3 @@ QLineEdit *KstBasicDialogI::output(const QString &name) const {
 
 #include "kstbasicdialog_i.moc"
 
-// vim: ts=2 sw=2 et
