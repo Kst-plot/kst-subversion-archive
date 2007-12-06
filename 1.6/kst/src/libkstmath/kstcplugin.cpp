@@ -1,5 +1,5 @@
 /***************************************************************************
-                                kstplugin.cpp
+                                kstcplugin.cpp
                              -------------------
     begin                : May 15 2003
     copyright            : (C) 2003 The University of Toronto
@@ -449,14 +449,14 @@ KstObject::UpdateType KstCPlugin::update(int update_counter) {
 
 QString KstCPlugin::label(int precision) const {
   QString label;
-  
+
   label = i18n("%1: %2").arg(plugin()->data()._readableName).arg(tagName());
   if ((outputVectors())["Parameters"]) {
     QString strParamName;
     QString strValue;
     int length = (outputVectors())["Parameters"]->length();
     int i = 0;
-    
+
     for (strParamName = plugin()->parameterName(0); 
         !strParamName.isEmpty() && i < length; 
         strParamName = plugin()->parameterName(++i)) {
@@ -720,7 +720,7 @@ KstDataObjectPtr KstCPlugin::makeDuplicate(KstDataObjectDataObjectMap& duplicate
   for (KstStringMap::ConstIterator iter = _inputStrings.begin(); iter != _inputStrings.end(); ++iter) {
     plugin->inputStrings().insert(iter.key(), iter.data());  
   }
-  
+
   // create new outputs
   for (KstVectorMap::ConstIterator iter = outputVectors().begin(); iter != outputVectors().end(); ++iter) {
     KstWriteLocker blockVectorUpdates(&KST::vectorList.lock());
@@ -735,7 +735,7 @@ KstDataObjectPtr KstCPlugin::makeDuplicate(KstDataObjectDataObjectMap& duplicate
     KstStringPtr s = new KstString(KstObjectTag(iter.data()->tag().tag() + "'", iter.data()->tag().context()), plugin.data()); // FIXME: unique tag generation
     plugin->outputStrings().insert(iter.key(), s);
   }
-  
+
   // set the same plugin
   plugin->setPlugin(_plugin);
   plugin->setTagName(KstObjectTag(tag().tag() + "'", tag().context())); // FIXME: unique tag generation method
@@ -743,4 +743,28 @@ KstDataObjectPtr KstCPlugin::makeDuplicate(KstDataObjectDataObjectMap& duplicate
   return KstDataObjectPtr(plugin);
 }
 
-// vim: ts=2 sw=2 et
+
+void KstCPlugin::setTagName(const KstObjectTag& tag) {
+  KstObject::setTagName(tag);
+}
+
+
+void KstCPlugin::setTagName(const QString &in_tag) {
+  KstObjectTag newTag(in_tag, tag().context());
+
+  if (newTag == tag()) {
+    return;
+  }
+
+  KstObject::setTagName(newTag);
+
+  for (KstVectorMap::Iterator iter = outputVectors().begin(); iter != outputVectors().end(); ++iter) {
+    (*iter)->setTagName(KstObjectTag(iter.data()->tag().tag(), tag()));
+  }
+  for (KstScalarMap::Iterator iter = outputScalars().begin(); iter != outputScalars().end(); ++iter) {
+    (*iter)->setTagName(KstObjectTag(iter.data()->tag().tag(), tag()));
+  }
+  for (KstStringMap::Iterator iter = outputStrings().begin(); iter != outputStrings().end(); ++iter) {
+    (*iter)->setTagName(KstObjectTag(iter.data()->tag().tag(), tag()));
+  }
+}

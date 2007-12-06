@@ -50,6 +50,9 @@ class KST_EXPORT KstBasicPlugin : public KstDataObject {
     //Provide an impl...
     virtual KstDataObjectPtr makeDuplicate(KstDataObjectDataObjectMap&);
 
+    virtual void setTagName(const QString& tag);
+    virtual void setTagName(const KstObjectTag& tag);
+
   public slots:
     //Pure virtual slots from KstDataObject
     //Each plugin can provide an implementation or use the default
@@ -105,5 +108,3 @@ typedef KstSharedPtr<KstBasicPlugin> KstBasicPluginPtr;
 typedef KstObjectList<KstBasicPluginPtr> KstBasicPluginList;
 
 #endif
-
-// vim: ts=2 sw=2 et

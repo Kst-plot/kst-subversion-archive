@@ -61,6 +61,7 @@ KstVectorView::KstVectorView(const QString &in_tag, KstVectorPtr in_X, KstVector
   commonConstructor(in_tag);
 }
 
+
 KstVectorView::KstVectorView(const QDomElement &e)
 : KstDataObject(e) {
 
@@ -132,7 +133,7 @@ void KstVectorView::commonConstructor(const QString &in_tag) {
   _typeString = i18n("Vector View");
   _type = "VectorView";
 
-  setTagName(KstObjectTag::fromString(in_tag));
+  KstObject::setTagName(KstObjectTag::fromString(in_tag));
 
   KstVectorPtr v = new KstVector(KstObjectTag("X", tag()), 0, this);
   _cxVector = _outputVectors.insert(OUT_XVECTOR, v);
@@ -365,6 +366,7 @@ KstObject::UpdateType KstVectorView::update(int update_counter) {
   return setLastUpdateResult(UPDATE);
 }
 
+
 void KstVectorView::setXminScalar(KstScalarPtr xmin) {
   if (xmin != _xmin) {
     if (_xmin != 0L) {
@@ -376,6 +378,7 @@ void KstVectorView::setXminScalar(KstScalarPtr xmin) {
     }
   }
 }
+
 
 void KstVectorView::setXmaxScalar(KstScalarPtr xmax) {
   if (xmax != _xmax) {
@@ -389,6 +392,7 @@ void KstVectorView::setXmaxScalar(KstScalarPtr xmax) {
   }
 }
 
+
 void KstVectorView::setYminScalar(KstScalarPtr ymin) {
   if (ymin != _ymin) {
     if (_ymin != 0L) {
@@ -401,6 +405,7 @@ void KstVectorView::setYminScalar(KstScalarPtr ymin) {
   }
 }
 
+
 void KstVectorView::setYmaxScalar(KstScalarPtr ymax) {
   if (ymax != _ymax) {
     if (_ymax != 0L) {
@@ -412,6 +417,7 @@ void KstVectorView::setYmaxScalar(KstScalarPtr ymax) {
     }
   }
 }
+
 
 void KstVectorView::setUseXmin(bool useXmin) {
   _useXmin = useXmin;
@@ -426,6 +432,7 @@ void KstVectorView::setUseXmin(bool useXmin) {
   }
 }
 
+
 void KstVectorView::setUseXmax(bool useXmax) {
   _useXmax = useXmax;
 
@@ -438,6 +445,7 @@ void KstVectorView::setUseXmax(bool useXmax) {
     connect(_xmax, SIGNAL(trigger()), this, SLOT(scalarChanged())); 
   }
 }
+
 
 void KstVectorView::setUseYmin(bool useYmin) {
   _useYmin = useYmin;
@@ -452,6 +460,7 @@ void KstVectorView::setUseYmin(bool useYmin) {
   }
 }
 
+
 void KstVectorView::setUseYmax(bool useYmax) {
   _useYmax = useYmax;
 
@@ -465,13 +474,16 @@ void KstVectorView::setUseYmax(bool useYmax) {
   }
 }
 
+
 void KstVectorView::setXVector(KstVectorPtr new_v) {
   _inputVectors[IN_XVECTOR] = new_v;
 }
 
+
 void KstVectorView::setYVector(KstVectorPtr new_v) {
   _inputVectors[IN_YVECTOR] = new_v;
 }
+
 
 void KstVectorView::setFlagVector(KstVectorPtr Flag) {
   if (Flag) {
@@ -482,29 +494,36 @@ void KstVectorView::setFlagVector(KstVectorPtr Flag) {
   setDirty();
 }
 
+
 bool KstVectorView::hasFlag() {
   return _inputVectors.contains(IN_FLAGVECTOR);
 }
+
 
 QString KstVectorView::xLabel() const {
   return _inputVectors[IN_XVECTOR]->label();
 }
 
+
 QString KstVectorView::yLabel() const {
   return _inputVectors[IN_YVECTOR]->label();
 }
+
 
 QString KstVectorView::in_xVTag() const {
   return _inputVectors[IN_XVECTOR]->tag().displayString();
 }
 
+
 QString KstVectorView::in_yVTag() const {
   return _inputVectors[IN_YVECTOR]->tag().displayString();
 }
 
+
 QString KstVectorView::FlagTag() const {
   return _inputVectors[IN_FLAGVECTOR]->tag().displayString();
 }
+
 
 void KstVectorView::save(QTextStream &ts, const QString& indent) {
   // FIXME: clean this up - all lower case nodes, maybe save points in the
@@ -544,9 +563,11 @@ void KstVectorView::showEditDialog() {
   KstDialogs::self()->showVectorViewDialog(tagName(), true);
 }
 
+
 bool KstVectorView::slaveVectorsUsed() const {
   return true;
 }
+
 
 KstDataObjectPtr KstVectorView::makeDuplicate(KstDataObjectDataObjectMap& duplicatedMap) {
   QString name(tagName() + '\'');
@@ -558,17 +579,33 @@ KstDataObjectPtr KstVectorView::makeDuplicate(KstDataObjectDataObjectMap& duplic
   return KstDataObjectPtr(vectorview);
 }
 
+
 void KstVectorView::scalarChanged() {
     setDirty();
 }
+
 
 KstVectorView::InterpType KstVectorView::interp() const {
   return (_interp);
 }
 
+
 void KstVectorView::setInterp(KstVectorView::InterpType itype) {
   _interp = itype;
   setDirty();
+}
+
+
+void KstVectorView::setTagName(const QString &in_tag) {
+  KstObjectTag newTag(in_tag, tag().context());
+
+  if (newTag == tag()) {
+    return;
+  }
+
+  KstObject::setTagName(newTag);
+  (*_cxVector)->setTagName(KstObjectTag("X", tag()));
+  (*_cyVector)->setTagName(KstObjectTag("Y", tag()));
 }
 
 #include "kstvectorview.moc"

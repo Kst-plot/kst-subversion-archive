@@ -566,7 +566,10 @@ bool KstVvDialogI::editObject() {
       _tagName->setFocus();
       return false;
     }
-    vp->setTagName(KstObjectTag(tag_name, vp->tag().context())); // FIXME: doesn't allow changing tag context
+
+    vp->writeLock();
+    vp->setTagName(tag_name);
+    vp->unlock();
 
     _xVectorDirty = true;
     _yVectorDirty = true;

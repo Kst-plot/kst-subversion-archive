@@ -83,6 +83,7 @@ KstDataObjectPtr KstBasicPlugin::makeDuplicate(KstDataObjectDataObjectMap &map) 
   return KstDataObjectPtr(plugin);
 }
 
+
 void KstBasicPlugin::showNewDialog() {
   //FIXME shouldn't tagName() == propertyString() ??
   KstDialogs::self()->showBasicPluginDialog(propertyString());
@@ -257,7 +258,7 @@ void KstBasicPlugin::load(const QDomElement &e) {
     QDomElement e = n.toElement();
     if (!e.isNull()) {
       if (e.tagName() == "tag") {
-        setTagName(KstObjectTag::fromString(e.text()));
+        KstObject::setTagName(KstObjectTag::fromString(e.text()));
       } else if (e.tagName() == "ivector") {
         _inputVectorLoadQueue.append(qMakePair(e.attribute("name"), e.text()));
       } else if (e.tagName() == "iscalar") {
@@ -507,3 +508,28 @@ double KstBasicPlugin::defaultScalarValue(const QString& name) const {
   return value;
 }
 
+
+void KstBasicPlugin::setTagName(const KstObjectTag& tag) {
+  KstObject::setTagName(tag);
+}
+
+
+void KstBasicPlugin::setTagName(const QString &in_tag) {
+  KstObjectTag newTag(in_tag, tag().context());
+
+  if (newTag == tag()) {
+    return;
+  }
+
+  KstObject::setTagName(newTag);
+
+  for (KstVectorMap::Iterator iter = outputVectors().begin(); iter != outputVectors().end(); ++iter) {
+    (*iter)->setTagName(KstObjectTag(iter.data()->tag().tag(), tag()));
+  }
+  for (KstScalarMap::Iterator iter = outputScalars().begin(); iter != outputScalars().end(); ++iter) {
+    (*iter)->setTagName(KstObjectTag(iter.data()->tag().tag(), tag()));
+  }
+  for (KstStringMap::Iterator iter = outputStrings().begin(); iter != outputStrings().end(); ++iter) {
+    (*iter)->setTagName(KstObjectTag(iter.data()->tag().tag(), tag()));
+  }
+}

@@ -1,5 +1,5 @@
 /***************************************************************************
-                                 kstplugin.h
+                                 kstcplugin.h
                              -------------------
     begin                : May 15 2003
     copyright            : (C) 2003 The University of Toronto
@@ -58,6 +58,9 @@ class KST_EXPORT KstCPlugin : public KstDataObject {
 
     virtual KstDataObjectPtr makeDuplicate(KstDataObjectDataObjectMap& duplicatedMap);
 
+    virtual void setTagName(const QString& tag);
+    virtual void setTagName(const KstObjectTag& tag);
+
   protected:
     static void countScalarsAndVectors(const QValueList<Plugin::Data::IOValue>& table, unsigned& scalars, unsigned& vectors);
     virtual void showNewDialog();
@@ -84,5 +87,3 @@ typedef KstSharedPtr<KstCPlugin> KstCPluginPtr;
 typedef KstObjectList<KstCPluginPtr> KstCPluginList;
 
 #endif
-
-// vim: ts=2 sw=2 et

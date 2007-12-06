@@ -79,6 +79,8 @@ class KST_EXPORT KstVectorView: public KstDataObject {
     virtual QString xLabel() const;
     virtual QString yLabel() const;
 
+    virtual void setTagName(const QString& tag);
+
     virtual void showNewDialog();
     virtual void showEditDialog();
 

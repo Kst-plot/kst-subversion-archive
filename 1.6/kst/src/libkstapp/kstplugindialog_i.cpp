@@ -612,7 +612,7 @@ bool KstPluginDialogI::editObject() {
     return false;
   }
 
-  pp->setTagName(KstObjectTag(_tagName->text(), KstObjectTag::globalTagContext));  // FIXME: tag context always global?
+  pp->setTagName(_tagName->text());
 
   int pitem = _w->PluginCombo->currentItem();
   KstSharedPtr<Plugin> pPtr = PluginCollection::self()->plugin(_pluginList[pitem]);
@@ -900,7 +900,4 @@ void KstPluginDialogI::updateStringTooltip(const QString& n) {
   }
 }
 
-
 #include "kstplugindialog_i.moc"
-
-// vim: ts=2 sw=2 et

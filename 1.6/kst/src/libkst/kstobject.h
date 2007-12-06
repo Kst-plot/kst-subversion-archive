@@ -416,6 +416,4 @@ inline KstSharedPtr<T> kst_cast(KstSharedPtr<U> object) {
   return dynamic_cast<T*>(object.data());
 }
 
-
 #endif
-// vim: ts=2 sw=2 et

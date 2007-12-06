@@ -300,7 +300,7 @@ bool KstBasicDialogI::editObject() {
     return false;
   }
 
-  ptr->setTagName(newTag);
+  ptr->setTagName(_tagName->text());
 
   ptr->inputVectors().clear();
   ptr->inputScalars().clear();
@@ -571,4 +571,3 @@ QLineEdit *KstBasicDialogI::output(const QString &name) const {
 }
 
 #include "kstbasicdialog_i.moc"
-
