@@ -38,6 +38,8 @@ class EventMonitorEntry : public KstDataObject {
     UpdateType update(int updateCounter = -1);
     void save(QTextStream &ts, const QString& indent = QString::null);
     QString propertyString() const;
+
+    virtual void setTagName(const QString& tag);
     void showNewDialog();
     void showEditDialog();
 
@@ -66,9 +68,9 @@ class EventMonitorEntry : public KstDataObject {
     void setEMailRecipients(const QString& str);
 
     bool reparse();
-    
+
     KstDataObjectPtr makeDuplicate(KstDataObjectDataObjectMap& duplicatedMap);
-    
+
     void replaceDependency(KstDataObjectPtr oldObject, KstDataObjectPtr newObject);
 
     void replaceDependency(KstVectorPtr oldVector, KstVectorPtr newVector);
@@ -111,4 +113,3 @@ typedef KstSharedPtr<EventMonitorEntry> EventMonitorEntryPtr;
 typedef KstObjectList<EventMonitorEntryPtr> KstEventMonitorEntryList;
 
 #endif
-// vim: ts=2 sw=2 et

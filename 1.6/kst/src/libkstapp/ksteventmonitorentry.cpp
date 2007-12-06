@@ -338,13 +338,13 @@ void EventMonitorEntry::logImmediately(bool sendEvent) {
 
 
 bool EventMonitorEntry::event(QEvent *e) {
-    if (e->type() == EventMonitorEventType) {
-      readLock();
-      doLog(static_cast<EventMonitorEvent*>(e)->logMessage);
-      unlock();
-      return true;
-    }
-    return false;
+  if (e->type() == EventMonitorEventType) {
+    readLock();
+    doLog(static_cast<EventMonitorEvent*>(e)->logMessage);
+    unlock();
+    return true;
+  }
+  return false;
 }
 
 
@@ -582,6 +582,16 @@ bool EventMonitorEntry::uses(KstObjectPtr p) const {
 }
 
 
-#include "ksteventmonitorentry.moc"
+void EventMonitorEntry::setTagName(const QString &in_tag) {
+  KstObjectTag newTag(in_tag, tag().context());
 
-// vim: ts=2 sw=2 et
+  if (newTag == tag()) {
+    return;
+  }
+
+  KstObject::setTagName(newTag);
+  (*_xVector)->setTagName(KstObjectTag("x", tag()));
+  (*_yVector)->setTagName(KstObjectTag("y", tag()));
+}
+
+#include "ksteventmonitorentry.moc"

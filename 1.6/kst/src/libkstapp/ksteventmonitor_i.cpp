@@ -226,15 +226,15 @@ bool KstEventMonitorI::newObject() {
 
 bool KstEventMonitorI::editSingleObject(EventMonitorEntryPtr emPtr) {
   emPtr->writeLock();
-  
+
   if (_lineEditEquationDirty) {
     emPtr->setEvent(_w->lineEditEquation->text());
   }
-  
+
   if (_lineEditDescriptionDirty) {
     emPtr->setDescription(_w->lineEditDescription->text());
   }
-  
+
   if (_checkBoxDebugDirty) {
     if (!(_w->radioButtonLogNotice->isChecked() ||
           _w->radioButtonLogWarning->isChecked() ||
@@ -322,11 +322,11 @@ bool KstEventMonitorI::editObject() {
       _tagName->setFocus();
       return false;
     }
-    
+
     ep->writeLock();
-    ep->setTagName(KstObjectTag(tag_name, ep->tag().context())); // FIXME: doesn't allow changing tag context
+    ep->setTagName(tag_name);
     ep->unlock();
-    
+
     // then edit the object
     _lineEditEquationDirty = true;
     _lineEditDescriptionDirty = true;
@@ -367,10 +367,10 @@ void KstEventMonitorI::populateEditMultiple() {
 
   _w->checkBoxELOGNotify->setTristate(true);
   _w->checkBoxELOGNotify->setNoChange();
-  
+
   _tagName->setText("");
   _tagName->setEnabled(false);
-  
+
   _w->lineEditEMailRecipients->setEnabled(true); 
   _w->radioButtonLogNotice->setEnabled(true);
   _w->radioButtonLogWarning->setEnabled(true);
@@ -381,7 +381,7 @@ void KstEventMonitorI::populateEditMultiple() {
   _w->_useScript->setChecked(false);
   _w->_script->setEnabled(false);
   _w->_script->setText("");
-  
+
   // and clean all the fields
   _lineEditEquationDirty = false;
   _lineEditDescriptionDirty = false;
