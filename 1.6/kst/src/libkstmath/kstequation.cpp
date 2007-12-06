@@ -139,6 +139,7 @@ KstEquation::~KstEquation() {
   _pe = 0L;
 }
 
+
 void KstEquation::commonConstructor(const QString& in_tag, const QString& in_equation) {
   _ns = 2;
   _pe = 0L;
@@ -230,7 +231,7 @@ KstObject::UpdateType KstEquation::update(int update_counter) {
 }
 
 
-void KstEquation::reParse() {
+void KstEquation::reparse() {
   Q_ASSERT(myLockStatus() == KstRWLock::WRITELOCKED);
 
   if (!_equation.isEmpty()) {
@@ -506,7 +507,7 @@ bool KstEquation::FillY(bool force, bool usedUpdated) {
   if (!(*_xOutVector)->resize(iv->length())) {
     // FIXME: handle error?
     unlockInputsAndOutputs();
-    return false;    
+    return false;
   }
 
   unlockInputsAndOutputs();
@@ -592,7 +593,7 @@ void KstEquation::replaceDependency(KstVectorPtr oldVector, KstVectorPtr newVect
   QString newTag = newVector->tagName();
 
   // replace all occurences of oldTag with newTag
-  QString newExp = _equation.replace("["+oldTag+"]", "["+newTag+"]");
+  QString newExp = _equation.replace("[" + oldTag + "]", "[" + newTag + "]");
 
   // also replace all occurences of scalar stats for the oldVector
   QDictIterator<KstScalar> scalarDictIter(oldVector->scalars());
@@ -608,7 +609,7 @@ void KstEquation::replaceDependency(KstVectorPtr oldVector, KstVectorPtr newVect
   // replaces _inputScalars 
   for (KstVectorMap::Iterator j = _inputVectors.begin(); j != _inputVectors.end(); ++j) {
     if (j.data() == oldVector) {
-      _inputVectors[j.key()] = newVector;  
+      _inputVectors[j.key()] = newVector;
     }
   }
 }
@@ -653,14 +654,13 @@ bool KstEquation::uses(KstObjectPtr p) const {
 
 void KstEquation::setupConnections() {
   for (KstScalarMap::iterator i = ScalarsUsed.begin(); i != ScalarsUsed.end(); ++i) {
-    disconnect(i.data(), SIGNAL(tagChanged()), this, SLOT(reParse()));
-    connect(i.data(), SIGNAL(tagChanged()), this, SLOT(reParse()));
+    disconnect(i.data(), SIGNAL(tagChanged()), this, SLOT(reparse()));
+    connect(i.data(), SIGNAL(tagChanged()), this, SLOT(reparse()));
   }
   for (KstVectorMap::iterator i = VectorsUsed.begin(); i != VectorsUsed.end(); ++i) {
-    disconnect(i.data(), SIGNAL(tagChanged()), this, SLOT(reParse()));
-    connect(i.data(), SIGNAL(tagChanged()), this, SLOT(reParse()));
+    disconnect(i.data(), SIGNAL(tagChanged()), this, SLOT(reparse()));
+    connect(i.data(), SIGNAL(tagChanged()), this, SLOT(reparse()));
   }
 }
 
 #include "kstequation.moc"
-

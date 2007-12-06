@@ -16,28 +16,28 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "kstdataobject.h"
+#include <assert.h>
 
+// include files for Qt
+#include <qtimer.h>
+#include <qdeepcopy.h>
+
+// include files for KDE
+#include <klocale.h>
+#include <klibloader.h>
+#include <kparts/componentfactory.h>
+
+// application specific includes
+#include "kstdataobject.h"
+#include "kstdataplugin.h"
 #include "ksdebug.h"
 #include "kstdebug.h"
 #include "kstdatacollection.h"
 #include "kstdataobjectcollection.h"
 
-#include <qtimer.h>
-#include <qdeepcopy.h>
-
-#include <assert.h>
-
-#include <klocale.h>
-#include <klibloader.h>
-#include <kparts/componentfactory.h>
-
-#include "kstdataplugin.h"
-
 //#define LOCKTRACE
 
 KstDataObject::KstDataObject() : KstObject() {
-  //kstdDebug() << "+++ CREATING DATA OBJECT: " << (void*)this << endl;
   _curveHints = new KstCurveHintList;
   _isInputLoaded = false;
   _isRecursed = false;
@@ -45,7 +45,6 @@ KstDataObject::KstDataObject() : KstObject() {
 
 KstDataObject::KstDataObject(const QDomElement& e) : KstObject() {
   Q_UNUSED(e)
-  //kstdDebug() << "+++ CREATING DATA OBJECT: " << (void*)this << endl;
   _curveHints = new KstCurveHintList;
   _isInputLoaded = false;
   _isRecursed = false;
@@ -53,39 +52,36 @@ KstDataObject::KstDataObject(const QDomElement& e) : KstObject() {
 
 
 KstDataObject::~KstDataObject() {
-  // Remove our slave vectors, scalars, and strings, and matrices
+  // remove our slave vectors, scalars, and strings, and matrices
   KST::stringList.lock().writeLock();
   for (KstStringMap::Iterator it = _outputStrings.begin();
-                               it != _outputStrings.end();
-                                                      ++it) {
+                               it != _outputStrings.end(); ++it) {
     KST::stringList.remove(it.data());
   }
   KST::stringList.lock().unlock();
 
   KST::scalarList.lock().writeLock();
   for (KstScalarMap::Iterator it = _outputScalars.begin();
-                               it != _outputScalars.end();
-                                                      ++it) {
+                               it != _outputScalars.end(); ++it) {
     KST::scalarList.remove(it.data());
   }
   KST::scalarList.lock().unlock();
 
   KST::vectorList.lock().writeLock();
   for (KstVectorMap::Iterator it = _outputVectors.begin();
-                               it != _outputVectors.end();
-                                                      ++it) {
+                               it != _outputVectors.end(); ++it) {
     KST::vectorList.remove(it.data());
   }
   KST::vectorList.lock().unlock();
-  
+
   KST::matrixList.lock().writeLock();
   for (KstMatrixMap::Iterator it = _outputMatrices.begin();
        it != _outputMatrices.end();
        ++it) {
-    KST::matrixList.remove(it.data());       
+    KST::matrixList.remove(it.data());
   }
   KST::matrixList.lock().unlock();
-//  kstdDebug() << "Destroying Data Object: " << tag().displayString() << endl;
+
   delete _curveHints;
 }
 
@@ -122,6 +118,7 @@ KstDataObjectPtr KstDataObject::createPlugin(KService::Ptr service) {
   }
 
   KstDebug::self()->log(i18n("Could not load data-object plugin %1.").arg(service->name()), KstDebug::Error);
+
   return 0L;
 }
 
@@ -151,15 +148,17 @@ KstPluginInfoList KstDataObject::pluginInfoList() {
   for (; it != pluginInfo.end(); ++it) {
     list.insert(it.key(), it.data()->kind());
   }
+
   return list;
 }
 
 
 KstDataObjectPtr KstDataObject::plugin(const QString& name) {
-    if (pluginInfo.contains(name)) {
-        return pluginInfo[name];
-    }
-    return 0L;
+  if (pluginInfo.contains(name)) {
+    return pluginInfo[name];
+  }
+
+  return 0L;
 }
 
 
@@ -172,6 +171,7 @@ KstDataObjectPtr KstDataObject::createPlugin(const QString& name) {
       return object;
     }
   }
+
   return 0L;
 }
 
@@ -203,7 +203,7 @@ void KstDataObject::save(QTextStream& ts, const QString& indent) {
 bool KstDataObject::loadInputs() {
   bool rc = true;
   QValueList<QPair<QString,QString> >::Iterator i;
-  
+
   KST::vectorList.lock().readLock();
   for (i = _inputVectorLoadQueue.begin(); i != _inputVectorLoadQueue.end(); ++i) {
     KstVectorList::Iterator it = KST::vectorList.findTag((*i).second);
@@ -257,10 +257,11 @@ bool KstDataObject::loadInputs() {
   _inputScalarLoadQueue.clear();
   _inputStringLoadQueue.clear();
   _inputMatrixLoadQueue.clear();
-  
+
   setDirty();
 
   _isInputLoaded = true;
+
   return rc;
 }
 
@@ -350,7 +351,7 @@ void KstDataObject::writeLockInputsAndOutputs() const {
   for (QValueList<KstStringPtr>::Iterator i = sl.begin(); i != sl.end(); ++i) {
     outputs += (*i).data();
   }
-  
+
   QValueList<KstScalarPtr> sc = _inputScalars.values();
   for (QValueList<KstScalarPtr>::Iterator i = sc.begin(); i != sc.end(); ++i) {
     inputs += (*i).data();
@@ -359,7 +360,7 @@ void KstDataObject::writeLockInputsAndOutputs() const {
   for (QValueList<KstScalarPtr>::Iterator i = sc.begin(); i != sc.end(); ++i) {
     outputs += (*i).data();
   }
-  
+
   QValueList<KstVectorPtr> vl = _inputVectors.values();
   for (QValueList<KstVectorPtr>::Iterator i = vl.begin(); i != vl.end(); ++i) {
     inputs += (*i).data();
@@ -368,7 +369,7 @@ void KstDataObject::writeLockInputsAndOutputs() const {
   for (QValueList<KstVectorPtr>::Iterator i = vl.begin(); i != vl.end(); ++i) {
     outputs += (*i).data();
   }
-  
+
   QValueList<KstMatrixPtr> ml = _inputMatrices.values();
   for (QValueList<KstMatrixPtr>::Iterator i = ml.begin(); i != ml.end(); ++i) {
     inputs += (*i).data();
@@ -534,7 +535,7 @@ bool KstDataObject::deleteDependents() {
       KST::dataObjectList.lock().unlock();
       dop->deleteDependents();
     }
-  } 
+  }
 
   return true;
 }
@@ -545,7 +546,7 @@ bool KstDataObject::duplicateDependents(QMap<KstDataObjectPtr, KstDataObjectPtr>
   KST::dataObjectList.lock().readLock();
   KstDataObjectList dol = QDeepCopy<KstDataObjectList>(KST::dataObjectList);
   KST::dataObjectList.lock().unlock();
-  
+
   for (KstDataObjectList::Iterator i = dol.begin(); i != dol.end(); ++i) { 
     if ((*i)->uses(this)) {
       if (duplicatedMap.contains(*i)) {
@@ -560,14 +561,14 @@ bool KstDataObject::duplicateDependents(QMap<KstDataObjectPtr, KstDataObjectPtr>
       }
     }
   }
+
   return true;
 }
 
 
 void KstDataObject::replaceDependency(KstDataObjectPtr oldObject, KstDataObjectPtr newObject) {
-  
   // find all connections from this object to old object
-  
+
   // vectors
   for (KstVectorMap::Iterator j = oldObject->outputVectors().begin(); j != oldObject->outputVectors().end(); ++j) {
     for (KstVectorMap::Iterator k = _inputVectors.begin(); k != _inputVectors.end(); ++k) {
@@ -586,7 +587,7 @@ void KstDataObject::replaceDependency(KstDataObjectPtr oldObject, KstDataObjectP
       }
     }
   }
-  
+
   // matrices
   for (KstMatrixMap::Iterator j = oldObject->outputMatrices().begin(); j != oldObject->outputMatrices().end(); ++j) {
     for (KstMatrixMap::Iterator k = _inputMatrices.begin(); k != _inputMatrices.end(); ++k) {
@@ -601,7 +602,7 @@ void KstDataObject::replaceDependency(KstDataObjectPtr oldObject, KstDataObjectP
       for (; scalarDictIter.current(); ++scalarDictIter) {
         if (scalarDictIter.current() == k.data()) {
           _inputScalars[k.key()] = (((newObject->outputMatrices())[j.key()])->scalars())[scalarDictIter.currentKey()];
-        }  
+        }
       }
     }
   }
@@ -611,17 +612,17 @@ void KstDataObject::replaceDependency(KstDataObjectPtr oldObject, KstDataObjectP
     for (KstScalarMap::Iterator k = _inputScalars.begin(); k != _inputScalars.end(); ++k) {
       if (j.data().data() == k.data().data()) {
         // replace input with the output from newObject
-        _inputScalars[k.key()] = (newObject->outputScalars())[j.key()];  
+        _inputScalars[k.key()] = (newObject->outputScalars())[j.key()];
       }
-    } 
+    }
   }
-  
+
   // strings 
   for (KstStringMap::Iterator j = oldObject->outputStrings().begin(); j != oldObject->outputStrings().end(); ++j) {
     for (KstStringMap::Iterator k = _inputStrings.begin(); k != _inputStrings.end(); ++k) {
       if (j.data().data() == k.data().data()) {
         // replace input with the output from newObject
-        _inputStrings[k.key()] = (newObject->outputStrings())[j.key()];  
+        _inputStrings[k.key()] = (newObject->outputStrings())[j.key()];
       }
     }
   }
@@ -631,16 +632,16 @@ void KstDataObject::replaceDependency(KstDataObjectPtr oldObject, KstDataObjectP
 void KstDataObject::replaceDependency(KstVectorPtr oldVector, KstVectorPtr newVector) {
   for (KstVectorMap::Iterator j = _inputVectors.begin(); j != _inputVectors.end(); ++j) {
     if (j.data() == oldVector) {
-      _inputVectors[j.key()] = newVector;  
-    }      
+      _inputVectors[j.key()] = newVector;
+    }
   }
-  
+
   QDictIterator<KstScalar> scalarDictIter(oldVector->scalars());
   for (KstScalarMap::Iterator j = _inputScalars.begin(); j != _inputScalars.end(); ++j) {
     for (; scalarDictIter.current(); ++ scalarDictIter) {
       if (scalarDictIter.current() == j.data()) {
         _inputScalars[j.key()] = (newVector->scalars())[scalarDictIter.currentKey()];
-      }  
+      }
     }
   }
 }
@@ -649,16 +650,16 @@ void KstDataObject::replaceDependency(KstVectorPtr oldVector, KstVectorPtr newVe
 void KstDataObject::replaceDependency(KstMatrixPtr oldMatrix, KstMatrixPtr newMatrix) {
   for (KstMatrixMap::Iterator j = _inputMatrices.begin(); j != _inputMatrices.end(); ++j) {
     if (j.data() == oldMatrix) {
-      _inputMatrices[j.key()] = newMatrix;  
-    }      
+      _inputMatrices[j.key()] = newMatrix;
+    }
   }
-  
+
   QDictIterator<KstScalar> scalarDictIter(oldMatrix->scalars());
   for (KstScalarMap::Iterator j = _inputScalars.begin(); j != _inputScalars.end(); ++j) {
     for (; scalarDictIter.current(); ++ scalarDictIter) {
       if (scalarDictIter.current() == j.data()) {
         _inputScalars[j.key()] = (newMatrix->scalars())[scalarDictIter.currentKey()];
-      }  
+      }
     }
   }
 }
@@ -797,6 +798,4 @@ bool KstDataObject::recursed() const {
   return _isRecursed;
 }
 
-
 #include "kstdataobject.moc"
-

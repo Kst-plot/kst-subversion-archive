@@ -78,7 +78,7 @@ class KST_EXPORT KstEquation : public KstDataObject {
     virtual bool uses(KstObjectPtr p) const;
 
   public slots:
-    void reParse();
+    void reparse();
 
   private:
     KstVectorMap::Iterator _xInVector, _xOutVector, _yOutVector;

@@ -1051,6 +1051,7 @@ bool Data::takeVectorsAndScalars(const KstVectorMap& vm, const KstScalarMap& sm)
     }
     return false;
   }
+
   if (_vector) {
     if (vm.contains(_tagName)) {
       _vector = vm[_tagName];
@@ -1072,6 +1073,7 @@ bool Data::takeVectorsAndScalars(const KstVectorMap& vm, const KstScalarMap& sm)
       return false;
     }
   }
+
   return true;
 }
 

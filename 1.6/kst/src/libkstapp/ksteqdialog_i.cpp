@@ -95,7 +95,7 @@ void KstEqDialogI::fillFieldsForEdit() {
 
   // re-parse to get the latest equation
   ep->writeLock();
-  ep->reParse();
+  ep->reparse();
   ep->unlock();
 
   ep->readLock();

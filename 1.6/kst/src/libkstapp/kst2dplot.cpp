@@ -931,6 +931,7 @@ void Kst2DPlot::setYScaleMode(KstScaleModeType scalemode_in) {
   _yScaleMode = scalemode_in;
 }
 
+
 bool Kst2DPlot::addCurve(KstBaseCurvePtr incurve) {
   if (!Curves.contains(incurve)) {
     Curves.append(incurve);
