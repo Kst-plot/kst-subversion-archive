@@ -197,7 +197,6 @@ public:
   KstPlotLabel *yTickLabel() const;
   KstPlotLabel *fullTickLabel() const;
   void setPlotLabelFontSizes(int size);
-  
 
   QRect GetPlotRegion() const;
   QRect GetWinRegion() const;
@@ -287,7 +286,7 @@ public:
   bool hasVectorToMarkers() const;
   void removeVectorToMarkers();
   KstVectorPtr vectorToMarkers() const;
-  
+
   void setXOffsetMode(bool xOffsetMode) { _xOffsetMode = xOffsetMode; }
   void setYOffsetMode(bool yOffsetMode) { _yOffsetMode = yOffsetMode; }
   bool xOffsetMode() const { return _xOffsetMode; }
@@ -525,14 +524,14 @@ private:
   bool _yMinorGrid : 1;
   bool _majorGridColorDefault : 1;
   bool _minorGridColorDefault : 1;
-  
+
   int _majorPenWidth;
   int _minorPenWidth;
   int _axisPenWidth;
 
   double _xLogBase;
   double _yLogBase;
-  
+
   bool _cursorOffset : 1;
 
   bool _xLog : 1;
@@ -664,7 +663,7 @@ private:
 
   KstScaleModeType _xScaleModeDefault;
   KstScaleModeType _yScaleModeDefault;
-  
+
   int _tabToShow;
 };
 
@@ -672,4 +671,4 @@ typedef KstSharedPtr<Kst2DPlot> Kst2DPlotPtr;
 typedef KstObjectMap<Kst2DPlotPtr> Kst2DPlotMap;
 
 #endif
-// vim: ts=2 sw=2 et
+

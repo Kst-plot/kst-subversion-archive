@@ -78,6 +78,4 @@ class KstViewPicture : public KstBorderedViewObject {
 
 typedef KstObjectList<KstViewPicturePtr> KstViewPictureList;
 
-
 #endif
-

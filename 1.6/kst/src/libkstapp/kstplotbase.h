@@ -36,6 +36,4 @@ typedef KstSharedPtr<KstPlotBase> KstPlotBasePtr;
 typedef KstObjectList<KstPlotBasePtr> KstPlotBaseList;
 typedef KstObjectMap<KstPlotBasePtr> KstPlotBaseMap;
 
-
 #endif
-// vim: ts=2 sw=2 et

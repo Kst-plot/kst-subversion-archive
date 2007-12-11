@@ -55,6 +55,4 @@ class KstPlotGroup : public KstMetaPlot {
 typedef KstSharedPtr<KstPlotGroup> KstPlotGroupPtr;
 typedef KstObjectList<KstPlotGroupPtr> KstPlotGroupList;
 
-
 #endif
-// vim: ts=2 sw=2 et

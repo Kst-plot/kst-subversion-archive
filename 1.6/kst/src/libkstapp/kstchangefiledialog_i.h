@@ -39,7 +39,7 @@ class KstChangeFileDialogI : public KstChangeFileDialog {
     void selectAll();
 
     void allFromFile();
-    
+
   private:
     int _lastVectorIndex;
     bool _first;
@@ -55,4 +55,3 @@ class KstChangeFileDialogI : public KstChangeFileDialog {
 };
 
 #endif
-// vim: ts=2 sw=2 et

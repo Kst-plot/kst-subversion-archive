@@ -34,7 +34,7 @@ class KstScalarListView : public KListView
 
   private:
     void addChildItems(KstScalarListViewItem *parentItem, KstObjectTreeNode<KstScalar> *parentNode);
-    
+
     KstObjectCollection<KstScalar> *_coll;
 };
 
@@ -61,4 +61,4 @@ class KstScalarListViewItem : public KListViewItem
 };
 
 #endif
-// vim: ts=2 sw=2 et
+

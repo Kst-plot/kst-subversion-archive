@@ -110,6 +110,5 @@ class KST_EXPORT KstViewWindow : public KMdiChildView {
     KstTopLevelViewPtr _view;
 };
 
-
 #endif
 

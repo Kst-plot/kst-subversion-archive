@@ -32,7 +32,4 @@ class ThreadEvent : public QEvent {
     int _counter;
 };
 
-
 #endif
-
-// vim: ts=2 sw=2 et

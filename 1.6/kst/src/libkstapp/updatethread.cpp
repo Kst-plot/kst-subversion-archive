@@ -149,7 +149,7 @@ bool UpdateThread::doUpdates(bool force, bool *gotData) {
   if (gotData) {
     *gotData = false;
   }
-  
+
 #if UPDATEDEBUG > 0
   if (force) {
     kstdDebug() << "Forced update!" << endl;
@@ -319,4 +319,3 @@ bool UpdateThread::paused() const {
 }
 
 #endif
-// vim: ts=2 sw=2 et

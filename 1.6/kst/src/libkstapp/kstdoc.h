@@ -116,5 +116,4 @@ signals:
   void logCleared();
 };
 
-#endif // KSTDOC_H
-// vim: ts=2 sw=2 et
+#endif

@@ -50,6 +50,3 @@ void DataSourceMetaDataDialog::updateMetadata(const QString& tag)
     _value->setText(_dsp->metaData()[tag]->value());
     _dsp->unlock();
 }
-
-
-// vim: ts=8 sw=4 noet

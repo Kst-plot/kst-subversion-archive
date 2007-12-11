@@ -126,4 +126,3 @@ class KST_EXPORT KstMatrixDialogI : public KstDataDialog {
 };
 
 #endif
-// vim: ts=2 sw=2 et

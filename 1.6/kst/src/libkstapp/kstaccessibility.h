@@ -21,4 +21,3 @@
 #define KST_RESIZE_BORDER_W 6
 
 #endif
-// vim: ts=2 sw=2 et

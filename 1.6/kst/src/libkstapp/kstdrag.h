@@ -29,6 +29,4 @@ class KstDrag : public QStoredDrag {
     // FIXME: add dcop ID here
 };
 
-
 #endif
-// vim: ts=2 sw=2 et

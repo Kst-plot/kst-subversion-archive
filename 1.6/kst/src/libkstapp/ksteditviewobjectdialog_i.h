@@ -77,6 +77,4 @@ class KST_EXPORT KstEditViewObjectDialogI : public KstEditViewObjectDialog {
     void modified();
 };
 
-
 #endif
-// vim: ts=2 sw=2 et

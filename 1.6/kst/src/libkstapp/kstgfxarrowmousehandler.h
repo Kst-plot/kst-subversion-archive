@@ -30,5 +30,3 @@ class KstGfxArrowMouseHandler : public KstGfxMouseHandler {
 };
 
 #endif
-
-// vim: ts=2 sw=2 et

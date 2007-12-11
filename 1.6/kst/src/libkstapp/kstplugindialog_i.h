@@ -35,7 +35,7 @@ class KST_EXPORT KstPluginDialogI : public KstDataDialog {
 
   protected:
     QString objectName() { return tr("Plugin"); }
- 
+
   public slots:
     void updateForm();
     void update();
@@ -79,4 +79,3 @@ class KST_EXPORT KstPluginDialogI : public KstDataDialog {
 };
 
 #endif
-// vim: ts=2 sw=2 et

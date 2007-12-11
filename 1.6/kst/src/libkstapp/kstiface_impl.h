@@ -133,7 +133,7 @@ class KstIfaceImpl : virtual public KstIface {
         int numBins,
         int normalizationType,
         const QColor& colour); //create histogram and curve
-    
+
     virtual QStringList createHistogram(const QString& name,
                                         const QString& vector,
                                         double min,
@@ -150,7 +150,7 @@ class KstIfaceImpl : virtual public KstIface {
         double sampleRate,
         const QString& vectorUnits,
         const QColor& colour); //create power spectrum and curve
-    
+
     virtual QStringList createPowerSpectrum(const QString& name,
                                             const QString& vector,
                                             bool appodize,
@@ -173,7 +173,7 @@ class KstIfaceImpl : virtual public KstIface {
     virtual QString loadMatrix(const QString& name, const QString& file, const QString& field,
                                int xStart, int yStart, int xNumSteps, int yNumSteps, 
                                int skipFrames, bool boxcarFilter);
-  
+
     virtual QString createGradient(const QString& name, bool xDirection, double zAtMin, double zAtMax, 
                                    int xNumSteps, int yNumSteps, double xMin, double yMin, 
                                    double xStepSize, double yStepSize);
@@ -202,4 +202,3 @@ class KstIfaceImpl : virtual public KstIface {
 };
 
 #endif
-// vim: ts=2 sw=2 et

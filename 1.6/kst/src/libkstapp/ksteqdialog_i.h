@@ -35,7 +35,7 @@ class KST_EXPORT KstEqDialogI : public KstDataDialog {
   protected:
     QString editTitle() { return tr("Edit Equation"); }
     QString newTitle() { return tr("New Equation"); }
- 
+
   public slots:
     void update();
     void updateWindow();
@@ -66,4 +66,3 @@ class KST_EXPORT KstEqDialogI : public KstDataDialog {
 };
 
 #endif
-// vim: ts=2 sw=2 et

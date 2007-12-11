@@ -52,4 +52,3 @@ void ViewLabelWidget::changedBgColor( )
   _changedBgColor = true;
 }
 
-// vim: ts=8 sw=4 noet

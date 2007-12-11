@@ -41,4 +41,3 @@ class KstMatrixTable : public QTable {
 };
 
 #endif
-// vim: ts=2 sw=2 et

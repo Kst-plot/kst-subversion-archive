@@ -34,7 +34,7 @@ class KstCurveDifferentiateI : public KstCurveDifferentiate {
                          const char* name = 0,
                          bool modal = TRUE, WFlags fl = 0 );
     virtual ~KstCurveDifferentiateI();
-    
+
     void setOptions();
     void getOptions();
 
@@ -44,7 +44,7 @@ class KstCurveDifferentiateI : public KstCurveDifferentiate {
 
     /** calls updateCurveDifferentiate(), then shows and raises the dialog */
     void showCurveDifferentiate() KST_EXPORT;
-    
+
   private slots:
     void updateButtons();
     void addButtonClicked();
@@ -57,7 +57,7 @@ class KstCurveDifferentiateI : public KstCurveDifferentiate {
     void saveProperties();
     void loadProperties();
     void cycleWindow(KstViewWindow *window);
-    
+
     KstNumberSequence _lineColorSeq;
     KstNumberSequence _lineStyleSeq;
     KstNumberSequence _pointStyleSeq;
@@ -74,4 +74,3 @@ class KstCurveDifferentiateI : public KstCurveDifferentiate {
 };
 
 #endif
-// vim: ts=2 sw=2 et

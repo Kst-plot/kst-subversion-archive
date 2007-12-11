@@ -29,7 +29,7 @@ class KstViewListView : public QListView {
   public:
     KstViewListView(QWidget * parent = 0, const char * name = 0);
    ~KstViewListView();
-   
+
   protected:
     virtual QDragObject* dragObject();
     virtual void contentsMouseMoveEvent(QMouseEvent *e);
@@ -53,7 +53,7 @@ class KstViewObjectItem : public QListViewItem {
     bool removable() const { return _removable; }
     void updateButtons();
     void openChildren(bool open);
-         
+
   private:
     int _rtti;
     QString _name;
@@ -68,7 +68,7 @@ class KstViewManagerI: public KstViewManager {
     KstViewManagerI(KstDoc *doc, QWidget* parent = 0, const char *name = 0, 
                     bool modal = false, WFlags fl = 0);
     virtual ~KstViewManagerI();
-        
+
   public slots:
     void update();
     void updateContents();
@@ -84,12 +84,12 @@ class KstViewManagerI: public KstViewManager {
     void close();
     void openAll();
     void closeAll();   
-  
+
   private slots:
     void doUpdates();
     void contextMenu(QListViewItem *i, const QPoint& p, int c);
     void currentChanged(QListViewItem *);
-  
+
   private:
     void open(bool open);  
 
@@ -102,4 +102,3 @@ class KstViewManagerI: public KstViewManager {
 };
 
 #endif
-// vim: ts=2 sw=2 et

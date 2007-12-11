@@ -149,4 +149,3 @@ KST_EXPORT QString labelText(QString txt, Label::Parsed *lp, KstVectorMap& vm, K
 KST_EXPORT void renderLabel(RenderContext& rc, Label::Chunk *fi, const KstVectorMap& vm, const KstScalarMap& scm, const KstStringMap& stm);
 
 #endif
-// vim: ts=2 sw=2 et

@@ -34,20 +34,19 @@ class KstFitDialogI : public KstPluginDialogI {
 
   private:
     static QGuardedPtr<KstFitDialogI> _inst;
-    
+
     QString _xvector;
     QString _yvector;
     QString _evector;
     QString _strWindow;
     QString _strPlotName;
     QString _strCurve;
-    
+
     bool createCurve(KstCPluginPtr plugin);
-    
+
     void generateEntries(bool input, int& cnt, QWidget *parent, QGridLayout *grid, const QValueList<Plugin::Data::IOValue>& table);
-    
+
     bool saveInputs(KstCPluginPtr plugin, KstSharedPtr<Plugin> p);
 };
 
 #endif
-// vim: ts=2 sw=2 et

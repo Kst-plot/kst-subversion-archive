@@ -28,17 +28,17 @@ class KST_EXPORT KstNumberSequence {
     KstNumberSequence();
     KstNumberSequence(int min, int max);
     ~KstNumberSequence();
-    
+
     int next(); //next number
     void reset();
-    
+
     int current(); // current number - does not advance sequence
     void setRange(int min, int max);
 
     // numberSequence will be advanced when this sequence rolls over
     // set to NULL to have no next number sequence
     void hookToNextSequence(KstNumberSequence* numberSequence);
-    
+
   private:
     int _curr;    // current number
     int _min;
@@ -47,5 +47,3 @@ class KST_EXPORT KstNumberSequence {
 };
 
 #endif
-
-// vim: ts=2 sw=2 et

@@ -35,6 +35,4 @@ class KstPlotDrag : public KstDrag {
 KstPlotDrag& operator<<(KstPlotDrag& drag, KstViewObject obj);
 KstPlotDrag& operator<<(KstPlotDrag& drag, KstViewObjectList objs);
 
-
 #endif
-// vim: ts=2 sw=2 et

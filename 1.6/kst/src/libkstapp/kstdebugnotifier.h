@@ -46,7 +46,4 @@ class KstDebugNotifier : public QLabel {
     QValueVector<QPixmap> _pm;
 };
 
-
 #endif
-
-// vim: ts=2 sw=2 et

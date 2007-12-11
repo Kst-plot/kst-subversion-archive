@@ -181,6 +181,5 @@ class KstTopLevelView : public KstViewObject {
 typedef KstSharedPtr<KstTopLevelView> KstTopLevelViewPtr;
 typedef KstObjectList<KstTopLevelViewPtr> KstTopLevelViewList;
 
-
 #endif
 

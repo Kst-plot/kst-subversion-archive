@@ -80,6 +80,5 @@ class KstViewBox : public KstViewObject {
 
 typedef KstObjectList<KstViewBoxPtr> KstViewBoxList;
 
-
 #endif
 

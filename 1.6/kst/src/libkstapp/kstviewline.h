@@ -93,6 +93,4 @@ class KstViewLine : public KstViewObject {
 
 typedef KstObjectList<KstViewLinePtr> KstViewLineList;
 
-
 #endif
-// vim: ts=2 sw=2 et

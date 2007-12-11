@@ -44,4 +44,3 @@ class KstViewMatricesDialogI : public KstViewMatricesDialog {
 };
 
 #endif
-// vim: ts=2 sw=2 et

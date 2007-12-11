@@ -35,7 +35,7 @@ class KST_EXPORT KstImageDialogI : public KstDataDialog {
   protected:
     QString editTitle() { return tr("Edit Image"); }
     QString newTitle() { return tr("New Image"); }
- 
+
   public slots:
     void update();
     void updateWindow();
@@ -49,7 +49,7 @@ class KST_EXPORT KstImageDialogI : public KstDataDialog {
     void placeInPlot(KstImagePtr image);
     bool checkParameters(double& lowerZDouble, double& upperZDouble);
     void fillFieldsForEditNoUpdate();
-    
+
     // the following are for the multiple edit mode
     bool _matrixDirty : 1;
     bool _colorOnlyDirty : 1;
@@ -64,13 +64,13 @@ class KST_EXPORT KstImageDialogI : public KstDataDialog {
     bool _useVariableWeightDirty : 1;
     bool _contourColorDirty : 1;
     bool editSingleObject(KstImagePtr imPtr);
-    
+
   private slots:
     void calcAutoThreshold();
     void calcSmartThreshold();
     void updateGroups();
     void updateEnables();
-    
+
     // for multiple edit mode
     void setColorOnlyDirty() { _colorOnlyDirty = true; }
     void setContourOnlyDirty() { _contourOnlyDirty = true; }
@@ -78,7 +78,7 @@ class KST_EXPORT KstImageDialogI : public KstDataDialog {
     void setRealTimeAutoThresholdDirty();
     void setUseVariableWeightDirty();
     void setContourColorDirty() { _contourColorDirty = true; }
-    
+
   private:
     void fillFieldsForEdit();
     void fillFieldsForNew();
@@ -87,4 +87,3 @@ class KST_EXPORT KstImageDialogI : public KstDataDialog {
 };
 
 #endif
-// vim: ts=2 sw=2 et

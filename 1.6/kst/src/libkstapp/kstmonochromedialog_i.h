@@ -27,7 +27,7 @@ class KstMonochromeDialogI : public KstMonochromeDialog {
                          const char* name = 0,
                          bool modal = TRUE, WFlags fl = 0 );
     virtual ~KstMonochromeDialogI();
-    
+
     void setOptions(const QMap<QString,QString>& opts);
     void getOptions(QMap<QString,QString> &opts, bool include_def = false);
 
@@ -37,7 +37,7 @@ class KstMonochromeDialogI : public KstMonochromeDialog {
 
     /** calls updateMonochromeDialog(), then shows and raises the dialog */
     void showMonochromeDialog();
-    
+
   private slots:
     void updateButtons();
     void removeClicked();
@@ -47,4 +47,3 @@ class KstMonochromeDialogI : public KstMonochromeDialog {
 };
 
 #endif
-// vim: ts=2 sw=2 et

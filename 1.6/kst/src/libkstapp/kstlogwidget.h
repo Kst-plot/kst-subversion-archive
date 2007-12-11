@@ -39,7 +39,7 @@ class KstLogWidget : public QTextBrowser {
   private slots:
     void regenerate();
 
-  private:            
+  private:
     KstDebug *_debug;
     int _show;
     QMimeSourceFactory _msrc;
@@ -48,4 +48,3 @@ class KstLogWidget : public QTextBrowser {
 };
 
 #endif
-// vim: ts=2 sw=2 et

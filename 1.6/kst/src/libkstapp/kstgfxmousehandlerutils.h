@@ -40,10 +40,6 @@ namespace KstGfxMouseHandlerUtils {
     QRect newLine(const QPoint& pos, const QPoint& mouseOrigin, bool specialAspect, const QRect& bounds);
     // returns -1 if pos is in 1st or 3rd quadrant with origin mouseOrigin, 1 otherwise
     int quadrantSign(const QPoint& pos, const QPoint& mouseOrigin);
-
-    
 }
 
 #endif
-
-// vim: ts=2 sw=2 et

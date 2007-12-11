@@ -65,6 +65,5 @@ class KstViewEllipse : public KstViewObject {
 
 typedef KstObjectList<KstViewEllipsePtr> KstViewEllipseList;
 
-
 #endif
 

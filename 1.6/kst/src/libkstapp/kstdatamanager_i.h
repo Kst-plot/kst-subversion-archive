@@ -135,4 +135,3 @@ class KstObjectItem : public QObject, public KListViewItem {
 };
 
 #endif
-// vim: ts=2 sw=2 et

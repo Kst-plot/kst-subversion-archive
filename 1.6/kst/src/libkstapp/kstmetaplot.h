@@ -35,6 +35,4 @@ class KstMetaPlot : public KstBorderedViewObject {
 typedef KstSharedPtr<KstMetaPlot> KstMetaPlotPtr;
 typedef KstObjectList<KstMetaPlotPtr> KstMetaPlotList;
 
-
 #endif
-// vim: ts=2 sw=2 et

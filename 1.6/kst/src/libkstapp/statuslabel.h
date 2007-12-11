@@ -34,11 +34,9 @@ class StatusLabel : public QLabel {
 
   private:
     QString squeeze(const QString& s, const QFontMetrics& fm, uint width);
-  
+
     QString _fullText;
     int     _width;
 };
 
-
 #endif
-// vim: ts=2 sw=2 et

@@ -73,7 +73,4 @@ class EMailThread : public QObject {
     void slaveError(KIO::Slave *, int, const QString &);
 };
 
-
 #endif
-
-// vim: ts=2 sw=2 et

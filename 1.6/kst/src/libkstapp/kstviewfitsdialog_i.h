@@ -45,6 +45,4 @@ class KstViewFitsDialogI : public KstViewFitsDialog {
     void fillComboBox(const QString& str);
 };
 
-
 #endif
-// vim: ts=2 sw=2 et

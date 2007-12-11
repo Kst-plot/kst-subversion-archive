@@ -55,6 +55,4 @@ class KstViewObjectFactory {
     QMap<QString, KstGfxMouseHandler* (*)()> _handlers;
 };
 
-
 #endif
-// vim: ts=2 sw=2 et

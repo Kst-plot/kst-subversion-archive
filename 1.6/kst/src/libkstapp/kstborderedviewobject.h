@@ -92,9 +92,9 @@ class KST_EXPORT KstBorderedViewObject : public KstViewObject {
     // See above for gross details
     virtual QRect contentsRect() const;
     virtual void setContentsRect(const QRect& rect);
-    
+
     virtual QMap<QString, QVariant> widgetHints(const QString& propertyName) const;
-    
+
     // just calls KstViewObject functions - Q_PROPERTY doesn't work in KstViewObject?
     virtual void setForegroundColor(const QColor& color);
     virtual QColor foregroundColor() const;
@@ -111,7 +111,6 @@ class KST_EXPORT KstBorderedViewObject : public KstViewObject {
     // on a given line width adjustment factor.
     QRect contentsRectForPainter(const KstPainter& painter) const;
     void setContentsRectForPainter(const KstPainter& painter, const QRect& rect);
-  
 
   private:
     QColor _borderColor;
@@ -121,6 +120,4 @@ class KST_EXPORT KstBorderedViewObject : public KstViewObject {
 
 typedef KstObjectList<KstBorderedViewObjectPtr> KstBorderedViewObjectList;
 
-
 #endif
-// vim: ts=2 sw=2 et

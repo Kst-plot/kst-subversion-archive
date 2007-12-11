@@ -58,8 +58,7 @@ class UpdateThread : public QThread {
     QValueList<KstBaseCurve*> _updatedCurves; // HACK: temporary use in update reworking
 };
 
-
 #endif
 
 #endif
-// vim: ts=2 sw=2 et
+
