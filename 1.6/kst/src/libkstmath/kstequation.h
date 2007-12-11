@@ -15,9 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-/** A class for handling equations for kst
- *@author C. Barth Netterfield
- */
 #ifndef KSTEQUATION_H
 #define KSTEQUATION_H
 
@@ -83,8 +80,8 @@ class KST_EXPORT KstEquation : public KstDataObject {
   private:
     KstVectorMap::Iterator _xInVector, _xOutVector, _yOutVector;
     Equation::Node *_pe;
-    KstVectorMap VectorsUsed;
-    KstScalarMap ScalarsUsed;
+    KstVectorMap _vectorsUsed;
+    KstScalarMap _scalarsUsed;
     QString _equation;
     bool _isValid : 1;
     bool _doInterp : 1;
@@ -103,4 +100,3 @@ typedef KstSharedPtr<KstEquation> KstEquationPtr;
 typedef KstObjectList<KstEquationPtr> KstEquationList;
 
 #endif
-// vim: ts=2 sw=2 et

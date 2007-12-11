@@ -147,7 +147,8 @@ bool BinaryNode::collectObjects(KstVectorMap& v, KstScalarMap& s, KstStringMap& 
 
 bool BinaryNode::takeVectorsAndScalars(const KstVectorMap& vm, const KstScalarMap& sm) {
   bool rc = _left->takeVectorsAndScalars(vm, sm);
-  rc = _right->takeVectorsAndScalars(vm, sm) && rc;
+  rc = _right->takeVectorsAndScalars(vm, sm) || rc;
+
   return rc;
 }
 
@@ -831,7 +832,7 @@ bool ArgumentList::collectObjects(KstVectorMap& v, KstScalarMap& s, KstStringMap
 bool ArgumentList::takeVectorsAndScalars(const KstVectorMap& vm, const KstScalarMap& sm) {
   bool rc = true;
   for (Node *i = _args.first(); i; i = _args.next()) {
-    rc = i->takeVectorsAndScalars(vm, sm) && rc;
+    rc = i->takeVectorsAndScalars(vm, sm) || rc;
   }
   return rc;
 }
@@ -1033,9 +1034,9 @@ bool Data::collectObjects(KstVectorMap& v, KstScalarMap& s, KstStringMap& t) {
       _equation->collectObjects(v, s, t);
     }
   } else if (_vector && !v.contains(_tagName)) {
-    v.insert(_tagName, _vector);
+    v.insert(_vector->tag().displayString(), _vector);
   } else if (_scalar && !s.contains(_tagName)) {
-    s.insert(_tagName, _scalar);
+    s.insert(_scalar->tag().displayString(), _scalar);
   } else if (!_scalar && !_vector) {
     KstDebug::self()->log(i18n("Equation has unknown object [%1].").arg(_tagName), KstDebug::Error);
     return false;
@@ -1045,36 +1046,34 @@ bool Data::collectObjects(KstVectorMap& v, KstScalarMap& s, KstStringMap& t) {
 
 
 bool Data::takeVectorsAndScalars(const KstVectorMap& vm, const KstScalarMap& sm) {
+  bool val = false;
+
   if (_isEquation) {
     if (_equation) {
-      return _equation->takeVectorsAndScalars(vm, sm);
+      _equation->takeVectorsAndScalars(vm, sm);
+      val = true;
     }
-    return false;
-  }
-
-  if (_vector) {
+  } else if (_vector) {
     if (vm.contains(_tagName)) {
       _vector = vm[_tagName];
-    } else {
-      return false;
+      val = true;
     }
   } else if (_scalar) {
     if (sm.contains(_tagName)) {
       _scalar = sm[_tagName];
-    } else {
-      return false;
+      val = true;
     }
   } else {
     if (vm.contains(_tagName)) {
       _vector = vm[_tagName];
+      val = true;
     } else if (sm.contains(_tagName)) {
       _scalar = sm[_tagName];
-    } else {
-      return false;
+      val = true;
     }
   }
 
-  return true;
+  return val;
 }
 
 

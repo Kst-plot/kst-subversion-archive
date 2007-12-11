@@ -241,8 +241,15 @@ void KstEquation::reparse() {
     int rc = yyparse();
     Equation::Node *en = static_cast<Equation::Node*>(ParsedEquation);
     if (rc == 0 && en) {
-      if (en->takeVectorsAndScalars(VectorsUsed, ScalarsUsed)) {
+      if (en->takeVectorsAndScalars(_vectorsUsed, _scalarsUsed)) {
         _equation = en->text();
+
+        KstStringMap sm;
+        _vectorsUsed.clear();
+        _scalarsUsed.clear();
+
+        en->collectObjects(_vectorsUsed, _scalarsUsed, sm);
+
         setupConnections();
       } else {
         kstdWarning() << "Equation [" << _equation << "] failed to find its vectors/scalars when re-parsing." << endl;
@@ -270,7 +277,7 @@ void KstEquation::save(QTextStream &ts, const QString& indent) {
     Equation::Node *en = static_cast<Equation::Node*>(ParsedEquation);
     if (rc == 0 && en) {
       QString etext;
-      if (en->takeVectorsAndScalars(VectorsUsed, ScalarsUsed)) {
+      if (en->takeVectorsAndScalars(_vectorsUsed, _scalarsUsed)) {
         etext = en->text();
       } else {
         kstdWarning() << "Equation [" << _equation << "] failed to find its vectors/scalars when saving. The resulting Kst file may have issues." << endl;
@@ -298,8 +305,8 @@ void KstEquation::setEquation(const QString& in_fn) {
   _equation = in_fn;
   setRecursed(false);
 
-  VectorsUsed.clear();
-  ScalarsUsed.clear();
+  _vectorsUsed.clear();
+  _scalarsUsed.clear();
 
   _ns = 2; // reset the updating
   delete _pe;
@@ -318,7 +325,7 @@ void KstEquation::setEquation(const QString& in_fn) {
       Equation::FoldVisitor vis(&ctx, &_pe);
       KstStringMap sm;
 
-      if (_pe->collectObjects(VectorsUsed, ScalarsUsed, sm)) {
+      if (_pe->collectObjects(_vectorsUsed, _scalarsUsed, sm)) {
         setupConnections();
         _pe->update(-1, &ctx);
       } else {
@@ -389,7 +396,7 @@ bool KstEquation::FillY(bool force, bool usedUpdated) {
   // determine value of Interp
   if (_doInterp) {
     ns = (*_xInVector)->length();
-    for (KstVectorMap::ConstIterator i = VectorsUsed.begin(); i != VectorsUsed.end(); ++i) {
+    for (KstVectorMap::ConstIterator i = _vectorsUsed.begin(); i != _vectorsUsed.end(); ++i) {
       if (i.data()->length() > ns) {
         ns = i.data()->length();
       }
@@ -426,7 +433,7 @@ bool KstEquation::FillY(bool force, bool usedUpdated) {
     v_shift = (*_xInVector)->numShift();
     v_new = (*_xInVector)->numNew();
 
-    for (KstVectorMap::ConstIterator i = VectorsUsed.begin(); i != VectorsUsed.end(); ++i) {
+    for (KstVectorMap::ConstIterator i = _vectorsUsed.begin(); i != _vectorsUsed.end(); ++i) {
       if (v_shift != i.data()->numShift()) {
         v_shift = _ns;
       }
@@ -486,7 +493,7 @@ bool KstEquation::FillY(bool force, bool usedUpdated) {
     if (_pe && rc == 0) {
       Equation::FoldVisitor vis(&ctx, &_pe);
       KstStringMap sm;
-      _pe->collectObjects(VectorsUsed, ScalarsUsed, sm);
+      _pe->collectObjects(_vectorsUsed, _scalarsUsed, sm);
       setupConnections();
       ParsedEquation = 0L;
     } else {
@@ -631,9 +638,9 @@ void KstEquation::replaceDependency(KstMatrixPtr oldMatrix, KstMatrixPtr newMatr
 
 
 bool KstEquation::uses(KstObjectPtr p) const {
-  // check VectorsUsed in addition to _input*'s
+  // check _vectorsUsed in addition to _input*'s
   if (KstVectorPtr vect = kst_cast<KstVector>(p)) {
-    for (KstVectorMap::ConstIterator j = VectorsUsed.begin(); j != VectorsUsed.end(); ++j) {
+    for (KstVectorMap::ConstIterator j = _vectorsUsed.begin(); j != _vectorsUsed.end(); ++j) {
       if (j.data() == vect) {
         return true;
       }
@@ -641,7 +648,7 @@ bool KstEquation::uses(KstObjectPtr p) const {
   } else if (KstDataObjectPtr obj = kst_cast<KstDataObject>(p) ) {
     // check all connections from this expression to p
     for (KstVectorMap::Iterator j = obj->outputVectors().begin(); j != obj->outputVectors().end(); ++j) {
-      for (KstVectorMap::ConstIterator k = VectorsUsed.begin(); k != VectorsUsed.end(); ++k) {
+      for (KstVectorMap::ConstIterator k = _vectorsUsed.begin(); k != _vectorsUsed.end(); ++k) {
         if (j.data() == k.data()) {
           return true;
         }
@@ -653,11 +660,11 @@ bool KstEquation::uses(KstObjectPtr p) const {
 
 
 void KstEquation::setupConnections() {
-  for (KstScalarMap::iterator i = ScalarsUsed.begin(); i != ScalarsUsed.end(); ++i) {
+  for (KstScalarMap::iterator i = _scalarsUsed.begin(); i != _scalarsUsed.end(); ++i) {
     disconnect(i.data(), SIGNAL(tagChanged()), this, SLOT(reparse()));
     connect(i.data(), SIGNAL(tagChanged()), this, SLOT(reparse()));
   }
-  for (KstVectorMap::iterator i = VectorsUsed.begin(); i != VectorsUsed.end(); ++i) {
+  for (KstVectorMap::iterator i = _vectorsUsed.begin(); i != _vectorsUsed.end(); ++i) {
     disconnect(i.data(), SIGNAL(tagChanged()), this, SLOT(reparse()));
     connect(i.data(), SIGNAL(tagChanged()), this, SLOT(reparse()));
   }
