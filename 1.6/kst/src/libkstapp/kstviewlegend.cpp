@@ -22,6 +22,7 @@
 #include "ksdebug.h"
 #include "kst2dplot.h"
 #include "kstdatacollection.h"
+#include "kstgfxlegendmousehandler.h"
 #include "kstdataobjectcollection.h"
 #include "kstlegenddefaults.h"
 #include "kst.h"
@@ -913,12 +914,10 @@ KstViewObject *create_KstViewLegend() {
 
 
 KstGfxMouseHandler *handler_KstViewLegend() {
-  return 0L;
+  return new KstGfxLegendMouseHandler;
 }
 
 KST_REGISTER_VIEW_OBJECT(Legend, create_KstViewLegend, handler_KstViewLegend)
 }
 
-
 #include "kstviewlegend.moc"
-// vim: ts=2 sw=2 et

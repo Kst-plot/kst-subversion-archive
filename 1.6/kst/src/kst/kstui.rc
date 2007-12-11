@@ -66,6 +66,7 @@
       <Action name="arrow_action"/>
       <Action name="picture_action"/>
       <Action name="2dplot_action"/>
+      <Action name="legend_action"/>
     </Menu>
     <Separator/>
     <Action name="datamode_action"/>

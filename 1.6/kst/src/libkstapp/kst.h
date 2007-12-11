@@ -565,6 +565,7 @@ class KST_EXPORT KstApp : public KMdiMainFrm {
     KRadioAction *_gfxPictureAction;
     KRadioAction *_gfx2DPlotAction;
     KRadioAction *_gfxArrowAction;
+    KRadioAction *_gfxLegendAction;
 
     StatusLabel *_readyBar;
     StatusLabel *_memoryBar;

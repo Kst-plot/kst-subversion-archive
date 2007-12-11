@@ -65,6 +65,7 @@ libkstapp_la_SOURCES = \
 	kstgfxpicturemousehandler.cpp \
 	kstgfxarrowmousehandler.cpp \
 	kstgfx2dplotmousehandler.cpp \
+	kstgfxlegendmousehandler.cpp \
 	kstgfxtlvmousehandler.cpp \
 	kstmetaplot.cpp \
 	kstdrag.cpp \

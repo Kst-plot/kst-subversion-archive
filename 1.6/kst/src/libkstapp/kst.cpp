@@ -795,7 +795,7 @@ void KstApp::initActions() {
   _gfxPictureAction->setExclusiveGroup("gfx");
   _gfxPictureAction->setToolTip(i18n("Insert picture"));
   _gfxPictureAction->setWhatsThis(i18n("Insert picture"));
-  
+
   _gfx2DPlotAction = new KRadioAction(i18n("&Plot"), "kst_newplot",
                                    KShortcut(CTRL+Key_2),
                                    this, SLOT(toggleMouseMode()),
@@ -811,6 +811,14 @@ void KstApp::initActions() {
   _gfxArrowAction->setExclusiveGroup("gfx");
   _gfxArrowAction->setToolTip(i18n("Draw arrow"));
   _gfxArrowAction->setWhatsThis(i18n("Draw arrow"));
+
+  _gfxLegendAction = new KRadioAction(i18n("&Legend"), "kst_gfx_legend",
+                                   KShortcut(CTRL+Key_3),
+                                   this, SLOT(toggleMouseMode()),
+                                   actionCollection(), "legend_action");
+  _gfxLegendAction->setExclusiveGroup("gfx");
+  _gfxLegendAction->setToolTip(i18n("Insert Legend"));
+  _gfxLegendAction->setWhatsThis(i18n("Insert Legend"));
 
   _gfxLineAction = new KRadioAction(i18n("&Line"), "kst_gfx_line",
                                    KShortcut(Key_F10),
@@ -854,6 +862,7 @@ void KstApp::initActions() {
   _gfxArrowAction->plug(mouseModeMenu);
   _gfxPictureAction->plug(mouseModeMenu);
   _gfx2DPlotAction->plug(mouseModeMenu);
+  _gfxLegendAction->plug(mouseModeMenu);
 
   toolBar()->insertButton("thumbnail", MODE_BUTTON_ID, mouseModeMenu, true, i18n("Select the desired mode"));
   toggleMouseMode();
@@ -1864,6 +1873,10 @@ void KstApp::toggleMouseMode() {
     action = _gfxArrowAction;
     mode = KstTopLevelView::CreateMode;
     createType = "Arrow";
+  } else if (_gfxLegendAction->isChecked()) {
+    action = _gfxLegendAction;
+    mode = KstTopLevelView::CreateMode;
+    createType = "Legend";
   } else if (LayoutAction->isChecked()) {
     action = LayoutAction;
     mode = KstTopLevelView::LayoutMode;

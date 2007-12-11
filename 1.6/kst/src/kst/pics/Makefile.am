@@ -17,7 +17,7 @@ icons_DATA = kst_zoomtie.png kst_zoomxy.png kst_zoomx.png kst_zoomy.png \
 	kst_gfx_ellipse.png kst_gfx_polyline.png kst_gfx_polygon.png \
 	kst_gfx_arrow.png kst_gfx_picture.png kst_choosecolor.png \
 	kst_csdnew.png kst_differentiatecurves.png kst_viewmanager.png \
-	kst_newplot.png
+	kst_newplot.png kst_gfx_legend.png
 
 
 
