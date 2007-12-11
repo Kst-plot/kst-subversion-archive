@@ -326,7 +326,6 @@ int KstRVector::reqStartFrame() const {
 }
 
 
-/** Save vector information */
 void KstRVector::save(QTextStream &ts, const QString& indent, bool saveAbsolutePosition) {
   if (_saveData) {
     // This is ugly.  Really we need a way to change vector types at runtime.
@@ -361,7 +360,6 @@ void KstRVector::save(QTextStream &ts, const QString& indent, bool saveAbsoluteP
 }
 
 
-/** return the name of the file */
 QString KstRVector::filename() const {
   QString rc;
   if (_file) {
@@ -373,7 +371,6 @@ QString KstRVector::filename() const {
 }
 
 
-/** return the field */
 const QString& KstRVector::field() const {
   return _field;
 }
@@ -439,7 +436,6 @@ void KstRVector::checkIntegrity() {
 }
 
 
-/** Update an RVECTOR */
 KstObject::UpdateType KstRVector::update(int update_counter) {
   Q_ASSERT(myLockStatus() == KstRWLock::WRITELOCKED);
 
@@ -750,8 +746,7 @@ KstDataSourcePtr KstRVector::dataSource() const {
 
 KstRVectorPtr KstRVector::makeDuplicate() const {
   QString newTag = tag().tag() + "'";
+
   return new KstRVector(_file, _field, KstObjectTag(newTag, tag().context()), _reqStartingFrame, _reqNumberFrames, _skip, _doSkip, _doAve);
 }
 
-
-// vim: ts=2 sw=2 et
