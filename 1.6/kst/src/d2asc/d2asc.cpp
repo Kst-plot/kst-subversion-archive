@@ -56,10 +56,13 @@ int main(int argc, char *argv[]) {
   fieldEntry field;
   QValueList<fieldEntry> fieldList;
   char *filename;
-  bool do_ave = false, do_skip = false;
-  int start_frame=0, n_frames=2000000;
+  bool do_ave = false;
+  bool do_skip = false;
+  int start_frame = 0;
+  int n_frames = 2000000;
   int n_skip = 0;
-  int NS=0, i_S;
+  int NS = 0
+  int i_S;
   int i;
 
   if (argc < 3 || argv[1][0] == '-') {
@@ -122,8 +125,9 @@ int main(int argc, char *argv[]) {
 
   /* find NS */
   for (i = 0; i < int(fieldList.size()); i++) {
-    while (vlist.at(i)->update(-1) != KstObject::NO_CHANGE)
-      ; // read vector
+    vlist.at(i)->writeLock();
+    while (vlist.at(i)->update(-1) != KstObject::NO_CHANGE); // read vector
+    vlist.at(i)->unlock();
     if (vlist.at(i)->length() > NS) {
       NS = vlist.at(i)->length();
     }
