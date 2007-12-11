@@ -61,7 +61,7 @@ int main(int argc, char *argv[]) {
   int start_frame = 0;
   int n_frames = 2000000;
   int n_skip = 0;
-  int NS = 0
+  int NS = 0;
   int i_S;
   int i;
 
