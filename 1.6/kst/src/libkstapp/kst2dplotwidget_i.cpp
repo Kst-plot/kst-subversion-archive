@@ -303,7 +303,6 @@ void Kst2dPlotWidget::addDisplayedCurve() {
     updateButtons();
     emit changed();
   }
-  TrackContents->setChecked(false);
 }
 
 
@@ -319,7 +318,6 @@ void Kst2dPlotWidget::removeDisplayedCurve() {
     updateButtons();
     emit changed();
   }
-  TrackContents->setChecked(false);
 }
 
 
