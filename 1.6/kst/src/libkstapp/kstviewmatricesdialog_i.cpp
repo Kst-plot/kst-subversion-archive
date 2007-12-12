@@ -68,23 +68,23 @@ void KstViewMatricesDialogI::updateViewMatricesDialog() {
 
 void KstViewMatricesDialogI::updateViewMatricesDialog(const QString& matrixName) {
   int needed = 0;
-  
+
   KST::matrixList.lock().readLock();
   KstMatrixPtr matrix = *KST::matrixList.findTag(matrixName);
   KST::matrixList.lock().unlock();
   if (matrix) {
     matrix->readLock();
-    
+
     needed = matrix->xNumSteps();
     if (needed != _tableMatrices->numCols()) {
       _tableMatrices->setNumCols(needed);
-    }    
-    
+    }
+
     needed = matrix->yNumSteps();
     if (needed != _tableMatrices->numRows()) {
       _tableMatrices->setNumRows(needed);
-    }  
-        
+    }
+
     matrix->unlock();
   }
 }
@@ -120,4 +120,3 @@ void KstViewMatricesDialogI::updateDefaults(int index) {
 }
 
 #include "kstviewmatricesdialog_i.moc"
-// vim: ts=2 sw=2 et

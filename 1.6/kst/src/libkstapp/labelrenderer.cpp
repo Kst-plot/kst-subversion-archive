@@ -139,7 +139,7 @@ void renderLabel(RenderContext& rc, Label::Chunk *fi, const KstVectorMap& vm, co
   int oldSize = rc.size;
   int oldY = rc.y;
   int oldX = rc.x;
-  
+
   while (fi) {
     if (fi->vOffset != Label::Chunk::None) {
       if (fi->vOffset == Label::Chunk::Up) {
@@ -362,5 +362,3 @@ void renderLabel(RenderContext& rc, Label::Chunk *fi, const KstVectorMap& vm, co
   rc.size = oldSize;
   rc.y = oldY;
 }
-
-// vim: ts=2 sw=2 et

@@ -1,5 +1,5 @@
 /***************************************************************************
-                               kstuinames.cpp  
+                               kstuinames.cpp
                              -------------------
     begin                : July 31, 2004
     copyright            : (C) 2003 C. Barth Netterfield
@@ -26,5 +26,3 @@ QString KST::suggestWinName() {
   }
   return suggestedName;
 }
-
-// vim: ts=2 sw=2 et

@@ -411,7 +411,7 @@ bool UpdateThread::jobsAreRunning() const {
   _jobCountMutex.unlock();
   return running;
 }
-  
+
 
 void UpdateThread::jobIsRunning() {
   _jobCountMutex.lock();
@@ -453,6 +453,3 @@ void UpdateThread::waitForJobs() {
   }
   _emptyQueueCondition.wait();
 }
-
-
-// vim: ts=2 sw=2 et

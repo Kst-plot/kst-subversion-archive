@@ -261,6 +261,4 @@ KstGfxMouseHandler *handler_KstPlotGroup() {
 KST_REGISTER_VIEW_OBJECT(PlotGroup, create_KstPlotGroup, handler_KstPlotGroup)
 }
 
-
 #include "kstplotgroup.moc"
-// vim: ts=2 sw=2 et

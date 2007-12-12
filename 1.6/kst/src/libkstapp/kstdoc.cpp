@@ -630,7 +630,7 @@ bool KstDoc::openDocument(const KURL& url, const QString& o_file,
 
   KstApp::inst()->setPaused(false);
   QApplication::restoreOverrideCursor();
-  
+
   if (cleanupFile) {
     KIO::NetAccess::removeTempFile(tmpFile);
   }
@@ -688,7 +688,7 @@ void KstDoc::saveDocument(QTextStream& ts, bool saveAbsoluteVectorPositions) {
         dsp->save(ts, "    ");
         ts << "  </kstfile>" << endl;
         saved = true;
-      } 
+      }
     }
     for (KstRMatrixList::Iterator it = rml.begin(); it != rml.end() && !saved; ++it) {
       if ((*it)->dataSource() == dsp) {
@@ -726,7 +726,7 @@ void KstDoc::saveDocument(QTextStream& ts, bool saveAbsoluteVectorPositions) {
       (*it)->save(ts, "  ", saveAbsoluteVectorPositions);
     }
   }
-  
+
   // save matrices
   for (KstMatrixList::Iterator it = KST::matrixList.begin(); it != KST::matrixList.end(); ++it) {
     if ((*it)->saveable()) {
@@ -740,7 +740,7 @@ void KstDoc::saveDocument(QTextStream& ts, bool saveAbsoluteVectorPositions) {
     (*it)->save(ts, "  ");
   }
   KST::dataObjectList.lock().unlock();
-  
+
   // save plots
   KMdiIterator<KMdiChildView*> *it = app->createIterator();
   while (it->currentItem()) {
@@ -867,7 +867,7 @@ void KstDoc::deleteContents() {
   KST::vectorList.lock().writeLock();
   KST::vectorList.clear();
   KST::vectorList.lock().unlock();
-  
+
   KST::scalarList.lock().writeLock();
   KST::scalarList.clear();
   KST::scalarList.lock().unlock();
@@ -1013,11 +1013,11 @@ void KstDoc::purge() {
     KST::vectorList.lock().unlock();
     KST::matrixList.lock().unlock();
     KST::dataObjectList.lock().unlock();
-    
+
     int prg = 0;
     app->slotUpdateProgress(cnt, prg, purging);
     again = false;
-  
+
     // ASSUMPTION: this only gets called from the data manager!
     KST::dataObjectList.lock().writeLock();
     for (KstDataObjectList::Iterator it = KST::dataObjectList.begin(); it != KST::dataObjectList.end(); ++it) {
@@ -1038,11 +1038,11 @@ void KstDoc::purge() {
       app->slotUpdateProgress(cnt, prg, purging);
     }
     KST::dataObjectList.lock().unlock();
-  
+
     KST::vectorList.lock().readLock();
     KstVectorList vectorList = QDeepCopy<KstVectorList>(KST::vectorList.list());
     KST::vectorList.lock().unlock();
-    
+
     // clear unused vectors that are editable 
     for (KstVectorList::ConstIterator it = vectorList.begin(); it != vectorList.end(); ++it) {
 #ifdef PURGEDEBUG
@@ -1069,7 +1069,7 @@ void KstDoc::purge() {
       ++prg;
       app->slotUpdateProgress(cnt, prg, purging);
     }
-    
+
     KST::matrixList.lock().readLock();
     KstMatrixList matrixList = QDeepCopy<KstMatrixList>(KST::matrixList.list());
     KST::matrixList.lock().unlock();
@@ -1123,10 +1123,10 @@ void KstDoc::purge() {
     KST::dataSourceList.remove(const_cast<KstDataSource*>((*it).data()));
   }
   KST::dataSourceList.lock().unlock();
- 
+
   setModified(modified);
   emit updateDialogs();
-  
+
   app->slotUpdateProgress(0, 0, QString::null);
 }
 
@@ -1395,5 +1395,3 @@ static bool backupFile(const QString& qFilename, const QString& backupDir,
 }
 
 #include "kstdoc.moc"
-
-// vim: ts=2 sw=2 et

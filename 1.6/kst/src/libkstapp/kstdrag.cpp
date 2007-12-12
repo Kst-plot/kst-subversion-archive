@@ -26,6 +26,3 @@ KstDrag::KstDrag(const char *mimeType, QWidget *dragSource)
 
 KstDrag::~KstDrag() {
 }
-
-
-// vim: ts=2 sw=2 et

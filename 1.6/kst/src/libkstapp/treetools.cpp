@@ -24,7 +24,7 @@ bool KST::duplicateDependents(KstVectorPtr vectorFor, KstDataObjectDataObjectMap
   KST::dataObjectList.lock().readLock();
   KstDataObjectList dol = QDeepCopy<KstDataObjectList>(KST::dataObjectList);
   KST::dataObjectList.lock().unlock();
-  
+
   for (KstDataObjectList::Iterator i = dol.begin(); i != dol.end(); ++i) {
     if ((*i)->uses(vectorFor)) {
       if (duplicatedMap.contains(*i)) {
@@ -44,6 +44,3 @@ bool KST::duplicateDependents(KstVectorPtr vectorFor, KstDataObjectDataObjectMap
 
   return true;
 }
-
-
-// vim: ts=2 sw=2 et

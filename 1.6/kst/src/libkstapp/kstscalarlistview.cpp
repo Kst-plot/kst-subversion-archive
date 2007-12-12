@@ -87,8 +87,6 @@ void KstScalarListViewItem::setRemove(bool remove) {
   _remove = remove;
 }
 
-/*----------------------------------------------------------------------------*/
-
 KstScalarListView::KstScalarListView(QWidget *parent, KstObjectCollection<KstScalar> *coll) : KListView(parent), _coll(coll) {
   addColumn(i18n("Scalar"));
   addColumn(i18n("Value"));
@@ -208,4 +206,3 @@ void KstScalarListView::update() {
   KListView::update();
 }
 
-// vim: ts=2 sw=2 et

@@ -873,6 +873,4 @@ KstObjectPtr KstVectorDialogI::findObject(const QString& name) {
   return o;
 }
 
-
 #include "kstvectordialog_i.moc"
-// vim: sw=2 ts=2 et

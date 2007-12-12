@@ -70,7 +70,7 @@ bool KstViewFitsDialogI::hasContent() const {
 void KstViewFitsDialogI::fillComboBox(const QString& str) {
   QString fitName = str;
   bool changed = false;
-  
+
   _comboBoxFits->clear();
   KstCPluginList fits = kstObjectSubList<KstDataObject,KstCPlugin>(KST::dataObjectList);
   for (uint i = 0; i < fits.count(); i++) {
@@ -200,4 +200,3 @@ void KstViewFitsDialogI::updateDefaults(int index) {
 }
 
 #include "kstviewfitsdialog_i.moc"
-// vim: ts=2 sw=2 et

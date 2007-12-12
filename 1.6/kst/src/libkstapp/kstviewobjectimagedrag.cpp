@@ -133,6 +133,3 @@ QByteArray KstViewObjectImageDrag::encodedData(const char *mimeType) const {
 bool KstViewObjectImageDrag::provides(const char *mimeType) const {
   return _mimeTypes.contains(QString::fromLatin1(mimeType));
 }
-
-
-// vim: ts=2 sw=2 et

@@ -57,7 +57,7 @@ KstPrintOptionsPage::KstPrintOptionsPage(QWidget *parent, const char *name)
   row++;
 
   grid->activate();
-  
+
   connect(_configureBW, SIGNAL(clicked()), KstApp::inst(), SLOT(showMonochromeDialog())); 
   connect(_bw, SIGNAL(toggled(bool)), _configureBW, SLOT(setEnabled(bool)));
 }
@@ -72,10 +72,10 @@ void KstPrintOptionsPage::setOptions(const QMap<QString,QString>& opts) {
   _dateTimeFooter->setChecked(opts["kst-plot-datetime-footer"] == "1");
   _maintainAspectRatio->setChecked(opts["kst-plot-maintain-aspect-ratio"] == "1");
   _curveWidthAdjust->setValue(opts["kst-plot-curve-width-adjust"].toInt());
-  
+
   // set options for monochrome dialog
   KstApp::inst()->monochromeDialog()->setOptions(opts);
-  
+
   // update buttons
   _configureBW->setEnabled(_bw->isChecked());
 }
@@ -99,7 +99,7 @@ void KstPrintOptionsPage::getOptions(QMap<QString,QString>& opts, bool include_d
   if (adj != 0 || include_def) {
     opts["kst-plot-curve-width-adjust"] = QString::number(adj);
   }
-  
+
   // get options from monochrome dialog
   KstApp::inst()->monochromeDialog()->getOptions(opts, include_def);
 }
@@ -109,5 +109,3 @@ bool KstPrintOptionsPage::isValid(QString& msg) {
   Q_UNUSED(msg)
   return true;
 }
-
-// vim: ts=2 sw=2 et

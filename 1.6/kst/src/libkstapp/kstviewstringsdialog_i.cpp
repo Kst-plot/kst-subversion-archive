@@ -93,4 +93,3 @@ void KstViewStringsDialogI::updateDefaults(int index) {
 }
 
 #include "kstviewstringsdialog_i.moc"
-// vim: ts=2 sw=2 et

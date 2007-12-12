@@ -41,6 +41,4 @@ void KstPlotBase::save(QTextStream& ts, const QString& indent) {
   KstMetaPlot::save(ts, indent);
 }
 
-
 #include "kstplotbase.moc"
-// vim: ts=2 sw=2 et

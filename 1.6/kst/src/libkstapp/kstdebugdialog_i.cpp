@@ -110,6 +110,4 @@ KstLogWidget *KstDebugDialogI::logWidget() const {
   return _log;
 }
 
-
 #include "kstdebugdialog_i.moc"
-// vim: et ts=2 sw=2

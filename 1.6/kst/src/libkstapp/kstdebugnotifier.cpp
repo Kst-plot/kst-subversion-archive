@@ -27,13 +27,14 @@
 
 #define TIMER_TICK 250
 #define TIMER_ITERATIONS 10
+#define IMAGE_STAGES 2
 
 KstDebugNotifier::KstDebugNotifier(QWidget *parent)
 : QLabel(parent) {
   _animationStage = 0;
   _gotPress = false;
   QToolTip::add(this, i18n("An error has occurred.  Click on this icon for more details."));
-#define IMAGE_STAGES 2
+
   _pm.resize(IMAGE_STAGES);
   _pm[0] = QPixmap(locate("data", "kst/pics/kst_error_1.png"));
   _pm[1] = QPixmap(locate("data", "kst/pics/kst_error_2.png"));
@@ -98,4 +99,3 @@ void KstDebugNotifier::mouseReleaseEvent(QMouseEvent *e) {
 
 #undef TIMER_ITERATIONS
 #include "kstdebugnotifier.moc"
-// vim: ts=2 sw=2 et

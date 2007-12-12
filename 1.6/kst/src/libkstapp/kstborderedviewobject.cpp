@@ -201,7 +201,7 @@ void KstBorderedViewObject::setContentsRect(const QRect& rect) {
   _geom.setY(rect.top() - mpb);
   _geom.setWidth(rect.width() + 2 * mpb);
   _geom.setHeight(rect.height() + 2 * mpb);
-  
+
   if(_parent) {
     _geom = _geom.intersect(_parent->geometry());
   }
@@ -259,4 +259,3 @@ QColor KstBorderedViewObject::foregroundColor() const {
 
 
 #include "kstborderedviewobject.moc"
-// vim: ts=2 sw=2 et

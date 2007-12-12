@@ -167,7 +167,7 @@ void EMailThread::send() {
       KIO::Scheduler::assignJobToSlave(_slave, _job);
       _sendOk = true;
     }
-  }   
+  }
 }
 
 void EMailThread::dataReq(KIO::Job *job, QByteArray &array)
@@ -217,5 +217,3 @@ void EMailThread::slaveError(KIO::Slave *aSlave, int error, const QString &error
 }
 
 #include "emailthread.moc"
-
-// vim: ts=2 sw=2 et

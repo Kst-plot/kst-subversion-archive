@@ -45,5 +45,3 @@ void KstScalarTable::paintCell( QPainter* painter, int row, int col, const QRect
 
   painter->drawText(0, 0, cr.width(), cr.height(), AlignLeft, str);
 }
-
-// vim: ts=2 sw=2 et

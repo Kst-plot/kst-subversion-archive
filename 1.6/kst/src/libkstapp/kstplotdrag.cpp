@@ -31,6 +31,7 @@ const char *KstPlotDrag::mimeType() {
   return "application/x-kst-plots";
 }
 
+
 KstPlotDrag::~KstPlotDrag() {
 }
 
@@ -63,12 +64,14 @@ KstViewObjectList KstPlotDrag::decodedContents(QByteArray& a) {
       abort();
     }
   }
+
   return c;
 }
 
 
 KstPlotDrag& operator<<(KstPlotDrag& drag, KstViewObjectList objs) {
   drag.setPlots(objs);
+
   return drag;
 }
 
@@ -77,8 +80,6 @@ KstPlotDrag& operator<<(KstPlotDrag& drag, KstViewObjectPtr obj) {
   KstViewObjectList list;
   list.append(obj);
   drag.setPlots(list);
+
   return drag;
 }
-
-// vim: ts=2 sw=2 et
-

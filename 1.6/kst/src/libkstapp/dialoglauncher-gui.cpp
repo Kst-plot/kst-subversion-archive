@@ -91,6 +91,7 @@ void KstGuiDialogs::showPSDDialog(const QString& name, bool edit) {
   }
 }
 
+
 void KstGuiDialogs::showVectorViewDialog(const QString& name, bool edit) {
   if (!edit) {
     KstVvDialogI::globalInstance()->showNew(name);
@@ -168,5 +169,3 @@ void KstGuiDialogs::showCurveDialog(const QString& name, bool edit) {
     KstCurveDialogI::globalInstance()->showEdit(name);
   }
 }
-
-// vim: ts=2 sw=2 et

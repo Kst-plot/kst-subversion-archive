@@ -73,9 +73,7 @@ void KstFitTable::paintCell( QPainter* painter, int row, int col, const QRect& c
     }
   } else if (row == _iNumParams+1 && col == 0) {
     str.setNum(_dChi2Nu, 'g', 6);
-  }    
+  }
 
   painter->drawText(0, 0, cr.width(), cr.height(), AlignLeft, str);
 }
-
-// vim: ts=2 sw=2 et

@@ -119,5 +119,3 @@ QRect KstAlignment::limits(const QRect& geometry) {
 
   return plotRegion;
 }
-
-// vim: ts=2 sw=2 et

@@ -71,6 +71,3 @@ KstGfxMouseHandler *KstViewObjectFactory::createHandlerFor(const QString& type) 
 QString KstViewObjectFactory::typeOf(KstViewObjectPtr ptr) {
   return ptr->type();
 }
-
-
-// vim: ts=2 sw=2 et

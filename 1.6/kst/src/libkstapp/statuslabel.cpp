@@ -37,21 +37,21 @@ StatusLabel::~StatusLabel() {
 void StatusLabel::setFullText() {
   QToolTip::remove(this);
   QToolTip::hide();
-  
-  setMaximumWidth(32767);  
+
+  setMaximumWidth(32767);
   setText(_fullText);
 }
 
 QString StatusLabel::squeeze(const QString& s, const QFontMetrics& fm, uint width) {
   uint currentWidth = fm.width(s);
-  
+
   if (s.isEmpty() || currentWidth <= width) {
      return s;
   }
 
   QString str(s);
   uint ellipsisWidth = fm.width("...");
-  
+
   if (currentWidth > ellipsisWidth) {
     const uint maxWidth = width - ellipsisWidth;
     const uint emWidth  = fm.maxWidth( );
@@ -69,23 +69,23 @@ QString StatusLabel::squeeze(const QString& s, const QFontMetrics& fm, uint widt
   } else {
     str = "...";
   }
-    
+
   return str;
 }
 
 void StatusLabel::setTextWidth(const QFontMetrics &metrics, int width) {
   QString str;
-  
+
   QToolTip::remove(this);
-  
+
   if (width < 0) {
     width = 0;
   }
-  
+
   setMaximumWidth(width);
 
   str = squeeze(_fullText, metrics, width);
-  
+
   if (str != _fullText) {
     QToolTip::add(this, _fullText);  
   }
@@ -102,4 +102,3 @@ const QString& StatusLabel::fullText() const {
 }
 
 #include "statuslabel.moc"
-// vim: ts=2 sw=2 et

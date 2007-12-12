@@ -33,8 +33,8 @@ KstNumberSequence::KstNumberSequence(int min, int max) {
 
 
 KstNumberSequence::~KstNumberSequence() {
-  
 }
+
 
 int KstNumberSequence::next() {
   _curr++;
@@ -44,9 +44,10 @@ int KstNumberSequence::next() {
       _nextSequence->next();
     }
   }
-  
+
   return _curr;
 }
+
 
 void KstNumberSequence::reset() {
   _curr = _min;
@@ -55,9 +56,11 @@ void KstNumberSequence::reset() {
   }
 }
 
+
 int KstNumberSequence::current() {
   return _curr;
 }
+
 
 void KstNumberSequence::setRange(int min, int max) {
   _min = min;
@@ -67,9 +70,7 @@ void KstNumberSequence::setRange(int min, int max) {
   }
 }
 
+
 void KstNumberSequence::hookToNextSequence(KstNumberSequence* numberSequence) {
   _nextSequence = numberSequence;
 }
-
-
-// vim: ts=2 sw=2 et

@@ -39,10 +39,10 @@ KstMonochromeDialogI::KstMonochromeDialogI(QWidget* parent,
   availableListBox->insertItem(i18n("Point Style"));  
   availableListBox->insertItem(i18n("Line Style"));
   availableListBox->insertItem(i18n("Line Width"));
-  
+
   connect(_Cancel, SIGNAL(clicked()), this, SLOT(accept()));
   connect(enhanceReadability, SIGNAL(clicked()), this, SLOT(updateButtons()));
-  
+
   // more connections to emulate kactionselector behaviour
   connect(_remove, SIGNAL(clicked()), this, SLOT(removeClicked()));
   connect(_add, SIGNAL(clicked()), this, SLOT(addClicked()));
@@ -50,7 +50,7 @@ KstMonochromeDialogI::KstMonochromeDialogI(QWidget* parent,
   connect(_down, SIGNAL(clicked()), this, SLOT(downClicked()));
   connect(availableListBox, SIGNAL(highlighted(int)), this, SLOT(updateButtons()));
   connect(selectedListBox, SIGNAL(highlighted(int)), this, SLOT(updateButtons()));
-  
+
   _up->setPixmap(BarIcon("up"));
   _down->setPixmap(BarIcon("down"));
   _add->setPixmap(BarIcon("forward"));
@@ -63,8 +63,8 @@ KstMonochromeDialogI::KstMonochromeDialogI(QWidget* parent,
 
 
 KstMonochromeDialogI::~KstMonochromeDialogI() {
-  
 }
+
 
 void KstMonochromeDialogI::updateMonochromeDialog() {
   updateButtons();
@@ -87,9 +87,8 @@ void KstMonochromeDialogI::updateButtons() {
 }
 
 void KstMonochromeDialogI::setOptions(const QMap<QString,QString>& opts) {
-  
   enhanceReadability->setChecked(opts["kst-plot-monochromesettings-enhancereadability"] == "1");
-  
+
   availableListBox->clear();
   selectedListBox->clear();
   if (opts["kst-plot-monochromesettings-pointstyleorder"] == "-1") {
@@ -110,7 +109,7 @@ void KstMonochromeDialogI::setOptions(const QMap<QString,QString>& opts) {
     selectedListBox->insertItem(i18n("Line Width"),
     opts["kst-plot-monochromesettings-linewidthorder"].toInt());
   }
-  
+
   maxLineWidth->setValue(opts["kst-plot-monochromesettings-maxlinewidth"].toInt());
   pointDensity->setCurrentItem(opts["kst-plot-monochromesettings-pointdensity"].toInt());
 }
@@ -153,7 +152,7 @@ void KstMonochromeDialogI::removeClicked() {
       availableListBox->insertItem(selectedListBox->text(i));
       selectedListBox->removeItem(i); 
       availableListBox->setSelected((int)availableListBox->count() - 1, true); 
-    }  
+    }
   }
   updateButtons();
 }
@@ -166,7 +165,7 @@ void KstMonochromeDialogI::addClicked() {
       selectedListBox->insertItem(availableListBox->text(i));
       availableListBox->removeItem(i);  
       selectedListBox->setSelected((int)selectedListBox->count() - 1, true);
-    }  
+    }
   }
   updateButtons();
 }
@@ -193,6 +192,4 @@ void KstMonochromeDialogI::downClicked() {
   updateButtons();
 }
 
-
 #include "kstmonochromedialog_i.moc"
-// vim: ts=2 sw=2 et

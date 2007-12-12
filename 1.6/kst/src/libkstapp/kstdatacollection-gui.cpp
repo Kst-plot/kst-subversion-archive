@@ -241,7 +241,7 @@ QStringList KstGuiData::plotList(const QString& window) {
   if (window.isEmpty()) {
     return Kst2DPlot::globalPlotList().tagNames();
   }
-  
+
   KstApp *app = KstApp::inst();
   KMdiChildView *c = app->findWindow(window);
   QStringList rc;
@@ -307,6 +307,3 @@ QString KstGuiData::currentWindow() {
   KMdiChildView *c = KstApp::inst()->activeWindow();
   return c ? c->caption() : QString::null;
 }
-
-
-// vim: ts=2 sw=2 et

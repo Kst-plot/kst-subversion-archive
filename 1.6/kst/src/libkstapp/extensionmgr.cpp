@@ -154,4 +154,3 @@ void ExtensionMgr::unregister() {
 ExtensionMgr *ExtensionMgr::_self = 0L;
 
 #include "extensionmgr.moc"
-// vim: ts=2 sw=2 et

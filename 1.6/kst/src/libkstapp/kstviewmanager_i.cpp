@@ -56,18 +56,18 @@ KstViewListView::~KstViewListView() {
 QDragObject* KstViewListView::dragObject() {
   QListViewItem *qi = selectedItem();
   QDragObject* drag = 0L;
-  
+
   if (qi) {
     KstViewObjectItem *koi = static_cast<KstViewObjectItem*>(qi);
-    
+
     if (koi) {
       if (koi->rtti() == RTTI_OBJ_VIEW_OBJECT) {
-        KMultipleDrag *multipleDrag = new KMultipleDrag(this);        
+        KMultipleDrag *multipleDrag = new KMultipleDrag(this);
         QStringList objects;
         KstViewObjectList vol;
         KstViewWindow *win;
         KstViewObjectPtr viewObject = koi->viewObject(&win);
-        
+
         drag = multipleDrag;
 
         if (viewObject) {
@@ -81,15 +81,15 @@ QDragObject* KstViewListView::dragObject() {
       } else if(koi->rtti() == RTTI_OBJ_DATA_OBJECT) {
         Kst2DPlotPtr plot;
         KstDataObjectPtr dataObject = koi->dataObject(plot);
-      
+
         if (dataObject) {
           QStoredDrag *storedDrag = new QStoredDrag("application/x-kst-curve-list", this);
           QStringList entries;
 
           drag = storedDrag;
-          
+
           entries << dataObject->tagName();
-          
+
           QByteArray data;
           QDataStream ds(data, IO_WriteOnly);
           ds << entries;
@@ -98,13 +98,13 @@ QDragObject* KstViewListView::dragObject() {
       }
     }
   }
-  
+
   return drag;
 }
 
 void KstViewListView::contentsMouseMoveEvent(QMouseEvent *e) {
   viewport()->setCursor(Qt::ArrowCursor);
-  
+
   QListView::contentsMouseMoveEvent(e);
 }
 
@@ -112,7 +112,7 @@ void KstViewListView::contentsMouseMoveEvent(QMouseEvent *e) {
 
 KstViewObjectItem::KstViewObjectItem(QListView *parent, KstTopLevelViewPtr x, KstViewManagerI *vm, int localUseCount)
 : QListViewItem(parent), _rtti(RTTI_OBJ_WINDOW), _name(x->tagName()), _vm(vm) {
-  
+
   if (x) {
     _inUse = false;
     _removable = true;
@@ -126,7 +126,7 @@ KstViewObjectItem::KstViewObjectItem(QListView *parent, KstTopLevelViewPtr x, Ks
 
 KstViewObjectItem::KstViewObjectItem(QListViewItem *parent, KstViewObjectPtr x, KstViewManagerI *vm, int localUseCount)
 : QListViewItem(parent), _rtti(RTTI_OBJ_VIEW_OBJECT), _name(x->tagName()), _vm(vm) {
-  
+
   if (x) {
     _inUse = false;
     _removable = true;
@@ -141,7 +141,7 @@ KstViewObjectItem::KstViewObjectItem(QListViewItem *parent, KstViewObjectPtr x, 
 KstViewObjectItem::KstViewObjectItem(QListViewItem *parent, KstBaseCurvePtr x, KstViewManagerI *vm, int localUseCount)
 : QListViewItem(parent), _rtti(RTTI_OBJ_DATA_OBJECT), _name(x->tagName()), _vm(vm) {
   Q_UNUSED(localUseCount)
-  
+
   if (x) {
     _inUse = false;
     _removable = true;
@@ -165,12 +165,12 @@ bool KstViewObjectItem::acceptDrop(const QMimeSource *mime) const {
   } else if (rtti() == RTTI_OBJ_VIEW_OBJECT) {
     KstViewWindow *win;
     KstViewObjectPtr obj = viewObject(&win);
-    
+
     if (mime->provides(PlotMimeSource::mimeType())) {
       if (obj && obj->isContainer()) {
         retVal = true;
       }
-    } else {     
+    } else {
       if (obj) {
         if (mime->provides("application/x-kst-curve-list")) {
           if (dynamic_cast<Kst2DPlot*>(obj.data())) {
@@ -182,7 +182,7 @@ bool KstViewObjectItem::acceptDrop(const QMimeSource *mime) const {
       }
     }
   }
-  
+
   //
   // the following should not be necessary but is due to a bug in QListView...
   //
@@ -191,13 +191,13 @@ bool KstViewObjectItem::acceptDrop(const QMimeSource *mime) const {
   } else {
     _vm->ViewView->viewport()->setCursor(Qt::ForbiddenCursor);  
   }
-  
+
   return retVal;
 }
 
 void KstViewObjectItem::dropped(QDropEvent *e) {
   bool accepted = false;
-  
+
   if (rtti() == RTTI_OBJ_WINDOW) {
     KstViewWindow *win;
 
@@ -209,12 +209,12 @@ void KstViewObjectItem::dropped(QDropEvent *e) {
   } else if (rtti() == RTTI_OBJ_VIEW_OBJECT) {
     KstViewWindow *win;
     KstViewObjectPtr obj = viewObject(&win);
-    
+
     if (win) {
       if (e->provides(PlotMimeSource::mimeType())) {
         KstViewObjectList list;
         bool added = false;
-        
+
         if (obj->paste(e, &list)) {
           for (KstViewObjectList::Iterator it = list.begin(); it != list.end(); ++it) {
             new KstViewObjectItem(this, *it, _vm);
@@ -234,7 +234,7 @@ void KstViewObjectItem::dropped(QDropEvent *e) {
           QDataStream ds(data, IO_ReadOnly);
           QStringList entries;
           bool added = false;
-          
+
           ds >> entries;
           for (QStringList::ConstIterator i = entries.begin(); i != entries.end(); ++i) {
             KstBaseCurveList::Iterator it = curves.findTag(*i);
@@ -247,7 +247,7 @@ void KstViewObjectItem::dropped(QDropEvent *e) {
               }
             }
           }
-          if (added) {          
+          if (added) {
             win->view()->paint(KstPainter::P_PLOT);
           }
           accepted = true;
@@ -255,34 +255,34 @@ void KstViewObjectItem::dropped(QDropEvent *e) {
       }
     }
   }
-   
+
   e->accept(accepted);
 }
 
 KstDataObjectPtr KstViewObjectItem::dataObject(Kst2DPlotPtr &plot) const {
   KstDataObjectPtr dataObj;
-  
+
   plot = 0L;
-  
+
   if (rtti() == RTTI_OBJ_VIEW_OBJECT) {
     KstViewWindow *win;
     KstViewObjectPtr viewObj = viewObject(&win);
-    
+
     if (viewObj) {
       plot = dynamic_cast<Kst2DPlot*>(viewObj.data());
     }
   } else if (rtti() == RTTI_OBJ_DATA_OBJECT) {
     KstViewObjectItem *koi;
     QListViewItem *item;
-    
-    dataObj = *KST::dataObjectList.findTag(tagName());      
+
+    dataObj = *KST::dataObjectList.findTag(tagName());
     item = parent();
     if (item) {
       koi = static_cast<KstViewObjectItem*>(item);
       koi->dataObject(plot);
     }
   }
-    
+
   return dataObj;
 }
 
@@ -290,9 +290,9 @@ KstViewObjectPtr KstViewObjectItem::viewObject(KstViewWindow **win) const {
   KstViewObjectPtr viewObj;
   KstViewObjectItem *koi;
   QListViewItem *item;
-  
+
   *win = 0L;
-  
+
   if (rtti() == RTTI_OBJ_WINDOW) {
     *win = dynamic_cast<KstViewWindow*>(KstApp::inst()->findWindow(tagName()));
     viewObj = (*win)->view()->findChild(tagName(), true);      
@@ -306,17 +306,17 @@ KstViewObjectPtr KstViewObjectItem::viewObject(KstViewWindow **win) const {
       }
     }
   }
-  
+
   return viewObj;
 }
 
 void KstViewObjectItem::update(KstViewObjectPtr x, bool recursive, int localUseCount) {
   Q_UNUSED(localUseCount)
   Q_UNUSED(recursive)
-  
+
   Kst2DPlotPtr plot = dynamic_cast<Kst2DPlot*>(x.data());
   QPtrStack<QListViewItem> trash;
-  
+
   // garbage collect first
   for (QListViewItem *i = firstChild(); i; i = i->nextSibling()) {
     bool found = false;
@@ -340,12 +340,12 @@ void KstViewObjectItem::update(KstViewObjectPtr x, bool recursive, int localUseC
       trash.push(i);
     }
   }
-  
+
   trash.setAutoDelete(true);
   _vm->blockSignals(true);
   trash.clear();
   _vm->blockSignals(false);
-  
+
   for (KstViewObjectList::ConstIterator obj = x->children().begin(); obj != x->children().end(); ++obj) {
     bool found = false;
     for (QListViewItem *i = firstChild(); i; i = i->nextSibling()) {
@@ -359,8 +359,8 @@ void KstViewObjectItem::update(KstViewObjectPtr x, bool recursive, int localUseC
     if (!found) {
       new KstViewObjectItem(this, *obj, _vm);
     }
-  } 
-  
+  }
+
   if (plot) {
     for (KstBaseCurveList::ConstIterator obj = plot->Curves.begin(); obj != plot->Curves.end(); ++obj) {
       bool found = false;
@@ -386,7 +386,7 @@ void KstViewObjectItem::updateButtons() {
 void KstViewObjectItem::openChildren(bool open) {
   for (QListViewItem *qi = firstChild(); qi; qi = qi->nextSibling()) {
     KstViewObjectItem *oi = static_cast<KstViewObjectItem*>(qi);
-    
+
     oi->openChildren(open);
     qi->setOpen(open);
   }
@@ -398,7 +398,7 @@ KstViewManagerI::KstViewManagerI(KstDoc *in_doc, QWidget* parent, const char* na
 : KstViewManager(parent, name, modal, fl) {
   doc = in_doc;
   delete ViewView;
-  
+
   setAcceptDrops(TRUE);
   ViewView = new KstViewListView(this, "ViewView");
   ViewView->addColumn(i18n("Name"));
@@ -410,7 +410,7 @@ KstViewManagerI::KstViewManagerI(KstDoc *in_doc, QWidget* parent, const char* na
   ViewView->viewport()->setAcceptDrops(TRUE);
   ViewView->setSelectionMode(QListView::Single);
   KstViewManagerLayout->addMultiCellWidget(ViewView, 0, 0, 0, 3);
-  
+
   connect(Close, SIGNAL(clicked()), this, SLOT(reject()));
   connect(Edit, SIGNAL(clicked()), this, SLOT(edit_I()));
   connect(Delete, SIGNAL(clicked()), this, SLOT(delete_I()));
@@ -435,7 +435,7 @@ void KstViewManagerI::updateContents() {
 
 void KstViewManagerI::update() {
   KstApp *app = KstApp::inst();
-    
+
   if (!isShown()) {
     return;
   }
@@ -450,7 +450,7 @@ void KstViewManagerI::update() {
     KstViewObjectItem *oi = static_cast<KstViewObjectItem*>(i);
     it->first();
     if (i->rtti() == RTTI_OBJ_WINDOW) {
-      while (it->currentItem()) {      
+      while (it->currentItem()) {
         KstViewWindow *win = dynamic_cast<KstViewWindow*>(it->currentItem());
         if (win) {
           KstTopLevelViewPtr view = win->view();
@@ -472,9 +472,9 @@ void KstViewManagerI::update() {
   ViewView->blockSignals(true);
   trash.clear();
   ViewView->blockSignals(false);
-  
+
   it->first();
-  while (it->currentItem()) {      
+  while (it->currentItem()) {
     KstViewWindow *win = dynamic_cast<KstViewWindow*>(it->currentItem());
     if (win) {
       KstTopLevelViewPtr view = win->view();
@@ -504,14 +504,14 @@ void KstViewManagerI::update() {
       break;
     }
   }
-  
+
   if (ViewView->selectedItem()) {
     static_cast<KstViewObjectItem*>(ViewView->currentItem())->updateButtons();
   } else {
     Edit->setEnabled(false);
     Delete->setEnabled(false);
   }
-  
+
   app->deleteIterator(it);
 }
 
@@ -519,7 +519,7 @@ void KstViewManagerI::edit_I() {
   QListViewItem *qi = ViewView->selectedItem();
   KstViewObjectItem *koi = static_cast<KstViewObjectItem*>(qi);
   KstViewWindow *win;
-  
+
   if (koi) {  
     if (qi->rtti() == RTTI_OBJ_WINDOW) {
       win = dynamic_cast<KstViewWindow*>(KstApp::inst()->findWindow(koi->tagName()));
@@ -535,7 +535,7 @@ void KstViewManagerI::edit_I() {
       Kst2DPlotPtr plot;
       KstDataObjectPtr obj = koi->dataObject(plot);
       if (obj) {
-        obj->showDialog(false);  
+        obj->showDialog(false);
       }
     }
   } else {
@@ -546,7 +546,7 @@ void KstViewManagerI::edit_I() {
 void KstViewManagerI::delete_I() {
   QListViewItem *qi = ViewView->selectedItem();
   KstViewObjectItem *koi = static_cast<KstViewObjectItem*>(qi);
-  
+
   if (koi) {
     if (koi->removable()) {
       if (koi->rtti() == RTTI_OBJ_WINDOW) {
@@ -570,10 +570,10 @@ void KstViewManagerI::delete_I() {
         KstBaseCurvePtr curve = dynamic_cast<KstBaseCurve*>(obj.data());
         koi->viewObject(&win);
         if (curve && plot && win) {
-          plot->removeCurve(curve);          
+          plot->removeCurve(curve);
           win->view()->paint(KstPainter::P_PAINT);
           update();
-        }        
+        }
       }
     }
   } else {
@@ -584,13 +584,13 @@ void KstViewManagerI::delete_I() {
 void KstViewManagerI::activate_I() {
   QListViewItem *qi = ViewView->selectedItem();
   KstViewObjectItem *koi = static_cast<KstViewObjectItem*>(qi);
-  
+
   if (koi) {
     if (koi->rtti() == RTTI_OBJ_WINDOW) {
       KstViewWindow *win = dynamic_cast<KstViewWindow*>(KstApp::inst()->findWindow(koi->tagName()));
       if (win) {
         win->activate();
-      }      
+      }
     }
   }
 }
@@ -598,35 +598,35 @@ void KstViewManagerI::activate_I() {
 void KstViewManagerI::cleanupDefault_I() {
   QListViewItem *qi = ViewView->selectedItem();
   KstViewObjectItem *koi = static_cast<KstViewObjectItem*>(qi);
-  
+
   if (koi) {
     if (koi->rtti() == RTTI_OBJ_WINDOW) {
       KstViewWindow *win = dynamic_cast<KstViewWindow*>(KstApp::inst()->findWindow(koi->tagName()));
       if (win) {
         win->view()->cleanupDefault();
-      }      
+      }
     }
-  }  
+  }
 }
 
 void KstViewManagerI::cleanupCustom_I() {
   QListViewItem *qi = ViewView->selectedItem();
   KstViewObjectItem *koi = static_cast<KstViewObjectItem*>(qi);
-  
+
   if (koi) {
     if (koi->rtti() == RTTI_OBJ_WINDOW) {
       KstViewWindow *win = dynamic_cast<KstViewWindow*>(KstApp::inst()->findWindow(koi->tagName()));
       if (win) {
         win->view()->cleanupCustom();
-      }      
+      }
     }
-  }  
+  }
 }
 
 void KstViewManagerI::select_I() {
   QListViewItem *qi = ViewView->selectedItem();
   KstViewObjectItem *koi = static_cast<KstViewObjectItem*>(qi);
-  
+
   if (koi) {
     if (koi->rtti() == RTTI_OBJ_VIEW_OBJECT) {
       KstViewWindow *win;
@@ -644,7 +644,7 @@ void KstViewManagerI::select_I() {
 void KstViewManagerI::deselect_I() {
   QListViewItem *qi = ViewView->selectedItem();
   KstViewObjectItem *koi = static_cast<KstViewObjectItem*>(qi);
-  
+
   if (koi) {
     if (koi->rtti() == RTTI_OBJ_VIEW_OBJECT) {
       KstViewWindow *win;
@@ -669,7 +669,7 @@ void KstViewManagerI::open() {
 
 void KstViewManagerI::close() {
   QListViewItem *qi = ViewView->selectedItem();
-  
+
   if (qi) {
     qi->setOpen(false);
   }
@@ -678,7 +678,7 @@ void KstViewManagerI::close() {
 void KstViewManagerI::open(bool open) {
   QListViewItem *qi = ViewView->selectedItem();
   KstViewObjectItem *koi = static_cast<KstViewObjectItem*>(qi);
-    
+
   if (koi) {
     koi->openChildren(open);
     qi->setOpen(open);
@@ -702,19 +702,19 @@ void KstViewManagerI::closeAll() {
 
 void KstViewManagerI::contextMenu(QListViewItem *i, const QPoint& p, int col) {
   Q_UNUSED(col)
-  
+
   if (i) {
     KstViewObjectItem *koi = static_cast<KstViewObjectItem*>(i);
     KPopupMenu *menu = new KPopupMenu(this);
     int id;
-    
+
     menu->insertTitle(koi->text(0));
-    
+
     if (koi->rtti() == RTTI_OBJ_WINDOW) {
       id = menu->insertItem(i18n("&Rename..."), this, SLOT(edit_I()));
       id = menu->insertItem(i18n("&Close"), this, SLOT(delete_I()));
       id = menu->insertItem(i18n("&Activate"), this, SLOT(activate_I()));
-      
+
       KPopupMenu *submenu = new KPopupMenu(menu);
       if (submenu) {
         menu->insertSeparator();
@@ -733,7 +733,7 @@ void KstViewManagerI::contextMenu(QListViewItem *i, const QPoint& p, int col) {
       id = menu->insertItem(i18n("&Edit..."), this, SLOT(edit_I()));
       id = menu->insertItem(i18n("&Remove"), this, SLOT(delete_I()));
     }
-    
+
     menu->insertSeparator();
     id = menu->insertItem(i18n("Expand"), this, SLOT(open()));
     menu->setItemEnabled(id, !koi->isOpen() && koi->firstChild());
@@ -743,17 +743,17 @@ void KstViewManagerI::contextMenu(QListViewItem *i, const QPoint& p, int col) {
     menu->setItemEnabled(id, koi->firstChild());
     id = menu->insertItem(i18n("Collapse All"), this, SLOT(closeAll()));
     menu->setItemEnabled(id, koi->firstChild());
-  
+
     menu->popup(p);
   } else {
     KPopupMenu *menu = new KPopupMenu(this);
     int id;
-        
+
     id = menu->insertItem(i18n("Expand All"), this, SLOT(openAll()));
     menu->setItemEnabled(id, ViewView->firstChild());
     id = menu->insertItem(i18n("Collapse All"), this, SLOT(closeAll()));
     menu->setItemEnabled(id, ViewView->firstChild());        
-    
+
     menu->popup(p);
   }
 }
@@ -770,4 +770,3 @@ void KstViewManagerI::currentChanged(QListViewItem *i) {
 }
 
 #include "kstviewmanager_i.moc"
-// vim: ts=2 sw=2 et

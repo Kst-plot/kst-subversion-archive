@@ -74,4 +74,3 @@ void KstDataNotifier::animate() {
 
 #undef TIMER_ITERATIONS
 #include "kstdatanotifier.moc"
-// vim: ts=2 sw=2 et

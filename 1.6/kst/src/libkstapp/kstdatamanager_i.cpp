@@ -1262,6 +1262,4 @@ void KstDataManagerI::selectionChanged() {
   }
 }
 
-
 #include "kstdatamanager_i.moc"
-// vim: ts=2 sw=2 et

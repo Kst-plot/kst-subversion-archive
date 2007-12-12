@@ -46,14 +46,14 @@ KTimezoneCombo::KTimezoneCombo(QWidget *parent, const char *name, KstTimezones *
     listBox()->setColumnMode(QListBox::FixedNumber);
     listBox()->setRowMode(QListBox::Variable);
   }
-  
+
   insertItem("UTC");
   const KstTimezones::ZoneMap zones = db->allZones();
   d->_offsets.resize(zones.count()+1);
   d->_offsets[0] = 0;
   d->_names += "UTC";
   int i = 0;
-  
+
   for (KstTimezones::ZoneMap::ConstIterator it = zones.begin(); it != zones.end(); ++it) {
     int offset = (*it)->offset();
     d->_offsets[++i] = offset;
@@ -119,6 +119,4 @@ void KTimezoneCombo::setTimezone(const QString& tz) {
   }
 }
 
-
 #include "ktimezonecombo.moc"
-// vim: ts=2 sw=2 et

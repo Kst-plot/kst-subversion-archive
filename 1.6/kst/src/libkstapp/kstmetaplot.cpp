@@ -43,6 +43,4 @@ void KstMetaPlot::save(QTextStream& ts, const QString& indent) {
   KstBorderedViewObject::save(ts, indent);
 }
 
-
 #include "kstmetaplot.moc"
-// vim: ts=2 sw=2 et

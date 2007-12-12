@@ -168,6 +168,3 @@ void KstLegendDefaults::readConfig(KConfig *config) {
   _border = config->readNumEntry("LegendBorder", 2);
   _margin = config->readNumEntry("LegendMargin", 5);
 }
-
-
-// vim: ts=2 sw=2 et

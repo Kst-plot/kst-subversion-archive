@@ -55,7 +55,7 @@ KstChangeFileDialogI::KstChangeFileDialogI(QWidget* parent,
   connect(_allFromFile, SIGNAL(clicked()), _filter, SLOT(clear()));
   connect(_allFromFile, SIGNAL(clicked()), this, SLOT(allFromFile()));
   connect(_duplicateSelected, SIGNAL(toggled(bool)), _duplicateDependents, SLOT(setEnabled(bool)));
-  
+
   _dataFile->completionObject()->setDir(QDir::currentDirPath());
   _dataFile->setMode(KFile::File | KFile::Directory | KFile::ExistingOnly);
 
@@ -79,10 +79,10 @@ void KstChangeFileDialogI::updateChangeFileDialog() {
   KstRMatrixList rml = kstObjectSubList<KstMatrix,KstRMatrix>(KST::matrixList);
   QMap<QString, QString> filesUsed;
   int i;
-  
+
   // clear list
   ChangeFileCurveList->clear();
-  
+
   // first add vectors
   for (i = 0; i < (int)rvl.count(); i++) {
     rvl[i]->readLock();
@@ -90,7 +90,7 @@ void KstChangeFileDialogI::updateChangeFileDialog() {
     filesUsed.insert(rvl[i]->filename(), rvl[i]->filename()); 
     rvl[i]->unlock();
   }
-  
+
   // then add matrices
   for (i = 0; i < (int)rml.count(); i++) {
     rml[i]->readLock();
@@ -127,11 +127,13 @@ void KstChangeFileDialogI::showChangeFileDialog() {
   raise();
 }
 
+
 void KstChangeFileDialogI::OKFileChange() {
   if (applyFileChange()) {
     reject();
   }
 }
+
 
 bool KstChangeFileDialogI::applyFileChange() {
   KstDataSourcePtr file;
@@ -178,7 +180,7 @@ bool KstChangeFileDialogI::applyFileChange() {
   QMap<KstMatrixPtr, KstMatrixPtr> duplicatedMatrices;
 
   KstDataSourceList oldSources;
-  
+
   // go through the vectors
   for (int i = 0; i < (int)rvl.count(); i++) {
     if (ChangeFileCurveList->isSelected(i)) {
@@ -225,7 +227,7 @@ bool KstChangeFileDialogI::applyFileChange() {
       app->slotUpdateProgress(selected, ++handled, i18n("Updating vectors..."));
     }
   }
-  
+
   // go through the matrices
   for (int i = (int)rvl.count(); i < (int)ChangeFileCurveList->count(); i++) {
     if (ChangeFileCurveList->isSelected(i)) {
@@ -275,7 +277,7 @@ bool KstChangeFileDialogI::applyFileChange() {
 
   app->slotUpdateProgress(0, 0, QString::null);
   file = 0L;
-  
+
   // now add any curves and images to plots if they were duplicated
   if (_duplicateSelected->isChecked() && _duplicateDependents->isChecked()) { 
     KstApp *app = KstApp::inst();
@@ -304,17 +306,14 @@ bool KstChangeFileDialogI::applyFileChange() {
   }
 
   // clean up unused data sources
-//  kstdDebug() << "cleaning up data sources" << endl;
   KST::dataSourceList.lock().writeLock();
   for (KstDataSourceList::Iterator it = oldSources.begin(); it != oldSources.end(); ++it) {
-//    kstdDebug() << "DATA SOURCE: " << (*it)->tag().displayString() << " (" << (void*)(*it) << ") USAGE: " << (*it)->getUsage() << endl;
     if ((*it)->getUsage() == 1) {
-//      kstdDebug() << "    -> REMOVED" << endl;
       KST::dataSourceList.remove((*it).data());
     }
   }
   KST::dataSourceList.lock().unlock();
-  
+
   if (!invalidSources.isEmpty()) {
     if (invalid == 1) {
       KMessageBox::sorry(this, i18n("The following field is not defined for the requested file:\n%1").arg(invalidSources));
@@ -358,4 +357,3 @@ void KstChangeFileDialogI::updateSelection(const QString& txt) {
 }
 
 #include "kstchangefiledialog_i.moc"
-// vim: ts=2 sw=2 et
