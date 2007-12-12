@@ -113,32 +113,6 @@
 </widget>
 <customwidgets>
 </customwidgets>
-<connections>
-    <connection>
-        <sender>pushButton2</sender>
-        <signal>clicked()</signal>
-        <receiver>VectorSaveDialog</receiver>
-        <slot>hide()</slot>
-    </connection>
-    <connection>
-        <sender>_saveButton</sender>
-        <signal>clicked()</signal>
-        <receiver>VectorSaveDialog</receiver>
-        <slot>save()</slot>
-    </connection>
-    <connection>
-        <sender>_vectorList</sender>
-        <signal>selectionChanged()</signal>
-        <receiver>VectorSaveDialog</receiver>
-        <slot>selectionChanged()</slot>
-    </connection>
-    <connection>
-        <sender>_vectorList</sender>
-        <signal>doubleClicked(QListBoxItem*)</signal>
-        <receiver>VectorSaveDialog</receiver>
-        <slot>save()</slot>
-    </connection>
-</connections>
 <tabstops>
     <tabstop>_vectorList</tabstop>
     <tabstop>_multiOptions</tabstop>
@@ -157,12 +131,6 @@
     <include location="local" impldecl="in implementation">kstdatacollection.h</include>
     <include location="local" impldecl="in implementation">vectorsavedialog.ui.h</include>
 </includes>
-<slots>
-    <slot access="private">save()</slot>
-    <slot>show()</slot>
-    <slot>init()</slot>
-    <slot access="private">selectionChanged()</slot>
-</slots>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
     <includehint>kcombobox.h</includehint>

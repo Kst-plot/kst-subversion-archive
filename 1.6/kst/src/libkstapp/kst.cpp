@@ -83,6 +83,7 @@
 #include "kstsettingsdlg_i.h"
 #include "kstuinames.h"
 #include "kstvectordefaults.h"
+#include "kstvectorsavedialog_i.h"
 #include "kstvectordialog_i.h"
 #include "kstviewmanager_i.h"
 #include "kstviewscalarsdialog_i.h"
@@ -99,7 +100,6 @@
 #include "statuslabel.h"
 #include "sysinfo.h"
 #include "updatethread.h"
-#include "vectorsavedialog.h"
 #include "kstobjectdefaults.h"
 
 #define MODE_BUTTON_ID       5
@@ -162,7 +162,7 @@ KstApp::KstApp(QWidget *parent, const char *name)
   differentiateCurvesDialog = new KstCurveDifferentiateI(this);
   changeNptsDialog = new KstChangeNptsDialogI(this);
   graphFileDialog = new KstGraphFileDialogI(this);
-  vectorSaveDialog = new VectorSaveDialog(this);
+  vectorSaveDialog = new KstVectorSaveDialogI(this);
   _monochromeDialog = new KstMonochromeDialogI(this);
 #ifdef KST_QUICKSTART_DLG
   _quickStartDialog = new KstQuickStartDialogI(this, 0 , true);

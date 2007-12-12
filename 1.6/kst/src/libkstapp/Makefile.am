@@ -95,6 +95,7 @@ libkstapp_la_SOURCES = \
 	kstviewvectorsdialog_i.cpp \
 	kstviewmatricesdialog_i.cpp \
 	kstviewfitsdialog_i.cpp \
+	kstvectorsavedialog_i.cpp \
 	kstchoosecolordialog_i.cpp \
 	kstchangenptsdialog_i.cpp \
 	kstchangefiledialog_i.cpp \
@@ -160,7 +161,6 @@ kstviewbox.lo: editviewobjectdialog.h
 kstviewlegend.lo: editviewobjectdialog.h
 matrixselector.lo: matrixselector.ui.h
 pluginmanager.lo: pluginmanager.ui.h pluginmanager.ui
-vectorsavedialog.lo: vectorsavedialog.ui.h vectorsavedialog.ui
 
 METASOURCES=AUTO
 

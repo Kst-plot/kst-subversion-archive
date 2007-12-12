@@ -57,6 +57,7 @@ class KstIfaceImpl;
 class KstMonochromeDialogI;
 class KstPlotDialogI;
 class KstQuickStartDialogI;
+class KstVectorSaveDialogI;
 class KstViewFitsDialogI;
 class KstViewManagerI;
 class KstViewMatricesDialogI;
@@ -66,7 +67,6 @@ class KstViewVectorsDialogI;
 class KstViewWindow;
 class StatusLabel;
 class UpdateThread;
-class VectorSaveDialog;
 
 class QLabel;
 class QProgressBar;
@@ -433,7 +433,7 @@ class KST_EXPORT KstApp : public KMdiMainFrm {
     KstGraphFileDialogI *graphFileDialog;
 
     /* Dialog for exporting to a text file */
-    VectorSaveDialog *vectorSaveDialog;
+    KstVectorSaveDialogI *vectorSaveDialog;
 
     /* Dialog for looking at data */
     KstDataManagerI *dataManager;
