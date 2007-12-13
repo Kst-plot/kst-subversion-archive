@@ -276,12 +276,12 @@ void KstSettings::reload() {
   KEMailSettings es;
   emailSender = cfg.readEntry("Sender", es.getSetting(KEMailSettings::EmailAddress));
   emailSMTPServer = cfg.readEntry("Server", es.getSetting(KEMailSettings::OutServer));
-  emailSMTPPort = cfg.readNumEntry("Port", 25); // FIXME: no KEMailSettings for this?
+  emailSMTPPort = cfg.readNumEntry("Port", 25);
   emailRequiresAuthentication = cfg.readBoolEntry("Authenticate", !es.getSetting(KEMailSettings::OutServerLogin).isEmpty());
   emailUsername = cfg.readEntry("Username", es.getSetting(KEMailSettings::OutServerLogin));
   emailPassword = cfg.readEntry("Password", es.getSetting(KEMailSettings::OutServerPass));
   emailEncryption = (EMailEncryption)cfg.readNumEntry("Encryption", es.getSetting(KEMailSettings::OutServerTLS) == "true" ? EMailEncryptionTLS : EMailEncryptionNone);
-  emailAuthentication = (EMailAuthentication)cfg.readNumEntry("Authentication", EMailAuthenticationPLAIN); // FIXME: no KEMailSettings for this?
+  emailAuthentication = (EMailAuthentication)cfg.readNumEntry("Authentication", EMailAuthenticationPLAIN);
 
   cfg.setGroup("Printing");
   printing.pageSize = cfg.readEntry("kde-pagesize", QString::number((int)KPrinter::Letter));
