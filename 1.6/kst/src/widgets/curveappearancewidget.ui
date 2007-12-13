@@ -593,8 +593,12 @@
     <include location="global" impldecl="in declaration">kst_export.h</include>
 </includes>
 <exportmacro>KST_EXPORT</exportmacro>
+<signals>
+    <signal>changed()</signal>
+</signals>
 <slots>
     <slot>init()</slot>
+    <slot access="private">modified()</slot>
     <slot access="private">fillCombo()</slot>
     <slot>setColor( QColor c )</slot>
     <slot>drawLine()</slot>

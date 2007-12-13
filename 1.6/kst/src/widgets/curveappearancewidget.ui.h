@@ -7,6 +7,30 @@
 ** place of a destructor.
 *****************************************************************************/
 
+void CurveAppearanceWidget::init()
+{
+    connect(_color, SIGNAL(changed(const QColor&)), this, SLOT(modified()));
+    connect(_showLines, SIGNAL(clicked()), this, SLOT(modified()));
+    connect(_showPoints, SIGNAL(clicked()), this, SLOT(modified()));
+    connect(_showBars, SIGNAL(clicked()), this, SLOT(modified()));
+    connect(_combo, SIGNAL(activated(int)), this, SLOT(modified()));
+    connect(_comboLineStyle, SIGNAL(activated(int)), this, SLOT(modified()));
+    connect(_comboPointDensity, SIGNAL(activated(int)), this, SLOT(modified()));
+    connect(_spinBoxLineWidth, SIGNAL(valueChanged(int)), this, SLOT(modified()));
+    connect(_spinBoxLineWidth->child("qt_spinbox_edit"), SIGNAL(textChanged(const QString&)), this, SLOT(modified()));
+    connect(_barStyle, SIGNAL(activated(int)), this, SLOT(modified()));
+
+    reset();
+    QTimer::singleShot(0, this, SLOT(drawLine()));
+}
+
+
+void CurveAppearanceWidget::modified()
+{
+    emit changed();
+}
+
+
 bool CurveAppearanceWidget::showLines()
 {
     return _showLines->isChecked();
@@ -22,13 +46,6 @@ bool CurveAppearanceWidget::showPoints()
 bool CurveAppearanceWidget::showBars()
 {
     return _showBars->isChecked();
-}
-
-
-void CurveAppearanceWidget::init()
-{
-    reset();
-    QTimer::singleShot(0, this, SLOT(drawLine()));
 }
 
 
