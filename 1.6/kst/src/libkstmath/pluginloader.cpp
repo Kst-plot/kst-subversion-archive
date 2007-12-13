@@ -93,6 +93,3 @@ Plugin *PluginLoader::loadPlugin(const QString& xmlfile, const QString& object) 
 
 return plug;
 }
-
-
-// vim: ts=2 sw=2 et

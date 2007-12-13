@@ -51,8 +51,7 @@ extern "C" void yyerror(const char *s) {
   Equation::errorStack << i18n(s);
 }
 
+
 extern "C" void yyerrortoken(char c) {
   Equation::errorStack << i18n(EParseErrorToken).arg(c);
 }
-
-// vim: ts=2 sw=2 et

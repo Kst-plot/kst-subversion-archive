@@ -24,7 +24,7 @@ namespace KstCurvePointSymbol {
 
 void draw(int Type, QPainter *p, int x, int y, int lineSize, int size) {
   Q_UNUSED(size)
-  
+
   int s;
 
   if (Type < 0 || Type > KSTPOINT_MAXTYPE) {
@@ -36,7 +36,7 @@ void draw(int Type, QPainter *p, int x, int y, int lineSize, int size) {
   } else {
     s = ( 3 * lineSize ) / 2;
   }
-  
+
   switch (Type) {
     case 0:
       p->drawLine(x-s, y-s, x+s, y+s);
@@ -148,5 +148,3 @@ int dim(QPainter *p) {
 }
 
 }
-
-// vim: ts=2 sw=2 et

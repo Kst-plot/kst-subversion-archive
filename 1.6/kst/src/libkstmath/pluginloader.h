@@ -39,7 +39,4 @@ protected:
   PluginXMLParser *_parser;
 };
 
-
 #endif
-
-// vim: ts=2 sw=2 et

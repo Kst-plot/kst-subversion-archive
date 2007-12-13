@@ -121,6 +121,3 @@ void KstDialogs::showCurveDialog(const QString& name, bool edit) {
   Q_UNUSED(name)
   Q_UNUSED(edit)
 }
-
-
-// vim: ts=2 sw=2 et

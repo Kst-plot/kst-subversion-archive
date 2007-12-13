@@ -60,5 +60,3 @@ KST_EXPORT class KstDialogs {
 };
 
 #endif
-
-// vim: ts=2 sw=2 et

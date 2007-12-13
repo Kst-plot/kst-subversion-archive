@@ -121,7 +121,4 @@ class KST_EXPORT PluginCollection : public QObject {
     void loadPluginsFor(const QString& path);
 };
 
-
 #endif
-
-// vim: ts=2 sw=2 et

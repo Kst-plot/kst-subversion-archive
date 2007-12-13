@@ -287,5 +287,3 @@ int PluginCollection::deletePlugin(const QString& xmlfile, const QString& object
 }
 
 #include "plugincollection.moc"
-
-// vim: ts=2 sw=2 et

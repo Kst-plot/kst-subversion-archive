@@ -154,7 +154,4 @@ class KST_EXPORT Plugin : public KstShared {
     QString _xmlFile, _soFile;
 };
 
-
 #endif
-
-// vim: ts=2 sw=2 et

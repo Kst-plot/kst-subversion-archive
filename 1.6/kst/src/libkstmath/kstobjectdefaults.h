@@ -29,7 +29,7 @@ class KST_EXPORT KstObjectDefaults {
     void sync();
     double psdFreq() const;
     int fftLen() const;
-    
+
     const QString& vUnits() const { return _vUnits; }
     const QString& rUnits() const { return _rUnits; }
     bool apodize() const { return _apodize; }
@@ -38,7 +38,7 @@ class KST_EXPORT KstObjectDefaults {
     int apodizeFxn() const { return _apodizeFxn; }
     int output() const { return _output; }
     int interpolateHoles() const { return _interpolateHoles; }
-    
+
     void readConfig(KConfig *config);
     void writeConfig(KConfig *config);
 
@@ -60,4 +60,3 @@ namespace KST {
 }
 
 #endif
-// vim: ts=2 sw=2 et

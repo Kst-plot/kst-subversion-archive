@@ -96,6 +96,3 @@ void KstObjectDefaults::readConfig(KConfig *config) {
   _output = config->readNumEntry("defaultOutput", 0);
   _interpolateHoles = config->readBoolEntry("defaultInterpolateHoles", false);
 }
-
-
-// vim: ts=2 sw=2 et

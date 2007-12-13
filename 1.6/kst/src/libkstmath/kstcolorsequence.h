@@ -39,7 +39,7 @@ class KstColorSequence {
     static KST_EXPORT int count();
     static KST_EXPORT void reset();
     static KST_EXPORT QColor entry(int ptr);
-    
+
   private:
     KstColorSequence();
     ~KstColorSequence();
@@ -52,5 +52,3 @@ class KstColorSequence {
 };
 
 #endif
-
-// vim: ts=2 sw=2 et

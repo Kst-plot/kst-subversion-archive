@@ -15,9 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-/** A utility class for calculating spectra 
-*/
-
 #include <assert.h>
 #include <math.h>
 
@@ -330,5 +327,3 @@ int PSDCalculator::calculateOutputVectorLength(int inputLen, bool average, int a
 
   return int(pow(2, psdloglen - 1));
 }
-
-// vim: ts=2 sw=2 et

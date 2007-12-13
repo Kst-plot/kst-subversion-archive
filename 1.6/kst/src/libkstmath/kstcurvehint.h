@@ -29,7 +29,7 @@ class KstCurveHint : public KstShared {
   friend class KstDataObject;
   public:
     KstCurveHint(const QString& name = QString::null, const QString& x = QString::null, const QString& y = QString::null);
-    
+
     virtual ~KstCurveHint();
 
     virtual const QString& curveName() const { return _curveName; }
@@ -49,5 +49,3 @@ typedef KstSharedPtr<KstCurveHint> KstCurveHintPtr;
 typedef QValueList<KstCurveHintPtr> KstCurveHintList;
 
 #endif
-
-// vim: ts=2 sw=2 et

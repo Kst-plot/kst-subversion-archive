@@ -61,6 +61,3 @@ KstBaseCurvePtr KstCurveHint::makeCurve(const QString& tag, const QColor& color)
 
   return new KstVCurve(tag, x, y, 0L, 0L, 0L, 0L, color);
 }
-
-
-// vim: ts=2 sw=2 et

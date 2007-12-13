@@ -667,6 +667,3 @@ Parsed *Label::parse(const QString& txt, bool interpret, bool interpretNewLine) 
   }
   return parsed;
 }
-
-
-// vim: ts=2 sw=2 et

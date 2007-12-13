@@ -44,5 +44,3 @@ bool KstData::dataTagNameNotUnique(const QString& tag, bool warn, void *p) {
   return false;
 }
 #endif
-
-// vim: ts=2 sw=2 et

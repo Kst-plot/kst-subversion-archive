@@ -117,4 +117,3 @@ typedef KstSharedPtr<KstVectorView> KstVectorViewPtr;
 typedef KstObjectList<KstVectorViewPtr> KstVectorViewList;
 
 #endif
-// vim: ts=2 sw=2 et

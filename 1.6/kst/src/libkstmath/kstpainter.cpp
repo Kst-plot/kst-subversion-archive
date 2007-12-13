@@ -58,10 +58,10 @@ void KstPainter::setMakingMask(bool making) {
 
 int KstPainter::lineWidthAdjustmentFactor() const {
   int factor = 1;
-  
+
   if (type() == P_PRINT || type() == P_EXPORT) {
     const QRect& w(window());
-    
+
     //
     // we want a line width of 1 to give a width of approximately 1 pt (where 1 pt = 1/72 
     //  inch) when printing on letter sized paper. Assuming a margin of 0.25 inch in one 
@@ -75,11 +75,9 @@ int KstPainter::lineWidthAdjustmentFactor() const {
     //
     //  w.width() + w.height() / scale factor = 10200 / 8.333 ~ 1300
     //
-    
+
     factor = (w.width() + w.height()) / 1300;
   }
-  
+
   return factor > 0 ? factor : 1;
 }
-
-// vim: ts=2 sw=2 et

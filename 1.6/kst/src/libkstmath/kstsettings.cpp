@@ -36,7 +36,7 @@ KstSettings::KstSettings() {
   showQuickStart = true;
   tiedZoomGlobal = false;
   curveColorSequencePalette = "Kst Colors";
-  
+
   xMajor = false;
   yMajor = false;
   xMinor = false;
@@ -52,9 +52,9 @@ KstSettings::KstSettings() {
   yAxisInterpret = false;
   yAxisInterpretation = AXIS_INTERP_CTIME;
   yAxisDisplay = AXIS_DISPLAY_QTLOCALDATEHHMMSS_SS;
-  
+
   defaultLineWeight = 0;
-  
+
   emailSMTPPort = 25;
   emailRequiresAuthentication = false;
   emailEncryption = EMailEncryptionNone;
@@ -62,7 +62,7 @@ KstSettings::KstSettings() {
 
   timezone = "UTC";
   offsetSeconds = 0;
-  
+
   setPrintingDefaults();
 }
 
@@ -83,10 +83,10 @@ KstSettings& KstSettings::operator=(const KstSettings& x) {
   showQuickStart = x.showQuickStart;
   tiedZoomGlobal = x.tiedZoomGlobal;
   curveColorSequencePalette = x.curveColorSequencePalette;
-  
+
   timezone = x.timezone;
   offsetSeconds = x.offsetSeconds;
-  
+
   xMajor = x.xMajor;
   yMajor = x.yMajor;
   xMinor = x.xMinor;
@@ -104,7 +104,7 @@ KstSettings& KstSettings::operator=(const KstSettings& x) {
   yAxisDisplay = x.yAxisDisplay;
 
   defaultLineWeight = x.defaultLineWeight;
-  
+
   emailSender = x.emailSender;
   emailSMTPServer = x.emailSMTPServer;
   emailSMTPPort = x.emailSMTPPort;
@@ -120,7 +120,7 @@ KstSettings& KstSettings::operator=(const KstSettings& x) {
   printing.maintainAspect = x.printing.maintainAspect;
   printing.curveWidthAdjust = x.printing.curveWidthAdjust;
   printing.monochrome = x.printing.monochrome;
-  
+
   printing.monochromeSettings.enhanceReadability = 
       x.printing.monochromeSettings.enhanceReadability;
   printing.monochromeSettings.pointStyleOrder = 
@@ -171,10 +171,10 @@ void KstSettings::save() {
   cfg.writeEntry("Show QuickStart", showQuickStart);
   cfg.writeEntry("Tied-zoom Global", tiedZoomGlobal);
   cfg.writeEntry("Curve Color Sequence", curveColorSequencePalette);
-  
+
   cfg.writeEntry("Timezone", timezone);
   cfg.writeEntry("OffsetSeconds", offsetSeconds);
-  
+
   cfg.setGroup("Grid Lines");
   cfg.writeEntry("X Major", xMajor);
   cfg.writeEntry("Y Major", yMajor);
@@ -196,7 +196,7 @@ void KstSettings::save() {
 
   cfg.setGroup("Curve");
   cfg.writeEntry("DefaultLineWeight", defaultLineWeight);
-  
+
   cfg.setGroup("EMail");
   cfg.writeEntry("Sender", emailSender);
   cfg.writeEntry("Server", emailSMTPServer);
@@ -214,7 +214,7 @@ void KstSettings::save() {
   cfg.writeEntry("kst-plot-maintain-aspect-ratio", printing.maintainAspect);
   cfg.writeEntry("kst-plot-curve-width-adjust", printing.curveWidthAdjust);
   cfg.writeEntry("kst-plot-monochrome", printing.monochrome);
-  
+
   cfg.writeEntry("kst-plot-monochromesettings-enhancereadability", 
                  printing.monochromeSettings.enhanceReadability);
   cfg.writeEntry("kst-plot-monochromesettings-pointstyleorder",
@@ -246,10 +246,10 @@ void KstSettings::reload() {
   showQuickStart = cfg.readBoolEntry("Show QuickStart", true);
   tiedZoomGlobal = cfg.readBoolEntry("Tied-zoom Global", true);
   curveColorSequencePalette = cfg.readEntry("Curve Color Sequence", "Kst Colors");
-  
+
   timezone = cfg.readEntry("Timezone", "UTC");
   offsetSeconds = cfg.readNumEntry("OffsetSeconds", 0);
-  
+
   cfg.setGroup("Grid Lines");
   xMajor = cfg.readBoolEntry("X Major", false);
   yMajor = cfg.readBoolEntry("Y Major", false);
@@ -271,7 +271,7 @@ void KstSettings::reload() {
 
   cfg.setGroup("Curve");
   defaultLineWeight = cfg.readNumEntry("DefaultLineWeight", 0);
-  
+
   cfg.setGroup("EMail");
   KEMailSettings es;
   emailSender = cfg.readEntry("Sender", es.getSetting(KEMailSettings::EmailAddress));
@@ -331,6 +331,3 @@ void KstSettings::setPrintingDefaults() {
 int KstSettings::utcOffset() {
   return offsetSeconds;
 }
-
-
-// vim: ts=2 sw=2 et

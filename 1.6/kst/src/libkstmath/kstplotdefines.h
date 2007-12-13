@@ -123,4 +123,3 @@ const unsigned int numAxisDisplays = sizeof( AxisDisplays ) / sizeof( AxisDispla
 const unsigned int numMajorTickSpacings = sizeof( MajorTickSpacings ) / sizeof( MajorTickSpacing );
 
 #endif
-// vim: ts=2 sw=2 et

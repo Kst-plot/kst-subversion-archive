@@ -83,9 +83,9 @@ QColor KstColorSequence::next(const KstVCurveList& curves, const QColor& badColo
     _self = sdColorSequence.setObject(_self, new KstColorSequence);
   }
   _self->createPalette();
-  
+
   QMemArray<int> usage(_self->_count*2);
-  
+
   for (int i = 0; i < _self->_count*2; i++) {
     usage[i] = 0;
   }
@@ -286,6 +286,3 @@ QColor KstColorSequence::entry(int ptr) {
   int dark_factor = 100 + ( 50 * ( ptr / _self->_count ) );
   return _self->_pal->color( ptr % _self->_count).dark(dark_factor);
 }
-
-
-// vim: ts=2 sw=2 et
