@@ -85,6 +85,7 @@ KstPsdDialogI::KstPsdDialogI(QWidget* parent, const char* name, bool modal, WFla
   connect(_w->_kstFFTOptions->VectorUnits, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
   connect(_w->_kstFFTOptions->RateUnits, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
   connect(_w->_kstFFTOptions->Output, SIGNAL(highlighted(int)), this, SLOT(wasModifiedApply()));
+  connect(_w->_curveAppearance, SIGNAL(changed()), this, SLOT(wasModifiedApply()));
 }
 
 

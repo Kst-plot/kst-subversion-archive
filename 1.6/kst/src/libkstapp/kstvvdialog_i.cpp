@@ -124,6 +124,7 @@ KstVvDialogI::KstVvDialogI(QWidget* parent, const char* name, bool modal, WFlags
   connect(_w->_currentButton, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
   connect(_w->_FlagVector, SIGNAL(selectionChanged(const QString&)), this, SLOT(wasModifiedApply()));
   connect(_w->_FlagVector, SIGNAL(selectionChangedLabel(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_curveAppearance, SIGNAL(changed()), this, SLOT(wasModifiedApply()));
 }
 
 

@@ -99,6 +99,8 @@ KstCurveDialogI::KstCurveDialogI(QWidget* parent, const char* name, bool modal, 
   connect(_w->_interp, SIGNAL(highlighted(int)), this, SLOT(wasModifiedApply()));
   connect(_w->_checkBoxXMinusSameAsPlus, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
   connect(_w->_checkBoxYMinusSameAsPlus, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
+  connect(_w->_curveAppearance, SIGNAL(changed()), this, SLOT(wasModifiedApply()));
+  connect(_w->_checkBoxIgnoreAutoscale, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
 
   _w->_xError->provideNoneVector(true);
   _w->_yError->provideNoneVector(true);

@@ -37,6 +37,7 @@
 #include <kmessagebox.h>
 
 // application specific includes
+#include "curveappearancewidget.h"
 #include "kst.h"
 #include "kstplugindialog_i.h"
 #include "kstdataobjectcollection.h"
@@ -67,6 +68,7 @@ KstPluginDialogI::KstPluginDialogI(QWidget* parent, const char* name, bool modal
   connect(_w->PluginCombo, SIGNAL(highlighted(int)), this, SLOT(wasModifiedApply()));
   connect(_w->PluginCombo, SIGNAL(activated(int)), this, SLOT(pluginChanged(int)));
   connect(_w->_pluginManager, SIGNAL(clicked()), this, SLOT(showPluginManager()));
+  connect(_w->_curveAppearance, SIGNAL(changed()), this, SLOT(wasModifiedApply()));
 
   _pluginInfoGrid = 0L;
   _pluginInputOutputGrid = 0L;

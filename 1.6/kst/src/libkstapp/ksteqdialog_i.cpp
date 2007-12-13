@@ -75,6 +75,7 @@ KstEqDialogI::KstEqDialogI(QWidget* parent, const char* name, bool modal, WFlags
   connect(_w->_xVectors, SIGNAL(selectionChanged(const QString&)), this, SLOT(wasModifiedApply()));
   connect(_w->_xVectors, SIGNAL(selectionChangedLabel(const QString&)), this, SLOT(wasModifiedApply()));
   connect(_w->_doInterpolation, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
+  connect(_w->_curveAppearance, SIGNAL(changed()), this, SLOT(wasModifiedApply()));
 }
 
 

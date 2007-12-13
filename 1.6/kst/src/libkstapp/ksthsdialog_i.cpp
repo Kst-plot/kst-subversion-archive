@@ -82,6 +82,7 @@ KstHsDialogI::KstHsDialogI(QWidget* parent, const char* name, bool modal, WFlags
   connect(_w->NormIsFraction, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
   connect(_w->NormIsNumber, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
   connect(_w->PeakIs1, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
+  connect(_w->_curveAppearance, SIGNAL(changed()), this, SLOT(wasModifiedApply()));
 
   QColor qc = _w->_curveAppearance->color();
   _w->_curveAppearance->setValue(false, false, true, qc, 0, 0, 0, 1, 0);
