@@ -797,7 +797,4 @@ KstDataSourcePtr KstDataSourceConfigWidget::instance() const {
   return _instance;
 }
 
-
-
 #include "kstdatasource.moc"
-// vim: ts=2 sw=2 et

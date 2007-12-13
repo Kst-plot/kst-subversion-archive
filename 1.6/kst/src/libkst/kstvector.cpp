@@ -788,4 +788,3 @@ int KstVector::indexNearX(double x, int NS) {
 #undef INITSIZE
 
 #include "kstvector.moc"
-// vim: et sw=2 ts=2

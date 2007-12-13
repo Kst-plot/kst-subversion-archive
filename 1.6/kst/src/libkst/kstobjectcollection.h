@@ -786,6 +786,4 @@ QValueList<KstObjectTreeNode<T> *> KstObjectCollection<T>::relatedNodes(T *o) {
   return outNodes;
 }
 
-
 #endif
-// vim: ts=2 sw=2 et

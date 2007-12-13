@@ -27,10 +27,7 @@ namespace Equation {
   class Node;
 }
 
-/**A class for handling data vectors for kst.
- *@author cbn
- */
-   
+
 class KST_EXPORT KstRVector : public KstVector {
 public:
   /** Create an RVECTOR */
@@ -162,4 +159,3 @@ typedef KstSharedPtr<KstRVector> KstRVectorPtr;
 typedef KstObjectList<KstRVectorPtr> KstRVectorList;
 
 #endif
-// vim: ts=2 sw=2 et

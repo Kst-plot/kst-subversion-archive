@@ -169,5 +169,3 @@ bool KstStdinSource::isValid() const {
 bool KstStdinSource::isEmpty() const {
   return !isValid() || _src->isEmpty();
 }
-
-// vim: ts=2 sw=2 et

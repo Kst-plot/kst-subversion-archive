@@ -89,7 +89,4 @@ class KST_EXPORT KstDebug : public QObject {
     QString _kstRevision;
 };
 
-
 #endif
-
-// vim: ts=2 sw=2 et

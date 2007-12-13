@@ -601,5 +601,3 @@ void KstRMatrix::changeFile(KstDataSourcePtr file) {
     _file->unlock();
   }
 }
-
-// vim: ts=2 sw=2 et

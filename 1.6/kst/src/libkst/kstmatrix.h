@@ -171,4 +171,3 @@ typedef KstObjectMap<KstMatrixPtr> KstMatrixMap;
 typedef KstObjectCollection<KstMatrix> KstMatrixCollection;
 
 #endif
-// vim: ts=2 sw=2 et

@@ -20,9 +20,6 @@
 #include "kstvector.h"
 #include "kst_export.h"
 
-/**A vector  with n editable pts
- *@author cbn
- */
 class KstAVector : public KstVector {
  public:
   KST_EXPORT KstAVector(const QDomElement &e);
@@ -38,7 +35,4 @@ class KstAVector : public KstVector {
 typedef KstSharedPtr<KstAVector> KstAVectorPtr;
 typedef KstObjectList<KstAVectorPtr> KstAVectorList;
 
-
-
 #endif
-// vim: ts=2 sw=2 et

@@ -127,7 +127,7 @@ bool KstData::matrixTagNameNotUniqueInternal(const QString& tag) {
   if (KST::matrixList.tagExists(tag) || KST::scalarList.tagExists(tag)) {
     return true;
   }
-  return false;  
+  return false;
 }
 
 
@@ -257,6 +257,3 @@ QStringList KstData::windowList() {
 QString KstData::currentWindow() {
   return QString::null;
 }
-
-
-// vim: ts=2 sw=2 et

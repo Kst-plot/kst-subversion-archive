@@ -69,7 +69,7 @@ class KST_EXPORT KstScalar : public KstPrimitive {
 
     bool editable() const;
     void setEditable(bool editable);
-  
+
   signals:
     void trigger();
 
@@ -86,4 +86,3 @@ typedef KstObjectMap<KstScalarPtr> KstScalarMap;
 typedef KstObjectCollection<KstScalar> KstScalarCollection;
 
 #endif
-// vim: ts=2 sw=2 et

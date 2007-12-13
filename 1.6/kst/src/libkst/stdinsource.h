@@ -31,21 +31,13 @@ class KST_EXPORT KstStdinSource : public KstDataSource {
     virtual ~KstStdinSource();
 
     virtual KstObject::UpdateType update(int = -1);
-
     virtual int readField(double *v, const QString &field, int s, int n);
-
     virtual bool isValidField(const QString &field) const;
-
     virtual int samplesPerFrame(const QString &field);
-
     virtual int frameCount(const QString& field = QString::null) const;
-
     virtual QString fileType() const;
-
     virtual void save(QTextStream &ts, const QString& indent = QString::null);
-
     virtual bool isValid() const;
-
     virtual bool isEmpty() const;
 
   private:
@@ -53,6 +45,4 @@ class KST_EXPORT KstStdinSource : public KstDataSource {
     KTempFile *_file;
 };
 
-
 #endif
-// vim: ts=2 sw=2 et

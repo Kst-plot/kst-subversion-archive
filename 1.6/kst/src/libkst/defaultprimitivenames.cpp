@@ -87,5 +87,3 @@ KstObjectTag KST::suggestUniqueStringTag(KstObjectTag baseTag) {
 KstObjectTag KST::suggestUniqueVectorTag(KstObjectTag baseTag) {
   return suggestUniqueTag(baseTag, KST::vectorList);
 }
-
-// vim: ts=2 sw=2 et

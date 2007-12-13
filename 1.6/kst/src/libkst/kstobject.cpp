@@ -123,6 +123,4 @@ bool KstObject::dirty() const {
   return _dirty;
 }
 
-
 #include "kstobject.moc"
-// vim: ts=2 sw=2 et

@@ -117,7 +117,7 @@ class KST_EXPORT KstDataSource : public KstObject {
      * return the number of -samples- written or -1 if writing fails or is not supported.
      */
     virtual int writeField(const double *v, const QString& field, int s, int n);
-    
+
     /** Read the specified sub-range of the matrix, flat-packed in z in row-major order
         xStart - starting x *frame*
         yStart - starting y *frame*
@@ -128,7 +128,7 @@ class KST_EXPORT KstDataSource : public KstObject {
         The suggested scaling and translation is returned in xMin, yMin, xStepSize, and yStepSize
         Returns the number of *samples* read **/
     virtual int readMatrix(KstMatrixData* data, const QString& matrix, int xStart, int yStart, int xNumSteps, int yNumSteps, int skip);
-    
+
     /** Read the specified sub-range of the matrix, flat-packed in z in row-major order (non-skipping)
         xStart - starting x *frame*
         yStart - starting y *frame*
@@ -137,16 +137,16 @@ class KST_EXPORT KstDataSource : public KstObject {
         The suggested scaling and translation is returned in xMin, yMin, xStepSize, and yStepSize
         Returns the number of *samples* read **/
     virtual int readMatrix(KstMatrixData* data, const QString& matrix, int xStart, int yStart, int xNumSteps, int yNumSteps);
-    
+
     /** Return the current dimensions of the matrix: xDim*yDim <= total frames **/
     virtual bool matrixDimensions(const QString& matrix, int* xDim, int* yDim);
-    
+
     /** Returns the list of fields that support readMatrix **/
     virtual QStringList matrixList() const;
 
     /** Returns true if the field is valid, or false if it is not */
     virtual bool isValidField(const QString& field) const;
-    
+
     /** Returns true if the matrix is valid, or false if it is not */
     virtual bool isValidMatrix(const QString& field) const;
 
@@ -226,7 +226,7 @@ class KST_EXPORT KstDataSource : public KstObject {
 
     /** Place to store the list of fields.  Base implementation returns this. */
     QStringList _fieldList;
-    
+
     /** Place to store the list of matrices.  Base implementation returns this. */
     mutable QStringList _matrixList;
 
@@ -313,4 +313,3 @@ class KstDataSourceConfigWidget : public QWidget {
 };
 
 #endif
-// vim: ts=2 sw=2 et

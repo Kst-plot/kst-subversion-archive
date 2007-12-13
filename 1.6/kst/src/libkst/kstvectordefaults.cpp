@@ -134,5 +134,3 @@ void KstVectorDefaults::readConfig(KConfig *config) {
 void KstVectorDefaults::setWizardXVector(const QString& vector) {
   _wizardX = vector;
 }
-
-// vim: ts=2 sw=2 et

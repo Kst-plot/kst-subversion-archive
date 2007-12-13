@@ -198,4 +198,3 @@ void KstScalar::setTagName(const KstObjectTag& newTag) {
 }
 
 #include "kstscalar.moc"
-// vim: et ts=2 sw=2

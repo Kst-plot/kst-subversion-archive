@@ -32,7 +32,4 @@ class LogEvent : public QEvent {
     KstDebug::LogMessage _msg;
 };
 
-
 #endif
-
-// vim: ts=2 sw=2 et

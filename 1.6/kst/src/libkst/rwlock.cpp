@@ -202,5 +202,3 @@ KstRWLock::LockStatus KstRWLock::myLockStatus() const {
   return _mutex.locked() ? WRITELOCKED : UNLOCKED;
 #endif
 }
-
-// vim: ts=2 sw=2 et

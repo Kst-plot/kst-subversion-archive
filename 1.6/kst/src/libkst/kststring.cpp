@@ -108,7 +108,7 @@ KstObject::UpdateType KstString::update(int updateCounter) {
   if (_provider) {
     _provider->update(updateCounter);
   }
-  
+
   return setLastUpdateResult(v == value() ? NO_CHANGE : UPDATE);
 }
 
@@ -132,4 +132,3 @@ void KstString::setValue(const QString& inV) {
 }
 
 #include "kststring.moc"
-// vim: ts=2 sw=2 et

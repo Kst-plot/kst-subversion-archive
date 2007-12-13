@@ -37,62 +37,62 @@ KstMatrixDefaults::KstMatrixDefaults() {
 }
 
 const QString& KstMatrixDefaults::dataSource() const {
-  return _dataSource;  
+  return _dataSource;
 }
 
 
 int KstMatrixDefaults::xStart() const {
-  return _xStart;  
+  return _xStart;
 }
 
 
 bool KstMatrixDefaults::xCountFromEnd() const {
-  return _xStart < 0;  
+  return _xStart < 0;
 }
 
 
 int KstMatrixDefaults::yStart() const {
-  return _yStart;  
+  return _yStart;
 }
 
 
 bool KstMatrixDefaults::yCountFromEnd() const {
-  return _yStart < 0;  
+  return _yStart < 0;
 }
 
 
 int KstMatrixDefaults::xNumSteps() const {
-  return _xNumSteps;  
+  return _xNumSteps;
 }
 
 
 bool KstMatrixDefaults::xReadToEnd() const {
-  return _xNumSteps < 1;  
+  return _xNumSteps < 1;
 }
 
 
 int KstMatrixDefaults::yNumSteps() const {
-  return _yNumSteps;  
+  return _yNumSteps;
 }
 
 
 bool KstMatrixDefaults::yReadToEnd() const {
-  return _yNumSteps < 1;  
+  return _yNumSteps < 1;
 }
 
 
 bool KstMatrixDefaults::doSkip() const {
-  return _doSkip;  
+  return _doSkip;
 }
 
 
 bool KstMatrixDefaults::doAverage() const {
-  return _doAve;  
+  return _doAve;
 }
 
 
 int KstMatrixDefaults::skip() const {
-  return _skip;  
+  return _skip;
 }
 
 void KstMatrixDefaults::sync() {
@@ -114,7 +114,7 @@ void KstMatrixDefaults::sync() {
 
   if (j >= 0) {
     rmatrixList[j]->readLock();
-    
+
     // get the settings
     _dataSource = rmatrixList[j]->filename();
     _xStart = rmatrixList[j]->reqXStart();
@@ -124,7 +124,7 @@ void KstMatrixDefaults::sync() {
     _skip = rmatrixList[j]->skip();
     _doAve = rmatrixList[j]->doAverage();
     _doSkip = rmatrixList[j]->doSkip();
-    
+
     rmatrixList[j]->unlock();
   }
 }
@@ -151,6 +151,3 @@ void KstMatrixDefaults::readConfig(KConfig *config) {
   _doAve = config->readNumEntry("defaultMatrixDoAverage", 0);
   _skip = config->readNumEntry("defaultMatrixSkip", 0);
 }
-
-
-// vim: ts=2 sw=2 et

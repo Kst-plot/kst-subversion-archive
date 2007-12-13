@@ -599,4 +599,4 @@ void kstdClearDebugConfig()
 #ifdef NDEBUG
 #define kstdDebug kndDebug
 #endif
-// vim: ts=2 sw=2 et
+

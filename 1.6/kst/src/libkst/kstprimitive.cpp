@@ -71,6 +71,3 @@ KstObject::UpdateType KstPrimitive::internalUpdate(KstObject::UpdateType provide
   Q_UNUSED(providerRC)
   return setLastUpdateResult(NO_CHANGE);
 }
-
-
-// vim: et sw=2 ts=2

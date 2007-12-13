@@ -60,5 +60,3 @@ struct KstELOGAttribStruct {
 typedef QValueList<KstELOGAttribStruct> ELOGAttribList;
 
 #endif
-
-// vim: ts=2 sw=2 et

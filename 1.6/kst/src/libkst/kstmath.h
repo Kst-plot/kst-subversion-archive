@@ -119,5 +119,3 @@ inline double logYHi(double x, double base = 10.0) {
 }
 
 #endif
-
-// vim: ts=2 sw=2 et

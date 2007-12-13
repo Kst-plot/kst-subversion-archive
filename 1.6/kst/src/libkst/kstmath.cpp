@@ -24,5 +24,3 @@ KST_EXPORT const double NOPOINT = NAN;
 KST_EXPORT const double NOPOINT = 0.0/0.0; // NaN
 #endif
 }
-
-// vim: ts=2 sw=2 et
