@@ -7323,7 +7323,6 @@ void Kst2DPlot::connectConfigWidget(QWidget *parent, QWidget *w) const {
   connect( widget->_checkBoxDefaultMarkerColor, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
   connect( widget->_comboMarkerLineStyle, SIGNAL( activated(int) ), parent, SLOT(modified()));
   connect( widget->_spinBoxMarkerLineWidth, SIGNAL( valueChanged(int) ), parent, SLOT(modified()));
-
 }
 
 void Kst2DPlot::createScalars() {

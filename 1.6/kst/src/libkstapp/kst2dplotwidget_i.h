@@ -64,6 +64,9 @@ class Kst2dPlotWidget: public View2DPlotWidget {
     void insertXExpressionMax(const QString&);
     void insertYExpressionMax(const QString&);
 
+  protected:
+    virtual void resizeEvent(QResizeEvent*);
+
   private:
     void populateEditMultiple(QRadioButton *radioButtonWidget);
     void populateEditMultiple(QComboBox *comboWidget);
@@ -75,8 +78,6 @@ class Kst2dPlotWidget: public View2DPlotWidget {
     Kst2DPlotPtr _plot;
     QLineEdit *_scalarDest;
     bool _editMultipleMode;
-
-  protected:
 };
 
 #endif

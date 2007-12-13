@@ -203,6 +203,11 @@ Kst2dPlotWidget::Kst2dPlotWidget(QWidget* parent, const char* name, WFlags fl) :
 Kst2dPlotWidget::~Kst2dPlotWidget() {
 }
 
+void Kst2dPlotWidget::resizeEvent(QResizeEvent *event) {
+  fillMarkerLineCombo();
+  View2DPlotWidget::resizeEvent(event);
+}
+
 void Kst2dPlotWidget::generateDefaultLabels() {
   if (_plot) {
     _plot->generateDefaultLabels();
@@ -290,7 +295,6 @@ void Kst2dPlotWidget::updateButtons() {
   _colorMarker->setEnabled(_checkBoxDefaultMarkerColor->state() != QButton::On);
 }
 
-
 void Kst2dPlotWidget::addDisplayedCurve() {
   uint count = AvailableCurveList->count();
   if (count > 0) {
@@ -304,7 +308,6 @@ void Kst2dPlotWidget::addDisplayedCurve() {
     emit changed();
   }
 }
-
 
 void Kst2dPlotWidget::removeDisplayedCurve() {
   uint count = DisplayedCurveList->count();
@@ -320,20 +323,17 @@ void Kst2dPlotWidget::removeDisplayedCurve() {
   }
 }
 
-
 void Kst2dPlotWidget::upDisplayedCurve() {
   if (DisplayedCurveList->up()) {
     emit changed();
   }
 }
 
-
 void Kst2dPlotWidget::downDisplayedCurve() {
   if (DisplayedCurveList->down()) {
     emit changed();
   }
 }
-
 
 void Kst2dPlotWidget::fillMarkerLineCombo() {
   QRect rect = _comboMarkerLineStyle->style().querySubControlMetrics(QStyle::CC_ComboBox, _comboMarkerLineStyle, QStyle::SC_ComboBoxEditField);
@@ -342,7 +342,6 @@ void Kst2dPlotWidget::fillMarkerLineCombo() {
   rect.setTop(rect.top() + 2);
   rect.setBottom(rect.bottom() - 2);
 
-  // fill the point type dialog with point types
   QPixmap ppix(rect.width(), rect.height());
   QPainter pp(&ppix);
   QPen pen(QColor("black"), 0);
@@ -361,7 +360,6 @@ void Kst2dPlotWidget::fillMarkerLineCombo() {
   _comboMarkerLineStyle->setCurrentItem(currentItem);
 }
 
-
 void Kst2dPlotWidget::updateAxesButtons() {
   bool major = _xMajorGrid->isChecked() || _yMajorGrid->isChecked();
   bool minor = _xMinorGrid->isChecked() || _yMinorGrid->isChecked();
@@ -379,7 +377,6 @@ void Kst2dPlotWidget::updateAxesButtons() {
   _xMinorTicks->setEnabled(_xMinorTicksAuto->state() != QButton::On);
   _yMinorTicks->setEnabled(_yMinorTicksAuto->state() != QButton::On);
 }
-
 
 void Kst2dPlotWidget::updateScalarCombo() {
   ScalarList->clear();
