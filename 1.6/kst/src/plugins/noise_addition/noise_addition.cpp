@@ -40,7 +40,6 @@ NoiseAddition::~NoiseAddition() {
 
 
 bool NoiseAddition::algorithm() {
-
   KstVectorPtr array    = inputVector(ARRAY);
   KstScalarPtr sigma    = inputScalar(SIGMA);
   KstVectorPtr output   = outputVector(OUTPUT);
@@ -50,6 +49,8 @@ bool NoiseAddition::algorithm() {
   double* pResult[1];
   int iRetVal = false;
   int iLength = array->length();
+
+  pResult[0] = 0L;
 
   if (iLength > 0) {
     if (output->length() != iLength) {
