@@ -216,7 +216,7 @@ public:
 
   KstBaseCurveList Curves;
 
-  void generateDefaultLabels(bool xl = true, bool yl = true, bool zl = true);
+  void generateDefaultLabels(bool xl = false, bool yl = false, bool zl = false);
 
   /* kstview tells kstplot where to offset the plot to */
   void setPixRect(const QRect& RelPlotRegion, const QRect& RelWinRegion, const QRect& RelPlotAndAxisRegion);
@@ -334,7 +334,14 @@ public:
   int lineStyleMarkers() const { return _lineStyleMarkers; }
   void setDefaultColorMarker(bool defaultColor) { _defaultMarkerColor = defaultColor; }
   bool defaultColorMarker() const { return _defaultMarkerColor; }
-  
+
+  void setAutoLabelTop(bool autoLabel) { _autoLabelTop = autoLabel; }
+  bool autoLabelTop( ) const { return _autoLabelTop; }
+  void setAutoLabelX(bool autoLabel) { _autoLabelX = autoLabel; }
+  bool autoLabelX( ) const { return _autoLabelX; }
+  void setAutoLabelY(bool autoLabel) { _autoLabelY = autoLabel; }
+  bool autoLabelY( ) const { return _autoLabelY; }
+
   // set and get tick mark display options
   void setXTicksInPlot(bool yes);
   void setXTicksOutPlot(bool yes);
@@ -556,6 +563,10 @@ private:
   bool _suppressBottom : 1;
   bool _suppressLeft : 1;
   bool _suppressRight : 1;
+
+  bool _autoLabelTop : 1;
+  bool _autoLabelX : 1;
+  bool _autoLabelY : 1;
 
   bool _xMinParsedValid : 1, _xMaxParsedValid : 1, _yMinParsedValid : 1, _yMaxParsedValid : 1;
   bool _xTransformed : 1, _yTransformed : 1;

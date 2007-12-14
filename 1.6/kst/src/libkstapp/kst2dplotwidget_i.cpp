@@ -98,16 +98,21 @@ Kst2dPlotWidget::Kst2dPlotWidget(QWidget* parent, const char* name, WFlags fl) :
   connect(_up, SIGNAL(clicked()), this, SLOT(upDisplayedCurve()));
   connect(_down, SIGNAL(clicked()), this, SLOT(downDisplayedCurve()));
 
-  connect(AutoLabel, SIGNAL(clicked()), this, SLOT(generateDefaultLabels()));
+  connect(_checkBoxAutoLabelTop, SIGNAL(clicked()), this, SLOT(autoLabelTop()));
+  connect(_checkBoxAutoLabelX, SIGNAL(clicked()), this, SLOT(autoLabelX()));
+  connect(_checkBoxAutoLabelY, SIGNAL(clicked()), this, SLOT(autoLabelY()));
 
   connect(ScalarList, SIGNAL(activated(int)), this, SLOT(insertCurrentScalar()));
 
   connect(YAxisText, SIGNAL(selectionChanged()), this, SLOT(setScalarDestYLabel()));
   connect(YAxisText, SIGNAL(textChanged(const QString &)), this, SLOT(setScalarDestYLabel()));
+  connect(YAxisText, SIGNAL(textChanged(const QString &)), this, SLOT(modifiedYAxisText()));
   connect(XAxisText, SIGNAL(selectionChanged()), this, SLOT(setScalarDestXLabel()));
   connect(XAxisText, SIGNAL(textChanged(const QString &)), this, SLOT(setScalarDestXLabel()));
+  connect(XAxisText, SIGNAL(textChanged(const QString &)), this, SLOT(modifiedXAxisText()));
   connect(TopLabelText, SIGNAL(selectionChanged()), this, SLOT(setScalarDestTopLabel()));
   connect(TopLabelText, SIGNAL(textChanged(const QString &)), this, SLOT(setScalarDestTopLabel()));
+  connect(TopLabelText, SIGNAL(textChanged(const QString &)), this, SLOT(modifiedTopAxisText()));
 
   connect(_checkBoxXInterpret, SIGNAL(toggled(bool)), _comboBoxXInterpret, SLOT(setEnabled(bool)));
   connect(_checkBoxXInterpret, SIGNAL(toggled(bool)), _comboBoxXDisplay, SLOT(setEnabled(bool)));
@@ -208,13 +213,27 @@ void Kst2dPlotWidget::resizeEvent(QResizeEvent *event) {
   View2DPlotWidget::resizeEvent(event);
 }
 
-void Kst2dPlotWidget::generateDefaultLabels() {
+void Kst2dPlotWidget::generateDefaultLabels(bool xl, bool yl, bool zl) {
+  disconnect(YAxisText, SIGNAL(textChanged(const QString &)), this, SLOT(modifiedYAxisText()));
+  disconnect(XAxisText, SIGNAL(textChanged(const QString &)), this, SLOT(modifiedXAxisText()));
+  disconnect(TopLabelText, SIGNAL(textChanged(const QString &)), this, SLOT(modifiedTopAxisText()));
+
   if (_plot) {
-    _plot->generateDefaultLabels();
-    XAxisText->setText(_plot->xLabel()->text());
-    YAxisText->setText(_plot->yLabel()->text());
-    TopLabelText->setText(_plot->topLabel()->text());
+    _plot->generateDefaultLabels(xl, yl, zl);
+    if (xl) {
+      XAxisText->setText(_plot->xLabel()->text());
+    }
+    if (yl) {
+      YAxisText->setText(_plot->yLabel()->text());
+    }
+    if (zl) {
+      TopLabelText->setText(_plot->topLabel()->text());
+    }
   }
+
+  connect(YAxisText, SIGNAL(textChanged(const QString &)), this, SLOT(modifiedYAxisText()));
+  connect(XAxisText, SIGNAL(textChanged(const QString &)), this, SLOT(modifiedXAxisText()));
+  connect(TopLabelText, SIGNAL(textChanged(const QString &)), this, SLOT(modifiedTopAxisText()));
 }
 
 void Kst2dPlotWidget::updateButtons() {
@@ -525,6 +544,9 @@ void Kst2dPlotWidget::populateEditMultiple(const Kst2DPlot *plot) {
   populateEditMultiple(_minorGridColor);
   populateEditMultiple(_comboBoxTopLabelJustify);
   populateEditMultiple(FontComboBox);
+  populateEditMultiple(_checkBoxAutoLabelTop);
+  populateEditMultiple(_checkBoxAutoLabelX);
+  populateEditMultiple(_checkBoxAutoLabelY);
 
   //
   // X Axis tab...
@@ -655,6 +677,10 @@ void Kst2dPlotWidget::fillWidget(const Kst2DPlot *plot) {
   _checkBoxDefaultMajorGridColor->setChecked(plot->defaultMajorGridColor());
   _checkBoxDefaultMinorGridColor->setChecked(plot->defaultMinorGridColor());
 
+  _checkBoxAutoLabelTop->setChecked(plot->autoLabelTop());
+  _checkBoxAutoLabelX->setChecked(plot->autoLabelX());
+  _checkBoxAutoLabelY->setChecked(plot->autoLabelY());
+
   // insert the current plot name in the plot name edit box
   _title->setText(plot->tagName());
 
@@ -758,6 +784,10 @@ void Kst2dPlotWidget::fillWidget(const Kst2DPlot *plot) {
   _spinBoxXAngle->setValue((int)plot->xTickLabel()->rotation());
   _spinBoxYAngle->setValue((int)plot->yTickLabel()->rotation());
 
+  disconnect(YAxisText, SIGNAL(textChanged(const QString &)), this, SLOT(modifiedYAxisText()));
+  disconnect(XAxisText, SIGNAL(textChanged(const QString &)), this, SLOT(modifiedXAxisText()));
+  disconnect(TopLabelText, SIGNAL(textChanged(const QString &)), this, SLOT(modifiedTopAxisText()));
+
   XAxisText->setText(plot->xLabel()->text());
   XLabelFontSize->setValue(plot->xLabel()->fontSize());
 
@@ -766,6 +796,11 @@ void Kst2dPlotWidget::fillWidget(const Kst2DPlot *plot) {
 
   TopLabelText->setText(plot->topLabel()->text());
   TopLabelFontSize->setValue(plot->topLabel()->fontSize());
+
+  connect(YAxisText, SIGNAL(textChanged(const QString &)), this, SLOT(modifiedYAxisText()));
+  connect(XAxisText, SIGNAL(textChanged(const QString &)), this, SLOT(modifiedXAxisText()));
+  connect(TopLabelText, SIGNAL(textChanged(const QString &)), this, SLOT(modifiedTopAxisText()));
+
   FontComboBox->setCurrentFont(plot->topLabel()->fontName());
   switch (plot->topLabel()->justification()) {
     case KST_JUSTIFY_H_LEFT:
@@ -971,6 +1006,30 @@ void Kst2dPlotWidget::applyAppearance(Kst2DPlotPtr plot) {
     plot->xLabel()->setFontName(FontComboBox->currentText());
     plot->yLabel()->setFontName(FontComboBox->currentText());
     plot->topLabel()->setFontName(FontComboBox->currentText());
+  }
+
+  if (!_editMultipleMode || _checkBoxAutoLabelTop->state() != QButton::NoChange) {
+    if (_checkBoxAutoLabelTop->state() == QButton::On) {
+      plot->setAutoLabelTop(true);
+    } else if (_checkBoxAutoLabelTop->state() == QButton::Off) {
+      plot->setAutoLabelTop(false);
+    }
+  }
+
+  if (!_editMultipleMode || _checkBoxAutoLabelX->state() != QButton::NoChange) {
+    if (_checkBoxAutoLabelX->state() == QButton::On) {
+      plot->setAutoLabelX(true);
+    } else if (_checkBoxAutoLabelX->state() == QButton::Off) {
+      plot->setAutoLabelX(false);
+    }
+  }
+
+  if (!_editMultipleMode || _checkBoxAutoLabelY->state() != QButton::NoChange) {
+    if (_checkBoxAutoLabelY->state() == QButton::On) {
+      plot->setAutoLabelY(true);
+    } else if (_checkBoxAutoLabelY->state() == QButton::Off) {
+      plot->setAutoLabelY(false);
+    }
   }
 
   if (!_editMultipleMode || XLabelFontSize->value() != XLabelFontSize->minValue()) {
@@ -1490,5 +1549,28 @@ void Kst2dPlotWidget::insertYExpressionMax(const QString& strIn) {
   YExpressionMax->insert(str);
 }
 
+void Kst2dPlotWidget::modifiedYAxisText() {
+  _checkBoxAutoLabelY->setChecked(false);
+}
+
+void Kst2dPlotWidget::modifiedXAxisText() {
+  _checkBoxAutoLabelX->setChecked(false);
+}
+
+void Kst2dPlotWidget::modifiedTopAxisText() {
+  _checkBoxAutoLabelTop->setChecked(false);
+}
+
+void Kst2dPlotWidget::autoLabelY() {
+  generateDefaultLabels(false, true, false);
+}
+
+void Kst2dPlotWidget::autoLabelX() {
+  generateDefaultLabels(true, false, false);
+}
+
+void Kst2dPlotWidget::autoLabelTop() {
+  generateDefaultLabels(false, false, true);
+}
 
 #include "kst2dplotwidget_i.moc"

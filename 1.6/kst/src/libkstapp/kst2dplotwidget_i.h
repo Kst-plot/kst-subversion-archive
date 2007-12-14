@@ -33,7 +33,7 @@ class Kst2dPlotWidget: public View2DPlotWidget {
     void changed();
 
   public slots:
-    void generateDefaultLabels();
+    void generateDefaultLabels(bool xl = false, bool yl = false, bool zl = false);
     void updateButtons();
     void upDisplayedCurve();
     void downDisplayedCurve();
@@ -63,6 +63,12 @@ class Kst2dPlotWidget: public View2DPlotWidget {
     void insertYExpressionMin(const QString&);
     void insertXExpressionMax(const QString&);
     void insertYExpressionMax(const QString&);
+    void modifiedYAxisText();
+    void modifiedXAxisText();
+    void modifiedTopAxisText();
+    void autoLabelY();
+    void autoLabelX();
+    void autoLabelTop();
 
   protected:
     virtual void resizeEvent(QResizeEvent*);

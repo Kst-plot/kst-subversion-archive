@@ -15,11 +15,11 @@
     <property name="caption">
         <string>View2DPlotWidget</string>
     </property>
-    <vbox>
+    <grid>
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <widget class="QLayoutWidget">
+        <widget class="QLayoutWidget" row="0" column="0">
             <property name="name">
                 <cstring>Layout30</cstring>
             </property>
@@ -62,7 +62,7 @@
                 </widget>
             </hbox>
         </widget>
-        <widget class="QTabWidget">
+        <widget class="QTabWidget" row="1" column="0">
             <property name="name">
                 <cstring>TabWidget</cstring>
             </property>
@@ -656,14 +656,6 @@
                             <property name="name">
                                 <cstring>unnamed</cstring>
                             </property>
-                            <widget class="QLineEdit" row="4" column="2" rowspan="1" colspan="7">
-                                <property name="name">
-                                    <cstring>XAxisText</cstring>
-                                </property>
-                                <property name="whatsThis" stdset="0">
-                                    <string>X axis label text.  This supports a subset of LaTeX equations.</string>
-                                </property>
-                            </widget>
                             <widget class="QLabel" row="5" column="0">
                                 <property name="name">
                                     <cstring>TextLabel3_2</cstring>
@@ -758,31 +750,6 @@
                                     <string>Numbers label font size, relative to current default font.</string>
                                 </property>
                             </widget>
-                            <widget class="QLabel" row="1" column="2" rowspan="1" colspan="7">
-                                <property name="name">
-                                    <cstring>TextLabel2_2</cstring>
-                                </property>
-                                <property name="sizePolicy">
-                                    <sizepolicy>
-                                        <hsizetype>5</hsizetype>
-                                        <vsizetype>0</vsizetype>
-                                        <horstretch>0</horstretch>
-                                        <verstretch>0</verstretch>
-                                    </sizepolicy>
-                                </property>
-                                <property name="font">
-                                    <font>
-                                    </font>
-                                </property>
-                                <property name="text">
-                                    <string>Label text</string>
-                                </property>
-                                <property name="alignment">
-                                    <set>AlignCenter</set>
-                                </property>
-                                <property name="hAlign" stdset="0">
-                                </property>
-                            </widget>
                             <widget class="QLabel" row="1" column="1">
                                 <property name="name">
                                     <cstring>TextLabel1_2</cstring>
@@ -854,25 +821,6 @@
                                 <property name="hAlign" stdset="0">
                                 </property>
                             </widget>
-                            <widget class="QPushButton" row="5" column="8">
-                                <property name="name">
-                                    <cstring>AutoLabel</cstring>
-                                </property>
-                                <property name="sizePolicy">
-                                    <sizepolicy>
-                                        <hsizetype>0</hsizetype>
-                                        <vsizetype>0</vsizetype>
-                                        <horstretch>0</horstretch>
-                                        <verstretch>0</verstretch>
-                                    </sizepolicy>
-                                </property>
-                                <property name="text">
-                                    <string>Auto Label</string>
-                                </property>
-                                <property name="whatsThis" stdset="0">
-                                    <string>Guesses default labels for the selected plots based on their contents.</string>
-                                </property>
-                            </widget>
                             <widget class="QLabel" row="6" column="0">
                                 <property name="name">
                                     <cstring>TextLabel4</cstring>
@@ -896,7 +844,7 @@
                                     <cstring>FontComboBox</cstring>
                                 </property>
                             </widget>
-                            <widget class="KFontCombo" row="6" column="1" rowspan="1" colspan="8">
+                            <widget class="KFontCombo" row="6" column="1" rowspan="1" colspan="9">
                                 <property name="name">
                                     <cstring>FontComboBox</cstring>
                                 </property>
@@ -907,7 +855,7 @@
                                     <bool>false</bool>
                                 </property>
                             </widget>
-                            <widget class="QLayoutWidget" row="0" column="0" rowspan="1" colspan="9">
+                            <widget class="QLayoutWidget" row="0" column="0" rowspan="1" colspan="10">
                                 <property name="name">
                                     <cstring>layout15</cstring>
                                 </property>
@@ -957,14 +905,6 @@
                                     <cstring>_spinBoxXAngle</cstring>
                                 </property>
                             </widget>
-                            <widget class="QLineEdit" row="3" column="2" rowspan="1" colspan="7">
-                                <property name="name">
-                                    <cstring>YAxisText</cstring>
-                                </property>
-                                <property name="whatsThis" stdset="0">
-                                    <string>Y axis label text.  This supports a subset of LaTeX equations.</string>
-                                </property>
-                            </widget>
                             <widget class="QSpinBox" row="5" column="3">
                                 <property name="name">
                                     <cstring>_spinBoxXAngle</cstring>
@@ -987,7 +927,7 @@
                                     <cstring>_spinBoxYAngle</cstring>
                                 </property>
                             </widget>
-                            <widget class="QSpinBox" row="5" column="5">
+                            <widget class="QSpinBox" row="5" column="5" rowspan="1" colspan="2">
                                 <property name="name">
                                     <cstring>_spinBoxYAngle</cstring>
                                 </property>
@@ -998,24 +938,7 @@
                                     <number>-90</number>
                                 </property>
                             </widget>
-                            <spacer row="5" column="6" rowspan="1" colspan="2">
-                                <property name="name">
-                                    <cstring>spacer25</cstring>
-                                </property>
-                                <property name="orientation">
-                                    <enum>Horizontal</enum>
-                                </property>
-                                <property name="sizeType">
-                                    <enum>Expanding</enum>
-                                </property>
-                                <property name="sizeHint">
-                                    <size>
-                                        <width>51</width>
-                                        <height>20</height>
-                                    </size>
-                                </property>
-                            </spacer>
-                            <widget class="QLineEdit" row="2" column="2" rowspan="1" colspan="5">
+                            <widget class="QLineEdit" row="2" column="2" rowspan="1" colspan="4">
                                 <property name="name">
                                     <cstring>TopLabelText</cstring>
                                 </property>
@@ -1029,17 +952,99 @@
                                     <string>Top label text.  This supports a subset of LaTeX equations.</string>
                                 </property>
                             </widget>
-                            <widget class="QComboBox" row="2" column="8">
-                                <property name="name">
-                                    <cstring>_comboBoxTopLabelJustify</cstring>
-                                </property>
-                            </widget>
-                            <widget class="QLabel" row="2" column="7">
+                            <widget class="QLabel" row="2" column="6" rowspan="1" colspan="2">
                                 <property name="name">
                                     <cstring>textLabel1_8</cstring>
                                 </property>
                                 <property name="text">
                                     <string>Justification:</string>
+                                </property>
+                            </widget>
+                            <widget class="QComboBox" row="2" column="8">
+                                <property name="name">
+                                    <cstring>_comboBoxTopLabelJustify</cstring>
+                                </property>
+                            </widget>
+                            <widget class="QLineEdit" row="3" column="2" rowspan="1" colspan="7">
+                                <property name="name">
+                                    <cstring>YAxisText</cstring>
+                                </property>
+                                <property name="whatsThis" stdset="0">
+                                    <string>Y axis label text.  This supports a subset of LaTeX equations.</string>
+                                </property>
+                            </widget>
+                            <widget class="QLineEdit" row="4" column="2" rowspan="1" colspan="7">
+                                <property name="name">
+                                    <cstring>XAxisText</cstring>
+                                </property>
+                                <property name="whatsThis" stdset="0">
+                                    <string>X axis label text.  This supports a subset of LaTeX equations.</string>
+                                </property>
+                            </widget>
+                            <widget class="QCheckBox" row="2" column="9">
+                                <property name="name">
+                                    <cstring>_checkBoxAutoLabelTop</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>Auto Label</string>
+                                </property>
+                            </widget>
+                            <widget class="QLabel" row="1" column="2" rowspan="1" colspan="8">
+                                <property name="name">
+                                    <cstring>TextLabel2_2</cstring>
+                                </property>
+                                <property name="sizePolicy">
+                                    <sizepolicy>
+                                        <hsizetype>5</hsizetype>
+                                        <vsizetype>0</vsizetype>
+                                        <horstretch>0</horstretch>
+                                        <verstretch>0</verstretch>
+                                    </sizepolicy>
+                                </property>
+                                <property name="font">
+                                    <font>
+                                    </font>
+                                </property>
+                                <property name="text">
+                                    <string>Label text</string>
+                                </property>
+                                <property name="alignment">
+                                    <set>AlignVCenter|AlignLeft</set>
+                                </property>
+                                <property name="hAlign" stdset="0">
+                                </property>
+                            </widget>
+                            <spacer row="5" column="7" rowspan="1" colspan="3">
+                                <property name="name">
+                                    <cstring>spacer25</cstring>
+                                </property>
+                                <property name="orientation">
+                                    <enum>Horizontal</enum>
+                                </property>
+                                <property name="sizeType">
+                                    <enum>Expanding</enum>
+                                </property>
+                                <property name="sizeHint">
+                                    <size>
+                                        <width>250</width>
+                                        <height>20</height>
+                                    </size>
+                                </property>
+                            </spacer>
+                            <widget class="QCheckBox" row="4" column="9">
+                                <property name="name">
+                                    <cstring>_checkBoxAutoLabelX</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>Auto Label</string>
+                                </property>
+                            </widget>
+                            <widget class="QCheckBox" row="3" column="9">
+                                <property name="name">
+                                    <cstring>_checkBoxAutoLabelY</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>Auto Label</string>
                                 </property>
                             </widget>
                         </grid>
@@ -2812,7 +2817,7 @@
                 </grid>
             </widget>
         </widget>
-    </vbox>
+    </grid>
 </widget>
 <customwidgets>
 </customwidgets>
@@ -2896,7 +2901,6 @@
     <tabstop>XAxisText</tabstop>
     <tabstop>_spinBoxXAngle</tabstop>
     <tabstop>_spinBoxYAngle</tabstop>
-    <tabstop>AutoLabel</tabstop>
     <tabstop>FontComboBox</tabstop>
     <tabstop>ShowLegend</tabstop>
     <tabstop>TrackContents</tabstop>
@@ -2926,22 +2930,17 @@
     <include location="local" impldecl="in implementation">kstdebug.h</include>
     <include location="local" impldecl="in implementation">kstdefaultnames.h</include>
 </includes>
-<variables>
-</variables>
-<signals>
-</signals>
-<slots>
-</slots>
-<functions>
-</functions>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
     <includehint>plotlistbox.h</includehint>
+    <includehint>plotlistbox.h</includehint>
     <includehint>kdualcolorbutton.h</includehint>
+    <includehint>kcolorbutton.h</includehint>
     <includehint>kcolorbutton.h</includehint>
     <includehint>kfontcombo.h</includehint>
     <includehint>klineedit.h</includehint>
     <includehint>kcombobox.h</includehint>
+    <includehint>kcolorbutton.h</includehint>
     <includehint>vectorselector.h</includehint>
     <includehint>kstcombobox.h</includehint>
 </includehints>

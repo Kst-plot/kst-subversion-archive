@@ -121,6 +121,10 @@ Kst2DPlot::Kst2DPlot(const QString& in_tag,
   _xOffsetMode = false;
   _yOffsetMode = false;
 
+  _autoLabelTop = true;
+  _autoLabelX = true;
+  _autoLabelY = true;
+
   // defaults
   _majorGridColor = KstSettings::globalSettings()->majorColor;
   _minorGridColor = KstSettings::globalSettings()->minorColor;
@@ -236,6 +240,10 @@ Kst2DPlot::Kst2DPlot(const QDomElement& e)
   _yOffsetMode = false;
   _xScaleModeDefault = AUTO;
   _yScaleModeDefault = AUTOBORDER;
+
+  _autoLabelTop = true;
+  _autoLabelX = true;
+  _autoLabelY = true;
 
   QDomElement xLabelNode, yLabelNode, topLabelNode, xTickLabelNode, yTickLabelNode, fullTickLabelNode;
 
@@ -411,6 +419,12 @@ Kst2DPlot::Kst2DPlot(const QDomElement& e)
         _colorMarkers.setNamedColor(el.text());
       } else if (el.tagName() == "defaultcolormarker") {
          _defaultMarkerColor = el.text() != "0";
+      } else if (el.tagName() == "autoLabelTop") {
+        _autoLabelTop = el.text() != "0";
+      } else if (el.tagName() == "autoLabelX") {
+        _autoLabelX = el.text() != "0";
+      } else if (el.tagName() == "autoLabelY") {
+        _autoLabelY = el.text() != "0";
       }
     }
     n = n.nextSibling();
@@ -601,6 +615,10 @@ Kst2DPlot::Kst2DPlot(const Kst2DPlot& plot, const QString& name)
 
   _lineWidthMarkers = plot._lineWidthMarkers;
   _lineStyleMarkers = plot._lineStyleMarkers;
+
+  _autoLabelTop = plot._autoLabelTop;
+  _autoLabelX = plot._autoLabelX;
+  _autoLabelY = plot._autoLabelY;
 
   Curves = plot.Curves;
 }
@@ -3077,6 +3095,10 @@ void Kst2DPlot::saveAttributes(QTextStream& ts, const QString& indent) {
   ts << indent << "<widthmarker>" << _lineWidthMarkers << "</widthmarker>" << endl;
   ts << indent << "<colormarker>" << _colorMarkers.name() << "</colormarker>" << endl;
   ts << indent << "<defaultcolormarker>" << _defaultMarkerColor << "</defaultcolormarker>" << endl;
+
+  ts << indent << "<autoLabelTop>" << _autoLabelTop << "</autoLabelTop>" << endl;
+  ts << indent << "<autoLabelX>" << _autoLabelX << "</autoLabelX>" << endl;
+  ts << indent << "<autoLabelY>" << _autoLabelY << "</autoLabelY>" << endl;
 }
 
 
@@ -3210,13 +3232,13 @@ void Kst2DPlot::generateDefaultLabels(bool xl, bool yl, bool tl) {
   EscapeSpecialChars(ylabel);
   EscapeSpecialChars(toplabel);
 
-  if (xl) {
+  if (xl || _autoLabelX) {
     _xLabel->setText(xlabel);
   }
-  if (yl) {
+  if (yl || _autoLabelY) {
     _yLabel->setText(ylabel);
   }
-  if (tl) {
+  if (tl || _autoLabelTop) {
     _topLabel->setText(toplabel);
   }
 }
@@ -7249,11 +7271,16 @@ void Kst2DPlot::connectConfigWidget(QWidget *parent, QWidget *w) const {
   connect( widget->NumberFontSize, SIGNAL( valueChanged(int) ), parent, SLOT(modified()));
   connect( widget->_spinBoxXAngle, SIGNAL( valueChanged(int) ), parent, SLOT(modified()));
   connect( widget->_spinBoxYAngle, SIGNAL( valueChanged(int) ), parent, SLOT(modified()));
-  connect( widget->AutoLabel, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
+  connect( widget->_checkBoxAutoLabelTop, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
+  connect( widget->_checkBoxAutoLabelX, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
+  connect( widget->_checkBoxAutoLabelY, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
   connect( widget->FontComboBox, SIGNAL( activated(int) ), parent, SLOT(modified()));
   connect( widget->ShowLegend, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
   connect( widget->TrackContents, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
   connect( widget->_pushButtonEditLegend, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
+  connect( widget->_checkBoxAutoLabelTop, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
+  connect( widget->_checkBoxAutoLabelX, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
+  connect( widget->_checkBoxAutoLabelY, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
 
   connect( widget->_suppressTop, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
   connect( widget->_suppressBottom, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
