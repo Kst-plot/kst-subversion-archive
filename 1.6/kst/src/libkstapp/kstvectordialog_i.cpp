@@ -638,7 +638,6 @@ bool KstVectorDialogI::editSingleObjectRV(KstVectorPtr vcPtr) {
 
     svp->writeLock();
     svp->changeRange(x0, x1, n);
-printf("s-change\n");
     svp->setTagName(KstObjectTag(_tagName->text(), svp->tag().context())); // FIXME: doesn't verify uniqueness, doesn't allow changing tag context
     svp->unlock();
   }

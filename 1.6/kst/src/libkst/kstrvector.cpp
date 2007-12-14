@@ -178,6 +178,7 @@ void KstRVector::change(KstDataSourcePtr in_file, const QString &in_field,
                         int reqStartingFrame, int reqNumberFrames,
                         int skip, bool doSkip, bool doAve) {
   Q_ASSERT(myLockStatus() == KstRWLock::WRITELOCKED);
+  Q_UNUSED(in_tag);
 
   _skip = skip;
   _doSkip = doSkip;
@@ -187,13 +188,12 @@ void KstRVector::change(KstDataSourcePtr in_file, const QString &in_field,
   }
 
   _dontUseSkipAccel = false;
-  _file = in_file;
+  if (in_file != _file) {
+    changeFile(in_file);
+  }
   _reqStartingFrame = reqStartingFrame;
   _reqNumberFrames = reqNumberFrames;
   _field = in_field;
-  if (in_tag != tag()) {
-    setTagName(in_tag);
-  }
 
   if (_file) {
     _file->writeLock();
@@ -206,7 +206,6 @@ void KstRVector::change(KstDataSourcePtr in_file, const QString &in_field,
   if (_reqNumberFrames <= 0 && _reqStartingFrame < 0) {
     _reqStartingFrame = 0;
   }
-
 }
 
 
