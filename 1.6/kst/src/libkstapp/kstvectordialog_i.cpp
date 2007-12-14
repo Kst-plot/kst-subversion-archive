@@ -172,7 +172,7 @@ void KstVectorDialogI::updateCompletion() {
   QString current_text = _w->Field->currentText();
   _w->Field->clear();
 
-  /* update filename list and ll axes combo boxes */
+  // update filename list and ll axes combo boxes
   KST::dataSourceList.lock().readLock();
   KstDataSourcePtr ds = *KST::dataSourceList.findReusableFileName(_w->FileName->url());
   KST::dataSourceList.lock().unlock();
@@ -246,11 +246,11 @@ void KstVectorDialogI::fillFieldsForRVEdit() {
 
   _tagName->setText(rvp->tagName());
 
-  /* fill the fields */
   _w->Field->clear();
   if (_fieldCompletion) {
     _fieldCompletion->clear();
   }
+
   {
     KstDataSourcePtr tf;
     KST::dataSourceList.lock().readLock();
@@ -272,22 +272,23 @@ void KstVectorDialogI::fillFieldsForRVEdit() {
     }
     KST::dataSourceList.lock().unlock();
   }
+
   _w->Field->setEnabled(_w->Field->count() > 0);
   _ok->setEnabled(_w->Field->isEnabled());
   _w->Field->setCurrentText(rvp->field());
 
-  /* select the proper file */
+  // select the proper file
   _w->FileName->setURL(rvp->filename());
 
-  /* fill the vector range entries */
+  // fill the vector range entries
   _w->_kstDataRange->CountFromEnd->setChecked(rvp->countFromEOF());
   _w->_kstDataRange->setF0Value(rvp->reqStartFrame());
 
-  /* fill number of frames entries */
+  // fill number of frames entries
   _w->_kstDataRange->ReadToEnd->setChecked(rvp->readToEOF());
   _w->_kstDataRange->setNValue(rvp->reqNumFrames());
 
-  /* fill in frames to skip box */
+  // fill in frames to skip box
   _w->_kstDataRange->Skip->setValue(rvp->skip());
   _w->_kstDataRange->DoSkip->setChecked(rvp->doSkip());
   _w->_kstDataRange->DoFilter->setChecked(rvp->doAve());
@@ -348,7 +349,7 @@ void KstVectorDialogI::fillFieldsForNew() {
 
   _tagName->setText(defaultTag);
 
-  /* set defaults with vectorDefaults */
+  // set defaults with vectorDefaults
   KST::vectorDefaults.sync();
   _w->FileName->setURL(KST::vectorDefaults.dataSource());
   updateCompletion();
@@ -368,7 +369,7 @@ bool KstVectorDialogI::newObject() {
     tag_name.replace(defaultTag, _w->Field->currentText());
     tag_name = KST::suggestVectorName(tag_name);
 
-    /* if there is not an active DataSource, create one */
+    // if there is not an active DataSource, create one
     {
       KST::dataSourceList.lock().writeLock();
       KstDataSourceList::Iterator it = KST::dataSourceList.findReusableFileName(_w->FileName->url());
@@ -428,7 +429,7 @@ bool KstVectorDialogI::newObject() {
     }
     file->unlock();
 
-    /* create the vector */
+    // create the vector
     KstRVectorPtr vector = new KstRVector(
         file, _w->Field->currentText(),
         KstObjectTag(tag_name, file->tag(), false),
@@ -493,7 +494,7 @@ bool KstVectorDialogI::editSingleObjectRV(KstVectorPtr vcPtr) {
 
   KstDataSourcePtr file;
   if (_fileNameDirty) {
-    /* if there is not an active KstFile, create one */
+    // if there is not an active KstFile, create one
     KST::dataSourceList.lock().writeLock();
     KstDataSourceList::Iterator it = KST::dataSourceList.findReusableFileName(_w->FileName->url());
 
@@ -531,6 +532,7 @@ bool KstVectorDialogI::editSingleObjectRV(KstVectorPtr vcPtr) {
       }
     }
   }
+
   file->writeLock();
   if (rvp) {
     QString pField;
@@ -587,6 +589,7 @@ bool KstVectorDialogI::editSingleObjectRV(KstVectorPtr vcPtr) {
     // other parameters for multiple edit
     bool pCountFromEnd, pReadToEnd, pDoSkip, pDoFilter;
     int pSkip;
+
     if (_countFromEndDirty) {
       pCountFromEnd = _w->_kstDataRange->CountFromEnd->isChecked();
     } else {
@@ -619,11 +622,9 @@ bool KstVectorDialogI::editSingleObjectRV(KstVectorPtr vcPtr) {
 
     rvp->unlock();
 
-    /* change the vector */
+    // change the vector
     rvp->writeLock();
-
     rvp->change(file, pField, rvp->tag(), pCountFromEnd ?  -1 : f0, pReadToEnd ?  -1 : n, pSkip, pDoSkip, pDoFilter);
-
     rvp->unlock();
   } else {
     KstSVectorPtr svp = kst_cast<KstSVector>(_dp);
@@ -634,9 +635,10 @@ bool KstVectorDialogI::editSingleObjectRV(KstVectorPtr vcPtr) {
     double x0 = _w->_xMin->text().toDouble();
     double x1 = _w->_xMax->text().toDouble();
     int n = _w->_N->value();
-//    QString tagname = _tagName->text();
+
     svp->writeLock();
     svp->changeRange(x0, x1, n);
+printf("s-change\n");
     svp->setTagName(KstObjectTag(_tagName->text(), svp->tag().context())); // FIXME: doesn't verify uniqueness, doesn't allow changing tag context
     svp->unlock();
   }
