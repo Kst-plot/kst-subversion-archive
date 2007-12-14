@@ -634,7 +634,7 @@ namespace KJSEmbed {
 	    char buff[4];
             if( !obj.hasProperty(exec, KJS::Identifier("length")) )
                 return Map;
-            else if( !obj.hasProperty(exec, KJS::Identifier( itoa((len.toNumber(exec) - 1), buff, 10 ) ) ) )
+            else if( !obj.hasProperty(exec, KJS::Identifier( itoa((len.toInt32(exec) - 1), buff, 10 ) ) ) )
                 return Map;
             /*
             if( obj.get(exec, KJS::Identifier("length")).toInteger(exec) == 0 )

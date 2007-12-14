@@ -63,8 +63,6 @@ public slots:
     void slotProcessExited();
     void slotReceivedStdout();
     void slotReceivedStderr();
-    
-    friend class Im_lonely;  // yet another reason why c++ is braindead...
 };
 
 #endif // KSIMPLE_PROCESS_H

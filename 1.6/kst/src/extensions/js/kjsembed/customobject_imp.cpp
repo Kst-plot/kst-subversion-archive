@@ -552,6 +552,8 @@ KJS::Value CustomObjectImp::qsplashScreenFinish(KJS::ExecState *exec, KJS::Objec
 
 KJS::Value CustomObjectImp::qsplashScreenRepaint(KJS::ExecState *exec, KJS::Object &, const KJS::List & )
 {
+        Q_UNUSED(exec);
+
 	QSplashScreen *ss = dynamic_cast<QSplashScreen*>(proxy->widget());
     	if ( ss )
 	{
@@ -1165,6 +1167,8 @@ return KJS::Null();
 
 KJS::Value Bindings::CustomObjectImp::qlistViewTakeItem( KJS::ExecState * exec, KJS::Object &, const KJS::List &args )
 {
+    Q_UNUSED(args);
+
     QListView *lv = dynamic_cast<QListView *>( proxy->object() );
     if( !lv )
         return KJS::Boolean(false);
@@ -1182,6 +1186,8 @@ KJS::Value Bindings::CustomObjectImp::qlistViewTakeItem( KJS::ExecState * exec, 
 
 KJS::Value Bindings::CustomObjectImp::qlistViewFirstChild( KJS::ExecState * exec, KJS::Object &, const KJS::List &args )
 {
+    Q_UNUSED(args);
+
     QListView *lv = dynamic_cast<QListView *>( proxy->object() );
     if( !lv )
         return KJS::Boolean(false);
@@ -1193,6 +1199,8 @@ KJS::Value Bindings::CustomObjectImp::qlistViewFirstChild( KJS::ExecState * exec
 
 KJS::Value Bindings::CustomObjectImp::qlistViewCurrentItem( KJS::ExecState * exec, KJS::Object &, const KJS::List &args )
 {
+    Q_UNUSED(args);
+
     QListView *lv = dynamic_cast<QListView *>( proxy->object() );
     if( !lv )
         return KJS::Boolean(false);
