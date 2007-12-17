@@ -280,7 +280,6 @@ static KstRVector *GetOrCreateVector(const QString& field, KstDataSourcePtr file
     }
   } else {
   }
-    
 
   return V;
 }
@@ -640,8 +639,7 @@ int main(int argc, char *argv[]) {
                     KstVectorPtr(yvector), in.rate, true, in.len,
                     true, true, in.VUnits, in.RUnits, WindowOriginal);
                 KstVCurvePtr vc = new KstVCurve(KST::suggestCurveName(psd->tag(), true),
-                    psd->vX(), psd->vY(),
-                    0L, 0L, 0L, 0L, color);
+                    psd->vX(), psd->vY(), 0L, 0L, 0L, 0L, color);
                 if (in.has_points) {
                   vc->setHasPoints(true);
                   vc->setHasLines(false);
@@ -714,7 +712,7 @@ int main(int argc, char *argv[]) {
                   0,0,-1,-1,false,false,0);
                   // xStart, yStart, xNumSteps, yNumSteps, 
                   //doAve, doSkip, skip);
-              
+
               // Time to create the image from the matrix
               tag_name = KST::suggestImageName(matrix->tag());
               QStringList palList = KPalette::getPaletteList();
@@ -724,7 +722,7 @@ int main(int argc, char *argv[]) {
               } else {
                 pal = QString(*palList.at(0));
               }
-              
+
               KPalette* newPal = new KPalette(pal);
               KstImagePtr image = new KstImage(tag_name, KstMatrixPtr(matrix), 0.0, 1.0,
                                    true, newPal);
@@ -733,7 +731,7 @@ int main(int argc, char *argv[]) {
               KST::dataObjectList.append(image.data());
               KST::dataObjectList.lock().unlock();
               image = 0L; // drop the reference
-              
+
               if (in.sep_plots) {
                 plot->setTagName(matrix->tag());
                 i_plot++;
@@ -756,14 +754,14 @@ int main(int argc, char *argv[]) {
       for (i_plot = 0; i_plot < in.n_plots; i_plot++) {
         plot = *plist.at(i_plot);
         plot->generateDefaultLabels();
-      
+
         // if we have only images in a plot then set the scale mode to AUTO (instead of AUTOBORDER)
         KstImageList images = kstObjectSubList<KstBaseCurve,KstImage>(plot->Curves);
         if (images.count() == plot->Curves.count()) {
           plot->setXScaleMode(AUTO);
           plot->setYScaleMode(AUTO);
         }
-    
+
         if (plot->Curves.count() > 3 || in.dolegend) {
           KstViewLegendPtr vl = plot->getOrCreateLegend();
           vl->resizeFromAspect(0.1, 0.1, 0.2, 0.1);
@@ -834,4 +832,4 @@ int main(int argc, char *argv[]) {
 
   return app.exec();
 }
-// vim: ts=2 sw=2 et
+
