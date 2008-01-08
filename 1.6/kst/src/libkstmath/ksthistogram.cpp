@@ -353,8 +353,6 @@ QString KstHistogram::xLabel() const {
 
 
 void KstHistogram::save(QTextStream &ts, const QString& indent) {
-  // FIXME: clean this up - all lower case nodes, maybe save points in the
-  // point class itself, etc
   QString l2 = indent + "  ";
   ts << indent << "<histogram>" << endl;
   ts << l2 << "<tag>" << QStyleSheet::escape(tagName()) << "</tag>" << endl;
