@@ -266,6 +266,3 @@ KJS::Value KstBindJSDataObject::valid(KJS::ExecState *exec) const {
   KstReadLocker rl(_d);
   return KJS::Boolean(_d->isValid());
 }
-
-
-// vim: ts=2 sw=2 et

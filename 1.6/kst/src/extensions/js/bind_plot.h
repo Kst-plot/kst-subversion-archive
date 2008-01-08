@@ -102,5 +102,3 @@ class KstBindPlot : public KstBindBorderedViewObject {
 
 
 #endif
-
-// vim: ts=2 sw=2 et

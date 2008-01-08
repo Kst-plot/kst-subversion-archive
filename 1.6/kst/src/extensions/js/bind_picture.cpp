@@ -307,5 +307,3 @@ KJS::Value KstBindPicture::image(KJS::ExecState *exec) const {
 
 
 #undef makePicture
-
-// vim: ts=2 sw=2 et

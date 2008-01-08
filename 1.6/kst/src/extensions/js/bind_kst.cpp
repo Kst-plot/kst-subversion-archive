@@ -303,6 +303,3 @@ KJS::Value KstBindKst::gui(KJS::ExecState *exec) const {
   Q_UNUSED(exec)
   return _ext->part()->bind(_ext->app());
 }
-
-
-// vim: ts=2 sw=2 et

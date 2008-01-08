@@ -230,5 +230,3 @@ KJS::Value KstBindScalar::value(KJS::ExecState *exec) const {
 
 
 #undef makeScalar
-
-// vim: ts=2 sw=2 et

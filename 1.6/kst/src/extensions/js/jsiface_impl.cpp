@@ -65,6 +65,3 @@ QString JSIfaceImpl::evaluateFile(const QString& filename) {
     return i18n("Error: %1").arg(c.toString(_jsPart->globalExec()).qstring());
   }
 }
-
-
-// vim: ts=2 sw=2 et

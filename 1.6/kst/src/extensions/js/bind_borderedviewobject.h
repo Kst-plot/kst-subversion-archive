@@ -79,5 +79,3 @@ class KstBindBorderedViewObject : public KstBindViewObject {
 
 
 #endif
-
-// vim: ts=2 sw=2 et

@@ -183,5 +183,3 @@ KJS::Value KstBindExtension::unload(KJS::ExecState *exec, const KJS::List& args)
   ExtensionMgr::self()->updateExtensions();
   return KJS::Undefined();
 }
-
-// vim: ts=2 sw=2 et

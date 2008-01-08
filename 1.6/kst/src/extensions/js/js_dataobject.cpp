@@ -113,7 +113,3 @@ void JSDataObject::setScript(const QString& script) {
 void JSDataObject::setProperty(const QString& property) {
   _propertyString = property;
 }
-
-
-
-// vim: ts=2 sw=2 et

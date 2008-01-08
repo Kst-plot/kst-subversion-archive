@@ -480,5 +480,3 @@ KJS::Value KstBindDataMatrix::dataSource(KJS::ExecState *exec) const {
 }
 
 #undef makeDataMatrix
-
-// vim: ts=2 sw=2 et

@@ -54,5 +54,3 @@ typedef KstSharedPtr<JSDataObject> JSDataObjectPtr;
 typedef KstObjectList<JSDataObjectPtr> JSDataObjectList;
 
 #endif
-
-// vim: ts=2 sw=2 et

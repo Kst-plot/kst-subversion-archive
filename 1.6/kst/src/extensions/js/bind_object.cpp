@@ -198,6 +198,3 @@ int KstBindObject::methodCount() const {
 int KstBindObject::propertyCount() const {
   return sizeof objectProperties + KstBinding::propertyCount();
 }
-
-
-// vim: ts=2 sw=2 et

@@ -99,6 +99,3 @@ KJS::Value KstBindStringCollection::extract(KJS::ExecState *exec, unsigned item)
   }
   return KJS::Object(new KstBindString(exec, sp));
 }
-
-
-// vim: ts=2 sw=2 et

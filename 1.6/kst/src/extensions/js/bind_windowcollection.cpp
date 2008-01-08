@@ -74,6 +74,3 @@ KJS::Value KstBindWindowCollection::extract(KJS::ExecState *exec, unsigned item)
   }
   return KJS::Undefined();
 }
-
-
-// vim: ts=2 sw=2 et

@@ -206,5 +206,3 @@ KJS::Value KstBindColorSequence::tooClose(KJS::ExecState *exec, const KJS::List&
 
   return KJS::Boolean(KstColorSequence::colorsTooClose(left.toColor(), right.toColor()));
 }
-
-// vim: ts=2 sw=2 et

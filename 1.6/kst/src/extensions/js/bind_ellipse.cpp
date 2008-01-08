@@ -270,5 +270,3 @@ KJS::Value KstBindEllipse::borderWidth(KJS::ExecState *exec) const {
 }
 
 #undef makeEllipse
-
-// vim: ts=2 sw=2 et

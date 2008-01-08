@@ -377,5 +377,3 @@ KJS::Value KstBindBox::borderColor(KJS::ExecState *exec) const {
 
 
 #undef makeBox
-
-// vim: ts=2 sw=2 et

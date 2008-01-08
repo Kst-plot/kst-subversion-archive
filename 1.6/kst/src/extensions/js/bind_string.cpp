@@ -212,5 +212,3 @@ KJS::Value KstBindString::value(KJS::ExecState *exec) const {
 
 
 #undef makeString
-
-// vim: ts=2 sw=2 et

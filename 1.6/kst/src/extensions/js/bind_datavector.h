@@ -154,5 +154,3 @@ class KstBindDataVector : public KstBindVector {
 
 
 #endif
-
-// vim: ts=2 sw=2 et

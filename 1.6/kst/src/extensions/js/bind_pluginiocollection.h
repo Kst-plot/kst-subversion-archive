@@ -46,5 +46,3 @@ class KstBindPluginIOCollection : public KstBindCollection {
 
 
 #endif
-
-// vim: ts=2 sw=2 et

@@ -66,5 +66,3 @@ KJS::Value KstBindPluginIOCollection::extract(KJS::ExecState *exec, unsigned ite
   return KJS::Undefined();
 }
 
-
-// vim: ts=2 sw=2 et

@@ -215,5 +215,3 @@ KJS::UString KstBindSize::toString(KJS::ExecState *exec) const {
   Q_UNUSED(exec)
   return KJS::UString(QString("(%1, %2)").arg(_sz.width()).arg(_sz.height()));
 }
-
-// vim: ts=2 sw=2 et

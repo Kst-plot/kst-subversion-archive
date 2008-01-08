@@ -397,5 +397,3 @@ KJS::Value KstBindDataSource::metaData(KJS::ExecState *exec) const {
 }
 
 #undef makeSource
-
-// vim: ts=2 sw=2 et

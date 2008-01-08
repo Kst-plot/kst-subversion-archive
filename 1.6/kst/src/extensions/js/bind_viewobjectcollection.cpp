@@ -209,6 +209,3 @@ KJS::Value KstBindViewObjectCollection::remove(KJS::ExecState *exec, const KJS::
 
   return KstBindCollection::clear(exec, args);
 }
-
-
-// vim: ts=2 sw=2 et

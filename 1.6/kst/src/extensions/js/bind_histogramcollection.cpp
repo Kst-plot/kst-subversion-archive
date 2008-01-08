@@ -66,6 +66,3 @@ KJS::Value KstBindHistogramCollection::extract(KJS::ExecState *exec, unsigned it
   }
   return KJS::Undefined();
 }
-
-
-// vim: ts=2 sw=2 et

@@ -108,6 +108,3 @@ KJS::Value KstBindPlotCollection::extract(KJS::ExecState *exec, unsigned item) c
   Kst2DPlotPtr p = pl[item];
   return KJS::Object(new KstBindPlot(exec, p));
 }
-
-
-// vim: ts=2 sw=2 et

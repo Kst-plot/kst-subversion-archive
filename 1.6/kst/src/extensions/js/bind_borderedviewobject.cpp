@@ -307,4 +307,4 @@ KJS::Value KstBindBorderedViewObject::borderColor(KJS::ExecState *exec) const {
 
 
 #undef makeBorderedViewObject
-// vim: ts=2 sw=2 et
+

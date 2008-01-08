@@ -215,6 +215,3 @@ KJS::Value KstBindCollection::extract(KJS::ExecState *exec, unsigned item) const
   exec->setException(eobj);
   return KJS::Undefined();
 }
-
-
-// vim: ts=2 sw=2 et

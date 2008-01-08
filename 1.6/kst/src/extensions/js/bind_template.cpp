@@ -220,6 +220,3 @@ int KstBindTemplate::methodCount() const {
 int KstBindTemplate::propertyCount() const {
   return sizeof templateProperties + KstBinding::propertyCount();
 }
-
-
-// vim: ts=2 sw=2 et

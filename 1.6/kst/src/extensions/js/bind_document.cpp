@@ -257,6 +257,3 @@ KJS::Value KstBindDocument::save(KJS::ExecState *exec, const KJS::List& args) {
   app->slotUpdateStatusMsg(i18n("Ready"));
   return KJS::Boolean(rc);
 }
-
-
-// vim: ts=2 sw=2 et

@@ -303,5 +303,3 @@ KJS::Value KstBindEquation::yVector(KJS::ExecState *exec) const {
 
 
 #undef makeEquation
-
-// vim: ts=2 sw=2 et

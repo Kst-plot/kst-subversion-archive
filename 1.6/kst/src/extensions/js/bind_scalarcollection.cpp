@@ -99,6 +99,3 @@ KJS::Value KstBindScalarCollection::extract(KJS::ExecState *exec, unsigned item)
   }
   return KJS::Object(new KstBindScalar(exec, sp));
 }
-
-
-// vim: ts=2 sw=2 et

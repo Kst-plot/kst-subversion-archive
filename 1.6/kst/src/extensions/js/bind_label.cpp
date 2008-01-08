@@ -480,5 +480,3 @@ KJS::Value KstBindLabel::adjustSizeForText(KJS::ExecState *exec, const KJS::List
 
 
 #undef makeLabel
-
-// vim: ts=2 sw=2 et

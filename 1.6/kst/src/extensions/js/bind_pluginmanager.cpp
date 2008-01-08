@@ -152,6 +152,3 @@ void KstBindPluginManager::addBindings(KJS::ExecState *exec, KJS::Object& obj) {
 KJS::Value KstBindPluginManager::modules(KJS::ExecState *exec) const {
   return KJS::Object(new KstBindPluginModuleCollection(exec));
 }
-
-
-// vim: ts=2 sw=2 et

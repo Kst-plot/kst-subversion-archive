@@ -202,7 +202,3 @@ KJS::Value KstBindPluginIO::defaultValue(KJS::ExecState *exec) const {
   Q_UNUSED(exec)
   return KJS::String(_d._default);
 }
-
-
-
-// vim: ts=2 sw=2 et

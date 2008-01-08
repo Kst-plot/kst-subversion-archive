@@ -206,5 +206,3 @@ KJS::UString KstBindPoint::toString(KJS::ExecState *exec) const {
   Q_UNUSED(exec)
   return KJS::UString(QString("(%1, %2)").arg(_x).arg(_y));
 }
-
-// vim: ts=2 sw=2 et

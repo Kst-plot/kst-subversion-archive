@@ -167,5 +167,3 @@ KJS::Value KstBindDebugLogEntry::level(KJS::ExecState *exec) const {
   }
   return KJS::String(lev);
 }
-
-// vim: ts=2 sw=2 et

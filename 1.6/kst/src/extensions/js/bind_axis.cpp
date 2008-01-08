@@ -919,5 +919,3 @@ KJS::Value KstBindAxis::scaleRange(KJS::ExecState *exec, const KJS::List& args) 
   return KJS::Undefined();
 }
 
-
-// vim: ts=2 sw=2 et

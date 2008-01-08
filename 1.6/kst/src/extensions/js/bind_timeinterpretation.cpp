@@ -114,7 +114,7 @@ KJS::Value KstBindTimeInterpretation::get(KJS::ExecState *exec, const KJS::Ident
       return (this->*timeInterpretationProperties[i].get)(exec);
     }
   }
-  
+
   return KstBinding::get(exec, propertyName);
 }
 
@@ -281,7 +281,7 @@ void KstBindTimeInterpretation::setInput(KJS::ExecState *exec, const KJS::Value&
       newInterp = AXIS_INTERP_YEAR;
       break;
   }
-    
+
   if (_d->_xAxis) {
     _d->_d->getXAxisInterpretation(isIt, interp, disp);
     _d->_d->setXAxisInterpretation(isIt, newInterp, disp);
@@ -385,7 +385,7 @@ void KstBindTimeInterpretation::setOutput(KJS::ExecState *exec, const KJS::Value
       newDisp = AXIS_DISPLAY_KDE_LONGDATE;
       break;
   }
-    
+
   if (_d->_xAxis) {
     _d->_d->getXAxisInterpretation(isIt, interp, disp);
     _d->_d->setXAxisInterpretation(isIt, interp, newDisp);
@@ -396,5 +396,3 @@ void KstBindTimeInterpretation::setOutput(KJS::ExecState *exec, const KJS::Value
   _d->_d->setDirty();
   KstApp::inst()->paintAll(KstPainter::P_PAINT);
 }
-
-// vim: ts=2 sw=2 et
