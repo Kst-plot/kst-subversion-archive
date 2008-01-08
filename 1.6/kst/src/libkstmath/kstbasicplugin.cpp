@@ -289,7 +289,6 @@ void KstBasicPlugin::load(const QDomElement &e) {
 }
 
 
-// FIXME: KstBasicPlugin should not know about fit scalars!!
 void KstBasicPlugin::createFitScalars() {
   // Assumes that this is called with a write lock in place on this object
   Q_ASSERT(myLockStatus() == KstRWLock::WRITELOCKED);

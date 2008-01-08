@@ -674,7 +674,6 @@ KstDataObject::Kind KstCPlugin::kind() const {
 }
 
 
-// FIXME: KstCPlugin should not know about fit scalars!!
 void KstCPlugin::createFitScalars() {
   Q_ASSERT(myLockStatus() == KstRWLock::WRITELOCKED);
   // Assumes that this is called with a write lock in place on this object
