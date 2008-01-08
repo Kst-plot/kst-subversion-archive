@@ -112,7 +112,7 @@ KJS::Value KstBindPluginIO::get(KJS::ExecState *exec, const KJS::Identifier& pro
       return (this->*pluginIOProperties[i].get)(exec);
     }
   }
-  
+
   return KstBinding::get(exec, propertyName);
 }
 

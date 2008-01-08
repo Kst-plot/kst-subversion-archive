@@ -230,6 +230,12 @@ void KstBindPlugin::setModule(KJS::ExecState *exec, const KJS::Value& value) {
     if (d) {
       KstWriteLocker wl(d);
       d->setPlugin(m);
+
+      if (!d->plugin()) {
+        KJS::Object eobj = KJS::Error::create(exec, KJS::GeneralError, "Failed to set module");
+        exec->setException(eobj);
+        return;
+      }
     }
   }
 }

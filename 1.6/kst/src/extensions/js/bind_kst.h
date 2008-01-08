@@ -45,11 +45,13 @@ class KstBindKst : public KstBinding {
        @returns boolean True if the file was successfully loaded and executed.
     */
     KJS::Value loadScript(KJS::ExecState *exec, const KJS::List& args);
+
     /* @method resetInterpreter
        @description Resets the KstScript interpreter.  All variables will be
                     lost.
     */
     KJS::Value resetInterpreter(KJS::ExecState *exec, const KJS::List& args);
+
     /* @method purge
        @description Purges unused objects in Kst.  The has the same behavior as
                     the purge button in the data manager.
@@ -61,53 +63,63 @@ class KstBindKst : public KstBinding {
        @description The list of all loaded data sources.
     */
     KJS::Value dataSources(KJS::ExecState *exec) const;
+
     /* @property ScalarCollection scalars
        @readonly
        @description The list of all scalars in Kst.
     */
     KJS::Value scalars(KJS::ExecState *exec) const;
+
     /* @property StringCollection strings
        @readonly
        @description The list of all strings in Kst.
     */
     KJS::Value strings(KJS::ExecState *exec) const;
+
     /* @property VectorCollection vectors
        @readonly
        @description The list of all vectors in Kst.
     */
     KJS::Value vectors(KJS::ExecState *exec) const;
+
     /* @property WindowCollection windows
        @readonly
        @description The list of all Kst windows in this process.
     */
     KJS::Value windows(KJS::ExecState *exec) const;
+
     /* @property DataObjectCollection objects
        @readonly
        @description The list of all data objects in Kst.
     */
     KJS::Value objects(KJS::ExecState *exec) const;
+
     /* @property ColorSequence colors
        @readonly
        @description A reference to the Kst color sequence in its current state.
     */
     KJS::Value colors(KJS::ExecState *exec) const;
+
     /* @property ExtensionCollection extensions
        @readonly
        @description The list of all extensions Kst can find installed on the
                     system.
     */
     KJS::Value extensions(KJS::ExecState *exec) const;
+
     /* @property Document document
        @readonly
        @description An object that provides access to the current Kst document
                     along with various utility functions.
     */
     KJS::Value document(KJS::ExecState *exec) const;
+
     /* @property PluginManager pluginManager
        @readonly
        @description A reference to the plugin management subsystem of Kst.
     */
     KJS::Value pluginManager(KJS::ExecState *exec) const;
+
     /* @property QWidget gui
        @readonly
        @description A reference to the Kst GUI.  This is implemented using
