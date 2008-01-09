@@ -1881,7 +1881,7 @@ void Kst2DPlot::genOffsetLabel(KstAxisInterpretation axisInterpretation, KstAxis
 
 void Kst2DPlot::genAxisTickLabel(QString& label, double z, bool isLog, double logBase, bool minorTick) {
   if (isLog) {
-    if (z > -4 && z < 4 || minorTick) {
+    if (z > -4.0 && z < 4.0 || minorTick) {
       label = QString::number(pow(logBase, z), 'g', LABEL_PRECISION);
     } else {
       label = i18n("%2 to the power of %1", "%2^{%1}").arg(z, 0, 'f', 0).arg(logBase, 0, 'f', 0);
@@ -2527,26 +2527,12 @@ void Kst2DPlot::updateTieBox(QPainter& p) {
 }
 
 
-void Kst2DPlot::updateDirtyFromLabels() {
-#if 0
-  bool dirty = this->dirty();
-  // FIXME: dirty for xlabel, ylabel, toplabel
-  // don't know what there is to fix... plotlabels no longer cache (and don't need to).
-  //dirty = dirty || XLabel->dirty() || YLabel->dirty() || TopLabel->dirty();
-  XLabel->setDirty(false);
-  YLabel->setDirty(false);
-  TopLabel->setDirty(false);
-  setDirty(dirty);
-#endif
-}
-
-
 void Kst2DPlot::updateSelf() {
   bool wasDirty(dirty());
   KstPlotBase::updateSelf();
   const QSize sizeNew(size());
   const QRect alignment(KST::alignment.limits(geometry()));
-  updateDirtyFromLabels();
+
   if (wasDirty || sizeNew != _oldSize || alignment != _oldAlignment) {
     forEachChild(&KstViewObject::setDirty, true); // FIXME: hack,remove
     draw();
@@ -5068,7 +5054,7 @@ void Kst2DPlot::moveToPrevMarker(KstViewWidget *view) {
   }
   if (prevMarker(currCenter, newCenter)) {
     if (_xLog) {
-      if (newCenter > 0) {
+      if (newCenter > 0.0) {
         newCenter = logXLo(newCenter);
       } else {
         return; //don't scroll left past 0 in log mode

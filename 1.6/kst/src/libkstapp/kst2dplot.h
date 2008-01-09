@@ -467,7 +467,6 @@ private:
   // for backwards compatibility with old labels - convert an old saved label to a KstViewLabel
   KstViewLabelPtr convertLabelToViewLabel(const QDomElement &e);
 
-  void updateDirtyFromLabels();
   void setCursorPos(QWidget *view);
   void unsetCursorPos(QWidget *view);
   void drawCursorPos(QWidget *view);
