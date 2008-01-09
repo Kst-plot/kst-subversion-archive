@@ -5391,8 +5391,10 @@ void Kst2DPlot::zoomSpikeInsensitiveMax(KstViewWidget *view) {
 }
 
 void Kst2DPlot::nextImageColorScale() {
-  const double per[5] = {0.0, 0.0001, 0.001, 0.005, 0.02};
-  if (++_i_per>=5) {
+  const double per[] = {0.0, 0.0001, 0.001, 0.005, 0.02};
+  const int length = sizeof(per) / sizeof(double);
+
+  if (++_i_per >= length) {
     _i_per = 0;
   }
   KstImageList images = kstObjectSubList<KstBaseCurve,KstImage>(Curves);
