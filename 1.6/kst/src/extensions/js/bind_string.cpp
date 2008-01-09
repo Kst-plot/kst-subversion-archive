@@ -145,7 +145,7 @@ KJS::Value KstBindString::get(KJS::ExecState *exec, const KJS::Identifier& prope
       return (this->*stringProperties[i].get)(exec);
     }
   }
-  
+
   return KstBindObject::get(exec, propertyName);
 }
 
@@ -187,15 +187,22 @@ void KstBindString::addBindings(KJS::ExecState *exec, KJS::Object& obj) {
 
 
 void KstBindString::setValue(KJS::ExecState *exec, const KJS::Value& value) {
-  if (value.type() != KJS::NumberType) {
+  if (value.type() == KJS::NumberType) {
+    KstStringPtr s = makeString(_d);
+    if (s) {
+      KstWriteLocker wl(s);
+      s->setValue(value.toString(exec).qstring());
+    }
+  } else if (value.type() == KJS::StringType) {
+    KstStringPtr s = makeString(_d);
+    if (s) {
+      KstWriteLocker wl(s);
+      s->setValue(value.toString(exec).qstring());
+    }
+  } else {
     KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError);
     exec->setException(eobj);
     return;
-  }
-  KstStringPtr s = makeString(_d);
-  if (s) {
-    KstWriteLocker wl(s);
-    s->setValue(value.toString(exec).qstring());
   }
 }
 

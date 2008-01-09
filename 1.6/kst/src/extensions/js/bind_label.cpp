@@ -195,7 +195,7 @@ KJS::Value KstBindLabel::get(KJS::ExecState *exec, const KJS::Identifier& proper
       return (this->*labelProperties[i].get)(exec);
     }
   }
-  
+
   return KstBindBorderedViewObject::get(exec, propertyName);
 }
 
