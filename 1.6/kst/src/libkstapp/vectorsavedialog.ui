@@ -129,7 +129,6 @@
     <include location="local" impldecl="in implementation">kstdatacollection.h</include>
     <include location="local" impldecl="in implementation">kstvector.h</include>
     <include location="local" impldecl="in implementation">kstdatacollection.h</include>
-    <include location="local" impldecl="in implementation">vectorsavedialog.ui.h</include>
 </includes>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
