@@ -2768,12 +2768,12 @@ void Kst2DPlot::draw(KstPainter& p) {
     // paint the curves
     p.save();
     if (_xReversed) {
-      p.scale(-1, 1);
-      p.translate(d2i(-1.0 * Hx - Lx), 0);
+      p.scale(-1.0, 1.0);
+      p.translate(d2i(-1.0 * Hx - Lx), 0.0);
     }
     if (_yReversed) {
-      p.scale(1, -1);
-      p.translate(0, d2i(-1.0 * Hy - Ly));
+      p.scale(1.0, -1.0);
+      p.translate(0.0, d2i(-1.0 * Hy - Ly));
     }
     p.setClipRect(int(Lx), int(Ly), int(Hx - Lx), int(Hy - Ly), QPainter::CoordPainter);
     for (KstBaseCurveList::Iterator i = Curves.begin(); i != Curves.end(); ++i) {
@@ -2804,13 +2804,13 @@ void Kst2DPlot::draw(KstPainter& p) {
     bt[i_bt++] = benchTime.elapsed();
 #endif
     if (_xReversed) {
-      p.scale(-1,1);
-      p.translate(d2i(-1 * Hx - Lx), 0);
+      p.scale(-1.0, 1.0);
+      p.translate(d2i(-1.0 * Hx - Lx), 0.0);
     }
     plotPlotMarkers(p, m_X, b_X, x_max, x_min, y_px, ytop_bdr_px, ybot_bdr_px);
     if (_xReversed) {
-      p.scale(-1,1);
-      p.translate(d2i(-1 * Hx - Lx), 0);
+      p.scale(-1.0, 1.0);
+      p.translate(d2i(-1.0 * Hx - Lx), 0.0);
     }
 #ifdef BENCHMARK
     bt_label[i_bt] = "Plot Markers";
@@ -3952,10 +3952,10 @@ void Kst2DPlot::updateMousePos(const QPoint& pos) {
     if (iXPrecision < 1) {
       iXPrecision = 1;
     }
-    xlabel = QString::number(xpos,'G',iXPrecision);
+    xlabel = QString::number(xpos, 'G', iXPrecision);
 
     if (_cursorOffset) {
-      msgXOffset = QString::number(xpos-_cursor_x,'G',iXPrecision);
+      msgXOffset = QString::number(xpos-_cursor_x, 'G', iXPrecision);
     }
   }
 
@@ -3980,10 +3980,10 @@ void Kst2DPlot::updateMousePos(const QPoint& pos) {
     if (iYPrecision < 1) {
       iYPrecision = 1;
     }
-    ylabel = QString::number(ypos,'G',iYPrecision);
+    ylabel = QString::number(ypos, 'G', iYPrecision);
 
     if (_cursorOffset) {
-      msgYOffset = QString::number(ypos-_cursor_y,'G',iYPrecision);
+      msgYOffset = QString::number(ypos-_cursor_y, 'G', iYPrecision);
     }
   }
 
@@ -4082,9 +4082,13 @@ void Kst2DPlot::drawCursorPos(QWidget *view) {
 
 template<class T>
 inline T kstClamp(const T& x, const T& low, const T& high) {
-  if (x < low)       return low;
-  else if (high < x) return high;
-  else               return x;
+  if (x < low) {
+    return low;
+  } else if (high < x) {
+    return high;
+  } else {
+    return x;
+  }
 }
 
 
@@ -4616,7 +4620,6 @@ void Kst2DPlot::mouseReleaseEvent(QWidget *view, QMouseEvent *e) {
   setCursorForMode(view, _mouse.mode, e->pos());
 
   if (doUpdate) {
-//  kstdDebug() << "mouse release: do update" << endl;
     setDirty();
     static_cast<KstViewWidget*>(view)->paint();
   }
@@ -4963,6 +4966,7 @@ void Kst2DPlot::menuMoveRight() {
   }
 }
 
+
 void Kst2DPlot::menuNextMarker() {
   if (_menuView) {
     moveToNextMarker(_menuView);
@@ -4970,12 +4974,14 @@ void Kst2DPlot::menuNextMarker() {
   }
 }
 
+
 void Kst2DPlot::menuPrevMarker() {
   if (_menuView) {
     moveToPrevMarker(_menuView);
     _menuView->paint();
   }
 }
+
 
 void Kst2DPlot::moveLeft(KstViewWidget *view) {
   if (moveSelfHorizontal(true)) {
@@ -5012,6 +5018,7 @@ void Kst2DPlot::moveDown(KstViewWidget *view) {
   }
 }
 
+
 void Kst2DPlot::moveToNextMarker(KstViewWidget *view) {
   double newCenter, currCenter;
   double xmin, xmax, ymin, ymax;
@@ -5041,6 +5048,7 @@ void Kst2DPlot::moveToNextMarker(KstViewWidget *view) {
     view->paint();
   }
 }
+
 
 void Kst2DPlot::moveToPrevMarker(KstViewWidget *view) {
   double newCenter, currCenter;
@@ -5120,6 +5128,7 @@ void Kst2DPlot::zoomSelfYLocalMax(bool unused) {
   setYScaleMode(FIXED);
 }
 
+
 void Kst2DPlot::moveSelfToCenter(double center) {
   // log the center if necessary
   if (_xLog) {
@@ -5127,7 +5136,7 @@ void Kst2DPlot::moveSelfToCenter(double center) {
   }
 
   // refuse to move if it's not possible
-  if (_xLog && center <= -350) {
+  if (_xLog && center <= -350.0) {
     return;
   }
 
@@ -6259,7 +6268,7 @@ void Kst2DPlot::plotAxes(QPainter& p, QRect& plotRegion,
 }
 
 
-void Kst2DPlot::plotLabels(QPainter &p, int x_px, int y_px, double xleft_bdr_px, double xright_bdr_px,  double ytop_bdr_px, double ybot_bdr_px) {
+void Kst2DPlot::plotLabels(QPainter &p, int x_px, int y_px, double xleft_bdr_px, double xright_bdr_px, double ytop_bdr_px, double ybot_bdr_px) {
   if (!_suppressBottom) {
     p.save();
     p.translate((x_px + xleft_bdr_px - xright_bdr_px - _xLabel->size().width()) / 2, 
