@@ -51,13 +51,13 @@ class KstBindColorSequence : public KstBinding {
        @description Returns the next color in the color sequence.
     */
     KJS::Value next(KJS::ExecState *exec, const KJS::List& args);
-   
+
     /* @method tooClose
        @arg string firstColor The first of two colors to compare.
        @arg string secondColor The second of two colors to compare.
        @returns boolean
        @description Returns true if colors are too close.
-    */   
+    */
     KJS::Value tooClose(KJS::ExecState *exec, const KJS::List& args);
 
     // properties

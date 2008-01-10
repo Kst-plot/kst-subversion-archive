@@ -57,7 +57,7 @@ void KstDataSource::cleanupForExit() {
 
 static QString obtainFile(const QString& source) {
   KURL url;
-  
+
   if (QFile::exists(source) && QFileInfo(source).isRelative()) {
     url.setPath(source);
   } else {

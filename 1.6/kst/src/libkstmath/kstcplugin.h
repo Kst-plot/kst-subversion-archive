@@ -41,6 +41,8 @@ class KST_EXPORT KstCPlugin : public KstDataObject {
     virtual bool slaveVectorsUsed() const;
     virtual bool isValid() const;
 
+    virtual bool validate();
+    virtual bool setModule(KstSharedPtr<Plugin> plugin);
     virtual bool setPlugin(KstSharedPtr<Plugin> plugin);
     KstSharedPtr<Plugin> plugin() const;
 
@@ -52,8 +54,6 @@ class KST_EXPORT KstCPlugin : public KstDataObject {
     QString lastError() const;
 
     virtual Kind kind() const;
-
-    // FIXME: remove this
     void createFitScalars();
 
     virtual KstDataObjectPtr makeDuplicate(KstDataObjectDataObjectMap& duplicatedMap);

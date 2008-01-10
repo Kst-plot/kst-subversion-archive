@@ -17,6 +17,8 @@
 
 #include "bind_plugin.h"
 #include "bind_pluginmodule.h"
+#include "bind_scalar.h"
+#include "bind_string.h"
 
 #include <kstdatacollection.h>
 
@@ -95,7 +97,9 @@ struct PluginProperties {
 };
 
 
-static PluginBindings pluginBindings[] = {
+static PluginBindings pluginBindings[] = {\
+  { "validate", &KstBindPlugin::validate },
+  { "setInput", &KstBindPlugin::setInput },
   { 0L, 0L }
 };
 
@@ -206,6 +210,156 @@ void KstBindPlugin::addBindings(KJS::ExecState *exec, KJS::Object& obj) {
 
 #define makePlugin(X) dynamic_cast<KstCPlugin*>(const_cast<KstObject*>(X.data()))
 
+KJS::Value KstBindPlugin::validate(KJS::ExecState *exec, const KJS::List& args) {
+  if (args.size() != 0) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::SyntaxError);
+    exec->setException(eobj);
+    return KJS::Undefined();
+  }
+
+  KstCPluginPtr d = makePlugin(_d);
+  if (d) {
+    KstReadLocker rl(d);
+    if (d->validate()) {
+      return KJS::Boolean(true);
+    }
+  }
+
+  return KJS::Boolean(false);
+}
+
+
+KJS::Value KstBindPlugin::setInput(KJS::ExecState *exec, const KJS::List& args) {
+  if (args.size() != 2) {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::SyntaxError);
+    exec->setException(eobj);
+    return KJS::Undefined();
+  }
+
+  KstCPluginPtr d = makePlugin(_d);
+  if (d) {
+    KstReadLocker rl(d);
+
+    if (!d->plugin()) {
+      KJS::Object eobj = KJS::Error::create(exec, KJS::GeneralError, "Plugin module must be set first.");
+      exec->setException(eobj);
+      return KJS::Undefined();
+    }
+
+    QString input;
+    unsigned int index;
+
+    if (args[0].type() == KJS::NumberType) {
+      index = args[0].toUInt32(exec);
+      if (index < d->plugin()->data()._inputs.size()) {
+        input = d->plugin()->data()._inputs[index]._name;
+      } else {
+        KJS::Object eobj = KJS::Error::create(exec, KJS::GeneralError, "Index is out of range.");
+        exec->setException(eobj);
+        return KJS::Undefined();
+      }
+    } else if (args[0].type() == KJS::StringType) {
+      input = args[0].toString(exec).qstring();
+      for (index = 0; index < d->plugin()->data()._inputs.size(); ++index ) {
+        if (d->plugin()->data()._inputs[index]._name.compare(input) == 0) {
+          break;
+        }
+      }
+      if (index >= d->plugin()->data()._inputs.size()) {
+        KJS::Object eobj = KJS::Error::create(exec, KJS::GeneralError, "Invalid argument name.");
+        exec->setException(eobj);
+        return KJS::Undefined();
+      }
+    } else {
+      KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError);
+      exec->setException(eobj);
+      return KJS::Undefined();
+    }
+
+    if (!input.isEmpty()) {
+      if (index < d->plugin()->data()._inputs.size()) {
+        Plugin::Data::IOValue::ValueType type = d->plugin()->data()._inputs[index]._type;
+
+        //
+        // ensure that the argument is of the right type...
+        //
+        if (type == Plugin::Data::IOValue::TableType) {
+          KstVectorPtr vp = extractVector(exec, args[1]);
+          if (vp) {
+            d->inputVectors().insert(d->plugin()->data()._inputs[index]._name, vp);
+          } else {
+            KJS::Object eobj = KJS::Error::create(exec, KJS::GeneralError, "Argument was not of the expected type.");
+            exec->setException(eobj);
+            return KJS::Undefined();
+          }
+        } else if (type == Plugin::Data::IOValue::StringType) {
+          KstStringPtr sp;
+
+          if (args[1].type() == KJS::ObjectType) {
+            KstBindString *imp = dynamic_cast<KstBindString*>(args[1].toObject(exec).imp());
+            if (imp) {
+              sp = kst_cast<KstString>(imp->_d);
+            }
+           } else if (args[1].type() ==  KJS::StringType) {
+            KST::stringList.lock().readLock();
+            sp = *KST::stringList.findTag(args[0].toString(exec).qstring());
+            KST::stringList.lock().unlock();
+          }
+
+          if (sp) {
+            d->inputStrings().insert(input, sp);
+          } else {
+            KJS::Object eobj = KJS::Error::create(exec, KJS::GeneralError, "Argument was not of the expected type.");
+            exec->setException(eobj);
+            return KJS::Undefined();
+          }
+        } else if (type == Plugin::Data::IOValue::FloatType ||
+                   type == Plugin::Data::IOValue::PidType ) {
+          KstScalarPtr sp;
+
+          if (args[1].type() == KJS::ObjectType) {
+            KstBindScalar *imp = dynamic_cast<KstBindScalar*>(args[1].toObject(exec).imp());
+            if (imp) {
+              sp = kst_cast<KstScalar>(imp->_d);
+            }
+          } else if (args[1].type() == KJS::StringType) {
+            KST::scalarList.lock().readLock();
+            sp = *KST::scalarList.findTag(args[0].toString(exec).qstring());
+            KST::scalarList.lock().unlock();
+          }
+
+          if (sp) {
+            d->inputScalars().insert(input, sp);
+          } else {
+            KJS::Object eobj = KJS::Error::create(exec, KJS::GeneralError, "Argument was not of the expected type.");
+            exec->setException(eobj);
+            return KJS::Undefined();
+          }
+        } else {
+          KJS::Object eobj = KJS::Error::create(exec, KJS::GeneralError, "Argument was not of the expected type.");
+          exec->setException(eobj);
+          return KJS::Undefined();
+        }
+      } else {
+        KJS::Object eobj = KJS::Error::create(exec, KJS::GeneralError, "Argument was not of the expected type.");
+        exec->setException(eobj);
+        return KJS::Undefined();
+      }
+    } else {
+      KJS::Object eobj = KJS::Error::create(exec, KJS::GeneralError, "Argument was not of the expected type.");
+      exec->setException(eobj);
+      return KJS::Undefined();
+    }
+  } else {
+    KJS::Object eobj = KJS::Error::create(exec, KJS::SyntaxError);
+    exec->setException(eobj);
+    return KJS::Undefined();
+  }
+
+  return KJS::Boolean(true);
+}
+
+
 KJS::Value KstBindPlugin::module(KJS::ExecState *exec) const {
   KstCPluginPtr d = makePlugin(_d);
   if (d) {
@@ -229,7 +383,7 @@ void KstBindPlugin::setModule(KJS::ExecState *exec, const KJS::Value& value) {
     KstCPluginPtr d = makePlugin(_d);
     if (d) {
       KstWriteLocker wl(d);
-      d->setPlugin(m);
+      d->setModule(m);
 
       if (!d->plugin()) {
         KJS::Object eobj = KJS::Error::create(exec, KJS::GeneralError, "Failed to set module");

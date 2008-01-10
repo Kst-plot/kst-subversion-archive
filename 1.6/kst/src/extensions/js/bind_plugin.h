@@ -53,18 +53,32 @@ class KstBindPlugin : public KstBindDataObject {
 
     // member functions
 
+    /* @method setInput
+       @arg index or name of the input argument to be set.
+       @arg input argument.
+       @description Sets the input argument at the specified index or name.
+    */
+    KJS::Value setInput(KJS::ExecState *exec, const KJS::List& args);
+
+    /* @method validate
+       @description Validates the plugin.
+    */
+    KJS::Value validate(KJS::ExecState *exec, const KJS::List& args);
+
     /* @property PluginModule module
        @description The library or module that is used for data processing by
                     this plugin object.
      */
     void setModule(KJS::ExecState *exec, const KJS::Value& value);
     KJS::Value module(KJS::ExecState *exec) const;
+
     /* @property string lastError
        @description A string containing details of the last error that
                     occurred while running the plugin.
        @readonly
      */
     KJS::Value lastError(KJS::ExecState *exec) const;
+
     /* @property boolean valid
        @description True if this plugin object is valid.  If false, there is
                     probably an invalid setting somewhere that needs to be

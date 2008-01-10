@@ -158,14 +158,14 @@ void KstCPlugin::commonConstructor() {
   _outStrings = 0L;
 
   _inScalarCnt = 0;
-  _outScalarCnt = 0;
+  _inStringCnt = 0;
   _inArrayCnt = 0;
+  _outScalarCnt = 0;
   _outArrayCnt = 0;
   _typeString = i18n("Plugin");
   _type = "Plugin";
   _plugin = 0L;
   _localData = 0L;
-  //kstdDebug() << "Creating KSTPlugin: " << long(this) << endl;
 }
 
 
@@ -177,7 +177,6 @@ KstCPlugin::~KstCPlugin() {
     }
     _localData = 0L;
   }
-  //kstdDebug() << "Destroying KSTPlugin: " << long(this) << endl;
 }
 
 
@@ -524,10 +523,16 @@ bool KstCPlugin::slaveVectorsUsed() const {
 
 
 bool KstCPlugin::isValid() const {
-  return _inputVectors.count() == _inArrayCnt &&
+  bool rc = false;
+
+  if (_inArrayCnt > 0 || _inScalarCnt > 0 || _inStringCnt > 0) {
+    rc = _inputVectors.count() == _inArrayCnt &&
          _inputScalars.count() == _inScalarCnt - _inPid &&
          _inputStrings.count() == _inStringCnt &&
          _plugin.data() != 0L;
+  }
+
+  return rc;
 }
 
 
@@ -544,6 +549,95 @@ QString KstCPlugin::propertyString() const {
   }
 
   return str;
+}
+
+//
+// to be used only from javaScript...
+//
+bool KstCPlugin::validate( ) {
+  bool rc = false;
+
+  if (_plugin) {
+    if (_plugin.data()) {
+      Plugin::countScalarsVectorsAndStrings(_plugin->data()._inputs, _inScalarCnt, _inArrayCnt, _inStringCnt, _inPid);
+      if (_inArrayCnt > 0 || _inScalarCnt > 0 || _inStringCnt > 0) {
+        if (_inputVectors.count() == _inArrayCnt &&
+          _inputScalars.count() == _inScalarCnt - _inPid &&
+          _inputStrings.count() == _inStringCnt) {
+
+          _outScalarCnt = 0;
+          _outArrayCnt = 0;
+          _outStringCnt = 0;
+          _outputVectors.clear();
+          _outputScalars.clear();
+          _outputStrings.clear();
+
+          const QValueList<Plugin::Data::IOValue>& otable = _plugin->data()._outputs;
+          for (QValueList<Plugin::Data::IOValue>::ConstIterator it = otable.begin(); it != otable.end(); ++it) {
+            if ((*it)._type == Plugin::Data::IOValue::TableType) {
+              KstWriteLocker blockVectorUpdates(&KST::vectorList.lock());
+              KstVectorPtr v;
+
+              if ((*it)._subType == Plugin::Data::IOValue::FloatNonVectorSubType) {
+                v = new KstVector(KstObjectTag((*it)._name, tag()), 0, this, true);
+              } else {
+                v = new KstVector(KstObjectTag((*it)._name, tag()), 0, this, false);
+              }
+              _outputVectors.insert((*it)._name, v);
+              ++_outArrayCnt;
+            } else if ((*it)._type == Plugin::Data::IOValue::FloatType) {
+              KstWriteLocker blockScalarUpdates(&KST::scalarList.lock());
+              KstScalarPtr s = new KstScalar(KstObjectTag((*it)._name, tag()), this);
+              _outputScalars.insert((*it)._name, s);
+              ++_outScalarCnt;
+            } else if ((*it)._type == Plugin::Data::IOValue::StringType) {
+              KstWriteLocker blockStringUpdates(&KST::stringList.lock());
+              KstStringPtr s = new KstString(KstObjectTag((*it)._name, tag()), this);
+              _outputStrings.insert((*it)._name, s);
+              ++_outStringCnt;
+            }
+          }
+
+          allocateParameters();
+
+          rc = true;
+        }
+      }
+    }
+  }
+
+  return rc;
+}
+
+
+//
+// to be used only from javaScript...
+//
+bool KstCPlugin::setModule(KstSharedPtr<Plugin> plugin) {
+  // Assumes that this is called with a write lock in place on this object
+  Q_ASSERT(myLockStatus() == KstRWLock::WRITELOCKED);
+
+  if (plugin != _plugin) {
+    freeParameters();
+
+    if (_localData) {
+      if (!_plugin || !_plugin->freeLocalData(&_localData)) {
+        free(_localData);
+      }
+      _localData = 0L;
+    }
+
+    _inputVectors.clear();
+    _inputScalars.clear();
+    _inputStrings.clear();
+    _outputVectors.clear();
+    _outputScalars.clear();
+    _outputStrings.clear();
+
+    _plugin = plugin;
+  }
+
+  return true;
 }
 
 
@@ -592,9 +686,7 @@ bool KstCPlugin::setPlugin(KstSharedPtr<Plugin> plugin) {
   _outputStrings.clear();
 
   const QValueList<Plugin::Data::IOValue>& otable = plugin->data()._outputs;
-  for (QValueList<Plugin::Data::IOValue>::ConstIterator it = otable.begin();
-                                                         it != otable.end();
-                                                                        ++it) {
+  for (QValueList<Plugin::Data::IOValue>::ConstIterator it = otable.begin(); it != otable.end(); ++it) {
     if ((*it)._type == Plugin::Data::IOValue::TableType) {
       KstWriteLocker blockVectorUpdates(&KST::vectorList.lock());
       KstVectorPtr v;

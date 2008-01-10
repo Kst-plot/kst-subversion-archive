@@ -131,7 +131,7 @@ QString Plugin::parameterName(int idx) const {
   if (parameter.isEmpty()) {
     parameter = i18n("Param%1").arg(idx);
   }
-  
+
   return parameter;
 }
 
