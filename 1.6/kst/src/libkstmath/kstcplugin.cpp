@@ -28,6 +28,7 @@
 // application specific includes
 #include "dialoglauncher.h"
 #include "kstdatacollection.h"
+#include "kstdataobjectcollection.h"
 #include "kstdebug.h"
 #include "kstcplugin.h"
 #include "plugincollection.h"
@@ -290,9 +291,7 @@ KstObject::UpdateType KstCPlugin::update(int update_counter) {
   bool doUpdate = force;
 
   // Populate the input scalars and vectors
-  for (QValueList<Plugin::Data::IOValue>::ConstIterator it = itable.begin();
-                                                         it != itable.end();
-                                                                        ++it) {
+  for (QValueList<Plugin::Data::IOValue>::ConstIterator it = itable.begin(); it != itable.end(); ++it) {
     if ((*it)._type == Plugin::Data::IOValue::TableType) {
       if (!_inputVectors.contains((*it)._name)) {
         KstDebug::self()->log(i18n("Input vector [%1] for plugin %2 not found.  Unable to continue.").arg((*it)._name).arg(tagName()), KstDebug::Error);
@@ -572,6 +571,8 @@ bool KstCPlugin::validate( ) {
           _outputScalars.clear();
           _outputStrings.clear();
 
+          freeParameters();
+
           const QValueList<Plugin::Data::IOValue>& otable = _plugin->data()._outputs;
           for (QValueList<Plugin::Data::IOValue>::ConstIterator it = otable.begin(); it != otable.end(); ++it) {
             if ((*it)._type == Plugin::Data::IOValue::TableType) {
@@ -599,6 +600,15 @@ bool KstCPlugin::validate( ) {
           }
 
           allocateParameters();
+
+          KstDataObjectList::Iterator oi = KST::dataObjectList.findTag(tagName());
+          if (oi == KST::dataObjectList.end()) {
+            KST::dataObjectList.lock().writeLock();
+            KST::dataObjectList.append(this);
+            KST::dataObjectList.lock().unlock();
+          }
+
+          setDirty(true);
 
           rc = true;
         }
