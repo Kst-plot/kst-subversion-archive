@@ -109,7 +109,7 @@ int PluginCollection::loadPlugin(const QString& xmlfile) {
   Plugin *p = PluginLoader::self()->loadPlugin(xmlfile,
                                    sofile.replace(QRegExp(".xml$"), ".so"));
   if (p) {
-    _plugins[name] = KstSharedPtr<Plugin>(p);
+    _plugins[name] = KstPluginPtr(p);
     emit pluginLoaded(name);
     return 0;
   }
@@ -118,7 +118,7 @@ int PluginCollection::loadPlugin(const QString& xmlfile) {
 }
 
 
-int PluginCollection::unloadPlugin(const KstSharedPtr<Plugin> p) {
+int PluginCollection::unloadPlugin(const KstPluginPtr p) {
   if (!p.data()) {
     return -1;
   }
@@ -138,9 +138,7 @@ int PluginCollection::unloadPlugin(const QString& name) {
 
 
 void PluginCollection::unloadAllPlugins() {
-  for (QMap<QString, KstSharedPtr<Plugin> >::ConstIterator it = _plugins.begin();
-                                                          it != _plugins.end();
-                                                                         ++it) {
+  for (QMap<QString, KstPluginPtr>::ConstIterator it = _plugins.begin(); it != _plugins.end(); ++it) {
     emit pluginUnloaded(it.key());
   }
 
@@ -148,7 +146,7 @@ void PluginCollection::unloadAllPlugins() {
 }
 
 
-KstSharedPtr<Plugin> PluginCollection::plugin(const QString& name) {
+KstPluginPtr PluginCollection::plugin(const QString& name) {
   if (!_plugins.contains(name) || _plugins[name] == 0L) {
     if (!_installedPluginNames.contains(name)) {
       rescan();

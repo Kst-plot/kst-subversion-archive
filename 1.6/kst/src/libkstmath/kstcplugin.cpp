@@ -623,7 +623,7 @@ bool KstCPlugin::validate( ) {
 //
 // to be used only from javaScript...
 //
-bool KstCPlugin::setModule(KstSharedPtr<Plugin> plugin) {
+bool KstCPlugin::setModule(KstPluginPtr plugin) {
   // Assumes that this is called with a write lock in place on this object
   Q_ASSERT(myLockStatus() == KstRWLock::WRITELOCKED);
 
@@ -651,7 +651,7 @@ bool KstCPlugin::setModule(KstSharedPtr<Plugin> plugin) {
 }
 
 
-bool KstCPlugin::setPlugin(KstSharedPtr<Plugin> plugin) {
+bool KstCPlugin::setPlugin(KstPluginPtr plugin) {
   // Assumes that this is called with a write lock in place on this object
   Q_ASSERT(myLockStatus() == KstRWLock::WRITELOCKED);
 
@@ -728,7 +728,7 @@ bool KstCPlugin::setPlugin(KstSharedPtr<Plugin> plugin) {
 }
 
 
-KstSharedPtr<Plugin> KstCPlugin::plugin() const {
+KstPluginPtr KstCPlugin::plugin() const {
   return _plugin;
 }
 

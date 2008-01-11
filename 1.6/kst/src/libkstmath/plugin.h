@@ -154,4 +154,6 @@ class KST_EXPORT Plugin : public KstShared {
     QString _xmlFile, _soFile;
 };
 
+typedef KstSharedPtr<Plugin> KstPluginPtr;
+
 #endif

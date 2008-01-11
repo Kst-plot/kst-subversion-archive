@@ -87,7 +87,7 @@ KstDataObject::~KstDataObject() {
 
 static QMap<QString, KstDataObjectPtr> pluginInfo;
 void KstDataObject::cleanupForExit() {
-  pluginInfo.clear(); //FIXME?
+  pluginInfo.clear();
 }
 
 

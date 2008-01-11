@@ -42,9 +42,9 @@ class KST_EXPORT KstCPlugin : public KstDataObject {
     virtual bool isValid() const;
 
     virtual bool validate();
-    virtual bool setModule(KstSharedPtr<Plugin> plugin);
-    virtual bool setPlugin(KstSharedPtr<Plugin> plugin);
-    KstSharedPtr<Plugin> plugin() const;
+    virtual bool setModule(KstPluginPtr plugin);
+    virtual bool setPlugin(KstPluginPtr plugin);
+    KstPluginPtr plugin() const;
 
     virtual QString propertyString() const;
 
@@ -65,7 +65,7 @@ class KST_EXPORT KstCPlugin : public KstDataObject {
     static void countScalarsAndVectors(const QValueList<Plugin::Data::IOValue>& table, unsigned& scalars, unsigned& vectors);
     virtual void showNewDialog();
     virtual void showEditDialog();
-    KstSharedPtr<Plugin> _plugin;
+    KstPluginPtr _plugin;
     unsigned _inScalarCnt, _inArrayCnt, _inStringCnt, _outScalarCnt;
     unsigned _inPid, _outArrayCnt, _outStringCnt;
     void *_localData;

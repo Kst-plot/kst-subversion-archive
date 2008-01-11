@@ -18,12 +18,11 @@
 #ifndef ENODES_H
 #define ENODES_H
 
+#include "plugin.h"
 #include "kstbasicplugin.h"
 #include "kststring.h"
 #include "kstvector.h"
 #include "kst_export.h"
-
-class Plugin;
 
 #define EQ_FALSE        0.0
 #define EQ_TRUE         1.0
@@ -134,7 +133,7 @@ namespace Equation {
       char *_name;
       ArgumentList *_args;
       void *_f;
-      KstSharedPtr<Plugin> _cStylePlugin;
+      KstPluginPtr _cStylePlugin;
       KstBasicPluginPtr _dataObjectPlugin;
 
     private:

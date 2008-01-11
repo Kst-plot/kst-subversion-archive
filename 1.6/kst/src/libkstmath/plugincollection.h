@@ -44,7 +44,7 @@ class KST_EXPORT PluginCollection : public QObject {
   /**
    *  Returns 0 on success, nonzero on error.
    */
-  int unloadPlugin(const KstSharedPtr<Plugin> p);
+  int unloadPlugin(const KstPluginPtr p);
   int unloadPlugin(const QString& name);
 
   int count() const;
@@ -53,7 +53,7 @@ class KST_EXPORT PluginCollection : public QObject {
    *  Returns 0L on error.  Will load the plugin if it is not already
    *  loaded.
    */
-  KstSharedPtr<Plugin> plugin(const QString& name);
+  KstPluginPtr plugin(const QString& name);
 
   /**
    *  Returns true if the plugin is loaded.
@@ -109,7 +109,7 @@ class KST_EXPORT PluginCollection : public QObject {
 
   private:
     PluginXMLParser *_parser;
-    QMap<QString, KstSharedPtr<Plugin> > _plugins;
+    QMap<QString, KstPluginPtr> _plugins;
 
     // Map: XMLFILE -> Plugin data
     mutable QMap<QString, Plugin::Data> _installedPlugins;
