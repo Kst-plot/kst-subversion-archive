@@ -65,6 +65,16 @@ class KstBindPlugin : public KstBindDataObject {
     */
     KJS::Value validate(KJS::ExecState *exec, const KJS::List& args);
 
+    /* @property ObjectCollection inputs
+       @description The list of inputs to the plugin.
+    */
+    KJS::Value inputs(KJS::ExecState *exec) const;
+
+    /* @property ObjectCollection outputs
+       @description The list of outputs to the plugin.
+    */
+    KJS::Value outputs(KJS::ExecState *exec) const;
+
     /* @property PluginModule module
        @description The library or module that is used for data processing by
                     this plugin object.

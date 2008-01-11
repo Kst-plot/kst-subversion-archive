@@ -20,6 +20,8 @@
 
 #include "bind_collection.h"
 
+#include <kstbasicplugin.h>
+#include <kstcplugin.h>
 #include <kstobject.h>
 
 #include <kjs/interpreter.h>
@@ -34,6 +36,7 @@
 class KstBindObjectCollection : public KstBindCollection {
   public:
     KstBindObjectCollection(KJS::ExecState *exec, const KstObjectList<KstObjectPtr>& vectors);
+    KstBindObjectCollection(KJS::ExecState *exec, const KstCPluginPtr plugin, bool inputs);
     KstBindObjectCollection(KJS::ExecState *exec);
     ~KstBindObjectCollection();
 
@@ -45,6 +48,8 @@ class KstBindObjectCollection : public KstBindCollection {
 
   protected:
     KstObjectList<KstObjectPtr> _objects;
+    KstCPluginPtr _plugin;
+    bool _inputs;
 };
 
 

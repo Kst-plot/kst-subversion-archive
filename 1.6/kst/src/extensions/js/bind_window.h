@@ -64,8 +64,6 @@ class KstBindWindow : public KstBinding {
 
     /* @property PlotCollection plots
        @description The list of plots contained in this window, flattened.
-                    This property is subject to change!  Do not rely on it for
-                    production code yet!
     */
     KJS::Value plots(KJS::ExecState *exec) const;
 

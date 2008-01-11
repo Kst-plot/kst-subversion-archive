@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "bind_objectcollection.h"
 #include "bind_plugin.h"
 #include "bind_pluginmodule.h"
 #include "bind_scalar.h"
@@ -97,7 +98,7 @@ struct PluginProperties {
 };
 
 
-static PluginBindings pluginBindings[] = {\
+static PluginBindings pluginBindings[] = {
   { "validate", &KstBindPlugin::validate },
   { "setInput", &KstBindPlugin::setInput },
   { 0L, 0L }
@@ -105,6 +106,8 @@ static PluginBindings pluginBindings[] = {\
 
 
 static PluginProperties pluginProperties[] = {
+  { "inputs", 0L, &KstBindPlugin::inputs },
+  { "outputs", 0L, &KstBindPlugin::outputs },
   { "module", &KstBindPlugin::setModule, &KstBindPlugin::module },
   { "lastError", 0L, &KstBindPlugin::lastError },
   { "valid", 0L, &KstBindPlugin::valid },
@@ -287,6 +290,7 @@ KJS::Value KstBindPlugin::setInput(KJS::ExecState *exec, const KJS::List& args) 
           KstVectorPtr vp = extractVector(exec, args[1]);
           if (vp) {
             d->inputVectors().insert(d->plugin()->data()._inputs[index]._name, vp);
+            d->setDirty(true);
           } else {
             KJS::Object eobj = KJS::Error::create(exec, KJS::GeneralError, "Argument was not of the expected type.");
             exec->setException(eobj);
@@ -308,6 +312,7 @@ KJS::Value KstBindPlugin::setInput(KJS::ExecState *exec, const KJS::List& args) 
 
           if (sp) {
             d->inputStrings().insert(input, sp);
+            d->setDirty(true);
           } else {
             KJS::Object eobj = KJS::Error::create(exec, KJS::GeneralError, "Argument was not of the expected type.");
             exec->setException(eobj);
@@ -330,6 +335,7 @@ KJS::Value KstBindPlugin::setInput(KJS::ExecState *exec, const KJS::List& args) 
 
           if (sp) {
             d->inputScalars().insert(input, sp);
+            d->setDirty(true);
           } else {
             KJS::Object eobj = KJS::Error::create(exec, KJS::GeneralError, "Argument was not of the expected type.");
             exec->setException(eobj);
@@ -357,6 +363,30 @@ KJS::Value KstBindPlugin::setInput(KJS::ExecState *exec, const KJS::List& args) 
   }
 
   return KJS::Boolean(true);
+}
+
+
+KJS::Value KstBindPlugin::inputs(KJS::ExecState *exec) const {
+  KstCPluginPtr d = makePlugin(_d);
+  if (d) {
+    KstReadLocker rl(d);
+    if (d->plugin()) {
+      return KJS::Object(new KstBindObjectCollection(exec, d, true));
+    }
+  }
+  return KJS::Undefined();
+}
+
+
+KJS::Value KstBindPlugin::outputs(KJS::ExecState *exec) const {
+  KstCPluginPtr d = makePlugin(_d);
+  if (d) {
+    KstReadLocker rl(d);
+    if (d->plugin()) {
+      return KJS::Object(new KstBindObjectCollection(exec, d, false));
+    }
+  }
+  return KJS::Undefined();
 }
 
 
