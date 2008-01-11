@@ -263,4 +263,4 @@ void ElogConfigurationI::loadSettings() {
 }
 
 #include "elogconfiguration_i.moc"
-// vim: ts=2 sw=2 et
+

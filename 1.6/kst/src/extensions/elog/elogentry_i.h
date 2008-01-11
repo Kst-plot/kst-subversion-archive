@@ -31,32 +31,32 @@ class ElogEntryI : public ElogEntry {
                 const char* name = 0,
                 bool modal = FALSE, WFlags fl = 0 );
     virtual ~ElogEntryI();
-          
+
     void    initialize();
     QString text() { return _strText; }
     QString attributes() { return _strAttributes; }
     bool    includeCapture() { return _bIncludeCapture; }
     bool    includeConfiguration() { return _bIncludeConfiguration; }
     bool    includeDebugInfo() { return _bIncludeDebugInfo; }
-    
+
   public slots:
     virtual void setEnabled(bool);
-  
+
   protected slots:
-  
+
   private slots:
     virtual void configuration();
     virtual void submit();
   signals:
-  
+
   protected:
     virtual void customEvent(QCustomEvent* event);
-    
+
   private:
     void setSettings();
     void saveSettings();
     void loadSettings();
-    
+
     ELOGAttribList _attribs;
     KstELOG* _elog;
     QWidget* _frameWidget;
@@ -69,4 +69,4 @@ class ElogEntryI : public ElogEntry {
 
 
 #endif // ELOGCONFIGURATIONI_H
-// vim: ts=2 sw=2 et
+

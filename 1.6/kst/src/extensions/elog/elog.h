@@ -33,10 +33,10 @@ class KstELOG : public KstExtension, public KXMLGUIClient {
     ElogConfigurationI* configuration() { return _elogConfiguration; }
     ElogEventEntryI* eventEntry() { return _elogEventEntry; }
     ElogEntryI* entry() { return _elogEntry; }
-    
+
     virtual void load(QDomElement& e);
     virtual void save(QTextStream& ts, const QString& indent = QString::null);
-    
+
   public slots:
     void submitEventEntry(const QString& strMessage);
     void submitEntry();
@@ -53,4 +53,3 @@ class KstELOG : public KstExtension, public KXMLGUIClient {
 
 #endif
 
-// vim: ts=2 sw=2 et

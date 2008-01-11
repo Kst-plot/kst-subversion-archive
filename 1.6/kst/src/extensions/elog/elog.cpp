@@ -63,7 +63,7 @@ KstELOG::~KstELOG() {
       app()->guiFactory()->removeClient(this);
     }
   }
-  
+
   delete _elogConfiguration;
   delete _elogEventEntry;
   delete _elogEntry;
@@ -177,7 +177,7 @@ void KstELOG::launchBrowser() {
     url += _elogConfiguration->name();
     url += "/";
   }
-  
+
   kapp->invokeBrowser(url);
 }
 
@@ -193,4 +193,4 @@ void KstELOG::save(QTextStream& ts, const QString& indent) {
 }
 
 #include "elog.moc"
-// vim: ts=2 sw=2 et
+

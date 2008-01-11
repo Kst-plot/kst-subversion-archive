@@ -40,4 +40,3 @@ class ElogBasicThreadSubmit : public ElogThreadSubmit {
 
 #endif
 
-// vim: ts=2 sw=2 et

@@ -44,10 +44,10 @@ void ElogThreadAttrs::doTransmit( ) {
   QString strWritePassword;
   QString strLogbook;
 
-  strUserName 					= _elog->configuration()->userName();
-  strUserPassword 			= _elog->configuration()->userPassword();
-  strWritePassword			= _elog->configuration()->writePassword();
-  strLogbook  					= _elog->configuration()->name();
+  strUserName = _elog->configuration()->userName();
+  strUserPassword = _elog->configuration()->userPassword();
+  strWritePassword = _elog->configuration()->writePassword();
+  strLogbook = _elog->configuration()->name();
 
   destination.setProtocol("http");
   destination.setHost(_elog->configuration()->ipAddress());
@@ -117,21 +117,21 @@ void ElogThreadAttrs::doResponse( char* response ) {
   static char    type[] = " type=";
   static char    value[] = " value=\"";
   static char    valueNoQuote[] = " value=";
-  char*				   p = response;
-  char*					 pAttribNameStart;
-  char*					 pAttribNameEnd = NULL;
-  char*					 pAttribValueStart;
-  char*					 pAttribValueEnd = NULL;
+  char*          p = response;
+  char*          pAttribNameStart;
+  char*          pAttribNameEnd = NULL;
+  char*          pAttribValueStart;
+  char*          pAttribValueEnd = NULL;
   bool           bAppend;
-  int					   iFontStart;
-  int						 iFontEnd;
+  int            iFontStart;
+  int            iFontEnd;
   int            iOptionsStart = 0;
-  int						 iOptionsEnd;
-  int					   iValueStart;
-  int						 iValueEnd;
-  int						 iInput;
-  int						 iSelect;
-  
+  int            iOptionsEnd;
+  int            iValueStart;
+  int            iValueEnd;
+  int            iInput;
+  int            iSelect;
+
   //
   // find and categorise the attributes...
   //
@@ -140,7 +140,7 @@ void ElogThreadAttrs::doResponse( char* response ) {
     attrib.bMandatory = FALSE;
     attrib.values.clear();
     attrib.pWidget = NULL;
-    
+
     //
     // retrieve the attribute label name...
     //
@@ -152,7 +152,7 @@ void ElogThreadAttrs::doResponse( char* response ) {
         *pAttribNameEnd  = '\0';
         strAttrib = pAttribNameStart;
         pAttribNameEnd += strlen( endlabel );
-        
+
         //
         // check for a mandatory field...
         //
@@ -167,7 +167,7 @@ void ElogThreadAttrs::doResponse( char* response ) {
             }
           }
         }
-        
+
         //
         // remove the trailing : if present...
         //
@@ -188,11 +188,11 @@ void ElogThreadAttrs::doResponse( char* response ) {
             *pAttribValueEnd  = '\0';
             strValues = pAttribValueStart;
             pAttribValueEnd += strlen( endlabel );
-            
+
             iInput = strValues.find( input );
             iSelect = strValues.find( select );
             if( ( iInput != -1 && iSelect == -1 ) || 
-                ( iInput != -1 && iSelect != -1 && iInput < iSelect ) ) {     
+                ( iInput != -1 && iSelect != -1 && iInput < iSelect ) ) {
               bAppend = FALSE;
               while( ( iOptionsStart = strValues.find( type, iOptionsStart ) ) != -1 ) {
                 iOptionsStart += strlen( type );
@@ -202,7 +202,7 @@ void ElogThreadAttrs::doResponse( char* response ) {
                   iOptionsStart += iOptionsEnd - iOptionsStart;
                   if( strType == "radio" ) {
                     attrib.type = AttribTypeRadio;
-                    
+
                     iValueStart = strValues.find( value, iOptionsStart );
                     if( iValueStart != -1 ) {
                       iValueStart += strlen( value );
@@ -263,7 +263,7 @@ void ElogThreadAttrs::doResponse( char* response ) {
                 }
               }
               if( bAppend ) {
-                attribs.append( attrib );               
+                attribs.append( attrib );
               }
             }
             else if( ( iSelect != -1 && iInput == -1 ) || 
@@ -272,7 +272,7 @@ void ElogThreadAttrs::doResponse( char* response ) {
               // we have a combobox, so need to determine the options...
               //
               attrib.type = AttribTypeCombo;
-             
+
               while( ( iOptionsStart = strValues.find( optionvalue, iOptionsStart ) ) != -1 ) {
                 iOptionsStart += strlen( optionvalue );
                 iOptionsEnd = strValues.find( "\">", iOptionsStart );
@@ -293,9 +293,9 @@ void ElogThreadAttrs::doResponse( char* response ) {
         }
       }
     }
-    p = pAttribValueEnd;   
+    p = pAttribValueEnd;
   }
-  
+
   eventAttrs.setData( &attribs );
   QApplication::sendEvent( (QObject*)_elog->entry(), (QEvent*)&eventAttrs );
   QApplication::sendEvent( (QObject*)_elog->eventEntry(), (QEvent*)&eventAttrs );
@@ -316,7 +316,7 @@ bool ElogThreadAttrs::doResponseError( const char* response, const QString& strD
     strError = i18n("Failed to access ELOG: error: %1").arg( strDefault );
     doError( strError );
   }
-  
+
   return bRetVal;
 }
 
@@ -360,4 +360,3 @@ void ElogThreadAttrs::result(KIO::Job *job) {
 
 #include "elogthreadattrs.moc"
 
-// vim: ts=2 sw=2 et

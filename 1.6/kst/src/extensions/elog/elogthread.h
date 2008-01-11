@@ -28,12 +28,12 @@ class ElogThread : public QObject {
   public:
     ElogThread(KstELOG*);
     virtual ~ElogThread();
-    
-  protected:    
+
+  protected:
     void addAttachment( QDataStream& stream, const QString& boundary, const QByteArray& byteArray, int iFileNumber, const QString& name );
     void addAttribute( QDataStream& stream, const QString& boundary, const QString& tag, const QString& strValue, bool bEncode );
     void doError( const QString& text, KstDebug::LogLevel level = KstDebug::Warning);
-    
+
     KIO::TransferJob  *_job;
     KstELOG*          _elog;
     QByteArray        _byteArrayResult;
@@ -42,4 +42,3 @@ class ElogThread : public QObject {
 
 #endif
 
-// vim: ts=2 sw=2 et

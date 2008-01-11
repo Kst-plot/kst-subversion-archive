@@ -196,7 +196,7 @@ bool ElogThreadSubmit::doResponseCheck( const char* response ) {
 bool ElogThreadSubmit::doResponseError( const char* response, const QString& strDefault ) {
   QString strError;
   char str[80];
-  
+
   if (strstr(response, "Logbook Selection"))
     doError( i18n("Failed to add %1: no logbook specified").arg(_strType) );
   else if (strstr(response, "enter password")) {
@@ -214,7 +214,7 @@ bool ElogThreadSubmit::doResponseError( const char* response, const QString& str
     strError = i18n("Failed to add %1: error: %2").arg(_strType).arg( strDefault );
     doError( strError ); 
   }
-  
+
   return TRUE;
 }
 
@@ -259,4 +259,3 @@ void ElogThreadSubmit::result(KIO::Job *job) {
 
 #include "elogthreadsubmit.moc"
 
-// vim: ts=2 sw=2 et

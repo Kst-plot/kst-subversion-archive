@@ -46,13 +46,13 @@ class ElogThreadSubmit : public ElogThread {
     void result(KIO::Job *);
     void dataReq(KIO::Job *, QByteArray &);
     void data(KIO::Job *, const QByteArray &);
-            
+
   protected:
     virtual bool doResponseError( const char* response, const QString& strDefault );
     virtual bool doResponseCheck( const char* response );
 
     QString           _strType;
-    
+
   protected:
     QByteArray        _byteArrayAll;
     QDataStream       _dataStreamAll;
@@ -74,4 +74,3 @@ class ElogThreadSubmit : public ElogThread {
 
 #endif
 
-// vim: ts=2 sw=2 et

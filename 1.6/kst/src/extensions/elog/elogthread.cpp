@@ -83,4 +83,3 @@ void ElogThread::doError( const QString& text, KstDebug::LogLevel level ) {
 
 #include "elogthread.moc"
 
-// vim: ts=2 sw=2 et

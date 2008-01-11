@@ -50,4 +50,3 @@ ElogEventThreadSubmit::ElogEventThreadSubmit(KstELOG* elog,
 
 #include "elogeventthreadsubmit.moc"
 
-// vim: ts=2 sw=2 et

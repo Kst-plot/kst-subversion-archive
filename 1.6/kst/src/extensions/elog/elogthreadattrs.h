@@ -26,7 +26,7 @@ class ElogThreadAttrs : public ElogThread {
   public:
     ElogThreadAttrs(KstELOG*);
     virtual ~ElogThreadAttrs();
-    
+
     virtual void doTransmit( );
 
   public slots:
@@ -36,11 +36,10 @@ class ElogThreadAttrs : public ElogThread {
 
   protected:
     virtual bool doResponseError( const char* response, const QString& strDefault );
-    
+
   private:
-    void doResponse( char* response );    
+    void doResponse( char* response );
 };
 
 #endif
 
-// vim: ts=2 sw=2 et
