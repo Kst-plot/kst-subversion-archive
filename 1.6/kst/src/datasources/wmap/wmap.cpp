@@ -794,4 +794,3 @@ extern "C" {
 
 KST_KEY_DATASOURCE_PLUGIN(wmap)
 
-// vim: ts=2 sw=2 et
