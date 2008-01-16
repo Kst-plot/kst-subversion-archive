@@ -35,15 +35,19 @@ FitsimageSource::FitsimageSource(KConfig *cfg, const QString& filename, const QS
 
 
 FitsimageSource::~FitsimageSource() {
-  int status;
-  if ( _fptr )
+  int status = 0;
+
+  if ( _fptr ) {
     fits_close_file( _fptr, &status );
+  }
+
   _fptr = 0L;
 }
 
 
 bool FitsimageSource::reset() {
   init();
+
   return true;
 }
 
@@ -65,6 +69,7 @@ bool FitsimageSource::init() {
     fits_close_file( _fptr, &status );
     _fptr = 0L;
   }
+
   return false;
 }
 
@@ -84,11 +89,11 @@ KstObject::UpdateType FitsimageSource::update(int u) {
   _frameCount = newNF;
 
   updateNumFramesScalar();
+
   return setLastUpdateResult(isnew ? KstObject::UPDATE : KstObject::NO_CHANGE);
 }
 
-bool FitsimageSource::matrixDimensions( const QString& matrix,
-                                           int* xDim, int* yDim) {
+bool FitsimageSource::matrixDimensions( const QString& matrix, int* xDim, int* yDim) {
   long n_axes[3];
   int status = 0;
 
@@ -98,10 +103,13 @@ bool FitsimageSource::matrixDimensions( const QString& matrix,
 
   fits_get_img_size( _fptr,  2,  n_axes,  &status );
 
-  if ( status ) return false;
+  if ( status ) {
+    return false;
+  }
 
   *xDim = n_axes[0];
   *yDim = n_axes[1];
+
   return true;
 }
 
@@ -125,14 +133,16 @@ int FitsimageSource::readMatrix(KstMatrixData* data,
 
   fits_get_img_size( _fptr,  2,  n_axes,  &status );
 
-  if ( status ) return false;
+  if ( status ) {
+    return false;
+  }
 
   n_elements = n_axes[0]*n_axes[1];
   buffer = ( double * )malloc( n_elements*sizeof( double ) );
 
   fits_read_pix( _fptr,  TDOUBLE, fpixel, n_elements,
                  &nullval, buffer, &anynull,  &status );
-  
+
   // Check to see if the file is using the BLANK keyword
   // to indicate the NULL value for the image.  This is
   // not correct useage for floating point images, but 
@@ -156,7 +166,7 @@ int FitsimageSource::readMatrix(KstMatrixData* data,
   x1 = xStart+xNumSteps;
   ni = xNumSteps*yNumSteps-1;
 
-  i=0;
+  i = 0;
 
   z = data->z;
   if ( field=="1" ) {
@@ -182,13 +192,13 @@ int FitsimageSource::readMatrix(KstMatrixData* data,
   if ( status ) {
     data->xMin = x0;
     data->yMin = y0;
-    data->xStepSize = 1;
-    data->yStepSize = 1;
+    data->xStepSize = 1.0;
+    data->yStepSize = 1.0;
   } else {
     dx = fabs( dx );
     dy = fabs( dy );
-    data->xStepSize =dx;
-    data->yStepSize =dy;
+    data->xStepSize = dx;
+    data->yStepSize = dy;
     data->xMin = x - cx*dx;
     data->yMin = y - cy*dy;
   }
@@ -196,7 +206,7 @@ int FitsimageSource::readMatrix(KstMatrixData* data,
 }
 
 int FitsimageSource::readField(double *v, const QString& field, int s, int n) {
-  int i=0;
+  int i = 0;
 
   if ( !_matrixList.contains( field ) ) {
     return false;
@@ -231,21 +241,23 @@ int FitsimageSource::readField(double *v, const QString& field, int s, int n) {
 
 
 bool FitsimageSource::isValidField(const QString& field) const {
-  return  _fieldList.contains( field );
+  return _fieldList.contains( field );
 }
 
 bool FitsimageSource::isValidMatrix(const QString& field) const {
-  return  _matrixList.contains( field );
+  return _matrixList.contains( field );
 }
 
 int FitsimageSource::samplesPerFrame(const QString &field) {
   Q_UNUSED(field)
+
   return 1;
 }
 
 
 int FitsimageSource::frameCount(const QString& field) const {
   Q_UNUSED(field)
+
   return _frameCount;
 }
 
@@ -264,7 +276,6 @@ void FitsimageSource::save(QTextStream &ts, const QString& indent) {
   KstDataSource::save(ts, indent);
 }
 
-//#include <kdebug.h>
 
 extern "C" {
 KstDataSource *create_fitsimage(KConfig *cfg, const QString& filename, const QString& type) {
@@ -273,7 +284,9 @@ KstDataSource *create_fitsimage(KConfig *cfg, const QString& filename, const QSt
 
 QStringList provides_fitsimage() {
   QStringList rc;
+
   rc += "FITS Image";
+
   return rc;
 }
 
@@ -287,12 +300,14 @@ int understands_fitsimage(KConfig*, const QString& filename) {
   fits_open_image( &ffits, filename.latin1( ), READONLY, &status );
   fits_get_img_dim( ffits, &naxis,  &status);
 
-  if( ( status == 0 ) && ( naxis>1 ) )
+  if( status == 0 && naxis > 1 ) {
     ret_val = 95;
-  else
+  } else {
     ret_val = 0;
+  }
 
-  // status !=0 should prevent close from having trouble...
+  status = 0;
+
   fits_close_file( ffits ,  &status );
 
   return ret_val;
@@ -321,4 +336,3 @@ QStringList fieldList_fitsimage(KConfig*, const QString& filename, const QString
 
 KST_KEY_DATASOURCE_PLUGIN(fitsimage)
 
-// vim: ts=2 sw=2 et
