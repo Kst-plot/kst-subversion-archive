@@ -228,7 +228,6 @@ void QimagesourceSource::save(QTextStream &ts, const QString& indent) {
   KstDataSource::save(ts, indent);
 }
 
-//#include <kdebug.h>
 
 extern "C" {
 KstDataSource *create_qimagesource(KConfig *cfg, const QString& filename, const QString& type) {
@@ -284,4 +283,3 @@ QStringList fieldList_qimagesource(KConfig*, const QString& filename, const QStr
 
 KST_KEY_DATASOURCE_PLUGIN(qimagesource)
 
-// vim: ts=2 sw=2 et

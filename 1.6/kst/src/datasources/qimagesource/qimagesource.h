@@ -25,37 +25,21 @@
 class QimagesourceSource : public KstDataSource {
   public:
     QimagesourceSource(KConfig *cfg, const QString& filename, const QString& type);
-
     ~QimagesourceSource();
 
     bool init();
-
     KstObject::UpdateType update(int = -1);
-
     int readField(double *v, const QString &field, int s, int n);
-
     int readMatrix(KstMatrixData* data, const QString& matrix, int xStart,
                    int yStart, int xNumSteps, int yNumSteps);
-/*     int readMatrix(KstMatrixData* data, const QString& matrix, int xStart, */
-/*                    int yStart, int xNumSteps, int yNumSteps, int skip); */
-
-    
     bool isValidField(const QString &field) const;
-
     bool isValidMatrix(const QString& field) const;
-
     bool matrixDimensions( const QString& matrix, int* xDim, int* yDim);
-
     int samplesPerFrame(const QString &field);
-
     int frameCount(const QString& field = QString::null) const;
-
     QString fileType() const;
-
     void save(QTextStream &ts, const QString& indent = QString::null);
-
     bool isEmpty() const;
-
     bool reset();
 
   private:
@@ -65,4 +49,4 @@ class QimagesourceSource : public KstDataSource {
 
 
 #endif
-// vim: ts=2 sw=2 et
+
