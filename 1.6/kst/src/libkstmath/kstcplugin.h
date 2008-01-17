@@ -40,7 +40,6 @@ class KST_EXPORT KstCPlugin : public KstDataObject {
 
     virtual bool slaveVectorsUsed() const;
     virtual bool isValid() const;
-
     virtual bool validate();
     virtual bool setModule(KstPluginPtr plugin);
     virtual bool setPlugin(KstPluginPtr plugin);

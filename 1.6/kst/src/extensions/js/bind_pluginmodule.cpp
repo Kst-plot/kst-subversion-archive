@@ -27,6 +27,13 @@ KstBindPluginModule::KstBindPluginModule(KJS::ExecState *exec, const Plugin::Dat
 }
 
 
+KstBindPluginModule::KstBindPluginModule(KJS::ExecState *exec, KstBasicPluginPtr bp)
+: KstBinding("PluginModule", false), _bp(bp) {
+  KJS::Object o(this);
+  addBindings(exec, o);
+}
+
+
 KstBindPluginModule::KstBindPluginModule(int id)
 : KstBinding("PluginModule Method", id) {
 }
@@ -82,6 +89,7 @@ KJS::ReferenceList KstBindPluginModule::propList(KJS::ExecState *exec, bool recu
 
 bool KstBindPluginModule::hasProperty(KJS::ExecState *exec, const KJS::Identifier& propertyName) const {
   QString prop = propertyName.qstring();
+
   for (int i = 0; pluginModuleProperties[i].name; ++i) {
     if (prop == pluginModuleProperties[i].name) {
       return true;
@@ -94,6 +102,7 @@ bool KstBindPluginModule::hasProperty(KJS::ExecState *exec, const KJS::Identifie
 
 void KstBindPluginModule::put(KJS::ExecState *exec, const KJS::Identifier& propertyName, const KJS::Value& value, int attr) {
   QString prop = propertyName.qstring();
+
   for (int i = 0; pluginModuleProperties[i].name; ++i) {
     if (prop == pluginModuleProperties[i].name) {
       if (!pluginModuleProperties[i].set) {
@@ -110,6 +119,7 @@ void KstBindPluginModule::put(KJS::ExecState *exec, const KJS::Identifier& prope
 
 KJS::Value KstBindPluginModule::get(KJS::ExecState *exec, const KJS::Identifier& propertyName) const {
   QString prop = propertyName.qstring();
+
   for (int i = 0; pluginModuleProperties[i].name; ++i) {
     if (prop == pluginModuleProperties[i].name) {
       if (!pluginModuleProperties[i].get) {
@@ -125,9 +135,11 @@ KJS::Value KstBindPluginModule::get(KJS::ExecState *exec, const KJS::Identifier&
 
 KJS::Value KstBindPluginModule::call(KJS::ExecState *exec, KJS::Object& self, const KJS::List& args) {
   int id = this->id();
+
   if (id <= 0) {
     KJS::Object eobj = KJS::Error::create(exec, KJS::GeneralError);
     exec->setException(eobj);
+
     return KJS::Undefined();
   }
 
@@ -135,6 +147,7 @@ KJS::Value KstBindPluginModule::call(KJS::ExecState *exec, KJS::Object& self, co
   if (!imp) {
     KJS::Object eobj = KJS::Error::create(exec, KJS::GeneralError);
     exec->setException(eobj);
+
     return KJS::Undefined();
   }
 
@@ -152,58 +165,125 @@ void KstBindPluginModule::addBindings(KJS::ExecState *exec, KJS::Object& obj) {
 
 KJS::Value KstBindPluginModule::usesLocalData(KJS::ExecState *exec) const {
   Q_UNUSED(exec)
-  return KJS::Boolean(_d._localdata);
+
+  if (_bp) {
+    return KJS::Boolean(false);
+  } else {
+    return KJS::Boolean(_d._localdata);
+  }
+
+  return KJS::Undefined();
 }
 
 
 KJS::Value KstBindPluginModule::isFit(KJS::ExecState *exec) const {
   Q_UNUSED(exec)
-  return KJS::Boolean(_d._isFit);
+
+  if (_bp) {
+    return KJS::Boolean(_bp->isFit());
+  } else {
+    return KJS::Boolean(_d._isFit);
+  }
+
+  return KJS::Undefined();
 }
 
 
 KJS::Value KstBindPluginModule::isFilter(KJS::ExecState *exec) const {
   Q_UNUSED(exec)
-  return KJS::Boolean(_d._isFilter);
+
+  if (_bp) {
+    return KJS::Boolean(false);
+  } else {
+    return KJS::Boolean(_d._isFilter);
+  }
+
+  return KJS::Undefined();
 }
 
 
 KJS::Value KstBindPluginModule::name(KJS::ExecState *exec) const {
   Q_UNUSED(exec)
-  return KJS::String(_d._name);
+
+  if (_bp) {
+    return KJS::String(_bp->name());
+  } else {
+    return KJS::String(_d._name);
+  }
+
+  return KJS::Undefined();
 }
 
 
 KJS::Value KstBindPluginModule::readableName(KJS::ExecState *exec) const {
   Q_UNUSED(exec)
-  return KJS::String(_d._readableName);
+
+  if (_bp) {
+    return KJS::String(_bp->name());
+  } else {
+    return KJS::String(_d._readableName);
+  }
+
+  return KJS::Undefined();
 }
 
 
 KJS::Value KstBindPluginModule::author(KJS::ExecState *exec) const {
   Q_UNUSED(exec)
-  return KJS::String(_d._author);
+
+  if (_bp) {
+    return KJS::String(_bp->author());
+  } else {
+    return KJS::String(_d._author);
+  }
+
+  return KJS::Undefined();
 }
 
 
 KJS::Value KstBindPluginModule::description(KJS::ExecState *exec) const {
   Q_UNUSED(exec)
-  return KJS::String(_d._description);
+
+  if (_bp) {
+    return KJS::String(_bp->description());
+  } else {
+    return KJS::String(_d._description);
+  }
+
+  return KJS::Undefined();
 }
 
 
 KJS::Value KstBindPluginModule::version(KJS::ExecState *exec) const {
   Q_UNUSED(exec)
-  return KJS::String(_d._version);
+
+  if (_bp) {
+    return KJS::String(_bp->version());
+  } else {
+    return KJS::String(_d._version);
+  }
+
+  return KJS::Undefined();
 }
 
 
 KJS::Value KstBindPluginModule::inputs(KJS::ExecState *exec) const {
-  return KJS::Object(new KstBindPluginIOCollection(exec, _d._inputs, true));
+  if (_bp) {
+    return KJS::Object(new KstBindPluginIOCollection(exec, _bp->inputVectorList(), _bp->inputScalarList(), _bp->inputStringList(), true));
+  } else {
+    return KJS::Object(new KstBindPluginIOCollection(exec, _d._inputs, true));
+  }
+
+  return KJS::Undefined();
 }
 
 
 KJS::Value KstBindPluginModule::outputs(KJS::ExecState *exec) const {
-  return KJS::Object(new KstBindPluginIOCollection(exec, _d._outputs, false));
-}
+  if (_bp) {
+    return KJS::Object(new KstBindPluginIOCollection(exec, _bp->outputVectorList(), _bp->outputScalarList(), _bp->outputStringList(), false));
+  } else {
+    return KJS::Object(new KstBindPluginIOCollection(exec, _d._outputs, false));
+  }
 
+  return KJS::Undefined();
+}

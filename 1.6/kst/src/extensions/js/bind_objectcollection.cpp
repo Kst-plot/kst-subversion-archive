@@ -40,6 +40,13 @@ KstBindObjectCollection::KstBindObjectCollection(KJS::ExecState *exec, const Kst
 }
 
 
+KstBindObjectCollection::KstBindObjectCollection(KJS::ExecState *exec, const KstBasicPluginPtr plugin, bool inputs)
+: KstBindCollection(exec, "ObjectCollection", true) {
+  _basicPlugin = plugin;
+  _inputs = inputs;
+}
+
+
 KstBindObjectCollection::KstBindObjectCollection(KJS::ExecState *exec)
 : KstBindCollection(exec, "ObjectCollection", true) {
   _inputs = false;
@@ -63,6 +70,16 @@ KJS::Value KstBindObjectCollection::length(KJS::ExecState *exec) const {
     } else {
       return KJS::Undefined();
     }
+  } else if (_basicPlugin) {
+    if (_inputs) {
+      return KJS::Number(_basicPlugin->inputVectorList().size() + 
+                         _basicPlugin->inputScalarList().size() + 
+                         _basicPlugin->inputStringList().size() );
+    } else {
+      return KJS::Number(_basicPlugin->outputVectorList().size() + 
+                         _basicPlugin->outputScalarList().size() + 
+                         _basicPlugin->outputStringList().size() );
+    }
   }
 
   return KJS::Number(_objects.count());
@@ -74,7 +91,17 @@ QStringList KstBindObjectCollection::collection(KJS::ExecState *exec) const {
 
   if (_plugin) {
     if (_plugin->plugin()) {
-      return _plugin->inputVectors().tagNames() + _plugin->inputStrings().tagNames() + _plugin->inputScalars().tagNames();
+      if (_inputs) {
+        return _plugin->inputVectors().tagNames() + _plugin->inputStrings().tagNames() + _plugin->inputScalars().tagNames();
+      } else {
+        return _plugin->outputVectors().tagNames() + _plugin->outputStrings().tagNames() + _plugin->outputScalars().tagNames();
+      }
+    }
+  } else if (_basicPlugin) {
+    if (_inputs) {
+      return _basicPlugin->inputVectorList() + _basicPlugin->inputScalarList() + _basicPlugin->inputStringList();
+    } else {
+      return _basicPlugin->outputVectorList() + _basicPlugin->outputScalarList() + _basicPlugin->outputStringList();
     }
   }
 
@@ -121,6 +148,24 @@ KJS::Value KstBindObjectCollection::extract(KJS::ExecState *exec, const KJS::Ide
             break;
           }
         }
+      }
+    }
+  } else if (_basicPlugin) {
+    if (_inputs) {
+      vp = _basicPlugin->inputVectors()[item.qstring()];
+      if (!vp) {
+        vp = _basicPlugin->inputScalars()[item.qstring()];
+      }
+      if (!vp) {
+        vp = _basicPlugin->inputStrings()[item.qstring()];
+      }
+    } else {
+      vp = _basicPlugin->outputVectors()[item.qstring()];
+      if (!vp) {
+        vp = _basicPlugin->outputScalars()[item.qstring()];
+      }
+      if (!vp) {
+        vp = _basicPlugin->outputStrings()[item.qstring()];
       }
     }
   } else {
@@ -170,6 +215,24 @@ KJS::Value KstBindObjectCollection::extract(KJS::ExecState *exec, unsigned item)
             vp = _plugin->inputScalars()[_plugin->plugin()->data()._outputs[item]._name];
           }
         }
+      }
+    }
+  } else if (_basicPlugin) {
+    if (_inputs) {
+      if (item < _basicPlugin->inputVectorList().size()) {
+        vp = _basicPlugin->inputVectors()[_basicPlugin->inputVectorList()[item]];
+      } else if (item < _basicPlugin->inputVectorList().size() + _basicPlugin->inputScalarList().size()) {
+        vp = _basicPlugin->inputScalars()[_basicPlugin->inputScalarList()[item - _basicPlugin->inputVectorList().size()]];
+      } else if (item < _basicPlugin->inputVectorList().size() + _basicPlugin->inputScalarList().size() + _basicPlugin->inputStringList().size()) {
+        vp = _basicPlugin->inputStrings()[_basicPlugin->inputScalarList()[item - _basicPlugin->inputVectorList().size() - _basicPlugin->inputScalarList().size()]];
+      }
+    } else {
+      if (item < _basicPlugin->outputVectorList().size()) {
+        vp = _basicPlugin->outputVectors()[_basicPlugin->outputVectorList()[item]];
+      } else if (item < _basicPlugin->outputVectorList().size() + _basicPlugin->outputScalarList().size()) {
+        vp = _basicPlugin->outputScalars()[_basicPlugin->outputScalarList()[item - _basicPlugin->outputVectorList().size()]];
+      } else if (item < _basicPlugin->outputVectorList().size() + _basicPlugin->outputScalarList().size() + _basicPlugin->outputStringList().size()) {
+        vp = _basicPlugin->outputStrings()[_basicPlugin->outputScalarList()[item - _basicPlugin->outputVectorList().size() - _basicPlugin->outputScalarList().size()]];
       }
     }
   } else if (item < _objects.count()) {

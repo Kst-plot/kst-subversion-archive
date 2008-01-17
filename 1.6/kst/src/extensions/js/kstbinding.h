@@ -22,6 +22,7 @@
 #include <kjs/object.h>
 
 #include <kst2dplot.h>
+#include <kstbasicplugin.h>
 #include <kstdatasource.h>
 #include <kstvcurve.h>
 #include <kstvector.h>
@@ -52,8 +53,11 @@ class KstBinding : public KJS::ObjectImp {
 
     static KstDataSourcePtr extractDataSource(KJS::ExecState*, const KJS::Value&, bool doThrow = true);
     static KstDataObjectPtr extractDataObject(KJS::ExecState*, const KJS::Value&, bool doThrow = true);
-    static KstSharedPtr<Plugin> extractPluginModule(KJS::ExecState*, const KJS::Value&, bool doThrow = true);
+    static KstPluginPtr extractPluginModule(KJS::ExecState*, const KJS::Value&, bool doThrow = true);
+    static KstBasicPluginPtr extractBasicPluginModule(KJS::ExecState*, const KJS::Value&, bool doThrow = true);
     static KstVectorPtr extractVector(KJS::ExecState*, const KJS::Value&, bool doThrow = true);
+    static KstScalarPtr extractScalar(KJS::ExecState*, const KJS::Value&, bool doThrow = true);
+    static KstStringPtr extractString(KJS::ExecState*, const KJS::Value&, bool doThrow = true);
     static KstVCurvePtr extractVCurve(KJS::ExecState*, const KJS::Value&, bool doThrow = true);
     static KstMatrixPtr extractMatrix(KJS::ExecState*, const KJS::Value&, bool doThrow = true);
     static KstViewWindow *extractWindow(KJS::ExecState*, const KJS::Value&, bool doThrow = true);

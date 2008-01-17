@@ -52,10 +52,11 @@ class KstBindDataObject : public KstBindObject {
        @description The type of data object this is.
     */
     KJS::Value type(KJS::ExecState *exec) const;
+
     /* @method convertTo
        @returns DataObject
        @arg string type The type to attempt to convert this object to.
-       @description Attempts to convert this DaraObject to a different type.
+       @description Attempts to convert this DataObject to a different type.
                     The object must be derived from this type at some level.
                     Null is returned if it is not possible to convert to the
                     requested type.

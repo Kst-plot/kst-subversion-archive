@@ -26,6 +26,8 @@
 #include "bind_object.h"
 #include "bind_plot.h"
 #include "bind_pluginmodule.h"
+#include "bind_scalar.h"
+#include "bind_string.h"
 #include "bind_vector.h"
 #include "bind_window.h"
 
@@ -90,7 +92,7 @@ KstDataSourcePtr KstBinding::extractDataSource(KJS::ExecState *exec, const KJS::
           dp = kst_cast<KstDataSource>(imp->_d);
         }
         if (!dp && doThrow) {
-          KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError);
+          KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError, "Failed to extract dataSource.");
           exec->setException(eobj);
         }
         return dp;
@@ -111,7 +113,7 @@ KstDataSourcePtr KstBinding::extractDataSource(KJS::ExecState *exec, const KJS::
       // fall through and throw
     default:
       if (doThrow) {
-        KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError);
+        KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError, "Failed to extract dataSource.");
         exec->setException(eobj);
       }
       return 0L;
@@ -119,27 +121,64 @@ KstDataSourcePtr KstBinding::extractDataSource(KJS::ExecState *exec, const KJS::
 }
 
 
-KstSharedPtr<Plugin> KstBinding::extractPluginModule(KJS::ExecState *exec, const KJS::Value& value, bool doThrow) {
+KstPluginPtr KstBinding::extractPluginModule(KJS::ExecState *exec, const KJS::Value& value, bool doThrow) {
   switch (value.type()) {
     case KJS::ObjectType:
       {
-        KstSharedPtr<Plugin> dp;
+        KstPluginPtr dp;
         KstBindPluginModule *imp = dynamic_cast<KstBindPluginModule*>(value.toObject(exec).imp());
+
         if (imp) {
           Plugin::Data d = imp->_d;
           PluginCollection *pc = PluginCollection::self();
           dp = pc->plugin(d._name);
         }
+
         if (!dp && doThrow) {
-          KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError);
+          KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError, "Failed to extract plugin.");
           exec->setException(eobj);
         }
+
         return dp;
       }
+
       // fall through and throw
     default:
       if (doThrow) {
-        KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError);
+        KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError, "Failed to extract plugin.");
+        exec->setException(eobj);
+      }
+      return 0L;
+  }
+}
+
+
+KstBasicPluginPtr KstBinding::extractBasicPluginModule(KJS::ExecState *exec, const KJS::Value& value, bool doThrow) {
+  switch (value.type()) {
+    case KJS::ObjectType:
+      {
+        KstBasicPluginPtr bp;
+        KstBindPluginModule *imp = dynamic_cast<KstBindPluginModule*>(value.toObject(exec).imp());
+
+        if (imp) {
+          KstDataObjectPtr ptr = KstDataObject::plugin(imp->name(exec).toString(exec).qstring());
+          if (ptr) {
+            bp = kst_cast<KstBasicPlugin>(ptr);
+          }
+        }
+
+        if (!bp && doThrow) {
+          KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError, "Failed to extract basic plugin.");
+          exec->setException(eobj);
+        }
+
+        return bp;
+      }
+
+      // fall through and throw
+    default:
+      if (doThrow) {
+        KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError, "Failed to extract basic plugin.");
         exec->setException(eobj);
       }
       return 0L;
@@ -157,7 +196,7 @@ KstDataObjectPtr KstBinding::extractDataObject(KJS::ExecState *exec, const KJS::
           dp = kst_cast<KstDataObject>(imp->_d);
         }
         if (!dp && doThrow) {
-          KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError);
+          KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError, "Failed to extract dataObject.");
           exec->setException(eobj);
         }
         return dp;
@@ -174,7 +213,7 @@ KstDataObjectPtr KstBinding::extractDataObject(KJS::ExecState *exec, const KJS::
       // fall through and throw
     default:
       if (doThrow) {
-        KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError);
+        KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError, "Failed to extract dataObject.");
         exec->setException(eobj);
       }
       return 0L;
@@ -197,7 +236,7 @@ KstVectorPtr KstBinding::extractVector(KJS::ExecState *exec, const KJS::Value& v
           }
         }
         if (!vp && doThrow) {
-          KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError);
+          KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError, "Failed to extract vector.");
           exec->setException(eobj);
         }
         return vp;
@@ -214,7 +253,77 @@ KstVectorPtr KstBinding::extractVector(KJS::ExecState *exec, const KJS::Value& v
       // fall through and throw
     default:
       if (doThrow) {
-        KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError);
+        KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError, "Failed to extract vector.");
+        exec->setException(eobj);
+      }
+      return 0L;
+  }
+}
+
+
+KstScalarPtr KstBinding::extractScalar(KJS::ExecState *exec, const KJS::Value& value, bool doThrow) {
+  switch (value.type()) {
+    case KJS::ObjectType:
+      {
+        KstScalarPtr sp;
+        KstBindScalar *imp = dynamic_cast<KstBindScalar*>(value.toObject(exec).imp());
+        if (imp) {
+          sp = kst_cast<KstScalar>(imp->_d);
+        }
+        if (!sp && doThrow) {
+          KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError, "Failed to extract scalar.");
+          exec->setException(eobj);
+        }
+        return sp;
+      }
+    case KJS::StringType:
+      {
+        KST::scalarList.lock().readLock();
+        KstScalarPtr sp = *KST::scalarList.findTag(value.toString(exec).qstring());
+        KST::scalarList.lock().unlock();
+        if (sp) {
+          return sp;
+        }
+      }
+      // fall through and throw
+    default:
+      if (doThrow) {
+        KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError, "Failed to extract scalar.");
+        exec->setException(eobj);
+      }
+      return 0L;
+  }
+}
+
+
+KstStringPtr KstBinding::extractString(KJS::ExecState *exec, const KJS::Value& value, bool doThrow) {
+  switch (value.type()) {
+    case KJS::ObjectType:
+      {
+        KstStringPtr sp;
+        KstBindString *imp = dynamic_cast<KstBindString*>(value.toObject(exec).imp());
+        if (imp) {
+          sp = kst_cast<KstString>(imp->_d);
+        }
+        if (!sp && doThrow) {
+          KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError, "Failed to extract string.");
+          exec->setException(eobj);
+        }
+        return sp;
+      }
+    case KJS::StringType:
+      {
+        KST::stringList.lock().readLock();
+        KstStringPtr sp = *KST::stringList.findTag(value.toString(exec).qstring());
+        KST::stringList.lock().unlock();
+        if (sp) {
+          return sp;
+        }
+      }
+      // fall through and throw
+    default:
+      if (doThrow) {
+        KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError, "Failed to extract scalar.");
         exec->setException(eobj);
       }
       return 0L;
@@ -232,7 +341,7 @@ KstVCurvePtr KstBinding::extractVCurve(KJS::ExecState *exec, const KJS::Value& v
           vp = kst_cast<KstVCurve>(imp->_d);
         }
         if (!vp && doThrow) {
-          KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError);
+          KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError, "Failed to extract curve.");
           exec->setException(eobj);
         }
         return vp;
@@ -249,7 +358,7 @@ KstVCurvePtr KstBinding::extractVCurve(KJS::ExecState *exec, const KJS::Value& v
       // fall through and throw
     default:
       if (doThrow) {
-        KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError);
+        KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError, "Failed to extract curve.");
         exec->setException(eobj);
       }
       return 0L;
@@ -272,7 +381,7 @@ KstMatrixPtr KstBinding::extractMatrix(KJS::ExecState *exec, const KJS::Value& v
           }
         }
         if (!mp && doThrow) {
-          KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError);
+          KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError, "Failed to extract matrix.");
           exec->setException(eobj);
         }
         return mp;
@@ -289,7 +398,7 @@ KstMatrixPtr KstBinding::extractMatrix(KJS::ExecState *exec, const KJS::Value& v
       // fall through and throw
     default:
       if (doThrow) {
-        KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError);
+        KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError, "Failed to extract matrix.");
         exec->setException(eobj);
       }
       return 0L;
@@ -304,7 +413,7 @@ KstViewWindow *KstBinding::extractWindow(KJS::ExecState *exec, const KJS::Value&
         KstBindWindow *imp = dynamic_cast<KstBindWindow*>(value.toObject(exec).imp());
         if (!imp) {
           if (doThrow) {
-            KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError);
+            KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError, "Failed to extract window.");
             exec->setException(eobj);
           }
           return 0L;
@@ -321,7 +430,7 @@ KstViewWindow *KstBinding::extractWindow(KJS::ExecState *exec, const KJS::Value&
       // fall through and throw
     default:
       if (doThrow) {
-        KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError);
+        KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError, "Failed to extract window.");
         exec->setException(eobj);
       }
       return 0L;
@@ -336,7 +445,7 @@ Kst2DPlotPtr KstBinding::extractPlot(KJS::ExecState *exec, const KJS::Value& val
         KstBindPlot *imp = dynamic_cast<KstBindPlot*>(value.toObject(exec).imp());
         if (!imp) {
           if (doThrow) {
-            KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError);
+            KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError, "Failed to extract plot.");
             exec->setException(eobj);
           }
           return 0L;
@@ -353,7 +462,7 @@ Kst2DPlotPtr KstBinding::extractPlot(KJS::ExecState *exec, const KJS::Value& val
       // fall through and throw
     default:
       if (doThrow) {
-        KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError);
+        KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError, "Failed to extract plot.");
         exec->setException(eobj);
       }
       return 0L;
@@ -370,7 +479,7 @@ KstViewObjectPtr KstBinding::extractViewObject(KJS::ExecState *exec, const KJS::
           KstViewWindow *w = extractWindow(exec, value, false);
           if (!w) {
             if (doThrow) {
-              KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError);
+              KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError, "Failed to extract viewObject.");
               exec->setException(eobj);
             }
             return 0L;
@@ -389,7 +498,7 @@ KstViewObjectPtr KstBinding::extractViewObject(KJS::ExecState *exec, const KJS::
       // fall through and throw
     default:
       if (doThrow) {
-        KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError);
+        KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError, "Failed to extract viewObject.");
         exec->setException(eobj);
       }
       return 0L;
@@ -405,7 +514,7 @@ KstBaseCurveList KstBinding::extractCurveList(KJS::ExecState *exec, const KJS::V
         KstBindCurveCollection *imp = dynamic_cast<KstBindCurveCollection*>(value.toObject(exec).imp());
         if (!imp) {
           if (doThrow) {
-            KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError);
+            KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError, "Failed to extract curve list.");
             exec->setException(eobj);
           }
           return rc;
@@ -436,7 +545,7 @@ KstBaseCurveList KstBinding::extractCurveList(KJS::ExecState *exec, const KJS::V
       // fall through and throw
     default:
       if (doThrow) {
-        KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError);
+        KJS::Object eobj = KJS::Error::create(exec, KJS::TypeError, "Failed to extract curve list.");
         exec->setException(eobj);
       }
   }

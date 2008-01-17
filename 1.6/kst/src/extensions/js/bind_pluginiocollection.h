@@ -32,6 +32,7 @@
 class KstBindPluginIOCollection : public KstBindCollection {
   public:
     KstBindPluginIOCollection(KJS::ExecState *exec, const QValueList<Plugin::Data::IOValue>& data, bool input);
+    KstBindPluginIOCollection(KJS::ExecState *exec, const QStringList& vectors, const QStringList& scalars, const QStringList& strings, bool input);
     ~KstBindPluginIOCollection();
 
     virtual KJS::Value length(KJS::ExecState *exec) const;
@@ -41,6 +42,10 @@ class KstBindPluginIOCollection : public KstBindCollection {
     virtual KJS::Value extract(KJS::ExecState *exec, unsigned item) const;
 
     QValueList<Plugin::Data::IOValue> _d;
+    QStringList _vectors;
+    QStringList _scalars;
+    QStringList _strings;
+    bool _cstyle;
     bool _input;
 };
 

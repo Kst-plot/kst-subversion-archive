@@ -152,6 +152,7 @@ KJS::Value KstBindPluginIO::name(KJS::ExecState *exec) const {
 
 KJS::Value KstBindPluginIO::type(KJS::ExecState *exec) const {
   Q_UNUSED(exec)
+
   switch (_d._type) {
     case Plugin::Data::IOValue::TableType:
       return KJS::String("Table");
@@ -169,11 +170,14 @@ KJS::Value KstBindPluginIO::type(KJS::ExecState *exec) const {
     default:
       return KJS::String("Unknown");
   }
+
+  return KJS::Undefined();
 }
 
 
 KJS::Value KstBindPluginIO::subType(KJS::ExecState *exec) const {
   Q_UNUSED(exec)
+
   switch (_d._subType) {
     case Plugin::Data::IOValue::FloatNonVectorSubType:
       return KJS::String("FloatNonVector");
@@ -189,16 +193,20 @@ KJS::Value KstBindPluginIO::subType(KJS::ExecState *exec) const {
     default:
       return KJS::String("Unknown");
   }
+
+  return KJS::Undefined();
 }
 
 
 KJS::Value KstBindPluginIO::description(KJS::ExecState *exec) const {
   Q_UNUSED(exec)
+
   return KJS::String(_d._description);
 }
 
 
 KJS::Value KstBindPluginIO::defaultValue(KJS::ExecState *exec) const {
   Q_UNUSED(exec)
+
   return KJS::String(_d._default);
 }

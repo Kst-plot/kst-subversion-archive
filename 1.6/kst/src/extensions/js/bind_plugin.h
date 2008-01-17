@@ -20,6 +20,7 @@
 
 #include "bind_dataobject.h"
 
+#include <kstbasicplugin.h>
 #include <kstcplugin.h>
 
 #include <kjs/interpreter.h>
@@ -41,6 +42,7 @@ class KstBindPlugin : public KstBindDataObject {
        @optarg PluginModule module The plugin module to use for this plugin.
     */
     KstBindPlugin(KJS::ExecState *exec, KstCPluginPtr d);
+    KstBindPlugin(KJS::ExecState *exec, KstBasicPluginPtr d);
     KstBindPlugin(KJS::ExecState *exec, KJS::Object *globalObject = 0L);
     ~KstBindPlugin();
 

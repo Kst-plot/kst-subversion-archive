@@ -42,27 +42,32 @@ class KstBindPluginIO : public KstBinding {
     bool hasProperty(KJS::ExecState *exec, const KJS::Identifier& propertyName) const;
 
     // properties
+
     /* @property string name
        @readonly
        @description The name of the input or output.
     */
     KJS::Value name(KJS::ExecState *exec) const;
+
     /* @property string type
        @readonly
        @description The data type of the input or output.
     */
     KJS::Value type(KJS::ExecState *exec) const;
+
     /* @property string subType
        @readonly
        @description The sub-type of the input or output, if needed.  For
                     instance, a <i>table</i> may have a subtype of <i>float</i>.
     */
     KJS::Value subType(KJS::ExecState *exec) const;
+
     /* @property string description
        @readonly
        @description A description of the meaning of the input or output.
     */
     KJS::Value description(KJS::ExecState *exec) const;
+
     /* @property string defaultValue
        @readonly
        @description The default value for this input or output, if specified by

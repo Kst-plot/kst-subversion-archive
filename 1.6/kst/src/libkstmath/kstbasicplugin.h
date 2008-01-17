@@ -91,6 +91,9 @@ class KST_EXPORT KstBasicPlugin : public KstDataObject {
     void createFitScalars();
     QString label(int precision) const;
 
+    virtual bool isValid() const;
+    virtual bool validate();
+
   protected:
     virtual QString parameterName(int index) const;
 

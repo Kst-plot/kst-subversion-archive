@@ -79,7 +79,8 @@ class KST_EXPORT Plugin : public KstShared {
 
         class IOValue {
           public:
-            enum ValueType { UnknownType,
+            enum ValueType { 
+              UnknownType,
               TableType,
               StringType,
               MapType,
@@ -89,7 +90,8 @@ class KST_EXPORT Plugin : public KstShared {
               MatrixType
             };
 
-            enum ValueSubType { UnknownSubType,
+            enum ValueSubType { 
+              UnknownSubType,
               AnySubType,
               FloatSubType,
               StringSubType,

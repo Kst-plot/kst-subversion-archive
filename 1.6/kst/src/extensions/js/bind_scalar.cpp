@@ -163,7 +163,7 @@ KJS::Value KstBindScalar::get(KJS::ExecState *exec, const KJS::Identifier& prope
       return (this->*scalarProperties[i].get)(exec);
     }
   }
-  
+
   return KstBindObject::get(exec, propertyName);
 }
 

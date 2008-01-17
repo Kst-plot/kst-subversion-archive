@@ -29,6 +29,7 @@
 #include "kstbasicplugin.h"
 #include "dialoglauncher.h"
 #include "kstdatacollection.h"
+#include "kstdataobjectcollection.h"
 
 KstBasicPlugin::KstBasicPlugin()
 : KstDataObject(), _isFit(false) {
@@ -286,6 +287,59 @@ void KstBasicPlugin::load(const QDomElement &e) {
     }
     n = n.nextSibling();
   }
+}
+
+
+bool KstBasicPlugin::isValid() const {
+  return inputsExist();
+}
+
+
+bool KstBasicPlugin::validate() {
+  bool rc = false;
+
+  if (isValid()) {
+    _outputVectors.clear();
+    _outputScalars.clear();
+    _outputStrings.clear();
+
+    //
+    // output vectors...
+    //
+    QStringList ov = outputVectorList();
+    for (QStringList::ConstIterator ovI = ov.begin(); ovI != ov.end(); ++ovI) {
+      setOutputVector(*ovI, "");
+    }
+
+    //
+    // output scalars...
+    //
+    QStringList os = outputScalarList();
+    for (QStringList::ConstIterator osI = os.begin(); osI != os.end(); ++osI) {
+      setOutputScalar(*osI, "");
+    }
+
+    //
+    // ouput strings...
+    //
+    QStringList ostr = outputStringList();
+    for (QStringList::ConstIterator ostrI = ostr.begin(); ostrI != ostr.end(); ++ostrI) {
+      setOutputString(*ostrI, "");
+    }
+
+    KstDataObjectList::Iterator oi = KST::dataObjectList.findTag(tagName());
+    if (oi == KST::dataObjectList.end()) {
+      KST::dataObjectList.lock().writeLock();
+      KST::dataObjectList.append(this);
+      KST::dataObjectList.lock().unlock();
+    }
+
+    setDirty(true);
+
+    rc = true;
+  }
+
+  return rc;
 }
 
 
