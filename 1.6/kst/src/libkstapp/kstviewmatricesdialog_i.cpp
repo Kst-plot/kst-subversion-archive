@@ -101,8 +101,13 @@ void KstViewMatricesDialogI::showViewMatricesDialog() {
 void KstViewMatricesDialogI::matrixChanged(const QString& matrix) {
   updateViewMatricesDialog(matrix);
   _tableMatrices->setMatrix(matrix);
+
+  //
+  // following two lines appear to be necessary to ensure a full update...
+  //
   _tableMatrices->hide();
   _tableMatrices->show();
+
   _tableMatrices->update();
 }
 
