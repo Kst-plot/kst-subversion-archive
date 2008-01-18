@@ -66,6 +66,7 @@ BinnedMapDialogI::BinnedMapDialogI(QWidget* parent, const char* name, bool modal
   connect(this, SIGNAL(modified()), _w->_Y, SLOT(update()));
   connect(this, SIGNAL(modified()), _w->_Z, SLOT(update()));
   connect(_w->_AutoBin, SIGNAL(clicked()), this, SLOT(fillAutoRange()));
+  connect(KstApp::inst()->document(), SIGNAL(updateDialogs()), this, SLOT(update()));
 }
 
 
@@ -74,7 +75,9 @@ BinnedMapDialogI::~BinnedMapDialogI() {
 
 
 void BinnedMapDialogI::update() {
-  //called upon showing the dialog either in 'edit' mode or 'new' mode
+  _w->_X->update();
+  _w->_Y->update();
+  _w->_Z->update();
 }
 
 

@@ -61,6 +61,7 @@ CrossSpectrumDialogI::CrossSpectrumDialogI(QWidget* parent, const char* name, bo
   connect(_w->_v2, SIGNAL(newVectorCreated(const QString&)), this, SIGNAL(modified()));
   connect(_w->_fft, SIGNAL(newScalarCreated()), this, SIGNAL(modified()));
   connect(_w->_sample, SIGNAL(newScalarCreated()), this, SIGNAL(modified()));
+  connect(KstApp::inst()->document(), SIGNAL(updateDialogs()), this, SLOT(update()));
 
   _w->_fft->allowDirectEntry( true );
   _w->_sample->allowDirectEntry( true );
@@ -72,7 +73,10 @@ CrossSpectrumDialogI::~CrossSpectrumDialogI() {
 
 
 void CrossSpectrumDialogI::update() {
-  //called upon showing the dialog either in 'edit' mode or 'new' mode
+  _w->_v1->update();
+  _w->_v2->update();
+  _w->_fft->update();
+  _w->_sample->update();
 }
 
 
@@ -89,7 +93,9 @@ bool CrossSpectrumDialogI::newObject() {
 
   //Need to create a new object rather than use the one in KstDataObject pluginList
   CrossPowerSpectrumPtr cps = kst_cast<CrossPowerSpectrum>(KstDataObject::createPlugin("Cross Power Spectrum"));
-  Q_ASSERT(cps); //should never happen...
+  if (!cps) {
+    return false;
+  }
 
   KstWriteLocker pl(cps);
 
@@ -125,9 +131,10 @@ bool CrossSpectrumDialogI::newObject() {
 
 
 bool CrossSpectrumDialogI::editObject() {
-  //called upon clicking 'ok' in 'edit' mode
-  //return false if the specified objects can't be editted, otherwise true
-
+  //
+  // called upon clicking 'ok' in 'edit' mode
+  // return false if the specified objects can't be edited, otherwise true
+  //
   CrossPowerSpectrumPtr cps = kst_cast<CrossPowerSpectrum>(_dp);
   if (!cps) {
     return false;
