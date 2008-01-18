@@ -47,4 +47,4 @@ class KST_EXPORT CrossSpectrumDialogI : public KstDataDialog {
 };
 
 #endif
-// vim: ts=2 sw=2 et
+

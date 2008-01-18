@@ -302,19 +302,20 @@ void CrossPowerSpectrum::crossspectrum() {
   int i_samp,  copyLen;
   double norm_factor;
 
-  /* parse fft length */
+  // parse fft length
   xps_len = int( fft->value() - 0.99);
   if ( xps_len > KSTPSDMAXLEN ) xps_len = KSTPSDMAXLEN;
   if ( xps_len<2 ) xps_len = 2;
   xps_len = int ( pow( 2,  xps_len ) );
 
-  /* input vector lengths */
-  v_len = ( ( v1->length() < v2->length() ) ?
-            v1->length() : v2->length() );
+  // input vector lengths
+  v_len = ( ( v1->length() < v2->length() ) ? v1->length() : v2->length() );
   dv0 = v_len/v1->length();
   dv1 = v_len/v2->length();
 
-  while ( xps_len > v_len ) xps_len/=2;
+  while ( xps_len > v_len ) {
+    xps_len/=2;
+  }
 
   // allocate the lengths
   if ( real->length() != xps_len ) {
@@ -323,7 +324,7 @@ void CrossPowerSpectrum::crossspectrum() {
     frequency->resize( xps_len, false );
   }
 
-  /* Fill the frequency and zero the xps */
+  // fill the frequency and zero the xps
   df = SR/( 2.0*double( xps_len-1 ) );
   for ( i=0; i<xps_len; i++ ) {
     frequency->value()[i] = double( i ) * df;
@@ -331,16 +332,16 @@ void CrossPowerSpectrum::crossspectrum() {
     imaginary->value()[i] = 0.0;
   }
 
-  /* allocate input arrays */
+  // allocate input arrays
   int ALen = xps_len * 2;
   a = new double[ALen];
   b = new double[ALen];
 
-  /* do the fft's */
+  // do the fft's
   n_subsets = v_len/xps_len + 1;
 
   for ( i_subset=0; i_subset<n_subsets; i_subset++ ) {
-        /* copy each chunk into a[] and find mean */
+    // copy each chunk into a[] and find mean
     if (i_subset*xps_len + ALen <= v_len) {
       copyLen = ALen;
     } else {
@@ -349,20 +350,16 @@ void CrossPowerSpectrum::crossspectrum() {
     mean_b = mean_a = 0;
     for (i_samp = 0; i_samp < copyLen; i_samp++) {
       i = ( i_samp + i_subset*xps_len )/dv0;
-      mean_a += (
-        a[i_samp] = v1->value()[i]
-        );
+      mean_a += (a[i_samp] = v1->value()[i]);
       i = ( i_samp + i_subset*xps_len )/dv1;
-      mean_b += (
-        b[i_samp] = v2->value()[i]
-        );
+      mean_b += (b[i_samp] = v2->value()[i]);
     }
-    if (copyLen>1) {
+    if (copyLen > 1) {
       mean_a/=(double)copyLen;
       mean_b/=(double)copyLen;
     }
 
-    /* Remove Mean and apodize */
+    // remove Mean and apodize
     for (i_samp=0; i_samp<copyLen; i_samp++) {
       a[i_samp] -= mean_a;
       b[i_samp] -= mean_b;
@@ -373,32 +370,29 @@ void CrossPowerSpectrum::crossspectrum() {
       b[i_samp] = 0.0;
     }
 
-    /* fft */
+    // fft
     rdft(ALen, 1, a);
     rdft(ALen, 1, b);
 
-    /* sum each bin into psd[] */
+    // sum each bin into psd[]
     real->value()[0] += ( a[0]*b[0] );
     real->value()[xps_len-1] += ( a[1]*b[1] );
     for (i_samp=1; i_samp<xps_len-1; i_samp++) {
-      real->value()[i_samp]+= ( a[i_samp*2] * b[i_samp*2] +
-                                   a[i_samp*2+1] * b[i_samp*2+1] );
-      imaginary->value()[i_samp]+= ( -a[i_samp*2] * b[i_samp*2+1] +
-                                   a[i_samp*2+1] * b[i_samp*2] );
-    }// (a+ci)(b+di)* = ab+cd +i(-ad + cb)
+      real->value()[i_samp]+= ( a[i_samp*2] * b[i_samp*2] + a[i_samp*2+1] * b[i_samp*2+1] );
+      imaginary->value()[i_samp]+= ( -a[i_samp*2] * b[i_samp*2+1] + a[i_samp*2+1] * b[i_samp*2] );
+    } // (a+ci)(b+di)* = ab+cd +i(-ad + cb)
   }
 
-  /* renormalize */
+  // renormalize
   norm_factor = 1.0/((double(SR)*double(xps_len))*double(n_subsets));
-  for ( i=0; i<xps_len; i++ ) {
+  for (i=0; i<xps_len; i++) {
     real->value()[i]*=norm_factor;
     imaginary->value()[i]*=norm_factor;
   }
 
-  /* free */
+  // free
   delete[] b;
   delete[] a;
-//   return 0;
 }
 
 
@@ -503,4 +497,4 @@ void CrossPowerSpectrum::save(QTextStream& ts, const QString& indent) {
 }
 
 #include "crosspowerspectrum.moc"
-// vim: ts=2 sw=2 et
+

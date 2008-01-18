@@ -264,4 +264,3 @@ void CrossSpectrumDialogI::fillFieldsForNew() {
 
 #include "crossspectrumdialog_i.moc"
 
-// vim: ts=2 sw=2 et
