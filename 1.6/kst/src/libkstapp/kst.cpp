@@ -2084,7 +2084,6 @@ void KstApp::updateDataNotifier() {
 
 
 void KstApp::updateDataDialogs(bool dm, bool vm) {
-
   ViewScalarsDialogAction->setEnabled(viewScalarsDialog->hasContent());
   ViewStringsDialogAction->setEnabled(viewStringsDialog->hasContent());
   ViewVectorsDialogAction->setEnabled(viewVectorsDialog->hasContent());

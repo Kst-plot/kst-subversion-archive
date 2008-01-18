@@ -35,7 +35,7 @@ void KstMatrixTable::paintCell( QPainter* painter, int row, int col, const QRect
   KstMatrixPtr matrix = *KST::matrixList.findTag(_strMatrix);
   QString str;
   double value;
-  
+
   painter->eraseRect( 0, 0, cr.width(), cr.height() );
   if (selected) {
     painter->fillRect( 0, 0, cr.width(), cr.height(), cg.highlight() );
@@ -50,6 +50,8 @@ void KstMatrixTable::paintCell( QPainter* painter, int row, int col, const QRect
     value = matrix->valueRaw(col, row, &ok);
     if (ok) {
       str.setNum(value, 'g', 16);
+    } else {
+      str = "-";
     }
   }
 

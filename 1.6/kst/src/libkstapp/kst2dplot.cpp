@@ -3218,13 +3218,13 @@ void Kst2DPlot::generateDefaultLabels(bool xl, bool yl, bool tl) {
   EscapeSpecialChars(ylabel);
   EscapeSpecialChars(toplabel);
 
-  if (xl || _autoLabelX) {
+  if (xl && _autoLabelX) {
     _xLabel->setText(xlabel);
   }
-  if (yl || _autoLabelY) {
+  if (yl && _autoLabelY) {
     _yLabel->setText(ylabel);
   }
-  if (tl || _autoLabelTop) {
+  if (tl && _autoLabelTop) {
     _topLabel->setText(toplabel);
   }
 }

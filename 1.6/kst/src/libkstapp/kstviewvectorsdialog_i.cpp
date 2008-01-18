@@ -42,7 +42,7 @@ KstViewVectorsDialogI::KstViewVectorsDialogI(QWidget* parent,
   layout2->insertWidget(1, tableVectors);
 
   connect(Cancel, SIGNAL(clicked()), this, SLOT(close()));
-  connect(vectorSelector, SIGNAL(selectionChanged(const QString&)), this, SLOT( vectorChanged(const QString&)));
+  connect(vectorSelector, SIGNAL(selectionChanged(const QString&)), this, SLOT(vectorChanged(const QString&)));
   connect(vectorSelector, SIGNAL(newVectorCreated(const QString&)), this, SLOT(vectorChanged(const QString&)));
 
   if (tableVectors->numCols() != 2) {
