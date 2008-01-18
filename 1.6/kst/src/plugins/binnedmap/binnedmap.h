@@ -54,6 +54,7 @@ class BinnedMap : public KstDataObject {
     //Regular virtual methods from KstDataObject
     virtual void load(const QDomElement &e);
     virtual void save(QTextStream& ts, const QString& indent = QString::null);
+    virtual Kind kind() const { return KstPlugin; }
 
     void setXMin(double xmin);
     void setXMax(double xmax);
