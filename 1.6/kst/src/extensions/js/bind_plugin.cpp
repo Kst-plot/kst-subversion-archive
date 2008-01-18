@@ -430,7 +430,7 @@ KJS::Value KstBindPlugin::setInput(KJS::ExecState *exec, const KJS::List& args) 
           bp->setInputVector(input, vp);
           bp->setDirty(true);
         } else {
-          KJS::Object eobj = KJS::Error::create(exec, KJS::GeneralError, "0 Argument was not of the expected type.");
+          KJS::Object eobj = KJS::Error::create(exec, KJS::GeneralError, "Argument was not of the expected type.");
           exec->setException(eobj);
           return KJS::Undefined();
         }
@@ -440,7 +440,7 @@ KJS::Value KstBindPlugin::setInput(KJS::ExecState *exec, const KJS::List& args) 
           bp->setInputScalar(input, sp);
           bp->setDirty(true);
         } else {
-          KJS::Object eobj = KJS::Error::create(exec, KJS::GeneralError, "1 Argument was not of the expected type.");
+          KJS::Object eobj = KJS::Error::create(exec, KJS::GeneralError, "Argument was not of the expected type.");
           exec->setException(eobj);
           return KJS::Undefined();
         }
@@ -450,17 +450,17 @@ KJS::Value KstBindPlugin::setInput(KJS::ExecState *exec, const KJS::List& args) 
           bp->setInputString(input, sp);
           bp->setDirty(true);
         } else {
-          KJS::Object eobj = KJS::Error::create(exec, KJS::GeneralError, "2 Argument was not of the expected type.");
+          KJS::Object eobj = KJS::Error::create(exec, KJS::GeneralError, "Argument was not of the expected type.");
           exec->setException(eobj);
           return KJS::Undefined();
         }
       } else {
-        KJS::Object eobj = KJS::Error::create(exec, KJS::GeneralError, "3 Argument was not of the expected type.");
+        KJS::Object eobj = KJS::Error::create(exec, KJS::GeneralError, "Argument was not of the expected type.");
         exec->setException(eobj);
         return KJS::Undefined();
       }
     } else {
-      KJS::Object eobj = KJS::Error::create(exec, KJS::GeneralError, "4 Argument was not of the expected type.");
+      KJS::Object eobj = KJS::Error::create(exec, KJS::GeneralError, "Argument was not of the expected type.");
       exec->setException(eobj);
       return KJS::Undefined();
     }

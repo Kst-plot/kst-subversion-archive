@@ -290,11 +290,17 @@ void KstBasicPlugin::load(const QDomElement &e) {
 }
 
 
+//
+// to be used only from javaScript...
+//
 bool KstBasicPlugin::isValid() const {
   return inputsExist();
 }
 
 
+//
+// to be used only from javaScript...
+//
 bool KstBasicPlugin::validate() {
   bool rc = false;
 
