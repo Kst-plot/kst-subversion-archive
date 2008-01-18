@@ -62,8 +62,6 @@ BinnedMapDialogI::BinnedMapDialogI(QWidget* parent, const char* name, bool modal
   connect(_w->_X, SIGNAL(newVectorCreated(const QString&)), this, SIGNAL(modified()));
   connect(_w->_Y, SIGNAL(newVectorCreated(const QString&)), this, SIGNAL(modified()));
   connect(_w->_Z, SIGNAL(newVectorCreated(const QString&)), this, SIGNAL(modified()));
-  //connect(_w->_binnedMap, SIGNAL(newMatrixCreated()), this, SIGNAL(modified()));
-  //connect(_w->_hitsMap,   SIGNAL(newMatrixCreated()), this, SIGNAL(modified()));
   connect(this, SIGNAL(modified()), _w->_X, SLOT(update()));
   connect(this, SIGNAL(modified()), _w->_Y, SLOT(update()));
   connect(this, SIGNAL(modified()), _w->_Z, SLOT(update()));
@@ -191,8 +189,7 @@ bool BinnedMapDialogI::editSingleObject(BinnedMapPtr map) {
     if (it != KST::vectorList.end()) {
       map->setZ(*it);
     }
-    
-    //xxxx
+
     map->setXMin(_w->_Xmin->text().toDouble());
     map->setXMax(_w->_Xmax->text().toDouble());
     map->setYMin(_w->_Ymin->text().toDouble());
@@ -201,10 +198,8 @@ bool BinnedMapDialogI::editSingleObject(BinnedMapPtr map) {
     map->setNX(_w->_Xn->value());
     map->setNY(_w->_Yn->value());
     map->setAutoBin(_w->_realTimeAutoBin->isChecked());
-
   }
 
-  // FIXME: set the map properties
   return true;
 }
 
@@ -218,7 +213,7 @@ void BinnedMapDialogI::fillFieldsForEdit() {
   map->readLock();
 
   _tagName->setText(map->tagName());
-  _legendText->setText(defaultTag); //FIXME?
+  _legendText->setText(defaultTag);
 
   _w->_X->setSelection(map->xTag());
   _w->_Y->setSelection(map->yTag());
@@ -227,16 +222,6 @@ void BinnedMapDialogI::fillFieldsForEdit() {
   _w->_binnedMap->setText(map->mapTag());
   _w->_hitsMap->setText(map->hitsMapTag());
 
-//   _w->_real->setText(map->realTag());
-//   _w->_real->setEnabled( false );
-// 
-//   _w->_imaginary->setText(map->imaginaryTag());
-//   _w->_imaginary->setEnabled( false );
-// 
-//   _w->_frequency->setText(map->frequencyTag());
-//   _w->_frequency->setEnabled(false);
-
-  // xxxxx
   _w->_Xmin->setText(QString::number(map->xMin()));
   _w->_Xmax->setText(QString::number(map->xMax()));
   _w->_Ymin->setText(QString::number(map->yMin()));
@@ -258,9 +243,6 @@ void BinnedMapDialogI::fillFieldsForNew() {
   _tagName->setText(defaultTag);
   _legendText->setText(defaultTag);
 
-//   _w->_fft->_scalar->setCurrentText(QString::number(KST::objectDefaults.fftLen()));
-//   _w->_sample->_scalar->setCurrentText(QString::number(KST::objectDefaults.psdFreq()));
-
   adjustSize();
   resize(minimumSizeHint());
   setFixedHeight(height());
@@ -271,9 +253,9 @@ void BinnedMapDialogI::fillAutoRange() {
   double minx, miny, maxx, maxy;
   KstVectorPtr vx = *KST::vectorList.findTag(_w->_X->selectedVector());
   KstVectorPtr vy = *KST::vectorList.findTag(_w->_Y->selectedVector());
-  
+
   BinnedMap::AutoSize(vx,vy, &nx, &minx, &maxx, &ny, &miny, &maxy);
-  
+
   _w->_Xmin->setText(QString::number(minx));
   _w->_Xmax->setText(QString::number(maxx));
   _w->_Ymin->setText(QString::number(miny));
@@ -284,5 +266,3 @@ void BinnedMapDialogI::fillAutoRange() {
 }
 
 #include "binnedmapdialog_i.moc"
-
-// vim: ts=2 sw=2 et

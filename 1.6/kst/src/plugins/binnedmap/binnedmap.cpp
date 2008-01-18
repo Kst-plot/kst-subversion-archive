@@ -36,8 +36,7 @@ static const QString& HITSMAP = KGlobal::staticQString("Hits Map");
 
 KST_KEY_DATAOBJECT_PLUGIN( binnedmap )
 
-K_EXPORT_COMPONENT_FACTORY( kstobject_binnedmap,
-	KGenericFactory<BinnedMap>( "kstobject_binnedmap" ) )
+K_EXPORT_COMPONENT_FACTORY( kstobject_binnedmap, KGenericFactory<BinnedMap>( "kstobject_binnedmap" ) )
 
 BinnedMap::BinnedMap( QObject */*parent*/, const char */*name*/, const QStringList &/*args*/ )
     : KstDataObject() {
@@ -56,42 +55,52 @@ BinnedMap::~BinnedMap() {
 
 QString BinnedMap::xTag() const {
   KstVectorPtr v = X();
+
   if (v) {
     return v->tagName();
   }
+
   return QString::null;
 }
 
 QString BinnedMap::yTag() const {
   KstVectorPtr v = Y();
+
   if (v) {
     return v->tagName();
   }
+
   return QString::null;
 }
 
 
 QString BinnedMap::zTag() const {
   KstVectorPtr v = Z();
+
   if (v) {
     return v->tagName();
   }
+
   return QString::null;
 }
 
 QString BinnedMap::mapTag() const {
   KstMatrixPtr m = map();
+
   if (m) {
     return m->tagName();
   }
+
   return QString::null;
 }
 
 QString BinnedMap::hitsMapTag() const {
   KstMatrixPtr m = hitsMap();
+
   if (m) {
     return m->tagName();
   }
+
   return QString::null;
 }
 
@@ -144,6 +153,7 @@ void BinnedMap::setZ(KstVectorPtr new_z) {
 
 void BinnedMap::setMap(const QString &name) {
   QString tname;
+
   if (name.isEmpty()) {
     tname = i18n("map");
   } else {
@@ -156,6 +166,7 @@ void BinnedMap::setMap(const QString &name) {
 
 void BinnedMap::setHitsMap(const QString &name) {
   QString tname;
+
   if (name.isEmpty()) {
     tname = i18n("hits map");
   } else {
@@ -189,13 +200,12 @@ KstObject::UpdateType BinnedMap::update(int updateCounter) {
   depUpdated = UPDATE == Z()->update(updateCounter) || depUpdated;
 
   if (depUpdated) {
-  binnedmap();
+    binnedmap();
 
-  //matrixRealloced(BinnedMap(), BinnedMap()->value(), real()->length());
-  map()->setDirty();
-  map()->update(updateCounter);
-  hitsMap()->setDirty();
-  hitsMap()->update(updateCounter);
+    map()->setDirty();
+    map()->update(updateCounter);
+    hitsMap()->setDirty();
+    hitsMap()->update(updateCounter);
   }
   unlockInputsAndOutputs();
 
@@ -214,35 +224,36 @@ void BinnedMap::binnedmap() {
   if (autoBin()) {
     AutoSize(X(),Y(), &_nx, &_xMin, &_xMax, &_ny, &_yMin, &_yMax);
   }
-  
+
   bool needsresize = false;
-  if (_nx<2) {
+
+  if (_nx < 2) {
     _nx = 2;
     needsresize = true;
   }
-  if (_ny<2) {
+  if (_ny < 2) {
     _ny = 2;
     needsresize = true;
   }
-  
+
   if ((map->xNumSteps() != _nx) || (map->yNumSteps() != _ny) ||
        (map->minX() != _xMin) || (map->minY() != _yMin)) {
     needsresize = true;
   }
-  
+
   if (map->xStepSize() != (_xMax - _xMin)/double(_nx-1)) {
     needsresize = true;
   }
   if (map->yStepSize() != (_yMax - _yMin)/double(_ny-1)) {
     needsresize = true;
   }
-  
+
   if (needsresize) {
-    map->change(map->tag(), _nx, _ny, _xMin, _yMin,
-		(_xMax - _xMin)/double(_nx-1), (_yMax - _yMin)/double(_ny-1));
+    map->change(map->tag(), _nx, _ny, _xMin, _yMin, 
+                (_xMax - _xMin)/double(_nx-1), (_yMax - _yMin)/double(_ny-1));
     map->resize(_nx, _ny);
     hitsMap->change(hitsMap->tag(), _nx, _ny, _xMin, _yMin,
-		(_xMax - _xMin)/double(_nx-1), (_yMax - _yMin)/double(_ny-1));
+                (_xMax - _xMin)/double(_nx-1), (_yMax - _yMin)/double(_ny-1));
     hitsMap->resize(_nx, _ny);
   }
 
@@ -251,6 +262,7 @@ void BinnedMap::binnedmap() {
 
   int ns = z->length(); // the z vector defines the number of points.
   double n,p, x0, y0, z0;
+
   for (int i=0; i<ns; i++) {
     x0 = x->interpolate(i, ns);
     y0 = y->interpolate(i, ns);
@@ -263,17 +275,15 @@ void BinnedMap::binnedmap() {
 
   for (int i=0; i<_nx; i++) {
     for (int j=0; j<_ny; j++) {
-      p = map->valueRaw(i,j);
-      n = hitsMap->valueRaw(i,j);
+      p = map->valueRaw(i, j);
+      n = hitsMap->valueRaw(i, j);
       if (n>0) {
-	map->setValueRaw(i,j,p/n);
+        map->setValueRaw(i, j, p/n);
       } else {
-	map->setValueRaw(i,j,KST::NOPOINT);
+        map->setValueRaw(i, j, KST::NOPOINT);
       }
     }
   }
-
-  //calculate here...
 }
 
 
@@ -312,24 +322,24 @@ void BinnedMap::load(const QDomElement &e) {
       } else if (e.tagName() == "ivector") {
         _inputVectorLoadQueue.append(qMakePair(e.attribute("name"), e.text()));
       } else if (e.tagName() == "omatrix") {
-	KstWriteLocker blockMatrixUpdates(&KST::matrixList.lock());
-	KstMatrixPtr m;
-	m = new KstMatrix(KstObjectTag(e.text(), tag()), this);
-	_outputMatrices.insert(e.attribute("name"), m);
+        KstWriteLocker blockMatrixUpdates(&KST::matrixList.lock());
+        KstMatrixPtr m;
+        m = new KstMatrix(KstObjectTag(e.text(), tag()), this);
+        _outputMatrices.insert(e.attribute("name"), m);
       } else if (e.tagName() == "minX") {
-	setXMin(e.text().toDouble());
+        setXMin(e.text().toDouble());
       } else if (e.tagName() == "maxX") {
-	setXMax(e.text().toDouble());
+        setXMax(e.text().toDouble());
       } else if (e.tagName() == "minY") {
-	setYMin(e.text().toDouble());
+        setYMin(e.text().toDouble());
       } else if (e.tagName() == "maxY") {
-	setYMax(e.text().toDouble());
+        setYMax(e.text().toDouble());
       } else if (e.tagName() == "nX") {
-	setNX(e.text().toInt());
+        setNX(e.text().toInt());
       } else if (e.tagName() == "nY") {
-	setNY(e.text().toInt());
+        setNY(e.text().toInt());
       } else if (e.tagName() == "autoBin") {
-	setAutoBin(true);
+        setAutoBin(true);
       }
     }
     n = n.nextSibling();
@@ -426,8 +436,12 @@ void BinnedMap::AutoSize(KstVectorPtr x, KstVectorPtr y, int *nx, double *minx, 
   // use a very simple guess at nx and ny... One could imagine something more
   // clever in principle.
   *nx = *ny = (int)sqrt(x->length())/2;
-  if (*nx<2) *nx = 2;
-  if (*ny<2) *ny = 2;
+  if (*nx < 2) {
+    *nx = 2;
+  }
+  if (*ny < 2) {
+    *ny = 2;
+  }
 
   *minx = x->min();
   *maxx = x->max();
@@ -437,4 +451,3 @@ void BinnedMap::AutoSize(KstVectorPtr x, KstVectorPtr y, int *nx, double *minx, 
 
 
 #include "binnedmap.moc"
-// vim: ts=2 sw=2 et

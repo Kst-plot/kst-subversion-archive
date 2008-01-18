@@ -80,7 +80,7 @@ class BinnedMap : public KstDataObject {
     //Pure virtual slots from KstDataObject
     virtual void showNewDialog();
     virtual void showEditDialog();
-  
+
   private:
     double _xMin;
     double _xMax;
