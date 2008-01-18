@@ -228,10 +228,9 @@ KstObject::UpdateType KstVectorView::update(int update_counter) {
       break;
   }
 
-  int NSm1 = NS-1;
-
   double *outXArr;
   double *outYArr;
+  int NSm1 = NS-1;
 
   if (inXVec->length() == NS && inXVec->isRising()) { //good scenario.
     int i_bot = inXVec->indexNearX(xmin, NS); //closest index to xmin
@@ -258,8 +257,9 @@ KstObject::UpdateType KstVectorView::update(int update_counter) {
 
     int in = 0;
     double yv;
+
     for (long i=i_bot; i<=i_top; i++) {
-        if (!flagVec || !flagVec->interpolate(i, NS)) { //only the LHS should be evaluated !flagVec
+        if (!flagVec || !flagVec->interpolate(i, NS)) {
           yv = inYVec->interpolate(i, NS);
           if (ymin <= yv && ymax >= yv) {
             outXArr[in] = inXArr[i];
@@ -303,10 +303,11 @@ KstObject::UpdateType KstVectorView::update(int update_counter) {
 
     int in = 0;
     double xv;
+
     for (long i=i_bot; i<=i_top; i++) {
-        if (!flagVec || !flagVec->interpolate(i, NS)) { //only the LHS should be evaluated !flagVec
+        if (!flagVec || !flagVec->interpolate(i, NS)) {
           xv = inXVec->interpolate(i, NS);
-          if ( (xmin <= xv) && (xmax >= xv) ) {
+          if (xmin <= xv && xmax >= xv) {
             outXArr[in] = inYArr[i];
             outYArr[in] = xv;
             in++;
@@ -336,8 +337,9 @@ KstObject::UpdateType KstVectorView::update(int update_counter) {
 
     int in = 0;
     double yv;
+
     for (long i=0; i<=NSm1; i++) {
-      if (!flagVec || !flagVec->interpolate(i, NS)) { //only the LHS should be evaluated if !flagVec.
+      if (!flagVec || !flagVec->interpolate(i, NS)) {
         double xv = inXVec->interpolate(i, NS);
         if (xmin <= xv && xmax >= xv) {
           yv = inYVec->interpolate(i,NS);
