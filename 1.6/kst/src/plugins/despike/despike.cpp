@@ -28,23 +28,22 @@ int despike(const double *const inArrays[], const int inArrayLens[],
 	    const double inScalars[],
 	    double *outArrays[], int outArrayLens[],
 	    double outScalars[]) {
-  
   int N = inArrayLens[0];
   const double *X = inArrays[0];
   double *Y;
-  double last_good;
+  double lastGood;
   double cut = inScalars[1];
-  double mdev = 0;
+  double mdev = 0.0;
   int dx = int(inScalars[0]);
   int i;
-  int spike_start = -1;
+  int spikeStart = -1;
   int border = dx*2;
 
   if (N<1 || cut<=0 || dx<1 || dx>N/2) {
     return -1;
   }
 
-  /* get mean deviation of 3 pt difference */
+  // get mean deviation of 3 pt difference
   for (i=dx; i<N-dx; i++) {
     mdev += fabs(X[i]-(X[i-dx]+X[i+dx])*0.5);
   }
@@ -56,63 +55,77 @@ int despike(const double *const inArrays[], const int inArrayLens[],
   outArrayLens[0] = N;
   Y = outArrays[0] = (double*)realloc(outArrays[0], N*sizeof(double));
 
-  // for first dx points, do a 2 point difference
-  last_good = X[0];
+  // do a 2 point difference for first dx points
+  lastGood = X[0];
   for (i=0; i<dx; i++) {
-    if (fabs(X[i] - X[i+dx])>cut) {
-      if (spike_start<0) { 
-	spike_start = i-border;
-	if (spike_start<0) spike_start = 0;
+    if (fabs(X[i] - X[i+dx]) > cut) {
+      if (spikeStart < 0) {
+        spikeStart = i-border;
+        if (spikeStart < 0) {
+          spikeStart = 0;
+        }
       }
     } else {
-      if (spike_start>=0) {
-	i += 4*border-1; 
-	if (i>=N) i=N-1;
-	for (int j=spike_start; j<=i; j++) {
-	  Y[j] = last_good;
-	}
-	spike_start = -1;
+      if (spikeStart >= 0) {
+        i += 4*border-1;
+        if (i >= N) {
+          i=N-1;
+        }
+        for (int j=spikeStart; j<=i; j++) {
+          Y[j] = lastGood;
+        }
+        spikeStart = -1;
       }
-      last_good = Y[i] = X[i];
+      lastGood = Y[i] = X[i];
     }
   }
+
   // do a 3 point difference where it is possible
   for (i=dx; i<N-dx; i++) {
-    if (fabs(X[i] - (X[i-dx]+X[i+dx])*0.5)>cut) {
-      if (spike_start<0) { 
-	spike_start = i-border;
-	if (spike_start<0) spike_start = 0;
+    if (fabs(X[i] - (X[i-dx]+X[i+dx])*0.5) > cut) {
+      if (spikeStart < 0) {
+        spikeStart = i-border;
+        if (spikeStart < 0) {
+          spikeStart = 0;
+        }
       }
     } else {
-      if (spike_start>=0) {
-	i += 4*border-1; 
-	if (i>=N) i=N-1;
-	for (int j=spike_start; j<=i; j++) {
-	  Y[j] = last_good;
-	}
-	spike_start = -1;
+      if (spikeStart >= 0) {
+        i += 4*border-1;
+        if (i >= N) {
+          i = N-1;
+        }
+        for (int j=spikeStart; j<=i; j++) {
+          Y[j] = lastGood;
+        }
+        spikeStart = -1;
       } else {
-	last_good = Y[i] = X[i];
+        lastGood = Y[i] = X[i];
       }
     }
   }
-  // do a 2 point difference for lat dx points
+
+  // do a 2 point difference for last dx points
   for (i=N-dx; i<N; i++) {
-    if (fabs(X[i-dx] - X[i])>cut) {
-      if (spike_start<0) { 
-	spike_start = i-border;
-	if (spike_start<0) spike_start = 0;
+    if (fabs(X[i-dx] - X[i]) > cut) {
+      if (spikeStart < 0) {
+        spikeStart = i-border;
+        if (spikeStart < 0) {
+          spikeStart = 0;
+        }
       }
     } else {
-      if (spike_start>=0) {
-	i += 4*border-1; 
-	if (i>=N) i=N-1;
-	for (int j=spike_start; j<=i; j++) {
-	  Y[j] = last_good;
-	}
-	spike_start = -1;
+      if (spikeStart >= 0) {
+        i += 4*border-1;
+        if (i >= N) {
+          i = N-1;
+        }
+        for (int j=spikeStart; j<=i; j++) {
+          Y[j] = lastGood;
+        }
+        spikeStart = -1;
       } else {
-	last_good = Y[i] = X[i];
+        lastGood = Y[i] = X[i];
       }
     }
   }
