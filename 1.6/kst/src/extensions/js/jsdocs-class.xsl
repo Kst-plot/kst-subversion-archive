@@ -170,7 +170,10 @@
     <br/>
     <a class="link" href="classindex.html">&lt;-- Back To Index</a><xsl:text disable-output-escaping="yes">&amp;nbsp;&amp;nbsp;&amp;nbsp;</xsl:text><a class="link" href="index.html">[Overview]</a>
     <hr/>
-    <h6>Copyright <xsl:text disable-output-escaping="yes">&amp;copy;</xsl:text> 2005-2006 <a class="link" href="http://www.utoronto.ca/">The University of Toronto</a><br/>
+    <h6>Copyright <xsl:text disable-output-escaping="yes">&amp;copy;</xsl:text>
+	2005-2006 <a class="link" href="http://www.utoronto.ca/">The University of Toronto</a><br/>
+	Copyright <xsl:text disable-output-escaping="yes">&amp;copy;</xsl:text>
+	2007-2008 <a class="link" href="http://www.ubc.ca/">The University of British Columbia</a><br/>
   Kst <a class="link" href="http://kst.kde.org/">http://kst.kde.org/</a></h6>
     </body>
     </html>

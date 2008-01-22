@@ -505,7 +505,7 @@ KJS::Value KstBindPlugin::outputs(KJS::ExecState *exec) const {
 
     if (bp) {
       KstReadLocker rl(bp);
-      return KJS::Object(new KstBindObjectCollection(exec, bp, true));
+      return KJS::Object(new KstBindObjectCollection(exec, bp, false));
     }
   }
 

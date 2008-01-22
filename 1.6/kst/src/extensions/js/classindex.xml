@@ -1,5 +1,7 @@
 <classes>
   <class name="Axis" file="bind_axis"/>
+  <class name="AxisLabel" file="bind_axislabel"/>
+  <class name="AxisTickLabel" file="bind_axisticklabel"/>
   <class name="Arrow" file="bind_arrow"/>
   <class name="BorderedViewObject" file="bind_borderedviewobject"/>
   <class name="Box" file="bind_box"/>
@@ -18,10 +20,12 @@
   <class name="DebugLog" file="bind_debuglog"/>
   <class name="Document" file="bind_document"/>
   <class name="Ellipse" file="bind_ellipse"/>
+  <class name="ELOG" file="bind_elog"/>
   <class name="EquationCollection" file="bind_equationcollection"/>
   <class name="Equation" file="bind_equation"/>
   <class name="ExtensionCollection" file="bind_extensioncollection"/>
   <class name="Extension" file="bind_extension"/>
+  <class name="File" file="bind_file"/>
   <class name="Group" file="bind_group"/>
   <class name="HistogramCollection" file="bind_histogramcollection"/>
   <class name="Histogram" file="bind_histogram"/>
@@ -37,6 +41,7 @@
   <class name="Picture" file="bind_picture"/>
   <class name="PlotCollection" file="bind_plotcollection"/>
   <class name="Plot" file="bind_plot"/>
+  <class name="PlotLabel" file="bind_plotlabel"/>
   <class name="PluginCollection" file="bind_plugincollection"/>
   <class name="Plugin" file="bind_plugin"/>
   <class name="PluginIOCollection" file="bind_pluginiocollection"/>
