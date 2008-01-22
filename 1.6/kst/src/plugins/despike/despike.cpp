@@ -39,7 +39,7 @@ int despike(const double *const inArrays[], const int inArrayLens[],
   int spikeStart = -1;
   int border = dx*2;
 
-  if (N<1 || cut<=0 || dx<1 || dx>N/2) {
+  if (N < 1 || cut <= 0.0 || dx < 1 || dx > N/2) {
     return -1;
   }
 
@@ -69,7 +69,7 @@ int despike(const double *const inArrays[], const int inArrayLens[],
       if (spikeStart >= 0) {
         i += 4*border-1;
         if (i >= N) {
-          i=N-1;
+          i = N-1;
         }
         for (int j=spikeStart; j<=i; j++) {
           Y[j] = lastGood;
