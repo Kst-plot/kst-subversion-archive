@@ -49,6 +49,7 @@ class KstBindTemplate : public KstBinding {
     int propertyCount() const;
 
     // member functions
+
     /* @method name
        @returns type
        @arg type name description

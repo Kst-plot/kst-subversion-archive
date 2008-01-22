@@ -56,15 +56,18 @@ class KstBindDataVector : public KstBindVector {
     bool hasProperty(KJS::ExecState *exec, const KJS::Identifier& propertyName) const;
 
     // member functions
+
     /* @method reload
        description Triggers a reload of this vector from disk.
     */
     KJS::Value reload(KJS::ExecState *exec, const KJS::List& args);
+
     /* @method changeFile
        @arg DataSource source The DataSource to switch to.
        @description Switches this DataVector to a different DataSource.
     */
     KJS::Value changeFile(KJS::ExecState *exec, const KJS::List& args);
+
     /* @method changeFrames
        @arg number start The starting frame.
        @arg number count The number of frames to read.
@@ -80,67 +83,79 @@ class KstBindDataVector : public KstBindVector {
        @description True if the data vector is valid.
     */
     KJS::Value valid(KJS::ExecState *exec) const;
+
     /* @property boolean skip
        @readonly
        @description True if the vector should skip by <i>skipLength</i> samples
                     while reading from the data source.
     */
     KJS::Value skip(KJS::ExecState *exec) const;
+
     /* @property boolean boxcar
        @readonly
        @description True if the vector should be boxcar filtered.
     */
     KJS::Value boxcar(KJS::ExecState *exec) const;
+
     /* @property boolean readToEnd
        @readonly
        @description If true, the vector is read to the end of the source.
     */
     KJS::Value readToEnd(KJS::ExecState *exec) const;
+
     /* @property boolean countFromEnd
        @readonly
        @description If true, the vector reads only a maximum number of samples
                     from the end of the source.
     */
     KJS::Value countFromEnd(KJS::ExecState *exec) const;
+
     /* @property number skipLength
        @readonly
        @description The number of samples to skip by.
     */
     KJS::Value skipLength(KJS::ExecState *exec) const;
+
     /* @property number startFrame
        @readonly
        @description The starting frame number.
     */
     KJS::Value startFrame(KJS::ExecState *exec) const;
+
     /* @property number startFrameRequested
        @readonly
        @description The requested starting frame number.  May not be the
                     actual <i>startFrame</i>.
     */
     KJS::Value startFrameRequested(KJS::ExecState *exec) const;
+
     /* @property number frames
        @readonly
        @description The number of frames read from the source.
     */
     KJS::Value frames(KJS::ExecState *exec) const;
+
     /* @property number framesRequested
        @readonly
        @description The number of frames requested to be read from the source.
                     May not be the actual <i>frames</i>.
     */
     KJS::Value framesRequested(KJS::ExecState *exec) const;
+
     /* @property number samplesPerFrame
        @readonly
        @description The number of samples per frame for the associated data
                     source.
     */
     KJS::Value samplesPerFrame(KJS::ExecState *exec) const;
+
     /* @property string field
        @readonly
        @description The field being read from the data source to create this
                     vector.
     */
     KJS::Value field(KJS::ExecState *exec) const;
+
     /* @property DataSource dataSource
        @readonly
        @description The data source object used by this DataVector.

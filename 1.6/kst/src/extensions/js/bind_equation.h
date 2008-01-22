@@ -77,6 +77,7 @@ class KstBindEquation : public KstBindDataObject {
      */
     void setEquation(KJS::ExecState *exec, const KJS::Value& value);
     KJS::Value equation(KJS::ExecState *exec) const;
+
     /* @property boolean valid
        @readonly
        @description True if the equation object is valid.  If false, any
@@ -84,11 +85,13 @@ class KstBindEquation : public KstBindDataObject {
                     meaningless.
     */
     KJS::Value valid(KJS::ExecState *exec) const;
+
     /* @property Vector xVector
        @readonly
        @description The X vector (input vector) for the equation.
     */
     KJS::Value xVector(KJS::ExecState *exec) const;
+
     /* @property Vector yVector
        @readonly
        @description The Y vector (output vector) for the equation.

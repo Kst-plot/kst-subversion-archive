@@ -57,37 +57,44 @@ class KstBindPlot : public KstBindBorderedViewObject {
        @description A list of all the Curves used by the plot.
     */
     KJS::Value curves(KJS::ExecState *exec) const;
+
     /* @property Legend legend
        @readonly
        @description The Legend for this plot.  May be null.
     */
     KJS::Value legend(KJS::ExecState *exec) const;
+
     /* @method createLegend
        @returns Legend
        @description Creates a Legend for this plot.  If a legend already exists
                     then that one is returned.
     */
     KJS::Value createLegend(KJS::ExecState *exec, const KJS::List& args);
+
     /* @property string topLabel
        @description The top label for this plot.
     */
     void setTopLabel(KJS::ExecState *exec, const KJS::Value& value);
     KJS::Value topLabel(KJS::ExecState *exec) const;
+
     /* @property Axis xAxis
        @readonly
        @description The X-axis for this plot.
     */
     KJS::Value xAxis(KJS::ExecState *exec) const;
+
     /* @property Axis yAxis
        @readonly
        @description The Y-axis for this plot.
     */
     KJS::Value yAxis(KJS::ExecState *exec) const;
+
     /* @property PlotLabel title
        @readonly
        @description The title for this plot.
     */
     KJS::Value title(KJS::ExecState *exec) const;
+
     /* @property boolean tied
        @description True if the plot zoom state is tied.
     */

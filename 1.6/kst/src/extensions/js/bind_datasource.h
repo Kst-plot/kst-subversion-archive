@@ -50,16 +50,19 @@ class KstBindDataSource : public KstBindObject {
     bool hasProperty(KJS::ExecState *exec, const KJS::Identifier& propertyName) const;
 
     // member functions
+
     /* @method isValidField
        @returns boolean
        @description Returns if the field is valid or not.
     */
     KJS::Value isValidField(KJS::ExecState *exec, const KJS::List& args);
+
     /* @method fieldList
        @returns array[string]
        @description Generates a list of the fields available from this source.
     */
     KJS::Value fieldList(KJS::ExecState *exec, const KJS::List& args);
+
     /* @method samplesPerFrame
        @arg string field A field name to get the number of
                          samples per frame for.  This is the same for every
@@ -68,6 +71,7 @@ class KstBindDataSource : public KstBindObject {
        @description The number of samples per frame for this field or source.
     */
     KJS::Value samplesPerFrame(KJS::ExecState *exec, const KJS::List& args);
+
     /* @method frameCount
        @optarg string field An optional field name to get the number of
                             frames for.  This is the same for every
@@ -79,36 +83,43 @@ class KstBindDataSource : public KstBindObject {
     KJS::Value frameCount(KJS::ExecState *exec, const KJS::List& args);
 
     // properties
+
     /* @property boolean valid
        @readonly
        @description True if the data source is valid.
     */
     KJS::Value valid(KJS::ExecState *exec) const;
+
     /* @property boolean empty
        @readonly
        @description True if the data source is empty.
     */
     KJS::Value empty(KJS::ExecState *exec) const;
+
     /* @property boolean completeFieldList
        @readonly
        @description True if the field list is complete.
     */
     KJS::Value completeFieldList(KJS::ExecState *exec) const;
+
     /* @property string fileName
        @readonly
        @description Name of the file.
     */
     KJS::Value fileName(KJS::ExecState *exec) const;
+
     /* @property string fileType
        @readonly
        @description The type (format) of the file, such as ASCII.
     */
     KJS::Value fileType(KJS::ExecState *exec) const;
+
     /* @property string source
        @readonly
        @description The name of the data source.
     */
     KJS::Value source(KJS::ExecState *exec) const;
+
     /* @property array[string] metaData
        @readonly
        @description Any metadata associated with the data source.  This is an

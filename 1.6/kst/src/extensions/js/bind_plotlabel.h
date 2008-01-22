@@ -42,6 +42,7 @@ class KstBindPlotLabel : public QObject, public KstBinding {
     bool hasProperty(KJS::ExecState *exec, const KJS::Identifier& propertyName) const;
 
     // member functions
+
     /* @property string text
        @description Contains the text contents of the label.  This may include
                     carriage returns (\n), scalar references of the form
@@ -49,16 +50,19 @@ class KstBindPlotLabel : public QObject, public KstBinding {
     */
     void setText(KJS::ExecState *exec, const KJS::Value& value);
     KJS::Value text(KJS::ExecState *exec) const;
+
     /* @property string font
        @description Used to set or get the current font used for the label.
     */
     void setFont(KJS::ExecState *exec, const KJS::Value& value);
     KJS::Value font(KJS::ExecState *exec) const;
+
     /* @property number fontSize
        @description Contains the size of the font used to draw the label.
     */
     void setFontSize(KJS::ExecState *exec, const KJS::Value& value);
     KJS::Value fontSize(KJS::ExecState *exec) const;
+
     /* @property number justification
        @description The horizontal justification for the label. This is a bit field.
                     The values are as follows:

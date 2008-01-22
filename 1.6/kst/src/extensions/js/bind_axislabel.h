@@ -42,22 +42,26 @@ class KstBindAxisLabel : public QObject, public KstBinding {
     bool hasProperty(KJS::ExecState *exec, const KJS::Identifier& propertyName) const;
 
     // member functions
+
     /* @property string text
        @description Contains the text contents of the label.  This may include
                     scalar references of the form <i>[scalar_name]</i> and some basic LaTeX.
     */
     void setText(KJS::ExecState *exec, const KJS::Value& value);
     KJS::Value text(KJS::ExecState *exec) const;
+
     /* @property string font
        @description Used to set or get the current font used for the label.
     */
     void setFont(KJS::ExecState *exec, const KJS::Value& value);
     KJS::Value font(KJS::ExecState *exec) const;
+
     /* @property number fontSize
        @description Contains the size of the font used to draw the label.
     */
     void setFontSize(KJS::ExecState *exec, const KJS::Value& value);
     KJS::Value fontSize(KJS::ExecState *exec) const;
+
     /* @property string type
        @readonly
        @description The type of axis - X or Y presently.

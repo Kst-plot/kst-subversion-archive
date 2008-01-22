@@ -43,10 +43,9 @@ class KstBindPluginManager : public KstBinding {
     bool hasProperty(KJS::ExecState *exec, const KJS::Identifier& propertyName) const;
 
     // member functions
-    // install
-    // remove
 
     // properties
+
     /* @property PluginModuleCollection modules
        @readonly
        @description A list of all PluginModules available.

@@ -59,6 +59,7 @@ class KstBindVector : public KstBindObject {
                                editable.
     */
     KJS::Value resize(KJS::ExecState *exec, const KJS::List& args);
+
     /* @method interpolate
        @returns number
        @description Interpolates the vector to <i>n</i> samples and
@@ -67,55 +68,66 @@ class KstBindVector : public KstBindObject {
        @arg number n The number of samples to interpolate to.
     */
     KJS::Value interpolate(KJS::ExecState *exec, const KJS::List& args);
+
     /* @method zero
        @description Sets all values in the vector to zero.
        @exception GeneralError Throws this exception if the vector is not editable.
     */
     KJS::Value zero(KJS::ExecState *exec, const KJS::List& args);
+
     /* @method update
        @description Updates the statistical values associated with a vector.
        @exception GeneralError Throws this exception if the vector is not editable.
     */
     KJS::Value update(KJS::ExecState *exec, const KJS::List& args);    
+
     /* @property number length
        @readonly
        @description The number of samples in the vector.
     */
     KJS::Value length(KJS::ExecState *exec) const;
+
     /* @property number min
        @readonly
        @description The value of the smallest sample in the vector.
     */
     KJS::Value min(KJS::ExecState *exec) const;
+
     /* @property number max
        @readonly
        @description The value of the largest sample in the vector.
     */
     KJS::Value max(KJS::ExecState *exec) const;
+
     /* @property number mean
        @readonly
        @description The mean value of all samples in the vector.
     */
     KJS::Value mean(KJS::ExecState *exec) const;
+
     /* @property number numNew
        @readonly
     */
     KJS::Value numNew(KJS::ExecState *exec) const;
+
     /* @property number numShifted
        @readonly
     */
     KJS::Value numShifted(KJS::ExecState *exec) const;
+
     /* @property number editable
        @readonly
        @description True if the vector is editable by the user.  This should be
                     checked before attempting to modify a vector in any way.
     */
     KJS::Value editable(KJS::ExecState *exec) const;
+
     /* @property number numNaN
        @readonly
        @description The number of NaN values in the vector.
     */
     KJS::Value numNaN(KJS::ExecState *exec) const;
+
   protected:
     KstBindVector(int id, const char *name = 0L);
     void addBindings(KJS::ExecState *exec, KJS::Object& obj);
