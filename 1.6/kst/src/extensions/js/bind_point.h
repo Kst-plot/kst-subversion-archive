@@ -53,6 +53,7 @@ class KstBindPoint : public KstBinding {
     */
     void setX(KJS::ExecState *exec, const KJS::Value& value);
     KJS::Value x(KJS::ExecState *exec) const;
+
     /* @property number y
        @description The value of the y co-ordinate.
     */

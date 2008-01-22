@@ -58,15 +58,18 @@ class KstBindDataMatrix : public KstBindMatrix {
     bool hasProperty(KJS::ExecState *exec, const KJS::Identifier& propertyName) const;
 
     // member functions
+
     /* @method reload
        description Triggers a reload of this matrix from disk.
     */
     KJS::Value reload(KJS::ExecState *exec, const KJS::List& args);
+
     /* @method changeFile
        @arg DataSource source The DataSource to switch to.
        @description Switches this DataMatrix to a different DataSource.
     */
     KJS::Value changeFile(KJS::ExecState *exec, const KJS::List& args);
+
     /* @method change
        @arg number xStart The x starting frame.
        @arg number yStart The y starting frame.
@@ -84,52 +87,61 @@ class KstBindDataMatrix : public KstBindMatrix {
        @description True if the data matrix is valid.
     */
     KJS::Value valid(KJS::ExecState *exec) const;
+
     /* @property boolean skip
        @readonly
        @description True if the matrix should skip by <i>skipLength</i> samples
                     while reading from the data source.
     */
     KJS::Value skip(KJS::ExecState *exec) const;
+
     /* @property boolean boxcar
        @readonly
        @description True if the matrix should be boxcar filtered.
     */
     KJS::Value boxcar(KJS::ExecState *exec) const;
+
     /* @property boolean xReadToEnd
        @readonly
        @description If true, the matrix is read to the end of the source in the
                     x dimension.
     */
     KJS::Value xReadToEnd(KJS::ExecState *exec) const;
+
     /* @property boolean yReadToEnd
        @readonly
        @description If true, the matrix is read to the end of the source in the
                     y dimension.
     */
     KJS::Value yReadToEnd(KJS::ExecState *exec) const;
+
     /* @property boolean xCountFromEnd
        @readonly
        @description If true, the matrix reads only a maximum number of samples
                     from the end of the source in the x dimension.
     */
     KJS::Value xCountFromEnd(KJS::ExecState *exec) const;
+
     /* @property boolean yCountFromEnd
        @readonly
        @description If true, the matrix reads only a maximum number of samples
                     from the end of the source in the y dimension.
     */
     KJS::Value yCountFromEnd(KJS::ExecState *exec) const;
+
     /* @property number skipLength
        @readonly
        @description The number of samples to skip by.
     */
     KJS::Value skipLength(KJS::ExecState *exec) const;
+
     /* @property string field
        @readonly
        @description The field being read from the data source to create this
                     matrix.
     */
     KJS::Value field(KJS::ExecState *exec) const;
+
     /* @property DataSource dataSource
        @readonly
        @description The data source object used by this DataMatrix.

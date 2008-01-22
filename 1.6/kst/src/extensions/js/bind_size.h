@@ -56,6 +56,7 @@ class KstBindSize : public KstBinding {
     */
     void setW(KJS::ExecState *exec, const KJS::Value& value);
     KJS::Value w(KJS::ExecState *exec) const;
+
     /* @property number h
        @description The height.
     */

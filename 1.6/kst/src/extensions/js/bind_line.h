@@ -62,16 +62,19 @@ class KstBindLine : public KstBindViewObject {
     */
     void setFrom(KJS::ExecState *exec, const KJS::Value& value);
     KJS::Value from(KJS::ExecState *exec) const;
+
     /* @property Point to
        @description The ending point of the line.
     */
     void setTo(KJS::ExecState *exec, const KJS::Value& value);
     KJS::Value to(KJS::ExecState *exec) const;
+
     /* @property number width
        @description The width of the line.
     */
     void setWidth(KJS::ExecState *exec, const KJS::Value& value);
     KJS::Value width(KJS::ExecState *exec) const;
+
     /* @property number capStyle
        @description The cap style for the line.
                     <ul>
@@ -82,6 +85,7 @@ class KstBindLine : public KstBindViewObject {
     */
     void setCapStyle(KJS::ExecState *exec, const KJS::Value& value);
     KJS::Value capStyle(KJS::ExecState *exec) const;
+
     /* @property number lineStyle
        @description The style for the line.
                     <ul>

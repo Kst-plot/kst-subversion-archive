@@ -63,12 +63,14 @@ class KstBindBox : public KstBindViewObject {
     */
     void setXRound(KJS::ExecState *exec, const KJS::Value& value);
     KJS::Value xRound(KJS::ExecState *exec) const;
+
     /* @property number yRound
        @description The roundness of the corners in the Y dimension.  Must be
                     an integer between 0 and 99.
     */
     void setYRound(KJS::ExecState *exec, const KJS::Value& value);
     KJS::Value yRound(KJS::ExecState *exec) const;
+
     /* @property number cornerStyle
        @description The style to draw the corners of the box.
                     <ul>
@@ -79,11 +81,13 @@ class KstBindBox : public KstBindViewObject {
     */
     void setCornerStyle(KJS::ExecState *exec, const KJS::Value& value);
     KJS::Value cornerStyle(KJS::ExecState *exec) const;
+
     /* @property int borderWidth
        @description The width in pixels of the border.
      */
     void setBorderWidth(KJS::ExecState *exec, const KJS::Value& value);
     KJS::Value borderWidth(KJS::ExecState *exec) const;
+
     /* @property string borderColor
        @description The border color for this object.
      */

@@ -62,6 +62,7 @@ class KstBindEllipse : public KstBindViewObject {
     */
     void setBorderWidth(KJS::ExecState *exec, const KJS::Value& value);
     KJS::Value borderWidth(KJS::ExecState *exec) const;
+
     /* @property string borderColor
        @description The color of the border of the ellipse.
     */

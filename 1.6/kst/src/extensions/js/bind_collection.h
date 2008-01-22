@@ -56,12 +56,14 @@ class KstBindCollection : public KstBinding {
     */
     // default throws an exception
     virtual KJS::Value append(KJS::ExecState *exec, const KJS::List& args);
+
     /* @method prepend
        @arg Object newObj The new object to prepend to the collection.
        @description Prepends a new object to the start of the collection.
     */
     // default throws an exception
     virtual KJS::Value prepend(KJS::ExecState *exec, const KJS::List& args);
+
     /* @method remove
        @arg number n The index of the entry to remove.
        @description Removes an entry from the collection.
@@ -72,22 +74,26 @@ class KstBindCollection : public KstBinding {
     */
     // default throws an exception
     virtual KJS::Value remove(KJS::ExecState *exec, const KJS::List& args);
+
     /* @method clear
        @description Clears the collection, removing all entries.
     */
     // default throws an exception
     virtual KJS::Value clear(KJS::ExecState *exec, const KJS::List& args);
+
     /* @property number length
        @readonly
        @description The number of items in the collection.  Items are ordered
                     0..(length - 1) so it is easy to iterate.
     */
     virtual KJS::Value length(KJS::ExecState *exec) const;
+
     /* @property boolean readOnly
        @readonly
        @description True if this is a read-only collection.
     */
     virtual KJS::Value readOnly(KJS::ExecState *exec) const;
+
     virtual QStringList collection(KJS::ExecState *exec) const;
     virtual KJS::Value extract(KJS::ExecState *exec, const KJS::Identifier& item) const;
     virtual KJS::Value extract(KJS::ExecState *exec, unsigned item) const;

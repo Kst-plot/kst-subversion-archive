@@ -47,10 +47,12 @@ class KstBindDocument : public KstBinding {
        @description Saves the current Kst session to disk.
     */
     KJS::Value save(KJS::ExecState *exec, const KJS::List& args);
+
     /* @method newDocument
        @description Clears the current Kst session and starts a new one.
     */
     KJS::Value newDocument(KJS::ExecState *exec, const KJS::List& args);
+
     /* @method load
        @returns boolean
        @arg string filename The filename for a Kst file to load.
@@ -63,11 +65,13 @@ class KstBindDocument : public KstBinding {
        @description The XML text of the current session in Kst-file form.
     */
     KJS::Value text(KJS::ExecState *exec) const;
+
     /* @property string name
        @description The filename for the current Kst session.
     */
     KJS::Value name(KJS::ExecState *exec) const;
     void setName(KJS::ExecState *exec, const KJS::Value& value);
+
     /* @property boolean modified
        @description True if the document has been modified but not saved.
     */

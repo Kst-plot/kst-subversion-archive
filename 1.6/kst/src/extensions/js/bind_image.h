@@ -26,7 +26,7 @@
 
 /* @class Image
    @inherits DataObject
-   @description an image object created from a matrix.
+   @description An image object created from a matrix.
 */
 class KstBindImage : public KstBindDataObject {
   public:

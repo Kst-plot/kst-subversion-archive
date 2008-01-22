@@ -42,22 +42,26 @@ class KstBindAxisTickLabel : public QObject, public KstBinding {
     bool hasProperty(KJS::ExecState *exec, const KJS::Identifier& propertyName) const;
 
     // member functions
+
     /* @property string font
        @description Used to set or get the current font used for the label.
     */
     void setFont(KJS::ExecState *exec, const KJS::Value& value);
     KJS::Value font(KJS::ExecState *exec) const;
+
     /* @property number fontSize
        @description Contains the size of the font used to draw the label.
     */
     void setFontSize(KJS::ExecState *exec, const KJS::Value& value);
     KJS::Value fontSize(KJS::ExecState *exec) const;
+
     /* @property number rotation
        @description Contains the rotation angle of the label.  Rotation is
                     clockwise from <i>normal</i> and is stored in degrees.
     */
     void setRotation(KJS::ExecState *exec, const KJS::Value& value);
     KJS::Value rotation(KJS::ExecState *exec) const;
+
     /* @property string type
        @readonly
        @description The type of axis - X or Y presently.

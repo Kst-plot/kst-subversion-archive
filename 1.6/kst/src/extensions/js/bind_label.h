@@ -61,6 +61,7 @@ class KstBindLabel : public KstBindBorderedViewObject {
        @description Adjusts the size of the label to fit the text.
     */
     KJS::Value adjustSizeForText(KJS::ExecState *exec, const KJS::List& args);
+
     /* @property string text
        @description Contains the text contents of the label.  This may include
                     carriage returns (\n), scalar references of the form
@@ -68,16 +69,19 @@ class KstBindLabel : public KstBindBorderedViewObject {
     */
     void setText(KJS::ExecState *exec, const KJS::Value& value);
     KJS::Value text(KJS::ExecState *exec) const;
+
     /* @property string font
        @description Used to set or get the current font used for the label.
     */
     void setFont(KJS::ExecState *exec, const KJS::Value& value);
     KJS::Value font(KJS::ExecState *exec) const;
+
     /* @property number fontSize
        @description Contains the size of the font used to draw the label.
     */
     void setFontSize(KJS::ExecState *exec, const KJS::Value& value);
     KJS::Value fontSize(KJS::ExecState *exec) const;
+
     /* @property number justification
        @description The justification for the label.  This is a bit field with
                     two segments, one for horizontal and one for vertical
@@ -99,12 +103,14 @@ class KstBindLabel : public KstBindBorderedViewObject {
     */
     void setJustification(KJS::ExecState *exec, const KJS::Value& value);
     KJS::Value justification(KJS::ExecState *exec) const;
+
     /* @property number rotation
        @description Contains the rotation angle of the label.  Rotation is
                     clockwise from <i>normal</i> and is stored in degrees.
     */
     void setRotation(KJS::ExecState *exec, const KJS::Value& value);
     KJS::Value rotation(KJS::ExecState *exec) const;
+
     /* @property number dataPrecision
        @description Contains the number of digits of precision to display data
                     values in the label.  Restricted to a value between 0 and
@@ -112,6 +118,7 @@ class KstBindLabel : public KstBindBorderedViewObject {
     */
     void setDataPrecision(KJS::ExecState *exec, const KJS::Value& value);
     KJS::Value dataPrecision(KJS::ExecState *exec) const;
+
     /* @property boolean interpreted
        @description Determines if the contents of the label should be
                     interpreted in order to substitute LaTeX-like
@@ -119,6 +126,7 @@ class KstBindLabel : public KstBindBorderedViewObject {
     */
     void setInterpreted(KJS::ExecState *exec, const KJS::Value& value);
     KJS::Value interpreted(KJS::ExecState *exec) const;
+
     /* @property boolean scalarReplacement
        @description Determines if the contents of the label should be
                     interpreted in order to substitute variable reference
@@ -126,6 +134,7 @@ class KstBindLabel : public KstBindBorderedViewObject {
     */
     void setScalarReplacement(KJS::ExecState *exec, const KJS::Value& value);
     KJS::Value scalarReplacement(KJS::ExecState *exec) const;
+
     /* @property boolean autoResize
        @description Automatically resizes the label to fit the text exactly.
                     May trigger a slight move of the label.  It will not

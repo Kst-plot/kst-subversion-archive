@@ -64,6 +64,7 @@ class KstBindPicture : public KstBindBorderedViewObject {
        @arg string url The URL to retrieve the image from.
     */
     KJS::Value load(KJS::ExecState *exec, const KJS::List& args);
+
     /* @property Image image
        @description The raw image that is being displayed.  You can take a copy
                     of this, manipulate it, then set it back to change the
@@ -71,19 +72,20 @@ class KstBindPicture : public KstBindBorderedViewObject {
     */
     void setImage(KJS::ExecState *exec, const KJS::Value& value);
     KJS::Value image(KJS::ExecState *exec) const;
+
     /* @property string url
        @readonly
        @description The URL of the image if it was loaded from a file and has
                     not been modified.
     */
     KJS::Value url(KJS::ExecState *exec) const;
+
     /* @property number refreshTimer
        @description A timer to automatically refresh the picture.  Value of 0
                     means the timer is disabled.  Units are in seconds.
     */
     void setRefreshTimer(KJS::ExecState *exec, const KJS::Value& value);
     KJS::Value refreshTimer(KJS::ExecState *exec) const;
-
 
   protected:
     KstBindPicture(int id, const char *name = 0L);
