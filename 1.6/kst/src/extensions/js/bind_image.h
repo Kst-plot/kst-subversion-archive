@@ -25,7 +25,8 @@
 #include <kstmatrix.h>
 
 /* @class Image
-   @description .....
+   @inherits DataObject
+   @description an image object created from a matrix.
 */
 class KstBindImage : public KstBindDataObject {
   public:
