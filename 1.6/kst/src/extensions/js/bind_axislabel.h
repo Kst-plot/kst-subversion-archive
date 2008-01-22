@@ -44,8 +44,7 @@ class KstBindAxisLabel : public QObject, public KstBinding {
     // member functions
     /* @property string text
        @description Contains the text contents of the label.  This may include
-                    carriage returns (\n), scalar references of the form
-                    <i>[scalar_name]</i>, and some basic LaTeX.
+                    scalar references of the form <i>[scalar_name]</i> and some basic LaTeX.
     */
     void setText(KJS::ExecState *exec, const KJS::Value& value);
     KJS::Value text(KJS::ExecState *exec) const;
