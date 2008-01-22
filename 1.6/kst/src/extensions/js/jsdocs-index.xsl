@@ -29,9 +29,13 @@
       </tr>
     </xsl:for-each>
     </table>
-
+    <br/><br/>
+    <a href="../index.html">[Index]</a>
     <hr/>
-    <h6>Copyright <xsl:text disable-output-escaping="yes">&amp;copy;</xsl:text> 2005-2006 <a href="http://www.utoronto.ca/">The University of Toronto</a><br/>
+    <h6>Copyright <xsl:text disable-output-escaping="yes">&amp;copy;</xsl:text> 
+	2005-2006 <a href="http://www.utoronto.ca/">The University of Toronto</a><br/>
+	Copyright <xsl:text disable-output-escaping="yes">&amp;copy;</xsl:text> 
+	2007-2008 <a href="http://www.ubc.ca/">The University of British Columbia</a><br/>
   Kst <a href="http://kst.kde.org/">http://kst.kde.org/</a></h6>
     </body>
     </html>
