@@ -54,23 +54,29 @@ bool GenericFilter::algorithm() {
   int length = y->length();
 
   // Extract polynom coefficients and instantiate polynoms
-  QStringList numCoeffs =
-    QStringList::split(QRegExp("\\s*(,|;|:)\\s*"), numerator->value());
-  QStringList denCoeffs =
-    QStringList::split(QRegExp("\\s*(,|;|:)\\s*"), denominator->value());
+  QStringList numCoeffs = QStringList::split(QRegExp("\\s*(,|;|:)\\s*"), numerator->value());
+  QStringList denCoeffs = QStringList::split(QRegExp("\\s*(,|;|:)\\s*"), denominator->value());
   int numDegree = numCoeffs.count() - 1, denDegree = denCoeffs.count() - 1;
   polynom<double> Num(numDegree), Den(denDegree);
   double tmpDouble = 0.0;
   bool ok = false;
+
   for (int i=0; i<=numDegree; i++) {
     tmpDouble = numCoeffs[i].toDouble(&ok);
-    if (ok) Num[i]= tmpDouble;
-    else Num[i] = 0.0;
+    if (ok) {
+      Num[i]= tmpDouble;
+    } else {
+      Num[i] = 0.0;
+    }
   }
+
   for (int i=0; i<=denDegree; i++) {
     tmpDouble = denCoeffs[i].toDouble(&ok);
-    if (ok) Den[i] = tmpDouble;
-    else Den[i] = 0.0;
+    if (ok) {
+      Den[i] = tmpDouble;
+    } else {
+      Den[i] = 0.0;
+    }
   }
 
   // Time step

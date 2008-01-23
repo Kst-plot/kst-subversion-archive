@@ -1,6 +1,6 @@
 /******************************************************************************
  *  filter.h : Digital Filter. Specified by its "s" transfer function.        *
- *             Synthesis of "z" transfert function is done by bilinear        *
+ *             Synthesis of "z" transfer function is done by bilinear        *
  *             transformation :             2   z-1                           *
  *                                    p -> --- -----                          *
  *                                          T   z+1                           *
