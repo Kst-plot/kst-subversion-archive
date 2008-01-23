@@ -22,7 +22,7 @@ ac_piolib_libraries=""
 AC_ARG_WITH(piolib,
     AC_HELP_STRING([--with-piolib=DIR],[where the root of PIOLib is installed ]),
     [  ac_piolib_includes="-I$withval"
-       ac_piolib_libraries="-L$withval"
+       ac_piolib_libraries="-L$withval/`uname -s`-`uname -m`"
     ])
 
 all_includes_save="$all_includes"
@@ -44,6 +44,40 @@ if test "x$ac_cv_lib_piolib_PIOGetObjectList" = "xyes"; then
 fi
 
 AM_CONDITIONAL(include_piolib, test -n "$PIOLIBS")
+
+# DMC Test
+ac_dmc_includes=""
+ac_dmc_libraries=""
+AC_ARG_WITH(dmc,
+    AC_HELP_STRING([--with-dmc=DIR],[where the root of DMC is installed ]),
+    [  ac_dmc_includes="-I$withval -I$withval/PioLib"
+       ac_dmc_libraries="-L$withval/`uname -s`-`uname -m`"
+    ])
+
+AC_ARG_WITH(postgres-headers,
+    AC_HELP_STRING([--with-postgres-headers=DIR],[where the PostgreSQL headers are installed ]),
+    [  ac_postgres_includes="-I$withval"
+    ])
+
+all_includes_save="$all_includes"
+all_includes="$all_includes $ac_dmc_includes $ac_postgres_includes"
+KDE_CHECK_HEADER(HL2_DMC/PIODB.h, AC_DEFINE(HAVE_PIODB_H, 1, [If we have dmc headers]) have_piodb_h=yes DMCINCLUDES="$ac_dmc_includes $ac_postgres_includes", , )
+all_includes="$all_includes_save"
+
+ldflags_save="$LDFLAGS"
+LDFLAGS="$LDFLAGS $ac_dmc_libraries"
+KDE_CHECK_LIB(dmc, PIOGetObjectList, DMCLIBS="$ac_dmc_libraries -ldmc -lpq -lxml2 $DMCLIBS", , -lm -lpthread -ldl -lpq -lxml2)
+LDFLAGS="$ldflags_save"
+
+if test "x$ac_cv_lib_dmc_PIOGetObjectList" = "xyes"; then
+  if test "x$have_piodb_h" = "xyes"; then
+    AC_SUBST(DMCLIBS)
+    AC_SUBST(DMCINCLUDES)
+    AC_DEFINE(KST_HAVE_DMC, 1, [If we have the PLANCK DMC I/O libraries.])
+  fi
+fi
+
+AM_CONDITIONAL(include_dmc, test -n "$DMCLIBS")
 
 
 # LIBNAD Test
@@ -82,7 +116,7 @@ ac_transfunc_libraries=""
 AC_ARG_WITH(transfunc,
     AC_HELP_STRING([--with-transfunc=DIR],[where the root of libtransfunc is installed ]),
     [  ac_transfunc_includes="-I$withval"
-       ac_transfunc_libraries="-L$withval"
+       ac_transfunc_libraries="-L$withval/`uname -s`-`uname -m`"
     ])
 
 if test "x$ac_cv_lib_piolib_PIOGetObjectList" = "xyes"; then

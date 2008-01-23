@@ -26,4 +26,4 @@ if include_nad
 NAD_SUBDIR=nad
 endif
 
-SUBDIRS=ascii qimagesource dirfile frame indirect scuba2 $(PIOLIB_SUBDIR) $(CDF_SUBDIR) $(NETCDF_SUBDIR) $(LFIIO_SUBDIR) $(WMAP_SUBDIR) $(FITSIMAGE_SUBDIR) $(HEALPIX_SUBDIR) $(NAD_SUBDIR)  #$(DMC_SUBDIR)
+SUBDIRS=ascii qimagesource dirfile frame indirect scuba2 $(PIOLIB_SUBDIR) $(CDF_SUBDIR) $(NETCDF_SUBDIR) $(LFIIO_SUBDIR) $(WMAP_SUBDIR) $(FITSIMAGE_SUBDIR) $(HEALPIX_SUBDIR) $(NAD_SUBDIR) #$(DMC_SUBDIR)

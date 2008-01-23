@@ -1527,6 +1527,15 @@ double Kst2DPlot::convertTimeValueToJD(KstAxisInterpretation axisInterpretation,
       value -= 32.0;
       value /= 24.0 * 60.0 * 60.0;
       value += JD1970;
+    case AXIS_INTERP_AIT_NANO:
+      value /= 1000000000.0;
+      value -= 86400.0 * (365.0 * 12.0 + 3.0);
+      // current difference (seconds) between UTC and AIT
+      // refer to the following for more information:
+      // http://hpiers.obspm.fr/eop-pc/earthor/utc/TAI-UTC_tab.html
+      value /= 24.0 * 60.0 * 60.0;
+      value += JD1970;
+      break;
     default:
       break;
   }
@@ -1550,6 +1559,10 @@ double Kst2DPlot::convertTimeDiffValueToDays(KstAxisInterpretation axisInterpret
     case AXIS_INTERP_RJD:
       break;
     case AXIS_INTERP_AIT:
+      diff /= 24.0 * 60.0 * 60.0;
+      break;
+    case AXIS_INTERP_AIT_NANO:
+      diff /= 1000000000.0;
       diff /= 24.0 * 60.0 * 60.0;
       break;
     default:
@@ -1911,6 +1924,9 @@ void Kst2DPlot::getPrefixUnitsScale(bool isInterpreted, KstAxisInterpretation ax
         range *= 24.0 * 60.0 * 60.0;
         break;
       case AXIS_INTERP_AIT:
+        break;
+      case AXIS_INTERP_AIT_NANO:
+        range /= 1000000000.0;
         break;
     }
 
