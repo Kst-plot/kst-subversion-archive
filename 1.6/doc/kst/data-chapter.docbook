@@ -316,7 +316,7 @@ The string to be used in Plot Legends to describe this curve.
 <para>
 The vector to use for the independent (horizontal) axis.
 </para>
-</listitem>
+</listitem>The following is a screenshot of the histogram specific options when creating or editing histograms. Explanations of the settings are listed below.
 </varlistentry>
 
 <varlistentry>
@@ -334,7 +334,7 @@ The vector to use for the dependent (vertical) axis.
 <term>
 <guilabel>+X error bar</guilabel> and <guilabel>+Y error bar</guilabel>
 </term>
-<listitem>
+<listitem></variablelist>
 <para>
 The vectors containing error values corresponding to the X axis vector and Y axis vector, respectively.
 The vectors should contain the sizes of the error bars in the same order as the data points.
@@ -351,7 +351,8 @@ uncheck the box, and choose a vector for the length of the error bar
 below the data point in the <guilabel>-<replaceable>X/Y</replaceable>
 error bar</guilabel> combo box.</para>
 </listitem>
-</varlistentry>
+</varlistentry></variablelist>
+</sec2>
 
 <varlistentry>
 <term><guilabel>-<replaceable>X/Y</replaceable> error
@@ -363,136 +364,170 @@ error bars.</para>
 </varlistentry>
 
 <varlistentry>
-<term>Show Points</term>
+<term><guilabel>Show Points<guilabel></term>
 <listitem><para>Determines whether are not the data points will be indicated by the selected type of marker.</para>
 </listitem>
 </varlistentry>
 
-<varlistentry>
-<term>Density</term>
-<listitem><para>If Show Points is enabled, Density allows you to have &kst; only show occasional points if they will otherwise clutter the plot.</para>
-</listitem>
-</varlistentry>
 
 <varlistentry>
-<term>Show Lines / Weight</term>
+<term><guilabel>Show Lines / Weight</guilabel></term>
 <listitem><para>The color and thickness (in pixels) of the curve.</para>
 </listitem>
 </varlistentry>
 
+
+
+
 <varlistentry>
-<term>Bargraph</term>
+<term><guilabel>Density<guilabel></term>
+<listitem><para>If Show Points and Show Lines is enabled, Density allows you to have &kst; only show occasional points if they will otherwise clutter the plot.</para>
+</listitem>
+</varlistentry>
+
+
+<varlistentry>
+<term><guilabel>Bargraph</guilabel></term>
 <listitem><para>Draws lines or rectangles from the data points to the bottom of the plot.</para>
 </listitem>
 </varlistentry>
+
 </variablelist>
+</sec2>
 
-</sect2>
-
-<sect2 id="data-types-equations">
+<sec2 id="data-types-equations">
 <title>Equations</title>
 <para>
-An equation data object consists of a mathematical expression and an independent variable.  The expression
-is built using a combination of scalars, vectors, and operators, and usually represents the values of the
-dependent variable.  The independent variable is generated from an existing vector, and stored as a slave vector along with the evaluated results of the equation.
+An equation data object consists of a mathematical expression and an independent variable. The expression is built using a combination of scalars, vectors, and operators, and usually represents the values of the dependent variable. The independent variable is generated from an existing vector, and stored as a slave vector along with the evaluated results of the equation.
 </para>
 <para>
-The following is a screenshot of the window displayed when creating or editing equations.  Explanations of the
-settings are listed below.
+The following is a screenshot of the window displayed when creating or editing equations. Explanations of the settings are listed below.
 </para>
 
 <screenshot>
-<screeninfo>Edit Equation</screeninfo>
+<screeninfo>Edit Equations</screeninfo>
 <mediaobject>
 <imageobject>
 <imagedata fileref="Screenshot-kst-data-equationedit.png" format="PNG" />
 </imageobject>
+<textobject>
+<phrase>Edit Equations</phrase>
+</textobject>
 </mediaobject>
 </screenshot>
+
 
 <variablelist>
 <varlistentry>
 <term>
-<guilabel>Operators</guilabel>
+<guilable>Operators
+</guilable>
 </term>
+
 <listitem>
 <para>
-A list of available operators.  Choosing an operator from the list inserts the operator at the current insertion point in the <guilabel>Equation</guilabel> text box.
+A list of available operators. Choosing an operator from the list inserts the operator at the current insertion point in the Equation text box.
 </para>
 </listitem>
+
 </varlistentry>
+
 
 <varlistentry>
 <term>
-<guilabel>Vectors</guilabel>
+<guilable>Vectors
+</guilable>
 </term>
+
 <listitem>
 <para>
-A list of the current vector objects in &kst;.  Choosing a vector from the list inserts the vector at the current
-insertion point in the <guilabel>Equation</guilabel> text box.
+A list of the current vector objects in Kst. Choosing a vector from the list inserts the vector at the current insertion point in the Equation text box.
 </para>
 </listitem>
+
 </varlistentry>
+
+
 
 <varlistentry>
 <term>
-<guilabel>Scalars</guilabel>
+<guilable>Scalars
+</guilable>
 </term>
+
 <listitem>
 <para>
-A list of the available scalar values.  This list is composed of both the scalar values in the current &kst;
-session as well as some built-in constants.  Choosing a scalar from the list inserts the scalar at the current
-insertion point in the <guilabel>Equation</guilabel> text box.
+ 
+ A list of the available scalar values. This list is composed of both the scalar values in the current Kst session as well as some built-in constants. Choosing a scalar from the list inserts the scalar at the current insertion point in the Equation text box
 </para>
 </listitem>
+
 </varlistentry>
+
 
 <varlistentry>
 <term>
-<guilabel>Equation</guilabel>
+<guilable>Equations
+</guilable>
 </term>
+
 <listitem>
 <para>
-The mathematical expression representing the independent variable.  You may manually type in this text box or
-you may select items to insert using the above drop-down lists.
+ The mathematical expression representing the independent variable. You may manually type in this text box or you may select items to insert using the above drop-down lists.
+
 </para>
 </listitem>
+
 </varlistentry>
+
 
 <varlistentry>
 <term>
-<guilabel>X Vector</guilabel>
+<guilable>X Vector
+</guilable>
 </term>
+
 <listitem>
 <para>
-Select this option to use an existing vector as the independent variable. Select a vector from the
-drop-down list, or quickly create a new one by clicking the wizard button to the right.
+Select this option to use an existing vector as the independent variable. Select a vector from the drop-down list, or quickly create a new one by clicking the wizard button to the right.
+
 </para>
 </listitem>
+
 </varlistentry>
+
 
 <varlistentry>
 <term>
-<guilabel>Interpolate to highest resolution vector</guilabel>
+<guilable>Interpolate to highest resolution vector
+</guilable>
 </term>
+
 <listitem>
 <para>
-Selecting this option interpolates the selected X vector to the greatest number of samples possible, given the data used in the equation expression. For example, if the data expression acts on a vector Y which contains twice as many variables as the selected X vector, the equation object will create a slave vector of interpolated X values with the same number of points as Y.
+ 
+ Selecting this option interpolates the selected X vector to the greatest number of samples possible, given the data used in the equation expression. For example, if the data expression acts on a vector Y which contains twice as many variables as the selected X vector, the equation object will create a slave vector of interpolated X values with the same number of points as Y.
+
 </para>
 </listitem>
+
 </varlistentry>
+
+
+
 
 </variablelist>
-</sect2>
+</sec2>
 
-<sect2 id="data-types-histograms">
+
+
+<sec2 id="data-types-histograms">
 <title>Histograms</title>
 <para>
-This object calculates the histogram of a chosen vector. 
+This object calculates the histogram of a chosen vector.
 </para>
 <para>
-The following is a screenshot of the histogram specific options when creating or editing histograms.  Explanations of the
-settings are listed below.
+The following is a screenshot of the histogram specific options when creating or editing histograms. Explanations of the settings are listed below.
 </para>
 
 <screenshot>
@@ -501,129 +536,167 @@ settings are listed below.
 <imageobject>
 <imagedata fileref="Screenshot-kst-data-histogramedit.png" format="PNG" />
 </imageobject>
+<textobject>
+<phrase>Edit Equations</phrase>
+</textobject>
 </mediaobject>
 </screenshot>
+
+
 
 <variablelist>
 <varlistentry>
 <term>
-<guilabel>Data vector</guilabel>
+<guilable>Data vector
+</guilable>
 </term>
+
 <listitem>
 <para>
-The data vector to create the histogram from.  Although a vector is needed to create a histogram, the vector is treated as an unordered set for the purposes of creating a histogram.
+ The data vector to create the histogram from. Although a vector is needed to create a histogram, the vector is treated as an unordered set for the purposes of creating a histogram.
+</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<guilable>Data vector
+</guilable>
+</term>
+
+<listitem>
+<para>
+ The data vector to create the histogram from. Although a vector is needed to create a histogram, the vector is treated as an unordered set for the purposes of creating a histogram.
 </para>
 </listitem>
 </varlistentry>
 
 <varlistentry>
 <term>
-<guilabel>From</guilabel> and <guilabel>to</guilabel>
+<guilable>From and to
+</guilable>
 </term>
+
 <listitem>
 <para>
-The <guilabel>From</guilabel> field contains the left bound for the leftmost bin in the histogram.
-The <guilabel>to</guilabel> field contains the right bound for the rightmost bin in the histogram.
+The From field contains the left bound for the leftmost bin in the histogram. The to field contains the right bound for the rightmost bin in the histogram
 </para>
 </listitem>
 </varlistentry>
 
 <varlistentry>
 <term>
-<guilabel>Num bins</guilabel>
+<guilable>Num bins
+</guilable>
 </term>
+
 <listitem>
 <para>
-Enter the total number of bins to use in the <guilabel>Num bins</guilabel> field.
+Enter the total number of bins to use in the Num bins field
+</para>
+</listitem>
+</varlistentry>
+
+
+<varlistentry>
+<term>
+<guilable>Auto Bin
+</guilable>
+</term>
+
+<listitem>
+<para>
+Instead of specifying values for From, to, and Num bins, you can click Auto Bin to automatically generate values for all three fields based based on the length and lowest/highest values of the chosen the data vector.
 </para>
 </listitem>
 </varlistentry>
 
 <varlistentry>
 <term>
-<guibutton>Auto Bin</guibutton>
+<guilable>Number in bin
+</guilable>
 </term>
+
 <listitem>
 <para>
-Instead of specifying values for <guilabel>From</guilabel>, <guilabel>to</guilabel>, and
-<guilabel>Num bins</guilabel>, you can click <guibutton>Auto Bin</guibutton> to automatically generate
-values for all three fields based based on the length and lowest/highest values of the chosen the data vector.
+ 
+ Selecting this option causes the y axis to represent the number of elements in each bin.
 </para>
 </listitem>
 </varlistentry>
 
 <varlistentry>
 <term>
-<guilabel>Number in bin</guilabel>
+<guilable>Fraction in bin
+</guilable>
 </term>
+
 <listitem>
 <para>
-Selecting this option causes the y axis to represent the number of elements in each bin.
+ 
+Selecting this option causes the y axis to represent the fraction of elements in each bin out of the total number of elements.
 </para>
 </listitem>
 </varlistentry>
 
 <varlistentry>
 <term>
-<guilabel>Fraction in bin</guilabel>
+<guilable>Percent in bin
+</guilable>
 </term>
+
 <listitem>
 <para>
-Selecting this option causes the y axis to represent the fraction of elements in each bin
-out of the total number of elements.
+ 
+Selecting this option causes the y axis to represent the percentage of elements (out of the total number of elements) in each bin.
 </para>
 </listitem>
 </varlistentry>
 
+
 <varlistentry>
 <term>
-<guilabel>Percent in bin</guilabel>
+<guilable>Peak bin=1.0
+</guilable>
 </term>
+
 <listitem>
 <para>
-Selecting this option causes the y axis to represent the percentage of elements (out of the total
-number of elements) in each bin.
+ 
+Selecting this option causes the y axis to represent the number of elements in each bin divided by the number of elements in the largest bin (the bin with the greatest number of elements).
 </para>
 </listitem>
 </varlistentry>
 
-<varlistentry>
-<term>
-<guilabel>Peak bin = 1.0</guilabel>
-</term>
-<listitem>
-<para>
-Selecting this option causes the y axis to represent the number of elements in each bin divided by
-the number of elements in the largest bin (the bin with the greatest number of elements).
-</para>
-</listitem>
-</varlistentry>
 </variablelist>
-</sect2>
+</sec2>
 
-<sect2 id="data-types-spectrum">
+
+<sec2 id="data-type-spectrum">
 <title>Spectrum</title>
 <para>
-The following definitions assume basic knowledge of power spectra&mdash; We use the conventions and terminology of "Numerical Recipes in C: The Art of Scientific Computing", published by Cambridge University Press.
+The following definitions assume basic knowledge of power spectra— We use the conventions and terminology of "Numerical Recipes in C: The Art of Scientific Computing", published by Cambridge University Press.
 </para>
 
 <screenshot>
-<screeninfo>Power Spectra Window</screeninfo>
+<screeninfo>Edit Spectrum</screeninfo>
 <mediaobject>
 <imageobject>
 <imagedata fileref="Screenshot-kst-data-spectraedit.png" format="PNG" />
 </imageobject>
 <textobject>
-<phrase>Power Spectra Window</phrase>
+<phrase>Edit Spectrum</phrase>
 </textobject>
 </mediaobject>
 </screenshot>
 
 <variablelist>
+
 <varlistentry>
 <term>
-<guilabel>Data vector</guilabel>
+<guilable>Data vector
+</guilable>
 </term>
+
 <listitem>
 <para>
 The data vector to create the spectrum from.
@@ -632,9 +705,11 @@ The data vector to create the spectrum from.
 </varlistentry>
 
 <varlistentry>
-<term>
-<guilabel>Apodize, Function, and Sigma</guilabel>
+<term>Apodize, Function, and Sigma
+<guilable>
+</guilable>
 </term>
+
 <listitem>
 <para>
 If the Apodize option is selected, the data is windowed using a the function chosen from the drop-down menu at right. Apodization can be used to reduce bin-to-bin leakage. If the Gaussian apodization function is chosen, then a sigma value may also be entered to define its effective width.
@@ -643,9 +718,11 @@ If the Apodize option is selected, the data is windowed using a the function cho
 </varlistentry>
 
 <varlistentry>
-<term>
-<guilabel>Remove Mean</guilabel>
+<term>Remove Mean
+<guilable>
+</guilable>
 </term>
+
 <listitem>
 <para>
 Select this option to remove the mean from the data while calculating the transform.
@@ -654,43 +731,55 @@ Select this option to remove the mean from the data while calculating the transf
 </varlistentry>
 
 <varlistentry>
-<term>
-<guilabel>Interleaved average</guilabel> and <guilabel>FFT Length</guilabel>
+<varialblist>
+
+</variablist>
+<term>Interleaved average and FFT Length
+<guilable>
+</guilable>
 </term>
+
 <listitem>
 <para>
-Selecting <guilabel>Interleaved average</guilabel> calculates the FFT over segments of the data, which increases the FFT speed and improves accuracy, at the result of less information about low frequency components. The length of the interleaved segments is specified as a power of 2. If <guilabel>Interleaved average</guilabel> is unchecked, &kst; will choose the smallest possible FFT length which is greater than the data vector length.
+Selecting Interleaved average calculates the FFT over segments of the data, which increases the FFT speed and improves accuracy, at the result of less information about low frequency components. The length of the interleaved segments is specified as a power of 2. If Interleaved average is unchecked, Kst will choose the smallest possible FFT length which is greater than the data vector length.
 </para>
 </listitem>
 </varlistentry>
 
 <varlistentry>
-<term>
-<guilabel>Interpolate Over Holes</guilabel>
+<term>Interpolate Over Holes
+<guilable>
+</guilable>
 </term>
+
 <listitem>
 <para>
-If the data vector contains NaN values, then selecting this option will cause &kst; to interpolate through them when calculating the power spectrum.
+ 
+ If the data vector contains NaN values, then selecting this option will cause Kst to interpolate through them when calculating the power spectrum.
 </para>
 </listitem>
 </varlistentry>
 
 <varlistentry>
-<term>
-<guibutton>Sample rate</guibutton>
+<term>Sample rate
+<guilable>
+</guilable>
 </term>
+
 <listitem>
 <para>
-This is the number of data vector samples per unit time.
-The sample rate is used to generate the X axis of the spectrum for plotting.
+ This is the number of data vector samples per unit time. The sample rate is used to generate the X axis of the spectrum for plotting.
+
 </para>
 </listitem>
 </varlistentry>
 
 <varlistentry>
-<term>
-<guilabel>Vector units</guilabel> and <guilabel>Rate units</guilabel>
+<term>Vector units and Rate units
+<guilable>
+</guilable>
 </term>
+
 <listitem>
 <para>
 The units specified in these textboxes are used for the purpose of auto-generating axes labels for the plots.
@@ -699,55 +788,60 @@ The units specified in these textboxes are used for the purpose of auto-generati
 </varlistentry>
 
 <varlistentry>
-<term>
-<guilabel>Output</guilabel>
+<term>Output
+<guilable>
+</guilable>
 </term>
+
 <listitem>
 <para>
 The option selected from this drop-down menu determines which variant of the power spectrum should be computed. The amplitude spectrum is calculated by taking the square root of the power spectrum. Spectral densitites are calculated by multiplying the Power or Amplitude Spectra by the number of data samples divided by the sample rate entered above.
-<!--- FIXME: improve this once a clear definition of the power spectrum itself has been entered at the start of this section. -->
 </para>
 </listitem>
 </varlistentry>
+
+
 </variablelist>
+</sec2>
 
-</sect2>
-
-<sect2 id="data-types-spectrogram">
+<sec2 id="data-type-spectrogram">
 <title>Spectrogram</title>
 <para>
-A spectrogram is a way to plot the frequency spectrum of a data vector as a function of position within the data. It allows you to visualize, for example, how the frequency distribution of a signal changes with time. In &kst; the spectrogram data object takes a data vector as an input and produces an image object which can be displayed as a 'waterfall' plot. An example is shown in the screenshot below. This is a spectrogram from one day of data from a channel of the WMAP satellite. The size of the intervals over which the component spectra are calculated has been chosen so that each interval corresponds to 1/2 hour of data. The 1h periodic precession of the satellite about its spin axis can be clearly seen. Also, at ~0.007Hz the red lines at the bottom of the image show the much faster (.5rpm) spin frequency of the satellite.
+A spectrogram is a way to plot the frequency spectrum of a data vector as a function of position within the data. It allows you to visualize, for example, how the frequency distribution of a signal changes with time. In Kst the spectrogram data object takes a data vector as an input and produces an image object which can be displayed as a 'waterfall' plot. An example is shown in the screenshot below. This is a spectrogram from one day of data from a channel of the WMAP satellite. The size of the intervals over which the component spectra are calculated has been chosen so that each interval corresponds to 1/2 hour of data. The 1h periodic precession of the satellite about its spin axis can be clearly seen. Also, at ~0.007Hz the red lines at the bottom of the image show the much faster (.5rpm) spin frequency of the satellite.
 </para>
 <screenshot>
-<screeninfo>Spectrogram Example</screeninfo>
+<screeninfo>wmap_sampleplots.kst-Kst</screeninfo>
 <mediaobject>
 <imageobject>
 <imagedata fileref="Screenshot-kst-data-spectrogramexample.png" format="PNG" />
 </imageobject>
+<textobject>
+<phrase>wmap_sampleplots.kst-Kst</phrase>
+</textobject>
 </mediaobject>
 </screenshot>
 
-<para>
-Here is the edit dialog for the spectrogram object. 
-</para>
-
+<para>Here is the edit dialog for the spectrogram object.</para>
 <screenshot>
-<screeninfo>Edit Spectrogram Window</screeninfo>
+<screeninfo>Edit Spectrogram</screeninfo>
 <mediaobject>
 <imageobject>
 <imagedata fileref="Screenshot-kst-data-spectrogramedit.png" format="PNG" />
 </imageobject>
+<textobject>
+<phrase>Edit Spectrogram</phrase>
+</textobject>
 </mediaobject>
 </screenshot>
 
-<para>
-An explanation of the spectrogram specific options is given below:
-</para>
+<para>An explanation of the spectorgram specific options is given below:</para>
 
-<variablelist>
+<varialbelist>
+
 <varlistentry>
 <term>
-Window Size
+<guilable>Window Size
+</guilable>
 </term>
 <listitem>
 <para>
@@ -758,7 +852,8 @@ The length of the data over which to take the spectra. The data vector will be s
 
 <varlistentry>
 <term>
-FFT Options
+<guilable>FFT Options
+</guilable>
 </term>
 <listitem>
 <para>
@@ -769,7 +864,8 @@ These are the options for the individual spectra. See the <link linkend="data-ty
 
 <varlistentry>
 <term>
-Color Palette
+<guilable>Color Palette
+</guilable>
 </term>
 <listitem>
 <para>
@@ -777,249 +873,258 @@ Here you can choose the color scheme to use for the spectrogram. The amplitudes 
 </para>
 </listitem>
 </varlistentry>
-</variablelist>
-</sect2>
 
-<sect2 id="data-types-plugins">
+</variablelist>
+
+</sec2>
+
+<sec2 id="data-type-plugins">
 <title>Plugins</title>
 <para>
-A plugin data object represents a &kst; plugin.  All plugins have a common format, and show up as type <quote>Plugin</quote> in the Data Manager.  For more information about the available plugins and their options, please see the <link linkend="plugins">Plugins</link> chapter.
+A plugin data object represents a Kst plugin. All plugins have a common format, and show up as type “Plugin” in the Data Manager. For more information about the available plugins and their options, please see the <link linkend ="plugins">Plugins</link> chapter.
 </para>
-</sect2>
 
-<sect2 id="data-types-eventmonitors">
+</sec2>
+
+
+
+<sec2 id="data-type-event-monitors">
 <title>Event Monitors</title>
 <para>
-An event monitor data object essentially keeps track of one or more vectors
-or scalars, and performs an action when a specified condition involving the vectors and scalars is true.
-Event monitors are usually used in conjunction with <quote>live</quote>, or streaming data. For example, an event monitor could be created to monitor whether or not elements of a data vector representing temperature exceed a predefined value.
+ An event monitor data object essentially keeps track of one or more vectors or scalars, and performs an action when a specified condition involving the vectors and scalars is true. Event monitors are usually used in conjunction with “live”, or streaming data. For example, an event monitor could be created to monitor whether or not elements of a data vector representing temperature exceed a predefined value. 
+</para>
+<para>
+ You can create a new event monitor using the New Event Monitor... item in the Data menu, or by using the <link linkend="data-overview-datamanager"> Data Manager</link>. 
 </para>
 
 <para>
-You can create a new event monitor using the <guimenuitem>New Event Monitor...</guimenuitem> item in the <guimenu>Data</guimenu> menu, or by using the <link linkend="data-overview-datamanager">Data Manager</link>.
-</para>
-
-<para>
-The following is a screenshot of the window displayed when creating or editing events. Explanations of the settings are given below.
+ The following is a screenshot of the window displayed when creating or editing events. Explanations of the settings are given below.
 </para>
 
 <screenshot>
-<screeninfo>Edit Event Monitor</screeninfo>
+<screeninfo>New Event Monitor</screeninfo>
 <mediaobject>
 <imageobject>
-<imagedata fileref="Screenshot-kst-data-eventmonitoredit.png" format="PNG" />
+<imagedata fileref="Screenshot-kst-commontasks-creatingeventmonitor-neweventmonitor.png" format="PNG" />
 </imageobject>
+<textobject>
+<phrase>Edit Equations</phrase>
+</textobject>
 </mediaobject>
 </screenshot>
 
 <variablelist>
-<varlistentry>
-<term>
-<guilabel>Expression</guilabel>
-</term>
-<listitem>
-<para>
-The expression to monitor.  You may type directly in this textbox, or select items to insert using the operator, vector, and scalar drop-down lists.  Ensure that the expression entered in this textbox is a boolean expression (i.e. it evaluates to either true or false).  This usually entails using an equality or inequality in the expression.  Note that vectors entered in the textbox will be monitored according to their individual elements.
-</para>
-<para>
-Whenever this expression is true (evaluates to 1), the event will be triggered.  The action taken upon an event trigger depends on the settings specified in the next two sections.
-</para>
-</listitem>
-</varlistentry>
 
 <varlistentry>
 <term>
-<guilabel>Description</guilabel>
+<guilable>Expression
+</guilable>
 </term>
 <listitem>
 <para>
-This textbox is used to store a short description of the event.  The description is primarily available as a method for keeping track of multiple events.  You can enter any text you wish in this textbox.
+The expression to monitor. You may type directly in this textbox, or select items to insert using the operator, vector, and scalar drop-down lists. Ensure that the expression entered in this textbox is a boolean expression (i.e. it evaluates to either true or false). This usually entails using an equality or inequality in the expression. Note that vectors entered in the textbox will be monitored according to their individual elements.
+</para>
+<para>
+Whenever this expression is true (evaluates to 1), the event will be triggered. The action taken upon an event trigger depends on the settings specified in the next two sections.
 </para>
 </listitem>
 </varlistentry>
 
 <varlistentry>
-<term><guilabel>Log as:</guilabel></term>
+<term>
+<guilable>Description
+</guilable>
+</term>
 <listitem>
 <para>
-Enable this checkbox to have entries added to the &kst; debug log when this event is triggered.
-There are three types of entries in the debug log&mdash;notices, warnings, and errors.
-Select the desired type of entry using the corresponding radio button.
+This textbox is used to store a short description of the event. The description is primarily available as a method for keeping track of multiple events. You can enter any text you wish in this textbox.
 </para>
 </listitem>
 </varlistentry>
 
 <varlistentry>
-<term><guilabel>E-Mail Notify</guilabel></term>
+<term>
+<guilable>Log as:
+</guilable>
+</term>
 <listitem>
 <para>
-Enable this checkbox to have &kst; send e-mail notifications to the specified address when this
-event is triggered. General E-mail configuration options are available in the &kst; <link linkend="settings-globalsettings">Settings</link> dialog.
+Enable this checkbox to have entries added to the Kst debug log when this event is triggered. There are three types of entries in the debug log—notices, warnings, and errors. Select the desired type of entry using the corresponding radio button.
 </para>
 </listitem>
 </varlistentry>
 
 <varlistentry>
-<term><guilabel>ELOG</guilabel></term>
+<term>
+<guilable>E-Mail Notify
+</guilable>
+</term>
 <listitem>
 <para>
-If the <link linkend="extensions-elog">ELOG Extension</link> is activated, then then Event Monitor can provide notification through ELOG. This can be useful for remotely monitoring live data, or for obtaining summaries of event activity. Please see the <link linkend="extensions-elog">ELOG</link> section for more information.
+ Enable this checkbox to have Kst send e-mail notifications to the specified address when this event is triggered. General E-mail configuration options are available in the Kst <link linkend="settings-globalsettings">Settings</link> dialog.
 </para>
 </listitem>
 </varlistentry>
 
 <varlistentry>
-<term><guilabel>KstScript</guilabel></term>
+<term>
+<guilable>ELOG
+</guilable>
+</term>
 <listitem>
 <para>
-If the  is activated, then then Event Monitor can provide execute a KstScript when it triggers. Please see the <link linkend="extensions-kstscript">KstScript</link> documentation for more information.
+ If the <link linkend = "extensions-elog">ELOG Extension</link> is activated, then then Event Monitor can provide notification through ELOG. This can be useful for remotely monitoring live data, or for obtaining summaries of event activity. Please see the <link linkend = "extensions-elog">ELOG</link> section for more information.
 </para>
 </listitem>
 </varlistentry>
-</variablelist>
 
-</sect2>
+<varlistentry>
+<term>
+<guilable>KstScript
+</guilable>
+</term>
+<listitem>
+<para>
+ If the is activated, then then Event Monitor can provide execute a KstScript when it triggers. Please see the KstScript documentation for more information.
+</para>
+</listitem>
+</varlistentry>
 
-<sect2 id="data-types-matrix">
+</vaiablelist>
+
+</sec2>
+
+<sec2 id="data-types-matrix">
 <title>Matrix</title>
 <para>
 A matrix represents a set of three-dimensional data points (x, y, z) arranged in a two-dimensional grid.
 </para>
 
-<screenshot>
-<screeninfo>Matrix Structure</screeninfo>
+<para>
+<inlinemediaobject>
 <mediaobject>
 <imageobject>
-<imagedata fileref="Diagram-kst-data-matrix.png" format="PNG"/>
+<imagedata fileref="Diagram-kst-data-matrix.png" format="PNG" />
 </imageobject>
+<textobject>
+<phrase>Matrix</phrase>
+</textobject>
 </mediaobject>
-</screenshot>
-
-<para>
-Just as is the case with the <link linkend="data-types-vectors">vector</link> datatype, there are two kinds of matrix: data and static. <link linkend="data-types-matrix-data">Data matrices</link> are read in from data sources, and <link linkend="data-types-matrix-static">static matrices</link> are generated by &kst;.
+</inlinemediaobject>
 </para>
 
-<sect3 id="data-types-matrix-data">
+<para>
+Just as is the case with the vector datatype, there are two kinds of matrix: data and static. Data matrices are read in from data sources, and static matrices are generated by Kst.
+</para>
+</sec2>
+
+<sec3 id="data-types-matrix-data">
 <title>Data Matrix</title>
 <para>
-The following is a screenshot of the window displayed when editing data matrix. A new data matrix is created if you choose the <guibutton>Read from data source</guibutton> radio button in the New Matrix dialog. 
+The following is a screenshot of the window displayed when editing data matrix. A new data matrix is created if you choose the Read from data source radio button in the New Matrix dialog.
 </para>
-
 <screenshot>
-<screeninfo>Edit Data Matrix</screeninfo>
+<screeninfo>Edit Matirx</screeninfo>
 <mediaobject>
 <imageobject>
 <imagedata fileref="Screenshot-kst-data-matrixedit.png" format="PNG" />
 </imageobject>
+<textobject>
+<phrase>Edit Matrix</phrase>
+</textobject>
 </mediaobject>
 </screenshot>
 
 <para>
 All of the options which are available for data matrices are analogous to the options for <link linkend="data-types-vectors-data">Data Vectors</link>.
 </para>
-</sect3>
+</sec3>
 
-<sect3 id="data-types-matrix-static">
+<sec3 id="data-types-matrix-static">
 <title>Static Matrix</title>
-
 <para>
-The following is a screenshot of the window displayed when editing static matrices. Static matrices allow you to create gradient matrices such as the one shown in the background of the annotation object <link linkend="view-overview-concepts-example">example</link>. A new static matrix is created if you choose the <guibutton>Generate gradient</guibutton> radio button in the New Matrix dialog.
+The following is a screenshot of the window displayed when editing static matrices. Static matrices allow you to create gradient matrices such as the one shown in the background of the annotation object example. A new static matrix is created if you choose the Generate gradient radio button in the New Matrix dialog.
 </para>
 
 <screenshot>
-<screeninfo>Edit Static Matrix</screeninfo>
+<screeninfo>Edit Matirx</screeninfo>
 <mediaobject>
 <imageobject>
 <imagedata fileref="Screenshot-kst-data-staticmatrixedit.png" format="PNG" />
 </imageobject>
+<textobject>
+<phrase>Edit Matrix</phrase>
+</textobject>
 </mediaobject>
 </screenshot>
 
 <para>
 These options allow you to construct a matrix which has a linear gradient in Z along either the X or Y axis. The steps options allow you to set the size of the matrix, and the X/Y minimum and step size options allow you to set the X and Y ranges.
 </para>
-</sect3>
 
-</sect2>
 
-<sect2 id="data-types-images">
+</sec3>
+
+<sec2 id="data-types-images">
 <title>Images</title>
-<para>
-Images are graphical representations of <link linkend="data-types-matrix">Matrices</link>.  Images can be plotted
-as color maps, contour maps, or both.
+<para>Images are graphical representations of Matrices. Images can be plotted as color maps, contour maps, or both.
 </para>
+
 <screenshot>
-<screeninfo>Image Window</screeninfo>
+<screeninfo>Edit Image</screeninfo>
 <mediaobject>
 <imageobject>
 <imagedata fileref="Screenshot-kst-data-imageedit.png" format="PNG" />
 </imageobject>
 <textobject>
-<phrase>Image Window</phrase>
+<phrase>Edit Image</phrase>
 </textobject>
 </mediaobject>
 </screenshot>
 
-
 <variablelist>
 <varlistentry>
 <term>
-<guilabel>Matrix Selection</guilabel>
+<guilable>Matrix Selection
+</guilable>
 </term>
 <listitem>
 <para>
-Select the matrix to use for this image.  New matrices can be created or edited by clicking buttons to the right.
+Select the matrix to use for this image. New matrices can be created or edited by clicking buttons to the right.
+</para>
+</listitem>
+</varlistentry>
+
+
+<varlistentry>
+<term>
+<guilable>Color Map, Contour Map, and Color Map and Contour Map
+</guilable>
+</term>
+<listitem>
+<para>
+Select the type of image to be plotted. Changing this selection enables or disables sections of the image dialog as appropriate. A color map represents the Z value of each cell in the matrix using a color. A contour map plots curves with lie on locations of constant Z.
 </para>
 </listitem>
 </varlistentry>
 
 <varlistentry>
 <term>
-<guilabel>Color Map</guilabel>, <guilabel>Contour Map</guilabel>, and <guilabel>Color Map and Contour Map</guilabel>
+<guilable>Threshold-Lower and Upper
+</guilable>
 </term>
 <listitem>
 <para>
-Select the type of image to be plotted. Changing this selection enables or disables sections of the image dialog
-as appropriate. A color map represents the Z value of each cell in the matrix using a color. A contour map plots curves with lie on locations of constant Z.
+  Enter the lower and upper thresholds to use for the mapping of colors. Palette colors are evenly distributed between the lower and upper thresholds. Any cells in the selected matrix with z values less than the lower threshold are mapped to the first color in the palette. Any cells in the selected matrix with z values greater than the upper threshold are mapped to the last color in the palette.
 </para>
 </listitem>
 </varlistentry>
 
-<varlistentry>
-<term>
-<guilabel>Color palette</guilabel>
-</term>
-<listitem>
-<para>
-Select the color palette to use for the color map. By default, two palettes suitable for color maps are installed
-by &kst;&mdash;Kst Grayscale 256 (a 256 color grayscale palette) and Kst Spectrum 1021 (a 1021 color rainbow
-spectrum that ranges from blue to red). Additional palettes can be installed by simply copying
-<productname>GIMP</productname> compatible palette files to the <filename>colors</filename> subdirectory of
-the user configuration directory (for example, <filename>/usr/share/config/colors/</filename>).  Note that
-saved images using a non-default palette may not be viewable by other users of &kst; if they do not have
-the required palette. In such cases, a default grayscale palette is used instead.
-</para>
-</listitem>
-</varlistentry>
 
 <varlistentry>
 <term>
-<guilabel>Threshold-</guilabel> <guilabel>Lower</guilabel> and <guilabel>Upper</guilabel>
-</term>
-<listitem>
-<para>
-Enter the lower and upper thresholds to use for the mapping of colors.  Palette colors are evenly distributed
-between the lower and upper thresholds.  Any cells in the
-selected matrix with z values less than the lower threshold are mapped to the first color in the palette.
-Any cells in the selected matrix with z values greater than the upper threshold are mapped
-to the last color in the palette.
-</para>
-</listitem>
-</varlistentry>
-
-<varlistentry>
-<term>
-<guilabel>Max/Min</guilabel>
+<guilable>Max/Min
+</guilable>
 </term>
 <listitem>
 <para>
@@ -1030,18 +1135,20 @@ Clicking this button causes the lower and upper threshold values to be set to th
 
 <varlistentry>
 <term>
-<guilabel>Smart</guilabel> and <guilabel>Percentile</guilabel>
+<guilable>Smart and Percentile
+</guilable>
 </term>
 <listitem>
 <para>
-Clicking the <guilabel>Smart</guilabel> button causes the lower and upper threshold values to be set such that the percentage of z values in the selected matrix contained between them is equal to the value in the percentile numberbox.
+Clicking the Smart button causes the lower and upper threshold values to be set such that the percentage of z values in the selected matrix contained between them is equal to the value in the percentile numberbox.
 </para>
 </listitem>
 </varlistentry>
 
 <varlistentry>
 <term>
-<guilabel>Real-time auto threshold</guilabel>
+<guilable>Real-time auto threshold
+</guilable>
 </term>
 <listitem>
 <para>
@@ -1052,193 +1159,245 @@ Selecting this option causes the lower and upper threshold values to be always s
 
 <varlistentry>
 <term>
-<guilabel>Number of contour levels</guilabel>
+<guilable>Number of contour levels
+</guilable>
 </term>
 <listitem>
 <para>
-Select the number of contour levels to use.  The contour levels will be distributed evenly between the lowest
-and highest z values found in the matrix.
+Select the number of contour levels to use. The contour levels will be distributed evenly between the lowest and highest z values found in the matrix.
+</para>
+</listitem>
+</varlistentry>
+
+
+<varlistentry>
+<term>
+<guilable>Color
+</guilable>
+</term>
+<listitem>
+<para>
+Select the color to use for the contour lines. Clicking this button displays a standard KDE color chooser dialog.
 </para>
 </listitem>
 </varlistentry>
 
 <varlistentry>
 <term>
-<guibutton>Color</guibutton>
+<guilable>Weight and Use variable line weight
+</guilable>
 </term>
 <listitem>
 <para>
-Select the color to use for the contour lines.  Clicking this button displays a standard &kde; color chooser
-dialog.
+Select the weight, or “thickness” of the contour lines. If Use variable line weight is selected, contour lines representing higher elevations are drawn thicker than those representing lower elevations. Use discretion when selecting this option, as images with high contour line densities may become unreadable.
 </para>
 </listitem>
 </varlistentry>
 
-<varlistentry>
-<term>
-<guilabel>Weight</guilabel> and <guilabel>Use variable line weight</guilabel>
-</term>
-<listitem>
-<para>
-Select the weight, or <quote>thickness</quote> of the contour lines.  If <guilabel>Use variable line weight</guilabel>
-is selected, contour lines representing higher elevations are drawn thicker than those representing lower elevations.
-Use discretion when selecting this option, as images with high contour line densities may become unreadable.
-</para>
-</listitem>
-</varlistentry>
 </variablelist>
-</sect2>
-</sect1>
 
-<sect1 id="data-tools">
-<title>Data Tools</title>
 
-<sect2 id="data-tools-wizard">
-<title>The Data Wizard</title>
 
+</sec2>
+
+
+<sec2 id="data-types-vector-view">
+<title>Vector View</title>
 <para>
-The Data Wizard provides a graphical quick and easy way of importing data into &kst;- automatically creating vectors, curves, power spectra, and plots. To launch the wizard, select <guimenuitem>Data Wizard</guimenuitem> from the <guimenu>Tools</guimenu> menu.  You will be prompted to select a data source.  Browse to a valid data file (or enter in the path to a data file) and click <guibutton>Next</guibutton>.  The following window will be displayed.
+Vector view provides a way to view a portion of the data plot. It excludes any data point which is not in the range of the X/Y limits specified by the user.
 </para>
-
-<sect3 id="data-tools-wizard-selectdatafile">
-<title>Selecting Data</title>
 
 <screenshot>
-<screeninfo>Data Wizard Select Data Dialog</screeninfo>
+<screeninfo>Edit Vector View</screeninfo>
 <mediaobject>
 <imageobject>
-<imagedata fileref="Screenshot-kst-data-wizard-selectdata.png" format="PNG" />
+<imagedata fileref="" format="PNG" />
 </imageobject>
 <textobject>
-<phrase>Data Wizard Select Data Dialog</phrase>
+<phrase>Edit Vector View</phrase>
 </textobject>
 </mediaobject>
 </screenshot>
 
+<variablelist>
+<varlistentry>
+<term>
+<guilable>Input Vectors
+</guilable>
+</term>
+<listitem>
 <para>
-Here you can select the fields you wish to import into &kst;.  You may filter the list of fields by entering a string to match (wildcards such as <literal>*</literal> are supported) into the text box above the list. Click the <guibutton>Next</guibutton> button to come to the Data Presentation pane.
+Select an input X/Y axis vector from existing vectors or create one by using the shortcut icons.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>
+<guilable>View Ranges
+</guilable>
+</term>
+<listitem>
+<para>
+Adjust the view range of the plot by selecting X/Y min and X/Y max for the input vectors.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>
+<guilable>Flag Vector
+</guilable>
+</term>
+<listitem>
+<para>
+
+</para>
+</listitem>
+</varlistentry>
+
+
+
+</vairablelist>
+</sec2>
+</sec1>
+
+
+<sec1 id="Data Tools">
+<title>Data Tools</title>
+<sec2 id="data-tools-data-wizard">
+<title>The Data Wizard</title>
+<para>
+The Data Wizard provides a graphical quick and easy way of importing data into Kst- automatically creating vectors, curves, power spectra, and plots. To launch the wizard, select Data Wizard from the Tools menu. You will be prompted to select a data source. Browse to a valid data file (or enter in the path to a data file) and click Next. The following window will be displayed.
 </para>
 
-</sect3>
-<sect3 id="data-tools-wizard-presentation">
+
+
+<sec3 id="Select Data">
+<title>Select Data</title>
+<screenshot>
+<screeninfo>Select Data</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-data-wizard-selectdata.png
+" format="PNG" />
+</imageobject>105
+<textobject>
+<phrase>Select Data</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+<para>
+Data Wizard Select Data Dialog Here you can select the fields you wish to import into Kst. You may filter the list of fields by entering a string to match (wildcards such as * are supported) into the text box above the list. Click the Next button to come to the Data Presentation pane.
+</para>
+</sec3>
+
+<sec3 id="Presention">
 <title>Presentation</title>
 
+
 <screenshot>
-<screeninfo>Data Wizard Data Presentation Pane</screeninfo>
+<screeninfo>Data Presentation</screeninfo>
 <mediaobject>
 <imageobject>
 <imagedata fileref="Screenshot-kst-data-wizard-presentation.png" format="PNG" />
 </imageobject>
 <textobject>
-<phrase>Data Wizard Data Presentation Pane</phrase>
+<phrase>Data Presentation</phrase>
 </textobject>
 </mediaobject>
 </screenshot>
-
-<anchor id="data-tools-wizard-range"></anchor>
 <para>
-The <guilabel>Data Range</guilabel> section is used to specify the range of data to read from the selected vectors in the input file. For information about these parameters, read the description of the <link linkend="data-types-vectors">Vector</link> data object.
+Data Wizard Data Presentation Pane The Data Range section is used to specify the range of data to read from the selected vectors in the input file. For information about these parameters, read the description of the Vector data object.
 </para>
 
-<para>
-Power Spectrum and X axis settings can be specified within the <guilabel>Plot Types</guilabel> section.
-These settings are described below.
-</para>
 
-<variablelist>
+<para>
+Power Spectrum and X axis settings can be specified within the Plot Types section. These settings are described below.
+</para>
 
 <varlistentry>
 <term>
-<guilabel>XY</guilabel>, <guilabel>Power Spectrum</guilabel>, and <guilabel>XY and Power Spectrum</guilabel>
+<guilable>XY, Power Spectrum, and XY and Power Spectrum
+</guilable>
 </term>
 <listitem>
 <para>
-Select whether to plot the power spectrum only, data (XY) only, or both.  If the power spectrum is selected for
-plotting, additional settings in this section become available.
+ Select whether to plot the power spectrum only, data (XY) only, or both. If the power spectrum is selected for plotting, additional settings in this section become available.
 </para>
 </listitem>
 </varlistentry>
 
 <varlistentry>
 <term>
-<guilabel>X Axis Vector</guilabel>
+<guilable>X Axis Vector
+</guilable>
 </term>
 <listitem>
 <para>
-The vector to be used as the independent vector for the plots.  You may select a field from your
-data file, or the INDEX vector.  The INDEX
-vector is simply a vector containing elements from 0 to N-1, where N is the number of frames in the
-data file.
+The vector to be used as the independent vector for the plots. You may select a field from your data file, or the INDEX vector. The INDEX vector is simply a vector containing elements from 0 to N-1, where N is the number of frames in the data file.
 </para>
-</listitem>
+</listitem><term>
+<guilable>Select Data
+</guilable>
+</term>
+<listitem>
 </varlistentry>
 
-</variablelist>
 
 <para>
-The <guilabel>FFT Options</guilabel> subsection
- in the <guilabel>Plot Types</guilabel> section is available only if a power spectrum
-is to be plotted. Detailed information on these options can be found in the <link linkend="data-types-spectrum">Spectrum</link> section.
+The FFT Options subsection in the Plot Types section is available only if a power spectrum is to be plotted. Detailed information on these options can be found in the Spectrum section.
 </para>
 
 <para>
-Once you are satisfied with all the settings, click <guibutton>Next</guibutton> to advance to advance to the final
-window.
+Once you are satisfied with all the settings, click Next to advance to advance to the final window.
 </para>
-</sect3>
 
-<sect3 id="data-tools-wizard-configureplotlayout">
+</sec3>
+
+<sec3 id ="configure plot layout">
 <title>Configure Plot Layout</title>
-
 <screenshot>
-<screeninfo>Data Wizard Configure Plot Layout</screeninfo>
+<screeninfo>plot layout</screeninfo>
 <mediaobject>
 <imageobject>
 <imagedata fileref="Screenshot-kst-data-wizard-configurelayout.png" format="PNG" />
 </imageobject>
 <textobject>
-<phrase>Data Wizard Configure Plot Layout</phrase>
+<phrase>plot layout</phrase>
 </textobject>
 </mediaobject>
 </screenshot>
 
-<para>
-From here, you can change general plotting settings.  Most of the settings are self-explanatory.
-A brief overview of each section is provided below.
-</para>
-
 <variablelist>
 <varlistentry>
 <term>
-<guilabel>Curve Style</guilabel>
+<guilable>Curve Style
+</guilable>
 </term>
 <listitem>
 <para>
-Select whether to plot data points only, lines connecting the data points only, or both.
-By default, lines are continuous with weight 0, and data points are marked using crosses.
-Line and data point colours are chosen so that curves with identical colours are minimized.
-Note that the curve style settings apply to both Power Spectra
-and XY plots.
+Select whether to plot data points only, lines connecting the data points only, or both. By default, lines are continuous with weight 0, and data points are marked using crosses. Line and data point colours are chosen so that curves with identical colours are minimized. Note that the curve style settings apply to both Power Spectra and XY plots.
 </para>
 </listitem>
 </varlistentry>
 
 <varlistentry>
 <term>
-<guilabel>Curve Placement</guilabel>
+<guilable>Curve Placement
+</guilable>
 </term>
 <listitem>
 <para>
-Select the plots to place the new curves on.  <guilabel>Cycle through</guilabel> distributes the
-curves on the plots by cycling through the plots.  Note that the curve placement settings apply
-to both Power Spectra and XY plots.
+Select the plots to place the new curves on. Cycle through distributes the curves on the plots by cycling through the plots. Note that the curve placement settings apply to both Power Spectra and XY plots.
 </para>
 </listitem>
 </varlistentry>
 
 <varlistentry>
 <term>
-<guilabel>Label Generation</guilabel>
+<guilable>Label Generation
+</guilable>
 </term>
 <listitem>
 <para>
@@ -1249,19 +1408,20 @@ Select the desired labels and legends to be placed on the plots.
 
 <varlistentry>
 <term>
-<guilabel>Plot Placement</guilabel>
+<guilable>Plot Placement
+</guilable>
 </term>
 <listitem>
 <para>
-Select the desired window(s) to place the new plots on.  New windows can be created for the plots by selecting
-<guilabel>In new window</guilabel>.
+Select the desired window(s) to place the new plots on. New windows can be created for the plots by selecting In new window.
 </para>
 </listitem>
 </varlistentry>
 
 <varlistentry>
 <term>
-<guilabel>Power Spectrum Axis Mode</guilabel>
+<guilable>Power Spectrum Axis Mode
+</guilable>
 </term>
 <listitem>
 <para>
@@ -1269,25 +1429,28 @@ Select these check-boxes if you would like the automatically created power spect
 </para>
 </listitem>
 </varlistentry>
-
 </variablelist>
 
 <para>
-Once you are satisfied with all the settings, click <guibutton>Finish</guibutton> and the plots will be generated.
+Once you are satisfied with all the settings, click Finish and the plots will be generated.
 </para>
-</sect3>
-</sect2>
 
-<sect2 id="data-tools-datamenu">
+</sec3>
+
+</sec2>
+</sec1>
+
+<sec2 id="data-tools-datamenu">
 <title>The Data Menu</title>
 <para>
-The <guimenu>Data</guimenu> menu provides quick access to many features related to data objects in
-&kst;.  Most of the menu functions duplicate functions found elsewhere, so only brief descriptions are
-provided below.
+The Data menu provides quick access to many features related to data objects in Kst. Most of the menu functions duplicate functions found elsewhere, so only brief descriptions are provided below.
 </para>
-<variablelist>
+<variablist>
 <varlistentry>
-<term><guimenuitem>Reload</guimenuitem></term>
+<term>
+<guilable>Reload
+</guilable>
+</term>
 <listitem>
 <para>
 Reloads all data vectors from their source files.
@@ -1296,122 +1459,127 @@ Reloads all data vectors from their source files.
 </varlistentry>
 
 <varlistentry>
-<term><guimenuitem>Data Manager</guimenuitem></term>
+<term>
+<guilable>data Manager
+</guilable>
+</term>
 <listitem>
 <para>
-Displays the <link linkend="data-overview-datamanager">Data Manager</link>.
+Display the <link linkend = "data-overview-datamanager">Data Manager</link>
 </para>
 </listitem>
 </varlistentry>
 
 <varlistentry>
-<term><guimenuitem>View Manager</guimenuitem></term>
+<term>
+<guilable>View Manager
+</guilable>
+</term>
 <listitem>
 <para>
-Displays the <link linkend="view-overview-viewmanager">View Manager</link>.
+Display the <link linkend = "data-overview-viewmanager">Data Manager</link>
 </para>
 </listitem>
 </varlistentry>
 
 <varlistentry>
-<term><guimenuitem>New</guimenuitem> [data object]</term>
+<term>
+<guilable>New[data object]
+</guilable>
+</term>
 <listitem>
 <para>
-Displays the corresponding dialog for creating the data object. Refer to
-<link linkend="data-types">Data Types</link> for descriptions of
-each dialog.
+Displays the corresponding dialog for creating the data object. Refer to <link linkend = "data-types">Data Types</link> for descriptions of each dialog.
 </para>
 </listitem>
 </varlistentry>
 
 <varlistentry>
-<term><guimenuitem>View Scalar Values</guimenuitem></term>
+<term>
+<guilable>View Scalar Values
+</guilable>
+</term>
 <listitem>
 <para>
-Displays a dialog from which the values of all the scalars in the current &kst; session
-can be viewed. The values are displayed hierarchically, based on which higher level data objects the scalars are determined for. The dialog is updated dynamically if the values change.
+Displays a dialog from which the values of all the scalars in the current Kst session can be viewed. The values are displayed hierarchically, based on which higher level data objects the scalars are determined for. The dialog is updated dynamically if the values change.
 </para>
+
 <screenshot>
 <screeninfo>View Scalar Values</screeninfo>
 <mediaobject>
 <imageobject>
-<imagedata fileref="Screenshot-kst-data-viewscalarvalues.png" format="PNG" />
+<imagedata fileref="Screenshot-kst-data-viewscalarvalues.png
+" format="PNG" />
 </imageobject>
+<textobject>
+<phrase>View Scalar Values</phrase>
+</textobject>
 </mediaobject>
 </screenshot>
 </listitem>
 </varlistentry>
 
 <varlistentry>
-<term><guimenuitem>View Vector Values</guimenuitem></term>
+<term>
+<guilable>View Matrix Values
+</guilable>
+</term>
 <listitem>
 <para>
-Displays a dialog from which the values in all the current vectors can be viewed. Select
-a vector to view using the drop-down list. The dialog is updated dynamically if the values change.
+ Displays a dialog from which the values in all the current matrices can be viewed. Select a matrix to view using the drop-down list. The dialog is updated dynamically if the values change.
 </para>
+
 <screenshot>
-<screeninfo>View Vector Values</screeninfo>
+<screeninfo>View Matrix Values</screeninfo>
 <mediaobject>
 <imageobject>
-<imagedata fileref="Screenshot-kst-data-viewscalarvalues.png" format="PNG" />
+<imagedata fileref="Screenshot-kst-data-viewmatrixvalues.png
+" format="PNG" />
 </imageobject>
+<textobject>
+<phrase>View Matrix Values</phrase>
+</textobject>
 </mediaobject>
 </screenshot>
 </listitem>
 </varlistentry>
 
 <varlistentry>
-<term><guimenuitem>View Matrix Values</guimenuitem></term>
+<term>
+<guilable>View Fit Results
+</guilable>
+</term>
 <listitem>
 <para>
-Displays a dialog from which the values in all the current matrices can be viewed. Select
-a matrix to view using the drop-down list. The dialog
-is updated dynamically if the values change.
+Displays a dialog which shows all the resulting values from fit plugins. Select a fit result to view using the drop-down list. The dialog is updated dynamicaScreenshot-kst-data-viewmatrixvalues.pnglly if the values change.
 </para>
+
 <screenshot>
-<screeninfo>View Vector Values</screeninfo>
+<screeninfo>View Fit Results</screeninfo>
 <mediaobject>
 <imageobject>
-<imagedata fileref="Screenshot-kst-data-viewmatrixvalues.png" format="PNG" />
+<imagedata fileref="Screenshot-kst-commontasks-curvefitting-fitresults.png
+" format="PNG" />
 </imageobject>
+<textobject>
+<phrase>View Matrix Values</phrase>
+</textobject>
 </mediaobject>
 </screenshot>
 </listitem>
 </varlistentry>
 
-<varlistentry>
-<term><guimenuitem>View Fit Results</guimenuitem></term>
-<listitem>
-<para>
-Displays a dialog which shows all the resulting values from fit plugins. Select
-a fit result to view using the drop-down list. The dialog
-is updated dynamically if the values change.
-</para>
-<screenshot>
-<screeninfo>Curve Fitting - Fit Results</screeninfo>
-<mediaobject>
-<imageobject>
-<imagedata fileref="Screenshot-kst-commontasks-curvefitting-fitresults.png" format="PNG" />
-</imageobject>
-</mediaobject>
-</screenshot> 
-</listitem>
-</varlistentry>
+
+
 </variablelist>
-</sect2>
+</sec2>
 
-<sect2 id="data-tools-datamode">
+<sec2 id="data-tools-dataviewmode">
 <title>Data View Mode</title>
-<para>Data mode allows precise viewing of the data points used in a plotted data object.  To toggle data mode,
-select <guimenuitem>Data Mode</guimenuitem> from the <guimenu>Plots</guimenu> menu, or click the <inlinemediaobject><imageobject><imagedata fileref="Icon-kst-datamode.png" format="PNG"/></imageobject></inlinemediaobject> Data Mode button on the <link linkend="view-tools-toolbar">Toolbar</link>. Now, when the cursor
-is moved over a plot, a coloured dot will indicate the closest data point to the cursor, as shown in the
-screenshot below.  The status bar will
-display the coordinates of the data point (in terms of the x and y vectors used to plot the data object) in status bar at the
-lower left corner of the &kst; window.
-The status bar will also display the x, y, and z coordinates of any visible image.  If images overlap, only the coordinates of the
-topmost image will be displayed.
-Note that all zooming functions are still available while in data mode.
+<para>
+Data mode allows precise viewing of the data points used in a plotted data object. To toggle data mode, select Data Mode from the Plots menu, or click the <guibutton> Data Mode button</guibutton> on the Toolbar. Now, when the cursor is moved over a plot, a coloured dot will indicate the closest data point to the cursor, as shown in the screenshot below. The status bar will display the coordinates of the data point (in terms of the x and y vectors used to plot the data object) in status bar at the lower left corner of the Kst window. The status bar will also display the x, y, and z coordinates of any visible image. If images overlap, only the coordinates of the topmost image will be displayed. Note that all zooming functions are still available while in data mode.
 </para>
+
 <screenshot>
 <screeninfo>Data Mode</screeninfo>
 <mediaobject>
@@ -1423,7 +1591,7 @@ Note that all zooming functions are still available while in data mode.
 <tip>
 <para>
 If the status bar is not visible, make sure <guimenuitem>Show Statusbar</guimenuitem> is checked in the
-<guimenu>Status</guimenu> menu.
+<guimenu>Setting</guimenu> menu.
 </para>
 </tip>
 </sect2>
@@ -1439,8 +1607,6 @@ One common mode of using &kst; is to create a 'session' of plots and analysis fo
 <imageobject>
 <imagedata fileref="Screenshot-kst-data-changedatafile.png" format="PNG"/>
 </imageobject>
-</inlinemediaobject>
-</para>
 
 <para>
 To use this dialog, select the vectors which you would like to change the data file of using the list in the middle of the dialog. The All From, Clear, Select All, and search fields can help you to do this. Then, select a new data file. If the "Change selected vectors and matrices" radio button is selected, then when you press Apply or OK the selected data vectors will have their data file changed, and will be reloaded. If the "Duplicate selected vectors and matrices" option is selected, then new vectors will be created which have the same ranges and sampling rates as the ones selected, but pull their data from the new file. If some of the selected vectors have dependents (curves, spectra, histograms, etc.) then the "Duplicate dependents" option will allow you to duplicate these other objects as well.
@@ -1452,7 +1618,7 @@ To use this dialog, select the vectors which you would like to change the data f
 <para>
 The <guimenuitem>Change Data Sample Ranges</guimenuitem> dialog can be accessed through the <guimenu>Tools</guimenu>. It allows you to modify how a set of vectors are read in from their associated files. The options are detailed in the <link linkend="data-tools-wizard-range">Data Range</link> section of the <link linkend="data-tools-wizard">Data Wizard</link> documentation.
 </para>
-
+Once you are satisfied with all the settings, click Finish and the plots will be generated.
 <para>
 <inlinemediaobject>
 <imageobject>
