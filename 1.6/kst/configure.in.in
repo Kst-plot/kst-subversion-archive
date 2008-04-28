@@ -25,14 +25,20 @@ AC_ARG_WITH(piolib,
        ac_piolib_libraries="-L$withval/`uname -s`-`uname -m`"
     ])
 
+AC_ARG_WITH(postgres-headers,
+    AC_HELP_STRING([--with-postgres-headers=DIR],[where the PostgreSQL headers are installed ]),
+    [  ac_postgres_includes="-I$withval"
+    ])
+
+
 all_includes_save="$all_includes"
-all_includes="$all_includes $ac_piolib_includes"
-KDE_CHECK_HEADER(HL2_PIOLIB/PIOLib.h, AC_DEFINE(HAVE_PIOLIB_H, 1, [If we have piolib headers]) have_piolib_h=yes PIOINCLUDES="$ac_piolib_includes", , )
+all_includes="$all_includes $ac_piolib_includes $ac_postgres_includes"
+KDE_CHECK_HEADER(PioLib/HL2_PIOLIB/PIOLib.h, AC_DEFINE(HAVE_PIOLIB_H, 1, [If we have piolib headers]) have_piolib_h=yes PIOINCLUDES="$ac_piolib_includes", , )
 all_includes="$all_includes_save"
 
 ldflags_save="$LDFLAGS"
 LDFLAGS="$LDFLAGS $ac_piolib_libraries"
-KDE_CHECK_LIB(piolib, PIOGetObjectList, PIOLIBS="$ac_piolib_libraries -lpiolib $PIOLIBS", , -lm -lpthread -ldl)
+KDE_CHECK_LIB(piolib, PIOGetObjectList, PIOLIBS="$ac_piolib_libraries -lpq -lpiolib $PIOLIBS", , -lm -lpthread -ldl -lpq)
 LDFLAGS="$ldflags_save"
 
 if test "x$ac_cv_lib_piolib_PIOGetObjectList" = "xyes"; then
@@ -51,12 +57,7 @@ ac_dmc_libraries=""
 AC_ARG_WITH(dmc,
     AC_HELP_STRING([--with-dmc=DIR],[where the root of DMC is installed ]),
     [  ac_dmc_includes="-I$withval -I$withval/PioLib"
-       ac_dmc_libraries="-L$withval/`uname -s`-`uname -m`"
-    ])
-
-AC_ARG_WITH(postgres-headers,
-    AC_HELP_STRING([--with-postgres-headers=DIR],[where the PostgreSQL headers are installed ]),
-    [  ac_postgres_includes="-I$withval"
+       ac_dmc_libraries="-L$withval/`uname -s`-`uname -m` -L$withval/../../../InstallArea/`uname -s`-`uname -m`/lib"
     ])
 
 all_includes_save="$all_includes"
@@ -66,7 +67,7 @@ all_includes="$all_includes_save"
 
 ldflags_save="$LDFLAGS"
 LDFLAGS="$LDFLAGS $ac_dmc_libraries"
-KDE_CHECK_LIB(dmc, PIOGetObjectList, DMCLIBS="$ac_dmc_libraries -ldmc -lpq -lxml2 $DMCLIBS", , -lm -lpthread -ldl -lpq -lxml2)
+KDE_CHECK_LIB(dmc, PIOGetObjectList, DMCLIBS="$ac_dmc_libraries -ldmc -lpq -lxml2 -lsqlite -ltransfunc $DMCLIBS", , -lm -lpthread -ldl -lpq -lxml2 -lsqlite -ltransfunc)
 LDFLAGS="$ldflags_save"
 
 if test "x$ac_cv_lib_dmc_PIOGetObjectList" = "xyes"; then

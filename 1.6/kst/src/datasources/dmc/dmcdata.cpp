@@ -29,6 +29,7 @@ bool haveDMC() {
 
 bool validDatabase(const QString& db) {
   if (getenv("PGUSER") == NULL || getenv("DBROOT") == NULL) {
+    qDebug("DMC is missing environment variables");
     /* DMC will lock up if these environment variables are not set */
     return false;
   }

@@ -52,6 +52,9 @@ class DMC::ObjectGroup {
     PIOLONG *firstIndex;
     PIOLONG *lastIndex;
 
+    PIOSTRING *TOItypes;
+    PIOSTRING *Datatypes;
+
     PIOGroup *_group;
     bool _valid;
 };
@@ -234,6 +237,10 @@ int Object::readObject(const QString& object, double *buf, long start, long end)
       return 0;
     }
 
+#ifdef PIOLIBDEBUG
+    kdDebug() << "Found object " << object << " in group " << _group << " , type is " << g->objTypes[i] << ", data type is " << g->Datatypes[i] << endl;
+#endif
+
     QString range("");
 
     if (start < 0 || end < start) {
@@ -253,48 +260,98 @@ int Object::readObject(const QString& object, double *buf, long start, long end)
 
     /* open the group only for reading this object */
     PIOGroup *MyGroup=NULL;
+    long n=0;
 
-    long n = PIORead_1(ObjName, 
-        const_cast<char*>("Written"),
-        const_cast<char*>("PIODOUBLE"),
-        const_cast<char*>(range.latin1()),
-        &MyGroup, &MyObject, &MyData, &MyDataFlag);
+    if (strncmp(g->Datatypes[i], "PIOFLAG", 7) == 0) {
+      n = PIORead_1(ObjName, 
+          const_cast<char*>("Written"),
+          const_cast<char*>("PIOFLAG"),
+          const_cast<char*>(range.latin1()),
+          &MyGroup, &MyObject, &MyData, &MyDataFlag);
+
+#ifdef PIOLIBDEBUG
+      kdDebug() << "READ " << n << " flags." << endl;
+#endif
+      if (n < 0) { // error
+        // FIXME - might have to reset() here
+        abort();
+        n = 0;
+        return n;
+      }
+
+      {
+        /* table to store the sample validity */
+        PIOFLAG *Mask = (PIOFLAG*)_PIOMALLOC(n);
+
+        /* temporary buffer */
+        PIOFLAG *flagbuf = (PIOFLAG*)_PIOMALLOC(n);
+
+        PIORead_2(flagbuf, 0L, Mask,
+            ObjName, 
+            const_cast<char*>("PIOFLAG"),
+            const_cast<char*>(range.latin1()),
+            const_cast<char*>("Written"), 
+            MyGroup, 
+            &MyObject, 
+            &MyData, 
+            &MyDataFlag,
+            PIOLONG(n));
+
+        for (i = 0; i < n; i++) {
+          if (Mask[i] == 0) {
+            buf[i] = NOPOINT;
+          } else {
+            // just cast flags to doubles
+            buf[i] = (PIODOUBLE)flagbuf[i];
+          }
+        }
+
+        _PIOFREE(flagbuf);
+        _PIOFREE(Mask);
+      }
+    } else {
+      n = PIORead_1(ObjName, 
+          const_cast<char*>("Written"),
+          const_cast<char*>("PIODOUBLE"),
+          const_cast<char*>(range.latin1()),
+          &MyGroup, &MyObject, &MyData, &MyDataFlag);
 
 #ifdef PIOLIBDEBUG
     kdDebug() << "READ " << n << " doubles." << endl;
 #endif
-    if (n < 0) { // error
-      // FIXME - might have to reset() here
-      abort();
-      n = 0;
-      return n;
-    }
-
-    {
-      /* table to store the sample validity */
-      PIOFLAG *Mask = (PIOFLAG*)_PIOMALLOC(n);
-
-      PIORead_2(buf, 0L, Mask,
-          ObjName, 
-          const_cast<char*>("PIODOUBLE"),
-          const_cast<char*>(range.latin1()),
-          const_cast<char*>("Written"), 
-          MyGroup, 
-          &MyObject, 
-          &MyData, 
-          &MyDataFlag,
-          PIOLONG(n));
-
-      /* the group is close no need to deletelink */
-      //PIODeleteLink(buf, g->_group);
-
-      for (i = 0; i < n; i++) {
-        if (Mask[i] == 0) {
-          buf[i] = NOPOINT;
-        }
+      if (n < 0) { // error
+        // FIXME - might have to reset() here
+        abort();
+        n = 0;
+        return n;
       }
 
-      _PIOFREE(Mask);
+      {
+        /* table to store the sample validity */
+        PIOFLAG *Mask = (PIOFLAG*)_PIOMALLOC(n);
+
+        PIORead_2(buf, 0L, Mask,
+            ObjName, 
+            const_cast<char*>("PIODOUBLE"),
+            const_cast<char*>(range.latin1()),
+            const_cast<char*>("Written"), 
+            MyGroup, 
+            &MyObject, 
+            &MyData, 
+            &MyDataFlag,
+            PIOLONG(n));
+
+        /* the group is close no need to deletelink */
+        //PIODeleteLink(buf, g->_group);
+
+        for (i = 0; i < n; i++) {
+          if (Mask[i] == 0) {
+            buf[i] = NOPOINT;
+          }
+        }
+
+        _PIOFREE(Mask);
+      }
     }
 #ifdef PIOLIBDEBUG
     kdDebug() << "Read " << n << " samples of data.  Range = [" << range << "]" << endl;
@@ -452,6 +509,8 @@ ObjectGroup::ObjectGroup() {
   firstIndex = 0L;
   lastIndex = 0L;
   objectListSize = 0;
+  TOItypes = 0L;
+  Datatypes = 0L;
 
   _group = 0L;
   _valid = false;
@@ -470,6 +529,11 @@ void ObjectGroup::close() {
     objNames = 0L;
     _PIOFREE(objTypes);
     objTypes = 0L;
+
+    delete[] TOItypes;
+    TOItypes = 0L;
+    delete[] Datatypes;
+    Datatypes = 0L;
 
     objectListSize = 0;
     _valid = false;
@@ -499,12 +563,16 @@ bool ObjectGroup::updateObjectList() {
 
   PIOErr e = PIOGetObjectList(&objNames, &objTypes, _group);
   if (e > 0) {
-    _valid = true;
     delete[] firstIndex;
     delete[] lastIndex;
     firstIndex = new PIOLONG[e];
     lastIndex = new PIOLONG[e];
+    delete[] TOItypes;
+    TOItypes = new PIOSTRING[e];
+    delete[] Datatypes;
+    Datatypes = new PIOSTRING[e];
     objectListSize = e;
+    _valid = true;
 
 #ifdef PIOLIBDEBUG
     kdDebug() << "               -> info acquired." << endl;
@@ -520,6 +588,16 @@ bool ObjectGroup::updateObjectList() {
     for (int i = 0; i < e; ++i) { 
       firstIndex[i] = FirstIdx;
       lastIndex[i] = LastIdx;
+
+      PIOLONG beginIdx, endIdx;
+      PIOSTRING author, date;
+      PIOErr ret = PIOInfoObject(TOItypes[i], Datatypes[i], &beginIdx, &endIdx, author, date, objNames[i], _group);
+#ifdef PIOLIBDEBUG
+      kdDebug() << "  PIOInfoObject(" << TOItypes[i] << "," << Datatypes[i] << "," << beginIdx << "," << endIdx << "," << author << "," << date << "," << objNames[i] << ") returned " << ret << endl;
+#endif  
+      if (ret != 0) {
+        _valid = false;
+      }
     }
   }
   return _valid;
