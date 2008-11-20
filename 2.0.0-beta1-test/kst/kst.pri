@@ -1,0 +1,13 @@
+isEmpty(OUTPUT_DIR):OUTPUT_DIR=$$PWD/build
+
+QT += core
+
+CONFIG += silent
+
+TOPLEVELDIR = $$PWD
+
+INCLUDEPATH += $$TOPLEVELDIR
+
+LIBS += -L$$OUTPUT_DIR/lib -L$$OUTPUT_DIR/plugin
+
+QMAKE_RPATHDIR += $$OUTPUT_DIR/lib $$OUTPUT_DIR/plugin

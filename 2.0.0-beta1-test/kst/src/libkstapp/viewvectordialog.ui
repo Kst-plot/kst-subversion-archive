@@ -1,0 +1,83 @@
+<ui version="4.0" >
+ <class>ViewVectorDialog</class>
+ <widget class="QDialog" name="ViewVectorDialog" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>528</width>
+    <height>536</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>View Vector Values</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout" >
+   <item>
+    <widget class="Kst::VectorSelector" native="1" name="_vectorSelector" >
+     <property name="sizePolicy" >
+      <sizepolicy vsizetype="Preferred" hsizetype="Expanding" >
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QTableView" name="_vectors" />
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox" >
+     <property name="orientation" >
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons" >
+      <set>QDialogButtonBox::Close</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>Kst::VectorSelector</class>
+   <extends>QWidget</extends>
+   <header>vectorselector.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>ViewVectorDialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>263</x>
+     <y>513</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>263</x>
+     <y>267</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>ViewVectorDialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>263</x>
+     <y>513</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>263</x>
+     <y>267</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

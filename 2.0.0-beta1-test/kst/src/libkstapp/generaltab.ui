@@ -1,0 +1,121 @@
+<ui version="4.0" >
+ <class>GeneralTab</class>
+ <widget class="QWidget" name="GeneralTab" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>304</width>
+    <height>247</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Form</string>
+  </property>
+  <layout class="QGridLayout" >
+   <item row="0" column="0" colspan="2" >
+    <widget class="QCheckBox" name="_useOpenGL" >
+     <property name="text" >
+      <string>Use OpenGL</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0" colspan="2" >
+    <widget class="QLabel" name="label" >
+     <property name="text" >
+      <string>Reference View Width (cm):</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="2" >
+    <widget class="QDoubleSpinBox" name="_refViewWidth" >
+     <property name="maximum" >
+      <double>2000.000000000000000</double>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0" colspan="2" >
+    <widget class="QLabel" name="label_2" >
+     <property name="text" >
+      <string>Reference View Height (cm):</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="2" >
+    <widget class="QDoubleSpinBox" name="_refViewHeight" >
+     <property name="maximum" >
+      <double>2000.000000000000000</double>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0" colspan="2" >
+    <widget class="QLabel" name="label_4" >
+     <property name="text" >
+      <string>Reference Font Size (points):</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="2" >
+    <widget class="QSpinBox" name="_refFontSize" />
+   </item>
+   <item row="4" column="0" colspan="2" >
+    <widget class="QLabel" name="label_3" >
+     <property name="text" >
+      <string>Minimum Font Size (points):</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="2" >
+    <widget class="QSpinBox" name="_minFontSize" />
+   </item>
+   <item row="5" column="0" >
+    <widget class="QLabel" name="_Label_12" >
+     <property name="text" >
+      <string>Default Font Family</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="1" colspan="2" >
+    <widget class="QFontComboBox" name="_defaultFontFamily" />
+   </item>
+   <item row="6" column="0" colspan="2" >
+    <widget class="QLabel" name="label_5" >
+     <property name="text" >
+      <string>Period Between Updates (ms)</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="2" >
+    <widget class="QSpinBox" name="_maxUpdate" >
+     <property name="minimum" >
+      <number>10</number>
+     </property>
+     <property name="maximum" >
+      <number>60000</number>
+     </property>
+     <property name="singleStep" >
+      <number>500</number>
+     </property>
+     <property name="value" >
+      <number>2000</number>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="0" >
+    <spacer>
+     <property name="orientation" >
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" >
+      <size>
+       <width>44</width>
+       <height>16</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
