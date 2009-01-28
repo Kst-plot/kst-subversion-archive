@@ -1,0 +1,13 @@
+[Desktop Entry]
+Encoding=UTF-8
+Type=Service
+ServiceTypes=Kst Data Object
+X-KDE-ModuleType=Plugin
+X-KDE-Library=kstobject_binnedmap
+X-Kst-Plugin-Author=Barth Netterfield
+Name=Binned Map
+Name[et]=Lahterdamiskaart
+Name[it]=Mappa per sottointervalli
+Name[pt]=Mapa em Cestos
+Name[pt_BR]=Mapa em Cestos
+Name[sv]=Områdesavbildning

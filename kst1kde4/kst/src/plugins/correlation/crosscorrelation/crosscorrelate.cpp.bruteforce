@@ -1,0 +1,141 @@
+/***************************************************************************
+                   crosscorrelate.cpp
+                             -------------------
+    begin                : 12/06/08
+    copyright            : (C) 2008 The University of British Columbia
+    email                :
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+#include "crosscorrelate.h"
+#include "kstmath.h"
+#include <kgenericfactory.h>
+
+static const QString& ARRAY_ONE = KGlobal::staticQString("Array One");
+static const QString& ARRAY_TWO = KGlobal::staticQString("Array Two");
+static const QString& STEP_VALUE = KGlobal::staticQString("Step value");
+static const QString& CORRELATED = KGlobal::staticQString("Correlated");
+
+KST_KEY_DATAOBJECT_PLUGIN( crosscorrelate )
+
+K_EXPORT_COMPONENT_FACTORY( kstobject_crosscorrelate,
+    KGenericFactory<CrossCorrelate>( "kstobject_crosscorrelate" ) )
+
+CrossCorrelate::CrossCorrelate( QObject */*parent*/, const char */*name*/, const QStringList &/*args*/ )
+    : KstBasicPlugin() {
+}
+
+
+CrossCorrelate::~CrossCorrelate() {
+}
+
+bool CrossCorrelate::algorithm() {
+  KstVectorPtr array_one    = inputVector(ARRAY_ONE);
+  KstVectorPtr array_two    = inputVector(ARRAY_TWO);
+  KstVectorPtr step_value   = outputVector(STEP_VALUE);
+  KstVectorPtr correlated   = outputVector(CORRELATED);
+
+  if (array_one->length() <= 0               ||
+      array_two->length() <= 0               ||
+      array_one->length() != array_two->length()) {
+      return false;
+  }
+
+  int     iLength;
+  int     i;
+
+  step_value->resize(array_one->length(), false);
+  correlated->resize(array_two->length(), false);
+
+  iLength = array_one->length();
+
+  for (i=-iLength/2; i<(iLength+1)/2; i++) {
+    double dSumXY = 0.0;
+    double dSumXSquared = 0.0;
+    double dSumYSquared = 0.0;
+    double dMeanX;
+    double dMeanY;
+    double dSumX = 0.0;
+    double dSumY = 0.0;
+    double dX;
+    double dY;
+    double dCoefficient;
+    int iStep = i + (iLength/2);
+    int iN = 0;
+    int j;
+
+    for (j=0; j<iLength - abs( i ); j++) {
+      if (i < 0) {
+        dX = array_one->value()[j + abs( i )];
+        dY = array_two->value()[j];
+      } else {
+        dX = array_one->value()[j];
+        dY = array_two->value()[j + abs( i )];
+      }
+
+      if (dX == dX && dY == dY) {
+        dSumXSquared += dX * dX;
+        dSumYSquared += dY * dY;
+        dSumXY += dX * dY;
+        dSumX += dX;
+        dSumY += dY;
+        iN++;
+      }
+    }
+
+    if (iN > 0) {
+      dMeanX = dSumX / (double)iN;
+      dMeanY = dSumY / (double)iN;
+      dCoefficient = dSumXY - ( (double)iN * dMeanX * dMeanY );
+      dCoefficient *= dCoefficient;
+      dCoefficient /= dSumXSquared - ( (double)iN * ( dMeanX * dMeanX ) );
+      dCoefficient /= dSumYSquared - ( (double)iN * ( dMeanY * dMeanY ) );
+      correlated->value()[iStep] = sqrt( dCoefficient );
+    } else {
+      correlated->value()[iStep] = NAN;
+    }
+    step_value->value()[iStep] = (double)i;
+  }
+
+
+  return true;
+}
+
+
+QStringList CrossCorrelate::inputVectorList() const {
+  return QStringList( ARRAY_ONE ) << ARRAY_TWO;
+}
+
+
+QStringList CrossCorrelate::inputScalarList() const {
+  return QStringList();
+}
+
+
+QStringList CrossCorrelate::inputStringList() const {
+  return QStringList();
+}
+
+
+QStringList CrossCorrelate::outputVectorList() const {
+  return QStringList( STEP_VALUE ) << CORRELATED;
+}
+
+
+QStringList CrossCorrelate::outputScalarList() const {
+  return QStringList();
+}
+
+
+QStringList CrossCorrelate::outputStringList() const {
+  return QStringList();
+}
+
+#include "crosscorrelate.moc"

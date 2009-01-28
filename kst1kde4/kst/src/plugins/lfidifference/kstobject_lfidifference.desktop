@@ -1,0 +1,14 @@
+[Desktop Entry]
+Encoding=UTF-8
+Type=Service
+ServiceTypes=Kst Data Object
+X-KDE-ModuleType=Plugin
+X-KDE-Library=kstobject_lfidifference
+X-Kst-Plugin-Author=The University of British Columbia
+Name=LFIDifference
+Name[ms]=Perbezaan LFI
+Name[sv]=LFI-differentiering
+Comment=The default LFI differencing procedure, where the difference is given by <sky> - r * <reference load>.
+Comment[et]=Vaikimisi LFI diferentsimise protsess, kus diferentsi määrab <sky> - r * <reference load>.
+Comment[it]=La procedura predefinita di differenziazione LFI, dove la differenza è data da <sky> - r * <carico di riferimento>.
+Comment[sv]=Proceduren för LFI-standarddifferentiering, där differensen anges av <tak> - r * <referenslast>.

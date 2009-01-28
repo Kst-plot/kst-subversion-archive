@@ -1,0 +1,27 @@
+[Desktop Action digiKam Detect and Download]
+Exec=@digikamhelper_dir@/digikam-camera detect %u
+Icon=digikam
+Name=digiKam Detect and Download
+Name[ca]=Detecta i descarrega amb el digiKam
+Name[de]=Finden und Herunterladen mit digiKam
+Name[es]=Detectar y descargar con digiKam
+Name[et]=*Fotode tuvastamine ja allalaadimine digiKamiga
+Name[fi]=Tunnista kamera ja lataa kuvat digiKamilla
+Name[fr]=Détecter et télécharger avec digiKam
+Name[is]=digiKam Finna og Niðurhala
+Name[it]=Rileva e scarica con digiKam
+Name[ja]=digiKam 検出とダウンロード
+Name[nds]=digiKam - Opdecken un daalladen
+Name[nl]=digiKam-detectie en download
+Name[pl]=Wykrycie i pobieranie digiKamem
+Name[pt]=Detectar e Transferir com o digiKam
+Name[pt_BR]=Detectar e Transferir com o digiKam
+Name[sk]=digiKam Nájsť a stiahnuť
+Name[sr]=digiKam-ово Препознај и преузми
+Name[sr@Latn]=digiKam-ово Препознај и преузми
+Name[sv]=Digikam detektering och nerladdning
+Name[xx]=xxdigiKam Detect and Downloadxx
+
+[Desktop Entry]
+Actions=digiKam Detect and Download
+ServiceTypes=media/gphoto2camera

@@ -1,0 +1,196 @@
+<html><head><title>Creating Non-linear Fit Plugins</title><link rel="stylesheet" href="help:/common/kde-default.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets V1.67.2"><meta name="keywords" content="KDE, kdeextragear, kdeextragear-2, Kst, plotting, plot"><link rel="start" href="index.html" title="The Kst Handbook"><link rel="up" href="creatingplugins.html" title="Appendix B. Creating Additional Plugins"><link rel="prev" href="creatinglinearfittingplugins.html" title="Creating Linear Fit Plugins"><link rel="next" href="creatingpassfilterplugins.html" title="Creating Pass Filter Plugins"><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta name="GENERATOR" content="KDE XSL Stylesheet V1.13 using libxslt"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div style="background-image: url(help:/common/top-middle.png); width: 100%; height: 131px;"><div style="position: absolute;                      right: 0px;"><img src="help:/common/top-right-konqueror.png" style="margin: 0px" alt=""></div><div style="position: absolute;                         top: 25px;                          right: 100px;                          text-align: right;                          font-size: xx-large;                          font-weight: bold;                          text-shadow: #fff 0px 0px 5px;                          color: #444">Creating Non-linear Fit Plugins</div></div><div style="margin-top: 20px; background-color: #white;                        color: black;                       margin-left: 20px;                        margin-right: 20px;"><div style="position: absolute;                          left: 20px;"><a accesskey="p" href="creatinglinearfittingplugins.html">Prev</a></div><div style="position: absolute;                          right: 20px;"><a accesskey="n" href="creatingpassfilterplugins.html">Next</a></div><div class="navCenter">Creating Additional Plugins</div></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="creatingnonlinearfitplugin"></a>Creating Non-linear Fit Plugins</h2></div></div></div><p>
+<span class="application">Kst</span> provides header files designed to simplify the creation of non-linear least-squares fit plugins.
+The following sections detail the use of the header files.
+</p><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="headersnonlinearfittingplugins"></a>Header Files and Definitions</h3></div></div></div><p>
+The non-linear fit header files are located in <code class="filename">kst/plugins/fits_nonlinear/</code> of
+the <span class="application">Kst</span> source tarball.  The files are named <code class="filename">non_linear.h</code> and
+<code class="filename">non_linear_weighted.h</code> for unweighted and weighted fits, respectively.
+To use these files, include only one of them in the source code for your plugin:
+<pre class="screen">
+#include &lt;../non_linear.h&gt;
+</pre>
+or
+<pre class="screen">
+#include &lt;../non_linear_weighted.h&gt;
+</pre>
+(by convention, we will place the source code for the plugin one directory below where the header files
+are).
+</p><p>
+As non-linear fitting is an iterative process, you must also define the maximum number of iterations
+that should be performed.  The non-linear fitting algorithm will stop when at least one of the following
+conditions is true:
+</p><div class="itemizedlist"><ul type="disc"><li><p>
+The maximum number of iterations has been reached.
+</p></li><li><p>
+A precision of 10<sup>-4</sup> has been reached.
+</p></li></ul></div><p>
+In addition, you need to define the number of parameters in the model, as it is not passed to the fitting
+function explicitly.  To define these two values, include the following at the top of your source code:
+</p><pre class="screen">
+#define NUM_PARAMS [num1]
+#define MAX_NUM_ITERATIONS [num2]
+</pre><p>
+replacing <code class="literal">[num1]</code> with the number of parameters in the model, and <code class="literal">[num2]</code>
+with the maximum number of iterations to perform.
+</p></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="reqfunctionsnonlinearfittingplugins"></a>Implementing Required Functions</h3></div></div></div><p>
+To use the header files for non-linear fits, you must provide the function to use as the model,
+the partial derivatives of the function with respect to each parameter, and initial estimates
+of the best-fit parameters.
+To do this, three functions must be implemented. These functions
+are described below.
+</p><div class="variablelist"><dl><dt><span class="term"><code class="function"><span class="returnvalue">double</span> function_calculate( double <span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="parameter"><em class="parameter"><code>dX</code></em></span>, double* <span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="parameter"><em class="parameter"><code>pdParameters</code></em></span>)</code></span></dt><dd><p>
+This function calculates the y value of the fitting model for a given x value <code class="literal">dX</code>,
+using the supplied array of parameters <code class="varname">pdParameters</code>.  The order of parameters in
+<code class="varname">pdParameters</code> is arbitrary, but should be consistent with the other two
+implemented functions.
+For example, for an exponential model,
+<code class="function">function_calculate</code> could be implemented as follows:
+</p><div class="informalexample"><pre class="screen">
+double function_calculate( double dX, double* pdParameters ) {
+  double dScale	 = pdParameters[0];
+  double dLambda = pdParameters[1];
+  double dOffset = pdParameters[2];
+  double dY;
+
+  dY  = ( dScale * exp( -dLambda * dX ) ) + dOffset;
+
+  return dY;
+}
+</pre></div></dd><dt><span class="term"><code class="function"><span class="returnvalue">void</span> function_derivative( double <span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="parameter"><em class="parameter"><code>dX</code></em></span>, double* <span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="parameter"><em class="parameter"><code>pdParameters</code></em></span>, double* <span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="parameter"><em class="parameter"><code>pdDerivatives</code></em></span> )</code></span></dt><dd><p>
+This function calculates the partial derivatives of the model function for
+a give value of x <code class="literal">dX</code>.  The partial derivatives should be returned in
+<code class="varname">pdDerivatives</code>.  The order of the partial derivatives in the array
+<code class="varname">pdDerivatives</code> should correspond to the order of the parameters
+in <code class="varname">pdParameters</code> (i.e. if <code class="varname">pdParameters[0]</code> contains
+the parameter lambda for an exponential model, <code class="varname">pdDerivatives[0]</code> should
+contain the derivative of the model with respect to lambda).
+</p></dd><dt><span class="term"><code class="function"><span class="returnvalue">void</span> function_initial_estimate(
+const double* <span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="parameter"><em class="parameter"><code>pdX</code></em></span>, const double* <span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="parameter"><em class="parameter"><code>pdY</code></em></span>,
+int <span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="parameter"><em class="parameter"><code>iLength</code></em></span>, double* <span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="parameter"><em class="parameter"><code>pdParameterEstimates</code></em></span> )</code></span></dt><dd><p>
+This function provides an initial estimate of the best-fit parameters to the fitting function. The array of
+x values and y values of the data points are provided in <code class="varname">pdX</code> and <code class="varname">pdY</code>
+respectively, and the number of data points is provided by <code class="varname">iLength</code>.  You can use any or
+none of these parameters at your discretion to calculate the initial estimate.  The function should put the
+calculated initial estimates in <code class="varname">pdParameterEstimates</code>, with the order of the estimates
+corresponding to the order of the parameters in <code class="varname">pdParameters</code> of
+<code class="function">function_calculate</code> and <code class="function">function_derivative</code>.  Keep in mind that the
+initial estimate is important in determining whether or not the fitting function converges to a solution.
+</p></dd></dl></div></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="callingnonlinearfittingplugins"></a>Calling the Fitting Functions</h3></div></div></div><p>
+Once all the required functions have been implemented, the fitting function from the included header file
+can be called:
+<pre class="screen">
+kstfit_nonlinear( <span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="parameter"><em class="parameter"><code>inArrays</code></em></span>, <span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="parameter"><em class="parameter"><code>inArrayLens</code></em></span>,
+		  <span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="parameter"><em class="parameter"><code>inScalars</code></em></span>, <span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="parameter"><em class="parameter"><code>outArrays</code></em></span>,
+		  <span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="parameter"><em class="parameter"><code>outArrayLens</code></em></span>, <span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="parameter"><em class="parameter"><code>outScalars</code></em></span> );
+</pre>
+or
+<pre class="screen">
+kstfit_nonlinear_weighted( <span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="parameter"><em class="parameter"><code>inArrays</code></em></span>, <span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="parameter"><em class="parameter"><code>inArrayLens</code></em></span>,
+                           <span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="parameter"><em class="parameter"><code>inScalars</code></em></span>, <span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="parameter"><em class="parameter"><code>outArrays</code></em></span>,
+                           <span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="parameter"><em class="parameter"><code>outArrayLens</code></em></span>, <span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="parameter"><em class="parameter"><code>outScalars</code></em></span> );
+</pre>
+depending on whether you are implementing a non-weighted fit or a weighted fit.
+</p><p>
+The function will return <code class="literal">0</code> on success, or <code class="literal">-1</code> on
+error, so it is simplest to set the return value of the exported C function to be equal to the return
+value of the fitting function. To maintain simplicity, the code for the plugin can simply pass the
+ arguments given to the exported C function to the fitting function. Note, however, that inArrays must
+be structured as follows:
+</p><div class="itemizedlist"><ul type="disc"><li><p>
+<code class="varname">inArrays[0]</code> must contain the array of x coordinates of the data points
+</p></li><li><p>
+<code class="varname">inArrays[1]</code> must contain the array of y coordinates of the data points
+</p></li><li><p>
+<code class="varname">inArrays[2]</code> only exists if <code class="function">kstfit_linear_weighted</code>
+is being called, and must contain the array of weights to use for the fit.
+</p></li></ul></div><p>
+The easiest way to ensure that inArrays is structured correctly is to specify the correct
+order of input vectors in the XML file for the plugin.
+</p><p>
+After <code class="function">kstfit_linear_unweighted</code> or <code class="function">kstfit_linear_weighted</code>
+is called, <code class="varname">outArrays</code> and <code class="varname">outScalars</code>
+will be set as follows:
+</p><div class="itemizedlist"><ul type="disc"><li><p>
+<code class="varname">outArrays[0]</code> will contain the array of fitted y values.
+</p></li><li><p>
+<code class="varname">outArrays[1]</code> will contain the array of residuals.
+</p></li><li><p>
+<code class="varname">outArrays[2]</code> will contain the array of best-fit parameters that were estimated.
+</p></li><li><p>
+<code class="varname">outArrays[3]</code> will contain the covariance matrix, returned row after row in an array.
+</p></li><li><p>
+<code class="varname">outScalars[0]</code> will contain chi^2/nu, where chi^2 is the weighted sum of squares of the residuals,
+and nu is the degrees of freedom.
+</p></li></ul></div><p>
+<code class="varname">outArrayLens</code> will be correctly set to indicate the length of each output array.
+</p><p>
+Ensure that the specified outputs in the XML file match those that the exported C function returns (which
+in most cases will simply be the outputs returned by the fitting function).
+</p></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="nonlinearfittingpluginexample"></a>Example</h3></div></div></div><p>The following is an example of a non-linear fit plugin that performs a fit to an exponential model.</p><div class="informalexample"><pre class="screen">
+/*
+ *  Exponential fit plugin for KST.
+ *  Copyright 2004, The University of British Columbia
+ *  Released under the terms of the GPL.
+ */
+
+#define NUM_PARAMS 3
+#define MAX_NUM_ITERATIONS 500
+
+#include "../non_linear.h"
+
+void function_initial_estimate( const double* pdX, const double* pdY,
+                                int iLength, double* pdParameterEstimates ) {
+  KST_UNUSED( pdX )
+  KST_UNUSED( pdY )
+  KST_UNUSED( iLength )
+
+  pdParameterEstimates[0] =  1.0;
+  pdParameterEstimates[1] =  0.0;
+  pdParameterEstimates[2] =  0.0;
+}
+
+double function_calculate( double dX, double* pdParameters ) {
+  double dScale	 = pdParameters[0];
+  double dLambda = pdParameters[1];
+  double dOffset = pdParameters[2];
+  double dY;
+
+  dY  = ( dScale * exp( -dLambda * dX ) ) + dOffset;
+
+  return dY;
+}
+
+void function_derivative( double dX, double* pdParameters, double* pdDerivatives ) {
+  double dScale	 = pdParameters[0];
+  double dLambda = pdParameters[1];
+  double dExp;  
+  double ddScale;
+  double ddLambda;
+  double ddOffset;
+  
+  dExp     = exp( -dLambda * dX );
+  ddScale  = dExp;
+  ddLambda = -dX * dScale * dExp;
+  ddOffset = 1.0;
+
+  pdDerivatives[0] = ddScale;
+  pdDerivatives[1] = ddLambda;
+  pdDerivatives[2] = ddOffset;
+}
+
+extern "C" int kstfit_exponential(const double *const inArrays[], const int inArrayLens[],
+		const double inScalars[],
+		double *outArrays[], int outArrayLens[],
+		double outScalars[]);
+
+int kstfit_exponential(const double *const inArrays[], const int inArrayLens[],
+		const double inScalars[],
+		double *outArrays[], int outArrayLens[],
+		double outScalars[])
+{
+  return kstfit_nonlinear( inArrays, inArrayLens,
+                           inScalars, outArrays,
+			   outArrayLens, outScalars );
+}
+</pre></div></div></div><div style="background-color: #white; color: black;                  margin-top: 20px; margin-left: 20px;                  margin-right: 20px;"><div style="position: absolute; left: 20px;"><a accesskey="p" href="creatinglinearfittingplugins.html">Prev</a></div><div style="position: absolute; right: 20px;"><a accesskey="n" href="creatingpassfilterplugins.html">Next</a></div><div align="center"><a accesskey="h" href="index.html">Home</a></div></div><div style="background-color: #white;   color: black;         margin-left: 20px;   margin-right: 20px;"><div class="navLeft">Creating Linear Fit Plugins </div><div class="navRight"> Creating Pass Filter Plugins</div><div class="navCenter"><a accesskey="u" href="creatingplugins.html">Up</a></div></div><br><br><div class="bannerBottom" style="background-image: url(help:/common/bottom-middle.png);                                        background-repeat: x-repeat;                                         width: 100%;                                         height: 100px;                                         bottom:0px;"><div class="BannerBottomRight"><img src="help:/common/bottom-right.png" style="margin: 0px" alt=""></div><div class="bannerBottomLeft"><img src="help:/common/bottom-left.png" style="margin: 0px;" alt=""></div><div id="comments" style="position:relative; top: 5px; left: 1em; height:85px; width: 50%; color: #cfe1f6"><p>Would you like to make a comment or contribute an update to this page?<br>
+        Send feedback to the <a href="mailto:kde-docs@kdemail.net" style="background:transparent; color:#cfe1f6; text-decoration: underline;">KDE Docs Team</a></p></div></div></body></html>

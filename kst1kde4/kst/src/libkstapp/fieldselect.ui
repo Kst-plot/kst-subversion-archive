@@ -1,0 +1,157 @@
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<class>FieldSelect</class>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>FieldSelect</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>252</width>
+            <height>480</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Field Select</string>
+    </property>
+    <grid>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QPushButton" row="2" column="2">
+            <property name="name">
+                <cstring>_Cancel</cstring>
+            </property>
+            <property name="text">
+                <string>&amp;Cancel</string>
+            </property>
+            <property name="accel">
+                <string>Alt+C</string>
+            </property>
+            <property name="whatsThis" stdset="0">
+                <string>Close dialog without changing field.</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="2" column="1">
+            <property name="name">
+                <cstring>_OK</cstring>
+            </property>
+            <property name="text">
+                <string>&amp;OK</string>
+            </property>
+            <property name="accel">
+                <string>Alt+O</string>
+            </property>
+            <property name="default">
+                <bool>true</bool>
+            </property>
+            <property name="whatsThis" stdset="0">
+                <string>Choose selected field</string>
+            </property>
+        </widget>
+        <spacer row="2" column="0">
+            <property name="name">
+                <cstring>spacer35</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>51</width>
+                    <height>21</height>
+                </size>
+            </property>
+        </spacer>
+        <widget class="QPushButton" row="0" column="2">
+            <property name="name">
+                <cstring>_vectorSearch</cstring>
+            </property>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>0</hsizetype>
+                    <vsizetype>0</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
+            <property name="text">
+                <string>S&amp;earch</string>
+            </property>
+            <property name="accel">
+                <string>Alt+E</string>
+            </property>
+            <property name="whatsThis" stdset="0">
+                <string>Appends the '*' wild card to the beginning and end of the search filter to match everything containing the search filter text.</string>
+            </property>
+        </widget>
+        <widget class="QLineEdit" row="0" column="0" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>_vectorReduction</cstring>
+            </property>
+            <property name="toolTip" stdset="0">
+                <string>Search Filter</string>
+            </property>
+            <property name="whatsThis" stdset="0">
+                <string>Search Filter: Fields matching this filter will be highlighted and moved to the top of the Available data list.  '*' and '?' wild cards are supported.</string>
+            </property>
+        </widget>
+        <widget class="VectorListView" row="1" column="0" rowspan="1" colspan="3">
+            <column>
+                <property name="text">
+                    <string>Field/Column</string>
+                </property>
+                <property name="clickable">
+                    <bool>true</bool>
+                </property>
+                <property name="resizable">
+                    <bool>true</bool>
+                </property>
+            </column>
+            <property name="name">
+                <cstring>_vectors</cstring>
+            </property>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>7</hsizetype>
+                    <vsizetype>7</vsizetype>
+                    <horstretch>5</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
+            <property name="resizePolicy">
+                <enum>AutoOneFit</enum>
+            </property>
+            <property name="selectionMode">
+                <enum>Extended</enum>
+            </property>
+            <property name="showSortIndicator">
+                <bool>true</bool>
+            </property>
+            <property name="toolTip" stdset="0">
+                <string>Field selection: Checked fields are plotted.</string>
+            </property>
+            <property name="whatsThis" stdset="0">
+                <string>Available data: This box lists all fields which have not been selected for plotting.  To select a field for plotting, move it to the Selected data list, by dragging it with the mouse, by double clicking, or by highlighting it, and clicking on the select button (Right Arrow - accelerator is Alt-s).</string>
+            </property>
+        </widget>
+    </grid>
+</widget>
+<customwidgets>
+</customwidgets>
+<layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>qheader.h</includehint>
+    <includehint>qlistview.h</includehint>
+    <includehint>vectorlistview.h</includehint>
+</includehints>
+<includes>
+    <include location="global" impldecl="in declaration">qheader.h</include>
+    <include location="global" impldecl="in declaration">qlistview.h</include>
+    <include location="global" impldecl="in declaration">vectorlistview.h</include>
+</includes>
+</UI>

@@ -1,0 +1,17 @@
+#libgetdata/libdirfile checks
+GETDATA_LIBS="-lgetdata -lm"
+AC_SUBST(GETDATA_LIBS)
+have_external_getdata="yes"
+PKG_CHECK_MODULES([GETDATA], [getdata >= 0.4.2],,[AC_MSG_RESULT([no])
+have_external_getdata="no"])
+KDE_CHECK_HEADER(getdata.h, ,[have_external_getdata="no"] )
+KDE_CHECK_LIB(getdata, dirfile_open, ,[have_external_getdata="no"], -lm )
+KDE_CHECK_LIB(getdata, GetData, ,[have_external_getdata="no"], -lm )
+AM_CONDITIONAL(NO_EXTERNAL_GETDATA, test "x$have_external_getdata" = "xno")
+if test "x$have_external_getdata" = "xyes"
+then
+AC_DEFINE([HAVE_EXTERNAL_GETDATA], [], [ Define if you have an external libgetdata ])
+else
+GETDATA_LIBS=
+GETDATA_CFLAGS=
+fi

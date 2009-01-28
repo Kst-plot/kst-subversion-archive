@@ -1,0 +1,92 @@
+Classes to be bound or created in JS:
+
+Kst             General Kst object (static global) - effectively "document"
+Debug           DONE
+Vector          DONE
+DataVector      DONE
+Scalar          DONE
+String          DONE
+DataSource      DONE
+Point           DONE
+Size            DONE
+Document        DONE
+Matrix          DONE
+DataMatrix      DONE
+
+Equation        DONE
+PowerSpectrum   DONE
+Spectrogram     DONE
+Fit
+Filter
+Plugin
+Histogram       DONE
+Curve           DONE
+Image           DONE
+Window          DONE
+
+PlotLabel       DONE
+PlotLegend      DONE
+ViewObject      DONE
+   Plot         DONE
+   Box          DONE
+   Ellipse      DONE
+   Picture      DONE
+   Line         DONE
+   Label        DONE
+   Arrow        DONE
+   Group        DONE
+
+ELOG            DONE
+
+KstUIMerge
+	- Global object used to load XMLUI files for merging.
+	KstJSUIBuilder loadGUI(string filename);
+		Load an XMLUI file for merging with Kst's GUI.
+		@param filename The filename of the .rc file to load
+		@returns KstJSUIBuilder with the XMLUI loaded and ready to
+			merge.
+KstJSUIBuilder
+	- Object containing an action collection and XMLUI ready for merging.
+	KActionCollection actionCollection();
+		Obtain a reference to the action collection for creating new
+		actions.
+		@returns KActionCollection for storing newly created actions to
+			be merged with Kst's GUI.
+	void merge();
+		Merge the action collection with Kst's GUI according to the
+		rules of the loaded XMLUI file.  Must be called after all
+		actions are created as a part of the actionCollection().
+KActionCollection
+	- See C++ documentation for KActionCollection.  Simply a list of
+	actions.
+
+
+
+Consistency
+-----------
+
+In all cases it is a priority to implement bindings so that they are consistent
+across all objects.  For instance, if one class uses .xVector, another class
+should not use .xV or .XVector or .vectors.x
+______________________________________________________________________________
+
+General Completion:
+- more verbose error messages (ie: which argument is wrong, and why)
+- input and output map for data objects
+- events and possibility to define event handlers
+- collection class is read-only presently - make read-write
+
+Would be nice:
+- save and load state
+- object browser GUI
+- multiple interpreters?
+- dump list of loaded files
+- many bindings lack good [or any] bindings (ComboBox, list{view,box}, etc)
+- string comparisons are too slow - at least use ustring
+
+Docs:
+- Add examples with an example node
+
+1.2.0 issues:
+- Curves are stale in concept - split them?
+- Make .position and .size directly manipulable?

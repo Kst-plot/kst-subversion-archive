@@ -1,0 +1,15 @@
+[Desktop Entry]
+Encoding=UTF-8
+Type=Service
+ServiceTypes=Kst Data Object
+X-KDE-ModuleType=Plugin
+X-KDE-Library=kstobject_trim
+X-Kst-Plugin-Author=Luis Mendes
+Name=Trim
+Name[et]=Kärpimine
+Name[it]=Spunta
+Name[sv]=Beskär
+Comment=Removes leading elements from a vector.
+Comment[et]=Juhtelementide eemaldamine vektorist.
+Comment[it]=Rimuovi gli elementi portanti da un vettore.
+Comment[sv]=Tar bort inledande element från en vektor.

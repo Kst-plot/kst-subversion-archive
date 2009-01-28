@@ -1,0 +1,9 @@
+&digikam; handbook TODO list for 0.9.2 release
+--------------------------------------------
+
+- Red eye plugin
+- Better descriptions of all startup operations (scan pictures) 
+- Updated image plugins dialog templates.
+
+Gimp script to prepare screenshots for docbook:
+Gimp : ftp://digikam3rdparty@ftpperso.free.fr/Tools/kde-screenshot-dropshadow.scm

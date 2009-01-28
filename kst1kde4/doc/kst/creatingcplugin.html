@@ -1,0 +1,170 @@
+<html><head><title>Creating a “C” Plugin</title><link rel="stylesheet" href="help:/common/kde-default.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets V1.67.2"><meta name="keywords" content="KDE, kdeextragear, kdeextragear-2, Kst, plotting, plot"><link rel="start" href="index.html" title="The Kst Handbook"><link rel="up" href="creatingplugins.html" title="Appendix B. Creating Additional Plugins"><link rel="prev" href="creatingdataobjectplugin.html" title="Creating a Data Object Plugin"><link rel="next" href="creatinglinearfittingplugins.html" title="Creating Linear Fit Plugins"><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta name="GENERATOR" content="KDE XSL Stylesheet V1.13 using libxslt"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div style="background-image: url(help:/common/top-middle.png); width: 100%; height: 131px;"><div style="position: absolute;                      right: 0px;"><img src="help:/common/top-right-konqueror.png" style="margin: 0px" alt=""></div><div style="position: absolute;                         top: 25px;                          right: 100px;                          text-align: right;                          font-size: xx-large;                          font-weight: bold;                          text-shadow: #fff 0px 0px 5px;                          color: #444">Creating a “<span class="quote">C</span>” Plugin</div></div><div style="margin-top: 20px; background-color: #white;                        color: black;                       margin-left: 20px;                        margin-right: 20px;"><div style="position: absolute;                          left: 20px;"><a accesskey="p" href="creatingdataobjectplugin.html">Prev</a></div><div style="position: absolute;                          right: 20px;"><a accesskey="n" href="creatinglinearfittingplugins.html">Next</a></div><div class="navCenter">Creating Additional Plugins</div></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="creatingcplugin"></a>Creating a “<span class="quote">C</span>” Plugin</h2></div></div></div><p>
+A <span class="application">Kst</span> plugin consists of two files — an XML file and a shared object file.
+</p><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="creatingcpluginxmlfile"></a>The XML File</h3></div></div></div><p>
+The XML file provide information about the plugin and describes its
+inputs and outputs.  The following is an example of an XML
+file for a <span class="application">Kst</span> plugin:
+</p><div class="informalexample"><pre class="screen">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE Module SYSTEM "file:/Repository/Level2/Soft/ProC/moduledef.dtd"&gt;
+
+&lt;module&gt;
+
+&lt;intro&gt;
+&lt;modulename name="testplugin"/&gt;    &lt;!-- The name of the module --&gt;
+&lt;author name="Rick Chern"/&gt; &lt;!-- The name of the author --&gt;
+&lt;description text="A test plugin for me"/&gt; &lt;!-- A description of the module --&gt;
+&lt;version minor="1" major="0"/&gt;  &lt;!-- The version number of the module --&gt;
+&lt;state devstate="release"/&gt;     &lt;!-- The development state of the module (optional)--&gt;
+&lt;/intro&gt;
+
+&lt;interface&gt;
+
+&lt;!--inputs here--&gt;
+&lt;input&gt;
+&lt;table type="float" name="Input Vector 1" descr="The first input vector" /&gt;
+&lt;/input&gt;
+
+&lt;input&gt;
+&lt;float name="Input Scalar 1" descr="The first input scalar" /&gt;
+&lt;/input&gt;
+
+&lt;!--outputs here--&gt;
+&lt;output&gt;
+&lt;table type="float" name="Output Vector 1" descr="The first output vector" /&gt;
+&lt;/output&gt;
+
+&lt;output&gt;
+&lt;float name="Output Scalar 1" descr="The first output scalar" /&gt;
+&lt;/output&gt;
+
+&lt;/interface&gt;
+
+&lt;/module&gt;
+</pre></div><p>
+Generally, you can use the example above as a template and modify sections to fit your needs.
+As can be seen from the example, the XML file consists of one <code class="literal">module</code>
+node.  The <code class="literal">module</code> node has an <code class="literal">intro</code> node and an
+<code class="literal">interface</code> node.  You should modify the <code class="literal">intro</code> node
+appropriately using the comments in the above XML file as guides.  It is important that
+<code class="literal">modulename</code> has the <code class="literal">name</code> attribute set to the same name
+that your shared object file will use.
+</p><p>
+The <code class="literal">interface</code> node describes the actual inputs and outputs of the plugin.
+Each input is described by an <code class="literal">input</code> node, and each output is described
+by an <code class="literal">output</code> node.  Each input or output should have either a
+<code class="literal">table</code> or a <code class="literal">float</code> node as a child.  The <code class="literal">type</code>
+attribute of a <code class="literal">table</code> must be set to <code class="literal">"float"</code>.
+Note that the order of the inputs and outputs matters — the order is used to determine
+the index values for each input and output array of the object file, and is the same order
+used to display the input and output fields in the <span class="application">Kst</span> plugin interface.
+</p><p>
+Once you have completed the XML file, save it as <code class="filename"><span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="replaceable"><em class="replaceable"><code>[modulename]</code></em></span>.xml</code>, where
+<span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="replaceable"><em class="replaceable"><code>[modulename]</code></em></span> is the value of the <code class="literal">name</code> attribute
+of the <code class="literal">modulename</code> node.
+</p></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="creatingbasicpluginobjectfile"></a>The Shared Object File</h3></div></div></div><p>
+The shared object file contains the actual functionality of the plugin.  In other words,
+it determines how to derive the outputs from the given inputs.  The following are the
+requirements for the shared object file:
+</p><div class="itemizedlist"><ul type="disc"><li><p>
+The object must export the following C linkage symbol:
+<div class="literallayout"><p><span style="white-space: pre;"><code class="function"><span class="returnvalue">int</span> symbol(const double *const <span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="parameter"><em class="parameter"><code>inArrays[]</code></em></span>,
+           const int <span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="parameter"><em class="parameter"><code>inArrayLens[]</code></em></span>,
+           const double <span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="parameter"><em class="parameter"><code>inScalars[]</code></em></span>,
+           double *<span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="parameter"><em class="parameter"><code>outArrays[]</code></em></span>,
+           int <span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="parameter"><em class="parameter"><code>outArrayLens[]</code></em></span>,
+           double <span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="parameter"><em class="parameter"><code>outScalars[]</code></em></span>)</code></span></p></div>
+</p><p>
+where <span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="replaceable"><em class="replaceable"><code>symbol</code></em></span> must be the value of the <code class="literal">name</code> attribute
+of the <code class="literal">modulename</code> node in the XML file.  This is the only
+function that will be called by <span class="application">Kst</span> (although you may have other functions).
+The following describes each argument of this function:
+</p><div class="variablelist"><dl><dt><span class="term"><code class="varname">const double *const inArrays[]</code></span></dt><dd><p>
+The array of input arrays.  Each input array corresponds to an input vector.
+The arrays are in the same order as the vectors are listed in the XML file, so
+<code class="literal">inArrays[0]</code> is the array representing the first input vector,
+<code class="literal">inArrays[1]</code> is the array representing the second input vector,
+and so on.
+</p></dd><dt><span class="term"><code class="varname">const int inArraysLens[]</code></span></dt><dd><p>
+The array containing array lengths for each input array.  The lengths are stored
+in the same order as the arrays in <code class="literal">inArrays[]</code> (e.g.
+<code class="literal">inArrayLens[0]</code> is the length of <code class="literal">inArrays[0]</code>).
+</p></dd><dt><span class="term"><code class="varname">const double inScalars[]</code></span></dt><dd><p>
+The array of input scalars.  The scalars are stored in the same order as they
+are listed in the XML file.
+</p></dd><dt><span class="term"><code class="varname">double *outArrays[]</code></span></dt><dd><p>
+The array of output arrays.  Each output array corresponds to an output vector,
+and the arrays should be in the same order as the output vectors are listed in the
+XML file.
+</p></dd><dt><span class="term"><code class="varname">int outArrayLens[]</code></span></dt><dd><p>
+The array that should contain lengths of the output arrays.  The lengths should be
+stored in the same order as the arrays in <code class="literal">outArrays[]</code>.
+</p></dd><dt><span class="term"><code class="varname">double outScalars[]</code></span></dt><dd><p>
+The array of output scalars.  The scalars should be in the same order they are
+listed in the XML file.
+</p></dd></dl></div></li><li><p>
+The function must return <code class="literal">0</code> if it executed succesfully, and
+<code class="literal">-1</code> otherwise.
+</p></li><li><p>
+The code for the object file must handle unexpected inputs, such as empty input arrays
+(in most cases a return value of <code class="literal">-1</code> would be sufficient when such
+situations are encountered).
+</p></li><li><p>
+The number and type of outputs must be exactly as specified by the XML file.
+</p></li><li><p>
+You will probably need to resize the arrays in <code class="varname">outArrays[]</code>.
+To do so, use the <code class="function">realloc()</code> function.  E.g.,
+</p><div class="informalexample"><pre class="screen">
+outArrays[0]=(double*)realloc(outArrays[0], 5*sizeof(double));
+</pre></div><p>
+will allocate space for 5 doubles for <code class="varname">outArrays[0]</code>.  Do not
+use any memory allocator other than <code class="function">realloc()</code>.
+</p></li><li><p>
+The input arguments must remain constant.  Do not cast them to non-constant types.
+</p></li></ul></div><p>
+The following is an example of the shared object file source code for a simple
+plugin:
+</p><div class="informalexample"><pre class="screen">
+#include &lt;stdlib.h&gt;
+
+extern "C" int testplugin(const double *const inArrays[], const int inArrayLens[],
+                const double is[],
+                double *outArrays[], int outArrayLens[],
+                double outScalars[]);
+
+int testplugin(const double *const inArrays[], const int inArrayLens[],
+                const double is[],
+                double *outArrays[], int outArrayLens[],
+                double outScalars[])
+
+//Accept 1 vector and 1 scalar. Multiply all elements of the vector by the
+//scalar, and output the resulting vector. Also output the original scalar.
+{
+	//Set the outputs
+	outArrayLens[0]=inArrayLens[0];
+
+	//resize the output arrays
+	outArrays[0]=(double*)realloc(outArrays[0], inArrayLens[0]*sizeof(double));
+
+	//multiply each element of the input vector
+	//by the scalar
+	for (int i=0; i&lt;inArrayLens[0]; i++)
+	{
+		outArrays[0][i]=inArrays[0][i] * is[0];
+	}
+
+	//now set the output scalar
+	outScalars[0]=is[0];
+
+	return 0;
+}
+</pre></div></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="compilingplugin"></a>Compiling the Plugin</h3></div></div></div><p>
+If you are using <span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="command"><span><strong class="command">gcc</strong></span></span> to compile your plugin, simply compile the object file:
+<pre class="screen"><strong class="userinput"><code><span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="command"><span><strong class="command">cc -Wall -c -o myplugin.o myplugin.c -fPIC -DPIC</strong></span></span></code></strong></pre>
+</p><p>and then create the shared library:
+<pre class="screen"><strong class="userinput"><code><span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="command"><span><strong class="command">ld -o myplugin.so -shared myplugin.o</strong></span></span></code></strong></pre>
+</p><p>
+The resulting <code class="filename">*.so</code> file and <code class="filename">*.xml</code> file must be put in the same
+directory.  When you use <span class="application">Kst</span>'s Plugin Manager to load the XML file, it will automatically look for the
+shared object file in the same directory.
+</p></div></div><div style="background-color: #white; color: black;                  margin-top: 20px; margin-left: 20px;                  margin-right: 20px;"><div style="position: absolute; left: 20px;"><a accesskey="p" href="creatingdataobjectplugin.html">Prev</a></div><div style="position: absolute; right: 20px;"><a accesskey="n" href="creatinglinearfittingplugins.html">Next</a></div><div align="center"><a accesskey="h" href="index.html">Home</a></div></div><div style="background-color: #white;   color: black;         margin-left: 20px;   margin-right: 20px;"><div class="navLeft">Creating a Data Object Plugin </div><div class="navRight"> Creating Linear Fit Plugins</div><div class="navCenter"><a accesskey="u" href="creatingplugins.html">Up</a></div></div><br><br><div class="bannerBottom" style="background-image: url(help:/common/bottom-middle.png);                                        background-repeat: x-repeat;                                         width: 100%;                                         height: 100px;                                         bottom:0px;"><div class="BannerBottomRight"><img src="help:/common/bottom-right.png" style="margin: 0px" alt=""></div><div class="bannerBottomLeft"><img src="help:/common/bottom-left.png" style="margin: 0px;" alt=""></div><div id="comments" style="position:relative; top: 5px; left: 1em; height:85px; width: 50%; color: #cfe1f6"><p>Would you like to make a comment or contribute an update to this page?<br>
+        Send feedback to the <a href="mailto:kde-docs@kdemail.net" style="background:transparent; color:#cfe1f6; text-decoration: underline;">KDE Docs Team</a></p></div></div></body></html>

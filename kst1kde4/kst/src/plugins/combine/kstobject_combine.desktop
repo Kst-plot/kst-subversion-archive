@@ -1,0 +1,16 @@
+[Desktop Entry]
+Encoding=UTF-8
+Type=Service
+ServiceTypes=Kst Data Object
+X-KDE-ModuleType=Plugin
+X-KDE-Library=kstobject_combine
+X-Kst-Plugin-Author=Andrew Walker
+Name=Combine
+Name[et]=Kombineerimine
+Name[it]=Combina
+Name[sv]=Kombinera
+Comment=Combines two data sets into a single data set.
+Comment[et]=Kahe andmekogumi kombineerimine üheks.
+Comment[it]=Combina due set di dati in un solo set di dati.
+Comment[sv]=Kombinerar två datamängder till en enda datamängd.
+

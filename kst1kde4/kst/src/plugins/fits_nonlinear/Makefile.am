@@ -1,0 +1,5 @@
+if include_muparser_dependencies
+GENERAL_SUBDIR=general_levenberg_marquardt
+endif
+
+SUBDIRS=gaussian gaussian_weighted lorentzian lorentzian_weighted exponential exponential_weighted $(GENERAL_SUBDIR)

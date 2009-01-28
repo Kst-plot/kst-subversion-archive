@@ -1,0 +1,415 @@
+<appendix id="equation-expressions">
+<title>Equation Expressions in Kst</title>
+<para>
+Kst equations are expressed in terms of <emphasis>built in operators, functions, constants</emphasis>, scalars and vectors in the current Kst session.
+</para>
+
+<para>Some rules should be noticed when you enter equation expressions in either UI textbox or KstScript:</para>
+
+<itemizedlist>
+
+<listitem><para>
+Vector names must be included in square brackets like this: [<replaceable>VectorName</replaceable>].
+</para></listitem>
+
+<listitem><para>
+Scalar names should also be included in square brackets: [<replaceable>ScalarName</replaceable>]
+</para></listitem>
+
+<listitem><para>
+Numbers don't need to be included in square brackets. PI and e should be counted as numbers, and all other built-in constants listed in <link linkend="constants">table G.2</link> are scalars. i.e. you should include them in square brackets.
+</para></listitem>
+
+<listitem><para>
+Values in scientific notation must be entered in the form: <replaceable>m</replaceable>E<replaceable>x</replaceable> or <replaceable>m</replaceable>e<replaceable>x</replaceable>, where <replaceable>m</replaceable> is the mantissa and <replaceable>x</replaceable> is the exponent. 
+</para>
+<para>For example, one way to enter the value 15000 in scientific notation is <userinput>1.5E4</userinput>.
+</para></listitem>
+
+</itemizedlist>
+
+
+
+<para>
+The following is a list of all built-in <emphasis>operators, functions and constants</emphasis> used to express Equations in Kst.
+</para>
+
+<sect1 id="operators">
+<title>Operators</title>
+<sect2>
+<title>Arithmetic Operators</title>
+<variablelist>
+
+<varlistentry id="addition">
+<term>+</term>
+<listitem><para>
+Addition operator
+</para></listitem>
+</varlistentry>
+
+<varlistentry id="minus">
+<term>-</term>
+<listitem><para>
+Subtraction operator
+</para></listitem>
+</varlistentry>
+
+<varlistentry id="mulitply">
+<term>*</term>
+<listitem><para>
+Multiplication operator
+</para></listitem>
+</varlistentry>
+
+<varlistentry id="divide">
+<term>/</term>
+<listitem><para>
+Division operator
+</para></listitem>
+</varlistentry>
+
+<varlistentry id="modulo">
+<term>&#037;</term>
+<listitem><para>
+Reminder operator
+</para></listitem>
+</varlistentry>
+
+<varlistentry id="exponets">
+<term>^</term>
+<listitem><para>
+Raise to power operator
+</para></listitem>
+</varlistentry>
+</variablelist>
+</sect2>
+
+<sect2 id="logical-operators">
+<title>Logical and Relational Operators</title>
+<para>
+Logical operators are used to evaluate expressions to true(1) or false(0) value. In &kst;, 0 is false, and all other numbers represent true value.
+</para>
+<variablelist>
+<varlistentry id="bitwise-and">
+<term>&#038;</term>
+<listitem><para>
+Bitwise And operator
+
+</para>
+<para>
+It compares the corresponding bits of two operands in their binary representation of equal length. If both values of the pair are 1, the resulting bit value is 1, 0 otherwise.
+</para></listitem>
+</varlistentry>
+
+<varlistentry id="bitwise-or">
+<term>|</term>
+<listitem>
+<para>
+Bitwise Or operators. 
+</para>
+<para>
+It compares the corresponding bits of two numbers in their binary representation of equal length. If both values of the pair are 0, the resulting bit is 0, 1 otherwise. 
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry id="logical-operator-and">
+<term>&#038;&#038;</term>
+<listitem>
+<para>
+Logical operator And. </para>
+<para>It takes two numbers as boolean variables, and results 1 (true) if both operands are non-zero, 0 (false) otherwise.  See an example below.
+</para>
+<para>
+<informaltable id="example-of-logical-and">
+<tgroup cols="2">
+
+<thead>
+<row>
+<entry>Expression</entry>
+<entry>Results</entry>
+</row>
+</thead>
+
+<tbody>
+
+<row>
+<entry>1 &#038;&#038; 3</entry>
+<entry>1</entry>
+</row>
+
+<row>
+<entry>3 &#038;&#038; 0</entry>
+<entry>0</entry>
+</row>
+</tbody>
+
+</tgroup>
+</informaltable>
+
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry id="logical-or">
+<term>||</term>
+<listitem>
+<para>
+Logical Or operators
+</para>
+<para>
+It takes two operands and results 0 (false) if both operands are 0, 1 (true) otherwise. See an example below
+</para>
+<informaltable id="logical-or-example">
+
+<tgroup cols="2">
+
+<thead>
+<row>
+<entry>Expression</entry>
+<entry>Results</entry>
+</row>
+</thead>
+
+<tbody>
+
+<row>
+<entry>2 || 0</entry>
+<entry>1</entry>
+</row>
+
+<row>
+<entry>2 || 1</entry>
+<entry>1</entry>
+</row>
+
+<row>
+<entry>0 || 0</entry>
+<entry>0</entry>
+</row>
+</tbody>
+
+</tgroup>
+</informaltable>
+
+
+</listitem>
+</varlistentry>
+
+<varlistentry id="logical-not">
+<term>!</term>
+<listitem><para>
+Logical not 
+</para></listitem>
+</varlistentry>
+
+<varlistentry id="less-than">
+<term>&#060;</term>
+<listitem><para>
+ Less than
+</para></listitem>
+</varlistentry>
+
+<varlistentry id="less-than-and-equal">
+<term>&#060;=</term>
+<listitem><para>
+Less than and equal to
+</para></listitem>
+</varlistentry>
+
+<varlistentry id="equal">
+<term>==</term>
+<listitem><para>
+Equal to
+</para></listitem>
+</varlistentry>
+
+<varlistentry id="greater-than">
+<term>&#062;</term>
+<listitem><para>
+Greater than 
+</para></listitem>
+</varlistentry>
+
+<varlistentry id="greater-than-and-equal">
+<term>&#062;=</term>
+<listitem><para>
+Greater than and equal to
+</para></listitem>
+</varlistentry>
+
+<varlistentry id="not-equal">
+<term>
+!=
+</term>
+<listitem><para>
+Not equal to 
+</para></listitem>
+</varlistentry>
+
+</variablelist>
+</sect2>
+</sect1>
+
+<sect1 id="functions">
+<title>Built-in Functions</title>
+<para>
+<table id="Kst-built-in-function">
+<title>Kst Built-in Function</title>
+<tgroup cols="2">
+
+<thead>
+<row>
+<entry>Function</entry>
+<entry>Description</entry>
+</row>
+</thead>
+
+<tbody>
+
+
+<row>
+<entry>ABS()</entry>
+<entry>returns the absolute value of the argument</entry>
+</row>
+
+<row>
+<entry>SQRT()</entry>
+<entry>returns the square root value of the argument</entry>
+</row>
+
+<row>
+<entry>CBRT()</entry>
+<entry>returns the cubic root value of the argument</entry>
+</row>
+
+<row>
+<entry>SIN()</entry>
+<entry> sine function</entry>
+</row>
+
+<row>
+<entry>COS()</entry>
+<entry> cosine function</entry>
+</row>
+
+<row>
+<entry>TAN()</entry>
+<entry> tangent function</entry>
+</row>
+
+<row>
+<entry>ASIN()</entry>
+<entry> acrsine function</entry>
+</row>
+
+<row>
+<entry>ACOS()</entry>
+<entry> arccosin function</entry>
+</row>
+
+<row>
+<entry>ATAN()</entry>
+<entry> arctangent function</entry>
+</row>
+
+<row>
+<entry>SEC()</entry>
+<entry> secant function</entry>
+</row>
+
+<row>
+<entry>CSC()</entry>
+<entry> cosecant function</entry>
+</row>
+
+<row>
+<entry>COT()</entry>
+<entry>cotangent function</entry>
+</row>
+
+<row>
+<entry>SINH()</entry>
+<entry> hyperbolic sine function</entry>
+</row>
+
+<row>
+<entry>COSH()</entry>
+<entry> hyperbolic cosine function</entry>
+</row>
+
+<row>
+<entry>TANH()</entry>
+<entry> hyperbolic tangent function</entry>
+</row>
+
+<row>
+<entry>EXP()</entry>
+<entry> exponential function </entry>
+</row>
+
+<row>
+<entry>LN()</entry>
+<entry> natural logarithmic function </entry>
+</row>
+
+<row>
+<entry>LOG()</entry>
+<entry>base 10 logarithmic function</entry>
+</row>
+</tbody>
+
+</tgroup>
+</table>
+
+</para>
+</sect1>
+
+<sect1 id="constants">
+<title>Built-in Constants</title>
+<table id="kst-built-in-const">
+<title>Kst Built-in Constants</title>
+<tgroup cols="3">
+
+<thead>
+<row>
+<entry>Name</entry>
+<entry>Value</entry>
+<entry>Description</entry>
+</row>
+</thead>
+
+<tbody>
+
+<row>
+<entry>PI or C_PI or CONST_PI</entry>
+<entry>3.14159</entry>
+<entry></entry>
+</row>
+
+<row>
+<entry>e</entry>
+<entry>2.71282</entry>
+<entry></entry>
+</row>
+
+<row>
+<entry>C_D2R</entry>
+<entry>0.0174533</entry>
+<entry>1 deg = 0.0174533 rad; conversion factor for degrees to radians</entry>
+</row>
+
+<row>
+<entry>C_R2D</entry>
+<entry>57.2958</entry>
+<entry>1 rad = 57.2958 deg; conversion factor for radians to degrees</entry>
+</row>
+</tbody>
+
+</tgroup>
+</table>
+
+
+</sect1>
+
+</appendix>

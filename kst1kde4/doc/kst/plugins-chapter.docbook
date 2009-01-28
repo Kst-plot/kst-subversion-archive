@@ -1,0 +1,3313 @@
+<chapter id="plugins">
+<title>Plugins, Fits, and Filters</title>
+
+<sect1 id="plugins-managing">
+<title>Managing Plugins</title>
+<para>
+Plugins provide added functionality to &kst;.  By default, &kst; comes packaged with an
+extensive selection of built-in plugins.  In addition, a simple <link linkend="creatingplugins">plugin API</link> allows for easy creation of third-party plugins.
+</para>
+
+<para>
+&kst; plugins are usually comprised of an object file and a .desktop file. For plugins which are available system-wide the object and .desktop files should be stored in <filename>/usr/lib/kde3/</filename> and <filename>/usr/share/services/kst/</filename> respectively (this may vary depending on how your system is configured).
+<!--FIXME: where should user specific plugins be under the new scheme?-->
+</para>
+</sect1>
+
+<sect1 id="plugins-builtindescriptions">
+<title>Built-in Plugins</title>
+
+<sect2 id="plugins-overview">
+<title>Overview</title>
+<para>
+ Kst plugins are powerful tools which can perform a lot of tasks, such as data fitting, interpolation, statistics, and signal processing including periodogram, correlations, convolution and filters, etc. There are over 25 built-in plugins available in &kst; currently.
+</para>
+</sect2>
+
+<sect2 id="plugins-use">
+<title>Using Built-in Plugins</title>
+<para>
+All plugins can be created from <menuchoice><guimenu>Data</guimenu><guimenuitem>New Plugins...</guimenuitem></menuchoice> or from the Data Manager, and all data objects resulting from plugins can be seen in the Data Manager. 
+</para>
+
+<para>
+To quickly apply fit or filter plugins to a set of data, you can right click on the data plot under any mouse modes, and choose the <guisubmenu>Fit</guisubmenu> or <guisubmenu>Filter</guisubmenu> submenu in the context menu. 
+</para>
+<para>
+The following sections describe the purpose, key algorithms or formulae used to perform calculations,
+and inputs and outputs for each plugin.
+</para>
+</sect2>
+</sect1>
+
+
+<sect1 id="plugins-fit">
+<title>Fit Plugins</title>
+<para>Kst provides lots of algorithms to perform data fitting. All fitting plugins output a vector of best fitted parameters, covariances, and Chi^2/Nu. These values can be seen by selecting the <menuchoice><guimenu>Data</guimenu><guimenuitem>View Fit Results</guimenuitem></menuchoice>
+</para>
+
+<sect2 id="plugins-kstfit-non-linear">
+<title>Fit any non-linear function</title>
+<para>
+This plugin is used to fit a set of data using the Levenberg-Marquardt algorithm.
+</para>
+
+<screenshot>
+<screeninfo>non-linear fit</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-plugins-fitnonlinear.png" format="PNG" />
+</imageobject>
+<textobject>
+<phrase>non-linear fit</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<sect3 id="plugins-kstfit_non_linear-inputs">
+<title>Inputs</title>
+<variablelist>
+
+<varlistentry>
+<term><guilabel>X Array</guilabel> (vector)</term>
+<listitem><para>
+The x array of the input data set
+</para></listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Y Array</guilabel> (vector)</term>
+<listitem><para>
+The y array of the input data set
+</para></listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Formula y= </guilabel>(string)</term>
+<listitem><para>
+The formula of the curve used to fit the data set
+</para>
+<para>
+The default string is <userinput>a*x^3 + b*x^2 - c*x +d</userinput>
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Parameters</guilabel> (string)</term>
+<listitem><para>
+Use a string to specify the parameter representation letters in the fitting formula. The plugin will later output the fitted values for these parameters.
+</para>
+<para>The default string is <userinput>a, b, c, d</userinput> corresponding to the default formula string.</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Init values</guilabel> (string)</term>
+<listitem><para>
+Use a string to specify the initial guess
+</para>
+<para>
+The default string is <userinput>1, 1, 1, 1</userinput>
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Tolerance</guilabel> (scalar)</term>
+<listitem><para>
+Tolerance is a number to indicate the precision of fitting; if the precision reaches the tolerance value, the curve fitting will stop. 
+</para>
+<para>
+The default tolerance is <userinput>1e-4</userinput>.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Max iterations</guilabel> (scalar)</term>
+<listitem>
+<para>
+ Specify the maximum number of iterations to indicate when the curve fitting should stop.
+</para>
+<para>
+The default max iterations is <userinput>2</userinput>.
+</para>
+</listitem>
+</varlistentry>
+
+</variablelist>
+
+</sect3>
+
+<sect3 id="plugins-kstfit_non_linear-outputs">
+<title>Outputs</title>
+<variablelist>
+
+<varlistentry>
+<term><guilabel>Y Fitted</guilabel> (vector)</term>
+<listitem><para>
+The Y values of the fitted curve
+</para></listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Residuals</guilabel> (vector)</term>
+<listitem><para>
+The array of residuals
+</para></listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Parameters</guilabel> (vector)</term>
+<listitem><para>
+The best fitted values of the model parameters specified in the inputs.
+</para></listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Covariance</guilabel> (vector)</term>
+<listitem><para>
+The covariance matrix of the model parameters, returned row after row in the vector.
+</para></listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>chi^2/nu</guilabel> (scalar)</term>
+<listitem><para>
+The sum of squares of residuals, divided by the degrees of freedom
+</para></listitem>
+</varlistentry>
+
+</variablelist>
+
+</sect3>
+
+
+
+</sect2>
+
+
+
+<sect2 id="plugins-kstfit_exponential_weighted">
+<title>Fit exponential weighted</title>
+<para>
+The Fit exponential weighted plugin performs a weighted non-linear least-squares fit
+to an exponential model
+</para>
+<para>
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="Formula-kst-exponentialfitequation.png" format="PNG"/>
+</imageobject>
+</inlinemediaobject>
+</para>
+
+
+<para>
+An initial estimate of
+<literal>a=1.0</literal>,
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="Symbol-kst-lambda.png" format="PNG"/>
+</imageobject>
+</inlinemediaobject><literal>=0</literal>, and
+<literal>b=0</literal> is used. The plugin subsequently iterates to the solution
+until a precision of <literal>1.0e-4</literal> is reached or 500 iterations have been performed.
+</para>
+
+<screenshot>
+<screeninfo>Plugins - Fit exponential weighted</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-plugins-fitexponential.png" format="PNG" />
+</imageobject>
+</mediaobject>
+</screenshot> 
+
+<sect3 id="plugins-kstfit_exponential_weighted-inputs">
+<title>Inputs</title>
+
+<variablelist>
+
+<varlistentry>
+<term><guilabel>X Array</guilabel> (vector)</term>
+<listitem>
+<para>
+The array of x values for the data points to be fitted.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Y Array</guilabel> (vector)</term>
+<listitem>
+<para>
+The array of y values for the data points to be fitted.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Weights Array</guilabel> (vector)</term>
+<listitem>
+<para>
+The array of weights to use for the fit.
+</para>
+</listitem>
+</varlistentry>
+</variablelist>
+</sect3>
+
+<sect3 id="plugins-kstfit_exponential_weighted-outputs">
+<title>Outputs</title>
+
+<variablelist>
+
+<varlistentry>
+<term><guilabel>Y Fitted</guilabel> (vector)</term>
+<listitem>
+<para>
+The array of fitted y values.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Residuals</guilabel> (vector)</term>
+<listitem>
+<para>
+The array of residuals.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Parameters</guilabel> (vector)</term>
+<listitem>
+<para>
+The best fit parameters <literal>a</literal>,
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="Symbol-kst-lambda.png" format="PNG"/>
+</imageobject>
+</inlinemediaobject>, and
+<literal>b</literal>.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Covariance</guilabel> (vector)</term>
+<listitem>
+<para>
+The covariance matrix of the model parameters, returned row after row in the vector.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>chi^2/nu</guilabel> (scalar)</term>
+<listitem>
+<para>
+The weighted sum of squares of the residuals, divided by the degrees of freedom.
+</para>
+</listitem>
+</varlistentry>
+
+</variablelist>
+</sect3>
+
+</sect2>
+
+
+
+<sect2 id="plugins-kstfit_exponential_unweighted">
+<title>Fit exponential</title>
+<para>
+The Fit exponential plugin is identical in function to the
+<link linkend="plugins-kstfit_exponential_weighted">Fit exponential weighted</link>
+plugin with the exception that the weight value <literal>w<subscript>i</subscript></literal>
+is equal to <literal>1</literal> for all index values <literal>i</literal>. As a result, the
+Weights (vector) input does not exist.
+</para>
+</sect2>
+
+<sect2 id="plugins-kstfit_gaussian_weighted">
+<title>Fit Gaussian weighted</title>
+<para>
+The Fit Gaussian weighted plugin performs a weighted non-linear least-squares fit
+to a Gaussian model:
+</para>
+<para>
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="Formula-kst-gaussianfitequation.png" format="PNG"/>
+</imageobject>
+</inlinemediaobject>
+</para>
+
+<para>
+An initial estimate of
+<literal>a=</literal>(maximum of the y values),
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="Symbol-kst-mu.png" format="PNG"/>
+</imageobject>
+</inlinemediaobject><literal>=</literal>(mean of the x values), and
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="Symbol-kst-sigma.png" format="PNG"/>
+</imageobject>
+</inlinemediaobject><literal>=</literal>(the midpoint of the x values)
+is used. The plugin subsequently iterates to the solution
+until a precision of <literal>1.0e-4</literal> is reached or 500 iterations have been performed.
+</para>
+
+<screenshot>
+<screeninfo>Plugins - Fit Gaussian</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-plugins-fitgaussian.png" format="PNG" />
+</imageobject>
+</mediaobject>
+</screenshot> 
+
+<sect3 id="plugins-kstfit_gaussian_weighted-inputs">
+<title>Inputs</title>
+
+<variablelist>
+
+<varlistentry>
+<term><guilabel>X Array </guilabel>(vector)</term>
+<listitem>
+<para>
+The array of x values for the data points to be fitted.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Y Array</guilabel> (vector)</term>
+<listitem>
+<para>
+The array of y values for the data points to be fitted.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Weights Array</guilabel> (vector)</term>
+<listitem>
+<para>
+The array of weights to use for the fit.
+</para>
+</listitem>
+</varlistentry>
+</variablelist>
+</sect3>
+
+<sect3 id="plugins-kstfit_gaussian_weighted-outputs">
+<title>Outputs</title>
+
+<variablelist>
+
+<varlistentry>
+<term><guilabel>Y Fitted </guilabel>(vector)</term>
+<listitem>
+<para>
+The array of fitted y values.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Residuals</guilabel> (vector)</term>
+<listitem>
+<para>
+The array of residuals.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Parameters</guilabel> (vector)</term>
+<listitem>
+<para>
+The best fit parameters
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="Symbol-kst-mu.png" format="PNG"/>
+</imageobject>
+</inlinemediaobject>,
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="Symbol-kst-sigma.png" format="PNG"/>
+</imageobject>
+</inlinemediaobject>, and
+<literal>a</literal>.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Covariance</guilabel> (vector)</term>
+<listitem>
+<para>
+The covariance matrix of the model parameters, returned row after row in the vector.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>chi^2/nu</guilabel> (scalar)</term>
+<listitem>
+<para>
+The weighted sum of squares of the residuals, divided by the degrees of freedom.
+</para>
+</listitem>
+</varlistentry>
+
+</variablelist>
+</sect3>
+
+</sect2>
+
+<sect2 id="plugins-kstfit_gaussian_unweighted">
+<title>Fit Gaussian</title>
+<para>
+The Fit Gaussian plugin is identical in function to the
+<link linkend="plugins-kstfit_gaussian_weighted">Fit Gaussian weighted</link>
+plugin with the exception that the weight value <literal>w<subscript>i</subscript></literal>
+is equal to <literal>1</literal> for all index values <literal>i</literal>.  As a result, the
+Weights (vector) input does not exist.
+</para>
+</sect2>
+
+
+
+<sect2 id="plugins-kstfit_gradient_weighted">
+<title>Fit gradient weighted</title>
+<para>
+The gradient weighted plugin performs a weighted least-squares fit to a straight line
+model without a constant term:
+</para>
+<para>
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="Formula-kst-gradientequation.png" format="PNG"/>
+</imageobject>
+</inlinemediaobject>
+</para>
+<para>
+The best-fit is found by minimizing the weighted sum of squared residuals:
+</para>
+<para>
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="Formula-kst-gradientsumofsquares.png" format="PNG"/>
+</imageobject>
+</inlinemediaobject>
+</para>
+<para>
+for <literal>b</literal>,
+where <literal>w<subscript>i</subscript></literal> is the weight at index <literal>i</literal>.
+</para>
+
+<screenshot>
+<screeninfo>Plugins - Fit Gradient</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-plugins-fitgradient.png" format="PNG" />
+</imageobject>
+</mediaobject>
+</screenshot> 
+
+<sect3 id="plugins-kstfit_gradient_weighted-inputs">
+<title>Inputs</title>
+<variablelist>
+
+<varlistentry>
+<term><guilabel>X Array</guilabel> (vector)</term>
+<listitem>
+<para>
+The array of x values for the data points to be fitted.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Y Array</guilabel> (vector)</term>
+<listitem>
+<para>
+The array of y values for the data points to be fitted.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Weights Array</guilabel> (vector)</term>
+<listitem>
+<para>
+The array containing weights to be used for the fit.
+</para>
+</listitem>
+</varlistentry>
+
+</variablelist>
+</sect3>
+
+<sect3 id="plugins-kstfit_gradient_weighted-outputs">
+<title>Outputs</title>
+<variablelist>
+<varlistentry>
+<term><guilabel>Y Fitted</guilabel> (vector)</term>
+<listitem>
+<para>
+The array of y values for the points representing the best-fit line.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Residuals</guilabel> (vector)</term>
+<listitem>
+<para>
+The array of residuals, or differences between the y values of the best-fit line and the y values
+of the data points.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Parameters</guilabel> (vector)</term>
+<listitem>
+<para>
+The parameter <literal>b</literal> of the best-fit.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Covariance</guilabel> (vector)</term>
+<listitem>
+<para>
+The estimated covariance matrix, returned row after row, starting with row 0.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Y Lo</guilabel> (vector)</term>
+<listitem>
+<para>
+The corresponding value in Y Fitted minus the standard deviation of the best-fit function at
+the corresponding x value.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Y Hi</guilabel> (vector)</term>
+<listitem>
+<para>
+The corresponding value in Y Fitted plus the standard deviation of the best-fit function at
+the corresponding x value.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>chi^2/nu</guilabel> (scalar)</term>
+<listitem>
+<para>
+The value of the sum of squares of the residuals, divided by the degrees of freedom.
+</para>
+</listitem>
+</varlistentry>
+
+
+</variablelist>
+</sect3>
+</sect2>
+
+
+<sect2 id="plugins-kstfit_gradient_unweighted">
+<title>Fit gradient</title>
+<para>
+The Fit linear plugin is identical in function to the
+<link linkend="plugins-kstfit_gradient_weighted">Fit gradient weighted</link>
+plugin with the exception that the weight value <literal>w<subscript>i</subscript></literal>
+is equal to <literal>1</literal> for all index values <literal>i</literal>.  As a result, the
+Weights (vector) input does not exist.
+</para>
+</sect2>
+
+
+
+<sect2 id="plugins-kstfit_linear_weighted">
+<title>Fit linear weighted</title>
+<para>
+The Fit linear weighted plugin performs a weighted least-squares fit to a straight line model:
+</para>
+<para>
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="Formula-kst-linefitequation.png" format="PNG"/>
+</imageobject>
+</inlinemediaobject>
+</para>
+<para>
+The best-fit is found by minimizing the weighted sum of squared residuals:
+</para>
+<para>
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="Formula-kst-linefitsumofsquaredresiduals.png" format="PNG"/>
+</imageobject>
+</inlinemediaobject>
+</para>
+<para>
+for <literal>a</literal> and <literal>b</literal>,
+where <literal>w<subscript>i</subscript></literal> is the weight at index <literal>i</literal>.
+</para>
+
+<screenshot>
+<screeninfo>Plugins - Fit linear</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-plugins-fitlinear.png" format="PNG" />
+</imageobject>
+</mediaobject>
+</screenshot> 
+
+<sect3 id="plugins-kstfit_linear_weighted-inputs">
+<title>Inputs</title>
+<variablelist>
+
+<varlistentry>
+<term><guilabel>X Array</guilabel> (vector)</term>
+<listitem>
+<para>
+The array of x values for the data points to be fitted.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Y Array</guilabel> (vector)</term>
+<listitem>
+<para>
+The array of y values for the data points to be fitted.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Weights Array</guilabel> (vector)</term>
+<listitem>
+<para>
+The array containing weights to be used for the fit.
+</para>
+</listitem>
+</varlistentry>
+
+</variablelist>
+</sect3>
+
+<sect3 id="plugins-kstfit_linear_weighted-outputs">
+<title>Outputs</title>
+<variablelist>
+
+<varlistentry>
+<term><guilabel>Y Fitted</guilabel> (vector)</term>
+<listitem>
+<para>
+The array of y values for the points representing the best-fit line.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Residuals</guilabel> (vector)</term>
+<listitem>
+<para>
+The array of residuals, or differences between the y values of the best-fit line and the y values
+of the data points.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Parameters</guilabel> (vector)</term>
+<listitem>
+<para>
+The parameters <literal>a</literal> and <literal>b</literal> of the best-fit.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Covariance</guilabel> (vector)</term>
+<listitem>
+<para>
+The estimated covariance matrix, returned row after row, starting with row 0.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Y Lo</guilabel> (vector)</term>
+<listitem>
+<para>
+The corresponding value in Y Fitted minus the standard deviation of the best-fit function at
+the corresponding x value.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Y Hi</guilabel> (vector)</term>
+<listitem>
+<para>
+The corresponding value in Y Fitted plus the standard deviation of the best-fit function at
+the corresponding x value.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>chi^2/nu</guilabel> (scalar)</term>
+<listitem>
+<para>
+The value of the sum of squares of the residuals, divided by the degrees of freedom.
+</para>
+</listitem>
+</varlistentry>
+
+
+</variablelist>
+</sect3>
+</sect2>
+
+
+<sect2 id="plugins-kstfit_linear_unweighted">
+<title>Fit linear</title>
+<para>
+The Fit linear plugin is identical in function to the
+<link linkend="plugins-kstfit_linear_weighted">Fit linear weighted</link>
+plugin with the exception that the weight value <literal>w<subscript>i</subscript></literal>
+is equal to <literal>1</literal> for all index values <literal>i</literal>.  As a result, the
+Weights (vector) input does not exist.
+</para>
+</sect2>
+
+
+<sect2 id="plugins-kstfit_lorentzian_weighted">
+<title>Fit Lorentz weighted</title>
+<para>
+The Fit Lorentz weighted plugin performs a weighted non-linear least-squares fit
+to a Lorentzian model:
+</para>
+<para>
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="Formula-kst-lorentzianfitequation.png" format="PNG"/>
+</imageobject>
+</inlinemediaobject>
+</para>
+
+<para>
+An initial estimate of
+<literal>a=</literal>(maximum of the y values),
+<literal>x<subscript>0</subscript>=</literal>(mean of the x values), and
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="Symbol-kst-Gamma.png" format="PNG"/>
+</imageobject>
+</inlinemediaobject><literal>=</literal>(the midpoint of the x values)
+is used. The plugin subsequently iterates to the solution
+until a precision of <literal>1.0e-4</literal> is reached or 500 iterations have been performed.
+</para>
+
+<screenshot>
+<screeninfo>Plugins - Fit Lorentzian</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-plugins-fitlorentzian.png" format="PNG" />
+</imageobject>
+</mediaobject>
+</screenshot> 
+
+<sect3 id="plugins-kstfit_lorentzian_weighted-inputs">
+<title>Inputs</title>
+
+<variablelist>
+
+<varlistentry>
+<term><guilabel>X Array</guilabel> (vector)</term>
+<listitem>
+<para>
+The array of x values for the data points to be fitted.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Y Array</guilabel> (vector)</term>
+<listitem>
+<para>
+The array of y values for the data points to be fitted.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Weights Array</guilabel> (vector)</term>
+<listitem>
+<para>
+The array of weights to use for the fit.
+</para>
+</listitem>
+</varlistentry>
+</variablelist>
+</sect3>
+
+<sect3 id="plugins-kstfit_lorentzian_weighted-outputs">
+<title>Outputs</title>
+
+<variablelist>
+
+<varlistentry>
+<term><guilabel>Y Fitted</guilabel> (vector)</term>
+<listitem>
+<para>
+The array of fitted y values.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Residuals</guilabel> (vector)</term>
+<listitem>
+<para>
+The array of residuals.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Parameters</guilabel> (vector)</term>
+<listitem>
+<para>
+The best fit parameters
+<literal>x<subscript>0</subscript></literal>,
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="Symbol-kst-Gamma.png" format="PNG"/>
+</imageobject>
+</inlinemediaobject>, and
+<literal>a</literal>.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Covariance</guilabel> (vector)</term>
+<listitem>
+<para>
+The covariance matrix of the model parameters, returned row after row in the vector.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>chi^2/nu</guilabel> (scalar)</term>
+<listitem>
+<para>
+The weighted sum of squares of the residuals, divided by the degrees of freedom.
+</para>
+</listitem>
+</varlistentry>
+
+</variablelist>
+</sect3>
+
+</sect2>
+
+<sect2 id="plugins-kstfit_lorentzian_unweighted">
+<title>Fit Lorentz</title>
+<para>
+The Fit Lorentz plugin is identical in function to the
+<link linkend="plugins-kstfit_lorentzian_weighted">Fit Lorentz weighted</link>
+plugin with the exception that the weight value <literal>w<subscript>i</subscript></literal>
+is equal to <literal>1</literal> for all index values <literal>i</literal>.  As a result, the
+Weights (vector) input does not exist.
+</para>
+</sect2>
+
+
+<sect2 id="plugins-kstfit_polynomial_weighted">
+<title>Fit polynomial weighted</title>
+<para>
+The Fit polynomial weighted plugin performs a weighted least-squares fit to a polynomial model:
+</para>
+<para>
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="Formula-kst-polynomialfitequation.png" format="PNG"/>
+</imageobject>
+</inlinemediaobject>
+</para>
+<para>
+where <literal>n</literal> is the degree of the polynomial model.
+</para>
+
+<screenshot>
+<screeninfo>Plugins - Fit Polynomial</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-plugins-fitpolynomial.png" format="PNG" />
+</imageobject>
+</mediaobject>
+</screenshot> 
+
+<sect3 id="plugins-kstfit_polynomial_weighted-inputs">
+<title>Inputs</title>
+
+<variablelist>
+
+<varlistentry>
+<term><guilabel>X Array</guilabel> (vector)</term>
+<listitem>
+<para>
+The array of x values for the data points to be fitted.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Y Array</guilabel> (vector)</term>
+<listitem>
+<para>
+The array of y values for the data points to be fitted.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Weights Array</guilabel> (vector)</term>
+<listitem>
+<para>
+The array of weights to use for the fit.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>Order (scalar)</term>
+<listitem>
+<para>
+The order, or degree, of the polynomial model to use.
+</para>
+</listitem>
+</varlistentry>
+
+</variablelist>
+</sect3>
+
+<sect3 id="plugins-kstfit_polynomial_weighted-outputs">
+<title>Outputs</title>
+
+<variablelist>
+
+<varlistentry>
+<term><guilabel>Y Fitted</guilabel> (vector)</term>
+<listitem>
+<para>
+The array of fitted y values.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Residuals</guilabel> (vector)</term>
+<listitem>
+<para>
+The array of residuals.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Parameters</guilabel> (vector)</term>
+<listitem>
+<para>
+The best fit parameters <literal>c<subscript>0</subscript></literal>,
+<literal>c<subscript>1</subscript></literal>,...,
+<literal>c<subscript>n</subscript></literal>.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Covariance</guilabel> (vector)</term>
+<listitem>
+<para>
+The covariance matrix of the model parameters, returned row after row in the vector.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>chi^2/nu</guilabel> (scalar)</term>
+<listitem>
+<para>
+The weighted sum of squares of the residuals, divided by the degrees of freedom.
+</para>
+</listitem>
+</varlistentry>
+
+</variablelist>
+</sect3>
+</sect2>
+
+
+<sect2 id="plugins-kstfit_polynomial_unweighted">
+<title>Fit polynomial</title>
+<para>
+The Fit polynomial plugin is identical in function to the
+<link linkend="plugins-kstfit_polynomial_weighted">Fit polynomial weighted</link>
+plugin with the exception that the weight value <literal>w<subscript>i</subscript></literal>
+is equal to <literal>1</literal> for all index values <literal>i</literal>.  As a result, the
+Weights (vector) input does not exist.
+</para>
+</sect2>
+
+
+<sect2 id="plugins-kstfit_sinusoid_weighted">
+<title>Fit sinusoid weighted</title>
+<para>
+The Fit sinusoid weighted plugin performs a least-squares fit to a sinusoid model:
+</para>
+<para>
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="Formula-kst-sinusoidfitequation.png" format="PNG"/>
+</imageobject>
+</inlinemediaobject>
+</para>
+<para>
+where <literal>T</literal> is the specified period,
+and <literal>n=2+2H</literal>, where
+<literal>H</literal> is the specified number of harmonics.
+</para>
+
+<screenshot>
+<screeninfo>Plugins - Fit Sinusoid</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-plugins-fitsinusoid.png" format="PNG" />
+</imageobject>
+</mediaobject>
+</screenshot> 
+
+<sect3 id="plugin-kstfit_sinusoid_weighted-inputs">
+<title>Inputs</title>
+
+<variablelist>
+
+<varlistentry>
+<term><guilabel>X Array</guilabel> (vector)</term>
+<listitem>
+<para>
+The array of x values for the data points to be fitted.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Y Array</guilabel> (vector)</term>
+<listitem>
+<para>
+The array of y values for the data points to be fitted.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Weights</guilabel> (vector)</term>
+<listitem>
+<para>
+The array of weights to use for the fit.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Harmonics</guilabel> (scalar)</term>
+<listitem>
+<para>
+The number of harmonics of the sinusoid to fit.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Period</guilabel> (scalar)</term>
+<listitem>
+<para>
+The period of the sinusoid to fit.
+</para>
+</listitem>
+</varlistentry>
+
+</variablelist>
+</sect3>
+
+<sect3 id="plugins-kstfit_sinusoid_weighted-outputs">
+<title>Outputs</title>
+
+<variablelist>
+
+<varlistentry>
+<term><guilabel>Y Fitted</guilabel> (vector)</term>
+<listitem>
+<para>
+The array of fitted y values.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Residuals</guilabel> (vector)</term>
+<listitem>
+<para>
+The array of residuals.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Parameters</guilabel> (vector)</term>
+<listitem>
+<para>
+The best fit parameters <literal>c<subscript>0</subscript></literal>,
+<literal>c<subscript>1</subscript></literal>,...,
+<literal>c<subscript>n</subscript></literal>.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Covariance</guilabel> (vector)</term>
+<listitem>
+<para>
+The covariance matrix of the model parameters, returned row after row in the vector.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>chi^2/nu</guilabel> (scalar)</term>
+<listitem>
+<para>
+The weighted sum of squares of the residuals, divided by the degrees of freedom.
+</para>
+</listitem>
+</varlistentry>
+
+</variablelist>
+</sect3>
+</sect2>
+
+
+<sect2 id="plugins-kstfit_sinusoid_unweighted">
+<title>Fit sinusoid</title>
+<para>
+The Fit sinusoid plugin is identical in function to the
+<link linkend="plugins-kstfit_sinusoid_weighted">Fit sinusoid weighted</link>
+plugin with the exception that the weight value <literal>w<subscript>i</subscript></literal>
+is equal to <literal>1</literal> for all index values <literal>i</literal>.  As a result, the
+Weights (vector) input does not exist.
+</para>
+</sect2>
+
+
+
+
+</sect1>
+
+<sect1 id="plugins-interpolations">
+<title>Interpolation Plugins</title>
+<para>Interpolation is a way to construct new data points within a data set. All Kst interpolation plugins take two vectors x and y, and a desired values x', then find the interpolation functions which fit x and y, and evaluate functions to get the corresponding y' value (interpolated y) for each x' value. </para>
+<sect2 id="plugins-kstinterp_akima">
+<title>Interpolation Akima spline</title>
+<para>
+The Interpolation Akima spline plugin generates a non-rounded Akima spline interpolation for the supplied data set,
+using natural boundary conditions.
+</para>
+
+<screenshot>
+<screeninfo>Plugins - Akima Spline</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-plugins-interpolationakimaspline.png" format="PNG" />
+</imageobject>
+</mediaobject>
+</screenshot> 
+
+<sect3 id="plugins-kstinterp_akima-inputs">
+<title>Inputs</title>
+<variablelist>
+
+<varlistentry>
+<term><guilabel>X Array</guilabel> (vector)</term>
+<listitem>
+<para>
+The array of x values of the data points to generate the interpolation for.
+</para>
+</listitem>
+</varlistentry>
+
+
+<varlistentry>
+<term><guilabel>Y Array</guilabel> (vector)</term>
+<listitem>
+<para>
+The array of y values of the data points to generate the interpolation for.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>X' Array</guilabel> (vector)</term>
+<listitem>
+<para>
+The array of x values for which interpolated y values are desired.
+</para>
+</listitem>
+</varlistentry>
+
+</variablelist>
+</sect3>
+
+<sect3 id="plugins-kstinterp_akima-outputs">
+<title>Outputs</title>
+<variablelist>
+
+<varlistentry>
+<term><guilabel>Y Interpolated</guilabel> (vector)</term>
+<listitem>
+<para>
+The interpolated y values.
+</para>
+</listitem>
+</varlistentry>
+
+</variablelist>
+</sect3>
+</sect2>
+<sect2 id="plugins-kstinterp_akima_periodic">
+<title>Interpolation Akima spline periodic</title>
+<para>
+The interpolation akima periodic plugin generates a non-rounded Akima spline interpolation for the supplied data set,
+using periodic boundary conditions. The input and output options are the same as those for <link linkend="plugins-kstinterp_akima">Interpolation Akima spline</link>.
+</para>
+</sect2>
+
+<sect2 id="plugins-kstinterp_cspline">
+<title>Interpolation cubic spline</title>
+<para>
+The Interpolation cubic spline plugin generates a cubic spline interpolation for the supplied data set,
+using natural boundary conditions. The input and output options are the same as those for <link linkend="plugins-kstinterp_akima">Interpolation Akima spline</link>.
+</para>
+</sect2>
+
+<sect2 id="plugins-kstinterp_cspline_periodic">
+<title>Interpolation cubic spline periodic</title>
+<para>
+The Interpolation cubic spline periodic plugin generates a cubic spline interpolation for the supplied data set,
+using periodic boundary conditions. The input and output options are the same as those for <link linkend="plugins-kstinterp_akima">Interpolation Akima spline</link>.
+</para>
+</sect2>
+
+<sect2 id="plugins-kstinterp_linear">
+<title>Interpolation linear</title>
+<para>
+The Interpolation linear plugin generates a linear interpolation for the supplied data set. The input and output options are the same as those for <link linkend="plugins-kstinterp_akima">Interpolation Akima spline</link>.
+</para>
+</sect2>
+
+
+<sect2 id="plugins-kstinterp_polynomial">
+<title>Interpolation polynomial</title>
+<para>
+The Interpolation polynomial plugin generates a polynomial interpolation for the supplied data set.
+The number of terms in the polynomial used is equal to the number of points in the supplied
+data set. The input and output options are the same as those for <link linkend="plugins-kstinterp_akima">Interpolation Akima spline</link>.
+</para>
+</sect2>
+
+</sect1>
+
+
+<sect1 id="plugins-filters">
+<title>Filters Plugins</title>
+<para>Kst has lots of built-in filters.</para>
+<sect2 id="plugins-genericfilter">
+	<title>
+         Generic Filter
+         </title>
+	<para>
+	This plugin filters a set of data by using the<ulink url="http://en.wikipedia.org/wiki/Bilinear_transform"> bilinear transformation formula</ulink>.	
+	</para>
+
+
+	<screenshot>
+		<screeninfo>
+		
+		</screeninfo>
+			<mediaobject>
+					<imageobject>
+					<imagedata fileref="Screenshot-kst-plugins-genericfilter.png" format="PNG" />
+					</imageobject>
+			</mediaobject>
+	</screenshot> 
+	
+	<sect3 id="plugins-genericfilter-inputs">
+		<title>
+		Inputs
+		</title>
+			<variablelist>
+					<varlistentry>
+						<term>
+						<guilabel>Y</guilabel> (vector)
+						</term>
+						<listitem>
+							<para>
+							The array of data to filter
+							</para>
+						</listitem>
+					</varlistentry>
+					<varlistentry>
+						<term>
+						<guilabel>Sampling interval(s)</guilabel> (scalar)
+						</term>
+						<listitem>
+							<para>
+							The time periods for sampling of the input vector, reciprocal of the sampling frequency
+							</para>
+						</listitem>
+					</varlistentry>
+
+					<varlistentry>
+						<term>
+						<guilabel>Numerator/Denominator(increasing order)</guilabel> (string)
+						</term>
+						<listitem>
+							<para>
+							A string of numbers separated by commas to indicate the coefficients of the polynomial as numerator/denominator in the transform formula. For example, if you have a polynomial: 2*z^2 + 3*z + 5, you will need to specify the string: 2,3,5. To input the string, click on the icon 
+							
+ <inlinemediaobject>
+<imageobject>
+<imagedata fileref="Icon-kst-string.png" format="PNG" />
+</imageobject>
+<textobject>
+<phrase>create string</phrase>
+</textobject>
+</inlinemediaobject>
+
+                                                        to construct a string with value 2,3,5	
+							</para>
+						</listitem>
+					</varlistentry>
+
+			</variablelist>
+	
+	</sect3>
+
+	<sect3 id="plugins-genericfilter-outputs">
+		<title>
+		Outputs
+		</title>
+			<variablelist>
+					<varlistentry>
+						<term>
+						<guilabel>Filtered</guilabel> (vector)
+						</term>
+						<listitem>
+							<para>
+							an array of filtered data
+							</para>
+						</listitem>
+					</varlistentry>
+
+			</variablelist>
+	
+	</sect3>
+
+</sect2>
+
+
+<sect2 id="plugins-butterworth_bandpass">
+<title>Band-pass filter</title>
+<para>
+The Butterworth band-pass plugin filters a set of data by calculating
+the Fourier transform of the data and scaling the spectral amplitudes using the following function G(f)
+</para>
+<para>
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="Formula-kst-bandpass.png" format="PNG" />
+</imageobject>
+<textobject>
+<phrase>Bandpass formula</phrase>
+</textobject>
+</inlinemediaobject>
+</para>
+<para>
+where <literal>f</literal> is the frequency, <literal>f<subscript>c</subscript></literal> is
+the central frequency to filter around, <literal>b</literal> is the bandwidth to pass, and
+<literal>n</literal> is the order of the Butterworth filter.  The inverse Fourier transform
+is then calculated using the scaled spectral amplitudes to give a filtered dataset.
+</para>
+
+<screenshot>
+<screeninfo>Plugins - Bandpass Filter</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-plugins-bandpassfilter.png" format="PNG" />
+</imageobject>
+</mediaobject>
+</screenshot> 
+
+<sect3 id="plugins-butterworth_bandpass-inputs">
+<title>Inputs</title>
+<variablelist>
+
+<varlistentry>
+<term><guilabel>Y</guilabel> (vector)</term>
+<listitem>
+<para>
+The array of values to filter.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Order</guilabel> (scalar)</term>
+<listitem>
+<para>
+The order of the Butterworth filter to use.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Central frequency/sample rate</guilabel> (scalar)</term>
+<listitem>
+<para>
+The frequency to filter around.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Band width</guilabel> (scalar)</term>
+<listitem>
+<para>
+The width of the band to pass.  This should be the difference between the desired high
+cutoff frequency and the low cutoff frequency.
+</para>
+</listitem>
+</varlistentry>
+
+</variablelist>
+</sect3>
+
+<sect3 id="plugins-butterworth_bandpass-outputs">
+<title>Outputs</title>
+<variablelist>
+
+<varlistentry>
+<term><guilabel>Filtered</guilabel> (vector)</term>
+<listitem>
+<para>
+The array of filtered data values.
+</para>
+</listitem>
+</varlistentry>
+
+</variablelist>
+</sect3>
+
+</sect2>
+
+
+<sect2 id="plugins-butterworth_bandstop">
+<title>Band-stop filter</title>
+<para>
+The Butterworth band-stop effectively removes signals in a given frequency range from an input vector. The options are the same as for the <link linkend="plugins-butterworth_bandpass">Band-pass filter</link> except that the scaling function G(f) which is used is now given by:
+</para>
+<para>
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="Formula-kst-bandstop.png" format="PNG" />
+</imageobject>
+<textobject>
+<phrase>Bandstop formula</phrase>
+</textobject>
+</inlinemediaobject>
+</para>
+</sect2>
+
+<sect2 id="plugins-butterworth_highpass">
+<title>High-pass filter</title>
+<para>
+The Butterworth high-pass plugin effectively removes signals below a given cutoff frequency from a data vector. It does this by by calculating the Fourier transform of the data and rescaling the
+the spectral amplitudes using the following following function G(f)
+</para>
+<para>
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="Formula-kst-highpass.png" format="PNG" />
+</imageobject>
+<textobject>
+<phrase>Highpass formula</phrase>
+</textobject>
+</inlinemediaobject>
+</para>
+<para>
+where <literal>f</literal> is the frequency, <literal>f<subscript>c</subscript></literal> is
+the high frequency cutoff, and
+<literal>n</literal> is the order of the Butterworth filter.  The inverse Fourier transform
+is then calculated using the new filtered frequency responses.
+</para>
+
+<screenshot>
+<screeninfo>Plugins - High pass</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-commontasks-plugins2.png" format="PNG" />
+</imageobject>
+</mediaobject>
+</screenshot> 
+
+<sect3 id="plugins-butterworth_highpass-inputs">
+<title>Inputs</title>
+<variablelist>
+
+<varlistentry>
+<term><guilabel>Y</guilabel> (vector)</term>
+<listitem>
+<para>
+The array of values to filter.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Order</guilabel> (scalar)</term>
+<listitem>
+<para>
+The order of the Butterworth filter to use.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Cutoff frequency/sample rate</guilabel> (scalar)</term>
+<listitem>
+<para>
+The cutoff frequency (<literal>f<subscript>c</subscript></literal>).
+</para>
+</listitem>
+</varlistentry>
+</variablelist>
+</sect3>
+
+<sect3 id="plugins-butterworth_highpass-outputs">
+<title>Outputs</title>
+<variablelist>
+
+<varlistentry>
+<term><guilabel>Filtered</guilabel> (vector)</term>
+<listitem>
+<para>
+The array of filtered data values.
+</para>
+</listitem>
+</varlistentry>
+
+</variablelist>
+</sect3>
+
+</sect2>
+
+
+<sect2 id="plugins-butterworth_lowpass">
+<title>Low-pass filter</title>
+<para>
+The Butterworth low-pass filter effectively removes signals above a given frequency cutoff from an input vector. The options are the same as for the <link linkend="plugins-butterworth_highpass">High-pass filter</link> except that the scaling function G(f) which is used is now given by:
+</para>
+<para>
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="Formula-kst-lowpass.png" format="PNG" />
+</imageobject>
+<textobject>
+<phrase>Autocorrelation formula</phrase>
+</textobject>
+</inlinemediaobject>
+</para>
+</sect2>
+
+<sect2 id="plugins-despikefilter">
+	<title>
+         Despike Filter
+         </title>
+	<para>
+	This plugin is used to find and remove spikes in a data set.	
+	</para>
+
+
+	<screenshot>
+		<screeninfo>
+		plugins-Edit Despike Filter
+		</screeninfo>
+			<mediaobject>
+					<imageobject>
+					<imagedata fileref="Screenshot-kst-plugins-despikefilter.png" format="PNG" />
+					</imageobject>
+			</mediaobject>
+	</screenshot> 
+	
+	<sect3 id="plugins-despike-filter">
+		<title>
+		Inputs
+		</title>
+			<variablelist>
+					<varlistentry>
+						<term>
+						 <guilabel>Y</guilabel> (vector)
+						</term>
+						<listitem>
+							<para>
+							Select the data vector needed to be smoothed.
+							</para>
+						</listitem>
+					</varlistentry>
+					<varlistentry>
+						<term>
+						 <guilabel>Spacing</guilabel> (scalar)
+						</term>
+						<listitem>
+							<para>
+							Specify the width of the spikes.
+
+							</para>
+						</listitem>
+					</varlistentry>
+
+					<varlistentry>
+						<term>
+						<guilabel>NSigma</guilabel> (scalar)
+						</term>
+						<listitem>
+							<para>
+							If a data point value varies from its neighboring data points by <replaceable>NSigma</replaceable> times more, it will be counted as a spike.
+							</para>
+						</listitem>
+					</varlistentry>
+
+
+			</variablelist>
+	
+	</sect3>
+	<sect3 id="plugins-despikefilter-outputs">
+		<title>
+		Outputs
+		</title>
+			<variablelist>
+					<varlistentry>
+						<term>
+						<guilabel>Despiked</guilabel> (vector)
+						</term>
+						<listitem>
+							<para>
+							This plugin outputs a smoothed data set with all specified spikes removed.
+							</para>
+						</listitem>
+					</varlistentry>
+
+			</variablelist>
+	
+	</sect3>
+
+
+</sect2>
+
+
+
+
+</sect1>
+
+
+<sect1 id="plugins-vector-processing">
+<title>Signal Processing Plugins</title>
+<para>Kst provides various plugins to help you process signals easily.</para>
+<sect2 id="plugins-autocorrelation">
+<title>Autocorrelation</title>
+<para>
+The autocorrelation plugin calculates correlation values between a series (vector) and a lagged version
+of itself, using lag values from <literal>floor(-(N-1)/2)</literal> to <literal>floor((N-1)/2)</literal>, where <literal>N</literal>
+is the number of points in the data set.  The time
+vector is not an input as it is assumed that the data is sampled at equal time intervals.  The correlation
+value <literal>r</literal> at lag <literal>k</literal> is:
+</para>
+<para>
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="Formula-kst-autocorrelation.png" format="PNG" />
+</imageobject>
+<textobject>
+<phrase>Autocorrelation formula</phrase>
+</textobject>
+</inlinemediaobject>
+</para>
+
+<screenshot>
+<screeninfo>Plugins - Autocorrelation</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-plugins-autocorrelation.png" format="PNG" />
+</imageobject>
+</mediaobject>
+</screenshot> 
+
+<sect3 id="plugins-autocorrelation-inputs">
+<title>Inputs</title>
+<variablelist>
+
+<varlistentry>
+<term><guilabel>Array</guilabel> (vector)</term>
+<listitem>
+<para>
+The array <literal>x</literal> of values to calculate correlation values for.
+</para>
+</listitem>
+</varlistentry>
+
+</variablelist>
+</sect3>
+
+<sect3 id="plugins-autocorrelation-outputs">
+<title>Outputs</title>
+<variablelist>
+
+<varlistentry>
+<term><guilabel>Step Value</guilabel> (vector)</term>
+<listitem>
+<para>
+The array of step, or lag values.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Auto-correlated</guilabel> (vector)</term>
+<listitem>
+<para>
+The array of correlation values calculated using the corresponding step number in the Step Number vector.
+</para>
+</listitem>
+</varlistentry>
+
+</variablelist>
+</sect3>
+
+</sect2>
+
+<sect2 id="plugins-crosscorrelation">
+<title>Crosscorrelation</title>
+<para>
+The crosscorrelation plugin calculates correlation values between two series (vectors) <literal>x</literal> and
+<literal>y</literal>,
+ using lag values from <literal>floor(-(N-1)/2)</literal> to <literal>floor((N-1)/2)</literal>, where <literal>N</literal>
+is the number of elements in the longer vector.  The shorter vector is padded to the length of the
+longer vector using <literal>0</literal>s.  The time
+vector is not an input as it is assumed that the data is sampled at equal time intervals.  The correlation
+value <literal>r</literal> at lag <literal>k</literal> is:
+</para>
+<para>
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="Formula-kst-crosscorrelation.png" format="PNG" />
+</imageobject>
+<textobject>
+<phrase>crosscorrelation formula</phrase>
+</textobject>
+</inlinemediaobject>
+</para>
+
+<screenshot>
+<screeninfo>Plugins - Cross-correlation</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-plugins-crosscorrelation.png" format="PNG" />
+</imageobject>
+</mediaobject>
+</screenshot> 
+
+<sect3 id="plugins-crosscorrelation-inputs">
+<title>Inputs</title>
+<variablelist>
+
+<varlistentry>
+<term><guilabel>Array One</guilabel> (vector)</term>
+<listitem>
+<para>
+The array <literal>x</literal> used in the cross-correlation formula.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Array Two</guilabel> (vector)</term>
+<listitem>
+<para>
+The array <literal>y</literal> used in the cross-correlation formula.
+</para>
+</listitem>
+</varlistentry>
+
+</variablelist>
+</sect3>
+
+<sect3 id="plugins-crosscorrelation-outputs">
+<title>Outputs</title>
+<variablelist>
+
+<varlistentry>
+<term><guilabel>Step value</guilabel> (vector)</term>
+<listitem>
+<para>
+The array of step, or lag values.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Correlation</guilabel> (vector)</term>
+<listitem>
+<para>
+The array of correlation values calculated using the corresponding step number in the Step value vector.
+</para>
+</listitem>
+</varlistentry>
+
+</variablelist>
+</sect3>
+
+</sect2>
+
+
+<sect2 id="plugins-crosspowerspectrum">
+	<title>
+        Cross Power Spectrum
+         </title>
+	<para>
+	The cross power spectrum plugin takes two vectors and calculates the <link linkend="data-types-spectrum">FFT</link> of their <link linkend="plugins-crosscorrelation">cross-correlation</link> values. 
+	</para>
+
+
+	<screenshot>
+		<screeninfo>
+		Plugins - CrossPowerSpectrum
+		</screeninfo>
+			<mediaobject>
+					<imageobject>
+					<imagedata fileref="Screenshot-kst-plugins-crosspowerspectrum.png" format="PNG" />
+					</imageobject>
+			</mediaobject>
+	</screenshot> 
+	
+	<sect3 id="plugins-crosspowerspectrum-Inputs">
+		<title>
+		Inputs	
+		</title>
+			<variablelist>
+					<varlistentry>
+						<term>
+						<guilabel>Vector One/Two</guilabel>
+						</term>
+						<listitem>
+							<para>
+							The two vectors used to calculate the cross power spectrum
+							</para>
+						</listitem>
+					</varlistentry>
+
+					<varlistentry>
+						<term>
+						<guilabel>FFT Length= 2^</guilabel> (scalar)
+						</term>
+						<listitem>
+							<para>
+							Refers to FFT options in <link linkend="data-types-spectrum">Spectrum</link>
+							</para>
+						</listitem>
+					</varlistentry>
+
+					<varlistentry>
+						<term>
+						<guilabel>Sample rate</guilabel> (scalar)
+						</term>
+						<listitem>
+							<para>
+							Refers to FFT options in <link linkend="data-types-spectrum">Spectrum</link>
+							</para>
+						</listitem>
+					</varlistentry>
+
+			</variablelist>
+	</sect3>
+
+	<sect3 id="plugins-crosspowerspectrum-outputs">
+		<title>
+		Outputs
+		</title>
+			<variablelist>
+					<varlistentry>
+						<term>
+						<guilabel>Cross Spectrum: Real</guilabel>(vector)
+						</term>
+						<listitem>
+							<para>
+							The real part of the calculated cross power spectrum.
+							</para>
+						</listitem>
+					</varlistentry>
+
+					<varlistentry>
+						<term>
+						<guilabel>Cross Spectrum: Imaginary</guilabel> (vector)
+						</term>
+						<listitem>
+							<para>
+							The imaginary part of the calculated cross power spectrum.
+							</para>
+						</listitem>
+					</varlistentry>
+
+					<varlistentry>
+						<term>
+						<guilabel>Frequency</guilabel> (vector)
+						</term>
+						<listitem>
+							<para>
+							The frequency vector of the output cross power spectrum.
+							</para>
+						</listitem>
+					</varlistentry>
+
+			</variablelist>
+
+	</sect3>
+
+</sect2>
+
+
+
+<sect2 id="plugins-convolution">
+<title>Convolution</title>
+<para>
+The convolution plugin generates the convolution of one vector with another.  The convolution of two functions
+<literal>f</literal> and <literal>g</literal> is given by:
+</para>
+<para>
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="Formula-kst-convolution.png" format="PNG"/>
+</imageobject>
+</inlinemediaobject>
+</para>
+<para>
+The order of the vectors does not matter, since <literal>f*g=g*f</literal>.  In addition,
+the vectors do not need to be of the same size,
+as the plugin will automatically interpolate smallest vector to the larger length.
+</para>
+
+<screenshot>
+<screeninfo>Plugins - Convolution</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-plugins-convolution.png" format="PNG" />
+</imageobject>
+</mediaobject>
+</screenshot> 
+
+<sect3 id="plugins-convolution-inputs">
+<title>Inputs</title>
+<variablelist>
+
+<varlistentry>
+<term><guilabel>Array One</guilabel> (vector)</term>
+<listitem>
+<para>
+One of the pair of arrays to take the convolution of.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Array Two</guilabel> (vector)</term>
+<listitem>
+<para>
+One of the pair of arrays to take the convolution of.
+</para>
+</listitem>
+</varlistentry>
+
+</variablelist>
+</sect3>
+
+<sect3 id="plugins-convolution-outputs">
+<title>Outputs</title>
+<variablelist>
+
+<varlistentry>
+<term><guilabel>Convolved</guilabel> (vector)</term>
+<listitem>
+<para>
+The convolution of the two input vectors.
+</para>
+</listitem>
+</varlistentry>
+</variablelist>
+</sect3>
+</sect2>
+
+
+<sect2 id="plugins-deconvolution">
+<title>Deconvolution</title>
+<para>
+The deconvolution plugin generates the deconvolution of one vector with another.  Deconvolution is the inverse of
+convolution.  Given the convolved vector <literal>h</literal> and another vector <literal>g</literal>, the deconvolution
+<literal>f</literal> is given by:
+</para>
+<para>
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="Formula-kst-deconvolution.png" format="PNG"/>
+</imageobject>
+</inlinemediaobject>
+</para>
+<para>
+The vectors do not need to be of the same size,
+as the plugin will automatically extrapolate the shorter vector.  The shorter vector is assumed to be the
+response function <literal>g</literal>.
+</para>
+
+<screenshot>
+<screeninfo>Plugins - Deconvolution</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-plugins-deconvolution.png" format="PNG" />
+</imageobject>
+</mediaobject>
+</screenshot> 
+
+<sect3 id="plugin-deconvolution-inputs">
+<title>Inputs</title>
+<variablelist>
+
+<varlistentry>
+<term><guilabel>Array One</guilabel> (vector)</term>
+<listitem>
+<para>
+One of the pair of arrays to take the deconvolution of.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Array Two</guilabel> (vector)</term>
+<listitem>
+<para>
+One of the pair of arrays to take the deconvolution of.
+</para>
+</listitem>
+</varlistentry>
+
+</variablelist>
+</sect3>
+
+<sect3 id="plugins-deconvolution-outputs">
+<title>Outputs</title>
+<variablelist>
+
+<varlistentry>
+<term><guilabel>Deconvolved</guilabel> (vector)</term>
+<listitem>
+<para>
+The deconvolution of the two input vectors.
+</para>
+</listitem>
+</varlistentry>
+</variablelist>
+</sect3>
+
+</sect2>
+
+<sect2 id="plugins-periodogram">
+<!-- FIXME: this description makes any sense. -->
+<title>Periodogram</title>
+<para>
+The periodogram plugin produces the periodogram of a given data set. Periodogram is an estimate of the spectral density of a signal.
+</para>
+
+<screenshot>
+<screeninfo>Plugins - Periodogram</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-plugins-periodogram.png" format="PNG" />
+</imageobject>
+</mediaobject>
+</screenshot> 
+
+<sect3 id="plugins-periodogram-inputs">
+<title>Inputs</title>
+<variablelist>
+
+<varlistentry>
+<term><guilabel>Time Array</guilabel> (vector)</term>
+<listitem>
+<para>
+The array of time values of the data points to generate the interpolation for.
+</para>
+</listitem>
+</varlistentry>
+
+
+<varlistentry>
+<term><guilabel>Data Array</guilabel> (vector)</term>
+<listitem>
+<para>
+The array of data values, dependent on the time values of the data points to generate the interpolation for.
+ 
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Oversampling factor</guilabel> (scalar)</term>
+<listitem>
+<para>
+The factor to oversample by.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Average Nyquist frequency factor</guilabel> (scalar)</term>
+<listitem>
+<para>
+The average Nyquist frequency factor.
+</para>
+</listitem>
+</varlistentry>
+
+</variablelist>
+</sect3>
+<sect3 id="plugins-periodogram-outputs">
+<title>Outputs</title>
+<variablelist>
+
+<varlistentry>
+<term><guilabel>Frequency</guilabel> (vector)</term>
+<listitem>
+<para>
+The frequency vector.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Periodogram</guilabel> (vector)</term>
+<listitem>
+<para>
+The frequency response vector for the periodogram.
+</para>
+</listitem>
+</varlistentry>
+
+</variablelist>
+</sect3>
+</sect2>
+
+<sect2 id="plugins-shift">
+	<title>
+         Shift
+         </title>
+	<para>
+	This plugin shifts the plot of an input vector forwards or backwards on the X axis.	
+	</para>
+
+
+	<screenshot>
+		<screeninfo>
+		plugins-Edit Phase
+		</screeninfo>
+			<mediaobject>
+					<imageobject>
+					<imagedata fileref="Screenshot-kst-plugins-shift.png" format="PNG" />
+					</imageobject>
+			</mediaobject>
+	</screenshot> 
+	
+	<sect3 id="plugins-shift-inputs">
+		<title>
+		Inputs
+		</title>
+			<variablelist>
+
+					<varlistentry>
+						<term>
+						<guilabel>InputVector</guilabel>
+						</term>
+						<listitem>
+							<para>
+							The vector to shift
+							</para>
+						</listitem>
+					</varlistentry>
+					<varlistentry>
+						<term>
+						<guilabel>Shift value(#points, negative allowed)</guilabel> (scalar)
+						</term>
+						<listitem>
+							<para>
+							Specify the units to be shifted.
+							Positive shifted value results right or forward shift.
+							Negative shifted value results left or backwards shift.
+							</para>
+						</listitem>
+					</varlistentry>
+			</variablelist>
+	</sect3>
+	<sect3 id="plugins-shift-outputs">
+		<title>
+		Outputs
+		</title>
+			<variablelist>
+					<varlistentry>
+						<term>
+						<guilabel>ShiftedVector</guilabel>
+						</term>
+						<listitem>
+							<para>
+							Output the original vector after shifting by the units indicated above.
+							</para>
+						</listitem>
+					</varlistentry>
+
+			</variablelist>
+	
+	</sect3>
+
+</sect2>
+<sect2 id="plugins-phase">
+	<title>
+         Phase
+         </title>
+	<para>
+	This plugin calculates the phase value for each data point of an input time array.	
+	</para>
+
+
+	<screenshot>
+		<screeninfo>
+		plugins-Edit Phase
+		</screeninfo>
+			<mediaobject>
+					<imageobject>
+					<imagedata fileref="Screenshot-kst-plugins-phase.png" format="PNG" />
+					</imageobject>
+			</mediaobject>
+	</screenshot> 
+	
+	<sect3 id="plugins-phase-inputs">
+		<title>
+		Inputs
+		</title>
+			<variablelist>
+					<varlistentry>
+						<term>
+						<guilabel>Time Array</guilabel> (vector)
+						</term>
+						<listitem>
+							<para>
+							An array of time values
+							</para>
+						</listitem>
+					</varlistentry>
+
+					<varlistentry>
+						<term>
+						<guilabel>Data In Array</guilabel> (vector)
+						</term>
+						<listitem>
+							<para>
+							Input data array corresponding to the time array
+							</para>
+						</listitem>
+					</varlistentry>
+
+					<varlistentry>
+						<term>
+						<guilabel>Period</guilabel> (scalar)
+						</term>
+						<listitem>
+							<para>
+							Set the period of the input time array.
+							</para>
+						</listitem>
+					</varlistentry>
+					<varlistentry>
+						<term>
+						<guilabel>Zero Phase</guilabel> (scalar)
+						</term>
+						<listitem>
+							<para>
+							Set the time for the zero phase.
+							</para>
+						</listitem>
+					</varlistentry>
+			</variablelist>
+	</sect3>
+	<sect3 id="plugins-phase-outputs">
+		<title>
+		Outputs
+		</title>
+			<variablelist>
+					<varlistentry>
+						<term>
+						<guilabel>Phase Array</guilabel> (vector)
+						</term>
+						<listitem>
+							<para>
+							An array of phase values corresponding to the input data values.
+							</para>
+						</listitem>
+					</varlistentry>
+					<varlistentry>
+						<term>
+						<guilabel>Data Out Array</guilabel> (vector)
+						</term>
+						<listitem>
+							<para>
+							Output the original data set with values sorted by the phase array.
+							</para>
+						</listitem>
+					</varlistentry>
+
+			</variablelist>
+	
+	</sect3>
+
+
+</sect2>
+
+<sect2 id="plugins-chop">
+<title>Chop</title>
+<para>
+The chop plugin takes an input vector and divides it into two vectors.  Every second element in the
+input vector is placed in one output vector, while all other elements from the input vector are placed
+in another output vector.
+</para>
+
+<screenshot>
+<screeninfo>Plugins - Chop</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-plugins-chop.png" format="PNG" />
+</imageobject>
+</mediaobject>
+</screenshot> 
+
+<sect3 id="plugins-chop-inputs">
+<title>Inputs</title>
+<variablelist>
+
+<varlistentry>
+<term><guilabel>Array</guilabel> (vector)</term>
+<listitem>
+<para>
+The array of values to perform the chop on.
+</para>
+</listitem>
+</varlistentry>
+
+</variablelist>
+</sect3>
+
+<sect3 id="plugins-chop-outputs">
+<title>Outputs</title>
+<variablelist>
+
+<varlistentry>
+<term><guilabel>Odd Array</guilabel> (vector)</term>
+<listitem>
+<para>
+The array containing the odd part of the input array (i.e. it contains the first element of the
+input array).
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Even Array</guilabel> (vector)</term>
+<listitem>
+<para>
+The array containing the even part of the input array (i.e. it does not contain the first element
+of the input array).
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Difference Array</guilabel> (vector)</term>
+<listitem>
+<para>
+The array containing the elements of the odd array minus the respective elements of the even array.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Index Array</guilabel> (vector)</term>
+<listitem>
+<para>
+An <link linkend="data-sources-concepts-index">index array</link> has the same length as the other three output arrays.
+</para>
+</listitem>
+</varlistentry>
+
+</variablelist>
+</sect3>
+</sect2>
+
+<sect2 id="plugins-noise-addition">
+<title>Noise Addition</title>
+<para>
+The Noise addition plugin adds a Gaussian random variable to each element of the input vector.
+The Gaussian distribution used has a mean of <literal>0</literal> and the specified
+standard deviation.  The probability density function of a Gaussian random variable is:
+</para>
+<para>
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="Formula-kst-gaussianprobability.png" format="PNG"/>
+</imageobject>
+</inlinemediaobject>
+</para>
+
+<screenshot>
+<screeninfo>Plugins - Noise addition</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-plugins-noiseaddition.png" format="PNG" />
+</imageobject>
+</mediaobject>
+</screenshot> 
+
+<sect3 id="plugins-noise-addition-inputs">
+<title>Inputs</title>
+<variablelist>
+
+<varlistentry>
+<term><guilabel>Array</guilabel> (vector)</term>
+<listitem>
+<para>
+The array of elements to which random noise is to be added.
+</para>
+</listitem>
+</varlistentry>
+
+
+<varlistentry>
+<term><guilabel>Sigma</guilabel> (scalar)</term>
+<listitem>
+<para>
+The standard deviation to use for the Gaussian distribution.
+</para>
+</listitem>
+</varlistentry>
+
+
+</variablelist>
+</sect3>
+
+<sect3 id="plugins-noiseaddition-outputs">
+<title>Outputs</title>
+<variablelist>
+
+<varlistentry>
+<term><guilabel>Output Array</guilabel> (vector)</term>
+<listitem>
+<para>
+The array of elements with Gaussian noise added.
+</para>
+</listitem>
+</varlistentry>
+
+</variablelist>
+</sect3>
+</sect2>
+
+<sect2 id="plugins-bin">
+<title>Bin</title>
+<para>
+The bin plugin group elements of a single data vector into bins of a specified size.  The value of each bin is the mean
+of the elements belonging to the bin. For example, if the bin size is <literal>3</literal>, and the input vector is
+<literal>[9,2,7,3,4,74,5,322,444,2,1]</literal>, then the outputted bins would be
+<literal>[6,27,257]</literal>.  Note that any elements remaining at the end of the input vector that do not form a complete
+bin (in this case, elements <literal>2</literal> and <literal>1</literal>), are simply discarded.
+</para>
+
+<screenshot>
+<screeninfo>plugins- - Bin</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-plugins-bin.png" format="PNG" />
+</imageobject>
+</mediaobject>
+</screenshot> 
+
+<sect3 id="plugins-bin-inputs">
+<title>Inputs</title>
+<variablelist>
+
+<varlistentry>
+<term><guilabel>Input Vector</guilabel> (vector)</term>
+<listitem>
+<para>
+The vector to bin.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Bin Size</guilabel> (scalar)</term>
+<listitem>
+<para>
+The size (# of elements) to have in each bin.
+</para>
+</listitem>
+</varlistentry>
+
+</variablelist>
+</sect3>
+
+<sect3 id="plugins-bin-outputs">
+<title>Outputs</title>
+<variablelist>
+
+<varlistentry>
+<term><guilabel>Bins</guilabel> (vector)</term>
+<listitem>
+<para>
+The array of means for each bin.
+</para>
+</listitem>
+</varlistentry>
+</variablelist>
+</sect3>
+</sect2>
+
+<sect2 id="plugins-syncbin">
+	<title>
+         Syncbin
+         </title>
+	<para>
+	This plugin groups y values of a data set into bins defined by x values.	
+	</para>
+
+
+	<screenshot>
+		<screeninfo>
+		plugins-Edit syncbin
+		</screeninfo>
+			<mediaobject>
+					<imageobject>
+					<imagedata fileref="Screenshot-kst-plugins-syncbin.png" format="PNG" />
+					</imageobject>
+			</mediaobject>
+	</screenshot> 
+	
+	<sect3 id="plugins-syncbin-inputs">
+		<title>
+		Inputs
+		</title>
+			<variablelist>
+					<varlistentry>
+						<term>
+						<guilabel>X in</guilabel> (vector)
+						</term>
+						<listitem>
+							<para>
+							The X values of a set of data points
+							</para>
+						</listitem>
+					</varlistentry>
+					<varlistentry>
+						<term>
+						<guilabel>Y in</guilabel> (vector)
+						</term>
+						<listitem>
+							<para>
+							The Y values of a set of data points
+							</para>
+						</listitem>
+					</varlistentry>
+
+						<varlistentry>
+						<term>
+						<guilabel>Number of Bins</guilabel> (scalar)
+						</term>
+						<listitem>
+							<para>
+							Specify the number of bins used to group the data points
+							</para>
+						</listitem>
+					</varlistentry>
+
+
+
+					<varlistentry>
+						<term>
+						<guilabel>X min/X max</guilabel> (scalar)
+						</term>
+						<listitem>
+							<para>
+							 Specify min/max X values of a data set to indicate the range of data points needed to be grouped.
+							</para>
+						</listitem>
+					</varlistentry>
+
+
+			</variablelist>
+	
+	</sect3>
+	<sect3 id="plugins-syncbin-outputs">
+		<title>
+		Outputs
+		</title>
+			<variablelist>
+					<varlistentry>
+						<term>
+						<guilabel>X out</guilabel> (vector)
+						</term>
+						<listitem>
+							<para>
+							The X values after binning. The X out vector is composed of the median values of the X elements in each bin 
+							</para>
+						</listitem>
+					</varlistentry>
+
+					<varlistentry>
+						<term>
+						<guilabel>Y out</guilabel> (vector)
+						</term>
+						<listitem>
+							<para>
+							The Y values after binning. The Y out vector is composed of the mean values of the Y elements in each bin 
+							</para>
+						</listitem>
+					</varlistentry>
+
+<varlistentry>
+						<term>
+						<guilabel>Y error</guilabel> (vector)
+						</term>
+						<listitem>
+							<para>
+							This vector is composed of the standard deviations of the Y values in each bin.
+							</para>
+						</listitem>
+					</varlistentry>
+
+					<varlistentry>
+						<term>
+						<guilabel>N</guilabel> (vector)
+						</term>
+						<listitem>
+							<para>
+							The N vector is composed of the number of data points in each bin.
+							</para>
+						</listitem>
+					</varlistentry>
+
+
+
+			</variablelist>
+	
+	</sect3>
+
+</sect2>
+</sect1>
+
+<sect1 id="plugins-calculus">
+<title>Calculus Plugins</title>
+<para>There are some plugins which can be used to do basic calculus.</para>
+<sect2 id="plugins-cumulativesum-integral">
+	<title>
+         Cumulative Sum(integral)
+         </title>
+	<para>
+		This plugin sums up the input vector cumulatively over a chosen time step which is the time interval between two neighboring data points of the input vector. As the time step becomes smaller, the calculated sum will approach this integral: 
+<inlinemediaobject>
+<imageobject>
+<imagedata fileref="Formula-kst-cumulativesum.png" format="PNG" />
+</imageobject>
+<textobject>
+<phrase>cumulative sum formulate</phrase>
+</textobject>
+</inlinemediaobject>
+
+ ,where x is the input data vector.
+	</para>
+
+
+	<screenshot>
+		<screeninfo>
+		
+		</screeninfo>
+			<mediaobject>
+					<imageobject>
+					<imagedata fileref="Screenshot-kst-plugins-cumulativesum.png" format="PNG" />
+					</imageobject>
+			</mediaobject>
+	</screenshot> 
+	
+	<sect3 id="plugins-cumulativesum-Inputs">
+		<title>
+		Inputs
+		</title>
+			<variablelist>
+					<varlistentry>
+						<term>
+						<guilabel>InputVector</guilabel>
+						</term>
+						<listitem>
+							<para>
+							The vector used to calculate the cumulative sum.
+							</para>
+						</listitem>
+					</varlistentry>
+
+					<varlistentry>
+						<term>
+						<guilabel>Scale factor(time step)</guilabel> (scalar)
+						</term>
+						<listitem>
+							<para>
+							The interval size for each step of calculating the cumulative sum
+							</para>
+						</listitem>
+					</varlistentry>
+			</variablelist>
+	
+	</sect3>
+	<sect3 id="plugins-cumulativesum-outputs">
+		<title>
+		Outputs
+		</title>
+			<variablelist>
+					<varlistentry>
+						<term>
+						<guilabel>Cumulative Sum</guilabel> (vector)
+						</term>
+						<listitem>
+							<para>
+							 This array stores values of the cumulative sum for each step.
+							</para>
+						</listitem>
+					</varlistentry>
+
+			</variablelist>
+	
+	</sect3>
+
+</sect2>
+
+<sect2 id="plugins-fixedstepdifferentiation">
+	<title>
+         Fixed Step Differentiation
+         </title>
+	<para>
+	This plugin calculates derivative values with respect to time for an input vector. As time step becomes smaller, the output vector will reach the values of dx/dt, where x is the input vector.
+	</para>
+
+
+	<screenshot>
+		<screeninfo>
+		plugins-Edit fixed step differentiation
+		</screeninfo>
+			<mediaobject>
+					<imageobject>
+					<imagedata fileref="Screenshot-kst-plugins-fixedstepdifferentiation.png" format="PNG" />
+					</imageobject>
+			</mediaobject>
+	</screenshot> 
+	
+	<sect3 id="plugins-fixedstepdifferentiation-inputs">
+		<title>
+		Inputs
+		</title>
+			<variablelist>
+					<varlistentry>
+						<term>
+						<guilabel>inputVector</guilabel>
+						</term>
+						<listitem>
+							<para>
+							the data vector to take derivative of
+							</para>
+						</listitem>
+					</varlistentry>
+
+					<varlistentry>
+						<term>
+						<guilabel>Time step</guilabel> (scalar)
+						</term>
+						<listitem>
+							<para>
+							Specify the size of the time interval between any two neighbor values in the input vector
+							</para>
+						</listitem>
+					</varlistentry>
+
+			</variablelist>
+	
+	</sect3>
+
+	<sect3 id="plugins-fixedstepdifferentiation-outputs">
+		<title>
+		Outputs
+		</title>
+			<variablelist>
+					<varlistentry>
+						<term>
+						<guilabel>Derivative</guilabel> (vector)
+						</term>
+						<listitem>
+							<para>
+							This plugin outputs the derivative values for every time step.
+							</para>
+						</listitem>
+					</varlistentry>
+
+			</variablelist>
+	
+	</sect3>
+
+</sect2>
+
+<sect2 id="plugins-binnnedmap">
+	<title>
+         Binned Map
+         </title>
+	<para>
+	The binned map can generate a surface count or plot of a two-variable function.
+	</para>
+
+
+	<screenshot>
+		<screeninfo>
+		Plugins - Binnedmap
+		</screeninfo>
+			<mediaobject>
+					<imageobject>
+					<imagedata fileref="Screenshot-kst-plugins-binnedmap.png" format="PNG" />
+					</imageobject>
+			</mediaobject>
+	</screenshot> 
+	
+	<sect3 id="plugins-binnedmap-settings">
+		<title>
+			Settings
+		</title>
+			<variablelist>
+					<varlistentry>
+						<term>
+						<guilabel>X,Y,Z</guilabel> (vector)
+						</term>
+						<listitem>
+							<para>
+								X/Y vectors are used to specify values of the two independent variables in a function, and Z vector specifies the values of the dependent variable.
+							</para>
+						</listitem>
+					</varlistentry>
+					
+					<varlistentry>
+						<term>
+						<guilabel>X/Y Binning: From/To</guilabel> (scalar)
+						</term>
+						<listitem>
+							<para>
+								Specify the range of X/Y values.
+							</para>
+						</listitem>
+					</varlistentry>
+
+					<varlistentry>
+						<term>
+						<guilabel>Num X/Y bins</guilabel> (scalar)
+						</term>
+						<listitem>
+							<para>
+							Specify the number of resolution grid for the output binned map.
+							</para>
+						</listitem>
+					</varlistentry>
+				
+			
+			</variablelist>
+	
+	</sect3>
+
+
+	<sect3 id="plugins-binnedmaps-outputs">
+		<title>
+		Outputs
+		</title>
+			<variablelist>
+					<varlistentry>
+						<term>
+						<guilabel>Binned Map</guilabel> (matrix)
+						</term>
+						<listitem>
+							<para>
+								Binned Map is a matrix whose entries can be used to generate the surface contour plot of the Z vector.
+							</para>
+						</listitem>
+					</varlistentry>
+
+					<varlistentry>
+						<term>
+						<guilabel>Hits Map</guilabel> (matrix)
+						</term>
+						<listitem>
+							<para>
+								Hits Map is a matrix whose values are specified by the number of points in each X/Y bin, and the image of Hits Map indicates the positions where Z values have been located in the X/Y plane.
+							</para>
+						</listitem>
+					</varlistentry>
+
+			</variablelist>
+	
+	</sect3>
+
+
+
+</sect2>
+
+</sect1>
+<sect1 id="plugins-kst-statistics">
+<title>Statistics Plugin</title>
+
+
+<sect2 id="plugins-statistics">
+<title>Statistics</title>
+<para>
+The statistics plugin calculates statistics for a given data set beyond those automatically calculated by &kst;.  Most of the output scalars are named such that the values they represent should be apparent.  Standard formulas are used to calculate the statistical values.
+</para>
+
+<screenshot>
+<screeninfo>Plugins - Statistics</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-plugins-statistics.png" format="PNG" />
+</imageobject>
+</mediaobject>
+</screenshot> 
+
+<sect3 id="plugins-statistics-inputs">
+<title>Inputs</title>
+<variablelist>
+
+<varlistentry>
+<term><guilabel>Data Array</guilabel> (vector)</term>
+<listitem>
+<para>
+The array of data whose statistic values needed to be calculated.
+</para>
+</listitem>
+</varlistentry>
+
+</variablelist>
+</sect3>
+
+<sect3 id="plugins-statistics-outputs">
+<title>Outputs</title>
+<variablelist>
+<varlistentry>
+<term><guilabel>Mean</guilabel> (scalar)</term>
+<listitem>
+<para>
+
+The mean of the data values.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Minimum</guilabel> (scalar)</term>
+<listitem>
+<para>
+The minimum value found in the data array.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Maximum</guilabel> (scalar)</term>
+<listitem>
+<para>
+The maximum value found in the data array.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Variance</guilabel> (scalar)</term>
+<listitem>
+<para>
+The variance of the data set.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Standard deviation</guilabel> (scalar)</term>
+<listitem>
+<para>
+The standard deviation of the data set.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Median</guilabel> (scalar)</term>
+<listitem>
+<para>
+The median of the data set.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Absolute deviation</guilabel> (scalar)</term>
+<listitem>
+<para>
+The absolute deviation of the data set.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Skewness</guilabel> (scalar)</term>
+<listitem>
+<para>
+The skewness of the data set.
+</para>
+</listitem>
+</varlistentry>
+
+
+<varlistentry>
+<term><guilabel>Kurtosis</guilabel> (scalar)</term>
+<listitem>
+<para>
+The kurtosis of the data set.
+</para>
+</listitem>
+</varlistentry>
+</variablelist>
+</sect3>
+</sect2>
+
+
+
+
+</sect1>
+
+<sect1 id="plugins-kstscript">
+<title>Using Plugins through KstScript</title>
+
+<sect2>
+<title>Overview</title>
+<para>Plugins can also be generated and edited through KstScript. See details in the <link linkend="class_Plugin">Plugin class</link> in the Working With KstScript chapter.</para>
+<para>To create a new plugin, using the following syntax:</para>
+<programlisting>plugin = new Plugin(Kst.pluginManager.modules["Plugin Name"])
+//the "Plugin Name" should be typed exactly as shown in the Create Plugin tab in the <link linkend="data-overview-datamanager">Data Manager</link>.
+</programlisting>
+<para>To set input values of this plugin</para>
+<programlisting>plugin.setInput(<replaceable>index of input</replaceable>, <replaceable>value of input</replaceable>);</programlisting>
+<para>You must validate the plugin before you can get its outputs. To validate the plugin, use the following method: </para>
+<programlisting>plugin.validate();</programlisting>
+<para>The output values stored in Kst as an objectcollection. To get an output of this plugin, you need to specify its index: </para>
+<programlisting>v = plugin.outputs[<replaceable>index of output</replaceable>];</programlisting>
+<para>To know the index of inputs and outputs, refer to their appearing orders in dialogs of plugins UI.</para>
+
+<para>See two examples below of using plugins through KstScript</para>
+</sect2>
+
+<sect2>
+<title>Examples</title>
+<example id="kstscript-stat-plugin-eg">
+<title>KstScript of Statistics Plugin</title>
+<programlisting>
+p = new Plugin(Kst.pluginManager.modules["Statistics"]);//create a new statistics plugin
+p.tagNmae = "Stat"; 			// this will be the plugin name in the data manager
+p.setInput(0, "x");			//x is the name of a vector whose various 
+                   			//statistical values are needed
+p.validate(); 				//validate the plugin
+s = new Scalar();
+s = p.outputs[0];			//to get the first output of this plugin, i.e the mean of x
+s.value					//the value of s will be printed on the screen, e.g. -4.12232621329268
+</programlisting>  
+</example>
+
+<example id="kstscript-interpolation-plugin-eg">
+<title>KstScript Function of Using Interpolation Plugins</title>
+<para>All Kst interpolation plugins have the same inputs and outputs; therefore, instead of writing lots of similar code to set inputs and get outputs for different interpolation schemes, we can write a kstScript function to do that. </para>
+<para>
+The following is a KstScript function which needs 3 vectors: x, y, ix, and a string as inputs. The function will use the string to specify an interpolation plugin, and apply the specified interpolation scheme to x, y vectors in order to get the interpolated y values for ix vector. Then the function will plot y vs x, and interpolated y vs ix.
+</para>
+
+<programlisting>
+//intplFuction.js
+function intpl(x,y,ix,intpl){
+//x is a vector used as X Array in interpolation plugins 
+//y is a vector used as Y Array 
+//ix is a vector used as X' Array
+//intpl is a string used to specify the name 
+//of a specific interpolation plugin, such as "Interpolation akima spline".
+//construct a new interpolation plugin  
+ pl = new Plugin(Kst.pluginManager.modules[intpl]);
+ pl.tagName = intpl+"plugin";
+//set the Inputs of the plugin
+ pl.setInput(0,x);
+ pl.setInput(1,y);
+ pl.setInput(2,ix);
+ pl.validate(); //validated the plugin
+
+iy = pl.outputs[0]; //gets the output vector from this plugin
+iy.tagName = "interpolated_y"; //call it interpolated_y vector in the data_manager
+//open a new window to plot x vs y and ix vs interpolated_y;
+w=new Window();
+p=new Plot(w);
+c1 = new Curve(x,y);
+c1.tagName = "y";
+c2 = new Curve(ix,iy);
+c2.tagName = "interpolated_y";
+p.curves.append(c1);
+p.curves.append(c2);
+p.xAxis.label = "X";
+p.yAxis.label = "Y";
+//edit the settings of the curves, such as line style, point style, etc
+//in order to make the two curves more distinguishable
+c1.hasPoints = true;
+c1.pointStyle = 3;
+c1.lineStyle = 1;
+c1.lineWidth = 2;
+c2.hasPoints = true;
+c2.pointStyle = 0;
+c2.lineWidth = 1;
+//add an legend
+l = new Legend(w);
+l.fontSize = 5;
+l.addCurve(c1);
+l.addCurve(c2);
+   }
+</programlisting>
+</example>
+<para>
+Let us see an example of using the above function. First, save the above script in a file called <filename>intplFunction.js</filename> in your home folder, and open a new text file to copy the following lines, then save this file as <filename>intplTest.js</filename> in your home folder.
+<programlisting>
+//intplTest.js
+//construct 2 vectors x and y, with y = sin(x) and x = {-10,-9,-8...0...8,9,10}
+x = new Vector();
+x.tagName = "x";
+y = new Vector();
+y.tagName = "y";
+x.resize(21);
+y.resize(21);
+var k=-10;
+for(var i=0; i&#060;21; i++){ 
+x[i]=k;
+y[i]=Math.sin(x[i]);
+k++;} 
+//construct the ix vector; ix={-10,-9.75,-9.25,-9,...0...9,9.25,9,75,10}
+//The y values of ix will be obtained by interpolation.
+ix=new Vector();
+ix.tagName = "ix";
+ix.resize(81);
+var k=-10;
+for(var i=0; i&#060;81; i++){
+ix[i]=k;
+k = k+0.25;}
+//load intpl function script
+loadScript('/home/vyiwen/intplFunction.js');
+//call intpl function
+intpl(x,y,ix,"Interpolation cubic spline")
+</programlisting>
+
+</para>
+
+<para>
+Open Kst, and load <filename>intplTest.js</filename> in the Java Console like this:
+<command>loadScript('/home/vyiwen/intplTest.js');</command>
+</para>
+
+<para>After loading the script, you should see the plots below: </para>
+
+<screenshot>
+<screeninfo>interpolation eg</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="Screenshot-kst-plugins-interpolation-eg.png" format="PNG" />
+</imageobject>
+<textobject>
+<phrase>interpolation eg</phrase>
+</textobject>
+</mediaobject>
+</screenshot></sect2>
+
+
+</sect1>
+
+</chapter>
+
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: xml
+sgml-omittag:nil
+sgml-shorttag:nil
+sgml-namecase-general:nil
+sgml-general-insert-case:lower
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:0
+sgml-indent-data:true
+sgml-parent-document:("index.docbook" "book" "chapter")
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+-->

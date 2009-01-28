@@ -1,0 +1,197 @@
+<html><head><title>Datasources</title><link rel="stylesheet" href="help:/common/kde-default.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets V1.67.2"><meta name="keywords" content="KDE, kdeextragear, kdeextragear-2, Kst, plotting, plot"><link rel="start" href="index.html" title="The Kst Handbook"><link rel="up" href="data.html" title="Chapter 3. Working With Data"><link rel="prev" href="data-tools.html" title="Data Tools"><link rel="next" href="views.html" title="Chapter 4. Working with Views"><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta name="GENERATOR" content="KDE XSL Stylesheet V1.13 using libxslt"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div style="background-image: url(help:/common/top-middle.png); width: 100%; height: 131px;"><div style="position: absolute;                      right: 0px;"><img src="help:/common/top-right-konqueror.png" style="margin: 0px" alt=""></div><div style="position: absolute;                         top: 25px;                          right: 100px;                          text-align: right;                          font-size: xx-large;                          font-weight: bold;                          text-shadow: #fff 0px 0px 5px;                          color: #444">Datasources</div></div><div style="margin-top: 20px; background-color: #white;                        color: black;                       margin-left: 20px;                        margin-right: 20px;"><div style="position: absolute;                          left: 20px;"><a accesskey="p" href="data-tools.html">Prev</a></div><div style="position: absolute;                          right: 20px;"><a accesskey="n" href="views.html">Next</a></div><div class="navCenter">Working With Data</div></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="data-sources"></a>Datasources</h2></div></div></div><p>
+<span class="application">Kst</span> uses externally linked datasources to read from data files. This means that new data formats can be transparently added to the <span class="application">Kst</span> repertoire. 
+
+Currently, the <span class="application">Kst</span> distribution includes the following default datasources:
+<div class="itemizedlist"><ul type="disc"><li><p><a href="data-sources.html#data-sources-ascii" title="ASCII">ASCII</a></p></li><li><p><a href="data-sources.html#data-sources-dirfiles" title="Dirfiles">Dirfiles</a></p></li><li><p><a href="data-sources.html#data-sources-healpix" title="HEALPix FITS files">HEALPix</a></p></li><li><p><a href="data-sources.html#data-sources-qimage" title="QImage">QImage</a></p></li><li><p><a href="data-sources.html#data-sources-indirect" title="Indirect">Indirect</a></p></li><li><p><a href="data-sources.html#data-sources-cdf" title="CDF">CDF</a></p></li><li><p><a href="data-sources.html#data-sources-netcdf" title="netCDF">netCDF</a></p></li><li><p><a href="data-sources.html#data-sources-lfiio" title="LFIIO">LFIIO</a></p></li><li><p><a href="data-sources.html#data-sources-scuba" title="SCUBA File Reader">SCUBA</a></p></li></ul></div>
+
+If you have a data format which you would like <span class="application">Kst</span> to read, it's easy to <a href="supportingadditionalfileformats.html" title="Appendix C. Supporting Additional File Formats">create</a> your own.
+</p><p>
+All of the data sources read from files using KIO, which is usually able to load data through common file compression formats (e.g. BZIP2, GZIP, ZIP, TAR) and most popular networking protocols (e.g. HTTP, FTP, SFTP, SMB). For more information on which formats are supported on your system type <strong class="userinput"><code><span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="command"><span><strong class="command">kinfocenter</strong></span></span></code></strong> at the command line and inspect the protocols tab. If <span class="application">Kst</span> detects that you have typed a URL into the filename of a vector or matrix, for example, a “<span class="quote"><span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="guiitem"><span class="guibutton">Connect</span></span></span>” button will appear. Clicking the <span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="guiitem"><span class="guibutton">Connect</span></span> button instructs <span class="application">Kst</span> to load the indicated data, and channel it to a suitable data source.
+</p><a name="data-sources-concepts"></a><p>
+The following concepts are important in understanding how <span class="application">Kst</span> works with
+data sources. Some terminology is also introduced in this section.
+</p><div class="variablelist"><dl><dt><span class="term">Samples</span></dt><dd><p>
+A sample is considered to be the fundamental unit with respect to data files.
+Each sample consists of one data value in the file.  Note, however, that one sample
+may not correspond to one value in a data vector in <span class="application">Kst</span>, due to the concept of
+<a href="data-sources.html#data-sources-concepts-frames">frames</a>.
+</p></dd><dt><span class="term">Fields</span></dt><dd><p>
+A field usually corresponds to one vector in <span class="application">Kst</span>.  For example, a column in an
+ASCII data file is considered to be one field.  Each field can have an explicit
+or implicit name.  Datasource readers provide functions for reading and obtaining
+fields and field names.
+</p></dd><dt><span class="term"><a name="data-sources-concepts-frames"></a>Frames</span></dt><dd><p>
+A frame corresponds to a set number of samples, and each field in a data file
+can have its own ratio of samples per frame.  The size of a data file
+is measured by the number of frames it contains.  For ASCII data files, the number of samples
+per frame is 1, but for some data files, there may be multiple samples per frame.  In the below
+illustration, the first 3 frames of an imaginary data file are shown.  In this particular data
+file, Field 1 has a ratio of 5 samples per frame, Field 2 has a ratio of 2 samples per frame,
+Field 3 has a ratio of 3 samples per frame, and Field 4 has a ratio of 1 sample per frame.
+</p><p>
+<span class="inlinemediaobject"><img src="Diagram-kst-data-framesconcept.png"></span>
+</p><p>
+Depending on the specific data vector settings in <span class="application">Kst</span>, data from files may be read as frames instead of samples, with either the first sample in a frame or the mean of all the samples in a frame representing the value of the frame. This capability can be useful for reducing extremely large data-sets to a more manageable size.
+</p></dd><dt><span class="term"><a name="data-sources-concepts-index"></a>INDEX field</span></dt><dd><p>
+Some data files may not have a field that represents the x axis of a plot. However, <span class="application">Kst</span>
+implicitly creates an INDEX field for all data sources.  The INDEX field simply contains
+integers from 0 to N-1, where N is the number of frames in the data file.
+</p></dd></dl></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="data-sources-ascii"></a>ASCII</h3></div></div></div><p>
+The simplest input file format is the ASCII text file.  These files are usually human-readable and
+can be easily created by hand or simple scripts if desired.  The following is an example of an ASCII input file.
+</p><div class="informalexample"><pre class="screen">
+112.5 3776 428
+187.5 5380 429
+262.5 5245 345
+337.5 2942 184
+412.5 1861 119
+487.5 2424 138
+567.5 2520 162
+637.5 1868 144
+712.5 1736 211
+787.5 1736 211
+862.5 2172 292
+937.5 1174 377
+1000.5 499 623
+</pre></div><div class="screenshot"><div xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="mediaobject"><hr><img src="Screenshot-kst-data-asciiconfig.png"><hr></div></div><div class="variablelist"><dl><dt><span class="term">Comment Indicators</span></dt><dd><p>
+By default, commented lines in ASCII files start with one of the characters in this set
+<code class="literal">{#, !, /, ;, c}</code>.  All commented lines and empty lines
+are ignored by <span class="application">Kst</span>.  Valid numbers include those with decimals, negative signs,
+or <code class="literal">e</code>, to indicate scientific notation. Invalid numbers (such as
+English words) are replaced with 0 by <span class="application">Kst</span>.
+</p></dd><dt><span class="term">Interpret ... As ...</span></dt><dd><p>
+See the <a href="view-types.html#view-types-plot-interpretas">corresponding section</a> for the Plot Dialog.
+</p></dd><dt><span class="term">Always accept files matching:</span></dt><dd><p>
+Here you can enter an expression which you want to designate ASCII data files, in case they are being claimed by another data source.
+</p></dd><dt><span class="term">Data starts at line:</span></dt><dd><p>
+Data before this line will be ignored. Setting this value to zero ensures that all of the data will be read.
+</p></dd><dt><span class="term">Read field names from line:</span></dt><dd><p>
+If this option is selected, the field names for the file's vectors will be read from the specified line. If the columns do not have labels, field names are assigned by <span class="application">Kst</span> based on the
+order of the columns (with the leftmost column having a field name of <code class="literal">1</code>).
+</p></dd><dt><span class="term">Data format</span></dt><dd><p>
+Choose the option which describes how the data is delimited (how the columns and rows are separated). Each column of this file represents a field, while each row represents one frame.
+Columns are typically separated by tabs or spaces, and rows are separated by carriage returns.
+</p></dd></dl></div></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="data-sources-dirfiles"></a>Dirfiles</h3></div></div></div><p>
+Dirfiles are a very simple data source designed to be read efficiently by <span class="application">Kst</span>.  The data
+source is a directory which contains each raw field in its own binary file.  Because the data
+for a given field are stored sequentially on disk in a binary format, reading is very efficient,
+typically limited by hard disk speed.  Fixed and floating point binary formats are supported, as
+well as calibrations, bit fields and linear combinations of channels.
+</p><p>
+The directory contains one file for each field.
+These files contain only the raw samples, written sequentially.  As in the rest of <span class="application">Kst</span>, each field in a
+datasource must have the 
+same number of frames, but each field may have a different (fixed) number of samples per frame.  Fomatting
+and calibration information is contained in a file in the Dirfile called
+<code class="filename">format</code>, which lists each field and its properties.  Below is example of such a file: In 
+this file, a “<span class="quote">#</span>” specifies a comment, and for all fields, the first column specifies the field name.
+</p><div class="informalexample"><pre class="screen">
+##### Raw fields ####
+# data types: 
+# c: 8 bit signed
+# u: 16 bit unsigned.  U: 32 bit unsigned
+# s: 16 bit signed     S: 32 bit signed
+# f: 32 bit float      d: 64 bit float
+# The fieldname is also the name of the raw binary file 
+# holding the data.
+# Fieldname  RAW    datatype   samples/frame
+sensor1      RAW       s         1
+sensor2      RAW       U         20
+sensor3      RAW       c         1
+#
+#### derived fields ####
+# LINCOM fields: (F_out = F1_in*m+b [+ F2_in*m+b [+ ...]])
+# Fieldname  LINCOM  N  Field1_in       gain        offset 
+S1V          LINCOM  1  sensor1    1.52587890625E-4 0.00
+#
+# LINTERP Fields: Calibrate using an ascii lookup table.
+# lookup table format: 
+#     2 whitespace separated columns
+#     The first colum is raw values, and the second is 
+#     a corresponding calibrated value.  The file must be
+#     sorted by column 1.
+# The table is linearly interpolated to the value of 
+# Field_in.
+# Fieldname  LINTERP  Field_in  Calibration_file
+S2K          LINTERP  sensor2   /data/etc/calibration/C2K.cal
+#
+# BIT values: the value of 1 bit of raw data: 0 or 1
+# Fieldname  BIT  Field_in  bit_num (0 to 7 for chars)
+RELAY1       BIT  sensor3   0
+RELAY2       BIT  sensor3   1 
+#
+# The next line includes the contents of another format file 
+# into this one.  Any fields refered to in this file will be 
+# looked for in ../work/, not in ./, so this is essentially 
+# including an entire other datasource.
+INCLUDE ../work/format
+
+</pre></div><p>
+The following code fragment (which foolishly ignores all pretences at error
+checking) could be used to create this data source...
+</p><div class="informalexample"><pre class="screen">
+  char bits[1000];
+  short s1[1000];
+  unsigned int s2[20000];
+  int fp;
+
+  ......
+  /* fill bits, s1, and s2 with data...*/
+  ......
+
+  fp = open("/data/example/sensor3",  O_WRONLY|O_CREAT, 00644);
+  write(fp, bits, 1000*sizeof(char));
+  close(fp);
+
+  fp = open("/data/example/sensor2",  O_WRONLY|O_CREAT, 00644);
+  write(fp, bits, 1000*20*sizeof(unsigned int));
+  close(fp);
+
+  fp = open("/data/example/sensor1",  O_WRONLY|O_CREAT, 00644);
+  write(fp, bits, 1000*sizeof(short));
+  close(fp);
+
+  /* create the ascii file /data/example/format, listed above */
+  /* create the cal file, /data/etc/calibration/C2K.cal,
+     described above. */
+
+  ......
+</pre></div><p>
+Dirfiles can be used for real time data, but as each field is written separately, this
+requires some extra care.  First of all, the writing application should avoid all buffering 
+or caching - raw writes as in the above example work fine.  Secondly, the order in which the
+fields are written need to be considered:  <span class="application">Kst</span> determines the number of frames avalible in
+the data source from the size of the file containing the first RAW field encountered in the
+format file.  So the first RAW field in <code class="filename">format</code> needs to be the last one
+written, as in the above example.  If the data source is being read over NFS, attribute caching
+needs to be turned off.
+</p><p>
+When selecting a dirfile for use in <span class="application">Kst</span>, the directory containing the field files should be
+selected. <span class="application">Kst</span> will then automatically look for a <code class="filename">format</code> file, if it exists,
+to determine the fields and their properties.
+</p></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="data-sources-healpix"></a>HEALPix FITS files</h3></div></div></div><p>
+HEALPix is a pixelisation scheme for the sphere. More information can be found at <a href="http://healpix.jpl.nasa.gov/" target="_top">http://healpix.jpl.nasa.gov/</a>. HEALPix data is typically be loaded into <span class="application">Kst</span> as a matrix. For this data source to work you must have the CFITSIO libraries installed. An image of a sample HEALPix matrix is shown below:
+</p><div class="screenshot"><div xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="mediaobject"><hr><img src="Screenshot-kst-data-healpixexample.png"><hr></div></div><p>
+Here is the configuration dialog for the HEALPix data source, an explanation of the possible options is given underneath:
+</p><div class="screenshot"><div xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="mediaobject"><hr><img src="Screenshot-kst-data-healpixconfig.png"><hr></div></div><div class="variablelist"><dl><dt><span class="term">Dimensions</span></dt><dd><p>
+The size of the matrix to create based on the HEALPix data. The larger the matrix, the higher the resolution. If you choose dimensions which are larger than the resolution of the data in the HEALPix file, you will be able to see the shape of the HEALPix pixels in the image of the matrix.
+</p></dd><dt><span class="term">Theta / Phi Range</span></dt><dd><p>
+The colatitude / azimuth range of data to extract.
+</p></dd><dt><span class="term">Theta / Phi Range</span></dt><dd><p>
+The colatitude / azimuth range of data to extract.
+</p></dd></dl></div></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="data-sources-qimage"></a>QImage</h3></div></div></div><p>
+The QImage datasource allows you to read image data into <span class="application">Kst</span> matrices from a variety of formats. The collection of supported formats depends on the libraries installed on your system, but most popular formats are generally readable. If you'd just like to add a picutre to a plot, then the <a href="view-types.html#view-types-pictures" title="Pictures">Picture</a> annotation object is a better choice to use. An example of an image plotted from a QImage sourced matrix is shown below:
+</p><div class="screenshot"><div xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="mediaobject"><hr><img src="Screenshot-kst-data-qimageexample.png"><hr></div></div></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="data-sources-indirect"></a>Indirect</h3></div></div></div><p>
+This is a “<span class="quote">helper</span>” data source, which allows you to access data through a file pointer. If you put the URL or path of a data file on the first line of a text file with the extension <code class="filename">.cur</code>, then the Indirect data source is used to load the referenced file. The use of this is that the contents of the <code class="filename">.cur</code> file can then be externally modified to change the data file which is loaded by <span class="application">Kst</span>.
+</p></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="data-sources-cdf"></a>CDF</h3></div></div></div><p>
+The <a href="http://cdf.gsfc.nasa.gov/" target="_top">Common Data Format</a> (CDF) was developed by NASA. It is described as “<span class="quote">a self-describing data format for the storage and manipulation of scalar and multidimensional data in a platform- and discipline-independent fashion.</span>”. This means that it is a generalized file format for storing and retrieving data, similar to FITS. For this datasource to work you must have the CDF libraries installed.
+</p></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="data-sources-netcdf"></a>netCDF</h3></div></div></div><p>
+The <a href="http://www.unidata.ucar.edu/software/netcdf/" target="_top">network Common Data Form</a> (netCDF) was developed by <a href="http://www.unidata.ucar.edu/" target="_top">Unidata</a>. They describe it as “<span class="quote">a set of interfaces for array-oriented data access and a freely-distributed collection of data access libraries for C, Fortran, C++, Java, and other languages. The netCDF libraries support a machine-independent format for representing scientific data. Together, the interfaces, libraries, and format support the creation, access, and sharing of scientific data.</span>”. In practice, it is similar to the FITS and CDF formats. For this datasource to work you must have the netCDF libraries installed.
+</p></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="data-sources-lfiio"></a>LFIIO</h3></div></div></div><p>
+The LFIIO datasource reads FITS format data files created by the LFI component of the <a href="http://www.rssd.esa.int/Planck" target="_top">Planck</a> satellite. It is currently the default reader for FITS files in <span class="application">Kst</span>. For this datasource to work you must have CFITSIO installed.
+</p></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="data-sources-wmap"></a>WMAP Reader</h3></div></div></div><p>
+This datasource allows you to load vectors from WMAP Time Ordered Data (TOD) files. For more information, see <a href="http://lambda.gsfc.nasa.gov/" target="_top">http://lambda.gsfc.nasa.gov/</a>. For this datasource to work you must have CFITSIO installed.
+</p></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="data-sources-scuba"></a>SCUBA File Reader</h3></div></div></div><p>
+This datasource allows you to read the datafiles produced for <a href="http://www.jach.hawaii.edu/JCMT/continuum/" target="_top">SCUBA</a>, an instrument on the JCMT telescope in Hawaii.
+</p></div></div><div style="background-color: #white; color: black;                  margin-top: 20px; margin-left: 20px;                  margin-right: 20px;"><div style="position: absolute; left: 20px;"><a accesskey="p" href="data-tools.html">Prev</a></div><div style="position: absolute; right: 20px;"><a accesskey="n" href="views.html">Next</a></div><div align="center"><a accesskey="h" href="index.html">Home</a></div></div><div style="background-color: #white;   color: black;         margin-left: 20px;   margin-right: 20px;"><div class="navLeft">Data Tools </div><div class="navRight"> Working with Views</div><div class="navCenter"><a accesskey="u" href="data.html">Up</a></div></div><br><br><div class="bannerBottom" style="background-image: url(help:/common/bottom-middle.png);                                        background-repeat: x-repeat;                                         width: 100%;                                         height: 100px;                                         bottom:0px;"><div class="BannerBottomRight"><img src="help:/common/bottom-right.png" style="margin: 0px" alt=""></div><div class="bannerBottomLeft"><img src="help:/common/bottom-left.png" style="margin: 0px;" alt=""></div><div id="comments" style="position:relative; top: 5px; left: 1em; height:85px; width: 50%; color: #cfe1f6"><p>Would you like to make a comment or contribute an update to this page?<br>
+        Send feedback to the <a href="mailto:kde-docs@kdemail.net" style="background:transparent; color:#cfe1f6; text-decoration: underline;">KDE Docs Team</a></p></div></div></body></html>

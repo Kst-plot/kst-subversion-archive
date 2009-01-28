@@ -1,0 +1,37 @@
+<html><head><title>Creating a Data Object Plugin</title><link rel="stylesheet" href="help:/common/kde-default.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets V1.67.2"><meta name="keywords" content="KDE, kdeextragear, kdeextragear-2, Kst, plotting, plot"><link rel="start" href="index.html" title="The Kst Handbook"><link rel="up" href="creatingplugins.html" title="Appendix B. Creating Additional Plugins"><link rel="prev" href="creatingplugins.html" title="Appendix B. Creating Additional Plugins"><link rel="next" href="creatingcplugin.html" title="Creating a “C” Plugin"><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta name="GENERATOR" content="KDE XSL Stylesheet V1.13 using libxslt"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div style="background-image: url(help:/common/top-middle.png); width: 100%; height: 131px;"><div style="position: absolute;                      right: 0px;"><img src="help:/common/top-right-konqueror.png" style="margin: 0px" alt=""></div><div style="position: absolute;                         top: 25px;                          right: 100px;                          text-align: right;                          font-size: xx-large;                          font-weight: bold;                          text-shadow: #fff 0px 0px 5px;                          color: #444">Creating a Data Object Plugin</div></div><div style="margin-top: 20px; background-color: #white;                        color: black;                       margin-left: 20px;                        margin-right: 20px;"><div style="position: absolute;                          left: 20px;"><a accesskey="p" href="creatingplugins.html">Prev</a></div><div style="position: absolute;                          right: 20px;"><a accesskey="n" href="creatingcplugin.html">Next</a></div><div class="navCenter">Creating Additional Plugins</div></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="creatingdataobjectplugin"></a>Creating a Data Object Plugin</h2></div></div></div><p>
+The purpose of a <code class="classname">KstDataObject</code> plugin is to provide an implementation of the
+virtual class <code class="classname">KstDataObject</code>.  Plugin writers need to provide a class that
+inherits <code class="classname">KstDataObject</code> directly.  You will also need to provide a 
+<code class="filename">.desktop</code>
+file and a configuration widget for this plugin.  The benefit of this type of
+plugin over <code class="classname">KstBasicPlugin</code> plugins is the degree of control you'll have over
+the implementation.  Most plugins should probably use <code class="classname">KstBasicPlugin</code>, but if
+you need a custom dialog for instance, this is the type of plugin for you.
+</p><p>
+Here is an example of the <code class="filename">.desktop</code> file named <code class="filename">kstobject_myplugin.desktop</code>:
+</p><div class="informalexample"><pre class="screen">
+    [Desktop Entry]
+    Encoding=UTF-8
+    Type=Service
+    ServiceTypes=Kst Data Object
+    X-KDE-ModuleType=Plugin
+    X-KDE-Library=kstobject_fooplugin
+    X-Kst-Plugin-Author=Your Name
+    X-Kst-Plugin-Version=0.1
+    Name=Foo
+    Comment=A plugin that provides Foo algorithm.
+</pre></div><p>
+You C++ class should inherit <code class="classname">KstDataObject</code> and provide implementations of the
+pure virtual methods found in <code class="classname">KstDataObject</code>:
+</p><div class="informalexample"><pre class="screen">
+    virtual UpdateType update(int updateCounter = -1) = 0;
+    virtual QString propertyString() const = 0;
+    virtual void showNewDialog() = 0;
+    virtual void showEditDialog() = 0;
+</pre></div><p>
+There is also a number of regular virtual methods that can be reimplemented as needed.
+</p><p>
+See the Cross Power Spectrum plugin for an example implementation and the
+<code class="classname">KstDataObject</code> header file for API declarations.
+</p></div><div style="background-color: #white; color: black;                  margin-top: 20px; margin-left: 20px;                  margin-right: 20px;"><div style="position: absolute; left: 20px;"><a accesskey="p" href="creatingplugins.html">Prev</a></div><div style="position: absolute; right: 20px;"><a accesskey="n" href="creatingcplugin.html">Next</a></div><div align="center"><a accesskey="h" href="index.html">Home</a></div></div><div style="background-color: #white;   color: black;         margin-left: 20px;   margin-right: 20px;"><div class="navLeft">Creating Additional Plugins </div><div class="navRight"> Creating a “<span class="quote">C</span>” Plugin</div><div class="navCenter"><a accesskey="u" href="creatingplugins.html">Up</a></div></div><br><br><div class="bannerBottom" style="background-image: url(help:/common/bottom-middle.png);                                        background-repeat: x-repeat;                                         width: 100%;                                         height: 100px;                                         bottom:0px;"><div class="BannerBottomRight"><img src="help:/common/bottom-right.png" style="margin: 0px" alt=""></div><div class="bannerBottomLeft"><img src="help:/common/bottom-left.png" style="margin: 0px;" alt=""></div><div id="comments" style="position:relative; top: 5px; left: 1em; height:85px; width: 50%; color: #cfe1f6"><p>Would you like to make a comment or contribute an update to this page?<br>
+        Send feedback to the <a href="mailto:kde-docs@kdemail.net" style="background:transparent; color:#cfe1f6; text-decoration: underline;">KDE Docs Team</a></p></div></div></body></html>

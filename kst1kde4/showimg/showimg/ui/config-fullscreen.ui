@@ -1,0 +1,285 @@
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<class>FullScreenOptions</class>
+<widget class="QWidget">
+    <property name="name">
+        <cstring>FullScreenLayout</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>307</width>
+            <height>432</height>
+        </rect>
+    </property>
+    <vbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QGroupBox">
+            <property name="name">
+                <cstring>fsGroupBox</cstring>
+            </property>
+            <property name="title">
+                <string>Full Screen</string>
+            </property>
+            <vbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QCheckBox">
+                    <property name="name">
+                        <cstring>sToolbar</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Show &amp;toolbar</string>
+                    </property>
+                </widget>
+                <widget class="QCheckBox">
+                    <property name="name">
+                        <cstring>sStatusbar</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Show &amp;status bar</string>
+                    </property>
+                </widget>
+            </vbox>
+        </widget>
+        <widget class="QGroupBox">
+            <property name="name">
+                <cstring>osdGroupBox</cstring>
+            </property>
+            <property name="title">
+                <string>OSD</string>
+            </property>
+            <vbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>osdcbfclayout</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QCheckBox">
+                            <property name="name">
+                                <cstring>sOSDcheckBox</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Display &amp;OSD</string>
+                            </property>
+                            <property name="checked">
+                                <bool>true</bool>
+                            </property>
+                        </widget>
+                        <widget class="KFontRequester">
+                            <property name="name">
+                                <cstring>osdFontRequester</cstring>
+                            </property>
+                        </widget>
+                    </hbox>
+                </widget>
+                <widget class="QGroupBox">
+                    <property name="name">
+                        <cstring>osdTimegroupBox</cstring>
+                    </property>
+                    <property name="title">
+                        <string>Time</string>
+                    </property>
+                    <vbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QSlider">
+                            <property name="name">
+                                <cstring>osdTimeSlider</cstring>
+                            </property>
+                            <property name="minValue">
+                                <number>1</number>
+                            </property>
+                            <property name="maxValue">
+                                <number>60</number>
+                            </property>
+                            <property name="lineStep">
+                                <number>1</number>
+                            </property>
+                            <property name="value">
+                                <number>10</number>
+                            </property>
+                            <property name="orientation">
+                                <enum>Horizontal</enum>
+                            </property>
+                            <property name="tickmarks">
+                                <enum>Below</enum>
+                            </property>
+                            <property name="tickInterval">
+                                <number>5</number>
+                            </property>
+                        </widget>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>osdTimeTextLabel</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Number of Secondes</string>
+                            </property>
+                            <property name="alignment">
+                                <set>AlignCenter</set>
+                            </property>
+                        </widget>
+                    </vbox>
+                </widget>
+                <widget class="QButtonGroup">
+                    <property name="name">
+                        <cstring>osdPosbuttonGroup</cstring>
+                    </property>
+                    <property name="title">
+                        <string>Position</string>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QRadioButton">
+                            <property name="name">
+                                <cstring>osdTopRadioButton</cstring>
+                            </property>
+                            <property name="text">
+                                <string>To&amp;p</string>
+                            </property>
+                            <property name="checked">
+                                <bool>true</bool>
+                            </property>
+                        </widget>
+                        <widget class="QRadioButton">
+                            <property name="name">
+                                <cstring>osdBottomRadioButton</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Botto&amp;m</string>
+                            </property>
+                        </widget>
+                    </hbox>
+                </widget>
+                <widget class="QGroupBox">
+                    <property name="name">
+                        <cstring>osdOptionsGroupBox</cstring>
+                    </property>
+                    <property name="title">
+                        <string>Options</string>
+                    </property>
+                    <grid>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QCheckBox" row="0" column="0">
+                            <property name="name">
+                                <cstring>osdOptFilenameCheckBox</cstring>
+                            </property>
+                            <property name="text">
+                                <string>File &amp;Name</string>
+                            </property>
+                        </widget>
+                        <widget class="QCheckBox" row="1" column="0">
+                            <property name="name">
+                                <cstring>osdOptFullpathCheckBox</cstring>
+                            </property>
+                            <property name="text">
+                                <string>File &amp;Full Path</string>
+                            </property>
+                        </widget>
+                        <widget class="QCheckBox" row="2" column="0">
+                            <property name="name">
+                                <cstring>osdOptDimensionsCheckBox</cstring>
+                            </property>
+                            <property name="text">
+                                <string>&amp;Dimensions</string>
+                            </property>
+                        </widget>
+                        <widget class="QCheckBox" row="2" column="1">
+                            <property name="name">
+                                <cstring>osdOptExifCheckBox</cstring>
+                            </property>
+                            <property name="text">
+                                <string>&amp;Exif Data</string>
+                            </property>
+                        </widget>
+                        <widget class="QCheckBox" row="0" column="1">
+                            <property name="name">
+                                <cstring>osdOptCommentsCheckBox</cstring>
+                            </property>
+                            <property name="text">
+                                <string>&amp;Comments</string>
+                            </property>
+                        </widget>
+                        <widget class="QCheckBox" row="1" column="1">
+                            <property name="name">
+                                <cstring>osdOptDatetimeCheckBox</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Date/&amp;Time</string>
+                            </property>
+                        </widget>
+                    </grid>
+                </widget>
+            </vbox>
+        </widget>
+        <spacer>
+            <property name="name">
+                <cstring>osdSpacer</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Vertical</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>20</width>
+                    <height>40</height>
+                </size>
+            </property>
+        </spacer>
+    </vbox>
+</widget>
+<connections>
+    <connection>
+        <sender>sOSDcheckBox</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>osdOptionsGroupBox</receiver>
+        <slot>setEnabled(bool)</slot>
+    </connection>
+    <connection>
+        <sender>sOSDcheckBox</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>osdPosbuttonGroup</receiver>
+        <slot>setEnabled(bool)</slot>
+    </connection>
+    <connection>
+        <sender>sOSDcheckBox</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>osdFontRequester</receiver>
+        <slot>setEnabled(bool)</slot>
+    </connection>
+    <connection>
+        <sender>sOSDcheckBox</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>osdTimegroupBox</receiver>
+        <slot>setEnabled(bool)</slot>
+    </connection>
+    <connection>
+        <sender>osdTimeSlider</sender>
+        <signal>sliderMoved(int)</signal>
+        <receiver>osdTimeTextLabel</receiver>
+        <slot>setNum(int)</slot>
+    </connection>
+</connections>
+<layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>kfontrequester.h</includehint>
+</includehints>
+</UI>

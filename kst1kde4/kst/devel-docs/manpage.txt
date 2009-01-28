@@ -1,0 +1,17 @@
+How to regenerate the manpage before a release:
+
+1. In the doc/kst folder, type:
+
+  make manpage
+
+2. If 1. fails then get the latest docbook-xsl package from:
+http://sourceforge.net/project/showfiles.php?group_id=21935
+Untar it somewhere, let's call it $XSLDIR
+In the doc/kst folder type:
+
+  meinproc --stylesheet $XSLDIR/manpages/docbook.xsl index.docbook
+
+The output file is kst.1
+
+--
+Philip Rodrigues 2005-01-17

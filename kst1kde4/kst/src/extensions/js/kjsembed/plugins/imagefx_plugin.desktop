@@ -1,0 +1,15 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=ImageFX
+Name[bg]=Визуални ефекти
+Name[gl]=ImaxeFX
+Name[hi]=इमेज-एफ़एक्स
+Name[hr]=Efekti
+Name[it]=Effetti Immagini
+Name[nds]=Bildeffekten
+Name[sv]=Bildeffekt
+Name[tg]=ТасвириFX
+Name[xx]=xxImageFXxx
+ServiceTypes=JSBindingPlugin/Binding
+Type=Service
+X-KDE-Library=libimagefxplugin

@@ -1,0 +1,166 @@
+<html><head><title>Data Tools</title><link rel="stylesheet" href="help:/common/kde-default.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets V1.67.2"><meta name="keywords" content="KDE, kdeextragear, kdeextragear-2, Kst, plotting, plot"><link rel="start" href="index.html" title="The Kst Handbook"><link rel="up" href="data.html" title="Chapter 3. Working With Data"><link rel="prev" href="data-types.html" title="Data Types"><link rel="next" href="data-sources.html" title="Datasources"><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta name="GENERATOR" content="KDE XSL Stylesheet V1.13 using libxslt"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div style="background-image: url(help:/common/top-middle.png); width: 100%; height: 131px;"><div style="position: absolute;                      right: 0px;"><img src="help:/common/top-right-konqueror.png" style="margin: 0px" alt=""></div><div style="position: absolute;                         top: 25px;                          right: 100px;                          text-align: right;                          font-size: xx-large;                          font-weight: bold;                          text-shadow: #fff 0px 0px 5px;                          color: #444">Data Tools</div></div><div style="margin-top: 20px; background-color: #white;                        color: black;                       margin-left: 20px;                        margin-right: 20px;"><div style="position: absolute;                          left: 20px;"><a accesskey="p" href="data-types.html">Prev</a></div><div style="position: absolute;                          right: 20px;"><a accesskey="n" href="data-sources.html">Next</a></div><div class="navCenter">Working With Data</div></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="data-tools"></a>Data Tools</h2></div></div></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="data-tools-wizard"></a>The Data Wizard</h3></div></div></div><p>
+The Data Wizard provides a graphical quick and easy way of importing data into <span class="application">Kst</span>- automatically creating vectors, curves, power spectra, and plots. To launch the wizard, select <span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="guiitem"><span class="guimenu">Tools</span></span>-&gt;<span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="guiitem"><span class="guimenuitem">Data Wizard</span></span> or click on the icon
+<span class="inlinemediaobject"><img src="Icon-kst-datawizard.png" alt="data wizard icon"></span>
+in the toolbar. The <span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="guiitem"><span class="guilabel">Data Source</span></span> pane will appear as following and you will need to select a data source file.
+ 
+</p><div class="screenshot"><div xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="mediaobject"><hr><img src="Screenshot-kst-data-wizard-datasource.png" alt="data source"><hr></div></div><div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="kst-datatools-configure-data-source"></a>Configuring Data Source</h4></div></div></div><p>
+After selecting the data source file, you may need to configure the file by clicking on the <span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="guiitem"><span class="guibutton">Configure...</span></span> button.
+For information on how to use the <span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="guiitem"><span class="guilabel">Configure Data Source</span></span> dialog, see the <a href="data-sources.html#data-sources-ascii" title="ASCII">ASCII datasource</a> section.
+</p><p>
+After configuring the data source file, click on the <span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="guiitem"><span class="guibutton">OK</span></span> button to close the <span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="guiitem"><span class="guilabel">Configure Data Source</span></span> dialog, and click on the <span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="guiitem"><span class="guibutton">Next</span></span> button in the <span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="guiitem"><span class="guilabel">Data Source</span></span> pane. The <span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="guiitem"><span class="guilabel">Select Data</span></span> pane will appear as shown below.
+</p></div><div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="data-tools-wizard-selectdatafile"></a>Selecting Data</h4></div></div></div><div class="screenshot"><div xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="mediaobject"><hr><img src="Screenshot-kst-data-wizard-selectdata.png" alt="Data Wizard Select Data Dialog"><hr></div></div><p>
+Here you can select the fields you wish to import into <span class="application">Kst</span>. The right and left arrow buttons allow you to move data vectors back and forth between the <span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="guiitem"><span class="guilabel">Available data</span></span> and the <span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="guiitem"><span class="guilabel">Selected data</span></span> lists. The up and down arrow buttons allow you to move the positions of the selected vectors up and down in the <span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="guiitem"><span class="guilabel">Selected data</span></span> list.  You may filter the list of fields by entering a string to match (wildcards such as <code class="literal">*</code> are supported) into the text box above the list. Click the <span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="guiitem"><span class="guibutton">Next</span></span> button to advance to the <span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="guiitem"><span class="guilabel">Data Presentation</span></span> pane.
+</p></div><div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="data-tools-wizard-presentation"></a>Presentation</h4></div></div></div><div class="screenshot"><div xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="mediaobject"><hr><img src="Screenshot-kst-data-wizard-presentation.png" alt="Data Wizard Data Presentation Pane"><hr></div></div><a name="data-tools-wizard-range"></a><p>
+The <span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="guiitem"><span class="guilabel">Data Range</span></span> section is used to specify the range of data to read from the selected vectors in the input file. For information about these parameters, read the description of the <a href="data-types.html#data-types-vectors" title="Vectors">Vector</a> data object.
+</p><p>
+Power Spectrum and X axis settings can be specified within the <span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="guiitem"><span class="guilabel">Plot Types</span></span> section.
+These settings are described below.
+</p><div class="variablelist"><dl><dt><span class="term">
+<span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="guiitem"><span class="guilabel">XY</span></span>, <span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="guiitem"><span class="guilabel">Power Spectrum</span></span>, and <span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="guiitem"><span class="guilabel">XY and Power Spectrum</span></span>
+</span></dt><dd><p>
+Select whether to plot the data (<span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="guiitem"><span class="guilabel">XY</span></span>) only, <span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="guiitem"><span class="guilabel">Power spectrum</span></span> only, or both.  If the power spectrum is selected for
+plotting, additional settings in this section become available.
+</p></dd><dt><span class="term">
+<span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="guiitem"><span class="guilabel">X Axis Vector</span></span>
+</span></dt><dd><p>
+The vector to be used as the independent vector for the plots.  You may select a field from your
+data file, or the INDEX vector.  The INDEX
+vector is simply a vector containing elements from 0 to N-1, where N is the number of frames in the
+data file.
+</p></dd></dl></div><p>
+The <span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="guiitem"><span class="guilabel">FFT Options</span></span> subsection
+ in the <span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="guiitem"><span class="guilabel">Plot Types</span></span> section is available only if a power spectrum
+is to be plotted. Detailed information on these options can be found in the <a href="data-types.html#data-types-spectrum" title="Spectrum">Spectrum</a> section.
+</p><p>
+Once you are satisfied with all the settings, click the <span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="guiitem"><span class="guibutton">Next</span></span> button to advance to the final
+window.
+</p></div><div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="data-tools-wizard-configureplotlayout"></a>Configure Plot Layout</h4></div></div></div><div class="screenshot"><div xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="mediaobject"><hr><img src="Screenshot-kst-data-wizard-configurelayout.png" alt="Data Wizard Configure Plot Layout"><hr></div></div><p>
+From here, you can change general plot settings.  Most of the settings are self-explanatory.
+A brief overview of each section is provided below.
+</p><div class="variablelist"><dl><dt><span class="term">
+<span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="guiitem"><span class="guilabel">Curve Style</span></span>
+</span></dt><dd><p>
+Select whether to plot data points only, lines connecting the data points only, or both.
+By default, lines are continuous with weight 0, and data points are marked using crosses.
+Line and data point colors are chosen so that curves with identical colors are minimized.
+Note that the curve style settings apply to both Power Spectra
+and XY plots.
+</p></dd><dt><span class="term">
+<span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="guiitem"><span class="guilabel">Curve Placement</span></span>
+</span></dt><dd><p>
+Select the plots to place the new curves on.  <span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="guiitem"><span class="guilabel">Cycle through</span></span> distributes the
+curves on the plots by cycling through the plots. </p><p>For example, if you have 4 curves, and you choose to cycle through 2 plots. The result will be that curve 1 is placed in plot 1; curve 2 is in plot 2, and this is the first plot cycle. Curve 3 is back to plot 1; curve 4 goes to plot 2, and this is the second cycle.  Note that the curve placement settings apply
+to both Power Spectra and XY plots.
+</p></dd><dt><span class="term">
+<span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="guiitem"><span class="guilabel">Label Generation</span></span>
+</span></dt><dd><p>
+Select the desired labels and legends to be placed on the plots.
+</p></dd><dt><span class="term">
+<span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="guiitem"><span class="guilabel">Plot Placement</span></span>
+</span></dt><dd><p>
+Select the desired window(s) to place the new plots in. New windows can be created for the plots by selecting
+<span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="guiitem"><span class="guilabel">In new window</span></span>.
+</p></dd><dt><span class="term">
+<span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="guiitem"><span class="guilabel">Power Spectrum Axis Mode</span></span>
+</span></dt><dd><p>
+Select these check-boxes if you would like the automatically created power spectra to have logarithmic X or Y axes.
+</p></dd></dl></div><p>
+Once you are satisfied with all the settings, click the <span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="guiitem"><span class="guibutton">Finish</span></span> button and the plots will be generated.
+</p></div></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="data-tools-datamenu"></a>The Data Menu</h3></div></div></div><p>
+The <span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="guiitem"><span class="guimenu">Data</span></span> menu provides quick access to many features related to data objects in
+<span class="application">Kst</span>.  Most of the menu functions duplicate functions found elsewhere, so only brief descriptions are
+provided below.
+</p><div class="variablelist"><dl><dt><span class="term"><span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="guiitem"><span class="guimenuitem">Reload</span></span></span></dt><dd><p>
+Reloads all data vectors from their source files.
+</p></dd><dt><span class="term"><span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="guiitem"><span class="guimenuitem">Data Manager</span></span></span></dt><dd><p>
+Displays the <a href="data.html#data-overview-datamanager" title="The Data Manager">Data Manager</a>.
+</p></dd><dt><span class="term"><span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="guiitem"><span class="guimenuitem">View Manager</span></span></span></dt><dd><p>
+Displays the <a href="views.html#view-overview-viewmanager" title="The View Manager">View Manager</a>.
+</p></dd><dt><span class="term"><span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="guiitem"><span class="guimenuitem">New</span></span> [data object]</span></dt><dd><p>
+Displays the corresponding dialog for creating the data object. Refer to
+<a href="data-types.html" title="Data Types">Data Types</a> for descriptions of
+each dialog.
+</p></dd><dt><span class="term"><a name="data-tool-view-scalar-vlaues"></a><span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="guiitem"><span class="guimenuitem">View Scalar Values</span></span></span></dt><dd><p>
+Displays a dialog from which the values of all the scalars in the current <span class="application">Kst</span> session
+can be viewed. The values are displayed hierarchically, based on which higher level data objects the scalars are determined for. The dialog is updated dynamically if the values change.
+</p><div class="screenshot"><div xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="mediaobject"><hr><img src="Screenshot-kst-data-viewscalarvalues.png"><hr></div></div></dd><dt><span class="term"><a name="data-tool-view-vector-vlaues"></a><span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="guiitem"><span class="guimenuitem">View Vector Values</span></span></span></dt><dd><p>
+Displays a dialog from which the values in all the current vectors can be viewed. Select
+a vector to view using the drop-down list. The dialog is updated dynamically if the values change.
+</p><div class="screenshot"><div xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="mediaobject"><hr><img src="Screenshot-kst-data-viewvectorvalues.png"><hr></div></div></dd><dt><span class="term"><span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="guiitem"><span class="guimenuitem">View Matrix Values</span></span></span></dt><dd><p>
+Displays a dialog from which the values in all the current matrices can be viewed. Select
+a matrix to view using the drop-down list. The dialog
+is updated dynamically if the values change.
+</p><div class="screenshot"><div xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="mediaobject"><hr><img src="Screenshot-kst-data-viewmatrixvalues.png"><hr></div></div></dd><dt><span class="term"><span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="guiitem"><span class="guimenuitem">View Fit Results</span></span></span></dt><dd><p>
+Displays a dialog which shows all the resulting values from fit plugins. Select
+a fit result to view using the drop-down list. The dialog
+is updated dynamically if the values change.
+</p><div class="screenshot"><div xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="mediaobject"><hr><img src="Screenshot-kst-commontasks-curvefitting-fitresults.png"><hr></div></div></dd></dl></div></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="data-tools-datamode"></a>Data View Mode</h3></div></div></div><p>Data mode allows precise viewing of the data points used in a plotted data object.  To toggle data mode,
+select <span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="guiitem"><span class="guimenu">Plots</span></span>-&gt;<span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="guiitem"><span class="guimenuitem">Data Mode</span></span>, or click the <span class="inlinemediaobject"><img src="Icon-kst-datamode.png"></span> Data Mode icon on the <a href="view-tools.html#view-tools-toolbar" title="The Toolbar">Toolbar</a>. Now, when the cursor
+is moved over a plot, a coloured dot will indicate the closest data point to the cursor, as shown in the
+screenshot below.  The status bar will
+display the coordinates of the data point (in terms of the x and y vectors used to plot the data object) in the status bar at the
+lower left corner of the <span class="application">Kst</span> window.
+The status bar will also display the x, y, and z coordinates of any visible image.  If images overlap, only the coordinates of the
+topmost image will be displayed.
+Note that all zooming functions are still available while in data mode.
+</p><div class="screenshot"><div xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="mediaobject"><hr><img src="Screenshot-kst-data-datamode.png"><hr></div></div><div class="tip" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Tip</h3><p>
+If the status bar is not visible, select <span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="guiitem"><span class="guimenu">Settings</span></span>-&gt;<span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="guiitem"><span class="guimenuitem">Show Statusbar</span></span>
+
+</p></div></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="data-tools-changedatafile"></a>Change Data File</h3></div></div></div><p>
+One common mode of using <span class="application">Kst</span> is to create a “<span class="quote">session</span>” of plots and analysis for a particular type of data. Then, the same plots and analyses can be performed easily on another set of data simply by changing the data source file, provided that the two data files are similar. For example, for ASCII data files, similar data files need to have same number of fields.</p><p>
+ The Change Data File dialog can be accessed by choosing <span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="guiitem"><span class="guimenu">Tools</span></span>-&gt;<span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="guiitem"><span class="guimenuitem">Change Data File</span></span> or clicking on the icon 
+<span class="inlinemediaobject"><img src="Icon-kst-changedatafile.png" alt="icon changedatafile"></span>
+in the toolbar. The dialog which appears is shown below:
+
+</p><p>
+<span class="inlinemediaobject"><img src="Screenshot-kst-data-changedatafile.png"></span>
+</p><p>
+To use this dialog, select the vectors which you would like to change the data file of using the list in the middle of the dialog. The <span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="guiitem"><span class="guilabel">All From</span></span>, <span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="guiitem"><span class="guilabel">Clear</span></span>, <span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="guiitem"><span class="guilabel">Select All</span></span>, and search field can help you to do this. The use of wildcards is supported in the search field.</p><p>
+ Then, select a new data file. If the <span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="guiitem"><span class="guilabel">Change selected vectors and matrices</span></span> radio button is selected, then when you press the <span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="guiitem"><span class="guibutton">Apply</span></span> or <span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="guiitem"><span class="guibutton">OK</span></span> button, the plots of the selected data vectors will be replaced by the data vectors loaded from the same fields of the new data file that you specified.</p><p> 
+If the <span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="guiitem"><span class="guilabel">Duplicate selected vectors and matrices</span></span> radio button is selected, vectors coming from the new file will be ploted together with the existing vectors in exactly the same way. 
+</p><p>
+ If some of the selected vectors have dependents (curves, spectra, histograms, etc.) then the <span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="guiitem"><span class="guilabel">Duplicate dependents</span></span> option allows you to duplicate these objects as well.
+</p></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="data-tools-changesampleranges"></a>Change Data Sample Ranges</h3></div></div></div><p>
+The <span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="guiitem"><span class="guimenuitem">Change Data Sample Ranges</span></span> dialog can be accessed through the <span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="guiitem"><span class="guimenu">Tools</span></span> menu or the icon
+<span class="inlinemediaobject"><img src="Icon-kst-changedatarange.png" alt="icon_datarange"></span>
+in the toolbar. It allows you to modify how a set of vectors are read in from their associated files. The options are detailed in the <span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="guiitem"><span class="guilabel">Data Range</span></span> option of the <a href="data-types.html#data-types-vectors-data" title="Data Vectors">Data Vectors</a> documentation.
+</p><p>
+<span class="inlinemediaobject"><img src="Screenshot-kst-data-changesampleranges.png"></span>
+</p></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="common-icons"></a>Common Icons</h3></div></div></div><p>
+As mentioned above, most data tools have corresponding icons in the <a href="view-tools.html#view-tools-toolbar" title="The Toolbar">toolbar</a>. There are also some useful icons commonly seen in various dialogs.
+</p><div class="variablelist"><dl><dt><span class="term">
+<span class="inlinemediaobject"><img src="Icon-kst-edit-creatvec.png" alt="create vetor icon"></span>
+</span></dt><dd><p>
+This icon opens the New Vector dialog, the same as choosing <span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="guiitem"><span class="guilabel">Data</span></span>-&gt;<span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="guiitem"><span class="guimenuitem">New Vector...</span></span>  
+</p></dd><dt><span class="term">
+<span class="inlinemediaobject"><img src="Icon-kst-edit-editvec.png" alt="edit vetor icon"></span>
+</span></dt><dd><p>
+This icon opens the <a href="data-types.html#data-types-vectors-data" title="Data Vectors">Edit Vector</a> dialog where you can edit the properties of the currently selected vector.
+</p></dd><dt><span class="term">
+<span class="inlinemediaobject"><img src="Icon-kst-edit-createmx.png" alt="create mx"></span>
+</span></dt><dd><p>
+This icon opens the New Matrix dialog, the same as choosing <span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="guiitem"><span class="guimenu">Data</span></span>-&gt;<span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="guiitem"><span class="guimenuitem">New Matrix...</span></span>
+</p></dd><dt><span class="term">
+<span class="inlinemediaobject"><img src="Icon-kst-edit-editmx.png" alt="edit matrix icon"></span>
+</span></dt><dd><p>
+This icon opens the <a href="data-types.html#data-types-matrix-data" title="Data Matrix">Edit Matrix</a> dialog where you can edit the properties of the currently selected matrix.
+</p></dd><dt><span class="term">
+<span class="inlinemediaobject"><img src="Icon-kst-edit-clear.png" alt="clear icon"></span>
+</span></dt><dd><p>
+This icon is commonly seen in the search field of many dialogs used to list data objects (vectors, curves, etc). For example, it appears in the <a href="data.html#data-overview-datamanager" title="The Data Manager">Data Manager</a>, <a href="data-tools.html#data-tool-view-scalar-vlaues">View Scalar Values</a>, and <a href="data-tools.html#data-tools-changedatafile" title="Change Data File">Change Data File</a>, etc.
+</p><p>
+It is used to quickly clear the textbox of the <span xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="guiitem"><span class="guilabel">Search</span></span> field and restore the original list of data objects. 
+</p></dd><dt><span class="term">
+<span class="inlinemediaobject"><img src="Icon-kst-edit-createscalar.png" alt="create scalar icon"></span>
+
+</span></dt><dd><p>
+This icon opens the New Scalar dialog as shown below:
+<div class="screenshot"><div xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" class="mediaobject"><hr><img src="Screenshot-kst-data-newscalar.png" alt="new scalar"><hr></div></div>
+</p><p>
+Here, you can define your own scalar by typing its name and associated value.
+</p></dd><dt><span class="term">
+<span class="inlinemediaobject"><img src="Icon-kst-edit-editscalar.png" alt="edit scalar icon"></span>
+</span></dt><dd><p>
+This icon is used to change values of user-defined scalars. Essentially, it opens the same dialog as shown above.
+</p></dd></dl></div></div></div><div style="background-color: #white; color: black;                  margin-top: 20px; margin-left: 20px;                  margin-right: 20px;"><div style="position: absolute; left: 20px;"><a accesskey="p" href="data-types.html">Prev</a></div><div style="position: absolute; right: 20px;"><a accesskey="n" href="data-sources.html">Next</a></div><div align="center"><a accesskey="h" href="index.html">Home</a></div></div><div style="background-color: #white;   color: black;         margin-left: 20px;   margin-right: 20px;"><div class="navLeft">Data Types </div><div class="navRight"> Datasources</div><div class="navCenter"><a accesskey="u" href="data.html">Up</a></div></div><br><br><div class="bannerBottom" style="background-image: url(help:/common/bottom-middle.png);                                        background-repeat: x-repeat;                                         width: 100%;                                         height: 100px;                                         bottom:0px;"><div class="BannerBottomRight"><img src="help:/common/bottom-right.png" style="margin: 0px" alt=""></div><div class="bannerBottomLeft"><img src="help:/common/bottom-left.png" style="margin: 0px;" alt=""></div><div id="comments" style="position:relative; top: 5px; left: 1em; height:85px; width: 50%; color: #cfe1f6"><p>Would you like to make a comment or contribute an update to this page?<br>
+        Send feedback to the <a href="mailto:kde-docs@kdemail.net" style="background:transparent; color:#cfe1f6; text-decoration: underline;">KDE Docs Team</a></p></div></div></body></html>

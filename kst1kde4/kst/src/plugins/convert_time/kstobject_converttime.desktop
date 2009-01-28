@@ -1,0 +1,15 @@
+[Desktop Entry]
+Encoding=UTF-8
+Type=Service
+ServiceTypes=Kst Data Object
+X-KDE-ModuleType=Plugin
+X-KDE-Library=kstobject_converttime
+X-Kst-Plugin-Author=Andrew Walker
+Name=Convert time
+Name[et]=Ajateisendus
+Name[it]=Converti tempo
+Name[sv]=Konvertera tid
+Comment=Converts the time format of a vector.
+Comment[et]=Vektori ajavormingu teisendamine.
+Comment[it]=Converti il formato tempo di un vettore.
+Comment[sv]=Konverterar tidsformatet för en vektor.
