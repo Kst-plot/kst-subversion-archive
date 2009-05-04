@@ -1,0 +1,575 @@
+Zoom Mode Plot Bugs:
+  -Zooming gets slower the more points there are in the curves. It should
+  always be fast.
+
+
+Zoom lines not updated on <ctrl> or <shift>
+what happens:
+  Put the mouse in a plot and depress <ctrl>.  Nothing Happens.
+  Now move the mouse.  A vertical line appears where the mouse is.
+  Move the mouse around.  The line follows the mouse.
+  Now release <ctrl>.  The line stays until the mouse is moved again.
+What should happen:
+  The line should appear when <ctrl> is pressed, and disappear when
+  <ctrl> is released, independent of mouse moves.
+  
+Tied X-Only (<ctrl>) zooms adjust X and Y.
+What happens:
+  create two plots (eg, 1 of gyrodata.dat col 1 and one from gyrodata.dat 
+  col 2).  Make sure they have different Y ranges.  Tie their zooms.  Now
+  adjust the X-range only from one plot with <ctrl>+mouse.  Both plots end up
+  with the same X and Y range.
+What should happen:
+  Only the X range should change.
+
+
+Rotated labels in boxes drift on resize...
+Create a box in kst.  Put a label in the box.  Rotate the label.
+Repeatedly resize the box.
+What Happens:
+  The location of the label in the box drifts (so when the box is set back to
+  its original position, the label is not in its original position).
+What Should happen:
+  location of the label should stay fixed relative to the size of the box,
+  so that when the box is returned to its original size, the label returns
+  to its original position.
+Note: if the text label is not rotated, it doesn't seem to drift.
+
+Label Parsing
+place a special characters in a plot label (eg, \omega in the X axis label).
+The special character is not interpreted.  It should be.
+Note: it is interpreted properly in floating labels.
+
+
+Plot ranges don't update.
+Create a plot with a curve of sine vs INDEX from dm.cur.  Read from end the last 100 frames.  In the plot hit 'm'.
+What happens:
+  As the curve is updated it dissappears from the plot.  Hitting 'm' recenters the curve.
+What should happen:
+  In 'm' zoom mode, the plot ranges should dynamically update to cover the full range of the curve on every curve update (As if you were holding 'm' down continuously.  Try kst1.x for a demonstration of the appropriate behavior.
+
+Crash deleting last tab:
+start kst, and in the only tab, select rmb->close.  CRASH!
+This is especially a problem since this is what TabWidget->clear() does.  TabWidget->clear() is used when opening
+a file to get rid of all of the old tabs.   As a temp hack (to allow file opening) clear() is not called on file open,
+so all of the old tabs linger after opening a file.  This should be reverted once the bug is fixed.
+
+-----------
+Editing a slave vector from a vector selector should bring up the
+edit dialog for the provider.  Instead it brings up a vector edit 
+dialog.... not what is wanted and won't work anyway.
+(cbn to fix this)
+
+-----------
+Editing a slave scalar from a scalar selector should bring up the
+edit dialog for the provider.  Instead it brings up a scalar edit 
+dialog.... not what is wanted and won't work anyway.
+(cbn to fix this)
+
+----------
+Cur files no longer work.
+Select a cur file from dirfile_maker.  It thinks its a ascii file.
+
+--------
+Problems reading files from the command line
+  ascii files can't find any fields from the command line
+
+--------
+Only dirfiles can be chosen from the data wizard.
+  ascii files can't find any fields
+
+--------
+Update curve after editing equation
+Create a plot with a curve from an equation.
+    eg, x = 0..100, y = x
+Put the plot in auto zoom ('m') mode.
+Edit the equation to change its Y range
+    eg, x = 0..100, y = 2x
+On apply, nothing changes.
+Do something that causes the curve to redraw (eg, resize the window).
+The curve redraws, but the Y zoom range stays at the old range.  'm' resets to the old zoom range.
+Now edit the curve, do nothing, and hit OK.  Still no change.
+Now do something to redraw the plot.  'm' mode now works.
+
+-------
+Butterworth low-pass crashes.
+  create a plot, apply filter with order=4, lowpass = 0.01.  Crash.
+  
+-------
+When chosing to filter a curve from the plot rmb, the input vectors should be fixed to the right thing:
+  eg, Butterworth low pass Y vector should be fixed to the Y vector of the curve selected in the RMB menu.
+
+-------
+Entering a numerical value into a scalar selector should create a scalar of that value, if there is not
+already a scalar of that name.  This is particularly important for plugin entries.  It can be created when
+the scalar that the selector has selected is asked for.
+
+--------
+Ascii file configure button troubles I: it doesn't work.
+  Configure from the data wizard brings up the configuration dialog, but applying it does nothing.
+
+--------
+Ascii file configure button troubles I: it crashes
+  Configure from the vector dialog crashes kst
+
+--------
+Filters should have default values
+  eg, low pass filter should default to order = 4, lowpass  = 0.1: see 1.x for defaults.
+
+-------
+Problems with file selector
+If you browse to select a dirfile, the name of the previous dirfile has been put into "File name:" entry.  So you have to erase it to select a dirfile.
+Of course, selecting a data file replaces the old name with a new one, but there is no way to clear it selecting a dirfile.
+If the 'current file' is a dirfile, then the File name entry should be blank.
+Either:
+  always clear the current file: entry when a directory is changed, and don't fill it in the first place if the default file is a directory
+Or:
+  Check to see if the current directory is recognized as a valid datasource - if it is, clear the current file entry.
+
+--------
+Change data sample range tool doesn't use defaults.
+---------
+
+Accelerators for the plot edit dialog:
+'E' should bring up the plot edit dialog
+
+---------
+
+Places where text labels are entered need string and scalar selectors to aid in the insertion of 
+strings and scalars (eg, primarily label editor)
+
+---------
+
+Missing tabs in plot dialog:
+  -There is no tab to set size, position, and rotation.  There should be.
+*cbn*
+
+
+Top Level View needs rmb menu:
+  -set background properties (colour, gradient, etc)
+  -set tied zoom mode for children (?)
+  -cleanup layout menu option
+*Mike*
+---------
+
+Axis labels are not transparent
+Create a plot with X, or Y or Top axis labels.  Change the background of the plot to a gradient.
+The axis label backgrounds are still white.  They should be the color of the background (alpha channel?)
+*Mike*
+---------
+
+Axis labels should have configurable colour.
+  A byproduct of making the label backgrounds transparent will be that if the background is set to a colour
+  with a low contrast to black (like black, or close to black) the labels will not be visible and there is 
+  currently no way to change them.
+*Mike*
+---------
+
+View Object parents not preserved in saving/loading kst file
+  Create a plot.  Put  a box in the plot.  Put a label in the box.
+  move the plot around - verify that the box is a child of the plot.
+  move the box around - verify that the label is a child of the box.
+  save as a .kst file.
+  load the kst file
+    -note that everything is positioned relative to the tlv, and are all children of the tlv.
+*Mike*
+---------
+Plot dialog label tab has grown out of control!  It should be shrunk to fit in 800x600
+It needs to shrink.  
+  -There needs to be only one scalar and string selection combos, and they need to apply
+  to the most recenly selected label text entry.
+  -The per-label font selection needs to be drastically shrunk.
+      maybe: only the text and the size active, w/ the info in a label, with a button to edit.
+      or maybe: only one font allowed for a plot, and have toggle buttons for U B I.
+      or maybe: only one font and UBI combo for a plot.  UBI can be set w/ latex commands in the label.
+  -get rid of all the per-item boxes and use more space efficient separators.
+
+*Mike*
+---------
+
+Missing features in edit label label dialog:
+  there is no mechanism to adjust the font, or Underline Bold Italics (UBI) in the edit label dialog.
+*Mike*
+---------
+
+The entire edit label properties tab should be shown when creating a label, not just the label text and the
+string/scalar selections (ie, incude size, font, UBI, and colour.)
+*Mike*
+---------
+
+Labels should have configurable font and UBI.
+*Mike*
+---------
+
+Tied zoom problems: (see devel-docs/Kst2Specs/Plot Geometry.pdf, last page).
+  -The tied zoom conditions are not honored
+  -The parent option condition is not honored.  In fact, there is no way to set parent options, even if there were parent options.
+  -The plots are not automatically re-sized to have equal size once the axis are shared.
+
+*Mike*
+---------
+
+kst settings dialogue box should select "General" when first opened
+to indicate that what we're seeing to the right is the General tab.
+*Mike*
+--------
+
+Double clicking on a curve in zoom mode should bring up the edit curve dialog (was in 1.x, 
+but was a little buggy).
+*Mike*
+----------
+
+Edit plot dialog format issue:
+The tab list on the left has a minimum size set in pixels, and is not dependent on
+the size of the tab names.
+*Mike*
+---------
+
+"Change color per file" changes are not shown in plots until the plot is moused over.
+*Mike*
+--------
+
+"Differentiate Curves" changes are not shown in plots until the plot is moused over.
+*Mike*
+--------
+
+Accelerators for the plot edit dialog:
+clicking on the plot outside the plot region in zoom mode should bring up the plot edit dialog.
+  if on a label, to the label page
+  if on the numbers to the axis range page (which doesn't yet exist).
+--------
+
+
+Missing tabs in plot dialog:
+  -There is no tab to manually set plot zoom ranges.  There should be (see 1.x).
+*cbn*
+---------
+
+When displaying data that is constant, the range is from about zero to slightly
+above the curve (meaning the curve is very near the top of the plot.
+instead, it should center the curve and have a range of �0.1 around the constant
+value.
+
+----------
+
+Line Endpoints drift relative to plot contents:
+Create a plot.  Put a line in the plot.  Resize the plot.
+The end points of the line don't stay fixed in plot space.  
+It seems to have something to do with the 'centerpoint' of the line.
+It rotates around an end point.
+This problem doesn't happen with boxes.
+*Mike*
+--------
+
+datawizard generated multiple plots per view have the font size for
+the lables way too big (so big that, in the case of 24 plots), the axis
+labels take up >75% of the real estate. �The wizard should chose the font
+based on the number of plots that will be in the tlv when finished.
+
+--------
+
+Clicking in a plot when in *layout* mode brings up the plot edit dialog.
+This should only happen in *zoom* mode!  The way it is now, you can't 
+move or resize plots.
+--------
+
+No way to cancel a drawing command.
+  Select a drawing tool (say, a box)
+  Change your mind.... tough - you have to draw something.
+*Mike*
+--------
+
+No visible feedback as to what drawing mode you are in...
+  Select a drawing tool (say, a box).  There is no visible indication
+  that you just selected a drawing tool.  The tool should be clearly shown 
+  either with the toolbar icon remaining depressed until the action is
+  finished, or in the mouse icon.
+*Mike*
+--------
+ 
+Export as png with a set width and height shows transparency (blank)
+where extra space is, rather than resizing the view for the export.
+*Mike*
+----------
+
+Should add some more latex mode fields
+  \odot
+
+--------
+
+In labels, \textbf{text} and \textit{text} set bold and italics for 'text',
+but they don't un-set bold and italics after the end of the curley brackets.
+They should.
+
+--------
+
+Negative size drawing considered invalid.
+Drawing items beginning with any corner other than the top left (negative height / width)
+results in an invalid viewRect and the item drawn with a nominal size rather than the 
+desired size.
+This is happening during completion processing as the objects are drawn currently during
+creation.
+*Mike*
+--------
+
+Tied zoom behavior oddness:
+Tied zoom has been implemented as a toggle button, setting or unsetting
+all of the zoom ties.  However, when in tied zoom, it is still possible to un-tie
+individual plots (which is good).  But: when you un-tie one of several plots, perhaps
+the tied zoom button should become disabled, as you are no longer in all-tied zoom mode.
+*Mike*
+--------
+
+  -Superscript and subscript size and position seems off.  This should be researched more
+  but wikipedia as an almost reasonable article on it.  It suggests both should be scaled by ~60%, and subscripts dropped by 16% and superscripts raised by 44%.  OOffice, illustrator, and photoshop use scale 58%, raise 33%, lower 33%.  msoffice uses 65%, -14%, +35%.  It might also pay to compare w/ TeX.
+
+---------
+
+No space allocated for subscripts or superscripts in axis lables
+  The subscript is cut off
+---------
+
+Number of major ticks bug:
+Occasionally there will be too few (<2) or too many (serious overlap) in the number of major 
+ticks.  This seems to have changed from 1.x
+*Mike*
+---------
+
+Plot axis number rounding bug:
+occasionally, the axis numbers can be something like 0.499999999993 instead of 0.5.  It is hard to
+reproduce.
+*Mike*
+---------
+ 
+Kst should ask about saving the .kst file on exit if the document has changed
+(basically, any change other than a mouse/arrow zoom).  See 1.x.
+*Mike*
+----------
+ 
+.kst should be appended to the name of a .kst file if it is not already there.
+*Mike*
+---------
+ 
+Reference point (see 1.x, 'c')  should be implemented.
+*Mike*
+----------
+
+RMB menu over a plot render item in layout mode doesn't have raise or lower, but
+but does have the zoom options, etc.
+the RMB menu should always have raise and lower in layout mode over any 
+raisable or lowerable object.
+*Mike*
+--------
+
+Shared axis Box Behavior: box shows in data mode
+Create a shared axis box around some plots. A grey box appears around the shared plots.
+It should not when in data mode.  In layout mode, when the group it moused over, then 
+a box can appear, as with other data object.  Otherwise, no visible box.
+*Mike*
+--------
+
+Automatic layout behavior: there are gaps between layed out plots
+Create some plots and apply cleanup layout.  The plots are aligned in a grid,
+but between the plots, and between the plots and the edge of the tlv there is a 
+gap, presumably to make room for the grips.  There should be no space.  Instead
+the plots should touch each other and the edge of the tlv, even if the grips would 
+overlap, and even if the grips would extend partially outside the tlv.  
+This applies to all layoutable objects.
+*Mike*
+--------
+
+Shared axis box creation behavior:
+The shared axis box dimensions are set by the corners of where the box is drawn.
+This is inconvenient.  It would be better if the box dimensions were set by the
+extents of all plots which have been included in the shared box.
+*Mike*
+--------
+
+Shared axis box behavior: resizing separates box
+Create several plots and put them in a shared axis box.
+In layout mode, resize the shared axis box.  The box ends up
+on top of the plots, and the plots cease to share axis.
+The plots should stay in the box.
+*Mike*
+--------
+
+Shared axis box creation behavior: no visual feedback
+There is no visual feedback as to what plots have been selected
+when drawing the shared axis box.  There should be something (eg, the
+selection rect shown in mouse over mode like in layout mode)
+*Mike*
+--------
+
+The size of selector on left of dialogs is too small to fit the entries, though it
+is resizeable.  It should default to a size which fits all of the entries, up to
+some reasonable maximum, but then be resizeable to either larger or smaller.
+At one point it was fixed too small.  Then it was changed to be resizeable 
+to larger than some fixed minimum.  Now it defaults too small, but can
+be resized.
+*Mike*
+---------
+
+Formatting/spacing issues:
+  -The spacing between the X-axis numbers and the axis is too small.
+  -The spacing between the Y-axis numbers and the axis doesn't seem to scale with window size.
+  -The plot selection buttons are too small.
+
+---------
+
+Data mode (see 1.x) should be implemented
+*Mike*
+----------
+
+Shared Axis box behavior: different boxes have tied zoom.
+When more than one shared axis box is created, the zooms
+seem to be tied between them.  The zooms should only be tied
+if indicated by the tied zoom box, which the shared axis box
+does not have, but should.  By default, each shared axis box
+has it own zoom.
+*Mike*
+----------
+
+Pointless complaints from Qt:
+we are getting on the console like 
+  "QGraphicsItem::ungrabMouse: not a mouse grabber".
+These need to be found and killed.
+*Mike*
+--------
+
+qgraphicsitem_cast is not setup correctly and causing bugs.
+  A number of bugs are occurring as the result of qgraphicsitem_cast failing.  All ViewItem objects will need to be
+  updated to support type and casts re-evaluated.
+
+  This causes context menu bugs.
+
+  Object selection bugs.
+*Mike*
+---------
+
+General drawing 'flicker' and missing regions in drawing with openGL enabled:
+OpenGL is qualitatively much faster, but on my laptop with Intel graphics, 
+embedded, and running opengl with kwin, there is lots of flicker, and lots
+of things simply not drawn.
+
+Notes:
+ - We are doing everything correctly according to the Qt documentation.
+
+ - This can be reproduced using the Qt example code.  Corruption extends beyond
+   Kst, and can be seen in all other apps showing drawing problems. while QGLWidget
+   is running.
+
+ - Sample Qt code:
+    http://labs.trolltech.com/blogs/2008/06/27/accelerate-your-widgets-with-opengl/
+
+ - Performance will be improved in future versions of Qt and is a known issue.
+   http://labs.trolltech.com/blogs/2008/02/04/qt-44-and-painting-performance/
+
+ - This bug is a platform specific to X11 and is documented by ubuntu with a work around.
+   https://wiki.ubuntu.com/RedirectedDirectRendering
+
+ - Sample app from Qt runs correctly under Windows, no reported problems with Mac.
+
+--------
+
+The first pane of the data wizard should be reading directories in
+the background, instead of in the foreground where it steals X focus
+until the directory is read. �I ran into a interminable-focus-stealing
+problem where kst was attempting to read a dead NFS mount. �Required an
+X restart.
+*Mike*
+--------
+
+Bugs in Build System:
+  -picks up libraries in lib/X11 before local libs
+  -doesn't support 'make install' nor DESTDIR
+---------
+
+With multiple plots, when zooming one changes the size properties of
+another (due to axis label changes, for example), the axes labels on the
+non-modified plot(s) can get garbled until the mouse is moved over them.
+
+----------
+
+PlotMarginStandardization is applied inconsistently.
+- Note: Fixed many cases.  After applying layout, plotBorders are set to Dirty, this may not be
+correct.  A number of margins are not updated within the changed plot currently preventing full
+validation.
+*Mike*
+--------
+
+SharedAxisBox plot sharing occasionally breaks for no apparent reason.
+Have not identified a pattern or cause as of yet.
+*Mike*
+--------
+
+Fragility in moving parents:
+  create a plot.
+  Put a child box in the plot.
+  Rapidly resize the plot.  Sometimes the box will either drift or loose parenting altogether.
+  (Editorial: Fundamentally, I think this is because qt's QGraphics system has been used to track placement
+  of objects, and QGraphics doesn't have the right model of what we are doing.)
+
+  Note:  This is still causing parenting to fail.  Updates are required to prevent reparenting on parent resize.
+*Mike*
+---------
+
+kst reads live dirfiles less efficiently than before. �On a shitty
+computer (devlin666), kst1.7 can display 200 frames of 24 bolometer
+channels (100Hz samples; 20 samples per frame) with a 500ms kst update
+timer, and only use about 20% of the cpu and the computer will still
+seem 'responsive enough'. �kst2 under the same conditions, except with
+2000ms kst update timer uses about 55% of the cpu and the computer (and
+kst) seem more sluggish. �
+------------
+
+
+Y Axis label placement is wrong
+Create a plot with 24 curves from the data wizard.  The Y axis label is offset vertically.
+
+------------
+
+'c' mode doesn't show difference.
+'c' mode is used to find the offset from a marker to the cursor.
+Currently, if 'c' is hit, a marker is placed, as it should.  However, the difference between the marker and the cursor is not shown anywhere.  See 1.x for the correct behavior.
+
+------------
+Plot update problem:
+  -from the data wizard create several plots.
+  -Make a change to the plot that changes the size of the plot (eg, change the font size.
+ The plot you changed is happy, but all of the other plots don't get automatically re-aligned.
+  -Move your mouse into one of the plots that is not properly aligned.  
+The curve is re-drawn to be aligned with the other curves, but the plot axis is not re-drawn.
+
+------------
+
+Equation update problem
+  -Create a curve from a datasource.
+  -create an equation from a vector from the curve.
+  -Change the input vector (eg, with the 'back one screen' button)
+The curve updates, but the equation/equation curve does not.
+
+------------
+
+Plot is not regenerated after 'ok' in the plot dialog axis tabs makes a visual change. 
+ -create a plot.
+ -in the plot dialog axis tab change something (eg, the 'draw grid lines' option) and hit 'ok'.
+The plot is not redrawn to honor this change.  (if you do something else to force a
+redraw, the change is displayed.)
+
+-------------
+
+Loading a kst files does not seem to work:
+  -run kst
+  -with the wizard, make a plot with three curves
+  -save it.
+  -restart kst and load the kst file you just created.
+ kst gives an 'invalid Tag' error, and no plots are shown.
+
+-------------
+
+Accelerators everywhere.
+
+------------
+
+'ok' in arrow dialog moves the arrow.
+draw an arrow. Open the edit dialog.  change something and hit apply.  The arrow moves.
