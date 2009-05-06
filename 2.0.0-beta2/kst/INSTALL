@@ -38,6 +38,11 @@ are used on the current Windows build machine used for testing, but may vary.
 6. qmake -r ../kst.pro
 7. nmake
 7a.  If an error occurs, you may need to update Makefile.debug and replace "CXX  = @echo compiling $< && cl" with "CXX=cl"
+7b.  If libkstapp fails to build the following steps should circumvent the error.
+  1) run nmake >makelog
+  2) locate the cl.exe command line including application.cpp and copy it
+  3) run the command line from (2)
+  4) rerun nmake.
 8. ../run-kst
 
 
