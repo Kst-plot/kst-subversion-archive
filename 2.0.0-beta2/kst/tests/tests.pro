@@ -18,7 +18,7 @@ INCLUDEPATH += \
     $$TOPLEVELDIR/src/libkstapp \
     $$OUTPUT_DIR/src/kst/tmp
 
-LIBS += -lkst -lkstmath -lkstwidgets -lkstapp
+LIBS += -lkstapp -lkstwidgets -lkstmath -lkst
 
 SOURCES += \
     main.cpp \

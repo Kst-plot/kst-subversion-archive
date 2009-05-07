@@ -18,7 +18,7 @@ INCLUDEPATH += \
     $$TOPLEVELDIR/src/libkstapp \
     $$OUTPUT_DIR/src/kst/tmp
 
-LIBS += -L$$OUTPUT_DIR/lib -L$$OUTPUT_DIR/plugin -lkst -lkstmath -lkstwidgets -lkstapp
+LIBS += -L$$OUTPUT_DIR/lib -L$$OUTPUT_DIR/plugin -lkstapp -lkstwidgets -lkstmath -lkst
 
 SOURCES += \
     main.cpp
@@ -27,3 +27,4 @@ RESOURCES += \
     $$TOPLEVELDIR/src/images/images.qrc
 
 win32:QT += svg opengl
+win32:RC_FILE = kst_icon.rc

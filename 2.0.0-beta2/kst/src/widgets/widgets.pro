@@ -21,7 +21,7 @@ INCLUDEPATH += \
     $$TOPLEVELDIR/src/libkstmath \
     $$OUTPUT_DIR/src/widgets/tmp
 
-LIBS += -L$$OUTPUT_DIR/lib -lkst -lkstmath
+LIBS += -L$$OUTPUT_DIR/lib -lkstmath -lkst
 
 SOURCES += \
     colorbutton.cpp \
