@@ -1,0 +1,69 @@
+Easier way to specify reversed axis when loading sky images:
+  -can desire to reverse be gleaned from the fits image?
+  -command line option?
+  -new-image (sticky) option?
+
+---------
+
+Smarter ASCII reader:
+  should be able to use huristics to get information about
+  the ascii file.
+    (eg, is it a CSV?  Does it have a field name header?)
+  these should be used only for new files, and should be used to sed the defaults, which can still be changed with 'configure'.
+
+---------
+
+15. The text label behaviour is un-intuitive.  The typical interface is
+to choose a position first, and then input some text.
+   ** -a possible justification for the current order is that it could allow us to 
+      drag around the label once we have defined it, for more precision placement.
+      not sure yet if we should change anything. **
+
+----------
+
+Tooltips/whats this where helpful.
+
+----------
+
+Printing from the command line.  This existed in 1.x
+  Note: printing still requires parts of Qt which require a window session, so pure scripted 
+  headless prints are not possible :-(
+
+--------
+
+Scientific notation (instead of C's %e notation) for extreme axis numbers
+
+--------
+
+Edit multiple for other view objects (arrow, line, label...)
+
+--------
+
+Multi-page printing:
+The code is in place and commented out, because it gets the size wrong for pages other than the current tab.
+This bug is also hit in the export widget.
+
+--------
+
+Export eps to vector format.
+  kst 1.x did this by printing to file a .ps file, and then modifying it by adding the bounding box.
+
+------------
+
+data source text box doesn't recognise initial ~ as a euphemism for
+   the user's home directory (QDirModel doesn't handle this...)
+   (nor QDir, though QDir seems to know about $HOME).
+
+------------
+
+1.x kst file read compatibility...
+
+------------
+
+DECIDE: absolute or relative file names in kst files?
+  kst1.x uses absolute.  This becomes a problem when the directory changes.
+
+------------
+
+Fixup line/arrow dimensions tab:
+  x,y instead of length/angle
