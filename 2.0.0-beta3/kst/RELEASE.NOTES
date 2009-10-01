@@ -1,23 +1,24 @@
 This is the third beta of kst 2, and the first that 
 is useful.  I am calling it a beta because of a few
-major missing features.
+missing features, and because I am open to major UI 
+rearrangements before 2.0 (eg, buttons, menues)
 
 -----------
 Known Bugs:
 Draw a view object (eg, ellipse) that spans many plots.  
--It ends up in the back, and can't be brought to the front.
--There are drawing artifacts when resizing large arrowheads.
--Datasources that are browsed are created, remembered, and saved/loaded.
+  -It ends up in the back, and can't be brought to the front.
+There are drawing artifacts when resizing large arrowheads.
+Datasources that are browsed are created, remembered, and saved/loaded.
 
 -----------
 Features missing from 2.0, which were in 1.x:
--Printing from command line: to be added soon
--Printing to eps files: to be added soon
+-Printing from command line: to be added for 2.0 
+-Printing to eps files: to be added for 2.0
 -Kst 1.7 file reading: work is in process 
--Updated documentation
--Java Scripting: no plans to add
--ELOG interface: no plans to add
+-Updated documentation: need resources
+-Java Scripting: deferred to after the 2.0.x series (Its a huge job and we need resources for it)
+-ELOG interface: will only be added if requested
 -Events: no plans to add
 
-Please report bugs to bugzilla, or (less preferable) by email to kst@kde.org
+Please report bugs to bugzilla, or by email to kst@kde.org
 
