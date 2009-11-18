@@ -15,7 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "ksdebug.h"
+#include <kdebug.h>
+
 #include "kstobject.h"
 
 /** Tag globals */
@@ -31,7 +32,7 @@ const KstObjectTag KstObjectTag::invalidTag = KstObjectTag(QString::null, KstObj
 
 static int i = 0;
 
-KstObject::KstObject() : QObject(), KstShared(), KstRWLock(),
+KstObject::KstObject() : QObject(), QSharedData(), KstRWLock(),
                          _lastUpdateCounter(0),
                          _tag(tr("Object %1").arg(++i), KstObjectTag::globalTagContext)
 {
@@ -81,7 +82,7 @@ void KstObject::setTagName(const KstObjectTag& tag) {
   }
 
   _tag = tag;
-  setName(_tag.tagString().local8Bit().data());
+  setObjectName(_tag.tagString());
 
   emit tagChanged();
 }
@@ -91,11 +92,13 @@ QString KstObject::tagLabel() const {
   return QString("[%1]").arg(_tag.displayString());
 }
 
-
+//
 // Returns count - 2 to account for "this" and the list pointer, therefore
 // you MUST have a reference-counted pointer to call this function
+//
+
 int KstObject::getUsage() const {
-  return _KShared_count() - 1;
+  return ref;
 }
 
 

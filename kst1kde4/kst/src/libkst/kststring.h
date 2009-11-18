@@ -28,26 +28,18 @@ class KST_EXPORT KstString : public KstPrimitive {
   public:
     KstString(KstObjectTag in_tag = KstObjectTag::invalidTag, KstObject *provider = 0L, const QString& val = QString::null, bool orphan = false);
     KstString(QDomElement& e);
-
+    KstString(const KstString&);   
     ~KstString();
 
   public:
     void setTagName(const KstObjectTag& tag);
-
-    /** Save information */
     void save(QTextStream &ts, const QString& indent = QString::null);
-
-    /** Update the vector.  Return true if there was new data. */
     UpdateType update(int updateCounter = -1);
-
     KstString& operator=(const QString& v);
     KstString& operator=(const char *v);
 
   public slots:
-    /* return the value of the string */
     const QString& value() const { return _value; }
-
-    /** Set the value of the string - ignored for some types */
     void setValue(const QString& inV);
 
     bool orphan() const { return _orphan; }
@@ -65,7 +57,7 @@ class KST_EXPORT KstString : public KstPrimitive {
     bool _editable;
 };
 
-typedef KstSharedPtr<KstString> KstStringPtr;
+typedef QExplicitlySharedDataPointer<KstString> KstStringPtr;
 typedef KstObjectList<KstStringPtr> KstStringList;
 typedef KstObjectMap<KstStringPtr> KstStringMap;
 typedef KstObjectCollection<KstString> KstStringCollection;

@@ -18,14 +18,16 @@
 #ifndef KSTPRIMITIVE_H
 #define KSTPRIMITIVE_H
 
+#include <qpointer.h>
+
 #include "kst_export.h"
 #include "kstobject.h"
-#include <qguardedptr.h>
 
 class KST_EXPORT KstPrimitive : public KstObject {
   public:
     KstPrimitive(KstObject* provider = 0L);
-
+    KstPrimitive(const KstPrimitive& primitive);
+    
   protected:
     ~KstPrimitive();
 
@@ -39,13 +41,13 @@ class KST_EXPORT KstPrimitive : public KstObject {
   protected:
     virtual KstObject::UpdateType internalUpdate(KstObject::UpdateType providerRC);
 
-    /** Possibly null.  Be careful, this is non-standard usage of a KstShared.
+    /** Possibly null.  Be careful, this is non-standard usage of a KShared.
      * The purpose of this is to trigger hierarchical updates properly.
      */
-    QGuardedPtr<KstObject> _provider;
+    QPointer<KstObject> _provider;
 };
 
-typedef KstSharedPtr<KstPrimitive> KstPrimitivePtr;
+typedef QExplicitlySharedDataPointer<KstPrimitive> KstPrimitivePtr;
 typedef KstObjectList<KstPrimitivePtr> KstPrimitiveList;
 typedef KstObjectMap<KstPrimitivePtr> KstPrimitiveMap;
 

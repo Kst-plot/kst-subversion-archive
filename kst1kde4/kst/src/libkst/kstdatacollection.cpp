@@ -15,8 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <config.h>
-
+// xxx #include <config.h>
 #include <stdlib.h>
 
 #include "kstdatacollection.h"
@@ -24,28 +23,48 @@
 #include "sysinfo.h"
 #include "psversion.h"
 
-/** The list of data sources (files) */
 KstDataSourceList KST::dataSourceList;
-
-/** The list of vectors that are being read */
 KstVectorCollection KST::vectorList;
-
-/** The list of matrices that are being read */
 KstMatrixCollection KST::matrixList;
-
-/** The list of Scalars which have been generated */
 KstScalarCollection KST::scalarList;
-
-/** The list of Strings */
 KstStringCollection KST::stringList;
 
-static QMutex bigLock;
+static QMutex lockMeminfo;
+
+bool KST::memfree(unsigned long& mem, bool wait) {
+  bool bRetVal = false;
+
+#ifdef HAVE_LINUX
+  if (wait) {
+    lockMeminfo.lock();
+
+    meminfo();
+    mem = S(kb_main_free + kb_main_buffers + kb_main_cached);
+    bRetVal = true;
+
+    lockMeminfo.unlock();
+  } else {
+    if (lockMeminfo.tryLock()) {
+      meminfo();
+      mem = S(kb_main_free + kb_main_buffers + kb_main_cached);
+      bRetVal = true;
+
+      lockMeminfo.unlock();
+    }
+  }
+#else
+  Q_UNUSED(mem)
+  Q_UNUSED(wait)
+#endif
+
+  return bRetVal;
+}
 
 void *KST::realloc(void *ptr, size_t size) {
 #ifdef HAVE_LINUX
-  QMutexLocker ml(&bigLock);
-  meminfo();
-  unsigned long bFree = S(kb_main_free + kb_main_buffers + kb_main_cached);
+  unsigned long bFree;
+
+  memfree(bFree, true);
   if (size > bFree) {
     const unsigned long sz = size;
     qDebug("Tried to allocate too much memory! (Wanted %lu, had %lu)", sz, bFree);
@@ -57,9 +76,9 @@ void *KST::realloc(void *ptr, size_t size) {
 
 void *KST::malloc(size_t size) {
 #ifdef HAVE_LINUX
-  QMutexLocker ml(&bigLock);
-  meminfo();
-  unsigned long bFree = S(kb_main_free + kb_main_buffers + kb_main_cached);
+  unsigned long bFree;
+
+  memfree(bFree, true);
   if (size > bFree) {
     const unsigned long sz = size;
     qDebug("Tried to allocate too much memory! (Wanted %lu, had %lu)", sz, bFree);
@@ -70,12 +89,12 @@ void *KST::malloc(size_t size) {
 }
 
 
-static KStaticDeleter<KstData> sdData;
+K_GLOBAL_STATIC(KstData, sdData)
 KstData *KstData::_self = 0L;
 
 KstData *KstData::self() {
   if (!_self) {
-    _self = sdData.setObject(_self, new KstData);
+// xxx    _self = sdData.setObject(_self, new KstData);
   }
   return _self;
 }
@@ -84,7 +103,7 @@ KstData *KstData::self() {
 void KstData::replaceSelf(KstData *newInstance) {
   delete _self;
   _self = 0L;
-  _self = sdData.setObject(_self, newInstance);
+// xxx _self = sdData.setObject(_self, newInstance);
 }
 
 
@@ -97,12 +116,19 @@ KstData::~KstData() {
 
 
 bool KstData::vectorTagNameNotUniqueInternal(const QString& tag) {
-  /* verify that the tag name is not empty */
-  if (tag.stripWhiteSpace().isEmpty()) {
+
+  //
+  // verify that the tag name is not empty
+  //
+  
+  if (tag.trimmed().isEmpty()) {
       return true;
   }
-
-  /* verify that the tag name is not used by a data object */
+  
+  //
+  // verify that the tag name is not used by a data object
+  //
+  
   KST::vectorList.lock().readLock();
   bool vc = KST::vectorList.tagExists(tag);
   KST::vectorList.lock().unlock();
@@ -111,28 +137,39 @@ bool KstData::vectorTagNameNotUniqueInternal(const QString& tag) {
     vc = KST::scalarList.tagExists(tag);
     KST::scalarList.lock().unlock();
   }
-  return vc;
+
+return vc;
 }
 
 
 bool KstData::matrixTagNameNotUniqueInternal(const QString& tag) {
-  /* verify that the tag name is not empty */
-  if (tag.stripWhiteSpace().isEmpty()) {
+  
+  //
+  // verify that the tag name is not empty
+  //
+  
+  if (tag.trimmed().isEmpty()) {
     return true;
   }
 
-  /* verify that the tag name is not used by a data object */
+  //
+  // verify that the tag name is not used by a data object
+  //
+
   KstReadLocker ml(&KST::matrixList.lock());
   KstReadLocker ml2(&KST::scalarList.lock());
+  
   if (KST::matrixList.tagExists(tag) || KST::scalarList.tagExists(tag)) {
     return true;
   }
+  
   return false;
 }
 
 
 bool KstData::tagNameNotUnique(const QString& tag, bool warn, void *p) {
   Q_UNUSED(p)
+
   return dataTagNameNotUnique(tag, warn) || vectorTagNameNotUnique(tag, warn);
 }
 
@@ -141,6 +178,7 @@ bool KstData::dataTagNameNotUnique(const QString& tag, bool warn, void *parent) 
   Q_UNUSED(tag)
   Q_UNUSED(warn)
   Q_UNUSED(parent)
+
   return false;
 }
 
@@ -148,14 +186,22 @@ bool KstData::dataTagNameNotUnique(const QString& tag, bool warn, void *parent) 
 bool KstData::vectorTagNameNotUnique(const QString& tag, bool warn, void *p) {
   Q_UNUSED(p)
   Q_UNUSED(warn)
-  /* verify that the tag name is not empty */
-  if (tag.stripWhiteSpace().isEmpty()) {
+
+  //
+  // verify that the tag name is not empty
+  //
+  
+  if (tag.trimmed().isEmpty()) {
       return true;
   }
 
-  /* verify that the tag name is not used by a data object */
+  //
+  // verify that the tag name is not used by a data object
+  //
+  
   KstReadLocker ml(&KST::vectorList.lock());
   KstReadLocker ml2(&KST::scalarList.lock());
+
   if (KST::vectorList.tagExists(tag) || KST::scalarList.tagExists(tag)) {
       return true;
   }
@@ -167,17 +213,26 @@ bool KstData::vectorTagNameNotUnique(const QString& tag, bool warn, void *p) {
 bool KstData::matrixTagNameNotUnique(const QString& tag, bool warn, void *p) {
   Q_UNUSED(p)
   Q_UNUSED(warn)
-  /* verify that the tag name is not empty */
-  if (tag.stripWhiteSpace().isEmpty()) {
+
+  //
+  // verify that the tag name is not empty
+  //
+  
+  if (tag.trimmed().isEmpty()) {
     return true;
   }
 
-  /* verify that the tag name is not used by a data object */
+  //
+  // verify that the tag name is not used by a data object
+  //
+  
   KstReadLocker ml(&KST::matrixList.lock());
   KstReadLocker ml2(&KST::scalarList.lock());
+
   if (KST::matrixList.tagExists(tag) || KST::scalarList.tagExists(tag)) {
     return true;
   }
+  
   return false;
 }
 
@@ -185,16 +240,25 @@ bool KstData::matrixTagNameNotUnique(const QString& tag, bool warn, void *p) {
 bool KstData::dataSourceTagNameNotUnique(const QString& tag, bool warn, void *p) {
   Q_UNUSED(p)
   Q_UNUSED(warn)
-  /* verify that the tag name is not empty */
-  if (tag.stripWhiteSpace().isEmpty()) {
+
+  //
+  // verify that the tag name is not empty
+  //
+  
+  if (tag.trimmed().isEmpty()) {
     return true;
   }
 
-  /* verify that the tag name is not used by a data source */
+  //
+  // verify that the tag name is not used by a data source
+  //
+  
   KstReadLocker l(&KST::dataSourceList.lock());
+
   if (KST::dataSourceList.findTag(tag) != KST::dataSourceList.end()) {
     return true;
   }
+  
   return false;
 }
 
@@ -208,15 +272,19 @@ QStringList KstData::plotList(const QString& window) {
 
 void KstData::removeCurveFromPlots(KstBaseCurve *c) {
   Q_UNUSED(c)
+
   // meaningless in no GUI: no plots!
 }
 
+
 bool KstData::viewObjectNameNotUnique(const QString& tag) {
   Q_UNUSED(tag)
+
   // meaningless in no GUI: no view objects!
 
   return false;
 }
+
 
 int KstData::vectorToFile(KstVectorPtr v, QFile *f) {
   // FIXME: implement me (non-gui)

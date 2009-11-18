@@ -14,26 +14,30 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-// use KCodecs::base64Encode() in kmdcodecs.h
-// Create QDataStream into a QByteArray
-// qCompress the bytearray
+
+#include <QTextDocument>
+
+#include <klocale.h>
 
 #include "kstamatrix.h"
 #include "kstdebug.h"
-#include <qcstring.h>
-#include <qstylesheet.h>
-#include <klocale.h>
-#include <kmdcodec.h>
 
 KstAMatrix::KstAMatrix(const QDomElement &e) : KstMatrix() {
   _editable = true;
 
-  double in_xMin = 0, in_yMin = 0, in_xStep = 1, in_yStep = 1;
-  int in_nX = 2, in_nY = 2;
-  QString in_tag = QString::null; 
-
-  // must get the grid dimensions before the data
   QDomNode n = e.firstChild();
+  QString in_tag = QString::null;
+  double in_xMin = 0.0;
+  double in_yMin = 0.0;
+  double in_xStep = 1.0;
+  double in_yStep = 1.0;
+  int in_nX = 2;
+  int in_nY = 2; 
+
+  //
+  // must get the grid dimensions before the data
+  //
+  
   while (!n.isNull()) {
     QDomElement e = n.toElement();
     if (!e.isNull()) {
@@ -65,13 +69,13 @@ KstAMatrix::KstAMatrix(const QDomElement &e) : KstMatrix() {
       QDomElement e = n.toElement();
       if (!e.isNull()) {
         if (e.tagName() == "data") {
-          QCString qcs(e.text().latin1());
-          QByteArray qbca;
-          KCodecs::base64Decode(qcs, qbca);
-          QByteArray qba = qUncompress(qbca);
-          QDataStream qds(qba, IO_ReadOnly);
+	  QByteArray qcs(e.text().toAscii());
+          QByteArray qbca = QByteArray::fromBase64(qcs);
+	  QByteArray qba = qUncompress(qbca);
+          QDataStream qds(&qba, QIODevice::ReadOnly);
           int i;
-          // fill in the raw array with the data
+          
+	  // fill in the raw array with the data
           for (i = 0; i < in_nX*in_nY && !qds.atEnd(); i++) {
             qds >> _z[i];  // stored in the same order as it was saved
           }
@@ -115,22 +119,22 @@ KstObject::UpdateType KstAMatrix::update(int update_counter) {
 
 void KstAMatrix::save(QTextStream &ts, const QString& indent) {
   QString indent2 = "  ";
-  QByteArray qba(_zSize*sizeof(double));
-  QDataStream qds(qba, IO_WriteOnly);
+  QByteArray qba(_zSize * sizeof(double), '\0');
+  QDataStream qds(&qba, QIODevice::WriteOnly);
 
   for (int i = 0; i < _zSize; i++) {
     qds << _z[i];
   }
 
   ts << indent << "<amatrix>" << endl;
-  ts << indent << indent2 << "<tag>" << QStyleSheet::escape(tag().tagString()) << "</tag>" << endl;
+  ts << indent << indent2 << "<tag>" << Qt::escape(tag().tagString()) << "</tag>" << endl;
   ts << indent << indent2 << "<xmin>" << minX() << "</xmin>" << endl;
   ts << indent << indent2 << "<ymin>" << minY() << "</ymin>" << endl;
   ts << indent << indent2 << "<nx>" << xNumSteps() << "</nx>" << endl;
   ts << indent << indent2 << "<ny>" << yNumSteps() << "</ny>" << endl;
   ts << indent << indent2 << "<xstep>" << xStepSize() << "</xstep>" << endl;
   ts << indent << indent2 << "<ystep>" << xStepSize() << "</ystep>" << endl;
-  ts << indent << indent2 << "<data>" << KCodecs::base64Encode(qCompress(qba)) << "</data>" << endl;
+  ts << indent << indent2 << "<data>" << qCompress(qba).toBase64() << "</data>" << endl;
   ts << indent << "</amatrix>" << endl;
 }
 

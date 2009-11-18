@@ -18,7 +18,8 @@
 #ifndef KSTDATEPARSER_H
 #define KSTDATEPARSER_H
 
-#include <kstextdatetime.h>
+#include <kdatetime.h>
+
 #include "kst_export.h"
 
 /* This is a public header */
@@ -27,9 +28,10 @@ namespace KST {
   All times represented as doubles are the number of milliseconds since Jan 01
   1970 00:00:00.  Negative times are before then.
   */
-  KST_EXPORT extern ExtDateTime parsePlanckDate(const QString& dateString);
-  KST_EXPORT extern double extDateTimeToMilliseconds(const ExtDateTime& edt);
-  KST_EXPORT extern ExtDateTime millisecondsToExtDateTime(double ms);
+  KST_EXPORT extern KDateTime parsePlanckDate(const QString& dateString, bool applyOffset);
+  KST_EXPORT extern double DateTimeToMilliseconds(const KDateTime& edt);
+  KST_EXPORT extern KDateTime millisecondsToDateTime(double ms);
+  KST_EXPORT extern double DateTimeUTCToTime_t(const KDateTime& edt);
 }
 
 #endif

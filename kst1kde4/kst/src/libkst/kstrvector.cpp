@@ -20,9 +20,9 @@
 #include <math.h>
 #include <stdlib.h>
 
-#include <qstylesheet.h>
+#include <QTextDocument>
 
-#include "ksdebug.h"
+#include <kdebug.h>
 #include <klocale.h>
 
 #include "kstdatacollection.h"
@@ -40,7 +40,6 @@
 //  > 1             < 0                 read the last _reqNumberFrames frames from the file
 //  > 1             >=0                 read _reqNumberFrames frames starting at frame _reqStartingFrame
 
-/** Create a KstRVector: raw data from a file */
 KstRVector::KstRVector(KstDataSourcePtr in_file, const QString &in_field,
                        KstObjectTag in_tag,
                        int in_f0, int in_n, int skip, bool in_DoSkip,
@@ -141,9 +140,12 @@ void KstRVector::commonRVConstructor(KstDataSourcePtr in_file,
   _saveable = true;
   _dontUseSkipAccel = false;
   _numSamples = 0;
+
   _scalars["sum"]->setValue(0.0);
   _scalars["sumsquared"]->setValue(0.0);
-  _startingFrame = _numberOfFrames = 0; // nothing read yet
+
+  _startingFrame = 0;
+  _numberOfFrames = 0;
 
   _nAveReadBuf = 0;
   _aveReadBuf = 0L;
@@ -343,11 +345,11 @@ void KstRVector::save(QTextStream &ts, const QString& indent, bool saveAbsoluteP
     ts << indent << "<vector>" << endl;
     KstVector::save(ts, indent + "  ", saveAbsolutePosition);
     _file->readLock();
-    ts << indent << "  <provider>" << QStyleSheet::escape(_file->tag().tagString()) << "</provider>" << endl;
-    ts << indent << "  <filename>" << QStyleSheet::escape(_file->fileName()) << "</filename>" << endl;
+    ts << indent << "  <provider>" << Qt::escape(_file->tag().tagString()) << "</provider>" << endl;
+    ts << indent << "  <filename>" << Qt::escape(_file->fileName()) << "</filename>" << endl;
     _file->unlock();
 
-    ts << indent << "  <field>" << QStyleSheet::escape(_field) << "</field>" << endl;
+    ts << indent << "  <field>" << Qt::escape(_field) << "</field>" << endl;
     if (saveAbsolutePosition) {
       ts << indent << "  <start>" << _startingFrame << "</start>" << endl;
       ts << indent << "  <num>" << _numberOfFrames << "</num>" << endl;
@@ -633,8 +635,13 @@ KstObject::UpdateType KstRVector::doUpdate(bool force) {
       }
     }
 
-    if (_numberOfFrames > 0) {
-      _numberOfFrames--; /* last frame read was only partially read... */
+    //
+    // if there is more than one sample per frame then
+    //  we read only the first sample in the final frame.
+    // see comment at start of method for further details...
+    //
+    if (_numberOfFrames > 0 && _file->samplesPerFrame(_field) > 1) {
+      _numberOfFrames--;
     }
 
     // read the new data from file
@@ -648,7 +655,6 @@ KstObject::UpdateType KstRVector::doUpdate(bool force) {
       nRead = _file->readField(_v+_numberOfFrames*_samplesPerFrame, _field, newStartingFrame + _numberOfFrames, newNumberOfFrames - _numberOfFrames - 1);
       nRead += _file->readField(_v+(newNumberOfFrames-1)*_samplesPerFrame, _field, newStartingFrame + newNumberOfFrames - 1, -1);
     } else {
-      //kstdDebug() << "Reading into _v=" << (void*)_v << " which has size " << _size << " and starting at offset " << NF*_samplesPerFrame << " for s=" << newStartingFrame + NF << " and n=" << newNumberOfFrames - NF << endl;
       assert(newStartingFrame + _numberOfFrames >= 0);
       if (newNumberOfFrames - _numberOfFrames > 0 || newNumberOfFrames - _numberOfFrames == -1) {
         nRead = _file->readField(_v+_numberOfFrames*_samplesPerFrame, _field, newStartingFrame + _numberOfFrames, newNumberOfFrames - _numberOfFrames);
@@ -661,6 +667,7 @@ KstObject::UpdateType KstRVector::doUpdate(bool force) {
   _startingFrame = newStartingFrame;
   _numSamples += nRead;
 
+  //
   // if for some reason (eg, realtime reading an nfs mounted
   // dirfile) not all of the data was read, the data will never
   // be read; the samples will be filled in with the last data
@@ -668,9 +675,9 @@ KstObject::UpdateType KstRVector::doUpdate(bool force) {
   // This is bad - I think it will be worthwhile
   // to add blocking w/ timeout to KstFile.
   // As a first fix, mount all nsf mounted dirfiles with "-o noac"
+  //
   _dirty = false;
   if (_numSamples != _size && !(_numSamples == 0 && _size == 1)) {
-    //kstdDebug() << "SET DIRTY since _numSamples = " << _numSamples << " but _size = " << _size << endl;
     _dirty = true;
     for (i = _numSamples; i < _size; i++) {
       _v[i] = _v[0];
@@ -680,6 +687,7 @@ KstObject::UpdateType KstRVector::doUpdate(bool force) {
   if (_numNew > _size) {
     _numNew = _size;
   }
+
   if (_numShifted > _size) {
     _numShifted = _size;
   }
@@ -732,7 +740,7 @@ void KstRVector::reload() {
       if (newsrc) {
         _file->unlock();
         KST::dataSourceList.lock().writeLock();
-        KST::dataSourceList.remove(_file);
+        KST::dataSourceList.removeAll(_file);
         _dontUseSkipAccel = false;
         _file = newsrc;
         _file->writeLock();
@@ -754,6 +762,6 @@ KstDataSourcePtr KstRVector::dataSource() const {
 KstRVectorPtr KstRVector::makeDuplicate() const {
   QString newTag = tag().tag() + "'";
 
-  return new KstRVector(_file, _field, KstObjectTag(newTag, tag().context()), _reqStartingFrame, _reqNumberFrames, _skip, _doSkip, _doAve);
+  return KstRVectorPtr( new KstRVector(_file, _field, KstObjectTag(newTag, tag().context()), _reqStartingFrame, _reqNumberFrames, _skip, _doSkip, _doAve) );
 }
 

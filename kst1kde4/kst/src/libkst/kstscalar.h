@@ -22,7 +22,6 @@
 #include "kstprimitive.h"
 #include "kstobjectcollection.h"
 
-/** The base class for all scalars. */
 class KST_EXPORT KstScalar : public KstPrimitive {
   Q_OBJECT
   Q_PROPERTY(bool orphan READ orphan WRITE setOrphan)
@@ -33,7 +32,6 @@ class KST_EXPORT KstScalar : public KstPrimitive {
               KstObject *provider = 0L, double val = 0.0, bool orphan = false,
               bool displayable = true, bool editable = false);
     KstScalar(const QDomElement& e);
-
     virtual ~KstScalar();
 
   public:
@@ -80,9 +78,10 @@ class KST_EXPORT KstScalar : public KstPrimitive {
     bool _editable;
 };
 
-typedef KstSharedPtr<KstScalar> KstScalarPtr;
+typedef QExplicitlySharedDataPointer<KstScalar> KstScalarPtr;
 typedef KstObjectList<KstScalarPtr> KstScalarList;
 typedef KstObjectMap<KstScalarPtr> KstScalarMap;
 typedef KstObjectCollection<KstScalar> KstScalarCollection;
+typedef QHash<QString, KstScalarPtr> ScalarCollection;
 
 #endif

@@ -18,13 +18,11 @@
 #ifndef KSTOBJECTCOLLECTION_H
 #define KSTOBJECTCOLLECTION_H
 
-// NAMEDEBUG: 0 for no debug, 1 for some debug, 2 for more debug, 3 for all debug
-#define NAMEDEBUG 0
+#include <QHash>
+#include <QMultiHash>
 
-#include <qdict.h>
-#include <qintdict.h>
+#include <kdebug.h>
 
-#include "ksdebug.h"
 #include "kstobject.h"
 
 // Forward Declarations
@@ -38,13 +36,12 @@ class KstVector;
 
 // Typedefs
 template <class T>
-class KstObjectNameIndex : public QDict<QValueList<KstObjectTreeNode<T> *> > {
+class KstObjectNameIndex : public QMultiHash<QString, QLinkedList<KstObjectTreeNode<T> *> > {
 };
 
 
-/** KstObject Naming Tree */
 template <class T>
-class KstObjectTreeNode : QObject {
+class KstObjectTreeNode : public QObject {
   public:
     KstObjectTreeNode(const QString& tag = QString::null);
     ~KstObjectTreeNode();
@@ -67,7 +64,7 @@ class KstObjectTreeNode : QObject {
 
   private:
     QString _tag;
-    QGuardedPtr<T> _object;
+    QPointer<T> _object;
     KstObjectTreeNode<T> *_parent;
     QMap<QString, KstObjectTreeNode<T> *> _children;
 };
@@ -82,8 +79,8 @@ class KstObjectCollection {
     bool removeObject(T *o);
     void doRename(T *o, const KstObjectTag& newTag);
 
-    KstSharedPtr<T> retrieveObject(QStringList tag) const;
-    KstSharedPtr<T> retrieveObject(const KstObjectTag& tag) const;
+    QExplicitlySharedDataPointer<T> retrieveObject(QStringList tag) const;
+    QExplicitlySharedDataPointer<T> retrieveObject(const KstObjectTag& tag) const;
     bool tagExists(const QString& tag) const;
     bool tagExists(const KstObjectTag& tag) const;
 
@@ -95,44 +92,40 @@ class KstObjectCollection {
     void setUpdateDisplayTags(bool u);
 
     KstObjectTreeNode<T> *nameTreeRoot() { return &_root; }
-
-    // QValueList compatibility
     bool isEmpty() const { return _list.isEmpty(); }
-    typename KstObjectList<KstSharedPtr<T> >::size_type count() const { return _list.count(); }
+    typename KstObjectList<QExplicitlySharedDataPointer<T> >::size_type count() const { return _list.count(); }
     void append(T *o);
     void remove(T *o);
     void clear();
     QStringList tagNames() const;
-    typename KstObjectList<KstSharedPtr<T> >::Iterator removeTag(const QString& x);
-    typename KstObjectList<KstSharedPtr<T> >::Iterator findTag(const QString& x);
-    typename KstObjectList<KstSharedPtr<T> >::ConstIterator findTag(const QString& x) const;
-    typename KstObjectList<KstSharedPtr<T> >::Iterator findTag(const KstObjectTag& x);
-    typename KstObjectList<KstSharedPtr<T> >::ConstIterator findTag(const KstObjectTag& x) const;
-    typename KstObjectList<KstSharedPtr<T> >::Iterator begin();
-    typename KstObjectList<KstSharedPtr<T> >::ConstIterator begin() const;
-    typename KstObjectList<KstSharedPtr<T> >::Iterator end();
-    typename KstObjectList<KstSharedPtr<T> >::ConstIterator end() const;
-    KstObjectList<KstSharedPtr<T> >& list() { return _list; } // FIXME: this should be const, but it will break KstObjectSubList
-    KstSharedPtr<T>& operator[](int i) { return _list[i]; }
-    const KstSharedPtr<T>& operator[](int i) const { return _list[i]; }
-
-    // locking
+    typename KstObjectList<QExplicitlySharedDataPointer<T> >::Iterator removeTag(const QString& x);
+    typename KstObjectList<QExplicitlySharedDataPointer<T> >::Iterator findTag(const QString& x);
+    typename KstObjectList<QExplicitlySharedDataPointer<T> >::ConstIterator findTag(const QString& x) const;
+    typename KstObjectList<QExplicitlySharedDataPointer<T> >::Iterator findTag(const KstObjectTag& x);
+    typename KstObjectList<QExplicitlySharedDataPointer<T> >::ConstIterator findTag(const KstObjectTag& x) const;
+    typename KstObjectList<QExplicitlySharedDataPointer<T> >::Iterator begin();
+    typename KstObjectList<QExplicitlySharedDataPointer<T> >::ConstIterator begin() const;
+    typename KstObjectList<QExplicitlySharedDataPointer<T> >::Iterator end();
+    typename KstObjectList<QExplicitlySharedDataPointer<T> >::ConstIterator end() const;
+    KstObjectList<QExplicitlySharedDataPointer<T> >& list() { return _list; } // FIXME: this should be const, but it will break KstObjectSubList
+    QExplicitlySharedDataPointer<T>& operator[](int i) { return _list[i]; }
+    const QExplicitlySharedDataPointer<T>& operator[](int i) const { return _list[i]; }
     KstRWLock& lock() const { return _list.lock(); }
 
   private:
-    QValueList<KstObjectTreeNode<T> *> relatedNodes(T *obj);
-    void relatedNodesHelper(T *o, KstObjectTreeNode<T> *n, QIntDict<KstObjectTreeNode<T> >& nodes);
+    QLinkedList<KstObjectTreeNode<T> *> relatedNodes(T *obj);
+    void relatedNodesHelper(T *o, KstObjectTreeNode<T> *n, QHash<long, KstObjectTreeNode<T>*>& nodes);
 
     // must be called AFTER the object is added to the index, while holding a write lock
     void updateAllDisplayTags();
     void updateDisplayTag(T *obj);
-    void updateDisplayTags(QValueList<KstObjectTreeNode<T> *> nodes);
+    void updateDisplayTags(QLinkedList<KstObjectTreeNode<T> *> nodes);
 
     bool _updateDisplayTags;
 
     KstObjectTreeNode<T> _root;
     KstObjectNameIndex<T> _index;
-    KstObjectList<KstSharedPtr<T> > _list; // owns the objects
+    KstObjectList<QExplicitlySharedDataPointer<T> > _list; // owns the objects
 };
 
 
@@ -140,20 +133,25 @@ class KstObjectCollection {
 
 // FIXME: this should probably return either a const list or another KstObjectCollection
 template<class T, class S>
-const KstObjectList<KstSharedPtr<S> > kstObjectSubList(KstObjectCollection<T>& coll) {
-  KstObjectList<KstSharedPtr<T> > list = coll.list();
+const KstObjectList<QExplicitlySharedDataPointer<S> > kstObjectSubList(KstObjectCollection<T>& coll) {
+  KstObjectList<QExplicitlySharedDataPointer<T> > list = coll.list();
+  KstObjectList<QExplicitlySharedDataPointer<S> > rc;
+  typename KstObjectList<QExplicitlySharedDataPointer<T> >::Iterator it;
+  
   list.lock().readLock();
-  KstObjectList<KstSharedPtr<S> > rc;
-  typename KstObjectList<KstSharedPtr<T> >::Iterator it;
 
   for (it = list.begin(); it != list.end(); ++it) {
     S *x = dynamic_cast<S*>((*it).data());
+
     if (x != 0L) {
-      rc.append(x);
+      QExplicitlySharedDataPointer<S> item(x);
+      
+      rc.append(item);
     }
   }
 
   list.lock().unlock();
+
   return rc;
 }
 
@@ -161,17 +159,15 @@ const KstObjectList<KstSharedPtr<S> > kstObjectSubList(KstObjectCollection<T>& c
 
 
 template <class T>
-KstObjectTreeNode<T>::KstObjectTreeNode(const QString& tag) : _tag(tag),
-                                                           _object(NULL),
-                                                           _parent(NULL)
-{
+KstObjectTreeNode<T>::KstObjectTreeNode(const QString& tag) : 
+  _tag(tag), _object(NULL), _parent(NULL) {
 }
 
 
 template <class T>
 KstObjectTreeNode<T>::~KstObjectTreeNode() {
-  for (QMapIterator<QString, KstObjectTreeNode*> i = _children.begin(); i != _children.end(); ++i) {
-    delete (i.data());
+  for (typename QMap<QString, KstObjectTreeNode<T>*>::iterator i = _children.begin(); i != _children.end(); ++i) {
+    delete(i.value());
   }
 }
 
@@ -237,65 +233,64 @@ KstObjectTreeNode<T> *KstObjectTreeNode<T>::addDescendant(T *o, KstObjectNameInd
   }
 
   QStringList tag = o->tag().fullTag();
-
   KstObjectTreeNode<T> *currNode = this;
+
   for (QStringList::ConstIterator i = tag.begin(); i != tag.end(); ++i) {
     KstObjectTreeNode<T> *nextNode = currNode->child(*i);
+
     if (!nextNode) {
       nextNode = new KstObjectTreeNode<T>(*i);
       nextNode->_parent = currNode;
       currNode->_children[*i] = nextNode;
+      
       if (index) {
-        QValueList<KstObjectTreeNode<T> *> *l;
-        if (!(l = index->take(*i))) {
-          l = new QValueList<KstObjectTreeNode<T> *>;
+        if (index->contains(*i)) {
+          QLinkedList<KstObjectTreeNode<T> *> l;
+
+          l = index->take(*i);
+          l.append(nextNode);
+          index->insert(*i, l);
+        } else {
+          QLinkedList<KstObjectTreeNode<T> *>* pl;
+
+          pl = new QLinkedList<KstObjectTreeNode<T> *>;
+          pl->append(nextNode);
+          index->insert(*i, *pl);
         }
-        l->append(nextNode);
-        index->insert(*i, l);
       }
     }
     currNode = nextNode;
   }
 
   if (currNode->_object) {
-#if NAMEDEBUG > 0
-    kstdDebug() << "Tried to add KstObject to naming tree " << (void*)this << ": \"" << o->tag().tagString() << "\", but there's already an object with that name" << endl;
-#endif
+
     return NULL;
   } else {
     currNode->_object = o;
-#if NAMEDEBUG > 0
-    kstdDebug() << "Added KstObject to naming tree " << (void*)this << ": \"" << o->tag().tagString() << "\"" << endl;
-#endif
+
     return currNode;
   }
 }
 
 
 template <class T>
-bool KstObjectTreeNode<T>::removeDescendant(T *o, KstObjectNameIndex<T> *index) {
-  if (!o) {
+bool KstObjectTreeNode<T>::removeDescendant(T *obj, KstObjectNameIndex<T> *index) {
+  if (!obj) {
     return false;
   }
 
-  QStringList tag = o->tag().fullTag();
+  QStringList tag = obj->tag().fullTag();
 
   KstObjectTreeNode<T> *currNode = this;
   for (QStringList::ConstIterator i = tag.begin(); i != tag.end(); ++i) {
     KstObjectTreeNode<T> *nextNode = currNode->child(*i);
     if (!nextNode) {
-#if NAMEDEBUG > 0
-      kstdDebug() << "Tried to remove KstObject from naming tree: \"" << o->tag().tagString() << "\", but the node is not in the tree" << endl;
-#endif
       return false;
     }
     currNode = nextNode;
   }
 
-  if (currNode->_object != QGuardedPtr<KstObject>(o)) {
-#if NAMEDEBUG > 0
-    kstdDebug() << "Tried to remove KstObject from naming tree: \"" << o->tag().tagString() << "\", but the object is not in the tree" << endl;
-#endif
+  if (currNode->_object != QPointer<KstObject>(obj)) {
     return false;
   } else {
     currNode->_object = NULL;
@@ -303,23 +298,22 @@ bool KstObjectTreeNode<T>::removeDescendant(T *o, KstObjectNameIndex<T> *index) 
     while (i != tag.begin() && currNode->_object.isNull() && currNode->_children.isEmpty()) {
       --i;
       KstObjectTreeNode<T> *lastNode = currNode->_parent;
+
       lastNode->_children.remove(*i);
-#if NAMEDEBUG > 1
-      kstdDebug() << "Removed naming tree node: \"" << currNode->fullTag().join(KstObjectTag::tagSeparator) << "\"" << endl;
-#endif
+
       if (index) {
-        QValueList<KstObjectTreeNode<T> *> *l = index->take(*i);
-        if (l) {
-          l->remove(currNode);
+        if (index->contains(*i)) {
+          QLinkedList<KstObjectTreeNode<T> *> l = index->take(*i);
+
+          l.removeAll(currNode);
           index->insert(*i, l);
         }
       }
+
       delete currNode;
       currNode = lastNode;
     }
-#if NAMEDEBUG > 0
-    kstdDebug() << "Removed KstObject from naming tree: \"" << o->tag().tagString() << "\"" << endl;
-#endif
+
     return true;
   }
 }
@@ -330,10 +324,14 @@ void KstObjectTreeNode<T>::clear() {
   _parent = NULL;
   _object = NULL;
 
+  //
   // delete children
+  //
+
   for (QMapIterator<QString, KstObjectTreeNode*> i = _children.begin(); i != _children.end(); ++i) {
-    delete (i.data());
+    delete (i.value());
   }
+  
   _children.clear();
 }
 
@@ -344,7 +342,6 @@ void KstObjectTreeNode<T>::clear() {
 template <class T>
 KstObjectCollection<T>::KstObjectCollection() : _updateDisplayTags(true)
 {
-  _index.setAutoDelete(true);
 }
 
 
@@ -354,9 +351,11 @@ bool KstObjectCollection<T>::addObject(T *o) {
     return false;
   }
 
-  _list.append(o);
+  QExplicitlySharedDataPointer<T> p(o);
+  QLinkedList<KstObjectTreeNode<T> *> relNodes;
+  
+  _list.append(p);
 
-  QValueList<KstObjectTreeNode<T> *> relNodes;
   if (_updateDisplayTags) {
     relNodes = relatedNodes(o);
   }
@@ -378,46 +377,28 @@ bool KstObjectCollection<T>::addObject(T *o) {
 
 template <class T>
 bool KstObjectCollection<T>::removeObject(T *o) {
-  if (!o) {
-    return false;
-  }
+  bool ok = false;
 
-  if (!_list.contains(o)) {
-#if NAMEDEBUG > 1
-    kstdDebug() << "Trying to delete a non-existant object from the collection: " << o->tag().tagString() << endl;
-#endif
-    return false;
-  }
+  if (o) {
+    QExplicitlySharedDataPointer<T> p(o);
+    
+    if (_list.contains(p)) {
+      QLinkedList<KstObjectTreeNode<T> *> relNodes;
+      
+      if (_updateDisplayTags) {
+        relNodes = relatedNodes(o);
+      }
 
-#if NAMEDEBUG > 1
-    kstdDebug() << "Removing object from the collection: " << o->tag().tagString() << endl;
-#endif
+      ok = _root.removeDescendant(o, &_index);
 
-    QValueList<KstObjectTreeNode<T> *> relNodes;
-    if (_updateDisplayTags) {
-#if NAMEDEBUG > 2
-      kstdDebug() << "  fetching related nodes" << endl;
-#endif
-      relNodes = relatedNodes(o);
+      if (ok) {
+        if (_updateDisplayTags) {
+          updateDisplayTags(relNodes);
+        }
+
+        _list.removeAll(p);
+      }
     }
-
-#if NAMEDEBUG > 2
-    kstdDebug() << "  removing object from tree" << endl;
-#endif
-  bool ok = _root.removeDescendant(o, &_index);
-
-  if (ok) {
-    if (_updateDisplayTags) {
-#if NAMEDEBUG > 2
-      kstdDebug() << "  updating display components" << endl;
-#endif
-      updateDisplayTags(relNodes);
-    }
-
-#if NAMEDEBUG > 2
-    kstdDebug() << "  removing object from list" << endl;
-#endif
-    _list.remove(o);
   }
 
   return ok;
@@ -434,7 +415,8 @@ void KstObjectCollection<T>::doRename(T *o, const KstObjectTag& newTag) {
     return;
   }
 
-  QValueList<KstObjectTreeNode<T> *> relNodes;
+  QLinkedList<KstObjectTreeNode<T> *> relNodes;
+  
   if (_updateDisplayTags) {
     relNodes = relatedNodes(o);
   }
@@ -456,30 +438,20 @@ void KstObjectCollection<T>::doRename(T *o, const KstObjectTag& newTag) {
 
 
 template <class T>
-KstSharedPtr<T> KstObjectCollection<T>::retrieveObject(QStringList tag) const {
-#if NAMEDEBUG > 1
-  kstdDebug() << "Retrieving object with tag: \"" << tag.join(KstObjectTag::tagSeparator) << "\"" << endl;
-#endif
-
+QExplicitlySharedDataPointer<T> KstObjectCollection<T>::retrieveObject(QStringList tag) const {
   if (tag.isEmpty()) {
     return NULL;
   }
 
   if (_index[tag.first()] && _index[tag.first()]->count() == 1) {
     // the first tag element is unique, so use the index
-#if NAMEDEBUG > 2
-    kstdDebug() << "  first tag element (\"" << tag.first() << "\") is unique in index" << endl;
-#endif
-
     KstObjectTreeNode<T> *n = _index[tag.first()]->first();
+
     if (n) {
       tag.pop_front();
       n = n->descendant(tag);
     }
     if (n) {
-#if NAMEDEBUG > 1
-      kstdDebug() << "  found node, returning object " << (void*) n->object() << endl;
-#endif
       return n->object();
     }
   }
@@ -487,20 +459,14 @@ KstSharedPtr<T> KstObjectCollection<T>::retrieveObject(QStringList tag) const {
   // search through the tree
   const KstObjectTreeNode<T> *n = _root.descendant(tag);
   if (n) {
-#if NAMEDEBUG > 1
-    kstdDebug() << "  found node, returning object " << (void*) n->object() << endl;
-#endif
     return n->object();
   } else {
-#if NAMEDEBUG > 1
-    kstdDebug() << "  node not found" << endl;
-#endif
     return NULL;
   }
 }
 
 template <class T>
-KstSharedPtr<T> KstObjectCollection<T>::retrieveObject(const KstObjectTag& tag) const {
+QExplicitlySharedDataPointer<T> KstObjectCollection<T>::retrieveObject(const KstObjectTag& tag) const {
   if (!tag.isValid()) {
     return NULL;
   }
@@ -510,7 +476,7 @@ KstSharedPtr<T> KstObjectCollection<T>::retrieveObject(const KstObjectTag& tag) 
 
 template <class T>
 bool KstObjectCollection<T>::tagExists(const QString& tag) const {
-  return (_index[tag] && _index[tag]->count() > 0);
+  return (_index.contains(tag) && _index.value(tag).count() > 0);
 }
 
 template <class T>
@@ -533,7 +499,7 @@ KstObjectTag KstObjectCollection<T>::shortestUniqueTag(const KstObjectTag& tag) 
   do {
     --it;
     out_tag.prepend(*it);
-    if (_index[*it] && _index[*it]->count() == 1) {
+    if (_index.contains(*it) && _index.value(*it).count() == 1) {
       // found unique tag
       break;
     }
@@ -557,7 +523,7 @@ unsigned int KstObjectCollection<T>::componentsForUniqueTag(const KstObjectTag& 
   do {
     --it;
     components++;
-    if (_index[*it] && _index[*it]->count() == 1) {
+    if (_index.contains(*it) && _index.value(*it).count() == 1) {
       // found unique tag
       break;
     }
@@ -580,11 +546,20 @@ void KstObjectCollection<T>::remove(T *o) {
 
 template <class T>
 void KstObjectCollection<T>::clear() {
-#if NAMEDEBUG > 0
-  kstdDebug () << "Clearing object collection " << (void*) this << endl;
-#endif
   _root.clear();
+  
+  //
+  // need to manually delete the contents of _index,
+  //  as setAutoDelete() is no longer supported...
+  //
+  typename QMultiHash<QString, QLinkedList<KstObjectTreeNode<T> *> >::iterator it;
+
+  for (it= _index.begin(); it != _index.end(); ++it) {
+    delete(it.value());
+  }
+  
   _index.clear();
+
   _list.clear();
 }
 
@@ -594,16 +569,26 @@ QStringList KstObjectCollection<T>::tagNames() const {
 }
 
 template <class T>
-typename KstObjectList<KstSharedPtr<T> >::Iterator KstObjectCollection<T>::removeTag(const QString& x) {
+typename KstObjectList<QExplicitlySharedDataPointer<T> >::Iterator KstObjectCollection<T>::removeTag(const QString& x) {
+  //
   // find object in tree
+  //
+
   T *obj = retrieveObject(KstObjectTag::fromString(x));
 
   if (obj) {
+    //
     // remove object from tree
+    //
+    
     _root.removeDescendant(obj, &_index);
 
+    //
     // remove object from list
-    typename KstObjectList<KstSharedPtr<T> >::Iterator it = _list.find(obj);
+    //
+    
+    typename KstObjectList<QExplicitlySharedDataPointer<T> >::Iterator it = _list.find(obj);
+
     if (it != _list.end()) {
       return _list.remove(it);
     }
@@ -612,7 +597,7 @@ typename KstObjectList<KstSharedPtr<T> >::Iterator KstObjectCollection<T>::remov
 }
 
 template <class T>
-typename KstObjectList<KstSharedPtr<T> >::Iterator KstObjectCollection<T>::findTag(const KstObjectTag& x) {
+typename KstObjectList<QExplicitlySharedDataPointer<T> >::Iterator KstObjectCollection<T>::findTag(const KstObjectTag& x) {
   T *obj = retrieveObject(x);
   if (obj) {
     return _list.find(obj);
@@ -621,7 +606,8 @@ typename KstObjectList<KstSharedPtr<T> >::Iterator KstObjectCollection<T>::findT
     // previously, output vectors of equations, PSDs, etc. were named PSD1-ABCDE-freq
     // now, they are PSD1-ABCDE/freq
     QString newTag = x.tagString();
-    newTag.replace(newTag.findRev('-'), 1, KstObjectTag::tagSeparator);
+
+    newTag.replace(newTag.lastIndexOf('-'), 1, KstObjectTag::tagSeparator);
     obj = retrieveObject(KstObjectTag::fromString(newTag));
     if (obj) {
       return _list.find(obj);
@@ -631,12 +617,12 @@ typename KstObjectList<KstSharedPtr<T> >::Iterator KstObjectCollection<T>::findT
 }
 
 template <class T>
-typename KstObjectList<KstSharedPtr<T> >::Iterator KstObjectCollection<T>::findTag(const QString& x) {
+typename KstObjectList<QExplicitlySharedDataPointer<T> >::Iterator KstObjectCollection<T>::findTag(const QString& x) {
   return findTag(KstObjectTag::fromString(x));
 }
 
 template <class T>
-typename KstObjectList<KstSharedPtr<T> >::ConstIterator KstObjectCollection<T>::findTag(const KstObjectTag& x) const {
+typename KstObjectList<QExplicitlySharedDataPointer<T> >::ConstIterator KstObjectCollection<T>::findTag(const KstObjectTag& x) const {
   T *obj = retrieveObject(x);
   if (obj) {
     return _list.find(obj);
@@ -645,7 +631,8 @@ typename KstObjectList<KstSharedPtr<T> >::ConstIterator KstObjectCollection<T>::
     // previously, output vectors of equations, PSDs, etc. were named PSD1-ABCDE-freq
     // now, they are PSD1-ABCDE/freq
     QString newTag = x.tagString();
-    newTag.replace(newTag.findRev('-'), 1, KstObjectTag::tagSeparator);
+    
+    newTag.replace(newTag.lastIndexOf('-'), 1, KstObjectTag::tagSeparator);
     obj = retrieveObject(KstObjectTag::fromString(newTag));
     if (obj) {
       return _list.find(obj);
@@ -655,49 +642,50 @@ typename KstObjectList<KstSharedPtr<T> >::ConstIterator KstObjectCollection<T>::
 }
 
 template <class T>
-typename KstObjectList<KstSharedPtr<T> >::ConstIterator KstObjectCollection<T>::findTag(const QString& x) const {
+typename KstObjectList<QExplicitlySharedDataPointer<T> >::ConstIterator KstObjectCollection<T>::findTag(const QString& x) const {
   return findTag(KstObjectTag::fromString(x));
 }
 
 template <class T>
-typename KstObjectList<KstSharedPtr<T> >::Iterator KstObjectCollection<T>::begin() {
+typename KstObjectList<QExplicitlySharedDataPointer<T> >::Iterator KstObjectCollection<T>::begin() {
   return _list.begin();
 }
 
 template <class T>
-typename KstObjectList<KstSharedPtr<T> >::ConstIterator KstObjectCollection<T>::begin() const {
+typename KstObjectList<QExplicitlySharedDataPointer<T> >::ConstIterator KstObjectCollection<T>::begin() const {
   return _list.begin();
 }
 
 template <class T>
-typename KstObjectList<KstSharedPtr<T> >::Iterator KstObjectCollection<T>::end() {
+typename KstObjectList<QExplicitlySharedDataPointer<T> >::Iterator KstObjectCollection<T>::end() {
   return _list.end();
 }
 
 template <class T>
-typename KstObjectList<KstSharedPtr<T> >::ConstIterator KstObjectCollection<T>::end() const {
+typename KstObjectList<QExplicitlySharedDataPointer<T> >::ConstIterator KstObjectCollection<T>::end() const {
   return _list.end();
 }
-
 
 template <class T>
 void KstObjectCollection<T>::setUpdateDisplayTags(bool u) {
   if (u && !_updateDisplayTags) {
+    //
     // turning on _updateDisplayTags, so do an update
+    //
+    
     updateAllDisplayTags();
   }
 
   _updateDisplayTags = u;
 }
 
-
 // update the display tags for all the objects in the collection
 template <class T>
 void KstObjectCollection<T>::updateAllDisplayTags() {
   Q_ASSERT(lock().myLockStatus() == KstRWLock::WRITELOCKED);
 
-  for (typename KstObjectList<KstSharedPtr<T> >::Iterator i = _list.begin(); i != _list.end(); ++i) {
-    updateDisplayTag(*i);
+  for (typename KstObjectList<QExplicitlySharedDataPointer<T> >::iterator i = _list.begin(); i != _list.end(); ++i) {
+    updateDisplayTag(i->data());
   }
 }
 
@@ -710,42 +698,43 @@ void KstObjectCollection<T>::updateDisplayTag(T *obj) {
 
   KstObjectTag tag = obj->tag();
 
-  if (!_index[tag.tag()]) {
+  if (!_index.contains(tag.tag())) {
     return;
   }
 
   unsigned int nc = componentsForUniqueTag(tag);
   if (tag.uniqueDisplayComponents() != nc) {
-#if NAMEDEBUG > 2
-    kstdDebug() << "Changing display components on \"" << tag.tagString() << "\" from " << tag.uniqueDisplayComponents() << " to " << nc << endl;
-#endif
     obj->tag().setUniqueDisplayComponents(nc);
   }
 }
 
 template <class T>
-void KstObjectCollection<T>::updateDisplayTags(QValueList<KstObjectTreeNode<T> *> nodes) {
-  for (typename QValueList<KstObjectTreeNode<T> *>::Iterator i = nodes.begin(); i != nodes.end(); ++i) {
+void KstObjectCollection<T>::updateDisplayTags(QLinkedList<KstObjectTreeNode<T> *> nodes) {
+  for (typename QLinkedList<KstObjectTreeNode<T> *>::Iterator i = nodes.begin(); i != nodes.end(); ++i) {
     updateDisplayTag((*i)->object());
   }
 }
 
 
-// recursion helper
 template <class T>
-void KstObjectCollection<T>::relatedNodesHelper(T *o, KstObjectTreeNode<T> *n, QIntDict<KstObjectTreeNode<T> >& nodes) {
-
-  if (n->object() && n->object() != o && !nodes[(long)n]) {
-#if NAMEDEBUG > 2
-          kstdDebug() << "Found related node to \"" << o->tag().tagString() << "\": \"" << n->object()->tag().tagString() << "\"" << endl; 
-#endif
-    nodes.insert((long)n, n);
+void KstObjectCollection<T>::relatedNodesHelper(T *o, KstObjectTreeNode<T> *n, QHash<long, KstObjectTreeNode<T>* >& nodes) {
+  if (n->object()) {
+    if (n->object() != o) {
+      if (!nodes.contains((int)n)) {
+        nodes.insert((int)n, n);
+      }
+    }
   }
 
   if (!n->children().isEmpty()) {
+    //
     // non-leaf node, so recurse
+    //
+
     QMap<QString, KstObjectTreeNode<T> *> children = n->children();
-    for (typename QMap<QString, KstObjectTreeNode<T> *>::ConstIterator i = children.begin(); i != children.end(); ++i) {
+    typename QMap<QString, KstObjectTreeNode<T> *>::ConstIterator i;
+
+    for (i = children.begin(); i != children.end(); ++i) {
       relatedNodesHelper(o, *i, nodes);
     }
   }
@@ -756,33 +745,33 @@ void KstObjectCollection<T>::relatedNodesHelper(T *o, KstObjectTreeNode<T> *n, Q
 //
 // There should not be any duplicates in the returned list.
 template <class T>
-QValueList<KstObjectTreeNode<T> *> KstObjectCollection<T>::relatedNodes(T *o) {
-  QIntDict<KstObjectTreeNode<T> > nodes;
-  QValueList<KstObjectTreeNode<T> *> outNodes;
+QLinkedList<KstObjectTreeNode<T> *> KstObjectCollection<T>::relatedNodes(T *o) {
+  QHash<long, KstObjectTreeNode<T>*> nodes;
+  QLinkedList<KstObjectTreeNode<T>*> outNodes;
 
   if (!o) {
     return outNodes;
   }
 
-#if NAMEDEBUG > 2
-  kstdDebug() << "Looking for related nodes to \"" << o->tag().tagString() << "\"" << endl; 
-#endif
-
   QStringList ft = o->tag().fullTag();
+  QStringList::ConstIterator i;
+  typename QHash<long, KstObjectTreeNode<T>*>::iterator it;
+  
+  for (i = ft.begin(); i != ft.end(); ++i) {
+    if (_index.contains(*i)) {
+      typename QLinkedList<KstObjectTreeNode<T> *>::ConstIterator i2;
+      QLinkedList<KstObjectTreeNode<T> *> nodeList = _index.value(*i);
 
-  for (QStringList::ConstIterator i = ft.begin(); i != ft.end(); ++i) {
-    if (_index[*i]) {
-      QValueList<KstObjectTreeNode<T> *> *nodeList = _index[*i];
-      for (typename QValueList<KstObjectTreeNode<T> *>::ConstIterator i2 = nodeList->begin(); i2 != nodeList->end(); ++i2) {
+      for (i2 = nodeList.begin(); i2 != nodeList.end(); ++i2) {
         relatedNodesHelper(o, *i2, nodes);
       }
     }
   }
 
-  QIntDictIterator<KstObjectTreeNode<T> > i(nodes);
-  for (; i.current(); ++i) {
-    outNodes << i.current();
+  for (it=nodes.begin(); it!=nodes.end(); ++it) {
+    outNodes << *it;
   }
+
   return outNodes;
 }
 

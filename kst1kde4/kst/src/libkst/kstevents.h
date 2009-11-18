@@ -57,6 +57,6 @@ struct KstELOGAttribStruct {
   int iMaxLength;
 };
 
-typedef QValueList<KstELOGAttribStruct> ELOGAttribList;
+typedef QLinkedList<KstELOGAttribStruct> ELOGAttribList;
 
 #endif

@@ -15,12 +15,12 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "kstdatacollection.h"
-#include "defaultprimitivenames.h"
-
-#include <qstylesheet.h>
+#include <QTextDocument>
 
 #include <klocale.h>
+
+#include "kstdatacollection.h"
+#include "defaultprimitivenames.h"
 
 static int anonymousStringCounter = 0;
 
@@ -67,6 +67,14 @@ KstString::KstString(QDomElement& e)
 }
 
 
+KstString::KstString(const KstString& str)
+: KstPrimitive() {
+  _value = str._value;
+  _orphan = str._orphan;
+  _editable = str._editable;
+}
+
+
 KstString::~KstString() {
 }
 
@@ -83,14 +91,14 @@ void KstString::setTagName(const KstObjectTag& tag) {
 
 
 void KstString::save(QTextStream &ts, const QString& indent) {
-  ts << indent << "<tag>" << QStyleSheet::escape(tag().tagString()) << "</tag>" << endl;
+  ts << indent << "<tag>" << Qt::escape(tag().tagString()) << "</tag>" << endl;
   if (_orphan) {
     ts << indent << "<orphan/>" << endl;
   }
   if (_editable) {
     ts << indent << "<editable/>" << endl;
   }
-  ts << indent << "<value>" << QStyleSheet::escape(value()) << "</value>" << endl;
+  ts << indent << "<value>" << Qt::escape(value()) << "</value>" << endl;
 }
 
 

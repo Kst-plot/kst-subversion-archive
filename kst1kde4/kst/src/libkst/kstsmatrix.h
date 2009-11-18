@@ -50,7 +50,7 @@ class KST_EXPORT KstSMatrix : public KstMatrix {
     bool _xDirection;
 };
 
-typedef KstSharedPtr<KstSMatrix> KstSMatrixPtr;
+typedef QExplicitlySharedDataPointer<KstSMatrix> KstSMatrixPtr;
 typedef KstObjectList<KstSMatrixPtr> KstSMatrixList;
 
 #endif

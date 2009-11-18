@@ -15,15 +15,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <qstylesheet.h>
+#include <QTextDocument>
 
+#include <kdebug.h>
 #include <klocale.h>
 
 #include "kstscalar.h"
 #include "kstdatacollection.h"
 #include "defaultprimitivenames.h"
-#include "ksdebug.h"
-
 
 static int iAnonymousScalarCounter = 0;
 
@@ -120,7 +119,7 @@ KstObject::UpdateType KstScalar::update(int updateCounter) {
 
 
 void KstScalar::save(QTextStream &ts, const QString& indent) {
-  ts << indent << "<tag>" << QStyleSheet::escape(tag().tagString()) << "</tag>" << endl;
+  ts << indent << "<tag>" << Qt::escape(tag().tagString()) << "</tag>" << endl;
   if (_orphan) {
     ts << indent << "<orphan/>" << endl;
   }

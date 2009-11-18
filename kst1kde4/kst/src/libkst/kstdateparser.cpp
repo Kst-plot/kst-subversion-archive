@@ -15,17 +15,19 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "kstdateparser.h"
-#include <qstringlist.h>
-
 #include <assert.h>
 #include <math.h>
 #include <stdlib.h>
+#include <time.h>
+
+#include <QStringList>
+
+#include "kstdateparser.h"
 
 namespace KST {
 
-ExtDateTime millisecondsToExtDateTime(double ms) {
-  ExtDateTime edt;
+KDateTime millisecondsToExtDateTime(double ms) {
+  KDateTime edt;
   edt.setTime_t(0);
   if (ms > 0.0) {
     double milli = fmod(ms, 1000.0);
@@ -43,7 +45,7 @@ ExtDateTime millisecondsToExtDateTime(double ms) {
 }
 
 
-double extDateTimeToMilliseconds(const ExtDateTime& edt) {
+double extDateTimeToMilliseconds(const KDateTime& edt) {
   double rc = 0.0;
   if (edt.isNull()) {
     return rc;
@@ -60,26 +62,62 @@ double extDateTimeToMilliseconds(const ExtDateTime& edt) {
 }
 
 
-ExtDateTime parsePlanckDate(const QString& dateString) {
-  QStringList secondSplit = QStringList::split('.', dateString);
+double DateTimeUTCToTime_t(const KDateTime& edt) {
+  time_t timeUTC;
+  time_t timeLocal;
+  tm brokenDown;
+  tm tmUTC;
+
+  brokenDown.tm_sec = edt.time().second();
+  brokenDown.tm_min = edt.time().minute();
+  brokenDown.tm_hour = edt.time().hour();
+  brokenDown.tm_mday = edt.date().day();
+  brokenDown.tm_mon = edt.date().month() - 1;
+  brokenDown.tm_year = edt.date().year() - 1900;
+  brokenDown.tm_isdst = 0;
+  timeLocal = mktime( &brokenDown );
+
+  tmUTC = *gmtime( &timeLocal );
+  tmUTC.tm_isdst = 0;
+  timeUTC = mktime( &tmUTC );
+  timeUTC -= 2 * ( timeUTC - timeLocal );
+
+  int secsSince1Jan1970UTC = (int)timeUTC;
+  if ( secsSince1Jan1970UTC < -1 ) {
+    secsSince1Jan1970UTC = -1;
+  }
+
+  return (uint)secsSince1Jan1970UTC;
+}
+
+
+KDateTime parsePlanckDate(const QString& dateString, bool applyOffset) {
+  QStringList secondSplit = dateString.split('.');
   if (secondSplit.isEmpty() || secondSplit.count() > 2) {
-    return ExtDateTime();
+    return KDateTime();
   }
 
   int seconds = 0;
+  int offset = 0;
+
   if (secondSplit.count() > 1) {
     seconds = secondSplit[1].toUInt();
   }
 
-  QStringList mainSplit = QStringList::split(':', secondSplit[0]);
-  ExtDateTime edt = ExtDateTime::currentDateTime();
-  int offset = ExtDateTime::currentDateTime(Qt::UTC).toTime_t() - edt.toTime_t();
-  ExtDate d = edt.date();
+  QStringList mainSplit = secondSplit[0].split(':');
+  KDateTime edt = KDateTime::currentUtcDateTime();
+
+  if (applyOffset) {
+    offset = KDateTime::currentUtcDateTime().toTime_t() - edt.toTime_t();
+  }
+
+  QDate d = edt.date();
   QTime t = edt.time();
   int i = 0;
+  
   switch (mainSplit.count()) {
     default:
-      return ExtDateTime();
+      return KDateTime();
     case 5:
       {
         int years = mainSplit[i++].toInt();

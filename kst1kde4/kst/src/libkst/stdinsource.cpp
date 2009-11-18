@@ -15,11 +15,10 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "config.h"
+// xxx #include "config.h"
 #include "stdinsource.h"
 
-#include <ktempfile.h>
-
+#include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 
@@ -36,10 +35,14 @@
 
 KstStdinSource::KstStdinSource(KConfig *cfg)
 : KstDataSource(cfg, "stdin", "stdin") {
-  _file = new KTempFile;
-  _filename = _file->name();
-  // Unfortunately we have to update here.  stdin is a special case.
+  _file = new QTemporaryFile;
+  _filename = _file->fileName();
+
+  //
+  // unfortunately we have to update here.  stdin is a special case
+  //
   update();
+  
   _src = KstDataSource::loadSource(_filename, "ASCII");
   if (_src && _src->isValid()) {
     _valid = true;
@@ -49,7 +52,7 @@ KstStdinSource::KstStdinSource(KConfig *cfg)
 
 KstStdinSource::~KstStdinSource() {
   _file->close();
-  _file->unlink();
+
   delete _file;
   _file = 0L;
 }
@@ -77,12 +80,6 @@ KstObject::UpdateType KstStdinSource::update(int u) {
   bool new_data = false;
   bool got_some = false;
 
-  FILE *fp = _file->fstream();
-
-  if (!fp) {
-    return setLastUpdateResult(KstObject::NO_CHANGE);
-  }
-
   do {
     /* Watch stdin (fd 0) to see when it has input. */
     FD_ZERO(&rfds);
@@ -96,19 +93,20 @@ KstObject::UpdateType KstStdinSource::update(int u) {
     new_data = false;
     if (retval > 0) {
       char *fgs = fgets(instr, 4096, stdin);
-      if (fgs && fp) {
+      if (fgs) {
         got_some = true;
-        fputs(instr, fp);
+        _file->write(instr);
         new_data = true;
       }
     }
   } while (++i < 100000 && new_data);
 
-  fflush(fp);
+  _file->flush();
 
   if (got_some && _src) {
     return setLastUpdateResult(_src->update(u));
   }
+  
   return setLastUpdateResult(KstObject::NO_CHANGE);
 }
 

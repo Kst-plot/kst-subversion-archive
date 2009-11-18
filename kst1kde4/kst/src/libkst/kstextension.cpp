@@ -15,13 +15,12 @@
  *                                                                         *
  ***************************************************************************/
 
-// include files for KDE
-
-// application specific includes
-#include "kstextension.h"
 #include <kmainwindow.h>
 
-KstExtension::KstExtension(QObject *parent, const char *name, const QStringList&) : QObject(parent, name) {
+#include "kstextension.h"
+
+KstExtension::KstExtension(QObject *parent, const char *name, const QStringList&) : QObject(parent) {
+  setObjectName(QString(name));
 }
 
 

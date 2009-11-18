@@ -20,7 +20,7 @@
 #include <math.h>
 #include <stdlib.h>
 
-#include <qstylesheet.h>
+#include <QTextDocument>
 
 #include <klocale.h>
 
@@ -42,7 +42,8 @@ KstRMatrix::KstRMatrix(KstDataSourcePtr file, const QString &field, KstObjectTag
 
 
 KstRMatrix::KstRMatrix(const QDomElement &e) : KstMatrix(KstObjectTag::invalidTag, 0L, 1, 1, 0, 0, 1, 1) {
-  KstDataSourcePtr in_file = 0L, in_provider = 0L;
+  KstDataSourcePtr in_file;
+  KstDataSourcePtr in_provider;
   QString in_field;
   QString in_tag;
   int in_xStart = 0;
@@ -111,12 +112,12 @@ void KstRMatrix::save(QTextStream &ts, const QString& indent) {
     QString indent2 = "  ";
 
     ts << indent << "<rmatrix>" << endl;
-    ts << indent << indent2 << "<tag>" << QStyleSheet::escape(tag().tagString()) << "</tag>" << endl;
+    ts << indent << indent2 << "<tag>" << Qt::escape(tag().tagString()) << "</tag>" << endl;
     _file->readLock();
-    ts << indent << indent2 << "<provider>" << QStyleSheet::escape(_file->tag().tagString()) << "</provider>" << endl;
-    ts << indent << indent2 << "<file>" << QStyleSheet::escape(_file->fileName()) << "</file>" << endl;
+    ts << indent << indent2 << "<provider>" << Qt::escape(_file->tag().tagString()) << "</provider>" << endl;
+    ts << indent << indent2 << "<file>" << Qt::escape(_file->fileName()) << "</file>" << endl;
     _file->unlock();
-    ts << indent << indent2 << "<field>" << QStyleSheet::escape(_field) << "</field>" << endl;
+    ts << indent << indent2 << "<field>" << Qt::escape(_field) << "</field>" << endl;
     ts << indent << indent2 << "<reqxstart>" << _reqXStart << "</reqxstart>" << endl;
     ts << indent << indent2 << "<reqystart>" << _reqYStart << "</reqystart>" << endl;
     ts << indent << indent2 << "<reqnx>" << _reqNX << "</reqnx>" << endl;
@@ -501,7 +502,7 @@ void KstRMatrix::reload() {
       if (newsrc) {
         _file->unlock();
         KST::dataSourceList.lock().writeLock();
-        KST::dataSourceList.remove(_file);
+        KST::dataSourceList.removeAll(_file);
         _file = newsrc;
         _file->writeLock();
         KST::dataSourceList.append(_file);
@@ -516,9 +517,10 @@ void KstRMatrix::reload() {
 
 KstRMatrixPtr KstRMatrix::makeDuplicate() const {
   QString newTag = tag().tag() + "'";
-  return new KstRMatrix(_file, _field, KstObjectTag(newTag, tag().context()),
+
+  return KstRMatrixPtr( new KstRMatrix(_file, _field, KstObjectTag(newTag, tag().context()),
                         _reqXStart, _reqYStart, _reqNX, _reqNY,
-                        _doAve, _doSkip, _skip);
+                        _doAve, _doSkip, _skip ) );
 }
 
 

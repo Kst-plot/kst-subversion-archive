@@ -16,17 +16,19 @@
  *                                                                         *
  ***************************************************************************/
 
-//#define UPDATEDEBUG
+#include <assert.h>
+
+#include <kdebug.h>
 
 #include "kstprimitive.h"
 
-#include <assert.h>
-
-#include "ksdebug.h"
-
-
 KstPrimitive::KstPrimitive(KstObject *provider)
 : KstObject(), _provider(provider) {
+}
+
+
+KstPrimitive::KstPrimitive(const KstPrimitive& primitive)
+: KstObject(), _provider(primitive._provider) {
 }
 
 
@@ -55,12 +57,16 @@ KstObject::UpdateType KstPrimitive::update(int update_counter) {
     //
     KstObjectPtr prov = KstObjectPtr(_provider);
     if (prov) {
-      KstWriteLocker pl(prov);
+      prov->writeLock();
 
       providerRC = prov->update(update_counter);
       if (!force && providerRC == KstObject::NO_CHANGE) {
-        return setLastUpdateResult(providerRC);
+	prov->unlock();
+	
+	return setLastUpdateResult(providerRC);
       }
+      
+      prov->unlock();
     }
   }
 

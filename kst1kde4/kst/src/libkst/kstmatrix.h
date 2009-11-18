@@ -18,13 +18,15 @@
 #ifndef KSTMATRIX_H
 #define KSTMATRIX_H
 
-#include <qdict.h>
+#include <qhash.h>
+
 #include "kstscalar.h"
 #include "kstprimitive.h"
 
 class KstMatrix;
 class KstDataObject;
-typedef KstSharedPtr<KstMatrix> KstMatrixPtr;
+
+typedef QHash<QString, KstScalar> MatrixCollection;
 
 class KST_EXPORT KstMatrix: public KstPrimitive {
   Q_OBJECT
@@ -34,8 +36,6 @@ class KST_EXPORT KstMatrix: public KstPrimitive {
               KstObject *provider = 0L, uint nX = 1, uint nY = 0,
               double minX = 0, double minY = 0,
               double stepX = 1, double stepY = 1);
-
-  protected:
     ~KstMatrix();
 
   public:
@@ -102,7 +102,7 @@ class KST_EXPORT KstMatrix: public KstPrimitive {
     virtual void setTagName(const KstObjectTag& tag);
 
     // the statistics scalars for this matrix
-    const QDict<KstScalar>& scalars() const;
+    const ScalarCollection& scalars() const;
 
     // set the labels for this matrix
     void setLabel(const QString& newLabel);
@@ -128,11 +128,9 @@ class KST_EXPORT KstMatrix: public KstPrimitive {
     virtual bool resize(int xSize, int ySize, bool reinit = true);
 
   protected:
+    ScalarCollection _scalars;
     int _NS;
-
-    /** number of valid points */
     int _nsum; // number of samples with real values
-
     int _nX;  //this can be 0
     int _nY;  //this should never be 0
     double _minX;
@@ -140,7 +138,6 @@ class KST_EXPORT KstMatrix: public KstPrimitive {
     double _stepX;
     double _stepY;
     int _numNew; // number of new samples
-    QDict<KstScalar> _statScalars; // statistics scalars
     bool _editable : 1;
     bool _saveable : 1;
 
@@ -169,6 +166,7 @@ class KST_EXPORT KstMatrix: public KstPrimitive {
     KstObject::UpdateType internalUpdate(KstObject::UpdateType providerUpdateType);
 };
 
+typedef QExplicitlySharedDataPointer<KstMatrix> KstMatrixPtr;
 typedef KstObjectList<KstMatrixPtr> KstMatrixList;
 typedef KstObjectMap<KstMatrixPtr> KstMatrixMap;
 typedef KstObjectCollection<KstMatrix> KstMatrixCollection;

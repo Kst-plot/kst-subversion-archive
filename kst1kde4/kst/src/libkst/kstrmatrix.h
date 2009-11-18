@@ -18,8 +18,9 @@
 #ifndef KSTRMATRIX_H
 #define KSTRMATRIX_H
 
+#include <QExplicitlySharedDataPointer>
+
 #include "kstmatrix.h"
-#include "kstsharedptr.h"
 #include "kstdatasource.h"
 #include "kst_export.h"
 
@@ -86,7 +87,7 @@ class KST_EXPORT KstRMatrix : public KstMatrix {
     void changeFile(KstDataSourcePtr file);
 
     // make a "copy" of this KstRMatrix 
-    KstSharedPtr<KstRMatrix> makeDuplicate() const;
+    QExplicitlySharedDataPointer<KstRMatrix> makeDuplicate() const;
 
   private:
     void commonConstructor(KstDataSourcePtr file, const QString &field,
@@ -119,7 +120,7 @@ class KST_EXPORT KstRMatrix : public KstMatrix {
     int _samplesPerFrameCache; // cache the samples per frame of the field in datasource
 };
 
-typedef KstSharedPtr<KstRMatrix> KstRMatrixPtr;
+typedef QExplicitlySharedDataPointer<KstRMatrix> KstRMatrixPtr;
 typedef KstObjectList<KstRMatrixPtr> KstRMatrixList;
 
 #endif

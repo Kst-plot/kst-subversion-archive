@@ -15,8 +15,10 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
+#include <QTextDocument>
+
 #include "kstsmatrix.h"
-#include <qstylesheet.h>
 
 KstSMatrix::KstSMatrix(const QDomElement &e) : KstMatrix() {
   double in_xMin = 0.0, in_yMin = 0.0, in_xStep = 1.0, in_yStep = 1.0;
@@ -76,7 +78,7 @@ void KstSMatrix::save(QTextStream &ts, const QString& indent) {
   QString indent2 = "  ";
 
   ts << indent << "<smatrix>" << endl;
-  ts << indent << indent2 << "<tag>" << QStyleSheet::escape(tag().tagString()) << "</tag>" << endl;
+  ts << indent << indent2 << "<tag>" << Qt::escape(tag().tagString()) << "</tag>" << endl;
   ts << indent << indent2 << "<xmin>" << minX() << "</xmin>" << endl;
   ts << indent << indent2 << "<ymin>" << minY() << "</ymin>" << endl;
   ts << indent << indent2 << "<nx>" << xNumSteps() << "</nx>" << endl;
@@ -155,15 +157,15 @@ void KstSMatrix::change(KstObjectTag tag, uint nX,
     }
   }
 
-  _statScalars["sum"]->setValue(sum);
-  _statScalars["sumsquared"]->setValue(sumsquared);
-  _statScalars["max"]->setValue(gradZMin);
-  _statScalars["min"]->setValue(gradZMax);
-  _statScalars["minpos"]->setValue(0.0);
-  _statScalars["mean"]->setValue((gradZMax-gradZMin)/2.0);
-  _statScalars["ns"]->setValue(_nX*_nY);
-  _statScalars["rms"]->setValue(0.0);
-  _statScalars["sigma"]->setValue(0.0);
+  _scalars["sum"]->setValue(sum);
+  _scalars["sumsquared"]->setValue(sumsquared);
+  _scalars["max"]->setValue(gradZMin);
+  _scalars["min"]->setValue(gradZMax);
+  _scalars["minpos"]->setValue(0.0);
+  _scalars["mean"]->setValue((gradZMax-gradZMin)/2.0);
+  _scalars["ns"]->setValue(_nX*_nY);
+  _scalars["rms"]->setValue(0.0);
+  _scalars["sigma"]->setValue(0.0);
 
   setDirty(true);
 }

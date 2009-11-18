@@ -19,52 +19,44 @@
 
 #include <assert.h>
 
-#include "ksdebug.h"
-#include <kio/netaccess.h>
-#include <klibloader.h>
-#include <klocale.h>
-#include <kservicetype.h>
-
-#include <qdeepcopy.h>
-#include <qfile.h>
-#include <qfileinfo.h>
-#include <qstylesheet.h>
+#include <q3deepcopy.h>
+#include <QFile>
+#include <QFileInfo>
+#include <QTextDocument>
+#include <QTextStream>
+#include <Q3ValueList>
 
 #include "kstdatacollection.h"
+#include "kstdataplugin.h"
 #include "kstdebug.h"
 #include "kstscalar.h"
 #include "stdinsource.h"
 
-#include "kstdataplugin.h"
-
 static KConfig *kConfigObject = 0L;
 static QMap<QString,QString> urlMap;
+static KST::PluginInfoList pluginInfo;
+
+
 void KstDataSource::setupOnStartup(KConfig *cfg) {
   kConfigObject = cfg;
 }
 
 
-static KST::PluginInfoList pluginInfo;
 void KstDataSource::cleanupForExit() {
   pluginInfo.clear();
   kConfigObject = 0L;
   for (QMap<QString,QString>::Iterator i = urlMap.begin(); i != urlMap.end(); ++i) {
-    KIO::NetAccess::removeTempFile(i.data());
+    KIO::NetAccess::removeTempFile(*i);
   }
   urlMap.clear();
 }
 
 
 static QString obtainFile(const QString& source) {
-  KURL url;
+  KUrl url(source);
+  QString tmpFile;
 
-  if (QFile::exists(source) && QFileInfo(source).isRelative()) {
-    url.setPath(source);
-  } else {
-    url = KURL::fromPathOrURL(source);
-  }
-
-  if (url.isLocalFile() || url.protocol().isEmpty() || url.protocol().lower() == "nad") {
+  if (url.isLocalFile() || url.protocol().isEmpty() || url.protocol().toLower() == "nad") {
     return source;
   }
 
@@ -72,24 +64,12 @@ static QString obtainFile(const QString& source) {
     return urlMap[source];
   }
 
-#if KDE_VERSION >= KDE_MAKE_VERSION(3,3,0)
   // FIXME: come up with a way to indicate the "widget" and fill it in here so
   //        that KIO dialogs are associated with the proper window
-  if (!KIO::NetAccess::exists(url, true, 0L)) {
-#else
-  if (!KIO::NetAccess::exists(url, true)) {
-#endif
+  if (!KIO::NetAccess::exists(url, KIO::NetAccess::DestinationSide, 0L)) {
     return QString::null;
   }
-
-  QString tmpFile;
-#if KDE_VERSION >= KDE_MAKE_VERSION(3,3,0)
-  // FIXME: come up with a way to indicate the "widget" and fill it in here so
-  //        that KIO dialogs are associated with the proper window
   if (!KIO::NetAccess::download(url, tmpFile, 0L)) {
-#else
-  if (!KIO::NetAccess::download(url, tmpFile)) {
-#endif
     return QString::null;
   }
 
@@ -105,7 +85,7 @@ static void scanPlugins() {
 
   KstDebug::self()->log(i18n("Scanning for data-source plugins."));
 
-  KService::List sl = KServiceType::offers("Kst Data Source");
+/* xxx  KService::List sl = KServiceType::offers("Kst Data Source");
   for (KService::List::ConstIterator it = sl.begin(); it != sl.end(); ++it) {
     for (KST::PluginInfoList::ConstIterator i2 = pluginInfo.begin(); i2 != pluginInfo.end(); ++i2) {
       if ((*i2)->service == *it) {
@@ -114,14 +94,14 @@ static void scanPlugins() {
       }
     }
 
-    KstSharedPtr<KST::Plugin> p = new KST::DataSourcePlugin(*it);
+    QExplicitlySharedDataPointer<KST::Plugin> p = new KST::DataSourcePlugin(*it);
     tmpList.append(p);
   }
-
+*/
   // This cleans up plugins that have been uninstalled and adds in new ones.
   // Since it is a shared pointer it can't dangle anywhere.
   pluginInfo.clear();
-  pluginInfo = QDeepCopy<KST::PluginInfoList>(tmpList);
+  pluginInfo = Q3DeepCopy<KST::PluginInfoList>(tmpList);
 }
 
 
@@ -143,7 +123,7 @@ QStringList KstDataSource::pluginList() {
 namespace {
 class PluginSortContainer {
   public:
-    KstSharedPtr<KST::DataSourcePlugin> plugin;
+    QExplicitlySharedDataPointer<KST::DataSourcePlugin> plugin;
     int match;
     int operator<(const PluginSortContainer& x) const {
       return match > x.match; // yes, this is by design.  biggest go first
@@ -155,23 +135,25 @@ class PluginSortContainer {
 }
 
 
-static QValueList<PluginSortContainer> bestPluginsForSource(const QString& filename, const QString& type) {
-  QValueList<PluginSortContainer> bestPlugins;
+static QList<PluginSortContainer> bestPluginsForSource(const QString& filename, const QString& type) {
+  QList<PluginSortContainer> bestPlugins;
+  
   if (pluginInfo.isEmpty()) {
     scanPlugins();
   }
 
-  KST::PluginInfoList info = QDeepCopy<KST::PluginInfoList>(pluginInfo);
+  KST::PluginInfoList info = Q3DeepCopy<KST::PluginInfoList>(pluginInfo);
 
   if (!type.isEmpty()) {
-    for (KST::PluginInfoList::ConstIterator it = info.begin(); it != info.end(); ++it) {
-      if (KST::DataSourcePlugin *p = kst_cast<KST::DataSourcePlugin>(*it)) {
-        if (p->provides(type)) {
+    for (KST::PluginInfoList::iterator it = info.begin(); it != info.end(); ++it) {
+      if (KST::DataSourcePlugin *p = dynamic_cast<KST::DataSourcePlugin*>((*it).data())) {
+        if (p && p->provides(type)) {
           PluginSortContainer psc;
           psc.match = 100;
           psc.plugin = p;
           bestPlugins.append(psc);
-          return bestPlugins;
+
+	  return bestPlugins;
         }
       }
     }
@@ -179,6 +161,7 @@ static QValueList<PluginSortContainer> bestPluginsForSource(const QString& filen
 
   for (KST::PluginInfoList::ConstIterator it = info.begin(); it != info.end(); ++it) {
     PluginSortContainer psc;
+    
     if (KST::DataSourcePlugin *p = kst_cast<KST::DataSourcePlugin>(*it)) {
       if ((psc.match = p->understands(kConfigObject, filename)) > 0) {
         psc.plugin = p;
@@ -187,24 +170,24 @@ static QValueList<PluginSortContainer> bestPluginsForSource(const QString& filen
     }
   }
 
-  qHeapSort(bestPlugins);
+  qSort(bestPlugins);
+  
   return bestPlugins;
 }
 
 
 static KstDataSourcePtr findPluginFor(const QString& filename, const QString& type, const QDomElement& e = QDomElement()) {
 
-  QValueList<PluginSortContainer> bestPlugins = bestPluginsForSource(filename, type);
+  Q3ValueList<PluginSortContainer> bestPlugins = bestPluginsForSource(filename, type);
 
-  for (QValueList<PluginSortContainer>::Iterator i = bestPlugins.begin(); i != bestPlugins.end(); ++i) {
-    KstDataSourcePtr plugin = (*i).plugin->create(kConfigObject, filename, QString::null, e);
+  for (Q3ValueList<PluginSortContainer>::Iterator i = bestPlugins.begin(); i != bestPlugins.end(); ++i) {
+    KstDataSourcePtr plugin((*i).plugin->create(kConfigObject, filename, QString::null, e));
     if (plugin) {
       // restore tag if present
       QDomNodeList l = e.elementsByTagName("tag");
       if (l.count() > 0) {
         QDomElement e2 = l.item(0).toElement();
         if (!e2.isNull()) {
-          kstdDebug() << "Restoring tag " << e2.text() << " to KstDataSource" << endl;
           plugin->setTagName(KstObjectTag::fromString(e2.text()));
         }
       }
@@ -212,18 +195,18 @@ static KstDataSourcePtr findPluginFor(const QString& filename, const QString& ty
     }
   }
 
-  return 0L;
+  return KstDataSourcePtr();
 }
 
 
 KstDataSourcePtr KstDataSource::loadSource(const QString& filename, const QString& type) {
   if (filename == "stdin" || filename == "-") {
-    return new KstStdinSource(kConfigObject);
+    return KstDataSourcePtr(new KstStdinSource(kConfigObject));
   }
 
   QString fn = obtainFile(filename);
   if (fn.isEmpty()) {
-    return 0L;
+    return KstDataSourcePtr( );
   }
 
   return findPluginFor(fn, type);
@@ -247,7 +230,7 @@ bool KstDataSource::pluginHasConfigWidget(const QString& plugin) {
     scanPlugins();
   }
 
-  KST::PluginInfoList info = QDeepCopy<KST::PluginInfoList>(pluginInfo);
+  KST::PluginInfoList info = Q3DeepCopy<KST::PluginInfoList>(pluginInfo);
 
   for (KST::PluginInfoList::ConstIterator it = info.begin(); it != info.end(); ++it) {
     if ((*it)->service->property("Name").toString() == plugin) {
@@ -264,7 +247,7 @@ KstDataSourceConfigWidget* KstDataSource::configWidgetForPlugin(const QString& p
     scanPlugins();
   }
 
-  KST::PluginInfoList info = QDeepCopy<KST::PluginInfoList>(pluginInfo);
+  KST::PluginInfoList info = Q3DeepCopy<KST::PluginInfoList>(pluginInfo);
 
   for (KST::PluginInfoList::ConstIterator it = info.begin(); it != info.end(); ++it) {
     if (KST::DataSourcePlugin *p = kst_cast<KST::DataSourcePlugin>(*it)) {
@@ -288,8 +271,8 @@ KstDataSourceConfigWidget* KstDataSource::configWidgetForSource(const QString& f
     return 0L;
   }
 
-  QValueList<PluginSortContainer> bestPlugins = bestPluginsForSource(fn, type);
-  for (QValueList<PluginSortContainer>::Iterator i = bestPlugins.begin(); i != bestPlugins.end(); ++i) {
+  Q3ValueList<PluginSortContainer> bestPlugins = bestPluginsForSource(fn, type);
+  for (Q3ValueList<PluginSortContainer>::Iterator i = bestPlugins.begin(); i != bestPlugins.end(); ++i) {
     KstDataSourceConfigWidget *w = (*i).plugin->configWidget(kConfigObject, fn);
     // Don't iterate.
     return w;
@@ -310,7 +293,7 @@ bool KstDataSource::supportsTime(const QString& filename, const QString& type) {
     return false;
   }
 
-  QValueList<PluginSortContainer> bestPlugins = bestPluginsForSource(fn, type);
+  Q3ValueList<PluginSortContainer> bestPlugins = bestPluginsForSource(fn, type);
   if (bestPlugins.isEmpty()) {
     return false;
   }
@@ -328,13 +311,21 @@ bool KstDataSource::supportsHierarchy(const QString& filename, const QString& ty
     return false;
   }
 
-  QValueList<PluginSortContainer> bestPlugins = bestPluginsForSource(fn, type);
+  Q3ValueList<PluginSortContainer> bestPlugins = bestPluginsForSource(fn, type);
   if (bestPlugins.isEmpty()) {
     return false;
   }
   return (*bestPlugins.begin()).plugin->supportsHierarchy();
 }
 
+
+QString KstDataSource::units(const QString& field) {
+  Q_UNUSED(field)
+
+  QString empty;
+
+  return empty;
+}
 
 QStringList KstDataSource::fieldListForSource(const QString& filename, const QString& type, QString *outType, bool *complete) {
   if (filename == "stdin" || filename == "-") {
@@ -346,9 +337,9 @@ QStringList KstDataSource::fieldListForSource(const QString& filename, const QSt
     return QStringList();
   }
 
-  QValueList<PluginSortContainer> bestPlugins = bestPluginsForSource(fn, type);
+  Q3ValueList<PluginSortContainer> bestPlugins = bestPluginsForSource(fn, type);
   QStringList rc;
-  for (QValueList<PluginSortContainer>::Iterator it = bestPlugins.begin(); it != bestPlugins.end(); ++it) {
+  for (Q3ValueList<PluginSortContainer>::Iterator it = bestPlugins.begin(); it != bestPlugins.end(); ++it) {
     QString typeSuggestion;
     rc = (*it).plugin->fieldList(kConfigObject, fn, QString::null, &typeSuggestion, complete);
     if (!rc.isEmpty()) {
@@ -392,9 +383,9 @@ QStringList KstDataSource::matrixListForSource(const QString& filename, const QS
     return QStringList();
   }
 
-  QValueList<PluginSortContainer> bestPlugins = bestPluginsForSource(fn, type);
+  Q3ValueList<PluginSortContainer> bestPlugins = bestPluginsForSource(fn, type);
   QStringList rc;
-  for (QValueList<PluginSortContainer>::Iterator i = bestPlugins.begin(); i != bestPlugins.end(); ++i) {
+  for (Q3ValueList<PluginSortContainer>::Iterator i = bestPlugins.begin(); i != bestPlugins.end(); ++i) {
     QString typeSuggestion;
     rc = (*i).plugin->matrixList(kConfigObject, fn, QString::null, &typeSuggestion, complete);
     if (!rc.isEmpty()) {
@@ -430,11 +421,11 @@ KstDataSourcePtr KstDataSource::loadSource(QDomElement& e) {
   }
 
   if (filename.isEmpty()) {
-    return 0L;
+    return KstDataSourcePtr();
   }
 
   if (filename == "stdin" || filename == "-") {
-    return new KstStdinSource(kConfigObject);
+    return KstDataSourcePtr(new KstStdinSource(kConfigObject));
   }
 
   return findPluginFor(filename, type, e);
@@ -467,14 +458,19 @@ KstDataSource::KstDataSource(KConfig *cfg, const QString& filename, const QStrin
 
 
 KstDataSource::~KstDataSource() {
+  QMultiHash<QString, KstString>::iterator it;
+  
   KST::scalarList.lock().writeLock();
-  KST::scalarList.remove(_numFramesScalar);
+  KST::scalarList.remove(_numFramesScalar.data());
   KST::scalarList.lock().unlock();
 
   KST::stringList.lock().writeLock();
   KST::stringList.setUpdateDisplayTags(false);
-  for (QDictIterator<KstString> it(_metaData); it.current(); ++it) {
-    KST::stringList.remove(it.current());
+  
+  for (it = _metaData.begin(); it != _metaData.end(); ++it) {
+    KstString  str(it.value());
+
+    KST::stringList.remove(&str);
   }
   KST::stringList.setUpdateDisplayTags(true);
   KST::stringList.lock().unlock();
@@ -487,13 +483,16 @@ void KstDataSource::setTagName(const KstObjectTag& in_tag) {
   if (in_tag == tag()) {
     return;
   }
-
+  
   KstObject::setTagName(in_tag);
   _numFramesScalar->setTagName(KstObjectTag("frames", tag()));
-  for (QDictIterator<KstString> it(_metaData); it.current(); ++it) {
-    KstObjectTag stag = it.current()->tag();
+
+  QHash<QString, KstString>::iterator it;
+  
+  for (it=_metaData.begin(); it != _metaData.end(); ++it) {
+    KstObjectTag stag = it->tag();
     stag.setContext(tag().fullTag());
-    it.current()->setTagName(stag);
+    it->setTagName(stag);
   }
 }
 
@@ -605,7 +604,7 @@ int KstDataSource::frameCount(const QString& field) const {
 QString KstDataSource::fileName() const {
   // Look to see if it was a URL and save the URL instead
   for (QMap<QString,QString>::ConstIterator i = urlMap.begin(); i != urlMap.end(); ++i) {
-    if (i.data() == _filename) {
+    if (i.value() == _filename) {
       return i.key();
     }
   }
@@ -629,17 +628,21 @@ QString KstDataSource::fileType() const {
 
 
 void KstDataSource::save(QTextStream &ts, const QString& indent) {
-  QString name = QStyleSheet::escape(_filename);
-  // Look to see if it was a URL and save the URL instead
+  QString name = Qt::escape(_filename);
+  
+  //
+  // look to see if it was a URL and save the URL instead...
+  //
+  
   for (QMap<QString,QString>::ConstIterator i = urlMap.begin(); i != urlMap.end(); ++i) {
-    if (i.data() == _filename) {
-      name = QStyleSheet::escape(i.key());
+    if (i.value() == _filename) {
+      name = Qt::escape(i.key());
       break;
     }
   }
-  ts << indent << "<tag>" << QStyleSheet::escape(tag().tagString()) << "</tag>" << endl;
+  ts << indent << "<tag>" << Qt::escape(tag().tagString()) << "</tag>" << endl;
   ts << indent << "<filename>" << name << "</filename>" << endl;
-  ts << indent << "<type>" << QStyleSheet::escape(fileType()) << "</type>" << endl;
+  ts << indent << "<type>" << Qt::escape(fileType()) << "</type>" << endl;
 }
 
 
@@ -673,17 +676,19 @@ bool KstDataSource::reset() {
 }
 
 
-const QDict<KstString>& KstDataSource::metaData() const {
+const QMultiHash<QString, KstString>& KstDataSource::metaData() const {
   return _metaData;
 }
 
 
-const QString& KstDataSource::metaData(const QString& key) const {
-  if (_metaData[key]) {
-    return _metaData[key]->value();
-  } else {
-    return QString::null;
+QString KstDataSource::metaData(const QString& key) const {
+  QString str = QString::null;
+  
+  if (_metaData.contains(key)) {
+    str = _metaData.value(key).value();
   }
+
+  return str;
 }
 
 
@@ -693,7 +698,7 @@ bool KstDataSource::hasMetaData() const {
 
 
 bool KstDataSource::hasMetaData(const QString& key) const {
-  return (_metaData[key] != NULL);
+  return _metaData.contains(key);
 }
 
 
@@ -702,7 +707,7 @@ bool KstDataSource::supportsTimeConversions() const {
 }
 
 
-int KstDataSource::sampleForTime(const KST::ExtDateTime& time, bool *ok) {
+int KstDataSource::sampleForTime(const KDateTime& time, bool *ok) {
   Q_UNUSED(time)
 
   if (ok) {
@@ -724,14 +729,14 @@ int KstDataSource::sampleForTime(double ms, bool *ok) {
 }
 
 
-KST::ExtDateTime KstDataSource::timeForSample(int sample, bool *ok) {
+KDateTime KstDataSource::timeForSample(int sample, bool *ok) {
   Q_UNUSED(sample)
 
   if (ok) {
     *ok = false;
   }
 
-  return KST::ExtDateTime::currentDateTime();
+  return KDateTime::currentUtcDateTime();
 }
 
 

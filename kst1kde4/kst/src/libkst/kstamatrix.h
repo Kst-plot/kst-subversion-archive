@@ -28,7 +28,7 @@ class KST_EXPORT KstAMatrix : public KstMatrix {
     void save(QTextStream &ts, const QString& indent = QString::null);
 };
 
-typedef KstSharedPtr<KstAMatrix> KstAMatrixPtr;
+typedef QExplicitlySharedDataPointer<KstAMatrix> KstAMatrixPtr;
 typedef KstObjectList<KstAMatrixPtr> KstAMatrixList;
 
 #endif

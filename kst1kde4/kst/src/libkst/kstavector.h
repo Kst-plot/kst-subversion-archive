@@ -30,7 +30,7 @@ class KstAVector : public KstVector {
   void setSaveData(bool save);
 };
 
-typedef KstSharedPtr<KstAVector> KstAVectorPtr;
+typedef QExplicitlySharedDataPointer<KstAVector> KstAVectorPtr;
 typedef KstObjectList<KstAVectorPtr> KstAVectorList;
 
 #endif

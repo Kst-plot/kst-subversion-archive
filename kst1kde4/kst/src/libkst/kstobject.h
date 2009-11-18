@@ -18,23 +18,27 @@
 #ifndef KSTOBJECT_H
 #define KSTOBJECT_H
 
-#include <qguardedptr.h>
+#include <qmap.h>
 #include <qmutex.h>
+#include <qlinkedlist.h>
 #include <qobject.h>
+#include <qpointer.h>
+#include <QExplicitlySharedDataPointer>
 #include <qstring.h>
 #include <qstringlist.h>
 
+#include <kdebug.h>
 #include <kglobal.h>
 
 #include "kst_export.h"
-#include "kstsharedptr.h"
-#include "ksdebug.h"
 #include "rwlock.h"
 
-//We define two different keys for datasource VS dataobject plugins
-//so that if the API for one changes, the other doesn't have to be
-//updated also...
-#define KST_CURRENT_DATASOURCE_KEY 0x00000006
+//
+// we define two different keys for datasource VS dataobject plugins so that 
+// if the API for one changes, the other doesn't have to be updated also...
+//
+
+#define KST_CURRENT_DATASOURCE_KEY 0x00000007
 
 #define KST_KEY_DATASOURCE_PLUGIN(x) extern "C" Q_UINT32 key_##x() { return KST_CURRENT_DATASOURCE_KEY; }
 
@@ -77,7 +81,7 @@ class KstObjectTag {
     {
       _tag = cleanTag(tag);
       _context = contextTag.fullTag();
-      _minDisplayComponents = 1 + (alwaysShowContext ? KMAX(contextTag._minDisplayComponents, (unsigned int)1) : 0);
+      _minDisplayComponents = 1 + (alwaysShowContext ? qMax(contextTag._minDisplayComponents, (unsigned int)1) : 0);
     }
 
     // construct a tag from a fullTag representation
@@ -136,12 +140,13 @@ class KstObjectTag {
     }
 
     QStringList displayFullTag() const { 
-      QStringList out_tag = _context + QStringList(_tag);
-      unsigned int componentsToDisplay = KMIN(KMAX(_uniqueDisplayComponents, _minDisplayComponents), components());
-      while (out_tag.count() > componentsToDisplay) {
-        out_tag.pop_front();
+      QStringList outTag = _context + QStringList(_tag);
+      int componentsToDisplay = qMin(qMax(_uniqueDisplayComponents, _minDisplayComponents), components());
+
+      while (outTag.count() > componentsToDisplay) {
+        outTag.pop_front();
       }
-      return out_tag;
+      return outTag;
     }
 
     QString displayString() const { 
@@ -150,7 +155,7 @@ class KstObjectTag {
 
     // factory for String representation
     static KstObjectTag fromString(const QString& str) {
-      QStringList l = QStringList::split(tagSeparator, str);
+      QStringList l = str.split(tagSeparator);
       if (l.isEmpty()) {
         return invalidTag;
       }
@@ -186,11 +191,12 @@ class KstObjectTag {
 };
 
 
-class KST_EXPORT KstObject : public QObject, public KstShared, public KstRWLock {
+class KST_EXPORT KstObject : public QObject, public QSharedData, public KstRWLock {
   Q_OBJECT
 
   public:
     KstObject();
+    virtual ~KstObject();
 
     enum UpdateType { NO_CHANGE = 0, UPDATE };
 
@@ -213,24 +219,18 @@ class KST_EXPORT KstObject : public QObject, public KstShared, public KstRWLock 
 
     virtual bool deleteDependents();
 
-    // @since 1.1.0
     virtual void setDirty(bool dirty = true);
-    // @since 1.1.0
     bool dirty() const;
+
+    friend class UpdateThread;
+
+    int _lastUpdateCounter;
+
+    UpdateType setLastUpdateResult(UpdateType result);
+    UpdateType lastUpdateResult() const;
 
   signals:
     void tagChanged();
-
-  protected:
-    virtual ~KstObject();
-
-    friend class UpdateThread;
-    int _lastUpdateCounter;
-
-    // @since 1.1.0
-    UpdateType setLastUpdateResult(UpdateType result);
-    // @since 1.1.0
-    UpdateType lastUpdateResult() const;
 
   private:
     KstObjectTag _tag;
@@ -238,61 +238,59 @@ class KST_EXPORT KstObject : public QObject, public KstShared, public KstRWLock 
     KstObject::UpdateType _lastUpdate;
 };
 
-typedef KstSharedPtr<KstObject> KstObjectPtr;
+typedef QExplicitlySharedDataPointer<KstObject> KstObjectPtr;
 
-#include <qvaluelist.h>
+#include <qlinkedlist.h>
 
 template<class T>
-class KstObjectList : public QValueList<T> {
-  friend class QDeepCopy<KstObjectList<T> >;
+class KstObjectList : public QLinkedList<T> {
   public:
-    KstObjectList() : QValueList<T>() {}
-    KstObjectList(const KstObjectList<T>& x) : QValueList<T>(x) {}
+    KstObjectList() : QLinkedList<T>() {}
+    KstObjectList(const KstObjectList<T>& x) : QLinkedList<T>(x) {}
     virtual ~KstObjectList() { }
 
     KstObjectList& operator=(const KstObjectList& l) {
-      this->QValueList<T>::operator=(l);
+      this->QLinkedList<T>::operator=(l);
       return *this;
     }
 
     virtual QStringList tagNames() {
       QStringList rc;
-      for (typename QValueList<T>::ConstIterator it = QValueList<T>::begin(); it != QValueList<T>::end(); ++it) {
+      for (typename QLinkedList<T>::ConstIterator it = QLinkedList<T>::begin(); it != QLinkedList<T>::end(); ++it) {
         rc << (*it)->tagName();
       }
       return rc;
     }
 
-    // @since 1.1.0
     QStringList tagNames() const {
       QStringList rc;
-      for (typename QValueList<T>::ConstIterator it = QValueList<T>::begin(); it != QValueList<T>::end(); ++it) {
+      for (typename QLinkedList<T>::ConstIterator it = QLinkedList<T>::begin(); it != QLinkedList<T>::end(); ++it) {
         rc << (*it)->tagName();
       }
       return rc;
     }
 
-    virtual typename QValueList<T>::Iterator findTag(const QString& x) {
-      for (typename QValueList<T>::Iterator it = QValueList<T>::begin(); it != QValueList<T>::end(); ++it) {
+    virtual typename QLinkedList<T>::Iterator findTag(const QString& x) {
+      for (typename QLinkedList<T>::Iterator it = QLinkedList<T>::begin(); it != QLinkedList<T>::end(); ++it) {
         if (*(*it) == x) {
           return it;
         }
       }
-      return QValueList<T>::end();
+      return QLinkedList<T>::end();
     }
 
-    virtual typename QValueList<T>::ConstIterator findTag(const QString& x) const {
-      for (typename QValueList<T>::ConstIterator it = QValueList<T>::begin(); it != QValueList<T>::end(); ++it) {
+    virtual typename QLinkedList<T>::ConstIterator findTag(const QString& x) const {
+      for (typename QLinkedList<T>::ConstIterator it = QLinkedList<T>::begin(); it != QLinkedList<T>::end(); ++it) {
         if (*(*it) == x) {
           return it;
         }
       }
-      return QValueList<T>::end();
+      return QLinkedList<T>::end();
     }
 
     virtual int findIndexTag(const QString& x) const {
       int i = 0;
-      for (typename QValueList<T>::ConstIterator it = QValueList<T>::begin(); it != QValueList<T>::end(); ++it) {
+      for (typename QLinkedList<T>::ConstIterator it = QLinkedList<T>::begin(); it != QLinkedList<T>::end(); ++it) {
         if (*(*it) == x) {
           return i;
         }
@@ -301,10 +299,10 @@ class KstObjectList : public QValueList<T> {
       return -1;
     }
 
-    virtual typename QValueList<T>::Iterator removeTag(const QString& x) {
-      typename QValueList<T>::Iterator it = findTag(x);
-      if (it != QValueList<T>::end()) {
-        return QValueList<T>::remove(it);
+    virtual typename QLinkedList<T>::Iterator removeTag(const QString& x) {
+      typename QLinkedList<T>::Iterator it = findTag(x);
+      if (it != QLinkedList<T>::end()) {
+        return QLinkedList<T>::erase(it);
       }
       return it;
     }
@@ -317,10 +315,10 @@ class KstObjectList : public QValueList<T> {
 
 /* Does locking for you automatically. */
 template<class T, class S>
-KstObjectList<KstSharedPtr<S> > kstObjectSubList(KstObjectList<KstSharedPtr<T> >& list) {
+KstObjectList<QExplicitlySharedDataPointer<S> > kstObjectSubList(KstObjectList<QExplicitlySharedDataPointer<T> >& list) {
   list.lock().readLock();
-  KstObjectList<KstSharedPtr<S> > rc;
-  typename KstObjectList<KstSharedPtr<T> >::Iterator it;
+  KstObjectList<QExplicitlySharedDataPointer<S> > rc;
+  typename KstObjectList<QExplicitlySharedDataPointer<T> >::Iterator it;
 
   for (it = list.begin(); it != list.end(); ++it) {
     S *x = dynamic_cast<S*>((*it).data());
@@ -336,9 +334,9 @@ KstObjectList<KstSharedPtr<S> > kstObjectSubList(KstObjectList<KstSharedPtr<T> >
 
 /* Does locking for you automatically. */
 template<class T, class S>
-void kstObjectSplitList(KstObjectList<KstSharedPtr<T> >& list, KstObjectList<KstSharedPtr<S> >& inclusive, KstObjectList<KstSharedPtr<T> >& exclusive) {
+void kstObjectSplitList(KstObjectList<QExplicitlySharedDataPointer<T> >& list, KstObjectList<QExplicitlySharedDataPointer<S> >& inclusive, KstObjectList<QExplicitlySharedDataPointer<T> >& exclusive) {
   list.lock().readLock();
-  typename KstObjectList<KstSharedPtr<T> >::Iterator it;
+  typename KstObjectList<QExplicitlySharedDataPointer<T> >::Iterator it;
 
   for (it = list.begin(); it != list.end(); ++it) {
     S *x = dynamic_cast<S*>((*it).data());
@@ -351,9 +349,6 @@ void kstObjectSplitList(KstObjectList<KstSharedPtr<T> >& list, KstObjectList<Kst
 
   list.lock().unlock();
 }
-
-
-#include <qmap.h>
 
 template<class T>
 class KstObjectMap : public QMap<QString,T> {
@@ -369,7 +364,6 @@ class KstObjectMap : public QMap<QString,T> {
       return rc;
     }
 
-    // @since 1.1.0
     QStringList tagNames() const {
       QStringList rc;
       for (typename QMap<QString,T>::ConstIterator it = QMap<QString,T>::begin(); it != QMap<QString,T>::end(); ++it) {
@@ -392,26 +386,10 @@ class KstObjectMap : public QMap<QString,T> {
       }
       return i;
     }
-
-/*
-These are wrong.  We should not assume that key(x) == x->tagName().
-    bool contains(const T& value) {
-      return QMap<QString,T>::contains(value->tagName());
-    }
-
-    typename QMap<QString,T>::iterator find(const T& value) {
-      return QMap<QString,T>::find(value->tagName());
-    }
-
-    void remove(const T& value) {
-      QMap<QString,T>::remove(value->tagName());
-    }
-
-*/
 };
 
 template <typename T, typename U>
-inline KstSharedPtr<T> kst_cast(KstSharedPtr<U> object) {
+inline T* kst_cast(QExplicitlySharedDataPointer<U> object) {
   return dynamic_cast<T*>(object.data());
 }
 

@@ -1,4 +1,4 @@
-#include "config.h"
+// xxx #include "config.h"
 #ifdef HAVE_LINUX
 #ifndef PROC_VERSION_H
 #define PROC_VERSION_H

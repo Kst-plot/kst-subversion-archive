@@ -42,7 +42,8 @@ class KST_EXPORT KstVectorDefaults {
     void writeConfig(KConfig *config);
 
   private:
-    QString _dataSource, _wizardX;
+    QString _dataSource;
+    QString _wizardX;
     double _f0;
     double _n;
     bool _doSkip;

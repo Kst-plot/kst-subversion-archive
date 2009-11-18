@@ -18,13 +18,15 @@
 #ifndef KSTDATASOURCE_H
 #define KSTDATASOURCE_H
 
-#include <qdict.h>
-#include <qdir.h>
-#include <qdom.h>
-#include <qguardedptr.h>
-#include <qstring.h>
-#include <qtextstream.h>
-#include <qwidget.h>
+#include <QDir>
+#include <QDomElement>
+#include <QHash>
+#include <QMultiHash>
+#include <QPointer>
+#include <QExplicitlySharedDataPointer>
+#include <QString>
+#include <QTextStream>
+#include <QWidget>
 
 #include <kconfig.h>
 
@@ -47,7 +49,7 @@ struct KstMatrixData {
 class KstScalar;
 class KstString;
 class KstDataSourceConfigWidget;
-typedef KstSharedPtr<KstScalar> KstScalarPtr;
+typedef QExplicitlySharedDataPointer<KstScalar> KstScalarPtr;
 
 class KST_EXPORT KstDataSource : public KstObject {
   protected:
@@ -65,24 +67,20 @@ class KST_EXPORT KstDataSource : public KstObject {
     /** Returns a list of plugins found on the system. */
     static QStringList pluginList();
 
-    static KstSharedPtr<KstDataSource> loadSource(const QString& filename, const QString& type = QString::null);
-    static KstSharedPtr<KstDataSource> loadSource(QDomElement& e);
+    static QExplicitlySharedDataPointer<KstDataSource> loadSource(const QString& filename, const QString& type = QString::null);
+    static QExplicitlySharedDataPointer<KstDataSource> loadSource(QDomElement& e);
     static QStringList fieldListForSource(const QString& filename, const QString& type = QString::null, QString *outType = 0L, bool *complete = 0L);
     static QStringList matrixListForSource(const QString& filename, const QString& type = QString::null, QString *outType = 0L, bool *complete = 0L);
     static KstDataSourceConfigWidget *configWidgetForSource(const QString& filename, const QString& type);
     static KstDataSourceConfigWidget *configWidgetForPlugin(const QString& plugin);
-    // @since 1.1.0
     static bool pluginHasConfigWidget(const QString& plugin);
-    // @since 1.1.0
     static bool supportsTime(const QString& plugin, const QString& type = QString::null);
     static bool supportsHierarchy(const QString& filename, const QString& type = QString::null);
-    static char separator() { return QDir::separator(); }
+    static char separator() { return QDir::separator().toAscii(); }
 
     KstDataSourceConfigWidget *configWidget() const;
 
-    // @since 1.1.0
     bool reusable() const;
-    // @since 1.1.0
     void disableReuse();
 
     virtual bool isValid() const; // generally you don't need to change this
@@ -192,27 +190,21 @@ class KST_EXPORT KstDataSource : public KstObject {
      */
     virtual bool reset();
 
-    virtual const QDict<KstString>& metaData() const;
-
-    virtual const QString& metaData(const QString& key) const;
-
+    virtual const QMultiHash<QString, KstString>& metaData() const;
+    virtual QString metaData(const QString& key) const;
     virtual bool hasMetaData() const;
-
     virtual bool hasMetaData(const QString& key) const;
 
     /** Does it support time conversion of sample numbers, in general? */
     virtual bool supportsTimeConversions() const;
-
-    virtual int sampleForTime(const KST::ExtDateTime& time, bool *ok = 0L);
-
+    virtual int sampleForTime(const KDateTime& time, bool *ok = 0L);
     virtual int sampleForTime(double milliseconds, bool *ok = 0L);
-
-    virtual KST::ExtDateTime timeForSample(int sample, bool *ok = 0L);
-
+    virtual KDateTime timeForSample(int sample, bool *ok = 0L);
     // in (ms)
     virtual double relativeTimeForSample(int sample, bool *ok = 0L);
 
     virtual bool supportsHierarchy() const;
+    virtual QString units(const QString& field);
 
     /** Allow configuration settings to be set from javaScript.
      *  These methods should be overridden for any datasource that
@@ -226,9 +218,7 @@ class KST_EXPORT KstDataSource : public KstObject {
 
     /** Is the object valid? */
     bool _valid;
-
     bool _reusable;
-
     bool _writable;
 
     /** Place to store the list of fields.  Base implementation returns this. */
@@ -245,18 +235,22 @@ class KST_EXPORT KstDataSource : public KstObject {
     /** The source type name. */
     QString _source;
 
-    QDict<KstString> _metaData;
+    QMultiHash<QString, KstString> _metaData;
 
     KConfig *_cfg;
 
     KstScalarPtr _numFramesScalar;
 
+    //
     // NOTE: You must bump the version key if you add new member variables
     //       or change or add virtual functions.
+    //       This is done by increasing the value of KST_CURRENT_DATASOURCE_KEY
+    //       in kstobject.h
+    //
 };
 
 
-typedef KstSharedPtr<KstDataSource> KstDataSourcePtr;
+typedef QExplicitlySharedDataPointer<KstDataSource> KstDataSourcePtr;
 
 class KstDataSourceList : public KstObjectList<KstDataSourcePtr> {
   public:
@@ -273,8 +267,7 @@ class KstDataSourceList : public KstObjectList<KstDataSourcePtr> {
       return end();
     }
 
-    // @since 1.1.0
-    KstDataSourceList::Iterator findReusableFileName(const QString& x) {
+   KstDataSourceList::Iterator findReusableFileName(const QString& x) {
       for (KstDataSourceList::Iterator it = begin(); it != end(); ++it) {
         if ((*it)->reusable() && (*it)->fileName() == x) {
           return it;
@@ -283,7 +276,6 @@ class KstDataSourceList : public KstObjectList<KstDataSourcePtr> {
       return end();
     }
 
-    // @since 1.1.0
     QStringList fileNames() const {
       QStringList rc;
       for (KstDataSourceList::ConstIterator it = begin(); it != end(); ++it) {
@@ -295,7 +287,6 @@ class KstDataSourceList : public KstObjectList<KstDataSourcePtr> {
 };
 
 
-// @since 1.1.0
 class KstDataSourceConfigWidget : public QWidget {
   Q_OBJECT
   friend class KstDataSource;

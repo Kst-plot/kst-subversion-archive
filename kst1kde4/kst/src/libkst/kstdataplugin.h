@@ -17,16 +17,15 @@
 
 #include <assert.h>
 
-#include "ksdebug.h"
+#include <qfile.h>
+#include <qfileinfo.h>
+
+#include <kdebug.h>
 #include <kio/netaccess.h>
 #include <klibloader.h>
 #include <klocale.h>
+#include <kservice.h>
 #include <kservicetype.h>
-
-#include <qdeepcopy.h>
-#include <qfile.h>
-#include <qfileinfo.h>
-#include <qstylesheet.h>
 
 #include "kstdatacollection.h"
 #include "kstdebug.h"
@@ -36,30 +35,27 @@
 // Eventually this will move to another file but I leave it here until then
 // to avoid confusion between the function plugins and Kst applicaton plugins.
 namespace KST {
-  class Plugin : public KstShared {
+  class Plugin : public QSharedData {
     public:
-      Plugin(KService::Ptr svc) : KstShared(), service(svc), _lib(0L) {
+      Plugin(KService::Ptr svc) : QSharedData(), service(svc), _lib(0L) {
         assert(service);
         _plugLib = service->library();
-        //kstdDebug() << "Create plugin " << (void*)this << " " << service->property("Name").toString() << endl;
       }
 
-	protected:
       virtual ~Plugin() {
-        //kstdDebug() << "Destroy plugin " << (void*)this << " " << service->property("Name").toString() << endl;
         if (_lib) {
           _lib->unload();
         }
       }
 
-	public:
-      Q_UINT32 key() const {
-        Q_UINT32 (*sym)() = (Q_UINT32(*)())symbol("key");
+  public:
+      quint32 key() const {
+        quint32 (*sym)() = (quint32(*)())symbol("key");
         if (sym) {
           return (sym)();
         }
 
-        return Q_UINT32();
+        return quint32();
       }
 
       bool hasConfigWidget() const {
@@ -75,11 +71,9 @@ namespace KST {
         }
 
         QString libname = _plugLib;
-        QCString s = QFile::encodeName(sym + "_" + libname.remove(QString("kstobject_")));
-        if (_lib->hasSymbol(s)) {
-          return _lib->symbol(s);
-        }
-        return 0L;
+        QByteArray s = QFile::encodeName(sym + "_" + libname.remove(QString("kstobject_")));
+        
+	return _lib->resolveSymbol(s);
       }
 
       bool loadLibrary() const {
@@ -90,16 +84,16 @@ namespace KST {
 
         bool isDataObject = _plugLib.contains(QString("kstobject_"));
 
-        QCString libname = QFile::encodeName((!isDataObject ? QString("kstdata_") : QString()) + _plugLib);
+        QByteArray libname = QFile::encodeName((!isDataObject ? QString("kstdata_") : QString()) + _plugLib);
         _lib = KLibLoader::self()->library(libname);
         if (!_lib) {
-          KstDebug::self()->log(i18n("Error loading data plugin [%1]: %2").arg(libname).arg(KLibLoader::self()->lastErrorMessage()), KstDebug::Error);
+          KstDebug::self()->log(i18n("Error loading data plugin [%1]: %2").arg(libname.data()).arg(KLibLoader::self()->lastErrorMessage()), KstDebug::Error);
           return false;
         }
 
         if (key() != (isDataObject ? KST_CURRENT_DATAOBJECT_KEY : KST_CURRENT_DATASOURCE_KEY)) {
-          KstDebug::self()->log(i18n("Error loading data plugin [%1]: %2").arg(libname).arg(i18n("Plugin is too old and needs to be recompiled.")), KstDebug::Error);
-          KstDebug::self()->log(i18n("Error loading data plugin key = [%1]: %2").arg(key()).arg(QFile::encodeName("key_" + _plugLib)), KstDebug::Error);
+          KstDebug::self()->log(i18n("Error loading data plugin [%1]: %2").arg(libname.data()).arg(i18n("Plugin is too old and needs to be recompiled.")), KstDebug::Error);
+          KstDebug::self()->log(i18n("Error loading data plugin key = [%1]: %2").arg(key()).arg(QFile::encodeName("key_" + _plugLib).data()), KstDebug::Error);
           return false;
         }
         return true;
@@ -122,12 +116,11 @@ namespace KST {
       KstDataSource *create(KConfig *cfg, const QString& filename, const QString& type = QString::null) const {
         KstDataSource *(*sym)(KConfig*, const QString&, const QString&) = (KstDataSource*(*)(KConfig*, const QString&, const QString&))symbol("create");
         if (sym) {
-          //kstdDebug() << "Trying to create " << filename << " type=" << type << " with " << service->property("Name").toString() << endl;
           KstDataSource *ds = (sym)(cfg, filename, type);
           if (ds) {
             ds->_source = service->property("Name").toString();
           }
-          //kstdDebug() << (ds ? "SUCCESS" : "FAILED") << endl;
+
           return ds;
         }
 
@@ -137,12 +130,11 @@ namespace KST {
       KstDataSource *create(KConfig *cfg, const QString& filename, const QString& type, const QDomElement& e) const {
         KstDataSource *(*sym)(KConfig*, const QString&, const QString&, const QDomElement&) = (KstDataSource*(*)(KConfig*, const QString&, const QString&, const QDomElement&))symbol("load");
         if (sym) {
-          //kstdDebug() << "Trying to create " << filename << " type=" << type << " with " << service->property("Name").toString() << endl;
           KstDataSource *ds = (sym)(cfg, filename, type, e);
           if (ds) {
             ds->_source = service->property("Name").toString();
           }
-          //kstdDebug() << (ds ? "SUCCESS" : "FAILED") << endl;
+
           return ds;
         } else {
           KstDataSource *(*sym)(KConfig*, const QString&, const QString&) = (KstDataSource*(*)(KConfig*, const QString&, const QString&))symbol("create");
@@ -151,6 +143,7 @@ namespace KST {
             if (ds) {
               ds->_source = service->property("Name").toString();
             }
+
             return ds;
           }
         }
@@ -163,9 +156,15 @@ namespace KST {
         if (sym) {
           return (sym)(cfg, filename, type, typeSuggestion, complete);  
         }
-        // fallback incase the helper isn't implemented
+	
+	//
+        // fallback in case the helper isn't implemented
         //  (note: less efficient now)
-        KstDataSourcePtr ds = create(cfg, filename, type);
+	//
+	
+        KstDataSourcePtr ds;
+	
+	ds = create(cfg, filename, type);
         if (ds) {
           QStringList rc = ds->matrixList();
           if (typeSuggestion) {
@@ -185,9 +184,14 @@ namespace KST {
           return (sym)(cfg, filename, type, typeSuggestion, complete);
         }
 
-        // fallback incase the helper isn't implemented
+	//
+        // fallback in case the helper isn't implemented
         //  (note: less efficient now)
-        KstDataSourcePtr ds = create(cfg, filename, type);
+	//
+	
+        KstDataSourcePtr ds;
+	
+	ds = create(cfg, filename, type);
         if (ds) {
           QStringList rc = ds->fieldList();
           if (typeSuggestion) {
@@ -205,9 +209,8 @@ namespace KST {
       int understands(KConfig *cfg, const QString& filename) const {
         int (*sym)(KConfig*, const QString&) = (int(*)(KConfig*, const QString&))symbol("understands");
         if (sym) {
-          //kstdDebug() << "Checking if " << service->property("Name").toString() << " understands " << filename << endl;
           int rc = (sym)(cfg, filename);
-          //kstdDebug() << "result: " << rc << endl;
+
           return rc;
         }
 
@@ -227,8 +230,8 @@ namespace KST {
       bool supportsHierarchy() const {
         bool (*sym)() = (bool(*)())symbol("supportsHierarchy");
         if (sym) {
-          //kstdDebug() << "Checking if " << service->property("Name").toString() << " provides " << type << endl;
           bool rc = (sym)();
+
           return rc;
         }
 
@@ -242,7 +245,6 @@ namespace KST {
       QStringList provides() const {
         QStringList (*sym)() = (QStringList(*)())symbol("provides");
         if (sym) {
-          //kstdDebug() << "Checking if " << service->property("Name").toString() << " provides " << type << endl;
           return (sym)();
         }
 
@@ -282,89 +284,5 @@ namespace KST {
       }
   };
 
-#if 0
-  class BasicPlugin : public DataObjectPlugin {
-    public:
-      BasicPlugin(KService::Ptr svc) : DataObjectPlugin(svc) {
-      }
-
-      virtual ~BasicPlugin() {
-      }
-
-      QWidget *configWidget(const QString& name) const {
-        Q_UNUSED(name);
-        return 0L;
-      }
-
-      QStringList inputVectorList() const {
-        QStringList (*sym)() = (QStringList(*)())symbol("inputVectorList");
-        if (sym) {
-          return (sym)();
-        }
-
-        return QStringList();
-      }
-
-      QStringList inputScalarList() const {
-        QStringList (*sym)() = (QStringList(*)())symbol("inputScalarList");
-        if (sym) {
-          return (sym)();
-        }
-
-        return QStringList();
-      }
-
-      QStringList inputStringList() const {
-        QStringList (*sym)() = (QStringList(*)())symbol("inputStringList");
-        if (sym) {
-          return (sym)();
-        }
-
-        return QStringList();
-      }
-
-      QStringList outputVectorList() const {
-        QStringList (*sym)() = (QStringList(*)())symbol("outputVectorList");
-        if (sym) {
-          return (sym)();
-        }
-
-        return QStringList();
-      }
-
-      QStringList outputScalarList() const {
-        QStringList (*sym)() = (QStringList(*)())symbol("outputScalarList");
-        if (sym) {
-          return (sym)();
-        }
-
-        return QStringList();
-      }
-
-      QStringList outputStringList() const {
-        QStringList (*sym)() = (QStringList(*)())symbol("outputStringList");
-        if (sym) {
-          return (sym)();
-        }
-
-        return QStringList();
-      }
-  };
-
-  class CPlugin : public DataObjectPlugin {
-    public:
-      CPlugin(KService::Ptr svc) : DataObjectPlugin(svc) {
-      }
-
-      virtual ~CPlugin() {
-      }
-
-      QWidget *configWidget(const QString& name) const {
-        Q_UNUSED(name);
-        return 0L;
-      }
-  };
-#endif
-
-  typedef QValueList<KstSharedPtr<KST::Plugin> > PluginInfoList;
+  typedef QLinkedList<QExplicitlySharedDataPointer<KST::Plugin> > PluginInfoList;
 }

@@ -21,10 +21,15 @@
 #include "stdinsource.h"
 
 #include <kconfig.h>
+#include <kconfiggroup.h>
 
 KstVectorDefaults KST::vectorDefaults;
 
 KstVectorDefaults::KstVectorDefaults() {
+  //
+  // some arbitrary defaults for the defaults...
+  //
+  
   _dataSource = ".";
   _f0 = 0;
   _n = -1;
@@ -79,55 +84,71 @@ int KstVectorDefaults::skip() const {
 }
 
 
-void KstVectorDefaults::sync() {
-  KST::vectorList.lock().readLock();
-  KstRVectorList vl = kstObjectSubList<KstVector,KstRVector>(KST::vectorList);
-  KST::vectorList.lock().unlock();
-  int j = vl.count() - 1;
+void KstVectorDefaults::sync() { 
+  KstRVectorList::iterator it;
+  KstRVectorList rvectorList;
+  KstRVectorPtr rvector;
 
-  // Find a non-stdin source
-  while (j >= 0) {
-    vl[j]->readLock();
-    KstDataSourcePtr dsp = vl[j]->dataSource();
-    vl[j]->unlock();
+  KST::vectorList.lock().readLock();
+  rvectorList = kstObjectSubList<KstVector,KstRVector>(KST::vectorList);
+  KST::vectorList.lock().unlock();
+  
+  //
+  // find a non-stdin source...
+  //
+  
+  for (it=rvectorList.begin(); it!=rvectorList.end(); ++it) {
+    KstDataSourcePtr dsp;
+    
+    rvector = *it;
+    
+    rvector->readLock();
+    dsp = rvector->dataSource();
+    rvector->unlock();
+    
     if (dsp && !kst_cast<KstStdinSource>(dsp)) {
       break;
     }
-    --j;
   }
 
-  if (j >= 0) {
-    vl[j]->readLock();
-    _f0 = vl[j]->reqStartFrame();
-    _n = vl[j]->reqNumFrames();
-    _dataSource = vl[j]->filename();
-    _skip = vl[j]->skip();
-    _doAve = vl[j]->doAve();
-    _doSkip = vl[j]->doSkip();
-    vl[j]->unlock();
+  if (it != rvectorList.end()) {
+    rvector->readLock();
+
+    _f0 = rvector->reqStartFrame();
+    _n = rvector->reqNumFrames();
+    _dataSource = rvector->filename();
+    _skip = rvector->skip();
+    _doAve = rvector->doAve();
+    _doSkip = rvector->doSkip();
+    
+    rvector->unlock();
   }
 }
 
 
 void KstVectorDefaults::writeConfig(KConfig *config) {
-  config->writeEntry("defaultDataSource", KST::vectorDefaults.dataSource());
-  config->writeEntry("defaultWizardXVector", KST::vectorDefaults.wizardXVector());
-  config->writeEntry("defaultStartFrame", KST::vectorDefaults.f0());
-  config->writeEntry("defaultNumFrames", KST::vectorDefaults.n());
-  config->writeEntry("defaultDoSkip", KST::vectorDefaults.doSkip());
-  config->writeEntry("defaultDoAve", KST::vectorDefaults.doAve());
-  config->writeEntry("defaultSkip", KST::vectorDefaults.skip());
+  KConfigGroup	group(config, "vectordefaults");
+  
+  group.writeEntry("defaultDataSource", KST::vectorDefaults.dataSource());
+  group.writeEntry("defaultWizardXVector", KST::vectorDefaults.wizardXVector());
+  group.writeEntry("defaultStartFrame", KST::vectorDefaults.f0());
+  group.writeEntry("defaultNumFrames", KST::vectorDefaults.n());
+  group.writeEntry("defaultDoSkip", KST::vectorDefaults.doSkip());
+  group.writeEntry("defaultDoAve", KST::vectorDefaults.doAve());
+  group.writeEntry("defaultSkip", KST::vectorDefaults.skip());
 }
 
 
 void KstVectorDefaults::readConfig(KConfig *config) {
-  _f0 = config->readDoubleNumEntry("defaultStartFrame", 0);
-  _n = config->readDoubleNumEntry("defaultNumFrames", -1);
-  _dataSource = config->readEntry("defaultDataSource", ".");
-  _wizardX = config->readEntry("defaultWizardXVector", "INDEX");
-  _doSkip = config->readNumEntry("defaultDoSkip", 0);
-  _doAve = config->readNumEntry("defaultDoAve", 0);
-  _skip = config->readNumEntry("defaultSkip", 0);
+  KConfigGroup  group(config, "vectordefaults");
+
+  _f0 = group.readEntry("defaultStartFrame", 0.0);
+  _n = group.readEntry("defaultNumFrames", -1.0);
+  _dataSource = group.readEntry("defaultDataSource", ".");
+  _wizardX = group.readEntry("defaultWizardXVector", "INDEX");
+  _doSkip = group.readEntry("defaultDoSkip", 0);
+  _doAve = group.readEntry("defaultDoAve", 0);
+  _skip = group.readEntry("defaultSkip", 0);
 }
 
 

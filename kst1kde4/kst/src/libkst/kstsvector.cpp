@@ -14,9 +14,12 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
+#include <QTextDocument>
+
+#include <kdebug.h>
+
 #include "kstsvector.h"
-#include "ksdebug.h"
-#include <qstylesheet.h>
 
 KstSVector::KstSVector(const QDomElement &e) : KstVector(e) {
   double in_x0 = 0.0;

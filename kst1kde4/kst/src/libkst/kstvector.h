@@ -19,8 +19,8 @@
 #define KSTVECTOR_H
 
 #include <math.h>
-#include <qdict.h>
-#include <qguardedptr.h>
+#include <qhash.h>
+#include <qpointer.h>
 #include "kstobjectcollection.h"
 #include "kstprimitive.h"
 #include "kstscalar.h"
@@ -41,14 +41,12 @@ namespace Equation {
 class KstDataObject;
 
 class KstVector;
-typedef KstSharedPtr<KstVector> KstVectorPtr;
+typedef QExplicitlySharedDataPointer<KstVector> KstVectorPtr;
 // KST::interpolate is still too polluting
 extern double kstInterpolate(double *v, int _size, int in_i, int ns_i);
 extern double kstInterpolateNoHoles(double *v, int _size, int in_i, int ns_i);
 
-/**A class for handling data vectors for kst.
- *@author cbn
- */
+
 class KST_EXPORT KstVector : public KstPrimitive {
   Q_OBJECT
   public:
@@ -58,8 +56,6 @@ class KST_EXPORT KstVector : public KstPrimitive {
     KstVector(KstObjectTag in_tag = KstObjectTag::invalidTag, int size = 0,
         KstObject *provider = 0L, bool bIsScalarList = false);
     KstVector(const QDomElement& e);
-
-  protected:
     virtual ~KstVector();
 
   public:
@@ -140,12 +136,12 @@ class KST_EXPORT KstVector : public KstPrimitive {
     virtual void setTagName(const KstObjectTag& newTag);
 
     /** Return a pointer to the raw vector */
-    double *const value() const;
+    double* value() const;
 
     /** access functions for _isScalarList */
     bool isScalarList() const { return _isScalarList; }
 
-    const QDict<KstScalar>& scalars() const;
+    const ScalarCollection& scalars() const;
 
     void setLabel(const QString& label_in);
 
@@ -182,7 +178,7 @@ class KST_EXPORT KstVector : public KstPrimitive {
     int _numNew;
 
     /** Statistics Scalars */
-    QDict<KstScalar> _scalars;
+    ScalarCollection _scalars;
 
     /** is the vector monotonically rising */
     bool _is_rising : 1;

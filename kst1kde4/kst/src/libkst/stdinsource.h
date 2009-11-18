@@ -18,11 +18,11 @@
 #ifndef STDINSRC_H
 #define STDINSRC_H
 
+#include <QTemporaryFile>
+
 #include <kstdatasource.h>
 
 #include "kst_export.h"
-
-class KTempFile;
 
 class KST_EXPORT KstStdinSource : public KstDataSource {
   public:
@@ -42,7 +42,7 @@ class KST_EXPORT KstStdinSource : public KstDataSource {
 
   private:
     KstDataSourcePtr _src;
-    KTempFile *_file;
+    QTemporaryFile *_file;
 };
 
 #endif

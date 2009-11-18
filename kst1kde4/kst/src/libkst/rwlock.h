@@ -21,10 +21,9 @@
 #include <qmutex.h>
 #include <qmap.h>
 #include <qthread.h>
+#include <qwaitcondition.h>
 
-#include "kstwaitcondition.h"
-
-#include "config.h"
+//#include "config.h"
 #include "kst_export.h"
 
 // NOTE: In order to preserve binary compatibility with plugins, you must
@@ -48,13 +47,8 @@ class KST_EXPORT KstRWLock {
     virtual LockStatus myLockStatus() const;
 
   protected:
-#ifdef ONE_LOCK_TO_RULE_THEM_ALL
-    static
-#else
-    mutable
-#endif
-    QMutex _mutex;
-    mutable KstWaitCondition _readerWait, _writerWait;
+    mutable QMutex _mutex;
+    mutable QWaitCondition _readerWait, _writerWait;
 
     mutable int _readCount, _writeCount;
     mutable int _waitingReaders, _waitingWriters;

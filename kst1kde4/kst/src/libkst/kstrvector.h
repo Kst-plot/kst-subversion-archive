@@ -116,7 +116,7 @@ public:
   void setFromEnd();
 
   // make a copy
-  KstSharedPtr<KstRVector> makeDuplicate() const;
+  QExplicitlySharedDataPointer<KstRVector> makeDuplicate() const;
 
 private:
   KstObject::UpdateType doUpdate(bool force = false);
@@ -157,7 +157,7 @@ private:
   bool _dontUseSkipAccel;
 };
 
-typedef KstSharedPtr<KstRVector> KstRVectorPtr;
+typedef QExplicitlySharedDataPointer<KstRVector> KstRVectorPtr;
 typedef KstObjectList<KstRVectorPtr> KstRVectorList;
 
 #endif

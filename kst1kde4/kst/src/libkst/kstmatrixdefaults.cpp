@@ -15,17 +15,21 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <kconfig.h>
+#include <kconfiggroup.h>
+
 #include "kstdatacollection.h" 
 #include "kstmatrixdefaults.h"
 #include "kstrmatrix.h"
 #include "stdinsource.h"
 
-#include <kconfig.h>
-
 KstMatrixDefaults KST::matrixDefaults;
 
 KstMatrixDefaults::KstMatrixDefaults() {
-  // some arbitrary defaults for the defaults
+  //
+  // some arbitrary defaults for the defaults...
+  //
+  
   _dataSource = ".";
   _xStart = 0;
   _yStart = 0;
@@ -96,58 +100,70 @@ int KstMatrixDefaults::skip() const {
 }
 
 void KstMatrixDefaults::sync() {
-  KST::matrixList.lock().readLock();
-  KstRMatrixList rmatrixList = kstObjectSubList<KstMatrix,KstRMatrix>(KST::matrixList);
-  KST::matrixList.lock().unlock();
-  int j = rmatrixList.count() - 1;
+  KstRMatrixList::iterator it;
+  KstRMatrixList rmatrixList;
+  KstRMatrixPtr rmatrix;
 
-  // Find a non-stdin source
-  while (j >= 0) {
-    rmatrixList[j]->readLock();
-    KstDataSourcePtr dsp = rmatrixList[j]->dataSource();
-    rmatrixList[j]->unlock();
+  KST::matrixList.lock().readLock();
+  rmatrixList = kstObjectSubList<KstMatrix,KstRMatrix>(KST::matrixList);
+  KST::matrixList.lock().unlock();
+  
+  //
+  // find a non-stdin source...
+  //
+  
+  for (it=rmatrixList.begin(); it!=rmatrixList.end(); ++it) {
+    KstDataSourcePtr dsp;
+    
+    rmatrix = *it;
+    
+    rmatrix->readLock();
+    dsp = rmatrix->dataSource();
+    rmatrix->unlock();
     if (dsp && !kst_cast<KstStdinSource>(dsp)) {
       break;
     }
-    --j;
   }
+  
+  if (it != rmatrixList.end()) {
+    rmatrix->readLock();
 
-  if (j >= 0) {
-    rmatrixList[j]->readLock();
+    _dataSource = rmatrix->filename();
+    _xStart = rmatrix->reqXStart();
+    _yStart = rmatrix->reqYStart();
+    _xNumSteps = rmatrix->reqXNumSteps();
+    _yNumSteps = rmatrix->reqYNumSteps();
+    _skip = rmatrix->skip();
+    _doAve = rmatrix->doAverage();
+    _doSkip = rmatrix->doSkip();
 
-    // get the settings
-    _dataSource = rmatrixList[j]->filename();
-    _xStart = rmatrixList[j]->reqXStart();
-    _yStart = rmatrixList[j]->reqYStart();
-    _xNumSteps = rmatrixList[j]->reqXNumSteps();
-    _yNumSteps = rmatrixList[j]->reqYNumSteps();
-    _skip = rmatrixList[j]->skip();
-    _doAve = rmatrixList[j]->doAverage();
-    _doSkip = rmatrixList[j]->doSkip();
-
-    rmatrixList[j]->unlock();
+    rmatrix->unlock();
   }
 }
 
 void KstMatrixDefaults::writeConfig(KConfig *config) {
-  config->writeEntry("defaultMatrixDataSource", KST::matrixDefaults.dataSource());
-  config->writeEntry("defaultXStart", KST::matrixDefaults.xStart());
-  config->writeEntry("defaultYStart", KST::matrixDefaults.yStart());
-  config->writeEntry("defaultXNumSteps", KST::matrixDefaults.xNumSteps());
-  config->writeEntry("defaultYNumSteps", KST::matrixDefaults.yNumSteps());
-  config->writeEntry("defaultMatrixDoSkip", KST::matrixDefaults.doSkip());
-  config->writeEntry("defaultMatrixDoAverage", KST::matrixDefaults.doAverage());
-  config->writeEntry("defaultMatrixSkip", KST::matrixDefaults.skip());
+  KConfigGroup	group(config, "matrixdefaults");
+  
+  group.writeEntry("defaultMatrixDataSource", KST::matrixDefaults.dataSource());
+  group.writeEntry("defaultXStart", KST::matrixDefaults.xStart());
+  group.writeEntry("defaultYStart", KST::matrixDefaults.yStart());
+  group.writeEntry("defaultXNumSteps", KST::matrixDefaults.xNumSteps());
+  group.writeEntry("defaultYNumSteps", KST::matrixDefaults.yNumSteps());
+  group.writeEntry("defaultMatrixDoSkip", KST::matrixDefaults.doSkip());
+  group.writeEntry("defaultMatrixDoAverage", KST::matrixDefaults.doAverage());
+  group.writeEntry("defaultMatrixSkip", KST::matrixDefaults.skip());
 }
 
 
 void KstMatrixDefaults::readConfig(KConfig *config) {
-  _dataSource = config->readEntry("defaultMatrixDataSource", ".");
-  _xStart = config->readNumEntry("defaultXStart", 0);
-  _yStart = config->readNumEntry("defaultYStart", 0);
-  _xNumSteps = config->readNumEntry("defaultXNumSteps", -1);
-  _yNumSteps = config->readNumEntry("defaultYNumSteps", -1);
-  _doSkip = config->readNumEntry("defaultMatrixDoSkip", 0);
-  _doAve = config->readNumEntry("defaultMatrixDoAverage", 0);
-  _skip = config->readNumEntry("defaultMatrixSkip", 0);
+  KConfigGroup	group(config, "matrixdefaults");
+
+  _dataSource = group.readEntry("defaultMatrixDataSource", ".");
+  _xStart = group.readEntry("defaultXStart", 0);
+  _yStart = group.readEntry("defaultYStart", 0);
+  _xNumSteps = group.readEntry("defaultXNumSteps", -1);
+  _yNumSteps = group.readEntry("defaultYNumSteps", -1);
+  _doSkip = group.readEntry("defaultMatrixDoSkip", 0);
+  _doAve = group.readEntry("defaultMatrixDoAverage", 0);
+  _skip = group.readEntry("defaultMatrixSkip", 0);
 }

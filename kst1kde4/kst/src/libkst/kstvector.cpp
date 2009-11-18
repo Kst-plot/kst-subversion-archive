@@ -20,32 +20,25 @@
 #include <math.h>
 #include <stdlib.h>
 
-#include <qcstring.h>
-#include <qdeepcopy.h>
-#include <qstylesheet.h>
+// #include <qdeepcopy.h>
+#include <QTextDocument>
 
+#include <kdebug.h>
 #include <kglobal.h>
 #include <klocale.h>
-#include <kmdcodec.h>
 
-#include "ksdebug.h"
-#include "kstdatacollection.h"
 #include "defaultprimitivenames.h"
+#include "kstdatacollection.h"
 #include "kstmath.h"
+#include "kstscalar.h"
 #include "kstvector.h"
 
 static int anonymousVectorCounter = 1;
 
-// "Zero" means set to NAN.
-// Use 1 for a simple for() loop
-// Use 2 for memset (presently broken)
-#define ZERO_MEMORY 1
-
 #define INITSIZE 1
 
-/** Create a vector */
 KstVector::KstVector(KstObjectTag in_tag, int size, KstObject *provider, bool isScalarList)
-: KstPrimitive(provider), _nsum(0), _scalars(isScalarList ? 0 : 11) {
+: KstPrimitive(provider), _nsum(0) {
   _editable = false;
   _numShifted = 0;
   _numNew = 0;
@@ -87,13 +80,14 @@ KstVector::KstVector(KstObjectTag in_tag, int size, KstObject *provider, bool is
 
 
 KstVector::KstVector(const QDomElement& e)
-: KstPrimitive(), _nsum(0), _scalars(11) {
+: KstPrimitive(), _nsum(0) {
+  QDomNode n = e.firstChild();
+  KstObjectTag in_tag = KstObjectTag::invalidTag;
   QByteArray qba;
+  int sz = INITSIZE;  
+
   _v = 0L;
   _size = 0;
-  int sz = INITSIZE;
-  KstObjectTag in_tag = KstObjectTag::invalidTag;
-
   _editable = false;
   _numShifted = 0;
   _numNew = 0;
@@ -101,18 +95,17 @@ KstVector::KstVector(const QDomElement& e)
   _saveable = false;
   _saveData = false;
 
-  QDomNode n = e.firstChild();
   while (!n.isNull()) {
     QDomElement e = n.toElement();
     if (!e.isNull()) {
       if (e.tagName() == "tag") {
         in_tag = KstObjectTag::fromString(e.text());
       } else if (e.tagName() == "data") {
-        QCString qcs(e.text().latin1());
-        QByteArray qbca;
-        KCodecs::base64Decode(qcs, qbca);
+        QByteArray qcs(e.text().toAscii());
+        QByteArray qbca = QByteArray::fromBase64(qcs);
+        
         qba = qUncompress(qbca);
-        sz = kMax((size_t)(INITSIZE), qba.size()/sizeof(double));
+        sz = qMax((size_t)(INITSIZE), qba.size()/sizeof(double));
       }
     }
     n = n.nextSibling();
@@ -132,9 +125,11 @@ KstVector::KstVector(const QDomElement& e)
   resize(sz, true);
 
   if (!qba.isEmpty()) {
+    QDataStream qds(&qba, QIODevice::ReadOnly);
+    
     _saveable = true;
     _saveData = true;
-    QDataStream qds(qba, IO_ReadOnly);
+
     for (int i = 0; !qds.atEnd(); ++i) {
       qds >> _v[i];
     }
@@ -151,10 +146,14 @@ KstVector::KstVector(const QDomElement& e)
 KstVector::~KstVector() {
   KST::scalarList.lock().writeLock();
   KST::scalarList.setUpdateDisplayTags(false);
-  for (QDictIterator<KstScalar> it(_scalars); it.current(); ++it) {
-    KST::scalarList.remove(it.current());
-    it.current()->_KShared_unref();
+
+  ScalarCollection::iterator it = _scalars.begin();
+  
+  while (it != _scalars.end()) {
+    KST::scalarList.remove(it.value().data());
+    it = _scalars.erase(it);
   }
+
   KST::scalarList.setUpdateDisplayTags(true);
   KST::scalarList.lock().unlock();
 
@@ -315,34 +314,21 @@ void KstVector::createScalars() {
 
     KstWriteLocker sl(&KST::scalarList.lock());
     KST::scalarList.setUpdateDisplayTags(false);
-
     KstScalarPtr sp;
+
     _scalars.insert("max", sp = new KstScalar(KstObjectTag("Max", tag()), this));
-    sp->_KShared_ref();
     _scalars.insert("min", sp = new KstScalar(KstObjectTag("Min", tag()), this));
-    sp->_KShared_ref();
     _scalars.insert("maxindex", sp = new KstScalar(KstObjectTag("MaxIndex", tag()), this));
-    sp->_KShared_ref();
     _scalars.insert("minindex", sp = new KstScalar(KstObjectTag("MinIndex", tag()), this));
-    sp->_KShared_ref();
     _scalars.insert("last", sp = new KstScalar(KstObjectTag("Last", tag()), this));
-    sp->_KShared_ref();
     _scalars.insert("first", sp = new KstScalar(KstObjectTag("First", tag()), this));
-    sp->_KShared_ref();
     _scalars.insert("mean", sp = new KstScalar(KstObjectTag("Mean", tag()), this));
-    sp->_KShared_ref();
     _scalars.insert("sigma", sp = new KstScalar(KstObjectTag("Sigma", tag()), this));
-    sp->_KShared_ref();
     _scalars.insert("rms", sp = new KstScalar(KstObjectTag("Rms", tag()), this));
-    sp->_KShared_ref();
     _scalars.insert("ns", sp = new KstScalar(KstObjectTag("NS", tag()), this));
-    sp->_KShared_ref();
     _scalars.insert("sum", sp = new KstScalar(KstObjectTag("Sum", tag()), this));
-    sp->_KShared_ref();
     _scalars.insert("sumsquared", sp = new KstScalar(KstObjectTag("SumSquared", tag()), this));
-    sp->_KShared_ref();
     _scalars.insert("minpos", sp = new KstScalar(KstObjectTag("MinPos", tag()), this));
-    sp->_KShared_ref();
 
     KST::scalarList.setUpdateDisplayTags(true);
   }
@@ -391,7 +377,7 @@ void KstVector::updateScalars() {
 }
 
 
-const QDict<KstScalar>& KstVector::scalars() const {
+const ScalarCollection& KstVector::scalars() const {
   return _scalars;
 }
 
@@ -433,25 +419,27 @@ void KstVector::blank() {
 
 
 bool KstVector::resize(int sz, bool reinit) {
+  writeLock();
+
   if (sz > 0) {
     _v = static_cast<double*>(KST::realloc(_v, sz*sizeof(double)));
     if (!_v) {
       return false;
     }
 
-#ifdef ZERO_MEMORY
     if (reinit && _size < sz) {
       for (int i = _size; i < sz; i++) {
         _v[i] = KST::NOPOINT;
       }
     }
-#endif
 
     _size = sz;
     updateScalars();
   }
 
   setDirty();
+  unlock();
+
   return true;
 }
 
@@ -477,7 +465,7 @@ KstObject::UpdateType KstVector::internalUpdate(KstObject::UpdateType providerRC
 
     if (i == _size) {
       if (!_isScalarList) {
-        _scalars["sum"]->setValue(sum);
+	_scalars["sum"]->setValue(sum);
         _scalars["sumsquared"]->setValue(sum2);
         _scalars["max"]->setValue(_max);
         _scalars["min"]->setValue(_min);
@@ -602,16 +590,16 @@ KstObject::UpdateType KstVector::internalUpdate(KstObject::UpdateType providerRC
 
 void KstVector::save(QTextStream &ts, const QString& indent, bool saveAbsolutePosition) {
   Q_UNUSED(saveAbsolutePosition)
-  ts << indent << "<tag>" << QStyleSheet::escape(tag().tagString()) << "</tag>" << endl;
+  ts << indent << "<tag>" << Qt::escape(tag().tagString()) << "</tag>" << endl;
   if (_saveData) {
-    QByteArray qba(length()*sizeof(double));
-    QDataStream qds(qba, IO_WriteOnly);
+    QByteArray qba(length()*sizeof(double), '\0');
+    QDataStream qds(&qba, QIODevice::WriteOnly);
 
     for (int i = 0; i < length(); i++) {
       qds << _v[i];
     }
 
-    ts << indent << "<data>" << KCodecs::base64Encode(qCompress(qba)) << "</data>" << endl;
+    ts << indent << "<data>" << qCompress(qba).toBase64() << "</data>" << endl;
   }
 }
 
@@ -645,7 +633,7 @@ QString KstVector::fileLabel() const {
 }
 
 
-double *const KstVector::value() const {
+double* KstVector::value() const {
   return _v;
 }
 
@@ -676,7 +664,8 @@ KstVectorPtr KstVector::generateVector(double x0, double x1, int n, const KstObj
     t = KST::suggestVectorName("X(" + QString::number(x0) + ".." + QString::number(x1) + ")");
   }
 
-  KstVectorPtr xv = new KstVector(KstObjectTag(t, tag.context()), n);
+  KstVectorPtr xv;
+  new KstVector(KstObjectTag(t, tag.context()), n);
   xv->_saveable = false;
 
   for (int i = 0; i < n; i++) {
@@ -699,10 +688,13 @@ void KstVector::setLabel(const QString& label_in) {
 
 
 int KstVector::getUsage() const {
+  QHash<QString, KstScalarPtr>::const_iterator it;
   int adj = 0;
-  for (QDictIterator<KstScalar> it(_scalars); it.current(); ++it) {
-    adj += it.current()->getUsage() - 1;
+
+  for (it=_scalars.begin(); it!=_scalars.end(); ++it) {
+    adj += (*it)->getUsage() - 1;
   }
+
   return KstObject::getUsage() + adj;
 }
 
@@ -775,8 +767,6 @@ int KstVector::indexNearX(double x, int NS) {
   }
 }
 
-
-#undef ZERO_MEMORY
 #undef INITSIZE
 
 #include "kstvector.moc"

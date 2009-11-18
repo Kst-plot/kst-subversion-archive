@@ -32,7 +32,7 @@ class KST_EXPORT KstSVector : public KstVector {
   void setSaveData(bool save);
 };
 
-typedef KstSharedPtr<KstSVector> KstSVectorPtr;
+typedef QExplicitlySharedDataPointer<KstSVector> KstSVectorPtr;
 typedef KstObjectList<KstSVectorPtr> KstSVectorList;
 
 #endif

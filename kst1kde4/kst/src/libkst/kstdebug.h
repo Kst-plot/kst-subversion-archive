@@ -18,23 +18,26 @@
 #ifndef KSTDEBUG_H
 #define KSTDEBUG_H
 
-#include <config.h>
+// #include <config.h> xxx
 
 #include <qdatetime.h>
-#include <qguardedptr.h>
+#include <qlinkedlist.h>
 #include <qobject.h>
 #include <qmutex.h>
+#include <qpointer.h>
 
-#include <kstaticdeleter.h>
-#include <ksttimers.h>
+//#include <ksttimers.h> xxx
 
 #include "kst_export.h"
 
 // This class has to be threadsafe
 class KST_EXPORT KstDebug : public QObject {
   Q_OBJECT
-  friend class KStaticDeleter<KstDebug>;
+
   public:
+    KstDebug();
+    ~KstDebug();
+    
     enum LogLevel { Unknown = 0, Notice = 1, Warning = 2, Error = 4, Debug = 8, None = 16384 };
     struct LogMessage {
       QDateTime date;
@@ -45,12 +48,12 @@ class KST_EXPORT KstDebug : public QObject {
 
     void clear();
     void log(const QString& msg, LogLevel level = Notice);
-    void setLimit(bool applyLimit, int limit);   
+    void setLimit(bool applyLimit, int limit);
     QString text();
     void sendEmail();
 
     int logLength() const;
-    QValueList<LogMessage> messages() const;
+    QLinkedList<LogMessage> messages() const;
     KstDebug::LogMessage message(unsigned n) const;
     QStringList dataSourcePlugins() const;
     QString label(LogLevel level) const;
@@ -62,29 +65,18 @@ class KST_EXPORT KstDebug : public QObject {
     bool hasNewError() const;
     void clearHasNewError();
 
-#ifdef BENCHMARK
-    QMap<QString,int>& drawCounter() { return _drawCounter; }
-#endif
-
   protected:
     friend class KstApp;
     void setHandler(QObject *handler);
 
   private:
-    KstDebug();
-    ~KstDebug();
-
     static KstDebug *_self;
-    QValueList<LogMessage> _messages;
+    QLinkedList<LogMessage> _messages;
     bool _applyLimit;
     bool _hasNewError;
     int _limit;
     mutable QMutex _lock;
-#ifdef BENCHMARK
-    // If this is ever public we can't do this
-    QMap<QString,int> _drawCounter;
-#endif
-    QGuardedPtr<QObject> _handler;
+    QPointer<QObject> _handler;
     QString _kstVersion;
     QString _kstRevision;
 };

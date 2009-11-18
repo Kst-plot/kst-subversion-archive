@@ -15,19 +15,20 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "kstdatasource.h"
-#include "kstdebug.h"
-#include "kstrevision.h"
-#include "logevents.h"
+// xxx #include <qdeepcopy.h>
 
 #include <kapplication.h>
-#include "ksdebug.h"
-#include <kglobal.h>
 #include <klocale.h>
 
-#include <qdeepcopy.h>
+#include <kdebug.h>
 
-static KStaticDeleter<KstDebug> sd;
+#include "kstdatasource.h"
+#include "kstdebug.h"
+// xxx #include "kstrevision.h"
+#include "logevents.h"
+
+K_GLOBAL_STATIC(KstDebug, sd)
+// xxx static KStaticDeleter<KstDebug> sd;
 
 KstDebug *KstDebug::_self = 0L;
 
@@ -35,7 +36,7 @@ static QMutex soLock;
 KstDebug *KstDebug::self() {
   QMutexLocker ml(&soLock);
   if (!_self) {
-    sd.setObject(_self, new KstDebug);
+// xxx    sd.setObject(_self, new KstDebug);
   }
 
   return _self;
@@ -46,24 +47,19 @@ KstDebug::KstDebug()
 : QObject() {
   _applyLimit = false;
   _limit = 10000;
-  _kstRevision = QString::fromLatin1(KSTREVISION);
-  _kstVersion = QString::fromLatin1(KSTVERSION);
+// xxx  _kstRevision = QString::fromLatin1(KSTREVISION);
+// xxx  _kstVersion = QString::fromLatin1(KSTVERSION);
   _hasNewError = false;
 }
 
 
 KstDebug::~KstDebug() {
-#ifdef BENCHMARK
-  kstdDebug() << "DRAW COUNTS ---------------------------------------" << endl;
-  for (QMap<QString,int>::ConstIterator i = _drawCounter.begin(); i != _drawCounter.end(); ++i) {
-    kstdDebug() << i.key() << ": " << i.data() << endl;
-  }
-#endif
 }
 
 
 int KstDebug::limit() const {
   QMutexLocker ml(&_lock);
+  
   return _limit;
 }
 
@@ -88,10 +84,11 @@ void KstDebug::log(const QString& msg, LogLevel level) {
 
   _messages.append(message);
   if (_applyLimit && int(_messages.size()) > _limit) {
-    QValueListIterator<LogMessage> first = _messages.begin();
-    QValueListIterator<LogMessage> last = first;
-    last += _messages.size() - _limit;
-    _messages.erase(first, last);
+    QLinkedList<LogMessage>::iterator msgFirst = _messages.begin();
+    QLinkedList<LogMessage>::iterator msgLast = msgFirst;
+
+    msgLast += _messages.size() - _limit;
+    _messages.erase(msgFirst, msgLast);
   }
 
   if (level == Error) {
@@ -100,6 +97,7 @@ void KstDebug::log(const QString& msg, LogLevel level) {
 
   if (_handler) {
     LogEvent *e = new LogEvent(LogEvent::LogAdded);
+    
     e->_msg = message;
     QApplication::postEvent(_handler, e);
   }
@@ -108,9 +106,13 @@ void KstDebug::log(const QString& msg, LogLevel level) {
 
 void KstDebug::clear() {
   clearHasNewError(); // has to be before the lock is acquired
+  
   QMutexLocker ml(&_lock);
+  
   _messages.clear(); 
+  
   LogEvent *e = new LogEvent(LogEvent::LogCleared);
+  
   QApplication::postEvent(_handler, e);
 }
 
@@ -133,10 +135,10 @@ QString KstDebug::label(LogLevel level) const {
 
 QString KstDebug::text() {
   QMutexLocker ml(&_lock);
-  QString body = i18n("Kst version %1\n\n\nKst log:\n").arg(KSTVERSION);
-
-  for (unsigned i = 0; i < _messages.count(); i++ ) {
-    body += i18n("date leveltext: message", "%1 %2: %3\n").arg(KGlobal::locale()->formatDateTime(_messages[i].date)).arg(label(_messages[i].level)).arg(_messages[i].msg);
+  QString body = i18n("Kst version %1\n\n\nKst log:\n").arg( _kstVersion );
+ 
+  for (QLinkedList<LogMessage>::const_iterator i=_messages.begin(); i != _messages.end(); ++i) {
+    body += i18n("date leveltext: message", "%1 %2: %3\n").arg(KGlobal::locale()->formatDateTime(i->date)).arg(label(i->level)).arg(i->msg);
   }
 
   body += i18n("\n\nData-source plugins:");
@@ -146,63 +148,80 @@ QString KstDebug::text() {
     body += *it;
   }
   body += "\n\n";
+
   return body;
 }
 
 
 void KstDebug::setLimit(bool applyLimit, int limit) {
   QMutexLocker ml(&_lock);
+  
   _applyLimit = applyLimit;
   _limit = limit;
 }
 
 
 void KstDebug::sendEmail() {
-  kapp->invokeMailer(QString::null, QString::null, QString::null, i18n("Kst Debugging Information"), text());
+//  kapp->invokeMailer(QString::null, QString::null, QString::null, i18n("Kst Debugging Information"), text());
 }
 
 
-QValueList<KstDebug::LogMessage> KstDebug::messages() const {
+QLinkedList<KstDebug::LogMessage> KstDebug::messages() const {
   QMutexLocker ml(&_lock);
-  return QDeepCopy<QValueList<LogMessage> >(_messages);
+
+  return _messages;
 }
 
 
 KstDebug::LogMessage KstDebug::message(unsigned n) const {
   QMutexLocker ml(&_lock);
-  if (_messages.size() > n) {
-    return _messages[n];
+  unsigned i;
+  
+  if (n < (unsigned)_messages.count()) {
+    QLinkedList<LogMessage>::const_iterator it = _messages.begin();
+    
+    for (i=0; i<n; ++i) {
+      ++it;
+    }
+    
+    return *it;
   }
+  
   return KstDebug::LogMessage();
 }
 
 
 int KstDebug::logLength() const {
   QMutexLocker ml(&_lock);
+  
   return _messages.size();
 }
 
 
 const QString& KstDebug::kstVersion() const {
   QMutexLocker ml(&_lock);
+  
   return _kstVersion;
 }
 
 
 const QString& KstDebug::kstRevision() const {
   QMutexLocker ml(&_lock);
+  
   return _kstRevision;
 }
 
 
 bool KstDebug::hasNewError() const {
   QMutexLocker ml(&_lock);
+  
   return _hasNewError;
 }
 
 
 void KstDebug::clearHasNewError() {
   QMutexLocker ml(&_lock);
+  
   _hasNewError = false;
 }
 
