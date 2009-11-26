@@ -440,35 +440,40 @@ void KstObjectCollection<T>::doRename(T *o, const KstObjectTag& newTag) {
 template <class T>
 QExplicitlySharedDataPointer<T> KstObjectCollection<T>::retrieveObject(QStringList tag) const {
   if (tag.isEmpty()) {
-    return NULL;
+    return QExplicitlySharedDataPointer<T>();
   }
 
-  if (_index[tag.first()] && _index[tag.first()]->count() == 1) {
-    // the first tag element is unique, so use the index
-    KstObjectTreeNode<T> *n = _index[tag.first()]->first();
+  if (_index.contains(tag.first()) && _index.value(tag.first()).count() == 1) {
+    KstObjectTreeNode<T> *n = _index.value(tag.first()).first();
 
     if (n) {
       tag.pop_front();
       n = n->descendant(tag);
     }
+    
     if (n) {
-      return n->object();
+      return QExplicitlySharedDataPointer<T>(n->object());
     }
   }
 
-  // search through the tree
+  //
+  // search through the tree...
+  //
+  
   const KstObjectTreeNode<T> *n = _root.descendant(tag);
+  
   if (n) {
-    return n->object();
+    return QExplicitlySharedDataPointer<T>(n->object());
   } else {
-    return NULL;
+    return QExplicitlySharedDataPointer<T>();
   }
 }
+
 
 template <class T>
 QExplicitlySharedDataPointer<T> KstObjectCollection<T>::retrieveObject(const KstObjectTag& tag) const {
   if (!tag.isValid()) {
-    return NULL;
+    return QExplicitlySharedDataPointer<T>();
   }
 
   return retrieveObject(tag.fullTag());
@@ -598,21 +603,38 @@ typename KstObjectList<QExplicitlySharedDataPointer<T> >::Iterator KstObjectColl
 
 template <class T>
 typename KstObjectList<QExplicitlySharedDataPointer<T> >::Iterator KstObjectCollection<T>::findTag(const KstObjectTag& x) {
-  T *obj = retrieveObject(x);
+  T *obj;
+  
+  obj = retrieveObject(x).data();
   if (obj) {
-    return _list.find(obj);
+    typename KstObjectList<QExplicitlySharedDataPointer<T> >::Iterator it;
+    
+    for (it=_list.begin(); it!=_list.end(); ++it) {
+      if ((*it).data() == obj) {
+        return it;
+      }
+    }
   } else {
-    // For historical compatibility:
-    // previously, output vectors of equations, PSDs, etc. were named PSD1-ABCDE-freq
-    // now, they are PSD1-ABCDE/freq
+    //
+    // for historical compatibility:
+    // previously, output vectors of equations, PSDs, etc. 
+    //  were named PSD1-ABCDE-freq now, they are PSD1-ABCDE/freq
+    //
     QString newTag = x.tagString();
 
     newTag.replace(newTag.lastIndexOf('-'), 1, KstObjectTag::tagSeparator);
-    obj = retrieveObject(KstObjectTag::fromString(newTag));
+    obj = retrieveObject(KstObjectTag::fromString(newTag)).data();
     if (obj) {
-      return _list.find(obj);
+      typename KstObjectList<QExplicitlySharedDataPointer<T> >::Iterator it;
+      
+      for (it=_list.begin(); it!=_list.end(); ++it) {
+        if ((*it).data() == obj) {
+          return it;
+        }
+      }
     }
   }
+  
   return _list.end();
 }
 
@@ -623,9 +645,17 @@ typename KstObjectList<QExplicitlySharedDataPointer<T> >::Iterator KstObjectColl
 
 template <class T>
 typename KstObjectList<QExplicitlySharedDataPointer<T> >::ConstIterator KstObjectCollection<T>::findTag(const KstObjectTag& x) const {
-  T *obj = retrieveObject(x);
+  T *obj;
+  
+  obj = retrieveObject(x).data();
   if (obj) {
-    return _list.find(obj);
+    typename KstObjectList<QExplicitlySharedDataPointer<T> >::Iterator it;
+    
+    for (it=_list.begin(); it!=_list.end(); ++it) {
+      if ((*it).data() == obj) {
+        return it;
+      }
+    }
   } else {
     // For historical compatibility:
     // previously, output vectors of equations, PSDs, etc. were named PSD1-ABCDE-freq
