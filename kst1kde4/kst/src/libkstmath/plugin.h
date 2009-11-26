@@ -18,14 +18,15 @@
 #ifndef _KST_PLUGIN_H
 #define _KST_PLUGIN_H
 
-#include <qmap.h>
+#include <QMap>
+#include <QPair>
+#include <QSharedData>
 
-#include "kstsharedptr.h"
 #include "kst_export.h"
 
 class KLibrary;
 
-class KST_EXPORT Plugin : public KstShared {
+class KST_EXPORT Plugin : public QSharedData {
   friend class PluginLoader;
   public:
     virtual ~Plugin();
@@ -123,8 +124,8 @@ class KST_EXPORT Plugin : public KstShared {
         // Unimplemented:  platforms, language, documentation
 
         // Interface
-        QValueList<IOValue> _inputs;
-        QValueList<IOValue> _outputs;
+        QList<IOValue> _inputs;
+        QList<IOValue> _outputs;
 
         // Parameter list
         QMap<QString, QPair<ParameterTypes, QString> > _parameters;
@@ -136,11 +137,11 @@ class KST_EXPORT Plugin : public KstShared {
             : name(name), x(x), y(y) {}
           QString name, x, y;
         };
-        QValueList<Data::CurveHint> _hints;
+        QList<Data::CurveHint> _hints;
     };
 
 
-    static void countScalarsVectorsAndStrings(const QValueList<Plugin::Data::IOValue>& table, unsigned& scalars, unsigned& vectors, unsigned& strings, unsigned& numberOfPids);
+    static void countScalarsVectorsAndStrings(const QList<Plugin::Data::IOValue>& table, unsigned& scalars, unsigned& vectors, unsigned& strings, unsigned& numberOfPids);
 
   protected:
     Plugin();
@@ -156,6 +157,6 @@ class KST_EXPORT Plugin : public KstShared {
     QString _xmlFile, _soFile;
 };
 
-typedef KstSharedPtr<Plugin> KstPluginPtr;
+typedef QExplicitlySharedDataPointer<Plugin> KstPluginPtr;
 
 #endif

@@ -15,23 +15,32 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QApplication>
+
 #include "dialoglauncher.h"
 
-static KStaticDeleter<KstDialogs> sdDialogs;
 KstDialogs *KstDialogs::_self = 0L;
 
 KstDialogs *KstDialogs::self() {
   if (!_self) {
-    _self = sdDialogs.setObject(_self, new KstDialogs);
+    _self = new KstDialogs();
+    qAddPostRoutine(KstDialogs::cleanup);
   }
+
   return _self;
+}
+
+
+void KstDialogs::cleanup() {
+  delete _self;
+  _self = 0L;
 }
 
 
 void KstDialogs::replaceSelf(KstDialogs *newInstance) {
   delete _self;
   _self = 0L;
-  _self = sdDialogs.setObject(_self, newInstance);
+  _self = newInstance;
 }
 
 

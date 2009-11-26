@@ -76,7 +76,6 @@ class KST_EXPORT KstVCurve: public KstBaseCurve {
     void setXMinusError(KstVectorPtr new_ex);
     void setYMinusError(KstVectorPtr new_ey);
 
-    /** Save curve information */
     void save(QTextStream &ts, const QString& indent = QString::null);
 
     QString xLabel() const;
@@ -168,17 +167,17 @@ class KST_EXPORT KstVCurve: public KstBaseCurve {
     bool _hasBars;
 
     QColor _color;
-    QValueStack<int> _widthStack;
-    QValueStack<QColor> _colorStack;
-    QValueStack<int> _pointStyleStack;
-    QValueStack<int> _lineStyleStack;
-    QValueStack<bool> _hasPointsStack;
-    QValueStack<bool> _hasLinesStack;
-    QValueStack<int> _pointDensityStack;
+    QStack<int> _widthStack;
+    QStack<QColor> _colorStack;
+    QStack<int> _pointStyleStack;
+    QStack<int> _lineStyleStack;
+    QStack<bool> _hasPointsStack;
+    QStack<bool> _hasLinesStack;
+    QStack<int> _pointDensityStack;
     InterpType _interp;
 };
 
-typedef KstSharedPtr<KstVCurve> KstVCurvePtr;
+typedef QExplicitlySharedDataPointer<KstVCurve> KstVCurvePtr;
 typedef KstObjectList<KstVCurvePtr> KstVCurveList;
 
 #endif

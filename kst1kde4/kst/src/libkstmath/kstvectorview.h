@@ -113,7 +113,7 @@ class KST_EXPORT KstVectorView: public KstDataObject {
     void commonConstructor(const QString &in_tag);
 };
 
-typedef KstSharedPtr<KstVectorView> KstVectorViewPtr;
+typedef QExplicitlySharedDataPointer<KstVectorView> KstVectorViewPtr;
 typedef KstObjectList<KstVectorViewPtr> KstVectorViewList;
 
 #endif

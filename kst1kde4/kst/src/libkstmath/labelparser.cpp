@@ -118,7 +118,8 @@ inline void setNormalChar(QChar c, Chunk **tail) {
 
 
 inline QColor parseColor(const QString& txt, int *skip) {
-  const int end = txt.find('}');
+  const int end = txt.indexOf('}');
+  
   if (skip) {
     *skip = end;
   }
@@ -133,37 +134,7 @@ inline QColor parseColor(const QString& txt, int *skip) {
                          // outside of QColor, make sure that this is called
                          // -after- we try our own formats.  Every cycle
                          // counts in here.
-#if 0
-  // This is rr,gg,bb support.  I'm not sure about supporting H,S,V or even
-  // about compatibility with LaTeX so for now we don't support it.  If it's
-  // ever re-enabled, make sure that testcases are added.
-  if (!color.isValid()) {
-    // the color is in the format "r,g,b"
-    QStringList components = QStringList::split(',', endPart, true);
-    if (components.count() == 3) {
-      int colors[3] = { 0, 0, 0 };
-      int base = 10;
 
-      // assume the colors are given as decimal numbers unless we have a hex value in the string
-      if (endPart.find(QRegExp("[A-F]", false)) != -1) {
-        base = 16;
-      }
-
-      bool ok = true;
-      colors[0] = components[0].toInt(&ok, base);
-      if (ok) {
-        colors[1] = components[1].toInt(&ok, base);
-      }
-      if (ok) {
-        colors[2] = components[2].toInt(&ok, base);
-      }
-
-      if (ok) {
-        color.setRgb(colors[0], colors[1], colors[2]);
-      } // Should error out?
-    }
-  }
-#endif
   return color;
 }
 
@@ -474,12 +445,14 @@ inline bool parseOutChar(const QString& txt, uint from, int *skip, Chunk **tail,
         return true;
       } else if (txt.mid(from + 1).startsWith("nichar{")) {
         int charStart = from + 8;
-        int charEnd = txt.find('}', charStart);
+        int charEnd = txt.indexOf('}', charStart);
+
         if (charEnd == -1) {
           return false;
         }
         setNormalChar(QChar( (txt.mid(charStart,charEnd - charStart)).toInt(0,0)), tail);
         *skip = charEnd - from + 1;
+        
         return true;
       }
       break;
@@ -502,6 +475,7 @@ static Chunk *parseInternal(Chunk *ctail, const QString& txt, uint& start, uint 
   for (uint& i = start; i < cnt; ++i) {
     QChar c = txt[i];
     Chunk::VOffset dir = Chunk::Down;
+
     switch (c.unicode()) {
       case '\n':
         if (!ctail->text.isEmpty() || ctail->locked()) {
@@ -626,11 +600,11 @@ static Chunk *parseInternal(Chunk *ctail, const QString& txt, uint& start, uint 
           }
 
           if (vector) {
-            ctail->text = txt.mid(i + 1, vectorIndexStart - i - 2).stripWhiteSpace();
+            ctail->text = txt.mid(i + 1, vectorIndexStart - i - 2).trimmed();
             ctail->expression = txt.mid(vectorIndexStart, vectorIndexEnd - vectorIndexStart + 1);
             ctail->vector = true;
           } else {
-            ctail->text = txt.mid(i + 1, pos - i - 1).stripWhiteSpace();
+            ctail->text = txt.mid(i + 1, pos - i - 1).trimmed();
             ctail->scalar = true;
           }
           i = uint(pos);

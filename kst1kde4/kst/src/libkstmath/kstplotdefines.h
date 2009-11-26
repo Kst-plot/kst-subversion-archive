@@ -120,8 +120,8 @@ class TickParameters {
     bool labelMinor;
     double maxWidth;
     double maxHeight;
-    QValueList<TickLabelDescription> labels;
-    QValueList<TickLabelDescription> labelsOpposite;
+    QList<TickLabelDescription> labels;
+    QList<TickLabelDescription> labelsOpposite;
     int iHi;
     int iLo;
     double oppMaxWidth;

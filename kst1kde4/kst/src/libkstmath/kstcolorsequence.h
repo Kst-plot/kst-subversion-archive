@@ -18,16 +18,14 @@
 #ifndef _KST_CS_H
 #define _KST_CS_H
 
-#include <qcolor.h>
-#include <kstaticdeleter.h>
-#include "kstvcurve.h"
-#include "kst_export.h"
+#include <QColor>
+#include <QCoreApplication>
 
-class KPalette;
+#include "kstvcurve.h"
+//#include "kst_export.h"
 
 class KstColorSequence {
-  friend class KStaticDeleter<KstColorSequence>;
-  public:
+  public:    
     enum ColorMode { MonoChrome, GrayScale, Color };
     KST_EXPORT void createPalette();
     static KST_EXPORT QColor next();
@@ -43,12 +41,14 @@ class KstColorSequence {
   private:
     KstColorSequence();
     ~KstColorSequence();
+    static void cleanup();
+       
     static KstColorSequence* _self;
-    KPalette* _pal;
+    QHash<int,QColor> _pal;
+    QString _palette;
+    ColorMode _mode;
     int _count;
     int _ptr;  // pointer to the next color
-    ColorMode _mode;
-    QString _palette;
 };
 
 #endif

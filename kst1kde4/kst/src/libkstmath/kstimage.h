@@ -18,7 +18,7 @@
 #ifndef KSTIMAGE_H
 #define KSTIMAGE_H
 
-#include <kpalette.h>
+#include <kcolorcollection.h>
 
 #include "kstmatrix.h"
 #include "kstbasecurve.h"
@@ -27,7 +27,7 @@
 class KST_EXPORT KstImage: public KstBaseCurve {
   public:
     //constructor for colormap only
-    KstImage(const QString &in_tag, KstMatrixPtr in_matrix, double lowerZ, double upperZ, bool autoThreshold, KPalette* pal);
+    KstImage(const QString &in_tag, KstMatrixPtr in_matrix, double lowerZ, double upperZ, bool autoThreshold, KColorCollection* pal);
     //constructor for contour map only
     KstImage(const QString &in_tag, KstMatrixPtr in_matrix, int numContours, const QColor& contourColor, int contourWeight);
     //constructor for both colormap and contour map
@@ -36,7 +36,7 @@ class KST_EXPORT KstImage: public KstBaseCurve {
         double lowerZ,
         double upperZ,
         bool autoThreshold,
-        KPalette* pal,
+        KColorCollection* pal,
         int numContours,
         const QColor& contourColor,
         int contourWeight);
@@ -54,7 +54,7 @@ class KST_EXPORT KstImage: public KstBaseCurve {
 
     virtual bool getNearestZ(double x, double y, double& z);
     virtual QColor getMappedColor(double x, double y);
-    virtual void setPalette(KPalette* pal);
+    virtual void setPalette(KColorCollection* pal);
     virtual void setPalette(const QString& strPalette);
     virtual void setUpperThreshold(double z);
     virtual void setLowerThreshold(double z);
@@ -70,16 +70,16 @@ class KST_EXPORT KstImage: public KstBaseCurve {
     virtual KstMatrixPtr matrix() const;
     virtual void setMatrix(const KstMatrixPtr& matrix);
     virtual QString paletteName() const;
-    virtual KPalette* palette() const { return _pal; }
+    virtual KColorCollection* palette() const { return _pal; }
 
     virtual void matrixDimensions(double &x, double &y, double &width, double &height);
 
     virtual void changeToColorOnly(const QString &in_tag, KstMatrixPtr in_matrix,
-        double lowerZ, double upperZ, bool autoThreshold, KPalette* pal);
+        double lowerZ, double upperZ, bool autoThreshold, KColorCollection* pal);
     virtual void changeToContourOnly(const QString &in_tag, KstMatrixPtr in_matrix,
         int numContours, const QColor& contourColor, int contourWeight);
     virtual void changeToColorAndContour(const QString &in_tag, KstMatrixPtr in_matrix,
-        double lowerZ, double upperZ, bool autoThreshold, KPalette* pal,
+        double lowerZ, double upperZ, bool autoThreshold, KColorCollection* pal,
         int numContours, const QColor& contourColor, int contourWeight);
 
     //contour lines
@@ -90,7 +90,7 @@ class KST_EXPORT KstImage: public KstBaseCurve {
     virtual int contourWeight() const { return _contourWeight; } // a contour weight of -1 means variable weight
     virtual void setContourWeight(int contourWeight) { _contourWeight = contourWeight; } // a contour weight of -1 means 
 
-    virtual QValueList<double> contourLines() const { return _contourLines; }
+    virtual QList<double> contourLines() const { return _contourLines; }
     virtual bool addContourLine(double line);
     virtual bool removeContourLine(double line);
     virtual void clearContourLines();
@@ -127,7 +127,8 @@ class KST_EXPORT KstImage: public KstBaseCurve {
     //use these to set defaults when either is not used.
     void setColorDefaults();
     void setContourDefaults();
-    KPalette* _pal;
+    KColorCollection* _pal;
+    
     //upper and lower thresholds
     double _zUpper;
     double _zLower;
@@ -137,14 +138,14 @@ class KST_EXPORT KstImage: public KstBaseCurve {
     bool _hasContourMap;
 
     int _numContourLines;
-    QValueList<double> _contourLines;
+    QList<double> _contourLines;
     QColor _contourColor;
     int _contourWeight; //_contourWeight = -1 means variable weight
     QString _lastPaletteName;
 };
 
 
-typedef KstSharedPtr<KstImage> KstImagePtr;
+typedef QExplicitlySharedDataPointer<KstImage> KstImagePtr;
 typedef KstObjectList<KstImagePtr> KstImageList;
 
 #endif

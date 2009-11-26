@@ -19,7 +19,7 @@
 #include <assert.h>
 #include <math.h>
 
-#include <qstylesheet.h>
+#include <QTextDocument>
 
 #include <kglobal.h>
 #include <klocale.h>
@@ -143,7 +143,8 @@ void KstCSD::commonConstructor(const QString& in_tag, KstVectorPtr in_V, double 
   {
     KstWriteLocker blockMatrixUpdates(&KST::matrixList.lock());
 
-    KstMatrixPtr outMatrix = new KstMatrix(KstObjectTag("csd", tag()), this, 1, 1);
+    KstMatrixPtr outMatrix( new KstMatrix(KstObjectTag("csd", tag()), this, 1, 1) );
+    
     outMatrix->setLabel(i18n("Power [%1/%2^{1/2}]").arg(_vectorUnits).arg(_rateUnits));
     outMatrix->setXLabel(i18n("%1 [%2]").arg(vecName).arg(_vectorUnits));
     outMatrix->setYLabel(i18n("Frequency [%1]").arg(_rateUnits));
@@ -157,8 +158,9 @@ void KstCSD::commonConstructor(const QString& in_tag, KstVectorPtr in_V, double 
 
 KstCSD::~KstCSD() {
   _outMatrix = _outputMatrices.end();
+
   KST::matrixList.lock().writeLock();
-  KST::matrixList.remove(_outputMatrices[OUTMATRIX]);
+  KST::matrixList.remove(_outputMatrices[OUTMATRIX].data());
   KST::matrixList.lock().unlock();
 }
 
@@ -245,8 +247,8 @@ KstObject::UpdateType KstCSD::update(int update_counter) {
 void KstCSD::save(QTextStream &ts, const QString& indent) {
   QString l2 = indent + "  ";
   ts << indent << "<csdobject>" << endl;
-  ts << l2 << "<tag>" << QStyleSheet::escape(tagName()) << "</tag>" << endl;
-  ts << l2 << "<vectag>" << QStyleSheet::escape(_inputVectors[INVECTOR]->tag().tagString()) << "</vectag>" << endl;
+  ts << l2 << "<tag>" << Qt::escape(tagName()) << "</tag>" << endl;
+  ts << l2 << "<vectag>" << Qt::escape(_inputVectors[INVECTOR]->tag().tagString()) << "</vectag>" << endl;
   ts << l2 << "<sampRate>"  << _frequency << "</sampRate>" << endl;
   ts << l2 << "<average>" << _average << "</average>" << endl;
   ts << l2 << "<fftLen>" << int(ceil(log(double(_PSDLen*2)) / log(2.0))) << "</fftLen>" << endl;
@@ -283,7 +285,7 @@ void KstCSD::setVector(KstVectorPtr new_v) {
     }
   }
 
-  _inputVectors.erase(INVECTOR);
+  _inputVectors.remove(INVECTOR);
   _inputVectors[INVECTOR] = new_v;
   setDirty();
 }
@@ -453,13 +455,17 @@ void KstCSD::setRateUnits(const QString& units) {
  
 KstDataObjectPtr KstCSD::makeDuplicate(KstDataObjectDataObjectMap& duplicatedMap) {
   QString name(tagName() + '\'');
+  
   while (KstData::self()->dataTagNameNotUnique(name, false)) {
     name += '\'';
   }
-  KstCSDPtr csd = new KstCSD(name, _inputVectors[INVECTOR], _frequency, _average, _removeMean,
+
+  KstCSDPtr csd( new KstCSD(name, _inputVectors[INVECTOR], _frequency, _average, _removeMean,
                              _apodize, _apodizeFxn, _windowSize, _averageLength, _gaussianSigma, 
-                             _outputType, _vectorUnits, _rateUnits);
-  duplicatedMap.insert(this, KstDataObjectPtr(csd));
+                             _outputType, _vectorUnits, _rateUnits) );
+                             
+  duplicatedMap.insert(KstDataObjectPtr(this), KstDataObjectPtr(csd));
+
   return KstDataObjectPtr(csd);
 }
 

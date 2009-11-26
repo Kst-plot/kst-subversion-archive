@@ -18,7 +18,7 @@
 #ifndef KSTDEFAULTNAMES_H
 #define KSTDEFAULTNAMES_H
 
-#include <qstring.h>
+#include <QString>
 
 #include "kst_export.h"
 

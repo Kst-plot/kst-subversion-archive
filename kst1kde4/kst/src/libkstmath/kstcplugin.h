@@ -61,7 +61,7 @@ class KST_EXPORT KstCPlugin : public KstDataObject {
     virtual void setTagName(const KstObjectTag& tag);
 
   protected:
-    static void countScalarsAndVectors(const QValueList<Plugin::Data::IOValue>& table, unsigned& scalars, unsigned& vectors);
+    static void countScalarsAndVectors(const QList<Plugin::Data::IOValue>& table, unsigned& scalars, unsigned& vectors);
     virtual void showNewDialog();
     virtual void showEditDialog();
     KstPluginPtr _plugin;
@@ -82,7 +82,7 @@ class KST_EXPORT KstCPlugin : public KstDataObject {
     void freeParameters();
 };
 
-typedef KstSharedPtr<KstCPlugin> KstCPluginPtr;
+typedef QExplicitlySharedDataPointer<KstCPlugin> KstCPluginPtr;
 typedef KstObjectList<KstCPluginPtr> KstCPluginList;
 
 #endif

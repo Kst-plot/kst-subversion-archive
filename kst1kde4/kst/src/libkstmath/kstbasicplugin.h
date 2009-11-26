@@ -107,7 +107,7 @@ class KST_EXPORT KstBasicPlugin : public KstDataObject {
     void updateOutput(int updateCounter) const;
 };
 
-typedef KstSharedPtr<KstBasicPlugin> KstBasicPluginPtr;
+typedef QExplicitlySharedDataPointer<KstBasicPlugin> KstBasicPluginPtr;
 typedef KstObjectList<KstBasicPluginPtr> KstBasicPluginList;
 
 #endif

@@ -16,11 +16,10 @@
  ***************************************************************************/
 
 // includes for Qt
-#include <qstylesheet.h>
+#include <QTextDocument>
 
 // includes for KDE
 #include <klocale.h>
-#include "ksdebug.h"
 
 // application specific includes
 #include "dialoglauncher.h"
@@ -32,7 +31,6 @@
 #include "kstmath.h"
 #include "kstrvector.h"
 #include "kstvcurve.h"
-#include "ksttimers.h"
 
 #include <time.h>
 
@@ -292,10 +290,10 @@ KstObject::UpdateType KstVCurve::update(int update_counter) {
 
   switch (interp()) {
     case InterpMax:
-      NS = kMax(cxV->length(), cyV->length());
+      NS = qMax(cxV->length(), cyV->length());
       break;
     case InterpMin:
-      NS = kMin(cxV->length(), cyV->length());
+      NS = qMin(cxV->length(), cyV->length());
       break;
     case InterpX:
       NS = cxV->length();
@@ -304,7 +302,7 @@ KstObject::UpdateType KstVCurve::update(int update_counter) {
       NS = cyV->length();
       break;
     default:
-      NS = kMax(cxV->length(), cyV->length());
+      NS = qMax(cxV->length(), cyV->length());
   }
 
   unlockInputsAndOutputs();
@@ -515,23 +513,23 @@ bool KstVCurve::hasYMinusError() const {
 void KstVCurve::save(QTextStream &ts, const QString& indent) {
   QString l2 = indent + "  ";
   ts << indent << "<curve>" << endl;
-  ts << l2 << "<tag>" << QStyleSheet::escape(tagName()) << "</tag>" << endl;
-  ts << l2 << "<xvectag>" << QStyleSheet::escape(_inputVectors[COLOR_XVECTOR]->tag().tagString()) << "</xvectag>" << endl;
-  ts << l2 << "<yvectag>" << QStyleSheet::escape(_inputVectors[COLOR_YVECTOR]->tag().tagString()) << "</yvectag>" << endl;
-  ts << l2 << "<legend>" << QStyleSheet::escape(legendText()) << "</legend>" << endl;
+  ts << l2 << "<tag>" << Qt::escape(tagName()) << "</tag>" << endl;
+  ts << l2 << "<xvectag>" << Qt::escape(_inputVectors[COLOR_XVECTOR]->tag().tagString()) << "</xvectag>" << endl;
+  ts << l2 << "<yvectag>" << Qt::escape(_inputVectors[COLOR_YVECTOR]->tag().tagString()) << "</yvectag>" << endl;
+  ts << l2 << "<legend>" << Qt::escape(legendText()) << "</legend>" << endl;
   ts << l2 << "<interp>" << interp() << "</interp>" << endl;
   ts << l2 << "<hasMinus/>" << endl;
   if (_inputVectors.contains(EXVECTOR)) {
-    ts << l2 << "<exVectag>" << QStyleSheet::escape(_inputVectors[EXVECTOR]->tag().tagString()) << "</exVectag>" << endl;
+    ts << l2 << "<exVectag>" << Qt::escape(_inputVectors[EXVECTOR]->tag().tagString()) << "</exVectag>" << endl;
   }
   if (_inputVectors.contains(EYVECTOR)) {
-    ts << l2 << "<eyVectag>" << QStyleSheet::escape(_inputVectors[EYVECTOR]->tag().tagString()) << "</eyVectag>" << endl;
+    ts << l2 << "<eyVectag>" << Qt::escape(_inputVectors[EYVECTOR]->tag().tagString()) << "</eyVectag>" << endl;
   }
   if (_inputVectors.contains(EXMINUSVECTOR)) {
-    ts << l2 << "<exMinusVectag>" << QStyleSheet::escape(_inputVectors[EXMINUSVECTOR]->tag().tagString()) << "</exMinusVectag>" << endl;
+    ts << l2 << "<exMinusVectag>" << Qt::escape(_inputVectors[EXMINUSVECTOR]->tag().tagString()) << "</exMinusVectag>" << endl;
   }
   if (_inputVectors.contains(EYMINUSVECTOR)) {
-    ts << l2 << "<eyMinusVectag>" << QStyleSheet::escape(_inputVectors[EYMINUSVECTOR]->tag().tagString()) << "</eyMinusVectag>" << endl;
+    ts << l2 << "<eyMinusVectag>" << Qt::escape(_inputVectors[EYMINUSVECTOR]->tag().tagString()) << "</eyMinusVectag>" << endl;
   }
   ts << l2 << "<color>" << _color.name() << "</color>" << endl;
   if (_hasLines) {
@@ -553,7 +551,7 @@ void KstVCurve::save(QTextStream &ts, const QString& indent) {
   }
   if (_yVectorOffset) {
     ts << l2 << "<yVectorOffset/>" << endl;
-    ts << l2 << "<yVectorOffsetScalar>" << QStyleSheet::escape(_inputScalars[YOFFSETSCALAR]->tag().tagString()) << "</yVectorOffsetScalar>" << endl;
+    ts << l2 << "<yVectorOffsetScalar>" << Qt::escape(_inputScalars[YOFFSETSCALAR]->tag().tagString()) << "</yVectorOffsetScalar>" << endl;
   }
   ts << indent << "</curve>" << endl;
 }
@@ -924,11 +922,16 @@ KstDataObjectPtr KstVCurve::makeDuplicate(KstDataObjectDataObjectMap& duplicated
   KstVectorPtr EYMinus = *_inputVectors.find(EYMINUSVECTOR);
 
   QString name(tagName() + '\'');
+
   while (KstData::self()->dataTagNameNotUnique(name, false)) {
     name += '\'';
   }
-  KstVCurvePtr vcurve = new KstVCurve(name, VX, VY, EX, EY, EXMinus, EYMinus, _color);
+
+  KstVCurvePtr vcurve(new KstVCurve(name, VX, VY, EX, EY, EXMinus, EYMinus, _color));
+
+  //
   // copy some other properties as well
+  //
   vcurve->setHasPoints(_hasPoints);
   vcurve->setHasLines(_hasLines);
   vcurve->setHasBars(_hasBars);
@@ -942,7 +945,8 @@ KstDataObjectPtr KstVCurve::makeDuplicate(KstDataObjectDataObjectMap& duplicated
     vcurve->setYVectorOffsetScalar(*_inputScalars.find(YOFFSETSCALAR));
   }
 
-  duplicatedMap.insert(this, KstDataObjectPtr(vcurve));
+// xxx  duplicatedMap.insert(this, KstDataObjectPtr(vcurve));
+  
   return KstDataObjectPtr(vcurve);
 }
 
@@ -1028,7 +1032,7 @@ void KstVCurve::paint(const KstCurveRenderContext& context) {
 #endif
 
     if (hasLines()) {
-      QPointArray points(MAX_NUM_POLYLINES);
+      QPolygon points(MAX_NUM_POLYLINES);
       int lastPlottedX = 0;
       int lastPlottedY = 0;
       int index = 0;
@@ -1090,7 +1094,7 @@ void KstVCurve::paint(const KstCurveRenderContext& context) {
 
         if (KDE_ISUNLIKELY(foundNan)) {
           if (index > 0) {
-            p->drawPolyline(points, 0, index);
+            p->drawPolyline(points);
           }
           index = 0;
           if (overlap) {
@@ -1149,7 +1153,7 @@ void KstVCurve::paint(const KstCurveRenderContext& context) {
                   int minYi = d2i(minY);
 
                   if (index >= MAX_NUM_POLYLINES-2) {
-                    p->drawPolyline(points, 0, index);
+                    p->drawPolyline(points);
                     index = 0;
                   }
                   if (KDE_ISUNLIKELY(minYi == maxYi)) {
@@ -1178,7 +1182,7 @@ void KstVCurve::paint(const KstCurveRenderContext& context) {
                   }
                   if (KDE_ISUNLIKELY(minY >= Ly && minY <= Hy && maxY >= Ly && maxY <= Hy)) {
                     if (index > 0) {
-                      p->drawPolyline(points, 0, index);
+                      p->drawPolyline(points);
                       index = 0;
                     }
                     p->drawLine(X2i, d2i(minY), X2i, d2i(maxY));
@@ -1274,7 +1278,7 @@ void KstVCurve::paint(const KstCurveRenderContext& context) {
                   points.setPoint(index++, X1i, Y1i);
                 } else {
                   if (KDE_ISLIKELY(index > 1)) {
-                    p->drawPolyline(points, 0, index);
+                    p->drawPolyline(points);
                   }
                   index = 0;
                   points.setPoint(index++, X2i, Y2i);
@@ -1290,7 +1294,7 @@ void KstVCurve::paint(const KstCurveRenderContext& context) {
 
       // we might a have polyline left undrawn...
       if (index > 1) {
-        p->drawPolyline(points, 0, index);
+        p->drawPolyline(points);
         index = 0;
       }
 
@@ -1310,12 +1314,6 @@ void KstVCurve::paint(const KstCurveRenderContext& context) {
         overlap = false;
       }
     } // end if hasLines()
-
-#ifdef BENCHMARK
-    clock_t linesEnd = clock();
-    kstdDebug() << "        Lines clocks: " << (linesEnd - linesStart) << endl;
-    benchmark0 = benchtmp.elapsed();
-#endif
 
     KstVectorPtr exv = *_inputVectors.find(EXVECTOR);
     KstVectorPtr eyv = *_inputVectors.find(EYVECTOR);
@@ -1467,7 +1465,7 @@ void KstVCurve::paint(const KstCurveRenderContext& context) {
           (unsigned int)pointDensity() < KSTPOINTDENSITY_MAXTYPE) {
         const double w = Hx - Lx;
         const double h = Hy - Ly;
-        const int size = int(kMax(w, h)) / int(pow(3.0, KSTPOINTDENSITY_MAXTYPE - pointDensity()));
+        const int size = int(qMax(w, h)) / int(pow(3.0, KSTPOINTDENSITY_MAXTYPE - pointDensity()));
         QRegion rgn((int)Lx, (int)Ly, (int)w, (int)h);
         QPoint pt;
 
@@ -1709,29 +1707,6 @@ void KstVCurve::paint(const KstCurveRenderContext& context) {
       }
     } // end if (hasYError())
   } // end if (sampleCount() > 0)
-
-#ifdef BENCHMARK
-  benchmark3 = benchtmp.elapsed();
-#endif
-
-#ifdef BENCHMARK
-  int i = bench_time.elapsed();
-
-  kstdDebug() << "Plotting curve " << tagName() << " ("<< (void*)this << ") " << ": " << i << "ms" << endl;
-  kstdDebug() << "    Without locks: " << benchmark3 << "ms" << endl;
-  if (benchmark0 > 0) {
-    kstdDebug() << "            Lines: " << benchmark0 << "ms" << endl;
-  }
-  if (benchmark1 - benchmark0 > 0) {
-    kstdDebug() << "             Bars: " << (benchmark1 - benchmark0) << "ms" << endl;
-  }
-  if (benchmark2 - benchmark1 > 0) {
-    kstdDebug() << "           Points: " << (benchmark2 - benchmark1) << "ms" << endl;
-  }
-  if (benchmark3 - benchmark2 > 0) {
-    kstdDebug() << "           Errors: " << (benchmark3 - benchmark2) << "ms" << endl;
-  }
-#endif
 }
 
 
@@ -1784,15 +1759,19 @@ void KstVCurve::yRange(double xFrom, double xTo, double* yMin, double* yMax) {
 
 
 KstDataObjectPtr KstVCurve::providerDataObject() const {
+  KstVectorPtr vp;
+  KstDataObjectPtr provider;
+    
   KST::vectorList.lock().readLock();
-  KstVectorPtr vp = *KST::vectorList.findTag(yVTag().tag());  // FIXME: should use full tag
-  KST::vectorList.lock().unlock();
-  KstDataObjectPtr provider = 0L;
+// xxx  vp = *KST::vectorList.findTag(yVTag().tag());  // FIXME: should use full tag
+  KST::vectorList.lock().unlock();;
+
   if (vp) {
     vp->readLock();
     provider = kst_cast<KstDataObject>(vp->provider());
     vp->unlock();
   }
+  
   return provider;
 }
 

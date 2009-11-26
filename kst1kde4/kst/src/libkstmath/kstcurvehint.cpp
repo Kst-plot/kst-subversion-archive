@@ -20,10 +20,8 @@
 #include "kstdatacollection.h"
 #include "kstvcurve.h"
 
-#include "ksdebug.h"
-
 KstCurveHint::KstCurveHint(const QString& name, const QString& x, const QString& y)
-: KstShared(),  _curveName(name), _xVectorName(x), _yVectorName(y) {
+: QSharedData(),  _curveName(name), _xVectorName(x), _yVectorName(y) {
 }
 
 
@@ -54,10 +52,10 @@ KstVectorPtr KstCurveHint::yVector() const {
 KstBaseCurvePtr KstCurveHint::makeCurve(const QString& tag, const QColor& color) const {
   KstVectorPtr x = xVector();
   KstVectorPtr y = yVector();
+
   if (!x || !y) {
-    kstdDebug() << "Couldn't find either " << _xVectorName << " or " << _yVectorName << endl;
-    return 0L;
+    return KstBaseCurvePtr();
   }
 
-  return new KstVCurve(tag, x, y, 0L, 0L, 0L, 0L, color);
+  return KstBaseCurvePtr(new KstVCurve(tag, x, y, KstVectorPtr(), KstVectorPtr(), KstVectorPtr(), KstVectorPtr(), color));
 }

@@ -101,7 +101,7 @@ private:
   void internalSetNBins(int in_n_bins);
 };
 
-typedef KstSharedPtr<KstHistogram> KstHistogramPtr;
+typedef QExplicitlySharedDataPointer<KstHistogram> KstHistogramPtr;
 typedef KstObjectList<KstHistogramPtr> KstHistogramList;
 
 #endif

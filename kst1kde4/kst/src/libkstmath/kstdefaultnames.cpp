@@ -15,6 +15,12 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <stdio.h>
+
+#include <QRegExp>
+
+#include <klocale.h>
+
 #include "kstdataobjectcollection.h"
 #include "kstdatacollection.h"
 #include "kstdefaultnames.h"
@@ -22,10 +28,6 @@
 #include "kstcplugin.h"
 #include "kstpsd.h"
 #include "kstvcurve.h"
-
-#include <qregexp.h>
-#include <klocale.h>
-#include <stdio.h>
 
 QString KST::suggestPlotName() {
   static int last = 0;

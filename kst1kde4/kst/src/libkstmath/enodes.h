@@ -110,7 +110,7 @@ namespace Equation {
       QString text() const;
 
     protected:
-      QPtrList<Node> _args;
+      QList<Node*> _args;
   };
 
 

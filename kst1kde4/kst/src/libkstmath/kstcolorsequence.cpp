@@ -17,12 +17,9 @@
 
 #include <math.h>
 
-// include files for Qt
+#include <QApplication>
+#include <QVector>
 
-// include files for KDE
-#include <kpalette.h>
-
-// application specific includes
 #include "kstcolorsequence.h"
 #include "kstsettings.h"
 
@@ -37,20 +34,15 @@ static const char *const colors[] = { "red",
                                       "#105010"
                                       };
 static const int colorcnt = sizeof(colors) / sizeof(char*);
-static KStaticDeleter<KstColorSequence> sdColorSequence;
 
 
 KstColorSequence::KstColorSequence()
 : _ptr(0), _mode(Color) {
-  _pal = 0L;
-
   createPalette();
 }
 
 
 KstColorSequence::~KstColorSequence() {
-  delete _pal;
-  _pal = 0L;
 }
 
 
@@ -59,19 +51,22 @@ KstColorSequence *KstColorSequence::_self = 0L;
 
 void KstColorSequence::createPalette( ) {
   if (_palette != KstSettings::globalSettings()->curveColorSequencePalette) {
-    delete _pal;  
+    _pal.clear();
     _palette = KstSettings::globalSettings()->curveColorSequencePalette;
-    _pal = new KPalette(_palette);
 
-    if (_pal->nrColors() <= 0) {
-      for (int i = 0; i < colorcnt; i++) {
-        _pal->addColor(QColor(colors[i]));
-      }
+    for (int i = 0; i < colorcnt; i++) {
+      _pal.insert(i, QColor(colors[i]));
     }
 
-    _count = _pal->nrColors();
+    _count = _pal.count();
     _ptr = 0;
   }
+}
+
+
+void KstColorSequence::cleanup() {
+  delete _self;
+  _self = 0L;
 }
 
 
@@ -80,11 +75,12 @@ QColor KstColorSequence::next(const KstVCurveList& curves, const QColor& badColo
   int dark_factor;
 
   if (!_self) {
-    _self = sdColorSequence.setObject(_self, new KstColorSequence);
+    _self = new KstColorSequence;
+    qAddPostRoutine(KstColorSequence::cleanup);
   }
   _self->createPalette();
 
-  QMemArray<int> usage(_self->_count*2);
+  QVector<int> usage(_self->_count*2);
 
   for (int i = 0; i < _self->_count*2; i++) {
     usage[i] = 0;
@@ -100,7 +96,7 @@ QColor KstColorSequence::next(const KstVCurveList& curves, const QColor& badColo
 
   do {
     dark_factor = 100 + ( 50 * ( _self->_ptr / _self->_count ) );
-    color = _self->_pal->color( _self->_ptr % _self->_count).dark(dark_factor);
+    color = _self->_pal.value( _self->_ptr % _self->_count).dark(dark_factor);
 
     // if we are too close to the bad color then increase the usage count
     //  to try and not use it.
@@ -108,8 +104,10 @@ QColor KstColorSequence::next(const KstVCurveList& curves, const QColor& badColo
       usage[_self->_ptr] += 100;
     }
 
-    for (int i = 0; i < (int)curves.count(); i++) {
-      if (color == curves[i]->color()) {
+    KstVCurveList::const_iterator it;
+    
+    for (it=curves.begin(); it!=curves.end(); ++it) {
+      if (color == (*it)->color()) {
         usage[_self->_ptr]++;
       }
     }
@@ -144,7 +142,7 @@ QColor KstColorSequence::next(const KstVCurveList& curves, const QColor& badColo
   }
 
   dark_factor = 100 + ( 50 * ( _self->_ptr / _self->_count ) );
-  color = _self->_pal->color( _self->_ptr++ % _self->_count).dark(dark_factor);
+  color = _self->_pal.value( _self->_ptr++ % _self->_count).dark(dark_factor);
 
   return color;
 }
@@ -152,7 +150,8 @@ QColor KstColorSequence::next(const KstVCurveList& curves, const QColor& badColo
 
 QColor KstColorSequence::next() {
   if (!_self) {
-    sdColorSequence.setObject(_self, new KstColorSequence);
+    _self = new KstColorSequence();
+    qAddPostRoutine(KstColorSequence::cleanup);
   }
   _self->createPalette();
 
@@ -161,7 +160,8 @@ QColor KstColorSequence::next() {
   }
 
   int dark_factor = 100 + ( 50 * ( _self->_ptr / _self->_count ) );
-  return _self->_pal->color( _self->_ptr++ % _self->_count).dark(dark_factor);
+  
+  return _self->_pal.value( _self->_ptr++ % _self->_count).dark(dark_factor);
 }
 
 
@@ -171,7 +171,8 @@ QColor KstColorSequence::next(const QColor& badColor) {
   int start;
 
   if (!_self) {
-    sdColorSequence.setObject(_self, new KstColorSequence);
+    _self = new KstColorSequence;
+    qAddPostRoutine(KstColorSequence::cleanup);
   }
   _self->createPalette();
 
@@ -184,7 +185,7 @@ QColor KstColorSequence::next(const QColor& badColor) {
   if (badColor.isValid()) {
     do {
       dark_factor = 100 + ( 50 * ( _self->_ptr / _self->_count ) );
-      color = _self->_pal->color( _self->_ptr++ % _self->_count).dark(dark_factor);
+      color = _self->_pal.value( _self->_ptr++ % _self->_count).dark(dark_factor);
       if (_self->_ptr >= _self->_count * 2) {
         _self->_ptr = 0;
       }
@@ -194,7 +195,7 @@ QColor KstColorSequence::next(const QColor& badColor) {
   // if we couldn't find one then just use the next color in the sequence.
   if (start == _self->_ptr) {
     dark_factor = 100 + ( 50 * ( _self->_ptr / _self->_count ) );
-    color = _self->_pal->color( _self->_ptr++ % _self->_count).dark(dark_factor);
+    color = _self->_pal.value( _self->_ptr++ % _self->_count).dark(dark_factor);
   }
 
   return color;
@@ -215,8 +216,8 @@ bool KstColorSequence::colorsTooClose(const QColor& color, const QColor& badColo
   // The 2nd angle is phi = S*(PI/4)/255
   // a color is acceptable if |C1-C2|>dcMin
 
-  color.getHsv(sugH,sugS,sugV);
-  badColor.getHsv(badH, badS, badV);
+  color.getHsv(&sugH, &sugS, &sugV);
+  badColor.getHsv(&badH, &badS, &badV);
 
   r1 = badV/255.0;
   h1 = badH*M_PI/180.0;
@@ -238,7 +239,8 @@ bool KstColorSequence::colorsTooClose(const QColor& color, const QColor& badColo
 
 KstColorSequence::ColorMode KstColorSequence::colorMode() {
   if (!_self) {
-    sdColorSequence.setObject(_self, new KstColorSequence);
+    _self = new KstColorSequence;
+    qAddPostRoutine(KstColorSequence::cleanup);
   }
 
   return _self->_mode;
@@ -247,7 +249,8 @@ KstColorSequence::ColorMode KstColorSequence::colorMode() {
 
 void KstColorSequence::setColorMode(KstColorSequence::ColorMode mode) {
   if (!_self) {
-    sdColorSequence.setObject(_self, new KstColorSequence);
+    _self = new KstColorSequence;
+    qAddPostRoutine(KstColorSequence::cleanup);
   }
 
   _self->_mode = mode;
@@ -256,7 +259,8 @@ void KstColorSequence::setColorMode(KstColorSequence::ColorMode mode) {
 
 int KstColorSequence::count() {
   if (!_self) {
-    sdColorSequence.setObject(_self, new KstColorSequence);
+    _self = new KstColorSequence;
+    qAddPostRoutine(KstColorSequence::cleanup);
   }
   _self->createPalette();
 
@@ -266,7 +270,8 @@ int KstColorSequence::count() {
 
 void KstColorSequence::reset() {
   if (!_self) {
-    sdColorSequence.setObject(_self, new KstColorSequence);
+    _self = new KstColorSequence;
+    qAddPostRoutine(KstColorSequence::cleanup);
   }
 
   _self->_ptr = 0;
@@ -275,7 +280,8 @@ void KstColorSequence::reset() {
 
 QColor KstColorSequence::entry(int ptr) {
   if (!_self) {
-    sdColorSequence.setObject(_self, new KstColorSequence);
+    _self = new KstColorSequence;
+    qAddPostRoutine(KstColorSequence::cleanup);
   }
   _self->createPalette();
 
@@ -284,5 +290,6 @@ QColor KstColorSequence::entry(int ptr) {
   }
 
   int dark_factor = 100 + ( 50 * ( ptr / _self->_count ) );
-  return _self->_pal->color( ptr % _self->_count).dark(dark_factor);
+  
+  return _self->_pal.value( ptr % _self->_count).dark(dark_factor);
 }

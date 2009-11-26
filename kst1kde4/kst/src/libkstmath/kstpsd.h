@@ -15,10 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-/** A class for handling power spectra for kst
- *@author C. Barth Netterfield
- */
-
 #ifndef KSTPSD_H
 #define KSTPSD_H
 
@@ -128,7 +124,7 @@ class KST_EXPORT KstPSD : public KstDataObject {
     static const QString& FVECTOR;
 };
 
-typedef KstSharedPtr<KstPSD> KstPSDPtr;
+typedef QExplicitlySharedDataPointer<KstPSD> KstPSDPtr;
 typedef KstObjectList<KstPSDPtr> KstPSDList;
 
 #endif

@@ -20,7 +20,7 @@
 #include <stdlib.h>
 
 // include files for Qt
-#include <qstylesheet.h>
+#include <QTextDocument>
 
 // include files for KDE
 #include <kglobal.h>
@@ -100,19 +100,19 @@ KstVectorView::KstVectorView(const QDomElement &e)
       } else if (e.tagName() == "useymax") {
         setUseYmax( e.text() != "0" );
       } else if (e.tagName() == "xmintag") {
-        KstScalarPtr xmin = *KST::scalarList.findTag(e.text());
-        if (xmin) { setXminScalar(xmin); }
+// xxx        KstScalarPtr xmin = *KST::scalarList.findTag(e.text());
+//        if (xmin) { setXminScalar(xmin); }
       } else if (e.tagName() == "xmaxtag") {
-        KstScalarPtr xmax = *KST::scalarList.findTag(e.text());
-        if (xmax) { setXmaxScalar(xmax); }
+// xxx        KstScalarPtr xmax = *KST::scalarList.findTag(e.text());
+//        if (xmax) { setXmaxScalar(xmax); }
       } else if (e.tagName() == "ymintag") {
-        KstScalarPtr ymin = *KST::scalarList.findTag(e.text());
-        if (ymin) { setYminScalar(ymin); }
+// xxx        KstScalarPtr ymin = *KST::scalarList.findTag(e.text());
+//        if (ymin) { setYminScalar(ymin); }
       } else if (e.tagName() == "ymaxtag") {
-        KstScalarPtr ymax = *KST::scalarList.findTag(e.text());
-        if (ymax) { setYmaxScalar(ymax); }
+// xxx        KstScalarPtr ymax = *KST::scalarList.findTag(e.text());
+//        if (ymax) { setYmaxScalar(ymax); }
       } else if (e.tagName() == "interp") {
-	setInterp(KstVectorView::InterpType(e.text().toInt()));
+        setInterp(KstVectorView::InterpType(e.text().toInt()));
       }
     }
     n = n.nextSibling();
@@ -159,8 +159,10 @@ KstVectorView::~KstVectorView() {
   _cxVector = _outputVectors.end();
   _cyVector = _outputVectors.end();
   KST::vectorList.lock().writeLock();
+/* xxx
   KST::vectorList.remove(_outputVectors[OUT_XVECTOR]);
   KST::vectorList.remove(_outputVectors[OUT_YVECTOR]);
+*/
   KST::vectorList.lock().unlock();
 }
 
@@ -226,10 +228,10 @@ KstObject::UpdateType KstVectorView::update(int update_counter) {
   int NS;
   switch (interp()) {
     case InterpMax:
-      NS = kMax(inXVec->length(), inYVec->length());
+      NS = qMax(inXVec->length(), inYVec->length());
       break;
     case InterpMin:
-      NS = kMin(inXVec->length(), inYVec->length());
+      NS = qMin(inXVec->length(), inYVec->length());
       break;
     case InterpX:
       NS = inXVec->length();
@@ -238,7 +240,7 @@ KstObject::UpdateType KstVectorView::update(int update_counter) {
       NS = inYVec->length();
       break;
     default:
-      NS = kMax(inXVec->length(), inYVec->length());
+      NS = qMax(inXVec->length(), inYVec->length());
       break;
   }
 
@@ -385,6 +387,7 @@ KstObject::UpdateType KstVectorView::update(int update_counter) {
 
 void KstVectorView::setXminScalar(KstScalarPtr xmin) {
   if (xmin != _xmin) {
+/* xxx
     if (_xmin != 0L) {
       disconnect(_xmin, SIGNAL(trigger()), this, SLOT(scalarChanged()));
     }
@@ -392,12 +395,14 @@ void KstVectorView::setXminScalar(KstScalarPtr xmin) {
     if (xmin && _useXmin) {
       connect(xmin, SIGNAL(trigger()), this, SLOT(scalarChanged()));
     }
+*/
   }
 }
 
 
 void KstVectorView::setXmaxScalar(KstScalarPtr xmax) {
   if (xmax != _xmax) {
+/* xxx
     if (_xmax != 0L) {
       disconnect(_xmax, SIGNAL(trigger()), this, SLOT(scalarChanged()));
     }
@@ -405,12 +410,14 @@ void KstVectorView::setXmaxScalar(KstScalarPtr xmax) {
     if (xmax && _useXmax) {
       connect(xmax, SIGNAL(trigger()), this, SLOT(scalarChanged()));
     }
+*/
   }
 }
 
 
 void KstVectorView::setYminScalar(KstScalarPtr ymin) {
   if (ymin != _ymin) {
+/* xxx
     if (_ymin != 0L) {
       disconnect(_ymin, SIGNAL(trigger()), this, SLOT(scalarChanged()));
     }
@@ -418,12 +425,14 @@ void KstVectorView::setYminScalar(KstScalarPtr ymin) {
     if (ymin && _useYmin) {
       connect(ymin, SIGNAL(trigger()), this, SLOT(scalarChanged()));
     }
+*/
   }
 }
 
 
 void KstVectorView::setYmaxScalar(KstScalarPtr ymax) {
   if (ymax != _ymax) {
+/* xxx
     if (_ymax != 0L) {
       disconnect(_ymax, SIGNAL(trigger()), this, SLOT(scalarChanged()));
     }
@@ -431,6 +440,7 @@ void KstVectorView::setYmaxScalar(KstScalarPtr ymax) {
     if (ymax && _useYmax) {
       connect(ymax, SIGNAL(trigger()), this, SLOT(scalarChanged()));
     }
+*/
   }
 }
 
@@ -439,12 +449,14 @@ void KstVectorView::setUseXmin(bool useXmin) {
   _useXmin = useXmin;
 
   if (!_useXmin) {
+/* xxx
     if (_xmin != 0L) {
       disconnect(_xmin, SIGNAL(trigger()), this, SLOT(scalarChanged()));
     }
+*/
   }
   if (_useXmin && _xmin) { 
-    connect(_xmin, SIGNAL(trigger()), this, SLOT(scalarChanged())); 
+// xxx    connect(_xmin, SIGNAL(trigger()), this, SLOT(scalarChanged())); 
   }
 }
 
@@ -453,12 +465,14 @@ void KstVectorView::setUseXmax(bool useXmax) {
   _useXmax = useXmax;
 
   if (!_useXmax) { 
+/* xxx
     if (_xmax != 0L) {
       disconnect(_xmax, SIGNAL(trigger()), this, SLOT(scalarChanged()));
     }
+*/
   }
   if (_useXmax && _xmax) { 
-    connect(_xmax, SIGNAL(trigger()), this, SLOT(scalarChanged())); 
+// xxx    connect(_xmax, SIGNAL(trigger()), this, SLOT(scalarChanged())); 
   }
 }
 
@@ -467,12 +481,14 @@ void KstVectorView::setUseYmin(bool useYmin) {
   _useYmin = useYmin;
 
   if (!_useYmin) {
+/* xxx
     if (_ymin != 0L) {
       disconnect(_ymin, SIGNAL(trigger()), this, SLOT(scalarChanged()));
     }
+*/
   }
   if (_useYmin && _ymin) { 
-    connect(_ymin, SIGNAL(trigger()), this, SLOT(scalarChanged())); 
+// xxx    connect(_ymin, SIGNAL(trigger()), this, SLOT(scalarChanged())); 
   }
 }
 
@@ -481,12 +497,14 @@ void KstVectorView::setUseYmax(bool useYmax) {
   _useYmax = useYmax;
 
   if (!_useYmax) { 
+/* xxx
     if (_ymax != 0L) {
       disconnect(_ymax, SIGNAL(trigger()), this, SLOT(scalarChanged()));
     }
+*/
   }
   if (_useYmax && _ymax) { 
-    connect(_ymax, SIGNAL(trigger()), this, SLOT(scalarChanged())); 
+// xxx    connect(_ymax, SIGNAL(trigger()), this, SLOT(scalarChanged())); 
   }
 }
 
@@ -544,20 +562,20 @@ QString KstVectorView::FlagTag() const {
 void KstVectorView::save(QTextStream &ts, const QString& indent) {
   QString l2 = indent + "  ";
   ts << indent << "<vectorview>" << endl;
-  ts << l2 << "<tag>" << QStyleSheet::escape(tagName()) << "</tag>" << endl;
-  ts << l2 << "<inxvectag>" << QStyleSheet::escape(_inputVectors[IN_XVECTOR]->tag().tagString()) << "</inxvectag>" << endl;
-  ts << l2 << "<inyvectag>" << QStyleSheet::escape(_inputVectors[IN_YVECTOR]->tag().tagString()) << "</inyvectag>" << endl;
+  ts << l2 << "<tag>" << Qt::escape(tagName()) << "</tag>" << endl;
+  ts << l2 << "<inxvectag>" << Qt::escape(_inputVectors[IN_XVECTOR]->tag().tagString()) << "</inxvectag>" << endl;
+  ts << l2 << "<inyvectag>" << Qt::escape(_inputVectors[IN_YVECTOR]->tag().tagString()) << "</inyvectag>" << endl;
   ts << l2 << "<interp>" << interp() << "</interp>" << endl;
   ts << l2 << "<usexmin>" << _useXmin << "</usexmin>" << endl;
-  ts << l2 << "<xmintag>" << QStyleSheet::escape(_xmin->tag().displayString()) << "</xmintag>" << endl;
+  ts << l2 << "<xmintag>" << Qt::escape(_xmin->tag().displayString()) << "</xmintag>" << endl;
   ts << l2 << "<usexmax>" << _useXmax << "</usexmax>" << endl;
-  ts << l2 << "<xmaxtag>" << QStyleSheet::escape(_xmax->tag().displayString()) << "</xmaxtag>" << endl;
+  ts << l2 << "<xmaxtag>" << Qt::escape(_xmax->tag().displayString()) << "</xmaxtag>" << endl;
   ts << l2 << "<useymin>" << _useYmin << "</useymin>" << endl;
-  ts << l2 << "<ymintag>" << QStyleSheet::escape(_ymin->tag().displayString()) << "</ymintag>" << endl;
+  ts << l2 << "<ymintag>" << Qt::escape(_ymin->tag().displayString()) << "</ymintag>" << endl;
   ts << l2 << "<useymax>" << _useYmax << "</useymax>" << endl;
-  ts << l2 << "<ymaxtag>" << QStyleSheet::escape(_ymax->tag().displayString()) << "</ymaxtag>" << endl;
+  ts << l2 << "<ymaxtag>" << Qt::escape(_ymax->tag().displayString()) << "</ymaxtag>" << endl;
   if (_inputVectors.contains(IN_FLAGVECTOR)) { 
-    ts << l2 << "<flagtag>" << QStyleSheet::escape(_inputVectors[IN_FLAGVECTOR]->tag().displayString()) << "</flagtag>" << endl; 
+    ts << l2 << "<flagtag>" << Qt::escape(_inputVectors[IN_FLAGVECTOR]->tag().displayString()) << "</flagtag>" << endl; 
   }
   ts << indent << "</vectorview>" << endl;
 }
@@ -588,8 +606,8 @@ KstDataObjectPtr KstVectorView::makeDuplicate(KstDataObjectDataObjectMap& duplic
   while (KstData::self()->dataTagNameNotUnique(name, false)) {
     name += '\'';
   }
-  KstVectorViewPtr vectorview = new KstVectorView(name, _inputVectors[IN_XVECTOR], _inputVectors[IN_YVECTOR], interp(), _useXmin, xMinScalar(), _useXmax, xMaxScalar(), _useYmin, yMinScalar(), _useYmax, yMaxScalar(), _inputVectors[IN_FLAGVECTOR]);
-  duplicatedMap.insert(this, KstDataObjectPtr(vectorview));
+  KstVectorViewPtr vectorview(new KstVectorView(name, _inputVectors[IN_XVECTOR], _inputVectors[IN_YVECTOR], interp(), _useXmin, xMinScalar(), _useXmax, xMaxScalar(), _useYmin, yMinScalar(), _useYmax, yMaxScalar(), _inputVectors[IN_FLAGVECTOR]));
+// xxx  duplicatedMap.insert(this, KstDataObjectPtr(vectorview));
   return KstDataObjectPtr(vectorview);
 }
 

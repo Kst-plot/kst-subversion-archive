@@ -49,7 +49,7 @@ class PluginXMLParser {
     int parseParalist(const QDomElement& element);
 #endif
     int parseCurveHints(const QDomElement& element);
-    int parseIO(const QDomElement& element, QValueList<Plugin::Data::IOValue>& collection);
+    int parseIO(const QDomElement& element, QList<Plugin::Data::IOValue>& collection);
 
     Plugin::Data _pluginData;
 };

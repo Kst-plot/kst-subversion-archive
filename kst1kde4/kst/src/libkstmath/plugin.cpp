@@ -24,7 +24,7 @@
 
 const int Plugin::CallError = -424242;
 
-Plugin::Plugin() : KstShared() {
+Plugin::Plugin() : QSharedData() {
   _lib = 0L;
   _symbol = 0L;
   _freeSymbol = 0L;
@@ -124,7 +124,7 @@ QString Plugin::parameterName(int idx) const {
   if (_data._isFit && _parameterName) {
     if (((int(*)(int, char**))_parameterName)(idx, &name) && name) {
       parameter = name; // deep copy into QString
-      free(name);
+// xxx      free(name);
     }
   }
 
@@ -136,13 +136,13 @@ QString Plugin::parameterName(int idx) const {
 }
 
 
-void Plugin::countScalarsVectorsAndStrings(const QValueList<Plugin::Data::IOValue>& table, unsigned& scalars, unsigned& vectors, unsigned& strings, unsigned& numberOfPids) {
+void Plugin::countScalarsVectorsAndStrings(const QList<Plugin::Data::IOValue>& table, unsigned& scalars, unsigned& vectors, unsigned& strings, unsigned& numberOfPids) {
   scalars = 0;
   vectors = 0;
   strings = 0;
   numberOfPids = 0;
 
-  for (QValueList<Plugin::Data::IOValue>::ConstIterator it = table.begin(); it != table.end(); ++it) {
+  for (QList<Plugin::Data::IOValue>::const_iterator it = table.begin(); it != table.end(); ++it) {
     switch ((*it)._type) {
       case Plugin::Data::IOValue::StringType:
         ++strings;
@@ -194,8 +194,10 @@ void Plugin::Data::clear() {
 bool Plugin::freeLocalData(void **local) const {
   if (_freeSymbol) {
     ((void (*)(void**))_freeSymbol)(local);
+    
     return true;
   }
+
   return false;
 }
 
@@ -204,6 +206,7 @@ const char *Plugin::errorCode(int code) const {
   if (_errorSymbol) {
     return ((const char *(*)(int))_errorSymbol)(code);
   }
+
   return 0L;
 }
 

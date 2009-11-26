@@ -22,13 +22,10 @@
 #include "plugin.h"
 #include "kst_export.h"
 
-#include <kstaticdeleter.h>
-
 class PluginXMLParser;
 
 class KST_EXPORT PluginCollection : public QObject {
   Q_OBJECT
-  friend class KStaticDeleter<PluginCollection>;
   public:
 
   static PluginCollection *self();
@@ -106,7 +103,8 @@ class KST_EXPORT PluginCollection : public QObject {
     ~PluginCollection();
 
     static PluginCollection *_self;
-
+    static void cleanup();
+    
   private:
     PluginXMLParser *_parser;
     QMap<QString, KstPluginPtr> _plugins;

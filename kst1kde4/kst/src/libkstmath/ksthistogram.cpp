@@ -20,7 +20,7 @@
 #include <stdlib.h>
 
 // include files for Qt
-#include <qstylesheet.h>
+#include <QTextDocument>
 
 // include files for KDE
 #include <kglobal.h>
@@ -139,7 +139,7 @@ void KstHistogram::commonConstructor(const QString &in_tag, KstVectorPtr in_V,
   _Bins = new unsigned long[_NBins];
   _NS = 3 * _NBins + 1;
 
-  KstVectorPtr v = new KstVector(KstObjectTag("bins", tag()), _NBins, this);
+  KstVectorPtr v(new KstVector(KstObjectTag("bins", tag()), _NBins, this));
   _bVector = _outputVectors.insert(BINS, v);
 
   v = new KstVector(KstObjectTag("sv", tag()), _NBins, this);
@@ -153,8 +153,8 @@ KstHistogram::~KstHistogram() {
   _bVector = _outputVectors.end();
   _hVector = _outputVectors.end();
   KST::vectorList.lock().writeLock();
-  KST::vectorList.remove(_outputVectors[BINS]);
-  KST::vectorList.remove(_outputVectors[HIST]);
+// xxx  KST::vectorList.remove(_outputVectors[BINS]);
+// xxx  KST::vectorList.remove(_outputVectors[HIST]);
   KST::vectorList.lock().unlock();
 
   delete[] _Bins;
@@ -365,8 +365,8 @@ QString KstHistogram::xLabel() const {
 void KstHistogram::save(QTextStream &ts, const QString& indent) {
   QString l2 = indent + "  ";
   ts << indent << "<histogram>" << endl;
-  ts << l2 << "<tag>" << QStyleSheet::escape(tagName()) << "</tag>" << endl;
-  ts << l2 << "<vectag>" << QStyleSheet::escape(_inputVectors[RAWVECTOR]->tag().tagString()) << "</vectag>" << endl;
+  ts << l2 << "<tag>" << Qt::escape(tagName()) << "</tag>" << endl;
+  ts << l2 << "<vectag>" << Qt::escape(_inputVectors[RAWVECTOR]->tag().tagString()) << "</vectag>" << endl;
   ts << l2 << "<numBins>"  << _NBins << "</numBins>" << endl;
   ts << l2 << "<realtimeautobin>" << _realTimeAutoBin << "</realtimeautobin>" << endl;
   ts << l2 << "<minX>" << _MinX << "</minX>" << endl;
@@ -455,12 +455,16 @@ bool KstHistogram::realTimeAutoBin() const {
 
 KstDataObjectPtr KstHistogram::makeDuplicate(KstDataObjectDataObjectMap& duplicatedMap) {
   QString name(tagName() + '\'');
+  
   while (KstData::self()->dataTagNameNotUnique(name, false)) {
     name += '\'';
   }
-  KstHistogramPtr histogram = new KstHistogram(name, _inputVectors[RAWVECTOR],
-                                               _MinX, _MaxX, _NBins, _NormMode);
-  duplicatedMap.insert(this, KstDataObjectPtr(histogram));
+  
+  KstHistogramPtr histogram(new KstHistogram(name, _inputVectors[RAWVECTOR],
+                                               _MinX, _MaxX, _NBins, _NormMode));
+
+// xxx  duplicatedMap.insert(this, KstDataObjectPtr(histogram));
+
   return KstDataObjectPtr(histogram);
 }
 

@@ -20,7 +20,7 @@
 #include <stdlib.h>
 
 // include files for Qt
-#include <qstylesheet.h>
+#include <QTextDocument>
 
 // include files for KDE
 #include <klocale.h>
@@ -124,7 +124,7 @@ KstEquation::KstEquation(const QDomElement &e)
       vtag = xvtag;
     }
 
-    KstVectorPtr xvector = new KstSVector(x0, x1, ns, vtag);
+    KstVectorPtr xvector(new KstSVector(x0, x1, ns, vtag));
 
     _doInterp = false;
     _xInVector = _inputVectors.insert(XINVECTOR, xvector);
@@ -156,10 +156,10 @@ void KstEquation::commonConstructor(const QString& in_tag, const QString& in_equ
 
   KstObject::setTagName(KstObjectTag::fromString(tagName));
 
-  KstVectorPtr xv = new KstVector(KstObjectTag("xsv", tag()), 2, this);
+  KstVectorPtr xv(new KstVector(KstObjectTag("xsv", tag()), 2, this));
   _xOutVector = _outputVectors.insert(XOUTVECTOR, xv);
 
-  KstVectorPtr yv = new KstVector(KstObjectTag("sv", tag()), 2, this);
+  KstVectorPtr yv(new KstVector(KstObjectTag("sv", tag()), 2, this));
   _yOutVector = _outputVectors.insert(YOUTVECTOR, yv);
 
   _isValid = false;
@@ -171,8 +171,10 @@ void KstEquation::commonConstructor(const QString& in_tag, const QString& in_equ
 
 const KstCurveHintList *KstEquation::curveHints() const {
   _curveHints->clear();
+/* xxx
   _curveHints->append(new KstCurveHint(i18n("Equation Curve"), 
                       (*_xOutVector)->tagName(), (*_yOutVector)->tagName()));
+*/
   return _curveHints;
 }
 
@@ -245,7 +247,7 @@ void KstEquation::reparse() {
 
   if (!_equation.isEmpty()) {
     QMutexLocker ml(&Equation::mutex());
-    yy_scan_string(_equation.latin1());
+// xxx    yy_scan_string(_equation.());
     ParsedEquation = 0L;
     int rc = yyparse();
     Equation::Node *en = static_cast<Equation::Node*>(ParsedEquation);
@@ -261,7 +263,7 @@ void KstEquation::reparse() {
 
         setupConnections();
       } else {
-        kstdWarning() << "Equation [" << _equation << "] failed to find its vectors/scalars when re-parsing." << endl;
+// xxx        kstdWarning() << "Equation [" << _equation << "] failed to find its vectors/scalars when re-parsing." << endl;
       }
     }
     delete en;
@@ -273,14 +275,14 @@ void KstEquation::reparse() {
 void KstEquation::save(QTextStream &ts, const QString& indent) {
   QString l2 = indent + "  ";
   ts << indent << "<equationobject>" << endl;
-  ts << l2 << "<tag>" << QStyleSheet::escape(tag().tagString()) << "</tag>" << endl;
+  ts << l2 << "<tag>" << Qt::escape(tag().tagString()) << "</tag>" << endl;
 
   // Reparse the equation, then write it back out in text so that we can update
   // any vectors or scalars that had name changes, but we don't get affected by
   // the optimizer
   if (!_equation.isEmpty()) {
     QMutexLocker ml(&Equation::mutex());
-    yy_scan_string(_equation.latin1());
+    yy_scan_string(_equation.toLatin1());
     ParsedEquation = 0L;
     int rc = yyparse();
     Equation::Node *en = static_cast<Equation::Node*>(ParsedEquation);
@@ -289,16 +291,16 @@ void KstEquation::save(QTextStream &ts, const QString& indent) {
       if (en->takeVectorsAndScalars(_vectorsUsed, _scalarsUsed)) {
         etext = en->text();
       } else {
-        kstdWarning() << "Equation [" << _equation << "] failed to find its vectors/scalars when saving. The resulting Kst file may have issues." << endl;
+// xxx        kstdWarning() << "Equation [" << _equation << "] failed to find its vectors/scalars when saving. The resulting Kst file may have issues." << endl;
         etext = _equation;
       }
-      ts << l2 << "<equation>" << QStyleSheet::escape(etext) << "</equation>" << endl;
+      ts << l2 << "<equation>" << Qt::escape(etext) << "</equation>" << endl;
     }
     delete en;
     ParsedEquation = 0L;
   }
 
-  ts << l2 << "<xvector>" << QStyleSheet::escape((*_xInVector)->tag().tagString()) << "</xvector>" << endl;
+  ts << l2 << "<xvector>" << Qt::escape((*_xInVector)->tag().tagString()) << "</xvector>" << endl;
   if (_doInterp) {
     ts << l2 << "<interpolate/>" << endl;
   }
@@ -322,7 +324,7 @@ void KstEquation::setEquation(const QString& in_fn) {
   _pe = 0L;
   if (!_equation.isEmpty()) {
     Equation::mutex().lock();
-    yy_scan_string(_equation.latin1());
+    yy_scan_string(_equation.toLatin1());
     int rc = yyparse();
     _pe = static_cast<Equation::Node*>(ParsedEquation);
     if (rc == 0 && _pe) {
@@ -368,7 +370,7 @@ void KstEquation::setExistingXVector(KstVectorPtr in_xv, bool do_interp) {
 
   setDirty();
 
-  _inputVectors.erase(XINVECTOR);
+// xxx  _inputVectors.erase(XINVECTOR);
   _xInVector = _inputVectors.insert(XINVECTOR, in_xv);
 
   _ns = 2; // reset the updating
@@ -406,8 +408,8 @@ bool KstEquation::FillY(bool force, bool usedUpdated) {
   if (_doInterp) {
     ns = (*_xInVector)->length();
     for (KstVectorMap::ConstIterator i = _vectorsUsed.begin(); i != _vectorsUsed.end(); ++i) {
-      if (i.data()->length() > ns) {
-        ns = i.data()->length();
+      if ((*i)->length() > ns) {
+        ns = (*i)->length();
       }
     }
   } else {
@@ -443,13 +445,13 @@ bool KstEquation::FillY(bool force, bool usedUpdated) {
     v_new = (*_xInVector)->numNew();
 
     for (KstVectorMap::ConstIterator i = _vectorsUsed.begin(); i != _vectorsUsed.end(); ++i) {
-      if (v_shift != i.data()->numShift()) {
+      if (v_shift != (*i)->numShift()) {
         v_shift = _ns;
       }
-      if (v_new != i.data()->numNew()) {
+      if (v_new != (*i)->numNew()) {
         v_shift = _ns;
       }
-      if (_ns != i.data()->length()) {
+      if (_ns != (*i)->length()) {
         v_shift = _ns;
       }
     }
@@ -496,7 +498,7 @@ bool KstEquation::FillY(bool force, bool usedUpdated) {
     }
 
     QMutexLocker ml(&Equation::mutex());
-    yy_scan_string(_equation.latin1());
+    yy_scan_string(_equation.toLatin1());
     int rc = yyparse();
     _pe = static_cast<Equation::Node*>(ParsedEquation);
     if (_pe && rc == 0) {
@@ -551,8 +553,8 @@ KstDataObjectPtr KstEquation::makeDuplicate(KstDataObjectDataObjectMap& duplicat
   while (KstData::self()->dataTagNameNotUnique(name, false)) {
     name += '\'';
   }
-  KstEquationPtr eq = new KstEquation(name, _equation, _inputVectors[XINVECTOR], _doInterp);
-  duplicatedMap.insert(this, KstDataObjectPtr(eq));
+  KstEquationPtr eq(new KstEquation(name, _equation, _inputVectors[XINVECTOR], _doInterp));
+// xxx  duplicatedMap.insert(this, KstDataObjectPtr(eq));
   return KstDataObjectPtr(eq);
 }
 
@@ -562,35 +564,38 @@ void KstEquation::replaceDependency(KstDataObjectPtr oldObject, KstDataObjectPtr
 
   // replace all occurences of outputVectors, outputScalars from oldObject
   for (KstVectorMap::Iterator j = oldObject->outputVectors().begin(); j != oldObject->outputVectors().end(); ++j) {
-    QString oldTag = j.data()->tagName();
+    QString oldTag = (*j)->tagName();
     QString newTag = ((newObject->outputVectors())[j.key()])->tagName();
     newExp = newExp.replace("[" + oldTag + "]", "[" + newTag + "]");
   }
 
   for (KstScalarMap::Iterator j = oldObject->outputScalars().begin(); j != oldObject->outputScalars().end(); ++j) {
-    QString oldTag = j.data()->tagName();
+    QString oldTag = (*j)->tagName();
     QString newTag = ((newObject->outputScalars())[j.key()])->tagName();
     newExp = newExp.replace("[" + oldTag + "]", "[" + newTag + "]");
   }
 
   // and dependencies on matrix stats (there won't be matrices themselves in the expression)
   for (KstMatrixMap::Iterator j = oldObject->outputMatrices().begin(); j != oldObject->outputMatrices().end(); ++j) {
+/* xxx
     QDictIterator<KstScalar> scalarDictIter(j.data()->scalars());
     for (; scalarDictIter.current(); ++scalarDictIter) {
       QString oldTag = scalarDictIter.current()->tagName();
       QString newTag = ((((newObject->outputMatrices())[j.key()])->scalars())[scalarDictIter.currentKey()])->tagName();
       newExp = newExp.replace("[" + oldTag + "]", "[" + newTag + "]"); 
     }
+*/
   }
 
   // only replace _inputVectors
   for (KstVectorMap::Iterator j = oldObject->outputVectors().begin(); j != oldObject->outputVectors().end(); ++j) {
     for (KstVectorMap::Iterator k = _inputVectors.begin(); k != _inputVectors.end(); ++k) {
-      if (j.data().data() == k.data().data()) {
+      if ((*j).data() == (*k).data()) {
         // replace input with the output from newObject
         _inputVectors[k.key()] = (newObject->outputVectors())[j.key()]; 
       }
     }
+/* xxx
     // and dependencies on vector stats
     QDictIterator<KstScalar> scalarDictIter(j.data()->scalars());
     for (; scalarDictIter.current(); ++scalarDictIter) {
@@ -598,6 +603,7 @@ void KstEquation::replaceDependency(KstDataObjectPtr oldObject, KstDataObjectPtr
       QString newTag = ((((newObject->outputVectors())[j.key()])->scalars())[scalarDictIter.currentKey()])->tagName();
       newExp = newExp.replace("[" + oldTag + "]", "[" + newTag + "]"); 
     }
+*/
   }
 
   setEquation(newExp);
@@ -610,7 +616,7 @@ void KstEquation::replaceDependency(KstVectorPtr oldVector, KstVectorPtr newVect
 
   // replace all occurences of oldTag with newTag
   QString newExp = _equation.replace("[" + oldTag + "]", "[" + newTag + "]");
-
+/* xxx
   // also replace all occurences of scalar stats for the oldVector
   QDictIterator<KstScalar> scalarDictIter(oldVector->scalars());
   for (; scalarDictIter.current(); ++scalarDictIter) {
@@ -618,22 +624,24 @@ void KstEquation::replaceDependency(KstVectorPtr oldVector, KstVectorPtr newVect
     QString newTag = ((newVector->scalars())[scalarDictIter.currentKey()])->tagName();
     newExp = newExp.replace("[" + oldTag + "]", "[" + newTag + "]"); 
   }
-
+*/
   setEquation(newExp);
 
   // do the dependency replacements for _inputVectors, but don't call parent function as it
   // replaces _inputScalars 
   for (KstVectorMap::Iterator j = _inputVectors.begin(); j != _inputVectors.end(); ++j) {
+/* xxx
     if (j.data() == oldVector) {
       _inputVectors[j.key()] = newVector;
     }
+*/
   }
 }
 
 
 void KstEquation::replaceDependency(KstMatrixPtr oldMatrix, KstMatrixPtr newMatrix) {
   QString newExp = _equation;
-
+/* xxx
   // also replace all occurences of scalar stats for the oldMatrix
   QDictIterator<KstScalar> scalarDictIter(oldMatrix->scalars());
   for (; scalarDictIter.current(); ++scalarDictIter) {
@@ -641,12 +649,13 @@ void KstEquation::replaceDependency(KstMatrixPtr oldMatrix, KstMatrixPtr newMatr
     QString newTag = ((newMatrix->scalars())[scalarDictIter.currentKey()])->tagName();
     newExp = newExp.replace("[" + oldTag + "]", "[" + newTag + "]"); 
   }
-
+*/
   setEquation(newExp);
 }
 
 
 bool KstEquation::uses(KstObjectPtr p) const {
+/* xxx
   // check _vectorsUsed in addition to _input*'s
   if (KstVectorPtr vect = kst_cast<KstVector>(p)) {
     for (KstVectorMap::ConstIterator j = _vectorsUsed.begin(); j != _vectorsUsed.end(); ++j) {
@@ -664,18 +673,19 @@ bool KstEquation::uses(KstObjectPtr p) const {
       }
     }
   }
+*/
   return KstDataObject::uses(p);
 }
 
 
 void KstEquation::setupConnections() {
   for (KstScalarMap::iterator i = _scalarsUsed.begin(); i != _scalarsUsed.end(); ++i) {
-    disconnect(i.data(), SIGNAL(tagChanged()), this, SLOT(reparse()));
-    connect(i.data(), SIGNAL(tagChanged()), this, SLOT(reparse()));
+// xxx    disconnect(i.data(), SIGNAL(tagChanged()), this, SLOT(reparse()));
+// xxx    connect(i.data(), SIGNAL(tagChanged()), this, SLOT(reparse()));
   }
   for (KstVectorMap::iterator i = _vectorsUsed.begin(); i != _vectorsUsed.end(); ++i) {
-    disconnect(i.data(), SIGNAL(tagChanged()), this, SLOT(reparse()));
-    connect(i.data(), SIGNAL(tagChanged()), this, SLOT(reparse()));
+// xxx    disconnect(i.data(), SIGNAL(tagChanged()), this, SLOT(reparse()));
+// xxx    connect(i.data(), SIGNAL(tagChanged()), this, SLOT(reparse()));
   }
 }
 

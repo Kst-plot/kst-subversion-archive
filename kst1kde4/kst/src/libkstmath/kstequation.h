@@ -96,7 +96,7 @@ class KST_EXPORT KstEquation : public KstDataObject {
     static const QString YOUTVECTOR;
 };
 
-typedef KstSharedPtr<KstEquation> KstEquationPtr;
+typedef QExplicitlySharedDataPointer<KstEquation> KstEquationPtr;
 typedef KstObjectList<KstEquationPtr> KstEquationList;
 
 #endif

@@ -19,8 +19,7 @@
 #include <assert.h>
 
 // include files for Qt
-#include <qtimer.h>
-#include <qdeepcopy.h>
+#include <QTimer>
 
 // include files for KDE
 #include <klocale.h>
@@ -30,7 +29,6 @@
 // application specific includes
 #include "kstdataobject.h"
 #include "kstdataplugin.h"
-#include "ksdebug.h"
 #include "kstdebug.h"
 #include "kstdatacollection.h"
 #include "kstdataobjectcollection.h"
@@ -52,36 +50,46 @@ KstDataObject::KstDataObject(const QDomElement& e) : KstObject() {
 
 
 KstDataObject::~KstDataObject() {
-  // remove our slave vectors, scalars, and strings, and matrices
-  KST::stringList.lock().writeLock();
-  for (KstStringMap::Iterator it = _outputStrings.begin();
-                               it != _outputStrings.end(); ++it) {
-    KST::stringList.remove(it.data());
+  {
+    KstStringMap::Iterator it;
+    
+    KST::stringList.lock().writeLock();
+    for (it = _outputStrings.begin(); it != _outputStrings.end(); ++it) {
+      KST::stringList.remove((*it).data());
+    }
+    KST::stringList.lock().unlock();
   }
-  KST::stringList.lock().unlock();
-
-  KST::scalarList.lock().writeLock();
-  for (KstScalarMap::Iterator it = _outputScalars.begin();
-                               it != _outputScalars.end(); ++it) {
-    KST::scalarList.remove(it.data());
+  
+  {
+    KstScalarMap::Iterator it;
+    
+    KST::scalarList.lock().writeLock();
+    for (it = _outputScalars.begin(); it != _outputScalars.end(); ++it) {
+      KST::scalarList.remove((*it).data());
+    }
+    KST::scalarList.lock().unlock();
   }
-  KST::scalarList.lock().unlock();
-
-  KST::vectorList.lock().writeLock();
-  for (KstVectorMap::Iterator it = _outputVectors.begin();
-                               it != _outputVectors.end(); ++it) {
-    KST::vectorList.remove(it.data());
+  
+  {
+    KstVectorMap::Iterator it;
+    
+    KST::vectorList.lock().writeLock();
+    for (it = _outputVectors.begin(); it != _outputVectors.end(); ++it) {
+      KST::vectorList.remove((*it).data());
+    }
+    KST::vectorList.lock().unlock();
   }
-  KST::vectorList.lock().unlock();
-
-  KST::matrixList.lock().writeLock();
-  for (KstMatrixMap::Iterator it = _outputMatrices.begin();
-       it != _outputMatrices.end();
-       ++it) {
-    KST::matrixList.remove(it.data());
+  
+  {
+    KstMatrixMap::Iterator it;
+    
+    KST::matrixList.lock().writeLock();
+    for (it = _outputMatrices.begin(); it != _outputMatrices.end(); ++it) {
+      KST::matrixList.remove((*it).data());
+    }
+    KST::matrixList.lock().unlock();
   }
-  KST::matrixList.lock().unlock();
-
+  
   delete _curveHints;
 }
 
@@ -90,14 +98,14 @@ void KstDataObject::cleanupForExit() {
   pluginInfo.clear();
 }
 
-
+/* xxx
 KstDataObjectPtr KstDataObject::createPlugin(KService::Ptr service) {
   int err = 0;
   KstDataObject *object =
       KParts::ComponentFactory::createInstanceFromService<KstDataObject>(service, 0, "",
       QStringList(), &err);
 
-  KstSharedPtr<KST::Plugin> p = new KST::DataObjectPlugin(service);
+  QExplicitlySharedDataPointer<KST::Plugin> p = new KST::DataObjectPlugin(service);
 
   if (object && p->key()) {
     const QString name = service->property("Name").toString();
@@ -119,22 +127,23 @@ KstDataObjectPtr KstDataObject::createPlugin(KService::Ptr service) {
 
   KstDebug::self()->log(i18n("Could not load data-object plugin %1.").arg(service->name()), KstDebug::Error);
 
-  return 0L;
+  return KstDataObjectPtr( );
 }
-
+*/
 
 // Scans for plugins and stores the information for them
 void KstDataObject::scanPlugins() {
   KstDebug::self()->log(i18n("Scanning for data-object plugins."));
 
-  pluginInfo.clear(); //FIXME?
-
+  pluginInfo.clear();
+/* xxx
   KService::List sl = KServiceType::offers("Kst Data Object");
   for (KService::List::ConstIterator it = sl.begin(); it != sl.end(); ++it) {
     if (KstDataObjectPtr object = createPlugin(*it)) {
       pluginInfo.insert((*it)->name(), KstDataObjectPtr(object));
     }
   }
+*/
 }
 
 
@@ -144,9 +153,10 @@ KstPluginInfoList KstDataObject::pluginInfoList() {
   }
 
   KstPluginInfoList list;
+
   QMap<QString, KstDataObjectPtr>::ConstIterator it = pluginInfo.begin();
   for (; it != pluginInfo.end(); ++it) {
-    list.insert(it.key(), it.data()->kind());
+    list.insert(it.key(), (*it)->kind());
   }
 
   return list;
@@ -158,11 +168,12 @@ KstDataObjectPtr KstDataObject::plugin(const QString& name) {
     return pluginInfo[name];
   }
 
-  return 0L;
+  return KstDataObjectPtr();
 }
 
 
 KstDataObjectPtr KstDataObject::createPlugin(const QString& name) {
+/* xxx
   KService::List sl = KServiceType::offers("Kst Data Object");
   for (KService::List::ConstIterator it = sl.begin(); it != sl.end(); ++it) {
     if ((*it)->name() != name) {
@@ -171,8 +182,8 @@ KstDataObjectPtr KstDataObject::createPlugin(const QString& name) {
       return object;
     }
   }
-
-  return 0L;
+*/
+  return KstDataObjectPtr();
 }
 
 
@@ -201,14 +212,14 @@ void KstDataObject::save(QTextStream& ts, const QString& indent) {
 
 
 bool KstDataObject::loadInputs() {
+  QLinkedList<QPair<QString,QString> >::Iterator i;
   bool rc = true;
-  QValueList<QPair<QString,QString> >::Iterator i;
 
   KST::vectorList.lock().readLock();
-  for (i = _inputVectorLoadQueue.begin(); i != _inputVectorLoadQueue.end(); ++i) {
-    KstVectorList::Iterator it = KST::vectorList.findTag((*i).second);
+  for (i = _inputVectorLoadQueue.begin(); i != _inputVectorLoadQueue.end(); ++i) {    
+    KstVectorList::iterator it = KST::vectorList.findTag((*i).second);
+
     if (it != KST::vectorList.end()) {
-      assert(*it);
       _inputVectors.insert((*i).first, *it);
     } else {
       KstDebug::self()->log(i18n("Unable to find required vector [%1] for data object %2.").arg((*i).second).arg(tagName()), KstDebug::Error);
@@ -220,6 +231,7 @@ bool KstDataObject::loadInputs() {
   KST::scalarList.lock().readLock();
   for (i = _inputScalarLoadQueue.begin(); i != _inputScalarLoadQueue.end(); ++i) {
     KstScalarList::Iterator it = KST::scalarList.findTag((*i).second);
+    
     if (it != KST::scalarList.end()) {
       _inputScalars.insert((*i).first, *it);
     } else {
@@ -232,6 +244,7 @@ bool KstDataObject::loadInputs() {
   KST::stringList.lock().readLock();
   for (i = _inputStringLoadQueue.begin(); i != _inputStringLoadQueue.end(); ++i) {
     KstStringList::Iterator it = KST::stringList.findTag((*i).second);
+    
     if (it != KST::stringList.end()) {
       _inputStrings.insert((*i).first, *it);
     } else {
@@ -244,6 +257,7 @@ bool KstDataObject::loadInputs() {
   KST::matrixList.lock().readLock();
   for (i = _inputMatrixLoadQueue.begin(); i != _inputMatrixLoadQueue.end(); ++i) {
     KstMatrixList::Iterator it = KST::matrixList.findTag((*i).second);
+    
     if (it != KST::matrixList.end()) {
       _inputMatrices.insert((*i).first, *it);
     } else {
@@ -270,26 +284,26 @@ int KstDataObject::getUsage() const {
   int rc = 0;
 
   for (KstVectorMap::ConstIterator i = _outputVectors.begin(); i != _outputVectors.end(); ++i) {
-    if (i.data().data()) {
-      rc += i.data()->getUsage() - 1;
+    if (*i) {
+      rc += (*i)->getUsage() - 1;
     }
   }
 
   for (KstScalarMap::ConstIterator i = _outputScalars.begin(); i != _outputScalars.end(); ++i) {
-    if (i.data().data()) {
-      rc += i.data()->getUsage() - 1;
+    if (*i) {
+      rc += (*i)->getUsage() - 1;
     }
   }
 
   for (KstStringMap::ConstIterator i = _outputStrings.begin(); i != _outputStrings.end(); ++i) {
-    if (i.data().data()) {
-      rc += i.data()->getUsage() - 1;
+    if (*i) {
+      rc += (*i)->getUsage() - 1;
     }
   }
 
   for (KstMatrixMap::ConstIterator i = _outputMatrices.begin(); i != _outputMatrices.end(); ++i) {
-    if (i.data().data()) {
-      rc += i.data()->getUsage() - 1;  
+    if (*i) {
+      rc += (*i)->getUsage() - 1;  
     }
   }
 
@@ -307,103 +321,85 @@ void KstDataObject::showDialog(bool isNew) {
 
 
 void KstDataObject::readLock() const {
-  #ifdef LOCKTRACE
-  kstdDebug() << (void*)this << " (" << this->type() << ": " << this->tag().tagString() << ") KstDataObject::readLock() by tid=" << (int)QThread::currentThread() << ": read locking myself" << endl;
-  #endif
-
   KstObject::readLock();
 }
 
 
 void KstDataObject::writeLock() const {
-  #ifdef LOCKTRACE
-  kstdDebug() << (void*)this << " (" << this->type() << ": " << this->tag().tagString() << ") KstDataObject::writeLock() by tid=" << (int)QThread::currentThread() << ": write locking myself" << endl;
-  #endif
-
   KstObject::writeLock();
 }
 
 
 void KstDataObject::unlock() const {
-  #ifdef LOCKTRACE
-  kstdDebug() << (void*)this << " (" << this->type() << ": " << this->tag().tagString() << ") KstDataObject::unlock() by tid=" << (int)QThread::currentThread() << ": unlocking myself" << endl;
-  #endif
-
   KstObject::unlock();
 }
 
 
 void KstDataObject::writeLockInputsAndOutputs() const {
   Q_ASSERT(myLockStatus() == KstRWLock::WRITELOCKED);
+/* xxx
+  QList<KstPrimitivePtr> inputs;
+  QList<KstPrimitivePtr> outputs;
+  QList<KstStringPtr> sl;
+  QList<KstScalarPtr> sc;
+  QList<KstVectorPtr> vl;
+  QList<KstMatrixPtr> ml;
 
-  #ifdef LOCKTRACE
-  kstdDebug() << (void*)this << " (" << this->type() << ": " << this->tag().tagString() << ") KstDataObject::writeLockInputsAndOutputs() by tid=" << (int)QThread::currentThread() << endl;
-  #endif
-
-  QValueList<KstPrimitivePtr> inputs;
-  QValueList<KstPrimitivePtr> outputs;
-
-  QValueList<KstStringPtr> sl = _inputStrings.values();
-  for (QValueList<KstStringPtr>::Iterator i = sl.begin(); i != sl.end(); ++i) {
+  sl = _inputStrings.values();
+  for (QList<KstStringPtr>::Iterator i = sl.begin(); i != sl.end(); ++i) {
     inputs += (*i).data();
   }
   sl = _outputStrings.values();
-  for (QValueList<KstStringPtr>::Iterator i = sl.begin(); i != sl.end(); ++i) {
+  for (QList<KstStringPtr>::Iterator i = sl.begin(); i != sl.end(); ++i) {
     outputs += (*i).data();
   }
 
-  QValueList<KstScalarPtr> sc = _inputScalars.values();
-  for (QValueList<KstScalarPtr>::Iterator i = sc.begin(); i != sc.end(); ++i) {
+  sc = _inputScalars.values();
+  for (QList<KstScalarPtr>::Iterator i = sc.begin(); i != sc.end(); ++i) {
     inputs += (*i).data();
   }
   sc = _outputScalars.values();
-  for (QValueList<KstScalarPtr>::Iterator i = sc.begin(); i != sc.end(); ++i) {
+  for (QList<KstScalarPtr>::Iterator i = sc.begin(); i != sc.end(); ++i) {
     outputs += (*i).data();
   }
 
-  QValueList<KstVectorPtr> vl = _inputVectors.values();
-  for (QValueList<KstVectorPtr>::Iterator i = vl.begin(); i != vl.end(); ++i) {
+  vl = _inputVectors.values();
+  for (QList<KstVectorPtr>::Iterator i = vl.begin(); i != vl.end(); ++i) {
     inputs += (*i).data();
   }
   vl = _outputVectors.values();
-  for (QValueList<KstVectorPtr>::Iterator i = vl.begin(); i != vl.end(); ++i) {
+  for (QList<KstVectorPtr>::Iterator i = vl.begin(); i != vl.end(); ++i) {
     outputs += (*i).data();
   }
 
-  QValueList<KstMatrixPtr> ml = _inputMatrices.values();
-  for (QValueList<KstMatrixPtr>::Iterator i = ml.begin(); i != ml.end(); ++i) {
+  ml = _inputMatrices.values();
+  for (QList<KstMatrixPtr>::Iterator i = ml.begin(); i != ml.end(); ++i) {
     inputs += (*i).data();
   }
   ml = _outputMatrices.values();
-  for (QValueList<KstMatrixPtr>::Iterator i = ml.begin(); i != ml.end(); ++i) {
+  for (QList<KstMatrixPtr>::Iterator i = ml.begin(); i != ml.end(); ++i) {
     outputs += (*i).data();
   }
 
-  qHeapSort(inputs);
-  qHeapSort(outputs);
+  qSort(inputs);
+  qSort(outputs);
 
-  QValueList<KstPrimitivePtr>::ConstIterator inputIt = inputs.begin();
-  QValueList<KstPrimitivePtr>::ConstIterator outputIt = outputs.begin();
+  QList<KstPrimitivePtr>::ConstIterator inputIt = inputs.begin();
+  QList<KstPrimitivePtr>::ConstIterator outputIt = outputs.begin();
 
   while (inputIt != inputs.end() || outputIt != outputs.end()) {
     if (inputIt != inputs.end() && (outputIt == outputs.end() || (void*)(*inputIt) < (void*)(*outputIt))) {
       // do input
       if (!(*inputIt)) {
-        kstdFatal() << "Input for data object " << this->tag().displayString() << " is invalid." << endl;
+// xxx        kstdFatal() << "Input for data object " << this->tag().displayString() << " is invalid." << endl;
       }
-#ifdef LOCKTRACE
-      kstdDebug() << (void*)this << " (" << this->type() << ": " << this->tag().tagString() << ") KstDataObject::writeLockInputsAndOutputs() by tid=" << (int)QThread::currentThread() << ": write locking input \"" << (*inputIt)->tag().tagString() << "\" (" << (void*)((KstRWLock*)*inputIt) << ")" << endl;
-#endif
       (*inputIt)->writeLock();
       ++inputIt;
     } else {
       // do output
       if (!(*outputIt)) {
-        kstdFatal() << "Output for data object " << this->tag().displayString() << " is invalid." << endl;
+// xxx        kstdFatal() << "Output for data object " << this->tag().displayString() << " is invalid." << endl;
       }
-#ifdef LOCKTRACE
-      kstdDebug() << (void*)this << " (" << this->type() << ": " << this->tag().tagString() << ") KstDataObject::writeLockInputsAndOutputs() by tid=" << (int)QThread::currentThread() << ": write locking output \"" << (*outputIt)->tag().tagString() << "\" (" << (void*)((KstRWLock*)*outputIt) << ")" << endl;
-#endif
       if ((*outputIt)->provider() != this) {
         KstDebug::self()->log(i18n("(%1) KstDataObject::writeLockInputsAndOutputs() by tid=%2: write locking output %3 (not provider) -- this is probably an error. Please email kst@kde.org with details.").arg(this->type()).arg((int)QThread::currentThread()).arg((*outputIt)->tagName()), KstDebug::Error);
       }
@@ -411,91 +407,40 @@ void KstDataObject::writeLockInputsAndOutputs() const {
       ++outputIt;
     }
   }
+*/
 }
 
 
 void KstDataObject::unlockInputsAndOutputs() const {
-  #ifdef LOCKTRACE
-  kstdDebug() << (void*)this << " (" << this->type() << ": " << this->tag().tagString() << ") KstDataObject::unlockInputsAndOutputs() by tid=" << (int)QThread::currentThread() << endl;
-  #endif
-
   for (KstMatrixMap::ConstIterator i = _outputMatrices.begin(); i != _outputMatrices.end(); ++i) {
-    if (!(*i)) {
-      kstdFatal() << "Output matrix for data object " << this->tag().displayString() << " is invalid." << endl;
-    }
-    #ifdef LOCKTRACE
-    kstdDebug() << (void*)this << " (" << this->type() << ": " << this->tag().tagString() << ") KstDataObject::unlockInputsAndOutputs() by tid=" << (int)QThread::currentThread() << ": unlocking output matrix \"" << (*i)->tag().tagString() << "\" (" << (void*)((KstRWLock*)*i) << ")" << endl;
-    #endif
     (*i)->unlock();
   }
 
   for (KstMatrixMap::ConstIterator i = _inputMatrices.begin(); i != _inputMatrices.end(); ++i) {
-    if (!(*i)) {
-      kstdFatal() << "Input matrix for data object " << this->tag().displayString() << " is invalid." << endl;
-    }
-    #ifdef LOCKTRACE
-    kstdDebug() << (void*)this << " (" << this->type() << ": " << this->tag().tagString() << ") KstDataObject::unlockInputsAndOutputs() by tid=" << (int)QThread::currentThread() << ": unlocking input matrix \"" << (*i)->tag().tagString() << "\" (" << (void*)((KstRWLock*)*i) << ")" << endl;
-    #endif
     (*i)->unlock();
   }
 
   for (KstVectorMap::ConstIterator i = _outputVectors.begin(); i != _outputVectors.end(); ++i) {
-    if (!(*i)) {
-      kstdFatal() << "Output vector for data object " << this->tag().displayString() << " is invalid." << endl;
-    }
-    #ifdef LOCKTRACE
-    kstdDebug() << (void*)this << " (" << this->type() << ": " << this->tag().tagString() << ") KstDataObject::unlockInputsAndOutputs() by tid=" << (int)QThread::currentThread() << ": unlocking output vector \"" << (*i)->tag().tagString() << "\" (" << (void*)((KstRWLock*)*i) << ")" << endl;
-    #endif
     (*i)->unlock();
   }
 
   for (KstVectorMap::ConstIterator i = _inputVectors.begin(); i != _inputVectors.end(); ++i) {
-    if (!(*i)) {
-      kstdFatal() << "Input vector for data object " << this->tag().displayString() << " is invalid." << endl;
-    }
-    #ifdef LOCKTRACE
-    kstdDebug() << (void*)this << " (" << this->type() << ": " << this->tag().tagString() << ") KstDataObject::unlockInputsAndOutputs() by tid=" << (int)QThread::currentThread() << ": unlocking input vector \"" << (*i)->tag().tagString() << "\" (" << (void*)((KstRWLock*)*i) << ")" << endl;
-    #endif
     (*i)->unlock();
   }
 
   for (KstScalarMap::ConstIterator i = _outputScalars.begin(); i != _outputScalars.end(); ++i) {
-    if (!(*i)) {
-      kstdFatal() << "Output scalar for data object " << this->tag().displayString() << " is invalid." << endl;
-    }
-    #ifdef LOCKTRACE
-    kstdDebug() << (void*)this << " (" << this->type() << ": " << this->tag().tagString() << ") KstDataObject::unlockInputsAndOutputs() by tid=" << (int)QThread::currentThread() << ": unlocking output scalar \"" << (*i)->tag().tagString() << "\" (" << (void*)((KstRWLock*)*i) << ")" << endl;
-    #endif
     (*i)->unlock();
   }
 
   for (KstScalarMap::ConstIterator i = _inputScalars.begin(); i != _inputScalars.end(); ++i) {
-    if (!(*i)) {
-      kstdFatal() << "Input scalar for data object " << this->tag().displayString() << " is invalid." << endl;
-    }
-    #ifdef LOCKTRACE
-    kstdDebug() << (void*)this << " (" << this->type() << ": " << this->tag().tagString() << ") KstDataObject::unlockInputsAndOutputs() by tid=" << (int)QThread::currentThread() << ": unlocking input scalar \"" << (*i)->tag().tagString() << "\" (" << (void*)((KstRWLock*)*i) << ")" << endl;
-    #endif
     (*i)->unlock();
   }
 
   for (KstStringMap::ConstIterator i = _outputStrings.begin(); i != _outputStrings.end(); ++i) {
-    if (!(*i)) {
-      kstdFatal() << "Output string for data object " << this->tag().displayString() << " is invalid." << endl;
-    }
-   #ifdef LOCKTRACE
-    kstdDebug() << (void*)this << " (" << this->type() << ": " << this->tag().tagString() << ") KstDataObject::unlockInputsAndOutputs() by tid=" << (int)QThread::currentThread() << ": unlocking output string \"" << (*i)->tag().tagString() << "\" (" << (void*)((KstRWLock*)*i) << ")" << endl;
-    #endif
     (*i)->unlock();
   }
 
   for (KstStringMap::ConstIterator i = _inputStrings.begin(); i != _inputStrings.end(); ++i) {
-    if (!(*i)) {
-      kstdFatal() << "Input string for data object " << this->tag().displayString() << " is invalid." << endl;
-    }
-    #ifdef LOCKTRACE
-    kstdDebug() << (void*)this << " (" << this->type() << ": " << this->tag().tagString() << ") KstDataObject::unlockInputsAndOutputs() by tid=" << (int)QThread::currentThread() << ": unlocking input string \"" << (*i)->tag().tagString() << "\" (" << (void*)((KstRWLock*)*i) << ")" << endl;
-    #endif
     (*i)->unlock();
   }
 }
@@ -513,26 +458,31 @@ const KstCurveHintList* KstDataObject::curveHints() const {
 
 bool KstDataObject::deleteDependents() {
   KST::dataObjectList.lock().readLock();
-  KstDataObjectList dol = QDeepCopy<KstDataObjectList>(KST::dataObjectList);
+  KstDataObjectList dol = KST::dataObjectList;
   KST::dataObjectList.lock().unlock();
+  
   for (KstDataObjectList::Iterator i = dol.begin(); i != dol.end(); ++i) {
-    bool user = (*i)->uses(this);
+    bool user = (*i)->uses(KstObjectPtr(this));
+    
     if (!user) {
       for (KstVectorMap::Iterator j = _outputVectors.begin(); !user && j != _outputVectors.end(); ++j) {
-        user = (*i)->uses(j.data().data());
+        user = (*i)->uses(KstObjectPtr((*j).data()));
       }
       for (KstScalarMap::Iterator j = _outputScalars.begin(); !user && j != _outputScalars.end(); ++j) {
-        user = (*i)->uses(j.data().data());
+        user = (*i)->uses(KstObjectPtr((*j).data()));
       }
       for (KstStringMap::Iterator j = _outputStrings.begin(); !user && j != _outputStrings.end(); ++j) {
-        user = (*i)->uses(j.data().data());
+        user = (*i)->uses(KstObjectPtr((*j).data()));
       }
     }
+
     if (user) {
       KstDataObjectPtr dop = *i;
+      
       KST::dataObjectList.lock().writeLock();
-      KST::dataObjectList.remove(dop);
+      KST::dataObjectList.erase(i);
       KST::dataObjectList.lock().unlock();
+
       dop->deleteDependents();
     }
   }
@@ -542,21 +492,26 @@ bool KstDataObject::deleteDependents() {
 
 
 bool KstDataObject::duplicateDependents(QMap<KstDataObjectPtr, KstDataObjectPtr> &duplicatedMap) {
+  //
   // work with a copy of the data object list
+  //
+  
   KST::dataObjectList.lock().readLock();
-  KstDataObjectList dol = QDeepCopy<KstDataObjectList>(KST::dataObjectList);
+  KstDataObjectList dol = KST::dataObjectList;
   KST::dataObjectList.lock().unlock();
 
   for (KstDataObjectList::Iterator i = dol.begin(); i != dol.end(); ++i) { 
-    if ((*i)->uses(this)) {
+    if ((*i)->uses(KstObjectPtr(this))) {
       if (duplicatedMap.contains(*i)) {
-        (duplicatedMap[*i])->replaceDependency(this, duplicatedMap[this]);
+        (duplicatedMap[*i])->replaceDependency(KstDataObjectPtr(this), duplicatedMap.value(KstDataObjectPtr(this)));
       } else {
         KstDataObjectPtr newObject = (*i)->makeDuplicate(duplicatedMap);
+
         KST::dataObjectList.lock().writeLock();
-        KST::dataObjectList.append(newObject.data());
+        KST::dataObjectList.append(newObject);
         KST::dataObjectList.lock().unlock();
-        (duplicatedMap[*i])->replaceDependency(this, duplicatedMap[this]);
+        
+        (duplicatedMap[*i])->replaceDependency(KstDataObjectPtr(this), duplicatedMap.value(KstDataObjectPtr(this)));
         (*i)->duplicateDependents(duplicatedMap);
       }
     }
@@ -567,60 +522,58 @@ bool KstDataObject::duplicateDependents(QMap<KstDataObjectPtr, KstDataObjectPtr>
 
 
 void KstDataObject::replaceDependency(KstDataObjectPtr oldObject, KstDataObjectPtr newObject) {
+  //
   // find all connections from this object to old object
+  //
 
-  // vectors
   for (KstVectorMap::Iterator j = oldObject->outputVectors().begin(); j != oldObject->outputVectors().end(); ++j) {
     for (KstVectorMap::Iterator k = _inputVectors.begin(); k != _inputVectors.end(); ++k) {
-      if (j.data().data() == k.data().data()) {
+      if (*j == *k) {
         // replace input with the output from newObject
         _inputVectors[k.key()] = (newObject->outputVectors())[j.key()]; 
       }
     }
+    
     // also replace dependencies on vector stats
-    QDictIterator<KstScalar> scalarDictIter(j.data()->scalars());
     for (KstScalarMap::Iterator k = _inputScalars.begin(); k != _inputScalars.end(); ++k) {
-      for (; scalarDictIter.current(); ++scalarDictIter) {
-        if (scalarDictIter.current() == k.data()) {
-          _inputScalars[k.key()] = (((newObject->outputVectors())[j.key()])->scalars())[scalarDictIter.currentKey()];
+      for (ScalarCollection::const_iterator l = (*j)->scalars().begin(); l != (*j)->scalars().end(); ++l) {
+        if (*l == *k) {
+          _inputScalars[k.key()] = (((newObject->outputVectors())[j.key()])->scalars())[l.key()];
         }
       }
     }
   }
 
-  // matrices
   for (KstMatrixMap::Iterator j = oldObject->outputMatrices().begin(); j != oldObject->outputMatrices().end(); ++j) {
     for (KstMatrixMap::Iterator k = _inputMatrices.begin(); k != _inputMatrices.end(); ++k) {
-      if (j.data().data() == k.data().data()) {
+      if (*j == *k) {
         // replace input with the output from newObject
         _inputMatrices[k.key()] = (newObject->outputMatrices())[j.key()]; 
       }
     }
+    
     // also replace dependencies on matrix stats
-    QDictIterator<KstScalar> scalarDictIter(j.data()->scalars());
     for (KstScalarMap::Iterator k = _inputScalars.begin(); k != _inputScalars.end(); ++k) {
-      for (; scalarDictIter.current(); ++scalarDictIter) {
-        if (scalarDictIter.current() == k.data()) {
-          _inputScalars[k.key()] = (((newObject->outputMatrices())[j.key()])->scalars())[scalarDictIter.currentKey()];
+      for (ScalarCollection::const_iterator l=(*j)->scalars().begin(); l != (*j)->scalars().end(); ++l) {
+        if (*l == *k) {
+          _inputScalars[k.key()] = (((newObject->outputMatrices())[j.key()])->scalars())[l.key()];
         }
       }
     }
   }
 
-  // scalars
   for (KstScalarMap::Iterator j = oldObject->outputScalars().begin(); j != oldObject->outputScalars().end(); ++j) {
     for (KstScalarMap::Iterator k = _inputScalars.begin(); k != _inputScalars.end(); ++k) {
-      if (j.data().data() == k.data().data()) {
+      if (*j == *k) {
         // replace input with the output from newObject
         _inputScalars[k.key()] = (newObject->outputScalars())[j.key()];
       }
     }
   }
 
-  // strings
   for (KstStringMap::Iterator j = oldObject->outputStrings().begin(); j != oldObject->outputStrings().end(); ++j) {
     for (KstStringMap::Iterator k = _inputStrings.begin(); k != _inputStrings.end(); ++k) {
-      if (j.data().data() == k.data().data()) {
+      if (*j == *k) {
         // replace input with the output from newObject
         _inputStrings[k.key()] = (newObject->outputStrings())[j.key()];
       }
@@ -631,16 +584,15 @@ void KstDataObject::replaceDependency(KstDataObjectPtr oldObject, KstDataObjectP
 
 void KstDataObject::replaceDependency(KstVectorPtr oldVector, KstVectorPtr newVector) {
   for (KstVectorMap::Iterator j = _inputVectors.begin(); j != _inputVectors.end(); ++j) {
-    if (j.data() == oldVector) {
+    if (*j == oldVector) {
       _inputVectors[j.key()] = newVector;
     }
   }
 
-  QDictIterator<KstScalar> scalarDictIter(oldVector->scalars());
   for (KstScalarMap::Iterator j = _inputScalars.begin(); j != _inputScalars.end(); ++j) {
-    for (; scalarDictIter.current(); ++ scalarDictIter) {
-      if (scalarDictIter.current() == j.data()) {
-        _inputScalars[j.key()] = (newVector->scalars())[scalarDictIter.currentKey()];
+    for (ScalarCollection::const_iterator l = oldVector->scalars().begin(); l != oldVector->scalars().end(); ++l) {
+      if (*l == *j) {
+        _inputScalars[j.key()] = (newVector->scalars())[l.key()];
       }
     }
   }
@@ -648,17 +600,20 @@ void KstDataObject::replaceDependency(KstVectorPtr oldVector, KstVectorPtr newVe
 
 
 void KstDataObject::replaceDependency(KstMatrixPtr oldMatrix, KstMatrixPtr newMatrix) {
-  for (KstMatrixMap::Iterator j = _inputMatrices.begin(); j != _inputMatrices.end(); ++j) {
-    if (j.data() == oldMatrix) {
+  KstMatrixMap::Iterator j;
+
+  for (j = _inputMatrices.begin(); j != _inputMatrices.end(); ++j) {
+    if (*j == oldMatrix) {
       _inputMatrices[j.key()] = newMatrix;
     }
   }
 
-  QDictIterator<KstScalar> scalarDictIter(oldMatrix->scalars());
+  ScalarCollection::const_iterator it;
+  
   for (KstScalarMap::Iterator j = _inputScalars.begin(); j != _inputScalars.end(); ++j) {
-    for (; scalarDictIter.current(); ++ scalarDictIter) {
-      if (scalarDictIter.current() == j.data()) {
-        _inputScalars[j.key()] = (newMatrix->scalars())[scalarDictIter.currentKey()];
+    for (it =oldMatrix->scalars().begin(); it != oldMatrix->scalars().end(); ++it) {
+      if ((*it) == (*j)) {
+        _inputScalars[j.key()] = (newMatrix->scalars())[it.key()];
       }
     }
   }
@@ -666,88 +621,90 @@ void KstDataObject::replaceDependency(KstMatrixPtr oldMatrix, KstMatrixPtr newMa
 
 
 bool KstDataObject::uses(KstObjectPtr p) const {
-  KstVectorPtr v = kst_cast<KstVector>(p);
+  KstVectorPtr v(kst_cast<KstVector>(p));
+  KstMatrixPtr m(kst_cast<KstMatrix>(p));
+  KstDataObjectPtr o(kst_cast<KstDataObject>(p));
+  ScalarCollection::const_iterator it;
+  
   if (v) {
     for (KstVectorMap::ConstIterator j = _inputVectors.begin(); j != _inputVectors.end(); ++j) {
-      if (j.data() == v) {
+      if (*j == v) {
         return true;
       }
     }
-    QDictIterator<KstScalar> scalarDictIter(v->scalars());
+      
     for (KstScalarMap::ConstIterator j = _inputScalars.begin(); j != _inputScalars.end(); ++j) {
-      for (; scalarDictIter.current(); ++scalarDictIter) {
-        if (scalarDictIter.current() == j.data()) {
+      for (it = v->scalars().begin(); it != v->scalars().end(); ++it) {
+        if (*it == *j) {
           return true;
         }
       }
     }
-  } else if (KstMatrixPtr matrix = kst_cast<KstMatrix>(p)) {
+  } else if (m) {
     for (KstMatrixMap::ConstIterator j = _inputMatrices.begin(); j != _inputMatrices.end(); ++j) {
-      if (j.data() == matrix) {
+      if (*j == m) {
         return true;
       }
     }
-    QDictIterator<KstScalar> scalarDictIter(matrix->scalars());
+
     for (KstScalarMap::ConstIterator j = _inputScalars.begin(); j != _inputScalars.end(); ++j) {
-      for (; scalarDictIter.current(); ++scalarDictIter) {
-        if (scalarDictIter.current() == j.data()) {
+      for (it = m->scalars().begin(); it != m->scalars().end(); ++it) {
+        if (*it != *j) {
           return true;
         }
       }
     }
-  } else if (KstDataObjectPtr obj = kst_cast<KstDataObject>(p) ) {
+  } else if (o) {
     // check all connections from this object to p
-    for (KstVectorMap::Iterator j = obj->outputVectors().begin(); j != obj->outputVectors().end(); ++j) {
+    for (KstVectorMap::Iterator j = o->outputVectors().begin(); j != o->outputVectors().end(); ++j) {
       for (KstVectorMap::ConstIterator k = _inputVectors.begin(); k != _inputVectors.end(); ++k) {
-        if (j.data() == k.data()) {
+        if (*j == *k) {
           return true;
         }
       }
-      // also check dependencies on vector stats
-      QDictIterator<KstScalar> scalarDictIter(j.data()->scalars());
+
       for (KstScalarMap::ConstIterator k = _inputScalars.begin(); k != _inputScalars.end(); ++k) {
-        for (; scalarDictIter.current(); ++scalarDictIter) {
-          if (scalarDictIter.current() == k.data()) {
+        for (it = (*j)->scalars().begin(); it != (*j)->scalars().end(); ++it) {
+          if (*it == *k) {
             return true;
           }
         }
       }
     }
 
-    for (KstMatrixMap::Iterator j = obj->outputMatrices().begin(); j != obj->outputMatrices().end(); ++j) {
+    for (KstMatrixMap::Iterator j = o->outputMatrices().begin(); j != o->outputMatrices().end(); ++j) {
       for (KstMatrixMap::ConstIterator k = _inputMatrices.begin(); k != _inputMatrices.end(); ++k) {
-        if (j.data() == k.data()) {
+        if (*j == *k) {
           return true;
         }
       }
-      // also check dependencies on vector stats
-      QDictIterator<KstScalar> scalarDictIter(j.data()->scalars());
+      
       for (KstScalarMap::ConstIterator k = _inputScalars.begin(); k != _inputScalars.end(); ++k) {
-        for (; scalarDictIter.current(); ++scalarDictIter) {
-          if (scalarDictIter.current() == k.data()) {
+        for (it = (*j)->scalars().begin(); it != (*j)->scalars().end(); ++it) {
+          if (*it == *k) {
             return true;
           }
         }
       }
     }
 
-    for (KstScalarMap::Iterator j = obj->outputScalars().begin(); j != obj->outputScalars().end(); ++j) {
+    for (KstScalarMap::Iterator j = o->outputScalars().begin(); j != o->outputScalars().end(); ++j) {
       for (KstScalarMap::ConstIterator k = _inputScalars.begin(); k != _inputScalars.end(); ++k) {
-        if (j.data() == k.data()) {
+        if (*j == *k) {
           return true;
         }
       }
     }
 
-    for (KstStringMap::Iterator j = obj->outputStrings().begin(); j != obj->outputStrings().end(); ++j) {
+    for (KstStringMap::Iterator j = o->outputStrings().begin(); j != o->outputStrings().end(); ++j) {
       for (KstStringMap::ConstIterator k = _inputStrings.begin(); k != _inputStrings.end(); ++k) {
-        if (j.data() == k.data()) {
+        if (*j == *k) {
           return true;
         }
       }
     }
   }
-
+  
   return false;
 }
 
@@ -755,10 +712,10 @@ bool KstDataObject::uses(KstObjectPtr p) const {
 bool KstDataObject::recursion(KstDataObjectDataObjectMap& objectsInUse) {
   bool recurses = false;
 
-  objectsInUse.insert(this, this);
+  objectsInUse.insert(KstDataObjectPtr(this), KstDataObjectPtr(this));
 
   for (KstDataObjectList::Iterator it = KST::dataObjectList.begin(); it != KST::dataObjectList.end(); ++it) {
-    if ((*it)->uses(this)) {
+    if ((*it)->uses(KstDataObjectPtr(this))) {
       if (objectsInUse.find(*it) == objectsInUse.end()) {
         if ((*it)->recursion(objectsInUse)) {
           recurses = true;
@@ -773,7 +730,7 @@ bool KstDataObject::recursion(KstDataObjectDataObjectMap& objectsInUse) {
     }
   }
 
-  objectsInUse.remove(this);
+  objectsInUse.remove(KstDataObjectPtr(this));
 
   return recurses;
 }

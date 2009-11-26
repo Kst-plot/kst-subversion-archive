@@ -26,9 +26,9 @@
 
 #include <klocale.h>
 
-#include <qimage.h>
-#include <qpainter.h>
-#include <qstylesheet.h>
+#include <QImage>
+#include <QPainter>
+#include <QTextDocument>
 
 #include <math.h>
 
@@ -43,8 +43,8 @@ KstImage::KstImage(const QDomElement& e) : KstBaseCurve(e){
   _autoThreshold = false;
   _pal = 0L;
 
-  /* parse the DOM tree */
   QDomNode n = e.firstChild();
+
   while( !n.isNull() ) {
     QDomElement e = n.toElement(); // try to convert the node to an element.
     if( !e.isNull() ) { // the node was really an element.
@@ -88,9 +88,12 @@ KstImage::KstImage(const QDomElement& e) : KstBaseCurve(e){
   _zUpper = in_zUpper;
 
   if (_hasColorMap) {
-    KPalette *in_pal = new KPalette(in_paletteName);
-    //maybe the palette doesn't exist anymore.  Generate a grayscale palette then.
-    if (in_pal->nrColors() <= 0) {
+    KColorCollection *in_pal = new KColorCollection(in_paletteName);
+
+    //
+    // maybe the palette doesn't exist anymore.  Generate a grayscale palette then.
+    //
+    if (in_pal->count() <= 0) {
       for (int i = 0; i < 256; i++) {
         in_pal->addColor(QColor(i,i,i));
       }
@@ -110,10 +113,10 @@ KstImage::KstImage(const QDomElement& e) : KstBaseCurve(e){
 
 
 //constructor for colormap only
-KstImage::KstImage(const QString &in_tag, KstMatrixPtr in_matrix, double lowerZ, double upperZ, bool autoThreshold, KPalette* pal) : KstBaseCurve(){
+KstImage::KstImage(const QString &in_tag, KstMatrixPtr in_matrix, double lowerZ, double upperZ, bool autoThreshold, KColorCollection* pal) : KstBaseCurve(){
   _inputMatrices[THEMATRIX] = in_matrix;
   if (in_tag == QString::null) {
-    QString tag_name = KST::suggestImageName(KstObjectTag(in_matrix->tagName()));
+// xxx    QString tag_name = KST::suggestImageName(KstObjectTag(in_matrix->tagName()));
     setTagName(KstObjectTag(in_matrix->tagName(), KstObjectTag::globalTagContext)); 
   } else {
     setTagName(KstObjectTag(in_tag, KstObjectTag::globalTagContext));
@@ -136,8 +139,8 @@ KstImage::KstImage(const QString &in_tag, KstMatrixPtr in_matrix, double lowerZ,
 KstImage::KstImage(const QString &in_tag, KstMatrixPtr in_matrix, int numContours, const QColor& contourColor, int contourWeight) : KstBaseCurve(){
   _inputMatrices[THEMATRIX] = in_matrix;
   if (in_tag == QString::null) {
-    QString tag_name = KST::suggestImageName(KstObjectTag(in_matrix->tagName()));
-    setTagName(KstObjectTag(tag_name, KstObjectTag::globalTagContext)); 
+// xxx    QString tag_name = KST::suggestImageName(KstObjectTag(in_matrix->tagName()));
+// xxx    setTagName(KstObjectTag(tag_name, KstObjectTag::globalTagContext)); 
   } else {
     setTagName(KstObjectTag(in_tag, KstObjectTag::globalTagContext));
   }
@@ -160,14 +163,14 @@ KstImage::KstImage(const QString &in_tag,
                    double lowerZ,
                    double upperZ,
                    bool autoThreshold,
-                   KPalette* pal,
+                   KColorCollection* pal,
                    int numContours,
                    const QColor& contourColor,
                    int contourWeight) {
   _inputMatrices[THEMATRIX] = in_matrix;
   if (in_tag == QString::null) {
-    QString tag_name = KST::suggestImageName(KstObjectTag(in_matrix->tagName()));
-    setTagName(KstObjectTag(tag_name, KstObjectTag::globalTagContext)); 
+// xxx    QString tag_name = KST::suggestImageName(KstObjectTag(in_matrix->tagName()));
+// xxx    setTagName(KstObjectTag(tag_name, KstObjectTag::globalTagContext)); 
   } else {
     setTagName(KstObjectTag(in_tag, KstObjectTag::globalTagContext));
   }
@@ -195,21 +198,21 @@ KstImage::~KstImage() {
 void KstImage::save(QTextStream &ts, const QString& indent) {
   QString l2 = indent + "  ";
   ts << indent << "<image>" << endl;
-  ts << l2 << "<tag>" << QStyleSheet::escape(tagName()) << "</tag>" << endl;
+  ts << l2 << "<tag>" << Qt::escape(tagName()) << "</tag>" << endl;
   if (_inputMatrices.contains(THEMATRIX)) {
-    ts << l2 << "<matrixtag>" << QStyleSheet::escape(_inputMatrices[THEMATRIX]->tag().tagString()) << "</matrixtag>" << endl;
+    ts << l2 << "<matrixtag>" << Qt::escape(_inputMatrices[THEMATRIX]->tag().tagString()) << "</matrixtag>" << endl;
   }
-  ts << l2 << "<legend>" << QStyleSheet::escape(legendText()) << "</legend>" << endl;
+  ts << l2 << "<legend>" << Qt::escape(legendText()) << "</legend>" << endl;
   ts << l2 << "<hascolormap>" << _hasColorMap << "</hascolormap>" <<endl;
   if (_pal) {
-    ts << l2 << "<palettename>" << QStyleSheet::escape(_pal->name()) << "</palettename>" << endl;
+    ts << l2 << "<palettename>" << Qt::escape(_pal->name()) << "</palettename>" << endl;
   }
   ts << l2 << "<lowerthreshold>" << _zLower << "</lowerthreshold>" << endl;
   ts << l2 << "<upperthreshold>" << _zUpper << "</upperthreshold>" << endl;
   ts << l2 << "<hascontourmap>" << _hasContourMap << "</hascontourmap>" << endl;
   ts << l2 << "<numcontourlines>" << _numContourLines << "</numcontourlines>" << endl;
   ts << l2 << "<contourweight>" << _contourWeight << "</contourweight>" << endl;
-  ts << l2 << "<contourcolor>" << QStyleSheet::escape(_contourColor.name()) << "</contourcolor>" << endl;
+  ts << l2 << "<contourcolor>" << Qt::escape(_contourColor.name()) << "</contourcolor>" << endl;
   ts << l2 << "<autothreshold>" << _autoThreshold << "</autothreshold>" << endl;
   ts << indent << "</image>" << endl;
 }
@@ -258,7 +261,8 @@ KstObject::UpdateType KstImage::update(int update_counter) {
       //update the contour lines
       if (hasContourMap()) {
         double min = mp->minValue(), max = mp->maxValue();
-          double contourStep  = (max - min) / (double)(_numContourLines + 1);
+        double contourStep  = (max - min) / (double)(_numContourLines + 1);
+        
         if (contourStep > 0) {
           _contourLines.clear();
           for (int i = 0; i < _numContourLines; i++) {
@@ -296,11 +300,11 @@ QColor KstImage::getMappedColor(double x, double y) {
       int index;
       if (_zUpper - _zLower != 0) {
         if (z > _zUpper) {
-          index = _pal->nrColors() - 1;
+          index = _pal->count() - 1;
         } else if (z < _zLower) {
           index = 0;
         } else {
-          index = (int)floor(((z - _zLower) * (_pal->nrColors() - 1)) / (_zUpper - _zLower));
+          index = (int)floor(((z - _zLower) * (_pal->count() - 1)) / (_zUpper - _zLower));
         }
       } else {
         index = 0;
@@ -313,7 +317,7 @@ QColor KstImage::getMappedColor(double x, double y) {
 }
 
 
-void KstImage::setPalette(KPalette* pal) {
+void KstImage::setPalette(KColorCollection* pal) {
   delete _pal;
   _pal = pal;
   setDirty();
@@ -321,7 +325,7 @@ void KstImage::setPalette(KPalette* pal) {
 
 
 void KstImage::setPalette(const QString& strPalette) {
-  KPalette* pal = new KPalette(strPalette);
+  KColorCollection* pal = new KColorCollection(strPalette);
 
   if (pal) {
     delete _pal;
@@ -375,7 +379,7 @@ void KstImage::setThresholdToSpikeInsensitive(double per) {
 
 
 void KstImage::changeToColorOnly(const QString &in_tag, KstMatrixPtr in_matrix,
-                                     double lowerZ, double upperZ, bool autoThreshold, KPalette* pal) {
+                                     double lowerZ, double upperZ, bool autoThreshold, KColorCollection* pal) {
   setTagName(KstObjectTag(in_tag, KstObjectTag::globalTagContext));  // FIXME: always top-level?
   if (_inputMatrices.contains(THEMATRIX)) {
     _inputMatrices[THEMATRIX] = in_matrix;
@@ -414,7 +418,7 @@ void KstImage::changeToContourOnly(const QString &in_tag, KstMatrixPtr in_matrix
 
 
 void KstImage::changeToColorAndContour(const QString &in_tag, KstMatrixPtr in_matrix,
-                                               double lowerZ, double upperZ, bool autoThreshold, KPalette* pal,
+                                               double lowerZ, double upperZ, bool autoThreshold, KColorCollection* pal,
                                                int numContours, const QColor& contourColor, int contourWeight) {
   setTagName(KstObjectTag(in_tag, KstObjectTag::globalTagContext));  // FIXME: always top-level?
   if (_inputMatrices.contains(THEMATRIX)) {
@@ -457,13 +461,15 @@ void KstImage::matrixDimensions(double &x, double &y, double &width, double &hei
 bool KstImage::addContourLine(double line) {
   _contourLines.append(line);
   setDirty();
+
   return true;
 }
 
 
 bool KstImage::removeContourLine(double line) {
   setDirty();
-  return _contourLines.remove(line);
+  
+  return _contourLines.removeOne(line);
 }
 
 
@@ -511,18 +517,17 @@ void KstImage::setAutoThreshold(bool yes) {
 
 
 KstDataObjectPtr KstImage::makeDuplicate(KstDataObjectDataObjectMap& duplicatedMap) {
-  // create a new palette
-  KPalette* newPalette = 0L;
+  KColorCollection* newPalette = 0L;
   if (_pal) {
-    newPalette = new KPalette(*_pal);
+    newPalette = new KColorCollection(*_pal);
   }
 
   QString name(tagName() + '\'');
   while (KstData::self()->dataTagNameNotUnique(name, false)) {
     name += '\'';
   }
-  KstImagePtr image = new KstImage(name, _inputMatrices[THEMATRIX], _zLower, _zUpper, _autoThreshold, newPalette);
-  duplicatedMap.insert(this, KstDataObjectPtr(image));
+  KstImagePtr image(new KstImage(name, _inputMatrices[THEMATRIX], _zLower, _zUpper, _autoThreshold, newPalette));
+// xxx  duplicatedMap.insert(this, KstDataObjectPtr(image));
   return KstDataObjectPtr(image);
 }
 
@@ -540,7 +545,7 @@ KstMatrixPtr KstImage::matrix() const {
   if (_inputMatrices.contains(THEMATRIX)) {
     return _inputMatrices[THEMATRIX];
   } else {
-    return NULL;
+    return KstMatrixPtr();
   }
 }
 
@@ -584,15 +589,19 @@ KstCurveType KstImage::curveType() const {
 
 
 KstDataObjectPtr KstImage::providerDataObject() const {
+  KstMatrixPtr mp;
+  KstDataObjectPtr provider;
+  
   KST::matrixList.lock().readLock();
-  KstMatrixPtr mp = *KST::matrixList.findTag(matrixTag());
+// xxx  KstMatrixPtr mp = *KST::matrixList.findTag(matrixTag());
   KST::matrixList.lock().unlock();
-  KstDataObjectPtr provider = 0L;
+
   if (mp) {
     mp->readLock();
     provider = kst_cast<KstDataObject>(mp->provider());
     mp->unlock();
   }
+  
   return provider;
 }
 
@@ -612,7 +621,7 @@ double KstImage::distanceToPoint(double xpos, double ypos, double distanceMax, c
 
 
 void KstImage::paint(const KstCurveRenderContext& context) {
-  KstImagePtr image = this;
+  KstImagePtr image(this);
   KstPainter* p = context.p;
   QColor invalid = context.backgroundColor;
   double Lx = context.Lx, Hx = context.Hx, Ly = context.Ly, Hy = context.Hy;
@@ -681,7 +690,8 @@ void KstImage::paint(const KstCurveRenderContext& context) {
       if (image->hasColorMap()) {
         int hXlXDiff = d2i(img_Hx_pix - img_Lx_pix);
         int hYlYDiff = d2i(img_Hy_pix - img_Ly_pix - 1);
-        QImage tempImage(hXlXDiff, hYlYDiff, 32);
+        QImage tempImage(hXlXDiff, hYlYDiff, QImage::Format_RGB32);
+        
         for (int i = 0; i < hXlXDiff; ++i) {
           for (int j = 0; j < hYlYDiff; ++j) {
             double new_x, new_y;
@@ -705,6 +715,7 @@ void KstImage::paint(const KstCurveRenderContext& context) {
         }
         p->drawImage(d2i(img_Lx_pix), d2i(img_Ly_pix + 1), tempImage);
       }
+      
       //*******************************************************************
       // CONTOURS
       //*******************************************************************
@@ -715,15 +726,18 @@ void KstImage::paint(const KstCurveRenderContext& context) {
       if (image->hasContourMap()) {
         QColor tempColor = image->contourColor();
         bool variableWeight = image->contourWeight() < 0;
+        
         if (!variableWeight) {
           // + 1 because 0 and 1 are the same width
           p->setPen(QPen(tempColor, image->contourWeight() + 1, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin));
         }
+        
         // do the drawing for each contour line
-        QValueList<double> lines = image->contourLines();
+        QList<double> lines = image->contourLines();
         QPoint lastPoint; // used to remember the previous point
         bool hasPrevBottom = false;
         KstMatrixPtr mp = _inputMatrices[THEMATRIX];
+
         for (uint k = 0; k < lines.count(); ++k) {
           double lineK = lines[k];
           if (variableWeight) {
@@ -733,6 +747,7 @@ void KstImage::paint(const KstCurveRenderContext& context) {
           int flImgHx = d2i(floor(img_Hx_pix));
           int flImgHy = d2i(floor(img_Hy_pix));
           int ceImgLy = d2i(ceil(img_Ly_pix));
+          
           for (int i = d2i(ceil(img_Lx_pix)); i + CONTOUR_STEP < flImgHx; i += CONTOUR_STEP) {
             for (int j = d2i(ceil(img_Ly_pix)); j + CONTOUR_STEP < flImgHy; j += CONTOUR_STEP) {
               // look at this group of 4 pixels and get the z values
@@ -861,15 +876,21 @@ void KstImage::yRange(double xFrom, double xTo, double* yMin, double* yMax) {
   if (!yMin || !yMax) {
     return;
   }
+  
+  //
   // if x range overlaps with image x range, just return image y range
+  //
+  
   if ((xFrom <= _minX && xTo >= _minX) ||
       (xTo >= _maxX && xFrom <= _maxX) ||
       (xFrom > _minX && xFrom < _maxX) ||
       (xTo > _minX && xTo < _maxX)) {
     *yMin = _minY;
     *yMax = _maxY;
+
     return;
   }
+  
   *yMin = 0.0;
   *yMax = 0.0;
 
@@ -881,10 +902,14 @@ void KstImage::paintLegendSymbol(KstPainter *p, const QRect& bound) {
   if (hasColorMap() && _pal) {
     int l = bound.left(), r = bound.right(), t = bound.top(), b = bound.bottom();
 
+    //
     // draw the color palette
+    //
+    
     for (int i = l; i <= r; i++) {
-      int index = (int)floor(((i - l) * (_pal->nrColors() - 1)) / (r - l));
+      int index = (int)floor(((i - l) * (_pal->count() - 1)) / (r - l));
       QColor sliceColor = _pal->color(index).rgb();
+      
       p->setPen(QPen(sliceColor, 0));
       p->drawLine(i, t, i, b);
     }

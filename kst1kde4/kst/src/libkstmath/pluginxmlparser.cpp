@@ -33,7 +33,7 @@ int PluginXMLParser::parseFile(const QString& filename) {
   QFile qf(filename);
   int retVal = -1;
 
-  if (qf.open(IO_ReadOnly)) {
+  if (qf.open(QIODevice::ReadOnly)) {
     QDomDocument doc(filename);
 
     if (doc.setContent(&qf)) {
@@ -104,12 +104,12 @@ static const QString& QS_optional = KGlobal::staticQString("optional");
 int PluginXMLParser::parseDOM(const QDomDocument& doc) {
 QDomElement topElem = doc.documentElement();
 
-  if (topElem.tagName().lower() == QString::fromLatin1("module")) {
+  if (topElem.tagName().toLower() == QString::fromLatin1("module")) {
     QDomNode n = topElem.firstChild();
 
     while (!n.isNull()) {
       QDomElement e = n.toElement();
-      QString tn = e.tagName().lower();
+      QString tn = e.tagName().toLower();
       int rc = 0;
 
       if (tn == QS_interface) {
@@ -202,7 +202,7 @@ QDomNode n = element.firstChild();
       continue;
     }
 
-    QString tn = e.tagName().lower();
+    QString tn = e.tagName().toLower();
     if (tn == QS_modulename) {
       _pluginData._readableName = e.attribute(QS_readableName);
       _pluginData._name = e.attribute(QS_name);
@@ -229,7 +229,7 @@ QDomNode n = element.firstChild();
       _pluginData._version = QString("%1.%2").arg(e.attribute(QS_major))
                                              .arg(e.attribute(QS_minor));
     } else if (tn == QS_state) {
-      QString st = e.attribute(QS_devstate).lower();
+      QString st = e.attribute(QS_devstate).toLower();
       _pluginData._state = Plugin::Data::Unknown;
 
       if (st == QS_prealpha) {
@@ -278,7 +278,7 @@ QDomNode n = element.firstChild();
       continue;
     }
 
-    QString tn = e.tagName().lower();
+    QString tn = e.tagName().toLower();
     if (tn == QS_input) {
       rc = parseIO(e, _pluginData._inputs);
     } else if (tn == QS_output) {
@@ -298,7 +298,7 @@ return 0;
 }
 
 
-int PluginXMLParser::parseIO(const QDomElement& element, QValueList<Plugin::Data::IOValue>& collection) {
+int PluginXMLParser::parseIO(const QDomElement& element, QList<Plugin::Data::IOValue>& collection) {
 QDomNode n = element.firstChild();
 
   while (!n.isNull()) {
@@ -311,7 +311,7 @@ QDomNode n = element.firstChild();
 
     Plugin::Data::IOValue iov;
 
-    QString tn = e.tagName().lower();
+    QString tn = e.tagName().toLower();
     if (tn == QS_table) {
       iov._type = Plugin::Data::IOValue::TableType;
 //    } else if (tn == QS_integer) {
@@ -337,7 +337,7 @@ QDomNode n = element.firstChild();
       iov._description = e.attribute(QS_descr);
       iov._default = e.attribute(QS_default);
       iov._optional = (bool)e.attribute(QS_optional).toInt();
-      QString subtype = e.attribute(QS_type).lower();
+      QString subtype = e.attribute(QS_type).toLower();
       if (subtype == QS_float) {
         iov._subType = Plugin::Data::IOValue::FloatSubType;
       } else if (subtype == QS_floatNonVector) {
@@ -380,7 +380,7 @@ int PluginXMLParser::parseCurveHints(const QDomElement& element) {
       continue;
     }
 
-    QString tn = e.tagName().lower();
+    QString tn = e.tagName().toLower();
     if (tn == QS_hint) {
       QString n = e.attribute(QS_name);
       QString x = e.attribute("x");

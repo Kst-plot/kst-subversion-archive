@@ -49,6 +49,7 @@ class KstSettings {
     KST_EXPORT static void setGlobalSettings(const KstSettings *settings);
     KST_EXPORT static void checkUpdates();
     KST_EXPORT void save();
+    static void cleanup();
     void reload();
 
     KST_EXPORT void setPrintingDefaults(); // set printing settings to default

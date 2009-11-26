@@ -18,12 +18,12 @@
 #ifndef KSTBASECURVE_H
 #define KSTBASECURVE_H
 
-#include <qcolor.h>
-#include <qvaluestack.h>
+#include <QColor>
+#include <QStack>
 
 #include "kstdataobject.h"
 #include "kstpainter.h"
-#include "kst_export.h"
+//#include "kst_export.h"
 #include "labelparser.h"
 
 // context for rendering a curve in a plot
@@ -153,7 +153,7 @@ class KST_EXPORT KstBaseCurve : public KstDataObject {
 };
 
 
-typedef KstSharedPtr<KstBaseCurve> KstBaseCurvePtr;
+typedef QExplicitlySharedDataPointer<KstBaseCurve> KstBaseCurvePtr;
 typedef KstObjectList<KstBaseCurvePtr> KstBaseCurveList;
 
 #endif

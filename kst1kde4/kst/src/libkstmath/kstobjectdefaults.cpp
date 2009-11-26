@@ -38,24 +38,27 @@ KstObjectDefaults::KstObjectDefaults() {
 
 
 void KstObjectDefaults::sync() {
-  KstPSDList pl = kstObjectSubList<KstDataObject, KstPSD>(KST::dataObjectList);
+  KstPSDList pl;
+  KstPSDList::iterator it;
+  
+  // xxx pl = kstObjectSubList<KstDataObject, KstPSD>(KST::dataObjectList);
+  
+  for (it=pl.begin(); it!=pl.end(); ++it) {
+    (*it)->readLock();
 
-  const int j = pl.count() - 1;
-  if (j >= 0) {
-    pl[j]->readLock();
-    _psd_freq = pl[j]->freq();
-    _fft_len = pl[j]->len();
+    _psd_freq = (*it)->freq();
+    _fft_len = (*it)->len();
 
-    _vUnits = pl[j]->vUnits();
-    _rUnits = pl[j]->rUnits();
-    _apodize = pl[j]->apodize();
-    _removeMean = pl[j]->removeMean();
-    _psd_average = pl[j]->average();
-    _apodizeFxn = pl[j]->apodizeFxn();
-    _output = pl[j]->output();
-    _interpolateHoles = pl[j]->interpolateHoles();
+    _vUnits = (*it)->vUnits();
+    _rUnits = (*it)->rUnits();
+    _apodize = (*it)->apodize();
+    _removeMean = (*it)->removeMean();
+    _psd_average = (*it)->average();
+    _apodizeFxn = (*it)->apodizeFxn();
+    _output = (*it)->output();
+    _interpolateHoles = (*it)->interpolateHoles();
 
-    pl[j]->unlock();
+    (*it)->unlock();
   }
 }
 
@@ -71,6 +74,7 @@ int KstObjectDefaults::fftLen() const {
 
 
 void KstObjectDefaults::writeConfig(KConfig *config) {
+ /* xxx
   config->writeEntry("defaultFFTLen", KST::objectDefaults.fftLen());
   config->writeEntry("defaultPSDFreq", KST::objectDefaults.psdFreq());
   config->writeEntry("defaultVUnits", KST::objectDefaults.vUnits());
@@ -81,10 +85,12 @@ void KstObjectDefaults::writeConfig(KConfig *config) {
   config->writeEntry("defaultApodizeFxn", KST::objectDefaults.apodizeFxn());
   config->writeEntry("defaultOutput", KST::objectDefaults.output());
   config->writeEntry("defaultInterpolateHoles", KST::objectDefaults.interpolateHoles());
+*/
 }
 
 
 void KstObjectDefaults::readConfig(KConfig *config) {
+/* xxx
   _fft_len = config->readNumEntry("defaultFFTLen", 10);
   _psd_freq = config->readDoubleNumEntry("defaultPSDFreq", 100.0);
   _vUnits = config->readEntry("defaultVUnits", "V");
@@ -95,4 +101,5 @@ void KstObjectDefaults::readConfig(KConfig *config) {
   _apodizeFxn = config->readNumEntry("defaultApodizeFxn", 0);
   _output = config->readNumEntry("defaultOutput", 0);
   _interpolateHoles = config->readBoolEntry("defaultInterpolateHoles", false);
+*/
 }

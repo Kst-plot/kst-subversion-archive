@@ -18,14 +18,15 @@
 #ifndef _KST_CURVEHINT_H
 #define _KST_CURVEHINT_H
 
-#include <qstring.h>
-#include <qvaluelist.h>
+#include <QColor>
+#include <QString>
+#include <QList>
 
 #include "kstvector.h"
 
 class KstBaseCurve;
 
-class KstCurveHint : public KstShared {
+class KstCurveHint : public QSharedData {
   friend class KstDataObject;
   public:
     KstCurveHint(const QString& name = QString::null, const QString& x = QString::null, const QString& y = QString::null);
@@ -39,13 +40,13 @@ class KstCurveHint : public KstShared {
     virtual KstVectorPtr xVector() const;
     virtual KstVectorPtr yVector() const;
 
-    virtual KstSharedPtr<KstBaseCurve> makeCurve(const QString& tag, const QColor& color) const;
+    virtual QExplicitlySharedDataPointer<KstBaseCurve> makeCurve(const QString& tag, const QColor& color) const;
 
   protected:
     QString _curveName, _xVectorName, _yVectorName;
 };
 
-typedef KstSharedPtr<KstCurveHint> KstCurveHintPtr;
-typedef QValueList<KstCurveHintPtr> KstCurveHintList;
+typedef QExplicitlySharedDataPointer<KstCurveHint> KstCurveHintPtr;
+typedef QList<KstCurveHintPtr> KstCurveHintList;
 
 #endif

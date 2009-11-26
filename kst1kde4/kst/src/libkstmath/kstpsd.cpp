@@ -19,12 +19,11 @@
 #include <math.h>
 
 // include files for Qt
-#include <qstylesheet.h>
+#include <QTextDocument>
 
 // include files for KDE
 #include <kglobal.h>
 #include <klocale.h>
-#include "ksdebug.h"
 
 // application specific includes
 #include "dialoglauncher.h"
@@ -157,7 +156,7 @@ void KstPSD::commonConstructor(const QString& in_tag, KstVectorPtr in_V,
   _last_n_new = 0;
 
   _PSDLen = 1;
-  KstVectorPtr ov = new KstVector(KstObjectTag("freq", tag()), _PSDLen, this);
+  KstVectorPtr ov(new KstVector(KstObjectTag("freq", tag()), _PSDLen, this));
   _fVector = _outputVectors.insert(FVECTOR, ov);
 
   ov = new KstVector(KstObjectTag("sv", tag()), _PSDLen, this);
@@ -171,15 +170,15 @@ KstPSD::~KstPSD() {
   _sVector = _outputVectors.end();
   _fVector = _outputVectors.end();
   KST::vectorList.lock().writeLock();
-  KST::vectorList.remove(_outputVectors[SVECTOR]);
-  KST::vectorList.remove(_outputVectors[FVECTOR]);
+// xxx  KST::vectorList.remove(_outputVectors[SVECTOR]);
+// xxx  KST::vectorList.remove(_outputVectors[FVECTOR]);
   KST::vectorList.lock().unlock();
 }
 
 
 const KstCurveHintList *KstPSD::curveHints() const {
   _curveHints->clear();
-  _curveHints->append(new KstCurveHint(i18n("Spectrum Curve"), (*_fVector)->tagName(), (*_sVector)->tagName()));
+// xxx  _curveHints->append(new KstCurveHint(i18n("Spectrum Curve"), (*_fVector)->tagName(), (*_sVector)->tagName()));
   return _curveHints;
 }
 
@@ -275,8 +274,8 @@ void KstPSD::_adjustLengths() {
 void KstPSD::save(QTextStream &ts, const QString& indent) {
   QString l2 = indent + "  ";
   ts << indent << "<psdobject>" << endl;
-  ts << l2 << "<tag>" << QStyleSheet::escape(tagName()) << "</tag>" << endl;
-  ts << l2 << "<vectag>" << QStyleSheet::escape(_inputVectors[INVECTOR]->tag().tagString()) << "</vectag>" << endl;
+  ts << l2 << "<tag>" << Qt::escape(tagName()) << "</tag>" << endl;
+  ts << l2 << "<vectag>" << Qt::escape(_inputVectors[INVECTOR]->tag().tagString()) << "</vectag>" << endl;
   ts << l2 << "<sampRate>"  << _Freq << "</sampRate>" << endl;
   ts << l2 << "<average>" << _Average << "</average>" << endl;
   ts << l2 << "<fftLen>" << int(ceil(log(double(_PSDLen*2)) / log(2.0))) << "</fftLen>" << endl;
@@ -390,7 +389,7 @@ void KstPSD::setVector(KstVectorPtr new_v) {
     }
   }
 
-  _inputVectors.erase(INVECTOR);
+// xxx  _inputVectors.erase(INVECTOR);
   _inputVectors[INVECTOR] = new_v;
   setDirty();
 }
@@ -467,10 +466,10 @@ KstDataObjectPtr KstPSD::makeDuplicate(KstDataObjectDataObjectMap& duplicatedMap
   while (KstData::self()->dataTagNameNotUnique(name, false)) {
     name += '\'';
   }
-  KstPSDPtr psd = new KstPSD(name, _inputVectors[INVECTOR], _Freq,
+  KstPSDPtr psd(new KstPSD(name, _inputVectors[INVECTOR], _Freq,
                              _Average, _averageLen, _Apodize, _RemoveMean, _vUnits, _rUnits, 
-                             _apodizeFxn, _gaussianSigma, _Output);
-  duplicatedMap.insert(this, KstDataObjectPtr(psd));    
+                             _apodizeFxn, _gaussianSigma, _Output));
+// xxx  duplicatedMap.insert(this, KstDataObjectPtr(psd));    
   return KstDataObjectPtr(psd);
 }
 

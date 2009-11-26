@@ -25,9 +25,10 @@
 #include "kstmatrix.h"
 #include "kst_export.h"
 
+// xxx #include <kservice,h>
 #include <kservicetype.h>
 
-typedef KstSharedPtr<KstDataObject> KstDataObjectPtr;
+typedef QExplicitlySharedDataPointer<KstDataObject> KstDataObjectPtr;
 typedef KstObjectList<KstDataObjectPtr> KstDataObjectList;
 typedef QMap<KstDataObjectPtr, KstDataObjectPtr> KstDataObjectDataObjectMap;
 typedef QMap<QString, int> KstPluginInfoList;
@@ -151,10 +152,10 @@ class KST_EXPORT KstDataObject : public KstObject {
 
     bool _isInputLoaded;
     bool _isRecursed : 1;
-    QValueList<QPair<QString,QString> > _inputVectorLoadQueue;
-    QValueList<QPair<QString,QString> > _inputScalarLoadQueue;
-    QValueList<QPair<QString,QString> > _inputStringLoadQueue;
-    QValueList<QPair<QString,QString> > _inputMatrixLoadQueue;
+    QLinkedList<QPair<QString,QString> > _inputVectorLoadQueue;
+    QLinkedList<QPair<QString,QString> > _inputScalarLoadQueue;
+    QLinkedList<QPair<QString,QString> > _inputStringLoadQueue;
+    QLinkedList<QPair<QString,QString> > _inputMatrixLoadQueue;
     KstCurveHintList *_curveHints;
 
   private:
@@ -166,7 +167,7 @@ class KST_EXPORT KstDataObject : public KstObject {
 
   private:
     static void scanPlugins();
-    static KstDataObjectPtr createPlugin(KService::Ptr);
+// xxx    static KstDataObjectPtr createPlugin(KService::Ptr);
 };
 
 #endif

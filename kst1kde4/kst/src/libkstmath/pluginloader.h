@@ -18,13 +18,11 @@
 #ifndef _PLUGINLOADER_H
 #define _PLUGINLOADER_H
 
-
 #include "plugin.h"
 
 class PluginXMLParser;
 
 class PluginLoader {
-friend class KStaticDeleter<PluginLoader>;
 public:
 
   static PluginLoader *self();

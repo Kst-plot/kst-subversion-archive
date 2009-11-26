@@ -117,7 +117,7 @@ class KST_EXPORT KstCSD : public KstDataObject {
     KstMatrixMap::Iterator _outMatrix;
 };
 
-typedef KstSharedPtr<KstCSD> KstCSDPtr;
+typedef QExplicitlySharedDataPointer<KstCSD> KstCSDPtr;
 typedef KstObjectList<KstCSDPtr> KstCSDList;
 
 #endif

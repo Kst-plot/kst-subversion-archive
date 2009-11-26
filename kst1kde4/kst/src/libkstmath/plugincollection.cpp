@@ -15,33 +15,33 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QApplication>
+#include <QDir>
+#include <QRegExp>
+
+#include <kdeversion.h>
+#include <klocale.h>
+#include <kstandarddirs.h>
 
 #include "kstdebug.h"
 #include "plugincollection.h"
 #include "pluginloader.h"
 #include "pluginxmlparser.h"
 
-#include <kdeversion.h>
-#include <klocale.h>
-#include <kstandarddirs.h>
-
-#include <qdir.h>
-#include <qregexp.h>
-
 PluginCollection *PluginCollection::_self = 0L;
-static KStaticDeleter<PluginCollection> _pcSelf;
 
 PluginCollection *PluginCollection::self() {
   if (!_self) {
-    _pcSelf.setObject(_self, new PluginCollection);
+    _self = new PluginCollection();
+    qAddPostRoutine(PluginCollection::cleanup);
   }
 
-return _self;
+  return _self;
 }
 
 
 PluginCollection::PluginCollection() 
-: QObject(0L, "KST Plugin Collection") {
+: QObject(0L) {
   KGlobal::dirs()->addResourceType("kstplugins", KStandardDirs::kde_default("data") + "kst" + QDir::separator() + "plugins");
   // KDE3 provides no way to get the plugin directory
   KGlobal::dirs()->addResourceType("kstpluginlib", KStandardDirs::kde_default("lib") + QString("kde%1").arg(KDE_VERSION_MAJOR) + QDir::separator() + "kstplugins");
@@ -57,8 +57,15 @@ PluginCollection::~PluginCollection() {
 }
 
 
+void PluginCollection::cleanup() {
+  delete _self;
+  _self = 0L;
+}
+
+
 void PluginCollection::loadAllPlugins() {
   QStringList dirs = KGlobal::dirs()->resourceDirs("kstplugins");
+  
   dirs += KGlobal::dirs()->resourceDirs("kstpluginlib");
   for (QStringList::ConstIterator it = dirs.begin(); it != dirs.end(); ++it) {
     loadPluginsFor(*it);
@@ -67,22 +74,20 @@ void PluginCollection::loadAllPlugins() {
 
 
 void PluginCollection::loadPluginsFor(const QString& path) {
+  QStringList filters;
+  QFileInfoList list;
+  QFileInfoList::iterator it;
+  QFileInfo fi;
   QDir d(path);
 
+  filters << "*.xml";
   d.setFilter(QDir::Files | QDir::NoSymLinks);
-  d.setNameFilter("*.xml");
+  d.setNameFilters(filters);
 
-  const QFileInfoList *list = d.entryInfoList();
-  if (!list) {
-    return;
-  }
+  list = d.entryInfoList();
 
-  QFileInfoListIterator it(*list);
-  QFileInfo *fi;
-
-  while ((fi = it.current()) != 0L) {
-    loadPlugin(path + QDir::separator() + fi->fileName());
-    ++it;
+  for (it=list.begin(); it!=list.end(); ++it) {
+    loadPlugin(path + QDir::separator() + (*it).fileName());
   }
 }
 
@@ -106,11 +111,11 @@ int PluginCollection::loadPlugin(const QString& xmlfile) {
   }
 
   QString sofile = xmlfile;
-  Plugin *p = PluginLoader::self()->loadPlugin(xmlfile,
-                                   sofile.replace(QRegExp(".xml$"), ".so"));
+  Plugin *p = PluginLoader::self()->loadPlugin(xmlfile, sofile.replace(QRegExp(".xml$"), ".so"));
   if (p) {
     _plugins[name] = KstPluginPtr(p);
     emit pluginLoaded(name);
+    
     return 0;
   }
 
@@ -147,6 +152,7 @@ void PluginCollection::unloadAllPlugins() {
 
 
 KstPluginPtr PluginCollection::plugin(const QString& name) {
+/*
   if (!_plugins.contains(name) || _plugins[name] == 0L) {
     if (!_installedPluginNames.contains(name)) {
       rescan();
@@ -163,6 +169,8 @@ KstPluginPtr PluginCollection::plugin(const QString& name) {
   }
 
   return _plugins[name];
+*/
+return KstPluginPtr();
 }
 
 
@@ -202,42 +210,40 @@ void PluginCollection::rescan() {
 }
 
 void PluginCollection::scanPlugins() {
-
   QMap<QString,QString> backup = _installedPluginNames;
+  QStringList::ConstIterator it;
+  QStringList dirs;
+  bool changed = false;
+  
   _installedPlugins.clear();
   _installedPluginNames.clear();
   _installedReadablePluginNames.clear();
-  bool changed = false;
 
-  QStringList dirs = KGlobal::dirs()->resourceDirs("kstplugins");
+  dirs = KGlobal::dirs()->resourceDirs("kstplugins");
   dirs += KGlobal::dirs()->resourceDirs("kstpluginlib");
-  for (QStringList::ConstIterator it = dirs.begin(); it != dirs.end(); ++it) {
-    //kstdDebug() << "Scanning [" << *it << "] for plugins." << endl;
+  for (it = dirs.begin(); it != dirs.end(); ++it) {
+    QFileInfoList list;
+    QFileInfoList::iterator fit;
+    QStringList filters;
     QDir d(*it);
-
-    d.setFilter(QDir::Files | QDir::NoSymLinks);
-    d.setNameFilter("*.xml");
-
-    const QFileInfoList *list = d.entryInfoList();
-    if (!list) {
-      continue;
-    }
-
-    QFileInfoListIterator fit(*list);
-    QFileInfo *fi;
     int status;
+    
+    filters << "*.xml";
+    d.setFilter(QDir::Files | QDir::NoSymLinks);
+    d.setNameFilters(filters);
 
-    while ((fi = fit.current()) != 0L) {
-      //kstdDebug() << "Parsing [" << (*it + fi->fileName()) << "]" << endl;
-      status = _parser->parseFile(*it + fi->fileName());
+    list = d.entryInfoList();
+
+    for (fit=list.begin(); fit!=list.end(); ++fit) {
+      status = _parser->parseFile(*it + (*fit).fileName());
       if (status == 0) {
         // dupe? - prefer earlier installations
         if (_installedPluginNames.contains(_parser->data()._name)) {
-          ++fit;
           continue;
         }
-        _installedPlugins[*it + fi->fileName()] = _parser->data();
-        _installedPluginNames[_parser->data()._name] = *it + fi->fileName();
+
+        _installedPlugins[*it + (*fit).fileName()] = _parser->data();
+        _installedPluginNames[_parser->data()._name] = *it + (*fit).fileName();
         _installedReadablePluginNames[_parser->data()._readableName] = _parser->data()._name;
         if (!backup.contains(_parser->data()._name)) {
           emit pluginInstalled(_parser->data()._name);
@@ -246,16 +252,15 @@ void PluginCollection::scanPlugins() {
           backup.remove(_parser->data()._name);
         }
       } else {
-        KstDebug::self()->log(i18n("Error [%2] parsing XML file '%1'; skipping.").arg(*it + fi->fileName()).arg(status), KstDebug::Warning);
+        KstDebug::self()->log(i18n("Error [%2] parsing XML file '%1'; skipping.").arg(*it + (*fit).fileName()).arg(status), KstDebug::Warning);
       }
-      ++fit;
     }
   }
 
   while (!backup.isEmpty()) {
     KstDebug::self()->log(i18n("Detected disappearance of '%1'.").arg(backup.begin().key()));
     emit pluginRemoved(backup.begin().key());
-    backup.remove(backup.begin());
+// xxx    backup.remove(backup.begin());
     changed = true;
   }
 
@@ -268,6 +273,7 @@ int PluginCollection::deletePlugin(const QString& xmlfile, const QString& object
   QString pname = _installedPlugins[xmlfile]._name;
   QString rname = _installedPlugins[xmlfile]._readableName;
   QFile::remove(xmlfile);
+
   if (object.isEmpty()) {
     QString f = xmlfile;
     f.replace(QRegExp(".xml$"), ".so");

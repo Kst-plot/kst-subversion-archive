@@ -17,6 +17,7 @@
 
 #include <assert.h>
 #include <math.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
@@ -430,8 +431,8 @@ Function::Function(char *name, ArgumentList *args)
       }
 
       if (_cStylePlugin) {
-        const QValueList<Plugin::Data::IOValue>& itable = _cStylePlugin->data()._inputs;
-        const QValueList<Plugin::Data::IOValue>& otable = _cStylePlugin->data()._outputs;
+        const QList<Plugin::Data::IOValue>& itable = _cStylePlugin->data()._inputs;
+        const QList<Plugin::Data::IOValue>& otable = _cStylePlugin->data()._outputs;
         unsigned ignore;
 
         Plugin::countScalarsVectorsAndStrings(itable, _inputScalarCnt, _inputVectorCnt, _inputStringCnt, _inPid);
@@ -456,7 +457,7 @@ Function::Function(char *name, ArgumentList *args)
           QStringList vectors = _dataObjectPlugin->outputVectorList();
           QStringList scalars = _dataObjectPlugin->outputScalarList();
 
-          KstWriteLocker pl(_dataObjectPlugin);
+          _dataObjectPlugin->writeLock();
 
           for (QStringList::ConstIterator it = vectors.begin(); it != vectors.end(); ++it) {
             _dataObjectPlugin->setOutputVector(*it, QString::null);
@@ -465,6 +466,8 @@ Function::Function(char *name, ArgumentList *args)
           for (QStringList::ConstIterator it = scalars.begin(); it != scalars.end(); ++it) {
             _dataObjectPlugin->setOutputScalar(*it, QString::null);
           }
+          
+          _dataObjectPlugin->unlock();
         }
       }
 
@@ -514,11 +517,11 @@ Function::~Function() {
 
 
 KstObject::UpdateType Function::updateCStylePlugin(Context *ctx) {
-  const QValueList<Plugin::Data::IOValue>& itable = _cStylePlugin->data()._inputs;
+  const QList<Plugin::Data::IOValue>& itable = _cStylePlugin->data()._inputs;
   uint itcnt = 0, vitcnt = 0, cnt = 0;
 
   // populate the input scalars and vectors
-  for (QValueList<Plugin::Data::IOValue>::ConstIterator it = itable.begin(); it != itable.end(); ++it) {
+  for (QList<Plugin::Data::IOValue>::ConstIterator it = itable.begin(); it != itable.end(); ++it) {
     if ((*it)._type == Plugin::Data::IOValue::TableType) {
       Data *d = dynamic_cast<Data*>(_args->node(cnt + 1));
       if (d && d->_vector) {
@@ -567,9 +570,9 @@ KstObject::UpdateType Function::updateCStylePlugin(Context *ctx) {
   if (!_cStylePlugin->data()._filterOutputVector.isEmpty()) {
     int loc = 0;
     bool found = false;
-    const QValueList<Plugin::Data::IOValue>& otable = _cStylePlugin->data()._outputs;
+    const QList<Plugin::Data::IOValue>& otable = _cStylePlugin->data()._outputs;
 
-    for (QValueList<Plugin::Data::IOValue>::ConstIterator it = otable.begin(); it != otable.end(); ++it) {
+    for (QList<Plugin::Data::IOValue>::ConstIterator it = otable.begin(); it != otable.end(); ++it) {
       if ((*it)._type == Plugin::Data::IOValue::TableType) {
         if ((*it)._name == _cStylePlugin->data()._filterOutputVector) {
           found = true;
@@ -637,7 +640,7 @@ KstObject::UpdateType Function::updateDataObjectPlugin(int counter, Context *ctx
     } else {
       Node *n = _args->node(cnt + 1);
       if (n) {
-        KstScalarPtr sp = new KstScalar(KstObjectTag::fromString(*it), 0L, n->value(ctx), true, false, false);
+        KstScalarPtr sp(new KstScalar(KstObjectTag::fromString(*it), 0L, n->value(ctx), true, false, false));
         if (sp) {
           _dataObjectPlugin->setInputScalar(*it, sp);
         }
@@ -647,9 +650,9 @@ KstObject::UpdateType Function::updateDataObjectPlugin(int counter, Context *ctx
   }
 
   {
-    KstWriteLocker pl(_dataObjectPlugin);
-
+    _dataObjectPlugin->writeLock();
     _dataObjectPlugin->update(counter);
+    _dataObjectPlugin->unlock();
   }
 
   _outputIndex = EQ_INDEX_ERROR;
@@ -764,7 +767,11 @@ bool Function::isConst() {
 
 
 bool Function::isPlugin() const {
-  return _cStylePlugin != 0L;
+  if (_cStylePlugin.data() != 0L) {
+    return true;
+  }
+  
+  return false;
 }
 
 
@@ -786,7 +793,6 @@ QString Function::text() const {
 /////////////////////////////////////////////////////////////////
 ArgumentList::ArgumentList()
 : Node() {
-  _args.setAutoDelete(true);
 }
 
 
@@ -811,28 +817,35 @@ double ArgumentList::at(int arg, Context *ctx) {
 
 
 bool ArgumentList::isConst() {
-  for (Node *i = _args.first(); i; i = _args.next()) {
-    if (!i->isConst()) {
+  QList<Node*>::iterator it;
+  
+  for (it = _args.begin(); it != _args.end(); ++it) {
+    if (!(*it)->isConst()) {
       return false;
     }
   }
+  
   return true;
 }
 
 
 bool ArgumentList::collectObjects(KstVectorMap& v, KstScalarMap& s, KstStringMap& t) {
+  QList<Node*>::iterator it;
   bool ok = true;
-  for (Node *i = _args.first(); i; i = _args.next()) {
-    ok = i->collectObjects(v, s, t) ? ok : false;
+
+  for (it = _args.begin(); it != _args.end(); ++it) {
+    ok = (*it)->collectObjects(v, s, t) ? ok : false;
   }
   return ok;
 }
 
 
 bool ArgumentList::takeVectorsAndScalars(const KstVectorMap& vm, const KstScalarMap& sm) {
+  QList<Node*>::iterator it;
   bool rc = true;
-  for (Node *i = _args.first(); i; i = _args.next()) {
-    rc = i->takeVectorsAndScalars(vm, sm) || rc;
+
+  for (it = _args.begin(); it != _args.end(); ++it) {
+    rc = (*it)->takeVectorsAndScalars(vm, sm) || rc;
   }
   return rc;
 }
@@ -848,28 +861,28 @@ Node *ArgumentList::node(int idx) {
 
 
 KstObject::UpdateType ArgumentList::update(int counter, Context *ctx) {
+  QList<Node*>::iterator it;
   bool updated = false;
-  for (Node *i = _args.first(); i; i = _args.next()) {
-    updated = updated || KstObject::UPDATE == i->update(counter, ctx);
+  
+  for (it = _args.begin(); it != _args.end(); ++it) {
+    updated = updated || KstObject::UPDATE == (*it)->update(counter, ctx);
   }
+  
   return updated ? KstObject::UPDATE : KstObject::NO_CHANGE;
 }
 
 
 QString ArgumentList::text() const {
+  QList<Node*>::const_iterator it;
   QString rc;
-  bool first = true;
-  QPtrListIterator<Node> it(_args);
-  const Node *i;
-  while ( (i = it.current()) ) {
-    if (!first) {
+
+  for (it = _args.begin(); it != _args.end(); ++it) {
+    if (it != _args.begin()) {
       rc += ", ";
-    } else {
-      first = false;
     }
-    rc += i->text();
-    ++it;
+    rc += (*it)->text();
   }
+
   return rc;
 }
 
@@ -931,20 +944,22 @@ QString Identifier::text() const {
 Data::Data(char *name)
 : Node(), _isEquation(false), _equation(0L) {
   if (name[0] == '=') {
-    _tagName = QString(&name[1]).stripWhiteSpace();
+    _tagName = QString(&name[1]).trimmed();
     _isEquation = true;
   } else if (strchr(name, '[')) {
-    _tagName = QString(name).stripWhiteSpace();
-    QRegExp re("(.*)\\[(.*)\\]");
-    int hit = re.search(_tagName);
-    if (hit > -1 && re.numCaptures() == 2) {
-      _vector = *KST::vectorList.findTag(re.cap(1));
+    QRegExp regexp("(.*)\\[(.*)\\]");
+    int hit;
+
+    _tagName = QString(name).trimmed();
+    hit = regexp.indexIn(_tagName);
+    if (hit > -1 && regexp.numCaptures() == 2) {
+      _vector = *KST::vectorList.findTag(regexp.cap(1));
       if (_vector) {
-        _vectorIndex = re.cap(2);
+        _vectorIndex = regexp.cap(2);
       }
     }
   } else {
-    _tagName = QString(name).stripWhiteSpace();
+    _tagName = QString(name).trimmed();
     _vector = *KST::vectorList.findTag(_tagName);
     if (!_vector) {
       _scalar = *KST::scalarList.findTag(_tagName);
@@ -965,7 +980,7 @@ double Data::value(Context *ctx) {
   if (_isEquation) {
     if (!_equation) {
       mutex().lock();
-      YY_BUFFER_STATE b = yy_scan_bytes(_tagName.latin1(), _tagName.length());
+      YY_BUFFER_STATE b = yy_scan_bytes(_tagName.toLatin1(), _tagName.length());
       int rc = yyparse();
       yy_delete_buffer(b);
       if (rc == 0 && ParsedEquation) {
@@ -982,6 +997,7 @@ double Data::value(Context *ctx) {
         ParsedEquation = 0L;
         mutex().unlock();
         _isEquation = false;
+
         return ctx->noPoint;
       }
     }
@@ -989,7 +1005,7 @@ double Data::value(Context *ctx) {
   } else if (_vector) {
     if (!_equation && !_vectorIndex.isEmpty()) {
       mutex().lock();
-      YY_BUFFER_STATE b = yy_scan_bytes(_vectorIndex.latin1(), _vectorIndex.length());
+      YY_BUFFER_STATE b = yy_scan_bytes(_vectorIndex.toLatin1(), _vectorIndex.length());
       int rc = yyparse();
       yy_delete_buffer(b);
       if (rc == 0 && ParsedEquation) {
@@ -1007,6 +1023,7 @@ double Data::value(Context *ctx) {
         mutex().unlock();
         _vectorIndex = QString::null;
         _vector = 0L;
+
         return ctx->noPoint;
       }
     }
@@ -1077,20 +1094,24 @@ bool Data::takeVectorsAndScalars(const KstVectorMap& vm, const KstScalarMap& sm)
 }
 
 
-KstObject::UpdateType Data::update(int counter, Context *ctx) {
-  Q_UNUSED(ctx)
+KstObject::UpdateType Data::update(int counter, Context *ctx) { 
+  KstObject::UpdateType updateType = KstObject::NO_CHANGE;
+  
   if (_isEquation) {
     if (_equation) {
-      return _equation->update(counter, ctx);
+      updateType = _equation->update(counter, ctx);
     }
   } else if (_vector) {
-    KstWriteLocker l(_vector);
-    return _vector->update(counter);
+    _vector->writeLock();
+    updateType = _vector->update(counter);
+    _vector->unlock();
   } else if (_scalar) {
-    KstWriteLocker l(_scalar);
-    return _scalar->update(counter);
+    _scalar->writeLock();
+    updateType = _scalar->update(counter);
+    _scalar->unlock();
   }
-  return KstObject::NO_CHANGE;
+  
+  return updateType;
 }
 
 
