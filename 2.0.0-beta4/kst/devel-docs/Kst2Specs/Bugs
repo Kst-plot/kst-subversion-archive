@@ -1,0 +1,44 @@
+
+Draw an ellipse that spans many plots.  It ends up in the back, and can't be brought to the front.
+
+--------------------
+
+Artifacts when resizing large arrowheads.
+
+--------------------
+
+Curves are rendered slightly above where they should be.  Take a plot
+that it is of very boring data (like always exactly zero) and it'll be
+drawn one pixel above the axis tick mark for zero.  
+
+--------------------
+
+Text for labels and axes is rendered (anti-aliased) non-uniformly.  One
+plot may look sharp whereas the plot immediately below it will have text
+that looks blurry (even out of focus).  
+
+--------------------
+
+If you turn on data mode, the data mode indicator on the plot (grey
+filled circle) remains, even after you scroll your mouse to a new plot.
+If in "live" mode, the indicator will scroll with the plot until it
+disappears off the edge.  If you turn off datamode all shown indicators
+disappear, but if you turn it on, those ones reappear.  
+
+--------------------
+
+When in data mode, the position of the data mode indicator and the
+values in the bottom status bar only update if you move the mouse.  When
+live data is scrolling by and the mouse is still, the data mode
+indicator scrolls off the plot with the data (until you jiggle the
+mouse).
+
+--------------------
+
+Windows MEMleak
+
+------------------
+
+Cleanup layout totally sucks!
+
+

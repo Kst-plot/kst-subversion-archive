@@ -1,0 +1,73 @@
+Export eps to vector format.
+  kst 1.x did this by printing to file a .ps file, and then modifying it by adding the bounding box.
+
+------------
+
+Shared axis from the command line
+
+---------
+
+Smarter ASCII reader:
+  should be able to use huristics to get information about
+  the ascii file.
+    (eg, is it a CSV?  Does it have a field name header?)
+  these should be used only for new files, and should be used to sed the defaults, which can still be changed with 'configure'.
+
+------------
+
+Fixup line/arrow dimensions tab:
+  x,y instead of length/angle
+
+----------
+
+Tooltips/whats this where helpful.
+
+----------
+
+Scientific notation (instead of C's %e notation) for extreme axis numbers
+
+--------
+
+Edit multiple for other view objects (arrow, line, label...)
+
+--------
+
+data source text box doesn't recognise initial ~ as a euphemism for
+   the user's home directory (QDirModel doesn't handle this...)
+   (nor QDir, though QDir seems to know about $HOME).
+
+------------
+
+1.x kst file read compatibility...
+
+------------
+
+DECIDE: absolute or relative file names in kst files?
+  kst1.x uses absolute.  This becomes a problem when the directory changes.
+
+-----------
+
+Easier way to specify reversed axis when loading sky images:
+  -can desire to reverse be gleaned from the fits image?
+  -command line option?
+  -new-image (sticky) option?
+
+---------
+
+After the label creation dialog has been applied, attach the label to
+the mouse, to allow it to be dragged around until placed by a click.
+
+---------
+
+The data manager doesn't have a purge button.
+
+--------------------
+
+Perhaps unrelated to kst, but the new symbolic link name in defile
+(replacing the defile.cur indirect file) is retarded.  It slows me down
+and the double extension is pointless.  
+
+--------------------
+
+Thread kst2
+
