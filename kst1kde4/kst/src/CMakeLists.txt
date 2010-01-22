@@ -1,0 +1,16 @@
+cmake_minimum_required(VERSION 2.6)
+
+add_subdirectory(extdate)
+add_subdirectory(libkst)
+add_subdirectory(libkstmath)
+add_subdirectory(datasources)
+add_subdirectory(widgets)
+add_subdirectory(libkstapp)
+add_subdirectory(kst)
+add_subdirectory(d2asc)
+add_subdirectory(plugins)
+add_subdirectory(extensions)
+
+IF (NOT HAVE_KMDI)
+    add_subdirectory(libkstkmdi)
+ENDIF (NOT HAVE_KMDI)
