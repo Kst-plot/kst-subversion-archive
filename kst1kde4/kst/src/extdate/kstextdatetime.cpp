@@ -403,7 +403,7 @@ ExtDate ExtDate::fromString( const QString& s, Qt::DateFormat f )
 			//Three possible date formats:
 			//dd mth yyyy; mth dd yyyy; wkd mth dd yyyy
 			//"mth" is the word for the month (long or short form)
-			QStringList ss = QStringList::split( " ", s );
+			QStringList ss = s.split( " " );
 			bool ok = false;
 			int month = -1;
 			uint imonth = 0;
@@ -1003,7 +1003,7 @@ ExtDateTime ExtDateTime::currentDateTime( Qt::TimeSpec ts )
 {
     ExtDateTime dt;
     dt.setDate( ExtDate::currentDate(ts) );
-    QTime t = t.currentTime(ts);
+    QTime t = QTime::currentTime();
     if ( t.hour()==0 && t.minute()==0 )         // midnight or right after?
         dt.setDate( ExtDate::currentDate(ts) ); // fetch date again
     dt.setTime( t );
@@ -1060,7 +1060,7 @@ ExtDateTime ExtDateTime::fromString( const QString& s, Qt::DateFormat f )
 		QTime time;
 		QString sd = s;
 		int hour, minute, second;
-		int pivot = s.find( QRegExp(QString::fromLatin1("[0-9][0-9]:[0-9][0-9]:[0-9][0-9]")) );
+		int pivot = s.indexOf( QRegExp(QString::fromLatin1("[0-9][0-9]:[0-9][0-9]:[0-9][0-9]")) );
 		if ( pivot != -1 ) {
 			hour = s.mid( pivot, 2 ).toInt();
 			minute = s.mid( pivot+3, 2 ).toInt();
@@ -1084,12 +1084,12 @@ ExtDateTime ExtDateTime::fromString( const QString& s, Qt::DateFormat f )
 #ifndef QT_NO_DATASTREAM
 QDataStream &operator<<( QDataStream & ostream, const ExtDate & date)
 {
-	return ostream << (Q_UINT32)(date.jd());
+	return ostream << (quint32)(date.jd());
 }
 
 QDataStream &operator>>( QDataStream & ostream, ExtDate & date)
 {
-	Q_UINT32 julday;
+	quint32 julday;
 	ostream >> julday;
 	date.setJD( julday );
 	return ostream;

@@ -92,57 +92,57 @@ QString ExtCalendarSystemGregorian::monthName(int month, int year, bool shortNam
     switch ( month )
       {
       case 1:
-        return locale()->translate("January", "Jan");
+        return ki18n("Jan").toString(locale());
       case 2:
-        return locale()->translate("February", "Feb");
+        return ki18n("Feb").toString(locale());
       case 3:
-        return locale()->translate("March", "Mar");
+        return ki18n("Mar").toString(locale());
       case 4:
-        return locale()->translate("April", "Apr");
+        return ki18n("Apr").toString(locale());
       case 5:
-        return locale()->translate("May short", "May");
+        return ki18n("May").toString(locale());
       case 6:
-        return locale()->translate("June", "Jun");
+        return ki18n("Jun").toString(locale());
       case 7:
-        return locale()->translate("July", "Jul");
+        return ki18n("Jul").toString(locale());
       case 8:
-        return locale()->translate("August", "Aug");
+        return ki18n("Aug").toString(locale());
       case 9:
-        return locale()->translate("September", "Sep");
+        return ki18n("Sep").toString(locale());
       case 10:
-        return locale()->translate("October", "Oct");
+        return ki18n("Oct").toString(locale());
       case 11:
-        return locale()->translate("November", "Nov");
+        return ki18n("Nov").toString(locale());
       case 12:
-        return locale()->translate("December", "Dec");
+        return ki18n("Dec").toString(locale());
       }
   else
     switch ( month )
       {
       case 1:
-        return locale()->translate("January");
+        return ki18n("January").toString(locale());
       case 2:
-        return locale()->translate("February");
+        return ki18n("February").toString(locale());
       case 3:
-        return locale()->translate("March");
+        return ki18n("March").toString(locale());
       case 4:
-        return locale()->translate("April");
+        return ki18n("April").toString(locale());
       case 5:
-        return locale()->translate("May long", "May");
+        return ki18n("May").toString(locale());
       case 6:
-        return locale()->translate("June");
+        return ki18n("June").toString(locale());
       case 7:
-        return locale()->translate("July");
+        return ki18n("July").toString(locale());
       case 8:
-        return locale()->translate("August");
+        return ki18n("August").toString(locale());
       case 9:
-        return locale()->translate("September");
+        return ki18n("September").toString(locale());
       case 10:
-        return locale()->translate("October");
+        return ki18n("October").toString(locale());
       case 11:
-        return locale()->translate("November");
+        return ki18n("November").toString(locale());
       case 12:
-        return locale()->translate("December");
+        return ki18n("December").toString(locale());
       }
 
   return QString::null;
@@ -157,57 +157,58 @@ QString ExtCalendarSystemGregorian::monthNamePossessive(int month, int year,
     switch ( month )
       {
       case 1:
-        return locale()->translate("of January", "of Jan");
+        return ki18n("of Jan").toString(locale());
       case 2:
-        return locale()->translate("of February", "of Feb");
+        return ki18n("of Feb").toString(locale());
       case 3:
-        return locale()->translate("of March", "of Mar");
+        return ki18n("of Mar").toString(locale());
       case 4:
-        return locale()->translate("of April", "of Apr");
+        return ki18n("of Apr").toString(locale());
       case 5:
-        return locale()->translate("of May short", "of May");
+        return ki18n("of May").toString(locale());
       case 6:
-        return locale()->translate("of June", "of Jun");
+        return ki18n("of Jun").toString(locale());
       case 7:
-        return locale()->translate("of July", "of Jul");
+        return ki18n("of Jul").toString(locale());
       case 8:
-        return locale()->translate("of August", "of Aug");
+        return ki18n("of Aug").toString(locale());
       case 9:
-        return locale()->translate("of September", "of Sep");
+        return ki18n("of Sep").toString(locale());
       case 10:
-        return locale()->translate("of October", "of Oct");
+        return ki18n("of Oct").toString(locale());
       case 11:
-       return locale()->translate("of November", "of Nov");
+        return ki18n("of Nov").toString(locale());
       case 12:
-        return locale()->translate("of December", "of Dec");
+        return ki18n("of Dec").toString(locale());
       }
   else
     switch ( month )
       {
       case 1:
-        return locale()->translate("of January");
+        return ki18n("of January").toString(locale());
       case 2:
-        return locale()->translate("of February");
+        return ki18n("of February").toString(locale());
       case 3:
-        return locale()->translate("of March");
+        return ki18n("of March").toString(locale());
       case 4:
-        return locale()->translate("of April");
+        return ki18n("of April").toString(locale());
       case 5:
-        return locale()->translate("of May long", "of May");
+        return ki18n("of May").toString(locale());
       case 6:
-        return locale()->translate("of June");
+        return ki18n("of June").toString(locale());
       case 7:
-        return locale()->translate("of July");
+        return ki18n("of July").toString(locale());
       case 8:
-        return locale()->translate("of August");
+        return ki18n("of August").toString(locale());
       case 9:
-        return locale()->translate("of September");
+        return ki18n("of September").toString(locale());
       case 10:
-        return locale()->translate("of October");
+        return ki18n("of October").toString(locale());
       case 11:
-        return locale()->translate("of November");
+        return ki18n("of November").toString(locale());
       case 12:
-        return locale()->translate("of December");
+        return ki18n("of December").toString(locale());
+
       }
 
   return QString::null;

@@ -120,10 +120,10 @@ private:
 	friend class ExtDateTime;
 
 	#ifndef QT_NO_DATASTREAM
-	friend Q_EXPORT QDataStream &operator<<( QDataStream &, const ExtDate & );
-	friend Q_EXPORT QDataStream &operator>>( QDataStream &, ExtDate & );
-	friend Q_EXPORT QDataStream &operator<<( QDataStream &, const ExtDateTime & );
-	friend Q_EXPORT QDataStream &operator>>( QDataStream &, ExtDateTime & );
+	friend Q_DECL_EXPORT QDataStream &operator<<( QDataStream &, const ExtDate & );
+	friend Q_DECL_EXPORT QDataStream &operator>>( QDataStream &, ExtDate & );
+	friend Q_DECL_EXPORT QDataStream &operator<<( QDataStream &, const ExtDateTime & );
+	friend Q_DECL_EXPORT QDataStream &operator>>( QDataStream &, ExtDateTime & );
 #endif
 };
 
@@ -178,8 +178,8 @@ private:
     ExtDate  d;
     QTime  t;
 #ifndef QT_NO_DATASTREAM
-    friend Q_EXPORT QDataStream &operator<<( QDataStream &, const ExtDateTime &);
-    friend Q_EXPORT QDataStream &operator>>( QDataStream &, ExtDateTime & );
+    friend Q_DECL_EXPORT QDataStream &operator<<( QDataStream &, const ExtDateTime &);
+    friend Q_DECL_EXPORT QDataStream &operator>>( QDataStream &, ExtDateTime & );
 #endif
 };
 
@@ -188,8 +188,8 @@ private:
  *****************************************************************************/
 
 #ifndef QT_NO_DATASTREAM
-Q_EXPORT QDataStream &operator<<( QDataStream &, const ExtDate & );
-Q_EXPORT QDataStream &operator>>( QDataStream &, ExtDate & );
+Q_DECL_EXPORT QDataStream &operator<<( QDataStream &, const ExtDate & );
+Q_DECL_EXPORT QDataStream &operator>>( QDataStream &, ExtDate & );
 #endif // QT_NO_DATASTREAM
 }
 
