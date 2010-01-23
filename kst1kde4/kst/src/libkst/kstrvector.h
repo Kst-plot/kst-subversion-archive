@@ -18,8 +18,9 @@
 #ifndef KSTRVECTOR_H
 #define KSTRVECTOR_H
 
-#include "kstvector.h"
+#include <QExplicitlySharedDataPointer>
 
+#include "kstvector.h"
 #include "kstdatasource.h"
 #include "kst_export.h"
 
@@ -33,13 +34,13 @@ public:
   /** Create an RVECTOR */
   KstRVector(KstDataSourcePtr file, const QString &field,
              KstObjectTag tag,
-             int f0, int n,
+             KstFrameSize f0, KstFrameSize n,
              int skip, bool in_doSkip,
              bool in_doAve);
 
   KstRVector(const QDomElement &e,
              const QString &o_file="|",
-             int o_n = -2, int o_f = -2,
+             KstFrameSize o_n = -2, KstFrameSize o_f = -2,
              int o_s = -1, bool o_ave = false);
 
   virtual ~KstRVector();
@@ -50,12 +51,12 @@ public:
   /** change the properties of a kstrvector */
   void change(KstDataSourcePtr file, const QString &field,
               KstObjectTag tag,
-              int f0, int n, int skip,
+              KstFrameSize f0, KstFrameSize n, int skip,
               bool in_doSkip, bool in_doAve);
 
   void changeFile(KstDataSourcePtr file);
 
-  void changeFrames(int f0, int n, int skip,
+  void changeFrames(KstFrameSize f0, KstFrameSize n, int skip,
                     bool in_doSkip, bool in_doAve);
 
   /** Return frames held in Vector */
@@ -65,10 +66,10 @@ public:
   int reqNumFrames() const;
 
   /** Return Starting Frame of Vector */
-  int startFrame() const;
+  KstFrameSize startFrame() const;
 
   /** Return the requested starting frame of the Vector */
-  int reqStartFrame() const;
+  KstFrameSize reqStartFrame() const;
 
   /** Return frames to skip per read */
   bool doSkip() const;
@@ -98,7 +99,7 @@ public:
   virtual QString fileLabel() const { return filename(); }
 
   /** return the length of the file */
-  int fileLength() const;
+  KstFrameSize fileLength() const;
 
   /** return whether the vector is suppose to read to end of file */
   bool readToEOF() const;
@@ -126,22 +127,22 @@ private:
   /** Common contructor for an RVector */
   void commonRVConstructor(KstDataSourcePtr file,
       const QString &field,
-      int f0, int n,
+      KstFrameSize f0, KstFrameSize n,
       int skip, bool in_doSkip,
       bool in_doAve);
 
   int _samplesPerFrame;
-  int _numberOfFrames;
-  int _startingFrame;
+  KstFrameSize _numberOfFrames;
+  KstFrameSize _startingFrame;
   bool _doSkip;
   bool _doAve;
   int _skip;
 
   /** max number of frames */
-  int _reqNumberFrames;
+  KstFrameSize _reqNumberFrames;
 
   /** Requested Starting Frame */
-  int _reqStartingFrame;
+  KstFrameSize _reqStartingFrame;
 
   /** file to read for rvectors */
   KstDataSourcePtr _file;
@@ -150,7 +151,7 @@ private:
   QString _field;
 
   /** Number of Samples allocated to the vector */
-  int _numSamples;
+  KstFrameSize _numSamples;
 
   int _nAveReadBuf;
   double *_aveReadBuf;

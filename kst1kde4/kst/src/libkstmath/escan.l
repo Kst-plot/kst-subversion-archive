@@ -1,6 +1,8 @@
 %option noyywrap
+%option never-interactive
 %x DATA
 %{
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>

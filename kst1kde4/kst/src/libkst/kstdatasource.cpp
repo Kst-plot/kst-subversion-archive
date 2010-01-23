@@ -69,6 +69,7 @@ static QString obtainFile(const QString& source) {
   if (!KIO::NetAccess::exists(url, KIO::NetAccess::DestinationSide, 0L)) {
     return QString::null;
   }
+
   if (!KIO::NetAccess::download(url, tmpFile, 0L)) {
     return QString::null;
   }
@@ -84,7 +85,6 @@ static void scanPlugins() {
   KST::PluginInfoList tmpList;
 
   KstDebug::self()->log(i18n("Scanning for data-source plugins."));
-
 /* xxx  KService::List sl = KServiceType::offers("Kst Data Source");
   for (KService::List::ConstIterator it = sl.begin(); it != sl.end(); ++it) {
     for (KST::PluginInfoList::ConstIterator i2 = pluginInfo.begin(); i2 != pluginInfo.end(); ++i2) {
@@ -97,11 +97,12 @@ static void scanPlugins() {
     QExplicitlySharedDataPointer<KST::Plugin> p = new KST::DataSourcePlugin(*it);
     tmpList.append(p);
   }
-*/
+
   // This cleans up plugins that have been uninstalled and adds in new ones.
   // Since it is a shared pointer it can't dangle anywhere.
   pluginInfo.clear();
-  pluginInfo = Q3DeepCopy<KST::PluginInfoList>(tmpList);
+  pluginInfo = QDeepCopy<KST::PluginInfoList>(tmpList);
+*/
 }
 
 
@@ -124,6 +125,7 @@ namespace {
 class PluginSortContainer {
   public:
     QExplicitlySharedDataPointer<KST::DataSourcePlugin> plugin;
+
     int match;
     int operator<(const PluginSortContainer& x) const {
       return match > x.match; // yes, this is by design.  biggest go first
@@ -137,7 +139,7 @@ class PluginSortContainer {
 
 static QList<PluginSortContainer> bestPluginsForSource(const QString& filename, const QString& type) {
   QList<PluginSortContainer> bestPlugins;
-  
+
   if (pluginInfo.isEmpty()) {
     scanPlugins();
   }
@@ -152,8 +154,8 @@ static QList<PluginSortContainer> bestPluginsForSource(const QString& filename, 
           psc.match = 100;
           psc.plugin = p;
           bestPlugins.append(psc);
-
-	  return bestPlugins;
+          
+          return bestPlugins;
         }
       }
     }
@@ -161,7 +163,6 @@ static QList<PluginSortContainer> bestPluginsForSource(const QString& filename, 
 
   for (KST::PluginInfoList::ConstIterator it = info.begin(); it != info.end(); ++it) {
     PluginSortContainer psc;
-    
     if (KST::DataSourcePlugin *p = kst_cast<KST::DataSourcePlugin>(*it)) {
       if ((psc.match = p->understands(kConfigObject, filename)) > 0) {
         psc.plugin = p;
@@ -171,17 +172,17 @@ static QList<PluginSortContainer> bestPluginsForSource(const QString& filename, 
   }
 
   qSort(bestPlugins);
-  
+
   return bestPlugins;
 }
 
 
 static KstDataSourcePtr findPluginFor(const QString& filename, const QString& type, const QDomElement& e = QDomElement()) {
-
   Q3ValueList<PluginSortContainer> bestPlugins = bestPluginsForSource(filename, type);
-
+ 
   for (Q3ValueList<PluginSortContainer>::Iterator i = bestPlugins.begin(); i != bestPlugins.end(); ++i) {
     KstDataSourcePtr plugin((*i).plugin->create(kConfigObject, filename, QString::null, e));
+
     if (plugin) {
       // restore tag if present
       QDomNodeList l = e.elementsByTagName("tag");
@@ -315,6 +316,7 @@ bool KstDataSource::supportsHierarchy(const QString& filename, const QString& ty
   if (bestPlugins.isEmpty()) {
     return false;
   }
+
   return (*bestPlugins.begin()).plugin->supportsHierarchy();
 }
 
@@ -385,6 +387,7 @@ QStringList KstDataSource::matrixListForSource(const QString& filename, const QS
 
   Q3ValueList<PluginSortContainer> bestPlugins = bestPluginsForSource(fn, type);
   QStringList rc;
+  
   for (Q3ValueList<PluginSortContainer>::Iterator i = bestPlugins.begin(); i != bestPlugins.end(); ++i) {
     QString typeSuggestion;
     rc = (*i).plugin->matrixList(kConfigObject, fn, QString::null, &typeSuggestion, complete);
@@ -459,19 +462,20 @@ KstDataSource::KstDataSource(KConfig *cfg, const QString& filename, const QStrin
 
 KstDataSource::~KstDataSource() {
   QMultiHash<QString, KstString>::iterator it;
-  
+
   KST::scalarList.lock().writeLock();
   KST::scalarList.remove(_numFramesScalar.data());
   KST::scalarList.lock().unlock();
 
   KST::stringList.lock().writeLock();
   KST::stringList.setUpdateDisplayTags(false);
-  
+
   for (it = _metaData.begin(); it != _metaData.end(); ++it) {
     KstString  str(it.value());
 
     KST::stringList.remove(&str);
   }
+
   KST::stringList.setUpdateDisplayTags(true);
   KST::stringList.lock().unlock();
 
@@ -483,7 +487,7 @@ void KstDataSource::setTagName(const KstObjectTag& in_tag) {
   if (in_tag == tag()) {
     return;
   }
-  
+
   KstObject::setTagName(in_tag);
   _numFramesScalar->setTagName(KstObjectTag("frames", tag()));
 
@@ -491,6 +495,7 @@ void KstDataSource::setTagName(const KstObjectTag& in_tag) {
   
   for (it=_metaData.begin(); it != _metaData.end(); ++it) {
     KstObjectTag stag = it->tag();
+
     stag.setContext(tag().fullTag());
     it->setTagName(stag);
   }
@@ -506,18 +511,36 @@ KstObject::UpdateType KstDataSource::update(int u) {
 
 
 void KstDataSource::updateNumFramesScalar() {
-  _numFramesScalar->setValue(frameCount());
+  _numFramesScalar->setValue((double)frameCountLarge());
 }
 
 
-int KstDataSource::readField(double *v, const QString& field, int s, int n, int skip, int *lastFrameRead) {
+int KstDataSource::readFieldSkip(double *v, const QString& field, int s, int n, int skip, int *lastFrameRead) {
   Q_UNUSED(v)
   Q_UNUSED(field)
   Q_UNUSED(s)
   Q_UNUSED(n)
   Q_UNUSED(skip)
   Q_UNUSED(lastFrameRead)
+
   return -9999; // unsupported
+}
+
+
+KstFrameSize KstDataSource::readFieldLargeSkip(double *v, const QString& field, KstFrameSize s, KstFrameSize n, int skip, KstFrameSize *lastFrameRead) {
+  KstFrameSize rc = -9999;
+
+  if (s <= INT_MAX && s+n <= INT_MAX) {
+    int iLastFrameRead;
+
+    rc = (KstFrameSize)readFieldSkip(v, field, (int)s, (int)n, skip, &iLastFrameRead);
+
+    *lastFrameRead = (KstFrameSize)iLastFrameRead;
+
+    return (KstFrameSize)rc;
+  }
+
+  return rc;
 }
 
 
@@ -526,20 +549,47 @@ int KstDataSource::readField(double *v, const QString& field, int s, int n) {
   Q_UNUSED(field)
   Q_UNUSED(s)
   Q_UNUSED(n)
+
   return -1;
 }
+
+
+KstFrameSize KstDataSource::readFieldLarge(double *v, const QString& field, KstFrameSize s, KstFrameSize n) {
+  KstFrameSize rc = -1;
+
+  if (s <= INT_MAX && n <= INT_MAX) {
+    rc = (KstFrameSize)readField(v, field, (int)s, (int)n);
+  }
+
+  return rc;
+}
+
 
 bool KstDataSource::isWritable() const {
   return _writable;
 }
+
 
 int KstDataSource::writeField(const double *v, const QString& field, int s, int n) {
   Q_UNUSED(v)
   Q_UNUSED(field)
   Q_UNUSED(s)
   Q_UNUSED(n)
+
   return -1;
 }
+
+
+KstFrameSize KstDataSource::writeFieldLarge(const double *v, const QString& field, KstFrameSize s, KstFrameSize n) {
+  KstFrameSize rc = -1;
+
+  if (s <= INT_MAX && s+n <= INT_MAX) {
+    rc = (KstFrameSize)writeField(v, field, (int)s, (int)n);
+  }
+
+  return rc;
+}
+
 
 int KstDataSource::readMatrix(KstMatrixData* data, const QString& matrix, int xStart, int yStart, int xNumSteps, int yNumSteps, int skip) {
   Q_UNUSED(data)
@@ -549,6 +599,7 @@ int KstDataSource::readMatrix(KstMatrixData* data, const QString& matrix, int xS
   Q_UNUSED(xNumSteps)
   Q_UNUSED(yNumSteps)
   Q_UNUSED(skip)
+
   return -9999;
 }
 
@@ -560,6 +611,7 @@ int KstDataSource::readMatrix(KstMatrixData* data, const QString& matrix, int xS
   Q_UNUSED(yStart)
   Q_UNUSED(xNumSteps)
   Q_UNUSED(yNumSteps)
+
   return -1;
 }
 
@@ -568,7 +620,8 @@ bool KstDataSource::matrixDimensions(const QString& matrix, int* xDim, int* yDim
   Q_UNUSED(matrix)
   Q_UNUSED(xDim)
   Q_UNUSED(yDim)
-  return false;  
+
+  return false;
 }
 
 
@@ -579,35 +632,48 @@ bool KstDataSource::isValid() const {
 
 bool KstDataSource::isValidField(const QString& field) const {
   Q_UNUSED(field)
+
   return false;
 }
 
 
 bool KstDataSource::isValidMatrix(const QString& field) const {
   Q_UNUSED(field)
-  return false;  
+
+  return false;
 }
 
 
 int KstDataSource::samplesPerFrame(const QString &field) {
   Q_UNUSED(field)
+
   return 0;
 }
 
 
 int KstDataSource::frameCount(const QString& field) const {
   Q_UNUSED(field)
+
   return 0;
 }
 
 
+KstFrameSize KstDataSource::frameCountLarge(const QString& field) const {
+  return (KstFrameSize)frameCount(field);
+}
+
+
 QString KstDataSource::fileName() const {
-  // Look to see if it was a URL and save the URL instead
+  //
+  // look to see if it was a URL and save the URL instead...
+  //
+
   for (QMap<QString,QString>::ConstIterator i = urlMap.begin(); i != urlMap.end(); ++i) {
     if (i.value() == _filename) {
       return i.key();
     }
   }
+
   return _filename;
 }
 
@@ -629,17 +695,18 @@ QString KstDataSource::fileType() const {
 
 void KstDataSource::save(QTextStream &ts, const QString& indent) {
   QString name = Qt::escape(_filename);
-  
+
   //
   // look to see if it was a URL and save the URL instead...
   //
-  
+
   for (QMap<QString,QString>::ConstIterator i = urlMap.begin(); i != urlMap.end(); ++i) {
     if (i.value() == _filename) {
       name = Qt::escape(i.key());
       break;
     }
   }
+
   ts << indent << "<tag>" << Qt::escape(tag().tagString()) << "</tag>" << endl;
   ts << indent << "<filename>" << name << "</filename>" << endl;
   ts << indent << "<type>" << Qt::escape(fileType()) << "</type>" << endl;
@@ -707,7 +774,7 @@ bool KstDataSource::supportsTimeConversions() const {
 }
 
 
-int KstDataSource::sampleForTime(const KDateTime& time, bool *ok) {
+int KstDataSource::sampleForTime(const KST::ExtDateTime& time, bool *ok) {
   Q_UNUSED(time)
 
   if (ok) {
@@ -715,6 +782,11 @@ int KstDataSource::sampleForTime(const KDateTime& time, bool *ok) {
   }
 
   return 0;
+}
+
+
+KstFrameSize KstDataSource::sampleForTimeLarge(const KST::ExtDateTime& time, bool *ok) {
+  return sampleForTime(time, ok);
 }
 
 
@@ -729,19 +801,50 @@ int KstDataSource::sampleForTime(double ms, bool *ok) {
 }
 
 
-KDateTime KstDataSource::timeForSample(int sample, bool *ok) {
+KstFrameSize KstDataSource::sampleForTimeLarge(double ms, bool *ok) {
+  return sampleForTime(ms, ok);
+}
+
+
+KST::ExtDateTime KstDataSource::timeForSample(int sample, bool *ok) {
   Q_UNUSED(sample)
 
   if (ok) {
     *ok = false;
   }
 
-  return KDateTime::currentUtcDateTime();
+  return KST::ExtDateTime::currentDateTime();
+}
+
+
+KST::ExtDateTime KstDataSource::timeForSampleLarge(KstFrameSize sample, bool *ok) {
+  if (sample <= INT_MAX) {
+    return timeForSample((int)sample, ok);
+  }
+
+  if (ok) {
+    *ok = false;
+  }
+
+  return KST::ExtDateTime::currentDateTime();
 }
 
 
 double KstDataSource::relativeTimeForSample(int sample, bool *ok) {
   Q_UNUSED(sample)
+
+  if (ok) {
+    *ok = false;
+  }
+
+  return 0.0;
+}
+
+
+double KstDataSource::relativeTimeForSampleLarge(KstFrameSize sample, bool *ok) {
+  if (sample <= INT_MAX) {
+    relativeTimeForSample((int)sample, ok);
+  }
 
   if (ok) {
     *ok = false;

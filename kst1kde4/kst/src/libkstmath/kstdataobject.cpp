@@ -755,4 +755,3 @@ bool KstDataObject::recursed() const {
   return _isRecursed;
 }
 
-#include "kstdataobject.moc"

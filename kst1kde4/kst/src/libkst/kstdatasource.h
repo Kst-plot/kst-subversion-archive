@@ -50,6 +50,7 @@ class KstScalar;
 class KstString;
 class KstDataSourceConfigWidget;
 typedef QExplicitlySharedDataPointer<KstScalar> KstScalarPtr;
+typedef qint64 KstFrameSize;
 
 class KST_EXPORT KstDataSource : public KstObject {
   protected:
@@ -99,11 +100,13 @@ class KST_EXPORT KstDataSource : public KstObject {
       return the number of -samples- read.
      */
     virtual int readField(double *v, const QString& field, int s, int n);
+    virtual KstFrameSize readFieldLarge(double *v, const QString& field, KstFrameSize s, KstFrameSize n);
 
     /** Reads a field from the file.  Data is returned in the
       double Array v[].  Will skip according to the parameter, but it may not
       be implemented.  If it returns -9999, use the non-skip version instead. */
-    virtual int readField(double *v, const QString& field, int s, int n, int skip, int *lastFrameRead = 0L);
+    virtual int readFieldSkip(double *v, const QString& field, int s, int n, int skip, int *lastFrameRead = 0L);
+    virtual KstFrameSize readFieldLargeSkip(double *v, const QString& field, KstFrameSize s, KstFrameSize n, int skip, KstFrameSize *lastFrameRead = 0L);
 
     virtual bool isWritable() const;
 
@@ -115,6 +118,7 @@ class KST_EXPORT KstDataSource : public KstObject {
      * return the number of -samples- written or -1 if writing fails or is not supported.
      */
     virtual int writeField(const double *v, const QString& field, int s, int n);
+    virtual KstFrameSize writeFieldLarge(const double *v, const QString& field, KstFrameSize s, KstFrameSize n);
 
     /** Read the specified sub-range of the matrix, flat-packed in z in row-major order
         xStart - starting x *frame*
@@ -157,6 +161,7 @@ class KST_EXPORT KstDataSource : public KstObject {
       don't provide it as the data source may have different frame counts
       for different fields.  When implementing this, field may be ignored. */
     virtual int frameCount(const QString& field = QString::null) const;
+    virtual KstFrameSize frameCountLarge(const QString& field = QString::null) const;
 
     /** Returns the file name. It is updated each time the fn is called. */
     virtual QString fileName() const;
@@ -197,13 +202,18 @@ class KST_EXPORT KstDataSource : public KstObject {
 
     /** Does it support time conversion of sample numbers, in general? */
     virtual bool supportsTimeConversions() const;
-    virtual int sampleForTime(const KDateTime& time, bool *ok = 0L);
+    virtual int sampleForTime(const KST::ExtDateTime& time, bool *ok = 0L);
+    virtual KstFrameSize sampleForTimeLarge(const KST::ExtDateTime& time, bool *ok = 0L);
     virtual int sampleForTime(double milliseconds, bool *ok = 0L);
-    virtual KDateTime timeForSample(int sample, bool *ok = 0L);
+    virtual KstFrameSize sampleForTimeLarge(double milliseconds, bool *ok = 0L);
+    virtual KST::ExtDateTime timeForSample(int sample, bool *ok = 0L);
+    virtual KST::ExtDateTime timeForSampleLarge(KstFrameSize sample, bool *ok = 0L);
     // in (ms)
     virtual double relativeTimeForSample(int sample, bool *ok = 0L);
+    virtual double relativeTimeForSampleLarge(KstFrameSize sample, bool *ok = 0L);
 
     virtual bool supportsHierarchy() const;
+
     virtual QString units(const QString& field);
 
     /** Allow configuration settings to be set from javaScript.
@@ -218,7 +228,9 @@ class KST_EXPORT KstDataSource : public KstObject {
 
     /** Is the object valid? */
     bool _valid;
+
     bool _reusable;
+
     bool _writable;
 
     /** Place to store the list of fields.  Base implementation returns this. */
@@ -267,7 +279,7 @@ class KstDataSourceList : public KstObjectList<KstDataSourcePtr> {
       return end();
     }
 
-   KstDataSourceList::Iterator findReusableFileName(const QString& x) {
+    KstDataSourceList::Iterator findReusableFileName(const QString& x) {
       for (KstDataSourceList::Iterator it = begin(); it != end(); ++it) {
         if ((*it)->reusable() && (*it)->fileName() == x) {
           return it;
@@ -285,6 +297,7 @@ class KstDataSourceList : public KstObjectList<KstDataSourcePtr> {
     }
 
 };
+
 
 
 class KstDataSourceConfigWidget : public QWidget {

@@ -21,8 +21,6 @@
 #include <stdlib.h>
 
 #include <QTextDocument>
-
-#include <kdebug.h>
 #include <klocale.h>
 
 #include "kstdatacollection.h"
@@ -42,7 +40,7 @@
 
 KstRVector::KstRVector(KstDataSourcePtr in_file, const QString &in_field,
                        KstObjectTag in_tag,
-                       int in_f0, int in_n, int skip, bool in_DoSkip,
+                       KstFrameSize in_f0, KstFrameSize in_n, int skip, bool in_DoSkip,
                        bool in_DoAve)
 : KstVector(in_tag) {
   commonRVConstructor(in_file, in_field, in_f0, in_n, skip,
@@ -51,17 +49,16 @@ KstRVector::KstRVector(KstDataSourcePtr in_file, const QString &in_field,
 
 
 KstRVector::KstRVector(const QDomElement &e, const QString &o_file,
-                       int o_n, int o_f, int o_s, bool o_ave)
+                       KstFrameSize o_n, KstFrameSize o_f, int o_s, bool o_ave)
 : KstVector(e) {
   KstDataSourcePtr in_file, in_provider;
   QString in_field;
-  int in_f0 = 0;
-  int in_n = -1;
+  KstFrameSize in_f0 = 0;
+  KstFrameSize in_n = -1;
   int in_skip = 0;
   bool in_DoSkip = false;
   bool in_DoAve = false;
 
-  /* parse the DOM tree */
   QDomNode n = e.firstChild();
   while (!n.isNull()) {
     QDomElement e = n.toElement();
@@ -83,9 +80,9 @@ KstRVector::KstRVector(const QDomElement &e, const QString &o_file,
       } else if (e.tagName() == "field") {
         in_field = e.text();
       } else if (e.tagName() == "start") {
-        in_f0 = e.text().toInt();
+        in_f0 = e.text().toLongLong();
       } else if (e.tagName() == "num") {
-        in_n = e.text().toInt();
+        in_n = e.text().toLongLong();
       } else if (e.tagName() == "skip") {
         in_skip = e.text().toInt();
         in_DoSkip = in_skip > 0;
@@ -134,18 +131,15 @@ KstRVector::KstRVector(const QDomElement &e, const QString &o_file,
 
 
 void KstRVector::commonRVConstructor(KstDataSourcePtr in_file,
-                                     const QString &field, int reqStartingFrame,
-                                     int reqNumberFrames, int skip, bool doSkip,
+                                     const QString &field, KstFrameSize reqStartingFrame,
+                                     KstFrameSize reqNumberFrames, int skip, bool doSkip,
                                      bool doAve) {
   _saveable = true;
   _dontUseSkipAccel = false;
   _numSamples = 0;
-
   _scalars["sum"]->setValue(0.0);
   _scalars["sumsquared"]->setValue(0.0);
-
-  _startingFrame = 0;
-  _numberOfFrames = 0;
+  _startingFrame = _numberOfFrames = 0; // nothing read yet
 
   _nAveReadBuf = 0;
   _aveReadBuf = 0L;
@@ -180,10 +174,10 @@ void KstRVector::commonRVConstructor(KstDataSourcePtr in_file,
 
 void KstRVector::change(KstDataSourcePtr in_file, const QString &in_field,
                         KstObjectTag in_tag,
-                        int reqStartingFrame, int reqNumberFrames,
+                        KstFrameSize reqStartingFrame, KstFrameSize reqNumberFrames,
                         int skip, bool doSkip, bool doAve) {
   Q_ASSERT(myLockStatus() == KstRWLock::WRITELOCKED);
-  Q_UNUSED(in_tag);
+  Q_UNUSED(in_tag)
 
   _skip = skip;
   _doSkip = doSkip;
@@ -237,7 +231,7 @@ void KstRVector::changeFile(KstDataSourcePtr in_file) {
 }
 
 
-void KstRVector::changeFrames(int reqStartingFrame, int reqNumberFrames,
+void KstRVector::changeFrames(KstFrameSize reqStartingFrame, KstFrameSize reqNumberFrames,
                               int skip, bool doSkip, bool doAve) {
   Q_ASSERT(myLockStatus() == KstRWLock::WRITELOCKED);
 
@@ -297,13 +291,11 @@ bool KstRVector::countFromEOF() const {
 }
 
 
-/** Return Starting Frame of Vector */
-int KstRVector::startFrame() const {
+KstFrameSize KstRVector::startFrame() const {
   return _startingFrame;
 }
 
 
-/** Return frames per skip to read */
 int KstRVector::skip() const {
   return _doSkip ? _skip : 0;
 }
@@ -319,7 +311,6 @@ bool KstRVector::doAve() const {
 }
 
 
-/** Return frames held in Vector */
 int KstRVector::numFrames() const {
   return _numberOfFrames;
 }
@@ -330,7 +321,7 @@ int KstRVector::reqNumFrames() const {
 }
 
 
-int KstRVector::reqStartFrame() const {
+KstFrameSize KstRVector::reqStartFrame() const {
   return _reqStartingFrame;
 }
 
@@ -351,11 +342,11 @@ void KstRVector::save(QTextStream &ts, const QString& indent, bool saveAbsoluteP
 
     ts << indent << "  <field>" << Qt::escape(_field) << "</field>" << endl;
     if (saveAbsolutePosition) {
-      ts << indent << "  <start>" << _startingFrame << "</start>" << endl;
-      ts << indent << "  <num>" << _numberOfFrames << "</num>" << endl;
+      ts << indent << "  <start>" << QString("%1").arg(_startingFrame) << "</start>" << endl;
+      ts << indent << "  <num>" << QString("%1").arg(_numberOfFrames) << "</num>" << endl;
     } else {
-      ts << indent << "  <start>" << _reqStartingFrame << "</start>" << endl;
-      ts << indent << "  <num>" << _reqNumberFrames << "</num>" << endl;
+      ts << indent << "  <start>" << QString("%1").arg(_reqStartingFrame) << "</start>" << endl;
+      ts << indent << "  <num>" << QString("%1").arg(_reqNumberFrames) << "</num>" << endl;
     }
 
     if (doSkip()) {
@@ -430,7 +421,7 @@ void KstRVector::checkIntegrity() {
   }
 
   // if it looks like we have a new file, reset
-  if (_file && (_samplesPerFrame != _file->samplesPerFrame(_field) || _file->frameCount(_field) < _numberOfFrames)) {
+  if (_file && (_samplesPerFrame != _file->samplesPerFrame(_field) || _file->frameCountLarge(_field) < _numberOfFrames)) {
     reset();
   }
 
@@ -490,10 +481,15 @@ KstObject::UpdateType KstRVector::update(int update_counter) {
 //     frame 0, Skip, 2*Skip... N*skip, and never M*Skip+1.
 
 KstObject::UpdateType KstRVector::doUpdate(bool force) {
-  int i, k, shift, nRead=0;
-  int ave_nread;
-  int newStartingFrame, newNumberOfFrames;
+  KstFrameSize newStartingFrame;
+  KstFrameSize newNumberOfFrames;
+  KstFrameSize frameCount;
+  KstFrameSize ave_nread;
+  KstFrameSize nRead = 0;
   bool startPastEOF = false;
+  int shift;
+  int i;
+  int k;
 
   checkIntegrity();
 
@@ -506,7 +502,7 @@ KstObject::UpdateType KstRVector::doUpdate(bool force) {
   }
 
   // set newNumberOfFrames and newStartingFrame
-  int frameCount = _file->frameCount(_field);
+  frameCount = _file->frameCountLarge(_field);
   if (_reqNumberFrames < 1) { // read to end of file
     newStartingFrame = _reqStartingFrame;
     newNumberOfFrames = frameCount - newStartingFrame;
@@ -564,7 +560,6 @@ KstObject::UpdateType KstRVector::doUpdate(bool force) {
 
   if (_doSkip) {
     // reallocate V if necessary
-    //kstdDebug() << "newNumberOfFrames = " << newNumberOfFrames << " and skip = " << Skip << " so newNumberOfFrames/Skip+1 = " << (newNumberOfFrames / Skip + 1) << endl;
     if (newNumberOfFrames / _skip != _size) {
       bool rc = resize(newNumberOfFrames/_skip);
       if (!rc) {
@@ -573,15 +568,15 @@ KstObject::UpdateType KstRVector::doUpdate(bool force) {
     }
     // for debugging: _dontUseSkipAccel = true;
     if (!_dontUseSkipAccel) {
-      int rc;
-      int lastRead = -1;
+      KstFrameSize rc;
+      KstFrameSize lastRead = -1;
+
       if (_doAve) {
         // We don't support boxcar inside data sources yet.
         _dontUseSkipAccel = true;
       } else {
-        rc = _file->readField(_v + _numSamples, _field, newStartingFrame, (newNumberOfFrames - _numberOfFrames)/_skip, _skip, &lastRead);
+        rc = _file->readFieldLargeSkip(_v + _numSamples, _field, newStartingFrame, (newNumberOfFrames - _numberOfFrames)/_skip, _skip, &lastRead);
         if (rc != -9999) {
-          //kstdDebug() << "USED SKIP FOR READ - " << _field << " - rc=" << rc << " for Skip=" << Skip << " s=" << newStartingFrame << " n=" << (newNumberOfFrames - _numberOfFrames)/Skip << endl;
           if (rc >= 0) {
             nRead = rc;
           } else {
@@ -594,10 +589,14 @@ KstObject::UpdateType KstRVector::doUpdate(bool force) {
     }
     if (_dontUseSkipAccel) {
       nRead = 0;
-      /** read each sample from the File */
-      //kstdDebug() << "NF = " << NF << " numsamples = " << _numSamples << " newStartingFrame = " << newStartingFrame << endl;
+
+      //
+      // read each sample from the file...
+      //
+
+      KstFrameSize new_nf_Skip = newNumberOfFrames - _skip;
       double *t = _v + _numSamples;
-      int new_nf_Skip = newNumberOfFrames - _skip;
+
       if (_doAve) {
         for (i = _numberOfFrames; new_nf_Skip >= i; i += _skip) {
           /* enlarge AveReadBuf if necessary */
@@ -608,7 +607,7 @@ KstObject::UpdateType KstRVector::doUpdate(bool force) {
               // FIXME: handle failed resize
             }
           }
-          ave_nread = _file->readField(_aveReadBuf, _field, newStartingFrame+i, _skip);
+          ave_nread = _file->readFieldLarge(_aveReadBuf, _field, newStartingFrame+i, _skip);
           for (k = 1; k < ave_nread; k++) {
             _aveReadBuf[0] += _aveReadBuf[k];
           }
@@ -620,8 +619,7 @@ KstObject::UpdateType KstRVector::doUpdate(bool force) {
         }
       } else {
         for (i = _numberOfFrames; new_nf_Skip >= i; i += _skip) {
-          //kstdDebug() << "readField " << _field << " start=" << newStartingFrame + i << " n=-1" << endl;
-          nRead += _file->readField(t++, _field, newStartingFrame + i, -1);
+          nRead += _file->readFieldLarge(t++, _field, newStartingFrame + i, -1);
         }
       }
     }
@@ -652,12 +650,12 @@ KstObject::UpdateType KstRVector::doUpdate(bool force) {
       assert(newNumberOfFrames - _numberOfFrames - 1 > 0 || newNumberOfFrames - _numberOfFrames - 1 == -1 || force);
       assert(newStartingFrame + _numberOfFrames >= 0);
       assert(newStartingFrame + newNumberOfFrames - 1 >= 0);
-      nRead = _file->readField(_v+_numberOfFrames*_samplesPerFrame, _field, newStartingFrame + _numberOfFrames, newNumberOfFrames - _numberOfFrames - 1);
-      nRead += _file->readField(_v+(newNumberOfFrames-1)*_samplesPerFrame, _field, newStartingFrame + newNumberOfFrames - 1, -1);
+      nRead = _file->readFieldLarge(_v+_numberOfFrames*_samplesPerFrame, _field, newStartingFrame + _numberOfFrames, newNumberOfFrames - _numberOfFrames - 1);
+      nRead += _file->readFieldLarge(_v+(newNumberOfFrames-1)*_samplesPerFrame, _field, newStartingFrame + newNumberOfFrames - 1, -1);
     } else {
       assert(newStartingFrame + _numberOfFrames >= 0);
       if (newNumberOfFrames - _numberOfFrames > 0 || newNumberOfFrames - _numberOfFrames == -1) {
-        nRead = _file->readField(_v+_numberOfFrames*_samplesPerFrame, _field, newStartingFrame + _numberOfFrames, newNumberOfFrames - _numberOfFrames);
+        nRead = _file->readFieldLarge(_v+_numberOfFrames*_samplesPerFrame, _field, newStartingFrame + _numberOfFrames, newNumberOfFrames - _numberOfFrames);
       }
     }
   }
@@ -676,6 +674,7 @@ KstObject::UpdateType KstRVector::doUpdate(bool force) {
   // to add blocking w/ timeout to KstFile.
   // As a first fix, mount all nsf mounted dirfiles with "-o noac"
   //
+
   _dirty = false;
   if (_numSamples != _size && !(_numSamples == 0 && _size == 1)) {
     _dirty = true;
@@ -714,10 +713,10 @@ bool KstRVector::isValid() const {
 }
 
 
-int KstRVector::fileLength() const {
+KstFrameSize KstRVector::fileLength() const {
   if (_file) {
     _file->readLock();
-    int rc = _file->frameCount(_field);
+    KstFrameSize rc = _file->frameCountLarge(_field);
     _file->unlock();
 
     return rc;

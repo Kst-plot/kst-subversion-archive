@@ -15,19 +15,18 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "kstdateparser.h"
+#include <qstringlist.h>
+
 #include <assert.h>
 #include <math.h>
 #include <stdlib.h>
 #include <time.h>
 
-#include <QStringList>
-
-#include "kstdateparser.h"
-
 namespace KST {
 
-KDateTime millisecondsToExtDateTime(double ms) {
-  KDateTime edt;
+ExtDateTime millisecondsToExtDateTime(double ms) {
+  ExtDateTime edt;
   edt.setTime_t(0);
   if (ms > 0.0) {
     double milli = fmod(ms, 1000.0);
@@ -45,7 +44,7 @@ KDateTime millisecondsToExtDateTime(double ms) {
 }
 
 
-double extDateTimeToMilliseconds(const KDateTime& edt) {
+double extDateTimeToMilliseconds(const ExtDateTime& edt) {
   double rc = 0.0;
   if (edt.isNull()) {
     return rc;
@@ -62,7 +61,7 @@ double extDateTimeToMilliseconds(const KDateTime& edt) {
 }
 
 
-double DateTimeUTCToTime_t(const KDateTime& edt) {
+double extDateTimeUTCToTime_t(const ExtDateTime& edt) {
   time_t timeUTC;
   time_t timeLocal;
   tm brokenDown;
@@ -91,33 +90,29 @@ double DateTimeUTCToTime_t(const KDateTime& edt) {
 }
 
 
-KDateTime parsePlanckDate(const QString& dateString, bool applyOffset) {
+ExtDateTime parsePlanckDate(const QString& dateString, bool applyOffset) {
   QStringList secondSplit = dateString.split('.');
   if (secondSplit.isEmpty() || secondSplit.count() > 2) {
-    return KDateTime();
+    return ExtDateTime();
   }
 
   int seconds = 0;
   int offset = 0;
-
   if (secondSplit.count() > 1) {
     seconds = secondSplit[1].toUInt();
   }
 
   QStringList mainSplit = secondSplit[0].split(':');
-  KDateTime edt = KDateTime::currentUtcDateTime();
-
+  ExtDateTime edt = ExtDateTime::currentDateTime();
   if (applyOffset) {
-    offset = KDateTime::currentUtcDateTime().toTime_t() - edt.toTime_t();
+    offset = ExtDateTime::currentDateTime(Qt::UTC).toTime_t() - edt.toTime_t();
   }
-
-  QDate d = edt.date();
+  ExtDate d = edt.date();
   QTime t = edt.time();
   int i = 0;
-  
   switch (mainSplit.count()) {
     default:
-      return KDateTime();
+      return ExtDateTime();
     case 5:
       {
         int years = mainSplit[i++].toInt();
