@@ -1,7 +1,5 @@
 include_directories(${CMAKE_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/src/extdate ${CMAKE_SOURCE_DIR}/src/libkst ${CMAKE_CURRENT_SOURCE_DIR} ${KDE4_INCLUDES} ${KDE4_INCLUDE_DIR} ${QT_INCLUDES})
 
-link_directories(${CMAKE_SOURCE_DIR}/src/kstlib)
-
 ########### next target ###############
 
 set(kstmath_LIB_SRCS
@@ -41,7 +39,7 @@ set(kstmath_LIB_SRCS
 
 kde4_add_library(kstmath SHARED ${kstmath_LIB_SRCS})
 
-target_link_libraries(kstmath ${KDE4_KDEUI_LIBS} ${KDE4_KPARTS_LIBS} ${QT_LIBRARIES} kstbase)
+target_link_libraries(kstmath kstbase ${KDE4_KDEUI_LIBS} ${KDE4_KPARTS_LIBS} ${QT_LIBRARIES})
 
 set_target_properties(kstmath PROPERTIES VERSION ${KST_LIBKST_VERSION} SOVERSION 1)
 

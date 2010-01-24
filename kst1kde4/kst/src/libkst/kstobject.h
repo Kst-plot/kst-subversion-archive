@@ -18,14 +18,14 @@
 #ifndef KSTOBJECT_H
 #define KSTOBJECT_H
 
-#include <qmap.h>
-#include <qmutex.h>
-#include <qlinkedlist.h>
-#include <qobject.h>
-#include <qpointer.h>
 #include <QExplicitlySharedDataPointer>
-#include <qstring.h>
-#include <qstringlist.h>
+#include <QLinkedList>
+#include <QMap>
+#include <QMutex>
+#include <QObject>
+#include <QPointer>
+#include <QString>
+#include <QStringList>
 
 #include <kdebug.h>
 #include <kglobal.h>
@@ -54,7 +54,7 @@ class KstObjectPrivate;
 //       non-virtual functions.
 
 
-class KstObjectTag {
+class KST_EXPORT KstObjectTag {
   public:
     static const KstObjectTag invalidTag;
 

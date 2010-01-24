@@ -19,8 +19,10 @@
 #define KSTVECTOR_H
 
 #include <math.h>
-#include <qhash.h>
-#include <qpointer.h>
+
+#include <QHash>
+#include <QPointer>
+
 #include "kstobjectcollection.h"
 #include "kstprimitive.h"
 #include "kstscalar.h"
@@ -39,12 +41,11 @@ namespace Equation {
 }
 
 class KstDataObject;
-
 class KstVector;
 typedef QExplicitlySharedDataPointer<KstVector> KstVectorPtr;
-// KST::interpolate is still too polluting
-extern double kstInterpolate(double *v, int _size, int in_i, int ns_i);
-extern double kstInterpolateNoHoles(double *v, int _size, int in_i, int ns_i);
+
+extern KST_EXPORT double kstInterpolate(double *v, int _size, int in_i, int ns_i);
+extern KST_EXPORT double kstInterpolateNoHoles(double *v, int _size, int in_i, int ns_i);
 
 
 class KST_EXPORT KstVector : public KstPrimitive {

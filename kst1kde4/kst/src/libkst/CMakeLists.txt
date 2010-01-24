@@ -43,7 +43,7 @@ kde4_add_library(kstbase SHARED ${kstbase_LIB_SRCS})
 
 target_link_libraries(kstbase ${KDE4_KDECORE_LIBS} kio kstextdate QtXml QtGui)
 
-set_target_properties(kstbase PROPERTIES VERSION 1.0.0 SOVERSION 1)
+set_target_properties(kstbase PROPERTIES VERSION ${KST_LIBKST_VERSION} SOVERSION 1)
 
 install(TARGETS kstbase ${INSTALL_TARGETS_DEFAULT_ARGS})
 
