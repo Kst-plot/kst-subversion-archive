@@ -67,4 +67,5 @@ ENDIF (HAVE_KJSEMBED_H_ AND HAVE_KJSEMBED_LIB_)
 CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/config.h.cmake ${CMAKE_SOURCE_DIR}/config.h)
 
 add_subdirectory(src)
+add_subdirectory(misc)
 
