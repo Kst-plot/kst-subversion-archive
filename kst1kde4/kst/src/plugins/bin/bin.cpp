@@ -36,6 +36,12 @@ Bin::Bin( QObject */*parent*/, const char */*name*/, const QStringList &/*args*/
 }
 
 
+Bin::Bin( QObject */*parent*/, const QStringList &/*args*/ )
+    : KstBasicPlugin() {
+  _inputScalarDefaults.insert(SIZE, 10.0);
+}
+
+
 Bin::~Bin() {
 }
 

@@ -24,6 +24,7 @@ class Bin : public KstBasicPlugin {
 public:
 
   Bin(QObject *parent, const char *name, const QStringList &args);
+  Bin(QObject *parent, const QStringList &args);
   virtual ~Bin();
 
   //algorithm
