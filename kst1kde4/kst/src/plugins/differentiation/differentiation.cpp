@@ -31,6 +31,9 @@ Differentiation::Differentiation( QObject */*parent*/, const char */*name*/, con
     : KstBasicPlugin() {
 }
 
+Differentiation::Differentiation( QObject */*parent*/, const QStringList &/*args*/ )
+    : KstBasicPlugin() {
+}
 
 Differentiation::~Differentiation() {
 }

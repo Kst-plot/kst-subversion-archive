@@ -18,7 +18,6 @@
 
 #include "filter.h"
 #include "polynom.h"
-
 #include <qregexp.h>
 
 #include <kgenericfactory.h>
@@ -38,6 +37,9 @@ GenericFilter::GenericFilter( QObject */*parent*/, const char */*name*/, const Q
     : KstBasicPlugin() {
 }
 
+GenericFilter::GenericFilter( QObject */*parent*/, const QStringList &/*args*/ )
+    : KstBasicPlugin() {
+}
 
 GenericFilter::~GenericFilter() {
 }
@@ -54,8 +56,9 @@ bool GenericFilter::algorithm() {
   int length = y->length();
 
   // Extract polynom coefficients and instantiate polynoms
-  QStringList numCoeffs = QStringList::split(QRegExp("\\s*(,|;|:)\\s*"), numerator->value());
-  QStringList denCoeffs = QStringList::split(QRegExp("\\s*(,|;|:)\\s*"), denominator->value());
+  QStringList numCoeffs = numerator->value().QString::split(QRegExp("\\s*(,|;|:)\\s*")); 
+  QStringList denCoeffs = denominator->value().QString::split(QRegExp("\\s*(,|;|:)\\s*")); 
+
   int numDegree = numCoeffs.count() - 1, denDegree = denCoeffs.count() - 1;
   polynom<double> Num(numDegree), Den(denDegree);
   double tmpDouble = 0.0;

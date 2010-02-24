@@ -23,6 +23,7 @@ class CrossCorrelate : public KstBasicPlugin {
   Q_OBJECT
   public:
     CrossCorrelate(QObject *parent, const char *name, const QStringList &args);
+    CrossCorrelate(QObject *parent, const QStringList &args);
     virtual ~CrossCorrelate();
 
     virtual bool algorithm();

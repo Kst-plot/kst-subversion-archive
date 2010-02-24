@@ -31,6 +31,10 @@ CumulativeSum::CumulativeSum( QObject */*parent*/, const char */*name*/, const Q
     : KstBasicPlugin() {
 }
 
+CumulativeSum::CumulativeSum( QObject */*parent*/, const QStringList &/*args*/ )
+    : KstBasicPlugin() {
+}
+
 
 CumulativeSum::~CumulativeSum() {
 }

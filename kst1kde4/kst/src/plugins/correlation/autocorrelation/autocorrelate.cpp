@@ -34,6 +34,9 @@ AutoCorrelate::AutoCorrelate( QObject */*parent*/, const char */*name*/, const Q
     : KstBasicPlugin() {
 }
 
+AutoCorrelate::AutoCorrelate( QObject */*parent*/, const QStringList &/*args*/ )
+    : KstBasicPlugin() {
+}
 
 AutoCorrelate::~AutoCorrelate() {
 }

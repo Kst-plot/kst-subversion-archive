@@ -23,6 +23,7 @@ class CumulativeSum : public KstBasicPlugin {
   Q_OBJECT
   public:
     CumulativeSum(QObject *parent, const char *name, const QStringList &args);
+    CumulativeSum(QObject *parent, const QStringList &args);
     virtual ~CumulativeSum();
 
     virtual bool algorithm();

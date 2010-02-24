@@ -23,6 +23,7 @@ class AutoCorrelate : public KstBasicPlugin {
   Q_OBJECT
   public:
     AutoCorrelate(QObject *parent, const char *name, const QStringList &args);
+    AutoCorrelate(QObject *parent, const QStringList &args);
     virtual ~AutoCorrelate();
 
     virtual bool algorithm();

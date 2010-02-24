@@ -23,6 +23,7 @@ class GenericFilter : public KstBasicPlugin {
   Q_OBJECT
   public:
     GenericFilter(QObject *parent, const char *name, const QStringList &args);
+    GenericFilter(QObject *parent, const QStringList &args);
     virtual ~GenericFilter();
 
     virtual bool algorithm();

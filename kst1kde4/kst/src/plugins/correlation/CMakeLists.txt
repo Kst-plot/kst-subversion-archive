@@ -1,0 +1,3 @@
+add_subdirectory(autocorrelation)
+add_subdirectory(crosscorrelation)
+

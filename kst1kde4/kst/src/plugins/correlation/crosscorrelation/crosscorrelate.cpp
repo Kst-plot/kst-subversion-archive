@@ -35,6 +35,9 @@ CrossCorrelate::CrossCorrelate( QObject */*parent*/, const char */*name*/, const
     : KstBasicPlugin() {
 }
 
+CrossCorrelate::CrossCorrelate( QObject */*parent*/, const QStringList &/*args*/ )
+    : KstBasicPlugin() {
+}
 
 CrossCorrelate::~CrossCorrelate() {
 }

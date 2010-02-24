@@ -23,6 +23,7 @@ class Differentiation : public KstBasicPlugin {
   Q_OBJECT
   public:
     Differentiation(QObject *parent, const char *name, const QStringList &args);
+    Differentiation(QObject *parent, const QStringList &args);
     virtual ~Differentiation();
 
     virtual bool algorithm();
