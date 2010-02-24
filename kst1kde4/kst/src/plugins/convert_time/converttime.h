@@ -23,6 +23,7 @@ class ConvertTime : public KstBasicPlugin {
   Q_OBJECT
   public:
     ConvertTime(QObject *parent, const char *name, const QStringList &args);
+    ConvertTime(QObject *parent, const QStringList &args);
     virtual ~ConvertTime();
 
     virtual bool algorithm();

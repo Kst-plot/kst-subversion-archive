@@ -23,6 +23,7 @@ class Convolve : public KstBasicPlugin {
   Q_OBJECT
   public:
     Convolve(QObject *parent, const char *name, const QStringList &args);
+    Convolve(QObject *parent, const QStringList &args);
     virtual ~Convolve();
 
     virtual bool algorithm();

@@ -36,6 +36,11 @@ ConvertTime::ConvertTime( QObject *parent, const char *name, const QStringList &
   Q_UNUSED(args)
 }
 
+ConvertTime::ConvertTime( QObject *parent, const QStringList &args )
+    : KstBasicPlugin() {
+  Q_UNUSED(parent)
+  Q_UNUSED(args)
+}
 
 ConvertTime::~ConvertTime() {
 }

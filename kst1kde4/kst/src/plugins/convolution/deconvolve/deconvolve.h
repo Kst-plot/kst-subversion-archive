@@ -23,6 +23,7 @@ class Deconvolve : public KstBasicPlugin {
   Q_OBJECT
   public:
     Deconvolve(QObject *parent, const char *name, const QStringList &args);
+    Deconvolve(QObject *parent, const QStringList &args);
     virtual ~Deconvolve();
 
     virtual bool algorithm();

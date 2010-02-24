@@ -2,17 +2,16 @@ include_directories(${CMAKE_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/src/libkst ${CMAKE_S
 
 ########### next target ###############
 
-set(kstobject_bin_PART_SRCS bin.cpp)
+set(kstobject_chop_PART_SRCS chop.cpp)
 
-kde4_add_plugin(kstobject_bin ${kstobject_bin_PART_SRCS})
+kde4_add_plugin(kstobject_chop ${kstobject_chop_PART_SRCS})
 
-target_link_libraries(kstobject_bin kstbase kstmath ${KDE4_KPARTS_LIBS})
+target_link_libraries(kstobject_chop kstbase kstmath ${KDE4_KPARTS_LIBS})
 
-install(TARGETS kstobject_bin 
+install(TARGETS kstobject_chop 
 	LIBRARY DESTINATION lib/kde4
  	${INSTALL_TARGETS_DEFAULT_ARGS})
 
 ########### install files ###############
 
-install(FILES  kstobject_bin.desktop DESTINATION share/services/kst)
-
+install(FILES  kstobject_chop.desktop DESTINATION share/services/kst)

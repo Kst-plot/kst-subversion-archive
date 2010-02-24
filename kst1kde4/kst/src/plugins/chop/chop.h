@@ -23,6 +23,7 @@ class Chop : public KstBasicPlugin {
   Q_OBJECT
   public:
     Chop(QObject *parent, const char *name, const QStringList &args);
+    Chop(QObject *parent, const QStringList &args);
     virtual ~Chop();
 
     virtual bool algorithm();

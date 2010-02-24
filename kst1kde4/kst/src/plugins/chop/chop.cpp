@@ -17,6 +17,8 @@
 #include "chop.h"
 
 #include <kgenericfactory.h>
+//Added by qt3to4:
+#include <Q3ValueList>
 
 static const QString& ARRAY = KGlobal::staticQString("Array");
 static const QString& ODD = KGlobal::staticQString("Odd Array");
@@ -33,6 +35,9 @@ Chop::Chop( QObject */*parent*/, const char */*name*/, const QStringList &/*args
     : KstBasicPlugin() {
 }
 
+Chop::Chop( QObject */*parent*/, const QStringList &/*args*/ )
+    : KstBasicPlugin() {
+}
 
 Chop::~Chop() {
 }
@@ -47,7 +52,7 @@ bool Chop::algorithm() {
   KstVectorPtr diff   = outputVector(DIFF);
   KstVectorPtr index  = outputVector(INDEX);
 
-  QValueList<KstVectorPtr> outputs;
+  Q3ValueList<KstVectorPtr> outputs;
   outputs << odd << even << diff << index;
 
   int iLength = array->length();
@@ -55,7 +60,7 @@ bool Chop::algorithm() {
 
   if (iLength > 1) {
 
-    QValueList<KstVectorPtr>::iterator it = outputs.begin();
+    Q3ValueList<KstVectorPtr>::iterator it = outputs.begin();
     for(; it != outputs.end(); ++it) {
       if ((*it)->length() != iLengthNew) {
         (*it)->resize(iLengthNew, false);

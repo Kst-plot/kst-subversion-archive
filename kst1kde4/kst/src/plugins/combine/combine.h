@@ -23,6 +23,7 @@ class Combine : public KstBasicPlugin {
   Q_OBJECT
   public:
     Combine(QObject *parent, const char *name, const QStringList &args);
+    Combine(QObject *parent, const QStringList &args);
     virtual ~Combine();
 
     virtual bool algorithm();

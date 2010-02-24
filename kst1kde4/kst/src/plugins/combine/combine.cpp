@@ -31,6 +31,9 @@ Combine::Combine( QObject */*parent*/, const char */*name*/, const QStringList &
     : KstBasicPlugin() {
 }
 
+Combine::Combine( QObject */*parent*/, const QStringList &/*args*/ )
+    : KstBasicPlugin() {
+}
 
 Combine::~Combine() {
 }

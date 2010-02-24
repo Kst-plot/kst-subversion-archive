@@ -34,6 +34,9 @@ Deconvolve::Deconvolve( QObject */*parent*/, const char */*name*/, const QString
     : KstBasicPlugin() {
 }
 
+Deconvolve::Deconvolve( QObject */*parent*/, const QStringList &/*args*/ )
+    : KstBasicPlugin() {
+}
 
 Deconvolve::~Deconvolve() {
 }

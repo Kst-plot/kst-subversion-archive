@@ -34,6 +34,9 @@ Convolve::Convolve( QObject * /*parent*/, const char * /*name*/, const QStringLi
     : KstBasicPlugin() {
 }
 
+Convolve::Convolve( QObject * /*parent*/, const QStringList &/*args*/ )
+    : KstBasicPlugin() {
+}
 
 Convolve::~Convolve() {
 }
