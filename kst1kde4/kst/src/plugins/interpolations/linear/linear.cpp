@@ -35,6 +35,9 @@ Linear::Linear( QObject */*parent*/, const char */*name*/, const QStringList &/*
     : KstBasicPlugin() {
 }
 
+Linear::Linear( QObject */*parent*/, const QStringList &/*args*/ )
+    : KstBasicPlugin() {
+}
 
 Linear::~Linear() {
 }

@@ -35,6 +35,9 @@ AkimaPeriodic::AkimaPeriodic( QObject */*parent*/, const char */*name*/, const Q
     : KstBasicPlugin() {
 }
 
+AkimaPeriodic::AkimaPeriodic( QObject */*parent*/, const QStringList &/*args*/ )
+    : KstBasicPlugin() {
+}
 
 AkimaPeriodic::~AkimaPeriodic() {
 }

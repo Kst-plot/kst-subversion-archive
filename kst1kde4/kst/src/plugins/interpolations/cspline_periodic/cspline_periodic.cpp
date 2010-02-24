@@ -35,6 +35,9 @@ CSplinePeriodic::CSplinePeriodic( QObject */*parent*/, const char */*name*/, con
     : KstBasicPlugin() {
 }
 
+CSplinePeriodic::CSplinePeriodic( QObject */*parent*/, const QStringList &/*args*/ )
+    : KstBasicPlugin() {
+}
 
 CSplinePeriodic::~CSplinePeriodic() {
 }

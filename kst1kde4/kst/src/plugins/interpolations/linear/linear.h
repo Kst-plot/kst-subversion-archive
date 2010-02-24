@@ -23,6 +23,7 @@ class Linear : public KstBasicPlugin {
   Q_OBJECT
   public:
     Linear(QObject *parent, const char *name, const QStringList &args);
+    Linear(QObject *parent, const QStringList &args);
     virtual ~Linear();
 
     virtual bool algorithm();

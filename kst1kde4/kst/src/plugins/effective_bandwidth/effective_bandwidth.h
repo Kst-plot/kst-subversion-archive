@@ -23,6 +23,7 @@ class EffBandwidth : public KstBasicPlugin {
   Q_OBJECT
   public:
     EffBandwidth(QObject *parent, const char *name, const QStringList &args);
+    EffBandwidth(QObject *parent, const QStringList &args);
     virtual ~EffBandwidth();
 
     virtual bool algorithm();

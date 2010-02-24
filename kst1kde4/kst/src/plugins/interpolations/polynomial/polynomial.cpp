@@ -35,6 +35,9 @@ Polynomial::Polynomial( QObject */*parent*/, const char */*name*/, const QString
     : KstBasicPlugin() {
 }
 
+Polynomial::Polynomial( QObject */*parent*/, const QStringList &/*args*/ )
+    : KstBasicPlugin() {
+}
 
 Polynomial::~Polynomial() {
 }

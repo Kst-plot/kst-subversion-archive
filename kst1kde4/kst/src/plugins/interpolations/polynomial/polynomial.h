@@ -23,6 +23,7 @@ class Polynomial : public KstBasicPlugin {
   Q_OBJECT
   public:
     Polynomial(QObject *parent, const char *name, const QStringList &args);
+    Polynomial(QObject *parent, const QStringList &args);
     virtual ~Polynomial();
 
     virtual bool algorithm();

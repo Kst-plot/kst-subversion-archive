@@ -23,6 +23,7 @@ class CSplinePeriodic : public KstBasicPlugin {
   Q_OBJECT
   public:
     CSplinePeriodic(QObject *parent, const char *name, const QStringList &args);
+    CSplinePeriodic(QObject *parent, const QStringList &args);
     virtual ~CSplinePeriodic();
 
     virtual bool algorithm();

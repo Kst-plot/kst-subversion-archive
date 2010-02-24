@@ -23,6 +23,7 @@ class Akima : public KstBasicPlugin {
   Q_OBJECT
   public:
     Akima(QObject *parent, const char *name, const QStringList &args);
+    Akima(QObject *parent, const QStringList &args);
     virtual ~Akima();
 
     virtual bool algorithm();

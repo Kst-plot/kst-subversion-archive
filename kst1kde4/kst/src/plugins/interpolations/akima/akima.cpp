@@ -35,6 +35,9 @@ Akima::Akima( QObject */*parent*/, const char */*name*/, const QStringList &/*ar
     : KstBasicPlugin() {
 }
 
+Akima::Akima( QObject */*parent*/, const QStringList &/*args*/ )
+    : KstBasicPlugin() {
+}
 
 Akima::~Akima() {
 }

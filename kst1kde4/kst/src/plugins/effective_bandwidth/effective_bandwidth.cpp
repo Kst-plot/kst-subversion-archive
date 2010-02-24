@@ -40,6 +40,9 @@ EffBandwidth::EffBandwidth( QObject */*parent*/, const char */*name*/, const QSt
     : KstBasicPlugin() {
 }
 
+EffBandwidth::EffBandwidth( QObject */*parent*/, const QStringList &/*args*/ )
+    : KstBasicPlugin() {
+}
 
 EffBandwidth::~EffBandwidth() {
 }

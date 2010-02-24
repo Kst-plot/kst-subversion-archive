@@ -35,6 +35,9 @@ CSpline::CSpline( QObject */*parent*/, const char */*name*/, const QStringList &
     : KstBasicPlugin() {
 }
 
+CSpline::CSpline( QObject */*parent*/, const QStringList &/*args*/ )
+    : KstBasicPlugin() {
+}
 
 CSpline::~CSpline() {
 }

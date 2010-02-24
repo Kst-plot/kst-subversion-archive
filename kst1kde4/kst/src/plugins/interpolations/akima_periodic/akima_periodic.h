@@ -23,6 +23,7 @@ class AkimaPeriodic : public KstBasicPlugin {
   Q_OBJECT
   public:
     AkimaPeriodic(QObject *parent, const char *name, const QStringList &args);
+    AkimaPeriodic(QObject *parent, const QStringList &args);
     virtual ~AkimaPeriodic();
 
     virtual bool algorithm();

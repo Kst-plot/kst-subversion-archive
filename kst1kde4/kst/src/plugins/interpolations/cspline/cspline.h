@@ -23,6 +23,7 @@ class CSpline : public KstBasicPlugin {
   Q_OBJECT
   public:
     CSpline(QObject *parent, const char *name, const QStringList &args);
+    CSpline(QObject *parent, const QStringList &args);
     virtual ~CSpline();
 
     virtual bool algorithm();
