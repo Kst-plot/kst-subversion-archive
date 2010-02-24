@@ -1,8 +1,8 @@
 /***************************************************************************
-                               kstbackbuffer.h
+                   reverse.h
                              -------------------
-    begin                : Apr 12, 2004
-    copyright            : (C) 2004 The University of Toronto
+    begin                : 01/13/10
+    copyright            : (C) 2010 The University of British Columbia
     email                :
  ***************************************************************************/
 
@@ -14,27 +14,26 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#ifndef REVERSE_H
+#define REVERSE_H
 
-#ifndef KSTBACKBUFFER_H
-#define KSTBACKBUFFER_H
+#include <kstbasicplugin.h>
 
-#include <QPainter>
-#include <QPixmap>
+class Reverse : public KstBasicPlugin {
+  Q_OBJECT
+public:
 
-class KstBackBuffer {
-  public:
-    KstBackBuffer(int depth = -1);
-    ~KstBackBuffer();
+  Reverse(QObject *parent, const char *name, const QStringList &args);
+  virtual ~Reverse();
 
-    QSize size() const { return _buffer.size(); }
-    QPixmap& buffer();
-    void paintInto(QPainter& p, const QRect& geom);
-    void paintInto(QPainter& p, const QRect& geom, const QPoint& from);
+  virtual bool algorithm();
 
-  private:
-    QPixmap _buffer; 
+  virtual QStringList inputVectorList() const;
+  virtual QStringList inputScalarList() const;
+  virtual QStringList inputStringList() const;
+  virtual QStringList outputVectorList() const;
+  virtual QStringList outputScalarList() const;
+  virtual QStringList outputStringList() const;
 };
 
-
 #endif
-

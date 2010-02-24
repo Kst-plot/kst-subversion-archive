@@ -1,8 +1,8 @@
 /***************************************************************************
-                               kstbackbuffer.h
+                   planckLatestDate.h
                              -------------------
-    begin                : Apr 12, 2004
-    copyright            : (C) 2004 The University of Toronto
+    begin                : Sept 24, 2009
+    copyright            : (C) 2009 The University of British Columbia
     email                :
  ***************************************************************************/
 
@@ -15,26 +15,27 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef KSTBACKBUFFER_H
-#define KSTBACKBUFFER_H
+#ifndef LATESTDATE_H
+#define LATESTDATE_H
 
-#include <QPainter>
-#include <QPixmap>
+#include <kstbasicplugin.h>
 
-class KstBackBuffer {
+class PlanckLatestDate : public KstBasicPlugin {
+  Q_OBJECT
   public:
-    KstBackBuffer(int depth = -1);
-    ~KstBackBuffer();
+    PlanckLatestDate(QObject *parent, const char *name, const QStringList &args);
+    virtual ~PlanckLatestDate();
 
-    QSize size() const { return _buffer.size(); }
-    QPixmap& buffer();
-    void paintInto(QPainter& p, const QRect& geom);
-    void paintInto(QPainter& p, const QRect& geom, const QPoint& from);
+    virtual bool algorithm();
+
+    virtual QStringList inputVectorList() const;
+    virtual QStringList inputScalarList() const;
+    virtual QStringList inputStringList() const;
+    virtual QStringList outputVectorList() const;
+    virtual QStringList outputScalarList() const;
+    virtual QStringList outputStringList() const;
 
   private:
-    QPixmap _buffer; 
 };
 
-
 #endif
-

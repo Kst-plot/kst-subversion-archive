@@ -1,0 +1,11 @@
+[Desktop Entry]
+Encoding=UTF-8
+Type=Service
+ServiceTypes=Kst Data Object
+X-KDE-ModuleType=Plugin
+X-KDE-Library=kstobject_planckLatestDate
+X-Kst-Plugin-Author=Andrew Walker
+Name=Planck Latest Date
+Name[xx]=xxPlanck Latest Datexx
+Comment=Determines the filename with the latest production date from the given template.
+Comment[xx]=xxDetermines the filename with the latest production date from the given template.xx

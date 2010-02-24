@@ -18,7 +18,7 @@
     </property>
     <layout class="QGridLayout">
       <item row="1" column="0" rowspan="1" colspan="4">
-        <widget class="Q3ListBox" name="_listBox">
+        <widget class="QListWidget" name="_listBox">
           <item>
             <property name="text">
               <string>New Item</string>

@@ -1,8 +1,8 @@
 /***************************************************************************
-                               kstbackbuffer.h
+                   crosscorrelate.cpp
                              -------------------
-    begin                : Apr 12, 2004
-    copyright            : (C) 2004 The University of Toronto
+    begin                : 12/06/06
+    copyright            : (C) 2006 The University of Toronto
     email                :
  ***************************************************************************/
 
@@ -14,27 +14,25 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#ifndef CROSSCORRELATE_H
+#define CROSSCORRELATE_H
 
-#ifndef KSTBACKBUFFER_H
-#define KSTBACKBUFFER_H
+#include <kstbasicplugin.h>
 
-#include <QPainter>
-#include <QPixmap>
-
-class KstBackBuffer {
+class CrossCorrelate : public KstBasicPlugin {
+  Q_OBJECT
   public:
-    KstBackBuffer(int depth = -1);
-    ~KstBackBuffer();
+    CrossCorrelate(QObject *parent, const char *name, const QStringList &args);
+    virtual ~CrossCorrelate();
 
-    QSize size() const { return _buffer.size(); }
-    QPixmap& buffer();
-    void paintInto(QPainter& p, const QRect& geom);
-    void paintInto(QPainter& p, const QRect& geom, const QPoint& from);
+    virtual bool algorithm();
 
-  private:
-    QPixmap _buffer; 
+    virtual QStringList inputVectorList() const;
+    virtual QStringList inputScalarList() const;
+    virtual QStringList inputStringList() const;
+    virtual QStringList outputVectorList() const;
+    virtual QStringList outputScalarList() const;
+    virtual QStringList outputStringList() const;
 };
 
-
 #endif
-

@@ -18,13 +18,13 @@
 #ifndef COMBOBOXSELECTIONI_H
 #define COMBOBOXSELECTIONI_H
 
-#include "comboboxselection.h"
+#include "ui_comboboxselection.h"
 
-class ComboBoxSelectionI : public ComboBoxSelection {
+class ComboBoxSelectionI : public QWidget, public Ui_ComboBoxSelection {
   Q_OBJECT
   public:
     ComboBoxSelectionI(QWidget* parent = 0, const char* name = 0,
-        bool modal = FALSE, WFlags fl = 0 );
+        bool modal = FALSE, Qt::WindowFlags fl = 0 );
     virtual ~ComboBoxSelectionI();
     void addString(const QString &str);
     void reset();

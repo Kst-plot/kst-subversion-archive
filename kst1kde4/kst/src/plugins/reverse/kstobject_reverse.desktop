@@ -1,0 +1,11 @@
+[Desktop Entry]
+Encoding=UTF-8
+Type=Service
+ServiceTypes=Kst Data Object
+X-KDE-ModuleType=Plugin
+X-KDE-Library=kstobject_reverse
+X-Kst-Plugin-Author=Zongyi Zhang
+Name=Reverse
+Name[xx]=xxReversexx
+Comment=A plugin that reverses a vector.
+Comment[xx]=xxA plugin that reverses a vector.xx

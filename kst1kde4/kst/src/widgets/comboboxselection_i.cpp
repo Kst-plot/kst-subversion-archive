@@ -16,20 +16,21 @@
  ***************************************************************************/
 
 // include files for Qt
-#include <qlineedit.h>
-#include <qlistbox.h>
-#include <qpushbutton.h>
-#include <qregexp.h>
-#include <qstringlist.h>
+#include <QLineEdit>
+#include <QListWidget>
+#include <QPushButton>
+#include <QRegExp>
+#include <QStringList>
 
 // include files for KDE
 
 // application specific includes
 #include "comboboxselection_i.h"
 
-ComboBoxSelectionI::ComboBoxSelectionI(QWidget *parent, const char* name, bool modal,
-                                 WFlags fl)
-: ComboBoxSelection(parent, name, modal, fl) {
+ComboBoxSelectionI::ComboBoxSelectionI(QWidget *parent, const char* name, bool modal, Qt::WindowFlags fl)
+: QWidget(parent, fl) {
+  setupUi((QDialog*)this);
+
   connect(OK, SIGNAL(clicked()), this, SLOT(ok()));
   connect(Cancel, SIGNAL(clicked()), this, SLOT(close()));
   connect(_lineEdit, SIGNAL(textChanged(const QString &)), this, SLOT(sort()));
@@ -54,7 +55,10 @@ void ComboBoxSelectionI::reset() {
 
 
 void ComboBoxSelectionI::changed() {    
-  if (_listBox->selectedItem()) {
+  QList<QListWidgetItem*> items; 
+  
+  items = _listBox->selectedItems();
+  if (items.count() > 0) {
     OK->setEnabled(true);
   } else {
     OK->setEnabled(false);
@@ -73,26 +77,29 @@ void ComboBoxSelectionI::sort() {
     search.prepend("*");
     search.append("*");
   }
-  QRegExp regexp(search, false, true);
+  QRegExp regexp(search, Qt::CaseInsensitive, QRegExp::Wildcard);
 
   OK->setEnabled(false);
   _listBox->clear();
   for (i=0; i<(int)_strs.count(); i++) {
     if (regexp.exactMatch(_strs[i])) {
-      _listBox->insertItem(_strs[i]);
+      _listBox->insertItem(0, _strs[i]);
     }
   }
-  _listBox->sort();
+  _listBox->sortItems();
 }
 
 
 void ComboBoxSelectionI::ok() {
-  if (_listBox->selectedItem() != 0L) {
-    _selected = _listBox->selectedItem()->text();
+  QList<QListWidgetItem*> items; 
+
+  items = _listBox->selectedItems();
+  if (items.count() > 0) {
+    _selected = items.first()->text();
   }
-  accept();
+//  accept();
 }
 
 
-#include "comboboxselection_i.moc"
+//#include "comboboxselection_i.moc"
 
