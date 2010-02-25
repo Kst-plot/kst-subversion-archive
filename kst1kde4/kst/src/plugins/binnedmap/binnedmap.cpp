@@ -16,7 +16,7 @@
  ***************************************************************************/
 #include "binnedmap.h"
 
-#include <qstylesheet.h>
+#include <QTextDocument>
 
 #include <kdebug.h>
 #include <kmessagebox.h>
@@ -415,17 +415,17 @@ void BinnedMap::load(const QDomElement &e) {
 void BinnedMap::save(QTextStream& ts, const QString& indent) {
   QString l2 = indent + "  ";
   ts << indent << "<plugin name=\"Binned Map\">" << endl;
-  ts << l2 << "<tag>" << QStyleSheet::escape(tagName()) << "</tag>" << endl;
+  ts << l2 << "<tag>" << Qt::escape(tagName()) << "</tag>" << endl;
 
   for (KstVectorMap::Iterator i = _inputVectors.begin(); i != _inputVectors.end(); ++i) {
-    ts << l2 << "<ivector name=\"" << QStyleSheet::escape(i.key()) << "\">"
-        << QStyleSheet::escape(i.data()->tagName())
+    ts << l2 << "<ivector name=\"" << Qt::escape(i.key()) << "\">"
+        << Qt::escape(i.data()->tagName())
         << "</ivector>" << endl;
   }
 
   for (KstMatrixMap::Iterator i = _outputMatrices.begin(); i != _outputMatrices.end(); ++i) {
-    ts << l2 << "<omatrix name=\"" << QStyleSheet::escape(i.key());
-    ts << "\">" << QStyleSheet::escape(i.data()->tagName())
+    ts << l2 << "<omatrix name=\"" << Qt::escape(i.key());
+    ts << "\">" << Qt::escape(i.data()->tagName())
         << "</omatrix>" << endl;
   }
   ts << 12 << "<minX>" << xMin() << "</minX>" << endl;
