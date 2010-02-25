@@ -1,0 +1,13 @@
+[Desktop Entry]
+Encoding=UTF-8
+Type=Service
+ServiceTypes=Kst Data Object
+X-KDE-ModuleType=Plugin
+X-KDE-Library=kstobject_spectral_normalization
+X-Kst-Plugin-Author=Yiwen Mao
+Name=Spectral Normalization
+Name[et]=Normaliseerimine
+Name[sv]=Normalisering
+Comment=Normalize input spectrum
+Comment[et]=Sisendi spektri normaliseerimine
+Comment[sv]=Normalisera indataspektrum

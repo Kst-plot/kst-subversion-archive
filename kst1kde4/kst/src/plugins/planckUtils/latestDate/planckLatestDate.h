@@ -24,6 +24,7 @@ class PlanckLatestDate : public KstBasicPlugin {
   Q_OBJECT
   public:
     PlanckLatestDate(QObject *parent, const char *name, const QStringList &args);
+    PlanckLatestDate(QObject *parent, const QStringList &args);
     virtual ~PlanckLatestDate();
 
     virtual bool algorithm();

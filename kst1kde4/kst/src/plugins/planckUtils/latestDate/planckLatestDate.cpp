@@ -36,6 +36,11 @@ PlanckLatestDate::PlanckLatestDate( QObject */*parent*/, const char */*name*/, c
 }
 
 
+PlanckLatestDate::PlanckLatestDate( QObject */*parent*/, const QStringList &/*args*/ )
+    : KstBasicPlugin() {
+}
+
+
 PlanckLatestDate::~PlanckLatestDate() {
 }
 
@@ -52,7 +57,7 @@ bool PlanckLatestDate::algorithm() {
 
   kstrName->setValue(QString());
 
-  iIndex = strTemplate.findRev( QDir::separator() );
+  iIndex = strTemplate.lastIndexOf( QDir::separator() );
   if (iIndex >= 0) {
     strDir = strTemplate.left( iIndex + 1 );
     if (strTemplate.length() > 0) {
@@ -68,7 +73,7 @@ bool PlanckLatestDate::algorithm() {
     files = dir.entryList( );
 
     if (!files.empty()) {
-      kstrName->setValue( dir.absFilePath( files.back() ) );
+      kstrName->setValue( dir.absoluteFilePath( files.back() ) );
     }
 
     iRetVal = true;
