@@ -15,7 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <qapplication.h>
+#include <QApplication>
+#include <QMouseEvent>
 #include "draggablelistbox.h"
 
 DraggableListBox::DraggableListBox(QWidget *parent, const char *name)
