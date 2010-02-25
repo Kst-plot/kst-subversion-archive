@@ -33,6 +33,8 @@ K_EXPORT_COMPONENT_FACTORY( kstobject_phase,
 Phase::Phase( QObject */*parent*/, const char */*name*/, const QStringList &/*args*/ )
     : KstBasicPlugin() {}
 
+Phase::Phase( QObject */*parent*/, const QStringList &/*args*/ )
+    : KstBasicPlugin() {}
 
 Phase::~Phase() {}
 

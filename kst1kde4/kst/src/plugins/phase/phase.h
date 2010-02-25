@@ -23,6 +23,7 @@ class Phase : public KstBasicPlugin {
   Q_OBJECT
   public:
     Phase(QObject *parent, const char *name, const QStringList &args);
+    Phase(QObject *parent, const QStringList &args);
     virtual ~Phase();
 
     virtual bool algorithm();
