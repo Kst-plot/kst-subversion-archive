@@ -29,18 +29,14 @@ class KstChangeFileDialogI : public KstChangeFileDialog {
     virtual ~KstChangeFileDialogI();
 
   public slots:
-    /** update the entries in changeFileDialog to represent current vectors */
     void updateChangeFileDialog();
-
-    /** calls updateChangeFileDialog(), then shows and raises the dialog */
     void showChangeFileDialog();
-
-    /** select all in selection box */
     void selectAll();
-
     void allFromFile();
 
   private:
+    QGuardedPtr<QWidget> _configWidget;
+    QString _file;
     int _lastVectorIndex;
     bool _first;
 
@@ -48,9 +44,11 @@ class KstChangeFileDialogI : public KstChangeFileDialog {
     bool applyFileChange();
     void OKFileChange();
     void updateSelection(const QString&);
+    void sourceChanged(const QString& text);
+    void configureSource();
+    void markSourceAndSave();
 
   signals:
-    /** signal that vectors have changed */
     void docChanged();
 };
 

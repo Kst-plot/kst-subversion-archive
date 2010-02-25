@@ -114,8 +114,8 @@ Kst2DPlot::Kst2DPlot(const QString& in_tag,
   _pos_y = 0.0;
   _width = 0.0;
   _height = 0.0;
-  _xOffsetMode = false;
-  _yOffsetMode = false;
+  _xOffsetMode = OFFSET_AUTO;
+  _yOffsetMode = OFFSET_AUTO;
 
   _autoLabelTop = true;
   _autoLabelX = true;
@@ -232,8 +232,8 @@ Kst2DPlot::Kst2DPlot(const QDomElement& e)
   _pos_y = 0.0;
   _width = 0.0;
   _height = 0.0;
-  _xOffsetMode = false;
-  _yOffsetMode = false;
+  _xOffsetMode = OFFSET_AUTO;
+  _yOffsetMode = OFFSET_AUTO;
   _xScaleModeDefault = AUTO;
   _yScaleModeDefault = AUTOBORDER;
 
@@ -368,9 +368,9 @@ Kst2DPlot::Kst2DPlot(const QDomElement& e)
       } else if (el.tagName() == "ydisplayas") {
         _yAxisDisplay = KstAxisDisplay(el.text().toInt());
       } else if (el.tagName() == "xoffsetmode") {
-        _xOffsetMode = el.text() != "0";
+        _xOffsetMode = KstOffsetType(el.text().toInt());
       } else if (el.tagName() == "yoffsetmode") {
-        _yOffsetMode = el.text() != "0";
+        _yOffsetMode = KstOffsetType(el.text().toInt());
       } else if (el.tagName() == "xminexp") {
         xminexp_in = el.text();
       } else if (el.tagName() == "xmaxexp") {
@@ -1961,7 +1961,7 @@ void Kst2DPlot::genOffsetLabel(KstAxisInterpretation axisInterpretation, KstAxis
 
 void Kst2DPlot::genAxisTickLabel(QString& label, double z, bool isLog, double logBase, bool minorTick) {
   if (isLog) {
-    if (z > -4.0 && z < 4.0 || minorTick) {
+    if ((z > -4.0 && z < 4.0) || minorTick) {
       label = QString::number(pow(logBase, z), 'g', LABEL_PRECISION);
     } else {
       label = i18n("%2 to the power of %1", "%2^{%1}").arg(z, 0, 'f', 0).arg(logBase, 0, 'f', 0);
@@ -2058,7 +2058,7 @@ void Kst2DPlot::getPrefixUnitsScale(bool isInterpreted, KstAxisInterpretation ax
 void Kst2DPlot::genAxisTickLabels(TickParameters &tp,
                                   double Min, double Max, bool isLog, double logBase,
                                   KstAxisInterpretation axisInterpretation, KstAxisDisplay axisDisplay,
-                                  bool isX, bool isInterpreted, bool isOffsetMode) {
+                                  bool isX, bool isInterpreted, KstOffsetType offsetMode) {
   QString strTmp;
   QString strTmpOld;
   QString strUnits;
@@ -2203,16 +2203,32 @@ void Kst2DPlot::genAxisTickLabels(TickParameters &tp,
       }
     }
 
-    // also generate labels for opposite axis if needed
+    //
+    // also generate labels for opposite axis if needed...
+    //
+
     if ((isX && _xTransformed) || (!isX && _yTransformed)) {
       for (QValueList<TickLabelDescription>::ConstIterator iter = tp.labels.begin(); iter != tp.labels.end(); ++iter) {
         double transformedNumber;
         bool transformedOK = false;
         double originalNumber = (*iter).position;
+        double rawNumber = originalNumber;
 
-        // case insensitive replace
+        if (isLog) {
+          if (isX) {
+            rawNumber = pow(_xLogBase, originalNumber);
+          } else {
+            rawNumber = pow(_yLogBase, originalNumber);
+          }
+        }
+
+        //
+        // case insensitive replace...
+        //
+
         QString replacedExp = isX ? _xTransformedExp : _yTransformedExp;
-        replacedExp.replace(isX ? "x" : "y", QString::number(originalNumber), false);
+
+        replacedExp.replace(isX ? "x" : "y", QString::number(rawNumber), false);
         transformedNumber = Equation::interpret(replacedExp.latin1(), &transformedOK, replacedExp.length());
         tickLabel->setText(QString::number(transformedNumber, 'g', LABEL_PRECISION));
         if (!transformedOK) {
@@ -2225,13 +2241,17 @@ void Kst2DPlot::genAxisTickLabels(TickParameters &tp,
 
         // update the max height and width of opposite labels
         QSize lsize = tickLabel->size();
+
         tp.oppMaxWidth = kMax(tp.oppMaxWidth, double(lsize.width()));
         tp.oppMaxHeight = kMax(tp.oppMaxHeight, double(lsize.height()));
       }
     }
 
-    // determine the values when using delta values
-    if (bDuplicate || isInterpreted || isOffsetMode) {
+    //
+    // determine the values when using delta values...
+    //
+    if ( ( offsetMode == OFFSET_AUTO && ( bDuplicate || isInterpreted ) ) || 
+           offsetMode == OFFSET_ON) {
       tp.maxWidth = 0.0;
       tp.maxHeight = 0.0;
       tp.delta = true;
@@ -2259,6 +2279,27 @@ void Kst2DPlot::genAxisTickLabels(TickParameters &tp,
         if (value > Min && value < Max) {
           labelDescr.label = strTmp;
           labelDescr.position = value;
+          labelDescr.minorTick = false;
+          tp.labels.append(labelDescr);
+
+          tickLabel->setText(strTmp);
+          QSize lsize = tickLabel->size();
+          tp.maxWidth = kMax(tp.maxWidth, double(lsize.width()));
+          tp.maxHeight = kMax(tp.maxHeight, double(lsize.height()));
+        }
+      }
+    } else if (isInterpreted && offsetMode == OFFSET_OFF) {
+      tp.maxWidth = 0.0;
+      tp.maxHeight = 0.0;
+      tp.delta = false;
+      tp.labels.clear();
+      for (int i = tp.iLo; i < tp.iHi; i++) {
+        value = (double)i * tp.tick + tp.org;
+        genAxisTickLabelFullPrecision(axisInterpretation, axisDisplay, strTmp, length, value, isLog, logBase, isInterpreted);
+        labelDescr.label = strTmp;
+        labelDescr.position = value;
+
+        if (value > Min && value < Max) {
           labelDescr.minorTick = false;
           tp.labels.append(labelDescr);
 
@@ -4013,7 +4054,6 @@ void Kst2DPlot::updateMousePos(const QPoint& pos) {
   uint length;
 
   getLScale(xmin, ymin, xmax, ymax);
-
 
   if (_xReversed) {
     xpos = (double)(pr.right() - pos.x())/(double)pr.width();
@@ -6308,7 +6348,7 @@ void Kst2DPlot::plotAxes(QPainter& p, QRect& plotRegion,
     for (QValueList<TickLabelDescription>::ConstIterator iter = tpx.labelsOpposite.begin(); iter != tpx.labelsOpposite.end(); ++iter) {
       double xTickPos = (*iter).position;
 
-      if(_xLog) {
+      if (_xLog) {
         xTickPos = xleft_bdr_px + ( ( xTickPos - logXLo(_XMin, _xLogBase) ) * ( x_px - xright_bdr_px - xleft_bdr_px ) / ( logXHi(_XMax, _xLogBase) - logXLo(_XMin, _xLogBase) ) );
       } else {
         xTickPos = xleft_bdr_px + ( ( xTickPos - _XMin ) * ( x_px - xright_bdr_px - xleft_bdr_px ) / ( _XMax - _XMin ) );
@@ -6382,6 +6422,7 @@ void Kst2DPlot::plotAxes(QPainter& p, QRect& plotRegion,
   // if right axis is transformed, plot right axis numbers as well
   if (_yTransformed && !_suppressRight && tpy.label) {
     int xTopTickPos = d2i(x_px - xright_bdr_px + _yTickLabel->lineSpacing()*0.15);
+
     if (yTicksOutPlot()) {
       xTopTickPos += d2i(2.0 * ytick_len_px);
     }
@@ -6389,7 +6430,7 @@ void Kst2DPlot::plotAxes(QPainter& p, QRect& plotRegion,
     for (QValueList<TickLabelDescription>::ConstIterator iter = tpy.labelsOpposite.begin(); iter != tpy.labelsOpposite.end(); ++iter) {
       double yTickPos = (*iter).position;
 
-      if(_yLog) {
+      if (_yLog) {
         yTickPos = y_px - ybot_bdr_px - ( ( yTickPos - logYLo(_YMin, _yLogBase) ) * ( y_px - ybot_bdr_px - ytop_bdr_px ) / ( logYLo(_YMax, _yLogBase) - logYLo(_YMin, _yLogBase) ) );
       } else {
         yTickPos = y_px - ybot_bdr_px - ( ( yTickPos - _YMin ) * ( y_px - ybot_bdr_px - ytop_bdr_px ) / ( _YMax - _YMin ) );
@@ -7432,7 +7473,9 @@ void Kst2DPlot::connectConfigWidget(QWidget *parent, QWidget *w) const {
   connect( widget->_suppressTop, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
   connect( widget->_suppressBottom, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
   connect( widget->XIsLog, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
-  connect( widget->_checkBoxXOffsetMode, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
+  connect( widget->_xOffsetAuto, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
+  connect( widget->_xOffsetOn, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
+  connect( widget->_xOffsetOff, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
   connect( widget->_xReversed, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
   connect( widget->_checkBoxXInterpret, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
   connect( widget->_comboBoxXInterpret, SIGNAL( activated(int) ), parent, SLOT(modified()));
@@ -7451,7 +7494,9 @@ void Kst2DPlot::connectConfigWidget(QWidget *parent, QWidget *w) const {
   connect( widget->_suppressLeft, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
   connect( widget->_suppressRight, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
   connect( widget->YIsLog, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
-  connect( widget->_checkBoxYOffsetMode, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
+  connect( widget->_yOffsetAuto, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
+  connect( widget->_yOffsetOn, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
+  connect( widget->_yOffsetOff, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
   connect( widget->_yReversed, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
   connect( widget->_checkBoxYInterpret, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
   connect( widget->_comboBoxYInterpret, SIGNAL( activated(int) ), parent, SLOT(modified()));

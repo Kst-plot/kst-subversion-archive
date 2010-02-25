@@ -55,17 +55,21 @@ KstChangeFileDialogI::KstChangeFileDialogI(QWidget* parent,
   connect(_allFromFile, SIGNAL(clicked()), _filter, SLOT(clear()));
   connect(_allFromFile, SIGNAL(clicked()), this, SLOT(allFromFile()));
   connect(_duplicateSelected, SIGNAL(toggled(bool)), _duplicateDependents, SLOT(setEnabled(bool)));
+  connect(_dataFile, SIGNAL(textChanged(const QString&)), this, SLOT(sourceChanged(const QString&)));
+  connect(_configureSource, SIGNAL(clicked()), this, SLOT(configureSource()));
 
   _dataFile->completionObject()->setDir(QDir::currentDirPath());
   _dataFile->setMode(KFile::File | KFile::Directory | KFile::ExistingOnly);
 
   _clearFilter->setPixmap(BarIcon("locationbar_erase"));
   _duplicateDependents->setEnabled(_duplicateSelected->isChecked());
+  _configWidget = 0L;
   _first = true;
 }
 
 
 KstChangeFileDialogI::~KstChangeFileDialogI() {
+  delete _configWidget;
 }
 
 
@@ -135,6 +139,117 @@ void KstChangeFileDialogI::OKFileChange() {
 }
 
 
+void KstChangeFileDialogI::sourceChanged(const QString& text)
+{
+  delete _configWidget;
+  _configWidget = 0L;
+  _configureSource->setEnabled(false);
+  _file = QString::null;
+  if (!text.isEmpty() && text != "stdin" && text != "-") {
+    KURL url;
+    QString txt = _dataFile->completionObject()->replacedPath(text);
+    if (QFile::exists(txt) && QFileInfo(txt).isRelative()) {
+      url.setPath(txt);
+    } else {
+      url = KURL::fromPathOrURL(txt);
+    }
+
+    if (!url.isLocalFile() && url.protocol() != "file" && !url.protocol().isEmpty()) {
+      _fileType->setText(QString::null);
+      return;
+    }
+
+    if (!url.isValid()) {
+      _fileType->setText(QString::null);
+      return;
+    }
+
+    QString file = txt;
+
+    KstDataSourcePtr ds = *KST::dataSourceList.findReusableFileName(file);
+    QStringList fl;
+    QString fileType;
+
+    if (ds) {
+      ds->readLock();
+      fl = ds->fieldList();
+      fileType = ds->fileType();
+      ds->unlock();
+      ds = 0L;
+    } else {
+      bool complete = false;
+      fl = KstDataSource::fieldListForSource(file, QString::null, &fileType, &complete);
+    }
+
+    if (!fl.isEmpty() && !fileType.isEmpty()) {
+      if (ds) {
+        ds->writeLock();
+        _configWidget = ds->configWidget();
+        ds->unlock();
+      } else {
+        _configWidget = KstDataSource::configWidgetForSource(file, fileType);
+      }
+    }
+
+    _configureSource->setEnabled(_configWidget);
+    _file = file;
+    _fileType->setText(fileType.isEmpty() ? QString::null : i18n("Data source of type: %1").arg(fileType));
+  } else {
+    _fileType->setText(QString::null);
+  }
+}
+
+
+void KstChangeFileDialogI::configureSource()
+{
+  bool isNew = false;
+  KST::dataSourceList.lock().readLock();
+  KstDataSourcePtr ds = *KST::dataSourceList.findReusableFileName(_file);
+  KST::dataSourceList.lock().unlock();
+  if (!ds) {
+    isNew = true;
+    ds = KstDataSource::loadSource(_file);
+    if (!ds || !ds->isValid()) {
+      _configureSource->setEnabled(false);
+      return;
+    }
+  }
+
+  if (_configWidget) {
+    KDialogBase *dlg = new KDialogBase(this, "Data Config Dialog", true, i18n("Configure Data Source"));
+    if (isNew) {
+      connect(dlg, SIGNAL(okClicked()), _configWidget, SLOT(save()));
+      connect(dlg, SIGNAL(applyClicked()), _configWidget, SLOT(save()));
+    } else {
+      connect(dlg, SIGNAL(okClicked()), this, SLOT(markSourceAndSave()));
+      connect(dlg, SIGNAL(applyClicked()), this, SLOT(markSourceAndSave()));
+    }
+
+    _configWidget->reparent(dlg, QPoint(0, 0));
+    dlg->setMainWidget(_configWidget);
+    static_cast<KstDataSourceConfigWidget*>((QWidget*)_configWidget)->setInstance(ds);
+    static_cast<KstDataSourceConfigWidget*>((QWidget*)_configWidget)->load();
+    dlg->exec();
+    _configWidget->reparent(0L, QPoint(0, 0));
+    dlg->setMainWidget(0L);
+    delete dlg;
+    sourceChanged(_dataFile->url());
+  }
+}
+
+
+void KstChangeFileDialogI::markSourceAndSave()
+{
+  if (_configWidget) {
+    KstDataSourcePtr src = static_cast<KstDataSourceConfigWidget*>((QWidget*)_configWidget)->instance();
+    if (src) {
+      src->disableReuse();
+    }
+    static_cast<KstDataSourceConfigWidget*>((QWidget*)_configWidget)->save();
+  }
+}
+
+
 bool KstChangeFileDialogI::applyFileChange() {
   KstDataSourcePtr file;
   KST::dataSourceList.lock().writeLock();
@@ -191,7 +306,6 @@ bool KstChangeFileDialogI::applyFileChange() {
       file->unlock();
       if (!valid) {
         if (invalid > 0) {
-          // FIXME: invalid list construction for i18n
           invalidSources = i18n("%1, %2").arg(invalidSources).arg(vector->field());
         } else {
           invalidSources = vector->field();
@@ -238,7 +352,6 @@ bool KstChangeFileDialogI::applyFileChange() {
       file->unlock();
       if (!valid) {
         if (invalid > 0) {
-          // FIXME: invalid list construction for i18n
           invalidSources = i18n("%1, %2").arg(invalidSources).arg(matrix->field());
         } else {
           invalidSources = matrix->field();
@@ -294,10 +407,9 @@ bool KstChangeFileDialogI::applyFileChange() {
                 if ((*plotIter)->Curves.contains(kst_cast<KstBaseCurve>(iter.key())) && !(*plotIter)->Curves.contains(kst_cast<KstBaseCurve>(curve))) {
                   (*plotIter)->addCurve(curve);
                 }
-              } 
+              }
             }
-  
-          }     
+          }
         }
       }
       it->next();

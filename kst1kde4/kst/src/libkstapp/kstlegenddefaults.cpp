@@ -34,6 +34,7 @@ KstLegendDefaults::KstLegendDefaults() {
   _trackContents = true;
   _border = 2;
   _margin = 5;
+  _scaleLineWidth = 1;
 }
 
 
@@ -87,6 +88,11 @@ int KstLegendDefaults::margin() const {
 }
 
 
+int KstLegendDefaults::scaleLineWidth() const {
+  return _scaleLineWidth;
+}
+
+
 void KstLegendDefaults::setFontColor(const QColor& color) {
   _fontColor = color;
 }
@@ -137,6 +143,11 @@ void KstLegendDefaults::setMargin(int margin) {
 }
 
 
+void KstLegendDefaults::setScaleLineWidth(int scaleLineWidth) {
+  _scaleLineWidth = scaleLineWidth;
+}
+
+
 void KstLegendDefaults::writeConfig(KConfig *config) {
   config->writeEntry("LegendFontSize", KST::legendDefaults.fontSize());
   config->writeEntry("LegendFontColor", KST::legendDefaults.fontColor());
@@ -148,6 +159,7 @@ void KstLegendDefaults::writeConfig(KConfig *config) {
   config->writeEntry("LegendTrackContents", KST::legendDefaults.trackContents());
   config->writeEntry("LegendBorder", KST::legendDefaults.border());
   config->writeEntry("LegendMargin", KST::legendDefaults.margin());
+  config->writeEntry("LegendScaleLineWidth", KST::legendDefaults.scaleLineWidth());
 }
 
 
@@ -167,4 +179,5 @@ void KstLegendDefaults::readConfig(KConfig *config) {
   _trackContents = config->readBoolEntry("LegendTrackContents", true);
   _border = config->readNumEntry("LegendBorder", 2);
   _margin = config->readNumEntry("LegendMargin", 5);
+  _scaleLineWidth = config->readNumEntry("LegendScaleLineWidth", 1);
 }

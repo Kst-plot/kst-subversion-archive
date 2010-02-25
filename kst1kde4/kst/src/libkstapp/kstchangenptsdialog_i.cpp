@@ -32,7 +32,7 @@
 KstChangeNptsDialogI::KstChangeNptsDialogI(
   QWidget* parent, const char* name, bool modal, WFlags fl)
 : KstChangeNptsDialog(parent, name, modal, fl) {
-  connect(Clear, SIGNAL(clicked()), CurveList, SLOT(clearSelection()));
+  connect(Clear, SIGNAL(clicked()), this, SLOT(selectNone()));
   connect(SelectAll, SIGNAL(clicked()), this, SLOT(selectAll()));
   connect(Apply, SIGNAL(clicked()), this, SLOT(applyNptsChange()));
   connect(OK, SIGNAL(clicked()), this, SLOT(OKNptsChange()));
@@ -47,8 +47,21 @@ KstChangeNptsDialogI::~KstChangeNptsDialogI() {
 }
 
 
+void KstChangeNptsDialogI::selectNone() {
+  CurveList->clearSelection();
+
+  OK->setEnabled(false);
+  Apply->setEnabled(false);
+}
+
+
 void KstChangeNptsDialogI::selectAll() {
   CurveList->selectAll(true);
+
+  if (CurveList->count() > 0) {
+    OK->setEnabled(true);
+    Apply->setEnabled(true);
+  }
 }
 
 
@@ -103,40 +116,43 @@ void KstChangeNptsDialogI::OKNptsChange() {
 
 void KstChangeNptsDialogI::applyNptsChange() {
   KstRVectorList rvl = kstObjectSubList<KstVector,KstRVector>(KST::vectorList);
+
   for (uint i = 0; i < CurveList->count(); ++i) {
     if (CurveList->isSelected(i)) {
       KstRVectorPtr vector = *(rvl.findTag(CurveList->text(i)));
+
       if (vector) {
-        int f0, n;
+        KstFrameSize f0;
+        KstFrameSize n;
 
         vector->readLock();
         KstDataSourcePtr ds = vector->dataSource();
         if (_kstDataRange->isStartRelativeTime() && ds) {
           ds->readLock();
-          f0 = ds->sampleForTime(_kstDataRange->f0Value());
+          f0 = ds->sampleForTimeLarge(_kstDataRange->f0Value());
           ds->unlock();
         } else if (_kstDataRange->isStartAbsoluteTime() && ds) {
           ds->readLock();
-          f0 = ds->sampleForTime(_kstDataRange->f0DateTimeValue());
+          f0 = ds->sampleForTimeLarge(_kstDataRange->f0DateTimeValue());
           ds->unlock();
         } else {
-          f0 = int(_kstDataRange->f0Value());
+          f0 = (KstFrameSize)_kstDataRange->f0Value();
         }
 
         if (_kstDataRange->isRangeRelativeTime() && ds) {
           ds->readLock();
           double nValStored = _kstDataRange->nValue();
           if (_kstDataRange->CountFromEnd->isChecked()) {
-            int frameCount = ds->frameCount(vector->field());
-            double msCount = ds->relativeTimeForSample(frameCount - 1);
-            n = frameCount - 1 - ds->sampleForTime(msCount - nValStored);
+            KstFrameSize frameCount = ds->frameCountLarge(vector->field());
+            double msCount = ds->relativeTimeForSampleLarge(frameCount - 1);
+            n = frameCount - 1 - ds->sampleForTimeLarge(msCount - nValStored);
           } else {
-            double fTime = ds->relativeTimeForSample(f0);
-            n = ds->sampleForTime(fTime + nValStored) - ds->sampleForTime(fTime);
+            double fTime = ds->relativeTimeForSampleLarge(f0);
+            n = ds->sampleForTimeLarge(fTime + nValStored) - ds->sampleForTimeLarge(fTime);
           }
           ds->unlock();
         } else {
-          n = int(_kstDataRange->nValue());
+          n = (KstFrameSize)_kstDataRange->nValue();
         }
         vector->unlock();
 
@@ -154,7 +170,10 @@ void KstChangeNptsDialogI::applyNptsChange() {
 
   _modifiedRange = false;
 
+  //
   // avoid re-entering the dialog
+  //
+
   QTimer::singleShot(0, this, SLOT(emitDocChanged()));
 }
 
@@ -178,15 +197,24 @@ void KstChangeNptsDialogI::updateDefaults(int index) {
   _kstDataRange->_startUnits->setCurrentItem(0);
   _kstDataRange->_rangeUnits->setCurrentItem(0);
 
-  /* fill the vector range entries */
+  //
+  // fill the vector range entries
+  //
+
   _kstDataRange->CountFromEnd->setChecked(vector->countFromEOF());
   _kstDataRange->setF0Value(vector->reqStartFrame());
 
-  /* fill number of frames entries */
+  //
+  // fill number of frames entries
+  //
+
   _kstDataRange->ReadToEnd->setChecked(vector->readToEOF());
   _kstDataRange->setNValue(vector->reqNumFrames());
 
-  /* fill in frames to skip box */
+  //
+  // fill in frames to skip box
+  //
+
   _kstDataRange->Skip->setValue(vector->skip());
   _kstDataRange->DoSkip->setChecked(vector->doSkip());
   _kstDataRange->DoFilter->setChecked(vector->doAve());
@@ -201,22 +229,36 @@ void KstChangeNptsDialogI::updateDefaults(int index) {
 void KstChangeNptsDialogI::changedSelection() {
   int index = -1;
   unsigned int i;
+  bool selected = false;
+  bool enable;
 
-  if (!_modifiedRange) {
-    for (i=0; i<CurveList->count(); ++i) {
-      if (CurveList->isSelected(i)) {
-        if (index == -1) {
-          index = i;
-        } else {
-          index = -1;
-          break;
-        }
+  for (i=0; i<CurveList->count(); ++i) {
+    if (CurveList->isSelected(i)) {
+      selected = true;
+      if (index == -1) {
+        index = i;
+      } else {
+        index = -1;
+        break;
       }
     }
+  }
 
+  if (!_modifiedRange) {
     if (index != -1) {
       updateDefaults(index);
     }
+  }
+
+  if (selected) {
+    enable = true;
+  } else {
+    enable = false;
+  }
+
+  if (OK->isEnabled() != enable) {
+    Apply->setEnabled(enable);
+    OK->setEnabled(enable);
   }
 }
 

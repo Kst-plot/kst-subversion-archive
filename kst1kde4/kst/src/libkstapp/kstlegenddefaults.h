@@ -42,6 +42,7 @@ class KST_EXPORT KstLegendDefaults {
     bool trackContents() const;
     int border() const;
     int margin() const;
+    int scaleLineWidth() const;
 
     void setFontColor(const QColor& color);
     void setForegroundColor(const QColor& color);
@@ -53,6 +54,7 @@ class KST_EXPORT KstLegendDefaults {
     void setTrackContents(bool trackContents);
     void setBorder(int border);
     void setMargin(int margin);
+    void setScaleLineWidth(int scaleLineWidth);
 
   private:
     QColor _fontColor;
@@ -65,6 +67,7 @@ class KST_EXPORT KstLegendDefaults {
     bool _trackContents;
     int _border;
     int _margin;
+    int _scaleLineWidth;
 };
 
 namespace KST {

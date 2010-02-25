@@ -150,6 +150,7 @@ class KST_EXPORT KstApp : public KMdiMainFrm {
     bool dataMode() const;
 
     void paintAll(KstPainter::PaintType = KstPainter::P_PAINT);
+    void paintAllFromScript();
 
     void EventELOGSubmitEntry(const QString& message);
 
@@ -387,6 +388,9 @@ class KST_EXPORT KstApp : public KMdiMainFrm {
 
     void emitTimezoneChanged(const QString& tz, int utcOffset);
 
+    void setEnableImplicitRepaintsFromScript(bool enable);
+    bool getEnableImplicitRepaintsFromScript();
+
   signals:
     void timezoneChanged(const QString& tz, int utcOffset);
     void settingsChanged();
@@ -584,6 +588,7 @@ class KST_EXPORT KstApp : public KMdiMainFrm {
     KConfig *_dataSourceConfig;
     QValueList<KstOpen> _openQueue;
     KstGraphicType _graphicType;
+    bool _updatesFromScriptEnabled;
 
     KstTopLevelView::ViewMode _viewMode;
     QString _createType;

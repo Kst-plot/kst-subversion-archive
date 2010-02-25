@@ -354,10 +354,8 @@ void KstViewWidget::paintEvent(QPaintEvent *e) {
   if (e) {  // Resize/expose/etc triggered by X11
     QRegion r = e->region();
     if (r.isEmpty()) {
-      //kstdDebug() << "Paint event with NO region" << endl;
       _view->paint(KstPainter::P_PAINT);
     } else {
-      //kstdDebug() << "Paint event with region " << e->region() << endl;
       _view->paint(KstPainter::P_PAINT, e->region());
     }
 

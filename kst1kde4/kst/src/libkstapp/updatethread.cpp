@@ -263,11 +263,11 @@ bool UpdateThread::doUpdates(bool force, bool *gotData) {
     unsigned cnt = KST::dataSourceList.count();
     for (uint i = 0; i < cnt; ++i) {
       KstDataSourcePtr dsp = KST::dataSourceList[i];
-
-      dsp->writeLock();
-      dsp->update(_updateCounter);
-      dsp->unlock();
-
+      if (dsp) {
+        dsp->writeLock();
+        dsp->update(_updateCounter);
+        dsp->unlock();
+      }
       if (_done) {
         KST::dataSourceList.lock().unlock();
         return false;
@@ -362,6 +362,7 @@ void UpdateThread::forceUpdate() {
   if (_done) {
     return;
   }
+
   _statusMutex.lock();
   _updateImmediate = true;
   _force = true;
@@ -371,6 +372,9 @@ void UpdateThread::forceUpdate() {
 
 
 void UpdateThread::waitForUpdate() {
+  bool updateImmediateLocal;
+  bool updateRunningLocal;
+
   _statusMutex.lock();
   _updateImmediate = true;
   _force = true;
@@ -385,9 +389,14 @@ void UpdateThread::waitForUpdate() {
   //
   // now we need to wait until we enter the main body of the update thread...
   //
+
   while(true) {
-    QMutexLocker ml(&_statusMutex);
-    if (_updateImmediate) {
+    {
+      QMutexLocker ml(&_statusMutex);
+      updateImmediateLocal  = _updateImmediate;
+    }
+	
+    if (updateImmediateLocal) {
       usleep(1);
     } else {
       break;
@@ -398,8 +407,12 @@ void UpdateThread::waitForUpdate() {
   // now we need to wait until we leave the main body of the update thread...
   //
   while(true) {
-    QMutexLocker ml(&_statusMutex);
-    if (_updateRunning) {
+    {
+      QMutexLocker ml(&_statusMutex);
+      updateRunningLocal = _updateRunning;
+    }
+
+    if (updateRunningLocal) {
       usleep(1);
     } else {
       break;

@@ -17,12 +17,14 @@
 #ifndef KSTDATAWIZARDI_H
 #define KSTDATAWIZARDI_H
 
+#include <kurlrequester.h>
+#include <klineedit.h>
+#include <kpushbutton.h>
+
 #include "datawizard.h"
-#include "kurlrequester.h"
-#include "klineedit.h"
-#include "kpushbutton.h"
-#include "vectorlistview.h"
 #include "kstcombobox.h"
+#include "kstdatasource.h"
+#include "vectorlistview.h"
 
 class KstDataWizard: public DataWizard {
   Q_OBJECT
@@ -73,7 +75,7 @@ class KstDataWizard: public DataWizard {
     void vectorsDroppedBack(QDropEvent *e);
 
   private:
-    bool checkAvailableMemory(KstDataSourcePtr &ds, int f0Value, int nValue);
+    bool checkAvailableMemory(KstDataSourcePtr &ds, KstFrameSize f0Value, Q_INT64 nValue);
     void createLegendsAndLabels(KstViewObjectList &plots, bool xLabels, bool yLabels, bool titleLabel, bool legend, bool legendAuto, int fontSize);
     void cleanupWindowLayout(KstViewWindow *window);
 
@@ -90,4 +92,3 @@ class KstDataWizard: public DataWizard {
 };
 
 #endif
-

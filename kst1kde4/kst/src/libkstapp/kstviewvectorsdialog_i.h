@@ -40,7 +40,7 @@ class KstViewVectorsDialogI : public KstViewVectorsDialog {
     void updateDefaults(int index = 0);
 
   protected slots:
-    virtual void languageChange();  
+    virtual void languageChange();
     virtual void vectorChanged(const QString& str);
 };
 

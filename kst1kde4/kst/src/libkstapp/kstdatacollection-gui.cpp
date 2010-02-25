@@ -30,7 +30,6 @@
 #include "kst2dplot.h"
 #include "kstdatacollection-gui.h"
 #include "kstdataobjectcollection.h"
-//#include "ksttoplevelview.h"
 #include "kstviewwindow.h"
 
 
@@ -65,6 +64,7 @@ bool KstGuiData::dataTagNameNotUnique(const QString &tag, bool warn, void *p) {
 
   return false;
 }
+
 
 bool KstGuiData::vectorTagNameNotUnique(const QString &tag, bool warn, void *p) {
   /* verify that the tag name is not empty */
@@ -255,6 +255,7 @@ QStringList KstGuiData::plotList(const QString& window) {
   return rc;
 }
 
+
 bool KstGuiData::viewObjectNameNotUnique(const QString& tag) {
   KstApp *app = KstApp::inst();
   KMdiIterator<KMdiChildView*> *it = app->createIterator();
@@ -272,6 +273,7 @@ bool KstGuiData::viewObjectNameNotUnique(const QString& tag) {
   }
   return false;
 }
+
 
 int KstGuiData::columns(const QString& window) {
   KstViewWindow *w = dynamic_cast<KstViewWindow*>(KstApp::inst()->findWindow(window));

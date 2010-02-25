@@ -388,11 +388,13 @@ void KstVectorDialogI::fillFieldsForNew() {
 
 bool KstVectorDialogI::newObject() {
   KstDataSourcePtr file;
-  QString tag_name = _tagName->text();
+  QString tagName = _tagName->text();
 
   if (_w->_readFromSource->isChecked()) {
-    tag_name.replace(defaultTag, _w->Field->currentText());
-    tag_name = KST::suggestVectorName(tag_name);
+    tagName.replace(defaultTag, _w->Field->currentText());
+    tagName = KST::suggestVectorName(tagName);
+    tagName.remove('[');
+    tagName.remove(']');
 
     // if there is not an active DataSource, create one
     {
@@ -424,40 +426,45 @@ bool KstVectorDialogI::newObject() {
       return false;
     }
 
-    int f0, n;
+    KstFrameSize f0;
+    KstFrameSize n;
+
     if (_w->_kstDataRange->isStartRelativeTime()) {
-      f0 = file->sampleForTime(_w->_kstDataRange->f0Value());
+      f0 = file->sampleForTimeLarge(_w->_kstDataRange->f0Value());
     } else if (_w->_kstDataRange->isStartAbsoluteTime()) {
       bool ok = false;
-      f0 = file->sampleForTime(_w->_kstDataRange->f0DateTimeValue(), &ok);
+      f0 = file->sampleForTimeLarge(_w->_kstDataRange->f0DateTimeValue(), &ok);
       if (!ok) {
         file->unlock();
         KMessageBox::sorry(this, i18n("The requested field or file could not use the specified date."));
         return false;
       }
     } else {
-      f0 = int(_w->_kstDataRange->f0Value());
+      f0 = (KstFrameSize)_w->_kstDataRange->f0Value();
     }
 
     if (_w->_kstDataRange->isRangeRelativeTime()) {
       double nValStored = _w->_kstDataRange->nValue();
       if (_w->_kstDataRange->CountFromEnd->isChecked()) {
-        int frameCount = file->frameCount(_w->Field->currentText());
-        double msCount = file->relativeTimeForSample(frameCount - 1);
-        n = frameCount - 1 - file->sampleForTime(msCount - nValStored);
+        KstFrameSize frameCount = file->frameCountLarge(_w->Field->currentText());
+        double msCount = file->relativeTimeForSampleLarge(frameCount - 1);
+        n = frameCount - 1 - file->sampleForTimeLarge(msCount - nValStored);
       } else {
-        double fTime = file->relativeTimeForSample(f0);
-        n = file->sampleForTime(fTime + nValStored) - file->sampleForTime(fTime);
+        double fTime = file->relativeTimeForSampleLarge(f0);
+        n = file->sampleForTimeLarge(fTime + nValStored) - file->sampleForTimeLarge(fTime);
       }
     } else {
-      n = int(_w->_kstDataRange->nValue());
+      n = (KstFrameSize)_w->_kstDataRange->nValue();
     }
     file->unlock();
 
+    //
     // create the vector
+    //
+
     KstRVectorPtr vector = new KstRVector(
         file, _w->Field->currentText(),
-        KstObjectTag(tag_name, file->tag(), false),
+        KstObjectTag(tagName, file->tag(), false),
         _w->_kstDataRange->CountFromEnd->isChecked() ? -1 : f0,
         _w->_kstDataRange->ReadToEnd->isChecked() ? -1 : n,
         _w->_kstDataRange->Skip->value(),
@@ -471,12 +478,16 @@ bool KstVectorDialogI::newObject() {
     double x0 = _w->_xMin->text().toDouble();
     double x1 = _w->_xMax->text().toDouble();
     int n = _w->_N->value();
-    QString tagname = _tagName->text();
-    if (tagname == defaultTag) {
-      tagname = KST::suggestVectorName(QString("(%1..%2)").arg(x0).arg(x1));
+    QString tagName = _tagName->text();
+
+    if (tagName == defaultTag) {
+      tagName = KST::suggestVectorName(QString("(%1..%2)").arg(x0).arg(x1));
+    } else {
+      tagName.remove('[');
+      tagName.remove(']');
     }
 
-    KstSVectorPtr svector = new KstSVector(x0, x1, n, KstObjectTag(tagname, KstObjectTag::globalTagContext));
+    KstSVectorPtr svector = new KstSVector(x0, x1, n, KstObjectTag(tagName, KstObjectTag::globalTagContext));
     emit vectorCreated(KstVectorPtr(svector));
     svector = 0L;
     emit modified();
@@ -573,11 +584,12 @@ bool KstVectorDialogI::editSingleObjectRV(KstVectorPtr vcPtr) {
       pField = rvp->field();
     }
 
-    int f0 = 0, n = 0;
+    KstFrameSize f0 = 0;
+    KstFrameSize n = 0;
 
     if (_f0Dirty) {
       if (_w->_kstDataRange->isStartRelativeTime()) {
-        f0 = file->sampleForTime(_w->_kstDataRange->f0Value());
+        f0 = file->sampleForTimeLarge(_w->_kstDataRange->f0Value());
       } else if (_w->_kstDataRange->isStartAbsoluteTime()) {
         bool ok = false;
         f0 = file->sampleForTime(_w->_kstDataRange->f0DateTimeValue(), &ok);
@@ -587,22 +599,23 @@ bool KstVectorDialogI::editSingleObjectRV(KstVectorPtr vcPtr) {
           return false;
         }
       } else {
-        f0 = int(_w->_kstDataRange->f0Value());
+        f0 = (KstFrameSize)_w->_kstDataRange->f0Value();
       }
     }
+
     if (_nDirty) {
       if (_w->_kstDataRange->isRangeRelativeTime()) {
         double nValStored = _w->_kstDataRange->nValue();
         if (_w->_kstDataRange->CountFromEnd->isChecked()) {
-          int frameCount = file->frameCount(_w->Field->currentText());
-          double msCount = file->relativeTimeForSample(frameCount - 1);
-          n = frameCount - 1 - file->sampleForTime(msCount - nValStored);
+          KstFrameSize frameCount = file->frameCountLarge(_w->Field->currentText());
+          double msCount = file->relativeTimeForSampleLarge(frameCount - 1);
+          n = frameCount - 1 - file->sampleForTimeLarge(msCount - nValStored);
         } else {
-          double fTime = file->relativeTimeForSample(f0);
-          n = file->sampleForTime(fTime + nValStored) - file->sampleForTime(fTime);
+          double fTime = file->relativeTimeForSampleLarge(f0);
+          n = file->sampleForTimeLarge(fTime + nValStored) - file->sampleForTimeLarge(fTime);
         }
       } else {
-        n = int(_w->_kstDataRange->nValue());
+        n = (KstFrameSize)_w->_kstDataRange->nValue();
       }
     }
 
@@ -615,8 +628,14 @@ bool KstVectorDialogI::editSingleObjectRV(KstVectorPtr vcPtr) {
       n = rvp->reqNumFrames();
     }
 
+    //
     // other parameters for multiple edit
-    bool pCountFromEnd, pReadToEnd, pDoSkip, pDoFilter;
+    //
+
+    bool pCountFromEnd;
+    bool pReadToEnd;
+    bool pDoSkip;
+    bool pDoFilter;
     int pSkip;
 
     if (_countFromEndDirty) {

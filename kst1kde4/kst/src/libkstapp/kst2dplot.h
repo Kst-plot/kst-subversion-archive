@@ -46,6 +46,7 @@ class KstPlotLabel;
 
 enum ZoomType { ZOOM_MOVE_HORIZONTAL = 0, ZOOM_MOVE_VERTICAL = 1, ZOOM_CENTER = 2, ZOOM_VERTICAL = 3, ZOOM_HORIZONTAL = 4, ZOOM_X_MODE = 5, ZOOM_Y_MODE = 6, ZOOM_Y_LOCAL_MAX = 7, ZOOM_XY_MODES = 8 };
 enum KstScaleModeType { AUTO = 0, AC = 1, FIXED = 2, AUTOUP = 3, NOSPIKE = 4, AUTOBORDER = 5, EXPRESSION = 6 };
+enum KstOffsetType { OFFSET_AUTO = 0, OFFSET_ON = 1, OFFSET_OFF = 2 };
 
 struct KstPlotScale {
   double xmin;
@@ -287,10 +288,10 @@ public:
   void removeVectorToMarkers();
   KstVectorPtr vectorToMarkers() const;
 
-  void setXOffsetMode(bool xOffsetMode) { _xOffsetMode = xOffsetMode; }
-  void setYOffsetMode(bool yOffsetMode) { _yOffsetMode = yOffsetMode; }
-  bool xOffsetMode() const { return _xOffsetMode; }
-  bool yOffsetMode() const { return _yOffsetMode; }
+  void setXOffsetMode(KstOffsetType xOffsetMode) { _xOffsetMode = xOffsetMode; }
+  void setYOffsetMode(KstOffsetType yOffsetMode) { _yOffsetMode = yOffsetMode; }
+  KstOffsetType xOffsetMode() const { return _xOffsetMode; }
+  KstOffsetType yOffsetMode() const { return _yOffsetMode; }
 
   // plot grid lines
   void setGridLinesColor(const QColor& majorColor, const QColor& minorColor,
@@ -509,7 +510,7 @@ private:
   void genAxisTickLabelDifference(KstAxisInterpretation axisInterpretation, KstAxisDisplay axisDisplay, QString& label, double zbase, double zvalue, bool isLog, double logBase, bool isInterpreted, double scale);
   void getPrefixUnitsScale(bool isInterpreted, KstAxisInterpretation axisInterpretation, KstAxisDisplay axisDisplay, bool bLog, double logBase, double Min, double Max, double& range, double& scale, int& base, QString& strPrefix, QString& strUnits);
   void genOffsetLabel(KstAxisInterpretation axisInterpretation, KstAxisDisplay axisDisplay, QString& label, double zbase, double zvalue, double Min, double Max, bool isLog, double logBase, bool isInterpreted);
-  void genAxisTickLabels(TickParameters &tp, double Min, double Max, bool bLog, double logBase, KstAxisInterpretation axisInterpretation, KstAxisDisplay axisDisplay, bool isX, bool isInterpreted, bool isOffsetMode);
+  void genAxisTickLabels(TickParameters &tp, double Min, double Max, bool bLog, double logBase, KstAxisInterpretation axisInterpretation, KstAxisDisplay axisDisplay, bool isX, bool isInterpreted, KstOffsetType offsetMode);
 
   // helper function needed before setBorders
   void set2dPlotTickPix(double& xtickpix, double& ytickpix, int x_pix, int y_pix);
@@ -549,16 +550,14 @@ private:
   bool _curveToMarkersFallingDetect : 1;
   bool _isLogLast : 1;
 
-  bool _xOffsetMode : 1;
-  bool _yOffsetMode : 1;
+  KstOffsetType _xOffsetMode;
+  KstOffsetType _yOffsetMode;
 
-  // tick mark display options
   bool _xTicksInPlot : 1;
   bool _xTicksOutPlot : 1;
   bool _yTicksInPlot : 1;
   bool _yTicksOutPlot : 1;
 
-  // suppress labels and axes
   bool _suppressTop : 1;
   bool _suppressBottom : 1;
   bool _suppressLeft : 1;
@@ -570,10 +569,7 @@ private:
 
   bool _xMinParsedValid : 1, _xMaxParsedValid : 1, _yMinParsedValid : 1, _yMaxParsedValid : 1;
   bool _xTransformed : 1, _yTransformed : 1;
-
   bool _isXAxisInterpreted : 1, _isYAxisInterpreted : 1;
-
-  // reverse axes
   bool _xReversed : 1, _yReversed : 1;
 
   bool _drawingGraphics : 1;

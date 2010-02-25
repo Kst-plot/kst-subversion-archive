@@ -56,13 +56,13 @@ QString StatusLabel::squeeze(const QString& s, const QFontMetrics& fm, uint widt
     const uint maxWidth = width - ellipsisWidth;
     const uint emWidth  = fm.maxWidth( );
     int truncate;
-  
+
     while (currentWidth > maxWidth && !str.isEmpty()) {
       truncate = (currentWidth-maxWidth)/emWidth;
       if (truncate == 0) {
         truncate = 1;
       }
-      str.truncate(str.length()-truncate);  
+      str.truncate(str.length()-truncate);
       currentWidth = fm.width(str); 
     }
     str += "...";
@@ -87,7 +87,7 @@ void StatusLabel::setTextWidth(const QFontMetrics &metrics, int width) {
   str = squeeze(_fullText, metrics, width);
 
   if (str != _fullText) {
-    QToolTip::add(this, _fullText);  
+    QToolTip::add(this, _fullText);
   }
 
   setText(str);

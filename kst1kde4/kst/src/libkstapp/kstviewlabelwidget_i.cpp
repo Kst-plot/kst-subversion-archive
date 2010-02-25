@@ -78,3 +78,4 @@ void KstViewLabelWidgetI::changedBgColor( )
   _changedBgColor = true;
 }
 
+#include "kstviewlabelwidget_i.moc"

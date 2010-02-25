@@ -43,6 +43,7 @@ class KstViewLegend : public KstBorderedViewObject {
   Q_PROPERTY(int legendMargin READ legendMargin WRITE setLegendMargin)
   Q_PROPERTY(bool vertical READ vertical WRITE setVertical)
   Q_PROPERTY(QString title READ title WRITE setTitle)
+  Q_PROPERTY(int scaleLineWidth READ scaleLineWidth WRITE setScaleLineWidth)
   public:
     KstViewLegend();
     KstViewLegend(const QDomElement& e);
@@ -93,10 +94,13 @@ class KstViewLegend : public KstBorderedViewObject {
     bool vertical() const;
     void setVertical(bool vertical);
 
-    void setLegendMargin(int margin);
     int legendMargin() const;
+    void setLegendMargin(int margin);
 
-    KstBaseCurveList& curves();
+    int scaleLineWidth() const;
+    void setScaleLineWidth(int scale);
+
+    KstBaseCurveList& curves(); 
 
     bool trackContents() const;
     void setTrackContents(bool track);
@@ -130,6 +134,7 @@ class KstViewLegend : public KstBorderedViewObject {
     int _textWidth, _textHeight, _ascent;
     int _titleWidth, _titleHeight;
     int _legendMargin;
+    int _scaleLineWidth;
     KstBackBuffer _backBuffer;
     KstBaseCurveList _curves;
     bool _trackContents;

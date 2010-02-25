@@ -905,20 +905,17 @@
                                     <cstring>_spinBoxXAngle</cstring>
                                 </property>
                             </widget>
-                            <widget class="QSpinBox" row="5" column="3">
-                                <property name="name">
-                                    <cstring>_spinBoxXAngle</cstring>
-                                </property>
-                                <property name="maxValue">
-                                    <number>90</number>
-                                </property>
-                                <property name="minValue">
-                                    <number>-90</number>
-                                </property>
-                            </widget>
                             <widget class="QLabel" row="5" column="4">
                                 <property name="name">
                                     <cstring>textLabel1_5</cstring>
+                                </property>
+                                <property name="sizePolicy">
+                                    <sizepolicy>
+                                        <hsizetype>4</hsizetype>
+                                        <vsizetype>5</vsizetype>
+                                        <horstretch>0</horstretch>
+                                        <verstretch>0</verstretch>
+                                    </sizepolicy>
                                 </property>
                                 <property name="text">
                                     <string>Y:</string>
@@ -927,18 +924,7 @@
                                     <cstring>_spinBoxYAngle</cstring>
                                 </property>
                             </widget>
-                            <widget class="QSpinBox" row="5" column="5" rowspan="1" colspan="2">
-                                <property name="name">
-                                    <cstring>_spinBoxYAngle</cstring>
-                                </property>
-                                <property name="maxValue">
-                                    <number>90</number>
-                                </property>
-                                <property name="minValue">
-                                    <number>-90</number>
-                                </property>
-                            </widget>
-                            <widget class="QLineEdit" row="2" column="2" rowspan="1" colspan="4">
+                            <widget class="QLineEdit" row="2" column="2" rowspan="1" colspan="5">
                                 <property name="name">
                                     <cstring>TopLabelText</cstring>
                                 </property>
@@ -952,7 +938,7 @@
                                     <string>Top label text.  This supports a subset of LaTeX equations.</string>
                                 </property>
                             </widget>
-                            <widget class="QLabel" row="2" column="6" rowspan="1" colspan="2">
+                            <widget class="QLabel" row="2" column="7">
                                 <property name="name">
                                     <cstring>textLabel1_8</cstring>
                                 </property>
@@ -1014,23 +1000,6 @@
                                 <property name="hAlign" stdset="0">
                                 </property>
                             </widget>
-                            <spacer row="5" column="7" rowspan="1" colspan="3">
-                                <property name="name">
-                                    <cstring>spacer25</cstring>
-                                </property>
-                                <property name="orientation">
-                                    <enum>Horizontal</enum>
-                                </property>
-                                <property name="sizeType">
-                                    <enum>Expanding</enum>
-                                </property>
-                                <property name="sizeHint">
-                                    <size>
-                                        <width>250</width>
-                                        <height>20</height>
-                                    </size>
-                                </property>
-                            </spacer>
                             <widget class="QCheckBox" row="4" column="9">
                                 <property name="name">
                                     <cstring>_checkBoxAutoLabelX</cstring>
@@ -1047,6 +1016,45 @@
                                     <string>Auto Label</string>
                                 </property>
                             </widget>
+                            <widget class="QSpinBox" row="5" column="3">
+                                <property name="name">
+                                    <cstring>_spinBoxXAngle</cstring>
+                                </property>
+                                <property name="maxValue">
+                                    <number>90</number>
+                                </property>
+                                <property name="minValue">
+                                    <number>-90</number>
+                                </property>
+                            </widget>
+                            <widget class="QSpinBox" row="5" column="5">
+                                <property name="name">
+                                    <cstring>_spinBoxYAngle</cstring>
+                                </property>
+                                <property name="maxValue">
+                                    <number>90</number>
+                                </property>
+                                <property name="minValue">
+                                    <number>-90</number>
+                                </property>
+                            </widget>
+                            <spacer row="5" column="6" rowspan="1" colspan="4">
+                                <property name="name">
+                                    <cstring>spacer25</cstring>
+                                </property>
+                                <property name="orientation">
+                                    <enum>Horizontal</enum>
+                                </property>
+                                <property name="sizeType">
+                                    <enum>Expanding</enum>
+                                </property>
+                                <property name="sizeHint">
+                                    <size>
+                                        <width>320</width>
+                                        <height>20</height>
+                                    </size>
+                                </property>
+                            </spacer>
                         </grid>
                     </widget>
                 </grid>
@@ -1146,7 +1154,7 @@
                                     <cstring>_comboBoxXInterpret</cstring>
                                 </property>
                             </widget>
-                            <widget class="QLabel" row="1" column="5" rowspan="1" colspan="2">
+                            <widget class="QLabel" row="1" column="5">
                                 <property name="name">
                                     <cstring>textLabelXDisplayAs</cstring>
                                 </property>
@@ -1157,7 +1165,7 @@
                                     <cstring>_comboBoxXDisplay</cstring>
                                 </property>
                             </widget>
-                            <widget class="QComboBox" row="1" column="7">
+                            <widget class="QComboBox" row="1" column="6" rowspan="1" colspan="5">
                                 <property name="name">
                                     <cstring>_comboBoxXDisplay</cstring>
                                 </property>
@@ -1170,7 +1178,7 @@
                                     </sizepolicy>
                                 </property>
                             </widget>
-                            <widget class="QCheckBox" row="3" column="0" rowspan="1" colspan="2">
+                            <widget class="QCheckBox" row="2" column="0" rowspan="1" colspan="2">
                                 <property name="name">
                                     <cstring>_xTransformTop</cstring>
                                 </property>
@@ -1178,7 +1186,7 @@
                                     <string>Transform top axis</string>
                                 </property>
                             </widget>
-                            <widget class="QLabel" row="3" column="2">
+                            <widget class="QLabel" row="2" column="2" rowspan="1" colspan="2">
                                 <property name="name">
                                     <cstring>textLabel2_5</cstring>
                                 </property>
@@ -1189,17 +1197,9 @@
                                     <cstring>_xTransformTopExp</cstring>
                                 </property>
                             </widget>
-                            <widget class="QLineEdit" row="3" column="3" rowspan="1" colspan="5">
+                            <widget class="QLineEdit" row="2" column="4" rowspan="1" colspan="7">
                                 <property name="name">
                                     <cstring>_xTransformTopExp</cstring>
-                                </property>
-                            </widget>
-                            <widget class="QCheckBox" row="0" column="1" rowspan="1" colspan="4">
-                                <property name="name">
-                                    <cstring>_checkBoxXOffsetMode</cstring>
-                                </property>
-                                <property name="text">
-                                    <string>Base and offset mode</string>
                                 </property>
                             </widget>
                             <widget class="QCheckBox" row="0" column="0">
@@ -1218,7 +1218,7 @@
                                     <string>Lo&amp;garithmic</string>
                                 </property>
                             </widget>
-                            <widget class="QCheckBox" row="0" column="5" rowspan="1" colspan="2">
+                            <widget class="QCheckBox" row="0" column="1" rowspan="1" colspan="2">
                                 <property name="name">
                                     <cstring>_xReversed</cstring>
                                 </property>
@@ -1226,7 +1226,39 @@
                                     <string>Reverse</string>
                                 </property>
                             </widget>
-                            <spacer row="0" column="7">
+                            <widget class="QLabel" row="0" column="5" rowspan="1" colspan="2">
+                                <property name="name">
+                                    <cstring>textLabel1_6_2</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>Base and offset mode:</string>
+                                </property>
+                            </widget>
+                            <widget class="QRadioButton" row="0" column="9">
+                                <property name="name">
+                                    <cstring>_xOffsetOff</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>Off</string>
+                                </property>
+                            </widget>
+                            <widget class="QRadioButton" row="0" column="7">
+                                <property name="name">
+                                    <cstring>_xOffsetAuto</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>Auto</string>
+                                </property>
+                            </widget>
+                            <widget class="QRadioButton" row="0" column="8">
+                                <property name="name">
+                                    <cstring>_xOffsetOn</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>On</string>
+                                </property>
+                            </widget>
+                            <spacer row="0" column="10">
                                 <property name="name">
                                     <cstring>spacer31</cstring>
                                 </property>
@@ -1238,7 +1270,24 @@
                                 </property>
                                 <property name="sizeHint">
                                     <size>
-                                        <width>100</width>
+                                        <width>60</width>
+                                        <height>20</height>
+                                    </size>
+                                </property>
+                            </spacer>
+                            <spacer row="0" column="3" rowspan="1" colspan="2">
+                                <property name="name">
+                                    <cstring>spacer31_3</cstring>
+                                </property>
+                                <property name="orientation">
+                                    <enum>Horizontal</enum>
+                                </property>
+                                <property name="sizeType">
+                                    <enum>Expanding</enum>
+                                </property>
+                                <property name="sizeHint">
+                                    <size>
+                                        <width>60</width>
                                         <height>20</height>
                                     </size>
                                 </property>
@@ -1499,7 +1548,7 @@
                                     <string>Interpret as:</string>
                                 </property>
                             </widget>
-                            <widget class="QComboBox" row="1" column="1" rowspan="1" colspan="3">
+                            <widget class="QComboBox" row="1" column="1" rowspan="1" colspan="4">
                                 <property name="name">
                                     <cstring>_comboBoxYInterpret</cstring>
                                 </property>
@@ -1528,7 +1577,7 @@
                                     <string>&amp;Logarithmic</string>
                                 </property>
                             </widget>
-                            <widget class="QComboBox" row="1" column="6" rowspan="1" colspan="2">
+                            <widget class="QComboBox" row="1" column="6" rowspan="1" colspan="5">
                                 <property name="name">
                                     <cstring>_comboBoxYDisplay</cstring>
                                 </property>
@@ -1541,15 +1590,7 @@
                                     </sizepolicy>
                                 </property>
                             </widget>
-                            <widget class="QCheckBox" row="0" column="1" rowspan="1" colspan="3">
-                                <property name="name">
-                                    <cstring>_checkBoxYOffsetMode</cstring>
-                                </property>
-                                <property name="text">
-                                    <string>Base and offset mode</string>
-                                </property>
-                            </widget>
-                            <widget class="QCheckBox" row="3" column="0" rowspan="1" colspan="2">
+                            <widget class="QCheckBox" row="2" column="0" rowspan="1" colspan="2">
                                 <property name="name">
                                     <cstring>_yTransformRight</cstring>
                                 </property>
@@ -1557,7 +1598,7 @@
                                     <string>Transform right axis</string>
                                 </property>
                             </widget>
-                            <widget class="QLabel" row="1" column="4" rowspan="1" colspan="2">
+                            <widget class="QLabel" row="1" column="5">
                                 <property name="name">
                                     <cstring>textLabelYDisplayAs</cstring>
                                 </property>
@@ -1568,7 +1609,7 @@
                                     <cstring>_comboBoxYDisplay</cstring>
                                 </property>
                             </widget>
-                            <widget class="QLabel" row="3" column="2">
+                            <widget class="QLabel" row="2" column="2" rowspan="1" colspan="2">
                                 <property name="name">
                                     <cstring>textLabel3_4</cstring>
                                 </property>
@@ -1579,12 +1620,28 @@
                                     <cstring>_yTransformRightExp</cstring>
                                 </property>
                             </widget>
-                            <widget class="QLineEdit" row="3" column="3" rowspan="1" colspan="5">
+                            <widget class="QLineEdit" row="2" column="4" rowspan="1" colspan="7">
                                 <property name="name">
                                     <cstring>_yTransformRightExp</cstring>
                                 </property>
                             </widget>
-                            <spacer row="0" column="7">
+                            <widget class="QCheckBox" row="0" column="1" rowspan="1" colspan="2">
+                                <property name="name">
+                                    <cstring>_yReversed</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>Reverse</string>
+                                </property>
+                            </widget>
+                            <widget class="QLabel" row="0" column="5" rowspan="1" colspan="2">
+                                <property name="name">
+                                    <cstring>textLabel1_6_2_2</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>Base and offset mode:</string>
+                                </property>
+                            </widget>
+                            <spacer row="0" column="3">
                                 <property name="name">
                                     <cstring>spacer34</cstring>
                                 </property>
@@ -1596,17 +1653,50 @@
                                 </property>
                                 <property name="sizeHint">
                                     <size>
-                                        <width>90</width>
+                                        <width>30</width>
                                         <height>20</height>
                                     </size>
                                 </property>
                             </spacer>
-                            <widget class="QCheckBox" row="0" column="4" rowspan="1" colspan="3">
+                            <spacer row="0" column="10">
                                 <property name="name">
-                                    <cstring>_yReversed</cstring>
+                                    <cstring>spacer34_3</cstring>
+                                </property>
+                                <property name="orientation">
+                                    <enum>Horizontal</enum>
+                                </property>
+                                <property name="sizeType">
+                                    <enum>Expanding</enum>
+                                </property>
+                                <property name="sizeHint">
+                                    <size>
+                                        <width>30</width>
+                                        <height>20</height>
+                                    </size>
+                                </property>
+                            </spacer>
+                            <widget class="QRadioButton" row="0" column="7">
+                                <property name="name">
+                                    <cstring>_yOffsetAuto</cstring>
                                 </property>
                                 <property name="text">
-                                    <string>Reverse</string>
+                                    <string>Auto</string>
+                                </property>
+                            </widget>
+                            <widget class="QRadioButton" row="0" column="8">
+                                <property name="name">
+                                    <cstring>_yOffsetOn</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>On</string>
+                                </property>
+                            </widget>
+                            <widget class="QRadioButton" row="0" column="9">
+                                <property name="name">
+                                    <cstring>_yOffsetOff</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>Off</string>
                                 </property>
                             </widget>
                         </grid>
@@ -2824,6 +2914,85 @@
 <tabstops>
     <tabstop>_title</tabstop>
     <tabstop>TabWidget</tabstop>
+    <tabstop>AvailableCurveList</tabstop>
+    <tabstop>DisplayedCurveList</tabstop>
+    <tabstop>_remove</tabstop>
+    <tabstop>_up</tabstop>
+    <tabstop>_add</tabstop>
+    <tabstop>_down</tabstop>
+    <tabstop>_axisPenWidth</tabstop>
+    <tabstop>_majorGridColor</tabstop>
+    <tabstop>_checkBoxDefaultMajorGridColor</tabstop>
+    <tabstop>_majorPenWidth</tabstop>
+    <tabstop>_minorGridColor</tabstop>
+    <tabstop>_checkBoxDefaultMinorGridColor</tabstop>
+    <tabstop>_minorPenWidth</tabstop>
+    <tabstop>ScalarList</tabstop>
+    <tabstop>TopLabelFontSize</tabstop>
+    <tabstop>TopLabelText</tabstop>
+    <tabstop>_comboBoxTopLabelJustify</tabstop>
+    <tabstop>_checkBoxAutoLabelTop</tabstop>
+    <tabstop>YLabelFontSize</tabstop>
+    <tabstop>YAxisText</tabstop>
+    <tabstop>_checkBoxAutoLabelY</tabstop>
+    <tabstop>XLabelFontSize</tabstop>
+    <tabstop>XAxisText</tabstop>
+    <tabstop>_checkBoxAutoLabelX</tabstop>
+    <tabstop>NumberFontSize</tabstop>
+    <tabstop>_spinBoxXAngle</tabstop>
+    <tabstop>_spinBoxYAngle</tabstop>
+    <tabstop>FontComboBox</tabstop>
+    <tabstop>ShowLegend</tabstop>
+    <tabstop>TrackContents</tabstop>
+    <tabstop>_pushButtonEditLegend</tabstop>
+    <tabstop>_suppressTop</tabstop>
+    <tabstop>_suppressBottom</tabstop>
+    <tabstop>XIsLog</tabstop>
+    <tabstop>_xReversed</tabstop>
+    <tabstop>_xOffsetAuto</tabstop>
+    <tabstop>_xOffsetOn</tabstop>
+    <tabstop>_xOffsetOff</tabstop>
+    <tabstop>_checkBoxXInterpret</tabstop>
+    <tabstop>_comboBoxXInterpret</tabstop>
+    <tabstop>_comboBoxXDisplay</tabstop>
+    <tabstop>_xTransformTop</tabstop>
+    <tabstop>_xTransformTopExp</tabstop>
+    <tabstop>_xMajorTickSpacing</tabstop>
+    <tabstop>_xMinorTicks</tabstop>
+    <tabstop>_xMinorTicksAuto</tabstop>
+    <tabstop>_xMajorGrid</tabstop>
+    <tabstop>_xMinorGrid</tabstop>
+    <tabstop>_suppressLeft</tabstop>
+    <tabstop>_suppressRight</tabstop>
+    <tabstop>YIsLog</tabstop>
+    <tabstop>_yReversed</tabstop>
+    <tabstop>_yOffsetAuto</tabstop>
+    <tabstop>_yOffsetOn</tabstop>
+    <tabstop>_yOffsetOff</tabstop>
+    <tabstop>_checkBoxYInterpret</tabstop>
+    <tabstop>_comboBoxYInterpret</tabstop>
+    <tabstop>_comboBoxYDisplay</tabstop>
+    <tabstop>_yTransformRight</tabstop>
+    <tabstop>_yTransformRightExp</tabstop>
+    <tabstop>_yMajorTickSpacing</tabstop>
+    <tabstop>_yMinorTicks</tabstop>
+    <tabstop>_yMinorTicksAuto</tabstop>
+    <tabstop>_yMajorGrid</tabstop>
+    <tabstop>_yMinorGrid</tabstop>
+    <tabstop>XAuto</tabstop>
+    <tabstop>XAC</tabstop>
+    <tabstop>XACRange</tabstop>
+    <tabstop>XExpressionMin</tabstop>
+    <tabstop>scalarSelectorX1</tabstop>
+    <tabstop>XExpressionMax</tabstop>
+    <tabstop>scalarSelectorX2</tabstop>
+    <tabstop>YAuto</tabstop>
+    <tabstop>YAC</tabstop>
+    <tabstop>YACRange</tabstop>
+    <tabstop>YExpressionMin</tabstop>
+    <tabstop>scalarSelectorY1</tabstop>
+    <tabstop>YExpressionMax</tabstop>
+    <tabstop>scalarSelectorY2</tabstop>
     <tabstop>NewPlotMarker</tabstop>
     <tabstop>AddPlotMarker</tabstop>
     <tabstop>PlotMarkerList</tabstop>
@@ -2839,78 +3008,6 @@
     <tabstop>_checkBoxDefaultMarkerColor</tabstop>
     <tabstop>_comboMarkerLineStyle</tabstop>
     <tabstop>_spinBoxMarkerLineWidth</tabstop>
-    <tabstop>XAuto</tabstop>
-    <tabstop>XAC</tabstop>
-    <tabstop>XACRange</tabstop>
-    <tabstop>XExpressionMin</tabstop>
-    <tabstop>scalarSelectorX1</tabstop>
-    <tabstop>XExpressionMax</tabstop>
-    <tabstop>scalarSelectorX2</tabstop>
-    <tabstop>YAuto</tabstop>
-    <tabstop>YAC</tabstop>
-    <tabstop>YACRange</tabstop>
-    <tabstop>YExpressionMin</tabstop>
-    <tabstop>scalarSelectorY1</tabstop>
-    <tabstop>YExpressionMax</tabstop>
-    <tabstop>scalarSelectorY2</tabstop>
-    <tabstop>_suppressLeft</tabstop>
-    <tabstop>_suppressRight</tabstop>
-    <tabstop>YIsLog</tabstop>
-    <tabstop>_checkBoxYOffsetMode</tabstop>
-    <tabstop>_yReversed</tabstop>
-    <tabstop>_checkBoxYInterpret</tabstop>
-    <tabstop>_comboBoxYInterpret</tabstop>
-    <tabstop>_comboBoxYDisplay</tabstop>
-    <tabstop>_yTransformRight</tabstop>
-    <tabstop>_yTransformRightExp</tabstop>
-    <tabstop>_yMajorTickSpacing</tabstop>
-    <tabstop>_yMinorTicks</tabstop>
-    <tabstop>_yMinorTicksAuto</tabstop>
-    <tabstop>_yMajorGrid</tabstop>
-    <tabstop>_yMinorGrid</tabstop>
-    <tabstop>_suppressTop</tabstop>
-    <tabstop>_suppressBottom</tabstop>
-    <tabstop>XIsLog</tabstop>
-    <tabstop>_checkBoxXOffsetMode</tabstop>
-    <tabstop>_xReversed</tabstop>
-    <tabstop>_checkBoxXInterpret</tabstop>
-    <tabstop>_comboBoxXInterpret</tabstop>
-    <tabstop>_comboBoxXDisplay</tabstop>
-    <tabstop>_xTransformTop</tabstop>
-    <tabstop>_xTransformTopExp</tabstop>
-    <tabstop>_xMajorTickSpacing</tabstop>
-    <tabstop>_xMinorTicks</tabstop>
-    <tabstop>_xMinorTicksAuto</tabstop>
-    <tabstop>_xMajorGrid</tabstop>
-    <tabstop>_xMinorGrid</tabstop>
-    <tabstop>_axisPenWidth</tabstop>
-    <tabstop>_majorGridColor</tabstop>
-    <tabstop>_checkBoxDefaultMajorGridColor</tabstop>
-    <tabstop>_majorPenWidth</tabstop>
-    <tabstop>_minorGridColor</tabstop>
-    <tabstop>_checkBoxDefaultMinorGridColor</tabstop>
-    <tabstop>_minorPenWidth</tabstop>
-    <tabstop>ScalarList</tabstop>
-    <tabstop>TopLabelFontSize</tabstop>
-    <tabstop>YLabelFontSize</tabstop>
-    <tabstop>XLabelFontSize</tabstop>
-    <tabstop>NumberFontSize</tabstop>
-    <tabstop>TopLabelText</tabstop>
-    <tabstop>_comboBoxTopLabelJustify</tabstop>
-    <tabstop>YAxisText</tabstop>
-    <tabstop>XAxisText</tabstop>
-    <tabstop>_spinBoxXAngle</tabstop>
-    <tabstop>_spinBoxYAngle</tabstop>
-    <tabstop>FontComboBox</tabstop>
-    <tabstop>ShowLegend</tabstop>
-    <tabstop>TrackContents</tabstop>
-    <tabstop>_pushButtonEditLegend</tabstop>
-    <tabstop>AvailableCurveList</tabstop>
-    <tabstop>_add</tabstop>
-    <tabstop>_remove</tabstop>
-    <tabstop>_up</tabstop>
-    <tabstop>_down</tabstop>
-    <tabstop>DisplayedCurveList</tabstop>
 </tabstops>
 <includes>
     <include location="local" impldecl="in declaration">kst2dplot.h</include>

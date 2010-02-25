@@ -21,6 +21,7 @@
 
 class KstDoc;
 class KstApp;
+class KMdiChildView;
 
 // Keep in sync with kstiface.h
 

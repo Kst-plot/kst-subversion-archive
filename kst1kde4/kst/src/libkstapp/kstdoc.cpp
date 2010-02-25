@@ -1210,7 +1210,20 @@ bool KstDoc::event(QEvent *e) {
     }
 
     _nextEventPaint = false;
-    QTimer::singleShot(0, this, SLOT(enableUpdates()));
+
+    //
+    // there are good reasons NOT to set _updating to false using a single shot timer:
+    // the main thread may be waiting on a call to Kst.waitForUpdate(...),
+    //  which will not return until this update is completed, which
+    //  is not until _updating is set equal to false.
+    // Attempting to set _updating to false through a timer will 
+    //  never be processed if the main thread is waiting for 
+    //  _updating to be set to false.
+    //
+    // QTimer::singleShot(0, this, SLOT(enableUpdates()));
+    //
+
+    _updating = false;
 
     return true;
   } else if (e->type() == KstEventTypeLog) {

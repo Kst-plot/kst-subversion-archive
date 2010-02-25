@@ -22,6 +22,7 @@
 #include <qbuttongroup.h>
 #include <qcheckbox.h>
 #include <qdeepcopy.h>
+#include <qglobal.h>
 #include <qradiobutton.h>
 #include <qregexp.h>
 #include <qspinbox.h>
@@ -44,6 +45,7 @@
 #include "kstdatacollection.h"
 #include "kstdataobject.h"
 #include "kstdataobjectcollection.h"
+#include "kstdatasource.h"
 #include "kstdatawizard_i.h"
 #include "kstplotlabel.h"
 #include "kstpsd.h"
@@ -628,26 +630,33 @@ void KstDataWizard::newFilter()
 }
 
 
-bool KstDataWizard::checkAvailableMemory(KstDataSourcePtr &ds, int f0Value, int nValue)
+bool KstDataWizard::checkAvailableMemory(KstDataSourcePtr &ds, KstFrameSize f0Value, Q_INT64 nValue)
 {
   unsigned long memoryRequested = 0;
   unsigned long memoryAvailable = 1024*1024*1024; // 1GB
-  unsigned long frames;
+  Q_INT64 frames;
   bool rc = true;
 
 #ifdef HAVE_LINUX
-  meminfo();
-  memoryAvailable = S(kb_main_free + kb_main_buffers + kb_main_cached);
+  KST::memfree(memoryAvailable, true);
+  KST::memfree(memoryAvailable, true);
 #endif
 
   ds->writeLock();
 
-  // only add to memory requirement if xVector is to be created 
+  //
+  // only add to memory requirement if xVector is to be created...
+  //
+
   if (_xAxisCreateFromField->isChecked()) {
     if (_kstDataRange->ReadToEnd->isChecked() || nValue < 0) {
-      frames = ds->frameCount(_xVector->currentText()) - f0Value;
+      frames = ds->frameCountLarge(_xVector->currentText()) - f0Value;
     } else {
-      frames = kMin(nValue, ds->frameCount(_xVector->currentText()));
+      if (nValue < ds->frameCountLarge(_xVector->currentText())) {
+        frames = nValue;
+      } else {
+        frames = ds->frameCountLarge(_xVector->currentText());
+      }
     }
 
     if (_kstDataRange->DoSkip->isChecked() && _kstDataRange->Skip->value() > 0) {
@@ -674,11 +683,11 @@ bool KstDataWizard::checkAvailableMemory(KstDataSourcePtr &ds, int f0Value, int 
       QString field = i->text(0);
 
       if (_kstDataRange->ReadToEnd->isChecked() || nValue < 0) {
-        frames = ds->frameCount(field) - f0Value;
+        frames = ds->frameCountLarge(field) - f0Value;
       } else {
         frames = nValue;
-        if (frames > (unsigned long)ds->frameCount(field)) {
-          frames = ds->frameCount();
+        if (frames > (unsigned long)ds->frameCountLarge(field)) {
+          frames = ds->frameCountLarge();
         }
       }
 
@@ -836,32 +845,32 @@ void KstDataWizard::finished()
     _sourceCache.clear();
   }
 
-  int f0Value;
-  int nValue;
+  KstFrameSize f0Value;
+  KstFrameSize nValue;
 
   if (_kstDataRange->isStartAbsoluteTime()) {
-    f0Value = ds->sampleForTime(_kstDataRange->f0DateTimeValue());
+    f0Value = ds->sampleForTimeLarge(_kstDataRange->f0DateTimeValue());
   } else if (_kstDataRange->isStartRelativeTime()) {
-    f0Value = ds->sampleForTime(_kstDataRange->f0Value());
+    f0Value = ds->sampleForTimeLarge(_kstDataRange->f0Value());
   } else {
-    f0Value = int(_kstDataRange->f0Value());
+    f0Value = (KstFrameSize)_kstDataRange->f0Value();
   }
 
   if (_kstDataRange->isRangeRelativeTime()) {
     double nValStored = _kstDataRange->nValue();
 
     if (_kstDataRange->CountFromEnd->isChecked()) {
-      int frameCount = ds->frameCount(_xVector->currentText());
-      double msCount = ds->relativeTimeForSample(frameCount - 1);
+      KstFrameSize frameCount = ds->frameCountLarge(_xVector->currentText());
+      double msCount = ds->relativeTimeForSampleLarge(frameCount - 1);
 
-      nValue = frameCount - 1 - ds->sampleForTime(msCount - nValStored);
+      nValue = frameCount - 1 - ds->sampleForTimeLarge(msCount - nValStored);
     } else {
-      double fTime = ds->relativeTimeForSample(f0Value);
+      double fTime = ds->relativeTimeForSampleLarge(f0Value);
 
-      nValue = ds->sampleForTime(fTime + nValStored) - ds->sampleForTime(fTime);
+      nValue = ds->sampleForTimeLarge(fTime + nValStored) - ds->sampleForTimeLarge(fTime);
     }
   } else {
-    nValue = int(_kstDataRange->nValue());
+    nValue = (KstFrameSize)_kstDataRange->nValue();
   }
 
   if (checkAvailableMemory(ds, f0Value, nValue)) {

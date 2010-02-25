@@ -130,6 +130,7 @@ KstApp::KstApp(QWidget *parent, const char *name)
   assert(!::inst);
   ::inst = this;
 
+  _updatesFromScriptEnabled = true;
   _plotHolderWhileOpeningDocument = new Kst2DPlotMap;
   KGlobal::dirs()->addResourceType("kst", KStandardDirs::kde_default("data") + "kst");
 
@@ -1959,20 +1960,32 @@ void KstApp::tieAll() {
   paintAll(KstPainter::P_PAINT);
 }
 
-//#define PAINTTIMER
+
 void KstApp::paintAll(KstPainter::PaintType pt) {
-#ifdef PAINTTIMER
-  QTime t;
-  t.start();
-#endif
   KstViewWindow *view = dynamic_cast<KstViewWindow*>(activeWindow());
   if (view) {
     view->view()->paint(pt);
   }
-#ifdef PAINTTIMER
-  int x = t.elapsed();
-  kstdDebug() << "paintAll with painttype " << (int)pt << " - " << x << "ms" << endl;
-#endif
+}
+
+
+void KstApp::paintAllFromScript() {
+  if (_updatesFromScriptEnabled) {
+    paintAll(KstPainter::P_PAINT);
+  }
+}
+
+
+void KstApp::setEnableImplicitRepaintsFromScript(bool enable) {
+  _updatesFromScriptEnabled = enable;
+  if (enable) {
+    paintAll(KstPainter::P_PAINT);
+  }
+}
+
+
+bool KstApp::getEnableImplicitRepaintsFromScript() {
+  return _updatesFromScriptEnabled;
 }
 
 
@@ -2296,7 +2309,6 @@ void KstApp::showDataWizardWithFile(const QString &input) {
 
 
 void KstApp::registerDocChange() {
-  kstdDebug() << "register doc changed" << endl;
   forceUpdate();
   updateVisibleDialogs();
   doc->setModified();
@@ -2697,30 +2709,31 @@ void KstApp::fromEnd() {
 
 void KstApp::updateMemoryStatus() {
 #ifdef HAVE_LINUX
-  meminfo();
+  unsigned long mi;
 
-  QString memoryAvailable;
-  unsigned long mi = S(kb_main_free + kb_main_buffers + kb_main_cached);
+  if (KST::memfree(mi, false)) {
+    QString memoryAvailable;
 
-  mi /= 1024;
-  if (mi < 1024) {
-    memoryAvailable = i18n("abbreviation for kilobytes", "%1 kB").arg(mi);
-  } else {
     mi /= 1024;
     if (mi < 1024) {
-      memoryAvailable = i18n("abbreviation for megabytes", "%1 MB").arg(mi);
+      memoryAvailable = i18n("abbreviation for kilobytes", "%1 kB").arg(mi);
     } else {
       mi /= 1024;
       if (mi < 1024) {
-        memoryAvailable = i18n("abbreviation for gigabytes", "%1 GB").arg(mi);
+        memoryAvailable = i18n("abbreviation for megabytes", "%1 MB").arg(mi);
       } else {
         mi /= 1024;
-        memoryAvailable = i18n("abbreviation for terabytes", "%1 TB").arg(mi);
+        if (mi < 1024) {
+          memoryAvailable = i18n("abbreviation for gigabytes", "%1 GB").arg(mi);
+        } else {
+          mi /= 1024;
+          memoryAvailable = i18n("abbreviation for terabytes", "%1 TB").arg(mi);
+        }
       }
     }
-  }
 
-  slotUpdateMemoryMsg(i18n("%1 available").arg(memoryAvailable));
+    slotUpdateMemoryMsg(i18n("%1 available").arg(memoryAvailable));
+  }
 #endif
 }
 

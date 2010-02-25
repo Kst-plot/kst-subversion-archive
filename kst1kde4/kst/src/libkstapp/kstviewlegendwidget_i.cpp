@@ -157,4 +157,4 @@ void KstViewLegendWidgetI::changedBgColor( )
   _changedBgColor = true;
 }
 
-
+#include "kstviewlegendwidget_i.moc"

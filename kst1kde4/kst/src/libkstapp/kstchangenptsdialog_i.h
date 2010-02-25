@@ -36,6 +36,9 @@ public slots:
   /** calls updateChangeNptsDialog(), then shows and raises changeNptsDialog */
   void showChangeNptsDialog();
 
+  /** select none in selection box */
+  void selectNone();
+
   /** select all in selection box */
   void selectAll();
 

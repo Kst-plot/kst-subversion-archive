@@ -84,23 +84,6 @@
                 </widget>
             </vbox>
         </widget>
-        <spacer row="1" column="1">
-            <property name="name">
-                <cstring>spacer14_3</cstring>
-            </property>
-            <property name="orientation">
-                <enum>Vertical</enum>
-            </property>
-            <property name="sizeType">
-                <enum>Expanding</enum>
-            </property>
-            <property name="sizeHint">
-                <size>
-                    <width>31</width>
-                    <height>80</height>
-                </size>
-            </property>
-        </spacer>
         <widget class="QLayoutWidget" row="1" column="0" rowspan="3" colspan="1">
             <property name="name">
                 <cstring>layout26_3</cstring>
@@ -135,6 +118,23 @@
                 </widget>
             </vbox>
         </widget>
+        <spacer row="1" column="1">
+            <property name="name">
+                <cstring>spacer14_3</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Vertical</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>31</width>
+                    <height>80</height>
+                </size>
+            </property>
+        </spacer>
         <widget class="QLayoutWidget" row="2" column="1">
             <property name="name">
                 <cstring>layout19</cstring>
@@ -251,26 +251,7 @@
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <widget class="QSpinBox" row="0" column="5">
-                    <property name="name">
-                        <cstring>_fontSize</cstring>
-                    </property>
-                    <property name="minValue">
-                        <number>-99</number>
-                    </property>
-                </widget>
-                <widget class="QLabel" row="0" column="4">
-                    <property name="name">
-                        <cstring>textLabel4</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Size:</string>
-                    </property>
-                    <property name="alignment">
-                        <set>AlignVCenter|AlignRight</set>
-                    </property>
-                </widget>
-                <widget class="QLabel" row="1" column="3" rowspan="1" colspan="2">
+                <widget class="QLabel" row="1" column="5" rowspan="1" colspan="2">
                     <property name="name">
                         <cstring>textLabel4_3_2</cstring>
                     </property>
@@ -286,7 +267,7 @@
                         <string>Font Color:</string>
                     </property>
                 </widget>
-                <widget class="KColorButton" row="1" column="5">
+                <widget class="KColorButton" row="1" column="7">
                     <property name="name">
                         <cstring>_fontColor</cstring>
                     </property>
@@ -302,6 +283,49 @@
                         <string>Vertical Layout</string>
                     </property>
                 </widget>
+                <widget class="QLabel" row="0" column="0">
+                    <property name="name">
+                        <cstring>textLabel3</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Font:</string>
+                    </property>
+                </widget>
+                <widget class="KFontCombo" row="0" column="1" rowspan="1" colspan="5">
+                    <property name="name">
+                        <cstring>_font</cstring>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="0" column="6">
+                    <property name="name">
+                        <cstring>textLabel4</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Size:</string>
+                    </property>
+                    <property name="alignment">
+                        <set>AlignVCenter|AlignRight</set>
+                    </property>
+                </widget>
+                <widget class="QSpinBox" row="0" column="7">
+                    <property name="name">
+                        <cstring>_fontSize</cstring>
+                    </property>
+                    <property name="minValue">
+                        <number>-99</number>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="1" column="3">
+                    <property name="name">
+                        <cstring>textLabel4_2</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Scale line width:</string>
+                    </property>
+                    <property name="alignment">
+                        <set>AlignVCenter|AlignRight</set>
+                    </property>
+                </widget>
                 <spacer row="1" column="2">
                     <property name="name">
                         <cstring>spacer6_2</cstring>
@@ -314,22 +338,20 @@
                     </property>
                     <property name="sizeHint">
                         <size>
-                            <width>131</width>
+                            <width>150</width>
                             <height>21</height>
                         </size>
                     </property>
                 </spacer>
-                <widget class="QLabel" row="0" column="0">
+                <widget class="QSpinBox" row="1" column="4">
                     <property name="name">
-                        <cstring>textLabel3</cstring>
+                        <cstring>_scaleLineWidth</cstring>
                     </property>
-                    <property name="text">
-                        <string>Font:</string>
+                    <property name="maxValue">
+                        <number>10</number>
                     </property>
-                </widget>
-                <widget class="KFontCombo" row="0" column="1" rowspan="1" colspan="3">
-                    <property name="name">
-                        <cstring>_font</cstring>
+                    <property name="minValue">
+                        <number>1</number>
                     </property>
                 </widget>
             </grid>
@@ -458,17 +480,10 @@
     <include location="global" impldecl="in declaration">kst_export.h</include>
     <include location="global" impldecl="in implementation">kiconloader.h</include>
 </includes>
-<variables>
-</variables>
-<signals>
-</signals>
-<slots>
-</slots>
-<functions>
-</functions>
 <exportmacro>KST_EXPORT</exportmacro>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
+    <includehint>plotlistbox.h</includehint>
     <includehint>plotlistbox.h</includehint>
     <includehint>kcolorbutton.h</includehint>
     <includehint>kfontcombo.h</includehint>

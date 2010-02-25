@@ -159,7 +159,7 @@ bool KstFitDialogI::createCurve(KstCPluginPtr plugin) {
   if (w && w->view()->findChild(_strPlotName)) {
     Kst2DPlotPtr plot = kst_cast<Kst2DPlot>(w->view()->findChild(_strPlotName));
     if (plot) {
-      QString strLabel = QString("[%1]").arg(plugin->tagName());      
+      QString strLabel = QString("[%1]").arg(plugin->tagName());
       KstViewLabelPtr label = new KstViewLabel();
 
       label->setTransparent(true);
@@ -242,11 +242,9 @@ bool KstFitDialogI::newObject() {
 
 
 void KstFitDialogI::generateEntries(bool input, int& cnt, QWidget *parent, QGridLayout *grid, const QValueList<Plugin::Data::IOValue>& table) {
-  const QString& pluginName = _pluginList[_w->PluginCombo->currentItem()];
-  const Plugin::Data& pluginData = PluginCollection::self()->pluginList()[PluginCollection::self()->pluginNameList()[pluginName]];
-  bool isWeighted = pluginData._isFitWeighted;
-
-  QString scalarLabelTemplate, vectorLabelTemplate, stringLabelTemplate;
+  QString scalarLabelTemplate;
+  QString vectorLabelTemplate;
+  QString stringLabelTemplate;
   int iInputVector = 0;
 
   if (input) {
@@ -277,8 +275,7 @@ void KstFitDialogI::generateEntries(bool input, int& cnt, QWidget *parent, QGrid
         string = true;
         break;
       case Plugin::Data::IOValue::TableType:
-        if (input && ( iInputVector == 0 || iInputVector == 1 || 
-                     ( isWeighted && iInputVector == 2 && !_evector.isEmpty() ) ) ) {
+        if (input && ( iInputVector == 0 || iInputVector == 1 ) ) {
           fixed = true;
         }
         if ((*it)._subType == Plugin::Data::IOValue::FloatSubType ||

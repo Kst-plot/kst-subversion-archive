@@ -190,6 +190,9 @@ Kst2dPlotWidget::Kst2dPlotWidget(QWidget* parent, const char* name, WFlags fl) :
   _yMarksInsidePlot->setChecked(true);
   _xMarksInsidePlot->setChecked(true);
 
+  _xOffsetAuto->setChecked(true);
+  _yOffsetAuto->setChecked(true);
+
   _comboBoxTopLabelJustify->insertItem(i18n("Left"));
   _comboBoxTopLabelJustify->insertItem(i18n("Right"));
   _comboBoxTopLabelJustify->insertItem(i18n("Center"));
@@ -376,6 +379,10 @@ void Kst2dPlotWidget::fillMarkerLineCombo() {
     _comboMarkerLineStyle->insertItem(ppix);
   }
 
+  if (_editMultipleMode) {
+    _comboMarkerLineStyle->insertItem(QString(" "));
+  }
+
   _comboMarkerLineStyle->setCurrentItem(currentItem);
 }
 
@@ -554,8 +561,10 @@ void Kst2dPlotWidget::populateEditMultiple(const Kst2DPlot *plot) {
   populateEditMultiple(_suppressTop);
   populateEditMultiple(_suppressBottom);
   populateEditMultiple(XIsLog);
-  populateEditMultiple(_checkBoxXOffsetMode);
   populateEditMultiple(_xReversed);
+  populateEditMultiple(_xOffsetAuto);
+  populateEditMultiple(_xOffsetOn);
+  populateEditMultiple(_xOffsetOff);
   populateEditMultiple(_checkBoxXInterpret);
   populateEditMultiple(_xTransformTop);
   populateEditMultiple(_xMinorTicksAuto);
@@ -576,7 +585,9 @@ void Kst2dPlotWidget::populateEditMultiple(const Kst2DPlot *plot) {
   populateEditMultiple(_suppressLeft);
   populateEditMultiple(_suppressRight);
   populateEditMultiple(YIsLog);
-  populateEditMultiple(_checkBoxYOffsetMode);
+  populateEditMultiple(_yOffsetAuto);
+  populateEditMultiple(_yOffsetOn);
+  populateEditMultiple(_yOffsetOff);
   populateEditMultiple(_yReversed);
   populateEditMultiple(_checkBoxYInterpret);
   populateEditMultiple(_yTransformRight);
@@ -688,8 +699,13 @@ void Kst2dPlotWidget::fillWidget(const Kst2DPlot *plot) {
   XIsLog->setChecked(plot->isXLog());
   YIsLog->setChecked(plot->isYLog());
 
-  _checkBoxXOffsetMode->setChecked(plot->xOffsetMode());
-  _checkBoxYOffsetMode->setChecked(plot->yOffsetMode());
+  _xOffsetAuto->setChecked(plot->xOffsetMode() == OFFSET_AUTO);
+  _xOffsetOn->setChecked(plot->xOffsetMode() == OFFSET_ON);
+  _xOffsetOff->setChecked(plot->xOffsetMode() == OFFSET_OFF);
+
+  _yOffsetAuto->setChecked(plot->yOffsetMode() == OFFSET_AUTO);
+  _yOffsetOn->setChecked(plot->yOffsetMode() == OFFSET_ON);
+  _yOffsetOff->setChecked(plot->yOffsetMode() == OFFSET_OFF);
 
   double xmin, ymin, xmax, ymax;
   plot->getScale(xmin, ymin, xmax, ymax);
@@ -1091,10 +1107,12 @@ void Kst2dPlotWidget::applyAppearance(Kst2DPlotPtr plot) {
 }
 
 void Kst2dPlotWidget::applyXAxis(Kst2DPlotPtr plot) {
-  if (_checkBoxXOffsetMode->state() == QButton::On) {
-    plot->setXOffsetMode(true);
-  } else if (_checkBoxXOffsetMode->state() == QButton::Off) {
-    plot->setXOffsetMode(false);
+  if (_xOffsetAuto->state() == QButton::On) {
+    plot->setXOffsetMode(OFFSET_AUTO);
+  } else if (_xOffsetOn->state() == QButton::On) {
+    plot->setXOffsetMode(OFFSET_ON);
+  } else if (_xOffsetOff->state() == QButton::On) {
+    plot->setXOffsetMode(OFFSET_OFF);
   }
 
   KstAxisInterpretation xAxisInterpretation;
@@ -1177,10 +1195,12 @@ void Kst2dPlotWidget::applyXAxis(Kst2DPlotPtr plot) {
 }
 
 void Kst2dPlotWidget::applyYAxis(Kst2DPlotPtr plot) {
-  if (_checkBoxYOffsetMode->state() == QButton::On) {
-    plot->setYOffsetMode(true);
-  } else if (_checkBoxYOffsetMode->state() == QButton::Off) {
-    plot->setYOffsetMode(false);
+  if (_yOffsetAuto->state() == QButton::On) {
+    plot->setYOffsetMode(OFFSET_AUTO);
+  } else if (_yOffsetOn->state() == QButton::On) {
+    plot->setYOffsetMode(OFFSET_ON);
+  } else if (_yOffsetOff->state() == QButton::On) {
+    plot->setYOffsetMode(OFFSET_OFF);
   }
 
   KstAxisInterpretation yAxisInterpretation;
@@ -1264,7 +1284,7 @@ void Kst2dPlotWidget::applyYAxis(Kst2DPlotPtr plot) {
 }
 
 void Kst2dPlotWidget::applyRange(Kst2DPlotPtr plot) {
-  if (XAC->isChecked() || plot->xScaleMode() == AC) {
+  if (XAC->isChecked()) {
     plot->setXScaleMode(AC);
     if (!_editMultipleMode || XACRange->text() != QString(" ")) {
       plot->setXScale(0, XACRange->text().toDouble());
@@ -1289,16 +1309,28 @@ void Kst2dPlotWidget::applyRange(Kst2DPlotPtr plot) {
     plot->setXScaleMode(AUTOBORDER);
   } else if (XNoSpikes->isChecked()) {
     plot->setXScaleMode(NOSPIKE);
-  } else if (!_editMultipleMode) {
-    KstDebug::self()->log(i18n("Internal error: No X scale type checked in %1.").arg(_title->text()), KstDebug::Error);
+  } else if (_editMultipleMode) {
+    if (plot->xScaleMode() == AC) {
+      if (XACRange->text() != QString(" ")) {
+        plot->setXScale(0, XACRange->text().toDouble());
+      }
+    } else if (plot->xScaleMode() == EXPRESSION) {
+      if (XExpressionMin->text() != QString(" ") && XExpressionMax->text() != QString(" ")) {
+        plot->setXExpressions(XExpressionMin->text(), XExpressionMax->text());
+      }
+      // if expressions are constant, just use FIXED mode
+      plot->optimizeXExps();
+    }
+  } else {
+     KstDebug::self()->log(i18n("Internal error: No X scale type checked in %1.").arg(_title->text()), KstDebug::Error);
   }
 
-  if (YAC->isChecked() || plot->yScaleMode() == AC) {
+  if (YAC->isChecked()) {
     plot->setYScaleMode(AC);
     if (!_editMultipleMode || YACRange->text() != QString(" ")) {
       plot->setYScale(0, YACRange->text().toDouble());
     }
-  } else if (YExpression->isChecked() || plot->yScaleMode() == EXPRESSION) {
+  } else if (YExpression->isChecked()) {
     plot->setYScaleMode(EXPRESSION);
     if (!_editMultipleMode || (YExpressionMin->text() != QString(" ") && YExpressionMax->text() != QString(" "))) {
       if (!plot->setYExpressions(YExpressionMin->text(), YExpressionMax->text())) {
@@ -1318,7 +1350,19 @@ void Kst2dPlotWidget::applyRange(Kst2DPlotPtr plot) {
     plot->setYScaleMode(AUTOBORDER);
   } else if (YNoSpikes->isChecked()) {
     plot->setYScaleMode(NOSPIKE);
-  } else if (!_editMultipleMode) {
+  } else if (_editMultipleMode) {
+    if (plot->yScaleMode() == AC) {
+      if (YACRange->text() != QString(" ")) {
+        plot->setYScale(0, YACRange->text().toDouble());
+      }
+    } else if (plot->yScaleMode() == EXPRESSION) {
+      if (YExpressionMin->text() != QString(" ") && YExpressionMax->text() != QString(" ")) {
+        plot->setYExpressions(YExpressionMin->text(), YExpressionMax->text());
+      }
+      // if expressions are constant, just use FIXED mode
+      plot->optimizeYExps();
+    }
+  } else {
     KstDebug::self()->log(i18n( "Internal error: No Y scale type checked in %1." ).arg(_title->text()), KstDebug::Error);
   }
 
