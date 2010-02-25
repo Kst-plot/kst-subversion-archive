@@ -24,6 +24,7 @@ class Trim : public KstBasicPlugin {
 public:
 
   Trim(QObject *parent, const char *name, const QStringList &args);
+  Trim(QObject *parent, const QStringList &args);
   virtual ~Trim();
 
   //algorithm

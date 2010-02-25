@@ -23,6 +23,7 @@ class Statistics : public KstBasicPlugin {
   Q_OBJECT
   public:
     Statistics(QObject *parent, const char *name, const QStringList &args);
+    Statistics(QObject *parent, const QStringList &args);
     virtual ~Statistics();
 
     virtual bool algorithm();

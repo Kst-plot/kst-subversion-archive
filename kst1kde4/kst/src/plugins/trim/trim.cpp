@@ -32,6 +32,10 @@ Trim::Trim( QObject */*parent*/, const char */*name*/, const QStringList &/*args
   _inputScalarDefaults.insert(REMOVE, 1);
 }
 
+Trim::Trim( QObject */*parent*/, const QStringList &/*args*/ )
+    : KstBasicPlugin() {
+  _inputScalarDefaults.insert(REMOVE, 1);
+}
 
 Trim::~Trim() {
 }

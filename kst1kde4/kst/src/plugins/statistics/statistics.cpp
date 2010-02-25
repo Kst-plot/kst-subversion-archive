@@ -38,6 +38,9 @@ Statistics::Statistics( QObject */*parent*/, const char */*name*/, const QString
     : KstBasicPlugin() {
 }
 
+Statistics::Statistics( QObject */*parent*/, const QStringList &/*args*/ )
+    : KstBasicPlugin() {
+}
 
 Statistics::~Statistics() {
 }

@@ -48,6 +48,14 @@ Syncbin::Syncbin( QObject */*parent*/, const char */*name*/, const QStringList &
   _inputScalarDefaults.insert(N_BINS, 5000.0);
 }
 
+Syncbin::Syncbin( QObject */*parent*/, const QStringList &/*args*/ )
+    : KstBasicPlugin() {
+  //
+  // set a reasonable number of bins as the default - 
+  //  any value is better than zero...
+  //
+  _inputScalarDefaults.insert(N_BINS, 5000.0);
+}
 
 Syncbin::~Syncbin() {
 }

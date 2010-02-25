@@ -23,6 +23,7 @@ class Syncbin : public KstBasicPlugin {
   Q_OBJECT
   public:
     Syncbin(QObject *parent, const char *name, const QStringList &args);
+    Syncbin(QObject *parent, const QStringList &args);
     virtual ~Syncbin();
 
     virtual bool algorithm();
