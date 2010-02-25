@@ -59,6 +59,11 @@ LFIDifference::LFIDifference( QObject */*parent*/, const char */*name*/, const Q
   _inputScalarDefaults.insert(SPAN, 1.0);
 }
 
+LFIDifference::LFIDifference( QObject */*parent*/, const QStringList &/*args*/ )
+    : KstBasicPlugin() {
+  _inputScalarDefaults.insert(FREQ, 1.0);
+  _inputScalarDefaults.insert(SPAN, 1.0);
+}
 
 LFIDifference::~LFIDifference() {
 }

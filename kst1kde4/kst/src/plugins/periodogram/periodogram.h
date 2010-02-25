@@ -23,6 +23,7 @@ class Periodogram : public KstBasicPlugin {
   Q_OBJECT
   public:
     Periodogram(QObject *parent, const char *name, const QStringList &args);
+    Periodogram(QObject *parent, const QStringList &args);
     virtual ~Periodogram();
 
     virtual bool algorithm();

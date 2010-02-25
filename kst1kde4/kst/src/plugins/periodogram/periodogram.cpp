@@ -38,6 +38,9 @@ Periodogram::Periodogram(QObject */*parent*/, const char */*name*/, const QStrin
     : KstBasicPlugin() {
 }
 
+Periodogram::Periodogram(QObject */*parent*/, const QStringList &/*args*/)
+    : KstBasicPlugin() {
+}
 
 Periodogram::~Periodogram() {
 }

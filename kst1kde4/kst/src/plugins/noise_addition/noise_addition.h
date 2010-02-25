@@ -23,6 +23,7 @@ class NoiseAddition : public KstBasicPlugin {
   Q_OBJECT
   public:
     NoiseAddition(QObject *parent, const char *name, const QStringList &args);
+    NoiseAddition(QObject *parent, const QStringList &args);
     virtual ~NoiseAddition();
 
     virtual bool algorithm();

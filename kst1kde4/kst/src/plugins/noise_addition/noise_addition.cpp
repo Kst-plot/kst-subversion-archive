@@ -34,6 +34,9 @@ NoiseAddition::NoiseAddition( QObject */*parent*/, const char */*name*/, const Q
     : KstBasicPlugin() {
 }
 
+NoiseAddition::NoiseAddition( QObject */*parent*/, const QStringList &/*args*/ )
+    : KstBasicPlugin() {
+}
 
 NoiseAddition::~NoiseAddition() {
 }

@@ -40,6 +40,9 @@ Normalization::Normalization( QObject */*parent*/, const char */*name*/, const Q
     : KstBasicPlugin() {
 }
 
+Normalization::Normalization( QObject */*parent*/, const QStringList &/*args*/ )
+    : KstBasicPlugin() {
+}
 
 Normalization::~Normalization() {
 }

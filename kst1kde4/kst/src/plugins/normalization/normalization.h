@@ -25,6 +25,7 @@ Q_OBJECT
 public:
 
   Normalization(QObject *parent, const char *name, const QStringList &args);
+  Normalization(QObject *parent, const QStringList &args);
   virtual ~Normalization();
 
   virtual bool algorithm();

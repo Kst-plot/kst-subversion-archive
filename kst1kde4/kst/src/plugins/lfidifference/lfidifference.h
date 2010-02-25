@@ -23,6 +23,7 @@ class LFIDifference : public KstBasicPlugin {
   Q_OBJECT
   public:
     LFIDifference(QObject *parent, const char *name, const QStringList &args);
+    LFIDifference(QObject *parent, const QStringList &args);
     virtual ~LFIDifference();
 
     virtual bool algorithm();
