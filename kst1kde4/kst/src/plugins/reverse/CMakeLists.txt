@@ -4,7 +4,7 @@ include_directories(${CMAKE_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/src/libkst ${CMAKE_S
 
 set(kstobject_reverse_PART_SRCS reverse.cpp)
 
-kde4_add_plugin(${kstobject_reverse_PART_SRCS})
+kde4_add_plugin(kstobject_reverse ${kstobject_reverse_PART_SRCS})
 
 target_link_libraries(kstobject_reverse kstbase kstmath ${KDE4_KPARTS_LIBS})
 
