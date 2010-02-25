@@ -2,16 +2,16 @@ include_directories(${CMAKE_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/src/libkst ${CMAKE_S
 
 ########### next target ###############
 
-set(kstobject_reverse_PART_SRCS reverse.cpp)
+set(kstobject_shift_PART_SRCS shift.cpp)
 
-kde4_add_plugin(${kstobject_reverse_PART_SRCS})
+kde4_add_plugin(kstobject_shift ${kstobject_shift_PART_SRCS})
 
-target_link_libraries(kstobject_reverse kstbase kstmath ${KDE4_KPARTS_LIBS})
+target_link_libraries(kstobject_shift kstbase kstmath ${KDE4_KPARTS_LIBS})
 
-install(TARGETS kstobject_reverse 
+install(TARGETS kstobject_shift 
 	LIBRARY DESTINATION lib/kde4
  	${INSTALL_TARGETS_DEFAULT_ARGS})
 
 ########### install files ###############
 
-install(FILES  kstobject_reverse.desktop DESTINATION share/services/kst)
+install(FILES  kstobject_shift.desktop DESTINATION share/services/kst)

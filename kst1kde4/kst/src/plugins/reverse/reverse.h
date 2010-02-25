@@ -24,6 +24,7 @@ class Reverse : public KstBasicPlugin {
 public:
 
   Reverse(QObject *parent, const char *name, const QStringList &args);
+  Reverse(QObject *parent, const QStringList &args);
   virtual ~Reverse();
 
   virtual bool algorithm();

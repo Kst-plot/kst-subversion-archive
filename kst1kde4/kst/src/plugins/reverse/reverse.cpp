@@ -33,7 +33,9 @@ Reverse::Reverse( QObject */*parent*/, const char */*name*/, const QStringList &
     : KstBasicPlugin() {
 }
 
-
+Reverse::Reverse( QObject */*parent*/, const QStringList &/*args*/ )
+    : KstBasicPlugin() {
+}
 
 Reverse::~Reverse() {
 }

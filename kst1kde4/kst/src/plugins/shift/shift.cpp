@@ -40,6 +40,11 @@ Shift::Shift( QObject *parent, const char *name, const QStringList &args )
   Q_UNUSED(args)
 }
 
+Shift::Shift( QObject *parent, const QStringList &args )
+    : KstBasicPlugin() {
+  Q_UNUSED(parent)
+  Q_UNUSED(args)
+}
 
 Shift::~Shift() {
 }

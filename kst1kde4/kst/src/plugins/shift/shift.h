@@ -23,6 +23,7 @@ class Shift : public KstBasicPlugin {
   Q_OBJECT
   public:
     Shift(QObject *parent, const char *name, const QStringList &args);
+    Shift(QObject *parent, const QStringList &args);
     virtual ~Shift();
 
     virtual bool algorithm();
