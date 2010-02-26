@@ -15,13 +15,14 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QDragMoveEvent>
 #include "plotlistbox.h"
 
 PlotListBox::PlotListBox(QWidget *parent, const char *name)
 : DraggableListBox(parent, name) {
   setDragEnabled(true);
   setAcceptDrops(true);
-  setSelectionMode(QListBox::Extended);
+  setSelectionMode(QAbstractItemView::ExtendedSelection);
 }
 
 
@@ -29,8 +30,10 @@ PlotListBox::~PlotListBox() {
 }
 
 
-QDragObject *PlotListBox::dragObject() {
-  QStoredDrag *drag = new QStoredDrag("application/x-kst-plot-list", this);
+QMimeData *PlotListBox::dragObject() {
+/* xxx
+  QStoredDrag *drag = 0L;
+  drag = new QStoredDrag("application/x-kst-plot-list", this);
 
   QStringList entries;
   for (QListBoxItem *entry = firstItem(); entry; entry = entry->next()) {
@@ -45,15 +48,18 @@ QDragObject *PlotListBox::dragObject() {
   drag->setEncodedData(data);
 
   return drag;
+*/
+  return 0L;
 }
 
 
 void PlotListBox::dragMoveEvent(QDragMoveEvent *e) {
-  e->accept(e->provides("application/x-kst-plot-list") && e->source() != this);
+// xxx  e->accept(e->provides("application/x-kst-plot-list") && e->source() != this);
 }
 
 
 void PlotListBox::dropEvent(QDropEvent *e) {
+/* xxx
   if (!e->provides("application/x-kst-plot-list") || e->source() == this) {
     e->accept(false);
     return;
@@ -70,11 +76,21 @@ void PlotListBox::dropEvent(QDropEvent *e) {
     emit changed();
   }
   clearSelection();
+
   e->accept(true);
+*/
 }
 
 
 void PlotListBox::startDrag() {
+  QMimeData *o = dragObject();
+  QDrag drag(this);
+
+  drag.setMimeData(o);
+  if (o) {
+    drag.start();
+  }
+/* xxx
   QDragObject *o = dragObject();
   if (o && o->dragMove()) {
     QByteArray data = o->encodedData("application/x-kst-plot-list");
@@ -89,7 +105,8 @@ void PlotListBox::startDrag() {
     }
     clearSelection();
   }
+*/
 }
 
-#include "plotlistbox.moc"
+// xxx #include "plotlistbox.moc"
 

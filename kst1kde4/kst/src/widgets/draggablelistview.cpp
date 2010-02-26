@@ -15,11 +15,12 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <qapplication.h>
+#include <QApplication>
+#include <QMouseEvent>
 #include "draggablelistview.h"
 
 DraggableListView::DraggableListView(QWidget *parent, const char *name)
-: QListView(parent, name), _pressPos(-1, -1), _dragEnabled(false) {
+: QListView(parent), _pressPos(-1, -1), _dragEnabled(false) {
 }
 
 
@@ -37,7 +38,7 @@ void DraggableListView::setDragEnabled(bool en) {
 }
 
 
-QDragObject *DraggableListView::dragObject() {
+QMimeData *DraggableListView::dragObject() {
   return 0L;
 }
 
@@ -47,6 +48,7 @@ void DraggableListView::mousePressEvent(QMouseEvent *e) {
     _pressPos = QPoint(-1, -1);
 
     if (e->button() & Qt::LeftButton) {
+/* xxx
       QListViewItem *item;
       if ((item = itemAt(e->pos()))) {
         setCurrentItem(item);
@@ -60,6 +62,7 @@ void DraggableListView::mousePressEvent(QMouseEvent *e) {
         e->accept();
         return;
       }
+*/
     }
   }
 
@@ -74,7 +77,7 @@ void DraggableListView::mouseReleaseEvent(QMouseEvent *e) {
 
 
 void DraggableListView::mouseMoveEvent(QMouseEvent *e) {
-  if (_dragEnabled && e->state() & Qt::LeftButton && _pressPos != QPoint(-1, -1)) {
+  if (_dragEnabled && ( e->buttons() & Qt::LeftButton ) && _pressPos != QPoint(-1, -1)) {
     QPoint delta = e->pos() - _pressPos;
     if (delta.manhattanLength() > QApplication::startDragDistance()) {
       _pressPos = QPoint(-1, -1);
@@ -88,11 +91,13 @@ void DraggableListView::mouseMoveEvent(QMouseEvent *e) {
 
 
 void DraggableListView::startDrag() {
-  QDragObject *o = dragObject();
+  QMimeData *o = dragObject();
+  QDrag drag(this);
+
+  drag.setMimeData(o);
   if (o) {
-    o->drag();
+    drag.start();
   }
 }
 
-#include "draggablelistview.moc"
 

@@ -26,9 +26,9 @@ kde4_add_ui_files(kstwidgets_LIB_SRCS
     datarangewidget.ui
     colorpalettewidget.ui)
 
-ADD_LIBRARY(kstwidgets SHARED ${kstwidgets_LIB_SRCS})
+kde4_add_library(kstwidgets SHARED ${kstwidgets_LIB_SRCS})
 
-target_link_libraries(kstwidgets kio kstmath)
+target_link_libraries(kstwidgets kio kstmath ${KDE4_KDEUI_LIBS} ${KDE4_KPARTS_LIBS} ${QT_LIBRARIES})
 
 set_target_properties(kstwidgets PROPERTIES VERSION 1.0.0 SOVERSION 1)
 install(TARGETS kstwidgets 

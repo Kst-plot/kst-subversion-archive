@@ -15,13 +15,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <ksdebug.h>
+#include <QDragMoveEvent>
 #include "vectorlistview.h"
 
 VectorListView::VectorListView(QWidget *parent, const char *name)
 : DraggableListView(parent, name) {
   setAcceptDrops(true);
-  setSelectionMode(QListView::Extended);
+  setSelectionMode(QAbstractItemView::ExtendedSelection);
 }
 
 
@@ -29,7 +29,8 @@ VectorListView::~VectorListView() {
 }
 
 
-QDragObject *VectorListView::dragObject() {
+QMimeData *VectorListView::dragObject() {
+/*
   QStoredDrag *drag = new QStoredDrag("application/x-kst-vector-list", this);
 
   QStringList entries;
@@ -45,15 +46,18 @@ QDragObject *VectorListView::dragObject() {
   drag->setEncodedData(data);
 
   return drag;
+*/
+  return 0L;
 }
 
 
 void VectorListView::dragMoveEvent(QDragMoveEvent *e) {
-  e->accept(e->provides("application/x-kst-vector-list") && e->source() != this);
+// xxx  e->accept(e->provides("application/x-kst-vector-list") && e->source() != this);
 }
 
 
 void VectorListView::dropEvent(QDropEvent *e) {
+/* xxx
   if (!e->provides("application/x-kst-vector-list") || e->source() == this) {
     e->accept(false);
     return;
@@ -74,10 +78,12 @@ void VectorListView::dropEvent(QDropEvent *e) {
   clearSelection();
   e->accept(true);
   emit dropped(e);
+*/
 }
 
 
 void VectorListView::startDrag() {
+/* xxx
   QDragObject *o = dragObject();
   if (o && o->dragMove()) {
     QByteArray data = o->encodedData("application/x-kst-vector-list");
@@ -90,7 +96,8 @@ void VectorListView::startDrag() {
 
     clearSelection();
   }
+*/
 }
 
-#include "vectorlistview.moc"
+// xxx #include "vectorlistview.moc"
 

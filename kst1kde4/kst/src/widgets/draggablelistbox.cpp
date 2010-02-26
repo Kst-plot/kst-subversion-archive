@@ -20,7 +20,7 @@
 #include "draggablelistbox.h"
 
 DraggableListBox::DraggableListBox(QWidget *parent, const char *name)
-: QListBox(parent, name), _pressPos(-1, -1), _dragEnabled(false) {
+: QListWidget(parent), _pressPos(-1, -1), _dragEnabled(false) {
 }
 
 
@@ -38,7 +38,7 @@ void DraggableListBox::setDragEnabled(bool en) {
 }
 
 
-QDragObject *DraggableListBox::dragObject() {
+QMimeData *DraggableListBox::dragObject() {
   return 0L;
 }
 
@@ -47,15 +47,16 @@ void DraggableListBox::mousePressEvent(QMouseEvent *e) {
   if (_dragEnabled) {
     _pressPos = QPoint(-1, -1);
 
-    if (e->button() & Qt::LeftButton && !isRubberSelecting()) {
-      QListBoxItem *item;
+    if (e->button() & Qt::LeftButton /* xxx && !isRubberSelecting()*/) {
+      QListWidgetItem *item;
+
       if ((item = itemAt(e->pos()))) {
         setCurrentItem(item);
         if (!item->isSelected()) {
-          if (!(e->state() & Qt::ControlButton)) {
+          if (!(e->buttons() & Qt::ControlModifier)) {
             clearSelection();
           }
-          setSelected(item, true);
+          item->setSelected(true);
         }
         _pressPos = e->pos();
         e->accept();
@@ -64,51 +65,53 @@ void DraggableListBox::mousePressEvent(QMouseEvent *e) {
     }
   }
 
-  QListBox::mousePressEvent(e);
+  QListWidget::mousePressEvent(e);
 }
 
 
 void DraggableListBox::mouseReleaseEvent(QMouseEvent *e) {
   _pressPos = QPoint(-1, -1);
-  QListBox::mouseReleaseEvent(e);
+
+  QListWidget::mouseReleaseEvent(e);
 }
 
 
 void DraggableListBox::mouseMoveEvent(QMouseEvent *e) {
-  if (_dragEnabled && e->state() & Qt::LeftButton && _pressPos != QPoint(-1, -1)) {
+  if (_dragEnabled && (e->buttons() & Qt::LeftButton) && _pressPos != QPoint(-1, -1)) {
     QPoint delta = e->pos() - _pressPos;
+
     if (delta.manhattanLength() > QApplication::startDragDistance()) {
       _pressPos = QPoint(-1, -1);
       startDrag();
     }
     e->accept();
   } else {
-    QListBox::mouseMoveEvent(e);
+    QListWidget::mouseMoveEvent(e);
   }
 }
 
 
 void DraggableListBox::startDrag() {
-  QDragObject *o = dragObject();
+  QMimeData *o = dragObject();
+  QDrag drag(this);
+
+  drag.setMimeData(o);
   if (o) {
-    o->drag();
+    drag.start();
   }
 }
 
 bool DraggableListBox::up() {
   bool bRetVal = false;
+  int i;
 
   if (count() > 1) {
-    QString C;
+    for (i=1; i<count(); i++) {
+      if (item(i)->isSelected()) {
+        insertItem(i-1, takeItem(i));
+        i--;
 
-    for (unsigned i=1; i<count(); i++) {
-      if (isSelected(i)) {
-        C = text(i);
-        removeItem(i);
-        --i;
-        insertItem(C, i);
-        setSelected(i, true);
-        while (isSelected(i) && (i < count())) {
+        while (i < count( ) && item(i)->isSelected( )) {
           ++i;
         }
 
@@ -122,17 +125,15 @@ bool DraggableListBox::up() {
 
 bool DraggableListBox::down() {
   bool bRetVal = false;
+  int i;
 
   if (count() > 1) {
-    QString C;
-    for (int i=int(count())-2; i>=0; i--) {
-      if (isSelected(i)) {
-        C = text(i);
-        removeItem(i);
-        ++i;
-        insertItem(C, i);
-        setSelected(i, true);
-        while (isSelected(i) && (i > 0)) {
+    for (i = count()-2; i>=0; i--) {
+      if (item(i)->isSelected()) {
+        insertItem(i+1, takeItem(i));
+        i++;
+
+        while (i > 0 && item(i)->isSelected( )) {
           --i;
         }
 
@@ -144,5 +145,5 @@ bool DraggableListBox::down() {
   return bRetVal;
 }
 
-#include "draggablelistbox.moc"
+//#include "draggablelistbox.moc"
 

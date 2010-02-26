@@ -18,14 +18,14 @@
 #include "kstcombobox.h"
 
 KstComboBox::KstComboBox(QWidget *parent, const char *name)
-  : KComboBox(parent, name), _trueRW(false) {
+  : KComboBox(parent), _trueRW(false) {
 
   commonConstructor();
 }
 
 
 KstComboBox::KstComboBox(bool rw, QWidget *parent, const char *name)
-  : KComboBox(false, parent, name), _trueRW(rw) {
+  : KComboBox(false, parent), _trueRW(rw) {
 
   commonConstructor();
 }
@@ -43,11 +43,11 @@ void KstComboBox::commonConstructor() {
   QComboBox::setEditable( true );
 
   if (!_trueRW) { //if not truly read write then go into psuedo mode for read only
-    setInsertionPolicy( NoInsertion );
-    setCompletionMode( KGlobalSettings::CompletionPopupAuto );
+// xxx    setInsertionPolicy( NoInsertion );
+// xxx    setCompletionMode( KGlobalSettings::CompletionPopupAuto );
 
     //DON'T HANDLE THE EDIT'S RETURNPRESSED IN qcombobox.cpp... RATHER HANDLE HERE!
-    disconnect( lineEdit(), SIGNAL(returnPressed()), this, SLOT(returnPressed()) );
+// xxx    disconnect( lineEdit(), SIGNAL(returnPressed()), this, SLOT(returnPressed()) );
     connect( this, SIGNAL(returnPressed()), this, SLOT(validate()) );
   }
 }
@@ -62,7 +62,7 @@ void KstComboBox::focusInEvent(QFocusEvent *event) {
     if (KCompletion *comp = completionObject()) {
       comp->clear();
       for (int i = 0; i < count(); ++i) {
-        comp->addItem(text(i));
+// xxx        comp->addItem(text(i));
       }
     }
   }
@@ -83,6 +83,7 @@ void KstComboBox::focusOutEvent(QFocusEvent *event) {
 
 
 void KstComboBox::validate(bool rp) {
+/* xxx
   if (!_trueRW) {
     int match = -1;
     for (int i = 0; i < count(); ++i) {
@@ -101,8 +102,9 @@ void KstComboBox::validate(bool rp) {
       emit activated(text(match));
     }
   }
+*/
 }
 
 
-#include "kstcombobox.moc"
+// xxx #include "kstcombobox.moc"
 

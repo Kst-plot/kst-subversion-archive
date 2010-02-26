@@ -18,8 +18,8 @@
 #ifndef DRAGGABLELISTVIEW_H
 #define DRAGGABLELISTVIEW_H
 
-#include <qlistview.h>
-#include <qdragobject.h>
+#include <QListView>
+#include <QMimeData>
 
 #include "kst_export.h"
 
@@ -29,7 +29,7 @@ class KST_EXPORT DraggableListView : public QListView {
     DraggableListView(QWidget *parent = 0L, const char *name = 0L);
     virtual ~DraggableListView();
 
-    virtual QDragObject *dragObject();
+    virtual QMimeData *dragObject();
 
     bool dragEnabled() const;
     virtual void setDragEnabled(bool enabled);

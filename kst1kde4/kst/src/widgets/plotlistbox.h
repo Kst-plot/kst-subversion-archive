@@ -27,7 +27,7 @@ class PlotListBox : public DraggableListBox {
     KST_EXPORT PlotListBox(QWidget *parent = 0L, const char *name = 0L);
     virtual ~PlotListBox();
 
-    virtual QDragObject *dragObject();
+    virtual QMimeData *dragObject();
 
   protected:
     virtual void dragMoveEvent(QDragMoveEvent *e);
