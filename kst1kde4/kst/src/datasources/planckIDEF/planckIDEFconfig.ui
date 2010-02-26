@@ -1,50 +1,43 @@
-<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
-<class>PlanckIDEFConfig</class>
-<widget class="QWidget">
-    <property name="name">
-        <cstring>PlanckIDEFConfig</cstring>
-    </property>
-    <property name="geometry">
-        <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>497</width>
-            <height>82</height>
-        </rect>
-    </property>
-    <property name="caption">
-        <string>PlanckIDEFConfig</string>
-    </property>
-    <grid>
-        <property name="name">
-            <cstring>unnamed</cstring>
-        </property>
-        <spacer row="1" column="0">
-            <property name="name">
-                <cstring>spacer1</cstring>
-            </property>
-            <property name="orientation">
-                <enum>Vertical</enum>
-            </property>
-            <property name="sizeType">
-                <enum>Expanding</enum>
-            </property>
-            <property name="sizeHint">
-                <size>
-                    <width>320</width>
-                    <height>30</height>
-                </size>
-            </property>
-        </spacer>
-        <widget class="QCheckBox" row="0" column="0">
-            <property name="name">
-                <cstring>_checkFilename</cstring>
-            </property>
-            <property name="text">
-                <string>Check filename for individual files</string>
-            </property>
-        </widget>
-    </grid>
-</widget>
-<layoutdefaults spacing="6" margin="11"/>
-</UI>
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>PlanckIDEFConfig</class>
+ <widget class="QWidget" name="PlanckIDEFConfig">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>497</width>
+    <height>82</height>
+   </rect>
+  </property>
+  <layout class="QGridLayout">
+   <item row="1" column="0">
+    <spacer name="spacer1">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeType">
+      <enum>QSizePolicy::Expanding</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>320</width>
+       <height>30</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="0" column="0">
+    <widget class="QCheckBox" name="_checkFilename">
+     <property name="text">
+      <string>Check filename for individual files</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+ <resources/>
+ <connections/>
+</ui>
