@@ -1,0 +1,17 @@
+add_subdirectory(ascii)
+add_subdirectory(qimagesource)
+add_subdirectory(dirfile)
+add_subdirectory(frame)
+add_subdirectory(indirect)
+add_subdirectory(scuba2)
+
+IF (KST_HAVE_FITSIO)
+    add_subdirectory(lfiio)
+    add_subdirectory(wmap)
+    add_subdirectory(fitsimage)
+    add_subdirectory(healpix)
+    add_subdirectory(planckIDEF)
+ELSE (KST_HAVE_FITSIO)
+    message(STATUS "========== some datasources will not be compiled. Install cfitsio to add this functionality")
+ENDIF (KST_HAVE_FITSIO)
+
