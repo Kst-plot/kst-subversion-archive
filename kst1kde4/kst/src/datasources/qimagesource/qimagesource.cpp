@@ -241,9 +241,10 @@ QStringList provides_qimagesource() {
   return rc;
 }
 
-//int understands_qimagesource(KConfig*, const QString& filename)
-int understands_qimagesource(KConfig*, const QString& filename, const QImage& _image) {
-  QString ftype( _image.QImage::format() );
+
+int understands_qimagesource(KConfig*, const QString& filename) {
+  QImage image(filename);
+  QString ftype( image.format() );
 
   if ( ftype.isEmpty() ) return 0;
 
@@ -256,10 +257,11 @@ int understands_qimagesource(KConfig*, const QString& filename, const QImage& _i
 
 }
 
-//QStringList fieldList_qimagesource(KConfig*, const QString& filename, const QString& type, QString *typeSuggestion, bool *complete)
-QStringList fieldList_qimagesource(KConfig*, const QImage& _image, const QString& type, QString *typeSuggestion, bool *complete) {
+
+QStringList fieldList_qimagesource(KConfig*, const QString& filename, const QString& type, QString *typeSuggestion, bool *complete) {
   Q_UNUSED(type)
   QStringList fieldList;
+  QImage image(filename);
 
   if (complete) {
     *complete = true;
@@ -268,7 +270,7 @@ QStringList fieldList_qimagesource(KConfig*, const QImage& _image, const QString
   if (typeSuggestion) {
     *typeSuggestion = "QImage compatible Image";
   }
-  if ( _image.QImage::format()) {
+  if (image.format()) {
     fieldList.append("INDEX");
     fieldList.append( "GRAY" );
     fieldList.append( "RED" );
