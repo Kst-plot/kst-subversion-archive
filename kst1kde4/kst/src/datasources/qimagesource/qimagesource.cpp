@@ -17,11 +17,12 @@
 
 #include "qimagesource.h"
 #include <qcolor.h>
+#include <QTextStream>
 
 
 QimagesourceSource::QimagesourceSource(KConfig *cfg, const QString& filename, const QString& type)
 : KstDataSource(cfg, filename, type) {
-  _image.reset();
+  _image = QImage();
   if (init()) {
     _valid = true;
   }
@@ -40,7 +41,7 @@ bool QimagesourceSource::reset() {
 
 bool QimagesourceSource::init() {
 
-  _image.reset();
+  _image = QImage();
   _matrixList.clear();
   _fieldList.clear();
   _frameCount = 0;
@@ -64,7 +65,7 @@ bool QimagesourceSource::init() {
     _matrixList.append( "4" );
     return update() == KstObject::UPDATE;
   } else {
-    _image.reset();
+    _image = QImage();
     return false;
   }
 }
@@ -240,21 +241,23 @@ QStringList provides_qimagesource() {
   return rc;
 }
 
-int understands_qimagesource(KConfig*, const QString& filename) {
-  QString ftype( QImage::imageFormat( filename ) );
+//int understands_qimagesource(KConfig*, const QString& filename)
+int understands_qimagesource(KConfig*, const QString& filename, const QImage& _image) {
+  QString ftype( _image.QImage::format() );
 
   if ( ftype.isEmpty() ) return 0;
 
   if ( ftype == "TIFF" ) {
-    if ( filename.find( ".tif",  -5, false )<0 ) return 0;
+    QString str = ".tif";
+    if ( filename.indexOf( str,  -5, Qt::CaseInsensitive)<0 ) return 0;
   }
 
   return 90;
 
 }
 
-
-QStringList fieldList_qimagesource(KConfig*, const QString& filename, const QString& type, QString *typeSuggestion, bool *complete) {
+//QStringList fieldList_qimagesource(KConfig*, const QString& filename, const QString& type, QString *typeSuggestion, bool *complete)
+QStringList fieldList_qimagesource(KConfig*, const QImage& _image, const QString& type, QString *typeSuggestion, bool *complete) {
   Q_UNUSED(type)
   QStringList fieldList;
 
@@ -265,7 +268,7 @@ QStringList fieldList_qimagesource(KConfig*, const QString& filename, const QStr
   if (typeSuggestion) {
     *typeSuggestion = "QImage compatible Image";
   }
-  if ( QImage::imageFormat( filename ) ) {
+  if ( _image.QImage::format()) {
     fieldList.append("INDEX");
     fieldList.append( "GRAY" );
     fieldList.append( "RED" );

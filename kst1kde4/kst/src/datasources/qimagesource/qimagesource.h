@@ -18,7 +18,8 @@
 #ifndef QIMAGESOURCE_H
 #define QIMAGESOURCE_H
 
-#include <qimage.h>
+#include <QImage>
+#include <QTextStream>
 #include <kstdatasource.h>
 
 
