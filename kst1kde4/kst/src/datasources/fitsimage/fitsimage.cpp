@@ -20,7 +20,8 @@
 
 #include <stdio.h>
 #include <math.h>
-#include <ksdebug.h>
+//#include <ksdebug.h>
+
 
 
 FitsimageSource::FitsimageSource(KConfig *cfg, const QString& filename, const QString& type)
@@ -59,7 +60,7 @@ bool FitsimageSource::init() {
   _fieldList.clear();
   _frameCount = 0;
 
-  fits_open_image( &_fptr, _filename.latin1( ), READONLY, &status );
+  fits_open_image( &_fptr, _filename.toLatin1( ), READONLY, &status );
   if ( status == 0 ) {
     _fieldList.append( "INDEX" );
     _fieldList.append( "1" );
@@ -297,7 +298,7 @@ int understands_fitsimage(KConfig*, const QString& filename) {
   int ret_val = 0;
   int naxis;
 
-  fits_open_image( &ffits, filename.latin1( ), READONLY, &status );
+  fits_open_image( &ffits, filename.toLatin1( ), READONLY, &status );
   fits_get_img_dim( ffits, &naxis,  &status);
 
   if( status == 0 && naxis > 1 ) {
