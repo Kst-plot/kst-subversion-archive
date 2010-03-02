@@ -8,6 +8,7 @@ find_package(KDE4 REQUIRED)
 add_definitions(${QT_DEFINITIONS} ${KDE_DEFINITIONS})
 
 include(CheckFunctionExists)
+include(FindPkgConfig)
 
 SET(KST_VERSION 1.9.0_devel)
 SET(KST_LIBKST_VERSION 1.9.0)
