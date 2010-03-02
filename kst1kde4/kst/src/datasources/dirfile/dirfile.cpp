@@ -32,6 +32,7 @@
 
 #include "kstdebug.h"
 
+
 DirFileSource::DirFileSource(KConfig *cfg, const QString& filename, const QString& type)
 : KstDataSource(cfg, filename, type) {
   if (init()) {
@@ -56,7 +57,7 @@ bool DirFileSource::init() {
   int err = 0;
 
   _frameCount = 0;
-  FormatType *ft = GetFormat(_filename.latin1(), &err);
+  FormatType *ft = GetFormat(_filename.toLatin1(), &err);
 
   if (err == GD_E_OK) {
     _fieldList.append("INDEX");
@@ -104,7 +105,7 @@ KstObject::UpdateType DirFileSource::update(int u) {
   int err = 0;
   int newNF;
 
-  newNF = GetNFrames(_filename.latin1(), &err, 0L);
+  newNF = GetNFrames(_filename.toLatin1(), &err, 0L);
   if (newNF < 0) {
     newNF = 0;
   }
@@ -123,13 +124,13 @@ int DirFileSource::readField(double *v, const QString& field, int s, int n) {
   int read;
 
   if (n < 0) {
-    read = GetData(_filename.latin1(), field.left(FIELD_LENGTH).latin1(),
+    read = GetData(_filename.toLatin1(), field.left(FIELD_LENGTH).toLatin1(),
                    s, 0, /* 1st sframe, 1st samp */
                    0, 1, /* num sframes, num samps */
                    'd', (void*)v,
                    &err);
   } else {
-    read = GetData(_filename.latin1(), field.left(FIELD_LENGTH).latin1(),
+    read = GetData(_filename.toLatin1(), field.left(FIELD_LENGTH).toLatin1(),
                    s, 0, /* 1st sframe, 1st samp */
                    n, 0, /* num sframes, num samps */
                    'd', (void*)v,
@@ -154,7 +155,7 @@ int DirFileSource::readField(double *v, const QString& field, int s, int n) {
 int DirFileSource::writeField(const double *v, const QString& field, int s, int n) {
   int err = 0;
 
-  return PutData(_filename.latin1(), field.left(FIELD_LENGTH).latin1(),
+  return PutData(_filename.toLatin1(), field.left(FIELD_LENGTH).toLatin1(),
       s, 0, /* 1st sframe, 1st samp */
       n, 0, /* num sframes, num samps */
       'd', (void*)v,
@@ -164,7 +165,7 @@ int DirFileSource::writeField(const double *v, const QString& field, int s, int 
 
 bool DirFileSource::isValidField(const QString& field) const {
   int err = GD_E_OK;
-  GetSamplesPerFrame(_filename.latin1(), field.left(FIELD_LENGTH).latin1(), &err);
+  GetSamplesPerFrame(_filename.toLatin1(), field.left(FIELD_LENGTH).toLatin1(), &err);
 
   if (err != GD_E_OK) {
     char error[200];
@@ -181,7 +182,7 @@ int DirFileSource::samplesPerFrame(const QString &field) {
   int samples = 0;
   int err = GD_E_OK;
 
-  samples = GetSamplesPerFrame(_filename.latin1(), field.left(FIELD_LENGTH).latin1(), &err);
+  samples = GetSamplesPerFrame(_filename.toLatin1(), field.left(FIELD_LENGTH).toLatin1(), &err);
 
   if (err != GD_E_OK) {
     char error[200];
@@ -231,7 +232,7 @@ int understands_dirfile(KConfig*, const QString& filename) {
   // FIXME: GetNFrames causes a memory error here.  I think it is due to
   // the lfilename parameter.
   int err = 0;
-  int frameCount = GetNFrames(filename.latin1(), &err, 0L);
+  int frameCount = GetNFrames(filename.toLatin1(), &err, 0L);
   if (frameCount > 0 && err == GD_E_OK) {
     return 98;
   }
@@ -244,7 +245,7 @@ int understands_dirfile(KConfig*, const QString& filename) {
 QStringList fieldList_dirfile(KConfig*, const QString& filename, const QString& type, QString *typeSuggestion, bool *complete) {
   Q_UNUSED(type)
   int err = 0;
-  struct FormatType *ft = GetFormat(filename.latin1(), &err);
+  struct FormatType *ft = GetFormat(filename.toLatin1(), &err);
   QStringList fieldList;
 
   if (complete) {
