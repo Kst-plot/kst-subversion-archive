@@ -138,7 +138,7 @@ int DirFileSource::readField(double *v, const QString& field, int s, int n) {
   }
 
   if (err != GD_E_OK) {
-    if (_errors.find(field) == 0L) {
+    if (_errors.value(field) == 0L) {
       char error[200];
 
       _errors.insert(field, (int*)1L);

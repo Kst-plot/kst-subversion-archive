@@ -35,7 +35,7 @@
 
 #define DIRFILE_DEBUG 0
 
-#include <config.h>
+/*#include <config.h>*/
 
 /* The following has been extracted from internal.cpp from kjs */
 

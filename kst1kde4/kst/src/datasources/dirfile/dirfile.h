@@ -19,7 +19,6 @@
 #define DIRFILE_H
 
 #include <kstdatasource.h>
-#include <Q3Dict>
 
 
 class DirFileSource : public KstDataSource {
@@ -51,7 +50,7 @@ class DirFileSource : public KstDataSource {
     bool reset();
 
   private:
-    Q3Dict<int>  _errors;
+    QMap<QString, int*>  _errors;
     int _frameCount;
 };
 
