@@ -116,7 +116,7 @@ static int iNumLOSDataHeaders = sizeof(LOSDataHeaders)/sizeof(char*);
 WMAPSource::WMAPSource( KConfig *cfg, const QString& filename, const QString& type )
 : KstDataSource( cfg, filename, type )
 {
-  _fields.setAutoDelete( TRUE );
+  //_fields.setAutoDelete( TRUE );  obsolete in QMultiHash class
 
   if( type.isEmpty( ) || type == "WMAP" )
   {
@@ -172,7 +172,7 @@ void WMAPSource::addToMetadata( fitsfile *ffits, int &iStatus )
 
         str.sprintf( "%s %s", value, comment );
         metaString = new KstString( newTag, this, str );
-        _metaData.insert( keyname, metaString );
+        _metaData.insert( keyname, *metaString );
       }
     }
   }
@@ -218,7 +218,7 @@ void WMAPSource::addToMetadata( fitsfile *ffits, const int iNumCols, int &iStatu
 
               strValue = QString("%1").arg(value);
               metaString = new KstString( newTag, this, strValue );
-              _metaData.insert( keyname, metaString );
+              _metaData.insert( keyname, *metaString );
             }
           }
         }
@@ -265,11 +265,11 @@ void WMAPSource::addToFieldList( fitsfile *ffits, const int iNumCols, const long
           fld->numFrames = lNumBaseRows;
 
           str = charName;
-          if( _fields.find( str ) != 0L )
+          if( _fields.contains( str ) != 0L )
           {
             str += QString("_%1").arg( iHDUNumber );
           }
-          _fields.insert( str, fld );
+          _fields.insert( str, *fld );
           _fieldList.append( str );
         }
         else if( lRepeat == 3 )
@@ -286,7 +286,7 @@ void WMAPSource::addToFieldList( fitsfile *ffits, const int iNumCols, const long
             fld->numFrames = lNumBaseRows;
 
             str = QString("%1_%2").arg(charName).arg(QChar('X'+entry));
-            _fields.insert( str, fld );
+            _fields.insert( str, *fld );
             _fieldList.append( str );
           }
         }
@@ -304,7 +304,7 @@ void WMAPSource::addToFieldList( fitsfile *ffits, const int iNumCols, const long
             fld->numFrames = lNumBaseRows;
 
             str = QString("%1_%2").arg(charName).arg(QChar('a'+entry));
-            _fields.insert( str, fld );
+            _fields.insert( str, *fld );
             _fieldList.append( str );
           }
         }
@@ -322,7 +322,7 @@ void WMAPSource::addToFieldList( fitsfile *ffits, const int iNumCols, const long
             fld->numFrames = lNumBaseRows;
 
             str = QString("%1_%2").arg(charName).arg(entry);
-            _fields.insert( str, fld );
+            _fields.insert( str, *fld );
             _fieldList.append( str );
           }
         }
@@ -344,7 +344,7 @@ bool WMAPSource::initFile( )
     fitsfile* ffits;
     int       iStatus = 0;
 
-    iResult = fits_open_file( &ffits, _filename.ascii( ), READONLY, &iStatus );
+    iResult = fits_open_file( &ffits, _filename.toAscii( ), READONLY, &iStatus );
     if( iResult == 0 )
     {
       int iNumHeaderDataUnits;
@@ -398,7 +398,7 @@ bool WMAPSource::initFile( )
         fld->numSamplesPerFrame = 1;
         fld->numFrames = lNumBaseRows;
 
-        _fields.insert( "INDEX", fld );
+        _fields.insert( "INDEX", *fld );
         _fieldList.append( "INDEX" );
 
         //
@@ -491,14 +491,14 @@ int WMAPSource::readField( double *v, const QString& fieldName, int s, int n )
   {
     field *fld = 0L;
 
-    fld = _fields.find( fieldName );
+    *fld = _fields.value( fieldName );
     if( fld != 0L ) 
     {
       _valid = false;
 
       if( !_filename.isNull( ) && !_filename.isEmpty( ) )
       {
-        iResult = fits_open_file( &ffits, _filename.ascii( ), READONLY, &iStatus );
+        iResult = fits_open_file( &ffits, _filename.toAscii( ), READONLY, &iStatus );
         if( iResult == 0 )
         {
           int iHDUType;
@@ -594,7 +594,7 @@ bool WMAPSource::isValidField( const QString& field ) const
   }
   else
   {
-    if( _fields.find( field ) != 0L )
+    if( _fields.contains( field ) != 0L )
     {
       bRetVal = true;
     }
@@ -609,7 +609,7 @@ int WMAPSource::samplesPerFrame( const QString& fieldName )
   int rc = 1;
   field* fld = 0L;
 
-  fld = _fields.find( fieldName );
+  *fld = _fields.value( fieldName );
   if( fld != 0L )
   {
     rc = fld->numSamplesPerFrame;
@@ -626,7 +626,7 @@ int WMAPSource::frameCount( const QString& fieldName ) const
 
   if( fieldName.isEmpty() )
   {
-    fld = _fields.find( "POSITION_X" );
+    *fld = _fields.value( "POSITION_X" );
     if( fld != 0L )
     {
       rc = fld->numFrames;
@@ -634,7 +634,7 @@ int WMAPSource::frameCount( const QString& fieldName ) const
   }
   else
   {
-    fld = _fields.find( fieldName );
+    *fld = _fields.value( fieldName );
     if( fld != 0L )
     {
       rc = fld->numFrames;
@@ -686,7 +686,7 @@ extern "C" {
     //
     // determine if it is a WMAP file...
     //
-    if( fits_open_file( &ffits, filename.ascii( ), READONLY, &iStatus ) == 0 )
+    if( fits_open_file( &ffits, filename.toAscii( ), READONLY, &iStatus ) == 0 )
     {
       int iNumHeaderDataUnits;
 

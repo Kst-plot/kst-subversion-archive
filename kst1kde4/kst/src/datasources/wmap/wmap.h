@@ -21,6 +21,8 @@
 #include <kstdatasource.h>
 #include <fitsio.h>
 
+
+
 typedef struct {
     int table;
     int column;
@@ -52,7 +54,7 @@ class WMAPSource : public KstDataSource {
     void addToMetadata( fitsfile *ffits, const int iNumCols, int &iStatus );
     void addToFieldList( fitsfile *ffits, const int iNumCols, const long lNumRows, const long lNumBaseRows, int &iStatus );
 
-    QDict<field> _fields;
+    QMultiHash<QString, field> _fields; 
     double _dTimeZero;
     double _dTimeDelta;
     bool _bHasTime;
