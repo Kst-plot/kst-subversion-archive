@@ -73,7 +73,7 @@ bool LFIIOSource::initFile( )
 
     if( _first )
     {
-      iResult = fits_open_table( &ffits, _filename.ascii( ), READONLY, &iStatus );
+      iResult = fits_open_table( &ffits, _filename.toAscii( ), READONLY, &iStatus );
       if( iResult == 0 )
       {
         int keysexist;
@@ -96,7 +96,7 @@ bool LFIIOSource::initFile( )
 
               str.sprintf( "%s %s", value, comment );
               metaString = new KstString( KstObjectTag( keyname, tag() ), this, str );
-              _metaData.insert( keyname, metaString );
+              _metaData.insert( keyname, *metaString );
             }
           }
 
@@ -143,7 +143,7 @@ KstObject::UpdateType LFIIOSource::update( int u )
 
   if( !_filename.isNull( ) && !_filename.isEmpty( ) )
   {
-    iResult = fits_open_table( &ffits, _filename.ascii( ), READONLY, &iStatus );
+    iResult = fits_open_table( &ffits, _filename.toAscii( ), READONLY, &iStatus );
     if( iResult == 0 )
     {
       //
@@ -178,7 +178,7 @@ KstObject::UpdateType LFIIOSource::update( int u )
               //
               // ensure that we don't add duplicates to the _fieldList...
               //
-              while( _fieldList.findIndex( strName ) != -1 )
+              while( _fieldList.indexOf( strName ) != -1 )
               {
                 strName = QString("%1[%2]").arg( charName ).arg( iOffset );
                 iOffset++;
@@ -217,7 +217,7 @@ KstObject::UpdateType LFIIOSource::update( int u )
             iResult = fits_read_key( ffits, TDOUBLE, charTimeDelta, &_dTimeDelta, 0L, &iStatus );
             if( iResult == 0 )
             {
-              if( _fieldList.find( QString( TIME_FIELD ) ) == _fieldList.end( ) )
+              if( _fieldList.indexOf( QString( TIME_FIELD ) ) == _fieldList.size( )-1 )
               {
                 _bHasTime = true;
                 _fieldList.append( TIME_FIELD );
@@ -288,7 +288,7 @@ int LFIIOSource::readField( double *v, const QString& field, int s, int n )
 
       if( !_filename.isNull( ) && !_filename.isEmpty( ) )
       {
-        iResult = fits_open_table( &ffits, _filename.ascii( ), READONLY, &iStatus );
+        iResult = fits_open_table( &ffits, _filename.toAscii( ), READONLY, &iStatus );
         if( iResult == 0 )
         {
           _valid = true;
@@ -342,8 +342,8 @@ bool LFIIOSource::getColNumber( const QString& field, int* piColNumber ) const
     //
     for( i=1; i<iCount; i++ )
     {
-      strName = _fieldList[i].lower( );
-      if( strName.compare( field.lower( ) ) == 0 )
+      strName = _fieldList[i].toLower( );
+      if( strName.compare( field.toLower( ) ) == 0 )
       {
         bRetVal = true;
 
@@ -440,7 +440,7 @@ extern "C" {
     //
     // determine if it is a FITS file...
     //
-    if( fits_open_table( &ffits, filename.ascii( ), READONLY, &iStatus ) == 0 )
+    if( fits_open_table( &ffits, filename.toAscii( ), READONLY, &iStatus ) == 0 )
     {
       fits_close_file( ffits, &iStatus );
 
