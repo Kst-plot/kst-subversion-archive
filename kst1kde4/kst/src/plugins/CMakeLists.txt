@@ -20,6 +20,7 @@ add_subdirectory(normalization)
 add_subdirectory(crosscorrelation_bruteforce)
 add_subdirectory(planckUtils)
 add_subdirectory(reverse)
+add_subdirectory(filters)
 
 IF (KST_HAVE_GSL)
     add_subdirectory(noise_addition)
