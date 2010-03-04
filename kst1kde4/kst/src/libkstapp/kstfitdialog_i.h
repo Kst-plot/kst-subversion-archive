@@ -33,7 +33,7 @@ class KstFitDialogI : public KstPluginDialogI {
     void updatePluginList();
 
   private:
-    static QGuardedPtr<KstFitDialogI> _inst;
+    static QPointer<KstFitDialogI> _inst;
 
     QString _xvector;
     QString _yvector;
@@ -46,7 +46,7 @@ class KstFitDialogI : public KstPluginDialogI {
 
     void generateEntries(bool input, int& cnt, QWidget *parent, QGridLayout *grid, const QValueList<Plugin::Data::IOValue>& table);
 
-    bool saveInputs(KstCPluginPtr plugin, KstSharedPtr<Plugin> p);
+    bool saveInputs(KstCPluginPtr plugin, QExplicitlySharedDataPointer<Plugin> p);
 };
 
 #endif

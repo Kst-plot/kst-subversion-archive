@@ -67,7 +67,7 @@ void KstPluginManagerI::selectionChanged( QListViewItem *item )
 
 
 void KstPluginManagerI::install() {
-  KURL xmlfile = KFileDialog::getOpenURL(QString::null, "*.xml", this, i18n("Select Plugin to Install"));
+  KUrl xmlfile = KFileDialog::getOpenURL(QString::null, "*.xml", this, i18n("Select Plugin to Install"));
 
   if (xmlfile.isEmpty()) {
     return;
@@ -92,26 +92,23 @@ void KstPluginManagerI::install() {
   }
 
   QString path = KGlobal::dirs()->saveLocation("kstplugins");
-  KURL pathURL;
+  KUrl pathURL;
+
   pathURL.setPath(path);
 
   // first try copying the .so file in
-  KURL sofile = xmlfile;
+  KUrl sofile = xmlfile;
+  KUrl tmpFileURL;
   QString tmpSoFile = sofile.path();
   tmpSoFile.replace(QRegExp(".xml$"), ".so");
   sofile.setPath(tmpSoFile);
 
-#if KDE_VERSION >= KDE_MAKE_VERSION(3,3,0)
   if (!KIO::NetAccess::dircopy(sofile, pathURL, this)) {
-#else
-  if (!KIO::NetAccess::dircopy(sofile, pathURL)) {
-#endif
     KIO::NetAccess::removeTempFile(tmpFile);
     KMessageBox::error(this, i18n("Unable to copy plugin file %1 to %2.").arg(sofile.prettyURL()).arg(pathURL.prettyURL()), i18n("KST Plugin Loader"));
     return;
   }
 
-  KURL tmpFileURL;
   tmpFileURL.setPath(tmpFile);
   pathURL.setFileName(xmlfile.fileName());
 

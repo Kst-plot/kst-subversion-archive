@@ -22,11 +22,7 @@
 
 // include files for KDE
 #include <kdeversion.h>
-#if KDE_VERSION >= KDE_MAKE_VERSION(3,3,0)
 #include <kinputdialog.h>
-#else
-#include <klineeditdlg.h>
-#endif
 #include <klocale.h>
 
 // application specific includes
@@ -39,7 +35,7 @@ class QLabel;
 
 /** The base class for Kst application view windows.
   */
-class KST_EXPORT KstViewWindow : public KMdiChildView {
+class KST_EXPORT KstViewWindow : public QMdiSubWindow {
   Q_OBJECT
   public:
     KstViewWindow(QWidget *parent=0, const char *name=0);
@@ -68,8 +64,9 @@ class KST_EXPORT KstViewWindow : public KMdiChildView {
     virtual void readProperties(KConfig *cfg);
 
     /**
-    * Ignores the event and calls KMdiMainFrm::childWindowCloseRequest instead. This is because the
-    * mainframe has control over the views. Therefore the MDI view has to request the mainframe for a close.
+    * Ignores the event and calls KMdiMainFrm::childWindowCloseRequest instead. 
+    * This is because the mainframe has control over the views. 
+    * Therefore the MDI view has to request the mainframe for a close.
     */
     virtual void closeEvent(QCloseEvent *e);
 
@@ -77,7 +74,7 @@ class KST_EXPORT KstViewWindow : public KMdiChildView {
     // Hack to update KStdActions
     void updateActions();
 
-    void slotActivated(KMdiChildView*);
+    void slotActivated(QMdiSubWindow*);
 
   public slots:
     void rename();

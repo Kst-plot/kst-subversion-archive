@@ -47,7 +47,7 @@ class KstEventMonitorI : public KstDataDialog {
 
     QString _vector;
 
-    static QGuardedPtr<KstEventMonitorI> _inst;
+    static QPointer<KstEventMonitorI> _inst;
 
     // the following are for the multiple edit mode
     bool _changed : 1;

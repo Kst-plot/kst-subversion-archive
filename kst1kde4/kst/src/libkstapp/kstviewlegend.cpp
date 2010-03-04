@@ -937,18 +937,19 @@ KstBaseCurveList& KstViewLegend::curves() {
 KstViewLegendList KstViewLegend::globalLegendList() {
   KstViewLegendList rc;
   KstApp *app = KstApp::inst();
-  KMdiIterator<KMdiChildView*> *it = app->createIterator();
-  if (it) {
-    while (it->currentItem()) {
-      KstViewWindow *view = dynamic_cast<KstViewWindow*>(it->currentItem());
-      if (view) {
-        KstViewLegendList sub = view->view()->findChildrenType<KstViewLegend>(true);
-        rc += sub;
-      }
-      it->next();
+  QList<QMdiSubWindow*> windows;
+  QList<QMdiSubWindow*>::const_iterator i;
+
+  windows = app->subWindowList( CreationOrder );
+
+  for (i = windows.constBegin(); i != windows.constEnd(); ++i)
+    KstViewWindow *viewWindow = dynamic_cast<KstViewWindow*>(*i);
+    if (viewWindow) {
+      KstViewLegendList sub = viewWindow->view()->findChildrenType<KstViewLegend>(true);
+      rc += sub;
     }
-    app->deleteIterator(it);
   }
+
   return rc;
 }
 

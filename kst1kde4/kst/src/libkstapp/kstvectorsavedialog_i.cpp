@@ -75,7 +75,7 @@ void KstVectorSaveDialogI::save() {
   }
   KST::vectorList.lock().unlock();
 
-  KURL url = KFileDialog::getSaveURL(QString::null, QString::null, this, i18n("Save Vector As"));
+  KUrl url = KFileDialog::getSaveURL(QString::null, QString::null, this, i18n("Save Vector As"));
   if (!url.isEmpty()) {
     bool interpolate = true;
     switch (_multiOptions->currentItem()) {
@@ -108,7 +108,7 @@ void KstVectorSaveDialogI::save() {
           }
         }
 #if KDE_VERSION >= KDE_MAKE_VERSION(3,2,0)
-        KIO::NetAccess::file_copy(KURL(tf.name()), url, -1, true, false, this);
+        KIO::NetAccess::file_copy(KUrl(tf.name()), url, -1, true, false, this);
 #else
         KIO::NetAccess::upload(tf.name(), url);
 #endif
@@ -119,7 +119,8 @@ void KstVectorSaveDialogI::save() {
         {
           unsigned n = 0;
           for (KstVectorList::Iterator i = toSave.begin(); i != toSave.end(); ++i) {
-            KURL url2 = url;
+            Kurl url2 = url;
+
             if (toSave.count() > 1) {
               url2.setFileName(url.fileName() + QString(".%1").arg(++n));
             } else {
@@ -148,7 +149,7 @@ void KstVectorSaveDialogI::save() {
             }
           }
 #if KDE_VERSION >= KDE_MAKE_VERSION(3,2,0)
-          KIO::NetAccess::file_copy(KURL(tf.name()), url2, -1, true, false, this);
+          KIO::NetAccess::file_copy(KUrl(tf.name()), url2, -1, true, false, this);
 #else
           KIO::NetAccess::upload(tf.name(), url2);
 #endif

@@ -44,7 +44,7 @@ class KST_EXPORT KstEqDialogI : public KstDataDialog {
     bool editObject();
 
   private:
-    static QGuardedPtr<KstEqDialogI> _inst;
+    static QPointer<KstEqDialogI> _inst;
     bool checkEntries();
     bool _equationDirty;
     bool _xVectorsDirty;

@@ -501,21 +501,28 @@ Kst2DPlot::Kst2DPlot(const Kst2DPlot& plot, const QString& name)
   } else {
     plotName = name;
   }
-
+  
   KstApp *app = KstApp::inst();
-  KMdiIterator<KMdiChildView*> *iter;
+  QList<QMdiSubWindow*> windows;
+  QList<QMdiSubWindow*>::const_iterator i;
   bool duplicate = true;
   int last = 0;
 
+  windows = app->subWindowList( CreationOrder );
+
+  //
   // check for unique plot name
+  //
+
   while (duplicate) {
     duplicate = false;
-    iter = app->createIterator();
-    while (iter->currentItem() && !duplicate) {
-      KMdiChildView *childview = iter->currentItem();
-      KstViewWindow *viewwindow = dynamic_cast<KstViewWindow*>(childview);
-      if (viewwindow) {
-        if (viewwindow->view()->findChild(plotName)) {
+
+    for (i = windows.constBegin(); i != windows.constEnd(); ++i)
+      QMdiSubWindow *window = *i;
+      KstViewWindow *viewWindow = dynamic_cast<KstViewWindow*>(window);
+
+      if (viewWindow) {
+        if (viewWindow->view()->findChild(plotName)) {
           if (last == 0) {
             plotName = i18n("%1-copy").arg(plot.tagName());
           } else {
@@ -524,12 +531,11 @@ Kst2DPlot::Kst2DPlot(const Kst2DPlot& plot, const QString& name)
           ++last;
 
           duplicate = true;
+
           break;
         }
       }
-      iter->next();
     }
-    app->deleteIterator(iter);
   }
 
   commonConstructor(plotName,
@@ -1000,9 +1006,11 @@ void Kst2DPlot::clearCurves() {
 
 
 void Kst2DPlot::fitCurve(int id) {
-  KMdiChildView* c = KstApp::inst()->activeWindow();
+  QMdiSubWindow* c = KstApp::inst()->activeSubWindow();
+
   if (c) {
     KstBaseCurvePtr curve = *(Curves.findTag(_curveRemoveMap[id]));
+
     if (curve) {
       KstFitDialogI::globalInstance()->show_setCurve(_curveRemoveMap[id], tagName(), c->caption());
       if (_menuView) {
@@ -1014,9 +1022,11 @@ void Kst2DPlot::fitCurve(int id) {
 
 
 void Kst2DPlot::fitCurveVisibleStatic(int id) {
-  KMdiChildView* c = KstApp::inst()->activeWindow();
+  QMdiSubWindow* c = KstApp::inst()->activeSubWindow();
+
   if (c) {
     KstBaseCurvePtr curve = *(Curves.findTag(_curveRemoveMap[id]));
+
     if (curve) {
       KstFitDialogI::globalInstance()->show_setCurve(_curveRemoveMap[id], tagName(), c->caption());
       if (_menuView) {
@@ -1028,9 +1038,11 @@ void Kst2DPlot::fitCurveVisibleStatic(int id) {
 
 
 void Kst2DPlot::fitCurveVisibleDynamic(int id) {
-  KMdiChildView* c = KstApp::inst()->activeWindow();
+  QMdiSubWindow* c = KstApp::inst()->activeSubWindow();
+
   if (c) {
     KstBaseCurvePtr curve = *(Curves.findTag(_curveRemoveMap[id]));
+
     if (curve) {
       KstFitDialogI::globalInstance()->show_setCurve(_curveRemoveMap[id], tagName(), c->caption());
       if (_menuView) {
@@ -1042,9 +1054,11 @@ void Kst2DPlot::fitCurveVisibleDynamic(int id) {
 
 
 void Kst2DPlot::filterCurve(int id) {
-  KMdiChildView* c = KstApp::inst()->activeWindow();
+  QMdiSubWindow* c = KstApp::inst()->activeSubWindow();
+
   if (c) {
     KstBaseCurvePtr curve = *(Curves.findTag(_curveRemoveMap[id]));
+
     if (curve) {
       KstFilterDialogI::globalInstance()->show_setCurve(_curveRemoveMap[id], tagName(), c->caption());
       if (_menuView) {
@@ -5815,22 +5829,23 @@ void Kst2DPlot::copy() {
 
 
 Kst2DPlotPtr Kst2DPlot::findPlotByName(const QString& name) {
-  Kst2DPlotPtr rc;
   KstApp *app = KstApp::inst();
-  KMdiIterator<KMdiChildView*> *it = app->createIterator();
-  if (it) {
-    while (it->currentItem()) {
-      KstViewWindow *view = dynamic_cast<KstViewWindow*>(it->currentItem());
-      if (view) {
-        rc = kst_cast<Kst2DPlot>(view->view()->findChild(name));
-        if (rc) {
-          break;
-        }
+  QList<QMdiSubWindow*> windows;
+  QList<QMdiSubWindow*>::const_iterator i;
+  Kst2DPlotPtr rc;
+
+  windows = app->subWindowList( CreationOrder );
+
+  for (i = windows.constBegin(); i != windows.constEnd(); ++i)
+    KstViewWindow *view = dynamic_cast<KstViewWindow*>(*i);
+    if (view) {
+      rc = kst_cast<Kst2DPlot>(view->view()->findChild(name));
+      if (rc) {
+        break;
       }
-      it->next();
     }
-    app->deleteIterator(it);
   }
+
   return rc;
 }
 

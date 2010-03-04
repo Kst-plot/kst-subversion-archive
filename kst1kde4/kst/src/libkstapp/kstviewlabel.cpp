@@ -821,7 +821,8 @@ bool KstViewLabel::transparent() const {
 
 
 int KstViewLabel::horizJustifyWrap() const {
-  Q_UINT8 justify = KST_JUSTIFY_H(justification());
+  quint8 justify = KST_JUSTIFY_H(justification());
+
   switch (justify) {
     case KST_JUSTIFY_H_LEFT:
       return 0;
@@ -839,7 +840,7 @@ int KstViewLabel::horizJustifyWrap() const {
 
 
 void KstViewLabel::setHorizJustifyWrap(int justify) {
-  Q_UINT8 justifySet;
+  quint8 justifySet;
 
   switch (justify) {
     case 0:

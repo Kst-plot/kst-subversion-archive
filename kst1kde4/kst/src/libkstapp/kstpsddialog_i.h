@@ -47,7 +47,7 @@ class KstPsdDialogI : public KstDataDialog {
     void setVector(const QString& name);
 
   private:
-    static QGuardedPtr<KstPsdDialogI> _inst;
+    static QPointer<KstPsdDialogI> _inst;
 
     // the following are for the multiple edit mode
     bool _vectorDirty : 1;

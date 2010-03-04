@@ -56,7 +56,7 @@ object.y = position().y() + margin() + padding() + borderWidth();
 ***************************************************************************/
 
 class KstBorderedViewObject;
-typedef KstSharedPtr<KstBorderedViewObject> KstBorderedViewObjectPtr;
+typedef QExplicitlySharedDataPointer<KstBorderedViewObject> KstBorderedViewObjectPtr;
 
 class KST_EXPORT KstBorderedViewObject : public KstViewObject {
   Q_OBJECT

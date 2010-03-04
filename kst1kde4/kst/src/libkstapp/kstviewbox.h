@@ -23,7 +23,7 @@
 #include <kglobal.h>
 
 class KstViewBox;
-typedef KstSharedPtr<KstViewBox> KstViewBoxPtr;
+typedef QExplicitlySharedDataPointer<KstViewBox> KstViewBoxPtr;
 
 class KstViewBox : public KstViewObject {
   Q_OBJECT

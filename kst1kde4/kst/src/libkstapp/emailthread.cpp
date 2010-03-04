@@ -87,7 +87,7 @@ void EMailThread::send() {
   QStringList listTo;
   QString mQuery;
   KIO::MetaData slaveConfig;
-  KURL destination;
+  KUrl destination;
   int i, count;
 
   _sendOk = false;
@@ -102,17 +102,17 @@ void EMailThread::send() {
   _bodyLength = _strBody.length();
 
   mQuery  = "headers=0&from=";
-  mQuery += KURL::encode_string(_strFrom);
+  mQuery += KUrl::encode_string(_strFrom);
   listTo = QStringList::split(QRegExp("[ ,;]"), _strTo);
   count = listTo.count();
   if (count > 0) {
     for (i=0; i<count; i++) {
       mQuery += "&to=";
-      mQuery += KURL::encode_string(listTo[i]);
+      mQuery += KUrl::encode_string(listTo[i]);
     }
   } else {
     mQuery += "&to=";
-    mQuery += KURL::encode_string(_strTo);
+    mQuery += KUrl::encode_string(_strTo);
   }
 
   mQuery += "&size=";

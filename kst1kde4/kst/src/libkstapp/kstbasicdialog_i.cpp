@@ -38,7 +38,7 @@
 
 const QString& KstBasicDialogI::defaultTag = KGlobal::staticQString("<Auto Name>");
 
-QGuardedPtr<KstBasicDialogI> KstBasicDialogI::_inst;
+QPointer<KstBasicDialogI> KstBasicDialogI::_inst;
 
 KstBasicDialogI *KstBasicDialogI::globalInstance() {
   if (!_inst) {

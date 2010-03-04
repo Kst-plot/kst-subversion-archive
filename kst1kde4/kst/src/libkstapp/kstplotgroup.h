@@ -52,7 +52,7 @@ class KstPlotGroup : public KstMetaPlot {
     KstViewObjectFactoryMethod factory() const;
 };
 
-typedef KstSharedPtr<KstPlotGroup> KstPlotGroupPtr;
+typedef QExplicitlySharedDataPointer<KstPlotGroup> KstPlotGroupPtr;
 typedef KstObjectList<KstPlotGroupPtr> KstPlotGroupList;
 
 #endif

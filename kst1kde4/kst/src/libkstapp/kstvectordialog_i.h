@@ -70,10 +70,10 @@ class KST_EXPORT KstVectorDialogI : public KstDataDialog {
     void fillFieldsForNew();
     void cleanup();
 
-    static QGuardedPtr<KstVectorDialogI> _inst;
+    static QPointer<KstVectorDialogI> _inst;
     static const QString& defaultTag;
-    QGuardedPtr<KCompletion> _fieldCompletion;
-    QGuardedPtr<KstDataSourceConfigWidget> _configWidget;
+    QPointer<KCompletion> _fieldCompletion;
+    QPointer<KstDataSourceConfigWidget> _configWidget;
     VectorDialogWidget *_w;
     bool _inTest : 1;
 

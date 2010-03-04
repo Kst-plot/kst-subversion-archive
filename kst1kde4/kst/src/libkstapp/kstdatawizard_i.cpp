@@ -187,7 +187,7 @@ void KstDataWizard::selectingFolder()
       QDir dir(strFolder);
 
       if (dir.cdUp()) {
-        fileDlg->setURL(KURL(dir.absPath()));
+        fileDlg->setURL(KUrl(dir.absPath()));
       }
     }
   }
@@ -259,12 +259,13 @@ void KstDataWizard::sourceChanged(const QString& text)
   _configureSource->setEnabled(false);
   _file = QString::null;
   if (!text.isEmpty() && text != "stdin" && text != "-") {
-    KURL url;
+    KUrl url;
+
     QString txt = _url->completionObject()->replacedPath(text);
     if (QFile::exists(txt) && QFileInfo(txt).isRelative()) {
       url.setPath(txt);
     } else {
-      url = KURL::fromPathOrURL(txt);
+      url = KUrl::fromPathOrURL(txt);
     }
 
     if (!_inTest && !url.isLocalFile() && url.protocol() != "file" && !url.protocol().isEmpty()) {

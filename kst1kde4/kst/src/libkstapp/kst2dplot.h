@@ -20,7 +20,7 @@
 
 #include <time.h>
 
-#include <qvaluestack.h>
+#include <QValueStack>
 
 #include <kmessagebox.h>
 
@@ -39,9 +39,9 @@ namespace Equation {
 
 class KstViewWidget;
 class Kst2DPlot;
-typedef KstObjectList<KstSharedPtr<Kst2DPlot> > Kst2DPlotList;
+typedef KstObjectList<QExplicitlySharedDataPointer<Kst2DPlot> > Kst2DPlotList;
 class KstViewLabel;
-typedef KstSharedPtr<KstViewLabel> KstViewLabelPtr;
+typedef QExplicitlySharedDataPointer<KstViewLabel> KstViewLabelPtr;
 class KstPlotLabel;
 
 enum ZoomType { ZOOM_MOVE_HORIZONTAL = 0, ZOOM_MOVE_VERTICAL = 1, ZOOM_CENTER = 2, ZOOM_VERTICAL = 3, ZOOM_HORIZONTAL = 4, ZOOM_X_MODE = 5, ZOOM_Y_MODE = 6, ZOOM_Y_LOCAL_MAX = 7, ZOOM_XY_MODES = 8 };
@@ -596,11 +596,11 @@ private:
 
   KstMouse _mouse;
   QMap<int, QString> _curveEditMap, _curveFitMap, _curveRemoveMap, _objectEditMap;
-  QMap<int, QGuardedPtr<Kst2DPlot> > _plotMap;
+  QMap<int, QPointer<Kst2DPlot> > _plotMap;
 
   KstBackBuffer _buffer;
-  QGuardedPtr<KstViewWidget> _menuView;
-  QGuardedPtr<KstViewWidget> _layoutMenuView;
+  QPointer<KstViewWidget> _menuView;
+  QPointer<KstViewWidget> _layoutMenuView;
   QSize _oldSize;
   QRect _oldAlignment;
   double _m_X, _b_X, _m_Y, _b_Y;
@@ -674,7 +674,7 @@ private:
   int _tabToShow;
 };
 
-typedef KstSharedPtr<Kst2DPlot> Kst2DPlotPtr;
+typedef QExplicitlySharedDataPointer<Kst2DPlot> Kst2DPlotPtr;
 typedef KstObjectMap<Kst2DPlotPtr> Kst2DPlotMap;
 
 #endif

@@ -179,7 +179,7 @@ void KstViewFitsDialogI::fitChanged(const QString& strFit) {
 
     if (plugin) {
       plugin->readLock();
-      KstSharedPtr<Plugin> pluginBase = plugin->plugin();
+      QExplicitlySharedDataPointer<Plugin> pluginBase = plugin->plugin();
       if (pluginBase) {
         textLabelFit->setText(pluginBase->data()._readableName);
         for (int i = 0; i < numParams; i++) {

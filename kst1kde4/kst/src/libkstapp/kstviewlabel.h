@@ -19,15 +19,15 @@
 #ifndef KSTVIEWLABEL_H
 #define KSTVIEWLABEL_H
 
+#include <QPointer>
+#include <qvaluevector.h>
+
 #include "dataref.h"
 #include "kstbackbuffer.h"
 #include "kstborderedviewobject.h"
 #include "kstscalar.h"
 #include "kstvector.h"
 #include "labelparser.h"
-
-#include <qguardedptr.h>
-#include <qvaluevector.h>
 
 class KstViewLabel : public KstBorderedViewObject {
   Q_OBJECT
@@ -148,8 +148,8 @@ class KstViewLabel : public KstBorderedViewObject {
     KstVectorMap _vectorsUsed;
 };
 
-typedef KstSharedPtr<KstViewLabel> KstViewLabelPtr;
-typedef KstObjectList<KstSharedPtr<KstViewLabel> > KstViewLabelList;
+typedef QExplicitlySharedDataPointer<KstViewLabel> KstViewLabelPtr;
+typedef KstObjectList<QExplicitlySharedDataPointer<KstViewLabel> > KstViewLabelList;
 
 #endif
 

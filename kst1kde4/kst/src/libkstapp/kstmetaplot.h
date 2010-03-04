@@ -32,7 +32,7 @@ class KstMetaPlot : public KstBorderedViewObject {
     virtual void save(QTextStream& ts, const QString& indent = QString::null);
 };
 
-typedef KstSharedPtr<KstMetaPlot> KstMetaPlotPtr;
+typedef QExplicitlySharedDataPointer<KstMetaPlot> KstMetaPlotPtr;
 typedef KstObjectList<KstMetaPlotPtr> KstMetaPlotList;
 
 #endif

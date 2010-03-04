@@ -22,7 +22,7 @@
 #include <qglobal.h>
 
 class KstViewLine;
-typedef KstSharedPtr<KstViewLine> KstViewLinePtr;
+typedef QExplicitlySharedDataPointer<KstViewLine> KstViewLinePtr;
 
 class KstViewLine : public KstViewObject {
   Q_OBJECT

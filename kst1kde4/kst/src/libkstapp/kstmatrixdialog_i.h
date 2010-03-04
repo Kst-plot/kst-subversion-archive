@@ -51,10 +51,10 @@ class KST_EXPORT KstMatrixDialogI : public KstDataDialog {
     void matrixCreated(KstMatrixPtr v);
 
   private:
-    QGuardedPtr<KCompletion> _fieldCompletion;
-    QGuardedPtr<KstDataSourceConfigWidget> _configWidget;
+    QPointer<KCompletion> _fieldCompletion;
+    QPointer<KstDataSourceConfigWidget> _configWidget;
 
-    static QGuardedPtr<KstMatrixDialogI> _inst;
+    static QPointer<KstMatrixDialogI> _inst;
     bool checkParameters(bool ok1, bool ok2, bool ok3, bool ok4, double xStep, double yStep);
 
     bool new_ISMatrix();

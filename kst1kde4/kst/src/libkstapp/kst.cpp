@@ -126,7 +126,7 @@ KstApp* KstApp::inst() {
 static KConfig *kConfigObject = 0L;
 
 KstApp::KstApp(QWidget *parent, const char *name)
-: KMdiMainFrm(parent, name) {
+: QMdiArea(parent, name) {
   assert(!::inst);
   ::inst = this;
 
@@ -1315,24 +1315,27 @@ void KstApp::slotFileClose() {
 }
 
 
-void KstApp::immediatePrintWindowToFile(KMdiChildView *win, const QString& filename) {
-  KstViewWindow *view = dynamic_cast<KstViewWindow*>(win);
-  if (view && !view->view()->children().isEmpty()) {
+void KstApp::immediatePrintWindowToFile(QMdiSubWindow *window, const QString& filename) {
+  KstViewWindow *viewWindow = dynamic_cast<KstViewWindow*>(window);
+
+  if (viewWindow && !viewWindow->view()->children().isEmpty()) {
     view->immediatePrintToFile(filename);
   }
 }
 
 
 void KstApp::immediatePrintActiveWindowToFile(const QString& filename) {
-  KstViewWindow *view = dynamic_cast<KstViewWindow*>(activeWindow());
-  if (view) {
+  KstViewWindow *viewWindow = dynamic_cast<KstViewWindow*>(activeSubWindow());
+
+  if (viewWindow) {
     view->immediatePrintToFile(filename);
   }
 }
 
 
-void KstApp::immediatePrintWindowToPng(KMdiChildView *win, const QString& filename, const QString& format, int width, int height, int display) {
-  KstViewWindow *view = dynamic_cast<KstViewWindow*>(win);
+void KstApp::immediatePrintWindowToPng(QMdiSubWindow *window, const QString& filename, const QString& format, int width, int height, int display) {
+  KstViewWindow *view = dynamic_cast<KstViewWindow*>(window);
+
   if (view && !view->view()->children().isEmpty()) {
     QSize size;
 
@@ -1360,7 +1363,7 @@ void KstApp::immediatePrintWindowToPng(KMdiChildView *win, const QString& filena
 
 
 void KstApp::immediatePrintActiveWindowToPng(const QString& filename, const QString& format, int width, int height, int display) {
-  KMdiChildView *win = activeWindow();
+  QMdiSubWindow *window = activeSubWindow();
 
   if (win) {
     immediatePrintWindowToPng(win, filename, format, width, height, display);
@@ -1368,8 +1371,9 @@ void KstApp::immediatePrintActiveWindowToPng(const QString& filename, const QStr
 }
 
 
-void KstApp::immediatePrintWindowToEps(KMdiChildView *win, const QString& filename, int width, int height, int display) {
-  KstViewWindow *view = dynamic_cast<KstViewWindow*>(win);
+void KstApp::immediatePrintWindowToEps(QMdiSubWindow *window, const QString& filename, int width, int height, int display) {
+  KstViewWindow *view = dynamic_cast<KstViewWindow*>(window);
+
   if (view && !view->view()->children().isEmpty()) {
     QSize size;
 
@@ -1397,7 +1401,7 @@ void KstApp::immediatePrintWindowToEps(KMdiChildView *win, const QString& filena
 
 
 void KstApp::immediatePrintActiveWindowToEps(const QString& filename, int width, int height, int display) {
-  KMdiChildView *win = activeWindow();
+  QMdiSubWindow *window = activeSubWindow();
 
   if (win) {
     immediatePrintWindowToEps(win, filename, width, height, display);
@@ -1406,258 +1410,262 @@ void KstApp::immediatePrintActiveWindowToEps(const QString& filename, int width,
 
 
 void KstApp::slotFilePrint() {
-  KstViewWindow *currentWin = dynamic_cast<KstViewWindow*>(activeWindow());
+  KstViewWindow *currentViewWindow = dynamic_cast<KstViewWindow*>(activeSubWindow());
   int currentPage = 0;
   int pages = 0;
 
-  KMdiIterator<KMdiChildView*> *it = createIterator();
-  if (it) {
-    while (it->currentItem()) {
-      KstViewWindow *win = dynamic_cast<KstViewWindow*>(it->currentItem());
-      if (win && !win->view()->children().isEmpty()) {
+  QList<QMdiSubWindow*> windows;
+  QList<QMdiSubWindow*>::const_iterator i;
+  Kst2DPlotPtr rc;
+
+  windows = app->subWindowList( CreationOrder );
+
+  for (i = windows.constBegin(); i != windows.constEnd(); ++i)
+    KstViewWindow *viewWindow = dynamic_cast<KstViewWindow*>(*i);
+    if (viewWindow) {
+      if (viewWindow && !viewWindow->view()->children().isEmpty()) {
         ++pages;
       }
-      if (win == currentWin) {
+
+      if (viewWindow == currentViewWindow) {
         currentPage = pages;
+      }
+    }
+  }
+
+  if (pages > 0) {
+    KPrinter printer(true, QPrinter::HighResolution);
+    KstSettings *ks = KstSettings::globalSettings();
+  
+    printer.setOption("kde-pagesize", ks->printing.pageSize);
+    printer.setOption("kde-orientation", ks->printing.orientation);
+    printer.setOption("kst-plot-datetime-footer", ks->printing.plotDateTimeFooter);
+    printer.setOption("kst-plot-maintain-aspect-ratio", ks->printing.maintainAspect);
+    printer.setOption("kst-plot-curve-width-adjust", ks->printing.curveWidthAdjust);
+    printer.setOption("kst-plot-monochrome", ks->printing.monochrome);
+    // additional monochrome settings
+    printer.setOption("kst-plot-monochromesettings-enhancereadability", ks->printing.monochromeSettings.enhanceReadability);
+    printer.setOption("kst-plot-monochromesettings-pointstyleorder", ks->printing.monochromeSettings.pointStyleOrder);
+    printer.setOption("kst-plot-monochromesettings-linestyleorder", ks->printing.monochromeSettings.lineStyleOrder);
+    printer.setOption("kst-plot-monochromesettings-linewidthorder", ks->printing.monochromeSettings.lineWidthOrder);
+    printer.setOption("kst-plot-monochromesettings-maxlinewidth", ks->printing.monochromeSettings.maxLineWidth);
+    printer.setOption("kst-plot-monochromesettings-pointdensity", ks->printing.monochromeSettings.pointDensity);
+  
+    printer.setFromTo(0, 0);
+    printer.setMinMax(1, pages);
+    printer.setCurrentPage(currentPage);
+    printer.setPageSelection(KPrinter::ApplicationSide);
+  
+    pages = 0;
+    printer.addDialogPage(new KstPrintOptionsPage);
+    if (!printer.setup(this, i18n("Print"))) {
+      return;
+    }
+  
+    KstPainter paint(KstPainter::P_PRINT);
+    paint.begin(&printer);
+    QPaintDeviceMetrics metrics(&printer);
+    QSize size(metrics.width(), metrics.height());
+    bool datetimeFooter;
+    bool maintainAspectRatio;
+    bool monochrome;
+    int lineAdjust;
+    // additional monochrome options
+    bool enhanceReadability;
+    int pointStyleOrder, lineStyleOrder, lineWidthOrder, maxLineWidth, pointDensity;
+  
+    slotUpdateStatusMsg(i18n("Printing..."));
+  
+    // make sure defaults are set for settings that are not overwritten
+    ks->setPrintingDefaults();
+  
+    if (!printer.option("kde-pagesize").isEmpty()) {
+      ks->printing.pageSize = printer.option("kde-pagesize");
+    }
+    if (!printer.option("kde-orientation").isEmpty()) {
+      ks->printing.orientation = printer.option("kde-orientation");
+    }
+    if (printer.option("kst-plot-datetime-footer").isEmpty()) {
+      datetimeFooter = ks->printing.plotDateTimeFooter == "1";
+    } else {
+      ks->printing.plotDateTimeFooter = printer.option("kst-plot-datetime-footer");
+      datetimeFooter = printer.option("kst-plot-datetime-footer") == "1";
+    }
+    if (printer.option("kst-plot-maintain-aspect-ratio").isEmpty()) {
+      maintainAspectRatio = ks->printing.maintainAspect == "1";
+    } else {
+      ks->printing.maintainAspect = printer.option("kst-plot-maintain-aspect-ratio");
+      maintainAspectRatio = printer.option("kst-plot-maintain-aspect-ratio") == "1";
+    }
+    if (printer.option("kst-plot-curve-width-adjust").isEmpty()) {
+      lineAdjust = ks->printing.curveWidthAdjust.toInt();
+    } else {
+      ks->printing.curveWidthAdjust = printer.option("kst-plot-curve-width-adjust");
+      lineAdjust = printer.option("kst-plot-curve-width-adjust").toInt();
+    }
+    if (printer.option("kst-plot-monochrome").isEmpty()) {
+      monochrome = ks->printing.monochrome == "1";
+    } else {
+      ks->printing.monochrome = printer.option("kst-plot-monochrome");
+      monochrome = printer.option("kst-plot-monochrome") == "1";
+    }
+    // save additional monochrome settings
+    if (printer.option("kst-plot-monochromesettings-enhancereadability").isEmpty()) {
+      enhanceReadability = ks->printing.monochromeSettings.enhanceReadability == "1";
+    } else {
+      ks->printing.monochromeSettings.enhanceReadability = printer.option("kst-plot-monochromesettings-enhancereadability");
+      enhanceReadability = printer.option("kst-plot-monochromesettings-enhancereadability") == "1";
+    }
+    if (printer.option("kst-plot-monochromesettings-pointstyleorder").isEmpty()) {
+      pointStyleOrder = ks->printing.monochromeSettings.pointStyleOrder.toInt();
+    } else {
+      ks->printing.monochromeSettings.pointStyleOrder = printer.option("kst-plot-monochromesettings-pointstyleorder");
+      pointStyleOrder = printer.option("kst-plot-monochromesettings-pointstyleorder").toInt();
+    }
+    if (printer.option("kst-plot-monochromesettings-linestyleorder").isEmpty()) {
+      lineStyleOrder = ks->printing.monochromeSettings.lineStyleOrder.toInt();
+    } else {
+      ks->printing.monochromeSettings.lineStyleOrder = printer.option("kst-plot-monochromesettings-linestyleorder");
+      lineStyleOrder = printer.option("kst-plot-monochromesettings-linestyleorder").toInt();
+    }
+    if (printer.option("kst-plot-monochromesettings-linewidthorder").isEmpty()) {
+      lineWidthOrder = ks->printing.monochromeSettings.lineWidthOrder.toInt();
+    } else {
+      ks->printing.monochromeSettings.lineWidthOrder = printer.option("kst-plot-monochromesettings-linewidthorder");
+      lineWidthOrder = printer.option("kst-plot-monochromesettings-linewidthorder").toInt();
+    }
+    if (printer.option("kst-plot-monochromesettings-maxlinewidth").isEmpty()) {
+      maxLineWidth = ks->printing.monochromeSettings.maxLineWidth.toInt();
+    } else {
+      ks->printing.monochromeSettings.maxLineWidth = printer.option("kst-plot-monochromesettings-maxlinewidth");
+      maxLineWidth = printer.option("kst-plot-monochromesettings-maxlinewidth").toInt();
+    }
+    if (printer.option("kst-plot-monochromesettings-pointdensity").isEmpty()) {
+      pointDensity = ks->printing.monochromeSettings.pointDensity.toInt();
+    } else {
+      ks->printing.monochromeSettings.pointDensity = printer.option("kst-plot-monochromesettings-pointdensity");
+      pointDensity = printer.option("kst-plot-monochromesettings-pointdensity").toInt();
+    }
+  
+    ks->save();
+  
+  #if KDE_VERSION < KDE_MAKE_VERSION(3,3,0)
+    int iFromPage = printer.fromPage();
+    int iToPage = printer.toPage();
+  
+    if (iFromPage == 0 && iToPage == 0) {
+      printer.setPageSelection(KPrinter::SystemSide);
+    }
+  #else
+    QValueList<int> pageList = printer.pageList();
+  #endif
+  
+    it = createIterator();
+    if (!it) {
+      return;
+    }
+  
+    bool firstPage = true;
+    while (it->currentItem()) {
+      KstViewWindow *win = dynamic_cast<KstViewWindow*>(it->currentItem());
+      KstTopLevelViewPtr tlv = win ? kst_cast<KstTopLevelView>(win->view()) : 0L;
+      if (win && tlv && !tlv->children().isEmpty()) {
+        ++pages;
+  #if KDE_VERSION < KDE_MAKE_VERSION(3,3,0)
+        if ((iFromPage == 0 && iToPage == 0) || (iFromPage <= pages && iToPage >= pages)) {
+  #else
+        if (pageList.contains(pages)) {
+  #endif
+          if (!firstPage && !printer.newPage()) {
+            break;
+          }
+  
+          win->print(paint, size, pages, lineAdjust, monochrome, enhanceReadability, datetimeFooter,  maintainAspectRatio, pointStyleOrder, lineStyleOrder, lineWidthOrder, maxLineWidth, pointDensity);
+  
+          firstPage = false;
+        }
       }
       it->next();
     }
+    paint.end();
     deleteIterator(it);
-  }
-
-  if (pages <= 0) {
+    slotUpdateStatusMsg(i18n("Ready"));
+  } else {
     slotUpdateStatusMsg(i18n("Nothing to print"));
-    return;
   }
-
-  KPrinter printer(true, QPrinter::HighResolution);
-  KstSettings *ks = KstSettings::globalSettings();
-
-  printer.setOption("kde-pagesize", ks->printing.pageSize);
-  printer.setOption("kde-orientation", ks->printing.orientation);
-  printer.setOption("kst-plot-datetime-footer", ks->printing.plotDateTimeFooter);
-  printer.setOption("kst-plot-maintain-aspect-ratio", ks->printing.maintainAspect);
-  printer.setOption("kst-plot-curve-width-adjust", ks->printing.curveWidthAdjust);
-  printer.setOption("kst-plot-monochrome", ks->printing.monochrome);
-  // additional monochrome settings
-  printer.setOption("kst-plot-monochromesettings-enhancereadability", ks->printing.monochromeSettings.enhanceReadability);
-  printer.setOption("kst-plot-monochromesettings-pointstyleorder", ks->printing.monochromeSettings.pointStyleOrder);
-  printer.setOption("kst-plot-monochromesettings-linestyleorder", ks->printing.monochromeSettings.lineStyleOrder);
-  printer.setOption("kst-plot-monochromesettings-linewidthorder", ks->printing.monochromeSettings.lineWidthOrder);
-  printer.setOption("kst-plot-monochromesettings-maxlinewidth", ks->printing.monochromeSettings.maxLineWidth);
-  printer.setOption("kst-plot-monochromesettings-pointdensity", ks->printing.monochromeSettings.pointDensity);
-
-  printer.setFromTo(0, 0);
-  printer.setMinMax(1, pages);
-  printer.setCurrentPage(currentPage);
-  printer.setPageSelection(KPrinter::ApplicationSide);
-
-  pages = 0;
-  printer.addDialogPage(new KstPrintOptionsPage);
-  if (!printer.setup(this, i18n("Print"))) {
-    return;
-  }
-
-  KstPainter paint(KstPainter::P_PRINT);
-  paint.begin(&printer);
-  QPaintDeviceMetrics metrics(&printer);
-  QSize size(metrics.width(), metrics.height());
-  bool datetimeFooter;
-  bool maintainAspectRatio;
-  bool monochrome;
-  int lineAdjust;
-  // additional monochrome options
-  bool enhanceReadability;
-  int pointStyleOrder, lineStyleOrder, lineWidthOrder, maxLineWidth, pointDensity;
-
-  slotUpdateStatusMsg(i18n("Printing..."));
-
-  // make sure defaults are set for settings that are not overwritten
-  ks->setPrintingDefaults();
-
-  if (!printer.option("kde-pagesize").isEmpty()) {
-    ks->printing.pageSize = printer.option("kde-pagesize");
-  }
-  if (!printer.option("kde-orientation").isEmpty()) {
-    ks->printing.orientation = printer.option("kde-orientation");
-  }
-  if (printer.option("kst-plot-datetime-footer").isEmpty()) {
-    datetimeFooter = ks->printing.plotDateTimeFooter == "1";
-  } else {
-    ks->printing.plotDateTimeFooter = printer.option("kst-plot-datetime-footer");
-    datetimeFooter = printer.option("kst-plot-datetime-footer") == "1";
-  }
-  if (printer.option("kst-plot-maintain-aspect-ratio").isEmpty()) {
-    maintainAspectRatio = ks->printing.maintainAspect == "1";
-  } else {
-    ks->printing.maintainAspect = printer.option("kst-plot-maintain-aspect-ratio");
-    maintainAspectRatio = printer.option("kst-plot-maintain-aspect-ratio") == "1";
-  }
-  if (printer.option("kst-plot-curve-width-adjust").isEmpty()) {
-    lineAdjust = ks->printing.curveWidthAdjust.toInt();
-  } else {
-    ks->printing.curveWidthAdjust = printer.option("kst-plot-curve-width-adjust");
-    lineAdjust = printer.option("kst-plot-curve-width-adjust").toInt();
-  }
-  if (printer.option("kst-plot-monochrome").isEmpty()) {
-    monochrome = ks->printing.monochrome == "1";
-  } else {
-    ks->printing.monochrome = printer.option("kst-plot-monochrome");
-    monochrome = printer.option("kst-plot-monochrome") == "1";
-  }
-  // save additional monochrome settings
-  if (printer.option("kst-plot-monochromesettings-enhancereadability").isEmpty()) {
-    enhanceReadability = ks->printing.monochromeSettings.enhanceReadability == "1";
-  } else {
-    ks->printing.monochromeSettings.enhanceReadability = printer.option("kst-plot-monochromesettings-enhancereadability");
-    enhanceReadability = printer.option("kst-plot-monochromesettings-enhancereadability") == "1";
-  }
-  if (printer.option("kst-plot-monochromesettings-pointstyleorder").isEmpty()) {
-    pointStyleOrder = ks->printing.monochromeSettings.pointStyleOrder.toInt();
-  } else {
-    ks->printing.monochromeSettings.pointStyleOrder = printer.option("kst-plot-monochromesettings-pointstyleorder");
-    pointStyleOrder = printer.option("kst-plot-monochromesettings-pointstyleorder").toInt();
-  }
-  if (printer.option("kst-plot-monochromesettings-linestyleorder").isEmpty()) {
-    lineStyleOrder = ks->printing.monochromeSettings.lineStyleOrder.toInt();
-  } else {
-    ks->printing.monochromeSettings.lineStyleOrder = printer.option("kst-plot-monochromesettings-linestyleorder");
-    lineStyleOrder = printer.option("kst-plot-monochromesettings-linestyleorder").toInt();
-  }
-  if (printer.option("kst-plot-monochromesettings-linewidthorder").isEmpty()) {
-    lineWidthOrder = ks->printing.monochromeSettings.lineWidthOrder.toInt();
-  } else {
-    ks->printing.monochromeSettings.lineWidthOrder = printer.option("kst-plot-monochromesettings-linewidthorder");
-    lineWidthOrder = printer.option("kst-plot-monochromesettings-linewidthorder").toInt();
-  }
-  if (printer.option("kst-plot-monochromesettings-maxlinewidth").isEmpty()) {
-    maxLineWidth = ks->printing.monochromeSettings.maxLineWidth.toInt();
-  } else {
-    ks->printing.monochromeSettings.maxLineWidth = printer.option("kst-plot-monochromesettings-maxlinewidth");
-    maxLineWidth = printer.option("kst-plot-monochromesettings-maxlinewidth").toInt();
-  }
-  if (printer.option("kst-plot-monochromesettings-pointdensity").isEmpty()) {
-    pointDensity = ks->printing.monochromeSettings.pointDensity.toInt();
-  } else {
-    ks->printing.monochromeSettings.pointDensity = printer.option("kst-plot-monochromesettings-pointdensity");
-    pointDensity = printer.option("kst-plot-monochromesettings-pointdensity").toInt();
-  }
-
-  ks->save();
-
-#if KDE_VERSION < KDE_MAKE_VERSION(3,3,0)
-  int iFromPage = printer.fromPage();
-  int iToPage = printer.toPage();
-
-  if (iFromPage == 0 && iToPage == 0) {
-    printer.setPageSelection(KPrinter::SystemSide);
-  }
-#else
-  QValueList<int> pageList = printer.pageList();
-#endif
-
-  it = createIterator();
-  if (!it) {
-    return;
-  }
-
-  bool firstPage = true;
-  while (it->currentItem()) {
-    KstViewWindow *win = dynamic_cast<KstViewWindow*>(it->currentItem());
-    KstTopLevelViewPtr tlv = win ? kst_cast<KstTopLevelView>(win->view()) : 0L;
-    if (win && tlv && !tlv->children().isEmpty()) {
-      ++pages;
-#if KDE_VERSION < KDE_MAKE_VERSION(3,3,0)
-      if ((iFromPage == 0 && iToPage == 0) || (iFromPage <= pages && iToPage >= pages)) {
-#else
-      if (pageList.contains(pages)) {
-#endif
-        if (!firstPage && !printer.newPage()) {
-          break;
-        }
-
-        win->print(paint, size, pages, lineAdjust, monochrome, enhanceReadability, datetimeFooter,  maintainAspectRatio, pointStyleOrder, lineStyleOrder, lineWidthOrder, maxLineWidth, pointDensity);
-
-        firstPage = false;
-      }
-    }
-    it->next();
-  }
-  paint.end();
-  deleteIterator(it);
-  slotUpdateStatusMsg(i18n("Ready"));
 }
 
 
 void KstApp::immediatePrintToFile(const QString& filename, bool revert) {
-  KMdiIterator<KMdiChildView*> *it = createIterator();
-  if (!it) {
-    return;
-  }
+  QList<QMdiSubWindow*> windows;
+  QList<QMdiSubWindow*>::const_iterator i;
+  Kst2DPlotPtr rc;
 
-  KPrinter printer(true, QPrinter::HighResolution);
-  printer.setPageSize(KPrinter::Letter);
-  printer.setOrientation(KPrinter::Landscape);
-  printer.setOutputToFile(true);
-  printer.setOutputFileName(filename);
-  printer.setFromTo(0, 0);
-
-  bool firstPage = true;
-  KstPainter paint(KstPainter::P_PRINT);
-  paint.begin(&printer);
-  QPaintDeviceMetrics metrics(&printer);
-  QRect rect;
-  const QSize size(metrics.width(), metrics.height());
-
-  rect.setLeft(0);
-  rect.setRight(size.height());
-  rect.setBottom(size.height());
-  rect.setTop(size.height());
-
-  while (it->currentItem()) {
-    KstViewWindow *view = dynamic_cast<KstViewWindow*>(it->currentItem());
-    if (view && !view->view()->children().isEmpty()) {
-      if (!firstPage && !printer.newPage()) {
-        break;
+  windows = app->subWindowList( CreationOrder );
+  if (windows.count() > 0) {
+    KPrinter printer(true, QPrinter::HighResolution);
+    printer.setPageSize(KPrinter::Letter);
+    printer.setOrientation(KPrinter::Landscape);
+    printer.setOutputToFile(true);
+    printer.setOutputFileName(filename);
+    printer.setFromTo(0, 0);
+  
+    bool firstPage = true;
+    KstPainter paint(KstPainter::P_PRINT);
+    paint.begin(&printer);
+    QPaintDeviceMetrics metrics(&printer);
+    QRect rect;
+    const QSize size(metrics.width(), metrics.height());
+  
+    rect.setLeft(0);
+    rect.setRight(size.height());
+    rect.setBottom(size.height());
+    rect.setTop(size.height());
+  
+    for (i = windows.constBegin(); i != windows.constEnd(); ++i)
+      KstViewWindow *viewWindow = dynamic_cast<KstViewWindow*>(*i);
+      if (viewWindow && viewWindow->view()->children().isEmpty()) {
+        if (!firstPage && !printer.newPage()) {
+          break;
+        }
+  
+        viewWindow->view()->resizeForPrint(size);
+        viewWindow->view()->paint(paint, QRegion());
+        if (revert) {
+          viewWindow->view()->revertForPrint();
+        }
+  
+        firstPage = false;
       }
-
-      view->view()->resizeForPrint(size);
-      view->view()->paint(paint, QRegion());
-      if (revert) {
-        view->view()->revertForPrint();
-      }
-
-      firstPage = false;
     }
-    it->next();
+  
+    paint.end();
   }
-  paint.end();
-  deleteIterator(it);
 }
 
 
 void KstApp::immediatePrintToPng(const QString& filename, const QString& format, int width, int height, bool all, int display) {
   if (all) {
-    QString filenameSub;
-    int pages = 0;
-
+    QList<QMdiSubWindow*> windows;
+    QList<QMdiSubWindow*>::const_iterator i;
     QString dotFormat = i18n(".%1").arg(format);
+    QString filenameSub;
+    QString filenameNew;
+    int pages = 0;
     int iPos = filename.findRev(dotFormat, -1, false);
+
     if (iPos != -1 && iPos == (int)(filename.length() - dotFormat.length())) {
       filenameSub = filename.left(filename.length() - dotFormat.length());
     } else {
       filenameSub = filename;
     }
-
-    KMdiIterator<KMdiChildView*>* it = createIterator();
-    if (it) {
-      while (it->currentItem()) {
-        pages++;
-        QString filenameNew = i18n("%1_%2").arg(filenameSub).arg(pages);
-        immediatePrintWindowToPng(it->currentItem(), filenameNew, format, width, height, display);
-        it->next();
-      }
-      deleteIterator(it);
+  
+    windows = app->subWindowList( CreationOrder );
+  
+    for (i = windows.constBegin(); i != windows.constEnd(); ++i)
+      pages++;
+      filenameNew = i18n("%1_%2").arg(filenameSub).arg(pages);
+      immediatePrintWindowToPng(*i, filenameNew, format, width, height, display);
     }
   } else {
     immediatePrintActiveWindowToPng(filename, format, width, height, display);
@@ -1666,26 +1674,26 @@ void KstApp::immediatePrintToPng(const QString& filename, const QString& format,
 
 void KstApp::immediatePrintToEps(const QString& filename, int width, int height, bool all, int display) {
   if (all) {
+    QList<QMdiSubWindow*> windows;
+    QList<QMdiSubWindow*>::const_iterator i;
     QString filenameSub;
-    int pages = 0;
-
     QString dotFormat = ".eps";
+    QString filenameNew;
+    int pages = 0;
     int iPos = filename.findRev(dotFormat, -1, false);
+
     if (iPos != -1 && iPos == (int)(filename.length() - dotFormat.length())) {
       filenameSub = filename.left(filename.length() - dotFormat.length());
     } else {
       filenameSub = filename;
     }
 
-    KMdiIterator<KMdiChildView*>* it = createIterator();
-    if (it) {
-      while (it->currentItem()) {
-        pages++;
-        QString filenameNew = i18n("%1_%2").arg(filenameSub).arg(pages);
-        immediatePrintWindowToEps(it->currentItem(), filenameNew, width, height, display);
-        it->next();
-      }
-      deleteIterator(it);
+    windows = app->subWindowList( CreationOrder );
+
+    for (i = windows.constBegin(); i != windows.constEnd(); ++i)
+      pages++;
+      filenameNew = i18n("%1_%2").arg(filenameSub).arg(pages);
+      immediatePrintWindowToEps(*i, filenameNew, width, height, display);
     }
   } else {
     immediatePrintActiveWindowToEps(filename, width, height, display);
@@ -1910,16 +1918,15 @@ void KstApp::toggleMouseMode() {
     }
   }
 
-  KMdiIterator<KMdiChildView*> *it = createIterator();
-  if (it) {
-    while (it->currentItem()) {
-      KstViewWindow *pView = dynamic_cast<KstViewWindow*>(it->currentItem());
-      if (pView) {
-        pView->view()->setViewMode(mode, createType);
-      }
-      it->next();
-    }
-    deleteIterator(it);
+  QList<QMdiSubWindow*> windows;
+  QList<QMdiSubWindow*>::const_iterator i;
+
+  windows = app->subWindowList( CreationOrder );
+
+  for (i = windows.constBegin(); i != windows.constEnd(); ++i)
+    KstViewWindow *viewWindow = dynamic_cast<KstViewWindow*>(*i);
+    if (viewWindow) {
+      viewWindow->view()->setViewMode(mode, createType);    }
   }
 
   _viewMode = mode;
@@ -2560,7 +2567,7 @@ QString KstApp::newWindow(bool prompt, QWidget *parent) {
 
 
 QString KstApp::newWindow(const QString& name_in) {
-  KstViewWindow *w = new KstViewWindow;
+  KstViewWindow *viewWindow = new KstViewWindow;
   QString nameToUse;
   QString name  = name_in;
 
@@ -2569,11 +2576,12 @@ QString KstApp::newWindow(const QString& name_in) {
   }
   nameToUse = name;
 
-  w->setCaption(nameToUse);
-  w->setTabCaption(nameToUse);
-  addWindow(w, KMdi::StandardAdd | KMdi::UseKMdiSizeHint);
-  w->activate();
+  viewWindow->setCaption(nameToUse);
+  viewWindow->setTabCaption(nameToUse);
+  addSubWindow(viewWindow, Qt::SubWindow);
+  viewWindow->activate();
   updateDialogsForWindow();
+  
   return nameToUse;
 }
 
@@ -2625,16 +2633,19 @@ QString KstApp::windowName(bool prompt, const QString& nameOriginal, bool rename
 
 void KstApp::tiedZoomPrev(KstViewWidget* view, const QString& plotName) {
   if (KstSettings::globalSettings()->tiedZoomGlobal) {
-    KMdiIterator<KMdiChildView*> *it = createIterator();
-    if (it) {
-      while (it->currentItem()) {
-        KstViewWindow *win = dynamic_cast<KstViewWindow*>(it->currentItem());
-        if (win && win->view()->tiedZoomPrev(plotName)) {
-          win->view()->widget()->paint();
+    QList<QMdiSubWindow*> windows;
+    QList<QMdiSubWindow*>::const_iterator i;
+  
+    windows = app->subWindowList( CreationOrder );
+  
+    for (i = windows.constBegin(); i != windows.constEnd(); ++i)
+      KstViewWindow *viewWindow = dynamic_cast<KstViewWindow*>(*i);
+      if (viewWindow) {
+       if (viewWindow && viewWindow->view()->tiedZoomPrev(plotName)) {
+          viewWindow->view()->widget()->paint();
         }
-        it->next();
+
       }
-      deleteIterator(it);
     }
   } else {
     view->viewObject()->tiedZoomPrev(plotName);
@@ -2644,16 +2655,19 @@ void KstApp::tiedZoomPrev(KstViewWidget* view, const QString& plotName) {
 
 void KstApp::tiedZoomMode(int zoom, bool flag, double center, int mode, int modeExtra, KstViewWidget* view, const QString& plotName) {
   if (KstSettings::globalSettings()->tiedZoomGlobal) {
-    KMdiIterator<KMdiChildView*> *it = createIterator();
-    if (it) {
-      while (it->currentItem()) {
-        KstViewWindow *win = dynamic_cast<KstViewWindow*>(it->currentItem());
-        if (win && win->view()->tiedZoomMode(zoom, flag, center, mode, modeExtra, plotName)) {
-          win->view()->widget()->paint();
+    QList<QMdiSubWindow*> windows;
+    QList<QMdiSubWindow*>::const_iterator i;
+  
+    windows = app->subWindowList( CreationOrder );
+  
+    for (i = windows.constBegin(); i != windows.constEnd(); ++i)
+      KstViewWindow *viewWindow = dynamic_cast<KstViewWindow*>(*i);
+      
+      if (viewWindow) {
+        if (viewWindow->view()->tiedZoomMode(zoom, flag, center, mode, modeExtra, plotName)) {) {
+          viewWindow->view()->widget()->paint();
         }
-        it->next();
       }
-      deleteIterator(it);
     }
   } else {
     view->viewObject()->tiedZoomMode(zoom, flag, center, mode, modeExtra, plotName);    
@@ -2663,16 +2677,19 @@ void KstApp::tiedZoomMode(int zoom, bool flag, double center, int mode, int mode
 
 void KstApp::tiedZoom(bool x, double xmin, double xmax, bool y, double ymin, double ymax, KstViewWidget* view, const QString& plotName) {
   if (KstSettings::globalSettings()->tiedZoomGlobal) {
-    KMdiIterator<KMdiChildView*> *it = createIterator();
-    if (it) {
-      while (it->currentItem()) {
-        KstViewWindow *win = dynamic_cast<KstViewWindow*>(it->currentItem());
-        if (win && win->view()->tiedZoom(x, xmin, xmax, y, ymin, ymax, plotName)) {
+   QList<QMdiSubWindow*> windows;
+    QList<QMdiSubWindow*>::const_iterator i;
+  
+    windows = app->subWindowList( CreationOrder );
+  
+    for (i = windows.constBegin(); i != windows.constEnd(); ++i)
+      KstViewWindow *viewWindow = dynamic_cast<KstViewWindow*>(*i);
+      
+      if (viewWindow) {
+        if (viewWindow->view()->tiedZoom(x, xmin, xmax, y, ymin, ymax, plotName)) {
           win->view()->widget()->paint();
         }
-        it->next();
       }
-      deleteIterator(it);
     }
   } else {
     view->viewObject()->tiedZoom(x, xmin, xmax, y, ymin, ymax, plotName);    

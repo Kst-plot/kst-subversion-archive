@@ -108,7 +108,7 @@ class EventMonitorEntry : public KstDataObject {
     QString _script;
 };
 
-typedef KstSharedPtr<EventMonitorEntry> EventMonitorEntryPtr;
+typedef QExplicitlySharedDataPointer<EventMonitorEntry> EventMonitorEntryPtr;
 typedef KstObjectList<EventMonitorEntryPtr> KstEventMonitorEntryList;
 
 #endif

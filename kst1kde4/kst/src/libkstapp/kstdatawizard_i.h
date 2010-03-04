@@ -80,7 +80,7 @@ class KstDataWizard: public DataWizard {
     void cleanupWindowLayout(KstViewWindow *window);
 
     static const QString &defaultTag;
-    QGuardedPtr<QWidget> _configWidget;
+    QPointer<QWidget> _configWidget;
     KstDataSourceList _sourceCache;
     QMap<QString,QString> _countMap;
     QDict<QListViewItem> _fields;

@@ -19,20 +19,20 @@
 #ifndef KSTVIEWLEGEND_H
 #define KSTVIEWLEGEND_H
 
+#include <QPointer>
+
 #include "kstbackbuffer.h"
 #include "kstborderedviewobject.h"
 #include "kstscalar.h"
 #include "labelparser.h"
 #include "kstbasecurve.h"
 
-#include <qguardedptr.h>
-
 class Kst2DPlot;
-typedef KstSharedPtr<Kst2DPlot> Kst2DPlotPtr;
+typedef QExplicitlySharedDataPointer<Kst2DPlot> Kst2DPlotPtr;
 class KstViewLegend;
-typedef KstSharedPtr<KstViewLegend> KstViewLegendPtr;
+typedef QExplicitlySharedDataPointer<KstViewLegend> KstViewLegendPtr;
 class KstViewLegend;
-typedef KstObjectList<KstSharedPtr<KstViewLegend> > KstViewLegendList;
+typedef KstObjectList<QExplicitlySharedDataPointer<KstViewLegend> > KstViewLegendList;
 
 class KstViewLegend : public KstBorderedViewObject {
   Q_OBJECT
@@ -143,7 +143,7 @@ class KstViewLegend : public KstBorderedViewObject {
     Label::Parsed *_parsedTitle;
 };
 
-typedef KstSharedPtr<KstViewLegend> KstViewLegendPtr;
+typedef QExplicitlySharedDataPointer<KstViewLegend> KstViewLegendPtr;
 
 #endif
 

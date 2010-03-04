@@ -45,7 +45,7 @@ class KST_EXPORT KstImageDialogI : public KstDataDialog {
     void setMatrix(const QString& name);
 
   private:
-    static QGuardedPtr<KstImageDialogI> _inst;
+    static QPointer<KstImageDialogI> _inst;
     void placeInPlot(KstImagePtr image);
     bool checkParameters(double& lowerZDouble, double& upperZDouble);
     void fillFieldsForEditNoUpdate();

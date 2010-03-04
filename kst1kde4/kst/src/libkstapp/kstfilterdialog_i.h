@@ -39,10 +39,10 @@ class KstFilterDialogI : public KstPluginDialogI {
     QString _window;
     QString _plotName;
     QString _curve;
-    static QGuardedPtr<KstFilterDialogI> _inst;
+    static QPointer<KstFilterDialogI> _inst;
 
     bool createCurve(KstCPluginPtr plugin);
-    bool saveInputs(KstCPluginPtr plugin, KstSharedPtr<Plugin> p);
+    bool saveInputs(KstCPluginPtr plugin, QExplicitlySharedDataPointer<Plugin> p);
     void generateEntries(bool input, int& cnt, QWidget *parent, QGridLayout *grid, const QValueList<Plugin::Data::IOValue>& table);
 };
 

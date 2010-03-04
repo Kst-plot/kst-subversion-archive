@@ -152,21 +152,20 @@ void KstEditViewObjectDialogI::toggleEditMultiple() {
 
 void KstEditViewObjectDialogI::fillObjectList() {
   KstViewObjectList list;
+  QList<QMdiSubWindow*> windows;
+  QList<QMdiSubWindow*>::const_iterator i;
 
-  KMdiIterator<KMdiChildView*>* it = KstApp::inst()->createIterator();
-  if (it) {
-    while (it->currentItem()) {
-      KstViewWindow *view = dynamic_cast<KstViewWindow*>(it->currentItem());
-      if (view) {
-        if (_viewObject->type() == "TopLevelView") {
-          list.append(view->view().data());
-        } else {
-          list += view->view()->findChildrenType(_viewObject->type(), true);
-        }
+  windows = app->subWindowList( CreationOrder );
+
+  for (i = windows.constBegin(); i != windows.constEnd(); ++i)
+    KstViewWindow *view = dynamic_cast<KstViewWindow*>(*i);
+    if (viewWindow) {
+      if (_viewObject->type() == "TopLevelView") {
+        list.append(viewWindow->view().data());
+      } else {
+        list += viewWindow->view()->findChildrenType(_viewObject->type(), true);
       }
-      it->next();
     }
-    KstApp::inst()->deleteIterator(it);
   }
 
   _editMultipleWidget->_objectList->insertStringList(list.tagNames());
@@ -501,34 +500,34 @@ bool KstEditViewObjectDialogI::apply() {
       QString name = _editMultipleWidget->_objectList->text(i);
 
       if (_editMultipleWidget->_objectList->isSelected(i)) {
-        KMdiIterator<KMdiChildView*>* it = KstApp::inst()->createIterator();
+        QList<QMdiSubWindow*> windows;
+        QList<QMdiSubWindow*>::const_iterator i;
+      
+        windows = app->subWindowList( CreationOrder );
+      
+        for (i = windows.constBegin(); i != windows.constEnd(); ++i)
+          KstViewWindow *viewWindow = dynamic_cast<KstViewWindow*>(*i);
+          if (viewWindow) {
+            KstViewObjectPtr viewObject;
 
-        if (it) {
-          while (it->currentItem()) {
-            KstViewWindow *view = dynamic_cast<KstViewWindow*>(it->currentItem());
-            if (view) {
-              KstViewObjectPtr viewObject;
+            if (_viewObject->type() == "TopLevelView") {
+              viewObject = viewWindow->view();
+              if (viewObject->name() == name) {
+                applySettings(viewObject);
 
-              if (_viewObject->type() == "TopLevelView") {
-                viewObject = view->view();
-                if (viewObject->name() == name) {
-                  applySettings(viewObject);
+                break;
+              }
+            } else {
+              viewObject = kst_cast<KstViewObject>(viewWindow->view()->findChild(name));
+              if (viewObject) {
+                applySettings(viewObject);
 
-                  break;
-                }
-              } else {
-                viewObject = kst_cast<KstViewObject>(view->view()->findChild(name));
-                if (viewObject) {
-                  applySettings(viewObject);
-
-                  break;
-                }
+                break;
               }
             }
-            it->next();
           }
-          KstApp::inst()->deleteIterator(it);
-        }
+        }        
+
         applied = true;
       }
     }

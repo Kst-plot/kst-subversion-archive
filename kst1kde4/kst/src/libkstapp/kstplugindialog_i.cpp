@@ -51,7 +51,7 @@
 
 const QString& KstPluginDialogI::plugin_defaultTag = KGlobal::staticQString("<Auto Name>");
 
-QGuardedPtr<KstPluginDialogI> KstPluginDialogI::_inst;
+QPointer<KstPluginDialogI> KstPluginDialogI::_inst;
 
 KstPluginDialogI *KstPluginDialogI::globalInstance() {
   if (!_inst) {
@@ -130,7 +130,7 @@ void KstPluginDialogI::updatePluginList() {
 
 
 void KstPluginDialogI::updateForm() {
-  KstSharedPtr<Plugin> plugin = PluginCollection::self()->plugin(_pluginList[_w->PluginCombo->currentItem()]);
+  QExplicitlySharedDataPointer<Plugin> plugin = PluginCollection::self()->plugin(_pluginList[_w->PluginCombo->currentItem()]);
   if (plugin) {
     const QValueList<Plugin::Data::IOValue>& itable = plugin->data()._inputs;
     for (QValueList<Plugin::Data::IOValue>::ConstIterator it = itable.begin(); it != itable.end(); ++it) {
@@ -176,7 +176,7 @@ void KstPluginDialogI::fillFieldsForEdit() {
   const QString pluginName(pp->tagName());
   const QString pluginObjectName(pp->plugin()->data()._name);
   const int usage = pp->getUsage();
-  KstSharedPtr<Plugin> plug = pp->plugin();
+  QExplicitlySharedDataPointer<Plugin> plug = pp->plugin();
   pp->unlock();
 
   _tagName->setText(pluginName);
@@ -202,7 +202,7 @@ void KstPluginDialogI::fillFieldsForNew() {
 }
 
 
-void KstPluginDialogI::fillVectorScalarCombos(KstSharedPtr<Plugin> plugin) {
+void KstPluginDialogI::fillVectorScalarCombos(QExplicitlySharedDataPointer<Plugin> plugin) {
   bool DPvalid = false;
   KstCPluginPtr pp = kst_cast<KstCPlugin>(_dp);
 
@@ -396,7 +396,7 @@ void KstPluginDialogI::restoreInputs(const QValueList<Plugin::Data::IOValue>& ta
 }
 
 
-bool KstPluginDialogI::saveInputs(KstCPluginPtr plugin, KstSharedPtr<Plugin> p) {
+bool KstPluginDialogI::saveInputs(KstCPluginPtr plugin, QExplicitlySharedDataPointer<Plugin> p) {
   bool rc = true;
 
   const QValueList<Plugin::Data::IOValue>& itable = p->data()._inputs;
@@ -458,7 +458,7 @@ bool KstPluginDialogI::saveInputs(KstCPluginPtr plugin, KstSharedPtr<Plugin> p) 
 }
 
 
-bool KstPluginDialogI::saveOutputs(KstCPluginPtr plugin, KstSharedPtr<Plugin> p) {
+bool KstPluginDialogI::saveOutputs(KstCPluginPtr plugin, QExplicitlySharedDataPointer<Plugin> p) {
   const QValueList<Plugin::Data::IOValue>& otable = p->data()._outputs;
 
   for (QValueList<Plugin::Data::IOValue>::ConstIterator it = otable.begin(); it != otable.end(); ++it) {
@@ -568,7 +568,7 @@ bool KstPluginDialogI::newObject() {
   KstCPluginPtr plugin;
   int pitem = _w->PluginCombo->currentItem();
   if (pitem >= 0 && _w->PluginCombo->count() > 0) {
-    KstSharedPtr<Plugin> pPtr = PluginCollection::self()->plugin(_pluginList[pitem]);
+    QExplicitlySharedDataPointer<Plugin> pPtr = PluginCollection::self()->plugin(_pluginList[pitem]);
     if (pPtr) {
       plugin = new KstCPlugin;
       KstWriteLocker pl(plugin);
@@ -627,7 +627,7 @@ bool KstPluginDialogI::editObject() {
   pp->setTagName(_tagName->text());
 
   int pitem = _w->PluginCombo->currentItem();
-  KstSharedPtr<Plugin> pPtr = PluginCollection::self()->plugin(_pluginList[pitem]);
+  QExplicitlySharedDataPointer<Plugin> pPtr = PluginCollection::self()->plugin(_pluginList[pitem]);
 
   pp->setRecursed(false);
   pp->inputVectors().clear();

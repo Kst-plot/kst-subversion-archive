@@ -45,7 +45,7 @@
 #include "stringselector.h"
 #include "vectorselector.h"
 
-QGuardedPtr<KstFitDialogI> KstFitDialogI::_inst;
+QPointer<KstFitDialogI> KstFitDialogI::_inst;
 
 KstFitDialogI *KstFitDialogI::globalInstance() {
   if (!_inst) {
@@ -194,7 +194,7 @@ bool KstFitDialogI::newObject() {
   int pitem = _w->PluginCombo->currentItem();
 
   if (pitem >= 0 && _w->PluginCombo->count() > 0) {
-    KstSharedPtr<Plugin> pPtr = PluginCollection::self()->plugin(_pluginList[pitem]);
+    QExplicitlySharedDataPointer<Plugin> pPtr = PluginCollection::self()->plugin(_pluginList[pitem]);
 
     if (pPtr) {
       KstCPluginPtr plugin = new KstCPlugin;
@@ -374,7 +374,7 @@ void KstFitDialogI::generateEntries(bool input, int& cnt, QWidget *parent, QGrid
 }
 
 
-bool KstFitDialogI::saveInputs(KstCPluginPtr plugin, KstSharedPtr<Plugin> p) {
+bool KstFitDialogI::saveInputs(KstCPluginPtr plugin, QExplicitlySharedDataPointer<Plugin> p) {
   bool rc = true;
 
   const QValueList<Plugin::Data::IOValue>& itable = p->data()._inputs;

@@ -46,7 +46,7 @@ class KST_EXPORT KstHsDialogI : public KstDataDialog {
     void setVector(const QString& name);
 
   private:
-    static QGuardedPtr<KstHsDialogI> _inst;
+    static QPointer<KstHsDialogI> _inst;
     // the following are for the multiple edit mode
     bool _vectorDirty;
     bool _minDirty;

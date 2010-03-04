@@ -46,7 +46,7 @@ class KST_EXPORT KstVvDialogI : public KstDataDialog {
     void setYVector(const QString& name);
 
   private:
-    static QGuardedPtr<KstVvDialogI> _inst;
+    static QPointer<KstVvDialogI> _inst;
 
     // the following are for the multiple edit mode
     bool _xVectorDirty;

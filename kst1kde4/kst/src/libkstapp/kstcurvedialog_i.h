@@ -45,7 +45,7 @@ class KstCurveDialogI : public KstDataDialog {
     void setVector(const QString& name);
 
   private:
-    static QGuardedPtr<KstCurveDialogI> _inst;
+    static QPointer<KstCurveDialogI> _inst;
 
     // the following are for the multiple edit mode
     bool _xVectorDirty : 1;

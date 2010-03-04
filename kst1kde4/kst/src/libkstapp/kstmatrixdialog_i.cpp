@@ -41,7 +41,7 @@
 #include <defaultprimitivenames.h>
 #include "vectorselector.h"
 
-QGuardedPtr<KstMatrixDialogI> KstMatrixDialogI::_inst;
+QPointer<KstMatrixDialogI> KstMatrixDialogI::_inst;
 
 KstMatrixDialogI *KstMatrixDialogI::globalInstance() {
   if (!_inst) {
@@ -142,7 +142,7 @@ void KstMatrixDialogI::selectingFolder()
       QDir dir(strFolder);
 
       if (dir.cdUp()) {
-        fileDlg->setURL(KURL(dir.absPath()));
+        fileDlg->setURL(KUrl(dir.absPath()));
       }
     }
   }
@@ -897,14 +897,15 @@ void KstMatrixDialogI::updateCompletion() {
     _w->_connect->hide();
   //  _kstDataRange->setAllowTime(ds->supportsTimeConversions());
   } else {
-    QString type;
     bool complete = false;
     QString u = _w->_fileName->url();
-    KURL url;
+    QString type;
+    KUrl url;
+    
     if (QFile::exists(u) && QFileInfo(u).isRelative()) {
       url.setPath(u);
     } else {
-      url = KURL::fromPathOrURL(u);
+      url = KUrl::fromPathOrURL(u);
     }
 
     if (!_inTest && !url.isLocalFile() && url.protocol() != "file" && !url.protocol().isEmpty()) {

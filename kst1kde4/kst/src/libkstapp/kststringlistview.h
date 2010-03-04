@@ -46,7 +46,7 @@ class KstStringListViewItem : public KListViewItem
     KstObjectTreeNode<KstString> *node() const { return _node; }
 
   private:
-    QGuardedPtr<KstObjectTreeNode<KstString> > _node;
+    QPointer<KstObjectTreeNode<KstString> > _node;
 };
 
 #endif

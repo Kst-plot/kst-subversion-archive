@@ -46,7 +46,7 @@
 
 const QString& KstCurveDialogI::defaultTag = KGlobal::staticQString("<Auto Name>");
 
-QGuardedPtr<KstCurveDialogI> KstCurveDialogI::_inst;
+QPointer<KstCurveDialogI> KstCurveDialogI::_inst;
 
 KstCurveDialogI *KstCurveDialogI::globalInstance() {
   if (!_inst) {

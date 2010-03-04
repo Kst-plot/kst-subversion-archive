@@ -47,7 +47,7 @@ class KstCsdDialogI : public KstDataDialog {
 
   private:
     KstImagePtr createImage(KstCSDPtr csd);
-    static QGuardedPtr<KstCsdDialogI> _inst;
+    static QPointer<KstCsdDialogI> _inst;
 
     // the following are for the multiple edit mode
     bool _vectorDirty : 1;

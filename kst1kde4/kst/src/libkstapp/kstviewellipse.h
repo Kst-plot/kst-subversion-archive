@@ -21,7 +21,7 @@
 #include "kstviewobject.h"
 
 class KstViewEllipse;
-typedef KstSharedPtr<KstViewEllipse> KstViewEllipsePtr;
+typedef QExplicitlySharedDataPointer<KstViewEllipse> KstViewEllipsePtr;
 
 class KstViewEllipse : public KstViewObject {
   Q_OBJECT

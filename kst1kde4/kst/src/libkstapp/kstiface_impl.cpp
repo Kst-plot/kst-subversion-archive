@@ -1413,7 +1413,7 @@ QStringList KstIfaceImpl::createPlugin(const QString& pluginName,
                                 const QStringList& vectorInputs) {
 
   PluginCollection *plug_collect = PluginCollection::self();
-  KstSharedPtr<Plugin> plug_ptr = plug_collect->plugin(pluginName);
+  QExplicitlySharedDataPointer<Plugin> plug_ptr = plug_collect->plugin(pluginName);
 
 
   if (!plug_ptr) {

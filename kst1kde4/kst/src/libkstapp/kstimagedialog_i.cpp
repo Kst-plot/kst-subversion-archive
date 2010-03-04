@@ -44,7 +44,7 @@
 #include "kstviewwindow.h"
 #include "matrixselector.h"
 
-QGuardedPtr<KstImageDialogI> KstImageDialogI::_inst;
+QPointer<KstImageDialogI> KstImageDialogI::_inst;
 
 KstImageDialogI *KstImageDialogI::globalInstance() {
   if (!_inst) {

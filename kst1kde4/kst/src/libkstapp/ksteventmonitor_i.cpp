@@ -38,7 +38,7 @@
 #include "vectorselector.h"
 
 
-QGuardedPtr<KstEventMonitorI> KstEventMonitorI::_inst;
+QPointer<KstEventMonitorI> KstEventMonitorI::_inst;
 
 KstEventMonitorI* KstEventMonitorI::globalInstance() {
   if (!_inst) {

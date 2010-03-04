@@ -671,6 +671,7 @@ void KstObjectItem::removeFromPlot(int id) {
     p->removeCurve(c);
     p->setDirty();
     paintPlot(p);
+
     emit updated();
   }
 }
@@ -678,16 +679,22 @@ void KstObjectItem::removeFromPlot(int id) {
 
 void KstObjectItem::paintPlot(Kst2DPlotPtr p) {
   KstApp *app = KstApp::inst();
-  KMdiIterator<KMdiChildView*> *it = app->createIterator();
-  while (it->currentItem()) {
-    KstViewWindow *v = dynamic_cast<KstViewWindow*>(it->currentItem());
-    if (v && v->view()->contains(kst_cast<KstViewObject>(p))) {
-      v->view()->paint(KstPainter::P_PLOT);
-      break;
+  QList<QMdiSubWindow*> windows;
+  QList<QMdiSubWindow*>::const_iterator i;
+
+  windows = app->subWindowList( CreationOrder );
+
+  for (i = windows.constBegin(); i != windows.constEnd(); ++i)
+    KstViewWindow *viewWindow = dynamic_cast<KstViewWindow*>(*i);
+
+    if (viewWindow) {
+      if (viewWindow->view()->contains(kst_cast<KstViewObject>(p))) {
+        viewWindow->view()->paint(KstPainter::P_PLOT);
+        
+        break;
+      }
     }
-    it->next();
   }
-  app->deleteIterator(it);
 }
 
 
@@ -848,8 +855,10 @@ void KstDataManagerI::createObjectAction(const QString &txt, QToolBar *bar,
 
 
 void KstDataManagerI::setupPluginActions() {
+  //
+  // the new KstDataObject plugins...
+  //
 
-  //The new KstDataObject plugins...
   {
     const KstPluginInfoList newPlugins = KstDataObject::pluginInfoList();
     KstPluginInfoList::ConstIterator it = newPlugins.begin();
@@ -882,10 +891,14 @@ void KstDataManagerI::setupPluginActions() {
     }
   }
 
-  //The old C style plugins...
+  //
+  // the old C style plugins...
+  //   
+  
   QStringList oldPlugins;
   const QMap<QString,QString> readable = PluginCollection::self()->readableNameList();
   QMap<QString,QString>::const_iterator it = readable.begin();
+  
   for (; it != readable.end(); ++it) {
     oldPlugins << it.key();
   }
@@ -893,7 +906,7 @@ void KstDataManagerI::setupPluginActions() {
   {
     QStringList::ConstIterator it = oldPlugins.begin();
     for (; it != oldPlugins.end(); ++it) {
-      if (KstSharedPtr<Plugin> p = PluginCollection::self()->plugin(readable[*it])) {
+      if (QExplicitlySharedDataPointer<Plugin> p = PluginCollection::self()->plugin(readable[*it])) {
         if (p->data()._isFit) {
           createObjectAction(*it, _fits, this, SLOT(showOldPlugin()));
         } else if (p->data()._isFilter) {
@@ -908,7 +921,6 @@ void KstDataManagerI::setupPluginActions() {
 
 
 void KstDataManagerI::showOldPlugin() {
-
   if (QAction *a = ::qt_cast<QAction*>(sender())) {
     const QMap<QString,QString> readable =
       PluginCollection::self()->readableNameList();
@@ -1377,13 +1389,19 @@ void KstDataManagerI::contextMenu(QListViewItem *i, const QPoint& p, int col) {
     bool haveAdd = false, haveRemove = false;
 
     KstApp *app = KstApp::inst();
-    KMdiIterator<KMdiChildView*> *it = app->createIterator();
-    while (it->currentItem()) {
-      KstViewWindow *v = dynamic_cast<KstViewWindow*>(it->currentItem());
-      if (v) {
-        Kst2DPlotList plots = v->view()->findChildrenType<Kst2DPlot>();
+    QList<QMdiSubWindow*> windows;
+    QList<QMdiSubWindow*>::const_iterator i;
+  
+    windows = app->subWindowList( CreationOrder );
+  
+    for (i = windows.constBegin(); i != windows.constEnd(); ++i)
+      KstViewWindow *viewWindow = dynamic_cast<KstViewWindow*>(*i);
+      if (viewWindow) {
+        Kst2DPlotList plots = viewWindow->view()->findChildrenType<Kst2DPlot>();
+        
         for (Kst2DPlotList::Iterator i = plots.begin(); i != plots.end(); ++i) {
           Kst2DPlotPtr plot = *i;
+
           if (!plot->Curves.contains(c)) {
             addMenu->insertItem(i18n("%1 - %2").arg(v->caption()).arg(plot->tag().tag()), koi, SLOT(addToPlot(int)), 0, id);
             haveAdd = true;
@@ -1394,10 +1412,7 @@ void KstDataManagerI::contextMenu(QListViewItem *i, const QPoint& p, int col) {
           PlotMap[id++] = plot;
         }
       }
-      it->next();
     }
-
-    app->deleteIterator(it);
 
     id = m->insertItem(i18n("&Add to Plot"), addMenu);
     m->setItemEnabled(id, haveAdd);
@@ -1406,7 +1421,10 @@ void KstDataManagerI::contextMenu(QListViewItem *i, const QPoint& p, int col) {
   } 
 
   if (koi->rtti() != RTTI_OBJ_VECTOR && koi->rtti() != RTTI_OBJ_MATRIX) {
+    //
     // no slave vectors or matrices get this
+    //
+
     id = m->insertItem(i18n("&Delete"), this, SLOT(delete_I()));
   }
 

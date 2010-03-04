@@ -37,7 +37,7 @@
 #define KST_STATUSBAR_STATUS 2
 
 KstViewWindow::KstViewWindow(QWidget *parent, const char* name)
-: KMdiChildView(QString::null, parent, name) {
+: QMdiSubWindow(QString::null, parent, name) {
   commonConstructor();
   _view = new KstTopLevelView(this, name);
   _view->applyDefaults();
@@ -45,7 +45,7 @@ KstViewWindow::KstViewWindow(QWidget *parent, const char* name)
 
 
 KstViewWindow::KstViewWindow(const QDomElement& e, QWidget* parent, const char* name)
-: KMdiChildView(QString::null, parent, name) {
+: QMdiSubWindow(QString::null, parent, name) {
   QString in_tag;
   QRect rectRestore;
   QRect rectInternal;
@@ -87,7 +87,7 @@ KstViewWindow::KstViewWindow(const QDomElement& e, QWidget* parent, const char* 
 void KstViewWindow::commonConstructor() {
   config = kapp->config();
 
-  connect(this, SIGNAL(focusInEventOccurs( KMdiChildView*)), this, SLOT(slotActivated(KMdiChildView*)));
+  connect(this, SIGNAL(focusInEventOccurs( QMdiSubWindow*)), this, SLOT(slotActivated(QMdiSubWindow*)));
 
   QTimer::singleShot(0, this, SLOT(updateActions()));
 
@@ -136,7 +136,7 @@ void KstViewWindow::readProperties(KConfig* config) {
 }
 
 
-void KstViewWindow::slotActivated(KMdiChildView*) {
+void KstViewWindow::slotActivated(QMdiSubWindow*) {
   // KDE bug: KMDIMainFrm close -> activate -> loops back from the destructor
   if (KstApp::inst()) {
     if (KstApp::inst()->getZoomRadio() == KstApp::LAYOUT) {
@@ -414,7 +414,7 @@ KstTopLevelViewPtr KstViewWindow::view() const {
 
 
 void KstViewWindow::setCaption(const QString& caption) {
-  KMdiChildView::setCaption(caption);
+  QMdiSubWindow::setCaption(caption);
   _view->setTagName(KstObjectTag(caption, KstObjectTag::globalTagContext));  // FIXME: global tag context?
 }
 
@@ -426,78 +426,88 @@ void KstViewWindow::closeEvent(QCloseEvent *e) {
       return;
     }
   }
-  KMdiChildView::closeEvent(e);
+  QMdiSubWindow::closeEvent(e);
 }
 
 
 QString KstViewWindow::createPlotObject(const QString& suggestedName, bool prompt) {
   KstApp *app = KstApp::inst();
-  KMdiIterator<KMdiChildView*> *iter;
-
   QString name = suggestedName;
   bool duplicate = true;
+
   while (duplicate) {
-    duplicate = false;
     KstViewObjectPtr rc;
-    //check the name
+
+    //
+    // check the name
+    //
+
+    duplicate = false;
     iter = app->createIterator();
-    while (iter->currentItem() && !duplicate) {
-      KMdiChildView *childview = iter->currentItem();
-      KstViewWindow *viewwindow = dynamic_cast<KstViewWindow*>(childview);
-      if (viewwindow) {
-        rc = viewwindow->view()->findChild(name);
+
+    QList<QMdiSubWindow*> windows;
+    QList<QMdiSubWindow*>::const_iterator i;
+  
+    windows = app->subWindowList( CreationOrder );
+  
+    for (i = windows.constBegin(); i != windows.constEnd() && !duplicate; ++i)
+      KstViewWindow *viewWindow = dynamic_cast<KstViewWindow*>(*i);
+      if (viewWindow) {
+        rc = viewWindow->view()->findChild(name);
         if (rc) {
           duplicate = true;
           name = KST::suggestPlotName();
         }
       }
-      iter->next();
     }
-    app->deleteIterator(iter);
   }
 
   if (prompt) {
     bool ok = false;
-#if KDE_VERSION >= KDE_MAKE_VERSION(3,3,0)
     name = KInputDialog::getText(i18n("Kst"), i18n("Enter a name for the new plot:"), name, &ok);
-#else
-    name = KLineEditDlg::getText(i18n("Enter a name for the new plot:"), name, &ok, 0L);
-#endif
-    if (!ok) {
-      return QString::null;
-    }
-    //check the name
-    duplicate = true;
-    while (duplicate) {
-      duplicate = false;
-      KstViewObjectPtr rc;
+
+    if (ok) {
+      //
       //check the name
-      iter = app->createIterator();
-      while (iter->currentItem() && !duplicate) {
-        KMdiChildView *childview = iter->currentItem();
-        KstViewWindow *viewwindow = dynamic_cast<KstViewWindow*>(childview);
-        if (viewwindow) {
-          rc = viewwindow->view()->findChild(name);
-          if (rc) {
-            duplicate = true;
-#if KDE_VERSION >= KDE_MAKE_VERSION(3,3,0)
-            name = KInputDialog::getText(i18n("Kst"), i18n("Enter a name for the new plot:"), name, &ok);
-#else
-            name = KLineEditDlg::getText(i18n("Enter a name for the new plot:"), name, &ok, 0L);
-#endif
-            if (!ok) {
-              app->deleteIterator(iter);
-              return QString::null;
+      //
+  
+      duplicate = true;
+      while (duplicate) {
+        KstViewObjectPtr rc;
+
+        duplicate = false;
+
+        QList<QMdiSubWindow*> windows;
+        QList<QMdiSubWindow*>::const_iterator i;
+      
+        windows = app->subWindowList( CreationOrder );
+      
+        for (i = windows.constBegin(); i != windows.constEnd() && !duplicate; ++i)
+          KstViewWindow *viewWindow = dynamic_cast<KstViewWindow*>(*i);
+          if (viewWindow) {
+            rc = viewWindow->view()->findChild(name);
+            if (rc) {
+              duplicate = true;
+
+              name = KInputDialog::getText(i18n("Kst"), i18n("Enter a name for the new plot:"), name, &ok);
+
+              if (!ok) {
+                name = QString::null;
+
+                break;
+              }
             }
           }
         }
-        iter->next();
       }
-      app->deleteIterator(iter);
+    } else {
+      name = QString::null;
     }
   }
 
-  _view->createPlotObject(name);
+  if (name != QString::null ) {
+    _view->createPlotObject(name);
+  }
 
   return name;
 }

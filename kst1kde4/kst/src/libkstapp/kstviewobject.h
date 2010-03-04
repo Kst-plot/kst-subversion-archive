@@ -18,14 +18,13 @@
 #ifndef KSTVIEWOBJECT_H
 #define KSTVIEWOBJECT_H
 
-#include <qcolor.h>
-#include <qdom.h>
-#include <qguardedptr.h>
+#include <QColor>
+#include <QDomElement>
+#include <QExplicitlySharedDataPointer>
+#include <QPointer>
 
 #include <kdeversion.h>
-#if KDE_VERSION >= KDE_MAKE_VERSION(3,2,0)
 #include <kdemacros.h>
-#endif
 
 #include "kstobject.h"
 #include "kstalignment.h"
@@ -37,11 +36,11 @@ class KstGfxMouseHandler;
 class KstViewObject;
 class KstViewWidget;
 class KstTopLevelView;
-typedef KstSharedPtr<KstViewObject> KstViewObjectPtr;
+typedef QExplicitlySharedDataPointer<KstViewObject> KstViewObjectPtr;
 typedef KstObjectList<KstViewObjectPtr> KstViewObjectList;
 typedef KstViewObjectPtr (*KstViewObjectFactoryMethod)();
 typedef KstGfxMouseHandler* (*KstHandlerFactoryMethod)();
-typedef KstSharedPtr<KstTopLevelView> KstTopLevelViewPtr;
+typedef QExplicitlySharedDataPointer<KstTopLevelView> KstTopLevelViewPtr;
 
 struct KstMargins {
   KstMargins() : left(0.0), right(0.0), top(0.0), bottom(0.0) { }
@@ -146,7 +145,7 @@ class KST_EXPORT KstViewObject : public KstObject {
     KstViewObjectPtr findDeepestChild(const QPoint& pos, bool borderForTransparent = false, bool stopAtGroup = false);
     KstViewObjectPtr findChild(const QString& name, bool recursive = true);
     bool contains(const KstViewObjectPtr child) const;
-    template<class T> KstObjectList<KstSharedPtr<T> > findChildrenType(bool recursive = false);
+    template<class T> KstObjectList<QExplicitlySharedDataPointer<T> > findChildrenType(bool recursive = false);
     KstViewObjectList findChildrenType( const QString& type, bool recursive = false);
 
     // Finds a container that can hold this rect.  Only searches objects that
@@ -333,9 +332,10 @@ class KST_EXPORT KstViewObject : public KstObject {
     bool _isResizable : 1;
     bool _maintainAspect : 1;
     int _columns : 10;
-    QGuardedPtr<KstViewObject> _topObjectForMenu;
-    QGuardedPtr<KstViewObject> _parent; // danger!!
-    Q_UINT32 _standardActions, _layoutActions;
+    QPointer<KstViewObject> _topObjectForMenu;
+    QPointer<KstViewObject> _parent; // danger!!
+    quint32 _standardActions;
+    quint32 _layoutActions;
     KstAspectRatio _aspect;
     KstMargins _margins;
     QSize _idealSize; //ideal size for object. useful when _maintainAspect==true
@@ -393,8 +393,8 @@ void KstViewObject::recursively(void (U::*method)(T), T arg, bool self) {
 
 
 template<class T>
-KstObjectList<KstSharedPtr<T> > KstViewObject::findChildrenType(bool recursive) {
-  KstObjectList<KstSharedPtr<T> > rc;
+KstObjectList<QExplicitlySharedDataPointer<T> > KstViewObject::findChildrenType(bool recursive) {
+  KstObjectList<QExplicitlySharedDataPointer<T> > rc;
   for (KstViewObjectList::Iterator i = _children.begin(); i != _children.end(); ++i) {
     T *o = kst_cast<T>(*i);
     if (o) {

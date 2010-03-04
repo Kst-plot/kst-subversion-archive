@@ -16,14 +16,13 @@
  ***************************************************************************/
 
 // include files for Qt
-#include <qfile.h>
+#include <QFile>
 #include <qglobal.h>
 
 // include files for KDE
 #include <kapplication.h>
 #include <klocale.h>
 #include <kmessagebox.h>
-#include <kprogress.h>
 
 // application specific includes
 #include "kst.h"
@@ -237,52 +236,61 @@ void KstGuiData::removeCurveFromPlots(KstBaseCurve *c) {
 }
 
 
-QStringList KstGuiData::plotList(const QString& window) {
+QStringList KstGuiData::plotList(const QString& strWindow) {
   if (window.isEmpty()) {
     return Kst2DPlot::globalPlotList().tagNames();
   }
 
   KstApp *app = KstApp::inst();
-  KMdiChildView *c = app->findWindow(window);
+  QMdiSubWindow *window = app->findWindow(strWindow);
   QStringList rc;
-  if (c) {
-    Kst2DPlotList plots = static_cast<KstViewWindow*>(c)->view()->findChildrenType<Kst2DPlot>();
+
+  if (window) {
+    Kst2DPlotList plots = static_cast<KstViewWindow*>(viewWindow)->view()->findChildrenType<Kst2DPlot>();
 
     for (Kst2DPlotList::ConstIterator i = plots.begin(); i != plots.end(); ++i) {
       rc << (*i)->tagName();
     }
   }
+
   return rc;
 }
 
 
 bool KstGuiData::viewObjectNameNotUnique(const QString& tag) {
   KstApp *app = KstApp::inst();
-  KMdiIterator<KMdiChildView*> *it = app->createIterator();
-  if (it) {
-    while (it->currentItem()) {
-      KstViewWindow *view = dynamic_cast<KstViewWindow*>(it->currentItem());
-      if (view) {
-        if (view->view()->findChild(tag, true)) {
-          return (true);
-        }
+  QList<QMdiSubWindow*> windows;
+  QList<QMdiSubWindow*>::const_iterator i;
+  bool retVal = false;
+
+  windows = app->subWindowList( CreationOrder );
+
+  for (i = windows.constBegin(); i != windows.constEnd(); ++i)
+    KstViewWindow *view = dynamic_cast<KstViewWindow*>(*i);
+    if (view) {
+      if (view->view()->findChild(tag, true)) {
+        retVal = true;
+
+        break;
       }
-      it->next();
     }
-    app->deleteIterator(it);
   }
-  return false;
+
+  return retVal;
 }
 
 
 int KstGuiData::columns(const QString& window) {
-  KstViewWindow *w = dynamic_cast<KstViewWindow*>(KstApp::inst()->findWindow(window));
+  KstViewWindow *viewWindow = dynamic_cast<KstViewWindow*>(KstApp::inst()->findWindow(window));
+
   if (w) {
-    KstTopLevelViewPtr view = w->view();
-    if (view->onGrid()) {
+    KstTopLevelViewPtr view = viewWindow->view();
+
+    if (view && view->onGrid()) {
       return view->columns();
     }
   }
+
   return -1;
 }
 
@@ -294,18 +302,21 @@ void KstGuiData::newWindow(QWidget *dialogParent) {
 
 QStringList KstGuiData::windowList() {
   QStringList rc;
-  KMdiIterator<KMdiChildView*> *it = KstApp::inst()->createIterator();
-  while (it->currentItem()) {
-    rc << it->currentItem()->caption();
-    it->next();
+  QList<QMdiSubWindow*> windows;
+  QList<QMdiSubWindow*>::const_iterator i;
+
+  windows = app->subWindowList( CreationOrder );
+
+  for (i = windows.constBegin(); i != windows.constEnd(); ++i)
+    rc << (*i)->caption();
   }
-  KstApp::inst()->deleteIterator(it);
 
   return rc;
 }
 
 
 QString KstGuiData::currentWindow() {
-  KMdiChildView *c = KstApp::inst()->activeWindow();
-  return c ? c->caption() : QString::null;
+  QMdiSubWindow *window = KstApp::inst()->activeSubWindow();
+
+  return window ? window->caption() : QString::null;
 }

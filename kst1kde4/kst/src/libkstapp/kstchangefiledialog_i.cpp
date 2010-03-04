@@ -394,13 +394,18 @@ bool KstChangeFileDialogI::applyFileChange() {
   // now add any curves and images to plots if they were duplicated
   if (_duplicateSelected->isChecked() && _duplicateDependents->isChecked()) { 
     KstApp *app = KstApp::inst();
-    KMdiIterator<KMdiChildView*> *it = app->createIterator();
-    while (it->currentItem()) {
-      KstViewWindow *w = dynamic_cast<KstViewWindow*>(it->currentItem());
-      if (w) {
-        KstTopLevelViewPtr view = kst_cast<KstTopLevelView>(w->view());
+    QList<QMdiSubWindow*> windows;
+    QList<QMdiSubWindow*>::const_iterator i;
+  
+    windows = app->subWindowList( CreationOrder );
+
+    for (i = windows.constBegin(); i != windows.constEnd(); ++i)
+      KstViewWindow *viewWindow = dynamic_cast<KstViewWindow*>(*i);
+      if (viewWindow) {
+        KstTopLevelViewPtr view = kst_cast<KstTopLevelView>(viewWindow->view());
         if (view) {
           Kst2DPlotList plots = view->findChildrenType<Kst2DPlot>(true);
+
           for (Kst2DPlotList::Iterator plotIter = plots.begin(); plotIter != plots.end(); ++plotIter) {
             for (KstDataObjectDataObjectMap::ConstIterator iter = duplicatedMap.begin(); iter != duplicatedMap.end(); ++iter) {
               if (KstBaseCurvePtr curve = kst_cast<KstBaseCurve>(iter.data())) {
@@ -412,12 +417,13 @@ bool KstChangeFileDialogI::applyFileChange() {
           }
         }
       }
-      it->next();
     }
-    app->deleteIterator(it);
   }
 
+  //
   // clean up unused data sources
+  //
+
   KST::dataSourceList.lock().writeLock();
   for (KstDataSourceList::Iterator it = oldSources.begin(); it != oldSources.end(); ++it) {
     if ((*it)->getUsage() == 1) {
@@ -436,26 +442,35 @@ bool KstChangeFileDialogI::applyFileChange() {
 
   emit docChanged();
 
+  //
   // force an update in case we're in paused mode
+  //
+
   KstApp::inst()->forceUpdate();
+
   return true;
 }
 
 
 void KstChangeFileDialogI::allFromFile() {
-  if (_files->count() <= 0) {
-    return;
-  }
+  if (_files->count() > 0) {
+    ChangeFileCurveList->selectAll(false);
+    KstReadLocker rl(&KST::vectorList.lock());
+    uint i;
 
-  ChangeFileCurveList->selectAll(false);
-  KstReadLocker rl(&KST::vectorList.lock());
-  for (uint i = 0; i < KST::vectorList.count(); ++i) {
-    KstRVectorPtr v = kst_cast<KstRVector>(*KST::vectorList.findTag(ChangeFileCurveList->text(i)));
-    ChangeFileCurveList->setSelected(i, v && v->filename() == _files->currentText());
-  }
-  for (uint i = KST::vectorList.count(); i < ChangeFileCurveList->count(); i++) {
-    KstRMatrixPtr m = kst_cast<KstRMatrix>(*KST::matrixList.findTag(ChangeFileCurveList->text(i)));
-    ChangeFileCurveList->setSelected(i, m && m->filename() == _files->currentText());
+    for (i = 0; i < KST::vectorList.count(); ++i) {
+      KstRVectorPtr v; 
+
+      v = kst_cast<KstRVector>(*KST::vectorList.findTag(ChangeFileCurveList->text(i)));
+      ChangeFileCurveList->setSelected(i, v && v->filename() == _files->currentText());
+    }
+
+    for (i = KST::vectorList.count(); i < ChangeFileCurveList->count(); i++) {
+      KstRMatrixPtr m;
+
+      m = kst_cast<KstRMatrix>(*KST::matrixList.findTag(ChangeFileCurveList->text(i)));
+      ChangeFileCurveList->setSelected(i, m && m->filename() == _files->currentText());
+    }
   }
 }
 
@@ -463,7 +478,9 @@ void KstChangeFileDialogI::allFromFile() {
 void KstChangeFileDialogI::updateSelection(const QString& txt) {
   ChangeFileCurveList->selectAll(false);
   QRegExp re(txt, true, true);
-  for (uint i = 0; i < ChangeFileCurveList->count(); ++i) {
+  uint i;
+
+  for (i = 0; i < ChangeFileCurveList->count(); ++i) {
     ChangeFileCurveList->setSelected(i, re.exactMatch(ChangeFileCurveList->text(i)));
   }
 }

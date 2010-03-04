@@ -18,7 +18,7 @@
 #ifndef KSTBASICDIALOGI_H
 #define KSTBASICDIALOGI_H
 
-#include <qguardedptr.h>
+#include <QPointer>
 
 #include "kst_export.h"
 #include "kstdatadialog.h"
@@ -72,7 +72,7 @@ class KST_EXPORT KstBasicDialogI : public KstDataDialog {
     QLineEdit *output(const QString &name) const;
 
     static const QString& defaultTag;
-    static QGuardedPtr<KstBasicDialogI> _inst;
+    static QPointer<KstBasicDialogI> _inst;
 
     QString _pluginName;
     BasicDialogWidget *_w;

@@ -198,12 +198,12 @@ void KstViewPicture::save(QTextStream& ts, const QString& indent) {
 
 
 bool KstViewPicture::setImage(const QString& source) {
-  KURL url;
+  KUrl url;
 
   if (QFile::exists(source) && QFileInfo(source).isRelative()) {
     url.setPath(source);
   } else {
-    url = KURL::fromPathOrURL(source);
+    url = KUrl::fromPathOrURL(source);
   }
 
 #if KDE_VERSION >= KDE_MAKE_VERSION(3,3,0)

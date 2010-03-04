@@ -18,13 +18,14 @@
 #ifndef KSTEDITVIEWOBJECTDIALOGI_H
 #define KSTEDITVIEWOBJECTDIALOGI_H
 
+#include <QPointer>
+
 #include "editmultiplewidget.h"
 #include "editviewobjectdialog.h"
 #include "kstviewobject.h"
 #include "kstviewwindow.h"
 #include "ksttoplevelview.h"
 #include "kst_export.h"
-#include <qguardedptr.h>
 
 class QComboBox;
 class QGridLayout;
@@ -68,7 +69,7 @@ class KST_EXPORT KstEditViewObjectDialogI : public KstEditViewObjectDialog {
     QValueList<QWidget*> _inputWidgets; // the widgets used to change properties
     QValueList<QWidget*> _widgets; // all other widgets
     QGridLayout* _grid;
-    QGuardedPtr<QWidget> _customWidget;
+    QPointer<QWidget> _customWidget;
     bool _isNew;
     bool _editMultipleMode;
 

@@ -333,21 +333,23 @@ void KstCurveDifferentiateI::apply() {
         cycleWindow(window);
       }
     } else {
-      KMdiIterator<KMdiChildView*> *it = app->createIterator();
-      
-      if (it) {
-        while (it->currentItem()) {
-          if (_repeatAcross == 1) {
-            _seqVect[0]->reset();
-          }
+      QList<QMdiSubWindow*> windows;
+      QList<QMdiSubWindow*>::const_iterator i;
+    
+      windows = app->subWindowList( CreationOrder );
+    
+      for (i = windows.constBegin(); i != windows.constEnd(); ++i)
+        KstViewWindow *viewWindow = dynamic_cast<KstViewWindow*>(*i);
 
-          window = dynamic_cast<KstViewWindow*>(it->currentItem());
-          if (window && !window->view()->children().isEmpty()) {
-            cycleWindow(window);
-          }
-          it->next();
+        if (_repeatAcross == 1) {
+          _seqVect[0]->reset();
         }
-        app->deleteIterator(it);
+
+        if (viewWindow) {
+          if (!viewWindow->view()->children().isEmpty()) {
+            cycleWindow(viewWindow);
+          }
+        }
       }
     }
   }

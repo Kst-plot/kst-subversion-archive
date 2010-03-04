@@ -35,7 +35,7 @@ class KstChangeFileDialogI : public KstChangeFileDialog {
     void allFromFile();
 
   private:
-    QGuardedPtr<QWidget> _configWidget;
+    QPointer<QWidget> _configWidget;
     QString _file;
     int _lastVectorIndex;
     bool _first;

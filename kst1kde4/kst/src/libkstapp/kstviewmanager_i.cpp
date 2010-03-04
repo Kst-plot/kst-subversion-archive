@@ -442,27 +442,33 @@ void KstViewManagerI::update() {
 
   QListViewItem *currentItem = ViewView->selectedItem();
   QPtrStack<QListViewItem> trash;
-  KMdiIterator<KMdiChildView*> *it = app->createIterator();
 
+  //
   // garbage collect first
+  //
+
+  QList<QMdiSubWindow*> windows;
+  QList<QMdiSubWindow*>::const_iterator it;
+
+  windows = app->subWindowList( CreationOrder );
+
   for (QListViewItem *i = ViewView->firstChild(); i; i = i->nextSibling()) {
     bool found = false;
     KstViewObjectItem *oi = static_cast<KstViewObjectItem*>(i);
-    it->first();
     if (i->rtti() == RTTI_OBJ_WINDOW) {
-      while (it->currentItem()) {
-        KstViewWindow *win = dynamic_cast<KstViewWindow*>(it->currentItem());
-        if (win) {
-          KstTopLevelViewPtr view = win->view();
+      for (it = windows.constBegin(); it != windows.constEnd(); ++it)
+        KstViewWindow *viewWindow = dynamic_cast<KstViewWindow*>(*it);
+        if (viewWindow) {
+          KstTopLevelViewPtr view = viewWindow->view();
           if (view) {
             if (view->tagName() == oi->tagName()) {
               found = true;
             }
           }
         }
-        it->next();
       }
     }
+
     if (!found) {
       trash.push(i);
     }
@@ -473,28 +479,30 @@ void KstViewManagerI::update() {
   trash.clear();
   ViewView->blockSignals(false);
 
-  it->first();
   while (it->currentItem()) {
-    KstViewWindow *win = dynamic_cast<KstViewWindow*>(it->currentItem());
-    if (win) {
-      KstTopLevelViewPtr view = win->view();
-      if (view) {
+    for (it = windows.constBegin(); it != windows.constEnd(); ++it)
+      KstViewWindow *viewWindow = dynamic_cast<KstViewWindow*>(*it);
+
+      if (viewWindow) {
         bool found = false;
 
         for (QListViewItem *i = ViewView->firstChild(); i; i = i->nextSibling()) {
           KstViewObjectItem *oi = static_cast<KstViewObjectItem*>(i);
-          if (oi->rtti() == RTTI_OBJ_WINDOW && oi->tagName() == view->tagName()) {
-            oi->update(KstViewObjectPtr(view));
+
+          if (oi->rtti() == RTTI_OBJ_WINDOW && oi->tagName() == viewWindow->tagName()) {
+            oi->update(KstViewObjectPtr(viewWindow));
+
             found = true;
+
             break;
           }
         }
+
         if (!found) {
-          new KstViewObjectItem(ViewView, view, this);
+          new KstViewObjectItem(ViewView, viewWindow, this);
         }
       }
     }
-    it->next();
   }
 
   for (QListViewItem *i = ViewView->firstChild(); i; i = i->nextSibling()) {

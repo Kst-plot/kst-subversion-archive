@@ -49,7 +49,7 @@
 #include "vectordialogwidget.h"
 
 
-QGuardedPtr<KstVectorDialogI> KstVectorDialogI::_inst = 0L;
+QPointer<KstVectorDialogI> KstVectorDialogI::_inst = 0L;
 
 const QString& KstVectorDialogI::defaultTag = KGlobal::staticQString("<Auto Name>");
 

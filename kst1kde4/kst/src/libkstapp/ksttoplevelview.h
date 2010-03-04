@@ -18,8 +18,8 @@
 #ifndef KSTTOPLEVELVIEW_H
 #define KSTTOPLEVELVIEW_H
 
-#include <qcursor.h>
-#include <qguardedptr.h>
+#include <QCursor>
+#include <QPointer>
 
 #include "kstviewobject.h"
 
@@ -27,7 +27,7 @@ class KPopupMenu;
 class KstGfxMouseHandler;
 class KstViewWidget;
 class Kst2DPlot;
-typedef KstSharedPtr<Kst2DPlot> Kst2DPlotPtr;
+typedef QExplicitlySharedDataPointer<Kst2DPlot> Kst2DPlotPtr;
 
 class KstTopLevelView : public KstViewObject {
   friend class KstViewWidget;
@@ -171,7 +171,7 @@ class KstTopLevelView : public KstViewObject {
     // If no children, returns (0,0)
     QSize averageChildSize() const;
 
-    QGuardedPtr<KstViewWidget> _w;
+    QPointer<KstViewWidget> _w;
     bool _focusOn : 1;
     bool _mouseGrabbed : 1;
     bool _mouseMoved : 1; // true even if mouse moved back to original position
@@ -191,7 +191,7 @@ class KstTopLevelView : public KstViewObject {
     QMap<QString,KstGfxMouseHandler*> _handlers;
 };
 
-typedef KstSharedPtr<KstTopLevelView> KstTopLevelViewPtr;
+typedef QExplicitlySharedDataPointer<KstTopLevelView> KstTopLevelViewPtr;
 typedef KstObjectList<KstTopLevelViewPtr> KstTopLevelViewList;
 
 #endif

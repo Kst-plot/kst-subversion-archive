@@ -56,7 +56,7 @@ class KstScalarListViewItem : public KListViewItem
   private:
     void commonConstructor();
 
-    QGuardedPtr<KstObjectTreeNode<KstScalar> > _node;
+    QPointer<KstObjectTreeNode<KstScalar> > _node;
     bool _remove;
 };
 

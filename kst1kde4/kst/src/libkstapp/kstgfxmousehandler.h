@@ -18,14 +18,15 @@
 #ifndef KSTGFXMOUSEHANDLER_H
 #define KSTGFXMOUSEHANDLER_H
 
-#include <qguardedptr.h>
+#include <QPointer>
+
 #include "kstobject.h"
 
 class KstTopLevelView;
 class KstViewObject;
 
-typedef KstSharedPtr<KstViewObject> KstViewObjectPtr;
-typedef KstSharedPtr<KstTopLevelView> KstTopLevelViewPtr;
+typedef QExplicitlySharedDataPointer<KstViewObject> KstViewObjectPtr;
+typedef QExplicitlySharedDataPointer<KstTopLevelView> KstTopLevelViewPtr;
 
 class KstGfxMouseHandler {
   public:

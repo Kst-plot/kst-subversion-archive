@@ -1332,28 +1332,30 @@ bool KstViewObject::layoutPopupMenu(KPopupMenu *menu, const QPoint& pos, KstView
   }
 
   if (_layoutActions & MoveTo) {
-    int i = 0;
-    bool hasEntry = false;
-
+    QList<QMdiSubWindow*> windows;
+    QList<QMdiSubWindow*>::const_iterator it;
     KPopupMenu *submenu = new KPopupMenu(menu);
+    bool hasEntry = false;
+    int i = 0;
 
     id = menu->insertItem(i18n("&Move To"), submenu);
 
-    KMdiIterator<KMdiChildView*> *it = KstApp::inst()->createIterator();
-    while (it->currentItem()) {
-      KstViewWindow *c = dynamic_cast<KstViewWindow*>(it->currentItem());
-      KstTopLevelViewPtr tlv = kst_cast<KstTopLevelView>(topParent);
-
-      if (c && (!tlv || tlv != c->view())) {
-        hasEntry = true;
-        submenu->insertItem(it->currentItem()->caption(), i);
-        submenu->connectItem(i, this, SLOT(moveTo(int)));
-        _moveToMap[i] = it->currentItem()->caption();
-        i++;
+    windows = app->subWindowList( CreationOrder );
+  
+    for (it = windows.constBegin(); it != windows.constEnd(); ++it)
+      KstViewWindow *viewWindow = dynamic_cast<KstViewWindow*>(*it);
+      if (viewWindow) {
+        KstTopLevelViewPtr tlv = kst_cast<KstTopLevelView>(topParent);
+  
+        if (viewWindow && (!tlv || tlv != viewWindow->view())) {
+          hasEntry = true;
+          submenu->insertItem(it->currentItem()->caption(), i);
+          submenu->connectItem(i, this, SLOT(moveTo(int)));
+          _moveToMap[i] = it->currentItem()->caption();
+          i++;
+        }
       }
-      it->next();
     }
-    KstApp::inst()->deleteIterator(it);
 
     menu->setItemEnabled(id, hasEntry);
 
@@ -1361,22 +1363,22 @@ bool KstViewObject::layoutPopupMenu(KPopupMenu *menu, const QPoint& pos, KstView
   }
 
   if (_layoutActions & CopyTo) {
-    int i = 0;
-    bool hasEntry = false;
-
+    KstTopLevelViewPtr tlv = kst_cast<KstTopLevelView>(topParent);
     KPopupMenu *submenu = new KPopupMenu(menu);
+    QList<QMdiSubWindow*> windows;
+    QList<QMdiSubWindow*>::const_iterator it;
+    bool hasEntry = false;
+    int i = 0;
 
     id = menu->insertItem(i18n("&Copy To"), submenu);
 
-    KMdiIterator<KMdiChildView*> *it = KstApp::inst()->createIterator();
-    while (it->currentItem()) {
-      KstViewWindow *c = dynamic_cast<KstViewWindow*>(it->currentItem());
-      KstTopLevelViewPtr tlv = kst_cast<KstTopLevelView>(topParent);
+    for (it = windows.constBegin(); it != windows.constEnd(); ++it)
+      KstViewWindow *viewWindow = dynamic_cast<KstViewWindow*>(*it);
 
-      if (c) {
+      if (viewWindow) {
         hasEntry = true;
-        if (tlv && tlv == c->view()) {
-          submenu->insertItem(i18n("%1 (here)").arg(it->currentItem()->caption()), i);
+        if (tlv && tlv == viewWindow->view()) {
+          submenu->insertItem(i18n("%1 (here)").arg(it->currentItem()->caption()),  i);
         } else {
           submenu->insertItem(it->currentItem()->caption(), i);
         }
@@ -1384,9 +1386,7 @@ bool KstViewObject::layoutPopupMenu(KPopupMenu *menu, const QPoint& pos, KstView
         _copyToMap[i] = it->currentItem()->caption();
         i++;
       }
-      it->next();
     }
-    KstApp::inst()->deleteIterator(it);
 
     menu->setItemEnabled(id, hasEntry);
 
@@ -1551,17 +1551,19 @@ void KstViewObject::moveTo(int id) {
   QString windowName = _moveToMap[id];
 
   if (_parent && !windowName.isEmpty()) {
-    KMdiChildView *mdiChild = KstApp::inst()->findWindow(windowName);
-    KstViewWindow *window = dynamic_cast<KstViewWindow*>(mdiChild);
-    if (window) {
+    QMdiSubWindow *window = KstApp::inst()->findWindow(windowName);
+    KstViewWindow *viewWindow = dynamic_cast<KstViewWindow*>(window);
+
+    if (viewWindow) {
       KstViewObjectPtr t = this;
       KstViewObjectList::Iterator it = _parent->_children.find(t);
+
       if (it != _parent->_children.end()) {
         KstApp::inst()->document()->setModified();
         setDirty();
         _parent->_children.remove(it);
-        window->view()->appendChild(t, true);
-        window->view()->paint(KstPainter::P_PAINT);
+        viewWindow->view()->appendChild(t, true);
+        viewWindow->view()->paint(KstPainter::P_PAINT);
       }
     }
   }
@@ -1572,13 +1574,13 @@ void KstViewObject::copyTo(int id) {
   QString windowName = _copyToMap[id];
 
   if (!windowName.isEmpty()) {
-    KMdiChildView *mdiChild = KstApp::inst()->findWindow(windowName);
-    KstViewWindow *window = dynamic_cast<KstViewWindow*>(mdiChild);
-    if (window) {
+    QMdiSubWindow *window = KstApp::inst()->findWindow(windowName);
+    KstViewWindow *viewWindow = dynamic_cast<KstViewWindow*>(window);
+    if (viewWindow) {
       setDirty();
       KstApp::inst()->document()->setModified();
       copyObjectQuietly(*(window->view().data()));
-      window->view()->paint(KstPainter::P_PAINT);
+      viewWindow->view()->paint(KstPainter::P_PAINT);
     }
   }
 }

@@ -19,8 +19,8 @@
 #define KSTVIEWWIDGET_H
 
 #include <qdragobject.h>
-#include <qguardedptr.h>
-#include <qwidget.h>
+#include <QPointer>
+#include <QWidget>
 
 #include <kpopupmenu.h>
 
@@ -73,11 +73,11 @@ class KstViewWidget : public QWidget {
   private:
     KstTopLevelViewPtr _view;
     KstTopLevelView::ViewMode _lastViewMode;
-    QGuardedPtr<KstViewObject> _vo_datamode;
+    QPointer<KstViewObject> _vo_datamode;
+    QPointer<KPopupMenu> _menu;
+    QDragObject *_drag;
     bool _dropEnabled : 1;
     bool _dragEnabled : 1;
-    QGuardedPtr<KPopupMenu> _menu;
-    QDragObject *_drag;
 };
 
 #endif

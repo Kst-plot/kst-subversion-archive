@@ -41,7 +41,7 @@
 #include "stringselector.h"
 #include "vectorselector.h"
 
-QGuardedPtr<KstFilterDialogI> KstFilterDialogI::_inst;
+QPointer<KstFilterDialogI> KstFilterDialogI::_inst;
 
 KstFilterDialogI *KstFilterDialogI::globalInstance() {
   if (!_inst) {
@@ -117,7 +117,7 @@ void KstFilterDialogI::updatePluginList() {
 }
 
 
-bool KstFilterDialogI::saveInputs(KstCPluginPtr plugin, KstSharedPtr<Plugin> p) {
+bool KstFilterDialogI::saveInputs(KstCPluginPtr plugin, QExplicitlySharedDataPointer<Plugin> p) {
   KstReadLocker vl(&KST::vectorList.lock());
   KstWriteLocker scl(&KST::scalarList.lock());
   KstWriteLocker stl(&KST::stringList.lock());
@@ -245,7 +245,7 @@ bool KstFilterDialogI::newObject() {
     int pitem = _w->PluginCombo->currentItem();
 
     if (pitem >= 0 && _w->PluginCombo->count() > 0) {
-      KstSharedPtr<Plugin> pPtr = PluginCollection::self()->plugin(_pluginList[pitem]);
+      QExplicitlySharedDataPointer<Plugin> pPtr = PluginCollection::self()->plugin(_pluginList[pitem]);
 
       if (pPtr) {
         KstCPluginPtr plugin = new KstCPlugin;

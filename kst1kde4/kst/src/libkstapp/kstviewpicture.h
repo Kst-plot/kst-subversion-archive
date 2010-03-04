@@ -25,7 +25,7 @@
 class QTimer;
 
 class KstViewPicture;
-typedef KstSharedPtr<KstViewPicture> KstViewPicturePtr;
+typedef QExplicitlySharedDataPointer<KstViewPicture> KstViewPicturePtr;
 
 class KstViewPicture : public KstBorderedViewObject {
   Q_OBJECT
