@@ -21,7 +21,7 @@
 #include <QPointer>
 
 #include "kst_export.h"
-#include "kstdatadialog.h"
+#include "ui_kstdatadialog.h"
 #include "kstbasicplugin.h"
 
 class QLineEdit;

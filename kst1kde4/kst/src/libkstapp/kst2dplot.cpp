@@ -7626,7 +7626,7 @@ void Kst2DPlot::setTagName(const KstObjectTag& newTag) {
   QTimer::singleShot(0, KstApp::inst(), SLOT(updateDialogs()));
 }
 
-const QDict<KstScalar>& Kst2DPlot::scalars() const {
+const QHash<QString, KstScalar>& Kst2DPlot::scalars() const {
   return _scalars;
 }
 

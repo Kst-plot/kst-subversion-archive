@@ -18,9 +18,8 @@
 #ifndef KSTPLUGINDIALOGI_H
 #define KSTPLUGINDIALOGI_H
 
+#include "ui_kstdatadialog.h"
 #include "kstcplugin.h"
-
-#include "kstdatadialog.h"
 #include "kst_export.h"
 
 class PluginDialogWidget;

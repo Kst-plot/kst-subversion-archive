@@ -148,20 +148,20 @@ KstApp::KstApp(QWidget *parent, const char *name)
   setCaption(doc->title());
 
   /* create dialogs */
-  debugDialog = new KstDebugDialogI(this);
-  dataManager = new KstDataManagerI(doc, this);
-  viewManager = new KstViewManagerI(doc, this);
-  viewScalarsDialog = new KstViewScalarsDialogI(this);
-  viewStringsDialog = new KstViewStringsDialogI(this);
-  viewVectorsDialog = new KstViewVectorsDialogI(this);
-  viewMatricesDialog = new KstViewMatricesDialogI(this);
-  viewFitsDialog = new KstViewFitsDialogI(this);
-  changeFileDialog = new KstChangeFileDialogI(this);
-  chooseColorDialog = new KstChooseColorDialogI(this);
-  differentiateCurvesDialog = new KstCurveDifferentiateI(this);
-  changeNptsDialog = new KstChangeNptsDialogI(this);
-  graphFileDialog = new KstGraphFileDialogI(this);
-  vectorSaveDialog = new KstVectorSaveDialogI(this);
+  _debugDialog = new KstDebugDialogI(this);
+  _dataManager = new KstDataManagerI(doc, this);
+  _viewManager = new KstViewManagerI(doc, this);
+  _viewScalarsDialog = new KstViewScalarsDialogI(this);
+  _viewStringsDialog = new KstViewStringsDialogI(this);
+  _viewVectorsDialog = new KstViewVectorsDialogI(this);
+  _viewMatricesDialog = new KstViewMatricesDialogI(this);
+  _viewFitsDialog = new KstViewFitsDialogI(this);
+  _changeFileDialog = new KstChangeFileDialogI(this);
+  _chooseColorDialog = new KstChooseColorDialogI(this);
+  _differentiateCurvesDialog = new KstCurveDifferentiateI(this);
+  _changeNptsDialog = new KstChangeNptsDialogI(this);
+  _graphFileDialog = new KstGraphFileDialogI(this);
+  _vectorSaveDialog = new KstVectorSaveDialogI(this);
   _monochromeDialog = new KstMonochromeDialogI(this);
   _quickStartDialog = new KstQuickStartDialogI(this, 0 , true);
 
@@ -423,10 +423,10 @@ void KstApp::initActions() {
   connect(PauseAction, SIGNAL(toggled(bool)), this, SLOT(updatePausedState(bool)));
 
   /************/
-  _saveData = new KToggleAction(i18n("Save Da&ta"), 0,0,0,0,
+  _actionSaveData = new KToggleAction(i18n("Save Da&ta"), 0,0,0,0,
 				actionCollection(), "save_vector_data");
-  _saveData->setToolTip(i18n("Save Vector Data To Disk"));
-  _saveData->setWhatsThis(i18n("When selected, data in vectors will be saved into the Kst file."));
+  _actionSaveData->setToolTip(i18n("Save Vector Data To Disk"));
+  _actionSaveData->setWhatsThis(i18n("When selected, data in vectors will be saved into the Kst file."));
 
   /************/
   XYZoomAction = new KRadioAction(i18n("XY Mouse &Zoom"), "kst_zoomxy",
@@ -1115,10 +1115,6 @@ bool KstApp::openDocumentFile(const QString& in_filename,
   opening = false;
 
   return rc;
-}
-
-KstMonochromeDialogI *KstApp::monochromeDialog() const {
-  return _monochromeDialog;
 }
 
 

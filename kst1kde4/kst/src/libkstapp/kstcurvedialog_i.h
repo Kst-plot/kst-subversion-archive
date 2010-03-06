@@ -19,7 +19,7 @@
 #ifndef KSTCURVEDIALOGI_H
 #define KSTCURVEDIALOGI_H
 
-#include "kstdatadialog.h"
+#include "ui_kstdatadialog.h"
 #include "kstvcurve.h"
 #include "kst_export.h"
 

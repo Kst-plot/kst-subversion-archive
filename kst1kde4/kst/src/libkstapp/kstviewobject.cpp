@@ -1340,7 +1340,7 @@ bool KstViewObject::layoutPopupMenu(KPopupMenu *menu, const QPoint& pos, KstView
 
     id = menu->insertItem(i18n("&Move To"), submenu);
 
-    windows = app->subWindowList( CreationOrder );
+    windows = app->subWindowList(QMdiArea::CreationOrder);
   
     for (it = windows.constBegin(); it != windows.constEnd(); ++it)
       KstViewWindow *viewWindow = dynamic_cast<KstViewWindow*>(*it);

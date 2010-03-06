@@ -17,18 +17,15 @@
  ***************************************************************************/
 #include <assert.h>
 
-// include files for Qt
-#include <qptrstack.h>
+#include <QStack>
 #include <qdragobject.h>
 
-// include files for KDE
 #include "ksdebug.h"
 #include <klistview.h>
 #include <kmessagebox.h>
 #include <kmultipledrag.h>
 #include <kstandarddirs.h>
 
-// application specific includes
 #include "kst.h"
 #include "kst2dplot.h"
 #include "kstdatacollection.h"

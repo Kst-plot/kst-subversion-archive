@@ -20,13 +20,12 @@
 
 #include <config.h>
 
-// include files for Qt
+#include <QActionGroup>
 #include <QMdiArea>
 #include <QMdiSubWindow>
 #include <QPointer>
 #include <QTimer>
 
-// application specific includes
 #include "kst_export.h"
 #include "kstpainter.h"
 #include "ksttoplevelview.h"
@@ -110,7 +109,6 @@ class KST_EXPORT KstApp : public QMdiArea {
     KstDoc *document() const;
 
     /** returns a pointer to the monochrome settings dialog */
-    KstMonochromeDialogI *monochromeDialog() const;
 
     /** pause the updating of data */
     void setPaused(bool paused);
@@ -122,7 +120,7 @@ class KST_EXPORT KstApp : public QMdiArea {
     /** Get XY zoom radio button state */
     KstZoomType getZoomRadio();
     KstGraphicType getGraphicType();
-    bool saveData() const { return _saveData->isChecked(); }
+    bool saveData() const { return _actionSaveData->isChecked(); }
 
     KstTopLevelView::ViewMode currentViewMode();
     QString currentCreateType();
@@ -145,13 +143,13 @@ class KST_EXPORT KstApp : public QMdiArea {
 
     void EventELOGSubmitEntry(const QString& message);
 
-    //return the list of recent files
     const QStringList recentFiles() const;
 
     KConfig *dataSourceConfig() const { return _dataSourceConfig; }
 
-    KstGraphFileDialogI *graphFileDlg() const { return graphFileDialog; }
-    KstChooseColorDialogI* chooseColorDlg() const { return chooseColorDialog; }
+    KstGraphFileDialogI *graphFileDlg() const { return _graphFileDialog; }
+    KstChooseColorDialogI *chooseColorDlg() const { return _chooseColorDialog; }
+    KstMonochromeDialogI *monochromeDialog() const { return _monochromeDialog; }
 
     void waitForUpdate() const;
     bool paused() const;
@@ -161,7 +159,7 @@ class KST_EXPORT KstApp : public QMdiArea {
     void saveTabs(QTextStream& ts);
 
   protected:
-    void customEvent(QCustomEvent *e);
+// xxx    void customEvent(QCustomEvent *e);
 
 
     /** save options to the configuration file
@@ -344,14 +342,14 @@ class KST_EXPORT KstApp : public QMdiArea {
     GraphicEditorI *_graphicDialog;
     KstMonochromeDialogI *_monochromeDialog; 
     KstQuickStartDialogI *_quickStartDialog;
-
+/* xxx
     KRecentFilesAction *_recent;
     KRecentFilesAction *_fileOpenRecent;
-
-    KToggleAction *_actionStatusBar;
-    KToggleAction *_actionPause;
-    KToggleAction *_actionDataMode;
-    KToggleAction *_actionSaveData;
+*/
+    QAction *_actionStatusBar;
+    QAction *_actionPause;
+    QAction *_actionDataMode;
+    QAction *_actionSaveData;
 
     QAction *_actionSamplesDown;
     QAction *_actionSamplesUp;
@@ -401,21 +399,22 @@ class KST_EXPORT KstApp : public QMdiArea {
     QAction *_actionFileCopy;
     QAction *_actionFilePaste;
 
-    /** Radio Collection: XY, X, Y zoom, Text, Layout */
-    KRadioAction *_actionZoomXY;
-    KRadioAction *_actionZoomX;
-    KRadioAction *_actionZoomY;
-    KRadioAction *_actionGfx;
-    KRadioAction *_actionLayout;
+    QActionGroup *_actionGroupZoom;
+    QAction *_actionZoomXY;
+    QAction *_actionZoomX;
+    QAction *_actionZoomY;
+    QAction *_actionGfx;
+    QAction *_actionLayout;
 
-    KRadioAction *_actionGfxLine;
-    KRadioAction *_actionGfxRectangle;
-    KRadioAction *_actionGfxEllipse;
-    KRadioAction *_actionGfxLabel;
-    KRadioAction *_actionGfxPicture;
-    KRadioAction *_actionGfx2DPlot;
-    KRadioAction *_actionGfxArrow;
-    KRadioAction *_actionGfxLegend;
+    QActionGroup *_actionGroupGfx;
+    QAction *_actionGfxLine;
+    QAction *_actionGfxRectangle;
+    QAction *_actionGfxEllipse;
+    QAction *_actionGfxLabel;
+    QAction *_actionGfxPicture;
+    QAction *_actionGfx2DPlot;
+    QAction *_actionGfxArrow;
+    QAction *_actionGfxLegend;
 
     StatusLabel *_readyBar;
     StatusLabel *_memoryBar;
@@ -427,7 +426,7 @@ class KST_EXPORT KstApp : public QMdiArea {
     QTimer _memTimer;
     QString _defaultFont;
     KConfig *_dataSourceConfig;
-    QValueList<KstOpen> _openQueue;
+    QList<KstOpen> _openQueue;
     KstGraphicType _graphicType;
     bool _updatesFromScriptEnabled;
     bool _stopping;

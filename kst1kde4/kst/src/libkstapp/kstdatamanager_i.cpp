@@ -682,7 +682,7 @@ void KstObjectItem::paintPlot(Kst2DPlotPtr p) {
   QList<QMdiSubWindow*> windows;
   QList<QMdiSubWindow*>::const_iterator i;
 
-  windows = app->subWindowList( CreationOrder );
+  windows = app->subWindowList(QMdiArea::CreationOrder);
 
   for (i = windows.constBegin(); i != windows.constEnd(); ++i)
     KstViewWindow *viewWindow = dynamic_cast<KstViewWindow*>(*i);
@@ -1392,7 +1392,7 @@ void KstDataManagerI::contextMenu(QListViewItem *i, const QPoint& p, int col) {
     QList<QMdiSubWindow*> windows;
     QList<QMdiSubWindow*>::const_iterator i;
   
-    windows = app->subWindowList( CreationOrder );
+    windows = app->subWindowList(QMdiArea::CreationOrder);
   
     for (i = windows.constBegin(); i != windows.constEnd(); ++i)
       KstViewWindow *viewWindow = dynamic_cast<KstViewWindow*>(*i);

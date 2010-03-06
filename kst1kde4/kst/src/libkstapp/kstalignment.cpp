@@ -19,10 +19,11 @@
 
 KstAlignment KST::alignment;
 
+/* xxx
 int operator<(const QPoint &p1, const QPoint &p2) {
   return p1.x() < p2.x() || (p1.x() == p2.x() && p1.y() < p2.y());
 }
-
+*/
 
 KstAlignment::KstAlignment() {
 }

@@ -39,8 +39,8 @@ class KstTopLevelView : public KstViewObject {
   Q_PROPERTY(double marginBottom READ marginBottom WRITE setMarginBottom)
 
   public:
-    KstTopLevelView(QWidget *parent = 0L, const char *name = 0L, WFlags w = 0);
-    KstTopLevelView(const QDomElement& e, QWidget *parent = 0L, const char *name = 0L, WFlags w = 0);
+    KstTopLevelView(QWidget *parent = 0L, const char *name = 0L, Qt::WFlags w = 0);
+    KstTopLevelView(const QDomElement& e, QWidget *parent = 0L, const char *name = 0L, Qt::WFlags w = 0);
     KstTopLevelView(const KstTopLevelView& tlv);
     virtual ~KstTopLevelView();
 

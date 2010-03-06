@@ -42,21 +42,28 @@ KstGuiData::~KstGuiData() {
 
 
 bool KstGuiData::dataTagNameNotUnique(const QString &tag, bool warn, void *p) {
-  /* verify that the tag name is not empty */
-  if (tag.stripWhiteSpace().isEmpty()) {
-      if (warn) {
-        KMessageBox::sorry(static_cast<QWidget*>(p), i18n("Empty tag names are not allowed."));
-      }
-      return true;
+  //
+  // verify that the tag name is not empty
+  //
+
+  if (tag.trimmed().isEmpty()) {
+    if (warn) {
+      QMessageBox::warning(static_cast<QWidget*>(p), i18n("Kst"), i18n("Empty tag names are not allowed."));
+    }
+    return true;
   }
 
-  /* verify that the tag name is not used by a data object */
+  //
+  // verify that the tag name is not used by a data object
+  //
+
   KST::dataObjectList.lock().readLock();
   if (KST::dataObjectList.findTag(tag) != KST::dataObjectList.end()) {
     KST::dataObjectList.lock().unlock();
       if (warn) {
-        KMessageBox::sorry(static_cast<QWidget*>(p), i18n("%1: this name is already in use. Change it to a unique name.").arg(tag));
+        QMessageBox::warning(static_cast<QWidget*>(p), i18n("Kst"), i18n("%1: this name is already in use. Change it to a unique name.").arg(tag));
       }
+
       return true;
   }
   KST::dataObjectList.lock().unlock();
@@ -66,22 +73,31 @@ bool KstGuiData::dataTagNameNotUnique(const QString &tag, bool warn, void *p) {
 
 
 bool KstGuiData::vectorTagNameNotUnique(const QString &tag, bool warn, void *p) {
-  /* verify that the tag name is not empty */
-  if (tag.stripWhiteSpace().isEmpty()) {
-      if (warn) {
-        KMessageBox::sorry(static_cast<QWidget*>(p), i18n("Empty tag names are not allowed."));
-      }
-      return true;
+  //
+  // verify that the tag name is not empty
+  //
+
+  if (tag.trimmed().isEmpty()) {
+    if (warn) {
+      QMessageBox::warning(static_cast<QWidget*>(p), i18n("Kst"), i18n("Empty tag names are not allowed."));
+    }
+
+    return true;
   }
 
-  /* verify that the tag name is not used by a data object */
+  //
+  // verify that the tag name is not used by a data object
+  //
+
   KstReadLocker vl(&KST::vectorList.lock());
   KstReadLocker sl(&KST::scalarList.lock());
+
   if (KST::vectorList.tagExists(tag) || KST::scalarList.tagExists(tag)) {
-      if (warn) {
-        KMessageBox::sorry(static_cast<QWidget*>(p), i18n("%1: this name is already in use. Change it to a unique name.").arg(tag));
-      }
-      return true;
+    if (warn) {
+      QMessageBox::warning(static_cast<QWidget*>(p), i18n("Kst"), i18n("%1: this name is already in use. Change it to a unique name.").arg(tag));
+    }
+
+    return true;
   }
 
   return false;
@@ -89,20 +105,27 @@ bool KstGuiData::vectorTagNameNotUnique(const QString &tag, bool warn, void *p) 
 
 
 bool KstGuiData::matrixTagNameNotUnique(const QString &tag, bool warn, void *p) {
-  /* verify that the tag name is not empty */
-  if (tag.stripWhiteSpace().isEmpty()) {
+  //
+  // verify that the tag name is not empty
+  //
+
+  if (tag.trimmed().isEmpty()) {
     if (warn) {
-      KMessageBox::sorry(static_cast<QWidget*>(p), i18n("Empty tag names are not allowed."));
+      QMessageBox::warning(static_cast<QWidget*>(p), i18n("Kst"), i18n("Empty tag names are not allowed."));
     }
     return true;
   }
 
-  /* verify that the tag name is not used by a data object */
+  //
+  // verify that the tag name is not used by a data object
+  //
+
   KstReadLocker ml(&KST::matrixList.lock());
   KstReadLocker sl(&KST::scalarList.lock());
+
   if (KST::matrixList.tagExists(tag) || KST::scalarList.tagExists(tag)) {
     if (warn) {
-      KMessageBox::sorry(static_cast<QWidget*>(p), i18n("%1: this name is already in use. Change it to a unique name.").arg(tag));
+      QMessageBox::warning(static_cast<QWidget*>(p), i18n("Kst"), i18n("%1: this name is already in use. Change it to a unique name.").arg(tag));
     }
     return true;
   }
@@ -113,31 +136,38 @@ bool KstGuiData::matrixTagNameNotUnique(const QString &tag, bool warn, void *p) 
 
 int KstGuiData::vectorToFile(KstVectorPtr v, QFile *f) {
   KstApp *app = KstApp::inst();
-#define BSIZE 128
+  QString saving;
+  QString ltxt;
+  double *value;
+  int BSIZE = 128;
   char buf[BSIZE];
+  register int modval;
+  int vSize;
+  int i;
+  int l;
 
   v->readLock();
 
-  int vSize = v->length();
-  double *value = v->value();
-  register int modval;
-  QString saving = i18n("Saving vector %1").arg(v->tagName());
+  vSize = v->length();
+  value = v->value();
+  saving = i18n("Saving vector %1").arg(v->tagName());
+  modval = qMax(vSize/100, 100);
+  ltxt = "; " + v->tagName() + '\n';
 
-  modval = kMax(vSize/100, 100);
+  f->write(ltxt.toAscii());
 
-  QString ltxt = "; " + v->tagName() + '\n';
-  f->writeBlock(ltxt.ascii(), ltxt.length());
   ltxt.fill('-');
   ltxt[0] = ';';
   ltxt[1] = ' ';
   ltxt[ltxt.length() - 1] = '\n';
-  f->writeBlock(ltxt.ascii(), ltxt.length());
+
+  f->write(ltxt.toAscii());
 
   app->slotUpdateProgress(vSize, 0, QString::null);
 
-  for (int i = 0; i < vSize; i++) {
-    int l = snprintf(buf, BSIZE, "%.15g\n", value[i]);
-    f->writeBlock(buf, l);
+  for (i = 0; i < vSize; i++) {
+    l = snprintf(buf, BSIZE, "%.15g\n", value[i]);
+    f->write(buf, l);
     if (i % modval == 0) {
       app->slotUpdateProgress(vSize, i, saving);
     }
@@ -147,7 +177,6 @@ int KstGuiData::vectorToFile(KstVectorPtr v, QFile *f) {
 
   app->slotUpdateProgress(0, 0, QString::null);
 
-#undef BSIZE
   return 0;
 }
 
@@ -160,7 +189,7 @@ int KstGuiData::vectorsToFile(const KstVectorList& vl, QFile *f, bool interpolat
     maxlen = 0;
     for (KstVectorList::ConstIterator v = vl.begin(); v != vl.end(); ++v) {
       (*v)->readLock();
-      maxlen = KMAX(maxlen, (*v)->length());
+      maxlen = qMax(maxlen, (*v)->length());
     }
   } else {
     for (KstVectorList::ConstIterator v = vl.begin(); v != vl.end(); ++v) {
@@ -168,13 +197,13 @@ int KstGuiData::vectorsToFile(const KstVectorList& vl, QFile *f, bool interpolat
       if (maxlen == -1) {
         maxlen = (*v)->length();
       } else {
-        maxlen = KMIN(maxlen, (*v)->length());
+        maxlen = qMin(maxlen, (*v)->length());
       }
     }
   }
 
   QString saving = i18n("Saving vectors...");
-  register int modval = kMax(maxlen/100, 100);
+  register int modval = qMax(maxlen/100, 100);
   app->slotUpdateProgress(maxlen, 0, QString::null);
 
   bool first = true;
@@ -185,15 +214,14 @@ int KstGuiData::vectorsToFile(const KstVectorList& vl, QFile *f, bool interpolat
   }
   ltxt += '\n';
 
-  f->writeBlock(ltxt.ascii(), ltxt.length());
+  f->write(ltxt.toAscii());
   ltxt.fill('-');
   ltxt[0] = ';';
   ltxt[1] = ' ';
   ltxt[ltxt.length() - 1] = '\n';
-  f->writeBlock(ltxt.ascii(), ltxt.length());
-#if QT_VERSION >= 0x030200
+  f->write(ltxt.toAscii());
   ltxt.reserve(vl.count()*17);
-#endif
+
   for (int line = 0; line < maxlen; ++line) {
     ltxt.truncate(0);
     first = true;
@@ -203,8 +231,10 @@ int KstGuiData::vectorsToFile(const KstVectorList& vl, QFile *f, bool interpolat
       } else {
         first = false;
       }
+
       double val;
-      if (interpolate) {  // might be faster to put this outside the for loops
+
+      if (interpolate) {
         val = (*v)->interpolate(line, maxlen);
       } else {
         val = (*v)->value()[line];
@@ -212,7 +242,7 @@ int KstGuiData::vectorsToFile(const KstVectorList& vl, QFile *f, bool interpolat
       ltxt += QString::number(val, 'g', 15);
     }
     ltxt += "\n";
-    f->writeBlock(ltxt.ascii(), ltxt.length());
+    f->write(ltxt.toAscii());
     if (line % modval == 0) {
       app->slotUpdateProgress(maxlen, line, saving);
     }
@@ -230,26 +260,34 @@ int KstGuiData::vectorsToFile(const KstVectorList& vl, QFile *f, bool interpolat
 
 void KstGuiData::removeCurveFromPlots(KstBaseCurve *c) {
   Kst2DPlotList pl = Kst2DPlot::globalPlotList();
-  for (Kst2DPlotList::Iterator i = pl.begin(); i != pl.end(); ++i) {
-    (*i)->removeCurve(c);
+  Kst2DPlotList::Iterator i;
+  
+  for (i = pl.begin(); i != pl.end(); ++i) {
+    (*i)->removeCurve(KstBaseCurvePtr(c));
   }
 }
 
 
 QStringList KstGuiData::plotList(const QString& strWindow) {
-  if (window.isEmpty()) {
+  if (strWindow.isEmpty()) {
     return Kst2DPlot::globalPlotList().tagNames();
   }
 
-  KstApp *app = KstApp::inst();
-  QMdiSubWindow *window = app->findWindow(strWindow);
+  QMdiSubWindow *window = KstApp::inst()->findChild<QMdiSubWindow*>(strWindow);
   QStringList rc;
 
   if (window) {
-    Kst2DPlotList plots = static_cast<KstViewWindow*>(viewWindow)->view()->findChildrenType<Kst2DPlot>();
+    KstViewWindow* viewWindow;
 
-    for (Kst2DPlotList::ConstIterator i = plots.begin(); i != plots.end(); ++i) {
-      rc << (*i)->tagName();
+    viewWindow = dynamic_cast<KstViewWindow*>(window);
+    if (viewWindow) {
+/* xxx
+      Kst2DPlotList plots = viewWindow->view()->findChildrenType<Kst2DPlot>();
+
+      for (Kst2DPlotList::ConstIterator i = plots.begin(); i != plots.end(); ++i) {
+        rc << (*i)->tagName();
+      }
+*/
     }
   }
 
@@ -263,9 +301,9 @@ bool KstGuiData::viewObjectNameNotUnique(const QString& tag) {
   QList<QMdiSubWindow*>::const_iterator i;
   bool retVal = false;
 
-  windows = app->subWindowList( CreationOrder );
+  windows = app->subWindowList(QMdiArea::CreationOrder);
 
-  for (i = windows.constBegin(); i != windows.constEnd(); ++i)
+  for (i = windows.constBegin(); i != windows.constEnd(); ++i) {
     KstViewWindow *view = dynamic_cast<KstViewWindow*>(*i);
     if (view) {
       if (view->view()->findChild(tag, true)) {
@@ -280,14 +318,18 @@ bool KstGuiData::viewObjectNameNotUnique(const QString& tag) {
 }
 
 
-int KstGuiData::columns(const QString& window) {
-  KstViewWindow *viewWindow = dynamic_cast<KstViewWindow*>(KstApp::inst()->findWindow(window));
+int KstGuiData::columns(const QString& strWindow) {
+  QMdiSubWindow *window = KstApp::inst()->findChild<QMdiSubWindow*>(strWindow);
 
-  if (w) {
-    KstTopLevelViewPtr view = viewWindow->view();
+  if (window) {
+    KstViewWindow *viewWindow = dynamic_cast<KstViewWindow*>(window);
 
-    if (view && view->onGrid()) {
-      return view->columns();
+    if (viewWindow) {
+      KstTopLevelViewPtr view = viewWindow->view();
+
+      if (view && view->onGrid()) {
+        return view->columns();
+      }
     }
   }
 
@@ -305,10 +347,10 @@ QStringList KstGuiData::windowList() {
   QList<QMdiSubWindow*> windows;
   QList<QMdiSubWindow*>::const_iterator i;
 
-  windows = app->subWindowList( CreationOrder );
+  windows = KstApp::inst()->subWindowList(QMdiArea::CreationOrder);
 
-  for (i = windows.constBegin(); i != windows.constEnd(); ++i)
-    rc << (*i)->caption();
+  for (i = windows.constBegin(); i != windows.constEnd(); ++i) {
+    rc << (*i)->objectName();
   }
 
   return rc;
@@ -318,5 +360,5 @@ QStringList KstGuiData::windowList() {
 QString KstGuiData::currentWindow() {
   QMdiSubWindow *window = KstApp::inst()->activeSubWindow();
 
-  return window ? window->caption() : QString::null;
+  return window ? window->windowTitle() : QString::null;
 }

@@ -18,7 +18,7 @@
 #ifndef KSTCSDDIALOGI_H
 #define KSTCSDDIALOGI_H
 
-#include "kstdatadialog.h"
+#include "ui_kstdatadialog.h"
 #include "kstcsd.h"
 #include "kstimage.h"
 #include "kst_export.h"
@@ -76,7 +76,7 @@ class KstCsdDialogI : public KstDataDialog {
     void fillFieldsForEdit();
     void fillFieldsForNew();
     void cleanup();
-    CSDDialogWidget *_w;
+    Ui::CSDDialogWidget *_w;
 };
 
 #endif

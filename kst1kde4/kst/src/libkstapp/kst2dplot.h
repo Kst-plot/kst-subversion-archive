@@ -20,9 +20,8 @@
 
 #include <time.h>
 
-#include <QValueStack>
-
-#include <kmessagebox.h>
+#include <QStack>
+#include <QMessageBox>
 
 #include "kstbackbuffer.h"
 #include "kstbasecurve.h"
@@ -66,7 +65,7 @@ struct KstMarker {
   bool isVectorValue;
 };
 
-typedef QValueList<KstMarker> KstMarkerList;
+typedef QList<KstMarker> KstMarkerList;
 
 enum KstMouseModeType { INACTIVE, XY_ZOOMBOX, Y_ZOOMBOX, X_ZOOMBOX, LAYOUT_TOOL };
 
@@ -146,7 +145,7 @@ public:
   void popPlotColors();
 
   void updateScalars();
-  const QDict<KstScalar>& scalars() const;
+  const QHash<QString, KstScalar>& scalars() const;
 
   /** Set the scale */
   void setScale(double xmin, double ymin, double xmax, double ymax);
@@ -389,9 +388,7 @@ public:
   //      passed to changeToMonochrome (otherwise behaviour is not as expected)
   bool undoChangeToMonochrome(int pointStylePriority, int lineStylePriority, int lineWidthPriority);
 
-  //convenience routines for working with viewLegends
   KstViewLegendPtr legend() const;
-
   KstViewLegendPtr getOrCreateLegend();
 
   virtual QRect contentsRect() const;
@@ -402,7 +399,7 @@ public:
   virtual void setTagName(const KstObjectTag& newTag);
 
 protected:
-  QDict<KstScalar> _scalars;
+  QHash<QString, KstScalar> _scalars;
 
   /** scalar maintenance methods */
   void createScalars();
@@ -579,20 +576,25 @@ private:
 
   KstScaleModeType _xScaleMode, _yScaleMode;
 
-  QPtrList<KstPlotScale> _plotScaleList;
+  QList<KstPlotScale> _plotScaleList;
 
+  //
   // hold last minimum and maximum y values that were plotted
-  double _yPlottedMinCached, _yPlottedMaxCached;
+  //
 
+  double _yPlottedMinCached;
+  double _yPlottedMaxCached;
 
-  /** Stores border limits.  Set by KstPlot::paint().
-      Stored here to be Used to determine mouse mode */
+  //
+  // stores border limits, set by KstPlot::paint().
+  // stored here to be Used to determine mouse mode
+  // 
+
   QRect PlotRegion;
   QRect WinRegion;
   QRect PlotAndAxisRegion;
 
   void updateScale();
-  //void adjustFontSize();
 
   KstMouse _mouse;
   QMap<int, QString> _curveEditMap, _curveFitMap, _curveRemoveMap, _objectEditMap;
@@ -632,7 +634,7 @@ private:
 
   KstPlotLabel *_xLabel, *_yLabel, *_topLabel, *_xTickLabel, *_yTickLabel, *_fullTickLabel;
 
-  QValueStack<QColor> _colorStack;
+  QStack<QColor> _colorStack;
 
   // for range expressions
   bool reparse(const QString& stringExp, Equation::Node** eqNode);

@@ -23,7 +23,7 @@ class Kst2dPlotWidget: public View2DPlotWidget {
   Q_OBJECT
 
   public:
-    Kst2dPlotWidget(QWidget* parent = 0, const char *name = 0, WFlags fl = 0);
+    Kst2dPlotWidget(QWidget* parent = 0, const char *name = 0, Qt::WFlags fl = 0);
     virtual ~Kst2dPlotWidget();
 
   public:

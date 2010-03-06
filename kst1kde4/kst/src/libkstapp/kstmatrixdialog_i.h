@@ -18,7 +18,7 @@
 #ifndef KSTMATRIXDIALOGI_H
 #define KSTMATRIXDIALOGI_H
 
-#include "kstdatadialog.h"
+#include "ui_kstdatadialog.h"
 #include "kstrmatrix.h"
 #include "kstsmatrix.h"
 #include "kst_export.h"

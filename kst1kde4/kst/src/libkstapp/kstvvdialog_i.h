@@ -18,7 +18,7 @@
 #ifndef KSTVVDIALOGI_H
 #define KSTVVDIALOGI_H
 
-#include "kstdatadialog.h"
+#include "ui_kstdatadialog.h"
 #include "kstvectorview.h"
 #include "kst_export.h"
 

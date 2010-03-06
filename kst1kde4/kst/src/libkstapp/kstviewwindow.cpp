@@ -448,7 +448,7 @@ QString KstViewWindow::createPlotObject(const QString& suggestedName, bool promp
     QList<QMdiSubWindow*> windows;
     QList<QMdiSubWindow*>::const_iterator i;
   
-    windows = app->subWindowList( CreationOrder );
+    windows = app->subWindowList(QMdiArea::CreationOrder);
   
     for (i = windows.constBegin(); i != windows.constEnd() && !duplicate; ++i)
       KstViewWindow *viewWindow = dynamic_cast<KstViewWindow*>(*i);
@@ -480,7 +480,7 @@ QString KstViewWindow::createPlotObject(const QString& suggestedName, bool promp
         QList<QMdiSubWindow*> windows;
         QList<QMdiSubWindow*>::const_iterator i;
       
-        windows = app->subWindowList( CreationOrder );
+        windows = app->subWindowList(QMdiArea::CreationOrder);
       
         for (i = windows.constBegin(); i != windows.constEnd() && !duplicate; ++i)
           KstViewWindow *viewWindow = dynamic_cast<KstViewWindow*>(*i);

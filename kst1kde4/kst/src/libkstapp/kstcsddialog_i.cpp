@@ -16,21 +16,18 @@
  *                                                                         *
  ***************************************************************************/
 
-// include files for Qt
-#include <qbuttongroup.h>
-#include <qcheckbox.h>
-#include <qlineedit.h>
-#include <qlistbox.h>
-#include <qspinbox.h>
-#include <qvbox.h>
+#include <QButtonGroup>
+#include <QCheckBox>
+#include <QLineEdit>
+#include <QListBox>
+#include <QSpinBox>
+#include <QVBox>
 
-// include files for KDE
 #include <kcombobox.h>
 #include "ksdebug.h"
 #include <knuminput.h>
 #include <kmessagebox.h>
 
-// application specific inclues
 #include "fftoptionswidget.h"
 #include "colorpalettewidget.h"
 #include "curveappearancewidget.h"
@@ -60,6 +57,8 @@ KstCsdDialogI *KstCsdDialogI::globalInstance() {
 KstCsdDialogI::KstCsdDialogI(QWidget* parent, const char* name, bool modal, WFlags fl)
 : KstDataDialog(parent, name, modal, fl) {
   _w = new CSDDialogWidget(_contents);
+  _w->setupUi(parent);
+
   setMultiple(true);
   connect(_w->_vector, SIGNAL(newVectorCreated(const QString&)), this, SIGNAL(modified()));
 

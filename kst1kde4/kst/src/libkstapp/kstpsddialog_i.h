@@ -19,7 +19,7 @@
 #ifndef KSTPSDDIALOGI_H
 #define KSTPSDDIALOGI_H
 
-#include "kstdatadialog.h"
+#include "ui_kstdatadialog.h"
 #include "kstpsd.h"
 #include "kst_export.h"
 

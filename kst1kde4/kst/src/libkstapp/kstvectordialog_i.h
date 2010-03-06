@@ -18,7 +18,7 @@
 #ifndef KSTVECTORDIALOGI_H
 #define KSTVECTORDIALOGI_H
 
-#include "kstdatadialog.h"
+#include "ui_kstdatadialog.h"
 #include "kst_export.h"
 
 class KCompletion;
