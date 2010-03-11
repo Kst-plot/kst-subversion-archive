@@ -8,38 +8,15 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+ 
+#include "stringeditor.h"
 
-#include <QRegExp>
-
-#include "editmultiplewidget.h"
-
-EditMultipleWidget::EditMultipleWidget(QWidget *parent) : QWidget(parent) {
+StringEditor::StringEditor(QWidget *parent) : QDialog(parent) {
   setupUi(this);
-  _objectList->setSelectionMode(QAbstractItemView::ExtendedSelection);
 }
 
-EditMultipleWidget::~EditMultipleWidget( ) {
+StringEditor::~StringEditor() {
 }
 
-void EditMultipleWidget::selectAllObjects()
-{
-  _objectList->selectAll();
-}
 
-void EditMultipleWidget::applyFilter(const QString& filter)
-{
-  QListWidgetItem *item;
-  QRegExp re(filter, Qt::CaseInsensitive, QRegExp::Wildcard);
-  uint count;
-  uint i;
 
-  _objectList->clearSelection();
-
-  count = _objectList->count();
-  for (i = 0; i < count; ++i) {
-    item = _objectList->item(i);
-    if (re.exactMatch(item->text())) {
-      item->setSelected(true);
-    }
-  }
-}

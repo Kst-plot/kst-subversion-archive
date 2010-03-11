@@ -9,37 +9,34 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QRegExp>
+#ifndef STRINGSELECTOR_H
+#define STRINGSELECTOR_H
+ 
+#include <QWidget>
+#include "ui_stringselector.h"
+#include "kst_export.h"
 
-#include "editmultiplewidget.h"
+class KST_EXPORT StringSelector : public QWidget, public Ui::StringSelector {
+  Q_OBJECT
+public:
+  StringSelector(QWidget *parent = 0);
+  virtual ~StringSelector(); 
 
-EditMultipleWidget::EditMultipleWidget(QWidget *parent) : QWidget(parent) {
-  setupUi(this);
-  _objectList->setSelectionMode(QAbstractItemView::ExtendedSelection);
-}
+  void allowNewStrings( bool allowed );
+  void update();
+  void createNewString();
+  void selectString();
+  void editString();
+  void selectionWatcher( const QString & tag );
+  void setSelection( const QString & tag );
+  void setSelection( KstStringPtr s );
+  QString selectedString();
+  void allowDirectEntry( bool allowed );
 
-EditMultipleWidget::~EditMultipleWidget( ) {
-}
+Q_SIGNALS:
 
-void EditMultipleWidget::selectAllObjects()
-{
-  _objectList->selectAll();
-}
+private Q_SLOTS:
+};
+ 
+#endif
 
-void EditMultipleWidget::applyFilter(const QString& filter)
-{
-  QListWidgetItem *item;
-  QRegExp re(filter, Qt::CaseInsensitive, QRegExp::Wildcard);
-  uint count;
-  uint i;
-
-  _objectList->clearSelection();
-
-  count = _objectList->count();
-  for (i = 0; i < count; ++i) {
-    item = _objectList->item(i);
-    if (re.exactMatch(item->text())) {
-      item->setSelected(true);
-    }
-  }
-}

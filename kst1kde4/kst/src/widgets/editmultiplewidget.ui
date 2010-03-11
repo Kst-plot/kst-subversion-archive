@@ -18,16 +18,13 @@
     </property>
     <layout class="QGridLayout">
       <item row="0" column="0">
-        <widget class="Q3GroupBox" name="groupBox6">
+        <widget class="QGroupBox" name="groupBox6">
           <property name="title">
             <string>Select Objects</string>
           </property>
           <layout class="QGridLayout">
             <item row="1" column="0" rowspan="1" colspan="2">
-              <widget class="Q3ListBox" name="_objectList">
-                <property name="selectionMode">
-                  <enum>Q3ListBox::Extended</enum>
-                </property>
+              <widget class="QListWidget" name="_objectList">
                 <item>
                   <property name="text">
                     <string>New Item</string>

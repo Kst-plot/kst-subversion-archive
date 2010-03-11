@@ -11,6 +11,8 @@ set(kstwidgets_LIB_SRCS
     plotlistbox.cpp
     scalareditor.cpp
     scalarselector.cpp
+    stringeditor.cpp
+    stringselector.cpp
     vectorlistview.cpp
     kstcombobox.cpp)
 
