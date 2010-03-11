@@ -7,6 +7,7 @@ set(kstwidgets_LIB_SRCS
     comboboxselection_i.cpp
     draggablelistbox.cpp
     draggablelistview.cpp
+    editmultiplewidget.cpp
     plotlistbox.cpp
     scalareditor.cpp
     scalarselector.cpp

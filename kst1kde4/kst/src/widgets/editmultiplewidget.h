@@ -9,41 +9,25 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef SCALARSELECTOR_H
-#define SCALARSELECTOR_H
+#ifndef EDITMULTIPLEWIDGET_H
+#define EDITMULTIPLEWIDGET_H
  
 #include <QWidget>
-#include <kstscalar.h>
-#include "ui_scalarselector.h"
+#include "ui_editmultiplewidget.h"
 #include "kst_export.h"
 
-class KST_EXPORT ScalarSelector : public QWidget, public Ui::ScalarSelector {
+class KST_EXPORT EditMultipleWidget : public QWidget, public Ui::EditMultipleWidget {
    Q_OBJECT
 public:
-  ScalarSelector(QWidget *parent = 0);
-  virtual ~ScalarSelector(); 
+  EditMultipleWidget(QWidget *parent = 0);
+  virtual ~EditMultipleWidget(); 
 
-  void allowNewScalars( bool allowed );
-  void update();  
-  void selectionWatcher( const QString & tag );
-  void setSelection( const QString & tag );
-  void setSelection( KstScalarPtr s );
-  QString selectedScalar();
-  KstScalarPtr selectedScalarPtr();
-  void allowDirectEntry( bool allowed );
+  void selectAllObjects( );
+  void applyFilter(const QString& filter);
 
 Q_SIGNALS:
-  void selectionChanged(const QString&);
 
 private Q_SLOTS:
-  void createNewScalar();
-  void editScalar();
-  void selectScalar();
 };
  
 #endif
-
-
-
-
-

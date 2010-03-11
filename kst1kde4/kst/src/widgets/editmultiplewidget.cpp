@@ -9,41 +9,34 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef SCALARSELECTOR_H
-#define SCALARSELECTOR_H
- 
-#include <QWidget>
-#include <kstscalar.h>
-#include "ui_scalarselector.h"
-#include "kst_export.h"
+#include <QRegExp>
+#include "editmultiplewidget.h"
 
-class KST_EXPORT ScalarSelector : public QWidget, public Ui::ScalarSelector {
-   Q_OBJECT
-public:
-  ScalarSelector(QWidget *parent = 0);
-  virtual ~ScalarSelector(); 
+EditMultipleWidget::EditMultipleWidget(QWidget *parent) : QWidget(parent) {
+  setupUi(this);
+}
 
-  void allowNewScalars( bool allowed );
-  void update();  
-  void selectionWatcher( const QString & tag );
-  void setSelection( const QString & tag );
-  void setSelection( KstScalarPtr s );
-  QString selectedScalar();
-  KstScalarPtr selectedScalarPtr();
-  void allowDirectEntry( bool allowed );
+EditMultipleWidget::~EditMultipleWidget( ) {
+}
 
-Q_SIGNALS:
-  void selectionChanged(const QString&);
+void EditMultipleWidget::selectAllObjects()
+{
+  _objectList->clearSelection();
+  _objectList->invertSelection();
+}
 
-private Q_SLOTS:
-  void createNewScalar();
-  void editScalar();
-  void selectScalar();
-};
- 
-#endif
+void EditMultipleWidget::applyFilter(const QString& filter)
+{
+  QRegExp re(filter, Qt::CaseInsensitive, QRegExp::Wildcard);
+  uint c;
+  uint i;
 
+  _objectList->clearSelection();
 
-
-
-
+  c = _objectList->count();
+  for (i = 0; i < c; ++i) {
+    if (re.exactMatch(_objectList->text(i))) {
+      _objectList->setSelected(i, true);
+    }
+  }
+}
