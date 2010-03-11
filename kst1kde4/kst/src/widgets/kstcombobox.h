@@ -18,18 +18,19 @@
 #ifndef KSTCOMBOBOX_H
 #define KSTCOMBOBOX_H
 
-#include <kcombobox.h>
+#include <QComboBox>
 
-/*This class is a wrapper around KComboBox that does something different in read only mode...
-  basically, we act like a readwrite combo with one important difference... when the widget
-  loses focus or return is pressed we validate and make sure that what is left in the
-  edit field either matches one of the combo's real entries, or we set the active item to
-  the first in the list...
+//
+// This class is a wrapper around KComboBox that does something different in 
+//  read only mode... basically, we act like a readwrite combo with one important
+//  difference... when the widget loses focus or return is pressed we validate 
+//  and make sure that what is left in the edit field either matches one of the 
+//  combo's real entries, or we set the active item to the first in the list...
+// The upshot is that we can have a readonly combo, but with a completion popup 
+//  for easy searching through large combo lists.
+//
 
-  The upshot is that we can have a readonly combo, but with a completion popup for easy
-  searching through large combo lists.
-*/
-class KstComboBox : public KComboBox {
+class KstComboBox : public QComboBox {
   Q_OBJECT
   public:
     KstComboBox(QWidget *parent=0, const char *name=0);

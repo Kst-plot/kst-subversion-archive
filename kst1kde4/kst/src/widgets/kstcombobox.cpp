@@ -18,15 +18,15 @@
 #include "kstcombobox.h"
 
 KstComboBox::KstComboBox(QWidget *parent, const char *name)
-  : KComboBox(parent), _trueRW(false) {
+  : QComboBox(parent), _trueRW(false) {
 
   commonConstructor();
 }
 
 
 KstComboBox::KstComboBox(bool rw, QWidget *parent, const char *name)
-  : KComboBox(false, parent), _trueRW(rw) {
-
+  : QComboBox(parent), _trueRW(rw) {
+  setEditable(false);
   commonConstructor();
 }
 
@@ -39,7 +39,6 @@ void KstComboBox::setEditable(bool rw) {
 }
 
 void KstComboBox::commonConstructor() {
-
   QComboBox::setEditable( true );
 
   if (!_trueRW) { //if not truly read write then go into psuedo mode for read only
@@ -57,17 +56,18 @@ void KstComboBox::focusInEvent(QFocusEvent *event) {
   //this will bug out!!  Unfortunately I see no way to check whether the list of items
   //changes programmatically other than to provide my own input methods or poll with a
   //timer.  Neither is a good idea IMO...
-
+/* xxx
   if (!_trueRW) {
     if (KCompletion *comp = completionObject()) {
       comp->clear();
       for (int i = 0; i < count(); ++i) {
-// xxx        comp->addItem(text(i));
+        comp->addItem(text(i));
       }
     }
   }
 
   KComboBox::focusInEvent(event);
+*/
 }
 
 void KstComboBox::focusOutEvent(QFocusEvent *event) {
@@ -78,7 +78,7 @@ void KstComboBox::focusOutEvent(QFocusEvent *event) {
 
   validate(false);
 
-  KComboBox::focusOutEvent(event);
+  QComboBox::focusOutEvent(event);
 }
 
 
@@ -107,4 +107,3 @@ void KstComboBox::validate(bool rp) {
 
 
 // xxx #include "kstcombobox.moc"
-
