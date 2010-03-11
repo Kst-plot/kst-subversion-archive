@@ -8,6 +8,7 @@ set(kstwidgets_LIB_SRCS
     draggablelistbox.cpp
     draggablelistview.cpp
     editmultiplewidget.cpp
+    fftoptionswidget.cpp
     plotlistbox.cpp
     scalareditor.cpp
     scalarselector.cpp
