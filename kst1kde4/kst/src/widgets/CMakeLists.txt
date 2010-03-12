@@ -4,7 +4,11 @@ include_directories(${CMAKE_SOURCE_DIR} ./ ${CMAKE_SOURCE_DIR}/src/extdate ${CMA
 
 set(kstwidgets_LIB_SRCS
     kstbackbuffer.cpp
+    colorpalettewidget.cpp
     comboboxselection_i.cpp
+    curveappearancewidget.cpp
+    curveplacementwidget.cpp
+    datarangewidget.cpp
     draggablelistbox.cpp
     draggablelistview.cpp
     editmultiplewidget.cpp

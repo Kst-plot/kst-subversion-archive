@@ -48,7 +48,7 @@
               </widget>
             </item>
             <item row="0" column="1" rowspan="1" colspan="3">
-              <widget class="KComboBox" name="_plotWindow">
+              <widget class="QComboBox" name="_plotWindow">
                 <property name="sizePolicy">
                   <sizepolicy>
                     <hsizetype>1</hsizetype>
@@ -161,13 +161,6 @@
   </widget>
   <layoutdefault spacing="6" margin="11"/>
   <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
-  <customwidgets>
-    <customwidget>
-      <class>KComboBox</class>
-      <extends>QComboBox</extends>
-      <header location="global">kcombobox.h</header>
-    </customwidget>
-  </customwidgets>
   <tabstops>
     <tabstop>_plotWindow</tabstop>
     <tabstop>_newWindow</tabstop>
@@ -180,7 +173,6 @@
   </tabstops>
   <includes>
     <include location="global">kst_export.h</include>
-    <include location="local">kcombobox.h</include>
   </includes>
   <connections>
     <connection>
