@@ -10,7 +10,9 @@
  ***************************************************************************/
  
 #include <QMessageBox>
+#include <QTimer>
 
+#include "enodes.h"
 #include "scalareditor.h"
 #include "scalarselector.h"
 #include "dialoglauncher.h"
@@ -80,15 +82,20 @@ void ScalarSelector::update()
   // if directentry is allowed, and if prev is a number, 
   //  then we can put it back into the combobox...
   //
-/* xxx
+
   if (found || ok) {
-    _scalar->setCurrentText(prev);
+    int index;
+
+    index = _scalar->findText(prev);
+    if (index != -1) {
+      _scalar->setCurrentIndex(index);
+    }
   } else {
     _scalar->insertItem(0, "0");
-    _scalar->setCurrentText("0");
+    _scalar->setCurrentIndex(0);
     _editScalar->setEnabled(false);
   }
-*/
+
   blockSignals(false);
 }
 
@@ -103,7 +110,7 @@ void ScalarSelector::createNewScalar()
     double val = se->_value->text().toFloat(&ok);
 
     if (!ok) {
-// xxx      val = Equation::interpret(se->_value->text().toLatin1(), &ok);
+      val = Equation::interpret(se->_value->text().toLatin1(), &ok);
     }
 
     if (ok) {
@@ -170,7 +177,7 @@ void ScalarSelector::editScalar()
     double val = se->_value->text().toFloat(&ok);
 
     if (!ok) {
-// xxx      val = Equation::interpret(se->_value->text().toLatin1(), &ok);
+      val = Equation::interpret(se->_value->text().toLatin1(), &ok);
     }
 
     if (ok) {

@@ -24,10 +24,8 @@ VectorListView::VectorListView(QWidget *parent, const char *name)
   setSelectionMode(QAbstractItemView::ExtendedSelection);
 }
 
-
 VectorListView::~VectorListView() {
 }
-
 
 QMimeData *VectorListView::dragObject() {
 /*
@@ -50,11 +48,9 @@ QMimeData *VectorListView::dragObject() {
   return 0L;
 }
 
-
 void VectorListView::dragMoveEvent(QDragMoveEvent *e) {
 // xxx  e->accept(e->provides("application/x-kst-vector-list") && e->source() != this);
 }
-
 
 void VectorListView::dropEvent(QDropEvent *e) {
 /* xxx
@@ -81,7 +77,6 @@ void VectorListView::dropEvent(QDropEvent *e) {
 */
 }
 
-
 void VectorListView::startDrag() {
 /* xxx
   QDragObject *o = dragObject();
@@ -99,5 +94,4 @@ void VectorListView::startDrag() {
 */
 }
 
-// xxx #include "vectorlistview.moc"
 
