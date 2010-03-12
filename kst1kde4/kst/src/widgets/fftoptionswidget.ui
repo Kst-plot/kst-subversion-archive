@@ -32,7 +32,7 @@
         <number>0</number>
       </property>
       <item row="0" column="0">
-        <widget class="Q3GroupBox" name="GroupBoxFFTOptions">
+        <widget class="QGroupBox" name="GroupBoxFFTOptions">
           <property name="sizePolicy">
             <sizepolicy>
               <hsizetype>5</hsizetype>
