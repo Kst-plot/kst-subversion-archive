@@ -26,6 +26,10 @@ StringSelector::StringSelector(QWidget *parent) : QWidget(parent) {
   connect(this, SIGNAL(selectionChanged(const QString&)), this, SLOT(selectionWatcher(const QString&)));
 }
 
+StringSelector::~StringSelector()
+{
+}
+
 void StringSelector::allowNewStrings( bool allowed )
 {
   _newString->setEnabled(allowed);
@@ -33,7 +37,7 @@ void StringSelector::allowNewStrings( bool allowed )
 
 void StringSelector::update()
 {
-  /*if (_string->listBox()->isVisible()) {
+  /* xxx if (_string->listBox()->isVisible()) {
     QTimer::singleShot(250, this, SLOT(update()));
     return;
   }*/
@@ -60,10 +64,11 @@ void StringSelector::update()
   }
 	KST::stringList.lock().unlock();
     
-//  qHeapSort(strings);
+// xxx qHeapSort(strings);
   _string->insertItems(0, strings);
 
-/*  if (found) {
+/* xxx 
+  if (found) {
 		if (_string->currentText() != prev) {
 			_string->setCurrentText(prev);
 		}
@@ -71,7 +76,8 @@ void StringSelector::update()
 
 	if (!_string->currentText().isNull()) {
 		selectionWatcher(_string->currentText());
-	}*/
+	}
+*/
     
   blockSignals(false);
 }
@@ -101,7 +107,8 @@ void StringSelector::createNewString()
 
 void StringSelector::selectString()
 {
-  /*ComboBoxSelectionI *selection = new ComboBoxSelectionI(this, "string selector");
+/* xxx
+  ComboBoxSelectionI *selection = new ComboBoxSelectionI(this, "string selector");
   int i;
     
   selection->reset();
@@ -114,7 +121,8 @@ void StringSelector::selectString()
     _string->setCurrentText(selection->selected());   
   }
     
-  delete selection;*/
+  delete selection;
+*/
 }
 
 void StringSelector::editString()
@@ -160,7 +168,7 @@ void StringSelector::selectionWatcher( const QString & tag )
   QString label = "["+tag+"]";
   bool editable = false;
 
-  //emit selectionChangedLabel(label);
+// xxx emit selectionChangedLabel(label);
 
   KST::stringList.lock().readLock();
   p = *KST::stringList.findTag(tag);
@@ -177,7 +185,7 @@ void StringSelector::setSelection( const QString & tag )
   if (!tag.isEmpty()) {
     if (_string->currentText() != tag) {
       blockSignals(true);
-  //    _string->setCurrentText(tag);
+// xxx   _string->setCurrentText(tag);
       selectionWatcher(tag);
       blockSignals(false);
     }
