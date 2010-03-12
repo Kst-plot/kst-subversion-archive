@@ -76,8 +76,8 @@ void StringSelector::update()
 
 	if (!_string->currentText().isNull()) {
 		selectionWatcher(_string->currentText());
-	}
-*/
+	}*/
+
     
   blockSignals(false);
 }
@@ -121,8 +121,8 @@ void StringSelector::selectString()
     _string->setCurrentText(selection->selected());   
   }
     
-  delete selection;
-*/
+  delete selection;*/
+
 }
 
 void StringSelector::editString()
