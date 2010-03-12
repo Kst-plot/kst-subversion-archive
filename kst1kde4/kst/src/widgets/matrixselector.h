@@ -22,20 +22,24 @@ public:
   MatrixSelector(QWidget *parent = 0);
   virtual ~MatrixSelector(); 
 
-  void allowNewMatrices( bool allowed );
-  void update();
-  void createNewMatrix();
-  void selectMatrix();
-  void editMatrix();
-  void selectionWatcher( const QString & tag );
-  void setSelection( const QString & tag );
-  void setSelection( KstMatrixPtr s );
+  void    allowNewMatrices( bool allowed );
   QString selectedMatrix();
-  void allowDirectEntry( bool allowed );
+  void    update();
+  void    createNewMatrix();
+  void    selectionWatcher( const QString & tag );
+  void    setSelection( const QString & tag );
+  void    newMatrixCreated( KstMatrixPtr v );
+  void    setSelection( KstMatrixPtr v );
+  void    provideNoneMatrix( bool provide );
+  void    editMatrix();
+  void    setEdit(const QString& tag);
 
 Q_SIGNALS:
 
 private Q_SLOTS:
+
+private:
+  bool _provideNoneMatrix;
 };
  
 #endif

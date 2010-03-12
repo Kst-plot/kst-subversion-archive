@@ -8,21 +8,23 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
+#include "dialoglauncher.h"
 #include "kstdataobject.h"
+#include "kstmatrix.h"
 #include "matrixselector.h"
+
 MatrixSelector::MatrixSelector(QWidget *parent) : QWidget(parent) {
   setupUi(this);
-  update();
+
 // xxx  _newMatrix->setPixmap(BarIcon("kst_matrixnew"));
 // xxx  _editMatrix->setPixmap(BarIcon("kst_matrixedit"));
-// xxx  _provideNoneMatrix = false;
+
+  _provideNoneMatrix = false;
+
   update();
 
-// xxx  connect(_selectMatrix, SIGNAL(clicked()), this, SLOT(selectMatrix()));
-  connect(_newMatrix, SIGNAL(clicked()), this, SLOT(createNewMatrix()));
-  connect(_editMatrix, SIGNAL(clicked()), this, SLOT(editMatrix()));
   connect(_matrix, SIGNAL(activated(const QString&)), this, SIGNAL(selectionChanged(const QString&)));
-  connect(this, SIGNAL(selectionChanged(const QString&)), this, SLOT(selectionWatcher(const QString&)));
 }
 
 MatrixSelector::~MatrixSelector()
@@ -38,31 +40,33 @@ void MatrixSelector::allowNewMatrices( bool allowed )
 QString MatrixSelector::selectedMatrix()
 {
   KstMatrixPtr ptr = *KST::matrixList.findTag(_matrix->currentText());
-
-  if (ptr) {
-    return _matrix->currentText();
-  } else {
+  if (!ptr || (_provideNoneMatrix && _matrix->currentIndex() == 0)) {
     return QString::null;
+  } else {
+    return _matrix->currentText();
   }
 }
 
+
 void MatrixSelector::update()
 {
-/* xxx  if (_matrix->listBox()->isVisible()) {
+/* xxx
+  if (_matrix->listBox()->isVisible()) {
     QTimer::singleShot(250, this, SLOT(update()));
 
     return;
-  } */
-
+  }
+*/
   blockSignals(true);
 
   QString prev = _matrix->currentText();
   bool found = false;
+  int index;
 
   _matrix->clear();
-/* xxx  if (_provideNoneMatrix) {
-    _matrix->insertItem("<None>");
-  } */
+  if (_provideNoneMatrix) {
+    _matrix->insertItem(0, "<None>");
+  }
 
   KstMatrixList matrices = KST::matrixList.list();
 
@@ -72,7 +76,7 @@ void MatrixSelector::update()
     (*i)->readLock();
     QString tag = (*i)->tag().displayString();
     (*i)->unlock();
-// xxx    _matrix->insertItem(tag);
+    _matrix->addItem(tag);
     if (!found && tag == prev) {
       found = true;
     }
@@ -80,59 +84,61 @@ void MatrixSelector::update()
 
   KST::matrixList.lock().unlock();
   if (found) {
-// xxx    _matrix->setCurrentText(prev);
+    index = _matrix->findText(prev);
+    if (index != -1) {
+      _matrix->setCurrentIndex(index);
+    }
   }
 
   blockSignals(false);
 
-// xxx  setEdit(_matrix->currentText());
+  setEdit(_matrix->currentText());
 }
-
-
-
-
 
 void MatrixSelector::createNewMatrix()
 {
 // xxx  KstDialogs::self()->newMatrixDialog(this, SLOT(newMatrixCreated(KstMatrixPtr)), SLOT(setSelection(KstMatrixPtr)), SLOT(update()));
 }
 
-
 void MatrixSelector::selectionWatcher( const QString & tag )
 {
-  bool editable = false;
-
-  QString label = "["+tag+"]";
+  QString label = "[" + tag + "]";
 // xxx  emit selectionChangedLabel(label);
-  KST::matrixList.lock().readLock();
-  KstMatrixPtr p = *KST::matrixList.findTag(tag);
-  if (p && p->editable()) {
-    editable = true;
-  }
-  KST::matrixList.lock().unlock();
-  _editMatrix->setEnabled(editable);
+  setEdit(tag);
 }
-
 
 void MatrixSelector::setSelection( const QString & tag )
 {
-  if (!tag.isEmpty()) {
+  if (tag.isEmpty()) {
+    if (_provideNoneMatrix) {
+      blockSignals(true);
+      _matrix->setCurrentIndex(0);
+      blockSignals(false);
+      _editMatrix->setEnabled(false);
+    }
+    return;
+  } else {
+    int index;
+
     blockSignals(true);
-// xxx    _matrix->setCurrentText(tag);
-    selectionWatcher(tag);
+    index = _matrix->findText(tag);
+    if (index != -1) {
+      _matrix->setCurrentIndex(index);
+    }
     blockSignals(false);
+
+    setEdit(tag);
   }
 }
-/* xxx
+
 void MatrixSelector::newMatrixCreated( KstMatrixPtr v )
 {
   v->readLock();
   QString name = v->tagName();
   v->unlock();
   v = 0L; // deref
-  emit newMatrixCreated(name);
+// xxx  emit newMatrixCreated(name);
 }
-*/
 
 void MatrixSelector::setSelection( KstMatrixPtr v )
 {
@@ -141,7 +147,6 @@ void MatrixSelector::setSelection( KstMatrixPtr v )
   v->unlock();
 }
 
-/* xxx
 void MatrixSelector::provideNoneMatrix( bool provide )
 {
   if (provide != _provideNoneMatrix) {
@@ -149,18 +154,20 @@ void MatrixSelector::provideNoneMatrix( bool provide )
     update();
   }
 }
-*/
 
 void MatrixSelector::editMatrix()
 {
-  KST::matrixList.lock().readLock();
-  KstMatrixPtr mat = *KST::matrixList.findTag(_matrix->currentText());
-  KST::matrixList.lock().unlock();
   KstDataObjectPtr pro;
-  pro = 0L;
+  KstMatrixPtr mat;
+  
+  KST::matrixList.lock().readLock();
+  mat = *KST::matrixList.findTag(_matrix->currentText());
+  KST::matrixList.lock().unlock();
+
   if (mat) {
     pro = kst_cast<KstDataObject>(mat->provider());
   }
+
   if (pro) {
     pro->readLock();
     pro->showDialog(false);
@@ -170,11 +177,9 @@ void MatrixSelector::editMatrix()
   }
 }
 
-/* xxx
 void MatrixSelector::setEdit(const QString& tag)
 {
   KST::matrixList.lock().readLock();
   _editMatrix->setEnabled(KST::matrixList.findTag(tag) != KST::matrixList.end());
   KST::matrixList.lock().unlock();
 }
-*/

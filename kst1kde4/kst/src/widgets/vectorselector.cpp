@@ -8,7 +8,12 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
+#include "dialoglauncher.h"
 #include "kstdataobject.h"
+#include "kstvector.h"
+#include "kstrvector.h"
+#include "kstsvector.h"
 #include "vectorselector.h"
 
 VectorSelector::VectorSelector(QWidget *parent) : QWidget(parent) {
@@ -16,11 +21,9 @@ VectorSelector::VectorSelector(QWidget *parent) : QWidget(parent) {
   update();
 // xxx  _newVector->setPixmap(BarIcon("kst_vectornew"));
 // xxx  _editVector->setPixmap(BarIcon("kst_vectoredit"));
-// xxx  connect(_selectVector, SIGNAL(clicked()), this, SLOT(selectVector()));
-  connect(_newVector, SIGNAL(clicked()), this, SLOT(createNewVector()));
-  connect(_editVector, SIGNAL(clicked()), this, SLOT(editVector()));
+  _provideNoneVector = false;
+  update();
   connect(_vector, SIGNAL(activated(const QString&)), this, SIGNAL(selectionChanged(const QString&)));
-  connect(this, SIGNAL(selectionChanged(const QString&)), this, SLOT(selectionWatcher(const QString&)));
 }
 
 VectorSelector::~VectorSelector()
@@ -32,36 +35,35 @@ void VectorSelector::allowNewVectors( bool allowed )
   _newVector->setEnabled(allowed);
 }
 
-
 QString VectorSelector::selectedVector()
 {
-  /* xxx
   KstVectorPtr ptr = *KST::vectorList.findTag(_vector->currentText());
-  if (!ptr || (_provideNoneVector && _vector->currentItem() == 0)) {
+  if (!ptr || (_provideNoneVector && _vector->currentIndex() == 0)) {
     return QString::null;
   } else {
     return _vector->currentText();
-  } */
+  }
 }
-
 
 void VectorSelector::update()
 {
-  /* xxx if (_vector->listBox()->isVisible()) {
+/* xxx
+  if (_vector->listBox()->isVisible()) {
     QTimer::singleShot(250, this, SLOT(update()));
 
     return;
-  } */
-
+  }
+*/
   blockSignals(true);
 
   QString prev = _vector->currentText();
   bool found = false;
+  int index;
 
   _vector->clear();
-/* xxx   if (_provideNoneVector) {
-    _vector->insertItem(tr("<None>"));
-  } */
+  if (_provideNoneVector) {
+    _vector->insertItem(0, tr("<None>"));
+  }
 
   QStringList vectors;
 
@@ -81,55 +83,57 @@ void VectorSelector::update()
   KST::vectorList.lock().unlock();
 
 // xxx  qHeapSort(vectors);
-  _vector->insertItems(0,vectors);
-/* xxx  if (found) {
-    _vector->setCurrentText(prev);
-  }*/
+  _vector->addItems(vectors);
+  if (found) {
+    index = _vector->findText(prev);
+    if (index != -1) {
+      _vector->setCurrentIndex(index);
+    }
+  }
 
   blockSignals(false);
 
-// xxx  setEdit(_vector->currentText());
+  setEdit(_vector->currentText());
 }
-
 
 void VectorSelector::createNewVector()
 {
-  // xxx KstDialogs::self()->newVectorDialog(this, SLOT(newVectorCreated(KstVectorPtr)), SLOT(setSelection(KstVectorPtr)), SLOT(update()));
+/* xxx
+  KstDialogs::self()->newVectorDialog(this, SLOT(newVectorCreated(KstVectorPtr)), SLOT(setSelection(KstVectorPtr)), SLOT(update()));
+*/
 }
-
 
 void VectorSelector::selectionWatcher( const QString & tag )
-{   
-  KstVectorPtr p;
-  QString label = "["+tag+"]";
-  bool editable = false;
-
-// xxx emit selectionChangedLabel(label);
-
-  KST::vectorList.lock().readLock();
-  p = *KST::vectorList.findTag(tag);
-  if (p && p->editable()) {
-    editable = true;
-  }
-  KST::vectorList.lock().unlock();
-   
- _editVector->setEnabled(editable);
+{
+  QString label = "[" + tag + "]";
+// xxx  emit selectionChangedLabel(label);
+  setEdit(tag);
 }
-
 
 void VectorSelector::setSelection( const QString & tag )
 {
-  if (!tag.isEmpty()) {
-    if (_vector->currentText() != tag) {
+  if (tag.isEmpty()) {
+    if (_provideNoneVector) {
       blockSignals(true);
-// xxx   _string->setCurrentText(tag);
-      selectionWatcher(tag);
+      _vector->setCurrentIndex(0);
       blockSignals(false);
+
+      _editVector->setEnabled(false);
     }
+  } else {
+    int index;
+  
+    blockSignals(true);
+    index = _vector->findText(tag);
+    if (index != -1) {
+      _vector->setCurrentIndex(index);
+    }
+    blockSignals(false);
+
+    setEdit(tag);
   }
 }
 
-/* xxx
 void VectorSelector::newVectorCreated( KstVectorPtr v )
 {
   v->readLock();
@@ -138,14 +142,18 @@ void VectorSelector::newVectorCreated( KstVectorPtr v )
   v = 0L; // deref
 // xxx  emit newVectorCreated(name);
 }
-*/
 
 void VectorSelector::setSelection( KstVectorPtr v )
 {
-  setSelection(v->tagName());
+  if (v) {
+    v->readLock();
+    setSelection(v->tag().tagString());
+    v->unlock();
+  } else if (_provideNoneVector) {
+    setSelection(tr("<None>"));
+  }
 }
 
-/* xxx
 void VectorSelector::provideNoneVector( bool provide )
 {
   if (provide != _provideNoneVector) {
@@ -153,15 +161,15 @@ void VectorSelector::provideNoneVector( bool provide )
     update();
   }
 }
-*/
 
 void VectorSelector::editVector()
 {
+  KstDataObjectPtr pro;
+
   KST::vectorList.lock().readLock();
   KstVectorPtr vec = *KST::vectorList.findTag(_vector->currentText());
   KST::vectorList.lock().unlock();
-  KstDataObjectPtr pro;
-  pro = 0L;
+
   if (vec) {
     pro = kst_cast<KstDataObject>(vec->provider());
   }
@@ -174,18 +182,25 @@ void VectorSelector::editVector()
   }
 }
 
-/* xxx
 void VectorSelector::setEdit( const QString& tag )
 {
+  KstVectorPtr vec;
+  KstRVectorPtr rvp;
+  KstSVectorPtr svp;
+  KstDataObjectPtr pro;
+
   KST::vectorList.lock().readLock();
-  KstVectorPtr vec = *KST::vectorList.findTag(tag);
+  vec = *KST::vectorList.findTag(tag);
   KST::vectorList.lock().unlock();
-  KstRVectorPtr rvp = kst_cast<KstRVector>(vec);
-  KstSVectorPtr svp = kst_cast<KstSVector>(vec);
-  KstDataObjectPtr pro = 0L;
+
   if (vec) {
     pro = kst_cast<KstDataObject>(vec->provider());
   }
+
+  if (!pro) {
+    rvp = kst_cast<KstRVector>(vec);
+    svp = kst_cast<KstSVector>(vec);
+  }
+
   _editVector->setEnabled(rvp||svp||pro);
 }
-*/

@@ -22,20 +22,24 @@ public:
   VectorSelector(QWidget *parent = 0);
   virtual ~VectorSelector(); 
 
-  void allowNewVectors( bool allowed );
-  void update();
-  void createNewVector();
-  void selectVector();
-  void editVector();
-  void selectionWatcher( const QString & tag );
-  void setSelection( const QString & tag );
-  void setSelection( KstVectorPtr v );
+  void    allowNewVectors( bool allowed );
   QString selectedVector();
-  void allowDirectEntry( bool allowed );
+  void    update();
+  void    createNewVector();
+  void    selectionWatcher( const QString & tag );
+  void    setSelection( const QString & tag );
+  void    newVectorCreated( KstVectorPtr v );
+  void    setSelection( KstVectorPtr v );
+  void    provideNoneVector( bool provide );
+  void    editVector();
+  void    setEdit( const QString& tag );
 
 Q_SIGNALS:
 
 private Q_SLOTS:
+
+private:
+  bool _provideNoneVector;
 };
  
 #endif

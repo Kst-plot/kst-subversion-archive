@@ -13,12 +13,14 @@ set(kstwidgets_LIB_SRCS
     draggablelistview.cpp
     editmultiplewidget.cpp
     fftoptionswidget.cpp
+    matrixselector.cpp
     plotlistbox.cpp
     scalareditor.cpp
     scalarselector.cpp
     stringeditor.cpp
     stringselector.cpp
     vectorlistview.cpp
+    vectorselector.cpp
     kstcombobox.cpp)
 
 kde4_add_ui_files(kstwidgets_LIB_SRCS
