@@ -33,10 +33,10 @@ void StringSelector::allowNewStrings( bool allowed )
 
 void StringSelector::update()
 {
-  if (_string->listBox()->isVisible()) {
+  /*if (_string->listBox()->isVisible()) {
     QTimer::singleShot(250, this, SLOT(update()));
     return;
-  }
+  }*/
 
   blockSignals(true);
     
@@ -60,9 +60,10 @@ void StringSelector::update()
   }
 	KST::stringList.lock().unlock();
     
-  qHeapSort(strings);
-  _string->insertStringList(strings);
-  if (found) {
+//  qHeapSort(strings);
+  _string->insertItems(0, strings);
+
+/*  if (found) {
 		if (_string->currentText() != prev) {
 			_string->setCurrentText(prev);
 		}
@@ -70,22 +71,25 @@ void StringSelector::update()
 
 	if (!_string->currentText().isNull()) {
 		selectionWatcher(_string->currentText());
-	}
+	}*/
     
   blockSignals(false);
 }
 
 void StringSelector::createNewString()
 {
-  StringEditor *se = new StringEditor(this, "string editor");
+  StringEditor *se = new StringEditor(this);
+  se->setWindowTitle(tr("New String"));
+
   if (se) {
   	int rc = se->exec();
 	  if (rc == QDialog::Accepted) {
-		  KstStringPtr s = new KstString(KstObjectTag(se->_name->text(), KstObjectTag::globalTagContext), 0L, se->_value->text());
-  
+          KstStringPtr s;
+		  s = new KstString(KstObjectTag(se->_name->text(), KstObjectTag::globalTagContext), 0L, se->_value->text());
+
 		  s->setOrphan(true);
 		  s->setEditable(true);
-		  emit newStringCreated();
+//		  emit newStringCreated();
 		  update();
 		  setSelection(s);
 		  _editString->setEnabled(true);
@@ -97,7 +101,7 @@ void StringSelector::createNewString()
 
 void StringSelector::selectString()
 {
-  ComboBoxSelectionI *selection = new ComboBoxSelectionI(this, "string selector");
+  /*ComboBoxSelectionI *selection = new ComboBoxSelectionI(this, "string selector");
   int i;
     
   selection->reset();
@@ -110,12 +114,13 @@ void StringSelector::selectString()
     _string->setCurrentText(selection->selected());   
   }
     
-  delete selection;
+  delete selection;*/
 }
 
 void StringSelector::editString()
 {
-  StringEditor *se = new StringEditor(this, "string editor");
+  StringEditor *se = new StringEditor(this);
+  se->setWindowTitle(tr("Edit string"));
   if (se ) {    
     KstStringPtr pold = *KST::stringList.findTag(_string->currentText());
     if (pold && pold->editable()) { 
@@ -138,7 +143,7 @@ void StringSelector::editString()
   
 			  p->setOrphan(true);
 			  p->setEditable(true);
-			  emit newStringCreated();
+			  //emit newStringCreated();
 			  update();
 			  setSelection(p);
 			  _editString->setEnabled(true);
@@ -155,7 +160,7 @@ void StringSelector::selectionWatcher( const QString & tag )
   QString label = "["+tag+"]";
   bool editable = false;
 
-  emit selectionChangedLabel(label);
+  //emit selectionChangedLabel(label);
 
   KST::stringList.lock().readLock();
   p = *KST::stringList.findTag(tag);
@@ -172,7 +177,7 @@ void StringSelector::setSelection( const QString & tag )
   if (!tag.isEmpty()) {
     if (_string->currentText() != tag) {
       blockSignals(true);
-      _string->setCurrentText(tag);
+  //    _string->setCurrentText(tag);
       selectionWatcher(tag);
       blockSignals(false);
     }
