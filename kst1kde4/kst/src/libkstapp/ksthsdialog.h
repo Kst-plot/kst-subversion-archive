@@ -45,7 +45,9 @@ class KST_EXPORT KstHsDialog : public KstDataDialog {
     void setVector(const QString& name);
 
   private:
-    static QPointer<KstHsDialogI> _inst;
+    static QPointer<KstHsDialog> _inst;
+    Ui::HistogramDialogWidget *_w;
+
     // the following are for the multiple edit mode
     bool _vectorDirty;
     bool _minDirty;
@@ -74,7 +76,6 @@ class KST_EXPORT KstHsDialog : public KstDataDialog {
     void fillFieldsForEdit();
     void fillFieldsForNew();
     void cleanup();
-    Ui::HistogramDialogWidget *_w;
 };
 
 #endif

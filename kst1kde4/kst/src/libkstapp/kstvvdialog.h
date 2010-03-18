@@ -21,12 +21,12 @@
 #include "kstdatadialog.h"
 #include "kstvectorview.h"
 #include "kst_export.h"
-#include "ui_vectordialogwidget.h"
+#include "ui_vectorviewdialogwidget.h"
 
 class KST_EXPORT KstVvDialog : public KstDataDialog {
   Q_OBJECT
   public:
-    KstVvDialogI(QWidget* parent = 0, const char* name = 0, bool modal = false, Qt::WFlags fl = 0 );
+    KstVvDialog(QWidget* parent = 0, const char* name = 0, bool modal = false, Qt::WFlags fl = 0 );
     virtual ~KstVvDialog();
     static KstVvDialog *globalInstance();
 
@@ -46,6 +46,7 @@ class KST_EXPORT KstVvDialog : public KstDataDialog {
 
   private:
     static QPointer<KstVvDialog> _inst;
+    Ui::VectorViewDialogWidget *_w;
 
     // the following are for the multiple edit mode
     bool _xVectorDirty;
@@ -80,7 +81,6 @@ class KST_EXPORT KstVvDialog : public KstDataDialog {
     void fillFieldsForEdit();
     void fillFieldsForNew();
     void cleanup();
-    Ui::VectorViewDialogWidget *_w;
 };
 
 #endif

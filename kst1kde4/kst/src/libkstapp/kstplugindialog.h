@@ -1,5 +1,5 @@
 /***************************************************************************
-                      kstplugindialog_i.h  -  Part of KST
+                      kstplugindialog.h  -  Part of KST
                              -------------------
     begin                : Mon May 12 2003
     copyright            : (C) 2003 The University of Toronto
@@ -18,24 +18,18 @@
 #ifndef KSTPLUGINDIALOGI_H
 #define KSTPLUGINDIALOGI_H
 
-#include "ui_kstdatadialog.h"
+#include "kstdatadialog.h"
 #include "kstcplugin.h"
 #include "kst_export.h"
+#include "ui_plugindialogwidget.h"
 
-class PluginDialogWidget;
-
-class KST_EXPORT KstPluginDialogI : public KstDataDialog {
+class KST_EXPORT KstPluginDialog : public KstDataDialog {
   Q_OBJECT
   public:
-    KstPluginDialogI(QWidget* parent = 0, const char* name = 0, bool modal = false, WFlags fl = 0);
-    virtual ~KstPluginDialogI();
-    static KstPluginDialogI *globalInstance();
+    KstPluginDialog(QWidget* parent = 0, const char* name = 0, bool modal = false, Qt::WFlags fl = 0);
+    virtual ~KstPluginDialog();
+    static KstPluginDialog *globalInstance();
     static const QString& plugin_defaultTag;
-
-  protected:
-    QString objectName() { return tr("Plugin"); }
-    QString editTitle();
-    QString newTitle();
 
   public slots:
     void updateForm();
@@ -53,30 +47,30 @@ class KST_EXPORT KstPluginDialogI : public KstDataDialog {
     void updateStringTooltip(const QString& n);
 
   protected:
-    QStringList _pluginList;
-
+    void fillFieldsForEdit();
+    void fillFieldsForNew();
+    QString objectName() { return tr("Plugin"); }
+    QString editTitle();
+    QString newTitle();
     void fillVectorScalarCombos(QExplicitlySharedDataPointer<Plugin> pPtr);
     virtual bool saveInputs(KstCPluginPtr plugin, QExplicitlySharedDataPointer<Plugin> p);
     bool saveOutputs(KstCPluginPtr plugin, QExplicitlySharedDataPointer<Plugin> p);
     virtual void generateEntries(bool input, int& cnt, QWidget *parent,
-        QGridLayout *grid, const QValueList<Plugin::Data::IOValue>& table);
+        QGridLayout *grid, const QLinkedList<Plugin::Data::IOValue>& table);
+    QMap<QString,QString> cacheInputs(const QLinkedList<Plugin::Data::IOValue>& table);
+    void restoreInputs(const QLinkedList<Plugin::Data::IOValue>& table, const QMap<QString,QString>& v);
 
-    QMap<QString,QString> cacheInputs(const QValueList<Plugin::Data::IOValue>& table);
-    void restoreInputs(const QValueList<Plugin::Data::IOValue>& table, const QMap<QString,QString>& v);
+    QStringList _pluginList;
 
     // layout items
     QGridLayout* _pluginInfoGrid;
     QGridLayout* _pluginInputOutputGrid;
-    QValueList<QWidget*> _pluginWidgets;
+    QLinkedList<QWidget*> _pluginWidgets;
 
   private:
     QString _pluginName;
-    static QPointer<KstPluginDialogI> _inst;
-
-  protected:
-    void fillFieldsForEdit();
-    void fillFieldsForNew();
-    PluginDialogWidget *_w;
+    static QPointer<KstPluginDialog> _inst;
+    Ui::PluginDialogWidget *_w;
 };
 
 #endif

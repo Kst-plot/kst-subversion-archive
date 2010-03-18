@@ -50,11 +50,28 @@ class KST_EXPORT KstMatrixDialog : public KstDataDialog {
   signals:
     void matrixCreated(KstMatrixPtr v);
 
-  private:
-    QPointer<KCompletion> _fieldCompletion;
-    QPointer<KstDataSourceConfigWidget> _configWidget;
+  private slots:
+    void updateEnables();
+    void xStartCountFromEndClicked();
+    void xNumStepsReadToEndClicked();
+    void yStartCountFromEndClicked();
+    void yNumStepsReadToEndClicked();
+    void configureSource();
+    void enableSource();
+    void markSourceAndSave();
+    void testURL();
 
-    static QPointer<KstMatrixDialogI> _inst;
+    void setXStartCountFromEndDirty();
+    void setYStartCountFromEndDirty();
+    void setXNumStepsReadToEndDirty();
+    void setYNumStepsReadToEndDirty();
+    void setDoSkipDirty();
+    void setDoAveDirty();
+
+  protected:
+    KstObjectPtr findObject(const QString& name);
+
+  private:
     bool checkParameters(bool ok1, bool ok2, bool ok3, bool ok4, double xStep, double yStep);
 
     bool new_ISMatrix();
@@ -68,6 +85,16 @@ class KST_EXPORT KstMatrixDialog : public KstDataDialog {
 
     void fillFieldsForRMatrixEdit();
     void fillFieldsForSMatrixEdit();
+    void fillFieldsForEdit();
+    void fillFieldsForNew();
+    void cleanup();
+    bool editSingleObject(KstMatrixPtr mxPtr);
+
+    QPointer<KCompletion> _fieldCompletion;
+    QPointer<KstDataSourceConfigWidget> _configWidget;
+
+    static QPointer<KstMatrixDialog> _inst;
+    Ui::MatrixDialogWidget *_w;
 
     bool _inTest; // testing URL for datasource
 
@@ -94,35 +121,6 @@ class KST_EXPORT KstMatrixDialog : public KstDataDialog {
     bool _doSkipDirty : 1;
     bool _skipDirty : 1;
     bool _doAveDirty : 1;
-
-    bool editSingleObject(KstMatrixPtr mxPtr);
-
-  private slots:
-    void updateEnables();
-    void xStartCountFromEndClicked();
-    void xNumStepsReadToEndClicked();
-    void yStartCountFromEndClicked();
-    void yNumStepsReadToEndClicked();
-    void configureSource();
-    void enableSource();
-    void markSourceAndSave();
-    void testURL();
-
-    void setXStartCountFromEndDirty();
-    void setYStartCountFromEndDirty();
-    void setXNumStepsReadToEndDirty();
-    void setYNumStepsReadToEndDirty();
-    void setDoSkipDirty();
-    void setDoAveDirty();
-
-  protected:
-    KstObjectPtr findObject(const QString& name);
-
-  private:
-    void fillFieldsForEdit();
-    void fillFieldsForNew();
-    void cleanup();
-    Ui::MatrixDialogWidget *_w;
 };
 
 #endif

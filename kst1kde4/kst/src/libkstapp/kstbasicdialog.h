@@ -1,5 +1,5 @@
 /***************************************************************************
-                      kstbasicdialog_i.h  -  Part of KST
+                      kstbasicdialog.h  -  Part of KST
                              -------------------
     begin                : 09/15/06
     copyright            : (C) 2006 The University of Toronto
@@ -18,29 +18,25 @@
 #ifndef KSTBASICDIALOGI_H
 #define KSTBASICDIALOGI_H
 
+#include <QLinkedList>
 #include <QPointer>
 
 #include "kst_export.h"
-#include "ui_kstdatadialog.h"
+#include "kstdatadialog.h"
 #include "kstbasicplugin.h"
+#include "ui_basicdialogwidget.h"
 
 class QLineEdit;
 class VectorSelector;
 class ScalarSelector;
 class StringSelector;
 
-class BasicDialogWidget;
-
-class KST_EXPORT KstBasicDialogI : public KstDataDialog {
+class KST_EXPORT KstBasicDialog : public KstDataDialog {
   Q_OBJECT
   public:
-    KstBasicDialogI(QWidget* parent = 0, const char* name = 0, bool modal = false, WFlags fl = 0);
-    virtual ~KstBasicDialogI();
-    static KstBasicDialogI *globalInstance();
-
-  protected:
-    QString editTitle();
-    QString newTitle();
+    KstBasicDialog(QWidget* parent = 0, const char* name = 0, bool modal = false, Qt::WFlags fl = 0);
+    virtual ~KstBasicDialog();
+    static KstBasicDialog *globalInstance();
 
   public slots:
     void updateForm();
@@ -53,6 +49,9 @@ class KST_EXPORT KstBasicDialogI : public KstDataDialog {
   protected:
     virtual void fillFieldsForEdit();
     virtual void fillFieldsForNew();
+
+    QString editTitle();
+    QString newTitle();
 
   private slots:
     void init();
@@ -72,14 +71,14 @@ class KST_EXPORT KstBasicDialogI : public KstDataDialog {
     QLineEdit *output(const QString &name) const;
 
     static const QString& defaultTag;
-    static QPointer<KstBasicDialogI> _inst;
+    static QPointer<KstBasicDialog> _inst;
 
     QString _pluginName;
-    BasicDialogWidget *_w;
+    Ui::BasicDialogWidget *_w;
 
     // layout items
     QGridLayout *_grid;
-    QValueList<QWidget*> _widgets;
+    QLinkedList<QWidget*> _widgets;
 };
 
 #endif

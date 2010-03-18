@@ -1,5 +1,5 @@
 /***************************************************************************
-                     kstplugindialog_I.h  -  Part of KST
+                     kstplugindialog.h  -  Part of KST
                              -------------------
     begin                : Mon May 12 2003
     copyright            : (C) 2003 The University of Toronto
@@ -17,7 +17,6 @@
 
 #include <assert.h>
 
-// include files for Qt
 #include <qcombobox.h>
 #include <qframe.h>
 #include <qgroupbox.h>
@@ -31,12 +30,10 @@
 #include <qvbox.h>
 #include <qwhatsthis.h>
 
-// include files for KDE
 #include <kcolorbutton.h>
 #include <klocale.h>
 #include <kmessagebox.h>
 
-// application specific includes
 #include "curveappearancewidget.h"
 #include "kst.h"
 #include "kstplugindialog_i.h"
@@ -49,21 +46,23 @@
 #include "stringselector.h"
 #include "vectorselector.h"
 
-const QString& KstPluginDialogI::plugin_defaultTag = KGlobal::staticQString("<Auto Name>");
+const QString& KstPluginDialog::plugin_defaultTag = KGlobal::staticQString("<Auto Name>");
 
-QPointer<KstPluginDialogI> KstPluginDialogI::_inst;
+QPointer<KstPluginDialog> KstPluginDialog::_inst;
 
-KstPluginDialogI *KstPluginDialogI::globalInstance() {
+KstPluginDialog *KstPluginDialog::globalInstance() {
   if (!_inst) {
-    _inst = new KstPluginDialogI(KstApp::inst());
+    _inst = new KstPluginDialog(KstApp::inst());
   }
   return _inst;
 }
 
 
-KstPluginDialogI::KstPluginDialogI(QWidget* parent, const char* name, bool modal, WFlags fl)
+KstPluginDialog::KstPluginDialog(QWidget* parent, const char* name, bool modal, Qt::WFlags fl)
 : KstDataDialog(parent, name, modal, fl) {
   _w = new PluginDialogWidget(_contents);
+  _w>setupUi(this);
+
   setMultiple(false);
   connect(_w->PluginCombo, SIGNAL(highlighted(int)), this, SLOT(wasModifiedApply()));
   connect(_w->PluginCombo, SIGNAL(activated(int)), this, SLOT(pluginChanged(int)));
@@ -76,21 +75,21 @@ KstPluginDialogI::KstPluginDialogI(QWidget* parent, const char* name, bool modal
 }
 
 
-KstPluginDialogI::~KstPluginDialogI() {
+KstPluginDialog::~KstPluginDialog() {
 }
 
 
-QString KstPluginDialogI::editTitle() {
+QString KstPluginDialog::editTitle() {
   return i18n("Edit Plugin");
 }
 
 
-QString KstPluginDialogI::newTitle() {
+QString KstPluginDialog::newTitle() {
   return i18n("New Plugin");
 }
 
 
-void KstPluginDialogI::updatePluginList() {
+void KstPluginDialog::updatePluginList() {
   PluginCollection *pc = PluginCollection::self();
   QString previous = _pluginList[_w->PluginCombo->currentItem()];
   int newFocus = -1;
@@ -129,7 +128,7 @@ void KstPluginDialogI::updatePluginList() {
 }
 
 
-void KstPluginDialogI::updateForm() {
+void KstPluginDialog::updateForm() {
   QExplicitlySharedDataPointer<Plugin> plugin = PluginCollection::self()->plugin(_pluginList[_w->PluginCombo->currentItem()]);
   if (plugin) {
     const QValueList<Plugin::Data::IOValue>& itable = plugin->data()._inputs;
@@ -163,7 +162,7 @@ void KstPluginDialogI::updateForm() {
 }
 
 
-void KstPluginDialogI::fillFieldsForEdit() {
+void KstPluginDialog::fillFieldsForEdit() {
   KstCPluginPtr pp = kst_cast<KstCPlugin>(_dp);
   if (!pp) {
     return;
@@ -193,7 +192,7 @@ void KstPluginDialogI::fillFieldsForEdit() {
 }
 
 
-void KstPluginDialogI::fillFieldsForNew() {
+void KstPluginDialog::fillFieldsForNew() {
   updatePluginList();
   int i = _pluginList.findIndex(_pluginName);
   _w->PluginCombo->setCurrentItem(i);
@@ -202,7 +201,7 @@ void KstPluginDialogI::fillFieldsForNew() {
 }
 
 
-void KstPluginDialogI::fillVectorScalarCombos(QExplicitlySharedDataPointer<Plugin> plugin) {
+void KstPluginDialog::fillVectorScalarCombos(QExplicitlySharedDataPointer<Plugin> plugin) {
   bool DPvalid = false;
   KstCPluginPtr pp = kst_cast<KstCPlugin>(_dp);
 
@@ -300,19 +299,19 @@ void KstPluginDialogI::fillVectorScalarCombos(QExplicitlySharedDataPointer<Plugi
 }
 
 
-void KstPluginDialogI::update() {
+void KstPluginDialog::update() {
   updatePluginList();
 }
 
 
-void KstPluginDialogI::fixupLayout() {
+void KstPluginDialog::fixupLayout() {
   adjustSize();
   resize(650, minimumSizeHint().height());
   setFixedHeight(height());
 }
 
 
-QMap<QString,QString> KstPluginDialogI::cacheInputs(const QValueList<Plugin::Data::IOValue>& table) {
+QMap<QString,QString> KstPluginDialog::cacheInputs(const QValueList<Plugin::Data::IOValue>& table) {
   QMap<QString,QString> rc;
   for (QValueList<Plugin::Data::IOValue>::ConstIterator it = table.begin(); it != table.end(); ++it) {
     if ((*it)._type == Plugin::Data::IOValue::TableType) {
@@ -354,7 +353,7 @@ QMap<QString,QString> KstPluginDialogI::cacheInputs(const QValueList<Plugin::Dat
 }
 
 
-void KstPluginDialogI::restoreInputs(const QValueList<Plugin::Data::IOValue>& table, const QMap<QString,QString>& v) {
+void KstPluginDialog::restoreInputs(const QValueList<Plugin::Data::IOValue>& table, const QMap<QString,QString>& v) {
   for (QValueList<Plugin::Data::IOValue>::ConstIterator it = table.begin(); it != table.end(); ++it) {
     if (!v.contains((*it)._name)) {
       continue;
@@ -396,7 +395,7 @@ void KstPluginDialogI::restoreInputs(const QValueList<Plugin::Data::IOValue>& ta
 }
 
 
-bool KstPluginDialogI::saveInputs(KstCPluginPtr plugin, QExplicitlySharedDataPointer<Plugin> p) {
+bool KstPluginDialog::saveInputs(KstCPluginPtr plugin, QExplicitlySharedDataPointer<Plugin> p) {
   bool rc = true;
 
   const QValueList<Plugin::Data::IOValue>& itable = p->data()._inputs;
@@ -458,7 +457,7 @@ bool KstPluginDialogI::saveInputs(KstCPluginPtr plugin, QExplicitlySharedDataPoi
 }
 
 
-bool KstPluginDialogI::saveOutputs(KstCPluginPtr plugin, QExplicitlySharedDataPointer<Plugin> p) {
+bool KstPluginDialog::saveOutputs(KstCPluginPtr plugin, QExplicitlySharedDataPointer<Plugin> p) {
   const QValueList<Plugin::Data::IOValue>& otable = p->data()._outputs;
 
   for (QValueList<Plugin::Data::IOValue>::ConstIterator it = otable.begin(); it != otable.end(); ++it) {
@@ -558,7 +557,7 @@ bool KstPluginDialogI::saveOutputs(KstCPluginPtr plugin, QExplicitlySharedDataPo
 }
 
 
-bool KstPluginDialogI::newObject() {
+bool KstPluginDialog::newObject() {
   QString tagName = _tagName->text();
 
   if (tagName != plugin_defaultTag && KstData::self()->dataTagNameNotUnique(tagName, true, this)) {
@@ -611,7 +610,7 @@ bool KstPluginDialogI::newObject() {
 }
 
 
-bool KstPluginDialogI::editObject() {
+bool KstPluginDialog::editObject() {
   KstCPluginPtr pp = kst_cast<KstCPlugin>(_dp);
   if (!pp) { // something is dreadfully wrong - this should never happen
     return false;
@@ -669,7 +668,7 @@ bool KstPluginDialogI::editObject() {
 }
 
 
-void KstPluginDialogI::showNew(const QString &field) {
+void KstPluginDialog::showNew(const QString &field) {
   //Call init every time on showNew, because the field might equal propertyString()...
   _pluginName = field;
   _newDialog = true;
@@ -678,7 +677,7 @@ void KstPluginDialogI::showNew(const QString &field) {
 }
 
 
-void KstPluginDialogI::generateEntries(bool input, int& cnt, QWidget *parent, QGridLayout *grid, const QValueList<Plugin::Data::IOValue>& table) {
+void KstPluginDialog::generateEntries(bool input, int& cnt, QWidget *parent, QGridLayout *grid, const QValueList<Plugin::Data::IOValue>& table) {
   QString scalarLabelTemplate, vectorLabelTemplate, stringLabelTemplate;
 
   if (input) {
@@ -800,8 +799,7 @@ void KstPluginDialogI::generateEntries(bool input, int& cnt, QWidget *parent, QG
 }
 
 
-void KstPluginDialogI::pluginChanged(int idx) {
-
+void KstPluginDialog::pluginChanged(int idx) {
   // find all children and delete them and the grids
   while (!_pluginWidgets.isEmpty())
   {
@@ -877,15 +875,15 @@ void KstPluginDialogI::pluginChanged(int idx) {
 }
 
 
-void KstPluginDialogI::showPluginManager() {
-  KstPluginManagerI *pm = new KstPluginManagerI(this, "Plugin Manager");
+void KstPluginDialog::showPluginManager() {
+  KstPluginManager *pm = new KstPluginManager(this, "Plugin Manager");
   pm->exec();
   delete pm;
   updatePluginList();
 }
 
 
-void KstPluginDialogI::updateScalarTooltip(const QString& n) {
+void KstPluginDialog::updateScalarTooltip(const QString& n) {
   KstScalarPtr s = *KST::scalarList.findTag(n);
   QWidget *w = const_cast<QWidget*>(static_cast<const QWidget*>(sender()));
   if (s) {
@@ -899,7 +897,7 @@ void KstPluginDialogI::updateScalarTooltip(const QString& n) {
 }
 
 
-void KstPluginDialogI::updateStringTooltip(const QString& n) {
+void KstPluginDialog::updateStringTooltip(const QString& n) {
   KstStringPtr s = *KST::stringList.findTag(n);
   QWidget *w = const_cast<QWidget*>(static_cast<const QWidget*>(sender()));
   if (s) {
@@ -912,4 +910,4 @@ void KstPluginDialogI::updateStringTooltip(const QString& n) {
   }
 }
 
-#include "kstplugindialog_i.moc"
+#include "kstplugindialog.moc"

@@ -1,5 +1,5 @@
 /***************************************************************************
-                       kstpsddialog_i.cpp  -  Part of KST
+                       kstpsddialog.cpp  -  Part of KST
                              -------------------
     begin                :
     copyright            : (C) 2003 The University of Toronto
@@ -16,20 +16,17 @@
  *                                                                         *
  ***************************************************************************/
 
-// include files for Qt
 #include <qcheckbox.h>
 #include <qlineedit.h>
+#include <QMessageBox>
 #include <qlistbox.h>
 #include <qspinbox.h>
 #include <qvbox.h>
 
-// include files for KDE
 #include <kcombobox.h>
 #include <knuminput.h>
-#include <kmessagebox.h>
 #include "ksdebug.h"
 
-// application specific inclues
 #include "fftoptionswidget.h"
 #include "curveappearancewidget.h"
 #include "curveplacementwidget.h"
@@ -45,21 +42,23 @@
 #include "psddialogwidget.h"
 #include "vectorselector.h"
 
-const QString& KstPsdDialogI::defaultTag = KGlobal::staticQString("<Auto Name>");
+const QString& KstPsdDialog::defaultTag = KGlobal::staticQString("<Auto Name>");
 
-QPointer<KstPsdDialogI> KstPsdDialogI::_inst = 0L;
+QPointer<KstPsdDialog> KstPsdDialogI::_inst = 0L;
 
-KstPsdDialogI *KstPsdDialogI::globalInstance() {
+KstPsdDialog *KstPsdDialog::globalInstance() {
   if (!_inst) {
-    _inst = new KstPsdDialogI(KstApp::inst());
+    _inst = new KstPsdDialog(KstApp::inst());
   }
   return _inst;
 }
 
 
-KstPsdDialogI::KstPsdDialogI(QWidget* parent, const char* name, bool modal, WFlags fl)
+KstPsdDialog::KstPsdDialog(QWidget* parent, const char* name, bool modal, Qt::WFlags fl)
 : KstDataDialog(parent, name, modal, fl) {
   _w = new PSDDialogWidget(_contents);
+  _w->setupUi(this);
+
   setMultiple(true);
   connect(_w->_vector, SIGNAL(newVectorCreated(const QString&)), this, SIGNAL(modified()));
 
@@ -89,16 +88,16 @@ KstPsdDialogI::KstPsdDialogI(QWidget* parent, const char* name, bool modal, WFla
 }
 
 
-KstPsdDialogI::~KstPsdDialogI() {
+KstPsdDialog::~KstPsdDialog() {
 }
 
 
-void KstPsdDialogI::updateWindow() {
+void KstPsdDialog::updateWindow() {
   _w->_curvePlacement->update();
 }
 
 
-void KstPsdDialogI::fillFieldsForEdit() {
+void KstPsdDialog::fillFieldsForEdit() {
   KstPSDPtr pp = kst_cast<KstPSD>(_dp);
   if (!pp) {
     return; // shouldn't be needed
@@ -139,7 +138,7 @@ void KstPsdDialogI::fillFieldsForEdit() {
 }
 
 
-void KstPsdDialogI::fillFieldsForNew() {
+void KstPsdDialog::fillFieldsForNew() {
   _tagName->setText(defaultTag);
   _legendText->setText(defaultTag);
   _legendText->show();
@@ -160,15 +159,16 @@ void KstPsdDialogI::fillFieldsForNew() {
 }
 
 
-void KstPsdDialogI::update() {
+void KstPsdDialog::update() {
   _w->_curvePlacement->update();
   _w->_vector->update();
 }
 
 
-/* returns true if succesful */
-bool KstPsdDialogI::newObject() {
+bool KstPsdDialog::newObject() {
   QString tag_name = _tagName->text();
+  bool retVal = false;
+
   if (tag_name == defaultTag) {
     tag_name = KST::suggestPSDName(KstObjectTag::fromString(_w->_vector->selectedVector()));
   }
@@ -180,103 +180,101 @@ bool KstPsdDialogI::newObject() {
   }
 
   if (_w->_vector->selectedVector().isEmpty()) {
-    KMessageBox::sorry(this, i18n("New spectrum not made: define vectors first."));
+    QMessageBox::sorry(this, i18n("Kst"), i18n("New spectrum not made: define vectors first."));
     return false;
   }
 
   KST::vectorList.lock().readLock();
   KstVectorPtr p = *KST::vectorList.findTag(_w->_vector->selectedVector());
   KST::vectorList.lock().unlock();
-  if (!p) {
-    kstdFatal() << "Bug in kst: the vector field (spectrum) refers to "
-                << "a non existant vector...." << endl;
-  }
 
-  // create the psd curve
-  if (!_w->_kstFFTOptions->checkValues()) {
-    return false;
-  } else {
-    p->readLock();
-    KstPSDPtr psd = new KstPSD(tag_name, p,
-                            _w->_kstFFTOptions->SampRate->text().toDouble(),
-                            _w->_kstFFTOptions->Interleaved->isChecked(),
-                            _w->_kstFFTOptions->FFTLen->text().toInt(),
-                            _w->_kstFFTOptions->Apodize->isChecked(),
-                            _w->_kstFFTOptions->RemoveMean->isChecked(),
-                            _w->_kstFFTOptions->VectorUnits->text(),
-                            _w->_kstFFTOptions->RateUnits->text(),
-                            ApodizeFunction(_w->_kstFFTOptions->ApodizeFxn->currentItem()),
-                            _w->_kstFFTOptions->Sigma->value(),
-                            PSDType(_w->_kstFFTOptions->Output->currentItem()));
-    psd->setInterpolateHoles(_w->_kstFFTOptions->InterpolateHoles->isChecked());
-    p->unlock();
-
-    QColor color = KstApp::inst()->chooseColorDlg()->getColorForCurve(psd->vX(), psd->vY());
-    if (!color.isValid()) {
-      color = _w->_curveAppearance->color();
-    }
-    KstVCurvePtr vc = new KstVCurve(KST::suggestCurveName(psd->tag(),true), psd->vX(), psd->vY(), 0L, 0L, 0L, 0L, color);
-    vc->setHasPoints(_w->_curveAppearance->showPoints());
-    vc->setHasLines(_w->_curveAppearance->showLines());
-    vc->setHasBars(_w->_curveAppearance->showBars());
-    vc->setPointStyle(_w->_curveAppearance->pointType());
-    vc->setLineWidth(_w->_curveAppearance->lineWidth());
-    vc->setLineStyle(_w->_curveAppearance->lineStyle());
-    vc->setBarStyle(_w->_curveAppearance->barStyle());
-    vc->setPointDensity(_w->_curveAppearance->pointDensity());
-
-    QString legend_text = _legendText->text();
-    if (legend_text == defaultTag) {
-      vc->setLegendText(QString::null);
-    } else {
-      vc->setLegendText(legend_text);
-    }
-
-    Kst2DPlotPtr plot;
-    KstViewWindow *w = dynamic_cast<KstViewWindow*>(KstApp::inst()->findWindow(_w->_curvePlacement->_plotWindow->currentText()));
-    if (!w) {
-      QString n = KstApp::inst()->newWindow(KST::suggestWinName());
-      w = static_cast<KstViewWindow*>(KstApp::inst()->findWindow(n));
-    }
-    if (w) {
-      if (_w->_curvePlacement->existingPlot()) {
-        // assign curve to plot
-        plot = kst_cast<Kst2DPlot>(w->view()->findChild(_w->_curvePlacement->plotName()));
-        if (plot) {
-          plot->addCurve(vc.data());
+  if (_w->_kstFFTOptions->checkValues()) {
+    if (p) {
+      p->readLock();
+      KstPSDPtr psd = new KstPSD(tag_name, p,
+                              _w->_kstFFTOptions->SampRate->text().toDouble(),
+                              _w->_kstFFTOptions->Interleaved->isChecked(),
+                              _w->_kstFFTOptions->FFTLen->text().toInt(),
+                              _w->_kstFFTOptions->Apodize->isChecked(),
+                              _w->_kstFFTOptions->RemoveMean->isChecked(),
+                              _w->_kstFFTOptions->VectorUnits->text(),
+                              _w->_kstFFTOptions->RateUnits->text(),
+                              ApodizeFunction(_w->_kstFFTOptions->ApodizeFxn->currentItem()),
+                              _w->_kstFFTOptions->Sigma->value(),
+                              PSDType(_w->_kstFFTOptions->Output->currentItem()));
+      psd->setInterpolateHoles(_w->_kstFFTOptions->InterpolateHoles->isChecked());
+      p->unlock();
+  
+      QColor color = KstApp::inst()->chooseColorDlg()->getColorForCurve(psd->vX(), psd->vY());
+      if (!color.isValid()) {
+        color = _w->_curveAppearance->color();
+      }
+      KstVCurvePtr vc = new KstVCurve(KST::suggestCurveName(psd->tag(),true), psd->vX(), psd->vY(), 0L, 0L, 0L, 0L, color);
+      vc->setHasPoints(_w->_curveAppearance->showPoints());
+      vc->setHasLines(_w->_curveAppearance->showLines());
+      vc->setHasBars(_w->_curveAppearance->showBars());
+      vc->setPointStyle(_w->_curveAppearance->pointType());
+      vc->setLineWidth(_w->_curveAppearance->lineWidth());
+      vc->setLineStyle(_w->_curveAppearance->lineStyle());
+      vc->setBarStyle(_w->_curveAppearance->barStyle());
+      vc->setPointDensity(_w->_curveAppearance->pointDensity());
+  
+      QString legend_text = _legendText->text();
+      if (legend_text == defaultTag) {
+        vc->setLegendText(QString::null);
+      } else {
+        vc->setLegendText(legend_text);
+      }
+  
+      Kst2DPlotPtr plot;
+      KstViewWindow *w = dynamic_cast<KstViewWindow*>(KstApp::inst()->findWindow(_w->_curvePlacement->_plotWindow->currentText()));
+      if (!w) {
+        QString n = KstApp::inst()->newWindow(KST::suggestWinName());
+        w = static_cast<KstViewWindow*>(KstApp::inst()->findWindow(n));
+      }
+      if (w) {
+        if (_w->_curvePlacement->existingPlot()) {
+          // assign curve to plot
+          plot = kst_cast<Kst2DPlot>(w->view()->findChild(_w->_curvePlacement->plotName()));
+          if (plot) {
+            plot->addCurve(vc.data());
+          }
+        }
+  
+        if (_w->_curvePlacement->newPlot()) {
+          // assign curve to plot
+          QString name = w->createPlot(KST::suggestPlotName());
+          if (_w->_curvePlacement->reGrid()) {
+            w->view()->cleanup(_w->_curvePlacement->columns());
+          }
+          plot = kst_cast<Kst2DPlot>(w->view()->findChild(name));
+          if (plot) {
+            plot->setXAxisInterpretation(false, KstAxisInterpretation(), KstAxisDisplay());
+            plot->setYAxisInterpretation(false, KstAxisInterpretation(), KstAxisDisplay());
+            _w->_curvePlacement->update();
+            _w->_curvePlacement->setCurrentPlot(plot->tagName());
+            plot->addCurve(vc.data());
+            plot->generateDefaultLabels();
+          }
         }
       }
+      KST::dataObjectList.lock().writeLock();
+      KST::dataObjectList.append(psd.data());
+      KST::dataObjectList.append(vc.data());
+      KST::dataObjectList.lock().unlock();
+      psd = 0L;
+      vc = 0L;
+      emit modified();
 
-      if (_w->_curvePlacement->newPlot()) {
-        // assign curve to plot
-        QString name = w->createPlot(KST::suggestPlotName());
-        if (_w->_curvePlacement->reGrid()) {
-          w->view()->cleanup(_w->_curvePlacement->columns());
-        }
-        plot = kst_cast<Kst2DPlot>(w->view()->findChild(name));
-        if (plot) {
-          plot->setXAxisInterpretation(false, KstAxisInterpretation(), KstAxisDisplay());
-          plot->setYAxisInterpretation(false, KstAxisInterpretation(), KstAxisDisplay());
-          _w->_curvePlacement->update();
-          _w->_curvePlacement->setCurrentPlot(plot->tagName());
-          plot->addCurve(vc.data());
-          plot->generateDefaultLabels();
-        }
-      }
+      retVal = true;
     }
-    KST::dataObjectList.lock().writeLock();
-    KST::dataObjectList.append(psd.data());
-    KST::dataObjectList.append(vc.data());
-    KST::dataObjectList.lock().unlock();
-    psd = 0L;
-    vc = 0L;
-    emit modified();
   }
-  return true;
+
+  return retVal;
 }
 
 
-bool KstPsdDialogI::editSingleObject(KstPSDPtr psPtr) {
+bool KstPsdDialog::editSingleObject(KstPSDPtr psPtr) {
   psPtr->writeLock();
 
   KST::vectorList.lock().readLock();
@@ -374,8 +372,7 @@ bool KstPsdDialogI::editSingleObject(KstPSDPtr psPtr) {
 }
 
 
-// returns true if succesful
-bool KstPsdDialogI::editObject() {
+bool KstPsdDialog::editObject() {
   // if the user selected no vector, treat it as non-dirty
   _vectorDirty = _w->_vector->_vector->currentItem() != 0;
   _apodizeFxnDirty = _w->_kstFFTOptions->ApodizeFxn->currentItem() != 0;
@@ -444,7 +441,7 @@ bool KstPsdDialogI::editObject() {
 }
 
 
-void KstPsdDialogI::populateEditMultiple() {
+void KstPsdDialog::populateEditMultiple() {
   KstPSDList pslist = kstObjectSubList<KstDataObject,KstPSD>(KST::dataObjectList);
   _editMultipleWidget->_objectList->insertStringList(pslist.tagNames());
 
@@ -488,25 +485,25 @@ void KstPsdDialogI::populateEditMultiple() {
 }
 
 
-void KstPsdDialogI::setApodizeDirty() {
+void KstPsdDialog::setApodizeDirty() {
   _w->_kstFFTOptions->Apodize->setTristate(false);
   _apodizeDirty = true;
 }
 
 
-void KstPsdDialogI::setRemoveMeanDirty() {
+void KstPsdDialog::setRemoveMeanDirty() {
   _w->_kstFFTOptions->RemoveMean->setTristate(false);
   _removeMeanDirty = true;
 }
 
 
-void KstPsdDialogI::setInterpolateHolesDirty() {
+void KstPsdDialog::setInterpolateHolesDirty() {
   _w->_kstFFTOptions->InterpolateHoles->setTristate(false);
   _interpolateHolesDirty = true;
 }
 
 
-void KstPsdDialogI::setInterleavedDirty() {
+void KstPsdDialog::setInterleavedDirty() {
   _w->_kstFFTOptions->Interleaved->setTristate(false);
   _interleavedDirty = true;
   // also set the FFTLen to be dirty, as presumably the user will think it
@@ -515,7 +512,7 @@ void KstPsdDialogI::setInterleavedDirty() {
 }
 
 
-void KstPsdDialogI::cleanup() {
+void KstPsdDialog::cleanup() {
   if (_editMultipleMode) {
     _w->_kstFFTOptions->Sigma->setMinValue(_w->_kstFFTOptions->Sigma->minValue() + 0.01);
     _w->_kstFFTOptions->Sigma->setSpecialValueText(QString::null);
@@ -527,9 +524,9 @@ void KstPsdDialogI::cleanup() {
 }
 
 
-void KstPsdDialogI::setVector(const QString& name) {
+void KstPsdDialog::setVector(const QString& name) {
   _w->_vector->setSelection(name);
 }
 
-#include "kstpsddialog_i.moc"
+#include "kstpsddialog.moc"
 

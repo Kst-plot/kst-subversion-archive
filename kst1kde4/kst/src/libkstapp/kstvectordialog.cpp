@@ -49,22 +49,24 @@
 #include "vectordialogwidget.h"
 
 
-QPointer<KstVectorDialogI> KstVectorDialogI::_inst = 0L;
+QPointer<KstVectorDialog> KstVectorDialog::_inst = 0L;
 
-const QString& KstVectorDialogI::defaultTag = KGlobal::staticQString("<Auto Name>");
+const QString& KstVectorDialog::defaultTag = KGlobal::staticQString("<Auto Name>");
 
-KstVectorDialogI *KstVectorDialogI::globalInstance() {
+KstVectorDialogI *KstVectorDialog::globalInstance() {
   if (!_inst) {
-    _inst = new KstVectorDialogI(KstApp::inst());
+    _inst = new KstVectorDialog(KstApp::inst());
   }
   return _inst;
 }
 
 
-KstVectorDialogI::KstVectorDialogI(QWidget* parent, const char* name,
-                                   bool modal, WFlags fl)
+KstVectorDialog::KstVectorDialog(QWidget* parent, const char* name,
+                                   bool modal, Qt::WFlags fl)
 : KstDataDialog(parent, name, modal, fl) {
   _w = new VectorDialogWidget(_contents);
+  _w->setupUi(this);
+
   setMultiple(true);
   _inTest = false;
   _w->FileName->completionObject()->setDir(QDir::currentDirPath());
@@ -119,13 +121,13 @@ KstVectorDialogI::KstVectorDialogI(QWidget* parent, const char* name,
 }
 
 
-KstVectorDialogI::~KstVectorDialogI() {
+KstVectorDialog::~KstVectorDialogI() {
   delete _configWidget;
   _configWidget = 0L;
 }
 
 
-void KstVectorDialogI::selectingFolder()
+void KstVectorDialog::selectingFolder()
 {
   QString strFolder = _w->FileName->url();
   KFileDialog *fileDlg = _w->FileName->fileDialog();
@@ -143,20 +145,20 @@ void KstVectorDialogI::selectingFolder()
 }
 
 
-void KstVectorDialogI::selectFolder()
+void KstVectorDialog::selectFolder()
 {
   QTimer::singleShot(0, this, SLOT(selectingFolder()));
 }
 
 
-void KstVectorDialogI::testURL() {
+void KstVectorDialog::testURL() {
   _inTest = true;
   updateCompletion();
   _inTest = false;
 }
 
 
-void KstVectorDialogI::showFields() {
+void KstVectorDialog::showFields() {
   KstFieldSelectI *dlg = new KstFieldSelectI(this, "Field Select", true);
   if (dlg) {
     dlg->setURL(_w->FileName->url());
@@ -173,7 +175,7 @@ void KstVectorDialogI::showFields() {
 }
 
 
-void KstVectorDialogI::enableSource() {
+void KstVectorDialog::enableSource() {
   _w->_rvectorGroup->setEnabled(true);
   _w->_svectorGroup->setEnabled(false);
   _ok->setEnabled(_w->Field->isEnabled());
@@ -181,7 +183,7 @@ void KstVectorDialogI::enableSource() {
 }
 
 
-void KstVectorDialogI::enableGenerate() {
+void KstVectorDialog::enableGenerate() {
   _w->_rvectorGroup->setEnabled(false);
   _w->_svectorGroup->setEnabled(true);
   _ok->setEnabled(true);
@@ -189,7 +191,7 @@ void KstVectorDialogI::enableGenerate() {
 }
 
 
-void KstVectorDialogI::updateCompletion() {
+void KstVectorDialog::updateCompletion() {
   QStringList list;
   QString currentText = _w->Field->currentText();
 
@@ -257,7 +259,7 @@ void KstVectorDialogI::updateCompletion() {
 }
 
 
-void KstVectorDialogI::fillFieldsForRVEdit() {
+void KstVectorDialog::fillFieldsForRVEdit() {
   KstRVectorPtr rvp = kst_cast<KstRVector>(_dp);
   rvp->readLock();
 
@@ -323,7 +325,7 @@ void KstVectorDialogI::fillFieldsForRVEdit() {
 }
 
 
-void KstVectorDialogI::fillFieldsForSVEdit() {
+void KstVectorDialog::fillFieldsForSVEdit() {
   KstSVectorPtr svp = kst_cast<KstSVector>(_dp);
   if (!svp) { // shouldn't be needed
     return;
@@ -348,7 +350,7 @@ void KstVectorDialogI::fillFieldsForSVEdit() {
 }
 
 
-void KstVectorDialogI::fillFieldsForEdit() {
+void KstVectorDialog::fillFieldsForEdit() {
   KstRVectorPtr rvp = kst_cast<KstRVector>(_dp);
 
   if (rvp) {
@@ -362,7 +364,7 @@ void KstVectorDialogI::fillFieldsForEdit() {
 }
 
 
-void KstVectorDialogI::fillFieldsForNew() {
+void KstVectorDialog::fillFieldsForNew() {
   _w->_readFromSource->setChecked(true);
   _w->_rvectorGroup->show();
   _w->_rvectorGroup->setEnabled(true);
@@ -386,7 +388,7 @@ void KstVectorDialogI::fillFieldsForNew() {
 }
 
 
-bool KstVectorDialogI::newObject() {
+bool KstVectorDialog::newObject() {
   KstDataSourcePtr file;
   QString tagName = _tagName->text();
 
@@ -497,7 +499,7 @@ bool KstVectorDialogI::newObject() {
 }
 
 
-bool KstVectorDialogI::editSingleObject(KstVectorPtr vcPtr) {
+bool KstVectorDialog::editSingleObject(KstVectorPtr vcPtr) {
   if (kst_cast<KstRVector>(vcPtr)) {
     return editSingleObjectRV(vcPtr);
   } else {
@@ -506,7 +508,7 @@ bool KstVectorDialogI::editSingleObject(KstVectorPtr vcPtr) {
 }
 
 
-bool KstVectorDialogI::editSingleObjectSV(KstVectorPtr vcPtr) {
+bool KstVectorDialog::editSingleObjectSV(KstVectorPtr vcPtr) {
   KstSVectorPtr svp = kst_cast<KstSVector>(vcPtr);
 
   svp->readLock();
@@ -526,7 +528,7 @@ bool KstVectorDialogI::editSingleObjectSV(KstVectorPtr vcPtr) {
 }
 
 
-bool KstVectorDialogI::editSingleObjectRV(KstVectorPtr vcPtr) {
+bool KstVectorDialog::editSingleObjectRV(KstVectorPtr vcPtr) {
   KstRVectorPtr rvp = kst_cast<KstRVector>(vcPtr);
   KstDataSourcePtr file;
 
@@ -696,7 +698,7 @@ bool KstVectorDialogI::editSingleObjectRV(KstVectorPtr vcPtr) {
 }
 
 
-bool KstVectorDialogI::editObject() {
+bool KstVectorDialog::editObject() {
   // if editing multiple objects, edit each one
   if (_editMultipleMode) {
     // get dirties first
@@ -767,7 +769,7 @@ bool KstVectorDialogI::editObject() {
 }
 
 
-void KstVectorDialogI::markSourceAndSave() {
+void KstVectorDialog::markSourceAndSave() {
   assert(_configWidget);
   KstDataSourcePtr src = static_cast<KstDataSourceConfigWidget*>((QWidget*)_configWidget)->instance();
   if (src) {
@@ -777,7 +779,7 @@ void KstVectorDialogI::markSourceAndSave() {
 }
 
 
-void KstVectorDialogI::configureSource() {
+void KstVectorDialog::configureSource() {
   bool isNew = false;
   KST::dataSourceList.lock().readLock();
   KstDataSourcePtr ds = *KST::dataSourceList.findReusableFileName(_w->FileName->url());
@@ -812,7 +814,7 @@ void KstVectorDialogI::configureSource() {
 }
 
 
-void KstVectorDialogI::populateEditMultipleRV() {
+void KstVectorDialog::populateEditMultipleRV() {
   KstRVectorList vclist = kstObjectSubList<KstVector, KstRVector>(KST::vectorList);
   _editMultipleWidget->_objectList->insertStringList(vclist.tagNames());
 
@@ -848,7 +850,7 @@ void KstVectorDialogI::populateEditMultipleRV() {
 }
 
 
-void KstVectorDialogI::populateEditMultipleSV() {
+void KstVectorDialog::populateEditMultipleSV() {
   KstSVectorList vclist = kstObjectSubList<KstVector, KstSVector>(KST::vectorList);
   _editMultipleWidget->_objectList->insertStringList(vclist.tagNames());
 
@@ -865,7 +867,7 @@ void KstVectorDialogI::populateEditMultipleSV() {
 }
 
 
-void KstVectorDialogI::populateEditMultiple() {
+void KstVectorDialog::populateEditMultiple() {
   _tagName->setText("");
   _tagName->setEnabled(false);
 
@@ -877,25 +879,25 @@ void KstVectorDialogI::populateEditMultiple() {
 }
 
 
-void KstVectorDialogI::setCountFromEndDirty() {
+void KstVectorDialog::setCountFromEndDirty() {
   _w->_kstDataRange->CountFromEnd->setTristate(false);
   _countFromEndDirty = true;
 }
 
 
-void KstVectorDialogI::setReadToEndDirty() {
+void KstVectorDialog::setReadToEndDirty() {
   _w->_kstDataRange->ReadToEnd->setTristate(false);
   _readToEndDirty = true;
 }
 
 
-void KstVectorDialogI::setDoFilterDirty() {
+void KstVectorDialog::setDoFilterDirty() {
   _w->_kstDataRange->DoFilter->setTristate(false);
   _doFilterDirty = true;
 }
 
 
-void KstVectorDialogI::setDoSkipDirty() {
+void KstVectorDialog::setDoSkipDirty() {
   _w->_kstDataRange->DoSkip->setTristate(false);
   _doSkipDirty = true;
   // also assume the number of frames to skip is dirty too
@@ -903,7 +905,7 @@ void KstVectorDialogI::setDoSkipDirty() {
 }
 
 
-void KstVectorDialogI::cleanup() {
+void KstVectorDialog::cleanup() {
   if (_editMultipleMode) {
     if (_w->_kstDataRange->Skip->specialValueText() == " ") {
       _w->_kstDataRange->Skip->setSpecialValueText(QString::null);
@@ -917,11 +919,11 @@ void KstVectorDialogI::cleanup() {
 }
 
 
-KstObjectPtr KstVectorDialogI::findObject(const QString& name) {
+KstObjectPtr KstVectorDialog::findObject(const QString& name) {
   KST::vectorList.lock().readLock();
   KstObjectPtr o = (*KST::vectorList.findTag(name)).data();
   KST::vectorList.lock().unlock();
   return o;
 }
 
-#include "kstvectordialog_i.moc"
+#include "kstvectordialog.moc"

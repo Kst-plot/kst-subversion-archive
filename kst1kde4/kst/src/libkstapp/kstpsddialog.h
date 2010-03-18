@@ -1,5 +1,5 @@
 /***************************************************************************
-                       kstpsddialog_i.h  -  Part of KST
+                       kstpsddialog.h  -  Part of KST
                              -------------------
     begin                :
     copyright            : (C) 2003 The University of Toronto
@@ -19,26 +19,24 @@
 #ifndef KSTPSDDIALOGI_H
 #define KSTPSDDIALOGI_H
 
-#include "ui_kstdatadialog.h"
+#include "kstdatadialog.h"
 #include "kstpsd.h"
 #include "kst_export.h"
+#include "ui_psddialogwidget.h"
 
-class PSDDialogWidget;
-
-class KstPsdDialogI : public KstDataDialog {
+class KstPsdDialog : public KstDataDialog {
   Q_OBJECT
   public:
-    KstPsdDialogI(QWidget* parent = 0, const char* name = 0,
-        bool modal = false, WFlags fl = 0 );
-    virtual ~KstPsdDialogI();
-    KST_EXPORT static KstPsdDialogI *globalInstance();
+    KstPsdDialog(QWidget* parent = 0, const char* name = 0,
+        bool modal = false, Qt::WFlags fl = 0 );
+    virtual ~KstPsdDialog();
+    KST_EXPORT static KstPsdDialog *globalInstance();
 
   protected:
     QString editTitle() { return tr("Edit Spectrum"); }
     QString newTitle() { return tr("New Spectrum"); }
  
   public slots:
-    /** update the entries in the psd dialog to represent current psds */
     void update();
     void updateWindow();
     bool newObject();
@@ -47,7 +45,8 @@ class KstPsdDialogI : public KstDataDialog {
     void setVector(const QString& name);
 
   private:
-    static QPointer<KstPsdDialogI> _inst;
+    static QPointer<KstPsdDialog> _inst;
+    Ui::PSDDialogWidget *_w;
 
     // the following are for the multiple edit mode
     bool _vectorDirty : 1;
@@ -75,7 +74,6 @@ class KstPsdDialogI : public KstDataDialog {
     void fillFieldsForEdit();
     void fillFieldsForNew();
     void cleanup();
-    PSDDialogWidget *_w;
 };
 
 #endif

@@ -18,18 +18,19 @@
 #ifndef KSTVECTORDIALOGI_H
 #define KSTVECTORDIALOGI_H
 
-#include "ui_kstdatadialog.h"
+#include "kstdatadialog.h"
 #include "kst_export.h"
+#include "ui_vectordialogwidget.h"
 
 class KCompletion;
 class VectorDialogWidget;
 
-class KST_EXPORT KstVectorDialogI : public KstDataDialog {
+class KST_EXPORT KstVectorDialog : public KstDataDialog {
   Q_OBJECT
   public:
-    KstVectorDialogI(QWidget* parent = 0, const char* name = 0, bool modal = false, WFlags fl = 0 );
-    virtual ~KstVectorDialogI();
-    static KstVectorDialogI *globalInstance();
+    KstVectorDialog(QWidget* parent = 0, const char* name = 0, bool modal = false, Qt::WFlags fl = 0 );
+    virtual ~KstVectorDialog();
+    static KstVectorDialog *globalInstance();
 
   public slots:
     void selectFolder();
@@ -70,11 +71,11 @@ class KST_EXPORT KstVectorDialogI : public KstDataDialog {
     void fillFieldsForNew();
     void cleanup();
 
-    static QPointer<KstVectorDialogI> _inst;
+    static QPointer<KstVectorDialog> _inst;
     static const QString& defaultTag;
     QPointer<KCompletion> _fieldCompletion;
     QPointer<KstDataSourceConfigWidget> _configWidget;
-    VectorDialogWidget *_w;
+    Ui::VectorDialogWidget *_w;
     bool _inTest : 1;
 
     // the following are for the multiple edit mode
