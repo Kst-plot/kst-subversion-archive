@@ -19,18 +19,17 @@
 #ifndef KSTCURVEDIALOGI_H
 #define KSTCURVEDIALOGI_H
 
-#include "ui_kstdatadialog.h"
+#include "kstdatadialog.h"
 #include "kstvcurve.h"
 #include "kst_export.h"
+#include "ui_curvedialogwidget.h"
 
-class CurveDialogWidget;
-
-class KstCurveDialogI : public KstDataDialog {
+class KstCurveDialog : public KstDataDialog {
   Q_OBJECT
   public:
-    KstCurveDialogI(QWidget* parent = 0, const char* name = 0, bool modal = false, WFlags fl = 0 );
-    virtual ~KstCurveDialogI();
-    KST_EXPORT static KstCurveDialogI *globalInstance();
+    KstCurveDialog(QWidget* parent = 0, const char* name = 0, bool modal = false, Qt::WFlags fl = 0 );
+    virtual ~KstCurveDialog();
+    KST_EXPORT static KstCurveDialog *globalInstance();
 
   protected:
     QString editTitle() { return tr("Edit Curve"); }
@@ -45,7 +44,7 @@ class KstCurveDialogI : public KstDataDialog {
     void setVector(const QString& name);
 
   private:
-    static QPointer<KstCurveDialogI> _inst;
+    static QPointer<KstCurveDialog> _inst;
 
     // the following are for the multiple edit mode
     bool _xVectorDirty : 1;
@@ -92,7 +91,7 @@ class KstCurveDialogI : public KstDataDialog {
     void fillFieldsForEdit();
     void fillFieldsForNew();
     void cleanup();
-    CurveDialogWidget *_w;
+    Ui::CurveDialogWidget *_w;
 };
 
 #endif

@@ -181,7 +181,7 @@ bool KstDoc::newDocument() {
   return true;
 }
 
-bool KstDoc::openDocument(const KUrl& url, const QString& o_file,
+bool KstDoc::openDocument(const QUrl& url, const QString& o_file,
                           int o_n, int o_f, int o_s, bool o_ave) {
   static bool opening = false;
   bool cleanupFile = false;

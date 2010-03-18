@@ -1,5 +1,5 @@
 /***************************************************************************
-                      ksthsdialog_i.cpp  -  Part of KST
+                      ksthsdialog.cpp  -  Part of KST
                              -------------------
     begin                :
     copyright            : (C) 2003 The University of Toronto
@@ -16,7 +16,6 @@
  *                                                                         *
  ***************************************************************************/
 
-// include files for Qt
 #include <qcheckbox.h>
 #include <qcombobox.h>
 #include <qfontmetrics.h>
@@ -26,12 +25,10 @@
 #include <qlistbox.h>
 #include <qvbox.h>
 
-// include files for KDE
 #include <kcombobox.h>
 #include "ksdebug.h"
 #include <kmessagebox.h>
 
-// application specific includes
 #include "ksthsdialog_i.h"
 #include "curveappearancewidget.h"
 #include "curveplacementwidget.h"
@@ -46,21 +43,23 @@
 #include "kstviewwindow.h"
 #include "vectorselector.h"
 
-const QString& KstHsDialogI::defaultTag = KGlobal::staticQString("<Auto Name>");
+const QString& KstHsDialog::defaultTag = KGlobal::staticQString("<Auto Name>");
 
-QPointer<KstHsDialogI> KstHsDialogI::_inst;
+QPointer<KstHsDialog> KstHsDialog::_inst;
 
-KstHsDialogI *KstHsDialogI::globalInstance() {
+KstHsDialogI *KstHsDialog::globalInstance() {
   if (!_inst) {
-    _inst = new KstHsDialogI(KstApp::inst());
+    _inst = new KstHsDialog(KstApp::inst());
   }
   return _inst;
 }
 
 
-KstHsDialogI::KstHsDialogI(QWidget* parent, const char* name, bool modal, WFlags fl)
+KstHsDialog::KstHsDialog(QWidget* parent, const char* name, bool modal, Qt::WFlags fl)
 : KstDataDialog(parent, name, modal, fl) {
-  _w = new HistogramDialogWidget(_contents);
+  _w = new Ui::HistogramDialogWidget(_contents);
+  _w->setupUi(this);
+
   setMultiple(true);
   connect(_w->AutoBin, SIGNAL(clicked()), this, SLOT(autoBin()));
   connect(_w->_vector, SIGNAL(newVectorCreated(const QString&)), this, SIGNAL(modified()));
@@ -92,16 +91,16 @@ KstHsDialogI::KstHsDialogI(QWidget* parent, const char* name, bool modal, WFlags
 }
 
 
-KstHsDialogI::~KstHsDialogI() {
+KstHsDialog::~KstHsDialog() {
 }
 
 
-void KstHsDialogI::updateWindow() {
+void KstHsDialog::updateWindow() {
   _w->_curvePlacement->update();
 }
 
 
-void KstHsDialogI::fillFieldsForEdit() {
+void KstHsDialog::fillFieldsForEdit() {
   KstHistogramPtr hp = kst_cast<KstHistogram>(_dp);
   if (!hp) {
     return; // shouldn't be needed
@@ -144,7 +143,7 @@ void KstHsDialogI::fillFieldsForEdit() {
 }
 
 
-void KstHsDialogI::fillFieldsForNew() {
+void KstHsDialog::fillFieldsForNew() {
   // set tag name
   _tagName->setText(defaultTag);
   _legendText->setText(defaultTag);
@@ -171,13 +170,13 @@ void KstHsDialogI::fillFieldsForNew() {
 }
 
 
-void KstHsDialogI::update() {
+void KstHsDialog::update() {
   _w->_curvePlacement->update();
   _w->_vector->update();
 }
 
 
-bool KstHsDialogI::newObject() {
+bool KstHsDialog::newObject() {
   QString tag_name = _tagName->text();
   if (tag_name == defaultTag) {
     tag_name = KST::suggestHistogramName(KstObjectTag::fromString(_w->_vector->selectedVector()));
@@ -306,7 +305,7 @@ bool KstHsDialogI::newObject() {
 }
 
 
-bool KstHsDialogI::editSingleObject(KstHistogramPtr hsPtr) {
+bool KstHsDialog::editSingleObject(KstHistogramPtr hsPtr) {
   // find max and min
   double new_min;
   double new_max;
@@ -389,7 +388,7 @@ bool KstHsDialogI::editSingleObject(KstHistogramPtr hsPtr) {
 }
 
 
-bool KstHsDialogI::editObject() {
+bool KstHsDialog::editObject() {
   KstHistogramList hsList = kstObjectSubList<KstDataObject,KstHistogram>(KST::dataObjectList);
 
   // if editing multiple objects, edit each one
@@ -453,7 +452,7 @@ bool KstHsDialogI::editObject() {
 }
 
 
-void KstHsDialogI::autoBin() {
+void KstHsDialog::autoBin() {
   KstReadLocker ml(&KST::vectorList.lock());
 
   if (!KST::vectorList.isEmpty()) {
@@ -476,7 +475,7 @@ void KstHsDialogI::autoBin() {
 }
 
 
-void KstHsDialogI::updateButtons() {
+void KstHsDialog::updateButtons() {
   if (!_editMultipleMode && _w->_realTimeAutoBin->isChecked()) {
     autoBin();
   }
@@ -488,7 +487,7 @@ void KstHsDialogI::updateButtons() {
 }
 
 
-void KstHsDialogI::populateEditMultiple() {
+void KstHsDialog::populateEditMultiple() {
   KstHistogramList hslist = kstObjectSubList<KstDataObject,KstHistogram>(KST::dataObjectList);
   _editMultipleWidget->_objectList->insertStringList(hslist.tagNames());
 
@@ -529,13 +528,13 @@ void KstHsDialogI::populateEditMultiple() {
 }
 
 
-void KstHsDialogI::setRealTimeAutoBinDirty() {
+void KstHsDialog::setRealTimeAutoBinDirty() {
   _w->_realTimeAutoBin->setTristate(false);
   _realTimeAutoBinDirty = true;
 }
 
 
-void KstHsDialogI::cleanup() {
+void KstHsDialog::cleanup() {
   if (_editMultipleMode) {
     _w->N->setMinValue(_w->N->minValue() + 1);
     _w->N->setSpecialValueText(QString::null);
@@ -543,9 +542,9 @@ void KstHsDialogI::cleanup() {
 }
 
 
-void KstHsDialogI::setVector(const QString& name) {
+void KstHsDialog::setVector(const QString& name) {
   _w->_vector->setSelection(name);
 }
 
-#include "ksthsdialog_i.moc"
+#include "ksthsdialog.moc"
 

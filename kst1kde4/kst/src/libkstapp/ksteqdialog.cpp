@@ -1,5 +1,5 @@
 /***************************************************************************
-                       ksteqdialog_i.cpp  -  Part of KST
+                       ksteqdialog.cpp  -  Part of KST
                              -------------------
     begin                :
     copyright            : (C) 2003 The University of Toronto
@@ -16,20 +16,18 @@
  *                                                                         *
  ***************************************************************************/
 
-// include files for Qt
 #include <qcheckbox.h>
 #include <qlistbox.h>
+#include <QMessageBox>
 #include <qradiobutton.h>
 #include <qregexp.h>
 #include <qspinbox.h>
 #include <qvbox.h>
 
-// include files for KDE
 #include <kcombobox.h>
 #include "ksdebug.h"
 #include <kmessagebox.h>
 
-// application specific includes
 #include "curveappearancewidget.h"
 #include "curveplacementwidget.h"
 #include "editmultiplewidget.h"
@@ -46,21 +44,23 @@
 #include "scalarselector.h"
 #include "vectorselector.h"
 
-const QString& KstEqDialogI::defaultTag = KGlobal::staticQString("<Auto Name>");
+const QString& KstEqDialog::defaultTag = KGlobal::staticQString("<Auto Name>");
 
-QPointer<KstEqDialogI> KstEqDialogI::_inst;
+QPointer<KstEqDialog> KstEqDialog::_inst;
 
-KstEqDialogI *KstEqDialogI::globalInstance() {
+KstEqDialogI *KstEqDialog::globalInstance() {
   if (!_inst) {
-    _inst = new KstEqDialogI(KstApp::inst());
+    _inst = new KstEqDialog(KstApp::inst());
   }
   return _inst;
 }
 
 
-KstEqDialogI::KstEqDialogI(QWidget* parent, const char* name, bool modal, WFlags fl)
+KstEqDialog::KstEqDialog(QWidget* parent, const char* name, bool modal, Qt::WFlags fl)
 : KstDataDialog(parent, name, modal, fl) {
-  _w = new EqDialogWidget(_contents);
+  _w = new Ui::EqDialogWidget(_contents);
+  _w->setupUi(this);
+
   setMultiple(true);
   connect(_w->_vectors, SIGNAL(newVectorCreated(const QString&)), this, SIGNAL(modified()));
   connect(_w->_xVectors, SIGNAL(newVectorCreated(const QString&)), this, SIGNAL(modified()));
@@ -79,16 +79,16 @@ KstEqDialogI::KstEqDialogI(QWidget* parent, const char* name, bool modal, WFlags
 }
 
 
-KstEqDialogI::~KstEqDialogI() {
+KstEqDialog::~KstEqDialog() {
 }
 
 
-void KstEqDialogI::updateWindow() {
+void KstEqDialog::updateWindow() {
   _w->_curvePlacement->update();
 }
 
 
-void KstEqDialogI::fillFieldsForEdit() {
+void KstEqDialog::fillFieldsForEdit() {
   KstEquationPtr ep = kst_cast<KstEquation>(_dp);
   if (!ep) {
     return; // shouldn't be needed
@@ -121,28 +121,32 @@ void KstEqDialogI::fillFieldsForEdit() {
 }
 
 
-void KstEqDialogI::fillFieldsForNew() {
+void KstEqDialog::fillFieldsForNew() {
   KstEquationList eqs = kstObjectSubList<KstDataObject, KstEquation>(KST::dataObjectList);
   KstVCurveList curves = kstObjectSubList<KstDataObject, KstVCurve>(KST::dataObjectList);
 
-  /* set tag name */
   _tagName->setText(defaultTag);
   _legendText->setText(defaultTag);
   _legendText->show();
   _legendLabel->show();
 
-  /* set the curve placement window  */
   _w->_curvePlacement->update();
 
+  //
   // set the X Axis Vector to the X axis vector of 
   // the last curve on the global curve list...
+  //
+
   if (curves.count() > 0) {
     _w->_xVectors->setSelection(curves.last()->xVTag().displayString());
   }
 
   _w->_equation->clear();
 
-  //for some reason the lower widget needs to be shown first to prevent overlapping?
+  //
+  // for some reason the lower widget needs to be shown first to prevent overlapping?
+  //
+
   _w->_curveAppearance->hide();
   _w->_curvePlacement->show();
   _w->_curveAppearance->show();
@@ -175,7 +179,6 @@ bool KstEqDialogI::newObject() {
     tag_name = KST::suggestEQName(etext);
   }
 
-  /* verify that the curve name is unique */
   if (KstData::self()->dataTagNameNotUnique(tag_name)) {
     _tagName->setFocus();
     return false;
@@ -186,7 +189,6 @@ bool KstEqDialogI::newObject() {
   }
 
   KST::vectorList.lock().readLock();
-  /* find *V */
   KstVectorPtr vp = *KST::vectorList.findTag(_w->_xVectors->selectedVector());
   if (!vp) {
     kstdFatal() << "Bug in kst: the Vector field (Eq) "
@@ -194,18 +196,23 @@ bool KstEqDialogI::newObject() {
   }
   KST::vectorList.lock().unlock();
 
-  /** Create the equation here */
   KstEquationPtr eq = new KstEquation(tag_name, _w->_equation->text(), vp, _w->_doInterpolation->isChecked());
 
   if (!eq->isValid()) {
-    eq = 0L;
+    QStringList::ConstIterator i;
     QString parseErrors;
-    for (QStringList::ConstIterator i = Equation::errorStack.begin(); i != Equation::errorStack.end(); ++i) {
+    QString strWarning = i18n("There is an error in the equation you entered.\n")
+
+    eq = 0L;
+
+    for (i = Equation::errorStack.begin(); i != Equation::errorStack.end(); ++i) {
       parseErrors += *i;
       parseErrors += "\n";
     }
 
-    KMessageBox::detailedSorry(this, i18n("There is an error in the equation you entered."), parseErrors);
+    strWarning += parseErrors;
+
+    QMessageBox::warning(this, i18n("Kst"), strWarning);
     return false;
   }
 
@@ -274,16 +281,16 @@ bool KstEqDialogI::newObject() {
 }
 
 
-bool KstEqDialogI::checkEntries() {
+bool KstEqDialog::checkEntries() {
   if (_w->_xVectors->selectedVector().isEmpty() && !_editMultipleMode) {
-    KMessageBox::sorry(this, i18n("An X vector must be defined first."));
+    QMessageBox::warning(this, i18n("Kst"), i18n("An X vector must be defined first."));
     return false;
   }
   return true;
 }
 
 
-bool KstEqDialogI::editSingleObject(KstEquationPtr eqPtr) {
+bool KstEqDialog::editSingleObject(KstEquationPtr eqPtr) {
   eqPtr->writeLock();
   if (!checkEntries()) {
     eqPtr->unlock();
@@ -316,12 +323,18 @@ bool KstEqDialogI::editSingleObject(KstEquationPtr eqPtr) {
   if (_equationDirty) {
     eqPtr->setEquation(_w->_equation->text());
     if (!eqPtr->isValid()) {
+      QStringList::ConstIterator i;
+      QString strWarning = i18n("There is an error in the equation you entered.\n");
       QString parseErrors;
-      for (QStringList::ConstIterator i = Equation::errorStack.begin(); i != Equation::errorStack.end(); ++i) {
+
+      for (i = Equation::errorStack.begin(); i != Equation::errorStack.end(); ++i) {
         parseErrors += *i;
         parseErrors += "\n";
       }
-      KMessageBox::detailedSorry(this, i18n("There is an error in the equation you entered."), parseErrors);
+      
+      strWarning += parseErrors;
+
+      QMessageBox::warning(this, i18n("Kst"), strWarning);
       eqPtr->unlock();
       return true;
     }
@@ -330,7 +343,7 @@ bool KstEqDialogI::editSingleObject(KstEquationPtr eqPtr) {
     if (eqPtr->recursion()) {
       eqPtr->setRecursed(true);
       eqPtr->unlock();
-      KMessageBox::error(this, i18n("There is a recursion resulting from the equation you entered."));
+      QMessageBox::critical(this, i18n("Kst"), i18n("There is a recursion resulting from the equation you entered."));
       return false;
     }
   }
@@ -341,7 +354,7 @@ bool KstEqDialogI::editSingleObject(KstEquationPtr eqPtr) {
 }
 
 
-bool KstEqDialogI::editObject() {
+bool KstEqDialog::editObject() {
   KstEquationList eqList = kstObjectSubList<KstDataObject,KstEquation>(KST::dataObjectList);
 
   // if editing multiple objects, edit each one
@@ -367,7 +380,7 @@ bool KstEqDialogI::editObject() {
       }
     } 
     if (!didEdit) {
-      KMessageBox::sorry(this, i18n("Select one or more objects to edit."));
+      QMessageBox::warning(this, i18n("Kst"), i18n("Select one or more objects to edit."));
       return false;  
     }
   } else {
@@ -396,7 +409,7 @@ bool KstEqDialogI::editObject() {
 }
 
 
-void KstEqDialogI::populateFunctionList() {
+void KstEqDialog::populateFunctionList() {
   _w->Operators->clear();
   _w->Operators->insertItem("+");
   _w->Operators->insertItem("-");
@@ -440,7 +453,7 @@ void KstEqDialogI::populateFunctionList() {
 }
 
 
-void KstEqDialogI::populateEditMultiple() {
+void KstEqDialog::populateEditMultiple() {
   // list of objects
   KstEquationList eqlist = kstObjectSubList<KstDataObject,KstEquation>(KST::dataObjectList);
   _editMultipleWidget->_objectList->insertStringList(eqlist.tagNames());
@@ -459,10 +472,10 @@ void KstEqDialogI::populateEditMultiple() {
 }
 
 
-void KstEqDialogI::setDoInterpolationDirty() {
+void KstEqDialog::setDoInterpolationDirty() {
   _w->_doInterpolation->setTristate(false); 
   _doInterpolationDirty = true;
 }
 
-#include "ksteqdialog_i.moc"
+#include "ksteqdialog.moc"
 

@@ -1,5 +1,5 @@
 /***************************************************************************
-                      kstimagedialog_i.cpp  -  Part of KST
+                      kstimagedialog.cpp  -  Part of KST
                              -------------------
     begin                :
     copyright            : (C) 2003 The University of Toronto
@@ -16,7 +16,6 @@
  *                                                                         *
  ***************************************************************************/
 
-// include files for Qt
 #include <qbuttongroup.h>
 #include <qcheckbox.h>
 #include <qcombobox.h>
@@ -26,13 +25,11 @@
 #include <qspinbox.h>
 #include <qvbox.h>
 
-// include files for KDE
 #include <kcolorbutton.h>
 #include <kcombobox.h>
 #include <kmessagebox.h>
 #include <knuminput.h>
 
-// application specific includes
 #include "colorpalettewidget.h"
 #include "curveplacementwidget.h"
 #include "editmultiplewidget.h"
@@ -44,7 +41,7 @@
 #include "kstviewwindow.h"
 #include "matrixselector.h"
 
-QPointer<KstImageDialogI> KstImageDialogI::_inst;
+QPointer<KstImageDialog> KstImageDialogI::_inst;
 
 KstImageDialogI *KstImageDialogI::globalInstance() {
   if (!_inst) {
@@ -54,10 +51,12 @@ KstImageDialogI *KstImageDialogI::globalInstance() {
 }
 
 
-KstImageDialogI::KstImageDialogI(QWidget* parent,
-                                 const char* name, bool modal, WFlags fl)
+KstImageDialog::KstImageDialog(QWidget* parent,
+                                 const char* name, bool modal, Qt::WFlags fl)
 : KstDataDialog(parent, name, modal, fl) {
   _w = new ImageDialogWidget(_contents);
+  _w->setupUi(this);
+
   setMultiple(true);
   connect(_w->_matrix, SIGNAL(newMatrixCreated(const QString&)), this, SIGNAL(modified()));
   connect(_w->_autoThreshold, SIGNAL(clicked()), this, SLOT(calcAutoThreshold()));
@@ -99,16 +98,16 @@ KstImageDialogI::KstImageDialogI(QWidget* parent,
 }
 
 
-KstImageDialogI::~KstImageDialogI() {
+KstImageDialog::~KstImageDialog() {
 }
 
 
-void KstImageDialogI::updateWindow() {
+void KstImageDialog::updateWindow() {
   _w->_curvePlacement->update();
 }
 
 
-void KstImageDialogI::fillFieldsForEdit() {
+void KstImageDialog::fillFieldsForEdit() {
   fillFieldsForEditNoUpdate();
 
   KstImagePtr ip = kst_cast<KstImage>(_dp);
@@ -137,7 +136,7 @@ void KstImageDialogI::fillFieldsForEdit() {
 }
 
 
-void KstImageDialogI::fillFieldsForEditNoUpdate() {
+void KstImageDialog::fillFieldsForEditNoUpdate() {
   KstImagePtr ip = kst_cast<KstImage>(_dp);
   if (!ip) {
     return; // shouldn't be needed
@@ -172,7 +171,7 @@ void KstImageDialogI::fillFieldsForEditNoUpdate() {
 }
 
 
-void KstImageDialogI::fillFieldsForNew() {
+void KstImageDialog::fillFieldsForNew() {
   KstImageList images = kstObjectSubList<KstDataObject, KstImage>(KST::dataObjectList);
 
   // set tag name
@@ -209,13 +208,13 @@ void KstImageDialogI::fillFieldsForNew() {
 }
 
 
-void KstImageDialogI::update() {
+void KstImageDialog::update() {
   _w->_matrix->update();
   _w->_curvePlacement->update();
 }
 
 
-bool KstImageDialogI::newObject() {
+bool KstImageDialog::newObject() {
   //if matrixCombo is empty then display an error message
   if (_w->_matrix->selectedMatrix().isEmpty()){
     KMessageBox::sorry(this, i18n("Matrix is a 2D grid of numbers, used to create image", "New image not made: define matrix first."));
@@ -279,7 +278,7 @@ bool KstImageDialogI::newObject() {
 }
 
 
-bool KstImageDialogI::editSingleObject(KstImagePtr imPtr) {
+bool KstImageDialog::editSingleObject(KstImagePtr imPtr) {
   KstMatrixPtr pMatrix;
   if (_matrixDirty) {
     //find the pMatrix
@@ -418,7 +417,7 @@ bool KstImageDialogI::editSingleObject(KstImagePtr imPtr) {
   return true;
 }
 
-bool KstImageDialogI::editObject() {
+bool KstImageDialog::editObject() {
   KstImageList imList = kstObjectSubList<KstDataObject,KstImage>(KST::dataObjectList);
 
   // if editing multiple objects, edit each one
@@ -486,7 +485,7 @@ bool KstImageDialogI::editObject() {
 }
 
 
-void KstImageDialogI::calcAutoThreshold() {
+void KstImageDialog::calcAutoThreshold() {
   //make sure an matrix is selected
   if (!_w->_matrix->selectedMatrix().isEmpty()){
     KST::matrixList.lock().readLock();
@@ -503,7 +502,7 @@ void KstImageDialogI::calcAutoThreshold() {
 
 // This should use a smart (percentile based) algorithm to
 // calculate the thresholds.  It will be expensive.
-void KstImageDialogI::calcSmartThreshold() {
+void KstImageDialog::calcSmartThreshold() {
   //make sure an matrix is selected
   if (!_w->_matrix->selectedMatrix().isEmpty()){
     KST::matrixList.lock().readLock();
@@ -522,7 +521,7 @@ void KstImageDialogI::calcSmartThreshold() {
 }
 
 
-void KstImageDialogI::placeInPlot(KstImagePtr image) {
+void KstImageDialog::placeInPlot(KstImagePtr image) {
   KstViewWindow *w = dynamic_cast<KstViewWindow*>(KstApp::inst()->findWindow(_w->_curvePlacement->_plotWindow->currentText()));
   if (!w) {
     QString n = KstApp::inst()->newWindow(KST::suggestWinName());
@@ -558,7 +557,7 @@ void KstImageDialogI::placeInPlot(KstImagePtr image) {
 }
 
 
-void KstImageDialogI::updateGroups() {
+void KstImageDialog::updateGroups() {
   _w->_colorMapGroup->setEnabled(_w->_colorOnly->isChecked() || _w->_colorAndContour->isChecked());
   _w->_contourMapGroup->setEnabled(_w->_contourOnly->isChecked() || _w->_colorAndContour->isChecked());
 
@@ -569,7 +568,7 @@ void KstImageDialogI::updateGroups() {
 }
 
 
-void KstImageDialogI::updateEnables() {
+void KstImageDialog::updateEnables() {
   if (!_w->_useVariableWeight->isTristate()) {
     _w->_contourWeight->setEnabled(!_w->_useVariableWeight->isChecked());
   }
@@ -587,7 +586,7 @@ void KstImageDialogI::updateEnables() {
 }
 
 
-bool KstImageDialogI::checkParameters(double& lowerZDouble, double& upperZDouble) {
+bool KstImageDialog::checkParameters(double& lowerZDouble, double& upperZDouble) {
   if (_w->_colorOnly->isChecked() || _w->_colorAndContour->isChecked()) {
     bool ok1, ok2;
     lowerZDouble = _w->_lowerZ->text().toDouble(&ok1);
@@ -614,7 +613,7 @@ bool KstImageDialogI::checkParameters(double& lowerZDouble, double& upperZDouble
 }
 
 
-void KstImageDialogI::populateEditMultiple() {
+void KstImageDialog::populateEditMultiple() {
   KstImageList imlist = kstObjectSubList<KstDataObject,KstImage>(KST::dataObjectList);
   _editMultipleWidget->_objectList->insertStringList(imlist.tagNames());
 
@@ -665,21 +664,21 @@ void KstImageDialogI::populateEditMultiple() {
 }
 
 
-void KstImageDialogI::setRealTimeAutoThresholdDirty() {
+void KstImageDialog::setRealTimeAutoThresholdDirty() {
   _w->_realTimeAutoThreshold->setTristate(false);
   _realTimeAutoThresholdDirty = true;
   updateEnables();
 }
 
 
-void KstImageDialogI::setUseVariableWeightDirty() {
+void KstImageDialog::setUseVariableWeightDirty() {
   _w->_useVariableWeight->setTristate(false);
   _useVariableWeightDirty = true;
   updateEnables();
 }
 
 
-void KstImageDialogI::cleanup() {
+void KstImageDialog::cleanup() {
   if (_editMultipleMode) {
     _w->_numContourLines->setSpecialValueText(QString::null);
     _w->_numContourLines->setMinValue(_w->_numContourLines->minValue() + 1);
@@ -690,9 +689,9 @@ void KstImageDialogI::cleanup() {
 }
 
 
-void KstImageDialogI::setMatrix(const QString& name) {
+void KstImageDialog::setMatrix(const QString& name) {
   _w->_matrix->setSelection(name);
 }
 
-#include "kstimagedialog_i.moc"
+#include "kstimagedialog.moc"
 

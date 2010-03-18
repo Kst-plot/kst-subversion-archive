@@ -16,20 +16,17 @@
  *                                                                         *
  ***************************************************************************/
 
-// include files for Qt
 #include <qcheckbox.h>
 #include <qlistbox.h>
+#include <QMessageBox>
 #include <qspinbox.h>
 #include <qvbox.h>
 #include <qradiobutton.h>
 
-// include files for KDE
 #include <kcombobox.h>
 #include <kcolorbutton.h>
 #include "ksdebug.h"
-#include <kmessagebox.h>
 
-// application specific includes
 #include "curveappearancewidget.h"
 #include "curvedialogwidget.h"
 #include "curveplacementwidget.h"
@@ -44,11 +41,11 @@
 #include "vectorselector.h"
 #include "kstplotlabel.h"
 
-const QString& KstCurveDialogI::defaultTag = KGlobal::staticQString("<Auto Name>");
+const QString& KstCurveDialog::defaultTag = KGlobal::staticQString("<Auto Name>");
 
-QPointer<KstCurveDialogI> KstCurveDialogI::_inst;
+QPointer<KstCurveDialogI> KstCurveDialog::_inst;
 
-KstCurveDialogI *KstCurveDialogI::globalInstance() {
+KstCurveDialog *KstCurveDialog::globalInstance() {
   if (!_inst) {
     _inst = new KstCurveDialogI(KstApp::inst());
   }
@@ -56,7 +53,7 @@ KstCurveDialogI *KstCurveDialogI::globalInstance() {
 }
 
 
-KstCurveDialogI::KstCurveDialogI(QWidget* parent, const char* name, bool modal, WFlags fl)
+KstCurveDialog::KstCurveDialog(QWidget* parent, const char* name, bool modal, Qt::WFlags fl)
 : KstDataDialog(parent, name, modal, fl) {
   _w = new CurveDialogWidget(_contents);
   setMultiple(true);
@@ -119,38 +116,38 @@ KstCurveDialogI::KstCurveDialogI(QWidget* parent, const char* name, bool modal, 
 }
 
 
-KstCurveDialogI::~KstCurveDialogI() {
+KstCurveDialog::~KstCurveDialog() {
 }
 
 
-void KstCurveDialogI::updateWindow() {
+void KstCurveDialog::updateWindow() {
   _w->_curvePlacement->update();
 }
 
 
-void KstCurveDialogI::toggledXErrorSame(bool on) {
+void KstCurveDialog::toggledXErrorSame(bool on) {
   _w->textLabelXMinus->setEnabled(!on);
   _w->_xMinusError->setEnabled(!on);
 }
 
 
-void KstCurveDialogI::toggledYErrorSame(bool on) {
+void KstCurveDialog::toggledYErrorSame(bool on) {
   _w->textLabelYMinus->setEnabled(!on);
   _w->_yMinusError->setEnabled(!on);
 }
 
 
-void KstCurveDialogI::toggledXErrorSame() {
+void KstCurveDialog::toggledXErrorSame() {
   toggledXErrorSame(_w->_checkBoxXMinusSameAsPlus->isChecked());
 }
 
 
-void KstCurveDialogI::toggledYErrorSame() {
+void KstCurveDialog::toggledYErrorSame() {
   toggledYErrorSame(_w->_checkBoxYMinusSameAsPlus->isChecked());
 }
 
 
-void KstCurveDialogI::fillFieldsForEdit() {
+void KstCurveDialog::fillFieldsForEdit() {
   KstVCurvePtr cp = kst_cast<KstVCurve>(_dp);
   if (!cp) {
     return; // shouldn't be needed
@@ -220,7 +217,7 @@ void KstCurveDialogI::fillFieldsForEdit() {
 }
 
 
-void KstCurveDialogI::fillFieldsForNew() {
+void KstCurveDialog::fillFieldsForNew() {
   KstVCurveList curves = kstObjectSubList<KstDataObject, KstVCurve>(KST::dataObjectList);
 
   _tagName->setText(defaultTag);
@@ -248,7 +245,7 @@ void KstCurveDialogI::fillFieldsForNew() {
 }
 
 
-void KstCurveDialogI::update() {
+void KstCurveDialog::update() {
   _w->_curvePlacement->update();
   _w->_xVector->update();
   _w->_yVector->update();
@@ -260,9 +257,9 @@ void KstCurveDialogI::update() {
 }
 
 
-bool KstCurveDialogI::newObject() {
+bool KstCurveDialog::newObject() {
   if (_w->_xVector->selectedVector().isEmpty() || _w->_yVector->selectedVector().isEmpty()) {
-    KMessageBox::sorry(this, i18n("New curve not made: define vectors first."));
+    QMessageBox::warning(this, i18n("Kst"), i18n("New curve not made: define vectors first."));
     return false;
   }
 
@@ -405,7 +402,7 @@ bool KstCurveDialogI::newObject() {
 }
 
 
-bool KstCurveDialogI::editSingleObject(KstVCurvePtr cvPtr) {
+bool KstCurveDialog::editSingleObject(KstVCurvePtr cvPtr) {
 
   { // leave this scope here to destroy the iterator
     KstReadLocker ml(&KST::vectorList.lock());
@@ -506,7 +503,7 @@ bool KstCurveDialogI::editSingleObject(KstVCurvePtr cvPtr) {
 }
 
 
-bool KstCurveDialogI::editObject() {
+bool KstCurveDialog::editObject() {
   KstVCurveList cvList = kstObjectSubList<KstDataObject,KstVCurve>(KST::dataObjectList);
 
   // if editing multiple objects, edit each one
@@ -549,7 +546,7 @@ bool KstCurveDialogI::editObject() {
       }
     }
     if (!didEdit) {
-      KMessageBox::sorry(this, i18n("Select one or more objects to edit."));
+      QMessageBox::warning(this, i18n("Kst"), i18n("Select one or more objects to edit."));
       return false;
     }
   } else {
@@ -603,7 +600,7 @@ bool KstCurveDialogI::editObject() {
 }
 
 
-void KstCurveDialogI::populateEditMultiple() {
+void KstCurveDialog::populateEditMultiple() {
   KstVCurveList cvlist = kstObjectSubList<KstDataObject,KstVCurve>(KST::dataObjectList);
   _editMultipleWidget->_objectList->insertStringList(cvlist.tagNames());
 
@@ -688,49 +685,49 @@ void KstCurveDialogI::populateEditMultiple() {
 }
 
 
-void KstCurveDialogI::setCheckBoxXMinusSameAsPlusDirty() {
+void KstCurveDialog::setCheckBoxXMinusSameAsPlusDirty() {
   _w->_checkBoxXMinusSameAsPlus->setTristate(false);
   _checkBoxXMinusSameAsPlusDirty = true;
 }
 
 
-void KstCurveDialogI::setCheckBoxYMinusSameAsPlusDirty() {
+void KstCurveDialog::setCheckBoxYMinusSameAsPlusDirty() {
   _w->_checkBoxYMinusSameAsPlus->setTristate(false);
   _checkBoxYMinusSameAsPlusDirty = true;
 }
 
 
-void KstCurveDialogI::setShowPointsDirty() {
+void KstCurveDialog::setShowPointsDirty() {
   _w->_curveAppearance->_showPoints->setTristate(false);
   _showPointsDirty = true;
 }
 
 
-void KstCurveDialogI::setShowLinesDirty() {
+void KstCurveDialog::setShowLinesDirty() {
   _w->_curveAppearance->_showLines->setTristate(false);
   _showLinesDirty = true;
 }
 
 
-void KstCurveDialogI::setShowBarsDirty() {
+void KstCurveDialog::setShowBarsDirty() {
   _w->_curveAppearance->_showBars->setTristate(false);
   _showBarsDirty = true;
 }
 
 
-void KstCurveDialogI::setCheckBoxIgnoreAutoscaleDirty() {
+void KstCurveDialog::setCheckBoxIgnoreAutoscaleDirty() {
   _w->_checkBoxIgnoreAutoscale->setTristate(false);
   _checkBoxIgnoreAutoscaleDirty = true;
 }
 
 
-void KstCurveDialogI::setCheckBoxYVectorOffsetDirty() {
+void KstCurveDialog::setCheckBoxYVectorOffsetDirty() {
   _w->_checkBoxYVectorOffset->setTristate(false);
   _checkBoxYVectorOffsetDirty = true;
 }
 
 
-void KstCurveDialogI::cleanup() {
+void KstCurveDialog::cleanup() {
   // get rid of the blanks in _curveAppearance
   if (_editMultipleMode) {
     _w->_curveAppearance->_combo->removeItem(0);
@@ -744,9 +741,9 @@ void KstCurveDialogI::cleanup() {
 }
 
 
-void KstCurveDialogI::setVector(const QString& name) {
+void KstCurveDialog::setVector(const QString& name) {
   _w->_yVector->setSelection(name);
 }
 
-#include "kstcurvedialog_i.moc"
+#include "kstcurvedialog.moc"
 

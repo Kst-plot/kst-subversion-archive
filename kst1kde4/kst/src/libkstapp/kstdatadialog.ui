@@ -160,7 +160,7 @@
   <customwidget>
    <class>EditMultipleWidget</class>
    <extends>QWidget</extends>
-   <header>ui_editmultiplewidget.h</header>
+   <header>editmultiplewidget.h</header>
   </customwidget>
  </customwidgets>
  <includes>

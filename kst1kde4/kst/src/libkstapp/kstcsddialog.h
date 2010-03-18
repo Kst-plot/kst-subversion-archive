@@ -18,26 +18,26 @@
 #ifndef KSTCSDDIALOGI_H
 #define KSTCSDDIALOGI_H
 
-#include "ui_kstdatadialog.h"
+#include "kstdatadialog.h"
 #include "kstcsd.h"
 #include "kstimage.h"
 #include "kst_export.h"
+#include "ui_csddialogwidget.h"
 
 class CSDDialogWidget;
 
-class KstCsdDialogI : public KstDataDialog {
+class KstCsdDialog : public KstDataDialog {
   Q_OBJECT
   public:
-    KstCsdDialogI(QWidget* parent = 0, const char* name = 0, bool modal = false, WFlags fl = 0 );
-    virtual ~KstCsdDialogI();
-    KST_EXPORT static KstCsdDialogI *globalInstance();
+    KstCsdDialog(QWidget* parent = 0, const char* name = 0, bool modal = false, Qt::WFlags fl = 0 );
+    virtual ~KstCsdDialog();
+    KST_EXPORT static KstCsdDialog *globalInstance();
 
   protected:
     QString editTitle() { return tr("Edit Spectrogram"); }
     QString newTitle() { return tr("New Spectrogram"); }
 
   public slots:
-    /** update the entries in the psd dialog to represent current psds */
     void update();
     void updateWindow();
     bool newObject();
@@ -47,7 +47,7 @@ class KstCsdDialogI : public KstDataDialog {
 
   private:
     KstImagePtr createImage(KstCSDPtr csd);
-    static QPointer<KstCsdDialogI> _inst;
+    static QPointer<KstCsdDialog> _inst;
 
     // the following are for the multiple edit mode
     bool _vectorDirty : 1;
@@ -80,4 +80,3 @@ class KstCsdDialogI : public KstDataDialog {
 };
 
 #endif
-

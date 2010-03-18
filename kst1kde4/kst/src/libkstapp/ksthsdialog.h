@@ -1,5 +1,5 @@
 /***************************************************************************
-                       ksthsdialog_i.h  -  Part of KST
+                       ksthsdialog.h  -  Part of KST
                              -------------------
     begin                :
     copyright            : (C) 2003 The University of Toronto
@@ -19,18 +19,17 @@
 #ifndef KSTHSDIALOGI_H
 #define KSTHSDIALOGI_H
 
-#include "ui_kstdatadialog.h"
+#include "kstdatadialog.h"
 #include "ksthistogram.h"
 #include "kst_export.h"
+#include "ui_histogramdialogwidget.h"
 
-class HistogramDialogWidget;
-
-class KST_EXPORT KstHsDialogI : public KstDataDialog {
+class KST_EXPORT KstHsDialog : public KstDataDialog {
   Q_OBJECT
   public:
-    KstHsDialogI(QWidget* parent = 0, const char* name = 0, bool modal = false, WFlags fl = 0 );
-    virtual ~KstHsDialogI();
-    static KstHsDialogI *globalInstance();
+    KstHsDialog(QWidget* parent = 0, const char* name = 0, bool modal = false, Qt::WFlags fl = 0 );
+    virtual ~KstHsDialog();
+    static KstHsDialog *globalInstance();
 
   protected:
     QString editTitle() { return tr("Edit Histogram"); }
@@ -75,7 +74,7 @@ class KST_EXPORT KstHsDialogI : public KstDataDialog {
     void fillFieldsForEdit();
     void fillFieldsForNew();
     void cleanup();
-    HistogramDialogWidget *_w;
+    Ui::HistogramDialogWidget *_w;
 };
 
 #endif

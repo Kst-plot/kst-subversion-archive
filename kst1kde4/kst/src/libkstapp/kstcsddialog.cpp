@@ -42,19 +42,19 @@
 #include "kstviewwindow.h"
 #include "vectorselector.h"
 
-const QString& KstCsdDialogI::defaultTag = KGlobal::staticQString("<Auto Name>");
+const QString& KstCsdDialog::defaultTag = KGlobal::staticQString("<Auto Name>");
 
-QPointer<KstCsdDialogI> KstCsdDialogI::_inst = 0L;
+QPointer<KstCsdDialog> KstCsdDialog::_inst = 0L;
 
-KstCsdDialogI *KstCsdDialogI::globalInstance() {
+KstCsdDialog *KstCsdDialog::globalInstance() {
   if (!_inst) {
-    _inst = new KstCsdDialogI(KstApp::inst());
+    _inst = new KstCsdDialog(KstApp::inst());
   }
   return _inst;
 }
 
 
-KstCsdDialogI::KstCsdDialogI(QWidget* parent, const char* name, bool modal, WFlags fl)
+KstCsdDialog::KstCsdDialog(QWidget* parent, const char* name, bool modal, Qt::WFlags fl)
 : KstDataDialog(parent, name, modal, fl) {
   _w = new CSDDialogWidget(_contents);
   _w->setupUi(parent);
@@ -89,15 +89,15 @@ KstCsdDialogI::KstCsdDialogI(QWidget* parent, const char* name, bool modal, WFla
 }
 
 
-KstCsdDialogI::~KstCsdDialogI() {
+KstCsdDialog::~KstCsdDialog() {
 }
 
 
-void KstCsdDialogI::updateWindow() {
+void KstCsdDialog::updateWindow() {
 }
 
 
-void KstCsdDialogI::fillFieldsForEdit() {
+void KstCsdDialog::fillFieldsForEdit() {
   KstCSDPtr cp = kst_cast<KstCSD>(_dp);
   if (!cp) {
     return; // shouldn't be needed
@@ -135,7 +135,7 @@ void KstCsdDialogI::fillFieldsForEdit() {
 }
 
 
-void KstCsdDialogI::fillFieldsForNew() {
+void KstCsdDialog::fillFieldsForNew() {
   _tagName->setText(defaultTag);
   _w->_kstFFTOptions->update();
   _w->_colorPalette->refresh();
@@ -149,14 +149,13 @@ void KstCsdDialogI::fillFieldsForNew() {
 }
 
 
-void KstCsdDialogI::update() {
+void KstCsdDialog::update() {
   _w->_vector->update();
   _w->_curvePlacement->update();
 }
 
 
-/* returns true if succesful */
-bool KstCsdDialogI::newObject() {
+bool KstCsdDialog::newObject() {
   QString tag_name = _tagName->text();
   if (tag_name == defaultTag) {
     tag_name = KST::suggestCSDName(KstObjectTag::fromString(_w->_vector->selectedVector()));
@@ -212,7 +211,7 @@ bool KstCsdDialogI::newObject() {
 }
 
 
-KstImagePtr KstCsdDialogI::createImage(KstCSDPtr csd) {
+KstImagePtr KstCsdDialog::createImage(KstCSDPtr csd) {
   KPalette* newPal = new KPalette(_w->_colorPalette->selectedPalette());
   csd->readLock();
   KstImagePtr image = new KstImage(csd->tagName()+"-I", csd->outputMatrix(), 0, 1, true, newPal);
@@ -254,7 +253,7 @@ KstImagePtr KstCsdDialogI::createImage(KstCSDPtr csd) {
 }
 
 
-bool KstCsdDialogI::editSingleObject(KstCSDPtr csPtr) {
+bool KstCsdDialog::editSingleObject(KstCSDPtr csPtr) {
   csPtr->writeLock();
 
   KST::vectorList.lock().readLock();
@@ -356,9 +355,12 @@ bool KstCsdDialogI::editSingleObject(KstCSDPtr csPtr) {
 }
 
 
-// returns true if succesful
-bool KstCsdDialogI::editObject() {
+
+bool KstCsdDialog::editObject() {
+  //
   // if the user selected no vector, treat it as non-dirty
+  //
+
   _vectorDirty = _w->_vector->_vector->currentItem() != 0;
   _fFTLenDirty = _w->_kstFFTOptions->FFTLen->text() != " ";
   _sampRateDirty = !_w->_kstFFTOptions->SampRate->text().isEmpty();
@@ -371,7 +373,10 @@ bool KstCsdDialogI::editObject() {
 
   KstCSDList csList = kstObjectSubList<KstDataObject,KstCSD>(KST::dataObjectList);
 
+  //
   // if editing multiple objects, edit each one
+  //
+
   if (_editMultipleMode) {
     bool didEdit = false;
     for (uint i = 0; i < _editMultipleWidget->_objectList->count(); i++) {
@@ -434,7 +439,10 @@ void KstCsdDialogI::populateEditMultiple() {
   KstCSDList csList = kstObjectSubList<KstDataObject,KstCSD>(KST::dataObjectList);
   _editMultipleWidget->_objectList->insertStringList(csList.tagNames());
 
+  //
   // also intermediate state for multiple edit
+  //
+
   _w->_vector->_vector->insertItem("", 0);
   _w->_vector->_vector->setCurrentItem(0);
   _w->_kstFFTOptions->Apodize->setNoChange();
@@ -478,7 +486,7 @@ void KstCsdDialogI::populateEditMultiple() {
 }
 
 
-void KstCsdDialogI::cleanup() {
+void KstCsdDialog::cleanup() {
   if (_editMultipleMode) {
      _w->_kstFFTOptions->FFTLen->setMinValue(_w->_kstFFTOptions->FFTLen->minValue() + 1);
      _w->_kstFFTOptions->FFTLen->setSpecialValueText(QString::null);
@@ -490,25 +498,25 @@ void KstCsdDialogI::cleanup() {
 }
 
 
-void KstCsdDialogI::setApodizeDirty() {
+void KstCsdDialog::setApodizeDirty() {
   _apodizeDirty = true;
   _w->_kstFFTOptions->Apodize->setTristate(false);
 }
 
 
-void KstCsdDialogI::setRemoveMeanDirty() {
+void KstCsdDialog::setRemoveMeanDirty() {
   _removeMeanDirty = true;
   _w->_kstFFTOptions->RemoveMean->setTristate(false);
 }
 
 
-void KstCsdDialogI::setInterpolateHolesDirty() {
+void KstCsdDialog::setInterpolateHolesDirty() {
   _w->_kstFFTOptions->InterpolateHoles->setTristate(false);
   _interpolateHolesDirty = true;
 }
 
 
-void KstCsdDialogI::setInterleavedDirty() {
+void KstCsdDialog::setInterleavedDirty() {
   _w->_kstFFTOptions->Interleaved->setTristate(false);
   _interleavedDirty = true;
   // also set the FFTLen to be dirty, as presumably the user will think it has been edited
@@ -516,8 +524,8 @@ void KstCsdDialogI::setInterleavedDirty() {
 }
 
 
-void KstCsdDialogI::setVector(const QString& name) {
+void KstCsdDialog::setVector(const QString& name) {
   _w->_vector->setSelection(name);
 }
 
-#include "kstcsddialog_i.moc"
+#include "kstcsddialog.moc"

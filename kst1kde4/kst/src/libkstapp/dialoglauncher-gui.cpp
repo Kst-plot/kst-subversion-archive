@@ -16,18 +16,17 @@
  ***************************************************************************/
 
 #include "dialoglauncher-gui.h"
-#include "kstcsddialog_i.h"
-#include "kstcurvedialog_i.h"
-#include "ksteqdialog_i.h"
-#include "ksthsdialog_i.h"
-#include "kstimagedialog_i.h"
-#include "kstmatrixdialog_i.h"
-#include "kstplugindialog_i.h"
-#include "kstbasicdialog_i.h"
-#include "kstpsddialog_i.h"
-#include "kstvvdialog_i.h"
-#include "kstvectordialog_i.h"
-
+#include "kstcsddialog.h"
+#include "kstcurvedialog.h"
+#include "ksteqdialog.h"
+#include "ksthsdialog.h"
+#include "kstimagedialog.h"
+#include "kstmatrixdialog.h"
+#include "kstplugindialog.h"
+#include "kstbasicdialog.h"
+#include "kstpsddialog.h"
+#include "kstvvdialog.h"
+#include "kstvectordialog.h"
 
 KstGuiDialogs::KstGuiDialogs()
 : KstDialogs() {
@@ -40,69 +39,69 @@ KstGuiDialogs::~KstGuiDialogs() {
 
 void KstGuiDialogs::showHistogramDialog(const QString& name, bool edit) {
   if (!edit) {
-    KstHsDialogI::globalInstance()->showNew(name);
+    KstHsDialog::globalInstance()->showNew(name);
   } else {
-    KstHsDialogI::globalInstance()->showEdit(name);
+    KstHsDialog::globalInstance()->showEdit(name);
   }
 }
 
 
 void KstGuiDialogs::showCPluginDialog(const QString& name, bool edit) {
   if (!edit) {
-    KstPluginDialogI::globalInstance()->showNew(name);
+    KstPluginDialog::globalInstance()->showNew(name);
   } else {
-    KstPluginDialogI::globalInstance()->showEdit(name);
+    KstPluginDialog::globalInstance()->showEdit(name);
   }
 }
 
 
 void KstGuiDialogs::showBasicPluginDialog(const QString& name, bool edit) {
   if (!edit) {
-    KstBasicDialogI::globalInstance()->showNew(name);
+    KstBasicDialog::globalInstance()->showNew(name);
   } else {
-    KstBasicDialogI::globalInstance()->showEdit(name);
+    KstBasicDialog::globalInstance()->showEdit(name);
   }
 }
 
 
 void KstGuiDialogs::showEquationDialog(const QString& name, bool edit) {
   if (!edit) {
-    KstEqDialogI::globalInstance()->showNew(name);
+    KstEqDialog::globalInstance()->showNew(name);
   } else {
-    KstEqDialogI::globalInstance()->showEdit(name);
+    KstEqDialog::globalInstance()->showEdit(name);
   }
 }
 
 
 void KstGuiDialogs::showCSDDialog(const QString& name, bool edit) {
   if (!edit) {
-    KstCsdDialogI::globalInstance()->showNew(name);
+    KstCsdDialog::globalInstance()->showNew(name);
   } else {
-    KstCsdDialogI::globalInstance()->showEdit(name);
+    KstCsdDialog::globalInstance()->showEdit(name);
   }
 }
 
 
 void KstGuiDialogs::showPSDDialog(const QString& name, bool edit) {
   if (!edit) {
-    KstPsdDialogI::globalInstance()->showNew(name);
+    KstPsdDialog::globalInstance()->showNew(name);
   } else {
-    KstPsdDialogI::globalInstance()->showEdit(name);
+    KstPsdDialog::globalInstance()->showEdit(name);
   }
 }
 
 
 void KstGuiDialogs::showVectorViewDialog(const QString& name, bool edit) {
   if (!edit) {
-    KstVvDialogI::globalInstance()->showNew(name);
+    KstVvDialog::globalInstance()->showNew(name);
   } else {
-    KstVvDialogI::globalInstance()->showEdit(name);
+    KstVvDialog::globalInstance()->showEdit(name);
   }
 }
 
 
 void KstGuiDialogs::newVectorDialog(QWidget *parent, const char *createdSlot, const char *selectedSlot, const char *updateSlot) {
-  KstVectorDialogI *ad = new KstVectorDialogI(parent, "vector dialog");
+  KstVectorDialog *ad = new KstVectorDialog(parent, "vector dialog");
   if (createdSlot) {
     QObject::connect(ad, SIGNAL(vectorCreated(KstVectorPtr)), parent, createdSlot);
   }
@@ -120,15 +119,15 @@ void KstGuiDialogs::newVectorDialog(QWidget *parent, const char *createdSlot, co
 
 void KstGuiDialogs::showVectorDialog(const QString& name, bool edit) {
   if (!edit) {
-    KstVectorDialogI::globalInstance()->showNew(name);
+    KstVectorDialog::globalInstance()->showNew(name);
   } else {
-    KstVectorDialogI::globalInstance()->showEdit(name);
+    KstVectorDialog::globalInstance()->showEdit(name);
   }
 }
 
 
 void KstGuiDialogs::newMatrixDialog(QWidget *parent, const char *createdSlot, const char *selectedSlot, const char *updateSlot) {
-  KstMatrixDialogI *ad = new KstMatrixDialogI(parent, "matrix dialog");
+  KstMatrixDialog *ad = new KstMatrixDialog(parent, "matrix dialog");
   if (createdSlot) {
     QObject::connect(ad, SIGNAL(matrixCreated(KstMatrixPtr)), parent, createdSlot);
   }
@@ -146,26 +145,26 @@ void KstGuiDialogs::newMatrixDialog(QWidget *parent, const char *createdSlot, co
 
 void KstGuiDialogs::showMatrixDialog(const QString& name, bool edit) {
   if (!edit) {
-    KstMatrixDialogI::globalInstance()->showNew(name);
+    KstMatrixDialog::globalInstance()->showNew(name);
   } else {
-    KstMatrixDialogI::globalInstance()->showEdit(name);
+    KstMatrixDialog::globalInstance()->showEdit(name);
   }
 }
 
 
 void KstGuiDialogs::showImageDialog(const QString& name, bool edit) {
   if (!edit) {
-    KstImageDialogI::globalInstance()->showNew(name);
+    KstImageDialog::globalInstance()->showNew(name);
   } else {
-    KstImageDialogI::globalInstance()->showEdit(name);
+    KstImageDialog::globalInstance()->showEdit(name);
   }
 }
 
 
 void KstGuiDialogs::showCurveDialog(const QString& name, bool edit) {
   if (!edit) {
-    KstCurveDialogI::globalInstance()->showNew(name);
+    KstCurveDialog::globalInstance()->showNew(name);
   } else {
-    KstCurveDialogI::globalInstance()->showEdit(name);
+    KstCurveDialog::globalInstance()->showEdit(name);
   }
 }

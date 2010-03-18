@@ -1,5 +1,5 @@
 /***************************************************************************
-                       ksteqdialog_i.h  -  Part of KST
+                       ksteqdialog.h  -  Part of KST
                              -------------------
     begin                :
     copyright            : (C) 2003 The University of Toronto
@@ -19,18 +19,17 @@
 #ifndef KSTEQDIALOGI_H
 #define KSTEQDIALOGI_H
 
-#include "ui_kstdatadialog.h"
+#include "kstdatadialog.h"
 #include "kstequation.h"
 #include "kst_export.h"
+#include "ui_eqdialogwidget.h"
 
-class EqDialogWidget;
-
-class KST_EXPORT KstEqDialogI : public KstDataDialog {
+class KST_EXPORT KstEqDialog : public KstDataDialog {
   Q_OBJECT
   public:
-    KstEqDialogI(QWidget* parent = 0, const char* name = 0, bool modal = false, WFlags fl = 0);
-    virtual ~KstEqDialogI();
-    static KstEqDialogI *globalInstance();
+    KstEqDialog(QWidget* parent = 0, const char* name = 0, bool modal = false, Qt::WFlags fl = 0);
+    virtual ~KstEqDialog();
+    static KstEqDialog *globalInstance();
 
   protected:
     QString editTitle() { return tr("Edit Equation"); }
@@ -44,7 +43,7 @@ class KST_EXPORT KstEqDialogI : public KstDataDialog {
     bool editObject();
 
   private:
-    static QPointer<KstEqDialogI> _inst;
+    static QPointer<KstEqDialog> _inst;
     bool checkEntries();
     bool _equationDirty;
     bool _xVectorsDirty;
@@ -62,7 +61,7 @@ class KST_EXPORT KstEqDialogI : public KstDataDialog {
   private:
     static const QString& defaultTag;
     void populateFunctionList();
-    EqDialogWidget *_w;
+    Ui::EqDialogWidget *_w;
 };
 
 #endif

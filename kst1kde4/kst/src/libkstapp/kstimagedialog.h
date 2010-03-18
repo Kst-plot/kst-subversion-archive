@@ -1,5 +1,5 @@
 /***************************************************************************
-                       kstimagedialog_i.h  -  Part of KST
+                       kstimagedialog.h  -  Part of KST
                              -------------------
     begin                :
     copyright            : (C) 2003 The University of Toronto
@@ -19,18 +19,17 @@
 #ifndef KSTIMAGEDIALOGI_H
 #define KSTIMAGEDIALOGI_H
 
-#include "ui_kstdatadialog.h"
+#include "kstdatadialog.h"
 #include "kstimage.h"
 #include "kst_export.h"
+#include "ui_imagedialogwidget.h"
 
-class ImageDialogWidget;
-
-class KST_EXPORT KstImageDialogI : public KstDataDialog {
+class KST_EXPORT KstImageDialog : public KstDataDialog {
   Q_OBJECT
   public:
-    KstImageDialogI(QWidget *parent = 0, const char *name = 0, bool modal = false, WFlags fl = 0 );
-    virtual ~KstImageDialogI();
-    static KstImageDialogI *globalInstance();
+    KstImageDialog(QWidget *parent = 0, const char *name = 0, bool modal = false, Qt::WFlags fl = 0 );
+    virtual ~KstImageDialog();
+    static KstImageDialog *globalInstance();
 
   protected:
     QString editTitle() { return tr("Edit Image"); }
@@ -45,7 +44,7 @@ class KST_EXPORT KstImageDialogI : public KstDataDialog {
     void setMatrix(const QString& name);
 
   private:
-    static QPointer<KstImageDialogI> _inst;
+    static QPointer<KstImageDialog> _inst;
     void placeInPlot(KstImagePtr image);
     bool checkParameters(double& lowerZDouble, double& upperZDouble);
     void fillFieldsForEditNoUpdate();
@@ -83,7 +82,7 @@ class KST_EXPORT KstImageDialogI : public KstDataDialog {
     void fillFieldsForEdit();
     void fillFieldsForNew();
     void cleanup();
-    ImageDialogWidget *_w;
+    Ui::ImageDialogWidget *_w;
 };
 
 #endif
