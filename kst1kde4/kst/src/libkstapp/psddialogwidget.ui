@@ -75,7 +75,7 @@
   <customwidget>
    <class>KstFFTOptions</class>
    <extends>QWidget</extends>
-   <header>kstfftoptions.h</header>
+   <header>fftoptionswidget.h</header>
   </customwidget>
   <customwidget>
    <class>CurvePlacementWidget</class>

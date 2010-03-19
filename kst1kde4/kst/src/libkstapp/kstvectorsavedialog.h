@@ -1,8 +1,8 @@
 /***************************************************************************
-                       kstviewlabelwidget_i.h  -  Part of KST
+                       kstvectorsavedialog.h  -  Part of KST
                              -------------------
     begin                :
-    copyright            : (C) 2008 The University of British Columbia
+    copyright            : (C) 2007 The University of British Columbia
     email                :
  ***************************************************************************/
 
@@ -15,35 +15,26 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef KSTVIEWLABELWIDGETI_H
-#define KSTVIEWLABELWIDGETI_H
+#ifndef KSTVECTORSAVEDIALOGI_H
+#define KSTVECTORSAVEDIALOGI_H
 
-#include "viewlabelwidget.h"
+#include "ui_vectorsavedialog.h"
 
-class KstViewLabelWidgetI : public ViewLabelWidget {
+class KstVectorSaveDialog : public QDialog, public Ui::VectorSaveDialog {
   Q_OBJECT
   public:
-    KstViewLabelWidgetI(QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
-    virtual ~KstViewLabelWidgetI();
-
-  protected:
-
-  public:
-    bool _changedFgColor;
-    bool _changedBgColor;
+    KstVectorSaveDialog(QWidget* parent = 0,
+                        const char* name = 0,
+                        bool modal = false, Qt::WFlags fl = 0 );
+    virtual ~KstVectorSaveDialog();
 
   public slots:
-    void insertScalarInText( const QString& S );
-    void insertStringInText( const QString& S );
-
-    virtual void changedFgColor();
-    virtual void changedBgColor();
+    void init();
+    void show();
 
   private slots:
-
-  signals:
-
-  private:
+    void selectionChanged();
+    void save();
 };
 
 #endif

@@ -18,32 +18,34 @@
 #ifndef KSTFITTABLE_H
 #define KSTFITTABLE_H
 
-#include <qtable.h>
+#include <QPainter>
+#include <QTableWidget>
+#include <QTableWidgetItem>
 
-class KstFitTable : public QTable
+class KstFitTable : public QTableWidget
 {
 public:
-    KstFitTable( QWidget * parent = 0, const char * name = 0 );
+    KstFitTable( QWidget *parent = 0, const char *name = 0 );
    ~KstFitTable( );
 
-    void          setParameters(double* pParams, int iNumParams, double* pCovars, int iNumCovars, double dChi2Nu);
-    void          paintCell( QPainter * p, int row, int col, const QRect & cr, bool selected, const QColorGroup & cg );
+    void              setParameters(double *pParams, int iNumParams, double *pCovars, int iNumCovars, double dChi2Nu);
+    void              paintCell( QPainter *p, int row, int col, const QRect &cr, bool selected, const QPalette &palette );
 
-    void          resizeData(int) {}
-    QWidget*      createEditor(int, int, bool) const { return 0; }
-    QTableItem*   item(int, int) { return 0; }
-    void          setItem(int, int, QTableItem *) {}
-    void          clearCell(int, int) {}
-    void          insertWidget(int, int, QWidget *) {}
-    QWidget*      cellWidget(int, int) const { return 0; }
-    void          clearCellWidget(int, int) {}
+    void              resizeData(int) {}
+    QWidget*          createEditor(int, int, bool) const { return 0; }
+    QTableWidgetItem* item(int, int) { return 0; }
+    void              setItem(int, int, QTableWidgetItem *) {}
+    void              clearCell(int, int) {}
+    void              insertWidget(int, int, QWidget *) {}
+    QWidget*          cellWidget(int, int) const { return 0; }
+    void              clearCellWidget(int, int) {}
 
 private:
-    double*       _pdParams;
-    double*       _pdCovars;
-    double        _dChi2Nu;
-    int           _iNumParams;
-    int           _iNumCovars;
+    double*           _pdParams;
+    double*           _pdCovars;
+    double            _dChi2Nu;
+    int               _iNumParams;
+    int               _iNumCovars;
 };
 
 #endif

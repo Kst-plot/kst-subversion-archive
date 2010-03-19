@@ -21,28 +21,19 @@
 
 #include "changenptsdialog.h"
 
-class KstChangeNptsDialogI : public KstChangeNptsDialog {
+class KstChangeNptsDialog : public QDialog, public Ui::KstChangeNptsDialog {
     Q_OBJECT
 public:
-    KstChangeNptsDialogI(QWidget* parent = 0,
+    KstChangeNptsDialog(QWidget* parent = 0,
                          const char* name = 0,
-                         bool modal = FALSE, WFlags fl = 0 );
-    virtual ~KstChangeNptsDialogI();
+                         bool modal = FALSE, Qt::WFlags fl = 0 );
+    virtual ~KstChangeNptsDialog();
 
 public slots:
-  /** update the entries in changenptsDialog to represent current vectors */
   bool updateChangeNptsDialog();
-
-  /** calls updateChangeNptsDialog(), then shows and raises changeNptsDialog */
   void showChangeNptsDialog();
-
-  /** select none in selection box */
   void selectNone();
-
-  /** select all in selection box */
   void selectAll();
-
-  /** Update fields based on vector at index */
   void updateDefaults(int index=0);
 
 private slots:
@@ -54,7 +45,6 @@ private slots:
   void changedSelection();
 
 signals:
-  /** signal that vectors have changed */
   void docChanged();
 
 private:

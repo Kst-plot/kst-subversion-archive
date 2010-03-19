@@ -1,5 +1,5 @@
 /***************************************************************************
-                     kstfilterdialog_i.cpp  -  Part of KST
+                     kstfilterdialog.cpp  -  Part of KST
                              -------------------
     begin                : Wed Jul 28 2004
     copyright            : (C) 2003 The University of Toronto
@@ -18,15 +18,10 @@
 
 #include <assert.h>
 
-// include files for Qt
 #include <qlineedit.h>
 #include <qtooltip.h>
 #include <qwhatsthis.h>
 
-// include files for KDE
-#include <kmessagebox.h>
-
-// application specific includes
 #include "curveappearancewidget.h"
 #include "kst2dplot.h"
 #include "kstchoosecolordialog_i.h"
@@ -41,40 +36,41 @@
 #include "stringselector.h"
 #include "vectorselector.h"
 
-QPointer<KstFilterDialogI> KstFilterDialogI::_inst;
+QPointer<KstFilterDialog> KstFilterDialog::_inst;
 
-KstFilterDialogI *KstFilterDialogI::globalInstance() {
+KstFilterDialog *KstFilterDialog::globalInstance() {
   if (!_inst) {
-    _inst = new KstFilterDialogI(KstApp::inst());
+    _inst = new KstFilterDialog(KstApp::inst());
   }
 
   return _inst;
 }
 
 
-KstFilterDialogI::KstFilterDialogI(QWidget* parent, const char* name, bool modal, WFlags fl)
+KstFilterDialog::KstFilterDialog(QWidget* parent, const char* name, bool modal, Qt::WFlags fl)
 : KstPluginDialogI(parent, name, modal, fl) {
   _w->_curveAppearance->show();
 }
 
 
-KstFilterDialogI::~KstFilterDialogI() {
+KstFilterDialog::~KstFilterDialog() {
 }
 
 
-void KstFilterDialogI::show_setCurve(const QString& curveName,
-                                  const QString& plotName,
-                                  const QString& window) {
-
+void KstFilterDialog::show_setCurve(const QString& curveName, const QString& plotName, const QString& window) {
   KstBaseCurveList curves = kstObjectSubList<KstDataObject, KstBaseCurve>(KST::dataObjectList);
   KstVCurveList vcurves = kstObjectSubList<KstBaseCurve, KstVCurve>(curves);
+
   _window   = window;
   _plotName = plotName;
   _curve    = curveName;
 
+  //
   // it should be impossible for the curve not to exist so this should
   // always be true.  If it is false, we do not properly take care of it,
   // here and bad things will happen....
+  //
+
   KstVCurvePtr curve = *vcurves.findTag(curveName);
   if (curve) {
     curve->readLock();
@@ -86,7 +82,7 @@ void KstFilterDialogI::show_setCurve(const QString& curveName,
 }
 
 
-void KstFilterDialogI::updatePluginList() {
+void KstFilterDialog::updatePluginList() {
   PluginCollection *pc = PluginCollection::self();
   const QMap<QString,Plugin::Data>& _pluginMap = pc->pluginList();
   QString previous = _pluginList[_w->PluginCombo->currentItem()];
@@ -117,12 +113,14 @@ void KstFilterDialogI::updatePluginList() {
 }
 
 
-bool KstFilterDialogI::saveInputs(KstCPluginPtr plugin, QExplicitlySharedDataPointer<Plugin> p) {
+bool KstFilterDialog::saveInputs(KstCPluginPtr plugin, QExplicitlySharedDataPointer<Plugin> p) {
   KstReadLocker vl(&KST::vectorList.lock());
   KstWriteLocker scl(&KST::scalarList.lock());
   KstWriteLocker stl(&KST::stringList.lock());
   const QValueList<Plugin::Data::IOValue>& itable = p->data()._inputs;
-  for (QValueList<Plugin::Data::IOValue>::ConstIterator it = itable.begin(); it != itable.end(); ++it) {
+  QValueList<Plugin::Data::IOValue>::ConstIterator it;
+
+  for (it = itable.begin(); it != itable.end(); ++it) {
     if ((*it)._type == Plugin::Data::IOValue::TableType) {
       if ((*it)._name == p->data()._filterInputVector) {
         KstVectorPtr v = *KST::vectorList.findTag(_yvector);
@@ -184,7 +182,7 @@ bool KstFilterDialogI::saveInputs(KstCPluginPtr plugin, QExplicitlySharedDataPoi
 }
 
 
-bool KstFilterDialogI::createCurve(KstCPluginPtr plugin) {
+bool KstFilterDialog::createCurve(KstCPluginPtr plugin) {
   KstVectorPtr xVector;
   KstVectorPtr yVector;
 
@@ -235,7 +233,7 @@ bool KstFilterDialogI::createCurve(KstCPluginPtr plugin) {
 }
 
 
-bool KstFilterDialogI::newObject() {
+bool KstFilterDialog::newObject() {
   QString tagName = _tagName->text();
 
   if (KstData::self()->dataTagNameNotUnique(tagName, true, this)) {
@@ -290,7 +288,7 @@ bool KstFilterDialogI::newObject() {
 }
 
 
-void KstFilterDialogI::generateEntries(bool input, int& cnt, QWidget *parent, QGridLayout *grid, const QValueList<Plugin::Data::IOValue>& table) {
+void KstFilterDialog::generateEntries(bool input, int& cnt, QWidget *parent, QGridLayout *grid, const QValueList<Plugin::Data::IOValue>& table) {
 
   // get fixed vector for filter
   QString fixedVector;
@@ -417,5 +415,5 @@ void KstFilterDialogI::generateEntries(bool input, int& cnt, QWidget *parent, QG
   }
 }
 
-#include "kstfilterdialog_i.moc"
+#include "kstfilterdialog.moc"
 

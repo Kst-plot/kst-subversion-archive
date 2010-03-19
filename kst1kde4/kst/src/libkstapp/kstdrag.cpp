@@ -19,8 +19,9 @@
 
 
 KstDrag::KstDrag(const char *mimeType, QWidget *dragSource)
-: QStoredDrag(mimeType, dragSource)
+: QMimeData()
 {
+// xxx  setData(mimeType);
 }
 
 

@@ -18,8 +18,6 @@
 #ifndef KSTNUMBERSEQUENCE_H
 #define KSTNUMBERSEQUENCE_H
 
-#include <kstaticdeleter.h>
-
 #include "kst_export.h"
 
 class KST_EXPORT KstNumberSequence {

@@ -1,5 +1,5 @@
 /**************************************************************************
-        kstchangefiledialog_i.cpp - source file: inherits designer dialog
+        kstchangefiledialog.cpp - source file: inherits designer dialog
                              -------------------
     begin                :  2001
     copyright            : (C) 2000-2003 by Barth Netterfield
@@ -38,11 +38,13 @@
 #include "kstviewwindow.h"
 #include "treetools.h"
 
-KstChangeFileDialogI::KstChangeFileDialogI(QWidget* parent,
+KstChangeFileDialog::KstChangeFileDialog(QWidget* parent,
                                            const char* name,
                                            bool modal,
-                                           WFlags fl)
+                                           Qt::WFlags fl)
 : KstChangeFileDialog(parent, name, modal, fl) {
+  setupUi(this);
+
   connect(_clearFilter, SIGNAL(clicked()), _filter, SLOT(clear()));
   connect(_clearFilter, SIGNAL(clicked()), ChangeFileCurveList, SLOT(clearSelection()));
   connect(_filter, SIGNAL(textChanged(const QString&)), this, SLOT(updateSelection(const QString&)));
@@ -68,17 +70,17 @@ KstChangeFileDialogI::KstChangeFileDialogI(QWidget* parent,
 }
 
 
-KstChangeFileDialogI::~KstChangeFileDialogI() {
+KstChangeFileDialog::~KstChangeFileDialog() {
   delete _configWidget;
 }
 
 
-void KstChangeFileDialogI::selectAll() {
+void KstChangeFileDialog::selectAll() {
   ChangeFileCurveList->selectAll(true);
 }
 
 
-void KstChangeFileDialogI::updateChangeFileDialog() {
+void KstChangeFileDialog::updateChangeFileDialog() {
   KstRVectorList rvl = kstObjectSubList<KstVector,KstRVector>(KST::vectorList);
   KstRMatrixList rml = kstObjectSubList<KstMatrix,KstRMatrix>(KST::matrixList);
   QMap<QString, QString> filesUsed;
@@ -125,21 +127,21 @@ void KstChangeFileDialogI::updateChangeFileDialog() {
 }
 
 
-void KstChangeFileDialogI::showChangeFileDialog() {
+void KstChangeFileDialog::showChangeFileDialog() {
   updateChangeFileDialog();
   show();
   raise();
 }
 
 
-void KstChangeFileDialogI::OKFileChange() {
+void KstChangeFileDialog::OKFileChange() {
   if (applyFileChange()) {
     reject();
   }
 }
 
 
-void KstChangeFileDialogI::sourceChanged(const QString& text)
+void KstChangeFileDialog::sourceChanged(const QString& text)
 {
   delete _configWidget;
   _configWidget = 0L;
@@ -200,7 +202,7 @@ void KstChangeFileDialogI::sourceChanged(const QString& text)
 }
 
 
-void KstChangeFileDialogI::configureSource()
+void KstChangeFileDialog::configureSource()
 {
   bool isNew = false;
   KST::dataSourceList.lock().readLock();
@@ -238,7 +240,7 @@ void KstChangeFileDialogI::configureSource()
 }
 
 
-void KstChangeFileDialogI::markSourceAndSave()
+void KstChangeFileDialog::markSourceAndSave()
 {
   if (_configWidget) {
     KstDataSourcePtr src = static_cast<KstDataSourceConfigWidget*>((QWidget*)_configWidget)->instance();
@@ -250,7 +252,7 @@ void KstChangeFileDialogI::markSourceAndSave()
 }
 
 
-bool KstChangeFileDialogI::applyFileChange() {
+bool KstChangeFileDialog::applyFileChange() {
   KstDataSourcePtr file;
   KST::dataSourceList.lock().writeLock();
   KstDataSourceList::Iterator it = KST::dataSourceList.findReusableFileName(_dataFile->url());
@@ -452,7 +454,7 @@ bool KstChangeFileDialogI::applyFileChange() {
 }
 
 
-void KstChangeFileDialogI::allFromFile() {
+void KstChangeFileDialog::allFromFile() {
   if (_files->count() > 0) {
     ChangeFileCurveList->selectAll(false);
     KstReadLocker rl(&KST::vectorList.lock());
@@ -475,7 +477,7 @@ void KstChangeFileDialogI::allFromFile() {
 }
 
 
-void KstChangeFileDialogI::updateSelection(const QString& txt) {
+void KstChangeFileDialog::updateSelection(const QString& txt) {
   ChangeFileCurveList->selectAll(false);
   QRegExp re(txt, true, true);
   uint i;
@@ -485,4 +487,4 @@ void KstChangeFileDialogI::updateSelection(const QString& txt) {
   }
 }
 
-#include "kstchangefiledialog_i.moc"
+#include "kstchangefiledialog.moc"

@@ -15,7 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-// application specific includes
 #include "kstnumbersequence.h"
 
 KstNumberSequence::KstNumberSequence() {

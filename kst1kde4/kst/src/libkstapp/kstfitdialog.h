@@ -1,5 +1,5 @@
 /***************************************************************************
-                      kstfilterdialog_i.h  -  Part of KST
+                      kstfitdialog.h  -  Part of KST
                              -------------------
     begin                : Wed Jul 28 2004
     copyright            : (C) 2004 The University of British Columbia
@@ -15,17 +15,17 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef KSTFILTERDIALOGI_H
-#define KSTFILTERDIALOGI_H
+#ifndef KSTFITDIALOGI_H
+#define KSTFITDIALOGI_H
 
-#include "kstplugindialog_i.h"
+#include "kstplugindialog.h"
 
-class KstFilterDialogI : public KstPluginDialogI {
+class KstFitDialog : public KstPluginDialog {
   Q_OBJECT
   public:
-    KstFilterDialogI(QWidget* parent = 0, const char* name = 0, bool modal = false, WFlags fl = 0);
-    virtual ~KstFilterDialogI();
-    static KstFilterDialogI *globalInstance();
+    KstFitDialog(QWidget* parent = 0, const char* name = 0, bool modal = false, Qt::WFlags fl = 0 );
+    virtual ~KstFitDialog();
+    static KstFitDialog *globalInstance();
 
   public slots:
     void show_setCurve(const QString& strCurve, const QString& strPlotName, const QString& strWindow);
@@ -33,17 +33,20 @@ class KstFilterDialogI : public KstPluginDialogI {
     void updatePluginList();
 
   private:
+    static QPointer<KstFitDialog> _inst;
+
     QString _xvector;
     QString _yvector;
     QString _evector;
-    QString _window;
-    QString _plotName;
-    QString _curve;
-    static QPointer<KstFilterDialogI> _inst;
+    QString _strWindow;
+    QString _strPlotName;
+    QString _strCurve;
 
     bool createCurve(KstCPluginPtr plugin);
+
+    void generateEntries(bool input, int& cnt, QWidget *parent, QGridLayout *grid, const QList<Plugin::Data::IOValue>& table);
+
     bool saveInputs(KstCPluginPtr plugin, QExplicitlySharedDataPointer<Plugin> p);
-    void generateEntries(bool input, int& cnt, QWidget *parent, QGridLayout *grid, const QValueList<Plugin::Data::IOValue>& table);
 };
 
 #endif

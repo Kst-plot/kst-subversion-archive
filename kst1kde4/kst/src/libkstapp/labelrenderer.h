@@ -23,7 +23,7 @@
 #include <qpair.h>
 #include <qstring.h>
 #include <qvariant.h>
-#include <qvaluevector.h>
+#include <QVector>
 
 #include "dataref.h"
 #include "kst_export.h"
@@ -32,10 +32,9 @@
 #include "kststring.h"
 #include "kstvector.h"
 
-// inline for speed.
 struct RenderContext {
   RenderContext(const QString& fontName, int fontSize, QPainter *p)
-  : fontName(fontName), size(fontSize), p(p), _fm(_font) {
+  : size(fontSize), fontName(fontName), p(p), _fm(_font) {
     x = y = xMax = xStart = 0;
     ascent = descent = lineSpacing = 0;
     precision = 8;
@@ -111,21 +110,27 @@ struct RenderContext {
     substitute = on;
   }
 
-  int x, y; // Coordinates we're rendering at
-  int xMax, xStart;
-  int ascent, descent, lineSpacing;
-  QString fontName;
+  int x; // coordinates we're rendering at
+  int y; // coordinates we're rendering at
+  int xMax;
+  int xStart;
+  int ascent;
+  int descent;
+  int lineSpacing;
   int size;
-  QPainter *p;
   int precision;
   bool substitute;
-  QValueVector<DataRef> *_cache;
+  QString fontName;
+  QPainter *p;
+  QVector<DataRef> *_cache;
   QPen pen;
 
   private:
     QFont _font;
     QFontMetrics _fm;
-    int _ascent, _descent, _height; // caches to avoid performance problem with QFont*
+    int _ascent;  // caches to avoid performance problem with QFont*
+    int _descent; // caches to avoid performance problem with QFont*
+    int _height;  // caches to avoid performance problem with QFont*
     int _fontSize;
 };
 

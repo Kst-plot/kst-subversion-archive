@@ -1,5 +1,5 @@
 /**************************************************************************
-        kstchangefiledialog_i.h - source file: inherits designer dialog
+        kstchangefiledialog.h - source file: inherits designer dialog
                              -------------------
     begin                :  2001
     copyright            : (C) 2000-2003 by Barth Netterfield
@@ -18,15 +18,15 @@
 #ifndef KSTCHANGEFILEDIALOGI_H
 #define KSTCHANGEFILEDIALOGI_H
 
-#include "changefiledialog.h"
+#include "ui_changefiledialog.h"
 
-class KstChangeFileDialogI : public KstChangeFileDialog {
+class KstChangeFileDialog : public QDialog, public Ui::KstChangeFileDialog {
   Q_OBJECT
   public:
-    KstChangeFileDialogI(QWidget* parent = 0,
+    KstChangeFileDialog(QWidget* parent = 0,
                          const char* name = 0,
-                         bool modal = FALSE, WFlags fl = 0 );
-    virtual ~KstChangeFileDialogI();
+                         bool modal = FALSE, Qt::WFlags fl = 0 );
+    virtual ~KstChangeFileDialog();
 
   public slots:
     void updateChangeFileDialog();

@@ -1,5 +1,5 @@
 /***************************************************************************
-                      kstfitdialog_i.h  -  Part of KST
+                      kstfilterdialog.h  -  Part of KST
                              -------------------
     begin                : Wed Jul 28 2004
     copyright            : (C) 2004 The University of British Columbia
@@ -15,17 +15,17 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef KSTFITDIALOGI_H
-#define KSTFITDIALOGI_H
+#ifndef KSTFILTERDIALOGI_H
+#define KSTFILTERDIALOGI_H
 
-#include "kstplugindialog_i.h"
+#include "kstplugindialog.h"
 
-class KstFitDialogI : public KstPluginDialogI {
+class KstFilterDialog : public KstPluginDialog {
   Q_OBJECT
   public:
-    KstFitDialogI(QWidget* parent = 0, const char* name = 0, bool modal = false, WFlags fl = 0 );
-    virtual ~KstFitDialogI();
-    static KstFitDialogI *globalInstance();
+    KstFilterDialog(QWidget* parent = 0, const char* name = 0, bool modal = false, Qt::WFlags fl = 0);
+    virtual ~KstFilterDialog();
+    static KstFilterDialog *globalInstance();
 
   public slots:
     void show_setCurve(const QString& strCurve, const QString& strPlotName, const QString& strWindow);
@@ -33,20 +33,17 @@ class KstFitDialogI : public KstPluginDialogI {
     void updatePluginList();
 
   private:
-    static QPointer<KstFitDialogI> _inst;
+    bool createCurve(KstCPluginPtr plugin);
+    bool saveInputs(KstCPluginPtr plugin, QExplicitlySharedDataPointer<Plugin> p);
+    void generateEntries(bool input, int& cnt, QWidget *parent, QGridLayout *grid, const QValueList<Plugin::Data::IOValue>& table);
 
     QString _xvector;
     QString _yvector;
     QString _evector;
-    QString _strWindow;
-    QString _strPlotName;
-    QString _strCurve;
-
-    bool createCurve(KstCPluginPtr plugin);
-
-    void generateEntries(bool input, int& cnt, QWidget *parent, QGridLayout *grid, const QValueList<Plugin::Data::IOValue>& table);
-
-    bool saveInputs(KstCPluginPtr plugin, QExplicitlySharedDataPointer<Plugin> p);
+    QString _window;
+    QString _plotName;
+    QString _curve;
+    static QPointer<KstFilterDialog> _inst;
 };
 
 #endif

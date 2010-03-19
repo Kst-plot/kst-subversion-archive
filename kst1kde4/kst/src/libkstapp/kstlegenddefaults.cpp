@@ -21,6 +21,7 @@
 #include "stdinsource.h"
 
 #include <kconfig.h>
+#include <kconfiggroup.h>
 
 KstLegendDefaults KST::legendDefaults;
 
@@ -149,35 +150,39 @@ void KstLegendDefaults::setScaleLineWidth(int scaleLineWidth) {
 
 
 void KstLegendDefaults::writeConfig(KConfig *config) {
-  config->writeEntry("LegendFontSize", KST::legendDefaults.fontSize());
-  config->writeEntry("LegendFontColor", KST::legendDefaults.fontColor());
-  config->writeEntry("LegendFont", KST::legendDefaults.font());
-  config->writeEntry("LegendTransparent", KST::legendDefaults.transparent());
-  config->writeEntry("LegendForegroundColor", KST::legendDefaults.foregroundColor());
-  config->writeEntry("LegendBackgroundColor", KST::legendDefaults.backgroundColor());
-  config->writeEntry("LegendVertical", KST::legendDefaults.vertical());
-  config->writeEntry("LegendTrackContents", KST::legendDefaults.trackContents());
-  config->writeEntry("LegendBorder", KST::legendDefaults.border());
-  config->writeEntry("LegendMargin", KST::legendDefaults.margin());
-  config->writeEntry("LegendScaleLineWidth", KST::legendDefaults.scaleLineWidth());
+  KConfigGroup cfg(config, "LegendDefaults");
+
+  cfg.writeEntry("LegendFontSize", KST::legendDefaults.fontSize());
+  cfg.writeEntry("LegendFontColor", KST::legendDefaults.fontColor());
+  cfg.writeEntry("LegendFont", KST::legendDefaults.font());
+  cfg.writeEntry("LegendTransparent", KST::legendDefaults.transparent());
+  cfg.writeEntry("LegendForegroundColor", KST::legendDefaults.foregroundColor());
+  cfg.writeEntry("LegendBackgroundColor", KST::legendDefaults.backgroundColor());
+  cfg.writeEntry("LegendVertical", KST::legendDefaults.vertical());
+  cfg.writeEntry("LegendTrackContents", KST::legendDefaults.trackContents());
+  cfg.writeEntry("LegendBorder", KST::legendDefaults.border());
+  cfg.writeEntry("LegendMargin", KST::legendDefaults.margin());
+  cfg.writeEntry("LegendScaleLineWidth", KST::legendDefaults.scaleLineWidth());
 }
 
 
 void KstLegendDefaults::readConfig(KConfig *config) {
+  KConfigGroup cfg(config, "LegendDefaults");
   QColor color;
-
-  _fontSize = config->readNumEntry("LegendFontSize", 12);
+/* xxx
+  _fontSize = cfg.readNumEntry("LegendFontSize", 12);
   color = KstSettings::globalSettings()->foregroundColor;
-  _fontColor = config->readColorEntry("LegendFontColor", &color);
-  _font = config->readEntry("LegendFont", KstApp::inst()->defaultFont());
-  _transparent = config->readBoolEntry("LegendTransparent", false);
+  _fontColor = cfg.readColorEntry("LegendFontColor", &color);
+  _font = cfg.readEntry("LegendFont", KstApp::inst()->defaultFont());
+  _transparent = cfg.readBoolEntry("LegendTransparent", false);
   color = KstSettings::globalSettings()->foregroundColor;
-  _foregroundColor = config->readColorEntry("LegendForegroundColor", &color);
+  _foregroundColor = cfg.readColorEntry("LegendForegroundColor", &color);
   color = KstSettings::globalSettings()->backgroundColor;
-  _backgroundColor = config->readColorEntry("LegendBackgroundColor", &color);
-  _vertical = config->readBoolEntry("LegendVertical", true);
-  _trackContents = config->readBoolEntry("LegendTrackContents", true);
-  _border = config->readNumEntry("LegendBorder", 2);
-  _margin = config->readNumEntry("LegendMargin", 5);
-  _scaleLineWidth = config->readNumEntry("LegendScaleLineWidth", 1);
+  _backgroundColor = cfg.readColorEntry("LegendBackgroundColor", &color);
+  _vertical = cfg.readBoolEntry("LegendVertical", true);
+  _trackContents = cfg.readBoolEntry("LegendTrackContents", true);
+  _border = cfg.readNumEntry("LegendBorder", 2);
+  _margin = cfg.readNumEntry("LegendMargin", 5);
+  _scaleLineWidth = cfg.readNumEntry("LegendScaleLineWidth", 1);
+*/
 }

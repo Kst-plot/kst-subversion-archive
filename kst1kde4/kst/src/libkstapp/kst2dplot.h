@@ -20,6 +20,7 @@
 
 #include <time.h>
 
+#include <QMenu>
 #include <QStack>
 #include <QMessageBox>
 
@@ -117,8 +118,8 @@ public:
   virtual void save(QTextStream& ts, const QString& indent = QString::null);
   virtual void saveAttributes(QTextStream& ts, const QString& indent = QString::null);
 
-  virtual bool popupMenu(KPopupMenu *menu, const QPoint& pos, KstViewObjectPtr topLevelParent);
-  virtual bool layoutPopupMenu(KPopupMenu *menu, const QPoint& pos, KstViewObjectPtr topLevelParent);
+  virtual bool popupMenu(QMenu *menu, const QPoint& pos, KstViewObjectPtr topLevelParent);
+  virtual bool layoutPopupMenu(QMenu *menu, const QPoint& pos, KstViewObjectPtr topLevelParent);
 
   void drawGraphicSelectionAt(QPainter& p, const QPoint& pos);
   void drawDotAt(QPainter& p, double x, double y);
@@ -214,7 +215,7 @@ public:
   double _pos_x;
   double _pos_y;
 
-  KstBaseCurveList Curves;
+  KstBaseCurveList _curves;
 
   void generateDefaultLabels(bool xl = false, bool yl = false, bool zl = false);
 
@@ -514,6 +515,27 @@ private:
 
   void updateXYGuideline(QWidget *view, const QPoint& oldPos, const QPoint& newPos, const QRect& pr, KstMouseModeType gzType);
 
+  void plotLabels(QPainter& p, int x_px, int y_px, double xleft_bdr_px, double xright_bdr_px, double ytop_bdr_px, double ybot_bdr_px);
+  void plotAxes(QPainter& p, QRect& plotRegion,
+      TickParameters tpx,
+      double xleft_bdr_px, double xright_bdr_px,
+      double x_orig_px, double xtick_px,
+      double xtick_len_px, int x_px,
+      TickParameters tpy,
+      double ytop_bdr_px, double ybot_bdr_px,
+      double y_orig_px, double ytick_px,
+      double ytick_len_px, int y_px,
+      bool offsetY);
+  void plotGridLines(KstPainter& p,
+      double XTick, double xleft_bdr_px, double xright_bdr_px,
+      double x_orig_px, double xtick_px, double xtick_len_px, int x_px,
+      double YTick, double ytop_bdr_px, double ybot_bdr_px,
+      double y_orig_px, double ytick_px, double ytick_len_px, int y_px);
+  void plotPlotMarkers(KstPainter& p, double b_X, double b_Y, double x_max, double x_min,
+      double y_px, double ytop_bdr_px, double ybot_bdr_px);
+
+  void updateScale();
+
   // range and domain of plot: not plot dimentions
   double _XMin, _XMax, _YMin, _YMax;
 
@@ -564,17 +586,25 @@ private:
   bool _autoLabelX : 1;
   bool _autoLabelY : 1;
 
-  bool _xMinParsedValid : 1, _xMaxParsedValid : 1, _yMinParsedValid : 1, _yMaxParsedValid : 1;
-  bool _xTransformed : 1, _yTransformed : 1;
-  bool _isXAxisInterpreted : 1, _isYAxisInterpreted : 1;
-  bool _xReversed : 1, _yReversed : 1;
+  bool _xMinParsedValid : 1;
+  bool _xMaxParsedValid : 1;
+  bool _yMinParsedValid : 1;
+  bool _yMaxParsedValid : 1;
+  bool _xTransformed : 1;
+  bool _yTransformed : 1;
+  bool _isXAxisInterpreted : 1;
+  bool _isYAxisInterpreted : 1;
+  bool _xReversed : 1;
+  bool _yReversed : 1;
 
   bool _drawingGraphics : 1;
 
-  KstAxisInterpretation _xAxisInterpretation, _yAxisInterpretation;
-  KstAxisDisplay _xAxisDisplay, _yAxisDisplay;
-
-  KstScaleModeType _xScaleMode, _yScaleMode;
+  KstAxisInterpretation _xAxisInterpretation;
+  KstAxisInterpretation _yAxisInterpretation;
+  KstAxisDisplay _xAxisDisplay;
+  KstAxisDisplay _yAxisDisplay;
+  KstScaleModeType _xScaleMode;
+  KstScaleModeType _yScaleMode;
 
   QList<KstPlotScale> _plotScaleList;
 
@@ -593,8 +623,6 @@ private:
   QRect PlotRegion;
   QRect WinRegion;
   QRect PlotAndAxisRegion;
-
-  void updateScale();
 
   KstMouse _mouse;
   QMap<int, QString> _curveEditMap, _curveFitMap, _curveRemoveMap, _objectEditMap;
@@ -632,7 +660,12 @@ private:
   int _yMajorTicks;
   int _i_per; // index for next image color range
 
-  KstPlotLabel *_xLabel, *_yLabel, *_topLabel, *_xTickLabel, *_yTickLabel, *_fullTickLabel;
+  KstPlotLabel *_xLabel;
+  KstPlotLabel *_yLabel;
+  KstPlotLabel *_topLabel;
+  KstPlotLabel *_xTickLabel;
+  KstPlotLabel *_yTickLabel;
+  KstPlotLabel *_fullTickLabel;
 
   QStack<QColor> _colorStack;
 
@@ -644,31 +677,16 @@ private:
   Equation::Node* _yMinParsed;
   Equation::Node* _yMaxParsed;
 
+  //
   // expressions for range and domain of plot
-  QString _xMinExp, _xMaxExp, _yMinExp, _yMaxExp;
+  //
 
-  // for the transformed axes
-  QString _xTransformedExp, _yTransformedExp;
-
-  // helper functions for draw(...)
-  void plotLabels(QPainter& p, int x_px, int y_px, double xleft_bdr_px, double xright_bdr_px, double ytop_bdr_px, double ybot_bdr_px);
-  void plotAxes(QPainter& p, QRect& plotRegion,
-      TickParameters tpx,
-      double xleft_bdr_px, double xright_bdr_px,
-      double x_orig_px, double xtick_px,
-      double xtick_len_px, int x_px,
-      TickParameters tpy,
-      double ytop_bdr_px, double ybot_bdr_px,
-      double y_orig_px, double ytick_px,
-      double ytick_len_px, int y_px,
-      bool offsetY);
-  void plotGridLines(KstPainter& p,
-      double XTick, double xleft_bdr_px, double xright_bdr_px,
-      double x_orig_px, double xtick_px, double xtick_len_px, int x_px,
-      double YTick, double ytop_bdr_px, double ybot_bdr_px,
-      double y_orig_px, double ytick_px, double ytick_len_px, int y_px);
-  void plotPlotMarkers(KstPainter& p, double b_X, double b_Y, double x_max, double x_min,
-      double y_px, double ytop_bdr_px, double ybot_bdr_px);
+  QString _xMinExp;
+  QString _xMaxExp;
+  QString _yMinExp;
+  QString _yMaxExp;
+  QString _xTransformedExp;
+  QString _yTransformedExp;
 
   KstScaleModeType _xScaleModeDefault;
   KstScaleModeType _yScaleModeDefault;

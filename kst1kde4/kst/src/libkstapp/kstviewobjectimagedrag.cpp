@@ -15,35 +15,35 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "kstviewobjectimagedrag.h"
-
-#include <kapplication.h>
-#include <kimageio.h>
-#include <klocale.h>
-#include <kprogress.h>
-#include <ktempfile.h>
+#include <stdlib.h>
 
 #include <qeventloop.h>
 #include <qfile.h>
 #include <qpainter.h>
 #include <qpixmap.h>
+#include <QProgressDialog>
+#include <QTemporaryFile>
 
-#include <stdlib.h>
+#include <kapplication.h>
+#include <kimageio.h>
+#include <klocale.h>
+
+#include "kstviewobjectimagedrag.h"
 
 KstViewObjectImageDrag::KstViewObjectImageDrag(QWidget *dragSource)
 : KstDrag("image/png", dragSource) {  // mimetype here is irrelevant
   _mimeTypes = KImageIO::mimeTypes();
   // Prefer image/png, image/jpeg, image/x-eps
   if (_mimeTypes.contains("image/x-eps")) {
-    _mimeTypes.remove("image/x-eps");
+    _mimeTypes.removeAll("image/x-eps");
     _mimeTypes.prepend("image/x-eps");
   }
   if (_mimeTypes.contains("image/jpeg")) {
-    _mimeTypes.remove("image/jpeg");
+    _mimeTypes.removeAll("image/jpeg");
     _mimeTypes.prepend("image/jpeg");
   }
   if (_mimeTypes.contains("image/png")) {
-    _mimeTypes.remove("image/png");
+    _mimeTypes.removeAll("image/png");
     _mimeTypes.prepend("image/png");
   }
 }
@@ -57,7 +57,7 @@ const char *KstViewObjectImageDrag::format(int i) const {
   if (i < 0 || i >= static_cast<int>(_mimeTypes.count())) {
     return 0L;
   }
-  return _mimeTypes[i].latin1();
+  return _mimeTypes[i].toLatin1();
 }
 
 
@@ -77,30 +77,33 @@ QByteArray KstViewObjectImageDrag::encodedData(const char *mimeType) const {
   }
 
   QPixmap pm;
-  pm.resize(geom.size());
+// xxx  pm.resize(geom.size());
   pm.fill();
 
   int prog = 0;
   bool cancelled = false;
   KstPainter p(KstPainter::P_EXPORT);
+
   p.begin(&pm);
   p.setClipping(true);
-  KProgressDialog *dlg = new KProgressDialog(0, 0, QString::null, i18n("Generating and storing images of objects..."), true);
-  dlg->setAllowCancel(true);
-  dlg->progressBar()->setTotalSteps(_objects.count());
-  dlg->progressBar()->setValue(prog);
+
+  QProgressDialog *dlg = new QProgressDialog(0L);
+
+// xxx  dlg->setAllowCancel(true);
+  dlg->setRange(0, _objects.count());
+  dlg->setValue(prog);
   dlg->show();
 
   for (KstViewObjectList::Iterator i = _objects.begin(); i != _objects.end(); ++i) {
     p.setClipRect((*i)->geometry());
     p.setViewport((*i)->geometry());
     (*i)->paint(p, QRegion());
-    if (dlg->wasCancelled()) {
+    if (dlg->wasCanceled()) {
       cancelled = true;
       break;
     }
-    dlg->progressBar()->setValue(++prog);
-    kapp->eventLoop()->processEvents(QEventLoop::ExcludeSocketNotifiers);
+    dlg->setValue(++prog);
+// xxx    kapp->eventLoop()->processEvents(QEventLoop::ExcludeSocketNotifiers);
   }
   p.end();
 
@@ -111,20 +114,9 @@ QByteArray KstViewObjectImageDrag::encodedData(const char *mimeType) const {
   }
 
   QByteArray rc;
-#if QT_VERSION < 0x030200
-  KTempFile tf;
-  pm.save(tf.name(), KImageIO::typeForMime(mimeType).latin1());
-  tf.close();
-  QFile f(tf.name());
-  if (f.open(IO_ReadOnly)) {
-    rc = f.readAll();
-    f.close();
-  }
-  QFile::remove(tf.name());
-#else
-  QDataStream ds(rc, IO_WriteOnly);
-  pm.save(ds.device(), KImageIO::typeForMime(mimeType).latin1());
-#endif
+  QDataStream ds(&rc, QIODevice::WriteOnly);
+
+  pm.save(ds.device(), KImageIO::typeForMime(mimeType).first().toLatin1());
 
   return rc;
 }

@@ -15,6 +15,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 #include <qcheckbox.h>
 #include <qlistbox.h>
 #include <qpushbutton.h>
@@ -29,9 +30,11 @@
 #include "kstdatacollection.h"
 #include "kstrvector.h"
 
-KstChangeNptsDialogI::KstChangeNptsDialogI(
+KstChangeNptsDialog::KstChangeNptsDialog(
   QWidget* parent, const char* name, bool modal, WFlags fl)
-: KstChangeNptsDialog(parent, name, modal, fl) {
+: QDialog(parent, name, modal, fl) {
+  setupUi(this);
+
   connect(Clear, SIGNAL(clicked()), this, SLOT(selectNone()));
   connect(SelectAll, SIGNAL(clicked()), this, SLOT(selectAll()));
   connect(Apply, SIGNAL(clicked()), this, SLOT(applyNptsChange()));
@@ -43,11 +46,11 @@ KstChangeNptsDialogI::KstChangeNptsDialogI(
 }
 
 
-KstChangeNptsDialogI::~KstChangeNptsDialogI() {
+KstChangeNptsDialog::~KstChangeNptsDialog() {
 }
 
 
-void KstChangeNptsDialogI::selectNone() {
+void KstChangeNptsDialog::selectNone() {
   CurveList->clearSelection();
 
   OK->setEnabled(false);
@@ -55,7 +58,7 @@ void KstChangeNptsDialogI::selectNone() {
 }
 
 
-void KstChangeNptsDialogI::selectAll() {
+void KstChangeNptsDialog::selectAll() {
   CurveList->selectAll(true);
 
   if (CurveList->count() > 0) {
@@ -65,7 +68,7 @@ void KstChangeNptsDialogI::selectAll() {
 }
 
 
-bool KstChangeNptsDialogI::updateChangeNptsDialog() {
+bool KstChangeNptsDialog::updateChangeNptsDialog() {
   QStringList qsl;
   int inserted = 0;
 
@@ -96,7 +99,7 @@ bool KstChangeNptsDialogI::updateChangeNptsDialog() {
 }
 
 
-void KstChangeNptsDialogI::showChangeNptsDialog() {
+void KstChangeNptsDialog::showChangeNptsDialog() {
   bool selected = updateChangeNptsDialog();
   updateDefaults(0);
   _modifiedRange = false;
@@ -108,13 +111,13 @@ void KstChangeNptsDialogI::showChangeNptsDialog() {
 }
 
 
-void KstChangeNptsDialogI::OKNptsChange() {
+void KstChangeNptsDialog::OKNptsChange() {
   applyNptsChange();
   reject();
 }
 
 
-void KstChangeNptsDialogI::applyNptsChange() {
+void KstChangeNptsDialog::applyNptsChange() {
   KstRVectorList rvl = kstObjectSubList<KstVector,KstRVector>(KST::vectorList);
 
   for (uint i = 0; i < CurveList->count(); ++i) {
@@ -178,12 +181,12 @@ void KstChangeNptsDialogI::applyNptsChange() {
 }
 
 
-void KstChangeNptsDialogI::emitDocChanged() {
+void KstChangeNptsDialog::emitDocChanged() {
   emit docChanged();
 }
 
 
-void KstChangeNptsDialogI::updateDefaults(int index) {
+void KstChangeNptsDialog::updateDefaults(int index) {
   KstRVectorList rvl = kstObjectSubList<KstVector,KstRVector>(KST::vectorList);
   if (rvl.isEmpty() || index >= (int)rvl.count() || index < 0) {
     return;
@@ -226,7 +229,7 @@ void KstChangeNptsDialogI::updateDefaults(int index) {
 }
 
 
-void KstChangeNptsDialogI::changedSelection() {
+void KstChangeNptsDialog::changedSelection() {
   int index = -1;
   unsigned int i;
   bool selected = false;
@@ -263,16 +266,22 @@ void KstChangeNptsDialogI::changedSelection() {
 }
 
 
-void KstChangeNptsDialogI::updateTimeCombo() {
+void KstChangeNptsDialog::updateTimeCombo() {
   KstRVectorList rvl = kstObjectSubList<KstVector,KstRVector>(KST::vectorList);
-  uint cnt = CurveList->count();
   bool supportsTime = true;
-  for (uint i = 0; i < cnt; ++i) {
+  uint cnt = CurveList->count();
+  uint i;
+
+  for (i = 0; i < cnt; ++i) {
     if (CurveList->isSelected(i)) {
-      KstRVectorPtr vector = *(rvl.findTag(CurveList->text(i)));
+      KstRVectorPtr vector;
+
+      vector = *(rvl.findTag(CurveList->text(i)));
       if (vector) {
+        KstDataSourcePtr ds;
+
         vector->readLock();
-        KstDataSourcePtr ds = vector->dataSource();
+        ds = vector->dataSource();
         vector->unlock();
         if (ds) {
           ds->readLock();
@@ -285,12 +294,13 @@ void KstChangeNptsDialogI::updateTimeCombo() {
       }
     }
   }
+
   _kstDataRange->setAllowTime(supportsTime);
 }
 
 
-void KstChangeNptsDialogI::modifiedRange() {
+void KstChangeNptsDialog::modifiedRange() {
   _modifiedRange = true;
 }
 
-#include "kstchangenptsdialog_i.moc"
+#include "kstchangenptsdialog.moc"

@@ -15,39 +15,38 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <qpainter.h>
-#include <qtable.h>
 #include "kstvectortable.h"
 #include "kstdatacollection.h"
 
-KstVectorTable::KstVectorTable( QWidget * parent, const char * name ) : QTable( parent, name ) {
+KstVectorTable::KstVectorTable( QWidget * parent, const char * name ) : QTableWidget( parent) {
+  Q_UNUSED(name)
 }
 
 void KstVectorTable::setVector(QString strVector) {
   _strVector = strVector;
 }
 
-void KstVectorTable::paintCell( QPainter* painter, int row, int col, const QRect& cr, bool selected, const QColorGroup& cg ) {
+void KstVectorTable::paintCell( QPainter* painter, int row, int col, const QRect& cr, bool selected, const QPalette& palette ) {
   QString str;
 
   painter->eraseRect( 0, 0, cr.width(), cr.height() );
   if (selected) {
-    painter->fillRect( 0, 0, cr.width(), cr.height(), cg.highlight() );
-    painter->setPen(cg.highlightedText());
+    painter->fillRect( 0, 0, cr.width(), cr.height(), palette.highlight() );
+    painter->setPen(palette.highlightedText().color());
   } else {
-    painter->fillRect( 0, 0, cr.width(), cr.height(), cg.base() );
-    painter->setPen(cg.text());
+    painter->fillRect( 0, 0, cr.width(), cr.height(), palette.base() );
+    painter->setPen(palette.text().color());
   }
 
   if (col == 0) {
     str.setNum(row);
-    painter->drawText(0, 0, cr.width(), cr.height(), AlignLeft, str);
+    painter->drawText(0, 0, cr.width(), cr.height(), Qt::AlignLeft, str);
   } else if (col == 1) {
     KstVectorPtr vector = *KST::vectorList.findTag(_strVector);
 
     if (vector) {
       str.setNum(vector->value(row), 'g', 16);
-      painter->drawText(0, 0, cr.width(), cr.height(), AlignLeft, str);
+      painter->drawText(0, 0, cr.width(), cr.height(), Qt::AlignLeft, str);
     }
   }
 }

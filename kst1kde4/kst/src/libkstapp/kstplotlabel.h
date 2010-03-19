@@ -1,5 +1,5 @@
 /***************************************************************************
-                            kstplotviewlabel.h
+                            kstplotlabel.h
                              ----------------
     begin                : Jun 22 2005
     copyright            : (C) 2005 by The University of Toronto
@@ -17,6 +17,9 @@
 
 #ifndef KSTPLOTLABEL_H
 #define KSTPLOTLABEL_H
+
+#include <QPainter>
+#include <QSize>
 
 #include "labelparser.h"
 

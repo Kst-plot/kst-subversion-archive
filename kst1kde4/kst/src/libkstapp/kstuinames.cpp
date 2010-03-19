@@ -21,8 +21,10 @@
 QString KST::suggestWinName() {
   static int last = 0;
   QString suggestedName = "W" + QString::number(++last);
-  while (KstApp::inst()->findWindow(suggestedName)) {
+
+  while (KstApp::inst()->findChild<QMdiSubWindow*>(suggestedName)) {
     suggestedName = "W" + QString::number(++last);
   }
+
   return suggestedName;
 }

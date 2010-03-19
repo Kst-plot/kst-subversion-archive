@@ -1,5 +1,5 @@
 /**************************************************************************
-        kstcurvedifferentiate_i.h - source file: inherits designer dialog
+        kstcurvedifferentiate.h - source file: inherits designer dialog
                              -------------------
     begin                :  2005
     copyright            : (C) 2005 The University of British Columbia
@@ -18,31 +18,27 @@
 #ifndef KSTCURVEDIFFERENTIATEI_H
 #define KSTCURVEDIFFERENTIATEI_H
 
-#include <qptrvector.h>
+#include <QVector>
 
 #include "kstnumbersequence.h"
-#include "curvedifferentiate.h"
 #include "kst_export.h"
+#include "ui_curvedifferentiate.h"
 
 class KstNumberSequence;
 class KstViewWindow;
 
-class KstCurveDifferentiateI : public KstCurveDifferentiate {
+class KstCurveDifferentiate : public QDialog, public Ui::curveDifferentiate {
   Q_OBJECT
   public:
-    KST_EXPORT KstCurveDifferentiateI(QWidget* parent = 0,
-                         const char* name = 0,
-                         bool modal = TRUE, WFlags fl = 0 );
-    virtual ~KstCurveDifferentiateI();
+    KST_EXPORT KstCurveDifferentiate(QWidget* parent = 0,
+                         const char* name = 0, bool modal = TRUE, Qt::WFlags fl = 0 );
+    virtual ~KstCurveDifferentiate();
 
     void setOptions();
     void getOptions();
 
   public slots:
-
     void updateCurveDifferentiate() KST_EXPORT;
-
-    /** calls updateCurveDifferentiate(), then shows and raises the dialog */
     void showCurveDifferentiate() KST_EXPORT;
 
   private slots:
@@ -62,7 +58,7 @@ class KstCurveDifferentiateI : public KstCurveDifferentiate {
     KstNumberSequence _lineStyleSeq;
     KstNumberSequence _pointStyleSeq;
     KstNumberSequence _lineWidthSeq;
-    QPtrVector<KstNumberSequence> _seqVect;
+    QVector<KstNumberSequence> _seqVect;
     int _lineColorOrder;
     int _pointStyleOrder;
     int _lineStyleOrder;

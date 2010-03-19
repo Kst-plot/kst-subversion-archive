@@ -10,9 +10,11 @@
  ***************************************************************************/
 
 #include "kst.h"
+#include "kstdatadialog.h"
+#include "kstdataobjectcollection.h"
 #include "kstdoc.h"
 
-KstDataDialog::KstDataDialog(QWidget *parent = 0) : QDialog(parent) 
+KstDataDialog::KstDataDialog(QWidget *parent) : QDialog(parent) 
 {
   setupUi(this);
 
@@ -37,7 +39,7 @@ void KstDataDialog::ok()
   _apply->setEnabled(false);
   _cancel->setEnabled(false);
 
-  if (_newDialog || _dp == 0L) {
+  if (_newDialog || !_dp) {
 	  if (newObject()) {
 	    close();
 	  } else {
@@ -57,7 +59,7 @@ void KstDataDialog::ok()
 
 void KstDataDialog::apply()
 {
-  if (!_newDialog && _dp != 0L) {
+  if (!_newDialog && !_dp) {
     if (editObject()) {
       _apply->setEnabled(false);
     }
@@ -72,7 +74,7 @@ void KstDataDialog::close()
 
 void KstDataDialog::wasModifiedApply()
 {
-  if (!_newDialog && _dp != 0L) {
+  if (!_newDialog && _dp) {
     _apply->setEnabled(true);
   }
 }
@@ -108,7 +110,7 @@ void KstDataDialog::showNew(const QString& field)
   _tagName->setEnabled(true);
   _legendText->setEnabled(true);
 
-  setCaption(newTitle());
+  setWindowTitle(newTitle());
   QDialog::show();
   raise();
   _ok->setEnabled(true);
@@ -137,7 +139,7 @@ void KstDataDialog::showEdit(const QString& field)
     update();
     fillFieldsForEdit();
 
-    setCaption(editTitle());
+    setWindowTitle(editTitle());
     QDialog::show();
     raise();
     _ok->setEnabled(true);
@@ -166,11 +168,13 @@ void KstDataDialog::fillFieldsForNew()
 
 KstObjectPtr KstDataDialog::findObject( const QString & name )
 {
+  KstObjectPtr obj;
+
   KST::dataObjectList.lock().readLock();
-  KstObjectPtr o = (*KST::dataObjectList.findTag(name)).data();
+  obj = (*KST::dataObjectList.findTag(name)).data();
   KST::dataObjectList.lock().unlock();
 
-  return o;
+  return obj;
 }
 
 bool KstDataDialog::newObject()

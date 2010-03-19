@@ -15,16 +15,16 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <qpainter.h>
-#include <qtable.h>
 #include "kstfittable.h"
 
-KstFitTable::KstFitTable( QWidget * parent, const char * name ) : QTable( parent, name ) {
+KstFitTable::KstFitTable( QWidget *parent, const char *name ) : QTableWidget( parent ) {
+  Q_UNUSED(name)
+  
   _pdParams = 0L;
   _pdCovars = 0L;
   _iNumParams = 0;
   _iNumCovars = 0;
-  _dChi2Nu    = 0.0;
+  _dChi2Nu = 0.0;
 }
 
 
@@ -37,28 +37,29 @@ KstFitTable::~KstFitTable() {
 void KstFitTable::setParameters(double* pParams, int iNumParams, double* pCovars, int iNumCovars, double dChi2Nu) {
   delete _pdParams;
   delete _pdCovars;
+
   _iNumParams = iNumParams;
   _pdParams   = pParams;
   _iNumCovars = iNumCovars;
   _pdCovars   = pCovars;
   _dChi2Nu    = dChi2Nu;
 
-  setNumRows(iNumParams + 2);
-  setNumCols(iNumParams + 2);
+  setRowCount(iNumParams + 2);
+  setColumnCount(iNumParams + 2);
 }
 
 
-void KstFitTable::paintCell( QPainter* painter, int row, int col, const QRect& cr, bool selected, const QColorGroup& cg ) {
+void KstFitTable::paintCell( QPainter* painter, int row, int col, const QRect& cr, bool selected, const QPalette& palette ) {
   QString str;
 
   if (selected) {
     painter->eraseRect(0, 0, cr.width(), cr.height());
-    painter->fillRect(0, 0, cr.width(), cr.height(), cg.highlight());
-    painter->setPen(cg.highlightedText());
+    painter->fillRect(0, 0, cr.width(), cr.height(), palette.highlight());
+    painter->setPen(palette.highlightedText().color());
   } else {
     painter->eraseRect(0, 0, cr.width(), cr.height());
-    painter->fillRect(0, 0, cr.width(), cr.height(), cg.base());
-    painter->setPen(cg.text());
+    painter->fillRect(0, 0, cr.width(), cr.height(), palette.base());
+    painter->setPen(palette.text().color());
   }
 
   if (row < _iNumParams) {
@@ -75,5 +76,5 @@ void KstFitTable::paintCell( QPainter* painter, int row, int col, const QRect& c
     str.setNum(_dChi2Nu, 'g', 6);
   }
 
-  painter->drawText(0, 0, cr.width(), cr.height(), AlignLeft, str);
+  painter->drawText(0, 0, cr.width(), cr.height(), Qt::AlignLeft, str);
 }

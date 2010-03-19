@@ -21,6 +21,7 @@
 #include <QColor>
 #include <QDomElement>
 #include <QExplicitlySharedDataPointer>
+#include <QMouseEvent>
 #include <QPointer>
 
 #include <kdeversion.h>

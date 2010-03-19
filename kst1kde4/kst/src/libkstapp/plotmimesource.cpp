@@ -15,35 +15,30 @@
  *                                                                         *
  ***************************************************************************/
 
-// include files for Qt
 #include <qmime.h>
 
-// include files for KDE
-
-// application specific includes
 #include "kst.h"
 #include "kstviewwindow.h"
 #include "plotmimesource.h"
 
-PlotMimeSource::PlotMimeSource(QString window, QStringList plots, QWidget *dragSource) : 
-  KstDrag(mimeType(), dragSource) {
+PlotMimeSource::PlotMimeSource(QString window, QStringList plots, QWidget *dragSource) : KstDrag(mimeType(), dragSource) {
   _window = window;
   _plots = plots;
 }
 
 QByteArray PlotMimeSource::encodedData(const char *mime) const {
   QByteArray  bytes;
+/* xxx
   QDataStream data(bytes, IO_WriteOnly);
   
   if (strcmp(mime, format(0)) == 0) {
     data << _window;
     data << _plots;    
   }
-  
+*/  
   return bytes;
 }
 
 const char* PlotMimeSource::mimeType() {
   return "application/x-kst-plot-names";
 }
-

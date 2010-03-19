@@ -158,7 +158,7 @@
       <item row="0" column="1">
        <layout class="QVBoxLayout">
         <item>
-         <widget class="KURLRequester" name="FileName" native="true"/>
+         <widget class="KUrlRequester" name="FileName" native="true"/>
         </item>
         <item>
          <layout class="QHBoxLayout">
@@ -218,7 +218,7 @@
          <bool>false</bool>
         </property>
         <property name="buddy">
-         <cstring>N</cstring>
+         <cstring>_N</cstring>
         </property>
        </widget>
       </item>
@@ -245,7 +245,7 @@
            <bool>false</bool>
           </property>
           <property name="buddy">
-           <cstring>XMin</cstring>
+           <cstring>_xMin</cstring>
           </property>
          </widget>
         </item>
@@ -274,7 +274,7 @@
            <bool>false</bool>
           </property>
           <property name="buddy">
-           <cstring>XMax</cstring>
+           <cstring>_xMax</cstring>
           </property>
          </widget>
         </item>
@@ -338,10 +338,10 @@
   <customwidget>
    <class>KstDataRange</class>
    <extends>QWidget</extends>
-   <header>kstdatarange.h</header>
+   <header>datarangewidget.h</header>
   </customwidget>
   <customwidget>
-   <class>KURLRequester</class>
+   <class>KUrlRequester</class>
    <extends>QWidget</extends>
    <header>kurlrequester.h</header>
   </customwidget>

@@ -1,5 +1,5 @@
 /***************************************************************************
-                       kstviewlabelwidget_i.cpp  -  Part of KST
+                       kstviewlabelwidget.cpp  -  Part of KST
                              -------------------
     begin                :
     copyright            : (C) 2008 The University of British Columbia
@@ -15,29 +15,25 @@
  *                                                                         *
  ***************************************************************************/
 
-// include files for Qt
 #include <qlabel.h>
 #include <qstring.h>
 #include <qtextedit.h>
 #include <qwhatsthis.h>
 
-// include files for KDE
 #include <kcombobox.h>
 #include <klocale.h>
 
-// application specific includes
-#include "kstviewlabelwidget_i.h"
+#include "kstviewlabelwidget.h"
 #include "scalarselector.h"
 #include "stringselector.h"
 
-KstViewLabelWidgetI::KstViewLabelWidgetI( QWidget* parent, const char* name, WFlags fl )
-  : ViewLabelWidget(parent, name, fl)
+KstViewLabelWidget::KstViewLabelWidget( QWidget* parent, const char* name, Qt::WFlags fl ) : Ui::ViewLabelWidget(parent, name, fl)
 {
     _horizontal->insertItem(i18n("Left"));
     _horizontal->insertItem(i18n("Right"));
     _horizontal->insertItem(i18n("Center"));
 
-    _horizontal->hide();// FIXME: until implemented - bug 135437
+    _horizontal->hide();
     textLabel5_3->hide();
 
     _changedFgColor = false;
@@ -50,32 +46,32 @@ KstViewLabelWidgetI::KstViewLabelWidgetI( QWidget* parent, const char* name, WFl
 }
 
 
-KstViewLabelWidgetI::~KstViewLabelWidgetI()
+KstViewLabelWidget::~KstViewLabelWidget()
 {
 }
 
 
-void KstViewLabelWidgetI::insertScalarInText(const QString &S)
+void KstViewLabelWidget::insertScalarInText(const QString &str)
 {
-  _text->insert("["+S+"]");
+  _text->insert("["+str+"]");
 }
 
 
-void KstViewLabelWidgetI::insertStringInText(const QString &S)
+void KstViewLabelWidget::insertStringInText(const QString &str)
 {
-  _text->insert("["+S+"]");
+  _text->insert("["+str+"]");
 }
 
 
-void KstViewLabelWidgetI::changedFgColor( )
+void KstViewLabelWidget::changedFgColor( )
 {
   _changedFgColor = true;
 }
 
 
-void KstViewLabelWidgetI::changedBgColor( )
+void KstViewLabelWidget::changedBgColor( )
 {
   _changedBgColor = true;
 }
 
-#include "kstviewlabelwidget_i.moc"
+#include "kstviewlabelwidget.moc"

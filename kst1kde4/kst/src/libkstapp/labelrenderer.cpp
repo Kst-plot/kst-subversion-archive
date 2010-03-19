@@ -24,7 +24,6 @@
 #include "ksttimers.h"
 #include "labelparser.h"
 
-#include "ksdebug.h"
 #include <kglobal.h>
 
 #include <iostream>
@@ -125,10 +124,6 @@ QString labelText(QString txt, Label::Parsed *lp, KstVectorMap& vm, KstScalarMap
     }
   }
 
-  if (label != txt) {
-    kstdDebug() << "Updated label \"" << txt << "\" to \"" << label << "\"" << endl;
-  }
-
   return label;
 }
 
@@ -185,7 +180,8 @@ void renderLabel(RenderContext& rc, Label::Chunk *fi, const KstVectorMap& vm, co
         // Parse and evaluate as an equation
         bool ok = false;
         const QString s = fi->text.mid(1);
-        const double eqResult(Equation::interpret(s.latin1(), &ok, s.length()));
+        const double eqResult(Equation::interpret(s.toLatin1(), &ok, s.length()));
+        
         txt = QString::number(eqResult, 'g', rc.precision);
         if (rc._cache) {
           rc._cache->append(DataRef(DataRef::DRExpression, fi->text, QString::null, 0.0, QVariant(eqResult)));
@@ -229,29 +225,33 @@ void renderLabel(RenderContext& rc, Label::Chunk *fi, const KstVectorMap& vm, co
             KstDataObjectList::Iterator oi = KST::dataObjectList.findTag(fi->text);
             KST::dataObjectList.lock().unlock();
             if (oi != KST::dataObjectList.end()) {
-              KstCPluginPtr fit = kst_cast<KstCPlugin>(*oi);
+              KstCPluginPtr fit;
+
+              fit = kst_cast<KstCPlugin>(*oi);
               if (fit) {
                 fit->readLock();
                 const QString txtAll = fit->label(rc.precision);
                 fit->unlock();
 
-                const QValueList<QString> strList = QStringList::split('\n', txtAll);
-                QValueListConstIterator<QString> last = --(strList.end());
-                for (QValueListConstIterator<QString> iter = strList.begin(); iter != strList.end(); ++iter) {
+                const QStringList strList = txtAll.split('\n');
+                QStringList::const_iterator iter;
+                QStringList::const_iterator last = --(strList.end());
+
+                for (iter = strList.begin(); iter != strList.end(); ++iter) {
                   txt = (*iter);
 
                   if (iter != last) {
                     if (rc.p) {
                       rc.p->drawText(rc.x, rc.y, txt);
                     } else {
-                      rc.ascent = kMax(rc.ascent, -rc.y + rc.fontAscent());
+                      rc.ascent = qMax(rc.ascent, -rc.y + rc.fontAscent());
                       if (-rc.y - rc.fontDescent() < 0) {
-                        rc.descent = kMax(rc.descent, rc.fontDescent() + rc.y);
+                        rc.descent = qMax(rc.descent, rc.fontDescent() + rc.y);
                       }
                       rc.lineSpacing = rc.ascent + rc.descent;
                     }
                     rc.x   += rc.fontWidth(txt);
-                    rc.xMax = kMax(rc.xMax, rc.x);
+                    rc.xMax = qMax(rc.xMax, rc.x);
 
                     rc.x    = oldX;
                     rc.y   += rc.fontAscent() + rc.fontDescent() + 1;
@@ -282,10 +282,9 @@ void renderLabel(RenderContext& rc, Label::Chunk *fi, const KstVectorMap& vm, co
       }
       if (vp) {
         if (!fi->expression.isEmpty()) {
-          // Parse and evaluate as an equation
           bool ok = false;
-          // FIXME: make more efficient: cache the parsed equation
-          const double idx = Equation::interpret(fi->expression.latin1(), &ok, fi->expression.length());
+          const double idx = Equation::interpret(fi->expression.toLatin1(), &ok, fi->expression.length());
+
           if (ok) {
             vp->readLock();
             const double vVal(vp->value()[int(idx)]);
@@ -328,9 +327,9 @@ void renderLabel(RenderContext& rc, Label::Chunk *fi, const KstVectorMap& vm, co
 
     if (!rc.p) {
       // No need to compute ascent and descent when really painting
-      rc.ascent = kMax(rc.ascent, -rc.y + rc.fontAscent());
+      rc.ascent = qMax(rc.ascent, -rc.y + rc.fontAscent());
       if (-rc.y - rc.fontDescent() < 0) {
-        rc.descent = kMax(rc.descent, rc.fontDescent() + rc.y);
+        rc.descent = qMax(rc.descent, rc.fontDescent() + rc.y);
       }
       rc.lineSpacing = rc.ascent + rc.descent;
     }
@@ -344,17 +343,17 @@ void renderLabel(RenderContext& rc, Label::Chunk *fi, const KstVectorMap& vm, co
     if (fi->up) {
       int xPrev = rc.x;
       renderLabel(rc, fi->up, vm, scm, stm);
-      xNext = kMax(xNext, rc.x);
+      xNext = qMax(xNext, rc.x);
       rc.x = xPrev;
     }
 
     if (fi->down) {
       renderLabel(rc, fi->down, vm, scm, stm);
-      xNext = kMax(xNext, rc.x);
+      xNext = qMax(xNext, rc.x);
     }
 
     rc.x = xNext;
-    rc.xMax = kMax(rc.xMax, rc.x);
+    rc.xMax = qMax(rc.xMax, rc.x);
 
     fi = fi->next;
   }

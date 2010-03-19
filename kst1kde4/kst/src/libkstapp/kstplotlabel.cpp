@@ -15,6 +15,16 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <stdlib.h>
+#include <stdio.h>
+
+#include <QDomNode>
+#include <QTextDocument>
+#include <QTextStream>
+
+#include <kglobal.h>
+#include <klocale.h>
+
 #include "kstplotlabel.h"
 
 #include "enodes.h"
@@ -23,16 +33,6 @@
 #include "kstdatacollection.h"
 #include "kstsettings.h"
 #include "labelrenderer.h"
-
-#include <qdom.h>
-#include <qstylesheet.h>
-#include <qtextstream.h>
-
-#include <kglobal.h>
-#include <klocale.h>
-
-#include <stdlib.h>
-#include <stdio.h>
 
 #define MIN_FONT_SIZE 5
 
@@ -282,7 +282,7 @@ void KstPlotLabel::load(const QDomElement& e) {
 void KstPlotLabel::save(QTextStream &ts, const QString& indent, bool save_pos) {
   reparse();
   QString l2 = indent + "  ";
-  ts << indent << "<text>" << QStyleSheet::escape(_txt) << "</text>" << endl;
+  ts << indent << "<text>" << Qt::escape(_txt) << "</text>" << endl;
   if (_interpret) {
     ts << indent << "<interpret/>" << endl;
   }
@@ -290,7 +290,7 @@ void KstPlotLabel::save(QTextStream &ts, const QString& indent, bool save_pos) {
   if (save_pos) {
     ts << indent << "<justify>" << _justify << "</justify>" << endl;
   }
-  ts << indent << "<fontfamily>" << QStyleSheet::escape(_fontName) << "</fontfamily>" << endl;
+  ts << indent << "<fontfamily>" << Qt::escape(_fontName) << "</fontfamily>" << endl;
   ts << indent << "<size>" << _fontSize << "</size>" << endl;
 }
 

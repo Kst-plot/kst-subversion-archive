@@ -42,7 +42,7 @@ class KstLogWidget : public QTextBrowser {
   private:
     KstDebug *_debug;
     int _show;
-    QMimeSourceFactory _msrc;
+// xxx QMimeSourceFactory _msrc;
 
     void generateImages();
 };

@@ -26,10 +26,10 @@
 #include "kstcplugin.h"
 #include "kstsettings.h"
 #include "ksttimers.h"
-#include "kstviewlabelwidget_i.h"
+#include "kstviewlabelwidget.h"
 #include "kstviewobjectfactory.h"
 #include "labelrenderer.h"
-
+/* xxx
 #include <kcolorbutton.h>
 #include <kcombobox.h>
 #include <kdatastream.h>
@@ -39,16 +39,15 @@
 #include <klocale.h>
 #include <knuminput.h>
 #include <kpopupmenu.h>
-#include "ksdebug.h"
-
-#include <qapplication.h>
+*/
+#include <QApplication>
 #include <qbitmap.h>
+#include <qcheckbox.h>
 #include <qmetaobject.h>
-#include <qptrstack.h>
 #include <qtextedit.h>
 #include <qregexp.h>
 #include <qspinbox.h>
-#include <qcheckbox.h>
+#include <QStack>
 
 #include <stdlib.h>
 
@@ -100,14 +99,20 @@ KstViewLabel::KstViewLabel(const QDomElement& e)
   _isResizable = false;
   reparse();
 
+  //
   // read the properties
+  //
+
   QDomNode n = e.firstChild();
+
   while (!n.isNull()) {
     QDomElement el = n.toElement();
     if (!el.isNull()) {
-      if (metaObject()->findProperty(el.tagName().latin1(), true) > -1) {
-        setProperty(el.tagName().latin1(), QVariant(el.text()));
+/* xxx
+      if (metaObject()->findProperty(el.tagName().toLatin1(), true) > -1) {
+        setProperty(el.tagName().toLatin1(), QVariant(el.text()));
       }
+*/
     }
     n = n.nextSibling();
   }
@@ -134,7 +139,6 @@ KstViewLabel::KstViewLabel(const KstViewLabel& label)
   _parsed = 0L;
   reparse();
 
-  // these always have these values
   _type = "Label";
 }
 
@@ -148,10 +152,12 @@ KstViewLabel::~KstViewLabel() {
 KstViewObject* KstViewLabel::copyObjectQuietly(KstViewObject& parent, const QString& name) const {
   Q_UNUSED(name)
 
-  KstViewLabel* viewLabel = new KstViewLabel(*this);
+  KstViewLabelPtr viewLabel;
+
+  viewLabel = new KstViewLabel(*this);
   parent.appendChild(viewLabel, true);
 
-  return viewLabel;
+  return viewLabel.data();
 }
 
 
@@ -163,18 +169,23 @@ KstViewObject* KstViewLabel::copyObjectQuietly() const {
 
 
 void KstViewLabel::setupConnections() {
-  for (KstScalarMap::iterator i = _scalarsUsed.begin(); i != _scalarsUsed.end(); ++i) {
-    disconnect(i.data(), SIGNAL(tagChanged()), this, SLOT(reparse()));
-    connect(i.data(), SIGNAL(tagChanged()), this, SLOT(reparse()));
+  KstScalarMap::iterator itScalar;
+  KstStringMap::iterator itString;
+  KstVectorMap::iterator itVector;
+/* xxx
+  for (itScalar = _scalarsUsed.begin(); itScalar != _scalarsUsed.end(); ++itScalar) {
+    disconnect(itScalar, SIGNAL(tagChanged()), this, SLOT(reparse()));
+    connect(itScalar, SIGNAL(tagChanged()), this, SLOT(reparse()));
   }
-  for (KstStringMap::iterator i = _stringsUsed.begin(); i != _stringsUsed.end(); ++i) {
-    disconnect(i.data(), SIGNAL(tagChanged()), this, SLOT(reparse()));
-    connect(i.data(), SIGNAL(tagChanged()), this, SLOT(reparse()));
+  for (itString = _stringsUsed.begin(); itString != _stringsUsed.end(); ++itString) {
+    disconnect(itString, SIGNAL(tagChanged()), this, SLOT(reparse()));
+    connect(itString, SIGNAL(tagChanged()), this, SLOT(reparse()));
   }
-  for (KstVectorMap::iterator i = _vectorsUsed.begin(); i != _vectorsUsed.end(); ++i) {
-    disconnect(i.data(), SIGNAL(tagChanged()), this, SLOT(reparse()));
-    connect(i.data(), SIGNAL(tagChanged()), this, SLOT(reparse()));
+  for (itVector = _vectorsUsed.begin(); itVector != _vectorsUsed.end(); ++itVector) {
+    disconnect(itVector, SIGNAL(tagChanged()), this, SLOT(reparse()));
+    connect(itVector, SIGNAL(tagChanged()), this, SLOT(reparse()));
   }
+*/
 }
 
 
@@ -270,7 +281,7 @@ void KstViewLabel::setDoScalarReplacement(bool replace) {
 
 
 void KstViewLabel::drawToBuffer(Label::Parsed *lp) {
-  _backBuffer.buffer().resize(contentsRect().size());
+// xxx  _backBuffer.buffer().resize(contentsRect().size());
   _backBuffer.buffer().fill(backgroundColor());
   QPainter p(&_backBuffer.buffer());
   drawToPainter(lp, p);
@@ -279,6 +290,7 @@ void KstViewLabel::drawToBuffer(Label::Parsed *lp) {
 
 void KstViewLabel::drawToPainter(Label::Parsed *lp, QPainter& p) {
   int hJust = KST_JUSTIFY_H(_justify);
+/* xxx
   if (QApplication::reverseLayout()) {
     if (hJust == KST_JUSTIFY_H_NONE) {
       hJust = KST_JUSTIFY_H_RIGHT;
@@ -288,7 +300,7 @@ void KstViewLabel::drawToPainter(Label::Parsed *lp, QPainter& p) {
       hJust = KST_JUSTIFY_H_LEFT;
     }
   }
-
+*/
   RenderContext rc(_fontName, _absFontSize, &p);
   rc.setSubstituteScalars(_replace);
   rc.precision = _dataPrecision;
@@ -329,22 +341,11 @@ void KstViewLabel::drawToPainter(Label::Parsed *lp, QPainter& p) {
   rc.pen = foregroundColor();
 
   rc.xStart = rc.x;
-#ifdef BENCHMARK
-  QTime t;
-  t.start();
-#endif
   if (lp && lp->chunk) {
     renderLabel(rc, lp->chunk, _vectorsUsed, _scalarsUsed, _stringsUsed);
     _cache.valid = true;
   }
-#ifdef BENCHMARK
-  kstdDebug() << "render took: " << t.elapsed() << endl;
-  t.start();
-#endif
   QApplication::syncX();
-#ifdef BENCHMARK
-  kstdDebug() << "sync X took: " << t.elapsed() << endl;
-#endif
 }
 
 
@@ -353,14 +354,7 @@ void KstViewLabel::computeTextSize(Label::Parsed *lp) {
     RenderContext rc(_fontName, _absFontSize, 0L);
     rc.setSubstituteScalars(_replace);
     rc.precision = _dataPrecision;
-#ifdef BENCHMARK
-    QTime t;
-    t.start();
-#endif
     renderLabel(rc, lp->chunk, _vectorsUsed, _scalarsUsed, _stringsUsed);
-#ifdef BENCHMARK
-    kstdDebug() << "compute (false render) took: " << t.elapsed() << endl;
-#endif
     _textWidth = rc.xMax;
     _ascent = rc.ascent;
     _textHeight = 1 + rc.ascent + rc.descent;
@@ -432,7 +426,7 @@ void KstViewLabel::paintSelf(KstPainter& p, const QRegion& bounds) {
   } else {
     if (p.makingMask()) {
       KstBorderedViewObject::paintSelf(p, bounds);
-      p.setRasterOp(Qt::SetROP);
+      p.setCompositionMode(QPainter::CompositionMode_Destination);
       const QRect cr(contentsRect());
       // slow but preserves antialiasing...
       QBitmap bm = _backBuffer.buffer().createHeuristicMask(false);
@@ -450,7 +444,7 @@ void KstViewLabel::paintSelf(KstPainter& p, const QRegion& bounds) {
 
 
 QRegion KstViewLabel::clipRegion() {
-  if (_clipMask.isNull()) {
+  if (_clipMask.isEmpty()) {
     if (_transparent) {
       const QRect cr(contentsRect());
       // slow but preserves antialiasing...
@@ -459,16 +453,16 @@ QRegion KstViewLabel::clipRegion() {
       _clipMask = QRegion(bm);
       _clipMask.translate(cr.topLeft().x(), cr.topLeft().y());
 
-      QBitmap bm1(_geom.bottomRight().x() + 1, _geom.bottomRight().y() + 1, true);
+      QBitmap bm1(_geom.bottomRight().x() + 1, _geom.bottomRight().y() + 1);
       if (!bm1.isNull()) {
         KstPainter p;
 
         p.setMakingMask(true);
         p.begin(&bm1);
-        p.setViewXForm(true);
+        p.setViewTransformEnabled(true);
         KstBorderedViewObject::paintSelf(p, QRegion());
         paint(p, QRegion());
-        p.flush();
+// xxx        p.flush();
         p.end();
 
         _clipMask |= QRegion(bm1);
@@ -536,23 +530,26 @@ QSize KstViewLabel::sizeForText(const QRect& w) {
     computeTextSize(_parsed);
   }
 
-  QSize sz(kMax(1, _textWidth), kMax(1, _textHeight));
+  QSize sz(qMax(1, _textWidth), qMax(1, _textHeight));
 
   if (int(_rotation) != 0 && int(_rotation) != 180) {
-    QPointArray pts(4);
+    QPolygon pts(4);
+
     pts[0] = QPoint(0, 0);
     pts[1] = QPoint(0, _textHeight);
     pts[2] = QPoint(_textWidth, _textHeight);
     pts[3] = QPoint(_textWidth, 0);
+
     double theta = M_PI * (int(_rotation) % 360) / 180;
     double sina = sin(theta);
     double cosa = cos(theta);
-    QWMatrix m(cosa, sina, -sina, cosa, 0.0, 0.0);
+    QMatrix m(cosa, sina, -sina, cosa, 0.0, 0.0);
 
     pts = m.map(pts);
 
     if (_parent) {
       QRect r(position(), pts.boundingRect().size());
+
       r.setSize(r.size() + QSize(2 * _labelMargin * _ascent / 10, 2 * _labelMargin * _ascent / 10));
       sz = r.intersect(_parent->geometry()).size();
     } else {
@@ -562,6 +559,7 @@ QSize KstViewLabel::sizeForText(const QRect& w) {
   } else {
     if (_parent) {
       QRect r(position(), sz);
+
       r.setSize(r.size() + QSize(2 * _labelMargin * _ascent / 10, 2 * _labelMargin * _ascent / 10));
       sz = r.intersect(_parent->geometry()).size();
     }
@@ -624,7 +622,7 @@ double KstViewLabel::rotation() const {
 
 
 bool KstViewLabel::fillConfigWidget(QWidget *w, bool isNew) const {
-  KstViewLabelWidgetI *widget = dynamic_cast<KstViewLabelWidgetI*>(w);
+  KstViewLabelWidget *widget = dynamic_cast<KstViewLabelWidget*>(w);
   if (!widget) {
     return false;
   }
@@ -636,14 +634,14 @@ bool KstViewLabel::fillConfigWidget(QWidget *w, bool isNew) const {
   widget->_precision->setValue(int(dataPrecision()));
   widget->_rotation->setValue(double(rotation()));
   widget->_fontSize->setValue(int(fontSize()));
-  widget->_horizontal->setCurrentItem(horizJustifyWrap());
-  widget->_fontColor->setColor(foregroundColor());
+  widget->_horizontal->setCurrentIndex(horizJustifyWrap());
+// xxx  widget->_fontColor->setColor(foregroundColor());
   widget->_font->setCurrentFont(fontName());
 
   widget->_transparent->setChecked(transparent());
   widget->_border->setValue(borderWidth());
-  widget->_boxColors->setForeground(borderColor());
-  widget->_boxColors->setBackground(backgroundColor());
+// xxx  widget->_boxColors->setForeground(borderColor());
+// xxx  widget->_boxColors->setBackground(backgroundColor());
   widget->_margin->setValue(labelMargin());
 
   widget->_text->setFocus();
@@ -653,7 +651,7 @@ bool KstViewLabel::fillConfigWidget(QWidget *w, bool isNew) const {
 
 
 bool KstViewLabel::readConfigWidget(QWidget *w, bool editMultipleMode) {
-  KstViewLabelWidgetI *widget = dynamic_cast<KstViewLabelWidgetI*>(w);
+  KstViewLabelWidget *widget = dynamic_cast<KstViewLabelWidget*>(w);
   if (!widget) {
     return false;
   }
@@ -662,38 +660,38 @@ bool KstViewLabel::readConfigWidget(QWidget *w, bool editMultipleMode) {
     _txt = widget->_text->text();
   }
 
-  if (!editMultipleMode || widget->_precision->value() != widget->_precision->minValue()) {
+  if (!editMultipleMode || widget->_precision->value() != widget->_precision->minimum()) {
     setDataPrecision(widget->_precision->value());
   }
 
-  if (!editMultipleMode || widget->_rotation->value() != widget->_rotation->minValue()) {
+  if (!editMultipleMode || widget->_rotation->value() != widget->_rotation->minimum()) {
     setRotation(widget->_rotation->value());
   }
 
-  if (!editMultipleMode || widget->_fontSize->value() != widget->_fontSize->minValue()) {
+  if (!editMultipleMode || widget->_fontSize->value() != widget->_fontSize->minimum()) {
     setFontSize(widget->_fontSize->value());
   }
 
   if (!editMultipleMode || widget->_horizontal->currentText().compare(QString(" ")) != 0) {
-    setHorizJustifyWrap(widget->_horizontal->currentItem());
+    setHorizJustifyWrap(widget->_horizontal->currentIndex());
   }
-
+/* xxx
   if (!editMultipleMode || widget->_fontColor->color() != QColor()) {
     setForegroundColor(widget->_fontColor->color());
   }
-
+*/
   if (!editMultipleMode || widget->_font->currentText().compare(QString(" ")) != 0) {
-    setFontName(widget->_font->currentFont());
+    setFontName(widget->_font->currentFont().family());
   }
 
-  if (!editMultipleMode || widget->_transparent->state() != QButton::NoChange) {
+  if (!editMultipleMode || widget->_transparent->checkState() != Qt::PartiallyChecked) {
     setTransparent(widget->_transparent->isChecked());
   }
 
-  if (!editMultipleMode || widget->_border->value() != widget->_border->minValue()) {
+  if (!editMultipleMode || widget->_border->value() != widget->_border->minimum()) {
     setBorderWidth(widget->_border->value());
   }
-
+/* xxx
   if (!editMultipleMode || widget->_changedFgColor) {
     setBorderColor(widget->_boxColors->foreground());
   }
@@ -701,8 +699,8 @@ bool KstViewLabel::readConfigWidget(QWidget *w, bool editMultipleMode) {
   if (!editMultipleMode || widget->_changedBgColor) {
     setBackgroundColor(widget->_boxColors->background());
   }
-
-  if (!editMultipleMode || widget->_margin->value() != widget->_margin->minValue()) {
+*/
+  if (!editMultipleMode || widget->_margin->value() != widget->_margin->minimum()) {
     setLabelMargin(widget->_margin->value());
   }
 
@@ -712,7 +710,7 @@ bool KstViewLabel::readConfigWidget(QWidget *w, bool editMultipleMode) {
 
 
 void KstViewLabel::connectConfigWidget(QWidget *parent, QWidget *w) const {
-  KstViewLabelWidgetI *widget = dynamic_cast<KstViewLabelWidgetI*>(w);
+  KstViewLabelWidget *widget = dynamic_cast<KstViewLabelWidget*>(w);
   if (!widget) {
     return;
   }
@@ -720,67 +718,67 @@ void KstViewLabel::connectConfigWidget(QWidget *parent, QWidget *w) const {
   connect(widget->_text, SIGNAL(textChanged()), parent, SLOT(modified()));
   connect(widget->_font, SIGNAL(activated(int)), parent, SLOT(modified()));
   connect(widget->_fontSize, SIGNAL(valueChanged(int)), parent, SLOT(modified()));
-  connect(widget->_fontSize->child("qt_spinbox_edit"), SIGNAL(textChanged(const QString&)), parent, SLOT(modified()));
+// xxx  connect(widget->_fontSize->child("qt_spinbox_edit"), SIGNAL(textChanged(const QString&)), parent, SLOT(modified()));
   connect(widget->_horizontal, SIGNAL(activated(int)), parent, SLOT(modified()));
-  connect(widget->_fontColor, SIGNAL(changed(const QColor&)), parent, SLOT(modified()));  
+// xxx  connect(widget->_fontColor, SIGNAL(changed(const QColor&)), parent, SLOT(modified()));  
   connect(widget->_precision, SIGNAL(valueChanged(int)), parent, SLOT(modified()));
-  connect(widget->_precision->child("qt_spinbox_edit"), SIGNAL(textChanged(const QString&)), parent, SLOT(modified()));
+// xxx  connect(widget->_precision->child("qt_spinbox_edit"), SIGNAL(textChanged(const QString&)), parent, SLOT(modified()));
   connect(widget->_rotation, SIGNAL(valueChanged(int)), parent, SLOT(modified()));
   connect(widget->_rotation, SIGNAL(valueChanged(double)), parent, SLOT(modified()));
-  connect(widget->_rotation->child("qt_spinbox_edit"), SIGNAL(textChanged(const QString&)), parent, SLOT(modified()));
+// xxx  connect(widget->_rotation->child("qt_spinbox_edit"), SIGNAL(textChanged(const QString&)), parent, SLOT(modified()));
   connect(widget->_transparent, SIGNAL(pressed()), parent, SLOT(modified()));
-  connect(widget->_boxColors, SIGNAL(fgChanged(const QColor&)), parent, SLOT(modified()));
-  connect(widget->_boxColors, SIGNAL(bgChanged(const QColor&)), parent, SLOT(modified()));
-  connect(widget->_boxColors, SIGNAL(fgChanged(const QColor&)), widget, SLOT(changedFgColor()));
-  connect(widget->_boxColors, SIGNAL(bgChanged(const QColor&)), widget, SLOT(changedBgColor()));
+// xxx  connect(widget->_boxColors, SIGNAL(fgChanged(const QColor&)), parent, SLOT(modified()));
+// xxx  connect(widget->_boxColors, SIGNAL(bgChanged(const QColor&)), parent, SLOT(modified()));
+// xxx  connect(widget->_boxColors, SIGNAL(fgChanged(const QColor&)), widget, SLOT(changedFgColor()));
+// xxx  connect(widget->_boxColors, SIGNAL(bgChanged(const QColor&)), widget, SLOT(changedBgColor()));
   connect(widget->_margin, SIGNAL(valueChanged(int)), parent, SLOT(modified()));
-  connect(widget->_margin->child("qt_spinbox_edit"), SIGNAL(textChanged(const QString&)), parent, SLOT(modified()));
+// xxx connect(widget->_margin->child("qt_spinbox_edit"), SIGNAL(textChanged(const QString&)), parent, SLOT(modified()));
   connect(widget->_border, SIGNAL(valueChanged(int)), parent, SLOT(modified()));
-  connect(widget->_border->child("qt_spinbox_edit"), SIGNAL(textChanged(const QString&)), parent, SLOT(modified()));
+// xxx  connect(widget->_border->child("qt_spinbox_edit"), SIGNAL(textChanged(const QString&)), parent, SLOT(modified()));
 }
 
 
 void KstViewLabel::populateEditMultiple(QWidget *w) {
-  KstViewLabelWidgetI *widget = dynamic_cast<KstViewLabelWidgetI*>(w);
+  KstViewLabelWidget *widget = dynamic_cast<KstViewLabelWidget*>(w);
   if (!widget) {
     return;
   }
 
   widget->_text->setText(QString(" "));
 
-  widget->_font->insertItem(QString(" "));
-  widget->_font->setCurrentItem(widget->_font->count()-1);
+  widget->_font->insertItem(0, QString(" "));
+  widget->_font->setCurrentIndex(widget->_font->count()-1);
 
-  widget->_fontSize->setMinValue(widget->_fontSize->minValue() - 1);
+  widget->_fontSize->setMinimum(widget->_fontSize->minimum() - 1);
   widget->_fontSize->setSpecialValueText(QString(" "));
-  widget->_fontSize->setValue(widget->_fontSize->minValue());
+  widget->_fontSize->setValue(widget->_fontSize->minimum());
 
-  widget->_horizontal->insertItem(QString(" "));
-  widget->_horizontal->setCurrentItem(widget->_horizontal->count()-1);
+  widget->_horizontal->insertItem(0, QString(" "));
+  widget->_horizontal->setCurrentIndex(widget->_horizontal->count()-1);
 
-  widget->_fontColor->setColor(QColor());
+// xxx  widget->_fontColor->setColor(QColor());
 
   widget->_transparent->setTristate();
-  widget->_transparent->setNoChange();
-
+  widget->_transparent->setCheckState(Qt::PartiallyChecked);
+/* xxx
   widget->_boxColors->setForeground(QColor());
   widget->_boxColors->setBackground(QColor());
-
-  widget->_precision->setMinValue(widget->_precision->minValue() - 1);
+*/
+  widget->_precision->setMinimum(widget->_precision->minimum() - 1);
   widget->_precision->setSpecialValueText(QString(" "));
-  widget->_precision->setValue(widget->_precision->minValue());
+  widget->_precision->setValue(widget->_precision->minimum());
 
-  widget->_rotation->setMinValue(widget->_rotation->minValue() - 1);
+  widget->_rotation->setMinimum(widget->_rotation->minimum() - 1);
   widget->_rotation->setSpecialValueText(QString(" "));
-  widget->_rotation->setValue(widget->_rotation->minValue());
+  widget->_rotation->setValue(widget->_rotation->minimum());
 
-  widget->_margin->setMinValue(widget->_margin->minValue() - 1);
+  widget->_margin->setMinimum(widget->_margin->minimum() - 1);
   widget->_margin->setSpecialValueText(QString(" "));
-  widget->_margin->setValue(widget->_margin->minValue());
+  widget->_margin->setValue(widget->_margin->minimum());
 
-  widget->_border->setMinValue(widget->_border->minValue() - 1);
+  widget->_border->setMinimum(widget->_border->minimum() - 1);
   widget->_border->setSpecialValueText(QString(" "));
-  widget->_border->setValue(widget->_border->minValue());
+  widget->_border->setValue(widget->_border->minimum());
 
   widget->_changedFgColor = false;
   widget->_changedBgColor = false;
@@ -860,7 +858,7 @@ void KstViewLabel::setHorizJustifyWrap(int justify) {
 
 
 void KstViewLabel::setLabelMargin(int margin) {
-  int mm = kMax(0, margin);
+  int mm = qMax(0, margin);
 
   if (mm != _labelMargin) {
     _labelMargin = mm;
@@ -875,7 +873,7 @@ int KstViewLabel::labelMargin() const {
 
 
 QWidget *KstViewLabel::configWidget(QWidget *parent) {
-  return new KstViewLabelWidgetI(parent, "custom");
+  return new KstViewLabelWidget(parent, "custom");
 }
 
 
@@ -889,18 +887,24 @@ KstGfxMouseHandler *handler_KstViewLabel() {
   return new KstGfxTextMouseHandler;
 }
 
+
 KST_REGISTER_VIEW_OBJECT(Label, create_KstViewLabel, handler_KstViewLabel)
 }
 
 
 void KstViewLabel::DataCache::update() {
-  for (QValueVector<DataRef>::ConstIterator i = data.begin(); valid && i != data.end(); ++i) {
+  QVector<DataRef>::const_iterator i;
+
+  for (i = data.begin(); valid && i != data.end(); ++i) {
     switch ((*i).type) {
       case DataRef::DataRef::DRScalar:
         {
+          KstScalarPtr p;
+
           KST::scalarList.lock().readLock();
-          KstScalarPtr p = *KST::scalarList.findTag((*i).name);
+          p = *KST::scalarList.findTag((*i).name);
           KST::scalarList.lock().unlock();
+          
           if (p) {
             p->readLock();
             if (QVariant(p->value()) != (*i).value) {
@@ -913,9 +917,12 @@ void KstViewLabel::DataCache::update() {
 
       case DataRef::DRString:
         {
+          KstStringPtr p;
+
           KST::stringList.lock().readLock();
-          KstStringPtr p = *KST::stringList.findTag((*i).name);
+          p = *KST::stringList.findTag((*i).name);
           KST::stringList.lock().unlock();
+          
           if (p) {
             p->readLock();
             if (QVariant(p->value()) != (*i).value) {
@@ -928,8 +935,10 @@ void KstViewLabel::DataCache::update() {
 
       case DataRef::DRExpression:
         {
+          double val;
           bool ok = false;
-          const double val = Equation::interpret((*i).name.latin1(), &ok, (*i).name.length());
+
+          val = Equation::interpret((*i).name.toLatin1(), &ok, (*i).name.length());
           if (QVariant(val) != (*i).value) {
             valid = false;
           }
@@ -938,15 +947,21 @@ void KstViewLabel::DataCache::update() {
 
       case DataRef::DRVector:
         {
+          KstVectorPtr p;
+          double idx;
           bool ok = false;
-          const double idx = Equation::interpret((*i).index.latin1(), &ok, (*i).index.length());
+
+          idx = Equation::interpret((*i).index.toLatin1(), &ok, (*i).index.length());
+
           if (idx != (*i).indexValue) {
             valid = false;
             break;
           }
+
           KST::vectorList.lock().readLock();
-          KstVectorPtr p = *KST::vectorList.findTag((*i).name);
+          p = *KST::vectorList.findTag((*i).name);
           KST::vectorList.lock().unlock();
+
           if (p) {
             p->readLock();
             if (QVariant(p->value(int((*i).indexValue))) != (*i).value) {
@@ -959,11 +974,16 @@ void KstViewLabel::DataCache::update() {
 
       case DataRef::DataRef::DRFit:
         {
+          KstDataObjectList::Iterator oi;
+
           KST::dataObjectList.lock().readLock();
-          KstDataObjectList::Iterator oi = KST::dataObjectList.findTag((*i).name);
+          oi = KST::dataObjectList.findTag((*i).name);
           KST::dataObjectList.lock().unlock();
+
           if (oi != KST::dataObjectList.end()) {
-            KstCPluginPtr fit = kst_cast<KstCPlugin>(*oi);
+            KstCPluginPtr fit;
+
+            fit = kst_cast<KstCPlugin>(*oi);
             if (fit) {
               fit->readLock(); 
               if (fit->label((int)((*i).indexValue)) != (*i).index) {

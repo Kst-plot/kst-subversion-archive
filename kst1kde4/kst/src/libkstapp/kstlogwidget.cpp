@@ -22,18 +22,18 @@
 #include <klocale.h>
 
 #include <qbitmap.h>
-#include <qpainter.h>
-#include <qpointarray.h>
+#include <QPainter>
+#include <QPolygon>
 
 
 KstLogWidget::KstLogWidget(QWidget *parent, const char *name )
-: QTextBrowser(parent, name) {
-  //setTextFormat(LogText);
-  //setMaxLogLines(KstDebug::self()->limit());
-  setTextFormat(AutoText);
+: QTextBrowser(parent) {
+  Q_UNUSED(name)
+
+// xxx  setTextFormat(AutoText);
   _show = KstDebug::Warning | KstDebug::Error | KstDebug::Notice | KstDebug::Debug;
   generateImages();
-  setMimeSourceFactory(&_msrc);
+// xxx  setMimeSourceFactory(&_msrc);
 }
 
 
@@ -44,6 +44,7 @@ void KstLogWidget::setDebug(KstDebug *debug) {
 
 void KstLogWidget::logAdded(const KstDebug::LogMessage& msg) {
   QString sym;
+
   switch (msg.level) {
     case KstDebug::Warning:
       sym = "<img src=\"DebugWarning\"/> ";
@@ -71,6 +72,7 @@ void KstLogWidget::logAdded(const KstDebug::LogMessage& msg) {
 
 void KstLogWidget::setShowDebug(bool show) {
   int old = _show;
+
   if (show) {
     _show |= KstDebug::Debug;
   } else {
@@ -84,6 +86,7 @@ void KstLogWidget::setShowDebug(bool show) {
 
 void KstLogWidget::setShowNotice(bool show) {
   int old = _show;
+
   if (show) {
     _show |= KstDebug::Notice;
   } else {
@@ -97,6 +100,7 @@ void KstLogWidget::setShowNotice(bool show) {
 
 void KstLogWidget::setShowWarning(bool show) {
   int old = _show;
+
   if (show) {
     _show |= KstDebug::Warning;
   } else {
@@ -110,6 +114,7 @@ void KstLogWidget::setShowWarning(bool show) {
 
 void KstLogWidget::setShowError(bool show) {
   int old = _show;
+
   if (show) {
     _show |= KstDebug::Error;
   } else {
@@ -129,25 +134,27 @@ void KstLogWidget::clear() {
 
 void KstLogWidget::regenerate() {
   clear();
-  QValueList<KstDebug::LogMessage> msgs = KstDebug::self()->messages();
+  QLinkedList<KstDebug::LogMessage> msgs = KstDebug::self()->messages();
 
-  QValueListConstIterator<KstDebug::LogMessage> it = msgs.begin();
+  QLinkedList<KstDebug::LogMessage>::const_iterator it = msgs.begin();
   while (it != msgs.end()) {
     logAdded(*it);
     ++it;
   }
 
-  scrollToBottom();
+// xxx  scrollToBottom();
 }
 
 
 void KstLogWidget::generateImages() {
-  QPointArray pointArray;
+  QPolygon polygon;
   QPixmap pixmap;
   QPainter painter;
 
-  int height = 14, margin = 1, step = (height - margin * 2) / 4;
-  // Based on Kst code Copyright 2004 The University of British Columbia
+  int height = 14;
+  int margin = 1;
+  int step = (height - margin * 2) / 4;
+
   pixmap = QPixmap(height, height);
   pixmap.fill();
   painter.begin(&pixmap);
@@ -155,25 +162,25 @@ void KstLogWidget::generateImages() {
   painter.drawEllipse(margin, margin, height - margin * 2, height - margin * 2);
   painter.end();
   pixmap.setMask(pixmap.createHeuristicMask(true));
-  _msrc.setPixmap("DebugNotice", pixmap);
+// xxx  _msrc.setPixmap("DebugNotice", pixmap);
 
   pixmap = QPixmap(height, height);
   pixmap.fill();
   painter.begin(&pixmap);
-  pointArray.putPoints(0, 3, margin, margin,
+  polygon.putPoints(0, 3, margin, margin,
       height - margin, margin,
       height / 2, height - margin);
   painter.setBrush(QColor("DarkOrange"));
-  painter.drawPolygon(pointArray);
+  painter.drawPolygon(polygon);
   painter.end();
   pixmap.setMask(pixmap.createHeuristicMask(true));
-  _msrc.setPixmap("DebugWarning", pixmap);
+// xxx  _msrc.setPixmap("DebugWarning", pixmap);
 
   pixmap = QPixmap(height, height);
   pixmap.fill();
   painter.begin(&pixmap);
   painter.setBrush(QColor("Red"));
-  pointArray.putPoints(0, 8,
+  polygon.putPoints(0, 8,
       margin + ( 0 * step ), margin + ( 1 * step ),
       margin + ( 0 * step ), margin + ( 3 * step ),
       margin + ( 1 * step ), margin + ( 4 * step ),
@@ -182,10 +189,10 @@ void KstLogWidget::generateImages() {
       margin + ( 4 * step ), margin + ( 1 * step ),
       margin + ( 3 * step ), margin + ( 0 * step ),
       margin + ( 1 * step ), margin + ( 0 * step ));
-  painter.drawPolygon(pointArray);
+  painter.drawPolygon(polygon);
   painter.end();
   pixmap.setMask(pixmap.createHeuristicMask(true));
-  _msrc.setPixmap("DebugError", pixmap);
+// xxx  _msrc.setPixmap("DebugError", pixmap);
 
   pixmap = QPixmap(height, height);
   pixmap.fill();
@@ -196,7 +203,7 @@ void KstLogWidget::generateImages() {
       (height - 2 * margin) / 3, (height - 2 * margin) / 3);
   painter.end();
   pixmap.setMask(pixmap.createHeuristicMask(true));
-  _msrc.setPixmap("DebugDebug", pixmap);
+// xxx  _msrc.setPixmap("DebugDebug", pixmap);
 }
 
 #include "kstlogwidget.moc"

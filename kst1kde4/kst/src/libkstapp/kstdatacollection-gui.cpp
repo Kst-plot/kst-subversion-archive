@@ -15,16 +15,11 @@
  *                                                                         *
  ***************************************************************************/
 
-// include files for Qt
 #include <QFile>
-#include <qglobal.h>
+#include <QMessageBox>
 
-// include files for KDE
-#include <kapplication.h>
 #include <klocale.h>
-#include <kmessagebox.h>
 
-// application specific includes
 #include "kst.h"
 #include "kst2dplot.h"
 #include "kstdatacollection-gui.h"

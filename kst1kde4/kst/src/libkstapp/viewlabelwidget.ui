@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <exportmacro>KST_EXPORT</exportmacro>
- <class>viewLabelWidget</class>
- <widget class="QWidget" name="viewLabelWidget">
+ <class>ViewLabelWidget</class>
+ <widget class="QWidget" name="ViewLabelWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -123,14 +123,7 @@
          </widget>
         </item>
         <item row="0" column="1" colspan="3">
-         <widget class="KFontCombo" name="_font" native="true"/>
-        </item>
-        <item row="2" column="1">
-         <widget class="KColorButton" name="_fontColor">
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
+         <widget class="QFontComboBox" name="_font"/>
         </item>
         <item row="1" column="0">
          <widget class="QLabel" name="textLabel5_3">
@@ -146,7 +139,7 @@
          </widget>
         </item>
         <item row="1" column="1">
-         <widget class="KComboBox" name="_horizontal"/>
+         <widget class="QComboBox" name="_horizontal"/>
         </item>
         <item row="1" column="2">
          <widget class="QLabel" name="textLabel4_2">
@@ -162,7 +155,7 @@
          </widget>
         </item>
         <item row="1" column="3">
-         <widget class="KDoubleSpinBox" name="_rotation" native="true">
+         <widget class="QDoubleSpinBox" name="_rotation">
           <property name="maxValue" stdset="0">
            <number>360</number>
           </property>
@@ -229,16 +222,6 @@
           </property>
           <property name="wordWrap">
            <bool>false</bool>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="KDualColorButton" name="_boxColors" native="true">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
           </property>
          </widget>
         </item>
@@ -332,16 +315,6 @@
    <header>q3textedit.h</header>
   </customwidget>
   <customwidget>
-   <class>KComboBox</class>
-   <extends>QComboBox</extends>
-   <header>kcombobox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>KColorButton</class>
-   <extends>QPushButton</extends>
-   <header>kcolorbutton.h</header>
-  </customwidget>
-  <customwidget>
    <class>ScalarSelector</class>
    <extends>QWidget</extends>
    <header>scalarselector.h</header>
@@ -351,33 +324,11 @@
    <extends>QWidget</extends>
    <header>stringselector.h</header>
   </customwidget>
-  <customwidget>
-   <class>KFontCombo</class>
-   <extends>QWidget</extends>
-   <header>kfontcombo.h</header>
-  </customwidget>
-  <customwidget>
-   <class>KDoubleSpinBox</class>
-   <extends>QWidget</extends>
-   <header>kdoublespinbox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>KDualColorButton</class>
-   <extends>QWidget</extends>
-   <header>kdualcolorbutton.h</header>
-  </customwidget>
  </customwidgets>
  <includes>
   <include location="local">kst_export.h</include>
   <include location="local">scalarselector.h</include>
   <include location="local">stringselector.h</include>
-  <include location="local">knuminput.h</include>
-  <include location="local">kfontcombo.h</include>
-  <include location="local">klineedit.h</include>
-  <include location="local">kcolorbutton.h</include>
-  <include location="local">kcombobox.h</include>
-  <include location="local">knuminput.h</include>
-  <include location="local">kdualcolorbutton.h</include>
  </includes>
  <resources/>
  <connections/>

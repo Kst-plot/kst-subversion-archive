@@ -20,8 +20,6 @@
 
 #include "kstviewobject.h"
 
-#include <kstaticdeleter.h>
-
 #define KST_REGISTER_VIEW_OBJECT(name, factory, handler)                      \
   class KstRegister##name##Factory {                                          \
     KstRegister##name##Factory() {                                            \
@@ -33,7 +31,6 @@
 class KstGfxMouseHandler;
 
 class KstViewObjectFactory {
-  friend class KStaticDeleter<KstViewObjectFactory>;
   public:
     static KstViewObjectFactory *self();
 

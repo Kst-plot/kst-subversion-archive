@@ -18,15 +18,13 @@
 #ifndef KSTDRAG_H
 #define KSTDRAG_H
 
-#include <qdragobject.h>
+#include <QMimeData>
 
 
-class KstDrag : public QStoredDrag {
+class KstDrag : public QMimeData {
   public:
     KstDrag(const char *mimeType, QWidget *dragSource);
     virtual ~KstDrag();
-
-    // FIXME: add dcop ID here
 };
 
 #endif

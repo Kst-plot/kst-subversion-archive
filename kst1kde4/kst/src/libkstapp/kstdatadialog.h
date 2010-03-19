@@ -17,7 +17,7 @@
 #include "ui_kstdatadialog.h"
 
 class KST_EXPORT KstDataDialog : public QDialog, public Ui::KstDataDialog
- {
+{
    Q_OBJECT
 public:
   KstDataDialog(QWidget *parent = 0);
@@ -48,9 +48,11 @@ private Q_SLOTS:
   void close();
   void reject();
 
-
 private:
-
+  KstObjectPtr _dp;
+  bool _multiple;
+  bool _editMultipleMode;
+  bool _newDialog;
 };
 
 #endif

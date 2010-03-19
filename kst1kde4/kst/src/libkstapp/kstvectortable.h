@@ -18,20 +18,22 @@
 #ifndef KSTVECTORTABLE_H
 #define KSTVECTORTABLE_H
 
-#include <qtable.h>
+#include <QPainter>
+#include <QTableWidget>
+#include <QTableWidgetItem>
 
-class KstVectorTable : public QTable
+class KstVectorTable : public QTableWidget
 {
   public:
-    KstVectorTable( QWidget * parent = 0, const char * name = 0 );
+    KstVectorTable( QWidget *parent = 0, const char *name = 0 );
 
     void setVector(QString strVector);
-    void paintCell( QPainter * p, int row, int col, const QRect & cr, bool selected, const QColorGroup & cg );
+    void paintCell( QPainter *p, int row, int col, const QRect &cr, bool selected, const QPalette &palette );
 
     void resizeData(int) {}
     QWidget* createEditor(int, int, bool) const { return 0; }
-    QTableItem* item(int, int) { return 0; }
-    void setItem(int, int, QTableItem *) {}
+    QTableWidgetItem* item(int, int) { return 0; }
+    void setItem(int, int, QTableWidgetItem *) {}
     void clearCell(int, int) {}
     void insertWidget(int, int, QWidget *) {}
     QWidget* cellWidget(int, int) const { return 0; }

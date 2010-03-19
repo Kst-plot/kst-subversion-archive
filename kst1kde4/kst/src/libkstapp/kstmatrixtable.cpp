@@ -15,34 +15,30 @@
  *                                                                         *
  ***************************************************************************/
 
-// includes files for Qt
-#include <qpainter.h>
-#include <qtable.h>
-
-// include files for KDE
 #include "kstmatrix.h"
 #include "kstmatrixtable.h"
 #include "kstdatacollection.h"
 
-KstMatrixTable::KstMatrixTable( QWidget * parent, const char * name ) : QTable( parent, name ) {
+KstMatrixTable::KstMatrixTable( QWidget *parent, const char *name ) : QTableWidget( parent) {
+  Q_UNUSED(name)
 }
 
 void KstMatrixTable::setMatrix(QString strMatrix) {
   _strMatrix = strMatrix;
 }
 
-void KstMatrixTable::paintCell( QPainter* painter, int row, int col, const QRect& cr, bool selected, const QColorGroup& cg ) {
+void KstMatrixTable::paintCell( QPainter* painter, int row, int col, const QRect& cr, bool selected, const QPalette &palette ) {
   KstMatrixPtr matrix = *KST::matrixList.findTag(_strMatrix);
   QString str;
   double value;
 
   painter->eraseRect( 0, 0, cr.width(), cr.height() );
   if (selected) {
-    painter->fillRect( 0, 0, cr.width(), cr.height(), cg.highlight() );
-    painter->setPen(cg.highlightedText());
+    painter->fillRect( 0, 0, cr.width(), cr.height(), palette.highlight() );
+    painter->setPen(palette.highlightedText().color());
   } else {
-    painter->fillRect( 0, 0, cr.width(), cr.height(), cg.base() );
-    painter->setPen(cg.text());
+    painter->fillRect( 0, 0, cr.width(), cr.height(), palette.base() );
+    painter->setPen(palette.text().color());
   }
 
   if (matrix) {
@@ -55,5 +51,5 @@ void KstMatrixTable::paintCell( QPainter* painter, int row, int col, const QRect
     }
   }
 
-  painter->drawText(0, 0, cr.width(), cr.height(), AlignLeft, str);
+  painter->drawText(0, 0, cr.width(), cr.height(), Qt::AlignLeft, str);
 }

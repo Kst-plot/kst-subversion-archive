@@ -24,8 +24,8 @@
 // application specific includes
 #include "statuslabel.h"
 
-StatusLabel::StatusLabel(const QString &text, QWidget *parent, const char *name, WFlags f)
-: QLabel(text, parent, name, f) {
+StatusLabel::StatusLabel(const QString &text, QWidget *parent, const char *name, Qt::WFlags f)
+: QLabel(text, parent, f) {
   setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
   setMinimumWidth(0);
   _width = 0;
@@ -35,8 +35,8 @@ StatusLabel::~StatusLabel() {
 }
 
 void StatusLabel::setFullText() {
-  QToolTip::remove(this);
-  QToolTip::hide();
+// xxx  QToolTip::remove(this);
+// xxx  QToolTip::hide();
 
   setMaximumWidth(32767);
   setText(_fullText);
@@ -76,7 +76,7 @@ QString StatusLabel::squeeze(const QString& s, const QFontMetrics& fm, uint widt
 void StatusLabel::setTextWidth(const QFontMetrics &metrics, int width) {
   QString str;
 
-  QToolTip::remove(this);
+// xxx  QToolTip::remove(this);
 
   if (width < 0) {
     width = 0;
@@ -87,7 +87,7 @@ void StatusLabel::setTextWidth(const QFontMetrics &metrics, int width) {
   str = squeeze(_fullText, metrics, width);
 
   if (str != _fullText) {
-    QToolTip::add(this, _fullText);
+// xxx    QToolTip::add(this, _fullText);
   }
 
   setText(str);

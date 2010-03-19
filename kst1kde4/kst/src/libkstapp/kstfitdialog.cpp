@@ -1,5 +1,5 @@
 /***************************************************************************
-                     kstfitdialog_i.cpp  -  Part of KST
+                     kstfitdialog.cpp  -  Part of KST
                              -------------------
     begin                : Wed Jul 28 2004
     copyright            : (C) 2003 The University of Toronto
@@ -17,19 +17,14 @@
  ***************************************************************************/
 
 #include <assert.h>
-
 #include <stdio.h>
 
-// include files for Qt
 #include <qlineedit.h>
+#include <QMessageBox>
 #include <qtooltip.h>
 #include <qwhatsthis.h>
 #include <qregexp.h>
 
-// include files for KDE
-#include <kmessagebox.h>
-
-// application specific includes
 #include "curveappearancewidget.h"
 #include "kst2dplot.h"
 #include "kstchoosecolordialog_i.h"
@@ -45,29 +40,29 @@
 #include "stringselector.h"
 #include "vectorselector.h"
 
-QPointer<KstFitDialogI> KstFitDialogI::_inst;
+QPointer<KstFitDialog> KstFitDialog::_inst;
 
-KstFitDialogI *KstFitDialogI::globalInstance() {
+KstFitDialog *KstFitDialog::globalInstance() {
   if (!_inst) {
-    _inst = new KstFitDialogI(KstApp::inst());
+    _inst = new KstFitDialog(KstApp::inst());
   }
   return _inst;
 }
 
 
-KstFitDialogI::KstFitDialogI(QWidget* parent, const char* name, bool modal, WFlags fl)
-: KstPluginDialogI(parent, name, modal, fl) {
+KstFitDialog::KstFitDialog(QWidget* parent, const char* name, bool modal, Qt::WFlags fl)
+: KstPluginDialog(parent, name, modal, fl) {
   _w->_curveAppearance->show();
 }
 
 
-KstFitDialogI::~KstFitDialogI() {
+KstFitDialog::~KstFitDialog() {
 }
 
 
-void KstFitDialogI::show_setCurve(const QString& strCurve,
-                                  const QString& strPlotName,
-                                  const QString& strWindow) {
+void KstFitDialog::show_setCurve(const QString& strCurve,
+                                 const QString& strPlotName,
+                                 const QString& strWindow) {
 
   KstVCurvePtr curve;
   KstBaseCurveList curves = kstObjectSubList<KstDataObject, KstBaseCurve>(KST::dataObjectList);
@@ -85,14 +80,16 @@ void KstFitDialogI::show_setCurve(const QString& strCurve,
     _xvector = curve->xVTag().displayString();
     _evector = curve->yETag().displayString();
   }
+
   if (_xvector == "<None>" || _yvector == "<None>") {
     return;
   }
+
   show();
 }
 
 
-void KstFitDialogI::updatePluginList() {
+void KstFitDialog::updatePluginList() {
   PluginCollection *pc = PluginCollection::self();
   const QMap<QString,Plugin::Data>& _pluginMap = pc->pluginList();
   QString previous = _pluginList[_w->PluginCombo->currentItem()];
@@ -124,7 +121,7 @@ void KstFitDialogI::updatePluginList() {
 }
 
 
-bool KstFitDialogI::createCurve(KstCPluginPtr plugin) {
+bool KstFitDialog::createCurve(KstCPluginPtr plugin) {
   KstVectorPtr xVector;
   KstVectorPtr yVector;
 
@@ -181,7 +178,7 @@ bool KstFitDialogI::createCurve(KstCPluginPtr plugin) {
 }
 
 
-bool KstFitDialogI::newObject() {
+bool KstFitDialog::newObject() {
   QString tagName = _tagName->text();
 
   if (tagName != plugin_defaultTag) {
@@ -212,26 +209,26 @@ bool KstFitDialogI::newObject() {
         if (saveOutputs(plugin, pPtr)) {
           if (plugin->isValid()) {
             if (!createCurve(plugin)) {
-              KMessageBox::sorry(this, i18n("Could not create curve from fit, possibly due to a bad plugin."));
+              QMessageBox::warning(this, i18n("Kst"), i18n("Could not create curve from fit, possibly due to a bad plugin."));
               return false;
             }
             KST::dataObjectList.lock().writeLock();
             KST::dataObjectList.append(plugin.data());
             KST::dataObjectList.lock().unlock();
           } else {
-            KMessageBox::sorry(this, i18n("There is something wrong (i.e, there is a bug) with the creation of the fit plugin."));
+            QMessageBox::warning(this, i18n("Kst"), i18n("There is something wrong (i.e, there is a bug) with the creation of the fit plugin."));
             return false;
           }
         } else {
-          KMessageBox::sorry(this, i18n("There is an error in the outputs you entered."));
+          QMessageBox::warning(this, i18n("Kst"), i18n("There is an error in the outputs you entered."));
           return false;
         }
       } else {
-        KMessageBox::sorry(this, i18n("There is an error in the inputs you entered."));
+        QMessageBox::warning(this, i18n("Kst"), i18n("There is an error in the inputs you entered."));
         return false;
       }
     } else {
-      KMessageBox::sorry(this, i18n("There is something wrong (i.e, there is a bug) with the selected plugin.\n"));
+      QMessageBox::warning(this, i18n("Kst"), i18n("There is something wrong (i.e, there is a bug) with the selected plugin.\n"));
       return false;
     }
 
@@ -241,7 +238,8 @@ bool KstFitDialogI::newObject() {
 }
 
 
-void KstFitDialogI::generateEntries(bool input, int& cnt, QWidget *parent, QGridLayout *grid, const QValueList<Plugin::Data::IOValue>& table) {
+void KstFitDialog::generateEntries(bool input, int& cnt, QWidget *parent, QGridLayout *grid, const QList<Plugin::Data::IOValue>& table) {
+  QList<Plugin::Data::IOValue>::const_iterator it;
   QString scalarLabelTemplate;
   QString vectorLabelTemplate;
   QString stringLabelTemplate;
@@ -257,7 +255,7 @@ void KstFitDialogI::generateEntries(bool input, int& cnt, QWidget *parent, QGrid
     vectorLabelTemplate = i18n("Output Vector - %1:");
   }
 
-  for (QValueList<Plugin::Data::IOValue>::ConstIterator it = table.begin(); it != table.end(); ++it) {
+  for (it = table.begin(); it != table.end(); ++it) {
     QString labellabel;
     bool string = false;
     bool scalar = false;
@@ -374,7 +372,7 @@ void KstFitDialogI::generateEntries(bool input, int& cnt, QWidget *parent, QGrid
 }
 
 
-bool KstFitDialogI::saveInputs(KstCPluginPtr plugin, QExplicitlySharedDataPointer<Plugin> p) {
+bool KstFitDialog::saveInputs(KstCPluginPtr plugin, QExplicitlySharedDataPointer<Plugin> p) {
   bool rc = true;
 
   const QValueList<Plugin::Data::IOValue>& itable = p->data()._inputs;
@@ -446,6 +444,5 @@ bool KstFitDialogI::saveInputs(KstCPluginPtr plugin, QExplicitlySharedDataPointe
   return rc;
 }
 
-
-#include "kstfitdialog_i.moc"
+#include "kstfitdialog.moc"
 

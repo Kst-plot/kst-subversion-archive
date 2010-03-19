@@ -15,11 +15,12 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <stdlib.h>
+
+
+
 #include "kstplotdrag.h"
 #include "kstviewobjectfactory.h"
-#include <kdatastream.h>
-
-#include <stdlib.h>
 
 KstPlotDrag::KstPlotDrag(QWidget *dragSource)
 : KstDrag(mimeType(), dragSource)
@@ -38,30 +39,33 @@ KstPlotDrag::~KstPlotDrag() {
 
 void KstPlotDrag::setPlots(const KstViewObjectList& l) {
   QByteArray a;
-  QDataStream ds(a, IO_WriteOnly);
+  QDataStream ds(&a, QIODevice::WriteOnly);
+
   ds << l.count();
   for (KstViewObjectList::ConstIterator i = l.begin(); i != l.end(); ++i) {
     ds << *i;
   }
-  setEncodedData(a);
+// xxx  setEncodedData(a);
 }
 
 
 KstViewObjectList KstPlotDrag::decodedContents(QByteArray& a) {
-  uint x;
-  QDataStream ds(a, IO_ReadOnly);
-  ds >> x;
+  QDataStream ds(&a, QIODevice::ReadOnly);
   KstViewObjectList c;
+  uint x;
+
+  ds >> x;
   for (uint i = 0; i < x; ++i) {
+    KstViewObjectPtr p;
     QString type;
+
     ds >> type;
-    KstViewObjectPtr p = KstViewObjectFactory::self()->createA(type);
+    p = KstViewObjectFactory::self()->createA(type);
     if (p) {
       ds >> p;
       c.append(p);
     } else {
-      // FIXME: how to recover?
-      abort();
+      break;
     }
   }
 

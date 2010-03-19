@@ -1,5 +1,5 @@
 /***************************************************************************
-                    kstvectorsavedialog_i.cpp  -  Part of KST
+                    kstvectorsavedialog.cpp  -  Part of KST
                              -------------------
     begin                :
     copyright            : (C) 2007 The University of British Columbia
@@ -17,6 +17,7 @@
 
 #include <qlayout.h>
 #include <qlistbox.h>
+#include <QMessageBox>
 #include <qpushbutton.h>
 #include <qtable.h>
 
@@ -30,11 +31,13 @@
 #include "kstvectorsavedialog_i.h"
 #include "vectorselector.h"
 
-KstVectorSaveDialogI::KstVectorSaveDialogI(QWidget* parent,
+KstVectorSaveDialog::KstVectorSaveDialog(QWidget* parent,
                                              const char* name,
                                              bool modal,
-                                             WFlags fl)
-: VectorSaveDialog(parent, name, modal, fl) {
+                                             Qt::WFlags fl)
+: QDialog(parent, name, modal, fl) {
+  setupUi(this);
+
   connect(pushButton2, SIGNAL(clicked()), this, SLOT(hide()));
   connect(_saveButton, SIGNAL(clicked()), this, SLOT(save()));
   connect(_vectorList, SIGNAL(selectionChanged()), this, SLOT(selectionChanged()));
@@ -44,14 +47,16 @@ KstVectorSaveDialogI::KstVectorSaveDialogI(QWidget* parent,
 }
 
 
-KstVectorSaveDialogI::~KstVectorSaveDialogI() {
+KstVectorSaveDialog::~KstVectorSaveDialog() {
 }
 
 
-void KstVectorSaveDialogI::init() {
+void KstVectorSaveDialog::init() {
+  KstVectorList::ConstIterator i;
+  
   _vectorList->clear();
   KST::vectorList.lock().readLock();
-  for (KstVectorList::ConstIterator i = KST::vectorList.begin(); i != KST::vectorList.end(); ++i) {
+  for (i = KST::vectorList.begin(); i != KST::vectorList.end(); ++i) {
     (*i)->readLock();
     _vectorList->insertItem((*i)->tag().displayString());
     (*i)->unlock();
@@ -61,7 +66,7 @@ void KstVectorSaveDialogI::init() {
 }
 
 
-void KstVectorSaveDialogI::save() {
+void KstVectorSaveDialog::save() {
   KstVectorList toSave;
 
   KST::vectorList.lock().readLock();
@@ -91,28 +96,17 @@ void KstVectorSaveDialogI::save() {
             KMessageBox::sorry(this, i18n("Error saving vector to %1.").arg(url.prettyURL()), i18n("Kst"));
             return;
           }
-#if KDE_VERSION >= KDE_MAKE_VERSION(3,3,0)
           tf.sync();
-#else
           tf.close();
-#endif
 
-#if KDE_VERSION >= KDE_MAKE_VERSION(3,3,0)
           if (KIO::NetAccess::exists(url, false, this)) {
-#else
-          if (KIO::NetAccess::exists(url)) {
-#endif
-          int rc = KMessageBox::warningYesNo(this, i18n("File %1 exists.  Overwrite?").arg(url.prettyURL()), i18n("Kst"));
-          if (rc == KMessageBox::No) {
-            return;
+            int rc = KMessageBox::warningYesNo(this, i18n("File %1 exists.  Overwrite?").arg(url.prettyURL()), i18n("Kst"));
+            if (rc == KMessageBox::No) {
+              return;
+            }
           }
+          KIO::NetAccess::file_copy(KUrl(tf.name()), url, -1, true, false, this);
         }
-#if KDE_VERSION >= KDE_MAKE_VERSION(3,2,0)
-        KIO::NetAccess::file_copy(KUrl(tf.name()), url, -1, true, false, this);
-#else
-        KIO::NetAccess::upload(tf.name(), url);
-#endif
-      }
       break;
 
       case 2:
@@ -132,33 +126,23 @@ void KstVectorSaveDialogI::save() {
               KMessageBox::sorry(this, i18n("Error saving vector to %1.").arg(url2.prettyURL()), i18n("Kst"));
               return;
             }
-#if KDE_VERSION >= KDE_MAKE_VERSION(3,3,0)
             tf.sync();
-#else
             tf.close();
-#endif
 
-#if KDE_VERSION >= KDE_MAKE_VERSION(3,3,0)
             if (KIO::NetAccess::exists(url2, false, this)) {
-#else
-            if (KIO::NetAccess::exists(url2)) {
-#endif
-            int rc = KMessageBox::warningYesNo(this, i18n("File %1 exists.  Overwrite?").arg(url2.prettyURL()), i18n("Kst"));
-            if (rc == KMessageBox::No) {
+              int rc = KMessageBox::warningYesNo(this, i18n("File %1 exists.  Overwrite?").arg(url2.prettyURL()), i18n("Kst"));
+              if (rc == KMessageBox::No) {
                 continue;
+              }
             }
+
+            KIO::NetAccess::file_copy(KUrl(tf.name()), url2, -1, true, false, this);
           }
-#if KDE_VERSION >= KDE_MAKE_VERSION(3,2,0)
-          KIO::NetAccess::file_copy(KUrl(tf.name()), url2, -1, true, false, this);
-#else
-          KIO::NetAccess::upload(tf.name(), url2);
-#endif
         }
-      }
       break;
 
       default:
-        KMessageBox::sorry(this, i18n("Internal error.  Please report."), i18n("Kst"));
+        QMessageBox::warning(this, i18n("Kst"), i18n("Internal error.  Please report."), i18n("Kst"));
         break;
     }
   }
@@ -185,5 +169,5 @@ void KstVectorSaveDialogI::selectionChanged() {
   _saveButton->setEnabled(cnt > 0);
 }
 
-#include "kstvectorsavedialog_i.moc"
+#include "kstvectorsavedialog.moc"
 

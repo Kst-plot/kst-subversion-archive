@@ -20,7 +20,7 @@
 #define KSTVIEWLABEL_H
 
 #include <QPointer>
-#include <qvaluevector.h>
+#include <QVector>
 
 #include "dataref.h"
 #include "kstbackbuffer.h"
@@ -137,7 +137,7 @@ class KstViewLabel : public KstBorderedViewObject {
     struct DataCache {
       DataCache() : valid(false) {}
       bool valid;
-      QValueVector<DataRef> data;
+      QVector<DataRef> data;
       void update();
     };
     DataCache _cache;

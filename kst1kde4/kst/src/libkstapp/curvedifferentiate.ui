@@ -107,12 +107,9 @@
          </widget>
         </item>
         <item>
-         <widget class="Q3ListBox" name="availableListBox">
-          <property name="resizePolicy">
-           <enum>Q3ScrollView::AutoOneFit</enum>
-          </property>
+         <widget class="QListWidget" name="availableListBox">
           <property name="selectionMode">
-           <enum>Q3ListBox::Single</enum>
+           <enum>QAbstractItemView::SingleSelection</enum>
           </property>
           <item>
            <property name="text">
@@ -136,7 +133,7 @@
          </widget>
         </item>
         <item>
-         <widget class="Q3ListBox" name="selectedListBox">
+         <widget class="QListWidget" name="selectedListBox">
           <item>
            <property name="text">
             <string>New Item</string>
@@ -386,11 +383,6 @@
    <extends>Q3GroupBox</extends>
    <header>Qt3Support/Q3ButtonGroup</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>Q3ListBox</class>
-   <extends>Q3Frame</extends>
-   <header>q3listbox.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
