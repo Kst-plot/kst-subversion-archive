@@ -79,9 +79,6 @@ make DESTDIR=$RPM_BUILD_ROOT SUID_ROOT="" install
 %prefix/share/servicetypes/kst/kstdatasourceplugin.desktop
 %prefix/share/servicetypes/kst/kstplugin.desktop
 %prefix/share/servicetypes/kst/kstfilter.desktop
-#designerplugin
-%prefix/%_lib/kde3/plugins/designer/kstwidgets.la
-%prefix/%_lib/kde3/plugins/designer/kstwidgets.so
 #extensions
 %prefix/%_lib/kde3/kstextension_*.la
 %prefix/%_lib/kde3/kstextension_*.so

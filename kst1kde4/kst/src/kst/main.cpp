@@ -369,6 +369,10 @@ int main(int argc, char *argv[]) {
                       "",
                       "",
                       "");
+  aboutData.addAuthor("Zongyi Zhang",
+                      "",
+                      "",
+                      "");
   aboutData.setTranslator(I18N_NOOP("_: NAME OF TRANSLATORS\nYour names"), 
                           I18N_NOOP("_: EMAIL OF TRANSLATORS\nYour emails"));
 

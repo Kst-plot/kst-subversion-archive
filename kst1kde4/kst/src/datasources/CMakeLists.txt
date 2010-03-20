@@ -1,4 +1,4 @@
-add_subdirectory(ascii)
+#add_subdirectory(ascii)
 add_subdirectory(qimagesource)
 add_subdirectory(dirfile)
 add_subdirectory(frame)
