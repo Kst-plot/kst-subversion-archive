@@ -1,12 +1,6 @@
-/**************************************************************************
-        kstchoosecolordialog_i.h - source file: inherits designer dialog
-                             -------------------
-    begin                :  2001
-    copyright            : (C) 2000-2003 by Barth Netterfield
-    email                :
- ***************************************************************************/
-
 /***************************************************************************
+ *                                                                         *
+ *   copyright : (C) 2010 The University of British Columbia               *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -15,8 +9,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef KSTCHOOSECOLORDIALOGI_H
-#define KSTCHOOSECOLORDIALOGI_H
+#ifndef KSTCHOOSECOLORDIALOG_H
+#define KSTCHOOSECOLORDIALOG_H
 
 #include <qcolor.h>
 #include <qlineedit.h>
@@ -26,16 +20,16 @@
 
 #include <kcolorcombo.h>
 
-#include "choosecolordialog.h"
+#include "ui_choosecolordialog.h"
 #include "kstvcurve.h"
 
-class KstChooseColorDialogI : public KstChooseColorDialog {
+class KST_EXPORT KstChooseColorDialog : public QDialog, public Ui::KstChooseColorDialog {
 Q_OBJECT
 public:
-  KstChooseColorDialogI(QWidget* parent = 0,
+  KstChooseColorDialog(QWidget* parent = 0,
                         const char* name = 0,
                         bool modal = FALSE, WFlags fl = 0 );
-  virtual ~KstChooseColorDialogI();
+  virtual ~KstChooseColorDialog();
 
   void updateChooseColorDialog();
   void showChooseColorDialog();

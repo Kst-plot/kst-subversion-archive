@@ -1,12 +1,6 @@
-/**************************************************************************
-        kstchoosecolordialog_i.cpp - source file: inherits designer dialog
-                             -------------------
-    begin                :  2001
-    copyright            : (C) 2000-2003 by Barth Netterfield
-    email                :
- ***************************************************************************/
-
 /***************************************************************************
+ *                                                                         *
+ *   copyright : (C) 2010 The University of British Columbia               *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -25,16 +19,17 @@
 #include <kcolorcombo.h>
 
 #include "kst.h"
-#include "kstchoosecolordialog_i.h"
+#include "kstchoosecolordialog.h"
 #include "kstcolorsequence.h"
 #include "kstdatacollection.h"
 #include "kstdataobjectcollection.h"
 #include "kstvcurve.h"
 #include "kstrvector.h"
 
-KstChooseColorDialogI::KstChooseColorDialogI(QWidget* parent,
+KstChooseColorDialog::KstChooseColorDialog(QWidget* parent,
               const char* name, bool modal, WFlags fl)
-  : KstChooseColorDialog(parent, name, modal, fl) {
+  : QDialog(parent, name, modal, fl) {
+  setupUi(this);
   xVector->setChecked(true);
   connect(OK, SIGNAL(clicked()), this, SLOT(applyColors()));  
   _xSelected = true;
@@ -43,17 +38,17 @@ KstChooseColorDialogI::KstChooseColorDialogI(QWidget* parent,
 }
 
 
-KstChooseColorDialogI::~KstChooseColorDialogI() {
+KstChooseColorDialog::~KstChooseColorDialogI() {
   delete _grid;
 }
 
 
-bool KstChooseColorDialogI::override() {
+bool KstChooseColorDialog::override() {
   return _override;
 }
 
 
-void KstChooseColorDialogI::updateChooseColorDialog() {
+void KstChooseColorDialog::updateChooseColorDialog() {
   // cannot use dataSourceList.fileNames() as it contains datasources that
   // are not used by any curves or vectors
   KstRVectorList vcList = kstObjectSubList<KstVector, KstRVector>(KST::vectorList);
@@ -115,7 +110,7 @@ void KstChooseColorDialogI::updateChooseColorDialog() {
 }
 
 
-void KstChooseColorDialogI::cleanColorGroup() {
+void KstChooseColorDialog::cleanColorGroup() {
   while (!_lineEdits.isEmpty()) {
     QLineEdit* lineEdit = _lineEdits.back();
     _lineEdits.pop_back();
@@ -134,7 +129,7 @@ void KstChooseColorDialogI::cleanColorGroup() {
 }
 
 
-void KstChooseColorDialogI::showChooseColorDialog() {
+void KstChooseColorDialog::showChooseColorDialog() {
   updateChooseColorDialog();
   OK->setEnabled(true);
   Cancel->setEnabled(true);
@@ -143,7 +138,7 @@ void KstChooseColorDialogI::showChooseColorDialog() {
 }
 
 
-void KstChooseColorDialogI::applyColors() {
+void KstChooseColorDialog::applyColors() {
   OK->setEnabled(false);
   Cancel->setEnabled(false);
 
@@ -183,7 +178,7 @@ void KstChooseColorDialogI::applyColors() {
 }
 
 
-QColor KstChooseColorDialogI::getColorForFile(const QString &fileName) {
+QColor KstChooseColorDialog::getColorForFile(const QString &fileName) {
   QValueList<KColorCombo*>::Iterator kc_iter = _colorCombos.begin();
 
   for (QValueList<QLineEdit*>::Iterator fn_iter = _lineEdits.begin();
@@ -198,12 +193,12 @@ QColor KstChooseColorDialogI::getColorForFile(const QString &fileName) {
 }
 
 
-QColor KstChooseColorDialogI::getColorForCurve(const KstVCurvePtr curve) {
+QColor KstChooseColorDialog::getColorForCurve(const KstVCurvePtr curve) {
   return getColorForCurve(curve->xVector(), curve->yVector());
 }
 
 
-QColor KstChooseColorDialogI::getColorForCurve(const KstVectorPtr xVector, const KstVectorPtr yVector) {
+QColor KstChooseColorDialog::getColorForCurve(const KstVectorPtr xVector, const KstVectorPtr yVector) {
   QColor color;
 
   if (_override) {
@@ -236,4 +231,4 @@ QColor KstChooseColorDialogI::getColorForCurve(const KstVectorPtr xVector, const
   return color;
 }
 
-#include "kstchoosecolordialog_i.moc"
+#include "kstchoosecolordialog.moc"
