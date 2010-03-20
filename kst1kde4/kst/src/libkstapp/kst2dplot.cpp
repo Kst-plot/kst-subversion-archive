@@ -30,7 +30,9 @@
 #include <QCheckBox>
 #include <QClipboard>
 #include <QFontComboBox>
+#include <QHashIterator>
 #include <QLineEdit>
+#include <QMessageBox>
 #include <QPolygon>
 #include <QRadioButton>
 #include <QSpinBox>
@@ -746,10 +748,9 @@ Kst2DPlot::~Kst2DPlot() {
 
   KST::scalarList.lock().writeLock();
   KST::scalarList.setUpdateDisplayTags(false);
-  for (QDictIterator<KstScalar> it(_scalars); it.current(); ++it) {
-    KST::scalarList.remove(it.current());
-    it.current()->_KShared_unref();
-  }
+
+  _scalars.clear();
+
   KST::scalarList.setUpdateDisplayTags(true);
   KST::scalarList.lock().unlock();
 }
@@ -1852,18 +1853,22 @@ void Kst2DPlot::convertJDToDateString(KstAxisInterpretation axisInterpretation, 
       break;
     case AXIS_DISPLAY_QTTEXTDATEHHMMSS_SS:
       date.setYMD(year, month, day);
-      label.sprintf("%s %02d:%02d:%02.*f", date.toString(Qt::TextDate).ascii(),
-                                            hour, minute, accuracy, second);
+      label.sprintf("%s %02d:%02d:%02.*f",
+                    date.toString(Qt::TextDate).toAscii().constData(),
+                    hour, minute, accuracy, second);
       break;
     case AXIS_DISPLAY_QTLOCALDATEHHMMSS_SS:
       date.setYMD(year, month, day);
-      label.sprintf("%s %02d:%02d:%02.*f", date.toString(Qt::LocalDate).ascii(),
-                                            hour, minute, accuracy, second);
+      label.sprintf("%s %02d:%02d:%02.*f", 
+                    date.toString(Qt::LocalDate).toAscii().constData(),
+                    hour, minute, accuracy, second);
       break;
     case AXIS_DISPLAY_KDE_SHORTDATE:
+/* xxx
       label = KGlobal::locale()->formatDateTime(
-                                               QDateTime(QDate(year, month, day),
-                                               QTime(hour, minute, (int)second)), true, true);
+                    QDateTime(QDate(year, month, day),
+                    QTime(hour, minute, (int)second)), true, true);
+*/
       // handle the fractional seconds
       if (accuracy > 0) {
         QString strSecond;
@@ -1873,9 +1878,11 @@ void Kst2DPlot::convertJDToDateString(KstAxisInterpretation axisInterpretation, 
       }
       break;
     case AXIS_DISPLAY_KDE_LONGDATE:
+/* xxx
       label = KGlobal::locale()->formatDateTime(
                                                QDateTime(QDate(year, month, day),
                                                QTime(hour, minute, (int)second)), false, true);
+*/
       // handle the fractional seconds
       if (accuracy > 0) {
         QString strSecond;
@@ -2282,7 +2289,9 @@ void Kst2DPlot::genAxisTickLabels(TickParameters &tp,
     //
 
     if ((isX && _xTransformed) || (!isX && _yTransformed)) {
-      for (QValueList<TickLabelDescription>::ConstIterator iter = tp.labels.begin(); iter != tp.labels.end(); ++iter) {
+      QList<TickLabelDescription>::const_iterator iter;
+
+      for (iter = tp.labels.begin(); iter != tp.labels.end(); ++iter) {
         double transformedNumber;
         bool transformedOK = false;
         double originalNumber = (*iter).position;
@@ -2626,11 +2635,11 @@ void Kst2DPlot::setBorders(double& xleft_bdr_px, double& xright_bdr_px,
 
 
 void Kst2DPlot::drawGraphicSelectionAt(QPainter& p, const QPoint& pos) {
-  if (PlotRegion.contains(pos)) {
-    p.setRasterOp(Qt::XorROP);
+  if (_plotRegion.contains(pos)) {
+// xxx    p.setRasterOp(Qt::XorROP);
     p.setPen(QPen(QColor("gray"), 1));
     p.drawRect(pos.x() - 2, pos.y() - 2, 4, 4);
-    p.setRasterOp(Qt::CopyROP);
+// xxx    p.setRasterOp(Qt::CopyROP);
   }
 }
 
@@ -2647,18 +2656,18 @@ void Kst2DPlot::drawDotAt(QPainter& p, double x, double y) {
   int Y1 = d2i(_m_Y * y + _b_Y) + position().y();
 
   if (_xReversed) {
-    X1 = PlotRegion.right() - (X1 - PlotRegion.left());
+    X1 = _plotRegion.right() - (X1 - _plotRegion.left());
   }
 
   if (_yReversed) {
-    Y1 = PlotRegion.bottom() - (Y1 - PlotRegion.top());
+    Y1 = _plotRegion.bottom() - (Y1 - _plotRegion.top());
   }
 
-  if (PlotRegion.contains(X1, Y1)) {
-    p.setRasterOp(Qt::XorROP);
+  if (_plotRegion.contains(X1, Y1)) {
+// xxx    p.setRasterOp(Qt::XorROP);
     p.setPen(QPen(QColor("gray"), 1));
     p.drawEllipse(X1 - 3, Y1 - 3, 6, 6);
-    p.setRasterOp(Qt::CopyROP);
+// xxx    p.setRasterOp(Qt::CopyROP);
   }
 }
 
@@ -2685,18 +2694,21 @@ void Kst2DPlot::drawPlusAt(QPainter& p, double x, double y) {
   int X1 = d2i(_m_X * x + _b_X) + position().x();
   int Y1 = d2i(_m_Y * y + _b_Y) + position().y();
 
-  if (PlotRegion.contains(X1, Y1)) {
-    p.setRasterOp(Qt::XorROP);
+  if (_plotRegion.contains(X1, Y1)) {
+// xxx    p.setRasterOp(Qt::XorROP);
     p.setPen(QPen(QColor("gray"), 1));
     p.drawLine(X1 - 3, Y1, X1 + 4, Y1);
     p.drawLine(X1, Y1 - 3, X1, Y1 + 4);
-    p.setRasterOp(Qt::CopyROP);
+// xxx    p.setRasterOp(Qt::CopyROP);
   }
 }
 
 
 void Kst2DPlot::edit() {
-  KstTopLevelViewPtr tlv = kst_cast<KstTopLevelView>(topLevelParent());
+  KstTopLevelViewPtr tlv;
+
+  tlv = kst_cast<KstTopLevelView>(topLevelParent());
+
   showDialog(tlv, false);
 }
 
@@ -2704,9 +2716,9 @@ void Kst2DPlot::edit() {
 void Kst2DPlot::move(const QPoint& pos) {
   QPoint offset = pos - _geom.topLeft();
 
-  PlotRegion.moveBy(offset.x(), offset.y());
-  WinRegion.moveBy(offset.x(), offset.y());
-  PlotAndAxisRegion.moveBy(offset.x(), offset.y());
+  _plotRegion.adjust(offset.x(), offset.y(), offset.x(), offset.y());
+  _winRegion.adjust(offset.x(), offset.y(), offset.x(), offset.y());
+  _plotAndAxisRegion.adjust(offset.x(), offset.y(), offset.x(), offset.y());
 
   KstPlotBase::move(pos);
 }
@@ -2719,17 +2731,17 @@ void Kst2DPlot::parentResized() {
 
 
 void Kst2DPlot::parentMoved(const QPoint& offset) {
-  PlotRegion.moveBy(offset.x(), offset.y());
-  WinRegion.moveBy(offset.x(), offset.y());
-  PlotAndAxisRegion.moveBy(offset.x(), offset.y());
+  _plotRegion.adjust(offset.x(), offset.y(), offset.x(), offset.y());
+  _winRegion.adjust(offset.x(), offset.y(), offset.x(), offset.y());
+  _plotAndAxisRegion.adjust(offset.x(), offset.y(), offset.x(), offset.y());
 
   KstPlotBase::parentMoved(offset);
 }
 
 
 void Kst2DPlot::resize(const QSize& size) {
-  _buffer.buffer().resize(size);
-  if (!_buffer.buffer().isEmpty()) {
+// xxx  _buffer.buffer().resize(size);
+  if (!_buffer.buffer().isNull()) {
     _buffer.buffer().fill(backgroundColor());
     KstPainter p;
     p.begin(&_buffer.buffer());
@@ -2793,7 +2805,7 @@ void Kst2DPlot::paintSelf(KstPainter& p, const QRegion& bounds) {
     }
 
     if (p.makingMask()) {
-      p.setRasterOp(Qt::SetROP);
+// xxx      p.setRasterOp(Qt::SetROP);
       KstPlotBase::paintSelf(p, bounds);
     } else {
       const QRegion clip(clipRegion());
@@ -2837,7 +2849,7 @@ void Kst2DPlot::draw() {
     return;
   }
 
-  _buffer.buffer().resize(size());
+// xxx  _buffer.buffer().resize(size());
   if (_buffer.buffer().isNull()) {
     return;
   }
@@ -2888,15 +2900,22 @@ void Kst2DPlot::draw(KstPainter& p) {
 
   setBorders(xleft_bdr_px, xright_bdr_px, ytop_bdr_px, ybot_bdr_px,
              tpx, tpy, p, offsetX, offsetY, xtick_len_px, ytick_len_px);
-  p.flush();
 
+  //
   // use a common plot region for plots that are aligned and of the same
   //  dimension, in either the horizontal or vertical sense...
+  //
   KST::alignment.limits(geometry(), in_xleft_bdr_px, in_xright_bdr_px, in_ytop_bdr_px, in_ybot_bdr_px, 1);
 
-  // only override if not maximized
+  //
+  // only override if not maximized...
+  //
+
   if (!maximized()) {
-    // only override if borders are not suppressed
+    //
+    // only override if borders are not suppressed...
+    //
+
     if (!_suppressLeft && in_xleft_bdr_px > 0.001) { // x-left border overridden
       xleft_bdr_px = in_xleft_bdr_px;
     }
@@ -2911,39 +2930,45 @@ void Kst2DPlot::draw(KstPainter& p) {
     }
   }
 
-  QRect RelPlotRegion(d2i(xleft_bdr_px),
+  QRect relPlotRegion(d2i(xleft_bdr_px),
       d2i(ytop_bdr_px),
       d2i(x_px - xright_bdr_px - xleft_bdr_px + 1.0),
       d2i(y_px - ybot_bdr_px - ytop_bdr_px + 1.0));
-  QRect RelPlotAndAxisRegion(d2i(_yLabel->lineSpacing() + 1.0),
+  QRect relPlotAndAxisRegion(d2i(_yLabel->lineSpacing() + 1.0),
                         d2i(ytop_bdr_px),
                         d2i(x_px - _yLabel->lineSpacing() - xright_bdr_px),
                         d2i(y_px - _xLabel->lineSpacing() - ytop_bdr_px));
-  QRect RelWinRegion(0, 0, d2i(x_px), d2i(y_px));
+  QRect relWinRegion(0, 0, d2i(x_px), d2i(y_px));
 
-  x_orig_px = (tpx.org - x_min) / (x_max - x_min) * double(RelPlotRegion.width()-1) + xleft_bdr_px;
-  y_orig_px = (y_max - tpy.org) / (y_max - y_min) * double(RelPlotRegion.height()-1) + ytop_bdr_px;
-  xtick_px = (tpx.tick / (x_max - x_min)) * double(RelPlotRegion.width()-1);
-  ytick_px = (tpy.tick / (y_max - y_min)) * double(RelPlotRegion.height()-1);
+  x_orig_px = (tpx.org - x_min) / (x_max - x_min) * double(relPlotRegion.width()-1) + xleft_bdr_px;
+  y_orig_px = (y_max - tpy.org) / (y_max - y_min) * double(relPlotRegion.height()-1) + ytop_bdr_px;
+  xtick_px = (tpx.tick / (x_max - x_min)) * double(relPlotRegion.width()-1);
+  ytick_px = (tpy.tick / (y_max - y_min)) * double(relPlotRegion.height()-1);
 
   if (p.type() != KstPainter::P_PRINT && p.type() != KstPainter::P_EXPORT) {
-    setPixRect(RelPlotRegion, RelWinRegion, RelPlotAndAxisRegion);
+    setPixRect(relPlotRegion, relWinRegion, relPlotAndAxisRegion);
   } else {
-    const QRect a(PlotRegion), b(WinRegion), c(PlotAndAxisRegion);
-    setPixRect(RelPlotRegion, RelWinRegion, RelPlotAndAxisRegion);
+    const QRect a(_plotRegion);
+    const QRect b(_winRegion);
+    const QRect c(_plotAndAxisRegion);
+
+    setPixRect(relPlotRegion, relWinRegion, relPlotAndAxisRegion);
     recursively(&KstViewObject::updateFromAspect); // alignment may have changed
     setPixRect(a, b, c);
   }
 
-  // only attempt to draw if plot is big enough
+  //
+  // only attempt to draw if plot is big enough...
+  //
+
   if (x_px - xright_bdr_px - xleft_bdr_px >= 10.0 &&
       y_px - ybot_bdr_px - ytop_bdr_px + 1.0 - ytop_bdr_px >= 10.0) {
-    Lx = RelPlotRegion.left();
-    Hx = RelPlotRegion.right();
-    Ly = RelPlotRegion.top();
-    Hy = RelPlotRegion.bottom();
-    m_X =  double(RelPlotRegion.width()-1)/(x_max - x_min);
-    m_Y = -double(RelPlotRegion.height()-1)/(y_max - y_min);
+    Lx = relPlotRegion.left();
+    Hx = relPlotRegion.right();
+    Ly = relPlotRegion.top();
+    Hy = relPlotRegion.bottom();
+    m_X =  double(relPlotRegion.width()-1)/(x_max - x_min);
+    m_Y = -double(relPlotRegion.height()-1)/(y_max - y_min);
     b_X = Lx - m_X * x_min;
     b_Y = Ly - m_Y * y_max;
     if (p.type() != KstPainter::P_PRINT && p.type() != KstPainter::P_EXPORT) {
@@ -2954,7 +2979,6 @@ void Kst2DPlot::draw(KstPainter& p) {
     }
 
     plotLabels(p, x_px, y_px, xleft_bdr_px, xright_bdr_px, ytop_bdr_px, ybot_bdr_px);
-    p.flush();
 
     KstCurveRenderContext context;
 
@@ -3005,7 +3029,7 @@ void Kst2DPlot::draw(KstPainter& p) {
                   ytick_px, ytick_len_px, y_px);
 
     p.setPen(QPen(_foregroundColor, penWidth));
-    plotAxes(p, RelPlotRegion,
+    plotAxes(p, relPlotRegion,
         tpx, xleft_bdr_px, xright_bdr_px, x_orig_px, xtick_px, xtick_len_px, x_px,
         tpy, ytop_bdr_px, ybot_bdr_px, y_orig_px, ytick_px, ytick_len_px, y_px,
         offsetY);
@@ -3019,28 +3043,29 @@ void Kst2DPlot::draw(KstPainter& p) {
       p.scale(-1.0, 1.0);
       p.translate(d2i(-1.0 * Hx - Lx), 0.0);
     }
-
-    p.flush();
   } else {
-    // if the plot is too small to draw then denote this with a cross pattern
-    p.fillRect(RelWinRegion, QBrush(foregroundColor(), Qt::DiagCrossPattern));
-    p.drawRect(RelWinRegion);
+    //
+    // if the plot is too small to draw then denote this with a cross pattern...
+    //
+
+    p.fillRect(relWinRegion, QBrush(foregroundColor(), Qt::DiagCrossPattern));
+    p.drawRect(relWinRegion);
   }
 }
 
 
 QRect Kst2DPlot::GetPlotRegion() const {
-  return PlotRegion;
+  return _plotRegion;
 }
 
 
 QRect Kst2DPlot::GetWinRegion() const {
-  return WinRegion;
+  return _winRegion;
 }
 
 
 QRect Kst2DPlot::GetPlotAndAxisRegion() const {
-  return PlotAndAxisRegion;
+  return _plotAndAxisRegion;
 }
 
 
@@ -3048,30 +3073,30 @@ QRect Kst2DPlot::GetTieBoxRegion() const {
   int left, top;
   const int dim = 11;
 
-  if (WinRegion.right() - PlotRegion.right() > dim + 3) {
-    left = PlotRegion.right() + 2;
+  if (_winRegion.right() - _plotRegion.right() > dim + 3) {
+    left = _plotRegion.right() + 2;
   } else {
-    left = WinRegion.right() - dim - 1;
+    left = _winRegion.right() - dim - 1;
   }
-  if (PlotRegion.top() - WinRegion.top() > dim + 3) {
-    top = PlotRegion.top() - 2 - dim;
+  if (_plotRegion.top() - _winRegion.top() > dim + 3) {
+    top = _plotRegion.top() - 2 - dim;
   } else {
-    top = WinRegion.top()+1;
+    top = _winRegion.top()+1;
   }
 
   return QRect(left, top, dim, dim);
 }
 
 
-void Kst2DPlot::setPixRect(const QRect& RelPlotRegion, const QRect& RelWinRegion, const QRect& RelPlotAndAxisRegion) {
-  PlotRegion = RelPlotRegion;
-  PlotRegion.moveBy(geometry().x(), geometry().y());
+void Kst2DPlot::setPixRect(const QRect& relPlotRegion, const QRect& relWinRegion, const QRect& relPlotAndAxisRegion) {
+  _plotRegion = relPlotRegion;
+  _plotRegion.adjust(geometry().x(), geometry().y(), geometry().x(), geometry().y());
 
-  WinRegion = RelWinRegion;
-  WinRegion.moveBy(geometry().x(), geometry().y());
+  _winRegion = relWinRegion;
+  _winRegion.adjust(geometry().x(), geometry().y(), geometry().x(), geometry().y());
 
-  PlotAndAxisRegion = RelPlotAndAxisRegion;
-  PlotAndAxisRegion.moveBy(geometry().x(), geometry().y());
+  _plotAndAxisRegion = relPlotAndAxisRegion;
+  _plotAndAxisRegion.adjust(geometry().x(), geometry().y(), geometry().x(), geometry().y());
 }
 
 
@@ -3108,8 +3133,8 @@ void Kst2DPlot::save(QTextStream& ts, const QString& indent) {
 
 
 void Kst2DPlot::saveAttributes(QTextStream& ts, const QString& indent) {
-  unsigned i;
   QString l2 = indent + "  ";
+  int i;
 
   KstPlotBase::saveAttributes(ts, indent);
 
@@ -3126,9 +3151,12 @@ void Kst2DPlot::saveAttributes(QTextStream& ts, const QString& indent) {
   ts << indent << "<xreversed>" << _xReversed << "</xreversed>" << endl;
   ts << indent << "<yreversed>" << _yReversed << "</yreversed>" << endl;
 
-  // Reparse the expressions, then write it back out in text so that we can update
-  // any vectors or scalars that had name changes, but we don't get affected by
-  // the optimizer
+  //
+  // reparse the expressions, then write it back out in text so that we 
+  //  can update any vectors or scalars that had name changes, but we 
+  //  don't get affected by the optimizer...
+  //
+
   if (_xScaleMode == EXPRESSION) {
     if (!(reparseToText(_xMinExp) && reparseToText(_xMaxExp))) {
       KstDebug::self()->log(i18n("X scale expression could not be reparsed while saving.  Resulting Kst file may have issues."), KstDebug::Warning);
@@ -3193,8 +3221,10 @@ void Kst2DPlot::saveAttributes(QTextStream& ts, const QString& indent) {
     ts << indent << "<plotbackcolor>" << Qt::escape(_backgroundColor.name()) << "</plotbackcolor>" << endl;
   }
 
-  // save the plot markers
-  // makes sure autogenerated markers are here
+  //
+  // save the plot markers, makes sure autogenerated markers are here...
+  //
+
   updateMarkersFromCurve();
   updateMarkersFromVector();
   for (i = 0; i < _plotMarkers.count(); i++) {
@@ -3218,7 +3248,10 @@ void Kst2DPlot::saveAttributes(QTextStream& ts, const QString& indent) {
     ts << indent << "<vectortomarkersname>" << _vectorToMarkers->tagName() <<  "</vectortomarkersname>" <<endl;
   }
 
-  // save grid line settings
+  //
+  // save grid line settings...
+  //
+
   ts << indent << "<xmajorgrid>" << _xMajorGrid << "</xmajorgrid>" << endl;
   ts << indent << "<ymajorgrid>" << _yMajorGrid << "</ymajorgrid>" << endl;
   ts << indent << "<xminorgrid>" << _xMinorGrid << "</xminorgrid>" << endl;
@@ -3252,13 +3285,19 @@ void Kst2DPlot::saveAttributes(QTextStream& ts, const QString& indent) {
   ts << indent << "<suppressleft>" << _suppressLeft << "</suppressleft>" << endl;
   ts << indent << "<suppressright>" << _suppressRight << "</suppressright>" << endl;
 
-  // transformed axis
+  //
+  // transformed axis...
+  //
+
   ts << indent << "<xtransformed>" << _xTransformed << "</xtransformed>" << endl;
   ts << indent << "<ytransformed>" << _yTransformed << "</ytransformed>" << endl;
   ts << indent << "<xtransformedexp>" << _xTransformedExp << "</xtransformedexp>" << endl;
   ts << indent << "<ytransformedexp>" << _yTransformedExp << "</ytransformedexp>" << endl;
 
-  // axis interpretation settings
+  //
+  // axis interpretation settings...
+  //
+
   ts << indent << "<xinterpret>" << _isXAxisInterpreted << "</xinterpret>" << endl;
   ts << indent << "<xinterpretas>" << _xAxisInterpretation << "</xinterpretas>" << endl;
   ts << indent << "<xdisplayas>" << _xAxisDisplay << "</xdisplayas>" << endl;
@@ -3301,25 +3340,29 @@ void Kst2DPlot::pushScale() {
 
 bool Kst2DPlot::popScale() {
   if (_plotScaleList.count() > 1) {
+    KstPlotScale ps;
+
     _plotScaleList.removeLast();
-    KstPlotScale *ps = _plotScaleList.last();
-    setScale(ps->xmin, ps->ymin, ps->xmax, ps->ymax);
-    _xScaleMode = ps->xscalemode;
-    _yScaleMode = ps->yscalemode;
-    _xLog = ps->xlog;
-    _yLog = ps->ylog;
-    _xMinExp = ps->xMinExp;
-    _xMaxExp = ps->xMaxExp;
-    _yMinExp = ps->yMinExp;
-    _yMaxExp = ps->yMaxExp;
+    ps = _plotScaleList.last();
+    setScale(ps.xmin, ps.ymin, ps.xmax, ps.ymax);
+    _xScaleMode = ps.xscalemode;
+    _yScaleMode = ps.yscalemode;
+    _xLog = ps.xlog;
+    _yLog = ps.ylog;
+    _xMinExp = ps.xMinExp;
+    _xMaxExp = ps.xMaxExp;
+    _yMinExp = ps.yMinExp;
+    _yMaxExp = ps.yMaxExp;
     _xMinParsedValid = reparse(_xMinExp, &_xMinParsed);
     _xMaxParsedValid = reparse(_xMaxExp, &_xMaxParsed);
     _yMinParsedValid = reparse(_yMinExp, &_yMinParsed);
     _yMaxParsedValid = reparse(_yMaxExp, &_yMaxParsed);
     optimizeXExps();
     optimizeYExps();
+
     return true;
   }
+
   return false;
 }
 
@@ -3330,42 +3373,55 @@ bool Kst2DPlot::popScale() {
 /*                                                              */
 /****************************************************************/
 static void EscapeSpecialChars(QString& label) {
-  unsigned int i_char;
-
-  for (i_char = 0; i_char < label.length(); i_char++) {
-    if (label.at(i_char) == '_') {
-      label.insert(i_char, '\\');
-      i_char++;
-    }
-  }
+  label.replace( QString("_"), QString("\\_")); 
 }
 
 
 void Kst2DPlot::generateDefaultLabels(bool xl, bool yl, bool tl) {
-  QStringList xlabels, ylabels, toplabels;
-  QString label, xlabel, ylabel, toplabel;
-  int n_curves, i_curve, i_count;
+  QStringList xlabels;
+  QStringList ylabels;
+  QStringList toplabels;
+  QString label;
+  QString xlabel;
+  QString ylabel;
+  QString toplabel;
+  int n_curves;
+  int i_curve;
+  int i_count;
 
   n_curves = _curves.count();
 
-  // accumulate list of curve labels
+  //
+  // accumulate list of curve labels...
+  //
+
   for (KstBaseCurveList::ConstIterator i = _curves.begin(); i != _curves.end(); ++i) {
     (*i)->readLock();
-    if (xlabels.findIndex((*i)->xLabel()) == -1) {
+
+    if (xlabels.indexOf((*i)->xLabel()) == -1) {
       xlabels.append((*i)->xLabel());
     }
-    if (ylabels.findIndex((*i)->yLabel()) == -1) {
+
+    if (ylabels.indexOf((*i)->yLabel()) == -1) {
       ylabels.append((*i)->yLabel());
     }
-    if (toplabels.findIndex((*i)->topLabel()) == -1) {
+
+    if (toplabels.indexOf((*i)->topLabel()) == -1) {
       toplabels.append((*i)->topLabel());
     }
+
     (*i)->unlock();
   }
 
-  // create the labels
+  //
+  // create the labels...
+  //
+
   if (n_curves > 0) {
-    // the x axis label
+    //
+    // the x axis label...
+    //
+
     i_count = xlabels.count();
     for (i_curve = 0; i_curve < i_count; i_curve++) {
       if (i_curve == i_count - 1) {
@@ -3377,11 +3433,17 @@ void Kst2DPlot::generateDefaultLabels(bool xl, bool yl, bool tl) {
       }
     }
 
-    // the y axis label
+    //
+    // the y axis label...
+    //
+
     i_count = ylabels.count();
     if (i_count < 4) {
-      // only fill if there are 1, 2 or 3 different label....
-      // otherwise a legend box should be used.
+      //
+      // only fill if there are 1, 2 or 3 different labels....
+      // otherwise a legend box should be used...
+      //
+
       for (i_curve = 0; i_curve < i_count; i_curve++) {
         if (i_curve == i_count - 1) {
           ylabel += ylabels[i_curve];
@@ -3393,7 +3455,10 @@ void Kst2DPlot::generateDefaultLabels(bool xl, bool yl, bool tl) {
       }
     }
 
-    // create the top label
+    //
+    // create the top label...
+    //
+
     i_count = toplabels.count();
     for (i_curve = 0; i_curve < i_count; i_curve++) {
       if (i_curve == i_count - 1) {
@@ -3641,7 +3706,9 @@ void Kst2DPlot::editVector(int id) {
 
 
 void Kst2DPlot::matchAxes(int id) {
-  Kst2DPlotPtr p = (Kst2DPlot*)_plotMap[id];
+  Kst2DPlotPtr p;
+
+  p = (Kst2DPlot*)_plotMap[id];
   if (p) {
     double x0, x1, y0, y1;
     p->getScale(x0, y0, x1, y1);
@@ -3663,7 +3730,9 @@ void Kst2DPlot::matchAxes(int id) {
 
 
 void Kst2DPlot::matchXAxis(int id) {
-  Kst2DPlotPtr p = (Kst2DPlot*)_plotMap[id];
+  Kst2DPlotPtr p;
+
+  p = (Kst2DPlot*)_plotMap[id];
   if (p) {
     double x0, x1, y0, y1;
     p->getScale(x0, y0, x1, y1);
@@ -3771,9 +3840,11 @@ void Kst2DPlot::deleteObject() {
   bool remove = false;
 
   if (KstSettings::globalSettings()->promptPlotDelete) {
-    KstTopLevelViewPtr tlv = kst_cast<KstTopLevelView>(KstViewObjectPtr(_topObjectForMenu));
+    KstTopLevelViewPtr tlv; 
+    
+    tlv  = kst_cast<KstTopLevelView>(KstViewObjectPtr(_topObjectForMenu));
     if (tlv) {
-      if (KMessageBox::warningYesNo(tlv->widget(), i18n("Are you sure you want to delete plot '%1'?").arg(tagName())) == KMessageBox::Yes) {
+      if (QMessageBox::warning(tlv->widget(), i18n("Kst"), i18n("Are you sure you want to delete plot '%1'?").arg(tagName()), QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes) {
         remove = true;
       }
     }
@@ -3796,9 +3867,9 @@ void Kst2DPlot::copyObject() {
 
         plotList.append(tagName());
 
-        PlotMimeSource *newplots = new PlotMimeSource(vw->caption(), plotList);
+        PlotMimeSource *newplots = new PlotMimeSource(vw->windowTitle(), plotList);
 
-        QApplication::clipboard()->setData(newplots, QClipboard::Clipboard);
+// xxx        QApplication::clipboard()->setData(newplots, QClipboard::Clipboard);
       }
     }
   }
@@ -3806,6 +3877,7 @@ void Kst2DPlot::copyObject() {
 
 
 KstViewObject* Kst2DPlot::copyObjectQuietly(KstViewObject& parent, const QString& name) const {
+  KstViewObjectPtr obj;
   QString plotName;
 
   if (name.isEmpty()) {
@@ -3815,7 +3887,9 @@ KstViewObject* Kst2DPlot::copyObjectQuietly(KstViewObject& parent, const QString
   }
 
   Kst2DPlot *plot = new Kst2DPlot(*this, plotName);
-  parent.appendChild(plot, true);
+
+  obj = plot;
+  parent.appendChild(obj, true);
 
   return plot;
 }
@@ -4360,7 +4434,10 @@ void Kst2DPlot::highlightNearestDataPoint(bool bRepaint, KstPainter *p, const QP
       }
     }
 
+    //
     // display the z value of the topmost image underneath cursor, if available...
+    //
+
     KstImageList images = kstObjectSubList<KstBaseCurve,KstImage>(_curves);
     if (images.count() > 0) {
       double zValue;
@@ -4669,14 +4746,20 @@ void Kst2DPlot::mousePressEvent(QWidget *view, QMouseEvent *e) {
       } else {
         _tabToShow = Y_AXIS_TAB;
       }
-      KstTopLevelViewPtr tlv = kst_cast<KstTopLevelView>(topLevelParent());
+
+      KstTopLevelViewPtr tlv;
+
+      tlv = kst_cast<KstTopLevelView>(topLevelParent());
       showDialog(tlv, false);
       _tabToShow = CONTENT_TAB;
 
       return;
     } else if (win_rect.contains(e->pos())) {
       _tabToShow = APPEARANCE_TAB;
-      KstTopLevelViewPtr tlv = kst_cast<KstTopLevelView>(topLevelParent());
+
+      KstTopLevelViewPtr tlv;
+
+      tlv = kst_cast<KstTopLevelView>(topLevelParent());
       showDialog(tlv, false);
       _tabToShow = CONTENT_TAB;
 
@@ -5501,7 +5584,7 @@ void Kst2DPlot::xZoomNormal(KstViewWidget *view) {
 
     getLScale(xmin, ymin, xmax, ymax);
     mean = xmin + ((xmax - xmin) / 2.0);
-    range = (double)PlotRegion.width() * (ymax - ymin) / (double)PlotRegion.height();
+    range = (double)plotRegion.width() * (ymax - ymin) / (double)plotRegion.height();
 
     new_xmin = mean - (range / 2.0);
     new_xmax = mean + (range / 2.0);
@@ -5525,7 +5608,7 @@ void Kst2DPlot::yZoomNormal(KstViewWidget *view) {
 
     getLScale(xmin, ymin, xmax, ymax);
     mean = ymin + ((ymax - ymin) / 2.0);
-    range = (double)PlotRegion.height() * (xmax - xmin) / (double)PlotRegion.width();
+    range = (double)plotRegion.height() * (xmax - xmin) / (double)plotRegion.width();
 
     new_ymin = mean - (range / 2.0);
     new_ymax = mean + (range / 2.0);
@@ -5758,7 +5841,7 @@ void Kst2DPlot::keyPressEvent(QWidget *vw, QKeyEvent *e) {
       if (!e->isAutoRepeat() && GetPlotRegion().contains(cursorPos)) {
         double fakeCursorPos = cursorPos.x();
         if (_xReversed) {
-          fakeCursorPos = PlotRegion.right() - (fakeCursorPos - PlotRegion.left());
+          fakeCursorPos = _plotRegion.right() - (fakeCursorPos - _plotRegion.left());
         }
         if (_xLog) {
           setPlotMarker(pow(_xLogBase, ((fakeCursorPos - position().x() - _b_X) / _m_X)), false, false, false);
@@ -6007,12 +6090,14 @@ bool Kst2DPlot::removePlotMarker(const double xValue) {
 const KstMarkerList Kst2DPlot::plotMarkers(const double minX, const double maxX) const {
   KstMarkerList foundMarkers;
   KstMarkerList::ConstIterator marks_iter = _plotMarkers.begin();
+
   while (marks_iter != _plotMarkers.end()) {
     if ((*marks_iter).value < maxX && (*marks_iter).value > minX) {
       foundMarkers.append(*marks_iter);
     }
     ++marks_iter;
   }
+
   return KstMarkerList(foundMarkers);
 }
 
@@ -6029,12 +6114,15 @@ void Kst2DPlot::setPlotMarkerList(const KstMarkerList& newMarkers) {
 
 bool Kst2DPlot::nextMarker(const double currentPosition, double& marker) {
   KstMarkerList::Iterator iter = _plotMarkers.begin();
+
   while (iter != _plotMarkers.end() && (*iter).value < currentPosition) {
     ++iter;
   }
+
   if (iter == _plotMarkers.end()) {
     return false;
   }
+
   marker = (*iter).value;
 
   return true;
@@ -6043,14 +6131,17 @@ bool Kst2DPlot::nextMarker(const double currentPosition, double& marker) {
 
 bool Kst2DPlot::prevMarker(const double currentPosition, double& marker) {
   KstMarkerList::Iterator iter = _plotMarkers.begin();
+
   if (iter == _plotMarkers.end() || (*iter).value >= currentPosition) {
     return false;
   }
+
   while (iter != _plotMarkers.end() && (*iter).value < currentPosition) {
     ++iter;
   }
   --iter;
   marker = (*iter).value;
+
   return true;
 }
 
@@ -6176,9 +6267,13 @@ void Kst2DPlot::plotPlotMarkers(KstPainter& p,
     marks = plotMarkers(x_min, x_max);
   }
 
-  // plot each one
+  //
+  // plot each one...
+  //
+
   KstMarkerList::iterator marks_iter = marks.begin();
   double mark_px;
+
   if (_xLog) {
     double new_x;
 
@@ -6221,10 +6316,16 @@ void Kst2DPlot::plotAxes(QPainter& p, QRect& plotRegion,
   double X2, Y2;
   int i, j;
 
-  // draw axis
+  //
+  // draw axis...
+  //
+
   p.drawRect(plotRegion);
 
+  //
   // tick length and position depends on tick display settings
+  //
+
   int xMajorTopTickTop = _xTicksOutPlot ? d2i(ytop_bdr_px - 2.0 * xtick_len_px) : d2i(ytop_bdr_px);
   int xMajorTopTickBottom = _xTicksInPlot ? d2i(ytop_bdr_px + 2.0 * xtick_len_px) : d2i(ytop_bdr_px);
   int xMajorBottomTickTop = _xTicksInPlot ? d2i(y_px - ybot_bdr_px - 2.0 * xtick_len_px) : d2i(y_px - ybot_bdr_px);
@@ -6243,7 +6344,10 @@ void Kst2DPlot::plotAxes(QPainter& p, QRect& plotRegion,
   int yMinorRightTickLeft = _yTicksInPlot ? d2i(x_px - xright_bdr_px - ytick_len_px) : d2i(x_px - xright_bdr_px);
   int yMinorRightTickRight = _yTicksOutPlot ? d2i(x_px - xright_bdr_px + ytick_len_px) : d2i(x_px - xright_bdr_px);
 
-  // draw x-ticks
+  //
+  // draw x-ticks...
+  //
+
   if (tpx.label) {
     if (_xLog) {
       double XPos;
@@ -6293,7 +6397,10 @@ void Kst2DPlot::plotAxes(QPainter& p, QRect& plotRegion,
     }
   }
 
-  // draw y ticks
+  //
+  // draw y ticks...
+  //
+
   if (tpy.label) {
     if (_yLog) {
       double YPos;
@@ -6343,7 +6450,10 @@ void Kst2DPlot::plotAxes(QPainter& p, QRect& plotRegion,
     }
   }
 
-  // x axis numbers
+  //
+  // x axis numbers...
+  //
+
   if (!_suppressBottom && tpx.label) {
     int yTickPos = d2i(y_px - ybot_bdr_px + _xTickLabel->lineSpacing()*0.15);
     if (xTicksOutPlot()) {
@@ -6360,7 +6470,9 @@ void Kst2DPlot::plotAxes(QPainter& p, QRect& plotRegion,
       tpx.labels.pop_front();
     }
 
-    for (QValueList<TickLabelDescription>::ConstIterator iter = tpx.labels.begin(); iter != tpx.labels.end(); ++iter) {
+    QList<TickLabelDescription>::const_iterator iter;
+
+    for (iter = tpx.labels.begin(); iter != tpx.labels.end(); ++iter) {
       _xTickLabel->setText((*iter).label);
       double xTickPos = (*iter).position;
       if(_xLog) {
@@ -6390,7 +6502,10 @@ void Kst2DPlot::plotAxes(QPainter& p, QRect& plotRegion,
     }
   }
 
-  // if top axis is transformed, plot top axis numbers as well
+  //
+  // if top axis is transformed, plot top axis numbers as well...
+  //
+
   if (_xTransformed && !_suppressTop && tpx.label) {
     int yTopTickPos = d2i(ytop_bdr_px);
 
@@ -6398,7 +6513,9 @@ void Kst2DPlot::plotAxes(QPainter& p, QRect& plotRegion,
       yTopTickPos -= d2i(2.0 * xtick_len_px);
     }
 
-    for (QValueList<TickLabelDescription>::ConstIterator iter = tpx.labelsOpposite.begin(); iter != tpx.labelsOpposite.end(); ++iter) {
+    QList<TickLabelDescription>::const_iterator iter;
+
+    for (iter = tpx.labelsOpposite.begin(); iter != tpx.labelsOpposite.end(); ++iter) {
       double xTickPos = (*iter).position;
 
       if (_xLog) {
@@ -6421,7 +6538,10 @@ void Kst2DPlot::plotAxes(QPainter& p, QRect& plotRegion,
     }
   }
 
-  // y axis numbers
+  //
+  // y axis numbers...
+  //
+
   if (!_suppressLeft && tpy.label) {
     if (tpy.delta && !tpy.labels.isEmpty()) {
       _fullTickLabel->setRotation(270.0);
@@ -6442,7 +6562,9 @@ void Kst2DPlot::plotAxes(QPainter& p, QRect& plotRegion,
       xTickPos -= d2i(2.0 * ytick_len_px);
     }
 
-    for (QValueList<TickLabelDescription>::ConstIterator iter = tpy.labels.begin(); iter != tpy.labels.end(); ++iter) {
+    QList<TickLabelDescription>::const_iterator iter;
+
+    for (iter = tpy.labels.begin(); iter != tpy.labels.end(); ++iter) {
       _yTickLabel->setText((*iter).label);
       double yTickPos = (*iter).position;
       if(_yLog) {
@@ -6472,7 +6594,10 @@ void Kst2DPlot::plotAxes(QPainter& p, QRect& plotRegion,
     }
   }
 
-  // if right axis is transformed, plot right axis numbers as well
+  //
+  // if right axis is transformed, plot right axis numbers as well...
+  //
+
   if (_yTransformed && !_suppressRight && tpy.label) {
     int xTopTickPos = d2i(x_px - xright_bdr_px + _yTickLabel->lineSpacing()*0.15);
 
@@ -6480,7 +6605,9 @@ void Kst2DPlot::plotAxes(QPainter& p, QRect& plotRegion,
       xTopTickPos += d2i(2.0 * ytick_len_px);
     }
 
-    for (QValueList<TickLabelDescription>::ConstIterator iter = tpy.labelsOpposite.begin(); iter != tpy.labelsOpposite.end(); ++iter) {
+    QList<TickLabelDescription>::const_iterator iter;
+
+    for (iter = tpy.labelsOpposite.begin(); iter != tpy.labelsOpposite.end(); ++iter) {
       double yTickPos = (*iter).position;
 
       if (_yLog) {
@@ -6526,6 +6653,7 @@ void Kst2DPlot::plotLabels(QPainter &p, int x_px, int y_px, double xleft_bdr_px,
     int xpos;
 
     p.save();
+
     switch (KST_JUSTIFY_H(_topLabel->justification())) {
       case KST_JUSTIFY_H_LEFT:
         xpos = d2i(xleft_bdr_px);
@@ -6540,6 +6668,7 @@ void Kst2DPlot::plotLabels(QPainter &p, int x_px, int y_px, double xleft_bdr_px,
         xpos = d2i(xleft_bdr_px);
         break;
     }
+
     p.translate(xpos, d2i(0.08 * _topLabel->size().height()));
     _topLabel->paint(p);
     p.restore();
@@ -6849,10 +6978,10 @@ void Kst2DPlot::mouseDoubleClickEvent(QWidget *view, QMouseEvent *e) {
 
   getCursorPos(pos, xpos, ypos, x_min, x_max, y_min, y_max);
 
-  Lx = PlotRegion.left();
-  Hx = PlotRegion.right();
-  Ly = PlotRegion.top();
-  Hy = PlotRegion.bottom();
+  Lx = _plotRegion.left();
+  Hx = _plotRegion.right();
+  Ly = _plotRegion.top();
+  Hy = _plotRegion.bottom();
 
   context.Lx = Lx;
   context.Hx = Hx;
@@ -7083,13 +7212,13 @@ void Kst2DPlot::setSuppressRight(bool yes) {
 
 void Kst2DPlot::setXTransformedExp(const QString& exp) {
   _xTransformedExp = exp;
-  _xTransformed = !exp.stripWhiteSpace().isEmpty();
+  _xTransformed = !exp.trimmed().isEmpty();
 }
 
 
 void Kst2DPlot::setYTransformedExp(const QString& exp) {
   _yTransformedExp = exp;
-  _yTransformed = !exp.stripWhiteSpace().isEmpty();
+  _yTransformed = !exp.trimmed().isEmpty();
 }
 
 
@@ -7395,7 +7524,7 @@ void Kst2DPlot::zoomPaused() {
 
 
 QRect Kst2DPlot::contentsRect() const {
-  return PlotRegion;
+  return _plotRegion;
 }
 
 
@@ -7602,33 +7731,37 @@ void Kst2DPlot::connectConfigWidget(QWidget *parent, QWidget *w) const {
 }
 
 void Kst2DPlot::createScalars() {
+    KstScalarPtr sp;
     KstWriteLocker sl(&KST::scalarList.lock());
+
     KST::scalarList.setUpdateDisplayTags(false);
 
-    KstScalarPtr sp;
-
     sp = *KST::scalarList.findTag(KstObjectTag("XMin", tag()));
-    if (!sp) { sp = new KstScalar(KstObjectTag("XMin", tag()), this); }
+    if (!sp) { 
+      sp = new KstScalar(KstObjectTag("XMin", tag()), this); 
+    }
     _scalars.insert("xmin", sp);
-    sp->_KShared_ref();
     sp->setOrphan(true); //seems kind of funny, but is req'd for the scalar to be saved. this should be done so that these scalars are be produced before vectorviews (and other objects which might want to use them) when a .kst session is recreated.
 
     sp = *KST::scalarList.findTag(KstObjectTag("XMax", tag()));
-    if (!sp) { sp = new KstScalar(KstObjectTag("XMax", tag()), this); }
+    if (!sp) { 
+      sp = new KstScalar(KstObjectTag("XMax", tag()), this); 
+    }
     _scalars.insert("xmax", sp);
-    sp->_KShared_ref();
     sp->setOrphan(true);
 
     sp = *KST::scalarList.findTag(KstObjectTag("YMin", tag()));
-    if (!sp) { sp = new KstScalar(KstObjectTag("YMin", tag()), this); }
+    if (!sp) { 
+      sp = new KstScalar(KstObjectTag("YMin", tag()), this); 
+    }
     _scalars.insert("ymin", sp);
-    sp->_KShared_ref();
     sp->setOrphan(true);
 
     sp = *KST::scalarList.findTag(KstObjectTag("YMax", tag()));
-    if (!sp) { sp = new KstScalar(KstObjectTag("YMax", tag()), this); }
+    if (!sp) { 
+      sp = new KstScalar(KstObjectTag("YMax", tag()), this); 
+    }
     _scalars.insert("ymax", sp);
-    sp->_KShared_ref();
     sp->setOrphan(true);
 
     KST::scalarList.setUpdateDisplayTags(true);

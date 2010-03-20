@@ -29,7 +29,7 @@
 class KstViewWidget : public QWidget {
   Q_OBJECT
   public:
-    KstViewWidget(KstTopLevelViewPtr view, QWidget *parent = 0L, const char *name = 0L, WFlags w = 0);
+    KstViewWidget(KstTopLevelViewPtr view, QWidget *parent = 0L, const char *name = 0L, Qt::WFlags w = 0);
     virtual ~KstViewWidget();
 
     void setDropEnabled(bool);

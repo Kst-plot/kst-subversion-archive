@@ -27,7 +27,7 @@
 #include "kstviewwindow.h"
 #include "plotmimesource.h"
 
-KstViewWidget::KstViewWidget(KstTopLevelViewPtr view, QWidget *parent, const char *name, WFlags w)
+KstViewWidget::KstViewWidget(KstTopLevelViewPtr view, QWidget *parent, const char *name, Qt::WFlags w)
 : QWidget(parent, name, WStyle_Customize | WRepaintNoErase | w), _view(view) {
   setDragEnabled(true);
   setDropEnabled(true);

@@ -220,7 +220,7 @@ public:
   void generateDefaultLabels(bool xl = false, bool yl = false, bool zl = false);
 
   /* kstview tells kstplot where to offset the plot to */
-  void setPixRect(const QRect& RelPlotRegion, const QRect& RelWinRegion, const QRect& RelPlotAndAxisRegion);
+  void setPixRect(const QRect& relPlotRegion, const QRect& relWinRegion, const QRect& relPlotAndAxisRegion);
 
   virtual void move(const QPoint&);
   virtual void resize(const QSize&);
@@ -400,7 +400,7 @@ public:
   virtual void setTagName(const KstObjectTag& newTag);
 
 protected:
-  QHash<QString, KstScalar> _scalars;
+  QHash<QString, KstScalarPtr> _scalars;
 
   /** scalar maintenance methods */
   void createScalars();
@@ -620,9 +620,9 @@ private:
   // stored here to be Used to determine mouse mode
   // 
 
-  QRect PlotRegion;
-  QRect WinRegion;
-  QRect PlotAndAxisRegion;
+  QRect _plotRegion;
+  QRect _winRegion;
+  QRect _plotAndAxisRegion;
 
   KstMouse _mouse;
   QMap<int, QString> _curveEditMap, _curveFitMap, _curveRemoveMap, _objectEditMap;
