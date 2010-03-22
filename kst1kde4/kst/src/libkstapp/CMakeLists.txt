@@ -1,0 +1,158 @@
+include_directories(${CMAKE_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/src/extdate ${CMAKE_SOURCE_DIR}/src/libkst ${CMAKE_SOURCE_DIR}/src/libkstmath ${CMAKE_SOURCE_DIR}/src/widgets ${KDE4_INCLUDES} ${KDE4_INCLUDE_DIR} ${QT_INCLUDES})
+
+########### next target ###############
+
+set(kstapp_LIB_SRCS
+    kstdatacollection-gui.cpp
+    dialoglauncher-gui.cpp
+    labelrenderer.cpp
+    kstlegenddefaults.cpp
+    kstnumbersequence.cpp
+    kstuinames.cpp
+    kstcurvedifferentiate.cpp
+#    kstiface_impl.cpp
+    statuslabel.cpp
+    plotmimesource.cpp
+    kstdatadialog.cpp
+    kstplotdrag.cpp
+    kstviewobjectimagedrag.cpp
+    kstvectortable.cpp
+    kstmatrixtable.cpp
+    kstfittable.cpp
+    kstlogwidget.cpp
+    kstplotbase.cpp
+    kstviewlabel.cpp
+    kstplotlabel.cpp
+    kst2dplot.cpp
+    kst2dplotwidget.cpp
+    kstviewlegend.cpp
+    kstviewbox.cpp
+    kstviewline.cpp
+    kstviewellipse.cpp
+    kstviewpicture.cpp
+    kstviewarrow.cpp
+    kstviewwidget.cpp
+    kstviewobjectfactory.cpp
+    kstviewobject.cpp
+    kstplotgroup.cpp
+    kstborderedviewobject.cpp
+    ksttoplevelview.cpp
+    kstgfxmousehandler.cpp
+    kstgfxmousehandlerutils.cpp
+    kstgfxrectanglemousehandler.cpp
+    kstgfxlinemousehandler.cpp
+    kstgfxtextmousehandler.cpp
+    kstgfxellipsemousehandler.cpp
+    kstgfxpicturemousehandler.cpp
+    kstgfxarrowmousehandler.cpp
+    kstgfx2dplotmousehandler.cpp
+    kstgfxlegendmousehandler.cpp
+    kstgfxtlvmousehandler.cpp
+    kstmetaplot.cpp
+    kstdrag.cpp
+    kstplugindialog.cpp
+    kstfitdialog.cpp
+    kstfilterdialog.cpp
+    extensionmgr.cpp
+    ksteditviewobjectdialog.cpp
+    kstdatamanager.cpp
+    kstpluginmanager.cpp
+    kstviewmanager.cpp
+    kstfieldselect_i.cpp
+    kstvectordialog.cpp
+    kstcsddialog.cpp
+    ksteqdialog.cpp
+    ksthsdialog.cpp
+    kstpsddialog.cpp
+    kstgraphfiledialog.cpp
+    kstimagedialog.cpp
+    kstvvdialog.cpp
+    kstquickstartdialog.cpp
+    kstsettingsdlg.cpp
+    updatethread.cpp
+    emailthread.cpp
+    kstprintoptionspage.cpp
+    kstviewlabelwidget.cpp
+    kstviewlegendwidget.cpp
+    kstviewscalarsdialog.cpp
+    kstviewstringsdialog.cpp
+    kstviewvectorsdialog.cpp
+    kstviewmatricesdialog.cpp
+    kstviewfitsdialog.cpp
+    kstvectorsavedialog.cpp
+    kstchoosecolordialog.cpp
+    kstchangenptsdialog.cpp
+    kstchangefiledialog.cpp
+    ksteventmonitor.cpp
+    kstdebugdialog.cpp
+    kstmatrixdialog.cpp
+    kstmonochromedialog.cpp
+    kstalignment.cpp
+    ksteventmonitorentry.cpp
+    kstcurvedialog.cpp
+    kstbasicdialog.cpp
+    kstdatawizard.cpp
+    kstdoc.cpp
+    kstviewwindow.cpp
+    ktimezonecombo.cpp
+    kstdebugnotifier.cpp
+    kstdatanotifier.cpp
+    kstscalarlistview.cpp
+    kststringlistview.cpp
+    kst.cpp)
+
+#KDE3_ADD_DCOP_SKELS(kstapp_LIB_SRCS
+#    kstiface.h
+#    kstiface_impl.h)
+
+kde4_add_ui_files(kstapp_LIB_SRCS
+    editviewobjectdialog.ui
+    vectordialogwidget.ui
+    curvedifferentiate.ui
+    csddialogwidget.ui
+    eqdialogwidget.ui
+    histogramdialogwidget.ui
+    psddialogwidget.ui
+    imagedialogwidget.ui
+    matrixdialogwidget.ui
+    plugindialogwidget.ui
+    vectorviewdialogwidget.ui
+    basicdialogwidget.ui
+    eventmonitorwidget.ui
+    pluginmanager.ui
+    curvedialogwidget.ui
+    viewlabelwidget.ui
+    viewlegendwidget.ui
+    view2dplotwidget.ui
+    datasourcemetadatadialog.ui
+    extensiondlg.ui
+    kstdatadialog.ui
+    choosecolordialog.ui
+    debugdialog.ui
+    datawizard.ui
+    changefiledialog.ui
+    graphfiledialog.ui
+    viewscalarsdialog.ui
+    viewstringsdialog.ui
+    viewvectorsdialog.ui
+    viewmatricesdialog.ui
+    viewfitsdialog.ui
+    changenptsdialog.ui
+    datamanager.ui
+    kstviewmanager.ui
+    vectorsavedialog.ui
+    kstsettingsdlg.ui
+    quickstartdialog.ui
+    monochromedialog.ui
+    fieldselect.ui)
+
+kde4_add_library(kstapp SHARED ${kstapp_LIB_SRCS})
+
+target_link_libraries(kstapp kdeprint kstwidgets)
+
+set_target_properties(kstapp PROPERTIES VERSION ${KST_LIBKST_VERSION} SOVERSION 1)
+install(TARGETS kstapp 
+	LIBRARY DESTINATION lib
+	${INSTALL_TARGETS_DEFAULT_ARGS})
+
+########### install files ###############
