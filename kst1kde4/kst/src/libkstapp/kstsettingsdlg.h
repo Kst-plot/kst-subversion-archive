@@ -22,7 +22,7 @@
 class KstSettingsDlg: public QDialog, public Ui::KstSettingsDlg {
   Q_OBJECT
   public:
-    KstSettingsDlg(QWidget* parent = 0, const char *name = 0, WFlags fl = 0);
+    KstSettingsDlg(QWidget* parent = 0, const char *name = 0, Qt::WindowFlags fl = 0);
     virtual ~KstSettingsDlg();
 
   signals:

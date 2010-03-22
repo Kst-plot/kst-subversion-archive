@@ -21,11 +21,11 @@
 
 class KstApp;
 
-class KstQuickStartDialog : public QDialog, public KstQuickStartDialog {
+class KstQuickStartDialog : public QDialog, public Ui::KstQuickStartDialog {
   Q_OBJECT
   public:
-    KstQuickStartDialogI(QWidget *parent = 0, const char *name = 0,
-        bool modal = false, WFlags fl = 0 );
+    KstQuickStartDialog(QWidget *parent = 0, const char *name = 0,
+        bool modal = false, Qt::WindowFlags fl = 0 );
     ~KstQuickStartDialog();
 
   public slots:

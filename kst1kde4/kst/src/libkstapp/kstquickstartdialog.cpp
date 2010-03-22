@@ -17,7 +17,7 @@
 
 // include files for Qt
 #include <qcheckbox.h>
-#include <qlistbox.h>
+#include <q3listbox.h>
 
 // include files for KDE
 #include <kurlcompletion.h>
@@ -29,10 +29,10 @@
 #include "kstquickstartdialog.h"
 #include "kstsettings.h"
 
-KstQuickStartDialog::KstQuickStartDialog(QWidget *parent, const char *name, bool modal, WFlags fl)
-: QDialog(parent, name, modal, fl) {
+KstQuickStartDialog::KstQuickStartDialog(QWidget *parent, const char *name, bool modal, Qt::WindowFlags fl)
+: QDialog(parent,fl) {
   setupUi(this);
-  _fileName->completionObject()->setDir(QDir::currentDirPath());
+  _fileName->completionObject()->setDir(QDir::currentPath());
   _app = KstApp::inst();
   _isRecentFile = false;
   _openFile->setEnabled(false);
@@ -96,7 +96,7 @@ void KstQuickStartDialog::fileChanged(const QString& name) {
   QString file;
 
   file = name;
-  file = file.stripWhiteSpace();
+  file = file.trimmed();
   if (!file.isEmpty()) {
     _openFile->setEnabled(true);
   } else {
@@ -107,7 +107,7 @@ void KstQuickStartDialog::fileChanged(const QString& name) {
 
 void KstQuickStartDialog::changeURL(const QString& name) {
   _fileName->blockSignals(true);
-  _fileName->setURL(name);
+  _fileName->setUrl(name);
   _fileName->blockSignals(false);
 
   fileChanged(name);

@@ -34,8 +34,8 @@
 #include "kstsettingsdlg.h"
 #include "ksttimezones.h"
 
-KstSettingsDlg::KstSettingsDlg(QWidget* parent, const char *name, WFlags fl) 
-: QDialog(parent, name, fl)
+KstSettingsDlg::KstSettingsDlg(QWidget* parent, const char *name, Qt::WindowFlags fl) 
+: QDialog(parent, fl)
 {
   setupUi(this);
   fillAxesSettings();
