@@ -288,19 +288,24 @@ bool KstFilterDialog::newObject() {
 }
 
 
-void KstFilterDialog::generateEntries(bool input, int& cnt, QWidget *parent, QGridLayout *grid, const QValueList<Plugin::Data::IOValue>& table) {
-
-  // get fixed vector for filter
+void KstFilterDialog::generateEntries(bool input, int& cnt, QWidget *parent, QGridLayout *grid, const QList<Plugin::Data::IOValue>& table) {
   QString fixedVector;
   const QString& pluginName = _pluginList[_w->PluginCombo->currentItem()];
   const Plugin::Data& pluginData = PluginCollection::self()->pluginList()[PluginCollection::self()->pluginNameList()[pluginName]];
+  QList<Plugin::Data::IOValue>::const_iterator it;
+  QString scalarLabelTemplate;
+  QString vectorLabelTemplate;
+  QString stringLabelTemplate;
+
+  //
+  // get fixed vector for filter
+  //
+
   if (input) {
     fixedVector = pluginData._filterInputVector;
   } else {
     fixedVector = pluginData._filterOutputVector;
   }
-
-  QString scalarLabelTemplate, vectorLabelTemplate, stringLabelTemplate;
 
   if (input) {
     stringLabelTemplate = i18n("Input String - %1:");
@@ -312,22 +317,26 @@ void KstFilterDialog::generateEntries(bool input, int& cnt, QWidget *parent, QGr
     vectorLabelTemplate = i18n("Output Vector - %1:");
   }
 
-  for (QValueList<Plugin::Data::IOValue>::ConstIterator it = table.begin(); it != table.end(); ++it) {
+  for (it = table.begin(); it != table.end(); ++it) {
     QString labellabel;
     bool string = false;
     bool scalar = false;
     bool fixed = false;
+
     switch ((*it)._type) {
       case Plugin::Data::IOValue::PidType:
         continue;
+
       case Plugin::Data::IOValue::FloatType:
         labellabel = scalarLabelTemplate.arg((*it)._name);
         scalar = true;
         break;
+
       case Plugin::Data::IOValue::StringType:
         labellabel = stringLabelTemplate.arg((*it)._name);
         string = true;
         break;
+
       case Plugin::Data::IOValue::TableType:
         if ((*it)._name == fixedVector) {
           fixed = true;
@@ -340,6 +349,7 @@ void KstFilterDialog::generateEntries(bool input, int& cnt, QWidget *parent, QGr
           continue;
         }
         break;
+
       default:
         // unsupported
         continue;
@@ -347,18 +357,24 @@ void KstFilterDialog::generateEntries(bool input, int& cnt, QWidget *parent, QGr
 
     QLabel *label = new QLabel(labellabel, parent, input ? "Input label" : "Output label");
     QWidget *widget = 0L;
+
     if (input) {
       if (scalar) {
         ScalarSelector *w = new ScalarSelector(parent, (*it)._name.latin1());
+        KstScalarPtr p;
+        
         widget = w;
+
         connect(w->_scalar, SIGNAL(activated(const QString&)), this, SLOT(updateScalarTooltip(const QString&)));
         connect(widget, SIGNAL(newScalarCreated()), this, SIGNAL(modified()));
+
         if (!(*it)._default.isEmpty()) {
           w->_scalar->insertItem((*it)._default);
           w->_scalar->setCurrentText((*it)._default);
           //printf("default: |%s|\n", (*it)._default.latin1());
         }
-        KstScalarPtr p = *KST::scalarList.findTag(w->_scalar->currentText());
+
+        p = *KST::scalarList.findTag(w->_scalar->currentText());
         w->allowDirectEntry(true);
         if (p) {
           p->readLock();
@@ -368,14 +384,18 @@ void KstFilterDialog::generateEntries(bool input, int& cnt, QWidget *parent, QGr
         }
       } else if (string) {
         StringSelector *w = new StringSelector(parent, (*it)._name.latin1());
+        KstStringPtr p;
+
         widget = w;
+
         connect(w->_string, SIGNAL(activated(const QString&)), this, SLOT(updateStringTooltip(const QString&)));
         connect(widget, SIGNAL(newStringCreated()), this, SIGNAL(modified()));
+
         if (!(*it)._default.isEmpty()) {
           w->_string->insertItem((*it)._default);
           w->_string->setCurrentText((*it)._default);
         }
-        KstStringPtr p = *KST::stringList.findTag(w->_string->currentText());
+        p = *KST::stringList.findTag(w->_string->currentText());
         w->allowDirectEntry(true);
         if (p) {
           p->readLock();

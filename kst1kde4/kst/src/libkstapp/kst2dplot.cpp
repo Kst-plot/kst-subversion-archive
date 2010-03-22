@@ -459,12 +459,13 @@ Kst2DPlot::Kst2DPlot(const QDomElement& e)
     _fullTickLabel->load(fullTickLabelNode);
   }
 
-  KstBaseCurveList l;
+  KstBaseCurveList curves;
+  int i;
 
-  l = kstObjectSubList<KstDataObject,KstBaseCurve>(KST::dataObjectList);
-  for (int i = 0; i < ctaglist.count(); i++) {
-    KstBaseCurveList::Iterator it = l.findTag(ctaglist[i]);
-    if (it != l.end()) {
+// xxx  curves = kstObjectSubList<KstDataObject,KstBaseCurve>(KST::dataObjectList);
+  for (i = 0; i < ctaglist.count(); i++) {
+    KstBaseCurveList::Iterator it = curves.findTag(ctaglist[i]);
+    if (it != curves.end()) {
       addCurve(*it);
     }
   }
@@ -485,7 +486,7 @@ Kst2DPlot::Kst2DPlot(const QDomElement& e)
   if (!in_curveToMarkersName.isEmpty()) {
     KstVCurveList vcurves;
 
-    vcurves = kstObjectSubList<KstDataObject, KstVCurve>(KST::dataObjectList);
+// xxx    vcurves = kstObjectSubList<KstDataObject, KstVCurve>(KST::dataObjectList);
     KstVCurveList::iterator curves_iter = vcurves.findTag(in_curveToMarkersName);
     setCurveToMarkers(*curves_iter, in_curveToMarkersRisingDetect, in_curveToMarkersFallingDetect);
   }
@@ -3007,7 +3008,10 @@ void Kst2DPlot::draw(KstPainter& p) {
     context.foregroundColor = _foregroundColor;
     context.backgroundColor = _backgroundColor;
 
-    // paint the curves
+    //
+    // paint the curves...
+    //
+
     p.save();
     if (_xReversed) {
       p.scale(-1.0, 1.0);
@@ -3017,13 +3021,16 @@ void Kst2DPlot::draw(KstPainter& p) {
       p.scale(1.0, -1.0);
       p.translate(0.0, d2i(-1.0 * Hy - Ly));
     }
-    p.setClipRect(int(Lx), int(Ly), int(Hx - Lx), int(Hy - Ly), QPainter::CoordPainter);
+// xxx    p.setClipRect(int(Lx), int(Ly), int(Hx - Lx), int(Hy - Ly), QPainter::CoordPainter);
     for (KstBaseCurveList::Iterator i = _curves.begin(); i != _curves.end(); ++i) {
       (*i)->paint(context);
     }
     p.restore();
 
-    // must plot grid lines before axes
+    //
+    // must plot grid lines before axes...
+    //
+
     plotGridLines(p, tpx.tick, xleft_bdr_px, xright_bdr_px, x_orig_px, xtick_px,
                   xtick_len_px, x_px, tpy.tick, ytop_bdr_px, ybot_bdr_px, y_orig_px,
                   ytick_px, ytick_len_px, y_px);
@@ -3320,7 +3327,8 @@ void Kst2DPlot::saveAttributes(QTextStream& ts, const QString& indent) {
 
 
 void Kst2DPlot::pushScale() {
-  KstPlotScale *ps = new KstPlotScale;
+  KstPlotScale ps;
+
   ps->xmin = _XMin;
   ps->ymin = _YMin;
   ps->xmax = _XMax;
@@ -3343,8 +3351,11 @@ bool Kst2DPlot::popScale() {
     KstPlotScale ps;
 
     _plotScaleList.removeLast();
+
     ps = _plotScaleList.last();
+
     setScale(ps.xmin, ps.ymin, ps.xmax, ps.ymax);
+
     _xScaleMode = ps.xscalemode;
     _yScaleMode = ps.yscalemode;
     _xLog = ps.xlog;
@@ -3357,6 +3368,7 @@ bool Kst2DPlot::popScale() {
     _xMaxParsedValid = reparse(_xMaxExp, &_xMaxParsed);
     _yMinParsedValid = reparse(_yMinExp, &_yMinParsed);
     _yMaxParsedValid = reparse(_yMaxExp, &_yMaxParsed);
+
     optimizeXExps();
     optimizeYExps();
 
@@ -4280,50 +4292,64 @@ void Kst2DPlot::getCursorPos(const QPoint& pos, double& xpos, double& ypos, doub
 
 
 bool Kst2DPlot::getNearestDataPoint(const QPoint& pos, QString& name, double &newxpos, double &newypos, double xpos, double ypos, double xmin, double xmax) {
+  KstVCurveList vcurves;
   bool rc = false;
 
-  // only makes sense to get nearest data point for vcurves
-  KstVCurveList vcurves = kstObjectSubList<KstBaseCurve,KstVCurve>(_curves);
+  //
+  // only makes sense to get nearest data point for vcurves...
+  //
+
+// xxx  vcurves = kstObjectSubList<KstBaseCurve,KstVCurve>(_curves);
   if (!vcurves.isEmpty()) {
+    KstVCurveList::Iterator i;
     QRect pr = GetPlotRegion();
-    double near_x, near_y;
+    double near_x;
+    double near_y;
     double distance;
     double best_distance = 1.0E300;
     double dx_per_pix;
     int i_near_x;
 
-    // convert 1 pixel to plot units.
+    //
+    // convert 1 pixel to plot units...
+    //
+
     if (_xReversed) {
       dx_per_pix = (double)(pr.right() + 2 - pos.x() + 2) / (double)pr.width() * (xmax - xmin) + xmin;
     } else {
       dx_per_pix = (double)(pos.x() + 2 - pr.left() + 2) / (double)pr.width() * (xmax - xmin) + xmin;
     }
+
     if (isXLog()) {
       dx_per_pix = pow(_xLogBase, dx_per_pix);
     }
     dx_per_pix -= xpos;
 
-    for (KstVCurveList::Iterator i = vcurves.begin(); i != vcurves.end(); ++i) {
+    for (i = vcurves.begin(); i != vcurves.end(); ++i) {
       if (isYLog()) {
         i_near_x = (*i)->getIndexNearXY(xpos, dx_per_pix, ypos);
       } else {
         i_near_x = (*i)->getIndexNearXY(xpos, dx_per_pix, ypos - (*i)->yVectorOffsetValue());
       }
       (*i)->point(i_near_x, near_x, near_y);
+
       if (isYLog()) {
         distance = fabs(ypos - near_y);
       } else {
         distance = fabs(ypos - (near_y + (*i)->yVectorOffsetValue()) );
       }
+
       if (distance < best_distance || !rc) {
         if (isYLog()) {
           newypos = near_y;
         } else {
           newypos = near_y + (*i)->yVectorOffsetValue();
         }
+
         newxpos = near_x;
         best_distance = distance;
         name = (*i)->tagName();
+
         rc = true;
       }
     }
@@ -4438,7 +4464,9 @@ void Kst2DPlot::highlightNearestDataPoint(bool bRepaint, KstPainter *p, const QP
     // display the z value of the topmost image underneath cursor, if available...
     //
 
-    KstImageList images = kstObjectSubList<KstBaseCurve,KstImage>(_curves);
+    KstImageList images;
+
+// xxx    images = kstObjectSubList<KstBaseCurve,KstImage>(_curves);
     if (images.count() > 0) {
       double zValue;
       bool found = false;
@@ -5699,18 +5727,22 @@ void Kst2DPlot::zoomSpikeInsensitiveMax(KstViewWidget *view) {
   setDirty();
 }
 
+
 void Kst2DPlot::nextImageColorScale() {
+  KstImageList images;
   const double per[] = {0.0, 0.0001, 0.001, 0.005, 0.02};
   const int length = sizeof(per) / sizeof(double);
 
   if (++_i_per >= length) {
     _i_per = 0;
   }
-  KstImageList images = kstObjectSubList<KstBaseCurve,KstImage>(_curves);
+
+// xxx  images = kstObjectSubList<KstBaseCurve,KstImage>(_curves);
   for (KstImageList::Iterator i = images.begin(); i != images.end(); ++i) {
     (*i)->setThresholdToSpikeInsensitive(per[_i_per]);
   }
 }
+
 
 void Kst2DPlot::keyPressEvent(QWidget *vw, QKeyEvent *e) {
   KstViewWidget *view = static_cast<KstViewWidget*>(vw);
@@ -5978,9 +6010,6 @@ Kst2DPlotPtr Kst2DPlot::findPlotByName(const QString& name) {
 }
 
 
-// FIXME: this does not strip out dupes.  Why?  Because we can't have them
-//        by definition at present.  this might change one day.  Unfortunately
-//        removal of dupes makes O(n) code become O(n^2).
 Kst2DPlotList Kst2DPlot::globalPlotList() {
   Kst2DPlotList rc;
   KstApp *app = KstApp::inst();
@@ -5989,7 +6018,7 @@ Kst2DPlotList Kst2DPlot::globalPlotList() {
     while (it->currentItem()) {
       KstViewWindow *view = dynamic_cast<KstViewWindow*>(it->currentItem());
       if (view) {
-        Kst2DPlotList sub = view->view()->findChildrenType<Kst2DPlot>(true);
+// xxx        Kst2DPlotList sub = view->view()->findChildrenType<Kst2DPlot>(true);
         rc += sub;
       }
       it->next();
@@ -6164,7 +6193,13 @@ void Kst2DPlot::setCurveToMarkers(KstVCurvePtr curve, bool risingDetect, bool fa
 
 
 bool Kst2DPlot::hasCurveToMarkers() const {
-  return _curveToMarkers != 0L;
+  bool retVal = false;
+
+  if (_curveToMarkers) {
+    retVal = true;
+  }
+
+  return retVal;
 }
 
 
@@ -6223,7 +6258,13 @@ void Kst2DPlot::setVectorToMarkers(KstVectorPtr vector) {
 
 
 bool Kst2DPlot::hasVectorToMarkers() const {
-  return _vectorToMarkers != 0L;
+  bool retVal = false;
+
+  if (_vectorToMarkers) {
+    retVal = true;
+  }
+
+  return retVal;
 }
 
 
@@ -6907,8 +6948,11 @@ void Kst2DPlot::setYMajorTicks(int majorTicks) {
 
 
 void Kst2DPlot::pushAdjustLineWidth(int adjustment) {
-  KstVCurveList vcurves = kstObjectSubList<KstBaseCurve,KstVCurve>(_curves);
-  for (KstVCurveList::Iterator i = vcurves.begin(); i != vcurves.end(); ++i) {
+  KstVCurveList vcurves;
+  KstVCurveList::Iterator i;
+  
+// xxx  vcurves = kstObjectSubList<KstBaseCurve,KstVCurve>(_curves);
+  for (i = vcurves.begin(); i != vcurves.end(); ++i) {
     (*i)->writeLock();
     (*i)->pushLineWidth((*i)->lineWidth() + adjustment);
     (*i)->unlock();
@@ -6917,8 +6961,11 @@ void Kst2DPlot::pushAdjustLineWidth(int adjustment) {
 
 
 void Kst2DPlot::popLineWidth() {
-  KstVCurveList vcurves = kstObjectSubList<KstBaseCurve,KstVCurve>(_curves);
-  for (KstVCurveList::Iterator i = vcurves.begin(); i != vcurves.end(); ++i) {
+  KstVCurveList vcurves;
+  KstVCurveList::Iterator i;
+
+// xxx  vcurves = kstObjectSubList<KstBaseCurve,KstVCurve>(_curves);
+  for (i = vcurves.begin(); i != vcurves.end(); ++i) {
     (*i)->writeLock();
     (*i)->popLineWidth();
     (*i)->unlock();
@@ -6927,8 +6974,11 @@ void Kst2DPlot::popLineWidth() {
 
 
 void Kst2DPlot::pushCurveColor(const QColor& c) {
-  KstVCurveList vcurves = kstObjectSubList<KstBaseCurve,KstVCurve>(_curves);
-  for (KstVCurveList::Iterator i = vcurves.begin(); i != vcurves.end(); ++i) {
+  KstVCurveList vcurves;
+  KstVCurveList::Iterator i;
+
+// xxx  vcurves = kstObjectSubList<KstBaseCurve,KstVCurve>(_curves);
+  for (i = vcurves.begin(); i != vcurves.end(); ++i) {
     (*i)->writeLock();
     (*i)->pushColor(c);
     (*i)->unlock();
@@ -6937,8 +6987,11 @@ void Kst2DPlot::pushCurveColor(const QColor& c) {
 
 
 void Kst2DPlot::popCurveColor() {
-  KstVCurveList vcurves = kstObjectSubList<KstBaseCurve,KstVCurve>(_curves);
-  for (KstVCurveList::Iterator i = vcurves.begin(); i != vcurves.end(); ++i) {
+  KstVCurveList vcurves;
+  KstVCurveList::Iterator i;
+
+// xxx  vcurves = kstObjectSubList<KstBaseCurve,KstVCurve>(_curves);
+  for (i = vcurves.begin(); i != vcurves.end(); ++i) {
     (*i)->writeLock();
     (*i)->popColor();
     (*i)->unlock();
@@ -7243,8 +7296,11 @@ const QString& Kst2DPlot::yTransformedExp() const {
 
 
 void Kst2DPlot::pushCurveHasPoints(bool yes) {
-  KstVCurveList vcurves = kstObjectSubList<KstBaseCurve,KstVCurve>(_curves);
-  for (KstVCurveList::Iterator i = vcurves.begin(); i != vcurves.end(); ++i) {
+  KstVCurveList vcurves;
+  KstVCurveList::Iterator i;
+
+// xxx  vcurves = kstObjectSubList<KstBaseCurve,KstVCurve>(_curves);
+  for (i = vcurves.begin(); i != vcurves.end(); ++i) {
     (*i)->writeLock();
     (*i)->pushHasPoints(yes);
     (*i)->unlock();
@@ -7253,8 +7309,11 @@ void Kst2DPlot::pushCurveHasPoints(bool yes) {
 
 
 void Kst2DPlot::popCurveHasPoints() {
-  KstVCurveList vcurves = kstObjectSubList<KstBaseCurve,KstVCurve>(_curves);
-  for (KstVCurveList::Iterator i = vcurves.begin(); i != vcurves.end(); ++i) {
+  KstVCurveList vcurves;
+  KstVCurveList::Iterator i;
+
+// xxx  vcurves = kstObjectSubList<KstBaseCurve,KstVCurve>(_curves);
+  for (i = vcurves.begin(); i != vcurves.end(); ++i) {
     (*i)->writeLock();
     (*i)->popHasPoints();
     (*i)->unlock();
@@ -7263,8 +7322,11 @@ void Kst2DPlot::popCurveHasPoints() {
 
 
 void Kst2DPlot::pushCurveHasLines(bool yes) {
-  KstVCurveList vcurves = kstObjectSubList<KstBaseCurve,KstVCurve>(_curves);
-  for (KstVCurveList::Iterator i = vcurves.begin(); i != vcurves.end(); ++i) {
+  KstVCurveList vcurves;
+  KstVCurveList::Iterator i;
+
+// xxx  vcurves = kstObjectSubList<KstBaseCurve,KstVCurve>(_curves);
+  for (i = vcurves.begin(); i != vcurves.end(); ++i) {
     (*i)->writeLock();
     (*i)->pushHasLines(yes);
     (*i)->unlock();
@@ -7273,8 +7335,11 @@ void Kst2DPlot::pushCurveHasLines(bool yes) {
 
 
 void Kst2DPlot::popCurveHasLines() {
-  KstVCurveList vcurves = kstObjectSubList<KstBaseCurve,KstVCurve>(_curves);
-  for (KstVCurveList::Iterator i = vcurves.begin(); i != vcurves.end(); ++i) {
+  KstVCurveList vcurves;
+  KstVCurveList::Iterator i;
+
+// xxx  vcurves = kstObjectSubList<KstBaseCurve,KstVCurve>(_curves);
+  for (i = vcurves.begin(); i != vcurves.end(); ++i) {
     (*i)->writeLock();
     (*i)->popHasLines();
     (*i)->unlock();
@@ -7283,8 +7348,11 @@ void Kst2DPlot::popCurveHasLines() {
 
 
 void Kst2DPlot::pushCurvePointDensity(int pointDensity) {
-  KstVCurveList vcurves = kstObjectSubList<KstBaseCurve,KstVCurve>(_curves);
-  for (KstVCurveList::Iterator i = vcurves.begin(); i != vcurves.end(); ++i) {
+  KstVCurveList vcurves;
+  KstVCurveList::Iterator i;
+
+// xxx  vcurves = kstObjectSubList<KstBaseCurve,KstVCurve>(_curves);
+  for (i = vcurves.begin(); i != vcurves.end(); ++i) {
     (*i)->writeLock();
     (*i)->pushPointDensity(pointDensity);
     (*i)->unlock();
@@ -7293,8 +7361,11 @@ void Kst2DPlot::pushCurvePointDensity(int pointDensity) {
 
 
 void Kst2DPlot::popCurvePointDensity() {
-  KstVCurveList vcurves = kstObjectSubList<KstBaseCurve,KstVCurve>(_curves);
-  for (KstVCurveList::Iterator i = vcurves.begin(); i != vcurves.end(); ++i) {
+  KstVCurveList vcurves;
+  KstVCurveList::Iterator i;
+
+// xxx  vcurves = kstObjectSubList<KstBaseCurve,KstVCurve>(_curves);
+  for (i = vcurves.begin(); i != vcurves.end(); ++i) {
     (*i)->writeLock();
     (*i)->popPointDensity();
     (*i)->unlock();
@@ -7321,69 +7392,98 @@ void Kst2DPlot::changeToMonochrome(int pointStylePriority, int lineStylePriority
   KstNumberSequence pointStyleSeq(0, KSTPOINT_MAXTYPE - 1);
   KstNumberSequence lineWidthSeq(1, maxLineWidth);
 
+  QVector<KstNumberSequence> seqVect(3);
   int maxSequences = -1;
-  QPtrVector<KstNumberSequence> seqVect(3);
+
   if (pointStylePriority > -1) {
-    seqVect.insert(pointStylePriority, &pointStyleSeq);
+    seqVect.insert(pointStylePriority, pointStyleSeq);
     ++maxSequences;
   }
+
   if (lineStylePriority > -1) {
-    seqVect.insert(lineStylePriority, &lineStyleSeq);
+    seqVect.insert(lineStylePriority, lineStyleSeq);
     ++maxSequences;
   }
+
   if (lineWidthPriority > -1) {
-    seqVect.insert(lineWidthPriority, &lineWidthSeq);
+    seqVect.insert(lineWidthPriority, lineWidthSeq);
     ++maxSequences;
   }
+
   if (maxSequences < 0) {
     return;
   }
+
   seqVect.resize(maxSequences + 1);
 
   for (int i = 0; i < maxSequences; i++) {
-    seqVect[i]->hookToNextSequence(seqVect[i+1]);
+//    seqVect[i].hookToNextSequence(seqVect[i+1]);
   }
-  KstVCurveList vcurves = kstObjectSubList<KstBaseCurve,KstVCurve>(_curves);
-  for (KstVCurveList::Iterator i = vcurves.begin(); i != vcurves.end(); ++i) {
+
+  KstVCurveList vcurves;
+  KstVCurveList::Iterator i;
+
+// xxx  vcurves = kstObjectSubList<KstBaseCurve,KstVCurve>(_curves);
+
+  for (i = vcurves.begin(); i != vcurves.end(); ++i) {
     (*i)->writeLock();
+
     if (pointStylePriority > -1) {
       (*i)->pushPointStyle(pointStyleSeq.current());
     }
+
     if (lineStylePriority > -1) {
       (*i)->pushLineStyle(lineStyleSeq.current());
     }
+
     if (lineWidthPriority > -1) {
       (*i)->pushLineWidth(5*lineWidthSeq.current());
     }
+
     (*i)->unlock();
-    seqVect[0]->next();
+
+    seqVect[0].next();
   }
 }
 
 
 
 bool Kst2DPlot::undoChangeToMonochrome(int pointStylePriority, int lineStylePriority, int lineWidthPriority) {
+  KstVCurveList vcurves;
+  KstVCurveList::Iterator i;
+
+// xxx  vcurves = kstObjectSubList<KstBaseCurve,KstVCurve>(_curves);
+
+  //
   // pop everything back
-  KstVCurveList vcurves = kstObjectSubList<KstBaseCurve,KstVCurve>(_curves);
-  for (KstVCurveList::Iterator i = vcurves.begin(); i != vcurves.end(); ++i) {
+  //
+
+  for (i = vcurves.begin(); i != vcurves.end(); ++i) {
     (*i)->writeLock();
+
     if (lineStylePriority > -1) {
       (*i)->popLineStyle();
     }
+
     if (pointStylePriority > -1) {
       (*i)->popPointStyle();
     }
+
     if (lineWidthPriority > -1) {
       (*i)->popLineWidth();
     }
+
     (*i)->unlock();
   }
+
   popPlotColors();
   popCurveColor();
+
   if (pointStylePriority > -1) {
     popCurvePointDensity();
     popCurveHasPoints();
   }
+
   if (lineStylePriority > -1 || lineWidthPriority > -1) {
     popCurveHasLines();
   }
@@ -7412,18 +7512,23 @@ bool Kst2DPlot::yReversed() const {
 }
 
 KstViewLabelPtr Kst2DPlot::convertLabelToViewLabel(const QDomElement &e) {
-  KstViewLabelPtr label = new KstViewLabel("label");
+  KstViewLabelPtr label;
+  QDomNode n;
+  float xPos = 0.0;
+  float yPos = 0.0;
+
+  label = new KstViewLabel("label");
   label->setRotation(0.0);
   label->setJustification(SET_KST_JUSTIFY(KST_JUSTIFY_H_CENTER, KST_JUSTIFY_V_BOTTOM));
   label->setTransparent(true);
   label->resizeFromAspect(0.05, 0.05, 0.05, 0.05);
   label->setDataPrecision(LABEL_PRECISION);
 
-  float xPos = 0.0, yPos = 0.0;
+  n = e.firstChild();
 
-  QDomNode n = e.firstChild();
   while (!n.isNull()) {
     QDomElement e = n.toElement(); // try to convert the node to an element.
+
     if (!e.isNull()) { // the node was really an element.
       if (e.tagName() == "text") {
         label->setText(e.text());
@@ -7490,24 +7595,29 @@ KstPlotLabel *Kst2DPlot::fullTickLabel() const {
 }
 
 
-/** find the first legend owned by the plot, or return NULL if there is none */
 KstViewLegendPtr Kst2DPlot::legend() const {
-  for (KstViewObjectList::ConstIterator i = _children.begin(); i != _children.end(); ++i) {
-    KstViewLegendPtr vl = kst_cast<KstViewLegend>(*i);
+  KstViewObjectList::const_iterator i;
+  KstViewLegendPtr vl;
+  
+  for (i = _children.begin(); i != _children.end(); ++i) {
+    vl = kst_cast<KstViewLegend>(*i);
     if (vl) {
-      return vl;
+      break;
     }
   }
-  return 0L;
+
+  return vl;
 }
 
 
 /** Find the first legend owned by a plot, or create and populate one if there is none */
 KstViewLegendPtr Kst2DPlot::getOrCreateLegend() {
-  KstViewLegendPtr vl = legend();
+  KstViewLegendPtr vl;
+
+  vl = legend();
   if (!vl) {
-    KstBaseCurveList::ConstIterator it;
-    
+    KstBaseCurveList::const_iterator it;
+
     vl = new KstViewLegend;
     appendChild(KstViewObjectPtr(vl), true);
     vl->resizeFromAspect(0.1, 0.1, 0.2, 0.1);
@@ -7523,6 +7633,7 @@ KstViewLegendPtr Kst2DPlot::getOrCreateLegend() {
 void Kst2DPlot::timezoneChanged(const QString& tz, int utcOffset) {
   Q_UNUSED(tz)
   Q_UNUSED(utcOffset)
+
   setDirty();
   KstApp::inst()->activeView()->widget()->paint();
 }
@@ -7544,9 +7655,11 @@ double Kst2DPlot::verticalSizeFactor() {
   // this is used by cleanup to do a better job with
   // sizing plots with supressed borders.
   double f = 1.3;
+
   if (_suppressTop) {
     f -= 0.1;
   }
+
   if (_suppressBottom) {
     f -= 0.2;
   }
@@ -7556,9 +7669,11 @@ double Kst2DPlot::verticalSizeFactor() {
 
 double Kst2DPlot::horizontalSizeFactor() {
   double f = 1.3;
+
   if (_suppressLeft) {
     f -= 0.25;
   }
+
   if (_suppressRight) {
     f -= 0.05;
   }
@@ -7602,13 +7717,16 @@ bool Kst2DPlot::fillConfigWidget(QWidget *w, bool isNew) const {
   Q_UNUSED(isNew)
 
   Kst2dPlotWidget *widget = dynamic_cast<Kst2dPlotWidget*>(w);
-  if (!widget) {
-    return false;
+  bool retVal = false;
+
+  if (widget) {
+    widget->fillWidget(this);
+    widget->TabWidget->setCurrentIndex(_tabToShow);
+
+    retVal = true;
   }
 
-  widget->fillWidget(this);
-  widget->TabWidget->setCurrentPage(_tabToShow);
-  return false;
+  return retVal;
 }
 
 /** apply properties in the custom config widget to this */
@@ -7618,13 +7736,15 @@ bool Kst2DPlot::readConfigWidget(QWidget *w, bool editMultipleMode) {
   Q_UNUSED(editMultipleMode)
 
   Kst2dPlotWidget *widget = dynamic_cast<Kst2dPlotWidget*>(w);
+  bool retVal = false;
+
   if (!widget) {
-    return false;
+    widget->fillPlot(Kst2DPlotPtr(this));
+    setDirty();
+    retVal = true;
   }
 
-  widget->fillPlot(this);
-  setDirty();
-  return true;
+  return retVal;
 }
 
 void Kst2DPlot::connectConfigWidget(QWidget *parent, QWidget *w) const {
@@ -7635,8 +7755,10 @@ void Kst2DPlot::connectConfigWidget(QWidget *parent, QWidget *w) const {
 
   connect(widget, SIGNAL(changed()), parent, SLOT(modified()));
   connect(widget->_title, SIGNAL( textChanged(const QString&) ), parent, SLOT( modified() ) );
+/* xxx
   connect(widget->plotColors, SIGNAL( bgChanged(const QColor&) ), parent, SLOT(modified()) );
   connect(widget->plotColors, SIGNAL( fgChanged(const QColor&) ), parent, SLOT( modified() ) );
+*/
   connect(widget->_axisPenWidth, SIGNAL( valueChanged(int) ), parent, SLOT( modified() ) );
   connect(widget->_majorPenWidth, SIGNAL( valueChanged(int) ), parent, SLOT( modified() ) );
   connect(widget->_minorPenWidth, SIGNAL( valueChanged(int) ), parent, SLOT( modified() ) );
@@ -7658,7 +7780,7 @@ void Kst2DPlot::connectConfigWidget(QWidget *parent, QWidget *w) const {
   connect( widget->_checkBoxAutoLabelTop, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
   connect( widget->_checkBoxAutoLabelX, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
   connect( widget->_checkBoxAutoLabelY, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
-  connect( widget->FontComboBox, SIGNAL( activated(int) ), parent, SLOT(modified()));
+// xxx  connect( widget->FontComboBox, SIGNAL( activated(int) ), parent, SLOT(modified()));
   connect( widget->ShowLegend, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
   connect( widget->TrackContents, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
   connect( widget->_pushButtonEditLegend, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
@@ -7808,10 +7930,11 @@ void Kst2DPlot::setTagName(const KstObjectTag& newTag) {
   //
   // update all dialogs that maintain a list of plots...
   //
+
   QTimer::singleShot(0, KstApp::inst(), SLOT(updateDialogs()));
 }
 
-const QHash<QString, KstScalar>& Kst2DPlot::scalars() const {
+const QHash<QString, KstScalarPtr>& Kst2DPlot::scalars() const {
   return _scalars;
 }
 

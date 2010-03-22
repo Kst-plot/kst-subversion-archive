@@ -35,7 +35,7 @@ class KstFilterDialog : public KstPluginDialog {
   private:
     bool createCurve(KstCPluginPtr plugin);
     bool saveInputs(KstCPluginPtr plugin, QExplicitlySharedDataPointer<Plugin> p);
-    void generateEntries(bool input, int& cnt, QWidget *parent, QGridLayout *grid, const QValueList<Plugin::Data::IOValue>& table);
+    void generateEntries(bool input, int& cnt, QWidget *parent, QGridLayout *grid, const QList<Plugin::Data::IOValue>& table);
 
     QString _xvector;
     QString _yvector;

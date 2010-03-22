@@ -146,7 +146,7 @@ public:
   void popPlotColors();
 
   void updateScalars();
-  const QHash<QString, KstScalar>& scalars() const;
+  const QHash<QString, KstScalarPtr>& scalars() const;
 
   /** Set the scale */
   void setScale(double xmin, double ymin, double xmax, double ymax);
