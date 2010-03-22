@@ -25,7 +25,7 @@ class KstDebugDialog : public QDialog, public Ui::DebugDialog {
   Q_OBJECT
   public:
     KstDebugDialog(QWidget* parent = 0, const char* name = 0,
-        bool modal = FALSE, WFlags fl = 0);
+        bool modal = FALSE, Qt::WindowFlags fl = 0);
     virtual ~KstDebugDialog();
 
   public:

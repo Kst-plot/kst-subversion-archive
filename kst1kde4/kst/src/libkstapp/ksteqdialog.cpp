@@ -56,7 +56,7 @@ KstEqDialogI *KstEqDialog::globalInstance() {
 }
 
 
-KstEqDialog::KstEqDialog(QWidget* parent, const char* name, bool modal, Qt::WFlags fl)
+KstEqDialog::KstEqDialog(QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl)
 : KstDataDialog(parent, name, modal, fl) {
   _w = new Ui::EqDialogWidget(_contents);
   _w->setupUi(this);

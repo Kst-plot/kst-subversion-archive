@@ -34,7 +34,7 @@ class StringSelector;
 class KST_EXPORT KstBasicDialog : public KstDataDialog {
   Q_OBJECT
   public:
-    KstBasicDialog(QWidget* parent = 0, const char* name = 0, bool modal = false, Qt::WFlags fl = 0);
+    KstBasicDialog(QWidget* parent = 0, const char* name = 0, bool modal = false, Qt::Qt::WindowFlags fl = 0);
     virtual ~KstBasicDialog();
     static KstBasicDialog *globalInstance();
 

@@ -55,7 +55,7 @@ KstHsDialogI *KstHsDialog::globalInstance() {
 }
 
 
-KstHsDialog::KstHsDialog(QWidget* parent, const char* name, bool modal, Qt::WFlags fl)
+KstHsDialog::KstHsDialog(QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl)
 : KstDataDialog(parent, name, modal, fl) {
   _w = new Ui::HistogramDialogWidget(_contents);
   _w->setupUi(this);

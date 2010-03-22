@@ -27,7 +27,7 @@
 KstViewStringsDialog::KstViewStringsDialog(QWidget* parent,
                                            const char* name,
                                            bool modal,
-                                           WFlags fl)
+                                           Qt::WindowFlags fl)
 : QDialog(parent, name, modal, fl) {
   setupUi(this);
   listViewStrings = new KstStringListView(this, &KST::stringList);

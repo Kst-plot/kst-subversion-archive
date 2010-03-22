@@ -58,7 +58,7 @@ KstPluginDialog *KstPluginDialog::globalInstance() {
 }
 
 
-KstPluginDialog::KstPluginDialog(QWidget* parent, const char* name, bool modal, Qt::WFlags fl)
+KstPluginDialog::KstPluginDialog(QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl)
 : KstDataDialog(parent, name, modal, fl) {
   _w = new PluginDialogWidget(_contents);
   _w>setupUi(this);

@@ -44,7 +44,7 @@ KstBasicDialog *KstBasicDialog::globalInstance() {
 }
 
 
-KstBasicDialog::KstBasicDialog(QWidget* parent, const char* name, bool modal, Qt::WFlags fl)
+KstBasicDialog::KstBasicDialog(QWidget* parent, const char* name, bool modal, Qt::Qt::WindowFlags fl)
 : KstDataDialog(parent, name, modal, fl) {
   setMultiple(false);
   _w = new BasicDialogWidget(_contents);

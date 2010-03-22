@@ -28,7 +28,7 @@ class VectorDialogWidget;
 class KST_EXPORT KstVectorDialog : public KstDataDialog {
   Q_OBJECT
   public:
-    KstVectorDialog(QWidget* parent = 0, const char* name = 0, bool modal = false, Qt::WFlags fl = 0 );
+    KstVectorDialog(QWidget* parent = 0, const char* name = 0, bool modal = false, Qt::WindowFlags fl = 0 );
     virtual ~KstVectorDialog();
     static KstVectorDialog *globalInstance();
 

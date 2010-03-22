@@ -29,7 +29,7 @@ class KstViewScalarsDialog : public QDialog, public Ui::KstViewScalarsDialog {
   public:
     KstViewScalarsDialog(QWidget* parent = 0,
         const char* name = 0,
-        bool modal = false, WFlags fl = 0 );
+        bool modal = false, Qt::WindowFlags fl = 0 );
     virtual ~KstViewScalarsDialog();
     KListViewSearchLineWidget *searchWidget;
     KstScalarListView *listViewScalars;

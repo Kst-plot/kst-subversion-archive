@@ -56,8 +56,8 @@ KstVvDialog *KstVvDialog::globalInstance() {
 }
 
 
-KstVvDialog::KstVvDialogI(QWidget* parent, const char* name, bool modal, Qt::WFlags fl)
-: KstDataDialog(parent, name, modal, fl) {
+KstVvDialog::KstVvDialog(QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl)
+: QDialog(parent, fl) {
   _w = new VectorViewDialogWidget(_contents);
   _w->setupUi(this);
 

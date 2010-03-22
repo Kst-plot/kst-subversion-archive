@@ -34,7 +34,7 @@
 KstVectorSaveDialog::KstVectorSaveDialog(QWidget* parent,
                                              const char* name,
                                              bool modal,
-                                             Qt::WFlags fl)
+                                             Qt::WindowFlags fl)
 : QDialog(parent, name, modal, fl) {
   setupUi(this);
 

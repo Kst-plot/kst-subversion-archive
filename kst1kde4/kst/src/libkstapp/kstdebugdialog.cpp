@@ -38,7 +38,7 @@
  *  TRUE to construct a modal dialog.
  */
 KstDebugDialog::KstDebugDialog(QWidget* parent,
-                               const char* name, bool modal, WFlags fl)
+                               const char* name, bool modal, Qt::WindowFlags fl)
 : QDialog(parent, name, modal, fl ) {
   setupUi(this);
   _log = new KstLogWidget(TabPage, "logwidget");
