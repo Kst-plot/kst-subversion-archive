@@ -1,5 +1,5 @@
 /***************************************************************************
-                       kstdatamanger_i.cpp  -  Part of KST
+                       kstdatamanger.cpp  -  Part of KST
                              -------------------
     begin                :
     copyright            : (C) 2003 The University of Toronto
@@ -40,21 +40,21 @@ static QStyle *windowsStyle = 0;
 // application specific includes
 #include "datasourcemetadatadialog.h"
 #include "kst2dplot.h"
-#include "kstcurvedialog_i.h"
-#include "kstcsddialog_i.h"
+#include "kstcurvedialog.h"
+#include "kstcsddialog.h"
 #include "kstdatacollection.h"
 #include "kstdataobjectcollection.h"
-#include "kstdatamanager_i.h"
+#include "kstdatamanager.h"
 #include "kstdoc.h"
-#include "ksteqdialog_i.h"
-#include "ksteventmonitor_i.h"
-#include "ksthsdialog_i.h"
-#include "kstimagedialog_i.h"
-#include "kstmatrixdialog_i.h"
-#include "kstplugindialog_i.h"
-#include "kstpsddialog_i.h"
-#include "kstvectordialog_i.h"
-#include "kstvvdialog_i.h"
+#include "ksteqdialog.h"
+#include "ksteventmonitor.h"
+#include "ksthsdialog.h"
+#include "kstimagedialog.h"
+#include "kstmatrixdialog.h"
+#include "kstplugindialog.h"
+#include "kstpsddialog.h"
+#include "kstvectordialog.h"
+#include "kstvvdialog.h"
 #include "kstviewwindow.h"
 #include "matrixselector.h"
 #include "vectorselector.h"
@@ -698,12 +698,13 @@ void KstObjectItem::paintPlot(Kst2DPlotPtr p) {
 }
 
 
-const QPixmap& KstDataManagerI::yesPixmap() const {
+const QPixmap& KstDataManager::yesPixmap() const {
   return _yesPixmap;
 }
 
-KstDataManagerI::KstDataManagerI(KstDoc *in_doc, QWidget* parent, const char* name, bool modal, WFlags fl)
+KstDataManager::KstDataManager(KstDoc *in_doc, QWidget* parent, const char* name, bool modal, WFlags fl)
 : KstDataManager(parent, name, modal, fl) {
+  setupUi(this);
   doc = in_doc;
 
   _yesPixmap = QPixmap(locate("data", "kst/pics/yes.png"));
@@ -826,7 +827,7 @@ KstDataManagerI::KstDataManagerI(KstDoc *in_doc, QWidget* parent, const char* na
 }
 
 
-KstDataManagerI::~KstDataManagerI() {
+KstDataManager::~KstDataManager() {
 }
 
 
@@ -844,7 +845,7 @@ void KstDataAction::addedTo(QWidget *actionWidget, QWidget *container) {
 }
 
 
-void KstDataManagerI::createObjectAction(const QString &txt, QToolBar *bar,
+void KstDataManager::createObjectAction(const QString &txt, QToolBar *bar,
                                          QObject *receiver, const char *slot) {
   KstDataAction *a = new KstDataAction(txt, QKeySequence(), bar);
   a->addTo(bar);
@@ -854,7 +855,7 @@ void KstDataManagerI::createObjectAction(const QString &txt, QToolBar *bar,
 }
 
 
-void KstDataManagerI::setupPluginActions() {
+void KstDataManager::setupPluginActions() {
   //
   // the new KstDataObject plugins...
   //
@@ -920,7 +921,7 @@ void KstDataManagerI::setupPluginActions() {
 }
 
 
-void KstDataManagerI::showOldPlugin() {
+void KstDataManager::showOldPlugin() {
   if (QAction *a = ::qt_cast<QAction*>(sender())) {
     const QMap<QString,QString> readable =
       PluginCollection::self()->readableNameList();
@@ -929,20 +930,20 @@ void KstDataManagerI::showOldPlugin() {
 }
 
 
-void KstDataManagerI::doubleClicked(QListViewItem *i) {
+void KstDataManager::doubleClicked(QListViewItem *i) {
   if (i && DataView->selectedItems().contains(i)) {
     edit_I();
   }
 }
 
-void KstDataManagerI::show_I() {
+void KstDataManager::show_I() {
   show();
   raise();
   update();
 }
 
 
-void KstDataManagerI::updateContents() {
+void KstDataManager::updateContents() {
   if (!isShown()) {
     return;
   }
@@ -956,7 +957,7 @@ void KstDataManagerI::updateContents() {
 }
 
 
-void KstDataManagerI::update() {
+void KstDataManager::update() {
   if (!isShown()) {
     return;
   }
@@ -1152,7 +1153,7 @@ void KstDataManagerI::update() {
 }
 
 
-void KstDataManagerI::edit_I() {
+void KstDataManager::edit_I() {
   QListViewItem *qi = 0;
 
   if (!DataView->selectedItems().isEmpty()) {
@@ -1189,7 +1190,7 @@ void KstDataManagerI::edit_I() {
 }
 
 
-void KstDataManagerI::delete_I() {
+void KstDataManager::delete_I() {
   QListViewItem *qi = DataView->selectedItems().at(0);
   if (!qi) {
     return;
@@ -1326,7 +1327,7 @@ void KstDataManagerI::delete_I() {
 // 100->499 reserved for plots
 // 500->999 reserved for filters
 
-void KstDataManagerI::contextMenu(QListViewItem *i, const QPoint& p, int col) {
+void KstDataManager::contextMenu(QListViewItem *i, const QPoint& p, int col) {
   Q_UNUSED(col)
 
   if (!i) {
@@ -1432,14 +1433,14 @@ void KstDataManagerI::contextMenu(QListViewItem *i, const QPoint& p, int col) {
 }
 
 
-void KstDataManagerI::doUpdates() {
+void KstDataManager::doUpdates() {
 //  doc->forceUpdate();
 //  doc->setModified();
   emit docChanged();
 }
 
 
-void KstDataManagerI::currentChanged(QListViewItem *i) {
+void KstDataManager::currentChanged(QListViewItem *i) {
   if (i && !DataView->selectedItems().isEmpty()) {
     KstObjectItem *koi = static_cast<KstObjectItem*>(i);
     koi->updateButtons();
@@ -1450,7 +1451,7 @@ void KstDataManagerI::currentChanged(QListViewItem *i) {
 }
 
 
-void KstDataManagerI::selectionChanged() {
+void KstDataManager::selectionChanged() {
   if (!DataView->selectedItems().isEmpty()) {
     KstObjectItem *koi = static_cast<KstObjectItem*>(DataView->selectedItems().first());
     koi->updateButtons();
@@ -1460,4 +1461,4 @@ void KstDataManagerI::selectionChanged() {
   }
 }
 
-#include "kstdatamanager_i.moc"
+#include "kstdatamanager.moc"

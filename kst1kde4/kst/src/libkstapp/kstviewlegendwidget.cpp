@@ -1,5 +1,5 @@
 /***************************************************************************
-                      kstviewlegendwidget_i.cpp  -  Part of KST
+                      kstviewlegendwidget.cpp  -  Part of KST
                              -------------------
     begin                :
     copyright            : (C) 2008 The University of British Columbia
@@ -25,11 +25,12 @@
 
 // application specific includes
 #include "kst_export.h"
-#include "kstviewlegendwidget_i.h"
+#include "kstviewlegendwidget.h"
 
-KstViewLegendWidgetI::KstViewLegendWidgetI(QWidget* parent, const char* name, WFlags fl) :
+KstViewLegendWidget::KstViewLegendWidget(QWidget* parent, const char* name, WFlags fl) :
   ViewLegendWidget(parent, name, fl)
-{
+{ 
+  setupUi(this);
   connect(DisplayedCurveList, SIGNAL(clicked(QListBoxItem*)), this, SLOT(updateButtons()));
   connect(AvailableCurveList, SIGNAL(clicked(QListBoxItem*)), this, SLOT(updateButtons()));
   connect(DisplayedCurveList, SIGNAL(doubleClicked(QListBoxItem*)), this, SLOT(removeDisplayedCurve()));
@@ -62,11 +63,11 @@ KstViewLegendWidgetI::KstViewLegendWidgetI(QWidget* parent, const char* name, WF
 }
 
 
-KstViewLegendWidgetI::~KstViewLegendWidgetI() {
+KstViewLegendWidget::~KstViewLegendWidget() {
 }
 
 
-void KstViewLegendWidgetI::updateButtons()
+void KstViewLegendWidget::updateButtons()
 {
   bool selected = false;
   uint count = AvailableCurveList->count();
@@ -106,7 +107,7 @@ void KstViewLegendWidgetI::updateButtons()
 }
 
 
-void KstViewLegendWidgetI::removeDisplayedCurve()
+void KstViewLegendWidget::removeDisplayedCurve()
 {
   uint count = DisplayedCurveList->count();
 
@@ -126,7 +127,7 @@ void KstViewLegendWidgetI::removeDisplayedCurve()
 }
 
 
-void KstViewLegendWidgetI::addDisplayedCurve()
+void KstViewLegendWidget::addDisplayedCurve()
 {
   uint count = AvailableCurveList->count();
 
@@ -146,15 +147,15 @@ void KstViewLegendWidgetI::addDisplayedCurve()
 }
 
 
-void KstViewLegendWidgetI::changedFgColor( )
+void KstViewLegendWidget::changedFgColor( )
 {
   _changedFgColor = true;
 }
 
 
-void KstViewLegendWidgetI::changedBgColor( )
+void KstViewLegendWidget::changedBgColor( )
 {
   _changedBgColor = true;
 }
 
-#include "kstviewlegendwidget_i.moc"
+#include "kstviewlegendwidget.moc"

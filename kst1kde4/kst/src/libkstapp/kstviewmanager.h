@@ -1,5 +1,5 @@
 /***************************************************************************
-                       kstdatamanger_i.h  -  Part of KST
+                       kstdatamanger.h  -  Part of KST
                              -------------------
     begin                :
     copyright            : (C) 2003 The University of British Columbia
@@ -19,7 +19,7 @@
 
 class KstDoc;
 
-#include "kstviewmanager.h"
+#include "ui_kstviewmanager.h"
 #include "kst2dplot.h"
 #include "kstplotgroup.h"
 #include "kstviewobject.h"
@@ -62,12 +62,12 @@ class KstViewObjectItem : public QListViewItem {
     bool _inUse;
 };
 
-class KstViewManagerI: public KstViewManager {
+class KstViewManager: public QDialog, public Ui::KstViewManager {
   Q_OBJECT
   public:
-    KstViewManagerI(KstDoc *doc, QWidget* parent = 0, const char *name = 0, 
+    KstViewManager(KstDoc *doc, QWidget* parent = 0, const char *name = 0, 
                     bool modal = false, WFlags fl = 0);
-    virtual ~KstViewManagerI();
+    virtual ~KstViewManager();
 
   public slots:
     void update();

@@ -1,5 +1,5 @@
 /***************************************************************************
-                    ksteventmonitor_i.cpp  -  Part of KST
+                    ksteventmonitor.cpp  -  Part of KST
                              -------------------
     begin                :
     copyright            : (C) 2004 The University of British Columbia
@@ -22,6 +22,7 @@
 #include <qradiobutton.h>
 #include <qtextedit.h>
 #include <qvbox.h>
+#include <QMessageBox.h>
 
 // include files for KDE
 #include <klocale.h>
@@ -38,19 +39,20 @@
 #include "vectorselector.h"
 
 
-QPointer<KstEventMonitorI> KstEventMonitorI::_inst;
+QPointer<KstEventMonitor> KstEventMonitor::_inst;
 
-KstEventMonitorI* KstEventMonitorI::globalInstance() {
+KstEventMonitor* KstEventMonitor::globalInstance() {
   if (!_inst) {
-    _inst = new KstEventMonitorI(KstApp::inst());
+    _inst = new KstEventMonitor(KstApp::inst());
   }
 
   return _inst;
 }
 
 
-KstEventMonitorI::KstEventMonitorI(QWidget* parent, const char* name, bool modal, WFlags fl)
+KstEventMonitor::KstEventMonitor(QWidget* parent, const char* name, bool modal, WFlags fl)
 : KstDataDialog(parent, name, modal, fl) {
+  setupUi(this);
   _w = new EventMonitorWidget(_contents);
   setMultiple(true);
   connect(_w->_vectorSelectorEq, SIGNAL(newVectorCreated(const QString&)), this, SIGNAL(modified()));
@@ -86,11 +88,11 @@ KstEventMonitorI::KstEventMonitorI(QWidget* parent, const char* name, bool modal
 }
 
 
-KstEventMonitorI::~KstEventMonitorI() {
+KstEventMonitor::~KstEventMonitor() {
 }
 
 
-void KstEventMonitorI::fillFieldsForEdit() {
+void KstEventMonitor::fillFieldsForEdit() {
   EventMonitorEntryPtr ep = kst_cast<EventMonitorEntry>(_dp);
   if (!ep) {
     return; // shouldn't be needed
@@ -129,7 +131,7 @@ void KstEventMonitorI::fillFieldsForEdit() {
 }
 
 
-void KstEventMonitorI::fillFieldsForNew() {
+void KstEventMonitor::fillFieldsForNew() {
   KstEventMonitorEntryList events = kstObjectSubList<KstDataObject, EventMonitorEntry>(KST::dataObjectList);
 
   QString new_label = QString("E%1-").arg(events.count() + 1) + "<New_Event>";
@@ -150,13 +152,13 @@ void KstEventMonitorI::fillFieldsForNew() {
 }
 
 
-void KstEventMonitorI::update() {
+void KstEventMonitor::update() {
   _w->_vectorSelectorEq->update();
   _w->_scalarSelectorEq->update();
 }
 
 
-void KstEventMonitorI::fillEvent(EventMonitorEntryPtr& event) {
+void KstEventMonitor::fillEvent(EventMonitorEntryPtr& event) {
   event->setEvent(_w->lineEditEquation->text());
   event->setDescription(_w->lineEditDescription->text());
   event->setLogKstDebug(_w->checkBoxDebug->isChecked());
@@ -177,19 +179,19 @@ void KstEventMonitorI::fillEvent(EventMonitorEntryPtr& event) {
 }
 
 
-void KstEventMonitorI::enableELOG() {
+void KstEventMonitor::enableELOG() {
   _w->checkBoxELOGNotify->setEnabled(true);
   _w->_pushButtonELOGConfigure->setEnabled(true);
 }
 
 
-void KstEventMonitorI::disableELOG() {
+void KstEventMonitor::disableELOG() {
   _w->checkBoxELOGNotify->setEnabled(false);
   _w->_pushButtonELOGConfigure->setEnabled(false);
 }
 
 
-bool KstEventMonitorI::newObject() {
+bool KstEventMonitor::newObject() {
   QString tag_name = _tagName->text();
   tag_name.replace("<New_Event>", _w->lineEditEquation->text());
   tag_name.replace(KstObjectTag::tagSeparator, KstObjectTag::tagSeparatorReplacement);
@@ -224,7 +226,7 @@ bool KstEventMonitorI::newObject() {
 }
 
 
-bool KstEventMonitorI::editSingleObject(EventMonitorEntryPtr emPtr) {
+bool KstEventMonitor::editSingleObject(EventMonitorEntryPtr emPtr) {
   emPtr->writeLock();
 
   if (_lineEditEquationDirty) {
@@ -281,7 +283,7 @@ bool KstEventMonitorI::editSingleObject(EventMonitorEntryPtr emPtr) {
 }
 
 
-bool KstEventMonitorI::editObject() {
+bool KstEventMonitor::editObject() {
   KstEventMonitorEntryList emList = kstObjectSubList<KstDataObject,EventMonitorEntry>(KST::dataObjectList);
 
   // if editing multiple objects, edit each one
@@ -347,7 +349,7 @@ bool KstEventMonitorI::editObject() {
 }
 
 
-void KstEventMonitorI::populateEditMultiple() {
+void KstEventMonitor::populateEditMultiple() {
   KstEventMonitorEntryList emlist = kstObjectSubList<KstDataObject,EventMonitorEntry>(KST::dataObjectList);
   _editMultipleWidget->_objectList->insertStringList(emlist.tagNames());
 
@@ -396,28 +398,28 @@ void KstEventMonitorI::populateEditMultiple() {
 }
 
 
-void KstEventMonitorI::setScriptDirty() {
+void KstEventMonitor::setScriptDirty() {
   _w->_useScript->setTristate(false);
   _scriptDirty = true; 
 }
 
 
-void KstEventMonitorI::setcheckBoxDebugDirty() {
+void KstEventMonitor::setcheckBoxDebugDirty() {
   _w->checkBoxDebug->setTristate(false);
   _checkBoxDebugDirty = true; 
 }
 
 
-void KstEventMonitorI::setcheckBoxEMailNotifyDirty() {
+void KstEventMonitor::setcheckBoxEMailNotifyDirty() {
   _w->checkBoxEMailNotify->setTristate(false);
   _checkBoxEMailNotifyDirty = true;
 }
 
 
-void KstEventMonitorI::setcheckBoxELOGNotifyDirty() {
+void KstEventMonitor::setcheckBoxELOGNotifyDirty() {
   _w->checkBoxELOGNotify->setTristate(false);
   _checkBoxELOGNotifyDirty = true;
 }
 
-#include "ksteventmonitor_i.moc"
+#include "ksteventmonitor.moc"
 

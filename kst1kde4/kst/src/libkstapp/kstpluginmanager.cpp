@@ -1,5 +1,5 @@
 /***************************************************************************
-                     kstpluginmanager_i.cpp  -  Part of KST
+                     kstpluginmanager.cpp  -  Part of KST
                              -------------------
     begin                :
     copyright            : (C) 2008 The University of British Columbia
@@ -43,8 +43,9 @@
 #define COLUMN_LOADED         1
 #define COLUMN_NAME           5
 
-KstPluginManagerI::KstPluginManagerI(QWidget* parent, const char* name, bool modal, WFlags fl)
+KstPluginManager::KstPluginManager(QWidget* parent, const char* name, bool modal, WFlags fl)
 : PluginManager(parent, name, modal, fl) {
+  setupUi(this);
   connect(_close, SIGNAL(clicked()), this, SLOT(close()));
   connect(_pluginList, SIGNAL(selectionChanged(QListViewItem*)), this, SLOT(selectionChanged(QListViewItem*)));
   connect(_install, SIGNAL(clicked()), this, SLOT(install()));
@@ -56,17 +57,17 @@ KstPluginManagerI::KstPluginManagerI(QWidget* parent, const char* name, bool mod
 }
 
 
-KstPluginManagerI::~KstPluginManagerI() {
+KstPluginManager::~KstPluginManager() {
 }
 
 
-void KstPluginManagerI::selectionChanged( QListViewItem *item )
+void KstPluginManager::selectionChanged( QListViewItem *item )
 {
   _remove->setEnabled(item != 0L);
 }
 
 
-void KstPluginManagerI::install() {
+void KstPluginManager::install() {
   KUrl xmlfile = KFileDialog::getOpenURL(QString::null, "*.xml", this, i18n("Select Plugin to Install"));
 
   if (xmlfile.isEmpty()) {
@@ -125,7 +126,7 @@ void KstPluginManagerI::install() {
 }
 
 
-void KstPluginManagerI::remove() {
+void KstPluginManager::remove() {
   QListViewItem *item = _pluginList->selectedItem();
   if (!item) {
     return;
@@ -149,14 +150,14 @@ void KstPluginManagerI::remove() {
 }
 
 
-void KstPluginManagerI::rescan() {
+void KstPluginManager::rescan() {
   PluginCollection::self()->rescan();
   reloadList();
   emit rescanned();
 }
 
 
-void KstPluginManagerI::reloadList() {
+void KstPluginManager::reloadList() {
   _pluginList->clear();
 
   PluginCollection *pc = PluginCollection::self();
@@ -181,5 +182,5 @@ void KstPluginManagerI::reloadList() {
   }
 }
 
-#include "kstpluginmanager_i.moc"
+#include "kstpluginmanager.moc"
 

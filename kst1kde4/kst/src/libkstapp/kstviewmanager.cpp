@@ -1,5 +1,5 @@
 /***************************************************************************
-                       kstviewmanager_i.cpp  -  Part of KST
+                       kstviewmanager.cpp  -  Part of KST
                              -------------------
     begin                :
     copyright            : (C) 2003 The University of Toronto
@@ -32,7 +32,7 @@
 #include "kstdataobjectcollection.h"
 #include "kstdoc.h"
 #include "kstobject.h"
-#include "kstviewmanager_i.h"
+#include "kstviewmanager.h"
 #include "kstviewobjectimagedrag.h"
 #include "kstviewwidget.h"
 #include "kstviewwindow.h"
@@ -391,8 +391,9 @@ void KstViewObjectItem::openChildren(bool open) {
 
 // ==============================================
 
-KstViewManagerI::KstViewManagerI(KstDoc *in_doc, QWidget* parent, const char* name, bool modal, WFlags fl)
+KstViewManager::KstViewManager(KstDoc *in_doc, QWidget* parent, const char* name, bool modal, WFlags fl)
 : KstViewManager(parent, name, modal, fl) {
+  setupUi(this);
   doc = in_doc;
   delete ViewView;
 
@@ -417,20 +418,20 @@ KstViewManagerI::KstViewManagerI(KstDoc *in_doc, QWidget* parent, const char* na
   connect(ViewView, SIGNAL(contextMenuRequested(QListViewItem*, const QPoint&, int)), this, SLOT(contextMenu(QListViewItem*, const QPoint&, int)));
 }
 
-KstViewManagerI::~KstViewManagerI() {
+KstViewManager::~KstViewManager() {
 }
 
-void KstViewManagerI::show_I() {
+void KstViewManager::show_I() {
   show();
   raise();
   update();
 }
 
-void KstViewManagerI::updateContents() {
+void KstViewManager::updateContents() {
   update();
 }
 
-void KstViewManagerI::update() {
+void KstViewManager::update() {
   KstApp *app = KstApp::inst();
 
   if (!isShown()) {
@@ -520,7 +521,7 @@ void KstViewManagerI::update() {
   app->deleteIterator(it);
 }
 
-void KstViewManagerI::edit_I() {
+void KstViewManager::edit_I() {
   QListViewItem *qi = ViewView->selectedItem();
   KstViewObjectItem *koi = static_cast<KstViewObjectItem*>(qi);
   KstViewWindow *win;
@@ -548,7 +549,7 @@ void KstViewManagerI::edit_I() {
   }
 }
 
-void KstViewManagerI::rename_I() {
+void KstViewManager::rename_I() {
   QListViewItem *qi = ViewView->selectedItem();
   KstViewObjectItem *koi = static_cast<KstViewObjectItem*>(qi);
   KstViewWindow *win;
@@ -565,7 +566,7 @@ void KstViewManagerI::rename_I() {
   }
 }
 
-void KstViewManagerI::delete_I() {
+void KstViewManager::delete_I() {
   QListViewItem *qi = ViewView->selectedItem();
   KstViewObjectItem *koi = static_cast<KstViewObjectItem*>(qi);
 
@@ -603,7 +604,7 @@ void KstViewManagerI::delete_I() {
   }
 }
 
-void KstViewManagerI::activate_I() {
+void KstViewManager::activate_I() {
   QListViewItem *qi = ViewView->selectedItem();
   KstViewObjectItem *koi = static_cast<KstViewObjectItem*>(qi);
 
@@ -617,7 +618,7 @@ void KstViewManagerI::activate_I() {
   }
 }
 
-void KstViewManagerI::cleanupDefault_I() {
+void KstViewManager::cleanupDefault_I() {
   QListViewItem *qi = ViewView->selectedItem();
   KstViewObjectItem *koi = static_cast<KstViewObjectItem*>(qi);
 
@@ -631,7 +632,7 @@ void KstViewManagerI::cleanupDefault_I() {
   }
 }
 
-void KstViewManagerI::cleanupCustom_I() {
+void KstViewManager::cleanupCustom_I() {
   QListViewItem *qi = ViewView->selectedItem();
   KstViewObjectItem *koi = static_cast<KstViewObjectItem*>(qi);
 
@@ -645,7 +646,7 @@ void KstViewManagerI::cleanupCustom_I() {
   }
 }
 
-void KstViewManagerI::select_I() {
+void KstViewManager::select_I() {
   QListViewItem *qi = ViewView->selectedItem();
   KstViewObjectItem *koi = static_cast<KstViewObjectItem*>(qi);
 
@@ -663,7 +664,7 @@ void KstViewManagerI::select_I() {
   }
 }
 
-void KstViewManagerI::deselect_I() {
+void KstViewManager::deselect_I() {
   QListViewItem *qi = ViewView->selectedItem();
   KstViewObjectItem *koi = static_cast<KstViewObjectItem*>(qi);
 
@@ -681,7 +682,7 @@ void KstViewManagerI::deselect_I() {
   }
 }
 
-void KstViewManagerI::open() {
+void KstViewManager::open() {
   QListViewItem *qi = ViewView->selectedItem();
   
   if (qi) {
@@ -689,7 +690,7 @@ void KstViewManagerI::open() {
   }
 }
 
-void KstViewManagerI::close() {
+void KstViewManager::close() {
   QListViewItem *qi = ViewView->selectedItem();
 
   if (qi) {
@@ -697,7 +698,7 @@ void KstViewManagerI::close() {
   }
 }
 
-void KstViewManagerI::open(bool open) {
+void KstViewManager::open(bool open) {
   QListViewItem *qi = ViewView->selectedItem();
   KstViewObjectItem *koi = static_cast<KstViewObjectItem*>(qi);
 
@@ -714,15 +715,15 @@ void KstViewManagerI::open(bool open) {
   }
 }
 
-void KstViewManagerI::openAll() {
+void KstViewManager::openAll() {
   open(true);
 }
 
-void KstViewManagerI::closeAll() {
+void KstViewManager::closeAll() {
   open(false);
 }
 
-void KstViewManagerI::contextMenu(QListViewItem *i, const QPoint& p, int col) {
+void KstViewManager::contextMenu(QListViewItem *i, const QPoint& p, int col) {
   Q_UNUSED(col)
 
   if (i) {
@@ -781,15 +782,15 @@ void KstViewManagerI::contextMenu(QListViewItem *i, const QPoint& p, int col) {
   }
 }
 
-void KstViewManagerI::doUpdates() {
+void KstViewManager::doUpdates() {
   emit docChanged();
 }
 
-void KstViewManagerI::currentChanged(QListViewItem *i) {
+void KstViewManager::currentChanged(QListViewItem *i) {
   if (i) {
     KstViewObjectItem *koi = static_cast<KstViewObjectItem*>(i);
     koi->updateButtons();
   }
 }
 
-#include "kstviewmanager_i.moc"
+#include "kstviewmanager.moc"

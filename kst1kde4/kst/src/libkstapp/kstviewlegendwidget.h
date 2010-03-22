@@ -1,5 +1,5 @@
 /***************************************************************************
-                       kstviewlegendwidget_i.h  -  Part of KST
+                       kstviewlegendwidget.h  -  Part of KST
                              -------------------
     begin                :
     copyright            : (C) 2008 The University of British Columbia
@@ -24,13 +24,13 @@
 #include "kdualcolorbutton.h"
 
 #include "plotlistbox.h"
-#include "viewlegendwidget.h"
+#include "ui_viewlegendwidget.h"
 
-class KstViewLegendWidgetI : public ViewLegendWidget {
+class KstViewLegendWidget : public QDialog, public Ui::ViewLegendWidget {
   Q_OBJECT
   public:
-    KstViewLegendWidgetI(QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
-    virtual ~KstViewLegendWidgetI();
+    KstViewLegendWidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
+    virtual ~KstViewLegendWidget();
 
   protected:
 

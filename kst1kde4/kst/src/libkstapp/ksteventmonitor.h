@@ -1,5 +1,5 @@
 /***************************************************************************
-                       ksteventmonitor_i.h  -  Part of KST
+                       ksteventmonitor.h  -  Part of KST
                              -------------------
     begin                :
     copyright            : (C) 2004 The University of British Columbia
@@ -18,17 +18,17 @@
 #ifndef KSTEVENTMONITORI_H
 #define KSTEVENTMONITORI_H
 
-#include "kstdatadialog.h"
+#include "ui_kstdatadialog.h"
 #include "ksteventmonitorentry.h"
 
 class EventMonitorWidget;
 
-class KstEventMonitorI : public KstDataDialog {
+class KstEventMonitor : public QDialog, public Ui::KstDataDialog {
   Q_OBJECT
   public:
-    KstEventMonitorI(QWidget* parent = 0, const char* name = 0, bool modal = false, WFlags fl = 0 );
-    virtual ~KstEventMonitorI();
-    static KstEventMonitorI *globalInstance();
+    KstEventMonitor(QWidget* parent = 0, const char* name = 0, bool modal = false, WFlags fl = 0 );
+    virtual ~KstEventMonitor();
+    static KstEventMonitor *globalInstance();
 
   protected:
     QString editTitle() { return tr("Edit Event Monitor"); }

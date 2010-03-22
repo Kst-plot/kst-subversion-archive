@@ -1,5 +1,5 @@
 /***************************************************************************
-                       kstdatamanger_i.h  -  Part of KST
+                       kstdatamanger.h  -  Part of KST
                              -------------------
     begin                :
     copyright            : (C) 2003 The University of Toronto
@@ -24,7 +24,7 @@ class KstDoc;
 class QToolBar;
 class KListViewSearchLineWidget;
 
-#include "datamanager.h"
+#include "ui_datamanager.h"
 #include "kstavector.h"
 #include "kstrvector.h"
 #include "kstsvector.h"
@@ -42,13 +42,13 @@ class KstDataAction : public QAction {
     void addedTo(QWidget *actionWidget, QWidget *container);
 };
 
-class KstDataManagerI : public KstDataManager {
+class KstDataManager : public QDialog, public Ui::KstDataManager {
   Q_OBJECT
   public:
-    KstDataManagerI(KstDoc *doc, QWidget* parent = 0,
+    KstDataManager(KstDoc *doc, QWidget* parent = 0,
         const char *name = 0,
         bool modal = false, WFlags fl = 0);
-    virtual ~KstDataManagerI();
+    virtual ~KstDataManager();
 
     const QPixmap& yesPixmap() const;
 

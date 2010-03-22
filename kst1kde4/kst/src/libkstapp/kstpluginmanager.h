@@ -1,5 +1,5 @@
 /***************************************************************************
-                       kstpluginmanager_i.h  -  Part of KST
+                       kstpluginmanager.h  -  Part of KST
                              -------------------
     begin                :
     copyright            : (C) 2008 The University of British Columbia
@@ -18,14 +18,14 @@
 #ifndef KSTPLUGINMANAGERI_H
 #define KSTPLUGINMANAGERI_H
 
-#include "pluginmanager.h"
+#include "ui_pluginmanager.h"
 
-class KstPluginManagerI : public PluginManager {
+class KstPluginManager : public QDialog, public Ui::PluginManager {
   Q_OBJECT
   public:
-    KstPluginManagerI(QWidget* parent = 0, const char* name = 0,
+    KstPluginManager(QWidget* parent = 0, const char* name = 0,
         bool modal = false, WFlags fl = 0 );
-    virtual ~KstPluginManagerI();
+    virtual ~KstPluginManager();
 
   public slots:
     void selectionChanged( QListViewItem *item );
