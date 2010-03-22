@@ -1,5 +1,5 @@
 /***************************************************************************
-                    Kst2dPlotWidget_i.cpp  -  Part of KST
+                    Kst2dPlotWidget.cpp  -  Part of KST
                              -------------------
     begin                : 2007
     copyright            : (C) 2007 The University of British Columbia
@@ -36,7 +36,7 @@
 
 #include "plotlistbox.h"
 #include "vectorselector.h"
-#include "kst2dplotwidget_i.h"
+#include "kst2dplotwidget.h"
 #include "kstcombobox.h"
 #include "kstdatacollection.h"
 #include "kstdataobject.h"
@@ -48,8 +48,9 @@
 #include "kstsettings.h"
 #include "ksttoplevelview.h"
 
-Kst2dPlotWidget::Kst2dPlotWidget(QWidget* parent, const char* name, WFlags fl) : View2DPlotWidget(parent, name, fl )
-{
+Kst2dPlotWidget::Kst2dPlotWidget(QWidget* parent, const char* name, WFlags fl) 
+: Kst2dPlotWidget(parent, name, fl ){
+  setupUi(this);
   QFontDatabase qfd;
 
   _editMultipleMode = false;
@@ -1615,4 +1616,4 @@ void Kst2dPlotWidget::autoLabelTop() {
   generateDefaultLabels(false, false, true);
 }
 
-#include "kst2dplotwidget_i.moc"
+#include "kst2dplotwidget.moc"

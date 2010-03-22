@@ -1,5 +1,5 @@
 /***************************************************************************
-                    ksteditviewobjectdialog_i.cpp  -  Part of KST
+                    ksteditviewobjectdialog.cpp  -  Part of KST
                              -------------------
     begin                : 2005
     copyright            : (C) 2005 The University of British Columbia
@@ -15,7 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "ksteditviewobjectdialog_i.h"
+#include "ksteditviewobjectdialog.h"
 
 #include <qbutton.h>
 #include <qbuttongroup.h>
@@ -41,8 +41,9 @@
 #include <klocale.h>
 #include <stdio.h>
 
-KstEditViewObjectDialogI::KstEditViewObjectDialogI(QWidget* parent, const char* name, bool modal, WFlags fl) 
+KstEditViewObjectDialog::KstEditViewObjectDialog(QWidget* parent, const char* name, bool modal, WFlags fl) 
 : KstEditViewObjectDialog(parent, name, modal, fl) {
+  setupUi(this);
   connect(_cancel, SIGNAL(clicked()), this, SLOT(close()));
   connect(_apply, SIGNAL(clicked()), this, SLOT(applyClicked()));
   connect(_OK, SIGNAL(clicked()), this, SLOT(okClicked()));
@@ -63,26 +64,26 @@ KstEditViewObjectDialogI::KstEditViewObjectDialogI(QWidget* parent, const char* 
 }
 
 
-KstEditViewObjectDialogI::~KstEditViewObjectDialogI() {
+KstEditViewObjectDialog::~KstEditViewObjectDialog() {
   if (_viewObject) {
     _viewObject->setDialogLock(false);
   }
 }
 
 
-void KstEditViewObjectDialogI::setNew() {
+void KstEditViewObjectDialog::setNew() {
   _isNew = true;
   _apply->setEnabled(false);
   _editMultiple->setEnabled(false);
 }
 
 
-void KstEditViewObjectDialogI::updateEditViewObjectDialog() {
+void KstEditViewObjectDialog::updateEditViewObjectDialog() {
   updateWidgets();
 }
 
 
-void KstEditViewObjectDialogI::showEditViewObjectDialog(KstViewObjectPtr viewObject, KstTopLevelViewPtr top) {
+void KstEditViewObjectDialog::showEditViewObjectDialog(KstViewObjectPtr viewObject, KstTopLevelViewPtr top) {
   _viewObject = viewObject;
   if (_viewObject) {
     _viewObject->setDialogLock(true);
@@ -112,7 +113,7 @@ void KstEditViewObjectDialogI::showEditViewObjectDialog(KstViewObjectPtr viewObj
 }
 
 
-void KstEditViewObjectDialogI::toggleEditMultiple() {
+void KstEditViewObjectDialog::toggleEditMultiple() {
   _editMultipleWidget->_objectList->clear();
 
   if (_editMultipleMode) {
@@ -150,7 +151,7 @@ void KstEditViewObjectDialogI::toggleEditMultiple() {
 }
 
 
-void KstEditViewObjectDialogI::fillObjectList() {
+void KstEditViewObjectDialog::fillObjectList() {
   KstViewObjectList list;
   QList<QMdiSubWindow*> windows;
   QList<QMdiSubWindow*>::const_iterator i;
@@ -172,7 +173,7 @@ void KstEditViewObjectDialogI::fillObjectList() {
 }
 
 
-void KstEditViewObjectDialogI::populateEditMultiple() {
+void KstEditViewObjectDialog::populateEditMultiple() {
   QSpinBox *spinBoxWidget;
   KColorButton *colorButtonWidget;
   KURLRequester *urlRequester;
@@ -202,7 +203,7 @@ void KstEditViewObjectDialogI::populateEditMultiple() {
 }
 
 
-void KstEditViewObjectDialogI::clearWidgets() {
+void KstEditViewObjectDialog::clearWidgets() {
   // clear all the current widgets from the grid
   for (QValueList<QWidget*>::Iterator i = _inputWidgets.begin(); i != _inputWidgets.end(); ++i) {
     delete *i;
@@ -222,7 +223,7 @@ void KstEditViewObjectDialogI::clearWidgets() {
 }
 
 
-void KstEditViewObjectDialogI::updateDefaultWidgets() {
+void KstEditViewObjectDialog::updateDefaultWidgets() {
   int numProperties = _viewObject->metaObject()->numProperties(true);
 
   // create a new grid
@@ -356,7 +357,7 @@ void KstEditViewObjectDialogI::updateDefaultWidgets() {
 }
 
 
-void KstEditViewObjectDialogI::updateWidgets() {
+void KstEditViewObjectDialog::updateWidgets() {
   clearWidgets();
 
   if (_viewObject) {
@@ -376,7 +377,7 @@ void KstEditViewObjectDialogI::updateWidgets() {
 }
 
 
-void KstEditViewObjectDialogI::fillPenStyleWidget(QComboBox* widget) {
+void KstEditViewObjectDialog::fillPenStyleWidget(QComboBox* widget) {
   QRect rect = widget->style().querySubControlMetrics(QStyle::CC_ComboBox, 
                                                       widget, 
                                                       QStyle::SC_ComboBoxEditField);
@@ -409,26 +410,26 @@ void KstEditViewObjectDialogI::fillPenStyleWidget(QComboBox* widget) {
 }
 
 
-void KstEditViewObjectDialogI::fillHJustifyWidget(QComboBox* widget) {
+void KstEditViewObjectDialog::fillHJustifyWidget(QComboBox* widget) {
   widget->insertItem(i18n("Left"));
   widget->insertItem(i18n("Right"));
   widget->insertItem(i18n("Center")); 
 }
 
 
-void KstEditViewObjectDialogI::fillVJustifyWidget(QComboBox* widget) {
+void KstEditViewObjectDialog::fillVJustifyWidget(QComboBox* widget) {
   widget->insertItem(i18n("Top"));
   widget->insertItem(i18n("Bottom"));
   widget->insertItem(i18n("Center")); 
 }
 
 
-void KstEditViewObjectDialogI::modified() {
+void KstEditViewObjectDialog::modified() {
   _apply->setEnabled(true);
 }
 
 
-void KstEditViewObjectDialogI::applySettings(KstViewObjectPtr viewObject) {
+void KstEditViewObjectDialog::applySettings(KstViewObjectPtr viewObject) {
   if (viewObject && viewObject.data()) {
     if (_customWidget) {
       viewObject->readConfigWidget(_customWidget, _editMultipleMode);
@@ -492,7 +493,7 @@ void KstEditViewObjectDialogI::applySettings(KstViewObjectPtr viewObject) {
 }
 
 
-bool KstEditViewObjectDialogI::apply() {
+bool KstEditViewObjectDialog::apply() {
   bool applied = false;
 
   if (_editMultipleMode) {
@@ -549,7 +550,7 @@ bool KstEditViewObjectDialogI::apply() {
 }
 
 
-void KstEditViewObjectDialogI::setDefaults() {
+void KstEditViewObjectDialog::setDefaults() {
   if (_top) {
     KstViewObjectPtr viewObject = _viewObject->copyObjectQuietly();
     if (viewObject) {
@@ -560,26 +561,26 @@ void KstEditViewObjectDialogI::setDefaults() {
 }
 
 
-void KstEditViewObjectDialogI::restoreDefaults() {
+void KstEditViewObjectDialog::restoreDefaults() {
   if (_top) {
     _top->restoreDefaults(_viewObject);
   }
 }
 
 
-void KstEditViewObjectDialogI::applyClicked() {
+void KstEditViewObjectDialog::applyClicked() {
   apply();
 }
 
 
-void KstEditViewObjectDialogI::okClicked() {
+void KstEditViewObjectDialog::okClicked() {
   if (_viewObject && apply()) {
     QDialog::accept();
   }
 }
 
 
-void KstEditViewObjectDialogI::resizeEvent(QResizeEvent *event) {
+void KstEditViewObjectDialog::resizeEvent(QResizeEvent *event) {
   Q_UNUSED(event)
 
   if (!_customWidget) {
@@ -599,4 +600,4 @@ void KstEditViewObjectDialogI::resizeEvent(QResizeEvent *event) {
   }
 }
 
-#include "ksteditviewobjectdialog_i.moc"
+#include "ksteditviewobjectdialog.moc"

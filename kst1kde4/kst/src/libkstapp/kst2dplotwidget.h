@@ -1,5 +1,5 @@
 /***************************************************************************
-                       kst2dplotwidget_i.h  -  Part of KST
+                       kst2dplotwidget.h  -  Part of KST
                              -------------------
     begin                :
     copyright            : (C) 2007 The University of British Columbia
@@ -19,7 +19,7 @@
 
 #include "view2dplotwidget.h"
 
-class Kst2dPlotWidget: public View2DPlotWidget {
+class Kst2dPlotWidget: public QWidget, public Ui::View2DPlotWidget {
   Q_OBJECT
 
   public:

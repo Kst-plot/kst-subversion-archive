@@ -1,5 +1,5 @@
 /***************************************************************************
-                       ksteditviewobjectdialog_i.h  -  Part of KST
+                       ksteditviewobjectdialog.h  -  Part of KST
                              -------------------
     begin                : 2005
     copyright            : (C) 2005 The University of British Columbia
@@ -21,7 +21,7 @@
 #include <QPointer>
 
 #include "editmultiplewidget.h"
-#include "editviewobjectdialog.h"
+#include "ui_editviewobjectdialog.h"
 #include "kstviewobject.h"
 #include "kstviewwindow.h"
 #include "ksttoplevelview.h"
@@ -30,13 +30,13 @@
 class QComboBox;
 class QGridLayout;
 
-class KST_EXPORT KstEditViewObjectDialogI : public KstEditViewObjectDialog {
+class KST_EXPORT KstEditViewObjectDialog : public QDialog, public Ui::KstEditViewObjectDialog {
   Q_OBJECT
   public:
-    KstEditViewObjectDialogI(QWidget* parent = 0,
+    KstEditViewObjectDialog(QWidget* parent = 0,
                              const char* name = 0,
                              bool modal = false, WFlags fl = 0 );
-    virtual ~KstEditViewObjectDialogI();
+    virtual ~KstEditViewObjectDialog();
 
   public slots:
     void updateEditViewObjectDialog();

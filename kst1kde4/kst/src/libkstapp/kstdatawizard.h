@@ -1,5 +1,5 @@
 /***************************************************************************
-                       kstdatawizard_i.h  -  Part of KST
+                       kstdatawizard.h  -  Part of KST
                              -------------------
     begin                :
     copyright            : (C) 2007 The University of British Columbia
@@ -21,12 +21,12 @@
 #include <klineedit.h>
 #include <kpushbutton.h>
 
-#include "datawizard.h"
+#include "ui_datawizard.h"
 #include "kstcombobox.h"
 #include "kstdatasource.h"
 #include "vectorlistview.h"
 
-class KstDataWizard: public DataWizard {
+class KstDataWizard: public QWidget, public Ui::DataWizard {
   Q_OBJECT
 
   public:

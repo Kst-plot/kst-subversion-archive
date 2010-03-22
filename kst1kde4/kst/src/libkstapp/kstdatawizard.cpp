@@ -1,5 +1,5 @@
 /***************************************************************************
-                    kstdatawizard_i.cpp  -  Part of KST
+                    kstdatawizard.cpp  -  Part of KST
                              -------------------
     begin                : 2007
     copyright            : (C) 2007 The University of British Columbia
@@ -1695,5 +1695,5 @@ double KstDataWizard::getFontSize(KstViewWindow *w) {
 }
 
 
-#include "kstdatawizard_i.moc"
+#include "kstdatawizard.moc"
 
