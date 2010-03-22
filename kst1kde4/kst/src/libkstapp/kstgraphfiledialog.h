@@ -1,5 +1,5 @@
 /***************************************************************************
-                       kstgraphfiledialog_i.h  -  Part of KST
+                       kstgraphfiledialog.h  -  Part of KST
                              -------------------
     begin                :
     copyright            : (C) 2003 The University of Toronto
@@ -18,14 +18,14 @@
 #ifndef KSTGRAPHFILEDIALOGI_H
 #define KSTGRAPHFILEDIALOGI_H
 
-#include "graphfiledialog.h"
+#include "ui_graphfiledialog.h"
 
-class KstGraphFileDialogI : public KstGraphFileDialog {
+class KstGraphFileDialog : public QDialog, public Ui::KstGraphFileDialog {
   Q_OBJECT
   public:
-    KstGraphFileDialogI(QWidget* parent = 0, const char* name = 0,
+    KstGraphFileDialog(QWidget* parent = 0, const char* name = 0,
         bool modal = false, WFlags fl = 0 );
-    virtual ~KstGraphFileDialogI();
+    virtual ~KstGraphFileDialog();
 
     void setAutoSave(bool as) {_autoSave = as;}
     bool autoSaving() const {return _autoSave;}

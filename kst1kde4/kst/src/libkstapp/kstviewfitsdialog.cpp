@@ -1,5 +1,5 @@
 /***************************************************************************
-                    kstviewfitsdialog_i.cpp  -  Part of KST
+                    kstviewfitsdialog.cpp  -  Part of KST
                              -------------------
     begin                :
     copyright            : (C) 2004 The University of British Columbia
@@ -28,14 +28,14 @@
 #include "kstcplugin.h"
 #include "kstdatacollection.h"
 #include "kstdataobjectcollection.h"
-#include "kstviewfitsdialog_i.h"
+#include "kstviewfitsdialog.h"
 
-KstViewFitsDialogI::KstViewFitsDialogI(QWidget* parent,
+KstViewFitsDialog::KstViewFitsDialog(QWidget* parent,
                                              const char* name,
                                              bool modal,
                                              WFlags fl) 
-: KstViewFitsDialog(parent, name, modal, fl) {
-
+: QDialog(parent, name, modal, fl) {
+  setupUi(this);
   tableFits = new KstFitTable(this, "tableFits");
   tableFits->setNumRows(0);
   tableFits->setNumCols(1);
@@ -50,11 +50,11 @@ KstViewFitsDialogI::KstViewFitsDialogI(QWidget* parent,
   tableFits->setReadOnly(true);
 }
 
-KstViewFitsDialogI::~KstViewFitsDialogI() {
+KstViewFitsDialog::~KstViewFitsDialog() {
 }
 
 
-bool KstViewFitsDialogI::hasContent() const {
+bool KstViewFitsDialog::hasContent() const {
   bool content = false;
   KstCPluginList fits = kstObjectSubList<KstDataObject,KstCPlugin>(KST::dataObjectList);
   KstCPluginList::ConstIterator it = fits.begin();
@@ -67,7 +67,7 @@ bool KstViewFitsDialogI::hasContent() const {
 }
 
 
-void KstViewFitsDialogI::fillComboBox(const QString& str) {
+void KstViewFitsDialog::fillComboBox(const QString& str) {
   QString fitName = str;
   bool changed = false;
 
@@ -95,7 +95,7 @@ void KstViewFitsDialogI::fillComboBox(const QString& str) {
   }
 }
 
-void KstViewFitsDialogI::updateViewFitsDialog() {
+void KstViewFitsDialog::updateViewFitsDialog() {
   if (_comboBoxFits->listBox()->isVisible()) {
     QTimer::singleShot(250, this, SLOT(updateViewFitsDialog()));
   } else {
@@ -108,11 +108,11 @@ void KstViewFitsDialogI::updateViewFitsDialog() {
   }
 }
 
-void KstViewFitsDialogI::showViewFitsDialog(const QString& fit) {
+void KstViewFitsDialog::showViewFitsDialog(const QString& fit) {
   fillComboBox(fit);
 }
 
-void KstViewFitsDialogI::showViewFitsDialog() {
+void KstViewFitsDialog::showViewFitsDialog() {
   updateViewFitsDialog();
   updateDefaults(0);
 
@@ -120,7 +120,7 @@ void KstViewFitsDialogI::showViewFitsDialog() {
   raise();
 }
 
-void KstViewFitsDialogI::fitChanged(const QString& strFit) {
+void KstViewFitsDialog::fitChanged(const QString& strFit) {
   double* params = 0L;
   double* covars = 0L;
   double chi2Nu = 0.0;
@@ -195,8 +195,8 @@ void KstViewFitsDialogI::fitChanged(const QString& strFit) {
   tableFits->update();
 }
 
-void KstViewFitsDialogI::updateDefaults(int index) {
+void KstViewFitsDialog::updateDefaults(int index) {
   Q_UNUSED(index)
 }
 
-#include "kstviewfitsdialog_i.moc"
+#include "kstviewfitsdialog.moc"

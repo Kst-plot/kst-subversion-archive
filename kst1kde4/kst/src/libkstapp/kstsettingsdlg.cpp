@@ -1,5 +1,5 @@
 /***************************************************************************
-                       kstsettingsdlg_i.cpp  -  Part of KST
+                       kstsettingsdlg.cpp  -  Part of KST
                              -------------------
     begin                :
     copyright            : (C) 2007 The University of British Columbia
@@ -31,11 +31,13 @@
 #include "kst.h"
 #include "kstdatasource.h"
 #include "kstplotdefines.h"
-#include "kstsettingsdlg_i.h"
+#include "kstsettingsdlg.h"
 #include "ksttimezones.h"
 
-KstSettingsDlgI::KstSettingsDlgI(QWidget* parent, const char *name, WFlags fl) : KstSettingsDlg(parent, name, fl)
+KstSettingsDlg::KstSettingsDlg(QWidget* parent, const char *name, WFlags fl) 
+: QDialog(parent, name, fl)
 {
+  setupUi(this);
   fillAxesSettings();
   updateCurveColorSettings();
   setSettings(KstSettings::globalSettings());
@@ -70,10 +72,10 @@ KstSettingsDlgI::KstSettingsDlgI(QWidget* parent, const char *name, WFlags fl) :
   connect(_fontMinSize->child("qt_spinbox_edit"), SIGNAL(textChanged(const QString&)), this, SLOT(setDirty()));
 }
 
-KstSettingsDlgI::~KstSettingsDlgI() {
+KstSettingsDlg::~KstSettingsDlg() {
 }
 
-void KstSettingsDlgI::setSettings(const KstSettings *settings)
+void KstSettingsDlg::setSettings(const KstSettings *settings)
 {
   _timer->setValue(settings->plotUpdateTimer);
   _fontSize->setValue(settings->plotFontSize);
@@ -116,7 +118,7 @@ void KstSettingsDlgI::setSettings(const KstSettings *settings)
 }
 
 
-void KstSettingsDlgI::defaults()
+void KstSettingsDlg::defaults()
 {
   KstSettings s;
 
@@ -125,19 +127,19 @@ void KstSettingsDlgI::defaults()
 }
 
 
-void KstSettingsDlgI::setDirty()
+void KstSettingsDlg::setDirty()
 {
   _dirty = true;
 }
 
 
-void KstSettingsDlgI::setClean()
+void KstSettingsDlg::setClean()
 {
   _dirty = false;
 }
 
 
-void KstSettingsDlgI::save()
+void KstSettingsDlg::save()
 {
   if (!_dirty) {
     return;
@@ -206,7 +208,7 @@ void KstSettingsDlgI::save()
 }
 
 
-void KstSettingsDlgI::updateAxesButtons()
+void KstSettingsDlg::updateAxesButtons()
 {
   bool major = _xMajorGrid->isChecked() || _yMajorGrid->isChecked();
   bool minor = _xMinorGrid->isChecked() || _yMinorGrid->isChecked();
@@ -218,7 +220,7 @@ void KstSettingsDlgI::updateAxesButtons()
 }
 
 
-void KstSettingsDlgI::updateAxesSettings()
+void KstSettingsDlg::updateAxesSettings()
 {
   bool interpret = true;
 
@@ -227,7 +229,7 @@ void KstSettingsDlgI::updateAxesSettings()
 }
 
 
-void KstSettingsDlgI::updateEMailSettings()
+void KstSettingsDlg::updateEMailSettings()
 {
   bool authenticate = _checkBoxAuthentication->isChecked();
 
@@ -239,13 +241,13 @@ void KstSettingsDlgI::updateEMailSettings()
 }
 
 
-void KstSettingsDlgI::updateCurveColorSettings()
+void KstSettingsDlg::updateCurveColorSettings()
 {
     _colorPalette->refresh();
 }
 
 
-void KstSettingsDlgI::fillAxesSettings()
+void KstSettingsDlg::fillAxesSettings()
 {
   unsigned int i;
 
@@ -258,7 +260,7 @@ void KstSettingsDlgI::fillAxesSettings()
 }
 
 
-void KstSettingsDlgI::configureSource()
+void KstSettingsDlg::configureSource()
 {
   KstDataSourceConfigWidget *cw = KstDataSource::configWidgetForPlugin(_source->currentText());
   if (!cw) {
@@ -274,13 +276,13 @@ void KstSettingsDlgI::configureSource()
 }
 
 
-void KstSettingsDlgI::updateUTCOffset()
+void KstSettingsDlg::updateUTCOffset()
 {
   setUTCOffset(_tz->tzName());
 }
 
 
-int KstSettingsDlgI::utcOffset(const QString& timezone)
+int KstSettingsDlg::utcOffset(const QString& timezone)
 {
   int seconds = 0;
 
@@ -306,7 +308,7 @@ int KstSettingsDlgI::utcOffset(const QString& timezone)
 }
 
 
-void KstSettingsDlgI::setUTCOffset(const QString& timezone)
+void KstSettingsDlg::setUTCOffset(const QString& timezone)
 {
   double hours = double(utcOffset(timezone)) / 3600.0;
 
@@ -319,7 +321,7 @@ void KstSettingsDlgI::setUTCOffset(const QString& timezone)
 }
 
 
-void KstSettingsDlgI::updateTimezone(const QString& strHours)
+void KstSettingsDlg::updateTimezone(const QString& strHours)
 {
   double hours = 0.0;
   QString strHrs = strHours;
@@ -339,7 +341,7 @@ void KstSettingsDlgI::updateTimezone(const QString& strHours)
 }
 
 
-void KstSettingsDlgI::updateTimezone(double hours)
+void KstSettingsDlg::updateTimezone(double hours)
 {
   _tz->setCurrentItem(0);
   _tz->setCurrentText(timezoneFromUTCOffset(hours));
@@ -347,13 +349,13 @@ void KstSettingsDlgI::updateTimezone(double hours)
 }
 
 
-void KstSettingsDlgI::sourceChanged(const QString& name)
+void KstSettingsDlg::sourceChanged(const QString& name)
 {
   _configureSource->setEnabled(KstDataSource::pluginHasConfigWidget(name));
 }
 
 
-QString KstSettingsDlgI::timezoneFromUTCOffset(double hours)
+QString KstSettingsDlg::timezoneFromUTCOffset(double hours)
 {
   bool negative = false;
   int offnum = int( floor( ( hours * 100.0 ) + 0.5 ) );
@@ -368,5 +370,5 @@ QString KstSettingsDlgI::timezoneFromUTCOffset(double hours)
   return tzName;
 }
 
-#include "kstsettingsdlg_i.moc"
+#include "kstsettingsdlg.moc"
 

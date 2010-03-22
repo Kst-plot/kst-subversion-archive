@@ -1,8 +1,8 @@
 /***************************************************************************
-                       kstviewmatricesdialog_i.h  -  Part of KST
+                       kstviewstringsdialog.h  -  Part of KST
                              -------------------
     begin                :
-    copyright            : (C) 2005 The University of British Columbia
+    copyright            : (C) 2006 The University of Toronto
     email                :
  ***************************************************************************/
 
@@ -15,33 +15,37 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef KSTVIEWMATRICESDIALOGI_H
-#define KSTVIEWMATRICESDIALOGI_H
+#ifndef KSTVIEWSTRINGSDIALOGI_H
+#define KSTVIEWSTRINGSDIALOGI_H
 
-#include "viewmatricesdialog.h"
-#include "kstmatrixtable.h"
+#include <klistviewsearchline.h>
 
-class KstViewMatricesDialogI : public KstViewMatricesDialog {
+#include "ui_viewstringsdialog.h"
+#include "kststringlistview.h"
+
+class KstViewStringsDialog : public QDialog, public Ui::KstViewStringsDialog {
   Q_OBJECT
   public:
-    KstViewMatricesDialogI(QWidget* parent = 0,
-                        const char* name = 0,
-                        bool modal = false, WFlags fl = 0 );
-    virtual ~KstViewMatricesDialogI();
-    KstMatrixTable* _tableMatrices;
+    KstViewStringsDialog(QWidget* parent = 0,
+        const char* name = 0,
+        bool modal = false, WFlags fl = 0 );
+    virtual ~KstViewStringsDialog();
+    KListViewSearchLineWidget *searchWidget;
+    KstStringListView *listViewStrings;
 
     bool hasContent() const;
 
+  protected slots:
+    virtual void languageChange();
+
   public slots:
-    void updateViewMatricesDialog();
-    void updateViewMatricesDialog(const QString& strMatrix);
-    void showViewMatricesDialog();
-    void showViewMatricesDialog(const QString& strMatrix);
+    void updateViewStringsDialog();
+    void showViewStringsDialog();
     void updateDefaults(int index = 0);
 
-  protected slots:
-    virtual void languageChange();  
-    virtual void matrixChanged(const QString& str);
+  signals:
+    /** signal that vectors have changed */
+    void docChanged();
 };
 
 #endif

@@ -1,5 +1,5 @@
 /**************************************************************************
-              kstdebugdialog_i.cpp - debug dialog: inherits designer dialog
+              kstdebugdialog.cpp - debug dialog: inherits designer dialog
                              -------------------
     begin                :  2004
     copyright            : (C) 2004 The University of British Columbia
@@ -14,7 +14,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
 // include files for Qt
 #include <qcheckbox.h>
 #include <qlabel.h>
@@ -27,7 +26,7 @@
 
 #include "kst.h"
 #include "kstdatacollection.h"
-#include "kstdebugdialog_i.h"
+#include "kstdebugdialog.h"
 #include "kstdoc.h"
 #include "kstlogwidget.h"
 
@@ -38,9 +37,10 @@
  *  The dialog will by default be modeless, unless you set 'modal' to
  *  TRUE to construct a modal dialog.
  */
-KstDebugDialogI::KstDebugDialogI(QWidget* parent,
+KstDebugDialog::KstDebugDialog(QWidget* parent,
                                const char* name, bool modal, WFlags fl)
-: DebugDialog(parent, name, modal, fl ) {
+: QDialog(parent, name, modal, fl ) {
+  setupUi(this);
   _log = new KstLogWidget(TabPage, "logwidget");
   _log->setDebug(KstDebug::self());
 
@@ -67,11 +67,11 @@ KstDebugDialogI::KstDebugDialogI(QWidget* parent,
 }
 
 
-KstDebugDialogI::~KstDebugDialogI() {
+KstDebugDialog::~KstDebugDialog() {
 }
 
 
-void KstDebugDialogI::show_I() {
+void KstDebugDialog::show_I() {
   QListViewItemIterator it(_dataSources);
 
   KST::dataSourceList.lock().readLock();
@@ -97,13 +97,13 @@ void KstDebugDialogI::show_I() {
 }
 
 
-void KstDebugDialogI::clear() {
+void KstDebugDialog::clear() {
   KstDebug::self()->clear();
   _log->clear();
 }
 
 
-void KstDebugDialogI::email() {
+void KstDebugDialog::email() {
   KstDebug::self()->sendEmail();
 }
 
@@ -112,4 +112,4 @@ KstLogWidget *KstDebugDialogI::logWidget() const {
   return _log;
 }
 
-#include "kstdebugdialog_i.moc"
+#include "kstdebugdialog.moc"

@@ -1,5 +1,5 @@
 /***************************************************************************
-                       kstdebugdialog_i.h  -  Part of KST
+                       kstviewvectorsdialog.h  -  Part of KST
                              -------------------
     begin                :
     copyright            : (C) 2004 The University of British Columbia
@@ -14,30 +14,34 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef KSTDEBUGI_H
-#define KSTDEBUGI_H
 
-#include "debugdialog.h"
+#ifndef KSTVIEWVECTORSDIALOGI_H
+#define KSTVIEWVECTORSDIALOGI_H
 
-class KstLogWidget;
+#include "ui_viewvectorsdialog.h"
+#include "kstvectortable.h"
 
-class KstDebugDialogI : public DebugDialog {
+class KstViewVectorsDialog : public QDialog, public Ui::KstViewVectorsDialog {
   Q_OBJECT
   public:
-    KstDebugDialogI(QWidget* parent = 0, const char* name = 0,
-        bool modal = FALSE, WFlags fl = 0);
-    virtual ~KstDebugDialogI();
+    KstViewVectorsDialog(QWidget* parent = 0,
+                        const char* name = 0,
+                        bool modal = false, WFlags fl = 0 );
+    virtual ~KstViewVectorsDialog();
+    KstVectorTable* tableVectors;
 
-  public:
-    KstLogWidget *logWidget() const;
+    bool hasContent() const;
 
   public slots:
-    void email();
-    void clear();
-    void show_I();
+    void updateViewVectorsDialog();
+    void updateViewVectorsDialog(const QString& strVector);
+    void showViewVectorsDialog();
+    void showViewVectorsDialog(const QString& strVector);
+    void updateDefaults(int index = 0);
 
-  private:  
-    KstLogWidget *_log;
+  protected slots:
+    virtual void languageChange();
+    virtual void vectorChanged(const QString& str);
 };
 
 #endif

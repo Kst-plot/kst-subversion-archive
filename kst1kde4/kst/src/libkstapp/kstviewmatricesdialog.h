@@ -1,8 +1,8 @@
 /***************************************************************************
-                       kstviewfitsdialog_i.h  -  Part of KST
+                       kstviewmatricesdialog.h  -  Part of KST
                              -------------------
     begin                :
-    copyright            : (C) 2004 The University of British Columbia
+    copyright            : (C) 2005 The University of British Columbia
     email                :
  ***************************************************************************/
 
@@ -15,34 +15,33 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef KSTVIEWFITSDIALOGI_H
-#define KSTVIEWFITSDIALOGI_H
+#ifndef KSTVIEWMATRICESDIALOGI_H
+#define KSTVIEWMATRICESDIALOGI_H
 
-#include "viewfitsdialog.h"
-#include "kstfittable.h"
+#include "ui_viewmatricesdialog.h"
+#include "kstmatrixtable.h"
 
-class KstViewFitsDialogI : public KstViewFitsDialog {
+class KstViewMatricesDialog : public QDialog, public Ui::KstViewMatricesDialog {
   Q_OBJECT
   public:
-    KstViewFitsDialogI(QWidget* parent = 0,
+    KstViewMatricesDialog(QWidget* parent = 0,
                         const char* name = 0,
                         bool modal = false, WFlags fl = 0 );
-    virtual ~KstViewFitsDialogI();
-    KstFitTable* tableFits;
+    virtual ~KstViewMatricesDialog();
+    KstMatrixTable* _tableMatrices;
 
     bool hasContent() const;
 
   public slots:
-    void updateViewFitsDialog();
-    void showViewFitsDialog();
-    void showViewFitsDialog(const QString& strVector);
+    void updateViewMatricesDialog();
+    void updateViewMatricesDialog(const QString& strMatrix);
+    void showViewMatricesDialog();
+    void showViewMatricesDialog(const QString& strMatrix);
     void updateDefaults(int index = 0);
 
   protected slots:
-    virtual void fitChanged(const QString& strFit);
-
-  private:
-    void fillComboBox(const QString& str);
+    virtual void languageChange();  
+    virtual void matrixChanged(const QString& str);
 };
 
 #endif

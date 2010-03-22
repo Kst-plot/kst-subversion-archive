@@ -1,5 +1,5 @@
 /***************************************************************************
-                       kstviewscalarsdialog_i.h  -  Part of KST
+                       kstviewfitsdialog.h  -  Part of KST
                              -------------------
     begin                :
     copyright            : (C) 2004 The University of British Columbia
@@ -15,38 +15,34 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef KSTVIEWSCALARSDIALOGI_H
-#define KSTVIEWSCALARSDIALOGI_H
+#ifndef KSTVIEWFITSDIALOGI_H
+#define KSTVIEWFITSDIALOGI_H
 
-#include <klistviewsearchline.h>
+#include "ui_viewfitsdialog.h"
+#include "kstfittable.h"
 
-#include "viewscalarsdialog.h"
-//#include "kstscalartable.h"
-#include "kstscalarlistview.h"
-
-class KstViewScalarsDialogI : public KstViewScalarsDialog {
+class KstViewFitsDialog : public QDialog, public Ui::KstViewFitsDialog {
   Q_OBJECT
   public:
-    KstViewScalarsDialogI(QWidget* parent = 0,
-        const char* name = 0,
-        bool modal = false, WFlags fl = 0 );
-    virtual ~KstViewScalarsDialogI();
-    KListViewSearchLineWidget *searchWidget;
-    KstScalarListView *listViewScalars;
+    KstViewFitsDialog(QWidget* parent = 0,
+                        const char* name = 0,
+                        bool modal = false, WFlags fl = 0 );
+    virtual ~KstViewFitsDialog();
+    KstFitTable* tableFits;
 
     bool hasContent() const;
 
-  protected slots:
-    virtual void languageChange();
-
   public slots:
-    void updateViewScalarsDialog();
-    void showViewScalarsDialog();
+    void updateViewFitsDialog();
+    void showViewFitsDialog();
+    void showViewFitsDialog(const QString& strVector);
     void updateDefaults(int index = 0);
 
-  signals:
-    /** signal that vectors have changed */
-    void docChanged();
+  protected slots:
+    virtual void fitChanged(const QString& strFit);
+
+  private:
+    void fillComboBox(const QString& str);
 };
 
 #endif

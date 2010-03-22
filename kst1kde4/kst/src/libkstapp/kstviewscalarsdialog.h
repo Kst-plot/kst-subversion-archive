@@ -1,8 +1,8 @@
 /***************************************************************************
-                       kstquickstartdialog_i.h  -  Part of KST
+                       kstviewscalarsdialog_i.h  -  Part of KST
                              -------------------
     begin                :
-    copyright            : (C) 2004 University of British Columbia
+    copyright            : (C) 2004 The University of British Columbia
     email                :
  ***************************************************************************/
 
@@ -14,38 +14,39 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef KSTQUICKSTARTDIALOGI_H
-#define KSTQUICKSTARTDIALOGI_H
 
-#include "quickstartdialog.h"
+#ifndef KSTVIEWSCALARSDIALOGI_H
+#define KSTVIEWSCALARSDIALOGI_H
 
-class KstApp;
+#include <klistviewsearchline.h>
 
-class KstQuickStartDialogI : public KstQuickStartDialog {
+#include "ui_viewscalarsdialog.h"
+//#include "kstscalartable.h"
+#include "kstscalarlistview.h"
+
+class KstViewScalarsDialog : public QDialog, public Ui::KstViewScalarsDialog {
   Q_OBJECT
   public:
-    KstQuickStartDialogI(QWidget *parent = 0, const char *name = 0,
+    KstViewScalarsDialog(QWidget* parent = 0,
+        const char* name = 0,
         bool modal = false, WFlags fl = 0 );
-    ~KstQuickStartDialogI();
+    virtual ~KstViewScalarsDialog();
+    KListViewSearchLineWidget *searchWidget;
+    KstScalarListView *listViewScalars;
+
+    bool hasContent() const;
+
+  protected slots:
+    virtual void languageChange();
 
   public slots:
-    void update();
-    void show_I();
-
-  private slots:
-    void wizard_I();
-    void open_I();
-    void fileChanged(const QString& name);
-    void changeURL(const QString& name);
-    void updateSettings();
-    void deselectRecentFile();
-
-  private:
-    KstApp* _app;
-    bool _isRecentFile;
+    void updateViewScalarsDialog();
+    void showViewScalarsDialog();
+    void updateDefaults(int index = 0);
 
   signals:
-    void settingsChanged();
+    /** signal that vectors have changed */
+    void docChanged();
 };
 
 #endif

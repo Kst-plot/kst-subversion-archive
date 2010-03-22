@@ -1,5 +1,5 @@
 /***************************************************************************
-                    kstviewvectorsdialog_i.cpp  -  Part of KST
+                    kstviewvectorsdialog.cpp  -  Part of KST
                              -------------------
     begin                :
     copyright            : (C) 2004 The University of British Columbia
@@ -21,14 +21,15 @@
 
 #include <klocale.h>
 
-#include "kstviewvectorsdialog_i.h"
+#include "kstviewvectorsdialog.h"
 #include "vectorselector.h"
 
-KstViewVectorsDialogI::KstViewVectorsDialogI(QWidget* parent,
+KstViewVectorsDialog::KstViewVectorsDialog(QWidget* parent,
                                              const char* name,
                                              bool modal,
                                              WFlags fl)
-: KstViewVectorsDialog(parent, name, modal, fl) {
+: QDialog(parent, name, modal, fl) {
+  setupUi(this);
   tableVectors = new KstVectorTable(this, "tableVectors");
   tableVectors->setNumRows(0);
   tableVectors->setNumCols(2);
@@ -57,16 +58,16 @@ KstViewVectorsDialogI::KstViewVectorsDialogI(QWidget* parent,
 }
 
 
-KstViewVectorsDialogI::~KstViewVectorsDialogI() {
+KstViewVectorsDialog::~KstViewVectorsDialog() {
 }
 
 
-bool KstViewVectorsDialogI::hasContent() const {
+bool KstViewVectorsDialog::hasContent() const {
   return !KST::vectorList.isEmpty();
 }
 
 
-void KstViewVectorsDialogI::updateViewVectorsDialog() {
+void KstViewVectorsDialog::updateViewVectorsDialog() {
   vectorSelector->update();
   QString vector = vectorSelector->selectedVector();
   tableVectors->setVector(vector);
@@ -74,7 +75,7 @@ void KstViewVectorsDialogI::updateViewVectorsDialog() {
 }
 
 
-void KstViewVectorsDialogI::updateViewVectorsDialog(const QString& vectorName) {
+void KstViewVectorsDialog::updateViewVectorsDialog(const QString& vectorName) {
   int needed = 0;
   KST::vectorList.lock().readLock();
   KstVectorPtr vector = *KST::vectorList.findTag(vectorName);
@@ -94,7 +95,7 @@ void KstViewVectorsDialogI::updateViewVectorsDialog(const QString& vectorName) {
 }
 
 
-void KstViewVectorsDialogI::showViewVectorsDialog() {
+void KstViewVectorsDialog::showViewVectorsDialog() {
   updateViewVectorsDialog();
   updateDefaults(0);
   show();
@@ -102,7 +103,7 @@ void KstViewVectorsDialogI::showViewVectorsDialog() {
 }
 
 
-void KstViewVectorsDialogI::showViewVectorsDialog(const QString &vectorName) {
+void KstViewVectorsDialog::showViewVectorsDialog(const QString &vectorName) {
   updateViewVectorsDialog();
 
   KST::vectorList.lock().readLock();
@@ -117,7 +118,7 @@ void KstViewVectorsDialogI::showViewVectorsDialog(const QString &vectorName) {
 }
 
 
-void KstViewVectorsDialogI::vectorChanged(const QString& vector) {
+void KstViewVectorsDialog::vectorChanged(const QString& vector) {
   updateViewVectorsDialog(vector);
   tableVectors->setVector(vector);
   tableVectors->update();
@@ -128,7 +129,7 @@ void KstViewVectorsDialogI::vectorChanged(const QString& vector) {
  *  Sets the strings of the subwidgets using the current
  *  language.
  */
-void KstViewVectorsDialogI::languageChange() {
+void KstViewVectorsDialog::languageChange() {
   setCaption(i18n("View Vector Values"));
   tableVectors->horizontalHeader()->setLabel(0, i18n("Index"));
   tableVectors->horizontalHeader()->setLabel(1, i18n("Value"));
@@ -136,9 +137,9 @@ void KstViewVectorsDialogI::languageChange() {
 }
 
 
-void KstViewVectorsDialogI::updateDefaults(int index) {
+void KstViewVectorsDialog::updateDefaults(int index) {
   Q_UNUSED(index)
 }
 
-#include "kstviewvectorsdialog_i.moc"
+#include "kstviewvectorsdialog.moc"
 

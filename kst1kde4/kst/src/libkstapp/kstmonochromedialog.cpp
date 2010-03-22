@@ -26,14 +26,14 @@
 #include <kiconloader.h>
 
 #include "kstlinestyle.h"
-#include "kstmonochromedialog_i.h"
+#include "kstmonochromedialog.h"
 
-KstMonochromeDialogI::KstMonochromeDialogI(QWidget* parent,
+KstMonochromeDialog::KstMonochromeDialog(QWidget* parent,
                                            const char* name,
                                            bool modal,
                                            WFlags fl)
-: KstMonochromeDialog(parent, name, modal, fl) {
-
+: QDialog(parent, name, modal, fl) {
+  setupUi(this);
   availableListBox->clear();
   selectedListBox->clear();
   availableListBox->insertItem(i18n("Point Style"));  
@@ -62,22 +62,22 @@ KstMonochromeDialogI::KstMonochromeDialogI(QWidget* parent,
 }
 
 
-KstMonochromeDialogI::~KstMonochromeDialogI() {
+KstMonochromeDialog::~KstMonochromeDialog() {
 }
 
 
-void KstMonochromeDialogI::updateMonochromeDialog() {
+void KstMonochromeDialog::updateMonochromeDialog() {
   updateButtons();
 }
 
 
-void KstMonochromeDialogI::showMonochromeDialog() {
+void KstMonochromeDialog::showMonochromeDialog() {
   updateMonochromeDialog();
   show();
   raise();
 }
 
-void KstMonochromeDialogI::updateButtons() {
+void KstMonochromeDialog::updateButtons() {
   cycleOrderGroup->setEnabled(enhanceReadability->isChecked());
   optionsGroup->setEnabled(enhanceReadability->isChecked());
   _remove->setEnabled(selectedListBox->currentItem() >= 0);
@@ -86,7 +86,7 @@ void KstMonochromeDialogI::updateButtons() {
   _down->setEnabled(selectedListBox->currentItem() < (int)selectedListBox->count() - 1);
 }
 
-void KstMonochromeDialogI::setOptions(const QMap<QString,QString>& opts) {
+void KstMonochromeDialog::setOptions(const QMap<QString,QString>& opts) {
   enhanceReadability->setChecked(opts["kst-plot-monochromesettings-enhancereadability"] == "1");
 
   availableListBox->clear();
@@ -114,7 +114,7 @@ void KstMonochromeDialogI::setOptions(const QMap<QString,QString>& opts) {
   pointDensity->setCurrentItem(opts["kst-plot-monochromesettings-pointdensity"].toInt());
 }
 
-void KstMonochromeDialogI::getOptions(QMap<QString,QString> &opts, bool include_def) {  
+void KstMonochromeDialog::getOptions(QMap<QString,QString> &opts, bool include_def) {  
   // enhance readability - default is false
   if (enhanceReadability->isChecked() || include_def) {
     opts["kst-plot-monochromesettings-enhancereadability"] = enhanceReadability->isChecked() ? "1" : "0";
@@ -145,7 +145,7 @@ void KstMonochromeDialogI::getOptions(QMap<QString,QString> &opts, bool include_
 }
 
 
-void KstMonochromeDialogI::removeClicked() {
+void KstMonochromeDialog::removeClicked() {
   // move from selected to available
   for (uint i = 0; i < selectedListBox->count(); i++) {
     if (selectedListBox->isSelected(i)) {
@@ -158,7 +158,7 @@ void KstMonochromeDialogI::removeClicked() {
 }
 
 
-void KstMonochromeDialogI::addClicked() {
+void KstMonochromeDialog::addClicked() {
   // move from available to selected
   for (uint i = 0; i < availableListBox->count(); i++) {
     if (availableListBox->isSelected(i)) {
@@ -171,7 +171,7 @@ void KstMonochromeDialogI::addClicked() {
 }
 
 
-void KstMonochromeDialogI::upClicked() {
+void KstMonochromeDialog::upClicked() {
   // move item up
   int i = selectedListBox->currentItem();
   QString text = selectedListBox->currentText();
@@ -182,7 +182,7 @@ void KstMonochromeDialogI::upClicked() {
 }
 
 
-void KstMonochromeDialogI::downClicked() {
+void KstMonochromeDialog::downClicked() {
   // move item down
   int i = selectedListBox->currentItem();
   QString text = selectedListBox->currentText();
@@ -192,4 +192,4 @@ void KstMonochromeDialogI::downClicked() {
   updateButtons();
 }
 
-#include "kstmonochromedialog_i.moc"
+#include "kstmonochromedialog.moc"

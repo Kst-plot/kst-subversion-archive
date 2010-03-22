@@ -1,5 +1,5 @@
 /***************************************************************************
-                       kstsettingsdlg_i.h  -  Part of KST
+                       kstsettingsdlg.h  -  Part of KST
                              -------------------
     begin                :
     copyright            : (C) 2007 The University of British Columbia
@@ -17,13 +17,13 @@
 #ifndef KSTSETTINGSDLGI_H
 #define KSTSETTINGSDLGI_H
 
-#include "kstsettingsdlg.h"
+#include "ui_kstsettingsdlg.h"
 
-class KstSettingsDlgI: public KstSettingsDlg {
+class KstSettingsDlg: public QDialog, public Ui::KstSettingsDlg {
   Q_OBJECT
   public:
-    KstSettingsDlgI(QWidget* parent = 0, const char *name = 0, WFlags fl = 0);
-    virtual ~KstSettingsDlgI();
+    KstSettingsDlg(QWidget* parent = 0, const char *name = 0, WFlags fl = 0);
+    virtual ~KstSettingsDlg();
 
   signals:
     void settingsChanged();

@@ -1,5 +1,5 @@
 /***************************************************************************
-                    kstviewscalarsdialog_i.cpp  -  Part of KST
+                    kstviewscalarsdialog.cpp  -  Part of KST
                              -------------------
     begin                :
     copyright            : (C) 2004 The University of British Columbia
@@ -22,13 +22,14 @@
 #include <klocale.h>
 
 #include "kstdatacollection.h"
-#include "kstviewscalarsdialog_i.h"
+#include "kstviewscalarsdialog.h"
 
-KstViewScalarsDialogI::KstViewScalarsDialogI(QWidget* parent,
+KstViewScalarsDialog::KstViewScalarsDialog(QWidget* parent,
                                            const char* name,
                                            bool modal,
                                            WFlags fl)
-: KstViewScalarsDialog(parent, name, modal, fl) {
+: QDialog(parent, name, modal, fl) {
+  setupUi(this);
   listViewScalars = new KstScalarListView(this, &KST::scalarList);
   listViewScalars->setShowSortIndicator(false);
   searchWidget = new KListViewSearchLineWidget(listViewScalars, this);
@@ -44,15 +45,15 @@ KstViewScalarsDialogI::KstViewScalarsDialogI(QWidget* parent,
 }
 
 
-KstViewScalarsDialogI::~KstViewScalarsDialogI() {
+KstViewScalarsDialog::~KstViewScalarsDialog() {
 }
 
 
-bool KstViewScalarsDialogI::hasContent() const {
+bool KstViewScalarsDialog::hasContent() const {
   return !KST::scalarList.isEmpty();
 }
 
-void KstViewScalarsDialogI::updateViewScalarsDialog() {
+void KstViewScalarsDialog::updateViewScalarsDialog() {
   listViewScalars->update();
   if (searchWidget) {
     searchWidget->searchLine()->updateSearch(); 
@@ -69,7 +70,7 @@ void KstViewScalarsDialogI::updateViewScalarsDialog() {
 }
 
 
-void KstViewScalarsDialogI::showViewScalarsDialog() {
+void KstViewScalarsDialog::showViewScalarsDialog() {
   updateViewScalarsDialog();
   updateDefaults(0);
   show();
@@ -81,7 +82,7 @@ void KstViewScalarsDialogI::showViewScalarsDialog() {
  *  Sets the strings of the subwidgets using the current
  *  language.
  */
-void KstViewScalarsDialogI::languageChange() {
+void KstViewScalarsDialog::languageChange() {
   setCaption(i18n("View Scalar Values"));
   listViewScalars->header()->setLabel(0, i18n("Scalar"));
   listViewScalars->header()->setLabel(1, i18n("Value"));
@@ -89,8 +90,8 @@ void KstViewScalarsDialogI::languageChange() {
 }
 
 
-void KstViewScalarsDialogI::updateDefaults(int index) {
+void KstViewScalarsDialog::updateDefaults(int index) {
   Q_UNUSED(index)
 }
 
-#include "kstviewscalarsdialog_i.moc"
+#include "kstviewscalarsdialog.moc"

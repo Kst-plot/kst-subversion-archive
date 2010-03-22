@@ -1,5 +1,5 @@
 /***************************************************************************
-                    kstviewmatricesdialog_i.cpp  -  Part of KST
+                    kstviewmatricesdialog.cpp  -  Part of KST
                              -------------------
     begin                :
     copyright            : (C) 2005 The University of British Columbia
@@ -25,14 +25,15 @@
 
 // application specific includes
 #include "kstmatrix.h"
-#include "kstviewmatricesdialog_i.h"
+#include "kstviewmatricesdialog.h"
 #include "matrixselector.h"
 
-KstViewMatricesDialogI::KstViewMatricesDialogI(QWidget* parent,
+KstViewMatricesDialog::KstViewMatricesDialog(QWidget* parent,
                                              const char* name,
                                              bool modal,
                                              WFlags fl)
-: KstViewMatricesDialog(parent, name, modal, fl) {
+: QDialog(parent, name, modal, fl) {
+  setupUi(this);
   _tableMatrices = new KstMatrixTable(this, "tableMatrices");
   _tableMatrices->setNumRows(0);
   _tableMatrices->setNumCols(5);
@@ -49,16 +50,16 @@ KstViewMatricesDialogI::KstViewMatricesDialogI(QWidget* parent,
 }
 
 
-KstViewMatricesDialogI::~KstViewMatricesDialogI() {
+KstViewMatricesDialog::~KstViewMatricesDialog() {
 }
 
 
-bool KstViewMatricesDialogI::hasContent() const {
+bool KstViewMatricesDialog::hasContent() const {
   return !KST::matrixList.isEmpty();
 }
 
 
-void KstViewMatricesDialogI::updateViewMatricesDialog() {
+void KstViewMatricesDialog::updateViewMatricesDialog() {
   matrixSelector->update();
   QString matrix = matrixSelector->selectedMatrix();
   _tableMatrices->setMatrix(matrix);
@@ -66,7 +67,7 @@ void KstViewMatricesDialogI::updateViewMatricesDialog() {
 }
 
 
-void KstViewMatricesDialogI::updateViewMatricesDialog(const QString& matrixName) {
+void KstViewMatricesDialog::updateViewMatricesDialog(const QString& matrixName) {
   KST::matrixList.lock().readLock();
   KstMatrixPtr matrix = *KST::matrixList.findTag(matrixName);
   KST::matrixList.lock().unlock();
@@ -103,7 +104,7 @@ void KstViewMatricesDialogI::updateViewMatricesDialog(const QString& matrixName)
 }
 
 
-void KstViewMatricesDialogI::showViewMatricesDialog() {
+void KstViewMatricesDialog::showViewMatricesDialog() {
   updateViewMatricesDialog();
   updateDefaults(0);
   show();
@@ -111,7 +112,7 @@ void KstViewMatricesDialogI::showViewMatricesDialog() {
 }
 
 
-void KstViewMatricesDialogI::showViewMatricesDialog(const QString &matrixName) {
+void KstViewMatricesDialog::showViewMatricesDialog(const QString &matrixName) {
   updateViewMatricesDialog();
 
   KST::matrixList.lock().readLock();
@@ -126,7 +127,7 @@ void KstViewMatricesDialogI::showViewMatricesDialog(const QString &matrixName) {
 }
 
 
-void KstViewMatricesDialogI::matrixChanged(const QString& matrix) {
+void KstViewMatricesDialog::matrixChanged(const QString& matrix) {
   updateViewMatricesDialog(matrix);
   _tableMatrices->setMatrix(matrix);
 
@@ -144,14 +145,14 @@ void KstViewMatricesDialogI::matrixChanged(const QString& matrix) {
  *  Sets the strings of the subwidgets using the current
  *  language.
  */
-void KstViewMatricesDialogI::languageChange() {
+void KstViewMatricesDialog::languageChange() {
   setCaption(i18n("View Matrix Values"));
   KstViewMatricesDialog::languageChange();
 }
 
 
-void KstViewMatricesDialogI::updateDefaults(int index) {
+void KstViewMatricesDialog::updateDefaults(int index) {
   Q_UNUSED(index)
 }
 
-#include "kstviewmatricesdialog_i.moc"
+#include "kstviewmatricesdialog.moc"

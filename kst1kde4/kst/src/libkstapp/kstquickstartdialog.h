@@ -1,8 +1,8 @@
 /***************************************************************************
-                       kstviewstringsdialog_i.h  -  Part of KST
+                       kstquickstartdialog.h  -  Part of KST
                              -------------------
     begin                :
-    copyright            : (C) 2006 The University of Toronto
+    copyright            : (C) 2004 University of British Columbia
     email                :
  ***************************************************************************/
 
@@ -14,38 +14,38 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#ifndef KSTQUICKSTARTDIALOGI_H
+#define KSTQUICKSTARTDIALOGI_H
 
-#ifndef KSTVIEWSTRINGSDIALOGI_H
-#define KSTVIEWSTRINGSDIALOGI_H
+#include "ui_quickstartdialog.h"
 
-#include <klistviewsearchline.h>
+class KstApp;
 
-#include "viewstringsdialog.h"
-#include "kststringlistview.h"
-
-class KstViewStringsDialogI : public KstViewStringsDialog {
+class KstQuickStartDialog : public QDialog, public KstQuickStartDialog {
   Q_OBJECT
   public:
-    KstViewStringsDialogI(QWidget* parent = 0,
-        const char* name = 0,
+    KstQuickStartDialogI(QWidget *parent = 0, const char *name = 0,
         bool modal = false, WFlags fl = 0 );
-    virtual ~KstViewStringsDialogI();
-    KListViewSearchLineWidget *searchWidget;
-    KstStringListView *listViewStrings;
-
-    bool hasContent() const;
-
-  protected slots:
-    virtual void languageChange();
+    ~KstQuickStartDialog();
 
   public slots:
-    void updateViewStringsDialog();
-    void showViewStringsDialog();
-    void updateDefaults(int index = 0);
+    void update();
+    void show_I();
+
+  private slots:
+    void wizard_I();
+    void open_I();
+    void fileChanged(const QString& name);
+    void changeURL(const QString& name);
+    void updateSettings();
+    void deselectRecentFile();
+
+  private:
+    KstApp* _app;
+    bool _isRecentFile;
 
   signals:
-    /** signal that vectors have changed */
-    void docChanged();
+    void settingsChanged();
 };
 
 #endif

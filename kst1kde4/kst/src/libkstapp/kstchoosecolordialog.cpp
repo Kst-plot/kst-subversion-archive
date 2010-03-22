@@ -38,7 +38,7 @@ KstChooseColorDialog::KstChooseColorDialog(QWidget* parent,
 }
 
 
-KstChooseColorDialog::~KstChooseColorDialogI() {
+KstChooseColorDialog::~KstChooseColorDialog() {
   delete _grid;
 }
 

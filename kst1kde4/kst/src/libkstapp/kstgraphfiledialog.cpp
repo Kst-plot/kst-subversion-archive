@@ -1,5 +1,5 @@
 /***************************************************************************
-                     kstgraphfiledialog_i.cpp  -  Part of KST
+                     kstgraphfiledialog.cpp  -  Part of KST
                              -------------------
     begin                :
     copyright            : (C) 2003 The University of Toronto
@@ -32,12 +32,13 @@
 #include <kurlrequester.h>
 
 // application specific includes
-#include "kstgraphfiledialog_i.h"
+#include "kstgraphfiledialog.h"
 
 
-KstGraphFileDialogI::KstGraphFileDialogI(QWidget* parent, const char* name,
+KstGraphFileDialog::KstGraphFileDialog(QWidget* parent, const char* name,
                                          bool modal, WFlags fl)
-: KstGraphFileDialog(parent, name, modal, fl) {
+: QDialog(parent, name, modal, fl) {
+  setupUi(this);
   _autoSaveTimer = new QTimer(this);
 
   connect(_autoSaveTimer, SIGNAL(timeout()),      this, SLOT(reqGraphFile()));
@@ -58,11 +59,11 @@ KstGraphFileDialogI::KstGraphFileDialogI(QWidget* parent, const char* name,
 }
 
 
-KstGraphFileDialogI::~KstGraphFileDialogI() {
+KstGraphFileDialog::~KstGraphFileDialog() {
 }
 
 
-void  KstGraphFileDialogI::show_I() {
+void  KstGraphFileDialog::show_I() {
   loadProperties();
   updateDialog();
   show();
@@ -70,13 +71,13 @@ void  KstGraphFileDialogI::show_I() {
 }
 
 
-void KstGraphFileDialogI::ok_I() {
+void KstGraphFileDialog::ok_I() {
   apply_I();
   hide();
 }
 
 
-void KstGraphFileDialogI::apply_I() {
+void KstGraphFileDialog::apply_I() {
   _url = _saveLocation->url();
   _format = _comboBoxFormats->currentText();
   _w = _xSize->value();
@@ -99,17 +100,17 @@ void KstGraphFileDialogI::apply_I() {
 }
 
 
-void KstGraphFileDialogI::reqGraphFile() {
+void KstGraphFileDialog::reqGraphFile() {
   emit graphFileReq(_url, _format, _w, _h, _allWindows, _displayOption);
 }
 
 
-void KstGraphFileDialogI::reqEpsGraphFile() {
+void KstGraphFileDialog::reqEpsGraphFile() {
   emit graphFileEpsReq(_url, _w, _h, _allWindows, _displayOption);
 }
 
 
-void KstGraphFileDialogI::applyAutosave() {
+void KstGraphFileDialog::applyAutosave() {
   if (_autoSave) {
     _autoSaveTimer->start(_savePeriod*1000, false);
   } else {
@@ -118,7 +119,7 @@ void KstGraphFileDialogI::applyAutosave() {
 }
 
 
-void KstGraphFileDialogI::setURL(const QString& url) {
+void KstGraphFileDialog::setURL(const QString& url) {
   QString path;
 
   if (url.isEmpty()) {
@@ -131,7 +132,7 @@ void KstGraphFileDialogI::setURL(const QString& url) {
 }
 
 
-void KstGraphFileDialogI::saveProperties() {
+void KstGraphFileDialog::saveProperties() {
   KConfig cfg("kstrc", false, false);
 
   cfg.setGroup("AutoSaveImages");
@@ -152,7 +153,7 @@ void KstGraphFileDialogI::saveProperties() {
 }
 
 
-void KstGraphFileDialogI::loadProperties() {
+void KstGraphFileDialog::loadProperties() {
   KConfig cfg("kstrc");
   bool isSquare;
 
@@ -188,12 +189,12 @@ void KstGraphFileDialogI::loadProperties() {
 }
 
 
-void KstGraphFileDialogI::enableEPSVector(const QString &format) {
+void KstGraphFileDialog::enableEPSVector(const QString &format) {
   _saveEPSVector->setEnabled(format == "EPS");
 }
 
 
-void KstGraphFileDialogI::enableWidthHeight() {
+void KstGraphFileDialog::enableWidthHeight() {
   int displayOption = _comboBoxSizeOption->currentItem();
 
   switch (displayOption) {
@@ -217,7 +218,7 @@ void KstGraphFileDialogI::enableWidthHeight() {
 }
 
 
-void KstGraphFileDialogI::updateDialog() {
+void KstGraphFileDialog::updateDialog() {
   if (_url.isEmpty()) {
     _url = QDir::currentDirPath();
   }
@@ -247,5 +248,5 @@ void KstGraphFileDialogI::updateDialog() {
   enableWidthHeight();
 }
 
-#include "kstgraphfiledialog_i.moc"
+#include "kstgraphfiledialog.moc"
 

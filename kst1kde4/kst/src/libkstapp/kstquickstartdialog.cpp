@@ -1,5 +1,5 @@
 /**************************************************************************
-              kstquickstartdialog_i.cpp - quickstart dialog: inherits designer dialog
+              kstquickstartdialog.cpp - quickstart dialog: inherits designer dialog
                              -------------------
     begin                :  2004
     copyright            : (C) 2004 University of British Columbia
@@ -26,11 +26,12 @@
 // application specific includes
 #include "kst.h"
 #include "kstdoc.h"
-#include "kstquickstartdialog_i.h"
+#include "kstquickstartdialog.h"
 #include "kstsettings.h"
 
-KstQuickStartDialogI::KstQuickStartDialogI(QWidget *parent, const char *name, bool modal, WFlags fl)
-: KstQuickStartDialog(parent, name, modal, fl) {
+KstQuickStartDialog::KstQuickStartDialog(QWidget *parent, const char *name, bool modal, WFlags fl)
+: QDialog(parent, name, modal, fl) {
+  setupUi(this);
   _fileName->completionObject()->setDir(QDir::currentDirPath());
   _app = KstApp::inst();
   _isRecentFile = false;
@@ -46,17 +47,17 @@ KstQuickStartDialogI::KstQuickStartDialogI(QWidget *parent, const char *name, bo
 }
 
 
-KstQuickStartDialogI::~KstQuickStartDialogI() {
+KstQuickStartDialog::~KstQuickStartDialog() {
 }
 
 
-void KstQuickStartDialogI::wizard_I() {
+void KstQuickStartDialog::wizard_I() {
   close();
   _app->showDataWizard();
 }
 
 
-void KstQuickStartDialogI::open_I() {
+void KstQuickStartDialog::open_I() {
   if (_isRecentFile) {
     if (_app->slotFileOpenRecent(_fileName->url())) {
       // select the recently opened file...
@@ -69,7 +70,7 @@ void KstQuickStartDialogI::open_I() {
 }
 
 
-void KstQuickStartDialogI::update() {
+void KstQuickStartDialog::update() {
   //get the list of recent files
   _recentFileList->clear();
   _recentFileList->insertStringList(_app->recentFiles());
@@ -84,14 +85,14 @@ void KstQuickStartDialogI::update() {
 }
 
 
-void KstQuickStartDialogI::show_I() {
+void KstQuickStartDialog::show_I() {
   update();
   show();
   raise();
 }
 
 
-void KstQuickStartDialogI::fileChanged(const QString& name) {
+void KstQuickStartDialog::fileChanged(const QString& name) {
   QString file;
 
   file = name;
@@ -104,7 +105,7 @@ void KstQuickStartDialogI::fileChanged(const QString& name) {
 }
 
 
-void KstQuickStartDialogI::changeURL(const QString& name) {
+void KstQuickStartDialog::changeURL(const QString& name) {
   _fileName->blockSignals(true);
   _fileName->setURL(name);
   _fileName->blockSignals(false);
@@ -115,17 +116,17 @@ void KstQuickStartDialogI::changeURL(const QString& name) {
 }
 
 
-void KstQuickStartDialogI::updateSettings() {
+void KstQuickStartDialog::updateSettings() {
   KstSettings::globalSettings()->showQuickStart = _showAtStartup->isChecked();
   KstSettings::globalSettings()->save();
   emit settingsChanged();
 }
 
 
-void KstQuickStartDialogI::deselectRecentFile() {
+void KstQuickStartDialog::deselectRecentFile() {
   _recentFileList->clearSelection();
   _isRecentFile = false;
 }
 
-#include "kstquickstartdialog_i.moc"
+#include "kstquickstartdialog.moc"
 

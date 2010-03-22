@@ -1,5 +1,5 @@
 /***************************************************************************
-                    kstviewstringsdialog_i.cpp  -  Part of KST
+                    kstviewstringsdialog.cpp  -  Part of KST
                              -------------------
     begin                :
     copyright            : (C) 2006 The University of Toronto
@@ -22,13 +22,14 @@
 #include <klocale.h>
 
 #include "kstdatacollection.h"
-#include "kstviewstringsdialog_i.h"
+#include "kstviewstringsdialog.h"
 
-KstViewStringsDialogI::KstViewStringsDialogI(QWidget* parent,
+KstViewStringsDialog::KstViewStringsDialog(QWidget* parent,
                                            const char* name,
                                            bool modal,
                                            WFlags fl)
-: KstViewStringsDialog(parent, name, modal, fl) {
+: QDialog(parent, name, modal, fl) {
+  setupUi(this);
   listViewStrings = new KstStringListView(this, &KST::stringList);
   listViewStrings->setShowSortIndicator(false);
   listViewStrings->setSelectionMode(QListView::NoSelection);
@@ -45,15 +46,15 @@ KstViewStringsDialogI::KstViewStringsDialogI(QWidget* parent,
 }
 
 
-KstViewStringsDialogI::~KstViewStringsDialogI() {
+KstViewStringsDialog::~KstViewStringsDialog() {
 }
 
 
-bool KstViewStringsDialogI::hasContent() const {
+bool KstViewStringsDialog::hasContent() const {
   return !KST::stringList.isEmpty();
 }
 
-void KstViewStringsDialogI::updateViewStringsDialog() {
+void KstViewStringsDialog::updateViewStringsDialog() {
   listViewStrings->update();
   searchWidget->searchLine()->updateSearch();
 
@@ -68,7 +69,7 @@ void KstViewStringsDialogI::updateViewStringsDialog() {
 }
 
 
-void KstViewStringsDialogI::showViewStringsDialog() {
+void KstViewStringsDialog::showViewStringsDialog() {
   updateViewStringsDialog();
   updateDefaults(0);
   show();
@@ -80,7 +81,7 @@ void KstViewStringsDialogI::showViewStringsDialog() {
  *  Sets the strings of the subwidgets using the current
  *  language.
  */
-void KstViewStringsDialogI::languageChange() {
+void KstViewStringsDialog::languageChange() {
   setCaption(i18n("View String Values"));
   listViewStrings->header()->setLabel(0, i18n("String"));
   listViewStrings->header()->setLabel(1, i18n("Value"));
@@ -88,8 +89,8 @@ void KstViewStringsDialogI::languageChange() {
 }
 
 
-void KstViewStringsDialogI::updateDefaults(int index) {
+void KstViewStringsDialog::updateDefaults(int index) {
   Q_UNUSED(index)
 }
 
-#include "kstviewstringsdialog_i.moc"
+#include "kstviewstringsdialog.moc"
