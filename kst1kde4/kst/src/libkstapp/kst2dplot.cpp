@@ -5055,7 +5055,7 @@ void Kst2DPlot::keyReleaseEvent(QWidget *view, QKeyEvent *e) {
 
     QPoint newp(x, y);
     QPainter p(view);
-
+/* xxx
     p.setRasterOp(Qt::NotROP);
     if (_mouse.rectBigEnough()) {
       p.drawWinFocusRect(_mouse.mouseRect());
@@ -5065,6 +5065,7 @@ void Kst2DPlot::keyReleaseEvent(QWidget *view, QKeyEvent *e) {
     if (_mouse.rectBigEnough()) {
       p.drawWinFocusRect(_mouse.mouseRect());
     }
+*/
   }
 
   if (e->key() == Qt::Key_Shift) {
@@ -5713,17 +5714,17 @@ void Kst2DPlot::nextImageColorScale() {
 
 void Kst2DPlot::keyPressEvent(QWidget *vw, QKeyEvent *e) {
   KstViewWidget *view = static_cast<KstViewWidget*>(vw);
+  Qt::KeyboardModifiers s = e->modifiers();
+  QPoint cursorPos = _mouse.tracker;
   bool handled = true;
   bool paint = true;
 
-  ButtonState s = e->stateAfter();
-  QPoint cursorPos = _mouse.tracker;
   switch (e->key()) {
     case Qt::Key_A:
       yZoomAc(view);
       break;
     case Qt::Key_C:
-      if (s & Qt::ShiftButton) {
+      if (s & Qt::ShiftModifier) {
         unsetCursorPos(view);
       } else {
         setCursorPos(view);
@@ -5736,23 +5737,23 @@ void Kst2DPlot::keyPressEvent(QWidget *vw, QKeyEvent *e) {
       xLogSlot(view);
       break;
     case Qt::Key_L:
-      if (s & Qt::ShiftButton) {
+      if (s & Qt::ShiftModifier) {
         yZoomLocalMax(view);
       } else {
         yLogSlot(view);
       }
       break;
     case Qt::Key_M:
-      if (s & Qt::ShiftButton) {
+      if (s & Qt::ShiftModifier) {
         yZoomMax(view);
-      } else if (s & Qt::ControlButton) {
+      } else if (s & Qt::ControlModifier) {
         xZoomMax(view);
       } else {
         zoomMax(view);
       }
       break;
     case Qt::Key_N:
-      if (s & Qt::ShiftButton) {
+      if (s & Qt::ShiftModifier) {
         yZoomNormal(view);
       } else {
         xZoomNormal(view);
@@ -5782,9 +5783,9 @@ void Kst2DPlot::keyPressEvent(QWidget *vw, QKeyEvent *e) {
       setDirty();
       break;
     case Qt::Key_Left:
-      if (s & Qt::ShiftButton) {
+      if (s & Qt::ShiftModifier) {
         xZoomIn(view);
-      } else if (s & Qt::AltButton) {
+      } else if (s & Qt::AltModifier) {
         if (_xReversed) {
           moveToNextMarker(view);
         } else {
@@ -5799,9 +5800,9 @@ void Kst2DPlot::keyPressEvent(QWidget *vw, QKeyEvent *e) {
       }
       break;
     case Qt::Key_Right:
-      if (s & Qt::ShiftButton) {
+      if (s & Qt::ShiftModifier) {
         xZoomOut(view);
-      } else if (s & Qt::AltButton) {
+      } else if (s & Qt::AltModifier) {
         if (_xReversed) {
           moveToPrevMarker(view);
         } else {
@@ -5816,7 +5817,7 @@ void Kst2DPlot::keyPressEvent(QWidget *vw, QKeyEvent *e) {
       }
       break;
     case Qt::Key_Up:
-      if (s & Qt::ShiftButton) {
+      if (s & Qt::ShiftModifier) {
         yZoomOut(view);
       } else {
         if (_yReversed) {
@@ -5827,7 +5828,7 @@ void Kst2DPlot::keyPressEvent(QWidget *vw, QKeyEvent *e) {
       }
       break;
     case Qt::Key_Down:
-      if (s & Qt::ShiftButton) {
+      if (s & Qt::ShiftModifier) {
         yZoomIn(view);
       } else {
         if (_yReversed) {
@@ -5889,6 +5890,7 @@ void Kst2DPlot::keyPressEvent(QWidget *vw, QKeyEvent *e) {
 
       QPainter p(view); // FIXME: Broken, just prepare and then trigger a
                         //  view->paint(GetPlotRegion());
+/* xxx
       p.setRasterOp(Qt::NotROP);
       if (_mouse.rectBigEnough()) {
         p.drawWinFocusRect(_mouse.mouseRect());
@@ -5898,13 +5900,14 @@ void Kst2DPlot::keyPressEvent(QWidget *vw, QKeyEvent *e) {
       if (_mouse.rectBigEnough()) {
         p.drawWinFocusRect(_mouse.mouseRect());
       }
+*/
     }
     setCursorForMode(view, _mouse.mode, cursorPos);
   } else {
     if (_mouse.mode == INACTIVE && GetPlotRegion().contains(cursorPos)) {
-      if (s & Qt::ShiftButton) {
+      if (s & Qt::ShiftModifier) {
         setCursorForMode(view, Y_ZOOMBOX, cursorPos);
-      } else if (s & Qt::ControlButton) {
+      } else if (s & Qt::ControlModifier) {
         setCursorForMode(view, X_ZOOMBOX, cursorPos);
       } else {
         setCursorForMode(view, globalZoomType(), cursorPos);
@@ -5922,12 +5925,16 @@ KstMouseModeType Kst2DPlot::globalZoomType() const {
   switch (KstApp::inst()->getZoomRadio()) {
     case KstApp::XZOOM:
       return X_ZOOMBOX;
+
     case KstApp::YZOOM:
       return Y_ZOOMBOX;
+
     case KstApp::XYZOOM:
       return XY_ZOOMBOX;
+
     case KstApp::LAYOUT:
       return LAYOUT_TOOL;
+
     default:
       break;
   }
@@ -5992,19 +5999,21 @@ Kst2DPlotList Kst2DPlot::globalPlotList() {
   return rc;
 }
 
-
 #ifndef WHEEL_DELTA
 #define WHEEL_DELTA 120
 #endif
 
 void Kst2DPlot::wheelEvent(QWidget *view, QWheelEvent *e) {
   KstViewWidget *vw = dynamic_cast<KstViewWidget*>(view);
+
   if (vw && GetPlotRegion().contains(e->pos())) {
     bool forward = e->delta() >= 0;
+    bool alt = e->state() & Qt::AltModifier;
     int absDelta = forward ? e->delta() : -e->delta();
-    bool alt = e->state() & Qt::AltButton;
-    if (e->state() & Qt::ControlButton) {
-      for (int i = 0; i < absDelta/WHEEL_DELTA; ++i) {
+    int i;
+
+    if (e->state() & Qt::ControlModifier) {
+      for (i = 0; i < absDelta/WHEEL_DELTA; ++i) {
         if (forward) {
           xZoomIn(vw);
         } else {
@@ -6012,8 +6021,8 @@ void Kst2DPlot::wheelEvent(QWidget *view, QWheelEvent *e) {
         }
       }
       vw->paint();
-    } else if (e->state() & Qt::ShiftButton) {
-      for (int i = 0; i < absDelta/WHEEL_DELTA; ++i) {
+    } else if (e->state() & Qt::ShiftModifier) {
+      for (i = 0; i < absDelta/WHEEL_DELTA; ++i) {
         if (forward) {
           yZoomIn(vw);
         } else {
@@ -6022,7 +6031,7 @@ void Kst2DPlot::wheelEvent(QWidget *view, QWheelEvent *e) {
       }
       vw->paint();
     } else {
-      for (int i = 0; i < absDelta/WHEEL_DELTA; ++i) {
+      for (i = 0; i < absDelta/WHEEL_DELTA; ++i) {
         if (forward) {
           if (alt) {
             if (_yReversed) {
@@ -6053,6 +6062,7 @@ void Kst2DPlot::wheelEvent(QWidget *view, QWheelEvent *e) {
           }
         }
       }
+
       vw->paint();
     }
 

@@ -49,9 +49,10 @@
 #include "ksttoplevelview.h"
 
 Kst2dPlotWidget::Kst2dPlotWidget(QWidget* parent, const char* name, WFlags fl) 
-: Kst2dPlotWidget(parent, name, fl ){
-  setupUi(this);
+: Kst2dPlotWidget(parent, name, fl ) {
   QFontDatabase qfd;
+
+  setupUi(this);
 
   _editMultipleMode = false;
   _plot = 0L;

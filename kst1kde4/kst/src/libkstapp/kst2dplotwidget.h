@@ -17,7 +17,7 @@
 #ifndef KST2DPLOTWIDGETI_H
 #define KST2DPLOTWIDGETI_H
 
-#include "view2dplotwidget.h"
+#include "ui_view2dplotwidget.h"
 
 class Kst2dPlotWidget: public QWidget, public Ui::View2DPlotWidget {
   Q_OBJECT
