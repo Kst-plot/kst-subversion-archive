@@ -18,7 +18,9 @@
 #ifndef KSTGFXMOUSEHANDLER_H
 #define KSTGFXMOUSEHANDLER_H
 
+#include <QPoint>
 #include <QPointer>
+#include <QRect>
 
 #include "kstobject.h"
 

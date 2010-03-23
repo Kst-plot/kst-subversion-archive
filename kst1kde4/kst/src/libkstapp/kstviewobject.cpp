@@ -752,13 +752,13 @@ void KstViewObject::cleanup(int cols) {
 
     if (!_onGrid) {
       _onGrid = true;
-      _columns = kMax(1, cols);
+      _columns = qMax(1, cols);
       cleanupRandomLayout(_columns, childrenCopy);
     } else {
       if (cols > 0) {
         _columns = cols;
       } else if (cols <= 0) {
-        _columns = kMax(1, int(sqrt(cnt)));
+        _columns = qMax(1, int(sqrt(cnt)));
       }
       cleanupGridLayout(_columns, childrenCopy);
     }

@@ -482,10 +482,10 @@ QRect KstTopLevelView::newSize(const QRect& originalSize, const QRect& bounds, i
 
   anchor_pt = move_pt = originalSize.center();
 
-  npos.setX(kMax(npos.x(), bounds.left()));
-  npos.setX(kMin(npos.x(), bounds.right()));
-  npos.setY(kMin(npos.y(), bounds.bottom()));
-  npos.setY(kMax(npos.y(), bounds.top()));
+  npos.setX(qMax(npos.x(), bounds.left()));
+  npos.setX(qMin(npos.x(), bounds.right()));
+  npos.setY(qMin(npos.y(), bounds.bottom()));
+  npos.setY(qMax(npos.y(), bounds.top()));
 
   if ((direction & UP) != 0) {
     move_pt.setY(originalSize.top());
@@ -515,10 +515,10 @@ QRect KstTopLevelView::newSizeCentered(const QRect& originalSize, const QRect& b
   QPoint anchor_pt, move_pt;
   QPoint npos = pos;
 
-  npos.setX(kMax(npos.x(), bounds.left()));
-  npos.setX(kMin(npos.x(), bounds.right()));
-  npos.setY(kMin(npos.y(), bounds.bottom()));
-  npos.setY(kMax(npos.y(), bounds.top()));
+  npos.setX(qMax(npos.x(), bounds.left()));
+  npos.setX(qMin(npos.x(), bounds.right()));
+  npos.setY(qMin(npos.y(), bounds.bottom()));
+  npos.setY(qMax(npos.y(), bounds.top()));
 
   anchor_pt = move_pt = originalSize.center();
 

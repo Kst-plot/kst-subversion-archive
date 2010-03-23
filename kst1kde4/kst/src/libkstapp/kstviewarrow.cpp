@@ -125,7 +125,7 @@ void KstViewArrow::paintArrow(KstPainter& p, const QPoint& to, const QPoint &fro
 
 QRegion KstViewArrow::clipRegion() {
   if (_clipMask.isNull()) {
-    double scaling = kMax(_fromArrowScaling, _toArrowScaling);
+    double scaling = qMax(_fromArrowScaling, _toArrowScaling);
     int w = int(ceil(SIZE_ARROW * scaling * double(width())));
     QRect rect(0, 0, _geom.bottomRight().x() + w + 1, _geom.bottomRight().y() + w + 1);
 
@@ -293,7 +293,7 @@ QRect KstViewArrow::surroundingGeometry() const {
   if (_hasFromArrow || _hasToArrow) {
     double scaling;
     if (_hasFromArrow && _hasToArrow) {
-      scaling = kMax(_fromArrowScaling, _toArrowScaling);
+      scaling = qMax(_fromArrowScaling, _toArrowScaling);
     } else if (_hasFromArrow) {
       scaling = _fromArrowScaling;
     } else {
