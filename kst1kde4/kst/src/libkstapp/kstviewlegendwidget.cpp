@@ -27,7 +27,7 @@
 #include "kst_export.h"
 #include "kstviewlegendwidget.h"
 
-KstViewLegendWidget::KstViewLegendWidget(QWidget* parent, const char* name, WFlags fl) :
+KstViewLegendWidget::KstViewLegendWidget(QWidget* parent, const char* name, Qt::WindowFlags fl) :
   ViewLegendWidget(parent, name, fl)
 { 
   setupUi(this);

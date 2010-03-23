@@ -19,9 +19,7 @@
 #define KSTVIEWLEGENDWIDGETI_H
 
 #include "kcolorbutton.h"
-#include "kfontcombo.h"
 #include "klineedit.h"
-#include "kdualcolorbutton.h"
 
 #include "plotlistbox.h"
 #include "ui_viewlegendwidget.h"
@@ -29,7 +27,7 @@
 class KstViewLegendWidget : public QDialog, public Ui::ViewLegendWidget {
   Q_OBJECT
   public:
-    KstViewLegendWidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
+    KstViewLegendWidget(QWidget* parent = 0, const char* name = 0, Qt::WindowFlags fl = 0 );
     virtual ~KstViewLegendWidget();
 
   protected:
