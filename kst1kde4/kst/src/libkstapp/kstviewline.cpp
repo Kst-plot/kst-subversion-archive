@@ -49,14 +49,16 @@ KstViewLine::KstViewLine(const QDomElement& e)
   _capStyle = Qt::FlatCap; 
   _penStyle = Qt::SolidLine;
   int orientationInt = 0;
+
   QDomNode n = e.firstChild();
   while (!n.isNull()) {
-    QDomElement el = n.toElement(); 
+    QDomElement el = n.toElement();
+
     if (!el.isNull()) {
       if (el.tagName() == "orientation") {
         orientationInt = el.text().toInt();
-      } else if (metaObject()->findProperty(el.tagName().latin1(), true) > -1) {
-        setProperty(el.tagName().latin1(), QVariant(el.text()));  
+      } else if (metaObject()->indexOfProperty(el.tagName().toLatin1()) > -1) {
+        setProperty(el.tagName().toLatin1(), QVariant(el.text()));  
       }
     }
     n = n.nextSibling();
@@ -109,7 +111,7 @@ KstViewObject* KstViewLine::copyObjectQuietly(KstViewObject& parent, const QStri
   Q_UNUSED(name)
 
   KstViewLine* viewLine = new KstViewLine(*this);
-  parent.appendChild(viewLine, true);
+  parent.appendChild(KstViewObjectPtr(viewLine), true);
 
   return viewLine;
 }
@@ -126,9 +128,10 @@ void KstViewLine::paintSelf(KstPainter& p, const QRegion& bounds) {
   p.save();
   if (p.type() != KstPainter::P_PRINT && p.type() != KstPainter::P_EXPORT) {
     if (p.makingMask()) {
-      p.setRasterOp(Qt::SetROP);
+// xxx      p.setRasterOp(Qt::SetROP);
     } else {
       const QRegion clip(clipRegion());
+
       KstViewObject::paintSelf(p, bounds - clip);
       p.setClipRegion(bounds & clip);
     }
@@ -256,19 +259,20 @@ Qt::PenStyle KstViewLine::penStyle() const {
 
 
 QRegion KstViewLine::clipRegion() {
-  if (_clipMask.isNull()) {
+  if (_clipMask.isEmpty()) {
     int w = width();
     QRect rect(0, 0, _geom.bottomRight().x() + w + 1, _geom.bottomRight().y() + w + 1);
-    QBitmap bm(rect.size(), true);
+    QBitmap bm(rect.size());
 
     if (!bm.isNull()) {
       KstPainter p;
+
       p.setMakingMask(true);
       p.begin(&bm);
-      p.setViewXForm(true);
+// xxx      p.setViewXForm(true);
       p.eraseRect(rect);
       paintSelf(p, QRegion());
-      p.flush();
+// xxx      p.flush();
       p.end();
       _clipMask = QRegion(bm);
     } else {

@@ -117,14 +117,13 @@ KstViewLegend::KstViewLegend(const QDomElement& e)
   QDomNode n = e.firstChild();
   while (!n.isNull()) {
     QDomElement el = n.toElement();
+
     if (!el.isNull()) {
-/* xxx
-      if (metaObject()->findProperty(el.tagName().toLatin1(), true) > -1) {
+      if (metaObject()->indexOfProperty(el.tagName().toLatin1()) > -1) {
         setProperty(el.tagName().toLatin1(), QVariant(el.text()));
       } else if (el.tagName() == "curvetag") {
         ctaglist.append(el.text()); 
       }
-*/
     }
     n = n.nextSibling();
   }

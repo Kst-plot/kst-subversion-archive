@@ -15,7 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "editviewobjectdialog.h" 
 #include "kstgfxrectanglemousehandler.h"
 #include "kst.h"
 #include "kstviewbox.h"
@@ -55,8 +54,8 @@ KstViewBox::KstViewBox(const QDomElement& e)
   while (!n.isNull()) {
     QDomElement el = n.toElement(); 
     if (!el.isNull()) {
-      if (metaObject()->findProperty(el.tagName().latin1(), true) > -1) {
-        setProperty(el.tagName().latin1(), QVariant(el.text()));
+      if (metaObject()->indexOfProperty(el.tagName().toLatin1()) > -1) {
+        setProperty(el.tagName().toLatin1(), QVariant(el.text()));
       }
     }
     n = n.nextSibling();
@@ -95,7 +94,7 @@ KstViewObject* KstViewBox::copyObjectQuietly(KstViewObject& parent, const QStrin
   Q_UNUSED(name)
 
   KstViewBox *viewBox = new KstViewBox(*this);
-  parent.appendChild(viewBox, true);
+  parent.appendChild(KstViewObjectPtr(viewBox), true);
 
   return viewBox;
 }
@@ -112,7 +111,7 @@ void KstViewBox::paintSelf(KstPainter& p, const QRegion& bounds) {
   p.save();
   if (p.type() != KstPainter::P_PRINT && p.type() != KstPainter::P_EXPORT) {
     if (p.makingMask()) {
-      p.setRasterOp(Qt::SetROP);
+// xxx      p.setRasterOp(Qt::SetROP);
     } else {
       const QRegion clip(clipRegion());
       KstViewObject::paintSelf(p, bounds - clip);
@@ -155,17 +154,18 @@ void KstViewBox::paintSelf(KstPainter& p, const QRegion& bounds) {
 
 
 QRegion KstViewBox::clipRegion() {
-  if (_clipMask.isNull()) {
+  if (_clipMask.isEmpty()) {
     if (transparent() || _xRound != 0 || _yRound != 0) {
-      QBitmap bm(_geom.bottomRight().x() + 1, _geom.bottomRight().y() + 1, true);
+      QBitmap bm(_geom.bottomRight().x() + 1, _geom.bottomRight().y() + 1);
+
       if (!bm.isNull()) {
         KstPainter p;
 
         p.begin(&bm);
         p.setMakingMask(true);
-        p.setViewXForm(true);
+// xxx        p.setViewXForm(true);
         paint(p, QRegion());
-        p.flush();
+// xxx        p.flush();
         p.end();
         _clipMask = QRegion(bm);
       } else {
@@ -309,7 +309,7 @@ QMap<QString, QVariant > KstViewBox::widgetHints(const QString& propertyName) co
     map.insert(QString("_kst_label"), i18n("Fill Color"));
   } else if (propertyName == "transparentFill") {
     map.insert(QString("_kst_widgetType"), QString("QCheckBox"));
-    map.insert(QString("_kst_label"), QString::null);
+    map.insert(QString("_kst_label"), QString(""));
     map.insert(QString("text"), i18n("Transparent fill"));
   } if (propertyName == "borderColor") {
     map.insert(QString("_kst_widgetType"), QString("KColorButton"));

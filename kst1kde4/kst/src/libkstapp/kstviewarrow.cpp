@@ -53,8 +53,8 @@ KstViewArrow::KstViewArrow(const QDomElement& e)
   while (!n.isNull()) {
     QDomElement el = n.toElement(); 
     if (!el.isNull()) {
-      if (metaObject()->findProperty(el.tagName().latin1(), true) > -1) {
-        setProperty(el.tagName().latin1(), QVariant(el.text()));  
+      if (metaObject()->indexOfProperty(el.tagName().toLatin1()) > -1) {
+        setProperty(el.tagName().toLatin1(), QVariant(el.text()));  
       }
     }
     n = n.nextSibling();
@@ -89,7 +89,7 @@ KstViewObject* KstViewArrow::copyObjectQuietly(KstViewObject& parent, const QStr
   Q_UNUSED(name)
 
   KstViewArrow *viewArrow = new KstViewArrow(*this);
-  parent.appendChild(viewArrow, true);
+  parent.appendChild(KstViewObjectPtr(viewArrow), true);
 
   return viewArrow;
 }
@@ -109,12 +109,13 @@ void KstViewArrow::paintArrow(KstPainter& p, const QPoint& to, const QPoint &fro
   double cosa = cos(theta);
   double yin = SIZE_ARROW * deltax;
   double x1, y1, x2, y2;
-  QWMatrix m(cosa, sina, -sina, cosa, 0.0, 0.0);
+  QMatrix m(cosa, sina, -sina, cosa, 0.0, 0.0);
 
   m.map( deltax, yin, &x1, &y1);
   m.map(-deltax, yin, &x2, &y2);
 
-  QPointArray pts(3);
+  QPolygon pts(3);
+
   pts[0] = to;
   pts[1] = to + QPoint(d2i(x1), d2i(y1));
   pts[2] = to + QPoint(d2i(x2), d2i(y2));
@@ -124,21 +125,21 @@ void KstViewArrow::paintArrow(KstPainter& p, const QPoint& to, const QPoint &fro
 
 
 QRegion KstViewArrow::clipRegion() {
-  if (_clipMask.isNull()) {
+  if (_clipMask.isEmpty()) {
     double scaling = qMax(_fromArrowScaling, _toArrowScaling);
     int w = int(ceil(SIZE_ARROW * scaling * double(width())));
     QRect rect(0, 0, _geom.bottomRight().x() + w + 1, _geom.bottomRight().y() + w + 1);
 
-    QBitmap bm(rect.size(), true);
+    QBitmap bm(rect.size());
     if (!bm.isNull()) {
       KstPainter p;
 
       p.setMakingMask(true);
       p.begin(&bm);
-      p.setViewXForm(true);
+// xxx      p.setViewXForm(true);
       p.eraseRect(rect);
       paintSelf(p, QRegion());
-      p.flush();
+// xxx      p.flush();
       _clipMask = QRegion(bm);
     }
   }
@@ -152,7 +153,7 @@ void KstViewArrow::paintSelf(KstPainter& p, const QRegion& bounds) {
   if (p.type() != KstPainter::P_PRINT && p.type() != KstPainter::P_EXPORT) {
     if (p.makingMask()) {
       KstViewLine::paintSelf(p, bounds);
-      p.setRasterOp(Qt::SetROP);
+// xxx      p.setRasterOp(Qt::SetROP);
     } else {
       const QRegion clip(clipRegion());
       KstViewLine::paintSelf(p, bounds);
@@ -203,11 +204,11 @@ QMap<QString, QVariant> KstViewArrow::widgetHints(const QString& propertyName) c
   }
   if (propertyName == "hasFromArrow") {
     map.insert(QString("_kst_widgetType"), QString("QCheckBox"));
-    map.insert(QString("_kst_label"), QString::null);
+    map.insert(QString("_kst_label"), QString(""));
     map.insert(QString("text"), i18n("Arrow at start"));
   } else if (propertyName == "hasToArrow") {
     map.insert(QString("_kst_widgetType"), QString("QCheckBox"));
-    map.insert(QString("_kst_label"), QString::null);
+    map.insert(QString("_kst_label"), QString(""));
     map.insert(QString("text"), i18n("Arrow at end"));
   } else if (propertyName == "fromArrowScaling") {
     map.insert(QString("_kst_widgetType"), QString("KDoubleSpinBox"));

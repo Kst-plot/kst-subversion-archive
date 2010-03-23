@@ -42,9 +42,10 @@ KstViewEllipse::KstViewEllipse(const QDomElement& e)
   QDomNode n = e.firstChild();
   while (!n.isNull()) {
     QDomElement el = n.toElement();
+
     if (!el.isNull()) {
-      if (metaObject()->findProperty(el.tagName().latin1(), true) > -1) {
-        setProperty(el.tagName().latin1(), QVariant(el.text()));
+      if (metaObject()->indexOfProperty(el.tagName().toLatin1()) > -1) {
+        setProperty(el.tagName().toLatin1(), QVariant(el.text()));
       }
     }
     n = n.nextSibling();
@@ -78,7 +79,7 @@ KstViewObject* KstViewEllipse::copyObjectQuietly(KstViewObject& parent, const QS
   Q_UNUSED(name)
 
   KstViewEllipse* viewEllipse = new KstViewEllipse(*this);
-  parent.appendChild(viewEllipse, true);
+  parent.appendChild(KstViewObjectPtr(viewEllipse), true);
 
   return viewEllipse;
 }
@@ -95,7 +96,7 @@ void KstViewEllipse::paintSelf(KstPainter& p, const QRegion& bounds) {
   p.save();
   if (p.type() != KstPainter::P_PRINT && p.type() != KstPainter::P_EXPORT) {
     if (p.makingMask()) {
-      p.setRasterOp(Qt::SetROP);
+// xxx      p.setRasterOp(Qt::SetROP);
       KstViewObject::paintSelf(p, geometry());
     } else {
       const QRegion clip(clipRegion());
@@ -136,17 +137,17 @@ void KstViewEllipse::invalidateClipRegion() {
 
 
 QRegion KstViewEllipse::clipRegion() {
-  if (_clipMask.isNull()) {
+  if (_clipMask.isEmpty()) {
     if (transparent() || !_children.isEmpty()) {
-      QBitmap bm(_geom.bottomRight().x() + 1, _geom.bottomRight().y() + 1, true);
+      QBitmap bm(_geom.bottomRight().x() + 1, _geom.bottomRight().y() + 1);
       if (!bm.isNull()) {
         KstPainter p;
 
         p.begin(&bm);
         p.setMakingMask(true);
-        p.setViewXForm(true);
+// xxx        p.setViewXForm(true);
         paint(p, QRegion());
-        p.flush();
+// xxx        p.flush();
         p.end();
         _clipMask = QRegion(bm);
       } else {
@@ -227,7 +228,7 @@ QMap<QString, QVariant> KstViewEllipse::widgetHints(const QString& propertyName)
     map.insert(QString("_kst_label"), i18n("Fill Color"));
   } else if (propertyName == "transparentFill") {
     map.insert(QString("_kst_widgetType"), QString("QCheckBox"));
-    map.insert(QString("_kst_label"), QString::null);
+    map.insert(QString("_kst_label"), QString(""));
     map.insert(QString("text"), i18n("Transparent fill"));
   }
 

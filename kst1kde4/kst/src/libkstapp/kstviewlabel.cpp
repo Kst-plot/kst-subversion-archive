@@ -107,12 +107,11 @@ KstViewLabel::KstViewLabel(const QDomElement& e)
 
   while (!n.isNull()) {
     QDomElement el = n.toElement();
+
     if (!el.isNull()) {
-/* xxx
-      if (metaObject()->findProperty(el.tagName().toLatin1(), true) > -1) {
+      if (metaObject()->indexOfProperty(el.tagName().toLatin1()) > -1) {
         setProperty(el.tagName().toLatin1(), QVariant(el.text()));
       }
-*/
     }
     n = n.nextSibling();
   }
