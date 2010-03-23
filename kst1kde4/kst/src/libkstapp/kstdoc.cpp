@@ -771,7 +771,7 @@ void KstDoc::saveDocument(QTextStream& ts, bool saveAbsoluteVectorPositions) {
 
   windows = app->subWindowList(QMdiArea::CreationOrder);
 
-  for (i = windows.constBegin(); i != windows.constEnd(); ++i)
+  for (i = windows.constBegin(); i != windows.constEnd(); ++i) {
     KstViewWindow *viewWindow = dynamic_cast<KstViewWindow*>(*i);
 
     if (viewWindow) {

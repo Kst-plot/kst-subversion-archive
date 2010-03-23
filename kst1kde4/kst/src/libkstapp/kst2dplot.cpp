@@ -76,13 +76,19 @@
 #define TICK_HYSTERESIS_FACTOR  1.25
 #define DIFFERENCE_PRECISION    7
 #define LABEL_PRECISION         9
+
 #ifndef DBL_EPSILON
   #define DBL_EPSILON           2.2204460492503131e-016
 #endif
+
 #ifndef DBL_DIG
   #define FULL_PRECISION        15
 #else
   #define FULL_PRECISION        DBL_DIG
+#endif
+
+#ifndef MARKER_NUM_SEGS
+  #define MARKER_NUM_SEGS 50
 #endif
 
 #define CONTENT_TAB     0
@@ -91,6 +97,7 @@
 #define Y_AXIS_TAB      3
 #define RANGE_TAB       4
 #define MARKERS_TAB     5
+
 
 
 extern "C" int yyparse();
@@ -4009,9 +4016,6 @@ bool Kst2DPlot::popupMenu(QMenu *menu, const QPoint& pos, KstViewObjectPtr topLe
   submenu->insertSeparator();
 
   // disable next or previous marker items if necessary
-  #ifndef MARKER_NUM_SEGS
-  #define MARKER_NUM_SEGS 50  //sort of get around rounding errors?  Also used in MoveToMarker function
-  #endif
   double xmin, xmax;
   double tempVal;
   getLScale(xmin, tempVal, xmax, tempVal);
@@ -4613,15 +4617,16 @@ void Kst2DPlot::mouseMoveEvent(QWidget *view, QMouseEvent *e) {
       updateXYGuideline(view, _mouse.lastGuideline, QPoint(-1, -1), pr, gzType);
     }
   } else if (gzType == XY_ZOOMBOX) {
-    ButtonState s = e->stateAfter();
-    if (s & Qt::ShiftButton) {
-      if (e->state() & Qt::LeftButton && _mouse.zooming()) {
+    Qt::ButtonModifiers s = e->modifiers();
+
+    if (s & Qt::ShiftModifier) {
+      if (e->modifiers() & Qt::LeftButton && _mouse.zooming()) {
         updateXYGuideline(view, _mouse.lastGuideline, QPoint(-1, -1), pr, Y_ZOOMBOX);
       } else {
         updateXYGuideline(view, _mouse.lastGuideline, _mouse.tracker, pr, Y_ZOOMBOX);
       }
-    } else if (s & Qt::ControlButton) {
-      if (e->state() & Qt::LeftButton && _mouse.zooming()) {
+    } else if (s & Qt::ControlModifier) {
+      if (e->modifiers() & Qt::LeftButton && _mouse.zooming()) {
         updateXYGuideline(view, _mouse.lastGuideline, QPoint(-1, -1), pr, X_ZOOMBOX);
       } else {
         updateXYGuideline(view, _mouse.lastGuideline, _mouse.tracker, pr, X_ZOOMBOX);
@@ -4631,8 +4636,6 @@ void Kst2DPlot::mouseMoveEvent(QWidget *view, QMouseEvent *e) {
     }
   }
 
-  // Note: we have one report of a system where this clip region is invalid
-  // somehow.  Removing it might cause painting to overlap other objects though.
   if (!_hasFocus) {
     KstViewWidget *w = dynamic_cast<KstViewWidget*>(view);
     if (w) {
@@ -4645,8 +4648,11 @@ void Kst2DPlot::mouseMoveEvent(QWidget *view, QMouseEvent *e) {
   }
 
   KstMouseModeType newType = _mouse.mode;
-  if (e->state() & Qt::LeftButton && _mouse.zooming()) {
-    // LEAVE BLANK
+
+  if (e->modifiers() & Qt::LeftButton && _mouse.zooming()) {
+    //
+    // nothing to do...
+    //
   } else if (KstApp::inst()->dataMode() && pr.contains(e->pos())) {
     KstViewWidget *w = dynamic_cast<KstViewWidget*>(view);
     if (w) {
@@ -4705,11 +4711,12 @@ void Kst2DPlot::mouseMoveEvent(QWidget *view, QMouseEvent *e) {
     zoomRectUpdate(view, newType, x, y);
     setCursorForMode(view, _mouse.mode, e->pos());
   } else {
-    ButtonState s = e->stateAfter();
+    Qt::KeyboardModifiers s = e->modifiers();
+
     if (pr.contains(e->pos())) {
-      if (s & Qt::ShiftButton) {
+      if (s & Qt::ShiftModifier) {
         setCursorForMode(view, Y_ZOOMBOX, e->pos());
-      } else if (s & Qt::ControlButton) {
+      } else if (s & Qt::ControlModifier) {
         setCursorForMode(view, X_ZOOMBOX, e->pos());
       } else {
         setCursorForMode(view, globalZoomType(), e->pos());
@@ -4726,9 +4733,12 @@ void Kst2DPlot::mousePressEvent(QWidget *view, QMouseEvent *e) {
   QRect tie_rect;
   QRect plot_and_axis_rect;
 
-  static_cast<KstViewWidget*>(view)->viewObject()->grabMouse(this);
+// xxx  static_cast<KstViewWidget*>(view)->viewObject()->grabMouse(this);
 
-  // find where the mouse was to determine which mode to be in which button
+  //
+  // find where the mouse was to determine which mode to be in which button...
+  //
+
   if (e->button() == Qt::LeftButton) {
     win_rect = GetWinRegion();
     plot_rect = GetPlotRegion();
@@ -4741,9 +4751,9 @@ void Kst2DPlot::mousePressEvent(QWidget *view, QMouseEvent *e) {
       static_cast<KstViewWidget*>(view)->paint();
       return;
     } else if (plot_rect.contains(e->pos())) {
-      if (e->state() & Qt::ShiftButton) {
+      if (e->modifiers() & Qt::ShiftModifier) {
         _mouse.mode = Y_ZOOMBOX;
-      } else if (e->state() & Qt::ControlButton) {
+      } else if (e->modifiers() & Qt::ControlModifier) {
         _mouse.mode = X_ZOOMBOX;
       } else {
         _mouse.mode = globalZoomType();
@@ -4813,14 +4823,15 @@ void Kst2DPlot::mousePressEvent(QWidget *view, QMouseEvent *e) {
 
 
 void Kst2DPlot::mouseReleaseEvent(QWidget *view, QMouseEvent *e) {
+  KstViewWidget* kstView = static_cast<KstViewWidget*>(view);
+  QRect plotregion;
   double xmin, xmax, ymin, ymax;
   double new_xmin, new_xmax, new_ymin, new_ymax;
-  QRect plotregion;
   bool doUpdate = false;
-  _zoomPaused = false;
-  KstViewWidget* kstView = static_cast<KstViewWidget*>(view);
 
-  kstView->viewObject()->releaseMouse(this);
+  _zoomPaused = false;
+
+// xxx  kstView->viewObject()->releaseMouse(this);
 
   _mouse.tracker = e->pos();
 
@@ -4829,9 +4840,10 @@ void Kst2DPlot::mouseReleaseEvent(QWidget *view, QMouseEvent *e) {
     if (_mouse.rectBigEnough()) {
       QPainter p(view); // FIXME: Broken, just prepare and then trigger a
                         //  view->paint(GetPlotRegion());
+/* xxx
       p.setRasterOp(Qt::NotROP);
       p.drawWinFocusRect(newg);
-
+*/
       getLScale(xmin, ymin, xmax, ymax);
       plotregion = GetPlotRegion();
 
@@ -4870,9 +4882,10 @@ void Kst2DPlot::mouseReleaseEvent(QWidget *view, QMouseEvent *e) {
     if (newg.height() >= _mouse.minMove) {
       QPainter p(view); // FIXME: Broken, just prepare and then trigger a
                         //  view->paint(GetPlotRegion());
+/*
       p.setRasterOp(Qt::NotROP);
       p.drawWinFocusRect(newg);
-
+*/
       getLScale(xmin, ymin, xmax, ymax);
       plotregion = GetPlotRegion();
 
@@ -4900,9 +4913,10 @@ void Kst2DPlot::mouseReleaseEvent(QWidget *view, QMouseEvent *e) {
     if (newg.width() >= _mouse.minMove) {
       QPainter p(view); // FIXME: Broken, just prepare and then trigger a
                         //  view->paint(GetPlotRegion());
+/* xxx
       p.setRasterOp(Qt::NotROP);
       p.drawWinFocusRect(newg);
-
+*/
       getLScale(xmin, ymin, xmax, ymax);
       plotregion = GetPlotRegion();
 
@@ -5000,6 +5014,7 @@ void Kst2DPlot::zoomRectUpdate(QWidget *view, KstMouseModeType t, int x, int y) 
   if (_mouse.lastLocation != newp) {
     QPainter p(view); // FIXME: Broken, just prepare and then trigger a
                       //  view->paint(GetPlotRegion());
+/* xxx
     p.setRasterOp(Qt::NotROP);
     if (_mouse.rectBigEnough()) {
       p.drawWinFocusRect(_mouse.mouseRect());
@@ -5008,6 +5023,7 @@ void Kst2DPlot::zoomRectUpdate(QWidget *view, KstMouseModeType t, int x, int y) 
     if (_mouse.rectBigEnough()) {
       p.drawWinFocusRect(_mouse.mouseRect());
     }
+*/
   }
 }
 
@@ -5118,8 +5134,10 @@ void Kst2DPlot::cancelZoom(QWidget *view) {
   if (_mouse.rectBigEnough()) {
     QPainter p(view); // FIXME: Broken, just prepare and then trigger a
                       //  view->paint(GetPlotRegion());
+/* xxx
     p.setRasterOp(Qt::NotROP);
     p.drawWinFocusRect(_mouse.mouseRect());
+*/
   }
 
   _mouse.lastLocation = _mouse.pressLocation; // make rectBigEnough() false
@@ -5343,9 +5361,11 @@ void Kst2DPlot::moveToNextMarker(KstViewWidget *view) {
 
   getLScale(xmin, ymin, xmax, ymax);
   currCenter = ((xmax + xmin) / 2.0) + (xmax - xmin)/MARKER_NUM_SEGS;
+
   if (_xLog) {
     currCenter = pow(_xLogBase, currCenter);
   }
+
   if (nextMarker(currCenter, newCenter)) {
     if (_xLog) {
       newCenter = logXLo(newCenter);
@@ -5355,10 +5375,14 @@ void Kst2DPlot::moveToNextMarker(KstViewWidget *view) {
     setXScaleMode(FIXED);
     setLXScale(new_xmin, new_xmax);
 
-    // now move all all the other tied plots to the same center
+    //
+    // now move all all the other tied plots to the same center...
+    //
+
     if (_xLog) {
       newCenter = pow(_xLogBase, newCenter);
     }
+
     KstApp::inst()->tiedZoomMode(ZOOM_CENTER, true, newCenter, AUTO, AUTO, view, tagName());
     pushScale();
     setDirty();
@@ -5374,9 +5398,11 @@ void Kst2DPlot::moveToPrevMarker(KstViewWidget *view) {
 
   getLScale(xmin, ymin, xmax, ymax);
   currCenter = ((xmax + xmin) / 2.0) - (xmax - xmin)/MARKER_NUM_SEGS;
+
   if (_xLog) {
     currCenter = pow(_xLogBase, currCenter);
   }
+
   if (prevMarker(currCenter, newCenter)) {
     if (_xLog) {
       if (newCenter > 0.0) {
@@ -5385,12 +5411,16 @@ void Kst2DPlot::moveToPrevMarker(KstViewWidget *view) {
         return; //don't scroll left past 0 in log mode
       }
     }
+
     new_xmin = newCenter - (xmax - xmin)/2.0;
     new_xmax = newCenter + (xmax - xmin)/2.0;
     setXScaleMode(FIXED);
     setLXScale(new_xmin, new_xmax);
 
-    // now move all the other tied plots to the same center
+    //
+    // now move all the other tied plots to the same center...
+    //
+
     if (_xLog) {
       newCenter = pow(_xLogBase, newCenter);
     }
@@ -5613,7 +5643,7 @@ void Kst2DPlot::xZoomNormal(KstViewWidget *view) {
 
     getLScale(xmin, ymin, xmax, ymax);
     mean = xmin + ((xmax - xmin) / 2.0);
-    range = (double)plotRegion.width() * (ymax - ymin) / (double)plotRegion.height();
+    range = (double)_plotRegion.width() * (ymax - ymin) / (double)_plotRegion.height();
 
     new_xmin = mean - (range / 2.0);
     new_xmax = mean + (range / 2.0);
@@ -5637,7 +5667,7 @@ void Kst2DPlot::yZoomNormal(KstViewWidget *view) {
 
     getLScale(xmin, ymin, xmax, ymax);
     mean = ymin + ((ymax - ymin) / 2.0);
-    range = (double)plotRegion.height() * (xmax - xmin) / (double)plotRegion.width();
+    range = (double)_plotRegion.height() * (xmax - xmin) / (double)_plotRegion.width();
 
     new_ymin = mean - (range / 2.0);
     new_ymax = mean + (range / 2.0);
@@ -5994,12 +6024,13 @@ Kst2DPlotPtr Kst2DPlot::findPlotByName(const QString& name) {
   QList<QMdiSubWindow*>::const_iterator i;
   Kst2DPlotPtr rc;
 
-  windows = app->subWindowList( CreationOrder );
-
+  windows = app->subWindowList( QMdiArea::CreationOrder );
   for (i = windows.constBegin(); i != windows.constEnd(); ++i) {
-    KstViewWindow *view = dynamic_cast<KstViewWindow*>(*i);
-    if (view) {
-      rc = kst_cast<Kst2DPlot>(view->view()->findChild(name));
+    KstViewWindow *viewWindow = dynamic_cast<KstViewWindow*>(*i);
+
+    if (viewWindow) {
+      rc = kst_cast<Kst2DPlot>(viewWindow->view()->findChild(name));
+
       if (rc) {
         break;
       }
@@ -6011,20 +6042,24 @@ Kst2DPlotPtr Kst2DPlot::findPlotByName(const QString& name) {
 
 
 Kst2DPlotList Kst2DPlot::globalPlotList() {
-  Kst2DPlotList rc;
   KstApp *app = KstApp::inst();
-  KMdiIterator<KMdiChildView*> *it = app->createIterator();
-  if (it) {
-    while (it->currentItem()) {
-      KstViewWindow *view = dynamic_cast<KstViewWindow*>(it->currentItem());
-      if (view) {
-// xxx        Kst2DPlotList sub = view->view()->findChildrenType<Kst2DPlot>(true);
-        rc += sub;
-      }
-      it->next();
+  QList<QMdiSubWindow*> windows;
+  QList<QMdiSubWindow*>::const_iterator i;
+  Kst2DPlotList rc;
+
+  windows = app->subWindowList( QMdiArea::CreationOrder );
+  for (i = windows.constBegin(); i != windows.constEnd(); ++i) {
+    KstViewWindow *viewWindow = dynamic_cast<KstViewWindow*>(*i);
+
+    if (viewWindow) {
+      Kst2DPlotList sub;
+
+// xxx sub = viewWindow->view()->findChildrenType<Kst2DPlot>(true);
+      
+      rc += sub;
     }
-    app->deleteIterator(it);
   }
+
   return rc;
 }
 
@@ -6037,11 +6072,11 @@ void Kst2DPlot::wheelEvent(QWidget *view, QWheelEvent *e) {
 
   if (vw && GetPlotRegion().contains(e->pos())) {
     bool forward = e->delta() >= 0;
-    bool alt = e->state() & Qt::AltModifier;
+    bool alt = e->modifiers() & Qt::AltModifier;
     int absDelta = forward ? e->delta() : -e->delta();
     int i;
 
-    if (e->state() & Qt::ControlModifier) {
+    if (e->modifiers() & Qt::ControlModifier) {
       for (i = 0; i < absDelta/WHEEL_DELTA; ++i) {
         if (forward) {
           xZoomIn(vw);
@@ -6050,7 +6085,7 @@ void Kst2DPlot::wheelEvent(QWidget *view, QWheelEvent *e) {
         }
       }
       vw->paint();
-    } else if (e->state() & Qt::ShiftModifier) {
+    } else if (e->modifiers() & Qt::ShiftModifier) {
       for (i = 0; i < absDelta/WHEEL_DELTA; ++i) {
         if (forward) {
           yZoomIn(vw);
