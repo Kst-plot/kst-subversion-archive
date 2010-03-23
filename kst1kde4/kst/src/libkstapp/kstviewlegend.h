@@ -19,6 +19,7 @@
 #ifndef KSTVIEWLEGEND_H
 #define KSTVIEWLEGEND_H
 
+#include <QMenu>
 #include <QPointer>
 
 #include "kstbackbuffer.h"
@@ -112,7 +113,7 @@ class KstViewLegend : public KstBorderedViewObject {
 
   protected:
     KstViewObjectFactoryMethod factory() const;
-    bool layoutPopupMenu(KPopupMenu *menu, const QPoint& pos, KstViewObjectPtr topLevelParent);
+    bool layoutPopupMenu(QMenu *menu, const QPoint& pos, KstViewObjectPtr topLevelParent);
     void readBinary(QDataStream& str);
     void writeBinary(QDataStream& str);
 

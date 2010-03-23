@@ -27,11 +27,11 @@
 #include <qradiobutton.h>
 #include <QTextDocument>
 #include <QSpinBox>
-#include <qcombobox.h>
 
 #include <kglobal.h>
 #include <klocale.h>
 #include <kcolorbutton.h>
+#include <kcombobox.h>
 
 #include "kstviewlegend.h"
 
@@ -567,7 +567,7 @@ void KstViewLegend::modifiedLegendEntry() {
 }
 
 
-bool KstViewLegend::layoutPopupMenu(KPopupMenu *menu, const QPoint& pos, KstViewObjectPtr topLevelParent) {
+bool KstViewLegend::layoutPopupMenu(QMenu *menu, const QPoint& pos, KstViewObjectPtr topLevelParent) {
   return KstViewObject::layoutPopupMenu(menu, pos, topLevelParent);
 }
 

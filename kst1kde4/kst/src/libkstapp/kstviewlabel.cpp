@@ -568,7 +568,7 @@ QSize KstViewLabel::sizeForText(const QRect& w) {
 }
 
 
-bool KstViewLabel::layoutPopupMenu(KPopupMenu *menu, const QPoint& pos, KstViewObjectPtr topLevelParent) {
+bool KstViewLabel::layoutPopupMenu(QMenu *menu, const QPoint& pos, KstViewObjectPtr topLevelParent) {
   KstViewObject::layoutPopupMenu(menu, pos, topLevelParent);
   return true;
 }

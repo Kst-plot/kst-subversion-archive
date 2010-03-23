@@ -1273,7 +1273,7 @@ void KstTopLevelView::menuClosed() {
 }
 
 
-bool KstTopLevelView::popupMenu(KPopupMenu *menu, const QPoint& pos) {
+bool KstTopLevelView::popupMenu(QMenu *menu, const QPoint& pos) {
   bool rc = false;
   // Want to clear focus without repaint
   _pressTarget = findDeepestChild(pos, false, true);
@@ -1317,9 +1317,9 @@ bool KstTopLevelView::popupMenu(KPopupMenu *menu, const QPoint& pos) {
         menu->insertSeparator();
       }
 
-      KPopupMenu *subMenu;
-      int         numPlots = 0;
-      int         id;
+      QMenu *subMenu;
+      int    numPlots = 0;
+      int    id;
 
       for (KstViewObjectList::ConstIterator i = _selectionList.begin(); i != _selectionList.end(); ++i) {
         if (kst_cast<Kst2DPlot>(*i)) {
@@ -1329,7 +1329,7 @@ bool KstTopLevelView::popupMenu(KPopupMenu *menu, const QPoint& pos) {
           }
         }
       }
-      subMenu = new KPopupMenu(menu);
+      subMenu = new QMenu(menu);
       subMenu->insertItem(i18n("X-axis"), this, SLOT(condenseXAxis()));
       subMenu->insertItem(i18n("Y-axis"), this, SLOT(condenseYAxis()));
       id = menu->insertItem(i18n("Condense selected"), subMenu);
@@ -1337,20 +1337,20 @@ bool KstTopLevelView::popupMenu(KPopupMenu *menu, const QPoint& pos) {
         menu->setItemEnabled(id, false);
       }
 
-      subMenu = new KPopupMenu(menu);
+      subMenu = new QMenu(menu);
       subMenu->insertItem(i18n("Width"), this, SLOT(makeSameWidth()));
       subMenu->insertItem(i18n("Height"), this, SLOT(makeSameHeight()));
       subMenu->insertItem(i18n("Size"), this, SLOT(makeSameSize()));
       menu->insertItem(i18n("Make Same"), subMenu);
 
-      subMenu = new KPopupMenu(menu);
+      subMenu = new QMenu(menu);
       subMenu->insertItem(i18n("Left"), this, SLOT(alignLeft()));
       subMenu->insertItem(i18n("Right"), this, SLOT(alignRight()));
       subMenu->insertItem(i18n("Top"), this, SLOT(alignTop()));
       subMenu->insertItem(i18n("Bottom"), this, SLOT(alignBottom()));
       menu->insertItem(i18n("Align"), subMenu);
 
-      subMenu = new KPopupMenu(menu);
+      subMenu = new QMenu(menu);
       subMenu->insertItem(i18n("Horizontally"), this, SLOT(packHorizontally()));
       subMenu->insertItem(i18n("Vertically"), this, SLOT(packVertically()));
       menu->insertItem(i18n("Pack"), subMenu);
@@ -1367,7 +1367,7 @@ bool KstTopLevelView::popupMenu(KPopupMenu *menu, const QPoint& pos) {
     menu->insertItem(i18n("&Edit..."), this, SLOT(edit()));
   }
 
-  KPopupMenu *subMenu = new KPopupMenu(menu);
+  QMenu *subMenu = new QMenu(menu);
   subMenu->insertItem(i18n("Default Tile"), this, SLOT(cleanupDefault()));
   subMenu->insertItem(i18n("Custom..."), this, SLOT(cleanupCustom()));
   menu->insertItem(i18n("Cleanup Layout"), subMenu);
