@@ -19,6 +19,7 @@
 #define KSTVIEWWIDGET_H
 
 // xxx#include <qdragobject.h>
+#include <QMenu>
 #include <QPointer>
 #include <QWidget>
 
@@ -74,7 +75,7 @@ class KstViewWidget : public QWidget {
     KstTopLevelViewPtr _view;
     KstTopLevelView::ViewMode _lastViewMode;
     QPointer<KstViewObject> _vo_datamode;
-    QPointer<KPopupMenu> _menu;
+    QPointer<QMenu> _menu;
 // xxx    QDragObject *_drag;
     bool _dropEnabled : 1;
     bool _dragEnabled : 1;

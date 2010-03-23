@@ -20,22 +20,15 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-// include files for Qt
-#include <qbitmap.h>
-#include <qdeepcopy.h>
-#include <qmetaobject.h>
-#include <qstylesheet.h>
+#include <QBitmap>
+#include <QMetaObject>
+#include <QTextDocument>
 
-// include files for KDE
-#include <kdatastream.h>
-#include "ksdebug.h"
-
-// application specific includes
 #include "kst.h"
-#include "kst2dplot.h" // Yuck, fix this
+#include "kst2dplot.h"
 #include "kstaccessibility.h"
 #include "kstdoc.h"
-#include "ksteditviewobjectdialog_i.h"
+#include "ksteditviewobjectdialog.h"
 #include "kstmath.h"
 #include "kstobject.h"
 #include "kstplotgroup.h"
@@ -1209,7 +1202,7 @@ QString KstViewObject::menuTitle() const {
 }
 
 
-bool KstViewObject::popupMenu(KPopupMenu *menu, const QPoint& pos, KstViewObjectPtr topParent) {
+bool KstViewObject::popupMenu(QMenu *menu, const QPoint& pos, KstViewObjectPtr topParent) {
   Q_UNUSED(pos)
   bool rc = false;
   int id;
@@ -1264,7 +1257,7 @@ bool KstViewObject::popupMenu(KPopupMenu *menu, const QPoint& pos, KstViewObject
 }
 
 
-bool KstViewObject::layoutPopupMenu(KPopupMenu *menu, const QPoint& pos, KstViewObjectPtr topParent) {
+bool KstViewObject::layoutPopupMenu(QMenu *menu, const QPoint& pos, KstViewObjectPtr topParent) {
   Q_UNUSED(pos)
 
   _topObjectForMenu = topParent;

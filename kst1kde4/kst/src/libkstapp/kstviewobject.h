@@ -21,6 +21,7 @@
 #include <QColor>
 #include <QDomElement>
 #include <QExplicitlySharedDataPointer>
+#include <QMenu>
 #include <QMouseEvent>
 #include <QPointer>
 
@@ -32,7 +33,6 @@
 #include "kstpainter.h"
 #include "kst_export.h"
 
-class KPopupMenu;
 class KstGfxMouseHandler;
 class KstViewObject;
 class KstViewWidget;
@@ -180,8 +180,8 @@ class KST_EXPORT KstViewObject : public KstObject {
     // note also: self=false
     template<class U> void forEachChild2(void (U::*)());
 
-    virtual bool popupMenu(KPopupMenu *menu, const QPoint& pos, KstViewObjectPtr topParent);
-    virtual bool layoutPopupMenu(KPopupMenu *menu, const QPoint& pos, KstViewObjectPtr topParent);
+    virtual bool popupMenu(QMenu *menu, const QPoint& pos, KstViewObjectPtr topParent);
+    virtual bool layoutPopupMenu(QMenu *menu, const QPoint& pos, KstViewObjectPtr topParent);
 
     enum StandardActions { Delete =          0x1,
                            Copy =            0x2,

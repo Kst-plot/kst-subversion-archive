@@ -18,12 +18,8 @@
 #include "kstviewobjectfactory.h"
 #include "kstgfxmousehandler.h"
 
-static KStaticDeleter<KstViewObjectFactory> sdViewObjectFactory;
-
 KstViewObjectFactory *KstViewObjectFactory::self() {
-  if (!_self) {
-    sdViewObjectFactory.setObject(_self, new KstViewObjectFactory);
-  }
+  _self = new KstViewObjectFactory;
 
   return _self;
 }
