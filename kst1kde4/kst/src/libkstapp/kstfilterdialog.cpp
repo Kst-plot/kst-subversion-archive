@@ -261,7 +261,7 @@ bool KstFilterDialog::newObject() {
           if (saveOutputs(plugin, pPtr)) {
             if (plugin->isValid()) {
               if (!createCurve(plugin)) {
-                KMessageBox::sorry(this, i18n("There is an error in the plugin you entered."));
+                QMessageBox::warning(this, i18n("Kst"), i18n("There is an error in the plugin you entered."));
                 return false;
               } else {
                 KST::dataObjectList.lock().writeLock();
@@ -269,15 +269,15 @@ bool KstFilterDialog::newObject() {
                 KST::dataObjectList.lock().unlock();
               }
             } else {
-              KMessageBox::sorry(this, i18n("There is an error in the plugin you entered."));
+              QMessageBox::warning(this, i18n("Kst"), i18n("There is an error in the plugin you entered."));
               return false;
             }
           } else {
-            KMessageBox::sorry(this, i18n("There is an error in the outputs you entered."));
+            QMessageBox::warning(this, i18n("Kst"), i18n("There is an error in the outputs you entered."));
             return false;
           }
         } else {
-          KMessageBox::sorry(this, i18n("There is an error in the inputs you entered."));
+          QMessageBox::warning(this, i18n("Kst"), i18n("There is an error in the inputs you entered."));
           return false;
         }
       }

@@ -25,6 +25,7 @@
 #include <qpopupmenu.h>
 #include <qprogressbar.h>
 #include <qvalidator.h>
+#include <qmessagebox.h>
 
 // include files for KDE
 #include <kaccel.h>
@@ -32,7 +33,6 @@
 #include "ksdebug.h"
 #include <kfiledialog.h>
 #include <kkeydialog.h>
-#include <kmessagebox.h>
 #include <kpopupmenu.h>
 #include <kprinter.h>
 #include <kprogress.h>
@@ -2619,7 +2619,7 @@ QString KstApp::windowName(bool prompt, const QString& nameOriginal, bool rename
       return QString::null;
     }
     if (prompt) {
-      KMessageBox::sorry(this, i18n("A window with the same name already exists.  Enter a unique window name."));
+      QMessageBox::warning(this, i18n("Kst"), i18n("A window with the same name already exists.  Enter a unique window name."));
     }
   } while(true);
 

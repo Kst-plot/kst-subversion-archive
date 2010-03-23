@@ -1162,7 +1162,7 @@ void KstDataManager::edit_I() {
     qi = DataView->selectedItems().at(0);
   } else {
     // This error message is odd to say the least.
-    //KMessageBox::sorry(this, i18n("A data item must be selected to edit."));
+    //QMessageBox::warning(this, i18n("Kst"), i18n("A data item must be selected to edit."));
     return;
   }
 
@@ -1265,7 +1265,7 @@ void KstDataManager::delete_I() {
           KST::vectorList.lock().unlock();
           doUpdates();
         } else {
-          KMessageBox::sorry(this, i18n("Unknown error deleting static vector."));
+          QMessageBox::warning(this, i18n("Kst"), i18n("Unknown error deleting static vector."));
         }
       } else if (qi->rtti() == RTTI_OBJ_A_VECTOR) {
         KstAVectorPtr x = kst_cast<KstAVector>(*KST::vectorList.findTag(koi->tag().tagString()));
@@ -1277,7 +1277,7 @@ void KstDataManager::delete_I() {
           KST::vectorList.lock().unlock();
           doUpdates();
         } else {
-          KMessageBox::sorry(this, i18n("Unknown error deleting static vector."));
+          QMessageBox::warning(this, i18n("Kst"), i18n("Unknown error deleting static vector."));
         }
       } else if (qi->rtti() == RTTI_OBJ_DATA_MATRIX) {
         KstRMatrixPtr x = kst_cast<KstRMatrix>(*KST::matrixList.findTag(koi->tag().tagString()));
@@ -1289,7 +1289,7 @@ void KstDataManager::delete_I() {
           KST::matrixList.lock().unlock();
           doUpdates();
         } else {
-          KMessageBox::sorry(this, i18n("Unknown error deleting data matrix."));
+          QMessageBox::warning(this, i18n("Kst"), i18n("Unknown error deleting data matrix."));
         }
       } else if (qi->rtti() == RTTI_OBJ_STATIC_MATRIX) {
         KstSMatrixPtr x = kst_cast<KstSMatrix>(*KST::matrixList.findTag(koi->tag().tagString()));
@@ -1301,7 +1301,7 @@ void KstDataManager::delete_I() {
           KST::matrixList.lock().unlock();
           doUpdates();
         } else {
-          KMessageBox::sorry(this, i18n("Unknown error deleting static matrix."));
+          QMessageBox::warning(this, i18n("Kst"),i18n("Unknown error deleting static matrix."));
         }
       } else if (qi->rtti() == RTTI_OBJ_A_MATRIX) {
         KstAMatrixPtr x = kst_cast<KstAMatrix>(*KST::matrixList.findTag(koi->tag().tagString()));
@@ -1313,13 +1313,13 @@ void KstDataManager::delete_I() {
           KST::matrixList.lock().unlock();
           doUpdates();
         } else {
-          KMessageBox::sorry(this, i18n("Unknown error deleting static matrix."));
+          QMessageBox::warning(this, i18n("Kst"), i18n("Unknown error deleting static matrix."));
         }
       }
       KstApp::inst()->paintAll(KstPainter::P_PLOT);
       update();
     } else {
-      KMessageBox::sorry(this, i18n("Cannot delete objects with dependencies."));
+      QMessageBox::warning(this, i18n("Kst"),i18n("Cannot delete objects with dependencies."));
     }
   }
 }

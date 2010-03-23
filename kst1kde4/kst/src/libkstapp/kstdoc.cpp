@@ -31,6 +31,7 @@
 #include <qdeepcopy.h>
 #include <qeventloop.h>
 #include <qstylesheet.h>
+#include <qmessagebox.h>
 
 // include files for KDE
 #include <dcopclient.h>
@@ -38,7 +39,6 @@
 #include <kdeversion.h>
 #include <kfiledialog.h>
 #include <kio/netaccess.h>
-#include <kmessagebox.h>
 #include <kmdimainfrm.h>
 #include <kprogress.h>
 #include <ksavefile.h>
@@ -123,9 +123,9 @@ bool KstDoc::saveModified(bool doDelete) {
   if (_modified) {
     KstApp *win = KstApp::inst();
     if (win->activeWindow()) {
-      int want_save = KMessageBox::warningYesNoCancel( win, i18n("The current plot definition has been modified. Do you want to save it?"), i18n("Question"));
+      int want_save = QMessageBox::warning( win, i18n("Question"), i18n("The current plot definition has been modified. Do you want to save it?"));
       switch (want_save) {
-        case KMessageBox::Yes:
+        case QMessageBox::Yes:
           if (_title == "Untitled") {
             if (!win->slotFileSaveAs()) {
               return false;
@@ -140,7 +140,7 @@ bool KstDoc::saveModified(bool doDelete) {
           completed = true;
           break;
 
-        case KMessageBox::No:
+        case QMessageBox::No:
           if (doDelete) {
             setModified(false);
             deleteContents();
@@ -148,7 +148,7 @@ bool KstDoc::saveModified(bool doDelete) {
           completed = true;
           break;
 
-        case KMessageBox::Cancel:
+        case QMessageBox::Cancel:
           completed = false;
           break;
 
@@ -168,7 +168,7 @@ void KstDoc::closeDocument() {
 
 bool KstDoc::newDocument() {
   // FIXME: implement this properly
-  //if (KMessageBox::Yes == KMessageBox::warningYesNo(KstApp::inst(), i18n("Are you sure you wish to erase all your data and plots?"))) {
+  //if (QMessageBox::Yes == QMessageBox::warningYesNo(KstApp::inst(), i18n("Are you sure you wish to erase all your data and plots?"))) {
     deleteContents();
     _modified = false;
     _absFilePath = QDir::homeDirPath();
@@ -195,13 +195,13 @@ bool KstDoc::openDocument(const QUrl& url, const QString& o_file,
     tmpFile = url.path();
   } else {
     if (!KIO::NetAccess::exists(url, true, KstApp::inst())) {
-      KMessageBox::sorry(KstApp::inst(), i18n("%1: There is no file with that name to open.").arg(url.prettyURL()));
+      QMessageBox::warning(KstApp::inst(), i18n("kst"), i18n("%1: There is no file with that name to open.").arg(url.prettyURL()));
 
       return false;
     }
 
     if (!KIO::NetAccess::download(url, tmpFile, KstApp::inst())) {
-      KMessageBox::sorry(KstApp::inst(), i18n("%1: There is no file with that name to open.").arg(url.prettyURL()));
+      QMessageBox::warning(KstApp::inst(), i18n("kst"), i18n("%1: There is no file with that name to open.").arg(url.prettyURL()));
 
       return false;
     }
@@ -218,7 +218,7 @@ bool KstDoc::openDocument(const QUrl& url, const QString& o_file,
   QFile f(tmpFile);
 
   if (!f.exists()) {
-    KMessageBox::sorry(KstApp::inst(), i18n("%1: There is no file with that name to open.").arg(url.prettyURL()));
+    QMessageBox::warning(KstApp::inst(), i18n("kst"), i18n("%1: There is no file with that name to open.").arg(url.prettyURL()));
     opening = false;
     _updating = false;
     KstApp::inst()->setPaused(false);
@@ -237,7 +237,7 @@ bool KstDoc::openDocument(const QUrl& url, const QString& o_file,
   QDomDocument doc(_title);
 
   if (!f.open(IO_ReadOnly)) {
-    KMessageBox::sorry(KstApp::inst(), i18n("%1: File exists, but kst could not open it.").arg(url.prettyURL()));
+    QMessageBox::warning(KstApp::inst(), i18n("kst"), i18n("%1: File exists, but kst could not open it.").arg(url.prettyURL()));
     opening = false;
     _updating = false;
     KstApp::inst()->setPaused(false);
@@ -250,7 +250,7 @@ bool KstDoc::openDocument(const QUrl& url, const QString& o_file,
   }
 
   if (!doc.setContent(&f)) {
-    KMessageBox::sorry(KstApp::inst(), i18n("%1: Not a valid kst plot specification file.").arg(url.prettyURL()));
+    QMessageBox::warning(KstApp::inst(), i18n("kst"), i18n("%1: Not a valid kst plot specification file.").arg(url.prettyURL()));
     f.close();
     opening = false;
     _updating = false;
@@ -278,7 +278,7 @@ bool KstDoc::openDocument(const QUrl& url, const QString& o_file,
   if (docElem.tagName() != "kstdoc") {
     QString err = i18n("Error opening file %1.  Does not appear to be a Kst file.").arg(url.prettyURL());
     KstDebug::self()->log(err, KstDebug::Error);
-    KMessageBox::sorry(KstApp::inst(), err);
+    QMessageBox::warning(KstApp::inst(), i18n("kst"), err);
     opening = false;
     _updating = false;
     KstApp::inst()->setPaused(false);
@@ -511,7 +511,7 @@ bool KstDoc::openDocument(const QUrl& url, const QString& o_file,
 
   if (warnOldKstFile) {
     QApplication::restoreOverrideCursor();
-    KMessageBox::sorry(KstApp::inst(), i18n("You tried to load an old Kst file.  Curves created by equations or spectra will not be loaded."));
+    QMessageBox::warning(KstApp::inst(), i18n("kst"), i18n("You tried to load an old Kst file.  Curves created by equations or spectra will not be loaded."));
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
   }
 
@@ -827,8 +827,8 @@ bool KstDoc::saveDocument(const QString& filename, bool saveAbsoluteVectorPositi
 
   if (KIO::NetAccess::exists(url, false, KstApp::inst())) {
     if (prompt) {
-      int rc = KMessageBox::warningYesNo(KstApp::inst(), i18n("File %1 exists.  Overwrite?").arg(url.prettyURL()), i18n("Kst"));
-      if (rc == KMessageBox::No) {
+      int rc = QMessageBox::warning(KstApp::inst(), i18n("Kst"), i18n("File %1 exists.  Overwrite?").arg(url.prettyURL()));
+      if (rc == QMessageBox::No) {
         return false;
       }
     }
