@@ -1238,7 +1238,7 @@ void KstDataManager::delete_I() {
   } else {
     // Don't prompt for base curves
     KstBaseCurvePtr bc = kst_cast<KstBaseCurve>(koi->dataObject());
-    if (bc || QMessageBox::warning(this, i18n("Kst"), i18n("There are other objects in memory that depend on %1.  Do you wish to delete them too?").arg(koi->tag().tag())) == QMessageBox::Yes) {
+    if (bc || QMessageBox::warning(this, i18n("Kst"), i18n("There are other objects in memory that depend on %1.  Do you wish to delete them too?").arg(koi->tag().tag()), QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes) {
 
       if (qi->rtti() == RTTI_OBJ_OBJECT) {
         koi->dataObject()->deleteDependents();

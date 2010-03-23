@@ -123,7 +123,7 @@ bool KstDoc::saveModified(bool doDelete) {
   if (_modified) {
     KstApp *win = KstApp::inst();
     if (win->activeWindow()) {
-      int want_save = QMessageBox::warning( win, i18n("Question"), i18n("The current plot definition has been modified. Do you want to save it?"));
+      int want_save = QMessageBox::warning( win, i18n("Question"), i18n("The current plot definition has been modified. Do you want to save it?"), QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
       switch (want_save) {
         case QMessageBox::Yes:
           if (_title == "Untitled") {
@@ -827,7 +827,7 @@ bool KstDoc::saveDocument(const QString& filename, bool saveAbsoluteVectorPositi
 
   if (KIO::NetAccess::exists(url, false, KstApp::inst())) {
     if (prompt) {
-      int rc = QMessageBox::warning(KstApp::inst(), i18n("Kst"), i18n("File %1 exists.  Overwrite?").arg(url.prettyURL()));
+      int rc = QMessageBox::warning(KstApp::inst(), i18n("Kst"), i18n("File %1 exists.  Overwrite?").arg(url.prettyURL()), QMessageBox::Yes | QMessageBox::No);
       if (rc == QMessageBox::No) {
         return false;
       }

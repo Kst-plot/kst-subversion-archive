@@ -27,7 +27,7 @@
 #include <kio/netaccess.h>
 #include <kstandarddirs.h>
 
-#include "kstvectorsavedialog_i.h"
+#include "kstvectorsavedialog.h"
 #include "vectorselector.h"
 
 KstVectorSaveDialog::KstVectorSaveDialog(QWidget* parent,
@@ -99,7 +99,7 @@ void KstVectorSaveDialog::save() {
           tf.close();
 
           if (KIO::NetAccess::exists(url, false, this)) {
-            int rc = QMessageBox::warning(this, i18n("Kst"), i18n("File %1 exists.  Overwrite?").arg(url.prettyURL()), i18n("Kst"));
+            int rc = QMessageBox::warning(this, i18n("Kst"), i18n("File %1 exists.  Overwrite?").arg(url.prettyURL()), i18n("Kst"), QMessageBox::Yes | QMessageBox::No);
             if (rc == QMessageBox::No) {
               return;
             }

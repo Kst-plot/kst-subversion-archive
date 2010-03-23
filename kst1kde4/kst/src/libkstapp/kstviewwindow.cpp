@@ -421,7 +421,7 @@ void KstViewWindow::setCaption(const QString& caption) {
 
 void KstViewWindow::closeEvent(QCloseEvent *e) {
   if (KstSettings::globalSettings()->promptWindowClose && !view()->children().isEmpty()) {
-    if (QMessageBox::warning(this, i18n("Kst"), i18n("Are you sure you want to close window '%1'?\nClosing a window deletes all plots in the window.").arg(caption())) != QMessageBox::Yes) {
+    if (QMessageBox::warning(this, i18n("Kst"), i18n("Are you sure you want to close window '%1'?\nClosing a window deletes all plots in the window.").arg(caption()), QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes) {
       e->ignore();
       return;
     }

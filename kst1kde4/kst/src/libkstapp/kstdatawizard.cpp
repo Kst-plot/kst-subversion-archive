@@ -747,7 +747,7 @@ bool KstDataWizard::checkAvailableMemory(KstDataSourcePtr &ds, KstFrameSize f0Va
       QMessageBox::warning(this, i18n("Kst"), i18n("You requested to read in over %1 of data but it seems that you have approximately only %2 of usable memory available. You cannot load this much data.").arg(strMemoryRequested).arg(strMemoryAvailable));
       rc = false;
     } else {
-      if (QMessageBox::warning(this, i18n("Kst"), i18n("You requested to read in approximately %1 of data but it seems that you have slightly less usable memory than this available. Would you like to try and load the data anyway?").arg(strMemoryRequested)) == QMessageBox::Yes) {
+      if (QMessageBox::warning(this, i18n("Kst"), i18n("You requested to read in approximately %1 of data but it seems that you have slightly less usable memory than this available. Would you like to try and load the data anyway?").arg(strMemoryRequested), QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes) {
         rc = true;
       } else {
         rc = false;

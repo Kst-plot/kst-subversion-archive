@@ -3868,7 +3868,7 @@ void Kst2DPlot::deleteObject() {
     
     tlv  = kst_cast<KstTopLevelView>(KstViewObjectPtr(_topObjectForMenu));
     if (tlv) {
-      if (QMessageBox::warning(tlv->widget(), i18n("Kst"), i18n("Are you sure you want to delete plot '%1'?").arg(tagName()), QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes) {
+      if (QMessageBox::warning(tlv->widget(), i18n("Kst"), i18n("Are you sure you want to delete plot '%1'?").arg(tagName(), QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes) {
         remove = true;
       }
     }
