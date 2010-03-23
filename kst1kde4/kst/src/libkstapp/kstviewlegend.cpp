@@ -27,11 +27,11 @@
 #include <qradiobutton.h>
 #include <QTextDocument>
 #include <QSpinBox>
+#include <qcombobox.h>
 
 #include <kglobal.h>
 #include <klocale.h>
 #include <kcolorbutton.h>
-#include <kcombobox.h>
 
 #include "kstviewlegend.h"
 

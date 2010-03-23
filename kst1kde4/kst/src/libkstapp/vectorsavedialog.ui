@@ -80,7 +80,7 @@
     </widget>
    </item>
    <item row="2" column="0" colspan="3">
-    <widget class="KComboBox" name="_multiOptions">
+    <widget class="QComboBox" name="_multiOptions">
      <property name="enabled">
       <bool>false</bool>
      </property>
@@ -118,9 +118,9 @@
    <header>q3listbox.h</header>
   </customwidget>
   <customwidget>
-   <class>KComboBox</class>
+   <class>QComboBox</class>
    <extends>QComboBox</extends>
-   <header>kcombobox.h</header>
+   <header>qcombobox.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
@@ -130,7 +130,7 @@
   <tabstop>pushButton2</tabstop>
  </tabstops>
  <includes>
-  <include location="local">kcombobox.h</include>
+  <include location="local">qcombobox.h</include>
  </includes>
  <resources/>
  <connections/>

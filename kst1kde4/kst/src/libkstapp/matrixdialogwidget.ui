@@ -676,7 +676,7 @@
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="KComboBox" name="_field">
+       <widget class="QComboBox" name="_field">
         <property name="editable">
          <bool>true</bool>
         </property>
@@ -740,9 +740,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>KComboBox</class>
+   <class>QComboBox</class>
    <extends>QComboBox</extends>
-   <header>kcombobox.h</header>
+   <header>qcombobox.h</header>
   </customwidget>
   <customwidget>
    <class>KUrlRequester</class>
@@ -782,7 +782,7 @@
   <include location="local">kurlrequester.h</include>
   <include location="local">klineedit.h</include>
   <include location="local">kpushbutton.h</include>
-  <include location="local">kcombobox.h</include>
+  <include location="local">qcombobox.h</include>
   <include location="local">klineedit.h</include>
   <include location="global">kst_export.h</include>
  </includes>

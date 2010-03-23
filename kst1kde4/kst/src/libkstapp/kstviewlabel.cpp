@@ -31,7 +31,7 @@
 #include "labelrenderer.h"
 /* xxx
 #include <kcolorbutton.h>
-#include <kcombobox.h>
+#include <qcombobox.h>
 #include <kdatastream.h>
 #include <kdualcolorbutton.h>
 #include <kfontcombo.h>

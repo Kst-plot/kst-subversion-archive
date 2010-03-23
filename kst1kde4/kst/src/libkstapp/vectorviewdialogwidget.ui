@@ -105,7 +105,7 @@
          </widget>
         </item>
         <item>
-         <widget class="KComboBox" name="_interp">
+         <widget class="QComboBox" name="_interp">
           <property name="focusPolicy">
            <enum>Qt::TabFocus</enum>
           </property>
@@ -294,7 +294,7 @@ of points, interpolation of one or the other will be required.  This combo-box s
          </widget>
         </item>
         <item>
-         <widget class="KComboBox" name="_plotAxes">
+         <widget class="QComboBox" name="_plotAxes">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
             <horstretch>1</horstretch>
@@ -344,7 +344,7 @@ of points, interpolation of one or the other will be required.  This combo-box s
          </widget>
         </item>
         <item>
-         <widget class="KComboBox" name="_plotList">
+         <widget class="QComboBox" name="_plotList">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
             <horstretch>1</horstretch>
@@ -448,9 +448,9 @@ of points, interpolation of one or the other will be required.  This combo-box s
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>KComboBox</class>
+   <class>QComboBox</class>
    <extends>QComboBox</extends>
-   <header>kcombobox.h</header>
+   <header>qcombobox.h</header>
   </customwidget>
   <customwidget>
    <class>VectorSelector</class>

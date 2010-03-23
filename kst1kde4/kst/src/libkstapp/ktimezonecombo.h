@@ -21,12 +21,12 @@
 #ifndef KTIMEZONECOMBO_H
 #define KTIMEZONECOMBO_H
 
-#include <kcombobox.h>
+#include <qcombobox.h>
 #include <qstring.h>
 
 class KstTimezones;
 
-class KTimezoneCombo : public KComboBox {
+class KTimezoneCombo : public QComboBox {
   Q_OBJECT
   public:
     KTimezoneCombo(QWidget *parent = 0L, const char *name = 0L, KstTimezones *db = 0L);

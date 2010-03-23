@@ -250,7 +250,7 @@
          </widget>
         </item>
         <item>
-         <widget class="KComboBox" name="_interp">
+         <widget class="QComboBox" name="_interp">
           <property name="whatsThis">
            <string>Kst assumes that the first and last samples of the X &amp; Y axis vectors 
 are pairs.  Consequently, if the X &amp; Y axis vectors have different numbers
@@ -332,9 +332,9 @@ of points, interpolation of one or the other will be required.  This combo-box s
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>KComboBox</class>
+   <class>QComboBox</class>
    <extends>QComboBox</extends>
-   <header>kcombobox.h</header>
+   <header>qcombobox.h</header>
   </customwidget>
   <customwidget>
    <class>CurveAppearanceWidget</class>
@@ -378,7 +378,7 @@ of points, interpolation of one or the other will be required.  This combo-box s
   <include location="local">curveplacementwidget.h</include>
   <include location="local">vectorselector.h</include>
   <include location="local">kstcombobox.h</include>
-  <include location="local">kcombobox.h</include>
+  <include location="local">qcombobox.h</include>
   <include location="local">scalarselector.h</include>
  </includes>
  <resources/>

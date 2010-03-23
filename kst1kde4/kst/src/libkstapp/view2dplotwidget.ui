@@ -736,7 +736,7 @@
              </widget>
             </item>
             <item>
-             <widget class="KComboBox" name="ScalarList">
+             <widget class="QComboBox" name="ScalarList">
               <property name="sizePolicy">
                <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
                 <horstretch>0</horstretch>
@@ -2587,9 +2587,9 @@
    <header>q3listbox.h</header>
   </customwidget>
   <customwidget>
-   <class>KComboBox</class>
+   <class>QComboBox</class>
    <extends>QComboBox</extends>
-   <header>kcombobox.h</header>
+   <header>qcombobox.h</header>
   </customwidget>
   <customwidget>
    <class>KColorButton</class>

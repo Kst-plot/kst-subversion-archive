@@ -226,7 +226,7 @@
          </widget>
         </item>
         <item>
-         <widget class="KComboBox" name="_files">
+         <widget class="QComboBox" name="_files">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
             <horstretch>0</horstretch>
@@ -346,9 +346,9 @@
    <header>q3listbox.h</header>
   </customwidget>
   <customwidget>
-   <class>KComboBox</class>
+   <class>QComboBox</class>
    <extends>QComboBox</extends>
-   <header>kcombobox.h</header>
+   <header>qcombobox.h</header>
   </customwidget>
   <customwidget>
    <class>KURLRequester</class>
@@ -375,7 +375,7 @@
   <include location="local">kurlrequester.h</include>
   <include location="local">klineedit.h</include>
   <include location="local">kpushbutton.h</include>
-  <include location="local">kcombobox.h</include>
+  <include location="local">qcombobox.h</include>
  </includes>
  <resources/>
  <connections>

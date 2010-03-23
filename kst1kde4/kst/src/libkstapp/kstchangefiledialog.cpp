@@ -18,8 +18,8 @@
 #include <qcheckbox.h> 
 #include <qradiobutton.h>
 #include <QMessageBox>
-  
-#include <kcombobox.h>
+#include <qcombobox.h>
+
 #include <klocale.h>
 #include <kiconloader.h>
 #include <kurlcompletion.h>
