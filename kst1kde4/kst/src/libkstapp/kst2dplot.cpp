@@ -1074,11 +1074,13 @@ void Kst2DPlot::fitCurveVisibleDynamic(int id) {
 
 
 void Kst2DPlot::filterCurve(int id) {
-  QMdiSubWindow* c = KstApp::inst()->activeSubWindow();
+  QMdiSubWindow* c;
 
+  c = KstApp::inst()->activeSubWindow();
   if (c) {
-    KstBaseCurvePtr curve = *(_curves.findTag(_curveRemoveMap[id]));
+    KstBaseCurvePtr curve;
 
+    curve = *(_curves.findTag(_curveRemoveMap[id]));
     if (curve) {
       KstFilterDialog::globalInstance()->show_setCurve(_curveRemoveMap[id], tagName(), c->windowTitle());
       if (_menuView) {
@@ -1090,9 +1092,11 @@ void Kst2DPlot::filterCurve(int id) {
 
 
 void Kst2DPlot::removeCurve(KstBaseCurvePtr incurve) {
+  KstViewLegendPtr vl;
+
   _curves.removeAll(incurve);
 
-  KstViewLegendPtr vl = legend();
+  vl = legend();
   if (vl) {
     if (vl->trackContents()) {
       vl->removeCurve(incurve);
@@ -1106,11 +1110,12 @@ void Kst2DPlot::removeCurve(KstBaseCurvePtr incurve) {
 QPair<double, double> Kst2DPlot::computeAutoBorder(bool log, double logBase, double currentMin, double currentMax) {
   double min = currentMin;
   double max = currentMax;
+  double dx;
 
   if (log) {
     min = log10(min)/log10(logBase);
     max = max > 0.0 ? log10(max) : 0.0;
-    double dx = (max - min) / 40.0;
+    dx = (max - min) / 40.0;
     max = pow(logBase, max + dx);
     min = pow(logBase, min - dx);
   } else {
@@ -1118,7 +1123,7 @@ QPair<double, double> Kst2DPlot::computeAutoBorder(bool log, double logBase, dou
     // need to be careful as max-min may exceed DBL_MAX...
     //
 
-    double dx = (max / 40.0) - (min / 40.0);
+    dx = (max / 40.0) - (min / 40.0);
 
     if (max < DBL_MAX - dx) {
       max += dx;
@@ -1133,14 +1138,14 @@ QPair<double, double> Kst2DPlot::computeAutoBorder(bool log, double logBase, dou
 
 
 void Kst2DPlot::updateScale() {
-  double mid, delta;
-  bool first;
-  int count;
-
+  double mid;
+  double delta;
   double nXMin = _XMin;
   double nXMax = _XMax;
   double nYMin = _YMin;
   double nYMax = _YMax;
+  bool first;
+  int count;
 
   //
   // x-axis calculation...
@@ -3336,18 +3341,18 @@ void Kst2DPlot::saveAttributes(QTextStream& ts, const QString& indent) {
 void Kst2DPlot::pushScale() {
   KstPlotScale ps;
 
-  ps->xmin = _XMin;
-  ps->ymin = _YMin;
-  ps->xmax = _XMax;
-  ps->ymax = _YMax;
-  ps->xscalemode = _xScaleMode;
-  ps->yscalemode = _yScaleMode;
-  ps->xlog = _xLog;
-  ps->ylog = _yLog;
-  ps->xMinExp = _xMinExp;
-  ps->xMaxExp = _xMaxExp;
-  ps->yMinExp = _yMinExp;
-  ps->yMaxExp = _yMaxExp;
+  ps.xmin = _XMin;
+  ps.ymin = _YMin;
+  ps.xmax = _XMax;
+  ps.ymax = _YMax;
+  ps.xscalemode = _xScaleMode;
+  ps.yscalemode = _yScaleMode;
+  ps.xlog = _xLog;
+  ps.ylog = _yLog;
+  ps.xMinExp = _xMinExp;
+  ps.xMaxExp = _xMaxExp;
+  ps.yMinExp = _yMinExp;
+  ps.yMaxExp = _yMaxExp;
 
   _plotScaleList.append(ps);
 }
@@ -4393,7 +4398,6 @@ void Kst2DPlot::highlightNearestDataPoint(bool bRepaint, KstPainter *p, const QP
   QString msg;
 
   if (!_curves.isEmpty()) {
-    int precision = 15;
     QString msgXOffset;
     QString msgYOffset;
     QString name;
@@ -4401,6 +4405,7 @@ void Kst2DPlot::highlightNearestDataPoint(bool bRepaint, KstPainter *p, const QP
     double newxpos, newypos;
     double xmin, ymin;
     double xmax, ymax;
+    int precision = 15;
 
     getCursorPos(pos, xpos, ypos, xmin, xmax, ymin, ymax);
     if (getNearestDataPoint(pos, name, newxpos, newypos, xpos, ypos, xmin, xmax)) {
@@ -4419,8 +4424,9 @@ void Kst2DPlot::highlightNearestDataPoint(bool bRepaint, KstPainter *p, const QP
 
       if (_isXAxisInterpreted) {
         uint length;
-        genAxisTickLabelFullPrecision(_xAxisInterpretation, _xAxisDisplay,
-                                      xlabel, length, newxpos, isXLog(), _xLogBase, true);
+
+        genAxisTickLabelFullPrecision(_xAxisInterpretation, _xAxisDisplay, xlabel, 
+                                      length, newxpos, isXLog(), _xLogBase, true);
         if (_cursorOffset) {
           if (isXLog()) {
             genOffsetLabel(_xAxisInterpretation, _xAxisDisplay, msgXOffset,
@@ -4469,18 +4475,19 @@ void Kst2DPlot::highlightNearestDataPoint(bool bRepaint, KstPainter *p, const QP
     //
 
     KstImageList images;
+    KstImageList::iterator imIter;
 
 // xxx    images = kstObjectSubList<KstBaseCurve,KstImage>(_curves);
     if (images.count() > 0) {
       double zValue;
       bool found = false;
-      int i = images.count() - 1;
 
-      while (i >= 0 && !found) {
-        if (images[i]->getNearestZ(xpos, ypos, zValue)) {
+      for (imIter = images.begin(); imIter != images.end(); ++imIter) {
+        if ((*imIter)->getNearestZ(xpos, ypos, zValue)) {
           found = true;
+
+          break;
         }
-        i--;
       }
 
       if (found) {
@@ -4528,9 +4535,9 @@ void Kst2DPlot::highlightNearestDataPoint(bool bRepaint, KstPainter *p, const QP
         }
 
         if (!msg.isEmpty()) {
-          msg = i18n("Label, Image name (x, y, z)", "%5, %4 (%1, %2, %3)" ).arg(xlabel).arg(ylabel).arg(zValue,0,'G',precision).arg(images[i+1]->tagName()).arg(msg);
+          msg = i18n("Label, Image name (x, y, z)", "%5, %4 (%1, %2, %3)" ).arg(xlabel).arg(ylabel).arg(zValue,0,'G',precision).arg((*imIter)->tagName()).arg(msg);
         } else {
-          msg = i18n("Image name (x, y, z)", "%4 (%1, %2, %3)" ).arg(xlabel).arg(ylabel).arg(zValue,0,'G', precision).arg(images[i+1]->tagName());
+          msg = i18n("Image name (x, y, z)", "%4 (%1, %2, %3)" ).arg(xlabel).arg(ylabel).arg(zValue,0,'G', precision).arg((*imIter)->tagName());
         }
       }
     }
@@ -4541,13 +4548,13 @@ void Kst2DPlot::highlightNearestDataPoint(bool bRepaint, KstPainter *p, const QP
 
 
 void Kst2DPlot::updateXYGuideline(QWidget *view, const QPoint& oldPos, const QPoint& newPos, const QRect& pr, KstMouseModeType gzType) {
-  //kstdDebug() << "update guideline for old=" << oldPos << " new=" << newPos << endl;
+  QPen newPen(Qt::black, 1, Qt::DotLine);
   KstPainter p; // FIXME: Broken, just prepare and then trigger a
                 //  view->paint(GetPlotRegion());
+
   p.begin(view);
-  QPen newPen(Qt::black, 1, Qt::DotLine);
   p.setPen(newPen);
-  p.setRasterOp(Qt::NotROP);
+// xxx  p.setRasterOp(Qt::NotROP);
 
   if (pr.contains(oldPos)) {
     if (_mouse.lastGuidelineType == X_ZOOMBOX) {
@@ -4577,8 +4584,11 @@ void Kst2DPlot::updateXYGuideline(QWidget *view, const QPoint& oldPos, const QPo
 
 void Kst2DPlot::mouseMoveEvent(QWidget *view, QMouseEvent *e) {
   if (e->pos() == QPoint(-1, -1)) {
+    KstViewWidget *w;
+
     setHasFocus(false);
-    KstViewWidget *w = dynamic_cast<KstViewWidget*>(view);
+
+    w = dynamic_cast<KstViewWidget*>(view);
     if (w) {
       w->paint();
     }
@@ -4594,21 +4604,22 @@ void Kst2DPlot::mouseMoveEvent(QWidget *view, QMouseEvent *e) {
   // draw a helper guide in X or Y zoom modes
   //
   if (gzType == X_ZOOMBOX || gzType == Y_ZOOMBOX) {
-    ButtonState s = e->stateAfter();
+    Qt::KeyboardModifiers s = e->modifiers();
+
     if (s == 0) {
-      if (e->state() & Qt::LeftButton && _mouse.zooming()) {
+      if (s & Qt::LeftButton && _mouse.zooming()) {
         updateXYGuideline(view, _mouse.lastGuideline, QPoint(-1, -1), pr, gzType);
       } else {
         updateXYGuideline(view, _mouse.lastGuideline, _mouse.tracker, pr, gzType);
       }
-    } else if (s & Qt::ShiftButton) {
-      if (e->state() & Qt::LeftButton && _mouse.zooming()) {
+    } else if (s & Qt::ShiftModifier) {
+      if (s & Qt::LeftButton && _mouse.zooming()) {
         updateXYGuideline(view, _mouse.lastGuideline, QPoint(-1, -1), pr, Y_ZOOMBOX);
       } else {
         updateXYGuideline(view, _mouse.lastGuideline, _mouse.tracker, pr, Y_ZOOMBOX);
       }
-    } else if (s & Qt::ControlButton) {
-      if (e->state() & Qt::LeftButton && _mouse.zooming()) {
+    } else if (s & Qt::ControlModifier) {
+      if (s & Qt::LeftButton && _mouse.zooming()) {
         updateXYGuideline(view, _mouse.lastGuideline, QPoint(-1, -1), pr, X_ZOOMBOX);
       } else {
         updateXYGuideline(view, _mouse.lastGuideline, _mouse.tracker, pr, X_ZOOMBOX);
@@ -4617,7 +4628,7 @@ void Kst2DPlot::mouseMoveEvent(QWidget *view, QMouseEvent *e) {
       updateXYGuideline(view, _mouse.lastGuideline, QPoint(-1, -1), pr, gzType);
     }
   } else if (gzType == XY_ZOOMBOX) {
-    Qt::ButtonModifiers s = e->modifiers();
+    Qt::KeyboardModifiers s = e->modifiers();
 
     if (s & Qt::ShiftModifier) {
       if (e->modifiers() & Qt::LeftButton && _mouse.zooming()) {

@@ -332,16 +332,6 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="1">
-           <widget class="KDualColorButton" name="plotColors" native="true">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-           </widget>
-          </item>
           <item row="2" column="2">
            <widget class="QCheckBox" name="_checkBoxDefaultMinorGridColor">
             <property name="text">
@@ -724,7 +714,7 @@
            </widget>
           </item>
           <item row="6" column="1" colspan="9">
-           <widget class="KFontCombo" name="FontComboBox" native="true">
+           <widget class="QFontComboBox" name="FontComboBox" native="true">
             <property name="autoCompletion" stdset="0">
              <bool>false</bool>
             </property>
@@ -2493,12 +2483,12 @@
           </widget>
          </item>
          <item>
-          <widget class="Q3ListBox" name="PlotMarkerList">
+          <widget class="QListWidget" name="PlotMarkerList">
            <property name="whatsThis">
             <string>The list of defined plot markers.  Use the Add, Remove, and Remove All buttons to modify the list.  Changes to the list are not saved until the plot dialog settings are applied.</string>
            </property>
            <property name="selectionMode">
-            <enum>Q3ListBox::Extended</enum>
+            <enum>QAbstractItemView::ExtendedSelection</enum>
            </property>
           </widget>
          </item>
@@ -2610,16 +2600,6 @@
    <class>PlotListBox</class>
   </customwidget>
   <customwidget>
-   <class>KDualColorButton</class>
-   <extends>QWidget</extends>
-   <header>kdualcolorbutton.h</header>
-  </customwidget>
-  <customwidget>
-   <class>KFontCombo</class>
-   <extends>QWidget</extends>
-   <header>kfontcombo.h</header>
-  </customwidget>
-  <customwidget>
    <class>VectorSelector</class>
    <extends>QWidget</extends>
    <header>vectorselector.h</header>
@@ -2726,13 +2706,6 @@
  <includes>
   <include location="local">kst2dplot.h</include>
   <include location="local">plotlistbox.h</include>
-  <include location="local">vectorselector.h</include>
-  <include location="local">plotlistbox.h</include>
-  <include location="local">plotlistbox.h</include>
-  <include location="local">kdualcolorbutton.h</include>
-  <include location="local">kcolorbutton.h</include>
-  <include location="local">kcolorbutton.h</include>
-  <include location="local">kfontcombo.h</include>
   <include location="local">klineedit.h</include>
   <include location="local">kcombobox.h</include>
   <include location="local">kcolorbutton.h</include>
