@@ -24,10 +24,9 @@
 #include <qradiobutton.h>
 #include <qspinbox.h>
 #include <qvbox.h>
+#include <qmessagebox.h>
 
 #include <kcolorbutton.h>
-#include <kcombobox.h>
-#include <kmessagebox.h>
 #include <knuminput.h>
 
 #include "colorpalettewidget.h"
@@ -217,7 +216,7 @@ void KstImageDialog::update() {
 bool KstImageDialog::newObject() {
   //if matrixCombo is empty then display an error message
   if (_w->_matrix->selectedMatrix().isEmpty()){
-    KMessageBox::sorry(this, i18n("Matrix is a 2D grid of numbers, used to create image", "New image not made: define matrix first."));
+    QMessageBox::warning(this, i18n("Kst"), i18n("Matrix is a 2D grid of numbers, used to create image", "New image not made: define matrix first."));
     return false;
   }
 
@@ -231,7 +230,7 @@ bool KstImageDialog::newObject() {
   KstMatrixPtr matrix = *KST::matrixList.findTag(_w->_matrix->selectedMatrix());
   KST::matrixList.lock().unlock();
   if (!matrix) {
-    KMessageBox::sorry(this, i18n("Matrix is a 2D grid of numbers, used to create image", "Could not find matrix."));
+    QMessageBox::warning(this, i18n("Kst"), i18n("Matrix is a 2D grid of numbers, used to create image", "Could not find matrix."));
     return false;
   }
   KST::dataObjectList.lock().readLock();
@@ -287,7 +286,7 @@ bool KstImageDialog::editSingleObject(KstImagePtr imPtr) {
     KST::matrixList.lock().unlock();
 
     if (!pMatrix) {
-      KMessageBox::sorry(this, i18n("Matrix is a 2D grid of numbers, used to create image", "Could not find pMatrix."));
+      QMessageBox::waring(this, i18n("Kst"), i18n("Matrix is a 2D grid of numbers, used to create image", "Could not find pMatrix."));
       return false;
     }
   } else {
@@ -302,7 +301,7 @@ bool KstImageDialog::editSingleObject(KstImagePtr imPtr) {
   if (_contourOnlyDirty || _colorOnlyDirty || _colorAndContourDirty) {
     double lowerZDouble, upperZDouble;
     if (!checkParameters(lowerZDouble, upperZDouble)) {
-      //KMessageBox::sorry(this, i18n("Image type was changed: Lower Z threshold cannot be higher than Upper Z threshold."));
+      //QMessageBox::warning(this, i18n("Kst"), i18n("Image type was changed: Lower Z threshold cannot be higher than Upper Z threshold."));
       //pMatrix->unlock();
       imPtr->unlock();
       return false;
@@ -378,7 +377,7 @@ bool KstImageDialog::editSingleObject(KstImagePtr imPtr) {
     // check parameters for color map
     if (imPtr->hasColorMap()) {
       if (pLowerZ > pUpperZ) {
-        //KMessageBox::sorry(this, i18n("The Lower Z threshold cannot be higher than Upper Z threshold."));
+        //QMessageBox::warning(this, i18n("Kst"), i18n("The Lower Z threshold cannot be higher than Upper Z threshold."));
         //pMatrix->unlock();
         imPtr->unlock();
         return false;
@@ -448,7 +447,7 @@ bool KstImageDialog::editObject() {
     }
 
     if (!didEdit) {
-      KMessageBox::sorry(this, i18n("Select one or more objects to edit."));
+      QMessageBox::warning(this, i18n("Kst"), i18n("Select one or more objects to edit."));
       return false;
     }
   } else {
@@ -594,17 +593,17 @@ bool KstImageDialog::checkParameters(double& lowerZDouble, double& upperZDouble)
     if (!(ok1 && ok2)) {
       if (ok1 || ok2) {
         if (ok1) {
-          KMessageBox::sorry(this, i18n("The upper threshold is not a valid decimal number."));
+          QMessageBox::warning(this, i18n("Kst"), i18n("The upper threshold is not a valid decimal number."));
         } else {
-          KMessageBox::sorry(this, i18n("The lower threshold is not a valid decimal number."));
+          QMessageBox::warning(this, i18n("Kst"), i18n("The lower threshold is not a valid decimal number."));
         }
       } else {
-        KMessageBox::sorry(this, i18n("The upper and lower thresholds are not valid decimal numbers."));
+        QMessageBox::warning(this, i18n("Kst"), i18n("The upper and lower thresholds are not valid decimal numbers."));
       }
       return false;
     }
     if (lowerZDouble >= upperZDouble) {
-      KMessageBox::sorry(this, i18n("The upper threshold must be greater than the lower threshold."));
+      QMessageBox::warning(this, i18n("Kst"), i18n("The upper threshold must be greater than the lower threshold."));
       return false;
     }
   }

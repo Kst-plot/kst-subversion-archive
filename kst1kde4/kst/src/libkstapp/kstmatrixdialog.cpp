@@ -23,10 +23,10 @@
 #include <qradiobutton.h>
 #include <qspinbox.h>
 #include <qvbox.h>
+#include <qcombobox.h>
+#include <qmessagebox.h>
 
-#include <kcombobox.h>
 #include <kfiledialog.h>
-#include <kmessagebox.h>
 #include <kurlcompletion.h>
 #include <kurlrequester.h>
 
@@ -359,12 +359,12 @@ bool KstMatrixDialog::new_IRMatrix() {
     file = KstDataSource::loadSource(_w->_fileName->url());
     if (!file || !file->isValid()) {
       KST::dataSourceList.lock().unlock();
-      KMessageBox::sorry(this, i18n("The file could not be opened."));
+      QMessageBox::warning(this, i18n("Kst"), i18n("The file could not be opened."));
       return false;
     }
     if (file->isEmpty()) {
       KST::dataSourceList.lock().unlock();
-      KMessageBox::sorry(this, i18n("The file does not contain data."));
+      QMessageBox::warning(this, i18n("Kst"), i18n("The file does not contain data."));
       return false;
     }
     KST::dataSourceList.append(file);
@@ -375,7 +375,7 @@ bool KstMatrixDialog::new_IRMatrix() {
 
   pField = _w->_field->currentText();
   if (!file->isValidMatrix(pField)) {
-    KMessageBox::sorry(this, i18n("The requested matrix is not defined for the requested file."));
+    QMessageBox::warning(this, i18n("Kst"), i18n("The requested matrix is not defined for the requested file."));
     file->unlock();
     return false;
   }
@@ -427,7 +427,7 @@ bool KstMatrixDialog::new_ISMatrix() {
   }
 
   if (!ok1 || !ok2) {
-    KMessageBox::sorry(this, i18n("Invalid gradient bounds.  Ensure only decimal values are entered."));
+    QMessageBox::warning(this, i18n("Kst"), i18n("Invalid gradient bounds.  Ensure only decimal values are entered."));
 
     return false;
   }
@@ -465,12 +465,12 @@ bool KstMatrixDialog::editSingleRMatrix(KstRMatrixPtr rmp) {
       file = KstDataSource::loadSource(_w->_fileName->url());
       if (!file || !file->isValid()) {
         KST::dataSourceList.lock().unlock();
-        KMessageBox::sorry(this, i18n("The file could not be opened."));
+        QMessageBox::warning(this, i18n("Kst"), i18n("The file could not be opened."));
         return false;
       }
       if (file->isEmpty()) {
         KST::dataSourceList.lock().unlock();
-        KMessageBox::sorry(this, i18n("The file does not contain data."));
+        QMessageBox::warning(this, i18n("Kst"), i18n("The file does not contain data."));
         return false;
       }
       KST::dataSourceList.append(file);
@@ -481,7 +481,7 @@ bool KstMatrixDialog::editSingleRMatrix(KstRMatrixPtr rmp) {
 
     pField = _w->_field->currentText();
     if (!file->isValidMatrix(pField)) {
-      KMessageBox::sorry(this, i18n("The requested field is not defined for the requested file."));
+      QMessageBox::warning(this, i18n("Kst"), i18n("The requested field is not defined for the requested file."));
       file->unlock();
       return false;
     }
@@ -616,7 +616,7 @@ bool KstMatrixDialog::editSingleSMatrix(KstSMatrixPtr smp) {
   smp->unlock();
 
   if (!ok5 || !ok6) {
-    KMessageBox::sorry(this, i18n("Gradient values are invalid.  Ensure only decimal values are entered."));
+    QMessageBox::warning(this, i18n("Kst"), i18n("Gradient values are invalid.  Ensure only decimal values are entered."));
     return false;
   }
 
@@ -687,7 +687,7 @@ bool KstMatrixDialog::editObject() {
       }
     }
     if (!didEdit) {
-      KMessageBox::sorry(this, i18n("Select one or more objects to edit."));
+      QMessageBox::warning(this, i18n("Kst"), i18n("Select one or more objects to edit."));
       return false;
     }
   } else {
@@ -740,12 +740,12 @@ bool KstMatrixDialog::editObject() {
 
 bool KstMatrixDialog::checkParameters(bool ok1, bool ok2, bool ok3, bool ok4, double xStep, double yStep) {
   if (!(ok1 && ok2 && ok3 && ok4)) {
-    KMessageBox::sorry(this, i18n("One or more grid parameters have invalid values.  Ensure that only decimal values are entered."));
+    QMessageBox::warning(this, i18n("Kst"), i18n("One or more grid parameters have invalid values.  Ensure that only decimal values are entered."));
     return false;
   }
 
   if (xStep <= 0 || yStep <= 0) {
-    KMessageBox::sorry(this, i18n("Invalid step size entered.  Ensure the step sizes are positive."));
+    QMessageBox::warning(this, i18n("Kst"), i18n("Invalid step size entered.  Ensure the step sizes are positive."));
     return false;
   }
 

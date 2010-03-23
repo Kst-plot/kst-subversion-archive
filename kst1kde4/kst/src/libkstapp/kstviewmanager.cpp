@@ -19,10 +19,10 @@
 
 #include <QStack>
 #include <qdragobject.h>
+#include <qmessagebox.h>
 
 #include "ksdebug.h"
 #include <klistview.h>
-#include <kmessagebox.h>
 #include <kmultipledrag.h>
 #include <kstandarddirs.h>
 
@@ -545,7 +545,7 @@ void KstViewManager::edit_I() {
       }
     }
   } else {
-    KMessageBox::sorry(this, i18n("An item must be selected to edit."));
+    QMessageBox::warning(this, i18n("Kst"), i18n("An item must be selected to edit."));
   }
 }
 
@@ -562,7 +562,7 @@ void KstViewManager::rename_I() {
       }
     }
   } else {
-    KMessageBox::sorry(this, i18n("An item must be selected to edit."));
+    QMessageBox::warning(this, i18n("Kst"), i18n("An item must be selected to edit."));
   }
 }
 
@@ -600,7 +600,7 @@ void KstViewManager::delete_I() {
       }
     }
   } else {
-    KMessageBox::sorry(this, i18n("An item must be selected to delete."));
+    QMessageBox::warning(this, i18n("Kst"), i18n("An item must be selected to delete."));
   }
 }
 

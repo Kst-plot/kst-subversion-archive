@@ -14,8 +14,8 @@
 #include <qgroupbox.h>
 #include <qvaluelist.h>
 #include <qradiobutton.h>
+#include <qcombobox.h>
 
-#include <kcombobox.h>
 #include <kcolorcombo.h>
 
 #include "kst.h"
@@ -27,8 +27,8 @@
 #include "kstrvector.h"
 
 KstChooseColorDialog::KstChooseColorDialog(QWidget* parent,
-              const char* name, bool modal, WFlags fl)
-  : QDialog(parent, name, modal, fl) {
+              const char* name, bool modal, Qt::WindowFlags fl)
+  : QDialog(parent, fl) {
   setupUi(this);
   xVector->setChecked(true);
   connect(OK, SIGNAL(clicked()), this, SLOT(applyColors()));  

@@ -22,11 +22,9 @@
 #include <qspinbox.h>
 #include <qlistbox.h>
 #include <qvbox.h>
-
+#include <qmessagebox.h>
 // include files for KDE
-#include <kcombobox.h>
 #include "ksdebug.h"
-#include <kmessagebox.h>
 
 // application specific includes
 #include "kstvvdialog_i.h"
@@ -338,12 +336,12 @@ bool KstVvDialog::newObject() {
   }
 
   if (_w->_xVector->selectedVector().isEmpty()) {
-    KMessageBox::sorry(this, i18n("New VectorView not made: define X vector first."));
+    QMessageBox::warning(this, i18n("Kst"), i18n("New VectorView not made: define X vector first."));
     return false;
   }
 
   if (_w->_yVector->selectedVector().isEmpty()) {
-    KMessageBox::sorry(this, i18n("New VectorView not made: define Y vector first."));
+    QMessageBox::warning(this, i18n("Kst"), i18n("New VectorView not made: define Y vector first."));
     return false;
   }
 
@@ -523,7 +521,7 @@ bool KstVvDialog::editSingleObject(KstVectorViewPtr vvPtr) {
   if (vvPtr->recursion()) {
     vvPtr->setRecursed(true);
     vvPtr->unlock();
-    KMessageBox::error(this, i18n("There is a recursion resulting from the vector view you entered."));
+    QMessageBox::critical(this, i18n("Kst"), i18n("There is a recursion resulting from the vector view you entered."));
     return false;
   }
 
@@ -568,7 +566,7 @@ bool KstVvDialog::editObject() {
       }
     }
     if (!didEdit) {
-      KMessageBox::sorry(this, i18n("Select one or more objects to edit."));
+      QMessageBox::warning(this, i18n("Kst"), i18n("Select one or more objects to edit."));
       return false;
     }
   } else {

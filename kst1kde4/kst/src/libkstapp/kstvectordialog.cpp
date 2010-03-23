@@ -24,12 +24,12 @@
 #include <qradiobutton.h>
 #include <qspinbox.h>
 #include <qvbox.h>
+#include <qmessagebox.h>
 
 #include <kdialogbase.h>
 #include <kfiledialog.h>
 #include <klineedit.h>
 #include <klocale.h>
-#include <kmessagebox.h>
 #include <knuminput.h>
 #include <kurlcompletion.h>
 #include <kurlrequester.h>
@@ -407,12 +407,12 @@ bool KstVectorDialog::newObject() {
         file = KstDataSource::loadSource(_w->FileName->url());
         if (!file || !file->isValid()) {
           KST::dataSourceList.lock().unlock();
-          KMessageBox::sorry(this, i18n("The file could not be loaded."));
+          QMessageBox::warning(this, i18n("Kst"), i18n("The file could not be loaded."));
           return false;
         }
         if (file->isEmpty()) {
           KST::dataSourceList.lock().unlock();
-          KMessageBox::sorry(this, i18n("The file does not contain data."));
+          QMessageBox::warning(this, i18n("Kst"), i18n("The file does not contain data."));
           return false;
         }
         KST::dataSourceList.append(file);
@@ -424,7 +424,7 @@ bool KstVectorDialog::newObject() {
     file->readLock();
     if (!file->isValidField(_w->Field->currentText())) {
       file->unlock();
-      KMessageBox::sorry(this, i18n("The requested field is not defined for the requested file."));
+      QMessageBox::warning(this, i18n("Kst"), i18n("The requested field is not defined for the requested file."));
       return false;
     }
 
@@ -438,7 +438,7 @@ bool KstVectorDialog::newObject() {
       f0 = file->sampleForTimeLarge(_w->_kstDataRange->f0DateTimeValue(), &ok);
       if (!ok) {
         file->unlock();
-        KMessageBox::sorry(this, i18n("The requested field or file could not use the specified date."));
+        QMessageBox::warning(this, i18n("Kst"), i18n("The requested field or file could not use the specified date."));
         return false;
       }
     } else {
@@ -541,12 +541,12 @@ bool KstVectorDialog::editSingleObjectRV(KstVectorPtr vcPtr) {
       file = KstDataSource::loadSource(_w->FileName->url());
       if (!file || !file->isValid()) {
         KST::dataSourceList.lock().unlock();
-        KMessageBox::sorry(this, i18n("The file could not be opened."));
+        QMessageBox::warning(this, i18n("Kst"), i18n("The file could not be opened."));
         return false;
       }
       if (file->isEmpty()) {
         KST::dataSourceList.lock().unlock();
-        KMessageBox::sorry(this, i18n("The file does not contain data."));
+        QMessageBox::warning(this, i18n("Kst"), i18n("The file does not contain data."));
         return false;
       }
       KST::dataSourceList.append(file);
@@ -578,7 +578,7 @@ bool KstVectorDialog::editSingleObjectRV(KstVectorPtr vcPtr) {
     if (_fileNameDirty) {
       pField = _w->Field->currentText();
       if (!file->isValidField(pField)) {
-        KMessageBox::sorry(this, i18n("The requested field is not defined for the requested file."));
+        QMessageBox::warning(this, i18n("Kst"), i18n("The requested field is not defined for the requested file."));
         file->unlock();
         return false;
       }
@@ -597,7 +597,7 @@ bool KstVectorDialog::editSingleObjectRV(KstVectorPtr vcPtr) {
         f0 = file->sampleForTime(_w->_kstDataRange->f0DateTimeValue(), &ok);
         if (!ok) {
           file->unlock();
-          KMessageBox::sorry(this, i18n("The requested field or file could not use the specified date."));
+          QMessageBox::warning(this, i18n("Kst"), i18n("The requested field or file could not use the specified date."));
           return false;
         }
       } else {
@@ -731,7 +731,7 @@ bool KstVectorDialog::editObject() {
       }
     }
     if (!didEdit) {
-      KMessageBox::sorry(this, i18n("Select one or more objects to edit."));
+      QMessageBox::warning(this, i18n("Kst"), i18n("Select one or more objects to edit."));
       return false;
     }
   } else {

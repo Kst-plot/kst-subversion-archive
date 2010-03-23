@@ -22,7 +22,7 @@
 #include <qspinbox.h>
 #include <qtimer.h>
 
-#include <kcombobox.h>
+#include <qcombobox.h>
 #include <knuminput.h>
 
 #include "datarangewidget.h"
@@ -31,8 +31,8 @@
 #include "kstrvector.h"
 
 KstChangeNptsDialog::KstChangeNptsDialog(
-  QWidget* parent, const char* name, bool modal, WFlags fl)
-: QDialog(parent, name, modal, fl) {
+  QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl)
+: QDialog(parent, fl) {
   setupUi(this);
 
   connect(Clear, SIGNAL(clicked()), this, SLOT(selectNone()));

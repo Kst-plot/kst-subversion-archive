@@ -29,10 +29,10 @@
 #include <qtooltip.h>
 #include <qvbox.h>
 #include <qwhatsthis.h>
+#include <qmessagebox.h>
 
 #include <kcolorbutton.h>
 #include <klocale.h>
-#include <kmessagebox.h>
 
 #include "curveappearancewidget.h"
 #include "kst.h"
@@ -579,7 +579,7 @@ bool KstPluginDialog::newObject() {
       plugin->setTagName(KstObjectTag(tagName, KstObjectTag::globalTagContext));
 
       if (!saveInputs(plugin, pPtr)) {
-        KMessageBox::sorry(this, i18n("There is an error in the inputs you entered."));
+        QMessageBox::warning(this, i18n("Kst"), i18n("There is an error in the inputs you entered."));
         plugin = 0L;
         return false;
       }
@@ -587,7 +587,7 @@ bool KstPluginDialog::newObject() {
       plugin->setPlugin(pPtr);
 
       if (!saveOutputs(plugin, pPtr)) {
-        KMessageBox::sorry(this, i18n("There is an error in the outputs you entered."));
+        QMessageBox::warning(this, i18n("Kst"), i18n("There is an error in the outputs you entered."));
         plugin = 0L;
         return false;
       }
@@ -595,7 +595,7 @@ bool KstPluginDialog::newObject() {
   }
 
   if (!plugin || !plugin->isValid()) {
-    KMessageBox::sorry(this, i18n("There is an error in the plugin you entered."));
+    QMessageBox::warning(this, i18n("Kst"), i18n("There is an error in the plugin you entered."));
     return false;
   }
 
@@ -635,7 +635,7 @@ bool KstPluginDialog::editObject() {
 
   // Save the vectors and scalars
   if (!saveInputs(pp, pPtr)) {
-    KMessageBox::sorry(this, i18n("There is an error in the inputs you entered."));
+    QMessageBox::warning(this, i18n("Kst"),i18n("There is an error in the inputs you entered."));
     return false;
   }
 
@@ -644,19 +644,19 @@ bool KstPluginDialog::editObject() {
   }
 
   if (!saveOutputs(pp, pPtr)) {
-    KMessageBox::sorry(this, i18n("There is an error in the outputs you entered."));
+    QMessageBox::warning(this, i18n("Kst"),i18n("There is an error in the outputs you entered."));
     return false;
   }
 
   if (!pp->isValid()) {
-    KMessageBox::sorry(this, i18n("There is an error in the plugin you entered."));
+    QMessageBox::warning(this, i18n("Kst"),i18n("There is an error in the plugin you entered."));
     return false;
   }
 
   pp->setRecursed(false);
   if (pp->recursion()) {
     pp->setRecursed(true);
-    KMessageBox::sorry(this, i18n("There is a recursion resulting from the plugin you entered."));
+    QMessageBox::warning(this, i18n("Kst"),i18n("There is a recursion resulting from the plugin you entered."));
     return false;
   }
 

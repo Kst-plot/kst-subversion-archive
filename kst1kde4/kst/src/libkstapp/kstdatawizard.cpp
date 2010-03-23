@@ -29,10 +29,10 @@
 #include <qstring.h>
 #include <qtimer.h>
 #include <qtooltip.h>
+#include <qmessagebox.h>
 
 #include <kfiledialog.h>
 #include <kiconloader.h>
-#include <kmessagebox.h>
 #include <knuminput.h>
 #include <kurlcompletion.h>
 
@@ -744,10 +744,10 @@ bool KstDataWizard::checkAvailableMemory(KstDataSourcePtr &ds, KstFrameSize f0Va
     }
 
     if (strMemoryRequested != strMemoryAvailable) {
-      KMessageBox::sorry(this, i18n("You requested to read in over %1 of data but it seems that you have approximately only %2 of usable memory available. You cannot load this much data.").arg(strMemoryRequested).arg(strMemoryAvailable));
+      QMessageBox::warning(this, i18n("Kst"), i18n("You requested to read in over %1 of data but it seems that you have approximately only %2 of usable memory available. You cannot load this much data.").arg(strMemoryRequested).arg(strMemoryAvailable));
       rc = false;
     } else {
-      if (KMessageBox::questionYesNo(this, i18n("You requested to read in approximately %1 of data but it seems that you have slightly less usable memory than this available. Would you like to try and load the data anyway?").arg(strMemoryRequested)) == KMessageBox::Yes) {
+      if (QMessageBox::warning(this, i18n("Kst"), i18n("You requested to read in approximately %1 of data but it seems that you have slightly less usable memory than this available. Would you like to try and load the data anyway?").arg(strMemoryRequested)) == QMessageBox::Yes) {
         rc = true;
       } else {
         rc = false;
@@ -836,7 +836,7 @@ void KstDataWizard::finished()
       ds = KstDataSource::loadSource(_file);
     }
     if (!ds) {
-      KMessageBox::sorry(this, i18n("<qt>Sorry, unable to load the data file '<b>%1</b>'.").arg(_file));
+      QMessageBox::warning(this, i18n("Kst"), i18n("<qt>Sorry, unable to load the data file '<b>%1</b>'.").arg(_file));
 
       return;
     }

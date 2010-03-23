@@ -24,10 +24,10 @@
 #include <qstyle.h>
 #include <qlistbox.h>
 #include <qvbox.h>
+#include <qcombobox.h>
+#include <qmessagebox.h>
 
-#include <kcombobox.h>
 #include "ksdebug.h"
-#include <kmessagebox.h>
 
 #include "ksthsdialog_i.h"
 #include "curveappearancewidget.h"
@@ -189,7 +189,7 @@ bool KstHsDialog::newObject() {
   }
 
   if (_w->_vector->selectedVector().isEmpty()) {
-    KMessageBox::sorry(this, i18n("New Histogram not made: define vectors first."));
+    QMessageBox::warning(this, i18n("Kst"), i18n("New Histogram not made: define vectors first."));
     return false;
   }
 
@@ -203,13 +203,13 @@ bool KstHsDialog::newObject() {
   }
 
   if (new_max == new_min) {
-    KMessageBox::sorry(this, i18n("Max and Min can not be equal."));
+    QMessageBox::warning(this, i18n("kst"), i18n("Max and Min can not be equal."));
     return false;
   }
 
   int new_n_bins = _w->N->text().toInt();
   if (new_n_bins < 1) {
-    KMessageBox::sorry(this, i18n("You must have one or more bins in a histogram."));
+    QMessageBox::warning(this, i18n("kst"), i18n("You must have one or more bins in a histogram."));
     return false;
   }
 
@@ -330,14 +330,14 @@ bool KstHsDialog::editSingleObject(KstHistogramPtr hsPtr) {
   }
 
   if (new_max == new_min) {
-    KMessageBox::sorry(this, i18n("Max and Min can not be equal."));
+    QMessageBox::warning(this, i18n("kst"), i18n("Max and Min can not be equal."));
     _w->Min->setFocus();
     return false;
   }
 
   int new_n_bins = _w->N->text().toInt();
   if (_nDirty && new_n_bins < 1) {
-    KMessageBox::sorry(this, i18n("You must have one or more bins in a histogram."));
+    QMessageBox::warning(this, i18n("kst"), i18n("You must have one or more bins in a histogram."));
     _w->N->setFocus();
     return false;
   }
@@ -378,7 +378,7 @@ bool KstHsDialog::editSingleObject(KstHistogramPtr hsPtr) {
   if (hsPtr->recursion()) {
     hsPtr->setRecursed(true);
     hsPtr->unlock();
-    KMessageBox::error(this, i18n("There is a recursion resulting from the histogram you entered."));
+    QMessageBox::critical(this, i18n("kst"), i18n("There is a recursion resulting from the histogram you entered."));
     return false;
   }
 
@@ -417,7 +417,7 @@ bool KstHsDialog::editObject() {
       }
     }
     if (!didEdit) {
-      KMessageBox::sorry(this, i18n("Select one or more objects to edit."));
+      QMessageBox::warning(this, i18n("kst"), i18n("Select one or more objects to edit."));
       return false;
     }
   } else {

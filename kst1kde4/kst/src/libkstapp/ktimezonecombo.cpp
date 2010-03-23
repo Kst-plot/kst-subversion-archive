@@ -20,9 +20,9 @@
 
 #include <qlistbox.h>
 #include <qmemarray.h>
+#include <qcombobox.h>
 
 #include <klocale.h>
-#include <kcombobox.h>
 
 #include "ktimezonecombo.h"
 #include "ksttimezones.h"
@@ -35,7 +35,7 @@ class KTimezoneCombo::Private {
 
 
 KTimezoneCombo::KTimezoneCombo(QWidget *parent, const char *name, KstTimezones *db)
-: KComboBox(parent, name), d(new Private) {
+: QComboBox(parent), d(new Private) {
   bool userDb = db != 0L;
   if (!userDb) {
     db = new KstTimezones;

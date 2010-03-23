@@ -19,7 +19,7 @@
 #ifndef KSTCHANGENPTSDIALOGI_H
 #define KSTCHANGENPTSDIALOGI_H
 
-#include "changenptsdialog.h"
+#include "ui_changenptsdialog.h"
 
 class KstChangeNptsDialog : public QDialog, public Ui::KstChangeNptsDialog {
     Q_OBJECT

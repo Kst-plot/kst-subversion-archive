@@ -19,8 +19,8 @@
 #include <qstring.h>
 #include <qtextedit.h>
 #include <qwhatsthis.h>
+#include <qcombobox.h>
 
-#include <kcombobox.h>
 #include <klocale.h>
 
 #include "kstviewlabelwidget.h"

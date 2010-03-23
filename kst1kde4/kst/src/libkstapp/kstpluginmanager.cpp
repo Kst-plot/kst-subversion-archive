@@ -23,6 +23,7 @@
 #include <qlistview.h>
 #include <qradiobutton.h>
 #include <qregexp.h>
+#include <qmessagebox.h>
 
 // include files for KDE
 #include <kconfig.h>
@@ -30,7 +31,6 @@
 #include <kimageio.h>
 #include <kio/netaccess.h>
 #include <klocale.h>
-#include <kmessagebox.h>
 #include <kstandarddirs.h>
 #include <kurlrequester.h>
 
@@ -80,7 +80,7 @@ void KstPluginManager::install() {
 #else
   if (!KIO::NetAccess::download(xmlfile, tmpFile)) {
 #endif
-    KMessageBox::error(this, i18n("Unable to access file %1.").arg(xmlfile.prettyURL()), i18n("KST Plugin Loader"));
+    QMessageBox::critical(this, i18n("Kst"),i18n("Unable to access file %1.").arg(xmlfile.prettyURL()), i18n("KST Plugin Loader"));
     return;
   }
 
@@ -88,7 +88,7 @@ void KstPluginManager::install() {
 
   if (parser.parseFile(tmpFile)) {
     KIO::NetAccess::removeTempFile(tmpFile);
-    KMessageBox::error(this, i18n("Invalid plugin file."), i18n("KST Plugin Loader"));
+    QMessageBox::critical(this, i18n("Kst"),i18n("Invalid plugin file."), i18n("KST Plugin Loader"));
     return;
   }
 
@@ -106,7 +106,7 @@ void KstPluginManager::install() {
 
   if (!KIO::NetAccess::dircopy(sofile, pathURL, this)) {
     KIO::NetAccess::removeTempFile(tmpFile);
-    KMessageBox::error(this, i18n("Unable to copy plugin file %1 to %2.").arg(sofile.prettyURL()).arg(pathURL.prettyURL()), i18n("KST Plugin Loader"));
+    QMessageBox::critical(this, i18n("Kst"), i18n("Unable to copy plugin file %1 to %2.").arg(sofile.prettyURL()).arg(pathURL.prettyURL()), i18n("KST Plugin Loader"));
     return;
   }
 
@@ -118,7 +118,7 @@ void KstPluginManager::install() {
 #else
   if (!KIO::NetAccess::dircopy(tmpFileURL, pathURL)) {
 #endif
-    KMessageBox::error(this, i18n("Internal temporary file %1 could not be copied to plugin directory %2.").arg(tmpFile).arg(path), i18n("KST Plugin Loader"));
+    QMessageBox::critical(this, i18n("Kst"), i18n("Internal temporary file %1 could not be copied to plugin directory %2.").arg(tmpFile).arg(path), i18n("KST Plugin Loader"));
   }
 
   KIO::NetAccess::removeTempFile(tmpFile);
@@ -132,9 +132,9 @@ void KstPluginManager::remove() {
     return;
   }
 
-  int rc = KMessageBox::questionYesNo(this, i18n("Are you sure you wish to remove the plugin \"%1\" from the system?").arg(item->text(COLUMN_READABLE_NAME)), i18n("KST Plugin Loader"));
+  int rc = QMessageBox::question(this, i18n("Kst"),i18n("Are you sure you wish to remove the plugin \"%1\" from the system?").arg(item->text(COLUMN_READABLE_NAME)), i18n("KST Plugin Loader"));
 
-  if (rc != KMessageBox::Yes) {
+  if (rc != QMessageBox::Yes) {
     return;
   }
 

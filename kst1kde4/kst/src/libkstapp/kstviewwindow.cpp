@@ -20,9 +20,9 @@
 #include <qpainter.h>
 #include <qpaintdevicemetrics.h>
 #include <qstylesheet.h>
+#include <qmessagebox.h>
 
 // include files for KDE
-#include <kmessagebox.h>
 #include <kprinter.h>
 
 // application specific includes
@@ -421,7 +421,7 @@ void KstViewWindow::setCaption(const QString& caption) {
 
 void KstViewWindow::closeEvent(QCloseEvent *e) {
   if (KstSettings::globalSettings()->promptWindowClose && !view()->children().isEmpty()) {
-    if (KMessageBox::warningYesNo(this, i18n("Are you sure you want to close window '%1'?\nClosing a window deletes all plots in the window.").arg(caption())) != KMessageBox::Yes) {
+    if (QMessageBox::warning(this, i18n("Kst"), i18n("Are you sure you want to close window '%1'?\nClosing a window deletes all plots in the window.").arg(caption())) != QMessageBox::Yes) {
       e->ignore();
       return;
     }

@@ -24,16 +24,18 @@
 #include <qtoolbutton.h>
 #include <qstylefactory.h>
 #include <qstyle.h>
+#include <qcombobox.h>
+#include <qmessagebox.h>
 
 static QStyle *windowsStyle = 0;
 
 // include files for KDE
 #include "ksdebug.h"
 #include <klistview.h>
-#include <kmessagebox.h>
+
 #include <kinputdialog.h>
 #include <kstandarddirs.h>
-#include <kcombobox.h>
+
 
 #include <klistviewsearchline.h>
 
@@ -643,7 +645,7 @@ void KstObjectItem::activateHint(int id) {
         KST::dataObjectList.lock().unlock();
         emit updated();
       } else {
-        KMessageBox::sorry(KstApp::inst(), i18n("Unable to create quick curve."));
+        QMessageBox::warning(KstApp::inst(), i18n("Kst"), i18n("Unable to create quick curve."));
       }
       break;
     }
@@ -1236,7 +1238,7 @@ void KstDataManager::delete_I() {
   } else {
     // Don't prompt for base curves
     KstBaseCurvePtr bc = kst_cast<KstBaseCurve>(koi->dataObject());
-    if (bc || KMessageBox::warningYesNo(this, i18n("There are other objects in memory that depend on %1.  Do you wish to delete them too?").arg(koi->tag().tag())) == KMessageBox::Yes) {
+    if (bc || QMessageBox::warning(this, i18n("Kst"), i18n("There are other objects in memory that depend on %1.  Do you wish to delete them too?").arg(koi->tag().tag())) == QMessageBox::Yes) {
 
       if (qi->rtti() == RTTI_OBJ_OBJECT) {
         koi->dataObject()->deleteDependents();
@@ -1251,7 +1253,7 @@ void KstDataManager::delete_I() {
           KST::vectorList.lock().unlock();
           doUpdates();
         } else {
-          KMessageBox::sorry(this, i18n("Unknown error deleting data vector."));
+          QMessageBox::warning(this, i18n("Kst"), i18n("Unknown error deleting data vector."));
         }
       } else if (qi->rtti() == RTTI_OBJ_STATIC_VECTOR) {
         KstSVectorPtr x = kst_cast<KstSVector>(*KST::vectorList.findTag(koi->tag().tagString()));

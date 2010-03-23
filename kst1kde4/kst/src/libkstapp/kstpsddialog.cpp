@@ -22,8 +22,8 @@
 #include <qlistbox.h>
 #include <qspinbox.h>
 #include <qvbox.h>
+#include <qcombobox.h>
 
-#include <kcombobox.h>
 #include <knuminput.h>
 #include "ksdebug.h"
 
@@ -180,7 +180,7 @@ bool KstPsdDialog::newObject() {
   }
 
   if (_w->_vector->selectedVector().isEmpty()) {
-    QMessageBox::sorry(this, i18n("Kst"), i18n("New spectrum not made: define vectors first."));
+    QMessageBox::warning(this, i18n("Kst"), i18n("New spectrum not made: define vectors first."));
     return false;
   }
 
@@ -363,7 +363,7 @@ bool KstPsdDialog::editSingleObject(KstPSDPtr psPtr) {
   if (psPtr->recursion()) {
     psPtr->setRecursed(true);
     psPtr->unlock();
-    KMessageBox::error(this, i18n("There is a recursion resulting from the spectrum  you entered."));
+    QMessageBox::crtical(this, i18n("Kst"), i18n("There is a recursion resulting from the spectrum  you entered."));
     return false;
   }
 
@@ -403,7 +403,7 @@ bool KstPsdDialog::editObject() {
       }
     } 
     if (!didEdit) {
-      KMessageBox::sorry(this, i18n("Select one or more objects to edit."));
+      QMessageBox::warning(this, i18n("Kst"), i18n("Select one or more objects to edit."));
       return false;  
     }
   } else {

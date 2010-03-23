@@ -22,11 +22,11 @@
 #include <QListBox>
 #include <QSpinBox>
 #include <QVBox>
+#include <qcombobox.h>
+#include <qmessagebox.h>
 
-#include <kcombobox.h>
 #include "ksdebug.h"
 #include <knuminput.h>
-#include <kmessagebox.h>
 
 #include "fftoptionswidget.h"
 #include "colorpalettewidget.h"
@@ -54,7 +54,7 @@ KstCsdDialog *KstCsdDialog::globalInstance() {
 }
 
 
-KstCsdDialog::KstCsdDialog(QWidget* parent, const char* name, bool modal, Qt::WFlags fl)
+KstCsdDialog::KstCsdDialog(QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl)
 : KstDataDialog(parent, name, modal, fl) {
   _w = new CSDDialogWidget(_contents);
   _w->setupUi(parent);
@@ -168,7 +168,7 @@ bool KstCsdDialog::newObject() {
   }
 
   if (_w->_vector->selectedVector().isEmpty()) {
-    KMessageBox::sorry(this, i18n("New spectrogram not made: define vectors first."));
+    QMessageBox::warning(this, i18n("Kst"), i18n("New spectrogram not made: define vectors first."));
     return false;
   }
 
@@ -346,7 +346,7 @@ bool KstCsdDialog::editSingleObject(KstCSDPtr csPtr) {
   if (csPtr->recursion()) {
     csPtr->setRecursed(true);
     csPtr->unlock();
-    KMessageBox::error(this, i18n("There is a recursion resulting from the spectrogram you entered."));
+    QMessageBox::warning(this, i18n("Kst"), i18n("There is a recursion resulting from the spectrogram you entered."));
     return false;
   }
 
@@ -396,7 +396,7 @@ bool KstCsdDialog::editObject() {
       }
     }
     if (!didEdit) {
-      KMessageBox::sorry(this, i18n("Select one or more objects to edit."));
+      QMessageBox::warning(this, i18n("Kst"), i18n("Select one or more objects to edit."));
       return false; 
     }
   } else {

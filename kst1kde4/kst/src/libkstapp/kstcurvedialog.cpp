@@ -22,8 +22,8 @@
 #include <qspinbox.h>
 #include <qvbox.h>
 #include <qradiobutton.h>
+#include <qcombobox.h>
 
-#include <kcombobox.h>
 #include <kcolorbutton.h>
 #include "ksdebug.h"
 

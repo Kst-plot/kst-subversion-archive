@@ -23,7 +23,6 @@
 
 #include <kfiledialog.h>
 #include <klocale.h>
-#include <kmessagebox.h>
 #include <ktempfile.h>
 #include <kio/netaccess.h>
 #include <kstandarddirs.h>
@@ -93,15 +92,15 @@ void KstVectorSaveDialog::save() {
 
           tf.setAutoDelete(true);
           if (0 != KstData::self()->vectorsToFile(toSave, tf.file(), interpolate)) {
-            KMessageBox::sorry(this, i18n("Error saving vector to %1.").arg(url.prettyURL()), i18n("Kst"));
+            QMessageBox::warning(this, i18n("Kst"), i18n("Error saving vector to %1.").arg(url.prettyURL()), i18n("Kst"));
             return;
           }
           tf.sync();
           tf.close();
 
           if (KIO::NetAccess::exists(url, false, this)) {
-            int rc = KMessageBox::warningYesNo(this, i18n("File %1 exists.  Overwrite?").arg(url.prettyURL()), i18n("Kst"));
-            if (rc == KMessageBox::No) {
+            int rc = QMessageBox::warning(this, i18n("Kst"), i18n("File %1 exists.  Overwrite?").arg(url.prettyURL()), i18n("Kst"));
+            if (rc == QMessageBox::No) {
               return;
             }
           }
@@ -123,15 +122,15 @@ void KstVectorSaveDialog::save() {
             KTempFile tf(locateLocal("tmp", "kstvectors"), "txt");
             tf.setAutoDelete(true);
             if (0 != KstData::self()->vectorToFile(*i, tf.file())) {
-              KMessageBox::sorry(this, i18n("Error saving vector to %1.").arg(url2.prettyURL()), i18n("Kst"));
+              QMessageBox::warning(this, i18n("Kst"), i18n("Error saving vector to %1.").arg(url2.prettyURL()), i18n("Kst"));
               return;
             }
             tf.sync();
             tf.close();
 
             if (KIO::NetAccess::exists(url2, false, this)) {
-              int rc = KMessageBox::warningYesNo(this, i18n("File %1 exists.  Overwrite?").arg(url2.prettyURL()), i18n("Kst"));
-              if (rc == KMessageBox::No) {
+              int rc = QMessageBox::warning(this, i18n("Kst"), i18n("File %1 exists.  Overwrite?").arg(url2.prettyURL()), i18n("Kst"));
+              if (rc == QMessageBox::No) {
                 continue;
               }
             }

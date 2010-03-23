@@ -28,11 +28,11 @@
 #include <qpainter.h>
 #include <qspinbox.h>
 #include <qstyle.h>
+#include <Qmessagebox.h>
 
 #include <kcolorbutton.h>
 #include <kfontcombo.h>
 #include <klineedit.h>
-#include <kmessagebox.h>
 #include <knuminput.h>
 #include <kurlrequester.h>
 
@@ -41,8 +41,8 @@
 #include <klocale.h>
 #include <stdio.h>
 
-KstEditViewObjectDialog::KstEditViewObjectDialog(QWidget* parent, const char* name, bool modal, WFlags fl) 
-: KstEditViewObjectDialog(parent, name, modal, fl) {
+KstEditViewObjectDialog::KstEditViewObjectDialog(QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl) 
+: QDialog(parent, fl) {
   setupUi(this);
   connect(_cancel, SIGNAL(clicked()), this, SLOT(close()));
   connect(_apply, SIGNAL(clicked()), this, SLOT(applyClicked()));
@@ -534,7 +534,7 @@ bool KstEditViewObjectDialog::apply() {
     }
 
     if (!applied) {
-      KMessageBox::sorry(this, i18n("Select one or more objects to edit."));
+      QMessageBox::sorry(this, i18n("Kst"), i18n("Select one or more objects to edit."));
     }
   } else {
     applied = true;

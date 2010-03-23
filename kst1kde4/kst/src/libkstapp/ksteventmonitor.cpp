@@ -22,11 +22,10 @@
 #include <qradiobutton.h>
 #include <qtextedit.h>
 #include <qvbox.h>
-#include <QMessageBox.h>
+#include <qMessageBox.h>
 
 // include files for KDE
 #include <klocale.h>
-#include <kmessagebox.h>
 
 // application specific includes
 #include "editmultiplewidget.h"
@@ -210,7 +209,7 @@ bool KstEventMonitor::newObject() {
     event->unlock();
     event = 0L;
 
-    KMessageBox::sorry(this, i18n("There is a syntax error in the equation you entered."));
+    QMessageBox::warning(this, i18n("Kst"), i18n("There is a syntax error in the equation you entered."));
     return false;
   }
 
@@ -241,7 +240,7 @@ bool KstEventMonitor::editSingleObject(EventMonitorEntryPtr emPtr) {
     if (!(_w->radioButtonLogNotice->isChecked() ||
           _w->radioButtonLogWarning->isChecked() ||
           _w->radioButtonLogError->isChecked()) && _w->checkBoxDebug->isChecked()) {
-      KMessageBox::sorry(this, i18n("Select a Debug Log type."));
+      QMessageBox::warning(this, i18n("Kst"), i18n("Select a Debug Log type."));
       emPtr->unlock();
       return false;
     }
@@ -313,7 +312,7 @@ bool KstEventMonitor::editObject() {
       }
     }
     if (!didEdit) {
-      KMessageBox::sorry(this, i18n("Select one or more objects to edit."));
+      QMessageBox::warning(this, i18n("Kst"), i18n("Select one or more objects to edit."));
       return false;
     }
   } else {

@@ -17,11 +17,11 @@
 
 #include <qcheckbox.h> 
 #include <qradiobutton.h>
+#include <QMessageBox>
   
 #include <kcombobox.h>
 #include <klocale.h>
 #include <kiconloader.h>
-#include <kmessagebox.h>
 #include <kurlcompletion.h>
 #include <kurlrequester.h>
 
@@ -41,8 +41,8 @@
 KstChangeFileDialog::KstChangeFileDialog(QWidget* parent,
                                            const char* name,
                                            bool modal,
-                                           Qt::WFlags fl)
-: KstChangeFileDialog(parent, name, modal, fl) {
+                                           Qt::WindowFlags fl)
+: KstChangeFileDialog(parent, fl) {
   setupUi(this);
 
   connect(_clearFilter, SIGNAL(clicked()), _filter, SLOT(clear()));
@@ -263,12 +263,12 @@ bool KstChangeFileDialog::applyFileChange() {
     file = KstDataSource::loadSource(_dataFile->url());
     if (!file || !file->isValid()) {
       KST::dataSourceList.lock().unlock();
-      KMessageBox::sorry(this, i18n("The file could not be loaded."));
+      QMessageBox::warning(this, i18n("Kst"), i18n("The file could not be loaded."));
       return false;
     }
     if (file->isEmpty()) {
       KST::dataSourceList.lock().unlock();
-      KMessageBox::sorry(this, i18n("The file does not contain data."));
+      QMessageBox::warning(this, i18n("Kst"), i18n("The file does not contain data."));
       return false;
     }
     KST::dataSourceList.append(file);
@@ -436,9 +436,9 @@ bool KstChangeFileDialog::applyFileChange() {
 
   if (!invalidSources.isEmpty()) {
     if (invalid == 1) {
-      KMessageBox::sorry(this, i18n("The following field is not defined for the requested file:\n%1").arg(invalidSources));
+      QMessageBox::warning(this, i18n("this"), i18n("The following field is not defined for the requested file:\n%1").arg(invalidSources));
     } else {
-      KMessageBox::sorry(this, i18n("The following fields are not defined for the requested file:\n%1").arg(invalidSources));
+      QMessageBox::warning(this, i18n("this"), i18n("The following fields are not defined for the requested file:\n%1").arg(invalidSources));
     }
   }
 

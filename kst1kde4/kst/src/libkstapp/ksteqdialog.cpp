@@ -23,10 +23,9 @@
 #include <qregexp.h>
 #include <qspinbox.h>
 #include <qvbox.h>
+#include <qcombobox.h>
 
-#include <kcombobox.h>
 #include "ksdebug.h"
-#include <kmessagebox.h>
 
 #include "curveappearancewidget.h"
 #include "curveplacementwidget.h"

@@ -31,7 +31,7 @@
 #include <klineeditdlg.h>
 #endif
 #include <klocale.h>
-#include <kmessagebox.h>
+#include <qmessagebox.h>
 
 // application specific includes
 #include "kst.h"
@@ -1900,7 +1900,7 @@ void KstTopLevelView::cleanupCustom() {
     if (ok) {
       unsigned int numCols = numColsString.toInt();
       if (numCols < 1 || numCols > _children.count()) {
-        KMessageBox::sorry(KstApp::inst(), i18n("Enter a number of columns between 1 and %d").arg(_selectionList.count()));
+        QMessageBox::warning(KstApp::inst(), i18n("Kst"), i18n("Enter a number of columns between 1 and %d").arg(_selectionList.count()));
       } else {
         cleanup(numCols);
 

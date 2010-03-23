@@ -21,7 +21,6 @@
 #include <QMessageBox>
 
 #include <klocale.h>
-#include <kmessagebox.h>
 
 #include "kst.h"
 #include "kstbasicdialog.h"
@@ -300,7 +299,7 @@ bool KstBasicDialog::newObject() {
   }
 
   if (!ptr || !ptr->isValid()) {
-    KMessageBox::sorry(this, i18n("There is an error in the plugin you entered."));
+    QMessageBox::sorry(this, i18n("Kst"), i18n("There is an error in the plugin you entered."));
     return false;
   }
 

@@ -24,7 +24,7 @@
 #include <klocale.h>
 
 #include "kstprintoptionspage.h"
-#include "kstmonochromedialog_i.h"
+#include "kstmonochromedialog.h"
 #include "kst.h"
 
 KstPrintOptionsPage::KstPrintOptionsPage(QWidget *parent, const char *name)
