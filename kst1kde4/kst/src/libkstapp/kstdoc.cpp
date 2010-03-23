@@ -588,14 +588,14 @@ bool KstDoc::openDocument(const QUrl& url, const QString& o_file,
   KST::dataObjectList.lock().unlock();
 
   if (!bitBucket.isEmpty()) {
-    QStringList names;
+    QString names = i18n("The Kst file could not be loaded in its entirety due to missing objects or data.\n";
     for (KstDataObjectList::Iterator i = bitBucket.begin(); i != bitBucket.end(); ++i) {
       names += (*i)->tagName();
     }
 
     QApplication::restoreOverrideCursor();
 
-    KMessageBox::errorList(KstApp::inst(), i18n("The Kst file could not be loaded in its entirety due to missing objects or data."), names);
+    QMessageBox::critical(KstApp::inst(), i18n("Kst"), names);
 
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
   }
