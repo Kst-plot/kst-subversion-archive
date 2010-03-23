@@ -740,11 +740,6 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qcombobox.h</header>
-  </customwidget>
-  <customwidget>
    <class>KUrlRequester</class>
    <extends>QWidget</extends>
    <header>kurlrequester.h</header>

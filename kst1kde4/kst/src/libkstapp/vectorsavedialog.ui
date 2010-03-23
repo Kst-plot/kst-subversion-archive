@@ -117,11 +117,6 @@
    <extends>Q3Frame</extends>
    <header>q3listbox.h</header>
   </customwidget>
-  <customwidget>
-   <class>QComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qcombobox.h</header>
-  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>_vectorList</tabstop>

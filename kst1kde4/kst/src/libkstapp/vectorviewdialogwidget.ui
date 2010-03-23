@@ -448,11 +448,6 @@ of points, interpolation of one or the other will be required.  This combo-box s
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qcombobox.h</header>
-  </customwidget>
-  <customwidget>
    <class>VectorSelector</class>
    <extends>QWidget</extends>
    <header>vectorselector.h</header>

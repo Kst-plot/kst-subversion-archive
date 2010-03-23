@@ -1115,11 +1115,6 @@
    <header>knuminput.h</header>
   </customwidget>
   <customwidget>
-   <class>QComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qcombobox.h</header>
-  </customwidget>
-  <customwidget>
    <class>KColorButton</class>
    <extends>QPushButton</extends>
    <header>kcolorbutton.h</header>
