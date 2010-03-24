@@ -184,7 +184,7 @@ void KstViewWindow::immediatePrintToPng(QDataStream* dataStream, const QSize& si
       view()->resizeForPrint(size);
       view()->paint(paint, QRegion());
 #if QT_VERSION >= 0x030200
-      pixmap.save(dataStream->device(), format.latin1());
+      pixmap.save(dataStream->device(), format.toLatin1());
 #else
       Q_UNUSED(format)
 
@@ -221,7 +221,7 @@ void KstViewWindow::immediatePrintToPng(const QString &filename, const QSize& si
 
       view()->resizeForPrint(size);
       view()->paint(paint, QRegion());
-      if (!pixmap.save(filenameNew, format.latin1())) {
+      if (!pixmap.save(filenameNew, format.toLatin1())) {
         KstDebug::self()->log(i18n("Failed to save image to %1").arg(filename), KstDebug::Warning);
       }
       view()->revertForPrint();

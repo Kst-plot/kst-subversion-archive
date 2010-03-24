@@ -257,26 +257,26 @@ void KstEditViewObjectDialog::updateDefaultWidgets() {
       QWidget* propertyWidget = 0L;
 
       if (widgetType == "QSpinBox") {
-        propertyWidget = new QSpinBox(_propertiesFrame, (propertyName+","+"value").latin1()); 
+        propertyWidget = new QSpinBox(_propertiesFrame, (propertyName+","+"value").toLatin1()); 
         propertyWidget->setProperty("value", _viewObject->property(property->name()));
         if (!_isNew) {
           connect(propertyWidget, SIGNAL(valueChanged(const QString&)), this, SLOT(modified()));
           connect(propertyWidget->child("qt_spinbox_edit"), SIGNAL(textChanged(const QString&)), this, SLOT(modified()));
         }
       } else if (widgetType == "KColorButton") {
-        propertyWidget = new KColorButton(_propertiesFrame, (propertyName+","+"color").latin1());
+        propertyWidget = new KColorButton(_propertiesFrame, (propertyName+","+"color").toLatin1());
         propertyWidget->setProperty("color", _viewObject->property(property->name()));
         if (!_isNew) {
           connect(propertyWidget, SIGNAL(changed(const QColor&)), this, SLOT(modified()));
         }
       } else if (widgetType == "QLineEdit") {
-        propertyWidget = new QLineEdit(_propertiesFrame, (propertyName+","+"text").latin1());
+        propertyWidget = new QLineEdit(_propertiesFrame, (propertyName+","+"text").toLatin1());
         propertyWidget->setProperty("text", _viewObject->property(property->name()));
         if (!_isNew) {
           connect(propertyWidget, SIGNAL(textChanged(const QString&)), this, SLOT(modified()));
         }
       } else if (widgetType == "KURLRequester") {
-        propertyWidget = new KURLRequester(_propertiesFrame, (propertyName+","+"url").latin1());
+        propertyWidget = new KURLRequester(_propertiesFrame, (propertyName+","+"url").toLatin1());
         propertyWidget->setProperty("url", _viewObject->property(property->name()));
         if (!_isNew) {
           connect(propertyWidget, SIGNAL(textChanged(const QString&)), this, SLOT(modified()));
@@ -284,7 +284,7 @@ void KstEditViewObjectDialog::updateDefaultWidgets() {
         }
       } else if (widgetType == "PenStyleWidget") {
         // insert a combobox with QT pen styles
-        QComboBox* combo = new QComboBox(_propertiesFrame, (propertyName+","+"currentItem").latin1());
+        QComboBox* combo = new QComboBox(_propertiesFrame, (propertyName+","+"currentItem").toLatin1());
         fillPenStyleWidget(combo);
         propertyWidget = combo;
         propertyWidget->setProperty("currentItem", _viewObject->property(property->name()));
@@ -292,13 +292,13 @@ void KstEditViewObjectDialog::updateDefaultWidgets() {
           connect(propertyWidget, SIGNAL(activated(int)), this, SLOT(modified()));
         }
       } else if (widgetType == "QCheckBox") {
-        propertyWidget = new QCheckBox(_propertiesFrame, (propertyName+","+"checked").latin1());
+        propertyWidget = new QCheckBox(_propertiesFrame, (propertyName+","+"checked").toLatin1());
         propertyWidget->setProperty("checked", _viewObject->property(property->name()));
         if (!_isNew) {
           connect(propertyWidget, SIGNAL(pressed()), this, SLOT(modified()));
         }
       } else if (widgetType == "KDoubleSpinBox") {
-        KDoubleSpinBox* input = new KDoubleSpinBox(_propertiesFrame, (propertyName+","+"value").latin1());
+        KDoubleSpinBox* input = new KDoubleSpinBox(_propertiesFrame, (propertyName+","+"value").toLatin1());
         input->setPrecision(metaData["precision"].toInt());
         input->setMinValue(metaData["minValue"].toDouble());
         input->setMaxValue(metaData["maxValue"].toDouble());
@@ -316,14 +316,14 @@ void KstEditViewObjectDialog::updateDefaultWidgets() {
           connect(propertyWidget->child("qt_spinbox_edit"), SIGNAL(textChanged(const QString&)), this, SLOT(modified()));
         }
       } else if (widgetType == "KFontCombo") {
-        propertyWidget = new KFontCombo(_propertiesFrame, (propertyName+","+"currentText").latin1());
+        propertyWidget = new KFontCombo(_propertiesFrame, (propertyName+","+"currentText").toLatin1());
         propertyWidget->setProperty("currentText", _viewObject->property(property->name()));  
         if (!_isNew) {
           connect(propertyWidget, SIGNAL(activated(int)), this, SLOT(modified()));
         }
       } else if (widgetType == "HJustifyCombo") {
         // insert a combo box filled with horizontal justifications
-        QComboBox* combo = new QComboBox(_propertiesFrame, (propertyName+","+"currentItem").latin1());
+        QComboBox* combo = new QComboBox(_propertiesFrame, (propertyName+","+"currentItem").toLatin1());
         fillHJustifyWidget(combo);
         propertyWidget = combo;
         propertyWidget->setProperty("currentItem", _viewObject->property(property->name()));
@@ -332,7 +332,7 @@ void KstEditViewObjectDialog::updateDefaultWidgets() {
         }
       } else if (widgetType == "VJustifyCombo") {
         // insert a combo box filled with vertical justifications
-        QComboBox* combo = new QComboBox(_propertiesFrame, (propertyName+","+"currentItem").latin1());
+        QComboBox* combo = new QComboBox(_propertiesFrame, (propertyName+","+"currentItem").toLatin1());
         fillVJustifyWidget(combo);
         propertyWidget = combo;
         propertyWidget->setProperty("currentItem", _viewObject->property(property->name()));
@@ -346,7 +346,7 @@ void KstEditViewObjectDialog::updateDefaultWidgets() {
 
         // also set any additional properties specified by metaData
         for (QMap<QString, QVariant>::ConstIterator it = metaData.begin(); it != metaData.end(); ++it) {
-          propertyWidget->setProperty(it.key().latin1(), it.data());
+          propertyWidget->setProperty(it.key().toLatin1(), it.data());
         }
 
         _grid->addWidget(propertyWidget, i, 1);
@@ -477,7 +477,7 @@ void KstEditViewObjectDialog::applySettings(KstViewObjectPtr viewObject) {
             QString widgetPropertyName = QString((*iter)->name()).section(',', 1, 1);
 
             // get the widget's property and set it on the viewObject
-            viewObject->setProperty(propertyName.latin1(), (*iter)->property(widgetPropertyName.latin1()));
+            viewObject->setProperty(propertyName.toLatin1(), (*iter)->property(widgetPropertyName.toLatin1()));
           }
         } else {
           // get the widget type and property name
@@ -485,7 +485,7 @@ void KstEditViewObjectDialog::applySettings(KstViewObjectPtr viewObject) {
           QString widgetPropertyName = QString((*iter)->name()).section(',', 1, 1);
 
           // get the widget's property and set it on the viewObject
-          viewObject->setProperty(propertyName.latin1(), (*iter)->property(widgetPropertyName.latin1()));
+          viewObject->setProperty(propertyName.toLatin1(), (*iter)->property(widgetPropertyName.toLatin1()));
         }
       }
     }

@@ -294,7 +294,7 @@ void KstFitDialog::generateEntries(bool input, int& cnt, QWidget *parent, QGridL
 
     if (input) {
       if (scalar) {
-        ScalarSelector *w = new ScalarSelector(parent, (*it)._name.latin1());
+        ScalarSelector *w = new ScalarSelector(parent, (*it)._name.toLatin1());
         widget = w;
         connect(w->_scalar, SIGNAL(activated(const QString&)), this, SLOT(updateScalarTooltip(const QString&)));
         connect(widget, SIGNAL(newScalarCreated()), this, SIGNAL(modified()));
@@ -308,7 +308,7 @@ void KstFitDialog::generateEntries(bool input, int& cnt, QWidget *parent, QGridL
           QToolTip::add(w->_scalar, QString::number(p->value()));
         }
       } else if (string) {
-        StringSelector *w = new StringSelector(parent, (*it)._name.latin1());
+        StringSelector *w = new StringSelector(parent, (*it)._name.toLatin1());
         widget = w;
         connect(w->_string, SIGNAL(activated(const QString&)), this, SLOT(updateStringTooltip(const QString&)));
         connect(widget, SIGNAL(newStringCreated()), this, SIGNAL(modified()));
@@ -323,7 +323,7 @@ void KstFitDialog::generateEntries(bool input, int& cnt, QWidget *parent, QGridL
         }
       } else {
         if (fixed) {
-          widget = new QLabel(parent, (*it)._name.latin1());
+          widget = new QLabel(parent, (*it)._name.toLatin1());
           switch (iInputVector) {
             case 0:
               static_cast<QLabel*>(widget)->setText(_xvector);
@@ -337,7 +337,7 @@ void KstFitDialog::generateEntries(bool input, int& cnt, QWidget *parent, QGridL
           }
           iInputVector++;
         } else {
-          VectorSelector *vectorSelector = new VectorSelector(parent, (*it)._name.latin1());
+          VectorSelector *vectorSelector = new VectorSelector(parent, (*it)._name.toLatin1());
           widget = dynamic_cast<QWidget*>(vectorSelector);
           if ((*it)._optional) {
             KstVectorPtr vector;
@@ -349,7 +349,7 @@ void KstFitDialog::generateEntries(bool input, int& cnt, QWidget *parent, QGridL
         }
       }
     } else {
-      widget = new QLineEdit(parent, (*it)._name.latin1());
+      widget = new QLineEdit(parent, (*it)._name.toLatin1());
     }
 
     grid->addWidget(label, cnt, 0);
@@ -378,12 +378,12 @@ bool KstFitDialog::saveInputs(KstCPluginPtr plugin, QExplicitlySharedDataPointer
   const QValueList<Plugin::Data::IOValue>& itable = p->data()._inputs;
   for (QValueList<Plugin::Data::IOValue>::ConstIterator it = itable.begin(); it != itable.end(); ++it) {
     if ((*it)._type == Plugin::Data::IOValue::TableType) {
-      QObject *field = _w->_pluginInputOutputFrame->child((*it)._name.latin1(), "VectorSelector");
+      QObject *field = _w->_pluginInputOutputFrame->child((*it)._name.toLatin1(), "VectorSelector");
       KstVectorPtr v;
       KstReadLocker vl(&KST::vectorList.lock());
 
       if (!field) {
-        field = _w->_pluginInputOutputFrame->child((*it)._name.latin1(), "QLabel");
+        field = _w->_pluginInputOutputFrame->child((*it)._name.toLatin1(), "QLabel");
         assert(field);
         v = *KST::vectorList.findTag(static_cast<QLabel*>(field)->text());
       } else {
@@ -400,7 +400,7 @@ bool KstFitDialog::saveInputs(KstCPluginPtr plugin, QExplicitlySharedDataPointer
         rc = false;
       }
     } else if ((*it)._type == Plugin::Data::IOValue::StringType) {
-      QObject *field = _w->_pluginInputOutputFrame->child((*it)._name.latin1(), "StringSelector");
+      QObject *field = _w->_pluginInputOutputFrame->child((*it)._name.toLatin1(), "StringSelector");
       assert(field);
       StringSelector *ss = static_cast<StringSelector*>(field);
       KstWriteLocker sl(&KST::stringList.lock());
@@ -417,7 +417,7 @@ bool KstFitDialog::saveInputs(KstCPluginPtr plugin, QExplicitlySharedDataPointer
     } else if ((*it)._type == Plugin::Data::IOValue::PidType) {
       // Nothing
     } else if ((*it)._type == Plugin::Data::IOValue::FloatType) {
-      QObject *field = _w->_pluginInputOutputFrame->child((*it)._name.latin1(), "ScalarSelector");
+      QObject *field = _w->_pluginInputOutputFrame->child((*it)._name.toLatin1(), "ScalarSelector");
       assert(field);
       ScalarSelector *ss = static_cast<ScalarSelector*>(field);
       KstWriteLocker sl(&KST::scalarList.lock());

@@ -129,7 +129,7 @@ bool KstFilterDialog::saveInputs(KstCPluginPtr plugin, QExplicitlySharedDataPoin
         }
         plugin->inputVectors().insert((*it)._name, v);
       } else {
-        QObject *field = _w->_pluginInputOutputFrame->child((*it)._name.latin1(), "VectorSelector");
+        QObject *field = _w->_pluginInputOutputFrame->child((*it)._name.toLatin1(), "VectorSelector");
         if (field) {
           VectorSelector *vs = static_cast<VectorSelector*>(field);
           KstVectorPtr v = *KST::vectorList.findTag(vs->selectedVector());
@@ -140,7 +140,7 @@ bool KstFilterDialog::saveInputs(KstCPluginPtr plugin, QExplicitlySharedDataPoin
         }
       }
     } else if ((*it)._type == Plugin::Data::IOValue::StringType) {
-      QObject *field = _w->_pluginInputOutputFrame->child((*it)._name.latin1(), "StringSelector");
+      QObject *field = _w->_pluginInputOutputFrame->child((*it)._name.toLatin1(), "StringSelector");
       if (field) {
         StringSelector *ss = static_cast<StringSelector*>(field);
         KstStringPtr s = *KST::stringList.findTag(ss->selectedString());
@@ -156,7 +156,7 @@ bool KstFilterDialog::saveInputs(KstCPluginPtr plugin, QExplicitlySharedDataPoin
     } else if ((*it)._type == Plugin::Data::IOValue::PidType) {
       // Nothing
     } else {
-      QObject *field = _w->_pluginInputOutputFrame->child((*it)._name.latin1(), "ScalarSelector");
+      QObject *field = _w->_pluginInputOutputFrame->child((*it)._name.toLatin1(), "ScalarSelector");
       if (field) {
         ScalarSelector *ss = static_cast<ScalarSelector*>(field);
         KstScalarPtr s = *KST::scalarList.findTag(ss->selectedScalar());
@@ -360,7 +360,7 @@ void KstFilterDialog::generateEntries(bool input, int& cnt, QWidget *parent, QGr
 
     if (input) {
       if (scalar) {
-        ScalarSelector *w = new ScalarSelector(parent, (*it)._name.latin1());
+        ScalarSelector *w = new ScalarSelector(parent, (*it)._name.toLatin1());
         KstScalarPtr p;
         
         widget = w;
@@ -371,7 +371,7 @@ void KstFilterDialog::generateEntries(bool input, int& cnt, QWidget *parent, QGr
         if (!(*it)._default.isEmpty()) {
           w->_scalar->insertItem((*it)._default);
           w->_scalar->setCurrentText((*it)._default);
-          //printf("default: |%s|\n", (*it)._default.latin1());
+          //printf("default: |%s|\n", (*it)._default.toLatin1());
         }
 
         p = *KST::scalarList.findTag(w->_scalar->currentText());
@@ -383,7 +383,7 @@ void KstFilterDialog::generateEntries(bool input, int& cnt, QWidget *parent, QGr
           p->unlock();
         }
       } else if (string) {
-        StringSelector *w = new StringSelector(parent, (*it)._name.latin1());
+        StringSelector *w = new StringSelector(parent, (*it)._name.toLatin1());
         KstStringPtr p;
 
         widget = w;
@@ -405,15 +405,15 @@ void KstFilterDialog::generateEntries(bool input, int& cnt, QWidget *parent, QGr
         }
       } else {
         if (fixed) {
-          widget = new QLabel(parent, (*it)._name.latin1());
+          widget = new QLabel(parent, (*it)._name.toLatin1());
           static_cast<QLabel*>(widget)->setText(_yvector);
         } else {
-          widget = new VectorSelector(parent, (*it)._name.latin1());
+          widget = new VectorSelector(parent, (*it)._name.toLatin1());
           connect(widget, SIGNAL(newVectorCreated(const QString&)), this, SIGNAL(modified()));
         }
       }
     } else {
-      widget = new QLineEdit(parent, (*it)._name.latin1());
+      widget = new QLineEdit(parent, (*it)._name.toLatin1());
     }
 
     grid->addWidget(label, cnt, 0);

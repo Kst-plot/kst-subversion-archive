@@ -148,7 +148,7 @@ void KstTopLevelView::save(QTextStream& ts, const QString& indent) {
 
   for (int i = 0; i < metaObject()->numProperties(true); i++) {
     ts << indent << "<" << metaObject()->property(i, true)->name() << ">";
-    ts << QStyleSheet::escape(property(metaObject()->property(i, true)->name()).toString().latin1());
+    ts << QStyleSheet::escape(property(metaObject()->property(i, true)->name()).toString().toLatin1());
     ts << "</" << metaObject()->property(i, true)->name() << ">" << endl;
   }
 
