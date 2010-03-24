@@ -536,7 +536,9 @@ bool KstViewObject::removeChild(KstViewObjectPtr obj, bool recursive) {
   bool rc = _children.removeAll(obj) > 0;
 
   if (recursive) {
-    for (KstViewObjectList::Iterator i = _children.begin(); i != _children.end(); ++i) {
+    KstViewObjectList::iterator i;
+  
+    for (i = _children.begin(); i != _children.end(); ++i) {
       rc = (*i)->removeChild(obj, true) && rc;
     }
   }
@@ -549,13 +551,21 @@ bool KstViewObject::removeChild(KstViewObjectPtr obj, bool recursive) {
 
 void KstViewObject::insertChildAfter(const KstViewObjectPtr after, KstViewObjectPtr obj, bool keepAspect) {
   KstViewObjectList::iterator i;
+  bool inserted = false;
 
-  i = _children.find(after);
-  if (i != _children.end()) {
-    _children.insert(i, obj);
-  } else {
+  for (i = _children.begin(); i != _children.end(); ++i) {
+    if (*i == after) {
+      _children.insert(i, obj);
+      inserted = true;
+
+      break;
+    }
+  }
+
+  if (!inserted) {
     _children.prepend(obj);
   }
+
   obj->_parent = this;
 
   for (i = _children.begin(); i != _children.end(); ++i) {
@@ -573,8 +583,10 @@ void KstViewObject::insertChildAfter(const KstViewObjectPtr after, KstViewObject
 
 
 KstViewObjectList KstViewObject::findChildrenType( const QString& type, bool recursive) {
+  KstViewObjectList::Iterator i;
   KstViewObjectList rc;
-  for (KstViewObjectList::Iterator i = _children.begin(); i != _children.end(); ++i) {
+
+  for (i = _children.begin(); i != _children.end(); ++i) {
     if ((*i)->type().compare(type) == 0) {
       rc.append(*i);
     }
@@ -589,7 +601,9 @@ KstViewObjectList KstViewObject::findChildrenType( const QString& type, bool rec
 
 
 void KstViewObject::clearChildren() {
-  for (KstViewObjectList::Iterator i = _children.begin(); i != _children.end(); ++i) {
+  KstViewObjectList::iterator i;
+
+  for (i = _children.begin(); i != _children.end(); ++i) {
     (*i)->_parent = 0L;
   }
   _children.clear();
@@ -607,7 +621,8 @@ KstViewObjectList& KstViewObject::children() {
 
 
 void KstViewObject::resize(const QSize& size) {
-  double xc = _aspect.x;  // preserve position in double precision to avoid wander on resize...
+  KstViewObjectList::iterator i;
+  double xc = _aspect.x;
   double yc = _aspect.y;
 
   setMinimumSize(minimumSize().expandedTo(QSize(_children.count(), _children.count())));
@@ -616,26 +631,30 @@ void KstViewObject::resize(const QSize& size) {
   _aspect.x = xc; // restore position.
   _aspect.y = yc;
   updateFromAspect();
-  for (KstViewObjectList::Iterator i = _children.begin(); i != _children.end(); ++i) {
+  for (i = _children.begin(); i != _children.end(); ++i) {
     (*i)->parentResized();
   }
 }
 
 
 void KstViewObject::resizeForPrint(const QSize& size) {
+  KstViewObjectList::iterator i;
+
   _geomOld = _geom;
   _geom.setSize(size);
   invalidateClipRegion();
-  for (KstViewObjectList::Iterator i = _children.begin(); i != _children.end(); ++i) {
+  for (i = _children.begin(); i != _children.end(); ++i) {
     (*i)->parentResizedForPrint();
   }
 }
 
 
 void KstViewObject::revertForPrint() {
+  KstViewObjectList::Iterator i;
+
   _geom = _geomOld;
   invalidateClipRegion();
-  for (KstViewObjectList::Iterator i = _children.begin(); i != _children.end(); ++i) {
+  for (i = _children.begin(); i != _children.end(); ++i) {
     (*i)->parentRevertedForPrint();
   }
 }
@@ -798,11 +817,11 @@ void KstViewObject::cleanupGridLayout(int cols, KstViewObjectList &childrenCopy)
   int cnt = childrenCopy.count();
 
   if (cols > 0 && cnt > 0) {
-    int row;
-    int col;
-    int rows = ( cnt + cols - 1 ) / cols;
+    KstViewObjectList::iterator it;
     QSize sz;
-
+    int row = 0;
+    int col = 0;
+    int rows = ( cnt + cols - 1 ) / cols;
     int marginLeftPixels = 0;
     int marginRightPixels = 0;
     int marginTopPixels = 0;
@@ -814,6 +833,7 @@ void KstViewObject::cleanupGridLayout(int cols, KstViewObjectList &childrenCopy)
         marginRightPixels = (int)((double)_geom.width() * _margins.right);
       }
     }
+
     if (_margins.top >= 0.0 && _margins.bottom >= 0.0 ) {
       if (_margins.top + _margins.bottom < 0.5) {
         marginTopPixels = (int)((double)_geom.height() * _margins.top);
@@ -824,18 +844,19 @@ void KstViewObject::cleanupGridLayout(int cols, KstViewObjectList &childrenCopy)
     sz.setWidth((_geom.width() - marginLeftPixels - marginRightPixels) / cols);
     sz.setHeight((_geom.height() - marginTopPixels - marginBottomPixels) / rows);
 
-    for (col=0; col<cols; ++col) {
-      for (row=0; row<rows; ++row) {
-        if (col + (row * cols) < cnt) {
-          KstViewObjectPtr plot = childrenCopy[col + (row * cols)];
-          QPoint pt(marginLeftPixels + (sz.width() * col), marginTopPixels + (sz.height() * row));
+    for (it = childrenCopy.begin(); it != childrenCopy.end(); ++it) {
+      KstViewObjectPtr plot;
+      QPoint pt(marginLeftPixels + (sz.width() * col), marginTopPixels + (sz.height() * row));
 
-          plot->move(pt);
-          plot->resize(sz);
-          plot->setDirty();
-        } else {
-          break;
-        }
+      plot = *it;
+      plot->move(pt);
+      plot->resize(sz);
+      plot->setDirty();
+
+      row++;
+      if (row >= rows) {
+        col++;
+        row = 0;
       }
     }
   }
@@ -846,17 +867,22 @@ void KstViewObject::cleanupRandomLayout(int cols, KstViewObjectList &childrenCop
   int cnt = childrenCopy.count();
 
   if (cols > 0 && cnt > 0) {
+    KstViewObjectList::iterator it;
     int rows = ( cnt + cols - 1 ) / cols;
-
-    QMemArray<int> plotLoc(rows * cols); // what plot lives at each grid location
-    QMemArray<int> unAssigned(cnt); // what plots haven't got a home yet?
+    QVector<int> plotLoc(rows * cols); // what plot lives at each grid location
+    QVector<int> unAssigned(cnt); // what plots haven't got a home yet?
     int n_unassigned = 0;
-    int row, col, CR;
-    for (int i = 0; i < rows * cols; ++i) {
+    int row;
+    int col;
+    int CR;
+    int i;
+
+    for (i = 0; i < rows * cols; ++i) {
       plotLoc[i] = -1;
     }
 
-    // put the plots on a grid.  Each plot goes to the closest grid location
+    //
+    // put the plots on a grid. Each plot goes to the closest grid location
     // unless there is another plot which is closer, in which case the 
     // plot gets dumped into an un-assigned list for placement into a
     // random un-filled grid space.
@@ -865,30 +891,58 @@ void KstViewObject::cleanupRandomLayout(int cols, KstViewObjectList &childrenCop
     // NOTE: the choice of grid location assumes a regular grid, which is
     // broken when supressed axis/labels are taken into account.  This
     // could have an effect if the plots are grown by >50%.
-    for (int i = 0; i < cnt; ++i) {
-      row = int( ( childrenCopy[i]->aspectRatio().y + childrenCopy[i]->aspectRatio().h / 2 ) * rows );
-      col = int( childrenCopy[i]->aspectRatio().x * cols + 0.5 );
+    //
+
+    for (it = childrenCopy.begin(); it != childrenCopy.end(); ++it) {
+      row = int( ( (*it)->aspectRatio().y + (*it)->aspectRatio().h / 2 ) * rows );
+      col = int( (*it)->aspectRatio().x * cols + 0.5 );
 
       if (col >= cols) {
-        col = cols-1;
+        col = cols - 1;
       }
+
       if (row >= rows) {
-        row = rows-1;
+        row = rows - 1;
       }
+
       CR = col + row * cols;
-      if (childrenCopy[i]->dirty()) { // newly added plots get no priority
+
+      if ((*it)->dirty()) {
+        //
+        // newly added plots get no priority...
+        //
+
         unAssigned[n_unassigned] = i;
         n_unassigned++;
       } else if (plotLoc[CR] < 0) {
         plotLoc[CR] = i;
-      } else { // another plot is already at this grid point
+      } else {
+        KstViewObjectList::iterator itSub;
+
         //
-        // put the further of the two in the unassigned list using Manhattan distance.
+        // another plot is already at this grid point, so we
+        //  put the further of the two in the unassigned list 
+        //  using Manhattan distance.
         //
-        double d1 = fabs(double(row) - childrenCopy[i]->aspectRatio().y*rows) + 
-            fabs(double(col) - childrenCopy[i]->aspectRatio().x*cols);
-        double d2 = fabs(double(row) - childrenCopy[plotLoc[CR]]->aspectRatio().y*rows) + 
-            fabs(double(col) - childrenCopy[plotLoc[CR]]->aspectRatio().x*cols);
+
+        double d1;
+        double d2;
+        int index = 0;
+
+        d1 = fabs(double(row) - (*it)->aspectRatio().y*rows) + 
+             fabs(double(col) - (*it)->aspectRatio().x*cols);
+        d2 = d1 + 1.0;
+
+        for (itSub = childrenCopy.begin(); itSub != childrenCopy.end(); ++itSub) {
+          if (index == plotLoc[CR]) {
+            d2 = fabs(double(row) - (*itSub)->aspectRatio().y*rows) + 
+                 fabs(double(col) - (*itSub)->aspectRatio().x*cols);
+
+            break;
+          }
+          index++;
+        }
+
         if (d1 >= d2) {
           unAssigned[n_unassigned] = i;
         } else {
@@ -900,29 +954,37 @@ void KstViewObject::cleanupRandomLayout(int cols, KstViewObjectList &childrenCop
     }
 
     //
-    // now dump the unassigned plots in random holes.
-    // Question: should we dump them in the closest holes?
+    // now dump the unassigned plots in random holes...
     //
+
     CR = 0;
-    for (int i = 0; i < n_unassigned; ++i) {
+    for (i = 0; i < n_unassigned; ++i) {
       for (; plotLoc[CR] != -1; ++CR) { }
       plotLoc[CR] = unAssigned[i];
     }
 
-    QMemArray<double> HR(rows);
-    double sum_HR = 0.0;
+    QVector<double> HR(rows);
     KstViewObject *ob;
+    double sum_HR = 0.0;
     double hr;
+    int marginLeftPixels = 0;
+    int marginRightPixels = 0;
+    int marginTopPixels = 0;
+    int marginBottomPixels = 0;
 
     for (row=0; row<rows; row++) {
       HR[row] = 10.0;
+
       for (col=0; col<cols; col++) {
         CR = col + row*cols;
+
         if (plotLoc[CR] > -1) {
+/* xxx
           hr = childrenCopy[plotLoc[CR]]->verticalSizeFactor();
           if (hr < HR[row]) {
             HR[row] = hr;
           }
+*/
         }
       }
       if (HR[row] > 9.0) {
@@ -931,17 +993,13 @@ void KstViewObject::cleanupRandomLayout(int cols, KstViewObjectList &childrenCop
       sum_HR += HR[row];
     }
 
-    int marginLeftPixels = 0;
-    int marginRightPixels = 0;
-    int marginTopPixels = 0;
-    int marginBottomPixels = 0;
-
     if (_margins.left >= 0.0 && _margins.right >= 0.0 ) {
       if (_margins.left + _margins.right < 0.5) {
         marginLeftPixels = (int)((double)_geom.width() * _margins.left);
         marginRightPixels = (int)((double)_geom.width() * _margins.right);
       }
     }
+
     if (_margins.top >= 0.0 && _margins.bottom >= 0.0 ) {
       if (_margins.top + _margins.bottom < 0.5) {
         marginTopPixels = (int)((double)_geom.height() * _margins.top);
@@ -952,6 +1010,7 @@ void KstViewObject::cleanupRandomLayout(int cols, KstViewObjectList &childrenCop
     //
     // now actually move/resize the plots
     //
+
     int w = (_geom.width() - marginLeftPixels - marginRightPixels)/ cols;
     int h = 0;
     int y = marginTopPixels;
@@ -968,34 +1027,49 @@ void KstViewObject::cleanupRandomLayout(int cols, KstViewObjectList &childrenCop
           col = CR % cols;
           QPoint pt((w*col) + marginLeftPixels, y);
 
-          // if necessary adjust the last column so that we don't spill over
+          //
+          // if necessary adjust the last column so that we don't spill over...
+          //
+
           if (col == cols-1) {
-            // only adjust the final width if necessary as we would rather have a gap
-            // at the right edge of the window than a column of plots that is significantly 
-            // wider than all the others
+            //
+            // only adjust the final width if necessary as we would rather 
+            //  have a gap at the right edge of the window than a column 
+            //  of plots that is significantly wider than all the others
+            //
+
             if (w*cols > _geom.width() - marginRightPixels) {
               sz.setWidth(_geom.width() - (w*col) - marginLeftPixels -marginRightPixels);
             }
           }
 
-          // if necessary adjust the last row so that we don't spill over
+          //
+          // if necessary adjust the last row so that we don't spill over...
+          //
+
           if (row == rows - 1) {
-            // only adjust the final height if necessary as we would rather have a gap
-            // at the bottom edge of the window than a row of plots that is significantly 
-            // taller than all the others
+            //
+            // only adjust the final height if necessary as we would rather 
+            //  have a gap at the bottom edge of the window than a row of 
+            //  plots that is significantly taller than all the others
+            //
+
             if (y + h > _geom.height() - marginBottomPixels) {
               sz.setHeight(_geom.height() - marginBottomPixels - y);
             }
           }
-
+/* xxx
           ob = childrenCopy[plotLoc[CR]];
           ob->move(pt);
           ob->resize(sz);
+
           // FIXME: This is here to trigger axis alignment updates when cleanup
           // happens.  Remove this once we can trigger an axis alignment update
           // without setting dirty since this is a performance penalty.
           // (It even causes non-plots to redraw)
+
           ob->setDirty();
+*/
         }
       }
     }
@@ -1241,43 +1315,44 @@ bool KstViewObject::popupMenu(QMenu *menu, const QPoint& pos, KstViewObjectPtr t
   Q_UNUSED(pos)
 
   QString menuTitle = this->menuTitle();
+  QAction *action;
   bool rc = false;
   int id;
 
-  _topObjectForMenu = topParent;
+  _topObjectForMenu = topParent.data();
 
   if (!menuTitle.isEmpty()) {
-    menu->insertTitle(menuTitle);
+    menu->setTitle(menuTitle);
   }
 
   if (_standardActions & Edit) {
-    menu->insertItem(i18n("&Edit..."), this, SLOT(edit()));
+    menu->addAction(i18n("&Edit..."), this, SLOT(edit()));
     rc = true;
   }
 
   if (_standardActions & Delete) {
-    menu->insertItem(i18n("&Delete"), this, SLOT(deleteObject()));
+    menu->addAction(i18n("&Delete"), this, SLOT(deleteObject()));
     rc = true;
   }
 
   if (_layoutActions & Rename) {
-    menu->insertItem(i18n("Re&name..."), this, SLOT(rename()));
+    menu->addAction(i18n("Re&name..."), this, SLOT(rename()));
     rc = true;
   }
 
 
   if (_standardActions & Zoom) {
-    id = menu->insertItem(i18n("Maximi&ze"), this, SLOT(zoomToggle()));
+    action = menu->addAction(i18n("Maximi&ze"), this, SLOT(zoomToggle()));
     if (_maximized) {
-      menu->setItemChecked(id,true);
+      action->setChecked(true);
     }
     rc = true;
   }
 
   if (_standardActions & Pause) {
-    id = menu->insertItem(i18n("&Pause"), this, SLOT(pauseToggle()));
+    action = menu->addAction(i18n("&Pause"), this, SLOT(pauseToggle()));
     if (KstApp::inst()->paused()) {
-      menu->setItemChecked(id, true);
+      action->setChecked(true);
     }
     rc = true;
   }
@@ -1289,8 +1364,9 @@ bool KstViewObject::popupMenu(QMenu *menu, const QPoint& pos, KstViewObjectPtr t
 bool KstViewObject::layoutPopupMenu(QMenu *menu, const QPoint& pos, KstViewObjectPtr topParent) {
   Q_UNUSED(pos)
 
-  _topObjectForMenu = topParent;
+  _topObjectForMenu = topParent.data();
 
+  QAction *action;
   bool rc = false;
   int id;
   int index;
@@ -1298,119 +1374,120 @@ bool KstViewObject::layoutPopupMenu(QMenu *menu, const QPoint& pos, KstViewObjec
   _moveToMap.clear();
 
   if (!tagName().isEmpty()) {
-    menu->insertTitle(tagName());
+    menu->setTitle(tagName());
   }
 
   if (_layoutActions & Edit) {
-    menu->insertItem(i18n("&Edit..."), this, SLOT(edit()));
+    menu->addAction(i18n("&Edit..."), this, SLOT(edit()));
     rc = true;
   }
 
   if (_layoutActions & Delete) {
-    menu->insertItem(i18n("&Delete"), this, SLOT(deleteObject()));
+    menu->addAction(i18n("&Delete"), this, SLOT(deleteObject()));
     rc = true;
   }
 
-//   if (_layoutActions & Copy) {
-//     menu->insertItem(i18n("&Copy"), this, SLOT(copyObject()));
-//     rc = true;
-//   }
-
   if (_layoutActions & Rename) {
-    menu->insertItem(i18n("Re&name..."), this, SLOT(rename()));
+    menu->addAction(i18n("Re&name..."), this, SLOT(rename()));
     rc = true;
   }
 
   if (_layoutActions & Raise) {
-    index = menu->insertItem(i18n("&Raise"), this, SLOT(raise()));
+    action = menu->addAction(i18n("&Raise"), this, SLOT(raise()));
     rc = true;
     if (_parent && !_parent->_children.empty() && _parent->_children.last().data() == this) {
-      menu->setItemEnabled(index, false);
+      action->setEnabled(false);
     }
   }
 
   if (_layoutActions & Lower) {
-    index = menu->insertItem(i18n("&Lower"), this, SLOT(lower()));
+    action = menu->addAction(i18n("&Lower"), this, SLOT(lower()));
     rc = true;
     if (_parent && !_parent->_children.empty() && _parent->_children.first().data() == this) {
-      menu->setItemEnabled(index, false);
+      action->setEnabled(false);
     }
   }
 
   if (_layoutActions & RaiseToTop) {
-    index = menu->insertItem(i18n("Raise to &Top"), this, SLOT(raiseToTop()));
+    action = menu->addAction(i18n("Raise to &Top"), this, SLOT(raiseToTop()));
     rc = true;
     if (_parent && !_parent->_children.empty() && _parent->_children.last().data() == this) {
-      menu->setItemEnabled(index, false);
+      action->setEnabled(false);
     }
   }
 
   if (_layoutActions & LowerToBottom) {
-    index = menu->insertItem(i18n("Lower to &Bottom"), this, SLOT(lowerToBottom()));
+    action = menu->addAction(i18n("Lower to &Bottom"), this, SLOT(lowerToBottom()));
     rc = true;
     if (_parent && !_parent->_children.empty() && _parent->_children.first().data() == this) {
-      menu->setItemEnabled(index, false);
+      action->setEnabled(false);
     }
   }
 
   if (_layoutActions & MoveTo) {
     QList<QMdiSubWindow*> windows;
     QList<QMdiSubWindow*>::const_iterator it;
-    KPopupMenu *submenu = new KPopupMenu(menu);
+    QAction *action;
+    QMenu *submenu = new QMenu(menu);
     bool hasEntry = false;
     int i = 0;
 
-    id = menu->insertItem(i18n("&Move To"), submenu);
-
-    windows = app->subWindowList(QMdiArea::CreationOrder);
+    action = menu->addMenu(submenu);
+    submenu->setTitle(i18n("&Move To"));
+    
+    windows = KstApp::inst()->subWindowList(QMdiArea::CreationOrder);
   
-    for (it = windows.constBegin(); it != windows.constEnd(); ++it)
+    for (it = windows.constBegin(); it != windows.constEnd(); ++it) {
       KstViewWindow *viewWindow = dynamic_cast<KstViewWindow*>(*it);
+
       if (viewWindow) {
-        KstTopLevelViewPtr tlv = kst_cast<KstTopLevelView>(topParent);
-  
+        KstTopLevelViewPtr tlv;
+
+        tlv = kst_cast<KstTopLevelView>(topParent);
         if (viewWindow && (!tlv || tlv != viewWindow->view())) {
           hasEntry = true;
-          submenu->insertItem(it->currentItem()->caption(), i);
-          submenu->connectItem(i, this, SLOT(moveTo(int)));
-          _moveToMap[i] = it->currentItem()->caption();
+          submenu->addAction((*it)->windowTitle(), this, SLOT(moveTo(int)));
+          _moveToMap[i] = (*it)->windowTitle();
           i++;
         }
       }
     }
 
-    menu->setItemEnabled(id, hasEntry);
+    action->setEnabled(hasEntry);
 
     rc = true;
   }
 
   if (_layoutActions & CopyTo) {
-    KstTopLevelViewPtr tlv = kst_cast<KstTopLevelView>(topParent);
-    KPopupMenu *submenu = new KPopupMenu(menu);
+    KstTopLevelViewPtr tlv;
+    QAction *action;
+    QMenu *submenu = new QMenu(menu);
     QList<QMdiSubWindow*> windows;
     QList<QMdiSubWindow*>::const_iterator it;
     bool hasEntry = false;
     int i = 0;
+    
+    tlv = kst_cast<KstTopLevelView>(topParent);
 
-    id = menu->insertItem(i18n("&Copy To"), submenu);
+    action = menu->addMenu(submenu);
+    submenu->setTitle(i18n("&Copy To"));
 
-    for (it = windows.constBegin(); it != windows.constEnd(); ++it)
+    for (it = windows.constBegin(); it != windows.constEnd(); ++it) {
       KstViewWindow *viewWindow = dynamic_cast<KstViewWindow*>(*it);
 
       if (viewWindow) {
         hasEntry = true;
         if (tlv && tlv == viewWindow->view()) {
-          submenu->insertItem(i18n("%1 (here)").arg(it->currentItem()->caption()),  i);
+          submenu->addAction(i18n("%1 (here)").arg((*it)->windowTitle()), this, SLOT(copyTo(int)));
         } else {
-          submenu->insertItem(it->currentItem()->caption(), i);
+          submenu->addAction((*it)->windowTitle(), this, SLOT(copyTo(int)));
         }
-        submenu->connectItem(i, this, SLOT(copyTo(int)));
-        _copyToMap[i] = it->currentItem()->caption();
+        _copyToMap[i] = (*it)->windowTitle();
         i++;
       }
     }
 
-    menu->setItemEnabled(id, hasEntry);
+    action->setEnabled(hasEntry);
 
     rc = true;
   }
@@ -1420,7 +1497,9 @@ bool KstViewObject::layoutPopupMenu(QMenu *menu, const QPoint& pos, KstViewObjec
 
 
 void KstViewObject::edit() {
-  KstTopLevelViewPtr tlv = kst_cast<KstTopLevelView>(KstViewObjectPtr(_topObjectForMenu));
+  KstTopLevelViewPtr tlv;
+
+  tlv = kst_cast<KstTopLevelView>(KstViewObjectPtr(_topObjectForMenu));
   showDialog(tlv, false);
 }
 
@@ -1430,8 +1509,9 @@ void KstViewObject::deleteObject() {
   KstViewObjectPtr vop(this);
 
   if (_topObjectForMenu) {
-    KstTopLevelViewPtr tlv = kst_cast<KstTopLevelView>(KstViewObjectPtr(_topObjectForMenu));
+    KstTopLevelViewPtr tlv;
 
+    tlv = kst_cast<KstTopLevelView>(KstViewObjectPtr(_topObjectForMenu));
     if (tlv && vop == tlv->pressTarget()) {
       tlv->clearPressTarget();
     }
@@ -1440,7 +1520,7 @@ void KstViewObject::deleteObject() {
       this->_parent->invalidateClipRegion();
     }
 
-    _topObjectForMenu->removeChild(this, true);
+// xxx    _topObjectForMenu->removeChild(this, true);
     _topObjectForMenu = 0L;
   }
 
@@ -1472,12 +1552,12 @@ KstViewObject* KstViewObject::copyObjectQuietly() const {
 
 void KstViewObject::raiseToTop() {
   if (_parent) {
-    KstViewObjectPtr t = this;
-    KstViewObjectList::Iterator it = _parent->_children.find(t);
+    KstViewObjectPtr obj;
 
-    if (it != _parent->_children.end()) {
-      _parent->_children.remove(it);
-      _parent->_children.append(t);
+    obj = this;
+    if (_parent->_children.contains(obj)) {
+      _parent->_children.removeAll(obj);
+      _parent->_children.append(obj);
       KstApp::inst()->document()->setModified();
       setDirty();
     }
@@ -1487,12 +1567,12 @@ void KstViewObject::raiseToTop() {
 
 void KstViewObject::lowerToBottom() {
   if (_parent) {
-    KstViewObjectPtr t = this;
-    KstViewObjectList::Iterator it = _parent->_children.find(t);
+    KstViewObjectPtr obj;
 
-    if (it != _parent->_children.end()) {
-      _parent->_children.remove(it);
-      _parent->_children.prepend(t);
+    obj = this;
+    if (_parent->_children.contains(obj)) {
+      _parent->_children.removeAll(obj);
+      _parent->_children.prepend(obj);
       KstApp::inst()->document()->setModified();
       setDirty();
     }
@@ -1502,10 +1582,10 @@ void KstViewObject::lowerToBottom() {
 
 void KstViewObject::raise() {
   if (_parent) {
-    KstViewObjectPtr t = this;
-    KstViewObjectList::Iterator it = _parent->_children.find(t);
-
-    if (it != _parent->_children.end()) {
+    KstViewObjectPtr obj;
+/* xxx
+    obj = this;
+    if (_parent->_children.contains(obj)) {
       it = _parent->_children.remove(it);
       ++it;
       if (it != _parent->_children.end()) {
@@ -1516,14 +1596,16 @@ void KstViewObject::raise() {
       KstApp::inst()->document()->setModified();
       setDirty();
     }
+*/
   }
 }
 
 
 void KstViewObject::lower() {
   if (_parent) {
+/* xxx
     KstViewObjectPtr t = this;
-    KstViewObjectList::Iterator it = _parent->_children.find(t);
+    KstViewObjectList::iterator it = _parent->_children.find(t);
 
     if (it != _parent->_children.end()) {
       it = _parent->_children.remove(it);
@@ -1536,6 +1618,7 @@ void KstViewObject::lower() {
       KstApp::inst()->document()->setModified();
       setDirty();
     }
+*/
   }
 }
 
@@ -1543,11 +1626,13 @@ void KstViewObject::lower() {
 void KstViewObject::remove() {
   KstApp::inst()->document()->setModified();
   KstViewObjectPtr vop(this);
-  KstViewObjectPtr tlp = topLevelParent();
+  KstViewObjectPtr tlp;
 
+  tlp = topLevelParent();
   if (tlp) {
-    KstTopLevelViewPtr tlv = kst_cast<KstTopLevelView>(tlp);
+    KstTopLevelViewPtr tlv;
 
+    tlv = kst_cast<KstTopLevelView>(tlp);
     if (tlv && vop == tlv->pressTarget()) {
       tlv->clearPressTarget();
     }
@@ -1556,7 +1641,7 @@ void KstViewObject::remove() {
       this->_parent->invalidateClipRegion();
     }
 
-    tlp->removeChild(this, true);
+// xxx    tlp->removeChild(this, true);
     tlp = 0L;
   }
 
@@ -1573,6 +1658,7 @@ void KstViewObject::moveTo(int id) {
   QString windowName = _moveToMap[id];
 
   if (_parent && !windowName.isEmpty()) {
+/* xxx
     QMdiSubWindow *window = KstApp::inst()->findWindow(windowName);
     KstViewWindow *viewWindow = dynamic_cast<KstViewWindow*>(window);
 
@@ -1588,6 +1674,7 @@ void KstViewObject::moveTo(int id) {
         viewWindow->view()->paint(KstPainter::P_PAINT);
       }
     }
+*/
   }
 }
 
@@ -1596,6 +1683,7 @@ void KstViewObject::copyTo(int id) {
   QString windowName = _copyToMap[id];
 
   if (!windowName.isEmpty()) {
+/* xxx
     QMdiSubWindow *window = KstApp::inst()->findWindow(windowName);
     KstViewWindow *viewWindow = dynamic_cast<KstViewWindow*>(window);
     if (viewWindow) {
@@ -1604,6 +1692,7 @@ void KstViewObject::copyTo(int id) {
       copyObjectQuietly(*(window->view().data()));
       viewWindow->view()->paint(KstPainter::P_PAINT);
     }
+*/
   }
 }
 
@@ -1623,10 +1712,10 @@ void KstViewObject::updateFromAspect() {
     _geom.setBottom(geom.top() + int(((_aspect.y + _aspect.h) * (double)geom.height()) - 0.5));
 
     if (_maintainAspect == true) {
-      QSize maintaining_size(_idealSize);
+      QSize maintainingSize(_idealSize);
 
-      maintaining_size.scale(_geom.size(), QSize::ScaleMin);
-      _geom.setSize(maintaining_size);
+      maintainingSize.scale(_geom.size(), Qt::KeepAspectRatio);
+      _geom.setSize(maintainingSize);
     }
   }
 
@@ -1730,15 +1819,17 @@ void KstViewObject::zoomToggle() {
 }
 
 
-// FIXME: rewrite this so it can be const.  It's -way- too expensive.
 void KstViewObject::recursivelyQuery(bool (KstViewObject::*method)() const, KstViewObjectList& list, bool matchRecurse) {
   bool has = (this->*method)();
+
   if (has) {
-    list.append(this);
+// xxx    list.append(this);
   }
 
   if (!has || (has && matchRecurse)) {
-    for (KstViewObjectList::Iterator i = _children.begin(); i != _children.end(); ++i) {
+    KstViewObjectList::iterator i;
+
+    for (i = _children.begin(); i != _children.end(); ++i) {
       (*i)->recursivelyQuery(method, list, matchRecurse);
     }
   }
@@ -1747,7 +1838,7 @@ void KstViewObject::recursivelyQuery(bool (KstViewObject::*method)() const, KstV
 
 void KstViewObject::detach() {
   if (_parent) {
-    _parent->removeChild(this);
+// xxx    _parent->removeChild(this);
     _parent = 0L;
   }
 }
@@ -1826,26 +1917,30 @@ QDataStream& operator>>(QDataStream& str, KstViewObjectPtr obj) {
 
 void KstViewObject::readBinary(QDataStream& str) {
   QString tagName;
+  uint cc = 0;
+  uint i;
+
   str >> tagName;
   setTagName(KstObjectTag(tagName, KstObjectTag::globalTagContext)); // FIXME: tag context
-  kstdDebug() << "Decoding " << tagName << " from drag." << endl;
+
   // FIXME: rename objects if they cause a namespace conflict
   str >> _geom >> _backgroundColor >> _foregroundColor;
   str >> _standardActions >> _layoutActions >> _aspect >> _idealSize;
 
   _children.clear();
-  uint cc = 0;
   str >> cc;
-  for (uint i = 0; i < cc; ++i) {
+
+  for (i = 0; i < cc; ++i) {
+    KstViewObjectPtr o;
     QString type;
+    
     str >> type;
-    KstViewObjectPtr o = KstViewObjectFactory::self()->createA(type);
+    o = KstViewObjectFactory::self()->createA(type);
     if (o.data()) {
       str >> o;
       appendChild(o, true);
     } else {
-      abort();
-      // FIXME: can't decode this one!  How to recover?
+      break;
     }
   }
 }
@@ -1937,7 +2032,8 @@ bool KstViewObject::paste(QMimeSource* source, KstViewObjectList* list) {
   bool rc = false;
 
   if (source && source->provides(PlotMimeSource::mimeType())) {
-    QDataStream ds(source->encodedData(PlotMimeSource::mimeType()), IO_ReadOnly);
+/* xxx
+    QDataStream ds(source->encodedData(PlotMimeSource::mimeType()), QIODevice::ReadOnly);
     KstViewWindow *w;
 
     ds >> window;
@@ -1981,6 +2077,7 @@ bool KstViewObject::paste(QMimeSource* source, KstViewObjectList* list) {
 
       rc = true;
     }
+*/
   }
 
   return rc;
@@ -2060,17 +2157,18 @@ bool KstViewObject::complexObject() const {
 
 
 QRegion KstViewObject::clipRegion() {
-  if (_clipMask.isNull()) {
+  if (_clipMask.isEmpty()) {
     if (transparent()) {
-      QBitmap bm(_geom.bottomRight().x(), _geom.bottomRight().y(), true);
+      QBitmap bm(_geom.bottomRight().x(), _geom.bottomRight().y());
+
       if (!bm.isNull()) {
         KstPainter p;
 
         p.begin(&bm);
         p.setMakingMask(true);
-        p.setViewXForm(true);
+// xxx        p.setViewXForm(true);
         paint(p, QRegion());
-        p.flush();
+// xxx        p.flush();
         p.end();
         _clipMask = QRegion(bm);
       } else {
@@ -2167,14 +2265,21 @@ signed int KstViewObject::directionFor(const QPoint& pos) {
 
 bool KstViewObject::showDialog(KstTopLevelViewPtr invoker, bool isNew) {
   bool rc = false;
+
   if (!_dialogLock) {
-    KstEditViewObjectDialogI dlg(KstApp::inst());
+    KstEditViewObjectDialog dlg(KstApp::inst());
+    KstViewObjectPtr obj;
+
     if (isNew) {
       dlg.setNew();
     }
-    dlg.showEditViewObjectDialog(this, invoker);
+
+    obj = this;
+
+    dlg.showEditViewObjectDialog(obj, invoker);
     rc = QDialog::Rejected != dlg.exec();
   }
+
   return rc;
 }
 
@@ -2280,21 +2385,27 @@ void KstViewObject::invalidateClipRegion() {
 
 
 KstViewObjectPtr KstViewObject::parent() const {
-  return static_cast<KstViewObject*>(_parent);
+  KstViewObjectPtr obj;
+    
+  obj = static_cast<KstViewObject*>(_parent);
+
+  return obj;
 }
 
 
 KstViewObjectPtr KstViewObject::topLevelParent() const {
+  KstViewObjectPtr obj;
   KstViewObject *p = _parent;
-  if (!p) {
-    return 0L;
+
+  if (p) {
+    while (p->_parent) {
+      p = p->_parent;
+    }
   }
 
-  while (p->_parent) {
-    p = p->_parent;
-  }
+  obj = static_cast<KstViewObject*>(p);
 
-  return static_cast<KstViewObject*>(p);
+  return obj;
 }
 
 #include "kstviewobject.moc"

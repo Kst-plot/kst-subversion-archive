@@ -85,7 +85,7 @@ KstPlotGroup::~KstPlotGroup() {
 void KstPlotGroup::copyObject() {
   if (_parent) {
     KstApp::inst()->document()->setModified();
-    _parent->appendChild(new KstPlotGroup(*this), true);
+// xxx    _parent->appendChild(new KstPlotGroup(*this), true);
     QTimer::singleShot(0, KstApp::inst(), SLOT(updateDialogs()));
   }
 }
@@ -95,7 +95,7 @@ KstViewObject* KstPlotGroup::copyObjectQuietly(KstViewObject& parent, const QStr
   Q_UNUSED(name)
 
   KstPlotGroup* plotGroup = new KstPlotGroup(*this);
-  parent.appendChild(plotGroup, true);
+// xxx  parent.appendChild(plotGroup, true);
   
   return plotGroup;
 }
@@ -132,7 +132,7 @@ void KstPlotGroup::flatten() {
     (*i)->setFocus(false);
     _parent->insertChildAfter(KstViewObjectPtr(this), *i);
   }
-  _parent->removeChild(this);
+// xxx  _parent->removeChild(this);
   KstApp::inst()->document()->setModified();
 }
 
@@ -165,14 +165,18 @@ void KstPlotGroup::paintSelf(KstPainter& p, const QRegion& bounds) {
 bool KstPlotGroup::popupMenu(QMenu *menu, const QPoint& pos, KstViewObjectPtr topParent) {
   KstMetaPlot::popupMenu(menu, pos, topParent);
   KstViewObjectPtr c = findChild(pos + position());
+
   if (c) {
-    KPopupMenu *s = new KPopupMenu(menu);
-    if (c->popupMenu(s, pos - c->position(), topParent)) {
-      menu->insertItem(c->tagName(), s);
+    QMenu *subMenu = new QMenu(menu);
+
+    if (c->popupMenu(subMenu, pos - c->position(), topParent)) {
+      menu->addMenu(subMenu);
+      subMenu->setTitle(c->tagName());
     } else {
-      delete s;
+      delete subMenu;
     }
   }
+
   return true;
 }
 
@@ -184,14 +188,16 @@ bool KstPlotGroup::layoutPopupMenu(QMenu *menu, const QPoint& pos, KstViewObject
   menu->addAction(i18n("&Ungroup"), this, SLOT(flatten()));
   c = findChild(pos + position());
   if (c) {
-    QMenu *s = new QMenu(menu);
+    QMenu *subMenu = new QMenu(menu);
 
-    if (c->layoutPopupMenu(s, pos - c->position(), topParent)) {
-      menu->insertItem(c->tagName(), s);
+    if (c->layoutPopupMenu(subMenu, pos - c->position(), topParent)) {
+      menu->addMenu(subMenu);
+      subMenu->setTitle(c->tagName());
     } else {
-      delete s;
+      delete subMenu;
     }
   }
+
   return true;
 }
 
@@ -216,7 +222,7 @@ QMap<QString, QVariant> KstPlotGroup::widgetHints(const QString& propertyName) c
   if (map.empty()) {
     if (propertyName == "transparent") {
       map.insert(QString("_kst_widgetType"), QString("QCheckBox"));
-      map.insert(QString("_kst_label"), QString::null);
+      map.insert(QString("_kst_label"), QString(""));
       map.insert(QString("text"), i18n("Transparent background"));
     } else if (propertyName == "backColor") {
       map.insert(QString("_kst_widgetType"), QString("KColorButton"));
@@ -236,11 +242,14 @@ QRegion KstPlotGroup::clipRegion() {
     //
     // make the clipregion just the children...
     //
+
     for (i = _children.begin(); i != _children.end(); ++i) {
       region += (*i)->clipRegion();
     }
+
     return region;
   }
+
   return KstViewObject::clipRegion();
 }
 

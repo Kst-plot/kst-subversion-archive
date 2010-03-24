@@ -262,9 +262,7 @@ class KST_EXPORT KstViewObject : public KstObject {
     virtual void connectConfigWidget(QWidget *parent, QWidget *w) const;
     virtual void populateEditMultiple(QWidget *w);
     virtual bool supportsDefaults();
-/* xxx
     virtual bool paste(QMimeSource* source, KstViewObjectList *list = 0L);
-*/
     virtual KstGfxMouseHandler *createHandler();
     void setDirty(bool = true);
 
