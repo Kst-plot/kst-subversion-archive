@@ -43,7 +43,7 @@
 #define COLUMN_LOADED         1
 #define COLUMN_NAME           5
 
-KstPluginManager::KstPluginManager(QWidget* parent, const char* name, bool modal, WFlags fl)
+KstPluginManager::KstPluginManager(QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl)
 : PluginManager(parent, name, modal, fl) {
   setupUi(this);
   connect(_close, SIGNAL(clicked()), this, SLOT(close()));

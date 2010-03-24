@@ -49,7 +49,7 @@ KstEventMonitor* KstEventMonitor::globalInstance() {
 }
 
 
-KstEventMonitor::KstEventMonitor(QWidget* parent, const char* name, bool modal, WFlags fl)
+KstEventMonitor::KstEventMonitor(QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl)
 : KstDataDialog(parent, name, modal, fl) {
   setupUi(this);
   _w = new EventMonitorWidget(_contents);

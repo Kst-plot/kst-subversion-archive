@@ -26,7 +26,7 @@ class EventMonitorWidget;
 class KstEventMonitor : public QDialog, public Ui::KstDataDialog {
   Q_OBJECT
   public:
-    KstEventMonitor(QWidget* parent = 0, const char* name = 0, bool modal = false, WFlags fl = 0 );
+    KstEventMonitor(QWidget* parent = 0, const char* name = 0, bool modal = false, Qt::WindowFlags fl = 0 );
     virtual ~KstEventMonitor();
     static KstEventMonitor *globalInstance();
 

@@ -25,7 +25,7 @@ class KstMonochromeDialog : public QDialog, public Ui::KstMonochromeDialog {
   public:
     KstMonochromeDialog(QWidget* parent = 0,
                          const char* name = 0,
-                         bool modal = TRUE, WFlags fl = 0 );
+                         bool modal = TRUE, Qt::WindowFlags fl = 0 );
     virtual ~KstMonochromeDialog();
 
     void setOptions(const QMap<QString,QString>& opts);
