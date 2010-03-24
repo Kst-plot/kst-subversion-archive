@@ -161,9 +161,9 @@ QString KstBasicDialog::newTitle() {
 
 void KstBasicDialog::createInputVector(const QString &name, int row) {
   QString labelName = name + "LABEL";
-  QLabel *label = new QLabel(name + ":", _w->_frame, labelName.latin1());
+  QLabel *label = new QLabel(name + ":", _w->_frame, labelName.toLatin1());
 
-  VectorSelector *widget = new VectorSelector(_w->_frame, name.latin1());
+  VectorSelector *widget = new VectorSelector(_w->_frame, name.toLatin1());
   connect(widget, SIGNAL(newVectorCreated(const QString&)), this, SIGNAL(modified()));
   connect(widget->_vector, SIGNAL(highlighted(int)), this, SLOT(wasModifiedApply()));
   connect(widget->_vector, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
@@ -177,9 +177,9 @@ void KstBasicDialog::createInputVector(const QString &name, int row) {
 
 void KstBasicDialog::createInputScalar(const QString &name, int row, double value) {
   QString labelName = name + "LABEL";
-  QLabel *label = new QLabel(name + ":", _w->_frame, labelName.latin1());
+  QLabel *label = new QLabel(name + ":", _w->_frame, labelName.toLatin1());
 
-  ScalarSelector *widget = new ScalarSelector(_w->_frame, name.latin1());
+  ScalarSelector *widget = new ScalarSelector(_w->_frame, name.toLatin1());
   connect(widget, SIGNAL(newScalarCreated()), this, SIGNAL(modified()));
   connect(widget->_scalar, SIGNAL(highlighted(int)), this, SLOT(wasModifiedApply()));
   connect(widget->_scalar, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
@@ -198,9 +198,9 @@ void KstBasicDialog::createInputScalar(const QString &name, int row, double valu
 
 void KstBasicDialog::createInputString(const QString &name, int row) {
   QString labelName = name + "LABEL";
-  QLabel *label = new QLabel(name + ":", _w->_frame, labelName.latin1());
+  QLabel *label = new QLabel(name + ":", _w->_frame, labelName.toLatin1());
 
-  StringSelector *widget = new StringSelector(_w->_frame, name.latin1());
+  StringSelector *widget = new StringSelector(_w->_frame, name.toLatin1());
   connect(widget, SIGNAL(newStringCreated()), this, SIGNAL(modified()));
   connect(widget->_string, SIGNAL(highlighted(int)), this, SLOT(wasModifiedApply()));
   connect(widget->_string, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
@@ -214,7 +214,7 @@ void KstBasicDialog::createInputString(const QString &name, int row) {
 
 void KstBasicDialog::createOutputWidget(const QString &name, int row) {
   QLabel *label = new QLabel(name + ":", _w->_frame);
-  QLineEdit *widget = new QLineEdit(_w->_frame, name.latin1());
+  QLineEdit *widget = new QLineEdit(_w->_frame, name.toLatin1());
   _grid->addWidget(label, row, 0);
   label->show();
   _grid->addWidget(widget, row, 1);
@@ -421,7 +421,7 @@ bool KstBasicDialog::editSingleObject(KstBasicPluginPtr ptr, QString &error) {
           if (!error.isEmpty()) {
             error += "\n";
           }
-          error += i18n("%1 '%2' is not a valid vector name.").arg(label(*ivI)->text().latin1()).arg(w->_vector->currentText());
+          error += i18n("%1 '%2' is not a valid vector name.").arg(label(*ivI)->text().toLatin1()).arg(w->_vector->currentText());
         }
       }
     }
@@ -446,7 +446,7 @@ bool KstBasicDialog::editSingleObject(KstBasicPluginPtr ptr, QString &error) {
             if (!error.isEmpty()) {
               error += "\n";
             }
-            error += i18n("%1 '%2' is not a valid scalar name or value.").arg(label(*isI)->text().latin1()).arg(w->_scalar->currentText());
+            error += i18n("%1 '%2' is not a valid scalar name or value.").arg(label(*isI)->text().toLatin1()).arg(w->_scalar->currentText());
           }
         }
       }
@@ -465,7 +465,7 @@ bool KstBasicDialog::editSingleObject(KstBasicPluginPtr ptr, QString &error) {
           if (!error.isEmpty()) {
             error += "\n";
           }
-          error += i18n("%1 '%2' is not a valid string name.").arg(label(*istrI)->text().latin1()).arg(w->_string->currentText());
+          error += i18n("%1 '%2' is not a valid string name.").arg(label(*istrI)->text().toLatin1()).arg(w->_string->currentText());
         }
       }
     }
@@ -619,28 +619,28 @@ void KstBasicDialog::fillFieldsForNew() {
 
 
 VectorSelector *KstBasicDialog::vector(const QString &name) const {
-  return ::qt_cast<VectorSelector*>(_w->_frame->child(name.latin1()));
+  return ::qt_cast<VectorSelector*>(_w->_frame->child(name.toLatin1()));
 }
 
 
 ScalarSelector *KstBasicDialog::scalar(const QString &name) const {
-  return ::qt_cast<ScalarSelector*>(_w->_frame->child(name.latin1()));
+  return ::qt_cast<ScalarSelector*>(_w->_frame->child(name.toLatin1()));
 }
 
 
 StringSelector *KstBasicDialog::string(const QString &name) const {
-  return ::qt_cast<StringSelector*>(_w->_frame->child(name.latin1()));
+  return ::qt_cast<StringSelector*>(_w->_frame->child(name.toLatin1()));
 }
 
 
 QLabel *KstBasicDialog::label(const QString &name) const {
   QString labelName = name + "LABEL";
-  return ::qt_cast<QLabel*>(_w->_frame->child(labelName.latin1()));
+  return ::qt_cast<QLabel*>(_w->_frame->child(labelName.toLatin1()));
 }
 
 
 QLineEdit *KstBasicDialog::output(const QString &name) const {
-  return ::qt_cast<QLineEdit*>(_w->_frame->child(name.latin1()));
+  return ::qt_cast<QLineEdit*>(_w->_frame->child(name.toLatin1()));
 }
 
 #include "kstbasicdialog.moc"
