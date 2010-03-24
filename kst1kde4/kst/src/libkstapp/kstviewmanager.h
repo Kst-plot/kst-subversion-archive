@@ -66,7 +66,7 @@ class KstViewManager: public QDialog, public Ui::KstViewManager {
   Q_OBJECT
   public:
     KstViewManager(KstDoc *doc, QWidget* parent = 0, const char *name = 0, 
-                    bool modal = false, WFlags fl = 0);
+                    bool modal = false, Qt::WindowFlags fl = 0);
     virtual ~KstViewManager();
 
   public slots:

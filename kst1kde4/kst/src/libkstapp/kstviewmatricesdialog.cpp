@@ -31,7 +31,7 @@
 KstViewMatricesDialog::KstViewMatricesDialog(QWidget* parent,
                                              const char* name,
                                              bool modal,
-                                             WFlags fl)
+                                             Qt::WindowFlags fl)
 : QDialog(parent, name, modal, fl) {
   setupUi(this);
   _tableMatrices = new KstMatrixTable(this, "tableMatrices");

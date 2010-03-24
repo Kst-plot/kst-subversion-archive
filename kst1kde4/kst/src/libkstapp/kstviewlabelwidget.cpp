@@ -27,7 +27,7 @@
 #include "scalarselector.h"
 #include "stringselector.h"
 
-KstViewLabelWidget::KstViewLabelWidget( QWidget* parent, const char* name, Qt::WFlags fl ) : Ui::ViewLabelWidget(parent, name, fl)
+KstViewLabelWidget::KstViewLabelWidget( QWidget* parent, const char* name, Qt::WindowFlags fl ) : Ui::ViewLabelWidget(parent, name, fl)
 {
     _horizontal->insertItem(i18n("Left"));
     _horizontal->insertItem(i18n("Right"));

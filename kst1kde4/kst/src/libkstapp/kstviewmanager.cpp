@@ -391,7 +391,7 @@ void KstViewObjectItem::openChildren(bool open) {
 
 // ==============================================
 
-KstViewManager::KstViewManager(KstDoc *in_doc, QWidget* parent, const char* name, bool modal, WFlags fl)
+KstViewManager::KstViewManager(KstDoc *in_doc, QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl)
 : KstViewManager(parent, name, modal, fl) {
   setupUi(this);
   doc = in_doc;
