@@ -5,6 +5,7 @@ include_directories(${CMAKE_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_SOUR
 set(kstapp_LIB_SRCS
     kstdatacollection-gui.cpp
     dialoglauncher-gui.cpp
+    datasourcemetadatadialog.cpp
     labelrenderer.cpp
     kstlegenddefaults.cpp
     kstnumbersequence.cpp
@@ -50,7 +51,6 @@ set(kstapp_LIB_SRCS
     kstgfxtlvmousehandler.cpp
     kstmetaplot.cpp
     kstdrag.cpp
-    ksteditviewobjectdialog.cpp
     kstdatamanager.cpp
     kstpluginmanager.cpp
     kstviewmanager.cpp
@@ -99,6 +99,7 @@ set(kstapp_LIB_SRCS
     kstfitdialog.cpp
     kstfilterdialog.cpp
     extensionmgr.cpp
+    ksteditviewobjectdialog.cpp
     kst.cpp)
 
 #KDE3_ADD_DCOP_SKELS(kstapp_LIB_SRCS
@@ -106,45 +107,45 @@ set(kstapp_LIB_SRCS
 #    kstiface_impl.h)
 
 kde4_add_ui_files(kstapp_LIB_SRCS
-    editviewobjectdialog.ui
-    vectordialogwidget.ui
-    curvedifferentiate.ui
-    csddialogwidget.ui
-    eqdialogwidget.ui
-    histogramdialogwidget.ui
-    psddialogwidget.ui
-    imagedialogwidget.ui
-    matrixdialogwidget.ui
-    plugindialogwidget.ui
-    vectorviewdialogwidget.ui
     basicdialogwidget.ui
-    eventmonitorwidget.ui
-    pluginmanager.ui
+    changefiledialog.ui
+    changenptsdialog.ui
+    choosecolordialog.ui
+    csddialogwidget.ui
     curvedialogwidget.ui
+    curvedifferentiate.ui
+    datamanager.ui
+    datasourcemetadatadialog.ui
+    datawizard.ui
+    debugdialog.ui
+    editviewobjectdialog.ui
+    eqdialogwidget.ui
+    eventmonitorwidget.ui
+    extensiondlg.ui
+    fieldselect.ui
+    graphfiledialog.ui
+    histogramdialogwidget.ui
+    imagedialogwidget.ui
+    kstdatadialog.ui
+    kstsettingsdlg.ui
+    kstviewmanager.ui
+    matrixdialogwidget.ui
+    monochromedialog.ui
+    plugindialogwidget.ui
+    pluginmanager.ui
+    psddialogwidget.ui
+    quickstartdialog.ui
+    vectordialogwidget.ui
+    vectorsavedialog.ui
+    vectorviewdialogwidget.ui
+    view2dplotwidget.ui
+    viewfitsdialog.ui
     viewlabelwidget.ui
     viewlegendwidget.ui
-    view2dplotwidget.ui
-    datasourcemetadatadialog.ui
-    extensiondlg.ui
-    kstdatadialog.ui
-    choosecolordialog.ui
-    debugdialog.ui
-    datawizard.ui
-    changefiledialog.ui
-    graphfiledialog.ui
+    viewmatricesdialog.ui
     viewscalarsdialog.ui
     viewstringsdialog.ui
-    viewvectorsdialog.ui
-    viewmatricesdialog.ui
-    viewfitsdialog.ui
-    changenptsdialog.ui
-    datamanager.ui
-    kstviewmanager.ui
-    vectorsavedialog.ui
-    kstsettingsdlg.ui
-    quickstartdialog.ui
-    monochromedialog.ui
-    fieldselect.ui)
+    viewvectorsdialog.ui)
 
 kde4_add_library(kstapp SHARED ${kstapp_LIB_SRCS})
 

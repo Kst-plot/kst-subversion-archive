@@ -54,7 +54,7 @@
         <widget class="Q3HBox" name="SearchBox" native="true"/>
        </item>
        <item>
-        <widget class="KListView" name="DataView">
+        <widget class="QListWidget" name="DataView">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
            <horstretch>1</horstretch>
@@ -215,16 +215,6 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>Q3ListView</class>
-   <extends>Q3Frame</extends>
-   <header>q3listview.h</header>
-  </customwidget>
-  <customwidget>
-   <class>KListView</class>
-   <extends>Q3ListView</extends>
-   <header location="global">klistview.h</header>
-  </customwidget>
-  <customwidget>
    <class>Q3HBox</class>
    <extends>QWidget</extends>
    <header>q3hbox.h</header>
@@ -237,9 +227,6 @@
   <tabstop>Edit</tabstop>
   <tabstop>Close</tabstop>
  </tabstops>
- <includes>
-  <include location="local">klistview.h</include>
- </includes>
  <resources/>
  <connections>
   <connection>

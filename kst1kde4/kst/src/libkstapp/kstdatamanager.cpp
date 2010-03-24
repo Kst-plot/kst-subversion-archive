@@ -17,30 +17,19 @@
  ***************************************************************************/
 #include <assert.h>
 
-// include files for Qt
+#include <QComboBox>
+#include <QListWidget>
+#include <QMessageBox>
 #include <qptrstack.h>
-#include <qtoolbox.h>
-
-#include <qtoolbutton.h>
 #include <qstylefactory.h>
 #include <qstyle.h>
-#include <qcombobox.h>
-#include <qmessagebox.h>
-
-static QStyle *windowsStyle = 0;
-
-// include files for KDE
-#include "ksdebug.h"
-#include <klistview.h>
+#include <qtoolbox.h>
+#include <qtoolbutton.h>
 
 #include <kinputdialog.h>
 #include <kstandarddirs.h>
 
-
-#include <klistviewsearchline.h>
-
-// application specific includes
-#include "datasourcemetadatadialog.h"
+#include "ui_datasourcemetadatadialog.h"
 #include "kst2dplot.h"
 #include "kstcurvedialog.h"
 #include "kstcsddialog.h"
@@ -62,6 +51,7 @@ static QStyle *windowsStyle = 0;
 #include "vectorselector.h"
 #include "plugincollection.h"
 
+static QStyle *windowsStyle = 0;
 
 static QMap<int,Kst2DPlotPtr> PlotMap;
 
@@ -562,32 +552,32 @@ void KstObjectItem::reload() {
 
 
 void KstObjectItem::makeCurve() {
-  KstCurveDialogI::globalInstance()->show();
-  KstCurveDialogI::globalInstance()->setVector(_tag.tagString());
+  KstCurveDialog::globalInstance()->show();
+  KstCurveDialog::globalInstance()->setVector(_tag.tagString());
 }
 
 
 void KstObjectItem::makeCSD() {
-  KstCsdDialogI::globalInstance()->show();
-  KstCsdDialogI::globalInstance()->setVector(_tag.tagString());
+  KstCsdDialog::globalInstance()->show();
+  KstCsdDialog::globalInstance()->setVector(_tag.tagString());
 }
 
 
 void KstObjectItem::makePSD() {
-  KstPsdDialogI::globalInstance()->show();
-  KstPsdDialogI::globalInstance()->setVector(_tag.tagString());
+  KstPsdDialog::globalInstance()->show();
+  KstPsdDialog::globalInstance()->setVector(_tag.tagString());
 }
 
 
 void KstObjectItem::makeHistogram() {
-  KstHsDialogI::globalInstance()->show();
-  KstHsDialogI::globalInstance()->setVector(_tag.tagString());
+  KstHsDialog::globalInstance()->show();
+  KstHsDialog::globalInstance()->setVector(_tag.tagString());
 }
 
 
 void KstObjectItem::makeImage() {
-  KstImageDialogI::globalInstance()->show();
-  KstImageDialogI::globalInstance()->setMatrix(_tag.tagString());
+  KstImageDialog::globalInstance()->show();
+  KstImageDialog::globalInstance()->setMatrix(_tag.tagString());
 }
 
 
@@ -604,10 +594,12 @@ void KstObjectItem::viewMatrixValues() {
 void KstObjectItem::showMetadata() {
   if (_rtti == RTTI_OBJ_DATA_VECTOR) {
     DataSourceMetaDataDialog *dlg = new DataSourceMetaDataDialog(_dm, 0, false, WDestructiveClose);
+
     KstReadLocker vl(&KST::vectorList.lock());
     KstVectorList::Iterator m = KST::vectorList.findTag(_tag);
     KstRVectorPtr r = kst_cast<KstRVector>(*m);
     KstDataSourcePtr dsp;
+
     if (r) {
       r->readLock();
       dsp = r->dataSource();
@@ -621,6 +613,7 @@ void KstObjectItem::showMetadata() {
     KstMatrixList::Iterator m = KST::matrixList.findTag(_tag);
     KstRMatrixPtr r = kst_cast<KstRMatrix>(*m);
     KstDataSourcePtr dsp;
+
     if (r) {
       r->readLock();
       dsp = r->dataSource();
@@ -634,11 +627,15 @@ void KstObjectItem::showMetadata() {
 
 void KstObjectItem::activateHint(int id) {
   KstDataObjectPtr d = dataObject();
+  KstCurveHintList::ConstIterator i;
   const KstCurveHintList* hints = d->curveHints();
   int cnt = 0;
-  for (KstCurveHintList::ConstIterator i = hints->begin(); i != hints->end(); ++i) {
+
+  for (i = hints->begin(); i != hints->end(); ++i) {
     if (cnt == id) {
-      KstBaseCurvePtr c = (*i)->makeCurve(KST::suggestCurveName(d->tag(), false), KstColorSequence::next());
+      KstBaseCurvePtr c;
+
+      c = (*i)->makeCurve(KST::suggestCurveName(d->tag(), false), KstColorSequence::next());
       if (c) {
         KST::dataObjectList.lock().writeLock();
         KST::dataObjectList.append(c.data());
@@ -657,6 +654,7 @@ void KstObjectItem::activateHint(int id) {
 void KstObjectItem::addToPlot(int id) {
   Kst2DPlotPtr p = PlotMap[id];
   KstBaseCurvePtr c = kst_cast<KstBaseCurve>(dataObject());
+
   if (p && c) {
     p->addCurve(c);
     p->setDirty();
@@ -669,6 +667,7 @@ void KstObjectItem::addToPlot(int id) {
 void KstObjectItem::removeFromPlot(int id) {
   Kst2DPlotPtr p = PlotMap[id];
   KstBaseCurvePtr c = kst_cast<KstBaseCurve>(dataObject());
+
   if (p && c) {
     p->removeCurve(c);
     p->setDirty();
@@ -865,31 +864,33 @@ void KstDataManager::setupPluginActions() {
   {
     const KstPluginInfoList newPlugins = KstDataObject::pluginInfoList();
     KstPluginInfoList::ConstIterator it = newPlugins.begin();
-    for (; it != newPlugins.end(); ++it) {
 
-      KstDataObjectPtr ptr = KstDataObject::plugin(it.key());
+    for (; it != newPlugins.end(); ++it) {
+      KstDataObjectPtr ptr;
+
+      ptr = KstDataObject::plugin(it.key());
       if (!ptr) {
         continue;
       }
 
       switch(it.data()) {
-      case KstDataObject::Generic:
-        createObjectAction(it.key(), _data, ptr, SLOT(showNewDialog()));
-        break;
-      case KstDataObject::KstPlugin:
-        createObjectAction(it.key(), _plugins, ptr, SLOT(showNewDialog()));
-        break;
-      case KstDataObject::Primitive:
-        createObjectAction(it.key(), _primitive, ptr, SLOT(showNewDialog()));
-        break;
-      case KstDataObject::Fit:
-        createObjectAction(it.key(), _fits, ptr, SLOT(showNewDialog()));
-        break;
-      case KstDataObject::Filter:
-        createObjectAction(it.key(), _filters, ptr, SLOT(showNewDialog()));
-        break;
-      default:
-        break;
+        case KstDataObject::Generic:
+          createObjectAction(it.key(), _data, ptr, SLOT(showNewDialog()));
+          break;
+        case KstDataObject::KstPlugin:
+          createObjectAction(it.key(), _plugins, ptr, SLOT(showNewDialog()));
+          break;
+        case KstDataObject::Primitive:
+          createObjectAction(it.key(), _primitive, ptr, SLOT(showNewDialog()));
+          break;
+        case KstDataObject::Fit:
+          createObjectAction(it.key(), _fits, ptr, SLOT(showNewDialog()));
+          break;
+        case KstDataObject::Filter:
+          createObjectAction(it.key(), _filters, ptr, SLOT(showNewDialog()));
+          break;
+        default:
+          break;
       }
     }
   }
@@ -908,8 +909,11 @@ void KstDataManager::setupPluginActions() {
 
   {
     QStringList::ConstIterator it = oldPlugins.begin();
+
     for (; it != oldPlugins.end(); ++it) {
-      if (QExplicitlySharedDataPointer<Plugin> p = PluginCollection::self()->plugin(readable[*it])) {
+      QExplicitlySharedDataPointer<Plugin> p;
+
+      if (p = PluginCollection::self()->plugin(readable[*it])) {
         if (p->data()._isFit) {
           createObjectAction(*it, _fits, this, SLOT(showOldPlugin()));
         } else if (p->data()._isFilter) {
@@ -997,12 +1001,12 @@ void KstDataManager::update() {
   trash.clear();
   DataView->blockSignals(false);
 
-  // update the data objects
-  for (KstDataObjectList::iterator it = KST::dataObjectList.begin();
-                                    it != KST::dataObjectList.end();
-                                                               ++it) {
+  KstDataObjectList::iterator it;
+
+  for (it = KST::dataObjectList.begin(); it != KST::dataObjectList.end(); ++it) {
     KstReadLocker dol(*it);
     bool found = false;
+
     for (QListViewItem *i = DataView->firstChild(); i; i = i->nextSibling()) {
       KstObjectItem *oi = static_cast<KstObjectItem*>(i);
       if (oi->rtti() == RTTI_OBJ_OBJECT && oi->tag().tagString() == (*it)->tag().tagString()) {
@@ -1021,9 +1025,12 @@ void KstDataManager::update() {
 
   // update the data vectors
   KstRVectorList rvl = kstObjectSubList<KstVector,KstRVector>(KST::vectorList);
-  for (KstRVectorList::iterator it = rvl.begin(); it != rvl.end(); ++it) {
+  KstRVectorList::iterator it;
+
+  for (it = rvl.begin(); it != rvl.end(); ++it) {
     KstReadLocker vl(*it);
     bool found = false;
+
     for (QListViewItem *i = DataView->firstChild(); i; i = i->nextSibling()) {
       KstObjectItem *oi = static_cast<KstObjectItem*>(i);
       if (oi->rtti() == RTTI_OBJ_DATA_VECTOR && oi->tag().tagString() == (*it)->tag().tagString()) {
@@ -1040,9 +1047,12 @@ void KstDataManager::update() {
 
   // update the static vectors
   KstSVectorList svl = kstObjectSubList<KstVector,KstSVector>(KST::vectorList);
-  for (KstSVectorList::iterator it = svl.begin(); it != svl.end(); ++it) {
+  KstSVectorList::iterator it;
+
+  for (it = svl.begin(); it != svl.end(); ++it) {
     KstReadLocker vl(*it);
     bool found = false;
+
     for (QListViewItem *i = DataView->firstChild(); i; i = i->nextSibling()) {
       KstObjectItem *oi = static_cast<KstObjectItem*>(i);
       if (oi->rtti() == RTTI_OBJ_STATIC_VECTOR && oi->tag().tagString() == (*it)->tag().tagString()) {
@@ -1059,9 +1069,12 @@ void KstDataManager::update() {
 
   // update the a vectors
   KstAVectorList avl = kstObjectSubList<KstVector,KstAVector>(KST::vectorList);
-  for (KstAVectorList::iterator it = avl.begin(); it != avl.end(); ++it) {
+  KstAVectorList::iterator it;
+
+  for (it = avl.begin(); it != avl.end(); ++it) {
     KstReadLocker vl(*it);
     bool found = false;
+
     for (QListViewItem *i = DataView->firstChild(); i; i = i->nextSibling()) {
       KstObjectItem *oi = static_cast<KstObjectItem*>(i);
       if (oi->rtti() == RTTI_OBJ_A_VECTOR && oi->tag().tagString() == (*it)->tag().tagString()) {
@@ -1080,9 +1093,12 @@ void KstDataManager::update() {
 
   // update the data matrices
   KstRMatrixList rml = kstObjectSubList<KstMatrix,KstRMatrix>(KST::matrixList);
-  for (KstRMatrixList::iterator it = rml.begin(); it != rml.end(); ++it) {
+  KstRMatrixList::iterator it;
+
+  for (it = rml.begin(); it != rml.end(); ++it) {
     KstReadLocker ml(*it);
     bool found = false;
+
     for (QListViewItem *i = DataView->firstChild(); i; i = i->nextSibling()) {
       KstObjectItem *oi = static_cast<KstObjectItem*>(i);
       if (oi->rtti() == RTTI_OBJ_DATA_MATRIX && oi->tag().tagString() == (*it)->tag().tagString()) {
@@ -1099,9 +1115,12 @@ void KstDataManager::update() {
 
   // update the static matrices
   KstSMatrixList sml = kstObjectSubList<KstMatrix,KstSMatrix>(KST::matrixList);
-  for (KstSMatrixList::iterator it = sml.begin(); it != sml.end(); ++it) {
+  KstSMatrixList::iterator it;
+
+  for (it = sml.begin(); it != sml.end(); ++it) {
     KstReadLocker ml(*it);
     bool found = false;
+
     for (QListViewItem *i = DataView->firstChild(); i; i = i->nextSibling()) {
       KstObjectItem *oi = static_cast<KstObjectItem*>(i);
       if (oi->rtti() == RTTI_OBJ_STATIC_MATRIX && oi->tag().tagString() == (*it)->tag().tagString()) {
@@ -1118,9 +1137,12 @@ void KstDataManager::update() {
 
   // update the a matrices
   KstAMatrixList aml = kstObjectSubList<KstMatrix,KstAMatrix>(KST::matrixList);
-  for (KstAMatrixList::iterator it = aml.begin(); it != aml.end(); ++it) {
+  KstAMatrixList::iterator it;
+
+  for (it = aml.begin(); it != aml.end(); ++it) {
     KstReadLocker ml(*it);
     bool found = false;
+
     for (QListViewItem *i = DataView->firstChild(); i; i = i->nextSibling()) {
       KstObjectItem *oi = static_cast<KstObjectItem*>(i);
       if (oi->rtti() == RTTI_OBJ_A_MATRIX && oi->tag().tagString() == (*it)->tag().tagString()) {
@@ -1186,7 +1208,7 @@ void KstDataManager::edit_I() {
       break;
     case RTTI_OBJ_A_MATRIX:
       break;
-  default:
+    default:
       break;
   }
 }
@@ -1237,14 +1259,17 @@ void KstDataManager::delete_I() {
     update();
   } else {
     // Don't prompt for base curves
-    KstBaseCurvePtr bc = kst_cast<KstBaseCurve>(koi->dataObject());
-    if (bc || QMessageBox::warning(this, i18n("Kst"), i18n("There are other objects in memory that depend on %1.  Do you wish to delete them too?").arg(koi->tag().tag()), QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes) {
+    KstBaseCurvePtr bc;
 
+    bc = kst_cast<KstBaseCurve>(koi->dataObject());
+    if (bc || QMessageBox::warning(this, i18n("Kst"), i18n("There are other objects in memory that depend on %1.  Do you wish to delete them too?").arg(koi->tag().tag()), QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes) {
       if (qi->rtti() == RTTI_OBJ_OBJECT) {
         koi->dataObject()->deleteDependents();
         doc->removeDataObject(koi->tag().tagString());
       } else if (qi->rtti() == RTTI_OBJ_DATA_VECTOR) {
-        KstRVectorPtr x = kst_cast<KstRVector>(*KST::vectorList.findTag(koi->tag().tagString()));
+        KstRVectorPtr x;
+
+        x = kst_cast<KstRVector>(*KST::vectorList.findTag(koi->tag().tagString()));
         if (x) {
           x->deleteDependents();
           x = 0L;
@@ -1256,7 +1281,9 @@ void KstDataManager::delete_I() {
           QMessageBox::warning(this, i18n("Kst"), i18n("Unknown error deleting data vector."));
         }
       } else if (qi->rtti() == RTTI_OBJ_STATIC_VECTOR) {
-        KstSVectorPtr x = kst_cast<KstSVector>(*KST::vectorList.findTag(koi->tag().tagString()));
+        KstSVectorPtr x;
+
+        x = kst_cast<KstSVector>(*KST::vectorList.findTag(koi->tag().tagString()));
         if (x) {
           x->deleteDependents();
           x = 0L;
@@ -1268,7 +1295,9 @@ void KstDataManager::delete_I() {
           QMessageBox::warning(this, i18n("Kst"), i18n("Unknown error deleting static vector."));
         }
       } else if (qi->rtti() == RTTI_OBJ_A_VECTOR) {
-        KstAVectorPtr x = kst_cast<KstAVector>(*KST::vectorList.findTag(koi->tag().tagString()));
+        KstAVectorPtr x;
+
+        x = kst_cast<KstAVector>(*KST::vectorList.findTag(koi->tag().tagString()));
         if (x) {
           x->deleteDependents();
           x = 0L;
@@ -1280,7 +1309,9 @@ void KstDataManager::delete_I() {
           QMessageBox::warning(this, i18n("Kst"), i18n("Unknown error deleting static vector."));
         }
       } else if (qi->rtti() == RTTI_OBJ_DATA_MATRIX) {
-        KstRMatrixPtr x = kst_cast<KstRMatrix>(*KST::matrixList.findTag(koi->tag().tagString()));
+        KstRMatrixPtr x;
+        
+        x = kst_cast<KstRMatrix>(*KST::matrixList.findTag(koi->tag().tagString()));
         if (x) {
           x->deleteDependents();
           x = 0L;
@@ -1292,7 +1323,9 @@ void KstDataManager::delete_I() {
           QMessageBox::warning(this, i18n("Kst"), i18n("Unknown error deleting data matrix."));
         }
       } else if (qi->rtti() == RTTI_OBJ_STATIC_MATRIX) {
-        KstSMatrixPtr x = kst_cast<KstSMatrix>(*KST::matrixList.findTag(koi->tag().tagString()));
+        KstSMatrixPtr x;
+        
+        x = kst_cast<KstSMatrix>(*KST::matrixList.findTag(koi->tag().tagString()));
         if (x) {
           x->deleteDependents();
           x = 0L;
@@ -1304,7 +1337,9 @@ void KstDataManager::delete_I() {
           QMessageBox::warning(this, i18n("Kst"),i18n("Unknown error deleting static matrix."));
         }
       } else if (qi->rtti() == RTTI_OBJ_A_MATRIX) {
-        KstAMatrixPtr x = kst_cast<KstAMatrix>(*KST::matrixList.findTag(koi->tag().tagString()));
+        KstAMatrixPtr x;
+
+        x = kst_cast<KstAMatrix>(*KST::matrixList.findTag(koi->tag().tagString()));
         if (x) {
           x->deleteDependents();
           x = 0L;
@@ -1399,10 +1434,12 @@ void KstDataManager::contextMenu(QListViewItem *i, const QPoint& p, int col) {
   
     for (i = windows.constBegin(); i != windows.constEnd(); ++i)
       KstViewWindow *viewWindow = dynamic_cast<KstViewWindow*>(*i);
+
       if (viewWindow) {
         Kst2DPlotList plots = viewWindow->view()->findChildrenType<Kst2DPlot>();
-        
-        for (Kst2DPlotList::Iterator i = plots.begin(); i != plots.end(); ++i) {
+        Kst2DPlotList::iterator i;
+
+        for (i = plots.begin(); i != plots.end(); ++i) {
           Kst2DPlotPtr plot = *i;
 
           if (!plot->Curves.contains(c)) {

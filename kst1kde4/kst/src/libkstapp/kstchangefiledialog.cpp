@@ -42,7 +42,7 @@ KstChangeFileDialog::KstChangeFileDialog(QWidget* parent,
                                            const char* name,
                                            bool modal,
                                            Qt::WindowFlags fl)
-: KstChangeFileDialog(parent, fl) {
+: QDialog(parent, fl) {
   setupUi(this);
 
   connect(_clearFilter, SIGNAL(clicked()), _filter, SLOT(clear()));

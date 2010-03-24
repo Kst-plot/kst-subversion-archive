@@ -1,5 +1,5 @@
 /***************************************************************************
-                       kstcsddialog_i.cpp  -  Part of KST
+                       kstcsddialog.cpp  -  Part of KST
                              -------------------
     begin                :
     copyright            : (C) 2003 The University of Toronto
