@@ -48,8 +48,10 @@ private Q_SLOTS:
   void close();
   void reject();
 
-private:
+protected:
   KstObjectPtr _dp;
+
+private:
   bool _multiple;
   bool _editMultipleMode;
   bool _newDialog;

@@ -17,14 +17,14 @@
 #ifndef KSTFIELDSELECTI_H
 #define KSTFIELDSELECTI_H
 
-#include "fieldselect.h"
+#include "ui_fieldselect.h"
 #include "kstdatasource.h"
 
-class KstFieldSelectI: public FieldSelect {
+class KstFieldSelect: public QDialog, public Ui::FieldSelect {
   Q_OBJECT
   public:
-    KstFieldSelectI(QWidget* parent = 0, const char *name = 0, bool modal = false, WFlags fl = 0);
-    virtual ~KstFieldSelectI();
+    KstFieldSelect(QWidget* parent = 0, const char *name = 0, bool modal = false, Qt::WindowFlags fl = 0);
+    virtual ~KstFieldSelect();
 
     void setURL(const QString& url);
     QString selection( ) { return _selection; }
@@ -44,7 +44,7 @@ class KstFieldSelectI: public FieldSelect {
   private:
     void fillFields();
 
-    QDict<QListViewItem> _fields;
+// xxx    QDict<QListWidgetItem> _fields;
     KstDataSourcePtr _ds;
     QString _url;
     QString _selection;

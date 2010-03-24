@@ -93,15 +93,6 @@
      <property name="whatsThis">
       <string>Available data: This box lists all fields which have not been selected for plotting.  To select a field for plotting, move it to the Selected data list, by dragging it with the mouse, by double clicking, or by highlighting it, and clicking on the select button (Right Arrow - accelerator is Alt-s).</string>
      </property>
-     <property name="resizePolicy">
-      <enum>Q3ScrollView::AutoOneFit</enum>
-     </property>
-     <property name="selectionMode">
-      <enum>Q3ListView::Extended</enum>
-     </property>
-     <property name="showSortIndicator">
-      <bool>true</bool>
-     </property>
      <column>
       <property name="text">
        <string>Field/Column</string>
@@ -127,21 +118,11 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>Q3ListView</class>
-   <extends>Q3Frame</extends>
-   <header>q3listview.h</header>
-  </customwidget>
-  <customwidget>
    <class>VectorListView</class>
   </customwidget>
  </customwidgets>
  <includes>
-  <include location="local">q3header.h</include>
-  <include location="local">q3listview.h</include>
   <include location="local">vectorlistview.h</include>
-  <include location="global">q3header.h</include>
-  <include location="global">q3listview.h</include>
-  <include location="global">vectorlistview.h</include>
  </includes>
  <resources/>
  <connections/>

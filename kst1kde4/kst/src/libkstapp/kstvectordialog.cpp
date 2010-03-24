@@ -20,13 +20,10 @@
 
 #include <qbuttongroup.h>
 #include <qcheckbox.h>
-#include <qlistbox.h>
 #include <qradiobutton.h>
 #include <qspinbox.h>
-#include <qvbox.h>
 #include <qmessagebox.h>
 
-#include <kdialogbase.h>
 #include <kfiledialog.h>
 #include <klineedit.h>
 #include <klocale.h>
@@ -39,21 +36,20 @@
 #include "editmultiplewidget.h"
 #include "kst.h"
 #include "kstdatacollection.h"
-#include "kstfieldselect_i.h"
+#include "kstfieldselect.h"
 #include "kstrvector.h"
 #include "kstsvector.h"
 #include "kstvectordefaults.h"
-#include "kstvectordialog_i.h"
+#include "kstvectordialog.h"
 #include "kstdefaultnames.h"
 #include "kstcombobox.h"
-#include "vectordialogwidget.h"
 
 
 QPointer<KstVectorDialog> KstVectorDialog::_inst = 0L;
 
 const QString& KstVectorDialog::defaultTag = KGlobal::staticQString("<Auto Name>");
 
-KstVectorDialogI *KstVectorDialog::globalInstance() {
+KstVectorDialog *KstVectorDialog::globalInstance() {
   if (!_inst) {
     _inst = new KstVectorDialog(KstApp::inst());
   }
@@ -64,7 +60,7 @@ KstVectorDialogI *KstVectorDialog::globalInstance() {
 KstVectorDialog::KstVectorDialog(QWidget* parent, const char* name,
                                    bool modal, Qt::WindowFlags fl)
 : KstDataDialog(parent, name, modal, fl) {
-  _w = new VectorDialogWidget(_contents);
+  _w = new Ui::VectorDialogWidget(_contents);
   _w->setupUi(this);
 
   setMultiple(true);
@@ -159,7 +155,8 @@ void KstVectorDialog::testURL() {
 
 
 void KstVectorDialog::showFields() {
-  KstFieldSelectI *dlg = new KstFieldSelectI(this, "Field Select", true);
+  KstFieldSelect *dlg = new KstFieldSelect(this, "Field Select", true);
+
   if (dlg) {
     dlg->setURL(_w->FileName->url());
     dlg->exec();
@@ -260,7 +257,9 @@ void KstVectorDialog::updateCompletion() {
 
 
 void KstVectorDialog::fillFieldsForRVEdit() {
-  KstRVectorPtr rvp = kst_cast<KstRVector>(_dp);
+  KstRVectorPtr rvp;
+
+  rvp = kst_cast<KstRVector>(_dp);
   rvp->readLock();
 
   _w->_readFromSource->setChecked(true);
@@ -792,7 +791,7 @@ void KstVectorDialog::configureSource() {
       return;
     }
   }
-
+/* xxx
   assert(_configWidget);
   KDialogBase *dlg = new KDialogBase(this, "Data Config Dialog", true, i18n("Configure Data Source"));
   if (isNew) {
@@ -811,6 +810,7 @@ void KstVectorDialog::configureSource() {
   dlg->setMainWidget(0L);
   delete dlg;
   updateCompletion(); // could be smarter by only running if Ok/Apply clicked
+*/
 }
 
 
@@ -822,17 +822,17 @@ void KstVectorDialog::populateEditMultipleRV() {
   _w->FileName->clear();
   _w->_kstDataRange->F0->setText("");
   _w->_kstDataRange->N->setText("");
-  _w->_kstDataRange->Skip->setMinValue(_w->_kstDataRange->Skip->minValue() - 1);
+  _w->_kstDataRange->Skip->setMinimum(_w->_kstDataRange->Skip->minimum() - 1);
   _w->_kstDataRange->Skip->setSpecialValueText(" ");
-  _w->_kstDataRange->Skip->setValue(_w->_kstDataRange->Skip->minValue());
+  _w->_kstDataRange->Skip->setValue(_w->_kstDataRange->Skip->minimum());
   _w->_kstDataRange->CountFromEnd->setTristate(true);
-  _w->_kstDataRange->CountFromEnd->setNoChange();
+  _w->_kstDataRange->CountFromEnd->setChecked(Qt::PartiallyChecked);
   _w->_kstDataRange->ReadToEnd->setTristate(true);
-  _w->_kstDataRange->ReadToEnd->setNoChange();
+  _w->_kstDataRange->ReadToEnd->setChecked(Qt::PartiallyChecked);
   _w->_kstDataRange->DoFilter->setTristate(true);
-  _w->_kstDataRange->DoFilter->setNoChange();
+  _w->_kstDataRange->DoFilter->setChecked(Qt::PartiallyChecked);
   _w->_kstDataRange->DoSkip->setTristate(true);
-  _w->_kstDataRange->DoSkip->setNoChange();
+  _w->_kstDataRange->DoSkip->setChecked(Qt::PartiallyChecked);
 
   _w->_kstDataRange->Skip->setEnabled(true);
   _w->_kstDataRange->N->setEnabled(true);
@@ -854,9 +854,9 @@ void KstVectorDialog::populateEditMultipleSV() {
   KstSVectorList vclist = kstObjectSubList<KstVector, KstSVector>(KST::vectorList);
   _editMultipleWidget->_objectList->insertStringList(vclist.tagNames());
 
-  _w->_N->setMinValue(_w->_N->minValue() - 1);
+  _w->_N->setMinimum(_w->_N->minimum() - 1);
   _w->_N->setSpecialValueText(" ");
-  _w->_N->setValue(_w->_N->minValue());
+  _w->_N->setValue(_w->_N->minimum());
   _w->_xMin->setText("");
   _w->_xMax->setText("");
 
@@ -909,21 +909,24 @@ void KstVectorDialog::cleanup() {
   if (_editMultipleMode) {
     if (_w->_kstDataRange->Skip->specialValueText() == " ") {
       _w->_kstDataRange->Skip->setSpecialValueText(QString::null);
-      _w->_kstDataRange->Skip->setMinValue(_w->_kstDataRange->Skip->minValue() + 1);
+      _w->_kstDataRange->Skip->setMinimum(_w->_kstDataRange->Skip->minimum() + 1);
     }
     if (_w->_N->specialValueText() == " ") {
       _w->_N->setSpecialValueText(QString::null);
-      _w->_N->setMinValue(_w->_N->minValue() + 1);
+      _w->_N->setMinimum(_w->_N->minimum() + 1);
     }
   }
 }
 
 
 KstObjectPtr KstVectorDialog::findObject(const QString& name) {
+  KstObjectPtr vec;
+
   KST::vectorList.lock().readLock();
-  KstObjectPtr o = (*KST::vectorList.findTag(name)).data();
+  vec = (*KST::vectorList.findTag(name)).data();
   KST::vectorList.lock().unlock();
-  return o;
+
+  return vec;
 }
 
 #include "kstvectordialog.moc"

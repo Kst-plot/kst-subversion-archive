@@ -20,7 +20,7 @@
 #include <QComboBox>
 #include <QListWidget>
 #include <QMessageBox>
-#include <qptrstack.h>
+#include <QStack>
 #include <qstylefactory.h>
 #include <qstyle.h>
 #include <qtoolbox.h>
@@ -529,7 +529,9 @@ void KstObjectItem::reload() {
     KstReadLocker ml(&KST::vectorList.lock());
     KstVectorList::Iterator v = KST::vectorList.findTag(_tag);
     if (v != KST::vectorList.end()) {
-      KstRVectorPtr r = kst_cast<KstRVector>(*v);
+      KstRVectorPtr r;
+
+      r = kst_cast<KstRVector>(*v);
       if (r) {
         r->writeLock();
         r->reload();
@@ -540,7 +542,9 @@ void KstObjectItem::reload() {
     KstReadLocker ml(&KST::matrixList.lock());
     KstMatrixList::Iterator m = KST::matrixList.findTag(_tag);
     if (m != KST::matrixList.end()) {
-      KstRMatrixPtr r = kst_cast<KstRMatrix>(*m);
+      KstRMatrixPtr r;
+
+      r = kst_cast<KstRMatrix>(*m);
       if (r) {
         r->writeLock();
         r->reload();
@@ -652,9 +656,11 @@ void KstObjectItem::activateHint(int id) {
 
 
 void KstObjectItem::addToPlot(int id) {
-  Kst2DPlotPtr p = PlotMap[id];
-  KstBaseCurvePtr c = kst_cast<KstBaseCurve>(dataObject());
+  Kst2DPlotPtr p;
+  KstBaseCurvePtr c;
 
+  p = PlotMap[id];
+  c = kst_cast<KstBaseCurve>(dataObject());
   if (p && c) {
     p->addCurve(c);
     p->setDirty();
@@ -685,7 +691,7 @@ void KstObjectItem::paintPlot(Kst2DPlotPtr p) {
 
   windows = app->subWindowList(QMdiArea::CreationOrder);
 
-  for (i = windows.constBegin(); i != windows.constEnd(); ++i)
+  for (i = windows.constBegin(); i != windows.constEnd(); ++i) {
     KstViewWindow *viewWindow = dynamic_cast<KstViewWindow*>(*i);
 
     if (viewWindow) {
@@ -931,12 +937,12 @@ void KstDataManager::showOldPlugin() {
   if (QAction *a = ::qt_cast<QAction*>(sender())) {
     const QMap<QString,QString> readable =
       PluginCollection::self()->readableNameList();
-    KstPluginDialogI::globalInstance()->showNew(readable[a->text()]);
+    KstPluginDialog::globalInstance()->showNew(readable[a->text()]);
   }
 }
 
 
-void KstDataManager::doubleClicked(QListViewItem *i) {
+void KstDataManager::doubleClicked(QListWidgetItem *i) {
   if (i && DataView->selectedItems().contains(i)) {
     edit_I();
   }

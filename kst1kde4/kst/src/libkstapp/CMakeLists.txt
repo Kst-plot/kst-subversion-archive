@@ -51,10 +51,7 @@ set(kstapp_LIB_SRCS
     kstgfxtlvmousehandler.cpp
     kstmetaplot.cpp
     kstdrag.cpp
-    kstdatamanager.cpp
-    kstpluginmanager.cpp
-    kstviewmanager.cpp
-    kstfieldselect_i.cpp
+    kstfieldselect.cpp
     kstvectordialog.cpp
     kstcsddialog.cpp
     ksteqdialog.cpp
@@ -100,6 +97,9 @@ set(kstapp_LIB_SRCS
     kstfilterdialog.cpp
     extensionmgr.cpp
     ksteditviewobjectdialog.cpp
+    kstdatamanager.cpp
+    kstpluginmanager.cpp
+    kstviewmanager.cpp
     kst.cpp)
 
 #KDE3_ADD_DCOP_SKELS(kstapp_LIB_SRCS

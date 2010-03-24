@@ -16,58 +16,51 @@
  ***************************************************************************/
 #include <assert.h>
 
-// include files for Qt
 #include <qpushbutton.h>
-#include <qheader.h>
 #include <qlineedit.h>
-#include <qlistview.h>
+#include <qlistwidget.h>
 #include <qradiobutton.h>
 #include <qregexp.h>
 
-// include files for KDE
-#include "ksdebug.h"
-#include <klistview.h>
-#include <kmessagebox.h>
-#include <kmultipledrag.h>
 #include <kstandarddirs.h>
 
-// application specific includes
-#include "fieldselect.h"
-#include "kstfieldselect_i.h"
+#include "kstfieldselect.h"
 #include "vectorlistview.h"
 
-KstFieldSelectI::KstFieldSelectI(QWidget* parent, const char* name, bool modal, WFlags fl)
-: FieldSelect(parent, name, modal, fl) {
+KstFieldSelect::KstFieldSelect(QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl)
+: QDialog(parent, fl) {
+  setupUi(this);
+
   connect(_OK, SIGNAL(clicked()), this, SLOT(OKFieldSelect()));
   connect(_Cancel, SIGNAL(clicked()), this, SLOT(CancelFieldSelect()));
   connect(_vectorReduction, SIGNAL(textChanged(const QString&)), this, SLOT(vectorSubset(const QString&)));
   connect(_vectorSearch, SIGNAL(clicked()), this, SLOT(search()));
 
-  _vectors->setSelectionMode(QListView::Single);
+// xxx  _vectors->setSelectionMode(QListView::Single);
 }
 
-KstFieldSelectI::~KstFieldSelectI() {
+KstFieldSelect::~KstFieldSelect() {
   _ds = 0;
 }
 
-void KstFieldSelectI::setURL(const QString& url) {
+void KstFieldSelect::setURL(const QString& url) {
   _url = url;
 
   fillFields();
 }
 
-void KstFieldSelectI::fillFields( ) {
+void KstFieldSelect::fillFields( ) {
   QStringList fl;
   QString fileType;
   bool complete = false;
-
+/* xxx
   fl = KstDataSource::fieldListForSource(_url, QString::null, &fileType, &complete);
 
   for (QStringList::ConstIterator it = fl.begin(); it != fl.end(); ++it) {
-    QStringList     entries = QStringList::split(QDir::separator(), (*it), FALSE);
-    QString         item;
-    QListViewItem*  parent = 0L;
-    QListViewItem*  parentOld = 0L;
+    QStringList       entries = (*it).split(QDir::separator(), FALSE);
+    QString           item;
+    QListWidgetItem*  parent = 0L;
+    QListWidgetItem*  parentOld = 0L;
 
     for (QStringList::ConstIterator itEntry = entries.begin(); itEntry != entries.end(); ++itEntry) {
       item += (*itEntry);
@@ -106,28 +99,33 @@ void KstFieldSelectI::fillFields( ) {
   }
 
   _vectors->sort();
+*/
 }
 
 
-void KstFieldSelectI::vectorSubset(const QString& filter) {
-  QRegExp re(filter, true /* case insensitive */, true /* wildcard */);
-  QListViewItemIterator it(_vectors);
+void KstFieldSelect::vectorSubset(const QString& filter) {
+/* xxx
+  QRegExp re(filter, Qt::CaseInsensitive, QRegExp::Wildcard);
+  QListWidgetItem::iterator it(_vectors);
 
   _vectors->clearSelection();
   _vectors->setSorting(3, true); // Qt 3.1 compat
 
   while (it.current()) {
-    QListViewItem *i = it.current();
+    QListWidgetItem *i = *it;
+
     ++it;
     if (re.exactMatch(i->text(0))) {
       i->setSelected(true);
     }
   }
+*/
 }
 
 
-void KstFieldSelectI::search() {
+void KstFieldSelect::search() {
   QString s = _vectorReduction->text();
+
   if (!s.isEmpty()) {
     if (s[0] != '*') {
       s = "*" + s;
@@ -140,9 +138,10 @@ void KstFieldSelectI::search() {
 }
 
 
-void KstFieldSelectI::OKFieldSelect() {
-  QListViewItemIterator it(_vectors);
-  QPtrList<QListViewItem> lst;
+void KstFieldSelect::OKFieldSelect() {
+/* xxx
+  QListWidgetItem::iterator it(_vectors);
+  QList<QListWidgetItem> lst;
 
   _selection.truncate(0);
 
@@ -156,12 +155,13 @@ void KstFieldSelectI::OKFieldSelect() {
   }
 
   if (lst.count() == 1) {
-    QListViewItem *item = lst.getFirst();
-    QListViewItem *parent = item->parent();
-    _selection = item->text(0);
+    QListWidgetItem *item = lst.getFirst();
+    QListWidgetItem *parent = item->parent();
+
+    _selection = item->text();
 
     while (parent) {
-      _selection = parent->text(0) + QDir::separator() + _selection;
+      _selection = parent->text() + QDir::separator() + _selection;
       parent = parent->parent();
     }
   }
@@ -169,11 +169,12 @@ void KstFieldSelectI::OKFieldSelect() {
   if (!_selection.isEmpty()) {
     accept();
   }
+*/
 }
 
 
-void KstFieldSelectI::CancelFieldSelect() {
+void KstFieldSelect::CancelFieldSelect() {
   reject();
 }
 
-#include "kstfieldselect_i.moc"
+#include "kstfieldselect.moc"
