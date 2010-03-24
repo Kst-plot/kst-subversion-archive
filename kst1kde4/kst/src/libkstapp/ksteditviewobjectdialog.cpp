@@ -17,21 +17,21 @@
 
 #include "ksteditviewobjectdialog.h"
 
-#include <qbutton.h>
 #include <qbuttongroup.h>
 #include <qcheckbox.h>
 #include <qcombobox.h>
+#include <QFontComboBox>
 #include <qlayout.h>
 #include <qlabel.h>
 #include <qlineedit.h>
+#include <QMessageBox>
 #include <qmetaobject.h>
 #include <qpainter.h>
+#include <QPushButton>
 #include <qspinbox.h>
 #include <qstyle.h>
-#include <Qmessagebox.h>
 
 #include <kcolorbutton.h>
-#include <kfontcombo.h>
 #include <klineedit.h>
 #include <knuminput.h>
 #include <kurlrequester.h>
@@ -92,9 +92,9 @@ void KstEditViewObjectDialog::showEditViewObjectDialog(KstViewObjectPtr viewObje
   updateWidgets();
   if (_viewObject) {
     if (_isNew) {
-      setCaption(_viewObject->newTitle());
+      setWindowTitle(_viewObject->newTitle());
     } else {
-      setCaption(_viewObject->editTitle());
+      setWindowTitle(_viewObject->editTitle());
     }
     if (_viewObject && !_viewObject->supportsDefaults()) {
       _buttonGroupDefaults->hide();
@@ -156,10 +156,11 @@ void KstEditViewObjectDialog::fillObjectList() {
   QList<QMdiSubWindow*> windows;
   QList<QMdiSubWindow*>::const_iterator i;
 
-  windows = app->subWindowList(QMdiArea::CreationOrder);
+  windows = KstApp::inst()->subWindowList(QMdiArea::CreationOrder);
 
-  for (i = windows.constBegin(); i != windows.constEnd(); ++i)
+  for (i = windows.constBegin(); i != windows.constEnd(); ++i) {
     KstViewWindow *view = dynamic_cast<KstViewWindow*>(*i);
+
     if (viewWindow) {
       if (_viewObject->type() == "TopLevelView") {
         list.append(viewWindow->view().data());

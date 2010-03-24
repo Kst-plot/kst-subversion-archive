@@ -58,9 +58,9 @@ KstPluginDialog *KstPluginDialog::globalInstance() {
 
 
 KstPluginDialog::KstPluginDialog(QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl)
-: KstDataDialog(parent, name, modal, fl) {
-  _w = new PluginDialogWidget(_contents);
-  _w>setupUi(this);
+: KstDataDialog(parent) {
+  _w = new Ui::PluginDialogWidget();
+  _w->setupUi(this);
 
   setMultiple(false);
   connect(_w->PluginCombo, SIGNAL(highlighted(int)), this, SLOT(wasModifiedApply()));
@@ -89,88 +89,97 @@ QString KstPluginDialog::newTitle() {
 
 
 void KstPluginDialog::updatePluginList() {
+  QMap<QString,Plugin::Data>::const_iterator it;
   PluginCollection *pc = PluginCollection::self();
-  QString previous = _pluginList[_w->PluginCombo->currentItem()];
+  Plugin::Data restoreEntry;
+  QString previous = _pluginList[_w->PluginCombo->currentIndex()];
+  QMap<QString,QString> oldIEntries;
+  QMap<QString,QString> oldOEntries;
   int newFocus = -1;
-
+  int cnt = 0;
   const QMap<QString,Plugin::Data>& pluginMap = pc->pluginList();
-
-  QMap<QString,QString> oldIEntries, oldOEntries;
 
   _w->PluginCombo->clear();
   _pluginList.clear();
-  int cnt = 0;
-  Plugin::Data restoreEntry;
-  for (QMap<QString,Plugin::Data>::ConstIterator it = pluginMap.begin();
-                                                  it != pluginMap.end();
-                                                                   ++it) {
-    _pluginList += it.data()._name;
-    _w->PluginCombo->insertItem(i18n("%1 (v%2)").arg(it.data()._readableName).arg(it.data()._version));
-    if (it.data()._name == previous) {
+
+  for (it = pluginMap.begin(); it != pluginMap.end(); ++it) {
+    _pluginList += (*it)._name;
+    _w->PluginCombo->insertItem(0, i18n("%1 (v%2)").arg((*it)._readableName).arg((*it)._version));
+    if ((*it)._name == previous) {
       newFocus = cnt;
-      oldIEntries = cacheInputs(it.data()._inputs);
-      oldOEntries = cacheInputs(it.data()._outputs);
-      restoreEntry = it.data();
+// xxx      oldIEntries = cacheInputs((*it)._inputs);
+// xxx      oldOEntries = cacheInputs((*it)._outputs);
+      restoreEntry = (*it);
     }
     ++cnt;
   }
 
   if (newFocus != -1) {
-    _w->PluginCombo->setCurrentItem(newFocus);
-    pluginChanged(_w->PluginCombo->currentItem());
-    restoreInputs(restoreEntry._inputs, oldIEntries);
-    restoreInputs(restoreEntry._outputs, oldOEntries);
+    _w->PluginCombo->setCurrentIndex(newFocus);
+    pluginChanged(_w->PluginCombo->currentIndex());
+// xxx    restoreInputs(restoreEntry._inputs, oldIEntries);
+// xxx    restoreInputs(restoreEntry._outputs, oldOEntries);
   } else {
-    _w->PluginCombo->setCurrentItem(0);
+    _w->PluginCombo->setCurrentIndex(0);
     pluginChanged(0);
   }
 }
 
 
 void KstPluginDialog::updateForm() {
-  QExplicitlySharedDataPointer<Plugin> plugin = PluginCollection::self()->plugin(_pluginList[_w->PluginCombo->currentItem()]);
+  QExplicitlySharedDataPointer<Plugin> plugin = PluginCollection::self()->plugin(_pluginList[_w->PluginCombo->currentIndex()]);
   if (plugin) {
-    const QValueList<Plugin::Data::IOValue>& itable = plugin->data()._inputs;
-    for (QValueList<Plugin::Data::IOValue>::ConstIterator it = itable.begin(); it != itable.end(); ++it) {
+    QList<Plugin::Data::IOValue>::const_iterator it;
+    const QList<Plugin::Data::IOValue>& itable = plugin->data()._inputs;
+/* xxx
+    for (it = itable.begin(); it != itable.end(); ++it) {
       if ((*it)._type == Plugin::Data::IOValue::TableType) { // vector
         QObject *field = _w->_pluginInputOutputFrame->child((*it)._name.toLatin1(), "VectorSelector");
-        assert(field);
+
         if (field) {
           VectorSelector *vs = static_cast<VectorSelector*>(field);
+
           vs->update();
         }
       } else if ((*it)._type == Plugin::Data::IOValue::StringType) { // string
         QObject *field = _w->_pluginInputOutputFrame->child((*it)._name.toLatin1(), "StringSelector");
-        assert(field);
+
         if (field) {
           StringSelector *ss = static_cast<StringSelector*>(field);
+
           ss->update();
         }
       } else if ((*it)._type == Plugin::Data::IOValue::PidType) {
         // Nothing
       } else {
         QObject *field = _w->_pluginInputOutputFrame->child((*it)._name.toLatin1(), "ScalarSelector");
-        assert(field);
+
         if (field) {
           ScalarSelector *ss = static_cast<ScalarSelector*>(field);
+
           ss->update();
         }
       }
     }
+*/
   }
 }
 
 
 void KstPluginDialog::fillFieldsForEdit() {
-  KstCPluginPtr pp = kst_cast<KstCPlugin>(_dp);
+  KstCPluginPtr pp;
+
+  pp = kst_cast<KstCPlugin>(_dp);
   if (!pp) {
     return;
   }
+
   pp->readLock();
   if (!pp->plugin()) { // plugin() can be null if the kst file is invalid
     pp->unlock();
     return;
   }
+
   const QString pluginName(pp->tagName());
   const QString pluginObjectName(pp->plugin()->data()._name);
   const int usage = pp->getUsage();
@@ -935,11 +944,11 @@ void KstPluginDialog::updateScalarTooltip(const QString& n) {
 
   if (s) {
     s->readLock();
-    QToolTip::remove(w);
-    QToolTip::add(w, QString::number(s->value()));
+// xxx    QToolTip::remove(w);
+// xxx    QToolTip::add(w, QString::number(s->value()));
     s->unlock();
   } else {
-    QToolTip::remove(w);
+// xxx    QToolTip::remove(w);
   }
 }
 
@@ -950,11 +959,11 @@ void KstPluginDialog::updateStringTooltip(const QString& n) {
 
   if (s) {
     s->readLock();
-    QToolTip::remove(w);
-    QToolTip::add(w, s->value());
+// xxx    QToolTip::remove(w);
+// xxx    QToolTip::add(w, s->value());
     s->unlock();
   } else {
-    QToolTip::remove(w);
+// xxx    QToolTip::remove(w);
   }
 }
 

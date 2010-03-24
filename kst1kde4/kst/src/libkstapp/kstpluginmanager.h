@@ -18,6 +18,8 @@
 #ifndef KSTPLUGINMANAGERI_H
 #define KSTPLUGINMANAGERI_H
 
+#include <QListWidgetItem>
+
 #include "ui_pluginmanager.h"
 
 class KstPluginManager : public QDialog, public Ui::PluginManager {
@@ -28,7 +30,7 @@ class KstPluginManager : public QDialog, public Ui::PluginManager {
     virtual ~KstPluginManager();
 
   public slots:
-    void selectionChanged( QListViewItem *item );
+    void selectionChanged( QListWidgetItem *item );
     void install();
     void remove();
     void rescan();
