@@ -131,7 +131,7 @@ DataWizard(parent, name, modal, fl )
   _newFilter->hide(); // FIXME: implement this
   _testURL->hide();
   _url->setURL(default_source);
-  _url->completionObject()->setDir(QDir::currentDirPath());
+  _url->completionObject()->setDir(QDir::currentPath());
   _url->setFocus();
 
   // x vector selection

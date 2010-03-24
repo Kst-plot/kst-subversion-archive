@@ -171,7 +171,7 @@ bool KstDoc::newDocument() {
   //if (QMessageBox::Yes == QMessageBox::warningYesNo(KstApp::inst(), i18n("Are you sure you wish to erase all your data and plots?"))) {
     deleteContents();
     _modified = false;
-    _absFilePath = QDir::homeDirPath();
+    _absFilePath = QDir::homePath();
     _title = "Untitled";
     KstApp::inst()->newWindow(i18n("default name of first window", "W1"));
     createScalars();

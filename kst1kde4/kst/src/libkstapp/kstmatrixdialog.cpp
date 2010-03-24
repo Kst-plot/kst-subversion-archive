@@ -55,7 +55,7 @@ KstMatrixDialog::KstMatrixDialog(QWidget* parent, const char* name, bool modal, 
 
   setMultiple(true);
   _inTest = false;
-  _w->_fileName->completionObject()->setDir(QDir::currentDirPath());
+  _w->_fileName->completionObject()->setDir(QDir::currentPath());
 
   connect(_w->_readFromSource, SIGNAL(clicked()), this, SLOT(updateEnables()));
   connect(_w->_generateGradient, SIGNAL(clicked()), this, SLOT(updateEnables()));

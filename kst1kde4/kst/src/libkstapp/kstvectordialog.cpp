@@ -69,7 +69,7 @@ KstVectorDialog::KstVectorDialog(QWidget* parent, const char* name,
 
   setMultiple(true);
   _inTest = false;
-  _w->FileName->completionObject()->setDir(QDir::currentDirPath());
+  _w->FileName->completionObject()->setDir(QDir::currentPath());
 
   _w->FileName->setMode(KFile::File | KFile::Directory | KFile::ExistingOnly);
   connect(_w->FileName, SIGNAL(openFileDialog(KURLRequester *)), this, SLOT(selectFolder()));

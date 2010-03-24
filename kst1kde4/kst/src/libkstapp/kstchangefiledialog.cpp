@@ -60,7 +60,7 @@ KstChangeFileDialog::KstChangeFileDialog(QWidget* parent,
   connect(_dataFile, SIGNAL(textChanged(const QString&)), this, SLOT(sourceChanged(const QString&)));
   connect(_configureSource, SIGNAL(clicked()), this, SLOT(configureSource()));
 
-  _dataFile->completionObject()->setDir(QDir::currentDirPath());
+  _dataFile->completionObject()->setDir(QDir::currentPath());
   _dataFile->setMode(KFile::File | KFile::Directory | KFile::ExistingOnly);
 
   _clearFilter->setPixmap(BarIcon("locationbar_erase"));
