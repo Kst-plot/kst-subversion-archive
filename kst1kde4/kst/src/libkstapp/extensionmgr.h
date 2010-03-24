@@ -35,7 +35,7 @@ class ExtensionMgr : QObject {
 
     const QMap<QString,bool>& extensions() const { return _extensions; }
     void setEnabled(const QString& extension, bool enabled) { _extensions[extension] = enabled; }
-    bool enabled(const QString& extension) { return _extensions.contains(extension) && _extensions[extension]; }
+    bool enabled(const QString& extension) { return _extensions.count(extension) && _extensions[extension]; }
     void updateExtensions();
 
     KstExtension *extension(const QString& name) const;
@@ -43,7 +43,7 @@ class ExtensionMgr : QObject {
     void doRegister(const QString& name, KstExtension *inst);
     void unregister(KstExtension *inst);
     void unregister(const QString& name) { _registry.remove(name); }
-    bool registered(const QString& name) const { return _registry.contains(name); }
+    bool registered(const QString& name) const { return _registry.count(name); }
 
     void loadExtension(const QString& name);
     void loadExtension(const KService::Ptr& service);

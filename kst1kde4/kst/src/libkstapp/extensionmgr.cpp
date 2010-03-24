@@ -132,7 +132,7 @@ void ExtensionMgr::updateExtensions() {
 
 
 void ExtensionMgr::doRegister(const QString& name, KstExtension *inst) {
-  assert(!_registry.contains(name));
+  assert(!_registry.count(name));
   _registry[name] = inst;
 }
 
