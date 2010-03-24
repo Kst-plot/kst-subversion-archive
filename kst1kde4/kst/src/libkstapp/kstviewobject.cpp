@@ -22,6 +22,7 @@
 
 #include <QBitmap>
 #include <QMetaObject>
+#include <QMetaProperty>
 #include <QTextDocument>
 
 #include "kst.h"
@@ -190,44 +191,62 @@ void KstViewObject::loadChildren(const QDomElement& e) {
         }
         Kst2DPlotMap *pmap = KstApp::inst()->plotHolderWhileOpeningDocument();
         if (pmap->count(in_tag) > 0) {
-          Kst2DPlotPtr plot = (*pmap)[in_tag];
+          Kst2DPlotPtr plot;
+
+          plot = (*pmap)[in_tag];
           if (plot) {
-            appendChild(plot.data(), true);
+            appendChild(plot, true);
             plot->loadChildren(el);
-            pmap->erase(in_tag);
+// xxx            pmap->removeAll(in_tag);
           }
         }
       } else if (el.tagName() == "PlotGroup" || el.tagName() == "plotgroup" /* 1.1 support */) {
-        KstPlotGroupPtr plotGroup = new KstPlotGroup(el);
-        appendChild(plotGroup.data(), true);
+        KstPlotGroupPtr plotGroup;
+
+        plotGroup = new KstPlotGroup(el);
+        appendChild(plotGroup, true);
         plotGroup->loadChildren(el);
       } else if (el.tagName() == "Box") {
-        KstViewBoxPtr box = new KstViewBox(el);
-        appendChild(box.data(), true);
+        KstViewBoxPtr box;
+        
+        box = new KstViewBox(el);
+        appendChild(box, true);
         box->loadChildren(el);
       } else if (el.tagName() == "Arrow") {
-        KstViewArrowPtr arrow = new KstViewArrow(el);
-        appendChild(arrow.data(), true);
+        KstViewArrowPtr arrow;
+
+        arrow = new KstViewArrow(el);
+        appendChild(arrow, true);
         arrow->loadChildren(el);
       } else if (el.tagName() == "Line") {
-        KstViewLinePtr line = new KstViewLine(el);
-        appendChild(line.data(), true);
+        KstViewLinePtr line;
+
+        line = new KstViewLine(el);
+        appendChild(line, true);
         line->loadChildren(el);
       } else if (el.tagName() == "Ellipse") {
-        KstViewEllipsePtr ellipse = new KstViewEllipse(el);
-        appendChild(ellipse.data(), true);
+        KstViewEllipsePtr ellipse;
+
+        ellipse = new KstViewEllipse(el);
+        appendChild(ellipse, true);
         ellipse->loadChildren(el);
       } else if (el.tagName() == "Label") {
-        KstViewLabelPtr label = new KstViewLabel(el);
-        appendChild(label.data(), true);
+        KstViewLabelPtr label;
+
+        label = new KstViewLabel(el);
+        appendChild(label, true);
         label->loadChildren(el);
       } else if (el.tagName() == "Legend") {
-        KstViewLegendPtr legend = new KstViewLegend(el);
-        appendChild(legend.data(), true);
+        KstViewLegendPtr legend;
+
+        legend = new KstViewLegend(el);
+        appendChild(legend, true);
         legend->loadChildren(el);
       } else if (el.tagName() == "Picture") {
-        KstViewPicturePtr picture = new KstViewPicture(el);
-        appendChild(picture.data(), true);
+        KstViewPicturePtr picture;
+
+        picture = new KstViewPicture(el);
+        appendChild(picture, true);
         picture->loadChildren(el);
       }
     }
@@ -249,21 +268,26 @@ KstObject::UpdateType KstViewObject::update(int counter) {
 
 KstObject::UpdateType KstViewObject::updateChildren(int counter) {
   KstObject::UpdateType rc = NO_CHANGE;
-  for (KstViewObjectList::Iterator i = _children.begin(); i != _children.end(); ++i) {
+  KstViewObjectList::iterator i;
+
+  for (i = _children.begin(); i != _children.end(); ++i) {
     if (rc == NO_CHANGE) {
       rc = (*i)->update(counter);
     } else {
       (*i)->update(counter);
     }
   }
+
   return rc;
 }
 
 
 void KstViewObject::save(QTextStream& ts, const QString& indent) {
+  KstViewObjectList::iterator i;
+
   saveAttributes(ts, indent);
 
-  for (KstViewObjectList::Iterator i = _children.begin(); i != _children.end(); ++i) {
+  for (i = _children.begin(); i != _children.end(); ++i) {
     (*i)->save(ts, indent);
   }
 }
@@ -281,7 +305,7 @@ void KstViewObject::saveAttributes(QTextStream& ts, const QString& indent) {
   if (transparent()) {
     ts << indent << "<transparent/>" << endl;
   }
-  ts << indent << "<tag>" << QStyleSheet::escape(tagName()) << "</tag>" << endl;
+  ts << indent << "<tag>" << Qt::escape(tagName()) << "</tag>" << endl;
   ts << indent << "<aspect x=\"" << aspect.x <<
     "\" y=\"" << aspect.y <<
     "\" w=\"" << aspect.w <<
@@ -290,15 +314,18 @@ void KstViewObject::saveAttributes(QTextStream& ts, const QString& indent) {
   ts << indent << "<idealsize w=\"" << _idealSize.width() <<
     "\" h=\"" << _idealSize.height() <<"\" />" << endl;
 
-  // save all properties
-  for (int i = 0; i < metaObject()->numProperties(true); i++) {
-    ts << indent << "<" << metaObject()->property(i, true)->name() << ">";
-    if (strcmp(metaObject()->property(i, true)->type(), "QString") == 0) {
-      ts << QStyleSheet::escape(property(metaObject()->property(i, true)->name()).toString());
+  //
+  // save all properties...
+  //
+
+  for (int i = 0; i < metaObject()->propertyCount(); i++) {
+    ts << indent << "<" << metaObject()->property(i).name() << ">";
+    if (metaObject()->property(i).type() == QVariant::String) {
+      ts << Qt::escape(property(metaObject()->property(i).name()).toString());
     } else {
-      ts << property(metaObject()->property(i, true)->name()).toString().latin1();
+      ts << property(metaObject()->property(i).name()).toString().toLatin1();
     }
-    ts << "</" << metaObject()->property(i, true)->name() << ">" << endl;
+    ts << "</" << metaObject()->property(i).name() << ">" << endl;
   }
 }
 
@@ -332,10 +359,14 @@ void KstViewObject::paint(KstPainter& p, const QRegion& bounds) {
   p.setWindow(geometry());
   paintUpdate();
 
-  bool nullBounds = bounds.isNull();
+  KstViewObjectList::iterator i;
+  bool nullBounds = bounds.isEmpty();
 
-  // handle the case where we have maximized plots
-  for (KstViewObjectList::Iterator i = _children.begin(); i != _children.end(); ++i) {
+  //
+  // handle the case where we have maximized plots...
+  //
+
+  for (i = _children.begin(); i != _children.end(); ++i) {
     if ((*i)->_maximized) {
       (*i)->paint(p, bounds);
       maximized = true;
@@ -354,21 +385,18 @@ void KstViewObject::paint(KstPainter& p, const QRegion& bounds) {
     }
 
     if (!_children.isEmpty()) {
-      KstViewObjectList::Iterator begin = _children.begin();
-      for (KstViewObjectList::Iterator i = _children.fromLast();; --i) {
-        const QRegion thisObjectGeometry((*i)->geometry());
+      KstViewObjectList::iterator begin = _children.begin();
+      KstViewObjectList::iterator i = _children.end();
+      QRegion thisObjectGeometry;
+
+      while (true) {
+        --i;
+
+        thisObjectGeometry = (*i)->geometry();
 
         if (nullBounds || !clipRegion.intersect(thisObjectGeometry).isEmpty()) {
-#ifdef BENCHMARK
-          QTime t;
-          t.start();
-#endif
           (*i)->paint(p, clipRegion);
           clipRegion -= (*i)->clipRegion();
-#ifdef BENCHMARK
-          int x = t.elapsed();
-          kstdDebug() << "   -> object " << (*i)->tagName() << " took " << x << "ms" << endl;
-#endif
         }
 
         if (i == begin) {
@@ -382,7 +410,10 @@ void KstViewObject::paint(KstPainter& p, const QRegion& bounds) {
 
   p.restore();
 
-  // Draw any inline UI items
+  //
+  // draw any inline UI items...
+  //
+
   if (p.drawInlineUI() && isSelected()) {
     if (_parent) {
       p.save();
@@ -394,12 +425,12 @@ void KstViewObject::paint(KstPainter& p, const QRegion& bounds) {
     }
   }
 
-  p.flush();
+// xxx  p.flush();
 }
 
 
 void KstViewObject::paintSelf(KstPainter& p, const QRegion& bounds) {
-  if (!bounds.isNull()) {
+  if (!bounds.isEmpty()) {
     p.setClipRegion(bounds);
   }
 }
@@ -422,7 +453,6 @@ void KstViewObject::paintUpdate() {
 
 
 void KstViewObject::drawFocusRect(KstPainter& p) {
-  // draw the 8 hotpoints
   const QRect geom(geometry());
   const QPoint topLeft(geom.topLeft());
   const QPoint topRight(geom.topRight());
@@ -432,7 +462,6 @@ void KstViewObject::drawFocusRect(KstPainter& p) {
   const QPoint bottomMiddle(QPoint((bottomLeft.x() + bottomRight.x())/2, bottomLeft.y()));
   const QPoint middleLeft(QPoint(topLeft.x(), (topLeft.y() + bottomLeft.y())/2));
   const QPoint middleRight(QPoint(topRight.x(), (topRight.y() + bottomRight.y())/2));
-
   int dx = KST_RESIZE_BORDER_W/2;
   int width = 2*dx + 1;
 
@@ -444,6 +473,10 @@ void KstViewObject::drawFocusRect(KstPainter& p) {
   p.uiMask() += QRect(bottomMiddle.x()-dx, bottomMiddle.y()-dx, width, width);
   p.uiMask() += QRect(middleLeft.x()-dx, middleLeft.y()-dx, width, width);
   p.uiMask() += QRect(middleRight.x()-dx, middleRight.y()-dx, width, width);
+
+  //
+  // draw the eight hotpoints...
+  //
 
   p.drawRect(topLeft.x()-dx, topLeft.y()-dx, width, width);
   p.drawRect(topRight.x()-dx, topRight.y()-dx, width, width);
@@ -500,7 +533,7 @@ void KstViewObject::prependChild(KstViewObjectPtr obj, bool keepAspect) {
 
 
 bool KstViewObject::removeChild(KstViewObjectPtr obj, bool recursive) {
-  bool rc = _children.remove(obj) > 0;
+  bool rc = _children.removeAll(obj) > 0;
 
   if (recursive) {
     for (KstViewObjectList::Iterator i = _children.begin(); i != _children.end(); ++i) {
@@ -515,7 +548,9 @@ bool KstViewObject::removeChild(KstViewObjectPtr obj, bool recursive) {
 
 
 void KstViewObject::insertChildAfter(const KstViewObjectPtr after, KstViewObjectPtr obj, bool keepAspect) {
-  KstViewObjectList::Iterator i = _children.find(after);
+  KstViewObjectList::iterator i;
+
+  i = _children.find(after);
   if (i != _children.end()) {
     _children.insert(i, obj);
   } else {
@@ -523,7 +558,7 @@ void KstViewObject::insertChildAfter(const KstViewObjectPtr after, KstViewObject
   }
   obj->_parent = this;
 
-  for (KstViewObjectList::Iterator i = _children.begin(); i != _children.end(); ++i) {
+  for (i = _children.begin(); i != _children.end(); ++i) {
     if ((*i)->maximized()) {
       (*i)->setMaximized(false);
     }
@@ -1204,9 +1239,10 @@ QString KstViewObject::menuTitle() const {
 
 bool KstViewObject::popupMenu(QMenu *menu, const QPoint& pos, KstViewObjectPtr topParent) {
   Q_UNUSED(pos)
+
+  QString menuTitle = this->menuTitle();
   bool rc = false;
   int id;
-  QString menuTitle = this->menuTitle();
 
   _topObjectForMenu = topParent;
 
@@ -1223,13 +1259,6 @@ bool KstViewObject::popupMenu(QMenu *menu, const QPoint& pos, KstViewObjectPtr t
     menu->insertItem(i18n("&Delete"), this, SLOT(deleteObject()));
     rc = true;
   }
-
-
-// Copy doesn't do anything yet, so don't put it in the UI...
-//   if (_standardActions & Copy) {
-//     menu->insertItem(i18n("&Copy"), this, SLOT(copyObject()));
-//     rc = true;
-//   }
 
   if (_layoutActions & Rename) {
     menu->insertItem(i18n("Re&name..."), this, SLOT(rename()));

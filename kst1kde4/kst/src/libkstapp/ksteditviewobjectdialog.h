@@ -18,6 +18,9 @@
 #ifndef KSTEDITVIEWOBJECTDIALOGI_H
 #define KSTEDITVIEWOBJECTDIALOGI_H
 
+#include <QComboBox>
+#include <QGridLayout>
+#include <QList>
 #include <QPointer>
 
 #include "editmultiplewidget.h"
@@ -27,15 +30,12 @@
 #include "ksttoplevelview.h"
 #include "kst_export.h"
 
-class QComboBox;
-class QGridLayout;
-
 class KST_EXPORT KstEditViewObjectDialog : public QDialog, public Ui::KstEditViewObjectDialog {
   Q_OBJECT
   public:
     KstEditViewObjectDialog(QWidget* parent = 0,
                              const char* name = 0,
-                             bool modal = false, WFlags fl = 0 );
+                             bool modal = false, Qt::WindowFlags fl = 0 );
     virtual ~KstEditViewObjectDialog();
 
   public slots:
@@ -65,9 +65,8 @@ class KST_EXPORT KstEditViewObjectDialog : public QDialog, public Ui::KstEditVie
     KstViewObjectPtr _viewObject; // the view object we are currently editing
     KstTopLevelViewPtr _top; // the top level view that invoked this dialog
 
-    // for layout purposes
-    QValueList<QWidget*> _inputWidgets; // the widgets used to change properties
-    QValueList<QWidget*> _widgets; // all other widgets
+    QList<QWidget*> _inputWidgets; // the widgets used to change properties
+    QList<QWidget*> _widgets; // all other widgets
     QGridLayout* _grid;
     QPointer<QWidget> _customWidget;
     bool _isNew;

@@ -162,7 +162,7 @@ void KstPlotGroup::paintSelf(KstPainter& p, const QRegion& bounds) {
 }
 
 
-bool KstPlotGroup::popupMenu(KPopupMenu *menu, const QPoint& pos, KstViewObjectPtr topParent) {
+bool KstPlotGroup::popupMenu(QMenu *menu, const QPoint& pos, KstViewObjectPtr topParent) {
   KstMetaPlot::popupMenu(menu, pos, topParent);
   KstViewObjectPtr c = findChild(pos + position());
   if (c) {
@@ -177,12 +177,15 @@ bool KstPlotGroup::popupMenu(KPopupMenu *menu, const QPoint& pos, KstViewObjectP
 }
 
 
-bool KstPlotGroup::layoutPopupMenu(KPopupMenu *menu, const QPoint& pos, KstViewObjectPtr topParent) {
+bool KstPlotGroup::layoutPopupMenu(QMenu *menu, const QPoint& pos, KstViewObjectPtr topParent) {
+  KstViewObjectPtr c;
+
   KstMetaPlot::layoutPopupMenu(menu, pos, topParent);
-  menu->insertItem(i18n("&Ungroup"), this, SLOT(flatten()));
-  KstViewObjectPtr c = findChild(pos + position());
+  menu->addAction(i18n("&Ungroup"), this, SLOT(flatten()));
+  c = findChild(pos + position());
   if (c) {
-    KPopupMenu *s = new KPopupMenu(menu);
+    QMenu *s = new QMenu(menu);
+
     if (c->layoutPopupMenu(s, pos - c->position(), topParent)) {
       menu->insertItem(c->tagName(), s);
     } else {
@@ -204,29 +207,36 @@ KstViewObjectFactoryMethod KstPlotGroup::factory() const {
 
 
 QMap<QString, QVariant> KstPlotGroup::widgetHints(const QString& propertyName) const {
-  // don't ask for borderedviewobject hints because we don't want to set border color
+  //
+  // don't ask for borderedviewobject hints because we don't want to set border color...
+  //
+
   QMap<QString, QVariant> map = KstViewObject::widgetHints(propertyName);
-  if (!map.empty()) {
-    return map;
+
+  if (map.empty()) {
+    if (propertyName == "transparent") {
+      map.insert(QString("_kst_widgetType"), QString("QCheckBox"));
+      map.insert(QString("_kst_label"), QString::null);
+      map.insert(QString("text"), i18n("Transparent background"));
+    } else if (propertyName == "backColor") {
+      map.insert(QString("_kst_widgetType"), QString("KColorButton"));
+      map.insert(QString("_kst_label"), i18n("Background color"));
+    }
   }
 
-  if (propertyName == "transparent") {
-    map.insert(QString("_kst_widgetType"), QString("QCheckBox"));
-    map.insert(QString("_kst_label"), QString::null);
-    map.insert(QString("text"), i18n("Transparent background"));
-  } else if (propertyName == "backColor") {
-    map.insert(QString("_kst_widgetType"), QString("KColorButton"));
-    map.insert(QString("_kst_label"), i18n("Background color"));
-  }
   return map;
 }
 
 
 QRegion KstPlotGroup::clipRegion() {
   if (transparent()) {
-    // make the clipregion just the children
+    KstViewObjectList::iterator i;
     QRegion region;
-    for (KstViewObjectList::Iterator i = _children.begin(); i != _children.end(); ++i) {
+
+    //
+    // make the clipregion just the children...
+    //
+    for (i = _children.begin(); i != _children.end(); ++i) {
       region += (*i)->clipRegion();
     }
     return region;
