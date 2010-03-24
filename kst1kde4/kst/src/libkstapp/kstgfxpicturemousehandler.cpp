@@ -29,7 +29,9 @@
 KstGfxPictureMouseHandler::KstGfxPictureMouseHandler()
 : KstGfxMouseHandler() {
   // initial default settings before any sticky settings
-  KstViewPicturePtr defaultPicture = new KstViewPicture;
+  KstViewPicturePtr defaultPicture;
+
+  defaultPicture = new KstViewPicture;
   defaultPicture->setBorderWidth(0);
   defaultPicture->setBorderColor(Qt::black);
   defaultPicture->setRefreshTimer(0);
@@ -56,7 +58,7 @@ void KstGfxPictureMouseHandler::pressMove(KstTopLevelViewPtr view, const QPoint&
     QPainter p;
     p.begin(view->widget());
     p.setPen(QPen(Qt::black, 0, Qt::SolidLine));
-    p.setRasterOp(Qt::NotROP);
+// xxx    p.setRasterOp(Qt::NotROP);
     if (old.topLeft() != QPoint(-1, -1)) {
       p.drawRect(old);
       p.drawLine(old.topLeft(), old.bottomRight());
@@ -81,16 +83,18 @@ void KstGfxPictureMouseHandler::releasePress(KstTopLevelViewPtr view, const QPoi
 
   // once released, create a picture and popup the edit dialog
   if (!_cancelled && _mouseOrigin != pos) {
-    KstViewPicturePtr pic = new KstViewPicture;
-    copyDefaults(KstViewObjectPtr(pic));
-    pic->move(_prevBand.topLeft());
-    pic->resize(_prevBand.size());
-    if (pic->showDialog(view, true)) {
+    KstViewPicturePtr picture;
+
+    picture = new KstViewPicture;
+    copyDefaults(KstViewObjectPtr(picture));
+    picture->move(_prevBand.topLeft());
+    picture->resize(_prevBand.size());
+    if (picture->showDialog(view, true)) {
       KstViewObjectPtr container = view->findDeepestChild(_prevBand);
       if (!container) {
         container = view;
       }
-      container->appendChild(KstViewObjectPtr(pic));
+      container->appendChild(KstViewObjectPtr(picture));
       container->invalidateClipRegion();
       KstApp::inst()->document()->setModified();
       KstApp::inst()->updateViewManager(true);

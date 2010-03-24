@@ -29,7 +29,9 @@
 KstGfxEllipseMouseHandler::KstGfxEllipseMouseHandler()
 : KstGfxMouseHandler() {
   // initial default settings before any sticky settings
-  KstViewEllipsePtr defaultEllipse = new KstViewEllipse;
+  KstViewEllipsePtr defaultEllipse;
+
+  defaultEllipse = new KstViewEllipse;
   defaultEllipse->setBorderWidth(2);
   defaultEllipse->setBorderColor(Qt::black);
   defaultEllipse->setForegroundColor(Qt::white);
@@ -55,7 +57,7 @@ void KstGfxEllipseMouseHandler::pressMove(KstTopLevelViewPtr view, const QPoint&
     QPainter p;
     p.begin(view->widget());
     p.setPen(QPen(Qt::black, 0, Qt::SolidLine));
-    p.setRasterOp(Qt::NotROP);
+// xxx    p.setRasterOp(Qt::NotROP);
     if (old.topLeft() != QPoint(-1, -1)) {
       p.drawEllipse(old);
     }
@@ -75,7 +77,9 @@ void KstGfxEllipseMouseHandler::releasePress(KstTopLevelViewPtr view, const QPoi
   _mouseDown = false;
 
   if (!_cancelled && _mouseOrigin != pos) {
-    KstViewEllipsePtr ellipse = new KstViewEllipse;
+    KstViewEllipsePtr ellipse;
+
+    ellipse = new KstViewEllipse;
     copyDefaults(KstViewObjectPtr(ellipse));
     ellipse->move(_prevBand.topLeft());
     ellipse->resize(_prevBand.size());

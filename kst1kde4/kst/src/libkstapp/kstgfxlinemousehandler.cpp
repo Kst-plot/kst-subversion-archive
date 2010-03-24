@@ -17,12 +17,11 @@
 
 #include <stdlib.h> 
 
-#include <qpainter.h>
+#include <QPainter>
 
 #include "kstgfxlinemousehandler.h"
 #include "kstgfxmousehandlerutils.h"
 #include "kst.h"
-#include "ksdebug.h"
 #include "kstdoc.h"
 #include "kstviewline.h"
 #include "kstviewwidget.h"
@@ -30,7 +29,9 @@
 KstGfxLineMouseHandler::KstGfxLineMouseHandler()
 : KstGfxMouseHandler() {
   // initial default settings before any sticky settings
-  KstViewLinePtr defaultLine = new KstViewLine;
+  KstViewLinePtr defaultLine;
+
+  defaultLine = new KstViewLine;
   defaultLine->setWidth(2);
   defaultLine->setPenStyle(Qt::SolidLine);
   defaultLine->setForegroundColor(Qt::black);
@@ -57,7 +58,7 @@ void KstGfxLineMouseHandler::pressMove(KstTopLevelViewPtr view, const QPoint& po
     QPainter p;
     p.begin(view->widget());
     p.setPen(QPen(Qt::black, 0, Qt::SolidLine));
-    p.setRasterOp(Qt::NotROP);
+// xxx    p.setRasterOp(Qt::NotROP);
     if (old.topLeft() != QPoint(-1, -1)) {
       p.drawLine(old.topLeft(), old.bottomRight());
     } 
@@ -77,12 +78,13 @@ void KstGfxLineMouseHandler::releasePress(KstTopLevelViewPtr view, const QPoint&
   _mouseDown = false;
 
   if (!_cancelled && _mouseOrigin != pos) {
-    // make a new line
-    KstViewLinePtr line = new KstViewLine;
+    KstViewLinePtr line;
+
+    line = new KstViewLine;
     copyDefaults(KstViewObjectPtr(line));
     line->setFrom(_prevBand.topLeft());
     line->setTo(_prevBand.bottomRight());
-    KstViewObjectPtr container = view->findDeepestChild(_prevBand.normalize());
+    KstViewObjectPtr container = view->findDeepestChild(_prevBand.normalized());
     if (!container) {
       container = view;
     }

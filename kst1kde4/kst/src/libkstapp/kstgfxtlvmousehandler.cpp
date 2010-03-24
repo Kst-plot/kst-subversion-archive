@@ -27,8 +27,10 @@
 KstGfxTLVMouseHandler::KstGfxTLVMouseHandler()
 : KstGfxMouseHandler() {
   // initial default settings before any sticky settings
-  KstTopLevelViewPtr defaultView = new KstTopLevelView;
-  defaultView->setBackgroundColor(KstApp::inst()->paletteBackgroundColor());
+  KstTopLevelViewPtr defaultView;
+
+  defaultView = new KstTopLevelView;
+// xxx  defaultView->setBackgroundColor(KstApp::inst()->paletteBackgroundColor());
   _defaultObject = KstViewObjectPtr(defaultView);
   _currentDefaultObject = KstViewObjectPtr(defaultView);
 }

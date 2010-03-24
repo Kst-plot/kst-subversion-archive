@@ -15,7 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-// include files for Qt
 #include <qcheckbox.h>
 #include <qcombobox.h>
 #include <qimage.h>
@@ -25,7 +24,6 @@
 #include <qregexp.h>
 #include <qmessagebox.h>
 
-// include files for KDE
 #include <kconfig.h>
 #include <kfiledialog.h>
 #include <kimageio.h>
@@ -34,7 +32,6 @@
 #include <kstandarddirs.h>
 #include <kurlrequester.h>
 
-// application specific includes
 #include "kstpluginmanager_i.h"
 #include "plugincollection.h"
 #include "pluginxmlparser.h"

@@ -29,7 +29,9 @@
 KstGfxArrowMouseHandler::KstGfxArrowMouseHandler()
 : KstGfxMouseHandler() {
   // initial default settings before any sticky settings
-  KstViewArrowPtr defaultArrow = new KstViewArrow;
+  KstViewArrowPtr defaultArrow;
+
+  defaultArrow = new KstViewArrow;
   defaultArrow->setHasToArrow(true);
   defaultArrow->setHasFromArrow(false);
   defaultArrow->setToArrowScaling(1);
@@ -59,7 +61,7 @@ void KstGfxArrowMouseHandler::pressMove(KstTopLevelViewPtr view, const QPoint& p
     QPainter p;
     p.begin(view->widget());
     p.setPen(QPen(Qt::black, 0, Qt::SolidLine));
-    p.setRasterOp(Qt::NotROP);
+// xxx    p.setRasterOp(Qt::NotROP);
     if (old.topLeft() != QPoint(-1, -1)) {
       p.drawLine(old.topLeft(), old.bottomRight());
     }
@@ -80,11 +82,13 @@ void KstGfxArrowMouseHandler::releasePress(KstTopLevelViewPtr view, const QPoint
 
   // make a new _drawingArrow using defaults
   if (!_cancelled && _mouseOrigin != pos) {
-    KstViewArrowPtr arrow = new KstViewArrow;
+    KstViewArrowPtr arrow;
+
+    arrow = new KstViewArrow;
     copyDefaults(KstViewObjectPtr(arrow));
     arrow->setFrom(_prevBand.topLeft());
     arrow->setTo(_prevBand.bottomRight());
-    KstViewObjectPtr container = view->findDeepestChild(_prevBand.normalize());
+    KstViewObjectPtr container = view->findDeepestChild(_prevBand.normalized());
     if (!container) {
       container = view;
     }

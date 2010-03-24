@@ -18,12 +18,11 @@
 #include <stdlib.h>
 #include <math.h>
 
-#include <qrect.h>
-#include <qpoint.h>
+#include <QPoint>
+#include <QRect>
 
 #include <kglobal.h>
 
-#include "ksdebug.h"
 #include "kstgfxmousehandlerutils.h"
 
 QPoint KstGfxMouseHandlerUtils::findNearestPtOnLine(const QPoint& fromPoint, const QPoint& toPoint, const QPoint& pos, const QRect &bounds) {
@@ -71,7 +70,7 @@ QRect KstGfxMouseHandlerUtils::resizeRectFromCorner(const QPoint& anchorPoint, c
   newSize.setTopLeft(anchorPoint);
   newSize.setBottomRight(npos);
 
-  return bounds.intersect(newSize.normalize());
+  return bounds.intersect(newSize.normalized());
 }
 
 
@@ -92,7 +91,7 @@ QRect KstGfxMouseHandlerUtils::resizeRectFromCornerCentered(const QRect& origina
     newHalfHeight = qMin(newHalfHeight,bounds.bottom() - anchorPoint.y());
 
     QSize newSize(originalRect.size());
-    newSize.scale(2*newHalfWidth, 2*newHalfHeight, QSize::ScaleMin);
+    newSize.scale(2*newHalfWidth, 2*newHalfHeight, Qt::KeepAspectRatio);
 
     newRect.setSize(newSize);
     newRect.moveCenter(anchorPoint);
@@ -153,7 +152,7 @@ QRect KstGfxMouseHandlerUtils::resizeRectFromEdge(const QRect& originalSize, con
     newSize.setBottom(anchorPoint.y() + newHeight);
   }
 
-  return newSize.normalize();
+  return newSize.normalized();
 }
 
 
@@ -176,17 +175,17 @@ QRect KstGfxMouseHandlerUtils::resizeRectFromEdgeCentered(const QRect& originalR
       newHalfHeight = qMin(newHalfHeight, anchorPoint.y() - bounds.top());
       newHalfHeight = qMin(newHalfHeight, bounds.bottom() - anchorPoint.y());
       if (newHalfHeight > originalRect.height()/2) {
-        newSize.scale(originalRect.width(), 2*newHalfHeight, QSize::ScaleMax);
+        newSize.scale(originalRect.width(), 2*newHalfHeight, Qt::KeepAspectRatioByExpanding);
       } else {
-        newSize.scale(originalRect.width(), 2*newHalfHeight, QSize::ScaleMin);
+        newSize.scale(originalRect.width(), 2*newHalfHeight, Qt::KeepAspectRatio);
       }
     } else {
       newHalfWidth = qMin(newHalfWidth, anchorPoint.x() - bounds.left());
       newHalfWidth = qMin(newHalfWidth, bounds.right() - anchorPoint.x());
       if (newHalfWidth > originalRect.width()/2) {
-        newSize.scale(2*newHalfWidth, originalRect.height(), QSize::ScaleMax);
+        newSize.scale(2*newHalfWidth, originalRect.height(), Qt::KeepAspectRatioByExpanding);
       } else {
-        newSize.scale(2*newHalfWidth, originalRect.height(), QSize::ScaleMin);
+        newSize.scale(2*newHalfWidth, originalRect.height(), Qt::KeepAspectRatio);
       }
     }
 

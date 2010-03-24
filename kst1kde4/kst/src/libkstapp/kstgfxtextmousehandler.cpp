@@ -23,7 +23,6 @@
 #include "kstgfxmousehandlerutils.h"
 #include "kstsettings.h"
 #include "kst.h"
-#include "ksdebug.h"
 #include "kstdoc.h"
 #include "kstviewlabel.h"
 #include "kstviewwidget.h"
@@ -31,7 +30,9 @@
 KstGfxTextMouseHandler::KstGfxTextMouseHandler()
 : KstGfxMouseHandler() {
   // initial default settings before any sticky settings
-  KstViewLabelPtr defaultLabel = new KstViewLabel;
+  KstViewLabelPtr defaultLabel;
+
+  defaultLabel = new KstViewLabel;
   defaultLabel->setForegroundColor(KstSettings::globalSettings()->foregroundColor);
   defaultLabel->setBackgroundColor(KstSettings::globalSettings()->backgroundColor);
   defaultLabel->setTransparent(false);
@@ -62,7 +63,7 @@ void KstGfxTextMouseHandler::pressMove(KstTopLevelViewPtr view, const QPoint& po
     QPainter p;
     p.begin(view->widget());
     p.setPen(QPen(Qt::black, 0, Qt::SolidLine));
-    p.setRasterOp(Qt::NotROP);
+// xxx    p.setRasterOp(Qt::NotROP);
     if (old.topLeft() != QPoint(-1, -1)) {
       p.drawRect(old);
     } 
@@ -84,7 +85,9 @@ void KstGfxTextMouseHandler::releasePress(KstTopLevelViewPtr view, const QPoint&
   // once released, create a new text object and popup the edit dialog
   if (!_cancelled) {
     QSize size(0,0);
-    KstViewLabelPtr label = new KstViewLabel;
+    KstViewLabelPtr label;
+
+    label = new KstViewLabel;
     copyDefaults(KstViewObjectPtr(label));
 
     if (_mouseOrigin != pos) {

@@ -29,7 +29,9 @@
 KstGfxRectangleMouseHandler::KstGfxRectangleMouseHandler()
 : KstGfxMouseHandler() {
   // initial default settings before any sticky settings
-  KstViewBoxPtr defaultBox = new KstViewBox;
+  KstViewBoxPtr defaultBox;
+
+  defaultBox = new KstViewBox;
   defaultBox->setBorderWidth(2);
   defaultBox->setBorderColor(Qt::black);
   defaultBox->setForegroundColor(Qt::white);
@@ -55,9 +57,10 @@ void KstGfxRectangleMouseHandler::pressMove(KstTopLevelViewPtr view, const QPoin
 
   if (old != _prevBand) {
     QPainter p;
+
     p.begin(view->widget());
     p.setPen(QPen(Qt::black, 0, Qt::SolidLine));
-    p.setRasterOp(Qt::NotROP);
+// xxx    p.setRasterOp(Qt::NotROP);
     if (old.topLeft() != QPoint(-1, -1)) {
       p.drawRect(old);
     } 
@@ -77,8 +80,9 @@ void KstGfxRectangleMouseHandler::releasePress(KstTopLevelViewPtr view, const QP
   _mouseDown = false;
 
   if (!_cancelled && _mouseOrigin != pos) {
-    // make a new rectangle
-    KstViewBoxPtr box = new KstViewBox;
+    KstViewBoxPtr box;
+
+    box = new KstViewBox;
     copyDefaults(KstViewObjectPtr(box));
     box->move(_prevBand.topLeft());
     box->resize(_prevBand.size());

@@ -23,7 +23,6 @@
 #include "kstgfxmousehandlerutils.h"
 #include "kstsettings.h"
 #include "kst.h"
-#include "ksdebug.h"
 #include "kstdoc.h"
 #include "kstviewlegend.h"
 #include "kstviewwidget.h"
@@ -31,7 +30,9 @@
 KstGfxLegendMouseHandler::KstGfxLegendMouseHandler()
 : KstGfxMouseHandler() {
   // initial default settings before any sticky settings
-  KstViewLegendPtr defaultLegend = new KstViewLegend;
+  KstViewLegendPtr defaultLegend;
+
+  defaultLegend = new KstViewLegend;
   _defaultObject = KstViewObjectPtr(defaultLegend);
   _currentDefaultObject = KstViewObjectPtr(defaultLegend); 
 }
@@ -54,7 +55,7 @@ void KstGfxLegendMouseHandler::pressMove(KstTopLevelViewPtr view, const QPoint& 
     QPainter p;
     p.begin(view->widget());
     p.setPen(QPen(Qt::black, 0, Qt::SolidLine));
-    p.setRasterOp(Qt::NotROP);
+// xxx    p.setRasterOp(Qt::NotROP);
     if (old.topLeft() != QPoint(-1, -1)) {
       p.drawRect(old);
     } 
@@ -76,7 +77,9 @@ void KstGfxLegendMouseHandler::releasePress(KstTopLevelViewPtr view, const QPoin
   // once released, create a new text object and popup the edit dialog
   if (!_cancelled) {
     QSize size(0,0);
-    KstViewLegendPtr legend = new KstViewLegend;
+    KstViewLegendPtr legend;
+
+    legend = new KstViewLegend;
     copyDefaults(KstViewObjectPtr(legend));
 
     if (_mouseOrigin != pos) {

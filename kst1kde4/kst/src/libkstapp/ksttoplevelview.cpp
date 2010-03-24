@@ -19,21 +19,14 @@
 #include <stdlib.h>
 #include <math.h>
 
-// include files for Qt
-#include <qstylesheet.h>
+#include <QMessageBox>
+#include <QMetaProperty>
+#include <QTextDocument>
 
-// include files for KDE
-#include "ksdebug.h"
 #include <kdeversion.h>
-#if KDE_VERSION >= KDE_MAKE_VERSION(3,3,0)
 #include <kinputdialog.h>
-#else
-#include <klineeditdlg.h>
-#endif
 #include <klocale.h>
-#include <qmessagebox.h>
 
-// application specific includes
 #include "kst.h"
 #include "kst2dplot.h"
 #include "kstaccessibility.h"
@@ -53,7 +46,7 @@
 #define STICKY_THRESHOLD 10
 
 KstTopLevelView::KstTopLevelView(QWidget *parent, const char *name, Qt::WindowFlags w)
-: KstViewObject("TopLevelView"), _w(new KstViewWidget(this, parent, name, w)) {
+: KstViewObject("TopLevelView"), _w(new KstViewWidget(KstTopLevelViewPtr(this), parent, name, w)) {
   _onGrid = true;
   setTagName(KstObjectTag(name, KstObjectTag::globalTagContext));  // FIXME: tag context
   commonConstructor();
@@ -61,10 +54,11 @@ KstTopLevelView::KstTopLevelView(QWidget *parent, const char *name, Qt::WindowFl
 
 
 KstTopLevelView::KstTopLevelView(const QDomElement& e, QWidget *parent, const char *name, Qt::WindowFlags w)
-: KstViewObject(e), _w(new KstViewWidget(this, parent, name, w)) {
+: KstViewObject(e), _w(new KstViewWidget(KstTopLevelViewPtr(this), parent, name, w)) {
   commonConstructor();
 
   QDomNode n = e.firstChild();
+
   while (!n.isNull()) {
     QDomElement el = n.toElement(); 
 
@@ -88,7 +82,7 @@ void KstTopLevelView::commonConstructor() {
   _pressDirection = -1;
   _moveOffset = QPoint(-1, -1);
   _moveOffsetSticky = QPoint(0, 0);
-  _backgroundColor = KstApp::inst()->paletteBackgroundColor();
+// xxx  _backgroundColor = KstApp::inst()->paletteBackgroundColor();
   _mouseGrabbed = false;
   _activeHandler = 0L;
   _mode = Unknown;
@@ -108,7 +102,7 @@ KstTopLevelView::KstTopLevelView(const KstTopLevelView& tlv)
 
 KstTopLevelView::~KstTopLevelView() {
   for (QMap<QString,KstGfxMouseHandler*>::Iterator i = _handlers.begin(); i != _handlers.end(); ++i) {
-    delete i.data();
+// xxx    delete i.data();
   }
 }
 
@@ -122,12 +116,13 @@ KstViewObject* KstTopLevelView::copyObjectQuietly() const {
 
 void KstTopLevelView::applyDefaults() {
   KstGfxMouseHandler *handler = handlerForObject(type());
+
   if (handler) {
     KstGfxTLVMouseHandler* tlvHandler;
 
     tlvHandler = dynamic_cast<KstGfxTLVMouseHandler*>(handler);
     if (tlvHandler) {
-      tlvHandler->applyDefaults(this);
+      tlvHandler->applyDefaults(KstTopLevelViewPtr(this));
     }
   }
 }
@@ -146,10 +141,10 @@ void KstTopLevelView::save(QTextStream& ts, const QString& indent) {
     ts << indent << "<columns>" << _columns << "</columns>" << endl;
   }
 
-  for (int i = 0; i < metaObject()->numProperties(true); i++) {
-    ts << indent << "<" << metaObject()->property(i, true)->name() << ">";
-    ts << QStyleSheet::escape(property(metaObject()->property(i, true)->name()).toString().toLatin1());
-    ts << "</" << metaObject()->property(i, true)->name() << ">" << endl;
+  for (int i = 0; i < metaObject()->propertyCount(); i++) {
+    ts << indent << "<" << metaObject()->property(i).name() << ">";
+    ts << Qt::escape(property(metaObject()->property(i).name()).toString().toLatin1());
+    ts << "</" << metaObject()->property(i).name() << ">" << endl;
   }
 
   for (KstViewObjectList::Iterator i = _children.begin(); i != _children.end(); ++i) {
@@ -184,15 +179,8 @@ void KstTopLevelView::resize(const QSize& size) {
 
 void KstTopLevelView::paint(KstPainter& p, const QRegion& bounds) {
   updateAlignment(p);
-#ifdef BENCHMARK
-  QTime t;
-  t.start();
-#endif
+
   KstViewObject::paint(p, bounds);
-#ifdef BENCHMARK
-  int x = t.elapsed();
-  kstdDebug() << " -> Parent class took " << x << "ms" << endl;
-#endif
 }
 
 
@@ -205,14 +193,22 @@ void KstTopLevelView::paint(KstPainter::PaintType type, const QRegion& bounds) {
   KstPainter p(type);
   p.setDrawInlineUI(_mode == LayoutMode && type != KstPainter::P_EXPORT && type != KstPainter::P_PRINT);
   p.begin(_w);
-  p.setViewXForm(true);
-  // Paint everything else first so that geometries are properly updated.
+// xxx  p.setViewXForm(true);
+
+  //
+  // paint everything else first so that geometries are properly updated...
+  //
+
   paint(p, bounds);
 
-  // now, check what has the focus and repaint the focus rect, as all focus rects are now lost
+  //
+  // now, check what has the focus and repaint the focus rect, 
+  //  as all focus rects are now lost...
+  //
+
   if (_hoverFocus) {
     p.setClipping(false);
-    p.setRasterOp(Qt::NotROP);
+// xxx    p.setRasterOp(Qt::NotROP);
     p.setPen(QPen(Qt::black, 0, Qt::SolidLine));
     p.setBrush(Qt::NoBrush);
     _hoverFocus->drawFocusRect(p);
@@ -222,7 +218,7 @@ void KstTopLevelView::paint(KstPainter::PaintType type, const QRegion& bounds) {
 
 
 void KstTopLevelView::paintSelf(KstPainter& p, const QRegion& bounds) {
-  if (!bounds.isNull()) {
+  if (!bounds.isEmpty()) {
     p.setClipRegion(bounds);
   }
   p.fillRect(geometry(), _backgroundColor);
@@ -246,13 +242,13 @@ void KstTopLevelView::clearFocus() {
     _moveOffsetSticky = QPoint(0, 0);
     _w->unsetCursor();
     _focusOn = false;
-    //recursively<bool>(&KstViewObject::setFocus, false);
     if (_hoverFocus) {
       KstPainter p;
+
       p.begin(_w);
-      p.setViewXForm(true);
+// xxx      p.setViewXForm(true);
       _hoverFocus->setFocus(false);
-      p.setRasterOp(Qt::NotROP);
+// xxx      p.setRasterOp(Qt::NotROP);
       p.setPen(QPen(Qt::black, 0, Qt::SolidLine));
       p.setBrush(Qt::NoBrush);
       _hoverFocus->drawFocusRect(p);
@@ -265,7 +261,7 @@ void KstTopLevelView::clearFocus() {
 
 void KstTopLevelView::updateFocus(const QPoint& pos) {
   if (_activeHandler) {
-    _activeHandler->updateFocus(this, pos);
+    _activeHandler->updateFocus(KstTopLevelViewPtr(this), pos);
     return;  
   }
 
@@ -273,11 +269,12 @@ void KstTopLevelView::updateFocus(const QPoint& pos) {
     return;
   }
 
-  //TODO: make this work better with click-select mode
+  KstViewObjectPtr p;
 
-  KstViewObjectPtr p = findDeepestChild(pos, false);
+  p = findDeepestChild(pos, false);
   if (p) {
     KstViewObjectPtr p2 = p;
+
     while (p2->_parent && p2->_parent->isContainer()) {
       p2 = p2->_parent;
     }
@@ -296,9 +293,11 @@ void KstTopLevelView::updateFocus(const QPoint& pos) {
       clearFocus();
     }
     setCursorFor(pos, p);
+
     KstPainter painter;
+
     painter.begin(_w);
-    painter.setRasterOp(Qt::NotROP);
+// xxx    painter.setRasterOp(Qt::NotROP);
     painter.setPen(QPen(Qt::black, 0, Qt::SolidLine));
     painter.setBrush(Qt::NoBrush);
     p->drawFocusRect(painter);
@@ -380,23 +379,26 @@ void KstTopLevelView::restartMove() {
 
 bool KstTopLevelView::handlePress(const QPoint& pos, bool shift) {
   if (_activeHandler) {
-    _activeHandler->handlePress(this, pos, shift);
+    _activeHandler->handlePress(KstTopLevelViewPtr(this), pos, shift);
+
     return true;
   }
 
   _mouseMoved = false;
 
-  //kstdDebug() << "HANDLE PRESS" << endl;
   _pressDirection = -1;
 
   if (_mode != LayoutMode) {
     _pressTarget = 0L;
+
     return false;
   }
 
   _pressTarget = findDeepestChild(pos, false, true);
   if (_pressTarget) {
-    KstViewObjectPtr p = _pressTarget;
+    KstViewObjectPtr p;
+
+    p = _pressTarget;
     while (p->_parent && (p->_parent->isContainer() || kst_cast<KstPlotGroup>((KstViewObjectPtr)p->_parent)) && !kst_cast<KstTopLevelView>((KstViewObjectPtr)p->_parent)) {
       p = p->_parent;
     }
@@ -409,6 +411,7 @@ bool KstTopLevelView::handlePress(const QPoint& pos, bool shift) {
 
   if (!_pressTarget) {
     _moveOffset = pos;
+
     return false;
   }
 
@@ -421,6 +424,7 @@ bool KstTopLevelView::handlePress(const QPoint& pos, bool shift) {
     _cursor.setShape(Qt::ArrowCursor);
     _w->setCursor(_cursor);
     _moveOffset = pos; // use _moveOffset to store our start point
+
     return true;
   }
 
@@ -429,17 +433,19 @@ bool KstTopLevelView::handlePress(const QPoint& pos, bool shift) {
   _pressDirection = _pressTarget->directionFor(pos);
 
   if (shift && _pressDirection < 1) {
-    KstViewObjectList::Iterator it = _selectionList.find(_pressTarget);
+    KstViewObjectList::iterator it;
+
+// xxx    it = _selectionList.find(_pressTarget);
 
     if (_pressTarget->isSelected()) {
       _pressTarget->setSelected(false);
       if (it != _selectionList.end()) {
-        _selectionList.remove(it);
+// xxx        _selectionList.remove(it);
       }
     } else {
       _pressTarget->setSelected(true);
       if (it == _selectionList.end()) {
-        _selectionList.append(_pressTarget);
+// xxx        _selectionList.append(_pressTarget);
       }
     }
     _pressTarget = 0L;
@@ -448,6 +454,7 @@ bool KstTopLevelView::handlePress(const QPoint& pos, bool shift) {
     _moveOffsetSticky = QPoint(0, 0);
     updateFocus(pos);
     paint(KstPainter::P_PAINT);
+
     return true;
   }
 
@@ -474,6 +481,7 @@ bool KstTopLevelView::handlePress(const QPoint& pos, bool shift) {
 
   _pressTarget->setFocus(false);
   paint(KstPainter::P_PAINT);
+
   return true;
 }
 
@@ -544,26 +552,34 @@ QRect KstTopLevelView::newSizeCentered(const QRect& originalSize, const QRect& b
 
 
 bool KstTopLevelView::tiedZoomPrev(const QString& plotName) {
-  Kst2DPlotList pl = findChildrenType<Kst2DPlot>(true);
+  Kst2DPlotList pl;
+  Kst2DPlotList::iterator i;
   bool repaint = false;
-  for (Kst2DPlotList::Iterator i = pl.begin(); i != pl.end(); ++i) {
+
+// xxx  pl = findChildrenType<Kst2DPlot>(true);
+  for (i = pl.begin(); i != pl.end(); ++i) {
     Kst2DPlotPtr p = *i;
+
     if (p->isTied() && p->tagName() != plotName) {
       if (p->tiedZoomPrev(widget())) {
         repaint = true;
       }
     }
   }
+
   return repaint;
 }
 
 
 bool KstTopLevelView::tiedZoomMode(int zoom, bool flag, double center, int mode, int modeExtra, const QString& plotName) {
-  Kst2DPlotList pl = findChildrenType<Kst2DPlot>(true);
+  Kst2DPlotList pl;
+  Kst2DPlotList::Iterator i;
   bool repaint = false;
 
-  for (Kst2DPlotList::Iterator i = pl.begin(); i != pl.end(); ++i) {
+// xxx  pl = findChildrenType<Kst2DPlot>(true);
+  for (i = pl.begin(); i != pl.end(); ++i) {
     Kst2DPlotPtr p = *i;
+
     if (p->isTied() && p->tagName() != plotName) {
       p->tiedZoomMode((ZoomType)zoom, flag, center, (KstScaleModeType)mode, (KstScaleModeType)modeExtra);
       repaint = true;
@@ -575,11 +591,14 @@ bool KstTopLevelView::tiedZoomMode(int zoom, bool flag, double center, int mode,
 
 
 bool KstTopLevelView::tiedZoom(bool x, double xmin, double xmax, bool y, double ymin, double ymax, const QString& plotName) {
-  Kst2DPlotList pl = findChildrenType<Kst2DPlot>(true);
+  Kst2DPlotList pl;
+  Kst2DPlotList::Iterator i;
   bool repaint = false;
 
-  for (Kst2DPlotList::Iterator i = pl.begin(); i != pl.end(); ++i) {
+// xxx  pl = findChildrenType<Kst2DPlot>(true);
+  for (i = pl.begin(); i != pl.end(); ++i) {
     Kst2DPlotPtr p = *i;
+
     if (p->isTied() && p->tagName() != plotName) {
       p->tiedZoom(x, xmin, xmax, y, ymin, ymax);
       repaint = true;
@@ -591,7 +610,10 @@ bool KstTopLevelView::tiedZoom(bool x, double xmin, double xmax, bool y, double 
 
 
 void KstTopLevelView::moveSnapToBorders(int *xMin, int *yMin, const KstViewObjectPtr &obj, const QRect &r) const {
-  for (KstViewObjectList::ConstIterator i = obj->children().begin(); i != obj->children().end(); ++i) {
+  KstViewObjectList::const_iterator i;
+
+  for (i = obj->children().begin(); i != obj->children().end(); ++i) {
+/* xxx
     if (_selectionList.find(*i) == _selectionList.end() && _pressTarget != *i) {
       const QRect rect((*i)->geometry());
 
@@ -599,6 +621,7 @@ void KstTopLevelView::moveSnapToBorders(int *xMin, int *yMin, const KstViewObjec
 
       int overlapLo = r.top() > rect.top() ? r.top() : rect.top();
       int overlapHi = r.bottom() < rect.bottom() ? r.bottom() : rect.bottom();
+
       if (overlapHi - overlapLo > 0) {
         if (labs(r.left() - rect.left()) < labs(*xMin)) {
           *xMin = r.left() - rect.left();
@@ -625,12 +648,15 @@ void KstTopLevelView::moveSnapToBorders(int *xMin, int *yMin, const KstViewObjec
         }
       }
     }
+*/
   }
 }
 
 
 void KstTopLevelView::resizeSnapToBorders(int *xMin, int *yMin, const KstViewObjectPtr &obj, const QRect &r, int direction) const {
-  for (KstViewObjectList::ConstIterator i = obj->children().begin(); i != obj->children().end(); ++i) {
+  KstViewObjectList::const_iterator i;
+
+  for (i = obj->children().begin(); i != obj->children().end(); ++i) {
     if (_pressTarget != *i) {
       const QRect rect((*i)->geometry());
 
@@ -638,6 +664,7 @@ void KstTopLevelView::resizeSnapToBorders(int *xMin, int *yMin, const KstViewObj
 
       int overlapLo = r.top() > rect.top() ? r.top() : rect.top();
       int overlapHi = r.bottom() < rect.bottom() ? r.bottom() : rect.bottom();
+
       if (overlapHi - overlapLo > 0) {
         if (direction & LEFT) {
           if (labs(r.left() - rect.left()) < labs(*xMin)) {
@@ -677,7 +704,9 @@ void KstTopLevelView::resizeSnapToBorders(int *xMin, int *yMin, const KstViewObj
 
 
 void KstTopLevelView::pointSnapToBorders(int *xMin, int *yMin, const KstViewObjectPtr &obj, const QPoint &p) const {
-  for (KstViewObjectList::ConstIterator i = obj->children().begin(); i != obj->children().end(); ++i) {
+  KstViewObjectList::const_iterator i;
+
+  for (i = obj->children().begin(); i != obj->children().end(); ++i) {
     if (_pressTarget != *i) {
       const QRect rect((*i)->geometry());
 
@@ -712,7 +741,7 @@ QPoint KstTopLevelView::pointSnapToObjects(const QPoint& p) {
   r.setTopLeft(QPoint(0, 0));
   r.setBottomRight(p);
 
-  pointSnapToBorders(&xMin, &yMin, this, p);
+  pointSnapToBorders(&xMin, &yMin, KstViewObjectPtr(this), p);
 
   if (labs(yMin) < STICKY_THRESHOLD) {
     r.setBottom(r.bottom() - yMin);
@@ -731,7 +760,7 @@ QRect KstTopLevelView::resizeCenteredSnapToObjects(const QRect& r, const QRect& 
   int xMin = STICKY_THRESHOLD;
   int yMin = STICKY_THRESHOLD;
 
-  resizeSnapToBorders(&xMin, &yMin, this, r, direction);
+  resizeSnapToBorders(&xMin, &yMin, KstViewObjectPtr(this), r, direction);
 
   if (labs(yMin) < STICKY_THRESHOLD) {
     if (direction & UP) {
@@ -757,7 +786,7 @@ QRect KstTopLevelView::resizeCenteredSnapToObjects(const QRect& r, const QRect& 
     rectNew = r;
   }
 
-  return rectNew.normalize();
+  return rectNew.normalized();
 }
 
 
@@ -766,7 +795,7 @@ QRect KstTopLevelView::resizeSnapToObjects(const QRect& r, int direction) {
   int xMin = STICKY_THRESHOLD;
   int yMin = STICKY_THRESHOLD;
 
-  resizeSnapToBorders(&xMin, &yMin, this, r, direction);
+  resizeSnapToBorders(&xMin, &yMin, KstViewObjectPtr(this), r, direction);
 
   if (labs(yMin) < STICKY_THRESHOLD) {
     if (direction & UP) {
@@ -784,7 +813,7 @@ QRect KstTopLevelView::resizeSnapToObjects(const QRect& r, int direction) {
     }
   }
 
-  return rectNew.normalize();
+  return rectNew.normalized();
 }
 
 
@@ -809,13 +838,18 @@ static void slideInto(const QRect& region, QRect& obj) {
 
 void KstTopLevelView::pressMove(const QPoint& pos, bool shift, bool alt) {
   if (_activeHandler) {
-    _activeHandler->pressMove(this, pos, shift, _geom);  
+    _activeHandler->pressMove(KstTopLevelViewPtr(this), pos, shift, _geom);
+
     return;
   }
 
-  // in these cases there is nothing to do         
+  //
+  // in these cases there is nothing to do...
+  //
+
   if (_mode == DisplayMode || _mode == Unknown) {
     _pressTarget = 0L;
+
     return;
   }
 
@@ -829,7 +863,10 @@ void KstTopLevelView::pressMove(const QPoint& pos, bool shift, bool alt) {
 
   _mouseMoved = true;
 
-  // handle as in layout mode
+  //
+  // handle as in layout mode...
+  //
+
   pressMoveLayoutMode(pos, shift, alt);
 }
 
@@ -839,26 +876,41 @@ void KstTopLevelView::pressMoveLayoutMode(const QPoint& pos, bool shift, bool al
     bool snapToBorder = !alt;
 
     if (_pressDirection == 0) {
-      // moving an object
+      //
+      // moving an object...
+      //
+
       pressMoveLayoutModeMove(pos, shift, snapToBorder);
       KstApp::inst()->slotUpdateDataMsg(i18n("(x0,y0)-(x1,y1)", "(%1,%2)-(%3,%4)").arg(_prevBand.topLeft().x()).arg(_prevBand.topLeft().y()).arg(_prevBand.bottomRight().x()).arg(_prevBand.bottomRight().y()));
     } else if (_pressTarget->isResizable()) {
       bool maintainAspect = shift ^ _pressTarget->maintainAspect(); // if default behaviour is to maintainAspect on resize, then shift will now have opposite behaviour.
 
       if (_pressDirection & ENDPOINT) {
-        // moving an endpoint of an object
+        //
+        // moving an endpoint of an object...
+        //
+
         pressMoveLayoutModeEndPoint(pos, maintainAspect, snapToBorder);
       } else if (_pressDirection & CENTEREDRESIZE) {
-        // resizing an object with fixed center
+        //
+        // resizing an object with fixed center...
+        //
+
         pressMoveLayoutModeCenteredResize(pos, maintainAspect, snapToBorder);
       } else {
-        // resizing a rectangular object
+        //
+        // resizing a rectangular object...
+        //
+
         pressMoveLayoutModeResize(pos, maintainAspect, snapToBorder);
       }
       KstApp::inst()->slotUpdateDataMsg(i18n("(x0,y0)-(x1,y1)", "(%1,%2)-(%3,%4)").arg(_prevBand.topLeft().x()).arg(_prevBand.topLeft().y()).arg(_prevBand.bottomRight().x()).arg(_prevBand.bottomRight().y()));
     }
   } else {
-    // selecting objects
+    //
+    // selecting objects...
+    //
+
     pressMoveLayoutModeSelect(pos);
   }
 }
@@ -882,7 +934,7 @@ void KstTopLevelView::pressMoveLayoutModeMove(const QPoint& pos, bool shift, boo
     int xMin = STICKY_THRESHOLD;
     int yMin = STICKY_THRESHOLD;
 
-    moveSnapToBorders(&xMin, &yMin, this, r); 
+    moveSnapToBorders(&xMin, &yMin, KstViewObjectPtr(this), r); 
 
     if (labs(xMin) < STICKY_THRESHOLD) {
       _moveOffsetSticky.setX(xMin);
@@ -904,7 +956,7 @@ void KstTopLevelView::pressMoveLayoutModeMove(const QPoint& pos, bool shift, boo
     KstPainter p;
 
     p.begin(_w);
-    p.setRasterOp(Qt::NotROP);
+// xxx    p.setRasterOp(Qt::NotROP);
     p.setPen(QPen(Qt::black, 0, Qt::DotLine));
     if (_selectionList.isEmpty()) {
       if (old.topLeft() != QPoint(-1, -1)) {
@@ -912,7 +964,9 @@ void KstTopLevelView::pressMoveLayoutModeMove(const QPoint& pos, bool shift, boo
       }
       _pressTarget->drawShadow(p, r.topLeft());
     } else {
-      for (KstViewObjectList::Iterator iter = _selectionList.begin(); iter != _selectionList.end(); ++iter) {
+      KstViewObjectList::Iterator iter;
+
+      for (iter = _selectionList.begin(); iter != _selectionList.end(); ++iter) {
         if (old.topLeft() != QPoint(-1, -1)) {
           (*iter)->drawShadow(p, old.topLeft() + (*iter)->geometry().topLeft() - originalTopLeft);
         }
@@ -923,8 +977,9 @@ void KstTopLevelView::pressMoveLayoutModeMove(const QPoint& pos, bool shift, boo
     //
     // draw a selection for the new parent if the _pressTarget is released now...
     //
-    KstViewObjectPtr container = findDeepestChild(r);
+    KstViewObjectPtr container;
 
+    container = findDeepestChild(r);
     if (container != _prevContainer) {
       if (_prevContainer) {
         _prevContainer->drawShadow(p, _prevContainer->geometry().topLeft());
@@ -953,7 +1008,7 @@ void KstTopLevelView::pressMoveLayoutModeResize(const QPoint& pos, bool maintain
     KstPainter p;
 
     p.begin(_w);
-    p.setRasterOp(Qt::NotROP);
+// xxx    p.setRasterOp(Qt::NotROP);
     p.setPen(QPen(Qt::black, 0, Qt::DotLine));
     if (old.topLeft() != QPoint(-1, -1)) {
       p.drawRect(old);
@@ -967,15 +1022,16 @@ void KstTopLevelView::pressMoveLayoutModeResize(const QPoint& pos, bool maintain
 void KstTopLevelView::pressMoveLayoutModeSelect(const QPoint& pos) {
   const QRect old(_prevBand);
   QRect r;
+
   r.setTopLeft(_moveOffset);
   r.setBottomRight(pos);
-  _prevBand = r.normalize().intersect(_geom);
+  _prevBand = r.normalized().intersect(_geom);
   if (old != _prevBand) {
     KstPainter p;
     p.begin(_w);
-    p.setRasterOp(Qt::NotROP);
-    p.drawWinFocusRect(old);
-    p.drawWinFocusRect(_prevBand);
+// xxx    p.setRasterOp(Qt::NotROP);
+// xxx    p.drawWinFocusRect(old);
+// xxx    p.drawWinFocusRect(_prevBand);
     p.end();
   }
   KstApp::inst()->slotUpdateDataMsg(QString::null);
@@ -983,9 +1039,11 @@ void KstTopLevelView::pressMoveLayoutModeSelect(const QPoint& pos) {
 
 
 void KstTopLevelView::pressMoveLayoutModeEndPoint(const QPoint& pos, bool maintainAspect, bool snapToBorder) {
+  KstViewLinePtr line;
   const QRect bounds(_pressTarget->_parent->geometry());
 
-  if (KstViewLinePtr line = kst_cast<KstViewLine>(_pressTarget)) {
+  line = kst_cast<KstViewLine>(_pressTarget);
+  if (line) {
     QPoint movePoint, anchorPoint;
     QPoint *fromPoint, *toPoint;
 
@@ -1019,14 +1077,16 @@ void KstTopLevelView::pressMoveLayoutModeEndPoint(const QPoint& pos, bool mainta
     }
 
     const QRect old(_prevBand);
+
     _prevBand.setTopLeft(*fromPoint);
     _prevBand.setBottomRight(*toPoint);
 
     if (old != _prevBand) {
       KstPainter p;
+
       p.begin(_w);
       p.setPen(QPen(Qt::black, 0, Qt::DotLine));
-      p.setRasterOp(Qt::NotROP);
+// xxx      p.setRasterOp(Qt::NotROP);
       if (old.topLeft() != QPoint(-1, -1)) {
         p.drawLine(old.topLeft(), old.bottomRight());
       } 
@@ -1052,7 +1112,7 @@ void KstTopLevelView::pressMoveLayoutModeCenteredResize(const QPoint& pos, bool 
 
     p.begin(_w);
     p.setPen(QPen(Qt::black, 0, Qt::DotLine));
-    p.setRasterOp(Qt::NotROP);
+// xxx    p.setRasterOp(Qt::NotROP);
     if (old.topLeft() != QPoint(-1, -1)) {
       p.drawEllipse(old);
     } 
@@ -1099,18 +1159,22 @@ void KstTopLevelView::releasePressLayoutMode(const QPoint& pos, bool shift) {
 void KstTopLevelView::releasePressLayoutModeMove(const QPoint& pos, bool shift) {
   Q_UNUSED(shift)
 
+  KstViewObjectList::iterator i;
   QRect obj(_pressTarget->geometry());
   const QRect old(obj);
 
-  // the list of other selected objects
+  //
+  // the list of other selected objects...
+  //
+
   if (!_selectionList.isEmpty()) {
     for (KstViewObjectList::ConstIterator i = _selectionList.begin(); i != _selectionList.end(); ++i) {
       obj = obj.unite((*i)->geometry());
     }
   }
+
   const QPoint objOffset(old.topLeft() - obj.topLeft());
 
-  // do the move
   obj.moveTopLeft(pos - _moveOffset - _moveOffsetSticky - old.topLeft() + obj.topLeft());
   if (!_geom.contains(obj, true)) {
     slideInto(_geom, obj);
@@ -1135,7 +1199,7 @@ void KstTopLevelView::releasePressLayoutModeMove(const QPoint& pos, bool shift) 
     updateViewManager = true;
   }
   _pressTarget->move(obj.topLeft() + objOffset);
-  for (KstViewObjectList::Iterator i = _selectionList.begin(); i != _selectionList.end(); ++i) {
+  for (i = _selectionList.begin(); i != _selectionList.end(); ++i) {
     if (*i != _pressTarget) {
       KstViewObjectPtr thisObj = *i; // ref
       if (container != thisObj && !container->children().contains(thisObj)) {
@@ -1160,7 +1224,7 @@ void KstTopLevelView::releasePressLayoutModeResize(const QPoint& pos, bool shift
   Q_UNUSED(shift)
 
   if (_prevBand.topLeft() != QPoint(-1, -1)) {
-    _prevBand = _prevBand.normalize();
+    _prevBand = _prevBand.normalized();
     _pressTarget->move(_prevBand.topLeft());
     _pressTarget->resize(_prevBand.size());
   }
@@ -1174,11 +1238,13 @@ void KstTopLevelView::releasePressLayoutModeSelect(const QPoint& pos, bool shift
   KstPainter p;
 
   p.begin(_w);
-  p.setRasterOp(Qt::NotROP);
-  p.drawWinFocusRect(_prevBand);
+// xxx  p.setRasterOp(Qt::NotROP);
+// xxx  p.drawWinFocusRect(_prevBand);
   p.end();
   if (shift) {
-    for (KstViewObjectList::Iterator i = _children.begin(); i != _children.end(); ++i) {
+    KstViewObjectList::iterator i;
+
+    for (i = _children.begin(); i != _children.end(); ++i) {
       if (_prevBand.contains((*i)->geometry().center())) {
         (*i)->setSelected(true);
       }
@@ -1193,8 +1259,11 @@ void KstTopLevelView::releasePressLayoutModeSelect(const QPoint& pos, bool shift
 void KstTopLevelView::releasePressLayoutModeEndPoint(const QPoint& pos, bool shift) {
   Q_UNUSED(shift)
   Q_UNUSED(pos)
+  
+  KstViewLinePtr line;
 
-  if (KstViewLinePtr line = kst_cast<KstViewLine>(_pressTarget)) {
+  line = kst_cast<KstViewLine>(_pressTarget);
+  if (line) {
     if (_prevBand.left() != -1 && _prevBand.top() != -1) {
       line->setFrom(_prevBand.topLeft());
       line->setTo(_prevBand.bottomRight());
@@ -1222,7 +1291,7 @@ void KstTopLevelView::releasePressLayoutModeCenteredResize(const QPoint& pos, bo
   Q_UNUSED(shift)
 
   if (_prevBand.topLeft() != QPoint(-1, -1)) {
-    _prevBand = _prevBand.normalize();
+    _prevBand = _prevBand.normalized();
     _pressTarget->move(_prevBand.topLeft());
     _pressTarget->resize(_prevBand.size());
   }
@@ -1232,7 +1301,7 @@ void KstTopLevelView::releasePressLayoutModeCenteredResize(const QPoint& pos, bo
 
 void KstTopLevelView::releasePress(const QPoint& pos, bool shift) { 
   if (_activeHandler) {
-    _activeHandler->releasePress(this, pos, shift);
+    _activeHandler->releasePress(KstTopLevelViewPtr(this), pos, shift);
     return;
   }
 
@@ -1275,10 +1344,15 @@ void KstTopLevelView::menuClosed() {
 
 bool KstTopLevelView::popupMenu(QMenu *menu, const QPoint& pos) {
   bool rc = false;
-  // Want to clear focus without repaint
+
+  //
+  // want to clear focus without repaint...
+  //
+
   _pressTarget = findDeepestChild(pos, false, true);
   if (_pressTarget) {
     KstViewObjectPtr p = _pressTarget;
+
     while (p->_parent && p->_parent->isContainer()) {
       p = p->_parent;
     }
@@ -1298,30 +1372,32 @@ bool KstTopLevelView::popupMenu(QMenu *menu, const QPoint& pos) {
 
   if (_pressTarget) {
     connect(menu, SIGNAL(aboutToHide()), this, SLOT(menuClosed()));
+
     if (_mode == LayoutMode) {
-      rc = _pressTarget->layoutPopupMenu(menu, pos - _pressTarget->position(), this) || rc;
+      rc = _pressTarget->layoutPopupMenu(menu, pos - _pressTarget->position(), KstViewObjectPtr(this)) || rc;
     } else {
-      rc = _pressTarget->popupMenu(menu, pos - _pressTarget->position(), this) || rc;
+      rc = _pressTarget->popupMenu(menu, pos - _pressTarget->position(), KstViewObjectPtr(this)) || rc;
     }
   } else {
     QString title = menuTitle();
 
     if (!title.isEmpty()) {
-      menu->insertTitle(title);
+      menu->setTitle(title);
     }
   }
 
   if (_selectionList.count() > 1) {
     if (_pressTarget && _mode == LayoutMode) {
       if (rc) {
-        menu->insertSeparator();
+        menu->addSeparator();
       }
 
+      KstViewObjectList::const_iterator i;
+      QAction *action;
       QMenu *subMenu;
-      int    numPlots = 0;
-      int    id;
+      int numPlots = 0;
 
-      for (KstViewObjectList::ConstIterator i = _selectionList.begin(); i != _selectionList.end(); ++i) {
+      for (i = _selectionList.begin(); i != _selectionList.end(); ++i) {
         if (kst_cast<Kst2DPlot>(*i)) {
           numPlots++;
           if (numPlots > 1) {
@@ -1330,52 +1406,59 @@ bool KstTopLevelView::popupMenu(QMenu *menu, const QPoint& pos) {
         }
       }
       subMenu = new QMenu(menu);
-      subMenu->insertItem(i18n("X-axis"), this, SLOT(condenseXAxis()));
-      subMenu->insertItem(i18n("Y-axis"), this, SLOT(condenseYAxis()));
-      id = menu->insertItem(i18n("Condense selected"), subMenu);
+      subMenu->addAction(i18n("X-axis"), this, SLOT(condenseXAxis()));
+      subMenu->addAction(i18n("Y-axis"), this, SLOT(condenseYAxis()));
+      action = menu->addMenu(subMenu);
+      subMenu->setTitle(i18n("Condense selected"));
       if (numPlots < 2) {
-        menu->setItemEnabled(id, false);
+        action->setEnabled(false);
       }
 
       subMenu = new QMenu(menu);
-      subMenu->insertItem(i18n("Width"), this, SLOT(makeSameWidth()));
-      subMenu->insertItem(i18n("Height"), this, SLOT(makeSameHeight()));
-      subMenu->insertItem(i18n("Size"), this, SLOT(makeSameSize()));
-      menu->insertItem(i18n("Make Same"), subMenu);
+      subMenu->addAction(i18n("Width"), this, SLOT(makeSameWidth()));
+      subMenu->addAction(i18n("Height"), this, SLOT(makeSameHeight()));
+      subMenu->addAction(i18n("Size"), this, SLOT(makeSameSize()));
+      menu->addMenu(subMenu);
+      subMenu->setTitle(i18n("Make Same"));
 
       subMenu = new QMenu(menu);
-      subMenu->insertItem(i18n("Left"), this, SLOT(alignLeft()));
-      subMenu->insertItem(i18n("Right"), this, SLOT(alignRight()));
-      subMenu->insertItem(i18n("Top"), this, SLOT(alignTop()));
-      subMenu->insertItem(i18n("Bottom"), this, SLOT(alignBottom()));
-      menu->insertItem(i18n("Align"), subMenu);
+      subMenu->addAction(i18n("Left"), this, SLOT(alignLeft()));
+      subMenu->addAction(i18n("Right"), this, SLOT(alignRight()));
+      subMenu->addAction(i18n("Top"), this, SLOT(alignTop()));
+      subMenu->addAction(i18n("Bottom"), this, SLOT(alignBottom()));
+      menu->addMenu(subMenu);
+      subMenu->setTitle(i18n("Align"));
 
       subMenu = new QMenu(menu);
-      subMenu->insertItem(i18n("Horizontally"), this, SLOT(packHorizontally()));
-      subMenu->insertItem(i18n("Vertically"), this, SLOT(packVertically()));
-      menu->insertItem(i18n("Pack"), subMenu);
+      subMenu->addAction(i18n("Horizontally"), this, SLOT(packHorizontally()));
+      subMenu->addAction(i18n("Vertically"), this, SLOT(packVertically()));
+      menu->addMenu(subMenu);
+      subMenu->setTitle(i18n("Pack"));
 
-      menu->insertSeparator();
+      menu->addSeparator();
     }
-    menu->insertItem(i18n("Group Objects"), this, SLOT(groupSelection()));
+    menu->addAction(i18n("Group Objects"), this, SLOT(groupSelection()));
     rc = true;
   }
 
   if (rc) {
-    menu->insertSeparator();
+    menu->addSeparator();
   } else {
-    menu->insertItem(i18n("&Edit..."), this, SLOT(edit()));
+    menu->addAction(i18n("&Edit..."), this, SLOT(edit()));
   }
 
   QMenu *subMenu = new QMenu(menu);
-  subMenu->insertItem(i18n("Default Tile"), this, SLOT(cleanupDefault()));
-  subMenu->insertItem(i18n("Custom..."), this, SLOT(cleanupCustom()));
-  menu->insertItem(i18n("Cleanup Layout"), subMenu);
+  subMenu->addAction(i18n("Default Tile"), this, SLOT(cleanupDefault()));
+  subMenu->addAction(i18n("Custom..."), this, SLOT(cleanupCustom()));
+  menu->addMenu(subMenu);
+  subMenu->setTitle(i18n("Cleanup Layout"));
+
   rc = true;
 
+  //
   // don't release the _pressTarget reference here as we are not yet done with
   //  it, since several of the menu handlers require it in order to function...
-  // _pressTarget = 0L; // release reference
+  //
 
   return rc;
 }
@@ -1393,9 +1476,7 @@ void KstTopLevelView::condenseXAxis() {
     bool processed = false;
     const double close = 0.02;
 
-    // create a list of all plot objects in this view
-    plots = kstObjectSubList<KstViewObject, Kst2DPlot>(_selectionList);
-
+// xxx    plots = kstObjectSubList<KstViewObject, Kst2DPlot>(_selectionList);
     while (plots.count() > 1) {
       plotsProcess.clear();
       plotsProcess.append(plots.first());
@@ -1417,22 +1498,22 @@ void KstTopLevelView::condenseXAxis() {
             if (geom.top() - geomItem.bottom() == 1) {
               geom = geom.unite(geomItem);
               plotsProcess.append(*i);
-              plots.remove(*i);
+// xxx              plots.remove(*i);
               added = true;
               break;
             } else if (geomItem.top() - geom.bottom() == 1) {
               plotsProcess.prepend(*i);
-              plots.remove(*i);        
+// xxx              plots.remove(*i);        
               added = true;
               break;
             } else if (fabs(aspect.y - (aspectItem.y + aspectItem.h)) < close) { 
               plotsProcess.append(*i);
-              plots.remove(*i);        
+// xxx              plots.remove(*i);        
               added = true;
               break;
             } else if (fabs(aspectItem.y - (aspect.y + aspect.h)) < close) {
               plotsProcess.prepend(*i);
-              plots.remove(*i);        
+// xxx              plots.remove(*i);        
               added = true;
               break;
             }
@@ -1451,8 +1532,13 @@ void KstTopLevelView::condenseXAxis() {
         }
       }
 
-      // modify the plot properties appropriately
+      //
+      // modify the plot properties appropriately...
+      //
+
       if (plotsProcess.count() > 1) {
+        Kst2DPlotList::iterator i;
+
         plotsProcess.first()->setSuppressTop(true);
         plotsProcess.first()->setDirty();
         plotsProcess.pop_front();
@@ -1461,7 +1547,7 @@ void KstTopLevelView::condenseXAxis() {
         plotsProcess.last()->setDirty();
         plotsProcess.pop_back();
 
-        for (Kst2DPlotList::Iterator i = plotsProcess.begin(); i != plotsProcess.end(); ++i) {
+        for (i = plotsProcess.begin(); i != plotsProcess.end(); ++i) {
           (*i)->setSuppressTop(true);
           (*i)->setSuppressBottom(true);
           (*i)->setDirty();  
@@ -1490,22 +1576,27 @@ void KstTopLevelView::condenseYAxis() {
     bool processed = false;
     const double close = 0.02;
 
-    // create a list of all plot objects
-    plots = kstObjectSubList<KstViewObject, Kst2DPlot>(_selectionList);
+// xxx    plots = kstObjectSubList<KstViewObject, Kst2DPlot>(_selectionList);
 
     while (plots.count() > 1) {
+      bool added = true;
+
       plotsProcess.clear();
       plotsProcess.append(plots.first());
       aspect = plots.first()->aspectRatio();
       geom = plots.first()->geometry();
       plots.pop_front();
-      bool added = true;
 
-      // find all the plots that are attached to this one
+      //
+      // find all the plots that are attached to this one...
+      //
+
       while (added && plots.count() > 0) {
+        Kst2DPlotList::const_iterator i;
+
         added = false;
 
-        for (Kst2DPlotList::ConstIterator i = plots.begin(); i != plots.end(); ++i) {
+        for (i = plots.begin(); i != plots.end(); ++i) {
           aspectItem = (*i)->aspectRatio();
           geomItem = (*i)->geometry();
 
@@ -1513,22 +1604,22 @@ void KstTopLevelView::condenseYAxis() {
               (fabs(aspectItem.y - aspect.y) < close && fabs(aspectItem.h - aspect.h) < close)) {
             if (geom.left() - geomItem.right() == 1) {
               plotsProcess.append(*i);
-              plots.remove(*i);
+// xxx              plots.remove(*i);
               added = true;
               break;
             } else if (geomItem.left() - geom.right() == 1) {
               plotsProcess.prepend(*i);
-              plots.remove(*i);
+// xxx              plots.remove(*i);
               added = true;
               break;
             } else if (fabs(aspect.x - (aspectItem.x + aspectItem.w)) < close) { 
               plotsProcess.append(*i);
-              plots.remove(*i);        
+// xxx              plots.remove(*i);        
               added = true;
               break;
             } else if (fabs(aspectItem.x - (aspect.x + aspect.w)) < close) {
               plotsProcess.prepend(*i);
-              plots.remove(*i);        
+// xxx              plots.remove(*i);        
               added = true;
               break;
             }
@@ -1547,8 +1638,13 @@ void KstTopLevelView::condenseYAxis() {
         }
       }
 
-      // modify the plot properties appropriately
+      //
+      // modify the plot properties appropriately...
+      //
+
       if (plotsProcess.count() > 1) {
+        Kst2DPlotList::iterator i;
+
         plotsProcess.first()->setSuppressLeft(true);
         plotsProcess.first()->setDirty();
         plotsProcess.pop_front();
@@ -1557,7 +1653,7 @@ void KstTopLevelView::condenseYAxis() {
         plotsProcess.last()->setDirty();
         plotsProcess.pop_back();
 
-        for (Kst2DPlotList::Iterator i = plotsProcess.begin(); i != plotsProcess.end(); ++i) {
+        for (i = plotsProcess.begin(); i != plotsProcess.end(); ++i) {
           (*i)->setSuppressLeft(true);
           (*i)->setSuppressRight(true);
           (*i)->setDirty();
@@ -1576,11 +1672,13 @@ void KstTopLevelView::condenseYAxis() {
 
 void KstTopLevelView::makeSameWidth() {
   if (_pressTarget) {
-    KstApp::inst()->document()->setModified();
+    KstViewObjectList::Iterator i;
     const QRect gg(_pressTarget->geometry());
     QSize size;
+
+    KstApp::inst()->document()->setModified();
     size.setWidth( gg.width() );
-    for (KstViewObjectList::Iterator i = _selectionList.begin(); i != _selectionList.end(); ++i) {
+    for (i = _selectionList.begin(); i != _selectionList.end(); ++i) {
       size.setHeight((*i)->geometry().height());
       (*i)->resize(size);
     }
@@ -1591,11 +1689,13 @@ void KstTopLevelView::makeSameWidth() {
 
 void KstTopLevelView::makeSameHeight() {
   if (_pressTarget) {
-    KstApp::inst()->document()->setModified();
+    KstViewObjectList::iterator i;
     const QRect gg(_pressTarget->geometry());
     QSize size;
+
+    KstApp::inst()->document()->setModified();
     size.setHeight( gg.height() );
-    for (KstViewObjectList::Iterator i = _selectionList.begin(); i != _selectionList.end(); ++i) {
+    for (i = _selectionList.begin(); i != _selectionList.end(); ++i) {
       size.setWidth((*i)->geometry().width());
       (*i)->resize(size);
     }
@@ -1606,12 +1706,14 @@ void KstTopLevelView::makeSameHeight() {
 
 void KstTopLevelView::makeSameSize() {
   if (_pressTarget) {
-    KstApp::inst()->document()->setModified();
+    KstViewObjectList::iterator i;
     QSize size;
     const QRect gg(_pressTarget->geometry());
+
+    KstApp::inst()->document()->setModified();
     size.setHeight(gg.height());
     size.setWidth(gg.width());
-    for (KstViewObjectList::Iterator i = _selectionList.begin(); i != _selectionList.end(); ++i) {
+    for (i = _selectionList.begin(); i != _selectionList.end(); ++i) {
       (*i)->resize(size);
     }
     paint(KstPainter::P_PAINT);
@@ -1632,11 +1734,13 @@ void KstTopLevelView::correctPosition(KstViewObjectPtr obj, QPoint point) {
 
 void KstTopLevelView::alignLeft() {
   if (_pressTarget) {
-    KstApp::inst()->document()->setModified();
+    KstViewObjectList::iterator i;
     const QRect gg(_pressTarget->geometry());
     QPoint point;
+
+    KstApp::inst()->document()->setModified();
     point.setX(gg.x());
-    for (KstViewObjectList::Iterator i = _selectionList.begin(); i != _selectionList.end(); ++i) {
+    for (i = _selectionList.begin(); i != _selectionList.end(); ++i) {
       point.setY((*i)->geometry().y());
       correctPosition(*i, point);
     }
@@ -1647,10 +1751,12 @@ void KstTopLevelView::alignLeft() {
 
 void KstTopLevelView::alignRight() {
   if (_pressTarget) {
-    KstApp::inst()->document()->setModified();
+    KstViewObjectList::iterator i;
     const QRect gg(_pressTarget->geometry());
     QPoint point;
-    for (KstViewObjectList::Iterator i = _selectionList.begin(); i != _selectionList.end(); ++i) {
+
+    KstApp::inst()->document()->setModified();
+    for (i = _selectionList.begin(); i != _selectionList.end(); ++i) {
       const QRect g((*i)->geometry());
       point.setX(gg.x() + gg.width() - g.width());
       point.setY(g.y());
@@ -1663,11 +1769,13 @@ void KstTopLevelView::alignRight() {
 
 void KstTopLevelView::alignTop() {
   if (_pressTarget) {
-    KstApp::inst()->document()->setModified();
+    KstViewObjectList::iterator i;
     const QRect gg(_pressTarget->geometry());
     QPoint point;
+
+    KstApp::inst()->document()->setModified();
     point.setY(gg.y());
-    for (KstViewObjectList::Iterator i = _selectionList.begin(); i != _selectionList.end(); ++i) {
+    for (i = _selectionList.begin(); i != _selectionList.end(); ++i) {
       point.setX((*i)->geometry().x());
       correctPosition(*i, point);
     }
@@ -1678,10 +1786,12 @@ void KstTopLevelView::alignTop() {
 
 void KstTopLevelView::alignBottom() {
   if (_pressTarget) {
-    KstApp::inst()->document()->setModified();
+    KstViewObjectList::iterator i;
     const QRect gg(_pressTarget->geometry());
     QPoint point;
-    for (KstViewObjectList::Iterator i = _selectionList.begin(); i != _selectionList.end(); ++i) {
+
+    KstApp::inst()->document()->setModified();
+    for (i = _selectionList.begin(); i != _selectionList.end(); ++i) {
       const QRect g((*i)->geometry());
       point.setX(g.x());
       point.setY(gg.y() + gg.height() - g.height());
@@ -1693,12 +1803,14 @@ void KstTopLevelView::alignBottom() {
 
 
 void KstTopLevelView::packVertically() {
+  KstViewObjectList::const_iterator i;
   int iTop = 0;
   int iBottom = 0;
   int iCount = 0;
 
-  for (KstViewObjectList::ConstIterator i = _selectionList.begin(); i != _selectionList.end(); ++i) {
+  for (i = _selectionList.begin(); i != _selectionList.end(); ++i) {
     const QRect g((*i)->geometry());
+
     if (i == _selectionList.begin()) {
       iTop = g.y();
       iBottom = g.y() + g.height();
@@ -1715,7 +1827,8 @@ void KstTopLevelView::packVertically() {
 
   if (iBottom > iTop && iCount > 0) {
     KstViewObjectList selectionList = _selectionList;
-    KstViewObjectList::Iterator temp;
+    KstViewObjectList::iterator temp;
+    KstViewObjectList::iterator i;
     QPoint point;
     QSize size;
     int iPosMin = 0;
@@ -1723,8 +1836,9 @@ void KstTopLevelView::packVertically() {
     int iHeight = (iBottom - iTop) / iCount;
 
     while (!selectionList.empty()) {
-      for (KstViewObjectList::Iterator i = selectionList.begin(); i != selectionList.end(); ++i) {
+      for (i = selectionList.begin(); i != selectionList.end(); ++i) {
         const QRect g((*i)->geometry());
+
         if (i == selectionList.begin()) {
           iPosMin = g.y();
           temp = i;
@@ -1750,12 +1864,14 @@ void KstTopLevelView::packVertically() {
 
 
 void KstTopLevelView::packHorizontally() {
+  KstViewObjectList::const_iterator i;
   int iLeft = 0;
   int iRight = 0;
   int iCount = 0;
 
-  for (KstViewObjectList::ConstIterator i = _selectionList.begin(); i != _selectionList.end(); ++i) {
+  for (i = _selectionList.begin(); i != _selectionList.end(); ++i) {
     const QRect g((*i)->geometry());
+
     if (i == _selectionList.begin()) {
       iLeft = g.x();
       iRight = g.x() + g.width();
@@ -1771,17 +1887,20 @@ void KstTopLevelView::packHorizontally() {
   }
 
   if (iRight > iLeft && iCount > 0) {
-    KstViewObjectList selectionList = _selectionList;
-    KstViewObjectList::Iterator temp;
+    KstViewObjectList selectionList;
+    KstViewObjectList::iterator i;
+    KstViewObjectList::iterator temp;
     QPoint point;
     QSize size;
     int iPosMin = 0;
     int iPos = iLeft;
     int iWidth = (iRight - iLeft) / iCount;
 
+    selectionList = _selectionList;
     while (!selectionList.empty()) {
-      for (KstViewObjectList::Iterator i = selectionList.begin(); i != selectionList.end(); ++i) {
+      for (i = selectionList.begin(); i != selectionList.end(); ++i) {
         const QRect g((*i)->geometry());
+
         if (i == selectionList.begin()) {
           iPosMin = g.x();
           temp = i;
@@ -1807,27 +1926,36 @@ void KstTopLevelView::packHorizontally() {
 
 
 void KstTopLevelView::groupSelection() {
-  KstPlotGroupPtr pg = new KstPlotGroup;
+  KstViewObjectList::const_iterator it;
+  KstViewObjectList::iterator iter; 
+  KstPlotGroupPtr pg;
   QRect gg(_selectionList.first()->geometry());
 
-  // First build the container
-  for (KstViewObjectList::ConstIterator it = _selectionList.begin(); it != _selectionList.end(); ++it) {
+  //
+  // first build the container...
+  //
+
+  pg = new KstPlotGroup();
+  for (it = _selectionList.begin(); it != _selectionList.end(); ++it) {
     gg |= (*it)->geometry();
   }
 
   pg->move(gg.topLeft());
   pg->resize(gg.size());
 
-  // Then add the items
-  for (KstViewObjectList::Iterator it = _selectionList.begin(); it != _selectionList.end(); ++it) {
-    (*it)->setSelected(false);
-    (*it)->setFocus(false);
-    (*it)->detach();
-    pg->appendChild(*it);
+  //
+  // then add the items...
+  //
+
+  for (iter = _selectionList.begin(); iter != _selectionList.end(); ++iter) {
+    (*iter)->setSelected(false);
+    (*iter)->setFocus(false);
+    (*iter)->detach();
+    pg->appendChild(KstViewObjectPtr(*iter));
   }
 
   if (!pg->children().isEmpty()) {
-    appendChild(pg.data());
+    appendChild(pg);
     KstApp::inst()->document()->setModified();
     paint(KstPainter::P_PAINT);
   }
@@ -1840,15 +1968,17 @@ void KstTopLevelView::cancelMouseOperations() {
     if (_pressTarget || _prevBand.isValid()) {
       paint(KstPainter::P_PAINT);
     }
-    //_pressTarget = 0L;
-    _prevBand = QRect(-1, -1, 0, 0);
+     _prevBand = QRect(-1, -1, 0, 0);
     _prevContainer = 0L;
     return;
   }
 
-  // other graphics modes - delete the current drawing object
+  //
+  // other graphics modes - delete the current drawing object...
+  //
+
   if (_activeHandler) {
-    _activeHandler->cancelMouseOperations(this);  
+    _activeHandler->cancelMouseOperations(KstTopLevelViewPtr(this));  
   }
 }
 
@@ -1878,8 +2008,9 @@ KstViewWidget *KstTopLevelView::widget() const {
 
 void KstTopLevelView::cleanupDefault() {
   //
-  // roughly layout in a square
+  // roughly layout in a square...
   //
+
   cleanup(-1);
 }
 
@@ -1929,12 +2060,14 @@ void KstTopLevelView::release() {
 
 
 QSize KstTopLevelView::averageChildSize() const {
+  KstViewObjectList::const_iterator i;
   int widths = 0;
   int heights = 0;
   int c;
 
-  for (KstViewObjectList::ConstIterator i = _children.begin(); i != _children.end(); ++i) {
+  for (i = _children.begin(); i != _children.end(); ++i) {
     const QRect g((*i)->geometry());
+
     widths += g.width();
     heights += g.height();
   }
@@ -1946,6 +2079,7 @@ QSize KstTopLevelView::averageChildSize() const {
 
 void KstTopLevelView::saveDefaults(KstViewObjectPtr object) {
   KstGfxMouseHandler *handler = handlerForObject(object->type());
+
   if (handler) {
     handler->saveDefaults(object);
   }
@@ -1954,6 +2088,7 @@ void KstTopLevelView::saveDefaults(KstViewObjectPtr object) {
 
 void KstTopLevelView::restoreDefaults(KstViewObjectPtr object) {
   KstGfxMouseHandler *handler = handlerForObject(object->type());
+
   if (handler) {
     handler->restoreDefaults();
   }
@@ -1963,7 +2098,7 @@ void KstTopLevelView::restoreDefaults(KstViewObjectPtr object) {
 bool KstTopLevelView::handleDoubleClick(const QPoint& pos, bool shift) {
   handlePress(pos, shift);
   if (_pressTarget) {
-    _pressTarget->showDialog(this, false);
+    _pressTarget->showDialog(KstTopLevelViewPtr(this), false);
   }
 
   return true;
@@ -1971,7 +2106,9 @@ bool KstTopLevelView::handleDoubleClick(const QPoint& pos, bool shift) {
 
 
 void KstTopLevelView::deleteSelectedObjects() {
-  for (KstViewObjectList::Iterator i = _selectionList.begin(); i != _selectionList.end(); ++i) {
+  KstViewObjectList::iterator i;
+  
+  for (i = _selectionList.begin(); i != _selectionList.end(); ++i) {
     KstViewObjectPtr selection = *i;
 
     if (selection && selection->parent()) {
@@ -1988,6 +2125,7 @@ void KstTopLevelView::deleteSelectedObjects() {
 
 QRect KstTopLevelView::correctWidthForRatio(const QRect& oldRect, double ratio, int direction) {
   QRect r = oldRect;
+
   if (direction & (UP|DOWN)) {
     int newWidth;
     int negOne;
@@ -2024,6 +2162,7 @@ QRect KstTopLevelView::correctHeightForRatio(const QRect& oldRect, double ratio,
   if (direction & (LEFT|RIGHT)) {
     int newHeight = (int)(abs(r.width())*ratio);
     int negOne, negOneW;
+
     if (r.height() == 0) {
       negOne = 1;
     } else {
@@ -2080,11 +2219,13 @@ QRect KstTopLevelView::correctHeightForRatio(const QRect& oldRect, double ratio,
 
 KstGfxMouseHandler *KstTopLevelView::handlerForObject(const QString& objType) {
   QMap<QString,KstGfxMouseHandler*>::Iterator i = _handlers.find(objType);
+
   if (i != _handlers.end()) {
-    return i.data();
+    return *i;
   }
 
   KstGfxMouseHandler *rc = KstViewObjectFactory::self()->createHandlerFor(objType);
+
   if (rc) {
     _handlers[objType] = rc;
   }
@@ -2094,15 +2235,17 @@ KstGfxMouseHandler *KstTopLevelView::handlerForObject(const QString& objType) {
 
 
 Kst2DPlotPtr KstTopLevelView::createPlotObject(const QString& name, bool doCleanup) {
-  Kst2DPlot *plot = new Kst2DPlot(name);
+  Kst2DPlotPtr plot;
+
+  plot = new Kst2DPlot(name);
   if (_onGrid) {
-    // FIXME: make this more powerful, preserve columns
-    appendChild(plot);
+    appendChild(KstViewObjectPtr(plot));
     if (doCleanup) {
       this->cleanup(-1); // GCC 2.95/ppc bug.  Don't touch!!!
     }
   } else {
     QSize sz = averageChildSize();
+
     if (sz != QSize(0, 0)) {
       plot->resize(sz);
     } else {
@@ -2111,10 +2254,13 @@ Kst2DPlotPtr KstTopLevelView::createPlotObject(const QString& name, bool doClean
     // First look at the overall clip mask.  If there are gaps, take the
     // biggest one and use that location.
     QRegion r = clipRegion();
-    QMemArray<QRect> rects = r.rects();
+    QVector<QRect> rects = r.rects();
+    QVector<QRect>::const_iterator i;
+    
     if (!rects.isEmpty()) {
       QRect maxRect(0, 0, 0, 0);
-      for (QMemArray<QRect>::ConstIterator i = rects.begin(); i != rects.end(); ++i) {
+
+      for (i = rects.begin(); i != rects.end(); ++i) {
         if ((*i).width() * (*i).height() > maxRect.width() * maxRect.height()) {
           maxRect = *i;
         }
@@ -2127,17 +2273,22 @@ Kst2DPlotPtr KstTopLevelView::createPlotObject(const QString& name, bool doClean
       }
       plot->move(maxRect.topLeft());
     } else {
-      // If no gaps, then look at the top object and place relative to it.  It
+      //
+      // if no gaps, then look at the top object and place relative to it. It
       // would probably be better to iterate back->front with complete masks
-      // but that's more complicated and not worth the effort at this time.
+      // but that's more complicated and not worth the effort at this time...
+      //
+
       r = QRegion(geometry());
       r -= QRegion(_children.last()->geometry());
       rects = r.rects();
       if (rects.isEmpty()) {
         plot->move(QPoint(0, 0));
       } else {
+        QVector<QRect>::const_iterator i;
         QRect maxRect(0, 0, 0, 0);
-        for (QMemArray<QRect>::ConstIterator i = rects.begin(); i != rects.end(); ++i) {
+
+        for (i = rects.begin(); i != rects.end(); ++i) {
           if ((*i).width() * (*i).height() > maxRect.width() * maxRect.height()) {
             maxRect = *i;
           }
@@ -2151,49 +2302,49 @@ Kst2DPlotPtr KstTopLevelView::createPlotObject(const QString& name, bool doClean
         plot->move(maxRect.topLeft());
       }
     }
-    appendChild(plot);
+    appendChild(KstViewObjectPtr(plot));
   }
+
   return plot;
 }
 
 
 QMap<QString, QVariant > KstTopLevelView::widgetHints(const QString& propertyName) const {
   QMap<QString, QVariant> map = KstViewObject::widgetHints(propertyName);
-  if (!map.empty()) {
-    return map;
-  }
 
-  if (propertyName == "backgroundColor") {
-    map.insert(QString("_kst_widgetType"), QString("KColorButton"));
-    map.insert(QString("_kst_label"), i18n("Background color"));
-  } else if (propertyName == "marginLeft") {
-    map.insert(QString("_kst_widgetType"), QString("KDoubleSpinBox"));
-    map.insert(QString("_kst_label"), i18n("Left margin"));
-    map.insert(QString("minValue"), 0.0);
-    map.insert(QString("maxValue"), 0.5);
-    map.insert(QString("lineStep"), 0.01);
-    map.insert(QString("precision"), 2);
-  } else if (propertyName == "marginRight") {
-    map.insert(QString("_kst_widgetType"), QString("KDoubleSpinBox"));
-    map.insert(QString("_kst_label"), i18n("Right margin"));
-    map.insert(QString("minValue"), 0.0);
-    map.insert(QString("maxValue"), 0.5);
-    map.insert(QString("lineStep"), 0.01);
-    map.insert(QString("precision"), 2);
-  } else if (propertyName == "marginTop") {
-    map.insert(QString("_kst_widgetType"), QString("KDoubleSpinBox"));
-    map.insert(QString("_kst_label"), i18n("Top margin"));
-    map.insert(QString("minValue"), 0.0);
-    map.insert(QString("maxValue"), 0.5);
-    map.insert(QString("lineStep"), 0.01);
-    map.insert(QString("precision"), 2);
-  } else if (propertyName == "marginBottom") {
-    map.insert(QString("_kst_widgetType"), QString("KDoubleSpinBox"));
-    map.insert(QString("_kst_label"), i18n("Bottom margin"));
-    map.insert(QString("minValue"), 0.0);
-    map.insert(QString("maxValue"), 0.5);
-    map.insert(QString("lineStep"), 0.01);
-    map.insert(QString("precision"), 2);
+  if (map.empty()) {
+    if (propertyName == "backgroundColor") {
+      map.insert(QString("_kst_widgetType"), QString("KColorButton"));
+      map.insert(QString("_kst_label"), i18n("Background color"));
+    } else if (propertyName == "marginLeft") {
+      map.insert(QString("_kst_widgetType"), QString("KDoubleSpinBox"));
+      map.insert(QString("_kst_label"), i18n("Left margin"));
+      map.insert(QString("minValue"), 0.0);
+      map.insert(QString("maxValue"), 0.5);
+      map.insert(QString("lineStep"), 0.01);
+      map.insert(QString("precision"), 2);
+    } else if (propertyName == "marginRight") {
+      map.insert(QString("_kst_widgetType"), QString("KDoubleSpinBox"));
+      map.insert(QString("_kst_label"), i18n("Right margin"));
+      map.insert(QString("minValue"), 0.0);
+      map.insert(QString("maxValue"), 0.5);
+      map.insert(QString("lineStep"), 0.01);
+      map.insert(QString("precision"), 2);
+    } else if (propertyName == "marginTop") {
+      map.insert(QString("_kst_widgetType"), QString("KDoubleSpinBox"));
+      map.insert(QString("_kst_label"), i18n("Top margin"));
+      map.insert(QString("minValue"), 0.0);
+      map.insert(QString("maxValue"), 0.5);
+      map.insert(QString("lineStep"), 0.01);
+      map.insert(QString("precision"), 2);
+    } else if (propertyName == "marginBottom") {
+      map.insert(QString("_kst_widgetType"), QString("KDoubleSpinBox"));
+      map.insert(QString("_kst_label"), i18n("Bottom margin"));
+      map.insert(QString("minValue"), 0.0);
+      map.insert(QString("maxValue"), 0.5);
+      map.insert(QString("lineStep"), 0.01);
+      map.insert(QString("precision"), 2);
+    }
   }
 
   return map;
@@ -2214,4 +2365,3 @@ KST_REGISTER_VIEW_OBJECT(TopLevelView, create_KstTopLevelView, handler_KstTopLev
 
 
 #include "ksttoplevelview.moc"
-

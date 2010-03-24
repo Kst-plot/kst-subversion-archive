@@ -31,12 +31,9 @@
 KstGfx2DPlotMouseHandler::KstGfx2DPlotMouseHandler()
 : KstGfxMouseHandler() {
   // initial default settings before any sticky settings
-  Kst2DPlotPtr default2DPlot = new Kst2DPlot;
-/*  defaultBox->setBorderWidth(2);
-  defaultBox->setBorderColor(Qt::black);
-  defaultBox->setForegroundColor(Qt::white);
-  defaultBox->setXRound(0);
-  defaultBox->setYRound(0);*/
+  Kst2DPlotPtr default2DPlot;
+
+  default2DPlot = new Kst2DPlot;
   _defaultObject = KstViewObjectPtr(default2DPlot);
   _currentDefaultObject = KstViewObjectPtr(default2DPlot);
 }
@@ -59,7 +56,7 @@ void KstGfx2DPlotMouseHandler::pressMove(KstTopLevelViewPtr view, const QPoint& 
     QPainter p;
     p.begin(view->widget());
     p.setPen(QPen(Qt::black, 0, Qt::SolidLine));
-    p.setRasterOp(Qt::NotROP);
+// xxx    p.setRasterOp(Qt::NotROP);
     if (old.topLeft() != QPoint(-1, -1)) {
       p.drawRect(old);
     }
@@ -79,8 +76,9 @@ void KstGfx2DPlotMouseHandler::releasePress(KstTopLevelViewPtr view, const QPoin
   _mouseDown = false;
 
   if (!_cancelled && _mouseOrigin != pos) {
-    // make a new 2dplot
-    Kst2DPlotPtr plot = new Kst2DPlot;
+    Kst2DPlotPtr plot;
+
+    plot = new Kst2DPlot;
     copyDefaults(KstViewObjectPtr(plot));
     plot->setTagName(KstObjectTag(KST::suggestPlotName(), KstObjectTag::globalTagContext));  // FIXME: tag context
     plot->move(_prevBand.topLeft());
