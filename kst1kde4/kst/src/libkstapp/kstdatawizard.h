@@ -30,7 +30,7 @@ class KstDataWizard: public QWidget, public Ui::DataWizard {
   Q_OBJECT
 
   public:
-    KstDataWizard(QWidget* parent = 0, const char *name = 0, bool modal = false, WFlags fl = 0);
+    KstDataWizard(QWidget* parent = 0, const char *name = 0, bool modal = false, Qt::WindowFlags fl = 0);
     virtual ~KstDataWizard();
 
   public:

@@ -704,8 +704,8 @@ const QPixmap& KstDataManager::yesPixmap() const {
   return _yesPixmap;
 }
 
-KstDataManager::KstDataManager(KstDoc *in_doc, QWidget* parent, const char* name, bool modal, WFlags fl)
-: KstDataManager(parent, name, modal, fl) {
+KstDataManager::KstDataManager(KstDoc *in_doc, QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl)
+: QDialog(parent, fl) {
   setupUi(this);
   doc = in_doc;
 

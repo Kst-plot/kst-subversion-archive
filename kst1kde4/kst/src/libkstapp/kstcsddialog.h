@@ -29,7 +29,7 @@ class CSDDialogWidget;
 class KstCsdDialog : public KstDataDialog {
   Q_OBJECT
   public:
-    KstCsdDialog(QWidget* parent = 0, const char* name = 0, bool modal = false, Qt::WFlags fl = 0 );
+    KstCsdDialog(QWidget* parent = 0, const char* name = 0, bool modal = false, Qt::WindowFlags fl = 0 );
     virtual ~KstCsdDialog();
     KST_EXPORT static KstCsdDialog *globalInstance();
 

@@ -31,7 +31,7 @@ class KstCurveDifferentiate : public QDialog, public Ui::curveDifferentiate {
   Q_OBJECT
   public:
     KST_EXPORT KstCurveDifferentiate(QWidget* parent = 0,
-                         const char* name = 0, bool modal = TRUE, Qt::WFlags fl = 0 );
+                         const char* name = 0, bool modal = TRUE, Qt::WindowFlags fl = 0 );
     virtual ~KstCurveDifferentiate();
 
     void setOptions();

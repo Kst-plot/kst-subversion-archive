@@ -24,7 +24,7 @@
 #include "kstnumbersequence.h"
 #include "kstviewwindow.h"
 
-KstCurveDifferentiate::KstCurveDifferentiate(QWidget* parent, const char* name, bool modal, Qt::WFlags fl)
+KstCurveDifferentiate::KstCurveDifferentiate(QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl)
 : QDialog(parent, fl) {
   Q_UNUSED(name)
   Q_UNUSED(modal)

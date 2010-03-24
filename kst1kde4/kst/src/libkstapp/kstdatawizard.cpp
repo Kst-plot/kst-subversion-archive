@@ -57,7 +57,7 @@
 
 const QString& KstDataWizard::defaultTag = KGlobal::staticQString("<Auto Name>");
 
-KstDataWizard::KstDataWizard(QWidget* parent, const char* name, bool modal, WFlags fl) :
+KstDataWizard::KstDataWizard(QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl) :
 DataWizard(parent, name, modal, fl )
 {
   _configWidget = 0L;
