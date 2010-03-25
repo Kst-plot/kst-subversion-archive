@@ -12,11 +12,11 @@
 #ifndef KSTCHOOSECOLORDIALOG_H
 #define KSTCHOOSECOLORDIALOG_H
 
-#include <qcolor.h>
+#include <QColor>
 #include <qlineedit.h>
-#include <qmap.h>
-#include <qstring.h>
-#include <qvaluelist.h>
+#include <QList>
+#include <QMap>
+#include <QString>
 
 #include <kcolorcombo.h>
 
@@ -45,8 +45,8 @@ private:
   void cleanColorGroup();
 
   QGridLayout* _grid;
-  QValueList<QLineEdit*> _lineEdits;
-  QValueList<KColorCombo*> _colorCombos;
+  QList<QLineEdit*> _lineEdits;
+  QList<KColorCombo*> _colorCombos;
   QMap<QString, QColor> _fileColors;
   bool _xSelected;
   bool _override;

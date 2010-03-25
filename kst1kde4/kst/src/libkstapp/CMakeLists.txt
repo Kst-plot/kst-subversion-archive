@@ -52,7 +52,6 @@ set(kstapp_LIB_SRCS
     kstmetaplot.cpp
     kstdrag.cpp
     kstfieldselect.cpp
-    kstvectordialog.cpp
     kstcsddialog.cpp
     ksteqdialog.cpp
     ksthsdialog.cpp
@@ -100,6 +99,7 @@ set(kstapp_LIB_SRCS
     kstdatamanager.cpp
     kstpluginmanager.cpp
     kstviewmanager.cpp
+    kstvectordialog.cpp
     kst.cpp)
 
 #KDE3_ADD_DCOP_SKELS(kstapp_LIB_SRCS

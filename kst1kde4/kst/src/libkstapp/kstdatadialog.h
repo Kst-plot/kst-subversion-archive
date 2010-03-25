@@ -50,10 +50,10 @@ private Q_SLOTS:
 
 protected:
   KstObjectPtr _dp;
+  bool _editMultipleMode;
 
 private:
   bool _multiple;
-  bool _editMultipleMode;
   bool _newDialog;
 };
 
