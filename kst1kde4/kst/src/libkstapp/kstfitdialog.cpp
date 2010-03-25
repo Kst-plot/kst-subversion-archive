@@ -27,9 +27,9 @@
 
 #include "curveappearancewidget.h"
 #include "kst2dplot.h"
-#include "kstchoosecolordialog_i.h"
+#include "kstchoosecolordialog.h"
 #include "kstdataobjectcollection.h"
-#include "kstfitdialog_i.h"
+#include "kstfitdialog.h"
 #include "kstvcurve.h"
 #include "kstviewlabel.h"
 #include "kstviewwindow.h"

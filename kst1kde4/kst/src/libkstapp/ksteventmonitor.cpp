@@ -32,7 +32,7 @@
 #include "eventmonitorwidget.h"
 #include "kst.h"
 #include "kstdataobjectcollection.h"
-#include "ksteventmonitor_i.h"
+#include "ksteventmonitor.h"
 #include "ksteventmonitorentry.h"
 #include "scalarselector.h"
 #include "vectorselector.h"

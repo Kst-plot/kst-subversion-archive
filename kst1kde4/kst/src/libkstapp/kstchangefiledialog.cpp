@@ -29,7 +29,7 @@
 
 #include "kst.h"
 #include "kst2dplot.h"
-#include "kstchangefiledialog_i.h"
+#include "kstchangefiledialog.h"
 #include "kstdatacollection.h"
 #include "kstdataobjectcollection.h"
 #include "kstrmatrix.h"

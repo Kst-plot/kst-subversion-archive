@@ -32,7 +32,7 @@
 #include "kst.h"
 #include "kstdatacollection.h"
 #include "ksteventmonitorentry.h"
-#include "ksteventmonitor_i.h"
+#include "ksteventmonitor.h"
 
 #include <assert.h>
 #include <unistd.h>

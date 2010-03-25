@@ -32,7 +32,7 @@
 #include <kstandarddirs.h>
 #include <kurlrequester.h>
 
-#include "kstpluginmanager_i.h"
+#include "kstpluginmanager.h"
 #include "plugincollection.h"
 #include "pluginxmlparser.h"
 

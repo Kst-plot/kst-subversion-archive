@@ -29,13 +29,13 @@
 
 #include "ksdebug.h"
 
-#include "ksthsdialog_i.h"
+#include "ksthsdialog.h"
 #include "curveappearancewidget.h"
 #include "curveplacementwidget.h"
 #include "editmultiplewidget.h"
 #include "histogramdialogwidget.h"
 #include "kst2dplot.h"
-#include "kstchoosecolordialog_i.h"
+#include "kstchoosecolordialog.h"
 #include "kstdataobjectcollection.h"
 #include "kstsettings.h"
 #include "kstuinames.h"

@@ -32,7 +32,7 @@
 #include "curveplacementwidget.h"
 #include "editmultiplewidget.h"
 #include "kst2dplot.h"
-#include "kstchoosecolordialog_i.h"
+#include "kstchoosecolordialog.h"
 #include "kstdataobjectcollection.h"
 #include "kstobjectdefaults.h"
 #include "kstpsddialog_i.h"

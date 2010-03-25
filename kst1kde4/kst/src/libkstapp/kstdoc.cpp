@@ -50,7 +50,7 @@
 #include "kstcsd.h"
 #include "kstdataobjectcollection.h"
 #include "kstdoc.h"
-#include "kstgraphfiledialog_i.h"
+#include "kstgraphfiledialog.h"
 #include "kstequation.h"
 #include "ksteventmonitorentry.h"
 #include "kstvectorview.h"

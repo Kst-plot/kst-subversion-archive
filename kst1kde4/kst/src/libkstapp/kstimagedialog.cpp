@@ -35,7 +35,7 @@
 #include "imagedialogwidget.h"
 #include "kst2dplot.h"
 #include "kstdataobjectcollection.h"
-#include "kstimagedialog_i.h"
+#include "kstimagedialog.h"
 #include "kstuinames.h"
 #include "kstviewwindow.h"
 #include "matrixselector.h"

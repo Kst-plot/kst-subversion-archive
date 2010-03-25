@@ -35,7 +35,7 @@
 #include "editmultiplewidget.h"
 #include "csddialogwidget.h"
 #include "kst2dplot.h"
-#include "kstcsddialog_i.h"
+#include "kstcsddialog.h"
 #include "kstdataobjectcollection.h"
 #include "kstuinames.h"
 #include "kstvcurve.h"

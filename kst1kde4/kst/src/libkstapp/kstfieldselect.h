@@ -1,5 +1,5 @@
 /***************************************************************************
-                       kstfieldselect_i.h  -  Part of KST
+                       kstfieldselect.h  -  Part of KST
                              -------------------
     begin                :
     copyright            : (C) 2008 The University of British Columbia

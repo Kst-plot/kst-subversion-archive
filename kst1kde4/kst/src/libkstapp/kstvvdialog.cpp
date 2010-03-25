@@ -27,13 +27,13 @@
 #include "ksdebug.h"
 
 // application specific includes
-#include "kstvvdialog_i.h"
+#include "kstvvdialog.h"
 #include "curveappearancewidget.h"
 #include "curveplacementwidget.h"
 #include "editmultiplewidget.h"
 #include "vectorviewdialogwidget.h"
 #include "kst2dplot.h"
-#include "kstchoosecolordialog_i.h"
+#include "kstchoosecolordialog.h"
 #include "kstdataobjectcollection.h"
 #include "kstsettings.h"
 #include "kstuinames.h"

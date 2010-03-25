@@ -32,7 +32,7 @@
 
 #include "editmultiplewidget.h"
 #include "kstmatrixdefaults.h"
-#include "kstmatrixdialog_i.h"
+#include "kstmatrixdialog.h"
 #include "kstviewwindow.h"
 #include "matrixdialogwidget.h"
 #include <defaultprimitivenames.h>

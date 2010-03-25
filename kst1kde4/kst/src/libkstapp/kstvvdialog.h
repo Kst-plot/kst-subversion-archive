@@ -1,5 +1,5 @@
 /***************************************************************************
-                       kstvvdialog_i.h  -  Dialog for KstVectorView objects.
+                       kstvvdialog.h  -  Dialog for KstVectorView objects.
                              -------------------
     begin                : 2007
     copyright            : (C) 2007 by The University of British Columbia
