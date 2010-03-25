@@ -16,7 +16,6 @@
  *                                                                         *
  ***************************************************************************/
 
-// include files for Qt
 #include <qcheckbox.h>
 #include <qcombobox.h>
 #include <qimage.h>
@@ -25,13 +24,11 @@
 #include <qspinbox.h>
 #include <qtimer.h>
 
-// include files for KDE
 #include <kconfig.h>
 #include <kimageio.h>
 #include <kurlcompletion.h>
 #include <kurlrequester.h>
 
-// application specific includes
 #include "kstgraphfiledialog.h"
 
 
@@ -226,16 +223,17 @@ void KstGraphFileDialog::updateDialog() {
   _saveLocation->completionObject()->setDir(_url);
 
   QString upfmt = _format.upper();
+
   for (int i = 0; i < _comboBoxFormats->count(); i++) {
-    if (_comboBoxFormats->text(i).upper() == upfmt) {
-      _comboBoxFormats->setCurrentItem(i);
+    if (_comboBoxFormats->text(i).toUpper() == upfmt) {
+      _comboBoxFormats->setCurrentIndex(i);
       break;
     }
   }
 
   _xSize->setValue(_w);
   _ySize->setValue(_h);
-  _comboBoxSizeOption->setCurrentItem(_displayOption);
+  _comboBoxSizeOption->setCurrentIndex(_displayOption);
   _radioButtonAll->setChecked(_allWindows);
   _radioButtonActive->setChecked(!_allWindows);
   _autosave->setChecked(_autoSave);
@@ -249,4 +247,3 @@ void KstGraphFileDialog::updateDialog() {
 }
 
 #include "kstgraphfiledialog.moc"
-

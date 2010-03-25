@@ -36,32 +36,32 @@ enum LineType { LineOnly, PointOnly, LinePoint };
 enum PlotType { OnePlot, MultiplePlots, CycleThrough, ExistingPlot, ExistingCycle};
 
 // forward declaration of the Kst classes
-class GraphicEditorI;
+class GraphicEditor;
 class Kst2DPlot;
 typedef KstObjectMap<QExplicitlySharedDataPointer<Kst2DPlot> > Kst2DPlotMap;
-class KstChangeFileDialogI;
-class KstChangeNptsDialogI;
-class KstChooseColorDialogI;
-class KstCurveDifferentiateI;
-class KstDataManagerI;
+class KstChangeFileDialog;
+class KstChangeNptsDialog;
+class KstChooseColorDialog;
+class KstCurveDifferentiate;
+class KstDataManager;
 class KstDataNotifier;
-class KstDebugDialogI;
+class KstDebugDialog;
 class KstDebugNotifier;
 class KstDoc;
 class KstEventMonitorEntry;
-class KstEventMonitorI;
-class KstGraphFileDialogI;
+class KstEventMonitor;
+class KstGraphFileDialog;
 class KstIfaceImpl;
-class KstMonochromeDialogI;
-class KstPlotDialogI;
-class KstQuickStartDialogI;
-class KstVectorSaveDialogI;
-class KstViewFitsDialogI;
-class KstViewManagerI;
-class KstViewMatricesDialogI;
-class KstViewScalarsDialogI;
-class KstViewStringsDialogI;
-class KstViewVectorsDialogI;
+class KstMonochromeDialog;
+class KstPlotDialog;
+class KstQuickStartDialog;
+class KstVectorSaveDialog;
+class KstViewFitsDialog;
+class KstViewManager;
+class KstViewMatricesDialog;
+class KstViewScalarsDialog;
+class KstViewStringsDialog;
+class KstViewVectorsDialog;
 class KstViewWindow;
 class StatusLabel;
 class UpdateThread;
@@ -147,9 +147,9 @@ class KST_EXPORT KstApp : public QMdiArea {
 
     KConfig *dataSourceConfig() const { return _dataSourceConfig; }
 
-    KstGraphFileDialogI *graphFileDlg() const { return _graphFileDialog; }
-    KstChooseColorDialogI *chooseColorDlg() const { return _chooseColorDialog; }
-    KstMonochromeDialogI *monochromeDialog() const { return _monochromeDialog; }
+    KstGraphFileDialog *graphFileDlg() const { return _graphFileDialog; }
+    KstChooseColorDialog *chooseColorDlg() const { return _chooseColorDialog; }
+    KstMonochromeDialog *monochromeDialog() const { return _monochromeDialog; }
 
     void waitForUpdate() const;
     bool paused() const;
@@ -325,23 +325,23 @@ class KST_EXPORT KstApp : public QMdiArea {
     KConfig *_config;
     KstDoc *_doc;
 
-    KstViewScalarsDialogI *_viewScalarsDialog;
-    KstViewStringsDialogI *_viewStringsDialog;
-    KstViewVectorsDialogI *_viewVectorsDialog;
-    KstViewMatricesDialogI *_viewMatricesDialog;
-    KstViewFitsDialogI *_viewFitsDialog;
-    KstChangeFileDialogI *_changeFileDialog;
-    KstChooseColorDialogI *_chooseColorDialog;
-    KstCurveDifferentiateI *_differentiateCurvesDialog;
-    KstChangeNptsDialogI *_changeNptsDialog;
-    KstGraphFileDialogI *_graphFileDialog;
-    KstVectorSaveDialogI *_vectorSaveDialog;
-    KstDataManagerI *_dataManager;
-    KstViewManagerI *_viewManager;
-    KstDebugDialogI *_debugDialog;
-    GraphicEditorI *_graphicDialog;
-    KstMonochromeDialogI *_monochromeDialog; 
-    KstQuickStartDialogI *_quickStartDialog;
+    KstViewScalarsDialog *_viewScalarsDialog;
+    KstViewStringsDialog *_viewStringsDialog;
+    KstViewVectorsDialog *_viewVectorsDialog;
+    KstViewMatricesDialog *_viewMatricesDialog;
+    KstViewFitsDialog *_viewFitsDialog;
+    KstChangeFileDialog *_changeFileDialog;
+    KstChooseColorDialog *_chooseColorDialog;
+    KstCurveDifferentiate *_differentiateCurvesDialog;
+    KstChangeNptsDialog *_changeNptsDialog;
+    KstGraphFileDialog *_graphFileDialog;
+    KstVectorSaveDialog *_vectorSaveDialog;
+    KstDataManager *_dataManager;
+    KstViewManager *_viewManager;
+    KstDebugDialog *_debugDialog;
+    GraphicEditor *_graphicDialog;
+    KstMonochromeDialog *_monochromeDialog; 
+    KstQuickStartDialog *_quickStartDialog;
 /* xxx
     KRecentFilesAction *_recent;
     KRecentFilesAction *_fileOpenRecent;

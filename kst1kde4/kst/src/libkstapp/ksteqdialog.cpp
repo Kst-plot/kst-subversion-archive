@@ -118,8 +118,11 @@ void KstEqDialog::fillFieldsForEdit() {
 
 
 void KstEqDialog::fillFieldsForNew() {
-  KstEquationList eqs = kstObjectSubList<KstDataObject, KstEquation>(KST::dataObjectList);
-  KstVCurveList curves = kstObjectSubList<KstDataObject, KstVCurve>(KST::dataObjectList);
+  KstEquationList eqs;
+  KstVCurveList curves;
+
+// xxx  eqs = kstObjectSubList<KstDataObject, KstEquation>(KST::dataObjectList);
+// xxx  curves = kstObjectSubList<KstDataObject, KstVCurve>(KST::dataObjectList);
 
   _tagName->setText(defaultTag);
   _legendText->setText(defaultTag);
@@ -164,6 +167,7 @@ void KstEqDialog::update() {
 bool KstEqDialog::newObject() {
   QString tag_name = _tagName->text();
   QString etext = _w->_equation->text();
+
   etext.remove(QRegExp("[^a-zA-Z0-9\\(\\)\\+\\-\\*/\\%\\^\\|\\&\\!<>=_.]"));
   etext.replace(KstObjectTag::tagSeparator, KstObjectTag::tagSeparatorReplacement);
   if (etext.length() > 12) {
@@ -194,30 +198,30 @@ bool KstEqDialog::newObject() {
     eq = new KstEquation(tag_name, _w->_equation->text(), vp, _w->_doInterpolation->isChecked());
   
     if (!eq->isValid()) {
-      QStringList::ConstIterator i;
-      QString parseErrors;
-      QString strWarning = i18n("There is an error in the equation you entered.\n")
+      QStringList::const_iterator i;
+      QString strWarning = i18n("There is an error in the equation you entered.\n");
   
       eq = 0L;
   
       for (i = Equation::errorStack.begin(); i != Equation::errorStack.end(); ++i) {
-        parseErrors += *i;
-        parseErrors += "\n";
+        strWarning += *i;
+        strWarning += "\n";
       }
   
-      strWarning += parseErrors;
-  
       QMessageBox::warning(this, i18n("Kst"), strWarning);
+
       return false;
     }
   
-    QColor color = KstApp::inst()->chooseColorDlg()->getColorForCurve(eq->vX(), eq->vY());
+    KstVCurvePtr vc;
+    QColor color;
+
+    color = KstApp::inst()->chooseColorDlg()->getColorForCurve(eq->vX(), eq->vY());
     if (!color.isValid()) {
       color = _w->_curveAppearance->color();
     }
-    KstVCurvePtr vc;
 
-    vc = new KstVCurve(KST::suggestCurveName(eq->tag(), true), eq->vX(), eq->vY(), 0L, 0L, 0L, 0L, color);
+    vc = new KstVCurve(KST::suggestCurveName(eq->tag(), true), eq->vX(), eq->vY(), KstVectorPtr(), KstVectorPtr(), KstVectorPtr(), KstVectorPtr(), color);
     vc->setHasPoints(_w->_curveAppearance->showPoints());
     vc->setHasLines(_w->_curveAppearance->showLines());
     vc->setHasBars(_w->_curveAppearance->showBars());
@@ -234,25 +238,28 @@ bool KstEqDialog::newObject() {
       vc->setLegendText(legend_text);
     }
   
-    KstViewWindow *w = dynamic_cast<KstViewWindow*>(KstApp::inst()->findWindow(_w->_curvePlacement->_plotWindow->currentText()));
+    KstViewWindow *w;
+/* xxx
+    w = dynamic_cast<KstViewWindow*>(KstApp::inst()->findWindow(_w->_curvePlacement->_plotWindow->currentText()));
     if (!w) {
       QString n = KstApp::inst()->newWindow(KST::suggestWinName());
+
       w = dynamic_cast<KstViewWindow*>(KstApp::inst()->findWindow(n));
     }
-  
+*/  
     if (w) {
       Kst2DPlotPtr plot;
+
       if (_w->_curvePlacement->existingPlot()) {
-        // assign curve to plot
         plot = kst_cast<Kst2DPlot>(w->view()->findChild(_w->_curvePlacement->plotName()));
         if (plot) {
-          plot->addCurve(vc.data());
+          plot->addCurve(vc);
         }
       }
   
       if (_w->_curvePlacement->newPlot()) {
-        // assign curve to plot
         QString name = w->createPlot(KST::suggestPlotName());
+
         if (_w->_curvePlacement->reGrid()) {
           w->view()->cleanup(_w->_curvePlacement->columns());
         }
@@ -267,13 +274,18 @@ bool KstEqDialog::newObject() {
     }
   
     KST::dataObjectList.lock().writeLock();
-    KST::dataObjectList.append(eq.data());
-    KST::dataObjectList.append(vc.data());
+    KST::dataObjectList.append(eq);
+    KST::dataObjectList.append(vc);
     KST::dataObjectList.lock().unlock();
   
-    eq = 0L; // drop the reference before we update
+    //
+    // drop the reference before we update...
+    //
+
+    eq = 0L; 
     vc = 0L;
-    emit modified();
+
+// xxx    emit modified();
   }
 
   return true;
@@ -283,20 +295,23 @@ bool KstEqDialog::newObject() {
 bool KstEqDialog::checkEntries() {
   if (_w->_xVectors->selectedVector().isEmpty() && !_editMultipleMode) {
     QMessageBox::warning(this, i18n("Kst"), i18n("An X vector must be defined first."));
+
     return false;
   }
+
   return true;
 }
 
 
 bool KstEqDialog::editSingleObject(KstEquationPtr eqPtr) {
+  KstVectorPtr vp;
+
   eqPtr->writeLock();
   if (!checkEntries()) {
     eqPtr->unlock();
+
     return false;
   }
-
-  KstVectorPtr vp;
 
   if (_xVectorsDirty) {
     KstVectorList::iterator i;
@@ -328,17 +343,15 @@ bool KstEqDialog::editSingleObject(KstEquationPtr eqPtr) {
     if (!eqPtr->isValid()) {
       QStringList::const_iterator i;
       QString strWarning = i18n("There is an error in the equation you entered.\n");
-      QString parseErrors;
 
       for (i = Equation::errorStack.begin(); i != Equation::errorStack.end(); ++i) {
-        parseErrors += *i;
-        parseErrors += "\n";
+        strWarning += *i;
+        strWarning += "\n";
       }
-      
-      strWarning += parseErrors;
 
       QMessageBox::warning(this, i18n("Kst"), strWarning);
       eqPtr->unlock();
+
       return true;
     }
 
@@ -347,6 +360,7 @@ bool KstEqDialog::editSingleObject(KstEquationPtr eqPtr) {
       eqPtr->setRecursed(true);
       eqPtr->unlock();
       QMessageBox::critical(this, i18n("Kst"), i18n("There is a recursion resulting from the equation you entered."));
+
       return false;
     }
   }
@@ -358,28 +372,32 @@ bool KstEqDialog::editSingleObject(KstEquationPtr eqPtr) {
 
 
 bool KstEqDialog::editObject() {
-  KstEquationList eqList = kstObjectSubList<KstDataObject,KstEquation>(KST::dataObjectList);
+  KstEquationList eqList;
+
+// xxx  eqList = kstObjectSubList<KstDataObject,KstEquation>(KST::dataObjectList);
 
   if (_editMultipleMode) { 
     //
     // if the user selected no vector, treat it as non-dirty...
     //
 
-    _xVectorsDirty = _w->_xVectors->_vector->currentItem() != 0;
+    _xVectorsDirty = _w->_xVectors->_vector->currentIndex() != 0;
     _equationDirty = !_w->_equation->text().isEmpty();
 
     bool didEdit = false;
     int i;
 
     for (i = 0; i < _editMultipleWidget->_objectList->count(); i++) {
-      if (_editMultipleWidget->_objectList->isSelected(i)) {
-        // get the pointer to the object
-        KstEquationList::Iterator eqIter = eqList.findTag(_editMultipleWidget->_objectList->text(i));
+      if (_editMultipleWidget->_objectList->item(i)->isSelected()) {
+        KstEquationList::iterator eqIter;
+        KstEquationPtr eqPtr;
+
+        eqIter = eqList.findTag(_editMultipleWidget->_objectList->item(i)->text());
         if (eqIter == eqList.end()) {
           return false;
         }
 
-        KstEquationPtr eqPtr = *eqIter;
+        eqPtr = *eqIter;
         if (!editSingleObject(eqPtr)) {
           return false;
         }
@@ -391,21 +409,27 @@ bool KstEqDialog::editObject() {
       return false;  
     }
   } else {
-    // verify that the curve name is unique
-    QString tag_name = _tagName->text();
+    QString tagName = _tagName->text();
     KstEquationPtr ep;
 
+    //
+    // verify that the curve name is unique...
+    //
+
     ep = kst_cast<KstEquation>(_dp);
-    if (!ep || tag_name != ep->tagName() && KstData::self()->dataTagNameNotUnique(tag_name)) {
+    if (!ep || (tagName != ep->tagName() && KstData::self()->dataTagNameNotUnique(tagName))) {
       _tagName->setFocus();
       return false;
     }
 
     ep->writeLock();
-    ep->setTagName(tag_name);
+    ep->setTagName(tagName);
     ep->unlock();
 
-    // then edit the object
+    //
+    // then edit the object...
+    //
+
     _equationDirty = true;
     _xVectorsDirty = true;
     _doInterpolationDirty = true;
@@ -413,7 +437,9 @@ bool KstEqDialog::editObject() {
       return false;
     }
   }
-  emit modified();
+
+// xxx  emit modified();
+
   return true;
 }
 
@@ -463,17 +489,19 @@ void KstEqDialog::populateFunctionList() {
 
 
 void KstEqDialog::populateEditMultiple() {
-  KstEquationList eqlist = kstObjectSubList<KstDataObject,KstEquation>(KST::dataObjectList);
-  _editMultipleWidget->_objectList->insertStringList(eqlist.tagNames());
+  KstEquationList eqList;
+
+// xxx  eqList = kstObjectSubList<KstDataObject,KstEquation>(KST::dataObjectList);
+// xxx  _editMultipleWidget->_objectList->insertStringList(eqList.tagNames());
 
   //
   // also intermediate state for multiple edit...
   //
 
-  _w->_xVectors->_vector->insertItem("", 0);
-  _w->_xVectors->_vector->setCurrentItem(0);
+  _w->_xVectors->_vector->insertItem(0, "");
+  _w->_xVectors->_vector->setCurrentIndex(0);
   _w->_doInterpolation->setTristate(true);
-  _w->_doInterpolation->setNoChange();
+  _w->_doInterpolation->setChecked(Qt::PartiallyChecked);
   _w->_equation->setText("");
 
   //

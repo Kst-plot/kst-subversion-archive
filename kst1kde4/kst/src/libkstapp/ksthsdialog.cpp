@@ -19,21 +19,15 @@
 #include <qcheckbox.h>
 #include <qcombobox.h>
 #include <qfontmetrics.h>
+#include <qmessagebox.h>
 #include <qradiobutton.h>
 #include <qspinbox.h>
 #include <qstyle.h>
-#include <qlistbox.h>
-#include <qvbox.h>
-#include <qcombobox.h>
-#include <qmessagebox.h>
-
-#include "ksdebug.h"
 
 #include "ksthsdialog.h"
 #include "curveappearancewidget.h"
 #include "curveplacementwidget.h"
 #include "editmultiplewidget.h"
-#include "histogramdialogwidget.h"
 #include "kst2dplot.h"
 #include "kstchoosecolordialog.h"
 #include "kstdataobjectcollection.h"
@@ -47,7 +41,7 @@ const QString& KstHsDialog::defaultTag = KGlobal::staticQString("<Auto Name>");
 
 QPointer<KstHsDialog> KstHsDialog::_inst;
 
-KstHsDialogI *KstHsDialog::globalInstance() {
+KstHsDialog *KstHsDialog::globalInstance() {
   if (!_inst) {
     _inst = new KstHsDialog(KstApp::inst());
   }
@@ -56,8 +50,8 @@ KstHsDialogI *KstHsDialog::globalInstance() {
 
 
 KstHsDialog::KstHsDialog(QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl)
-: KstDataDialog(parent, name, modal, fl) {
-  _w = new Ui::HistogramDialogWidget(_contents);
+: KstDataDialog(parent) {
+  _w = new Ui::HistogramDialogWidget();
   _w->setupUi(this);
 
   setMultiple(true);
@@ -101,66 +95,69 @@ void KstHsDialog::updateWindow() {
 
 
 void KstHsDialog::fillFieldsForEdit() {
-  KstHistogramPtr hp = kst_cast<KstHistogram>(_dp);
-  if (!hp) {
-    return; // shouldn't be needed
+  KstHistogramPtr hp;
+
+  hp = kst_cast<KstHistogram>(_dp);
+  if (hp) {
+    hp->readLock();
+  
+    _tagName->setText(hp->tagName());
+  
+    _w->_vector->setSelection(hp->vTag());
+  
+    _w->N->setValue(hp->nBins());
+    _w->Min->setText(QString::number(hp->vX()->min() - (hp->width()/2.0)));
+    _w->Max->setText(QString::number(hp->vX()->max() + (hp->width()/2.0)));
+    _w->_realTimeAutoBin->setChecked(hp->realTimeAutoBin());
+  
+    if (hp->isNormPercent()) {
+      _w->NormIsPercent->setChecked(true);
+    } else if (hp->isNormFraction()) {
+      _w->NormIsFraction->setChecked(true);
+    } else if (hp->isNormOne()) {
+      _w->PeakIs1->setChecked(true);
+    } else {
+      _w->NormIsNumber->setChecked(true);
+    }
+  
+  
+    hp->unlock();
+    updateButtons();
+  
+    // can't edit curve props from here....
+    _w->_curveAppearance->hide();
+    _w->_curvePlacement->hide();
+    _legendText->hide();
+    _legendLabel->hide();
+  
+    adjustSize();
+    resize(minimumSizeHint());
+    setFixedHeight(height());
   }
-
-  hp->readLock();
-
-  _tagName->setText(hp->tagName());
-
-  _w->_vector->setSelection(hp->vTag());
-
-  _w->N->setValue(hp->nBins());
-  _w->Min->setText(QString::number(hp->vX()->min() - (hp->width()/2.0)));
-  _w->Max->setText(QString::number(hp->vX()->max() + (hp->width()/2.0)));
-  _w->_realTimeAutoBin->setChecked(hp->realTimeAutoBin());
-
-  if (hp->isNormPercent()) {
-    _w->NormIsPercent->setChecked(true);
-  } else if (hp->isNormFraction()) {
-    _w->NormIsFraction->setChecked(true);
-  } else if (hp->isNormOne()) {
-    _w->PeakIs1->setChecked(true);
-  } else {
-    _w->NormIsNumber->setChecked(true);
-  }
-
-
-  hp->unlock();
-  updateButtons();
-
-  // can't edit curve props from here....
-  _w->_curveAppearance->hide();
-  _w->_curvePlacement->hide();
-  _legendText->hide();
-  _legendLabel->hide();
-
-  adjustSize();
-  resize(minimumSizeHint());
-  setFixedHeight(height());
 }
 
 
 void KstHsDialog::fillFieldsForNew() {
-  // set tag name
+  QColor color;
+
   _tagName->setText(defaultTag);
   _legendText->setText(defaultTag);
   _legendText->show();
   _legendLabel->show();
 
-  // set the curve placement window
   _w->_curvePlacement->update();
 
-  // for some reason the lower widget needs to be shown first to prevent overlapping?
+  //
+  // for some reason the lower widget needs to be shown first to prevent overlapping?...
+  //
+
   _w->_curveAppearance->hide();
   _w->_curvePlacement->show();
   _w->_curveAppearance->show();
   _w->_curveAppearance->reset();
 
-  QColor qc = _w->_curveAppearance->color();
-  _w->_curveAppearance->setValue(false, false, true, qc, 0, 0, 0, 1, 0);
+  color = _w->_curveAppearance->color();
+  _w->_curveAppearance->setValue(false, false, true, color, 0, 0, 0, 1, 0);
 
   _w->_realTimeAutoBin->setChecked(false);
   updateButtons();
@@ -178,11 +175,15 @@ void KstHsDialog::update() {
 
 bool KstHsDialog::newObject() {
   QString tag_name = _tagName->text();
+
   if (tag_name == defaultTag) {
     tag_name = KST::suggestHistogramName(KstObjectTag::fromString(_w->_vector->selectedVector()));
   }
 
-  // verify that the curve name is unique
+  //
+  // verify that the curve name is unique...
+  //
+
   if (KstData::self()->dataTagNameNotUnique(tag_name)) {
     _tagName->setFocus();
     return false;
@@ -193,11 +194,16 @@ bool KstHsDialog::newObject() {
     return false;
   }
 
-  // find max and min
+  //
+  // find max and min...
+  //
+
   double new_min = _w->Min->text().toDouble();
   double new_max = _w->Max->text().toDouble();
+
   if (new_max < new_min) {
     double m = new_max;
+
     new_max = new_min;
     new_min = m;
   }
@@ -229,84 +235,91 @@ bool KstHsDialog::newObject() {
   KST::vectorList.lock().readLock();
   KstVectorPtr vp = *KST::vectorList.findTag(_w->_vector->selectedVector());
   KST::vectorList.lock().unlock();
-  if (!vp) {
-    kstdFatal() << "Bug in kst: the Vector field (Hs) refers to "
-                << " a non existant vector..." << endl;
-  }
+  if (vp) {
+    KstVCurvePtr vc;
+    KstViewWindow *w;
+    QColor color;
 
-  vp->readLock();
-  hs = new KstHistogram(tag_name, vp, new_min, new_max,
-                        new_n_bins, new_norm_mode);
-  vp->unlock();
-  hs->setRealTimeAutoBin(_w->_realTimeAutoBin->isChecked());
+    vp->readLock();
+    hs = new KstHistogram(tag_name, vp, new_min, new_max,
+                          new_n_bins, new_norm_mode);
+    vp->unlock();
 
-  QColor color = KstApp::inst()->chooseColorDlg()->getColorForCurve(hs->vX(), hs->vY());
-  if (!color.isValid()) {
-    color = _w->_curveAppearance->color();
-  }
-  KstVCurvePtr vc = new KstVCurve(KST::suggestCurveName(hs->tag(), true), hs->vX(), hs->vY(), 0L, 0L, 0L, 0L, color);
+    hs->setRealTimeAutoBin(_w->_realTimeAutoBin->isChecked());
+  
+    color = KstApp::inst()->chooseColorDlg()->getColorForCurve(hs->vX(), hs->vY());
+    if (!color.isValid()) {
+      color = _w->_curveAppearance->color();
+    }
+    vc = new KstVCurve(KST::suggestCurveName(hs->tag(), true), hs->vX(), hs->vY(), KstVectorPtr(), KstVectorPtr(), KstVectorPtr(), KstVectorPtr(), color);
+  
+    vc->setHasPoints(_w->_curveAppearance->showPoints());
+    vc->setHasLines(_w->_curveAppearance->showLines());
+    vc->setHasBars(_w->_curveAppearance->showBars());
+    vc->setPointStyle(_w->_curveAppearance->pointType());
+    vc->setLineWidth(_w->_curveAppearance->lineWidth());
+    vc->setLineStyle(_w->_curveAppearance->lineStyle());
+    vc->setBarStyle(_w->_curveAppearance->barStyle());
+    vc->setPointDensity(_w->_curveAppearance->pointDensity());
+  
+    QString legendText = _legendText->text();
 
-  vc->setHasPoints(_w->_curveAppearance->showPoints());
-  vc->setHasLines(_w->_curveAppearance->showLines());
-  vc->setHasBars(_w->_curveAppearance->showBars());
-  vc->setPointStyle(_w->_curveAppearance->pointType());
-  vc->setLineWidth(_w->_curveAppearance->lineWidth());
-  vc->setLineStyle(_w->_curveAppearance->lineStyle());
-  vc->setBarStyle(_w->_curveAppearance->barStyle());
-  vc->setPointDensity(_w->_curveAppearance->pointDensity());
+    if (legendText == defaultTag) {
+      vc->setLegendText(QString(""));
+    } else {
+      vc->setLegendText(legendText);
+    }
+/* xxx  
+    w = dynamic_cast<KstViewWindow*>(KstApp::inst()->findWindow(_w->_curvePlacement->_plotWindow->currentText()));
+*/
+    if (!w) {
+      QString n = KstApp::inst()->newWindow(KST::suggestWinName());
 
-  QString legendText = _legendText->text();
-  if (legendText == defaultTag) {
-    vc->setLegendText(QString(""));
-  } else {
-    vc->setLegendText(legendText);
-  }
+// xxx      w = static_cast<KstViewWindow*>(KstApp::inst()->findWindow(n));
+    }
+    
+    if (w) {
+      Kst2DPlotPtr plot;
+    
+      if (_w->_curvePlacement->existingPlot()) {
+        plot = kst_cast<Kst2DPlot>(w->view()->findChild(_w->_curvePlacement->plotName()));
+        if (plot) {
+          plot->addCurve(vc);
+        }
+      }
+  
+      if (_w->_curvePlacement->newPlot()) {
+        QString name = w->createPlot(KST::suggestPlotName());
 
-  KstViewWindow *w = dynamic_cast<KstViewWindow*>(KstApp::inst()->findWindow(_w->_curvePlacement->_plotWindow->currentText()));
-  if (!w) {
-    QString n = KstApp::inst()->newWindow(KST::suggestWinName());
-    w = static_cast<KstViewWindow*>(KstApp::inst()->findWindow(n));
-  }
-  if (w) {
-    Kst2DPlotPtr plot;
-    if (_w->_curvePlacement->existingPlot()) {
-      // assign curve to plot
-      plot = kst_cast<Kst2DPlot>(w->view()->findChild(_w->_curvePlacement->plotName()));
-      if (plot) {
-        plot->addCurve(vc.data());
+        if (_w->_curvePlacement->reGrid()) {
+          w->view()->cleanup(_w->_curvePlacement->columns());
+        }
+        plot = kst_cast<Kst2DPlot>(w->view()->findChild(name));
+        if (plot) {
+          _w->_curvePlacement->update();
+          _w->_curvePlacement->setCurrentPlot(plot->tagName());
+          plot->addCurve(vc);
+          plot->generateDefaultLabels();
+        }
       }
     }
+  
+    KST::dataObjectList.lock().writeLock();
+    KST::dataObjectList.append(hs);
+    KST::dataObjectList.append(vc);
+    KST::dataObjectList.lock().unlock();
+  
+    hs = 0L;
+    vc = 0L;
 
-    if (_w->_curvePlacement->newPlot()) {
-      // assign curve to plot
-      QString name = w->createPlot(KST::suggestPlotName());
-      if (_w->_curvePlacement->reGrid()) {
-        w->view()->cleanup(_w->_curvePlacement->columns());
-      }
-      plot = kst_cast<Kst2DPlot>(w->view()->findChild(name));
-      if (plot) {
-        _w->_curvePlacement->update();
-        _w->_curvePlacement->setCurrentPlot(plot->tagName());
-        plot->addCurve(vc.data());
-        plot->generateDefaultLabels();
-      }
-    }
+// xxx    emit modified();
   }
 
-  KST::dataObjectList.lock().writeLock();
-  KST::dataObjectList.append(hs.data());
-  KST::dataObjectList.append(vc.data());
-  KST::dataObjectList.lock().unlock();
-
-  hs = 0L;
-  vc = 0L;
-  emit modified();
   return true;
 }
 
 
 bool KstHsDialog::editSingleObject(KstHistogramPtr hsPtr) {
-  // find max and min
   double new_min;
   double new_max;
 
@@ -325,19 +338,20 @@ bool KstHsDialog::editSingleObject(KstHistogramPtr hsPtr) {
 
   if (new_max < new_min) {
     double m = new_max;
+
     new_max = new_min;
     new_min = m;
   }
 
   if (new_max == new_min) {
-    QMessageBox::warning(this, i18n("kst"), i18n("Max and Min can not be equal."));
+    QMessageBox::warning(this, i18n("Kst"), i18n("Max and Min can not be equal."));
     _w->Min->setFocus();
     return false;
   }
 
   int new_n_bins = _w->N->text().toInt();
   if (_nDirty && new_n_bins < 1) {
-    QMessageBox::warning(this, i18n("kst"), i18n("You must have one or more bins in a histogram."));
+    QMessageBox::warning(this, i18n("Kst"), i18n("You must have one or more bins in a histogram."));
     _w->N->setFocus();
     return false;
   }
@@ -378,37 +392,42 @@ bool KstHsDialog::editSingleObject(KstHistogramPtr hsPtr) {
   if (hsPtr->recursion()) {
     hsPtr->setRecursed(true);
     hsPtr->unlock();
-    QMessageBox::critical(this, i18n("kst"), i18n("There is a recursion resulting from the histogram you entered."));
+    QMessageBox::critical(this, i18n("Kst"), i18n("There is a recursion resulting from the histogram you entered."));
     return false;
   }
 
   hsPtr->setDirty();
   hsPtr->unlock();
+
   return true;
 }
 
 
 bool KstHsDialog::editObject() {
-  KstHistogramList hsList = kstObjectSubList<KstDataObject,KstHistogram>(KST::dataObjectList);
+  KstHistogramList hsList;
 
-  // if editing multiple objects, edit each one
+// xxx  hsList = kstObjectSubList<KstDataObject,KstHistogram>(KST::dataObjectList);
+
   if (_editMultipleMode) {
-    // if the user selected no vector, treat it as non-dirty
-    _vectorDirty = _w->_vector->_vector->currentItem() != 0;
+    _vectorDirty = _w->_vector->_vector->currentIndex() != 0;
     _nDirty = _w->N->text() != " ";
     _minDirty = !_w->Min->text().isEmpty();
     _maxDirty = !_w->Max->text().isEmpty();
 
     bool didEdit = false;
-    for (uint i = 0; i < _editMultipleWidget->_objectList->count(); i++) {
-      if (_editMultipleWidget->_objectList->isSelected(i)) {
-        // get the pointer to the object
-        KstHistogramList::Iterator hsIter = hsList.findTag(_editMultipleWidget->_objectList->text(i));
+    int i;
+
+    for (i = 0; i < _editMultipleWidget->_objectList->count(); i++) {
+      if (_editMultipleWidget->_objectList->item(i)->isSelected()) {
+        KstHistogramList::iterator hsIter;
+        KstHistogramPtr hsPtr;
+
+        hsIter = hsList.findTag(_editMultipleWidget->_objectList->item(i)->text());
         if (hsIter == hsList.end()) {
           return false;
         }
 
-        KstHistogramPtr hsPtr = *hsIter;
+        hsPtr = *hsIter;
 
         if (!editSingleObject(hsPtr)) {
           return false;
@@ -417,13 +436,20 @@ bool KstHsDialog::editObject() {
       }
     }
     if (!didEdit) {
-      QMessageBox::warning(this, i18n("kst"), i18n("Select one or more objects to edit."));
+      QMessageBox::warning(this, i18n("Kst"), i18n("Select one or more objects to edit."));
       return false;
     }
   } else {
-    KstHistogramPtr hp = kst_cast<KstHistogram>(_dp);
-    // verify that the curve name is unique
-    QString tag_name = _tagName->text();
+    KstHistogramPtr hp;
+    QString tag_name;
+
+    hp = kst_cast<KstHistogram>(_dp);
+
+    //
+    // verify that the curve name is unique...
+    //
+
+    tag_name = _tagName->text();
     if (!hp || (tag_name != hp->tagName() && KstData::self()->dataTagNameNotUnique(tag_name))) {
       _tagName->setFocus();
       return false;
@@ -433,7 +459,10 @@ bool KstHsDialog::editObject() {
     hp->setTagName(tag_name);
     hp->unlock();
 
-    // then edit the object
+    //
+    // then edit the object...
+    //
+
     _vectorDirty = true;
     _minDirty = true;
     _maxDirty = true;
@@ -447,7 +476,9 @@ bool KstHsDialog::editObject() {
       return false;
     }
   }
-  emit modified();
+
+// xxx  emit modified();
+
   return true;
 }
 
@@ -456,21 +487,21 @@ void KstHsDialog::autoBin() {
   KstReadLocker ml(&KST::vectorList.lock());
 
   if (!KST::vectorList.isEmpty()) {
-    KstVectorList::Iterator i = KST::vectorList.findTag(_w->_vector->selectedVector());
-    double max, min;
+    KstVectorList::iterator i;
+    double max;
+    double min;
     int n;
 
-    if (i == KST::vectorList.end()) {
-      kstdFatal() << "Bug in kst: the Vector field in hsdialog refers to "
-                  << "a non existant vector..." << endl;
-    }
-    (*i)->readLock(); // Hmm should we really lock here?  AutoBin should I think
-    KstHistogram::AutoBin(KstVectorPtr(*i), &n, &max, &min);
-    (*i)->unlock();
+    i = KST::vectorList.findTag(_w->_vector->selectedVector());
+    if (i != KST::vectorList.end()) {
+      (*i)->readLock();
+      KstHistogram::AutoBin(KstVectorPtr(*i), &n, &max, &min);
+      (*i)->unlock();
 
-    _w->N->setValue(n);
-    _w->Min->setText(QString::number(min));
-    _w->Max->setText(QString::number(max));
+      _w->N->setValue(n);
+      _w->Min->setText(QString::number(min));
+      _w->Max->setText(QString::number(max));
+    }
   }
 }
 
@@ -488,21 +519,22 @@ void KstHsDialog::updateButtons() {
 
 
 void KstHsDialog::populateEditMultiple() {
-  KstHistogramList hslist = kstObjectSubList<KstDataObject,KstHistogram>(KST::dataObjectList);
-  _editMultipleWidget->_objectList->insertStringList(hslist.tagNames());
+  KstHistogramList hslist;
 
-  // also intermediate state for multiple edit
+// xxx  hslist = kstObjectSubList<KstDataObject,KstHistogram>(KST::dataObjectList);
+// xxx  _editMultipleWidget->_objectList->insertStringList(hslist.tagNames());
+
   _w->Min->setText("");
   _w->Max->setText("");
 
-  _w->N->setMinValue(_w->N->minValue() - 1);
+  _w->N->setMinimum(_w->N->minimum() - 1);
   _w->N->setSpecialValueText(" ");
-  _w->N->setValue(_w->N->minValue());
+  _w->N->setValue(_w->N->minimum());
 
-  _w->_vector->_vector->insertItem("", 0);
-  _w->_vector->_vector->setCurrentItem(0);
+  _w->_vector->_vector->insertItem(0, "");
+  _w->_vector->_vector->setCurrentIndex(0);
   _w->_realTimeAutoBin->setTristate(true);
-  _w->_realTimeAutoBin->setNoChange();
+  _w->_realTimeAutoBin->setChecked(Qt::PartiallyChecked);
 
   _w->NormIsPercent->setChecked(false);
   _w->NormIsFraction->setChecked(false);
@@ -515,7 +547,6 @@ void KstHsDialog::populateEditMultiple() {
   _w->Min->setEnabled(true);
   _w->Max->setEnabled(true);
 
-  // and clean all the fields
   _minDirty = false;
   _maxDirty = false;
   _nDirty = false;
@@ -536,7 +567,7 @@ void KstHsDialog::setRealTimeAutoBinDirty() {
 
 void KstHsDialog::cleanup() {
   if (_editMultipleMode) {
-    _w->N->setMinValue(_w->N->minValue() + 1);
+    _w->N->setMinimum(_w->N->minimum() + 1);
     _w->N->setSpecialValueText(QString::null);
   }
 }
@@ -547,4 +578,3 @@ void KstHsDialog::setVector(const QString& name) {
 }
 
 #include "ksthsdialog.moc"
-

@@ -145,25 +145,24 @@ KstApp::KstApp(QWidget *parent, const char *name)
 
   initDocument();
   KstDebug::self()->setHandler(doc);
-  setCaption(doc->title());
+  setWindowTitle(doc->title());
 
-  /* create dialogs */
-  _debugDialog = new KstDebugDialogI(this);
-  _dataManager = new KstDataManagerI(doc, this);
-  _viewManager = new KstViewManagerI(doc, this);
-  _viewScalarsDialog = new KstViewScalarsDialogI(this);
-  _viewStringsDialog = new KstViewStringsDialogI(this);
-  _viewVectorsDialog = new KstViewVectorsDialogI(this);
-  _viewMatricesDialog = new KstViewMatricesDialogI(this);
-  _viewFitsDialog = new KstViewFitsDialogI(this);
-  _changeFileDialog = new KstChangeFileDialogI(this);
-  _chooseColorDialog = new KstChooseColorDialogI(this);
-  _differentiateCurvesDialog = new KstCurveDifferentiateI(this);
-  _changeNptsDialog = new KstChangeNptsDialogI(this);
-  _graphFileDialog = new KstGraphFileDialogI(this);
-  _vectorSaveDialog = new KstVectorSaveDialogI(this);
-  _monochromeDialog = new KstMonochromeDialogI(this);
-  _quickStartDialog = new KstQuickStartDialogI(this, 0 , true);
+  _debugDialog = new KstDebugDialog(this);
+  _dataManager = new KstDataManager(doc, this);
+  _viewManager = new KstViewManager(doc, this);
+  _viewScalarsDialog = new KstViewScalarsDialog(this);
+  _viewStringsDialog = new KstViewStringsDialog(this);
+  _viewVectorsDialog = new KstViewVectorsDialog(this);
+  _viewMatricesDialog = new KstViewMatricesDialog(this);
+  _viewFitsDialog = new KstViewFitsDialog(this);
+  _changeFileDialog = new KstChangeFileDialog(this);
+  _chooseColorDialog = new KstChooseColorDialog(this);
+  _differentiateCurvesDialog = new KstCurveDifferentiate(this);
+  _changeNptsDialog = new KstChangeNptsDialog(this);
+  _graphFileDialog = new KstGraphFileDialog(this);
+  _vectorSaveDialog = new KstVectorSaveDialog(this);
+  _monochromeDialog = new KstMonochromeDialog(this);
+  _quickStartDialog = new KstQuickStartDialog(this, 0 , true);
 
   initActions();
   readOptions();
