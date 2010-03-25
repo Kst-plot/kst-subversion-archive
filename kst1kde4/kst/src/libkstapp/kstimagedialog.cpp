@@ -20,10 +20,8 @@
 #include <qcheckbox.h>
 #include <qcombobox.h>
 #include <qlineedit.h>
-#include <qlistbox.h>
 #include <qradiobutton.h>
 #include <qspinbox.h>
-#include <qvbox.h>
 #include <qmessagebox.h>
 
 #include <kcolorbutton.h>
@@ -32,7 +30,6 @@
 #include "colorpalettewidget.h"
 #include "curveplacementwidget.h"
 #include "editmultiplewidget.h"
-#include "imagedialogwidget.h"
 #include "kst2dplot.h"
 #include "kstdataobjectcollection.h"
 #include "kstimagedialog.h"
@@ -40,20 +37,18 @@
 #include "kstviewwindow.h"
 #include "matrixselector.h"
 
-QPointer<KstImageDialog> KstImageDialogI::_inst;
+QPointer<KstImageDialog> KstImageDialog::_inst;
 
-KstImageDialogI *KstImageDialogI::globalInstance() {
+KstImageDialog *KstImageDialog::globalInstance() {
   if (!_inst) {
-    _inst = new KstImageDialogI(KstApp::inst());
+    _inst = new KstImageDialog(KstApp::inst());
   }
   return _inst;
 }
 
 
-KstImageDialog::KstImageDialog(QWidget* parent,
-                                 const char* name, bool modal, Qt::WFlags fl)
-: KstDataDialog(parent, name, modal, fl) {
-  _w = new ImageDialogWidget(_contents);
+KstImageDialog::KstImageDialog(QWidget* parent, const char* name, bool modal, Qt::WFlags fl) : KstDataDialog(parent) {
+  _w = new Ui::ImageDialogWidget();
   _w->setupUi(this);
 
   setMultiple(true);
@@ -86,13 +81,13 @@ KstImageDialog::KstImageDialog(QWidget* parent,
   connect(_w->_autoThreshold, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
   connect(_w->_smartThreshold, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
   connect(_w->_smartThresholdValue, SIGNAL(valueChanged(double)), this, SLOT(wasModifiedApply()));
-  connect(_w->_smartThresholdValue->child("qt_spinbox_edit"), SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
+// xxx  connect(_w->_smartThresholdValue->child("qt_spinbox_edit"), SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
   connect(_w->_realTimeAutoThreshold, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
   connect(_w->_numContourLines, SIGNAL(valueChanged(int)), this, SLOT(wasModifiedApply()));
-  connect(_w->_numContourLines->child("qt_spinbox_edit"), SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
+// xxx  connect(_w->_numContourLines->child("qt_spinbox_edit"), SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
   connect(_w->_contourColor, SIGNAL(changed(const QColor&)), this, SLOT(wasModifiedApply()));
   connect(_w->_contourWeight, SIGNAL(valueChanged(int)), this, SLOT(wasModifiedApply()));
-  connect(_w->_contourWeight->child("qt_spinbox_edit"), SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
+// xxx  connect(_w->_contourWeight->child("qt_spinbox_edit"), SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
   connect(_w->_useVariableWeight, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
 }
 
@@ -109,7 +104,9 @@ void KstImageDialog::updateWindow() {
 void KstImageDialog::fillFieldsForEdit() {
   fillFieldsForEditNoUpdate();
 
-  KstImagePtr ip = kst_cast<KstImage>(_dp);
+  KstImagePtr ip;
+
+  ip = kst_cast<KstImage>(_dp);
   if (!ip) {
     return;
   }
@@ -136,42 +133,47 @@ void KstImageDialog::fillFieldsForEdit() {
 
 
 void KstImageDialog::fillFieldsForEditNoUpdate() {
-  KstImagePtr ip = kst_cast<KstImage>(_dp);
-  if (!ip) {
-    return; // shouldn't be needed
+  KstImagePtr ip;
+
+  ip = kst_cast<KstImage>(_dp);
+  if (ip) {
+    KstImageList images;
+    int tempWeight;
+
+// xxx    images = kstObjectSubList<KstDataObject, KstImage>(KST::dataObjectList);
+  
+    ip->readLock();
+
+    _tagName->setText(ip->tagName());
+    _w->_lowerZ->setText(QString::number(ip->lowerThreshold()));
+    _w->_upperZ->setText(QString::number(ip->upperThreshold()));
+    _w->_realTimeAutoThreshold->setChecked(ip->autoThreshold());
+    _w->_colorPalette->refresh(ip->paletteName());
+    _w->_numContourLines->setValue(ip->numContourLines());
+    _w->_contourColor->setColor(ip->contourColor());
+    tempWeight = ip->contourWeight();
+    _w->_useVariableWeight->setChecked(tempWeight == -1);
+    if (tempWeight >= 0) {
+      _w->_contourWeight->setValue(tempWeight);
+    }
+  
+    ip->unlock();
+
+    //
+    // don't place the image in edits...
+    //
+
+    _w->_curvePlacement->hide();
+  
+    updateEnables();
   }
-
-  KstImageList images = kstObjectSubList<KstDataObject, KstImage>(KST::dataObjectList);
-
-  ip->readLock();
-  // fill in the tag name
-  _tagName->setText(ip->tagName());
-
-  // fill in the other parameters
-  _w->_lowerZ->setText(QString::number(ip->lowerThreshold()));
-  _w->_upperZ->setText(QString::number(ip->upperThreshold()));
-  _w->_realTimeAutoThreshold->setChecked(ip->autoThreshold());
-
-  _w->_colorPalette->refresh(ip->paletteName());
-  _w->_numContourLines->setValue(ip->numContourLines());
-  _w->_contourColor->setColor(ip->contourColor());
-  int tempWeight = ip->contourWeight();
-  _w->_useVariableWeight->setChecked(tempWeight == -1);
-  if (tempWeight >= 0) {
-    _w->_contourWeight->setValue(tempWeight);
-  }
-
-  ip->unlock();
-
-  //don't place the image in edits
-  _w->_curvePlacement->hide();
-
-  updateEnables();
 }
 
 
 void KstImageDialog::fillFieldsForNew() {
-  KstImageList images = kstObjectSubList<KstDataObject, KstImage>(KST::dataObjectList);
+  KstImageList images;
+
+// xxx  images = kstObjectSubList<KstDataObject, KstImage>(KST::dataObjectList);
 
   // set tag name
   _tagName->setText("<New_Image>");
@@ -217,35 +219,40 @@ bool KstImageDialog::newObject() {
   //if matrixCombo is empty then display an error message
   if (_w->_matrix->selectedMatrix().isEmpty()){
     QMessageBox::warning(this, i18n("Kst"), i18n("Matrix is a 2D grid of numbers, used to create image", "New image not made: define matrix first."));
+
     return false;
   }
 
-  //do some checks on the inputs
-  double lowerZDouble, upperZDouble;
+  KstMatrixPtr matrix;
+  double lowerZDouble;
+  double upperZDouble;
+
   if (!checkParameters(lowerZDouble, upperZDouble)) {
     return false;
   }
 
   KST::matrixList.lock().readLock();
-  KstMatrixPtr matrix = *KST::matrixList.findTag(_w->_matrix->selectedMatrix());
+  matrix = *KST::matrixList.findTag(_w->_matrix->selectedMatrix());
   KST::matrixList.lock().unlock();
   if (!matrix) {
     QMessageBox::warning(this, i18n("Kst"), i18n("Matrix is a 2D grid of numbers, used to create image", "Could not find matrix."));
+
     return false;
   }
   KST::dataObjectList.lock().readLock();
   matrix->readLock();
 
-  //create a unique name
+  KstImagePtr image;
   QString tag_name = KST::suggestImageName(matrix->tag());
+
   if (KstData::self()->dataTagNameNotUnique(tag_name)) {
     _tagName->setFocus();
     matrix->unlock();
     KST::dataObjectList.lock().unlock();
+
     return false;
   }
 
-  KstImagePtr image;
   if (_w->_contourOnly->isChecked()) {
     //need a contour map only
     QColor tempColor = _w->_contourColor->color();
@@ -253,45 +260,55 @@ bool KstImageDialog::newObject() {
                          _w->_useVariableWeight->isChecked() ? -1 : _w->_contourWeight->value());
   } else if (_w->_colorOnly->isChecked()) {
     //need a color map only
+/* xxx
     KPalette* newPal = new KPalette(_w->_colorPalette->selectedPalette());
+
     image = new KstImage(tag_name, matrix, lowerZDouble, upperZDouble,
                          _w->_realTimeAutoThreshold->isChecked(), newPal);
+*/
   } else {
     //need both a contour map and colour map
     QColor tempColor = _w->_contourColor->color();
+/* xxx
     KPalette* newPal = new KPalette(_w->_colorPalette->selectedPalette());
+
     image = new KstImage(tag_name, matrix, lowerZDouble, upperZDouble,
                          _w->_realTimeAutoThreshold->isChecked(), newPal,
                          _w->_numContourLines->text().toInt(), tempColor,
                          _w->_useVariableWeight->isChecked() ? -1 : _w->_contourWeight->value());
+*/
   }
   matrix->unlock();
   KST::dataObjectList.lock().unlock();
   placeInPlot(image);
   KST::dataObjectList.lock().writeLock();
-  KST::dataObjectList.append(image.data());
+  KST::dataObjectList.append(image);
   KST::dataObjectList.lock().unlock();
+
   image = 0L; // drop the reference
-  emit modified();
+
+// xxx  emit modified();
+
   return true;
 }
 
 
 bool KstImageDialog::editSingleObject(KstImagePtr imPtr) {
-  KstMatrixPtr pMatrix;
+  KstMatrixPtr matrix;
+
   if (_matrixDirty) {
-    //find the pMatrix
     KST::matrixList.lock().readLock();
-    pMatrix = *KST::matrixList.findTag(_w->_matrix->selectedMatrix());
+    matrix = *KST::matrixList.findTag(_w->_matrix->selectedMatrix());
     KST::matrixList.lock().unlock();
 
-    if (!pMatrix) {
-      QMessageBox::waring(this, i18n("Kst"), i18n("Matrix is a 2D grid of numbers, used to create image", "Could not find pMatrix."));
+    if (!matrix) {
+      QMessageBox::warning(this, i18n("Kst"), i18n("Could not find matrix."));
+
       return false;
     }
   } else {
     imPtr->readLock();
-    pMatrix = imPtr->matrix();
+    matrix = imPtr->matrix();
     imPtr->unlock();
   }
 
@@ -299,31 +316,42 @@ bool KstImageDialog::editSingleObject(KstImagePtr imPtr) {
 
   // if image type was changed, get all parameters from the dialog
   if (_contourOnlyDirty || _colorOnlyDirty || _colorAndContourDirty) {
-    double lowerZDouble, upperZDouble;
+    double lowerZDouble;
+    double upperZDouble;
+
     if (!checkParameters(lowerZDouble, upperZDouble)) {
       //QMessageBox::warning(this, i18n("Kst"), i18n("Image type was changed: Lower Z threshold cannot be higher than Upper Z threshold."));
       //pMatrix->unlock();
       imPtr->unlock();
+
       return false;
     }
+
     if (_w->_contourOnly->isChecked()) {
       //need a contour map only
       QColor tempColor = _w->_contourColor->color();
-      imPtr->changeToContourOnly(imPtr->tagName(), pMatrix, _w->_numContourLines->text().toInt(), tempColor,
+
+      imPtr->changeToContourOnly(imPtr->tagName(), matrix, _w->_numContourLines->text().toInt(), tempColor,
                               _w->_useVariableWeight->isChecked() ? -1 : _w->_contourWeight->value());
     } else if (_w->_colorOnly->isChecked()) {
       //need a color map only
+/* xxx
       KPalette* newPal = new KPalette(_w->_colorPalette->selectedPalette());
+
       imPtr->changeToColorOnly(imPtr->tagName(), pMatrix, lowerZDouble, upperZDouble,
                             _w->_realTimeAutoThreshold->isChecked(), newPal);
+*/
     } else {
       //need both a contour map and colour map
       QColor tempColor = _w->_contourColor->color();
+/* xxx
       KPalette* newPal = new KPalette(_w->_colorPalette->selectedPalette());
+
       imPtr->changeToColorAndContour(imPtr->tagName(), pMatrix, lowerZDouble, upperZDouble,
                                   _w->_realTimeAutoThreshold->isChecked(), newPal,
                                   _w->_numContourLines->text().toInt(), tempColor,
                                   _w->_useVariableWeight->isChecked() ? -1 : _w->_contourWeight->value());
+*/
     }
   } else {
     // get the current or new parameters as required
@@ -377,9 +405,8 @@ bool KstImageDialog::editSingleObject(KstImagePtr imPtr) {
     // check parameters for color map
     if (imPtr->hasColorMap()) {
       if (pLowerZ > pUpperZ) {
-        //QMessageBox::warning(this, i18n("Kst"), i18n("The Lower Z threshold cannot be higher than Upper Z threshold."));
-        //pMatrix->unlock();
         imPtr->unlock();
+
         return false;
       }
     }
@@ -387,10 +414,12 @@ bool KstImageDialog::editSingleObject(KstImagePtr imPtr) {
     // don't change the image type, just change applicable settings for the
     // current image type
     if (imPtr->hasContourMap() && !imPtr->hasColorMap()) {
-      imPtr->changeToContourOnly(imPtr->tagName(), pMatrix, pNumContours, pContourColor,
+      imPtr->changeToContourOnly(imPtr->tagName(), matrix, pNumContours, pContourColor,
           pUseVariableWeight ? -1 : pContourWeight);
     } else {
+/* xxx
       KPalette *palette;
+
       if (_paletteDirty) {
         palette = new KPalette(_w->_colorPalette->selectedPalette());
       } else {
@@ -401,12 +430,16 @@ bool KstImageDialog::editSingleObject(KstImagePtr imPtr) {
         imPtr->changeToColorOnly(imPtr->tagName(), pMatrix, pLowerZ, pUpperZ,
             pRealTimeAutoThreshold, palette);
       } else {
-        // images always have at least one of color or contour maps
+        //
+        // images always have at least one of color or contour maps...
+        //
+
         imPtr->changeToColorAndContour(imPtr->tagName(), pMatrix, pLowerZ, pUpperZ,
             pRealTimeAutoThreshold, palette,
             pNumContours, pContourColor,
             pUseVariableWeight ? -1 : pContourWeight);
       }
+*/
     }
   }
 
@@ -417,27 +450,32 @@ bool KstImageDialog::editSingleObject(KstImagePtr imPtr) {
 }
 
 bool KstImageDialog::editObject() {
-  KstImageList imList = kstObjectSubList<KstDataObject,KstImage>(KST::dataObjectList);
+  KstImageList imList;
 
-  // if editing multiple objects, edit each one
+// xxx  imList = kstObjectSubList<KstDataObject,KstImage>(KST::dataObjectList);
+
   if (_editMultipleMode) {
     _numContourLinesDirty = _w->_numContourLines->text() != " ";
     _contourWeightDirty = _w->_contourWeight->text() != " ";
     _paletteDirty = _w->_colorPalette->currentPaletteIndex() != 0;
-    _matrixDirty = _w->_matrix->_matrix->currentItem() != 0;
+    _matrixDirty = _w->_matrix->_matrix->currentIndex() != 0;
     _lowerZDirty = !_w->_lowerZ->text().isEmpty();
     _upperZDirty = !_w->_upperZ->text().isEmpty();
 
     bool didEdit = false;
-    for (uint i = 0; i < _editMultipleWidget->_objectList->count(); ++i) {
-      if (_editMultipleWidget->_objectList->isSelected(i)) {
-        // get the pointer to the object
-        KstImageList::Iterator imIter = imList.findTag(_editMultipleWidget->_objectList->text(i));
+    int i;
+
+    for (i = 0; i < _editMultipleWidget->_objectList->count(); ++i) {
+      if (_editMultipleWidget->_objectList->item(i)->isSelected()) {
+        KstImageList::iterator imIter;
+        KstImagePtr imPtr;
+
+        imIter = imList.findTag(_editMultipleWidget->_objectList->item(i)->text());
         if (imIter == imList.end()) {
           return false;
         }
 
-        KstImagePtr imPtr = *imIter;
+        imPtr = *imIter;
 
         if (!editSingleObject(imPtr)) {
           return false;
@@ -451,9 +489,10 @@ bool KstImageDialog::editObject() {
       return false;
     }
   } else {
-    KstImagePtr ip = kst_cast<KstImage>(_dp);
-    // verify that the curve name is unique
+    KstImagePtr ip;
     QString tag_name = _tagName->text();
+
+    ip = kst_cast<KstImage>(_dp);
     if (!ip || (tag_name != ip->tagName() && KstData::self()->dataTagNameNotUnique(tag_name))) {
       _tagName->setFocus();
       return false;
@@ -479,17 +518,21 @@ bool KstImageDialog::editObject() {
       return false;
     }
   }
-  emit modified();
+
+// xxx  emit modified();
+
   return true;
 }
 
 
 void KstImageDialog::calcAutoThreshold() {
-  //make sure an matrix is selected
-  if (!_w->_matrix->selectedMatrix().isEmpty()){
+ if (!_w->_matrix->selectedMatrix().isEmpty()){
+    KstMatrixPtr matrix;
+
     KST::matrixList.lock().readLock();
-    KstMatrixPtr matrix = *KST::matrixList.findTag(_w->_matrix->selectedMatrix());
+    matrix = *KST::matrixList.findTag(_w->_matrix->selectedMatrix());
     KST::matrixList.lock().unlock();
+
     if (matrix) {
       matrix->readLock();
       _w->_lowerZ->setText(QString::number(matrix->minValue()));
@@ -502,15 +545,17 @@ void KstImageDialog::calcAutoThreshold() {
 // This should use a smart (percentile based) algorithm to
 // calculate the thresholds.  It will be expensive.
 void KstImageDialog::calcSmartThreshold() {
-  //make sure an matrix is selected
   if (!_w->_matrix->selectedMatrix().isEmpty()){
+    KstMatrixPtr matrix;
+
     KST::matrixList.lock().readLock();
-    KstMatrixPtr matrix = *KST::matrixList.findTag(_w->_matrix->selectedMatrix());
+    matrix = *KST::matrixList.findTag(_w->_matrix->selectedMatrix());
     KST::matrixList.lock().unlock();
+
     if (matrix) {
-      matrix->readLock();
       double per = _w->_smartThresholdValue->value()/100.0;
 
+      matrix->readLock();
       matrix->calcNoSpikeRange(per);
       _w->_lowerZ->setText(QString::number(matrix->minValueNoSpike()));
       _w->_upperZ->setText(QString::number(matrix->maxValueNoSpike()));
@@ -521,13 +566,18 @@ void KstImageDialog::calcSmartThreshold() {
 
 
 void KstImageDialog::placeInPlot(KstImagePtr image) {
-  KstViewWindow *w = dynamic_cast<KstViewWindow*>(KstApp::inst()->findWindow(_w->_curvePlacement->_plotWindow->currentText()));
+  KstViewWindow *w;
+/* xxx  
+  w = dynamic_cast<KstViewWindow*>(KstApp::inst()->findWindow(_w->_curvePlacement->_plotWindow->currentText()));
   if (!w) {
     QString n = KstApp::inst()->newWindow(KST::suggestWinName());
+
     w = static_cast<KstViewWindow*>(KstApp::inst()->findWindow(n));
   }
+*/
   if (w) {
     Kst2DPlotPtr plot;
+
     if (_w->_curvePlacement->existingPlot()) {
       // assign image to plot
       plot = kst_cast<Kst2DPlot>(w->view()->findChild(_w->_curvePlacement->plotName()));
@@ -539,6 +589,7 @@ void KstImageDialog::placeInPlot(KstImagePtr image) {
     if (_w->_curvePlacement->newPlot()) {
       // assign image to plot
       QString name = w->createPlot(KST::suggestPlotName());
+
       if (_w->_curvePlacement->reGrid()) {
         w->view()->cleanup(_w->_curvePlacement->columns());
       }
@@ -588,8 +639,10 @@ void KstImageDialog::updateEnables() {
 bool KstImageDialog::checkParameters(double& lowerZDouble, double& upperZDouble) {
   if (_w->_colorOnly->isChecked() || _w->_colorAndContour->isChecked()) {
     bool ok1, ok2;
+
     lowerZDouble = _w->_lowerZ->text().toDouble(&ok1);
     upperZDouble = _w->_upperZ->text().toDouble(&ok2);
+
     if (!(ok1 && ok2)) {
       if (ok1 || ok2) {
         if (ok1) {
@@ -602,19 +655,22 @@ bool KstImageDialog::checkParameters(double& lowerZDouble, double& upperZDouble)
       }
       return false;
     }
+
     if (lowerZDouble >= upperZDouble) {
       QMessageBox::warning(this, i18n("Kst"), i18n("The upper threshold must be greater than the lower threshold."));
       return false;
     }
   }
-  //for now there is nothing to check for contour maps
+
   return true;
 }
 
 
 void KstImageDialog::populateEditMultiple() {
-  KstImageList imlist = kstObjectSubList<KstDataObject,KstImage>(KST::dataObjectList);
-  _editMultipleWidget->_objectList->insertStringList(imlist.tagNames());
+  KstImageList imlist;
+
+// xxx  imlist = kstObjectSubList<KstDataObject,KstImage>(KST::dataObjectList);
+// xxx  _editMultipleWidget->_objectList->insertStringList(imlist.tagNames());
 
   // also intermediate state for multiple edit
   _w->_colorOnly->setChecked(false);
@@ -622,23 +678,23 @@ void KstImageDialog::populateEditMultiple() {
   _w->_colorAndContour->setChecked(false);
   _w->_colorMapGroup->setEnabled(true);
   _w->_contourMapGroup->setEnabled(true);
-  _w->_colorPalette->_palette->insertItem("", 0);
-  _w->_colorPalette->_palette->setCurrentItem(0);
-  _w->_matrix->_matrix->insertItem("",0);
-  _w->_matrix->_matrix->setCurrentItem(0);
+  _w->_colorPalette->_palette->insertItem(0, "");
+  _w->_colorPalette->_palette->setCurrentIndex(0);
+  _w->_matrix->_matrix->insertItem(0, "");
+  _w->_matrix->_matrix->setCurrentIndex(0);
   _w->_lowerZ->setText("");
   _w->_upperZ->setText("");
   _w->_realTimeAutoThreshold->setTristate(true);
-  _w->_realTimeAutoThreshold->setNoChange();
+  _w->_realTimeAutoThreshold->setChecked(Qt::PartiallyChecked);
   _w->_autoThreshold->setEnabled(false);
   _w->_numContourLines->setSpecialValueText(" ");
-  _w->_numContourLines->setMinValue(_w->_numContourLines->minValue() - 1);
-  _w->_numContourLines->setValue(_w->_numContourLines->minValue());
+  _w->_numContourLines->setMinimum(_w->_numContourLines->minimum() - 1);
+  _w->_numContourLines->setValue(_w->_numContourLines->minimum());
   _w->_contourWeight->setSpecialValueText(" ");
-  _w->_contourWeight->setMinValue(_w->_contourWeight->minValue() - 1);
-  _w->_contourWeight->setValue(_w->_contourWeight->minValue());
+  _w->_contourWeight->setMinimum(_w->_contourWeight->minimum() - 1);
+  _w->_contourWeight->setValue(_w->_contourWeight->minimum());
   _w->_useVariableWeight->setTristate(true);
-  _w->_useVariableWeight->setNoChange();
+  _w->_useVariableWeight->setChecked(Qt::PartiallyChecked);
   _w->_contourColor->setColor(QColor()); //default color
 
   _tagName->setText("");
@@ -680,9 +736,9 @@ void KstImageDialog::setUseVariableWeightDirty() {
 void KstImageDialog::cleanup() {
   if (_editMultipleMode) {
     _w->_numContourLines->setSpecialValueText(QString::null);
-    _w->_numContourLines->setMinValue(_w->_numContourLines->minValue() + 1);
+    _w->_numContourLines->setMinimum(_w->_numContourLines->minimum() + 1);
     _w->_contourWeight->setSpecialValueText(QString::null);
-    _w->_contourWeight->setMinValue(_w->_contourWeight->minValue() + 1);
+    _w->_contourWeight->setMinimum(_w->_contourWeight->minimum() + 1);
     _w->_autoThreshold->setEnabled(true);
   }
 }
@@ -693,4 +749,3 @@ void KstImageDialog::setMatrix(const QString& name) {
 }
 
 #include "kstimagedialog.moc"
-

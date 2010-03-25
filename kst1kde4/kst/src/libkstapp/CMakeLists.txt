@@ -56,7 +56,6 @@ set(kstapp_LIB_SRCS
     ksteqdialog.cpp
     ksthsdialog.cpp
     kstpsddialog.cpp
-    kstgraphfiledialog.cpp
     kstimagedialog.cpp
     kstvvdialog.cpp
     kstquickstartdialog.cpp
@@ -100,6 +99,7 @@ set(kstapp_LIB_SRCS
     kstpluginmanager.cpp
     kstviewmanager.cpp
     kstvectordialog.cpp
+    kstgraphfiledialog.cpp
     kst.cpp)
 
 #KDE3_ADD_DCOP_SKELS(kstapp_LIB_SRCS

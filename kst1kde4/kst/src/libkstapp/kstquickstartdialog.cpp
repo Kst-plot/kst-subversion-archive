@@ -15,15 +15,12 @@
  *                                                                         *
  ***************************************************************************/
 
-// include files for Qt
 #include <qcheckbox.h>
 #include <q3listbox.h>
 
-// include files for KDE
 #include <kurlcompletion.h>
 #include <kurlrequester.h>
 
-// application specific includes
 #include "kst.h"
 #include "kstdoc.h"
 #include "kstquickstartdialog.h"
@@ -58,6 +55,7 @@ void KstQuickStartDialog::wizard_I() {
 
 
 void KstQuickStartDialog::open_I() {
+/* xxx
   if (_isRecentFile) {
     if (_app->slotFileOpenRecent(_fileName->url())) {
       // select the recently opened file...
@@ -67,6 +65,7 @@ void KstQuickStartDialog::open_I() {
   } else if (_app->openDocumentFile(_fileName->url())) {
     close();
   }
+*/
 }
 
 
@@ -119,6 +118,7 @@ void KstQuickStartDialog::changeURL(const QString& name) {
 void KstQuickStartDialog::updateSettings() {
   KstSettings::globalSettings()->showQuickStart = _showAtStartup->isChecked();
   KstSettings::globalSettings()->save();
+
   emit settingsChanged();
 }
 

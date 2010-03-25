@@ -34,7 +34,7 @@
 
 KstGraphFileDialog::KstGraphFileDialog(QWidget* parent, const char* name,
                                          bool modal, Qt::WindowFlags fl)
-: QDialog(parent, name, modal, fl) {
+: QDialog(parent, fl) {
   setupUi(this);
   _autoSaveTimer = new QTimer(this);
 
@@ -43,12 +43,12 @@ KstGraphFileDialog::KstGraphFileDialog(QWidget* parent, const char* name,
   connect(_Apply,         SIGNAL(clicked()),      this, SLOT(apply_I()));
   connect(_comboBoxSizeOption, SIGNAL(activated(int)), this, SLOT(enableWidthHeight()));
   connect(_comboBoxFormats, SIGNAL(activated(const QString&)), this, SLOT(enableEPSVector(const QString&)));
-
+/* xxx
   _saveLocation->setFilter(KImageIO::mimeTypes().join(" "));
   _saveLocation->setMode(KFile::File);
-
-  _comboBoxFormats->insertStrList(QImageIO::outputFormats());
-  _comboBoxFormats->setCurrentItem(0);
+*/
+// xxx  _comboBoxFormats->insertStrList(QImageIO::outputFormats());
+  _comboBoxFormats->setCurrentIndex(0);
 
   loadProperties();
 
@@ -75,11 +75,11 @@ void KstGraphFileDialog::ok_I() {
 
 
 void KstGraphFileDialog::apply_I() {
-  _url = _saveLocation->url();
+// xxx  _url = _saveLocation->url();
   _format = _comboBoxFormats->currentText();
   _w = _xSize->value();
   _h = _ySize->value();
-  _displayOption = _comboBoxSizeOption->currentItem();
+  _displayOption = _comboBoxSizeOption->currentIndex();
   _allWindows = _radioButtonAll->isChecked();
   _autoSave = _autosave->isChecked();
   _savePeriod = _period->value();
@@ -109,7 +109,7 @@ void KstGraphFileDialog::reqEpsGraphFile() {
 
 void KstGraphFileDialog::applyAutosave() {
   if (_autoSave) {
-    _autoSaveTimer->start(_savePeriod*1000, false);
+// xxx    _autoSaveTimer->start(_savePeriod*1000, false);
   } else {
     _autoSaveTimer->stop();
   }
@@ -130,6 +130,7 @@ void KstGraphFileDialog::setURL(const QString& url) {
 
 
 void KstGraphFileDialog::saveProperties() {
+/* xxx
   KConfig cfg("kstrc", false, false);
 
   cfg.setGroup("AutoSaveImages");
@@ -147,10 +148,12 @@ void KstGraphFileDialog::saveProperties() {
   cfg.writeEntry("EPSVector", _saveEPSAsVector);
 
   cfg.sync();
+*/
 }
 
 
 void KstGraphFileDialog::loadProperties() {
+/* xxx
   KConfig cfg("kstrc");
   bool isSquare;
 
@@ -183,6 +186,7 @@ void KstGraphFileDialog::loadProperties() {
   _autoSave = false; // do not read from config file...
   _savePeriod = cfg.readNumEntry("Seconds", 15);
   _saveEPSAsVector = cfg.readBoolEntry("EPSVector", true);
+*/
 }
 
 
@@ -192,7 +196,7 @@ void KstGraphFileDialog::enableEPSVector(const QString &format) {
 
 
 void KstGraphFileDialog::enableWidthHeight() {
-  int displayOption = _comboBoxSizeOption->currentItem();
+  int displayOption = _comboBoxSizeOption->currentIndex();
 
   switch (displayOption) {
     case 0:
@@ -219,13 +223,14 @@ void KstGraphFileDialog::updateDialog() {
   if (_url.isEmpty()) {
     _url = QDir::currentPath();
   }
+/* xxx
   _saveLocation->setURL(_url);
   _saveLocation->completionObject()->setDir(_url);
-
-  QString upfmt = _format.upper();
+*/
+  QString upfmt = _format.toUpper();
 
   for (int i = 0; i < _comboBoxFormats->count(); i++) {
-    if (_comboBoxFormats->text(i).toUpper() == upfmt) {
+    if (_comboBoxFormats->itemText(i).toUpper() == upfmt) {
       _comboBoxFormats->setCurrentIndex(i);
       break;
     }
