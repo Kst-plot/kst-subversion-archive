@@ -40,7 +40,7 @@ void KstAlignment::setPosition(const QRect& geometry, const QRect& plotRegion) {
   QPoint yAllRegion(geometry.top(), geometry.bottom());
   QPoint xPlotRegion(plotRegion.left(), plotRegion.right());
   QPoint yPlotRegion(plotRegion.top(), plotRegion.bottom());
-
+/* xxx
   if (_xAlignments.contains(xAllRegion)) {
     QPoint xPlotRegionCurrent = _xAlignments[xAllRegion];
 
@@ -68,13 +68,14 @@ void KstAlignment::setPosition(const QRect& geometry, const QRect& plotRegion) {
   } else {
     _yAlignments.insert(yAllRegion, yPlotRegion);
   }
+*/
 }
 
 
 void KstAlignment::limits(const QRect& geometry, double& xleft, double& xright, double& ytop, double& ybottom, double dFactor) {
   QPoint xAllRegion(geometry.left(), geometry.right());
   QPoint yAllRegion(geometry.top(), geometry.bottom());
-
+/* xxx
   alignmentMap::ConstIterator allRef = _xAlignments.find(xAllRegion);
   if (allRef != _xAlignments.end()) {
     xleft = double((*allRef).x()) * dFactor;
@@ -92,6 +93,7 @@ void KstAlignment::limits(const QRect& geometry, double& xleft, double& xright, 
     ytop = 0.0;
     ybottom = 0.0;
   }
+*/
 }
 
 
@@ -99,7 +101,7 @@ QRect KstAlignment::limits(const QRect& geometry) {
   QPoint xAllRegion(geometry.left(), geometry.right());
   QPoint yAllRegion(geometry.top(), geometry.bottom());
   QRect plotRegion;
-
+/* xxx
   alignmentMap::ConstIterator allRef = _xAlignments.find(xAllRegion);
   if (allRef != _xAlignments.end()) {
     plotRegion.setLeft((*allRef).x());
@@ -117,6 +119,6 @@ QRect KstAlignment::limits(const QRect& geometry) {
     plotRegion.setTop(0);
     plotRegion.setBottom(0);
   }
-
+*/
   return plotRegion;
 }

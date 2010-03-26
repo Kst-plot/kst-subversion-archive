@@ -18,7 +18,6 @@
 #include <qbuttongroup.h> 
 #include <qcheckbox.h> 
 #include <qcombobox.h>
-#include <qlistbox.h>
 #include <qpushbutton.h>
 #include <qspinbox.h>
 
@@ -28,12 +27,11 @@
 #include "kstlinestyle.h"
 #include "kstmonochromedialog.h"
 
-KstMonochromeDialog::KstMonochromeDialog(QWidget* parent,
-                                           const char* name,
-                                           bool modal,
-                                           Qt::WindowFlags fl)
-: QDialog(parent, name, modal, fl) {
+KstMonochromeDialog::KstMonochromeDialog(QWidget* parent, const char* name,
+                                           bool modal, Qt::WindowFlags fl)
+: QDialog(parent, fl) {
   setupUi(this);
+
   availableListBox->clear();
   selectedListBox->clear();
   availableListBox->insertItem(i18n("Point Style"));  
@@ -42,22 +40,21 @@ KstMonochromeDialog::KstMonochromeDialog(QWidget* parent,
 
   connect(_Cancel, SIGNAL(clicked()), this, SLOT(accept()));
   connect(enhanceReadability, SIGNAL(clicked()), this, SLOT(updateButtons()));
-
-  // more connections to emulate kactionselector behaviour
   connect(_remove, SIGNAL(clicked()), this, SLOT(removeClicked()));
   connect(_add, SIGNAL(clicked()), this, SLOT(addClicked()));
   connect(_up, SIGNAL(clicked()), this, SLOT(upClicked()));
   connect(_down, SIGNAL(clicked()), this, SLOT(downClicked()));
   connect(availableListBox, SIGNAL(highlighted(int)), this, SLOT(updateButtons()));
   connect(selectedListBox, SIGNAL(highlighted(int)), this, SLOT(updateButtons()));
-
+/* xxx
   _up->setPixmap(BarIcon("up"));
   _down->setPixmap(BarIcon("down"));
   _add->setPixmap(BarIcon("forward"));
   _remove->setPixmap(BarIcon("back"));
+*/
+  maxLineWidth->setMaximum(KSTLINESTYLE_MAXTYPE);
+  maxLineWidth->setMinimum(1);
 
-  maxLineWidth->setMaxValue(KSTLINESTYLE_MAXTYPE);
-  maxLineWidth->setMinValue(1);
   updateMonochromeDialog();
 }
 
@@ -111,36 +108,39 @@ void KstMonochromeDialog::setOptions(const QMap<QString,QString>& opts) {
   }
 
   maxLineWidth->setValue(opts["kst-plot-monochromesettings-maxlinewidth"].toInt());
-  pointDensity->setCurrentItem(opts["kst-plot-monochromesettings-pointdensity"].toInt());
+  pointDensity->setCurrentIndex(opts["kst-plot-monochromesettings-pointdensity"].toInt());
 }
 
 void KstMonochromeDialog::getOptions(QMap<QString,QString> &opts, bool include_def) {  
-  // enhance readability - default is false
+  int pointStyleOrder;
+  int lineStyleOrder;
+  int lineWidthOrder;
+
   if (enhanceReadability->isChecked() || include_def) {
     opts["kst-plot-monochromesettings-enhancereadability"] = enhanceReadability->isChecked() ? "1" : "0";
   }
-  // point style order - default is 0
-  int pointStyleOrder = selectedListBox->index(selectedListBox->findItem(i18n("Point Style"), ExactMatch));
+
+  pointStyleOrder = selectedListBox->index(selectedListBox->findItem(i18n("Point Style"), Qt::MatchExactly));
   if (pointStyleOrder != 0 || include_def) {
     opts["kst-plot-monochromesettings-pointstyleorder"] = QString::number(pointStyleOrder);
   }
-  // line style order - default is 1
-  int lineStyleOrder = selectedListBox->index(selectedListBox->findItem(i18n("Line Style"), ExactMatch));
+
+  lineStyleOrder = selectedListBox->index(selectedListBox->findItem(i18n("Line Style"), Qt::MatchExactly));
   if (lineStyleOrder != 1 || include_def) {
     opts["kst-plot-monochromesettings-linestyleorder"] = QString::number(lineStyleOrder);
   }
-  // line width order - default is 2
-  int lineWidthOrder = selectedListBox->index(selectedListBox->findItem(i18n("Line Width"), ExactMatch));
+
+  lineWidthOrder = selectedListBox->index(selectedListBox->findItem(i18n("Line Width"), Qt::MatchExactly));
   if (lineWidthOrder != 2 || include_def) {
     opts["kst-plot-monochromesettings-linewidthorder"] = QString::number(lineWidthOrder);
   }
-  // maximum line width - default is 3
+
   if (maxLineWidth->value() != 3 || include_def) {
     opts["kst-plot-monochromesettings-maxlinewidth"] = QString::number(maxLineWidth->value());
   }
-  // point density - default is 2
-  if (pointDensity->currentItem() != 2 || include_def) {
-    opts["kst-plot-monochromesettings-pointdensity"] = QString::number(pointDensity->currentItem());
+
+  if (pointDensity->currentIndex() != 2 || include_def) {
+    opts["kst-plot-monochromesettings-pointdensity"] = QString::number(pointDensity->currentIndex());
   }
 }
 

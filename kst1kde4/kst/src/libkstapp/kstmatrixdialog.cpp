@@ -19,22 +19,18 @@
 
 #include <qbuttongroup.h>
 #include <qcheckbox.h>
-#include <qlistbox.h>
+#include <qfiledialog.h>
 #include <qradiobutton.h>
 #include <qspinbox.h>
-#include <qvbox.h>
 #include <qcombobox.h>
 #include <qmessagebox.h>
 
-#include <kfiledialog.h>
 #include <kurlcompletion.h>
 #include <kurlrequester.h>
 
-#include "editmultiplewidget.h"
 #include "kstmatrixdefaults.h"
 #include "kstmatrixdialog.h"
 #include "kstviewwindow.h"
-#include "matrixdialogwidget.h"
 #include <defaultprimitivenames.h>
 #include "vectorselector.h"
 
@@ -48,9 +44,8 @@ KstMatrixDialog *KstMatrixDialog::globalInstance() {
 }
 
 
-KstMatrixDialog::KstMatrixDialog(QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl)
-: KstDataDialog(parent, name, modal, fl) {
-  _w = new Ui::MatrixDialogWidget(_contents);
+KstMatrixDialog::KstMatrixDialog(QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl) : KstDataDialog(parent) {
+  _w = new Ui::MatrixDialogWidget();
   _w->setupUi(this);
 
   setMultiple(true);
@@ -74,8 +69,8 @@ KstMatrixDialog::KstMatrixDialog(QWidget* parent, const char* name, bool modal, 
   connect(_w->_connect, SIGNAL(clicked()), this, SLOT(testURL()));
 
   _w->_configure->setEnabled(false);
-  _fieldCompletion = _w->_field->completionObject();
-  _w->_field->setAutoDeleteCompletionObject(true);
+// xxx  _fieldCompletion = _w->_field->completionObject();
+// xxx  _w->_field->setAutoDeleteCompletionObject(true);
   setFixedHeight(height());
   _configWidget = 0L;
   _w->_field->setEnabled(false);
@@ -97,17 +92,17 @@ KstMatrixDialog::KstMatrixDialog(QWidget* parent, const char* name, bool modal, 
   connect(_w->_yStart, SIGNAL(valueChanged(int)), this, SLOT(wasModifiedApply()));
   connect(_w->_xNumSteps, SIGNAL(valueChanged(int)), this, SLOT(wasModifiedApply()));
   connect(_w->_yNumSteps, SIGNAL(valueChanged(int)), this, SLOT(wasModifiedApply()));
-  connect(_w->_xStart->child("qt_spinbox_edit"), SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
-  connect(_w->_yStart->child("qt_spinbox_edit"), SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
-  connect(_w->_xNumSteps->child("qt_spinbox_edit"), SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
-  connect(_w->_yNumSteps->child("qt_spinbox_edit"), SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
+// xxx  connect(_w->_xStart->child("qt_spinbox_edit"), SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
+// xxx  connect(_w->_yStart->child("qt_spinbox_edit"), SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
+// xxx  connect(_w->_xNumSteps->child("qt_spinbox_edit"), SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
+// xxx  connect(_w->_yNumSteps->child("qt_spinbox_edit"), SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
   connect(_w->_xStartCountFromEnd, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
   connect(_w->_yStartCountFromEnd, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
   connect(_w->_xNumStepsReadToEnd, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
   connect(_w->_yNumStepsReadToEnd, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
   connect(_w->_doSkip, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
   connect(_w->_skip, SIGNAL(valueChanged(int)), this, SLOT(wasModifiedApply()));
-  connect(_w->_skip->child("qt_spinbox_edit"), SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
+// xxx  connect(_w->_skip->child("qt_spinbox_edit"), SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
   connect(_w->_doAve, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
   connect(_w->_gradientX, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
   connect(_w->_gradientY, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
@@ -126,14 +121,15 @@ KstMatrixDialog::KstMatrixDialog(QWidget* parent, const char* name, bool modal, 
 }
 
 
-KstMatrixDialog::~KstMatrixDialogI() {
+KstMatrixDialog::~KstMatrixDialog() {
 }
 
 
 void KstMatrixDialog::selectingFolder()
 {
+/* xxx
   QString strFolder = _w->_fileName->url();
-  KFileDialog *fileDlg = _w->_fileName->fileDialog();
+  QFileDialog *fileDlg = _w->_fileName->fileDialog();
   QFileInfo fileInfo(strFolder);
 
   if (fileDlg) {
@@ -141,10 +137,11 @@ void KstMatrixDialog::selectingFolder()
       QDir dir(strFolder);
 
       if (dir.cdUp()) {
-        fileDlg->setURL(KUrl(dir.absPath()));
+// xxx        fileDlg->setURL(KUrl(dir.absPath()));
       }
     }
   }
+*/
 }
 
 
@@ -159,38 +156,41 @@ void KstMatrixDialog::updateWindow() {
 
 
 void KstMatrixDialog::fillFieldsForEdit() {
-  KstMatrixPtr mp = kst_cast<KstMatrix>(_dp);
-  if (!mp) {
-    return; // shouldn't be needed
+  KstMatrixPtr mp;
+
+  mp = kst_cast<KstMatrix>(_dp);
+  if (mp) {
+    KstRMatrixPtr rmp;
+
+    mp->readLock();
+    _tagName->setText(mp->tagName());
+    _w->_minX->setText(QString::number(mp->minX()));
+    _w->_minY->setText(QString::number(mp->minY()));
+    _w->_xStep->setText(QString::number(mp->xStepSize()));
+    _w->_yStep->setText(QString::number(mp->yStepSize()));
+    mp->unlock();
+  
+    _w->_sourceGroup->hide();
+  
+    rmp = kst_cast<KstRMatrix>(mp);
+    if (rmp) {
+      fillFieldsForRMatrixEdit();
+    } else {
+      fillFieldsForSMatrixEdit();
+    }
+  
+    updateEnables();
+  
+    adjustSize();
+    resize(minimumSizeHint());
+    setFixedHeight(height());
   }
-
-  // fill in the common fields
-  mp->readLock();
-  _tagName->setText(mp->tagName());
-  _w->_minX->setText(QString::number(mp->minX()));
-  _w->_minY->setText(QString::number(mp->minY()));
-  _w->_xStep->setText(QString::number(mp->xStepSize()));
-  _w->_yStep->setText(QString::number(mp->yStepSize()));
-  mp->unlock();
-
-  _w->_sourceGroup->hide();
-
-  KstRMatrixPtr rmp = kst_cast<KstRMatrix>(mp);
-  if (rmp) {
-    fillFieldsForRMatrixEdit();
-  } else {
-    fillFieldsForSMatrixEdit();
-  }
-
-  updateEnables();
-
-  adjustSize();
-  resize(minimumSizeHint());
-  setFixedHeight(height());
 }
 
 
 void KstMatrixDialog::fillFieldsForRMatrixEdit() {
+  KstRMatrixPtr rmp;
+
   // first hide/show the correct widgets
   _w->_readFromSource->setChecked(true);
   _w->_generateGradient->setChecked(false);
@@ -199,66 +199,68 @@ void KstMatrixDialog::fillFieldsForRMatrixEdit() {
   _w->_gradientGroup->hide();
   _w->_scalingGroup->hide();
 
-  KstRMatrixPtr rmp = kst_cast<KstRMatrix>(_dp);
-  if (!rmp) {
-    return; //internal inconsistency
-  }
-
-  rmp->readLock();
-
-  // fill in the list of fields
-  _w->_field->clear();
-  if (_fieldCompletion) {
-    _fieldCompletion->clear();
-  }
-  // scope for iterator
-  {
-    KstDataSourcePtr tf;
-    KST::dataSourceList.lock().readLock();
-    KstDataSourceList::Iterator it = KST::dataSourceList.findReusableFileName(rmp->filename());
-    if (it != KST::dataSourceList.end()) {
-      tf = *it;
-      tf->readLock();
-      _w->_field->insertStringList(tf->matrixList());
-      if (_fieldCompletion) {
-        _fieldCompletion->insertItems(tf->matrixList());
-      }
-      tf->unlock();
-    } else {
-      QStringList list = KstDataSource::matrixListForSource(_w->_fileName->url());
-      _w->_field->insertStringList(list);
-      if (_fieldCompletion) {
-        _fieldCompletion->insertItems(list);
-      }
+  rmp = kst_cast<KstRMatrix>(_dp);
+  if (rmp) {
+    rmp->readLock();
+  
+    // fill in the list of fields
+    _w->_field->clear();
+    if (_fieldCompletion) {
+      _fieldCompletion->clear();
     }
-    KST::dataSourceList.lock().unlock();
+    // scope for iterator
+    {
+      KstDataSourcePtr tf;
+      KST::dataSourceList.lock().readLock();
+      KstDataSourceList::Iterator it = KST::dataSourceList.findReusableFileName(rmp->filename());
+      if (it != KST::dataSourceList.end()) {
+        tf = *it;
+        tf->readLock();
+// xxx        _w->_field->insertStringList(tf->matrixList());
+        if (_fieldCompletion) {
+          _fieldCompletion->insertItems(tf->matrixList());
+        }
+        tf->unlock();
+      } else {
+        QStringList list;
+
+        list = KstDataSource::matrixListForSource(_w->_fileName->url());
+// xxx        _w->_field->insertStringList(list);
+        if (_fieldCompletion) {
+          _fieldCompletion->insertItems(list);
+        }
+      }
+      KST::dataSourceList.lock().unlock();
+    }
+    _w->_field->setEnabled(_w->_field->count() > 0);
+    _ok->setEnabled(_w->_field->isEnabled());
+    _w->_field->setCurrentText(rmp->field());
+  
+    // fill in the other parameters
+    _w->_fileName->setURL(rmp->filename());
+  
+    _w->_xStart->setValue(rmp->reqXStart());
+    _w->_yStart->setValue(rmp->reqYStart());
+    _w->_xNumSteps->setValue(rmp->reqXNumSteps());
+    _w->_yNumSteps->setValue(rmp->reqYNumSteps());
+  
+    _w->_xStartCountFromEnd->setChecked(rmp->xCountFromEnd());
+    _w->_yStartCountFromEnd->setChecked(rmp->yCountFromEnd());
+    _w->_xNumStepsReadToEnd->setChecked(rmp->xReadToEnd());
+    _w->_yNumStepsReadToEnd->setChecked(rmp->yReadToEnd());
+  
+    _w->_doSkip->setChecked(rmp->doSkip());
+    _w->_skip->setValue(rmp->skip());
+    _w->_doAve->setChecked(rmp->doAverage());
+  
+    rmp->unlock();
   }
-  _w->_field->setEnabled(_w->_field->count() > 0);
-  _ok->setEnabled(_w->_field->isEnabled());
-  _w->_field->setCurrentText(rmp->field());
-
-  // fill in the other parameters
-  _w->_fileName->setURL(rmp->filename());
-
-  _w->_xStart->setValue(rmp->reqXStart());
-  _w->_yStart->setValue(rmp->reqYStart());
-  _w->_xNumSteps->setValue(rmp->reqXNumSteps());
-  _w->_yNumSteps->setValue(rmp->reqYNumSteps());
-
-  _w->_xStartCountFromEnd->setChecked(rmp->xCountFromEnd());
-  _w->_yStartCountFromEnd->setChecked(rmp->yCountFromEnd());
-  _w->_xNumStepsReadToEnd->setChecked(rmp->xReadToEnd());
-  _w->_yNumStepsReadToEnd->setChecked(rmp->yReadToEnd());
-
-  _w->_doSkip->setChecked(rmp->doSkip());
-  _w->_skip->setValue(rmp->skip());
-  _w->_doAve->setChecked(rmp->doAverage());
-
-  rmp->unlock();
 }
 
 
 void KstMatrixDialog::fillFieldsForSMatrixEdit() {
+  KstSMatrixPtr smp;
+
   // first hide/show the correct widgets
   _w->_readFromSource->setChecked(false);
   _w->_generateGradient->setChecked(true);
@@ -267,19 +269,19 @@ void KstMatrixDialog::fillFieldsForSMatrixEdit() {
   _w->_gradientGroup->show();
   _w->_scalingGroup->show();
 
-  KstSMatrixPtr smp = kst_cast<KstSMatrix>(_dp);
-  if (!smp) {
-    return; // internal inconsistency
-  }
+  smp = kst_cast<KstSMatrix>(_dp);
+  if (smp) {
+    smp->readLock();
 
-  smp->readLock();
-  _w->_gradientX->setChecked(smp->xDirection());
-  _w->_gradientY->setChecked(!smp->xDirection());
-  _w->_gradientZAtMin->setText(QString::number(smp->gradZMin()));
-  _w->_gradientZAtMax->setText(QString::number(smp->gradZMax()));
-  _w->_nX->setValue(smp->xNumSteps());
-  _w->_nY->setValue(smp->yNumSteps());
-  smp->unlock();
+    _w->_gradientX->setChecked(smp->xDirection());
+    _w->_gradientY->setChecked(!smp->xDirection());
+    _w->_gradientZAtMin->setText(QString::number(smp->gradZMin()));
+    _w->_gradientZAtMax->setText(QString::number(smp->gradZMax()));
+    _w->_nX->setValue(smp->xNumSteps());
+    _w->_nY->setValue(smp->yNumSteps());
+
+    smp->unlock();
+  }
 }
 
 
@@ -385,10 +387,10 @@ bool KstMatrixDialog::new_IRMatrix() {
   bool doAve = _w->_doAve->isChecked();
   int skip = _w->_skip->value();
 
-  KstRMatrixPtr matrix = new KstRMatrix(file, pField,
-                                        KstObjectTag(tag_name, file->tag(), false),
-                                        xStart, yStart, xNumSteps, yNumSteps,
-                                        doAve, doSkip, skip);
+  KstRMatrixPtr matrix;
+
+  matrix = new KstRMatrix(file, pField, KstObjectTag(tag_name, file->tag(), false),
+                          xStart, yStart, xNumSteps, yNumSteps, doAve, doSkip, skip);
   emit matrixCreated(KstMatrixPtr(matrix));
   matrix = 0L; // drop the reference
   emit modified();
@@ -401,6 +403,7 @@ bool KstMatrixDialog::new_ISMatrix() {
   //create a unique name
   QString tagPart = _w->_gradientZAtMin->text() + "-" + _w->_gradientZAtMax->text();
   QString tag_name = (_tagName->text() == "<New_Matrix>") ? KST::suggestMatrixName(tagPart) : _tagName->text();
+
   if (KstData::self()->matrixTagNameNotUnique(tag_name)) {
     _tagName->setFocus();
     return false;
@@ -452,7 +455,6 @@ bool KstMatrixDialog::newObject() {
 
 
 bool KstMatrixDialog::editSingleRMatrix(KstRMatrixPtr rmp) {
-  // get the parameters for this object
   KstDataSourcePtr file;
   QString pField;
 
@@ -633,19 +635,21 @@ bool KstMatrixDialog::editSingleSMatrix(KstSMatrixPtr smp) {
 
 
 bool KstMatrixDialog::editSingleObject(KstMatrixPtr mxPtr) {
-  // see if it's an RMatrix
-  KstRMatrixPtr rmp = kst_cast<KstRMatrix>(mxPtr);
+  KstRMatrixPtr rmp;
+  
+  rmp = kst_cast<KstRMatrix>(mxPtr);
   if (rmp) {
     return editSingleRMatrix(rmp);
   } else {
-    // are editing an SMatrix
-    KstSMatrixPtr smp = kst_cast<KstSMatrix>(mxPtr);
-    if (!smp) {
-      return false;
+    KstSMatrixPtr smp;
+
+    smp = kst_cast<KstSMatrix>(mxPtr);
+    if (smp) {
+      return editSingleSMatrix(smp);
     }
-    return editSingleSMatrix(smp);
   }
-  return true;
+
+  return false;
 }
 
 
@@ -670,12 +674,17 @@ bool KstMatrixDialog::editObject() {
     _nYDirty = _w->_nY->text() != " ";
 
     bool didEdit = false;
-    for (uint i = 0; i < _editMultipleWidget->_objectList->count(); i++) {
-      if (_editMultipleWidget->_objectList->isSelected(i)) {
+    int i;
+
+    for (i = 0; i < _editMultipleWidget->_objectList->count(); i++) {
+      if (_editMultipleWidget->_objectList->item(i)->isSelected()) {
+        KstMatrixPtr mxPtr;
+
         // get the pointer to the object
         KST::matrixList.lock().readLock();
-        KstMatrixPtr mxPtr = *KST::matrixList.findTag(_editMultipleWidget->_objectList->text(i));
+        mxPtr = *KST::matrixList.findTag(_editMultipleWidget->_objectList->item(i)->text());
         KST::matrixList.lock().unlock();
+        
         if (!mxPtr) {
           return false;
         }
@@ -691,9 +700,11 @@ bool KstMatrixDialog::editObject() {
       return false;
     }
   } else {
-    KstMatrixPtr mp = kst_cast<KstMatrix>(_dp);
-    // verify that the curve name is unique
-    QString tag_name = _tagName->text();
+    KstMatrixPtr mp;
+    QString tag_name;
+
+    mp = kst_cast<KstMatrix>(_dp);
+    tag_name = _tagName->text();
     if (!mp || (tag_name != mp->tagName() && KstData::self()->dataTagNameNotUnique(tag_name))) {
       _tagName->setFocus();
       return false;
@@ -732,7 +743,7 @@ bool KstMatrixDialog::editObject() {
     }
   }
 
-  emit modified();
+// xxx  emit modified();
 
   return true;
 }
@@ -796,43 +807,45 @@ void KstMatrixDialog::populateEditMultiple() {
 
 
 void KstMatrixDialog::populateEditMultipleRMatrix() {
-  KstRMatrixList mxList = kstObjectSubList<KstMatrix,KstRMatrix>(KST::matrixList);
-  _editMultipleWidget->_objectList->insertStringList(mxList.tagNames());
+  KstRMatrixList mxList;
+
+// xxx  mxList = kstObjectSubList<KstMatrix,KstRMatrix>(KST::matrixList);
+// xxx  _editMultipleWidget->_objectList->insertStringList(mxList.tagNames());
 
   // intermediate state for multiple edit
   _w->_fileName->clear();
   _w->_xStart->setSpecialValueText(" ");
-  _w->_xStart->setMinValue(_w->_xStart->minValue() - 1);
-  _w->_xStart->setValue(_w->_xStart->minValue());
+  _w->_xStart->setMinimum(_w->_xStart->minimum() - 1);
+  _w->_xStart->setValue(_w->_xStart->minimum());
 
   _w->_yStart->setSpecialValueText(" ");
-  _w->_yStart->setMinValue(_w->_yStart->minValue() - 1);
-  _w->_yStart->setValue(_w->_yStart->minValue());
+  _w->_yStart->setMinimum(_w->_yStart->minimum() - 1);
+  _w->_yStart->setValue(_w->_yStart->minimum());
 
   _w->_xNumSteps->setSpecialValueText(" ");
-  _w->_xNumSteps->setMinValue(_w->_xNumSteps->minValue() - 1);
-  _w->_xNumSteps->setValue(_w->_xNumSteps->minValue());
+  _w->_xNumSteps->setMinimum(_w->_xNumSteps->minimum() - 1);
+  _w->_xNumSteps->setValue(_w->_xNumSteps->minimum());
 
   _w->_yNumSteps->setSpecialValueText(" ");
-  _w->_yNumSteps->setMinValue(_w->_yNumSteps->minValue() - 1);
-  _w->_yNumSteps->setValue(_w->_yNumSteps->minValue());
+  _w->_yNumSteps->setMinimum(_w->_yNumSteps->minimum() - 1);
+  _w->_yNumSteps->setValue(_w->_yNumSteps->minimum());
 
   _w->_skip->setSpecialValueText(" ");
-  _w->_skip->setMinValue(_w->_skip->minValue() - 1);
-  _w->_skip->setValue(_w->_skip->minValue());
+  _w->_skip->setMinimum(_w->_skip->minimum() - 1);
+  _w->_skip->setValue(_w->_skip->minimum());
 
   _w->_doSkip->setTristate(true);
-  _w->_doSkip->setNoChange();
+  _w->_doSkip->setChecked(Qt::PartiallyChecked);
   _w->_doAve->setTristate(true);
-  _w->_doAve->setNoChange();
+  _w->_doAve->setChecked(Qt::PartiallyChecked);
   _w->_xStartCountFromEnd->setTristate(true);
-  _w->_xStartCountFromEnd->setNoChange();
+  _w->_xStartCountFromEnd->setChecked(Qt::PartiallyChecked);
   _w->_yStartCountFromEnd->setTristate(true);
-  _w->_yStartCountFromEnd->setNoChange();
+  _w->_yStartCountFromEnd->setChecked(Qt::PartiallyChecked);
   _w->_xNumStepsReadToEnd->setTristate(true);
-  _w->_xNumStepsReadToEnd->setNoChange();
+  _w->_xNumStepsReadToEnd->setChecked(Qt::PartiallyChecked);
   _w->_yNumStepsReadToEnd->setTristate(true);
-  _w->_yNumStepsReadToEnd->setNoChange();
+  _w->_yNumStepsReadToEnd->setChecked(Qt::PartiallyChecked);
   _w->_xStart->setEnabled(true);
   _w->_xNumSteps->setEnabled(true);
   _w->_yStart->setEnabled(true);
@@ -848,26 +861,26 @@ void KstMatrixDialog::populateEditMultipleSMatrix() {
   _w->_gradientZAtMin->setText("");
   _w->_gradientZAtMax->setText("");
   _w->_nX->setSpecialValueText(" ");
-  _w->_nX->setMinValue(_w->_nX->minValue() - 1);
-  _w->_nX->setValue(_w->_nX->minValue());
+  _w->_nX->setMinimum(_w->_nX->minimum() - 1);
+  _w->_nX->setValue(_w->_nX->minimum());
   _w->_nY->setSpecialValueText(" ");
-  _w->_nY->setMinValue(_w->_nY->minValue() - 1);
-  _w->_nY->setValue(_w->_nY->minValue());
+  _w->_nY->setMinimum(_w->_nY->minimum() - 1);
+  _w->_nY->setValue(_w->_nY->minimum());
 }
 
 
 void KstMatrixDialog::cleanup() {
   if (_editMultipleMode) {
     _w->_xStart->setSpecialValueText(QString::null);
-    _w->_xStart->setMinValue(_w->_xStart->minValue() + 1);
+    _w->_xStart->setMinimum(_w->_xStart->minimum() + 1);
     _w->_yStart->setSpecialValueText(QString::null);
-    _w->_yStart->setMinValue(_w->_yStart->minValue() + 1);
+    _w->_yStart->setMinimum(_w->_yStart->minimum() + 1);
     _w->_xNumSteps->setSpecialValueText(QString::null);
-    _w->_xNumSteps->setMinValue(_w->_xNumSteps->minValue() + 1);
+    _w->_xNumSteps->setMinimum(_w->_xNumSteps->minimum() + 1);
     _w->_yNumSteps->setSpecialValueText(QString::null);
-    _w->_yNumSteps->setMinValue(_w->_yNumSteps->minValue() + 1);
+    _w->_yNumSteps->setMinimum(_w->_yNumSteps->minimum() + 1);
     _w->_skip->setSpecialValueText(QString::null);
-    _w->_skip->setMinValue(_w->_skip->minValue() + 1);
+    _w->_skip->setMinimum(_w->_skip->minValue() + 1);
     _w->_nX->setSpecialValueText(QString::null);
     _w->_nY->setSpecialValueText(QString::null);
   }
@@ -947,7 +960,9 @@ void KstMatrixDialog::updateCompletion() {
 
 void KstMatrixDialog::markSourceAndSave() {
   assert(_configWidget);
-  KstDataSourcePtr src = static_cast<KstDataSourceConfigWidget*>((QWidget*)_configWidget)->instance();
+  KstDataSourcePtr src;
+
+  src = static_cast<KstDataSourceConfigWidget*>((QWidget*)_configWidget)->instance();
   if (src) {
     src->disableReuse();
   }
@@ -1039,10 +1054,13 @@ void KstMatrixDialog::setDoAveDirty() {
 
 
 void KstMatrixDialog::configureSource() {
+  KstDataSourcePtr ds;
   bool isNew = false;
+
   KST::dataSourceList.lock().readLock();
-  KstDataSourcePtr ds = *KST::dataSourceList.findReusableFileName(_w->_fileName->url());
+  ds = *KST::dataSourceList.findReusableFileName(_w->_fileName->url());
   KST::dataSourceList.lock().unlock();
+
   if (!ds) {
     isNew = true;
     ds = KstDataSource::loadSource(_w->_fileName->url());
@@ -1053,7 +1071,9 @@ void KstMatrixDialog::configureSource() {
   }
 
   assert(_configWidget);
-  KDialogBase *dlg = new KDialogBase(this, "Data Config Dialog", true, i18n("Configure Data Source"));
+  KDialogBase *dlg;
+
+  dlg = new KDialogBase(this, "Data Config Dialog", true, i18n("Configure Data Source"));
   if (isNew) {
     connect(dlg, SIGNAL(okClicked()), _configWidget, SLOT(save()));
     connect(dlg, SIGNAL(applyClicked()), _configWidget, SLOT(save()));
@@ -1089,10 +1109,13 @@ void KstMatrixDialog::testURL() {
 
 
 KstObjectPtr KstMatrixDialog::findObject(const QString& name) {
+  KstObjectPtr obj;
+
   KST::matrixList.lock().readLock();
-  KstObjectPtr o = (*KST::matrixList.findTag(name)).data();
+  obj = (*KST::matrixList.findTag(name));
   KST::matrixList.lock().unlock();
-  return o;
+
+  return obj;
 }
 
 #include "kstmatrixdialog.moc"

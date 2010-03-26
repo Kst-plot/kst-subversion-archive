@@ -65,10 +65,8 @@ set(kstapp_LIB_SRCS
     kstchoosecolordialog.cpp
     ksteventmonitor.cpp
     kstdebugdialog.cpp
-    kstmatrixdialog.cpp
     kstmonochromedialog.cpp
     kstalignment.cpp
-    ksteventmonitorentry.cpp
     kstcurvedialog.cpp
     kstbasicdialog.cpp
     kstdatawizard.cpp
@@ -100,6 +98,8 @@ set(kstapp_LIB_SRCS
     kstviewfitsdialog.cpp
     kstchangenptsdialog.cpp
     kstchangefiledialog.cpp
+    kstmatrixdialog.cpp
+    ksteventmonitorentry.cpp
     kst.cpp)
 
 #KDE3_ADD_DCOP_SKELS(kstapp_LIB_SRCS
