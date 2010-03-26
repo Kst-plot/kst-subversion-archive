@@ -22,9 +22,10 @@
 #ifndef UPDATETHREAD_H
 #define UPDATETHREAD_H
 
+#include <qlist.h>
 #include <qmutex.h>
 #include <qthread.h>
-#include <qvaluelist.h>
+#include <QWaitCondition>
 
 #include "kstwaitcondition.h"
 
@@ -49,9 +50,9 @@ class UpdateThread : public QThread {
     bool doUpdates(bool force = false, bool *gotData = 0L);
 
   private:
-    KstWaitCondition _waitCondition;
-    mutable QMutex _statusMutex;
+    QWaitCondition _waitCondition;
     KstDoc *_doc;
+    mutable QMutex _statusMutex;
     bool _updateImmediate;
     bool _updateRunning;
     bool _paused;
@@ -59,7 +60,7 @@ class UpdateThread : public QThread {
     bool _force;
     int _updateCounter;
     int _updateTime;
-    QValueList<KstBaseCurve*> _updatedCurves; // HACK: temporary use in update reworking
+    QList<KstBaseCurve*> _updatedCurves; // HACK: temporary use in update reworking
 };
 
 #endif

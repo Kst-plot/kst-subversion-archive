@@ -59,21 +59,10 @@ set(kstapp_LIB_SRCS
     kstimagedialog.cpp
     kstvvdialog.cpp
     kstquickstartdialog.cpp
-    kstsettingsdlg.cpp
-    updatethread.cpp
-    emailthread.cpp
-    kstprintoptionspage.cpp
     kstviewlabelwidget.cpp
     kstviewlegendwidget.cpp
-    kstviewscalarsdialog.cpp
-    kstviewstringsdialog.cpp
-    kstviewvectorsdialog.cpp
-    kstviewmatricesdialog.cpp
-    kstviewfitsdialog.cpp
     kstvectorsavedialog.cpp
     kstchoosecolordialog.cpp
-    kstchangenptsdialog.cpp
-    kstchangefiledialog.cpp
     ksteventmonitor.cpp
     kstdebugdialog.cpp
     kstmatrixdialog.cpp
@@ -88,8 +77,6 @@ set(kstapp_LIB_SRCS
     ktimezonecombo.cpp
     kstdebugnotifier.cpp
     kstdatanotifier.cpp
-    kstscalarlistview.cpp
-    kststringlistview.cpp
     kstplugindialog.cpp
     kstfitdialog.cpp
     kstfilterdialog.cpp
@@ -100,6 +87,19 @@ set(kstapp_LIB_SRCS
     kstviewmanager.cpp
     kstvectordialog.cpp
     kstgraphfiledialog.cpp
+    kstsettingsdlg.cpp
+    updatethread.cpp
+    emailthread.cpp
+    kstprintoptionspage.cpp
+    kstscalarlistview.cpp
+    kststringlistview.cpp
+    kstviewscalarsdialog.cpp
+    kstviewstringsdialog.cpp
+    kstviewvectorsdialog.cpp
+    kstviewmatricesdialog.cpp
+    kstviewfitsdialog.cpp
+    kstchangenptsdialog.cpp
+    kstchangefiledialog.cpp
     kst.cpp)
 
 #KDE3_ADD_DCOP_SKELS(kstapp_LIB_SRCS

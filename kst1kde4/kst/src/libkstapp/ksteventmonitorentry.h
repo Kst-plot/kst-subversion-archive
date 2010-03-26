@@ -92,7 +92,7 @@ class EventMonitorEntry : public KstDataObject {
     static const QString OUTYVECTOR;
 
     KstVectorMap _vectorsUsed;
-    QValueList<int> _indexArray;
+    QList<int> _indexArray;
     QString _event;
     QString _description;
     QString _eMailRecipients;

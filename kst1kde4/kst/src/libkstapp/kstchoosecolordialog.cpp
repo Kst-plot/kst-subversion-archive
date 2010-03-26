@@ -12,7 +12,7 @@
 #include <qcheckbox.h>
 #include <qlineedit.h>
 #include <qgroupbox.h>
-#include <qvaluelist.h>
+#include <QList>
 #include <qradiobutton.h>
 #include <qcombobox.h>
 
@@ -30,8 +30,11 @@ KstChooseColorDialog::KstChooseColorDialog(QWidget* parent,
               const char* name, bool modal, Qt::WindowFlags fl)
   : QDialog(parent, fl) {
   setupUi(this);
+
   xVector->setChecked(true);
+
   connect(OK, SIGNAL(clicked()), this, SLOT(applyColors()));  
+
   _xSelected = true;
   _grid = 0L;
   _override = false;
@@ -49,14 +52,18 @@ bool KstChooseColorDialog::override() {
 
 
 void KstChooseColorDialog::updateChooseColorDialog() {
+  //
   // cannot use dataSourceList.fileNames() as it contains datasources that
-  // are not used by any curves or vectors
-  KstRVectorList vcList = kstObjectSubList<KstVector, KstRVector>(KST::vectorList);
+  // are not used by any curves or vectors...
+  //
 
-  // buildup a list of filenames
+  KstRVectorList::iterator vc_iter;
+  KstRVectorList vcList;
   QStringList fileNameList;
-  for (KstRVectorList::Iterator vc_iter = vcList.begin(); 
-        vc_iter != vcList.end(); ++vc_iter) {
+  QStringList::iterator it;
+  
+  vcList = kstObjectSubList<KstVector, KstRVector>(KST::vectorList);
+  for (vc_iter = vcList.begin(); vc_iter != vcList.end(); ++vc_iter) {
     if (fileNameList.contains((*vc_iter)->filename()) == 0) {
       fileNameList.push_back((*vc_iter)->filename());
     }
@@ -64,17 +71,18 @@ void KstChooseColorDialog::updateChooseColorDialog() {
 
   cleanColorGroup();
 
-  _grid = new QGridLayout(colorFrame, fileNameList.count(), 2, 0, 8);
-  _grid->setColStretch(1, 0);
+  _grid = new QGridLayout(colorFrame);// xxx, fileNameList.count(), 2, 0, 8);
+  _grid->setColumnStretch(1, 0);
 
   int i = fileNameList.count();
 
-  for (QStringList::Iterator it = fileNameList.begin();  it != fileNameList.end(); ++it) {
+  for (it = fileNameList.begin();  it != fileNameList.end(); ++it) {
     //
     // create the filename and color selector for each file...
     //
-    QLineEdit* dsName = new QLineEdit(colorFrame, "dsName"+i);
-    KColorCombo* dsColor = new KColorCombo(colorFrame, "dsColor"+i);
+
+    QLineEdit* dsName = new QLineEdit(colorFrame);
+    KColorCombo* dsColor = new KColorCombo(colorFrame);
     QMap<QString, QColor>::const_iterator itColor;
 
     dsName->setReadOnly(true);
@@ -93,11 +101,13 @@ void KstChooseColorDialog::updateChooseColorDialog() {
       //
       // set the color to the existing value, if present...
       //
+
       dsColor->setColor(*itColor);
     } else {
       //
       // else assign a custom color...
       //
+
       dsColor->setColor(QColor(0x11, 0x22, 0x33));
     }
 
@@ -146,10 +156,12 @@ void KstChooseColorDialog::applyColors() {
   _xSelected = xVector->isChecked();
   _override = _applyToNewCurves->isChecked();
 
-  KstVCurveList cvList = kstObjectSubList<KstDataObject, KstVCurve>(KST::dataObjectList);
+  KstVCurveList cvList;
+  KstVCurveList::iterator cv_iter;
 
-  for (KstVCurveList::iterator cv_iter = cvList.begin();
-        cv_iter != cvList.end(); ++cv_iter) {
+// xxx  cvList = kstObjectSubList<KstDataObject, KstVCurve>(KST::dataObjectList);
+
+  for (cv_iter = cvList.begin(); cv_iter != cvList.end(); ++cv_iter) {
     KstVectorPtr vect;
 
     if (_xSelected) {
@@ -171,7 +183,10 @@ void KstChooseColorDialog::applyColors() {
     }
   }
 
-  // force an update in case we're in paused mode
+  //
+  // force an update in case we're in paused mode...
+  //
+
   KstApp::inst()->forceUpdate();
 
   close();
@@ -179,10 +194,10 @@ void KstChooseColorDialog::applyColors() {
 
 
 QColor KstChooseColorDialog::getColorForFile(const QString &fileName) {
-  QValueList<KColorCombo*>::Iterator kc_iter = _colorCombos.begin();
+  QList<KColorCombo*>::iterator kc_iter = _colorCombos.begin();
+  QList<QLineEdit*>::iterator fn_iter;
 
-  for (QValueList<QLineEdit*>::Iterator fn_iter = _lineEdits.begin();
-        fn_iter != _lineEdits.end(); ++fn_iter) {
+  for (fn_iter = _lineEdits.begin(); fn_iter != _lineEdits.end(); ++fn_iter) {
     if (fileName == (*fn_iter)->text()) {
       return (*kc_iter)->color();
     }

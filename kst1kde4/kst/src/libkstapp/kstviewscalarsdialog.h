@@ -18,8 +18,6 @@
 #ifndef KSTVIEWSCALARSDIALOGI_H
 #define KSTVIEWSCALARSDIALOGI_H
 
-#include <klistviewsearchline.h>
-
 #include "ui_viewscalarsdialog.h"
 //#include "kstscalartable.h"
 #include "kstscalarlistview.h"

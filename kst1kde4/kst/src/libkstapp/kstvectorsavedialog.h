@@ -23,8 +23,7 @@
 class KstVectorSaveDialog : public QDialog, public Ui::VectorSaveDialog {
   Q_OBJECT
   public:
-    KstVectorSaveDialog(QWidget* parent = 0,
-                        const char* name = 0,
+    KstVectorSaveDialog(QWidget* parent = 0, const char* name = 0,
                         bool modal = false, Qt::WindowFlags fl = 0 );
     virtual ~KstVectorSaveDialog();
 

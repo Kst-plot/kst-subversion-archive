@@ -18,12 +18,13 @@
 #ifndef KSTEVENTMONITORI_H
 #define KSTEVENTMONITORI_H
 
-#include "ui_kstdatadialog.h"
+#include "kstdatadialog.h"
 #include "ksteventmonitorentry.h"
+#include "ui_eventmonitorwidget.h"
 
 class EventMonitorWidget;
 
-class KstEventMonitor : public QDialog, public Ui::KstDataDialog {
+class KstEventMonitor : public KstDataDialog, public Ui::EventMonitorWidget {
   Q_OBJECT
   public:
     KstEventMonitor(QWidget* parent = 0, const char* name = 0, bool modal = false, Qt::WindowFlags fl = 0 );
@@ -43,11 +44,7 @@ class KstEventMonitor : public QDialog, public Ui::KstDataDialog {
     void populateEditMultiple();
 
   private:
-    void fillEvent(EventMonitorEntryPtr& event);
-
-    QString _vector;
-
-    static QPointer<KstEventMonitorI> _inst;
+    static QPointer<KstEventMonitor> _inst;
 
     // the following are for the multiple edit mode
     bool _changed : 1;
@@ -71,9 +68,12 @@ class KstEventMonitor : public QDialog, public Ui::KstDataDialog {
     void setScriptDirty();
 
   private:
+    void fillEvent(EventMonitorEntryPtr& event);
     void fillFieldsForEdit();
     void fillFieldsForNew();
+
     EventMonitorWidget *_w;
+    QString _vector;
 };
 
 #endif

@@ -14,13 +14,13 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-// include files for Qt
+
 #include <qcheckbox.h>
 #include <qlabel.h>
 #include <qlayout.h>
-#include <qlistview.h>
+#include <qlistwidget.h>
+#include <QListWidgetItem>
 
-// include files for KDE
 #include <kcolorbutton.h>
 #include <klocale.h>
 
@@ -30,31 +30,24 @@
 #include "kstdoc.h"
 #include "kstlogwidget.h"
 
-/*
- *  Constructs a KstDebugDialogI which is a child of 'parent', with the
- *  name 'name' and widget flags set to 'f'
- *
- *  The dialog will by default be modeless, unless you set 'modal' to
- *  TRUE to construct a modal dialog.
- */
-KstDebugDialog::KstDebugDialog(QWidget* parent,
-                               const char* name, bool modal, Qt::WindowFlags fl)
-: QDialog(parent, name, modal, fl ) {
+KstDebugDialog::KstDebugDialog(QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl) : QDialog(parent, fl) {
   setupUi(this);
+
   _log = new KstLogWidget(TabPage, "logwidget");
   _log->setDebug(KstDebug::self());
 
-  TabPageLayout->addMultiCellWidget(_log, 0, 0, 0, 2);
+// xxx  TabPageLayout->addMultiCellWidget(_log, 0, 0, 0, 2);
 
   const QStringList& pl = KstDataSource::pluginList();
-
-  for (QStringList::ConstIterator it = pl.begin(); it != pl.end(); ++it) {
-    new QListViewItem(_dataSources, *it);
+  QStringList::const_iterator it;
+  
+  for (it = pl.begin(); it != pl.end(); ++it) {
+    new QListWidgetItem(*it, _dataSources);
   }
 
   _buildInfo->setText(i18n("<h1>Kst</h1> version %1 (%2)").arg(KSTVERSION).arg(KstDebug::self()->kstRevision()));
 
-  _dataSources->setAllColumnsShowFocus(true);
+// xxx  _dataSources->setAllColumnsShowFocus(true);
 
   connect(KstApp::inst()->document(), SIGNAL(logAdded(const KstDebug::LogMessage&)), _log, SLOT(logAdded(const KstDebug::LogMessage&)));
   connect(KstApp::inst()->document(), SIGNAL(logCleared()), _log, SLOT(clear()));
@@ -72,7 +65,8 @@ KstDebugDialog::~KstDebugDialog() {
 
 
 void KstDebugDialog::show_I() {
-  QListViewItemIterator it(_dataSources);
+/* xxx
+  QListWidgetItem::iterator it(_dataSources);
 
   KST::dataSourceList.lock().readLock();
 
@@ -84,7 +78,7 @@ void KstDebugDialog::show_I() {
     for (KstDataSourceList::Iterator i = KST::dataSourceList.begin(); i != KST::dataSourceList.end(); ++i) {
       (*i)->readLock();
       if ((*i)->sourceName() == it.current()->text(0)) {
-        new QListViewItem(it.current(), QString::null, (*i)->fileName());
+        new QListWidgetItem(it.current(), QString::null, (*i)->fileName());
       }
       (*i)->unlock();
     }
@@ -92,7 +86,7 @@ void KstDebugDialog::show_I() {
   }
 
   KST::dataSourceList.lock().unlock();
-
+*/
   QDialog::show();
 }
 
@@ -108,7 +102,7 @@ void KstDebugDialog::email() {
 }
 
 
-KstLogWidget *KstDebugDialogI::logWidget() const {
+KstLogWidget *KstDebugDialog::logWidget() const {
   return _log;
 }
 

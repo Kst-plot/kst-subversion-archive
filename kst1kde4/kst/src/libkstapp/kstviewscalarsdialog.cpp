@@ -15,7 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <qheader.h>
 #include <qlayout.h>
 #include <qpushbutton.h>
 
@@ -30,6 +29,7 @@ KstViewScalarsDialog::KstViewScalarsDialog(QWidget* parent,
                                            Qt::WindowFlags fl)
 : QDialog(parent, name, modal, fl) {
   setupUi(this);
+
   listViewScalars = new KstScalarListView(this, &KST::scalarList);
   listViewScalars->setShowSortIndicator(false);
   searchWidget = new KListViewSearchLineWidget(listViewScalars, this);

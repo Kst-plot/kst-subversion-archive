@@ -230,10 +230,7 @@
       </attribute>
       <layout class="QGridLayout">
        <item row="0" column="0">
-        <widget class="Q3ListView" name="_dataSources">
-         <property name="rootIsDecorated">
-          <bool>true</bool>
-         </property>
+        <widget class="QListWidget" name="_dataSources">
          <column>
           <property name="text">
            <string>Plugin</string>

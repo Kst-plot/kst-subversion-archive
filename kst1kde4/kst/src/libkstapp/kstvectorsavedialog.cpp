@@ -15,26 +15,26 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <qlayout.h>
-#include <qlistbox.h>
+#include <QFile>
+#include <QFileDialog>
+#include <QLayout>
+#include <QListWidget>
+#include <QListWidgetItem>
 #include <QMessageBox>
-#include <qpushbutton.h>
-#include <qtable.h>
+#include <QPushButton>
+#include <QTableWidget>
 
 #include <kfiledialog.h>
 #include <klocale.h>
-#include <ktempfile.h>
 #include <kio/netaccess.h>
 #include <kstandarddirs.h>
 
 #include "kstvectorsavedialog.h"
 #include "vectorselector.h"
 
-KstVectorSaveDialog::KstVectorSaveDialog(QWidget* parent,
-                                             const char* name,
-                                             bool modal,
-                                             Qt::WindowFlags fl)
-: QDialog(parent, name, modal, fl) {
+KstVectorSaveDialog::KstVectorSaveDialog(QWidget* parent, const char* name,
+                                         bool modal, Qt::WindowFlags fl)
+: QDialog(parent, fl) {
   setupUi(this);
 
   connect(pushButton2, SIGNAL(clicked()), this, SLOT(hide()));
@@ -51,27 +51,32 @@ KstVectorSaveDialog::~KstVectorSaveDialog() {
 
 
 void KstVectorSaveDialog::init() {
-  KstVectorList::ConstIterator i;
+  KstVectorList::const_iterator i;
   
   _vectorList->clear();
+
   KST::vectorList.lock().readLock();
   for (i = KST::vectorList.begin(); i != KST::vectorList.end(); ++i) {
     (*i)->readLock();
-    _vectorList->insertItem((*i)->tag().displayString());
+    _vectorList->addItem((*i)->tag().displayString());
     (*i)->unlock();
   }
   KST::vectorList.lock().unlock();
+
   _saveButton->setEnabled(false);
 }
 
 
 void KstVectorSaveDialog::save() {
   KstVectorList toSave;
+  int i;
 
   KST::vectorList.lock().readLock();
-  for (QListBoxItem *i = _vectorList->firstItem(); i; i = i->next()) {
-    if (i->isSelected()) {
-      KstVectorPtr v = *KST::vectorList.findTag(i->text());
+  for (i = 0; i < _vectorList->count(); ++i) {
+    if (_vectorList->item(i)->isSelected()) {
+      KstVectorPtr v;
+
+      v = *KST::vectorList.findTag(_vectorList->item(i)->text());
       if (v) {
         toSave += v;
       }
@@ -79,86 +84,88 @@ void KstVectorSaveDialog::save() {
   }
   KST::vectorList.lock().unlock();
 
-  KUrl url = KFileDialog::getSaveURL(QString::null, QString::null, this, i18n("Save Vector As"));
-  if (!url.isEmpty()) {
+  QString str = QFileDialog::getSaveFileName(this, i18n("Save Vector As"), QString::null, QString::null);
+  if (!str.isEmpty()) {
     bool interpolate = true;
-    switch (_multiOptions->currentItem()) {
+
+    switch (_multiOptions->currentIndex()) {
       case 0:
         interpolate = false;
 
       case 1:
         {
-          KTempFile tf(locateLocal("tmp", "kstvectors"), "txt");
+          QFile file(str);
 
-          tf.setAutoDelete(true);
-          if (0 != KstData::self()->vectorsToFile(toSave, tf.file(), interpolate)) {
-            QMessageBox::warning(this, i18n("Kst"), i18n("Error saving vector to %1.").arg(url.prettyURL()), i18n("Kst"));
+          if (KstData::self()->vectorsToFile(toSave, &file, interpolate) != 0) {
+            QMessageBox::warning(this, i18n("Kst"), i18n("Error saving vector to %1.").arg(str));
             return;
           }
-          tf.sync();
-          tf.close();
-
+          file.close();
+/* xxx
           if (KIO::NetAccess::exists(url, false, this)) {
             int rc = QMessageBox::warning(this, i18n("Kst"), i18n("File %1 exists.  Overwrite?").arg(url.prettyURL()), i18n("Kst"), QMessageBox::Yes | QMessageBox::No);
             if (rc == QMessageBox::No) {
               return;
             }
           }
-          KIO::NetAccess::file_copy(KUrl(tf.name()), url, -1, true, false, this);
+*/
         }
       break;
 
       case 2:
         {
+          KstVectorList::iterator it;
           unsigned n = 0;
-          for (KstVectorList::Iterator i = toSave.begin(); i != toSave.end(); ++i) {
-            Kurl url2 = url;
+ 
+          for (it = toSave.begin(); it != toSave.end(); ++it) {
+            QFile file;
 
             if (toSave.count() > 1) {
-              url2.setFileName(url.fileName() + QString(".%1").arg(++n));
+              file.setFileName(str + QString(".%1").arg(++n));
             } else {
-              url2.setFileName(url.fileName());
+              file.setFileName(str);
             }
-            KTempFile tf(locateLocal("tmp", "kstvectors"), "txt");
-            tf.setAutoDelete(true);
-            if (0 != KstData::self()->vectorToFile(*i, tf.file())) {
-              QMessageBox::warning(this, i18n("Kst"), i18n("Error saving vector to %1.").arg(url2.prettyURL()), i18n("Kst"));
+
+            if (KstData::self()->vectorToFile(*it, &file) != 0) {
+              QMessageBox::warning(this, i18n("Kst"), i18n("Error saving vector to %1.").arg(str));
               return;
             }
-            tf.sync();
-            tf.close();
-
+            file.close();
+/* xxx
             if (KIO::NetAccess::exists(url2, false, this)) {
               int rc = QMessageBox::warning(this, i18n("Kst"), i18n("File %1 exists.  Overwrite?").arg(url2.prettyURL()), i18n("Kst"));
+
               if (rc == QMessageBox::No) {
                 continue;
               }
             }
 
             KIO::NetAccess::file_copy(KUrl(tf.name()), url2, -1, true, false, this);
+*/
           }
         }
       break;
 
       default:
-        QMessageBox::warning(this, i18n("Kst"), i18n("Internal error.  Please report."), i18n("Kst"));
+        QMessageBox::warning(this, i18n("Kst"), i18n("Internal error. Please report."));
         break;
     }
   }
 }
 
 
-void KstVectorSaveDialogI::show() {
+void KstVectorSaveDialog::show() {
   init();
   QDialog::show();
 }
 
 
-void KstVectorSaveDialogI::selectionChanged() {
+void KstVectorSaveDialog::selectionChanged() {
   int cnt = 0;
-  // expensive but qlistbox provides nothing better at the moment
-  for (QListBoxItem *i = _vectorList->firstItem(); i; i = i->next()) {
-    if (i->isSelected()) {
+  int i;
+
+  for (i = 0; i < _vectorList->count(); ++i) {
+    if (_vectorList->item(i)->isSelected()) {
       if (++cnt > 1) {
         break;
       }

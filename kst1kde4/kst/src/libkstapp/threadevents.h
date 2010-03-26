@@ -28,7 +28,7 @@ class ThreadEvent : public QEvent {
     virtual ~ThreadEvent() {}
 
     ThreadEventType _eventType;
-    QValueList<KstBaseCurve*> _curves; // HACK: for temporary use in update reworking
+    QList<KstBaseCurve*> _curves; // HACK: for temporary use in update reworking
     int _counter;
 };
 

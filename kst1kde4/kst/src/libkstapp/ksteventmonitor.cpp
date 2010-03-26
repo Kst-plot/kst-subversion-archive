@@ -15,21 +15,15 @@
  *                                                                         *
  ***************************************************************************/
 
-// include files for Qt
 #include <qcheckbox.h>
 #include <qlineedit.h>
-#include <qlistbox.h>
 #include <qradiobutton.h>
 #include <qtextedit.h>
-#include <qvbox.h>
-#include <qMessageBox.h>
+#include <qmessagebox.h>
 
-// include files for KDE
 #include <klocale.h>
 
-// application specific includes
 #include "editmultiplewidget.h"
-#include "eventmonitorwidget.h"
 #include "kst.h"
 #include "kstdataobjectcollection.h"
 #include "ksteventmonitor.h"
@@ -49,10 +43,10 @@ KstEventMonitor* KstEventMonitor::globalInstance() {
 }
 
 
-KstEventMonitor::KstEventMonitor(QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl)
-: KstDataDialog(parent, name, modal, fl) {
-  setupUi(this);
-  _w = new EventMonitorWidget(_contents);
+KstEventMonitor::KstEventMonitor(QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl) : KstDataDialog(parent) {
+  _w = new Ui::EventMonitorWidget();
+  _w->setupUi(this);
+
   setMultiple(true);
   connect(_w->_vectorSelectorEq, SIGNAL(newVectorCreated(const QString&)), this, SIGNAL(modified()));
   connect(_w->_scalarSelectorEq, SIGNAL(newScalarCreated()), this, SIGNAL(modified()));
@@ -92,48 +86,51 @@ KstEventMonitor::~KstEventMonitor() {
 
 
 void KstEventMonitor::fillFieldsForEdit() {
-  EventMonitorEntryPtr ep = kst_cast<EventMonitorEntry>(_dp);
-  if (!ep) {
-    return; // shouldn't be needed
+  EventMonitorEntryPtr ep;
+
+  ep = kst_cast<EventMonitorEntry>(_dp);
+  if (ep) {
+    ep->readLock();
+    _tagName->setText(ep->tagName());
+  
+    _w->lineEditEquation->setText(ep->event());
+    _w->lineEditDescription->setText(ep->description());
+    _w->checkBoxDebug->setChecked(ep->logKstDebug());
+    _w->checkBoxEMailNotify->setChecked(ep->logEMail());
+    _w->checkBoxELOGNotify->setChecked(ep->logELOG());
+    _w->lineEditEMailRecipients->setText(ep->eMailRecipients());
+    _w->_useScript->setEnabled(!ep->scriptCode().isEmpty());
+    _w->_script->setText(ep->scriptCode());
+  
+    switch (ep->level()) {
+      case KstDebug::Notice:
+        _w->radioButtonLogNotice->setChecked(true);
+        break;
+      case KstDebug::Warning:
+        _w->radioButtonLogWarning->setChecked(true);
+        break;
+      case KstDebug::Error:
+        _w->radioButtonLogError->setChecked(true);
+        break;
+      default:
+        _w->radioButtonLogWarning->setChecked(true);
+        break;
+    }
+  
+    ep->unlock();
+    adjustSize();
+    resize(minimumSizeHint());
+    setFixedHeight(height());
   }
-  ep->readLock();
-  _tagName->setText(ep->tagName());
-
-  _w->lineEditEquation->setText(ep->event());
-  _w->lineEditDescription->setText(ep->description());
-  _w->checkBoxDebug->setChecked(ep->logKstDebug());
-  _w->checkBoxEMailNotify->setChecked(ep->logEMail());
-  _w->checkBoxELOGNotify->setChecked(ep->logELOG());
-  _w->lineEditEMailRecipients->setText(ep->eMailRecipients());
-  _w->_useScript->setEnabled(!ep->scriptCode().isEmpty());
-  _w->_script->setText(ep->scriptCode());
-
-  switch (ep->level()) {
-    case KstDebug::Notice:
-      _w->radioButtonLogNotice->setChecked(true);
-      break;
-    case KstDebug::Warning:
-      _w->radioButtonLogWarning->setChecked(true);
-      break;
-    case KstDebug::Error:
-      _w->radioButtonLogError->setChecked(true);
-      break;
-    default:
-      _w->radioButtonLogWarning->setChecked(true);
-      break;
-  }
-
-  ep->unlock();
-  adjustSize();
-  resize(minimumSizeHint());
-  setFixedHeight(height());
 }
 
 
 void KstEventMonitor::fillFieldsForNew() {
-  KstEventMonitorEntryList events = kstObjectSubList<KstDataObject, EventMonitorEntry>(KST::dataObjectList);
+  KstEventMonitorEntryList events;
+  QString new_label;
 
-  QString new_label = QString("E%1-").arg(events.count() + 1) + "<New_Event>";
+// xxx  events = kstObjectSubList<KstDataObject, EventMonitorEntry>(KST::dataObjectList);
+  new_label = QString("E%1-").arg(events.count() + 1) + "<New_Event>";
   _tagName->setText(new_label);
 
   _w->radioButtonLogWarning->setChecked(true);
@@ -201,7 +198,9 @@ bool KstEventMonitor::newObject() {
     return false;
   }
 
-  EventMonitorEntryPtr event = new EventMonitorEntry(tag_name);
+  EventMonitorEntryPtr event;
+
+  event = new EventMonitorEntry(tag_name);
   event->writeLock();
   fillEvent(event);
 
@@ -216,11 +215,13 @@ bool KstEventMonitor::newObject() {
   event->unlock();
 
   KST::dataObjectList.lock().writeLock();
-  KST::dataObjectList.append(event.data());
+  KST::dataObjectList.append(event);
   KST::dataObjectList.lock().unlock();
 
   event = 0L; // drop the reference before we update
-  emit modified();
+
+// xxx  emit modified();
+
   return true;
 }
 
@@ -242,6 +243,7 @@ bool KstEventMonitor::editSingleObject(EventMonitorEntryPtr emPtr) {
           _w->radioButtonLogError->isChecked()) && _w->checkBoxDebug->isChecked()) {
       QMessageBox::warning(this, i18n("Kst"), i18n("Select a Debug Log type."));
       emPtr->unlock();
+
       return false;
     }
     emPtr->setLogKstDebug(_w->checkBoxDebug->isChecked());
@@ -283,7 +285,9 @@ bool KstEventMonitor::editSingleObject(EventMonitorEntryPtr emPtr) {
 
 
 bool KstEventMonitor::editObject() {
-  KstEventMonitorEntryList emList = kstObjectSubList<KstDataObject,EventMonitorEntry>(KST::dataObjectList);
+  KstEventMonitorEntryList emList;
+
+// xxx  emList = kstObjectSubList<KstDataObject,EventMonitorEntry>(KST::dataObjectList);
 
   // if editing multiple objects, edit each one
   if (_editMultipleMode) { 
@@ -293,16 +297,19 @@ bool KstEventMonitor::editObject() {
     _lineEditEMailRecipientsDirty = !_w->lineEditEMailRecipients->text().isEmpty();
 
     bool didEdit = false;
+    int i;
 
-    for (uint i = 0; i < _editMultipleWidget->_objectList->count(); i++) {
-      if (_editMultipleWidget->_objectList->isSelected(i)) {
-        // get the pointer to the object
-        KstEventMonitorEntryList::Iterator emIter = emList.findTag(_editMultipleWidget->_objectList->text(i));
+    for (i = 0; i < _editMultipleWidget->_objectList->count(); i++) {
+      if (_editMultipleWidget->_objectList->item(i)->isSelected()) {
+        KstEventMonitorEntryList::Iterator emIter;
+        EventMonitorEntryPtr emPtr;
+
+        emIter = emList.findTag(_editMultipleWidget->_objectList->item(i)->text());
         if (emIter == emList.end()) {
           return false;
         }
 
-        EventMonitorEntryPtr emPtr = *emIter;
+        emPtr = *emIter;
 
         if (!editSingleObject(emPtr)) {
           return false;
@@ -316,9 +323,10 @@ bool KstEventMonitor::editObject() {
       return false;
     }
   } else {
-    EventMonitorEntryPtr ep = kst_cast<EventMonitorEntry>(_dp);
-    // verify that the curve name is unique
+    EventMonitorEntryPtr ep;
     QString tag_name = _tagName->text();
+
+    ep = kst_cast<EventMonitorEntry>(_dp);
     if (!ep || (tag_name != ep->tagName() && KstData::self()->dataTagNameNotUnique(tag_name))) {
       _tagName->setFocus();
       return false;
@@ -343,31 +351,35 @@ bool KstEventMonitor::editObject() {
       return false;
     }
   }
-  emit modified();
+
+// xxx  emit modified();
+
   return true;
 }
 
 
 void KstEventMonitor::populateEditMultiple() {
-  KstEventMonitorEntryList emlist = kstObjectSubList<KstDataObject,EventMonitorEntry>(KST::dataObjectList);
-  _editMultipleWidget->_objectList->insertStringList(emlist.tagNames());
+  KstEventMonitorEntryList emlist;
+
+// xxx  emlist = kstObjectSubList<KstDataObject,EventMonitorEntry>(KST::dataObjectList);
+// xxx  _editMultipleWidget->_objectList->insertStringList(emlist.tagNames());
 
   // also intermediate state for multiple edit
   _w->lineEditEquation->setText("");
   _w->lineEditDescription->setText("");
 
   _w->checkBoxDebug->setTristate(true);
-  _w->checkBoxDebug->setNoChange();
-  _w->radioButtonLogNotice->setChecked(false);
-  _w->radioButtonLogWarning->setChecked(false);
-  _w->radioButtonLogError->setChecked(false);
+  _w->checkBoxDebug->setChecked(Qt::PartiallyChecked);
+  _w->radioButtonLogNotice->setChecked(Qt::Unchecked);
+  _w->radioButtonLogWarning->setChecked(Qt::Unchecked);
+  _w->radioButtonLogError->setChecked(Qt::Unchecked);
 
   _w->checkBoxEMailNotify->setTristate(true);
-  _w->checkBoxEMailNotify->setNoChange();
+  _w->checkBoxEMailNotify->setChecked(Qt::PartiallyChecked);
   _w->lineEditEMailRecipients->setText("");
 
   _w->checkBoxELOGNotify->setTristate(true);
-  _w->checkBoxELOGNotify->setNoChange();
+  _w->checkBoxELOGNotify->setChecked(Qt::PartiallyChecked);
 
   _tagName->setText("");
   _tagName->setEnabled(false);
@@ -378,8 +390,7 @@ void KstEventMonitor::populateEditMultiple() {
   _w->radioButtonLogError->setEnabled(true);
 
   _w->_useScript->setTristate(true);
-  _w->_useScript->setNoChange();
-  _w->_useScript->setChecked(false);
+  _w->_useScript->setChecked(Qt::PartiallyChecked);
   _w->_script->setEnabled(false);
   _w->_script->setText("");
 

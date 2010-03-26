@@ -27,10 +27,10 @@
 #include "kst_export.h"
 #include "kstviewlegendwidget.h"
 
-KstViewLegendWidget::KstViewLegendWidget(QWidget* parent, const char* name, Qt::WindowFlags fl) :
-  ViewLegendWidget(parent, name, fl)
+KstViewLegendWidget::KstViewLegendWidget(QWidget* parent, const char* name, Qt::WindowFlags fl) : QDialog(parent, fl)
 { 
   setupUi(this);
+
   connect(DisplayedCurveList, SIGNAL(clicked(QListBoxItem*)), this, SLOT(updateButtons()));
   connect(AvailableCurveList, SIGNAL(clicked(QListBoxItem*)), this, SLOT(updateButtons()));
   connect(DisplayedCurveList, SIGNAL(doubleClicked(QListBoxItem*)), this, SLOT(removeDisplayedCurve()));
@@ -44,20 +44,20 @@ KstViewLegendWidget::KstViewLegendWidget(QWidget* parent, const char* name, Qt::
   connect(_up, SIGNAL(clicked()), DisplayedCurveList, SIGNAL(changed()));
   connect(_down, SIGNAL(clicked()), DisplayedCurveList, SIGNAL(changed()));
 
-  _up->setPixmap(BarIcon("up"));
+// xxx  _up->setPixmap(BarIcon("up"));
   _up->setEnabled(false);
-  _down->setPixmap(BarIcon("down"));
+// xxx  _down->setPixmap(BarIcon("down"));
   _down->setEnabled(false);
-  _add->setPixmap(BarIcon("forward"));
+// xxx  _add->setPixmap(BarIcon("forward"));
   _add->setEnabled(false);
-  _remove->setPixmap(BarIcon("back"));
+// xxx  _remove->setPixmap(BarIcon("back"));
   _remove->setEnabled(false);
-
+/* xxx
   QToolTip::add(_up, i18n("Shortcut: Alt+Up"));
   QToolTip::add(_down, i18n("Shortcut: Alt+Down"));
   QToolTip::add(_add, i18n("Shortcut: Alt+s"));
   QToolTip::add(_remove, i18n("Shortcut: Alt+r"));
-
+*/
   _changedFgColor = false;
   _changedBgColor = false;
 }
@@ -73,7 +73,7 @@ void KstViewLegendWidget::updateButtons()
   uint count = AvailableCurveList->count();
 
   for (uint i = 0; i < count; i++) {
-    if (AvailableCurveList->isSelected(i)) {
+    if (AvailableCurveList->item(i)->isSelected()) {
       selected = true;
     }
   }
@@ -86,7 +86,7 @@ void KstViewLegendWidget::updateButtons()
   selected = false;
   count = DisplayedCurveList->count();
   for (uint i = 0; i < count; i++) {
-    if (DisplayedCurveList->isSelected(i)) {
+    if (DisplayedCurveList->item(i)->isSelected()) {
       selected = true;
     }
   }
@@ -113,9 +113,9 @@ void KstViewLegendWidget::removeDisplayedCurve()
 
   if (count > 0) {
     for (int i = count-1; i >= 0; i--) {
-      if (DisplayedCurveList->isSelected(i)) {
-        AvailableCurveList->insertItem(DisplayedCurveList->text(i));
-        DisplayedCurveList->removeItem(i);
+      if (DisplayedCurveList->item(i)->isSelected()) {
+        AvailableCurveList->addItem(DisplayedCurveList->item(i)->text());
+// xxx        DisplayedCurveList->removeIndex(i);
       }
     }
     updateButtons();
@@ -133,9 +133,9 @@ void KstViewLegendWidget::addDisplayedCurve()
 
   if (count > 0) {
     for (int i = count-1; i >= 0; i--) {
-      if (AvailableCurveList->isSelected(i)) {
-        DisplayedCurveList->insertItem(AvailableCurveList->text(i));
-        AvailableCurveList->removeItem(i);
+      if (AvailableCurveList->item(i)->isSelected()) {
+        DisplayedCurveList->addItem(AvailableCurveList->item(i)->text());
+// xxx        AvailableCurveList->removeIndex(i);
       }
     }
     updateButtons();

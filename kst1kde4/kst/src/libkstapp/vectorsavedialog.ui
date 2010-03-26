@@ -21,9 +21,9 @@
     <number>6</number>
    </property>
    <item row="1" column="0" colspan="3">
-    <widget class="Q3ListBox" name="_vectorList">
+    <widget class="QListWidget" name="_vectorList">
      <property name="selectionMode">
-      <enum>Q3ListBox::Extended</enum>
+      <enum>QAbstractItemView::ExtendedSelection</enum>
      </property>
     </widget>
    </item>
