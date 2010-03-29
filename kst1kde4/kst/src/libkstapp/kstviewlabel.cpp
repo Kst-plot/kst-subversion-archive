@@ -655,8 +655,8 @@ bool KstViewLabel::readConfigWidget(QWidget *w, bool editMultipleMode) {
     return false;
   }
 
-  if (!editMultipleMode || widget->_text->text().compare(QString(" ")) != 0) {
-    _txt = widget->_text->text();
+  if (!editMultipleMode || widget->_text->toPlainText().compare(QString(" ")) != 0) {
+    _txt = widget->_text->toPlainText();
   }
 
   if (!editMultipleMode || widget->_precision->value() != widget->_precision->minimum()) {

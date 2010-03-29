@@ -53,13 +53,13 @@ KstViewLabelWidget::~KstViewLabelWidget()
 
 void KstViewLabelWidget::insertScalarInText(const QString &str)
 {
-  _text->insert("["+str+"]");
+  _text->insertPlainText("["+str+"]");
 }
 
 
 void KstViewLabelWidget::insertStringInText(const QString &str)
 {
-  _text->insert("["+str+"]");
+  _text->insertPlainText("["+str+"]");
 }
 
 

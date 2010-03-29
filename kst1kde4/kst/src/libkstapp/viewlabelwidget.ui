@@ -61,17 +61,17 @@
    <item>
     <layout class="QVBoxLayout">
      <item>
-      <widget class="Q3TextEdit" name="_text">
+      <widget class="QTextEdit" name="_text">
        <property name="acceptDrops">
         <bool>true</bool>
        </property>
-       <property name="wordWrap">
-        <enum>Q3TextEdit::NoWrap</enum>
+       <property name="LineWrapMode">
+        <enum>QTextEdit::NoWrap</enum>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="Q3GroupBox" name="groupBox2">
+      <widget class="QGroupBox" name="groupBox2">
        <property name="title">
         <string>Format</string>
        </property>
@@ -197,7 +197,7 @@
       </widget>
      </item>
      <item>
-      <widget class="Q3GroupBox" name="groupBox1">
+      <widget class="QGroupBox" name="groupBox1">
        <property name="title">
         <string>Box</string>
        </property>
@@ -297,24 +297,7 @@
  <layoutdefault spacing="6" margin="11"/>
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <customwidgets>
-  <customwidget>
-   <class>Q3GroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>Qt3Support/Q3GroupBox</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>Q3Frame</class>
-   <extends>QFrame</extends>
-   <header>Qt3Support/Q3Frame</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>Q3TextEdit</class>
-   <extends>Q3Frame</extends>
-   <header>q3textedit.h</header>
-  </customwidget>
-  <customwidget>
+   <customwidget>
    <class>ScalarSelector</class>
    <extends>QWidget</extends>
    <header>scalarselector.h</header>
