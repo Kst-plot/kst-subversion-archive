@@ -76,7 +76,7 @@ KstChangeFileDialog::~KstChangeFileDialog() {
 
 
 void KstChangeFileDialog::selectAll() {
-  ChangeFileCurveList->selectAll(true);
+  ChangeFileCurveList->selectAll();
 }
 
 
@@ -148,12 +148,12 @@ void KstChangeFileDialog::sourceChanged(const QString& text)
   _configureSource->setEnabled(false);
   _file = QString::null;
   if (!text.isEmpty() && text != "stdin" && text != "-") {
-    KURL url;
+    KUrl url;
     QString txt = _dataFile->completionObject()->replacedPath(text);
     if (QFile::exists(txt) && QFileInfo(txt).isRelative()) {
       url.setPath(txt);
     } else {
-      url = KURL::fromPathOrURL(txt);
+      url = KUrl::fromPathOrURL(txt);
     }
 
     if (!url.isLocalFile() && url.protocol() != "file" && !url.protocol().isEmpty()) {

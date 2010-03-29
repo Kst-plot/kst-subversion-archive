@@ -44,7 +44,7 @@
         <item row="0" column="1">
          <layout class="QHBoxLayout">
           <item>
-           <widget class="KURLRequester" name="_dataFile" native="true"/>
+           <widget class="KUrlRequester" name="_dataFile" native="true"/>
           </item>
          </layout>
         </item>
@@ -240,7 +240,7 @@
       <item row="2" column="0">
        <layout class="QGridLayout">
         <item row="0" column="0" rowspan="5">
-         <widget class="QListBox" name="ChangeFileCurveList">
+         <widget class="QListWidget" name="ChangeFileCurveList">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
             <horstretch>1</horstretch>
@@ -250,8 +250,8 @@
           <property name="whatsThis">
            <string>The source file for the vectors selected in this list will be changed.</string>
           </property>
-          <property name="selectionMode">
-           <enum>QListBox::Extended</enum>
+          <property name="SelectionMode">
+           <enum>QListWidget::ExtendedSelection</enum>
           </property>
          </widget>
         </item>
