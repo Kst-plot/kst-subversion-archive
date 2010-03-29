@@ -1167,7 +1167,7 @@ void Kst2DPlot::updateScale() {
 
       {
         KstBaseCurveList cl = _curves;
-// xxx        qHeapSort(cl);
+// xxx        qSort(cl);
         for (it = cl.begin(); it != cl.end(); ++it) {
           KstBaseCurvePtr c;
 

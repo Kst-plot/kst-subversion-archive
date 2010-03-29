@@ -227,8 +227,8 @@ bool UpdateThread::doUpdates(bool force, bool *gotData) {
     KstBaseCurveList cl;
     KstDataObjectList dol;
     kstObjectSplitList<KstDataObject, KstBaseCurve>(KST::dataObjectList, cl, dol);
-    qHeapSort(cl); 
-    qHeapSort(dol); 
+    qSort(cl); 
+    qSort(dol); 
 
     // Update all curves
     for (uint i = 0; i < cl.count(); ++i) {

@@ -445,7 +445,7 @@ void Kst2dPlotWidget::updateScalarCombo() {
   KST::scalarList.lock().readLock();
   KstScalarList sl = KST::scalarList.list();
   KST::scalarList.lock().unlock();
-// xxx  qHeapSort(sl);
+// xxx  qSort(sl);
 
   for (i = sl.begin(); i != sl.end(); ++i) {
     (*i)->readLock();
