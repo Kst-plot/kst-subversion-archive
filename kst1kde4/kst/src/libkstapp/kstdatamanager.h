@@ -18,7 +18,7 @@
 #ifndef KSTDATAMANAGERI_H
 #define KSTDATAMANAGERI_H
 
-#include <qaction.h>
+#include <QAction>
 
 class KstDoc;
 class QToolBar;

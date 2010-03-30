@@ -18,7 +18,7 @@
 #ifndef KSTSCALARTABLE_H
 #define KSTSCALARTABLE_H
 
-#include <qtable.h>
+#include <QTable>
 
 class KstScalarTable : public QTable
 {

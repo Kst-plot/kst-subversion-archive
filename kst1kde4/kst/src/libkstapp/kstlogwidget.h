@@ -20,7 +20,7 @@
 
 #include "kstdebug.h"
 #include <qmime.h>
-#include <qtextbrowser.h>
+#include <QTextBrowser>
 
 class KstLogWidget : public QTextBrowser {
   Q_OBJECT

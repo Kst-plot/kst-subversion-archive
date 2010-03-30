@@ -18,7 +18,7 @@
 #ifndef KSTEVENTMONITORENTRY_H
 #define KSTEVENTMONITORENTRY_H
 
-#include <qtimer.h>
+#include <QTimer>
 
 #include "kstdataobject.h"
 #include "kstdebug.h"

@@ -20,7 +20,7 @@
 
 #include "kstborderedviewobject.h"
 
-#include <qimage.h>
+#include <QImage>
 
 class QTimer;
 

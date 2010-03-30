@@ -18,8 +18,8 @@
 #ifndef EMAILTHREAD_H
 #define EMAILTHREAD_H
 
-#include <qcstring.h>
-#include <qobject.h>
+#include <QCString>
+#include <QObject>
 
 #include <kio/global.h>
 #include <kio/passdlg.h>

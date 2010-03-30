@@ -18,9 +18,9 @@
 #ifndef KSTDEBUGNOTIFIER_H
 #define KSTDEBUGNOTIFIER_H
 
-#include <qlabel.h>
-#include <qpixmap.h>
-#include <qvaluevector.h>
+#include <QLabel>
+#include <QPixmap>
+#include <QValueVector>
 
 class KstDebugNotifier : public QLabel {
   Q_OBJECT

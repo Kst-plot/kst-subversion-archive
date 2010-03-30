@@ -31,7 +31,7 @@
 #include <qdeepcopy.h>
 #include <qeventloop.h>
 #include <qstylesheet.h>
-#include <qmessagebox.h>
+#include <QMessageBox.h>
 
 // include files for KDE
 #include <dcopclient.h>

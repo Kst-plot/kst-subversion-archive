@@ -18,12 +18,12 @@
 #include <assert.h>
 
 #include <qbuttongroup.h>
-#include <qcheckbox.h>
-#include <qfiledialog.h>
-#include <qradiobutton.h>
-#include <qspinbox.h>
-#include <qcombobox.h>
-#include <qmessagebox.h>
+#include <QCheckBox.h>
+#include <QFileDialog.h>
+#include <QRadioButton.h>
+#include <QSpinBox.h>
+#include <QComboBox.h>
+#include <QMessageBox.h>
 
 #include <kurlcompletion.h>
 #include <kurlrequester.h>

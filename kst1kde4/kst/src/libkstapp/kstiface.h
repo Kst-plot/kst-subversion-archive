@@ -20,8 +20,8 @@
 #include <dcopobject.h>
 #include <dcopref.h>
 
-#include <qcolor.h>
-#include <qstringlist.h>  //Qt 3.1.2 KDE 3.1.4
+#include <QColor>
+#include <QStringList>  //Qt 3.1.2 KDE 3.1.4
 
 
 // Warning: If you change something here, you could break existing scripts.

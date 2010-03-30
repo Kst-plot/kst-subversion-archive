@@ -18,17 +18,17 @@
 #include <assert.h>
 
 #include <QComboBox>
-#include <qframe.h>
-#include <qgroupbox.h>
+#include <QFrame>
+#include <QGroupBox>
 #include <QLabel>
-#include <qlayout.h>
-#include <qlineedit.h>
+#include <QLayout>
+#include <QLineEdit>
 #include <QList>
-#include <qtextedit.h>
-#include <qtimer.h>
-#include <qtooltip.h>
-#include <qwhatsthis.h>
-#include <qmessagebox.h>
+#include <QTextEdit>
+#include <QTimer>
+#include <QToolTip>
+#include <QWhatsThis>
+#include <QMessageBox>
 
 #include <kcolorbutton.h>
 #include <klocale.h>

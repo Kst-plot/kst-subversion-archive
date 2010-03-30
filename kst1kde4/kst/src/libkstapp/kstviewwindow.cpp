@@ -16,11 +16,11 @@
  ***************************************************************************/
 
 // include files for Qt
-#include <qfile.h>
-#include <qpainter.h>
-#include <qpaintdevicemetrics.h>
-#include <qstylesheet.h>
-#include <qmessagebox.h>
+#include <QFile>
+#include <QPainter>
+#include <QPaintDeviceMetrics>
+#include <QStyleSheet>
+#include <QMessageBox>
 
 // include files for KDE
 #include <kprinter.h>

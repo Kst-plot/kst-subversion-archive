@@ -18,7 +18,7 @@
 #ifndef KSTUINAMES_H
 #define KSTUINAMES_H
 
-#include <qstring.h>
+#include <QString>
 #include "kst_export.h"
 
 namespace KST {

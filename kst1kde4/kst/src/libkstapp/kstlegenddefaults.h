@@ -18,8 +18,8 @@
 #ifndef KSTLEGENDDEFAULTS_H
 #define KSTLEGENDDEFAULTS_H
 
-#include <qstring.h>
-#include <qcolor.h>
+#include <QString>
+#include <QColor>
 #include "kst_export.h"
 
 class KConfig;

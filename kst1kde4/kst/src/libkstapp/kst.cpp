@@ -25,7 +25,7 @@
 #include <qpopupmenu.h>
 #include <qprogressbar.h>
 #include <qvalidator.h>
-#include <qmessagebox.h>
+#include <QMessageBox>
 
 // include files for KDE
 #include <kaccel.h>

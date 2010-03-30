@@ -18,8 +18,8 @@
 #include <assert.h>
 
 #include <QStack>
-#include <qdragobject.h>
-#include <qmessagebox.h>
+#include <QDragObject>
+#include <QMessageBox>
 
 #include "ksdebug.h"
 #include <klistview.h>

@@ -19,9 +19,9 @@
 #ifndef KSTALIGNMENT_H
 #define KSTALIGNMENT_H
 
-#include <qmap.h>
-#include <qpoint.h>
-#include <qrect.h>
+#include <QMap>
+#include <QPoint>
+#include <QRect>
 
 // xxx Q_EXPORT int operator<(const QPoint &p1, const QPoint &p2);
 

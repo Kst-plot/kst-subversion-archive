@@ -18,8 +18,8 @@
 #ifndef DATAREF_H
 #define DATAREF_H
 
-#include <qstring.h>
-#include <qvariant.h>
+#include <QString>
+#include <QVariant>
 
 struct DataRef {
   enum Type { DRScalar, DRString, DRVector, DRExpression, DRFit };

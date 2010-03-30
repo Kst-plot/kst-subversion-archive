@@ -13,7 +13,7 @@
 #define KSTCHOOSECOLORDIALOG_H
 
 #include <QColor>
-#include <qlineedit.h>
+#include <QLineEdit>
 #include <QList>
 #include <QMap>
 #include <QString>
