@@ -15,7 +15,7 @@
   </property>
   <layout class="QVBoxLayout">
    <item>
-    <widget class="Q3ButtonGroup" name="cycleOrderGroup">
+    <widget class="QGroupBox" name="cycleOrderGroup">
      <property name="title">
       <string>Property Selection and Cycle Order</string>
      </property>
@@ -179,7 +179,7 @@
     </widget>
    </item>
    <item>
-    <widget class="Q3ButtonGroup" name="optionsGroup">
+    <widget class="QGroupBox" name="optionsGroup">
      <property name="title">
       <string>Options</string>
      </property>
@@ -275,7 +275,7 @@
     </widget>
    </item>
    <item>
-    <widget class="Q3ButtonGroup" name="_buttonGroupRepeat">
+    <widget class="QGroupBox" name="_buttonGroupRepeat">
      <property name="title">
       <string>Repeat Across</string>
      </property>
@@ -305,7 +305,7 @@
     </widget>
    </item>
    <item>
-    <widget class="Q3ButtonGroup" name="_buttonGroupApplyTo">
+    <widget class="QGroupBox" name="_buttonGroupApplyTo">
      <property name="title">
       <string>Apply To</string>
      </property>
@@ -365,26 +365,7 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
- <customwidgets>
-  <customwidget>
-   <class>Q3GroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>Qt3Support/Q3GroupBox</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>Q3Frame</class>
-   <extends>QFrame</extends>
-   <header>Qt3Support/Q3Frame</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>Q3ButtonGroup</class>
-   <extends>Q3GroupBox</extends>
-   <header>Qt3Support/Q3ButtonGroup</header>
-   <container>1</container>
-  </customwidget>
- </customwidgets>
+
  <tabstops>
   <tabstop>_radioButtonRepeatPlot</tabstop>
   <tabstop>_radioButtonRepeatWindow</tabstop>

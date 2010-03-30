@@ -226,8 +226,8 @@ void KstCurveDifferentiate::getOptions( ) {
   _maxLineWidth = maxLineWidth->value();
   _pointDensity = pointDensity->currentIndex();
   
-  _repeatAcross = _buttonGroupRepeat->selectedId();
-  _applyTo = _buttonGroupApplyTo->selectedId();
+// xxx  _repeatAcross = _buttonGroupRepeat->selectedId();
+// xxx  _applyTo = _buttonGroupApplyTo->selectedId();
 }
 
 
