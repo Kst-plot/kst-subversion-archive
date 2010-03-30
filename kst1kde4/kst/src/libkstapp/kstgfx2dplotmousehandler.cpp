@@ -17,7 +17,7 @@
 
 #include <stdlib.h>
  
-#include <qpainter.h>
+#include <QPainter>
 
 #include "kst.h"
 #include "kstdoc.h"

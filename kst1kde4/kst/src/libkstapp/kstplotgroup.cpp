@@ -17,8 +17,8 @@
 
 #include <assert.h>
 
-#include <qmetaobject.h>
-#include <qpainter.h>
+#include <QMetaObject>
+#include <QPainter>
 
 #include <klocale.h>
 
