@@ -16,13 +16,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <qcheckbox.h>
-#include <qcombobox.h>
-#include <qfontmetrics.h>
-#include <qmessagebox.h>
-#include <qradiobutton.h>
-#include <qspinbox.h>
-#include <qstyle.h>
+#include <QCheckBox>
+#include <QComboBox>
+#include <QFontMetrics>
+#include <QMessageBox>
+#include <QRadioButton>
+#include <QSpinBox>
+#include <QStyle>
 
 #include "ksthsdialog.h"
 #include "curveappearancewidget.h"

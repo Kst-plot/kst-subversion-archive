@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <qlayout.h>
-#include <qlineedit.h>
+#include <QLayout>
+#include <QLineEdit>
 #include <QMessageBox>
 
 #include <klocale.h>

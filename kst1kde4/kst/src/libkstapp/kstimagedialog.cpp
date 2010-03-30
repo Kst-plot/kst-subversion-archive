@@ -16,13 +16,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <qbuttongroup.h>
-#include <qcheckbox.h>
-#include <qcombobox.h>
-#include <qlineedit.h>
-#include <qradiobutton.h>
-#include <qspinbox.h>
-#include <qmessagebox.h>
+// xxx #include <QButtonGroup>
+#include <QCheckBox>
+#include <QComboBox>
+#include <QLineEdit>
+#include <QRadioButton>
+#include <QSpinBox>
+#include <QMessageBox>
 
 #include <kcolorbutton.h>
 #include <knuminput.h>

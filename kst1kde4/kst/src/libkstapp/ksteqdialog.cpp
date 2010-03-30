@@ -19,7 +19,7 @@
 #include <QCheckBox>
 #include <QComboBox>
 #include <QMessageBox>
-#include <qradiobutton.h>
+#include <QRadioButton>
 #include <QRegExp>
 #include <QSpinBox>
 

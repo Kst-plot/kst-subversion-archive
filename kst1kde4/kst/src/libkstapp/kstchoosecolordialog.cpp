@@ -9,12 +9,12 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <qcheckbox.h>
-#include <qlineedit.h>
-#include <qgroupbox.h>
+#include <QCheckBox>
+#include <QLineEdit>
+#include <QGroupBox>
 #include <QList>
-#include <qradiobutton.h>
-#include <qcombobox.h>
+#include <QRadioButton>
+#include <QComboBox>
 
 #include <kcolorcombo.h>
 

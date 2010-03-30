@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <qcheckbox.h>
-#include <q3listbox.h>
+// xxx #include <QCheckBox>
+// xxx #include <Q3ListBox>
 
 #include <kurlcompletion.h>
 #include <kurlrequester.h>

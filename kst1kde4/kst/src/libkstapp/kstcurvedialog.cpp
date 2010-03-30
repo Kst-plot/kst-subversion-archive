@@ -16,11 +16,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <qcheckbox.h>
-#include <qcombobox.h>
+#include <QCheckBox>
+#include <QComboBox>
 #include <QMessageBox>
-#include <qradiobutton.h>
-#include <qspinbox.h>
+#include <QRadioButton>
+#include <QSpinBox>
 
 #include <kcolorbutton.h>
 

@@ -16,11 +16,11 @@
  ***************************************************************************/
 #include <assert.h>
 
-#include <qpushbutton.h>
-#include <qlineedit.h>
-#include <qlistwidget.h>
-#include <qradiobutton.h>
-#include <qregexp.h>
+#include <QPushButton>
+#include <QLineEdit>
+#include <QListWidget>
+#include <QRadioButton>
+#include <QRegExp>
 
 #include <kstandarddirs.h>
 

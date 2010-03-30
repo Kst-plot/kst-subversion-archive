@@ -15,11 +15,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <qbuttongroup.h> 
-#include <qcheckbox.h> 
-#include <qcombobox.h>
-#include <qpushbutton.h>
-#include <qspinbox.h>
+// xxx #include <qbuttongroup.h> 
+#include <QCheckBox> 
+#include <QComboBox>
+#include <QPushButton>
+#include <QSpinBox>
 
 #include <klocale.h>
 #include <kiconloader.h>

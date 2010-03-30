@@ -15,11 +15,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <qlabel.h>
-#include <qstring.h>
-#include <qtextedit.h>
-#include <qwhatsthis.h>
-#include <qcombobox.h>
+#include <QLabel>
+#include <QString>
+#include <QTextEdit>
+#include <QWhatsThis>
+#include <QComboBox>
 
 #include <klocale.h>
 

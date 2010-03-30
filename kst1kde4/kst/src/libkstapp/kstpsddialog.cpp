@@ -16,11 +16,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <qcheckbox.h>
-#include <qlineedit.h>
+#include <QCheckBox>
+#include <QLineEdit>
 #include <QMessageBox>
-#include <qspinbox.h>
-#include <qcombobox.h>
+#include <QSpinBox>
+#include <QComboBox>
 
 #include <knuminput.h>
 

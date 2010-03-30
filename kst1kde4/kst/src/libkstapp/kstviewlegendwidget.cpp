@@ -16,8 +16,8 @@
  ***************************************************************************/
 
 // include files for Qt
-#include <qcheckbox.h>
-#include <qtooltip.h>
+#include <QCheckBox>
+#include <QToolTip>
 
 // include files for KDE
 #include <kiconloader.h>

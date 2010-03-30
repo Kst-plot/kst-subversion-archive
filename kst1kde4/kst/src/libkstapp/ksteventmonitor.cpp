@@ -15,11 +15,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <qcheckbox.h>
-#include <qlineedit.h>
-#include <qradiobutton.h>
-#include <qtextedit.h>
-#include <qmessagebox.h>
+#include <QCheckBox>
+#include <QLineEdit>
+#include <QRadioButton>
+#include <QTextEdit>
+#include <QMessageBox>
 
 #include <klocale.h>
 

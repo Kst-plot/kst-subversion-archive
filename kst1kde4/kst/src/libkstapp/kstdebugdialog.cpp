@@ -15,10 +15,10 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <qcheckbox.h>
-#include <qlabel.h>
-#include <qlayout.h>
-#include <qlistwidget.h>
+#include <QCheckBox>
+#include <QLabel>
+#include <QLayout>
+#include <QListWidget>
 #include <QListWidgetItem>
 
 #include <kcolorbutton.h>
