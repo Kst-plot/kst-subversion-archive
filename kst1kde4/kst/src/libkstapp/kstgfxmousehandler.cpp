@@ -15,8 +15,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <qmetaobject.h>
-#include <qvariant.h>
+#include <QMetaObject>
+#include <QMetaProperty>
+#include <QVariant>
 
 #include "kstgfxmousehandler.h"
 #include "ksttoplevelview.h"
