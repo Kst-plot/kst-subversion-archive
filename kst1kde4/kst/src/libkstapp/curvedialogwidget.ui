@@ -26,7 +26,7 @@
     </widget>
    </item>
    <item row="0" column="0" colspan="2">
-    <widget class="Q3GroupBox" name="GroupBox9_4">
+    <widget class="QGroupBox" name="GroupBox9_4">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -325,12 +325,6 @@ of points, interpolation of one or the other will be required.  This combo-box s
  <layoutdefault spacing="6" margin="11"/>
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <customwidgets>
-  <customwidget>
-   <class>Q3GroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>Qt3Support/Q3GroupBox</header>
-   <container>1</container>
-  </customwidget>
   <customwidget>
    <class>CurveAppearanceWidget</class>
    <extends>QWidget</extends>

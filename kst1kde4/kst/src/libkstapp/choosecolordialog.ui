@@ -15,7 +15,7 @@
   </property>
   <layout class="QGridLayout">
    <item row="1" column="0">
-    <widget class="Q3ButtonGroup" name="vectorGroup">
+    <widget class="QGroupBox" name="vectorGroup">
      <property name="title">
       <string>Base Curve Color On</string>
      </property>
@@ -79,13 +79,13 @@
     </widget>
    </item>
    <item row="0" column="0">
-    <widget class="Q3GroupBox" name="colorGroup">
+    <widget class="QGroupBox" name="colorGroup">
      <property name="title">
       <string>Assign Colors</string>
      </property>
      <layout class="QGridLayout">
       <item row="0" column="0">
-       <widget class="Q3Frame" name="colorFrame">
+       <widget class="QFrame" name="colorFrame">
         <property name="frameShape">
          <enum>QFrame::StyledPanel</enum>
         </property>
@@ -104,26 +104,6 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
- <customwidgets>
-  <customwidget>
-   <class>Q3GroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>Qt3Support/Q3GroupBox</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>Q3Frame</class>
-   <extends>QFrame</extends>
-   <header>Qt3Support/Q3Frame</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>Q3ButtonGroup</class>
-   <extends>Q3GroupBox</extends>
-   <header>Qt3Support/Q3ButtonGroup</header>
-   <container>1</container>
-  </customwidget>
- </customwidgets>
  <tabstops>
   <tabstop>xVector</tabstop>
   <tabstop>yVector</tabstop>
