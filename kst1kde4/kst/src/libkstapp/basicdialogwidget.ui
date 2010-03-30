@@ -19,13 +19,13 @@
     <number>0</number>
    </property>
    <item row="1" column="0">
-    <widget class="Q3GroupBox" name="_inputOutputBox">
+    <widget class="QGroupBox" name="_inputOutputBox">
      <property name="title">
       <string>Inputs and Outputs</string>
      </property>
      <layout class="QGridLayout">
       <item row="0" column="0">
-       <widget class="Q3Frame" name="_frame">
+       <widget class="QFrame" name="_frame">
         <property name="frameShape">
          <enum>QFrame::NoFrame</enum>
         </property>
@@ -42,18 +42,6 @@
  <layoutdefault spacing="6" margin="11"/>
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <customwidgets>
-  <customwidget>
-   <class>Q3GroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>Qt3Support/Q3GroupBox</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>Q3Frame</class>
-   <extends>QFrame</extends>
-   <header>Qt3Support/Q3Frame</header>
-   <container>1</container>
-  </customwidget>
  </customwidgets>
  <includes>
   <include location="global">kst_export.h</include>

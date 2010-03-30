@@ -15,7 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <qvbox.h>
 #include <qlayout.h>
 #include <qlineedit.h>
 #include <QMessageBox>
@@ -43,10 +42,11 @@ KstBasicDialog *KstBasicDialog::globalInstance() {
 }
 
 
-KstBasicDialog::KstBasicDialog(QWidget* parent, const char* name, bool modal, Qt::Qt::WindowFlags fl)
-: KstDataDialog(parent, name, modal, fl) {
+KstBasicDialog::KstBasicDialog(QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl) : KstDataDialog(parent) {
+  _w = new Ui::BasicDialogWidget();
+  _w->setupUi(this);
+
   setMultiple(false);
-  _w = new BasicDialogWidget(_contents);
 
   _pluginName = QString::null;
   _grid = 0L;
@@ -68,10 +68,11 @@ void KstBasicDialog::init() {
 
   if (ptr) {
     if (_grid) { //reset
-      QLayoutIterator it = _grid->iterator();
-      while(QLayoutItem *item = it.takeCurrent()) {
-        delete item->widget();
-        delete item;
+      int i;
+
+      for (i=0; i<_grid->count();) {
+        delete _grid->itemAt(i)->widget();
+        delete _grid->itemAt(i);
       }
       delete _grid;
       _grid = 0;
@@ -85,37 +86,43 @@ void KstBasicDialog::init() {
                         + ptr->outputScalarList().count()
                         + ptr->outputStringList().count();
   
-    _grid = new QGridLayout(_w->_frame, numInputOutputs + 1, 2, 0, 8);
-    _grid->setColStretch(1,1);
-    _grid->setColStretch(0,0);
+    _grid = new QGridLayout(_w->_frame);
+
+    _grid->setColumnStretch(0, 0);
+    _grid->setColumnStretch(1, 1);
   
     //
     // create input widgets...
     //
   
     QStringList iv = ptr->inputVectorList();
-    QStringList::ConstIterator ivI = iv.begin();
+    QStringList::const_iterator ivI = iv.begin();
+
     for (; ivI != iv.end(); ++ivI) {
       createInputVector(*ivI, ++cnt);
     }
   
     QStringList is = ptr->inputScalarList();
-    QStringList::ConstIterator isI = is.begin();
+    QStringList::const_iterator isI = is.begin();
+
     for (; isI != is.end(); ++isI) {
       createInputScalar(*isI, ++cnt, ptr->defaultScalarValue(*isI));
     }
   
     QStringList istr = ptr->inputStringList();
-    QStringList::ConstIterator istrI = istr.begin();
+    QStringList::const_iterator istrI = istr.begin();
+
     for (; istrI != istr.end(); ++istrI) {
       createInputString(*istrI, ++cnt);
     }
   
     cnt++;
+
     QFrame* line = new QFrame(_w->_frame);
+
     line->setFrameShadow(QFrame::Sunken);
     line->setFrameShape(QFrame::HLine);
-    _grid->addMultiCellWidget(line, cnt, cnt, 0, 1);
+    _grid->addWidget(line, cnt, 0, 1, 2);
     line->show();
     cnt++;
   
@@ -124,19 +131,22 @@ void KstBasicDialog::init() {
     //
   
     QStringList ov = ptr->outputVectorList();
-    QStringList::ConstIterator ovI = ov.begin();
+    QStringList::const_iterator ovI = ov.begin();
+
     for (; ovI != ov.end(); ++ovI) {
       createOutputWidget(*ovI, ++cnt);
     }
   
     QStringList os = ptr->outputScalarList();
-    QStringList::ConstIterator osI = os.begin();
+    QStringList::const_iterator osI = os.begin();
+
     for (; osI != os.end(); ++osI) {
       createOutputWidget(*osI, ++cnt);
     }
   
     QStringList ostr = ptr->outputStringList();
-    QStringList::ConstIterator ostrI = ostr.begin();
+    QStringList::const_iterator ostrI = ostr.begin();
+
     for (; ostrI != ostr.end(); ++ostrI) {
       createOutputWidget(*ostrI, ++cnt);
     }
@@ -145,7 +155,9 @@ void KstBasicDialog::init() {
 
 
 QString KstBasicDialog::editTitle() {
-  KstBasicPluginPtr ptr = kst_cast<KstBasicPlugin>(_dp);
+  KstBasicPluginPtr ptr;
+
+  ptr = kst_cast<KstBasicPlugin>(_dp);
   if (ptr) {
     return i18n("Edit ") + ptr->name();
   }
@@ -160,10 +172,13 @@ QString KstBasicDialog::newTitle() {
 
 
 void KstBasicDialog::createInputVector(const QString &name, int row) {
+  VectorSelector *widget;
   QString labelName = name + "LABEL";
-  QLabel *label = new QLabel(name + ":", _w->_frame, labelName.toLatin1());
+  QLabel *label;
 
-  VectorSelector *widget = new VectorSelector(_w->_frame, name.toLatin1());
+  label = new QLabel(name + ":", _w->_frame);
+  widget = new VectorSelector(_w->_frame);
+
   connect(widget, SIGNAL(newVectorCreated(const QString&)), this, SIGNAL(modified()));
   connect(widget->_vector, SIGNAL(highlighted(int)), this, SLOT(wasModifiedApply()));
   connect(widget->_vector, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
@@ -176,10 +191,13 @@ void KstBasicDialog::createInputVector(const QString &name, int row) {
 
 
 void KstBasicDialog::createInputScalar(const QString &name, int row, double value) {
+  ScalarSelector *widget;
   QString labelName = name + "LABEL";
-  QLabel *label = new QLabel(name + ":", _w->_frame, labelName.toLatin1());
+  QLabel *label;
 
-  ScalarSelector *widget = new ScalarSelector(_w->_frame, name.toLatin1());
+  label = new QLabel(name + ":", _w->_frame);
+  widget = new ScalarSelector(_w->_frame);
+
   connect(widget, SIGNAL(newScalarCreated()), this, SIGNAL(modified()));
   connect(widget->_scalar, SIGNAL(highlighted(int)), this, SLOT(wasModifiedApply()));
   connect(widget->_scalar, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
@@ -197,10 +215,13 @@ void KstBasicDialog::createInputScalar(const QString &name, int row, double valu
 
 
 void KstBasicDialog::createInputString(const QString &name, int row) {
+  StringSelector *widget;
   QString labelName = name + "LABEL";
-  QLabel *label = new QLabel(name + ":", _w->_frame, labelName.toLatin1());
+  QLabel *label;
 
-  StringSelector *widget = new StringSelector(_w->_frame, name.toLatin1());
+  widget = new StringSelector(_w->_frame);
+  label = new QLabel(name + ":", _w->_frame);
+
   connect(widget, SIGNAL(newStringCreated()), this, SIGNAL(modified()));
   connect(widget->_string, SIGNAL(highlighted(int)), this, SLOT(wasModifiedApply()));
   connect(widget->_string, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
@@ -214,7 +235,8 @@ void KstBasicDialog::createInputString(const QString &name, int row) {
 
 void KstBasicDialog::createOutputWidget(const QString &name, int row) {
   QLabel *label = new QLabel(name + ":", _w->_frame);
-  QLineEdit *widget = new QLineEdit(_w->_frame, name.toLatin1());
+  QLineEdit *widget = new QLineEdit(_w->_frame);
+
   _grid->addWidget(label, row, 0);
   label->show();
   _grid->addWidget(widget, row, 1);
@@ -239,76 +261,89 @@ bool KstBasicDialog::newObject() {
   // need to create a new object rather than use the one in KstDataObject pluginList
   //
 
-  KstBasicPluginPtr ptr = kst_cast<KstBasicPlugin>(KstDataObject::createPlugin(_pluginName));
-  Q_ASSERT(ptr);
-
-  KstWriteLocker pl(ptr);
-
-  QString tagName = _tagName->text();
-
-  if (tagName != defaultTag && KstData::self()->dataTagNameNotUnique(tagName, true, this)) {
-    _tagName->setFocus();
-    return false;
-  }
-
-  if (tagName == defaultTag) {
-    tagName = KST::suggestPluginName(ptr->propertyString());
-  }
-  ptr->setTagName(KstObjectTag::fromString(tagName));
-
-  // Save the vectors and scalars
+  KstBasicPluginPtr ptr;
   QString error;
-  if (!editSingleObject(ptr, error) || !ptr->isValid()) {
-    QString str;
 
-    str = i18n("There is an error in the values you entered.");
-    if (!error.isEmpty()) {
-      str += "\n";
-      str += error;
+  ptr = kst_cast<KstBasicPlugin>(KstDataObject::createPlugin(_pluginName));
+  if (ptr) {
+    KstWriteLocker pl(ptr.data());
+  
+    QString tagName = _tagName->text();
+  
+    if (tagName != defaultTag && KstData::self()->dataTagNameNotUnique(tagName, true, this)) {
+      _tagName->setFocus();
+
+      return false;
     }
-    QMessageBox::warning(this, i18n("Kst"), str);
-    return false;
-  }
-
-  //
-  // set the outputs
-  //
-
-  QStringList ov = ptr->outputVectorList();
-  QStringList::ConstIterator ovI = ov.begin();
-  for (; ovI != ov.end(); ++ovI) {
-    if (QLineEdit *w = output(*ovI)) {
-      ptr->setOutputVector(*ovI, w->text());
+  
+    if (tagName == defaultTag) {
+      tagName = KST::suggestPluginName(ptr->propertyString());
     }
-  }
-
-  QStringList os = ptr->outputScalarList();
-  QStringList::ConstIterator osI = os.begin();
-  for (; osI != os.end(); ++osI) {
-    if (QLineEdit *w = output(*osI)) {
-      ptr->setOutputScalar(*osI, w->text());
+    ptr->setTagName(KstObjectTag::fromString(tagName));
+  
+    //
+    // save the vectors and scalars...
+    //
+  
+    if (!editSingleObject(ptr, error) || !ptr->isValid()) {
+      QString str;
+  
+      str = i18n("There is an error in the values you entered.");
+      if (!error.isEmpty()) {
+        str += "\n";
+        str += error;
+      }
+      QMessageBox::warning(this, i18n("Kst"), str);
+  
+      return false;
     }
-  }
-
-  QStringList ostr = ptr->outputStringList();
-  QStringList::ConstIterator ostrI = ostr.begin();
-  for (; ostrI != ostr.end(); ++ostrI) {
-    if (QLineEdit *w = output(*ostrI)) {
-      ptr->setOutputString(*ostrI, w->text());
+  
+    //
+    // set the outputs
+    //
+  
+    QStringList ov = ptr->outputVectorList();
+    QStringList::const_iterator ovI = ov.begin();
+  
+    for (; ovI != ov.end(); ++ovI) {
+      if (QLineEdit *w = output(*ovI)) {
+        ptr->setOutputVector(*ovI, w->text());
+      }
     }
+  
+    QStringList os = ptr->outputScalarList();
+    QStringList::const_iterator osI = os.begin();
+  
+    for (; osI != os.end(); ++osI) {
+      if (QLineEdit *w = output(*osI)) {
+        ptr->setOutputScalar(*osI, w->text());
+      }
+    }
+  
+    QStringList ostr = ptr->outputStringList();
+    QStringList::const_iterator ostrI = ostr.begin();
+  
+    for (; ostrI != ostr.end(); ++ostrI) {
+      if (QLineEdit *w = output(*ostrI)) {
+        ptr->setOutputString(*ostrI, w->text());
+      }
+    }
+  
+    if (!ptr->isValid()) {
+      QMessageBox::warning(this, i18n("Kst"), i18n("There is an error in the plugin you entered."));
+  
+      return false;
+    }
+  
+    ptr->setDirty();
+    KST::dataObjectList.lock().writeLock();
+    KST::dataObjectList.append(ptr);
+    KST::dataObjectList.lock().unlock();
+  
+    ptr = 0L; // drop the reference
+  
+  // xxx  emit modified();
   }
-
-  if (!ptr || !ptr->isValid()) {
-    QMessageBox::sorry(this, i18n("Kst"), i18n("There is an error in the plugin you entered."));
-    return false;
-  }
-
-  ptr->setDirty();
-  KST::dataObjectList.lock().writeLock();
-  KST::dataObjectList.append(ptr.data());
-  KST::dataObjectList.lock().unlock();
-  ptr = 0L; // drop the reference
-  emit modified();
 
   return true;
 }
@@ -320,18 +355,20 @@ bool KstBasicDialog::editObject() {
   // return false if the specified objects can't be edited, otherwise true
   //
 
-  KstBasicPluginPtr ptr = kst_cast<KstBasicPlugin>(_dp);
+  KstBasicPluginPtr ptr;
+  bool retVal = false;
 
+  ptr = kst_cast<KstBasicPlugin>(_dp);
   if (ptr) {
-    KstObjectTag newTag;
     QString error;
 
     ptr->writeLock();
 
-    newTag = KstObjectTag::fromString(_tagName->text());
+    KstObjectTag newTag = KstObjectTag::fromString(_tagName->text());
     if (newTag != ptr->tag() && KstData::self()->dataTagNameNotUnique(_tagName->text())) {
       _tagName->setFocus();
       ptr->unlock();
+
       return false;
     }
   
@@ -369,7 +406,7 @@ bool KstBasicDialog::editObject() {
     }
   
     ptr->setDirty();
-    emit modified();
+// xxx    emit modified();
 
     retVal = true;
   }
@@ -396,22 +433,28 @@ void KstBasicDialog::showEdit(const QString &field) {
     _newDialog = false;
     init();
   }
+
   KstDataDialog::showEdit(field);
 }
 
 
 bool KstBasicDialog::editSingleObject(KstBasicPluginPtr ptr, QString &error) {
-
   KstReadLocker vl(&KST::vectorList.lock());
   KstWriteLocker scl(&KST::scalarList.lock());
   KstReadLocker stl(&KST::stringList.lock());
 
-  { // leave this scope here to destroy the iterators
-
+  //
+  // leave the following scope here to destroy the iterators...
+  //
+  { 
+    //
     // input vectors...
-    KstVectorList::Iterator v;
+    //
+
+    KstVectorList::iterator v;
     QStringList iv = ptr->inputVectorList();
-    QStringList::ConstIterator ivI = iv.begin();
+    QStringList::const_iterator ivI = iv.begin();
+
     for (; ivI != iv.end(); ++ivI) {
       if (VectorSelector *w = vector(*ivI)) {
         v = KST::vectorList.findTag(w->selectedVector());
@@ -421,41 +464,55 @@ bool KstBasicDialog::editSingleObject(KstBasicPluginPtr ptr, QString &error) {
           if (!error.isEmpty()) {
             error += "\n";
           }
-          error += i18n("%1 '%2' is not a valid vector name.").arg(label(*ivI)->text().toLatin1()).arg(w->_vector->currentText());
+          error += i18n("%1 '%2' is not a valid vector name.").arg(label(*ivI)->text().toLatin1().data()).arg(w->_vector->currentText());
         }
       }
     }
 
+    //
     // input scalars...
-    KstScalarList::Iterator s;
+    //
+
+    KstScalarList::iterator s;
     QStringList is = ptr->inputScalarList();
-    QStringList::ConstIterator isI = is.begin();
+    QStringList::const_iterator isI = is.begin();
+
     for (; isI != is.end(); ++isI) {
       if (ScalarSelector *w = scalar(*isI)) {
         s = KST::scalarList.findTag(w->selectedScalar());
         if (s != KST::scalarList.end()) {
           ptr->setInputScalar(*isI, *s);
         } else {
-          // deal with direct entry
+          //
+          // deal with direct entry...
+          //
+
           bool ok;
           double val = w->_scalar->currentText().toDouble(&ok);
+
           if (ok) {
-            KstScalarPtr sp = new KstScalar(KstObjectTag::fromString(w->_scalar->currentText()), 0L, val, true, false, false);  // FIXME: should this be a global-context scalar?
+            KstScalarPtr sp;
+
+            sp = new KstScalar(KstObjectTag::fromString(w->_scalar->currentText()), 0L, val, true, false, false);  // FIXME: should this be a global-context scalar?
             ptr->setInputScalar(*isI, sp);
           } else {
             if (!error.isEmpty()) {
               error += "\n";
             }
-            error += i18n("%1 '%2' is not a valid scalar name or value.").arg(label(*isI)->text().toLatin1()).arg(w->_scalar->currentText());
+            error += i18n("%1 '%2' is not a valid scalar name or value.").arg(label(*isI)->text().toLatin1().data()).arg(w->_scalar->currentText());
           }
         }
       }
     }
 
+    //
     // input strings...
-    KstStringList::Iterator str;
+    //
+
+    KstStringList::iterator str;
     QStringList istr = ptr->inputStringList();
-    QStringList::ConstIterator istrI = istr.begin();
+    QStringList::const_iterator istrI = istr.begin();
+
     for (; istrI != istr.end(); ++istrI) {
       if (StringSelector *w = string(*istrI)) {
         str = KST::stringList.findTag(w->selectedString());
@@ -465,7 +522,7 @@ bool KstBasicDialog::editSingleObject(KstBasicPluginPtr ptr, QString &error) {
           if (!error.isEmpty()) {
             error += "\n";
           }
-          error += i18n("%1 '%2' is not a valid string name.").arg(label(*istrI)->text().toLatin1()).arg(w->_string->currentText());
+          error += i18n("%1 '%2' is not a valid string name.").arg(label(*istrI)->text().toLatin1().data()).arg(w->_string->currentText());
         }
       }
     }
@@ -476,14 +533,21 @@ bool KstBasicDialog::editSingleObject(KstBasicPluginPtr ptr, QString &error) {
 
 
 void KstBasicDialog::updateForm() {
-  KstBasicPluginPtr ptr = kst_cast<KstBasicPlugin>(KstDataObject::plugin(_pluginName));
+  KstBasicPluginPtr ptr;
+
+  ptr = kst_cast<KstBasicPlugin>(KstDataObject::plugin(_pluginName));
   if (!ptr) {
     return;
   }
 
+  //
   // input vectors...
+  //
+  
   QStringList iv = ptr->inputVectorList();
-  for (QStringList::ConstIterator ivI = iv.begin(); ivI != iv.end(); ++ivI) {
+  QStringList::const_iterator ivI;
+  
+  for (ivI = iv.begin(); ivI != iv.end(); ++ivI) {
     if (VectorSelector *w = vector(*ivI)) {
       disconnect(w->_vector, SIGNAL(highlighted(int)), this, SLOT(wasModifiedApply()));
       disconnect(w->_vector, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
@@ -493,9 +557,14 @@ void KstBasicDialog::updateForm() {
     }
   }
 
+  //
   // input scalars...
+  //
+
   QStringList is = ptr->inputScalarList();
-  for (QStringList::ConstIterator isI = is.begin(); isI != is.end(); ++isI) {
+  QStringList::const_iterator isI;
+
+  for (isI = is.begin(); isI != is.end(); ++isI) {
     if (ScalarSelector *w = scalar(*isI)) {
       disconnect(w->_scalar, SIGNAL(highlighted(int)), this, SLOT(wasModifiedApply()));
       disconnect(w->_scalar, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
@@ -505,9 +574,14 @@ void KstBasicDialog::updateForm() {
     }
   }
 
+  //
   // input strings...
+  //
+
   QStringList istr = ptr->inputStringList();
-  for (QStringList::ConstIterator istrI = istr.begin(); istrI != istr.end(); ++istrI) {
+  QStringList::const_iterator istrI;
+
+  for (istrI = istr.begin(); istrI != istr.end(); ++istrI) {
     if (StringSelector *w = string(*istrI)) {
       disconnect(w->_string, SIGNAL(highlighted(int)), this, SLOT(wasModifiedApply()));
       disconnect(w->_string, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
@@ -520,80 +594,125 @@ void KstBasicDialog::updateForm() {
 
 
 void KstBasicDialog::fillFieldsForEdit() {
-  KstBasicPluginPtr ptr = kst_cast<KstBasicPlugin>(_dp);
-  if (!ptr)
+  KstBasicPluginPtr ptr;
+
+  ptr = kst_cast<KstBasicPlugin>(_dp);
+  if (!ptr) {
     return; //shouldn't happen
+  }
 
   ptr->readLock();
 
   _tagName->setText(ptr->tagName());
   _legendText->setText(defaultTag); //FIXME?
 
-  //Update the various widgets...
+  //
+  // update the various widgets...
+  //
 
+  //
   // input vectors...
+  //
   QStringList iv = ptr->inputVectorList();
-  QStringList::ConstIterator ivI = iv.begin();
+  QStringList::const_iterator ivI = iv.begin();
+
   for (; ivI != iv.end(); ++ivI) {
-    KstVectorPtr p = ptr->inputVector(*ivI);
-    QString t = p ? p->tag().displayString() : QString::null;
+    KstVectorPtr p;
+    QString t;
+
+    p = ptr->inputVector(*ivI);
+    t = p ? p->tag().displayString() : QString::null;
     if (VectorSelector *w = vector(*ivI)) {
       w->setSelection(t);
     }
   }
 
+  //
   // input scalars...
+  //
+
   QStringList is = ptr->inputScalarList();
-  QStringList::ConstIterator isI = is.begin();
+  QStringList::const_iterator isI = is.begin();
+
   for (; isI != is.end(); ++isI) {
-    KstScalarPtr p = ptr->inputScalar(*isI);
-    QString t = p ? p->tag().displayString() : QString::null;
+    KstScalarPtr p;
+    QString t;
+
+    p = ptr->inputScalar(*isI);
+    t = p ? p->tag().displayString() : QString::null;
     if (ScalarSelector *w = scalar(*isI)) {
       w->setSelection(t);
     }
   }
 
+  //
   // input strings...
+  //
   QStringList istr = ptr->inputStringList();
-  QStringList::ConstIterator istrI = istr.begin();
+  QStringList::const_iterator istrI = istr.begin();
+
   for (; istrI != istr.end(); ++istrI) {
-    KstStringPtr p = ptr->inputString(*istrI);
-    QString t = p ? p->tag().displayString() : QString::null;
+    KstStringPtr p;
+    QString t;
+
+    p = ptr->inputString(*istrI);
+    t = p ? p->tag().displayString() : QString::null;
     if (StringSelector *w = string(*istrI)) {
       w->setSelection(t);
     }
   }
 
+  //
   // output vectors...
+  //
+
   QStringList ov = ptr->outputVectorList();
-  QStringList::ConstIterator ovI = ov.begin();
+  QStringList::const_iterator ovI = ov.begin();
+
   for (; ovI != ov.end(); ++ovI) {
-    KstVectorPtr p = ptr->outputVector(*ovI);
-    QString t = p ? p->tagName() : QString::null;
+    KstVectorPtr p;
+    QString t;
+
+    p = ptr->outputVector(*ovI);
+    t = p ? p->tagName() : QString::null;
     if (QLineEdit *w = output(*ovI)) {
       w->setText(t);
       w->setEnabled(false);
     }
   }
 
+  //
   // output scalars...
+  //
+
   QStringList os = ptr->outputScalarList();
-  QStringList::ConstIterator osI = os.begin();
+  QStringList::const_iterator osI = os.begin();
+
   for (; osI != os.end(); ++osI) {
-    KstScalarPtr p = ptr->outputScalar(*osI);
-    QString t = p ? p->tagName() : QString::null;
+    KstScalarPtr p;
+    QString t;
+
+    p = ptr->outputScalar(*osI);
+    t = p ? p->tagName() : QString::null;
     if (QLineEdit *w = output(*osI)) {
       w->setText(t);
       w->setEnabled(false);
     }
   }
 
+  //
   // ouput strings...
+  //
+
   QStringList ostr = ptr->outputStringList();
-  QStringList::ConstIterator ostrI = ostr.begin();
+  QStringList::const_iterator ostrI = ostr.begin();
+
   for (; ostrI != ostr.end(); ++ostrI) {
-    KstStringPtr p = ptr->outputString(*ostrI);
-    QString t = p ? p->tagName() : QString::null;
+    KstStringPtr p;
+    QString t;
+
+    p = ptr->outputString(*ostrI);
+    t = p ? p->tagName() : QString::null;
     if (QLineEdit *w = output(*ostrI)) {
       w->setText(t);
       w->setEnabled(false);
@@ -619,28 +738,34 @@ void KstBasicDialog::fillFieldsForNew() {
 
 
 VectorSelector *KstBasicDialog::vector(const QString &name) const {
-  return ::qt_cast<VectorSelector*>(_w->_frame->child(name.toLatin1()));
+// xxx  return ::qobject_cast<VectorSelector*>(_w->_frame->child(name.toLatin1()));\
+  return 0L;
 }
 
 
 ScalarSelector *KstBasicDialog::scalar(const QString &name) const {
-  return ::qt_cast<ScalarSelector*>(_w->_frame->child(name.toLatin1()));
+// xxx  return ::qobject_cast<ScalarSelector*>(_w->_frame->child(name.toLatin1()));
+  return 0L;
 }
 
 
 StringSelector *KstBasicDialog::string(const QString &name) const {
-  return ::qt_cast<StringSelector*>(_w->_frame->child(name.toLatin1()));
+// xxx  return ::qobject_cast<StringSelector*>(_w->_frame->child(name.toLatin1()));
+  return 0L;
 }
 
 
 QLabel *KstBasicDialog::label(const QString &name) const {
   QString labelName = name + "LABEL";
-  return ::qt_cast<QLabel*>(_w->_frame->child(labelName.toLatin1()));
+
+// xxx  return ::qobject_cast<QLabel*>(_w->_frame->child(labelName.toLatin1()));
+  return 0L;
 }
 
 
 QLineEdit *KstBasicDialog::output(const QString &name) const {
-  return ::qt_cast<QLineEdit*>(_w->_frame->child(name.toLatin1()));
+// xxx  return ::qobject_cast<QLineEdit*>(_w->_frame->child(name.toLatin1()));
+  return 0L;
 }
 
 #include "kstbasicdialog.moc"
