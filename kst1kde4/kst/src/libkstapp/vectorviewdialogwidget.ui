@@ -13,7 +13,7 @@
   </property>
   <layout class="QVBoxLayout">
    <item>
-    <widget class="Q3GroupBox" name="GroupBox9_4">
+    <widget class="QGroupBox" name="GroupBox9_4">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -158,7 +158,7 @@ of points, interpolation of one or the other will be required.  This combo-box s
     </widget>
    </item>
    <item>
-    <widget class="Q3ButtonGroup" name="buttonGroup4">
+    <widget class="QGroupBox" name="buttonGroup4">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -435,18 +435,6 @@ of points, interpolation of one or the other will be required.  This combo-box s
  <layoutdefault spacing="6" margin="11"/>
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <customwidgets>
-  <customwidget>
-   <class>Q3GroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>Qt3Support/Q3GroupBox</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>Q3ButtonGroup</class>
-   <extends>Q3GroupBox</extends>
-   <header>Qt3Support/Q3ButtonGroup</header>
-   <container>1</container>
-  </customwidget>
   <customwidget>
    <class>VectorSelector</class>
    <extends>QWidget</extends>

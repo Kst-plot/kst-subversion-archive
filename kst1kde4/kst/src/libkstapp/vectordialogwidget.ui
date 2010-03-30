@@ -19,7 +19,7 @@
     <number>0</number>
    </property>
    <item row="0" column="0">
-    <widget class="Q3ButtonGroup" name="sourceGroup">
+    <widget class="QGroupBox" name="sourceGroup">
      <property name="title">
       <string>Source</string>
      </property>
@@ -80,7 +80,7 @@
     </widget>
    </item>
    <item row="1" column="0">
-    <widget class="Q3GroupBox" name="_rvectorGroup">
+    <widget class="QGroupBox" name="_rvectorGroup">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
        <horstretch>0</horstretch>
@@ -189,7 +189,7 @@
     </widget>
    </item>
    <item row="3" column="0">
-    <widget class="Q3GroupBox" name="_svectorGroup">
+    <widget class="QGroupBox" name="_svectorGroup">
      <property name="enabled">
       <bool>false</bool>
      </property>
@@ -320,18 +320,6 @@
  <layoutdefault spacing="6" margin="11"/>
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <customwidgets>
-  <customwidget>
-   <class>Q3GroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>Qt3Support/Q3GroupBox</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>Q3ButtonGroup</class>
-   <extends>Q3GroupBox</extends>
-   <header>Qt3Support/Q3ButtonGroup</header>
-   <container>1</container>
-  </customwidget>
   <customwidget>
    <class>KstComboBox</class>
   </customwidget>

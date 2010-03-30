@@ -19,7 +19,7 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="Q3ButtonGroup" name="_matrixGroup">
+    <widget class="QGroupBox" name="_matrixGroup">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -60,7 +60,7 @@
     </widget>
    </item>
    <item>
-    <widget class="Q3ButtonGroup" name="_imageTypeGroup">
+    <widget class="QGroupBox" name="_imageTypeGroup">
      <property name="title">
       <string>Image Type</string>
      </property>
@@ -93,7 +93,7 @@
     </widget>
    </item>
    <item>
-    <widget class="Q3ButtonGroup" name="_colorMapGroup">
+    <widget class="QGroupBox" name="_colorMapGroup">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -260,7 +260,7 @@
     </widget>
    </item>
    <item>
-    <widget class="Q3ButtonGroup" name="_contourMapGroup">
+    <widget class="QGroupBox" name="_contourMapGroup">
      <property name="title">
       <string>Contour Map Parameters</string>
      </property>
@@ -418,18 +418,6 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
-  <customwidget>
-   <class>Q3GroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>Qt3Support/Q3GroupBox</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>Q3ButtonGroup</class>
-   <extends>Q3GroupBox</extends>
-   <header>Qt3Support/Q3ButtonGroup</header>
-   <container>1</container>
-  </customwidget>
   <customwidget>
    <class>KDoubleNumInput</class>
    <extends>QWidget</extends>

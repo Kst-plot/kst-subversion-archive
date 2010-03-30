@@ -223,7 +223,7 @@
       </attribute>
       <layout class="QGridLayout">
        <item row="0" column="0">
-        <widget class="Q3GroupBox" name="groupBox4">
+        <widget class="QGroupBox" name="groupBox4">
          <property name="title">
           <string>Colors and Line Weights</string>
          </property>
@@ -475,7 +475,7 @@
         </widget>
        </item>
        <item row="2" column="0">
-        <widget class="Q3GroupBox" name="groupBox3">
+        <widget class="QGroupBox" name="groupBox3">
          <property name="title">
           <string>Legend</string>
          </property>
@@ -536,7 +536,7 @@
         </widget>
        </item>
        <item row="1" column="0">
-        <widget class="Q3GroupBox" name="groupBox5">
+        <widget class="QGroupBox" name="groupBox5">
          <property name="title">
           <string>Labels</string>
          </property>
@@ -915,7 +915,7 @@
       </attribute>
       <layout class="QGridLayout">
        <item row="0" column="0">
-        <widget class="Q3ButtonGroup" name="buttonGroup16">
+        <widget class="QGroupBox" name="buttonGroup16">
          <property name="title">
           <string>Placement</string>
          </property>
@@ -960,7 +960,7 @@
         </spacer>
        </item>
        <item row="1" column="0">
-        <widget class="Q3ButtonGroup" name="ButtonGroup1_2">
+        <widget class="QGroupBox" name="ButtonGroup1_2">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -1132,7 +1132,7 @@
         </widget>
        </item>
        <item row="2" column="0">
-        <widget class="Q3ButtonGroup" name="groupBox5_2">
+        <widget class="QGroupBox" name="groupBox5_2">
          <property name="title">
           <string>Tick Marks</string>
          </property>
@@ -1274,7 +1274,7 @@
         </widget>
        </item>
        <item row="3" column="0">
-        <widget class="Q3ButtonGroup" name="buttonGroup6">
+        <widget class="QGroupBox" name="buttonGroup6">
          <property name="title">
           <string>Grid Lines</string>
          </property>
@@ -1338,7 +1338,7 @@
       </attribute>
       <layout class="QGridLayout">
        <item row="1" column="0">
-        <widget class="Q3ButtonGroup" name="ButtonGroup1_2_2">
+        <widget class="QGroupBox" name="ButtonGroup1_2_2">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -1511,7 +1511,7 @@
         </widget>
        </item>
        <item row="0" column="0">
-        <widget class="Q3ButtonGroup" name="buttonGroup16_2">
+        <widget class="QGroupBox" name="buttonGroup16_2">
          <property name="title">
           <string>Placement</string>
          </property>
@@ -1540,7 +1540,7 @@
         </widget>
        </item>
        <item row="3" column="0">
-        <widget class="Q3ButtonGroup" name="buttonGroup6_2">
+        <widget class="QGroupBox" name="buttonGroup6_2">
          <property name="title">
           <string>Grid Lines</string>
          </property>
@@ -1597,7 +1597,7 @@
         </widget>
        </item>
        <item row="2" column="0">
-        <widget class="Q3ButtonGroup" name="buttonGroup18">
+        <widget class="QGroupBox" name="buttonGroup18">
          <property name="title">
           <string>Tick Marks</string>
          </property>
@@ -1778,7 +1778,7 @@
         </spacer>
        </item>
        <item row="0" column="0">
-        <widget class="Q3ButtonGroup" name="buttonGroup9">
+        <widget class="QGroupBox" name="buttonGroup9">
          <property name="title">
           <string>X Axis</string>
          </property>
@@ -1991,7 +1991,7 @@
         </widget>
        </item>
        <item row="1" column="0">
-        <widget class="Q3ButtonGroup" name="buttonGroup10">
+        <widget class="QGroupBox" name="buttonGroup10">
          <property name="title">
           <string>Y Axis</string>
          </property>
@@ -2205,7 +2205,7 @@
       </attribute>
       <layout class="QGridLayout">
        <item row="3" column="0">
-        <widget class="Q3ButtonGroup" name="buttonGroup17">
+        <widget class="QGroupBox" name="buttonGroup17">
          <property name="title">
           <string>Appearance</string>
          </property>
@@ -2375,7 +2375,7 @@
         </layout>
        </item>
        <item row="2" column="0" colspan="2">
-        <widget class="Q3ButtonGroup" name="buttonGroup15">
+        <widget class="QGroupBox" name="buttonGroup15">
          <property name="title">
           <string>Automatic Marker Generation</string>
          </property>
@@ -2563,29 +2563,6 @@
  <layoutdefault spacing="6" margin="11"/>
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <customwidgets>
-  <customwidget>
-   <class>Q3GroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>Qt3Support/Q3GroupBox</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>Q3Frame</class>
-   <extends>QFrame</extends>
-   <header>Qt3Support/Q3Frame</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>Q3ButtonGroup</class>
-   <extends>Q3GroupBox</extends>
-   <header>Qt3Support/Q3ButtonGroup</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>Q3ListBox</class>
-   <extends>Q3Frame</extends>
-   <header>q3listbox.h</header>
-  </customwidget>
   <customwidget>
    <class>KColorButton</class>
    <extends>QPushButton</extends>

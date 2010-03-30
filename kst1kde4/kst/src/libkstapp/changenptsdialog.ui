@@ -61,12 +61,12 @@
     </layout>
    </item>
    <item row="1" column="0">
-    <widget class="Q3ListBox" name="CurveList">
+    <widget class="QListBox" name="CurveList">
      <property name="whatsThis">
       <string>The sample ranges for the vectors selected in this list will be changed.</string>
      </property>
      <property name="selectionMode">
-      <enum>Q3ListBox::Extended</enum>
+      <enum>QListBox::Extended</enum>
      </property>
     </widget>
    </item>
@@ -131,17 +131,6 @@
  <layoutdefault spacing="6" margin="11"/>
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <customwidgets>
-  <customwidget>
-   <class>Q3Frame</class>
-   <extends>QFrame</extends>
-   <header>Qt3Support/Q3Frame</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>Q3ListBox</class>
-   <extends>Q3Frame</extends>
-   <header>q3listbox.h</header>
-  </customwidget>
   <customwidget>
    <class>KstDataRange</class>
    <extends>QWidget</extends>

@@ -19,7 +19,7 @@
     <number>0</number>
    </property>
    <item row="0" column="0">
-    <widget class="Q3GroupBox" name="GroupBox9_3">
+    <widget class="QGroupBox" name="GroupBox9_3">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -51,7 +51,7 @@
        </layout>
       </item>
       <item row="1" column="0">
-       <widget class="Q3Frame" name="_pluginInfoFrame">
+       <widget class="QFrame" name="_pluginInfoFrame">
         <property name="frameShape">
          <enum>QFrame::NoFrame</enum>
         </property>
@@ -64,13 +64,13 @@
     </widget>
    </item>
    <item row="1" column="0">
-    <widget class="Q3GroupBox" name="_pluginInputsBox">
+    <widget class="QGroupBox" name="_pluginInputsBox">
      <property name="title">
       <string>Inputs and Outputs</string>
      </property>
      <layout class="QGridLayout">
       <item row="0" column="0">
-       <widget class="Q3Frame" name="_pluginInputOutputFrame">
+       <widget class="QFrame" name="_pluginInputOutputFrame">
         <property name="frameShape">
          <enum>QFrame::NoFrame</enum>
         </property>
@@ -94,18 +94,6 @@
  <layoutdefault spacing="6" margin="11"/>
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <customwidgets>
-  <customwidget>
-   <class>Q3GroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>Qt3Support/Q3GroupBox</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>Q3Frame</class>
-   <extends>QFrame</extends>
-   <header>Qt3Support/Q3Frame</header>
-   <container>1</container>
-  </customwidget>
   <customwidget>
    <class>CurveAppearanceWidget</class>
    <extends>QWidget</extends>
