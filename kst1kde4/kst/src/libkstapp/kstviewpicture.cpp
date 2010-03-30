@@ -18,12 +18,12 @@
 #include <assert.h>
 #include <math.h>
 
-#include <qbitmap.h>
-#include <qfile.h>
-#include <qfileinfo.h>
-#include <qmetaobject.h>
-#include <qpainter.h>
-#include <qtimer.h>
+#include <QBitmap>
+#include <QFile>
+#include <QFileInfo>
+#include <QMetaObject>
+#include <QPainter>
+#include <QTimer>
 
 #include <kglobal.h>
 #include <kio/netaccess.h>

@@ -23,11 +23,11 @@
 #include <kglobal.h>
 #include <klocale.h>
 
-#include <qbitmap.h>
-#include <qmetaobject.h>
-#include <qpainter.h>
-#include <qmap.h>
-#include <qpair.h>
+#include <QBitmap>
+#include <QMetaObject>
+#include <QPainter>
+#include <QMap>
+#include <QPair>
 
 KstViewBox::KstViewBox()
 : KstViewObject("Box"), _borderColor(QColor(0, 0, 0)), _borderWidth(0) {

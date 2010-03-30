@@ -18,11 +18,11 @@
 
 #include <assert.h>
 
-#include <qbuttongroup.h>
-#include <qcheckbox.h>
-#include <qradiobutton.h>
-#include <qspinbox.h>
-#include <qmessagebox.h>
+#include <QButtonGroup>
+#include <QCheckBox>
+#include <QRadioButton>
+#include <QSpinBox>
+#include <QMessageBox>
 
 #include <kfiledialog.h>
 #include <klineedit.h>

@@ -18,20 +18,20 @@
 
 #include <stdlib.h>
 
-#include <qapplication.h>
-#include <qbitmap.h>
+#include <QApplication>
+#include <QBitmap>
 #include <QCheckBox>
 #include <QFontComboBox>
-#include <qmetaobject.h>
+#include <QMetaObject>
 #include <QStack>
-#include <qradiobutton.h>
+#include <QRadioButton>
 #include <QTextDocument>
 #include <QSpinBox>
 
 #include <kglobal.h>
 #include <klocale.h>
 #include <kcolorbutton.h>
-#include <kcombobox.h>
+// xxx #include <kcombobox.h>
 
 #include "kstviewlegend.h"
 

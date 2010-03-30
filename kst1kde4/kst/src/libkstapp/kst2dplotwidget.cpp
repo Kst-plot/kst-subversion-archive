@@ -22,11 +22,11 @@
 #include <QPushButton>
 #include <QString>
 
-#include <qfontdatabase.h>
-#include <qradiobutton.h>
-#include <qspinbox.h>
-#include <qstyle.h>
-#include <qtooltip.h>
+#include <QFontDatabase>
+#include <QRadioButton>
+#include <QSpinBox>
+#include <QStyle>
+#include <QToolTip>
 
 #include <kcolorbutton.h>
 #include <kiconloader.h>

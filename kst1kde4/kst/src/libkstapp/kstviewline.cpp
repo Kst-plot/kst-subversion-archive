@@ -22,10 +22,10 @@
 
 #include <klocale.h>
 
-#include <qbitmap.h>
-#include <qmetaobject.h>
-#include <qpainter.h>
-#include <qvariant.h>
+#include <QBitmap>
+#include <QMetaObject>
+#include <QPainter>
+#include <QVariant>
 
 #include <math.h>
 

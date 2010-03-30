@@ -21,7 +21,7 @@
 #include <kglobal.h>
 #include <klocale.h>
 
-#include <qbitmap.h>
+#include <QBitmap>
 #include <QPainter>
 #include <QPolygon>
 

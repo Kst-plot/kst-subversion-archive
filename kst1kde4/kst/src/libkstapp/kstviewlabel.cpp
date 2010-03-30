@@ -41,12 +41,12 @@
 #include <kpopupmenu.h>
 */
 #include <QApplication>
-#include <qbitmap.h>
-#include <qcheckbox.h>
-#include <qmetaobject.h>
-#include <qtextedit.h>
-#include <qregexp.h>
-#include <qspinbox.h>
+#include <QBitmap>
+#include <QCheckBox>
+#include <QMetaObject>
+#include <QTextEdit>
+#include <QRegExp>
+#include <QSpinBox>
 #include <QStack>
 
 #include <stdlib.h>
