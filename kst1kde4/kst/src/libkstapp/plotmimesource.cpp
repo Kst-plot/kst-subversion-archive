@@ -15,7 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <qmime.h>
+// xxx #include <qmime.h>
 
 #include "kst.h"
 #include "kstviewwindow.h"

@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 // include files for Qt
-#include <qlabel.h> 
+#include <QLabel> 
 
 //include files for KDE
 #include <klocale.h>

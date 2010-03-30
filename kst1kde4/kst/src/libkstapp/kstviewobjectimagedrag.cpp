@@ -17,10 +17,10 @@
 
 #include <stdlib.h>
 
-#include <qeventloop.h>
-#include <qfile.h>
-#include <qpainter.h>
-#include <qpixmap.h>
+#include <QEventLoop>
+#include <QFile>
+#include <QPainter>
+#include <QPixmap>
 #include <QProgressDialog>
 #include <QTemporaryFile>
 
