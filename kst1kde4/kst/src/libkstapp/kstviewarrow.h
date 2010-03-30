@@ -19,7 +19,7 @@
 #define KSTVIEWARROW_H
 
 #include "kstviewline.h"
-#include <QGlobal>
+#include <qglobal.h>
 
 class KstViewArrow;
 typedef QExplicitlySharedDataPointer<KstViewArrow> KstViewArrowPtr;

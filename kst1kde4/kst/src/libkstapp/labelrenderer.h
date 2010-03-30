@@ -18,11 +18,11 @@
 #ifndef LABELRENDERER_H
 #define LABELRENDERER_H
 
-#include <qfont.h>
-#include <qpainter.h>
-#include <qpair.h>
-#include <qstring.h>
-#include <qvariant.h>
+#include <QFont>
+#include <QPainter>
+#include <QPair>
+#include <QString>
+#include <QVariant>
 #include <QVector>
 
 #include "dataref.h"
