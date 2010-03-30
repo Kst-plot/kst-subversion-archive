@@ -72,12 +72,12 @@ void KstQuickStartDialog::open_I() {
 void KstQuickStartDialog::update() {
   //get the list of recent files
   _recentFileList->clear();
-  _recentFileList->insertStringList(_app->recentFiles());
+  _recentFileList->insertItems(0,_app->recentFiles());
 
   //by default, select a recent file
-  if (_recentFileList->numItemsVisible() > 0) {
+/* xxx  if (_recentFileList->numItemsVisible() > 0) {
     _recentFileList->setSelected(0, true);
-  }
+  } */
 
   //update the startup checkbox
   _showAtStartup->setChecked(KstSettings::globalSettings()->showQuickStart);
