@@ -73,7 +73,7 @@
     </spacer>
    </item>
    <item row="0" column="0" colspan="4">
-    <widget class="Q3ListView" name="ViewView">
+    <widget class="QListView" name="ViewView">
      <column>
       <property name="text">
        <string>Column 1</string>
@@ -96,19 +96,6 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
- <customwidgets>
-  <customwidget>
-   <class>Q3Frame</class>
-   <extends>QFrame</extends>
-   <header>Qt3Support/Q3Frame</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>Q3ListView</class>
-   <extends>Q3Frame</extends>
-   <header>q3listview.h</header>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
 </ui>
