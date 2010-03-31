@@ -19,7 +19,7 @@
     <number>0</number>
    </property>
    <item row="4" column="0">
-    <widget class="Q3ButtonGroup" name="_scalingGroup">
+    <widget class="QGroupBox" name="_scalingGroup">
      <property name="title">
       <string>Scaling and Translation</string>
      </property>
@@ -176,7 +176,7 @@
     </widget>
    </item>
    <item row="3" column="0">
-    <widget class="Q3ButtonGroup" name="_gradientGroup">
+    <widget class="QGroupBox" name="_gradientGroup">
      <property name="title">
       <string>Gradient Parameters</string>
      </property>
@@ -308,7 +308,7 @@
     </widget>
    </item>
    <item row="2" column="0">
-    <widget class="Q3ButtonGroup" name="_dataRangeGroup">
+    <widget class="QGroupBox" name="_dataRangeGroup">
      <property name="title">
       <string>Data Range</string>
      </property>
@@ -590,7 +590,7 @@
     </widget>
    </item>
    <item row="0" column="0">
-    <widget class="Q3ButtonGroup" name="_sourceGroup">
+    <widget class="QGroupBox" name="_sourceGroup">
      <property name="title">
       <string>Source</string>
      </property>
@@ -629,7 +629,7 @@
     </widget>
    </item>
    <item row="1" column="0">
-    <widget class="Q3GroupBox" name="_dataSourceGroup">
+    <widget class="QGroupBox" name="_dataSourceGroup">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
        <horstretch>0</horstretch>
@@ -727,19 +727,7 @@
  <layoutdefault spacing="6" margin="11"/>
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <customwidgets>
-  <customwidget>
-   <class>Q3GroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>Qt3Support/Q3GroupBox</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>Q3ButtonGroup</class>
-   <extends>Q3GroupBox</extends>
-   <header>Qt3Support/Q3ButtonGroup</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
+    <customwidget>
    <class>KUrlRequester</class>
    <extends>QWidget</extends>
    <header>kurlrequester.h</header>

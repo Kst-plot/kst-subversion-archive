@@ -76,7 +76,7 @@
     </widget>
    </item>
    <item row="5" column="0" colspan="5">
-    <widget class="Q3ButtonGroup" name="buttonGroup2">
+    <widget class="QGroupBox" name="buttonGroup2">
      <property name="title">
       <string>Save Options</string>
      </property>
@@ -191,7 +191,7 @@
     </widget>
    </item>
    <item row="3" column="0" colspan="5">
-    <widget class="Q3GroupBox" name="groupBox1">
+    <widget class="QGroupBox" name="groupBox1">
      <property name="title">
       <string>Size</string>
      </property>
@@ -369,7 +369,7 @@
     </spacer>
    </item>
    <item row="4" column="0" colspan="5">
-    <widget class="Q3ButtonGroup" name="buttonGroup1">
+    <widget class="QGroupBox" name="buttonGroup1">
      <property name="title">
       <string>Tabs</string>
      </property>
@@ -438,19 +438,7 @@
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <customwidgets>
   <customwidget>
-   <class>Q3GroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>Qt3Support/Q3GroupBox</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>Q3ButtonGroup</class>
-   <extends>Q3GroupBox</extends>
-   <header>Qt3Support/Q3ButtonGroup</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>KURLRequester</class>
+   <class>KUrlRequester</class>
    <extends>QWidget</extends>
    <header>kurlrequester.h</header>
   </customwidget>

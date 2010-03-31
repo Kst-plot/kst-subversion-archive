@@ -254,7 +254,7 @@
         </layout>
        </item>
        <item>
-        <widget class="Q3ButtonGroup" name="buttonGroup6">
+        <widget class="QGroupBox" name="buttonGroup6">
          <property name="title">
           <string>Default Plot Grid Lines</string>
          </property>
@@ -461,7 +461,7 @@
         </widget>
        </item>
        <item>
-        <widget class="Q3GroupBox" name="groupBox1">
+        <widget class="QGroupBox" name="groupBox1">
          <property name="title">
           <string>Default X Axis</string>
          </property>
@@ -942,7 +942,7 @@
        <item row="6" column="0" colspan="2">
         <layout class="QHBoxLayout">
          <item>
-          <widget class="Q3ButtonGroup" name="_buttonGroupEncryption">
+          <widget class="QGroupBox" name="_buttonGroupEncryption">
            <property name="title">
             <string>Encryption</string>
            </property>
@@ -972,7 +972,7 @@
           </widget>
          </item>
          <item>
-          <widget class="Q3ButtonGroup" name="_buttonGroupAuthentication">
+          <widget class="QGroupBox" name="_buttonGroupAuthentication">
            <property name="title">
             <string>Authentication</string>
            </property>
@@ -1092,18 +1092,6 @@
  <layoutdefault spacing="6" margin="11"/>
  <layoutfunction spacing="KDialog::spacingHint" margin="KDialog::marginHint"/>
  <customwidgets>
-  <customwidget>
-   <class>Q3GroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>Qt3Support/Q3GroupBox</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>Q3ButtonGroup</class>
-   <extends>Q3GroupBox</extends>
-   <header>Qt3Support/Q3ButtonGroup</header>
-   <container>1</container>
-  </customwidget>
   <customwidget>
    <class>KIntSpinBox</class>
    <extends>QSpinBox</extends>
