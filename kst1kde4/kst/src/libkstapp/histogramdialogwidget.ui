@@ -23,12 +23,7 @@
      <property name="title">
       <string>Histogram Properties</string>
      </property>
-     <property name="frameShape">
-      <enum>Q3GroupBox::Box</enum>
-     </property>
-     <property name="frameShadow">
-      <enum>Q3GroupBox::Sunken</enum>
-     </property>
+
      <layout class="QGridLayout">
       <property name="margin">
        <number>11</number>

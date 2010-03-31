@@ -304,7 +304,7 @@
     </widget>
    </item>
    <item row="4" column="0">
-    <widget class="Q3GroupBox" name="groupBoxScript">
+    <widget class="QGroupBox" name="groupBoxScript">
      <property name="title">
       <string>KstScript</string>
      </property>
@@ -317,13 +317,13 @@
        </widget>
       </item>
       <item>
-       <widget class="Q3TextEdit" name="_script"/>
+       <widget class="QTextEdit" name="_script"/>
       </item>
      </layout>
     </widget>
    </item>
    <item row="3" column="0">
-    <widget class="Q3GroupBox" name="groupBoxELOG">
+    <widget class="QGroupBox" name="groupBoxELOG">
      <property name="title">
       <string>ELOG</string>
      </property>

@@ -15,7 +15,7 @@
   </property>
   <layout class="QGridLayout">
    <item row="1" column="0" colspan="3">
-    <widget class="Q3ListView" name="_extensions">
+    <widget class="QListView" name="_extensions">
      <property name="allColumnsShowFocus">
       <bool>true</bool>
      </property>
@@ -109,19 +109,6 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
- <customwidgets>
-  <customwidget>
-   <class>Q3Frame</class>
-   <extends>QFrame</extends>
-   <header>Qt3Support/Q3Frame</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>Q3ListView</class>
-   <extends>Q3Frame</extends>
-   <header>q3listview.h</header>
-  </customwidget>
- </customwidgets>
  <tabstops>
   <tabstop>_extensions</tabstop>
   <tabstop>_ok</tabstop>

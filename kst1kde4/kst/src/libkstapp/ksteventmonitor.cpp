@@ -161,7 +161,7 @@ void KstEventMonitor::fillEvent(EventMonitorEntryPtr& event) {
   event->setLogEMail(_w->checkBoxEMailNotify->isChecked());
   event->setLogELOG(_w->checkBoxELOGNotify->isChecked());
   event->setEMailRecipients(_w->lineEditEMailRecipients->text());
-  event->setScriptCode(_w->_useScript->isChecked() ? _w->_script->text() : QString::null);
+  event->setScriptCode(_w->_useScript->isChecked() ? _w->_script->toPlainText() : QString::null);
 
   if (_w->radioButtonLogNotice->isChecked()) {
     event->setLevel(KstDebug::Notice);
@@ -263,7 +263,7 @@ bool KstEventMonitor::editSingleObject(EventMonitorEntryPtr emPtr) {
 
   if (_scriptDirty) {
     if (_w->_useScript->isChecked()) {
-      emPtr->setScriptCode(_w->_script->text());
+      emPtr->setScriptCode(_w->_script->toPlainText());
     } else {
       emPtr->setScriptCode(QString::null);
     }
