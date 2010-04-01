@@ -19,8 +19,8 @@
 #include <config.h>
 
 // include files for Qt
-#include <qstylesheet.h>
-#include <qthread.h>
+#include <QStyleSheet>
+#include <QThread>
 
 // include files for KDE
 #include <dcopref.h>

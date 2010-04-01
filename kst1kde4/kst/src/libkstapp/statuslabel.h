@@ -18,8 +18,8 @@
 #ifndef STATUSLABEL_H
 #define STATUSLABEL_H
 
-#include <qlabel.h>
-#include <qtooltip.h>
+#include <QLabel>
+#include <QToolTip>
 
 class StatusLabel : public QLabel {
   Q_OBJECT

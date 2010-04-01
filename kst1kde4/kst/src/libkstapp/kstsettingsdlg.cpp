@@ -15,10 +15,10 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <qbuttongroup.h>
-#include <qcheckbox.h>
-#include <qlabel.h>
-#include <qspinbox.h>
+#include <QButtonGroup>
+#include <QCheckBox>
+#include <QLabel>
+#include <QSpinBox>
 
 #include <kcolorbutton.h>
 #include <kdialogbase.h>

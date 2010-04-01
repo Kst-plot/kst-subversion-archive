@@ -15,7 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <qpainter.h>
+#include <QPainter>
 #include "kstscalartable.h"
 #include "kstdatacollection.h"
 

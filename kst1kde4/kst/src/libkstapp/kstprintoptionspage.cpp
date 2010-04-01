@@ -15,11 +15,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <qbutton.h> 
-#include <qcheckbox.h>
-#include <qlabel.h>
-#include <qlayout.h>
-#include <qspinbox.h>
+#include <QButton> 
+#include <QCheckBox>
+#include <QLabel>
+#include <QLayout>
+#include <QSpinBox>
 
 #include <klocale.h>
 

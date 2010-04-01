@@ -15,10 +15,10 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <qcheckbox.h> 
-#include <qradiobutton.h>
+#include <QCheckBox> 
+#include <QRadioButton>
 #include <QMessageBox>
-#include <qcombobox.h>
+#include <QComboBox>
 
 #include <klocale.h>
 #include <kiconloader.h>

@@ -17,19 +17,19 @@
 
 #include "ksteditviewobjectdialog.h"
 
-#include <qbuttongroup.h>
-#include <qcheckbox.h>
-#include <qcombobox.h>
+#include <QButtonGroup>
+#include <QCheckBox>
+#include <QComboBox>
 #include <QFontComboBox>
-#include <qlayout.h>
-#include <qlabel.h>
-#include <qlineedit.h>
+#include <QLayout>
+#include <QLabel>
+#include <QLineEdit>
 #include <QMessageBox>
-#include <qmetaobject.h>
-#include <qpainter.h>
+#include <QMetaobject>
+#include <QPainter>
 #include <QPushButton>
-#include <qspinbox.h>
-#include <qstyle.h>
+#include <QSpinBox>
+#include <QStyle>
 
 #include <kcolorbutton.h>
 #include <klineedit.h>

@@ -21,10 +21,10 @@
 #include <QListWidget>
 #include <QMessageBox>
 #include <QStack>
-#include <qstylefactory.h>
-#include <qstyle.h>
-#include <qtoolbox.h>
-#include <qtoolbutton.h>
+#include <QStyleFactory>
+#include <QStyle>
+#include <QToolBox>
+#include <QToolButton>
 
 #include <kinputdialog.h>
 #include <kstandarddirs.h>

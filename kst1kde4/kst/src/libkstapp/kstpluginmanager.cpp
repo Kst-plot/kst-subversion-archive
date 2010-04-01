@@ -15,14 +15,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <qcheckbox.h>
-#include <qcombobox.h>
-#include <qimage.h>
-#include <qlabel.h>
-#include <qlistview.h>
-#include <qradiobutton.h>
-#include <qregexp.h>
-#include <qmessagebox.h>
+#include <QCheckBox>
+#include <QComboBox>
+#include <QImage>
+#include <QLabel>
+#include <QListView>
+#include <QRadioButton>
+#include <QRegExp>
+#include <QMessageBox>
 
 #include <kconfig.h>
 #include <kfiledialog.h>

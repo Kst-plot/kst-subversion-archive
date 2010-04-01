@@ -18,8 +18,8 @@
 #include <assert.h>
 
 // include files for Qt
-#include <qfileinfo.h>
-#include <qregexp.h>
+#include <QFileInfo>
+#include <QRegExp>
 
 // include files for KDE
 

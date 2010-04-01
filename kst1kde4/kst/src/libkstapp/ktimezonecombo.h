@@ -21,8 +21,8 @@
 #ifndef KTIMEZONECOMBO_H
 #define KTIMEZONECOMBO_H
 
-#include <qcombobox.h>
-#include <qstring.h>
+#include <QComboBox>
+#include <QString>
 
 class KstTimezones;
 

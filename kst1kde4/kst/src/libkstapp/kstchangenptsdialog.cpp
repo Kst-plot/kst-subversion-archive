@@ -16,12 +16,12 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <qcheckbox.h>
-#include <qcombobox.h>
-#include <qlistwidget.h>
-#include <qpushbutton.h>
-#include <qspinbox.h>
-#include <qtimer.h>
+#include <QCheckBox>
+#include <QComboBox>
+#include <QListWidget>
+#include <QPushButton>
+#include <QSpinBox>
+#include <QTimer>
 
 #include <knuminput.h>
 

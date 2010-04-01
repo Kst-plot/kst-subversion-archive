@@ -19,17 +19,17 @@
 #include <psversion.h>
 #include <sysinfo.h>
 
-#include <qbuttongroup.h>
-#include <qcheckbox.h>
+#include <QButtonGroup>
+#include <QCheckBox>
 #include <qdeepcopy.h>
 #include <qglobal.h>
-#include <qradiobutton.h>
-#include <qregexp.h>
-#include <qspinbox.h>
-#include <qstring.h>
-#include <qtimer.h>
-#include <qtooltip.h>
-#include <qmessagebox.h>
+#include <QRadioButton>
+#include <QRegExp>
+#include <QSpinBox>
+#include <QString>
+#include <QTimer>
+#include <QToolTip>
+#include <QMessageBox>
 
 #include <kfiledialog.h>
 #include <kiconloader.h>

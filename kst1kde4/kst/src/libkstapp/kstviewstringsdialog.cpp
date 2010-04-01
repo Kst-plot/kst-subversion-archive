@@ -15,9 +15,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <qheader.h>
-#include <qlayout.h>
-#include <qpushbutton.h>
+#include <QHeader>
+#include <QLayout>
+#include <QPushButton>
 
 #include <klocale.h>
 

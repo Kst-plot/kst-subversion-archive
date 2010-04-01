@@ -15,13 +15,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <qcombobox.h>
-#include <qlabel.h>
-#include <qlayout.h>
-#include <qlistbox.h>
-#include <qpushbutton.h>
-#include <qtable.h>
-#include <qtimer.h>
+#include <QComboBox>
+#include <QLabel>
+#include <QLayout>
+#include <QListBox>
+#include <QPushButton>
+#include <QTable>
+#include <QTimer>
 
 #include <klocale.h>
 

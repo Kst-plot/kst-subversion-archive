@@ -18,9 +18,9 @@
 
 #include <assert.h>
 
-#include <qlineedit.h>
-#include <qtooltip.h>
-#include <qwhatsthis.h>
+#include <QLineEdit>
+#include <QToolTip>
+#include <QWhatsThis>
 
 #include "curveappearancewidget.h"
 #include "kst2dplot.h"

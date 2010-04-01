@@ -21,9 +21,9 @@
 
 #include <klocale.h>
 
-#include <qcolor.h>
-#include <qtimer.h>
-#include <qtooltip.h>
+#include <QColor>
+#include <QTimer>
+#include <QToolTip>
 
 static const int delays[] = { 900, 675, 425, 300, 200, 100,  80,  40,  20 };
 static const int dark[] =   { 100, 150, 200, 250, 300, 375, 450, 525, 600 };

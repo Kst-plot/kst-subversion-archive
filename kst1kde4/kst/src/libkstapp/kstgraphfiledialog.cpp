@@ -16,13 +16,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <qcheckbox.h>
-#include <qcombobox.h>
-#include <qimage.h>
-#include <qlabel.h>
-#include <qradiobutton.h>
-#include <qspinbox.h>
-#include <qtimer.h>
+#include <QCheckBox>
+#include <QComboBox>
+#include <QImage>
+#include <QLabel>
+#include <QRadioButton>
+#include <QSpinBox>
+#include <QTimer>
 
 #include <kconfig.h>
 #include <kimageio.h>

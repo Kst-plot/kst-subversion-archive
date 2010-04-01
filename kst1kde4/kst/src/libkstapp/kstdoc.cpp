@@ -29,9 +29,9 @@
 
 // include files for Qt
 #include <qdeepcopy.h>
-#include <qeventloop.h>
-#include <qstylesheet.h>
-#include <QMessageBox.h>
+#include <QEventLoop>
+#include <QStyleSheet>
+#include <QMessageBox>
 
 // include files for KDE
 #include <dcopclient.h>

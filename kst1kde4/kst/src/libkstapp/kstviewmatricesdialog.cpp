@@ -16,9 +16,9 @@
  ***************************************************************************/
 
 // includes files for Qt
-#include <qlayout.h>
-#include <qpushbutton.h>
-#include <qtable.h>
+#include <QLayout>
+#include <QPushButton>
+#include <QTable>
 
 // include files for KDE
 #include <klocale.h>

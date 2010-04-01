@@ -18,7 +18,7 @@
 #include <ctype.h>
 
 // include files for Qt
-#include <qregexp.h>
+#include <QRegExp>
 
 // application specific includes
 #include "emailthread.h"

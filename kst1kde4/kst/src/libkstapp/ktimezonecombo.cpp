@@ -18,9 +18,9 @@
     Boston, MA 02110-1301, USA.
 */
 
-#include <qlistbox.h>
-#include <qmemarray.h>
-#include <qcombobox.h>
+#include <QListBox>
+#include <QMemArray>
+#include <QComboBox>
 
 #include <klocale.h>
 
