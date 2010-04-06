@@ -15,14 +15,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "kstdebugnotifier.h"
-
-#include "kst.h"
+#include <QTimer>
+#include <QToolTip>
 
 #include <kstandarddirs.h>
 
-#include <qtimer.h>
-#include <qtooltip.h>
+#include "kst.h"
+#include "kstdebugnotifier.h"
 
 #define TIMER_TICK 250
 #define TIMER_ITERATIONS 10
@@ -32,13 +31,14 @@ KstDebugNotifier::KstDebugNotifier(QWidget *parent)
 : QLabel(parent) {
   _animationStage = 0;
   _gotPress = false;
-  QToolTip::add(this, QObject::tr("An error has occurred.  Click on this icon for more details."));
+// xxx  QToolTip::add(this, QObject::tr("An error has occurred. Click on this icon for more details."));
 
   _pm.resize(IMAGE_STAGES);
-  _pm[0] = QPixmap(locate("data", "kst/pics/kst_error_1.png"));
-  _pm[1] = QPixmap(locate("data", "kst/pics/kst_error_2.png"));
+// xxx  _pm[0] = QPixmap(locate("data", "kst/pics/kst_error_1.png"));
+// xxx  _pm[1] = QPixmap(locate("data", "kst/pics/kst_error_2.png"));
   setPixmap(_pm[0]);
   show();
+
   QTimer::singleShot(TIMER_TICK, this, SLOT(animate()));
 }
 

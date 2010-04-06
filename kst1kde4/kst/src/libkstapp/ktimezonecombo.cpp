@@ -1,5 +1,7 @@
 /*
     Copyright (c) 2005 The University of Toronto
+    Copyright (c) 2010 The University of British Columbia
+
     Based on code Copyright (C) 2005, S.R.Haque <srhaque@iee.org>.
     This file is part of the KDE project
 
@@ -18,16 +20,16 @@
     Boston, MA 02110-1301, USA.
 */
 
-#include <QListBox>
-#include <QMemArray>
 #include <QComboBox>
+#include <QListWidget>
+#include <QVector>
 
 #include "ktimezonecombo.h"
 #include "ksttimezones.h"
 
 class KTimezoneCombo::Private {
   public:
-    QMemArray<int> _offsets;
+    QVector<int> _offsets;
     QStringList _names;
 };
 
@@ -38,14 +40,14 @@ KTimezoneCombo::KTimezoneCombo(QWidget *parent, const char *name, KstTimezones *
   if (!userDb) {
     db = new KstTimezones;
   }
-
+/* xxx
   if (listBox()) {
     listBox()->setVScrollBarMode(QScrollView::AlwaysOn);
     listBox()->setColumnMode(QListBox::FixedNumber);
     listBox()->setRowMode(QListBox::Variable);
   }
-
-  insertItem("UTC");
+*/
+  insertItem(0, "UTC");
   const KstTimezones::ZoneMap zones = db->allZones();
   d->_offsets.resize(zones.count()+1);
   d->_offsets[0] = 0;
@@ -75,7 +77,7 @@ KTimezoneCombo::KTimezoneCombo(QWidget *parent, const char *name, KstTimezones *
     }
     offnum += QString::number(minutes);
     if ((*it)->name() != "UTC") {
-      insertItem(QObject::tr("%3 (UTC%1%2)").arg(negative ? '-' : '+').arg(offnum).arg((*it)->name()));
+      insertItem(0, tr("%3 (UTC%1%2)").arg(negative ? '-' : '+').arg(offnum).arg((*it)->name()));
       d->_names += (*it)->name();
     }
   }
@@ -93,27 +95,27 @@ KTimezoneCombo::~KTimezoneCombo() {
 
 
 int KTimezoneCombo::offset() const {
-  return d->_offsets[currentItem()];
+  return d->_offsets[currentIndex()];
 }
 
 
 QString KTimezoneCombo::tzName() const {
-  if (currentItem() == 0) {
+  if (currentIndex() == 0) {
     return currentText();
   } else {
-    return d->_names[currentItem()];
+    return d->_names[currentIndex()];
   }
 }
 
 
 void KTimezoneCombo::setTimezone(const QString& tz) {
-  int idx = d->_names.findIndex(tz);
+  int idx = d->_names.indexOf(tz);
 
   if (idx != -1) {
-    setCurrentItem(idx);
+    setCurrentIndex(idx);
   } else {
-    setCurrentItem(0);
-    setCurrentText(tz);
+    setCurrentIndex(0);
+    setItemText(currentIndex(), tz);
   }
 }
 

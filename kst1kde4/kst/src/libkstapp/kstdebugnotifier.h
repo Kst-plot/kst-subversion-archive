@@ -20,7 +20,7 @@
 
 #include <QLabel>
 #include <QPixmap>
-#include <QValueVector>
+#include <QVector>
 
 class KstDebugNotifier : public QLabel {
   Q_OBJECT
@@ -43,7 +43,7 @@ class KstDebugNotifier : public QLabel {
   private:
     int _animationStage;
     bool _gotPress;
-    QValueVector<QPixmap> _pm;
+    QVector<QPixmap> _pm;
 };
 
 #endif

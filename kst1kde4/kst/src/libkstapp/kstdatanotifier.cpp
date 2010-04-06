@@ -15,13 +15,12 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "kstdatanotifier.h"
-
-#include "kst.h"
-
 #include <QColor>
 #include <QTimer>
 #include <QToolTip>
+
+#include "kst.h"
+#include "kstdatanotifier.h"
 
 static const int delays[] = { 900, 675, 425, 300, 200, 100,  80,  40,  20 };
 static const int dark[] =   { 100, 150, 200, 250, 300, 375, 450, 525, 600 };
@@ -34,7 +33,7 @@ KstDataNotifier::KstDataNotifier(QWidget *parent)
   setShape(Rectangular);
   setLook(Sunken);
   _animationStage = 0;
-  QToolTip::add(this, tr("Indicates that new data has arrived."));
+// xxx  QToolTip::add(this, tr("Indicates that new data has arrived."));
   show();
 
   _colors = new QColor[numIterations];
