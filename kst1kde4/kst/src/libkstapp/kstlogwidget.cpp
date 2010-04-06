@@ -19,7 +19,6 @@
 #include "kst.h"
 
 #include <kglobal.h>
-#include <klocale.h>
 
 #include <QBitmap>
 #include <QPainter>
@@ -66,7 +65,9 @@ void KstLogWidget::logAdded(const KstDebug::LogMessage& msg) {
     return;
   }
 
-  append(QObject::tr("%1<b>%2</b> %3").arg(sym).arg(KGlobal::locale()->formatDateTime(msg.date)).arg(msg.msg));
+  QString format = "yyyy-mm-dd hh:mm";
+
+  append(QObject::tr("%1<b>%2</b> %3").arg(sym).arg(msg.date.QDateTime::toString(format)).arg(msg.msg));
 }
 
 

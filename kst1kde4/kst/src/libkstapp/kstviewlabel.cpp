@@ -36,7 +36,6 @@
 #include <kdualcolorbutton.h>
 #include <kfontcombo.h>
 #include <kglobal.h>
-#include <klocale.h>
 #include <knuminput.h>
 #include <kpopupmenu.h>
 */
