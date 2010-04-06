@@ -25,7 +25,6 @@
 #include <QTableWidget>
 
 #include <kfiledialog.h>
-#include <klocale.h>
 #include <kio/netaccess.h>
 #include <kstandarddirs.h>
 
@@ -84,7 +83,7 @@ void KstVectorSaveDialog::save() {
   }
   KST::vectorList.lock().unlock();
 
-  QString str = QFileDialog::getSaveFileName(this, i18n("Save Vector As"), QString::null, QString::null);
+  QString str = QFileDialog::getSaveFileName(this, tr("Save Vector As"), QString::null, QString::null);
   if (!str.isEmpty()) {
     bool interpolate = true;
 
@@ -97,13 +96,13 @@ void KstVectorSaveDialog::save() {
           QFile file(str);
 
           if (KstData::self()->vectorsToFile(toSave, &file, interpolate) != 0) {
-            QMessageBox::warning(this, i18n("Kst"), i18n("Error saving vector to %1.").arg(str));
+            QMessageBox::warning(this, tr("Kst"), tr("Error saving vector to %1.").arg(str));
             return;
           }
           file.close();
 /* xxx
           if (KIO::NetAccess::exists(url, false, this)) {
-            int rc = QMessageBox::warning(this, i18n("Kst"), i18n("File %1 exists.  Overwrite?").arg(url.prettyURL()), i18n("Kst"), QMessageBox::Yes | QMessageBox::No);
+            int rc = QMessageBox::warning(this, tr("Kst"), tr("File %1 exists.  Overwrite?").arg(url.prettyURL()), tr("Kst"), QMessageBox::Yes | QMessageBox::No);
             if (rc == QMessageBox::No) {
               return;
             }
@@ -127,13 +126,13 @@ void KstVectorSaveDialog::save() {
             }
 
             if (KstData::self()->vectorToFile(*it, &file) != 0) {
-              QMessageBox::warning(this, i18n("Kst"), i18n("Error saving vector to %1.").arg(str));
+              QMessageBox::warning(this, tr("Kst"), tr("Error saving vector to %1.").arg(str));
               return;
             }
             file.close();
 /* xxx
             if (KIO::NetAccess::exists(url2, false, this)) {
-              int rc = QMessageBox::warning(this, i18n("Kst"), i18n("File %1 exists.  Overwrite?").arg(url2.prettyURL()), i18n("Kst"));
+              int rc = QMessageBox::warning(this, tr("Kst"), tr("File %1 exists.  Overwrite?").arg(url2.prettyURL()), tr("Kst"));
 
               if (rc == QMessageBox::No) {
                 continue;
@@ -147,7 +146,7 @@ void KstVectorSaveDialog::save() {
       break;
 
       default:
-        QMessageBox::warning(this, i18n("Kst"), i18n("Internal error. Please report."));
+        QMessageBox::warning(this, tr("Kst"), tr("Internal error. Please report."));
         break;
     }
   }

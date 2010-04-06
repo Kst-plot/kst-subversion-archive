@@ -29,9 +29,7 @@
 #include <QSpinBox>
 
 #include <kglobal.h>
-#include <klocale.h>
 #include <kcolorbutton.h>
-// xxx #include <kcombobox.h>
 
 #include "kstviewlegend.h"
 
@@ -54,8 +52,8 @@
 
 KstViewLegend::KstViewLegend()
 : KstBorderedViewObject("Legend") {
-  _editTitle = i18n("Edit Legend");
-  _newTitle = i18n("New Legend");
+  _editTitle = QObject::tr("Edit Legend");
+  _newTitle = QObject::tr("New Legend");
   _fontName = KST::legendDefaults.font();
   _vertical = KST::legendDefaults.vertical();
   _legendMargin = KST::legendDefaults.margin();
@@ -86,8 +84,8 @@ KstViewLegend::KstViewLegend()
 
 KstViewLegend::KstViewLegend(const QDomElement& e)
 : KstBorderedViewObject(e) {
-  _editTitle = i18n("Edit Legend");
-  _newTitle = i18n("New Legend");
+  _editTitle = QObject::tr("Edit Legend");
+  _newTitle = QObject::tr("New Legend");
   _fontName = KST::legendDefaults.font();
   _vertical = KST::legendDefaults.vertical();
   _legendMargin = KST::legendDefaults.margin();
@@ -160,8 +158,8 @@ KstViewLegend::KstViewLegend(const QDomElement& e)
 
 KstViewLegend::KstViewLegend(const KstViewLegend& legend)
 : KstBorderedViewObject(legend) {
-  _editTitle = i18n("Edit Legend");
-  _newTitle = i18n("New Legend");
+  _editTitle = QObject::tr("Edit Legend");
+  _newTitle = QObject::tr("New Legend");
   _type = "Legend";
   _layoutActions &= ~(MoveTo | Copy | CopyTo);
   _standardActions |= Delete | Edit;

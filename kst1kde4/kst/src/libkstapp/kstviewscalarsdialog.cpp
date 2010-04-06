@@ -18,8 +18,6 @@
 #include <QLayout>
 #include <QPushButton>
 
-#include <klocale.h>
-
 #include "kstdatacollection.h"
 #include "kstviewscalarsdialog.h"
 
@@ -83,9 +81,9 @@ void KstViewScalarsDialog::showViewScalarsDialog() {
  *  language.
  */
 void KstViewScalarsDialog::languageChange() {
-  setCaption(i18n("View Scalar Values"));
-  listViewScalars->header()->setLabel(0, i18n("Scalar"));
-  listViewScalars->header()->setLabel(1, i18n("Value"));
+  setCaption(QObject::tr("View Scalar Values"));
+  listViewScalars->header()->setLabel(0, QObject::tr("Scalar"));
+  listViewScalars->header()->setLabel(1, QObject::tr("Value"));
   KstViewScalarsDialog::languageChange();
 }
 

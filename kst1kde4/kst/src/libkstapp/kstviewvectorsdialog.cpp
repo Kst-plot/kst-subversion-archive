@@ -19,8 +19,6 @@
 #include <QPushButton>
 #include <QTable>
 
-#include <klocale.h>
-
 #include "kstviewvectorsdialog.h"
 #include "vectorselector.h"
 
@@ -130,9 +128,9 @@ void KstViewVectorsDialog::vectorChanged(const QString& vector) {
  *  language.
  */
 void KstViewVectorsDialog::languageChange() {
-  setCaption(i18n("View Vector Values"));
-  tableVectors->horizontalHeader()->setLabel(0, i18n("Index"));
-  tableVectors->horizontalHeader()->setLabel(1, i18n("Value"));
+  setCaption(QObject::tr("View Vector Values"));
+  tableVectors->horizontalHeader()->setLabel(0, QObject::tr("Index"));
+  tableVectors->horizontalHeader()->setLabel(1, QObject::tr("Value"));
   KstViewVectorsDialog::languageChange();
 }
 

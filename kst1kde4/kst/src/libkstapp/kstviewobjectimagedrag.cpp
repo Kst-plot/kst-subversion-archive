@@ -26,7 +26,6 @@
 
 #include <kapplication.h>
 #include <kimageio.h>
-#include <klocale.h>
 
 #include "kstviewobjectimagedrag.h"
 

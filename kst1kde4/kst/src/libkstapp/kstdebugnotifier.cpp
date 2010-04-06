@@ -19,7 +19,6 @@
 
 #include "kst.h"
 
-#include <klocale.h>
 #include <kstandarddirs.h>
 
 #include <qtimer.h>

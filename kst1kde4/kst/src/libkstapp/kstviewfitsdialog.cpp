@@ -23,8 +23,6 @@
 #include <QTable>
 #include <QTimer>
 
-#include <klocale.h>
-
 #include "kstcplugin.h"
 #include "kstdatacollection.h"
 #include "kstdataobjectcollection.h"
@@ -171,11 +169,11 @@ void KstViewFitsDialog::fitChanged(const QString& strFit) {
   tableFits->setParameters(params, numParams, covars, numCovars, chi2Nu);
 
   if (numParams > 0) {
-    tableFits->horizontalHeader()->setLabel(0, i18n("Value"));
-    tableFits->horizontalHeader()->setLabel(1, i18n("Covariance:"));
+    tableFits->horizontalHeader()->setLabel(0, tr("Value"));
+    tableFits->horizontalHeader()->setLabel(1, tr("Covariance:"));
 
     tableFits->verticalHeader()->setLabel(numParams+0, "---");
-    tableFits->verticalHeader()->setLabel(numParams+1, i18n("Chi^2/Nu"));
+    tableFits->verticalHeader()->setLabel(numParams+1, tr("Chi^2/Nu"));
 
     if (plugin) {
       plugin->readLock();

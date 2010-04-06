@@ -20,9 +20,6 @@
 #include <QPushButton>
 #include <QTable>
 
-// include files for KDE
-#include <klocale.h>
-
 // application specific includes
 #include "kstmatrix.h"
 #include "kstviewmatricesdialog.h"
@@ -146,7 +143,7 @@ void KstViewMatricesDialog::matrixChanged(const QString& matrix) {
  *  language.
  */
 void KstViewMatricesDialog::languageChange() {
-  setCaption(i18n("View Matrix Values"));
+  setCaption(QObject::tr("View Matrix Values"));
   KstViewMatricesDialog::languageChange();
 }
 

@@ -22,8 +22,6 @@
 
 #include <math.h>
 
-#include <klocale.h>
-
 #include <QBitmap>
 #include <QMetaObject>
 #include <QPainter>
@@ -33,8 +31,8 @@
 
 KstViewArrow::KstViewArrow()
 : KstViewLine("Arrow") {
-  _editTitle = i18n("Edit Arrow");
-  _newTitle = i18n("New Arrow");
+  _editTitle = tr("Edit Arrow");
+  _newTitle = tr("New Arrow");
   _hasFromArrow = false;
   _hasToArrow = true;
   _fromArrowScaling = 1.0;
@@ -62,8 +60,8 @@ KstViewArrow::KstViewArrow(const QDomElement& e)
 
   // always has this value
   _type = "Arrow";
-  _editTitle = i18n("Edit Arrow");
-  _newTitle = i18n("New Arrow");
+  _editTitle = tr("Edit Arrow");
+  _newTitle = tr("New Arrow");
   _standardActions |= Delete | Edit;
 }
 
@@ -205,21 +203,21 @@ QMap<QString, QVariant> KstViewArrow::widgetHints(const QString& propertyName) c
   if (propertyName == "hasFromArrow") {
     map.insert(QString("_kst_widgetType"), QString("QCheckBox"));
     map.insert(QString("_kst_label"), QString(""));
-    map.insert(QString("text"), i18n("Arrow at start"));
+    map.insert(QString("text"), tr("Arrow at start"));
   } else if (propertyName == "hasToArrow") {
     map.insert(QString("_kst_widgetType"), QString("QCheckBox"));
     map.insert(QString("_kst_label"), QString(""));
-    map.insert(QString("text"), i18n("Arrow at end"));
+    map.insert(QString("text"), tr("Arrow at end"));
   } else if (propertyName == "fromArrowScaling") {
     map.insert(QString("_kst_widgetType"), QString("KDoubleSpinBox"));
-    map.insert(QString("_kst_label"), i18n("Start arrow scaling")); 
+    map.insert(QString("_kst_label"), tr("Start arrow scaling")); 
     map.insert(QString("minValue"), 1.0);
     map.insert(QString("maxValue"), 100.0);
     map.insert(QString("lineStep"), 0.1);
     map.insert(QString("precision"), 1);
   } else if (propertyName == "toArrowScaling") {
     map.insert(QString("_kst_widgetType"), QString("KDoubleSpinBox"));
-    map.insert(QString("_kst_label"), i18n("End arrow scaling"));
+    map.insert(QString("_kst_label"), tr("End arrow scaling"));
     map.insert(QString("minValue"), 1.0);
     map.insert(QString("maxValue"), 100.0);
     map.insert(QString("lineStep"), 0.1);

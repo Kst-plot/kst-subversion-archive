@@ -18,9 +18,6 @@
 // include files for Qt
 #include <QLabel> 
 
-//include files for KDE
-#include <klocale.h>
-
 // application specific includes
 #include "statuslabel.h"
 

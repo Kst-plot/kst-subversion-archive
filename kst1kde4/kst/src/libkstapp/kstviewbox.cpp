@@ -21,7 +21,6 @@
 #include "kstviewobjectfactory.h"
 
 #include <kglobal.h>
-#include <klocale.h>
 
 #include <QBitmap>
 #include <QMetaObject>
@@ -31,8 +30,8 @@
 
 KstViewBox::KstViewBox()
 : KstViewObject("Box"), _borderColor(QColor(0, 0, 0)), _borderWidth(0) {
-  _editTitle = i18n("Edit Box");
-  _newTitle = i18n("New Box");
+  _editTitle = tr("Edit Box");
+  _newTitle = tr("New Box");
   _xRound = 0;
   _yRound = 0;
   _cornerStyle = Qt::MiterJoin;
@@ -63,8 +62,8 @@ KstViewBox::KstViewBox(const QDomElement& e)
 
   // these always have these values
   _type = "Box";
-  _editTitle = i18n("Edit Box");
-  _newTitle = i18n("New Box");
+  _editTitle = tr("Edit Box");
+  _newTitle = tr("New Box");
   _standardActions |= Delete | Edit;
   _layoutActions |= Delete | Raise | Lower | RaiseToTop | LowerToBottom | Rename | MoveTo | Copy | CopyTo;
   _fallThroughTransparency = false;
@@ -298,25 +297,25 @@ QMap<QString, QVariant > KstViewBox::widgetHints(const QString& propertyName) co
 
   if (propertyName == "xRound") {
     map.insert(QString("_kst_widgetType"), QString("QSpinBox"));
-    map.insert(QString("_kst_label"), i18n("X Roundness"));
+    map.insert(QString("_kst_label"), tr("X Roundness"));
     map.insert(QString("minValue"), 0);
   } else if (propertyName == "yRound") {
     map.insert(QString("_kst_widgetType"), QString("QSpinBox"));
-    map.insert(QString("_kst_label"), i18n("Y Roundness"));
+    map.insert(QString("_kst_label"), tr("Y Roundness"));
     map.insert(QString("minValue"), 0);
   } else if (propertyName == "foregroundColor") {
     map.insert(QString("_kst_widgetType"), QString("KColorButton"));
-    map.insert(QString("_kst_label"), i18n("Fill Color"));
+    map.insert(QString("_kst_label"), tr("Fill Color"));
   } else if (propertyName == "transparentFill") {
     map.insert(QString("_kst_widgetType"), QString("QCheckBox"));
     map.insert(QString("_kst_label"), QString(""));
-    map.insert(QString("text"), i18n("Transparent fill"));
+    map.insert(QString("text"), tr("Transparent fill"));
   } if (propertyName == "borderColor") {
     map.insert(QString("_kst_widgetType"), QString("KColorButton"));
-    map.insert(QString("_kst_label"), i18n("Border color"));
+    map.insert(QString("_kst_label"), tr("Border color"));
   } else if (propertyName == "borderWidth") {
     map.insert(QString("_kst_widgetType"), QString("QSpinBox"));
-    map.insert(QString("_kst_label"), i18n("Border width"));
+    map.insert(QString("_kst_label"), tr("Border width"));
     map.insert(QString("minValue"), 0);
   }
 

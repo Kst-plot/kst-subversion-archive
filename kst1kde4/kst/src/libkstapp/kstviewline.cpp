@@ -20,8 +20,6 @@
 #include "kstviewline.h"
 #include "kstviewobjectfactory.h"
 
-#include <klocale.h>
-
 #include <QBitmap>
 #include <QMetaObject>
 #include <QPainter>
@@ -31,8 +29,8 @@
 
 KstViewLine::KstViewLine(const QString& type)
 : KstViewObject(type), _width(1) {
-  _editTitle = i18n("Edit Line");
-  _newTitle = i18n("New Line");
+  _editTitle = QObject::tr("Edit Line");
+  _newTitle = QObject::tr("New Line");
   setTransparent(true);
   _container = false;
   _capStyle = Qt::FlatCap; 
@@ -82,8 +80,8 @@ KstViewLine::KstViewLine(const QDomElement& e)
   // always these values
   setTransparent(true);
   _type = "Line";
-  _editTitle = i18n("Edit Line");
-  _newTitle = i18n("New Line");
+  _editTitle = QObject::tr("Edit Line");
+  _newTitle = QObject::tr("New Line");
   setMinimumSize(QSize(1, 1));
   _standardActions |= Delete | Edit;
 }
@@ -420,14 +418,14 @@ QMap<QString, QVariant> KstViewLine::widgetHints(const QString& propertyName) co
 
   if (propertyName == "width") {
     map.insert(QString("_kst_widgetType"), QString("QSpinBox"));
-    map.insert(QString("_kst_label"), i18n("Line width"));  
+    map.insert(QString("_kst_label"), QObject::tr("Line width"));  
     map.insert(QString("minValue"), 0);
   } else if (propertyName == "lineStyle") {
     map.insert(QString("_kst_widgetType"), QString("PenStyleWidget"));
-    map.insert(QString("_kst_label"), i18n("Line style"));  
+    map.insert(QString("_kst_label"), QObject::tr("Line style"));  
   } else if (propertyName == "lineColor") {
     map.insert(QString("_kst_widgetType"), QString("KColorButton"));
-    map.insert(QString("_kst_label"), i18n("Line color"));    
+    map.insert(QString("_kst_label"), QObject::tr("Line color"));    
   }
   return map;
 }

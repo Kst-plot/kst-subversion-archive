@@ -25,12 +25,11 @@
 #include <QPainter>
 #include <QVariant>
 
-#include <klocale.h>
 
 KstViewEllipse::KstViewEllipse()
 : KstViewObject("Ellipse"), _borderWidth(1) {
-  _editTitle = i18n("Edit Ellipse");
-  _newTitle = i18n("New Ellipse");
+  _editTitle = tr("Edit Ellipse");
+  _newTitle = tr("New Ellipse");
   setTransparent(false);
   _standardActions |= Delete | Edit;
 }
@@ -53,8 +52,8 @@ KstViewEllipse::KstViewEllipse(const QDomElement& e)
 
   // always have these values
   _type = "Ellipse";
-  _editTitle = i18n("Edit Ellipse");
-  _newTitle = i18n("New Ellipse");
+  _editTitle = tr("Edit Ellipse");
+  _newTitle = tr("New Ellipse");
   _standardActions |= Delete | Edit;
   _layoutActions |= Delete | Raise | Lower | RaiseToTop | LowerToBottom | Rename | MoveTo | Copy | CopyTo;
 }
@@ -218,18 +217,18 @@ QMap<QString, QVariant> KstViewEllipse::widgetHints(const QString& propertyName)
 
   if (propertyName == "borderColor") {
     map.insert(QString("_kst_widgetType"), QString("KColorButton"));
-    map.insert(QString("_kst_label"), i18n("Border color"));
+    map.insert(QString("_kst_label"), tr("Border color"));
   } else if (propertyName == "borderWidth") {
     map.insert(QString("_kst_widgetType"), QString("QSpinBox"));
-    map.insert(QString("_kst_label"), i18n("Border width"));
+    map.insert(QString("_kst_label"), tr("Border width"));
     map.insert(QString("minValue"), 0);
   } else if (propertyName == "fillColor") {
     map.insert(QString("_kst_widgetType"), QString("KColorButton"));
-    map.insert(QString("_kst_label"), i18n("Fill Color"));
+    map.insert(QString("_kst_label"), tr("Fill Color"));
   } else if (propertyName == "transparentFill") {
     map.insert(QString("_kst_widgetType"), QString("QCheckBox"));
     map.insert(QString("_kst_label"), QString(""));
-    map.insert(QString("text"), i18n("Transparent fill"));
+    map.insert(QString("text"), tr("Transparent fill"));
   }
 
   return map;

@@ -27,7 +27,6 @@
 
 #include <kglobal.h>
 #include <kio/netaccess.h>
-#include <klocale.h>
 
 #include "kstgfxpicturemousehandler.h"
 #include "kst.h"
@@ -36,8 +35,8 @@
 
 KstViewPicture::KstViewPicture()
 : KstBorderedViewObject("Picture") {
-  _editTitle = i18n("Edit Picture");
-  _newTitle = i18n("New Picture");
+  _editTitle = QObject::tr("Edit Picture");
+  _newTitle = QObject::tr("New Picture");
   _refresh = 0;
   _timer = 0L;
   setTransparent(true);
@@ -65,8 +64,8 @@ KstViewPicture::KstViewPicture(const QDomElement& e)
 
   // always have these values
   _type = "Picture";
-  _editTitle = i18n("Edit Picture");
-  _newTitle = i18n("New Picture");
+  _editTitle = QObject::tr("Edit Picture");
+  _newTitle = QObject::tr("New Picture");
   setTransparent(true);
   _standardActions |= Delete | Edit;
 }
@@ -347,14 +346,14 @@ QMap<QString, QVariant> KstViewPicture::widgetHints(const QString& propertyName)
   if (map.empty()) {
     if (propertyName == "path") {
       map.insert(QString("_kst_widgetType"), QString("KURLRequester"));
-      map.insert(QString("_kst_label"), i18n("File path"));
+      map.insert(QString("_kst_label"), QObject::tr("File path"));
     } else if (propertyName == "refreshTimer") {
       map.insert(QString("_kst_widgetType"), QString("QSpinBox"));
-      map.insert(QString("_kst_label"), i18n("Refresh timer"));
+      map.insert(QString("_kst_label"), QObject::tr("Refresh timer"));
     } else if (propertyName == "maintainAspect") {
       map.insert(QString("_kst_widgetType"), QString("QCheckBox"));
       map.insert(QString("_kst_label"), QString(""));    
-      map.insert(QString("text"), i18n("Maintain aspect ratio"));
+      map.insert(QString("text"), QObject::tr("Maintain aspect ratio"));
     }
   }
 

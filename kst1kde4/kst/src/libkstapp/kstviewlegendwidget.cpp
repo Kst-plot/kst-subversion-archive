@@ -21,7 +21,6 @@
 
 // include files for KDE
 #include <kiconloader.h>
-#include <klocale.h>
 
 // application specific includes
 #include "kst_export.h"
@@ -53,10 +52,10 @@ KstViewLegendWidget::KstViewLegendWidget(QWidget* parent, const char* name, Qt::
 // xxx  _remove->setPixmap(BarIcon("back"));
   _remove->setEnabled(false);
 /* xxx
-  QToolTip::add(_up, i18n("Shortcut: Alt+Up"));
-  QToolTip::add(_down, i18n("Shortcut: Alt+Down"));
-  QToolTip::add(_add, i18n("Shortcut: Alt+s"));
-  QToolTip::add(_remove, i18n("Shortcut: Alt+r"));
+  QToolTip::add(_up, QObject::tr("Shortcut: Alt+Up"));
+  QToolTip::add(_down, QObject::tr("Shortcut: Alt+Down"));
+  QToolTip::add(_add, QObject::tr("Shortcut: Alt+s"));
+  QToolTip::add(_remove, QObject::tr("Shortcut: Alt+r"));
 */
   _changedFgColor = false;
   _changedBgColor = false;

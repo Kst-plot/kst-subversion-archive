@@ -22,8 +22,6 @@
 #include <QMemArray>
 #include <QComboBox>
 
-#include <klocale.h>
-
 #include "ktimezonecombo.h"
 #include "ksttimezones.h"
 
@@ -77,7 +75,7 @@ KTimezoneCombo::KTimezoneCombo(QWidget *parent, const char *name, KstTimezones *
     }
     offnum += QString::number(minutes);
     if ((*it)->name() != "UTC") {
-      insertItem(i18n("%3 (UTC%1%2)").arg(negative ? '-' : '+').arg(offnum).arg((*it)->name()));
+      insertItem(QObject::tr("%3 (UTC%1%2)").arg(negative ? '-' : '+').arg(offnum).arg((*it)->name()));
       d->_names += (*it)->name();
     }
   }

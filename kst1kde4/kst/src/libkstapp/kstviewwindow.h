@@ -23,7 +23,6 @@
 // include files for KDE
 #include <kdeversion.h>
 #include <kinputdialog.h>
-#include <klocale.h>
 
 // application specific includes
 #include "kst.h"

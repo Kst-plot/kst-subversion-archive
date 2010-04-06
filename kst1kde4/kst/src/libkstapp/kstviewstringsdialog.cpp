@@ -19,8 +19,6 @@
 #include <QLayout>
 #include <QPushButton>
 
-#include <klocale.h>
-
 #include "kstdatacollection.h"
 #include "kstviewstringsdialog.h"
 
@@ -82,9 +80,9 @@ void KstViewStringsDialog::showViewStringsDialog() {
  *  language.
  */
 void KstViewStringsDialog::languageChange() {
-  setCaption(i18n("View String Values"));
-  listViewStrings->header()->setLabel(0, i18n("String"));
-  listViewStrings->header()->setLabel(1, i18n("Value"));
+  setCaption(QObject::tr("View String Values"));
+  listViewStrings->header()->setLabel(0, QObject::tr("String"));
+  listViewStrings->header()->setLabel(1, QObject::tr("Value"));
   KstViewStringsDialog::languageChange();      
 }
 

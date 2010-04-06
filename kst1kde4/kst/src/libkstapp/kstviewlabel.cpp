@@ -70,8 +70,8 @@ KstViewLabel::KstViewLabel(const QString& txt, KstLJustifyType justify, float ro
   _parsed = 0L;
   _labelMargin = 0;
   _isResizable = false;
-  _editTitle = i18n("Edit Label");
-  _newTitle = i18n("New Label");
+  _editTitle = QObject::tr("Edit Label");
+  _newTitle = QObject::tr("New Label");
   reparse();
   computeTextSize(_parsed);
 }
@@ -83,8 +83,8 @@ KstViewLabel::KstViewLabel(const QDomElement& e)
   _fallThroughTransparency = false;
   _container = false;
   _type = "Label";
-  _editTitle = i18n("Edit Label");
-  _newTitle = i18n("New Label");
+  _editTitle = QObject::tr("Edit Label");
+  _newTitle = QObject::tr("New Label");
   _dataPrecision = 8;
   _interpret = true;
   _replace = true;
@@ -120,8 +120,8 @@ KstViewLabel::KstViewLabel(const QDomElement& e)
 
 KstViewLabel::KstViewLabel(const KstViewLabel& label)
 : KstBorderedViewObject(label) {
-  _editTitle = i18n("Edit Label");
-  _newTitle = i18n("New Label");
+  _editTitle = QObject::tr("Edit Label");
+  _newTitle = QObject::tr("New Label");
 
   _dataPrecision = label._dataPrecision;
   _interpret = label._interpret;
