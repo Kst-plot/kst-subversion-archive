@@ -27,15 +27,12 @@
 #include <unistd.h>
 #include <math.h>
 
-// include files for Qt
 #include <qdeepcopy.h>
 #include <QEventLoop>
 #include <QStyleSheet>
 #include <QMessageBox>
 
-// include files for KDE
 #include <dcopclient.h>
-#include "ksdebug.h"
 #include <kdeversion.h>
 #include <kfiledialog.h>
 #include <kio/netaccess.h>
@@ -45,7 +42,6 @@
 #include <kstandarddirs.h>
 #include <ktempfile.h>
 
-// application specific includes
 #include "kst2dplot.h"
 #include "kstcsd.h"
 #include "kstdataobjectcollection.h"

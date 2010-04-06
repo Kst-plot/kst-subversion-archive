@@ -69,8 +69,6 @@ set(kstapp_LIB_SRCS
     kstalignment.cpp
     kstcurvedialog.cpp
     kstbasicdialog.cpp
-    kstdatawizard.cpp
-    kstdoc.cpp
     kstviewwindow.cpp
     ktimezonecombo.cpp
     kstdebugnotifier.cpp
@@ -100,6 +98,8 @@ set(kstapp_LIB_SRCS
     kstchangefiledialog.cpp
     kstmatrixdialog.cpp
     ksteventmonitorentry.cpp
+    kstdatawizard.cpp
+    kstdoc.cpp
     kst.cpp)
 
 #KDE3_ADD_DCOP_SKELS(kstapp_LIB_SRCS

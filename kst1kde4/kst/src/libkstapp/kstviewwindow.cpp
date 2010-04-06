@@ -15,17 +15,13 @@
  *                                                                         *
  ***************************************************************************/
 
-// include files for Qt
 #include <QFile>
-#include <QPainter>
-#include <QPaintDeviceMetrics>
-#include <QStyleSheet>
 #include <QMessageBox>
+#include <QPainter>
+#include <QPrinter>
+#include <QTextDocument>
+#include <QVBoxLayout>
 
-// include files for KDE
-#include <kprinter.h>
-
-// application specific includes
 #include "kst2dplot.h"
 #include "kstplotlabel.h"
 #include "kstdoc.h"
@@ -37,7 +33,7 @@
 #define KST_STATUSBAR_STATUS 2
 
 KstViewWindow::KstViewWindow(QWidget *parent, const char* name)
-: QMdiSubWindow(QString::null, parent, name) {
+: QMdiSubWindow(parent) {
   commonConstructor();
   _view = new KstTopLevelView(this, name);
   _view->applyDefaults();
@@ -45,7 +41,7 @@ KstViewWindow::KstViewWindow(QWidget *parent, const char* name)
 
 
 KstViewWindow::KstViewWindow(const QDomElement& e, QWidget* parent, const char* name)
-: QMdiSubWindow(QString::null, parent, name) {
+: QMdiSubWindow(parent) {
   QString in_tag;
   QRect rectRestore;
   QRect rectInternal;
@@ -54,29 +50,31 @@ KstViewWindow::KstViewWindow(const QDomElement& e, QWidget* parent, const char* 
   _view = new KstTopLevelView(e, this);
 
   QDomNode n = e.firstChild();
+
   while (!n.isNull()) {
     QDomElement e = n.toElement(); // try to convert the node to an element.
+
     if( !e.isNull()) { // the node was really an element.
       if (e.tagName() == "tag") {
         in_tag = e.text();
         setCaption(in_tag);
-        setTabCaption(in_tag);
+// xxx        setTabCaption(in_tag);
       } else if (e.tagName() == "restore") {
         rectRestore.setX( e.attribute( "x", "0" ).toInt() );
         rectRestore.setY( e.attribute( "y", "0" ).toInt() );
         rectRestore.setWidth( e.attribute( "w", "100" ).toInt() );
         rectRestore.setHeight( e.attribute( "h", "100" ).toInt() );
-        setRestoreGeometry( rectRestore );
+// xxx        setRestoreGeometry( rectRestore );
       } else if (e.tagName() == "internal") {
         rectInternal.setX( e.attribute( "x", "0" ).toInt() );
         rectInternal.setY( e.attribute( "y", "0" ).toInt() );
         rectInternal.setWidth( e.attribute( "w", "100" ).toInt() );
         rectInternal.setHeight( e.attribute( "h", "100" ).toInt() );
-        setInternalGeometry( rectInternal );
+// xxx        setInternalGeometry( rectInternal );
       } else if (e.tagName() == "minimize") {
-        minimize(false);
+// xxx        minimize(false);
       } else if (e.tagName() == "maximize") {
-        maximize(false);
+// xxx        maximize(false);
       }
     }
     n = n.nextSibling();
@@ -85,14 +83,14 @@ KstViewWindow::KstViewWindow(const QDomElement& e, QWidget* parent, const char* 
 
 
 void KstViewWindow::commonConstructor() {
-  config = kapp->config();
+// xxx  config = kapp->config();
 
   connect(this, SIGNAL(focusInEventOccurs( QMdiSubWindow*)), this, SLOT(slotActivated(QMdiSubWindow*)));
 
   QTimer::singleShot(0, this, SLOT(updateActions()));
 
   QVBoxLayout *vb = new QVBoxLayout(this);
-  vb->setAutoAdd(true);
+// xxx  vb->setAutoAdd(true);
 }
 
 
@@ -157,6 +155,7 @@ void KstViewWindow::slotFileClose() {
 
 
 void KstViewWindow::immediatePrintToFile(const QString &filename) {
+/* xxx
   KPrinter printer(true, QPrinter::HighResolution);
   printer.setPageSize(KPrinter::Letter);
   printer.setOrientation(KPrinter::Landscape);
@@ -172,6 +171,7 @@ void KstViewWindow::immediatePrintToFile(const QString &filename) {
   view()->paint(p, QRegion());
   view()->revertForPrint();
   p.end();
+*/
 }
 
 
@@ -179,23 +179,12 @@ void KstViewWindow::immediatePrintToPng(QDataStream* dataStream, const QSize& si
   if (!view()->children().isEmpty()) {
     QPixmap pixmap(size);
     KstPainter paint(KstPainter::P_EXPORT);
+
     if (paint.begin(&pixmap)) {
       const QSize sizeOld(view()->size());
       view()->resizeForPrint(size);
       view()->paint(paint, QRegion());
-#if QT_VERSION >= 0x030200
       pixmap.save(dataStream->device(), format.toLatin1());
-#else
-      Q_UNUSED(format)
-
-      QByteArray bytes;
-      QDataStream tempStream(bytes, IO_ReadWrite);
-
-      tempStream << pixmap;
-      if (bytes.count() > 4) {
-        dataStream->writeRawBytes(bytes.data()+4, bytes.count()-4);
-      }
-#endif
       view()->revertForPrint();
       paint.end();
     }
@@ -211,12 +200,12 @@ void KstViewWindow::immediatePrintToPng(const QString &filename, const QSize& si
     if (paint.begin(&pixmap)) {
       QString dotFormat = QString(".") + format;
       QString filenameNew;
-      const int pos = filename.findRev(dotFormat, -1, false);
+      const int pos = filename.lastIndexOf(dotFormat, -1, Qt::CaseInsensitive);
 
       if (pos != -1 && pos == int(filename.length() - dotFormat.length())) {
         filenameNew = filename;
       } else {
-        filenameNew = filename + "." + format.lower();
+        filenameNew = filename + "." + format.toLower();
       }
 
       view()->resizeForPrint(size);
@@ -241,7 +230,7 @@ void KstViewWindow::immediatePrintToEps(const QString &filename, const QSize& si
     {
       QPrinter printer(QPrinter::HighResolution);
       QString dotFormat = QString(".eps");
-      const int pos = filename.findRev(dotFormat, -1, false);
+      const int pos = filename.lastIndexOf(dotFormat, -1, Qt::CaseInsensitive);
 
       if (pos != -1 && pos == int(filename.length() - dotFormat.length())) {
         filenameNewEps = filename;
@@ -257,17 +246,16 @@ void KstViewWindow::immediatePrintToEps(const QString &filename, const QSize& si
       right = ( 72 * size.height() ) / resolution;
       bottom = ( 72 * size.width() ) / resolution;
 
-      printer.setMargins(0, 0, 0, 0);
+      printer.setPageMargins(0.0, 0.0, 0.0, 0.0, QPrinter::Point);
       printer.setResolution(resolution);
       printer.setPageSize(QPrinter::Letter);
       printer.setOrientation(QPrinter::Landscape);
-      printer.setOutputToFile(true);
       printer.setOutputFileName(filenameNew);
       printer.setColorMode(QPrinter::Color);
 
       KstPainter paint(KstPainter::P_PRINT);
       paint.begin(&printer);
-      QPaintDeviceMetrics metrics(&printer);
+// xxx      QPaintDeviceMetrics metrics(&printer);
 
       view()->resizeForPrint(size);
       view()->paint(paint, QRegion());
@@ -278,12 +266,13 @@ void KstViewWindow::immediatePrintToEps(const QString &filename, const QSize& si
     //
     // now try to open the .ps file and convert it to an .eps...
     //
+
     QFile filePS(filenameNew);
     QFile fileEPS(filenameNewEps);
     QString line;
 
-    if (filePS.open(IO_ReadOnly)) {
-      if (fileEPS.open(IO_WriteOnly | IO_Truncate)) {
+    if (filePS.open(QIODevice::ReadOnly)) {
+      if (fileEPS.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
         QTextStream streamPS(&filePS);
         QTextStream streamEPS(&fileEPS);
 
@@ -316,9 +305,10 @@ void KstViewWindow::immediatePrintToEps(const QString &filename, const QSize& si
 
 
 void KstViewWindow::print(KstPainter& paint, const QSize& size, int pages, int lineAdjust, bool monochrome, bool enhanceReadability, bool datetimeFooter, bool maintainAspectRatio, int pointStyleOrder, int lineStyleOrder, int lineWidthOrder, int maxLineWidth, int pointDensity) {
-  KstTopLevelViewPtr tlv = kst_cast<KstTopLevelView>(view());
+  KstTopLevelViewPtr tlv;
   QSize sizeNew = size;
 
+  tlv = kst_cast<KstTopLevelView>(view());
   if (tlv) {
     if (lineAdjust != 0) {
       tlv->forEachChild(&Kst2DPlot::pushAdjustLineWidth, lineAdjust, false);
@@ -328,7 +318,9 @@ void KstViewWindow::print(KstPainter& paint, const QSize& size, int pages, int l
       tlv->forEachChild<const QColor&>(&Kst2DPlot::pushCurveColor, Qt::black, false);
       // additional pushes for enhanced readability
       if (enhanceReadability) {
-        Kst2DPlotList plotList = tlv->findChildrenType<Kst2DPlot>(false);
+        Kst2DPlotList plotList;
+
+// xxx        plotList = tlv->findChildrenType<Kst2DPlot>(false);
         for (Kst2DPlotList::Iterator it = plotList.begin(); it != plotList.end(); ++it ) {
           (*it)->changeToMonochrome(pointStyleOrder, lineStyleOrder, lineWidthOrder, maxLineWidth, pointDensity);
         }
@@ -337,7 +329,7 @@ void KstViewWindow::print(KstPainter& paint, const QSize& size, int pages, int l
 
     if (datetimeFooter) {
       QDateTime dateTime = QDateTime::currentDateTime();
-      QString title = i18n("Page: %1  Name: %2  Date: %3").arg(pages).arg(caption()).arg(dateTime.toString(Qt::ISODate));
+      QString title = i18n("Page: %1  Name: %2  Date: %3").arg(pages).arg(windowTitle()).arg(dateTime.toString(Qt::ISODate));
       QRect rect(0, 0, sizeNew.width(), sizeNew.height());
       QRect rectBounding;
 
@@ -369,8 +361,11 @@ void KstViewWindow::print(KstPainter& paint, const QSize& size, int pages, int l
       tlv->forEachChild2(&Kst2DPlot::popCurveColor);
       // additional pops to undo enhanced readability
       if (enhanceReadability) {
-        Kst2DPlotList plotList = tlv->findChildrenType<Kst2DPlot>(false);
-        for (Kst2DPlotList::Iterator it = plotList.begin(); it != plotList.end(); ++it ) {
+        Kst2DPlotList plotList;
+        Kst2DPlotList::iterator it;
+
+// xxx        plostList = tlv->findChildrenType<Kst2DPlot>(false);
+        for (it = plotList.begin(); it != plotList.end(); ++it ) {
           (*it)->undoChangeToMonochrome(pointStyleOrder, lineStyleOrder, lineWidthOrder);
         }
       }
@@ -382,10 +377,10 @@ void KstViewWindow::print(KstPainter& paint, const QSize& size, int pages, int l
 
 
 void KstViewWindow::save(QTextStream& ts, const QString& indent) {
-  const QRect restoreGeom(restoreGeometry());
-  const QRect internalGeom(internalGeometry());
+  const QRect restoreGeom;// xxx restoreGeometry());
+  const QRect internalGeom;// xxx internalGeometry());
 
-  ts << indent << "<tag>" << QStyleSheet::escape(caption()) << "</tag>" << endl;
+  ts << indent << "<tag>" << Qt::escape(windowTitle()) << "</tag>" << endl;
 
   ts << indent << "<restore"  << " x=\"" << restoreGeom.x()
     << "\" y=\"" << restoreGeom.y()
@@ -414,18 +409,20 @@ KstTopLevelViewPtr KstViewWindow::view() const {
 
 
 void KstViewWindow::setCaption(const QString& caption) {
-  QMdiSubWindow::setCaption(caption);
+  QMdiSubWindow::setWindowTitle(caption);
   _view->setTagName(KstObjectTag(caption, KstObjectTag::globalTagContext));  // FIXME: global tag context?
 }
 
 
 void KstViewWindow::closeEvent(QCloseEvent *e) {
   if (KstSettings::globalSettings()->promptWindowClose && !view()->children().isEmpty()) {
-    if (QMessageBox::warning(this, i18n("Kst"), i18n("Are you sure you want to close window '%1'?\nClosing a window deletes all plots in the window.").arg(caption()), QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes) {
+    if (QMessageBox::warning(this, tr("Kst"), tr("Are you sure you want to close window '%1'?\nClosing a window deletes all plots in the window.").arg(windowTitle()), QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes) {
       e->ignore();
+
       return;
     }
   }
+
   QMdiSubWindow::closeEvent(e);
 }
 
@@ -436,6 +433,8 @@ QString KstViewWindow::createPlotObject(const QString& suggestedName, bool promp
   bool duplicate = true;
 
   while (duplicate) {
+    QList<QMdiSubWindow*> windows;
+    QList<QMdiSubWindow*>::const_iterator i;
     KstViewObjectPtr rc;
 
     //
@@ -443,15 +442,10 @@ QString KstViewWindow::createPlotObject(const QString& suggestedName, bool promp
     //
 
     duplicate = false;
-    iter = app->createIterator();
-
-    QList<QMdiSubWindow*> windows;
-    QList<QMdiSubWindow*>::const_iterator i;
-  
-    windows = app->subWindowList(QMdiArea::CreationOrder);
-  
-    for (i = windows.constBegin(); i != windows.constEnd() && !duplicate; ++i)
+    windows = app->subWindowList(QMdiArea::CreationOrder); 
+    for (i = windows.constBegin(); i != windows.constEnd() && !duplicate; ++i) {
       KstViewWindow *viewWindow = dynamic_cast<KstViewWindow*>(*i);
+
       if (viewWindow) {
         rc = viewWindow->view()->findChild(name);
         if (rc) {
@@ -482,8 +476,10 @@ QString KstViewWindow::createPlotObject(const QString& suggestedName, bool promp
       
         windows = app->subWindowList(QMdiArea::CreationOrder);
       
-        for (i = windows.constBegin(); i != windows.constEnd() && !duplicate; ++i)
-          KstViewWindow *viewWindow = dynamic_cast<KstViewWindow*>(*i);
+        for (i = windows.constBegin(); i != windows.constEnd() && !duplicate; ++i) {
+          KstViewWindow *viewWindow;
+
+          viewWindow = dynamic_cast<KstViewWindow*>(*i);
           if (viewWindow) {
             rc = viewWindow->view()->findChild(name);
             if (rc) {
@@ -514,13 +510,20 @@ QString KstViewWindow::createPlotObject(const QString& suggestedName, bool promp
 
 
 QString KstViewWindow::createPlot(const QString& suggestedName, bool prompt) {
-  Kst2DPlotList plotList = view()->findChildrenType<Kst2DPlot>(false);
-  QString name = createPlotObject(suggestedName, prompt);
-  Kst2DPlotPtr plot = kst_cast<Kst2DPlot>(view()->findChild(name));
+  Kst2DPlotList plotList;
+  Kst2DPlotPtr plot;
+  QString name;
 
-  // if there are already plots in the window, use the the first one's font size.
+// xxx  plotList = view()->findChildrenType<Kst2DPlot>(false);
+  name = createPlotObject(suggestedName, prompt);
+  plot = kst_cast<Kst2DPlot>(view()->findChild(name));
+
+  //
+  // if there are already plots in the window, use the the first one's font size...
+  //
+
   if (!plotList.isEmpty()) {
-    plot->setPlotLabelFontSizes(plotList[0]->xTickLabel()->fontSize());
+    plot->setPlotLabelFontSizes(plotList.first()->xTickLabel()->fontSize());
   }
 
   return (name);
@@ -528,4 +531,3 @@ QString KstViewWindow::createPlot(const QString& suggestedName, bool prompt) {
 
 
 #include "kstviewwindow.moc"
-
