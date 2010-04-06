@@ -28,7 +28,7 @@
 #include <QTextDocument>
 #include <QSpinBox>
 
-#include <kglobal.h>
+// xxx #include <kglobal.h>
 #include <kcolorbutton.h>
 
 #include "kstviewlegend.h"

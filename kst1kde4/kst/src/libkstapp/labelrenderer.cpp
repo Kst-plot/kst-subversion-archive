@@ -24,7 +24,7 @@
 #include "ksttimers.h"
 #include "labelparser.h"
 
-#include <kglobal.h>
+// xxx #include <kglobal.h>
 
 #include <iostream>
 

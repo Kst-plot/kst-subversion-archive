@@ -20,7 +20,7 @@
 #include "kstviewbox.h"
 #include "kstviewobjectfactory.h"
 
-#include <kglobal.h>
+// xxx #include <kglobal.h>
 
 #include <QBitmap>
 #include <QMetaObject>

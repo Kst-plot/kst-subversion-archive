@@ -18,7 +18,7 @@
 #include "kstlogwidget.h"
 #include "kst.h"
 
-#include <kglobal.h>
+// xxx #include <kglobal.h>
 
 #include <QBitmap>
 #include <QPainter>

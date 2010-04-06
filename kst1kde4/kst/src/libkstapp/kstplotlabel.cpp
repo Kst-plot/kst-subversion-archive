@@ -22,7 +22,7 @@
 #include <QTextDocument>
 #include <QTextStream>
 
-#include <kglobal.h>
+// xxx #include <kglobal.h>
 
 #include "kstplotlabel.h"
 

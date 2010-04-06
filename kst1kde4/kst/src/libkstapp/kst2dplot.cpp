@@ -38,7 +38,7 @@
 #include <QSpinBox>
 #include <QTextDocument>
 
-#include <kglobal.h>
+// xxx #include <kglobal.h>
 
 #include "dialoglauncher.h"
 #include "enodes.h"

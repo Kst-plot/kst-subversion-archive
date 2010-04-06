@@ -21,7 +21,7 @@
 #include <QTextDocument>
 #include <QVariant>
 
-#include <kglobal.h>
+// xxx #include <kglobal.h>
 
 KstBorderedViewObject::KstBorderedViewObject(const QString& type)
 : KstViewObject(type), _borderColor(QColor(0, 0, 0)), _borderWidth(0), _padding(0), _margin(0) {

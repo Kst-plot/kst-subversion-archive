@@ -25,7 +25,7 @@
 #include <QPainter>
 #include <QTimer>
 
-#include <kglobal.h>
+// xxx #include <kglobal.h>
 #include <kio/netaccess.h>
 
 #include "kstgfxpicturemousehandler.h"
