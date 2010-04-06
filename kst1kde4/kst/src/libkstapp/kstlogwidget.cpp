@@ -15,15 +15,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "kstlogwidget.h"
-#include "kst.h"
-
-// xxx #include <kglobal.h>
-
 #include <QBitmap>
 #include <QPainter>
 #include <QPolygon>
 
+// xxx #include <kglobal.h>
+
+#include "kstlogwidget.h"
+#include "kst.h"
 
 KstLogWidget::KstLogWidget(QWidget *parent, const char *name )
 : QTextBrowser(parent) {

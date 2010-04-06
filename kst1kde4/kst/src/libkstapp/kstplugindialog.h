@@ -56,7 +56,7 @@ class KST_EXPORT KstPluginDialog : public KstDataDialog {
     virtual bool saveInputs(KstCPluginPtr plugin, QExplicitlySharedDataPointer<Plugin> p);
     bool saveOutputs(KstCPluginPtr plugin, QExplicitlySharedDataPointer<Plugin> p);
     virtual void generateEntries(bool input, int& cnt, QWidget *parent,
-        QGridLayout *grid, const QLinkedList<Plugin::Data::IOValue>& table);
+        QGridLayout *grid, const QList<Plugin::Data::IOValue>& table);
     QMap<QString,QString> cacheInputs(const QLinkedList<Plugin::Data::IOValue>& table);
     void restoreInputs(const QLinkedList<Plugin::Data::IOValue>& table, const QMap<QString,QString>& v);
 

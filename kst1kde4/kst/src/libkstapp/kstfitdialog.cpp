@@ -19,11 +19,11 @@
 #include <assert.h>
 #include <stdio.h>
 
-#include <QLineEdit.h>
+#include <QLineEdit>
 #include <QMessageBox>
+#include <QRegExp>
 #include <QToolTip>
 #include <QWhatsThis>
-#include <QRegExp>
 
 #include "curveappearancewidget.h"
 #include "kst2dplot.h"
