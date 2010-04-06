@@ -21,15 +21,15 @@
 
 #include <QButtonGroup>
 #include <QCheckBox>
-#include <qdeepcopy.h>
 #include <qglobal.h>
+#include <QMessageBox>
 #include <QRadioButton>
 #include <QRegExp>
 #include <QSpinBox>
 #include <QString>
 #include <QTimer>
 #include <QToolTip>
-#include <QMessageBox>
+#include <QWizard>
 
 #include <kfiledialog.h>
 #include <kiconloader.h>
@@ -57,23 +57,22 @@
 
 const QString& KstDataWizard::defaultTag = KGlobal::staticQString("<Auto Name>");
 
-KstDataWizard::KstDataWizard(QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl) :
-DataWizard(parent, name, modal, fl )
+KstDataWizard::KstDataWizard(QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl) : DataWizard()
 {
   _configWidget = 0L;
   _inTest = false;
   _hierarchy = false;
   KST::vectorDefaults.sync();
   QString default_source = KST::vectorDefaults.dataSource();
-  _url->setMode(KFile::File | KFile::Directory | KFile::ExistingOnly);
-  setAppropriate(_pageFilters, false);
-  setIcon(BarIcon("kst_datawizard"));
+// xxx  _url->setMode(KFile::File | KFile::Directory | KFile::ExistingOnly);
+// xxx  setAppropriate(_pageFilters, false);
+// xxx  setIcon(BarIcon("kst_datawizard"));
 
   _kstDataRange->update();
   _kstFFTOptions->update();
 
   _newWindowName->setText(defaultTag);
-
+/* xxx
   setNextEnabled(_pageDataSource, false);
   setNextEnabled(_pageVectors, false);
   setNextEnabled(_pageFilters, true);
@@ -81,6 +80,7 @@ DataWizard(parent, name, modal, fl )
 
   disconnect(finishButton(), SIGNAL(clicked()), (QDialog*)this, SLOT(accept()));
   connect(finishButton(), SIGNAL(clicked()), this, SLOT(finished()));
+*/
   _vectors->setAcceptDrops(true);
   _vectorsToPlot->setAcceptDrops(true);
   _vectors->addColumn(i18n("Position"));
@@ -122,7 +122,6 @@ DataWizard(parent, name, modal, fl )
   connect(_vectorsToPlot, SIGNAL(dropped(QDropEvent*)), this, SLOT(updateVectorPageButtons()));
   connect(_testURL, SIGNAL(clicked()), this, SLOT(testURL()));
 
-  // No help button
   setHelpEnabled(_pageDataSource, false);
   setHelpEnabled(_pageVectors, false);
   setHelpEnabled(_pageFilters, false);
@@ -134,7 +133,10 @@ DataWizard(parent, name, modal, fl )
   _url->completionObject()->setDir(QDir::currentPath());
   _url->setFocus();
 
-  // x vector selection
+  //
+  // x vector selection...
+  //
+
   connect(_xAxisCreateFromField, SIGNAL(toggled(bool)), _xVector, SLOT(setEnabled(bool)));
   connect(_xAxisUseExisting, SIGNAL(toggled(bool)), _xVectorExisting, SLOT(setEnabled(bool)));
   connect(_xAxisCreateFromField, SIGNAL(clicked()), this, SLOT(xChanged()));
@@ -145,28 +147,28 @@ DataWizard(parent, name, modal, fl )
   _xVectorExisting->_newVector->hide();
   _xVectorExisting->_editVector->hide();
 
-  _up->setPixmap(BarIcon("up"));
-  _up->setAccel(ALT+Key_Up);
+// xxx  _up->setPixmap(BarIcon("up"));
+  _up->setAccel(ALT+Qt::Key_Up);
 
-  _down->setPixmap(BarIcon("down"));
-  _down->setAccel(ALT+Key_Down);
+// xxx  _down->setPixmap(BarIcon("down"));
+  _down->setAccel(ALT+Qt::Key_Down);
 
-  _add->setPixmap(BarIcon("forward"));
-  _add->setAccel(ALT+Key_S);
+// xxx  _add->setPixmap(BarIcon("forward"));
+  _add->setAccel(ALT+Qt::Key_S);
 
-  _remove->setPixmap(BarIcon("back"));
-  _remove->setAccel(ALT+Key_R);
+// xxx  _remove->setPixmap(BarIcon("back"));
+  _remove->setAccel(ALT+Qt::Key_R);
 
-  _plotColumns->setMinValue(0);
-  _plotColumns->setMaxValue(10);
-  _plotColumns->setSpecialValueText(i18n("default"));
+  _plotColumns->setMinimum(0);
+  _plotColumns->setMaximum(10);
+  _plotColumns->setSpecialValueText(tr("default"));
 
   loadSettings();
 
-  QToolTip::add(_up, i18n("Raise in plot order: Alt+Up"));
-  QToolTip::add(_down, i18n("Lower in plot order: Alt+Down"));
-  QToolTip::add(_add, i18n("Select: Alt+s"));
-  QToolTip::add(_remove, i18n("Remove: Alt+r"));
+  QToolTip::add(_up, tr("Raise in plot order: Alt+Up"));
+  QToolTip::add(_down, tr("Lower in plot order: Alt+Down"));
+  QToolTip::add(_add, tr("Select: Alt+s"));
+  QToolTip::add(_remove, tr("Remove: Alt+r"));
 }
 
 
@@ -500,20 +502,23 @@ void KstDataWizard::showPage( QWidget *page )
 void KstDataWizard::updateWindowBox()
 {
   KstApp *app = KstApp::inst();
-  KMdiIterator<KMdiChildView*> *it = app->createIterator();
+  QList<QMdiSubWindow*> windows;
+  QList<QMdiSubWindow*>::const_iterator i;
+  Kst2DPlotPtr rc;
 
-  _windowName->clear();
-  while (it->currentItem()) {
-    KstViewWindow *v = dynamic_cast<KstViewWindow*>(it->currentItem());
-    if (v) {
-      _windowName->insertItem(v->caption());
+  windows = app->subWindowList(QMdiArea::CreationOrder);
+
+  for (i = windows.constBegin(); i != windows.constEnd(); ++i) {
+    KstViewWindow *viewWindow;
+
+    viewWindow = dynamic_cast<KstViewWindow*>(*i);
+    if (viewWindow) {
+      _windowName->insertItem(0, viewWindow->windowTitle());
     }
-    it->next();
   }
-  app->deleteIterator(it);
 
   _existingWindow->setEnabled(_windowName->count() > 0);
-  _currentWindow->setEnabled(_windowName->count() > 0 && KstApp::inst()->activeWindow());
+  _currentWindow->setEnabled(_windowName->count() > 0 && KstApp::inst()->activeSubWindow());
 
   if (!_windowGroup->selected() || !_windowGroup->selected()->isEnabled()) {
     _newWindow->setChecked(true);
@@ -532,7 +537,7 @@ void KstDataWizard::updateColumns()
   KstViewWindow *v;
 
   if (_currentWindow->isChecked()) {
-    v = static_cast<KstViewWindow*>(KstApp::inst()->activeWindow());
+    v = static_cast<KstViewWindow*>(KstApp::inst()->activeSubWindow());
   } else {
     v = static_cast<KstViewWindow*>(KstApp::inst()->findWindow(_windowName->currentText()));
   }
@@ -570,12 +575,14 @@ void KstDataWizard::updatePlotBox()
       v = static_cast<KstViewWindow*>(app->findWindow(_windowName->currentText()));
     }
 
+    Kst2DPlotList::const_iterator i;
     Kst2DPlotList plots;
+
     if (v) {
-      plots += v->view()->findChildrenType<Kst2DPlot>();
+// xxx      plots += v->view()->findChildrenType<Kst2DPlot>();
     }
 
-    for (Kst2DPlotList::ConstIterator i = plots.begin(); i != plots.end(); ++i) {
+    for (i = plots.begin(); i != plots.end(); ++i) {
       _existingPlotName->insertItem((*i)->tagName());
     }
 
@@ -601,14 +608,16 @@ void KstDataWizard::updatePlotBox()
 
 void KstDataWizard::vectorSubset(const QString& filter)
 {
-  QListViewItem *after = 0L;
-  _vectors->clearSelection();
-  _vectors->setSorting(3, true); // Qt 3.1 compat
-  QRegExp re(filter, true /* case insensitive */, true /* wildcard */);
-  QListViewItemIterator it(_vectors);
+/* xxx
+  QRegExp re(filter, Qt::CaseSensitive, QRegExp::Wildcard);
+  QListWidgetItem *after = 0L;
+  QListWidgetItem *i;
 
+  _vectors->clearSelection();
+  _vectors->setSortingEnabled(true);
+ 
   while (it.current()) {
-    QListViewItem *i = it.current();
+    i = it.current();
     ++it;
     if (re.exactMatch(i->text(0))) {
       if (!_hierarchy) {
@@ -623,6 +632,7 @@ void KstDataWizard::vectorSubset(const QString& filter)
       i->setSelected(true);
     }
   }
+*/
 }
 
 
@@ -631,11 +641,11 @@ void KstDataWizard::newFilter()
 }
 
 
-bool KstDataWizard::checkAvailableMemory(KstDataSourcePtr &ds, KstFrameSize f0Value, Q_INT64 nValue)
+bool KstDataWizard::checkAvailableMemory(KstDataSourcePtr &ds, KstFrameSize f0Value, qint64 nValue)
 {
   unsigned long memoryRequested = 0;
   unsigned long memoryAvailable = 1024*1024*1024; // 1GB
-  Q_INT64 frames;
+  qint64 frames;
   bool rc = true;
 
 #ifdef HAVE_LINUX
@@ -670,6 +680,7 @@ bool KstDataWizard::checkAvailableMemory(KstDataSourcePtr &ds, KstFrameSize f0Va
   //
   // memory estimate for the y vectors
   //
+/* xxx
   {
     QListViewItemIterator it(_vectorsToPlot);
     unsigned long memoryForVector = 0;
@@ -710,7 +721,7 @@ bool KstDataWizard::checkAvailableMemory(KstDataSourcePtr &ds, KstFrameSize f0Va
       ++it;
     }
   }
-
+*/
   ds->unlock();
 
   if (memoryRequested > memoryAvailable) {
@@ -761,10 +772,13 @@ bool KstDataWizard::checkAvailableMemory(KstDataSourcePtr &ds, KstFrameSize f0Va
 
 void KstDataWizard::createLegendsAndLabels(KstViewObjectList &plots, bool xLabels, bool yLabels, bool titleLabel, bool legend, bool legendAuto, int fontSize)
 {
-  KstViewObjectList::Iterator pit = plots.begin();
+  KstViewObjectList::Iterator pit;
 
+  pit = plots.begin();
   while (pit != plots.end()) {
-    Kst2DPlotPtr pp = kst_cast<Kst2DPlot>(*pit);
+    Kst2DPlotPtr pp;
+
+    pp = kst_cast<Kst2DPlot>(*pit);
     if (!pp) {
       ++pit;
 
@@ -775,7 +789,7 @@ void KstDataWizard::createLegendsAndLabels(KstViewObjectList &plots, bool xLabel
     if (legend) {
       pp->getOrCreateLegend();
     } else if (legendAuto) {
-      if (pp->Curves.count() > 1) {
+      if (pp->_curves.count() > 1) {
         pp->getOrCreateLegend();
       }
     }
@@ -798,7 +812,7 @@ void KstDataWizard::cleanupWindowLayout(KstViewWindow *window)
     if (_reGrid->isChecked() || _newWindow->isChecked() || _newWindows->isChecked()) {
       int cols;
 
-      if (_plotColumns->value() == _plotColumns->minValue()) {
+      if (_plotColumns->value() == _plotColumns->minimum()) {
         const KstViewObjectList& children(window->view()->children());
         int cnt = 0;
 
@@ -822,8 +836,11 @@ void KstDataWizard::cleanupWindowLayout(KstViewWindow *window)
 
 void KstDataWizard::finished()
 {
-  KstDataSourcePtr ds = *KST::dataSourceList.findReusableFileName(_file);
+  KstDataSourcePtr ds;
+  KstFrameSize f0Value;
+  KstFrameSize nValue;
 
+  ds = *KST::dataSourceList.findReusableFileName(_file);
   if (!ds) {
     for (KstDataSourceList::Iterator i = _sourceCache.begin(); i != _sourceCache.end(); ++i) {
       if ((*i)->fileName() == _file) {
@@ -836,7 +853,7 @@ void KstDataWizard::finished()
       ds = KstDataSource::loadSource(_file);
     }
     if (!ds) {
-      QMessageBox::warning(this, i18n("Kst"), i18n("<qt>Sorry, unable to load the data file '<b>%1</b>'.").arg(_file));
+      QMessageBox::warning(this, i18n("Kst"), i18n("Sorry, unable to load the data file '%1'.").arg(_file));
 
       return;
     }
@@ -845,9 +862,6 @@ void KstDataWizard::finished()
     KST::dataSourceList.lock().unlock();
     _sourceCache.clear();
   }
-
-  KstFrameSize f0Value;
-  KstFrameSize nValue;
 
   if (_kstDataRange->isStartAbsoluteTime()) {
     f0Value = ds->sampleForTimeLarge(_kstDataRange->f0DateTimeValue());
@@ -878,9 +892,10 @@ void KstDataWizard::finished()
     KstApp *app = KstApp::inst();
     KstVectorList vectorList;
     QString name = KST::suggestVectorName(_xVector->currentText());
-    QValueList<QColor> colors;
+    QList<QColor> colors;
     QColor color;
     KstVectorPtr xVector;
+    bool wasPaused;
     uint nCurves = 0;
     uint nSteps = 0;
     int progress = 0;
@@ -892,7 +907,7 @@ void KstDataWizard::finished()
     //
     // pause updates to avoid event storms
     //
-    bool wasPaused = app->paused();
+    wasPaused = app->paused();
     if (!wasPaused) {
       app->setPaused(true);
     }
@@ -908,7 +923,10 @@ void KstDataWizard::finished()
       progress = 0;
       app->slotUpdateProgress(nSteps, progress, i18n("Creating vectors..."));
 
-      // create the x-vector
+      //
+      // create the x-vector...
+      //
+
       xVector = new KstRVector(ds, _xVector->currentText(),
               KstObjectTag(name, ds->tag(), false),
               _kstDataRange->CountFromEnd->isChecked() ? -1 : f0Value,
@@ -923,20 +941,28 @@ void KstDataWizard::finished()
       app->slotUpdateProgress(nSteps, progress, i18n("Creating vectors..."));
     }
 
+    //
     // next time we use the wizard this session, we probably will want to use the
-    // same X vector, so... lets set that as the default.
+    // same X vector, so... lets set that as the default...
+    //
+
     _xAxisUseExisting->setChecked(true);
     _xVectorExisting->update();
     _xVectorExisting->setSelection(xVector->tag().displayString());
 
-    // create the y-vectors
+    //
+    // create the y-vectors...
+    //
+
     {
       QListViewItemIterator it(_vectorsToPlot);
+
       while (it.current()) {
+        KstVectorPtr v;
         QListViewItem *i = it.current();
         name = KST::suggestVectorName(i->text(0));
 
-        KstVectorPtr v = new KstRVector(ds, i->text(0),
+        v = new KstRVector(ds, i->text(0),
                 KstObjectTag(name, ds->tag(), false),
                 _kstDataRange->CountFromEnd->isChecked() ? -1 : f0Value,
                 _kstDataRange->ReadToEnd->isChecked() ? -1 : nValue,
@@ -950,7 +976,10 @@ void KstDataWizard::finished()
       }
     }
 
-    // get a pointer to the first window
+    //
+    // get a pointer to the first window...
+    //
+
     QString newName;
     KstViewWindow *window = 0L;
     KstViewWindow *windowPSD = 0L;
@@ -961,6 +990,7 @@ void KstDataWizard::finished()
         //
         // use the existing view
         //
+
         newName = window->caption();
         if (newName.isEmpty()) {
           newName = window->tabCaption();
@@ -995,31 +1025,32 @@ void KstDataWizard::finished()
 
     fontSize = qRound(getFontSize(window));
 
-    // create the necessary plots
+    //
+    // create the necessary plots...
+    //
+
     app->slotUpdateProgress(nSteps, progress, i18n("Creating plots..."));
+
     KstViewObjectList plots;
+    Kst2DPlotPtr p;
 
     if (_onePlot->isChecked()) {
-      Kst2DPlotPtr p = kst_cast<Kst2DPlot>(window->view()->findChild(window->createPlotObject(KST::suggestPlotName(), false)));
-      plots.append(p.data());
+      p = kst_cast<Kst2DPlot>(window->view()->findChild(window->createPlotObject(KST::suggestPlotName(), false)));
+      plots.append(p);
       if (_radioButtonPlotDataPSD->isChecked()) {
-        Kst2DPlotPtr p;
-
         if (windowPSD) {
           p = kst_cast<Kst2DPlot>(windowPSD->view()->findChild(windowPSD->createPlotObject(KST::suggestPlotName(), false)));
         } else {
            p = kst_cast<Kst2DPlot>(window->view()->findChild(window->createPlotObject(KST::suggestPlotName(), false)));
         }
-        plots.append(p.data());
+        plots.append(p);
         p->setXAxisInterpretation(false, KstAxisInterpretation(), KstAxisDisplay());
         p->setYAxisInterpretation(false, KstAxisInterpretation(), KstAxisDisplay());
       }
     } else if (_multiplePlots->isChecked()) {
-      Kst2DPlotPtr p;
-
-      for (uint i = 0; i < vectorList.count(); ++i) {
+      for (int i = 0; i < vectorList.count(); ++i) {
         p = kst_cast<Kst2DPlot>(window->view()->findChild(window->createPlotObject(KST::suggestPlotName(), false)));
-        plots.append(p.data());
+        plots.append(p);
       }
       if (_radioButtonPlotDataPSD->isChecked()) {
         for (uint i = 0; i < vectorList.count(); ++i) {
@@ -1028,24 +1059,26 @@ void KstDataWizard::finished()
           } else {
             p = kst_cast<Kst2DPlot>(window->view()->findChild(window->createPlotObject(KST::suggestPlotName(), false)));
           }
-          plots.append(p.data());
+          plots.append(p);
           p->setXAxisInterpretation(false, KstAxisInterpretation(), KstAxisDisplay());
           p->setYAxisInterpretation(false, KstAxisInterpretation(), KstAxisDisplay());
         }
       }
     } else if (_existingPlot->isChecked()) {
-      Kst2DPlotPtr p = kst_cast<Kst2DPlot>(window->view()->findChild(_existingPlotName->currentText()));
-      plots.append(p.data());
+      p = kst_cast<Kst2DPlot>(window->view()->findChild(_existingPlotName->currentText()));
+      plots.append(p);
     } else if (_cycleExisting->isChecked()) {
-      Kst2DPlotList pl = QDeepCopy<Kst2DPlotList>(window->view()->findChildrenType<Kst2DPlot>());
-      for (Kst2DPlotList::Iterator i = pl.begin(); i != pl.end(); ++i) {
+      Kst2DPlotList pl;
+      Kst2DPlotList::iterator i;
+
+// xxx      pl = QCopy<Kst2DPlotList>(window->view()->findChildrenType<Kst2DPlot>());
+      for ( i = pl.begin(); i != pl.end(); ++i) {
         plots += (*i).data();
       }
     } else { /* cycle */
-      Kst2DPlotPtr p;
       for (int i = 0; i < _plotNumber->value(); ++i) {
         p = kst_cast<Kst2DPlot>(window->view()->findChild(window->createPlotObject(KST::suggestPlotName(), false)));
-        plots.append(p.data());
+        plots.append(p);
       }
       if (_radioButtonPlotDataPSD->isChecked()) {
         for (int i = 0; i < _plotNumber->value(); ++i) {
@@ -1054,14 +1087,17 @@ void KstDataWizard::finished()
           } else {
             p = kst_cast<Kst2DPlot>(window->view()->findChild(window->createPlotObject(KST::suggestPlotName(), false)));
           }
-          plots.append(p.data());
+          plots.append(p);
           p->setXAxisInterpretation(false, KstAxisInterpretation(), KstAxisDisplay());
           p->setYAxisInterpretation(false, KstAxisInterpretation(), KstAxisDisplay());
         }
       }
     }
 
-    // re-order the vectors if the user wants it
+    //
+    // re-order the vectors if the user wants it...
+    //
+
     if (_orderInColumns->isChecked()) {
       const KstVectorList lOld = vectorList;
       const int count = lOld.count();
@@ -1084,24 +1120,36 @@ void KstDataWizard::finished()
       }
     }
 
-    // create the data curves
+    KstViewObjectList::iterator pit;
+    KstVectorList::iterator it;
+    
+    //
+    // create the data curves...
+    //
+
     app->slotUpdateProgress(nSteps, progress, i18n("Creating curves..."));
-    KstViewObjectList::Iterator pit = plots.begin();
-    for (KstVectorList::Iterator it = vectorList.begin(); it != vectorList.end(); ++it) {
+    pit = plots.begin();
+    for (it = vectorList.begin(); it != vectorList.end(); ++it) {
       if (_radioButtonPlotData->isChecked() || _radioButtonPlotDataPSD->isChecked()) {
+        Kst2DPlotPtr plot;
+        KstVCurvePtr c;
+
         name = KST::suggestCurveName((*it)->tag(), false);
-        Kst2DPlotPtr plot = kst_cast<Kst2DPlot>(*pit);
+        plot = kst_cast<Kst2DPlot>(*pit)
         color = KstApp::inst()->chooseColorDlg()->getColorForCurve(xVector, *it);
         if (!color.isValid()) {
           if (plot) {
-            KstVCurveList vcurves = kstObjectSubList<KstBaseCurve,KstVCurve>(plot->Curves);
+            KstVCurveList vcurves;
+
+// xxx            vcurves = kstObjectSubList<KstBaseCurve,KstVCurve>(plot->Curves);
             color = KstColorSequence::next(vcurves, plot->backgroundColor());
           } else {
             color = KstColorSequence::next();
           }
         }
         colors.append(color);
-        KstVCurvePtr c = new KstVCurve(name, xVector, *it, 0L, 0L, 0L, 0L, color);
+
+        c = new KstVCurve(name, xVector, *it, KstVectorPtr(), KstVectorPtr(),  KstVectorPtr(),  KstVectorPtr(), color);
         c->setLineWidth(KstSettings::globalSettings()->defaultLineWeight);
         if (_drawBoth->isChecked()) {
           c->setHasPoints(true);
@@ -1144,18 +1192,23 @@ void KstDataWizard::finished()
       pit = plots.at(plots.count()/2);
     }
 
-    // create the PSDs
+    //
+    // create the PSDs...
+    //
+
     if (_radioButtonPlotPSD->isChecked() || _radioButtonPlotDataPSD->isChecked()) {
+      KstVectorList::Iterator it;
       KstVCurvePtr c;
       int indexColor = 0;
 
       pointType = 0;
       app->slotUpdateProgress(nSteps, progress, i18n("Creating spectra..."));
 
-      for (KstVectorList::Iterator it = vectorList.begin(); it != vectorList.end(); ++it) {
+      for (it = vectorList.begin(); it != vectorList.end(); ++it) {
         if ((*it)->length() > 0) {
           Kst2DPlotPtr plot;
           KstViewObjectList::Iterator startPlot = pit;
+          KstPSDPtr p;
 
           while (!plot) {
             plot = kst_cast<Kst2DPlot>(*pit);
@@ -1171,7 +1224,7 @@ void KstDataWizard::finished()
           }
           name = KST::suggestPSDName((*it)->tag());
 
-          KstPSDPtr p = new KstPSD(name, *it,
+          p = new KstPSD(name, *it,
                   _kstFFTOptions->SampRate->text().toDouble(),
                   _kstFFTOptions->Interleaved->isChecked(),
                   _kstFFTOptions->FFTLen->text().toInt(),
@@ -1186,7 +1239,9 @@ void KstDataWizard::finished()
           color = KstApp::inst()->chooseColorDlg()->getColorForCurve(p->vX(), p->vY());
           if (!color.isValid()) {
             if (_radioButtonPlotPSD->isChecked() || colors.count() <= (unsigned long)indexColor) {
-              KstVCurveList vcurves = kstObjectSubList<KstBaseCurve,KstVCurve>(plot->Curves);
+              KstVCurveList vcurves;
+
+// xxx              vcurves = kstObjectSubList<KstBaseCurve,KstVCurve>(plot->_curves);
               color = KstColorSequence::next(vcurves, plot->backgroundColor());
             } else {
               color = colors[indexColor];
@@ -1211,7 +1266,7 @@ void KstDataWizard::finished()
           KST::dataObjectList.append(KstDataObjectPtr(p));
           KST::dataObjectList.append(KstDataObjectPtr(c));
           KST::dataObjectList.lock().unlock();
-          plot->addCurve(c.data());
+          plot->addCurve(c);
           plot->setLog(_psdLogX->isChecked(),_psdLogY->isChecked());
           if (!_onePlot->isChecked()) { // change plots if we are not onePlot
             if (++pit == plots.end()) {
@@ -1277,6 +1332,7 @@ void KstDataWizard::disablePSDEntries()
 void KstDataWizard::search()
 {
   QString s = _vectorReduction->text();
+
   if (!s.isEmpty()) {
     if (s[0] != '*') {
       s = "*" + s;
@@ -1303,12 +1359,15 @@ void KstDataWizard::enableWindowEntries()
 
 void KstDataWizard::markSourceAndSave()
 {
-  assert(_configWidget);
-  KstDataSourcePtr src = static_cast<KstDataSourceConfigWidget*>((QWidget*)_configWidget)->instance();
-  if (src) {
-    src->disableReuse();
+  if (_configWidget) {
+    KstDataSourcePtr src;
+
+    src = static_cast<KstDataSourceConfigWidget*>((QWidget*)_configWidget)->instance();
+    if (src) {
+      src->disableReuse();
+    }
+    static_cast<KstDataSourceConfigWidget*>((QWidget*)_configWidget)->save();
   }
-  static_cast<KstDataSourceConfigWidget*>((QWidget*)_configWidget)->save();
 }
 
 
@@ -1329,6 +1388,7 @@ void KstDataWizard::configureSource()
 
   assert(_configWidget);
   KDialogBase *dlg = new KDialogBase(this, "Data Config Dialog", true, i18n("Configure Data Source"));
+
   if (isNew) {
     connect(dlg, SIGNAL(okClicked()), _configWidget, SLOT(save()));
     connect(dlg, SIGNAL(applyClicked()), _configWidget, SLOT(save()));
@@ -1351,7 +1411,7 @@ void KstDataWizard::configureSource()
 void KstDataWizard::saveSettings()
 {
   KConfig cfg("kstrc", false, false);
-
+/* xxx
   cfg.setGroup("DataWizard");
 
   cfg.writeEntry("PlotXY", _radioButtonPlotData->isChecked());
@@ -1385,11 +1445,13 @@ void KstDataWizard::saveSettings()
 
   cfg.writeEntry("OrderInColumns", _orderInColumns->isChecked());
   cfg.writeEntry("PlotColumns", _plotColumns->value());
+*/
 }
 
 
 void KstDataWizard::loadSettings()
 {
+/* xxx
   KConfig cfg("kstrc");
   cfg.setGroup("DataWizard");
 
@@ -1453,6 +1515,7 @@ void KstDataWizard::loadSettings()
   _plotNumber->setValue(cfg.readNumEntry("PlotNumber", 2));
   _orderInColumns->setChecked(cfg.readBoolEntry("OrderInColumns", false));
   _plotColumns->setValue(cfg.readNumEntry("PlotColumns", 0));
+*/
 }
 
 
@@ -1461,12 +1524,14 @@ void KstDataWizard::clear()
   QPtrList<QListViewItem> lst;
 
   QListViewItemIterator it(_vectorsToPlot);
+
   while (it.current()) {
     lst.append(it.current());
     ++it;
   }
 
   QPtrListIterator<QListViewItem> iter(lst);
+
   while (iter.current()) {
     _vectorsToPlot->takeItem(iter.current());
     _vectors->insertItem(iter.current());
@@ -1485,8 +1550,10 @@ void KstDataWizard::down()
   _vectorsToPlot->setSorting(10, true);
 
   QListViewItemIterator it(_vectorsToPlot);
+
   while (it.current()) {
     QListViewItem *current = it.current();
+
     ++it;
     if (_vectorsToPlot->isSelected(current)) {
       lastSelected = current;
@@ -1495,6 +1562,7 @@ void KstDataWizard::down()
         current->moveItem(lastUnselected);
       } else {
         QListViewItem *itemAbove = current->itemAbove();
+
         while (itemAbove) {
           itemAbove->moveItem(current);
           itemAbove = current->itemAbove();
@@ -1519,6 +1587,7 @@ void KstDataWizard::up()
   _vectorsToPlot->setSorting(10, true);
 
   QListViewItemIterator it(_vectorsToPlot);
+
   while (it.current()) {
     if (_vectorsToPlot->isSelected(it.current())) {
       lastSelected = it.current();
@@ -1547,9 +1616,10 @@ void KstDataWizard::updateVectorPageButtons()
 
 void KstDataWizard::add()
 {
-  QPtrList<QListViewItem> lst;
-
+  QList<QListViewItem> lst;
   QListViewItemIterator it(_vectors);
+  QListViewItem *last;
+
   while (it.current()) {
     if (it.current()->isSelected()) {
       if (it.current()->childCount() == 0) {
@@ -1559,11 +1629,13 @@ void KstDataWizard::add()
     ++it;
   }
 
-  QListViewItem *last = _vectorsToPlot->lastItem();
+  *last = _vectorsToPlot->lastItem();
   QPtrListIterator<QListViewItem> iter(lst);
+
   while (iter.current()) {
-    QListViewItem* parent;
-    QListViewItem *item = iter.current();
+    QListWidgetItem *parent;
+    QListWidgetItem *item = iter.current();
+
     parent = item->parent();
 
     while (parent) {
@@ -1608,8 +1680,8 @@ void KstDataWizard::add()
 
 void KstDataWizard::remove()
 {
-  QPtrList<QListViewItem> lst;
-  QListViewItemIterator it(_vectorsToPlot);
+  QList<QListViewItem> lst;
+  QList::iterator it(_vectorsToPlot);
 
   while (it.current()) {
     if (it.current()->isSelected()) {
@@ -1618,17 +1690,19 @@ void KstDataWizard::remove()
     ++it;
   }
 
-  QPtrListIterator<QListViewItem> iter(lst);
+  QList::iterator<QListViewItem> iter(lst);
+
   while (iter.current()) {
     _vectorsToPlot->takeItem(iter.current());
     if (_hierarchy) {
       QListViewItem* parent = 0L;
+      QStringList::const_iterator itEntry;
       QStringList entries;
       QString text = iter.current()->text(0);
       QString item;
 
-      entries = QStringList::split(QDir::separator(), text, FALSE);
-      for (QStringList::ConstIterator itEntry = entries.begin(); itEntry != entries.end(); ++itEntry) {
+      entries = text.split(QDir::separator(), QString::KeepEmptyParts);
+      for (itEntry = entries.begin(); itEntry != entries.end(); ++itEntry) {
         item += (*itEntry);
         if (text.compare(item) != 0) {
           parent = _fields.find(item);
@@ -1659,7 +1733,7 @@ void KstDataWizard::remove()
   }
   updateVectorPageButtons();
 
-  vectorsDroppedBack(0L); // abuse
+  vectorsDroppedBack(0L);
 }
 
 
@@ -1669,6 +1743,7 @@ void KstDataWizard::vectorsDroppedBack(QDropEvent *e)
 
   // Note: e can be null
   QListViewItemIterator it(_vectors);
+
   while (it.current()) {
     QListViewItem *i = it.current();
     if (i->text(1).isEmpty()) {
@@ -1680,11 +1755,17 @@ void KstDataWizard::vectorsDroppedBack(QDropEvent *e)
   updateVectorPageButtons();
 }
 
+
 double KstDataWizard::getFontSize(KstViewWindow *w) {
+  Kst2DPlotList plotList;
   double size;
 
-  // if there are already plots in the window, use the the first one's font size.
-  Kst2DPlotList plotList = w->view()->findChildrenType<Kst2DPlot>(false);
+  //
+  // if there are already plots in the window, use the the first one's font size...
+  //
+
+// xxx  plotList = w->view()->findChildrenType<Kst2DPlot>(false);
+
   if (!plotList.isEmpty()) {
     size = plotList[0]->xTickLabel()->fontSize();
   } else {
@@ -1696,4 +1777,3 @@ double KstDataWizard::getFontSize(KstViewWindow *w) {
 
 
 #include "kstdatawizard.moc"
-

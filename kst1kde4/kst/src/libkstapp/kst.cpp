@@ -17,20 +17,18 @@
 
 #include <assert.h>
 
-// include files for Qt
 #include <qclipboard.h>
+#include <qdatetime.h>
 #include <qdeepcopy.h>
 #include <qeventloop.h>
+#include <QMessageBox>
 #include <qpaintdevicemetrics.h>
 #include <qpopupmenu.h>
 #include <qprogressbar.h>
 #include <qvalidator.h>
-#include <QMessageBox>
 
-// include files for KDE
 #include <kaccel.h>
 #include <kcmdlineargs.h>
-#include "ksdebug.h"
 #include <kfiledialog.h>
 #include <kkeydialog.h>
 #include <kpopupmenu.h>
@@ -40,9 +38,7 @@
 #include <kstatusbar.h>
 #include <ktabwidget.h>
 #include <ktoolbarbutton.h>
-#include <qdatetime.h>
 
-// application specific includes
 #include "extensiondlg.h"
 #include "extensionmgr.h"
 #include "kst.h"
@@ -1413,9 +1409,9 @@ void KstApp::slotFilePrint() {
   QList<QMdiSubWindow*>::const_iterator i;
   Kst2DPlotPtr rc;
 
-  windows = app->subWindowList( CreationOrder );
+  windows = app->subWindowList(QMidArea::CreationOrder);
 
-  for (i = windows.constBegin(); i != windows.constEnd(); ++i)
+  for (i = windows.constBegin(); i != windows.constEnd(); ++i) {
     KstViewWindow *viewWindow = dynamic_cast<KstViewWindow*>(*i);
     if (viewWindow) {
       if (viewWindow && !viewWindow->view()->children().isEmpty()) {
@@ -1596,7 +1592,7 @@ void KstApp::immediatePrintToFile(const QString& filename, bool revert) {
   QList<QMdiSubWindow*>::const_iterator i;
   Kst2DPlotPtr rc;
 
-  windows = app->subWindowList( CreationOrder );
+  windows = app->subWindowList(QMdiArea::CreationOrder);
   if (windows.count() > 0) {
     KPrinter printer(true, QPrinter::HighResolution);
     printer.setPageSize(KPrinter::Letter);
@@ -1655,7 +1651,7 @@ void KstApp::immediatePrintToPng(const QString& filename, const QString& format,
       filenameSub = filename;
     }
   
-    windows = app->subWindowList( CreationOrder );
+    windows = app->subWindowList(QMdiArea::CreationOrder);
   
     for (i = windows.constBegin(); i != windows.constEnd(); ++i)
       pages++;
@@ -1683,7 +1679,7 @@ void KstApp::immediatePrintToEps(const QString& filename, int width, int height,
       filenameSub = filename;
     }
 
-    windows = app->subWindowList( CreationOrder );
+    windows = app->subWindowList(QMdiArea::CreationOrder);
 
     for (i = windows.constBegin(); i != windows.constEnd(); ++i)
       pages++;
@@ -1916,7 +1912,7 @@ void KstApp::toggleMouseMode() {
   QList<QMdiSubWindow*> windows;
   QList<QMdiSubWindow*>::const_iterator i;
 
-  windows = app->subWindowList( CreationOrder );
+  windows = app->subWindowList(QMdiArea::CreationOrder);
 
   for (i = windows.constBegin(); i != windows.constEnd(); ++i)
     KstViewWindow *viewWindow = dynamic_cast<KstViewWindow*>(*i);
@@ -2631,7 +2627,7 @@ void KstApp::tiedZoomPrev(KstViewWidget* view, const QString& plotName) {
     QList<QMdiSubWindow*> windows;
     QList<QMdiSubWindow*>::const_iterator i;
   
-    windows = app->subWindowList( CreationOrder );
+    windows = app->subWindowList(QMdiArea::CreationOrder);
   
     for (i = windows.constBegin(); i != windows.constEnd(); ++i)
       KstViewWindow *viewWindow = dynamic_cast<KstViewWindow*>(*i);
@@ -2653,7 +2649,7 @@ void KstApp::tiedZoomMode(int zoom, bool flag, double center, int mode, int mode
     QList<QMdiSubWindow*> windows;
     QList<QMdiSubWindow*>::const_iterator i;
   
-    windows = app->subWindowList( CreationOrder );
+    windows = app->subWindowList(QMdiArea::CreationOrder);
   
     for (i = windows.constBegin(); i != windows.constEnd(); ++i)
       KstViewWindow *viewWindow = dynamic_cast<KstViewWindow*>(*i);
@@ -2675,7 +2671,7 @@ void KstApp::tiedZoom(bool x, double xmin, double xmax, bool y, double ymin, dou
    QList<QMdiSubWindow*> windows;
     QList<QMdiSubWindow*>::const_iterator i;
   
-    windows = app->subWindowList( CreationOrder );
+    windows = app->subWindowList(QMdiArea::CreationOrder);
   
     for (i = windows.constBegin(); i != windows.constEnd(); ++i)
       KstViewWindow *viewWindow = dynamic_cast<KstViewWindow*>(*i);

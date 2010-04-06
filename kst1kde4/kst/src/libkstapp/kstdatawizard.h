@@ -75,15 +75,15 @@ class KstDataWizard: public QWidget, public Ui::DataWizard {
     void vectorsDroppedBack(QDropEvent *e);
 
   private:
-    bool checkAvailableMemory(KstDataSourcePtr &ds, KstFrameSize f0Value, Q_INT64 nValue);
+    bool checkAvailableMemory(KstDataSourcePtr &ds, KstFrameSize f0Value, qint64 nValue);
     void createLegendsAndLabels(KstViewObjectList &plots, bool xLabels, bool yLabels, bool titleLabel, bool legend, bool legendAuto, int fontSize);
     void cleanupWindowLayout(KstViewWindow *window);
 
     static const QString &defaultTag;
     QPointer<QWidget> _configWidget;
     KstDataSourceList _sourceCache;
-    QMap<QString,QString> _countMap;
-    QDict<QListViewItem> _fields;
+    QMap<QString, QString> _countMap;
+    QHash<QString, QListViewItem> _fields;
     QString _file;
     bool _hierarchy;
     bool _inTest;
