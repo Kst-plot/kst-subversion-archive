@@ -66,7 +66,7 @@ void KstLogWidget::logAdded(const KstDebug::LogMessage& msg) {
     return;
   }
 
-  append(i18n("%1<b>%2</b> %3").arg(sym).arg(KGlobal::locale()->formatDateTime(msg.date)).arg(msg.msg));
+  append(QObject::tr("%1<b>%2</b> %3").arg(sym).arg(KGlobal::locale()->formatDateTime(msg.date)).arg(msg.msg));
 }
 
 

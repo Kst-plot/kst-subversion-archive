@@ -24,7 +24,6 @@
 
 // include files for KDE
 #include <dcopref.h>
-#include <klocale.h>
 
 // application specific includes
 #include "enodes.h"
@@ -101,7 +100,7 @@ void EventMonitorEntry::commonConstructor(const QString &in_tag) {
   _isValid = false;
   _pExpression = 0L;
 
-  _typeString = i18n("Event");
+  _typeString = QObject::tr("Event");
   _type = "Event";
   KstObject::setTagName(KstObjectTag::fromString(in_tag));
 
@@ -127,7 +126,7 @@ bool EventMonitorEntry::reparse() {
       KstStringMap stm;
       if (_pExpression->collectObjects(_vectorsUsed, _inputScalars, stm)) {
         if (recursion()) {
-          KstDebug::self()->log( i18n("There is a recursion resulting from the event monitor entry you entered, '%s'").arg(_event), KstDebug::Warning);
+          KstDebug::self()->log( QObject::tr("There is a recursion resulting from the event monitor entry you entered, '%s'").arg(_event), KstDebug::Warning);
         } else {
           _isValid = true;
         }
@@ -303,22 +302,22 @@ void EventMonitorEntry::logImmediately(bool sendEvent) {
       } else if (!makeRange && idx == idxOld + 1) {
         makeRange = true;
       } else if (makeRange && idx != idxOld + 1) {
-        rangeString = i18n("%1-%2,%3").arg(rangeString).arg(idxOld).arg(idx);
+        rangeString = QObject::tr("%1-%2,%3").arg(rangeString).arg(idxOld).arg(idx);
         makeRange = false;
       } else if (idx != idxOld + 1) {
-        rangeString = i18n("%1,%2").arg(rangeString).arg(idx);
+        rangeString = QObject::tr("%1,%2").arg(rangeString).arg(idx);
       }
       idxOld = idx;
     }
 
     if (makeRange) {
-      rangeString = i18n("%1-%2").arg(rangeString).arg(idx);
+      rangeString = QObject::tr("%1-%2").arg(rangeString).arg(idx);
     }
 
     if (_description.isEmpty()) {
-      logMessage = i18n("Event Monitor: %1: %2").arg(_event).arg(rangeString);
+      logMessage = QObject::tr("Event Monitor: %1: %2").arg(_event).arg(rangeString);
     } else {
-      logMessage = i18n("Event Monitor: %1: %2").arg(_description).arg(rangeString);
+      logMessage = QObject::tr("Event Monitor: %1: %2").arg(_description).arg(rangeString);
     }
 
     _indexArray.clear();
@@ -349,7 +348,7 @@ void EventMonitorEntry::doLog(const QString& logMessage) const {
   }
 
   if (_logEMail && !_eMailRecipients.isEmpty()) {
-    EMailThread* thread = new EMailThread(_eMailRecipients, i18n("Kst Event Monitoring Notification"), logMessage);
+    EMailThread* thread = new EMailThread(_eMailRecipients, QObject::tr("Kst Event Monitoring Notification"), logMessage);
     thread->send();
   }
 

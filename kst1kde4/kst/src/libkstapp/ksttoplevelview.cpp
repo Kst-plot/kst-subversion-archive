@@ -25,7 +25,6 @@
 
 #include <kdeversion.h>
 #include <kinputdialog.h>
-#include <klocale.h>
 
 #include "kst.h"
 #include "kst2dplot.h"
@@ -76,8 +75,8 @@ KstTopLevelView::KstTopLevelView(const QDomElement& e, QWidget *parent, const ch
 
 void KstTopLevelView::commonConstructor() {
   _type = "TopLevelView";
-  _editTitle = i18n("Edit View");
-  _newTitle = i18n("New View");
+  _editTitle = QObject::tr("Edit View");
+  _newTitle = QObject::tr("New View");
   _focusOn = false;
   _pressDirection = -1;
   _moveOffset = QPoint(-1, -1);
@@ -881,7 +880,7 @@ void KstTopLevelView::pressMoveLayoutMode(const QPoint& pos, bool shift, bool al
       //
 
       pressMoveLayoutModeMove(pos, shift, snapToBorder);
-      KstApp::inst()->slotUpdateDataMsg(i18n("(x0,y0)-(x1,y1)", "(%1,%2)-(%3,%4)").arg(_prevBand.topLeft().x()).arg(_prevBand.topLeft().y()).arg(_prevBand.bottomRight().x()).arg(_prevBand.bottomRight().y()));
+      KstApp::inst()->slotUpdateDataMsg(QObject::tr("(x0,y0)-(x1,y1)", "(%1,%2)-(%3,%4)").arg(_prevBand.topLeft().x()).arg(_prevBand.topLeft().y()).arg(_prevBand.bottomRight().x()).arg(_prevBand.bottomRight().y()));
     } else if (_pressTarget->isResizable()) {
       bool maintainAspect = shift ^ _pressTarget->maintainAspect(); // if default behaviour is to maintainAspect on resize, then shift will now have opposite behaviour.
 
@@ -904,7 +903,7 @@ void KstTopLevelView::pressMoveLayoutMode(const QPoint& pos, bool shift, bool al
 
         pressMoveLayoutModeResize(pos, maintainAspect, snapToBorder);
       }
-      KstApp::inst()->slotUpdateDataMsg(i18n("(x0,y0)-(x1,y1)", "(%1,%2)-(%3,%4)").arg(_prevBand.topLeft().x()).arg(_prevBand.topLeft().y()).arg(_prevBand.bottomRight().x()).arg(_prevBand.bottomRight().y()));
+      KstApp::inst()->slotUpdateDataMsg(QObject::tr("(x0,y0)-(x1,y1)", "(%1,%2)-(%3,%4)").arg(_prevBand.topLeft().x()).arg(_prevBand.topLeft().y()).arg(_prevBand.bottomRight().x()).arg(_prevBand.bottomRight().y()));
     }
   } else {
     //
@@ -1406,52 +1405,52 @@ bool KstTopLevelView::popupMenu(QMenu *menu, const QPoint& pos) {
         }
       }
       subMenu = new QMenu(menu);
-      subMenu->addAction(i18n("X-axis"), this, SLOT(condenseXAxis()));
-      subMenu->addAction(i18n("Y-axis"), this, SLOT(condenseYAxis()));
+      subMenu->addAction(QObject::tr("X-axis"), this, SLOT(condenseXAxis()));
+      subMenu->addAction(QObject::tr("Y-axis"), this, SLOT(condenseYAxis()));
       action = menu->addMenu(subMenu);
-      subMenu->setTitle(i18n("Condense selected"));
+      subMenu->setTitle(QObject::tr("Condense selected"));
       if (numPlots < 2) {
         action->setEnabled(false);
       }
 
       subMenu = new QMenu(menu);
-      subMenu->addAction(i18n("Width"), this, SLOT(makeSameWidth()));
-      subMenu->addAction(i18n("Height"), this, SLOT(makeSameHeight()));
-      subMenu->addAction(i18n("Size"), this, SLOT(makeSameSize()));
+      subMenu->addAction(QObject::tr("Width"), this, SLOT(makeSameWidth()));
+      subMenu->addAction(QObject::tr("Height"), this, SLOT(makeSameHeight()));
+      subMenu->addAction(QObject::tr("Size"), this, SLOT(makeSameSize()));
       menu->addMenu(subMenu);
-      subMenu->setTitle(i18n("Make Same"));
+      subMenu->setTitle(QObject::tr("Make Same"));
 
       subMenu = new QMenu(menu);
-      subMenu->addAction(i18n("Left"), this, SLOT(alignLeft()));
-      subMenu->addAction(i18n("Right"), this, SLOT(alignRight()));
-      subMenu->addAction(i18n("Top"), this, SLOT(alignTop()));
-      subMenu->addAction(i18n("Bottom"), this, SLOT(alignBottom()));
+      subMenu->addAction(QObject::tr("Left"), this, SLOT(alignLeft()));
+      subMenu->addAction(QObject::tr("Right"), this, SLOT(alignRight()));
+      subMenu->addAction(QObject::tr("Top"), this, SLOT(alignTop()));
+      subMenu->addAction(QObject::tr("Bottom"), this, SLOT(alignBottom()));
       menu->addMenu(subMenu);
-      subMenu->setTitle(i18n("Align"));
+      subMenu->setTitle(QObject::tr("Align"));
 
       subMenu = new QMenu(menu);
-      subMenu->addAction(i18n("Horizontally"), this, SLOT(packHorizontally()));
-      subMenu->addAction(i18n("Vertically"), this, SLOT(packVertically()));
+      subMenu->addAction(QObject::tr("Horizontally"), this, SLOT(packHorizontally()));
+      subMenu->addAction(QObject::tr("Vertically"), this, SLOT(packVertically()));
       menu->addMenu(subMenu);
-      subMenu->setTitle(i18n("Pack"));
+      subMenu->setTitle(QObject::tr("Pack"));
 
       menu->addSeparator();
     }
-    menu->addAction(i18n("Group Objects"), this, SLOT(groupSelection()));
+    menu->addAction(QObject::tr("Group Objects"), this, SLOT(groupSelection()));
     rc = true;
   }
 
   if (rc) {
     menu->addSeparator();
   } else {
-    menu->addAction(i18n("&Edit..."), this, SLOT(edit()));
+    menu->addAction(QObject::tr("&Edit..."), this, SLOT(edit()));
   }
 
   QMenu *subMenu = new QMenu(menu);
-  subMenu->addAction(i18n("Default Tile"), this, SLOT(cleanupDefault()));
-  subMenu->addAction(i18n("Custom..."), this, SLOT(cleanupCustom()));
+  subMenu->addAction(QObject::tr("Default Tile"), this, SLOT(cleanupDefault()));
+  subMenu->addAction(QObject::tr("Custom..."), this, SLOT(cleanupCustom()));
   menu->addMenu(subMenu);
-  subMenu->setTitle(i18n("Cleanup Layout"));
+  subMenu->setTitle(QObject::tr("Cleanup Layout"));
 
   rc = true;
 
@@ -2019,8 +2018,8 @@ void KstTopLevelView::cleanupCustom() {
   bool ok = false;
 
 #if KDE_VERSION >= KDE_MAKE_VERSION(3,3,0)
-  int numCols = KInputDialog::getInteger(i18n("Number of Columns"), 
-                                         i18n("Select number of columns:"), 
+  int numCols = KInputDialog::getInteger(QObject::tr("Number of Columns"), 
+                                         QObject::tr("Select number of columns:"), 
                                          int(sqrt(_children.count())), 
                                          1, _children.count(), 1, &ok, 0L);
   if (ok) {
@@ -2028,11 +2027,11 @@ void KstTopLevelView::cleanupCustom() {
   }
 #else
   for (;;) {
-    QString numColsString = KLineEditDlg::getText(i18n("Enter number of columns:"), i18n("Number of Columns"), &ok, 0L);
+    QString numColsString = KLineEditDlg::getText(QObject::tr("Enter number of columns:"), QObject::tr("Number of Columns"), &ok, 0L);
     if (ok) {
       unsigned int numCols = numColsString.toInt();
       if (numCols < 1 || numCols > _children.count()) {
-        QMessageBox::warning(KstApp::inst(), i18n("Kst"), i18n("Enter a number of columns between 1 and %d").arg(_selectionList.count()));
+        QMessageBox::warning(KstApp::inst(), QObject::tr("Kst"), QObject::tr("Enter a number of columns between 1 and %d").arg(_selectionList.count()));
       } else {
         cleanup(numCols);
 
@@ -2315,31 +2314,31 @@ QMap<QString, QVariant > KstTopLevelView::widgetHints(const QString& propertyNam
   if (map.empty()) {
     if (propertyName == "backgroundColor") {
       map.insert(QString("_kst_widgetType"), QString("KColorButton"));
-      map.insert(QString("_kst_label"), i18n("Background color"));
+      map.insert(QString("_kst_label"), QObject::tr("Background color"));
     } else if (propertyName == "marginLeft") {
       map.insert(QString("_kst_widgetType"), QString("KDoubleSpinBox"));
-      map.insert(QString("_kst_label"), i18n("Left margin"));
+      map.insert(QString("_kst_label"), QObject::tr("Left margin"));
       map.insert(QString("minValue"), 0.0);
       map.insert(QString("maxValue"), 0.5);
       map.insert(QString("lineStep"), 0.01);
       map.insert(QString("precision"), 2);
     } else if (propertyName == "marginRight") {
       map.insert(QString("_kst_widgetType"), QString("KDoubleSpinBox"));
-      map.insert(QString("_kst_label"), i18n("Right margin"));
+      map.insert(QString("_kst_label"), QObject::tr("Right margin"));
       map.insert(QString("minValue"), 0.0);
       map.insert(QString("maxValue"), 0.5);
       map.insert(QString("lineStep"), 0.01);
       map.insert(QString("precision"), 2);
     } else if (propertyName == "marginTop") {
       map.insert(QString("_kst_widgetType"), QString("KDoubleSpinBox"));
-      map.insert(QString("_kst_label"), i18n("Top margin"));
+      map.insert(QString("_kst_label"), QObject::tr("Top margin"));
       map.insert(QString("minValue"), 0.0);
       map.insert(QString("maxValue"), 0.5);
       map.insert(QString("lineStep"), 0.01);
       map.insert(QString("precision"), 2);
     } else if (propertyName == "marginBottom") {
       map.insert(QString("_kst_widgetType"), QString("KDoubleSpinBox"));
-      map.insert(QString("_kst_label"), i18n("Bottom margin"));
+      map.insert(QString("_kst_label"), QObject::tr("Bottom margin"));
       map.insert(QString("minValue"), 0.0);
       map.insert(QString("maxValue"), 0.5);
       map.insert(QString("lineStep"), 0.01);

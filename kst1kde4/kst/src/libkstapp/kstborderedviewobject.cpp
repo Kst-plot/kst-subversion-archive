@@ -22,7 +22,6 @@
 #include <QVariant>
 
 #include <kglobal.h>
-#include <klocale.h>
 
 KstBorderedViewObject::KstBorderedViewObject(const QString& type)
 : KstViewObject(type), _borderColor(QColor(0, 0, 0)), _borderWidth(0), _padding(0), _margin(0) {
@@ -238,10 +237,10 @@ QMap<QString, QVariant> KstBorderedViewObject::widgetHints(const QString& proper
   if (map.empty()) {
     if (propertyName == "borderColor") {
       map.insert(QString("_kst_widgetType"), QString("KColorButton"));
-      map.insert(QString("_kst_label"), i18n("Border color"));
+      map.insert(QString("_kst_label"), tr("Border color"));
     } else if (propertyName == "borderWidth") {
       map.insert(QString("_kst_widgetType"), QString("QSpinBox"));
-      map.insert(QString("_kst_label"), i18n("Border width"));
+      map.insert(QString("_kst_label"), tr("Border width"));
       map.insert(QString("minValue"), 0);
     }
   }

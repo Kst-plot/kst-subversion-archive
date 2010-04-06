@@ -21,8 +21,6 @@
 #include <QLayout>
 #include <QSpinBox>
 
-#include <klocale.h>
-
 #include "kstprintoptionspage.h"
 #include "kstmonochromedialog.h"
 #include "kst.h"
@@ -31,28 +29,28 @@ KstPrintOptionsPage::KstPrintOptionsPage(QWidget *parent, const char *name)
 : KPrintDialogPage(parent, name) {
   int row = 0;
 
-  setTitle(i18n("Kst Options"));
+  setTitle(QObject::tr("Kst Options"));
 
   QGridLayout *grid = new QGridLayout(this, 4, 2);
 
-  _dateTimeFooter = new QCheckBox(i18n("Append plot information to each page"), this);
+  _dateTimeFooter = new QCheckBox(QObject::tr("Append plot information to each page"), this);
   grid->addMultiCellWidget(_dateTimeFooter, row, row, 0, 1);
   row++;
 
-  _maintainAspectRatio = new QCheckBox(i18n("Maintain aspect ratio"), this);
+  _maintainAspectRatio = new QCheckBox(QObject::tr("Maintain aspect ratio"), this);
   grid->addMultiCellWidget(_maintainAspectRatio, row, row, 0, 1);
   row++;
 
-  _bw = new QCheckBox(i18n("Print in monochrome"), this);
+  _bw = new QCheckBox(QObject::tr("Print in monochrome"), this);
   grid->addWidget(_bw, row, 0);
-  _configureBW = new QPushButton(i18n("Configure..."), this);
+  _configureBW = new QPushButton(QObject::tr("Configure..."), this);
   grid->addWidget(_configureBW, row, 1);
   row++;
 
-  grid->addWidget(new QLabel(i18n("Curve width adjustment:"), this), row, 0);
+  grid->addWidget(new QLabel(QObject::tr("Curve width adjustment:"), this), row, 0);
   _curveWidthAdjust = new QSpinBox(-20, 20, 1, this);
   _curveWidthAdjust->setValue(0);
-  _curveWidthAdjust->setSuffix(i18n("px"));
+  _curveWidthAdjust->setSuffix(QObject::tr("px"));
   grid->addWidget(_curveWidthAdjust, row, 1);
   row++;
 

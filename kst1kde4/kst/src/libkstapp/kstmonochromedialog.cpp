@@ -21,7 +21,6 @@
 #include <QPushButton>
 #include <QSpinBox>
 
-#include <klocale.h>
 #include <kiconloader.h>
 
 #include "kstlinestyle.h"
@@ -34,9 +33,9 @@ KstMonochromeDialog::KstMonochromeDialog(QWidget* parent, const char* name,
 
   availableListBox->clear();
   selectedListBox->clear();
-  availableListBox->insertItem(i18n("Point Style"));  
-  availableListBox->insertItem(i18n("Line Style"));
-  availableListBox->insertItem(i18n("Line Width"));
+  availableListBox->insertItem(QObject::tr("Point Style"));  
+  availableListBox->insertItem(QObject::tr("Line Style"));
+  availableListBox->insertItem(QObject::tr("Line Width"));
 
   connect(_Cancel, SIGNAL(clicked()), this, SLOT(accept()));
   connect(enhanceReadability, SIGNAL(clicked()), this, SLOT(updateButtons()));
@@ -89,21 +88,21 @@ void KstMonochromeDialog::setOptions(const QMap<QString,QString>& opts) {
   availableListBox->clear();
   selectedListBox->clear();
   if (opts["kst-plot-monochromesettings-pointstyleorder"] == "-1") {
-    availableListBox->insertItem(i18n("Point Style"));
+    availableListBox->insertItem(QObject::tr("Point Style"));
   } else {
-    selectedListBox->insertItem(i18n("Point Style"),
+    selectedListBox->insertItem(QObject::tr("Point Style"),
     opts["kst-plot-monochromesettings-pointstyleorder"].toInt());
   }
   if (opts["kst-plot-monochromesettings-linestyleorder"] == "-1") {
-    availableListBox->insertItem(i18n("Line Style"));
+    availableListBox->insertItem(QObject::tr("Line Style"));
   } else {
-    selectedListBox->insertItem(i18n("Line Style"),
+    selectedListBox->insertItem(QObject::tr("Line Style"),
     opts["kst-plot-monochromesettings-linestyleorder"].toInt());
   }
   if (opts["kst-plot-monochromesettings-linewidthorder"] == "-1") {
-    availableListBox->insertItem(i18n("Line Width"));
+    availableListBox->insertItem(QObject::tr("Line Width"));
   } else {
-    selectedListBox->insertItem(i18n("Line Width"),
+    selectedListBox->insertItem(QObject::tr("Line Width"),
     opts["kst-plot-monochromesettings-linewidthorder"].toInt());
   }
 
@@ -120,17 +119,17 @@ void KstMonochromeDialog::getOptions(QMap<QString,QString> &opts, bool include_d
     opts["kst-plot-monochromesettings-enhancereadability"] = enhanceReadability->isChecked() ? "1" : "0";
   }
 
-  pointStyleOrder = selectedListBox->index(selectedListBox->findItem(i18n("Point Style"), Qt::MatchExactly));
+  pointStyleOrder = selectedListBox->index(selectedListBox->findItem(QObject::tr("Point Style"), Qt::MatchExactly));
   if (pointStyleOrder != 0 || include_def) {
     opts["kst-plot-monochromesettings-pointstyleorder"] = QString::number(pointStyleOrder);
   }
 
-  lineStyleOrder = selectedListBox->index(selectedListBox->findItem(i18n("Line Style"), Qt::MatchExactly));
+  lineStyleOrder = selectedListBox->index(selectedListBox->findItem(QObject::tr("Line Style"), Qt::MatchExactly));
   if (lineStyleOrder != 1 || include_def) {
     opts["kst-plot-monochromesettings-linestyleorder"] = QString::number(lineStyleOrder);
   }
 
-  lineWidthOrder = selectedListBox->index(selectedListBox->findItem(i18n("Line Width"), Qt::MatchExactly));
+  lineWidthOrder = selectedListBox->index(selectedListBox->findItem(QObject::tr("Line Width"), Qt::MatchExactly));
   if (lineWidthOrder != 2 || include_def) {
     opts["kst-plot-monochromesettings-linewidthorder"] = QString::number(lineWidthOrder);
   }

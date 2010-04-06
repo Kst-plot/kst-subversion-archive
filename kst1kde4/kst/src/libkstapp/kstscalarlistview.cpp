@@ -15,8 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "klocale.h"
-
 #include "ksdebug.h"
 #include "kstscalar.h"
 
@@ -88,8 +86,8 @@ void KstScalarListViewItem::setRemove(bool remove) {
 }
 
 KstScalarListView::KstScalarListView(QWidget *parent, KstObjectCollection<KstScalar> *coll) : KListView(parent), _coll(coll) {
-  addColumn(i18n("Scalar"));
-  addColumn(i18n("Value"));
+  addColumn(QObject::tr("Scalar"));
+  addColumn(QObject::tr("Value"));
 
   setRootIsDecorated(true);
   setAllColumnsShowFocus(true);

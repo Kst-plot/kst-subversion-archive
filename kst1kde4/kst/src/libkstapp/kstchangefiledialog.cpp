@@ -19,13 +19,11 @@
 #include <QRadioButton>
 #include <QMessageBox>
 #include <QComboBox>
+#include <QRegExp>
 
-#include <klocale.h>
 #include <kiconloader.h>
 #include <kurlcompletion.h>
 #include <kurlrequester.h>
-
-#include <qregexp.h>
 
 #include "kst.h"
 #include "kst2dplot.h"
@@ -195,7 +193,7 @@ void KstChangeFileDialog::sourceChanged(const QString& text)
 
     _configureSource->setEnabled(_configWidget);
     _file = file;
-    _fileType->setText(fileType.isEmpty() ? QString::null : i18n("Data source of type: %1").arg(fileType));
+    _fileType->setText(fileType.isEmpty() ? QString::null : tr("Data source of type: %1").arg(fileType));
   } else {
     _fileType->setText(QString::null);
   }
@@ -218,7 +216,7 @@ void KstChangeFileDialog::configureSource()
   }
 
   if (_configWidget) {
-    KDialogBase *dlg = new KDialogBase(this, "Data Config Dialog", true, i18n("Configure Data Source"));
+    KDialogBase *dlg = new KDialogBase(this, "Data Config Dialog", true, tr("Configure Data Source"));
     if (isNew) {
       connect(dlg, SIGNAL(okClicked()), _configWidget, SLOT(save()));
       connect(dlg, SIGNAL(applyClicked()), _configWidget, SLOT(save()));
@@ -263,12 +261,12 @@ bool KstChangeFileDialog::applyFileChange() {
     file = KstDataSource::loadSource(_dataFile->url());
     if (!file || !file->isValid()) {
       KST::dataSourceList.lock().unlock();
-      QMessageBox::warning(this, i18n("Kst"), i18n("The file could not be loaded."));
+      QMessageBox::warning(this, tr("Kst"), tr("The file could not be loaded."));
       return false;
     }
     if (file->isEmpty()) {
       KST::dataSourceList.lock().unlock();
-      QMessageBox::warning(this, i18n("Kst"), i18n("The file does not contain data."));
+      QMessageBox::warning(this, tr("Kst"), tr("The file does not contain data."));
       return false;
     }
     KST::dataSourceList.append(file);
@@ -308,7 +306,7 @@ bool KstChangeFileDialog::applyFileChange() {
       file->unlock();
       if (!valid) {
         if (invalid > 0) {
-          invalidSources = i18n("%1, %2").arg(invalidSources).arg(vector->field());
+          invalidSources = tr("%1, %2").arg(invalidSources).arg(vector->field());
         } else {
           invalidSources = vector->field();
         }
@@ -340,7 +338,7 @@ bool KstChangeFileDialog::applyFileChange() {
         }
       }
       vector->unlock();
-      app->slotUpdateProgress(selected, ++handled, i18n("Updating vectors..."));
+      app->slotUpdateProgress(selected, ++handled, tr("Updating vectors..."));
     }
   }
 
@@ -354,7 +352,7 @@ bool KstChangeFileDialog::applyFileChange() {
       file->unlock();
       if (!valid) {
         if (invalid > 0) {
-          invalidSources = i18n("%1, %2").arg(invalidSources).arg(matrix->field());
+          invalidSources = tr("%1, %2").arg(invalidSources).arg(matrix->field());
         } else {
           invalidSources = matrix->field();
         }
@@ -386,7 +384,7 @@ bool KstChangeFileDialog::applyFileChange() {
         }
       }
       matrix->unlock();
-      app->slotUpdateProgress(selected, ++handled, i18n("Updating matrices..."));
+      app->slotUpdateProgress(selected, ++handled, tr("Updating matrices..."));
     }
   }
 
@@ -436,9 +434,9 @@ bool KstChangeFileDialog::applyFileChange() {
 
   if (!invalidSources.isEmpty()) {
     if (invalid == 1) {
-      QMessageBox::warning(this, i18n("this"), i18n("The following field is not defined for the requested file:\n%1").arg(invalidSources));
+      QMessageBox::warning(this, tr("this"), tr("The following field is not defined for the requested file:\n%1").arg(invalidSources));
     } else {
-      QMessageBox::warning(this, i18n("this"), i18n("The following fields are not defined for the requested file:\n%1").arg(invalidSources));
+      QMessageBox::warning(this, tr("this"), tr("The following fields are not defined for the requested file:\n%1").arg(invalidSources));
     }
   }
 

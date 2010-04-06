@@ -15,7 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <klocale.h>
 #include <kiconloader.h>
 
 #include "kst2dplot.h"
@@ -33,10 +32,10 @@ KstCurveDifferentiate::KstCurveDifferentiate(QWidget* parent, const char* name, 
 
   availableListBox->clear();
   selectedListBox->clear();
-  availableListBox->addItem(i18n("Line Color"));  
-  availableListBox->addItem(i18n("Point Style"));  
-  availableListBox->addItem(i18n("Line Style"));
-  availableListBox->addItem(i18n("Line Width"));
+  availableListBox->addItem(tr("Line Color"));  
+  availableListBox->addItem(tr("Point Style"));  
+  availableListBox->addItem(tr("Line Style"));
+  availableListBox->addItem(tr("Line Width"));
   
   connect(Cancel_2, SIGNAL(clicked()), this, SLOT(close()));
   connect(OK_2, SIGNAL(clicked()), this, SLOT(apply()));
@@ -162,24 +161,24 @@ void KstCurveDifferentiate::setOptions( ) {
   selectedListBox->clear();
   
   if (_lineColorOrder == -1) {
-    availableListBox->addItem(i18n("Line Color"));
+    availableListBox->addItem(tr("Line Color"));
   } else {
-    selectedListBox->insertItem(_lineColorOrder, i18n("Line Color"));
+    selectedListBox->insertItem(_lineColorOrder, tr("Line Color"));
   }
   if (_pointStyleOrder == -1) {
-    availableListBox->addItem(i18n("Point Style"));
+    availableListBox->addItem(tr("Point Style"));
   } else {
-    selectedListBox->insertItem(_pointStyleOrder, i18n("Point Style"));
+    selectedListBox->insertItem(_pointStyleOrder, tr("Point Style"));
   }
   if (_lineStyleOrder == -1) {
-    availableListBox->addItem(i18n("Line Style"));
+    availableListBox->addItem(tr("Line Style"));
   } else {
-    selectedListBox->insertItem(_lineStyleOrder, i18n("Line Style"));
+    selectedListBox->insertItem(_lineStyleOrder, tr("Line Style"));
   }
   if (_lineWidthOrder == -1) {
-    availableListBox->addItem(i18n("Line Width"));
+    availableListBox->addItem(tr("Line Width"));
   } else {
-    selectedListBox->insertItem(_lineWidthOrder, i18n("Line Width"));
+    selectedListBox->insertItem(_lineWidthOrder, tr("Line Width"));
   }
   
   maxLineWidth->setValue(_maxLineWidth);
@@ -199,25 +198,25 @@ void KstCurveDifferentiate::setOptions( ) {
 void KstCurveDifferentiate::getOptions( ) {
   QList<QListWidgetItem*> items;
 
-  items.append(selectedListBox->findItems(i18n("Line Color"), Qt::MatchExactly));
+  items.append(selectedListBox->findItems(tr("Line Color"), Qt::MatchExactly));
   if (!items.isEmpty()) {
     _lineColorOrder = selectedListBox->row(items.first());
   }
   items.clear();
 
-  items.append(selectedListBox->findItems(i18n("Point Style"), Qt::MatchExactly));
+  items.append(selectedListBox->findItems(tr("Point Style"), Qt::MatchExactly));
   if (!items.isEmpty()) {
     _pointStyleOrder = selectedListBox->row(items.first());
   }
   items.clear();
 
-  items.append(selectedListBox->findItems(i18n("Line Style"), Qt::MatchExactly));
+  items.append(selectedListBox->findItems(tr("Line Style"), Qt::MatchExactly));
   if (!items.isEmpty()) {
     _lineStyleOrder = selectedListBox->row(items.first());
   }
   items.clear();
 
-  items.append(selectedListBox->findItems(i18n("Line Width"), Qt::MatchExactly));
+  items.append(selectedListBox->findItems(tr("Line Width"), Qt::MatchExactly));
   if (!items.isEmpty()) {
     _lineWidthOrder = selectedListBox->row(items.first());
   }

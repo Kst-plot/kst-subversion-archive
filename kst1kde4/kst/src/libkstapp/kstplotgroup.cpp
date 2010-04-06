@@ -20,8 +20,6 @@
 #include <QMetaObject>
 #include <QPainter>
 
-#include <klocale.h>
-
 #include "kst.h"
 #include "kstdoc.h"
 #include "kstplotgroup.h"
@@ -35,7 +33,7 @@ KstPlotGroup::KstPlotGroup()
 : KstMetaPlot("PlotGroup") {
   _standardActions |= Delete | Raise | Zoom | Lower | RaiseToTop | LowerToBottom;
   _layoutActions |= Delete | Copy | Raise | Lower | RaiseToTop | LowerToBottom | Rename | MoveTo;
-  setTagName(KstObjectTag(i18n("Plot Group %1").arg(++pgcount), KstObjectTag::globalTagContext));  // FIXME: tag context?
+  setTagName(KstObjectTag(QObject::tr("Plot Group %1").arg(++pgcount), KstObjectTag::globalTagContext));  // FIXME: tag context?
   _type = "PlotGroup";
   setBorderColor(Qt::blue);
   _container = false; // plot group is a container that doesn't behave like one
@@ -62,7 +60,7 @@ KstPlotGroup::KstPlotGroup(const QDomElement& e)
   // always have these values
   _standardActions |= Delete | Raise | Zoom | Lower | RaiseToTop | LowerToBottom;
   _layoutActions |= Delete | Copy | Raise | Lower | RaiseToTop | LowerToBottom | Rename | MoveTo;
-  setTagName(KstObjectTag(i18n("Plot Group %1").arg(++pgcount), KstObjectTag::globalTagContext));  // FIXME: tag context?
+  setTagName(KstObjectTag(QObject::tr("Plot Group %1").arg(++pgcount), KstObjectTag::globalTagContext));  // FIXME: tag context?
   _type = "PlotGroup";
   _container = false; // plot group is a container that doesn't behave like one
   setBorderColor(Qt::blue);
@@ -74,7 +72,7 @@ KstPlotGroup::KstPlotGroup(const KstPlotGroup& plotGroup)
   _type = "PlotGroup";
   _container = false; // plot group is a container that doesn't behave like one
 
-  setTagName(KstObjectTag(i18n("Plot Group %1").arg(++pgcount), KstObjectTag::globalTagContext));  // FIXME: tag context?
+  setTagName(KstObjectTag(QObject::tr("Plot Group %1").arg(++pgcount), KstObjectTag::globalTagContext));  // FIXME: tag context?
 }
 
 
@@ -185,7 +183,7 @@ bool KstPlotGroup::layoutPopupMenu(QMenu *menu, const QPoint& pos, KstViewObject
   KstViewObjectPtr c;
 
   KstMetaPlot::layoutPopupMenu(menu, pos, topParent);
-  menu->addAction(i18n("&Ungroup"), this, SLOT(flatten()));
+  menu->addAction(QObject::tr("&Ungroup"), this, SLOT(flatten()));
   c = findChild(pos + position());
   if (c) {
     QMenu *subMenu = new QMenu(menu);
@@ -223,10 +221,10 @@ QMap<QString, QVariant> KstPlotGroup::widgetHints(const QString& propertyName) c
     if (propertyName == "transparent") {
       map.insert(QString("_kst_widgetType"), QString("QCheckBox"));
       map.insert(QString("_kst_label"), QString(""));
-      map.insert(QString("text"), i18n("Transparent background"));
+      map.insert(QString("text"), QObject::tr("Transparent background"));
     } else if (propertyName == "backColor") {
       map.insert(QString("_kst_widgetType"), QString("KColorButton"));
-      map.insert(QString("_kst_label"), i18n("Background color"));
+      map.insert(QString("_kst_label"), QObject::tr("Background color"));
     }
   }
 

@@ -31,7 +31,6 @@
 #include <QMessageBox>
 
 #include <kcolorbutton.h>
-#include <klocale.h>
 
 #include "curveappearancewidget.h"
 #include "kst.h"
@@ -79,12 +78,12 @@ KstPluginDialog::~KstPluginDialog() {
 
 
 QString KstPluginDialog::editTitle() {
-  return i18n("Edit Plugin");
+  return QObject::tr("Edit Plugin");
 }
 
 
 QString KstPluginDialog::newTitle() {
-  return i18n("New Plugin");
+  return QObject::tr("New Plugin");
 }
 
 
@@ -104,7 +103,7 @@ void KstPluginDialog::updatePluginList() {
 
   for (it = pluginMap.begin(); it != pluginMap.end(); ++it) {
     _pluginList += (*it)._name;
-    _w->PluginCombo->insertItem(0, i18n("%1 (v%2)").arg((*it)._readableName).arg((*it)._version));
+    _w->PluginCombo->insertItem(0, QObject::tr("%1 (v%2)").arg((*it)._readableName).arg((*it)._version));
     if ((*it)._name == previous) {
       newFocus = cnt;
 // xxx      oldIEntries = cacheInputs((*it)._inputs);
@@ -609,7 +608,7 @@ bool KstPluginDialog::newObject() {
       plugin->setTagName(KstObjectTag(tagName, KstObjectTag::globalTagContext));
 
       if (!saveInputs(plugin, pPtr)) {
-        QMessageBox::warning(this, i18n("Kst"), i18n("There is an error in the inputs you entered."));
+        QMessageBox::warning(this, QObject::tr("Kst"), QObject::tr("There is an error in the inputs you entered."));
         plugin = 0L;
         return false;
       }
@@ -617,7 +616,7 @@ bool KstPluginDialog::newObject() {
       plugin->setPlugin(pPtr);
 
       if (!saveOutputs(plugin, pPtr)) {
-        QMessageBox::warning(this, i18n("Kst"), i18n("There is an error in the outputs you entered."));
+        QMessageBox::warning(this, QObject::tr("Kst"), QObject::tr("There is an error in the outputs you entered."));
         plugin = 0L;
         return false;
       }
@@ -625,7 +624,7 @@ bool KstPluginDialog::newObject() {
   }
 
   if (!plugin || !plugin->isValid()) {
-    QMessageBox::warning(this, i18n("Kst"), i18n("There is an error in the plugin you entered."));
+    QMessageBox::warning(this, QObject::tr("Kst"), QObject::tr("There is an error in the plugin you entered."));
     return false;
   }
 
@@ -669,7 +668,7 @@ bool KstPluginDialog::editObject() {
   //
 
   if (!saveInputs(pp, pPtr)) {
-    QMessageBox::warning(this, i18n("Kst"),i18n("There is an error in the inputs you entered."));
+    QMessageBox::warning(this, QObject::tr("Kst"),QObject::tr("There is an error in the inputs you entered."));
     return false;
   }
 
@@ -678,19 +677,19 @@ bool KstPluginDialog::editObject() {
   }
 
   if (!saveOutputs(pp, pPtr)) {
-    QMessageBox::warning(this, i18n("Kst"),i18n("There is an error in the outputs you entered."));
+    QMessageBox::warning(this, QObject::tr("Kst"),QObject::tr("There is an error in the outputs you entered."));
     return false;
   }
 
   if (!pp->isValid()) {
-    QMessageBox::warning(this, i18n("Kst"),i18n("There is an error in the plugin you entered."));
+    QMessageBox::warning(this, QObject::tr("Kst"),QObject::tr("There is an error in the plugin you entered."));
     return false;
   }
 
   pp->setRecursed(false);
   if (pp->recursion()) {
     pp->setRecursed(true);
-    QMessageBox::warning(this, i18n("Kst"),i18n("There is a recursion resulting from the plugin you entered."));
+    QMessageBox::warning(this, QObject::tr("Kst"),QObject::tr("There is a recursion resulting from the plugin you entered."));
     return false;
   }
 
@@ -717,13 +716,13 @@ void KstPluginDialog::generateEntries(bool input, int& cnt, QWidget *parent, QGr
   QString stringLabelTemplate;
 
   if (input) {
-    stringLabelTemplate = i18n("Input string - %1:");
-    scalarLabelTemplate = i18n("Input scalar - %1:");
-    vectorLabelTemplate = i18n("Input vector - %1:");
+    stringLabelTemplate = QObject::tr("Input string - %1:");
+    scalarLabelTemplate = QObject::tr("Input scalar - %1:");
+    vectorLabelTemplate = QObject::tr("Input vector - %1:");
   } else {
-    stringLabelTemplate = i18n("Output string - %1:");
-    scalarLabelTemplate = i18n("Output scalar - %1:");
-    vectorLabelTemplate = i18n("Output vector - %1:");
+    stringLabelTemplate = QObject::tr("Output string - %1:");
+    scalarLabelTemplate = QObject::tr("Output scalar - %1:");
+    vectorLabelTemplate = QObject::tr("Output vector - %1:");
   }
 
   for (it = table.begin(); it != table.end(); ++it) {
@@ -870,7 +869,7 @@ void KstPluginDialog::pluginChanged(int idx) {
 
     QLabel* infoLabel;
 
-    infoLabel = new QLabel(i18n("Plugin name:"), _w->_pluginInfoFrame);
+    infoLabel = new QLabel(QObject::tr("Plugin name:"), _w->_pluginInfoFrame);
     _pluginInfoGrid->addWidget(infoLabel, 0, 0);
     _pluginWidgets.append(infoLabel);
     infoLabel->show();
@@ -880,7 +879,7 @@ void KstPluginDialog::pluginChanged(int idx) {
     _pluginWidgets.append(infoLabel);
     infoLabel->show();
 
-    infoLabel = new QLabel(i18n("Description:"), _w->_pluginInfoFrame);
+    infoLabel = new QLabel(QObject::tr("Description:"), _w->_pluginInfoFrame);
     infoLabel->setAlignment(Qt::AlignTop);
     _pluginInfoGrid->addWidget(infoLabel, 1, 0);
     _pluginWidgets.append(infoLabel);

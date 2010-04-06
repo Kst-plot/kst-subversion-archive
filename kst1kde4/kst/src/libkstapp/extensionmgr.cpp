@@ -20,7 +20,6 @@
 // include files for Qt
 
 // include files for KDE
-#include <klocale.h>
 #include <kparts/componentfactory.h>
 #include <kservicetype.h>
 
@@ -105,10 +104,10 @@ void ExtensionMgr::loadExtension(const KService::Ptr& service) {
   KstExtension *e = KParts::ComponentFactory::createInstanceFromService<KstExtension>(service, _window, 0, QStringList(), &err);
   if (e) {
     connect(e, SIGNAL(unregister()), this, SLOT(unregister()));
-    KstDebug::self()->log(i18n("Kst Extension %1 loaded.").arg(name));
+    KstDebug::self()->log(tr("Kst Extension %1 loaded.").arg(name));
     doRegister(name,e);
   } else {
-    KstDebug::self()->log(i18n("Error trying to load Kst extension %1.  Code=%2, \"%3\"").arg(name).arg(err).arg(err == KParts::ComponentFactory::ErrNoLibrary ? i18n("Library not found [%1].").arg(KLibLoader::self()->lastErrorMessage()) : KLibLoader::self()->lastErrorMessage()), KstDebug::Error);
+    KstDebug::self()->log(tr("Error trying to load Kst extension %1.  Code=%2, \"%3\"").arg(name).arg(err).arg(err == KParts::ComponentFactory::ErrNoLibrary ? tr("Library not found [%1].").arg(KLibLoader::self()->lastErrorMessage()) : KLibLoader::self()->lastErrorMessage()), KstDebug::Error);
   }
 }
 

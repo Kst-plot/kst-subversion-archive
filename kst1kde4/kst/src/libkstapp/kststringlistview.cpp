@@ -15,8 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "klocale.h"
-
 #include "ksdebug.h"
 #include "kststring.h"
 
@@ -52,8 +50,8 @@ QString KstStringListViewItem::text(int column) const {
 
 
 KstStringListView::KstStringListView(QWidget *parent, KstObjectCollection<KstString> *tree) : KListView(parent), _coll(tree) {
-  addColumn(i18n("String"));
-  addColumn(i18n("Value"));
+  addColumn(QObject::tr("String"));
+  addColumn(QObject::tr("Value"));
 
   setRootIsDecorated(true);
   setAllColumnsShowFocus(true);

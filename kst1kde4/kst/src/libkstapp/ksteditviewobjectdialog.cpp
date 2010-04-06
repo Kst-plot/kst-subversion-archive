@@ -38,7 +38,6 @@
 
 #include "kst.h"
 
-#include <klocale.h>
 #include <stdio.h>
 
 KstEditViewObjectDialog::KstEditViewObjectDialog(QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl) 
@@ -118,7 +117,7 @@ void KstEditViewObjectDialog::toggleEditMultiple() {
 
   if (_editMultipleMode) {
     _editMultipleWidget->hide();
-    _editMultiple->setText(i18n("Edit Multiple >>"));
+    _editMultiple->setText(QObject::tr("Edit Multiple >>"));
     if (_viewObject && _viewObject->supportsDefaults()) {
       _buttonGroupDefaults->setEnabled(true);
       _pushButtonSetDefaults->setEnabled(true);
@@ -127,7 +126,7 @@ void KstEditViewObjectDialog::toggleEditMultiple() {
     updateWidgets();
   } else {
     _editMultipleWidget->show();
-    _editMultiple->setText(i18n("Edit Multiple <<"));
+    _editMultiple->setText(QObject::tr("Edit Multiple <<"));
     _buttonGroupDefaults->setEnabled(false);
     _pushButtonSetDefaults->setEnabled(false);
     _pushButtonRestoreDefaults->setEnabled(false);
@@ -412,16 +411,16 @@ void KstEditViewObjectDialog::fillPenStyleWidget(QComboBox* widget) {
 
 
 void KstEditViewObjectDialog::fillHJustifyWidget(QComboBox* widget) {
-  widget->insertItem(i18n("Left"));
-  widget->insertItem(i18n("Right"));
-  widget->insertItem(i18n("Center")); 
+  widget->insertItem(QObject::tr("Left"));
+  widget->insertItem(QObject::tr("Right"));
+  widget->insertItem(QObject::tr("Center")); 
 }
 
 
 void KstEditViewObjectDialog::fillVJustifyWidget(QComboBox* widget) {
-  widget->insertItem(i18n("Top"));
-  widget->insertItem(i18n("Bottom"));
-  widget->insertItem(i18n("Center")); 
+  widget->insertItem(QObject::tr("Top"));
+  widget->insertItem(QObject::tr("Bottom"));
+  widget->insertItem(QObject::tr("Center")); 
 }
 
 
@@ -535,7 +534,7 @@ bool KstEditViewObjectDialog::apply() {
     }
 
     if (!applied) {
-      QMessageBox::sorry(this, i18n("Kst"), i18n("Select one or more objects to edit."));
+      QMessageBox::sorry(this, QObject::tr("Kst"), QObject::tr("Select one or more objects to edit."));
     }
   } else {
     applied = true;

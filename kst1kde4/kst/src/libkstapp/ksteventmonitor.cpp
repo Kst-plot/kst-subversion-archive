@@ -21,8 +21,6 @@
 #include <QTextEdit>
 #include <QMessageBox>
 
-#include <klocale.h>
-
 #include "editmultiplewidget.h"
 #include "kst.h"
 #include "kstdataobjectcollection.h"
@@ -208,7 +206,7 @@ bool KstEventMonitor::newObject() {
     event->unlock();
     event = 0L;
 
-    QMessageBox::warning(this, i18n("Kst"), i18n("There is a syntax error in the equation you entered."));
+    QMessageBox::warning(this, QObject::tr("Kst"), QObject::tr("There is a syntax error in the equation you entered."));
     return false;
   }
 
@@ -241,7 +239,7 @@ bool KstEventMonitor::editSingleObject(EventMonitorEntryPtr emPtr) {
     if (!(_w->radioButtonLogNotice->isChecked() ||
           _w->radioButtonLogWarning->isChecked() ||
           _w->radioButtonLogError->isChecked()) && _w->checkBoxDebug->isChecked()) {
-      QMessageBox::warning(this, i18n("Kst"), i18n("Select a Debug Log type."));
+      QMessageBox::warning(this, QObject::tr("Kst"), QObject::tr("Select a Debug Log type."));
       emPtr->unlock();
 
       return false;
@@ -319,7 +317,7 @@ bool KstEventMonitor::editObject() {
       }
     }
     if (!didEdit) {
-      QMessageBox::warning(this, i18n("Kst"), i18n("Select one or more objects to edit."));
+      QMessageBox::warning(this, QObject::tr("Kst"), QObject::tr("Select one or more objects to edit."));
       return false;
     }
   } else {

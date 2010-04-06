@@ -23,7 +23,6 @@
 #include <QTextStream>
 
 #include <kglobal.h>
-#include <klocale.h>
 
 #include "kstplotlabel.h"
 

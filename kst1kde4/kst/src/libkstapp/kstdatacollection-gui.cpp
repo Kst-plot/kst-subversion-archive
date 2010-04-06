@@ -18,8 +18,6 @@
 #include <QFile>
 #include <QMessageBox>
 
-#include <klocale.h>
-
 #include "kst.h"
 #include "kst2dplot.h"
 #include "kstdatacollection-gui.h"
@@ -43,7 +41,7 @@ bool KstGuiData::dataTagNameNotUnique(const QString &tag, bool warn, void *p) {
 
   if (tag.trimmed().isEmpty()) {
     if (warn) {
-      QMessageBox::warning(static_cast<QWidget*>(p), i18n("Kst"), i18n("Empty tag names are not allowed."));
+      QMessageBox::warning(static_cast<QWidget*>(p), QObject::tr("Kst"), QObject::tr("Empty tag names are not allowed."));
     }
     return true;
   }
@@ -56,7 +54,7 @@ bool KstGuiData::dataTagNameNotUnique(const QString &tag, bool warn, void *p) {
   if (KST::dataObjectList.findTag(tag) != KST::dataObjectList.end()) {
     KST::dataObjectList.lock().unlock();
       if (warn) {
-        QMessageBox::warning(static_cast<QWidget*>(p), i18n("Kst"), i18n("%1: this name is already in use. Change it to a unique name.").arg(tag));
+        QMessageBox::warning(static_cast<QWidget*>(p), QObject::tr("Kst"), QObject::tr("%1: this name is already in use. Change it to a unique name.").arg(tag));
       }
 
       return true;
@@ -74,7 +72,7 @@ bool KstGuiData::vectorTagNameNotUnique(const QString &tag, bool warn, void *p) 
 
   if (tag.trimmed().isEmpty()) {
     if (warn) {
-      QMessageBox::warning(static_cast<QWidget*>(p), i18n("Kst"), i18n("Empty tag names are not allowed."));
+      QMessageBox::warning(static_cast<QWidget*>(p), QObject::tr("Kst"), QObject::tr("Empty tag names are not allowed."));
     }
 
     return true;
@@ -89,7 +87,7 @@ bool KstGuiData::vectorTagNameNotUnique(const QString &tag, bool warn, void *p) 
 
   if (KST::vectorList.tagExists(tag) || KST::scalarList.tagExists(tag)) {
     if (warn) {
-      QMessageBox::warning(static_cast<QWidget*>(p), i18n("Kst"), i18n("%1: this name is already in use. Change it to a unique name.").arg(tag));
+      QMessageBox::warning(static_cast<QWidget*>(p), QObject::tr("Kst"), QObject::tr("%1: this name is already in use. Change it to a unique name.").arg(tag));
     }
 
     return true;
@@ -106,7 +104,7 @@ bool KstGuiData::matrixTagNameNotUnique(const QString &tag, bool warn, void *p) 
 
   if (tag.trimmed().isEmpty()) {
     if (warn) {
-      QMessageBox::warning(static_cast<QWidget*>(p), i18n("Kst"), i18n("Empty tag names are not allowed."));
+      QMessageBox::warning(static_cast<QWidget*>(p), QObject::tr("Kst"), QObject::tr("Empty tag names are not allowed."));
     }
     return true;
   }
@@ -120,7 +118,7 @@ bool KstGuiData::matrixTagNameNotUnique(const QString &tag, bool warn, void *p) 
 
   if (KST::matrixList.tagExists(tag) || KST::scalarList.tagExists(tag)) {
     if (warn) {
-      QMessageBox::warning(static_cast<QWidget*>(p), i18n("Kst"), i18n("%1: this name is already in use. Change it to a unique name.").arg(tag));
+      QMessageBox::warning(static_cast<QWidget*>(p), QObject::tr("Kst"), QObject::tr("%1: this name is already in use. Change it to a unique name.").arg(tag));
     }
     return true;
   }
@@ -145,7 +143,7 @@ int KstGuiData::vectorToFile(KstVectorPtr v, QFile *f) {
 
   vSize = v->length();
   value = v->value();
-  saving = i18n("Saving vector %1").arg(v->tagName());
+  saving = QObject::tr("Saving vector %1").arg(v->tagName());
   modval = qMax(vSize/100, 100);
   ltxt = "; " + v->tagName() + '\n';
 
@@ -197,7 +195,7 @@ int KstGuiData::vectorsToFile(const KstVectorList& vl, QFile *f, bool interpolat
     }
   }
 
-  QString saving = i18n("Saving vectors...");
+  QString saving = QObject::tr("Saving vectors...");
   register int modval = qMax(maxlen/100, 100);
   app->slotUpdateProgress(maxlen, 0, QString::null);
 

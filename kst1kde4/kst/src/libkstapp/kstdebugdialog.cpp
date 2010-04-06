@@ -22,7 +22,6 @@
 #include <QListWidgetItem>
 
 #include <kcolorbutton.h>
-#include <klocale.h>
 
 #include "kst.h"
 #include "kstdatacollection.h"
@@ -45,7 +44,7 @@ KstDebugDialog::KstDebugDialog(QWidget* parent, const char* name, bool modal, Qt
     new QListWidgetItem(*it, _dataSources);
   }
 
-  _buildInfo->setText(i18n("<h1>Kst</h1> version %1 (%2)").arg(KSTVERSION).arg(KstDebug::self()->kstRevision()));
+  _buildInfo->setText(tr("<h1>Kst</h1> version %1 (%2)").arg(KSTVERSION).arg(KstDebug::self()->kstRevision()));
 
 // xxx  _dataSources->setAllColumnsShowFocus(true);
 
