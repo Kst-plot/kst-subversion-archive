@@ -134,7 +134,7 @@ class KstObjectItem : public QObject, public KListViewItem {
   private:
     int _rtti;
     KstObjectTag _tag;
-    KstDataManagerI *_dm;
+    KstDataManager *_dm;
     bool _removable;
     bool _inUse;
     void paintPlot(Kst2DPlotPtr p); //used by add to/remove from plot slots

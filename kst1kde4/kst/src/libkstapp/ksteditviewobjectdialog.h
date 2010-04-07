@@ -24,11 +24,11 @@
 #include <QPointer>
 
 #include "editmultiplewidget.h"
-#include "ui_editviewobjectdialog.h"
 #include "kstviewobject.h"
 #include "kstviewwindow.h"
 #include "ksttoplevelview.h"
 #include "kst_export.h"
+#include "ui_editviewobjectdialog.h"
 
 class KST_EXPORT KstEditViewObjectDialog : public QDialog, public Ui::KstEditViewObjectDialog {
   Q_OBJECT
