@@ -54,7 +54,7 @@
         <widget class="Q3HBox" name="SearchBox" native="true"/>
        </item>
        <item>
-        <widget class="QListWidget" name="DataView">
+        <widget class="QTreeWidget" name="DataView">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
            <horstretch>1</horstretch>

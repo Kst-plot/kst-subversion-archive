@@ -19,10 +19,11 @@
 #define KSTDATAMANAGERI_H
 
 #include <QAction>
+#include <QToolBar>
 
 class KstDoc;
 class QToolBar;
-class KListViewSearchLineWidget;
+// xxxclass KListViewSearchLineWidget;
 
 #include "ui_datamanager.h"
 #include "kstavector.h"
@@ -35,8 +36,7 @@ class KListViewSearchLineWidget;
 class KstDataAction : public QAction {
   Q_OBJECT
   public:
-    KstDataAction(const QString &menuText, QKeySequence accel, QObject *parent, const char *name = 0)
-      : QAction(menuText, accel, parent, name) {}
+    KstDataAction(const QString &menuText, QKeySequence accel, QObject *parent, const char *name = 0);
 
   protected:
     void addedTo(QWidget *actionWidget, QWidget *container);
@@ -45,9 +45,8 @@ class KstDataAction : public QAction {
 class KstDataManager : public QDialog, public Ui::KstDataManager {
   Q_OBJECT
   public:
-    KstDataManager(KstDoc *doc, QWidget* parent = 0,
-        const char *name = 0,
-        bool modal = false, WFlags fl = 0);
+    KstDataManager(KstDoc *doc, QWidget* parent = 0, const char *name = 0, 
+                   bool modal = false, Qt::WindowFlags fl = 0);
     virtual ~KstDataManager();
 
     const QPixmap& yesPixmap() const;
@@ -61,10 +60,10 @@ class KstDataManager : public QDialog, public Ui::KstDataManager {
 
   private slots:
     void doUpdates();
-    void contextMenu(QListViewItem *i, const QPoint& p, int c);
-    void currentChanged(QListViewItem *);
+    void contextMenu(QTreeWidgetItem *i, const QPoint& p, int c);
+    void currentChanged(QTreeWidgetItem *);
     void selectionChanged();
-    void doubleClicked(QListViewItem *);
+    void doubleClicked(QTreeWidgetItem *);
     void showOldPlugin();
 
   private:
@@ -79,7 +78,7 @@ class KstDataManager : public QDialog, public Ui::KstDataManager {
     QToolBar *_plugins;
     QToolBar *_fits;
     QToolBar *_filters;
-    KListViewSearchLineWidget *_searchWidget;
+// xxx    KListViewSearchLineWidget *_searchWidget;
 
   protected:
     QPixmap _yesPixmap;
@@ -92,18 +91,18 @@ class KstDataManager : public QDialog, public Ui::KstDataManager {
     void docChanged();
 };
 
-class KstObjectItem : public QObject, public KListViewItem {
+class KstObjectItem : public QObject, public QTreeWidgetItem {
   Q_OBJECT
   public:
-    KstObjectItem(QListView *parent, KstRVectorPtr x, KstDataManagerI *dm, int localUseCount = 0);
-    KstObjectItem(QListView *parent, KstSVectorPtr x, KstDataManagerI *dm, int localUseCount = 0);
-    KstObjectItem(QListView *parent, KstAVectorPtr x, KstDataManagerI *dm, int localUseCount = 0);
-    KstObjectItem(KListViewItem *parent, KstVectorPtr x, KstDataManagerI *dm, int localUseCount = 0);
-    KstObjectItem(QListView *parent, KstDataObjectPtr x, KstDataManagerI *dm, int localUseCount = 0);
-    KstObjectItem(QListView *parent, KstAMatrixPtr x, KstDataManagerI *dm, int localUseCount = 0);
-    KstObjectItem(QListView *parent, KstRMatrixPtr x, KstDataManagerI *dm, int localUseCount = 0);
-    KstObjectItem(QListView *parent, KstSMatrixPtr x, KstDataManagerI *dm, int localUseCount = 0);
-    KstObjectItem(KListViewItem *parent, KstMatrixPtr x, KstDataManagerI *dm, int localUseCount = 0);
+    KstObjectItem(QTreeWidget *parent, KstRVectorPtr x, KstDataManager *dm, int localUseCount = 0);
+    KstObjectItem(QTreeWidget *parent, KstSVectorPtr x, KstDataManager *dm, int localUseCount = 0);
+    KstObjectItem(QTreeWidget *parent, KstAVectorPtr x, KstDataManager *dm, int localUseCount = 0);
+    KstObjectItem(QTreeWidgetItem *parent, KstVectorPtr x, KstDataManager *dm, int localUseCount = 0);
+    KstObjectItem(QTreeWidget *parent, KstDataObjectPtr x, KstDataManager *dm, int localUseCount = 0);
+    KstObjectItem(QTreeWidget *parent, KstAMatrixPtr x, KstDataManager *dm, int localUseCount = 0);
+    KstObjectItem(QTreeWidget *parent, KstRMatrixPtr x, KstDataManager *dm, int localUseCount = 0);
+    KstObjectItem(QTreeWidget *parent, KstSMatrixPtr x, KstDataManager *dm, int localUseCount = 0);
+    KstObjectItem(QTreeWidgetItem *parent, KstMatrixPtr x, KstDataManager *dm, int localUseCount = 0);
     virtual ~KstObjectItem();
 
     void update(bool recursive = true, int localUseCount = 0);
