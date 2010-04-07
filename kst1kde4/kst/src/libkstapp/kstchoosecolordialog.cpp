@@ -16,7 +16,7 @@
 #include <QRadioButton>
 #include <QComboBox>
 
-#include <kcolorcombo.h>
+// xxx #include <kcolorcombo.h>
 
 #include "kst.h"
 #include "kstchoosecolordialog.h"

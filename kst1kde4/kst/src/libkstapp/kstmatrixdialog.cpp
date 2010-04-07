@@ -17,13 +17,13 @@
 
 #include <assert.h>
 
-#include <qbuttongroup.h>
-#include <QCheckBox.h>
-#include <QFileDialog.h>
-#include <QRadioButton.h>
-#include <QSpinBox.h>
-#include <QComboBox.h>
-#include <QMessageBox.h>
+#include <QButtonGroup>
+#include <QCheckBox>
+#include <QFileDialog>
+#include <QRadioButton>
+#include <QSpinBox>
+#include <QComboBox>
+#include <QMessageBox>
 
 #include <kurlcompletion.h>
 #include <kurlrequester.h>
