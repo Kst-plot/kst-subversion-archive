@@ -28,9 +28,10 @@
 #include <QStyle>
 #include <QToolTip>
 
+/* xxx
 #include <kcolorbutton.h>
 #include <kiconloader.h>
-#include <klineedit.h>
+#include <klineedit.h> */
 
 #include "plotlistbox.h"
 #include "vectorselector.h"

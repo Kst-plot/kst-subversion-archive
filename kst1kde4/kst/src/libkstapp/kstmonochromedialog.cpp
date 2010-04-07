@@ -21,7 +21,7 @@
 #include <QPushButton>
 #include <QSpinBox>
 
-#include <kiconloader.h>
+// xxx #include <kiconloader.h>
 
 #include "kstlinestyle.h"
 #include "kstmonochromedialog.h"

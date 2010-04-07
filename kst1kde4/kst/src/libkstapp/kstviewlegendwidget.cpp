@@ -20,7 +20,7 @@
 #include <QToolTip>
 
 // include files for KDE
-#include <kiconloader.h>
+// xxx #include <kiconloader.h>
 
 // application specific includes
 #include "kst_export.h"
