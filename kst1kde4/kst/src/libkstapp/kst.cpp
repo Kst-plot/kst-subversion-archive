@@ -1914,10 +1914,13 @@ void KstApp::toggleMouseMode() {
 
   windows = app->subWindowList(QMdiArea::CreationOrder);
 
-  for (i = windows.constBegin(); i != windows.constEnd(); ++i)
-    KstViewWindow *viewWindow = dynamic_cast<KstViewWindow*>(*i);
+  for (i = windows.constBegin(); i != windows.constEnd(); ++i) {
+    KstViewWindow *viewWindow;
+
+    viewWindow = dynamic_cast<KstViewWindow*>(*i);
     if (viewWindow) {
-      viewWindow->view()->setViewMode(mode, createType);    }
+      viewWindow->view()->setViewMode(mode, createType);    
+    }
   }
 
   _viewMode = mode;
@@ -1960,9 +1963,11 @@ void KstApp::tieAll() {
 
 
 void KstApp::paintAll(KstPainter::PaintType pt) {
-  KstViewWindow *view = dynamic_cast<KstViewWindow*>(activeWindow());
-  if (view) {
-    view->view()->paint(pt);
+  KstViewWindow *viewWindow;
+
+  viewWindow = dynamic_cast<KstViewWindow*>(activeWindow());
+  if (viewWindow) {
+    viewWindow->view()->paint(pt);
   }
 }
 
@@ -1988,14 +1993,18 @@ bool KstApp::getEnableImplicitRepaintsFromScript() {
 
 
 void KstApp::newPlot() {
-  KstViewWindow *w = dynamic_cast<KstViewWindow*>(activeWindow());
-  if (!w) {
+  KstViewWindow *viewWindow;
+
+  viewWindow = dynamic_cast<KstViewWindow*>(activeWindow());
+  if (!viewWindow) {
     newWindow(false);
-    w = dynamic_cast<KstViewWindow*>(activeWindow());
-    assert(w);
+    viewWindow = dynamic_cast<KstViewWindow*>(activeWindow());
   }
-  w->createPlot(KST::suggestPlotName(), false);
-  updateDialogsForPlot();
+
+  if (viewWindow) {
+    viewWindow->createPlot(KST::suggestPlotName(), false);
+    updateDialogsForPlot();
+  }
 }
 
 
@@ -2146,10 +2155,6 @@ void KstApp::updateVisibleDialogs() {
 
 void KstApp::updateDialogs(bool onlyVisible) {
   if (!_stopping) {
-#ifdef BENCHMARK
-    QTime t;
-    t.start();
-#endif
     if (!onlyVisible || KstVectorDialogI::globalInstance()->isShown()) {
       KstVectorDialogI::globalInstance()->update();
     }
@@ -2210,9 +2215,6 @@ void KstApp::updateDialogs(bool onlyVisible) {
     updateDataDialogs(false);
     updateDataManager(onlyVisible);
     updateViewManager(onlyVisible);
-#ifdef BENCHMARK
-    kstdDebug() << "Dialogs updated in " << t.elapsed() << "ms" << endl;
-#endif
   }
 }
 
@@ -2334,6 +2336,7 @@ void KstApp::reload() {
           // if we've already reset the datasource held by this vector then
           //  we only need to reset the vector itself...
           //
+
           r->reset();
         } else {
           dataSrc->writeLock();
@@ -2343,19 +2346,24 @@ void KstApp::reload() {
             // if we were successful in resetting the datasource held by this vector then
             //  we remember it and reset the vector itself...
             //
+
             dataSourcesReset.insert(dataSrc, dataSrc);
             r->reset();
           } else {
             //
             // we have to try and reload the datasource...
             //
+
             QMap<KstDataSourcePtr, KstDataSourcePtr>::Iterator itsrc = dataSourcesReloaded.find(dataSrc);
 
             if (itsrc == dataSourcesReloaded.end()) {
+              KstDataSourcePtr newsrc;
+
               //
               // if we haven't yet reloaded this datasource then do so now...
               //
-              KstDataSourcePtr newsrc = KstDataSource::loadSource(dataSrc->fileName(), dataSrc->fileType());
+
+              newsrc = KstDataSource::loadSource(dataSrc->fileName(), dataSrc->fileType());
               if (newsrc) {
                 newsrc->writeLock();
 
@@ -2375,6 +2383,7 @@ void KstApp::reload() {
               //
               // we have already reloaded this datasource, so just set it...
               //
+
               (*itsrc)->writeLock();
               r->resetFile(*itsrc);
               r->reset();
@@ -2406,6 +2415,7 @@ void KstApp::reload() {
           // if we've already reset the datasource held by this matrix then
           //  we only need to reset the matrix itself...
           //
+
           r->reset();
         } else {
           dataSrc->writeLock();
@@ -2415,19 +2425,24 @@ void KstApp::reload() {
             // if we were successful in resetting the datasource held by this matrix then
             //  we remember it and reset the matrix itself...
             //
+
             dataSourcesReset.insert(dataSrc, dataSrc);
             r->reset();
           } else {
             //
             // we have to try and reload the datasource...
             //
+
             QMap<KstDataSourcePtr, KstDataSourcePtr>::Iterator itsrc = dataSourcesReloaded.find(dataSrc);
 
             if (itsrc == dataSourcesReloaded.end()) {
+              KstDataSourcePtr newsrc;
+
               //
               // if we haven't yet reloaded this datasource then do so now...
               //
-              KstDataSourcePtr newsrc = KstDataSource::loadSource(dataSrc->fileName(), dataSrc->fileType());
+
+              newsrc = KstDataSource::loadSource(dataSrc->fileName(), dataSrc->fileType());
               if (newsrc) {
                 newsrc->writeLock();
 
@@ -2447,6 +2462,7 @@ void KstApp::reload() {
               //
               // we have already reloaded this datasource, so just set it...
               //
+
               (*itsrc)->writeLock();
               r->resetFile(*itsrc);
               r->reset();
@@ -2468,7 +2484,9 @@ void KstApp::reload() {
 
 
 void KstApp::slotPreferences() {
-  KstSettingsDlgI *ksd = new KstSettingsDlgI(this, "Kst Settings Dialog");
+  KstSettingsDlgI *ksd;
+
+  ksd = new KstSettingsDlgI(this, "Kst Settings Dialog");
   connect(ksd, SIGNAL(settingsChanged()), this, SIGNAL(settingsChanged()));
   ksd->exec();
   delete ksd;
@@ -2486,7 +2504,9 @@ void KstApp::slotCopy() {
     if (tlv) {
       KstViewWidget *w = tlv->widget();
       KstViewObjectPtr o = w->findChildFor(w->mapFromGlobal(QCursor::pos()));
-      Kst2DPlotPtr p = kst_cast<Kst2DPlot>(o);
+      Kst2DPlotPtr p;
+
+      p = kst_cast<Kst2DPlot>(o);
       if (p) {
         p->copy();
       }
@@ -2549,11 +2569,33 @@ void KstApp::renameWindow(KstViewWindow *vw) {
 QString KstApp::newWindow(bool prompt, QWidget *parent) {
   QString nameUsed;
   QString name = windowName(prompt, defaultTag, false, parent);
+
   if (!name.isEmpty()) {
     nameUsed = newWindow(name);
   }
 
   return nameUsed;
+}
+
+
+KstViewWindow* KstApp::findWindow(const QString& title) {
+  QList<QMdiSubWindow*> windows;
+  QList<QMdiSubWindow*>::const_iterator i;
+  KstViewWindow *viewWindowFound = 0L;
+  KstViewWindow *viewWindow;
+
+  windows = app->subWindowList(QMdiArea::CreationOrder);
+
+  for (i = windows.constBegin(); i != windows.constEnd(); ++i)
+    viewWindow = dynamic_cast<KstViewWindow*>(*i);
+    if (viewWindow) {
+      if (title == viewWindow->windowTitle()) {
+        viewWindowFound = viewWindow;
+      }
+    }
+  }
+
+  return viewWindowFound;
 }
 
 
@@ -2587,17 +2629,9 @@ QString KstApp::windowName(bool prompt, const QString& nameOriginal, bool rename
       QRegExpValidator val(exp, 0L);
 
       if (rename) {
-#if KDE_VERSION >= KDE_MAKE_VERSION(3,3,0)
         name = KInputDialog::getText(i18n("Kst"), i18n("Enter a new name for the tab:"), name, &ok, parent, 0L, &val).trimmed();
-#else
-        name = KLineEditDlg::getText(i18n("Enter a new name for the tab:"), name, &ok, parent, &val).trimmed();
-#endif
       } else {
-#if KDE_VERSION >= KDE_MAKE_VERSION(3,3,0)
         name = KInputDialog::getText(i18n("Kst"), i18n("Enter a name for the new tab:"), name, &ok, parent, 0L, &val).trimmed();
-#else
-        name = KLineEditDlg::getText(i18n("Enter a name for the new tab:"), name, &ok, parent, &val).trimmed();
-#endif
       }
       if (ok && name==defaultTag) {
         name = KST::suggestWinName();

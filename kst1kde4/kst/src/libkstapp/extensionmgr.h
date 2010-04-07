@@ -18,16 +18,12 @@
 #ifndef EXTENSIONMGR_H
 #define EXTENSIONMGR_H
 
-
-#include <kstaticdeleter.h>
 #include "kstextension.h"
 
 class KstApp;
 
 class ExtensionMgr : QObject {
   Q_OBJECT
-  friend class KStaticDeleter<ExtensionMgr>;
-
   public:
     static ExtensionMgr *self();
 

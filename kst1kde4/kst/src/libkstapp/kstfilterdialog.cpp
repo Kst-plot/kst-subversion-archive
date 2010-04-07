@@ -24,17 +24,17 @@
 
 #include "curveappearancewidget.h"
 #include "kst2dplot.h"
-#include "kstchoosecolordialog_i.h"
+#include "kstchoosecolordialog.h"
 #include "kstdataobjectcollection.h"
-#include "kstfilterdialog_i.h"
+#include "kstfilterdialog.h"
 #include "kstvcurve.h"
 #include "kstviewwindow.h"
 #include "plugincollection.h"
-#include "plugindialogwidget.h"
-#include "pluginmanager.h"
 #include "scalarselector.h"
 #include "stringselector.h"
 #include "vectorselector.h"
+#include "ui_plugindialogwidget.h"
+#include "ui_pluginmanager.h"
 
 QPointer<KstFilterDialog> KstFilterDialog::_inst;
 
@@ -47,8 +47,7 @@ KstFilterDialog *KstFilterDialog::globalInstance() {
 }
 
 
-KstFilterDialog::KstFilterDialog(QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl)
-: KstPluginDialog(parent, name, modal, fl) {
+KstFilterDialog::KstFilterDialog(QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl) : KstPluginDialog(parent, name, modal, fl) {
   _w->_curveAppearance->show();
 }
 
@@ -58,8 +57,12 @@ KstFilterDialog::~KstFilterDialog() {
 
 
 void KstFilterDialog::show_setCurve(const QString& curveName, const QString& plotName, const QString& window) {
-  KstBaseCurveList curves = kstObjectSubList<KstDataObject, KstBaseCurve>(KST::dataObjectList);
-  KstVCurveList vcurves = kstObjectSubList<KstBaseCurve, KstVCurve>(curves);
+  KstBaseCurveList curves;
+  KstVCurveList vcurves;
+  KstVCurvePtr curve;
+  
+// xxx  curves = kstObjectSubList<KstDataObject, KstBaseCurve>(KST::dataObjectList);
+// xxx  vcurves = kstObjectSubList<KstBaseCurve, KstVCurve>(curves);
 
   _window   = window;
   _plotName = plotName;
@@ -71,7 +74,7 @@ void KstFilterDialog::show_setCurve(const QString& curveName, const QString& plo
   // here and bad things will happen....
   //
 
-  KstVCurvePtr curve = *vcurves.findTag(curveName);
+  curve = *vcurves.findTag(curveName);
   if (curve) {
     curve->readLock();
     _xvector = curve->xVTag().displayString();
@@ -85,19 +88,20 @@ void KstFilterDialog::show_setCurve(const QString& curveName, const QString& plo
 void KstFilterDialog::updatePluginList() {
   PluginCollection *pc = PluginCollection::self();
   const QMap<QString,Plugin::Data>& _pluginMap = pc->pluginList();
-  QString previous = _pluginList[_w->PluginCombo->currentItem()];
+  QMap<QString,Plugin::Data>::const_iterator it;
+  QString previous = _pluginList[_w->PluginCombo->currentIndex()];
   int newFocus = -1;
   int cnt = 0;
 
   _w->PluginCombo->clear();
   _pluginList.clear();
-  for (QMap<QString,Plugin::Data>::ConstIterator it = _pluginMap.begin(); it != _pluginMap.end(); ++it) {
-    if (it.data()._isFilter) {
-      _pluginList += it.data()._name;
-      _w->PluginCombo->insertItem(i18n("%1 (v%2) - %3").arg(it.data()._readableName)
-                              .arg(it.data()._version)
-                              .arg(it.data()._description));
-      if (it.data()._name == previous) {
+  for (it = _pluginMap.begin(); it != _pluginMap.end(); ++it) {
+    if ((*it)._isFilter) {
+      _pluginList += (*it)._name;
+      _w->PluginCombo->insertItem(0, i18n("%1 (v%2) - %3").arg((*it)._readableName)
+                              .arg((*it)._version)
+                              .arg((*it)._description));
+      if ((*it)._name == previous) {
         newFocus = cnt;
       }
       ++cnt;
@@ -105,9 +109,9 @@ void KstFilterDialog::updatePluginList() {
   }
 
   if (newFocus != -1) {
-    _w->PluginCombo->setCurrentItem(newFocus);
+    _w->PluginCombo->setCurrentIndex(newFocus);
   } else {
-    _w->PluginCombo->setCurrentItem(0);
+    _w->PluginCombo->setCurrentIndex(0);
     pluginChanged(0);
   }
 }
@@ -117,8 +121,8 @@ bool KstFilterDialog::saveInputs(KstCPluginPtr plugin, QExplicitlySharedDataPoin
   KstReadLocker vl(&KST::vectorList.lock());
   KstWriteLocker scl(&KST::scalarList.lock());
   KstWriteLocker stl(&KST::stringList.lock());
-  const QValueList<Plugin::Data::IOValue>& itable = p->data()._inputs;
-  QValueList<Plugin::Data::IOValue>::ConstIterator it;
+  const QList<Plugin::Data::IOValue>& itable = p->data()._inputs;
+  QList<Plugin::Data::IOValue>::const_iterator it;
 
   for (it = itable.begin(); it != itable.end(); ++it) {
     if ((*it)._type == Plugin::Data::IOValue::TableType) {
@@ -129,10 +133,13 @@ bool KstFilterDialog::saveInputs(KstCPluginPtr plugin, QExplicitlySharedDataPoin
         }
         plugin->inputVectors().insert((*it)._name, v);
       } else {
-        QObject *field = _w->_pluginInputOutputFrame->child((*it)._name.toLatin1(), "VectorSelector");
-        if (field) {
-          VectorSelector *vs = static_cast<VectorSelector*>(field);
-          KstVectorPtr v = *KST::vectorList.findTag(vs->selectedVector());
+        VectorSelector *vs;
+
+        vs = _w->_pluginInputOutputFrame->findChild<VectorSelector*>((*it)._name.toLatin1());
+        if (vs) {
+          KstVectorPtr v;
+
+          v = *KST::vectorList.findTag(vs->selectedVector());
           if (!v) {
             return false;
           }
@@ -140,14 +147,22 @@ bool KstFilterDialog::saveInputs(KstCPluginPtr plugin, QExplicitlySharedDataPoin
         }
       }
     } else if ((*it)._type == Plugin::Data::IOValue::StringType) {
-      QObject *field = _w->_pluginInputOutputFrame->child((*it)._name.toLatin1(), "StringSelector");
-      if (field) {
-        StringSelector *ss = static_cast<StringSelector*>(field);
-        KstStringPtr s = *KST::stringList.findTag(ss->selectedString());
+      StringSelector *ss;
+
+      ss = _w->_pluginInputOutputFrame->findChild<StringSelector*>((*it)._name.toLatin1());
+      if (ss) {
+        KstStringPtr s;
+
+        s = *KST::stringList.findTag(ss->selectedString());
         if (s == *KST::stringList.end()) {
           QString val = ss->_string->currentText();
-          // create orphan string
-          KstStringPtr newString = new KstString(KstObjectTag(ss->_string->currentText(), KstObjectTag::orphanTagContext), 0L, val, true);
+          KstStringPtr newString;
+
+          //
+          // create orphan string...
+          //
+
+          newString = new KstString(KstObjectTag(ss->_string->currentText(), KstObjectTag::orphanTagContext), 0L, val, true);
           plugin->inputStrings().insert((*it)._name, newString);
         } else {
           return false;
@@ -156,17 +171,25 @@ bool KstFilterDialog::saveInputs(KstCPluginPtr plugin, QExplicitlySharedDataPoin
     } else if ((*it)._type == Plugin::Data::IOValue::PidType) {
       // Nothing
     } else {
-      QObject *field = _w->_pluginInputOutputFrame->child((*it)._name.toLatin1(), "ScalarSelector");
-      if (field) {
-        ScalarSelector *ss = static_cast<ScalarSelector*>(field);
-        KstScalarPtr s = *KST::scalarList.findTag(ss->selectedScalar());
+      ScalarSelector *ss;
+
+      ss = _w->_pluginInputOutputFrame->findChild<ScalarSelector*>((*it)._name.toLatin1());
+      if (ss) {
+        KstScalarPtr s;
+
+        s = *KST::scalarList.findTag(ss->selectedScalar());
         if (s == *KST::scalarList.end()) {
           bool ok;
           double val = ss->_scalar->currentText().toDouble(&ok);
 
           if (ok) {
-            // create orphan scalar
-            KstScalarPtr newScalar = new KstScalar(KstObjectTag(ss->_scalar->currentText(), KstObjectTag::orphanTagContext), 0L, val, true, false);
+            KstScalarPtr newScalar;
+
+            //
+            // create orphan scalar...
+            //
+
+            newScalar = new KstScalar(KstObjectTag(ss->_scalar->currentText(), KstObjectTag::orphanTagContext), 0L, val, true, false);
             plugin->inputScalars().insert((*it)._name, newScalar);
           } else {
             return false;
@@ -183,8 +206,12 @@ bool KstFilterDialog::saveInputs(KstCPluginPtr plugin, QExplicitlySharedDataPoin
 
 
 bool KstFilterDialog::createCurve(KstCPluginPtr plugin) {
+  KstViewWindow *viewWindow;
   KstVectorPtr xVector;
   KstVectorPtr yVector;
+  KstVCurvePtr fit;
+  QString c_name;
+  QColor color;
 
   KST::vectorList.lock().readLock();
   KstVectorList::Iterator it = KST::vectorList.findTag(_xvector);
@@ -200,13 +227,14 @@ bool KstFilterDialog::createCurve(KstCPluginPtr plugin) {
   if (!xVector || !yVector) {
     return false;
   }
+
   plugin->setDirty();
-  QString c_name = KST::suggestCurveName(plugin->tag(), true);
-  QColor color = KstApp::inst()->chooseColorDlg()->getColorForCurve(KstVectorPtr(xVector), KstVectorPtr(yVector));
+  c_name = KST::suggestCurveName(plugin->tag(), true);
+  color = KstApp::inst()->chooseColorDlg()->getColorForCurve(KstVectorPtr(xVector), KstVectorPtr(yVector));
   if (!color.isValid()) {
     color = _w->_curveAppearance->color();
   }
-  KstVCurvePtr fit = new KstVCurve(c_name, KstVectorPtr(xVector), KstVectorPtr(yVector), KstVectorPtr(0L), KstVectorPtr(0L), KstVectorPtr(0L), KstVectorPtr(0L), color);
+  fit = new KstVCurve(c_name, KstVectorPtr(xVector), KstVectorPtr(yVector), KstVectorPtr(0L), KstVectorPtr(0L), KstVectorPtr(0L), KstVectorPtr(0L), color);
 
   fit->setHasPoints(_w->_curveAppearance->showPoints());
   fit->setHasLines(_w->_curveAppearance->showLines());
@@ -217,16 +245,18 @@ bool KstFilterDialog::createCurve(KstCPluginPtr plugin) {
   fit->setBarStyle(_w->_curveAppearance->barStyle());
   fit->setPointDensity(_w->_curveAppearance->pointDensity());
 
-  KstViewWindow *w = dynamic_cast<KstViewWindow*>(KstApp::inst()->findWindow(_window));
-  if (w && w->view()->findChild(_plotName)) {
-    Kst2DPlotPtr plot = kst_cast<Kst2DPlot>(w->view()->findChild(_plotName));
+  viewWindow = KstApp::inst()->findWindow(_window);
+  if (viewWindow && viewWindow->view()->findChild(_plotName)) {
+    Kst2DPlotPtr plot;
+
+    plot = kst_cast<Kst2DPlot>(viewWindow->view()->findChild(_plotName));
     if (plot) {
-      plot->addCurve(fit.data());
+      plot->addCurve(fit);
     }
   }
 
   KST::dataObjectList.lock().writeLock();
-  KST::dataObjectList.append(fit.data());
+  KST::dataObjectList.append(fit);
   KST::dataObjectList.lock().unlock();
 
   return true;
@@ -240,14 +270,18 @@ bool KstFilterDialog::newObject() {
     _tagName->setFocus();
     return false;
   } else {
-    int pitem = _w->PluginCombo->currentItem();
+    int pitem = _w->PluginCombo->currentIndex();
 
     if (pitem >= 0 && _w->PluginCombo->count() > 0) {
       QExplicitlySharedDataPointer<Plugin> pPtr = PluginCollection::self()->plugin(_pluginList[pitem]);
 
       if (pPtr) {
-        KstCPluginPtr plugin = new KstCPlugin;
-        KstWriteLocker pl(plugin);
+        KstCPluginPtr plugin;
+
+        plugin = new KstCPlugin;
+
+        KstWriteLocker pl(plugin.data());
+
         plugin->setDirty();
         if (saveInputs(plugin, pPtr)) {
           if (tagName == plugin_defaultTag) {
@@ -262,35 +296,41 @@ bool KstFilterDialog::newObject() {
             if (plugin->isValid()) {
               if (!createCurve(plugin)) {
                 QMessageBox::warning(this, i18n("Kst"), i18n("There is an error in the plugin you entered."));
+
                 return false;
               } else {
                 KST::dataObjectList.lock().writeLock();
-                KST::dataObjectList.append(plugin.data());
+                KST::dataObjectList.append(plugin);
                 KST::dataObjectList.lock().unlock();
               }
             } else {
               QMessageBox::warning(this, i18n("Kst"), i18n("There is an error in the plugin you entered."));
+
               return false;
             }
           } else {
             QMessageBox::warning(this, i18n("Kst"), i18n("There is an error in the outputs you entered."));
+
             return false;
           }
         } else {
           QMessageBox::warning(this, i18n("Kst"), i18n("There is an error in the inputs you entered."));
+
           return false;
         }
       }
     }
-    emit modified();
+
+// xxx    emit modified();
   }
+
   return true;
 }
 
 
 void KstFilterDialog::generateEntries(bool input, int& cnt, QWidget *parent, QGridLayout *grid, const QList<Plugin::Data::IOValue>& table) {
   QString fixedVector;
-  const QString& pluginName = _pluginList[_w->PluginCombo->currentItem()];
+  const QString& pluginName = _pluginList[_w->PluginCombo->currentIndex()];
   const Plugin::Data& pluginData = PluginCollection::self()->pluginList()[PluginCollection::self()->pluginNameList()[pluginName]];
   QList<Plugin::Data::IOValue>::const_iterator it;
   QString scalarLabelTemplate;
@@ -298,7 +338,7 @@ void KstFilterDialog::generateEntries(bool input, int& cnt, QWidget *parent, QGr
   QString stringLabelTemplate;
 
   //
-  // get fixed vector for filter
+  // get fixed vector for filter...
   //
 
   if (input) {
@@ -355,65 +395,74 @@ void KstFilterDialog::generateEntries(bool input, int& cnt, QWidget *parent, QGr
         continue;
     }
 
-    QLabel *label = new QLabel(labellabel, parent, input ? "Input label" : "Output label");
+    QLabel *label = 0L;
     QWidget *widget = 0L;
+
+    label = new QLabel(labellabel, parent);
+    label->setObjectName(input ? "Input label" : "Output label");
 
     if (input) {
       if (scalar) {
-        ScalarSelector *w = new ScalarSelector(parent, (*it)._name.toLatin1());
+        ScalarSelector *w = 0L;
         KstScalarPtr p;
         
+        w = new ScalarSelector(parent);
+        w->setObjectName((*it)._name.toLatin1());
         widget = w;
 
         connect(w->_scalar, SIGNAL(activated(const QString&)), this, SLOT(updateScalarTooltip(const QString&)));
         connect(widget, SIGNAL(newScalarCreated()), this, SIGNAL(modified()));
 
         if (!(*it)._default.isEmpty()) {
-          w->_scalar->insertItem((*it)._default);
-          w->_scalar->setCurrentText((*it)._default);
-          //printf("default: |%s|\n", (*it)._default.toLatin1());
+          w->_scalar->insertItem(0, (*it)._default);
+          w->_scalar->setEditText((*it)._default);
         }
 
         p = *KST::scalarList.findTag(w->_scalar->currentText());
         w->allowDirectEntry(true);
         if (p) {
           p->readLock();
-          QToolTip::remove(w->_scalar);
-          QToolTip::add(w->_scalar, QString::number(p->value()));
+// xxx          QToolTip::remove(w->_scalar);
+// xxx          QToolTip::add(w->_scalar, QString::number(p->value()));
           p->unlock();
         }
       } else if (string) {
-        StringSelector *w = new StringSelector(parent, (*it)._name.toLatin1());
+        StringSelector *w;
         KstStringPtr p;
 
+        w = new StringSelector(parent);
+        w->setObjectName((*it)._name.toLatin1());
         widget = w;
 
         connect(w->_string, SIGNAL(activated(const QString&)), this, SLOT(updateStringTooltip(const QString&)));
         connect(widget, SIGNAL(newStringCreated()), this, SIGNAL(modified()));
 
         if (!(*it)._default.isEmpty()) {
-          w->_string->insertItem((*it)._default);
-          w->_string->setCurrentText((*it)._default);
+          w->_string->insertItem(0, (*it)._default);
+          w->_string->setEditText((*it)._default);
         }
         p = *KST::stringList.findTag(w->_string->currentText());
         w->allowDirectEntry(true);
         if (p) {
           p->readLock();
-          QToolTip::remove(w->_string);
-          QToolTip::add(w->_string, p->value());
+// xxx          QToolTip::remove(w->_string);
+// xxx          QToolTip::add(w->_string, p->value());
           p->unlock();
         }
       } else {
         if (fixed) {
-          widget = new QLabel(parent, (*it)._name.toLatin1());
+          widget = new QLabel(parent);
+          widget->setObjectName((*it)._name.toLatin1());
           static_cast<QLabel*>(widget)->setText(_yvector);
         } else {
-          widget = new VectorSelector(parent, (*it)._name.toLatin1());
+          widget = new VectorSelector(parent);
+          widget->setObjectName((*it)._name.toLatin1());
           connect(widget, SIGNAL(newVectorCreated(const QString&)), this, SIGNAL(modified()));
         }
       }
     } else {
-      widget = new QLineEdit(parent, (*it)._name.toLatin1());
+      widget = new QLineEdit(parent);
+      widget->setObjectName((*it)._name.toLatin1());
     }
 
     grid->addWidget(label, cnt, 0);
@@ -425,10 +474,12 @@ void KstFilterDialog::generateEntries(bool input, int& cnt, QWidget *parent, QGr
     widget->show();
 
     if (!(*it)._description.isEmpty()) {
+/* xxx
       QWhatsThis::remove(label);
       QWhatsThis::remove(widget);
       QWhatsThis::add(label, (*it)._description);
       QWhatsThis::add(widget, (*it)._description);
+*/
     }
 
     ++cnt;

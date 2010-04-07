@@ -30,15 +30,15 @@
 #include "kstchoosecolordialog.h"
 #include "kstdataobjectcollection.h"
 #include "kstfitdialog.h"
+#include "kstpluginmanager.h"
 #include "kstvcurve.h"
 #include "kstviewlabel.h"
 #include "kstviewwindow.h"
 #include "plugincollection.h"
-#include "plugindialogwidget.h"
-#include "pluginmanager.h"
 #include "scalarselector.h"
 #include "stringselector.h"
 #include "vectorselector.h"
+#include "ui_plugindialogwidget.h"
 
 QPointer<KstFitDialog> KstFitDialog::_inst;
 

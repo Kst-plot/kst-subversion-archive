@@ -17,22 +17,16 @@
 
 #include <assert.h>
 
-// include files for Qt
-
-// include files for KDE
 #include <kparts/componentfactory.h>
 #include <kservicetype.h>
 
-// appliaction specific includes
 #include "extensionmgr.h"
 #include "kst.h"
 #include "kstdebug.h"
 
-static KStaticDeleter<ExtensionMgr> sdExtension;
-
 ExtensionMgr *ExtensionMgr::self() {
   if (!_self) {
-    sdExtension.setObject(_self, new ExtensionMgr);
+// xxx    sdExtension.setObject(_self, new ExtensionMgr);
   }
 
   return _self;
@@ -40,31 +34,41 @@ ExtensionMgr *ExtensionMgr::self() {
 
 
 void ExtensionMgr::save() {
-  KConfig cfg("kstextensionsrc", false, false);
-  cfg.setGroup("Extensions");
+  QMap<QString,bool>::const_iterator i;
+// xxx  KConfig cfg("kstextensionsrc", false, false);
   QStringList disabled;
   QStringList enabled;
-  for (QMap<QString,bool>::ConstIterator i = _extensions.begin(); i != _extensions.end(); ++i) {
-    if (i.data()) {
+
+// xxx  cfg.setGroup("Extensions");
+
+  for (i = _extensions.begin(); i != _extensions.end(); ++i) {
+    if (*i) {
       enabled += i.key();
     } else {
       disabled += i.key();
     }
   }
+/* xxx
   cfg.writeEntry("Disabled", disabled);
   cfg.writeEntry("Enabled", enabled);
+*/
 }
 
 
 ExtensionMgr::ExtensionMgr() : QObject(), _window(0L) {
-  KConfig cfg("kstextensionsrc", true, false);
-  cfg.setGroup("Extensions");
-  QStringList disabled = cfg.readListEntry("Disabled");
-  QStringList enabled = cfg.readListEntry("Enabled");
-  for (QStringList::ConstIterator i = disabled.begin(); i != disabled.end(); ++i) {
+  QStringList::const_iterator i;
+// xxx  KConfig cfg("kstextensionsrc", true, false);
+  QStringList disabled;
+  QStringList enabled;
+
+// xxx  disabled = cfg.readListEntry("Disabled");
+// xxx  enabled = cfg.readListEntry("Enabled");
+
+// xxx  cfg.setGroup("Extensions");
+  for (i = disabled.begin(); i != disabled.end(); ++i) {
     _extensions[*i] = false;
   }
-  for (QStringList::ConstIterator i = enabled.begin(); i != enabled.end(); ++i) {
+  for (i = enabled.begin(); i != enabled.end(); ++i) {
     _extensions[*i] = true;
   }
 }
@@ -79,19 +83,27 @@ ExtensionMgr::~ExtensionMgr() {
 
 KstExtension *ExtensionMgr::extension(const QString& name) const {
   QMap<QString,KstExtension*>::ConstIterator i = _registry.find(name);
+
   if (i != _registry.end()) {
     return *i;
   }
+
   return 0L;
 }
 
 
 void ExtensionMgr::loadExtension(const QString& name) {
-  KService::List sl = KServiceType::offers("Kst Extension");
-  for (KService::List::ConstIterator it = sl.begin(); it != sl.end(); ++it) {
+  KService::List sl;
+  KService::List::const_iterator it;
+
+// xxx  sl = KServiceType::offers("Kst Extension");
+
+  for (it = sl.begin(); it != sl.end(); ++it) {
     KService::Ptr service = *it;
+
     if (name == service->property("Name").toString()) {
       loadExtension(service);
+
       return;
     }
   }
@@ -101,27 +113,33 @@ void ExtensionMgr::loadExtension(const QString& name) {
 void ExtensionMgr::loadExtension(const KService::Ptr& service) {
   int err = 0;
   QString name = service->property("Name").toString();
-  KstExtension *e = KParts::ComponentFactory::createInstanceFromService<KstExtension>(service, _window, 0, QStringList(), &err);
+  KstExtension *e = 0L;
+
+// xxx  e = KParts::ComponentFactory::createInstanceFromService<KstExtension>(service, _window, 0, QStringList(), &err);
+
   if (e) {
     connect(e, SIGNAL(unregister()), this, SLOT(unregister()));
     KstDebug::self()->log(tr("Kst Extension %1 loaded.").arg(name));
     doRegister(name,e);
   } else {
-    KstDebug::self()->log(tr("Error trying to load Kst extension %1.  Code=%2, \"%3\"").arg(name).arg(err).arg(err == KParts::ComponentFactory::ErrNoLibrary ? tr("Library not found [%1].").arg(KLibLoader::self()->lastErrorMessage()) : KLibLoader::self()->lastErrorMessage()), KstDebug::Error);
+// xxx    KstDebug::self()->log(tr("Error trying to load Kst extension %1.  Code=%2, \"%3\"").arg(name).arg(err).arg(err == KParts::ComponentFactory::ErrNoLibrary ? tr("Library not found [%1].").arg(KLibLoader::self()->lastErrorMessage()) : KLibLoader::self()->lastErrorMessage()), KstDebug::Error);
   }
 }
 
 
 void ExtensionMgr::updateExtensions() {
-  for (QMap<QString,bool>::ConstIterator i = _extensions.begin(); i != _extensions.end(); ++i) {
-    QMap<QString,KstExtension*>::Iterator j = _registry.find(i.key());
-    if (i.data()) {
+  QMap<QString,bool>::ConstIterator i;
+  QMap<QString,KstExtension*>::Iterator j;
+
+  for (i = _extensions.begin(); i != _extensions.end(); ++i) {
+    j = _registry.find(i.key());
+    if (*i) {
       if (j == _registry.end()) {      
         loadExtension(i.key());
       }
     } else {
       if (j != _registry.end()) {      
-        delete j.data();
+        delete *j;
         // Does this automatically
         //_registry.remove(j);
       }
@@ -132,14 +150,18 @@ void ExtensionMgr::updateExtensions() {
 
 void ExtensionMgr::doRegister(const QString& name, KstExtension *inst) {
   assert(!_registry.count(name));
+
   _registry[name] = inst;
 }
 
 
 void ExtensionMgr::unregister(KstExtension *inst) {
-  for (QMap<QString,KstExtension*>::Iterator i = _registry.begin(); i != _registry.end(); ++i) {
-    if (i.data() == inst) {
-      _registry.remove(i);
+  QMap<QString,KstExtension*>::Iterator i;
+
+  for (i = _registry.begin(); i != _registry.end(); ++i) {
+    if ((*i) == inst) {
+// xxx      _registry.remove(i);
+
       break;
     }
   }

@@ -1,5 +1,5 @@
 /***************************************************************************
-                     kstplugindialog.h  -  Part of KST
+                     kstplugindialog.cpp  -  Part of KST
                              -------------------
     begin                : Mon May 12 2003
     copyright            : (C) 2003 The University of Toronto
@@ -840,8 +840,9 @@ void KstPluginDialog::generateEntries(bool input, int& cnt, QWidget *parent, QGr
     QLabel *label = 0L;
     QWidget *widget = 0L;
     
-    label = new QLabel(input ? "Input label" : "Output label", parent);
-    label->setObjectName(labellabel);
+    label = new QLabel(labellabel, parent);
+    label->setObjectName(input ? "Input label" : "Output label");
+
     if (input) {
       if (scalar) {
         KstScalarPtr p;

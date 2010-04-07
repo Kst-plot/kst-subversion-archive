@@ -131,6 +131,7 @@ class KST_EXPORT KstApp : public QMdiArea {
     QString windowName(bool prompt, const QString& nameOriginal, bool rename = false, QWidget *parent = 0L);
     QString newWindow(const QString& name);
     QString newWindow(bool prompt = true, QWidget *parent=0L);
+    KstViewWindow* findWindow(const QString& title);
     void renameWindow(KstViewWindow *);
     void tiedZoomPrev(KstViewWidget* view, const QString& plotName);
     void tiedZoomMode(int zoom, bool flag, double center, int mode, int modeExtra, KstViewWidget* view, const QString& plotName);
