@@ -24,8 +24,8 @@
 #include <QSpinBox>
 #include <QMessageBox>
 
-#include <kcolorbutton.h>
-#include <knuminput.h>
+/* xxx #include <kcolorbutton.h>
+#include <knuminput.h> */
 
 #include "colorpalettewidget.h"
 #include "curveplacementwidget.h"

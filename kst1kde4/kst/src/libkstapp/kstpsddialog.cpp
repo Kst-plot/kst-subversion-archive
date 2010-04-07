@@ -22,7 +22,7 @@
 #include <QSpinBox>
 #include <QComboBox>
 
-#include <knuminput.h>
+// xxx #include <knuminput.h>
 
 #include "fftoptionswidget.h"
 #include "curveappearancewidget.h"
