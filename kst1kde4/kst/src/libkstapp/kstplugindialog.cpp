@@ -30,7 +30,7 @@
 #include <QToolTip>
 #include <QWhatsThis>
 
-#include <kcolorbutton.h>
+// xxx #include <kcolorbutton.h>
 
 #include "curveappearancewidget.h"
 #include "kst.h"

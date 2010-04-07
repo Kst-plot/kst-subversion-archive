@@ -28,8 +28,8 @@
 #include <QTextDocument>
 #include <QSpinBox>
 
-// xxx #include <kglobal.h>
-#include <kcolorbutton.h>
+/* xxx #include <kglobal.h>
+#include <kcolorbutton.h> */
 
 #include "kstviewlegend.h"
 
