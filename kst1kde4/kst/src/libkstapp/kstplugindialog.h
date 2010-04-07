@@ -66,11 +66,11 @@ class KST_EXPORT KstPluginDialog : public KstDataDialog {
     QGridLayout* _pluginInfoGrid;
     QGridLayout* _pluginInputOutputGrid;
     QLinkedList<QWidget*> _pluginWidgets;
+    Ui::PluginDialogWidget *_w;
 
   private:
     QString _pluginName;
     static QPointer<KstPluginDialog> _inst;
-    Ui::PluginDialogWidget *_w;
 };
 
 #endif
