@@ -16,7 +16,7 @@
   </property>
   <layout class="QGridLayout">
    <item row="1" column="0" rowspan="5">
-    <widget class="QListView" name="_pluginList">
+    <widget class="QListWidget" name="_pluginList">
      <column>
       <property name="text">
        <string>Name</string>

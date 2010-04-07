@@ -21,7 +21,6 @@
 #include <QDragObject>
 #include <QMessageBox>
 
-#include "ksdebug.h"
 #include <klistview.h>
 #include <kmultipledrag.h>
 #include <kstandarddirs.h>
@@ -47,8 +46,10 @@
 KstViewListView::KstViewListView(QWidget *parent, const char *name) : QListView(parent, name) {
 }
 
+
 KstViewListView::~KstViewListView() {
 }
+
 
 QDragObject* KstViewListView::dragObject() {
   QListViewItem *qi = selectedItem();
@@ -99,13 +100,13 @@ QDragObject* KstViewListView::dragObject() {
   return drag;
 }
 
+
 void KstViewListView::contentsMouseMoveEvent(QMouseEvent *e) {
   viewport()->setCursor(Qt::ArrowCursor);
 
   QListView::contentsMouseMoveEvent(e);
 }
 
-// ==============================================
 
 KstViewObjectItem::KstViewObjectItem(QListView *parent, KstTopLevelViewPtr x, KstViewManagerI *vm, int localUseCount)
 : QListViewItem(parent), _rtti(RTTI_OBJ_WINDOW), _name(x->tagName()), _vm(vm) {
@@ -121,6 +122,7 @@ KstViewObjectItem::KstViewObjectItem(QListView *parent, KstTopLevelViewPtr x, Ks
   }
 }
 
+
 KstViewObjectItem::KstViewObjectItem(QListViewItem *parent, KstViewObjectPtr x, KstViewManagerI *vm, int localUseCount)
 : QListViewItem(parent), _rtti(RTTI_OBJ_VIEW_OBJECT), _name(x->tagName()), _vm(vm) {
 
@@ -134,6 +136,7 @@ KstViewObjectItem::KstViewObjectItem(QListViewItem *parent, KstViewObjectPtr x, 
     update(KstViewObjectPtr(x), true, localUseCount);
   }
 }
+
 
 KstViewObjectItem::KstViewObjectItem(QListViewItem *parent, KstBaseCurvePtr x, KstViewManagerI *vm, int localUseCount)
 : QListViewItem(parent), _rtti(RTTI_OBJ_DATA_OBJECT), _name(x->tagName()), _vm(vm) {
@@ -149,8 +152,10 @@ KstViewObjectItem::KstViewObjectItem(QListViewItem *parent, KstBaseCurvePtr x, K
   }
 }
 
+
 KstViewObjectItem::~KstViewObjectItem() {
 }
+
 
 bool KstViewObjectItem::acceptDrop(const QMimeSource *mime) const {
   bool retVal = false;
@@ -191,6 +196,7 @@ bool KstViewObjectItem::acceptDrop(const QMimeSource *mime) const {
 
   return retVal;
 }
+
 
 void KstViewObjectItem::dropped(QDropEvent *e) {
   bool accepted = false;
@@ -256,6 +262,7 @@ void KstViewObjectItem::dropped(QDropEvent *e) {
   e->accept(accepted);
 }
 
+
 KstDataObjectPtr KstViewObjectItem::dataObject(Kst2DPlotPtr &plot) const {
   KstDataObjectPtr dataObj;
 
@@ -283,6 +290,7 @@ KstDataObjectPtr KstViewObjectItem::dataObject(Kst2DPlotPtr &plot) const {
   return dataObj;
 }
 
+
 KstViewObjectPtr KstViewObjectItem::viewObject(KstViewWindow **win) const {
   KstViewObjectPtr viewObj;
   KstViewObjectItem *koi;
@@ -306,6 +314,7 @@ KstViewObjectPtr KstViewObjectItem::viewObject(KstViewWindow **win) const {
 
   return viewObj;
 }
+
 
 void KstViewObjectItem::update(KstViewObjectPtr x, bool recursive, int localUseCount) {
   Q_UNUSED(localUseCount)
@@ -375,10 +384,12 @@ void KstViewObjectItem::update(KstViewObjectPtr x, bool recursive, int localUseC
   }
 }
 
+
 void KstViewObjectItem::updateButtons() {
   _vm->Edit->setEnabled(true);
   _vm->Delete->setEnabled(true);
 }
+
 
 void KstViewObjectItem::openChildren(bool open) {
   for (QListViewItem *qi = firstChild(); qi; qi = qi->nextSibling()) {
@@ -389,7 +400,6 @@ void KstViewObjectItem::openChildren(bool open) {
   }
 }
 
-// ==============================================
 
 KstViewManager::KstViewManager(KstDoc *in_doc, QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl)
 : KstViewManager(parent, name, modal, fl) {
@@ -418,8 +428,10 @@ KstViewManager::KstViewManager(KstDoc *in_doc, QWidget* parent, const char* name
   connect(ViewView, SIGNAL(contextMenuRequested(QListViewItem*, const QPoint&, int)), this, SLOT(contextMenu(QListViewItem*, const QPoint&, int)));
 }
 
+
 KstViewManager::~KstViewManager() {
 }
+
 
 void KstViewManager::show_I() {
   show();
@@ -427,9 +439,11 @@ void KstViewManager::show_I() {
   update();
 }
 
+
 void KstViewManager::updateContents() {
   update();
 }
+
 
 void KstViewManager::update() {
   KstApp *app = KstApp::inst();
@@ -521,6 +535,7 @@ void KstViewManager::update() {
   app->deleteIterator(it);
 }
 
+
 void KstViewManager::edit_I() {
   QListViewItem *qi = ViewView->selectedItem();
   KstViewObjectItem *koi = static_cast<KstViewObjectItem*>(qi);
@@ -549,6 +564,7 @@ void KstViewManager::edit_I() {
   }
 }
 
+
 void KstViewManager::rename_I() {
   QListViewItem *qi = ViewView->selectedItem();
   KstViewObjectItem *koi = static_cast<KstViewObjectItem*>(qi);
@@ -565,6 +581,7 @@ void KstViewManager::rename_I() {
     QMessageBox::warning(this, i18n("Kst"), i18n("An item must be selected to edit."));
   }
 }
+
 
 void KstViewManager::delete_I() {
   QListViewItem *qi = ViewView->selectedItem();
@@ -604,6 +621,7 @@ void KstViewManager::delete_I() {
   }
 }
 
+
 void KstViewManager::activate_I() {
   QListViewItem *qi = ViewView->selectedItem();
   KstViewObjectItem *koi = static_cast<KstViewObjectItem*>(qi);
@@ -617,6 +635,7 @@ void KstViewManager::activate_I() {
     }
   }
 }
+
 
 void KstViewManager::cleanupDefault_I() {
   QListViewItem *qi = ViewView->selectedItem();
@@ -632,6 +651,7 @@ void KstViewManager::cleanupDefault_I() {
   }
 }
 
+
 void KstViewManager::cleanupCustom_I() {
   QListViewItem *qi = ViewView->selectedItem();
   KstViewObjectItem *koi = static_cast<KstViewObjectItem*>(qi);
@@ -645,6 +665,7 @@ void KstViewManager::cleanupCustom_I() {
     }
   }
 }
+
 
 void KstViewManager::select_I() {
   QListViewItem *qi = ViewView->selectedItem();
@@ -682,6 +703,7 @@ void KstViewManager::deselect_I() {
   }
 }
 
+
 void KstViewManager::open() {
   QListViewItem *qi = ViewView->selectedItem();
   
@@ -690,6 +712,7 @@ void KstViewManager::open() {
   }
 }
 
+
 void KstViewManager::close() {
   QListViewItem *qi = ViewView->selectedItem();
 
@@ -697,6 +720,7 @@ void KstViewManager::close() {
     qi->setOpen(false);
   }
 }
+
 
 void KstViewManager::open(bool open) {
   QListViewItem *qi = ViewView->selectedItem();
@@ -715,13 +739,16 @@ void KstViewManager::open(bool open) {
   }
 }
 
+
 void KstViewManager::openAll() {
   open(true);
 }
 
+
 void KstViewManager::closeAll() {
   open(false);
 }
+
 
 void KstViewManager::contextMenu(QListViewItem *i, const QPoint& p, int col) {
   Q_UNUSED(col)
@@ -782,9 +809,11 @@ void KstViewManager::contextMenu(QListViewItem *i, const QPoint& p, int col) {
   }
 }
 
+
 void KstViewManager::doUpdates() {
   emit docChanged();
 }
+
 
 void KstViewManager::currentChanged(QListViewItem *i) {
   if (i) {

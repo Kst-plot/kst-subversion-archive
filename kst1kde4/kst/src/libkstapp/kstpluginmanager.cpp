@@ -20,9 +20,9 @@
 #include <QImage>
 #include <QLabel>
 #include <QListView>
+#include <QMessageBox>
 #include <QRadioButton>
 #include <QRegExp>
-#include <QMessageBox>
 
 #include <kconfig.h>
 #include <kfiledialog.h>
@@ -39,16 +39,16 @@
 #define COLUMN_LOADED         1
 #define COLUMN_NAME           5
 
-KstPluginManager::KstPluginManager(QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl)
-: PluginManager(parent, name, modal, fl) {
+KstPluginManager::KstPluginManager(QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl) : QDialog(parent, fl) {
   setupUi(this);
+
   connect(_close, SIGNAL(clicked()), this, SLOT(close()));
   connect(_pluginList, SIGNAL(selectionChanged(QListViewItem*)), this, SLOT(selectionChanged(QListViewItem*)));
   connect(_install, SIGNAL(clicked()), this, SLOT(install()));
   connect(_remove, SIGNAL(clicked()), this, SLOT(remove()));
   connect(_rescan, SIGNAL(clicked()), this, SLOT(rescan()));
 
-  _pluginList->setAllColumnsShowFocus(true);
+// xxx  _pluginList->setAllColumnsShowFocus(true);
   reloadList();
 }
 
@@ -57,13 +57,14 @@ KstPluginManager::~KstPluginManager() {
 }
 
 
-void KstPluginManager::selectionChanged( QListViewItem *item )
+void KstPluginManager::selectionChanged(QListWidgetItem *item)
 {
   _remove->setEnabled(item != 0L);
 }
 
 
 void KstPluginManager::install() {
+/* xxx
   KUrl xmlfile = KFileDialog::getOpenURL(QString::null, "*.xml", this, QObject::tr("Select Plugin to Install"));
 
   if (xmlfile.isEmpty()) {
@@ -71,11 +72,8 @@ void KstPluginManager::install() {
   }
 
   QString tmpFile;
-#if KDE_VERSION >= KDE_MAKE_VERSION(3,3,0)
+
   if (!KIO::NetAccess::download(xmlfile, tmpFile, this)) {
-#else
-  if (!KIO::NetAccess::download(xmlfile, tmpFile)) {
-#endif
     QMessageBox::critical(this, QObject::tr("Kst"),QObject::tr("Unable to access file %1.").arg(xmlfile.prettyURL()), QObject::tr("KST Plugin Loader"));
     return;
   }
@@ -109,46 +107,49 @@ void KstPluginManager::install() {
   tmpFileURL.setPath(tmpFile);
   pathURL.setFileName(xmlfile.fileName());
 
-#if KDE_VERSION >= KDE_MAKE_VERSION(3,3,0)
   if (!KIO::NetAccess::dircopy(tmpFileURL, pathURL, this)) {
-#else
-  if (!KIO::NetAccess::dircopy(tmpFileURL, pathURL)) {
-#endif
     QMessageBox::critical(this, QObject::tr("Kst"), QObject::tr("Internal temporary file %1 could not be copied to plugin directory %2.").arg(tmpFile).arg(path), QObject::tr("KST Plugin Loader"));
   }
 
   KIO::NetAccess::removeTempFile(tmpFile);
   rescan();
+*/
 }
 
 
 void KstPluginManager::remove() {
-  QListViewItem *item = _pluginList->selectedItem();
-  if (!item) {
-    return;
+  if (!_pluginList->selectedItems().isEmpty()) {
+    QListWidgetItem *item = 0L;
+
+    item = _pluginList->selectedItems().front();
+/* xxx
+    int rc = QMessageBox::question(this, QObject::tr("Kst"),QObject::tr("Are you sure you wish to remove the plugin \"%1\" from the system?").arg(item->text(COLUMN_READABLE_NAME)), QObject::tr("KST Plugin Loader"));
+  
+    if (rc != QMessageBox::Yes) {
+      return;
+    }
+  
+    if (PluginCollection::self()->isLoaded(item->text(COLUMN_NAME))) {
+      PluginCollection::self()->unloadPlugin(item->text(COLUMN_NAME));
+  // xxx    item->setPixmap(COLUMN_LOADED, locate("data", "kst/pics/no.png"));
+    }
+  
+    PluginCollection::self()->deletePlugin(PluginCollection::self()->pluginNameList()[item->text(COLUMN_NAME)]);
+*/    
+    delete item;
+    
+    if (!_pluginList->selectedItems().isEmpty()) {
+      item = _pluginList->selectedItems().front();
+      selectionChanged(item);
+    }
   }
-
-  int rc = QMessageBox::question(this, QObject::tr("Kst"),QObject::tr("Are you sure you wish to remove the plugin \"%1\" from the system?").arg(item->text(COLUMN_READABLE_NAME)), QObject::tr("KST Plugin Loader"));
-
-  if (rc != QMessageBox::Yes) {
-    return;
-  }
-
-  if (PluginCollection::self()->isLoaded(item->text(COLUMN_NAME))) {
-    PluginCollection::self()->unloadPlugin(item->text(COLUMN_NAME));
-    item->setPixmap(COLUMN_LOADED, locate("data", "kst/pics/no.png"));
-  }
-
-  PluginCollection::self()->deletePlugin(PluginCollection::self()->pluginNameList()[item->text(COLUMN_NAME)]);
-
-  delete item;
-  selectionChanged(_pluginList->selectedItem());
 }
 
 
 void KstPluginManager::rescan() {
   PluginCollection::self()->rescan();
   reloadList();
+
   emit rescanned();
 }
 
@@ -159,22 +160,18 @@ void KstPluginManager::reloadList() {
   PluginCollection *pc = PluginCollection::self();
   QStringList loadedPluginList = pc->loadedPluginList();
   const QMap<QString,Plugin::Data>& pluginList = pc->pluginList();
-  QMap<QString,Plugin::Data>::ConstIterator it;
+  QMap<QString,Plugin::Data>::const_iterator it;
 
   for (it = pluginList.begin(); it != pluginList.end(); ++it) {
-    QString path = pc->pluginNameList()[it.data()._name];
-    QListViewItem *i = new QListViewItem(_pluginList,
-            it.data()._readableName,
-            QString::null,
-            it.data()._description,
-            it.data()._version,
-            it.data()._author,
-            it.data()._name,
-            path);
-    if (loadedPluginList.contains(it.data()._name)) {
+    QString path = pc->pluginNameList()[(*it)._name];
+    QListWidgetItem *i;
+/* xxx
+    i = new QListWidgetItem(_pluginList, (*it)._readableName, QString::null,
+            (*it)._description, (*it)._version, (*it)._author, (*it)._name, path);
+    if (loadedPluginList.contains((*it)._name)) {
       i->setPixmap(COLUMN_LOADED, locate("data", "kst/pics/yes.png"));
-      // don't use no.png - it looks bad
     }
+*/
   }
 }
 

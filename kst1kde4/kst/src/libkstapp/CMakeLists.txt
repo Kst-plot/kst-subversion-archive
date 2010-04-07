@@ -80,17 +80,16 @@ set(kstapp_LIB_SRCS
     ksteditviewobjectdialog.cpp
     kstdatamanager.cpp
     kstpluginmanager.cpp
-    kstviewmanager.cpp
+    kstviewstringsdialog.cpp
+    updatethread.cpp
     kstvectordialog.cpp
     kstgraphfiledialog.cpp
     kstsettingsdlg.cpp
-    updatethread.cpp
     emailthread.cpp
     kstprintoptionspage.cpp
     kstscalarlistview.cpp
     kststringlistview.cpp
     kstviewscalarsdialog.cpp
-    kstviewstringsdialog.cpp
     kstviewvectorsdialog.cpp
     kstviewmatricesdialog.cpp
     kstviewfitsdialog.cpp
@@ -100,6 +99,7 @@ set(kstapp_LIB_SRCS
     ksteventmonitorentry.cpp
     kstdatawizard.cpp
     kstdoc.cpp
+    kstviewmanager.cpp
     kst.cpp)
 
 #KDE3_ADD_DCOP_SKELS(kstapp_LIB_SRCS

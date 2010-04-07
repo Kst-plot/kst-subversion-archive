@@ -30,7 +30,7 @@ class KstPluginManager : public QDialog, public Ui::PluginManager {
     virtual ~KstPluginManager();
 
   public slots:
-    void selectionChanged( QListWidgetItem *item );
+    void selectionChanged(QListWidgetItem *item);
     void install();
     void remove();
     void rescan();
