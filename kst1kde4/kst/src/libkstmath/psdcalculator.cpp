@@ -18,8 +18,8 @@
 #include <assert.h>
 #include <math.h>
 
-#include <kglobal.h>
-#include <klocale.h>
+// xxx #include <kglobal.h>
+// xxx #include <klocale.h>
 
 #include "kstdebug.h"
 #include "psdcalculator.h"
@@ -159,7 +159,7 @@ int PSDCalculator::calculatePowerSpectrum(
   PSDType outputType, double inputSamplingFreq) {
 
   if (outputLen != calculateOutputVectorLength(inputLen, average, averageLen)) {
-    KstDebug::self()->log(i18n("in PSDCalculator::calculatePowerSpectrum: received output array with wrong length."), KstDebug::Error);
+    KstDebug::self()->log(QObject::tr("in PSDCalculator::calculatePowerSpectrum: received output array with wrong length."), KstDebug::Error);
     return -1;
   }
 

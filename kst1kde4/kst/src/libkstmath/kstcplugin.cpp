@@ -22,7 +22,7 @@
 #include <QTextDocument>
 
 // include files for
-#include <klocale.h>
+// xxx #include <klocale.h>
 
 // application specific includes
 #include "dialoglauncher.h"
@@ -92,7 +92,7 @@ KstCPlugin::KstCPlugin(const QDomElement& pluginElement)
   _plugin = PluginCollection::self()->plugin(pluginName);
 
   if (!_plugin.data()) {
-    KstDebug::self()->log(i18n("Unable to load plugin %1 for \"%2\".").arg(pluginName).arg(tagName()), KstDebug::Warning);
+    KstDebug::self()->log(QObject::tr("Unable to load plugin %1 for \"%2\".").arg(pluginName).arg(tagName()), KstDebug::Warning);
   } else {
     Plugin::countScalarsVectorsAndStrings(_plugin->data()._inputs, _inScalarCnt, _inArrayCnt, _inStringCnt, _inPid);
 
@@ -164,7 +164,7 @@ void KstCPlugin::commonConstructor() {
   _inArrayCnt = 0;
   _outScalarCnt = 0;
   _outArrayCnt = 0;
-  _typeString = i18n("Plugin");
+  _typeString = QObject::tr("Plugin");
   _type = "Plugin";
   _plugin = 0L;
   _localData = 0L;
@@ -297,7 +297,7 @@ KstObject::UpdateType KstCPlugin::update(int update_counter) {
   for (QList<Plugin::Data::IOValue>::ConstIterator it = itable.begin(); it != itable.end(); ++it) {
     if ((*it)._type == Plugin::Data::IOValue::TableType) {
       if (!_inputVectors.contains((*it)._name)) {
-        KstDebug::self()->log(i18n("Input vector [%1] for plugin %2 not found.  Unable to continue.").arg((*it)._name).arg(tagName()), KstDebug::Error);
+        KstDebug::self()->log(QObject::tr("Input vector [%1] for plugin %2 not found.  Unable to continue.").arg((*it)._name).arg(tagName()), KstDebug::Error);
         CLEANUP();
         return setLastUpdateResult(NO_CHANGE);
       }
@@ -340,7 +340,7 @@ KstObject::UpdateType KstCPlugin::update(int update_counter) {
                                                                         ++it) {
     if ((*it)._type == Plugin::Data::IOValue::TableType) {
       if (!_outputVectors.contains((*it)._name)) {
-        KstDebug::self()->log(i18n("Output vector [%1] for plugin %2 not found.  Unable to continue.").arg((*it)._name).arg(tagName()), KstDebug::Error);
+        KstDebug::self()->log(QObject::tr("Output vector [%1] for plugin %2 not found.  Unable to continue.").arg((*it)._name).arg(tagName()), KstDebug::Error);
         CLEANUP();
         unlockInputsAndOutputs();
         return setLastUpdateResult(NO_CHANGE);
@@ -410,7 +410,7 @@ KstObject::UpdateType KstCPlugin::update(int update_counter) {
       const char *err = _plugin->errorCode(rc);
       if (err && *err) {
         _lastError = err;
-        KstDebug::self()->log(i18n("Plugin %1 produced error: %2.").arg(tagName()).arg(_lastError), KstDebug::Error);
+        KstDebug::self()->log(QObject::tr("Plugin %1 produced error: %2.").arg(tagName()).arg(_lastError), KstDebug::Error);
       } else {
         _lastError = QString::null;
       }
@@ -420,21 +420,21 @@ KstObject::UpdateType KstCPlugin::update(int update_counter) {
 
     switch (rc) {
       case -1:
-        _lastError = i18n("Generic Error");
+        _lastError = QObject::tr("Generic Error");
         break;
       case -2:
-        _lastError = i18n("Input Error");
+        _lastError = QObject::tr("Input Error");
         break;
       case -3:
-        _lastError = i18n("Memory Error");
+        _lastError = QObject::tr("Memory Error");
         break;
       default:
-        _lastError = i18n("Unknown Error");
+        _lastError = QObject::tr("Unknown Error");
         break;
     }
 
     if (doSend) {
-      KstDebug::self()->log(i18n("Plugin %2 produced error: %1.").arg(_lastError).arg(tagName()), KstDebug::Error);
+      KstDebug::self()->log(QObject::tr("Plugin %2 produced error: %1.").arg(_lastError).arg(tagName()), KstDebug::Error);
     }
   }
 
@@ -448,7 +448,7 @@ KstObject::UpdateType KstCPlugin::update(int update_counter) {
 QString KstCPlugin::label(int precision) const {
   QString label;
 
-  label = i18n("%1: %2").arg(plugin()->data()._readableName).arg(tagName());
+  label = QObject::tr("%1: %2").arg(plugin()->data()._readableName).arg(tagName());
   if ((outputVectors())["Parameters"]) {
     QString strParamName;
     QString strValue;
@@ -461,7 +461,7 @@ QString KstCPlugin::label(int precision) const {
       KstScalarPtr scalar = outputScalars()[strParamName];
       if (scalar) {
         strValue = QString::number(scalar->value(), 'g', precision);
-        label += i18n("\n%1: %2").arg(strParamName).arg(strValue);
+        label += QObject::tr("\n%1: %2").arg(strParamName).arg(strValue);
       }
     }
   }
@@ -539,7 +539,7 @@ QString KstCPlugin::propertyString() const {
   QString str;
 
   if (!isValid()) {
-    str = i18n("Invalid plugin.");
+    str = QObject::tr("Invalid plugin.");
   } else {
     str = plugin()->data()._readableName;
     if (str.isEmpty()) {

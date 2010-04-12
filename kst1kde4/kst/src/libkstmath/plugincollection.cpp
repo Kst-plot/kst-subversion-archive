@@ -20,7 +20,7 @@
 #include <QRegExp>
 
 #include <kdeversion.h>
-#include <klocale.h>
+// xxx #include <klocale.h>
 #include <kstandarddirs.h>
 
 #include "kstdebug.h"
@@ -252,13 +252,13 @@ void PluginCollection::scanPlugins() {
           backup.remove(_parser->data()._name);
         }
       } else {
-        KstDebug::self()->log(i18n("Error [%2] parsing XML file '%1'; skipping.").arg(*it + (*fit).fileName()).arg(status), KstDebug::Warning);
+        KstDebug::self()->log(QObject::tr("Error [%2] parsing XML file '%1'; skipping.").arg(*it + (*fit).fileName()).arg(status), KstDebug::Warning);
       }
     }
   }
 
   while (!backup.isEmpty()) {
-    KstDebug::self()->log(i18n("Detected disappearance of '%1'.").arg(backup.begin().key()));
+    KstDebug::self()->log(QObject::tr("Detected disappearance of '%1'.").arg(backup.begin().key()));
     emit pluginRemoved(backup.begin().key());
 // xxx    backup.remove(backup.begin());
     changed = true;

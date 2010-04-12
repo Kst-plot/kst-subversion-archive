@@ -18,7 +18,7 @@
 #ifndef KSTOBJECTDEFAULTS_H
 #define KSTOBJECTDEFAULTS_H
 
-#include <qstring.h>
+#include <QString>
 #include "kst_export.h"
 
 class KConfig;

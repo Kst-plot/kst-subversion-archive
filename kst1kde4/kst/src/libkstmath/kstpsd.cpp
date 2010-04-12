@@ -22,8 +22,8 @@
 #include <QTextDocument>
 
 // include files for KDE
-#include <kglobal.h>
-#include <klocale.h>
+// xxx #include <kglobal.h>
+// xxx #include <klocale.h>
 
 // application specific includes
 #include "dialoglauncher.h"
@@ -133,7 +133,7 @@ void KstPSD::commonConstructor(const QString& in_tag, KstVectorPtr in_V,
                                ApodizeFunction in_apodizeFxn, double in_gaussianSigma, PSDType in_output,
                                bool interpolateHoles) {
 
-  _typeString = i18n("Spectrum");
+  _typeString = QObject::tr("Spectrum");
   _type = "PowerSpectrum";
   if (in_V) {
     _inputVectors[INVECTOR] = in_V;
@@ -178,7 +178,7 @@ KstPSD::~KstPSD() {
 
 const KstCurveHintList *KstPSD::curveHints() const {
   _curveHints->clear();
-// xxx  _curveHints->append(new KstCurveHint(i18n("Spectrum Curve"), (*_fVector)->tagName(), (*_sVector)->tagName()));
+// xxx  _curveHints->append(new KstCurveHint(QObject::tr("Spectrum Curve"), (*_fVector)->tagName(), (*_sVector)->tagName()));
   return _curveHints;
 }
 
@@ -264,7 +264,7 @@ void KstPSD::_adjustLengths() {
     if ( ((*_sVector)->length() == nPSDLen) && ((*_fVector)->length() == nPSDLen) ) {
       _PSDLen = nPSDLen;
     } else {
-      KstDebug::self()->log(i18n("Attempted to create a spectrum that used all memory."), KstDebug::Error);
+      KstDebug::self()->log(QObject::tr("Attempted to create a spectrum that used all memory."), KstDebug::Error);
     }
 
     _last_n_subsets = 0;
@@ -401,7 +401,7 @@ bool KstPSD::slaveVectorsUsed() const {
 
 
 QString KstPSD::propertyString() const {
-  return i18n("Spectrum: %1").arg(vTag());
+  return QObject::tr("Spectrum: %1").arg(vTag());
 }
 
 
@@ -490,19 +490,19 @@ void KstPSD::updateVectorLabels() {
   switch (_Output) {
     default:
     case PSDAmplitudeSpectralDensity: // amplitude spectral density (default) [V/Hz^1/2]
-      (*_sVector)->setLabel(i18n("ASD \\[%1/%2^{1/2} \\]").arg(_vUnits).arg(_rUnits));
+      (*_sVector)->setLabel(QObject::tr("ASD \\[%1/%2^{1/2} \\]").arg(_vUnits).arg(_rUnits));
       break;
     case PSDPowerSpectralDensity: // power spectral density [V^2/Hz]
-      (*_sVector)->setLabel(i18n("PSD \\[%1^2/%2\\]").arg(_vUnits).arg(_rUnits));
+      (*_sVector)->setLabel(QObject::tr("PSD \\[%1^2/%2\\]").arg(_vUnits).arg(_rUnits));
       break;
     case PSDAmplitudeSpectrum: // amplitude spectrum [V]
-      (*_sVector)->setLabel(i18n("Amplitude Spectrum\\[%1\\]").arg(_vUnits));
+      (*_sVector)->setLabel(QObject::tr("Amplitude Spectrum\\[%1\\]").arg(_vUnits));
       break;
     case PSDPowerSpectrum: // power spectrum [V^2]
-      (*_sVector)->setLabel(i18n("Power Spectrum \\[%1^2\\]").arg(_vUnits));
+      (*_sVector)->setLabel(QObject::tr("Power Spectrum \\[%1^2\\]").arg(_vUnits));
       break;
   }
-  (*_fVector)->setLabel(i18n("Frequency \\[%1\\]").arg(_rUnits));
+  (*_fVector)->setLabel(QObject::tr("Frequency \\[%1\\]").arg(_rUnits));
 }
 
 

@@ -18,7 +18,7 @@
 #ifndef KSTSETTINGS_H
 #define KSTSETTINGS_H
 
-#include <qcolor.h>
+#include <QColor>
 
 #include "kstplotdefines.h"
 #include "kst_export.h"

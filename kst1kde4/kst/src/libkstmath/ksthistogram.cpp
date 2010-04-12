@@ -23,8 +23,8 @@
 #include <QTextDocument>
 
 // include files for KDE
-#include <kglobal.h>
-#include <klocale.h>
+// xxx #include <kglobal.h>
+// xxx #include <klocale.h>
 
 // application specific includes
 #include "dialoglauncher.h"
@@ -103,7 +103,7 @@ void KstHistogram::commonConstructor(const QString &in_tag, KstVectorPtr in_V,
                                      KstHsNormType in_norm_mode) {
   QString tagName;
 
-  _typeString = i18n("Histogram");
+  _typeString = QObject::tr("Histogram");
   _type = "Histogram";
   _NormMode = in_norm_mode;
   _Bins = 0L;
@@ -231,7 +231,7 @@ KstObject::UpdateType KstHistogram::update(int update_counter) {
   switch (_NormMode) {
     case KST_HS_NUMBER:
       _Normalization = 1.0;
-      (*_hVector)->setLabel(i18n("Number in bin"));
+      (*_hVector)->setLabel(QObject::tr("Number in bin"));
       break;
     case KST_HS_PERCENT:
       if (ns > 0) {
@@ -239,7 +239,7 @@ KstObject::UpdateType KstHistogram::update(int update_counter) {
       } else {
         _Normalization = 1.0;
       }
-      (*_hVector)->setLabel(i18n("Percent in bin"));
+      (*_hVector)->setLabel(QObject::tr("Percent in bin"));
       break;
     case KST_HS_FRACTION:
       if (ns > 0) {
@@ -247,7 +247,7 @@ KstObject::UpdateType KstHistogram::update(int update_counter) {
       } else {
         _Normalization = 1.0;
       }
-      (*_hVector)->setLabel(i18n("Fraction in bin"));
+      (*_hVector)->setLabel(QObject::tr("Fraction in bin"));
       break;
     case KST_HS_MAX_ONE:
       if (MaxY > 0) {
@@ -341,19 +341,19 @@ void KstHistogram::setVector(KstVectorPtr new_v) {
 QString KstHistogram::yLabel() const {
   switch (_NormMode) {
     case KST_HS_NUMBER:
-      return i18n("Number in Bin");
+      return QObject::tr("Number in Bin");
       break;
     case KST_HS_PERCENT:
-      return i18n("Percent in Bin");
+      return QObject::tr("Percent in Bin");
       break;
     case KST_HS_FRACTION:
-      return i18n("Fraction in Bin");
+      return QObject::tr("Fraction in Bin");
       break;
     case KST_HS_MAX_ONE:
-      return i18n("Histogram");
+      return QObject::tr("Histogram");
       break;
   }
-  return i18n("Histogram");
+  return QObject::tr("Histogram");
 }
 
 
@@ -390,7 +390,7 @@ void KstHistogram::save(QTextStream &ts, const QString& indent) {
 
 
 QString KstHistogram::propertyString() const {
-  return i18n("Histogram: %1").arg(vTag());
+  return QObject::tr("Histogram: %1").arg(vTag());
 }
 
 

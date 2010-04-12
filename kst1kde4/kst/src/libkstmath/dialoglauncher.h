@@ -17,7 +17,7 @@
 
 #ifndef DIALOGLAUNCHER_H
 #define DIALOGLAUNCHER_H
-#include <qstring.h>
+#include <QString>
 #include "kst_export.h"
 
 class QWidget;

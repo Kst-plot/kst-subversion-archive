@@ -18,8 +18,8 @@
 #include "pluginxmlparser.h"
 
 #include <kglobal.h>
-#include <klocale.h>
-#include <qfile.h>
+// xxx #include <klocale.h>
+#include <QFile>
 
 PluginXMLParser::PluginXMLParser() {
 }
@@ -212,7 +212,7 @@ QDomNode n = element.firstChild();
       _pluginData._isFilter = true;
       _pluginData._filterInputVector = e.attribute(QS_filter_input);
       _pluginData._filterOutputVector = e.attribute(QS_filter_output);
-      QString n = i18n("Filter Output");
+      QString n = QObject::tr("Filter Output");
       QString x = _pluginData._filterInputVector;
       QString y = _pluginData._filterOutputVector;
       if (!y.isEmpty() && !x.isEmpty()) {

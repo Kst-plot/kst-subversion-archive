@@ -21,7 +21,7 @@
 #include "pluginxmlparser.h"
 
 #include <klibloader.h>
-#include <klocale.h>
+// xxx #include <klocale.h>
 
 
 PluginLoader *PluginLoader::_self = 0L;
@@ -51,7 +51,7 @@ Plugin *PluginLoader::loadPlugin(const QString& xmlfile, const QString& object) 
   // first try to load the XML file...
   //
   if (_parser->parseFile(xmlfile) != 0) {
-    KstDebug::self()->log(i18n("Could not parse xml file '%1'.").arg(xmlfile), KstDebug::Error);
+    KstDebug::self()->log(QObject::tr("Could not parse xml file '%1'.").arg(xmlfile), KstDebug::Error);
     return 0L;
   }
 
@@ -66,7 +66,7 @@ Plugin *PluginLoader::loadPlugin(const QString& xmlfile, const QString& object) 
   //
   plug->_lib = KLibLoader::self()->library(object.toLocal8Bit().data());
   if (!plug->_lib) {
-    KstDebug::self()->log(i18n("Error trying to load plugin %1 [%2].").arg(object).arg(KLibLoader::self()->lastErrorMessage()), KstDebug::Error);
+    KstDebug::self()->log(QObject::tr("Error trying to load plugin %1 [%2].").arg(object).arg(KLibLoader::self()->lastErrorMessage()), KstDebug::Error);
     delete plug;
     return 0L;
   }
@@ -84,7 +84,7 @@ Plugin *PluginLoader::loadPlugin(const QString& xmlfile, const QString& object) 
   }
 */
   if (!plug->_symbol) {
-    KstDebug::self()->log(i18n("Could not find symbol '%1' in plugin %2.").arg(plug->_data._name).arg(object), KstDebug::Error);
+    KstDebug::self()->log(QObject::tr("Could not find symbol '%1' in plugin %2.").arg(plug->_data._name).arg(object), KstDebug::Error);
     delete plug;
     return 0L;
   }

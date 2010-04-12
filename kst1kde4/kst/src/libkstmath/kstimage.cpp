@@ -24,7 +24,7 @@
 #include "kstmath.h"
 #include "kstsettings.h"
 
-#include <klocale.h>
+// xxx #include <klocale.h>
 
 #include <QImage>
 #include <QPainter>
@@ -80,7 +80,7 @@ KstImage::KstImage(const QDomElement& e) : KstBaseCurve(e){
 
   _inputMatrixLoadQueue.append(qMakePair(THEMATRIX, in_matrixName));
 
-  _typeString = i18n("Image");
+  _typeString = QObject::tr("Image");
   _type = "Image";
   _hasColorMap = in_hasColorMap;
   _hasContourMap = in_hasContourMap;
@@ -97,7 +97,7 @@ KstImage::KstImage(const QDomElement& e) : KstBaseCurve(e){
       for (int i = 0; i < 256; i++) {
         in_pal->addColor(QColor(i,i,i));
       }
-      KstDebug::self()->log(i18n("Unable to find palette %1.  Using a 256 color grayscale palette instead.").arg(in_paletteName),
+      KstDebug::self()->log(QObject::tr("Unable to find palette %1.  Using a 256 color grayscale palette instead.").arg(in_paletteName),
                                  KstDebug::Warning);
     }
     _pal = in_pal;
@@ -121,7 +121,7 @@ KstImage::KstImage(const QString &in_tag, KstMatrixPtr in_matrix, double lowerZ,
   } else {
     setTagName(KstObjectTag(in_tag, KstObjectTag::globalTagContext));
   }
-  _typeString = i18n("Image");
+  _typeString = QObject::tr("Image");
   _type = "Image";
   _zLower = lowerZ;
   _zUpper = upperZ;
@@ -144,7 +144,7 @@ KstImage::KstImage(const QString &in_tag, KstMatrixPtr in_matrix, int numContour
   } else {
     setTagName(KstObjectTag(in_tag, KstObjectTag::globalTagContext));
   }
-  _typeString = i18n("Image");
+  _typeString = QObject::tr("Image");
   _type = "Image";
   _contourColor = contourColor;
   _numContourLines = numContours;
@@ -174,7 +174,7 @@ KstImage::KstImage(const QString &in_tag,
   } else {
     setTagName(KstObjectTag(in_tag, KstObjectTag::globalTagContext));
   }
-  _typeString = i18n("Image");
+  _typeString = QObject::tr("Image");
   _type = "Image";
   _contourColor = contourColor;
   _numContourLines = numContours;
@@ -283,7 +283,7 @@ KstObject::UpdateType KstImage::update(int update_counter) {
 
 QString KstImage::propertyString() const {
   if (_inputMatrices.contains(THEMATRIX)) {
-    return i18n("Using matrix %1" ).arg(_inputMatrices[THEMATRIX]->tag().displayString());
+    return QObject::tr("Using matrix %1" ).arg(_inputMatrices[THEMATRIX]->tag().displayString());
   } else {
     return QString();
   }

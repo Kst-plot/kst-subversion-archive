@@ -22,10 +22,10 @@
 #include <string.h>
 #include <unistd.h>
 
-#include <klocale.h>
+// xxx #include <klocale.h>
 
-#include <qmutex.h>
-#include <qregexp.h>
+#include <QMutex>
+#include <QRegExp>
 
 #include "enodes.h"
 #include "kstdatacollection.h"
@@ -472,10 +472,10 @@ Function::Function(char *name, ArgumentList *args)
       }
 
       if (!_cStylePlugin && !_dataObjectPlugin) {
-        KstDebug::self()->log(i18n("Equation was unable to load plugin %1.").arg(pn->name()), KstDebug::Warning);
+        KstDebug::self()->log(QObject::tr("Equation was unable to load plugin %1.").arg(pn->name()), KstDebug::Warning);
       }
     } else {
-      KstDebug::self()->log(i18n("A plugin call in an equation requires the first argument to be the name of the plugin."), KstDebug::Warning);
+      KstDebug::self()->log(QObject::tr("A plugin call in an equation requires the first argument to be the name of the plugin."), KstDebug::Warning);
     }
   } else {
     for (int i = 0; FTable[i].name; ++i) {
@@ -539,7 +539,7 @@ KstObject::UpdateType Function::updateCStylePlugin(Context *ctx) {
           _inArrayLens[vitcnt++] = ctx->xVector->length();
         } else {
           _outputIndex = EQ_INDEX_ERROR;
-          KstDebug::self()->log(i18n("Plugin %2 failed when called from equation.  Argument %1 was not found.").arg(cnt + 1).arg(_cStylePlugin->data()._name), KstDebug::Warning);
+          KstDebug::self()->log(QObject::tr("Plugin %2 failed when called from equation.  Argument %1 was not found.").arg(cnt + 1).arg(_cStylePlugin->data()._name), KstDebug::Warning);
           return KstObject::NO_CHANGE;
         }
       }
@@ -563,7 +563,7 @@ KstObject::UpdateType Function::updateCStylePlugin(Context *ctx) {
 
   _outputIndex = EQ_INDEX_ERROR;
   if (rc != 0) {
-    KstDebug::self()->log(i18n("Plugin %1 failed when called from equation.").arg(_cStylePlugin->data()._name), KstDebug::Warning);
+    KstDebug::self()->log(QObject::tr("Plugin %1 failed when called from equation.").arg(_cStylePlugin->data()._name), KstDebug::Warning);
     return KstObject::NO_CHANGE;
   }
 
@@ -625,7 +625,7 @@ KstObject::UpdateType Function::updateDataObjectPlugin(int counter, Context *ctx
         _dataObjectPlugin->setInputVector(*it, ctx->xVector);
       } else {
         _outputIndex = EQ_INDEX_ERROR;
-        KstDebug::self()->log(i18n("Plugin %2 failed when called from equation.  Argument %1 was not found.").arg(cnt + 1).arg(_dataObjectPlugin->tagName()), KstDebug::Warning);
+        KstDebug::self()->log(QObject::tr("Plugin %2 failed when called from equation.  Argument %1 was not found.").arg(cnt + 1).arg(_dataObjectPlugin->tagName()), KstDebug::Warning);
         return KstObject::NO_CHANGE;
       }
     }
@@ -1055,7 +1055,7 @@ bool Data::collectObjects(KstVectorMap& v, KstScalarMap& s, KstStringMap& t) {
   } else if (_scalar && !s.contains(_tagName)) {
     s.insert(_scalar->tag().displayString(), _scalar);
   } else if (!_scalar && !_vector) {
-    KstDebug::self()->log(i18n("Equation has unknown object [%1].").arg(_tagName), KstDebug::Error);
+    KstDebug::self()->log(QObject::tr("Equation has unknown object [%1].").arg(_tagName), KstDebug::Error);
     return false;
   }
   return true;

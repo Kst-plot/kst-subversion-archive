@@ -22,7 +22,7 @@
 #include <QTextDocument>
 
 // include files for KDE
-#include <klocale.h>
+// xxx #include <klocale.h>
 
 // application specific includes
 #include "kstdebug.h"
@@ -33,14 +33,14 @@
 
 KstBasicPlugin::KstBasicPlugin()
 : KstDataObject(), _isFit(false) {
-  _typeString = i18n("Plugin");
+  _typeString = QObject::tr("Plugin");
   _type = "Plugin";
 }
 
 
 KstBasicPlugin::KstBasicPlugin(const QDomElement& e)
 : KstDataObject(e), _isFit(false) {
-  _typeString = i18n("Plugin");
+  _typeString = QObject::tr("Plugin");
   _type = "Plugin";
 }
 
@@ -243,7 +243,7 @@ KstObject::UpdateType KstBasicPlugin::update(int updateCounter) {
   //
   if (depUpdated) {
     if (!algorithm()) {
-      KstDebug::self()->log(i18n("There is an error in the %1 algorithm.").arg(propertyString()), KstDebug::Error);
+      KstDebug::self()->log(QObject::tr("There is an error in the %1 algorithm.").arg(propertyString()), KstDebug::Error);
       unlockInputsAndOutputs();
       return lastUpdateResult();
     }
@@ -394,7 +394,7 @@ QString KstBasicPlugin::parameterName(int index) const {
 QString KstBasicPlugin::label(int precision) const {
   QString label;
 
-  label = i18n("%1: %2").arg(name()).arg(tagName());
+  label = QObject::tr("%1: %2").arg(name()).arg(tagName());
   if ((outputVectors())["Parameters"]) {
     QString strParamName;
     QString strValue;
@@ -407,7 +407,7 @@ QString KstBasicPlugin::label(int precision) const {
       KstScalarPtr scalar = outputScalars()[strParamName];
       if (scalar) {
         strValue = QString::number(scalar->value(), 'g', precision);
-        label += i18n("\n%1: %2").arg(strParamName).arg(strValue);
+        label += QObject::tr("\n%1: %2").arg(strParamName).arg(strValue);
       }
     }
   }

@@ -21,8 +21,8 @@
 
 #include <QTextDocument>
 
-#include <kglobal.h>
-#include <klocale.h>
+// xxx #include <kglobal.h>
+// xxx #include <klocale.h>
 
 #include "dialoglauncher.h"
 #include "kstcsd.h"
@@ -119,7 +119,7 @@ void KstCSD::commonConstructor(const QString& in_tag, KstVectorPtr in_V, double 
                                 int in_averageLength, double in_gaussianSigma, const QString& in_vectorUnits,
                                 const QString& in_rateUnits, PSDType in_outputType, bool in_interpolateHoles,
                                 const QString& vecName) {
-  _typeString = i18n("Spectrogram");
+  _typeString = QObject::tr("Spectrogram");
   _type = "Spectrogram";
   _inputVectors[INVECTOR] = in_V;
   KstObject::setTagName(KstObjectTag::fromString(in_tag));
@@ -145,9 +145,9 @@ void KstCSD::commonConstructor(const QString& in_tag, KstVectorPtr in_V, double 
 
     KstMatrixPtr outMatrix( new KstMatrix(KstObjectTag("csd", tag()), this, 1, 1) );
     
-    outMatrix->setLabel(i18n("Power [%1/%2^{1/2}]").arg(_vectorUnits).arg(_rateUnits));
-    outMatrix->setXLabel(i18n("%1 [%2]").arg(vecName).arg(_vectorUnits));
-    outMatrix->setYLabel(i18n("Frequency [%1]").arg(_rateUnits));
+    outMatrix->setLabel(QObject::tr("Power [%1/%2^{1/2}]").arg(_vectorUnits).arg(_rateUnits));
+    outMatrix->setXLabel(QObject::tr("%1 [%2]").arg(vecName).arg(_vectorUnits));
+    outMatrix->setYLabel(QObject::tr("Frequency [%1]").arg(_rateUnits));
     _outMatrix = _outputMatrices.insert(OUTMATRIX, outMatrix);
   }
 
@@ -224,7 +224,7 @@ KstObject::UpdateType KstCSD::update(int update_counter) {
         (*_outMatrix)->setValueRaw(xSize, j, tempOutput[j]);
       }
     } else {
-      KstDebug::self()->log(i18n("Could not allocate sufficient memory for spectrogram."), KstDebug::Error);
+      KstDebug::self()->log(QObject::tr("Could not allocate sufficient memory for spectrogram."), KstDebug::Error);
       break;
     }
 
@@ -297,7 +297,7 @@ bool KstCSD::slaveVectorsUsed() const {
 
 
 QString KstCSD::propertyString() const {
-  return i18n("Spectrogram: %1").arg(_inputVectors[INVECTOR]->tag().displayString());
+  return QObject::tr("Spectrogram: %1").arg(_inputVectors[INVECTOR]->tag().displayString());
 }
 
 
@@ -473,16 +473,16 @@ void KstCSD::updateMatrixLabels(void) {
   switch (_outputType) {
     default:
     case 0: // amplitude spectral density (default) [V/Hz^1/2]
-      (*_outMatrix)->setLabel(i18n("ASD [%1/%2^{1/2}]").arg(_vectorUnits).arg(_rateUnits));
+      (*_outMatrix)->setLabel(QObject::tr("ASD [%1/%2^{1/2}]").arg(_vectorUnits).arg(_rateUnits));
       break;
     case 1: // power spectral density [V^2/Hz]
-      (*_outMatrix)->setLabel(i18n("PSD [%1^2/%2]").arg(_vectorUnits).arg(_rateUnits));
+      (*_outMatrix)->setLabel(QObject::tr("PSD [%1^2/%2]").arg(_vectorUnits).arg(_rateUnits));
       break;
     case 2: // amplitude spectrum [V]
-      (*_outMatrix)->setLabel(i18n("Amplitude Spectrum [%1]").arg(_vectorUnits));
+      (*_outMatrix)->setLabel(QObject::tr("Amplitude Spectrum [%1]").arg(_vectorUnits));
       break;
     case 3: // power spectrum [V^2]
-      (*_outMatrix)->setLabel(i18n("Power Spectrum [%1^2]").arg(_vectorUnits));
+      (*_outMatrix)->setLabel(QObject::tr("Power Spectrum [%1^2]").arg(_vectorUnits));
       break;
   }
 }

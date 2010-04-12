@@ -22,7 +22,7 @@
 #include <QTimer>
 
 // include files for KDE
-#include <klocale.h>
+// xxx #include <klocale.h>
 #include <klibloader.h>
 #include <kparts/componentfactory.h>
 
@@ -121,11 +121,11 @@ KstDataObjectPtr KstDataObject::createPlugin(KService::Ptr service) {
     object->setVersion(version);
     object->setLibrary(library);
 
-    KstDebug::self()->log(i18n("Loaded data-object plugin %1.").arg(service->name()));
+    KstDebug::self()->log(QObject::tr("Loaded data-object plugin %1.").arg(service->name()));
     return object;
   }
 
-  KstDebug::self()->log(i18n("Could not load data-object plugin %1.").arg(service->name()), KstDebug::Error);
+  KstDebug::self()->log(QObject::tr("Could not load data-object plugin %1.").arg(service->name()), KstDebug::Error);
 
   return KstDataObjectPtr( );
 }
@@ -133,7 +133,7 @@ KstDataObjectPtr KstDataObject::createPlugin(KService::Ptr service) {
 
 // Scans for plugins and stores the information for them
 void KstDataObject::scanPlugins() {
-  KstDebug::self()->log(i18n("Scanning for data-object plugins."));
+  KstDebug::self()->log(QObject::tr("Scanning for data-object plugins."));
 
   pluginInfo.clear();
 /* xxx
@@ -222,7 +222,7 @@ bool KstDataObject::loadInputs() {
     if (it != KST::vectorList.end()) {
       _inputVectors.insert((*i).first, *it);
     } else {
-      KstDebug::self()->log(i18n("Unable to find required vector [%1] for data object %2.").arg((*i).second).arg(tagName()), KstDebug::Error);
+      KstDebug::self()->log(QObject::tr("Unable to find required vector [%1] for data object %2.").arg((*i).second).arg(tagName()), KstDebug::Error);
       rc = false;
     }
   }
@@ -235,7 +235,7 @@ bool KstDataObject::loadInputs() {
     if (it != KST::scalarList.end()) {
       _inputScalars.insert((*i).first, *it);
     } else {
-      KstDebug::self()->log(i18n("Unable to find required scalar [%1] for data object %2.").arg((*i).second).arg(tagName()), KstDebug::Error);
+      KstDebug::self()->log(QObject::tr("Unable to find required scalar [%1] for data object %2.").arg((*i).second).arg(tagName()), KstDebug::Error);
       rc = false;
     }
   }
@@ -248,7 +248,7 @@ bool KstDataObject::loadInputs() {
     if (it != KST::stringList.end()) {
       _inputStrings.insert((*i).first, *it);
     } else {
-      KstDebug::self()->log(i18n("Unable to find required string [%1] for data object %2.").arg((*i).second).arg(tagName()), KstDebug::Error);
+      KstDebug::self()->log(QObject::tr("Unable to find required string [%1] for data object %2.").arg((*i).second).arg(tagName()), KstDebug::Error);
       rc = false;
     }
   }
@@ -261,7 +261,7 @@ bool KstDataObject::loadInputs() {
     if (it != KST::matrixList.end()) {
       _inputMatrices.insert((*i).first, *it);
     } else {
-      KstDebug::self()->log(i18n("Unable to find required matrix [%1] for data object %2.").arg((*i).second).arg(tagName()), KstDebug::Error);
+      KstDebug::self()->log(QObject::tr("Unable to find required matrix [%1] for data object %2.").arg((*i).second).arg(tagName()), KstDebug::Error);
       rc = false;
     }
   }
@@ -401,7 +401,7 @@ void KstDataObject::writeLockInputsAndOutputs() const {
 // xxx        kstdFatal() << "Output for data object " << this->tag().displayString() << " is invalid." << endl;
       }
       if ((*outputIt)->provider() != this) {
-        KstDebug::self()->log(i18n("(%1) KstDataObject::writeLockInputsAndOutputs() by tid=%2: write locking output %3 (not provider) -- this is probably an error. Please email kst@kde.org with details.").arg(this->type()).arg((int)QThread::currentThread()).arg((*outputIt)->tagName()), KstDebug::Error);
+        KstDebug::self()->log(QObject::tr("(%1) KstDataObject::writeLockInputsAndOutputs() by tid=%2: write locking output %3 (not provider) -- this is probably an error. Please email kst@kde.org with details.").arg(this->type()).arg((int)QThread::currentThread()).arg((*outputIt)->tagName()), KstDebug::Error);
       }
       (*outputIt)->writeLock();
       ++outputIt;

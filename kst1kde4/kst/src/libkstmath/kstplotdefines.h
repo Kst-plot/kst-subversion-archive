@@ -20,11 +20,11 @@
 
 #define MARKER_LABEL_PRECISION        15
 
-#include <qstringlist.h>
-#include <klocale.h>
+#include <QStringList>
+// xxx #include <klocale.h>
 
-#ifndef I18N_NOOP2
-#define I18N_NOOP2( comment,x ) x
+#ifndef QT_TRANSLATE_NOOP
+#define QT_TRANSLATE_NOOP( comment,x ) x
 #endif
 
 #define JD1900                  2415020.5
@@ -76,35 +76,35 @@ struct TickLabelDescription {
 };
 
 const AxisInterpretation AxisInterpretations[] = {
-  { I18N_NOOP("Julian Year"), AXIS_INTERP_YEAR },
-  { I18N_NOOP("Standard C time"), AXIS_INTERP_CTIME },
-  { I18N_NOOP2("Julian Date", "JD"), AXIS_INTERP_JD },
-  { I18N_NOOP2("Modified Julian Date", "MJD"), AXIS_INTERP_MJD },
-  { I18N_NOOP2("Reduced Julian Date", "RJD"), AXIS_INTERP_RJD },
-  { I18N_NOOP2("Temps Atomique International", "TAI"), AXIS_INTERP_AIT },
-  { I18N_NOOP2("Temps Atomique International - Nanoseconds", "TAI (ns)"), AXIS_INTERP_AIT_NANO },
-  { I18N_NOOP2("Temps Atomique International - 2^-16 seconds", "TAI (2^-16 seconds)"), AXIS_INTERP_AIT_PLANCK_IDEF }
+  { QT_TR_NOOP("Julian Year"), AXIS_INTERP_YEAR },
+  { QT_TR_NOOP("Standard C time"), AXIS_INTERP_CTIME },
+  { QT_TRANSLATE_NOOP("Julian Date", "JD"), AXIS_INTERP_JD },
+  { QT_TRANSLATE_NOOP("Modified Julian Date", "MJD"), AXIS_INTERP_MJD },
+  { QT_TRANSLATE_NOOP("Reduced Julian Date", "RJD"), AXIS_INTERP_RJD },
+  { QT_TRANSLATE_NOOP("Temps Atomique International", "TAI"), AXIS_INTERP_AIT },
+  { QT_TRANSLATE_NOOP("Temps Atomique International - Nanoseconds", "TAI (ns)"), AXIS_INTERP_AIT_NANO },
+  { QT_TRANSLATE_NOOP("Temps Atomique International - 2^-16 seconds", "TAI (2^-16 seconds)"), AXIS_INTERP_AIT_PLANCK_IDEF }
 };
 
 const AxisDisplay AxisDisplays[] = {
-  { I18N_NOOP("Julian Year"), AXIS_DISPLAY_YEAR },
-  { I18N_NOOP("YYYY/MM/DD HH:MM:SS.SS"), AXIS_DISPLAY_YYMMDDHHMMSS_SS },
-  { I18N_NOOP("DD/MM/YYYY HH:MM:SS.SS"), AXIS_DISPLAY_DDMMYYHHMMSS_SS },
-  { I18N_NOOP("<Qt Text Date> HH:MM:SS.SS"), AXIS_DISPLAY_QTTEXTDATEHHMMSS_SS },
-  { I18N_NOOP("<Qt Local Date> HH:MM:SS.SS"), AXIS_DISPLAY_QTLOCALDATEHHMMSS_SS },
-  { I18N_NOOP2("Julian Date", "JD"), AXIS_DISPLAY_JD },
-  { I18N_NOOP2("Modified Julian Date", "MJD"), AXIS_DISPLAY_MJD },
-  { I18N_NOOP2("Reduced Julian Date", "RJD"), AXIS_DISPLAY_RJD },
-  { I18N_NOOP("<KDE Short Date and Time>"), AXIS_DISPLAY_KDE_SHORTDATE },
-  { I18N_NOOP("<KDE Long Date and Time>"), AXIS_DISPLAY_KDE_LONGDATE }
+  { QT_TR_NOOP("Julian Year"), AXIS_DISPLAY_YEAR },
+  { QT_TR_NOOP("YYYY/MM/DD HH:MM:SS.SS"), AXIS_DISPLAY_YYMMDDHHMMSS_SS },
+  { QT_TR_NOOP("DD/MM/YYYY HH:MM:SS.SS"), AXIS_DISPLAY_DDMMYYHHMMSS_SS },
+  { QT_TR_NOOP("<Qt Text Date> HH:MM:SS.SS"), AXIS_DISPLAY_QTTEXTDATEHHMMSS_SS },
+  { QT_TR_NOOP("<Qt Local Date> HH:MM:SS.SS"), AXIS_DISPLAY_QTLOCALDATEHHMMSS_SS },
+  { QT_TRANSLATE_NOOP("Julian Date", "JD"), AXIS_DISPLAY_JD },
+  { QT_TRANSLATE_NOOP("Modified Julian Date", "MJD"), AXIS_DISPLAY_MJD },
+  { QT_TRANSLATE_NOOP("Reduced Julian Date", "RJD"), AXIS_DISPLAY_RJD },
+  { QT_TR_NOOP("<KDE Short Date and Time>"), AXIS_DISPLAY_KDE_SHORTDATE },
+  { QT_TR_NOOP("<KDE Long Date and Time>"), AXIS_DISPLAY_KDE_LONGDATE }
 };
 
 const MajorTickSpacing MajorTickSpacings[] = {
-  { I18N_NOOP("None"), 0 },
-  { I18N_NOOP("Coarse"), 2 },
-  { I18N_NOOP("Default"), 5 },
-  { I18N_NOOP("Fine"), 10 },
-  { I18N_NOOP("Very fine"), 15 }
+  { QT_TR_NOOP("None"), 0 },
+  { QT_TR_NOOP("Coarse"), 2 },
+  { QT_TR_NOOP("Default"), 5 },
+  { QT_TR_NOOP("Fine"), 10 },
+  { QT_TR_NOOP("Very fine"), 15 }
 };
 
 class TickParameters {

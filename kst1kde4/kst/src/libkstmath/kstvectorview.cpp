@@ -23,8 +23,8 @@
 #include <QTextDocument>
 
 // include files for KDE
-#include <kglobal.h>
-#include <klocale.h>
+// xxx #include <kglobal.h>
+// xxx #include <klocale.h>
 
 // application specific includes
 #include "dialoglauncher.h"
@@ -133,7 +133,7 @@ void KstVectorView::commonConstructor(const QString &in_tag) {
   KstVectorPtr v;
   QString tagName;
 
-  _typeString = i18n("Vector View");
+  _typeString = QObject::tr("Vector View");
   _type = "VectorView";
 
   if (in_tag.isEmpty()) {
@@ -582,7 +582,7 @@ void KstVectorView::save(QTextStream &ts, const QString& indent) {
 
 
 QString KstVectorView::propertyString() const {
-  return i18n("VectorView: %1 vs %2").arg(xVTag(),yVTag());
+  return QObject::tr("VectorView: %1 vs %2").arg(xVTag(),yVTag());
 }
 
 

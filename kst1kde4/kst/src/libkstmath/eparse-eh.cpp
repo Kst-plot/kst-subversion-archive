@@ -15,10 +15,10 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <qstring.h>
-#include <qstringlist.h>
+#include <QString>
+#include <QStringList>
 
-#include <klocale.h>
+// xxx #include <klocale.h>
 #include "kst_export.h"
 
 namespace Equation {
@@ -26,15 +26,15 @@ namespace Equation {
 }
 
 
-static const char *EParseErrorUnknown = I18N_NOOP("parse error"); // from bison
-extern "C" const char *EParseErrorEmpty = I18N_NOOP("Equation is empty.");
-extern "C" const char *EParseErrorEmptyArg = I18N_NOOP("Function argument is empty.");
-extern "C" const char *EParseErrorTwoOperands = I18N_NOOP("Two operands are required.");
-extern "C" const char *EParseErrorEmptyParentheses = I18N_NOOP("Empty parentheses are forbidden except in function calls.");
-extern "C" const char *EParseErrorMissingClosingParenthesis = I18N_NOOP("Closing parenthesis is missing.");
-extern "C" const char *EParseErrorNoImplicitMultiply = I18N_NOOP("Term must be followed by an operator.  Implicit multiplication is not supported.");
-extern "C" const char *EParseErrorRequiresOperand = I18N_NOOP("This operator requires an operand.");
-extern "C" const char *EParseErrorToken = I18N_NOOP("Unknown character '%1'.");
+static const char *EParseErrorUnknown = QT_TR_NOOP("parse error"); // from bison
+extern "C" const char *EParseErrorEmpty = QT_TR_NOOP("Equation is empty.");
+extern "C" const char *EParseErrorEmptyArg = QT_TR_NOOP("Function argument is empty.");
+extern "C" const char *EParseErrorTwoOperands = QT_TR_NOOP("Two operands are required.");
+extern "C" const char *EParseErrorEmptyParentheses = QT_TR_NOOP("Empty parentheses are forbidden except in function calls.");
+extern "C" const char *EParseErrorMissingClosingParenthesis = QT_TR_NOOP("Closing parenthesis is missing.");
+extern "C" const char *EParseErrorNoImplicitMultiply = QT_TR_NOOP("Term must be followed by an operator.  Implicit multiplication is not supported.");
+extern "C" const char *EParseErrorRequiresOperand = QT_TR_NOOP("This operator requires an operand.");
+extern "C" const char *EParseErrorToken = QT_TR_NOOP("Unknown character '%1'.");
 
 
 extern "C" void yyClearErrors() {
@@ -48,10 +48,10 @@ extern "C" int yyErrorCount() {
 
 
 extern "C" void yyerror(const char *s) {
-  Equation::errorStack << i18n(s);
+  Equation::errorStack << QObject::tr(s);
 }
 
 
 extern "C" void yyerrortoken(char c) {
-  Equation::errorStack << i18n(EParseErrorToken).arg(c);
+  Equation::errorStack << QObject::tr(EParseErrorToken).arg(c);
 }

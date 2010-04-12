@@ -19,7 +19,7 @@
 #define KSTCURVEPOINTSYMBOL_H
 
 #include "kst_export.h"
-#include <qpainter.h>
+#include <QPainter>
 
 #define KSTPOINT_MAXTYPE 14
 

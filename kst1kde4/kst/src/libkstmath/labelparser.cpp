@@ -20,8 +20,8 @@
 #include <assert.h>
 #include <stdlib.h>
 
-#include <qregexp.h>
-#include <qstring.h>
+#include <QRegExp>
+#include <QString>
 
 using namespace Label;
 

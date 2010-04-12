@@ -18,7 +18,7 @@
 #ifndef KSTPAINTER_H
 #define KSTPAINTER_H
 
-#include <qpainter.h>
+#include <QPainter>
 
 
 class KstPainter : public QPainter {

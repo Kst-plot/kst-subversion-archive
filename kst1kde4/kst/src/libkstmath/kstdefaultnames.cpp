@@ -19,7 +19,7 @@
 
 #include <QRegExp>
 
-#include <klocale.h>
+// xxx #include <klocale.h>
 
 #include "kstdataobjectcollection.h"
 #include "kstdatacollection.h"
@@ -70,41 +70,41 @@ QString suggestDataObjectName(const QString& field,
 /* been put on the list */
 QString KST::suggestCurveName( KstObjectTag vector_name, bool add_c ) {
   return suggestDataObjectName(vector_name.displayString(), 
-                      i18n("Minimal abbreviation for 'Curve'", "C"), 
+                      QObject::tr("Minimal abbreviation for 'Curve'", "C"), 
                       add_c);
 }
 
 
 QString KST::suggestPSDName( KstObjectTag vector_name ) {
   return suggestDataObjectName(vector_name.tag(), 
-                      i18n("Minimal abbreviation for 'Power spectrum'", "P"),
+                      QObject::tr("Minimal abbreviation for 'Power spectrum'", "P"),
                       true);
 }
 
 
 QString KST::suggestCSDName( KstObjectTag vector_name ) {
   return suggestDataObjectName(vector_name.tag(),
-                               i18n("Minimal abbreviation for 'Spectrogram'", "S"),
+                               QObject::tr("Minimal abbreviation for 'Spectrogram'", "S"),
                                true);
 }
 
 
 QString KST::suggestHistogramName( KstObjectTag vector_name ) {
   return suggestDataObjectName(vector_name.tag(), 
-                      i18n("Minimal abbreviation for 'Histogram'", "H"),
+                      QObject::tr("Minimal abbreviation for 'Histogram'", "H"),
                       true);
 }
 
 QString KST::suggestVectorViewName( KstObjectTag vector_name ) {
   return suggestDataObjectName(vector_name.tag(), 
-                      i18n("Minimal abbreviation for 'VectorView'", "V"),
+                      QObject::tr("Minimal abbreviation for 'VectorView'", "V"),
                       true);
 }
 
 
 QString KST::suggestEQName(const QString& name_in) {
   return suggestDataObjectName(name_in, 
-                      i18n("Minimal abbreviation for 'Equation'", "E"),
+                      QObject::tr("Minimal abbreviation for 'Equation'", "E"),
                       false);
 }
 
@@ -118,14 +118,14 @@ QString KST::suggestPluginName(const QString& pname, KstObjectTag vname) {
     tag = vname.tag() + "-" + pname;
   }
   return suggestDataObjectName(tag, 
-                      i18n("Minimal abbreviation for 'pluGin'", "G"),
+                      QObject::tr("Minimal abbreviation for 'pluGin'", "G"),
                       false);
 }
 
 
 QString KST::suggestImageName(KstObjectTag matrix_name) {
   return suggestDataObjectName(matrix_name.tag(), 
-                      i18n("Minimal abbreviation for 'Image'", "I"),
+                      QObject::tr("Minimal abbreviation for 'Image'", "I"),
                       true);
 }
 

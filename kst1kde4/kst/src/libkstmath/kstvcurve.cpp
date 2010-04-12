@@ -19,7 +19,7 @@
 #include <QTextDocument>
 
 // includes for KDE
-#include <klocale.h>
+// xxx #include <klocale.h>
 
 // application specific includes
 #include "dialoglauncher.h"
@@ -207,7 +207,7 @@ KstVCurve::KstVCurve(QDomElement &e)
 void KstVCurve::commonConstructor(const QString &in_tag, const QColor &in_color) {
   _maxX = _minX = _meanX = _maxY = _minY = _meanY = _minPosX = _minPosY = 0.0;
   NS = 0;
-  _typeString = i18n("Curve");
+  _typeString = QObject::tr("Curve");
   _type = "Curve";
   _color = in_color;
   if (in_tag == QString::null) {
@@ -639,7 +639,7 @@ KstCurveType KstVCurve::curveType() const {
 
 
 QString KstVCurve::propertyString() const {
-  return i18n("%1 vs %2").arg(yVTag().displayString()).arg(xVTag().displayString());
+  return QObject::tr("%1 vs %2").arg(yVTag().displayString()).arg(xVTag().displayString());
 }
 
 

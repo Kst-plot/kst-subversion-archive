@@ -23,7 +23,7 @@
 #include <QTextDocument>
 
 // include files for KDE
-#include <klocale.h>
+// xxx #include <klocale.h>
 
 // application specific includes
 #include "defaultprimitivenames.h"
@@ -144,7 +144,7 @@ KstEquation::~KstEquation() {
 void KstEquation::commonConstructor(const QString& in_tag, const QString& in_equation) {
   _ns = 2;
   _pe = 0L;
-  _typeString = i18n("Equation");
+  _typeString = QObject::tr("Equation");
   _type = "Equation";
 
   QString tagName;
@@ -172,7 +172,7 @@ void KstEquation::commonConstructor(const QString& in_tag, const QString& in_equ
 const KstCurveHintList *KstEquation::curveHints() const {
   _curveHints->clear();
 /* xxx
-  _curveHints->append(new KstCurveHint(i18n("Equation Curve"), 
+  _curveHints->append(new KstCurveHint(QObject::tr("Equation Curve"), 
                       (*_xOutVector)->tagName(), (*_yOutVector)->tagName()));
 */
   return _curveHints;
@@ -341,16 +341,16 @@ void KstEquation::setEquation(const QString& in_fn) {
         _pe->update(-1, &ctx);
       } else {
         //we have bad objects...
-        KstDebug::self()->log(i18n("Equation [%1] references non-existent objects.").arg(_equation), KstDebug::Error);
+        KstDebug::self()->log(QObject::tr("Equation [%1] references non-existent objects.").arg(_equation), KstDebug::Error);
         delete (Equation::Node*)ParsedEquation;
         ParsedEquation = 0L;
         Equation::mutex().unlock();
       }
     } else {
       // Parse error
-      KstDebug::self()->log(i18n("Equation [%1] failed to parse.  Errors follow.").arg(_equation), KstDebug::Warning);
+      KstDebug::self()->log(QObject::tr("Equation [%1] failed to parse.  Errors follow.").arg(_equation), KstDebug::Warning);
       for (QStringList::ConstIterator i = Equation::errorStack.begin(); i != Equation::errorStack.end(); ++i) {
-        KstDebug::self()->log(i18n("Parse Error: %1").arg(*i), KstDebug::Warning);
+        KstDebug::self()->log(QObject::tr("Parse Error: %1").arg(*i), KstDebug::Warning);
       }
       delete (Equation::Node*)ParsedEquation;
       ParsedEquation = 0L;
