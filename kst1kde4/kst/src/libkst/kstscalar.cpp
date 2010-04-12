@@ -18,7 +18,7 @@
 #include <QTextDocument>
 
 #include <kdebug.h>
-#include <klocale.h>
+// xxx #include <klocale.h>
 
 #include "kstscalar.h"
 #include "kstdatacollection.h"
@@ -44,7 +44,7 @@ KstScalar::KstScalar(KstObjectTag in_tag, KstObject *provider, double val, bool 
 : KstPrimitive(provider), _value(val), _orphan(orphan), _displayable(displayable), _editable(editable) {
   QString _tag = in_tag.tag();
   if (_tag.isEmpty()) {
-    QString nt = i18n("Anonymous Scalar %1");
+    QString nt = QObject::tr("Anonymous Scalar %1");
 
     do {
       _tag = nt.arg(iAnonymousScalarCounter++);

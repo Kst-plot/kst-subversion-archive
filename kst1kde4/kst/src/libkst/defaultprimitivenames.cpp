@@ -20,8 +20,8 @@
 #include "kstobjectcollection.h"
 #include "defaultprimitivenames.h"
 
-#include <qregexp.h>
-#include <klocale.h>
+#include <QRegExp>
+// xxx #include <klocale.h>
 #include <stdio.h>
 
 // takes a field name and returns a unique tag name, which will be

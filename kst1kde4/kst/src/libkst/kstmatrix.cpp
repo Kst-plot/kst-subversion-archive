@@ -22,7 +22,7 @@
 #include <QMultiHash>
 
 #include <kdebug.h>
-#include <klocale.h>
+// xxx #include <klocale.h>
 
 #include "defaultprimitivenames.h"
 #include "kstdatacollection.h"
@@ -51,7 +51,7 @@ KstMatrix::KstMatrix(KstObjectTag in_tag, KstObject *provider, uint nX, uint nY,
 
   QString _tag = in_tag.tag();
   if (!in_tag.isValid()) {
-    QString nt = i18n("Anonymous Matrix %1");
+    QString nt = QObject::tr("Anonymous Matrix %1");
 
     do {
       _tag = nt.arg(anonymousMatrixCounter++);

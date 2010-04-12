@@ -24,8 +24,8 @@
 #include <QTextDocument>
 
 #include <kdebug.h>
-#include <kglobal.h>
-#include <klocale.h>
+// xxx #include <kglobal.h>
+// xxx #include <klocale.h>
 
 #include "defaultprimitivenames.h"
 #include "kstdatacollection.h"
@@ -52,7 +52,7 @@ KstVector::KstVector(KstObjectTag in_tag, int size, KstObject *provider, bool is
   }
 
   if (!in_tag.isValid()) {
-    QString nt = i18n("Anonymous Vector %1");
+    QString nt = QObject::tr("Anonymous Vector %1");
 
     do {
       KstObject::setTagName(KstObjectTag(nt.arg(anonymousVectorCounter++), in_tag.context()));
@@ -112,7 +112,7 @@ KstVector::KstVector(const QDomElement& e)
   }
 
   if (!in_tag.isValid()) {
-    QString nt = i18n("Anonymous Vector %1");
+    QString nt = QObject::tr("Anonymous Vector %1");
 
     do {
       KstObject::setTagName(KstObjectTag(nt.arg(anonymousVectorCounter++), in_tag.context()));

@@ -21,7 +21,7 @@
 #include <stdlib.h>
 
 #include <QTextDocument>
-#include <klocale.h>
+// xxx #include <klocale.h>
 
 #include "kstdatacollection.h"
 #include "kstdebug.h"
@@ -167,7 +167,7 @@ void KstRVector::commonRVConstructor(KstDataSourcePtr in_file,
   _dirty = true;
 
   if (!in_file) {
-    KstDebug::self()->log(i18n("Data file for vector %1 was not opened.").arg(tagName()), KstDebug::Warning);
+    KstDebug::self()->log(QObject::tr("Data file for vector %1 was not opened.").arg(tagName()), KstDebug::Warning);
   }
 }
 
@@ -217,7 +217,7 @@ void KstRVector::changeFile(KstDataSourcePtr in_file) {
   Q_ASSERT(myLockStatus() == KstRWLock::WRITELOCKED);
 
   if (!in_file) {
-    KstDebug::self()->log(i18n("Data file for vector %1 was not opened.").arg(tagName()), KstDebug::Warning);
+    KstDebug::self()->log(QObject::tr("Data file for vector %1 was not opened.").arg(tagName()), KstDebug::Warning);
   }
   _file = in_file;
   if (_file) {
@@ -384,7 +384,7 @@ QString KstRVector::label() const {
   if (ok && _file) {
     _file->readLock();
     if (_file->fileType() == "ASCII") {
-      label = i18n("Column %1").arg(_field);
+      label = QObject::tr("Column %1").arg(_field);
     } else {
       label = _field;
     }

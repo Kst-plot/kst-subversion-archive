@@ -18,7 +18,7 @@
 #ifndef DEFAULTPRIMITIVENAMES_H
 #define DEFAULTPRIMITIVENAMES_H
 
-#include <qstring.h>
+#include <QString>
 
 #include "kst_export.h"
 #include "kstobject.h"

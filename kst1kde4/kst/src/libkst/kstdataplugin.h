@@ -17,13 +17,13 @@
 
 #include <assert.h>
 
-#include <qfile.h>
-#include <qfileinfo.h>
+#include <QFile>
+#include <QFileInfo>
 
 #include <kdebug.h>
 #include <kio/netaccess.h>
 #include <klibloader.h>
-#include <klocale.h>
+// xxx #include <klocale.h>
 #include <kservice.h>
 #include <kservicetype.h>
 
@@ -87,13 +87,13 @@ namespace KST {
         QByteArray libname = QFile::encodeName((!isDataObject ? QString("kstdata_") : QString()) + _plugLib);
         _lib = KLibLoader::self()->library(libname);
         if (!_lib) {
-          KstDebug::self()->log(i18n("Error loading data plugin [%1]: %2").arg(libname.data()).arg(KLibLoader::self()->lastErrorMessage()), KstDebug::Error);
+          KstDebug::self()->log(QObject::tr("Error loading data plugin [%1]: %2").arg(libname.data()).arg(KLibLoader::self()->lastErrorMessage()), KstDebug::Error);
           return false;
         }
 
         if (key() != (isDataObject ? KST_CURRENT_DATAOBJECT_KEY : KST_CURRENT_DATASOURCE_KEY)) {
-          KstDebug::self()->log(i18n("Error loading data plugin [%1]: %2").arg(libname.data()).arg(i18n("Plugin is too old and needs to be recompiled.")), KstDebug::Error);
-          KstDebug::self()->log(i18n("Error loading data plugin key = [%1]: %2").arg(key()).arg(QFile::encodeName("key_" + _plugLib).data()), KstDebug::Error);
+          KstDebug::self()->log(QObject::tr("Error loading data plugin [%1]: %2").arg(libname.data()).arg(QObject::tr("Plugin is too old and needs to be recompiled.")), KstDebug::Error);
+          KstDebug::self()->log(QObject::tr("Error loading data plugin key = [%1]: %2").arg(key()).arg(QFile::encodeName("key_" + _plugLib).data()), KstDebug::Error);
           return false;
         }
         return true;
@@ -261,7 +261,7 @@ namespace KST {
             return cw;
           }
           if (rc) {
-            KstDebug::self()->log(i18n("Error in plugin %1: Configuration widget is of the wrong type.").arg(service->property("Name").toString()), KstDebug::Error);
+            KstDebug::self()->log(QObject::tr("Error in plugin %1: Configuration widget is of the wrong type.").arg(service->property("Name").toString()), KstDebug::Error);
             delete rc;
           }
         }

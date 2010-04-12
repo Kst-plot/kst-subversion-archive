@@ -32,8 +32,8 @@
 #include <kglobal.h>
 #include <kinstance.h>
 #include <kstandarddirs.h>
+// xxx #include <klocale.h>
 
-#include <klocale.h>
 #include <qbrush.h>
 #include <qdatetime.h>
 #include <qfile.h>
@@ -296,7 +296,7 @@ static void kstDebugBackend( unsigned short nLevel, unsigned int nArea, const ch
       // QMessageBox instead
       if ( !kstDebug_data->aAreaName.isEmpty() )
           aCaption += QString("(%1)").arg( kstDebug_data->aAreaName );
-      QMessageBox::warning( 0L, aCaption, data, i18n("&OK") );
+      QMessageBox::warning( 0L, aCaption, data, QObject::tr("&OK") );
       break;
   }
   case 2: // Shell

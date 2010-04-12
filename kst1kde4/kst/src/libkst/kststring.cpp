@@ -17,7 +17,7 @@
 
 #include <QTextDocument>
 
-#include <klocale.h>
+// xxx #include <klocale.h>
 
 #include "kstdatacollection.h"
 #include "defaultprimitivenames.h"
@@ -28,7 +28,7 @@ KstString::KstString(KstObjectTag in_tag, KstObject *provider, const QString& va
 : KstPrimitive(provider), _value(val), _orphan(orphan), _editable(false) {
   QString _tag = in_tag.tag();
   if (!in_tag.isValid()) {
-    QString nt = i18n("Anonymous String %1");
+    QString nt = QObject::tr("Anonymous String %1");
 
     do {
       _tag = nt.arg(anonymousStringCounter++);

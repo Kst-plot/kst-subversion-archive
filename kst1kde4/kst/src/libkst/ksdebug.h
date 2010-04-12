@@ -22,7 +22,7 @@
 #ifndef _KSDEBUG_H_
 #define _KSDEBUG_H_
 
-#include <qstring.h>
+#include <QString>
 #include "kst_export.h"
 
 class QWidget;
