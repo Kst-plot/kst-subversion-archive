@@ -19,7 +19,7 @@
 #include "kstdataobjectcollection.h"
 #include "kstpsd.h"
 
-#include <kconfig.h>
+#include <QSettings>
 
 KstObjectDefaults KST::objectDefaults;
 
@@ -73,33 +73,33 @@ int KstObjectDefaults::fftLen() const {
 }
 
 
-void KstObjectDefaults::writeConfig(KConfig *config) {
- /* xxx
-  config->writeEntry("defaultFFTLen", KST::objectDefaults.fftLen());
-  config->writeEntry("defaultPSDFreq", KST::objectDefaults.psdFreq());
-  config->writeEntry("defaultVUnits", KST::objectDefaults.vUnits());
-  config->writeEntry("defaultRUnits", KST::objectDefaults.rUnits());
-  config->writeEntry("defaultApodize", KST::objectDefaults.apodize());
-  config->writeEntry("defaultRemoveMean", KST::objectDefaults.removeMean());
-  config->writeEntry("defaultPSDAverage", KST::objectDefaults.psdAverage());
-  config->writeEntry("defaultApodizeFxn", KST::objectDefaults.apodizeFxn());
-  config->writeEntry("defaultOutput", KST::objectDefaults.output());
-  config->writeEntry("defaultInterpolateHoles", KST::objectDefaults.interpolateHoles());
-*/
+void KstObjectDefaults::writeConfig(QSettings *config) {
+
+  config->setValue("defaultFFTLen", KST::objectDefaults.fftLen());
+  config->setValue("defaultPSDFreq", KST::objectDefaults.psdFreq());
+  config->setValue("defaultVUnits", KST::objectDefaults.vUnits());
+  config->setValue("defaultRUnits", KST::objectDefaults.rUnits());
+  config->setValue("defaultApodize", KST::objectDefaults.apodize());
+  config->setValue("defaultRemoveMean", KST::objectDefaults.removeMean());
+  config->setValue("defaultPSDAverage", KST::objectDefaults.psdAverage());
+  config->setValue("defaultApodizeFxn", KST::objectDefaults.apodizeFxn());
+  config->setValue("defaultOutput", KST::objectDefaults.output());
+  config->setValue("defaultInterpolateHoles", KST::objectDefaults.interpolateHoles());
+
 }
 
 
-void KstObjectDefaults::readConfig(KConfig *config) {
-/* xxx
-  _fft_len = config->readNumEntry("defaultFFTLen", 10);
-  _psd_freq = config->readDoubleNumEntry("defaultPSDFreq", 100.0);
-  _vUnits = config->readEntry("defaultVUnits", "V");
-  _rUnits = config->readEntry("defaultRUnits", "Hz");
-  _apodize = config->readNumEntry("defaultApodize", 1);
-  _removeMean = config->readNumEntry("defaultRemoveMean", 1);
-  _psd_average = config->readNumEntry("defaultPSDAverage", 1);
-  _apodizeFxn = config->readNumEntry("defaultApodizeFxn", 0);
-  _output = config->readNumEntry("defaultOutput", 0);
-  _interpolateHoles = config->readBoolEntry("defaultInterpolateHoles", false);
-*/
+void KstObjectDefaults::readConfig(QSettings *config) {
+
+  _fft_len = config->value("defaultFFTLen", 10).toInt();
+  _psd_freq = config->value("defaultPSDFreq", 100.0).toDouble();
+  _vUnits = config->value("defaultVUnits", "V").toString();
+  _rUnits = config->value("defaultRUnits", "Hz").toString();
+  _apodize = config->value("defaultApodize", 1).toBool();
+  _removeMean = config->value("defaultRemoveMean", 1).toBool();
+  _psd_average = config->value("defaultPSDAverage", 1).toBool();
+  _apodizeFxn = config->value("defaultApodizeFxn", 0).toInt();
+  _output = config->value("defaultOutput", 0).toInt();
+  _interpolateHoles = config->value("defaultInterpolateHoles", false).toBool();
+
 }

@@ -20,7 +20,7 @@
 #include <QSettings>
 
 // include files for KDE
-#include <kconfig.h>
+// xxx #include <kconfig.h>
 #include <kemailsettings.h>
 #include "ksttimezones.h"
 
@@ -316,9 +316,9 @@ void KstSettings::reload() {
 
 
 void KstSettings::checkUpdates() {
-  KConfig cfg("kstrc");
-  cfg.checkUpdate("kstautosave1.1", "kstautosave11.upd");
-  cfg.checkUpdate("kstrcmisc1.1", "kstrcmisc11.upd");
+  QSettings cfg("kstrc");
+// xxx  cfg.checkUpdate("kstautosave1.1", "kstautosave11.upd");
+// xxx  cfg.checkUpdate("kstrcmisc1.1", "kstrcmisc11.upd");
 }
 
 

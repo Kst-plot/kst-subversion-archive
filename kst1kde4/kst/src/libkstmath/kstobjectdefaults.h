@@ -19,6 +19,7 @@
 #define KSTOBJECTDEFAULTS_H
 
 #include <QString>
+#include <QSettings>
 #include "kst_export.h"
 
 class KConfig;
@@ -39,8 +40,8 @@ class KST_EXPORT KstObjectDefaults {
     int output() const { return _output; }
     int interpolateHoles() const { return _interpolateHoles; }
 
-    void readConfig(KConfig *config);
-    void writeConfig(KConfig *config);
+    void readConfig(QSettings *config);
+    void writeConfig(QSettings *config);
 
   private:
     double _psd_freq;
