@@ -17,6 +17,8 @@
 
 #include <assert.h>
 
+#include <QSettings>
+
 #include <kparts/componentfactory.h>
 #include <kservicetype.h>
 
@@ -35,7 +37,7 @@ ExtensionMgr *ExtensionMgr::self() {
 
 void ExtensionMgr::save() {
   QMap<QString,bool>::const_iterator i;
-//  QSettings cfg("kstextensionsrc", false, false);
+  QSettings cfg("kstextensionsrc", QSettings::NativeFormat, this);
   QStringList disabled;
   QStringList enabled;
 
@@ -51,20 +53,17 @@ void ExtensionMgr::save() {
 
   cfg.setValue("Disabled", disabled);
   cfg.setValue("Enabled", enabled);
-
+  cfg.endGroup();
 }
 
 
 ExtensionMgr::ExtensionMgr() : QObject(), _window(0L) {
   QStringList::const_iterator i;
-// xxx  KConfig cfg("kstextensionsrc", true, false);
-  QStringList disabled;
-  QStringList enabled;
+  QSettings cfg("kstextensionsrc", QSettings::NativeFormat, this);
 
-// xxx  disabled = cfg.readListEntry("Disabled");
-// xxx  enabled = cfg.readListEntry("Enabled");
+  QStringList disabled = cfg.value("Disabled").toStringList();
+  QStringList enabled = cfg.value("Enabled").toStringList();
 
-// xxx  cfg.setGroup("Extensions");
   for (i = disabled.begin(); i != disabled.end(); ++i) {
     _extensions[*i] = false;
   }

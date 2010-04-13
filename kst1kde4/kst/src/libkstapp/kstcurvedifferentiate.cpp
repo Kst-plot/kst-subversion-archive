@@ -122,35 +122,38 @@ void KstCurveDifferentiate::updateButtons() {
 
 
 void KstCurveDifferentiate::loadProperties( ) {
-  KConfig cfg("kstrc");
-  KConfigGroup cfgGroup(&cfg, "curveDifferentiate");
-/* xxx
-  _lineColorOrder = cfgGroup.readNumEntry("DifferentiateLineColor", -1);
-  _pointStyleOrder = cfgGroup.readNumEntry("DifferentiatePointStyle", -1);
-  _lineStyleOrder = cfgGroup.readNumEntry("DifferentiateLineStyle", -1);
-  _lineWidthOrder = cfgGroup.readNumEntry("DifferentiateLineWidth", -1);
-  _maxLineWidth = cfgGroup.readNumEntry("DifferentiateMaxLineWidth", 1);
-  _pointDensity = cfgGroup.readNumEntry("DifferentiatePointDensity", 0);
-  _repeatAcross = cfgGroup.readNumEntry("DifferentiateRepeatAcross", 0);
-  _applyTo = cfgGroup.readNumEntry("DifferentiateApplyTo", 0);
-*/
+  QSettings cfg("kstrc");
+  cfg.beginGroup("curveDifferentiate");
+
+  _lineColorOrder = cfg.value("DifferentiateLineColor", -1).toInt();
+  _pointStyleOrder = cfg.value("DifferentiatePointStyle", -1).toInt();
+  _lineStyleOrder = cfg.value("DifferentiateLineStyle", -1).toInt();
+  _lineWidthOrder = cfg.value("DifferentiateLineWidth", -1).toInt();
+  _maxLineWidth = cfg.value("DifferentiateMaxLineWidth", 1).toInt();
+  _pointDensity = cfg.value("DifferentiatePointDensity", 0).toInt();
+  _repeatAcross = cfg.value("DifferentiateRepeatAcross", 0).toInt();
+  _applyTo = cfg.value("DifferentiateApplyTo", 0).toInt();
+
+  cfg.endGroup();
+  cfg.sync();
 }
 
 
 void KstCurveDifferentiate::saveProperties( ) {  
-  KConfig cfg("kstrc");
-  KConfigGroup cfgGroup(&cfg, "curveDifferentiate");
+  QSettings cfg("kstrc");
+  cfg.beginGroup("curveDifferentiate");
 
-  cfgGroup.writeEntry("DifferentiateLineColor", _lineColorOrder);
-  cfgGroup.writeEntry("DifferentiatePointStyle", _pointStyleOrder);
-  cfgGroup.writeEntry("DifferentiateLineStyle", _lineStyleOrder);
-  cfgGroup.writeEntry("DifferentiateLineWidth", _lineWidthOrder);
-  cfgGroup.writeEntry("DifferentiateMaxLineWidth", _maxLineWidth);
-  cfgGroup.writeEntry("DifferentiatePointDensity", _pointDensity);
-  cfgGroup.writeEntry("DifferentiateRepeatAcross", _repeatAcross);
-  cfgGroup.writeEntry("DifferentiateApplyTo", _applyTo);
+  cfg.setValue("DifferentiateLineColor", _lineColorOrder);
+  cfg.setValue("DifferentiatePointStyle", _pointStyleOrder);
+  cfg.setValue("DifferentiateLineStyle", _lineStyleOrder);
+  cfg.setValue("DifferentiateLineWidth", _lineWidthOrder);
+  cfg.setValue("DifferentiateMaxLineWidth", _maxLineWidth);
+  cfg.setValue("DifferentiatePointDensity", _pointDensity);
+  cfg.setValue("DifferentiateRepeatAcross", _repeatAcross);
+  cfg.setValue("DifferentiateApplyTo", _applyTo);
 
-  cfgGroup.sync();
+  cfg.endGroup();
+  cfg.sync();
 }  
 
 
