@@ -15,8 +15,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <kconfig.h>
-#include <kconfiggroup.h>
+// xxx #include <kconfig.h>
+// xxx #include <kconfiggroup.h>
+#include <QSettings>
 
 #include "kstdatacollection.h" 
 #include "kstmatrixdefaults.h"
@@ -141,29 +142,33 @@ void KstMatrixDefaults::sync() {
   }
 }
 
-void KstMatrixDefaults::writeConfig(KConfig *config) {
-  KConfigGroup	group(config, "matrixdefaults");
+void KstMatrixDefaults::writeConfig(QSettings *config) {
+  config->beginGroup("matrixdefaults");
   
-  group.writeEntry("defaultMatrixDataSource", KST::matrixDefaults.dataSource());
-  group.writeEntry("defaultXStart", KST::matrixDefaults.xStart());
-  group.writeEntry("defaultYStart", KST::matrixDefaults.yStart());
-  group.writeEntry("defaultXNumSteps", KST::matrixDefaults.xNumSteps());
-  group.writeEntry("defaultYNumSteps", KST::matrixDefaults.yNumSteps());
-  group.writeEntry("defaultMatrixDoSkip", KST::matrixDefaults.doSkip());
-  group.writeEntry("defaultMatrixDoAverage", KST::matrixDefaults.doAverage());
-  group.writeEntry("defaultMatrixSkip", KST::matrixDefaults.skip());
+  config->setValue("defaultMatrixDataSource", KST::matrixDefaults.dataSource());
+  config->setValue("defaultXStart", KST::matrixDefaults.xStart());
+  config->setValue("defaultYStart", KST::matrixDefaults.yStart());
+  config->setValue("defaultXNumSteps", KST::matrixDefaults.xNumSteps());
+  config->setValue("defaultYNumSteps", KST::matrixDefaults.yNumSteps());
+  config->setValue("defaultMatrixDoSkip", KST::matrixDefaults.doSkip());
+  config->setValue("defaultMatrixDoAverage", KST::matrixDefaults.doAverage());
+  config->setValue("defaultMatrixSkip", KST::matrixDefaults.skip());
+  
+  config->endGroup();
 }
 
 
-void KstMatrixDefaults::readConfig(KConfig *config) {
-  KConfigGroup	group(config, "matrixdefaults");
+void KstMatrixDefaults::readConfig(QSettings *config) {
+  config->beginGroup("matrixdefaults");
 
-  _dataSource = group.readEntry("defaultMatrixDataSource", ".");
-  _xStart = group.readEntry("defaultXStart", 0);
-  _yStart = group.readEntry("defaultYStart", 0);
-  _xNumSteps = group.readEntry("defaultXNumSteps", -1);
-  _yNumSteps = group.readEntry("defaultYNumSteps", -1);
-  _doSkip = group.readEntry("defaultMatrixDoSkip", 0);
-  _doAve = group.readEntry("defaultMatrixDoAverage", 0);
-  _skip = group.readEntry("defaultMatrixSkip", 0);
+  _dataSource = config->value("defaultMatrixDataSource", ".").toString();
+  _xStart = config->value("defaultXStart", 0).toInt();
+  _yStart = config->value("defaultYStart", 0).toInt();
+  _xNumSteps = config->value("defaultXNumSteps", -1).toInt();
+  _yNumSteps = config->value("defaultYNumSteps", -1).toInt();
+  _doSkip = config->value("defaultMatrixDoSkip", 0).toBool();
+  _doAve = config->value("defaultMatrixDoAverage", 0).toBool();
+  _skip = config->value("defaultMatrixSkip", 0).toInt();
+
+  config->endGroup();
 }

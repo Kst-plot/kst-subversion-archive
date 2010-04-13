@@ -19,6 +19,7 @@
 
 #include <QFile>
 #include <QFileInfo>
+#include <QSettings>
 
 #include <kdebug.h>
 #include <kio/netaccess.h>
@@ -113,8 +114,8 @@ namespace KST {
       virtual ~DataSourcePlugin() {
       }
 
-      KstDataSource *create(KConfig *cfg, const QString& filename, const QString& type = QString::null) const {
-        KstDataSource *(*sym)(KConfig*, const QString&, const QString&) = (KstDataSource*(*)(KConfig*, const QString&, const QString&))symbol("create");
+      KstDataSource *create(QSettings *cfg, const QString& filename, const QString& type = QString::null) const {
+        KstDataSource *(*sym)(QSettings*, const QString&, const QString&) = (KstDataSource*(*)(QSettings*, const QString&, const QString&))symbol("create");
         if (sym) {
           KstDataSource *ds = (sym)(cfg, filename, type);
           if (ds) {
@@ -127,8 +128,8 @@ namespace KST {
         return 0L;
       }
 
-      KstDataSource *create(KConfig *cfg, const QString& filename, const QString& type, const QDomElement& e) const {
-        KstDataSource *(*sym)(KConfig*, const QString&, const QString&, const QDomElement&) = (KstDataSource*(*)(KConfig*, const QString&, const QString&, const QDomElement&))symbol("load");
+      KstDataSource *create(QSettings *cfg, const QString& filename, const QString& type, const QDomElement& e) const {
+        KstDataSource *(*sym)(QSettings*, const QString&, const QString&, const QDomElement&) = (KstDataSource*(*)(QSettings*, const QString&, const QString&, const QDomElement&))symbol("load");
         if (sym) {
           KstDataSource *ds = (sym)(cfg, filename, type, e);
           if (ds) {
@@ -137,7 +138,7 @@ namespace KST {
 
           return ds;
         } else {
-          KstDataSource *(*sym)(KConfig*, const QString&, const QString&) = (KstDataSource*(*)(KConfig*, const QString&, const QString&))symbol("create");
+          KstDataSource *(*sym)(QSettings*, const QString&, const QString&) = (KstDataSource*(*)(QSettings*, const QString&, const QString&))symbol("create");
           if (sym) {
             KstDataSource *ds = (sym)(cfg, filename, type);
             if (ds) {
@@ -151,8 +152,8 @@ namespace KST {
         return 0L;
       }
 
-      QStringList matrixList(KConfig *cfg, const QString& filename, const QString& type = QString::null, QString *typeSuggestion = 0L, bool *complete = 0L) const {
-        QStringList (*sym)(KConfig*, const QString&, const QString&, QString*, bool*) = (QStringList(*)(KConfig*, const QString&, const QString&, QString*, bool*))symbol("matrixList");
+      QStringList matrixList(QSettings *cfg, const QString& filename, const QString& type = QString::null, QString *typeSuggestion = 0L, bool *complete = 0L) const {
+        QStringList (*sym)(QSettings*, const QString&, const QString&, QString*, bool*) = (QStringList(*)(QSettings*, const QString&, const QString&, QString*, bool*))symbol("matrixList");
         if (sym) {
           return (sym)(cfg, filename, type, typeSuggestion, complete);  
         }
@@ -178,8 +179,8 @@ namespace KST {
         return QStringList();
       }
 
-      QStringList fieldList(KConfig *cfg, const QString& filename, const QString& type = QString::null, QString *typeSuggestion = 0L, bool *complete = 0L) const {
-        QStringList (*sym)(KConfig*, const QString&, const QString&, QString*, bool*) = (QStringList(*)(KConfig*, const QString&, const QString&, QString*, bool*))symbol("fieldList");
+      QStringList fieldList(QSettings *cfg, const QString& filename, const QString& type = QString::null, QString *typeSuggestion = 0L, bool *complete = 0L) const {
+        QStringList (*sym)(QSettings*, const QString&, const QString&, QString*, bool*) = (QStringList(*)(QSettings*, const QString&, const QString&, QString*, bool*))symbol("fieldList");
         if (sym) {
           return (sym)(cfg, filename, type, typeSuggestion, complete);
         }
@@ -206,8 +207,8 @@ namespace KST {
         return QStringList();
       }
 
-      int understands(KConfig *cfg, const QString& filename) const {
-        int (*sym)(KConfig*, const QString&) = (int(*)(KConfig*, const QString&))symbol("understands");
+      int understands(QSettings *cfg, const QString& filename) const {
+        int (*sym)(QSettings*, const QString&) = (int(*)(QSettings*, const QString&))symbol("understands");
         if (sym) {
           int rc = (sym)(cfg, filename);
 
@@ -217,8 +218,8 @@ namespace KST {
         return 0;
       }
 
-      bool supportsTime(KConfig *cfg, const QString& filename) const {
-        bool (*sym)(KConfig*, const QString&) = (bool(*)(KConfig*, const QString&))symbol("supportsTime");
+      bool supportsTime(QSettings *cfg, const QString& filename) const {
+        bool (*sym)(QSettings*, const QString&) = (bool(*)(QSettings*, const QString&))symbol("supportsTime");
         if (sym) {
           bool rc = (sym)(cfg, filename);
           return rc;
@@ -251,7 +252,7 @@ namespace KST {
         return QStringList();
       }
 
-      KstDataSourceConfigWidget *configWidget(KConfig *cfg, const QString& filename) const {
+      KstDataSourceConfigWidget *configWidget(QSettings *cfg, const QString& filename) const {
         QWidget *(*sym)(const QString&) = (QWidget *(*)(const QString&))symbol("widget");
         if (sym) {
           QWidget *rc = (sym)(filename);

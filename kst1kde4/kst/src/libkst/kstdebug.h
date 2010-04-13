@@ -20,11 +20,11 @@
 
 // #include <config.h> xxx
 
-#include <qdatetime.h>
-#include <qlinkedlist.h>
-#include <qobject.h>
-#include <qmutex.h>
-#include <qpointer.h>
+#include <QDateTime>
+#include <QLinkedList>
+#include <QObject>
+#include <QMutex>
+#include <QPointer>
 
 //#include <ksttimers.h> xxx
 

@@ -18,10 +18,11 @@
 #ifndef KSTVECTORDEFAULTS_H
 #define KSTVECTORDEFAULTS_H
 
-#include <qstring.h>
+#include <QString>
+#include <QSettings>
 #include "kst_export.h"
 
-class KConfig;
+// xxx class KConfig;
 
 class KST_EXPORT KstVectorDefaults {
   public:
@@ -38,8 +39,8 @@ class KST_EXPORT KstVectorDefaults {
     bool doAve() const;
     int skip() const;
 
-    void readConfig(KConfig *config);
-    void writeConfig(KConfig *config);
+    void readConfig(QSettings *config);
+    void writeConfig(QSettings *config);
 
   private:
     QString _dataSource;

@@ -20,8 +20,10 @@
 #include "kstdatacollection.h"
 #include "stdinsource.h"
 
-#include <kconfig.h>
-#include <kconfiggroup.h>
+// xxx #include <kconfig.h>
+// xxx #include <kconfiggroup.h>
+
+#include <QSettings>
 
 KstVectorDefaults KST::vectorDefaults;
 
@@ -126,29 +128,33 @@ void KstVectorDefaults::sync() {
 }
 
 
-void KstVectorDefaults::writeConfig(KConfig *config) {
-  KConfigGroup	group(config, "vectordefaults");
+void KstVectorDefaults::writeConfig(QSettings *config) {
+  config->beginGroup("vectordefaults");
   
-  group.writeEntry("defaultDataSource", KST::vectorDefaults.dataSource());
-  group.writeEntry("defaultWizardXVector", KST::vectorDefaults.wizardXVector());
-  group.writeEntry("defaultStartFrame", KST::vectorDefaults.f0());
-  group.writeEntry("defaultNumFrames", KST::vectorDefaults.n());
-  group.writeEntry("defaultDoSkip", KST::vectorDefaults.doSkip());
-  group.writeEntry("defaultDoAve", KST::vectorDefaults.doAve());
-  group.writeEntry("defaultSkip", KST::vectorDefaults.skip());
+  config->setValue("defaultDataSource", KST::vectorDefaults.dataSource());
+  config->setValue("defaultWizardXVector", KST::vectorDefaults.wizardXVector());
+  config->setValue("defaultStartFrame", KST::vectorDefaults.f0());
+  config->setValue("defaultNumFrames", KST::vectorDefaults.n());
+  config->setValue("defaultDoSkip", KST::vectorDefaults.doSkip());
+  config->setValue("defaultDoAve", KST::vectorDefaults.doAve());
+  config->setValue("defaultSkip", KST::vectorDefaults.skip());
+
+	config->endGroup();
 }
 
 
-void KstVectorDefaults::readConfig(KConfig *config) {
-  KConfigGroup  group(config, "vectordefaults");
+void KstVectorDefaults::readConfig(QSettings *config) {
+  config->beginGroup("vectordefaults");
 
-  _f0 = group.readEntry("defaultStartFrame", 0.0);
-  _n = group.readEntry("defaultNumFrames", -1.0);
-  _dataSource = group.readEntry("defaultDataSource", ".");
-  _wizardX = group.readEntry("defaultWizardXVector", "INDEX");
-  _doSkip = group.readEntry("defaultDoSkip", 0);
-  _doAve = group.readEntry("defaultDoAve", 0);
-  _skip = group.readEntry("defaultSkip", 0);
+  _f0 = config->value("defaultStartFrame", 0.0).toDouble();
+  _n = config->value("defaultNumFrames", -1.0).toDouble();
+  _dataSource = config->value("defaultDataSource", ".").toString();
+  _wizardX = config->value("defaultWizardXVector", "INDEX").toString();
+  _doSkip = config->value("defaultDoSkip", 0).toBool();
+  _doAve = config->value("defaultDoAve", 0).toBool();
+  _skip = config->value("defaultSkip", 0).toInt();
+
+	config->endGroup();
 }
 
 

@@ -33,7 +33,7 @@
 # endif
 #endif
 
-KstStdinSource::KstStdinSource(KConfig *cfg)
+KstStdinSource::KstStdinSource(QSettings *cfg)
 : KstDataSource(cfg, "stdin", "stdin") {
   _file = new QTemporaryFile;
   _filename = _file->fileName();
