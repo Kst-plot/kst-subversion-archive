@@ -16,6 +16,8 @@
  ***************************************************************************/
 
 #include "fitstools.h"
+//Added by qt3to4:
+#include <Q3ValueList>
 
 
 char **fitsSarrayAlloc(size_t nstring)
@@ -253,14 +255,14 @@ QStringList fitsFields( fitsfile *fp, int HDU ) {
   fields.append("INDEX");
   for (int i = 0; i < nString; i++) {
     if (names[i].contains("IMAGE")) {
-      cur.sprintf("%d - %s Data", i, names[i].latin1());
+      cur.sprintf("%d - %s Data", i, names[i].toLatin1());
     } else {
-      cur.sprintf("%d - %s", i, names[i].latin1());
+      cur.sprintf("%d - %s", i, names[i].toLatin1());
     }
     if (units[i].isEmpty()) {
-      cur.sprintf("%s (Unknown Units)", cur.latin1());
+      cur.sprintf("%s (Unknown Units)", cur.toLatin1());
     } else {
-      cur.sprintf("%s (%s)", cur.latin1(), units[i].latin1());
+      cur.sprintf("%s (%s)", cur.toLatin1(), units[i].toLatin1());
     }
     fields.append(cur);
   }
@@ -285,7 +287,7 @@ QStringList fitsMatrices( fitsfile *fp, int HDU ) {
   matrices.append("INDEX");
   
   if (names[0].contains("IMAGE")) {
-    cur.sprintf("1 - %s", names[0].latin1());
+    cur.sprintf("1 - %s", names[0].toLatin1());
   } else {    
     cur.sprintf("1 - TABLE");
   }
@@ -295,9 +297,9 @@ QStringList fitsMatrices( fitsfile *fp, int HDU ) {
 }
 
 
-QValueList<int> fitsDim( fitsfile *fp, int HDU ) {
+Q3ValueList<int> fitsDim( fitsfile *fp, int HDU ) {
   
-  QValueList<int> dims;
+  Q3ValueList<int> dims;
   
   // move to desired HDU
   int ret = 0;

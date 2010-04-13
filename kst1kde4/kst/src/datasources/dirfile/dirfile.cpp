@@ -33,7 +33,7 @@
 #include "kstdebug.h"
 
 
-DirFileSource::DirFileSource(KConfig *cfg, const QString& filename, const QString& type)
+DirFileSource::DirFileSource(QSettings *cfg, const QString& filename, const QString& type)
 : KstDataSource(cfg, filename, type) {
   if (init()) {
     _valid = true;
@@ -218,7 +218,7 @@ void DirFileSource::save(QTextStream &ts, const QString& indent) {
 //#include <kdebug.h>
 
 extern "C" {
-KstDataSource *create_dirfile(KConfig *cfg, const QString& filename, const QString& type) {
+KstDataSource *create_dirfile(QSettings *cfg, const QString& filename, const QString& type) {
   return new DirFileSource(cfg, filename, type);
 }
 
@@ -228,7 +228,7 @@ QStringList provides_dirfile() {
   return rc;
 }
 
-int understands_dirfile(KConfig*, const QString& filename) {
+int understands_dirfile(QSettings*, const QString& filename) {
   // FIXME: GetNFrames causes a memory error here.  I think it is due to
   // the lfilename parameter.
   int err = 0;
@@ -242,7 +242,7 @@ int understands_dirfile(KConfig*, const QString& filename) {
 }
 
 
-QStringList fieldList_dirfile(KConfig*, const QString& filename, const QString& type, QString *typeSuggestion, bool *complete) {
+QStringList fieldList_dirfile(QSettings*, const QString& filename, const QString& type, QString *typeSuggestion, bool *complete) {
   Q_UNUSED(type)
   int err = 0;
   struct FormatType *ft = GetFormat(filename.toLatin1(), &err);

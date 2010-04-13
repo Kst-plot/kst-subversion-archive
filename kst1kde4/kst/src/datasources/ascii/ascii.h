@@ -18,13 +18,13 @@
 #ifndef ASCII_H
 #define ASCII_H
 
-#include <qfile.h>
+#include <QFile>
 
 #include <kstdatasource.h>
 
 class AsciiSource : public KstDataSource {
   public:
-    AsciiSource(KConfig *cfg, const QString& filename, const QString& type, const QDomElement& e = QDomElement());
+    AsciiSource(QSettings *cfg, const QString& filename, const QString& type, const QDomElement& e = QDomElement());
     ~AsciiSource();
 
     static int readFullLine(QFile &file, QString &str);

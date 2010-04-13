@@ -16,11 +16,11 @@
  ***************************************************************************/
 
 #include "qimagesource.h"
-#include <qcolor.h>
+#include <QColor>
 #include <QTextStream>
 
 
-QimagesourceSource::QimagesourceSource(KConfig *cfg, const QString& filename, const QString& type)
+QimagesourceSource::QimagesourceSource(QSettings *cfg, const QString& filename, const QString& type)
 : KstDataSource(cfg, filename, type) {
   _image = QImage();
   if (init()) {
@@ -231,7 +231,7 @@ void QimagesourceSource::save(QTextStream &ts, const QString& indent) {
 
 
 extern "C" {
-KstDataSource *create_qimagesource(KConfig *cfg, const QString& filename, const QString& type) {
+KstDataSource *create_qimagesource(QSettings *cfg, const QString& filename, const QString& type) {
   return new QimagesourceSource(cfg, filename, type);
 }
 
@@ -242,7 +242,7 @@ QStringList provides_qimagesource() {
 }
 
 
-int understands_qimagesource(KConfig*, const QString& filename) {
+int understands_qimagesource(QSettings*, const QString& filename) {
   QImage image(filename);
   QString ftype( image.format() );
 
@@ -258,7 +258,7 @@ int understands_qimagesource(KConfig*, const QString& filename) {
 }
 
 
-QStringList fieldList_qimagesource(KConfig*, const QString& filename, const QString& type, QString *typeSuggestion, bool *complete) {
+QStringList fieldList_qimagesource(QSettings*, const QString& filename, const QString& type, QString *typeSuggestion, bool *complete) {
   Q_UNUSED(type)
   QStringList fieldList;
   QImage image(filename);

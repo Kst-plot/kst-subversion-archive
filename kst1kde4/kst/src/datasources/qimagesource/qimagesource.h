@@ -25,7 +25,7 @@
 
 class QimagesourceSource : public KstDataSource {
   public:
-    QimagesourceSource(KConfig *cfg, const QString& filename, const QString& type);
+    QimagesourceSource(QSettings *cfg, const QString& filename, const QString& type);
     ~QimagesourceSource();
 
     bool init();

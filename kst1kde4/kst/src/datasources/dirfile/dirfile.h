@@ -23,7 +23,7 @@
 
 class DirFileSource : public KstDataSource {
   public:
-    DirFileSource(KConfig *cfg, const QString& filename, const QString& type);
+    DirFileSource(QSettings *cfg, const QString& filename, const QString& type);
 
     ~DirFileSource();
 
