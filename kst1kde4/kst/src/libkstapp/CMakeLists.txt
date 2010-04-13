@@ -3,9 +3,66 @@ include_directories(${CMAKE_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_SOUR
 ########### next target ###############
 
 set(kstapp_LIB_SRCS
+# view objects...
+    kst2dplot.cpp
+    kstborderedviewobject.cpp
+    kstmetaplot.cpp
+    kstplotbase.cpp
+    kstplotgroup.cpp
+    kstplotlabel.cpp
+    ksttoplevelview.cpp
+    kstviewarrow.cpp
+    kstviewbox.cpp
+    kstviewellipse.cpp
+    kstviewlabel.cpp
+    kstviewlegend.cpp
+    kstviewline.cpp
+    kstviewobject.cpp
+    kstviewobjectfactory.cpp
+    kstviewpicture.cpp
+    kstviewwidget.cpp
+    kstviewwindow.cpp
+# widgets...
+    kst2dplotwidget.cpp
+    kstlogwidget.cpp
+    kstviewlabelwidget.cpp
+    kstviewlegendwidget.cpp
+    ktimezonecombo.cpp
+# dialogs...
+    datasourcemetadatadialog.cpp
+    kstbasicdialog.cpp
+    kstchoosecolordialog.cpp
+    kstcsddialog.cpp
+    kstcurvedialog.cpp
+    kstdatadialog.cpp
+    kstdebugdialog.cpp
+    ksteditviewobjectdialog.cpp
+    ksteqdialog.cpp
+    kstfilterdialog.cpp
+    kstfitdialog.cpp
+    ksthsdialog.cpp
+    kstimagedialog.cpp
+    kstmonochromedialog.cpp
+    kstplugindialog.cpp
+    kstpsddialog.cpp
+    kstquickstartdialog.cpp
+    kstvectorsavedialog.cpp
+    kstvvdialog.cpp
+# handlers...
+    kstgfx2dplotmousehandler.cpp
+    kstgfxarrowmousehandler.cpp
+    kstgfxellipsemousehandler.cpp
+    kstgfxlegendmousehandler.cpp
+    kstgfxlinemousehandler.cpp
+    kstgfxmousehandler.cpp
+    kstgfxmousehandlerutils.cpp
+    kstgfxpicturemousehandler.cpp
+    kstgfxrectanglemousehandler.cpp
+    kstgfxtextmousehandler.cpp
+    kstgfxtlvmousehandler.cpp
+# other...
     kstdatacollection-gui.cpp
     dialoglauncher-gui.cpp
-    datasourcemetadatadialog.cpp
     labelrenderer.cpp
     kstlegenddefaults.cpp
     kstnumbersequence.cpp
@@ -14,70 +71,18 @@ set(kstapp_LIB_SRCS
 #    kstiface_impl.cpp
     statuslabel.cpp
     plotmimesource.cpp
-    kstdatadialog.cpp
     kstplotdrag.cpp
     kstviewobjectimagedrag.cpp
     kstvectortable.cpp
     kstmatrixtable.cpp
     kstfittable.cpp
-    kstlogwidget.cpp
-    kstplotbase.cpp
-    kstviewlabel.cpp
-    kstplotlabel.cpp
-    kst2dplot.cpp
-    kst2dplotwidget.cpp
-    kstviewlegend.cpp
-    kstviewbox.cpp
-    kstviewline.cpp
-    kstviewellipse.cpp
-    kstviewpicture.cpp
-    kstviewarrow.cpp
-    kstviewwidget.cpp
-    kstviewobjectfactory.cpp
-    kstviewobject.cpp
-    kstplotgroup.cpp
-    kstborderedviewobject.cpp
-    ksttoplevelview.cpp
-    kstgfxmousehandler.cpp
-    kstgfxmousehandlerutils.cpp
-    kstgfxrectanglemousehandler.cpp
-    kstgfxlinemousehandler.cpp
-    kstgfxtextmousehandler.cpp
-    kstgfxellipsemousehandler.cpp
-    kstgfxpicturemousehandler.cpp
-    kstgfxarrowmousehandler.cpp
-    kstgfx2dplotmousehandler.cpp
-    kstgfxlegendmousehandler.cpp
-    kstgfxtlvmousehandler.cpp
-    kstmetaplot.cpp
     kstdrag.cpp
     kstfieldselect.cpp
-    kstcsddialog.cpp
-    ksteqdialog.cpp
-    ksthsdialog.cpp
-    kstpsddialog.cpp
-    kstimagedialog.cpp
-    kstvvdialog.cpp
-    kstquickstartdialog.cpp
-    kstviewlabelwidget.cpp
-    kstviewlegendwidget.cpp
-    kstvectorsavedialog.cpp
-    kstchoosecolordialog.cpp
     ksteventmonitor.cpp
-    kstdebugdialog.cpp
-    kstmonochromedialog.cpp
     kstalignment.cpp
-    kstcurvedialog.cpp
-    kstbasicdialog.cpp
-    kstviewwindow.cpp
-    ktimezonecombo.cpp
     kstdebugnotifier.cpp
     kstdatanotifier.cpp
-    kstplugindialog.cpp
-    kstfitdialog.cpp
-    kstfilterdialog.cpp
     extensionmgr.cpp
-    ksteditviewobjectdialog.cpp
     kstdatamanager.cpp
     kstpluginmanager.cpp
     kstdoc.cpp

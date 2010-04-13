@@ -17,8 +17,6 @@
 
 #include <QTextDocument>
 
-// xxx #include <klocale.h>
-
 #include "kstdatacollection.h"
 #include "defaultprimitivenames.h"
 

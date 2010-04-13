@@ -20,12 +20,7 @@
 #include <math.h>
 #include <stdlib.h>
 
-// #include <qdeepcopy.h>
 #include <QTextDocument>
-
-#include <kdebug.h>
-// xxx #include <kglobal.h>
-// xxx #include <klocale.h>
 
 #include "defaultprimitivenames.h"
 #include "kstdatacollection.h"

@@ -320,6 +320,8 @@ bool KstObjectTreeNode<T>::removeDescendant(T *obj, KstObjectNameIndex<T> *index
 
 template <class T>
 void KstObjectTreeNode<T>::clear() {
+  QMapIterator<QString, KstObjectTreeNode*> i;
+
   _tag = QString::null;
   _parent = NULL;
   _object = NULL;
@@ -328,8 +330,8 @@ void KstObjectTreeNode<T>::clear() {
   // delete children
   //
 
-  for (QMapIterator<QString, KstObjectTreeNode*> i = _children.begin(); i != _children.end(); ++i) {
-    delete (i.value());
+  for (i = _children.begin(); i != _children.end(); ++i) {
+    delete (i);
   }
   
   _children.clear();
@@ -560,7 +562,7 @@ void KstObjectCollection<T>::clear() {
   typename QMultiHash<QString, QLinkedList<KstObjectTreeNode<T> *> >::iterator it;
 
   for (it= _index.begin(); it != _index.end(); ++it) {
-    delete(it.value());
+    delete(it);
   }
   
   _index.clear();

@@ -24,19 +24,21 @@
 
 #include <assert.h>
 #include <fcntl.h>
-#include <unistd.h>
 #include <math.h>
+#include <unistd.h>
 
 #include <QEventLoop>
 #include <QMessageBox>
 #include <QTemporaryFile>
 #include <QTextDocument>
 
-// xxx #include <dcopclient.h>
+/* xxx
+#include <dcopclient.h>
 #include <kfiledialog.h>
 #include <kio/netaccess.h>
 #include <ksavefile.h>
 #include <kstandarddirs.h>
+*/
 
 #include "kst2dplot.h"
 #include "kstcsd.h"
@@ -65,25 +67,18 @@
 #include "logevents.h"
 #include "threadevents.h"
 
-static bool backupFile(const QString& qFilename, const QString& backupDir = QString::null, const QString& backupExtension = "~");
-
-
-KstDoc::KstDoc(QWidget *parent, const char *name)
-: QObject(parent, name) {
+KstDoc::KstDoc(QWidget *parent, const char *name) : QObject(parent) {
   _lock = 0;
   _updating = false;
   _stopping = false;
   _nextEventPaint = false;
   _title = "Untitled";
   createScalars();
+  setObjectName(name);
 }
 
 
 KstDoc::~KstDoc() {
-  // We -have- to clear this here because static destruction order is not
-  // guaranteed by any means and KstDoc::vectorList is static and has a
-  // pointer to KstDoc::scalarList, also static, which gets used during
-  // vector destruction.
   deleteContents();
 }
 
@@ -123,9 +118,11 @@ bool KstDoc::saveModified(bool doDelete) {
 
   if (_modified) {
     KstApp *win = KstApp::inst();
-    if (win->activeWindow()) {
-      int want_save = QMessageBox::warning( win, QObject::tr("Question"), QObject::tr("The current plot definition has been modified. Do you want to save it?"), QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
-      switch (want_save) {
+
+    if (win->activeSubWindow()) {
+      int wantSave = QMessageBox::warning( win, QObject::tr("Question"), QObject::tr("The current plot definition has been modified. Do you want to save it?"), QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
+
+      switch (wantSave) {
         case QMessageBox::Yes:
           if (_title == "Untitled") {
             if (!win->slotFileSaveAs()) {
@@ -193,6 +190,7 @@ bool KstDoc::openDocument(const QUrl& url, const QString& o_file,
   }
 
   QString tmpFile;
+/* xxx
   if (url.isLocalFile() || url.protocol().isEmpty()) {
     tmpFile = url.path();
   } else {
@@ -209,18 +207,23 @@ bool KstDoc::openDocument(const QUrl& url, const QString& o_file,
     }
     cleanupFile = true;
   }
-
+*/
   QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
   opening = true;
 
   deleteContents();
   KstApp::inst()->setPaused(true);
-  _updating = true; // block update thread from sending events until we're done
+
+  //
+  // block update thread from sending events until we're done...
+  //
+
+  _updating = true;
 
   QFile f(tmpFile);
 
   if (!f.exists()) {
-    QMessageBox::warning(KstApp::inst(), QObject::tr("kst"), QObject::tr("%1: There is no file with that name to open.").arg(url.prettyURL()));
+    QMessageBox::warning(KstApp::inst(), QObject::tr("Kst"), QObject::tr("%1: There is no file with that name to open.").arg(url.path()));
     opening = false;
     _updating = false;
     KstApp::inst()->setPaused(false);
@@ -228,38 +231,38 @@ bool KstDoc::openDocument(const QUrl& url, const QString& o_file,
 
     return false;
   }
-
+/* xxx
   _title = url.fileName(false);
   _absFilePath = url.url();
   _lastFilePath = url.url();
   if (_title.isEmpty()) {
     _title = _absFilePath;
   }
-
+*/
   QDomDocument doc(_title);
 
-  if (!f.open(IO_ReadOnly)) {
-    QMessageBox::warning(KstApp::inst(), QObject::tr("Kst"), QObject::tr("%1: File exists, but kst could not open it.").arg(url.prettyURL()));
+  if (!f.open(QIODevice::ReadOnly)) {
+    QMessageBox::warning(KstApp::inst(), QObject::tr("Kst"), QObject::tr("%1: File exists, but kst could not open it.").arg(url.path()));
     opening = false;
     _updating = false;
     KstApp::inst()->setPaused(false);
     QApplication::restoreOverrideCursor();
     if (cleanupFile) {
-      KIO::NetAccess::removeTempFile(tmpFile);
+// xxx      KIO::NetAccess::removeTempFile(tmpFile);
     }
 
     return false;
   }
 
   if (!doc.setContent(&f)) {
-    QMessageBox::warning(KstApp::inst(), QObject::tr("Kst"), QObject::tr("%1: Not a valid kst plot specification file.").arg(url.prettyURL()));
+    QMessageBox::warning(KstApp::inst(), QObject::tr("Kst"), QObject::tr("%1: Not a valid kst plot specification file.").arg(url.path()));
     f.close();
     opening = false;
     _updating = false;
     KstApp::inst()->setPaused(false);
     QApplication::restoreOverrideCursor();
     if (cleanupFile) {
-      KIO::NetAccess::removeTempFile(tmpFile);
+// xxx      KIO::NetAccess::removeTempFile(tmpFile);
     }
 
     return false;
@@ -278,7 +281,7 @@ bool KstDoc::openDocument(const QUrl& url, const QString& o_file,
   QString readingDocument = QObject::tr("Reading Kst file");
 
   if (docElem.tagName() != "kstdoc") {
-    QString err = QObject::tr("Error opening file %1.  Does not appear to be a Kst file.").arg(url.prettyURL());
+    QString err = QObject::tr("Error opening file %1. Does not appear to be a Kst file.").arg(url.path());
     KstDebug::self()->log(err, KstDebug::Error);
     QMessageBox::warning(KstApp::inst(), QObject::tr("Kst"), err);
     opening = false;
@@ -286,14 +289,14 @@ bool KstDoc::openDocument(const QUrl& url, const QString& o_file,
     KstApp::inst()->setPaused(false);
     QApplication::restoreOverrideCursor();
     if (cleanupFile) {
-      KIO::NetAccess::removeTempFile(tmpFile);
+// xxx      KIO::NetAccess::removeTempFile(tmpFile);
     }
 
     return false;
   }
 
   if (docElem.attribute("version").toDouble() > 1.3 && !docElem.attribute("version").isEmpty()) {
-    QString err = QObject::tr("While opening file %2, version %1 is too new.  Update Kst or fix the Kst file.  Attempting to load as-is.").arg(docElem.attribute("version")).arg(url.prettyURL());
+    QString err = QObject::tr("While opening file %2, version %1 is too new.  Update Kst or fix the Kst file.  Attempting to load as-is.").arg(docElem.attribute("version")).arg(url.path());
     KstDebug::self()->log(err, KstDebug::Warning);
   }
 
@@ -303,9 +306,12 @@ bool KstDoc::openDocument(const QUrl& url, const QString& o_file,
   count = docElem.childNodes().length();
   app->slotUpdateProgress(count, handled, readingDocument);
 
-  kapp->dcopClient()->setAcceptCalls(false);
+// xxx  kapp->dcopClient()->setAcceptCalls(false);
 
-  // disable display tags for speed
+  //
+  // disable display tags for speed...
+  //
+
   {
     KstWriteLocker ml(&KST::matrixList.lock());
     KST::matrixList.setUpdateDisplayTags(false);
@@ -345,7 +351,9 @@ bool KstDoc::openDocument(const QUrl& url, const QString& o_file,
         }
         app->resize(size);
       } else if (e.tagName() == "graphicsautosave") {
-        KstGraphFileDialogI *gdlg = app->graphFileDlg();
+        KstGraphFileDialog *gDlg;
+
+        gDlg = app->graphFileDlg();
         int time = e.attribute("time").toInt();
         bool en = e.attribute("enabled") == "true";
         QString fmt = e.attribute("format");
@@ -356,30 +364,31 @@ bool KstDoc::openDocument(const QUrl& url, const QString& o_file,
         int display = e.attribute("display").toInt();
 
         if (sizeX > 0 && sizeY > 0) {
-          gdlg->setImageSize(sizeX, sizeY);
+          gDlg->setImageSize(sizeX, sizeY);
         }
         if (!url.isEmpty()) {
-          gdlg->setURL(url);
+          gDlg->setURL(url);
         }
         if (!fmt.isEmpty()) {
-          gdlg->setFormat(fmt);
+          gDlg->setFormat(fmt);
         }
         if (time >= 0) {
-          gdlg->setAutoSaveTimer(time);
+          gDlg->setAutoSaveTimer(time);
         }
         if (sq) {
-          gdlg->setDisplay(1);
+          gDlg->setDisplay(1);
         } else {
-          gdlg->setDisplay(display);
+          gDlg->setDisplay(display);
         }
-        gdlg->setAutoSave(en);
-        gdlg->updateDialog();
-        gdlg->applyAutosave();
+        gDlg->setAutoSave(en);
+        gDlg->updateDialog();
+        gDlg->applyAutosave();
       } else if (e.tagName() == "plotcols") {
         columns = e.text().toInt();
       } else if (e.tagName() == "kstfile") {
         KstWriteLocker dswl(&KST::dataSourceList.lock());
         KstDataSourcePtr file;
+
         if (o_file == "|") {
           file = KstDataSource::loadSource(e);
         } else {
@@ -402,14 +411,19 @@ bool KstDoc::openDocument(const QUrl& url, const QString& o_file,
         vector = new KstRVector(e, o_file, o_n, o_f, o_s, o_ave);
         // Vectors are automatically added to the global list.
       } else if (e.tagName() == "svector") {
+        KstSVectorPtr svector;
+
         KstWriteLocker vl(&KST::vectorList.lock());
-        KstSVectorPtr svector = new KstSVector(e);
+        svector = new KstSVector(e);
       } else if (e.tagName() == "avector") {
+        KstAVectorPtr avector;
+
         KstWriteLocker vl(&KST::vectorList.lock());
-        KstAVectorPtr avector = new KstAVector(e);
+        avector = new KstAVector(e);
       } else if (e.tagName() == "plugin") {
         const QString name = e.attribute("name");
         KstDataObjectPtr p;
+
         if (name.isEmpty()) {
           p = new KstCPlugin(e);
         } else {
@@ -421,73 +435,105 @@ bool KstDoc::openDocument(const QUrl& url, const QString& o_file,
           KST::dataObjectList.append(p);
         }
       } else if (e.tagName() == "curve") {
-        KstDataObjectPtr p = new KstVCurve(e);
+        KstDataObjectPtr p;
+
+        p = new KstVCurve(e);
         KstWriteLocker dowl(&KST::dataObjectList.lock());
         KST::dataObjectList.append(p);
       } else if (e.tagName() == "equation") {
-        KstEquationPtr p = new KstEquation(e);
+        KstEquationPtr p;
+
+        p = new KstEquation(e);
         KstWriteLocker dowl(&KST::dataObjectList.lock());
-        KST::dataObjectList.append(p.data());
+        KST::dataObjectList.append(p);
         warnOldKstFile = true;
       } else if (e.tagName() == "psd") {
-        KstPSDPtr p = new KstPSD(e);
+        KstPSDPtr p;
+
+        p = new KstPSD(e);
         KstWriteLocker dowl(&KST::dataObjectList.lock());
-        KST::dataObjectList.append(p.data());
+        KST::dataObjectList.append(p);
         warnOldKstFile = true;
       } else if (e.tagName() == "equationobject") {
-        KstDataObjectPtr p = new KstEquation(e);
+        KstDataObjectPtr p;
+
+        p = new KstEquation(e);
         KstWriteLocker dowl(&KST::dataObjectList.lock());
         KST::dataObjectList.append(p);
       } else if (e.tagName() == "psdobject") {
-        KstDataObjectPtr p = new KstPSD(e);
+        KstDataObjectPtr p;
+
+        p = new KstPSD(e);
         KstWriteLocker dowl(&KST::dataObjectList.lock());
         KST::dataObjectList.append(p);
       } else if (e.tagName() == "csdobject") {
-        KstDataObjectPtr p = new KstCSD(e);
+        KstDataObjectPtr p;
+
+        p = new KstCSD(e);
         KstWriteLocker dowl(&KST::dataObjectList.lock());
         KST::dataObjectList.append(p);
       } else if (e.tagName() == "vectorview") {
-        KstDataObjectPtr p = new KstVectorView(e);
+        KstDataObjectPtr p;
+
+        p = new KstVectorView(e);
         KstWriteLocker dowl(&KST::dataObjectList.lock());
         KST::dataObjectList.append(p);
       } else if (e.tagName() == "histogram") {
-        KstDataObjectPtr p = new KstHistogram(e);
+        KstDataObjectPtr p;
+        
+        p = new KstHistogram(e);
         KstWriteLocker dowl(&KST::dataObjectList.lock());
         KST::dataObjectList.append(p);
       } else if (e.tagName() == "event") {
-        KstDataObjectPtr p = new EventMonitorEntry(e);
+        KstDataObjectPtr p;
+
+        p = new EventMonitorEntry(e);
         KstWriteLocker dowl(&KST::dataObjectList.lock());
         KST::dataObjectList.append(p);
       } else if (e.tagName() == "plot") {
-        KstBaseCurveList l = kstObjectSubList<KstDataObject,KstBaseCurve>(KST::dataObjectList);
-        Kst2DPlotPtr plot = new Kst2DPlot(e);
+        KstBaseCurveList l;
+        Kst2DPlotPtr plot;
+
+// xxx        l = kstObjectSubList<KstDataObject,KstBaseCurve>(KST::dataObjectList);
+        plot = new Kst2DPlot(e);
         app->plotHolderWhileOpeningDocument()->insert(plot->tagName(), plot);
       } else if (e.tagName() == "amatrix") {
+        KstAMatrixPtr p;
+
         KstWriteLocker ml(&KST::matrixList.lock());
-        KstAMatrixPtr p = new KstAMatrix(e);
+        p = new KstAMatrix(e);
       } else if (e.tagName() == "smatrix") {
+        KstSMatrixPtr p;
+
         KstWriteLocker ml(&KST::matrixList.lock());
-        KstSMatrixPtr p = new KstSMatrix(e);
+        p = new KstSMatrix(e);
       } else if (e.tagName() == "rmatrix") {
+        KstRMatrixPtr p;
+
         KstWriteLocker ml(&KST::matrixList.lock());
-        KstRMatrixPtr p = new KstRMatrix(e);
+        p = new KstRMatrix(e);
       } else if (e.tagName() == "image") {
-        KstDataObjectPtr p = new KstImage(e);
+        KstDataObjectPtr p;
+
+        p = new KstImage(e);
         KstWriteLocker dowl(&KST::dataObjectList.lock());
         KST::dataObjectList.append(p);
       } else if (e.tagName() == "window") {
-        KstViewWindow *viewWindow = new KstViewWindow(e);
+        KstViewWindow *viewWindow;
 
-        app->addSubWindow(viewWindow, SubWindow);
-        viewWindow->activate();
+        viewWindow = new KstViewWindow(e);
+        if (viewWindow) {
+          app->addSubWindow(viewWindow);
+          viewWindow->activateWindow();
+        }
       } else {
-        KstDebug::self()->log(QObject::tr("Unsupported element '%1' in file %2.").arg(e.tagName()).arg(url.prettyURL()), KstDebug::Warning);
+        KstDebug::self()->log(QObject::tr("Unsupported element '%1' in file %2.").arg(e.tagName()).arg(url.path()), KstDebug::Warning);
       }
     }
     handled++;
     app->slotUpdateProgress(count, handled, readingDocument);
     n = n.nextSibling();
-    kapp->eventLoop()->processEvents(QEventLoop::ExcludeSocketNotifiers, 10);
+// xxx    kapp->eventLoop()->processEvents(QEventLoop::ExcludeSocketNotifiers, 10);
   }
 
   //
@@ -525,23 +571,32 @@ bool KstDoc::openDocument(const QUrl& url, const QString& o_file,
   //  a default view and fill it with whatever is left...
   //
 
-  if (!app->plotHolderWhileOpeningDocument()->isEmpty() && !app->activeWindow()) {
-    QString winName = app->newWindow(QString::null);
-    KstViewWindow *win = dynamic_cast<KstViewWindow*>(app->findWindow(winName));
-
+  if (!app->plotHolderWhileOpeningDocument()->isEmpty() && !app->activeSubWindow()) {
+    QString winName;
+    KstViewWindow *win;
+    
+    winName = app->newWindow(QString::null);
+    win = dynamic_cast<KstViewWindow*>(app->findWindow(winName));
     if (win) {
+      Kst2DPlotMap::iterator it;
+
       if (columns != -1) {
         win->view()->setOnGrid(true);
         win->view()->setColumns(columns);
       }
 
-      for (Kst2DPlotMap::Iterator it = app->plotHolderWhileOpeningDocument()->begin();
+      for (it = app->plotHolderWhileOpeningDocument()->begin();
           it != app->plotHolderWhileOpeningDocument()->end(); ++it ) {
-        Kst2DPlotPtr plot = *it;
+        Kst2DPlotPtr plot;
 
-        // Legacy 1.0 loading code
+        plot = *it;
+
+        //
+        // legacy 1.0 loading code...
+        //
+
         if (plot->_width > 0.0 && plot->_height > 0.0 ) {
-          win->view()->appendChild(plot.data(), true);
+          win->view()->appendChild(plot);
           if (plot->_width > 1.0 && plot->_height > 1.0) {
             plot->resizeFromAspect(double(plot->_pos_x) / double(plot->_width),
                 double(plot->_pos_y) / double(plot->_height),
@@ -563,11 +618,12 @@ bool KstDoc::openDocument(const QUrl& url, const QString& o_file,
   //
   // lazy load data
   //
+
   KstDataObjectList bitBucket;
+  KstDataObjectList::iterator i;
 
   {
     KstDataObjectList dol;
-    KstDataObjectList::iterator i;
     bool rc;
 
     KST::dataObjectList.lock().readLock();
@@ -589,20 +645,20 @@ bool KstDoc::openDocument(const QUrl& url, const QString& o_file,
         }
       }
 
-      kapp->eventLoop()->processEvents(QEventLoop::ExcludeSocketNotifiers, 10);
+// xxx      kapp->eventLoop()->processEvents(QEventLoop::ExcludeSocketNotifiers, 10);
     }
   }
 
   KST::dataObjectList.lock().writeLock();
-  for (KstDataObjectList::Iterator i = bitBucket.begin(); i != bitBucket.end(); ++i) {
-    KST::dataObjectList.remove(*i);
+  for (i = bitBucket.begin(); i != bitBucket.end(); ++i) {
+    KST::dataObjectList.removeOne(*i);
   }
   KST::dataObjectList.lock().unlock();
 
   if (!bitBucket.isEmpty()) {
     QString names = QObject::tr("The Kst file could not be loaded in its entirety due to missing objects or data.\n");
 
-    for (KstDataObjectList::Iterator i = bitBucket.begin(); i != bitBucket.end(); ++i) {
+    for (i = bitBucket.begin(); i != bitBucket.end(); ++i) {
       names += (*i)->tagName();
     }
 
@@ -614,7 +670,7 @@ bool KstDoc::openDocument(const QUrl& url, const QString& o_file,
   }
 
   app->slotUpdateProgress(0, 0, QObject::tr("Synchronizing data"));
-  kapp->dcopClient()->setAcceptCalls(true);
+// xxx  kapp->dcopClient()->setAcceptCalls(true);
 
   _nextEventPaint = true;
 
@@ -641,7 +697,7 @@ bool KstDoc::openDocument(const QUrl& url, const QString& o_file,
   QApplication::restoreOverrideCursor();
 
   if (cleanupFile) {
-    KIO::NetAccess::removeTempFile(tmpFile);
+// xxx    KIO::NetAccess::removeTempFile(tmpFile);
   }
   return true;
 }
@@ -687,7 +743,6 @@ void KstDoc::saveDocument(QTextStream& ts, bool saveAbsoluteVectorPositions) {
     << app->graphFileDlg()->imageYSize()
     << "\" display=\""
     << app->graphFileDlg()->display()
-    // #### Kst2 Remove me - compatibility
     << "\" square=\""
     << (app->graphFileDlg()->display() == 1 ? "true" : "false");
 
@@ -698,6 +753,7 @@ void KstDoc::saveDocument(QTextStream& ts, bool saveAbsoluteVectorPositions) {
 
   KstRVectorList rvl;
   KstRMatrixList rml;
+  KstDataSourceList::iterator dslit;
 
   rvl = kstObjectSubList<KstVector,KstRVector>(KST::vectorList);
   rml = kstObjectSubList<KstMatrix,KstRMatrix>(KST::matrixList);
@@ -707,13 +763,13 @@ void KstDoc::saveDocument(QTextStream& ts, bool saveAbsoluteVectorPositions) {
   //
 
   KST::dataSourceList.lock().readLock();
-  for (int i = 0; i < KST::dataSourceList.count(); i++) {
+  for (dslit = KST::dataSourceList.begin(); dslit != KST::dataSourceList.end(); ++dslit) {
     KstRVectorList::iterator itRVector;
     KstRMatrixList::iterator itRMatrix;
     KstDataSourcePtr dsp;
     bool saved = false;
 
-    dsp = KST::dataSourceList[i];
+    dsp = *dslit;
     for (itRVector = rvl.begin(); itRVector != rvl.end() && !saved; ++itRVector) {
       if ((*itRVector)->dataSource() == dsp) {
         ts << "  <kstfile>" << endl;
@@ -803,12 +859,12 @@ void KstDoc::saveDocument(QTextStream& ts, bool saveAbsoluteVectorPositions) {
 
     viewWindow = dynamic_cast<KstViewWindow*>(*i);
     if (viewWindow) {
-      KstPlotBaseList plots = viewWindow->view()->findChildrenType<KstPlotBase>(true);
-      KstPlotBaseList::Iterator it;
+      KstPlotBaseList::iterator it;
+      KstPlotBaseList plots;
+      Kst2DPlotPtr plot;
 
+// xxx      plots = viewWindow->view()->findChildrenType<KstPlotBase>(true);
       for (it = plots.begin(); it != plots.end(); ++it) {
-        Kst2DPlotPtr plot;
-
         plot = kst_cast<Kst2DPlot>(*it);
         if (plot) {
           ts << "  <plot>" << endl;
@@ -826,35 +882,22 @@ void KstDoc::saveDocument(QTextStream& ts, bool saveAbsoluteVectorPositions) {
 
 
 bool KstDoc::saveDocument(const QString& filename, bool saveAbsoluteVectorPositions, bool prompt) {
-  KUrl url;
-
-  if (QFile::exists(filename) && QFileInfo(filename).isRelative()) {
-    url.setPath(QFileInfo(filename).absoluteFilePath());
-  } else {
-    url = KUrl::fromPathOrURL(filename);
-  }
-
   if (QFile::exists(filename)) {
     //
     // only backup local files
     //
 
-    backupFile(filename);
+// xxx    backupFile(filename);
   }
-
+/* xxx
   QTemporaryFile tf(locateLocal("tmp", "kst"), "txt");
   QTextStream ts(&tf);
-/* xxx
-  ts.setEncoding(QTextStream::UnicodeUTF8);
-  ts.precision(14);
-*/
-  _lastFilePath = url.prettyURL();
 
   saveDocument(ts, saveAbsoluteVectorPositions);
 
   tf.close();
 
-  if (KIO::NetAccess::exists(url, false, KstApp::inst())) {
+  if (QFile::exists(url)) {
     if (prompt) {
       int rc = QMessageBox::warning(KstApp::inst(), QObject::tr("Kst"), QObject::tr("File %1 exists.  Overwrite?").arg(url.prettyURL()), QMessageBox::Yes | QMessageBox::No);
       if (rc == QMessageBox::No) {
@@ -863,7 +906,9 @@ bool KstDoc::saveDocument(const QString& filename, bool saveAbsoluteVectorPositi
     }
   }
 
-  KIO::NetAccess::file_copy(KUrl(tf.fileName()), url, -1, true, false, KstApp::inst());
+  QFile::copy(tf.fileName(), filename);
+*/
+  _lastFilePath = filename;
 
   _modified = false;
 
@@ -872,53 +917,59 @@ bool KstDoc::saveDocument(const QString& filename, bool saveAbsoluteVectorPositi
 
 
 void KstDoc::deleteContents() {
+  KstDataObjectList tmpDol;
+  KstApp *app;
+
   KST::vectorDefaults.sync();
   KST::matrixDefaults.sync();
   KST::objectDefaults.sync();
 
-  KstApp *app = KstApp::inst();
-  if (app) { // Can be null on application exit
-  QList<QMdiSubWindow*> windows;
-  QList<QMdiSubWindow*>::const_iterator i;
+  app = KstApp::inst();
+  if (app) {
+    QList<QMdiSubWindow*> windows;
+    QList<QMdiSubWindow*>::const_iterator i;
+    KstViewWindow *viewWindow;
 
-  windows = app->subWindowList(QMdiArea::CreationOrder);
+    windows = app->subWindowList(QMdiArea::CreationOrder);
 
-  for (i = windows.constBegin(); i != windows.constEnd(); ++i)
-    KstViewWindow *viewWindow = dynamic_cast<KstViewWindow*>(*i);
-    if (viewWindow) {
-      app->closeWindow(viewWindow);
+    for (i = windows.constBegin(); i != windows.constEnd(); ++i) {
+      viewWindow = dynamic_cast<KstViewWindow*>(*i);
+      if (viewWindow) {
+        app->removeSubWindow(viewWindow);
+
+        delete viewWindow;
+      }
     }
   }
-
-  KST::dataObjectList.lock().writeLock();
 
   //
   // avoid deadlock in DataObject destructor
   //
 
-  KstDataObjectList tmpDol = QDeepCopy<KstDataObjectList>(KST::dataObjectList);
-  KST::dataObjectList.clear();
+  KST::dataObjectList.lock().writeLock();
+  tmpDol = KST::dataObjectList;
+// xxx  KST::dataObjectList.clear();
   KST::dataObjectList.lock().unlock();
   tmpDol.clear();
 
   KST::dataSourceList.lock().writeLock();
-  KST::dataSourceList.clear();
+// xxx  KST::dataSourceList.clear();
   KST::dataSourceList.lock().unlock();
 
   KST::matrixList.lock().writeLock();
-  KST::matrixList.clear();
+// xxx  KST::matrixList.clear();
   KST::matrixList.lock().unlock();
 
   KST::vectorList.lock().writeLock();
-  KST::vectorList.clear();
+// xxx  KST::vectorList.clear();
   KST::vectorList.lock().unlock();
 
   KST::scalarList.lock().writeLock();
-  KST::scalarList.clear();
+// xxx  KST::scalarList.clear();
   KST::scalarList.lock().unlock();
 
   KST::stringList.lock().writeLock();
-  KST::stringList.clear();
+// xxx  KST::stringList.clear();
   KST::stringList.lock().unlock();
 
   emit updateDialogs();
@@ -926,18 +977,22 @@ void KstDoc::deleteContents() {
 
 
 void KstDoc::samplesUp() {
-  KstRVectorList rvl = kstObjectSubList<KstVector,KstRVector>(KST::vectorList);
+  KstRVectorList rvl;
+  KstRVectorList::iterator it;
   bool changed = false;
 
-  for (int i = 0; i < (int)rvl.count(); i++) {
-    KstRVectorPtr v = rvl[i];
+  rvl = kstObjectSubList<KstVector,KstRVector>(KST::vectorList);
+  for (it = rvl.begin(); it != rvl.end(); ++it) {
+    KstRVectorPtr v;
+
+    v = *it;
     v->writeLock();
 
+    bool doSkip = v->doSkip();
+    bool doAve = v->doAve();
     int f0 = v->reqStartFrame();
     int n = v->reqNumFrames();
     int skip = v->skip();
-    bool doSkip = v->doSkip();
-    bool doAve = v->doAve();
     int fileN = v->fileLength();
     bool didChange = false;
 
@@ -963,6 +1018,7 @@ void KstDoc::samplesUp() {
   if (changed) {
     setModified();
     forceUpdate();
+
     emit dataChanged();
   }
 }
@@ -970,10 +1026,16 @@ void KstDoc::samplesUp() {
 
 void KstDoc::samplesDown() {
   bool changed = false;
-  KstRVectorList rvl = kstObjectSubList<KstVector,KstRVector>(KST::vectorList);
-  for (int i = 0; i < (int)rvl.count(); i++) {
-    KstRVectorPtr v = rvl[i];
+  KstRVectorList rvl;
+  KstRVectorList::iterator it;
+
+  rvl = kstObjectSubList<KstVector,KstRVector>(KST::vectorList);
+  for (it = rvl.begin(); it != rvl.end(); ++it) {
+    KstRVectorPtr v;
+
+    v = *it;
     v->writeLock();
+
     int f0 = v->reqStartFrame();
     if (f0 == -1) {
       f0 = v->startFrame();
@@ -1009,14 +1071,18 @@ void KstDoc::samplesDown() {
 
 
 void KstDoc::samplesEnd() {
-  KstRVectorPtr V;
+  KstRVectorPtr v;
+  KstRVectorList rvl;
+  KstRVectorList::iterator it;
 
-  KstRVectorList rvl = kstObjectSubList<KstVector,KstRVector>(KST::vectorList);
-  for (int i = 0; i < (int)rvl.count(); i++) {
-    V = rvl[i];
-    V->writeLock();
-    V->setFromEnd();
-    V->unlock();
+  rvl = kstObjectSubList<KstVector,KstRVector>(KST::vectorList);
+  for (it = rvl.begin(); it != rvl.end(); ++it) {
+    v = *it;
+    v->writeLock();
+
+    v->setFromEnd();
+
+    v->unlock();
   }
 
   setModified();
@@ -1037,8 +1103,11 @@ RemoveStatus KstDoc::removeDataObject(const QString& tag) {
   KST::dataObjectList.lock().writeLock();
   KST::dataObjectList.removeTag(tag);
   KST::dataObjectList.lock().unlock();
+
   setModified();
+
   forceUpdate();
+
   return OBJECT_DELETED;
 }
 
@@ -1050,25 +1119,42 @@ void KstDoc::purge() {
   KstApp *app = KstApp::inst();
 
   while (again) {
+    KstVectorList vectorList;
+    KstMatrixList matrixList;
+    KstVectorList::const_iterator itvl;
+    KstMatrixList::const_iterator itml;
+    KstDataSourceList::const_iterator itdsl;
+    KstDataObjectList::iterator itdol;
+    int prg = 0;
+    int cnt;
+
     KST::dataObjectList.lock().readLock();
     KST::matrixList.lock().readLock();
     KST::vectorList.lock().readLock();
-    int cnt = KST::matrixList.count() + KST::vectorList.count() + KST::dataObjectList.count();
+    
+    cnt = KST::matrixList.count();
+    cnt += KST::vectorList.count();
+    cnt += KST::dataObjectList.count();
+    
     KST::vectorList.lock().unlock();
     KST::matrixList.lock().unlock();
     KST::dataObjectList.lock().unlock();
 
-    int prg = 0;
     app->slotUpdateProgress(cnt, prg, purging);
     again = false;
 
-    // ASSUMPTION: this only gets called from the data manager!
+    //
+    // ASSUMPTION: this only gets called from the data manager...
+    //
+
     KST::dataObjectList.lock().writeLock();
-    for (KstDataObjectList::Iterator it = KST::dataObjectList.begin(); it != KST::dataObjectList.end(); ++it) {
-      if ((*it)->getUsage() == 0 && !kst_cast<EventMonitorEntry>(*it)) {
-        KstDataObjectList::Iterator byebye = it;
-        --it;
-        KST::dataObjectList.remove(byebye);
+    for (itdol = KST::dataObjectList.begin(); itdol != KST::dataObjectList.end(); ++itdol) {
+      if ((*itdol)->getUsage() == 0 && !kst_cast<EventMonitorEntry>(*itdol)) {
+        KstDataObjectList::iterator byebye;
+
+        byebye = itdol;
+        --itdol;
+        KST::dataObjectList.removeOne(*byebye);
         again = true;
         modified = true;
       }
@@ -1078,17 +1164,17 @@ void KstDoc::purge() {
     KST::dataObjectList.lock().unlock();
 
     KST::vectorList.lock().readLock();
-    KstVectorList vectorList = QDeepCopy<KstVectorList>(KST::vectorList.list());
+    vectorList = KST::vectorList.list();
     KST::vectorList.lock().unlock();
 
     //
     // clear unused vectors that are editable...
     //
 
-    for (KstVectorList::ConstIterator it = vectorList.begin(); it != vectorList.end(); ++it) {
-      if ((*it)->getUsage() == 1) {
+    for (itvl = vectorList.begin(); itvl != vectorList.end(); ++itvl) {
+      if ((*itvl)->getUsage() == 1) {
         KST::vectorList.lock().writeLock();
-        if (KST::vectorList.removeObject(const_cast<KstVector*>((*it).data()))) {
+        if (KST::vectorList.removeObject(const_cast<KstVector*>((*itvl).data()))) {
           again = true;
           modified = true;
         }
@@ -1099,17 +1185,17 @@ void KstDoc::purge() {
     }
 
     KST::matrixList.lock().readLock();
-    KstMatrixList matrixList = QDeepCopy<KstMatrixList>(KST::matrixList.list());
+    matrixList = KST::matrixList.list();
     KST::matrixList.lock().unlock();
 
     //
     // clear unused matrices that are editable...
     //
 
-    for (KstMatrixList::ConstIterator it = matrixList.begin(); it != matrixList.end(); ++it) {
-      if ((*it)->getUsage() == 1) {
+    for (itml = matrixList.begin(); itml != matrixList.end(); ++itml) {
+      if ((*itml)->getUsage() == 1) {
         KST::matrixList.lock().writeLock();
-        if (KST::matrixList.removeObject(const_cast<KstMatrix*>((*it).data()))) {
+        if (KST::matrixList.removeObject(const_cast<KstMatrix*>((*itml).data()))) {
           again = true;
           modified = true;
         }
@@ -1121,21 +1207,24 @@ void KstDoc::purge() {
   }
 
   KstDataSourceList dataList;
-  KST::dataSourceList.lock().readLock();
-  for (KstDataSourceList::ConstIterator it = KST::dataSourceList.begin(); it != KST::dataSourceList.end(); ++it) {
-      KstDataSourcePtr ds;
+  KstDataSourceList::const_iterator itdsl;
 
-      ds = *it; // MUST use a reference-counted pointer to call getUsage()
-      if (ds->getUsage() == 1) {
-        dataList.append(const_cast<KstDataSource*>((*it).data()));
-        modified = true;
-      }
+  KST::dataSourceList.lock().readLock();
+  for (itdsl = KST::dataSourceList.begin(); itdsl != KST::dataSourceList.end(); ++itdsl) {
+    KstDataSourcePtr ds;
+
+    ds = *itdsl; // MUST use a reference-counted pointer to call getUsage()
+    if (ds->getUsage() == 1) {
+      dataList.append(ds);
+      modified = true;
+    }
   }
 
   KST::dataSourceList.lock().unlock();
+
   KST::dataSourceList.lock().writeLock();
-  for (KstDataSourceList::ConstIterator it = dataList.begin(); it != dataList.end(); ++it) {
-    KST::dataSourceList.remove(const_cast<KstDataSource*>((*it).data()));
+  for (itdsl = dataList.begin(); itdsl != dataList.end(); ++itdsl) {
+    KST::dataSourceList.removeOne(*itdsl);
   }
   KST::dataSourceList.lock().unlock();
 
@@ -1163,6 +1252,7 @@ bool KstDoc::event(QEvent *e) {
     //
     // block update thread from sending events until we're done
     //
+
     _updating = true;
 
     ThreadEvent *te = static_cast<ThreadEvent*>(e);
@@ -1176,24 +1266,27 @@ bool KstDoc::event(QEvent *e) {
           QList<QMdiSubWindow*> windows;
           QList<QMdiSubWindow*>::const_iterator i;
         
-          windows = app->subWindowList(QMdiArea::CreationOrder);
+          windows = KstApp::inst()->subWindowList(QMdiArea::CreationOrder);
         
-          for (i = windows.constBegin(); i != windows.constEnd(); ++i)
-            KstViewWindow *viewWindow = dynamic_cast<KstViewWindow*>(*i);
+          for (i = windows.constBegin(); i != windows.constEnd(); ++i) {
+            KstViewWindow *viewWindow;
+
+            viewWindow = dynamic_cast<KstViewWindow*>(*i);
             if (viewWindow) {
-              Kst2DPlotList pl = viewWindow->view()->findChildrenType<Kst2DPlot>(true);
-              
-              for (Kst2DPlotList::Iterator i = pl.begin(); i != pl.end(); ++i) {
-                QValueList<KstBaseCurve*>::ConstIterator j;
+              Kst2DPlotList pl;
+              Kst2DPlotList::iterator i;
+
+// xxx              pl = viewWindow->view()->findChildrenType<Kst2DPlot>(true);
+              for (i = pl.begin(); i != pl.end(); ++i) {
+                QList<KstBaseCurve*>::const_iterator j;
 
                 for (j = te->_curves.begin(); j != te->_curves.end(); ++j) {
-                  // race: if ((*i)->Curves.contains(*j)) 
-                  KstBaseCurveList::ConstIterator k;
-                  const KstBaseCurveList& cl = (*i)->Curves;
+                  KstBaseCurveList::const_iterator k;
+                  const KstBaseCurveList& cl = (*i)->_curves;
                   bool doBreak = false;
-                  
+          
                   for (k = cl.begin(); k != cl.end(); ++k) {
-                    if (*j == *k) {
+                    if (*j == (*k).data()) {
                       (*i)->setDirty();
                       doBreak = true;
 
@@ -1206,7 +1299,7 @@ bool KstDoc::event(QEvent *e) {
                   }
                 }
 
-                viewWindow->view()->recursively<int, KstViewObject>((void (KstViewObject::*)(int))&KstViewObject::update, te->_counter);
+// xxx                viewWindow->view()->recursively<int, KstViewObject>((void (KstViewObject::*)(int))&KstViewObject::update, te->_counter);
               }
             }
           }
@@ -1220,10 +1313,12 @@ bool KstDoc::event(QEvent *e) {
           QList<QMdiSubWindow*> windows;
           QList<QMdiSubWindow*>::const_iterator i;
         
-          windows = app->subWindowList(QMdiArea::CreationOrder);
+          windows = KstApp::inst()->subWindowList(QMdiArea::CreationOrder);
         
-          for (i = windows.constBegin(); i != windows.constEnd(); ++i)
-            KstViewWindow *viewWindow = dynamic_cast<KstViewWindow*>(*i);
+          for (i = windows.constBegin(); i != windows.constEnd(); ++i) {
+            KstViewWindow *viewWindow;
+
+            viewWindow = dynamic_cast<KstViewWindow*>(*i);
             if (viewWindow) {
               viewWindow->view()->update();
             }
@@ -1253,10 +1348,11 @@ bool KstDoc::event(QEvent *e) {
     _nextEventPaint = false;
 
     //
-    // there are good reasons NOT to set _updating to false using a single shot timer:
-    // the main thread may be waiting on a call to Kst.waitForUpdate(...),
-    //  which will not return until this update is completed, which
-    //  is not until _updating is set equal to false.
+    // there are good reasons NOT to set _updating to false using a 
+    //  single shot timer: the main thread may be waiting on a call 
+    //  to Kst.waitForUpdate(...), which will not return until this 
+    //  update is completed, which is not until _updating is set 
+    //  equal to false.
     // Attempting to set _updating to false through a timer will 
     //  never be processed if the main thread is waiting for 
     //  _updating to be set to false.
@@ -1268,7 +1364,9 @@ bool KstDoc::event(QEvent *e) {
 
     return true;
   } else if (e->type() == KstEventTypeLog) {
-    LogEvent *le = dynamic_cast<LogEvent*>(e);
+    LogEvent *le;
+
+    le = dynamic_cast<LogEvent*>(e);
     if (le) {
       switch (le->_eventType) {
         case LogEvent::LogAdded:
@@ -1277,9 +1375,11 @@ bool KstDoc::event(QEvent *e) {
             QTimer::singleShot(0, KstApp::inst(), SLOT(createDebugNotifier()));
           }
           break;
+
         case LogEvent::LogCleared:
           emit logCleared();
           break;
+
         default:
           break;
       }
@@ -1298,10 +1398,12 @@ void KstDoc::createScalars() const {
   new KstScalar(KstObjectTag("C_R2D", KstObjectTag::constantTagContext), 0L, 180.0/M_PI, false); // radians to degrees
   new KstScalar(KstObjectTag("C_D2R", KstObjectTag::constantTagContext), 0L, M_PI/180.0, false); // degrees to radians
 }
+/* xxx
+//
+// all code after this point is code copied from KDE libraries...
+//
 
-
-// All code after this point is code copied from KDE libraries
-static int write_all(int fd, const char *buf, size_t len) {
+static int writeAll(int fd, const char *buf, size_t len) {
   while (len > 0) {
     int written = write(fd, buf, len);
 
@@ -1309,7 +1411,6 @@ static int write_all(int fd, const char *buf, size_t len) {
       if (errno == EINTR) {
         continue;
       }
-
       return -1;
     }
 
@@ -1321,9 +1422,8 @@ static int write_all(int fd, const char *buf, size_t len) {
 }
 
 
-static bool backupFile(const QString& qFilename, const QString& backupDir,
-                       const QString& backupExtension) {
-  QCString cFilename = QFile::encodeName(qFilename);
+static bool backupFile(const QString& qFilename, const QString& backupDir, const QString& backupExtension) {
+  QString cFilename = QFile::encodeName(qFilename);
   const char *filename = cFilename.data();
   int fd;
 
@@ -1396,11 +1496,12 @@ static bool backupFile(const QString& qFilename, const QString& backupDir,
 
       return false;
     }
+
     if (n == 0) {
       break; // Finished
     }
 
-    if (write_all( fd2, buffer, n)) {
+    if (writeAll( fd2, buffer, n)) {
       ::close(fd);
       ::close(fd2);
 
@@ -1416,5 +1517,5 @@ static bool backupFile(const QString& qFilename, const QString& backupDir,
 
   return true;
 }
-
+*/
 #include "kstdoc.moc"

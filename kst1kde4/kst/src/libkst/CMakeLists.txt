@@ -12,7 +12,6 @@ ADD_CUSTOM_TARGET("kstrevision" ALL DEPENDS kstrevision.h)
 ########### next target ###############
 
 set(kstbase_LIB_SRCS
-#   ksdebug.cpp
     kstobject.cpp
     kstdatasource.cpp
     stdinsource.cpp

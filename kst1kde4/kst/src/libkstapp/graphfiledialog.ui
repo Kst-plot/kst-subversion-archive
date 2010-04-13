@@ -56,8 +56,7 @@
     </widget>
    </item>
    <item row="0" column="1" colspan="4">
-    <widget class="KURLRequester" name="_saveLocation" native="true"/>
-   </item>
+    </item>
    <item row="1" column="1" colspan="4">
     <widget class="QComboBox" name="_comboBoxFormats">
      <property name="sizePolicy">
@@ -437,11 +436,6 @@
  <layoutdefault spacing="6" margin="11"/>
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <customwidgets>
-  <customwidget>
-   <class>KUrlRequester</class>
-   <extends>QWidget</extends>
-   <header>kurlrequester.h</header>
-  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>_saveLocation</tabstop>
@@ -459,9 +453,6 @@
   <tabstop>_autosave</tabstop>
  </tabstops>
  <includes>
-  <include location="local">kurlrequester.h</include>
-  <include location="local">klineedit.h</include>
-  <include location="local">kpushbutton.h</include>
  </includes>
  <resources/>
  <connections>

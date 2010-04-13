@@ -15,10 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-// include files for Qt
 #include <QLabel> 
 
-// application specific includes
 #include "statuslabel.h"
 
 StatusLabel::StatusLabel(const QString &text, QWidget *parent, const char *name, Qt::WindowFlags f)

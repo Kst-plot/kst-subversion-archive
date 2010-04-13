@@ -22,8 +22,6 @@
 
 #include <QTextDocument>
 
-// xxx #include <klocale.h>
-
 #include "kstdatacollection.h"
 #include "kstdebug.h"
 #include "kstrmatrix.h"

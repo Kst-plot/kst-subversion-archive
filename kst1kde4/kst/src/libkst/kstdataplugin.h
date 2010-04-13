@@ -24,7 +24,6 @@
 #include <kdebug.h>
 #include <kio/netaccess.h>
 #include <klibloader.h>
-// xxx #include <klocale.h>
 #include <kservice.h>
 #include <kservicetype.h>
 
