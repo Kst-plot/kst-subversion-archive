@@ -26,9 +26,8 @@
 class KstViewStringsDialog : public QDialog, public Ui::KstViewStringsDialog {
   Q_OBJECT
   public:
-    KstViewStringsDialog(QWidget* parent = 0,
-        const char* name = 0,
-        bool modal = false, Qt::WindowFlags fl = 0 );
+    KstViewStringsDialog(QWidget *parent = 0,
+        const char *name = 0, bool modal = false, Qt::WindowFlags fl = 0 );
     virtual ~KstViewStringsDialog();
     KListViewSearchLineWidget *searchWidget;
     KstStringListView *listViewStrings;

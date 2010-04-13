@@ -27,20 +27,16 @@
 #include <unistd.h>
 #include <math.h>
 
-#include <qdeepcopy.h>
 #include <QEventLoop>
-#include <QStyleSheet>
 #include <QMessageBox>
+#include <QTemporaryFile>
+#include <QTextDocument>
 
-#include <dcopclient.h>
-#include <kdeversion.h>
+// xxx #include <dcopclient.h>
 #include <kfiledialog.h>
 #include <kio/netaccess.h>
-#include <kmdimainfrm.h>
-#include <kprogress.h>
 #include <ksavefile.h>
 #include <kstandarddirs.h>
-#include <ktempfile.h>
 
 #include "kst2dplot.h"
 #include "kstcsd.h"
@@ -71,6 +67,7 @@
 
 static bool backupFile(const QString& qFilename, const QString& backupDir = QString::null, const QString& backupExtension = "~");
 
+
 KstDoc::KstDoc(QWidget *parent, const char *name)
 : QObject(parent, name) {
   _lock = 0;
@@ -81,6 +78,7 @@ KstDoc::KstDoc(QWidget *parent, const char *name)
   createScalars();
 }
 
+
 KstDoc::~KstDoc() {
   // We -have- to clear this here because static destruction order is not
   // guaranteed by any means and KstDoc::vectorList is static and has a
@@ -89,29 +87,36 @@ KstDoc::~KstDoc() {
   deleteContents();
 }
 
+
 void KstDoc::setAbsFilePath(const QString& filename) {
   _absFilePath = filename;
 }
+
 
 const QString& KstDoc::absFilePath() const {
   return _absFilePath;
 }
 
+
 void KstDoc::setLastFilePath(const QString& filename) {
   _lastFilePath = filename;
 }
+
 
 const QString& KstDoc::lastFilePath() const {
   return _lastFilePath;
 }
 
+
 void KstDoc::setTitle(const QString& t) {
   _title = t;
 }
 
+
 const QString& KstDoc::title() const {
   return _title;
 }
+
 
 bool KstDoc::saveModified(bool doDelete) {
   bool completed = true;
@@ -119,7 +124,7 @@ bool KstDoc::saveModified(bool doDelete) {
   if (_modified) {
     KstApp *win = KstApp::inst();
     if (win->activeWindow()) {
-      int want_save = QMessageBox::warning( win, i18n("Question"), i18n("The current plot definition has been modified. Do you want to save it?"), QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
+      int want_save = QMessageBox::warning( win, QObject::tr("Question"), QObject::tr("The current plot definition has been modified. Do you want to save it?"), QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
       switch (want_save) {
         case QMessageBox::Yes:
           if (_title == "Untitled") {
@@ -158,24 +163,25 @@ bool KstDoc::saveModified(bool doDelete) {
   return completed;
 }
 
+
 void KstDoc::closeDocument() {
   deleteContents();
 }
 
+
 bool KstDoc::newDocument() {
-  // FIXME: implement this properly
-  //if (QMessageBox::Yes == QMessageBox::warningYesNo(KstApp::inst(), i18n("Are you sure you wish to erase all your data and plots?"))) {
-    deleteContents();
-    _modified = false;
-    _absFilePath = QDir::homePath();
-    _title = "Untitled";
-    KstApp::inst()->newWindow(i18n("default name of first window", "W1"));
-    createScalars();
-    emit updateDialogs();
-  //}
+  deleteContents();
+  _modified = false;
+  _absFilePath = QDir::homePath();
+  _title = "Untitled";
+  KstApp::inst()->newWindow(QObject::tr("default name of first window", "W1"));
+  createScalars();
+
+  emit updateDialogs();
 
   return true;
 }
+
 
 bool KstDoc::openDocument(const QUrl& url, const QString& o_file,
                           int o_n, int o_f, int o_s, bool o_ave) {
@@ -191,13 +197,13 @@ bool KstDoc::openDocument(const QUrl& url, const QString& o_file,
     tmpFile = url.path();
   } else {
     if (!KIO::NetAccess::exists(url, true, KstApp::inst())) {
-      QMessageBox::warning(KstApp::inst(), i18n("kst"), i18n("%1: There is no file with that name to open.").arg(url.prettyURL()));
+      QMessageBox::warning(KstApp::inst(), QObject::tr("kst"), QObject::tr("%1: There is no file with that name to open.").arg(url.prettyURL()));
 
       return false;
     }
 
     if (!KIO::NetAccess::download(url, tmpFile, KstApp::inst())) {
-      QMessageBox::warning(KstApp::inst(), i18n("kst"), i18n("%1: There is no file with that name to open.").arg(url.prettyURL()));
+      QMessageBox::warning(KstApp::inst(), QObject::tr("kst"), QObject::tr("%1: There is no file with that name to open.").arg(url.prettyURL()));
 
       return false;
     }
@@ -214,7 +220,7 @@ bool KstDoc::openDocument(const QUrl& url, const QString& o_file,
   QFile f(tmpFile);
 
   if (!f.exists()) {
-    QMessageBox::warning(KstApp::inst(), i18n("kst"), i18n("%1: There is no file with that name to open.").arg(url.prettyURL()));
+    QMessageBox::warning(KstApp::inst(), QObject::tr("kst"), QObject::tr("%1: There is no file with that name to open.").arg(url.prettyURL()));
     opening = false;
     _updating = false;
     KstApp::inst()->setPaused(false);
@@ -233,7 +239,7 @@ bool KstDoc::openDocument(const QUrl& url, const QString& o_file,
   QDomDocument doc(_title);
 
   if (!f.open(IO_ReadOnly)) {
-    QMessageBox::warning(KstApp::inst(), i18n("kst"), i18n("%1: File exists, but kst could not open it.").arg(url.prettyURL()));
+    QMessageBox::warning(KstApp::inst(), QObject::tr("Kst"), QObject::tr("%1: File exists, but kst could not open it.").arg(url.prettyURL()));
     opening = false;
     _updating = false;
     KstApp::inst()->setPaused(false);
@@ -246,7 +252,7 @@ bool KstDoc::openDocument(const QUrl& url, const QString& o_file,
   }
 
   if (!doc.setContent(&f)) {
-    QMessageBox::warning(KstApp::inst(), i18n("kst"), i18n("%1: Not a valid kst plot specification file.").arg(url.prettyURL()));
+    QMessageBox::warning(KstApp::inst(), QObject::tr("Kst"), QObject::tr("%1: Not a valid kst plot specification file.").arg(url.prettyURL()));
     f.close();
     opening = false;
     _updating = false;
@@ -269,12 +275,12 @@ bool KstDoc::openDocument(const QUrl& url, const QString& o_file,
   QString activeWindow;
   KstRVectorPtr vector;
   KstApp *app = KstApp::inst();
-  QString readingDocument = i18n("Reading Kst file");
+  QString readingDocument = QObject::tr("Reading Kst file");
 
   if (docElem.tagName() != "kstdoc") {
-    QString err = i18n("Error opening file %1.  Does not appear to be a Kst file.").arg(url.prettyURL());
+    QString err = QObject::tr("Error opening file %1.  Does not appear to be a Kst file.").arg(url.prettyURL());
     KstDebug::self()->log(err, KstDebug::Error);
-    QMessageBox::warning(KstApp::inst(), i18n("kst"), err);
+    QMessageBox::warning(KstApp::inst(), QObject::tr("Kst"), err);
     opening = false;
     _updating = false;
     KstApp::inst()->setPaused(false);
@@ -287,7 +293,7 @@ bool KstDoc::openDocument(const QUrl& url, const QString& o_file,
   }
 
   if (docElem.attribute("version").toDouble() > 1.3 && !docElem.attribute("version").isEmpty()) {
-    QString err = i18n("While opening file %2, version %1 is too new.  Update Kst or fix the Kst file.  Attempting to load as-is.").arg(docElem.attribute("version")).arg(url.prettyURL());
+    QString err = QObject::tr("While opening file %2, version %1 is too new.  Update Kst or fix the Kst file.  Attempting to load as-is.").arg(docElem.attribute("version")).arg(url.prettyURL());
     KstDebug::self()->log(err, KstDebug::Warning);
   }
 
@@ -380,7 +386,7 @@ bool KstDoc::openDocument(const QUrl& url, const QString& o_file,
           file = KstDataSource::loadSource(o_file);
         }
         if (file && (!file->isValid() || file->isEmpty())) {
-          KstDebug::self()->log(i18n("No data in file %1.").arg(file->fileName()), KstDebug::Warning);
+          KstDebug::self()->log(QObject::tr("No data in file %1.").arg(file->fileName()), KstDebug::Warning);
         }
         if (file) {
           KST::dataSourceList.append(file);
@@ -475,7 +481,7 @@ bool KstDoc::openDocument(const QUrl& url, const QString& o_file,
         app->addSubWindow(viewWindow, SubWindow);
         viewWindow->activate();
       } else {
-        KstDebug::self()->log(i18n("Unsupported element '%1' in file %2.").arg(e.tagName()).arg(url.prettyURL()), KstDebug::Warning);
+        KstDebug::self()->log(QObject::tr("Unsupported element '%1' in file %2.").arg(e.tagName()).arg(url.prettyURL()), KstDebug::Warning);
       }
     }
     handled++;
@@ -507,11 +513,11 @@ bool KstDoc::openDocument(const QUrl& url, const QString& o_file,
 
   if (warnOldKstFile) {
     QApplication::restoreOverrideCursor();
-    QMessageBox::warning(KstApp::inst(), i18n("kst"), i18n("You tried to load an old Kst file.  Curves created by equations or spectra will not be loaded."));
+    QMessageBox::warning(KstApp::inst(), QObject::tr("Kst"), QObject::tr("You tried to load an old Kst file.  Curves created by equations or spectra will not be loaded."));
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
   }
 
-  app->slotUpdateProgress(0, 0, i18n("Creating plots"));
+  app->slotUpdateProgress(0, 0, QObject::tr("Creating plots"));
 
   //
   // if we have anything left in plotHolderWhileOpeningDocument then
@@ -552,7 +558,7 @@ bool KstDoc::openDocument(const QUrl& url, const QString& o_file,
 
   app->plotHolderWhileOpeningDocument()->clear();
 
-  app->slotUpdateProgress(0, 0, i18n("Loading data"));
+  app->slotUpdateProgress(0, 0, QObject::tr("Loading data"));
 
   //
   // lazy load data
@@ -560,19 +566,29 @@ bool KstDoc::openDocument(const QUrl& url, const QString& o_file,
   KstDataObjectList bitBucket;
 
   {
+    KstDataObjectList dol;
+    KstDataObjectList::iterator i;
+    bool rc;
+
     KST::dataObjectList.lock().readLock();
-    KstDataObjectList dol = QDeepCopy<KstDataObjectList>(KST::dataObjectList);
+    dol = KST::dataObjectList;
     KST::dataObjectList.lock().unlock();
-    for (KstDataObjectList::Iterator i = dol.begin(); i != dol.end(); ++i) {
-      assert(*i);
-      //kstdDebug() << "Load inputs for " << (*i)->tagName() << " " << (void*)*i << endl;
-      (*i)->KstRWLock::writeLock();
-      bool rc = (*i)->loadInputs();
-      (*i)->KstRWLock::unlock();
-      if (!rc) {
-        // schedule for removal
-        bitBucket.append(*i);
+
+    for (i = dol.begin(); i != dol.end(); ++i) {
+      if (*i) {
+        (*i)->KstRWLock::writeLock();
+        rc = (*i)->loadInputs();
+        (*i)->KstRWLock::unlock();
+
+        if (!rc) {
+          //
+          // schedule for removal...
+          //
+
+          bitBucket.append(*i);
+        }
       }
+
       kapp->eventLoop()->processEvents(QEventLoop::ExcludeSocketNotifiers, 10);
     }
   }
@@ -584,19 +600,20 @@ bool KstDoc::openDocument(const QUrl& url, const QString& o_file,
   KST::dataObjectList.lock().unlock();
 
   if (!bitBucket.isEmpty()) {
-    QString names = i18n("The Kst file could not be loaded in its entirety due to missing objects or data.\n";
+    QString names = QObject::tr("The Kst file could not be loaded in its entirety due to missing objects or data.\n");
+
     for (KstDataObjectList::Iterator i = bitBucket.begin(); i != bitBucket.end(); ++i) {
       names += (*i)->tagName();
     }
 
     QApplication::restoreOverrideCursor();
 
-    QMessageBox::critical(KstApp::inst(), i18n("Kst"), names);
+    QMessageBox::critical(KstApp::inst(), QObject::tr("Kst"), names);
 
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
   }
 
-  app->slotUpdateProgress(0, 0, i18n("Synchronizing data"));
+  app->slotUpdateProgress(0, 0, QObject::tr("Synchronizing data"));
   kapp->dcopClient()->setAcceptCalls(true);
 
   _nextEventPaint = true;
@@ -604,10 +621,11 @@ bool KstDoc::openDocument(const QUrl& url, const QString& o_file,
   emit updateDialogs();
 
   if (!activeWindow.isEmpty()) {
-    QMdiSubWindow *c = app->findWindow(activeWindow);
-    
-    if (c) {
-      c->activate();
+    QMdiSubWindow *mdi;
+
+    mdi = app->findWindow(activeWindow);
+    if (mdi) {
+      mdi->activateWindow();
     }
   }
 
@@ -632,6 +650,11 @@ bool KstDoc::openDocument(const QUrl& url, const QString& o_file,
 void KstDoc::saveDocument(QTextStream& ts, bool saveAbsoluteVectorPositions) {
   KstApp *app = KstApp::inst();
   QMdiSubWindow *viewWindow = app->activeSubWindow();
+  KstStringList::iterator itString; 
+  KstVectorList::iterator itVector;
+  KstMatrixList::iterator itMatrix;
+  KstScalarList::iterator itScalar;
+  KstDataObjectList::iterator itObject;
 
   ts << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << endl;
   ts << "<kstdoc version=\"1.3\">" << endl;
@@ -644,7 +667,7 @@ void KstDoc::saveDocument(QTextStream& ts, bool saveAbsoluteVectorPositions) {
   ts << "    <width>" << app->width() << "</width>" << endl;
   ts << "    <height>"<< app->height()<< "</height>" << endl;
   if (viewWindow) {
-    ts << "    <active name=\"" << QStyleSheet::escape(viewWindow->caption()) << "\"/>" << endl;
+    ts << "    <active name=\"" << Qt::escape(viewWindow->windowTitle()) << "\"/>" << endl;
   }
   ts << "  </windowsize>" << endl;
 
@@ -657,7 +680,7 @@ void KstDoc::saveDocument(QTextStream& ts, bool saveAbsoluteVectorPositions) {
     << "\" enabled=\""
     << (app->graphFileDlg()->autoSaving() ? "true" : "false")
     << "\" format=\""
-    << QStyleSheet::escape(app->graphFileDlg()->format())
+    << Qt::escape(app->graphFileDlg()->format())
     << "\" xsize=\""
     << app->graphFileDlg()->imageXSize()
     << "\" ysize=\""
@@ -669,31 +692,39 @@ void KstDoc::saveDocument(QTextStream& ts, bool saveAbsoluteVectorPositions) {
     << (app->graphFileDlg()->display() == 1 ? "true" : "false");
 
   if (app->graphFileDlg()->autoSaving()) {
-    ts << "\" url=\"" << QStyleSheet::escape(app->graphFileDlg()->url().url());
+// xxx    ts << "\" url=\"" << Qt::escape(app->graphFileDlg()->url().url());
   }
   ts << "\" />" << endl;
 
-  KstRVectorList rvl = kstObjectSubList<KstVector,KstRVector>(KST::vectorList);
-  KstRMatrixList rml = kstObjectSubList<KstMatrix,KstRMatrix>(KST::matrixList);
+  KstRVectorList rvl;
+  KstRMatrixList rml;
+
+  rvl = kstObjectSubList<KstVector,KstRVector>(KST::vectorList);
+  rml = kstObjectSubList<KstMatrix,KstRMatrix>(KST::matrixList);
 
   //
   // save files
   //
 
   KST::dataSourceList.lock().readLock();
-  for (uint i = 0; i < KST::dataSourceList.count(); i++) {
-    KstDataSourcePtr dsp = KST::dataSourceList[i];
+  for (int i = 0; i < KST::dataSourceList.count(); i++) {
+    KstRVectorList::iterator itRVector;
+    KstRMatrixList::iterator itRMatrix;
+    KstDataSourcePtr dsp;
     bool saved = false;
-    for (KstRVectorList::Iterator it = rvl.begin(); it != rvl.end() && !saved; ++it) {
-      if ((*it)->dataSource() == dsp) {
+
+    dsp = KST::dataSourceList[i];
+    for (itRVector = rvl.begin(); itRVector != rvl.end() && !saved; ++itRVector) {
+      if ((*itRVector)->dataSource() == dsp) {
         ts << "  <kstfile>" << endl;
         dsp->save(ts, "    ");
         ts << "  </kstfile>" << endl;
         saved = true;
       }
     }
-    for (KstRMatrixList::Iterator it = rml.begin(); it != rml.end() && !saved; ++it) {
-      if ((*it)->dataSource() == dsp) {
+
+    for (itRMatrix = rml.begin(); itRMatrix != rml.end() && !saved; ++itRMatrix) {
+      if ((*itRMatrix)->dataSource() == dsp) {
         ts << "  <kstfile>" << endl;
         dsp->save(ts, "    ");
         ts << "  </kstfile>" << endl;
@@ -707,10 +738,10 @@ void KstDoc::saveDocument(QTextStream& ts, bool saveAbsoluteVectorPositions) {
   // save orphan scalars
   //
 
-  for (KstScalarList::Iterator it = KST::scalarList.begin(); it != KST::scalarList.end(); ++it) {
-    if ((*it)->orphan()) {
+  for (itScalar = KST::scalarList.begin(); itScalar != KST::scalarList.end(); ++itScalar) {
+    if ((*itScalar)->orphan()) {
       ts << "  <scalar>" << endl;
-      (*it)->save(ts, "    ");
+      (*itScalar)->save(ts, "    ");
       ts << "  </scalar>" << endl;
     }
   }
@@ -719,10 +750,10 @@ void KstDoc::saveDocument(QTextStream& ts, bool saveAbsoluteVectorPositions) {
   // save orphan strings
   //
 
-  for (KstStringList::Iterator it = KST::stringList.begin(); it != KST::stringList.end(); ++it) {
-    if ((*it)->orphan()) {
+  for (itString = KST::stringList.begin(); itString != KST::stringList.end(); ++itString) {
+    if ((*itString)->orphan()) {
       ts << "  <string>" << endl;
-      (*it)->save(ts, "    ");
+      (*itString)->save(ts, "    ");
       ts << "  </string>" << endl;
     }
   }
@@ -731,10 +762,10 @@ void KstDoc::saveDocument(QTextStream& ts, bool saveAbsoluteVectorPositions) {
   // save vectors
   //
 
-  for (KstVectorList::Iterator it = KST::vectorList.begin(); it != KST::vectorList.end(); ++it) {
-    if ((*it)->saveable()) {
-      (*it)->setSaveData(KstApp::inst()->saveData());
-      (*it)->save(ts, "  ", saveAbsoluteVectorPositions);
+  for (itVector = KST::vectorList.begin(); itVector != KST::vectorList.end(); ++itVector) {
+    if ((*itVector)->saveable()) {
+      (*itVector)->setSaveData(KstApp::inst()->saveData());
+      (*itVector)->save(ts, "  ", saveAbsoluteVectorPositions);
     }
   }
 
@@ -742,9 +773,9 @@ void KstDoc::saveDocument(QTextStream& ts, bool saveAbsoluteVectorPositions) {
   // save matrices
   //
 
-  for (KstMatrixList::Iterator it = KST::matrixList.begin(); it != KST::matrixList.end(); ++it) {
-    if ((*it)->saveable()) {
-      (*it)->save(ts, "  ");
+  for (itMatrix = KST::matrixList.begin(); itMatrix != KST::matrixList.end(); ++itMatrix) {
+    if ((*itMatrix)->saveable()) {
+      (*itMatrix)->save(ts, "  ");
     }
   }
 
@@ -753,8 +784,8 @@ void KstDoc::saveDocument(QTextStream& ts, bool saveAbsoluteVectorPositions) {
   //
 
   KST::dataObjectList.lock().readLock();
-  for (KstDataObjectList::Iterator it = KST::dataObjectList.begin(); it != KST::dataObjectList.end(); ++it) {
-    (*it)->save(ts, "  ");
+  for (itObject = KST::dataObjectList.begin(); itObject != KST::dataObjectList.end(); ++itObject) {
+    (*itObject)->save(ts, "  ");
   }
   KST::dataObjectList.lock().unlock();
 
@@ -768,14 +799,17 @@ void KstDoc::saveDocument(QTextStream& ts, bool saveAbsoluteVectorPositions) {
   windows = app->subWindowList(QMdiArea::CreationOrder);
 
   for (i = windows.constBegin(); i != windows.constEnd(); ++i) {
-    KstViewWindow *viewWindow = dynamic_cast<KstViewWindow*>(*i);
+    KstViewWindow *viewWindow;
 
+    viewWindow = dynamic_cast<KstViewWindow*>(*i);
     if (viewWindow) {
       KstPlotBaseList plots = viewWindow->view()->findChildrenType<KstPlotBase>(true);
       KstPlotBaseList::Iterator it;
 
       for (it = plots.begin(); it != plots.end(); ++it) {
-        Kst2DPlotPtr plot = kst_cast<Kst2DPlot>(*it);
+        Kst2DPlotPtr plot;
+
+        plot = kst_cast<Kst2DPlot>(*it);
         if (plot) {
           ts << "  <plot>" << endl;
           plot->saveAttributes(ts, "    ");
@@ -795,7 +829,7 @@ bool KstDoc::saveDocument(const QString& filename, bool saveAbsoluteVectorPositi
   KUrl url;
 
   if (QFile::exists(filename) && QFileInfo(filename).isRelative()) {
-    url.setPath(QFileInfo(filename).absFilePath());
+    url.setPath(QFileInfo(filename).absoluteFilePath());
   } else {
     url = KUrl::fromPathOrURL(filename);
   }
@@ -808,29 +842,28 @@ bool KstDoc::saveDocument(const QString& filename, bool saveAbsoluteVectorPositi
     backupFile(filename);
   }
 
-  KTempFile tf(locateLocal("tmp", "kst"), "txt");
-
-  QTextStream ts(tf.file());
+  QTemporaryFile tf(locateLocal("tmp", "kst"), "txt");
+  QTextStream ts(&tf);
+/* xxx
   ts.setEncoding(QTextStream::UnicodeUTF8);
   ts.precision(14);
-
+*/
   _lastFilePath = url.prettyURL();
 
   saveDocument(ts, saveAbsoluteVectorPositions);
 
-  tf.sync();
   tf.close();
 
   if (KIO::NetAccess::exists(url, false, KstApp::inst())) {
     if (prompt) {
-      int rc = QMessageBox::warning(KstApp::inst(), i18n("Kst"), i18n("File %1 exists.  Overwrite?").arg(url.prettyURL()), QMessageBox::Yes | QMessageBox::No);
+      int rc = QMessageBox::warning(KstApp::inst(), QObject::tr("Kst"), QObject::tr("File %1 exists.  Overwrite?").arg(url.prettyURL()), QMessageBox::Yes | QMessageBox::No);
       if (rc == QMessageBox::No) {
         return false;
       }
     }
   }
 
-  KIO::NetAccess::file_copy(KUrl(tf.name()), url, -1, true, false, KstApp::inst());
+  KIO::NetAccess::file_copy(KUrl(tf.fileName()), url, -1, true, false, KstApp::inst());
 
   _modified = false;
 
@@ -1011,11 +1044,7 @@ RemoveStatus KstDoc::removeDataObject(const QString& tag) {
 
 
 void KstDoc::purge() {
-#ifdef PURGEDEBUG
-  kstdDebug() << "Purging unused objects" << endl;
-#endif
-
-  QString purging = i18n("Purging unused objects");
+  QString purging = QObject::tr("Purging unused objects");
   bool modified = false;
   bool again = true;
   KstApp *app = KstApp::inst();
@@ -1036,13 +1065,7 @@ void KstDoc::purge() {
     // ASSUMPTION: this only gets called from the data manager!
     KST::dataObjectList.lock().writeLock();
     for (KstDataObjectList::Iterator it = KST::dataObjectList.begin(); it != KST::dataObjectList.end(); ++it) {
-#ifdef PURGEDEBUG
-      kstdDebug() << "OBJECT: " << (*it)->tag().displayString() << " (" << (void*)(*it) << ") USAGE: " << (*it)->getUsage() << endl;
-#endif
       if ((*it)->getUsage() == 0 && !kst_cast<EventMonitorEntry>(*it)) {
-#ifdef PURGEDEBUG
-        kstdDebug() << "    -> REMOVED" << endl;
-#endif
         KstDataObjectList::Iterator byebye = it;
         --it;
         KST::dataObjectList.remove(byebye);
@@ -1058,23 +1081,12 @@ void KstDoc::purge() {
     KstVectorList vectorList = QDeepCopy<KstVectorList>(KST::vectorList.list());
     KST::vectorList.lock().unlock();
 
-    // clear unused vectors that are editable 
+    //
+    // clear unused vectors that are editable...
+    //
+
     for (KstVectorList::ConstIterator it = vectorList.begin(); it != vectorList.end(); ++it) {
-#ifdef PURGEDEBUG
-      kstdDebug() << "VECTOR: " << (*it)->tag().displayString() << " (" << (void*)(*it) << ") USAGE: " << (*it)->getUsage() << endl;
-//      if ((*it)->provider()) {
-//        kstdDebug() << "  provider=" << (*it)->provider()->tag().displayString() << endl;
-//      }
-//      KstRVectorPtr rvp = kst_cast<KstRVector>(*it);
-//      if (rvp && rvp->_file) {
-//        KstDataSource *file = rvp->_file;
-//        kstdDebug() << "  file=" << file->tag().displayString() << " (" << (void*)(&(*file)) << "): " << file->getUsage() << endl;
-//      }
-#endif
       if ((*it)->getUsage() == 1) {
-#ifdef PURGEDEBUG
-        kstdDebug() << "    -> REMOVED" << endl;
-#endif
         KST::vectorList.lock().writeLock();
         if (KST::vectorList.removeObject(const_cast<KstVector*>((*it).data()))) {
           again = true;
@@ -1090,23 +1102,12 @@ void KstDoc::purge() {
     KstMatrixList matrixList = QDeepCopy<KstMatrixList>(KST::matrixList.list());
     KST::matrixList.lock().unlock();
 
-    // clear unused matrices that are editable
+    //
+    // clear unused matrices that are editable...
+    //
+
     for (KstMatrixList::ConstIterator it = matrixList.begin(); it != matrixList.end(); ++it) {
-#ifdef PURGEDEBUG
-      kstdDebug() << "MATRIX: " << (*it)->tag().displayString() << " (" << (void*)(*it) << ") USAGE: " << (*it)->getUsage() << endl;
-//      if ((*it)->provider()) {
-//        kstdDebug() << "  provider=" << (*it)->provider()->tag().displayString() << endl;
-//      }
-//      KstRMatrixPtr rmp = kst_cast<KstRMatrix>(*it);
-//      if (rmp && rmp->_file) {
-//        KstDataSource *file = rmp->_file;
-//        kstdDebug() << "  file=" << file->tag().displayString() << " (" << (void*)(&(*file)) << "): " << file->getUsage() << endl;
-//      }
-#endif
       if ((*it)->getUsage() == 1) {
-#ifdef PURGEDEBUG
-        kstdDebug() << "    -> REMOVED" << endl;
-#endif
         KST::matrixList.lock().writeLock();
         if (KST::matrixList.removeObject(const_cast<KstMatrix*>((*it).data()))) {
           again = true;
@@ -1122,18 +1123,15 @@ void KstDoc::purge() {
   KstDataSourceList dataList;
   KST::dataSourceList.lock().readLock();
   for (KstDataSourceList::ConstIterator it = KST::dataSourceList.begin(); it != KST::dataSourceList.end(); ++it) {
-      KstDataSourcePtr ds = *it; // MUST use a reference-counted pointer to call getUsage()
-#ifdef PURGEDEBUG
-      kstdDebug() << "DATA SOURCE: " << ds->tag().displayString() << " (" << (void*)ds << ") USAGE: " << ds->getUsage() << endl;
-#endif
+      KstDataSourcePtr ds;
+
+      ds = *it; // MUST use a reference-counted pointer to call getUsage()
       if (ds->getUsage() == 1) {
-#ifdef PURGEDEBUG
-        kstdDebug() << "    -> REMOVED" << endl;
-#endif
         dataList.append(const_cast<KstDataSource*>((*it).data()));
         modified = true;
       }
   }
+
   KST::dataSourceList.lock().unlock();
   KST::dataSourceList.lock().writeLock();
   for (KstDataSourceList::ConstIterator it = dataList.begin(); it != dataList.end(); ++it) {
@@ -1142,6 +1140,7 @@ void KstDoc::purge() {
   KST::dataSourceList.lock().unlock();
 
   setModified(modified);
+
   emit updateDialogs();
 
   app->slotUpdateProgress(0, 0, QString::null);
@@ -1294,27 +1293,6 @@ bool KstDoc::event(QEvent *e) {
 
 
 void KstDoc::createScalars() const {
-#if 0
-  // Should not be orphans, just unparented so they are not saved
-  new KstScalar("CONST_MKSA_SPEED_OF_LIGHT", 2.99792458e8 , false);
-  new KstScalar("CONST_MKSA_GRAVITATIONAL_CONSTANT", 6.673e-11, false);
-  new KstScalar("CONST_MKSA_PLANCKS_CONSTANT_H", 6.62606876e-34, false);
-  new KstScalar("CONST_MKSA_PLANCKS_CONSTANT_HBAR", 1.05457159642e-34, false);
-  new KstScalar("CONST_MKSA_ASTRONOMICAL_UNIT", 1.49597870691e11, false);
-  new KstScalar("CONST_MKSA_VACUUM_PERMITTIVITY", 8.854187817e-12, false);
-  new KstScalar("CONST_MKSA_VACUUM_PERMEABILITY", 1.25663706144e-6, false);
-  new KstScalar("CONST_MKSA_GRAV_ACCEL", 9.80665e0, false);
-  new KstScalar("CONST_MKSA_MASS_MUON", 1.88353109e-28, false);
-  new KstScalar("CONST_MKSA_MASS_PROTON", 1.67262158e-27, false);
-  new KstScalar("CONST_MKSA_MASS_NEUTRON", 1.67492716e-27, false);
-  new KstScalar("CONST_MKSA_RYDBERG", 2.17987190389e-18, false);
-  new KstScalar("CONST_MKSA_BOLTZMANN", 1.3806503e-23, false);
-  new KstScalar("CONST_MKSA_SOLAR_MASS", 1.98892e30, false);
-  new KstScalar("CONST_MKSA_BOHR_RADIUS", 5.291772083e-11, false);
-  new KstScalar("CONST_MKSA_ELECTRON_CHARGE", 1.602176462e-19, false);
-  new KstScalar("CONST_MKSA_MOLAR_GAS", 8.314472e0, false);
-  new KstScalar("CONST_MKSA_STANDARD_GAS_VOLUME", 2.2710981e-2, false);
-#endif
   new KstScalar(KstObjectTag("CONST_PI", KstObjectTag::constantTagContext), 0L, M_PI, false);
   new KstScalar(KstObjectTag("C_PI", KstObjectTag::constantTagContext), 0L, M_PI, false);
   new KstScalar(KstObjectTag("C_R2D", KstObjectTag::constantTagContext), 0L, 180.0/M_PI, false); // radians to degrees
@@ -1326,24 +1304,30 @@ void KstDoc::createScalars() const {
 static int write_all(int fd, const char *buf, size_t len) {
   while (len > 0) {
     int written = write(fd, buf, len);
+
     if (written < 0) {
       if (errno == EINTR) {
         continue;
       }
+
       return -1;
     }
+
     buf += written;
     len -= written;
   }
+
   return 0;
 }
+
 
 static bool backupFile(const QString& qFilename, const QString& backupDir,
                        const QString& backupExtension) {
   QCString cFilename = QFile::encodeName(qFilename);
   const char *filename = cFilename.data();
+  int fd;
 
-  int fd = open(filename, O_RDONLY);
+  fd = open(filename, O_RDONLY);
   if (fd < 0) {
     return false;
   }
@@ -1351,10 +1335,12 @@ static bool backupFile(const QString& qFilename, const QString& backupDir,
   struct stat buff;
   if ( fstat( fd, &buff) < 0 ) {
     ::close( fd );
+
     return false;
   }
 
   QCString cBackup;
+
   if ( backupDir.isEmpty() ) {
     cBackup = cFilename;
   } else {
@@ -1373,22 +1359,27 @@ static bool backupFile(const QString& qFilename, const QString& backupDir,
     cBackup += nameOnly;
   }
   cBackup += QFile::encodeName(backupExtension);
+
   const char *backup = cBackup.data();
   int permissions = buff.st_mode & 07777;
 
   if ( stat( backup, &buff) == 0) {
     if ( unlink( backup ) != 0 ) {
       ::close(fd);
+
       return false;
     }
   }
 
   mode_t old_umask = umask(0);
+
   int fd2 = open( backup, O_WRONLY | O_CREAT | O_EXCL, permissions | S_IWUSR);
+
   umask(old_umask);
 
   if ( fd2 < 0 ) {
     ::close(fd);
+
     return false;
   }
 
@@ -1402,6 +1393,7 @@ static bool backupFile(const QString& qFilename, const QString& backupDir,
       }
       ::close(fd);
       ::close(fd2);
+
       return false;
     }
     if (n == 0) {
@@ -1411,6 +1403,7 @@ static bool backupFile(const QString& qFilename, const QString& backupDir,
     if (write_all( fd2, buffer, n)) {
       ::close(fd);
       ::close(fd2);
+
       return false;
     }
   }

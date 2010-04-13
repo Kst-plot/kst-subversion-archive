@@ -211,7 +211,7 @@ void KstViewWindow::immediatePrintToPng(const QString &filename, const QSize& si
       view()->resizeForPrint(size);
       view()->paint(paint, QRegion());
       if (!pixmap.save(filenameNew, format.toLatin1())) {
-        KstDebug::self()->log(i18n("Failed to save image to %1").arg(filename), KstDebug::Warning);
+        KstDebug::self()->log(QObject::tr("Failed to save image to %1").arg(filename), KstDebug::Warning);
       }
       view()->revertForPrint();
       paint.end();
@@ -329,7 +329,7 @@ void KstViewWindow::print(KstPainter& paint, const QSize& size, int pages, int l
 
     if (datetimeFooter) {
       QDateTime dateTime = QDateTime::currentDateTime();
-      QString title = i18n("Page: %1  Name: %2  Date: %3").arg(pages).arg(windowTitle()).arg(dateTime.toString(Qt::ISODate));
+      QString title = QObject::tr("Page: %1  Name: %2  Date: %3").arg(pages).arg(windowTitle()).arg(dateTime.toString(Qt::ISODate));
       QRect rect(0, 0, sizeNew.width(), sizeNew.height());
       QRect rectBounding;
 
@@ -458,7 +458,7 @@ QString KstViewWindow::createPlotObject(const QString& suggestedName, bool promp
 
   if (prompt) {
     bool ok = false;
-    name = KInputDialog::getText(i18n("Kst"), i18n("Enter a name for the new plot:"), name, &ok);
+    name = KInputDialog::getText(QObject::tr("Kst"), QObject::tr("Enter a name for the new plot:"), name, &ok);
 
     if (ok) {
       //
@@ -485,7 +485,7 @@ QString KstViewWindow::createPlotObject(const QString& suggestedName, bool promp
             if (rc) {
               duplicate = true;
 
-              name = KInputDialog::getText(i18n("Kst"), i18n("Enter a name for the new plot:"), name, &ok);
+              name = KInputDialog::getText(QObject::tr("Kst"), QObject::tr("Enter a name for the new plot:"), name, &ok);
 
               if (!ok) {
                 name = QString::null;

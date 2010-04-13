@@ -15,24 +15,25 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QHeader>
 #include <QLayout>
 #include <QPushButton>
 
 #include "kstdatacollection.h"
 #include "kstviewstringsdialog.h"
 
-KstViewStringsDialog::KstViewStringsDialog(QWidget* parent,
-                                           const char* name,
-                                           bool modal,
-                                           Qt::WindowFlags fl)
+KstViewStringsDialog::KstViewStringsDialog(QWidget* parent, const char* name,
+                                           bool modal, Qt::WindowFlags fl)
 : QDialog(parent, name, modal, fl) {
+  QBoxLayout *box;
+
   setupUi(this);
+
   listViewStrings = new KstStringListView(this, &KST::stringList);
   listViewStrings->setShowSortIndicator(false);
   listViewStrings->setSelectionMode(QListView::NoSelection);
   searchWidget = new KListViewSearchLineWidget(listViewStrings, this);
-  QBoxLayout *box = dynamic_cast<QBoxLayout*>(layout());
+
+  box = dynamic_cast<QBoxLayout*>(layout());
   if (box) {
     box->insertWidget(0, searchWidget);
     box->insertWidget(1, listViewStrings);
@@ -56,10 +57,14 @@ void KstViewStringsDialog::updateViewStringsDialog() {
   listViewStrings->update();
   searchWidget->searchLine()->updateSearch();
 
-  // use whole width
+  //
+  // use whole width...
+  //
+
   int c0Width = listViewStrings->columnWidth(0);
   int c1Width = listViewStrings->columnWidth(1);
   int totalWidth = listViewStrings->header()->rect().width();
+
   c0Width = totalWidth * c0Width/(c0Width + c1Width);
   c1Width = totalWidth - c0Width;
   listViewStrings->setColumnWidth(0, c0Width);
