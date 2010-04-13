@@ -27,7 +27,7 @@
 
 #define TIME_FIELD  "TIME"
 
-LFIIOSource::LFIIOSource( KConfig *cfg, const QString& filename, const QString& type )
+LFIIOSource::LFIIOSource( QSettings *cfg, const QString& filename, const QString& type )
 : KstDataSource( cfg, filename, type )
 {
   _first = true;
@@ -417,7 +417,7 @@ void LFIIOSource::save( QTextStream& ts, const QString& indent )
 
 
 extern "C" {
-  KstDataSource *create_lfiio( KConfig *cfg, const QString& filename, const QString& type )
+  KstDataSource *create_lfiio( QSettings *cfg, const QString& filename, const QString& type )
   {
     return new LFIIOSource( cfg, filename, type );
   }
@@ -431,7 +431,7 @@ extern "C" {
     return rc;
   }
 
-  int understands_lfiio( KConfig*, const QString& filename )
+  int understands_lfiio( QSettings*, const QString& filename )
   {
     fitsfile* ffits;
     int       iStatus = 0;

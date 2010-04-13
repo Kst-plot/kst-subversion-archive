@@ -31,7 +31,7 @@
 #include <unistd.h>
 
 
-FrameSource::FrameSource(KConfig *cfg, const QString& filename, const QString& type)
+FrameSource::FrameSource(QSettings *cfg, const QString& filename, const QString& type)
 : KstDataSource(cfg, filename, type) {
   _valid = init();
 }
@@ -207,7 +207,7 @@ bool FrameSource::fieldListIsComplete() const {
 
 
 extern "C" {
-KstDataSource *create_frame(KConfig *cfg, const QString& filename, const QString& type) {
+KstDataSource *create_frame(QSettings *cfg, const QString& filename, const QString& type) {
   return new FrameSource(cfg, filename, type);
 }
 
@@ -217,7 +217,7 @@ QStringList provides_frame() {
   return rc;
 }
 
-int understands_frame(KConfig*, const QString& filename) {
+int understands_frame(QSettings*, const QString& filename) {
   int err = 0;
   CReadData(filename.toLatin1(), "INDEX",
             0, 0, /* 1st sframe, 1st samp */

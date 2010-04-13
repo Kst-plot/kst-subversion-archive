@@ -23,7 +23,7 @@
 
 class FrameSource : public KstDataSource {
   public:
-    FrameSource(KConfig *cfg, const QString& filename, const QString& type);
+    FrameSource(QSettings *cfg, const QString& filename, const QString& type);
 
     ~FrameSource();
 

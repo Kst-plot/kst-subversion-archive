@@ -24,7 +24,7 @@
 
 class FitsimageSource : public KstDataSource {
   public:
-    FitsimageSource(KConfig *cfg, const QString& filename, const QString& type);
+    FitsimageSource(QSettings *cfg, const QString& filename, const QString& type);
     ~FitsimageSource();
 
     bool init();

@@ -24,7 +24,7 @@
 
 
 
-FitsimageSource::FitsimageSource(KConfig *cfg, const QString& filename, const QString& type)
+FitsimageSource::FitsimageSource(QSettings *cfg, const QString& filename, const QString& type)
 : KstDataSource(cfg, filename, type) {
   _fptr = 0L;
   if( type.isEmpty( ) || type == "FITS" ) {
@@ -279,7 +279,7 @@ void FitsimageSource::save(QTextStream &ts, const QString& indent) {
 
 
 extern "C" {
-KstDataSource *create_fitsimage(KConfig *cfg, const QString& filename, const QString& type) {
+KstDataSource *create_fitsimage(QSettings *cfg, const QString& filename, const QString& type) {
   return new FitsimageSource(cfg, filename, type);
 }
 
@@ -291,7 +291,7 @@ QStringList provides_fitsimage() {
   return rc;
 }
 
-int understands_fitsimage(KConfig*, const QString& filename) {
+int understands_fitsimage(QSettings*, const QString& filename) {
 
   fitsfile* ffits;
   int status = 0;
@@ -315,7 +315,7 @@ int understands_fitsimage(KConfig*, const QString& filename) {
 }
 
 
-QStringList fieldList_fitsimage(KConfig*, const QString& filename, const QString& type, QString *typeSuggestion, bool *complete) {
+QStringList fieldList_fitsimage(QSettings*, const QString& filename, const QString& type, QString *typeSuggestion, bool *complete) {
   Q_UNUSED(type)
   QStringList fieldList;
 

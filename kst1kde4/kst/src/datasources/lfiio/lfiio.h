@@ -23,7 +23,7 @@
 
 class LFIIOSource : public KstDataSource {
   public:
-    LFIIOSource(KConfig *cfg, const QString& filename, const QString& type);
+    LFIIOSource(QSettings *cfg, const QString& filename, const QString& type);
 
     ~LFIIOSource();
     bool initFile();

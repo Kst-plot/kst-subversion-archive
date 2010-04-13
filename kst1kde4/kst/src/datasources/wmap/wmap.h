@@ -34,7 +34,7 @@ typedef struct {
 
 class WMAPSource : public KstDataSource {
   public:
-    WMAPSource(KConfig *cfg, const QString& filename, const QString& type);
+    WMAPSource(QSettings *cfg, const QString& filename, const QString& type);
    ~WMAPSource();
 
     bool initFile();

@@ -23,7 +23,7 @@
 
 class IndirectSource : public KstDataSource {
   public:
-    IndirectSource(KConfig *cfg, const QString& filename, KstDataSourcePtr child);
+    IndirectSource(QSettings *cfg, const QString& filename, KstDataSourcePtr child);
 
     ~IndirectSource();
 

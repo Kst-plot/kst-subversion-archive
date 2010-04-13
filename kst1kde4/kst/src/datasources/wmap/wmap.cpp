@@ -113,7 +113,7 @@ static int iNumAIHKDataHeaders = sizeof(AIHKDataHeaders)/sizeof(char*);
 static int iNumDIHKDataHeaders = sizeof(DIHKDataHeaders)/sizeof(char*);
 static int iNumLOSDataHeaders = sizeof(LOSDataHeaders)/sizeof(char*);
 
-WMAPSource::WMAPSource( KConfig *cfg, const QString& filename, const QString& type )
+WMAPSource::WMAPSource( QSettings *cfg, const QString& filename, const QString& type )
 : KstDataSource( cfg, filename, type )
 {
   //_fields.setAutoDelete( TRUE );  obsolete in QMultiHash class
@@ -663,7 +663,7 @@ void WMAPSource::save( QTextStream& ts, const QString& indent )
 
 
 extern "C" {
-  KstDataSource *create_wmap( KConfig *cfg, const QString& filename, const QString& type )
+  KstDataSource *create_wmap( QSettings *cfg, const QString& filename, const QString& type )
   {
     return new WMAPSource( cfg, filename, type );
   }
@@ -677,7 +677,7 @@ extern "C" {
     return rc;
   }
 
-  int understands_wmap( KConfig*, const QString& filename )
+  int understands_wmap( QSettings*, const QString& filename )
   {
     fitsfile* ffits;
     int       iStatus = 0;

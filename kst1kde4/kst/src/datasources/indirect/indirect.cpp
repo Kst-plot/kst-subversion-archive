@@ -25,7 +25,7 @@
 #include <qfileinfo.h>
  
 
-IndirectSource::IndirectSource(KConfig *cfg, const QString& filename, KstDataSourcePtr child)
+IndirectSource::IndirectSource(QSettings *cfg, const QString& filename, KstDataSourcePtr child)
 : KstDataSource(cfg, filename, QString::null), _child(child) {
   if (child) {
     _valid = true;
@@ -123,7 +123,7 @@ bool IndirectSource::isEmpty() const {
 
 
 extern "C" {
-KstDataSource *create_indirect(KConfig *cfg, const QString& filename, const QString& type) {
+KstDataSource *create_indirect(QSettings *cfg, const QString& filename, const QString& type) {
   if (!type.isEmpty() && type != "Indirect") {
     return 0L;
   }
@@ -159,7 +159,7 @@ QStringList provides_indirect() {
 }
 
 
-int understands_indirect(KConfig*, const QString& filename) {
+int understands_indirect(QSettings*, const QString& filename) {
   int percent = 50;
 
   if (filename.endsWith(".cur")) { // Do we really have to do this?
@@ -192,7 +192,7 @@ int understands_indirect(KConfig*, const QString& filename) {
 }
 
 
-QStringList fieldList_indirect(KConfig *cfg, const QString& filename, const QString& type, QString *typeSuggestion, bool *complete) {
+QStringList fieldList_indirect(QSettings *cfg, const QString& filename, const QString& type, QString *typeSuggestion, bool *complete) {
   if ((!type.isEmpty() && !provides_indirect().contains(type)) || !understands_indirect(cfg, filename)) {
       return QStringList();
   }
