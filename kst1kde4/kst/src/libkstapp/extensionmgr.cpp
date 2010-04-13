@@ -35,11 +35,11 @@ ExtensionMgr *ExtensionMgr::self() {
 
 void ExtensionMgr::save() {
   QMap<QString,bool>::const_iterator i;
-// xxx  KConfig cfg("kstextensionsrc", false, false);
+//  QSettings cfg("kstextensionsrc", false, false);
   QStringList disabled;
   QStringList enabled;
 
-// xxx  cfg.setGroup("Extensions");
+  cfg.beginGroup("Extensions");
 
   for (i = _extensions.begin(); i != _extensions.end(); ++i) {
     if (*i) {
@@ -48,10 +48,10 @@ void ExtensionMgr::save() {
       disabled += i.key();
     }
   }
-/* xxx
-  cfg.writeEntry("Disabled", disabled);
-  cfg.writeEntry("Enabled", enabled);
-*/
+
+  cfg.setValue("Disabled", disabled);
+  cfg.setValue("Enabled", enabled);
+
 }
 
 

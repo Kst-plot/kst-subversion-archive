@@ -124,12 +124,12 @@ KstViewWindow::~KstViewWindow() {
 }
 
 
-void KstViewWindow::saveProperties(KConfig *config) {
+void KstViewWindow::saveProperties(QSettings *config) {
   Q_UNUSED(config)
 }
 
 
-void KstViewWindow::readProperties(KConfig* config) {
+void KstViewWindow::readProperties(QSettings* config) {
   Q_UNUSED(config)
 }
 

@@ -54,13 +54,13 @@ class KST_EXPORT KstViewWindow : public QMdiSubWindow {
      * end to the session config file, including saving the currently
      * opened file by a temporary filename provided by KApplication.
      * @see KMainWindow#saveProperties */
-    virtual void saveProperties(KConfig *cfg);
+    virtual void saveProperties(QSettings *cfg);
 
     /** reads the session config file and restores the application's
      * state including the last opened files and documents by reading
      * the temporary files saved by saveProperties()
      * @see KMainWindow#readProperties */
-    virtual void readProperties(KConfig *cfg);
+    virtual void readProperties(QSettings *cfg);
 
     /**
     * Ignores the event and calls KMdiMainFrm::childWindowCloseRequest instead. 
@@ -102,7 +102,7 @@ class KST_EXPORT KstViewWindow : public QMdiSubWindow {
     void commonConstructor();
 
     /** the configuration object of the application */
-    KConfig *config;
+    QSettings *config;
     KstTopLevelViewPtr _view;
 };
 
