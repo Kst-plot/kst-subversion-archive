@@ -20,17 +20,18 @@
 
 #include <QString>
 #include <QColor>
+#include <QSettings>
 #include "kst_export.h"
 
-class KConfig;
+// xxx class KConfig;
 
 class KST_EXPORT KstLegendDefaults {
   public:
 
     KstLegendDefaults();
 
-    void readConfig(KConfig *config);
-    void writeConfig(KConfig *config);
+    void readConfig(QSettings *config);
+    void writeConfig(QSettings *config);
 
     const QColor& fontColor() const;
     const QColor& foregroundColor() const;
