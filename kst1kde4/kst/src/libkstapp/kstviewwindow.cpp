@@ -155,23 +155,23 @@ void KstViewWindow::slotFileClose() {
 
 
 void KstViewWindow::immediatePrintToFile(const QString &filename) {
-/* xxx
-  KPrinter printer(true, QPrinter::HighResolution);
-  printer.setPageSize(KPrinter::Letter);
-  printer.setOrientation(KPrinter::Landscape);
-  printer.setOutputToFile(true);
+
+  QPrinter printer(QPrinter::HighResolution);
+  printer.setPageSize(QPrinter::Letter);
+  printer.setOrientation(QPrinter::Landscape);
+  printer.setOutputFormat(QPrinter::PdfFormat);
   printer.setOutputFileName(filename);
 
   KstPainter p(KstPainter::P_PRINT);
   p.begin(&printer);
-  QPaintDeviceMetrics metrics(&printer);
-  const QSize size(metrics.width(), metrics.height());
+
+  const QSize size(printer.width(), printer.height());
 
   view()->resizeForPrint(size);
   view()->paint(p, QRegion());
   view()->revertForPrint();
   p.end();
-*/
+
 }
 
 
