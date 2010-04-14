@@ -23,8 +23,8 @@
 #include <QRadioButton>
 #include <QSpinBox>
 #include <QTimer>
+#include <QSettings>
 
-#include <kconfig.h>
 #include <kimageio.h>
 #include <kurlcompletion.h>
 #include <kurlrequester.h>
@@ -130,42 +130,41 @@ void KstGraphFileDialog::setURL(const QString& url) {
 
 
 void KstGraphFileDialog::saveProperties() {
-/* xxx
-  KConfig cfg("kstrc", false, false);
+  QSettings cfg("kstrc", QSettings::NativeFormat, this);
 
-  cfg.setGroup("AutoSaveImages");
+  cfg.beginGroup("AutoSaveImages");
 
-  //cfg.writeEntry("AutoSave", _autosave); // not read
-  cfg.writeEntry("Seconds", _savePeriod);
-  cfg.writeEntry("Location", _url);
+  //cfg.setValue("AutoSave", _autosave); // not read
+  cfg.setValue("Seconds", _savePeriod);
+  cfg.setValue("Location", _url);
 
-  cfg.writeEntry("XSize", _w);
-  cfg.writeEntry("YSize", _h);
-  cfg.writeEntry("Display", _displayOption);
-  cfg.writeEntry("Square", _displayOption == 1);
-  cfg.writeEntry("All", _allWindows);
-  cfg.writeEntry("Format", _format);
-  cfg.writeEntry("EPSVector", _saveEPSAsVector);
+  cfg.setValue("XSize", _w);
+  cfg.setValue("YSize", _h);
+  cfg.setValue("Display", _displayOption);
+  cfg.setValue("Square", _displayOption == 1);
+  cfg.setValue("All", _allWindows);
+  cfg.setValue("Format", _format);
+  cfg.setValue("EPSVector", _saveEPSAsVector);
 
+  cfg.endGroup();
   cfg.sync();
-*/
+
 }
 
 
 void KstGraphFileDialog::loadProperties() {
-/* xxx
-  KConfig cfg("kstrc");
+  QSettings cfg("kstrc");
   bool isSquare;
 
-  cfg.setGroup("AutoSaveImages");
+  cfg.beginGroup("AutoSaveImages");
 
   if (_url.isEmpty()) {
-    _url = cfg.readEntry("Location", "");
+    _url = cfg.value("Location", "").toString();
   }
   if (_url.isEmpty()) {
     _url = QDir::currentPath();
     if (_url.length() > 0) {
-      if (_url.endsWith("/", FALSE)) {
+      if (_url.endsWith("/", Qt::CaseInsensitive)) {
         _url += QString("export");
       } else {
         _url += QString("/export");
@@ -173,20 +172,19 @@ void KstGraphFileDialog::loadProperties() {
     }
   }
 
-  _format = cfg.readEntry("Format", "PNG");
-  _w = cfg.readNumEntry("XSize", 640);
-  _h = cfg.readNumEntry("YSize", 480);
-  isSquare = cfg.readBoolEntry("Square", false);
+  _format = cfg.value("Format", "PNG").toString();
+  _w = cfg.value("XSize", 640).toInt();
+  _h = cfg.value("YSize", 480).toInt();
+  isSquare = cfg.value("Square", false).toBool();
   if (isSquare) {
     _displayOption = 1;
   } else {
-    _displayOption = cfg.readNumEntry("Display", 0);
+    _displayOption = cfg.value("Display", 0).toInt();
   }
-  _allWindows = cfg.readBoolEntry("All", false);
+  _allWindows = cfg.value("All", false).toBool();
   _autoSave = false; // do not read from config file...
-  _savePeriod = cfg.readNumEntry("Seconds", 15);
-  _saveEPSAsVector = cfg.readBoolEntry("EPSVector", true);
-*/
+  _savePeriod = cfg.value("Seconds", 15).toInt();
+  _saveEPSAsVector = cfg.value("EPSVector", true).toBool();
 }
 
 
