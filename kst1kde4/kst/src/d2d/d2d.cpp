@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 #include <stdlib.h> // atoi
-#include <kconfig.h>
+#include <QSettings>
 #include <kinstance.h>
 
 // hack to make main() a friend of kstdatasource
@@ -45,8 +45,8 @@ int main(int argc, char *argv[]) {
   atexit(exitHelper);
   KInstance inst("d2d");
 
-  KConfig *kConfigObject = new KConfig("kstdatarc", false, false);
-  KstDataSource::setupOnStartup(kConfigObject);
+  QSettings *qSettingsObject = new QSettings("kstdatarc", QSettings::NativeFormat, this);
+  KstDataSource::setupOnStartup(qSettingsObject);
 
   char field_list[40][120], in_filename[180], out_filename[180], out_type[40];
   int n_field=0;
@@ -128,7 +128,7 @@ int main(int argc, char *argv[]) {
   for (KService::List::ConstIterator it = sl.begin(); it != sl.end(); ++it) {
     if ((*it)->library() == out_type) {
       KstSharedPtr<KST::DataSourcePlugin> p = new KST::DataSourcePlugin(*it);
-      out_file = p->create(kConfigObject, out_filename, QString::null);
+      out_file = p->create(qSettingsObject, out_filename, QString::null);
       break;
     }
   } 

@@ -22,7 +22,7 @@
 #include <QSettings>
 #include "kst_export.h"
 
-class KConfig;
+// xxx class KConfig;
 
 class KST_EXPORT KstObjectDefaults {
   public:

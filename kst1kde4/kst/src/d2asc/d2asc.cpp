@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 #include <stdlib.h>
-#include <kconfig.h>
+#include <QSettings>
 #include <kinstance.h>
 
 // hack to make main() a friend of kstdatasource
@@ -50,8 +50,8 @@ int main(int argc, char *argv[]) {
   KInstance inst("d2asc");
   KstDataSourcePtr file;
 
-  KConfig *kConfigObject = new KConfig("kstdatarc", false, false);
-  KstDataSource::setupOnStartup(kConfigObject);
+  QSettings *qSettingsObject = new QSettings("kstdatarc", QSettings::NativeFormat, false);
+  KstDataSource::setupOnStartup(qSettingsObject);
 
   fieldEntry field;
   QValueList<fieldEntry> fieldList;
