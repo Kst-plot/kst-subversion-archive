@@ -15,6 +15,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 #include "kstalignment.h"
 
 KstAlignment KST::alignment;

@@ -16,16 +16,12 @@
  *                                                                         *
  ***************************************************************************/
 
-// xxx #include <QButtonGroup>
 #include <QCheckBox>
 #include <QComboBox>
 #include <QLineEdit>
 #include <QRadioButton>
 #include <QSpinBox>
 #include <QMessageBox>
-
-/* xxx #include <kcolorbutton.h>
-#include <knuminput.h> */
 
 #include "colorpalettewidget.h"
 #include "curveplacementwidget.h"

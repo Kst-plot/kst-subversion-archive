@@ -161,8 +161,7 @@ class KST_EXPORT KstApp : public QMdiArea {
     void saveTabs(QTextStream& ts);
 
   protected:
-// xxx    void customEvent(QCustomEvent *e);
-
+    void customEvent(QEvent *e);
 
     /** save options to the configuration file
      *  Geometry, Toolbar status, Statusbar status */

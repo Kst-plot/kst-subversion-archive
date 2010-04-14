@@ -23,8 +23,6 @@
 #include <QSpinBox>
 #include <QTimer>
 
-#include <knuminput.h>
-
 #include "datarangewidget.h"
 #include "kstchangenptsdialog.h"
 #include "kstdatacollection.h"

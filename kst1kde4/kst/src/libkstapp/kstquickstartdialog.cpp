@@ -15,12 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-// xxx #include <QCheckBox>
-// xxx #include <Q3ListBox>
-
-#include <kurlcompletion.h>
-#include <kurlrequester.h>
-
 #include "kst.h"
 #include "kstdoc.h"
 #include "kstquickstartdialog.h"
@@ -29,7 +23,7 @@
 KstQuickStartDialog::KstQuickStartDialog(QWidget *parent, const char *name, bool modal, Qt::WindowFlags fl)
 : QDialog(parent,fl) {
   setupUi(this);
-  _fileName->completionObject()->setDir(QDir::currentPath());
+// xxx  _fileName->completionObject()->setDir(QDir::currentPath());
   _app = KstApp::inst();
   _isRecentFile = false;
   _openFile->setEnabled(false);

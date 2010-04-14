@@ -95,7 +95,7 @@ set(kstapp_LIB_SRCS
 # xxx    kstviewstringsdialog.cpp
     updatethread.cpp
     kstvectordialog.cpp
-    kstprintoptionspage.cpp
+# xxx    kstprintoptionspage.cpp
 # xxx    kstscalarlistview.cpp
 # xxx    kststringlistview.cpp
 # xxx    kstviewscalarsdialog.cpp

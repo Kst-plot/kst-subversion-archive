@@ -20,15 +20,10 @@
 
 #include <QButtonGroup>
 #include <QCheckBox>
+#include <QFileDialog>
+#include <QMessageBox>
 #include <QRadioButton>
 #include <QSpinBox>
-#include <QMessageBox>
-
-#include <kfiledialog.h>
-#include <klineedit.h>
-#include <knuminput.h>
-#include <kurlcompletion.h>
-#include <kurlrequester.h>
 
 #include "datarangewidget.h"
 #include "defaultprimitivenames.h"
@@ -56,17 +51,15 @@ KstVectorDialog *KstVectorDialog::globalInstance() {
 }
 
 
-KstVectorDialog::KstVectorDialog(QWidget* parent, const char* name,
-                                   bool modal, Qt::WindowFlags fl)
-: KstDataDialog(parent, name, modal, fl) {
-  _w = new Ui::VectorDialogWidget(_contents);
+KstVectorDialog::KstVectorDialog(QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl) : KstDataDialog(parent) {
+  _w = new Ui::VectorDialogWidget();
   _w->setupUi(this);
 
   setMultiple(true);
   _inTest = false;
-  _w->FileName->completionObject()->setDir(QDir::currentPath());
+// xxx  _w->FileName->completionObject()->setDir(QDir::currentPath());
 
-  _w->FileName->setMode(KFile::File | KFile::Directory | KFile::ExistingOnly);
+// xxx  _w->FileName->setMode(KFile::File | KFile::Directory | KFile::ExistingOnly);
   connect(_w->FileName, SIGNAL(openFileDialog(KURLRequester *)), this, SLOT(selectFolder()));
   connect(_w->FileName, SIGNAL(textChanged(const QString&)), this, SLOT(updateCompletion()));
   connect(_w->_configure, SIGNAL(clicked()), this, SLOT(configureSource()));
@@ -75,13 +68,19 @@ KstVectorDialog::KstVectorDialog(QWidget* parent, const char* name,
   connect(_w->_connect, SIGNAL(clicked()), this, SLOT(testURL()));
   connect(_w->_pushButtonHierarchy, SIGNAL(clicked()), this, SLOT(showFields()));
 
-  // connections for multiple edit mode
+  //
+  // connections for multiple edit mode...
+  //
+
   connect(_w->_kstDataRange->CountFromEnd, SIGNAL(clicked()), this, SLOT(setCountFromEndDirty()));
   connect(_w->_kstDataRange->ReadToEnd, SIGNAL(clicked()), this, SLOT(setReadToEndDirty()));
   connect(_w->_kstDataRange->DoFilter, SIGNAL(clicked()), this, SLOT(setDoFilterDirty()));
   connect(_w->_kstDataRange->DoSkip, SIGNAL(clicked()), this, SLOT(setDoSkipDirty()));
 
-  // for apply button
+  //
+  // for apply button...
+  //
+
   connect(_w->_readFromSource, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
   connect(_w->_generateX, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
   connect(_w->_configure, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
@@ -89,7 +88,7 @@ KstVectorDialog::KstVectorDialog(QWidget* parent, const char* name,
   connect(_w->Field, SIGNAL(highlighted(int)), this, SLOT(wasModifiedApply()));
   connect(_w->Field, SIGNAL(completion(const QString&)), this, SLOT(wasModifiedApply()));
   connect(_w->_N, SIGNAL(valueChanged(int)), this, SLOT(wasModifiedApply()));
-  connect(_w->_N->child("qt_spinbox_edit"), SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
+// xxx  connect(_w->_N->child("qt_spinbox_edit"), SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
   connect(_w->_xMin, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
   connect(_w->_xMax, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
   connect(_w->_kstDataRange->F0, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
@@ -104,8 +103,8 @@ KstVectorDialog::KstVectorDialog(QWidget* parent, const char* name,
 
   _w->_configure->setEnabled(false);
   _w->_connect->setHidden(true);
-  _fieldCompletion = _w->Field->completionObject();
-  _w->Field->setAutoDeleteCompletionObject(true);
+// xxx  _fieldCompletion = _w->Field->completionObject();
+// xxx  _w->Field->setAutoDeleteCompletionObject(true);
   setFixedHeight(height());
   _configWidget = 0L;
   _hierarchy = false;
@@ -116,24 +115,27 @@ KstVectorDialog::KstVectorDialog(QWidget* parent, const char* name,
 }
 
 
-KstVectorDialog::~KstVectorDialogI() {
+KstVectorDialog::~KstVectorDialog() {
   delete _configWidget;
   _configWidget = 0L;
 }
 
 
-void KstVectorDialog::selectingFolder()
-{
-  QString strFolder = _w->FileName->url();
-  KFileDialog *fileDlg = _w->FileName->fileDialog();
-  QFileInfo fileInfo(strFolder);
+void KstVectorDialog::selectingFolder() {
+  QString strFolder;
+  QFileDialog *fileDlg;
+
+// xxx  strFolder = _w->FileName->url();
+// xxx  fileDlg = _w->FileName->fileDialog();
 
   if (fileDlg) {
+    QFileInfo fileInfo(strFolder);
+
     if (fileInfo.isDir()) {
       QDir dir(strFolder);
 
       if (dir.cdUp()) {
-        fileDlg->setURL(KURL(dir.absPath()));
+// xxx        fileDlg->setURL(KURL(dir.absPath()));
       }
     }
   }
@@ -157,12 +159,12 @@ void KstVectorDialog::showFields() {
   KstFieldSelect *dlg = new KstFieldSelect(this, "Field Select", true);
 
   if (dlg) {
-    dlg->setURL(_w->FileName->url());
+// xxx    dlg->setURL(_w->FileName->url());
     dlg->exec();
 
     if (dlg->result() == QDialog::Accepted) {
       if (!dlg->selection().isEmpty()) {
-        _w->Field->setCurrentText(dlg->selection());
+// xxx        _w->Field->setCurrentText(dlg->selection());
       }
     }
 
@@ -188,13 +190,14 @@ void KstVectorDialog::enableGenerate() {
 
 
 void KstVectorDialog::updateCompletion() {
+  KstDataSourcePtr ds;
   QStringList list;
   QString currentText = _w->Field->currentText();
 
   _w->Field->clear();
 
   KST::dataSourceList.lock().readLock();
-  KstDataSourcePtr ds = *KST::dataSourceList.findReusableFileName(_w->FileName->url());
+// xxx  ds = *KST::dataSourceList.findReusableFileName(_w->FileName->url());
   KST::dataSourceList.lock().unlock();
 
   delete _configWidget;
@@ -214,8 +217,10 @@ void KstVectorDialog::updateCompletion() {
   } else {
     QString type;
     bool complete = false;
+/* xxx
     QString u = _w->FileName->url();
     KURL url;
+
     if (QFile::exists(u) && QFileInfo(u).isRelative()) {
       url.setPath(u);
     } else {
@@ -237,20 +242,23 @@ void KstVectorDialog::updateCompletion() {
       _configWidget = KstDataSource::configWidgetForSource(u, type);
     }
     _w->_kstDataRange->setAllowTime(KstDataSource::supportsTime(u, type));
+*/
   }
 
   _w->_configure->setEnabled(_configWidget);
   _w->_pushButtonHierarchy->setEnabled(_hierarchy);
-  _fieldCompletion = _w->Field->completionObject();
+// xxx  _fieldCompletion = _w->Field->completionObject();
 
-  _w->Field->insertStringList(list);
+  _w->Field->insertItems(0, list);
   if (_fieldCompletion) {
     _fieldCompletion->clear();
     _fieldCompletion->insertItems(list);
   }
+/* xxx
   if (!currentText.isEmpty() && (list.contains(currentText) || _w->Field->editable())) {
     _w->Field->setCurrentText(currentText);
   }
+*/
   _ok->setEnabled(_w->Field->isEnabled() || _editMultipleMode);
 }
 
@@ -283,14 +291,16 @@ void KstVectorDialog::fillFieldsForRVEdit() {
     if (it != KST::dataSourceList.end()) {
       tf = *it;
       tf->readLock();
-      _w->Field->insertStringList(tf->fieldList());
+      _w->Field->insertItems(0, tf->fieldList());
       if (_fieldCompletion) {
         _fieldCompletion->insertItems(tf->fieldList());
       }
       tf->unlock();
     } else {
-      QStringList list = KstDataSource::fieldListForSource(_w->FileName->url());
-      _w->Field->insertStringList(list);
+      QStringList list;
+
+// xxx      list = KstDataSource::fieldListForSource(_w->FileName->url());
+      _w->Field->insertItems(0, list);
       if (_fieldCompletion) {
         _fieldCompletion->insertItems(list);
       }
@@ -300,10 +310,10 @@ void KstVectorDialog::fillFieldsForRVEdit() {
 
   _w->Field->setEnabled(_w->Field->count() > 0);
   _ok->setEnabled(_w->Field->isEnabled());
-  _w->Field->setCurrentText(rvp->field());
+// xxx  _w->Field->setCurrentText(rvp->field());
 
   // select the proper file
-  _w->FileName->setURL(rvp->filename());
+// xxx  _w->FileName->setURL(rvp->filename());
 
   // fill the vector range entries
   _w->_kstDataRange->CountFromEnd->setChecked(rvp->countFromEOF());
@@ -324,33 +334,34 @@ void KstVectorDialog::fillFieldsForRVEdit() {
 
 
 void KstVectorDialog::fillFieldsForSVEdit() {
-  KstSVectorPtr svp = kst_cast<KstSVector>(_dp);
-  if (!svp) { // shouldn't be needed
-    return;
+  KstSVectorPtr svp;
+
+  svp = kst_cast<KstSVector>(_dp);
+  if (svp) {
+    _w->_generateX->setChecked(true);
+    _w->_rvectorGroup->hide();
+    _w->_rvectorGroup->setEnabled(false);
+    _w->_kstDataRange->hide();
+    _w->_kstDataRange->setEnabled(false);
+    _w->_svectorGroup->show();
+    _w->_svectorGroup->setEnabled(true);
+    _w->sourceGroup->hide();
+  
+    svp->readLock();
+    _tagName->setText(svp->tagName());
+    _w->_N->setValue( svp->length() );
+    _w->_xMin->setText(QString::number(svp->min()));
+    _w->_xMax->setText(QString::number(svp->max()));
+    svp->unlock();
+    _ok->setEnabled(true);
   }
-
-  _w->_generateX->setChecked(true);
-  _w->_rvectorGroup->hide();
-  _w->_rvectorGroup->setEnabled(false);
-  _w->_kstDataRange->hide();
-  _w->_kstDataRange->setEnabled(false);
-  _w->_svectorGroup->show();
-  _w->_svectorGroup->setEnabled(true);
-  _w->sourceGroup->hide();
-
-  svp->readLock();
-  _tagName->setText(svp->tagName());
-  _w->_N->setValue( svp->length() );
-  _w->_xMin->setText(QString::number(svp->min()));
-  _w->_xMax->setText(QString::number(svp->max()));
-  svp->unlock();
-  _ok->setEnabled(true);
 }
 
 
 void KstVectorDialog::fillFieldsForEdit() {
-  KstRVectorPtr rvp = kst_cast<KstRVector>(_dp);
+  KstRVectorPtr rvp;
 
+  rvp = kst_cast<KstRVector>(_dp);
   if (rvp) {
     fillFieldsForRVEdit();
   } else {
@@ -374,9 +385,12 @@ void KstVectorDialog::fillFieldsForNew() {
 
   _tagName->setText(defaultTag);
 
-  // set defaults with vectorDefaults
+  //
+  // set defaults with vectorDefaults...
+  //
+
   KST::vectorDefaults.sync();
-  _w->FileName->setURL(KST::vectorDefaults.dataSource());
+// xxx  _w->FileName->setURL(KST::vectorDefaults.dataSource());
   updateCompletion();
   _w->_kstDataRange->update();
   _w->Field->setFocus();
@@ -399,18 +413,21 @@ bool KstVectorDialog::newObject() {
     // if there is not an active DataSource, create one
     {
       KST::dataSourceList.lock().writeLock();
-      KstDataSourceList::Iterator it = KST::dataSourceList.findReusableFileName(_w->FileName->url());
+      KstDataSourceList::Iterator it;
 
+// xxx      it = KST::dataSourceList.findReusableFileName(_w->FileName->url());
       if (it == KST::dataSourceList.end()) {
-        file = KstDataSource::loadSource(_w->FileName->url());
+// xxx        file = KstDataSource::loadSource(_w->FileName->url());
         if (!file || !file->isValid()) {
           KST::dataSourceList.lock().unlock();
-          QMessageBox::warning(this, tr("Kst"), tr("The file could not be loaded."));
+          QMessageBox::warning(this, QObject::tr("Kst"), QObject::tr("The file could not be loaded."));
+
           return false;
         }
         if (file->isEmpty()) {
           KST::dataSourceList.lock().unlock();
-          QMessageBox::warning(this, tr("Kst"), tr("The file does not contain data."));
+          QMessageBox::warning(this, QObject::tr("Kst"), QObject::tr("The file does not contain data."));
+
           return false;
         }
         KST::dataSourceList.append(file);
@@ -426,6 +443,7 @@ bool KstVectorDialog::newObject() {
       return false;
     }
 
+    KstRVectorPtr vector;
     KstFrameSize f0;
     KstFrameSize n;
 
@@ -433,10 +451,12 @@ bool KstVectorDialog::newObject() {
       f0 = file->sampleForTimeLarge(_w->_kstDataRange->f0Value());
     } else if (_w->_kstDataRange->isStartAbsoluteTime()) {
       bool ok = false;
+
       f0 = file->sampleForTimeLarge(_w->_kstDataRange->f0DateTimeValue(), &ok);
       if (!ok) {
         file->unlock();
-        QMessageBox::warning(this, tr("Kst"), tr("The requested field or file could not use the specified date."));
+        QMessageBox::warning(this, QObject::tr("Kst"), QObject::tr("The requested field or file could not use the specified date."));
+
         return false;
       }
     } else {
@@ -445,12 +465,15 @@ bool KstVectorDialog::newObject() {
 
     if (_w->_kstDataRange->isRangeRelativeTime()) {
       double nValStored = _w->_kstDataRange->nValue();
+
       if (_w->_kstDataRange->CountFromEnd->isChecked()) {
         KstFrameSize frameCount = file->frameCountLarge(_w->Field->currentText());
         double msCount = file->relativeTimeForSampleLarge(frameCount - 1);
+
         n = frameCount - 1 - file->sampleForTimeLarge(msCount - nValStored);
       } else {
         double fTime = file->relativeTimeForSampleLarge(f0);
+
         n = file->sampleForTimeLarge(fTime + nValStored) - file->sampleForTimeLarge(fTime);
       }
     } else {
@@ -462,8 +485,7 @@ bool KstVectorDialog::newObject() {
     // create the vector
     //
 
-    KstRVectorPtr vector = new KstRVector(
-        file, _w->Field->currentText(),
+    vector = new KstRVector(file, _w->Field->currentText(),
         KstObjectTag(tagName, file->tag(), false),
         _w->_kstDataRange->CountFromEnd->isChecked() ? -1 : f0,
         _w->_kstDataRange->ReadToEnd->isChecked() ? -1 : n,
@@ -472,9 +494,12 @@ bool KstVectorDialog::newObject() {
         _w->_kstDataRange->DoFilter->isChecked());
 
     emit vectorCreated(KstVectorPtr(vector));
+
     vector = 0L;
-    emit modified();
+
+// xxx    emit modified();
   } else {
+    KstSVectorPtr svector;
     double x0 = _w->_xMin->text().toDouble();
     double x1 = _w->_xMax->text().toDouble();
     int n = _w->_N->value();
@@ -487,10 +512,13 @@ bool KstVectorDialog::newObject() {
       tagName.remove(']');
     }
 
-    KstSVectorPtr svector = new KstSVector(x0, x1, n, KstObjectTag(tagName, KstObjectTag::globalTagContext));
+    svector = new KstSVector(x0, x1, n, KstObjectTag(tagName, KstObjectTag::globalTagContext));
+
     emit vectorCreated(KstVectorPtr(svector));
+
     svector = 0L;
-    emit modified();
+
+// xxx    emit modified();
   }
 
   return true;
@@ -507,12 +535,14 @@ bool KstVectorDialog::editSingleObject(KstVectorPtr vcPtr) {
 
 
 bool KstVectorDialog::editSingleObjectSV(KstVectorPtr vcPtr) {
-  KstSVectorPtr svp = kst_cast<KstSVector>(vcPtr);
+  KstSVectorPtr svp;
+  double p_xMin, p_xMax;
+  int p_N;
+
+  svp = kst_cast<KstSVector>(vcPtr);
 
   svp->readLock();
 
-  int p_N;
-  double p_xMin, p_xMax;
   p_N = _NDirty ? _w->_N->value() : svp->length();
   p_xMin = _xMinDirty ? _w->_xMin->text().toDouble() : svp->min();
   p_xMax = _xMaxDirty ? _w->_xMax->text().toDouble() : svp->max();
@@ -527,24 +557,27 @@ bool KstVectorDialog::editSingleObjectSV(KstVectorPtr vcPtr) {
 
 
 bool KstVectorDialog::editSingleObjectRV(KstVectorPtr vcPtr) {
-  KstRVectorPtr rvp = kst_cast<KstRVector>(vcPtr);
+  KstRVectorPtr rvp;
   KstDataSourcePtr file;
 
+  rvp = kst_cast<KstRVector>(vcPtr);
   if (_fileNameDirty) {
-    // if there is not an active KstFile, create one
-    KST::dataSourceList.lock().writeLock();
-    KstDataSourceList::Iterator it = KST::dataSourceList.findReusableFileName(_w->FileName->url());
+    KstDataSourceList::iterator it;
 
+    KST::dataSourceList.lock().writeLock();
+// xxx    it = KST::dataSourceList.findReusableFileName(_w->FileName->url());
     if (it == KST::dataSourceList.end()) {
-      file = KstDataSource::loadSource(_w->FileName->url());
+// xxx      file = KstDataSource::loadSource(_w->FileName->url());
       if (!file || !file->isValid()) {
         KST::dataSourceList.lock().unlock();
-        QMessageBox::warning(this, tr("Kst"), tr("The file could not be opened."));
+        QMessageBox::warning(this, QObject::tr("Kst"), QObject::tr("The file could not be opened."));
+
         return false;
       }
       if (file->isEmpty()) {
         KST::dataSourceList.lock().unlock();
-        QMessageBox::warning(this, tr("Kst"), tr("The file does not contain data."));
+        QMessageBox::warning(this, QObject::tr("Kst"), QObject::tr("The file does not contain data."));
+
         return false;
       }
       KST::dataSourceList.append(file);
@@ -553,16 +586,20 @@ bool KstVectorDialog::editSingleObjectRV(KstVectorPtr vcPtr) {
     }
     KST::dataSourceList.lock().unlock();
   } else {
-    KstRVectorList vcList = kstObjectSubList<KstVector,KstRVector>(KST::vectorList);
+    KstRVectorList vcList;
+
+    vcList = kstObjectSubList<KstVector,KstRVector>(KST::vectorList);
     for (uint i = 0; i < _editMultipleWidget->_objectList->count(); i++) {
-      if (_editMultipleWidget->_objectList->isSelected(i)) {
-        // get the pointer to the object
-        KstRVectorList::Iterator vcIter = vcList.findTag(_editMultipleWidget->_objectList->text(i));
+      if (_editMultipleWidget->_objectList->item(i)->isSelected()) {
+        KstRVectorList::Iterator vcIter;
+        KstRVectorPtr rvp;
+
+        vcIter = vcList.findTag(_editMultipleWidget->_objectList->item(i)->text());
         if (vcIter == vcList.end()) {
           return false;
         }
 
-        KstRVectorPtr rvp = *vcIter;
+        rvp = *vcIter;
         rvp->readLock();
         file = rvp->dataSource();
         rvp->unlock();
@@ -573,11 +610,13 @@ bool KstVectorDialog::editSingleObjectRV(KstVectorPtr vcPtr) {
   file->writeLock();
   if (rvp) {
     QString pField;
+
     if (_fileNameDirty) {
       pField = _w->Field->currentText();
       if (!file->isValidField(pField)) {
         QMessageBox::warning(this, tr("Kst"), tr("The requested field is not defined for the requested file."));
         file->unlock();
+
         return false;
       }
     } else {
@@ -596,6 +635,7 @@ bool KstVectorDialog::editSingleObjectRV(KstVectorPtr vcPtr) {
         if (!ok) {
           file->unlock();
           QMessageBox::warning(this, tr("Kst"), tr("The requested field or file could not use the specified date."));
+
           return false;
         }
       } else {
@@ -606,12 +646,15 @@ bool KstVectorDialog::editSingleObjectRV(KstVectorPtr vcPtr) {
     if (_nDirty) {
       if (_w->_kstDataRange->isRangeRelativeTime()) {
         double nValStored = _w->_kstDataRange->nValue();
+
         if (_w->_kstDataRange->CountFromEnd->isChecked()) {
           KstFrameSize frameCount = file->frameCountLarge(_w->Field->currentText());
           double msCount = file->relativeTimeForSampleLarge(frameCount - 1);
+
           n = frameCount - 1 - file->sampleForTimeLarge(msCount - nValStored);
         } else {
           double fTime = file->relativeTimeForSampleLarge(f0);
+
           n = file->sampleForTimeLarge(fTime + nValStored) - file->sampleForTimeLarge(fTime);
         }
       } else {
@@ -619,7 +662,10 @@ bool KstVectorDialog::editSingleObjectRV(KstVectorPtr vcPtr) {
       }
     }
 
-    // use existing requested start and number of frames if not dirty
+    //
+    // use existing requested start and number of frames if not dirty...
+    //
+
     rvp->readLock();
     if (!_f0Dirty) {
       f0 = rvp->reqStartFrame();
@@ -670,14 +716,20 @@ bool KstVectorDialog::editSingleObjectRV(KstVectorPtr vcPtr) {
 
     rvp->unlock();
 
-    // change the vector
+    //
+    // change the vector...
+    //
+
     rvp->writeLock();
     rvp->change(file, pField, rvp->tag(), pCountFromEnd ?  -1 : f0, pReadToEnd ?  -1 : n, pSkip, pDoSkip, pDoFilter);
     rvp->unlock();
   } else {
-    KstSVectorPtr svp = kst_cast<KstSVector>(_dp);
+    KstSVectorPtr svp;
+
+    svp = kst_cast<KstSVector>(_dp);
     if (!svp) {
       file->unlock();
+
       return true; // shouldn't be needed
     }
 
@@ -711,12 +763,14 @@ bool KstVectorDialog::editObject() {
     // now edit the vectors
     bool didEdit = false;
     for (uint i = 0; i < _editMultipleWidget->_objectList->count(); i++) {
-      if (_editMultipleWidget->_objectList->isSelected(i)) {
-        // get the pointer to the object
+      if (_editMultipleWidget->_objectList->item(i)->isSelected()) {
+        KstVectorList::Iterator vcIter;
+
         KST::vectorList.lock().readLock();
-        KstVectorList::Iterator vcIter = KST::vectorList.findTag(_editMultipleWidget->_objectList->text(i));
+        vcIter = KST::vectorList.findTag(_editMultipleWidget->_objectList->item(i)->text());
         if (vcIter == KST::vectorList.end()) {
           KST::vectorList.lock().unlock();
+
           return false;
         }
         KstVectorPtr vcPtr = *vcIter;
@@ -729,23 +783,29 @@ bool KstVectorDialog::editObject() {
       }
     }
     if (!didEdit) {
-      QMessageBox::warning(this, tr("Kst"), tr("Select one or more objects to edit."));
+      QMessageBox::warning(this, QObject::tr("Kst"), QObject::tr("Select one or more objects to edit."));
+
       return false;
     }
   } else {
-    // verify that the curve name is unique
-    QString tag_name = _tagName->text();
+    QString tagName = _tagName->text();
+    KstVectorPtr vp;
+
     _dp->writeLock();
-    if (tag_name != _dp->tagName() && KstData::self()->vectorTagNameNotUnique(tag_name)) {
+    if (tagName != _dp->tagName() && KstData::self()->vectorTagNameNotUnique(tagName)) {
       _dp->unlock();
       _tagName->setFocus();
+
       return false;
     }
 
-    _dp->setTagName(KstObjectTag(tag_name, _dp->tag().context())); // FIXME: doesn't allow changing tag context
+    _dp->setTagName(KstObjectTag(tagName, _dp->tag().context())); // FIXME: doesn't allow changing tag context
     _dp->unlock();
 
-    // then edit the object
+    //
+    // then edit the object...
+    //
+
     _fileNameDirty = true;
     _f0Dirty = true;
     _nDirty = true;
@@ -757,36 +817,45 @@ bool KstVectorDialog::editObject() {
     _skipDirty = true;
     _xMinDirty = true;
     _xMaxDirty = true;
-    KstVectorPtr vp = kst_cast<KstVector>(_dp);
+
+    vp = kst_cast<KstVector>(_dp);
     if (!vp || !editSingleObject(vp)) {
       return false;
     }
   }
-  emit modified();
+
+// xxx  emit modified();
+
   return true;
 }
 
 
 void KstVectorDialog::markSourceAndSave() {
-  assert(_configWidget);
-  KstDataSourcePtr src = static_cast<KstDataSourceConfigWidget*>((QWidget*)_configWidget)->instance();
-  if (src) {
-    src->disableReuse();
+  if (_configWidget) {
+    KstDataSourcePtr src;
+
+    src = static_cast<KstDataSourceConfigWidget*>((QWidget*)_configWidget)->instance();
+    if (src) {
+      src->disableReuse();
+    }
+    static_cast<KstDataSourceConfigWidget*>((QWidget*)_configWidget)->save();
   }
-  static_cast<KstDataSourceConfigWidget*>((QWidget*)_configWidget)->save();
 }
 
 
 void KstVectorDialog::configureSource() {
+  KstDataSourcePtr ds;
   bool isNew = false;
+
   KST::dataSourceList.lock().readLock();
-  KstDataSourcePtr ds = *KST::dataSourceList.findReusableFileName(_w->FileName->url());
+// xxx  ds = *KST::dataSourceList.findReusableFileName(_w->FileName->url());
   KST::dataSourceList.lock().unlock();
   if (!ds) {
     isNew = true;
-    ds = KstDataSource::loadSource(_w->FileName->url());
+// xxx    ds = KstDataSource::loadSource(_w->FileName->url());
     if (!ds || !ds->isValid()) {
       _w->_configure->setEnabled(false);
+
       return;
     }
   }
@@ -814,10 +883,15 @@ void KstVectorDialog::configureSource() {
 
 
 void KstVectorDialog::populateEditMultipleRV() {
-  KstRVectorList vclist = kstObjectSubList<KstVector, KstRVector>(KST::vectorList);
-  _editMultipleWidget->_objectList->insertStringList(vclist.tagNames());
+  KstRVectorList vclist;
 
-  // also intermediate state for multiple edit
+  vclist = kstObjectSubList<KstVector, KstRVector>(KST::vectorList);
+  _editMultipleWidget->_objectList->insertItems(0, vclist.tagNames());
+
+  //
+  // also intermediate state for multiple edit...
+  //
+
   _w->FileName->clear();
   _w->_kstDataRange->F0->setText("");
   _w->_kstDataRange->N->setText("");
@@ -837,7 +911,10 @@ void KstVectorDialog::populateEditMultipleRV() {
   _w->_kstDataRange->N->setEnabled(true);
   _w->_kstDataRange->F0->setEnabled(true);
 
-  // and clean all the fields
+  //
+  // and clean all the fields...
+  //
+
   _fileNameDirty = false;
   _f0Dirty = false;
   _nDirty = false;
@@ -850,8 +927,10 @@ void KstVectorDialog::populateEditMultipleRV() {
 
 
 void KstVectorDialog::populateEditMultipleSV() {
-  KstSVectorList vclist = kstObjectSubList<KstVector, KstSVector>(KST::vectorList);
-  _editMultipleWidget->_objectList->insertStringList(vclist.tagNames());
+  KstSVectorList vclist;
+
+  vclist = kstObjectSubList<KstVector, KstSVector>(KST::vectorList);
+  _editMultipleWidget->_objectList->insertItems(0, vclist.tagNames());
 
   _w->_N->setMinimum(_w->_N->minimum() - 1);
   _w->_N->setSpecialValueText(" ");
@@ -859,7 +938,10 @@ void KstVectorDialog::populateEditMultipleSV() {
   _w->_xMin->setText("");
   _w->_xMax->setText("");
 
-  // clean all the fields
+  //
+  // clean all the fields...
+  //
+
   _NDirty = false;
   _xMinDirty = false;
   _xMaxDirty = false;

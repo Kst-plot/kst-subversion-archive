@@ -15,8 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-// xxx #include <kiconloader.h>
-
 #include "kst2dplot.h"
 #include "kstcurvedifferentiate.h"
 #include "kstlinestyle.h"

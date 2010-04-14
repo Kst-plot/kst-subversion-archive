@@ -15,7 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "ksteditviewobjectdialog.h"
+#include <stdio.h>
 
 #include <QButtonGroup>
 #include <QCheckBox>
@@ -32,14 +32,8 @@
 #include <QSpinBox>
 #include <QStyle>
 
-#include <kcolorbutton.h>
-#include <klineedit.h>
-#include <knuminput.h>
-#include <kurlrequester.h>
-
 #include "kst.h"
-
-#include <stdio.h>
+#include "ksteditviewobjectdialog.h"
 
 KstEditViewObjectDialog::KstEditViewObjectDialog(QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl) 
 : QDialog(parent, fl) {

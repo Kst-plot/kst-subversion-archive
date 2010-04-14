@@ -22,10 +22,7 @@
 #include <QTextDocument>
 #include <QTextStream>
 
-// xxx #include <kglobal.h>
-
 #include "kstplotlabel.h"
-
 #include "enodes.h"
 #include "kst.h"
 #include "kstmath.h"

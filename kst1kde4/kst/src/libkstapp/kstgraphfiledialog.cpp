@@ -18,16 +18,13 @@
 
 #include <QCheckBox>
 #include <QComboBox>
+#include <QDir>
 #include <QImage>
 #include <QLabel>
 #include <QRadioButton>
 #include <QSpinBox>
 #include <QTimer>
 #include <QSettings>
-
-#include <kimageio.h>
-#include <kurlcompletion.h>
-#include <kurlrequester.h>
 
 #include "kstgraphfiledialog.h"
 

@@ -24,8 +24,6 @@
 #include <QMessageBox>
 #include <QSpinBox>
 
-// xxx #include <knuminput.h>
-
 #include "fftoptionswidget.h"
 #include "colorpalettewidget.h"
 #include "curveappearancewidget.h"

@@ -22,8 +22,6 @@
 #include <QRadioButton>
 #include <QSpinBox>
 
-// xxx #include <kcolorbutton.h>
-
 #include "kst2dplot.h"
 #include "kstchoosecolordialog.h"
 #include "kstcurvedialog.h"

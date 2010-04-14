@@ -17,27 +17,15 @@
 
 #include <assert.h>
 
-#include <qclipboard.h>
-#include <qdatetime.h>
-#include <qdeepcopy.h>
-#include <qeventloop.h>
+#include <QClipboard>
+#include <QDateTime>
+#include <QEvent>
+#include <QEventLoop>
 #include <QMessageBox>
 #include <qpaintdevicemetrics.h>
-#include <qpopupmenu.h>
-#include <qprogressbar.h>
-#include <qvalidator.h>
-
-#include <kaccel.h>
-#include <kcmdlineargs.h>
-#include <kfiledialog.h>
-#include <kkeydialog.h>
-#include <kpopupmenu.h>
-#include <kprinter.h>
-#include <kprogress.h>
-#include <kstandarddirs.h>
-#include <kstatusbar.h>
-#include <ktabwidget.h>
-#include <ktoolbarbutton.h>
+#include <QMenu>
+#include <QProgressBar>
+#include <QValidator>
 
 #include "extensiondlg.h"
 #include "extensionmgr.h"
@@ -306,8 +294,9 @@ const QString& KstApp::defaultFont() const {
 void KstApp::checkFontPresent(const QString& font) {
   QFont f(font);
   QFontInfo info(f);
-  if (info.family().lower() != font.lower()) {
-    QString msg = i18n("The %1 font was not found and was replaced by the %2 font; as a result, some labels may not display correctly.").arg(font).arg(info.family());
+
+  if (info.family().toLower() != font.toLower()) {
+    QString msg = QObject::tr("The %1 font was not found and was replaced by the %2 font; as a result, some labels may not display correctly.").arg(font).arg(info.family());
     KstDebug::self()->log(msg, KstDebug::Warning);
   }
 }
@@ -323,7 +312,7 @@ void KstApp::EventELOGConfigure() {
 }
 
 
-void KstApp::customEvent(QCustomEvent *pEvent) {
+void KstApp::customEvent(QEvent *pEvent) {
   if (pEvent->type() == KstELOGAliveEvent) {
     KstEventMonitorI::globalInstance()->enableELOG();
   } else if (pEvent->type() == KstELOGDeathEvent) {
@@ -2877,10 +2866,14 @@ void KstApp::moveTabRight(KstViewWindow *tab) {
 
 
 void KstApp::saveTabs(QTextStream& ts) {
+/* xxx
   KTabWidget *tw = tabWidget();
+
   if (tw) {
     for (int tab=0; tab<tw->count(); ++tab) {
-      KstViewWindow *v = dynamic_cast<KstViewWindow*>(tw->page(tab));
+      KstViewWindow *v;
+
+      v = dynamic_cast<KstViewWindow*>(tw->page(tab));
       if (v) {
         ts << "  <window>" << endl;
         v->save(ts, "    ");
@@ -2888,6 +2881,7 @@ void KstApp::saveTabs(QTextStream& ts) {
       }
     }
   }
+*/
 }
 
 

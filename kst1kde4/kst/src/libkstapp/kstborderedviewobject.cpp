@@ -15,13 +15,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "kstborderedviewobject.h"
-
 #include <QPainter>
 #include <QTextDocument>
 #include <QVariant>
 
-// xxx #include <kglobal.h>
+#include "kstborderedviewobject.h"
 
 KstBorderedViewObject::KstBorderedViewObject(const QString& type)
 : KstViewObject(type), _borderColor(QColor(0, 0, 0)), _borderWidth(0), _padding(0), _margin(0) {

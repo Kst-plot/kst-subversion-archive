@@ -10,13 +10,11 @@
  ***************************************************************************/
 
 #include <QCheckBox>
-#include <QLineEdit>
+#include <QComboBox>
 #include <QGroupBox>
+#include <QLineEdit>
 #include <QList>
 #include <QRadioButton>
-#include <QComboBox>
-
-// xxx #include <kcolorcombo.h>
 
 #include "kst.h"
 #include "kstchoosecolordialog.h"

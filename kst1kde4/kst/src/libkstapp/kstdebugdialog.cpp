@@ -21,8 +21,6 @@
 #include <QListWidget>
 #include <QListWidgetItem>
 
-// xxx #include <kcolorbutton.h>
-
 #include "kst.h"
 #include "kstdatacollection.h"
 #include "kstdebugdialog.h"

@@ -17,12 +17,10 @@
  ***************************************************************************/
 
 #include <QCheckBox>
+#include <QComboBox>
 #include <QLineEdit>
 #include <QMessageBox>
 #include <QSpinBox>
-#include <QComboBox>
-
-// xxx #include <knuminput.h>
 
 #include "fftoptionswidget.h"
 #include "curveappearancewidget.h"

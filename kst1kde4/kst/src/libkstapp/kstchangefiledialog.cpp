@@ -16,14 +16,10 @@
  ***************************************************************************/
 
 #include <QCheckBox> 
-#include <QRadioButton>
-#include <QMessageBox>
 #include <QComboBox>
+#include <QMessageBox>
+#include <QRadioButton>
 #include <QRegExp>
-
-#include <kiconloader.h>
-#include <kurlcompletion.h>
-#include <kurlrequester.h>
 
 #include "kst.h"
 #include "kst2dplot.h"

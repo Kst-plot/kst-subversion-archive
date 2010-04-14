@@ -24,12 +24,6 @@
 #include <QRadioButton>
 #include <QRegExp>
 
-#include <kfiledialog.h>
-#include <kimageio.h>
-#include <kio/netaccess.h>
-#include <kstandarddirs.h>
-#include <kurlrequester.h>
-
 #include "kstpluginmanager.h"
 #include "plugincollection.h"
 #include "pluginxmlparser.h"

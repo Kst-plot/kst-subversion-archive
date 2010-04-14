@@ -18,8 +18,6 @@
 #include <QTimer>
 #include <QToolTip>
 
-#include <kstandarddirs.h>
-
 #include "kst.h"
 #include "kstdebugnotifier.h"
 

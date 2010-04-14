@@ -17,8 +17,6 @@
 
 #include <stdlib.h>
 
-
-
 #include "kstplotdrag.h"
 #include "kstviewobjectfactory.h"
 
