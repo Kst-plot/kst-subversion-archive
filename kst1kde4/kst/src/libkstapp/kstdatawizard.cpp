@@ -21,7 +21,7 @@
 
 #include <QButtonGroup>
 #include <QCheckBox>
-#include <qglobal.h>
+#include <QGlobal>
 #include <QMessageBox>
 #include <QRadioButton>
 #include <QRegExp>
@@ -1410,66 +1410,66 @@ void KstDataWizard::configureSource()
 
 void KstDataWizard::saveSettings()
 {
-  KConfig cfg("kstrc", false, false);
-/* xxx
-  cfg.setGroup("DataWizard");
+  QSettings cfg("kstrc", QSettings::NativeFormat, this);
 
-  cfg.writeEntry("PlotXY", _radioButtonPlotData->isChecked());
-  cfg.writeEntry("PlotPS", _radioButtonPlotPSD->isChecked());
-  cfg.writeEntry("PlotBoth", _radioButtonPlotDataPSD->isChecked());
+  cfg.beginGroup("DataWizard");
 
-  cfg.writeEntry("XCreate", _xAxisCreateFromField->isChecked());
-  cfg.writeEntry("XFieldCreate", _xVector->currentText());
-  cfg.writeEntry("XExists", _xAxisUseExisting->isChecked());
-  cfg.writeEntry("XFieldExists", _xVectorExisting->selectedVector());
+  cfg.setValue("PlotXY", _radioButtonPlotData->isChecked());
+  cfg.setValue("PlotPS", _radioButtonPlotPSD->isChecked());
+  cfg.setValue("PlotBoth", _radioButtonPlotDataPSD->isChecked());
 
-  cfg.writeEntry("Lines", _drawLines->isChecked());
-  cfg.writeEntry("Points", _drawPoints->isChecked());
-  cfg.writeEntry("Both", _drawBoth->isChecked());
+  cfg.setValue("XCreate", _xAxisCreateFromField->isChecked());
+  cfg.setValue("XFieldCreate", _xVector->currentText());
+  cfg.setValue("XExists", _xAxisUseExisting->isChecked());
+  cfg.setValue("XFieldExists", _xVectorExisting->selectedVector());
 
-  cfg.writeEntry("LogX", _psdLogX->isChecked());
-  cfg.writeEntry("LogY", _psdLogY->isChecked());
-  cfg.writeEntry("XAxisLabel", _xAxisLabels->isChecked());
-  cfg.writeEntry("YAxisLabel", _yAxisLabels->isChecked());
-  cfg.writeEntry("TitleLabel", _plotTitles->isChecked());
+  cfg.setValue("Lines", _drawLines->isChecked());
+  cfg.setValue("Points", _drawPoints->isChecked());
+  cfg.setValue("Both", _drawBoth->isChecked());
 
-  cfg.writeEntry("LegendsOn", _legendsOn->isChecked());
-  cfg.writeEntry("LegendsOff", _legendsOff->isChecked());
-  cfg.writeEntry("LegendsAuto", _legendsAuto->isChecked());
+  cfg.setValue("LogX", _psdLogX->isChecked());
+  cfg.setValue("LogY", _psdLogY->isChecked());
+  cfg.setValue("XAxisLabel", _xAxisLabels->isChecked());
+  cfg.setValue("YAxisLabel", _yAxisLabels->isChecked());
+  cfg.setValue("TitleLabel", _plotTitles->isChecked());
 
-  cfg.writeEntry("OnePlot", _onePlot->isChecked());
-  cfg.writeEntry("MultiplePlots", _multiplePlots->isChecked());
-  cfg.writeEntry("CycleThrough", _cycleThrough->isChecked());
-  cfg.writeEntry("CycleExisting", _cycleExisting->isChecked());
-  cfg.writeEntry("PlotNumber", _plotNumber->value());
+  cfg.setValue("LegendsOn", _legendsOn->isChecked());
+  cfg.setValue("LegendsOff", _legendsOff->isChecked());
+  cfg.setValue("LegendsAuto", _legendsAuto->isChecked());
 
-  cfg.writeEntry("OrderInColumns", _orderInColumns->isChecked());
-  cfg.writeEntry("PlotColumns", _plotColumns->value());
-*/
+  cfg.setValue("OnePlot", _onePlot->isChecked());
+  cfg.setValue("MultiplePlots", _multiplePlots->isChecked());
+  cfg.setValue("CycleThrough", _cycleThrough->isChecked());
+  cfg.setValue("CycleExisting", _cycleExisting->isChecked());
+  cfg.setValue("PlotNumber", _plotNumber->value());
+
+  cfg.setValue("OrderInColumns", _orderInColumns->isChecked());
+  cfg.setValue("PlotColumns", _plotColumns->value());
+  
+  cfg.endGroup();
 }
 
 
 void KstDataWizard::loadSettings()
 {
-/* xxx
-  KConfig cfg("kstrc");
-  cfg.setGroup("DataWizard");
+  QSettings cfg("kstrc");
+  cfg.beginGroup("DataWizard");
 
-  if (cfg.readBoolEntry("PlotXY", true)) {
+  if (cfg.value("PlotXY", true).toBool()) {
     _radioButtonPlotData->setChecked(true);
-  } else if (cfg.readBoolEntry("PlotPS", true)) {
+  } else if (cfg.value("PlotPS", true).toBool()) {
     _radioButtonPlotPSD->setChecked(true);
     _kstFFTOptions->setEnabled(true);
-  } else if (cfg.readBoolEntry("PlotBoth", true)) {
+  } else if (cfg.value("PlotBoth", true).toBool()) {
     _radioButtonPlotDataPSD->setChecked(true);
     _kstFFTOptions->setEnabled(true);
   } else {
     _radioButtonPlotData->setChecked(true);
   }
 
-  if (cfg.readBoolEntry("XCreate", true) || _xVectorExisting->_vector->count() == 0) {
+  if (cfg.value("XCreate", true).toBool() || _xVectorExisting->_vector->count() == 0) {
     _xAxisCreateFromField->setChecked(true);
-    QString str = cfg.readEntry("XFieldCreate", "");
+    QString str = cfg.value("XFieldCreate", "").toString();
     if (_xVector->listBox()) {
       QListBoxItem *item = _xVector->listBox()->findItem(str, Qt::ExactMatch);
       if (item) {
@@ -1478,44 +1478,44 @@ void KstDataWizard::loadSettings()
     }
   } else {
     _xAxisUseExisting->setChecked(true);
-    QString str = cfg.readEntry("XFieldExists", "");
+    QString str = cfg.value("XFieldExists", "").toString();
     if (_xVectorExisting->_vector->listBox() && _xVectorExisting->_vector->listBox()->findItem(str, Qt::ExactMatch)) {
       _xVectorExisting->setSelection(str);
     }
   }
 
-  if (cfg.readBoolEntry("Lines", true)) {
+  if (cfg.value("Lines", true).toBool()) {
     _drawLines->setChecked(true);
-  } else if (cfg.readBoolEntry("Points", true)) {
+  } else if (cfg.value("Points", true).toBool()) {
     _drawPoints->setChecked(true);
-  } else if (cfg.readBoolEntry("Both", true)) {
+  } else if (cfg.value("Both", true).toBool()) {
     _drawBoth->setChecked(true);
   } else {
     _drawLines->setChecked(true);
   }
 
-  _psdLogX->setChecked(cfg.readBoolEntry("LogX", false));
-  _psdLogY->setChecked(cfg.readBoolEntry("LogY", false));
-  _xAxisLabels->setChecked(cfg.readBoolEntry("XAxisLabel", true));
-  _yAxisLabels->setChecked(cfg.readBoolEntry("YAxisLabel", true));
-  _plotTitles->setChecked(cfg.readBoolEntry("TitleLabel", true));
+  _psdLogX->setChecked(cfg.value("LogX", false).toBool());
+  _psdLogY->setChecked(cfg.value("LogY", false).toBool());
+  _xAxisLabels->setChecked(cfg.value("XAxisLabel", true).toBool());
+  _yAxisLabels->setChecked(cfg.value("YAxisLabel", true).toBool());
+  _plotTitles->setChecked(cfg.value("TitleLabel", true).toBool());
 
-  if (cfg.readBoolEntry("LegendsAuto", true)) {
+  if (cfg.value("LegendsAuto", true).toBool()) {
     _legendsAuto->setChecked(true);
-  } else if (cfg.readBoolEntry("LegendsOn", true)) {
+  } else if (cfg.value("LegendsOn", true).toBool()) {
     _legendsOn->setChecked(true);
   } else { // off is default
     _legendsOff->setChecked(true);
   }
 
-  _onePlot->setChecked(cfg.readBoolEntry("OnePlot", true));
-  _multiplePlots->setChecked(cfg.readBoolEntry("MultiplePlots", false));
-  _cycleThrough->setChecked(cfg.readBoolEntry("CycleThrough", false));
-  _cycleExisting->setChecked(cfg.readBoolEntry("CycleExisting", false));
-  _plotNumber->setValue(cfg.readNumEntry("PlotNumber", 2));
-  _orderInColumns->setChecked(cfg.readBoolEntry("OrderInColumns", false));
-  _plotColumns->setValue(cfg.readNumEntry("PlotColumns", 0));
-*/
+  _onePlot->setChecked(cfg.value("OnePlot", true).toBool());
+  _multiplePlots->setChecked(cfg.value("MultiplePlots", false).toBool());
+  _cycleThrough->setChecked(cfg.value("CycleThrough", false).toBool());
+  _cycleExisting->setChecked(cfg.value("CycleExisting", false).toBool());
+  _plotNumber->setValue(cfg.value("PlotNumber", 2).toInt());
+  _orderInColumns->setChecked(cfg.value("OrderInColumns", false).toBool());
+  _plotColumns->setValue(cfg.value("PlotColumns", 0).toInt());
+
 }
 
 
