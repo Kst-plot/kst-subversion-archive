@@ -17,24 +17,19 @@
  ***************************************************************************/
 
 #include <config.h>
+#include <unistd.h>
 
-// include files for Qt
-#include <QStyleSheet>
+#include <QTextDocument>
 #include <QThread>
 
-// include files for KDE
-#include <dcopref.h>
+// xxx #include <dcopref.h>
 
-// application specific includes
 #include "enodes.h"
 #include "emailthread.h"
 #include "kst.h"
 #include "kstdatacollection.h"
 #include "ksteventmonitorentry.h"
 #include "ksteventmonitor.h"
-
-#include <assert.h>
-#include <unistd.h>
 
 extern "C" int yyparse();
 extern "C" void *ParsedEquation;
@@ -63,6 +58,7 @@ EventMonitorEntry::EventMonitorEntry(const QDomElement &e) {
   _logELOG = false;
 
   QDomNode n = e.firstChild();
+
   while (!n.isNull()) {
     QDomElement e = n.toElement(); // try to convert the node to an element.
     if (!e.isNull()) { // the node was really an element.
@@ -94,6 +90,8 @@ EventMonitorEntry::EventMonitorEntry(const QDomElement &e) {
 
 
 void EventMonitorEntry::commonConstructor(const QString &in_tag) {
+  KstVectorPtr xv;
+  KstVectorPtr yv;
   const int NS = 1;
 
   _numDone = 0;
@@ -104,19 +102,22 @@ void EventMonitorEntry::commonConstructor(const QString &in_tag) {
   _type = "Event";
   KstObject::setTagName(KstObjectTag::fromString(in_tag));
 
-  KstVectorPtr xv = new KstVector(KstObjectTag("x", tag()), NS, this);
+  xv = new KstVector(KstObjectTag("x", tag()), NS, this);
   _xVector = _outputVectors.insert(OUTXVECTOR, xv);
 
-  KstVectorPtr yv = new KstVector(KstObjectTag("y", tag()), NS, this);
+  yv = new KstVector(KstObjectTag("y", tag()), NS, this);
   _yVector = _outputVectors.insert(OUTYVECTOR, yv);
 }
 
 
 bool EventMonitorEntry::reparse() {
   Q_ASSERT(myLockStatus() == KstRWLock::WRITELOCKED);
+
   _isValid = false;
+
   if (!_event.isEmpty()) {
     QMutexLocker ml(&Equation::mutex());
+
     yy_scan_string(_event.toLatin1());
     int rc = yyparse();
     if (rc == 0) {
@@ -131,7 +132,6 @@ bool EventMonitorEntry::reparse() {
           _isValid = true;
         }
       } else {
-        //we have bad objects...
         delete (Equation::Node*)ParsedEquation;
       }
     } else {
@@ -139,22 +139,24 @@ bool EventMonitorEntry::reparse() {
     }
     ParsedEquation = 0L;
   }
+
   return _isValid;
 }
 
 
 void EventMonitorEntry::save(QTextStream &ts, const QString& indent) {
   QString l2 = indent + "  ";
+
   ts << indent << "<event>" << endl;
-  ts << l2 << "<tag>" << QStyleSheet::escape(tagName()) << "</tag>" << endl;
-  ts << l2 << "<equation>" << QStyleSheet::escape(_event) << "</equation>" << endl;
-  ts << l2 << "<description>" << QStyleSheet::escape(_description) << "</description>" << endl;
+  ts << l2 << "<tag>" << Qt::escape(tagName()) << "</tag>" << endl;
+  ts << l2 << "<equation>" << Qt::escape(_event) << "</equation>" << endl;
+  ts << l2 << "<description>" << Qt::escape(_description) << "</description>" << endl;
   ts << l2 << "<logdebug>" << QString::number(_logKstDebug) << "</logdebug>" << endl;
   ts << l2 << "<loglevel>" << QString::number(_level) << "</loglevel>" << endl;
   ts << l2 << "<logemail>" << QString::number(_logEMail) << "</logemail>" << endl;
   ts << l2 << "<logelog>" << QString::number(_logELOG) << "</logelog>" << endl;
-  ts << l2 << "<emailRecipients>" << QStyleSheet::escape(_eMailRecipients) << "</emailRecipients>" << endl;
-  ts << l2 << "<script>" << QStyleSheet::escape(_script) << "</script>" << endl;
+  ts << l2 << "<emailRecipients>" << Qt::escape(_eMailRecipients) << "</emailRecipients>" << endl;
+  ts << l2 << "<script>" << Qt::escape(_script) << "</script>" << endl;
   ts << indent << "</event>" << endl;
 }
 
@@ -163,6 +165,7 @@ EventMonitorEntry::~EventMonitorEntry() {
   logImmediately(false);
 
   delete _pExpression;
+
   _pExpression = 0L;
 }
 
@@ -171,6 +174,7 @@ KstObject::UpdateType EventMonitorEntry::update(int updateCounter) {
   Q_ASSERT(myLockStatus() == KstRWLock::WRITELOCKED);
 
   bool force = dirty();
+
   setDirty(false);
 
   if (KstObject::checkUpdateCounter(updateCounter) && !force) {
@@ -178,10 +182,13 @@ KstObject::UpdateType EventMonitorEntry::update(int updateCounter) {
   }
 
   //
-  // do not call reparse() after writeLockInputsAndOutputs() as the call to reparse() may create input and output objects. 
-  // As a result the calls to writeLockInputsAndOutputs() and unlockInputsAndOutputs() would attempt
-  //  to lock and unlock different lists of objects...
+  // do not call reparse() after writeLockInputsAndOutputs() 
+  //  as the call to reparse() may create input and output objects. 
+  // As a result the calls to writeLockInputsAndOutputs() and
+  //  unlockInputsAndOutputs() would attempt to lock and unlock 
+  //  different lists of objects...
   //
+
   if (!_pExpression) {
     reparse();
   }
@@ -189,16 +196,18 @@ KstObject::UpdateType EventMonitorEntry::update(int updateCounter) {
   writeLockInputsAndOutputs();
 
   if (_isValid) {
+    Equation::Context ctx;
+    KstVectorMap::const_iterator i;
     KstVectorPtr xv = *_xVector;
     KstVectorPtr yv = *_yVector;
-    int ns = 1;
-
-    for (KstVectorMap::ConstIterator i = _vectorsUsed.begin(); i != _vectorsUsed.end(); ++i) {
-      ns = qMax(ns, i.data()->length());
-    }
-
     double *rawValuesX = 0L;
     double *rawValuesY = 0L;
+    int ns = 1;
+
+    for (i= _vectorsUsed.begin(); i != _vectorsUsed.end(); ++i) {
+      ns = qMax(ns, (*i)->length());
+    }
+
     if (xv && yv) {
       if (xv->resize(ns)) {
         rawValuesX = xv->value();
@@ -209,7 +218,6 @@ KstObject::UpdateType EventMonitorEntry::update(int updateCounter) {
       }
     }
 
-    Equation::Context ctx;
     ctx.sampleCount = ns;
     ctx.x = 0.0;
 
@@ -265,6 +273,7 @@ void EventMonitorEntry::setEvent(const QString& strEvent) {
     _isValid = false;
 
     delete _pExpression;
+
     _pExpression = 0L;
   }
 }
@@ -277,6 +286,7 @@ bool EventMonitorEntry::needToEvaluate() {
 
 namespace {
   const int EventMonitorEventType = int(QEvent::User) + 2931;
+
   class EventMonitorEvent : public QEvent {
     public:
       EventMonitorEvent(const QString& msg) : QEvent(QEvent::Type(EventMonitorEventType)), logMessage(msg) {}
@@ -294,9 +304,10 @@ void EventMonitorEntry::logImmediately(bool sendEvent) {
     bool makeRange = false;
     int idx = 0;
     int idxOld = 0;
+    int i;
 
-    for (int i = 0; i < arraySize; ++i) {
-      idx = *_indexArray.at(i);
+    for (i = 0; i < arraySize; ++i) {
+// xxx      idx = *_indexArray.at(i);
       if (i == 0) {
         rangeString.setNum(idx);
       } else if (!makeRange && idx == idxOld + 1) {
@@ -336,8 +347,10 @@ bool EventMonitorEntry::event(QEvent *e) {
     readLock();
     doLog(static_cast<EventMonitorEvent*>(e)->logMessage);
     unlock();
+
     return true;
   }
+
   return false;
 }
 
@@ -348,7 +361,9 @@ void EventMonitorEntry::doLog(const QString& logMessage) const {
   }
 
   if (_logEMail && !_eMailRecipients.isEmpty()) {
-    EMailThread* thread = new EMailThread(_eMailRecipients, QObject::tr("Kst Event Monitoring Notification"), logMessage);
+    EMailThread* thread;
+
+    thread = new EMailThread(_eMailRecipients, QObject::tr("Kst Event Monitoring Notification"), logMessage);
     thread->send();
   }
 
@@ -357,8 +372,10 @@ void EventMonitorEntry::doLog(const QString& logMessage) const {
   }
 
   if (!_script.isEmpty()) {
+/* xxx
     DCOPRef ref(QString("kst-%1").arg(getpid()).toLatin1(), "KstScript");
     ref.send("evaluate", _script);
+*/
   }
 }
 
@@ -377,12 +394,12 @@ QString EventMonitorEntry::propertyString() const {
 
 
 void EventMonitorEntry::showNewDialog() {
-  KstEventMonitorI::globalInstance()->show();
+  KstEventMonitor::globalInstance()->show();
 }
 
 
 void EventMonitorEntry::showEditDialog() {
-  KstEventMonitorI::globalInstance()->showEdit(tagName());
+  KstEventMonitor::globalInstance()->showEdit(tagName());
 }
 
 
@@ -457,10 +474,15 @@ void EventMonitorEntry::setEMailRecipients(const QString& str) {
 
 KstDataObjectPtr EventMonitorEntry::makeDuplicate(KstDataObjectDataObjectMap& duplicatedMap) {
   QString name(tagName() + '\'');
+  KstDataObjectPtr dob;
+
   while (KstData::self()->dataTagNameNotUnique(name, false)) {
     name += '\'';
   }
-  EventMonitorEntryPtr event = new EventMonitorEntry(name);
+
+  EventMonitorEntryPtr event;
+
+  event = new EventMonitorEntry(name);
   event->setEvent(_event);
   event->setDescription(_description);
   event->setLevel(_level);
@@ -469,104 +491,160 @@ KstDataObjectPtr EventMonitorEntry::makeDuplicate(KstDataObjectDataObjectMap& du
   event->setLogELOG(_logELOG);
   event->setEMailRecipients(_eMailRecipients);
 
-  duplicatedMap.insert(this, KstDataObjectPtr(event));
-  return KstDataObjectPtr(event);
+  dob = event;
+// xxx  duplicatedMap.insert(this, dob.data());
+
+  return dob;
 }
 
 
 void EventMonitorEntry::replaceDependency(KstDataObjectPtr oldObject, KstDataObjectPtr newObject) {
+  KstVectorMap::const_iterator itv;
+  KstScalarMap::const_iterator its;
+  KstMatrixMap::const_iterator itm;
   QString newExp = _event;
 
-  // replace all occurences of outputVectors, outputScalars from oldObject
-  for (KstVectorMap::ConstIterator j = oldObject->outputVectors().begin(); j != oldObject->outputVectors().end(); ++j) {
-    const QString oldTag = j.data()->tagName();
-    const QString newTag = newObject->outputVectors()[j.key()]->tagName();
+  //
+  // replace all occurences of outputVectors, outputScalars from oldObject...
+  //
+
+  for (itv = oldObject->outputVectors().begin(); itv != oldObject->outputVectors().end(); ++itv) {
+    const QString oldTag = (*itv)->tagName();
+    const QString newTag = newObject->outputVectors()[itv.key()]->tagName();
+
     newExp = newExp.replace("[" + oldTag + "]", "[" + newTag + "]");
   }
 
-  for (KstScalarMap::ConstIterator j = oldObject->outputScalars().begin(); j != oldObject->outputScalars().end(); ++j) {
-    const QString oldTag = j.data()->tagName();
-    const QString newTag = newObject->outputScalars()[j.key()]->tagName();
+  for (its = oldObject->outputScalars().begin(); its != oldObject->outputScalars().end(); ++its) {
+    const QString oldTag = (*its)->tagName();
+    const QString newTag = newObject->outputScalars()[its.key()]->tagName();
+
     newExp = newExp.replace("[" + oldTag + "]", "[" + newTag + "]");
   }
 
-  // and dependencies on vector stats
-  for (KstVectorMap::ConstIterator j = oldObject->outputVectors().begin(); j != oldObject->outputVectors().end(); ++j) {
-    const QDict<KstScalar>& scalarMap(newObject->outputVectors()[j.key()]->scalars());
-    QDictIterator<KstScalar> scalarDictIter(j.data()->scalars());
+  //
+  // and dependencies on vector stats...
+  //
+
+  for (itv = oldObject->outputVectors().begin(); itv != oldObject->outputVectors().end(); ++itv) {
+/* xxx
+    const QHash<KstScalar>& scalarMap(newObject->outputVectors()[itv.key()]->scalars());
+    QHashIterator<KstScalar> scalarDictIter(itv.data()->scalars());
+
     for (; scalarDictIter.current(); ++scalarDictIter) {
       const QString oldTag = scalarDictIter.current()->tagName();
       const QString newTag = scalarMap[scalarDictIter.currentKey()]->tagName();
+
       newExp = newExp.replace("[" + oldTag + "]", "[" + newTag + "]");
     }
+*/
   }
 
-  // and dependencies on matrix stats
-  for (KstMatrixMap::ConstIterator j = oldObject->outputMatrices().begin(); j != oldObject->outputMatrices().end(); ++j) {
-    const QDict<KstScalar>& scalarMap(newObject->outputMatrices()[j.key()]->scalars());
-    QDictIterator<KstScalar> scalarDictIter(j.data()->scalars());
+  //
+  // and dependencies on matrix stats...
+  //
+
+  for (itm = oldObject->outputMatrices().begin(); itm != oldObject->outputMatrices().end(); ++itm) {
+/* xxx
+    const QDict<KstScalar>& scalarMap(newObject->outputMatrices()[itm.key()]->scalars());
+    QDictIterator<KstScalar> scalarDictIter(itm.data()->scalars());
+
     for (; scalarDictIter.current(); ++scalarDictIter) {
       const QString oldTag = scalarDictIter.current()->tagName();
       const QString newTag = scalarMap[scalarDictIter.currentKey()]->tagName();
+
       newExp = newExp.replace("[" + oldTag + "]", "[" + newTag + "]");
     }
+*/
   }
 
   setEvent(newExp);
   setDirty();
-
-  // events have no _inputVectors
 }
 
 
 void EventMonitorEntry::replaceDependency(KstVectorPtr oldVector, KstVectorPtr newVector) {
-  // replace all occurences of oldTag with newTag
-  QString newExp = _event.replace("[" + oldVector->tagName() + "]", "[" + newVector->tagName() + "]");
-
-  // also replace all occurences of vector stats for the oldVector
+/* xxx
   QDictIterator<KstScalar> scalarDictIter(oldVector->scalars());
+  QString newExp;
+
+  //
+  // replace all occurences of oldTag with newTag...
+  //
+
+  newExp = _event.replace("[" + oldVector->tagName() + "]", "[" + newVector->tagName() + "]");
+
+  //
+  // also replace all occurences of vector stats for the oldVector...
+  //
+
   for (; scalarDictIter.current(); ++scalarDictIter) {
     const QString oldTag = scalarDictIter.current()->tagName();
     const QString newTag = newVector->scalars()[scalarDictIter.currentKey()]->tagName();
+
     newExp = newExp.replace("[" + oldTag + "]", "[" + newTag + "]");
   }
 
   setEvent(newExp);
   setDirty();
-
-  // events have no _inputVectors
+*/
 }
 
 
 void EventMonitorEntry::replaceDependency(KstMatrixPtr oldMatrix, KstMatrixPtr newMatrix) {
+/* xxx
+  QDictIterator<KstScalar> scalarDictIter(oldMatrix->scalars());
   QString newExp = _event;
 
-  // also replace all occurences of scalar stats for the oldMatrix
-  QDictIterator<KstScalar> scalarDictIter(oldMatrix->scalars());
+  //
+  // also replace all occurences of scalar stats for the oldMatrix...
+  //
+
   for (; scalarDictIter.current(); ++scalarDictIter) {
     const QString oldTag = scalarDictIter.current()->tagName();
     const QString newTag = newMatrix->scalars()[scalarDictIter.currentKey()]->tagName();
+
     newExp = newExp.replace("[" + oldTag + "]", "[" + newTag + "]");
   }
 
   setEvent(newExp);
   setDirty();
+*/
 }
 
 
 bool EventMonitorEntry::uses(KstObjectPtr p) const {
-  // check VectorsUsed in addition to _input*'s
-  if (KstVectorPtr vect = kst_cast<KstVector>(p)) {
-    for (KstVectorMap::ConstIterator j = _vectorsUsed.begin(); j != _vectorsUsed.end(); ++j) {
-      if (j.data() == vect) {
+  KstVectorPtr vect;
+  KstDataObjectPtr obj;
+
+  vect = kst_cast<KstVector>(p);
+  obj = kst_cast<KstDataObject>(p);
+
+  //
+  // check VectorsUsed in addition to _input*'s...
+  //
+
+  if (vect) {
+    KstVectorMap::const_iterator j;
+
+    for (j = _vectorsUsed.begin(); j != _vectorsUsed.end(); ++j) {
+      if (*j == vect) {
+
         return true;
       }
     }
-  } else if (KstDataObjectPtr obj = kst_cast<KstDataObject>(p) ) {
-    // check all connections from this expression to p
-    for (KstVectorMap::ConstIterator j = obj->outputVectors().begin(); j != obj->outputVectors().end(); ++j) {
-      for (KstVectorMap::ConstIterator k = _vectorsUsed.begin(); k != _vectorsUsed.end(); ++k) {
-        if (j.data() == k.data()) {
+  } else if (obj) {
+    KstVectorMap::ConstIterator j;
+    KstVectorMap::ConstIterator k;
+
+    //
+    // check all connections from this expression to p...
+    //
+
+    for (j = obj->outputVectors().begin(); j != obj->outputVectors().end(); ++j) {
+      for (k = _vectorsUsed.begin(); k != _vectorsUsed.end(); ++k) {
+        if (*j == *k) {
+
           return true;
         }
       }
@@ -585,6 +663,7 @@ void EventMonitorEntry::setTagName(const QString &in_tag) {
   }
 
   KstObject::setTagName(newTag);
+
   (*_xVector)->setTagName(KstObjectTag("x", tag()));
   (*_yVector)->setTagName(KstObjectTag("y", tag()));
 }
