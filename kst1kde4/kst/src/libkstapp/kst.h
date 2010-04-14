@@ -25,6 +25,7 @@
 #include <QMdiSubWindow>
 #include <QPointer>
 #include <QTimer>
+#include <QSettings>
 
 #include "kst_export.h"
 #include "kstpainter.h"
