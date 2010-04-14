@@ -17,7 +17,6 @@
 
 #include <QFile>
 #include <QMessageBox>
-#include <QPainter>
 #include <QPrinter>
 #include <QTextDocument>
 #include <QVBoxLayout>
@@ -255,7 +254,6 @@ void KstViewWindow::immediatePrintToEps(const QString &filename, const QSize& si
 
       KstPainter paint(KstPainter::P_PRINT);
       paint.begin(&printer);
-// xxx      QPaintDeviceMetrics metrics(&printer);
 
       view()->resizeForPrint(size);
       view()->paint(paint, QRegion());
