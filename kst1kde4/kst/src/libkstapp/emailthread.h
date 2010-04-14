@@ -18,13 +18,13 @@
 #ifndef EMAILTHREAD_H
 #define EMAILTHREAD_H
 
-#include <QCString>
 #include <QObject>
-
+#include <QString>
+/* xxx
 #include <kio/global.h>
 #include <kio/passdlg.h>
 #include <kio/scheduler.h>
-
+*/
 #include "kstsettings.h"
 
 class EMailThread : public QObject {
@@ -50,7 +50,7 @@ class EMailThread : public QObject {
 
     QString       _strFrom;
     QString       _strTo;
-    QCString      _strBody;
+    QByteArray    _strBody;
     QString       _strSubject;
     QString       _strSMTPServer;
     QString       _strMessage;
@@ -60,17 +60,20 @@ class EMailThread : public QObject {
     int           _iPort;
     EMailEncryption _encryption;
     EMailAuthentication _authentication;
-
+/* xxx
     KIO::TransferJob *_job;
     KIO::Slave       *_slave;
+*/
     bool              _sendOk;
     uint              _bodyLength;
     uint              _bodyOffset;
 
   public slots:
+/* xxx
     void dataReq(KIO::Job *, QByteArray &);
     void result(KIO::Job *);
     void slaveError(KIO::Slave *, int, const QString &);
+*/
 };
 
 #endif

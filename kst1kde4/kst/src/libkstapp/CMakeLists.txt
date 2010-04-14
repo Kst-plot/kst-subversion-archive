@@ -24,6 +24,8 @@ set(kstapp_LIB_SRCS
     kstviewwindow.cpp
 # widgets...
     kst2dplotwidget.cpp
+    kstdatanotifier.cpp
+    kstdebugnotifier.cpp
     kstlogwidget.cpp
     kstviewlabelwidget.cpp
     kstviewlegendwidget.cpp
@@ -40,12 +42,14 @@ set(kstapp_LIB_SRCS
     ksteqdialog.cpp
     kstfilterdialog.cpp
     kstfitdialog.cpp
+    kstgraphfiledialog.cpp
     ksthsdialog.cpp
     kstimagedialog.cpp
     kstmonochromedialog.cpp
     kstplugindialog.cpp
     kstpsddialog.cpp
     kstquickstartdialog.cpp
+    kstsettingsdlg.cpp
     kstvectorsavedialog.cpp
     kstvvdialog.cpp
 # handlers...
@@ -80,15 +84,18 @@ set(kstapp_LIB_SRCS
     kstfieldselect.cpp
     ksteventmonitor.cpp
     kstalignment.cpp
-    kstdebugnotifier.cpp
-    kstdatanotifier.cpp
     extensionmgr.cpp
     kstdatamanager.cpp
     kstpluginmanager.cpp
     kstdoc.cpp
-    kstgraphfiledialog.cpp
-    kstsettingsdlg.cpp
     emailthread.cpp
+    kstmatrixdialog.cpp
+    ksteventmonitorentry.cpp
+    kstdatawizard.cpp
+    kstviewmanager.cpp
+    kstviewstringsdialog.cpp
+    updatethread.cpp
+    kstvectordialog.cpp
     kstprintoptionspage.cpp
     kstscalarlistview.cpp
     kststringlistview.cpp
@@ -98,13 +105,6 @@ set(kstapp_LIB_SRCS
     kstviewfitsdialog.cpp
     kstchangenptsdialog.cpp
     kstchangefiledialog.cpp
-    kstmatrixdialog.cpp
-    ksteventmonitorentry.cpp
-    kstdatawizard.cpp
-    kstviewmanager.cpp
-    kstviewstringsdialog.cpp
-    updatethread.cpp
-    kstvectordialog.cpp
     kst.cpp)
 
 #KDE3_ADD_DCOP_SKELS(kstapp_LIB_SRCS

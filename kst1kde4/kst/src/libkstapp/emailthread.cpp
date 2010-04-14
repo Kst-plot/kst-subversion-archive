@@ -17,10 +17,8 @@
 
 #include <ctype.h>
 
-// include files for Qt
 #include <QRegExp>
 
-// application specific includes
 #include "emailthread.h"
 #include "kstdebug.h"
 
@@ -39,9 +37,10 @@ EMailThread::EMailThread( const QString& strTo,
   _iPort          =  KstSettings::globalSettings()->emailSMTPPort;
   _encryption     =  KstSettings::globalSettings()->emailEncryption;
   _authentication =  KstSettings::globalSettings()->emailAuthentication;
-
+/* xxx
   _job            = 0L;
   _slave          = 0L;
+*/
 }
 
 EMailThread::EMailThread( const QString& strTo,
@@ -66,12 +65,14 @@ EMailThread::EMailThread( const QString& strTo,
   _iPort          = iPort;
   _encryption     = encryption;
   _authentication = authentication;
-
+/* xxx
   _job            = 0L;
   _slave          = 0L;
+*/
 }
 
 EMailThread::~EMailThread() {
+/* xxx
   if (_job) {
     _job->kill();
     _job = 0L;
@@ -81,9 +82,11 @@ EMailThread::~EMailThread() {
     KIO::Scheduler::disconnectSlave(_slave);
     _slave = 0L;
   }
+*/
 }
 
 void EMailThread::send() {
+/* xxx
   QStringList listTo;
   QString mQuery;
   KIO::MetaData slaveConfig;
@@ -91,7 +94,6 @@ void EMailThread::send() {
   int i, count;
 
   _sendOk = false;
-
   KIO::Scheduler::connect(SIGNAL(slaveError(KIO::Slave *, int, const QString &)), this,
                             SLOT(slaveError(KIO::Slave *, int, const QString &)));
 
@@ -103,7 +105,7 @@ void EMailThread::send() {
 
   mQuery  = "headers=0&from=";
   mQuery += KUrl::encode_string(_strFrom);
-  listTo = QStringList::split(QRegExp("[ ,;]"), _strTo);
+  listTo = _strTo.split(QRegExp("[ ,;]"));
   count = listTo.count();
   if (count > 0) {
     for (i=0; i<count; i++) {
@@ -123,6 +125,7 @@ void EMailThread::send() {
   } else {
     destination.setProtocol("smtp");
   }
+
   destination.setHost(_strSMTPServer);
   destination.setPort((short)_iPort);
   destination.setPath("/send");
@@ -157,6 +160,7 @@ void EMailThread::send() {
         break;
     }
   }
+
   _slave = KIO::Scheduler::getConnectedSlave(destination, slaveConfig);
   if (_slave) {
     _job = KIO::put(destination, -1, false, false, false);
@@ -168,8 +172,9 @@ void EMailThread::send() {
       _sendOk = true;
     }
   }
+*/
 }
-
+/* xxx
 void EMailThread::dataReq(KIO::Job *job, QByteArray &array)
 {
   Q_UNUSED(job)
@@ -215,5 +220,5 @@ void EMailThread::slaveError(KIO::Slave *aSlave, int error, const QString &error
 
   delete this;
 }
-
+*/
 #include "emailthread.moc"

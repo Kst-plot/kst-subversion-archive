@@ -61,12 +61,12 @@
     </layout>
    </item>
    <item row="1" column="0">
-    <widget class="QListBox" name="CurveList">
+    <widget class="QListWidget" name="CurveList">
      <property name="whatsThis">
       <string>The sample ranges for the vectors selected in this list will be changed.</string>
      </property>
      <property name="selectionMode">
-      <enum>QListBox::Extended</enum>
+      <enum>QListWidget::Extended</enum>
      </property>
     </widget>
    </item>

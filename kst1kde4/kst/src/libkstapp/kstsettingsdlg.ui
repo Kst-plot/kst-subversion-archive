@@ -203,16 +203,6 @@
           </widget>
          </item>
          <item>
-          <widget class="KDualColorButton" name="_colors" native="true">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-          </widget>
-         </item>
-         <item>
           <spacer name="spacer40">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
@@ -419,20 +409,6 @@
              </widget>
             </item>
             <item>
-             <widget class="KColorButton" name="_minorGridColor">
-              <property name="text">
-               <string/>
-              </property>
-              <property name="color">
-               <color>
-                <red>228</red>
-                <green>254</green>
-                <blue>255</blue>
-               </color>
-              </property>
-             </widget>
-            </item>
-            <item>
              <widget class="QCheckBox" name="_checkBoxDefaultMinorGridColor">
               <property name="text">
                <string>Default</string>
@@ -595,16 +571,6 @@
            </property>
            <property name="buddy">
             <cstring>_valueOffset</cstring>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="KDoubleNumInput" name="_valueOffset">
-           <property name="minValue" stdset="0">
-            <number>-24</number>
-           </property>
-           <property name="maxValue" stdset="0">
-            <number>24</number>
            </property>
           </widget>
          </item>
@@ -933,8 +899,8 @@
         <widget class="QLineEdit" name="_lineEditLogin"/>
        </item>
        <item row="2" column="1">
-        <widget class="KIntSpinBox" name="_kIntSpinBoxEMailPort">
-         <property name="maxValue" stdset="0">
+        <widget class="QSpinBox" name="_kIntSpinBoxEMailPort">
+         <property name="maximum" stdset="0">
           <number>65536</number>
          </property>
         </widget>
@@ -1090,23 +1056,7 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <layoutfunction spacing="KDialog::spacingHint" margin="KDialog::marginHint"/>
  <customwidgets>
-  <customwidget>
-   <class>KIntSpinBox</class>
-   <extends>QSpinBox</extends>
-   <header>knuminput.h</header>
-  </customwidget>
-  <customwidget>
-   <class>KDoubleNumInput</class>
-   <extends>QWidget</extends>
-   <header>knuminput.h</header>
-  </customwidget>
-  <customwidget>
-   <class>KColorButton</class>
-   <extends>QPushButton</extends>
-   <header>kcolorbutton.h</header>
-  </customwidget>
   <customwidget>
    <class>ColorPaletteWidget</class>
    <extends>QWidget</extends>
@@ -1116,11 +1066,6 @@
    <class>KTimezoneCombo</class>
    <extends>QWidget</extends>
    <header location="global">ktimezonecombo.h</header>
-  </customwidget>
-  <customwidget>
-   <class>KDualColorButton</class>
-   <extends>QWidget</extends>
-   <header>kdualcolorbutton.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
@@ -1166,21 +1111,11 @@
  </tabstops>
  <includes>
   <include location="global">math.h</include>
-  <include location="global">kdialog.h</include>
-  <include location="global">kpalette.h</include>
   <include location="local">kstsettings.h</include>
   <include location="local">kstplotdefines.h</include>
   <include location="local">ktimezonecombo.h</include>
-  <include location="local">kdualcolorbutton.h</include>
   <include location="local">colorpalettewidget.h</include>
-  <include location="local">kcolorbutton.h</include>
-  <include location="local">kcolorbutton.h</include>
-  <include location="local">knuminput.h</include>
-  <include location="local">knuminput.h</include>
-  <include location="local">ktimezonecombo.h</include>
-  <include location="local">kcombobox.h</include>
-  <include location="local">knuminput.h</include>
- </includes>
+</includes>
  <resources/>
  <connections>
   <connection>
