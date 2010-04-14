@@ -119,7 +119,7 @@ KstApp* KstApp::inst() {
 }
 
 
-static KConfig *kConfigObject = 0L;
+static QSettings *qSettingsObject = 0L;
 
 KstApp::KstApp(QWidget *parent, const char *name)
 : QMdiArea(parent, name) {
@@ -130,7 +130,7 @@ KstApp::KstApp(QWidget *parent, const char *name)
   _plotHolderWhileOpeningDocument = new Kst2DPlotMap;
   KGlobal::dirs()->addResourceType("kst", KStandardDirs::kde_default("data") + "kst");
 
-  _dataSourceConfig = kConfigObject;
+  _dataSourceConfig = qSettingsObject;
 
   clearWFlags(WDestructiveClose);
 
@@ -222,8 +222,8 @@ KstApp::~KstApp() {
     _dataSourceConfig->sync();
     _dataSourceConfig = 0L;
   }
-  delete kConfigObject; // must be after cleanupForExit
-  kConfigObject = 0L;
+  delete qSettingsObject; // must be after cleanupForExit
+  qSettingsObject = 0L;
 }
 
 
@@ -241,8 +241,8 @@ QSize KstApp::sizeHint() const
 
 void KstApp::initialize() {
   KstSettings::checkUpdates();
-  kConfigObject = new KConfig("kstdatarc", false, false);
-  KstDataSource::setupOnStartup(kConfigObject);
+  qSettingsObject = new QSettings("kstdatarc", QSettings::NativeFormat, this);
+  KstDataSource::setupOnStartup(qSettingsObject);
   // NOTE: This is leaked in commandline mode if we never create a KstApp.
   //       Not too much of a problem right now, and less messy than hooking in
   //       cleanups in main.
@@ -1143,11 +1143,11 @@ void KstApp::readOptions() {
 }
 
 
-void KstApp::saveProperties(KConfig *config) {
+void KstApp::saveProperties(QSettings *config) {
   QString name = doc->absFilePath();
   if (!name.isEmpty() && doc->title() != "Untitled") {
-    config->writePathEntry("Document", name);
-    config->writeEntry("NamedDocument", true);
+    config->setValue("Document", name);
+    config->setValue("NamedDocument", true);
   } else {
     QString sl = KGlobal::dirs()->saveLocation("kst", "kst/");
     int i = 0;
@@ -1155,20 +1155,20 @@ void KstApp::saveProperties(KConfig *config) {
       name = sl + QString("unsaved%1.kst").arg(i);
     } while(QFile::exists(name));
     doc->saveDocument(name, false, false);
-    config->writePathEntry("Document", name);
-    config->writeEntry("NamedDocument", false);
+    config->setValue("Document", name);
+    config->setValue("NamedDocument", false);
   }
 }
 
 
-void KstApp::readProperties(KConfig* config) {
-  QString name = config->readPathEntry("Document");
+void KstApp::readProperties(QSettings* config) {
+  QString name = config->value("Document").toString();
 
   if (name.isEmpty()) {
     return;
   }
 
-  if (config->readBoolEntry("NamedDocument", false)) {
+  if (config->value("NamedDocument", false).toBool()) {
     doc->openDocument(name);
   } else {
     doc->openDocument(name);

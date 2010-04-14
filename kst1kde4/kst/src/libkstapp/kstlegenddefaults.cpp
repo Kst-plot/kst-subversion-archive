@@ -20,9 +20,6 @@
 #include "kstsettings.h"
 #include "stdinsource.h"
 
-// xxx #include <kconfig.h>
-// xxx #include <kconfiggroup.h>
-
 KstLegendDefaults KST::legendDefaults;
 
 KstLegendDefaults::KstLegendDefaults() {

@@ -24,7 +24,6 @@
 #include <QRadioButton>
 #include <QRegExp>
 
-// xxx #include <kconfig.h>
 #include <kfiledialog.h>
 #include <kimageio.h>
 #include <kio/netaccess.h>
