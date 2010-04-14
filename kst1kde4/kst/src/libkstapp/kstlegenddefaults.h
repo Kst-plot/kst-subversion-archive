@@ -22,8 +22,7 @@
 #include <QColor>
 #include <QSettings>
 #include "kst_export.h"
-
-// xxx class KConfig;
+;
 
 class KST_EXPORT KstLegendDefaults {
   public:

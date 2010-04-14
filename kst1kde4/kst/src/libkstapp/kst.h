@@ -146,7 +146,7 @@ class KST_EXPORT KstApp : public QMdiArea {
 
     const QStringList recentFiles() const;
 
-    KConfig *dataSourceConfig() const { return _dataSourceConfig; }
+    QSettings *dataSourceConfig() const { return _dataSourceConfig; }
 
     KstGraphFileDialog *graphFileDlg() const { return _graphFileDialog; }
     KstChooseColorDialog *chooseColorDlg() const { return _chooseColorDialog; }
@@ -196,13 +196,13 @@ class KST_EXPORT KstApp : public QMdiArea {
      * end to the session config file, including saving the currently
      * opened file by a temporary filename provided by KApplication.
      * @see KMainWindow#saveProperties */
-    void saveProperties(KConfig *cfg);
+    void saveProperties(QSettings *cfg);
 
     /** reads the session config file and restores the application's
      * state including the last opened files and documents by reading
      * the temporary files saved by saveProperties()
      * @see KMainWindow#readProperties */
-    void readProperties(KConfig *cfg);
+    void readProperties(QSettings *cfg);
 
   private slots:
     // Hack to update KStdActions
@@ -323,7 +323,7 @@ class KST_EXPORT KstApp : public QMdiArea {
   private:
     static const QString& defaultTag;
 
-    KConfig *_config;
+    QSettings *_config;
     KstDoc *_doc;
 
     KstViewScalarsDialog *_viewScalarsDialog;
@@ -426,7 +426,7 @@ class KST_EXPORT KstApp : public QMdiArea {
     Kst2DPlotMap *_plotHolderWhileOpeningDocument;
     QTimer _memTimer;
     QString _defaultFont;
-    KConfig *_dataSourceConfig;
+    QSettings *_dataSourceConfig;
     QList<KstOpen> _openQueue;
     KstGraphicType _graphicType;
     bool _updatesFromScriptEnabled;
