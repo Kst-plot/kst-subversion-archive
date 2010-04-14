@@ -17,10 +17,6 @@
 #ifndef KSTDATAWIZARDI_H
 #define KSTDATAWIZARDI_H
 
-#include <kurlrequester.h>
-#include <klineedit.h>
-#include <kpushbutton.h>
-
 #include "ui_datawizard.h"
 #include "kstcombobox.h"
 #include "kstdatasource.h"
@@ -83,7 +79,7 @@ class KstDataWizard: public QWidget, public Ui::DataWizard {
     QPointer<QWidget> _configWidget;
     KstDataSourceList _sourceCache;
     QMap<QString, QString> _countMap;
-    QHash<QString, QListViewItem> _fields;
+    QHash<QString, QListWidgetItem> _fields;
     QString _file;
     bool _hierarchy;
     bool _inTest;

@@ -56,13 +56,13 @@ void UpdateThread::run() {
       updateTime = _updateTime;
     }
     _statusMutex.unlock();
-
+/* xxx
     if (_waitCondition.wait(updateTime)) {
       if (!_force) {
         break;
       }
     }
-
+*/
     _statusMutex.lock();
     if (_done) {
       _statusMutex.unlock();
@@ -76,6 +76,7 @@ void UpdateThread::run() {
     //  then set the necessary flags so we can monitor the start and end of the
     //  update routine...
     //
+
     if (_updateImmediate) {
       _updateImmediate = false;
       _updateRunning = true;
@@ -87,6 +88,7 @@ void UpdateThread::run() {
     }
 
     bool gotData = false;
+
     if (doUpdates(force, &gotData) && !_done) {
       if (gotData) {
         ThreadEvent *e = new ThreadEvent(ThreadEvent::UpdateDataDialogs);
@@ -154,32 +156,40 @@ bool UpdateThread::doUpdates(bool force, bool *gotData) {
   }
 
   {
-    // Must make a copy to avoid deadlock
+    //
+    // must make a copy to avoid deadlock...
+    //
+
     KstBaseCurveList cl;
     KstDataObjectList dol;
-    kstObjectSplitList<KstDataObject, KstBaseCurve>(KST::dataObjectList, cl, dol);
-    qSort(cl);
-    qSort(dol);
+    KstBaseCurveList::iterator itcl;
+    KstDataObjectList::iterator itdol;
+
+// xxx    kstObjectSplitList<KstDataObject, KstBaseCurve>(KST::dataObjectList, cl, dol);
+// xxx    qSort(cl);
+// xxx    qSort(dol);
 
     //
     // update all curves
     //
-    for (uint i = 0; i < cl.count(); ++i) {
-      KstBaseCurvePtr bcp = cl[i];
 
-      bcp->writeLock();
-      assert(bcp.data());
+    for (itcl = cl.begin(); itcl != cl.end(); ++itcl) {
+      KstBaseCurvePtr bcp;
 
-      KstObject::UpdateType ut = bcp->update(_updateCounter);
-      bcp->unlock();
+      bcp = *itcl;
+      if (bcp) {
+        bcp->writeLock();
+        KstObject::UpdateType ut = bcp->update(_updateCounter);
+        bcp->unlock();
+      
+        if (ut == KstObject::UPDATE) { // HACK
+          _updatedCurves.append(bcp.data());
+        }
 
-      if (ut == KstObject::UPDATE) { // HACK
-        _updatedCurves.append(bcp);
-      }
-
-      if (U != KstObject::UPDATE) {
-        U = ut;
-        if (U == KstObject::UPDATE) {
+        if (U != KstObject::UPDATE) {
+          U = ut;
+          if (U == KstObject::UPDATE) {
+          }
         }
       }
 
@@ -191,14 +201,16 @@ bool UpdateThread::doUpdates(bool force, bool *gotData) {
     //
     // update all data objects
     //
-    for (uint i = 0; i < dol.count(); ++i) {
-      KstDataObjectPtr dp = dol[i];
 
-      dp->writeLock();
-      assert(dp.data());
+    for (itdol = dol.begin(); itdol != dol.end(); ++itdol) {
+      KstDataObjectPtr dp;
 
-      dp->update(_updateCounter);
-      dp->unlock();
+      dp = *itdol;
+      if (dp) {
+        dp->writeLock();
+        dp->update(_updateCounter);
+        dp->unlock();
+      }
 
       if (_done || (_paused && !force)) {
         return U == KstObject::UPDATE;
@@ -209,18 +221,27 @@ bool UpdateThread::doUpdates(bool force, bool *gotData) {
   //
   // update the files
   //
+
   if (!_paused) { // don't update even if paused && force
+    unsigned cnt;
+    KstDataSourceList::iterator it;
+
     KST::dataSourceList.lock().readLock();
-    unsigned cnt = KST::dataSourceList.count();
-    for (uint i = 0; i < cnt; ++i) {
-      KstDataSourcePtr dsp = KST::dataSourceList[i];
+    cnt = KST::dataSourceList.count();
+
+    for (it = KST::dataSourceList.begin(); it != KST::dataSourceList.end(); ++it) {
+      KstDataSourcePtr dsp;
+
+      dsp = *it;
       if (dsp) {
         dsp->writeLock();
         dsp->update(_updateCounter);
         dsp->unlock();
       }
+
       if (_done) {
         KST::dataSourceList.lock().unlock();
+
         return false;
       }
     }
@@ -228,19 +249,27 @@ bool UpdateThread::doUpdates(bool force, bool *gotData) {
   }
 
   //
-  // update all data vectors
+  // update all data vectors...
   //
+
   {
+    KstVectorList vl;
+    KstVectorList::const_iterator i;
+
     KST::vectorList.lock().readLock();
-    KstVectorList vl = QDeepCopy<KstVectorList>(KST::vectorList.list()); // avoid deadlock on exit
+    vl = KST::vectorList.list(); // avoid deadlock on exit
     KST::vectorList.lock().unlock();
-    for (KstVectorList::ConstIterator i = vl.begin(); i != vl.end(); ++i) {
-      KstRVectorPtr rv = kst_cast<KstRVector>(*i);
+
+    for (i = vl.begin(); i != vl.end(); ++i) {
+      KstRVectorPtr rv;
+
+      rv = kst_cast<KstRVector>(*i);
       if (rv) {
         rv->writeLock();
         rv->update(_updateCounter);
         rv->unlock();
       }
+
       if (_done) {
         return false;
       }
@@ -250,12 +279,17 @@ bool UpdateThread::doUpdates(bool force, bool *gotData) {
   //
   // update all scalars
   //
+
   if (KstScalar::scalarsDirty()) {
+    KstScalarList sl;
+    KstScalarList::const_iterator i;
+
     KstScalar::clearScalarsDirty();
     KST::scalarList.lock().readLock();
-    KstScalarList sl = QDeepCopy<KstScalarList>(KST::scalarList.list()); // avoid deadlock on exit
+    sl = KST::scalarList.list(); // avoid deadlock on exit
     KST::scalarList.lock().unlock();
-    for (KstScalarList::ConstIterator i = sl.begin(); i != sl.end(); ++i) {
+
+    for (i = sl.begin(); i != sl.end(); ++i) {
       KstScalarPtr sp = *i;
 
       sp->writeLock();

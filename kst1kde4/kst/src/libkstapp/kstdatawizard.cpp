@@ -21,6 +21,7 @@
 
 #include <QButtonGroup>
 #include <QCheckBox>
+#include <QFileDialog>
 #include <QGlobal>
 #include <QMessageBox>
 #include <QRadioButton>
@@ -30,11 +31,6 @@
 #include <QTimer>
 #include <QToolTip>
 #include <QWizard>
-
-#include <kfiledialog.h>
-#include <kiconloader.h>
-#include <knuminput.h>
-#include <kurlcompletion.h>
 
 #include "kst.h"
 #include "datarangewidget.h"
@@ -57,8 +53,7 @@
 
 const QString& KstDataWizard::defaultTag = KGlobal::staticQString("<Auto Name>");
 
-KstDataWizard::KstDataWizard(QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl) : DataWizard()
-{
+KstDataWizard::KstDataWizard(QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl) : DataWizard() {
   _configWidget = 0L;
   _inTest = false;
   _hierarchy = false;
@@ -83,7 +78,7 @@ KstDataWizard::KstDataWizard(QWidget* parent, const char* name, bool modal, Qt::
 */
   _vectors->setAcceptDrops(true);
   _vectorsToPlot->setAcceptDrops(true);
-  _vectors->addColumn(i18n("Position"));
+  _vectors->addColumn(QObject::tr("Position"));
   _vectors->setSorting(1);
   _vectorsToPlot->setSorting(-1);
 
@@ -172,50 +167,47 @@ KstDataWizard::KstDataWizard(QWidget* parent, const char* name, bool modal, Qt::
 }
 
 
-KstDataWizard::~KstDataWizard()
-{
+KstDataWizard::~KstDataWizard() {
   delete _configWidget;
 }
 
 
-void KstDataWizard::selectingFolder()
-{
-  QString strFolder = _url->url();
-  KFileDialog *fileDlg = _url->fileDialog();
-  QFileInfo fileInfo(strFolder);
+void KstDataWizard::selectingFolder() {
+  QString strFolder;
+  QFileDialog *fileDlg;
 
+// xxx  strFolder = _url->url();
+// xxx  fileDlg = _url->fileDialog();
   if (fileDlg) {
+    QFileInfo fileInfo(strFolder);
+
     if (fileInfo.isDir()) {
       QDir dir(strFolder);
 
       if (dir.cdUp()) {
-        fileDlg->setURL(KUrl(dir.absPath()));
+// xxx        fileDlg->setURL(KUrl(dir.absPath()));
       }
     }
   }
 }
 
 
-void KstDataWizard::selectFolder()
-{
+void KstDataWizard::selectFolder() {
   QTimer::singleShot(0, this, SLOT(selectingFolder()));
 }
 
 
-void KstDataWizard::setInput(const QString& input)
-{
-  _url->setURL(input);
+void KstDataWizard::setInput(const QString& input) {
+// xxx  _url->setURL(input);
 }
 
 
-void KstDataWizard::plotColsChanged()
-{
+void KstDataWizard::plotColsChanged() {
   _reGrid->setChecked(true);
 }
 
 
-bool KstDataWizard::xVectorOk()
-{
+bool KstDataWizard::xVectorOk() {
   if (!_xAxisGroup->isEnabled()) {
     return true;
   }
@@ -234,28 +226,24 @@ bool KstDataWizard::xVectorOk()
 }
 
 
-bool KstDataWizard::yVectorsOk()
-{
+bool KstDataWizard::yVectorsOk() {
   return _vectorsToPlot->childCount() > 0;
 }
 
 
-void KstDataWizard::xChanged()
-{
+void KstDataWizard::xChanged() {
   setNextEnabled(_pageVectors, xVectorOk() && yVectorsOk());
 }
 
 
-void KstDataWizard::testURL()
-{
+void KstDataWizard::testURL() {
   _inTest = true;
   sourceChanged(_url->url());
   _inTest = false;
 }
 
 
-void KstDataWizard::sourceChanged(const QString& text)
-{
+void KstDataWizard::sourceChanged(const QString& text) {
   delete _configWidget;
   _configWidget = 0L;
   _configureSource->setEnabled(false);
@@ -323,7 +311,7 @@ void KstDataWizard::sourceChanged(const QString& text)
 
     _configureSource->setEnabled(_configWidget);
 
-    _fileType->setText(fileType.isEmpty() ? QString::null : i18n("Data source of type: %1").arg(fileType));
+    _fileType->setText(fileType.isEmpty() ? QString::null : QObject::tr("Data source of type: %1").arg(fileType));
 
     if (fl.isEmpty()) {
       setNextEnabled(_pageDataSource, false);
@@ -428,15 +416,14 @@ void KstDataWizard::sourceChanged(const QString& text)
 }
 
 
-void KstDataWizard::fieldListChanged()
-{
+void KstDataWizard::fieldListChanged() {
   bool ok = yVectorsOk();
+
   setNextEnabled(_pageVectors, ok && xVectorOk());
 }
 
 
-void KstDataWizard::showPage( QWidget *page )
-{
+void KstDataWizard::showPage(QWidget *page) {
   if (page == _pageVectors) {
     KstDataSourcePtr ds = *KST::dataSourceList.findReusableFileName(_file);
     if (!ds) {
@@ -499,8 +486,7 @@ void KstDataWizard::showPage( QWidget *page )
 }
 
 
-void KstDataWizard::updateWindowBox()
-{
+void KstDataWizard::updateWindowBox() {
   KstApp *app = KstApp::inst();
   QList<QMdiSubWindow*> windows;
   QList<QMdiSubWindow*>::const_iterator i;
@@ -526,8 +512,7 @@ void KstDataWizard::updateWindowBox()
 }
 
 
-void KstDataWizard::updateColumns()
-{
+void KstDataWizard::updateColumns() {
   if (_newWindow->isChecked() || _newWindows->isChecked()) {
     _reGrid->setChecked(false);
 
@@ -552,8 +537,7 @@ void KstDataWizard::updateColumns()
 }
 
 
-void KstDataWizard::updatePlotBox()
-{
+void KstDataWizard::updatePlotBox() {
   QString psave = _existingPlotName->currentText();
   KstApp *app = KstApp::inst();
 
@@ -606,8 +590,7 @@ void KstDataWizard::updatePlotBox()
 }
 
 
-void KstDataWizard::vectorSubset(const QString& filter)
-{
+void KstDataWizard::vectorSubset(const QString& filter) {
 /* xxx
   QRegExp re(filter, Qt::CaseSensitive, QRegExp::Wildcard);
   QListWidgetItem *after = 0L;
@@ -636,13 +619,11 @@ void KstDataWizard::vectorSubset(const QString& filter)
 }
 
 
-void KstDataWizard::newFilter()
-{
+void KstDataWizard::newFilter() {
 }
 
 
-bool KstDataWizard::checkAvailableMemory(KstDataSourcePtr &ds, KstFrameSize f0Value, qint64 nValue)
-{
+bool KstDataWizard::checkAvailableMemory(KstDataSourcePtr &ds, KstFrameSize f0Value, qint64 nValue) {
   unsigned long memoryRequested = 0;
   unsigned long memoryAvailable = 1024*1024*1024; // 1GB
   qint64 frames;
@@ -731,34 +712,34 @@ bool KstDataWizard::checkAvailableMemory(KstDataSourcePtr &ds, KstFrameSize f0Va
     memoryRequested /= 1024;
     memoryAvailable /= 1024;
     if (memoryRequested < 10 * 1024) {
-      strMemoryRequested = i18n("abbreviation for kilobytes", "%1 kB").arg(memoryRequested);
-      strMemoryAvailable = i18n("abbreviation for kilobytes", "%1 kB").arg(memoryAvailable);
+      strMemoryRequested = QObject::tr("abbreviation for kilobytes", "%1 kB").arg(memoryRequested);
+      strMemoryAvailable = QObject::tr("abbreviation for kilobytes", "%1 kB").arg(memoryAvailable);
     } else {
       memoryRequested /= 1024;
       memoryAvailable /= 1024;
       if (memoryRequested < 10 * 1024) {
-        strMemoryRequested = i18n("abbreviation for megabytes", "%1 MB").arg(memoryRequested);
-        strMemoryAvailable = i18n("abbreviation for megabytes", "%1 MB").arg(memoryAvailable);
+        strMemoryRequested = QObject::tr("abbreviation for megabytes", "%1 MB").arg(memoryRequested);
+        strMemoryAvailable = QObject::tr("abbreviation for megabytes", "%1 MB").arg(memoryAvailable);
       } else {
         memoryRequested /= 1024;
         memoryAvailable /= 1024;
         if (memoryRequested < 10 * 1024) {
-          strMemoryRequested = i18n("abbreviation for gigabytes", "%1 GB").arg(memoryRequested);
-          strMemoryAvailable = i18n("abbreviation for gigabytes", "%1 GB").arg(memoryAvailable);
+          strMemoryRequested = QObject::tr("abbreviation for gigabytes", "%1 GB").arg(memoryRequested);
+          strMemoryAvailable = QObject::tr("abbreviation for gigabytes", "%1 GB").arg(memoryAvailable);
         } else {
           memoryRequested /= 1024;
           memoryAvailable /= 1024;
-          strMemoryRequested = i18n("abbreviation for terabytes", "%1 TB").arg(memoryRequested);
-          strMemoryAvailable = i18n("abbreviation for terabytes", "%1 TB").arg(memoryAvailable);
+          strMemoryRequested = QObject::tr("abbreviation for terabytes", "%1 TB").arg(memoryRequested);
+          strMemoryAvailable = QObject::tr("abbreviation for terabytes", "%1 TB").arg(memoryAvailable);
         }
       }
     }
 
     if (strMemoryRequested != strMemoryAvailable) {
-      QMessageBox::warning(this, i18n("Kst"), i18n("You requested to read in over %1 of data but it seems that you have approximately only %2 of usable memory available. You cannot load this much data.").arg(strMemoryRequested).arg(strMemoryAvailable));
+      QMessageBox::warning(this, QObject::tr("Kst"), QObject::tr("You requested to read in over %1 of data but it seems that you have approximately only %2 of usable memory available. You cannot load this much data.").arg(strMemoryRequested).arg(strMemoryAvailable));
       rc = false;
     } else {
-      if (QMessageBox::warning(this, i18n("Kst"), i18n("You requested to read in approximately %1 of data but it seems that you have slightly less usable memory than this available. Would you like to try and load the data anyway?").arg(strMemoryRequested), QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes) {
+      if (QMessageBox::warning(this, QObject::tr("Kst"), QObject::tr("You requested to read in approximately %1 of data but it seems that you have slightly less usable memory than this available. Would you like to try and load the data anyway?").arg(strMemoryRequested), QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes) {
         rc = true;
       } else {
         rc = false;
@@ -770,8 +751,7 @@ bool KstDataWizard::checkAvailableMemory(KstDataSourcePtr &ds, KstFrameSize f0Va
 }
 
 
-void KstDataWizard::createLegendsAndLabels(KstViewObjectList &plots, bool xLabels, bool yLabels, bool titleLabel, bool legend, bool legendAuto, int fontSize)
-{
+void KstDataWizard::createLegendsAndLabels(KstViewObjectList &plots, bool xLabels, bool yLabels, bool titleLabel, bool legend, bool legendAuto, int fontSize) {
   KstViewObjectList::Iterator pit;
 
   pit = plots.begin();
@@ -801,8 +781,7 @@ void KstDataWizard::createLegendsAndLabels(KstViewObjectList &plots, bool xLabel
 }
 
 
-void KstDataWizard::cleanupWindowLayout(KstViewWindow *window)
-{
+void KstDataWizard::cleanupWindowLayout(KstViewWindow *window) {
   if (window) {
     //
     // we want to layout the plots in a window in a grid if:
@@ -834,8 +813,7 @@ void KstDataWizard::cleanupWindowLayout(KstViewWindow *window)
   }
 }
 
-void KstDataWizard::finished()
-{
+void KstDataWizard::finished() {
   KstDataSourcePtr ds;
   KstFrameSize f0Value;
   KstFrameSize nValue;
@@ -853,7 +831,7 @@ void KstDataWizard::finished()
       ds = KstDataSource::loadSource(_file);
     }
     if (!ds) {
-      QMessageBox::warning(this, i18n("Kst"), i18n("Sorry, unable to load the data file '%1'.").arg(_file));
+      QMessageBox::warning(this, QObject::tr("Kst"), QObject::tr("Sorry, unable to load the data file '%1'.").arg(_file));
 
       return;
     }
@@ -921,7 +899,7 @@ void KstDataWizard::finished()
     if (_xAxisCreateFromField->isChecked()) {
       nSteps += 1; // for the creation of the x-vector
       progress = 0;
-      app->slotUpdateProgress(nSteps, progress, i18n("Creating vectors..."));
+      app->slotUpdateProgress(nSteps, progress, QObject::tr("Creating vectors..."));
 
       //
       // create the x-vector...
@@ -935,10 +913,10 @@ void KstDataWizard::finished()
               _kstDataRange->DoSkip->isChecked(),
               _kstDataRange->DoFilter->isChecked());
 
-      app->slotUpdateProgress(nSteps, ++progress, i18n("Creating vectors..."));
+      app->slotUpdateProgress(nSteps, ++progress, QObject::tr("Creating vectors..."));
     } else {
       xVector = *(KST::vectorList.findTag(_xVectorExisting->selectedVector()));
-      app->slotUpdateProgress(nSteps, progress, i18n("Creating vectors..."));
+      app->slotUpdateProgress(nSteps, progress, QObject::tr("Creating vectors..."));
     }
 
     //
@@ -971,7 +949,7 @@ void KstDataWizard::finished()
                 _kstDataRange->DoFilter->isChecked());
         vectorList.append(v);
         ++nCurves;
-        app->slotUpdateProgress(nSteps, ++progress, i18n("Creating vectors..."));
+        app->slotUpdateProgress(nSteps, ++progress, QObject::tr("Creating vectors..."));
         ++it;
       }
     }
@@ -1005,7 +983,7 @@ void KstDataWizard::finished()
 
       if (_radioButtonPlotDataPSD->isChecked()) {
         if (_newWindows->isChecked()) {
-          newName += i18n("-Spectra");
+          newName += QObject::tr("-Spectra");
           QString n = app->newWindow(newName);
           windowPSD = static_cast<KstViewWindow*>(app->findWindow(n));
         }
@@ -1029,7 +1007,7 @@ void KstDataWizard::finished()
     // create the necessary plots...
     //
 
-    app->slotUpdateProgress(nSteps, progress, i18n("Creating plots..."));
+    app->slotUpdateProgress(nSteps, progress, QObject::tr("Creating plots..."));
 
     KstViewObjectList plots;
     Kst2DPlotPtr p;
@@ -1104,9 +1082,11 @@ void KstDataWizard::finished()
       const int cols = signed(sqrt(plots.count()));
       const int rows = cols + (count - cols * cols) / cols;
       int overflow = count % cols;
-      int row = 0, col = 0;
+      int row = 0;
+      int col = 0;
+      int i;
 
-      for (int i = 0; i < count; ++i) {
+      for (i = 0; i < count; ++i) {
         vectorList[row * cols + col] = lOld[i];
         ++row;
         if (row >= rows) {
@@ -1127,7 +1107,7 @@ void KstDataWizard::finished()
     // create the data curves...
     //
 
-    app->slotUpdateProgress(nSteps, progress, i18n("Creating curves..."));
+    app->slotUpdateProgress(nSteps, progress, QObject::tr("Creating curves..."));
     pit = plots.begin();
     for (it = vectorList.begin(); it != vectorList.end(); ++it) {
       if (_radioButtonPlotData->isChecked() || _radioButtonPlotDataPSD->isChecked()) {
@@ -1183,9 +1163,15 @@ void KstDataWizard::finished()
     }
 
     if (_onePlot->isChecked()) {
-      // if we are one plot, now we can move to the psd plot
+      //
+      // if we are one plot, now we can move to the psd plot...
+      //
+
       if (++pit == plots.end()) {
-        // if _newWindows is not checked, there will not be another.
+        //
+        // if _newWindows is not checked, there will not be another...
+        //
+
         pit = plots.begin();
       }
     } else if (_radioButtonPlotDataPSD->isChecked()) {
@@ -1202,7 +1188,7 @@ void KstDataWizard::finished()
       int indexColor = 0;
 
       pointType = 0;
-      app->slotUpdateProgress(nSteps, progress, i18n("Creating spectra..."));
+      app->slotUpdateProgress(nSteps, progress, QObject::tr("Creating spectra..."));
 
       for (it = vectorList.begin(); it != vectorList.end(); ++it) {
         if ((*it)->length() > 0) {
@@ -1216,10 +1202,6 @@ void KstDataWizard::finished()
               if (++pit == plots.end()) {
                 pit = plots.begin();
               }
-              // If this is ever false, we have no valid 2D plots
-              // which means that someone wrote some incomplete code
-              // or something is really broken
-              assert(pit != startPlot);
             }
           }
           name = KST::suggestPSDName((*it)->tag());
@@ -1279,7 +1261,7 @@ void KstDataWizard::finished()
           }
         }
       }
-      app->slotUpdateProgress(nSteps, ++progress, i18n("Creating spectra..."));
+      app->slotUpdateProgress(nSteps, ++progress, QObject::tr("Creating spectra..."));
     }
 
     createLegendsAndLabels(plots, _xAxisLabels->isChecked(), _yAxisLabels->isChecked(), _plotTitles->isChecked(), _legendsOn->isChecked(), _legendsAuto->isChecked(), fontSize);
@@ -1297,40 +1279,34 @@ void KstDataWizard::finished()
 }
 
 
-void KstDataWizard::applyFiltersChecked( bool on )
-{
+void KstDataWizard::applyFiltersChecked( bool on ) {
   setAppropriate(_pageFilters, on);
 }
 
 
-void KstDataWizard::enableXEntries()
-{
+void KstDataWizard::enableXEntries() {
   _xAxisGroup->setEnabled(true);
   xChanged();
 }
 
 
-void KstDataWizard::disableXEntries()
-{
+void KstDataWizard::disableXEntries() {
   _xAxisGroup->setEnabled(false);
   xChanged();
 }
 
 
-void KstDataWizard::enablePSDEntries()
-{
+void KstDataWizard::enablePSDEntries() {
   _kstFFTOptions->setEnabled(true);
 }
 
 
-void KstDataWizard::disablePSDEntries()
-{
+void KstDataWizard::disablePSDEntries() {
   _kstFFTOptions->setEnabled(false);
 }
 
 
-void KstDataWizard::search()
-{
+void KstDataWizard::search() {
   QString s = _vectorReduction->text();
 
   if (!s.isEmpty()) {
@@ -1345,20 +1321,17 @@ void KstDataWizard::search()
 }
 
 
-void KstDataWizard::disableWindowEntries()
-{
+void KstDataWizard::disableWindowEntries() {
   _windowGroup->setEnabled(false);
 }
 
 
-void KstDataWizard::enableWindowEntries()
-{
+void KstDataWizard::enableWindowEntries() {
   _windowGroup->setEnabled(true);
 }
 
 
-void KstDataWizard::markSourceAndSave()
-{
+void KstDataWizard::markSourceAndSave() {
   if (_configWidget) {
     KstDataSourcePtr src;
 
@@ -1387,7 +1360,7 @@ void KstDataWizard::configureSource()
   }
 
   assert(_configWidget);
-  KDialogBase *dlg = new KDialogBase(this, "Data Config Dialog", true, i18n("Configure Data Source"));
+  KDialogBase *dlg = new KDialogBase(this, "Data Config Dialog", true, QObject::tr("Configure Data Source"));
 
   if (isNew) {
     connect(dlg, SIGNAL(okClicked()), _configWidget, SLOT(save()));
@@ -1408,8 +1381,7 @@ void KstDataWizard::configureSource()
   sourceChanged(_url->url());
 }
 
-void KstDataWizard::saveSettings()
-{
+void KstDataWizard::saveSettings() {
   QSettings cfg("kstrc", QSettings::NativeFormat, this);
 
   cfg.beginGroup("DataWizard");
@@ -1450,8 +1422,7 @@ void KstDataWizard::saveSettings()
 }
 
 
-void KstDataWizard::loadSettings()
-{
+void KstDataWizard::loadSettings() {
   QSettings cfg("kstrc");
   cfg.beginGroup("DataWizard");
 
@@ -1519,8 +1490,7 @@ void KstDataWizard::loadSettings()
 }
 
 
-void KstDataWizard::clear()
-{
+void KstDataWizard::clear() {
   QPtrList<QListViewItem> lst;
 
   QListViewItemIterator it(_vectorsToPlot);
@@ -1542,8 +1512,7 @@ void KstDataWizard::clear()
 }
 
 
-void KstDataWizard::down()
-{
+void KstDataWizard::down() {
   QListViewItem *lastSelected = 0L;
   QListViewItem *lastUnselected = 0L;
 
@@ -1579,8 +1548,7 @@ void KstDataWizard::down()
 }
 
 
-void KstDataWizard::up()
-{
+void KstDataWizard::up() {
   QListViewItem *lastSelected = 0L;
   QListViewItem *lastUnselected = 0L;
 
@@ -1608,14 +1576,12 @@ void KstDataWizard::up()
 }
 
 
-void KstDataWizard::updateVectorPageButtons()
-{
+void KstDataWizard::updateVectorPageButtons() {
   setNextEnabled(_pageVectors, yVectorsOk());
 }
 
 
-void KstDataWizard::add()
-{
+void KstDataWizard::add() {
   QList<QListViewItem> lst;
   QListViewItemIterator it(_vectors);
   QListViewItem *last;
@@ -1678,8 +1644,7 @@ void KstDataWizard::add()
 }
 
 
-void KstDataWizard::remove()
-{
+void KstDataWizard::remove() {
   QList<QListViewItem> lst;
   QList::iterator it(_vectorsToPlot);
 
@@ -1737,8 +1702,7 @@ void KstDataWizard::remove()
 }
 
 
-void KstDataWizard::vectorsDroppedBack(QDropEvent *e)
-{
+void KstDataWizard::vectorsDroppedBack(QDropEvent *e) {
   Q_UNUSED(e)
 
   // Note: e can be null

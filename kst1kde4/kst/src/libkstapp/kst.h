@@ -24,8 +24,8 @@
 #include <QMdiArea>
 #include <QMdiSubWindow>
 #include <QPointer>
-#include <QTimer>
 #include <QSettings>
+#include <QTimer>
 
 #include "kst_export.h"
 #include "kstpainter.h"
@@ -44,7 +44,7 @@ class KstChangeFileDialog;
 class KstChangeNptsDialog;
 class KstChooseColorDialog;
 class KstCurveDifferentiate;
-class KstDataManager;
+// xxx class KstDataManager;
 class KstDataNotifier;
 class KstDebugDialog;
 class KstDebugNotifier;
@@ -58,7 +58,7 @@ class KstPlotDialog;
 class KstQuickStartDialog;
 class KstVectorSaveDialog;
 class KstViewFitsDialog;
-class KstViewManager;
+// xxx class KstViewManager;
 class KstViewMatricesDialog;
 class KstViewScalarsDialog;
 class KstViewStringsDialog;
@@ -338,8 +338,8 @@ class KST_EXPORT KstApp : public QMdiArea {
     KstChangeNptsDialog *_changeNptsDialog;
     KstGraphFileDialog *_graphFileDialog;
     KstVectorSaveDialog *_vectorSaveDialog;
-    KstDataManager *_dataManager;
-    KstViewManager *_viewManager;
+// xxx    KstDataManager *_dataManager;
+// xxx    KstViewManager *_viewManager;
     KstDebugDialog *_debugDialog;
     GraphicEditor *_graphicDialog;
     KstMonochromeDialog *_monochromeDialog; 

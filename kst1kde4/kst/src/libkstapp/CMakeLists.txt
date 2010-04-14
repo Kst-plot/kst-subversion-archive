@@ -91,20 +91,20 @@ set(kstapp_LIB_SRCS
     emailthread.cpp
     kstmatrixdialog.cpp
     ksteventmonitorentry.cpp
-    kstdatawizard.cpp
-    kstviewmanager.cpp
-    kstviewstringsdialog.cpp
+# xxx    kstviewmanager.cpp
+# xxx    kstviewstringsdialog.cpp
     updatethread.cpp
     kstvectordialog.cpp
     kstprintoptionspage.cpp
-    kstscalarlistview.cpp
-    kststringlistview.cpp
-    kstviewscalarsdialog.cpp
-    kstviewvectorsdialog.cpp
-    kstviewmatricesdialog.cpp
-    kstviewfitsdialog.cpp
-    kstchangenptsdialog.cpp
-    kstchangefiledialog.cpp
+# xxx    kstscalarlistview.cpp
+# xxx    kststringlistview.cpp
+# xxx    kstviewscalarsdialog.cpp
+# xxx    kstviewvectorsdialog.cpp
+# xxx    kstviewmatricesdialog.cpp
+# xxx    kstviewfitsdialog.cpp
+# xxx    kstchangenptsdialog.cpp
+# xxx    kstchangefiledialog.cpp
+# xxx    kstdatawizard.cpp
     kst.cpp)
 
 #KDE3_ADD_DCOP_SKELS(kstapp_LIB_SRCS

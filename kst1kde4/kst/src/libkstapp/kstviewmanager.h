@@ -14,6 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 #ifndef KSTVIEWMANAGERI_H
 #define KSTVIEWMANAGERI_H
 
@@ -57,7 +58,7 @@ class KstViewObjectItem : public QListViewItem {
   private:
     int _rtti;
     QString _name;
-    KstViewManagerI *_vm;
+    KstViewManager *_vm;
     bool _removable;
     bool _inUse;
 };
@@ -94,7 +95,7 @@ class KstViewManager: public QDialog, public Ui::KstViewManager {
   private:
     void open(bool open);  
 
-    KstDoc *doc;
+    KstDoc *_doc;
 
   protected:
 

@@ -15,15 +15,10 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <assert.h>
 
 #include <QStack>
 #include <QDragObject>
 #include <QMessageBox>
-
-#include <klistview.h>
-#include <kmultipledrag.h>
-#include <kstandarddirs.h>
 
 #include "kst.h"
 #include "kst2dplot.h"
@@ -37,13 +32,12 @@
 #include "kstviewwindow.h"
 #include "plotmimesource.h"
 
-
 #define RTTI_OBJ_WINDOW          4301
 #define RTTI_OBJ_VIEW_OBJECT     4302
 #define RTTI_OBJ_DATA_OBJECT     4303
 
 
-KstViewListView::KstViewListView(QWidget *parent, const char *name) : QListView(parent, name) {
+KstViewListView::KstViewListView(QWidget *parent, const char *name) : QTreeView(parent, name) {
 }
 
 
@@ -104,7 +98,7 @@ QDragObject* KstViewListView::dragObject() {
 void KstViewListView::contentsMouseMoveEvent(QMouseEvent *e) {
   viewport()->setCursor(Qt::ArrowCursor);
 
-  QListView::contentsMouseMoveEvent(e);
+  QTreeView::contentsMouseMoveEvent(e);
 }
 
 
@@ -404,7 +398,7 @@ void KstViewObjectItem::openChildren(bool open) {
 KstViewManager::KstViewManager(KstDoc *in_doc, QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl)
 : KstViewManager(parent, name, modal, fl) {
   setupUi(this);
-  doc = in_doc;
+  _doc = in_doc;
   delete ViewView;
 
   setAcceptDrops(TRUE);

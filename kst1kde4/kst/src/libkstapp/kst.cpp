@@ -110,6 +110,7 @@ const QString& KstApp::defaultTag = KGlobal::staticQString("<Auto Name>");
 void KstApp::doubleCheckCleanup() {
   KstApp *ptr = ::inst; // guard to prevent double delete on recursion
   ::inst = 0L;
+
   delete ptr;
 }
 
@@ -144,8 +145,8 @@ KstApp::KstApp(QWidget *parent, const char *name)
   setWindowTitle(doc->title());
 
   _debugDialog = new KstDebugDialog(this);
-  _dataManager = new KstDataManager(doc, this);
-  _viewManager = new KstViewManager(doc, this);
+// xxx  _dataManager = new KstDataManager(doc, this);
+// xxx  _viewManager = new KstViewManager(doc, this);
   _viewScalarsDialog = new KstViewScalarsDialog(this);
   _viewStringsDialog = new KstViewStringsDialog(this);
   _viewVectorsDialog = new KstViewVectorsDialog(this);
