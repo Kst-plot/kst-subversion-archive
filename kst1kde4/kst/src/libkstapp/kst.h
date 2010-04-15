@@ -24,6 +24,7 @@
 #include <QMdiArea>
 #include <QMdiSubWindow>
 #include <QPointer>
+#include <QProgressBar>
 #include <QSettings>
 #include <QTimer>
 
@@ -116,8 +117,7 @@ class KST_EXPORT KstApp : public QMdiArea {
     void togglePaused();
 
     enum KstZoomType { XYZOOM, YZOOM, XZOOM, TEXT, GRAPHICS, LAYOUT };
-    enum KstGraphicType { GFX_LINE, GFX_ARROW, GFX_POLYGON, GFX_POLYLINE, GFX_ELLIPSE, 
-                           GFX_RECTANGLE, GFX_ROUNDED_RECTANGLE, GFX_CURVE, GFX_LABEL };
+    enum KstGraphicType { GFX_LINE, GFX_ARROW, GFX_POLYGON, GFX_POLYLINE, GFX_ELLIPSE, GFX_RECTANGLE, GFX_ROUNDED_RECTANGLE, GFX_CURVE, GFX_LABEL };
     /** Get XY zoom radio button state */
     KstZoomType getZoomRadio();
     KstGraphicType getGraphicType();
@@ -211,7 +211,6 @@ class KST_EXPORT KstApp : public QMdiArea {
     void toggleDataMode();
     void toggleMouseMode();
     void slotSettingsChanged();
-    void fixKMdi();
     void showContextMenu(QWidget *w, const QPoint& pos);
     void showContextMenu(const QPoint& pos);
     void delayedDocInit();
@@ -227,7 +226,7 @@ class KST_EXPORT KstApp : public QMdiArea {
     void slotFileRenameWindow();
     void slotFileNew();
     void slotFileOpen();
-    bool slotFileOpenRecent(const KUrl &);
+    bool slotFileOpenRecent(const QUrl &);
     void slotFileSave();
     bool slotFileSaveAs();
     void slotFileClose();
@@ -420,7 +419,7 @@ class KST_EXPORT KstApp : public QMdiArea {
     StatusLabel *_readyBar;
     StatusLabel *_memoryBar;
     StatusLabel *_dataBar;
-    KProgress *_progressBar;
+    QProgressBar *_progressBar;
     KstIfaceImpl *_dcopIface;
     UpdateThread *_updateThread;
     Kst2DPlotMap *_plotHolderWhileOpeningDocument;

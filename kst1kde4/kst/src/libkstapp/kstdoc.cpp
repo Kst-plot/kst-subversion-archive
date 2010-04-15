@@ -194,8 +194,8 @@ bool KstDoc::openDocument(const QUrl& url, const QString& o_file,
   if (url.scheme() == "file" || url.isRelative()) {
     tmpFile = url.path();
   } else {
-/*    if (!KIO::NetAccess::exists(url, true, KstApp::inst()) || !KIO::NetAccess::download(url, tmpFile, KstApp::inst())) {
-      QMessageBox::warning(KstApp::inst(), QObject::tr("kst"), QObject::tr("%1: There is no file with that name to open.").arg(url.toString()));
+/* xxx   if (!KIO::NetAccess::exists(url, true, KstApp::inst()) || !KIO::NetAccess::download(url, tmpFile, KstApp::inst())) {
+      QMessageBox::warning(KstApp::inst(), QObject::tr("Kst"), QObject::tr("%1: There is no file with that name to open.").arg(url.toString()));
 
       return false;
     }
