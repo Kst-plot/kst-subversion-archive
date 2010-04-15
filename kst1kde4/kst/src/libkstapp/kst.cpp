@@ -21,6 +21,7 @@
 #include <QDateTime>
 #include <QEvent>
 #include <QEventLoop>
+#include <QFileDialog>
 #include <QInputDialog>
 #include <QMessageBox>
 #include <qpaintdevicemetrics.h>
@@ -120,20 +121,20 @@ KstApp::KstApp(QWidget *parent, const char *name)
 
   _updatesFromScriptEnabled = true;
   _plotHolderWhileOpeningDocument = new Kst2DPlotMap;
-  KGlobal::dirs()->addResourceType("kst", KStandardDirs::kde_default("data") + "kst");
+// xxx  KGlobal::dirs()->addResourceType("kst", KStandardDirs::kde_default("data") + "kst");
 
   _dataSourceConfig = qSettingsObject;
 
-  clearWFlags(WDestructiveClose);
+// xxx  clearWFlags(WDestructiveClose);
 
   _stopping = false;
-  config = kapp->config();
+// xxx  config = kapp->config();
   initStatusBar();
   setStandardToolBarMenuEnabled(true);
 
   initDocument();
-  KstDebug::self()->setHandler(doc);
-  setWindowTitle(doc->title());
+  KstDebug::self()->setHandler(_doc);
+  setWindowTitle(_doc->title());
 
   _debugDialog = new KstDebugDialog(this);
 // xxx  _dataManager = new KstDataManager(doc, this);
@@ -154,33 +155,38 @@ KstApp::KstApp(QWidget *parent, const char *name)
 
   initActions();
   readOptions();
-  XYZoomAction->setChecked(true);
+  _actionZoomXY->setChecked(true);
   toggleMouseMode();
 
-  _updateThread = new UpdateThread(doc);
+  _updateThread = new UpdateThread(_doc);
   _updateThread->setUpdateTime(KstSettings::globalSettings()->plotUpdateTimer);
   _updateThread->start();
 
-  /*** Plot Dialog signals */
-  connect(changeFileDialog, SIGNAL(docChanged()),
-          this,             SLOT(registerDocChange()));
-  connect(changeNptsDialog, SIGNAL(docChanged()),
-          this,             SLOT(registerDocChange()));
-  connect(graphFileDialog, SIGNAL(graphFileReq(const QString&,const QString&,int,int,bool,int)), this, SLOT(immediatePrintToPng(const QString&,const QString&,int,int,bool,int)));
-  connect(graphFileDialog, SIGNAL(graphFileEpsReq(const QString&,int,int,bool,int)), this, SLOT(immediatePrintToEps(const QString&,int,int,bool,int)));
+  //
+  // plot Dialog signals...
+  //
 
-  // data manager signals
-  connect(dataManager, SIGNAL(docChanged()), this, SLOT(registerDocChange()));
-  connect(doc, SIGNAL(updateDialogs()), this, SLOT(updateDialogs()));
-  connect(doc, SIGNAL(dataChanged()), this, SLOT(updateDataDialogs()));
-  connect(dataManager, SIGNAL(editDataVector(const QString&)), KstVectorDialogI::globalInstance(), SLOT(showEdit(const QString&)));
-  connect(dataManager, SIGNAL(editStaticVector(const QString&)), KstVectorDialogI::globalInstance(), SLOT(showEdit(const QString&)));
-  connect(dataManager, SIGNAL(editDataMatrix(const QString&)), KstMatrixDialogI::globalInstance(), SLOT(showEdit(const QString&)));
-  connect(dataManager, SIGNAL(editStaticMatrix(const QString&)), KstMatrixDialogI::globalInstance(), SLOT(showEdit(const QString&)));
+  connect(_changeFileDialog, SIGNAL(docChanged()), this, SLOT(registerDocChange()));
+  connect(_changeNptsDialog, SIGNAL(docChanged()), this, SLOT(registerDocChange()));
+  connect(_graphFileDialog, SIGNAL(graphFileReq(const QString&,const QString&,int,int,bool,int)), this, SLOT(immediatePrintToPng(const QString&,const QString&,int,int,bool,int)));
+  connect(_graphFileDialog, SIGNAL(graphFileEpsReq(const QString&,int,int,bool,int)), this, SLOT(immediatePrintToEps(const QString&,int,int,bool,int)));
 
+  //
+  // data manager signals...
+  //
 
-  setAutoSaveSettings("KST-KMainWindow", true);
-  _dcopIface = new KstIfaceImpl(doc, this);
+  connect(_doc, SIGNAL(updateDialogs()), this, SLOT(updateDialogs()));
+  connect(_doc, SIGNAL(dataChanged()), this, SLOT(updateDataDialogs()));
+/* xxx
+  connect(_dataManager, SIGNAL(docChanged()), this, SLOT(registerDocChange()));
+  connect(_dataManager, SIGNAL(editDataVector(const QString&)), KstVectorDialog::globalInstance(), SLOT(showEdit(const QString&)));
+  connect(_dataManager, SIGNAL(editStaticVector(const QString&)), KstVectorDialog::globalInstance(), SLOT(showEdit(const QString&)));
+  connect(_dataManager, SIGNAL(editDataMatrix(const QString&)), KstMatrixDialog::globalInstance(), SLOT(showEdit(const QString&)));
+  connect(_dataManager, SIGNAL(editStaticMatrix(const QString&)), KstMatrixDialog::globalInstance(), SLOT(showEdit(const QString&)));
+*/
+
+// xxx  setAutoSaveSettings("KST-KMainWindow", true);
+// xxx  _dcopIface = new KstIfaceImpl(_doc, this);
 
   connect(this, SIGNAL(settingsChanged()), this, SLOT(slotSettingsChanged()));
 
@@ -230,16 +236,19 @@ QSize KstApp::sizeHint() const
 
 
 void KstApp::initialize() {
+/* xxx
   KstSettings::checkUpdates();
   qSettingsObject = new QSettings("kstdatarc", QSettings::NativeFormat, this);
   KstDataSource::setupOnStartup(qSettingsObject);
   // NOTE: This is leaked in commandline mode if we never create a KstApp.
   //       Not too much of a problem right now, and less messy than hooking in
   //       cleanups in main.
+*/
 }
 
 
 void KstApp::loadExtensions() {
+/* xxx
   QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
   // Initialise the plugin loader and collection first.
@@ -262,6 +271,7 @@ void KstApp::loadExtensions() {
   ExtensionMgr *mgr = ExtensionMgr::self();
   mgr->setWindow(this);
   KService::List sl = KServiceType::offers("Kst Extension");
+
   for (KService::List::ConstIterator it = sl.begin(); it != sl.end(); ++it) {
     KService::Ptr service = *it;
     QString name = service->property("Name").toString();
@@ -270,6 +280,7 @@ void KstApp::loadExtensions() {
     }
     mgr->loadExtension(service);
   }
+
   for (KService::List::ConstIterator it = sl.begin(); it != sl.end(); ++it) {
     KService::Ptr service = *it;
     QString name = service->property("Name").toString();
@@ -284,6 +295,7 @@ void KstApp::loadExtensions() {
     }
   }
   QApplication::restoreOverrideCursor();
+*/
 }
 
 
@@ -314,10 +326,11 @@ void KstApp::EventELOGConfigure() {
 
 
 void KstApp::customEvent(QEvent *pEvent) {
+/* xxx
   if (pEvent->type() == KstELOGAliveEvent) {
-    KstEventMonitorI::globalInstance()->enableELOG();
+    KstEventMonitor::globalInstance()->enableELOG();
   } else if (pEvent->type() == KstELOGDeathEvent) {
-    KstEventMonitorI::globalInstance()->disableELOG();
+    KstEventMonitor::globalInstance()->disableELOG();
   } else if (pEvent->type() == KstELOGDebugInfoEvent) {
     QTextStream *pTextStream = (QTextStream*)pEvent->data();
     (*pTextStream) << KstDebug::self()->text();
@@ -332,25 +345,27 @@ void KstApp::customEvent(QEvent *pEvent) {
     if( pCapture ) {
       QDataStream *pStream = pCapture->pBuffer;
       QSize size(pCapture->iWidth, pCapture->iHeight);
-      KstViewWindow *vw = dynamic_cast<KstViewWindow*>(activeWindow());
+      KstViewWindow *viewWindow;
 
-      if (vw) {
+      viewWindow = dynamic_cast<KstViewWindow*>(activeSubWindow());
+      if (viewWindow) {
         vw->immediatePrintToPng(pStream, size);
       }
     }
   }
+*/
 }
 
 
 void KstApp::updateActions() {
-  // Hack
-  StatusBarAction->setChecked(statusBar()->isShown());
-  QApplication::flushX();
+// xxx  StatusBarAction->setChecked(statusBar()->isShown());
+// xxx  QApplication::flushX();
   QTimer::singleShot(0, this, SLOT(loadExtensions()));
 }
 
 
 void KstApp::initActions() {
+/* xxx
   KAction *newTab = new KAction(QObject::tr("&New tab..."), 0, 0, this, SLOT(slotFileNewWindow()), actionCollection(), "file_new_window");
   newTab->setWhatsThis(QObject::tr("Create a new tab."));
 
@@ -363,12 +378,8 @@ void KstApp::initActions() {
   fileQuit = KStdAction::quit(this, SLOT(slotFileClose()), actionCollection());
   fileQuit->setWhatsThis(QObject::tr("Quit Kst."));
 
-#if 0
-  // KDE 3.3 only
-  fileKeyBindings = KStdAction::keyBindings(guiFactory(), SLOT(slotConfigureKeys()), actionCollection());
-#else
   fileKeyBindings = KStdAction::keyBindings(this, SLOT(slotConfigureKeys()), actionCollection());
-#endif
+
   fileKeyBindings->setWhatsThis(QObject::tr("Bring up a dialog box\n"
                                      "to configure shortcuts."));
 
@@ -382,39 +393,32 @@ void KstApp::initActions() {
   filePaste = KStdAction::paste(this, SLOT(slotPaste()), actionCollection());
   filePaste->setWhatsThis(QObject::tr("Paste plots from the clipboard."));
 
-  /************/
   filePrint = KStdAction::print(this, SLOT(slotFilePrint()),
                                 actionCollection());
   filePrint->setToolTip(QObject::tr("Print"));
   filePrint->setWhatsThis(QObject::tr("Print current display"));
 
-  /************/
   StatusBarAction = KStdAction::showStatusbar(this, SLOT(slotViewStatusBar()),
                                               actionCollection());
   StatusBarAction->setWhatsThis(QObject::tr("Toggle Statusbar"));
   connect(StatusBarAction, SIGNAL(activated()), this, SLOT(setSettingsDirty()));
 
-  /************/
   KStdAction::open(this, SLOT(slotFileOpen()), actionCollection());
 
-  /************/
   _recent = KStdAction::openRecent(this, SLOT(slotFileOpenRecent(const KURL &)), actionCollection());
   _recent->setWhatsThis(QObject::tr("Open a recently used Kst plot."));
 
-  /************/
   PauseAction = new KToggleAction(QObject::tr("P&ause"),"player_pause", 0,
                                   actionCollection(), "pause_action");
   PauseAction->setToolTip(QObject::tr("Pause"));
   PauseAction->setWhatsThis(QObject::tr("When paused, new data will not be read."));
   connect(PauseAction, SIGNAL(toggled(bool)), this, SLOT(updatePausedState(bool)));
 
-  /************/
   _actionSaveData = new KToggleAction(QObject::tr("Save Da&ta"), 0,0,0,0,
 				actionCollection(), "save_vector_data");
   _actionSaveData->setToolTip(QObject::tr("Save Vector Data To Disk"));
   _actionSaveData->setWhatsThis(QObject::tr("When selected, data in vectors will be saved into the Kst file."));
 
-  /************/
   XYZoomAction = new KRadioAction(QObject::tr("XY Mouse &Zoom"), "kst_zoomxy",
                                   KShortcut(Key_F2),
                                   this, SLOT(toggleMouseMode()),
@@ -425,7 +429,6 @@ void KstApp::initActions() {
                                   "both X and Y axis"));
   XYZoomAction->setChecked(true);
 
-  /************/
   XZoomAction = new KRadioAction(QObject::tr("&X Mouse Zoom"), "kst_zoomx",
                                  KShortcut(Key_F3),
                                  this, SLOT(toggleMouseMode()),
@@ -435,7 +438,6 @@ void KstApp::initActions() {
   XZoomAction->setWhatsThis(QObject::tr("X zoom: Mouse zooming affects only the\n"
                                  "X axis (CTRL-mouse also does this)"));
 
-  /************/
   YZoomAction = new KRadioAction(QObject::tr("&Y Mouse Zoom"), "kst_zoomy",
                                   KShortcut(Key_F4),
                                   this, SLOT(toggleMouseMode()),
@@ -445,7 +447,6 @@ void KstApp::initActions() {
   YZoomAction->setWhatsThis(QObject::tr("Y zoom: Mouse zooming affects only the\n"
                                  "Y axis (SHIFT-mouse also does this)"));
 
-  /************/
   GfxAction = new KRadioAction(QObject::tr("&Graphics Mode"), "kst_graphics", 0,
                                 this, SLOT(toggleMouseMode()),
                                 actionCollection(), "graphics_action");
@@ -453,31 +454,24 @@ void KstApp::initActions() {
   GfxAction->setToolTip(QObject::tr("Graphics Editor"));
   GfxAction->setWhatsThis(QObject::tr("Use the mouse to create and edit graphics objects."));
 
-  /************/
-
-
-  /************/
   NewPlotAction = new KAction(QObject::tr("New Plot"), "kst_newplot", 0,
                                  this, SLOT(newPlot()),
                                  actionCollection(), "newplot_action");
   NewPlotAction->setWhatsThis(QObject::tr("Create a new plot in the\n"
                                       "current window."));
 
-  /************/
   DataManagerAction = new KAction(QObject::tr("&Data Manager"), "kst_datamanager", 0,
                                   dataManager, SLOT(show_I()),
                                   actionCollection(), "datamanager_action");
   DataManagerAction->setWhatsThis(QObject::tr("Bring up a dialog box\n"
                                        "to manage data."));
 
-  /************/
   ViewManagerAction = new KAction(QObject::tr("&View Manager"), "kst_viewmanager", 0,
                                   viewManager, SLOT(show_I()),
                                   actionCollection(), "viewmanager_action");
   ViewManagerAction->setWhatsThis(QObject::tr("Bring up a dialog box\n"
                                        "to manage views."));
   
-  /************/
   VectorDialogAction = new KAction(QObject::tr("New &Vector..."), "kst_vectornew", 0,
                                  KstVectorDialogI::globalInstance(),
                                  SLOT(show()), actionCollection(),
@@ -485,7 +479,6 @@ void KstApp::initActions() {
   VectorDialogAction->setWhatsThis(QObject::tr("Bring up a dialog box\n"
                                         "to create a new vector."));
 
-  /************/
   CurveDialogAction = new KAction(QObject::tr("New &Curve..."), "kst_curvenew", 0,
                                   KstCurveDialogI::globalInstance(),
                                   SLOT(show()), actionCollection(),
@@ -493,7 +486,6 @@ void KstApp::initActions() {
   CurveDialogAction->setWhatsThis(QObject::tr("Bring up a dialog box\n"
                                        "to create a new curve."));
 
-  /************/
   CsdDialogAction = new KAction(QObject::tr("New &Spectrogram..."), "kst_csdnew", 0,
                                 KstCsdDialogI::globalInstance(),
                                 SLOT(show()), actionCollection(),
@@ -502,7 +494,6 @@ void KstApp::initActions() {
                                      "to create a new spectrogram."));
 
 
-  /************/
   EqDialogAction = new KAction(QObject::tr("New &Equation..."),
                                "kst_equationnew", 0,
                                KstEqDialogI::globalInstance(),
@@ -511,7 +502,6 @@ void KstApp::initActions() {
   EqDialogAction->setWhatsThis(QObject::tr("Bring up a dialog box\n"
                                     "to create a new equation."));
 
-  /************/
   HsDialogAction = new KAction(QObject::tr("New &Histogram..."),
                                "kst_histogramnew", 0,
                                KstHsDialogI::globalInstance(),
@@ -520,7 +510,6 @@ void KstApp::initActions() {
   HsDialogAction->setWhatsThis(QObject::tr("Bring up a dialog box\n"
                                     "to create a new histogram."));
 
-  /************/
   PsdDialogAction = new KAction(QObject::tr("New &Spectrum..."),
                                 "kst_psdnew", 0,
                                 KstPsdDialogI::globalInstance(),
@@ -529,7 +518,6 @@ void KstApp::initActions() {
   PsdDialogAction->setWhatsThis(QObject::tr("Bring up a dialog box\n"
                                      "to create a new spectrum."));
 
-  /************/
   PluginDialogAction = new KAction(QObject::tr("New &Plugin..."),
                                   "kst_pluginnew", 0,
                                    this, SLOT(selectDataPlugin()), actionCollection(),
@@ -537,7 +525,6 @@ void KstApp::initActions() {
   PluginDialogAction->setWhatsThis(QObject::tr("Bring up a dialog box\n"
                                         "to create a new plugin instance."));
 
-  /************/
   MatrixDialogAction = new KAction(QObject::tr("New M&atrix..."), "kst_matrixnew", 0,
                                    KstMatrixDialogI::globalInstance(),
                                    SLOT(show()), actionCollection(),
@@ -545,7 +532,6 @@ void KstApp::initActions() {
   MatrixDialogAction->setWhatsThis(QObject::tr("Bring up a dialog box\n"
                                         "to create a new matrix."));
 
-  /************/
   ImageDialogAction = new KAction(QObject::tr("New &Image..."),
                                    "kst_imagenew", 0,
                                    KstImageDialogI::globalInstance(),
@@ -554,7 +540,6 @@ void KstApp::initActions() {
   ImageDialogAction->setWhatsThis(QObject::tr("Bring up a dialog box\n"
                                         "to create a new image instance."));
 
-  /************/
   ChangeFileDialogAction = new KAction(QObject::tr("Change Data &File..."),
                                        "kst_changefile", 0, this,
                                        SLOT(showChangeFileDialog()),
@@ -563,7 +548,6 @@ void KstApp::initActions() {
   ChangeFileDialogAction->setWhatsThis(QObject::tr("Bring up a dialog box\n"
                                             "to change input files."));
 
-  /************/
   ChooseColorDialogAction = new KAction(QObject::tr("Assign Curve &Color Per File..."),
                                         "kst_choosecolor", 0, this,
                                         SLOT(showChooseColorDialog()),
@@ -573,7 +557,6 @@ void KstApp::initActions() {
                                              "to change curve colors\n"
                                              "based on data file."));
 
-  /************/
   DifferentiateCurvesDialogAction = new KAction(QObject::tr("&Differentiate Between Curves..."),
                                         "kst_differentiatecurves", 0, this,
                                         SLOT(showDifferentiateCurvesDialog()),
@@ -582,7 +565,6 @@ void KstApp::initActions() {
   DifferentiateCurvesDialogAction->setWhatsThis(QObject::tr("Bring up a dialog box\n"
                                              "to differentiate between curves."));
 
-/* xxx
   ViewScalarsDialogAction = new KAction(QObject::tr("View &Scalar Values"),
                                        0, 0, this,
                                        SLOT(showViewScalarsDialog()),
@@ -629,6 +611,7 @@ void KstApp::initActions() {
   ViewFitsDialogAction->setEnabled(false);
 
 */
+/* xxx
   ChangeNptsDialogAction = new KAction(QObject::tr("Change Data Sample &Ranges..."),
                                        "kst_changenpts", 0, this,
                                        SLOT(showChangeNptsDialog()),
@@ -637,7 +620,6 @@ void KstApp::initActions() {
   ChangeNptsDialogAction->setWhatsThis(QObject::tr("Bring up a dialog box\n"
                                             "to change data sample ranges."));
 
-  /************/
   EventMonitorAction = new KAction(QObject::tr("New Event &Monitor..."),
                                      "kst_eventnew", 0,
                                      KstEventMonitorI::globalInstance(),
@@ -647,7 +629,6 @@ void KstApp::initActions() {
   EventMonitorAction->setWhatsThis(QObject::tr("Bring up a dialog box\n"
                                           "create a new event monitor."));
 
-  /************/
   GraphFileDialogAction = new KAction(QObject::tr("Export to Graphics File..."),
                                   "thumbnail", 0,
                                   this, SLOT(showGraphFileDialog()),
@@ -657,7 +638,6 @@ void KstApp::initActions() {
                                            "to export the plot as a\n"
                                            "graphics file."));
 
-  /************/
   _vectorSaveAction = new KAction(QObject::tr("Save Vectors to Disk..."),
                                   0, 0,
                                   vectorSaveDialog, SLOT(show()),
@@ -666,7 +646,6 @@ void KstApp::initActions() {
   _vectorSaveAction->setWhatsThis(QObject::tr("Bring up a dialog box\n"
                                        "to save vectors to text files."));
 
-  /************/
   SamplesDownAction = new KAction(QObject::tr("&Back 1 Screen"),
                                   "player_rew",
                                   KShortcut(CTRL + Key_Left),
@@ -678,7 +657,6 @@ void KstApp::initActions() {
                                        "the current number of frames."));
 
 
-  /************/
   SamplesUpAction = new KAction(QObject::tr("&Advance 1 Screen"),
                                 "player_fwd",
                                 KShortcut(CTRL + Key_Right),
@@ -690,7 +668,6 @@ void KstApp::initActions() {
   SamplesUpAction->setWhatsThis(QObject::tr("Increase the starting frame by\n"
                                      "the current number of frames."));
 
-  /************/
   SamplesFromEndAction = new KAction(QObject::tr("Read From &End"),
                                      "player_end",
                                      KShortcut(SHIFT + CTRL + Key_Right),
@@ -700,16 +677,6 @@ void KstApp::initActions() {
   SamplesFromEndAction->setToolTip(QObject::tr("Read from end"));
   SamplesFromEndAction->setWhatsThis(QObject::tr("Read current data from end of file."));
 
-  /************/
-#if 0
-  PluginManagerAction = new KAction(QObject::tr("&Plugins..."), 0, 0,
-                                 this, SLOT(showPluginManager()),
-                                 actionCollection(), "pluginmanager_action");
-  PluginManagerAction->setWhatsThis(QObject::tr("Bring up a dialog box\n"
-                                           "to manage plugins."));
-#endif
-
-  /************/
   ExtensionManagerAction = new KAction(QObject::tr("&Extensions..."), 0, 0,
                                  this, SLOT(showExtensionManager()),
                                  actionCollection(), "extensionmanager_action");
@@ -717,7 +684,6 @@ void KstApp::initActions() {
                                            "to manage extensions."));
 
 
-  /************/
   DataWizardAction = new KAction(QObject::tr("Data &Wizard"), "wizard", 
                                  KShortcut(CTRL+ALT+Key_W),
                                  this, SLOT(showDataWizard()),
@@ -726,7 +692,6 @@ void KstApp::initActions() {
                                            "to easily load data."));
 
 
-  /************/
   DebugDialogAction = new KAction(QObject::tr("Debug Kst..."), 0, 0,
                                  this, SLOT(showDebugDialog()),
                                  actionCollection(), "debug_action");
@@ -734,13 +699,12 @@ void KstApp::initActions() {
                                            "to display debugging information."));
 
 
-  /************/
   DataMode = new KToggleAction(QObject::tr("Data Mode"), "kst_datamode", 0,
                                  this, SLOT(toggleDataMode()),
                                  actionCollection(), "datamode_action");
   DataMode->setWhatsThis(QObject::tr("Toggle between cursor mode and data mode."));
   DataMode->setToolTip(QObject::tr("Data mode"));
-  /************/
+
   _reloadAction = new KAction(QObject::tr("Reload"), "reload", Key_F5, this, SLOT(reload()),
                               actionCollection(), "reload");
   _reloadAction->setWhatsThis(QObject::tr("Reload the data from file."));
@@ -784,78 +748,75 @@ void KstApp::initActions() {
   _gfx2DPlotAction->setToolTip(QObject::tr("Insert Plot"));
   _gfx2DPlotAction->setWhatsThis(QObject::tr("Insert Plot"));
 
-  _gfxArrowAction = new KRadioAction(QObject::tr("&Arrow"), "kst_gfx_arrow",
+  _actionGfxArrow = new KRadioAction(QObject::tr("&Arrow"), "kst_gfx_arrow",
                                    KShortcut(Key_F11),
                                    this, SLOT(toggleMouseMode()),
                                    actionCollection(), "arrow_action");
-  _gfxArrowAction->setExclusiveGroup("gfx");
-  _gfxArrowAction->setToolTip(QObject::tr("Draw arrow"));
-  _gfxArrowAction->setWhatsThis(QObject::tr("Draw arrow"));
+  _actionGfxArrow->setExclusiveGroup("gfx");
+  _actionGfxArrow->setToolTip(QObject::tr("Draw arrow"));
+  _actionGfxArrow->setWhatsThis(QObject::tr("Draw arrow"));
 
-  _gfxLegendAction = new KRadioAction(QObject::tr("&Legend"), "kst_gfx_legend",
+  _actionGfxLegend = new KRadioAction(QObject::tr("&Legend"), "kst_gfx_legend",
                                    KShortcut(CTRL+Key_3),
                                    this, SLOT(toggleMouseMode()),
                                    actionCollection(), "legend_action");
-  _gfxLegendAction->setExclusiveGroup("gfx");
-  _gfxLegendAction->setToolTip(QObject::tr("Insert Legend"));
-  _gfxLegendAction->setWhatsThis(QObject::tr("Insert Legend"));
+  _actionGfxLegend->setExclusiveGroup("gfx");
+  _actionGfxLegend->setToolTip(QObject::tr("Insert Legend"));
+  _actionGfxLegend->setWhatsThis(QObject::tr("Insert Legend"));
 
-  _gfxLineAction = new KRadioAction(QObject::tr("&Line"), "kst_gfx_line",
+  _actionGfxLine = new KRadioAction(QObject::tr("&Line"), "kst_gfx_line",
                                    KShortcut(Key_F10),
                                    this, SLOT(toggleMouseMode()),
                                    actionCollection(), "line_action");
-  _gfxLineAction->setExclusiveGroup("gfx");
-  _gfxLineAction->setToolTip(QObject::tr("Draw line"));
-  _gfxLineAction->setWhatsThis(QObject::tr("Draw line"));
-  _gfxLineAction->setChecked(true);
+  _actionGfxLine->setExclusiveGroup("gfx");
+  _actionGfxLine->setToolTip(QObject::tr("Draw line"));
+  _actionGfxLine->setWhatsThis(QObject::tr("Draw line"));
+  _actionGfxLine->setChecked(true);
 
-  /************/
-  _gfxLabelAction = new KRadioAction(QObject::tr("L&abel"), "text",
+  _actionGfxLabel = new KRadioAction(QObject::tr("L&abel"), "text",
                                    KShortcut(Key_F7),
                                    this, SLOT(toggleMouseMode()),
                                    actionCollection(), "label_action");
-  _gfxLabelAction->setExclusiveGroup("gfx");
-  _gfxLabelAction->setToolTip(QObject::tr("Draw label"));
-  _gfxLabelAction->setWhatsThis(QObject::tr("Draw label"));
+  _actionGfxLabel->setExclusiveGroup("gfx");
+  _actionGfxLabel->setToolTip(QObject::tr("Draw label"));
+  _actionGfxLabel->setWhatsThis(QObject::tr("Draw label"));
 
-  LayoutAction = new KRadioAction(QObject::tr("Layout Mode"), "kst_layoutmode",
+  _actionLayout = new KRadioAction(QObject::tr("Layout Mode"), "kst_layoutmode",
                                    KShortcut(Key_F6),
                                    this, SLOT(toggleMouseMode()),
                                    actionCollection(), "layoutmode_action");
-  LayoutAction->setExclusiveGroup("gfx");
-  LayoutAction->setToolTip(QObject::tr("Layout mode"));
-  LayoutAction->setWhatsThis(QObject::tr("Use this mode to move, resize, and group plots."));
-
+  _actionLayout->setExclusiveGroup("gfx");
+  _actionLayout->setToolTip(QObject::tr("Layout mode"));
+  _actionLayout->setWhatsThis(QObject::tr("Use this mode to move, resize, and group plots."));
+*/
   // this is the mouse mode menu
-  QPopupMenu* mouseModeMenu = new QPopupMenu(this);
+  QMenu* mouseModeMenu = new QMenu(this);
 
-  XYZoomAction->plug(mouseModeMenu);
-  XZoomAction->plug(mouseModeMenu);
-  YZoomAction->plug(mouseModeMenu);
-  mouseModeMenu->insertSeparator();
-  LayoutAction->plug(mouseModeMenu);
-  mouseModeMenu->insertSeparator();
-  _gfxLabelAction->plug(mouseModeMenu);
-  _gfxRectangleAction->plug(mouseModeMenu);
-  _gfxEllipseAction->plug(mouseModeMenu);
-  _gfxLineAction->plug(mouseModeMenu);
-  _gfxArrowAction->plug(mouseModeMenu);
-  _gfxPictureAction->plug(mouseModeMenu);
-  _gfx2DPlotAction->plug(mouseModeMenu);
-  _gfxLegendAction->plug(mouseModeMenu);
-
+  mouseModeMenu->addAction(_actionZoomXY);
+  mouseModeMenu->addAction(_actionZoomX);
+  mouseModeMenu->addAction(_actionZoomY);
+  mouseModeMenu->addSeparator();
+  mouseModeMenu->addAction(_actionLayout);
+  mouseModeMenu->addSeparator();
+  mouseModeMenu->addAction(_actionGfxLabel);
+  mouseModeMenu->addAction(_actionGfxRectangle);
+  mouseModeMenu->addAction(_actionGfxEllipse);
+  mouseModeMenu->addAction(_actionGfxLine);
+  mouseModeMenu->addAction(_actionGfxArrow);
+  mouseModeMenu->addAction(_actionGfxPicture);
+  mouseModeMenu->addAction(_actionGfx2DPlot);
+  mouseModeMenu->addAction(_actionGfxLegend);
+/* xxx
   toolBar()->insertButton("thumbnail", MODE_BUTTON_ID, mouseModeMenu, true, QObject::tr("Select the desired mode"));
   toggleMouseMode();
 
   createGUI(0L);
+*/
 }
 
 
 void KstApp::slotConfigureKeys() {
-#if 0
-  // KDE 3.3 only:
-  KKeyDialog::configure(actionCollection(), this);
-#else
+/* xxx
   KKeyDialog dlg(true, this);
   dlg.insert(actionCollection());
   ExtensionMgr *mgr = ExtensionMgr::self();
@@ -872,7 +833,7 @@ void KstApp::slotConfigureKeys() {
     }
   }
   dlg.configure(true);
-#endif
+*/
 }
 
 
@@ -887,24 +848,24 @@ bool KstApp::paused() const {
 
 
 void KstApp::setPaused(bool in_paused) {
-  PauseAction->setChecked(in_paused);
+  _actionPause->setChecked(in_paused);
   _updateThread->setPaused(in_paused);
 }
 
 
 void KstApp::togglePaused() {
-  setPaused(!PauseAction->isChecked());
+  setPaused(!_actionPause->isChecked());
 }
 
 
 KstApp::KstZoomType KstApp::getZoomRadio() {
-  if (XZoomAction->isChecked()) {
+  if (_actionZoomX->isChecked()) {
     return XZOOM;
-  } else if (YZoomAction->isChecked()) {
+  } else if (_actionZoomY->isChecked()) {
     return YZOOM;
-  } else if (LayoutAction->isChecked()) {
+  } else if (_actionLayout->isChecked()) {
     return LAYOUT;
-  } else if (GfxAction->isChecked()) {
+  } else if (_actionGfx->isChecked()) {
     return GRAPHICS;
   } else {
     return XYZOOM;
@@ -913,6 +874,7 @@ KstApp::KstZoomType KstApp::getZoomRadio() {
 
 
 void KstApp::initStatusBar() {
+/* xxx
   _dataNotifier = new KstDataNotifier(statusBar());
   statusBar()->addWidget(_dataNotifier, 0, true);
 
@@ -925,13 +887,14 @@ void KstApp::initStatusBar() {
   _readyBar->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
   statusBar()->addWidget(_readyBar, 5, true);
 
-  _progressBar = new KProgress(statusBar());
-  _progressBar->setPercentageVisible(false);
+  _progressBar = new QProgress(statusBar());
+  _progressBar->setTextVisible(false);
   _progressBar->setCenterIndicator(true);
   statusBar()->addWidget(_progressBar, 2, true);
   _progressBar->setMaximumHeight( fontMetrics().height() );
   _progressBar->hide();
-
+*/
+/* xxx
 #ifdef HAVE_LINUX
   _memoryBar = new StatusLabel(QObject::tr("0 MB available"), statusBar());
   _memoryBar->setTextFormat(Qt::PlainText);
@@ -941,7 +904,7 @@ void KstApp::initStatusBar() {
 #endif
 
   statusBar()->show();
-
+*/
   slotUpdateMemoryMsg(QObject::tr("0 MB available"));
   slotUpdateStatusMsg(QObject::tr("Ready"));
   slotUpdateDataMsg(QString::null);
@@ -949,14 +912,15 @@ void KstApp::initStatusBar() {
 
 
 void KstApp::initDocument() {
-  doc = new KstDoc(this);
+  _doc = new KstDoc(this);
+
   QTimer::singleShot(0, this, SLOT(delayedDocInit()));
 }
 
 
 void KstApp::delayedDocInit() {
-  if (!activeWindow()) {
-    doc->newDocument();
+  if (!activeSubWindow()) {
+    _doc->newDocument();
   }
 }
 
@@ -994,18 +958,22 @@ void KstApp::selectDataPlugin() {
   l.sort();
 
   bool ok = false;
-  QStringList plugin = KInputDialog::getItemList(QObject::tr("Data Plugins"), QObject::tr("Create..."), l, 0, false, &ok, this);
+/* xxx
+  QStringList plugin = QInputDialog::getItemList(QObject::tr("Data Plugins"), QObject::tr("Create..."), l, 0, false, &ok, this);
 
   if (ok && !plugin.isEmpty()) {
     const QString p = plugin.join("");
 
     if (dataObjectPlugins.contains(p)) {
-      KstDataObjectPtr ptr = KstDataObject::plugin(p);
+      KstDataObjectPtr ptr;
+
+      ptr = KstDataObject::plugin(p);
       ptr->showDialog(true);
     } else if (cPlugins.contains(p)) {
-      KstPluginDialogI::globalInstance()->showNew(readable[p]);
+      KstPluginDialog::globalInstance()->showNew(readable[p]);
     }
   }
+*/
 }
 
 
@@ -1014,12 +982,13 @@ void KstApp::forceUpdate() {
 }
 
 
-void KstApp::addRecentFile(const KURL& url) {
-  _recent->addURL(url);
+void KstApp::addRecentFile(const QUrl &url) {
+// xxx  _recent->addURL(url);
 }
 
 
-void KstApp::selectRecentFile(const KURL &url) {
+void KstApp::selectRecentFile(const QUrl &url) {
+/* xxx
   if (url.isEmpty()) {
     _recent->setCurrentItem(-1);
   } else {
@@ -1032,14 +1001,18 @@ void KstApp::selectRecentFile(const KURL &url) {
       }
     }
   }
+*/
 }
 
 
 void KstApp::doDelayedOpens() {
-  QValueList<KstOpen> queueCopy = QDeepCopy<QValueList<KstOpen> >(_openQueue);
+  QList<KstOpen> queueCopy;
+  QList<KstOpen>::const_iterator i;
+  
+  queueCopy = _openQueue;
   _openQueue.clear();
 
-  for (QValueList<KstOpen>::ConstIterator i = queueCopy.begin(); i != queueCopy.end(); ++i) {
+  for (i = queueCopy.begin(); i != queueCopy.end(); ++i) {
     openDocumentFile((*i).filename, (*i).file, (*i).n, (*i).f, (*i).s, (*i).ave);
   }
 }
@@ -1048,49 +1021,54 @@ void KstApp::doDelayedOpens() {
 bool KstApp::openDocumentFile(const QString& in_filename,
     const QString& o_file, int o_n, int o_f, int o_s, bool o_ave, bool delayed) {
   static bool opening = false;
+  QUrl url;
+  bool rc = false;
 
   if (delayed || opening) {
     KstOpen job;
+
     job.filename = in_filename;
     job.file = o_file;
     job.n = o_n;
     job.f = o_f;
     job.s = o_s;
     job.ave = o_ave;
+
     _openQueue.append(job);
+
     QTimer::singleShot(0, this, SLOT(doDelayedOpens()));
+
     return true;
   }
 
   opening = true;
 
-  KURL url;
-  bool rc = false;
-
   if (QFile::exists(in_filename) && QFileInfo(in_filename).isRelative()) {
-    url.setPath(QFileInfo(in_filename).absFilePath());
+    url.setPath(QFileInfo(in_filename).absoluteFilePath());
   } else {
-    url = KURL::fromPathOrURL(in_filename);
+// xxx    url = KURL::fromPathOrURL(in_filename);
   }
 
-  slotUpdateStatusMsg(QObject::tr("Opening %1...").arg(url.prettyURL()));
+  slotUpdateStatusMsg(QObject::tr("Opening %1...").arg(url.path()));
 
-  if (doc->openDocument(url, o_file, o_n, o_f, o_s, o_ave)) {
-    setCaption(doc->title());
+  if (_doc->openDocument(url, o_file, o_n, o_f, o_s, o_ave)) {
+    setWindowTitle(_doc->title());
+/* xxx
     if (url.isLocalFile()) {
       QFileInfo finfo(in_filename);
       QString fileExport;
 
-      fileExport = finfo.absFilePath();
+      fileExport = finfo.absoluteFilePath();
       addRecentFile(fileExport);
-      if (fileExport.endsWith(QString(".kst"), FALSE)) {
+
+      if (fileExport.endsWith(QString(".kst"), Qt::CaseInsensitive)) {
         fileExport.truncate(fileExport.length() - QString(".kst").length());
       }
       graphFileDlg()->setURL(fileExport);
     } else {
       addRecentFile(url);
     }
-
+*/
     rc = true;
   }
 
@@ -1107,43 +1085,51 @@ KstDoc *KstApp::document() const {
 
 
 void KstApp::saveOptions() {
-  config->setGroup("General Options");
-  _recent->saveEntries(config, "Recent Files");
+  _config->beginGroup("General Options");
+// xxx  _recent->saveEntries(_config, "Recent Files");
 
-  KST::legendDefaults.writeConfig(config);
-  KST::vectorDefaults.writeConfig(config);
-  KST::matrixDefaults.writeConfig(config);
-  KST::objectDefaults.writeConfig(config);
-  config->sync();
+  KST::legendDefaults.writeConfig(_config);
+  KST::vectorDefaults.writeConfig(_config);
+  KST::matrixDefaults.writeConfig(_config);
+  KST::objectDefaults.writeConfig(_config);
+
+  _config->endGroup();
+  _config->sync();
 }
 
 
 void KstApp::readOptions() {
-  config->setGroup("General Options");
-  _recent->loadEntries(config, "Recent Files");
+  _config->beginGroup("General Options");
+// xxx  _recent->loadEntries(config, "Recent Files");
 
-  KST::legendDefaults.readConfig(config);
-  KST::vectorDefaults.readConfig(config);
-  KST::matrixDefaults.readConfig(config);
-  KST::objectDefaults.readConfig(config);
+  KST::legendDefaults.readConfig(_config);
+  KST::vectorDefaults.readConfig(_config);
+  KST::matrixDefaults.readConfig(_config);
+  KST::objectDefaults.readConfig(_config);
 
-  switchToTabPageMode();
+  _config->endGroup();
+// xxx  switchToTabPageMode();
 }
 
 
 void KstApp::saveProperties(QSettings *config) {
-  QString name = doc->absFilePath();
+  QString name;
 
-  if (!name.isEmpty() && doc->title() != "Untitled") {
+  name = _doc->absFilePath();
+  if (!name.isEmpty() && _doc->title() != "Untitled") {
     config->setValue("Document", name);
     config->setValue("NamedDocument", true);
   } else {
-    QString sl = KGlobal::dirs()->saveLocation("kst", "kst/");
+    QString sl;
     int i = 0;
+
+// xxx    sl = KGlobal::dirs()->saveLocation("kst", "kst/");
+
     do {
       name = sl + QString("unsaved%1.kst").arg(i);
     } while(QFile::exists(name));
-    doc->saveDocument(name, false, false);
+
+    _doc->saveDocument(name, false, false);
     config->setValue("Document", name);
     config->setValue("NamedDocument", false);
   }
@@ -1171,7 +1157,8 @@ bool KstApp::queryClose() {
   if (_doc->saveModified()) {
      _doc->cancelUpdate();
     _stopping = true;
-    QTimer::singleShot(0, doc, SLOT(deleteContents()));
+
+    QTimer::singleShot(0, _doc, SLOT(deleteContents()));
 
     return true;
   }
@@ -1190,10 +1177,10 @@ bool KstApp::queryExit() {
 void KstApp::slotFileNew() {
   slotUpdateStatusMsg(QObject::tr("Creating new document..."));
 
-  if (doc->saveModified()) {
-    doc->newDocument();
-    setWindowTitle(doc->title());
-    selectRecentFile(KURL(""));
+  if (_doc->saveModified()) {
+    _doc->newDocument();
+    setWindowTitle(_doc->title());
+    selectRecentFile(QUrl(""));
   }
 
   slotUpdateStatusMsg(QObject::tr("Ready"));
@@ -1227,7 +1214,7 @@ bool KstApp::slotFileOpenRecent(const QUrl& newfile) {
     if (_doc->openDocument(newfile)) {
       returnVal = true;
     }
-    setWindowTitle(kapp->caption() + ": " + doc->title());
+    setWindowTitle(/* xxx kapp->caption() + */ ": " + _doc->title());
   }
 
   slotUpdateStatusMsg(QObject::tr("Ready"));
@@ -1241,7 +1228,7 @@ void KstApp::slotFileSave() {
     slotFileSaveAs();
   } else {
     slotUpdateStatusMsg(QObject::tr("Saving file..."));
-    doc->saveDocument(doc->absFilePath(), false, false);
+    _doc->saveDocument(_doc->absFilePath(), false, false);
     slotUpdateStatusMsg(QObject::tr("Ready"));
   }
 }
@@ -1257,13 +1244,13 @@ bool KstApp::slotFileSaveAs() {
     if (_doc->lastFilePath().isEmpty()) {
       folder = QDir::currentPath();
     } else {
-      folder = doc->lastFilePath();
+      folder = _doc->lastFilePath();
     }
 
     newName = QFileDialog::getSaveFileName(this, QObject::tr("Save As"),
                   folder, QObject::tr("*.kst|Kst Plot File (*.kst)\n*|All Files"));
     if (!newName.isEmpty()) {
-      QRegExp extension("*.kst", Qt::CaseInsensitive, QRegExp::WildCard);
+      QRegExp extension("*.kst", Qt::CaseInsensitive, QRegExp::Wildcard);
       QString longName = newName;
 
       if (!extension.exactMatch(newName)) {

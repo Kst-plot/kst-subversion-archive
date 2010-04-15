@@ -97,8 +97,8 @@ class KST_EXPORT KstApp : public QMdiArea {
     const QString& defaultFont() const;
 
     /** add a file to the recent file list */
-    void addRecentFile(const KUrl &file);
-    void selectRecentFile(const KUrl &file);
+    void addRecentFile(const QUrl &file);
+    void selectRecentFile(const QUrl &file);
 
     /** opens a file specified by commandline option */
     bool openDocumentFile(const QString& _cmdl = QString::null,
