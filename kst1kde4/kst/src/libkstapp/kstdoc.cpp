@@ -190,24 +190,19 @@ bool KstDoc::openDocument(const QUrl& url, const QString& o_file,
   }
 
   QString tmpFile;
-/* xxx
-  if (url.isLocalFile() || url.protocol().isEmpty()) {
+
+  if (url.scheme() == "file" || url.isRelative()) {
     tmpFile = url.path();
   } else {
-    if (!KIO::NetAccess::exists(url, true, KstApp::inst())) {
-      QMessageBox::warning(KstApp::inst(), QObject::tr("kst"), QObject::tr("%1: There is no file with that name to open.").arg(url.prettyURL()));
+/*    if (!KIO::NetAccess::exists(url, true, KstApp::inst()) || !KIO::NetAccess::download(url, tmpFile, KstApp::inst())) {
+      QMessageBox::warning(KstApp::inst(), QObject::tr("kst"), QObject::tr("%1: There is no file with that name to open.").arg(url.path()));
 
       return false;
     }
 
-    if (!KIO::NetAccess::download(url, tmpFile, KstApp::inst())) {
-      QMessageBox::warning(KstApp::inst(), QObject::tr("kst"), QObject::tr("%1: There is no file with that name to open.").arg(url.prettyURL()));
-
-      return false;
-    }
-    cleanupFile = true;
+    cleanupFile = true;  */
   }
-*/
+
   QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
   opening = true;
 
@@ -231,14 +226,15 @@ bool KstDoc::openDocument(const QUrl& url, const QString& o_file,
 
     return false;
   }
-/* xxx
-  _title = url.fileName(false);
-  _absFilePath = url.url();
-  _lastFilePath = url.url();
+
+  QFileInfo fi(url.path());
+  _title = fi.fileName();
+  _absFilePath = url.toEncoded();
+  _lastFilePath = url.toEncoded();
   if (_title.isEmpty()) {
     _title = _absFilePath;
   }
-*/
+
   QDomDocument doc(_title);
 
   if (!f.open(QIODevice::ReadOnly)) {
