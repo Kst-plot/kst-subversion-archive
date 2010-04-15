@@ -23,6 +23,7 @@
 #include <QMessageBox>
 #include <QRadioButton>
 #include <QRegExp>
+#include <QFileDialog>
 
 #include "kstpluginmanager.h"
 #include "plugincollection.h"
@@ -57,15 +58,15 @@ void KstPluginManager::selectionChanged(QListWidgetItem *item)
 
 
 void KstPluginManager::install() {
-/* xxx
-  KUrl xmlfile = KFileDialog::getOpenURL(QString::null, "*.xml", this, QObject::tr("Select Plugin to Install"));
+
+  QUrl xmlfile = QFileDialog::getOpenFileName(this, QObject::tr("Select Plugin to Install"), QString::null, tr("XML files (*.xml)"));
 
   if (xmlfile.isEmpty()) {
     return;
   }
 
   QString tmpFile;
-
+/* xxx
   if (!KIO::NetAccess::download(xmlfile, tmpFile, this)) {
     QMessageBox::critical(this, QObject::tr("Kst"),QObject::tr("Unable to access file %1.").arg(xmlfile.prettyURL()), QObject::tr("KST Plugin Loader"));
     return;

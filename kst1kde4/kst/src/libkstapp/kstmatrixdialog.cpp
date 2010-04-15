@@ -138,7 +138,7 @@ void KstMatrixDialog::selectingFolder()
       QDir dir(strFolder);
 
       if (dir.cdUp()) {
-        fileDlg->setURL(KUrl(dir.absPath()));
+        fileDlg->setDirectory(dir);
       }
     }
   }
@@ -1006,10 +1006,10 @@ void KstMatrixDialog::updateCompletion() {
     if (QFile::exists(u) && QFileInfo(u).isRelative()) {
       url.setPath(u);
     } else {
-      url = KUrl::fromPathOrURL(u);
+      url = QUrl(u);
     }
 
-    if (!_inTest && !url.isLocalFile() && url.protocol() != "file" && !url.protocol().isEmpty()) {
+    if (!_inTest && !url.scheme()=="file" && url.scheme() != "file" && !url.isRelative()) {
       _w->_connect->show();
     } else if (url.isValid()) {
       list = KstDataSource::matrixListForSource(u, QString::null, &type, &complete);

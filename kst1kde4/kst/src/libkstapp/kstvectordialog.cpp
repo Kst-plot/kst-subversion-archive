@@ -219,15 +219,15 @@ void KstVectorDialog::updateCompletion() {
     bool complete = false;
 /* xxx
     QString u = _w->FileName->url();
-    KURL url;
+    QUrl url;
 
     if (QFile::exists(u) && QFileInfo(u).isRelative()) {
       url.setPath(u);
     } else {
-      url = KURL::fromPathOrURL(u);
+      url = QUrl(u);
     }
 
-    if (!_inTest && !url.isLocalFile() && url.protocol() != "file" && !url.protocol().isEmpty()) {
+    if (!_inTest && !url.scheme()=="file" && url.scheme() != "file" && !url.isRelative()) {
       _w->_connect->show();
     } else if (url.isValid()) {
       list = KstDataSource::fieldListForSource(u, QString::null, &type, &complete);
