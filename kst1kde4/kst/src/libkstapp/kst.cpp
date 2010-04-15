@@ -1430,7 +1430,7 @@ void KstApp::slotFilePrint() {
   if (pages > 0) {
     QPrinter printer(QPrinter::HighResolution);
     KstSettings *ks = KstSettings::globalSettings();
-    QPrinterDialog printerdlg(&printer);
+    QPrintDialog printerdlg(&printer);
 /* xxx   
     printer.setOption("kde-pagesize", ks->printing.pageSize);
     printer.setOption("kde-orientation", ks->printing.orientation);
