@@ -195,7 +195,7 @@ bool KstDoc::openDocument(const QUrl& url, const QString& o_file,
     tmpFile = url.path();
   } else {
 /*    if (!KIO::NetAccess::exists(url, true, KstApp::inst()) || !KIO::NetAccess::download(url, tmpFile, KstApp::inst())) {
-      QMessageBox::warning(KstApp::inst(), QObject::tr("kst"), QObject::tr("%1: There is no file with that name to open.").arg(url.path()));
+      QMessageBox::warning(KstApp::inst(), QObject::tr("kst"), QObject::tr("%1: There is no file with that name to open.").arg(url.toString()));
 
       return false;
     }
@@ -895,7 +895,7 @@ bool KstDoc::saveDocument(const QString& filename, bool saveAbsoluteVectorPositi
 
   if (QFile::exists(url)) {
     if (prompt) {
-      int rc = QMessageBox::warning(KstApp::inst(), QObject::tr("Kst"), QObject::tr("File %1 exists.  Overwrite?").arg(url.prettyURL()), QMessageBox::Yes | QMessageBox::No);
+      int rc = QMessageBox::warning(KstApp::inst(), QObject::tr("Kst"), QObject::tr("File %1 exists.  Overwrite?").arg(url.path()), QMessageBox::Yes | QMessageBox::No);
       if (rc == QMessageBox::No) {
         return false;
       }

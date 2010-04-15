@@ -135,7 +135,7 @@ void KstVectorDialog::selectingFolder() {
       QDir dir(strFolder);
 
       if (dir.cdUp()) {
-// xxx        fileDlg->setURL(KURL(dir.absPath()));
+        fileDlg->setDirectory(dir);
       }
     }
   }
