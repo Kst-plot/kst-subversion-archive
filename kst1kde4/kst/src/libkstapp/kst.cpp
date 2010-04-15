@@ -26,6 +26,7 @@
 #include <qpaintdevicemetrics.h>
 #include <QMenu>
 #include <QPrinter>
+#include <QPrintDialog> 
 #include <QProgressBar>
 #include <QValidator>
 
@@ -1400,14 +1401,14 @@ void KstApp::immediatePrintActiveWindowToEps(const QString& filename, int width,
 
 
 void KstApp::slotFilePrint() {
-/* xxx
+
   QList<QMdiSubWindow*> windows;
   QList<QMdiSubWindow*>::const_iterator i;
   Kst2DPlotPtr rc;
   KstViewWindow *currentViewWindow;
   int currentPage = 0;
   int pages = 0;
-
+/* xxx
   currentViewWindow = dynamic_cast<KstViewWindow*>(activeSubWindow());
   windows = app->subWindowList(QMdiArea::CreationOrder);
 
@@ -1425,11 +1426,12 @@ void KstApp::slotFilePrint() {
       }
     }
   }
-
+*/
   if (pages > 0) {
-    KPrinter printer(true, QPrinter::HighResolution);
+    QPrinter printer(QPrinter::HighResolution);
     KstSettings *ks = KstSettings::globalSettings();
-  
+    QPrinterDialog printerdlg(&printer);
+/* xxx   
     printer.setOption("kde-pagesize", ks->printing.pageSize);
     printer.setOption("kde-orientation", ks->printing.orientation);
     printer.setOption("kst-plot-datetime-footer", ks->printing.plotDateTimeFooter);
@@ -1443,22 +1445,22 @@ void KstApp::slotFilePrint() {
     printer.setOption("kst-plot-monochromesettings-linewidthorder", ks->printing.monochromeSettings.lineWidthOrder);
     printer.setOption("kst-plot-monochromesettings-maxlinewidth", ks->printing.monochromeSettings.maxLineWidth);
     printer.setOption("kst-plot-monochromesettings-pointdensity", ks->printing.monochromeSettings.pointDensity);
-  
-    printer.setFromTo(0, 0);
-    printer.setMinMax(1, pages);
-    printer.setCurrentPage(currentPage);
-    printer.setPageSelection(KPrinter::ApplicationSide);
+*/  
+    printerdlg.setFromTo(0, 0);
+    printerdlg.setMinMax(1, pages);
+// xxx    printer.setCurrentPage(currentPage);
+// xxx    printer.setPageSelection(KPrinter::ApplicationSide);
   
     pages = 0;
-    printer.addDialogPage(new KstPrintOptionsPage);
-    if (!printer.setup(this, QObject::tr("Print"))) {
+// xxx    printerdlg.KPrinter::addDialogPage(new KstPrintOptionsPage);
+    printerdlg.setWindowTitle(QObject::tr("Print"));
+    if (!printerdlg.exec()) {
       return;
     }
   
     KstPainter paint(KstPainter::P_PRINT);
     paint.begin(&printer);
-    QPaintDeviceMetrics metrics(&printer);
-    QSize size(metrics.width(), metrics.height());
+    QSize size(printer.width(), printer.height());
     bool datetimeFooter;
     bool maintainAspectRatio;
     bool monochrome;
@@ -1468,7 +1470,7 @@ void KstApp::slotFilePrint() {
     int pointStyleOrder, lineStyleOrder, lineWidthOrder, maxLineWidth, pointDensity;
   
     slotUpdateStatusMsg(QObject::tr("Printing..."));
-  
+ /* xxx 
     // make sure defaults are set for settings that are not overwritten
     ks->setPrintingDefaults();
   
