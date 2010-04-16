@@ -401,12 +401,10 @@ void KstFitDialog::generateEntries(bool input, int& cnt, QWidget *parent, QGridL
     widget->show();
 
     if (!(*it)._description.isEmpty()) {
-/* xxx
-      QWhatsThis::remove(label);
-      QWhatsThis::remove(widget);
-      QWhatsThis::add(label, (*it)._description);
-      QWhatsThis::add(widget, (*it)._description);
-*/
+      label->setWhatsThis("");;
+      widget->setWhatsThis("");
+      label->setWhatsThis((*it)._description);
+      widget->setWhatsThis((*it)._description);
     }
 
     ++cnt;
