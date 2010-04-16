@@ -19,7 +19,6 @@
 #define STATUSLABEL_H
 
 #include <QLabel>
-#include <QToolTip>
 
 class StatusLabel : public QLabel {
   Q_OBJECT

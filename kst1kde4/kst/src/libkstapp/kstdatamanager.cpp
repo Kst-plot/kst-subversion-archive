@@ -94,7 +94,7 @@ void KstDataAction::addedTo(QWidget *actionWidget, QWidget *container) {
 KstObjectItem::KstObjectItem(QTreeWidget *parent, KstRVectorPtr x, KstDataManager *dm, int localUseCount) : QObject(), QTreeWidgetItem(parent), _rtti(RTTI_OBJ_DATA_VECTOR), _tag(x->tag()), _dm(dm) {
   _inUse = false;
   setText(0, x->tag().tag());
-  setText(1, i18n("Data Vector"));
+  setText(1, tr("Data Vector"));
   x = 0L; // keep the counts in sync
   update(true, localUseCount);
 }
@@ -103,7 +103,7 @@ KstObjectItem::KstObjectItem(QTreeWidget *parent, KstRVectorPtr x, KstDataManage
 KstObjectItem::KstObjectItem(QTreeWidget *parent, KstSVectorPtr x, KstDataManager *dm, int localUseCount) : QObject(), QTreeWidgetItem(parent), _rtti(RTTI_OBJ_STATIC_VECTOR), _tag(x->tag()), _dm(dm) {
   _inUse = false;
   setText(0, x->tag().tag());
-  setText(1, i18n("Static Vector"));
+  setText(1, tr("Static Vector"));
   x = 0L; // keep the counts in sync
   update(true, localUseCount);
 }
@@ -112,7 +112,7 @@ KstObjectItem::KstObjectItem(QTreeWidget *parent, KstSVectorPtr x, KstDataManage
 KstObjectItem::KstObjectItem(QTreeWidget *parent, KstAVectorPtr x, KstDataManager *dm, int localUseCount) : QObject(), QTreeWidgetItem(parent), _rtti(RTTI_OBJ_A_VECTOR), _tag(x->tag()), _dm(dm) {
   _inUse = false;
   setText(0, x->tag().tag());
-  setText(1, i18n("Static Vector"));
+  setText(1, tr("Static Vector"));
   x = 0L; // keep the counts in sync
   update(true, localUseCount);
 }
@@ -121,7 +121,7 @@ KstObjectItem::KstObjectItem(QTreeWidget *parent, KstAVectorPtr x, KstDataManage
 KstObjectItem::KstObjectItem(QTreeWidgetItem *parent, KstVectorPtr x, KstDataManager *dm, int localUseCount) : QObject(), QTreeWidgetItem(parent), _rtti(RTTI_OBJ_VECTOR), _tag(x->tag()), _dm(dm) {
   _inUse = false;
   setText(0, x->tag().tag());
-  setText(1, i18n("Slave Vector"));
+  setText(1, tr("Slave Vector"));
   x = 0L; // keep the counts in sync
   update(true, localUseCount);
 }
@@ -150,7 +150,7 @@ KstObjectItem::KstObjectItem(QTreeWidget *parent, KstDataObjectPtr x, KstDataMan
 KstObjectItem::KstObjectItem(QTreeWidget *parent, KstRMatrixPtr x, KstDataManager *dm, int localUseCount) : QObject(), QTreeWidgetItem(parent), _rtti(RTTI_OBJ_DATA_MATRIX), _tag(x->tag()), _dm(dm) {
   _inUse = false;
   setText(0, x->tag().tag());
-  setText(1, i18n("Data Matrix"));
+  setText(1, tr("Data Matrix"));
   x = 0L; // keep the counts in sync
   update(true, localUseCount);
 }
@@ -159,7 +159,7 @@ KstObjectItem::KstObjectItem(QTreeWidget *parent, KstRMatrixPtr x, KstDataManage
 KstObjectItem::KstObjectItem(QTreeWidget *parent, KstSMatrixPtr x, KstDataManager *dm, int localUseCount) : QObject(), QTreeWidgetItem(parent), _rtti(RTTI_OBJ_STATIC_MATRIX), _tag(x->tag()), _dm(dm) {
   _inUse = false;
   setText(0, x->tag().tag());
-  setText(1, i18n("Static Matrix"));
+  setText(1, tr("Static Matrix"));
   x = 0L; // keep the counts in sync
   update(true, localUseCount);
 }
@@ -168,7 +168,7 @@ KstObjectItem::KstObjectItem(QTreeWidget *parent, KstSMatrixPtr x, KstDataManage
 KstObjectItem::KstObjectItem(QTreeWidget *parent, KstAMatrixPtr x, KstDataManager *dm, int localUseCount) : QObject(), QTreeWidgetItem(parent), _rtti(RTTI_OBJ_A_MATRIX), _tag(x->tag()), _dm(dm) {
   _inUse = false;
   setText(0, x->tag().tag());
-  setText(1, i18n("Static Matrix"));
+  setText(1, tr("Static Matrix"));
   x = 0L; // keep the counts in sync
   update(true, localUseCount);
 }
@@ -177,7 +177,7 @@ KstObjectItem::KstObjectItem(QTreeWidget *parent, KstAMatrixPtr x, KstDataManage
 KstObjectItem::KstObjectItem(QTreeWidgetItem *parent, KstMatrixPtr x, KstDataManager *dm, int localUseCount) : QObject(), QTreeWidgetItem(parent), _rtti(RTTI_OBJ_MATRIX), _tag(x->tag()), _dm(dm) {
   _inUse = false;
   setText(0, x->tag().tag());
-  setText(1, i18n("Slave Matrix"));
+  setText(1, tr("Slave Matrix"));
   x = 0L; // keep the counts in sync
   update(true, localUseCount);
 }
@@ -223,7 +223,7 @@ void KstObjectItem::update(bool recursive, int localUseCount) {
           setText(3, field);
         }
 
-        field = i18n("%3: %4 [%1..%2]").arg(x->reqStartFrame())
+        field = tr("%3: %4 [%1..%2]").arg(x->reqStartFrame())
             .arg(x->reqStartFrame() + x->reqNumFrames())
             .arg(x->filename())
             .arg(x->field());
@@ -261,7 +261,7 @@ void KstObjectItem::update(bool recursive, int localUseCount) {
         if (text(3) != field) {
           setText(3, field);
         }
-        field = i18n("%1 to %2").arg(x->min()).arg(x->max());
+        field = tr("%1 to %2").arg(x->min()).arg(x->max());
         if (text(4) != field) {
           setText(4, field);
         }
@@ -298,7 +298,7 @@ void KstObjectItem::update(bool recursive, int localUseCount) {
         if (text(3) != field) {
           setText(3, field);
         }
-        field = i18n("[%1..%2]").arg(x->min()).arg(x->max());
+        field = tr("[%1..%2]").arg(x->min()).arg(x->max());
         if (text(4) != field) {
           setText(4, field);
         }
@@ -330,7 +330,7 @@ void KstObjectItem::update(bool recursive, int localUseCount) {
         if (text(3) != field) {
           setText(3, field);
         }
-        field = i18n("[%1..%2]").arg(x->min()).arg(x->max());
+        field = tr("[%1..%2]").arg(x->min()).arg(x->max());
         if (text(4) != field) {
           setText(4, field);
         }
@@ -483,7 +483,7 @@ void KstObjectItem::update(bool recursive, int localUseCount) {
           field = "-";
         }
 
-        field = i18n("%1: %2 (%3 by %4)").arg(x->filename()).arg(x->field())
+        field = tr("%1: %2 (%3 by %4)").arg(x->filename()).arg(x->field())
                 .arg(x->xNumSteps()).arg(x->yNumSteps());
         if (text(4) != field) {
           setText(4, field);
@@ -517,7 +517,7 @@ void KstObjectItem::update(bool recursive, int localUseCount) {
           field = "-";
         }
 
-        field = i18n("%1 to %2").arg(x->gradZMin()).arg(x->gradZMax());
+        field = tr("%1 to %2").arg(x->gradZMin()).arg(x->gradZMax());
         if (text(4) != field) {
           setText(4, field);
         }
@@ -553,7 +553,7 @@ void KstObjectItem::update(bool recursive, int localUseCount) {
         if (text(3) != field) {
           setText(3, field);
         }
-        field = i18n("[%1..%2]").arg(x->minValue()).arg(x->maxValue());
+        field = tr("[%1..%2]").arg(x->minValue()).arg(x->maxValue());
         if (text(4) != field) {
           setText(4, field);
         }
@@ -590,7 +590,7 @@ void KstObjectItem::update(bool recursive, int localUseCount) {
         if (text(3) != field) {
           setText(3, field);
         }
-        field = i18n("[%1..%2]").arg(x->minValue()).arg(x->maxValue());
+        field = tr("[%1..%2]").arg(x->minValue()).arg(x->maxValue());
         if (text(4) != field) {
           setText(4, field);
         }
@@ -741,7 +741,7 @@ void KstObjectItem::activateHint(int id) {
         KST::dataObjectList.lock().unlock();
         emit updated();
       } else {
-        QMessageBox::warning(KstApp::inst(), i18n("Kst"), i18n("Unable to create quick curve."));
+        QMessageBox::warning(KstApp::inst(), tr("Kst"), tr("Unable to create quick curve."));
       }
       break;
     }
@@ -838,27 +838,27 @@ KstDataManager::KstDataManager(KstDoc *in_doc, QWidget* parent, const char* name
   QMainWindow *main = static_cast<QMainWindow*>(parent);
   main->setUsesTextLabel(true);
 
-  _primitive = new QToolBar(i18n("Create Primitive"), main, this);
+  _primitive = new QToolBar(tr("Create Primitive"), main, this);
   _primitive->setFrameStyle(QFrame::NoFrame);
   _primitive->setOrientation(Qt::Vertical);
   _primitive->setBackgroundMode(PaletteBase);
 
-  _data = new QToolBar(i18n("Create Data Object"), main, this);
+  _data = new QToolBar(tr("Create Data Object"), main, this);
   _data->setFrameStyle(QFrame::NoFrame);
   _data->setOrientation(Qt::Vertical);
   _data->setBackgroundMode(PaletteBase);
 
-  _plugins = new QToolBar(i18n("Create Plugin"), main, this);
+  _plugins = new QToolBar(tr("Create Plugin"), main, this);
   _plugins->setFrameStyle(QFrame::NoFrame);
   _plugins->setOrientation(Qt::Vertical);
   _plugins->setBackgroundMode(PaletteBase);
 
-  _fits = new QToolBar(i18n("Create Fit"), main, this);
+  _fits = new QToolBar(tr("Create Fit"), main, this);
   _fits->setFrameStyle(QFrame::NoFrame);
   _fits->setOrientation(Qt::Vertical);
   _fits->setBackgroundMode(PaletteBase);
 
-  _filters = new QToolBar(i18n("Create Filter"), main, this);
+  _filters = new QToolBar(tr("Create Filter"), main, this);
   _filters->setFrameStyle(QFrame::NoFrame);
   _filters->setOrientation(Qt::Vertical);
   _filters->setBackgroundMode(PaletteBase);
@@ -885,19 +885,19 @@ KstDataManager::KstDataManager(KstDoc *in_doc, QWidget* parent, const char* name
   // create canonical actions...
   //
 
-//   createObjectAction(i18n("Scalar"), _primitive, KstScalarDialog::globalInstance(), SLOT(show()));
-  createObjectAction(i18n("Vector"), _primitive, KstVectorDialog::globalInstance(), SLOT(show()));
-  createObjectAction(i18n("Matrix"), _primitive, KstMatrixDialog::globalInstance(), SLOT(show()));
-//   createObjectAction(i18n("String"), _primitive, KstStringDialog::globalInstance(), SLOT(show()));
+//   createObjectAction(tr("Scalar"), _primitive, KstScalarDialog::globalInstance(), SLOT(show()));
+  createObjectAction(tr("Vector"), _primitive, KstVectorDialog::globalInstance(), SLOT(show()));
+  createObjectAction(tr("Matrix"), _primitive, KstMatrixDialog::globalInstance(), SLOT(show()));
+//   createObjectAction(tr("String"), _primitive, KstStringDialog::globalInstance(), SLOT(show()));
 
-  createObjectAction(i18n("Curve"), _data, KstCurveDialog::globalInstance(), SLOT(show()));
-  createObjectAction(i18n("Equation"), _data, KstEqDialog::globalInstance(), SLOT(show()));
-  createObjectAction(i18n("Histogram"), _data, KstHsDialog::globalInstance(), SLOT(show()));
-  createObjectAction(i18n("Spectrum"), _data, KstPsdDialog::globalInstance(), SLOT(show()));
-  createObjectAction(i18n("Event Monitor"), _data, KstEventMonitor::globalInstance(), SLOT(show()));
-  createObjectAction(i18n("Image"), _data, KstImageDialog::globalInstance(), SLOT(show()));
-  createObjectAction(i18n("Spectrogram"), _data, KstCsdDialog::globalInstance(), SLOT(show()));
-  createObjectAction(i18n("Vector View"), _data, KstVvDialog::globalInstance(), SLOT(show()));
+  createObjectAction(tr("Curve"), _data, KstCurveDialog::globalInstance(), SLOT(show()));
+  createObjectAction(tr("Equation"), _data, KstEqDialog::globalInstance(), SLOT(show()));
+  createObjectAction(tr("Histogram"), _data, KstHsDialog::globalInstance(), SLOT(show()));
+  createObjectAction(tr("Spectrum"), _data, KstPsdDialog::globalInstance(), SLOT(show()));
+  createObjectAction(tr("Event Monitor"), _data, KstEventMonitor::globalInstance(), SLOT(show()));
+  createObjectAction(tr("Image"), _data, KstImageDialog::globalInstance(), SLOT(show()));
+  createObjectAction(tr("Spectrogram"), _data, KstCsdDialog::globalInstance(), SLOT(show()));
+  createObjectAction(tr("Vector View"), _data, KstVvDialog::globalInstance(), SLOT(show()));
   
   setupPluginActions();
 /* xxx
@@ -929,11 +929,11 @@ KstDataManager::KstDataManager(KstDoc *in_doc, QWidget* parent, const char* name
   _fits->setUpdatesEnabled(true);
   _filters->setUpdatesEnabled(true);
 
-  ToolBox->addItem(_primitive, i18n("Create Primitive"));
-  ToolBox->addItem(_data, i18n("Create Data Object"));
-  ToolBox->addItem(_plugins, i18n("Create Plugin"));
-  ToolBox->addItem(_fits, i18n("Create Fit"));
-  ToolBox->addItem(_filters, i18n("Create Filter"));
+  ToolBox->addItem(_primitive, tr("Create Primitive"));
+  ToolBox->addItem(_data, tr("Create Data Object"));
+  ToolBox->addItem(_plugins, tr("Create Plugin"));
+  ToolBox->addItem(_fits, tr("Create Fit"));
+  ToolBox->addItem(_filters, tr("Create Filter"));
 */
 }
 
@@ -1448,7 +1448,7 @@ void KstDataManager::delete_I() {
     KstBaseCurvePtr bc;
 
     bc = kst_cast<KstBaseCurve>(koi->dataObject());
-    if (bc || QMessageBox::warning(this, i18n("Kst"), i18n("There are other objects in memory that depend on %1.  Do you wish to delete them too?").arg(koi->tag().tag()), QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes) {
+    if (bc || QMessageBox::warning(this, tr("Kst"), tr("There are other objects in memory that depend on %1.  Do you wish to delete them too?").arg(koi->tag().tag()), QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes) {
       if (qi->rtti() == RTTI_OBJ_OBJECT) {
         koi->dataObject()->deleteDependents();
         doc->removeDataObject(koi->tag().tagString());
@@ -1464,7 +1464,7 @@ void KstDataManager::delete_I() {
           KST::vectorList.lock().unlock();
           doUpdates();
         } else {
-          QMessageBox::warning(this, i18n("Kst"), i18n("Unknown error deleting data vector."));
+          QMessageBox::warning(this, tr("Kst"), tr("Unknown error deleting data vector."));
         }
       } else if (qi->rtti() == RTTI_OBJ_STATIC_VECTOR) {
         KstSVectorPtr x;
@@ -1478,7 +1478,7 @@ void KstDataManager::delete_I() {
           KST::vectorList.lock().unlock();
           doUpdates();
         } else {
-          QMessageBox::warning(this, i18n("Kst"), i18n("Unknown error deleting static vector."));
+          QMessageBox::warning(this, tr("Kst"), tr("Unknown error deleting static vector."));
         }
       } else if (qi->rtti() == RTTI_OBJ_A_VECTOR) {
         KstAVectorPtr x;
@@ -1492,7 +1492,7 @@ void KstDataManager::delete_I() {
           KST::vectorList.lock().unlock();
           doUpdates();
         } else {
-          QMessageBox::warning(this, i18n("Kst"), i18n("Unknown error deleting static vector."));
+          QMessageBox::warning(this, tr("Kst"), tr("Unknown error deleting static vector."));
         }
       } else if (qi->rtti() == RTTI_OBJ_DATA_MATRIX) {
         KstRMatrixPtr x;
@@ -1506,7 +1506,7 @@ void KstDataManager::delete_I() {
           KST::matrixList.lock().unlock();
           doUpdates();
         } else {
-          QMessageBox::warning(this, i18n("Kst"), i18n("Unknown error deleting data matrix."));
+          QMessageBox::warning(this, tr("Kst"), tr("Unknown error deleting data matrix."));
         }
       } else if (qi->rtti() == RTTI_OBJ_STATIC_MATRIX) {
         KstSMatrixPtr x;
@@ -1520,7 +1520,7 @@ void KstDataManager::delete_I() {
           KST::matrixList.lock().unlock();
           doUpdates();
         } else {
-          QMessageBox::warning(this, i18n("Kst"),i18n("Unknown error deleting static matrix."));
+          QMessageBox::warning(this, tr("Kst"),tr("Unknown error deleting static matrix."));
         }
       } else if (qi->rtti() == RTTI_OBJ_A_MATRIX) {
         KstAMatrixPtr x;
@@ -1534,13 +1534,13 @@ void KstDataManager::delete_I() {
           KST::matrixList.lock().unlock();
           doUpdates();
         } else {
-          QMessageBox::warning(this, i18n("Kst"), i18n("Unknown error deleting static matrix."));
+          QMessageBox::warning(this, tr("Kst"), tr("Unknown error deleting static matrix."));
         }
       }
       KstApp::inst()->paintAll(KstPainter::P_PLOT);
       update();
     } else {
-      QMessageBox::warning(this, i18n("Kst"),i18n("Cannot delete objects with dependencies."));
+      QMessageBox::warning(this, tr("Kst"),tr("Cannot delete objects with dependencies."));
     }
   }
 */
@@ -1567,7 +1567,7 @@ void KstDataManager::contextMenu(QTreeWidgetItem *i, const QPoint& p, int col) {
   m->insertTitle(koi->text(0));
 
   if (koi->rtti() != RTTI_OBJ_VECTOR && koi->rtti() != RTTI_OBJ_MATRIX) {
-    id = m->insertItem(i18n("&Edit..."), this, SLOT(edit_I()));
+    id = m->insertItem(tr("&Edit..."), this, SLOT(edit_I()));
   }
 
   if (koi->dataObject()) {
@@ -1582,32 +1582,32 @@ void KstDataManager::contextMenu(QTreeWidgetItem *i, const QPoint& p, int col) {
         hintMenu->insertItem((*i)->curveName(), koi, SLOT(activateHint(int)), 0, cnt);
         cnt++;
       }
-      id = m->insertItem(i18n("&Quick Curve"), hintMenu);
+      id = m->insertItem(tr("&Quick Curve"), hintMenu);
     }
   }
 
   if (koi->rtti() == RTTI_OBJ_DATA_VECTOR) {
-    id = m->insertItem(i18n("&Make Curve..."), koi, SLOT(makeCurve()));
-    id = m->insertItem(i18n("Make Spect&rum..."), koi, SLOT(makePSD()));
-    id = m->insertItem(i18n("Make &Spectrogram..."), koi, SLOT(makeCSD()));
-    id = m->insertItem(i18n("Make &Histogram..."), koi, SLOT(makeHistogram()));
-    id = m->insertItem(i18n("&Reload"), koi, SLOT(reload()));
-    id = m->insertItem(i18n("Meta &Data"), koi, SLOT(showMetadata()));
-    id = m->insertItem(i18n("&View Values..."), koi, SLOT(viewVectorValues()));
+    id = m->insertItem(tr("&Make Curve..."), koi, SLOT(makeCurve()));
+    id = m->insertItem(tr("Make Spect&rum..."), koi, SLOT(makePSD()));
+    id = m->insertItem(tr("Make &Spectrogram..."), koi, SLOT(makeCSD()));
+    id = m->insertItem(tr("Make &Histogram..."), koi, SLOT(makeHistogram()));
+    id = m->insertItem(tr("&Reload"), koi, SLOT(reload()));
+    id = m->insertItem(tr("Meta &Data"), koi, SLOT(showMetadata()));
+    id = m->insertItem(tr("&View Values..."), koi, SLOT(viewVectorValues()));
   } else if (koi->rtti() == RTTI_OBJ_VECTOR) {
-    id = m->insertItem(i18n("&Make Curve..."), koi, SLOT(makeCurve()));
-    id = m->insertItem(i18n("Make Spect&rum..."), koi, SLOT(makePSD()));
-    id = m->insertItem(i18n("Make &Spectrogram..."), koi, SLOT(makeCSD()));
-    id = m->insertItem(i18n("Make &Histogram..."), koi, SLOT(makeHistogram()));
-    id = m->insertItem(i18n("&View Values..."), koi, SLOT(viewVectorValues()));
+    id = m->insertItem(tr("&Make Curve..."), koi, SLOT(makeCurve()));
+    id = m->insertItem(tr("Make Spect&rum..."), koi, SLOT(makePSD()));
+    id = m->insertItem(tr("Make &Spectrogram..."), koi, SLOT(makeCSD()));
+    id = m->insertItem(tr("Make &Histogram..."), koi, SLOT(makeHistogram()));
+    id = m->insertItem(tr("&View Values..."), koi, SLOT(viewVectorValues()));
   } else if (koi->rtti() == RTTI_OBJ_DATA_MATRIX) {
-    id = m->insertItem(i18n("Make &Image..."), koi, SLOT(makeImage()));  
-    id = m->insertItem(i18n("&Reload"), koi, SLOT(reload()));
-    id = m->insertItem(i18n("Meta &Data"), koi, SLOT(showMetadata()));
-    id = m->insertItem(i18n("&View Values..."), koi, SLOT(viewMatrixValues()));
+    id = m->insertItem(tr("Make &Image..."), koi, SLOT(makeImage()));  
+    id = m->insertItem(tr("&Reload"), koi, SLOT(reload()));
+    id = m->insertItem(tr("Meta &Data"), koi, SLOT(showMetadata()));
+    id = m->insertItem(tr("&View Values..."), koi, SLOT(viewMatrixValues()));
   } else if (koi->rtti() == RTTI_OBJ_MATRIX || koi->rtti() == RTTI_OBJ_STATIC_MATRIX) {
-    id = m->insertItem(i18n("Make &Image..."), koi, SLOT(makeImage()));
-    id = m->insertItem(i18n("&View Values..."), koi, SLOT(viewMatrixValues()));
+    id = m->insertItem(tr("Make &Image..."), koi, SLOT(makeImage()));
+    id = m->insertItem(tr("&View Values..."), koi, SLOT(viewMatrixValues()));
   } else if ((c = kst_cast<KstBaseCurve>(koi->dataObject()))) {
     KPopupMenu *addMenu = new KPopupMenu(this);
     KPopupMenu *removeMenu = new KPopupMenu(this);
@@ -1632,10 +1632,10 @@ void KstDataManager::contextMenu(QTreeWidgetItem *i, const QPoint& p, int col) {
           Kst2DPlotPtr plot = *i;
 
           if (!plot->Curves.contains(c)) {
-            addMenu->insertItem(i18n("%1 - %2").arg(v->caption()).arg(plot->tag().tag()), koi, SLOT(addToPlot(int)), 0, id);
+            addMenu->insertItem(tr("%1 - %2").arg(v->caption()).arg(plot->tag().tag()), koi, SLOT(addToPlot(int)), 0, id);
             haveAdd = true;
           } else {
-            removeMenu->insertItem(i18n("%1 - %2").arg(v->caption()).arg(plot->tag().tag()), koi, SLOT(removeFromPlot(int)), 0, id);
+            removeMenu->insertItem(tr("%1 - %2").arg(v->caption()).arg(plot->tag().tag()), koi, SLOT(removeFromPlot(int)), 0, id);
             haveRemove = true;
           }
           PlotMap[id++] = plot;
@@ -1643,9 +1643,9 @@ void KstDataManager::contextMenu(QTreeWidgetItem *i, const QPoint& p, int col) {
       }
     }
 
-    id = m->insertItem(i18n("&Add to Plot"), addMenu);
+    id = m->insertItem(tr("&Add to Plot"), addMenu);
     m->setItemEnabled(id, haveAdd);
-    id = m->insertItem(i18n("&Remove From Plot"), removeMenu);
+    id = m->insertItem(tr("&Remove From Plot"), removeMenu);
     m->setItemEnabled(id, haveRemove);
   } 
 
@@ -1654,7 +1654,7 @@ void KstDataManager::contextMenu(QTreeWidgetItem *i, const QPoint& p, int col) {
     // no slave vectors or matrices get this
     //
 
-    id = m->insertItem(i18n("&Delete"), this, SLOT(delete_I()));
+    id = m->insertItem(tr("&Delete"), this, SLOT(delete_I()));
   }
 
   m->popup(p);

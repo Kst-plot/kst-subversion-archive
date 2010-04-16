@@ -21,7 +21,7 @@
 #include <QMessageBox>
 #include <QPushButton>
 #include <QString>
-
+#include <QKeySequence>
 #include <QFontDatabase>
 #include <QRadioButton>
 #include <QSpinBox>
@@ -55,18 +55,18 @@ Kst2dPlotWidget::Kst2dPlotWidget(QWidget* parent, const char* name, Qt::WindowFl
   _editMultipleMode = false;
   _plot = 0L;
 
-// xxx  _up->setPixmap(BarIcon("up"));
+  _up->setIcon(BarIcon("up"));
   _up->setEnabled(false);
-// xxx  _up->setAccel(ALT+Key_Up);
-// xxx  _down->setPixmap(BarIcon("down"));
+  _up->setShortcut(QKeySequence(Qt::ALT + Qt::Key_Up));
+  _down->setIcon(BarIcon("down"));
   _down->setEnabled(false);
-// xxx  _down->setAccel(ALT+Key_Down);
-// xxx  _add->setPixmap(BarIcon("forward"));
+  _down->setShortcut(QKeySequence(Qt::ALT + Qt::Key_Down));
+  _add->setIcon(BarIcon("forward"));
   _add->setEnabled(false);
-// xxx  _add->setAccel(ALT+Key_S);
-// xxx  _remove->setPixmap(BarIcon("back"));
+  _add->setShortcut(QKeySequence(Qt::ALT + Qt::Key_S));
+  _remove->setIcon(BarIcon("back"));
   _remove->setEnabled(false);
-// xxx  _remove->setAccel(ALT+Key_R);
+  _remove->setShortcut(QKeySequence(Qt::ALT + Qt::Key_R));
 
 	_up->setToolTip(tr("Shortcut: Alt+Up"));
   _down->setToolTip(tr("Shortcut: Alt+Down"));
