@@ -51,9 +51,6 @@
      <widget class="QWidget" name="layout5">
       <layout class="QVBoxLayout">
        <item>
-        <widget class="Q3HBox" name="SearchBox" native="true"/>
-       </item>
-       <item>
         <widget class="QTreeWidget" name="DataView">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -204,11 +201,6 @@
    <extends>QFrame</extends>
    <header>Qt3Support/Q3Frame</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>Q3HBox</class>
-   <extends>QWidget</extends>
-   <header>q3hbox.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

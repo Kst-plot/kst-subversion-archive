@@ -24,7 +24,7 @@
 #include "kst_export.h"
 #include "ui_matrixdialogwidget.h"
 
-class KCompletion;
+// xxx class KCompletion;
 
 class KST_EXPORT KstMatrixDialog : public KstDataDialog {
   Q_OBJECT
@@ -90,7 +90,7 @@ class KST_EXPORT KstMatrixDialog : public KstDataDialog {
     void cleanup();
     bool editSingleObject(KstMatrixPtr mxPtr);
 
-    QPointer<KCompletion> _fieldCompletion;
+// xxx    QPointer<KCompletion> _fieldCompletion;
     QPointer<KstDataSourceConfigWidget> _configWidget;
 
     static QPointer<KstMatrixDialog> _inst;

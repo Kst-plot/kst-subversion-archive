@@ -14,6 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 #ifndef KST2DPLOTWIDGETI_H
 #define KST2DPLOTWIDGETI_H
 
@@ -76,7 +77,7 @@ class Kst2dPlotWidget: public QWidget, public Ui::View2DPlotWidget {
   private:
     void populateEditMultiple(QRadioButton *radioButtonWidget);
     void populateEditMultiple(QComboBox *comboWidget);
-    void populateEditMultiple(KColorButton *colorButton);
+// xxx    void populateEditMultiple(KColorButton *colorButton);
     void populateEditMultiple(QLineEdit *lineEditWidget);
     void populateEditMultiple(QSpinBox *spinBoxWidget);
     void populateEditMultiple(QCheckBox *checkBoxWidget);

@@ -34,6 +34,7 @@ set(kstbase_LIB_SRCS
     kstrvector.cpp
     kstvectordefaults.cpp
     kstmatrixdefaults.cpp
+    ksttimezones.cpp
     kstprimitive.cpp
     defaultprimitivenames.cpp)
 #   kstwaitcondition_unix.cpp)

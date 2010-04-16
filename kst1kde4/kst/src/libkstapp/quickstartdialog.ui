@@ -94,9 +94,6 @@
       <string>Open Existing Kst Session</string>
      </property>
      <layout class="QGridLayout">
-      <item row="3" column="0">
-       <widget class="KUrlRequester" name="_fileName" native="true"/>
-      </item>
       <item row="1" column="0">
        <widget class="QListWidget" name="_recentFileList">
         <item>
@@ -186,11 +183,6 @@
  <layoutdefault spacing="6" margin="11"/>
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <customwidgets>
-  <customwidget>
-   <class>KUrlRequester</class>
-   <extends>QWidget</extends>
-   <header>kurlrequester.h</header>
-  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>_recentFileList</tabstop>
@@ -201,9 +193,6 @@
   <tabstop>_close</tabstop>
  </tabstops>
  <includes>
-  <include location="local">kurlrequester.h</include>
-  <include location="local">klineedit.h</include>
-  <include location="local">kpushbutton.h</include>
  </includes>
  <resources/>
  <connections>

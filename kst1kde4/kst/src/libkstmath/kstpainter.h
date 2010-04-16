@@ -20,8 +20,9 @@
 
 #include <QPainter>
 
+#include "kstprimitive.h"
 
-class KstPainter : public QPainter {
+class KST_EXPORT KstPainter : public QPainter {
   public:
     // KstPaintType - hints to paint to allow optimizations
     // P_PAINT: Neither 'data' nor 'plot' needs to change

@@ -79,9 +79,6 @@
      </item>
     </layout>
    </item>
-   <item row="1" column="0">
-    <widget class="Q3VBox" name="_contents" native="true"/>
-   </item>
    <item row="0" column="1" rowspan="2">
     <widget class="EditMultipleWidget" name="_editMultipleWidget" native="true">
      <property name="sizePolicy">
@@ -152,11 +149,6 @@
  <layoutdefault spacing="6" margin="11"/>
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <customwidgets>
-  <customwidget>
-   <class>Q3VBox</class>
-   <extends>QWidget</extends>
-   <header>q3vbox.h</header>
-  </customwidget>
   <customwidget>
    <class>EditMultipleWidget</class>
    <extends>QWidget</extends>

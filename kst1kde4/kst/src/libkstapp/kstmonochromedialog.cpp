@@ -33,9 +33,9 @@ KstMonochromeDialog::KstMonochromeDialog(QWidget* parent, const char* name,
 
   availableListBox->clear();
   selectedListBox->clear();
-  availableListBox->insertItem(QObject::tr("Point Style"));  
-  availableListBox->insertItem(QObject::tr("Line Style"));
-  availableListBox->insertItem(QObject::tr("Line Width"));
+  availableListBox->insertItem(0, QObject::tr("Point Style"));  
+  availableListBox->insertItem(0, QObject::tr("Line Style"));
+  availableListBox->insertItem(0, QObject::tr("Line Width"));
 
   connect(_Cancel, SIGNAL(clicked()), this, SLOT(accept()));
   connect(enhanceReadability, SIGNAL(clicked()), this, SLOT(updateButtons()));
@@ -76,10 +76,10 @@ void KstMonochromeDialog::showMonochromeDialog() {
 void KstMonochromeDialog::updateButtons() {
   cycleOrderGroup->setEnabled(enhanceReadability->isChecked());
   optionsGroup->setEnabled(enhanceReadability->isChecked());
-  _remove->setEnabled(selectedListBox->currentItem() >= 0);
-  _add->setEnabled(availableListBox->currentItem() >= 0);
-  _up->setEnabled(selectedListBox->currentItem() > 0);
-  _down->setEnabled(selectedListBox->currentItem() < (int)selectedListBox->count() - 1);
+  _remove->setEnabled(selectedListBox->currentRow() >= 0);
+  _add->setEnabled(availableListBox->currentRow() >= 0);
+  _up->setEnabled(selectedListBox->currentRow() > 0);
+  _down->setEnabled(selectedListBox->currentRow() < (int)selectedListBox->count() - 1);
 }
 
 void KstMonochromeDialog::setOptions(const QMap<QString,QString>& opts) {
@@ -88,29 +88,27 @@ void KstMonochromeDialog::setOptions(const QMap<QString,QString>& opts) {
   availableListBox->clear();
   selectedListBox->clear();
   if (opts["kst-plot-monochromesettings-pointstyleorder"] == "-1") {
-    availableListBox->insertItem(QObject::tr("Point Style"));
+    availableListBox->insertItem(0, QObject::tr("Point Style"));
   } else {
-    selectedListBox->insertItem(QObject::tr("Point Style"),
-    opts["kst-plot-monochromesettings-pointstyleorder"].toInt());
+    selectedListBox->insertItem(opts["kst-plot-monochromesettings-pointstyleorder"].toInt(), QObject::tr("Point Style"));
   }
   if (opts["kst-plot-monochromesettings-linestyleorder"] == "-1") {
-    availableListBox->insertItem(QObject::tr("Line Style"));
+    availableListBox->insertItem(0, QObject::tr("Line Style"));
   } else {
-    selectedListBox->insertItem(QObject::tr("Line Style"),
-    opts["kst-plot-monochromesettings-linestyleorder"].toInt());
+    selectedListBox->insertItem(opts["kst-plot-monochromesettings-linestyleorder"].toInt(), QObject::tr("Line Style"));
   }
   if (opts["kst-plot-monochromesettings-linewidthorder"] == "-1") {
-    availableListBox->insertItem(QObject::tr("Line Width"));
+    availableListBox->insertItem(0, QObject::tr("Line Width"));
   } else {
-    selectedListBox->insertItem(QObject::tr("Line Width"),
-    opts["kst-plot-monochromesettings-linewidthorder"].toInt());
+    selectedListBox->insertItem(opts["kst-plot-monochromesettings-linewidthorder"].toInt(), QObject::tr("Line Width"));
   }
 
   maxLineWidth->setValue(opts["kst-plot-monochromesettings-maxlinewidth"].toInt());
   pointDensity->setCurrentIndex(opts["kst-plot-monochromesettings-pointdensity"].toInt());
 }
 
-void KstMonochromeDialog::getOptions(QMap<QString,QString> &opts, bool include_def) {  
+void KstMonochromeDialog::getOptions(QMap<QString,QString> &opts, bool include_def) {
+  QList<QListWidgetItem*> items;
   int pointStyleOrder;
   int lineStyleOrder;
   int lineWidthOrder;
@@ -119,19 +117,28 @@ void KstMonochromeDialog::getOptions(QMap<QString,QString> &opts, bool include_d
     opts["kst-plot-monochromesettings-enhancereadability"] = enhanceReadability->isChecked() ? "1" : "0";
   }
 
-  pointStyleOrder = selectedListBox->index(selectedListBox->findItem(QObject::tr("Point Style"), Qt::MatchExactly));
-  if (pointStyleOrder != 0 || include_def) {
-    opts["kst-plot-monochromesettings-pointstyleorder"] = QString::number(pointStyleOrder);
+  items = selectedListBox->findItems(QObject::tr("Point Style"), Qt::MatchExactly);
+  if (!items.isEmpty()) {
+    pointStyleOrder = selectedListBox->row(items.front());
+    if (pointStyleOrder != 0 || include_def) {
+      opts["kst-plot-monochromesettings-pointstyleorder"] = QString::number(pointStyleOrder);
+    }
   }
 
-  lineStyleOrder = selectedListBox->index(selectedListBox->findItem(QObject::tr("Line Style"), Qt::MatchExactly));
-  if (lineStyleOrder != 1 || include_def) {
-    opts["kst-plot-monochromesettings-linestyleorder"] = QString::number(lineStyleOrder);
+  items = selectedListBox->findItems(QObject::tr("Line Style"), Qt::MatchExactly);
+  if (!items.isEmpty()) {
+    lineStyleOrder = selectedListBox->row(items.front());
+    if (lineStyleOrder != 1 || include_def) {
+      opts["kst-plot-monochromesettings-linestyleorder"] = QString::number(lineStyleOrder);
+    }
   }
 
-  lineWidthOrder = selectedListBox->index(selectedListBox->findItem(QObject::tr("Line Width"), Qt::MatchExactly));
-  if (lineWidthOrder != 2 || include_def) {
-    opts["kst-plot-monochromesettings-linewidthorder"] = QString::number(lineWidthOrder);
+  items = selectedListBox->findItems(QObject::tr("Line Width"), Qt::MatchExactly);
+  if (!items.isEmpty()) {
+    lineWidthOrder = selectedListBox->row(items.front());
+    if (lineWidthOrder != 2 || include_def) {
+      opts["kst-plot-monochromesettings-linewidthorder"] = QString::number(lineWidthOrder);
+    }
   }
 
   if (maxLineWidth->value() != 3 || include_def) {
@@ -145,12 +152,11 @@ void KstMonochromeDialog::getOptions(QMap<QString,QString> &opts, bool include_d
 
 
 void KstMonochromeDialog::removeClicked() {
-  // move from selected to available
-  for (uint i = 0; i < selectedListBox->count(); i++) {
-    if (selectedListBox->isSelected(i)) {
-      availableListBox->insertItem(selectedListBox->text(i));
-      selectedListBox->removeItem(i); 
-      availableListBox->setSelected((int)availableListBox->count() - 1, true); 
+  for (int i = 0; i < selectedListBox->count(); i++) {
+    if (selectedListBox->item(i)->isSelected()) {
+      availableListBox->insertItem(0, selectedListBox->item(i)->text());
+      selectedListBox->removeItemWidget(selectedListBox->item(i)); 
+      availableListBox->item((int)availableListBox->count() - 1)->setSelected(true); 
     }
   }
   updateButtons();
@@ -158,12 +164,11 @@ void KstMonochromeDialog::removeClicked() {
 
 
 void KstMonochromeDialog::addClicked() {
-  // move from available to selected
-  for (uint i = 0; i < availableListBox->count(); i++) {
-    if (availableListBox->isSelected(i)) {
-      selectedListBox->insertItem(availableListBox->text(i));
-      availableListBox->removeItem(i);  
-      selectedListBox->setSelected((int)selectedListBox->count() - 1, true);
+  for (int i = 0; i < availableListBox->count(); i++) {
+    if (availableListBox->item(i)->isSelected()) {
+      selectedListBox->insertItem(0, availableListBox->item(i)->text());
+      availableListBox->removeItemWidget(availableListBox->item(i));
+      selectedListBox->item((int)selectedListBox->count() - 1)->setSelected(true);
     }
   }
   updateButtons();
@@ -171,23 +176,31 @@ void KstMonochromeDialog::addClicked() {
 
 
 void KstMonochromeDialog::upClicked() {
-  // move item up
-  int i = selectedListBox->currentItem();
-  QString text = selectedListBox->currentText();
-  selectedListBox->removeItem(i);
-  selectedListBox->insertItem(text, i-1);
-  selectedListBox->setSelected(i-1, true);
+  QListWidgetItem *item;
+  QString text;
+  int row;
+
+  item = selectedListBox->currentItem();
+  row = selectedListBox->currentRow();
+  text = selectedListBox->item(row)->text();
+  selectedListBox->removeItemWidget(item);
+  selectedListBox->insertItem(row-1, text);
+  selectedListBox->item(row-1)->setSelected(true);
   updateButtons();
 }
 
 
 void KstMonochromeDialog::downClicked() {
-  // move item down
-  int i = selectedListBox->currentItem();
-  QString text = selectedListBox->currentText();
-  selectedListBox->removeItem(i);
-  selectedListBox->insertItem(text, i+1);
-  selectedListBox->setSelected(i+1, true);
+  QListWidgetItem *item;
+  QString text;
+  int row;
+
+  item = selectedListBox->currentItem();
+  row = selectedListBox->currentRow();
+  text = selectedListBox->item(row)->text();
+  selectedListBox->removeItemWidget(item);
+  selectedListBox->insertItem(row+1, text);
+  selectedListBox->item(row+1)->setSelected(true);
   updateButtons();
 }
 

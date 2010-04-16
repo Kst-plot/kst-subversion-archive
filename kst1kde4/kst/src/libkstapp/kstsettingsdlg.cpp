@@ -214,7 +214,7 @@ void KstSettingsDlg::updateAxesButtons()
 
   _checkBoxDefaultMajorGridColor->setEnabled(major);
   _checkBoxDefaultMinorGridColor->setEnabled(minor);
-  _majorGridColor->setEnabled(major && !_checkBoxDefaultMajorGridColor->isChecked());
+// xxx  _majorGridColor->setEnabled(major && !_checkBoxDefaultMajorGridColor->isChecked());
 // xxx  _minorGridColor->setEnabled(minor && !_checkBoxDefaultMinorGridColor->isChecked());
 }
 

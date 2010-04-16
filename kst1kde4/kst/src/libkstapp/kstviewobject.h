@@ -332,17 +332,17 @@ class KST_EXPORT KstViewObject : public KstObject {
     bool _maintainAspect : 1;
     int _columns : 10;
     QPointer<KstViewObject> _topObjectForMenu;
-    QPointer<KstViewObject> _parent; // danger!!
+    QPointer<KstViewObject> _parent;
     quint32 _standardActions;
     quint32 _layoutActions;
     KstAspectRatio _aspect;
     KstMargins _margins;
-    QSize _idealSize; //ideal size for object. useful when _maintainAspect==true
+    QSize _idealSize;
     KstAspectRatio _aspectOldZoomedObject;
     QString _type;
     QString _editTitle;
     QString _newTitle;
-    QRegion _clipMask; // The mask of this object
+    QRegion _clipMask;
     QMap<int, QString> _moveToMap;
     QMap<int, QString> _copyToMap;
     QSize _minimumSize;
@@ -351,8 +351,11 @@ class KST_EXPORT KstViewObject : public KstObject {
 
 template<class U>
 void KstViewObject::forEachChild2(void (U::*method)()) {
-  for (KstViewObjectList::Iterator i = _children.begin(); i != _children.end(); ++i) {
+  KstViewObjectList::iterator i;
+
+  for (i = _children.begin(); i != _children.end(); ++i) {
     U *it = kst_cast<U>(*i);
+
     if (it) {
       (it->*method)();
     }
@@ -362,14 +365,19 @@ void KstViewObject::forEachChild2(void (U::*method)()) {
 
 template<class T, class U>
 void KstViewObject::forEachChild(void (U::*method)(T), T arg, bool self) {
+  KstViewObjectList::iterator i;
+
   if (self) {
     U *me = dynamic_cast<U*>(this);
+
     if (me) {
       (me->*method)(arg);
     }
   }
-  for (KstViewObjectList::Iterator i = _children.begin(); i != _children.end(); ++i) {
+
+  for (i = _children.begin(); i != _children.end(); ++i) {
     U *it = kst_cast<U>(*i);
+
     if (it) {
       (it->*method)(arg);
     }
@@ -379,13 +387,17 @@ void KstViewObject::forEachChild(void (U::*method)(T), T arg, bool self) {
 
 template<class T, class U>
 void KstViewObject::recursively(void (U::*method)(T), T arg, bool self) {
+  KstViewObjectList::iterator i;
+
   if (self) {
     U *me = dynamic_cast<U*>(this);
+
     if (me) {
       (me->*method)(arg);
     }
   }
-  for (KstViewObjectList::Iterator i = _children.begin(); i != _children.end(); ++i) {
+
+  for (i = _children.begin(); i != _children.end(); ++i) {
     (*i)->recursively<T>(method, arg, true);
   }
 }
@@ -394,8 +406,11 @@ void KstViewObject::recursively(void (U::*method)(T), T arg, bool self) {
 template<class T>
 KstObjectList<QExplicitlySharedDataPointer<T> > KstViewObject::findChildrenType(bool recursive) {
   KstObjectList<QExplicitlySharedDataPointer<T> > rc;
-  for (KstViewObjectList::Iterator i = _children.begin(); i != _children.end(); ++i) {
+  KstViewObjectList::iterator i;
+
+  for (i = _children.begin(); i != _children.end(); ++i) {
     T *o = kst_cast<T>(*i);
+
     if (o) {
       rc.append(o);
     }
@@ -409,4 +424,3 @@ KstObjectList<QExplicitlySharedDataPointer<T> > KstViewObject::findChildrenType(
 }
 
 #endif
-

@@ -339,46 +339,6 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="1">
-           <widget class="KColorButton" name="_minorGridColor">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="color">
-             <color>
-              <red>228</red>
-              <green>254</green>
-              <blue>255</blue>
-             </color>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="KColorButton" name="_majorGridColor">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="color">
-             <color>
-              <red>207</red>
-              <green>229</green>
-              <blue>235</blue>
-             </color>
-            </property>
-           </widget>
-          </item>
           <item row="2" column="0">
            <widget class="QLabel" name="textLabel2_6">
             <property name="sizePolicy">
@@ -2210,23 +2170,7 @@
           <string>Appearance</string>
          </property>
          <layout class="QHBoxLayout">
-          <item>
-           <widget class="KColorButton" name="_colorMarker">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string>-</string>
-            </property>
-            <attribute name="buttonGroup">
-             <string/>
-            </attribute>
-           </widget>
-          </item>
-          <item>
+         <item>
            <widget class="QCheckBox" name="_checkBoxDefaultMarkerColor">
             <property name="text">
              <string>Default</string>
@@ -2564,11 +2508,6 @@
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <customwidgets>
   <customwidget>
-   <class>KColorButton</class>
-   <extends>QPushButton</extends>
-   <header>kcolorbutton.h</header>
-  </customwidget>
-  <customwidget>
    <class>PlotListBox</class>
   </customwidget>
   <customwidget>
@@ -2678,9 +2617,6 @@
  <includes>
   <include location="local">kst2dplot.h</include>
   <include location="local">plotlistbox.h</include>
-  <include location="local">klineedit.h</include>
-  <include location="local">kcombobox.h</include>
-  <include location="local">kcolorbutton.h</include>
   <include location="local">vectorselector.h</include>
   <include location="local">kstcombobox.h</include>
  </includes>

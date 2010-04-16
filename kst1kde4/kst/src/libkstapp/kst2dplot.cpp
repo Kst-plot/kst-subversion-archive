@@ -164,7 +164,7 @@ Kst2DPlot::Kst2DPlot(const QString& in_tag,
   _yReversed = false;
   _lineStyleMarkers = 0;
   _lineWidthMarkers = 0;
-  _colorMarkers = QColor("black");
+// xxx  _colorMarkers = QColor("black");
   _defaultMarkerColor = true;
 
   commonConstructor(in_tag, xscale_in, yscale_in, xmin_in, ymin_in,
@@ -193,7 +193,10 @@ Kst2DPlot::Kst2DPlot(const QDomElement& e)
   marker.isRising = false;
   marker.isFalling = false;
 
-  // for older .kst files that don't have these settings
+  //
+  // for older .kst files that don't have these settings...
+  //
+
   _xMajorGrid = false;
   _xMinorGrid = false;
   _yMajorGrid = false;
@@ -231,7 +234,7 @@ Kst2DPlot::Kst2DPlot(const QDomElement& e)
   _defaultMarkerColor = true;
 
   //
-  // must stay here for plot loading correctness
+  // must stay here for plot loading correctness...
   //
 
   _pos_x = 0.0;
@@ -252,6 +255,7 @@ Kst2DPlot::Kst2DPlot(const QDomElement& e)
   QDomNode n = e.firstChild();
   while (!n.isNull()) {
     QDomElement el = n.toElement(); // try to convert the node to an element.
+
     if (!el.isNull()) { // the node was really an element.
       if (el.tagName() == "width") {
         _width = el.text().toDouble();
@@ -7863,8 +7867,8 @@ void Kst2DPlot::connectConfigWidget(QWidget *parent, QWidget *w) const {
   connect(widget->_axisPenWidth, SIGNAL( valueChanged(int) ), parent, SLOT( modified() ) );
   connect(widget->_majorPenWidth, SIGNAL( valueChanged(int) ), parent, SLOT( modified() ) );
   connect(widget->_minorPenWidth, SIGNAL( valueChanged(int) ), parent, SLOT( modified() ) );
-  connect(widget->_majorGridColor, SIGNAL( changed(const QColor&) ), parent, SLOT( modified() ) );
-  connect(widget->_minorGridColor, SIGNAL( changed(const QColor&) ), parent, SLOT( modified() ) );
+// xxx  connect(widget->_majorGridColor, SIGNAL( changed(const QColor&) ), parent, SLOT( modified() ) );
+// xxx  connect(widget->_minorGridColor, SIGNAL( changed(const QColor&) ), parent, SLOT( modified() ) );
   connect(widget->_checkBoxDefaultMajorGridColor, SIGNAL( stateChanged(int) ), parent, SLOT( modified() ) );
 
   connect( widget->ScalarList, SIGNAL( textChanged(const QString&) ), parent, SLOT(modified()));
@@ -7957,7 +7961,7 @@ void Kst2DPlot::connectConfigWidget(QWidget *parent, QWidget *w) const {
   connect( widget->Falling, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
   connect( widget->UseVector, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
   connect( widget->_vectorForMarkers, SIGNAL( selectionChanged(const QString&) ), parent, SLOT(modified()));
-  connect( widget->_colorMarker, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
+// xxx  connect( widget->_colorMarker, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
   connect( widget->_checkBoxDefaultMarkerColor, SIGNAL( stateChanged(int) ), parent, SLOT(modified()));
   connect( widget->_comboMarkerLineStyle, SIGNAL( activated(int) ), parent, SLOT(modified()));
   connect( widget->_spinBoxMarkerLineWidth, SIGNAL( valueChanged(int) ), parent, SLOT(modified()));

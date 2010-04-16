@@ -55,9 +55,9 @@ KstMatrixDialog::KstMatrixDialog(QWidget* parent, const char* name, bool modal, 
   connect(_w->_yNumStepsReadToEnd, SIGNAL(clicked()), this, SLOT(yNumStepsReadToEndClicked()));
   connect(_w->_doSkip, SIGNAL(clicked()), this, SLOT(updateEnables()));
 
-  _w->_fileName->setMode(KFile::File | KFile::Directory | KFile::ExistingOnly);
+// xxx  _w->_fileName->setMode(KFile::File | KFile::Directory | KFile::ExistingOnly);
 // xxx  connect(_w->_fileName, SIGNAL(openFileDialog(KURLRequester *)), this, SLOT(selectFolder()));
-  connect(_w->_fileName, SIGNAL(textChanged(const QString&)), this, SLOT(updateCompletion()));
+// xxx  connect(_w->_fileName, SIGNAL(textChanged(const QString&)), this, SLOT(updateCompletion()));
   connect(_w->_configure, SIGNAL(clicked()), this, SLOT(configureSource()));
   connect(_w->_readFromSource, SIGNAL(clicked()), this, SLOT(enableSource()));
   connect(_w->_generateGradient, SIGNAL(clicked()), this, SLOT(updateEnables()));
@@ -86,7 +86,7 @@ KstMatrixDialog::KstMatrixDialog(QWidget* parent, const char* name, bool modal, 
   // for apply button...
   //
 
-  connect(_w->_fileName, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
+// xxx  connect(_w->_fileName, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
   connect(_w->_field, SIGNAL(highlighted(int)), this, SLOT(wasModifiedApply()));
   connect(_w->_configure, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
   connect(_w->_xStart, SIGNAL(valueChanged(int)), this, SLOT(wasModifiedApply()));
@@ -211,10 +211,11 @@ void KstMatrixDialog::fillFieldsForRMatrixEdit() {
     //
 
     _w->_field->clear();
+/* xxx
     if (_fieldCompletion) {
       _fieldCompletion->clear();
     }
-
+*/
     //
     // scope for iterator...
     //
@@ -229,18 +230,22 @@ void KstMatrixDialog::fillFieldsForRMatrixEdit() {
         tf = *it;
         tf->readLock();
 // xxx        _w->_field->insertStringList(tf->matrixList());
+/* xxx
         if (_fieldCompletion) {
           _fieldCompletion->insertItems(tf->matrixList());
         }
+*/
         tf->unlock();
       } else {
         QStringList list;
 
 // xxx        list = KstDataSource::matrixListForSource(_w->_fileName->url());
 // xxx        _w->_field->insertStringList(list);
+/* xxx
         if (_fieldCompletion) {
           _fieldCompletion->insertItems(list);
         }
+*/
       }
       KST::dataSourceList.lock().unlock();
     }
@@ -710,7 +715,7 @@ bool KstMatrixDialog::editObject() {
   //
 
   if (_editMultipleMode) {
-    _fileNameDirty = !_w->_fileName->url().isEmpty();
+// xxx    _fileNameDirty = !_w->_fileName->url().isEmpty();
     _gradientZAtMinDirty = !_w->_gradientZAtMin->text().isEmpty();
     _gradientZAtMaxDirty = !_w->_gradientZAtMax->text().isEmpty();
     _minXDirty = !_w->_minX->text().isEmpty();
@@ -889,7 +894,7 @@ void KstMatrixDialog::populateEditMultipleRMatrix() {
   // intermediate state for multiple edit...
   //
 
-  _w->_fileName->clear();
+// xxx  _w->_fileName->clear();
   _w->_xStart->setSpecialValueText(" ");
   _w->_xStart->setMinimum(_w->_xStart->minimum() - 1);
   _w->_xStart->setValue(_w->_xStart->minimum());
@@ -1040,11 +1045,12 @@ void KstMatrixDialog::updateCompletion() {
 // xxx  _fieldCompletion = _w->_field->completionObject();
 
   _w->_field->insertItems(0, list);
-
+/* xxx
   if (_fieldCompletion) {
     _fieldCompletion->clear();
     _fieldCompletion->insertItems(list);
   }
+*/
 /* xxx
   if (!current_text.isEmpty() && (list.contains(current_text) || _w->_field->editable())) {
     _w->_field->setCurrentText(current_text);

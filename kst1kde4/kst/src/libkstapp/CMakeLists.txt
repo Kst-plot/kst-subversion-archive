@@ -24,7 +24,7 @@ set(kstapp_LIB_SRCS
     kstviewwindow.cpp
 # widgets...
     kst2dplotwidget.cpp
-    kstdatanotifier.cpp
+# xxx    kstdatanotifier.cpp
     kstdebugnotifier.cpp
     kstlogwidget.cpp
     kstviewlabelwidget.cpp
@@ -121,7 +121,7 @@ kde4_add_ui_files(kstapp_LIB_SRCS
     curvedifferentiate.ui
     datamanager.ui
     datasourcemetadatadialog.ui
-    datawizard.ui
+# xxx    datawizard.ui
     debugdialog.ui
     editviewobjectdialog.ui
     eqdialogwidget.ui
@@ -154,7 +154,7 @@ kde4_add_ui_files(kstapp_LIB_SRCS
 
 kde4_add_library(kstapp SHARED ${kstapp_LIB_SRCS})
 
-target_link_libraries(kstapp kstwidgets ${KDE4_KDECORE_LIBS})
+target_link_libraries(kstapp kstbase kstmath kstwidgets ${KDE4_KDECORE_LIBS} QtXml QtGui)
 
 set_target_properties(kstapp PROPERTIES VERSION ${KST_LIBKST_VERSION} SOVERSION 1)
 install(TARGETS kstapp 

@@ -210,13 +210,6 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="7">
-       <widget class="KColorButton" name="_fontColor">
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
       <item row="1" column="0" colspan="2">
        <widget class="QCheckBox" name="_vertical">
         <property name="text">
@@ -399,19 +392,12 @@
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <customwidgets>
   <customwidget>
-   <class>KColorButton</class>
-   <extends>QPushButton</extends>
-   <header>kcolorbutton.h</header>
-  </customwidget>
-  <customwidget>
    <class>PlotListBox</class>
   </customwidget>
  </customwidgets>
  <includes>
   <include location="global">kst_export.h</include>
   <include location="local">plotlistbox.h</include>
-  <include location="local">kcolorbutton.h</include>
-  <include location="local">klineedit.h</include>
  </includes>
  <resources/>
  <connections/>

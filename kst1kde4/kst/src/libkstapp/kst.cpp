@@ -44,7 +44,7 @@
 #include "kstcurvedialog.h"
 #include "kstcsddialog.h"
 #include "kstdatamanager.h"
-#include "kstdatanotifier.h"
+// xxx #include "kstdatanotifier.h"
 // xxx #include "kstdatawizard.h"
 #include "kstdebugdialog.h"
 #include "kstdebugnotifier.h"
@@ -229,7 +229,7 @@ KstApp::~KstApp() {
 QSize KstApp::sizeHint() const
 {
   QSize size;
-  QRect rect( KGlobalSettings::desktopGeometry(KstApp::inst()) );
+  QRect rect; // xxx ( KGlobalSettings::desktopGeometry(KstApp::inst()) );
 
   size.setWidth(3*rect.width()/4);
   size.setHeight(3*rect.height()/4);
@@ -2107,9 +2107,11 @@ void KstApp::samplesDown() {
 
 
 void KstApp::updateDataNotifier() {
+/* xxx
   if (_dataNotifier) {
     _dataNotifier->arrived();
   }
+*/
 }
 
 

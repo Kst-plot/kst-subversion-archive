@@ -60,8 +60,8 @@ KstVectorDialog::KstVectorDialog(QWidget* parent, const char* name, bool modal, 
 // xxx  _w->FileName->completionObject()->setDir(QDir::currentPath());
 
 // xxx  _w->FileName->setMode(KFile::File | KFile::Directory | KFile::ExistingOnly);
-  connect(_w->FileName, SIGNAL(openFileDialog(KURLRequester *)), this, SLOT(selectFolder()));
-  connect(_w->FileName, SIGNAL(textChanged(const QString&)), this, SLOT(updateCompletion()));
+// xxx  connect(_w->FileName, SIGNAL(openFileDialog(KURLRequester *)), this, SLOT(selectFolder()));
+// xxx  connect(_w->FileName, SIGNAL(textChanged(const QString&)), this, SLOT(updateCompletion()));
   connect(_w->_configure, SIGNAL(clicked()), this, SLOT(configureSource()));
   connect(_w->_readFromSource, SIGNAL(clicked()), this, SLOT(enableSource()));
   connect(_w->_generateX, SIGNAL(clicked()), this, SLOT(enableGenerate()));
@@ -84,7 +84,7 @@ KstVectorDialog::KstVectorDialog(QWidget* parent, const char* name, bool modal, 
   connect(_w->_readFromSource, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
   connect(_w->_generateX, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
   connect(_w->_configure, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
-  connect(_w->FileName, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
+// xxx  connect(_w->FileName, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
   connect(_w->Field, SIGNAL(highlighted(int)), this, SLOT(wasModifiedApply()));
   connect(_w->Field, SIGNAL(completion(const QString&)), this, SLOT(wasModifiedApply()));
   connect(_w->_N, SIGNAL(valueChanged(int)), this, SLOT(wasModifiedApply()));
@@ -250,11 +250,12 @@ void KstVectorDialog::updateCompletion() {
 // xxx  _fieldCompletion = _w->Field->completionObject();
 
   _w->Field->insertItems(0, list);
+/* xxx
   if (_fieldCompletion) {
     _fieldCompletion->clear();
     _fieldCompletion->insertItems(list);
   }
-/* xxx
+
   if (!currentText.isEmpty() && (list.contains(currentText) || _w->Field->editable())) {
     _w->Field->setCurrentText(currentText);
   }
@@ -280,10 +281,11 @@ void KstVectorDialog::fillFieldsForRVEdit() {
   _tagName->setText(rvp->tagName());
 
   _w->Field->clear();
+/* xxx
   if (_fieldCompletion) {
     _fieldCompletion->clear();
   }
-
+*/
   {
     KstDataSourcePtr tf;
     KST::dataSourceList.lock().readLock();
@@ -292,18 +294,22 @@ void KstVectorDialog::fillFieldsForRVEdit() {
       tf = *it;
       tf->readLock();
       _w->Field->insertItems(0, tf->fieldList());
+/* xxx
       if (_fieldCompletion) {
         _fieldCompletion->insertItems(tf->fieldList());
       }
+*/
       tf->unlock();
     } else {
       QStringList list;
 
 // xxx      list = KstDataSource::fieldListForSource(_w->FileName->url());
       _w->Field->insertItems(0, list);
+/* xxx
       if (_fieldCompletion) {
         _fieldCompletion->insertItems(list);
       }
+*/
     }
     KST::dataSourceList.lock().unlock();
   }
@@ -589,7 +595,7 @@ bool KstVectorDialog::editSingleObjectRV(KstVectorPtr vcPtr) {
     KstRVectorList vcList;
 
     vcList = kstObjectSubList<KstVector,KstRVector>(KST::vectorList);
-    for (uint i = 0; i < _editMultipleWidget->_objectList->count(); i++) {
+    for (int i = 0; i < _editMultipleWidget->_objectList->count(); i++) {
       if (_editMultipleWidget->_objectList->item(i)->isSelected()) {
         KstRVectorList::Iterator vcIter;
         KstRVectorPtr rvp;
@@ -752,7 +758,7 @@ bool KstVectorDialog::editObject() {
   // if editing multiple objects, edit each one
   if (_editMultipleMode) {
     // get dirties first
-    _fileNameDirty = !_w->FileName->url().isEmpty();
+// xxx    _fileNameDirty = !_w->FileName->url().isEmpty();
     _skipDirty = _w->_kstDataRange->Skip->text() != " ";
     _f0Dirty = !_w->_kstDataRange->F0->text().isEmpty();
     _nDirty = !_w->_kstDataRange->N->text().isEmpty();
@@ -892,7 +898,7 @@ void KstVectorDialog::populateEditMultipleRV() {
   // also intermediate state for multiple edit...
   //
 
-  _w->FileName->clear();
+// xxx  _w->FileName->clear();
   _w->_kstDataRange->F0->setText("");
   _w->_kstDataRange->N->setText("");
   _w->_kstDataRange->Skip->setMinimum(_w->_kstDataRange->Skip->minimum() - 1);

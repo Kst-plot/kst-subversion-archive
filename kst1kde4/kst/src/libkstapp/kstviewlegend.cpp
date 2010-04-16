@@ -656,7 +656,7 @@ bool KstViewLegend::fillConfigWidget(QWidget *w, bool isNew) const {
 
   if (isNew) {
     widget->_fontSize->setValue(KST::legendDefaults.fontSize());
-    widget->_fontColor->setColor(KST::legendDefaults.fontColor());
+// xxx    widget->_fontColor->setColor(KST::legendDefaults.fontColor());
     widget->_font->setCurrentFont(KST::legendDefaults.font());
 // xxx    widget->_boxColors->setForeground(KST::legendDefaults.foregroundColor());
 // xxx    widget->_boxColors->setBackground(KST::legendDefaults.backgroundColor());
@@ -681,7 +681,7 @@ bool KstViewLegend::fillConfigWidget(QWidget *w, bool isNew) const {
     widget->TrackContents->setChecked(trackContents());
     widget->_title->setText(title());
     widget->_fontSize->setValue(fontSize());
-    widget->_fontColor->setColor(foregroundColor());
+// xxx    widget->_fontColor->setColor(foregroundColor());
     widget->_font->setCurrentFont(fontName());
     widget->_transparent->setChecked(transparent());
     widget->_border->setValue(borderWidth());
@@ -742,12 +742,12 @@ bool KstViewLegend::readConfigWidget(QWidget *w, bool editMultipleMode) {
     setFontSize(widget->_fontSize->value());
     KST::legendDefaults.setFontSize(widget->_fontSize->value());
   }
-
+/* xxx
   if (!editMultipleMode || widget->_fontColor->color() != QColor()) {
     setForegroundColor(widget->_fontColor->color());
     KST::legendDefaults.setFontColor(widget->_fontColor->color());
   }
-
+*/
   if (!editMultipleMode || widget->_font->currentText().compare(QString(" ")) != 0) {
     setFontName(widget->_font->currentFont().family());
     KST::legendDefaults.setFont(widget->_font->currentFont().family());
@@ -817,7 +817,7 @@ void KstViewLegend::connectConfigWidget(QWidget *parent, QWidget *w) const {
   connect(widget->_fontSize, SIGNAL(valueChanged(int)), parent, SLOT(modified()));
 // xxx  connect(widget->_fontSize->child("qt_spinbox_edit"), SIGNAL(textChanged(const QString&)), parent, SLOT(modified()));
   connect(widget->_vertical, SIGNAL(pressed()), parent, SLOT(modified()));
-  connect(widget->_fontColor, SIGNAL(changed(const QColor&)), parent, SLOT(modified()));  
+// xxx  connect(widget->_fontColor, SIGNAL(changed(const QColor&)), parent, SLOT(modified()));  
   connect(widget->_transparent, SIGNAL(pressed()), parent, SLOT(modified()));
 /* xxx
   connect(widget->_boxColors, SIGNAL(fgChanged(const QColor&)), parent, SLOT(modified()));
@@ -864,7 +864,7 @@ void KstViewLegend::populateEditMultiple(QWidget *w) {
   widget->_vertical->setTristate();
   widget->_vertical->setCheckState(Qt::PartiallyChecked);
 
-  widget->_fontColor->setColor(QColor());
+// xxx  widget->_fontColor->setColor(QColor());
 
   widget->_transparent->setTristate();
   widget->_transparent->setCheckState(Qt::PartiallyChecked);

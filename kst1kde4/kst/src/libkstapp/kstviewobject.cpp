@@ -21,6 +21,7 @@
 #include <unistd.h>
 
 #include <QBitmap>
+#include <QInputDialog>
 #include <QMetaObject>
 #include <QMetaProperty>
 #include <QTextDocument>
@@ -1845,25 +1846,19 @@ void KstViewObject::detach() {
 
 
 void KstViewObject::rename() {
-  bool ok = false;
-  bool done;
   QString oldName = tagName();
   QString newName;
+  bool ok = false;
+  bool done;
 
-#if KDE_VERSION >= KDE_MAKE_VERSION(3,3,0)
-  newName = KInputDialog::getText(i18n("Kst"), i18n("Enter a new name for %1:").arg(tagName()), tagName(), &ok);
-#else
-  newName = KLineEditDlg::getText(i18n("Enter a new name for %1:").arg(tagName()), tagName(), &ok, 0L);
-#endif
+  newName = QInputDialog::getText(KstApp::inst()->activeSubWindow(), QObject::tr("Kst"), QObject::tr("Enter a new name for %1:").arg(tagName()), QLineEdit::Normal, tagName(), &ok);
+
   done = !ok;
   while (!done) {
     setTagName(KstObjectTag(newName+"tmpholdingstring", KstObjectTag::globalTagContext));
     if (KstData::self()->viewObjectNameNotUnique(newName)) {
-#if KDE_VERSION >= KDE_MAKE_VERSION(3,3,0)
-      newName = KInputDialog::getText(i18n("Kst"), i18n("%1 is not a unique name: Enter a new name for %2:").arg(newName).arg(oldName), oldName, &ok);
-#else
-      newName = KLineEditDlg::getText(i18n("%1 is not a unique name: Enter a new name for %2:").arg(newName).arg(oldName), oldName, &ok, 0L);
-#endif
+      newName = QInputDialog::getText(KstApp::inst()->activeSubWindow(), QObject::tr("Kst"), QObject::tr("%1 is not a unique name: Enter a new name for %2:").arg(newName).arg(oldName), QLineEdit::Normal, oldName, &ok);
+
       done = !ok;
     } else {
       done = ok = true;
@@ -1891,11 +1886,14 @@ KstHandlerFactoryMethod KstViewObject::handlerFactory() const {
 
 QDataStream& operator<<(QDataStream& str, KstViewObjectPtr obj) {
   obj->writeBinary(str);
+
   return str;
 }
 
 
 void KstViewObject::writeBinary(QDataStream& str) {
+  KstViewObjectList::iterator i;
+
   str << type();
   str << tagName();
   str << _geom << _backgroundColor << _foregroundColor;
@@ -1903,7 +1901,7 @@ void KstViewObject::writeBinary(QDataStream& str) {
   str << _standardActions << _layoutActions << _aspect << _idealSize;
 
   str << _children.count();
-  for (KstViewObjectList::Iterator i = _children.begin(); i != _children.end(); ++i) {
+  for (i = _children.begin(); i != _children.end(); ++i) {
     str << *i;
   }
 }
@@ -1911,6 +1909,7 @@ void KstViewObject::writeBinary(QDataStream& str) {
 
 QDataStream& operator>>(QDataStream& str, KstViewObjectPtr obj) {
   obj->readBinary(str);
+
   return str;
 }
 
@@ -2097,7 +2096,9 @@ void KstViewObject::selectAll() {
 
 
 void KstViewObject::unselectAll() {
-  for (KstViewObjectList::Iterator i = _children.begin(); i != _children.end(); ++i) {
+  KstViewObjectList::iterator i;
+
+  for (i = _children.begin(); i != _children.end(); ++i) {
     (*i)->setSelected(false);
   }
 }
@@ -2109,6 +2110,7 @@ bool KstViewObject::contains(const KstViewObjectPtr child) const {
       return true;
     }
   }
+
   return false;
 }
 
@@ -2208,12 +2210,14 @@ void KstViewObject::setDirty(bool dirty) {
 
 QMap<QString, QVariant > KstViewObject::widgetHints(const QString& propertyName) const {
   Q_UNUSED(propertyName)
+
   return QMap<QString, QVariant>();
 }
 
 
 inline bool pointsCloseEnough(const QPoint& point1, const QPoint& point2) {
   const int dx = KST_RESIZE_BORDER_W/2;
+
   return point1.x() <= point2.x() + dx &&
       point1.x() >= point2.x() - dx &&
       point1.y() <= point2.y() + dx &&
@@ -2299,15 +2303,18 @@ QRect KstViewObject::surroundingGeometry() const {
 
 
 bool KstViewObject::objectDirty() const {
+  KstViewObjectList::const_iterator i;
+
   if (dirty()) {
     return true;
   }
 
-  for (KstViewObjectList::ConstIterator i = _children.begin(); i != _children.end(); ++i) {
+  for (i = _children.begin(); i != _children.end(); ++i) {
     if ((*i)->objectDirty()) {
       return true;
     }
   }
+
   return false;
 }
 
@@ -2409,4 +2416,3 @@ KstViewObjectPtr KstViewObject::topLevelParent() const {
 }
 
 #include "kstviewobject.moc"
-

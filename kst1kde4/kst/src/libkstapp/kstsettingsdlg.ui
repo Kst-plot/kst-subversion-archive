@@ -310,20 +310,6 @@
              </widget>
             </item>
             <item>
-             <widget class="KColorButton" name="_majorGridColor">
-              <property name="text">
-               <string/>
-              </property>
-              <property name="color">
-               <color>
-                <red>207</red>
-                <green>229</green>
-                <blue>235</blue>
-               </color>
-              </property>
-             </widget>
-            </item>
-            <item>
              <widget class="QCheckBox" name="_checkBoxDefaultMajorGridColor">
               <property name="text">
                <string>Default</string>
@@ -1075,11 +1061,9 @@
   <tabstop>_fontMinSize</tabstop>
   <tabstop>_xMajorGrid</tabstop>
   <tabstop>_yMajorGrid</tabstop>
-  <tabstop>_majorGridColor</tabstop>
   <tabstop>_checkBoxDefaultMajorGridColor</tabstop>
   <tabstop>_xMinorGrid</tabstop>
   <tabstop>_yMinorGrid</tabstop>
-  <tabstop>_minorGridColor</tabstop>
   <tabstop>_checkBoxDefaultMinorGridColor</tabstop>
   <tabstop>_comboBoxXInterpret</tabstop>
   <tabstop>_comboBoxXDisplay</tabstop>

@@ -158,9 +158,6 @@
       <item row="0" column="1">
        <layout class="QVBoxLayout">
         <item>
-         <widget class="KUrlRequester" name="FileName" native="true"/>
-        </item>
-        <item>
          <layout class="QHBoxLayout">
           <item>
            <widget class="KstComboBox" name="Field"/>
@@ -328,11 +325,6 @@
    <extends>QWidget</extends>
    <header>datarangewidget.h</header>
   </customwidget>
-  <customwidget>
-   <class>KUrlRequester</class>
-   <extends>QWidget</extends>
-   <header>kurlrequester.h</header>
-  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>_readFromSource</tabstop>
@@ -348,11 +340,7 @@
  <includes>
   <include location="global">kst_export.h</include>
   <include location="local">datarangewidget.h</include>
-  <include location="local">kurlrequester.h</include>
-  <include location="local">klineedit.h</include>
-  <include location="local">kpushbutton.h</include>
   <include location="local">kstcombobox.h</include>
-  <include location="local">klineedit.h</include>
  </includes>
  <resources/>
  <connections/>

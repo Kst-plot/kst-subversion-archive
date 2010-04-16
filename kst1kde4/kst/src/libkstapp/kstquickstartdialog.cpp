@@ -32,8 +32,8 @@ KstQuickStartDialog::KstQuickStartDialog(QWidget *parent, const char *name, bool
   connect(_openFile, SIGNAL(clicked()), this, SLOT(open_I()));
   connect(_recentFileList, SIGNAL(highlighted(const QString&)), this, SLOT(changeURL(const QString&)));
   connect(_showAtStartup, SIGNAL(clicked()), this, SLOT(updateSettings()));
-  connect(_fileName, SIGNAL(textChanged(const QString&)), this, SLOT(deselectRecentFile()));
-  connect(_fileName, SIGNAL(textChanged(const QString&)), this, SLOT(fileChanged(const QString&)));
+// xxx  connect(_fileName, SIGNAL(textChanged(const QString&)), this, SLOT(deselectRecentFile()));
+// xxx  connect(_fileName, SIGNAL(textChanged(const QString&)), this, SLOT(fileChanged(const QString&)));
   connect(_recentFileList, SIGNAL(selected(const QString&)), this, SLOT(open_I()));
 }
 
@@ -99,10 +99,11 @@ void KstQuickStartDialog::fileChanged(const QString& name) {
 
 
 void KstQuickStartDialog::changeURL(const QString& name) {
+/* xxx
   _fileName->blockSignals(true);
   _fileName->setUrl(name);
   _fileName->blockSignals(false);
-
+*/
   fileChanged(name);
 
   _isRecentFile = true;

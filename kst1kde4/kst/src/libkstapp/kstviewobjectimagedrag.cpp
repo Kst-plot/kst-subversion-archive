@@ -24,14 +24,11 @@
 #include <QProgressDialog>
 #include <QTemporaryFile>
 
-#include <kapplication.h>
-#include <kimageio.h>
-
 #include "kstviewobjectimagedrag.h"
 
 KstViewObjectImageDrag::KstViewObjectImageDrag(QWidget *dragSource)
 : KstDrag("image/png", dragSource) {  // mimetype here is irrelevant
-  _mimeTypes = KImageIO::mimeTypes();
+// xxx  _mimeTypes = KImageIO::mimeTypes();
   // Prefer image/png, image/jpeg, image/x-eps
   if (_mimeTypes.contains("image/x-eps")) {
     _mimeTypes.removeAll("image/x-eps");
@@ -115,7 +112,7 @@ QByteArray KstViewObjectImageDrag::encodedData(const char *mimeType) const {
   QByteArray rc;
   QDataStream ds(&rc, QIODevice::WriteOnly);
 
-  pm.save(ds.device(), KImageIO::typeForMime(mimeType).first().toLatin1());
+// xxx  pm.save(ds.device(), KImageIO::typeForMime(mimeType).first().toLatin1());
 
   return rc;
 }

@@ -16,6 +16,8 @@
  ***************************************************************************/
 
 #include <QFile>
+#include <QInputDialog>
+#include <QLineEdit>
 #include <QMessageBox>
 #include <QPrinter>
 #include <QTextDocument>
@@ -113,10 +115,11 @@ void KstViewWindow::updateActions() {
 
 
 KstViewWindow::~KstViewWindow() {
+  KstApp *app;
+
   _view->release();
-  KstApp *app = KstApp::inst(); // Can be null on exit - but then why do
-                                // we even need to be calling this function
-                                // here?  It seems wrong to me.
+
+  app = KstApp::inst();
   if (app) {
     app->updateDialogsForWindow();
   }
@@ -134,7 +137,6 @@ void KstViewWindow::readProperties(QSettings* config) {
 
 
 void KstViewWindow::slotActivated(QMdiSubWindow*) {
-  // KDE bug: KMDIMainFrm close -> activate -> loops back from the destructor
   if (KstApp::inst()) {
     if (KstApp::inst()->getZoomRadio() == KstApp::LAYOUT) {
       if( view()->viewMode() == KstTopLevelView::DisplayMode ) {
@@ -456,7 +458,7 @@ QString KstViewWindow::createPlotObject(const QString& suggestedName, bool promp
 
   if (prompt) {
     bool ok = false;
-    name = KInputDialog::getText(QObject::tr("Kst"), QObject::tr("Enter a name for the new plot:"), name, &ok);
+    name = QInputDialog::getText(widget(), QObject::tr("Kst"), QObject::tr("Enter a name for the new plot:"), QLineEdit::Normal, name, &ok);
 
     if (ok) {
       //
@@ -465,12 +467,11 @@ QString KstViewWindow::createPlotObject(const QString& suggestedName, bool promp
   
       duplicate = true;
       while (duplicate) {
+        QList<QMdiSubWindow*> windows;
+        QList<QMdiSubWindow*>::const_iterator i;
         KstViewObjectPtr rc;
 
         duplicate = false;
-
-        QList<QMdiSubWindow*> windows;
-        QList<QMdiSubWindow*>::const_iterator i;
       
         windows = app->subWindowList(QMdiArea::CreationOrder);
       
@@ -483,7 +484,7 @@ QString KstViewWindow::createPlotObject(const QString& suggestedName, bool promp
             if (rc) {
               duplicate = true;
 
-              name = KInputDialog::getText(QObject::tr("Kst"), QObject::tr("Enter a name for the new plot:"), name, &ok);
+              name = QInputDialog::getText(widget(), QObject::tr("Kst"), QObject::tr("Enter a name for the new plot:"), QLineEdit::Normal, name, &ok);
 
               if (!ok) {
                 name = QString::null;

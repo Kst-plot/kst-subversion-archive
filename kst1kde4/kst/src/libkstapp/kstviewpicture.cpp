@@ -202,15 +202,17 @@ void KstViewPicture::save(QTextStream& ts, const QString& indent) {
 
 
 bool KstViewPicture::setImage(const QString& source) {
-  QUrl url;
   QString tmpFile;
+  QImage ti;
+  QUrl url;
+  bool success = true;
 
   if (QFile::exists(source) && QFileInfo(source).isRelative()) {
     url.setPath(source);
   } else {
 // xxx    url = QUrl::fromUserInput(source);
   }
-
+/* xxx
   if (!KIO::NetAccess::exists(url, true, KstApp::inst())) {
     return false;
   }
@@ -218,9 +220,7 @@ bool KstViewPicture::setImage(const QString& source) {
   if (!KIO::NetAccess::download(url, tmpFile, KstApp::inst())) {
     return false;
   }
-
-  QImage ti;
-  bool success = true;
+*/
 
 // xxx  ti.setAlphaBuffer(true);
   if (ti.load(tmpFile)) {
@@ -234,7 +234,7 @@ bool KstViewPicture::setImage(const QString& source) {
     success = false;
   }
 
-  KIO::NetAccess::removeTempFile(tmpFile);
+// xxx  KIO::NetAccess::removeTempFile(tmpFile);
 
   return success;
 }
