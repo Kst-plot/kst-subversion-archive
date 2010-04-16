@@ -68,12 +68,12 @@ Kst2dPlotWidget::Kst2dPlotWidget(QWidget* parent, const char* name, Qt::WindowFl
 // xxx  _remove->setPixmap(BarIcon("back"));
   _remove->setEnabled(false);
 // xxx  _remove->setAccel(ALT+Key_R);
-/* xxx
-  QToolTip::add(_up, i18n("Shortcut: Alt+Up"));
-  QToolTip::add(_down, i18n("Shortcut: Alt+Down"));
-  QToolTip::add(_add, i18n("Shortcut: Alt+s"));
-  QToolTip::add(_remove, i18n("Shortcut: Alt+r"));
-*/
+
+	_up->setToolTip(tr("Shortcut: Alt+Up"));
+  _down->setToolTip(tr("Shortcut: Alt+Down"));
+  _add->setToolTip(tr("Shortcut: Alt+s"));
+  _remove->setToolTip(tr("Shortcut: Alt+r"));
+
 
   //
   // axes range...

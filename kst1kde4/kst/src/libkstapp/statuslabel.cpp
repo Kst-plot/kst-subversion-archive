@@ -30,7 +30,7 @@ StatusLabel::~StatusLabel() {
 }
 
 void StatusLabel::setFullText() {
-// xxx  QToolTip::remove(this);
+	this->setToolTip("");
 // xxx  QToolTip::hide();
 
   setMaximumWidth(32767);
@@ -72,6 +72,7 @@ void StatusLabel::setTextWidth(const QFontMetrics &metrics, int width) {
   QString str;
 
 // xxx  QToolTip::remove(this);
+	this->setToolTip("");
 
   if (width < 0) {
     width = 0;
@@ -83,6 +84,7 @@ void StatusLabel::setTextWidth(const QFontMetrics &metrics, int width) {
 
   if (str != _fullText) {
 // xxx    QToolTip::add(this, _fullText);
+		this->setToolTip(_fullText);
   }
 
   setText(str);

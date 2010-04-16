@@ -17,7 +17,6 @@
 
 #include <QColor>
 #include <QTimer>
-#include <QToolTip>
 
 #include "kst.h"
 #include "kstdatanotifier.h"
@@ -33,7 +32,7 @@ KstDataNotifier::KstDataNotifier(QWidget *parent)
   setShape(Rectangular);
   setLook(Sunken);
   _animationStage = 0;
-// xxx  QToolTip::add(this, tr("Indicates that new data has arrived."));
+  this->setToolTip(tr("Indicates that new data has arrived."));
   show();
 
   _colors = new QColor[numIterations];

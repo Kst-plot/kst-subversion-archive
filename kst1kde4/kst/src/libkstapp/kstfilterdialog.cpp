@@ -422,8 +422,8 @@ void KstFilterDialog::generateEntries(bool input, int& cnt, QWidget *parent, QGr
         w->allowDirectEntry(true);
         if (p) {
           p->readLock();
-// xxx					w->_scalar->QWidget::setToopTip("");
-// xxx					w->_scalar->QWidget::setToopTip(QString::number(p->value()));
+					w->_scalar->QWidget::setToolTip("");
+					w->_scalar->QWidget::setToolTip(QString::number(p->value()));
           p->unlock();
         }
       } else if (string) {
@@ -446,7 +446,7 @@ void KstFilterDialog::generateEntries(bool input, int& cnt, QWidget *parent, QGr
         if (p) {
           p->readLock();
 					w->_string->setToolTip("");
-// xxx					w->_string->setToopTip(p->value());
+					w->_string->setToolTip(p->value());
           p->unlock();
         }
       } else {
