@@ -861,8 +861,8 @@ void KstPluginDialog::generateEntries(bool input, int& cnt, QWidget *parent, QGr
         w->allowDirectEntry(true);
         if (p) {
           p->readLock();
-// xxx          QToolTip::remove(w->_scalar);
-// xxx          QToolTip::add(w->_scalar, QString::number(p->value()));
+					w->_scalar->setToolTip("");
+					w->_scalar->setToolTip(QString::number(p->value()));
           p->unlock();
         }
       } else if (string) {
@@ -884,8 +884,8 @@ void KstPluginDialog::generateEntries(bool input, int& cnt, QWidget *parent, QGr
         w->allowDirectEntry(true);
         if (p) {
           p->readLock();
-// xxx          QToolTip::remove(w->_string);
-// xxx          QToolTip::add(w->_string, p->value());
+					w->_string->setToolTip("");
+					w->_string->setToolTip(p->value());
           p->unlock();
         }
       } else {
@@ -917,12 +917,10 @@ void KstPluginDialog::generateEntries(bool input, int& cnt, QWidget *parent, QGr
     widget->show();
 
     if (!(*it)._description.isEmpty()) {
-/* xxx
-      QWhatsThis::remove(label);
-      QWhatsThis::remove(widget);
-      QWhatsThis::add(label, (*it)._description);
-      QWhatsThis::add(widget, (*it)._description);
-*/
+			label->setWhatsThis("");
+			widget->setWhatsThis("");
+			label->setWhatsThis((*it)._description);
+			widget->setWhatsThis((*it)._description);			
     }
 
     ++cnt;
@@ -1041,11 +1039,11 @@ void KstPluginDialog::updateScalarTooltip(const QString& n) {
 
   if (s) {
     s->readLock();
-// xxx    QToolTip::remove(w);
-// xxx    QToolTip::add(w, QString::number(s->value()));
+		w->setToolTip("");
+		w->setToolTip(QString::number(s->value()));
     s->unlock();
   } else {
-// xxx    QToolTip::remove(w);
+      w->setToolTip("");
   }
 }
 
@@ -1056,11 +1054,11 @@ void KstPluginDialog::updateStringTooltip(const QString& n) {
 
   if (s) {
     s->readLock();
-// xxx    QToolTip::remove(w);
-// xxx    QToolTip::add(w, s->value());
+		w->setToolTip("");
+		w->setToolTip(s->value());
     s->unlock();
   } else {
-// xxx    QToolTip::remove(w);
+      w->setToolTip("");
   }
 }
 
