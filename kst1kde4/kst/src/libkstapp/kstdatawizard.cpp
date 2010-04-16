@@ -29,7 +29,6 @@
 #include <QSpinBox>
 #include <QString>
 #include <QTimer>
-#include <QToolTip>
 #include <QWizard>
 
 #include "kst.h"
@@ -160,10 +159,10 @@ KstDataWizard::KstDataWizard(QWidget* parent, const char* name, bool modal, Qt::
 
   loadSettings();
 
-  QToolTip::add(_up, tr("Raise in plot order: Alt+Up"));
-  QToolTip::add(_down, tr("Lower in plot order: Alt+Down"));
-  QToolTip::add(_add, tr("Select: Alt+s"));
-  QToolTip::add(_remove, tr("Remove: Alt+r"));
+  _up->setToolTip(tr("Raise in plot order: Alt+Up"));
+  _down->setToolTip(tr("Lower in plot order: Alt+Down"));
+  _add->setToolTip(tr("Select: Alt+s"));
+  _rename->setToolTip(tr("Remove: Alt+r"));
 }
 
 

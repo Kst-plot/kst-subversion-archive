@@ -22,8 +22,6 @@
 #include <QLineEdit>
 #include <QMessageBox>
 #include <QRegExp>
-#include <QToolTip>
-#include <QWhatsThis>
 
 #include "curveappearancewidget.h"
 #include "kst2dplot.h"
@@ -337,7 +335,7 @@ void KstFitDialog::generateEntries(bool input, int& cnt, QWidget *parent, QGridL
         p = *KST::scalarList.findTag(w->_scalar->currentText());
         w->allowDirectEntry( true );
         if (p) {
-// xxx          QToolTip::add(w->_scalar, QString::number(p->value()));
+					w->_scalar->setToolTip(QString::number(p->value()));
         }
       } else if (string) {
         StringSelector *w = new StringSelector(parent);
@@ -354,7 +352,7 @@ void KstFitDialog::generateEntries(bool input, int& cnt, QWidget *parent, QGridL
         p = *KST::stringList.findTag(w->_string->currentText());
         w->allowDirectEntry( true );
         if (p) {
-// xxx          QToolTip::add(w->_string, p->value());
+					w->_string->setToolTip(p->value());
         }
       } else {
         if (fixed) {
