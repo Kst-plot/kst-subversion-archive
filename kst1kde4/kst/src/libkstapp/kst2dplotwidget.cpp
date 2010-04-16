@@ -26,7 +26,6 @@
 #include <QRadioButton>
 #include <QSpinBox>
 #include <QStyle>
-#include <QToolTip>
 
 /* xxx
 #include <kcolorbutton.h>

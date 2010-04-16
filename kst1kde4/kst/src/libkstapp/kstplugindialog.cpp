@@ -27,8 +27,6 @@
 #include <QMessageBox>
 #include <QTextEdit>
 #include <QTimer>
-#include <QToolTip>
-#include <QWhatsThis>
 
 #include "curveappearancewidget.h"
 #include "kst.h"

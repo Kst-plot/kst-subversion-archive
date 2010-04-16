@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include <QTimer>
-#include <QToolTip>
 
 #include "kst.h"
 #include "kstdebugnotifier.h"
@@ -29,7 +28,7 @@ KstDebugNotifier::KstDebugNotifier(QWidget *parent)
 : QLabel(parent) {
   _animationStage = 0;
   _gotPress = false;
-// xxx  QToolTip::add(this, QObject::tr("An error has occurred. Click on this icon for more details."));
+	this->setToolTip(QObject::tr("An error has occurred. Click on this icon for more details."));
 
   _pm.resize(IMAGE_STAGES);
 // xxx  _pm[0] = QPixmap(locate("data", "kst/pics/kst_error_1.png"));

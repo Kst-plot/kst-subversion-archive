@@ -17,7 +17,6 @@
 
 // include files for Qt
 #include <QCheckBox>
-#include <QToolTip>
 
 // include files for KDE
 // xxx #include <kiconloader.h>
@@ -51,12 +50,12 @@ KstViewLegendWidget::KstViewLegendWidget(QWidget* parent, const char* name, Qt::
   _add->setEnabled(false);
 // xxx  _remove->setPixmap(BarIcon("back"));
   _remove->setEnabled(false);
-/* xxx
-  QToolTip::add(_up, QObject::tr("Shortcut: Alt+Up"));
-  QToolTip::add(_down, QObject::tr("Shortcut: Alt+Down"));
-  QToolTip::add(_add, QObject::tr("Shortcut: Alt+s"));
-  QToolTip::add(_remove, QObject::tr("Shortcut: Alt+r"));
-*/
+
+  _up->setToolTip(QObject::tr("Shortcut: Alt+Up"));
+  _down->setToolTip(QObject::tr("Shortcut: Alt+Down"));
+  _add->setToolTip(QObject::tr("Shortcut: Alt+s"));
+  _remove->setToolTip(QObject::tr("Shortcut: Alt+r"));
+
   _changedFgColor = false;
   _changedBgColor = false;
 }
