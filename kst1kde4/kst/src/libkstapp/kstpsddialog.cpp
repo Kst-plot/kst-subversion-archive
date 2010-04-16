@@ -201,7 +201,7 @@ bool KstPsdDialog::newObject() {
       psd->setInterpolateHoles(_w->_kstFFTOptions->InterpolateHoles->isChecked());
       p->unlock();
   
-      color = KstApp::inst()->chooseColorDlg()->getColorForCurve(psd->vX(), psd->vY());
+// xxx      color = KstApp::inst()->chooseColorDlg()->getColorForCurve(psd->vX(), psd->vY());
       if (!color.isValid()) {
         color = _w->_curveAppearance->color();
       }

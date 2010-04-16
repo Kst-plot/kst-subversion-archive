@@ -376,7 +376,7 @@ bool KstVvDialog::newObject() {
       flag->unlock();
     }
   
-    color = KstApp::inst()->chooseColorDlg()->getColorForCurve(vv->vX(), vv->vY());
+// xxx    color = KstApp::inst()->chooseColorDlg()->getColorForCurve(vv->vX(), vv->vY());
     if (!color.isValid()) {
       color = _w->_curveAppearance->color();
     }

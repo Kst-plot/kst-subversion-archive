@@ -23,7 +23,7 @@
 #include "kstobject.h"
 #include "kstobjectcollection.h"
 
-class KstStringListView : public KListView
+class KstStringListView : public QListView
 {
   public:
     KstStringListView(QWidget *parent = 0, KstObjectCollection<KstString> *coll = NULL);
@@ -35,7 +35,7 @@ class KstStringListView : public KListView
 };
 
 
-class KstStringListViewItem : public KListViewItem
+class KstStringListViewItem : public QListWidgetItem
 {
   public:
     KstStringListViewItem(KstStringListView *parent, KstObjectTreeNode<KstString> *node);

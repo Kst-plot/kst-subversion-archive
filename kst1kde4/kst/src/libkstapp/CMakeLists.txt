@@ -154,7 +154,7 @@ kde4_add_ui_files(kstapp_LIB_SRCS
 
 kde4_add_library(kstapp SHARED ${kstapp_LIB_SRCS})
 
-target_link_libraries(kstapp kdeprint kstwidgets)
+target_link_libraries(kstapp kstwidgets ${KDE4_KDECORE_LIBS})
 
 set_target_properties(kstapp PROPERTIES VERSION ${KST_LIBKST_VERSION} SOVERSION 1)
 install(TARGETS kstapp 

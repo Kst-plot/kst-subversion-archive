@@ -247,7 +247,7 @@ bool KstHsDialog::newObject() {
 
     hs->setRealTimeAutoBin(_w->_realTimeAutoBin->isChecked());
   
-    color = KstApp::inst()->chooseColorDlg()->getColorForCurve(hs->vX(), hs->vY());
+// xxx    color = KstApp::inst()->chooseColorDlg()->getColorForCurve(hs->vX(), hs->vY());
     if (!color.isValid()) {
       color = _w->_curveAppearance->color();
     }

@@ -347,6 +347,7 @@ bool KstDoc::openDocument(const QUrl& url, const QString& o_file,
         }
         app->resize(size);
       } else if (e.tagName() == "graphicsautosave") {
+/* xxx
         KstGraphFileDialog *gDlg;
 
         gDlg = app->graphFileDlg();
@@ -379,6 +380,7 @@ bool KstDoc::openDocument(const QUrl& url, const QString& o_file,
         gDlg->setAutoSave(en);
         gDlg->updateDialog();
         gDlg->applyAutosave();
+*/
       } else if (e.tagName() == "plotcols") {
         columns = e.text().toInt();
       } else if (e.tagName() == "kstfile") {
@@ -726,7 +728,7 @@ void KstDoc::saveDocument(QTextStream& ts, bool saveAbsoluteVectorPositions) {
   //
   // save graphics autosave settings
   //
-
+/* xxx
   ts << "  <graphicsautosave time=\""
     << app->graphFileDlg()->autoSaveTimer()
     << "\" enabled=\""
@@ -746,7 +748,7 @@ void KstDoc::saveDocument(QTextStream& ts, bool saveAbsoluteVectorPositions) {
 // xxx    ts << "\" url=\"" << Qt::escape(app->graphFileDlg()->url().url());
   }
   ts << "\" />" << endl;
-
+*/
   KstRVectorList rvl;
   KstRMatrixList rml;
   KstDataSourceList::iterator dslit;

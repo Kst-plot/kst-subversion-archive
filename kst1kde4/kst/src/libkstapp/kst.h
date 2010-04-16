@@ -41,8 +41,10 @@ enum PlotType { OnePlot, MultiplePlots, CycleThrough, ExistingPlot, ExistingCycl
 class GraphicEditor;
 class Kst2DPlot;
 typedef KstObjectMap<QExplicitlySharedDataPointer<Kst2DPlot> > Kst2DPlotMap;
+/* xxx
 class KstChangeFileDialog;
 class KstChangeNptsDialog;
+*/
 class KstChooseColorDialog;
 class KstCurveDifferentiate;
 // xxx class KstDataManager;
@@ -58,12 +60,14 @@ class KstMonochromeDialog;
 class KstPlotDialog;
 class KstQuickStartDialog;
 class KstVectorSaveDialog;
+/* xxx
 class KstViewFitsDialog;
-// xxx class KstViewManager;
+class KstViewManager;
 class KstViewMatricesDialog;
 class KstViewScalarsDialog;
 class KstViewStringsDialog;
 class KstViewVectorsDialog;
+*/
 class KstViewWindow;
 class StatusLabel;
 class UpdateThread;
@@ -149,8 +153,8 @@ class KST_EXPORT KstApp : public QMdiArea {
 
     QSettings *dataSourceConfig() const { return _dataSourceConfig; }
 
-    KstGraphFileDialog *graphFileDlg() const { return _graphFileDialog; }
-    KstChooseColorDialog *chooseColorDlg() const { return _chooseColorDialog; }
+// xxx    KstGraphFileDialog *graphFileDlg() const { return _graphFileDialog; }
+// xxx    KstChooseColorDialog *chooseColorDlg() const { return _chooseColorDialog; }
     KstMonochromeDialog *monochromeDialog() const { return _monochromeDialog; }
 
     void waitForUpdate() const;
@@ -324,7 +328,7 @@ class KST_EXPORT KstApp : public QMdiArea {
 
     QSettings *_config;
     KstDoc *_doc;
-
+/* xxx
     KstViewScalarsDialog *_viewScalarsDialog;
     KstViewStringsDialog *_viewStringsDialog;
     KstViewVectorsDialog *_viewVectorsDialog;
@@ -336,8 +340,9 @@ class KST_EXPORT KstApp : public QMdiArea {
     KstChangeNptsDialog *_changeNptsDialog;
     KstGraphFileDialog *_graphFileDialog;
     KstVectorSaveDialog *_vectorSaveDialog;
-// xxx    KstDataManager *_dataManager;
-// xxx    KstViewManager *_viewManager;
+    KstDataManager *_dataManager;
+    KstViewManager *_viewManager;
+*/
     KstDebugDialog *_debugDialog;
     GraphicEditor *_graphicDialog;
     KstMonochromeDialog *_monochromeDialog; 
@@ -420,7 +425,7 @@ class KST_EXPORT KstApp : public QMdiArea {
     StatusLabel *_memoryBar;
     StatusLabel *_dataBar;
     QProgressBar *_progressBar;
-    KstIfaceImpl *_dcopIface;
+// xxx    KstIfaceImpl *_dcopIface;
     UpdateThread *_updateThread;
     Kst2DPlotMap *_plotHolderWhileOpeningDocument;
     QTimer _memTimer;

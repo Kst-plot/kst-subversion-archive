@@ -42,7 +42,7 @@ class ExtensionMgr : QObject {
     bool registered(const QString& name) const { return _registry.count(name); }
 
     void loadExtension(const QString& name);
-    void loadExtension(const KService::Ptr& service);
+// xxx    void loadExtension(const KService::Ptr& service);
 
     void setWindow(KstApp *w) { _window = w; }
 

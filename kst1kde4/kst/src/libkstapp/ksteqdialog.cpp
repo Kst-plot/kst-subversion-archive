@@ -28,7 +28,7 @@
 #include "editmultiplewidget.h"
 #include "eparse-eh.h"
 #include "kst2dplot.h"
-#include "kstchoosecolordialog.h"
+// xxx #include "kstchoosecolordialog.h"
 #include "kstdataobjectcollection.h"
 #include "kstdefaultnames.h"
 #include "ksteqdialog.h"
@@ -216,7 +216,7 @@ bool KstEqDialog::newObject() {
     KstVCurvePtr vc;
     QColor color;
 
-    color = KstApp::inst()->chooseColorDlg()->getColorForCurve(eq->vX(), eq->vY());
+// xxx    color = KstApp::inst()->chooseColorDlg()->getColorForCurve(eq->vX(), eq->vY());
     if (!color.isValid()) {
       color = _w->_curveAppearance->color();
     }

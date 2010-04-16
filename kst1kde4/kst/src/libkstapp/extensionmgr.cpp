@@ -18,10 +18,10 @@
 #include <assert.h>
 
 #include <QSettings>
-
+/* xxx
 #include <kparts/componentfactory.h>
 #include <kservicetype.h>
-
+*/
 #include "extensionmgr.h"
 #include "kst.h"
 #include "kstdebug.h"
@@ -92,10 +92,11 @@ KstExtension *ExtensionMgr::extension(const QString& name) const {
 
 
 void ExtensionMgr::loadExtension(const QString& name) {
+/* xxx
   KService::List sl;
   KService::List::const_iterator it;
 
-// xxx  sl = KServiceType::offers("Kst Extension");
+  sl = KServiceType::offers("Kst Extension");
 
   for (it = sl.begin(); it != sl.end(); ++it) {
     KService::Ptr service = *it;
@@ -106,9 +107,10 @@ void ExtensionMgr::loadExtension(const QString& name) {
       return;
     }
   }
+*/
 }
 
-
+/* xxx
 void ExtensionMgr::loadExtension(const KService::Ptr& service) {
   int err = 0;
   QString name = service->property("Name").toString();
@@ -124,7 +126,7 @@ void ExtensionMgr::loadExtension(const KService::Ptr& service) {
 // xxx    KstDebug::self()->log(tr("Error trying to load Kst extension %1.  Code=%2, \"%3\"").arg(name).arg(err).arg(err == KParts::ComponentFactory::ErrNoLibrary ? tr("Library not found [%1].").arg(KLibLoader::self()->lastErrorMessage()) : KLibLoader::self()->lastErrorMessage()), KstDebug::Error);
   }
 }
-
+*/
 
 void ExtensionMgr::updateExtensions() {
   QMap<QString,bool>::ConstIterator i;

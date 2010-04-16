@@ -144,7 +144,7 @@ bool KstFitDialog::createCurve(KstCPluginPtr plugin) {
   }
 
   c_name = KST::suggestCurveName(plugin->tag(), true);
-  color = KstApp::inst()->chooseColorDlg()->getColorForCurve(KstVectorPtr(xVector), KstVectorPtr(yVector));
+// xxx  color = KstApp::inst()->chooseColorDlg()->getColorForCurve(KstVectorPtr(xVector), KstVectorPtr(yVector));
   if (!color.isValid()) {
     color = _w->_curveAppearance->color();
   }

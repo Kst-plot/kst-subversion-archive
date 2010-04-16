@@ -50,6 +50,7 @@ KstCurveDialog::KstCurveDialog(QWidget* parent, const char* name, bool modal, Qt
   _w->setupUi(this);
 
   setMultiple(true);
+
   connect(_w->_xVector, SIGNAL(newVectorCreated(const QString&)), this, SIGNAL(modified()));
   connect(_w->_yVector, SIGNAL(newVectorCreated(const QString&)), this, SIGNAL(modified()));
   connect(_w->_xError, SIGNAL(newVectorCreated(const QString&)), this, SIGNAL(modified()));
@@ -59,7 +60,10 @@ KstCurveDialog::KstCurveDialog(QWidget* parent, const char* name, bool modal, Qt
   connect(_w->_checkBoxXMinusSameAsPlus, SIGNAL(clicked()), this, SLOT(toggledXErrorSame()));
   connect(_w->_checkBoxYMinusSameAsPlus, SIGNAL(clicked()), this, SLOT(toggledYErrorSame()));
 
-  // multiple edit mode
+  //
+  // multiple edit mode...
+  //
+
   connect(_w->_checkBoxXMinusSameAsPlus, SIGNAL(clicked()), this, SLOT(setCheckBoxXMinusSameAsPlusDirty()));
   connect(_w->_checkBoxYMinusSameAsPlus, SIGNAL(clicked()), this, SLOT(setCheckBoxYMinusSameAsPlusDirty()));
   connect(_w->_curveAppearance->_color, SIGNAL(changed(const QColor&)), this, SLOT(setColorDirty()));
@@ -69,7 +73,10 @@ KstCurveDialog::KstCurveDialog(QWidget* parent, const char* name, bool modal, Qt
   connect(_w->_checkBoxIgnoreAutoscale, SIGNAL(clicked()), this, SLOT(setCheckBoxIgnoreAutoscaleDirty()));
   connect(_w->_checkBoxYVectorOffset, SIGNAL(clicked()), this, SLOT(setCheckBoxYVectorOffsetDirty()));
 
-  // for apply button
+  //
+  // for apply button...
+  //
+
   connect(_w->_xVector, SIGNAL(selectionChanged(const QString&)), this, SLOT(wasModifiedApply()));
   connect(_w->_yVector, SIGNAL(selectionChanged(const QString&)), this, SLOT(wasModifiedApply()));
   connect(_w->_xError, SIGNAL(selectionChanged(const QString&)), this, SLOT(wasModifiedApply()));
@@ -310,8 +317,8 @@ bool KstCurveDialog::newObject() {
 
     KstVCurvePtr curve;
     QColor color;
-  
-    color = KstApp::inst()->chooseColorDlg()->getColorForCurve(VX, VY);
+
+// xxx    color = KstApp::inst()->chooseColorDlg()->getColorForCurve(VX, VY);
     if (!color.isValid()) {
       color = _w->_curveAppearance->color();
     }

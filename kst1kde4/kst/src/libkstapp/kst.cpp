@@ -24,26 +24,28 @@
 #include <QFileDialog>
 #include <QInputDialog>
 #include <QMessageBox>
-#include <qpaintdevicemetrics.h>
+// xxx #include <qpaintdevicemetrics.h>
 #include <QMenu>
 #include <QPrinter>
 #include <QPrintDialog> 
 #include <QProgressBar>
 #include <QValidator>
 
-#include "extensiondlg.h"
+// xxx #include "extensiondlg.h"
 #include "extensionmgr.h"
 #include "kst.h"
 #include "kst2dplot.h"
+/* xxx
 #include "kstchangefiledialog.h"
 #include "kstchangenptsdialog.h"
+*/
 #include "kstchoosecolordialog.h"
 #include "kstcurvedifferentiate.h"
 #include "kstcurvedialog.h"
 #include "kstcsddialog.h"
 #include "kstdatamanager.h"
 #include "kstdatanotifier.h"
-#include "kstdatawizard.h"
+// xxx #include "kstdatawizard.h"
 #include "kstdebugdialog.h"
 #include "kstdebugnotifier.h"
 #include "kstdoc.h"
@@ -56,7 +58,7 @@
 #include "kstgraphfiledialog.h"
 #include "ksthsdialog.h"
 #include "kstvvdialog.h"
-#include "kstiface_impl.h"
+// xxx #include "kstiface_impl.h"
 #include "kstimagedialog.h"
 #include "kstlegenddefaults.h"
 #include "kstlogwidget.h"
@@ -66,7 +68,7 @@
 #include "kstplugindialog.h"
 #include "kstbasicdialog.h"
 #include "kstpluginmanager.h"
-#include "kstprintoptionspage.h"
+// xxx #include "kstprintoptionspage.h"
 #include "kstpsddialog.h"
 #include "kstquickstartdialog.h"
 #include "kstsettingsdlg.h"
@@ -74,12 +76,14 @@
 #include "kstvectordefaults.h"
 #include "kstvectorsavedialog.h"
 #include "kstvectordialog.h"
+/* xxx
 #include "kstviewmanager.h"
 #include "kstviewscalarsdialog.h"
 #include "kstviewstringsdialog.h"
 #include "kstviewvectorsdialog.h"
 #include "kstviewmatricesdialog.h"
 #include "kstviewfitsdialog.h"
+*/
 #include "kstviewwidget.h"
 #include "kstviewwindow.h"
 #include "plotmimesource.h"
@@ -114,8 +118,7 @@ KstApp* KstApp::inst() {
 
 static QSettings *qSettingsObject = 0L;
 
-KstApp::KstApp(QWidget *parent, const char *name)
-: QMdiArea(parent, name) {
+KstApp::KstApp(QWidget *parent, const char *name) : QMdiArea(parent) {
   assert(!::inst);
   ::inst = this;
 
@@ -130,7 +133,7 @@ KstApp::KstApp(QWidget *parent, const char *name)
   _stopping = false;
 // xxx  config = kapp->config();
   initStatusBar();
-  setStandardToolBarMenuEnabled(true);
+// xxx  setStandardToolBarMenuEnabled(true);
 
   initDocument();
   KstDebug::self()->setHandler(_doc);
@@ -139,17 +142,17 @@ KstApp::KstApp(QWidget *parent, const char *name)
   _debugDialog = new KstDebugDialog(this);
 // xxx  _dataManager = new KstDataManager(doc, this);
 // xxx  _viewManager = new KstViewManager(doc, this);
-  _viewScalarsDialog = new KstViewScalarsDialog(this);
-  _viewStringsDialog = new KstViewStringsDialog(this);
-  _viewVectorsDialog = new KstViewVectorsDialog(this);
-  _viewMatricesDialog = new KstViewMatricesDialog(this);
-  _viewFitsDialog = new KstViewFitsDialog(this);
-  _changeFileDialog = new KstChangeFileDialog(this);
-  _chooseColorDialog = new KstChooseColorDialog(this);
-  _differentiateCurvesDialog = new KstCurveDifferentiate(this);
-  _changeNptsDialog = new KstChangeNptsDialog(this);
-  _graphFileDialog = new KstGraphFileDialog(this);
-  _vectorSaveDialog = new KstVectorSaveDialog(this);
+// xxx  _viewScalarsDialog = new KstViewScalarsDialog(this);
+// xxx  _viewStringsDialog = new KstViewStringsDialog(this);
+// xxx  _viewVectorsDialog = new KstViewVectorsDialog(this);
+// xxx  _viewMatricesDialog = new KstViewMatricesDialog(this);
+// xxx  _viewFitsDialog = new KstViewFitsDialog(this);
+// xxx  _changeFileDialog = new KstChangeFileDialog(this);
+// xxx  _chooseColorDialog = new KstChooseColorDialog(this);
+// xxx  _differentiateCurvesDialog = new KstCurveDifferentiate(this);
+// xxx  _changeNptsDialog = new KstChangeNptsDialog(this);
+// xxx  _graphFileDialog = new KstGraphFileDialog(this);
+// xxx  _vectorSaveDialog = new KstVectorSaveDialog(this);
   _monochromeDialog = new KstMonochromeDialog(this);
   _quickStartDialog = new KstQuickStartDialog(this, 0 , true);
 
@@ -166,10 +169,10 @@ KstApp::KstApp(QWidget *parent, const char *name)
   // plot Dialog signals...
   //
 
-  connect(_changeFileDialog, SIGNAL(docChanged()), this, SLOT(registerDocChange()));
-  connect(_changeNptsDialog, SIGNAL(docChanged()), this, SLOT(registerDocChange()));
-  connect(_graphFileDialog, SIGNAL(graphFileReq(const QString&,const QString&,int,int,bool,int)), this, SLOT(immediatePrintToPng(const QString&,const QString&,int,int,bool,int)));
-  connect(_graphFileDialog, SIGNAL(graphFileEpsReq(const QString&,int,int,bool,int)), this, SLOT(immediatePrintToEps(const QString&,int,int,bool,int)));
+// xxx  connect(_changeFileDialog, SIGNAL(docChanged()), this, SLOT(registerDocChange()));
+// xxx  connect(_changeNptsDialog, SIGNAL(docChanged()), this, SLOT(registerDocChange()));
+// xxx  connect(_graphFileDialog, SIGNAL(graphFileReq(const QString&,const QString&,int,int,bool,int)), this, SLOT(immediatePrintToPng(const QString&,const QString&,int,int,bool,int)));
+// xxx  connect(_graphFileDialog, SIGNAL(graphFileEpsReq(const QString&,int,int,bool,int)), this, SLOT(immediatePrintToEps(const QString&,int,int,bool,int)));
 
   //
   // data manager signals...
@@ -211,8 +214,8 @@ KstApp::~KstApp() {
   KstDataObject::cleanupForExit(); // must be before deletions
   delete _updateThread;
   _updateThread = 0L;
-  delete _dcopIface;
-  _dcopIface = 0L;
+// xxx  delete _dcopIface;
+// xxx  _dcopIface = 0L;
   ::inst = 0L;
   if (_dataSourceConfig) {
     _dataSourceConfig->sync();
@@ -1388,7 +1391,6 @@ void KstApp::immediatePrintActiveWindowToEps(const QString& filename, int width,
 
 
 void KstApp::slotFilePrint() {
-
   QList<QMdiSubWindow*> windows;
   QList<QMdiSubWindow*>::const_iterator i;
   Kst2DPlotPtr rc;
@@ -1561,11 +1563,11 @@ void KstApp::slotFilePrint() {
     }
     paint.end();
     deleteIterator(it);
+*/
     slotUpdateStatusMsg(QObject::tr("Ready"));
   } else {
     slotUpdateStatusMsg(QObject::tr("Nothing to print"));
   }
-*/
 }
 
 
@@ -2016,62 +2018,62 @@ void KstApp::showViewManager() {
 
 
 void KstApp::showViewScalarsDialog() {
-  _viewScalarsDialog->showViewScalarsDialog();
+// xxx  _viewScalarsDialog->showViewScalarsDialog();
 }
 
 
 void KstApp::showViewStringsDialog() {
-  _viewStringsDialog->showViewStringsDialog();
+// xxx  _viewStringsDialog->showViewStringsDialog();
 }
 
 
 void KstApp::showViewVectorsDialog() {
-  _viewVectorsDialog->showViewVectorsDialog();
+// xxx  _viewVectorsDialog->showViewVectorsDialog();
 }
 
 
 void KstApp::showViewVectorsDialog(const QString &vector) {
-  _viewVectorsDialog->showViewVectorsDialog(vector);
+// xxx  _viewVectorsDialog->showViewVectorsDialog(vector);
 }
 
 
 void KstApp::showViewMatricesDialog() {
-  _viewMatricesDialog->showViewMatricesDialog();
+// xxx  _viewMatricesDialog->showViewMatricesDialog();
 }
 
 
 void KstApp::showViewMatricesDialog(const QString &matrix) {
-  _viewMatricesDialog->showViewMatricesDialog(matrix);
+// xxx  _viewMatricesDialog->showViewMatricesDialog(matrix);
 }
 
 
 void KstApp::showViewFitsDialog() {
-  _viewFitsDialog->showViewFitsDialog();
+// xxx  _viewFitsDialog->showViewFitsDialog();
 }
 
 
 void KstApp::showChangeFileDialog() {
-  _changeFileDialog->showChangeFileDialog();
+// xxx  _changeFileDialog->showChangeFileDialog();
 }
 
 
 void KstApp::showChooseColorDialog() {
-  _chooseColorDialog->showChooseColorDialog();
+// xxx  _chooseColorDialog->showChooseColorDialog();
 }
 
 
 void KstApp::showDifferentiateCurvesDialog() {
-  _differentiateCurvesDialog->showCurveDifferentiate();
+// xxx  _differentiateCurvesDialog->showCurveDifferentiate();
 }
 
 
 void KstApp::showChangeNptsDialog() {
-  _changeNptsDialog->showChangeNptsDialog();
+// xxx  _changeNptsDialog->showChangeNptsDialog();
 }
 
 
 void KstApp::showGraphFileDialog() {
-  _graphFileDialog->show_I();
+// xxx  _graphFileDialog->show_I();
 }
 
 
@@ -2112,6 +2114,7 @@ void KstApp::updateDataNotifier() {
 
 
 void KstApp::updateDataDialogs(bool dm, bool vm) {
+/* xxx
   _actionViewScalarsDialog->setEnabled(_viewScalarsDialog->hasContent());
   _actionViewStringsDialog->setEnabled(_viewStringsDialog->hasContent());
   _actionViewVectorsDialog->setEnabled(_viewVectorsDialog->hasContent());
@@ -2133,7 +2136,7 @@ void KstApp::updateDataDialogs(bool dm, bool vm) {
   if (!_viewFitsDialog->isHidden()) {
     _viewFitsDialog->updateViewFitsDialog();
   }
-
+*/
   if (dm) {
 // xxx    _dataManager->updateContents();
   }

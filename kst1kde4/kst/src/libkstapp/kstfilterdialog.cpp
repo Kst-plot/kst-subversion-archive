@@ -230,11 +230,11 @@ bool KstFilterDialog::createCurve(KstCPluginPtr plugin) {
 
   plugin->setDirty();
   c_name = KST::suggestCurveName(plugin->tag(), true);
-  color = KstApp::inst()->chooseColorDlg()->getColorForCurve(KstVectorPtr(xVector), KstVectorPtr(yVector));
+// xxx  color = KstApp::inst()->chooseColorDlg()->getColorForCurve(xVector, yVector);
   if (!color.isValid()) {
     color = _w->_curveAppearance->color();
   }
-  fit = new KstVCurve(c_name, KstVectorPtr(xVector), KstVectorPtr(yVector), KstVectorPtr(0L), KstVectorPtr(0L), KstVectorPtr(0L), KstVectorPtr(0L), color);
+  fit = new KstVCurve(c_name, xVector, yVector, KstVectorPtr(0L), KstVectorPtr(0L), KstVectorPtr(0L), KstVectorPtr(0L), color);
 
   fit->setHasPoints(_w->_curveAppearance->showPoints());
   fit->setHasLines(_w->_curveAppearance->showLines());
