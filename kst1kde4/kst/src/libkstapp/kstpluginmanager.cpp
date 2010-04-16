@@ -125,7 +125,7 @@ void KstPluginManager::remove() {
   
     if (PluginCollection::self()->isLoaded(item->text(COLUMN_NAME))) {
       PluginCollection::self()->unloadPlugin(item->text(COLUMN_NAME));
-  // xxx    item->setPixmap(COLUMN_LOADED, locate("data", "kst/pics/no.png"));
+    item->setIcon(COLUMN_LOADED, locate("data", "kst/pics/no.png"));
     }
   
     PluginCollection::self()->deletePlugin(PluginCollection::self()->pluginNameList()[item->text(COLUMN_NAME)]);
@@ -163,7 +163,7 @@ void KstPluginManager::reloadList() {
     i = new QListWidgetItem(_pluginList, (*it)._readableName, QString::null,
             (*it)._description, (*it)._version, (*it)._author, (*it)._name, path);
     if (loadedPluginList.contains((*it)._name)) {
-      i->setPixmap(COLUMN_LOADED, locate("data", "kst/pics/yes.png"));
+      i->setIcon(COLUMN_LOADED, locate("data", "kst/pics/yes.png"));
     }
 */
   }

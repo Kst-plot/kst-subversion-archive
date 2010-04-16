@@ -162,7 +162,7 @@ void KstLogWidget::generateImages() {
   painter.drawEllipse(margin, margin, height - margin * 2, height - margin * 2);
   painter.end();
   pixmap.setMask(pixmap.createHeuristicMask(true));
-// xxx  _msrc.setPixmap("DebugNotice", pixmap);
+// xxx  _msrc.setIcon("DebugNotice", pixmap);
 
   pixmap = QPixmap(height, height);
   pixmap.fill();
@@ -174,7 +174,7 @@ void KstLogWidget::generateImages() {
   painter.drawPolygon(polygon);
   painter.end();
   pixmap.setMask(pixmap.createHeuristicMask(true));
-// xxx  _msrc.setPixmap("DebugWarning", pixmap);
+// xxx  _msrc.setIcon("DebugWarning", pixmap);
 
   pixmap = QPixmap(height, height);
   pixmap.fill();
@@ -192,7 +192,7 @@ void KstLogWidget::generateImages() {
   painter.drawPolygon(polygon);
   painter.end();
   pixmap.setMask(pixmap.createHeuristicMask(true));
-// xxx  _msrc.setPixmap("DebugError", pixmap);
+// xxx  _msrc.setIcon("DebugError", pixmap);
 
   pixmap = QPixmap(height, height);
   pixmap.fill();
@@ -203,7 +203,7 @@ void KstLogWidget::generateImages() {
       (height - 2 * margin) / 3, (height - 2 * margin) / 3);
   painter.end();
   pixmap.setMask(pixmap.createHeuristicMask(true));
-// xxx  _msrc.setPixmap("DebugDebug", pixmap);
+// xxx  _msrc.setIcon("DebugDebug", pixmap);
 }
 
 #include "kstlogwidget.moc"

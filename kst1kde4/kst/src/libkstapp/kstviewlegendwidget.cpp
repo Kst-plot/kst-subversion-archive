@@ -42,13 +42,13 @@ KstViewLegendWidget::KstViewLegendWidget(QWidget* parent, const char* name, Qt::
   connect(_up, SIGNAL(clicked()), DisplayedCurveList, SIGNAL(changed()));
   connect(_down, SIGNAL(clicked()), DisplayedCurveList, SIGNAL(changed()));
 
-// xxx  _up->setPixmap(BarIcon("up"));
+  _up->setIcon(BarIcon("up"));
   _up->setEnabled(false);
-// xxx  _down->setPixmap(BarIcon("down"));
+  _down->setIcon(BarIcon("down"));
   _down->setEnabled(false);
-// xxx  _add->setPixmap(BarIcon("forward"));
+  _add->setIcon(BarIcon("forward"));
   _add->setEnabled(false);
-// xxx  _remove->setPixmap(BarIcon("back"));
+  _remove->setIcon(BarIcon("back"));
   _remove->setEnabled(false);
 
   _up->setToolTip(QObject::tr("Shortcut: Alt+Up"));
