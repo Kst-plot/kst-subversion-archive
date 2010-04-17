@@ -17,12 +17,13 @@
 
 #ifndef DIALOGLAUNCHER_H
 #define DIALOGLAUNCHER_H
+
 #include <QString>
+#include <QWidget>
+
 #include "kst_export.h"
 
-class QWidget;
-
-KST_EXPORT class KstDialogs {
+class KST_EXPORT KstDialogs {
   protected:
     static KstDialogs *_self;
     KstDialogs();

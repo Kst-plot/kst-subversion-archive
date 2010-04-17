@@ -15,13 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-// include files for Qt
 #include <QCheckBox>
 
-// include files for KDE
-// xxx #include <kiconloader.h>
-
-// application specific includes
 #include "kst_export.h"
 #include "kstviewlegendwidget.h"
 
@@ -42,13 +37,13 @@ KstViewLegendWidget::KstViewLegendWidget(QWidget* parent, const char* name, Qt::
   connect(_up, SIGNAL(clicked()), DisplayedCurveList, SIGNAL(changed()));
   connect(_down, SIGNAL(clicked()), DisplayedCurveList, SIGNAL(changed()));
 
-  _up->setIcon(BarIcon("up"));
+// xxx  _up->setIcon(BarIcon("up"));
   _up->setEnabled(false);
-  _down->setIcon(BarIcon("down"));
+// xxx  _down->setIcon(BarIcon("down"));
   _down->setEnabled(false);
-  _add->setIcon(BarIcon("forward"));
+// xxx  _add->setIcon(BarIcon("forward"));
   _add->setEnabled(false);
-  _remove->setIcon(BarIcon("back"));
+// xxx  _remove->setIcon(BarIcon("back"));
   _remove->setEnabled(false);
 
   _up->setToolTip(QObject::tr("Shortcut: Alt+Up"));

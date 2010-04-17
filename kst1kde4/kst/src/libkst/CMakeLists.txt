@@ -21,6 +21,7 @@ set(kstbase_LIB_SRCS
     rwlock.cpp
     kstmath.cpp
     kstdateparser.cpp
+    ksttimezones.cpp
     kstscalar.cpp
 #   $(PROCPS_COPY)
     kststring.cpp

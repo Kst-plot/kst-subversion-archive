@@ -80,7 +80,7 @@ void KstChooseColorDialog::updateChooseColorDialog() {
     //
 
     QLineEdit* dsName = new QLineEdit(colorFrame);
-    KColorCombo* dsColor = new KColorCombo(colorFrame);
+// xxx    KColorCombo* dsColor = new KColorCombo(colorFrame);
     QMap<QString, QColor>::const_iterator itColor;
 
     dsName->setReadOnly(true);
@@ -89,10 +89,10 @@ void KstChooseColorDialog::updateChooseColorDialog() {
     _lineEdits.push_back(dsName);
     dsName->show();
 
-    dsColor->setColor(KstColorSequence::next());
-    _grid->addWidget(dsColor, i, 1);
-    _colorCombos.push_back(dsColor);
-    dsColor->show();
+// xxx    dsColor->setColor(KstColorSequence::next());
+// xxx    _grid->addWidget(dsColor, i, 1);
+// xxx    _colorCombos.push_back(dsColor);
+// xxx    dsColor->show();
 
     itColor = _fileColors.find(*it);
     if (itColor != _fileColors.end()) {
@@ -100,13 +100,13 @@ void KstChooseColorDialog::updateChooseColorDialog() {
       // set the color to the existing value, if present...
       //
 
-      dsColor->setColor(*itColor);
+// xxx      dsColor->setColor(*itColor);
     } else {
       //
       // else assign a custom color...
       //
 
-      dsColor->setColor(QColor(0x11, 0x22, 0x33));
+// xxx      dsColor->setColor(QColor(0x11, 0x22, 0x33));
     }
 
     i++;
@@ -197,7 +197,7 @@ QColor KstChooseColorDialog::getColorForFile(const QString &fileName) {
 
   for (fn_iter = _lineEdits.begin(); fn_iter != _lineEdits.end(); ++fn_iter) {
     if (fileName == (*fn_iter)->text()) {
-      return (*kc_iter)->color();
+// xxx      return (*kc_iter)->color();
     }
     ++kc_iter;
   }

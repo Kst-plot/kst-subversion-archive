@@ -20,6 +20,8 @@
 
 #include <QComboBox>
 
+#include "kst_export.h"
+
 //
 // This class is a wrapper around KComboBox that does something different in 
 //  read only mode... basically, we act like a readwrite combo with one important
@@ -30,7 +32,7 @@
 //  for easy searching through large combo lists.
 //
 
-class KstComboBox : public QComboBox {
+class KST_EXPORT KstComboBox : public QComboBox {
   Q_OBJECT
   public:
     KstComboBox(QWidget *parent=0, const char *name=0);

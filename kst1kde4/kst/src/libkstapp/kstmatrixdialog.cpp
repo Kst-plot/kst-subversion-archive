@@ -229,7 +229,7 @@ void KstMatrixDialog::fillFieldsForRMatrixEdit() {
       if (it != KST::dataSourceList.end()) {
         tf = *it;
         tf->readLock();
-// xxx        _w->_field->insertStringList(tf->matrixList());
+        _w->_field->insertItems(0, tf->matrixList());
 /* xxx
         if (_fieldCompletion) {
           _fieldCompletion->insertItems(tf->matrixList());
@@ -240,7 +240,7 @@ void KstMatrixDialog::fillFieldsForRMatrixEdit() {
         QStringList list;
 
 // xxx        list = KstDataSource::matrixListForSource(_w->_fileName->url());
-// xxx        _w->_field->insertStringList(list);
+        _w->_field->insertItems(0, list);
 /* xxx
         if (_fieldCompletion) {
           _fieldCompletion->insertItems(list);
@@ -1042,7 +1042,7 @@ void KstMatrixDialog::updateCompletion() {
 
   _w->_configure->setEnabled(_configWidget);
 
-	_w->_field->setCompleter(_fieldCompletion);
+// xxx  _fieldCompletion = _w->_field->completionObject();
 
   _w->_field->insertItems(0, list);
 /* xxx

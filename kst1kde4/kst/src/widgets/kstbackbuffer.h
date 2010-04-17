@@ -21,7 +21,9 @@
 #include <QPainter>
 #include <QPixmap>
 
-class KstBackBuffer {
+#include "kst_export.h"
+
+class KST_EXPORT KstBackBuffer {
   public:
     KstBackBuffer(int depth = -1);
     ~KstBackBuffer();

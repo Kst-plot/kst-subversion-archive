@@ -216,14 +216,14 @@
          </widget>
         </item>
         <item>
-         <widget class="KDoubleNumInput" name="_smartThresholdValue">
+         <widget class="QDoubleSpinBox" name="_smartThresholdValue">
           <property name="value">
            <double>0.500000000000000</double>
           </property>
-          <property name="minValue" stdset="0">
+          <property name="minimum" stdset="0">
            <number>0</number>
           </property>
-          <property name="maxValue" stdset="0">
+          <property name="maximum" stdset="0">
            <number>45</number>
           </property>
          </widget>
@@ -401,11 +401,6 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
-  <customwidget>
-   <class>KDoubleNumInput</class>
-   <extends>QWidget</extends>
-   <header>knuminput.h</header>
-  </customwidget>
   <customwidget>
    <class>ColorPaletteWidget</class>
    <extends>QWidget</extends>

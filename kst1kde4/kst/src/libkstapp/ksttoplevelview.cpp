@@ -19,6 +19,7 @@
 #include <stdlib.h>
 #include <math.h>
 
+#include <QInputDialog>
 #include <QMessageBox>
 #include <QMetaProperty>
 #include <QTextDocument>
@@ -2016,32 +2017,16 @@ void KstTopLevelView::cleanupDefault() {
 
 void KstTopLevelView::cleanupCustom() {
   bool ok = false;
+  int numCols;
 
-#if KDE_VERSION >= KDE_MAKE_VERSION(3,3,0)
-  int numCols = KInputDialog::getInteger(QObject::tr("Number of Columns"), 
-                                         QObject::tr("Select number of columns:"), 
-                                         int(sqrt(_children.count())), 
-                                         1, _children.count(), 1, &ok, 0L);
+  numCols = QInputDialog::getInt(widget(),
+                                 QObject::tr("Number of Columns"), 
+                                 QObject::tr("Select number of columns:"), 
+                                 int(sqrt(_children.count())), 
+                                 1, _children.count(), 1, &ok);
   if (ok) {
     cleanup(numCols);
   }
-#else
-  for (;;) {
-    QString numColsString = KLineEditDlg::getText(QObject::tr("Enter number of columns:"), QObject::tr("Number of Columns"), &ok, 0L);
-    if (ok) {
-      unsigned int numCols = numColsString.toInt();
-      if (numCols < 1 || numCols > _children.count()) {
-        QMessageBox::warning(KstApp::inst(), QObject::tr("Kst"), QObject::tr("Enter a number of columns between 1 and %d").arg(_selectionList.count()));
-      } else {
-        cleanup(numCols);
-
-        break;
-      }
-    } else {
-      break;
-    }
-  }
-#endif
 }
 
 
@@ -2077,8 +2062,9 @@ QSize KstTopLevelView::averageChildSize() const {
 
 
 void KstTopLevelView::saveDefaults(KstViewObjectPtr object) {
-  KstGfxMouseHandler *handler = handlerForObject(object->type());
+  KstGfxMouseHandler *handler;
 
+  handler = handlerForObject(object->type());
   if (handler) {
     handler->saveDefaults(object);
   }
@@ -2086,8 +2072,9 @@ void KstTopLevelView::saveDefaults(KstViewObjectPtr object) {
 
 
 void KstTopLevelView::restoreDefaults(KstViewObjectPtr object) {
-  KstGfxMouseHandler *handler = handlerForObject(object->type());
+  KstGfxMouseHandler *handler;
 
+  handler = handlerForObject(object->type());
   if (handler) {
     handler->restoreDefaults();
   }
@@ -2108,8 +2095,9 @@ void KstTopLevelView::deleteSelectedObjects() {
   KstViewObjectList::iterator i;
   
   for (i = _selectionList.begin(); i != _selectionList.end(); ++i) {
-    KstViewObjectPtr selection = *i;
+    KstViewObjectPtr selection;
 
+    selection = *i;
     if (selection && selection->parent()) {
       selection->parent()->invalidateClipRegion();
       selection->parent()->removeChild(selection);
@@ -2217,14 +2205,15 @@ QRect KstTopLevelView::correctHeightForRatio(const QRect& oldRect, double ratio,
 
 
 KstGfxMouseHandler *KstTopLevelView::handlerForObject(const QString& objType) {
-  QMap<QString,KstGfxMouseHandler*>::Iterator i = _handlers.find(objType);
+  QMap<QString,KstGfxMouseHandler*>::iterator i;
+  KstGfxMouseHandler *rc;
 
+  i = _handlers.find(objType);
   if (i != _handlers.end()) {
     return *i;
   }
 
-  KstGfxMouseHandler *rc = KstViewObjectFactory::self()->createHandlerFor(objType);
-
+  rc = KstViewObjectFactory::self()->createHandlerFor(objType);
   if (rc) {
     _handlers[objType] = rc;
   }
@@ -2250,8 +2239,11 @@ Kst2DPlotPtr KstTopLevelView::createPlotObject(const QString& name, bool doClean
     } else {
       plot->resize(size());
     }
-    // First look at the overall clip mask.  If there are gaps, take the
-    // biggest one and use that location.
+
+    //
+    // first look at the overall clip mask.  
+    //  If there are gaps, take the biggest one and use that location...
+    //
     QRegion r = clipRegion();
     QVector<QRect> rects = r.rects();
     QVector<QRect>::const_iterator i;
@@ -2361,6 +2353,5 @@ KstGfxMouseHandler *handler_KstTopLevelView() {
 
 KST_REGISTER_VIEW_OBJECT(TopLevelView, create_KstTopLevelView, handler_KstTopLevelView)
 }
-
 
 #include "ksttoplevelview.moc"

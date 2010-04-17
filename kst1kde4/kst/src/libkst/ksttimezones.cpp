@@ -17,18 +17,16 @@
    Boston, MA 02110-1301, USA.
 */
 
-#include <config.h>
-
 #include "ksttimezones.h"
-#include <kmdcodec.h>
-#include <kprocess.h>
-#include <kstringhandler.h>
-#include <ktempfile.h>
 
 #include <qdatetime.h>
 #include <qfile.h>
+#include <qiodevice.h>
+#include <qprocess.h>
 #include <qregexp.h>
 #include <qstringlist.h>
+#include <qtemporaryfile.h>
+#include <qtextcodec.h>
 #include <qtextstream.h>
 
 #include <cerrno>
@@ -38,48 +36,6 @@
 #include <ctime>
 
 #define UTC_ZONE "UTC"
-
-#ifndef HAVE_UNSETENV
-#ifdef HAVE_ALLOCA_H
-#include <alloca.h>
-#endif
-
-#include <string.h>
-#include <stdlib.h>
-#include <errno.h>
-#include <unistd.h>
-
-#ifndef environ
-extern char ** environ;
-#endif
-
-void unsetenv(const char *name)
-{
-  size_t len;
-  char **ep;
-
-  if (name == NULL || *name == '\0' || strchr (name, '=') != NULL) {
-    errno = EINVAL;
-    return;
-  }
-
-  len = strlen (name);
-  ep = environ;
-  while (*ep != NULL) {
-    if (!strncmp (*ep, name, len) && (*ep)[len] == '=') {
-      /* Found it.  Remove this pointer by moving later ones back.  */
-      char **dp = ep;
-      do {
-        dp[0] = dp[1];
-      } while (*dp++);
-      /* Continue the loop in case NAME appears again.  */
-    } else {
-      ++ep;
-    }
-  }
-}
-
-#endif /* !HAVE_UNSETENV */
 
 /**
  * Find out if the given standard (e.g. "GMT") and daylight savings time
@@ -278,15 +234,15 @@ QDateTime KstTimezone::convert(const KstTimezone *newZone, const QDateTime &date
     char *originalZone = ::getenv("TZ");
 
     // Convert the given localtime to UTC.
-    ::putenv(strdup(QString("TZ=:").append(m_name).utf8()));
+    ::putenv(strdup(QString("TZ=:").append(m_name).toUtf8()));
     tzset();
     unsigned utc = dateTime.toTime_t();
 
     // Set the timezone and convert UTC to localtime.
-    ::putenv(strdup(QString("TZ=:").append(newZone->name()).utf8()));
+    ::putenv(strdup(QString("TZ=:").append(newZone->name()).toUtf8()));
     tzset();
     QDateTime remoteTime;
-    remoteTime.setTime_t(utc, Qt::LocalTime);
+    remoteTime.setTime_t(utc);
 
     // Now restore things
     if (!originalZone)
@@ -295,7 +251,7 @@ QDateTime KstTimezone::convert(const KstTimezone *newZone, const QDateTime &date
     }
     else
     {
-        ::putenv(strdup(QString("TZ=").append(originalZone).utf8()));
+        ::putenv(strdup(QString("TZ=").append(originalZone).toUtf8()));
     }
     tzset();
     return remoteTime;
@@ -329,12 +285,12 @@ int KstTimezone::offset(Qt::TimeSpec basisSpec) const
     char *originalZone = ::getenv("TZ");
 
     // Get the time in the current timezone.
-    QDateTime basisTime = QDateTime::currentDateTime(basisSpec);
+    QDateTime basisTime = QDateTime::currentDateTime();// xxx basisSpec);
 
     // Set the timezone and find out what time it is there compared to the basis.
-    ::putenv(strdup(QString("TZ=:").append(m_name).utf8()));
+    ::putenv(strdup(QString("TZ=:").append(m_name).toUtf8()));
     tzset();
-    QDateTime remoteTime = QDateTime::currentDateTime(Qt::LocalTime);
+    QDateTime remoteTime = QDateTime::currentDateTime();// xxx Qt::LocalTime);
     int offset = remoteTime.secsTo(basisTime);
 
     // Round things off nicely if necessary
@@ -355,7 +311,7 @@ int KstTimezone::offset(Qt::TimeSpec basisSpec) const
     }
     else
     {
-        ::putenv(strdup(QString("TZ=").append(originalZone).utf8()));
+        ::putenv(strdup(QString("TZ=").append(originalZone).toUtf8()));
     }
     tzset();
 
@@ -386,9 +342,12 @@ KstTimezones::KstTimezones() :
     m_zones(0),
     d(0)
 {
+    KSharedPtr<KstTimezoneSource> db;
+
+    db = (KstTimezoneSource*)new DummySource();
     // Create the database (and resolve m_zoneinfoDir!).
     allZones();
-    m_UTC = new KstTimezone(new DummySource(), UTC_ZONE);
+    m_UTC = new KstTimezone(db, UTC_ZONE);
     add(m_UTC);
 }
 
@@ -402,7 +361,7 @@ KstTimezones::~KstTimezones()
     {
         for (ZoneMap::ConstIterator it = m_zones->begin(); it != m_zones->end(); ++it)
         {
-            delete it.data();
+            delete *it;
         }
     }
     delete m_zones;
@@ -428,16 +387,16 @@ const KstTimezones::ZoneMap KstTimezones::allZones()
     // For Unix its all easy except knowing where to look. Try the LSB location first.
     QFile f;
     m_zoneinfoDir = "/usr/share/zoneinfo";
-    f.setName(m_zoneinfoDir + "/zone.tab");
-    if (!f.open(IO_ReadOnly))
+    f.setFileName(m_zoneinfoDir + "/zone.tab");
+    if (!f.open(QIODevice::ReadOnly))
     {
         m_zoneinfoDir = "/usr/lib/zoneinfo";
-        f.setName(m_zoneinfoDir + "/zone.tab");
-        if (!f.open(IO_ReadOnly))
+        f.setFileName(m_zoneinfoDir + "/zone.tab");
+        if (!f.open(QIODevice::ReadOnly))
         {
             m_zoneinfoDir = ::getenv("TZDIR");
-            f.setName(m_zoneinfoDir + "/zone.tab");
-            if (m_zoneinfoDir.isEmpty() || !f.open(IO_ReadOnly))
+            f.setFileName(m_zoneinfoDir + "/zone.tab");
+            if (m_zoneinfoDir.isEmpty() || !f.open(QIODevice::ReadOnly))
             {
                 // Solaris support. Synthesise something that looks like a zone.tab.
                 //
@@ -446,18 +405,21 @@ const KstTimezones::ZoneMap KstTimezones::allZones()
                 // where the country code is set to "??" and the lattitude/longitude
                 // values are dummies.
                 m_zoneinfoDir = "/usr/share/lib/zoneinfo";
-                KTempFile temp;
-                KShellProcess reader;
-                reader << "/bin/grep" << "-h" << "^Zone" << m_zoneinfoDir << "/src/*" << temp.name() << "|" <<
-                    "/bin/awk" << "'{print \"??\\t+9999+99999\\t\" $2}'";
+                QTemporaryFile temp;
+                QProcess reader;
+
+// xxx                reader << "/bin/grep" << "-h" << "^Zone" << m_zoneinfoDir << "/src/*" << temp.fileName() << "|" <<
+// xxx                    "/bin/awk" << "'{print \"??\\t+9999+99999\\t\" $2}'";
                 // Note the use of blocking here...it is a trivial amount of data!
+/* xxx
                 temp.close();
                 reader.start(KProcess::Block);
-                f.setName(temp.name());
-                if (!temp.status() || !f.open(IO_ReadOnly))
+                f.setFileName(temp.fileName());
+                if (!temp.status() || !f.open(QIODevice::ReadOnly))
                 {
                     return *m_zones;
                 }
+*/
             }
         }
     }
@@ -472,14 +434,14 @@ const KstTimezones::ZoneMap KstTimezones::allZones()
         QString line = str.readLine();
         if (line.isEmpty() || '#' == line[0])
             continue;
-        QStringList tokens = KStringHandler::perlSplit(lineSeparator, line, 4);
+        QStringList tokens = line.split(lineSeparator);
         if (tokens.count() < 3)
         {
             continue;
         }
 
         // Got three tokens. Now check for two ordinates plus first one is "".
-        QStringList ordinates = KStringHandler::perlSplit(ordinateSeparator, tokens[1], 2);
+        QStringList ordinates = tokens[1].split(ordinateSeparator);
         if (ordinates.count() < 2)
         {
             continue;
@@ -550,40 +512,46 @@ const KstTimezone *KstTimezones::local()
 
     // Try to match /etc/localtime against the list of zoneinfo files.
     QFile f;
-    f.setName("/etc/localtime");
-    if (f.open(IO_ReadOnly))
+    f.setFileName("/etc/localtime");
+    if (f.open(QIODevice::ReadOnly))
     {
+/* xxx
         // Compute the MD5 sum of /etc/localtime.
         KMD5 context("");
         context.reset();
         context.update(f);
-        QIODevice::Offset referenceSize = f.size();
-        QString referenceMd5Sum = context.hexDigest();
+*/
+        qint64 referenceSize = f.size();
+// xxx        QString referenceMd5Sum = context.hexDigest();
         f.close();
         if (!m_zoneinfoDir.isEmpty())
         {
             // Compare it with each zoneinfo file.
             for (ZoneMap::Iterator it = m_zones->begin(); it != m_zones->end(); ++it)
             {
-                KstTimezone *zone = it.data();
-                f.setName(m_zoneinfoDir + '/' + zone->name());
-                if (f.open(IO_ReadOnly))
+                KstTimezone *zone = *it;
+                f.setFileName(m_zoneinfoDir + '/' + zone->name());
+                if (f.open(QIODevice::ReadOnly))
                 {
-                    QIODevice::Offset candidateSize = f.size();
+                    qint64 candidateSize = f.size();
                     QString candidateMd5Sum;
                     if (candidateSize == referenceSize)
                     {
+/* xxx
                         // Only do the heavy lifting for file sizes which match.
                         context.reset();
                         context.update(f);
                         candidateMd5Sum = context.hexDigest();
+*/
                     }
                     f.close();
+/* xxx
                     if (candidateMd5Sum == referenceMd5Sum)
                     {
                         local = zone;
                         break;
                     }
+*/
                 }
             }
         }
@@ -593,15 +561,15 @@ const KstTimezone *KstTimezones::local()
 
     // BSD support.
     QString fileZone;
-    f.setName("/etc/timezone");
-    if (!f.open(IO_ReadOnly))
+    f.setFileName("/etc/timezone");
+    if (!f.open(QIODevice::ReadOnly))
     {
         // Solaris support using /etc/default/init.
-        f.setName("/etc/default/init");
-        if (f.open(IO_ReadOnly))
+        f.setFileName("/etc/default/init");
+        if (f.open(QIODevice::ReadOnly))
         {
             QTextStream ts(&f);
-            ts.setEncoding(QTextStream::Latin1);
+            ts.setCodec(QTextCodec::codecForName("ISO-8859-1"));
 
             // Read the last line starting "TZ=".
             while (!ts.atEnd())
@@ -620,7 +588,7 @@ const KstTimezone *KstTimezones::local()
     else
     {
         QTextStream ts(&f);
-        ts.setEncoding(QTextStream::Latin1);
+        ts.setCodec(QTextCodec::codecForName("ISO-8859-1"));
 
         // Read the first line.
         if (!ts.atEnd())
@@ -644,8 +612,8 @@ const KstTimezone *KstTimezones::local()
         int bestOffset = INT_MAX;
         for (ZoneMap::Iterator it = m_zones->begin(); it != m_zones->end(); ++it)
         {
-            KstTimezone *zone = it.data();
-            int candidateOffset = QABS(zone->offset(Qt::LocalTime));
+            KstTimezone *zone = *it;
+            int candidateOffset = labs(zone->offset(Qt::LocalTime));
             if (zone->parse(matcher) && matcher.test() && (candidateOffset < bestOffset))
             {
                 bestOffset = candidateOffset;
@@ -664,7 +632,7 @@ const KstTimezone *KstTimezones::zone(const QString &name)
         return m_UTC;
     ZoneMap::ConstIterator it = m_zones->find(name);
     if (it != m_zones->end())
-        return it.data();
+        return *it;
 
     // Error.
     return 0;
@@ -727,34 +695,34 @@ QString KstTimezoneSource::db()
 bool KstTimezoneSource::parse(const QString &zone, KstTimezoneDetails &dataReceiver) const
 {
     QFile f(m_db + '/' + zone);
-    if (!f.open(IO_ReadOnly))
+    if (!f.open(QIODevice::ReadOnly))
     {
         return false;
     }
 
     // Structures that represent the zoneinfo file.
-    Q_UINT8 T, z, i_, f_;
+    quint8 T, z, i_, f_;
     struct
     {
-        Q_UINT32 ttisgmtcnt;
-        Q_UINT32 ttisstdcnt;
-        Q_UINT32 leapcnt;
-        Q_UINT32 timecnt;
-        Q_UINT32 typecnt;
-        Q_UINT32 charcnt;
+        quint32 ttisgmtcnt;
+        quint32 ttisstdcnt;
+        quint32 leapcnt;
+        quint32 timecnt;
+        quint32 typecnt;
+        quint32 charcnt;
     } tzh;
-    Q_UINT32 transitionTime;
-    Q_UINT8 localTimeIndex;
+    quint32 transitionTime;
+    quint8 localTimeIndex;
     struct
     {
-        Q_INT32 gmtoff;
-        Q_INT8 isdst;
-        Q_UINT8 abbrind;
+        qint32 gmtoff;
+        qint8 isdst;
+        quint8 abbrind;
     } tt;
-    Q_UINT32 leapTime;
-    Q_UINT32 leapSeconds;
-    Q_UINT8 isStandard;
-    Q_UINT8 isUTC;
+    quint32 leapTime;
+    quint32 leapSeconds;
+    quint8 isStandard;
+    quint8 isUTC;
 
     QDataStream str(&f);
     str >> T >> z >> i_ >> f_;
@@ -785,8 +753,8 @@ bool KstTimezoneSource::parse(const QString &zone, KstTimezoneDetails &dataRecei
     {
         return false;
     }
-    QByteArray array(tzh.charcnt);
-    str.readRawBytes(array.data(), array.size());
+    QByteArray array(tzh.charcnt, '\0');
+    str.readRawData(array.data(), array.size());
     char *abbrs = array.data();
     if (abbrs[tzh.charcnt - 1] != 0)
     {

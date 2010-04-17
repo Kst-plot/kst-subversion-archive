@@ -20,7 +20,7 @@
 #include "kstvector.h"
 #include "kst_export.h"
 
-class KstAVector : public KstVector {
+class KST_EXPORT KstAVector : public KstVector {
  public:
   KST_EXPORT KstAVector(const QDomElement &e);
   KST_EXPORT KstAVector(int n, KstObjectTag tag);
