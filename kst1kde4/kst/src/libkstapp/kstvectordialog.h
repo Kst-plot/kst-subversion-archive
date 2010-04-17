@@ -18,6 +18,8 @@
 #ifndef KSTVECTORDIALOGI_H
 #define KSTVECTORDIALOGI_H
 
+#include <QCompleter>
+
 #include "kstdatadialog.h"
 #include "kst_export.h"
 #include "ui_vectordialogwidget.h"
@@ -73,7 +75,7 @@ class KST_EXPORT KstVectorDialog : public KstDataDialog {
 
     static QPointer<KstVectorDialog> _inst;
     static const QString& defaultTag;
-// xxx    QPointer<KCompletion> _fieldCompletion;
+    QPointer<QCompleter> _fieldCompletion;
     QPointer<KstDataSourceConfigWidget> _configWidget;
     Ui::VectorDialogWidget *_w;
     bool _inTest : 1;

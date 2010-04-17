@@ -247,7 +247,7 @@ void KstVectorDialog::updateCompletion() {
 
   _w->_configure->setEnabled(_configWidget);
   _w->_pushButtonHierarchy->setEnabled(_hierarchy);
-// xxx  _fieldCompletion = _w->Field->completionObject();
+  _w->Field->setCompleter(_fieldCompletion);
 
   _w->Field->insertItems(0, list);
 /* xxx

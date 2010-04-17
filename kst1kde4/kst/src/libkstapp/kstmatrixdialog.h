@@ -18,6 +18,8 @@
 #ifndef KSTMATRIXDIALOGI_H
 #define KSTMATRIXDIALOGI_H
 
+#include <QCompleter>
+
 #include "kstdatadialog.h"
 #include "kstrmatrix.h"
 #include "kstsmatrix.h"
@@ -90,7 +92,7 @@ class KST_EXPORT KstMatrixDialog : public KstDataDialog {
     void cleanup();
     bool editSingleObject(KstMatrixPtr mxPtr);
 
-// xxx    QPointer<KCompletion> _fieldCompletion;
+    QPointer<QCompleter> _fieldCompletion;
     QPointer<KstDataSourceConfigWidget> _configWidget;
 
     static QPointer<KstMatrixDialog> _inst;

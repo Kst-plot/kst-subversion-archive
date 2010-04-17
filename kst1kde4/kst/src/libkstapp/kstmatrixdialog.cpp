@@ -1042,7 +1042,7 @@ void KstMatrixDialog::updateCompletion() {
 
   _w->_configure->setEnabled(_configWidget);
 
-// xxx  _fieldCompletion = _w->_field->completionObject();
+	_w->_field->setCompleter(_fieldCompletion);
 
   _w->_field->insertItems(0, list);
 /* xxx
