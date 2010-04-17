@@ -1,5 +1,5 @@
 add_subdirectory(bin)
-add_subdirectory(binnedmap)
+# xxx add_subdirectory(binnedmap)
 add_subdirectory(periodogram)
 add_subdirectory(phase)
 add_subdirectory(statistics)

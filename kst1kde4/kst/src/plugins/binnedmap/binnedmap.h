@@ -92,7 +92,7 @@ class BinnedMap : public KstDataObject {
     bool _autoBin;
 };
 
-typedef KstSharedPtr<BinnedMap> BinnedMapPtr;
+typedef QExplicitlySharedPointer<BinnedMap> BinnedMapPtr;
 typedef KstObjectList<BinnedMapPtr> BinnedMapList;
 
 #endif

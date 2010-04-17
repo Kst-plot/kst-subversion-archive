@@ -20,4 +20,4 @@ install(TARGETS kstextdate
 
 ########### install files ###############
 
-install(FILES  kstextdatetime.h kstextcalendarsystem.h kstextcalendarsystemgregorian.h kstextdatetbl.h kstextdatepicker.h kstextdatetimeedit.h kstextdatewidget.h DESTINATION include)
+install(FILES  kstextdatetime.h kstextcalendarsystem.h kstextcalendarsystemgregorian.h DESTINATION include)
