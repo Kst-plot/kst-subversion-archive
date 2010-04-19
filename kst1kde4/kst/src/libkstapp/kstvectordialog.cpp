@@ -164,7 +164,7 @@ void KstVectorDialog::showFields() {
 
     if (dlg->result() == QDialog::Accepted) {
       if (!dlg->selection().isEmpty()) {
-// xxx        _w->Field->setCurrentText(dlg->selection());
+        _w->Field->setItemText(_w->Field->currentIndex(), dlg->selection());
       }
     }
 
@@ -255,11 +255,11 @@ void KstVectorDialog::updateCompletion() {
     _fieldCompletion->clear();
     _fieldCompletion->insertItems(list);
   }
-
-  if (!currentText.isEmpty() && (list.contains(currentText) || _w->Field->editable())) {
-    _w->Field->setCurrentText(currentText);
-  }
 */
+  if (!currentText.isEmpty() && (list.contains(currentText) || _w->Field->isEditable())) {
+    _w->Field->setItemText(_w->Field->currentIndex(), currentText);
+  }
+
   _ok->setEnabled(_w->Field->isEnabled() || _editMultipleMode);
 }
 
@@ -316,7 +316,7 @@ void KstVectorDialog::fillFieldsForRVEdit() {
 
   _w->Field->setEnabled(_w->Field->count() > 0);
   _ok->setEnabled(_w->Field->isEnabled());
-// xxx  _w->Field->setCurrentText(rvp->field());
+  _w->Field->setItemText(_w->Field->currentIndex(), rvp->field());
 
   // select the proper file
 // xxx  _w->FileName->setURL(rvp->filename());

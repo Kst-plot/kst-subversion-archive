@@ -252,7 +252,7 @@ void KstMatrixDialog::fillFieldsForRMatrixEdit() {
 
     _w->_field->setEnabled(_w->_field->count() > 0);
     _ok->setEnabled(_w->_field->isEnabled());
-// xxx    _w->_field->setCurrentText(rmp->field());
+    _w->_field->setItemText(_w->_field->currentIndex(), rmp->field());
   
     //
     // fill in the other parameters...
