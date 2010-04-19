@@ -92,7 +92,7 @@ class KST_EXPORT KstMatrixDialog : public KstDataDialog {
     void cleanup();
     bool editSingleObject(KstMatrixPtr mxPtr);
 
-    QPointer<QCompleter> _fieldCompletion;
+// xxx    QPointer<QCompleter> _fieldCompletion;
     QPointer<KstDataSourceConfigWidget> _configWidget;
 
     static QPointer<KstMatrixDialog> _inst;

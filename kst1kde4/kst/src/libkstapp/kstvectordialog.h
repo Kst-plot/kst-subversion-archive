@@ -75,7 +75,7 @@ class KST_EXPORT KstVectorDialog : public KstDataDialog {
 
     static QPointer<KstVectorDialog> _inst;
     static const QString& defaultTag;
-    QPointer<QCompleter> _fieldCompletion;
+// xxx    QPointer<QCompleter> _fieldCompletion;
     QPointer<KstDataSourceConfigWidget> _configWidget;
     Ui::VectorDialogWidget *_w;
     bool _inTest : 1;
