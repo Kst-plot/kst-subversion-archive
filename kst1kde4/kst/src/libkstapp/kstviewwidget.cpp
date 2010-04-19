@@ -393,7 +393,7 @@ void KstViewWidget::dragEnterEvent(QDragEnterEvent *e) {
     if (vo) {
       vo->dragEnterEvent(this, e);
     } else {
-// xxx      e->accept(false);
+      e->setAccepted(false);
     }
   }
 
@@ -403,13 +403,13 @@ void KstViewWidget::dragEnterEvent(QDragEnterEvent *e) {
 
 void KstViewWidget::dragMoveEvent(QDragMoveEvent *e) {
   if (_dragEnabled && e->provides(PlotMimeSource::mimeType())) {
-// xxx    e->accept(true);
+    e->setAccepted(true);
   } else if (_view->viewMode() != KstTopLevelView::LayoutMode) {
     KstViewObjectPtr vo = findChildFor(e->pos());
     if (vo) {
       vo->dragMoveEvent(this, e);
     } else {
-// xxx      e->accept(false);
+      e->setAccepted(false);
     }
   }
   QWidget::dragMoveEvent(e);
