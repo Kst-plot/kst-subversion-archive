@@ -1,4 +1,4 @@
-include_directories(${CMAKE_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/src/extdate ${CMAKE_SOURCE_DIR}/src/libkst ${CMAKE_SOURCE_DIR}/src/libkstmath ${CMAKE_SOURCE_DIR}/src/widgets ${CMAKE_SOURCE_DIR}/src/libkstapp ${KDE3_INCLUDE_DIR} ${QT_INCLUDE_DIR} )
+include_directories(${CMAKE_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/src/extdate ${CMAKE_SOURCE_DIR}/src/libkst ${CMAKE_SOURCE_DIR}/src/libkstmath ${CMAKE_SOURCE_DIR}/src/widgets ${CMAKE_SOURCE_DIR}/src/libkstapp ${KDE4_INCLUDES} ${KDE4_INCLUDE_DIR} ${QT_INCLUDES} )
 
 add_subdirectory(pics)
 
@@ -8,10 +8,10 @@ set(kst_SRCS main.cpp)
 
 add_executable(kst ${kst_SRCS})
 
-target_link_libraries(kst kstapp kmdi)
+target_link_libraries(kst kstapp ${KDE4_KDECORE_LIBS} QtXml QtGui)
 
 install(TARGETS kst 
-	RUNTIME DESTINATION bin
+	DESTINATION bin
 	${INSTALL_TARGETS_DEFAULT_ARGS})
 
 ########### install files ###############

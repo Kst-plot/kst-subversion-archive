@@ -18,12 +18,12 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include <qstringlist.h>
-#include <qfileinfo.h>
+#include <QFileInfo>
+#include <QObject>
+#include <QStringList>
 
 #include <kaboutdata.h>
 #include <kcmdlineargs.h>
-#include "ksdebug.h"
 #include <kglobalsettings.h>
 #include <kimageio.h>
 
@@ -48,9 +48,9 @@
 #include <defaultprimitivenames.h>
 
 
-static const char description[] = I18N_NOOP("Kst: a data viewing program.");
+static const char description[] = "Kst: a data viewing program.";
 static QStringList startupErrors;
-
+/* xxx
 static KCmdLineOptions options[] = {
   { "y <Y>",  I18N_NOOP("Field for Y axis (multiple allowed)"), 0 },
   { "z <Z>",  I18N_NOOP("Field for a Z image (multiple allowed)"), 0 },
@@ -80,7 +80,7 @@ static KCmdLineOptions options[] = {
   { "+[Files]", I18N_NOOP("Data files (if -y given) or *.kst file"), 0},
   KCmdLineLastOption
 };
-
+*/
 struct InType {
   int skip;
   bool doskip;
@@ -99,32 +99,26 @@ struct InType {
   QString RUnits;
 };
 
-/****************************************************************/
-/*                                                              */
-/*        check command line options for simple usage errors    */
-/*                                                              */
-/****************************************************************/
+/* xxx
 static void CheckForCMDErrors(KCmdLineArgs *args) {
   bool nOK;
 
   if (args->getOption("n").toInt(&nOK) == 0) {
-    kstdError() << i18n("Exiting because '-n 0' requests vectors with no data in them.") << endl;
+    kstdError() << QObject::tr("Exiting because '-n 0' requests vectors with no data in them.") << endl;
+
     exit(0); // ugly but now safe
   }
+
   if (args->getOption("n").toInt(&nOK)>0) {
     if (args->getOption("n").toInt(&nOK) < 2*args->getOption("s").toInt(&nOK)) {
-      kstdError() << i18n("Requested data skipping would leave vector with fewer than two points.") << endl;
+      kstdError() << QObject::tr("Requested data skipping would leave vector with fewer than two points.") << endl;
+
       exit(0); // ugly but now safe
     }
   }
 }
 
 
-/****************************************************************/
-/*                                                              */
-/*        fill the in struct from the command line args         */
-/*                                                              */
-/****************************************************************/
 static void SetCMDOptions(KCmdLineArgs *args, InType &in, int n_y) {
   bool nOK;
 
@@ -169,7 +163,10 @@ static void SetCMDOptions(KCmdLineArgs *args, InType &in, int n_y) {
 
   in.n_rows = (in.n_plots-1)/in.n_cols + 1;
 
-  // set skip options
+  //
+  // set skip options...
+  //
+
   in.skip = args->getOption("s").toInt(&nOK);
   if (in.skip < 1) {
     in.skip = 0;
@@ -180,27 +177,28 @@ static void SetCMDOptions(KCmdLineArgs *args, InType &in, int n_y) {
     in.doave = args->isSet("a");
   }
 
-  // set Units for PSDs
+  //
+  // set Units for PSDs...
+  //
+
   in.VUnits = args->getOption("yu");
   in.RUnits = args->getOption("ru");
   in.dolegend = args->isSet("g");
 }
 
-/****************************************************************/
-/*                                                              */
-/*        create the plots                                      */
-/*                                                              */
-/****************************************************************/
+
 static void CreatePlots(InType &in, KstTopLevelViewPtr tlv) {
   KstApp *kst = KstApp::inst();
-  QString creatingPlots = i18n("Creating plots");
+  QString creatingPlots = QObject::tr("Creating plots");
 
   kst->slotUpdateProgress( 0, 0, creatingPlots );
   int count = in.n_plots;
   int handled = 0;
 
   for (int i_plot = 0; i_plot < in.n_plots; ++i_plot) {
-    Kst2DPlotPtr plot = new Kst2DPlot(KST::suggestPlotName());
+    Kst2DPlotPtr plot;
+
+    plot = new Kst2DPlot(KST::suggestPlotName());
     tlv->appendChild(plot.data());
 
     plot->resizeFromAspect(double(i_plot%in.n_cols)/double(in.n_cols),
@@ -208,6 +206,7 @@ static void CreatePlots(InType &in, KstTopLevelViewPtr tlv) {
                             1.0/double(in.n_cols), 1.0/double(in.n_rows));
 
     ++handled;
+
     kst->slotUpdateProgress( count, handled, creatingPlots );
   }
 
@@ -217,45 +216,40 @@ static void CreatePlots(InType &in, KstTopLevelViewPtr tlv) {
   kst->slotUpdateProgress( 0, 0, QString::null );
 }
 
-/******************************************************************/
-/*                                                                */
-/*        set X range for equations if -xe is specified           */
-/*        start:end:Nsamp                                         */
-/*                                                                */
-/******************************************************************/
+
 static void SetEqXRanges(QString xeqS, double *min, double *max, int *n, bool *ok) {
+  QStringList fields;
+  QString f;
+
+  fields = xeqS.split( QChar(':'),  );
   *ok = true;
-  QStringList fields = QStringList::split( QChar(':'), xeqS );
+
   if (fields.count() != 3) {
     *ok = false;
     *n = 2;
     *min = -1;
     *max = 1;
+
     return;
   }
-  QString f;
 
-  f = *fields.at(0);
+  f = fields.at(0);
   *min = f.toDouble(ok);
-  f = *fields.at(1);
+  f = fields.at(1);
   *max = f.toDouble(ok);
-  f = *fields.at(2);
+  f = fields.at(2);
   *n = f.toInt(ok);
 
   if (*n < 2) {
-    *ok=false;
+    *ok = false;
   }
+
   if (*min >= *max) {
     *ok = false;
   }
 }
 
-/******************************************************************/
-/*                                                                */
-/*        create vectors, including name and error checking       */
-/*        if a vector with the same field and file exists, use it */
-/*                                                                */
-/******************************************************************/
+
 static KstRVector *GetOrCreateVector(const QString& field, KstDataSourcePtr file, InType &in) {
   int i_v = 0, n_v;
   KstRVector *V;
@@ -273,9 +267,9 @@ static KstRVector *GetOrCreateVector(const QString& field, KstDataSourcePtr file
   V = new KstRVector(file, field, KstObjectTag(KST::suggestVectorName(field), file->tag(), false), in.f, in.n, in.skip, in.doskip, in.doave);
   if (!V->isValid()) {
     if (file->fileType() == "stdin") {
-      startupErrors.append(i18n("Failed to create vector '%1' from file '%2'.  Trying again later.").arg(field).arg(file->fileName()));
+      startupErrors.append(QObject::tr("Failed to create vector '%1' from file '%2'.  Trying again later.").arg(field).arg(file->fileName()));
     } else {
-      startupErrors.append(i18n("Failed to create vector '%1' from file '%2'.").arg(field).arg(file->fileName()));
+      startupErrors.append(QObject::tr("Failed to create vector '%1' from file '%2'.").arg(field).arg(file->fileName()));
       V = 0L;
     }
   } else {
@@ -284,15 +278,11 @@ static KstRVector *GetOrCreateVector(const QString& field, KstDataSourcePtr file
   return V;
 }
 
-/****************************************************************/
-/*                                                              */
-/*        Process Equation: replace fields with vector tags     */
-/*        Create vectors that don't exist.                      */
-/*                                                              */
-/****************************************************************/
+
 static bool NoVectorEq(const QString& eq) {
   return eq.find('[') < 0;
 }
+
 
 static void ProcessEq(QString &eq, KstDataSourcePtr file, InType &in, bool *ok) {
   QString field;
@@ -312,22 +302,18 @@ static void ProcessEq(QString &eq, KstDataSourcePtr file, InType &in, bool *ok) 
     i0++;
   }
 }
-
+*/
 
 static void exitHelper(void) {
   KstApp::doubleCheckCleanup();
 }
 
-/****************************************************************/
-/*                                                              */
-/*        main for kst.  mostly command line handling           */
-/*                                                              */
-/****************************************************************/
+
 int main(int argc, char *argv[]) {
   int i_file, i_v, i_curve;
   int i_plot;
   QString fullPath;
-
+/* xxx
   KAboutData aboutData("kst", I18N_NOOP("Kst"),
                        KSTVERSION, description, KAboutData::License_GPL,
                        I18N_NOOP("(c) 2000-2007 Barth Netterfield"),
@@ -378,20 +364,23 @@ int main(int argc, char *argv[]) {
 
   KCmdLineArgs::init( argc, argv, &aboutData );
   KCmdLineArgs::addCmdLineOptions( options ); // Add our own options.
+*/
+  QApplication app(argc, argv);
+// xxx  KImageIO::registerFormats();
 
-  KApplication app;
-  KImageIO::registerFormats();
-
-  KstDialogs::replaceSelf(new KstGuiDialogs);
-  KstData::replaceSelf(new KstGuiData);
+// xxx  KstDialogs::replaceSelf(new KstGuiDialogs);
+// xxx  KstData::replaceSelf(new KstGuiData);
   KstApp::initialize();
-
+/* xxx
   atexit(exitHelper);
 
   if (app.isRestored()) {
     RESTORE(KstApp)
   } else {
+*/
     KstApp *kst = new KstApp;
+/* xxx
+
     InType in;
     QColor color;
     QCStringList ycolList;
@@ -431,7 +420,10 @@ int main(int argc, char *argv[]) {
       kst->show();
     }
 
-    // get Y axis columns
+    //
+    // get Y axis columns...
+    //
+
     ycolList = args->getOptionList("y");
     matrixList = args->getOptionList("z");
     yEqList = args->getOptionList("ye");
@@ -439,12 +431,19 @@ int main(int argc, char *argv[]) {
     hsList = args->getOptionList("h");
     errorList = args->getOptionList("e");
 
-    // y axis or PSD specified, so the files are data files, not kst files.
+    //
+    // y axis or PSD specified, so the files are data files, not kst files...
+    //
+
     n_y = ycolList.count() + psdList.count() + hsList.count() + yEqList.count() + matrixList.count();
     if (n_y > 0) {
-      QString creatingEquations = i18n("Creating equations");
-      QString creatingCurves = i18n("Creating curves");
-      QString creatingPlots = i18n("Creating plots");
+      KstTopLevelViewPtr tlv;
+      Kst2DPlotList plist;
+      Kst2DPlotPtr plot;
+      KstVCurveList vcurves;
+      QString creatingEquations = QObject::tr("Creating equations");
+      QString creatingCurves = QObject::tr("Creating curves");
+      QString creatingPlots = QObject::tr("Creating plots");
       int count;
       int handled;
 
@@ -452,8 +451,7 @@ int main(int argc, char *argv[]) {
 
       SetCMDOptions(args, in, n_y);
 
-      KstTopLevelViewPtr tlv = kst->activeView();
-
+      tlv = kst->activeView();
       if (!tlv) {
         // if there was no active view then we create one...
         kst->newWindow(false);
@@ -461,18 +459,17 @@ int main(int argc, char *argv[]) {
       }
 
       if (!tlv) {
-        kstdError() << i18n("Can't create a view.") << endl;
+        kstdError() << QObject::tr("Can't create a view.") << endl;
         return 0;
       }
 
       CreatePlots(in, tlv);
-      Kst2DPlotList plist = kstObjectSubList<KstViewObject, Kst2DPlot>(tlv->children());
-
       i_plot = 0;
-      Kst2DPlotPtr plot = *plist.at(i_plot);
 
-      KstVCurveList vcurves = kstObjectSubList<KstBaseCurve,KstVCurve>(plot->Curves);
-
+// xxx      plist = kstObjectSubList<KstViewObject, Kst2DPlot>(tlv->children());
+      plot = *plist.at(i_plot);
+      vcurves = kstObjectSubList<KstBaseCurve,KstVCurve>(plot->Curves);
+    
       // make stand alone equations if there are no files
       if (args->count() < 1) {
         if (!yEqList.isEmpty()) {
@@ -490,10 +487,14 @@ int main(int argc, char *argv[]) {
             for (eq_i = yEqList.begin(); eq_i != yEqList.end(); ++eq_i) {
               eqS = *eq_i;
               if (NoVectorEq(eqS)) {
-                KstEquationPtr eq = new KstEquation(KST::suggestEQName(eqS), eqS, min, max, n);
-                KstVCurvePtr vc = new KstVCurve(KST::suggestCurveName(eq->tag(), true),
-                                        eq->vX(), eq->vY(), 0L, 0L, 0L, 0L,
-                                        KstColorSequence::next(vcurves,plot->backgroundColor()));
+                KstEquationPtr eq;
+                KstVCurvePtr vc;
+
+                eq = new KstEquation(KST::suggestEQName(eqS), eqS, min, max, n);
+                vc  = new KstVCurve(KST::suggestCurveName(eq->tag(), true),
+                             eq->vX(), eq->vY(), 0L, 0L, 0L, 0L,
+                             KstColorSequence::next(vcurves,plot->backgroundColor()));
+
                 KST::dataObjectList.lock().writeLock();
                 KST::dataObjectList.append(eq.data());
                 KST::dataObjectList.append(vc.data());
@@ -515,24 +516,32 @@ int main(int argc, char *argv[]) {
         }
       }
 
-      // make the requested curves for each data file
+      //
+      // make the requested curves for each data file...
+      //
+
       count = args->count();
       handled = 0;
       kst->slotUpdateProgress( count, handled, creatingCurves );
 
       for (i_curve = i_v = 0, i_file = 0; i_file < args->count(); i_file++) {
-        // make the file
+        KstDataSourcePtr file;
+
+        //
+        // make the file...
+        //
+
         if (QFile::exists(args->arg(i_file))) {
           fullPath = QFileInfo(args->arg(i_file)).absFilePath();
         } else {
           fullPath = args->arg(i_file);
         }
 
-        KstDataSourcePtr file = KstDataSource::loadSource(fullPath);
+        file = KstDataSource::loadSource(fullPath);
 
         if (file) {
           if (!file->isValid() || file->isEmpty()) {
-            kstdError() << i18n("No data in file %1.  Trying to continue...").arg(args->arg(i_file)) << endl;
+            kstdError() << QObject::tr("No data in file %1.  Trying to continue...").arg(args->arg(i_file)) << endl;
             // The file might get data later!
           }
 
@@ -540,12 +549,12 @@ int main(int argc, char *argv[]) {
           KST::dataSourceList.append(file);
           KST::dataObjectList.lock().unlock();
 
+          KstHistogramPtr hs;
+          KstRVectorPtr xvector;
           KstRVectorPtr yvector;
           KstRVectorPtr evector;
           KstVCurvePtr curve;
           KstPSDPtr psd;
-          KstHistogramPtr hs;
-          KstRVectorPtr xvector;
 
           if (!ycolList.isEmpty()) { // if there are some xy plots
             // make the x axis vector
@@ -615,9 +624,11 @@ int main(int argc, char *argv[]) {
               }
 
               if (eq) {
-                KstVCurvePtr vc = new KstVCurve(KST::suggestCurveName(eq->tag(), true),
-                                      eq->vX(), eq->vY(), 0L, 0L, 0L, 0L,
-                                      KstColorSequence::next(vcurves,plot->backgroundColor()));
+                KstVCurvePtr vc;
+
+                vc = new KstVCurve(KST::suggestCurveName(eq->tag(), true),
+                             eq->vX(), eq->vY(), 0L, 0L, 0L, 0L,
+                             KstColorSequence::next(vcurves,plot->backgroundColor()));
                 KST::dataObjectList.lock().writeLock();
                 KST::dataObjectList.append(eq.data());
                 KST::dataObjectList.append(vc.data());
@@ -636,7 +647,9 @@ int main(int argc, char *argv[]) {
           }
 
           if (psdList.count() > 0) { // if there are some psd plots
-            KstRVectorList rvl = kstObjectSubList<KstVector,KstRVector>(KST::vectorList);
+            KstRVectorList rvl;
+
+            rvl = kstObjectSubList<KstVector,KstRVector>(KST::vectorList);
             for (QCStringList::ConstIterator it = psdList.begin(); it != psdList.end(); ++it) {
 
               yvector = GetOrCreateVector(*it, file, in);
@@ -713,7 +726,7 @@ int main(int argc, char *argv[]) {
             for (mat_i = matrixList.begin(); mat_i != matrixList.end(); ++mat_i) {
               QString tag_name = KST::suggestMatrixName(*mat_i);
               if (!file->isValidMatrix(*mat_i)) {
-                startupErrors.append(i18n("Failed to create matrix '%1' from file '%2'.").arg(*mat_i).arg(file->fileName()));
+                startupErrors.append(QObject::tr("Failed to create matrix '%1' from file '%2'.").arg(*mat_i).arg(file->fileName()));
               }
               KstRMatrixPtr matrix = new KstRMatrix(file, *mat_i,
                   KstObjectTag(tag_name, file->tag()),
@@ -750,7 +763,7 @@ int main(int argc, char *argv[]) {
             }
           }
         } else {
-          startupErrors.append(i18n("Failed to load file '%1'.").arg(args->arg(i_file)));
+          startupErrors.append(QObject::tr("Failed to load file '%1'.").arg(args->arg(i_file)));
         }
         handled++;
         kst->slotUpdateProgress( count, handled, creatingCurves );
@@ -793,7 +806,8 @@ int main(int argc, char *argv[]) {
       //
       // don't display the Quick Start dialog if we are passing extension commands...
       //
-      if (!args->getOption("E")) {
+
+      if (!(args->getOption("E"))) {
         showQuickStart = true;
       }
     }
@@ -853,12 +867,12 @@ int main(int argc, char *argv[]) {
       }
       startupErrors.clear();
     }
-
+*/
     // LEAVE THIS HERE - causes crashes otherwise!
     int rc = app.exec();
     delete kst;
     return rc;
-  }
+// xxx  }
 
   return app.exec();
 }
