@@ -147,7 +147,7 @@ void KstVvDialog::updatePlotList() {
     }
 
     if (!old.isNull() && plots.contains(old)) {
-// xxx      _w->_plotList->setCurrentText(old);
+      _w->_plotList->setItemText(_w->_plotList->currentIndex(), old);
     }
 }
 
