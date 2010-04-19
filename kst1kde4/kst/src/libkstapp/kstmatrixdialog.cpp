@@ -1051,11 +1051,11 @@ void KstMatrixDialog::updateCompletion() {
     _fieldCompletion->insertItems(list);
   }
 */
-/* xxx
-  if (!current_text.isEmpty() && (list.contains(current_text) || _w->_field->editable())) {
-    _w->_field->setCurrentText(current_text);
+
+  if (!current_text.isEmpty() && (list.contains(current_text) || _w->_field->isEditable())) {
+    _w->_field->setItemText(_w->_field->currentIndex(), current_text);
   }
-*/
+
   _ok->setEnabled(_w->_field->isEnabled() || _editMultipleMode);
 }
 
