@@ -460,34 +460,27 @@ void KstApp::initActions() {
   _actionNewPlot = new QAction(QObject::tr("New Plot"), this);
   _actionNewPlot->setStatusTip(QObject::tr("Create a new plot in the current window."));
   connect(_actionNewPlot, SIGNAL(triggered()), this, SLOT(newPlot()));
-
+/* xxx
   _actionDataManager = new QAction(QObject::tr("&Data Manager"), this);
   _actionDataManager->setStatusTip(QObject::tr("Bring up a dialog box to manage data."));
-  connect(_actionDataManager, SIGNAL(triggered()), this, SLOT(show_I()));
+  connect(_actionDataManager, SIGNAL(triggered()), _dataManager, SLOT(show_I()));
 
   _actionViewManager = new QAction(QObject::tr("&View Manager"), this);
   _actionViewManager->setStatusTip(QObject::tr("Bring up a dialog box to manage views."));
-  connect(_actionViewManager, SIGNAL(triggered()), this, SLOT(show_I()));
-  
+  connect(_actionViewManager, SIGNAL(triggered()), _viewManager, SLOT(show_I()));
+*/  
   _actionVectorDialog = new QAction(QObject::tr("New &Vector..."), this);
   _actionVectorDialog->setStatusTip(QObject::tr("Bring up a dialog box to create a new vector."));
-  connect(_actionVectorDialog, SIGNAL(triggered()), this, SLOT(show()));
+  connect(_actionVectorDialog, SIGNAL(triggered()), KstVectorDialog::globalInstance(), SLOT(show()));
+
+  _actionCurveDialog = new QAction(QObject::tr("New &Curve..."), this);
+  _actionCurveDialog->setStatusTip(QObject::tr("Bring up a dialog box to create a new curve."));
+  connect(_actionCurveDialog, SIGNAL(triggered()), KstCurveDialog::globalInstance(), SLOT(show()));
+
+  _actionCsdDialog = new QAction(QObject::tr("New &Spectrogram..."), this);
+  _actionCsdDialog->setStatusTip(QObject::tr("Bring up a dialog box to create a new spectrogram."));
+  connect(_actionCsdDialog, SIGNAL(triggered()), KstCsdDialog::globalInstance(), SLOT(show()));
 /* xxx
-  _actionCurveDialog = new QAction(QObject::tr("New &Curve..."), "kst_curvenew", 0,
-                                  KstCurveDialogI::globalInstance(),
-                                  SLOT(show()), actionCollection(),
-                                  "curvedialog_action");
-  CurveDialogAction->setWhatsThis(QObject::tr("Bring up a dialog box\n"
-                                       "to create a new curve."));
-
-  CsdDialogAction = new KAction(QObject::tr("New &Spectrogram..."), "kst_csdnew", 0,
-                                KstCsdDialogI::globalInstance(),
-                                SLOT(show()), actionCollection(),
-                                "csddialog_action");
-  CsdDialogAction->setWhatsThis(QObject::tr("Bring up a dialog box\n"
-                                     "to create a new spectrogram."));
-
-
   EqDialogAction = new KAction(QObject::tr("New &Equation..."),
                                "kst_equationnew", 0,
                                KstEqDialogI::globalInstance(),

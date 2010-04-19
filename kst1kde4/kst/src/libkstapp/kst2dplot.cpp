@@ -518,7 +518,7 @@ Kst2DPlot::Kst2DPlot(const Kst2DPlot& plot, const QString& name)
   _type = "Plot";
 
   if (name.isEmpty()) {
-    plotName = i18n("%1-copy").arg(plot.tagName());
+    plotName = QObject::tr("%1-copy").arg(plot.tagName());
   } else {
     plotName = name;
   }
@@ -545,9 +545,9 @@ Kst2DPlot::Kst2DPlot(const Kst2DPlot& plot, const QString& name)
       if (viewWindow) {
         if (viewWindow->view()->findChild(plotName)) {
           if (last == 0) {
-            plotName = i18n("%1-copy").arg(plot.tagName());
+            plotName = QObject::tr("%1-copy").arg(plot.tagName());
           } else {
-            plotName = i18n("%1-copy%2").arg(plot.tagName()).arg(last);
+            plotName = QObject::tr("%1-copy%2").arg(plot.tagName()).arg(last);
           }
           ++last;
 
@@ -660,8 +660,8 @@ void Kst2DPlot::commonConstructor(const QString &in_tag,
                                 double y_logbase) {
   connect(KstApp::inst(), SIGNAL(timezoneChanged(const QString&, int)), this, SLOT(timezoneChanged(const QString&, int)));
 
-  _editTitle = i18n("Edit Plot");
-  _newTitle = i18n("New Plot");
+  _editTitle = QObject::tr("Edit Plot");
+  _newTitle = QObject::tr("New Plot");
   _tabToShow = CONTENT_TAB;
   _xLabel = new KstPlotLabel;
   _yLabel = new KstPlotLabel(270.0);
@@ -2021,11 +2021,11 @@ void Kst2DPlot::genAxisTickLabelDifference(KstAxisInterpretation axisInterpretat
   }
 
   if (zdiff > 0.0) {
-    label = i18n("+[numeric value]", "+[%1]").arg(zdiff, 0, 'g', DIFFERENCE_PRECISION);
+    label = QObject::tr("+[numeric value]", "+[%1]").arg(zdiff, 0, 'g', DIFFERENCE_PRECISION);
   } else if (zdiff < 0.0) {
-    label = i18n("-[numeric value]", "-[%1]").arg(-zdiff, 0, 'g', DIFFERENCE_PRECISION);
+    label = QObject::tr("-[numeric value]", "-[%1]").arg(-zdiff, 0, 'g', DIFFERENCE_PRECISION);
   } else {
-    label = i18n("[0]");
+    label = QObject::tr("[0]");
   }
 }
 
@@ -2062,7 +2062,7 @@ void Kst2DPlot::genAxisTickLabel(QString& label, double z, bool isLog, double lo
     if ((z > -4.0 && z < 4.0) || minorTick) {
       label = QString::number(pow(logBase, z), 'g', LABEL_PRECISION);
     } else {
-      label = i18n("%2 to the power of %1", "%2^{%1}").arg(z, 0, 'f', 0).arg(logBase, 0, 'f', 0);
+      label = QObject::tr("%2 to the power of %1", "%2^{%1}").arg(z, 0, 'f', 0).arg(logBase, 0, 'f', 0);
     }
   } else {
     label = QString::number(z, 'g', LABEL_PRECISION);
@@ -2100,8 +2100,8 @@ void Kst2DPlot::getPrefixUnitsScale(bool isInterpreted, KstAxisInterpretation ax
 
     switch (axisDisplay) {
       case AXIS_DISPLAY_YEAR:
-        strPrefix = i18n("Prefix for Julian Year", "J");
-        strUnits  = i18n("years");
+        strPrefix = QObject::tr("Prefix for Julian Year", "J");
+        strUnits  = QObject::tr("years");
         scale /= 365.25 * 24.0 * 60.0 * 60.0;
         break;
       case AXIS_DISPLAY_YYMMDDHHMMSS_SS:
@@ -2119,33 +2119,33 @@ void Kst2DPlot::getPrefixUnitsScale(bool isInterpreted, KstAxisInterpretation ax
         }
         if( value > 10.0 * 24.0 * 60.0 * 60.0 ) {
           scale /= 24.0 * 60.0 * 60.0;
-          strUnits  = i18n("days");
+          strUnits  = QObject::tr("days");
         } else if( value > 10.0 * 24.0 * 60.0 ) {
           scale /= 60.0 * 60.0;
-          strUnits  = i18n("hours");
+          strUnits  = QObject::tr("hours");
           base = 24;
         } else if( value > 10.0 * 60.0 ) {
           scale /= 60.0;
-          strUnits  = i18n("minutes");
+          strUnits  = QObject::tr("minutes");
           base = 60;
         } else {
-          strUnits  = i18n("seconds");
+          strUnits  = QObject::tr("seconds");
           base = 60;
         }
         break;
       case AXIS_DISPLAY_JD:
-        strPrefix = i18n("Prefix for Julian Date", "JD");
-        strUnits  = i18n("days");
+        strPrefix = QObject::tr("Prefix for Julian Date", "JD");
+        strUnits  = QObject::tr("days");
         scale /= 24.0 * 60.0 * 60.0;
         break;
       case AXIS_DISPLAY_MJD:
-        strPrefix = i18n("Prefix for Modified Julian Date", "MJD");
-        strUnits  = i18n("days");
+        strPrefix = QObject::tr("Prefix for Modified Julian Date", "MJD");
+        strUnits  = QObject::tr("days");
         scale /= 24.0 * 60.0 * 60.0;
         break;
       case AXIS_DISPLAY_RJD:
-        strPrefix = i18n("Prefix for Reduced Julian Date", "RJD");
-        strUnits  = i18n("days");
+        strPrefix = QObject::tr("Prefix for Reduced Julian Date", "RJD");
+        strUnits  = QObject::tr("days");
         scale /= 24.0 * 60.0 * 60.0;
         break;
     }
@@ -2364,7 +2364,7 @@ void Kst2DPlot::genAxisTickLabels(TickParameters &tp,
         if (i == iShort) {
           genAxisTickLabelFullPrecision(axisInterpretation, axisDisplay, strTmp, length, (double)iShort * tp.tick + tp.org, isLog, logBase, isInterpreted);
           if (!strUnits.isEmpty()) {
-            strTmp = i18n( "<Prefix e.g. JD><Value> [Units]", "%1%2 [%3]" ).arg(strPrefix).arg(strTmp).arg(strUnits);
+            strTmp = QObject::tr( "<Prefix e.g. JD><Value> [Units]", "%1%2 [%3]" ).arg(strPrefix).arg(strTmp).arg(strUnits);
           }
           labelDescr.label = strTmp;
           labelDescr.position = (double)iShort * tp.tick + tp.org;
@@ -3182,7 +3182,7 @@ void Kst2DPlot::saveAttributes(QTextStream& ts, const QString& indent) {
 
   if (_xScaleMode == EXPRESSION) {
     if (!(reparseToText(_xMinExp) && reparseToText(_xMaxExp))) {
-      KstDebug::self()->log(i18n("X scale expression could not be reparsed while saving.  Resulting Kst file may have issues."), KstDebug::Warning);
+      KstDebug::self()->log(QObject::tr("X scale expression could not be reparsed while saving.  Resulting Kst file may have issues."), KstDebug::Warning);
     }
     ts << indent << "<xminexp>" << _xMinExp << "</xminexp>" << endl;
     ts << indent << "<xmaxexp>" << _xMaxExp << "</xmaxexp>" << endl;
@@ -3190,7 +3190,7 @@ void Kst2DPlot::saveAttributes(QTextStream& ts, const QString& indent) {
 
   if (_yScaleMode == EXPRESSION) {
     if (!(reparseToText(_yMinExp) && reparseToText(_yMaxExp))) {
-      KstDebug::self()->log(i18n("Y scale expression could not be reparsed while saving.  Resulting Kst file may have issues."), KstDebug::Warning);
+      KstDebug::self()->log(QObject::tr("Y scale expression could not be reparsed while saving.  Resulting Kst file may have issues."), KstDebug::Warning);
     }
     ts << indent << "<yminexp>" << _yMinExp << "</yminexp>" << endl;
     ts << indent << "<ymaxexp>" << _yMaxExp << "</ymaxexp>" << endl;
@@ -3455,9 +3455,9 @@ void Kst2DPlot::generateDefaultLabels(bool xl, bool yl, bool tl) {
       if (i_curve == i_count - 1) {
         xlabel += xlabels[i_curve];
       } else if (i_curve < i_count-2) {
-        xlabel += i18n("name in a list", "%1, ").arg(xlabels[i_curve]);
+        xlabel += QObject::tr("name in a list", "%1, ").arg(xlabels[i_curve]);
       } else if (i_curve == i_count-2) {
-        xlabel += i18n("penultimate name in a list", "%1 and ").arg(xlabels[i_curve]);
+        xlabel += QObject::tr("penultimate name in a list", "%1 and ").arg(xlabels[i_curve]);
       }
     }
 
@@ -3476,9 +3476,9 @@ void Kst2DPlot::generateDefaultLabels(bool xl, bool yl, bool tl) {
         if (i_curve == i_count - 1) {
           ylabel += ylabels[i_curve];
         } else if (i_curve < i_count-2) {
-          ylabel += i18n("name in a list", "%1, ").arg(ylabels[i_curve]);
+          ylabel += QObject::tr("name in a list", "%1, ").arg(ylabels[i_curve]);
         } else if (i_curve == i_count-2) {
-          ylabel += i18n("penultimate name in a list", "%1 and ").arg(ylabels[i_curve]);
+          ylabel += QObject::tr("penultimate name in a list", "%1 and ").arg(ylabels[i_curve]);
         }
       }
     }
@@ -3492,9 +3492,9 @@ void Kst2DPlot::generateDefaultLabels(bool xl, bool yl, bool tl) {
       if (i_curve == i_count - 1) {
         toplabel += toplabels[i_curve];
       } else if (i_curve < i_count-2) {
-        toplabel += i18n("name in a list", "%1, ").arg(toplabels[i_curve]);
+        toplabel += QObject::tr("name in a list", "%1, ").arg(toplabels[i_curve]);
       } else if (i_curve == i_count-2) {
-        toplabel += i18n("penultimate name in a list", "%1 and ").arg(toplabels[i_curve]);
+        toplabel += QObject::tr("penultimate name in a list", "%1 and ").arg(toplabels[i_curve]);
       }
     }
   }
@@ -3872,7 +3872,7 @@ void Kst2DPlot::deleteObject() {
     
     tlv  = kst_cast<KstTopLevelView>(KstViewObjectPtr(_topObjectForMenu));
     if (tlv) {
-      if (QMessageBox::warning(tlv->widget(), i18n("Kst"), i18n("Are you sure you want to delete plot '%1'?").arg(tagName()), QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes) {
+      if (QMessageBox::warning(tlv->widget(), QObject::tr("Kst"), QObject::tr("Are you sure you want to delete plot '%1'?").arg(tagName()), QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes) {
         remove = true;
       }
     }
@@ -3909,7 +3909,7 @@ KstViewObject* Kst2DPlot::copyObjectQuietly(KstViewObject& parent, const QString
   QString plotName;
 
   if (name.isEmpty()) {
-    plotName = i18n("%1-copy").arg(tagName());
+    plotName = QObject::tr("%1-copy").arg(tagName());
   } else {
     plotName = name;
   }
@@ -3926,7 +3926,7 @@ KstViewObject* Kst2DPlot::copyObjectQuietly(KstViewObject& parent, const QString
 KstViewObject* Kst2DPlot::copyObjectQuietly() const {
   QString plotName;
 
-  plotName = i18n("%1-copy").arg(tagName());
+  plotName = QObject::tr("%1-copy").arg(tagName());
 
   Kst2DPlot *plot = new Kst2DPlot(*this, plotName);
 
@@ -3981,11 +3981,11 @@ bool Kst2DPlot::popupMenu(QMenu *menu, const QPoint& pos, KstViewObjectPtr topLe
   }
 
   action = menu->insertMenu(0L, submenu);
-  action->setText(i18n("&Match Axes"));
+  action->setText(QObject::tr("&Match Axes"));
   action->setEnabled(hasEntry);
 
   action = menu->insertMenu(0L, submenu2);
-  action->setText(i18n("&Match X Axis"));
+  action->setText(QObject::tr("&Match X Axis"));
   action->setEnabled(hasEntry);
   
   hasEntry = false;
@@ -3993,58 +3993,58 @@ bool Kst2DPlot::popupMenu(QMenu *menu, const QPoint& pos, KstViewObjectPtr topLe
   submenu = new QMenu(menu);
 
   action = menu->insertMenu(0L, submenu);
-  action->setText(i18n("Z&oom"));
+  action->setText(QObject::tr("Z&oom"));
 
-  submenu->addAction(i18n("Zoom &Maximum"), 
+  submenu->addAction(QObject::tr("Zoom &Maximum"), 
                         this, SLOT(menuZoomMax()), Qt::Key_M);
-  submenu->addAction(i18n("Zoom Max &Spike Insensitive"),
+  submenu->addAction(QObject::tr("Zoom Max &Spike Insensitive"),
                         this, SLOT(menuZoomSpikeInsensitiveMax()), Qt::Key_S);
-  submenu->addAction(i18n("Zoom P&revious"), 
+  submenu->addAction(QObject::tr("Zoom P&revious"), 
                         this, SLOT(menuZoomPrev()), Qt::Key_R);
-  submenu->addAction(i18n("Y-Zoom Mean-centered"), 
+  submenu->addAction(QObject::tr("Y-Zoom Mean-centered"), 
                         this, SLOT(menuYZoomAc()), Qt::Key_A);
 
   submenu->insertSeparator(0L);
 
-  submenu->addAction(i18n("X-Zoom Maximum"),
+  submenu->addAction(QObject::tr("X-Zoom Maximum"),
                         this, SLOT(menuXZoomMax()), Qt::CTRL + Qt::Key_M);
-  submenu->addAction(i18n("X-Zoom Out"),
+  submenu->addAction(QObject::tr("X-Zoom Out"),
                         this, SLOT(menuXZoomOut()), Qt::SHIFT + Qt::Key_Right);
-  submenu->addAction(i18n("X-Zoom In"),
+  submenu->addAction(QObject::tr("X-Zoom In"),
                         this, SLOT(menuXZoomIn()), Qt::SHIFT + Qt::Key_Left);
-  submenu->addAction(i18n("Normalize X Axis to Y Axis"),
+  submenu->addAction(QObject::tr("Normalize X Axis to Y Axis"),
                         this, SLOT(menuXNormalize()), Qt::Key_N);
-  submenu->addAction(i18n("Toggle Log X Axis"),
+  submenu->addAction(QObject::tr("Toggle Log X Axis"),
                         this, SLOT(menuXLogSlot()), Qt::Key_G);
 
   submenu->insertSeparator(0L);
 
-  submenu->addAction(i18n("Y-Zoom Local Maximum"),
+  submenu->addAction(QObject::tr("Y-Zoom Local Maximum"),
                         this, SLOT(menuYZoomLocalMax()), Qt::SHIFT + Qt::Key_L);
-  submenu->addAction(i18n("Y-Zoom Maximum"),
+  submenu->addAction(QObject::tr("Y-Zoom Maximum"),
                         this, SLOT(menuYZoomMax()), Qt::SHIFT + Qt::Key_M);
-  submenu->addAction(i18n("Y-Zoom Out"),
+  submenu->addAction(QObject::tr("Y-Zoom Out"),
                         this, SLOT(menuYZoomOut()), Qt::SHIFT + Qt::Key_Up);
-  submenu->addAction(i18n("Y-Zoom In"),
+  submenu->addAction(QObject::tr("Y-Zoom In"),
                         this, SLOT(menuYZoomIn()), Qt::SHIFT + Qt::Key_Down);
-  submenu->addAction(i18n("Normalize Y Axis to X Axis"),
+  submenu->addAction(QObject::tr("Normalize Y Axis to X Axis"),
                         this, SLOT(menuYNormalize()), Qt::SHIFT + Qt::Key_N);
-  submenu->addAction(i18n("Toggle Log Y Axis"),
+  submenu->addAction(QObject::tr("Toggle Log Y Axis"),
                         this, SLOT(menuYLogSlot()), Qt::Key_L);
 
   submenu->insertSeparator(0L);
 
-  submenu->addAction(i18n("Next &Image Color Scale"), 
+  submenu->addAction(QObject::tr("Next &Image Color Scale"), 
                         this, SLOT(menuNextImageColorScale()), Qt::Key_I);
 
   submenu = new QMenu(menu);
   action = menu->insertMenu(0L, submenu);
-  action->setText(i18n("&Scroll"));
+  action->setText(QObject::tr("&Scroll"));
 
-  submenu->addAction(i18n("Left"), this, SLOT(menuMoveLeft()), Qt::Key_Left);
-  submenu->addAction(i18n("Right"), this, SLOT(menuMoveRight()), Qt::Key_Right);
-  submenu->addAction(i18n("Up"), this, SLOT(menuMoveUp()), Qt::Key_Up);
-  submenu->addAction(i18n("Down"), this, SLOT(menuMoveDown()), Qt::Key_Down);
+  submenu->addAction(QObject::tr("Left"), this, SLOT(menuMoveLeft()), Qt::Key_Left);
+  submenu->addAction(QObject::tr("Right"), this, SLOT(menuMoveRight()), Qt::Key_Right);
+  submenu->addAction(QObject::tr("Up"), this, SLOT(menuMoveUp()), Qt::Key_Up);
+  submenu->addAction(QObject::tr("Down"), this, SLOT(menuMoveDown()), Qt::Key_Down);
 
   submenu->insertSeparator(0L);
 
@@ -4061,10 +4061,10 @@ bool Kst2DPlot::popupMenu(QMenu *menu, const QPoint& pos, KstViewObjectPtr topLe
     currCenter = pow(_xLogBase, currCenter);
   }
 
-  action = submenu->addAction(i18n("Next Marker"), this, SLOT(menuNextMarker()), Qt::ALT + Qt::Key_Right);
+  action = submenu->addAction(QObject::tr("Next Marker"), this, SLOT(menuNextMarker()), Qt::ALT + Qt::Key_Right);
   action->setEnabled(nextMarker(currCenter, tempVal));
 
-  action = submenu->addAction(i18n("Previous Marker"), this, SLOT(menuPrevMarker()), Qt::ALT + Qt::Key_Left);
+  action = submenu->addAction(QObject::tr("Previous Marker"), this, SLOT(menuPrevMarker()), Qt::ALT + Qt::Key_Left);
   currCenter = ((xmax + xmin)/2.0) - (xmax - xmin)/MARKER_NUM_SEGS;
   if (_xLog) {
     currCenter = pow(_xLogBase, currCenter);
@@ -4100,7 +4100,7 @@ bool Kst2DPlot::popupMenu(QMenu *menu, const QPoint& pos, KstViewObjectPtr topLe
     c->unlock();
     _curveEditMap[i] = tag;
 
-    submenuEdit->addAction(i18n("Type: Name", "Plot Object: %1").arg(tag), this, SLOT(editCurve(int)));
+    submenuEdit->addAction(QObject::tr("Type: Name", "Plot Object: %1").arg(tag), this, SLOT(editCurve(int)));
 
     vc = kst_cast<KstVCurve>(c);
     if (vc && vc->yVector()) {
@@ -4114,7 +4114,7 @@ bool Kst2DPlot::popupMenu(QMenu *menu, const QPoint& pos, KstViewObjectPtr topLe
         if (dop) {
           _objectEditMap[i + n_curves] = dop->tagName();
 
-          submenuEdit->addAction(i18n("Type: Name", "%1: %2").arg(dop->typeString()).arg(dop->tagName()), this, SLOT(editObject(int)));
+          submenuEdit->addAction(QObject::tr("Type: Name", "%1: %2").arg(dop->typeString()).arg(dop->tagName()), this, SLOT(editObject(int)));
         }
       } else {
         KstRVectorPtr rv;
@@ -4122,7 +4122,7 @@ bool Kst2DPlot::popupMenu(QMenu *menu, const QPoint& pos, KstViewObjectPtr topLe
         rv = kst_cast<KstRVector>(vc->yVector());
         if (rv) {
           _objectEditMap[i + n_curves] = rv->tagName();
-          submenuEdit->addAction(i18n("Type: Name", "Vector: %1").arg(rv->tagName()),  this, SLOT(editVector(int)));
+          submenuEdit->addAction(QObject::tr("Type: Name", "Vector: %1").arg(rv->tagName()),  this, SLOT(editVector(int)));
         }
       }
     } else {
@@ -4139,7 +4139,7 @@ bool Kst2DPlot::popupMenu(QMenu *menu, const QPoint& pos, KstViewObjectPtr topLe
           dop = kst_cast<KstDataObject>(provider);
           if (dop) {
             _objectEditMap[i + n_curves] = dop->tagName();
-            submenuEdit->addAction(i18n("Type: Name", "%1: %2").arg(dop->typeString()).arg(dop->tagName()), this, SLOT(editObject(int)));
+            submenuEdit->addAction(QObject::tr("Type: Name", "%1: %2").arg(dop->typeString()).arg(dop->tagName()), this, SLOT(editObject(int)));
           }
         } else {
           KstRMatrixPtr rm;
@@ -4147,7 +4147,7 @@ bool Kst2DPlot::popupMenu(QMenu *menu, const QPoint& pos, KstViewObjectPtr topLe
           rm = kst_cast<KstRMatrix>(img->matrix());
           if (rm) {
             _objectEditMap[i + n_curves] = rm->tagName();
-            submenuEdit->addAction(i18n("Type: Name", "Matrix: %1").arg(rm->tagName()),  this, SLOT(editMatrix(int)));
+            submenuEdit->addAction(QObject::tr("Type: Name", "Matrix: %1").arg(rm->tagName()),  this, SLOT(editMatrix(int)));
           }
         }
       }
@@ -4162,19 +4162,19 @@ bool Kst2DPlot::popupMenu(QMenu *menu, const QPoint& pos, KstViewObjectPtr topLe
   }
 
   action = menu->insertMenu(0L, submenuEdit);
-  action->setText(i18n("Edit"));
+  action->setText(QObject::tr("Edit"));
   action->setEnabled(hasEntry);
 
   action = menu->insertMenu(0L, submenuFit);
-  action->setText(i18n("Fit"));
+  action->setText(QObject::tr("Fit"));
   action->setEnabled(hasEntry);
 
   action = menu->insertMenu(0L, submenuFilter);
-  action->setText(i18n("Filter"));
+  action->setText(QObject::tr("Filter"));
   action->setEnabled(hasEntry);
 
   action = menu->insertMenu(0L, submenuRemove);
-  action->setText(i18n("Remove"));
+  action->setText(QObject::tr("Remove"));
   action->setEnabled(hasEntry);
 
   return true;
@@ -4324,9 +4324,9 @@ void Kst2DPlot::updateMousePos(const QPoint& pos) {
   }
 
   if (_cursorOffset) {
-    KstApp::inst()->slotUpdateDataMsg(i18n("(x, y) [Offset: x,y]", "(%1, %2) [Offset: %3, %4]").arg(xlabel).arg(ylabel).arg(msgXOffset).arg(msgYOffset));
+    KstApp::inst()->slotUpdateDataMsg(QObject::tr("(x, y) [Offset: x,y]", "(%1, %2) [Offset: %3, %4]").arg(xlabel).arg(ylabel).arg(msgXOffset).arg(msgYOffset));
   } else {
-    KstApp::inst()->slotUpdateDataMsg(i18n("(x, y)", "(%1, %2)").arg(xlabel).arg(ylabel));
+    KstApp::inst()->slotUpdateDataMsg(QObject::tr("(x, y)", "(%1, %2)").arg(xlabel).arg(ylabel));
   }
 }
 
@@ -4523,9 +4523,9 @@ void Kst2DPlot::highlightNearestDataPoint(bool bRepaint, KstPainter *p, const QP
       }
 
       if (_cursorOffset) {
-        msg = i18n("Curve name, (x, y) [Offset: x,y]", "%3 (%1, %2) [Offset: %4, %5]").arg(xlabel).arg(ylabel).arg(name).arg(msgXOffset).arg(msgYOffset);
+        msg = QObject::tr("Curve name, (x, y) [Offset: x,y]", "%3 (%1, %2) [Offset: %4, %5]").arg(xlabel).arg(ylabel).arg(name).arg(msgXOffset).arg(msgYOffset);
       } else {
-        msg = i18n("Curve name, (x, y)", "%3 (%1, %2)").arg(xlabel).arg(ylabel).arg(name);
+        msg = QObject::tr("Curve name, (x, y)", "%3 (%1, %2)").arg(xlabel).arg(ylabel).arg(name);
       }
     }
 
@@ -4594,9 +4594,9 @@ void Kst2DPlot::highlightNearestDataPoint(bool bRepaint, KstPainter *p, const QP
         }
 
         if (!msg.isEmpty()) {
-          msg = i18n("Label, Image name (x, y, z)", "%5, %4 (%1, %2, %3)" ).arg(xlabel).arg(ylabel).arg(zValue,0,'G',precision).arg((*imIter)->tagName()).arg(msg);
+          msg = QObject::tr("Label, Image name (x, y, z)", "%5, %4 (%1, %2, %3)" ).arg(xlabel).arg(ylabel).arg(zValue,0,'G',precision).arg((*imIter)->tagName()).arg(msg);
         } else {
-          msg = i18n("Image name (x, y, z)", "%4 (%1, %2, %3)" ).arg(xlabel).arg(ylabel).arg(zValue,0,'G', precision).arg((*imIter)->tagName());
+          msg = QObject::tr("Image name (x, y, z)", "%4 (%1, %2, %3)" ).arg(xlabel).arg(ylabel).arg(zValue,0,'G', precision).arg((*imIter)->tagName());
         }
       }
     }
@@ -6083,7 +6083,7 @@ void Kst2DPlot::copy() {
   //
 
   // FIXME: if we are over an image, we should also return Z.
-  QString msg = i18n("%1 %2").arg(_copy_x, 0, 'G').arg(_copy_y, 0, 'G');
+  QString msg = QObject::tr("%1 %2").arg(_copy_x, 0, 'G').arg(_copy_y, 0, 'G');
   QApplication::clipboard()->setText(msg);
 }
 
@@ -7125,7 +7125,7 @@ void Kst2DPlot::popPlotColors() {
 
 
 QString Kst2DPlot::menuTitle() const {
-  return i18n("Plot: %1").arg(tagName());
+  return QObject::tr("Plot: %1").arg(tagName());
 }
 
 

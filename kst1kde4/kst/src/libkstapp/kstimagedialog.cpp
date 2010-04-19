@@ -214,7 +214,7 @@ void KstImageDialog::update() {
 bool KstImageDialog::newObject() {
   //if matrixCombo is empty then display an error message
   if (_w->_matrix->selectedMatrix().isEmpty()){
-    QMessageBox::warning(this, i18n("Kst"), i18n("Matrix is a 2D grid of numbers, used to create image", "New image not made: define matrix first."));
+    QMessageBox::warning(this, QObject::tr("Kst"), QObject::tr("Matrix is a 2D grid of numbers, used to create image", "New image not made: define matrix first."));
 
     return false;
   }
@@ -231,7 +231,7 @@ bool KstImageDialog::newObject() {
   matrix = *KST::matrixList.findTag(_w->_matrix->selectedMatrix());
   KST::matrixList.lock().unlock();
   if (!matrix) {
-    QMessageBox::warning(this, i18n("Kst"), i18n("Matrix is a 2D grid of numbers, used to create image", "Could not find matrix."));
+    QMessageBox::warning(this, QObject::tr("Kst"), QObject::tr("Matrix is a 2D grid of numbers, used to create image", "Could not find matrix."));
 
     return false;
   }
@@ -298,7 +298,7 @@ bool KstImageDialog::editSingleObject(KstImagePtr imPtr) {
     KST::matrixList.lock().unlock();
 
     if (!matrix) {
-      QMessageBox::warning(this, i18n("Kst"), i18n("Could not find matrix."));
+      QMessageBox::warning(this, QObject::tr("Kst"), QObject::tr("Could not find matrix."));
 
       return false;
     }
@@ -316,7 +316,7 @@ bool KstImageDialog::editSingleObject(KstImagePtr imPtr) {
     double upperZDouble;
 
     if (!checkParameters(lowerZDouble, upperZDouble)) {
-      //QMessageBox::warning(this, i18n("Kst"), i18n("Image type was changed: Lower Z threshold cannot be higher than Upper Z threshold."));
+      //QMessageBox::warning(this, QObject::tr("Kst"), QObject::tr("Image type was changed: Lower Z threshold cannot be higher than Upper Z threshold."));
       //pMatrix->unlock();
       imPtr->unlock();
 
@@ -481,7 +481,7 @@ bool KstImageDialog::editObject() {
     }
 
     if (!didEdit) {
-      QMessageBox::warning(this, i18n("Kst"), i18n("Select one or more objects to edit."));
+      QMessageBox::warning(this, QObject::tr("Kst"), QObject::tr("Select one or more objects to edit."));
       return false;
     }
   } else {
@@ -642,18 +642,20 @@ bool KstImageDialog::checkParameters(double& lowerZDouble, double& upperZDouble)
     if (!(ok1 && ok2)) {
       if (ok1 || ok2) {
         if (ok1) {
-          QMessageBox::warning(this, i18n("Kst"), i18n("The upper threshold is not a valid decimal number."));
+          QMessageBox::warning(this, QObject::tr("Kst"), QObject::tr("The upper threshold is not a valid decimal number."));
         } else {
-          QMessageBox::warning(this, i18n("Kst"), i18n("The lower threshold is not a valid decimal number."));
+          QMessageBox::warning(this, QObject::tr("Kst"), QObject::tr("The lower threshold is not a valid decimal number."));
         }
       } else {
-        QMessageBox::warning(this, i18n("Kst"), i18n("The upper and lower thresholds are not valid decimal numbers."));
+        QMessageBox::warning(this, QObject::tr("Kst"), QObject::tr("The upper and lower thresholds are not valid decimal numbers."));
       }
+
       return false;
     }
 
     if (lowerZDouble >= upperZDouble) {
-      QMessageBox::warning(this, i18n("Kst"), i18n("The upper threshold must be greater than the lower threshold."));
+      QMessageBox::warning(this, QObject::tr("Kst"), QObject::tr("The upper threshold must be greater than the lower threshold."));
+
       return false;
     }
   }
@@ -668,7 +670,10 @@ void KstImageDialog::populateEditMultiple() {
 // xxx  imlist = kstObjectSubList<KstDataObject,KstImage>(KST::dataObjectList);
 // xxx  _editMultipleWidget->_objectList->insertStringList(imlist.tagNames());
 
-  // also intermediate state for multiple edit
+  //
+  // also intermediate state for multiple edit...
+  //
+
   _w->_colorOnly->setChecked(false);
   _w->_contourOnly->setChecked(false);
   _w->_colorAndContour->setChecked(false);
@@ -700,7 +705,10 @@ void KstImageDialog::populateEditMultiple() {
   _w->_upperZ->setEnabled(true);
   _w->_contourWeight->setEnabled(true);
 
-  // and clean all the fields
+  //
+  // and clean all the fields...
+  //
+
   _colorOnlyDirty = false;
   _contourOnlyDirty = false;
   _colorAndContourDirty = false;
