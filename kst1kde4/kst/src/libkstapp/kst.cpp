@@ -100,7 +100,7 @@
 #define KST_STATUSBAR_STATUS 2
 
 static KstApp *inst = 0L;
-
+static QSettings *qSettingsObject = 0L;
 const QString& KstApp::defaultTag = KGlobal::staticQString("<Auto Name>");
 
 void KstApp::doubleCheckCleanup() {
@@ -115,8 +115,6 @@ KstApp* KstApp::inst() {
   return ::inst;
 }
 
-
-static QSettings *qSettingsObject = 0L;
 
 KstApp::KstApp(QWidget *parent, const char *name) : QMdiArea(parent) {
   assert(!::inst);
@@ -136,10 +134,9 @@ KstApp::KstApp(QWidget *parent, const char *name) : QMdiArea(parent) {
 // xxx  setStandardToolBarMenuEnabled(true);
 
   initDocument();
-  KstDebug::self()->setHandler(_doc);
+// xxx  KstDebug::self()->setHandler(_doc);
   setWindowTitle(_doc->title());
-
-  _debugDialog = new KstDebugDialog(this);
+// xxx  _debugDialog = new KstDebugDialog(this);
 // xxx  _dataManager = new KstDataManager(doc, this);
 // xxx  _viewManager = new KstViewManager(doc, this);
 // xxx  _viewScalarsDialog = new KstViewScalarsDialog(this);
@@ -157,9 +154,11 @@ KstApp::KstApp(QWidget *parent, const char *name) : QMdiArea(parent) {
   _quickStartDialog = new KstQuickStartDialog(this, 0 , true);
 
   initActions();
-  readOptions();
+// xxx  readOptions();
+/* xxx
   _actionZoomXY->setChecked(true);
   toggleMouseMode();
+*/
 
   _updateThread = new UpdateThread(_doc);
   _updateThread->setUpdateTime(KstSettings::globalSettings()->plotUpdateTimer);
@@ -192,7 +191,7 @@ KstApp::KstApp(QWidget *parent, const char *name) : QMdiArea(parent) {
 // xxx  _dcopIface = new KstIfaceImpl(_doc, this);
 
   connect(this, SIGNAL(settingsChanged()), this, SLOT(slotSettingsChanged()));
-
+printf("---- x\n");
   QTimer::singleShot(0, this, SLOT(updateActions()));
 }
 
@@ -313,6 +312,7 @@ void KstApp::checkFontPresent(const QString& font) {
 
   if (info.family().toLower() != font.toLower()) {
     QString msg = QObject::tr("The %1 font was not found and was replaced by the %2 font; as a result, some labels may not display correctly.").arg(font).arg(info.family());
+
     KstDebug::self()->log(msg, KstDebug::Warning);
   }
 }
@@ -368,10 +368,10 @@ void KstApp::updateActions() {
 
 
 void KstApp::initActions() {
+  QAction *newTab = new QAction(QObject::tr("&New tab..."), this);
+  newTab->setStatusTip(QObject::tr("Create a new tab."));
+  connect(newTab, SIGNAL(trigerred()), this, SLOT(slotFileNewWindow()));
 /* xxx
-  KAction *newTab = new KAction(QObject::tr("&New tab..."), 0, 0, this, SLOT(slotFileNewWindow()), actionCollection(), "file_new_window");
-  newTab->setWhatsThis(QObject::tr("Create a new tab."));
-
   fileSave = KStdAction::save(this, SLOT(slotFileSave()), actionCollection());
   fileSave->setWhatsThis(QObject::tr("Save to current Kst plot file."));
 
@@ -456,33 +456,24 @@ void KstApp::initActions() {
   GfxAction->setExclusiveGroup("zoom");
   GfxAction->setToolTip(QObject::tr("Graphics Editor"));
   GfxAction->setWhatsThis(QObject::tr("Use the mouse to create and edit graphics objects."));
+*/
+  _actionNewPlot = new QAction(QObject::tr("New Plot"), this);
+  _actionNewPlot->setStatusTip(QObject::tr("Create a new plot in the current window."));
+  connect(_actionNewPlot, SIGNAL(triggered()), this, SLOT(newPlot()));
 
-  NewPlotAction = new KAction(QObject::tr("New Plot"), "kst_newplot", 0,
-                                 this, SLOT(newPlot()),
-                                 actionCollection(), "newplot_action");
-  NewPlotAction->setWhatsThis(QObject::tr("Create a new plot in the\n"
-                                      "current window."));
+  _actionDataManager = new QAction(QObject::tr("&Data Manager"), this);
+  _actionDataManager->setStatusTip(QObject::tr("Bring up a dialog box to manage data."));
+  connect(_actionDataManager, SIGNAL(triggered()), this, SLOT(show_I()));
 
-  DataManagerAction = new KAction(QObject::tr("&Data Manager"), "kst_datamanager", 0,
-                                  dataManager, SLOT(show_I()),
-                                  actionCollection(), "datamanager_action");
-  DataManagerAction->setWhatsThis(QObject::tr("Bring up a dialog box\n"
-                                       "to manage data."));
-
-  ViewManagerAction = new KAction(QObject::tr("&View Manager"), "kst_viewmanager", 0,
-                                  viewManager, SLOT(show_I()),
-                                  actionCollection(), "viewmanager_action");
-  ViewManagerAction->setWhatsThis(QObject::tr("Bring up a dialog box\n"
-                                       "to manage views."));
+  _actionViewManager = new QAction(QObject::tr("&View Manager"), this);
+  _actionViewManager->setStatusTip(QObject::tr("Bring up a dialog box to manage views."));
+  connect(_actionViewManager, SIGNAL(triggered()), this, SLOT(show_I()));
   
-  VectorDialogAction = new KAction(QObject::tr("New &Vector..."), "kst_vectornew", 0,
-                                 KstVectorDialogI::globalInstance(),
-                                 SLOT(show()), actionCollection(),
-                                 "vectordialog_action");
-  VectorDialogAction->setWhatsThis(QObject::tr("Bring up a dialog box\n"
-                                        "to create a new vector."));
-
-  CurveDialogAction = new KAction(QObject::tr("New &Curve..."), "kst_curvenew", 0,
+  _actionVectorDialog = new QAction(QObject::tr("New &Vector..."), this);
+  _actionVectorDialog->setStatusTip(QObject::tr("Bring up a dialog box to create a new vector."));
+  connect(_actionVectorDialog, SIGNAL(triggered()), this, SLOT(show()));
+/* xxx
+  _actionCurveDialog = new QAction(QObject::tr("New &Curve..."), "kst_curvenew", 0,
                                   KstCurveDialogI::globalInstance(),
                                   SLOT(show()), actionCollection(),
                                   "curvedialog_action");
@@ -792,6 +783,7 @@ void KstApp::initActions() {
   _actionLayout->setToolTip(QObject::tr("Layout mode"));
   _actionLayout->setWhatsThis(QObject::tr("Use this mode to move, resize, and group plots."));
 */
+/* xxx
   // this is the mouse mode menu
   QMenu* mouseModeMenu = new QMenu(this);
 
@@ -809,6 +801,7 @@ void KstApp::initActions() {
   mouseModeMenu->addAction(_actionGfxPicture);
   mouseModeMenu->addAction(_actionGfx2DPlot);
   mouseModeMenu->addAction(_actionGfxLegend);
+*/
 /* xxx
   toolBar()->insertButton("thumbnail", MODE_BUTTON_ID, mouseModeMenu, true, QObject::tr("Select the desired mode"));
   toggleMouseMode();
@@ -908,9 +901,11 @@ void KstApp::initStatusBar() {
 
   statusBar()->show();
 */
+/* xxx
   slotUpdateMemoryMsg(QObject::tr("0 MB available"));
   slotUpdateStatusMsg(QObject::tr("Ready"));
   slotUpdateDataMsg(QString::null);
+*/
 }
 
 
