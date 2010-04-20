@@ -24,10 +24,12 @@
 #include <QMainWindow>
 #include <QMdiArea>
 #include <QMdiSubWindow>
+#include <QMenuBar>
 #include <QPointer>
 #include <QProgressBar>
 #include <QSettings>
 #include <QTimer>
+#include <QToolBar>
 
 #include "kst_export.h"
 #include "kstpainter.h"
@@ -88,7 +90,8 @@ class KstOpen {
 class KST_EXPORT KstApp : public QMainWindow {
   Q_OBJECT
   public:
-    static void initialize(); // for main to call
+    enum KstZoomType { XYZOOM, YZOOM, XZOOM, TEXT, GRAPHICS, LAYOUT };
+    enum KstGraphicType { GFX_LINE, GFX_ARROW, GFX_POLYGON, GFX_POLYLINE, GFX_ELLIPSE, GFX_RECTANGLE, GFX_ROUNDED_RECTANGLE, GFX_CURVE, GFX_LABEL };
 
     KstApp(QWidget* parent=0, const char* name=0);
     ~KstApp();
@@ -97,33 +100,21 @@ class KST_EXPORT KstApp : public QMainWindow {
 
     static KstApp* inst();
     static void doubleCheckCleanup();
+    static void initialize();
 
     void checkFontPresent(const QString& font);
     const QString& defaultFont() const;
 
-    /** add a file to the recent file list */
     void addRecentFile(const QUrl &file);
     void selectRecentFile(const QUrl &file);
 
-    /** opens a file specified by commandline option */
     bool openDocumentFile(const QString& _cmdl = QString::null,
         const QString& o_file = "|", int o_n = -2, int o_f = -2,
         int o_s = -1, bool o_ave = false, bool delayed = false);
-
-    /** returns a pointer to the current document connected to the
-     * KMainWindow instance and is used by the View class to access
-     * the document object's methods */
     KstDoc *document() const;
-
-    /** returns a pointer to the monochrome settings dialog */
-
-    /** pause the updating of data */
     void setPaused(bool paused);
     void togglePaused();
 
-    enum KstZoomType { XYZOOM, YZOOM, XZOOM, TEXT, GRAPHICS, LAYOUT };
-    enum KstGraphicType { GFX_LINE, GFX_ARROW, GFX_POLYGON, GFX_POLYLINE, GFX_ELLIPSE, GFX_RECTANGLE, GFX_ROUNDED_RECTANGLE, GFX_CURVE, GFX_LABEL };
-    /** Get XY zoom radio button state */
     KstZoomType getZoomRadio();
     KstGraphicType getGraphicType();
     bool saveData() const { return _actionSaveData->isChecked(); }
@@ -168,49 +159,19 @@ class KST_EXPORT KstApp : public QMainWindow {
   protected:
     void customEvent(QEvent *e);
 
-    /** save options to the configuration file
-     *  Geometry, Toolbar status, Statusbar status */
     void saveOptions();
-
-    /** read options from configuration file
-     *  Geometry, Toolbar status, Statusbar status */
     void readOptions();
-
-    /** setup kde2 actions and build the GUI */
     void initActions();
-
-    /** sets up the statusbar for the main window */
     void initStatusBar();
-
-    /** initializes the document object */
+    void initToolBar();
+    void initMenuBar();
     void initDocument();
-
-    /** queryClose is called by KMainWindow on each closeEvent of a
-     * window. This calles saveModified() on the document object to ask
-     * if the document should be saved if Modified; on cancel the
-     * closeEvent is rejected.
-     * @see saveModified()
-     * @see KMainWindow#queryClose
-     * @see KMainWindow#closeEvent */
     bool queryClose();
-
-    /** Calls queryClose */
     bool queryExit();
-
-    /** saves the window properties for each open window during session
-     * end to the session config file, including saving the currently
-     * opened file by a temporary filename provided by KApplication.
-     * @see KMainWindow#saveProperties */
     void saveProperties(QSettings *cfg);
-
-    /** reads the session config file and restores the application's
-     * state including the last opened files and documents by reading
-     * the temporary files saved by saveProperties()
-     * @see KMainWindow#readProperties */
     void readProperties(QSettings *cfg);
 
   private slots:
-    // Hack to update KStdActions
     void updateActions();
     void loadExtensions();
     void toggleDataMode();
@@ -238,17 +199,14 @@ class KST_EXPORT KstApp : public QMainWindow {
     void slotFileQuit();
     void slotFilePrint();
 
-    /** print without querying */
     void immediatePrintToFile(const QString& filename, bool revert = true);
     void immediatePrintWindowToFile(QMdiSubWindow *window, const QString& filename);
     void immediatePrintActiveWindowToFile(const QString& filename);
 
-    /** export to png without querying */
     void immediatePrintToPng(const QString& filename, const QString& format = "PNG", int width = 640, int height = 480, bool all = false, int display = 0);
     void immediatePrintWindowToPng(QMdiSubWindow *window, const QString& filename, const QString& format = "PNG", int width = 640, int height = 480, int display = 0);
     void immediatePrintActiveWindowToPng(const QString& filename, const QString& format = "PNG", int width = 640, int height = 480, int display = 0);
 
-    /** export to eps without querying */
     void immediatePrintToEps(const QString& filename, int width = 640, int height = 480, bool all=false, int display = 0);
     void immediatePrintWindowToEps(QMdiSubWindow *win, const QString& filename, int width, int height, int display);    
     void immediatePrintActiveWindowToEps(const QString& filename, int width, int height, int display);
@@ -257,10 +215,7 @@ class KST_EXPORT KstApp : public QMainWindow {
     void slotCopy();
     void slotPaste();
 
-    /** toggles the statusbar */
     void slotViewStatusBar();
-
-    /** changes the statusbar contents */
     void updateStatusBarText();
     void slotUpdateStatusMsg(const QString &msg);
     void slotUpdateDataMsg(const QString &msg);
@@ -367,35 +322,40 @@ class KST_EXPORT KstApp : public QMainWindow {
     QAction *_actionSamplesFromEnd;
     QAction *_actionTiedZoom;
     QAction *_actionReload;
-    QAction *_actionMatrixDialog;
-    QAction *_actionImageDialog;
     QAction *_actionNewPlot;
-    QAction *_actionPlotDialog;
-    QAction *_actionVectorDialog;
-    QAction *_actionCurveDialog;
-    QAction *_actionCsdDialog;
-    QAction *_actionEqDialog;
-    QAction *_actionHsDialog;
-    QAction *_actionVvDialog;
-    QAction *_actionPsdDialog;
-    QAction *_actionDataManager;  
-    QAction *_actionViewManager;
+    QAction *_actionNewTab;
     QAction *_actionVectorSave;
-    QAction *_actionPluginDialog;
-    QAction *_actionViewScalarsDialog;
-    QAction *_actionViewStringsDialog;
-    QAction *_actionViewVectorsDialog;
-    QAction *_actionViewMatricesDialog;
-    QAction *_actionViewFitsDialog;
+
+    QAction *_actionDialogPlot;
+    QAction *_actionDialogVector;
+    QAction *_actionDialogCurveD;
+    QAction *_actionDialogCsd;
+    QAction *_actionDialogEq;
+    QAction *_actionDialogHs;
+    QAction *_actionDialogVv;
+    QAction *_actionDialogPsd;
+    QAction *_actionDialogMatrix;
+    QAction *_actionDialogImage;
+    QAction *_actionDialogPlugin;
+    QAction *_actionDialogViewScalars;
+    QAction *_actionDialogViewStrings;
+    QAction *_actionDialogViewVectors;
+    QAction *_actionDialogViewMatrices;
+    QAction *_actionDialogViewFits;
+    QAction *_actionDialogDebug;
+    QAction *_actionDialogChangeFile;
+    QAction *_actionDialogChooseColor;
+    QAction *_actionDialogDifferentiateCurves;
+    QAction *_actionDialogChangeNpts;
+    QAction *_actionDialogGraphFile;
+
     QAction *_actionDataWizard;
-    QAction *_actionDebugDialog;
-    QAction *_actionChangeFileDialog;
-    QAction *_actionChooseColorDialog;
-    QAction *_actionDifferentiateCurvesDialog;
-    QAction *_actionChangeNptsDialog;
-    QAction *_actionGraphFileDialog;
-    QAction *_actionPluginManager;
-    QAction *_actionExtensionManager;
+
+    QAction *_actionManagerData;  
+    QAction *_actionManagerView;
+    QAction *_actionManagerPluginr;
+    QAction *_actionManagerExtension;
+
     QAction *_actionEventMonitor;
 
     QAction *_actionFileNew;
@@ -431,7 +391,10 @@ class KST_EXPORT KstApp : public QMainWindow {
     StatusLabel *_memoryBar;
     StatusLabel *_dataBar;
     QProgressBar *_progressBar;
+    QToolBar *_toolBar;
+    QMenuBar *_menuBar;
     QMdiArea *_mdiArea;
+
 // xxx    KstIfaceImpl *_dcopIface;
     UpdateThread *_updateThread;
     Kst2DPlotMap *_plotHolderWhileOpeningDocument;
