@@ -21,6 +21,7 @@
 #include <config.h>
 
 #include <QActionGroup>
+#include <QMainWindow>
 #include <QMdiArea>
 #include <QMdiSubWindow>
 #include <QPointer>
@@ -84,7 +85,7 @@ class KstOpen {
     bool ave;
 };
 
-class KST_EXPORT KstApp : public QMdiArea {
+class KST_EXPORT KstApp : public QMainWindow {
   Q_OBJECT
   public:
     static void initialize(); // for main to call
@@ -313,6 +314,11 @@ class KST_EXPORT KstApp : public QMdiArea {
     void setEnableImplicitRepaintsFromScript(bool enable);
     bool getEnableImplicitRepaintsFromScript();
 
+    QList<QMdiSubWindow*> subWindowList(QMdiArea::WindowOrder order = QMdiArea::CreationOrder) const;
+    QMdiSubWindow *activeSubWindow() const;
+    void removeSubWindow(QWidget *widget);
+    QMdiSubWindow *addSubWindow(QWidget *widget, Qt::WindowFlags windowFlags = 0 ); 
+
   signals:
     void timezoneChanged(const QString& tz, int utcOffset);
     void settingsChanged();
@@ -425,6 +431,7 @@ class KST_EXPORT KstApp : public QMdiArea {
     StatusLabel *_memoryBar;
     StatusLabel *_dataBar;
     QProgressBar *_progressBar;
+    QMdiArea *_mdiArea;
 // xxx    KstIfaceImpl *_dcopIface;
     UpdateThread *_updateThread;
     Kst2DPlotMap *_plotHolderWhileOpeningDocument;

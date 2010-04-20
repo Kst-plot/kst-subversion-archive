@@ -262,13 +262,14 @@ void KstGuiData::removeCurveFromPlots(KstBaseCurve *c) {
 
 
 QStringList KstGuiData::plotList(const QString& strWindow) {
+  QMdiSubWindow *window;
+  QStringList rc;
+
   if (strWindow.isEmpty()) {
     return Kst2DPlot::globalPlotList().tagNames();
   }
 
-  QMdiSubWindow *window = KstApp::inst()->findChild<QMdiSubWindow*>(strWindow);
-  QStringList rc;
-
+  window = KstApp::inst()->findChild<QMdiSubWindow*>(strWindow);
   if (window) {
     KstViewWindow* viewWindow;
 
@@ -297,7 +298,9 @@ bool KstGuiData::viewObjectNameNotUnique(const QString& tag) {
   windows = app->subWindowList(QMdiArea::CreationOrder);
 
   for (i = windows.constBegin(); i != windows.constEnd(); ++i) {
-    KstViewWindow *view = dynamic_cast<KstViewWindow*>(*i);
+    KstViewWindow *view;
+
+    view = dynamic_cast<KstViewWindow*>(*i);
     if (view) {
       if (view->view()->findChild(tag, true)) {
         retVal = true;
@@ -312,11 +315,13 @@ bool KstGuiData::viewObjectNameNotUnique(const QString& tag) {
 
 
 int KstGuiData::columns(const QString& strWindow) {
-  QMdiSubWindow *window = KstApp::inst()->findChild<QMdiSubWindow*>(strWindow);
+  QMdiSubWindow *window;
 
+  window = KstApp::inst()->findChild<QMdiSubWindow*>(strWindow);
   if (window) {
-    KstViewWindow *viewWindow = dynamic_cast<KstViewWindow*>(window);
+    KstViewWindow *viewWindow;
 
+    viewWindow = dynamic_cast<KstViewWindow*>(window);
     if (viewWindow) {
       KstTopLevelViewPtr view = viewWindow->view();
 
@@ -351,7 +356,9 @@ QStringList KstGuiData::windowList() {
 
 
 QString KstGuiData::currentWindow() {
-  QMdiSubWindow *window = KstApp::inst()->activeSubWindow();
+  QMdiSubWindow *window;
+
+  window = KstApp::inst()->activeSubWindow();
 
   return window ? window->windowTitle() : QString::null;
 }

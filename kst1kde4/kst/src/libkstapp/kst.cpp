@@ -15,8 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <assert.h>
-
 #include <QClipboard>
 #include <QDateTime>
 #include <QEvent>
@@ -116,9 +114,18 @@ KstApp* KstApp::inst() {
 }
 
 
-KstApp::KstApp(QWidget *parent, const char *name) : QMdiArea(parent) {
-  assert(!::inst);
+KstApp::KstApp(QWidget *parent, const char *name) : QMainWindow(parent) {
   ::inst = this;
+
+  //
+  // create the mdi area...
+  //
+
+  _mdiArea = new QMdiArea(this);
+  _mdiArea->setViewMode(QMdiArea::TabbedView);
+  _mdiArea->setDocumentMode(true);
+  _mdiArea->setTabShape(QTabWidget::Rounded);
+  setCentralWidget(_mdiArea);
 
   _updatesFromScriptEnabled = true;
   _plotHolderWhileOpeningDocument = new Kst2DPlotMap;
@@ -135,7 +142,8 @@ KstApp::KstApp(QWidget *parent, const char *name) : QMdiArea(parent) {
 
   initDocument();
 // xxx  KstDebug::self()->setHandler(_doc);
-  setWindowTitle(_doc->title());
+
+// xxx  setWindowTitle(_doc->title());
 // xxx  _debugDialog = new KstDebugDialog(this);
 // xxx  _dataManager = new KstDataManager(doc, this);
 // xxx  _viewManager = new KstViewManager(doc, this);
@@ -150,36 +158,36 @@ KstApp::KstApp(QWidget *parent, const char *name) : QMdiArea(parent) {
 // xxx  _changeNptsDialog = new KstChangeNptsDialog(this);
 // xxx  _graphFileDialog = new KstGraphFileDialog(this);
 // xxx  _vectorSaveDialog = new KstVectorSaveDialog(this);
-  _monochromeDialog = new KstMonochromeDialog(this);
-  _quickStartDialog = new KstQuickStartDialog(this, 0 , true);
+// xxx  _monochromeDialog = new KstMonochromeDialog(this);
+// xxx  _quickStartDialog = new KstQuickStartDialog(this, 0 , true);
 
-  initActions();
+// xxx  initActions();
+
 // xxx  readOptions();
 /* xxx
   _actionZoomXY->setChecked(true);
   toggleMouseMode();
 */
-
+/* xxx
   _updateThread = new UpdateThread(_doc);
   _updateThread->setUpdateTime(KstSettings::globalSettings()->plotUpdateTimer);
   _updateThread->start();
-
+*/
   //
   // plot Dialog signals...
   //
-
-// xxx  connect(_changeFileDialog, SIGNAL(docChanged()), this, SLOT(registerDocChange()));
-// xxx  connect(_changeNptsDialog, SIGNAL(docChanged()), this, SLOT(registerDocChange()));
-// xxx  connect(_graphFileDialog, SIGNAL(graphFileReq(const QString&,const QString&,int,int,bool,int)), this, SLOT(immediatePrintToPng(const QString&,const QString&,int,int,bool,int)));
-// xxx  connect(_graphFileDialog, SIGNAL(graphFileEpsReq(const QString&,int,int,bool,int)), this, SLOT(immediatePrintToEps(const QString&,int,int,bool,int)));
-
+/* XXX
+  connect(_changeFileDialog, SIGNAL(docChanged()), this, SLOT(registerDocChange()));
+  connect(_changeNptsDialog, SIGNAL(docChanged()), this, SLOT(registerDocChange()));
+  connect(_graphFileDialog, SIGNAL(graphFileReq(const QString&,const QString&,int,int,bool,int)), this, SLOT(immediatePrintToPng(const QString&,const QString&,int,int,bool,int)));
+  connect(_graphFileDialog, SIGNAL(graphFileEpsReq(const QString&,int,int,bool,int)), this, SLOT(immediatePrintToEps(const QString&,int,int,bool,int)));
+*/
   //
   // data manager signals...
   //
-
+/* XXX
   connect(_doc, SIGNAL(updateDialogs()), this, SLOT(updateDialogs()));
   connect(_doc, SIGNAL(dataChanged()), this, SLOT(updateDataDialogs()));
-/* xxx
   connect(_dataManager, SIGNAL(docChanged()), this, SLOT(registerDocChange()));
   connect(_dataManager, SIGNAL(editDataVector(const QString&)), KstVectorDialog::globalInstance(), SLOT(showEdit(const QString&)));
   connect(_dataManager, SIGNAL(editStaticVector(const QString&)), KstVectorDialog::globalInstance(), SLOT(showEdit(const QString&)));
@@ -191,8 +199,10 @@ KstApp::KstApp(QWidget *parent, const char *name) : QMdiArea(parent) {
 // xxx  _dcopIface = new KstIfaceImpl(_doc, this);
 
   connect(this, SIGNAL(settingsChanged()), this, SLOT(slotSettingsChanged()));
-printf("---- x\n");
-  QTimer::singleShot(0, this, SLOT(updateActions()));
+
+// xxx  QTimer::singleShot(0, this, SLOT(updateActions()));
+
+  show();
 }
 
 
@@ -211,22 +221,46 @@ KstApp::~KstApp() {
 
   KstDataSource::cleanupForExit(); // must be before deletions
   KstDataObject::cleanupForExit(); // must be before deletions
+
   delete _updateThread;
   _updateThread = 0L;
+
 // xxx  delete _dcopIface;
 // xxx  _dcopIface = 0L;
+
   ::inst = 0L;
+
   if (_dataSourceConfig) {
     _dataSourceConfig->sync();
     _dataSourceConfig = 0L;
   }
+
   delete qSettingsObject; // must be after cleanupForExit
   qSettingsObject = 0L;
 }
 
 
-QSize KstApp::sizeHint() const
-{
+QList<QMdiSubWindow*> KstApp::subWindowList(QMdiArea::WindowOrder order) const {
+  return _mdiArea->subWindowList(order);
+}
+
+
+QMdiSubWindow *KstApp::activeSubWindow() const {
+  return _mdiArea->activeSubWindow();
+}
+
+
+void KstApp::removeSubWindow(QWidget *widget) {
+  _mdiArea->removeSubWindow(widget);
+}
+
+
+QMdiSubWindow *KstApp::addSubWindow(QWidget *widget, Qt::WindowFlags windowFlags) {
+  return _mdiArea->addSubWindow(widget, windowFlags);
+}
+
+
+QSize KstApp::sizeHint() const {
   QSize size;
   QRect rect; // xxx ( KGlobalSettings::desktopGeometry(KstApp::inst()) );
 

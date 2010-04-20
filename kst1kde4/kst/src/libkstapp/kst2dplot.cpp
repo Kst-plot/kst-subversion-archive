@@ -529,7 +529,7 @@ Kst2DPlot::Kst2DPlot(const Kst2DPlot& plot, const QString& name)
   bool duplicate = true;
   int last = 0;
 
-  windows = app->subWindowList( QMdiArea::CreationOrder );
+  windows = app->subWindowList(QMdiArea::CreationOrder);
 
   //
   // check for unique plot name
@@ -1030,11 +1030,13 @@ void Kst2DPlot::clearCurves() {
 
 
 void Kst2DPlot::fitCurve(int id) {
-  QMdiSubWindow* c = KstApp::inst()->activeSubWindow();
+  QMdiSubWindow* c;
 
+  c = KstApp::inst()->activeSubWindow();
   if (c) {
-    KstBaseCurvePtr curve = *(_curves.findTag(_curveRemoveMap[id]));
+    KstBaseCurvePtr curve;
 
+    curve = *(_curves.findTag(_curveRemoveMap[id]));
     if (curve) {
       KstFitDialog::globalInstance()->show_setCurve(_curveRemoveMap[id], tagName(), c->windowTitle());
       if (_menuView) {
@@ -1046,11 +1048,13 @@ void Kst2DPlot::fitCurve(int id) {
 
 
 void Kst2DPlot::fitCurveVisibleStatic(int id) {
-  QMdiSubWindow* c = KstApp::inst()->activeSubWindow();
+  QMdiSubWindow* c;
 
+  c = KstApp::inst()->activeSubWindow();
   if (c) {
-    KstBaseCurvePtr curve = *(_curves.findTag(_curveRemoveMap[id]));
+    KstBaseCurvePtr curve;
 
+    curve = *(_curves.findTag(_curveRemoveMap[id]));
     if (curve) {
       KstFitDialog::globalInstance()->show_setCurve(_curveRemoveMap[id], tagName(), c->windowTitle());
       if (_menuView) {
@@ -1062,11 +1066,13 @@ void Kst2DPlot::fitCurveVisibleStatic(int id) {
 
 
 void Kst2DPlot::fitCurveVisibleDynamic(int id) {
-  QMdiSubWindow* c = KstApp::inst()->activeSubWindow();
+  QMdiSubWindow* c;
 
+  c = KstApp::inst()->activeSubWindow();
   if (c) {
-    KstBaseCurvePtr curve = *(_curves.findTag(_curveRemoveMap[id]));
+    KstBaseCurvePtr curve;
 
+    curve = *(_curves.findTag(_curveRemoveMap[id]));
     if (curve) {
       KstFitDialog::globalInstance()->show_setCurve(_curveRemoveMap[id], tagName(), c->windowTitle());
       if (_menuView) {
@@ -3887,15 +3893,19 @@ void Kst2DPlot::deleteObject() {
 
 void Kst2DPlot::copyObject() {
   if (_layoutMenuView) {
-    KstTopLevelViewPtr tlv = _layoutMenuView->viewObject();
+    KstTopLevelViewPtr tlv;
+
+    tlv = _layoutMenuView->viewObject();
     if (tlv) {
-      KstViewWindow *vw = dynamic_cast<KstViewWindow*>(_layoutMenuView->parent());
-      if (vw) {
+      KstViewWindow *viewWindow;
+
+      viewWindow = dynamic_cast<KstViewWindow*>(_layoutMenuView->parent());
+      if (viewWindow) {
         QStringList plotList;
 
         plotList.append(tagName());
 
-        PlotMimeSource *newplots = new PlotMimeSource(vw->windowTitle(), plotList);
+        PlotMimeSource *newplots = new PlotMimeSource(viewWindow->windowTitle(), plotList);
 
 // xxx        QApplication::clipboard()->setData(newplots, QClipboard::Clipboard);
       }
@@ -6094,12 +6104,13 @@ Kst2DPlotPtr Kst2DPlot::findPlotByName(const QString& name) {
   QList<QMdiSubWindow*>::const_iterator i;
   Kst2DPlotPtr rc;
 
-  windows = app->subWindowList( QMdiArea::CreationOrder );
+  windows = app->subWindowList(QMdiArea::CreationOrder);
   for (i = windows.constBegin(); i != windows.constEnd(); ++i) {
-    KstViewWindow *viewWindow = dynamic_cast<KstViewWindow*>(*i);
+    KstViewWindow *viewWindow;
 
+    viewWindow = dynamic_cast<KstViewWindow*>(*i);
     if (viewWindow) {
-      rc = kst_cast<Kst2DPlot>(viewWindow->view()->findChild(name));
+// xxx      rc = kst_cast<Kst2DPlot>(viewWindow->view()->findChild(name));
 
       if (rc) {
         break;
@@ -6117,10 +6128,11 @@ Kst2DPlotList Kst2DPlot::globalPlotList() {
   QList<QMdiSubWindow*>::const_iterator i;
   Kst2DPlotList rc;
 
-  windows = app->subWindowList( QMdiArea::CreationOrder );
+  windows = app->subWindowList(QMdiArea::CreationOrder);
   for (i = windows.constBegin(); i != windows.constEnd(); ++i) {
-    KstViewWindow *viewWindow = dynamic_cast<KstViewWindow*>(*i);
+    KstViewWindow *viewWindow;
 
+    viewWindow = dynamic_cast<KstViewWindow*>(*i);
     if (viewWindow) {
       Kst2DPlotList sub;
 

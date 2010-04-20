@@ -378,6 +378,7 @@ int main(int argc, char *argv[]) {
     RESTORE(KstApp)
   } else {
 */
+
     KstApp *kst = new KstApp;
 /* xxx
 
@@ -870,7 +871,9 @@ int main(int argc, char *argv[]) {
 */
     // LEAVE THIS HERE - causes crashes otherwise!
     int rc = app.exec();
+
     delete kst;
+
     return rc;
 // xxx  }
 

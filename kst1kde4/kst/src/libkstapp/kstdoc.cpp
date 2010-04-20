@@ -167,14 +167,14 @@ void KstDoc::closeDocument() {
 
 
 bool KstDoc::newDocument() {
-  deleteContents();
+// xxx  deleteContents();
   _modified = false;
   _absFilePath = QDir::homePath();
   _title = "Untitled";
-  KstApp::inst()->newWindow(QObject::tr("default name of first window", "W1"));
-  createScalars();
+// xxx  KstApp::inst()->newWindow(QObject::tr("default name of first window", "W1"));
+// xxx  createScalars();
 
-  emit updateDialogs();
+// xxx  emit updateDialogs();
 
   return true;
 }

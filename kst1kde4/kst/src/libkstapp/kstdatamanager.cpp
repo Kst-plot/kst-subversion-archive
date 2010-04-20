@@ -789,8 +789,9 @@ void KstObjectItem::paintPlot(Kst2DPlotPtr p) {
   windows = app->subWindowList(QMdiArea::CreationOrder);
 
   for (i = windows.constBegin(); i != windows.constEnd(); ++i) {
-    KstViewWindow *viewWindow = dynamic_cast<KstViewWindow*>(*i);
+    KstViewWindow *viewWindow;
 
+    viewWindow = dynamic_cast<KstViewWindow*>(*i);
     if (viewWindow) {
 /* xxx
       if (viewWindow->view()->contains(kst_cast<KstViewObject>(p))) {

@@ -1439,8 +1439,9 @@ bool KstViewObject::layoutPopupMenu(QMenu *menu, const QPoint& pos, KstViewObjec
     windows = KstApp::inst()->subWindowList(QMdiArea::CreationOrder);
   
     for (it = windows.constBegin(); it != windows.constEnd(); ++it) {
-      KstViewWindow *viewWindow = dynamic_cast<KstViewWindow*>(*it);
+      KstViewWindow *viewWindow;
 
+      viewWindow = dynamic_cast<KstViewWindow*>(*it);
       if (viewWindow) {
         KstTopLevelViewPtr tlv;
 
@@ -1474,8 +1475,9 @@ bool KstViewObject::layoutPopupMenu(QMenu *menu, const QPoint& pos, KstViewObjec
     submenu->setTitle(i18n("&Copy To"));
 
     for (it = windows.constBegin(); it != windows.constEnd(); ++it) {
-      KstViewWindow *viewWindow = dynamic_cast<KstViewWindow*>(*it);
+      KstViewWindow *viewWindow;
 
+      viewWindow = dynamic_cast<KstViewWindow*>(*it);
       if (viewWindow) {
         hasEntry = true;
         if (tlv && tlv == viewWindow->view()) {
@@ -1851,11 +1853,12 @@ void KstViewObject::rename() {
   bool ok = false;
   bool done;
 
-  newName = QInputDialog::getText(KstApp::inst()->activeSubWindow(), QObject::tr("Kst"), QObject::tr("Enter a new name for %1:").arg(tagName()), QLineEdit::Normal, tagName(), &ok);
+// xxx  newName = QInputDialog::getText(KstApp::inst()->activeSubWindow(), QObject::tr("Kst"), QObject::tr("Enter a new name for %1:").arg(tagName()), QLineEdit::Normal, tagName(), &ok);
 
   done = !ok;
   while (!done) {
     setTagName(KstObjectTag(newName+"tmpholdingstring", KstObjectTag::globalTagContext));
+/* xxx
     if (KstData::self()->viewObjectNameNotUnique(newName)) {
       newName = QInputDialog::getText(KstApp::inst()->activeSubWindow(), QObject::tr("Kst"), QObject::tr("%1 is not a unique name: Enter a new name for %2:").arg(newName).arg(oldName), QLineEdit::Normal, oldName, &ok);
 
@@ -1863,6 +1866,7 @@ void KstViewObject::rename() {
     } else {
       done = ok = true;
     }
+*/
   }
 
   if (ok) {

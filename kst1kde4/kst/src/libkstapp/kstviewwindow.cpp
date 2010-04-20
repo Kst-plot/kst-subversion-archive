@@ -86,11 +86,11 @@ KstViewWindow::KstViewWindow(const QDomElement& e, QWidget* parent, const char* 
 void KstViewWindow::commonConstructor() {
 // xxx  config = kapp->config();
 
-  connect(this, SIGNAL(focusInEventOccurs( QMdiSubWindow*)), this, SLOT(slotActivated(QMdiSubWindow*)));
+// xxx  connect(this, SIGNAL(focusInEventOccurs( QMdiSubWindow*)), this, SLOT(slotActivated(QMdiSubWindow*)));
 
-  QTimer::singleShot(0, this, SLOT(updateActions()));
+// xxx  QTimer::singleShot(0, this, SLOT(updateActions()));
 
-  QVBoxLayout *vb = new QVBoxLayout(this);
+// xxx  QVBoxLayout *vb = new QVBoxLayout(this);
 // xxx  vb->setAutoAdd(true);
 }
 
@@ -442,10 +442,11 @@ QString KstViewWindow::createPlotObject(const QString& suggestedName, bool promp
     //
 
     duplicate = false;
-    windows = app->subWindowList(QMdiArea::CreationOrder); 
+// xxx    windows = app->subWindowList(QMdiArea::CreationOrder); 
     for (i = windows.constBegin(); i != windows.constEnd() && !duplicate; ++i) {
-      KstViewWindow *viewWindow = dynamic_cast<KstViewWindow*>(*i);
+      KstViewWindow *viewWindow;
 
+      viewWindow = dynamic_cast<KstViewWindow*>(*i);
       if (viewWindow) {
         rc = viewWindow->view()->findChild(name);
         if (rc) {
@@ -473,7 +474,7 @@ QString KstViewWindow::createPlotObject(const QString& suggestedName, bool promp
 
         duplicate = false;
       
-        windows = app->subWindowList(QMdiArea::CreationOrder);
+// xxx        windows = app->subWindowList(QMdiArea::CreationOrder);
       
         for (i = windows.constBegin(); i != windows.constEnd() && !duplicate; ++i) {
           KstViewWindow *viewWindow;

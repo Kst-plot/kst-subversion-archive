@@ -150,7 +150,7 @@ void KstEditViewObjectDialog::fillObjectList() {
   QList<QMdiSubWindow*> windows;
   QList<QMdiSubWindow*>::const_iterator i;
 
-  windows = KstApp::inst()->subWindowList(QMdiArea::CreationOrder);
+// xxx  windows = KstApp::inst()->subWindowList(QMdiArea::CreationOrder);
 
   for (i = windows.constBegin(); i != windows.constEnd(); ++i) {
     KstViewWindow *viewWindow = dynamic_cast<KstViewWindow*>(*i);
