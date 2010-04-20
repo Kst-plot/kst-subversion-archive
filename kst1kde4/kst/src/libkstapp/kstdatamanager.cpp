@@ -1563,12 +1563,12 @@ void KstDataManager::contextMenu(QTreeWidgetItem *i, const QPoint& p, int col) {
   KstBaseCurvePtr c;
   KstImagePtr img;
   QMenu *m = new QMenu(this);
-  QAction* id;
+  int id = 300;
 
   m->setTitle(koi->text(0));
 
   if (koi->rtti() != RTTI_OBJ_VECTOR && koi->rtti() != RTTI_OBJ_MATRIX) {
-    id = m->addAction(tr("&Edit..."), this, SLOT(edit_I()));
+    m->addAction(tr("&Edit..."), this, SLOT(edit_I()));
   }
 
   if (koi->dataObject()) {
@@ -1577,43 +1577,41 @@ void KstDataManager::contextMenu(QTreeWidgetItem *i, const QPoint& p, int col) {
     if (!hints->isEmpty()) {
       KstCurveHintList::const_iterator i;
       QMenu *hintMenu = new QMenu(this);
-      int cnt = 0;
 
       for (i = hints->begin(); i != hints->end(); ++i) {
-// xxx        hintMenu->insertItem((*i)->curveName(), koi, SLOT(activateHint(int)), 0, cnt);
-        cnt++;
+        hintMenu->addAction((*i)->curveName(), koi, SLOT(activateHint(int)));
       }
-// xxx      id = m->insertItem(tr("&Quick Curve"), hintMenu);
+// xxx      m->insertItem(tr("&Quick Curve"), hintMenu);
+
     }
   }
 
   if (koi->rtti() == RTTI_OBJ_DATA_VECTOR) {
-    id = m->addAction(tr("&Make Curve..."), koi, SLOT(makeCurve()));
-    id = m->addAction(tr("Make Spect&rum..."), koi, SLOT(makePSD()));
-    id = m->addAction(tr("Make &Spectrogram..."), koi, SLOT(makeCSD()));
-    id = m->addAction(tr("Make &Histogram..."), koi, SLOT(makeHistogram()));
-    id = m->addAction(tr("&Reload"), koi, SLOT(reload()));
-    id = m->addAction(tr("Meta &Data"), koi, SLOT(showMetadata()));
-    id = m->addAction(tr("&View Values..."), koi, SLOT(viewVectorValues()));
+    m->addAction(tr("&Make Curve..."), koi, SLOT(makeCurve()));
+    m->addAction(tr("Make Spect&rum..."), koi, SLOT(makePSD()));
+    m->addAction(tr("Make &Spectrogram..."), koi, SLOT(makeCSD()));
+    m->addAction(tr("Make &Histogram..."), koi, SLOT(makeHistogram()));
+    m->addAction(tr("&Reload"), koi, SLOT(reload()));
+    m->addAction(tr("Meta &Data"), koi, SLOT(showMetadata()));
+    m->addAction(tr("&View Values..."), koi, SLOT(viewVectorValues()));
   } else if (koi->rtti() == RTTI_OBJ_VECTOR) {
-    id = m->addAction(tr("&Make Curve..."), koi, SLOT(makeCurve()));
-    id = m->addAction(tr("Make Spect&rum..."), koi, SLOT(makePSD()));
-    id = m->addAction(tr("Make &Spectrogram..."), koi, SLOT(makeCSD()));
-    id = m->addAction(tr("Make &Histogram..."), koi, SLOT(makeHistogram()));
-    id = m->addAction(tr("&View Values..."), koi, SLOT(viewVectorValues()));
+    m->addAction(tr("&Make Curve..."), koi, SLOT(makeCurve()));
+    m->addAction(tr("Make Spect&rum..."), koi, SLOT(makePSD()));
+    m->addAction(tr("Make &Spectrogram..."), koi, SLOT(makeCSD()));
+    m->addAction(tr("Make &Histogram..."), koi, SLOT(makeHistogram()));
+    m->addAction(tr("&View Values..."), koi, SLOT(viewVectorValues()));
   } else if (koi->rtti() == RTTI_OBJ_DATA_MATRIX) {
-    id = m->addAction(tr("Make &Image..."), koi, SLOT(makeImage()));  
-    id = m->addAction(tr("&Reload"), koi, SLOT(reload()));
-    id = m->addAction(tr("Meta &Data"), koi, SLOT(showMetadata()));
-    id = m->addAction(tr("&View Values..."), koi, SLOT(viewMatrixValues()));
+    m->addAction(tr("Make &Image..."), koi, SLOT(makeImage()));  
+    m->addAction(tr("&Reload"), koi, SLOT(reload()));
+    m->addAction(tr("Meta &Data"), koi, SLOT(showMetadata()));
+    m->addAction(tr("&View Values..."), koi, SLOT(viewMatrixValues()));
   } else if (koi->rtti() == RTTI_OBJ_MATRIX || koi->rtti() == RTTI_OBJ_STATIC_MATRIX) {
-    id = m->addAction(tr("Make &Image..."), koi, SLOT(makeImage()));
-    id = m->addAction(tr("&View Values..."), koi, SLOT(viewMatrixValues()));
+    m->addAction(tr("Make &Image..."), koi, SLOT(makeImage()));
+    m->addAction(tr("&View Values..."), koi, SLOT(viewMatrixValues()));
   } else if ((c = kst_cast<KstBaseCurve>(koi->dataObject()))) {
     QMenu *addMenu = new QMenu(this);
     QMenu *removeMenu = new QMenu(this);
     PlotMap.clear();
-// xxx    id = 300;
     bool haveAdd = false, haveRemove = false;
 
     KstApp *app = KstApp::inst();
@@ -1621,41 +1619,43 @@ void KstDataManager::contextMenu(QTreeWidgetItem *i, const QPoint& p, int col) {
     QList<QMdiSubWindow*>::const_iterator i;
 
     windows = app->subWindowList(QMdiArea::CreationOrder);
-  
-    for (i = windows.constBegin(); i != windows.constEnd(); ++i)
+ 
+    for (i = windows.constBegin(); i != windows.constEnd(); ++i) {
       KstViewWindow *viewWindow = dynamic_cast<KstViewWindow*>(*i);
-/* xxx
+
       if (viewWindow) {
-        Kst2DPlotList plots = viewWindow->view()->findChildrenType<Kst2DPlot>();
+/* xxx       Kst2DPlotList plots = viewWindow->view()->findChildrenType<Kst2DPlot>();
         Kst2DPlotList::iterator i;
 
         for (i = plots.begin(); i != plots.end(); ++i) {
           Kst2DPlotPtr plot = *i;
   
           if (!plot->Curves.contains(c)) {
-            addMenu->insertItem(tr("%1 - %2").arg(v->caption()).arg(plot->tag().tag()), koi, SLOT(addToPlot(int)), 0, id);
+            addMenu->addAction(tr("%1 - %2").arg(v->caption()).arg(plot->tag().tag()), koi, SLOT(addToPlot(int)));
             haveAdd = true;
           } else {
-            removeMenu->insertItem(tr("%1 - %2").arg(v->caption()).arg(plot->tag().tag()), koi, SLOT(removeFromPlot(int)), 0, id);
+            removeMenu->addAction(tr("%1 - %2").arg(v->caption()).arg(plot->tag().tag()), koi, SLOT(removeFromPlot(int)));
             haveRemove = true;
           }
           PlotMap[id++] = plot;
-        }
+        }*/
       }
     }
 
-    id = m->insertItem(tr("&Add to Plot"), addMenu);
+/* xxx    id = m->insertItem(tr("&Add to Plot"), addMenu);
     m->setItemEnabled(id, haveAdd);
     id = m->insertItem(tr("&Remove From Plot"), removeMenu);
-    m->setItemEnabled(id, haveRemove);
-  */} 
+    m->setItemEnabled(id, haveRemove); */
+    
+  }
+   
 
   if (koi->rtti() != RTTI_OBJ_VECTOR && koi->rtti() != RTTI_OBJ_MATRIX) {
     //
     // no slave vectors or matrices get this
     //
 
-    id = m->addAction(tr("&Delete"), this, SLOT(delete_I()));
+     m->addAction(tr("&Delete"), this, SLOT(delete_I()));
   }
 
   m->popup(p);
