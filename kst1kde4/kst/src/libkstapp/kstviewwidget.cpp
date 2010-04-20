@@ -336,15 +336,15 @@ void KstViewWidget::contextMenuEvent(QContextMenuEvent *e) {
   }
 
   _menu = new QMenu(this);
-/* xxx
+//
   bool rc = _view->popupMenu(_menu, e->pos());
-  if (rc && _menu->count() > 0) {
+  if (rc && _menu->actions().count() > 0) {
     _menu->popup(mapToGlobal(e->pos()));
     connect(_menu, SIGNAL(aboutToHide()), this, SLOT(menuHiding()));
   } else {
     delete _menu;
   }
-*/
+
   e->accept();
 }
 
