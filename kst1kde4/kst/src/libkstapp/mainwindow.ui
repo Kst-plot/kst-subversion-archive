@@ -1,0 +1,605 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Kst</string>
+  </property>
+  <widget class="QWidget" name="centralwidget"/>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>800</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="_menuFile">
+    <property name="title">
+     <string>&amp;File</string>
+    </property>
+    <addaction name="_actionNewTab"/>
+    <addaction name="_actionDialogGraphFile"/>
+    <addaction name="_actionVectorSave"/>
+    <addaction name="_actionSaveData"/>
+   </widget>
+   <widget class="QMenu" name="_menuEdit">
+    <property name="title">
+     <string>&amp;Edit</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="_menuData">
+    <property name="title">
+     <string>&amp;Data</string>
+    </property>
+    <addaction name="_actionReload"/>
+    <addaction name="separator"/>
+    <addaction name="_actionManagerData"/>
+    <addaction name="_actionManagerView"/>
+    <addaction name="separator"/>
+    <addaction name="_actionNewVector"/>
+    <addaction name="_actionNewCurve"/>
+    <addaction name="_actionNewEquation"/>
+    <addaction name="_actionNewHistogram"/>
+    <addaction name="_actionNewSpectrum"/>
+    <addaction name="_actionNewPlugin"/>
+    <addaction name="_actionNewEventMonitor"/>
+    <addaction name="_actionNewMatrix"/>
+    <addaction name="_actionNewImage"/>
+    <addaction name="_actionNewSpectrogram"/>
+    <addaction name="separator"/>
+    <addaction name="_actionViewScalars"/>
+    <addaction name="_actionViewVectors"/>
+    <addaction name="_actionViewMatrices"/>
+    <addaction name="_actionViewFits"/>
+    <addaction name="_actionViewStrings"/>
+   </widget>
+   <widget class="QMenu" name="_menuRange">
+    <property name="title">
+     <string>&amp;Range</string>
+    </property>
+    <addaction name="_actionSamplesDown"/>
+    <addaction name="_actionSamplesUp"/>
+    <addaction name="separator"/>
+    <addaction name="_actionSamplesFromEnd"/>
+    <addaction name="_actionPause"/>
+   </widget>
+   <widget class="QMenu" name="_menuTools">
+    <property name="title">
+     <string>&amp;Tools</string>
+    </property>
+    <addaction name="_actionDataWizard"/>
+    <addaction name="_actionDialogChangeFile"/>
+    <addaction name="_actionDialogChangeNpts"/>
+    <addaction name="_actionDialogChooseColor"/>
+    <addaction name="_actionDialogDifferentiateCurves"/>
+   </widget>
+   <widget class="QMenu" name="menu_Plots">
+    <property name="title">
+     <string>&amp;Plots</string>
+    </property>
+    <widget class="QMenu" name="_menuLayoutMode">
+     <property name="title">
+      <string>Layout Mode</string>
+     </property>
+     <addaction name="_actionGfxLabel"/>
+     <addaction name="_actionGfxRectangle"/>
+     <addaction name="_actionGfxEllipse"/>
+     <addaction name="_actionGfxLine"/>
+     <addaction name="_actionGfxArrow"/>
+     <addaction name="_actionGfxPicture"/>
+     <addaction name="_actionGfx2DPlot"/>
+     <addaction name="_actionGfxLegend"/>
+    </widget>
+    <addaction name="_actionNewPlot"/>
+    <addaction name="separator"/>
+    <addaction name="_actionTiedZoom"/>
+    <addaction name="separator"/>
+    <addaction name="_actionZoomXY"/>
+    <addaction name="_actionZoomX"/>
+    <addaction name="_actionZoomY"/>
+    <addaction name="_menuLayoutMode"/>
+    <addaction name="separator"/>
+    <addaction name="_actionDataMode"/>
+   </widget>
+   <widget class="QMenu" name="menu_Settings">
+    <property name="title">
+     <string>&amp;Settings</string>
+    </property>
+    <addaction name="separator"/>
+    <addaction name="_actionManagerExtension"/>
+   </widget>
+   <widget class="QMenu" name="menu_help">
+    <property name="title">
+     <string>&amp;Help</string>
+    </property>
+    <addaction name="_actionDialogDebug"/>
+   </widget>
+   <addaction name="_menuFile"/>
+   <addaction name="_menuEdit"/>
+   <addaction name="_menuData"/>
+   <addaction name="_menuRange"/>
+   <addaction name="_menuTools"/>
+   <addaction name="menu_Plots"/>
+   <addaction name="menu_Settings"/>
+   <addaction name="menu_help"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="_actionNewTab">
+   <property name="text">
+    <string>New tab...</string>
+   </property>
+   <property name="toolTip">
+    <string>Create a new tab.</string>
+   </property>
+   <property name="statusTip">
+    <string>Create a new tab.</string>
+   </property>
+  </action>
+  <action name="actionSave_vectors">
+   <property name="text">
+    <string>Save vectors...</string>
+   </property>
+  </action>
+  <action name="_actionDialogGraphFile">
+   <property name="text">
+    <string>Export to Graphics File...</string>
+   </property>
+   <property name="statusTip">
+    <string>Export to Graphics File</string>
+   </property>
+   <property name="whatsThis">
+    <string>Bring up a dialog box to export the plot as a graphics file.</string>
+   </property>
+  </action>
+  <action name="_actionVectorSave">
+   <property name="text">
+    <string>Save Vectors to Disk...</string>
+   </property>
+   <property name="statusTip">
+    <string>Save Vectors to Disk</string>
+   </property>
+   <property name="whatsThis">
+    <string>Bring up a dialog box to save vectors to text files.</string>
+   </property>
+  </action>
+  <action name="_actionSaveData">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Save Da&amp;ta</string>
+   </property>
+   <property name="toolTip">
+    <string>Save Vector Data To Disk</string>
+   </property>
+   <property name="statusTip">
+    <string>Save Data</string>
+   </property>
+   <property name="whatsThis">
+    <string>When selected, data in vectors will be saved into the Kst file.</string>
+   </property>
+  </action>
+  <action name="_actionReload">
+   <property name="text">
+    <string>Reload</string>
+   </property>
+   <property name="statusTip">
+    <string>Reload</string>
+   </property>
+   <property name="whatsThis">
+    <string>Reload the data from file.</string>
+   </property>
+   <property name="shortcut">
+    <string>F5</string>
+   </property>
+  </action>
+  <action name="_actionManagerData">
+   <property name="text">
+    <string>&amp;Data Manager</string>
+   </property>
+   <property name="statusTip">
+    <string>Bring up a dialog box to manage data.</string>
+   </property>
+   <property name="whatsThis">
+    <string>Bring up a dialog box to manage data.</string>
+   </property>
+  </action>
+  <action name="_actionManagerView">
+   <property name="text">
+    <string>&amp;View Manager</string>
+   </property>
+   <property name="statusTip">
+    <string>Bring up a dialog box to manage views.</string>
+   </property>
+   <property name="whatsThis">
+    <string>Bring up a dialog box to manage views.</string>
+   </property>
+  </action>
+  <action name="_actionNewVector">
+   <property name="text">
+    <string>New &amp;Vector...</string>
+   </property>
+   <property name="statusTip">
+    <string>Bring up a dialog box to create a new vector.</string>
+   </property>
+   <property name="whatsThis">
+    <string>Bring up a dialog box to create a new vector.</string>
+   </property>
+  </action>
+  <action name="_actionNewCurve">
+   <property name="text">
+    <string>New &amp;Curve...</string>
+   </property>
+   <property name="statusTip">
+    <string>Bring up a dialog box to create a new curve.</string>
+   </property>
+   <property name="whatsThis">
+    <string>Bring up a dialog box to create a new curve.</string>
+   </property>
+  </action>
+  <action name="_actionNewEquation">
+   <property name="text">
+    <string>New &amp;Equation...</string>
+   </property>
+   <property name="statusTip">
+    <string>Bring up a dialog box to create a new equation.</string>
+   </property>
+   <property name="whatsThis">
+    <string>Bring up a dialog box to create a new equation.</string>
+   </property>
+  </action>
+  <action name="_actionNewHistogram">
+   <property name="text">
+    <string>New &amp;Histogram...</string>
+   </property>
+   <property name="statusTip">
+    <string>Bring up a dialog box to create a new histogram.</string>
+   </property>
+   <property name="whatsThis">
+    <string>Bring up a dialog box to create a new histogram.</string>
+   </property>
+  </action>
+  <action name="_actionNewSpectrum">
+   <property name="text">
+    <string>New &amp;Spectrum...</string>
+   </property>
+   <property name="statusTip">
+    <string>Bring up a dialog box to create a new spectrum.</string>
+   </property>
+   <property name="whatsThis">
+    <string>Bring up a dialog box to create a new spectrum.</string>
+   </property>
+  </action>
+  <action name="_actionNewPlugin">
+   <property name="text">
+    <string>New &amp;Plugin...</string>
+   </property>
+   <property name="statusTip">
+    <string>Bring up a dialog box to create a new plugin instance.</string>
+   </property>
+   <property name="whatsThis">
+    <string>Bring up a dialog box to create a new plugin instance.</string>
+   </property>
+  </action>
+  <action name="_actionNewEventMonitor">
+   <property name="text">
+    <string>New Event &amp;Monitor...</string>
+   </property>
+   <property name="statusTip">
+    <string>Bring up a dialog box to create a new event monitor.</string>
+   </property>
+   <property name="whatsThis">
+    <string>Bring up a dialog box to create a new event monitor.</string>
+   </property>
+  </action>
+  <action name="_actionNewMatrix">
+   <property name="text">
+    <string>New M&amp;atrix...</string>
+   </property>
+   <property name="statusTip">
+    <string>Bring up a dialog box to create a new matrix.</string>
+   </property>
+   <property name="whatsThis">
+    <string>Bring up a dialog box to create a new matrix.</string>
+   </property>
+  </action>
+  <action name="_actionNewImage">
+   <property name="text">
+    <string>New &amp;Image...</string>
+   </property>
+   <property name="statusTip">
+    <string>Bring up a dialog box to create a new image instance.</string>
+   </property>
+   <property name="whatsThis">
+    <string>Bring up a dialog box to create a new image instance.</string>
+   </property>
+  </action>
+  <action name="_actionNewSpectrogram">
+   <property name="text">
+    <string>New &amp;Spectrogram...</string>
+   </property>
+   <property name="statusTip">
+    <string>Bring up a dialog box to create a new spectrogram.</string>
+   </property>
+   <property name="whatsThis">
+    <string>Bring up a dialog box to create a new spectrogram.</string>
+   </property>
+  </action>
+  <action name="_actionViewScalars">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>View &amp;Scalar Values</string>
+   </property>
+   <property name="statusTip">
+    <string>Bring up a dialog box to view scalar values.</string>
+   </property>
+   <property name="whatsThis">
+    <string>Bring up a dialog box to view scalar values.</string>
+   </property>
+  </action>
+  <action name="_actionViewVectors">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>View Vec&amp;tor Values</string>
+   </property>
+   <property name="statusTip">
+    <string>Bring up a dialog box to view vector values.</string>
+   </property>
+   <property name="whatsThis">
+    <string>Bring up a dialog box to view vector values.</string>
+   </property>
+  </action>
+  <action name="_actionViewMatrices">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>View &amp;Matrix Values</string>
+   </property>
+   <property name="statusTip">
+    <string>Bring up a dialog box to view matrix values.</string>
+   </property>
+   <property name="whatsThis">
+    <string>Bring up a dialog box to view matrix values.</string>
+   </property>
+  </action>
+  <action name="_actionViewFits">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>View &amp;Fit Results</string>
+   </property>
+   <property name="statusTip">
+    <string>Bring up a dialog box to view fit values.</string>
+   </property>
+   <property name="whatsThis">
+    <string>Bring up a dialog box to view fit values.</string>
+   </property>
+  </action>
+  <action name="_actionViewStrings">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>View Strin&amp;g Values</string>
+   </property>
+   <property name="statusTip">
+    <string>Bring up a dialog box to view string values.</string>
+   </property>
+   <property name="whatsThis">
+    <string>Bring up a dialog box to view string values.</string>
+   </property>
+  </action>
+  <action name="_actionSamplesDown">
+   <property name="text">
+    <string>&amp;Back 1 Screen</string>
+   </property>
+   <property name="toolTip">
+    <string>Back</string>
+   </property>
+   <property name="statusTip">
+    <string>Reduce the starting frame by the current number of frames.</string>
+   </property>
+   <property name="whatsThis">
+    <string>Reduce the starting frame by the current number of frames.</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Left</string>
+   </property>
+  </action>
+  <action name="_actionSamplesUp">
+   <property name="text">
+    <string>&amp;Advance 1 Screen</string>
+   </property>
+   <property name="toolTip">
+    <string>Advance</string>
+   </property>
+   <property name="statusTip">
+    <string>Increase the starting frame by the current number of frames.</string>
+   </property>
+   <property name="whatsThis">
+    <string>Increase the starting frame by the current number of frames.</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Right</string>
+   </property>
+  </action>
+  <action name="_actionSamplesFromEnd">
+   <property name="text">
+    <string>Read From &amp;End</string>
+   </property>
+   <property name="toolTip">
+    <string>Read from end</string>
+   </property>
+   <property name="statusTip">
+    <string>Read current data from end of file.</string>
+   </property>
+   <property name="whatsThis">
+    <string>Read current data from end of file.</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+Right</string>
+   </property>
+  </action>
+  <action name="_actionPause">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>P&amp;ause</string>
+   </property>
+   <property name="statusTip">
+    <string>When paused, new data will not be read.</string>
+   </property>
+   <property name="whatsThis">
+    <string>When paused, new data will not be read.</string>
+   </property>
+  </action>
+  <action name="_actionDataWizard">
+   <property name="text">
+    <string>Data &amp;Wizard</string>
+   </property>
+  </action>
+  <action name="_actionDialogChangeFile">
+   <property name="text">
+    <string>Change Data &amp;File...</string>
+   </property>
+   <property name="statusTip">
+    <string>Bring up a dialog box to change input files.</string>
+   </property>
+   <property name="whatsThis">
+    <string>Bring up a dialog box to change input files.</string>
+   </property>
+  </action>
+  <action name="_actionDialogChangeNpts">
+   <property name="text">
+    <string>Change Data Sample &amp;Ranges...</string>
+   </property>
+  </action>
+  <action name="_actionDialogChooseColor">
+   <property name="text">
+    <string>Assign Curve &amp;Color Per File...</string>
+   </property>
+  </action>
+  <action name="_actionDialogDifferentiateCurves">
+   <property name="text">
+    <string>&amp;Differentiate Between Curves...</string>
+   </property>
+  </action>
+  <action name="_actionNewPlot">
+   <property name="text">
+    <string>New Plot</string>
+   </property>
+  </action>
+  <action name="_actionTiedZoom">
+   <property name="text">
+    <string>&amp;Tied Zoom</string>
+   </property>
+  </action>
+  <action name="_actionZoomXY">
+   <property name="text">
+    <string>XY Mouse &amp;Zoom</string>
+   </property>
+  </action>
+  <action name="_actionZoomX">
+   <property name="text">
+    <string>&amp;X Mouse Zoom</string>
+   </property>
+  </action>
+  <action name="_actionZoomY">
+   <property name="text">
+    <string>&amp;Y Mouse Zoom</string>
+   </property>
+  </action>
+  <action name="_actionGfxLabel">
+   <property name="text">
+    <string>L&amp;abel</string>
+   </property>
+  </action>
+  <action name="_actionGfxRectangle">
+   <property name="text">
+    <string>&amp;Box</string>
+   </property>
+  </action>
+  <action name="_actionGfxEllipse">
+   <property name="text">
+    <string>&amp;Ellipse</string>
+   </property>
+  </action>
+  <action name="_actionGfxLine">
+   <property name="text">
+    <string>&amp;Line</string>
+   </property>
+  </action>
+  <action name="_actionGfxArrow">
+   <property name="text">
+    <string>&amp;Arrow</string>
+   </property>
+  </action>
+  <action name="_actionGfxPicture">
+   <property name="text">
+    <string>&amp;Picture</string>
+   </property>
+  </action>
+  <action name="_actionGfx2DPlot">
+   <property name="text">
+    <string>&amp;Plot</string>
+   </property>
+  </action>
+  <action name="_actionGfxLegend">
+   <property name="text">
+    <string>&amp;Legend</string>
+   </property>
+  </action>
+  <action name="_actionDataMode">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Data Mode</string>
+   </property>
+   <property name="toolTip">
+    <string>Data mode</string>
+   </property>
+   <property name="statusTip">
+    <string>Toggle between cursor mode and data mode.</string>
+   </property>
+   <property name="whatsThis">
+    <string>Toggle between cursor mode and data mode.</string>
+   </property>
+  </action>
+  <action name="_actionManagerExtension">
+   <property name="text">
+    <string>&amp;Extensions...</string>
+   </property>
+  </action>
+  <action name="_actionDialogDebug">
+   <property name="text">
+    <string>Debug Kst...</string>
+   </property>
+   <property name="statusTip">
+    <string>Bring up a dialog to display debugging information.</string>
+   </property>
+   <property name="whatsThis">
+    <string>Bring up a dialog to display debugging information.</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

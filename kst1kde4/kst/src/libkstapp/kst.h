@@ -34,6 +34,7 @@
 #include "kst_export.h"
 #include "kstpainter.h"
 #include "ksttoplevelview.h"
+#include "ui_mainwindow.h"
 
 enum LegendType { LegendOn, LegendOff, LegendAuto };
 enum DataType { DataOnly, DataPSD, PSDOnly };
@@ -87,7 +88,7 @@ class KstOpen {
     bool ave;
 };
 
-class KST_EXPORT KstApp : public QMainWindow {
+class KST_EXPORT KstApp : public QMainWindow, private Ui_MainWindow {
   Q_OBJECT
   public:
     enum KstZoomType { XYZOOM, YZOOM, XZOOM, TEXT, GRAPHICS, LAYOUT };
@@ -312,31 +313,19 @@ class KST_EXPORT KstApp : public QMainWindow {
     KRecentFilesAction *_recent;
     KRecentFilesAction *_fileOpenRecent;
 */
+/* xxx
     QAction *_actionStatusBar;
     QAction *_actionPause;
     QAction *_actionDataMode;
-    QAction *_actionSaveData;
 
     QAction *_actionSamplesDown;
     QAction *_actionSamplesUp;
     QAction *_actionSamplesFromEnd;
     QAction *_actionTiedZoom;
-    QAction *_actionReload;
     QAction *_actionNewPlot;
-    QAction *_actionNewTab;
-    QAction *_actionVectorSave;
 
     QAction *_actionDialogPlot;
-    QAction *_actionDialogVector;
     QAction *_actionDialogCurveD;
-    QAction *_actionDialogCsd;
-    QAction *_actionDialogEq;
-    QAction *_actionDialogHs;
-    QAction *_actionDialogVv;
-    QAction *_actionDialogPsd;
-    QAction *_actionDialogMatrix;
-    QAction *_actionDialogImage;
-    QAction *_actionDialogPlugin;
     QAction *_actionDialogViewScalars;
     QAction *_actionDialogViewStrings;
     QAction *_actionDialogViewVectors;
@@ -347,12 +336,9 @@ class KST_EXPORT KstApp : public QMainWindow {
     QAction *_actionDialogChooseColor;
     QAction *_actionDialogDifferentiateCurves;
     QAction *_actionDialogChangeNpts;
-    QAction *_actionDialogGraphFile;
 
     QAction *_actionDataWizard;
 
-    QAction *_actionManagerData;  
-    QAction *_actionManagerView;
     QAction *_actionManagerPluginr;
     QAction *_actionManagerExtension;
 
@@ -386,7 +372,7 @@ class KST_EXPORT KstApp : public QMainWindow {
     QAction *_actionGfx2DPlot;
     QAction *_actionGfxArrow;
     QAction *_actionGfxLegend;
-
+*/
     StatusLabel *_readyBar;
     StatusLabel *_memoryBar;
     StatusLabel *_dataBar;

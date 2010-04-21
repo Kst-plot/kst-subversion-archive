@@ -134,6 +134,7 @@ kde4_add_ui_files(kstapp_LIB_SRCS
     kstdatadialog.ui
     kstsettingsdlg.ui
     kstviewmanager.ui
+    mainwindow.ui
     matrixdialogwidget.ui
     monochromedialog.ui
     plugindialogwidget.ui

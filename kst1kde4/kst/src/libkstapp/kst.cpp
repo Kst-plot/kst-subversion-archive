@@ -115,6 +115,8 @@ KstApp* KstApp::inst() {
 
 
 KstApp::KstApp(QWidget *parent, const char *name) : QMainWindow(parent) {
+  setupUi(this);
+
   ::inst = this;
 
 // xxx  _dataNotifier = 0L;
@@ -145,17 +147,16 @@ KstApp::KstApp(QWidget *parent, const char *name) : QMainWindow(parent) {
 
   _stopping = false;
 // xxx  config = kapp->config();
+/* xxx
   initActions();
   initStatusBar();
   initToolBar();
   initMenuBar();
   initDocument();
+*/
 // xxx  setStandardToolBarMenuEnabled(true);
-
-
 // xxx  KstDebug::self()->setHandler(_doc);
-
-  setWindowTitle(_doc->title());
+// xxx  setWindowTitle(_doc->title());
 // xxx  _debugDialog = new KstDebugDialog(this);
 // xxx  _dataManager = new KstDataManager(doc, this);
 // xxx  _viewManager = new KstViewManager(doc, this);
@@ -186,7 +187,7 @@ KstApp::KstApp(QWidget *parent, const char *name) : QMainWindow(parent) {
   //
   // plot Dialog signals...
   //
-/* XXX
+/* xxx
   connect(_changeFileDialog, SIGNAL(docChanged()), this, SLOT(registerDocChange()));
   connect(_changeNptsDialog, SIGNAL(docChanged()), this, SLOT(registerDocChange()));
   connect(_graphFileDialog, SIGNAL(graphFileReq(const QString&,const QString&,int,int,bool,int)), this, SLOT(immediatePrintToPng(const QString&,const QString&,int,int,bool,int)));
@@ -195,7 +196,7 @@ KstApp::KstApp(QWidget *parent, const char *name) : QMainWindow(parent) {
   //
   // data manager signals...
   //
-/* XXX
+/* xxx
   connect(_doc, SIGNAL(updateDialogs()), this, SLOT(updateDialogs()));
   connect(_doc, SIGNAL(dataChanged()), this, SLOT(updateDataDialogs()));
   connect(_dataManager, SIGNAL(docChanged()), this, SLOT(registerDocChange()));
@@ -314,9 +315,38 @@ void KstApp::initMenuBar() {
 
 
 void KstApp::initActions() {
-  _actionNewTab = new QAction(QObject::tr("&New tab..."), this);
-  _actionNewTab->setStatusTip(QObject::tr("Create a new tab."));
+/* xxx
   connect(_actionNewTab, SIGNAL(triggered()), this, SLOT(slotFileNewWindow()));
+  connect(_actionDialogGraphFile, SIGNAL(triggered()), this, SLOT(showGraphFileDialog()));
+  connect(_actionVectorSave, SIGNAL(triggered()), _vectorSaveDialog, SLOT(show()));
+
+  connect(_actionReload, SIGNAL(triggered()), this, SLOT(reload()));
+  connect(_actionManagerData, SIGNAL(triggered()), _dataManager, SLOT(show_I()));
+  connect(_actionManagerView, SIGNAL(triggered()), _viewManager, SLOT(show_I())); 
+  connect(_actionNewVector, SIGNAL(triggered()), KstVectorDialog::globalInstance(), SLOT(show())); 
+  connect(_actionNewCurve, SIGNAL(triggered()), KstCurveDialog::globalInstance(), SLOT(show()));
+  connect(_actionNewEquation, SIGNAL(triggered()), KstEqDialog::globalInstance(), SLOT(show())); 
+  connect(_actionNewHistogram, SIGNAL(triggered()), KstHsDialog::globalInstance(), SLOT(show()));
+  connect(_actionNewSpectrum, SIGNAL(triggered()), KstPsdDialog::globalInstance(), SLOT(show()));
+  connect(_actionNewPlugin, SIGNAL(triggered()), this, SLOT(selectDataPlugin()));
+  connect(_actionNewEventMonitor, SIGNAL(triggered()), KstEventMonitor::globalInstance(), SLOT(show())); 
+  connect(_actionNewMatrix, SIGNAL(triggered()), KstMatrixDialog::globalInstance(), SLOT(show()));
+  connect(_actionNewImage, SIGNAL(triggered()), KstImageDialog::globalInstance(), SLOT(show()));
+  connect(_actionNewSpectrogram, SIGNAL(triggered()), KstCsdDialog::globalInstance(), SLOT(show()));
+
+  connect(_actionViewScalars, SIGNAL(triggered()), this, SLOT(showViewScalarsDialog()));
+  connect(_actionViewVectors, SIGNAL(triggered()), this, SLOT(showViewVectorsDialog()));
+  connect(_actionViewMatrices, SIGNAL(triggered()), this, SLOT(showViewMatricesDialog()));
+  connect(_actionViewFits, SIGNAL(triggered()), this, SLOT(showViewFitsDialog()));
+  connect(_actionViewStrings, SIGNAL(triggered()), this, SLOT(showViewStringsDialog()));
+
+  connect(_actionSamplesDown, SIGNAL(triggered()), this, SLOT(samplesDown()));
+  connect(_actionSamplesUp, SIGNAL(triggered()), this, SLOT(samplesUp()));
+  connect(_actionSamplesFromEnd, SIGNAL(triggered()), this, SLOT(fromEnd()));
+  connect(_actionPause, SIGNAL(toggled(bool)), this, SLOT(updatePausedState(bool)));
+
+
+*/
 /* xxx
   fileSave = KStdAction::save(this, SLOT(slotFileSave()), actionCollection());
   fileSave->setWhatsThis(QObject::tr("Save to current Kst plot file."));
@@ -342,8 +372,7 @@ void KstApp::initActions() {
   filePaste = KStdAction::paste(this, SLOT(slotPaste()), actionCollection());
   filePaste->setWhatsThis(QObject::tr("Paste plots from the clipboard."));
 
-  filePrint = KStdAction::print(this, SLOT(slotFilePrint()),
-                                actionCollection());
+  filePrint = KStdAction::print(this, SLOT(slotFilePrint()), actionCollection());
   filePrint->setToolTip(QObject::tr("Print"));
   filePrint->setWhatsThis(QObject::tr("Print current display"));
 
@@ -356,17 +385,6 @@ void KstApp::initActions() {
 
   _recent = KStdAction::openRecent(this, SLOT(slotFileOpenRecent(const KURL &)), actionCollection());
   _recent->setWhatsThis(QObject::tr("Open a recently used Kst plot."));
-
-  _actionPause = new KToggleAction(QObject::tr("P&ause"),"player_pause", 0,
-                                  actionCollection(), "pause_action");
-  _actionPause->setToolTip(QObject::tr("Pause"));
-  _actionPause->setWhatsThis(QObject::tr("When paused, new data will not be read."));
-  connect(_actionPause, SIGNAL(toggled(bool)), this, SLOT(updatePausedState(bool)));
-
-  _actionSaveData = new KToggleAction(QObject::tr("Save Da&ta"), 0,0,0,0,
-        actionCollection(), "save_vector_data");
-  _actionSaveData->setToolTip(QObject::tr("Save Vector Data To Disk"));
-  _actionSaveData->setWhatsThis(QObject::tr("When selected, data in vectors will be saved into the Kst file."));
 
   _actionZoomXY = new KRadioAction(QObject::tr("XY Mouse &Zoom"), "kst_zoomxy",
                                   KShortcut(Key_F2),
@@ -402,86 +420,10 @@ void KstApp::initActions() {
   _actionGfx->setExclusiveGroup("zoom");
   _actionGfx->setToolTip(QObject::tr("Graphics Editor"));
   _actionGfx->setWhatsThis(QObject::tr("Use the mouse to create and edit graphics objects."));
-*/
+
   _actionNewPlot = new QAction(QObject::tr("New Plot"), this);
   _actionNewPlot->setStatusTip(QObject::tr("Create a new plot in the current window."));
   connect(_actionNewPlot, SIGNAL(triggered()), this, SLOT(newPlot()));
-/* xxx
-  _actionDataManager = new QAction(QObject::tr("&Data Manager"), this);
-  _actionDataManager->setStatusTip(QObject::tr("Bring up a dialog box to manage data."));
-  connect(_actionDataManager, SIGNAL(triggered()), _dataManager, SLOT(show_I()));
-
-  _actionViewManager = new QAction(QObject::tr("&View Manager"), this);
-  _actionViewManager->setStatusTip(QObject::tr("Bring up a dialog box to manage views."));
-  connect(_actionViewManager, SIGNAL(triggered()), _viewManager, SLOT(show_I()));
-*/  
-/* xxx
-  _actionDialogVector = new QAction(QObject::tr("New &Vector..."), this);
-  _actionDialogVector->setStatusTip(QObject::tr("Bring up a dialog box to create a new vector."));
-  connect(_actionDialogVector, SIGNAL(triggered()), KstVectorDialog::globalInstance(), SLOT(show()));
-
-  _actionDialogCurve = new QAction(QObject::tr("New &Curve..."), this);
-  _actionDialogCurve->setStatusTip(QObject::tr("Bring up a dialog box to create a new curve."));
-  connect(_actionDialogCurve, SIGNAL(triggered()), KstCurveDialog::globalInstance(), SLOT(show()));
-
-  _actionDialogCsd = new QAction(QObject::tr("New &Spectrogram..."), this);
-  _actionDialogCsd->setStatusTip(QObject::tr("Bring up a dialog box to create a new spectrogram."));
-  connect(_actionDialogCsd, SIGNAL(triggered()), KstCsdDialog::globalInstance(), SLOT(show()));
-*/
-/* xxx
-  _actionDialogEq = new KAction(QObject::tr("New &Equation..."),
-                               "kst_equationnew", 0,
-                               KstEqDialogI::globalInstance(),
-                               SLOT(show()),
-                               actionCollection(), "eqdialog_action");
-  _actionDialogEq->setWhatsThis(QObject::tr("Bring up a dialog box\n"
-                                    "to create a new equation."));
-
-  _actionDialogHs = new KAction(QObject::tr("New &Histogram..."),
-                               "kst_histogramnew", 0,
-                               KstHsDialogI::globalInstance(),
-                               SLOT(show()), actionCollection(),
-                               "hsdialog_action");
-  _actionDialogHs->setWhatsThis(QObject::tr("Bring up a dialog box\n"
-                                    "to create a new histogram."));
-
-  _actionDialogPsd = new KAction(QObject::tr("New &Spectrum..."),
-                                "kst_psdnew", 0,
-                                KstPsdDialogI::globalInstance(),
-                                SLOT(show()), actionCollection(),
-                                "psddialog_action");
-  _actionDialogPsd->setWhatsThis(QObject::tr("Bring up a dialog box\n"
-                                     "to create a new spectrum."));
-
-  _actionDialogPlugin = new KAction(QObject::tr("New &Plugin..."),
-                                  "kst_pluginnew", 0,
-                                   this, SLOT(selectDataPlugin()), actionCollection(),
-                                   "plugindialog_action");
-  _actionDialogPlugin->setWhatsThis(QObject::tr("Bring up a dialog box\n"
-                                        "to create a new plugin instance."));
-
-  _actionDialogMatrix = new KAction(QObject::tr("New M&atrix..."), "kst_matrixnew", 0,
-                                   KstMatrixDialogI::globalInstance(),
-                                   SLOT(show()), actionCollection(),
-                                   "matrixdialog_action");
-  _actionDialogMatrix->setWhatsThis(QObject::tr("Bring up a dialog box\n"
-                                        "to create a new matrix."));
-
-  _actionDialogImage = new KAction(QObject::tr("New &Image..."),
-                                   "kst_imagenew", 0,
-                                   KstImageDialogI::globalInstance(),
-                                   SLOT(show()), actionCollection(),
-                                   "imagedialog_action");
-  _actionDialogImage->setWhatsThis(QObject::tr("Bring up a dialog box\n"
-                                        "to create a new image instance."));
-
-  _actionDialogChangeFile = new KAction(QObject::tr("Change Data &File..."),
-                                       "kst_changefile", 0, this,
-                                       SLOT(showChangeFileDialog()),
-                                       actionCollection(),
-                                       "changefiledialog_action");
-  _actionDialogChangeFile->setWhatsThis(QObject::tr("Bring up a dialog box\n"
-                                            "to change input files."));
 
   _actionDialogChooseColor = new KAction(QObject::tr("Assign Curve &Color Per File..."),
                                         "kst_choosecolor", 0, this,
@@ -500,53 +442,6 @@ void KstApp::initActions() {
   _actionDialogDifferentiateCurves->setWhatsThis(QObject::tr("Bring up a dialog box\n"
                                              "to differentiate between curves."));
 
-  _actionDialogViewScalars = new KAction(QObject::tr("View &Scalar Values"),
-                                       0, 0, this,
-                                       SLOT(showViewScalarsDialog()),
-                                       actionCollection(),
-                                       "viewscalarsdialog_action");
-  _actionDialogViewScalars->setWhatsThis(QObject::tr("Bring up a dialog box\n"
-                                            "to view scalar values."));
-  ViewScalarsDialogAction->setEnabled(false);
-
-  ViewStringsDialogAction = new KAction(QObject::tr("View Strin&g Values"),
-                                       0, 0, this,
-                                       SLOT(showViewStringsDialog()),
-                                       actionCollection(),
-                                       "viewstringsdialog_action");
-  ViewStringsDialogAction->setWhatsThis(QObject::tr("Bring up a dialog box\n"
-                                            "to view string values."));
-
-  ViewVectorsDialogAction = new KAction(QObject::tr("View Vec&tor Values"),
-                                       0, 0, this,
-                                       SLOT(showViewVectorsDialog()),
-                                       actionCollection(),
-                                       "viewvectorsdialog_action");
-  ViewVectorsDialogAction->setWhatsThis(QObject::tr("Bring up a dialog box\n"
-                                            "to view vector values."));
-  ViewVectorsDialogAction->setEnabled(false);
-
-
-  ViewMatricesDialogAction = new KAction(QObject::tr("View &Matrix Values"),
-                                       0, 0, this,
-                                       SLOT(showViewMatricesDialog()),
-                                       actionCollection(),
-                                       "viewmatricesdialog_action");
-  ViewMatricesDialogAction->setWhatsThis(QObject::tr("Bring up a dialog box\n"
-                                            "to view matrix values."));
-  ViewMatricesDialogAction->setEnabled(false);
-
-  ViewFitsDialogAction = new KAction(QObject::tr("View &Fit Results"),
-                                       0, 0, this,
-                                       SLOT(showViewFitsDialog()),
-                                       actionCollection(),
-                                       "viewfitsdialog_action");
-  ViewFitsDialogAction->setWhatsThis(QObject::tr("Bring up a dialog box\n"
-                                            "to view fit values."));
-  ViewFitsDialogAction->setEnabled(false);
-
-*/
-/* xxx
   ChangeNptsDialogAction = new KAction(QObject::tr("Change Data Sample &Ranges..."),
                                        "kst_changenpts", 0, this,
                                        SLOT(showChangeNptsDialog()),
@@ -555,60 +450,6 @@ void KstApp::initActions() {
   ChangeNptsDialogAction->setWhatsThis(QObject::tr("Bring up a dialog box\n"
                                             "to change data sample ranges."));
 
-  EventMonitorAction = new KAction(QObject::tr("New Event &Monitor..."),
-                                     "kst_eventnew", 0,
-                                     KstEventMonitorI::globalInstance(),
-                                     SLOT(show()),
-                                     actionCollection(),
-                                     "eventmonitor_action");
-  EventMonitorAction->setWhatsThis(QObject::tr("Bring up a dialog box\n"
-                                          "create a new event monitor."));
-
-  GraphFileDialogAction = new KAction(QObject::tr("Export to Graphics File..."),
-                                  "thumbnail", 0,
-                                  this, SLOT(showGraphFileDialog()),
-                                  actionCollection(),
-                                  "graphfiledialog_action");
-  GraphFileDialogAction->setWhatsThis(QObject::tr("Bring up a dialog box\n"
-                                           "to export the plot as a\n"
-                                           "graphics file."));
-
-  _vectorSaveAction = new KAction(QObject::tr("Save Vectors to Disk..."),
-                                  0, 0,
-                                  vectorSaveDialog, SLOT(show()),
-                                  actionCollection(),
-                                  "vectorsavedialog_action");
-  _vectorSaveAction->setWhatsThis(QObject::tr("Bring up a dialog box\n"
-                                       "to save vectors to text files."));
-
-  _actionSamplesDown = new KAction(QObject::tr("&Back 1 Screen"),
-                                  "player_rew",
-                                  KShortcut(CTRL + Key_Left),
-                                  this, SLOT(samplesDown()),
-                                  actionCollection(),
-                                  "samplesdown_action");
-  _actionSamplesDown->setToolTip(QObject::tr("Back"));
-  _actionSamplesDown->setWhatsThis(QObject::tr("Reduce the starting frame by\n"
-                                       "the current number of frames."));
-
-
-  _actionSamplesUp = new KAction(QObject::tr("&Advance 1 Screen"),
-                                "player_fwd",
-                                KShortcut(CTRL + Key_Right),
-                                this, SLOT(samplesUp()),
-                                actionCollection(),
-                                "samplesup_action");
-
-  _actionSamplesUp->setToolTip(QObject::tr("Advance"));
-  _actionSamplesUp->setWhatsThis(QObject::tr("Increase the starting frame by\n"
-                                     "the current number of frames."));
-
-  _actionSamplesFromEnd = new KAction(QObject::tr("Read From &End"),
-                                     "player_end",
-                                     KShortcut(SHIFT + CTRL + Key_Right),
-                                     this, SLOT(fromEnd()),
-                                     actionCollection(),
-                                     "samplesend_action");
   _actionSamplesFromEnd->setToolTip(QObject::tr("Read from end"));
   _actionSamplesFromEnd->setWhatsThis(QObject::tr("Read current data from end of file."));
 
@@ -618,31 +459,12 @@ void KstApp::initActions() {
   _actionManagerExtension->setWhatsThis(QObject::tr("Bring up a dialog box\n"
                                            "to manage extensions."));
 
-
   _actionDataWizard = new KAction(QObject::tr("Data &Wizard"), "wizard", 
                                  KShortcut(CTRL+ALT+Key_W),
                                  this, SLOT(showDataWizard()),
                                  actionCollection(), "datawizard_action");
   _actionDataWizard->setWhatsThis(QObject::tr("Bring up a wizard\n"
                                            "to easily load data."));
-
-
-  _actionDialogDebug = new KAction(QObject::tr("Debug Kst..."), 0, 0,
-                                 this, SLOT(showDebugDialog()),
-                                 actionCollection(), "debug_action");
-  _actionDialogDebug->setWhatsThis(QObject::tr("Bring up a dialog\n"
-                                           "to display debugging information."));
-
-
-  _actionDataMode = new KToggleAction(QObject::tr("Data Mode"), "kst_datamode", 0,
-                                 this, SLOT(toggleDataMode()),
-                                 actionCollection(), "datamode_action");
-  _actionDataMode->setWhatsThis(QObject::tr("Toggle between cursor mode and data mode."));
-  _actionDataMode->setToolTip(QObject::tr("Data mode"));
-
-  _actionReload = new KAction(QObject::tr("Reload"), "reload", Key_F5, this, SLOT(reload()),
-                              actionCollection(), "reload");
-  _actionReload->setWhatsThis(QObject::tr("Reload the data from file."));
 
   _actionTiedZoom = new KAction(QObject::tr("&Tied Zoom"),"kst_zoomtie", 0,
                                this, SLOT(tieAll()),
@@ -955,10 +777,12 @@ KstApp::KstZoomType KstApp::getZoomRadio() {
     return XZOOM;
   } else if (_actionZoomY->isChecked()) {
     return YZOOM;
+/* xxx
   } else if (_actionLayout->isChecked()) {
     return LAYOUT;
   } else if (_actionGfx->isChecked()) {
     return GRAPHICS;
+*/
   } else {
     return XYZOOM;
   }
@@ -993,8 +817,10 @@ void KstApp::selectDataPlugin() {
   l += cPlugins;
 
   //
-  // list the KstDataObject and C-style plugins together in ascending alphabetical order...
+  // list the KstDataObject and C-style plugins together 
+  //  in ascending alphabetical order...
   //
+
   l.sort();
 
   bool ok = false;
@@ -1723,12 +1549,14 @@ void KstApp::slotFileQuit() {
 
 
 void KstApp::slotViewStatusBar() {
+/* xxx
   if (_actionStatusBar->isChecked()) {
-// xxx    statusBar()->show();
+    statusBar()->show();
     updateStatusBarText();
   } else {
-// xxx    statusBar()->hide();
+    statusBar()->hide();
   }
+*/
 }
 
 
@@ -1915,9 +1743,11 @@ void KstApp::toggleMouseMode() {
     action = _actionGfxLegend;
     mode = KstTopLevelView::CreateMode;
     createType = "Legend";
+/* xxx
   } else if (_actionLayout->isChecked()) {
     action = _actionLayout;
     mode = KstTopLevelView::LayoutMode;
+*/
   } else if (_actionZoomXY->isChecked()) {
     action = _actionZoomXY;
     mode = KstTopLevelView::DisplayMode;
@@ -2570,6 +2400,7 @@ void KstApp::slotSettingsChanged() {
 
 
 void KstApp::slotCopy() {
+/* xxx
   if (!_actionLayout->isChecked()) {
     KstTopLevelViewPtr tlv;
 
@@ -2587,19 +2418,19 @@ void KstApp::slotCopy() {
       }
     }
   } else {
-    KstViewWindow *vw;
+    KstViewWindow *viewWindow;
 
-    vw = dynamic_cast<KstViewWindow*>(activeSubWindow());
-    if (vw) {
-/* xxx
+    viewWindow = dynamic_cast<KstViewWindow*>(activeSubWindow());
+    if (viewWindow) {
       QApplication::clipboard()->setData(vw->view()->widget()->dragObject(), QClipboard::Clipboard);
-*/
     }
   }
+*/
 }
 
 
 void KstApp::slotPaste() {
+/* xxx
   if (_actionLayout->isChecked()) {
     KstTopLevelViewPtr tlv;
 
@@ -2607,7 +2438,7 @@ void KstApp::slotPaste() {
     if (tlv) {
       QMimeSource* source;
 
-// xxx      source = QApplication::clipboard()->data(QClipboard::Clipboard);
+      source = QApplication::clipboard()->data(QClipboard::Clipboard);
       if (!tlv->paste(source)) {
         KstDebug::self()->log(QObject::tr("Paste operation failed: clipboard data was not found or of the wrong format."));
       }
@@ -2617,6 +2448,7 @@ void KstApp::slotPaste() {
   } else {
     KstDebug::self()->log(QObject::tr("Paste operation failed: must be in layout mode."));
   }
+*/
 }
 
 
