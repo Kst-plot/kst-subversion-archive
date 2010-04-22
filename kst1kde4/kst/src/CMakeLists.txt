@@ -10,7 +10,3 @@ add_subdirectory(kst)
 add_subdirectory(d2asc)
 add_subdirectory(plugins)
 add_subdirectory(extensions)
-
-IF (NOT HAVE_KMDI)
-    add_subdirectory(libkstkmdi)
-ENDIF (NOT HAVE_KMDI)

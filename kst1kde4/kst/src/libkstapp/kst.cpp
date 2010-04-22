@@ -318,6 +318,28 @@ void KstApp::initMenuBar() {
 
 
 void KstApp::initActions() {
+  //
+  // define the standard icons...
+  //
+
+  _actionOpen->setIcon(style()->standardIcon(QStyle::SP_DialogOpenButton));
+  _actionSave->setIcon(style()->standardIcon(QStyle::SP_DialogSaveButton));
+  _actionQuit->setIcon(style()->standardIcon(QStyle::SP_DialogCloseButton));
+
+  _actionSamplesDown->setIcon(style()->standardIcon(QStyle::SP_MediaSeekBackward));
+  _actionSamplesUp->setIcon(style()->standardIcon(QStyle::SP_MediaSeekForward));
+  _actionSamplesFromEnd->setIcon(style()->standardIcon(QStyle::SP_MediaSkipForward));
+  _actionPause->setIcon(style()->standardIcon(QStyle::SP_MediaPause));
+
+  //
+  // define the non-standard icons
+  //
+
+  _actionZoomX->setIcon(QIcon((":/kst_zoomx.png")));
+  _actionZoomY->setIcon(QIcon((":/kst_zoomy.png")));
+  _actionZoomXY->setIcon(QIcon((":/kst_zoomxy.png")));
+  _actionLayout->setIcon(QIcon((":/kst_gfx_layout.png")));
+
   connect(_actionOpen, SIGNAL(triggered()), this, SLOT(slotFileOpen()));
 // xxx  connect(_actionOpenRecent, SIGNAL(triggered()), this, SLOT(slotFileOpenRecent(const QUrl &));
   connect(_actionSave, SIGNAL(triggered()), this, SLOT(slotFileSave()));
