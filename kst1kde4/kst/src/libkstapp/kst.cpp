@@ -339,11 +339,13 @@ void KstApp::initActions() {
   _actionZoomX->setIcon(QIcon((":/kst_zoomx.png")));
   _actionZoomY->setIcon(QIcon((":/kst_zoomy.png")));
   _actionZoomXY->setIcon(QIcon((":/kst_zoomxy.png")));
+	_actionTiedZoom->setIcon(QIcon((":/kst_zoomtie.png")));
 
   _actionGfxArrow->setIcon(QIcon((":/kst_gfx_arrow.png")));
 	_actionGfxRectangle->setIcon(QIcon((":/kst_gfx_rectangle.png")));
 	_actionGfxEllipse->setIcon(QIcon((":/kst_gfx_ellipse.png")));
 	_actionGfxLine->setIcon(QIcon((":/kst_gfx_line.png")));
+	_actionGfxLabel->setIcon(QIcon((":/kst_gfx_label.png")));
 	_actionGfxPicture->setIcon(QIcon((":/kst_gfx_picture.png")));
 
 	_actionNewVector->setIcon(QIcon((":/kst_vectornew.png")));
@@ -354,6 +356,8 @@ void KstApp::initActions() {
 	_actionNewEventMonitor->setIcon(QIcon((":/kst_eventnew.png")));
 	_actionNewMatrix->setIcon(QIcon((":/kst_matrixnew.png")));
 	_actionNewImage->setIcon(QIcon((":/kst_imagenew.png")));
+
+	_actionDataWizard->setIcon(QIcon((":/kst_datawizard.png")));
 
   connect(_actionOpen, SIGNAL(triggered()), this, SLOT(slotFileOpen()));
 // xxx  connect(_actionOpenRecent, SIGNAL(triggered()), this, SLOT(slotFileOpenRecent(const QUrl &));
@@ -566,7 +570,7 @@ void KstApp::initActions() {
   _actionLayout->setToolTip(QObject::tr("Layout mode"));
   _actionLayout->setWhatsThis(QObject::tr("Use this mode to move, resize, and group plots."));
 */
-/* xxx
+
   // this is the mouse mode menu
   QMenu* mouseModeMenu = new QMenu(this);
 
@@ -574,7 +578,7 @@ void KstApp::initActions() {
   mouseModeMenu->addAction(_actionZoomX);
   mouseModeMenu->addAction(_actionZoomY);
   mouseModeMenu->addSeparator();
-  mouseModeMenu->addAction(_actionLayout);
+// xxx  mouseModeMenu->addAction(_actionLayout);
   mouseModeMenu->addSeparator();
   mouseModeMenu->addAction(_actionGfxLabel);
   mouseModeMenu->addAction(_actionGfxRectangle);
@@ -584,7 +588,7 @@ void KstApp::initActions() {
   mouseModeMenu->addAction(_actionGfxPicture);
   mouseModeMenu->addAction(_actionGfx2DPlot);
   mouseModeMenu->addAction(_actionGfxLegend);
-*/
+
 /* xxx
   toolBar()->insertButton("thumbnail", MODE_BUTTON_ID, mouseModeMenu, true, QObject::tr("Select the desired mode"));
   toggleMouseMode();
