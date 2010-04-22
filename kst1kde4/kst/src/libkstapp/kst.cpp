@@ -363,6 +363,9 @@ void KstApp::initActions() {
   // define the non-standard icons
   //
 	_actionReload->setIcon(QIcon((":/kst_reload.png")));
+	_actionCopy->setIcon(QIcon((":/kst_copy.png")));
+	_actionPaste->setIcon(QIcon((":/kst_paste.png")));
+	_actionPrint->setIcon(QIcon((":/kst_print.png")));
 
   _actionZoomX->setIcon(QIcon((":/kst_zoomx.png")));
   _actionZoomY->setIcon(QIcon((":/kst_zoomy.png")));

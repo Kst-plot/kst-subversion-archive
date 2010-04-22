@@ -15,6 +15,7 @@
         <file>kst_changefile.png</file>
         <file>kst_changenpts.png</file>
         <file>kst_choosecolor.png</file>
+        <file>kst_copy.png</file>
         <file>kst_csdnew.png</file>
         <file>kst_curvenew.png</file>
         <file>kst_datamanager.png</file>
@@ -66,6 +67,8 @@
         <file>yes.png</file>
         <file>kst_readFromEnd.png</file>
         <file>kst_pause.png</file>
+        <file>kst_paste.png</file>
+        <file>kst_print.png</file>
         <file>kst_back.png</file>
         <file>kst_forward.png</file>
         <file>kst_rightarrow.png</file>
