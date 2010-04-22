@@ -334,12 +334,26 @@ void KstApp::initActions() {
   //
   // define the non-standard icons
   //
+	_actionReload->setIcon(QIcon((":/kst_reload.png")));
 
   _actionZoomX->setIcon(QIcon((":/kst_zoomx.png")));
   _actionZoomY->setIcon(QIcon((":/kst_zoomy.png")));
   _actionZoomXY->setIcon(QIcon((":/kst_zoomxy.png")));
 
   _actionGfxArrow->setIcon(QIcon((":/kst_gfx_arrow.png")));
+	_actionGfxRectangle->setIcon(QIcon((":/kst_gfx_rectangle.png")));
+	_actionGfxEllipse->setIcon(QIcon((":/kst_gfx_ellipse.png")));
+	_actionGfxLine->setIcon(QIcon((":/kst_gfx_line.png")));
+	_actionGfxPicture->setIcon(QIcon((":/kst_gfx_picture.png")));
+
+	_actionNewVector->setIcon(QIcon((":/kst_vectornew.png")));
+	_actionNewCurve->setIcon(QIcon((":/kst_curvenew.png")));
+	_actionNewEquation->setIcon(QIcon((":/kst_equationnew.png")));
+	_actionNewHistogram->setIcon(QIcon((":/kst_histogramnew.png")));
+	_actionNewPlugin->setIcon(QIcon((":/kst_pluginnew.png")));
+	_actionNewEventMonitor->setIcon(QIcon((":/kst_eventnew.png")));
+	_actionNewMatrix->setIcon(QIcon((":/kst_matrixnew.png")));
+	_actionNewImage->setIcon(QIcon((":/kst_imagenew.png")));
 
   connect(_actionOpen, SIGNAL(triggered()), this, SLOT(slotFileOpen()));
 // xxx  connect(_actionOpenRecent, SIGNAL(triggered()), this, SLOT(slotFileOpenRecent(const QUrl &));
