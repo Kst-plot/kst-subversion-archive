@@ -18,14 +18,8 @@
 #include <assert.h>
 #include <math.h>
 
-// include files for Qt
 #include <QTextDocument>
 
-// include files for KDE
-// xxx #include <kglobal.h>
-// xxx #include <klocale.h>
-
-// application specific includes
 #include "dialoglauncher.h"
 #include "kstdatacollection.h"
 #include "kstdebug.h"
@@ -177,8 +171,14 @@ KstPSD::~KstPSD() {
 
 
 const KstCurveHintList *KstPSD::curveHints() const {
+  KstCurveHintPtr curveHint;
+
   _curveHints->clear();
-// xxx  _curveHints->append(new KstCurveHint(QObject::tr("Spectrum Curve"), (*_fVector)->tagName(), (*_sVector)->tagName()));
+
+  curveHint = new KstCurveHint(QObject::tr("Spectrum Curve"), (*_fVector)->tagName(), (*_sVector)->tagName());
+
+ _curveHints->append(curveHint);
+
   return _curveHints;
 }
 
@@ -463,13 +463,18 @@ void KstPSD::setGaussianSigma(double in_gaussianSigma) {
 
 KstDataObjectPtr KstPSD::makeDuplicate(KstDataObjectDataObjectMap& duplicatedMap) {
   QString name(tagName() + '\'');
+  KstPSDPtr psd;
+
   while (KstData::self()->dataTagNameNotUnique(name, false)) {
     name += '\'';
   }
-  KstPSDPtr psd(new KstPSD(name, _inputVectors[INVECTOR], _Freq,
-                             _Average, _averageLen, _Apodize, _RemoveMean, _vUnits, _rUnits, 
-                             _apodizeFxn, _gaussianSigma, _Output));
-// xxx  duplicatedMap.insert(this, KstDataObjectPtr(psd));    
+
+  psd = new KstPSD(name, _inputVectors[INVECTOR], _Freq, _Average, 
+                    _averageLen, _Apodize, _RemoveMean, _vUnits, _rUnits, 
+                    _apodizeFxn, _gaussianSigma, _Output);
+
+  duplicatedMap.insert(KstPSDPtr(this), KstDataObjectPtr(psd));    
+
   return KstDataObjectPtr(psd);
 }
 

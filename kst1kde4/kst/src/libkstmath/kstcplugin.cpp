@@ -18,20 +18,14 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-// include files for Qt
 #include <QTextDocument>
 
-// include files for
-// xxx #include <klocale.h>
-
-// application specific includes
 #include "dialoglauncher.h"
 #include "kstdatacollection.h"
 #include "kstdataobjectcollection.h"
 #include "kstdebug.h"
 #include "kstcplugin.h"
 #include "plugincollection.h"
-
 
 KstCPlugin::KstCPlugin()
 : KstDataObject() {
@@ -525,9 +519,9 @@ bool KstCPlugin::isValid() const {
   bool rc = false;
 
   if (_inArrayCnt > 0 || _inScalarCnt > 0 || _inStringCnt > 0) {
-    rc = _inputVectors.count() == _inArrayCnt &&
-         _inputScalars.count() == _inScalarCnt - _inPid &&
-         _inputStrings.count() == _inStringCnt &&
+    rc = (unsigned)_inputVectors.count() == _inArrayCnt &&
+         (unsigned)_inputScalars.count() == _inScalarCnt - _inPid &&
+         (unsigned)_inputStrings.count() == _inStringCnt &&
          _plugin.data() != 0L;
   }
 
@@ -560,9 +554,9 @@ bool KstCPlugin::validate( ) {
     if (_plugin.data()) {
       Plugin::countScalarsVectorsAndStrings(_plugin->data()._inputs, _inScalarCnt, _inArrayCnt, _inStringCnt, _inPid);
       if (_inArrayCnt > 0 || _inScalarCnt > 0 || _inStringCnt > 0) {
-        if (_inputVectors.count() == _inArrayCnt &&
-          _inputScalars.count() == _inScalarCnt - _inPid &&
-          _inputStrings.count() == _inStringCnt) {
+        if ((unsigned)_inputVectors.count() == _inArrayCnt &&
+            (unsigned)_inputScalars.count() == _inScalarCnt - _inPid &&
+            (unsigned)_inputStrings.count() == _inStringCnt) {
 
           _outScalarCnt = 0;
           _outArrayCnt = 0;
@@ -574,7 +568,9 @@ bool KstCPlugin::validate( ) {
           freeParameters();
 
           const QList<Plugin::Data::IOValue>& otable = _plugin->data()._outputs;
-          for (QList<Plugin::Data::IOValue>::ConstIterator it = otable.begin(); it != otable.end(); ++it) {
+          QList<Plugin::Data::IOValue>::const_iterator it;
+
+          for (it = otable.begin(); it != otable.end(); ++it) {
             if ((*it)._type == Plugin::Data::IOValue::TableType) {
               KstWriteLocker blockVectorUpdates(&KST::vectorList.lock());
               KstVectorPtr v;
@@ -589,11 +585,13 @@ bool KstCPlugin::validate( ) {
             } else if ((*it)._type == Plugin::Data::IOValue::FloatType) {
               KstWriteLocker blockScalarUpdates(&KST::scalarList.lock());
               KstScalarPtr s(new KstScalar(KstObjectTag((*it)._name, tag()), this));
+
               _outputScalars.insert((*it)._name, s);
               ++_outScalarCnt;
             } else if ((*it)._type == Plugin::Data::IOValue::StringType) {
               KstWriteLocker blockStringUpdates(&KST::stringList.lock());
               KstStringPtr s(new KstString(KstObjectTag((*it)._name, tag()), this));
+
               _outputStrings.insert((*it)._name, s);
               ++_outStringCnt;
             }
@@ -602,6 +600,7 @@ bool KstCPlugin::validate( ) {
           allocateParameters();
 
           KstDataObjectList::Iterator oi = KST::dataObjectList.findTag(tagName());
+
           if (oi == KST::dataObjectList.end()) {
             KST::dataObjectList.lock().writeLock();
             KST::dataObjectList.append(KstDataObjectPtr(this));
@@ -623,6 +622,7 @@ bool KstCPlugin::validate( ) {
 //
 // to be used only from javaScript...
 //
+
 bool KstCPlugin::setModule(KstPluginPtr plugin) {
   // Assumes that this is called with a write lock in place on this object
   Q_ASSERT(myLockStatus() == KstRWLock::WRITELOCKED);
@@ -676,15 +676,17 @@ bool KstCPlugin::setPlugin(KstPluginPtr plugin) {
     _outputScalars.clear();
     _outputStrings.clear();
     _plugin = 0L;
+
     return true;
   }
 
   Plugin::countScalarsVectorsAndStrings(plugin->data()._inputs, _inScalarCnt, _inArrayCnt, _inStringCnt, _inPid);
 
-  if (_inputVectors.count() != _inArrayCnt ||
-      _inputScalars.count() != _inScalarCnt - _inPid ||
-      _inputStrings.count() != _inStringCnt) {
+  if ((unsigned)_inputVectors.count() != _inArrayCnt ||
+      (unsigned)_inputScalars.count() != _inScalarCnt - _inPid ||
+      (unsigned)_inputStrings.count() != _inStringCnt) {
     _plugin = 0L;
+
     return false;
   }
 
@@ -696,7 +698,9 @@ bool KstCPlugin::setPlugin(KstPluginPtr plugin) {
   _outputStrings.clear();
 
   const QList<Plugin::Data::IOValue>& otable = plugin->data()._outputs;
-  for (QList<Plugin::Data::IOValue>::ConstIterator it = otable.begin(); it != otable.end(); ++it) {
+  QList<Plugin::Data::IOValue>::ConstIterator it;
+
+  for (it = otable.begin(); it != otable.end(); ++it) {
     if ((*it)._type == Plugin::Data::IOValue::TableType) {
       KstWriteLocker blockVectorUpdates(&KST::vectorList.lock());
       KstVectorPtr v;
@@ -711,11 +715,13 @@ bool KstCPlugin::setPlugin(KstPluginPtr plugin) {
     } else if ((*it)._type == Plugin::Data::IOValue::FloatType) {
       KstWriteLocker blockScalarUpdates(&KST::scalarList.lock());
       KstScalarPtr s(new KstScalar(KstObjectTag((*it)._name, tag()), this));
+
       _outputScalars.insert((*it)._name, s);
       ++_outScalarCnt;
     } else if ((*it)._type == Plugin::Data::IOValue::StringType) {
       KstWriteLocker blockStringUpdates(&KST::stringList.lock());
       KstStringPtr s(new KstString(KstObjectTag((*it)._name, tag()), this));
+
       _outputStrings.insert((*it)._name, s);
       ++_outStringCnt;
     }
@@ -746,9 +752,12 @@ void KstCPlugin::showEditDialog() {
 const KstCurveHintList* KstCPlugin::curveHints() const {
   _curveHints->clear();
   if (_plugin) {
-    for (QList<Plugin::Data::CurveHint>::ConstIterator i = _plugin->data()._hints.begin(); i != _plugin->data()._hints.end(); ++i) {
+    QList<Plugin::Data::CurveHint>::const_iterator i;
+
+    for (i = _plugin->data()._hints.begin(); i != _plugin->data()._hints.end(); ++i) {
       KstVectorPtr xv(_outputVectors[(*i).x]);
       KstVectorPtr yv(_outputVectors[(*i).y]);
+
       if (xv && yv) {
         _curveHints->append(KstCurveHintPtr(new KstCurveHint((*i).name, xv->tagName(), yv->tagName())));
       }
@@ -765,7 +774,6 @@ QString KstCPlugin::lastError() const {
 
 
 KstDataObject::Kind KstCPlugin::kind() const {
-
   if (_plugin->data()._isFit) {
     return Fit;
   } else if (_plugin->data()._isFilter) {
@@ -782,20 +790,29 @@ void KstCPlugin::createFitScalars() {
 
   if (_plugin->data()._isFit && _outputVectors.contains("Parameters")) {
     KstVectorPtr vectorParam = _outputVectors["Parameters"];
+
     if (vectorParam) {
       QString paramName;
       int i = 0;
       int length = vectorParam->length();
 
       KstWriteLocker blockScalarUpdates(&KST::scalarList.lock());
+
       KST::scalarList.setUpdateDisplayTags(false);
       for (paramName = _plugin->parameterName(i); 
           !paramName.isEmpty() && i < length; 
            paramName = _plugin->parameterName(++i)) {
         double scalarValue = vectorParam->value(i);
+
         if (!_outputScalars.contains(paramName)) {
           KstScalarPtr s(new KstScalar(KstObjectTag(paramName, tag()), this, scalarValue));
-          s->KstObject::writeLock();  // must write lock, since fit scalars are created from update()
+
+          //
+          // must write lock, since fit scalars are created from update()...
+          //
+
+          s->KstObject::writeLock();  
+
           _outputScalars.insert(paramName, s);
           ++_outScalarCnt;
         } else {
@@ -810,34 +827,49 @@ void KstCPlugin::createFitScalars() {
 
 KstDataObjectPtr KstCPlugin::makeDuplicate(KstDataObjectDataObjectMap& duplicatedMap) {
   KstCPluginPtr plugin(new KstCPlugin);
+  KstVectorMap::const_iterator iterV;
+  KstScalarMap::const_iterator iterS;
+  KstStringMap::const_iterator iterStr;
 
-  // use same inputs
-  for (KstVectorMap::ConstIterator iter = _inputVectors.begin(); iter != _inputVectors.end(); ++iter) {
-    plugin->inputVectors().insert(iter.key(), *iter);
-  }
-  for (KstScalarMap::ConstIterator iter = _inputScalars.begin(); iter != _inputScalars.end(); ++iter) {
-    plugin->inputScalars().insert(iter.key(), *iter);  
-  }
-  for (KstStringMap::ConstIterator iter = _inputStrings.begin(); iter != _inputStrings.end(); ++iter) {
-    plugin->inputStrings().insert(iter.key(), *iter);  
+  for (iterV = _inputVectors.begin(); iterV != _inputVectors.end(); ++iterV) {
+    plugin->inputVectors().insert(iterV.key(), *iterV);
   }
 
-  // create new outputs
-  for (KstVectorMap::ConstIterator iter = outputVectors().begin(); iter != outputVectors().end(); ++iter) {
+  for (iterS = _inputScalars.begin(); iterS != _inputScalars.end(); ++iterS) {
+    plugin->inputScalars().insert(iterS.key(), *iterS);  
+  }
+
+  for (iterStr = _inputStrings.begin(); iterStr != _inputStrings.end(); ++iterStr) {
+    plugin->inputStrings().insert(iterStr.key(), *iterStr);  
+  }
+
+  //
+  // create new outputs...
+  //
+
+  for (iterV = outputVectors().begin(); iterV != outputVectors().end(); ++iterV) {
     KstWriteLocker blockVectorUpdates(&KST::vectorList.lock());
-    KstVectorPtr v(new KstVector(KstObjectTag((*iter)->tag().tag() + "'", (*iter)->tag().context()), 0, plugin.data())); // FIXME: unique tag generation
-    plugin->outputVectors().insert(iter.key(), v);
-  }
-  for (KstScalarMap::ConstIterator iter = outputScalars().begin(); iter != outputScalars().end(); ++iter) {
-    KstScalarPtr s(new KstScalar(KstObjectTag((*iter)->tag().tag() + "'", (*iter)->tag().context()), plugin.data())); // FIXME: unique tag generation
-    plugin->outputScalars().insert(iter.key(), s);
-  }
-  for (KstStringMap::ConstIterator iter = outputStrings().begin(); iter != outputStrings().end(); ++iter) {
-    KstStringPtr s(new KstString(KstObjectTag((*iter)->tag().tag() + "'", (*iter)->tag().context()), plugin.data())); // FIXME: unique tag generation
-    plugin->outputStrings().insert(iter.key(), s);
+    KstVectorPtr v(new KstVector(KstObjectTag((*iterV)->tag().tag() + "'", (*iterV)->tag().context()), 0, plugin.data())); // FIXME: unique tag generation
+
+    plugin->outputVectors().insert(iterV.key(), v);
   }
 
-  // set the same plugin
+  for (iterS = outputScalars().begin(); iterS != outputScalars().end(); ++iterS) {
+    KstScalarPtr s(new KstScalar(KstObjectTag((*iterS)->tag().tag() + "'", (*iterS)->tag().context()), plugin.data())); // FIXME: unique tag generation
+
+    plugin->outputScalars().insert(iterS.key(), s);
+  }
+
+  for (iterStr = outputStrings().begin(); iterStr != outputStrings().end(); ++iterStr) {
+    KstStringPtr s(new KstString(KstObjectTag((*iterStr)->tag().tag() + "'", (*iterStr)->tag().context()), plugin.data())); // FIXME: unique tag generation
+
+    plugin->outputStrings().insert(iterStr.key(), s);
+  }
+
+  //
+  // set the same plugin...
+  //
+
   plugin->setPlugin(_plugin);
   plugin->setTagName(KstObjectTag(tag().tag() + "'", tag().context())); // FIXME: unique tag generation method
   duplicatedMap.insert(KstDataObjectPtr(this), KstDataObjectPtr(plugin));  
@@ -852,6 +884,9 @@ void KstCPlugin::setTagName(const KstObjectTag& tag) {
 
 
 void KstCPlugin::setTagName(const QString &in_tag) {
+  KstVectorMap::iterator iterV;
+  KstScalarMap::Iterator iterS;
+  KstStringMap::Iterator iterStr;
   KstObjectTag newTag(in_tag, tag().context());
 
   if (newTag == tag()) {
@@ -860,13 +895,15 @@ void KstCPlugin::setTagName(const QString &in_tag) {
 
   KstObject::setTagName(newTag);
 
-  for (KstVectorMap::Iterator iter = outputVectors().begin(); iter != outputVectors().end(); ++iter) {
-    (*iter)->setTagName(KstObjectTag((*iter)->tag().tag(), tag()));
+  for (iterV = outputVectors().begin(); iterV != outputVectors().end(); ++iterV) {
+    (*iterV)->setTagName(KstObjectTag((*iterV)->tag().tag(), tag()));
   }
-  for (KstScalarMap::Iterator iter = outputScalars().begin(); iter != outputScalars().end(); ++iter) {
-    (*iter)->setTagName(KstObjectTag((*iter)->tag().tag(), tag()));
+
+  for (iterS = outputScalars().begin(); iterS != outputScalars().end(); ++iterS) {
+    (*iterS)->setTagName(KstObjectTag((*iterS)->tag().tag(), tag()));
   }
-  for (KstStringMap::Iterator iter = outputStrings().begin(); iter != outputStrings().end(); ++iter) {
-    (*iter)->setTagName(KstObjectTag((*iter)->tag().tag(), tag()));
+
+  for (iterStr = outputStrings().begin(); iterStr != outputStrings().end(); ++iterStr) {
+    (*iterStr)->setTagName(KstObjectTag((*iterStr)->tag().tag(), tag()));
   }
 }

@@ -19,8 +19,6 @@
 
 #include <QRegExp>
 
-// xxx #include <klocale.h>
-
 #include "kstdataobjectcollection.h"
 #include "kstdatacollection.h"
 #include "kstdefaultnames.h"

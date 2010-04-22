@@ -34,45 +34,49 @@ class KST_EXPORT KstCPlugin : public KstDataObject {
     KstCPlugin(const QDomElement &e);
     virtual ~KstCPlugin();
 
-    virtual UpdateType update(int update_counter);
-
     virtual void save(QTextStream &ts, const QString& indent = QString::null);
-
     virtual bool slaveVectorsUsed() const;
     virtual bool isValid() const;
     virtual bool validate();
     virtual bool setModule(KstPluginPtr plugin);
     virtual bool setPlugin(KstPluginPtr plugin);
-    KstPluginPtr plugin() const;
-
+    virtual void setTagName(const QString& tag);
+    virtual void setTagName(const KstObjectTag& tag);
+    virtual KstDataObjectPtr makeDuplicate(KstDataObjectDataObjectMap& duplicatedMap);
+    virtual UpdateType update(int update_counter);
     virtual QString propertyString() const;
+    virtual Kind kind() const;
 
     virtual const KstCurveHintList* curveHints() const;
 
+    KstPluginPtr plugin() const;
     QString label(int precision) const;
     QString lastError() const;
-
-    virtual Kind kind() const;
     void createFitScalars();
-
-    virtual KstDataObjectPtr makeDuplicate(KstDataObjectDataObjectMap& duplicatedMap);
-
-    virtual void setTagName(const QString& tag);
-    virtual void setTagName(const KstObjectTag& tag);
-
+ 
   protected:
     static void countScalarsAndVectors(const QList<Plugin::Data::IOValue>& table, unsigned& scalars, unsigned& vectors);
+
     virtual void showNewDialog();
     virtual void showEditDialog();
-    KstPluginPtr _plugin;
-    unsigned _inScalarCnt, _inArrayCnt, _inStringCnt, _outScalarCnt;
-    unsigned _inPid, _outArrayCnt, _outStringCnt;
-    void *_localData;
-    QString _lastError;
 
-    int *_inArrayLens, *_outArrayLens;
-    double *_inScalars, *_outScalars;
-    double **_inVectors, **_outVectors;
+    KstPluginPtr _plugin;
+    QString _lastError;
+    unsigned _inScalarCnt;
+    unsigned _inArrayCnt;
+    unsigned _inStringCnt;
+    unsigned _inPid;
+    unsigned _outScalarCnt;
+    unsigned _outArrayCnt;
+    unsigned _outStringCnt;
+    void *_localData;
+
+    int *_inArrayLens;
+    int *_outArrayLens;
+    double *_inScalars;
+    double *_outScalars;
+    double **_inVectors;
+    double **_outVectors;
     char **_inStrings;
     char **_outStrings;
 

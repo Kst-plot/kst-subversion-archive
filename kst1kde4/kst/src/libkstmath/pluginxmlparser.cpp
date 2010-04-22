@@ -15,11 +15,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "pluginxmlparser.h"
+#include <QFile>
 
 #include <kglobal.h>
-// xxx #include <klocale.h>
-#include <QFile>
+
+#include "pluginxmlparser.h"
 
 PluginXMLParser::PluginXMLParser() {
 }
@@ -132,16 +132,22 @@ QDomElement topElem = doc.documentElement();
       n = n.nextSibling();
     }
 
-    // check that we have a valid filter, and if not then disable it.
+    //
+    // check that we have a valid filter, and if not then disable it...
+    //
+
     if (_pluginData._isFilter) {
       _pluginData._isFilter = false;
 
-      // if we have no input vector name check to see if we can declare one by default.
+      //
+      // if we have no input vector name check to see if we can declare one by default...
+      //
+
       if (_pluginData._filterInputVector.isEmpty()) {
         int num = 0;
         int inputIndex = 0;
 
-        for (uint i = 0; i < _pluginData._inputs.size(); i++) {
+        for (int i = 0; i < _pluginData._inputs.size(); i++) {
           if (_pluginData._inputs[i]._type == Plugin::Data::IOValue::TableType) {
             num++;
             inputIndex = i;
@@ -152,12 +158,14 @@ QDomElement topElem = doc.documentElement();
         }
       }
 
-      // if we have no output vector name check to see if we can declare one by default.
+      //
+      // if we have no output vector name check to see if we can declare one by default...
+      //
       if (_pluginData._filterOutputVector.isEmpty()) {
         int num = 0;
         int inputIndex = 0;
 
-        for (uint i = 0; i < _pluginData._outputs.size(); i++) {
+        for (int i = 0; i < _pluginData._outputs.size(); i++) {
           if (_pluginData._outputs[i]._type == Plugin::Data::IOValue::TableType) {
             num++;
             inputIndex = i;
@@ -168,14 +176,18 @@ QDomElement topElem = doc.documentElement();
         }
       }
 
-      // check that we have valid vector names for the input and output.
-      for (uint i = 0; i < _pluginData._inputs.size(); i++) {
+      //
+      // check that we have valid vector names for the input and output...
+      //
+
+      for (int i = 0; i < _pluginData._inputs.size(); i++) {
         if (_pluginData._inputs[i]._type == Plugin::Data::IOValue::TableType &&
             _pluginData._inputs[i]._name == _pluginData._filterInputVector) {
-          for (uint j = 0; j < _pluginData._outputs.size(); j++) {
+          for (int j = 0; j < _pluginData._outputs.size(); j++) {
             if (_pluginData._outputs[j]._type == Plugin::Data::IOValue::TableType &&
                 _pluginData._outputs[j]._name == _pluginData._filterOutputVector) {
               _pluginData._isFilter = true;
+
               break;
             }
           }
@@ -186,7 +198,7 @@ QDomElement topElem = doc.documentElement();
     return -3;  // XML parse error - no "module" at the top
   }
 
-return 0;
+  return 0;
 }
 
 
@@ -194,15 +206,16 @@ int PluginXMLParser::parseIntro(const QDomElement& element) {
 QDomNode n = element.firstChild();
 
   while (!n.isNull()) {
-    int rc = 0;
     QDomElement e = n.toElement();
+    QString tn;
+    int rc = 0;
 
     if (e.isNull()) {
       n = n.nextSibling();
       continue;
     }
 
-    QString tn = e.tagName().toLower();
+    tn = e.tagName().toLower();
     if (tn == QS_modulename) {
       _pluginData._readableName = e.attribute(QS_readableName);
       _pluginData._name = e.attribute(QS_name);
@@ -229,7 +242,9 @@ QDomNode n = element.firstChild();
       _pluginData._version = QString("%1.%2").arg(e.attribute(QS_major))
                                              .arg(e.attribute(QS_minor));
     } else if (tn == QS_state) {
-      QString st = e.attribute(QS_devstate).toLower();
+      QString st;
+
+      st = e.attribute(QS_devstate).toLower();
       _pluginData._state = Plugin::Data::Unknown;
 
       if (st == QS_prealpha) {
@@ -270,15 +285,17 @@ int PluginXMLParser::parseInterface(const QDomElement& element) {
 QDomNode n = element.firstChild();
 
   while (!n.isNull()) {
-    int rc = 0;
     QDomElement e = n.toElement();
-
+    QString tn;
+    int rc = 0;
+ 
     if (e.isNull()) {
       n = n.nextSibling();
+
       continue;
     }
 
-    QString tn = e.tagName().toLower();
+    tn = e.tagName().toLower();
     if (tn == QS_input) {
       rc = parseIO(e, _pluginData._inputs);
     } else if (tn == QS_output) {
@@ -294,7 +311,7 @@ QDomNode n = element.firstChild();
     n = n.nextSibling();
   }
 
-return 0;
+  return 0;
 }
 
 
@@ -303,15 +320,16 @@ QDomNode n = element.firstChild();
 
   while (!n.isNull()) {
     QDomElement e = n.toElement();
+    Plugin::Data::IOValue iov;
+    QString tn;
 
     if (e.isNull()) {
       n = n.nextSibling();
+
       continue;
     }
 
-    Plugin::Data::IOValue iov;
-
-    QString tn = e.tagName().toLower();
+    tn = e.tagName().toLower();
     if (tn == QS_table) {
       iov._type = Plugin::Data::IOValue::TableType;
 //    } else if (tn == QS_integer) {
@@ -364,7 +382,7 @@ QDomNode n = element.firstChild();
     n = n.nextSibling();
   }
 
-return 0;
+  return 0;
 }
 
 
@@ -372,19 +390,22 @@ int PluginXMLParser::parseCurveHints(const QDomElement& element) {
   QDomNode n = element.firstChild();
 
   while (!n.isNull()) {
-    int rc = 0;
     QDomElement e = n.toElement();
+    QString tn;
+    int rc = 0;
 
     if (e.isNull()) {
       n = n.nextSibling();
+
       continue;
     }
 
-    QString tn = e.tagName().toLower();
+    tn = e.tagName().toLower();
     if (tn == QS_hint) {
       QString n = e.attribute(QS_name);
       QString x = e.attribute("x");
       QString y = e.attribute("y");
+
       if (!n.isEmpty() && !y.isEmpty() && !x.isEmpty()) {
         _pluginData._hints.append(Plugin::Data::CurveHint(n, x, y));
       }
@@ -402,37 +423,4 @@ int PluginXMLParser::parseCurveHints(const QDomElement& element) {
   return 0;
 }
 
-
-#if 0
-int PluginXMLParser::parseParalist(const QDomElement& element) {
-  QDomNode n = element.firstChild();
-
-  while (!n.isNull()) {
-    int rc = 0;
-    QDomElement e = n.toElement();
-
-    if (e.isNull()) {
-      n = n.nextSibling();
-      continue;
-    }
-
-    QString tn = e.tagName().lower();
-    if (tn == QS_string) {
-      _pluginData._parameters[e.attribute(QS_name)] = qMakePair(Plugin::Data::String, e.attribute(QS_helptext));
-    } else if (tn == QS_int) {
-      _pluginData._parameters[e.attribute(QS_name)] = qMakePair(Plugin::Data::Integer, e.attribute(QS_helptext));
-    } else {
-      // Unknown node
-    }
-
-    if (rc < 0) {
-      return rc;
-    }
-
-    n = n.nextSibling();
-  }
-
-  return 0;
-}
-#endif
 

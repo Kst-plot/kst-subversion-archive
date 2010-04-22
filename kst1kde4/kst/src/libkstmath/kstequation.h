@@ -78,7 +78,9 @@ class KST_EXPORT KstEquation : public KstDataObject {
     void reparse();
 
   private:
-    KstVectorMap::Iterator _xInVector, _xOutVector, _yOutVector;
+    KstVectorMap::iterator _xInVector;
+    KstVectorMap::iterator _xOutVector;
+    KstVectorMap::iterator _yOutVector;
     Equation::Node *_pe;
     KstVectorMap _vectorsUsed;
     KstScalarMap _scalarsUsed;

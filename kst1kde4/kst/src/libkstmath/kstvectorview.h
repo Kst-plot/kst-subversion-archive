@@ -91,8 +91,8 @@ class KST_EXPORT KstVectorView: public KstDataObject {
 
     QString FlagTag() const;
 
-    virtual QString xVTag() const {return (*_cxVector)->tagName();} //?
-    virtual QString yVTag() const {return (*_cyVector)->tagName();} //?
+    virtual QString xVTag() const {return (*_cxVector)->tagName();}
+    virtual QString yVTag() const {return (*_cyVector)->tagName();}
 
     KstVectorPtr vX() const { return *_cxVector; }
     KstVectorPtr vY() const { return *_cyVector; }
@@ -103,14 +103,19 @@ class KST_EXPORT KstVectorView: public KstDataObject {
     void scalarChanged();
 
   private:
-    KstVectorMap::Iterator _cxVector;
-    KstVectorMap::Iterator _cyVector;
-
-    InterpType _interp;
-    bool _useXmin, _useXmax, _useYmin, _useYmax;
-    KstScalarPtr _xmin, _xmax, _ymin, _ymax;
-
     void commonConstructor(const QString &in_tag);
+
+    KstVectorMap::iterator _cxVector;
+    KstVectorMap::iterator _cyVector;
+    KstScalarPtr _xmin;
+    KstScalarPtr _xmax;
+    KstScalarPtr _ymin;
+    KstScalarPtr _ymax;
+    InterpType _interp;
+    bool _useXmin;
+    bool _useXmax;
+    bool _useYmin;
+    bool _useYmax;
 };
 
 typedef QExplicitlySharedDataPointer<KstVectorView> KstVectorViewPtr;

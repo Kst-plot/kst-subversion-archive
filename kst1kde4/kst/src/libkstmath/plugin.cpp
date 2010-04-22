@@ -15,12 +15,12 @@
  *                                                                         *
  ***************************************************************************/
 
-
-#include "plugin.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 #include <klibloader.h>
-#include <klocale.h>
 
+#include "plugin.h"
 
 const int Plugin::CallError = -424242;
 
@@ -30,7 +30,6 @@ Plugin::Plugin() : QSharedData() {
   _freeSymbol = 0L;
   _errorSymbol = 0L;
   _parameterName = 0L;
-  //kstdDebug() << "Creating Plugin: " << long(this) << endl;
 }
 
 
@@ -44,8 +43,6 @@ Plugin::~Plugin() {
     _lib->unload();  // this deletes it too
     _lib = 0L;
   }
-
-  //kstdDebug() << "Destroying Plugin: " << long(this) << endl;
 }
 
 
@@ -123,13 +120,13 @@ QString Plugin::parameterName(int idx) const {
 
   if (_data._isFit && _parameterName) {
     if (((int(*)(int, char**))_parameterName)(idx, &name) && name) {
-      parameter = name; // deep copy into QString
-// xxx      free(name);
+      parameter = name;
+      free(name);
     }
   }
 
   if (parameter.isEmpty()) {
-    parameter = i18n("Param%1").arg(idx);
+    parameter = QObject::tr("Param%1").arg(idx);
   }
 
   return parameter;
@@ -137,27 +134,32 @@ QString Plugin::parameterName(int idx) const {
 
 
 void Plugin::countScalarsVectorsAndStrings(const QList<Plugin::Data::IOValue>& table, unsigned& scalars, unsigned& vectors, unsigned& strings, unsigned& numberOfPids) {
+  QList<Plugin::Data::IOValue>::const_iterator it;
   scalars = 0;
   vectors = 0;
   strings = 0;
   numberOfPids = 0;
 
-  for (QList<Plugin::Data::IOValue>::const_iterator it = table.begin(); it != table.end(); ++it) {
+  for (it = table.begin(); it != table.end(); ++it) {
     switch ((*it)._type) {
       case Plugin::Data::IOValue::StringType:
         ++strings;
         break;
+
       case Plugin::Data::IOValue::PidType:
         ++numberOfPids;
+
       case Plugin::Data::IOValue::FloatType:
         ++scalars;
         break;
+
       case Plugin::Data::IOValue::TableType:
         if ((*it)._subType == Plugin::Data::IOValue::FloatSubType ||
             (*it)._subType == Plugin::Data::IOValue::FloatNonVectorSubType) {
           ++vectors;
         }
         break;
+
       default:
         break;
     }

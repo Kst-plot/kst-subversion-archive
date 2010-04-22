@@ -15,14 +15,11 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <klibloader.h>
 
 #include "kstdebug.h"
 #include "pluginloader.h"
 #include "pluginxmlparser.h"
-
-#include <klibloader.h>
-// xxx #include <klocale.h>
-
 
 PluginLoader *PluginLoader::_self = 0L;
 

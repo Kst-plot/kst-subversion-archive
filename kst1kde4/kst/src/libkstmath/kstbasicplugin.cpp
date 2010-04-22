@@ -18,13 +18,8 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-// include files for Qt
 #include <QTextDocument>
 
-// include files for KDE
-// xxx #include <klocale.h>
-
-// application specific includes
 #include "kstdebug.h"
 #include "kstbasicplugin.h"
 #include "dialoglauncher.h"

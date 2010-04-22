@@ -21,9 +21,6 @@
 
 #include <QTextDocument>
 
-// xxx #include <kglobal.h>
-// xxx #include <klocale.h>
-
 #include "dialoglauncher.h"
 #include "kstcsd.h"
 #include "kstdatacollection.h"

@@ -19,14 +19,8 @@
 #include <math.h>
 #include <stdlib.h>
 
-// include files for Qt
 #include <QTextDocument>
 
-// include files for KDE
-// xxx #include <kglobal.h>
-// xxx #include <klocale.h>
-
-// application specific includes
 #include "dialoglauncher.h"
 #include "kstdatacollection.h"
 #include "kstdefaultnames.h"
@@ -455,15 +449,15 @@ bool KstHistogram::realTimeAutoBin() const {
 
 KstDataObjectPtr KstHistogram::makeDuplicate(KstDataObjectDataObjectMap& duplicatedMap) {
   QString name(tagName() + '\'');
-  
+  KstHistogramPtr histogram;
+
   while (KstData::self()->dataTagNameNotUnique(name, false)) {
     name += '\'';
   }
   
-  KstHistogramPtr histogram(new KstHistogram(name, _inputVectors[RAWVECTOR],
-                                               _MinX, _MaxX, _NBins, _NormMode));
+  histogram = new KstHistogram(name, _inputVectors[RAWVECTOR], _MinX, _MaxX, _NBins, _NormMode);
 
-// xxx  duplicatedMap.insert(this, KstDataObjectPtr(histogram));
+  duplicatedMap.insert(KstHistogramPtr(this), KstDataObjectPtr(histogram));
 
   return KstDataObjectPtr(histogram);
 }

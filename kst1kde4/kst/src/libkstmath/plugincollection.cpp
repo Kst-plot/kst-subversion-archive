@@ -20,7 +20,6 @@
 #include <QRegExp>
 
 #include <kdeversion.h>
-// xxx #include <klocale.h>
 #include <kstandarddirs.h>
 
 #include "kstdebug.h"

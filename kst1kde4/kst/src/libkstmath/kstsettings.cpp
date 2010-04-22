@@ -19,13 +19,10 @@
 #include <QPrinter>
 #include <QSettings>
 
-// include files for KDE
-// xxx #include <kconfig.h>
 #include <kemailsettings.h>
-#include "ksttimezones.h"
 
-// application specific includes
 #include "kstsettings.h"
+#include "ksttimezones.h"
 
 KstSettings::KstSettings() {
   plotUpdateTimer = 200;

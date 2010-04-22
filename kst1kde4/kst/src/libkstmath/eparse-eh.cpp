@@ -18,7 +18,6 @@
 #include <QString>
 #include <QStringList>
 
-// xxx #include <klocale.h>
 #include "kst_export.h"
 
 namespace Equation {
@@ -26,16 +25,25 @@ namespace Equation {
 }
 
 
-static const char *EParseErrorUnknown = QT_TR_NOOP("parse error"); // from bison
-extern "C" const char *EParseErrorEmpty = QT_TR_NOOP("Equation is empty.");
-extern "C" const char *EParseErrorEmptyArg = QT_TR_NOOP("Function argument is empty.");
-extern "C" const char *EParseErrorTwoOperands = QT_TR_NOOP("Two operands are required.");
-extern "C" const char *EParseErrorEmptyParentheses = QT_TR_NOOP("Empty parentheses are forbidden except in function calls.");
-extern "C" const char *EParseErrorMissingClosingParenthesis = QT_TR_NOOP("Closing parenthesis is missing.");
-extern "C" const char *EParseErrorNoImplicitMultiply = QT_TR_NOOP("Term must be followed by an operator.  Implicit multiplication is not supported.");
-extern "C" const char *EParseErrorRequiresOperand = QT_TR_NOOP("This operator requires an operand.");
-extern "C" const char *EParseErrorToken = QT_TR_NOOP("Unknown character '%1'.");
+extern "C" const char *EParseErrorUnknown;
+extern "C" const char *EParseErrorEmpty;
+extern "C" const char *EParseErrorEmptyArg;
+extern "C" const char *EParseErrorTwoOperands;
+extern "C" const char *EParseErrorEmptyParentheses;
+extern "C" const char *EParseErrorMissingClosingParenthesis;
+extern "C" const char *EParseErrorNoImplicitMultiply;
+extern "C" const char *EParseErrorRequiresOperand;
+extern "C" const char *EParseErrorToken;
 
+const char *EParseErrorUnknown = QT_TR_NOOP("parse error");
+const char *EParseErrorEmpty = QT_TR_NOOP("Equation is empty.");
+const char *EParseErrorEmptyArg = QT_TR_NOOP("Function argument is empty.");
+const char *EParseErrorTwoOperands = QT_TR_NOOP("Two operands are required.");
+const char *EParseErrorEmptyParentheses = QT_TR_NOOP("Empty parentheses are forbidden except in function calls.");
+const char *EParseErrorMissingClosingParenthesis = QT_TR_NOOP("Closing parenthesis is missing.");
+const char *EParseErrorNoImplicitMultiply = QT_TR_NOOP("Term must be followed by an operator. Implicit multiplication is not supported.");
+const char *EParseErrorRequiresOperand = QT_TR_NOOP("This operator requires an operand.");
+const char *EParseErrorToken = QT_TR_NOOP("Unknown character '%1'.");
 
 extern "C" void yyClearErrors() {
   Equation::errorStack.clear();

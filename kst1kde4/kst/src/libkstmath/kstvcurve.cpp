@@ -15,13 +15,10 @@
  *                                                                         *
  ***************************************************************************/
 
-// includes for Qt
+#include <time.h>
+
 #include <QTextDocument>
 
-// includes for KDE
-// xxx #include <klocale.h>
-
-// application specific includes
 #include "dialoglauncher.h"
 #include "kstcolorsequence.h"
 #include "kstdatacollection.h"
@@ -31,8 +28,6 @@
 #include "kstmath.h"
 #include "kstrvector.h"
 #include "kstvcurve.h"
-
-#include <time.h>
 
 #ifndef KDE_IS_LIKELY
 #if __GNUC__ - 0 >= 3
@@ -945,7 +940,7 @@ KstDataObjectPtr KstVCurve::makeDuplicate(KstDataObjectDataObjectMap& duplicated
     vcurve->setYVectorOffsetScalar(*_inputScalars.find(YOFFSETSCALAR));
   }
 
-// xxx  duplicatedMap.insert(this, KstDataObjectPtr(vcurve));
+  duplicatedMap.insert(KstVCurvePtr(this), KstDataObjectPtr(vcurve));
   
   return KstDataObjectPtr(vcurve);
 }
@@ -954,6 +949,7 @@ KstDataObjectPtr KstVCurve::makeDuplicate(KstDataObjectDataObjectMap& duplicated
 void KstVCurve::paint(const KstCurveRenderContext& context) {
   KstVectorPtr xv = *_inputVectors.find(COLOR_XVECTOR);
   KstVectorPtr yv = *_inputVectors.find(COLOR_YVECTOR);
+
   if (!xv || !yv) {
     return;
   }

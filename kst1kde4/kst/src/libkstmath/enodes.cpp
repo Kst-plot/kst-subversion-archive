@@ -22,8 +22,6 @@
 #include <string.h>
 #include <unistd.h>
 
-// xxx #include <klocale.h>
-
 #include <QMutex>
 #include <QRegExp>
 

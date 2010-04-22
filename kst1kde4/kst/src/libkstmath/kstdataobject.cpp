@@ -18,22 +18,16 @@
 
 #include <assert.h>
 
-// include files for Qt
 #include <QTimer>
 
-// include files for KDE
-// xxx #include <klocale.h>
 #include <klibloader.h>
 #include <kparts/componentfactory.h>
 
-// application specific includes
 #include "kstdataobject.h"
 #include "kstdataplugin.h"
 #include "kstdebug.h"
 #include "kstdatacollection.h"
 #include "kstdataobjectcollection.h"
-
-//#define LOCKTRACE
 
 KstDataObject::KstDataObject() : KstObject() {
   _curveHints = new KstCurveHintList;

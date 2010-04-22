@@ -21,7 +21,6 @@
 #define MARKER_LABEL_PRECISION        15
 
 #include <QStringList>
-// xxx #include <klocale.h>
 
 #ifndef QT_TRANSLATE_NOOP
 #define QT_TRANSLATE_NOOP( comment,x ) x

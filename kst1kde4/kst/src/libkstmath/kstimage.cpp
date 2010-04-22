@@ -16,6 +16,12 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <math.h>
+
+#include <QImage>
+#include <QPainter>
+#include <QTextDocument>
+
 #include "dialoglauncher.h"
 #include "kstdatacollection.h"
 #include "kstdebug.h"
@@ -23,14 +29,6 @@
 #include "kstimage.h"
 #include "kstmath.h"
 #include "kstsettings.h"
-
-// xxx #include <klocale.h>
-
-#include <QImage>
-#include <QPainter>
-#include <QTextDocument>
-
-#include <math.h>
 
 static const QString& THEMATRIX = KGlobal::staticQString("THEMATRIX");
 
@@ -527,7 +525,9 @@ KstDataObjectPtr KstImage::makeDuplicate(KstDataObjectDataObjectMap& duplicatedM
     name += '\'';
   }
   KstImagePtr image(new KstImage(name, _inputMatrices[THEMATRIX], _zLower, _zUpper, _autoThreshold, newPalette));
-// xxx  duplicatedMap.insert(this, KstDataObjectPtr(image));
+
+  duplicatedMap.insert(KstImagePtr(this), KstDataObjectPtr(image));
+
   return KstDataObjectPtr(image);
 }
 
@@ -593,7 +593,7 @@ KstDataObjectPtr KstImage::providerDataObject() const {
   KstDataObjectPtr provider;
   
   KST::matrixList.lock().readLock();
-// xxx  KstMatrixPtr mp = *KST::matrixList.findTag(matrixTag());
+  mp = *KST::matrixList.findTag(matrixTag());
   KST::matrixList.lock().unlock();
 
   if (mp) {

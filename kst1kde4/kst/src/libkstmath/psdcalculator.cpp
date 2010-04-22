@@ -18,9 +18,6 @@
 #include <assert.h>
 #include <math.h>
 
-// xxx #include <kglobal.h>
-// xxx #include <klocale.h>
-
 #include "kstdebug.h"
 #include "psdcalculator.h"
 #include "kstvector.h"
@@ -34,13 +31,10 @@ inline double PSDCalculator::cabs2(double r, double i) {
   return r*r + i*i;
 }
 
-PSDCalculator::PSDCalculator()
-{
+PSDCalculator::PSDCalculator() {
   _a = 0L;
   _w = 0L;
-
   _awLen = 0;
-
   _prevApodizeFxn = WindowUndefined;
   _prevGaussianSigma = 1.0;
   _prevOutputLen = 0;
@@ -50,6 +44,7 @@ PSDCalculator::PSDCalculator()
 PSDCalculator::~PSDCalculator() {
   delete[] _w;
   _w = 0L;
+
   delete[] _a;
   _a = 0L;
 }
@@ -139,7 +134,11 @@ void PSDCalculator::updateWindowFxn(ApodizeFunction apodizeFxn, double gaussianS
       break;
   }
 
-  double norm = sqrt((double)_awLen/sW); // normalization constant s.t. sum over (w^2) is _awLen
+  //
+  // normalization constant s.t. sum over (w^2) is _awLen...
+  //
+
+  double norm = sqrt((double)_awLen/sW); 
 
   for (int i = 0; i < _awLen; ++i) {
     _w[i] *= norm;
@@ -160,6 +159,7 @@ int PSDCalculator::calculatePowerSpectrum(
 
   if (outputLen != calculateOutputVectorLength(inputLen, average, averageLen)) {
     KstDebug::self()->log(QObject::tr("in PSDCalculator::calculatePowerSpectrum: received output array with wrong length."), KstDebug::Error);
+
     return -1;
   }
 
@@ -189,8 +189,11 @@ int PSDCalculator::calculatePowerSpectrum(
   for (i_subset = 0; !done; i_subset++) {
     ioffset = i_subset*outputLen; //overlapping average => i_subset*outputLen
 
-    // only zero pad if we really have to.  It is better to adjust the last chunk's
-    // overlap.
+    //
+    // only zero pad if we really have to.  
+    //  It is better to adjust the last chunk's overlap.\
+    //
+
     if (ioffset + _awLen*5/4 < inputLen) {
       currentCopyLen = _awLen; //will copy a complete window.
     } else if (_awLen<inputLen) {  // count the last one from the end.
@@ -212,8 +215,12 @@ int PSDCalculator::calculatePowerSpectrum(
       mean /= (double)currentCopyLen;
     }
 
+    //
     // apply the PSD options (removeMean, apodize, etc.)
-    // separate cases for speed- although this shouldn't really matter- the rdft should be the most time consuming step by far for any large data set.
+    // separate cases for speed- although this shouldn't really matter - 
+    //  the rdft should be the most time consuming step by far for any large data set...
+    //
+
     if (removeMean && apodize && interpolateHoles) {
       for (i_samp = 0; i_samp < currentCopyLen; i_samp++) {
         _a[i_samp] = (kstInterpolateNoHoles(input, inputLen, i_samp + ioffset, inputLen) - mean)*_w[i_samp];
@@ -250,7 +257,11 @@ int PSDCalculator::calculatePowerSpectrum(
 
     nsamples += currentCopyLen;
 
-    rdft(_awLen, 1, _a); //real discrete fourier transorm on _a.
+    //
+    // real discrete fourier transorm on _a.
+    //
+
+    rdft(_awLen, 1, _a); 
 
     output[0] += _a[0] * _a[0];
     output[outputLen-1] += _a[1] * _a[1];
@@ -259,49 +270,36 @@ int PSDCalculator::calculatePowerSpectrum(
     }
   }
 
-  // FIXME: NORMALIZATION. 
-  /* This normalization doesn't give the same results as the original KstPSD.
-
-  double frequencyStep = .5*(double)inputSamplingFreq/(double)(outputLen-1);
-
-  //normalization factors which were left out earlier for speed. 
-  //    - 2.0 for the negative frequencies which were neglected by the rdft //FIXME: double check.
-  //    - /(_awLen*_awLen) for the constant Wss from numerical recipes in C. (ensure that the window function agrees with this.)
-  //    - /i_subset to average the powers in all the subsets.
-  double norm = 2.0/(double)_awLen/(double)_awLen/(double)i_subset;
-  */
-
-  // original normalization
-  double frequencyStep = 2.0*(double)inputSamplingFreq/(double)nsamples; //OLD value for frequencyStep.
-  double norm = 2.0/(double)nsamples*2.0/(double)nsamples; //OLD value for norm.
+  double frequencyStep = 2.0*(double)inputSamplingFreq/(double)nsamples;
+  double norm = 2.0/(double)nsamples*2.0/(double)nsamples;
 
   switch (outputType) {
-  default:
+    default:
     case PSDAmplitudeSpectralDensity: // amplitude spectral density (default) [V/Hz^1/2]
       norm /= frequencyStep;
       for (i_samp = 0; i_samp < outputLen; i_samp++) {
         output[i_samp] = sqrt(output[i_samp]*norm);
       }
-    break;
+      break;
 
     case PSDPowerSpectralDensity: // power spectral density [V^2/Hz]
       norm /= frequencyStep;
       for (i_samp = 0; i_samp < outputLen; i_samp++) {
         output[i_samp] *= norm;
       }
-    break;
+      break;
 
     case PSDAmplitudeSpectrum: // amplitude spectrum [V]
       for (i_samp = 0; i_samp < outputLen; i_samp++) {
         output[i_samp] = sqrt(output[i_samp]*norm);
       }
-    break;
+      break;
 
     case PSDPowerSpectrum: // power spectrum [V^2]
       for (i_samp = 0; i_samp < outputLen; i_samp++) {
         output[i_samp] *= norm;
       }
-    break;
+      break;
   }
 
   return 0;
