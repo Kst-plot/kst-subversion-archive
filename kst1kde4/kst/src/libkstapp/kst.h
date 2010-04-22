@@ -313,66 +313,6 @@ class KST_EXPORT KstApp : public QMainWindow, private Ui_MainWindow {
     KRecentFilesAction *_recent;
     KRecentFilesAction *_fileOpenRecent;
 */
-/* xxx
-    QAction *_actionStatusBar;
-    QAction *_actionPause;
-    QAction *_actionDataMode;
-
-    QAction *_actionSamplesDown;
-    QAction *_actionSamplesUp;
-    QAction *_actionSamplesFromEnd;
-    QAction *_actionTiedZoom;
-    QAction *_actionNewPlot;
-
-    QAction *_actionDialogPlot;
-    QAction *_actionDialogCurveD;
-    QAction *_actionDialogViewScalars;
-    QAction *_actionDialogViewStrings;
-    QAction *_actionDialogViewVectors;
-    QAction *_actionDialogViewMatrices;
-    QAction *_actionDialogViewFits;
-    QAction *_actionDialogDebug;
-    QAction *_actionDialogChangeFile;
-    QAction *_actionDialogChooseColor;
-    QAction *_actionDialogDifferentiateCurves;
-    QAction *_actionDialogChangeNpts;
-
-    QAction *_actionDataWizard;
-
-    QAction *_actionManagerPluginr;
-    QAction *_actionManagerExtension;
-
-    QAction *_actionEventMonitor;
-
-    QAction *_actionFileNew;
-    QAction *_actionFilePrint;
-    QAction *_actionFileOpenNew;
-    QAction *_actionFileOpen;
-    QAction *_actionFileSave;
-    QAction *_actionFileSaveAs;
-    QAction *_actionFileQuit;
-    QAction *_actionFileKeyBindings;
-    QAction *_actionFilePreferences;
-    QAction *_actionFileCopy;
-    QAction *_actionFilePaste;
-
-    QActionGroup *_actionGroupZoom;
-    QAction *_actionZoomXY;
-    QAction *_actionZoomX;
-    QAction *_actionZoomY;
-    QAction *_actionGfx;
-    QAction *_actionLayout;
-
-    QActionGroup *_actionGroupGfx;
-    QAction *_actionGfxLine;
-    QAction *_actionGfxRectangle;
-    QAction *_actionGfxEllipse;
-    QAction *_actionGfxLabel;
-    QAction *_actionGfxPicture;
-    QAction *_actionGfx2DPlot;
-    QAction *_actionGfxArrow;
-    QAction *_actionGfxLegend;
-*/
     StatusLabel *_readyBar;
     StatusLabel *_memoryBar;
     StatusLabel *_dataBar;

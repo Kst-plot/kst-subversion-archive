@@ -27,15 +27,27 @@
     <property name="title">
      <string>&amp;File</string>
     </property>
+    <addaction name="_actionOpen"/>
+    <addaction name="_actionOpenRecent"/>
+    <addaction name="separator"/>
+    <addaction name="_actionSave"/>
+    <addaction name="_actionSaveAs"/>
+    <addaction name="separator"/>
+    <addaction name="_actionPrint"/>
+    <addaction name="separator"/>
     <addaction name="_actionNewTab"/>
     <addaction name="_actionDialogGraphFile"/>
     <addaction name="_actionVectorSave"/>
     <addaction name="_actionSaveData"/>
+    <addaction name="separator"/>
+    <addaction name="_actionQuit"/>
    </widget>
    <widget class="QMenu" name="_menuEdit">
     <property name="title">
      <string>&amp;Edit</string>
     </property>
+    <addaction name="_actionCopy"/>
+    <addaction name="_actionPaste"/>
    </widget>
    <widget class="QMenu" name="_menuData">
     <property name="title">
@@ -83,7 +95,7 @@
     <addaction name="_actionDialogChooseColor"/>
     <addaction name="_actionDialogDifferentiateCurves"/>
    </widget>
-   <widget class="QMenu" name="menu_Plots">
+   <widget class="QMenu" name="_menuPlots">
     <property name="title">
      <string>&amp;Plots</string>
     </property>
@@ -111,14 +123,18 @@
     <addaction name="separator"/>
     <addaction name="_actionDataMode"/>
    </widget>
-   <widget class="QMenu" name="menu_Settings">
+   <widget class="QMenu" name="_menuSettings">
     <property name="title">
      <string>&amp;Settings</string>
     </property>
     <addaction name="separator"/>
     <addaction name="_actionManagerExtension"/>
+    <addaction name="separator"/>
+    <addaction name="_actionToolBar"/>
+    <addaction name="_actionStatusBar"/>
+    <addaction name="separator"/>
    </widget>
-   <widget class="QMenu" name="menu_help">
+   <widget class="QMenu" name="_menuHelp">
     <property name="title">
      <string>&amp;Help</string>
     </property>
@@ -129,9 +145,9 @@
    <addaction name="_menuData"/>
    <addaction name="_menuRange"/>
    <addaction name="_menuTools"/>
-   <addaction name="menu_Plots"/>
-   <addaction name="menu_Settings"/>
-   <addaction name="menu_help"/>
+   <addaction name="_menuPlots"/>
+   <addaction name="_menuSettings"/>
+   <addaction name="_menuHelp"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="_actionNewTab">
@@ -143,11 +159,6 @@
    </property>
    <property name="statusTip">
     <string>Create a new tab.</string>
-   </property>
-  </action>
-  <action name="actionSave_vectors">
-   <property name="text">
-    <string>Save vectors...</string>
    </property>
   </action>
   <action name="_actionDialogGraphFile">
@@ -512,6 +523,9 @@
    </property>
   </action>
   <action name="_actionZoomXY">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>XY Mouse &amp;Zoom</string>
    </property>
@@ -597,6 +611,119 @@
    </property>
    <property name="whatsThis">
     <string>Bring up a dialog to display debugging information.</string>
+   </property>
+  </action>
+  <action name="_actionOpen">
+   <property name="text">
+    <string>&amp;Open...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
+   </property>
+  </action>
+  <action name="_actionOpenRecent">
+   <property name="text">
+    <string>Open &amp;Recent</string>
+   </property>
+   <property name="statusTip">
+    <string>Open a recently used Kst plot.</string>
+   </property>
+   <property name="whatsThis">
+    <string>Open a recently used Kst plot.</string>
+   </property>
+  </action>
+  <action name="_actionSave">
+   <property name="text">
+    <string>&amp;Save</string>
+   </property>
+   <property name="statusTip">
+    <string>Save to current Kst plot file.</string>
+   </property>
+   <property name="whatsThis">
+    <string>Save to current Kst plot file.</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="_actionSaveAs">
+   <property name="text">
+    <string>Save &amp;As</string>
+   </property>
+   <property name="statusTip">
+    <string>Save to new Kst plot file.</string>
+   </property>
+   <property name="whatsThis">
+    <string>Save to new Kst plot file.</string>
+   </property>
+  </action>
+  <action name="_actionPrint">
+   <property name="text">
+    <string>&amp;Print...</string>
+   </property>
+   <property name="statusTip">
+    <string>Print</string>
+   </property>
+   <property name="whatsThis">
+    <string>Print current display.</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+P</string>
+   </property>
+  </action>
+  <action name="_actionQuit">
+   <property name="text">
+    <string>&amp;Quit</string>
+   </property>
+   <property name="statusTip">
+    <string>Quit Kst.</string>
+   </property>
+   <property name="whatsThis">
+    <string>Quit Kst.</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Q</string>
+   </property>
+  </action>
+  <action name="_actionCopy">
+   <property name="text">
+    <string>Copy</string>
+   </property>
+   <property name="statusTip">
+    <string>Copy cursor position or plots to the clipboard.</string>
+   </property>
+   <property name="whatsThis">
+    <string>Copy cursor position or plots to the clipboard.</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+C</string>
+   </property>
+  </action>
+  <action name="_actionPaste">
+   <property name="text">
+    <string>Paste</string>
+   </property>
+   <property name="statusTip">
+    <string>Paste plots from the clipboard.</string>
+   </property>
+   <property name="whatsThis">
+    <string>Paste plots from the clipboard.</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+V</string>
+   </property>
+  </action>
+  <action name="_actionToolBar">
+   <property name="text">
+    <string>Hide &amp;Toolbar</string>
+   </property>
+  </action>
+  <action name="_actionStatusBar">
+   <property name="text">
+    <string>Hide St&amp;atusbar</string>
+   </property>
+   <property name="whatsThis">
+    <string>Toggle Statusbar</string>
    </property>
   </action>
  </widget>

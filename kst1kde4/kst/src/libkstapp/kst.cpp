@@ -126,6 +126,7 @@ KstApp::KstApp(QWidget *parent, const char *name) : QMainWindow(parent) {
   _memoryBar = 0L;
   _toolBar = 0L;
   _menuBar = 0L;
+  _updateThread = 0L;
 
   //
   // create the mdi area...
@@ -147,13 +148,13 @@ KstApp::KstApp(QWidget *parent, const char *name) : QMainWindow(parent) {
 
   _stopping = false;
 // xxx  config = kapp->config();
-/* xxx
+
   initActions();
   initStatusBar();
   initToolBar();
   initMenuBar();
   initDocument();
-*/
+
 // xxx  setStandardToolBarMenuEnabled(true);
 // xxx  KstDebug::self()->setHandler(_doc);
 // xxx  setWindowTitle(_doc->title());
@@ -211,13 +212,14 @@ KstApp::KstApp(QWidget *parent, const char *name) : QMainWindow(parent) {
 
   connect(this, SIGNAL(settingsChanged()), this, SLOT(slotSettingsChanged()));
 
-  QTimer::singleShot(0, this, SLOT(updateActions()));
+// xxx  QTimer::singleShot(0, this, SLOT(updateActions()));
 
   show();
 }
 
 
 KstApp::~KstApp() {
+/* xxx
   destroyDebugNotifier();
 
   delete _plotHolderWhileOpeningDocument;
@@ -248,6 +250,7 @@ KstApp::~KstApp() {
 
   delete qSettingsObject; // must be after cleanupForExit
   qSettingsObject = 0L;
+*/
 }
 
 
@@ -315,11 +318,19 @@ void KstApp::initMenuBar() {
 
 
 void KstApp::initActions() {
-/* xxx
+  connect(_actionOpen, SIGNAL(triggered()), this, SLOT(slotFileOpen()));
+// xxx  connect(_actionOpenRecent, SIGNAL(triggered()), this, SLOT(slotFileOpenRecent(const QUrl &));
+  connect(_actionSave, SIGNAL(triggered()), this, SLOT(slotFileSave()));
+  connect(_actionSaveAs, SIGNAL(triggered()), this, SLOT(slotFileSaveAs()));
+  connect(_actionPrint, SIGNAL(triggered()), this, SLOT(slotFilePrint()));
   connect(_actionNewTab, SIGNAL(triggered()), this, SLOT(slotFileNewWindow()));
-  connect(_actionDialogGraphFile, SIGNAL(triggered()), this, SLOT(showGraphFileDialog()));
-  connect(_actionVectorSave, SIGNAL(triggered()), _vectorSaveDialog, SLOT(show()));
+// xxx  connect(_actionDialogGraphFile, SIGNAL(triggered()), this, SLOT(showGraphFileDialog()));
+// xxx  connect(_actionVectorSave, SIGNAL(triggered()), _vectorSaveDialog, SLOT(show()));
+  connect(_actionQuit, SIGNAL(triggered()), this, SLOT(slotFileClose()));
 
+  connect(_actionCopy, SIGNAL(triggered()), this, SLOT(slotCopy()));
+  connect(_actionPaste, SIGNAL(triggered()), this, SLOT(slotPaste()));
+/* xxx
   connect(_actionReload, SIGNAL(triggered()), this, SLOT(reload()));
   connect(_actionManagerData, SIGNAL(triggered()), _dataManager, SLOT(show_I()));
   connect(_actionManagerView, SIGNAL(triggered()), _viewManager, SLOT(show_I())); 
@@ -345,18 +356,10 @@ void KstApp::initActions() {
   connect(_actionSamplesFromEnd, SIGNAL(triggered()), this, SLOT(fromEnd()));
   connect(_actionPause, SIGNAL(toggled(bool)), this, SLOT(updatePausedState(bool)));
 
-
+  connect(_actionStatusBar, SIGNAL(toggled(bool)), this, SLOT(slotViewStatusBar()));
+  connect(_actionToolBar, SIGNAL(toggled(bool)), this, SLOT(slotViewToolBar()));
 */
 /* xxx
-  fileSave = KStdAction::save(this, SLOT(slotFileSave()), actionCollection());
-  fileSave->setWhatsThis(QObject::tr("Save to current Kst plot file."));
-
-  fileSaveAs = KStdAction::saveAs(this, SLOT(slotFileSaveAs()), actionCollection());
-  fileSaveAs->setWhatsThis(QObject::tr("Save to new Kst plot file."));
-
-  fileQuit = KStdAction::quit(this, SLOT(slotFileClose()), actionCollection());
-  fileQuit->setWhatsThis(QObject::tr("Quit Kst."));
-
   fileKeyBindings = KStdAction::keyBindings(this, SLOT(slotConfigureKeys()), actionCollection());
 
   fileKeyBindings->setWhatsThis(QObject::tr("Bring up a dialog box\n"
@@ -365,26 +368,6 @@ void KstApp::initActions() {
   filePreferences = KStdAction::preferences(this, SLOT(slotPreferences()), actionCollection());
   filePreferences->setWhatsThis(QObject::tr("Bring up a dialog box\n"
                                      "to configure Kst settings."));
-
-  fileCopy = KStdAction::copy(this, SLOT(slotCopy()), actionCollection());
-  fileCopy->setWhatsThis(QObject::tr("Copy cursor position or plots to the clipboard."));
-
-  filePaste = KStdAction::paste(this, SLOT(slotPaste()), actionCollection());
-  filePaste->setWhatsThis(QObject::tr("Paste plots from the clipboard."));
-
-  filePrint = KStdAction::print(this, SLOT(slotFilePrint()), actionCollection());
-  filePrint->setToolTip(QObject::tr("Print"));
-  filePrint->setWhatsThis(QObject::tr("Print current display"));
-
-  StatusBarAction = KStdAction::showStatusbar(this, SLOT(slotViewStatusBar()),
-                                              actionCollection());
-  StatusBarAction->setWhatsThis(QObject::tr("Toggle Statusbar"));
-  connect(StatusBarAction, SIGNAL(activated()), this, SLOT(setSettingsDirty()));
-
-  KStdAction::open(this, SLOT(slotFileOpen()), actionCollection());
-
-  _recent = KStdAction::openRecent(this, SLOT(slotFileOpenRecent(const KURL &)), actionCollection());
-  _recent->setWhatsThis(QObject::tr("Open a recently used Kst plot."));
 
   _actionZoomXY = new KRadioAction(QObject::tr("XY Mouse &Zoom"), "kst_zoomxy",
                                   KShortcut(Key_F2),
@@ -1549,14 +1532,12 @@ void KstApp::slotFileQuit() {
 
 
 void KstApp::slotViewStatusBar() {
-/* xxx
   if (_actionStatusBar->isChecked()) {
     statusBar()->show();
     updateStatusBarText();
   } else {
     statusBar()->hide();
   }
-*/
 }
 
 
@@ -2094,6 +2075,7 @@ void KstApp::updateDialogs(bool onlyVisible) {
 
 void KstApp::updateDialogsForWindow() {
   if (!_stopping) {
+/* xxx
     KstCsdDialog::globalInstance()->updateWindow();
     KstEqDialog::globalInstance()->updateWindow();
     KstHsDialog::globalInstance()->updateWindow();
@@ -2103,6 +2085,7 @@ void KstApp::updateDialogsForWindow() {
     KstImageDialog::globalInstance()->updateWindow();
     updateDataManager(false);
     updateViewManager(false);
+*/
   }
 }
 
