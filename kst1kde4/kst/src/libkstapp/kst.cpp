@@ -310,6 +310,34 @@ void KstApp::initStatusBar() {
 
 void KstApp::initToolBar() {
   _toolBar = addToolBar(QObject::tr("Kst\n"));
+	_toolBar->addAction(_actionOpen);
+	_toolBar->addAction(_actionSave);
+	_toolBar->addAction(_actionPrint);
+	_toolBar->addSeparator();
+
+	_toolBar->addAction(_actionCopy);
+	_toolBar->addAction(_actionPaste);
+	_toolBar->addSeparator();
+
+	_toolBar->addAction(_actionReload);
+	_toolBar->addSeparator();
+
+	_toolBar->addAction(_actionDataWizard);
+	_toolBar->addAction(_actionManagerData);
+	_toolBar->addAction(_actionManagerView);
+// xxx	_toolBar->addAction(_actionChangeFile);
+// xxx	_toolBar->addAction(_actionChangeNpts);
+	_toolBar->addSeparator();
+
+	_toolBar->addAction(_actionSamplesDown);
+	_toolBar->addAction(_actionSamplesUp);
+	_toolBar->addAction(_actionPause);
+	_toolBar->addAction(_actionSamplesFromEnd); 
+	_toolBar->addSeparator();
+
+	_toolBar->addAction(_actionTiedZoom);
+	_toolBar->addAction(_actionDataMode);
+// xxx	_toolBar->addAction(_actionLayout);
 }
 
 
@@ -358,6 +386,10 @@ void KstApp::initActions() {
 	_actionNewImage->setIcon(QIcon((":/kst_imagenew.png")));
 
 	_actionDataWizard->setIcon(QIcon((":/kst_datawizard.png")));
+	_actionManagerData->setIcon(QIcon((":/kst_datamanager.png")));
+	_actionManagerView->setIcon(QIcon((":/kst_viewmanager.png")));
+
+	_actionDataMode->setIcon(QIcon((":/kst_datamode.png")));
 
   connect(_actionOpen, SIGNAL(triggered()), this, SLOT(slotFileOpen()));
 // xxx  connect(_actionOpenRecent, SIGNAL(triggered()), this, SLOT(slotFileOpenRecent(const QUrl &));
