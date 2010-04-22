@@ -23,7 +23,3 @@ install(FILES  kstplugin.desktop kstdatasourceplugin.desktop kstdataobjectplugin
 install(FILES  kstautosave11.upd kstrcmisc11.upd DESTINATION share/apps/kconf_update)
 install(FILES  x-kst.desktop DESTINATION share/mimelink/application)
 install(FILES  kst.desktop DESTINATION share/applications)
-
-# xxx KDE3_INSTALL_ICONS(hicolor)
-# xxx KDE3_INSTALL_ICONS(locolor)
-

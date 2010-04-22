@@ -338,7 +338,8 @@ void KstApp::initActions() {
   _actionZoomX->setIcon(QIcon((":/kst_zoomx.png")));
   _actionZoomY->setIcon(QIcon((":/kst_zoomy.png")));
   _actionZoomXY->setIcon(QIcon((":/kst_zoomxy.png")));
-  _actionLayout->setIcon(QIcon((":/kst_gfx_layout.png")));
+
+  _actionGfxArrow->setIcon(QIcon((":/kst_gfx_arrow.png")));
 
   connect(_actionOpen, SIGNAL(triggered()), this, SLOT(slotFileOpen()));
 // xxx  connect(_actionOpenRecent, SIGNAL(triggered()), this, SLOT(slotFileOpenRecent(const QUrl &));
