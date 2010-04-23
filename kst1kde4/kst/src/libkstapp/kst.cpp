@@ -322,11 +322,14 @@ void KstApp::initToolBar() {
 	_toolBar->addAction(_actionReload);
 	_toolBar->addSeparator();
 
+	_toolBar->addAction(_actionDialogGraphFile);
+	_toolBar->addSeparator();
+
 	_toolBar->addAction(_actionDataWizard);
 	_toolBar->addAction(_actionManagerData);
 	_toolBar->addAction(_actionManagerView);
-// xxx	_toolBar->addAction(_actionChangeFile);
-// xxx	_toolBar->addAction(_actionChangeNpts);
+// xxx	_toolBar->addAction(_actionChangeFileDialog);
+// xxx	_toolBar->addAction(_actionChangeNptsDialog);
 	_toolBar->addSeparator();
 
 	_toolBar->addAction(_actionSamplesDown);
@@ -337,7 +340,7 @@ void KstApp::initToolBar() {
 
 	_toolBar->addAction(_actionTiedZoom);
 	_toolBar->addAction(_actionDataMode);
-// xxx	_toolBar->addAction(_actionLayout);
+// xxx	_toolBar->addAction(_actionLayoutMode);
 }
 
 
@@ -366,11 +369,14 @@ void KstApp::initActions() {
 	_actionCopy->setIcon(QIcon((":/kst_copy.png")));
 	_actionPaste->setIcon(QIcon((":/kst_paste.png")));
 	_actionPrint->setIcon(QIcon((":/kst_print.png")));
+	_actionDialogGraphFile->setIcon(QIcon((":/kst_graphfile.png")));
 
   _actionZoomX->setIcon(QIcon((":/kst_zoomx.png")));
   _actionZoomY->setIcon(QIcon((":/kst_zoomy.png")));
   _actionZoomXY->setIcon(QIcon((":/kst_zoomxy.png")));
 	_actionTiedZoom->setIcon(QIcon((":/kst_zoomtie.png")));
+
+	_actionDataMode->setIcon(QIcon((":/kst_datamode.png")));
 
   _actionGfxArrow->setIcon(QIcon((":/kst_gfx_arrow.png")));
 	_actionGfxRectangle->setIcon(QIcon((":/kst_gfx_rectangle.png")));
@@ -392,7 +398,6 @@ void KstApp::initActions() {
 	_actionManagerData->setIcon(QIcon((":/kst_datamanager.png")));
 	_actionManagerView->setIcon(QIcon((":/kst_viewmanager.png")));
 
-	_actionDataMode->setIcon(QIcon((":/kst_datamode.png")));
 
   connect(_actionOpen, SIGNAL(triggered()), this, SLOT(slotFileOpen()));
 // xxx  connect(_actionOpenRecent, SIGNAL(triggered()), this, SLOT(slotFileOpenRecent(const QUrl &));
