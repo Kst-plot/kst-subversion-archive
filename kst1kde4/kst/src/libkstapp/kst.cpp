@@ -129,6 +129,7 @@ KstApp::KstApp(QWidget *parent, const char *name) : QMainWindow(parent) {
   _updateThread = 0L;
 
 	_layoutToolBarMenu = new QToolButton(this);
+	_mouseToolBarMenu = new QToolButton(this);
 	mouseModeMenu = new QMenu(this);
 
   //
@@ -348,7 +349,11 @@ void KstApp::initToolBar() {
 	_toolBar->addAction(_actionTiedZoom);
 	_toolBar->addAction(_actionDataMode);
 
-	_layoutToolBarMenu->setMenu(mouseModeMenu);
+	_mouseToolBarMenu->setMenu(mouseModeMenu);
+	_mouseToolBarMenu->setPopupMode(QToolButton::InstantPopup);
+	_toolBar->addWidget(_mouseToolBarMenu);
+
+	_layoutToolBarMenu->setMenu(_menuLayoutMode);
 	_layoutToolBarMenu->setPopupMode(QToolButton::InstantPopup);
 	_toolBar->addWidget(_layoutToolBarMenu);
 }
@@ -404,7 +409,8 @@ void KstApp::initActions() {
   _actionZoomXY->setIcon(QIcon((":/kst_zoomxy.png")));
 	_actionTiedZoom->setIcon(QIcon((":/kst_zoomtie.png")));
 	_actionDataMode->setIcon(QIcon((":/kst_datamode.png")));
-	_layoutToolBarMenu->setIcon(QIcon((":/kst_zoomxy.png")));
+	_layoutToolBarMenu->setIcon(QIcon((":/kst_layoutmode.png")));
+	_mouseToolBarMenu->setIcon(QIcon((":/kst_zoomxy.png")));
 
   _actionGfxArrow->setIcon(QIcon((":/kst_gfx_arrow.png")));
 	_actionGfxRectangle->setIcon(QIcon((":/kst_gfx_rectangle.png")));
@@ -520,8 +526,6 @@ void KstApp::initActions() {
   mouseModeMenu->addAction(_actionZoomXY);
   mouseModeMenu->addAction(_actionZoomX);
   mouseModeMenu->addAction(_actionZoomY);
-  mouseModeMenu->addSeparator();
-  mouseModeMenu->addMenu(_menuLayoutMode);
 
 /* xxx
   toolBar()->insertButton("thumbnail", MODE_BUTTON_ID, mouseModeMenu, true, QObject::tr("Select the desired mode"));

@@ -322,7 +322,7 @@ class KST_EXPORT KstApp : public QMainWindow, private Ui_MainWindow {
     QToolBar *_toolBar;
     QMenuBar *_menuBar;
     QMdiArea *_mdiArea;
-		QToolButton *_layoutToolBarMenu;
+		QToolButton *_layoutToolBarMenu, *_mouseToolBarMenu;
 		QMenu *mouseModeMenu;
 
 // xxx    KstIfaceImpl *_dcopIface;
