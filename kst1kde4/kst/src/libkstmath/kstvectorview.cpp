@@ -15,7 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <assert.h>
 #include <math.h>
 #include <stdlib.h>
 
@@ -200,7 +199,7 @@ KstObject::UpdateType KstVectorView::update(int update_counter) {
   writeLockInputsAndOutputs();
 
   if (update_counter <= 0) {
-    assert(update_counter == 0);
+    Q_ASSERT(update_counter == 0);
     force = true;
   }
 

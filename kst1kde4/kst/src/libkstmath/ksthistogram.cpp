@@ -15,7 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <assert.h>
 #include <math.h>
 #include <stdlib.h>
 
@@ -178,23 +177,31 @@ KstObject::UpdateType KstHistogram::update(int update_counter) {
   writeLockInputsAndOutputs();
 
   if (update_counter <= 0) {
-    assert(update_counter == 0);
+    Q_ASSERT(update_counter == 0);
+
     force = true;
   }
 
   bool xUpdated = KstObject::UPDATE == _inputVectors[RAWVECTOR]->update(update_counter);
+
   if (!xUpdated && !force) {
     unlockInputsAndOutputs();
+
     return setLastUpdateResult(KstObject::NO_CHANGE);
   }
 
   int i_bin, i_pt, ns;
   double y = 0.0;
   double MaxY = 0.0;
-  // do auto-binning if necessary
+
+  //
+  // do auto-binning if necessary...
+  //
+
   if (_realTimeAutoBin) {
     int temp_NBins;
     double temp_xMin, temp_xMax;
+
     KstHistogram::AutoBin(_inputVectors[RAWVECTOR], &temp_NBins, &temp_xMax, &temp_xMin);
     internalSetNBins(temp_NBins);
     setXRange(temp_xMin, temp_xMax);
@@ -232,6 +239,7 @@ KstObject::UpdateType KstHistogram::update(int update_counter) {
       _Normalization = 1.0;
       (*_hVector)->setLabel(QObject::tr("Number in bin"));
       break;
+
     case KST_HS_PERCENT:
       if (ns > 0) {
         _Normalization = 100.0/(double)ns;
@@ -240,6 +248,7 @@ KstObject::UpdateType KstHistogram::update(int update_counter) {
       }
       (*_hVector)->setLabel(QObject::tr("Percent in bin"));
       break;
+
     case KST_HS_FRACTION:
       if (ns > 0) {
         _Normalization = 1.0/(double)ns;
@@ -248,6 +257,7 @@ KstObject::UpdateType KstHistogram::update(int update_counter) {
       }
       (*_hVector)->setLabel(QObject::tr("Fraction in bin"));
       break;
+
     case KST_HS_MAX_ONE:
       if (MaxY > 0) {
         _Normalization = 1.0/MaxY;
@@ -256,6 +266,7 @@ KstObject::UpdateType KstHistogram::update(int update_counter) {
       }
       (*_hVector)->setLabel("");
       break;
+
     default:
       _Normalization = 1.0;
       break;

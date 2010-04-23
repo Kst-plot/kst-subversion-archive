@@ -15,7 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <assert.h>
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -435,7 +434,9 @@ Function::Function(char *name, ArgumentList *args)
 
         Plugin::countScalarsVectorsAndStrings(itable, _inputScalarCnt, _inputVectorCnt, _inputStringCnt, _inPid);
         Plugin::countScalarsVectorsAndStrings(otable, _outputScalarCnt, _outputVectorCnt, _outputStringCnt, ignore);
-        assert(_inputStringCnt == 0 && _outputStringCnt == 0); // FIXME: implement support for strings
+
+        Q_ASSERT(_inputStringCnt == 0 && _outputStringCnt == 0);
+
         _inScalars = new double[_inputScalarCnt];
         _outScalars = new double[_outputScalarCnt];
         _inVectors = new double*[_inputVectorCnt];
@@ -449,19 +450,21 @@ Function::Function(char *name, ArgumentList *args)
       //
       // now check for the KstDataObject plugins...
       //
+
       if (!_cStylePlugin) {
         _dataObjectPlugin = kst_cast<KstBasicPlugin>(KstDataObject::createPlugin(pn->name()));
         if (_dataObjectPlugin) {
           QStringList vectors = _dataObjectPlugin->outputVectorList();
           QStringList scalars = _dataObjectPlugin->outputScalarList();
+          QStringList::const_iterator it;
 
           _dataObjectPlugin->writeLock();
 
-          for (QStringList::ConstIterator it = vectors.begin(); it != vectors.end(); ++it) {
+          for (it = vectors.begin(); it != vectors.end(); ++it) {
             _dataObjectPlugin->setOutputVector(*it, QString::null);
           }
 
-          for (QStringList::ConstIterator it = scalars.begin(); it != scalars.end(); ++it) {
+          for (it = scalars.begin(); it != scalars.end(); ++it) {
             _dataObjectPlugin->setOutputScalar(*it, QString::null);
           }
           
@@ -479,6 +482,7 @@ Function::Function(char *name, ArgumentList *args)
     for (int i = 0; FTable[i].name; ++i) {
       if (strcasecmp(FTable[i].name, name) == 0) {
         _f = (void*)FTable[i].func;
+
         break;
       }
     }

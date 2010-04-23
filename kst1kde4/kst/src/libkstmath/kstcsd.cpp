@@ -16,7 +16,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <assert.h>
 #include <math.h>
 
 #include <QTextDocument>
@@ -180,14 +179,20 @@ KstObject::UpdateType KstCSD::update(int update_counter) {
   writeLockInputsAndOutputs();
 
   if (update_counter <= 0) {
-    assert(update_counter == 0);
+    Q_ASSERT(update_counter == 0);
+
     force = true;
   }
 
   bool xUpdated = KstObject::UPDATE == inVector->update(update_counter);
-  // if vector was not changed, don't update the CSD
+
+  //
+  // if vector was not changed, don't update the CSD...
+  //
+
   if (!xUpdated && !force) {
     unlockInputsAndOutputs();
+
     return setLastUpdateResult(NO_CHANGE);
   }
 
@@ -212,16 +217,15 @@ KstObject::UpdateType KstCSD::update(int update_counter) {
                                           _average, _averageLength, _apodize, _apodizeFxn, 
                                           _gaussianSigma, _outputType, _frequency);
 
-    // resize output matrix
     (*_outMatrix)->resize(xSize+1, tempOutputLen);
 
     if ((*_outMatrix)->sampleCount() == (xSize+1)*tempOutputLen) {
-      // copy elements to output matrix
       for (int j=0; j < tempOutputLen; j++) {
         (*_outMatrix)->setValueRaw(xSize, j, tempOutput[j]);
       }
     } else {
       KstDebug::self()->log(QObject::tr("Could not allocate sufficient memory for spectrogram."), KstDebug::Error);
+
       break;
     }
 

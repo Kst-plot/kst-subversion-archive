@@ -101,7 +101,7 @@ class KST_EXPORT KstVector : public KstPrimitive {
     /** Number of samples  shifted since last newSync */
     inline int numShift() const { return _numShifted; }
 
-    inline bool isRising() const { return _is_rising; }
+    inline bool isRising() const { return _isRising; }
     inline bool hasNaN() const { return _nsum < _size; }
     inline int numNaN() const { return _size - _nsum; }
 
@@ -131,7 +131,6 @@ class KST_EXPORT KstVector : public KstPrimitive {
     virtual void save(QTextStream &ts, const QString& indent = QString::null, bool saveAbsolutePosition = false);
 
     /** Generate a new vector [x0..x1] with n total points */
-    // #### Remove
     static KstVectorPtr generateVector(double x0, double x1, int n, const KstObjectTag& tag);
 
     virtual void setTagName(const KstObjectTag& newTag);
@@ -182,7 +181,7 @@ class KST_EXPORT KstVector : public KstPrimitive {
     ScalarCollection _scalars;
 
     /** is the vector monotonically rising */
-    bool _is_rising : 1;
+    bool _isRising : 1;
 
     /** if true then we have a scalar list and do not want to be able to
     use it in a curve, display statistics for it, etc. */

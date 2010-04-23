@@ -15,7 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <assert.h>
 #include <math.h>
 
 #include "kstdebug.h"
@@ -183,26 +182,30 @@ int PSDCalculator::calculatePowerSpectrum(
   int currentCopyLen, nsamples = 0;
   int i_samp, i_subset, ioffset;
 
-  memset(output, 0, sizeof(double)*outputLen); // initialize output.
+  memset(output, 0, sizeof(double) * outputLen);
 
   bool done = false;
   for (i_subset = 0; !done; i_subset++) {
-    ioffset = i_subset*outputLen; //overlapping average => i_subset*outputLen
+    //
+    // overlapping average => i_subset*outputLen...
+    //
+
+    ioffset = i_subset * outputLen;
 
     //
     // only zero pad if we really have to.  
-    //  It is better to adjust the last chunk's overlap.\
+    //  It is better to adjust the last chunk's overlap...
     //
 
     if (ioffset + _awLen*5/4 < inputLen) {
-      currentCopyLen = _awLen; //will copy a complete window.
+      currentCopyLen = _awLen; // will copy a complete window.
     } else if (_awLen<inputLen) {  // count the last one from the end.
       ioffset = inputLen-_awLen - 1;
-      currentCopyLen = _awLen; //will copy a complete window.
+      currentCopyLen = _awLen; // will copy a complete window.
       done = true;
     } else {
-      currentCopyLen = inputLen - ioffset; //will copy a partial window.
-      memset(&_a[currentCopyLen], 0, sizeof(double)*(_awLen - currentCopyLen)); //zero the leftovers.
+      currentCopyLen = inputLen - ioffset; // will copy a partial window.
+      memset(&_a[currentCopyLen], 0, sizeof(double)*(_awLen - currentCopyLen)); // zero the leftovers.
       done = true;
     }
 

@@ -15,7 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <assert.h>
 #include <math.h>
 #include <stdlib.h>
 
@@ -206,7 +205,7 @@ KstObject::UpdateType KstEquation::update(int update_counter) {
     return setLastUpdateResult(NO_CHANGE);
   }
 
-  assert(update_counter >= 0);
+  Q_ASSERT(update_counter >= 0);
 
   if (_xInVector == _inputVectors.end()) {
     _xInVector = _inputVectors.find(XINVECTOR);
@@ -594,22 +593,28 @@ KstDataObjectPtr KstEquation::makeDuplicate(KstDataObjectDataObjectMap& duplicat
 
 
 void KstEquation::replaceDependency(KstDataObjectPtr oldObject, KstDataObjectPtr newObject) {
+  KstVectorMap::iterator itV;
+  KstVectorMap::iterator itVSub;
+  KstScalarMap::iterator itS;
+  KstMatrixMap::iterator itM;
   QString newExp = _equation;
+  QString oldTag;
+  QString newTag;
 
   //
   // replace all occurences of outputVectors, outputScalars from oldObject...
   //
 
-  for (KstVectorMap::iterator j = oldObject->outputVectors().begin(); j != oldObject->outputVectors().end(); ++j) {
-    QString oldTag = (*j)->tagName();
-    QString newTag = ((newObject->outputVectors())[j.key()])->tagName();
+  for (itV = oldObject->outputVectors().begin(); itV != oldObject->outputVectors().end(); ++itV) {
+    oldTag = (*itV)->tagName();
+    newTag = ((newObject->outputVectors())[itV.key()])->tagName();
 
     newExp = newExp.replace("[" + oldTag + "]", "[" + newTag + "]");
   }
 
-  for (KstScalarMap::iterator j = oldObject->outputScalars().begin(); j != oldObject->outputScalars().end(); ++j) {
-    QString oldTag = (*j)->tagName();
-    QString newTag = ((newObject->outputScalars())[j.key()])->tagName();
+  for (itS = oldObject->outputScalars().begin(); itS != oldObject->outputScalars().end(); ++itS) {
+    oldTag = (*itS)->tagName();
+    newTag = ((newObject->outputScalars())[itS.key()])->tagName();
 
     newExp = newExp.replace("[" + oldTag + "]", "[" + newTag + "]");
   }
@@ -619,46 +624,44 @@ void KstEquation::replaceDependency(KstDataObjectPtr oldObject, KstDataObjectPtr
   //  matrices themselves in the expression)...
   //
 
-  for (KstMatrixMap::iterator j = oldObject->outputMatrices().begin(); j != oldObject->outputMatrices().end(); ++j) {
-/* xxx
-    QDictIterator<KstScalar> scalarDictIter((*j)->scalars());
+  for (itM = oldObject->outputMatrices().begin(); itM != oldObject->outputMatrices().end(); ++itM) {
+    ScalarCollection::const_iterator it;
 
-    for (; scalarDictIter.current(); ++scalarDictIter) {
-      QString oldTag = scalarDictIter.current()->tagName();
-      QString newTag = ((((newObject->outputMatrices())[j.key()])->scalars())[scalarDictIter.currentKey()])->tagName();
+    for (it = (*itM)->scalars().begin(); it != (*itM)->scalars().end(); ++it) {
+      oldTag = (*it)->tagName();
+      newTag = ((((newObject->outputMatrices())[itM.key()])->scalars())[it.key()])->tagName();
 
       newExp = newExp.replace("[" + oldTag + "]", "[" + newTag + "]"); 
     }
-*/
   }
 
   //
   // only replace _inputVectors...
   //
 
-  for (KstVectorMap::iterator j = oldObject->outputVectors().begin(); j != oldObject->outputVectors().end(); ++j) {
-    for (KstVectorMap::iterator k = _inputVectors.begin(); k != _inputVectors.end(); ++k) {
-      if (*j == *k) {
+  for (itV = oldObject->outputVectors().begin(); itV != oldObject->outputVectors().end(); ++itV) {
+    ScalarCollection::const_iterator it;
+
+    for (itVSub = _inputVectors.begin(); itVSub != _inputVectors.end(); ++itVSub) {
+      if (*itV == *itVSub) {
         //
         // replace input with the output from newObject...
         //
 
-        _inputVectors[k.key()] = (newObject->outputVectors())[j.key()]; 
+        _inputVectors[itVSub.key()] = (newObject->outputVectors())[itV.key()]; 
       }
     }
-/* xxx
+
     //
     // and dependencies on vector stats...
     //
+    
+    for (it = (*itV)->scalars().begin(); it != (*itV)->scalars().end(); ++it) {
+      oldTag = (*it)->tagName();
+      newTag = ((((newObject->outputVectors())[itV.key()])->scalars())[it.key()])->tagName();
 
-    QDictIterator<KstScalar> scalarDictIter((*j)->scalars());\
-
-    for (; scalarDictIter.current(); ++scalarDictIter) {
-      QString oldTag = scalarDictIter.current()->tagName();
-      QString newTag = ((((newObject->outputVectors())[j.key()])->scalars())[scalarDictIter.currentKey()])->tagName();
       newExp = newExp.replace("[" + oldTag + "]", "[" + newTag + "]"); 
     }
-*/
   }
 
   setEquation(newExp);
@@ -666,7 +669,8 @@ void KstEquation::replaceDependency(KstDataObjectPtr oldObject, KstDataObjectPtr
 
 
 void KstEquation::replaceDependency(KstVectorPtr oldVector, KstVectorPtr newVector) {
-  KstVectorMap::iterator j;
+  ScalarCollection::const_iterator it;
+  KstVectorMap::iterator itV;
   QString oldTag = oldVector->tagName();
   QString newTag = newVector->tagName();
   QString newExp;
@@ -680,16 +684,14 @@ void KstEquation::replaceDependency(KstVectorPtr oldVector, KstVectorPtr newVect
   //
   // also replace all occurences of scalar stats for the oldVector...
   //
-/* xxx
-  QDictIterator<KstScalar> scalarDictIter(oldVector->scalars());
 
-  for (; scalarDictIter.current(); ++scalarDictIter) {
-    QString oldTag = scalarDictIter.current()->tagName();
-    QString newTag = ((newVector->scalars())[scalarDictIter.currentKey()])->tagName();
+  for (it = oldVector->scalars().begin(); it != oldVector->scalars().end(); ++it) {
+    oldTag = (*it)->tagName();
+    newTag = ((newVector->scalars())[it.key()])->tagName();
 
     newExp = newExp.replace("[" + oldTag + "]", "[" + newTag + "]"); 
   }
-*/
+
   setEquation(newExp);
 
   //
@@ -697,30 +699,31 @@ void KstEquation::replaceDependency(KstVectorPtr oldVector, KstVectorPtr newVect
   //  but don't call parent function as it replaces _inputScalars...
   //
  
-  for (j = _inputVectors.begin(); j != _inputVectors.end(); ++j) {
-    if (*j == oldVector) {
-      _inputVectors[j.key()] = newVector;
+  for (itV = _inputVectors.begin(); itV != _inputVectors.end(); ++itV) {
+    if (*itV == oldVector) {
+      _inputVectors[itV.key()] = newVector;
     }
   }
 }
 
 
 void KstEquation::replaceDependency(KstMatrixPtr oldMatrix, KstMatrixPtr newMatrix) {
+  ScalarCollection::const_iterator it;
   QString newExp = _equation;
+  QString oldTag;
+  QString newTag;
 
   //
   // also replace all occurences of scalar stats for the oldMatrix...
   //
-/* xxx
-  QDictIterator<KstScalar> scalarDictIter(oldMatrix->scalars());
 
-  for (; scalarDictIter.current(); ++scalarDictIter) {
-    QString oldTag = scalarDictIter.current()->tagName();
-    QString newTag = ((newMatrix->scalars())[scalarDictIter.currentKey()])->tagName();
+  for (it = oldMatrix->scalars().begin(); it != oldMatrix->scalars().end(); ++it) {
+    oldTag = (*it)->tagName();
+    newTag = ((newMatrix->scalars())[it.key()])->tagName();
 
     newExp = newExp.replace("[" + oldTag + "]", "[" + newTag + "]"); 
   }
-*/
+
   setEquation(newExp);
 }
 

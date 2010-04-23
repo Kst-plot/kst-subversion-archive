@@ -15,7 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <assert.h>
 #include <math.h>
 
 #include <QTextDocument>
@@ -133,16 +132,16 @@ void KstPSD::commonConstructor(const QString& in_tag, KstVectorPtr in_V,
     _inputVectors[INVECTOR] = in_V;
   }
   KstObject::setTagName(KstObjectTag::fromString(in_tag));
-  _Freq = in_freq;
-  _Average = in_average;
-  _Apodize = in_apodize;
+  _freq = in_freq;
+  _average = in_average;
+  _apodize = in_apodize;
   _apodizeFxn = in_apodizeFxn;
   _gaussianSigma = in_gaussianSigma;
   _prevOutput = PSDUndefined;
-  _RemoveMean = in_removeMean;
+  _removeMean = in_removeMean;
   _vUnits = in_VUnits;
   _rUnits = in_RUnits;
-  _Output = in_output;
+  _output = in_output;
   _interpolateHoles = interpolateHoles;
   _averageLen = in_averageLen;
 
@@ -207,7 +206,7 @@ KstObject::UpdateType KstPSD::update(int update_counter) {
   KstVectorPtr iv = _inputVectors[INVECTOR];
 
   if (update_counter <= 0) {
-    assert(update_counter == 0);
+    Q_ASSERT(update_counter == 0);
     force = true;
   }
 
@@ -215,20 +214,31 @@ KstObject::UpdateType KstPSD::update(int update_counter) {
 
   const int v_len = iv->length();
 
-  // Don't touch _last_n_new if !xUpdated since it will certainly be wrong.
+  //
+  // don't touch _last_n_new if !xUpdated since it will certainly be wrong...
+  //
+
   if (!xUpdated && !force) {
     unlockInputsAndOutputs();
+
     return setLastUpdateResult(NO_CHANGE);
   }
 
   _last_n_new += iv->numNew();
-  assert(_last_n_new >= 0);
+  Q_ASSERT(_last_n_new >= 0);
 
   int n_subsets = v_len/_PSDLen;
 
-  // determine if the PSD needs to be updated. if not using averaging, then we need at least _PSDLen/16 new data points. if averaging, then we want enough new data for a complete subset.
-  if ( ((_last_n_new < _PSDLen/16) || (_Average && (n_subsets - _last_n_subsets < 1))) &&  iv->length() != iv->numNew() && !force) {
+  //
+  // determine if the PSD needs to be updated. 
+  //  if not using averaging, then we need at least _PSDLen/16 
+  //  new data points. if averaging, then we want enough new 
+  //  data for a complete subset...
+  //
+
+  if ( ((_last_n_new < _PSDLen/16) || (_average && (n_subsets - _last_n_subsets < 1))) &&  iv->length() != iv->numNew() && !force) {
     unlockInputsAndOutputs();
+
     return setLastUpdateResult(NO_CHANGE);
   }
 
@@ -236,13 +246,13 @@ KstObject::UpdateType KstPSD::update(int update_counter) {
 
   double *psd = (*_sVector)->value();
   double *f = (*_fVector)->value();
-
   int i_samp;
+
   for (i_samp = 0; i_samp < _PSDLen; ++i_samp) {
-    f[i_samp] = i_samp * 0.5 * _Freq / (_PSDLen - 1);
+    f[i_samp] = i_samp * 0.5 * _freq / (_PSDLen - 1);
   }
 
-  _psdCalculator.calculatePowerSpectrum(iv->value(), v_len, psd, _PSDLen, _RemoveMean,  _interpolateHoles, _Average, _averageLen, _Apodize, _apodizeFxn, _gaussianSigma, _Output, _Freq);
+  _psdCalculator.calculatePowerSpectrum(iv->value(), v_len, psd, _PSDLen, _removeMean,  _interpolateHoles, _average, _averageLen, _apodize, _apodizeFxn, _gaussianSigma, _output, _freq);
 
   _last_n_subsets = n_subsets;
   _last_n_new = 0;
@@ -260,7 +270,7 @@ KstObject::UpdateType KstPSD::update(int update_counter) {
 
 
 void KstPSD::_adjustLengths() {
-  int nPSDLen = PSDCalculator::calculateOutputVectorLength(_inputVectors[INVECTOR]->length(), _Average, _averageLen);
+  int nPSDLen = PSDCalculator::calculateOutputVectorLength(_inputVectors[INVECTOR]->length(), _average, _averageLen);
 
   if (_PSDLen != nPSDLen) {
     (*_sVector)->resize(nPSDLen);
@@ -278,68 +288,69 @@ void KstPSD::_adjustLengths() {
 
 void KstPSD::save(QTextStream &ts, const QString& indent) {
   QString l2 = indent + "  ";
+
   ts << indent << "<psdobject>" << endl;
   ts << l2 << "<tag>" << Qt::escape(tagName()) << "</tag>" << endl;
   ts << l2 << "<vectag>" << Qt::escape(_inputVectors[INVECTOR]->tag().tagString()) << "</vectag>" << endl;
-  ts << l2 << "<sampRate>"  << _Freq << "</sampRate>" << endl;
-  ts << l2 << "<average>" << _Average << "</average>" << endl;
+  ts << l2 << "<sampRate>"  << _freq << "</sampRate>" << endl;
+  ts << l2 << "<average>" << _average << "</average>" << endl;
   ts << l2 << "<fftLen>" << int(ceil(log(double(_PSDLen*2)) / log(2.0))) << "</fftLen>" << endl;
-  ts << l2 << "<removeMean>" << _RemoveMean << "</removeMean>" << endl;
+  ts << l2 << "<removeMean>" << _removeMean << "</removeMean>" << endl;
   ts << l2 << "<interpolateHoles>" << _interpolateHoles << "</interpolateHoles>" << endl;
-  ts << l2 << "<apodize>" << _Apodize << "</apodize>" << endl;
+  ts << l2 << "<apodize>" << _apodize << "</apodize>" << endl;
   ts << l2 << "<apodizefxn>" << _apodizeFxn << "</apodizefxn>" << endl;
   ts << l2 << "<gaussiansigma>" << _gaussianSigma << "</gaussiansigma>" << endl;
   ts << l2 << "<VUnits>" << _vUnits << "</VUnits>" << endl;
   ts << l2 << "<RUnits>" << _rUnits << "</RUnits>" << endl;
-  ts << l2 << "<output>" << _Output << "</output>" << endl;
+  ts << l2 << "<output>" << _output << "</output>" << endl;
   ts << indent << "</psdobject>" << endl;
 }
 
 
 bool KstPSD::apodize() const {
-  return _Apodize;
+  return _apodize;
 }
 
 
 void KstPSD::setApodize(bool in_apodize)  {
   setDirty();
-  _Apodize = in_apodize;
+  _apodize = in_apodize;
 }
 
 
 bool KstPSD::removeMean() const {
-  return _RemoveMean;
+  return _removeMean;
 }
 
 
 void KstPSD::setRemoveMean(bool in_removeMean) {
   setDirty();
-  _RemoveMean = in_removeMean;
+  _removeMean = in_removeMean;
 }
 
 
 bool KstPSD::average() const {
-  return _Average;
+  return _average;
 }
 
 
 void KstPSD::setAverage(bool in_average) {
   setDirty();
-  _Average = in_average;
+  _average = in_average;
 }
 
 
 double KstPSD::freq() const {
-  return _Freq;
+  return _freq;
 }
 
 
 void KstPSD::setFreq(double in_freq) {
   setDirty();
   if (in_freq > 0.0) {
-    _Freq = in_freq;
+    _freq = in_freq;
   } else {
-    _Freq = KST::objectDefaults.psdFreq();
+    _freq = KST::objectDefaults.psdFreq();
   }
 }
 
@@ -358,14 +369,14 @@ void KstPSD::setLen(int in_len) {
 
 
 PSDType KstPSD::output() const {
-  return _Output;
+  return _output;
 }
 
 
 void KstPSD::setOutput(PSDType in_output)  {
-  if (in_output != _Output) {
+  if (in_output != _output) {
     setDirty();
-    _Output = in_output;
+    _output = in_output;
   }
 }
 
@@ -476,9 +487,9 @@ KstDataObjectPtr KstPSD::makeDuplicate(KstDataObjectDataObjectMap& duplicatedMap
     name += '\'';
   }
 
-  psd = new KstPSD(name, _inputVectors[INVECTOR], _Freq, _Average, 
-                    _averageLen, _Apodize, _RemoveMean, _vUnits, _rUnits, 
-                    _apodizeFxn, _gaussianSigma, _Output);
+  psd = new KstPSD(name, _inputVectors[INVECTOR], _freq, _average, 
+                    _averageLen, _apodize, _removeMean, _vUnits, _rUnits, 
+                    _apodizeFxn, _gaussianSigma, _output);
 
   duplicatedMap.insert(KstPSDPtr(this), KstDataObjectPtr(psd));    
 
@@ -499,21 +510,25 @@ void KstPSD::setInterpolateHoles(bool interpolate) {
 }
 
 void KstPSD::updateVectorLabels() {
-  switch (_Output) {
+  switch (_output) {
     default:
     case PSDAmplitudeSpectralDensity: // amplitude spectral density (default) [V/Hz^1/2]
       (*_sVector)->setLabel(QObject::tr("ASD \\[%1/%2^{1/2} \\]").arg(_vUnits).arg(_rUnits));
       break;
+
     case PSDPowerSpectralDensity: // power spectral density [V^2/Hz]
       (*_sVector)->setLabel(QObject::tr("PSD \\[%1^2/%2\\]").arg(_vUnits).arg(_rUnits));
       break;
+
     case PSDAmplitudeSpectrum: // amplitude spectrum [V]
       (*_sVector)->setLabel(QObject::tr("Amplitude Spectrum\\[%1\\]").arg(_vUnits));
       break;
+
     case PSDPowerSpectrum: // power spectrum [V^2]
       (*_sVector)->setLabel(QObject::tr("Power Spectrum \\[%1^2\\]").arg(_vUnits));
       break;
   }
+
   (*_fVector)->setLabel(QObject::tr("Frequency \\[%1\\]").arg(_rUnits));
 }
 

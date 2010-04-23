@@ -15,13 +15,12 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "labelparser.h"
-
-#include <assert.h>
 #include <stdlib.h>
 
 #include <QRegExp>
 #include <QString>
+
+#include "labelparser.h"
 
 using namespace Label;
 
@@ -33,7 +32,7 @@ using namespace Label;
 
 Chunk::Chunk(Chunk *parent, VOffset dir, bool isGroup, bool inherit)
 : next(0L), prev(0L), up(0L), down(0L), group(0L), scalar(false), linebreak(false), tab(false), vector(false), vOffset(dir) {
-  assert(parent || vOffset == None);
+  Q_ASSERT(parent || vOffset == None);
   if (parent) {  // attach and inherit
     switch (vOffset) {
       case None:
@@ -47,11 +46,11 @@ Chunk::Chunk(Chunk *parent, VOffset dir, bool isGroup, bool inherit)
         }
         break;
       case Up:
-        assert(!parent->up);
+        Q_ASSERT(!parent->up);
         parent->up = this;
         break;
       case Down:
-        assert(!parent->down);
+        Q_ASSERT(!parent->down);
         parent->down = this;
         break;
     }
@@ -536,7 +535,7 @@ static Chunk *parseInternal(Chunk *ctail, const QString& txt, uint& start, uint 
           new Chunk(ctail, Chunk::None, true, true);
           dumpattr(ctail->group, "start group with non-group and empty text");
           rc = 0L != parseInternal(ctail->group, txt, ++i, cnt, interpretNewLine);
-          assert(rc);
+          Q_ASSERT(rc);
           dumpattr(ctail->group, "after start group with non-group and empty text");
           if (!rc) {
             return 0L;

@@ -15,24 +15,17 @@
  *                                                                         *
  ***************************************************************************/
 
-// xxx #include <qdeepcopy.h>
-
-#include <kapplication.h>
-#include <klocale.h>
-
-#include <kdebug.h>
+#include <QApplication>
 
 #include "kstdatasource.h"
 #include "kstdebug.h"
-// xxx #include "kstrevision.h"
+#include "kstrevision.h"
 #include "logevents.h"
 
 K_GLOBAL_STATIC(KstDebug, sd)
-// xxx static KStaticDeleter<KstDebug> sd;
-
 KstDebug *KstDebug::_self = 0L;
-
 static QMutex soLock;
+
 KstDebug *KstDebug::self() {
   QMutexLocker ml(&soLock);
   if (!_self) {
@@ -43,11 +36,10 @@ KstDebug *KstDebug::self() {
 }
 
 
-KstDebug::KstDebug()
-: QObject() {
+KstDebug::KstDebug() : QObject() {
   _applyLimit = false;
   _limit = 10000;
-// xxx  _kstRevision = QString::fromLatin1(KSTREVISION);
+  _kstRevision = QString::fromLatin1(KSTREVISION);
 // xxx  _kstVersion = QString::fromLatin1(KSTVERSION);
   _hasNewError = false;
 }
@@ -136,14 +128,18 @@ QString KstDebug::label(LogLevel level) const {
 QString KstDebug::text() {
   QMutexLocker ml(&_lock);
   QString body = QObject::tr("Kst version %1\n\n\nKst log:\n").arg( _kstVersion );
- 
-  for (QLinkedList<LogMessage>::const_iterator i=_messages.begin(); i != _messages.end(); ++i) {
-    body += QObject::tr("date leveltext: message", "%1 %2: %3\n").arg(KGlobal::locale()->formatDateTime(i->date)).arg(label(i->level)).arg(i->msg);
+  QLinkedList<LogMessage>::const_iterator i;
+  QStringList::const_iterator it;
+  QStringList dsp;
+
+  for (i =_messages.begin(); i != _messages.end(); ++i) {
+// xxx    body += QObject::tr("date leveltext: message", "%1 %2: %3\n").arg(KGlobal::locale()->formatDateTime(i->date)).arg(label(i->level)).arg(i->msg);
   }
 
   body += QObject::tr("\n\nData-source plugins:");
-  QStringList dsp = dataSourcePlugins();
-  for (QStringList::ConstIterator it = dsp.begin(); it != dsp.end(); ++it) {
+  dsp = dataSourcePlugins();
+
+  for (it = dsp.begin(); it != dsp.end(); ++it) {
     body += '\n';
     body += *it;
   }
@@ -178,8 +174,9 @@ KstDebug::LogMessage KstDebug::message(unsigned n) const {
   unsigned i;
   
   if (n < (unsigned)_messages.count()) {
-    QLinkedList<LogMessage>::const_iterator it = _messages.begin();
-    
+    QLinkedList<LogMessage>::const_iterator it;
+
+    it = _messages.begin();
     for (i=0; i<n; ++i) {
       ++it;
     }

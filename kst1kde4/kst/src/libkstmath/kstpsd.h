@@ -100,15 +100,15 @@ class KST_EXPORT KstPSD : public KstDataObject {
     void _adjustLengths();
     ApodizeFunction _apodizeFxn;
     double _gaussianSigma;
-    bool _Apodize;
-    bool _RemoveMean;
-    bool _Average;
+    bool _apodize;
+    bool _removeMean;
+    bool _average;
     bool _interpolateHoles;
-    PSDType _Output;
+    PSDType _output;
     PSDType _prevOutput;
     int _last_n_subsets;
     int _last_n_new;
-    double _Freq;
+    double _freq;
 
     int _PSDLen;
     int _averageLen;

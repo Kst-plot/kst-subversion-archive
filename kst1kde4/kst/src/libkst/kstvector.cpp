@@ -63,7 +63,7 @@ KstVector::KstVector(KstObjectTag in_tag, int size, KstObject *provider, bool is
   } else {
     _size = size;
   }
-  _is_rising = false;
+  _isRising = false;
 
   createScalars();
   blank();
@@ -130,7 +130,7 @@ KstVector::KstVector(const QDomElement& e)
     }
   }
 
-  _is_rising = false;
+  _isRising = false;
 
   KST::vectorList.lock().writeLock();
   KST::vectorList.append(this);
@@ -451,7 +451,7 @@ KstObject::UpdateType KstVector::internalUpdate(KstObject::UpdateType providerRC
   _nsum = 0;
 
   if (_size > 0) {
-    _is_rising = true;
+    _isRising = true;
 
     // FIXME: expensive!!  Can we somehow cache this at least?
     for (i = 0; i < _size && !finite(_v[i]); i++) {
@@ -480,7 +480,7 @@ KstObject::UpdateType KstVector::internalUpdate(KstObject::UpdateType providerRC
     i0 = i;
 
     if (i0 > 0) {
-      _is_rising = false;
+      _isRising = false;
     }
 
     _max = _min = _v[i0];
@@ -505,7 +505,7 @@ KstObject::UpdateType KstVector::internalUpdate(KstObject::UpdateType providerRC
 
         if (v <= last_v) {
           if (i != i0) {
-            _is_rising = false;
+            _isRising = false;
           }
         }
 
@@ -526,7 +526,7 @@ KstObject::UpdateType KstVector::internalUpdate(KstObject::UpdateType providerRC
           _minPos = v;
         }
       } else {
-        _is_rising = false;
+        _isRising = false;
       }
     }
 

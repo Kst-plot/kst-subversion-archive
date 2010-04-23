@@ -21,9 +21,6 @@
 
 #include <QMultiHash>
 
-#include <kdebug.h>
-// xxx #include <klocale.h>
-
 #include "defaultprimitivenames.h"
 #include "kstdatacollection.h"
 #include "kstdebug.h"
