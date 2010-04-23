@@ -15,13 +15,11 @@
  *                                                                         *
  ***************************************************************************/
 
-// xxx #include <config.h>
 #include <stdlib.h>
 
 #include "kstdatacollection.h"
-
-#include "sysinfo.h"
 #include "psversion.h"
+#include "sysinfo.h"
 
 KstDataSourceList KST::dataSourceList;
 KstVectorCollection KST::vectorList;
@@ -116,54 +114,56 @@ KstData::~KstData() {
 
 
 bool KstData::vectorTagNameNotUniqueInternal(const QString& tag) {
+  bool rc = false;
 
   //
   // verify that the tag name is not empty
   //
   
   if (tag.trimmed().isEmpty()) {
-      return true;
-  }
-  
-  //
-  // verify that the tag name is not used by a data object
-  //
-  
-  KST::vectorList.lock().readLock();
-  bool vc = KST::vectorList.tagExists(tag);
-  KST::vectorList.lock().unlock();
-  if (!vc) {
-    KST::scalarList.lock().readLock();
-    vc = KST::scalarList.tagExists(tag);
-    KST::scalarList.lock().unlock();
+    rc = true;
+  } else {
+    //
+    // verify that the tag name is not used by a data object
+    //
+    
+    KST::vectorList.lock().readLock();
+    rc = KST::vectorList.tagExists(tag);
+    KST::vectorList.lock().unlock();
+    if (!rc) {
+      KST::scalarList.lock().readLock();
+      rc = KST::scalarList.tagExists(tag);
+      KST::scalarList.lock().unlock();
+    }
   }
 
-return vc;
+  return rc;
 }
 
 
 bool KstData::matrixTagNameNotUniqueInternal(const QString& tag) {
-  
+  bool rc = false;
+ 
   //
   // verify that the tag name is not empty
   //
   
   if (tag.trimmed().isEmpty()) {
-    return true;
+    rc = true;
+  } else {
+    //
+    // verify that the tag name is not used by a data object
+    //
+  
+    KstReadLocker ml(&KST::matrixList.lock());
+    KstReadLocker ml2(&KST::scalarList.lock());
+    
+    if (KST::matrixList.tagExists(tag) || KST::scalarList.tagExists(tag)) {
+      rc = true;
+    }
   }
 
-  //
-  // verify that the tag name is not used by a data object
-  //
-
-  KstReadLocker ml(&KST::matrixList.lock());
-  KstReadLocker ml2(&KST::scalarList.lock());
-  
-  if (KST::matrixList.tagExists(tag) || KST::scalarList.tagExists(tag)) {
-    return true;
-  }
-  
-  return false;
+  return rc;
 }
 
 
@@ -187,26 +187,28 @@ bool KstData::vectorTagNameNotUnique(const QString& tag, bool warn, void *p) {
   Q_UNUSED(p)
   Q_UNUSED(warn)
 
+  bool rc = false;
+
   //
-  // verify that the tag name is not empty
+  // verify that the tag name is not empty...
   //
   
   if (tag.trimmed().isEmpty()) {
-      return true;
-  }
-
-  //
-  // verify that the tag name is not used by a data object
-  //
+    rc = true;
+  } else {
+    //
+    // verify that the tag name is not used by a data object...
+    //
+    
+    KstReadLocker ml(&KST::vectorList.lock());
+    KstReadLocker ml2(&KST::scalarList.lock());
   
-  KstReadLocker ml(&KST::vectorList.lock());
-  KstReadLocker ml2(&KST::scalarList.lock());
-
-  if (KST::vectorList.tagExists(tag) || KST::scalarList.tagExists(tag)) {
-      return true;
+    if (KST::vectorList.tagExists(tag) || KST::scalarList.tagExists(tag)) {
+      rc = true;
+    }
   }
 
-  return false;
+  return rc;
 }
 
 
@@ -214,26 +216,28 @@ bool KstData::matrixTagNameNotUnique(const QString& tag, bool warn, void *p) {
   Q_UNUSED(p)
   Q_UNUSED(warn)
 
+  bool rc = false;
+
   //
-  // verify that the tag name is not empty
+  // verify that the tag name is not empty...
   //
   
   if (tag.trimmed().isEmpty()) {
-    return true;
+    rc = true;
+  } else {
+    //
+    // verify that the tag name is not used by a data object...
+    //
+    
+    KstReadLocker ml(&KST::matrixList.lock());
+    KstReadLocker ml2(&KST::scalarList.lock());
+  
+    if (KST::matrixList.tagExists(tag) || KST::scalarList.tagExists(tag)) {
+      rc = true;
+    }
   }
 
-  //
-  // verify that the tag name is not used by a data object
-  //
-  
-  KstReadLocker ml(&KST::matrixList.lock());
-  KstReadLocker ml2(&KST::scalarList.lock());
-
-  if (KST::matrixList.tagExists(tag) || KST::scalarList.tagExists(tag)) {
-    return true;
-  }
-  
-  return false;
+  return rc;
 }
 
 
@@ -241,25 +245,27 @@ bool KstData::dataSourceTagNameNotUnique(const QString& tag, bool warn, void *p)
   Q_UNUSED(p)
   Q_UNUSED(warn)
 
+  bool rc = false;
+
   //
-  // verify that the tag name is not empty
+  // verify that the tag name is not empty...
   //
   
   if (tag.trimmed().isEmpty()) {
-    return true;
+    rc = true;
+  } else {
+    //
+    // verify that the tag name is not used by a data source...
+    //
+    
+    KstReadLocker l(&KST::dataSourceList.lock());
+  
+    if (KST::dataSourceList.findTag(tag) != KST::dataSourceList.end()) {
+      rc = true;
+    }
   }
 
-  //
-  // verify that the tag name is not used by a data source
-  //
-  
-  KstReadLocker l(&KST::dataSourceList.lock());
-
-  if (KST::dataSourceList.findTag(tag) != KST::dataSourceList.end()) {
-    return true;
-  }
-  
-  return false;
+  return rc;
 }
 
 
@@ -287,7 +293,6 @@ bool KstData::viewObjectNameNotUnique(const QString& tag) {
 
 
 int KstData::vectorToFile(KstVectorPtr v, QFile *f) {
-  // FIXME: implement me (non-gui)
   Q_UNUSED(v);
   Q_UNUSED(f);
 
@@ -296,7 +301,6 @@ int KstData::vectorToFile(KstVectorPtr v, QFile *f) {
 
 
 int KstData::vectorsToFile(const KstVectorList& l, QFile *f, bool interpolate) {
-  // FIXME: implement me (non-gui)
   Q_UNUSED(l);
   Q_UNUSED(f);
   Q_UNUSED(interpolate);

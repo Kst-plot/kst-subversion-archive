@@ -1759,7 +1759,7 @@ KstDataObjectPtr KstVCurve::providerDataObject() const {
   KstDataObjectPtr provider;
     
   KST::vectorList.lock().readLock();
-// xxx  vp = *KST::vectorList.findTag(yVTag().tag());  // FIXME: should use full tag
+  vp = *KST::vectorList.findTag(yVTag().tag());  // FIXME: should use full tag
   KST::vectorList.lock().unlock();;
 
   if (vp) {

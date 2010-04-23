@@ -312,13 +312,6 @@ void KstSettings::reload() {
 }
 
 
-void KstSettings::checkUpdates() {
-  QSettings cfg("kstrc");
-// xxx  cfg.checkUpdate("kstautosave1.1", "kstautosave11.upd");
-// xxx  cfg.checkUpdate("kstrcmisc1.1", "kstrcmisc11.upd");
-}
-
-
 void KstSettings::setPrintingDefaults() {
   printing.pageSize = QString::number((int)QPrinter::Letter);
   printing.orientation = "Landscape";

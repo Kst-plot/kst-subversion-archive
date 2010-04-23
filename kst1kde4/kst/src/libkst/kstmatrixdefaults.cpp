@@ -15,8 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-// xxx #include <kconfig.h>
-// xxx #include <kconfiggroup.h>
 #include <QSettings>
 
 #include "kstdatacollection.h" 

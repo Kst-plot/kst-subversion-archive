@@ -363,14 +363,16 @@ void KstApp::initActions() {
   _actionPause->setIcon(style()->standardIcon(QStyle::SP_MediaPause));
 
   //
-  // define the non-standard icons
+  // define the non-standard icons...
   //
+
 	_actionReload->setIcon(QIcon((":/kst_reload.png")));
 	_actionCopy->setIcon(QIcon((":/kst_copy.png")));
 	_actionPaste->setIcon(QIcon((":/kst_paste.png")));
 	_actionPrint->setIcon(QIcon((":/kst_print.png")));
 	_actionDialogGraphFile->setIcon(QIcon((":/kst_graphfile.png")));
 
+  _actionNewPlot->setIcon(QIcon((":/kst_newplot.png")));
   _actionZoomX->setIcon(QIcon((":/kst_zoomx.png")));
   _actionZoomY->setIcon(QIcon((":/kst_zoomy.png")));
   _actionZoomXY->setIcon(QIcon((":/kst_zoomxy.png")));
@@ -384,15 +386,18 @@ void KstApp::initActions() {
 	_actionGfxLine->setIcon(QIcon((":/kst_gfx_line.png")));
 	_actionGfxLabel->setIcon(QIcon((":/kst_gfx_label.png")));
 	_actionGfxPicture->setIcon(QIcon((":/kst_gfx_picture.png")));
+  _actionGfx2DPlot->setIcon(QIcon((":/kst_newplot.png")));
 
 	_actionNewVector->setIcon(QIcon((":/kst_vectornew.png")));
 	_actionNewCurve->setIcon(QIcon((":/kst_curvenew.png")));
 	_actionNewEquation->setIcon(QIcon((":/kst_equationnew.png")));
 	_actionNewHistogram->setIcon(QIcon((":/kst_histogramnew.png")));
+  _actionNewSpectrum->setIcon(QIcon((":/kst_psdnew.png")));
 	_actionNewPlugin->setIcon(QIcon((":/kst_pluginnew.png")));
 	_actionNewEventMonitor->setIcon(QIcon((":/kst_eventnew.png")));
 	_actionNewMatrix->setIcon(QIcon((":/kst_matrixnew.png")));
 	_actionNewImage->setIcon(QIcon((":/kst_imagenew.png")));
+  _actionNewSpectrogram->setIcon(QIcon((":/kst_csdnew.png")));
 
 	_actionDataWizard->setIcon(QIcon((":/kst_datawizard.png")));
 	_actionManagerData->setIcon(QIcon((":/kst_datamanager.png")));

@@ -20,6 +20,5 @@ install(TARGETS kst
 install(FILES  kst.desktop DESTINATION share/applnk/Graphics)
 install(FILES  kstui.rc DESTINATION share/apps/kst)
 install(FILES  kstplugin.desktop kstdatasourceplugin.desktop kstdataobjectplugin.desktop kstbasicplugin.desktop kstfilter.desktop kstextension.desktop DESTINATION share/servicetypes/kst)
-install(FILES  kstautosave11.upd kstrcmisc11.upd DESTINATION share/apps/kconf_update)
 install(FILES  x-kst.desktop DESTINATION share/mimelink/application)
 install(FILES  kst.desktop DESTINATION share/applications)

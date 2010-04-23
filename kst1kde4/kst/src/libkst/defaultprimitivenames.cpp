@@ -15,18 +15,21 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <stdio.h>
+
+#include <QRegExp>
+
 #include "kstdatacollection.h"
 #include "kstobject.h"
 #include "kstobjectcollection.h"
 #include "defaultprimitivenames.h"
 
-#include <QRegExp>
-// xxx #include <klocale.h>
-#include <stdio.h>
-
+//
 // takes a field name and returns a unique tag name, which will be
 // the field if that is unique, or field-N if there are already N
-// vectors of that name
+// vectors of that name...
+//
+
 QString KST::suggestVectorName(const QString& field) {
   int i = 0;
   QString name(field);
@@ -53,36 +56,31 @@ QString KST::suggestMatrixName(const QString& vectorName) {
 
 template <class T>
 KstObjectTag suggestUniqueTag(const KstObjectTag& baseTag, const KstObjectCollection<T>& coll) {
-  int i = 0;
   KstObjectTag tag = baseTag;
+  int i = 0;
 
   while (coll.tagExists(tag)) {
     tag.setTag((QString("%1-%2").arg(baseTag.tag()).arg(++i)));
   }
 
   return tag;
-  /*
-  QString name(baseTag.tag());
-
-  while (coll.tagExists(name)) {
-    name = QString("%1-%2").arg(baseTag.tag()).arg(++i);
-  }
-
-  return KstObjectTag(name, baseTag.context());
-  */
 }
+
 
 KstObjectTag KST::suggestUniqueMatrixTag(KstObjectTag baseTag) {
   return suggestUniqueTag(baseTag, KST::matrixList);
 }
 
+
 KstObjectTag KST::suggestUniqueScalarTag(KstObjectTag baseTag) {
   return suggestUniqueTag(baseTag, KST::scalarList);
 }
 
+
 KstObjectTag KST::suggestUniqueStringTag(KstObjectTag baseTag) {
   return suggestUniqueTag(baseTag, KST::stringList);
 }
+
 
 KstObjectTag KST::suggestUniqueVectorTag(KstObjectTag baseTag) {
   return suggestUniqueTag(baseTag, KST::vectorList);

@@ -20,13 +20,13 @@
 
 #include <QString>
 #include <QSettings>
-#include "kst_export.h"
 
-// xxx class KConfig;
+#include "kst_export.h"
 
 class KST_EXPORT KstVectorDefaults {
   public:
     KstVectorDefaults();
+
     void sync();
     const QString& dataSource() const;
     const QString& wizardXVector() const;

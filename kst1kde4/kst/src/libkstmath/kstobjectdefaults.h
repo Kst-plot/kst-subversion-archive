@@ -18,11 +18,10 @@
 #ifndef KSTOBJECTDEFAULTS_H
 #define KSTOBJECTDEFAULTS_H
 
-#include <QString>
 #include <QSettings>
-#include "kst_export.h"
+#include <QString>
 
-// xxx class KConfig;
+#include "kst_export.h"
 
 class KST_EXPORT KstObjectDefaults {
   public:

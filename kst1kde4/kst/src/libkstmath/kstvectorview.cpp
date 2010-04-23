@@ -173,10 +173,12 @@ KstVectorView::~KstVectorView() {
   _cxVector = _outputVectors.end();
   _cyVector = _outputVectors.end();
   KST::vectorList.lock().writeLock();
-/* xxx
-  KST::vectorList.remove(_outputVectors[OUT_XVECTOR]);
-  KST::vectorList.remove(_outputVectors[OUT_YVECTOR]);
-*/
+  if (_outputVectors[OUT_XVECTOR]) {
+    KST::vectorList.remove(_outputVectors[OUT_XVECTOR].data());
+  }
+  if (_outputVectors[OUT_YVECTOR]) {
+    KST::vectorList.remove(_outputVectors[OUT_YVECTOR].data());
+  }
   KST::vectorList.lock().unlock();
 }
 
@@ -385,6 +387,7 @@ KstObject::UpdateType KstVectorView::update(int update_counter) {
     for (long i=0; i<=NSm1; i++) {
       if (!flagVec || !flagVec->interpolate(i, NS)) {
         double xv = inXVec->interpolate(i, NS);
+
         if (xmin <= xv && xmax >= xv) {
           yv = inYVec->interpolate(i,NS);
           if (ymin <= yv && ymax >= yv) {

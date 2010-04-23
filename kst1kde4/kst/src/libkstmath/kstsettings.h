@@ -47,7 +47,6 @@ class KstSettings {
     // do not delete this object
     KST_EXPORT static KstSettings *globalSettings();
     KST_EXPORT static void setGlobalSettings(const KstSettings *settings);
-    KST_EXPORT static void checkUpdates();
     KST_EXPORT void save();
     static void cleanup();
     void reload();
@@ -103,10 +102,10 @@ class KstSettings {
       QString pointStyleOrder;
       QString lineStyleOrder;
       QString lineWidthOrder;
-
       QString maxLineWidth;
       QString pointDensity;
     };
+
     struct Printing {
       QString pageSize;
       QString orientation;

@@ -27,8 +27,6 @@ class KST_EXPORT KstPrimitive : public KstObject {
   public:
     KstPrimitive(KstObject* provider = 0L);
     KstPrimitive(const KstPrimitive& primitive);
-    
-  protected:
     ~KstPrimitive();
 
   public:

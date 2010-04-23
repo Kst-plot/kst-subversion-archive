@@ -111,20 +111,19 @@ KstImage::KstImage(const QDomElement& e) : KstBaseCurve(e){
 }
 
 
-KstImage::KstImage(const QString &in_tag, KstMatrixPtr in_matrix, double lowerZ, double upperZ, bool autoThreshold, KColorCollection* pal) : KstBaseCurve() {
+KstImage::KstImage(const QString &tag, KstMatrixPtr matrix, double lowerZ, double upperZ, bool autoThreshold, KColorCollection* pal) : KstBaseCurve() {
   //
   // constructor for colormap only...
   //
 
-  _inputMatrices[THEMATRIX] = in_matrix;
+  _inputMatrices[THEMATRIX] = matrix;
 
-  if (in_tag == QString::null) {
-/* xxx
-    QString tag_name = KST::suggestImageName(KstObjectTag(in_matrix->tagName()));
-    setTagName(KstObjectTag(in_matrix->tagName(), KstObjectTag::globalTagContext)); 
-*/
+  if (tag == QString::null) {
+    QString tagName = KST::suggestImageName(KstObjectTag(matrix->tag()));
+
+    setTagName(KstObjectTag(tagName, KstObjectTag::globalTagContext)); 
   } else {
-    setTagName(KstObjectTag(in_tag, KstObjectTag::globalTagContext));
+    setTagName(KstObjectTag(tag, KstObjectTag::globalTagContext));
   }
 
   _typeString = QObject::tr("Image");
@@ -141,21 +140,20 @@ KstImage::KstImage(const QString &in_tag, KstMatrixPtr in_matrix, double lowerZ,
 }
 
 
-KstImage::KstImage(const QString &in_tag, KstMatrixPtr in_matrix, int numContours, 
+KstImage::KstImage(const QString &tag, KstMatrixPtr matrix, int numContours, 
                    const QColor& contourColor, int contourWeight) : KstBaseCurve() {
   //
   // constructor for contour map only...
   //
 
-  _inputMatrices[THEMATRIX] = in_matrix;
+  _inputMatrices[THEMATRIX] = matrix;
 
-  if (in_tag == QString::null) {
-/* xxx
-    QString tag_name = KST::suggestImageName(KstObjectTag(in_matrix->tagName()));
-    setTagName(KstObjectTag(tag_name, KstObjectTag::globalTagContext)); 
-*/
+  if (tag == QString::null) {
+    QString tagName = KST::suggestImageName(KstObjectTag(matrix->tag()));
+
+    setTagName(KstObjectTag(tagName, KstObjectTag::globalTagContext)); 
   } else {
-    setTagName(KstObjectTag(in_tag, KstObjectTag::globalTagContext));
+    setTagName(KstObjectTag(tag, KstObjectTag::globalTagContext));
   }
 
   _typeString = QObject::tr("Image");
@@ -172,7 +170,7 @@ KstImage::KstImage(const QString &in_tag, KstMatrixPtr in_matrix, int numContour
 
 
 
-KstImage::KstImage(const QString &in_tag, KstMatrixPtr in_matrix,
+KstImage::KstImage(const QString &tag, KstMatrixPtr matrix,
                    double lowerZ, double upperZ, bool autoThreshold,
                    KColorCollection* pal, int numContours,
                    const QColor& contourColor, int contourWeight) : KstBaseCurve() {
@@ -180,15 +178,14 @@ KstImage::KstImage(const QString &in_tag, KstMatrixPtr in_matrix,
   // constructor for both colormap and contour map...
   //
 
-  _inputMatrices[THEMATRIX] = in_matrix;
+  _inputMatrices[THEMATRIX] = matrix;
 
-  if (in_tag == QString::null) {
-/* xxx
-    QString tag_name = KST::suggestImageName(KstObjectTag(in_matrix->tagName()));
-    setTagName(KstObjectTag(tag_name, KstObjectTag::globalTagContext)); 
-*/
+  if (tag == QString::null) {
+    QString tagName = KST::suggestImageName(KstObjectTag(matrix->tag()));
+
+    setTagName(KstObjectTag(tagName, KstObjectTag::globalTagContext)); 
   } else {
-    setTagName(KstObjectTag(in_tag, KstObjectTag::globalTagContext));
+    setTagName(KstObjectTag(tag, KstObjectTag::globalTagContext));
   }
 
   _typeString = QObject::tr("Image");
@@ -202,6 +199,7 @@ KstImage::KstImage(const QString &in_tag, KstMatrixPtr in_matrix,
   _zUpper = upperZ;
   _autoThreshold = autoThreshold;
   _pal = pal;
+
   setDirty();
 }
 

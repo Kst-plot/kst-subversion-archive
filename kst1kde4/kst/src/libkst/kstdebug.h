@@ -18,8 +18,6 @@
 #ifndef KSTDEBUG_H
 #define KSTDEBUG_H
 
-// #include <config.h> xxx
-
 #include <QDateTime>
 #include <QLinkedList>
 #include <QObject>
@@ -30,7 +28,10 @@
 
 #include "kst_export.h"
 
-// This class has to be threadsafe
+//
+// this class has to be threadsafe...
+//
+
 class KST_EXPORT KstDebug : public QObject {
   Q_OBJECT
 

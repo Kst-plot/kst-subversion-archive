@@ -29,8 +29,6 @@
 #include <QWidget>
 #include <QSettings>
 
-// xxx #include <kconfig.h>
-
 #include "kstdateparser.h"
 #include "kstobject.h"
 #include "kst_export.h"

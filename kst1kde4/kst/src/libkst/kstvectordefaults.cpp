@@ -20,11 +20,6 @@
 #include "kstdatacollection.h"
 #include "stdinsource.h"
 
-// xxx #include <kconfig.h>
-// xxx #include <kconfiggroup.h>
-
-#include <QSettings>
-
 KstVectorDefaults KST::vectorDefaults;
 
 KstVectorDefaults::KstVectorDefaults() {

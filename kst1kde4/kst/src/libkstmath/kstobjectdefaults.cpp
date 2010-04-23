@@ -15,11 +15,11 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QSettings>
+
 #include "kstobjectdefaults.h"
 #include "kstdataobjectcollection.h"
 #include "kstpsd.h"
-
-#include <QSettings>
 
 KstObjectDefaults KST::objectDefaults;
 
