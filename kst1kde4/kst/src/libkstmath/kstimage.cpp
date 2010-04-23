@@ -91,12 +91,13 @@ KstImage::KstImage(const QDomElement& e) : KstBaseCurve(e){
     //
     // maybe the palette doesn't exist anymore.  Generate a grayscale palette then.
     //
+
     if (in_pal->count() <= 0) {
       for (int i = 0; i < 256; i++) {
         in_pal->addColor(QColor(i,i,i));
       }
-      KstDebug::self()->log(QObject::tr("Unable to find palette %1.  Using a 256 color grayscale palette instead.").arg(in_paletteName),
-                                 KstDebug::Warning);
+
+      KstDebug::self()->log(QObject::tr("Unable to find palette %1. Using a 256 color grayscale palette instead.").arg(in_paletteName), KstDebug::Warning);
     }
     _pal = in_pal;
   }
@@ -110,15 +111,22 @@ KstImage::KstImage(const QDomElement& e) : KstBaseCurve(e){
 }
 
 
-//constructor for colormap only
-KstImage::KstImage(const QString &in_tag, KstMatrixPtr in_matrix, double lowerZ, double upperZ, bool autoThreshold, KColorCollection* pal) : KstBaseCurve(){
+KstImage::KstImage(const QString &in_tag, KstMatrixPtr in_matrix, double lowerZ, double upperZ, bool autoThreshold, KColorCollection* pal) : KstBaseCurve() {
+  //
+  // constructor for colormap only...
+  //
+
   _inputMatrices[THEMATRIX] = in_matrix;
+
   if (in_tag == QString::null) {
-// xxx    QString tag_name = KST::suggestImageName(KstObjectTag(in_matrix->tagName()));
+/* xxx
+    QString tag_name = KST::suggestImageName(KstObjectTag(in_matrix->tagName()));
     setTagName(KstObjectTag(in_matrix->tagName(), KstObjectTag::globalTagContext)); 
+*/
   } else {
     setTagName(KstObjectTag(in_tag, KstObjectTag::globalTagContext));
   }
+
   _typeString = QObject::tr("Image");
   _type = "Image";
   _zLower = lowerZ;
@@ -133,15 +141,23 @@ KstImage::KstImage(const QString &in_tag, KstMatrixPtr in_matrix, double lowerZ,
 }
 
 
-//constructor for contour map only
-KstImage::KstImage(const QString &in_tag, KstMatrixPtr in_matrix, int numContours, const QColor& contourColor, int contourWeight) : KstBaseCurve(){
+KstImage::KstImage(const QString &in_tag, KstMatrixPtr in_matrix, int numContours, 
+                   const QColor& contourColor, int contourWeight) : KstBaseCurve() {
+  //
+  // constructor for contour map only...
+  //
+
   _inputMatrices[THEMATRIX] = in_matrix;
+
   if (in_tag == QString::null) {
-// xxx    QString tag_name = KST::suggestImageName(KstObjectTag(in_matrix->tagName()));
-// xxx    setTagName(KstObjectTag(tag_name, KstObjectTag::globalTagContext)); 
+/* xxx
+    QString tag_name = KST::suggestImageName(KstObjectTag(in_matrix->tagName()));
+    setTagName(KstObjectTag(tag_name, KstObjectTag::globalTagContext)); 
+*/
   } else {
     setTagName(KstObjectTag(in_tag, KstObjectTag::globalTagContext));
   }
+
   _typeString = QObject::tr("Image");
   _type = "Image";
   _contourColor = contourColor;
@@ -155,23 +171,26 @@ KstImage::KstImage(const QString &in_tag, KstMatrixPtr in_matrix, int numContour
 }
 
 
-//constructor for both colormap and contour map
-KstImage::KstImage(const QString &in_tag,
-                   KstMatrixPtr in_matrix,
-                   double lowerZ,
-                   double upperZ,
-                   bool autoThreshold,
-                   KColorCollection* pal,
-                   int numContours,
-                   const QColor& contourColor,
-                   int contourWeight) {
+
+KstImage::KstImage(const QString &in_tag, KstMatrixPtr in_matrix,
+                   double lowerZ, double upperZ, bool autoThreshold,
+                   KColorCollection* pal, int numContours,
+                   const QColor& contourColor, int contourWeight) : KstBaseCurve() {
+  //
+  // constructor for both colormap and contour map...
+  //
+
   _inputMatrices[THEMATRIX] = in_matrix;
+
   if (in_tag == QString::null) {
-// xxx    QString tag_name = KST::suggestImageName(KstObjectTag(in_matrix->tagName()));
-// xxx    setTagName(KstObjectTag(tag_name, KstObjectTag::globalTagContext)); 
+/* xxx
+    QString tag_name = KST::suggestImageName(KstObjectTag(in_matrix->tagName()));
+    setTagName(KstObjectTag(tag_name, KstObjectTag::globalTagContext)); 
+*/
   } else {
     setTagName(KstObjectTag(in_tag, KstObjectTag::globalTagContext));
   }
+
   _typeString = QObject::tr("Image");
   _type = "Image";
   _contourColor = contourColor;
@@ -738,10 +757,14 @@ void KstImage::paint(const KstCurveRenderContext& context) {
         bool hasPrevBottom = false;
         KstMatrixPtr mp = _inputMatrices[THEMATRIX];
 
-        for (uint k = 0; k < lines.count(); ++k) {
+        for (int k = 0; k < lines.count(); ++k) {
           double lineK = lines[k];
+
           if (variableWeight) {
-            // + 1 because 0 and 1 are the same width
+            //
+            // + 1 because 0 and 1 are the same width...
+            //
+
             p->setPen(QPen(tempColor, k + 1, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin));
           }
           int flImgHx = d2i(floor(img_Hx_pix));
@@ -750,7 +773,10 @@ void KstImage::paint(const KstCurveRenderContext& context) {
           
           for (int i = d2i(ceil(img_Lx_pix)); i + CONTOUR_STEP < flImgHx; i += CONTOUR_STEP) {
             for (int j = d2i(ceil(img_Ly_pix)); j + CONTOUR_STEP < flImgHy; j += CONTOUR_STEP) {
-              // look at this group of 4 pixels and get the z values
+              //
+              // look at this group of 4 pixels and get the z values...
+              //
+
               double zTL, zTR, zBL, zBR;
               double new_x_small = (i - b_X) / m_X, new_y_small = (j + 1 - b_Y) / m_Y;
               double new_x_large = (i + CONTOUR_STEP - b_X) / m_X, new_y_large = (j+1+CONTOUR_STEP - b_Y) / m_Y;
@@ -759,6 +785,7 @@ void KstImage::paint(const KstCurveRenderContext& context) {
                 new_x_small = pow(xLogBase, new_x_small);
                 new_x_large = pow(xLogBase, new_x_large);
               }
+
               if (yLog) {
                 new_y_small = pow(yLogBase, new_y_small);
                 new_y_large = pow(yLogBase, new_y_large);
@@ -769,12 +796,18 @@ void KstImage::paint(const KstCurveRenderContext& context) {
               zBL = mp->value(new_x_small, new_y_large, 0L);
               zBR = mp->value(new_x_large, new_y_large, 0L);
 
-              // determine the lines to draw
+              //
+              // determine the lines to draw...
+              //
+
               int numPoints = 0;
               bool passTop = false, passBottom = false, passLeft = false, passRight = false;
               QPoint topPoint, bottomPoint, leftPoint, rightPoint;
 
-              // passes through the top
+              //
+              // passes through the top...
+              //
+
               if (hasPrevBottom) {
                 topPoint = lastPoint;
                 ++numPoints;
@@ -787,7 +820,9 @@ void KstImage::paint(const KstCurveRenderContext& context) {
               }
               hasPrevBottom = false;
 
-              // passes through the bottom
+              //
+              // passes through the bottom...
+              //
               if ((lineK < zBR && lineK > zBL) || (lineK < zBL && lineK > zBR)) {
                 ++numPoints;
                 passBottom = true;
@@ -799,7 +834,9 @@ void KstImage::paint(const KstCurveRenderContext& context) {
                 }
               }
 
-              // passes through the left
+              //
+              // passes through the left...
+              //
               if ((lineK < zBL && lineK > zTL) || (lineK < zTL && lineK > zBL)) {
                 ++numPoints;
                 passLeft = true;
@@ -807,7 +844,9 @@ void KstImage::paint(const KstCurveRenderContext& context) {
                 leftPoint.setX(i);
               }
 
-              // passes through the right
+              //
+              // passes through the right...
+              //
               if ((lineK < zBR && lineK > zTR) || (lineK < zTR && lineK > zBR)) {
                 ++numPoints;
                 passRight = true;
@@ -816,11 +855,17 @@ void KstImage::paint(const KstCurveRenderContext& context) {
               }
 
               if (numPoints == 4) {
-                // draw a cross
+                //
+                // draw a cross...
+                //
+
                 p->drawLine(topPoint, bottomPoint);
                 p->drawLine(rightPoint, leftPoint);
               } else if (numPoints == 3) {
-                // draw a V opening to non-intersecting side
+                //
+                // draw a V opening to non-intersecting side...
+                //
+
                 if (!passTop) {
                   p->drawLine(leftPoint, bottomPoint);
                   p->drawLine(bottomPoint, rightPoint);
@@ -835,7 +880,10 @@ void KstImage::paint(const KstCurveRenderContext& context) {
                   p->drawLine(leftPoint, bottomPoint);
                 }
               } else if (numPoints == 2) {
-                // two points - connect them
+                //
+                // two points - connect them...
+                //
+
                 QPoint point1, point2;
                 bool true1 = false;
 
@@ -914,6 +962,7 @@ void KstImage::paintLegendSymbol(KstPainter *p, const QRect& bound) {
       p->drawLine(i, t, i, b);
     }
   }
+
   if (hasContourMap()) {
     // draw a box with contour color
     p->setPen(QPen(_contourColor, 0));

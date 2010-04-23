@@ -146,9 +146,14 @@ void KstHistogram::commonConstructor(const QString &in_tag, KstVectorPtr in_V,
 KstHistogram::~KstHistogram() {
   _bVector = _outputVectors.end();
   _hVector = _outputVectors.end();
+
   KST::vectorList.lock().writeLock();
-// xxx  KST::vectorList.remove(_outputVectors[BINS]);
-// xxx  KST::vectorList.remove(_outputVectors[HIST]);
+  if (_outputVectors[BINS]) {
+    KST::vectorList.remove(_outputVectors[BINS].data());
+  }
+  if (_outputVectors[HIST]) {
+    KST::vectorList.remove(_outputVectors[HIST].data());
+  }
   KST::vectorList.lock().unlock();
 
   delete[] _Bins;

@@ -163,9 +163,14 @@ void KstPSD::commonConstructor(const QString& in_tag, KstVectorPtr in_V,
 KstPSD::~KstPSD() {
   _sVector = _outputVectors.end();
   _fVector = _outputVectors.end();
+
   KST::vectorList.lock().writeLock();
-// xxx  KST::vectorList.remove(_outputVectors[SVECTOR]);
-// xxx  KST::vectorList.remove(_outputVectors[FVECTOR]);
+  if (_outputVectors[SVECTOR]) {
+    KST::vectorList.remove(_outputVectors[SVECTOR].data());
+  }
+  if (_outputVectors[FVECTOR]) {
+    KST::vectorList.remove(_outputVectors[FVECTOR].data());
+  }
   KST::vectorList.lock().unlock();
 }
 
@@ -382,14 +387,16 @@ void KstPSD::setVector(KstVectorPtr new_v) {
 
   setRecursed(false);
 
-  KstVectorPtr v = _inputVectors[INVECTOR];
+  KstVectorPtr v;
+
+  v = _inputVectors[INVECTOR];
   if (v) {
     if (v == new_v) {
       return;
     }
   }
 
-// xxx  _inputVectors.erase(INVECTOR);
+  _inputVectors.remove(INVECTOR);
   _inputVectors[INVECTOR] = new_v;
   setDirty();
 }
