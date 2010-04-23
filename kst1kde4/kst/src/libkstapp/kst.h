@@ -30,6 +30,7 @@
 #include <QSettings>
 #include <QTimer>
 #include <QToolBar>
+#include <QToolButton>
 
 #include "kst_export.h"
 #include "kstpainter.h"
@@ -320,6 +321,8 @@ class KST_EXPORT KstApp : public QMainWindow, private Ui_MainWindow {
     QToolBar *_toolBar;
     QMenuBar *_menuBar;
     QMdiArea *_mdiArea;
+		QToolButton *_layoutToolBarMenu;
+		QMenu *mouseModeMenu;
 
 // xxx    KstIfaceImpl *_dcopIface;
     UpdateThread *_updateThread;

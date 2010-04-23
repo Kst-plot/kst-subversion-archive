@@ -128,6 +128,9 @@ KstApp::KstApp(QWidget *parent, const char *name) : QMainWindow(parent) {
   _menuBar = 0L;
   _updateThread = 0L;
 
+	_layoutToolBarMenu = new QToolButton(this);
+	mouseModeMenu = new QMenu(this);
+
   //
   // create the mdi area...
   //
@@ -340,7 +343,10 @@ void KstApp::initToolBar() {
 
 	_toolBar->addAction(_actionTiedZoom);
 	_toolBar->addAction(_actionDataMode);
-// xxx	_toolBar->addAction(_actionLayout);
+
+	_layoutToolBarMenu->setMenu(mouseModeMenu);
+	_layoutToolBarMenu->setPopupMode(QToolButton::InstantPopup);
+	_toolBar->addWidget(_layoutToolBarMenu);
 }
 
 
@@ -378,7 +384,7 @@ void KstApp::initActions() {
   _actionZoomXY->setIcon(QIcon((":/kst_zoomxy.png")));
 	_actionTiedZoom->setIcon(QIcon((":/kst_zoomtie.png")));
 	_actionDataMode->setIcon(QIcon((":/kst_datamode.png")));
-// xxx	_actionLayout->setIcon(QIcon((":/kst_layoutmode.png")));
+	_layoutToolBarMenu->setIcon(QIcon((":/kst_zoomxy.png")));
 
   _actionGfxArrow->setIcon(QIcon((":/kst_gfx_arrow.png")));
 	_actionGfxRectangle->setIcon(QIcon((":/kst_gfx_rectangle.png")));
@@ -620,22 +626,11 @@ void KstApp::initActions() {
 */
 
   // this is the mouse mode menu
-  QMenu* mouseModeMenu = new QMenu(this);
-
   mouseModeMenu->addAction(_actionZoomXY);
   mouseModeMenu->addAction(_actionZoomX);
   mouseModeMenu->addAction(_actionZoomY);
   mouseModeMenu->addSeparator();
-// xxx  mouseModeMenu->addAction(_actionLayout);
-  mouseModeMenu->addSeparator();
-  mouseModeMenu->addAction(_actionGfxLabel);
-  mouseModeMenu->addAction(_actionGfxRectangle);
-  mouseModeMenu->addAction(_actionGfxEllipse);
-  mouseModeMenu->addAction(_actionGfxLine);
-  mouseModeMenu->addAction(_actionGfxArrow);
-  mouseModeMenu->addAction(_actionGfxPicture);
-  mouseModeMenu->addAction(_actionGfx2DPlot);
-  mouseModeMenu->addAction(_actionGfxLegend);
+  mouseModeMenu->addMenu(_menuLayoutMode);
 
 /* xxx
   toolBar()->insertButton("thumbnail", MODE_BUTTON_ID, mouseModeMenu, true, QObject::tr("Select the desired mode"));
