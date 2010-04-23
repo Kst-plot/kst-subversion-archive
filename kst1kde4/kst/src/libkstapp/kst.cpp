@@ -140,6 +140,7 @@ KstApp::KstApp(QWidget *parent, const char *name) : QMainWindow(parent) {
   _mdiArea->setDocumentMode(true);
   _mdiArea->setTabShape(QTabWidget::Rounded);
   setCentralWidget(_mdiArea);
+  setWindowIcon(QIcon(":/kst.png"));
 
   _updatesFromScriptEnabled = true;
   _plotHolderWhileOpeningDocument = new Kst2DPlotMap;
@@ -150,33 +151,16 @@ KstApp::KstApp(QWidget *parent, const char *name) : QMainWindow(parent) {
 // xxx  clearWFlags(WDestructiveClose);
 
   _stopping = false;
-// xxx  config = kapp->config();
 
+  initDialogs();
   initActions();
   initStatusBar();
   initToolBar();
   initMenuBar();
   initDocument();
 
-// xxx  setStandardToolBarMenuEnabled(true);
 // xxx  KstDebug::self()->setHandler(_doc);
 // xxx  setWindowTitle(_doc->title());
-// xxx  _debugDialog = new KstDebugDialog(this);
-// xxx  _dataManager = new KstDataManager(doc, this);
-// xxx  _viewManager = new KstViewManager(doc, this);
-// xxx  _viewScalarsDialog = new KstViewScalarsDialog(this);
-// xxx  _viewStringsDialog = new KstViewStringsDialog(this);
-// xxx  _viewVectorsDialog = new KstViewVectorsDialog(this);
-// xxx  _viewMatricesDialog = new KstViewMatricesDialog(this);
-// xxx  _viewFitsDialog = new KstViewFitsDialog(this);
-// xxx  _changeFileDialog = new KstChangeFileDialog(this);
-// xxx  _chooseColorDialog = new KstChooseColorDialog(this);
-// xxx  _differentiateCurvesDialog = new KstCurveDifferentiate(this);
-// xxx  _changeNptsDialog = new KstChangeNptsDialog(this);
-// xxx  _graphFileDialog = new KstGraphFileDialog(this);
-// xxx  _vectorSaveDialog = new KstVectorSaveDialog(this);
-// xxx  _monochromeDialog = new KstMonochromeDialog(this);
-// xxx  _quickStartDialog = new KstQuickStartDialog(this, 0 , true);
 
 // xxx  readOptions();
 /* xxx
@@ -277,6 +261,26 @@ QMdiSubWindow *KstApp::addSubWindow(QWidget *widget, Qt::WindowFlags windowFlags
 }
 
 
+void KstApp::initDialogs() {
+// xxx  _debugDialog = new KstDebugDialog(this);
+// xxx  _dataManager = new KstDataManager(doc, this);
+// xxx  _viewManager = new KstViewManager(doc, this);
+// xxx  _viewScalarsDialog = new KstViewScalarsDialog(this);
+// xxx  _viewStringsDialog = new KstViewStringsDialog(this);
+// xxx  _viewVectorsDialog = new KstViewVectorsDialog(this);
+// xxx  _viewMatricesDialog = new KstViewMatricesDialog(this);
+// xxx  _viewFitsDialog = new KstViewFitsDialog(this);
+// xxx  _changeFileDialog = new KstChangeFileDialog(this);
+// xxx  _chooseColorDialog = new KstChooseColorDialog(this);
+// xxx  _differentiateCurvesDialog = new KstCurveDifferentiate(this);
+// xxx  _changeNptsDialog = new KstChangeNptsDialog(this);
+// xxx  _graphFileDialog = new KstGraphFileDialog(this);
+// xxx  _vectorSaveDialog = new KstVectorSaveDialog(this);
+// xxx  _monochromeDialog = new KstMonochromeDialog(this);
+// xxx  _quickStartDialog = new KstQuickStartDialog(this, 0 , true);
+}
+
+
 void KstApp::initStatusBar() {
 /* xxx
   _dataNotifier = new KstDataNotifier(statusBar());
@@ -355,6 +359,22 @@ void KstApp::initMenuBar() {
 
 
 void KstApp::initActions() {
+  QActionGroup *groupZoom = new QActionGroup(this);
+  QActionGroup *groupGfx = new QActionGroup(this);
+
+  groupZoom->addAction(_actionZoomX);
+  groupZoom->addAction(_actionZoomY);
+  groupZoom->addAction(_actionZoomXY);
+
+  groupGfx->addAction(_actionGfxArrow);
+  groupGfx->addAction(_actionGfxRectangle);
+  groupGfx->addAction(_actionGfxEllipse);
+  groupGfx->addAction(_actionGfxLine);
+  groupGfx->addAction(_actionGfxLabel);
+  groupGfx->addAction(_actionGfxPicture);
+  groupGfx->addAction(_actionGfx2DPlot);
+  groupGfx->addAction(_actionGfxLegend);
+
   //
   // define the standard icons...
   //
@@ -411,7 +431,9 @@ void KstApp::initActions() {
 	_actionDialogChangeFile->setIcon(QIcon((":/kst_changefile.png")));
 	_actionDialogChangeNpts->setIcon(QIcon((":/kst_changenpts.png")));
 
-
+  //
+  // setup the connections...
+  //
 
   connect(_actionOpen, SIGNAL(triggered()), this, SLOT(slotFileOpen()));
 // xxx  connect(_actionOpenRecent, SIGNAL(triggered()), this, SLOT(slotFileOpenRecent(const QUrl &));
@@ -425,8 +447,8 @@ void KstApp::initActions() {
 
   connect(_actionCopy, SIGNAL(triggered()), this, SLOT(slotCopy()));
   connect(_actionPaste, SIGNAL(triggered()), this, SLOT(slotPaste()));
-/* xxx
   connect(_actionReload, SIGNAL(triggered()), this, SLOT(reload()));
+/* xxx
   connect(_actionManagerData, SIGNAL(triggered()), _dataManager, SLOT(show_I()));
   connect(_actionManagerView, SIGNAL(triggered()), _viewManager, SLOT(show_I())); 
   connect(_actionNewVector, SIGNAL(triggered()), KstVectorDialog::globalInstance(), SLOT(show())); 
@@ -451,47 +473,21 @@ void KstApp::initActions() {
   connect(_actionSamplesFromEnd, SIGNAL(triggered()), this, SLOT(fromEnd()));
   connect(_actionPause, SIGNAL(toggled(bool)), this, SLOT(updatePausedState(bool)));
 
+  connect(_actionDataWizard, SIGNAL(triggered()), this, SLOT(showDataWizard()));
+  connect(_actionDialogChangeFile, SIGNAL(triggered()), this, SLOT(showChangeFile()));
+  connect(_actionDialogChooseColor, SIGNAL(triggered()), this, SLOT(showChooseColorDialog()));
+  connect(_actionDialogDifferentiateCurves, SIGNAL(triggered()), this, SLOT(showDifferentiateCurvesDialog()));
+  connect(_actionDialogChangeNpts, SIGNAL(triggered()), this, SLOT(showChangeNptsDialog()));
+
   connect(_actionStatusBar, SIGNAL(toggled(bool)), this, SLOT(slotViewStatusBar()));
   connect(_actionToolBar, SIGNAL(toggled(bool)), this, SLOT(slotViewToolBar()));
+
+  connect(_actionNewPlot, SIGNAL(triggered()), this, SLOT(newPlot()));
+  connect(_actionTiedZoom, SLOT(toggled(bool)), this, SLOT(tieAll());           
+  connect(groupZoom, SIGNAL(triggered()), this, SLOT(toggleMouseMode()));
+  connect(groupGfx, SIGNAL(triggered()), this, SLOT(toggleMouseMode())); 
 */
 /* xxx
-  fileKeyBindings = KStdAction::keyBindings(this, SLOT(slotConfigureKeys()), actionCollection());
-
-  fileKeyBindings->setWhatsThis(QObject::tr("Bring up a dialog box\n"
-                                     "to configure shortcuts."));
-
-  filePreferences = KStdAction::preferences(this, SLOT(slotPreferences()), actionCollection());
-  filePreferences->setWhatsThis(QObject::tr("Bring up a dialog box\n"
-                                     "to configure Kst settings."));
-
-  _actionZoomXY = new KRadioAction(QObject::tr("XY Mouse &Zoom"), "kst_zoomxy",
-                                  KShortcut(Key_F2),
-                                  this, SLOT(toggleMouseMode()),
-                                  actionCollection(), "zoomxy_action");
-  _actionZoomXY->setExclusiveGroup("gfx");
-  _actionZoomXY->setToolTip(QObject::tr("XY mouse zoom"));
-  _actionZoomXY->setWhatsThis(QObject::tr("XY zoom: mouse zooming affects\n"
-                                  "both X and Y axis"));
-  _actionZoomXY->setChecked(true);
-
-  _actionZoomX = new KRadioAction(QObject::tr("&X Mouse Zoom"), "kst_zoomx",
-                                 KShortcut(Key_F3),
-                                 this, SLOT(toggleMouseMode()),
-                                 actionCollection(), "zoomx_action");
-  _actionZoomX->setExclusiveGroup("gfx");
-  _actionZoomX->setToolTip(QObject::tr("X mouse zoom"));
-  _actionZoomX->setWhatsThis(QObject::tr("X zoom: Mouse zooming affects only the\n"
-                                 "X axis (CTRL-mouse also does this)"));
-
-  _actionZoomY = new KRadioAction(QObject::tr("&Y Mouse Zoom"), "kst_zoomy",
-                                  KShortcut(Key_F4),
-                                  this, SLOT(toggleMouseMode()),
-                                  actionCollection(), "zoomy_action");
-  _actionZoomX->setExclusiveGroup("gfx");
-  _actionZoomX->setToolTip(QObject::tr("Y mouse zoom"));
-  _actionZoomX->setWhatsThis(QObject::tr("Y zoom: Mouse zooming affects only the\n"
-                                 "Y axis (SHIFT-mouse also does this)"));
-
   _actionGfx = new KRadioAction(QObject::tr("&Graphics Mode"), "kst_graphics", 0,
                                 this, SLOT(toggleMouseMode()),
                                 actionCollection(), "graphics_action");
@@ -499,122 +495,17 @@ void KstApp::initActions() {
   _actionGfx->setToolTip(QObject::tr("Graphics Editor"));
   _actionGfx->setWhatsThis(QObject::tr("Use the mouse to create and edit graphics objects."));
 
-  _actionNewPlot = new QAction(QObject::tr("New Plot"), this);
-  _actionNewPlot->setStatusTip(QObject::tr("Create a new plot in the current window."));
-  connect(_actionNewPlot, SIGNAL(triggered()), this, SLOT(newPlot()));
+  fileKeyBindings = KStdAction::keyBindings(this, SLOT(slotConfigureKeys()), actionCollection());
 
-  _actionDialogChooseColor = new KAction(QObject::tr("Assign Curve &Color Per File..."),
-                                        "kst_choosecolor", 0, this,
-                                        SLOT(showChooseColorDialog()),
-                                        actionCollection(),
-                                        "choosecolordialog_action");
-  _actionDialogChooseColor->setWhatsThis(QObject::tr("Bring up a dialog box\n"
-                                             "to change curve colors\n"
-                                             "based on data file."));
+  fileKeyBindings->setWhatsThis(QObject::tr("Bring up a dialog box to configure shortcuts."));
 
-  _actionDialogDifferentiateCurves = new KAction(QObject::tr("&Differentiate Between Curves..."),
-                                        "kst_differentiatecurves", 0, this,
-                                        SLOT(showDifferentiateCurvesDialog()),
-                                        actionCollection(),
-                                        "differentiatecurves_action");
-  _actionDialogDifferentiateCurves->setWhatsThis(QObject::tr("Bring up a dialog box\n"
-                                             "to differentiate between curves."));
+  filePreferences = KStdAction::preferences(this, SLOT(slotPreferences()), actionCollection());
+  filePreferences->setWhatsThis(QObject::tr("Bring up a dialog box\n"
+                                     "to configure Kst settings."));
 
-  ChangeNptsDialogAction = new KAction(QObject::tr("Change Data Sample &Ranges..."),
-                                       "kst_changenpts", 0, this,
-                                       SLOT(showChangeNptsDialog()),
-                                       actionCollection(),
-                                       "changenptsdialog_action");
-  ChangeNptsDialogAction->setWhatsThis(QObject::tr("Bring up a dialog box\n"
-                                            "to change data sample ranges."));
 
-  _actionSamplesFromEnd->setToolTip(QObject::tr("Read from end"));
-  _actionSamplesFromEnd->setWhatsThis(QObject::tr("Read current data from end of file."));
+  connect(_actionManagerExtension, SIGNAL(triggered()), this, SLOT(showExtensionManager()));
 
-  _actionManagerExtension = new KAction(QObject::tr("&Extensions..."), 0, 0,
-                                 this, SLOT(showExtensionManager()),
-                                 actionCollection(), "extensionmanager_action");
-  _actionManagerExtension->setWhatsThis(QObject::tr("Bring up a dialog box\n"
-                                           "to manage extensions."));
-
-  _actionDataWizard = new KAction(QObject::tr("Data &Wizard"), "wizard", 
-                                 KShortcut(CTRL+ALT+Key_W),
-                                 this, SLOT(showDataWizard()),
-                                 actionCollection(), "datawizard_action");
-  _actionDataWizard->setWhatsThis(QObject::tr("Bring up a wizard\n"
-                                           "to easily load data."));
-
-  _actionTiedZoom = new KAction(QObject::tr("&Tied Zoom"),"kst_zoomtie", 0,
-                               this, SLOT(tieAll()),
-                               actionCollection(), "zoomtie_action");
-  _actionTiedZoom->setToolTip(QObject::tr("Enable tied zoom"));
-  _actionTiedZoom->setWhatsThis(QObject::tr("Apply zoom actions to all plots\n"
-                                     "(not just the active one)."));
-
-  _actionGfxRectangle = new KRadioAction(QObject::tr("&Box"), "kst_gfx_rectangle", 
-                                  KShortcut(Key_F8),
-                                  this, SLOT(toggleMouseMode()),
-                                  actionCollection(), "rectangle_action");
-  _actionGfxRectangle->setExclusiveGroup("gfx");
-  _actionGfxRectangle->setToolTip(QObject::tr("Draw box"));
-  _actionGfxRectangle->setWhatsThis(QObject::tr("Draw box"));
-
-  __actionGfxEllipse = new KRadioAction(QObject::tr("&Ellipse"), "kst_gfx_ellipse",
-                                  KShortcut(Key_F9),
-                                  this, SLOT(toggleMouseMode()),
-                                  actionCollection(), "ellipse_action");
-  __actionGfxEllipse->setExclusiveGroup("gfx");
-  __actionGfxEllipse->setToolTip(QObject::tr("Draw ellipse"));
-  __actionGfxEllipse->setWhatsThis(QObject::tr("Draw ellipse"));
-
-  _actionGfxPicture = new KRadioAction(QObject::tr("&Picture"), "kst_gfx_picture",
-                                   KShortcut(Key_F12),
-                                   this, SLOT(toggleMouseMode()),
-                                   actionCollection(), "picture_action");
-  _actionGfxPicture->setExclusiveGroup("gfx");
-  _actionGfxPicture->setToolTip(QObject::tr("Insert picture"));
-  _actionGfxPicture->setWhatsThis(QObject::tr("Insert picture"));
-
-  _actionGfx2DPlot = new KRadioAction(QObject::tr("&Plot"), "kst_newplot",
-                                   KShortcut(CTRL+Key_2),
-                                   this, SLOT(toggleMouseMode()),
-                                   actionCollection(), "2dplot_action");
-  _actionGfx2DPlot->setExclusiveGroup("gfx");
-  _actionGfx2DPlot->setToolTip(QObject::tr("Insert Plot"));
-  _actionGfx2DPlot->setWhatsThis(QObject::tr("Insert Plot"));
-
-  _actionGfxArrow = new KRadioAction(QObject::tr("&Arrow"), "kst_gfx_arrow",
-                                   KShortcut(Key_F11),
-                                   this, SLOT(toggleMouseMode()),
-                                   actionCollection(), "arrow_action");
-  _actionGfxArrow->setExclusiveGroup("gfx");
-  _actionGfxArrow->setToolTip(QObject::tr("Draw arrow"));
-  _actionGfxArrow->setWhatsThis(QObject::tr("Draw arrow"));
-
-  _actionGfxLegend = new KRadioAction(QObject::tr("&Legend"), "kst_gfx_legend",
-                                   KShortcut(CTRL+Key_3),
-                                   this, SLOT(toggleMouseMode()),
-                                   actionCollection(), "legend_action");
-  _actionGfxLegend->setExclusiveGroup("gfx");
-  _actionGfxLegend->setToolTip(QObject::tr("Insert Legend"));
-  _actionGfxLegend->setWhatsThis(QObject::tr("Insert Legend"));
-
-  _actionGfxLine = new KRadioAction(QObject::tr("&Line"), "kst_gfx_line",
-                                   KShortcut(Key_F10),
-                                   this, SLOT(toggleMouseMode()),
-                                   actionCollection(), "line_action");
-  _actionGfxLine->setExclusiveGroup("gfx");
-  _actionGfxLine->setToolTip(QObject::tr("Draw line"));
-  _actionGfxLine->setWhatsThis(QObject::tr("Draw line"));
-  _actionGfxLine->setChecked(true);
-
-  _actionGfxLabel = new KRadioAction(QObject::tr("L&abel"), "text",
-                                   KShortcut(Key_F7),
-                                   this, SLOT(toggleMouseMode()),
-                                   actionCollection(), "label_action");
-  _actionGfxLabel->setExclusiveGroup("gfx");
-  _actionGfxLabel->setToolTip(QObject::tr("Draw label"));
-  _actionGfxLabel->setWhatsThis(QObject::tr("Draw label"));
 
   _actionLayout = new KRadioAction(QObject::tr("Layout Mode"), "kst_layoutmode",
                                    KShortcut(Key_F6),

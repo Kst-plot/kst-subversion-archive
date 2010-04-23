@@ -485,6 +485,15 @@
    <property name="text">
     <string>Data &amp;Wizard</string>
    </property>
+   <property name="statusTip">
+    <string>Bring up a wizard to easily load data.</string>
+   </property>
+   <property name="whatsThis">
+    <string>Bring up a wizard to easily load data.</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Alt+W</string>
+   </property>
   </action>
   <action name="_actionDialogChangeFile">
    <property name="text">
@@ -501,83 +510,281 @@
    <property name="text">
     <string>Change Data Sample &amp;Ranges...</string>
    </property>
+   <property name="statusTip">
+    <string>Bring up a dialog box to change data sample ranges.</string>
+   </property>
+   <property name="whatsThis">
+    <string>Bring up a dialog box to change data sample ranges.</string>
+   </property>
   </action>
   <action name="_actionDialogChooseColor">
    <property name="text">
     <string>Assign Curve &amp;Color Per File...</string>
+   </property>
+   <property name="statusTip">
+    <string>Bring up a dialog box to change curve colors based on data file.</string>
+   </property>
+   <property name="whatsThis">
+    <string>Bring up a dialog box to change curve colors based on data file.</string>
    </property>
   </action>
   <action name="_actionDialogDifferentiateCurves">
    <property name="text">
     <string>&amp;Differentiate Between Curves...</string>
    </property>
+   <property name="statusTip">
+    <string>Bring up a dialog box to differentiate between curves.</string>
+   </property>
+   <property name="whatsThis">
+    <string>Bring up a dialog box to differentiate between curves.</string>
+   </property>
   </action>
   <action name="_actionNewPlot">
    <property name="text">
     <string>New Plot</string>
    </property>
+   <property name="statusTip">
+    <string>Create a new plot in the current window.</string>
+   </property>
+   <property name="whatsThis">
+    <string>Create a new plot in the current window.</string>
+   </property>
   </action>
   <action name="_actionTiedZoom">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>&amp;Tied Zoom</string>
+   </property>
+   <property name="toolTip">
+    <string>Enable tied zoom</string>
+   </property>
+   <property name="statusTip">
+    <string>Apply zoom actions to all plots (not just the active one).</string>
+   </property>
+   <property name="whatsThis">
+    <string>Apply zoom actions to all plots (not just the active one).</string>
    </property>
   </action>
   <action name="_actionZoomXY">
    <property name="checkable">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="text">
     <string>XY Mouse &amp;Zoom</string>
    </property>
+   <property name="toolTip">
+    <string>XY mouse zoom</string>
+   </property>
+   <property name="statusTip">
+    <string>XY zoom: mouse zooming affects both X and Y axis.</string>
+   </property>
+   <property name="whatsThis">
+    <string>XY zoom: mouse zooming affects both X and Y axis.</string>
+   </property>
+   <property name="shortcut">
+    <string>F2</string>
+   </property>
   </action>
   <action name="_actionZoomX">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>&amp;X Mouse Zoom</string>
    </property>
+   <property name="toolTip">
+    <string>X mouse zoom</string>
+   </property>
+   <property name="statusTip">
+    <string>X zoom: Mouse zooming affects only the X axis.</string>
+   </property>
+   <property name="whatsThis">
+    <string>X zoom: Mouse zooming affects only the X axis.</string>
+   </property>
+   <property name="shortcut">
+    <string>F3</string>
+   </property>
   </action>
   <action name="_actionZoomY">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>&amp;Y Mouse Zoom</string>
    </property>
+   <property name="toolTip">
+    <string>Y mouse zoom</string>
+   </property>
+   <property name="statusTip">
+    <string>Y zoom: Mouse zooming affects only the Y axis.</string>
+   </property>
+   <property name="whatsThis">
+    <string>Y zoom: Mouse zooming affects only the Y axis.</string>
+   </property>
+   <property name="shortcut">
+    <string>F4</string>
+   </property>
   </action>
   <action name="_actionGfxLabel">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>L&amp;abel</string>
    </property>
+   <property name="toolTip">
+    <string>Draw label</string>
+   </property>
+   <property name="statusTip">
+    <string>Draw label</string>
+   </property>
+   <property name="whatsThis">
+    <string>Draw label</string>
+   </property>
+   <property name="shortcut">
+    <string>F7</string>
+   </property>
   </action>
   <action name="_actionGfxRectangle">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>&amp;Box</string>
    </property>
+   <property name="toolTip">
+    <string>Draw box</string>
+   </property>
+   <property name="statusTip">
+    <string>Draw box</string>
+   </property>
+   <property name="whatsThis">
+    <string>Draw box</string>
+   </property>
+   <property name="shortcut">
+    <string>F8</string>
+   </property>
   </action>
   <action name="_actionGfxEllipse">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>&amp;Ellipse</string>
    </property>
+   <property name="toolTip">
+    <string>Draw ellipse</string>
+   </property>
+   <property name="statusTip">
+    <string>Draw ellipse</string>
+   </property>
+   <property name="whatsThis">
+    <string>Draw ellipse</string>
+   </property>
+   <property name="shortcut">
+    <string>F9</string>
+   </property>
   </action>
   <action name="_actionGfxLine">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>&amp;Line</string>
    </property>
+   <property name="toolTip">
+    <string>Draw line</string>
+   </property>
+   <property name="statusTip">
+    <string>Draw line</string>
+   </property>
+   <property name="whatsThis">
+    <string>Draw line</string>
+   </property>
+   <property name="shortcut">
+    <string>F10</string>
+   </property>
   </action>
   <action name="_actionGfxArrow">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>&amp;Arrow</string>
    </property>
+   <property name="toolTip">
+    <string>Draw arrow</string>
+   </property>
+   <property name="statusTip">
+    <string>Draw arrow</string>
+   </property>
+   <property name="whatsThis">
+    <string>Draw arrow</string>
+   </property>
+   <property name="shortcut">
+    <string>F11</string>
+   </property>
   </action>
   <action name="_actionGfxPicture">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>&amp;Picture</string>
    </property>
+   <property name="toolTip">
+    <string>Insert picture</string>
+   </property>
+   <property name="statusTip">
+    <string>Insert picture</string>
+   </property>
+   <property name="whatsThis">
+    <string>Insert picture</string>
+   </property>
+   <property name="shortcut">
+    <string>F12</string>
+   </property>
   </action>
   <action name="_actionGfx2DPlot">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>&amp;Plot</string>
    </property>
+   <property name="toolTip">
+    <string>Insert Plot</string>
+   </property>
+   <property name="statusTip">
+    <string>Insert Plot</string>
+   </property>
+   <property name="whatsThis">
+    <string>Insert Plot</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+2</string>
+   </property>
   </action>
   <action name="_actionGfxLegend">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>&amp;Legend</string>
+   </property>
+   <property name="toolTip">
+    <string>Insert Legend</string>
+   </property>
+   <property name="statusTip">
+    <string>Insert Legend</string>
+   </property>
+   <property name="whatsThis">
+    <string>Insert Legend</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+3</string>
    </property>
   </action>
   <action name="_actionDataMode">
@@ -600,6 +807,12 @@
   <action name="_actionManagerExtension">
    <property name="text">
     <string>&amp;Extensions...</string>
+   </property>
+   <property name="statusTip">
+    <string>Bring up a dialog box to manage extensions.</string>
+   </property>
+   <property name="whatsThis">
+    <string>Bring up a dialog box to manage extensions.</string>
    </property>
   </action>
   <action name="_actionDialogDebug">

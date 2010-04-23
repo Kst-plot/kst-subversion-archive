@@ -163,6 +163,7 @@ class KST_EXPORT KstApp : public QMainWindow, private Ui_MainWindow {
 
     void saveOptions();
     void readOptions();
+    void initDialogs();
     void initActions();
     void initStatusBar();
     void initToolBar();
