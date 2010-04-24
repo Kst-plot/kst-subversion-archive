@@ -318,12 +318,13 @@ class KST_EXPORT KstApp : public QMainWindow, private Ui_MainWindow {
     StatusLabel *_readyBar;
     StatusLabel *_memoryBar;
     StatusLabel *_dataBar;
+    QActionGroup *_actionGroupMouse;
+    QToolButton *_mouseToolBarMenu;
+    QMenu *_mouseModeMenu;
     QProgressBar *_progressBar;
     QToolBar *_toolBar;
     QMenuBar *_menuBar;
     QMdiArea *_mdiArea;
-		QToolButton *_layoutToolBarMenu, *_mouseToolBarMenu;
-		QMenu *mouseModeMenu;
 
 // xxx    KstIfaceImpl *_dcopIface;
     UpdateThread *_updateThread;

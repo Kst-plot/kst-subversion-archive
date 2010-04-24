@@ -1,3 +1,4 @@
+
 /***************************************************************************
                           kst.cpp  -  description
                              -------------------
@@ -17,12 +18,13 @@
 
 #include <QClipboard>
 #include <QDateTime>
+#include <QDesktopWidget>
 #include <QEvent>
 #include <QEventLoop>
 #include <QFileDialog>
 #include <QInputDialog>
-#include <QMessageBox>
 #include <QMenu>
+#include <QMessageBox>
 #include <QPrinter>
 #include <QPrintDialog> 
 #include <QProgressBar>
@@ -128,10 +130,6 @@ KstApp::KstApp(QWidget *parent, const char *name) : QMainWindow(parent) {
   _menuBar = 0L;
   _updateThread = 0L;
 
-	_layoutToolBarMenu = new QToolButton(this);
-	_mouseToolBarMenu = new QToolButton(this);
-	mouseModeMenu = new QMenu(this);
-
   //
   // create the mdi area...
   //
@@ -164,10 +162,8 @@ KstApp::KstApp(QWidget *parent, const char *name) : QMainWindow(parent) {
 // xxx  setWindowTitle(_doc->title());
 
 // xxx  readOptions();
-/* xxx
-  _actionZoomXY->setChecked(true);
-  toggleMouseMode();
-*/
+// xxx  toggleMouseMode();
+
 /* xxx
   _updateThread = new UpdateThread(_doc);
   _updateThread->setUpdateTime(KstSettings::globalSettings()->plotUpdateTimer);
@@ -198,7 +194,7 @@ KstApp::KstApp(QWidget *parent, const char *name) : QMainWindow(parent) {
 // xxx  setAutoSaveSettings("KST-KMainWindow", true);
 // xxx  _dcopIface = new KstIfaceImpl(_doc, this);
 
-  connect(this, SIGNAL(settingsChanged()), this, SLOT(slotSettingsChanged()));
+// xxx  connect(this, SIGNAL(settingsChanged()), this, SLOT(slotSettingsChanged()));
 
 // xxx  QTimer::singleShot(0, this, SLOT(updateActions()));
 
@@ -318,67 +314,86 @@ void KstApp::initStatusBar() {
 
 void KstApp::initToolBar() {
   _toolBar = addToolBar(QObject::tr("Kst\n"));
-	_toolBar->addAction(_actionOpen);
-	_toolBar->addAction(_actionSave);
-	_toolBar->addAction(_actionPrint);
-	_toolBar->addSeparator();
 
-	_toolBar->addAction(_actionCopy);
-	_toolBar->addAction(_actionPaste);
-	_toolBar->addSeparator();
+  if (_toolBar) {
+	  _toolBar->addAction(_actionOpen);
+	  _toolBar->addAction(_actionSave);
+	  _toolBar->addAction(_actionPrint);
+	  _toolBar->addSeparator();
+  
+	  _toolBar->addAction(_actionCopy);
+	  _toolBar->addAction(_actionPaste);
+	  _toolBar->addSeparator();
+  
+	  _toolBar->addAction(_actionReload);
+	  _toolBar->addSeparator();
+  
+	  _toolBar->addAction(_actionDialogGraphFile);
+	  _toolBar->addSeparator();
+  
+	  _toolBar->addAction(_actionDataWizard);
+	  _toolBar->addAction(_actionManagerData);
+	  _toolBar->addAction(_actionManagerView);
+	  _toolBar->addAction(_actionDialogChangeFile);
+	  _toolBar->addAction(_actionDialogChangeNpts);
+	  _toolBar->addSeparator();
+  
+	  _toolBar->addAction(_actionSamplesDown);
+	  _toolBar->addAction(_actionSamplesUp);
+	  _toolBar->addAction(_actionPause);
+	  _toolBar->addAction(_actionSamplesFromEnd); 
+	  _toolBar->addSeparator();
+  
+	  _toolBar->addAction(_actionTiedZoom);
+	  _toolBar->addAction(_actionDataMode);
 
-	_toolBar->addAction(_actionReload);
-	_toolBar->addSeparator();
+    _mouseModeMenu = new QMenu(this);
+    if (_mouseModeMenu) {
+      _mouseModeMenu->addAction(_actionZoomXY);
+      _mouseModeMenu->addAction(_actionZoomX);
+      _mouseModeMenu->addAction(_actionZoomY);
+      _mouseModeMenu->addSeparator();
+      _mouseModeMenu->addAction(_actionLayout);
+      _mouseModeMenu->addSeparator();
+      _mouseModeMenu->addAction(_actionGfxLabel);
+      _mouseModeMenu->addAction(_actionGfxRectangle);
+      _mouseModeMenu->addAction(_actionGfxEllipse);
+      _mouseModeMenu->addAction(_actionGfxLine);
+      _mouseModeMenu->addAction(_actionGfxArrow);
+      _mouseModeMenu->addAction(_actionGfxPicture);
+      _mouseModeMenu->addAction(_actionGfx2DPlot);
+      _mouseModeMenu->addAction(_actionGfxLegend);
+    
+      _mouseToolBarMenu = new QToolButton(this);
+      if (_mouseToolBarMenu) {
+        _mouseToolBarMenu->setMenu(_mouseModeMenu);
+        _mouseToolBarMenu->setPopupMode(QToolButton::InstantPopup);
+        _mouseToolBarMenu->setIcon(QIcon((":/kst_zoomxy.png")));
 
-	_toolBar->addAction(_actionDialogGraphFile);
-	_toolBar->addSeparator();
-
-	_toolBar->addAction(_actionDataWizard);
-	_toolBar->addAction(_actionManagerData);
-	_toolBar->addAction(_actionManagerView);
-	_toolBar->addAction(_actionDialogChangeFile);
-	_toolBar->addAction(_actionDialogChangeNpts);
-	_toolBar->addSeparator();
-
-	_toolBar->addAction(_actionSamplesDown);
-	_toolBar->addAction(_actionSamplesUp);
-	_toolBar->addAction(_actionPause);
-	_toolBar->addAction(_actionSamplesFromEnd); 
-	_toolBar->addSeparator();
-
-	_toolBar->addAction(_actionTiedZoom);
-	_toolBar->addAction(_actionDataMode);
-
-	_mouseToolBarMenu->setMenu(mouseModeMenu);
-	_mouseToolBarMenu->setPopupMode(QToolButton::InstantPopup);
-	_toolBar->addWidget(_mouseToolBarMenu);
-
-	_layoutToolBarMenu->setMenu(_menuLayoutMode);
-	_layoutToolBarMenu->setPopupMode(QToolButton::InstantPopup);
-	_toolBar->addWidget(_layoutToolBarMenu);
+        _toolBar->addWidget(_mouseToolBarMenu);
+      }
+    }
+  }
 }
 
 
 void KstApp::initMenuBar() {
-}
+  _actionGroupMouse = new QActionGroup(this);
 
+  _actionGroupMouse->addAction(_actionZoomX);
+  _actionGroupMouse->addAction(_actionZoomY);
+  _actionGroupMouse->addAction(_actionZoomXY);
+  _actionGroupMouse->addAction(_actionLayout);
+  _actionGroupMouse->addAction(_actionGfxArrow);
+  _actionGroupMouse->addAction(_actionGfxRectangle);
+  _actionGroupMouse->addAction(_actionGfxEllipse);
+  _actionGroupMouse->addAction(_actionGfxLine);
+  _actionGroupMouse->addAction(_actionGfxLabel);
+  _actionGroupMouse->addAction(_actionGfxPicture);
+  _actionGroupMouse->addAction(_actionGfx2DPlot);
+  _actionGroupMouse->addAction(_actionGfxLegend);
 
-void KstApp::initActions() {
-  QActionGroup *groupZoom = new QActionGroup(this);
-  QActionGroup *groupGfx = new QActionGroup(this);
-
-  groupZoom->addAction(_actionZoomX);
-  groupZoom->addAction(_actionZoomY);
-  groupZoom->addAction(_actionZoomXY);
-
-  groupGfx->addAction(_actionGfxArrow);
-  groupGfx->addAction(_actionGfxRectangle);
-  groupGfx->addAction(_actionGfxEllipse);
-  groupGfx->addAction(_actionGfxLine);
-  groupGfx->addAction(_actionGfxLabel);
-  groupGfx->addAction(_actionGfxPicture);
-  groupGfx->addAction(_actionGfx2DPlot);
-  groupGfx->addAction(_actionGfxLegend);
+  _actionZoomXY->setChecked(true);
 
   //
   // define the standard icons...
@@ -397,46 +412,51 @@ void KstApp::initActions() {
   // define the non-standard icons...
   //
 
-	_actionReload->setIcon(QIcon((":/kst_reload.png")));
-	_actionCopy->setIcon(QIcon((":/kst_copy.png")));
-	_actionPaste->setIcon(QIcon((":/kst_paste.png")));
-	_actionPrint->setIcon(QIcon((":/kst_print.png")));
-	_actionDialogGraphFile->setIcon(QIcon((":/kst_graphfile.png")));
+  _actionReload->setIcon(QIcon((":/kst_reload.png")));
+  _actionCopy->setIcon(QIcon((":/kst_copy.png")));
+  _actionPaste->setIcon(QIcon((":/kst_paste.png")));
+  _actionPrint->setIcon(QIcon((":/kst_print.png")));
+  _actionDialogGraphFile->setIcon(QIcon((":/kst_graphfile.png")));
 
   _actionNewPlot->setIcon(QIcon((":/kst_newplot.png")));
   _actionZoomX->setIcon(QIcon((":/kst_zoomx.png")));
   _actionZoomY->setIcon(QIcon((":/kst_zoomy.png")));
   _actionZoomXY->setIcon(QIcon((":/kst_zoomxy.png")));
-	_actionTiedZoom->setIcon(QIcon((":/kst_zoomtie.png")));
-	_actionDataMode->setIcon(QIcon((":/kst_datamode.png")));
-	_layoutToolBarMenu->setIcon(QIcon((":/kst_layoutmode.png")));
-	_mouseToolBarMenu->setIcon(QIcon((":/kst_zoomxy.png")));
+  _actionLayout->setIcon(QIcon((":/kst_layoutmode.png")));
+  _actionTiedZoom->setIcon(QIcon((":/kst_zoomtie.png")));
+  _actionDataMode->setIcon(QIcon((":/kst_datamode.png")));
 
   _actionGfxArrow->setIcon(QIcon((":/kst_gfx_arrow.png")));
-	_actionGfxRectangle->setIcon(QIcon((":/kst_gfx_rectangle.png")));
-	_actionGfxEllipse->setIcon(QIcon((":/kst_gfx_ellipse.png")));
-	_actionGfxLine->setIcon(QIcon((":/kst_gfx_line.png")));
-	_actionGfxLabel->setIcon(QIcon((":/kst_gfx_label.png")));
-	_actionGfxPicture->setIcon(QIcon((":/kst_gfx_picture.png")));
+  _actionGfxRectangle->setIcon(QIcon((":/kst_gfx_rectangle.png")));
+  _actionGfxEllipse->setIcon(QIcon((":/kst_gfx_ellipse.png")));
+  _actionGfxLine->setIcon(QIcon((":/kst_gfx_line.png")));
+  _actionGfxLabel->setIcon(QIcon((":/kst_gfx_label.png")));
+  _actionGfxPicture->setIcon(QIcon((":/kst_gfx_picture.png")));
   _actionGfx2DPlot->setIcon(QIcon((":/kst_newplot.png")));
+  _actionGfxLegend->setIcon(QIcon((":/kst_gfx_legend.png")));
 
-	_actionNewVector->setIcon(QIcon((":/kst_vectornew.png")));
-	_actionNewCurve->setIcon(QIcon((":/kst_curvenew.png")));
-	_actionNewEquation->setIcon(QIcon((":/kst_equationnew.png")));
-	_actionNewHistogram->setIcon(QIcon((":/kst_histogramnew.png")));
+  _actionNewVector->setIcon(QIcon((":/kst_vectornew.png")));
+  _actionNewCurve->setIcon(QIcon((":/kst_curvenew.png")));
+  _actionNewEquation->setIcon(QIcon((":/kst_equationnew.png")));
+  _actionNewHistogram->setIcon(QIcon((":/kst_histogramnew.png")));
   _actionNewSpectrum->setIcon(QIcon((":/kst_psdnew.png")));
-	_actionNewPlugin->setIcon(QIcon((":/kst_pluginnew.png")));
-	_actionNewEventMonitor->setIcon(QIcon((":/kst_eventnew.png")));
-	_actionNewMatrix->setIcon(QIcon((":/kst_matrixnew.png")));
-	_actionNewImage->setIcon(QIcon((":/kst_imagenew.png")));
+  _actionNewPlugin->setIcon(QIcon((":/kst_pluginnew.png")));
+  _actionNewEventMonitor->setIcon(QIcon((":/kst_eventnew.png")));
+  _actionNewMatrix->setIcon(QIcon((":/kst_matrixnew.png")));
+  _actionNewImage->setIcon(QIcon((":/kst_imagenew.png")));
   _actionNewSpectrogram->setIcon(QIcon((":/kst_csdnew.png")));
 
-	_actionDataWizard->setIcon(QIcon((":/kst_datawizard.png")));
-	_actionManagerData->setIcon(QIcon((":/kst_datamanager.png")));
-	_actionManagerView->setIcon(QIcon((":/kst_viewmanager.png")));
-	_actionDialogChangeFile->setIcon(QIcon((":/kst_changefile.png")));
-	_actionDialogChangeNpts->setIcon(QIcon((":/kst_changenpts.png")));
+  _actionDataWizard->setIcon(QIcon((":/kst_datawizard.png")));
+  _actionManagerData->setIcon(QIcon((":/kst_datamanager.png")));
+  _actionManagerView->setIcon(QIcon((":/kst_viewmanager.png")));
+  _actionDialogChangeFile->setIcon(QIcon((":/kst_changefile.png")));
+  _actionDialogChangeNpts->setIcon(QIcon((":/kst_changenpts.png")));
+  _actionDialogDifferentiateCurves->setIcon(QIcon((":/kst_differentiatecurves.png")));
+  _actionDialogChooseColor->setIcon(QIcon((":/kst_choosecolor.png")));
+}
 
+
+void KstApp::initActions() {
   //
   // setup the connections...
   //
@@ -467,7 +487,7 @@ void KstApp::initActions() {
   connect(_actionNewMatrix, SIGNAL(triggered()), KstMatrixDialog::globalInstance(), SLOT(show()));
   connect(_actionNewImage, SIGNAL(triggered()), KstImageDialog::globalInstance(), SLOT(show()));
   connect(_actionNewSpectrogram, SIGNAL(triggered()), KstCsdDialog::globalInstance(), SLOT(show()));
-
+*/
   connect(_actionViewScalars, SIGNAL(triggered()), this, SLOT(showViewScalarsDialog()));
   connect(_actionViewVectors, SIGNAL(triggered()), this, SLOT(showViewVectorsDialog()));
   connect(_actionViewMatrices, SIGNAL(triggered()), this, SLOT(showViewMatricesDialog()));
@@ -485,53 +505,22 @@ void KstApp::initActions() {
   connect(_actionDialogDifferentiateCurves, SIGNAL(triggered()), this, SLOT(showDifferentiateCurvesDialog()));
   connect(_actionDialogChangeNpts, SIGNAL(triggered()), this, SLOT(showChangeNptsDialog()));
 
+  connect(_actionManagerExtension, SIGNAL(triggered()), this, SLOT(showExtensionManager()));
   connect(_actionStatusBar, SIGNAL(toggled(bool)), this, SLOT(slotViewStatusBar()));
   connect(_actionToolBar, SIGNAL(toggled(bool)), this, SLOT(slotViewToolBar()));
 
   connect(_actionNewPlot, SIGNAL(triggered()), this, SLOT(newPlot()));
-  connect(_actionTiedZoom, SLOT(toggled(bool)), this, SLOT(tieAll());           
-  connect(groupZoom, SIGNAL(triggered()), this, SLOT(toggleMouseMode()));
-  connect(groupGfx, SIGNAL(triggered()), this, SLOT(toggleMouseMode())); 
-*/
-/* xxx
-  _actionGfx = new KRadioAction(QObject::tr("&Graphics Mode"), "kst_graphics", 0,
-                                this, SLOT(toggleMouseMode()),
-                                actionCollection(), "graphics_action");
-  _actionGfx->setExclusiveGroup("zoom");
-  _actionGfx->setToolTip(QObject::tr("Graphics Editor"));
-  _actionGfx->setWhatsThis(QObject::tr("Use the mouse to create and edit graphics objects."));
+  connect(_actionTiedZoom, SLOT(toggled(bool)), this, SLOT(tieAll()));
+  connect(_actionGroupMouse, SIGNAL(triggered()), this, SLOT(toggleMouseMode()));
+// xxx  connect(_actionDataMode, SIGNAL(toggled(bool)), this SLOT(toggleDataMode()));
 
+/* xxx
   fileKeyBindings = KStdAction::keyBindings(this, SLOT(slotConfigureKeys()), actionCollection());
 
   fileKeyBindings->setWhatsThis(QObject::tr("Bring up a dialog box to configure shortcuts."));
 
   filePreferences = KStdAction::preferences(this, SLOT(slotPreferences()), actionCollection());
-  filePreferences->setWhatsThis(QObject::tr("Bring up a dialog box\n"
-                                     "to configure Kst settings."));
-
-
-  connect(_actionManagerExtension, SIGNAL(triggered()), this, SLOT(showExtensionManager()));
-
-
-  _actionLayout = new KRadioAction(QObject::tr("Layout Mode"), "kst_layoutmode",
-                                   KShortcut(Key_F6),
-                                   this, SLOT(toggleMouseMode()),
-                                   actionCollection(), "layoutmode_action");
-  _actionLayout->setExclusiveGroup("gfx");
-  _actionLayout->setToolTip(QObject::tr("Layout mode"));
-  _actionLayout->setWhatsThis(QObject::tr("Use this mode to move, resize, and group plots."));
-*/
-
-  // this is the mouse mode menu
-  mouseModeMenu->addAction(_actionZoomXY);
-  mouseModeMenu->addAction(_actionZoomX);
-  mouseModeMenu->addAction(_actionZoomY);
-
-/* xxx
-  toolBar()->insertButton("thumbnail", MODE_BUTTON_ID, mouseModeMenu, true, QObject::tr("Select the desired mode"));
-  toggleMouseMode();
-
-  createGUI(0L);
+  filePreferences->setWhatsThis(QObject::tr("Bring up a dialog box to configure Kst settings."));
 */
 }
 
@@ -552,7 +541,9 @@ void KstApp::delayedDocInit() {
 
 QSize KstApp::sizeHint() const {
   QSize size;
-  QRect rect; // xxx ( KGlobalSettings::desktopGeometry(KstApp::inst()) );
+  QRect rect;
+
+  rect = QApplication::desktop()->geometry();
 
   size.setWidth(3*rect.width()/4);
   size.setHeight(3*rect.height()/4);
@@ -735,40 +726,45 @@ void KstApp::togglePaused() {
 
 
 KstApp::KstZoomType KstApp::getZoomRadio() {
-  if (_actionZoomX->isChecked()) {
+  if (_actionZoomXY->isChecked()) {
+    return XYZOOM;
+  } else if (_actionZoomX->isChecked()) {
     return XZOOM;
   } else if (_actionZoomY->isChecked()) {
     return YZOOM;
-/* xxx
   } else if (_actionLayout->isChecked()) {
     return LAYOUT;
-  } else if (_actionGfx->isChecked()) {
-    return GRAPHICS;
-*/
   } else {
-    return XYZOOM;
+    return GRAPHICS;
   }
 }
 
 
 void KstApp::selectDataPlugin() {
-  QStringList l;
-
-  // the KstDataObject plugins...
-  QStringList dataObjectPlugins;
   const KstPluginInfoList pluginInfo = KstDataObject::pluginInfoList();
+  const QMap<QString,QString> readable = PluginCollection::self()->readableNameList();
+  QStringList l;
+  QStringList dataObjectPlugins;
+  QStringList cPlugins;
+
+  //
+  // the KstDataObject plugins...
+  //
+ 
   {
-    KstPluginInfoList::ConstIterator it = pluginInfo.begin();
-    for (; it != pluginInfo.end(); ++it) {
+    KstPluginInfoList::const_iterator it;
+
+    for (it = pluginInfo.begin(); it != pluginInfo.end(); ++it) {
       dataObjectPlugins << it.key();
     }
   }
 
   l += dataObjectPlugins;
 
+  //
   // the C-style plugins...
-  QStringList cPlugins;
-  const QMap<QString,QString> readable = PluginCollection::self()->readableNameList();
+  //
+
   {
     QMap<QString,QString>::const_iterator it = readable.begin();
     for (; it != readable.end(); ++it) {
@@ -936,7 +932,6 @@ void KstApp::readOptions() {
   KST::objectDefaults.readConfig(_config);
 
   _config->endGroup();
-// xxx  switchToTabPageMode();
 }
 
 
@@ -967,16 +962,14 @@ void KstApp::saveProperties(QSettings *config) {
 void KstApp::readProperties(QSettings* config) {
   QString name = config->value("Document").toString();
 
-  if (name.isEmpty()) {
-    return;
-  }
-
-  if (config->value("NamedDocument", false).toBool()) {
-    _doc->openDocument(name);
-  } else {
-    _doc->openDocument(name);
-    QFile::remove(name);
-    _doc->setTitle("Untitled");
+  if (!name.isEmpty()) {
+    if (config->value("NamedDocument", false).toBool()) {
+      _doc->openDocument(name);
+    } else {
+      _doc->openDocument(name);
+      QFile::remove(name);
+      _doc->setTitle("Untitled");
+    }
   }
 }
 
@@ -1036,6 +1029,7 @@ void KstApp::slotFileOpen() {
 
 bool KstApp::slotFileOpenRecent(const QUrl& newfile) {
   bool returnVal = false;
+
   slotUpdateStatusMsg(QObject::tr("Opening file..."));
 
   if (_doc->saveModified()) {
@@ -1177,10 +1171,10 @@ void KstApp::immediatePrintActiveWindowToPng(const QString& filename, const QStr
 
 
 void KstApp::immediatePrintWindowToEps(QMdiSubWindow *window, const QString& filename, int width, int height, int display) {
-  KstViewWindow *view;
+  KstViewWindow *viewWindow;
 
-  view = dynamic_cast<KstViewWindow*>(window);
-  if (view && !view->view()->children().isEmpty()) {
+  viewWindow = dynamic_cast<KstViewWindow*>(window);
+  if (viewWindow && !viewWindow->view()->children().isEmpty()) {
     QSize size;
 
     if (display == 0) {
@@ -1190,18 +1184,18 @@ void KstApp::immediatePrintWindowToEps(QMdiSubWindow *window, const QString& fil
       size.setWidth(width);
       size.setHeight(width);
     } else if (display == 2) {
-      QSize sizeWindow(view->geometry().size());
+      QSize sizeWindow(viewWindow->geometry().size());
 
       size.setWidth(width);
       size.setHeight((int)((double)width * (double)sizeWindow.height() / (double)sizeWindow.width()));
     } else {
-      QSize sizeWindow(view->geometry().size());
+      QSize sizeWindow(viewWindow->geometry().size());
 
       size.setHeight(height);
       size.setWidth((int)((double)height * (double)sizeWindow.width() / (double)sizeWindow.height()));
     }
 
-    view->immediatePrintToEps(filename, size);
+    viewWindow->immediatePrintToEps(filename, size);
   }
 }
 
@@ -1703,11 +1697,9 @@ void KstApp::toggleMouseMode() {
     action = _actionGfxLegend;
     mode = KstTopLevelView::CreateMode;
     createType = "Legend";
-/* xxx
   } else if (_actionLayout->isChecked()) {
     action = _actionLayout;
     mode = KstTopLevelView::LayoutMode;
-*/
   } else if (_actionZoomXY->isChecked()) {
     action = _actionZoomXY;
     mode = KstTopLevelView::DisplayMode;
@@ -1728,14 +1720,10 @@ void KstApp::toggleMouseMode() {
   }
 
   if (action) {
-/* xxx
-    KToolBarButton* button = toolBar()->getButton(MODE_BUTTON_ID);
-
-    if (button) {
-      button->setText(action->toolTip());
-      button->setIcon(action->icon());
+    if (_mouseToolBarMenu) {
+      _mouseToolBarMenu->setText(action->toolTip());
+      _mouseToolBarMenu->setIcon(action->icon());
     }
-*/
   }
 
   QList<QMdiSubWindow*> windows;

@@ -99,9 +99,12 @@
     <property name="title">
      <string>&amp;Plots</string>
     </property>
-    <widget class="QMenu" name="_menuLayoutMode">
+    <widget class="QMenu" name="_menuGraphicsMode">
+     <property name="tearOffEnabled">
+      <bool>false</bool>
+     </property>
      <property name="title">
-      <string>Layout Mode</string>
+      <string>&amp;Graphics Mode</string>
      </property>
      <addaction name="_actionGfxLabel"/>
      <addaction name="_actionGfxRectangle"/>
@@ -119,7 +122,8 @@
     <addaction name="_actionZoomXY"/>
     <addaction name="_actionZoomX"/>
     <addaction name="_actionZoomY"/>
-    <addaction name="_menuLayoutMode"/>
+    <addaction name="_actionLayout"/>
+    <addaction name="_menuGraphicsMode"/>
     <addaction name="separator"/>
     <addaction name="_actionDataMode"/>
    </widget>
@@ -540,6 +544,9 @@
    </property>
   </action>
   <action name="_actionNewPlot">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>New Plot</string>
    </property>
@@ -937,6 +944,17 @@
    </property>
    <property name="whatsThis">
     <string>Toggle Statusbar</string>
+   </property>
+  </action>
+  <action name="_actionLayout">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Layout Mode</string>
+   </property>
+   <property name="shortcut">
+    <string>F6</string>
    </property>
   </action>
  </widget>
