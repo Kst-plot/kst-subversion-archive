@@ -22,10 +22,11 @@
 #include <QObject>
 #include <QStringList>
 
-#include <kaboutdata.h>
-#include <kcmdlineargs.h>
 #include <kglobalsettings.h>
 #include <kimageio.h>
+
+#include "kaboutdata.h"
+// #include "kcmdlineargs.h"
 
 #include "dialoglauncher-gui.h"
 #include "kst.h"
@@ -52,32 +53,32 @@ static const char description[] = "Kst: a data viewing program.";
 static QStringList startupErrors;
 /* xxx
 static KCmdLineOptions options[] = {
-  { "y <Y>",  I18N_NOOP("Field for Y axis (multiple allowed)"), 0 },
-  { "z <Z>",  I18N_NOOP("Field for a Z image (multiple allowed)"), 0 },
-  { "ye <equation>",  I18N_NOOP("Equation for Y axis (multiple allowed)"), 0 },
-  { "E <text>",  I18N_NOOP("Pass argument to extension.  text is of format extensionname:argumentlist"), 0 },
-  { "e <E>",  I18N_NOOP("Field for Y errors (multiple allowed)"), 0 },
-  { "x <X>",  I18N_NOOP("Field or range for X axis"),        "INDEX"},
-  { "xe <X>", I18N_NOOP("X vector for equations x0:x1:n"),   "INDEX"},
-  { "p <Y>",  I18N_NOOP("Field for power spectrum (multiple allowed)"), 0},
-  { "h <Y>",  I18N_NOOP("Field for histogram (multiple allowed)"), 0},
-  { "r <f>",  I18N_NOOP("Sample rate for power spectrum"),      "60.0"},
-  { "ru <U>", I18N_NOOP("Units for psd sample rate"),           "Hz"},
-  { "yu <U>", I18N_NOOP("Units for y vectors"),                 "V"},
-  { "l <P>",  I18N_NOOP("Length of FFTs is 2^P"),               "10"},
-  { "f <F0>", I18N_NOOP("First frame to read"),                 "-2"},
-  { "n <NS>", I18N_NOOP("Number of frames to read"),            "-2"},
-  { "s <NS>", I18N_NOOP("Number of frames to skip each read"),  "-1"},
-  { "a",      I18N_NOOP("Apply boxcar filter before skipping frames"),0},
-  { "m <NC>", I18N_NOOP("Separate plots arranged in <NC> columns"),0},
-  { "d",      I18N_NOOP("Display as points rather than curves"),0},
-  { "g",      I18N_NOOP("Provide a legend box"),0},
-  { "w <file>",      I18N_NOOP("Display the data wizard"),"<none>"},
-  { "print <file>",  I18N_NOOP("Print to file and exit"),"<none>"},
-  { "png <file>",  I18N_NOOP("Save as a png file and exit"),"<none>"},
-  { "nq",     I18N_NOOP("Bypass the quickstart dialog"), 0},
-  {"F <dataFile>", I18N_NOOP("Override a *.kst file's data file with <datafile>"), "|"},
-  { "+[Files]", I18N_NOOP("Data files (if -y given) or *.kst file"), 0},
+  { "y <Y>",  QT_TR_NOOP("Field for Y axis (multiple allowed)"), 0 },
+  { "z <Z>",  QT_TR_NOOP("Field for a Z image (multiple allowed)"), 0 },
+  { "ye <equation>",  QT_TR_NOOP("Equation for Y axis (multiple allowed)"), 0 },
+  { "E <text>",  QT_TR_NOOP("Pass argument to extension.  text is of format extensionname:argumentlist"), 0 },
+  { "e <E>",  QT_TR_NOOP("Field for Y errors (multiple allowed)"), 0 },
+  { "x <X>",  QT_TR_NOOP("Field or range for X axis"),        "INDEX"},
+  { "xe <X>", QT_TR_NOOP("X vector for equations x0:x1:n"),   "INDEX"},
+  { "p <Y>",  QT_TR_NOOP("Field for power spectrum (multiple allowed)"), 0},
+  { "h <Y>",  QT_TR_NOOP("Field for histogram (multiple allowed)"), 0},
+  { "r <f>",  QT_TR_NOOP("Sample rate for power spectrum"),      "60.0"},
+  { "ru <U>", QT_TR_NOOP("Units for psd sample rate"),           "Hz"},
+  { "yu <U>", QT_TR_NOOP("Units for y vectors"),                 "V"},
+  { "l <P>",  QT_TR_NOOP("Length of FFTs is 2^P"),               "10"},
+  { "f <F0>", QT_TR_NOOP("First frame to read"),                 "-2"},
+  { "n <NS>", QT_TR_NOOP("Number of frames to read"),            "-2"},
+  { "s <NS>", QT_TR_NOOP("Number of frames to skip each read"),  "-1"},
+  { "a",      QT_TR_NOOP("Apply boxcar filter before skipping frames"),0},
+  { "m <NC>", QT_TR_NOOP("Separate plots arranged in <NC> columns"),0},
+  { "d",      QT_TR_NOOP("Display as points rather than curves"),0},
+  { "g",      QT_TR_NOOP("Provide a legend box"),0},
+  { "w <file>",      QT_TR_NOOP("Display the data wizard"),"<none>"},
+  { "print <file>",  QT_TR_NOOP("Print to file and exit"),"<none>"},
+  { "png <file>",  QT_TR_NOOP("Save as a png file and exit"),"<none>"},
+  { "nq",     QT_TR_NOOP("Bypass the quickstart dialog"), 0},
+  {"F <dataFile>", QT_TR_NOOP("Override a *.kst file's data file with <datafile>"), "|"},
+  { "+[Files]", QT_TR_NOOP("Data files (if -y given) or *.kst file"), 0},
   KCmdLineLastOption
 };
 */
@@ -313,30 +314,29 @@ int main(int argc, char *argv[]) {
   int i_file, i_v, i_curve;
   int i_plot;
   QString fullPath;
-/* xxx
-  KAboutData aboutData("kst", I18N_NOOP("Kst"),
+  KAboutData aboutData("kst", NULL, QT_TR_NOOP("Kst"),
                        KSTVERSION, description, KAboutData::License_GPL,
-                       I18N_NOOP("(c) 2000-2007 Barth Netterfield"),
+                       QT_TR_NOOP("(c) 2000-2007 Barth Netterfield"),
                        0,
-                       "http://kst.kde.org/");
+                       "http://kst.kde.org/", NULL);
   aboutData.addAuthor("Barth Netterfield",
-                      I18N_NOOP("Original author and maintainer."),
+                      QT_TR_NOOP("Original author and maintainer."),
                       "netterfield@astro.utoronto.ca",
                       "http://omega.astro.utoronto.ca/");
   aboutData.addAuthor("Staikos Computing Services Inc.",
-                      I18N_NOOP("Developed for the University of Toronto."),
+                      QT_TR_NOOP("Developed for the University of Toronto."),
                       "info@staikos.net",
                       "http://www.staikos.net/");
   aboutData.addAuthor("Sumus Technology Limited",
-                      I18N_NOOP("Developed for the University of British Columbia"),
+                      QT_TR_NOOP("Developed for the University of British Columbia"),
                       "info@sumusltd.com",
                       "http://www.sumusltd.com/");
   aboutData.addAuthor("Rick Chern",
-                      I18N_NOOP("University of British Columbia"),
+                      QT_TR_NOOP("University of British Columbia"),
                       "",
                       "");
   aboutData.addAuthor("Duncan Hanson",
-                      I18N_NOOP("University of British Columbia"),
+                      QT_TR_NOOP("University of British Columbia"),
                       "",
                       "");
   aboutData.addAuthor("Nicolas Brisset",
@@ -359,9 +359,9 @@ int main(int argc, char *argv[]) {
                       "",
                       "",
                       "");
-  aboutData.setTranslator(I18N_NOOP("_: NAME OF TRANSLATORS\nYour names"), 
-                          I18N_NOOP("_: EMAIL OF TRANSLATORS\nYour emails"));
-
+  aboutData.setTranslator(QT_TR_NOOP("_: NAME OF TRANSLATORS\nYour names"), 
+                          QT_TR_NOOP("_: EMAIL OF TRANSLATORS\nYour emails"));
+/* xxx 
   KCmdLineArgs::init( argc, argv, &aboutData );
   KCmdLineArgs::addCmdLineOptions( options ); // Add our own options.
 */
