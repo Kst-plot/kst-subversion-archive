@@ -121,8 +121,8 @@ void KstEqDialog::fillFieldsForNew() {
   KstEquationList eqs;
   KstVCurveList curves;
 
-// xxx  eqs = kstObjectSubList<KstDataObject, KstEquation>(KST::dataObjectList);
-// xxx  curves = kstObjectSubList<KstDataObject, KstVCurve>(KST::dataObjectList);
+  eqs = kstObjectSubList<KstDataObject, KstEquation>(KST::dataObjectList);
+  curves = kstObjectSubList<KstDataObject, KstVCurve>(KST::dataObjectList);
 
   _tagName->setText(defaultTag);
   _legendText->setText(defaultTag);
@@ -374,7 +374,7 @@ bool KstEqDialog::editSingleObject(KstEquationPtr eqPtr) {
 bool KstEqDialog::editObject() {
   KstEquationList eqList;
 
-// xxx  eqList = kstObjectSubList<KstDataObject,KstEquation>(KST::dataObjectList);
+  eqList = kstObjectSubList<KstDataObject,KstEquation>(KST::dataObjectList);
 
   if (_editMultipleMode) { 
     //
@@ -491,8 +491,8 @@ void KstEqDialog::populateFunctionList() {
 void KstEqDialog::populateEditMultiple() {
   KstEquationList eqList;
 
-// xxx  eqList = kstObjectSubList<KstDataObject,KstEquation>(KST::dataObjectList);
-// xxx  _editMultipleWidget->_objectList->insertStringList(eqList.tagNames());
+  eqList = kstObjectSubList<KstDataObject,KstEquation>(KST::dataObjectList);
+  _editMultipleWidget->_objectList->insertItems(0, eqList.tagNames());
 
   //
   // also intermediate state for multiple edit...

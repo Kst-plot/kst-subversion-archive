@@ -19,9 +19,9 @@
 #include <QCheckBox>
 #include <QComboBox>
 #include <QLineEdit>
+#include <QMessageBox>
 #include <QRadioButton>
 #include <QSpinBox>
-#include <QMessageBox>
 
 #include "colorpalettewidget.h"
 #include "curveplacementwidget.h"
@@ -136,7 +136,7 @@ void KstImageDialog::fillFieldsForEditNoUpdate() {
     KstImageList images;
     int tempWeight;
 
-// xxx    images = kstObjectSubList<KstDataObject, KstImage>(KST::dataObjectList);
+    images = kstObjectSubList<KstDataObject, KstImage>(KST::dataObjectList);
   
     ip->readLock();
 
@@ -169,22 +169,21 @@ void KstImageDialog::fillFieldsForEditNoUpdate() {
 void KstImageDialog::fillFieldsForNew() {
   KstImageList images;
 
-// xxx  images = kstObjectSubList<KstDataObject, KstImage>(KST::dataObjectList);
+  images = kstObjectSubList<KstDataObject, KstImage>(KST::dataObjectList);
 
-  // set tag name
   _tagName->setText("<New_Image>");
 
   _w->_colorPalette->refresh();
-
-  // some default values
   _w->_lowerZ->setText("0");
   _w->_upperZ->setText("100");
   _w->_realTimeAutoThreshold->setChecked(true);
 
-  // let the image be placed in plots
   _w->_curvePlacement->update();
 
-  // for some reason the widgets need to be placed from bottom to top
+  //
+  // for some reason the widgets need to be placed from bottom to top...
+  //
+
   _w->_imageTypeGroup->hide();
   _w->_contourMapGroup->hide();
   _w->_colorMapGroup->hide();
@@ -195,7 +194,10 @@ void KstImageDialog::fillFieldsForNew() {
   _w->_imageTypeGroup->show();
   _w->_matrixGroup->show();
 
-  // use whatever setting was used last
+  //
+  // use whatever setting was used last...
+  //
+
   updateGroups();
   updateEnables();
   _w->_colorPalette->updatePalette(_w->_colorPalette->selectedPalette());
@@ -448,7 +450,7 @@ bool KstImageDialog::editSingleObject(KstImagePtr imPtr) {
 bool KstImageDialog::editObject() {
   KstImageList imList;
 
-// xxx  imList = kstObjectSubList<KstDataObject,KstImage>(KST::dataObjectList);
+  imList = kstObjectSubList<KstDataObject,KstImage>(KST::dataObjectList);
 
   if (_editMultipleMode) {
     _numContourLinesDirty = _w->_numContourLines->text() != " ";
@@ -482,6 +484,7 @@ bool KstImageDialog::editObject() {
 
     if (!didEdit) {
       QMessageBox::warning(this, QObject::tr("Kst"), QObject::tr("Select one or more objects to edit."));
+
       return false;
     }
   } else {
@@ -491,6 +494,7 @@ bool KstImageDialog::editObject() {
     ip = kst_cast<KstImage>(_dp);
     if (!ip || (tag_name != ip->tagName() && KstData::self()->dataTagNameNotUnique(tag_name))) {
       _tagName->setFocus();
+
       return false;
     }
 
@@ -498,7 +502,10 @@ bool KstImageDialog::editObject() {
     ip->setTagName(KstObjectTag(tag_name, ip->tag().context())); // FIXME: doesn't allow changing tag context
     ip->unlock();
 
-    // then edit the object
+    //
+    // then edit the object...
+    //
+
     _colorOnlyDirty = true;
     _contourOnlyDirty = true;
     _colorAndContourDirty = true;
@@ -538,8 +545,7 @@ void KstImageDialog::calcAutoThreshold() {
   }
 }
 
-// This should use a smart (percentile based) algorithm to
-// calculate the thresholds.  It will be expensive.
+
 void KstImageDialog::calcSmartThreshold() {
   if (!_w->_matrix->selectedMatrix().isEmpty()){
     KstMatrixPtr matrix;
@@ -667,8 +673,8 @@ bool KstImageDialog::checkParameters(double& lowerZDouble, double& upperZDouble)
 void KstImageDialog::populateEditMultiple() {
   KstImageList imlist;
 
-// xxx  imlist = kstObjectSubList<KstDataObject,KstImage>(KST::dataObjectList);
-// xxx  _editMultipleWidget->_objectList->insertStringList(imlist.tagNames());
+  imlist = kstObjectSubList<KstDataObject,KstImage>(KST::dataObjectList);
+  _editMultipleWidget->_objectList->insertItems(0, imlist.tagNames());
 
   //
   // also intermediate state for multiple edit...

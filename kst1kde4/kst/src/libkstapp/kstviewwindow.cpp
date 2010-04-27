@@ -386,8 +386,8 @@ void KstViewWindow::print(KstPainter& paint, const QSize& size, int pages, int l
 
 
 void KstViewWindow::save(QTextStream& ts, const QString& indent) {
-  const QRect restoreGeom;// xxx restoreGeometry());
-  const QRect internalGeom;// xxx internalGeometry());
+  const QRect restoreGeom = normalGeometry();
+  const QRect internalGeom = geometry();
 
   ts << indent << "<tag>" << Qt::escape(windowTitle()) << "</tag>" << endl;
 
@@ -483,7 +483,7 @@ QString KstViewWindow::createPlotObject(const QString& suggestedName, bool promp
 
         duplicate = false;
       
-// xxx        windows = app->subWindowList(QMdiArea::CreationOrder);
+        windows = KstApp::inst()->subWindowList(QMdiArea::CreationOrder);
       
         for (i = windows.constBegin(); i != windows.constEnd() && !duplicate; ++i) {
           KstViewWindow *viewWindow;

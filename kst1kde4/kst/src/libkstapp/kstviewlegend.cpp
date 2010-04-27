@@ -133,7 +133,7 @@ KstViewLegend::KstViewLegend(const QDomElement& e)
   KstBaseCurveList::const_iterator end;
   QStringList::const_iterator str;
 
-// xxx  l = kstObjectSubList<KstDataObject,KstBaseCurve>(KST::dataObjectList);
+  l = kstObjectSubList<KstDataObject,KstBaseCurve>(KST::dataObjectList);
   end = l.end();
   for (str = ctaglist.begin(); str != ctaglist.end(); ++str) {
     KstBaseCurveList::const_iterator it;
@@ -652,7 +652,7 @@ bool KstViewLegend::fillConfigWidget(QWidget *w, bool isNew) const {
   KstBaseCurveList allCurves;
   KstBaseCurveList::const_iterator it;
 
-// xxx  allCurves = kstObjectSubList<KstDataObject, KstBaseCurve>(KST::dataObjectList);
+  allCurves = kstObjectSubList<KstDataObject, KstBaseCurve>(KST::dataObjectList);
 
   if (isNew) {
     widget->_fontSize->setValue(KST::legendDefaults.fontSize());
@@ -726,7 +726,7 @@ bool KstViewLegend::readConfigWidget(QWidget *w, bool editMultipleMode) {
     // apply the curve list, but only to this legend...
     //
 
-// xxx    allCurves = kstObjectSubList<KstDataObject, KstBaseCurve>(KST::dataObjectList);
+    allCurves = kstObjectSubList<KstDataObject, KstBaseCurve>(KST::dataObjectList);
     _curves.clear();
     for (i = 0; i < widget->DisplayedCurveList->count(); i++) {
       KstBaseCurveList::iterator it;

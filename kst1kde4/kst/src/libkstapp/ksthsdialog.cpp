@@ -406,7 +406,7 @@ bool KstHsDialog::editSingleObject(KstHistogramPtr hsPtr) {
 bool KstHsDialog::editObject() {
   KstHistogramList hsList;
 
-// xxx  hsList = kstObjectSubList<KstDataObject,KstHistogram>(KST::dataObjectList);
+  hsList = kstObjectSubList<KstDataObject,KstHistogram>(KST::dataObjectList);
 
   if (_editMultipleMode) {
     _vectorDirty = _w->_vector->_vector->currentIndex() != 0;
@@ -521,8 +521,8 @@ void KstHsDialog::updateButtons() {
 void KstHsDialog::populateEditMultiple() {
   KstHistogramList hslist;
 
-// xxx  hslist = kstObjectSubList<KstDataObject,KstHistogram>(KST::dataObjectList);
-// xxx  _editMultipleWidget->_objectList->insertStringList(hslist.tagNames());
+  hslist = kstObjectSubList<KstDataObject,KstHistogram>(KST::dataObjectList);
+  _editMultipleWidget->_objectList->insertItems(0, hslist.tagNames());
 
   _w->Min->setText("");
   _w->Max->setText("");

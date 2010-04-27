@@ -887,8 +887,8 @@ void KstMatrixDialog::populateEditMultiple() {
 void KstMatrixDialog::populateEditMultipleRMatrix() {
   KstRMatrixList mxList;
 
-// xxx  mxList = kstObjectSubList<KstMatrix,KstRMatrix>(KST::matrixList);
-// xxx  _editMultipleWidget->_objectList->insertStringList(mxList.tagNames());
+  mxList = kstObjectSubList<KstMatrix,KstRMatrix>(KST::matrixList);
+  _editMultipleWidget->_objectList->insertItems(0, mxList.tagNames());
 
   //
   // intermediate state for multiple edit...

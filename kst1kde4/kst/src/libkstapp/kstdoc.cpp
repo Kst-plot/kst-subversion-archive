@@ -492,7 +492,7 @@ bool KstDoc::openDocument(const QUrl& url, const QString& o_file,
         KstBaseCurveList l;
         Kst2DPlotPtr plot;
 
-// xxx        l = kstObjectSubList<KstDataObject,KstBaseCurve>(KST::dataObjectList);
+        l = kstObjectSubList<KstDataObject,KstBaseCurve>(KST::dataObjectList);
         plot = new Kst2DPlot(e);
         app->plotHolderWhileOpeningDocument()->insert(plot->tagName(), plot);
       } else if (e.tagName() == "amatrix") {

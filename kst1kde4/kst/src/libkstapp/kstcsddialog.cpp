@@ -379,7 +379,7 @@ bool KstCsdDialog::editObject() {
 
   KstCSDList csList;
 
-// xxx  csList = kstObjectSubList<KstDataObject,KstCSD>(KST::dataObjectList);
+  csList = kstObjectSubList<KstDataObject,KstCSD>(KST::dataObjectList);
 
   //
   // if editing multiple objects, edit each one
@@ -460,8 +460,8 @@ bool KstCsdDialog::editObject() {
 void KstCsdDialog::populateEditMultiple() {
   KstCSDList csList;
 
-// xxx  csList = kstObjectSubList<KstDataObject,KstCSD>(KST::dataObjectList);
-// xxx  _editMultipleWidget->_objectList->insertStringList(csList.tagNames());
+  csList = kstObjectSubList<KstDataObject,KstCSD>(KST::dataObjectList);
+  _editMultipleWidget->_objectList->insertItems(0, csList.tagNames());
 
   //
   // also intermediate state for multiple edit

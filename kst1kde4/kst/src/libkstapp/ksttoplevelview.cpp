@@ -1479,7 +1479,7 @@ void KstTopLevelView::condenseXAxis() {
     bool processed = false;
     const double close = 0.02;
 
-// xxx    plots = kstObjectSubList<KstViewObject, Kst2DPlot>(_selectionList);
+    plots = kstObjectSubList<KstViewObject, Kst2DPlot>(_selectionList);
     while (plots.count() > 1) {
       plotsProcess.clear();
       plotsProcess.append(plots.first());
@@ -1579,8 +1579,7 @@ void KstTopLevelView::condenseYAxis() {
     bool processed = false;
     const double close = 0.02;
 
-// xxx    plots = kstObjectSubList<KstViewObject, Kst2DPlot>(_selectionList);
-
+    plots = kstObjectSubList<KstViewObject, Kst2DPlot>(_selectionList);
     while (plots.count() > 1) {
       bool added = true;
 

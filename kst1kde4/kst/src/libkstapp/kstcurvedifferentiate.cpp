@@ -298,7 +298,9 @@ void KstCurveDifferentiate::downButtonClicked() {
 
 
 void KstCurveDifferentiate::cycleWindow(KstViewWindow *window) {
-  KstTopLevelViewPtr tlv(kst_cast<KstTopLevelView>(window->view()));
+  KstTopLevelViewPtr tlv;
+
+  tlv = kst_cast<KstTopLevelView>(window->view());
   if (tlv) {
     Kst2DPlotList plotList;
     Kst2DPlotList::Iterator it;
@@ -310,9 +312,9 @@ void KstCurveDifferentiate::cycleWindow(KstViewWindow *window) {
       }
       
       KstVCurveList vcurves;
-      KstVCurveList::Iterator i;
+      KstVCurveList::iterator i;
 
-// xxx      vcurves = kstObjectSubList<KstBaseCurve,KstVCurve>((*it)->Curves);
+      vcurves = kstObjectSubList<KstBaseCurve,KstVCurve>((*it)->_curves);
       for (i = vcurves.begin(); i != vcurves.end(); ++i) {
         if (_lineColorOrder > -1) {
           (*i)->setColor(KstColorSequence::entry(_lineColorSeq.current()));
@@ -352,16 +354,19 @@ void KstCurveDifferentiate::apply() {
     _seqVect[_lineColorOrder] = _lineColorSeq;
     maxSequences++;
   }
+
   if (_pointStyleOrder > -1) {
     _pointStyleSeq.setRange(0, KSTPOINT_MAXTYPE - 1);
     _seqVect[_pointStyleOrder] = _pointStyleSeq;
     maxSequences++;
   }
+
   if (_lineStyleOrder > -1) {
     _lineStyleSeq.setRange(0, KSTLINESTYLE_MAXTYPE - 1);
     _seqVect[_lineStyleOrder] = _lineStyleSeq;
     maxSequences++;
   }
+
   if (_lineWidthOrder > -1) {
     _lineWidthSeq.setRange(1, _maxLineWidth);
     _seqVect[_lineWidthOrder] = _lineWidthSeq;
@@ -390,7 +395,9 @@ void KstCurveDifferentiate::apply() {
       windows = app->subWindowList( QMdiArea::CreationOrder );
     
       for (i = windows.constBegin(); i != windows.constEnd(); ++i) {
-        KstViewWindow *viewWindow = dynamic_cast<KstViewWindow*>(*i);
+        KstViewWindow *viewWindow;
+
+        viewWindow = dynamic_cast<KstViewWindow*>(*i);
 
         if (_repeatAcross == 1) {
           _seqVect[0].reset();

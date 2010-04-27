@@ -66,9 +66,9 @@ void KstFitDialog::show_setCurve(const QString& strCurve,
   KstVCurveList vcurves;
   KstCPluginList c;
 
-// xxx  curves = kstObjectSubList<KstDataObject, KstBaseCurve>(KST::dataObjectList);
-// xxx  vcurves = kstObjectSubList<KstBaseCurve, KstVCurve>(curves);
-// xxx  c = kstObjectSubList<KstDataObject, KstCPlugin>(KST::dataObjectList);
+  curves = kstObjectSubList<KstDataObject, KstBaseCurve>(KST::dataObjectList);
+  vcurves = kstObjectSubList<KstBaseCurve, KstVCurve>(curves);
+  c = kstObjectSubList<KstDataObject, KstCPlugin>(KST::dataObjectList);
 
   _strWindow = strWindow;
   _strPlotName = strPlotName;

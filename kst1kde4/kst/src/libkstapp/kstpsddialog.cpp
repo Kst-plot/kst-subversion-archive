@@ -377,7 +377,10 @@ bool KstPsdDialog::editSingleObject(KstPSDPtr psPtr) {
 bool KstPsdDialog::editObject() {
   KstPSDList psList;
 
-  // if the user selected no vector, treat it as non-dirty
+  //
+  // if the user selected no vector, treat it as non-dirty...
+  //
+
   _vectorDirty = _w->_vector->_vector->currentIndex() != 0;
   _apodizeFxnDirty = _w->_kstFFTOptions->ApodizeFxn->currentIndex() != 0;
   _fFTLenDirty = _w->_kstFFTOptions->FFTLen->text() != " ";
@@ -385,7 +388,7 @@ bool KstPsdDialog::editObject() {
   _vectorUnitsDirty = !_w->_kstFFTOptions->VectorUnits->text().isEmpty();
   _rateUnitsDirty = !_w->_kstFFTOptions->RateUnits->text().isEmpty();
   _outputDirty = _w->_kstFFTOptions->Output->currentIndex() != 0;
-// xxx  psList = kstObjectSubList<KstDataObject,KstPSD>(KST::dataObjectList);
+  psList = kstObjectSubList<KstDataObject,KstPSD>(KST::dataObjectList);
 
   if (_editMultipleMode) { 
     bool didEdit = false;
@@ -454,10 +457,13 @@ bool KstPsdDialog::editObject() {
 void KstPsdDialog::populateEditMultiple() {
   KstPSDList pslist;
 
-// xxx  pslist = kstObjectSubList<KstDataObject,KstPSD>(KST::dataObjectList);
-// xxx  _editMultipleWidget->_objectList->insertStringList(pslist.tagNames());
+  pslist = kstObjectSubList<KstDataObject,KstPSD>(KST::dataObjectList);
+  _editMultipleWidget->_objectList->insertItems(0, pslist.tagNames());
 
-  // also intermediate state for multiple edit
+  //
+  // also intermediate state for multiple edit...
+  //
+
   _w->_vector->_vector->insertItem(0, "");
   _w->_vector->_vector->setCurrentIndex(0);
   _w->_kstFFTOptions->ApodizeFxn->insertItem(0, "");

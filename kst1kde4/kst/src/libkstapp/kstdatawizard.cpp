@@ -15,7 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <assert.h>
 #include <psversion.h>
 #include <sysinfo.h>
 
@@ -1120,7 +1119,7 @@ void KstDataWizard::finished() {
           if (plot) {
             KstVCurveList vcurves;
 
-// xxx            vcurves = kstObjectSubList<KstBaseCurve,KstVCurve>(plot->Curves);
+            vcurves = kstObjectSubList<KstBaseCurve,KstVCurve>(plot->Curves);
             color = KstColorSequence::next(vcurves, plot->backgroundColor());
           } else {
             color = KstColorSequence::next();
@@ -1222,7 +1221,7 @@ void KstDataWizard::finished() {
             if (_radioButtonPlotPSD->isChecked() || colors.count() <= (unsigned long)indexColor) {
               KstVCurveList vcurves;
 
-// xxx              vcurves = kstObjectSubList<KstBaseCurve,KstVCurve>(plot->_curves);
+              vcurves = kstObjectSubList<KstBaseCurve,KstVCurve>(plot->_curves);
               color = KstColorSequence::next(vcurves, plot->backgroundColor());
             } else {
               color = colors[indexColor];

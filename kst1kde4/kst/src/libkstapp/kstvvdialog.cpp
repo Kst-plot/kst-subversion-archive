@@ -559,7 +559,7 @@ bool KstVvDialog::editObject() {
   _yMinScalarDirty = _w->_yMinScalar->_scalar->currentIndex() != 0;
   _yMaxScalarDirty = _w->_yMaxScalar->_scalar->currentIndex() != 0;
   _interpTypeDirty = _w->_interp->currentIndex() != 0;
-// xxx  vvList = kstObjectSubList<KstDataObject,KstVectorView>(KST::dataObjectList);
+  vvList = kstObjectSubList<KstDataObject,KstVectorView>(KST::dataObjectList);
 
   if (_editMultipleMode) {
     bool didEdit = false;
@@ -711,8 +711,8 @@ void KstVvDialog::cleanup() {
 void KstVvDialog::populateEditMultiple() {
   KstVectorViewList vvlist;
 
-// xxx  vvlist = kstObjectSubList<KstDataObject,KstVectorView>(KST::dataObjectList);
-// xxx  _editMultipleWidget->_objectList->insertStringList(vvlist.tagNames());
+  vvlist = kstObjectSubList<KstDataObject,KstVectorView>(KST::dataObjectList);
+  _editMultipleWidget->_objectList->insertItems(0, vvlist.tagNames());
 
   _w->_xVector->_vector->insertItem(0, "");
   _w->_xVector->_vector->setCurrentIndex(0);

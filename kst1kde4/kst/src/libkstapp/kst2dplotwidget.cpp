@@ -486,7 +486,7 @@ void Kst2dPlotWidget::updatePlotMarkers(const Kst2DPlot *plot) {
   KstBaseCurveList curves;
   KstBaseCurveList::const_iterator curves_iter;
 
-// xxx  curves = kstObjectSubList<KstDataObject, KstBaseCurve>(KST::dataObjectList);
+  curves = kstObjectSubList<KstDataObject, KstBaseCurve>(KST::dataObjectList);
   CurveCombo->clear();
   for (curves_iter = curves.begin(); curves_iter != curves.end(); ++curves_iter) {
     (*curves_iter)->readLock();
@@ -713,7 +713,7 @@ void Kst2dPlotWidget::fillWidget(const Kst2DPlot *plot) {
   KstBaseCurveList curves;
   KstBaseCurveList::const_iterator it;
 
-// xxx  curves = kstObjectSubList<KstDataObject, KstBaseCurve>(KST::dataObjectList);
+  curves = kstObjectSubList<KstDataObject, KstBaseCurve>(KST::dataObjectList);
 
   DisplayedCurveList->clear();
   AvailableCurveList->clear();
@@ -1047,7 +1047,7 @@ void Kst2dPlotWidget::applyContents(Kst2DPlotPtr plot) {
     plot->clearCurves();
     KstBaseCurveList curves;
 
-// xxx    curves = kstObjectSubList<KstDataObject, KstBaseCurve>(KST::dataObjectList);
+    curves = kstObjectSubList<KstDataObject, KstBaseCurve>(KST::dataObjectList);
     for (i = 0; i < DisplayedCurveList->count(); ++i) {
       KstBaseCurveList::iterator it;
 
@@ -1570,8 +1570,8 @@ void Kst2dPlotWidget::applyPlotMarkers(Kst2DPlotPtr plot) {
       bool falling = Falling->isChecked();
       bool rising = Rising->isChecked();
 
-// xxx      curves = kstObjectSubList<KstDataObject, KstBaseCurve>(KST::dataObjectList);
-// xxx      vcurves = kstObjectSubList<KstBaseCurve, KstVCurve>(curves);
+      curves = kstObjectSubList<KstDataObject, KstBaseCurve>(KST::dataObjectList);
+      vcurves = kstObjectSubList<KstBaseCurve, KstVCurve>(curves);
       curve = *(vcurves.findTag(CurveCombo->currentText()));
 
       if (Both->isChecked()) {

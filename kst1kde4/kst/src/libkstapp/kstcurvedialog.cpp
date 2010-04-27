@@ -220,19 +220,25 @@ void KstCurveDialog::fillFieldsForEdit() {
 void KstCurveDialog::fillFieldsForNew() {
   KstVCurveList curves;
 
-// xxx  curves = kstObjectSubList<KstDataObject, KstVCurve>(KST::dataObjectList);
+  curves = kstObjectSubList<KstDataObject, KstVCurve>(KST::dataObjectList);
 
   _tagName->setText(defaultTag);
   _legendText->setText(defaultTag);
   _w->_curvePlacement->update();
 
+  //
   // set the X Axis Vector to the X axis vector of 
   // the last curve on the global curve list...
+  //
+
   if (curves.count() >0) {
     _w->_xVector->setSelection(curves.last()->xVTag().displayString());
   }
 
-  // for some reason the lower widget needs to be shown first to prevent overlapping?
+  //
+  // for some reason the lower widget needs to be shown first to prevent overlapping...
+  //
+
   _w->_curveAppearance->hide();
   _w->_curvePlacement->show();
   _w->_curveAppearance->show();
@@ -514,11 +520,17 @@ bool KstCurveDialog::editSingleObject(KstVCurvePtr cvPtr) {
 bool KstCurveDialog::editObject() {
   KstVCurveList cvList;
 
-// xxx  cvList = kstObjectSubList<KstDataObject,KstVCurve>(KST::dataObjectList);
+  cvList = kstObjectSubList<KstDataObject,KstVCurve>(KST::dataObjectList);
 
-  // if editing multiple objects, edit each one
+  //
+  // if editing multiple objects, edit each one...
+  //
+
   if (_editMultipleMode) {
-    // if the user selected no vector, treat it as non-dirty
+    //
+    // if the user selected no vector, treat it as non-dirty...
+    //
+
     _xVectorDirty = _w->_xVector->_vector->currentIndex() != 0;
     _yVectorDirty = _w->_yVector->_vector->currentIndex() != 0;
     _xErrorDirty = _w->_xError->_vector->currentIndex() != 0;
@@ -620,10 +632,13 @@ bool KstCurveDialog::editObject() {
 void KstCurveDialog::populateEditMultiple() {
   KstVCurveList cvlist;
 
-// xxx  cvlist = kstObjectSubList<KstDataObject,KstVCurve>(KST::dataObjectList);
-// xxx  _editMultipleWidget->_objectList->insertStringList(cvlist.tagNames());
+  cvlist = kstObjectSubList<KstDataObject,KstVCurve>(KST::dataObjectList);
+  _editMultipleWidget->_objectList->insertItems(0, cvlist.tagNames());
+  
+  //
+  // also intermediate state for multiple edit...
+  //
 
-  // also intermediate state for multiple edit
   _w->_xVector->_vector->insertItem(0, "");
   _w->_xVector->_vector->setCurrentIndex(0);
   _w->_yVector->_vector->insertItem(0, "");

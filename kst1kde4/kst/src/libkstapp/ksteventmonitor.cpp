@@ -17,9 +17,9 @@
 
 #include <QCheckBox>
 #include <QLineEdit>
+#include <QMessageBox>
 #include <QRadioButton>
 #include <QTextEdit>
-#include <QMessageBox>
 
 #include "editmultiplewidget.h"
 #include "kst.h"
@@ -127,7 +127,7 @@ void KstEventMonitor::fillFieldsForNew() {
   KstEventMonitorEntryList events;
   QString new_label;
 
-// xxx  events = kstObjectSubList<KstDataObject, EventMonitorEntry>(KST::dataObjectList);
+  events = kstObjectSubList<KstDataObject, EventMonitorEntry>(KST::dataObjectList);
   new_label = QString("E%1-").arg(events.count() + 1) + "<New_Event>";
   _tagName->setText(new_label);
 
@@ -285,11 +285,17 @@ bool KstEventMonitor::editSingleObject(EventMonitorEntryPtr emPtr) {
 bool KstEventMonitor::editObject() {
   KstEventMonitorEntryList emList;
 
-// xxx  emList = kstObjectSubList<KstDataObject,EventMonitorEntry>(KST::dataObjectList);
+  emList = kstObjectSubList<KstDataObject,EventMonitorEntry>(KST::dataObjectList);
 
-  // if editing multiple objects, edit each one
+  //
+  // if editing multiple objects, edit each one...
+  //
+
   if (_editMultipleMode) { 
-    // if text fields are empty, treat as non-dirty
+    //
+    // if text fields are empty, treat as non-dirty...
+    //
+
     _lineEditEquationDirty = !_w->lineEditEquation->text().isEmpty();
     _lineEditDescriptionDirty = !_w->lineEditDescription->text().isEmpty();
     _lineEditEMailRecipientsDirty = !_w->lineEditEMailRecipients->text().isEmpty();
@@ -359,10 +365,13 @@ bool KstEventMonitor::editObject() {
 void KstEventMonitor::populateEditMultiple() {
   KstEventMonitorEntryList emlist;
 
-// xxx  emlist = kstObjectSubList<KstDataObject,EventMonitorEntry>(KST::dataObjectList);
-// xxx  _editMultipleWidget->_objectList->insertStringList(emlist.tagNames());
+  emlist = kstObjectSubList<KstDataObject,EventMonitorEntry>(KST::dataObjectList);
+  _editMultipleWidget->_objectList->insertItems(0, emlist.tagNames());
 
-  // also intermediate state for multiple edit
+  //
+  // also intermediate state for multiple edit...
+  //
+
   _w->lineEditEquation->setText("");
   _w->lineEditDescription->setText("");
 

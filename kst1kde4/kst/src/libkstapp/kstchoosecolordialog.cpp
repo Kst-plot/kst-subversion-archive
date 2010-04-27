@@ -157,8 +157,7 @@ void KstChooseColorDialog::applyColors() {
   KstVCurveList cvList;
   KstVCurveList::iterator cv_iter;
 
-// xxx  cvList = kstObjectSubList<KstDataObject, KstVCurve>(KST::dataObjectList);
-
+  cvList = kstObjectSubList<KstDataObject, KstVCurve>(KST::dataObjectList);
   for (cv_iter = cvList.begin(); cv_iter != cvList.end(); ++cv_iter) {
     KstVectorPtr vect;
 

@@ -54,26 +54,34 @@ KstViewFitsDialog::~KstViewFitsDialog() {
 
 bool KstViewFitsDialog::hasContent() const {
   bool content = false;
-  KstCPluginList fits = kstObjectSubList<KstDataObject,KstCPlugin>(KST::dataObjectList);
-  KstCPluginList::ConstIterator it = fits.begin();
+  KstCPluginList fits;
+  KstCPluginList::const_iterator it;
+  
+  fits = kstObjectSubList<KstDataObject,KstCPlugin>(KST::dataObjectList);
+  it = fits.begin();
   for (; it != fits.end(); ++it) {
     (*it)->readLock();
     content = (*it)->plugin()->data()._isFit ? true : content;
     (*it)->unlock();
   }
+
   return content;
 }
 
 
 void KstViewFitsDialog::fillComboBox(const QString& str) {
+  KstCPluginList fits;
   QString fitName = str;
   bool changed = false;
+  uint i;
 
   _comboBoxFits->clear();
-  KstCPluginList fits = kstObjectSubList<KstDataObject,KstCPlugin>(KST::dataObjectList);
-  for (uint i = 0; i < fits.count(); i++) {
+  fits = kstObjectSubList<KstDataObject,KstCPlugin>(KST::dataObjectList);
+  for (i = 0; i < fits.count(); i++) {
     KstCPluginPtr fit = fits[i];
+
     fit->readLock();
+
     if (fit->plugin()->data()._isFit) {
       _comboBoxFits->insertItem(fit->tagName());
       if (fitName == fit->tagName() || fitName.isEmpty()) {
@@ -85,6 +93,7 @@ void KstViewFitsDialog::fillComboBox(const QString& str) {
         fitChanged(fitName);
       }
     }
+
     fit->unlock();
   }
 
@@ -119,16 +128,19 @@ void KstViewFitsDialog::showViewFitsDialog() {
 }
 
 void KstViewFitsDialog::fitChanged(const QString& strFit) {
+  KstCPluginList fits;
+  KstCPluginPtr plugin;
   double* params = 0L;
   double* covars = 0L;
   double chi2Nu = 0.0;
   int numParams = 0;
   int numCovars = 0;
 
-  KstCPluginList fits = kstObjectSubList<KstDataObject,KstCPlugin>(KST::dataObjectList);
-  KstCPluginPtr plugin = *(fits.findTag(strFit));
+  fits = kstObjectSubList<KstDataObject,KstCPlugin>(KST::dataObjectList);
+  plugin = *(fits.findTag(strFit));
   if (plugin) {
     plugin->readLock();
+
     const KstScalarMap& scalars = plugin->outputScalars();
     KstScalarPtr scalarChi2Nu = scalars["chi^2/nu"];
     if (scalarChi2Nu) {
@@ -139,6 +151,7 @@ void KstViewFitsDialog::fitChanged(const QString& strFit) {
 
     const KstVectorMap& vectors = plugin->outputVectors();
     KstVectorPtr vectorParam = vectors["Parameters"];
+
     if (vectorParam) {
       vectorParam->readLock();
       KstVectorPtr vectorCovar = vectors["Covariance"];
@@ -176,8 +189,11 @@ void KstViewFitsDialog::fitChanged(const QString& strFit) {
     tableFits->verticalHeader()->setLabel(numParams+1, tr("Chi^2/Nu"));
 
     if (plugin) {
+      QExplicitlySharedDataPointer<Plugin> pluginBase;
+
       plugin->readLock();
-      QExplicitlySharedDataPointer<Plugin> pluginBase = plugin->plugin();
+      pluginBase = plugin->plugin();
+
       if (pluginBase) {
         textLabelFit->setText(pluginBase->data()._readableName);
         for (int i = 0; i < numParams; i++) {

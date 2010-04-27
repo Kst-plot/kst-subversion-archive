@@ -59,8 +59,8 @@ void KstFilterDialog::show_setCurve(const QString& curveName, const QString& plo
   KstVCurveList vcurves;
   KstVCurvePtr curve;
   
-// xxx  curves = kstObjectSubList<KstDataObject, KstBaseCurve>(KST::dataObjectList);
-// xxx  vcurves = kstObjectSubList<KstBaseCurve, KstVCurve>(curves);
+  curves = kstObjectSubList<KstDataObject, KstBaseCurve>(KST::dataObjectList);
+  vcurves = kstObjectSubList<KstBaseCurve, KstVCurve>(curves);
 
   _window   = window;
   _plotName = plotName;

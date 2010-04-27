@@ -1069,6 +1069,7 @@ bool KstApp::slotFileSaveAs() {
       if (!extension.exactMatch(newName)) {
         longName = newName + QString(".kst");
       }
+
       if (_doc->saveDocument(longName, false, true)) {
         QFileInfo saveAsInfo(longName);
 
@@ -1095,7 +1096,9 @@ void KstApp::slotFileClose() {
   if (_doc->saveModified()) {
     _doc->cancelUpdate();
     _stopping = true;
+
     QTimer::singleShot(0, _doc, SLOT(deleteContents()));
+
     close();
   }
 }
@@ -1207,9 +1210,9 @@ void KstApp::slotFilePrint() {
   KstViewWindow *currentViewWindow;
   int currentPage = 0;
   int pages = 0;
-/* xxx
+
   currentViewWindow = dynamic_cast<KstViewWindow*>(activeSubWindow());
-  windows = app->subWindowList(QMdiArea::CreationOrder);
+  windows = KstApp::inst()->subWindowList(QMdiArea::CreationOrder);
 
   for (i = windows.constBegin(); i != windows.constEnd(); ++i) {
     KstViewWindow *viewWindow;
@@ -1225,7 +1228,7 @@ void KstApp::slotFilePrint() {
       }
     }
   }
-*/
+
   if (pages > 0) {
     QPrinter printer(QPrinter::HighResolution);
     KstSettings *ks = KstSettings::globalSettings();
@@ -1270,7 +1273,10 @@ void KstApp::slotFilePrint() {
   
     slotUpdateStatusMsg(QObject::tr("Printing..."));
  /* xxx 
-    // make sure defaults are set for settings that are not overwritten
+    //
+    // make sure defaults are set for settings that are not overwritten...
+    //
+
     ks->setPrintingDefaults();
   
     if (!printer.option("kde-pagesize").isEmpty()) {
