@@ -152,10 +152,10 @@ KstApp::KstApp(QWidget *parent, const char *name) : QMainWindow(parent) {
   _stopping = false;
 
   initDialogs();
-  initActions();
-  initStatusBar();
-  initToolBar();
   initMenuBar();
+  initToolBar();
+  initStatusBar();
+  initActions();
   initDocument();
 
 // xxx  KstDebug::self()->setHandler(_doc);
@@ -196,7 +196,7 @@ KstApp::KstApp(QWidget *parent, const char *name) : QMainWindow(parent) {
 
 // xxx  connect(this, SIGNAL(settingsChanged()), this, SLOT(slotSettingsChanged()));
 
-// xxx  QTimer::singleShot(0, this, SLOT(updateActions()));
+  QTimer::singleShot(0, this, SLOT(loadExtensions()));
 
   show();
 }
@@ -500,7 +500,7 @@ void KstApp::initActions() {
   connect(_actionPause, SIGNAL(toggled(bool)), this, SLOT(updatePausedState(bool)));
 
   connect(_actionDataWizard, SIGNAL(triggered()), this, SLOT(showDataWizard()));
-  connect(_actionDialogChangeFile, SIGNAL(triggered()), this, SLOT(showChangeFile()));
+  connect(_actionDialogChangeFile, SIGNAL(triggered()), this, SLOT(showChangeFileDialog()));
   connect(_actionDialogChooseColor, SIGNAL(triggered()), this, SLOT(showChooseColorDialog()));
   connect(_actionDialogDifferentiateCurves, SIGNAL(triggered()), this, SLOT(showDifferentiateCurvesDialog()));
   connect(_actionDialogChangeNpts, SIGNAL(triggered()), this, SLOT(showChangeNptsDialog()));
@@ -510,9 +510,9 @@ void KstApp::initActions() {
   connect(_actionToolBar, SIGNAL(toggled(bool)), this, SLOT(slotViewToolBar()));
 
   connect(_actionNewPlot, SIGNAL(triggered()), this, SLOT(newPlot()));
-  connect(_actionTiedZoom, SLOT(toggled(bool)), this, SLOT(tieAll()));
-  connect(_actionGroupMouse, SIGNAL(triggered()), this, SLOT(toggleMouseMode()));
-// xxx  connect(_actionDataMode, SIGNAL(toggled(bool)), this SLOT(toggleDataMode()));
+  connect(_actionTiedZoom, SIGNAL(toggled(bool)), this, SLOT(tieAll()));
+  connect(_actionGroupMouse, SIGNAL(triggered(QAction*)), this, SLOT(toggleMouseMode()));
+  connect(_actionDataMode, SIGNAL(toggled(bool)), this, SLOT(toggleDataMode()));
 
 /* xxx
   fileKeyBindings = KStdAction::keyBindings(this, SLOT(slotConfigureKeys()), actionCollection());
@@ -672,13 +672,6 @@ void KstApp::customEvent(QEvent *pEvent) {
     }
   }
 */
-}
-
-
-void KstApp::updateActions() {
-// xxx  StatusBarAction->setChecked(statusBar()->isShown());
-// xxx  QApplication::flushX();
-  QTimer::singleShot(0, this, SLOT(loadExtensions()));
 }
 
 
@@ -1506,10 +1499,19 @@ void KstApp::slotFileQuit() {
 
 void KstApp::slotViewStatusBar() {
   if (_actionStatusBar->isChecked()) {
+    statusBar()->hide();
+  } else {
     statusBar()->show();
     updateStatusBarText();
+  }
+}
+
+
+void KstApp::slotViewToolBar() {
+  if (_actionToolBar->isChecked()) {
+    _toolBar->hide();
   } else {
-    statusBar()->hide();
+    _toolBar->show();
   }
 }
 
@@ -1760,18 +1762,22 @@ KstApp::KstGraphicType KstApp::getGraphicType() {
 
 
 void KstApp::tieAll() {
+  Kst2DPlotList::const_iterator cit;
+  Kst2DPlotList::iterator it;
+  Kst2DPlotList pl;
   int tied = 0;
-  Kst2DPlotList pl = Kst2DPlot::globalPlotList();
-  for (Kst2DPlotList::ConstIterator i = pl.begin(); i != pl.end(); ++i) {
-    if ((*i)->isTied()) {
+
+  pl = Kst2DPlot::globalPlotList();
+  for (cit = pl.begin(); cit != pl.end(); ++cit) {
+    if ((*cit)->isTied()) {
       ++tied;
     } else {
       --tied;
     }
   }
 
-  for (Kst2DPlotList::Iterator i = pl.begin(); i != pl.end(); ++i) {
-    (*i)->setTied(tied <= 0);
+  for (it = pl.begin(); it != pl.end(); ++it) {
+    (*it)->setTied(tied <= 0);
   }
 
   paintAll(KstPainter::P_PAINT);

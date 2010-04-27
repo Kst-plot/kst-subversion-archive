@@ -174,17 +174,6 @@ class KST_EXPORT KstApp : public QMainWindow, private Ui_MainWindow {
     void saveProperties(QSettings *cfg);
     void readProperties(QSettings *cfg);
 
-  private slots:
-    void updateActions();
-    void loadExtensions();
-    void toggleDataMode();
-    void toggleMouseMode();
-    void slotSettingsChanged();
-    void showContextMenu(QWidget *w, const QPoint& pos);
-    void showContextMenu(const QPoint& pos);
-    void delayedDocInit();
-    void selectDataPlugin();
-
   public slots:
     void fromEnd();
     void updatePausedState(bool);
@@ -219,6 +208,7 @@ class KST_EXPORT KstApp : public QMainWindow, private Ui_MainWindow {
     void slotPaste();
 
     void slotViewStatusBar();
+    void slotViewToolBar();
     void updateStatusBarText();
     void slotUpdateStatusMsg(const QString &msg);
     void slotUpdateDataMsg(const QString &msg);
@@ -277,15 +267,23 @@ class KST_EXPORT KstApp : public QMainWindow, private Ui_MainWindow {
     void removeSubWindow(QWidget *widget);
     QMdiSubWindow *addSubWindow(QWidget *widget, Qt::WindowFlags windowFlags = 0 ); 
 
+  private slots:
+    void updateMemoryStatus();
+    void doDelayedOpens();
+    void loadExtensions();
+    void toggleDataMode();
+    void toggleMouseMode();
+    void slotSettingsChanged();
+    void showContextMenu(QWidget *w, const QPoint& pos);
+    void showContextMenu(const QPoint& pos);
+    void delayedDocInit();
+    void selectDataPlugin();
+
   signals:
     void timezoneChanged(const QString& tz, int utcOffset);
     void settingsChanged();
     void ELOGConfigure();
     void ELOGSubmitEntry(const QString& strMessage);
-
-  private slots:
-    void updateMemoryStatus();
-    void doDelayedOpens();
 
   private:
     static const QString& defaultTag;

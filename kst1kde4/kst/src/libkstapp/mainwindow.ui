@@ -934,11 +934,17 @@
    </property>
   </action>
   <action name="_actionToolBar">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>Hide &amp;Toolbar</string>
    </property>
   </action>
   <action name="_actionStatusBar">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>Hide St&amp;atusbar</string>
    </property>
