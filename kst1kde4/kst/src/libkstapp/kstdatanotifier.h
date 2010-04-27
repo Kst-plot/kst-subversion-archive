@@ -18,7 +18,7 @@
 #ifndef KSTDATANOTIFIER_H
 #define KSTDATANOTIFIER_H
 
-#include <kled.h>
+#include "kled.h"
 
 class KstDataNotifier : public KLed {
   Q_OBJECT

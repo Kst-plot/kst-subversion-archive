@@ -24,7 +24,8 @@ set(kstapp_LIB_SRCS
     kstviewwindow.cpp
 # widgets...
     kst2dplotwidget.cpp
-# xxx    kstdatanotifier.cpp
+		kled.cpp
+    kstdatanotifier.cpp
     kstdebugnotifier.cpp
     kstlogwidget.cpp
     kstviewlabelwidget.cpp
