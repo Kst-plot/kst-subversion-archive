@@ -44,7 +44,7 @@
 #include "kstcurvedialog.h"
 #include "kstcsddialog.h"
 #include "kstdatamanager.h"
-// xxx #include "kstdatanotifier.h"
+#include "kstdatanotifier.h"
 // xxx #include "kstdatawizard.h"
 #include "kstdebugdialog.h"
 #include "kstdebugnotifier.h"
@@ -121,7 +121,6 @@ KstApp::KstApp(QWidget *parent, const char *name) : QMainWindow(parent) {
 
   ::inst = this;
 
-// xxx  _dataNotifier = 0L;
   _dataBar = 0L;
   _readyBar = 0L;
   _progressBar = 0L;
@@ -279,10 +278,9 @@ void KstApp::initDialogs() {
 
 
 void KstApp::initStatusBar() {
-/* xxx
   _dataNotifier = new KstDataNotifier(statusBar());
-  statusBar()->addWidget(_dataNotifier, 0, true);
-*/
+  statusBar()->addPermanentWidget(_dataNotifier, 0);
+
   _dataBar = new StatusLabel(QString::null, statusBar());
   _dataBar->setTextFormat(Qt::PlainText);
   statusBar()->addPermanentWidget(_dataBar, 5);
@@ -1930,11 +1928,9 @@ void KstApp::samplesDown() {
 
 
 void KstApp::updateDataNotifier() {
-/* xxx
   if (_dataNotifier) {
     _dataNotifier->arrived();
   }
-*/
 }
 
 

@@ -15,7 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <assert.h>
 #include <math.h>
 
 #include <QBitmap>
@@ -25,7 +24,6 @@
 #include <QPainter>
 #include <QTimer>
 
-// xxx #include <kglobal.h>
 #include <kio/netaccess.h>
 
 #include "kstgfxpicturemousehandler.h"

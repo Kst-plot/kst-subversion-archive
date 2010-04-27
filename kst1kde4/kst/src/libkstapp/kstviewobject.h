@@ -412,7 +412,11 @@ KstObjectList<QExplicitlySharedDataPointer<T> > KstViewObject::findChildrenType(
     T *o = kst_cast<T>(*i);
 
     if (o) {
-      rc.append(o);
+      QExplicitlySharedDataPointer<T> ptr;
+
+      ptr = o;
+
+      rc.append(ptr);
     }
 
     if (recursive) {

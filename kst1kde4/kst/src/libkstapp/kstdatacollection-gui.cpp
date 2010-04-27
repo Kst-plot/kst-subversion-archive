@@ -275,13 +275,14 @@ QStringList KstGuiData::plotList(const QString& strWindow) {
 
     viewWindow = dynamic_cast<KstViewWindow*>(window);
     if (viewWindow) {
-/* xxx
-      Kst2DPlotList plots = viewWindow->view()->findChildrenType<Kst2DPlot>();
+      Kst2DPlotList::const_iterator i;
+      Kst2DPlotList plots;
 
-      for (Kst2DPlotList::ConstIterator i = plots.begin(); i != plots.end(); ++i) {
+      plots = viewWindow->view()->findChildrenType<Kst2DPlot>();
+
+      for (i = plots.begin(); i != plots.end(); ++i) {
         rc << (*i)->tagName();
       }
-*/
     }
   }
 

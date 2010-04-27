@@ -55,16 +55,19 @@ Kst2dPlotWidget::Kst2dPlotWidget(QWidget* parent, const char* name, Qt::WindowFl
   _editMultipleMode = false;
   _plot = 0L;
 
-// xxx  _up->setIcon(BarIcon("up"));
+  _up->setIcon(style()->standardIcon(QStyle::SP_ArrowUp));
   _up->setEnabled(false);
   _up->setShortcut(QKeySequence(Qt::ALT + Qt::Key_Up));
-// xxx  _down->setIcon(BarIcon("down"));
+
+  _down->setIcon(style()->standardIcon(QStyle::SP_ArrowDown));
   _down->setEnabled(false);
   _down->setShortcut(QKeySequence(Qt::ALT + Qt::Key_Down));
-// xxx  _add->setIcon(BarIcon("forward"));
+
+  _add->setIcon(style()->standardIcon(QStyle::SP_ArrowRight));
   _add->setEnabled(false);
   _add->setShortcut(QKeySequence(Qt::ALT + Qt::Key_S));
-// xxx  _remove->setIcon(BarIcon("back"));
+
+  _remove->setIcon(style()->standardIcon(QStyle::SP_ArrowLeft));
   _remove->setEnabled(false);
   _remove->setShortcut(QKeySequence(Qt::ALT + Qt::Key_R));
 

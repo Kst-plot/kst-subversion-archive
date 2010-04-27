@@ -19,8 +19,6 @@
 #include <QPainter>
 #include <QPolygon>
 
-// xxx #include <kglobal.h>
-
 #include "kstlogwidget.h"
 #include "kst.h"
 

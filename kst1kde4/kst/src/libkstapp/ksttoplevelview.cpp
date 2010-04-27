@@ -15,7 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <assert.h>
 #include <stdlib.h>
 #include <math.h>
 
@@ -373,7 +372,8 @@ void KstTopLevelView::restartMove() {
   _pressDirection = 0;
   _cursor.setShape(Qt::SizeAllCursor);
   _w->setCursor(_cursor);
-  assert(_pressTarget);
+
+  Q_ASSERT(_pressTarget);
 }
 
 
@@ -428,59 +428,62 @@ bool KstTopLevelView::handlePress(const QPoint& pos, bool shift) {
     return true;
   }
 
-  assert(_pressTarget);
-
-  _pressDirection = _pressTarget->directionFor(pos);
-
-  if (shift && _pressDirection < 1) {
-    KstViewObjectList::iterator it;
-
+  if (_pressTarget) {
+    _pressDirection = _pressTarget->directionFor(pos);
+  
+    if (shift && _pressDirection < 1) {
+      KstViewObjectList::iterator it;
+  
 // xxx    it = _selectionList.find(_pressTarget);
-
-    if (_pressTarget->isSelected()) {
-      _pressTarget->setSelected(false);
-      if (it != _selectionList.end()) {
+  
+      if (_pressTarget->isSelected()) {
+        _pressTarget->setSelected(false);
+        if (it != _selectionList.end()) {
 // xxx        _selectionList.remove(it);
-      }
-    } else {
-      _pressTarget->setSelected(true);
-      if (it == _selectionList.end()) {
+        }
+      } else {
+        _pressTarget->setSelected(true);
+        if (it == _selectionList.end()) {
 // xxx        _selectionList.append(_pressTarget);
+        }
       }
+      _pressTarget = 0L;
+      _pressDirection = -1;
+      _moveOffset = QPoint(-1, -1);
+      _moveOffsetSticky = QPoint(0, 0);
+      updateFocus(pos);
+      paint(KstPainter::P_PAINT);
+  
+      return true;
     }
-    _pressTarget = 0L;
-    _pressDirection = -1;
-    _moveOffset = QPoint(-1, -1);
-    _moveOffsetSticky = QPoint(0, 0);
-    updateFocus(pos);
-    paint(KstPainter::P_PAINT);
-
-    return true;
-  }
-
-  if (_pressDirection == 0) {
-    _moveOffset = pos - _pressTarget->position();
-    _selectionList.clear();
-    if (_pressTarget->isSelected()) {
-      recursivelyQuery(&KstViewObject::isSelected, _selectionList, false);
+  
+    if (_pressDirection == 0) {
+      _moveOffset = pos - _pressTarget->position();
+      _selectionList.clear();
+      if (_pressTarget->isSelected()) {
+        recursivelyQuery(&KstViewObject::isSelected, _selectionList, false);
+      } else {
+        recursively<bool>(&KstViewObject::setSelected, false);
+      }
     } else {
+      _selectionList.clear();
       recursively<bool>(&KstViewObject::setSelected, false);
     }
-  } else {
-    _selectionList.clear();
-    recursively<bool>(&KstViewObject::setSelected, false);
-  }
+  
+    //
+    // single click selects a single object if it is not part of the current list...
+    //
 
-  // single click selects a single object if it is not part of the current list
-  if (!_selectionList.contains(_pressTarget)) {
-    _selectionList.clear();
-    recursively<bool>(&KstViewObject::setSelected, false);
-    _selectionList.append(_pressTarget);
+    if (!_selectionList.contains(_pressTarget)) {
+      _selectionList.clear();
+      recursively<bool>(&KstViewObject::setSelected, false);
+      _selectionList.append(_pressTarget);
+    }
+    _pressTarget->setSelected(true);
+  
+    _pressTarget->setFocus(false);
+    paint(KstPainter::P_PAINT);
   }
-  _pressTarget->setSelected(true);
-
-  _pressTarget->setFocus(false);
-  paint(KstPainter::P_PAINT);
 
   return true;
 }
@@ -556,7 +559,7 @@ bool KstTopLevelView::tiedZoomPrev(const QString& plotName) {
   Kst2DPlotList::iterator i;
   bool repaint = false;
 
-// xxx  pl = findChildrenType<Kst2DPlot>(true);
+  pl = findChildrenType<Kst2DPlot>(true);
   for (i = pl.begin(); i != pl.end(); ++i) {
     Kst2DPlotPtr p = *i;
 
@@ -576,7 +579,7 @@ bool KstTopLevelView::tiedZoomMode(int zoom, bool flag, double center, int mode,
   Kst2DPlotList::Iterator i;
   bool repaint = false;
 
-// xxx  pl = findChildrenType<Kst2DPlot>(true);
+  pl = findChildrenType<Kst2DPlot>(true);
   for (i = pl.begin(); i != pl.end(); ++i) {
     Kst2DPlotPtr p = *i;
 
@@ -595,7 +598,7 @@ bool KstTopLevelView::tiedZoom(bool x, double xmin, double xmax, bool y, double 
   Kst2DPlotList::Iterator i;
   bool repaint = false;
 
-// xxx  pl = findChildrenType<Kst2DPlot>(true);
+  pl = findChildrenType<Kst2DPlot>(true);
   for (i = pl.begin(); i != pl.end(); ++i) {
     Kst2DPlotPtr p = *i;
 

@@ -16,8 +16,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <assert.h>
-
 #include <QComboBox>
 #include <QListWidget>
 #include <QMessageBox>
@@ -601,7 +599,7 @@ void KstObjectItem::update(bool recursive, int localUseCount) {
     }
 
     default:
-      assert(0);
+      Q_ASSERT(0);
   }
 }
 
@@ -615,7 +613,8 @@ void KstObjectItem::updateButtons() {
 void KstObjectItem::reload() {
   if (_rtti == RTTI_OBJ_DATA_VECTOR) {
     KstReadLocker ml(&KST::vectorList.lock());
-    KstVectorList::Iterator v = KST::vectorList.findTag(_tag);
+    KstVectorList::iterator v = KST::vectorList.findTag(_tag);
+
     if (v != KST::vectorList.end()) {
       KstRVectorPtr r;
 
@@ -628,7 +627,8 @@ void KstObjectItem::reload() {
     }
   } else if (_rtti == RTTI_OBJ_DATA_MATRIX) {
     KstReadLocker ml(&KST::matrixList.lock());
-    KstMatrixList::Iterator m = KST::matrixList.findTag(_tag);
+    KstMatrixList::iterator m = KST::matrixList.findTag(_tag);
+
     if (m != KST::matrixList.end()) {
       KstRMatrixPtr r;
 
@@ -687,13 +687,13 @@ void KstObjectItem::showMetadata() {
   if (_rtti == RTTI_OBJ_DATA_VECTOR) {
     DataSourceMetaDataDialog *dlg = new DataSourceMetaDataDialog(_dm, 0, false);
     KstRVectorPtr r;
+    KstDataSourcePtr dsp;
 
     dlg->setAttribute(Qt::WA_DeleteOnClose);
 
     KstReadLocker vl(&KST::vectorList.lock());
     KstVectorList::iterator m = KST::vectorList.findTag(_tag);
     r = kst_cast<KstRVector>(*m);
-    KstDataSourcePtr dsp;
 
     if (r) {
       r->readLock();
@@ -705,13 +705,13 @@ void KstObjectItem::showMetadata() {
   } else if (_rtti == RTTI_OBJ_DATA_MATRIX) {
     DataSourceMetaDataDialog *dlg = new DataSourceMetaDataDialog(_dm, 0, false);
     KstRMatrixPtr r;
+    KstDataSourcePtr dsp;
 
     dlg->setAttribute(Qt::WA_DeleteOnClose);
 
     KstReadLocker ml(&KST::matrixList.lock());
     KstMatrixList::iterator m = KST::matrixList.findTag(_tag);
     r = kst_cast<KstRMatrix>(*m);
-    KstDataSourcePtr dsp;
 
     if (r) {
       r->readLock();
@@ -1624,12 +1624,15 @@ void KstDataManager::contextMenu(QTreeWidgetItem *i, const QPoint& p, int col) {
       KstViewWindow *viewWindow = dynamic_cast<KstViewWindow*>(*i);
 
       if (viewWindow) {
-/* xxx       Kst2DPlotList plots = viewWindow->view()->findChildrenType<Kst2DPlot>();
+        Kst2DPlotList plots;
         Kst2DPlotList::iterator i;
 
+        plots = viewWindow->view()->findChildrenType<Kst2DPlot>();
         for (i = plots.begin(); i != plots.end(); ++i) {
-          Kst2DPlotPtr plot = *i;
-  
+          Kst2DPlotPtr plot;
+
+          plot = *i;
+/* xxx
           if (!plot->Curves.contains(c)) {
             addMenu->addAction(tr("%1 - %2").arg(v->caption()).arg(plot->tag().tag()), koi, SLOT(addToPlot(int)));
             haveAdd = true;
@@ -1638,15 +1641,17 @@ void KstDataManager::contextMenu(QTreeWidgetItem *i, const QPoint& p, int col) {
             haveRemove = true;
           }
           PlotMap[id++] = plot;
-        }*/
+*/
+        }
       }
     }
 
-/* xxx    id = m->insertItem(tr("&Add to Plot"), addMenu);
+/* xxx    
+    id = m->insertItem(tr("&Add to Plot"), addMenu);
     m->setItemEnabled(id, haveAdd);
     id = m->insertItem(tr("&Remove From Plot"), removeMenu);
-    m->setItemEnabled(id, haveRemove); */
-    
+    m->setItemEnabled(id, haveRemove); 
+*/    
   }
    
 

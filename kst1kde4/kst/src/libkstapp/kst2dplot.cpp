@@ -6136,7 +6136,7 @@ Kst2DPlotList Kst2DPlot::globalPlotList() {
     if (viewWindow) {
       Kst2DPlotList sub;
 
-// xxx sub = viewWindow->view()->findChildrenType<Kst2DPlot>(true);
+      sub = viewWindow->view()->findChildrenType<Kst2DPlot>(true);
       
       rc += sub;
     }

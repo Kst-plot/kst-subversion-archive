@@ -33,8 +33,7 @@
 class KST_EXPORT KstEditViewObjectDialog : public QDialog, public Ui::KstEditViewObjectDialog {
   Q_OBJECT
   public:
-    KstEditViewObjectDialog(QWidget* parent = 0,
-                             const char* name = 0,
+    KstEditViewObjectDialog(QWidget* parent = 0, const char* name = 0,
                              bool modal = false, Qt::WindowFlags fl = 0 );
     virtual ~KstEditViewObjectDialog();
 
@@ -64,7 +63,6 @@ class KST_EXPORT KstEditViewObjectDialog : public QDialog, public Ui::KstEditVie
 
     KstViewObjectPtr _viewObject; // the view object we are currently editing
     KstTopLevelViewPtr _top; // the top level view that invoked this dialog
-
     QList<QWidget*> _inputWidgets; // the widgets used to change properties
     QList<QWidget*> _widgets; // all other widgets
     QGridLayout* _grid;

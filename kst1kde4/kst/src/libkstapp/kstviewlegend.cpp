@@ -984,7 +984,7 @@ KstViewLegendList KstViewLegend::globalLegendList() {
     if (viewWindow) {
       KstViewLegendList sub;
 
-// xxx      sub = viewWindow->view()->findChildrenType<KstViewLegend>(true);
+      sub = viewWindow->view()->findChildrenType<KstViewLegend>(true);
       rc += sub;
     }
   }

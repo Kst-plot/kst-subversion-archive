@@ -15,18 +15,15 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "labelrenderer.h"
+#include <iostream>
 
+#include "labelrenderer.h"
 #include "enodes.h"
 #include "kstdatacollection.h"
 #include "kstdataobjectcollection.h"
 #include "kstcplugin.h"
 #include "ksttimers.h"
 #include "labelparser.h"
-
-// xxx #include <kglobal.h>
-
-#include <iostream>
 
 bool collectObjects(Label::Parsed *lp, KstVectorMap& vm, KstScalarMap& scm, KstStringMap& stm) {
   if (!lp) {

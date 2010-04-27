@@ -37,8 +37,6 @@ KstCurveDifferentiate::KstCurveDifferentiate(QWidget* parent, const char* name, 
   
   connect(Cancel_2, SIGNAL(clicked()), this, SLOT(close()));
   connect(OK_2, SIGNAL(clicked()), this, SLOT(apply()));
-  
-  // more connections to emulate kactionselector behaviour
   connect(_add, SIGNAL(clicked()), this, SLOT(addButtonClicked()));
   connect(_remove, SIGNAL(clicked()), this, SLOT(removeButtonClicked()));
   connect(_up, SIGNAL(clicked()), this, SLOT(upButtonClicked()));
@@ -46,13 +44,13 @@ KstCurveDifferentiate::KstCurveDifferentiate(QWidget* parent, const char* name, 
   connect(availableListBox, SIGNAL(highlighted(int)), this, SLOT(updateButtons()));
   connect(selectedListBox, SIGNAL(highlighted(int)), this, SLOT(updateButtons()));
   
-// xxx  _up->setIcon(BarIcon("up"));
+  _up->setIcon(style()->standardIcon(QStyle::SP_ArrowUp));
   _up->setEnabled(false);
-// xxx  _down->setIcon(BarIcon("down"));
+  _down->setIcon(style()->standardIcon(QStyle::SP_ArrowDown));
   _down->setEnabled(false);
-// xxx  _add->setIcon(BarIcon("forward"));
+  _add->setIcon(style()->standardIcon(QStyle::SP_ArrowRight));
   _add->setEnabled(false);
-// xxx  _remove->setIcon(BarIcon("back"));
+  _remove->setIcon(style()->standardIcon(QStyle::SP_ArrowLeft));
   _remove->setEnabled(false);
 
   maxLineWidth->setMaximum(KSTLINEWIDTH_MAX);
@@ -305,7 +303,7 @@ void KstCurveDifferentiate::cycleWindow(KstViewWindow *window) {
     Kst2DPlotList plotList;
     Kst2DPlotList::Iterator it;
 
-// xxx    plotList = tlv->findChildrenType<Kst2DPlot>(false);
+    plotList = tlv->findChildrenType<Kst2DPlot>(false);
     for (it = plotList.begin(); it != plotList.end(); ++it ) {
       if (_repeatAcross == 0) {
         _seqVect[0].reset();

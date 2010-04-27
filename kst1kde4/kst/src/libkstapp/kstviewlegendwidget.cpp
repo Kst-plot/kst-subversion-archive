@@ -37,13 +37,13 @@ KstViewLegendWidget::KstViewLegendWidget(QWidget* parent, const char* name, Qt::
   connect(_up, SIGNAL(clicked()), DisplayedCurveList, SIGNAL(changed()));
   connect(_down, SIGNAL(clicked()), DisplayedCurveList, SIGNAL(changed()));
 
-// xxx  _up->setIcon(BarIcon("up"));
+  _up->setIcon(style()->standardIcon(QStyle::SP_ArrowUp));
   _up->setEnabled(false);
-// xxx  _down->setIcon(BarIcon("down"));
+  _down->setIcon(style()->standardIcon(QStyle::SP_ArrowDown));
   _down->setEnabled(false);
-// xxx  _add->setIcon(BarIcon("forward"));
+  _add->setIcon(style()->standardIcon(QStyle::SP_ArrowRight));
   _add->setEnabled(false);
-// xxx  _remove->setIcon(BarIcon("back"));
+  _remove->setIcon(style()->standardIcon(QStyle::SP_ArrowLeft));
   _remove->setEnabled(false);
 
   _up->setToolTip(QObject::tr("Shortcut: Alt+Up"));
@@ -64,12 +64,14 @@ void KstViewLegendWidget::updateButtons()
 {
   bool selected = false;
   uint count = AvailableCurveList->count();
+  uint i;
 
-  for (uint i = 0; i < count; i++) {
+  for (i = 0; i < count; i++) {
     if (AvailableCurveList->item(i)->isSelected()) {
       selected = true;
     }
   }
+
   if (selected && !_add->isEnabled()) {
     _add->setEnabled(true);
   } else if (!selected && _add->isEnabled()) {
@@ -78,7 +80,8 @@ void KstViewLegendWidget::updateButtons()
 
   selected = false;
   count = DisplayedCurveList->count();
-  for (uint i = 0; i < count; i++) {
+
+  for (i = 0; i < count; i++) {
     if (DisplayedCurveList->item(i)->isSelected()) {
       selected = true;
     }

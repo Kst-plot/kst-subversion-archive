@@ -60,7 +60,7 @@ KstDataWizard::KstDataWizard(QWidget* parent, const char* name, bool modal, Qt::
   QString default_source = KST::vectorDefaults.dataSource();
 // xxx  _url->setMode(KFile::File | KFile::Directory | KFile::ExistingOnly);
 // xxx  setAppropriate(_pageFilters, false);
-// xxx  setIcon(BarIcon("kst_datawizard"));
+  setIcon(QIcon((":/kst_datawizard.png")));
 
   _kstDataRange->update();
   _kstFFTOptions->update();
@@ -562,7 +562,7 @@ void KstDataWizard::updatePlotBox() {
     Kst2DPlotList plots;
 
     if (v) {
-// xxx      plots += v->view()->findChildrenType<Kst2DPlot>();
+      plots += v->view()->findChildrenType<Kst2DPlot>();
     }
 
     for (i = plots.begin(); i != plots.end(); ++i) {
@@ -1048,7 +1048,7 @@ void KstDataWizard::finished() {
       Kst2DPlotList pl;
       Kst2DPlotList::iterator i;
 
-// xxx      pl = QCopy<Kst2DPlotList>(window->view()->findChildrenType<Kst2DPlot>());
+      pl = window->view()->findChildrenType<Kst2DPlot>();
       for ( i = pl.begin(); i != pl.end(); ++i) {
         plots += (*i).data();
       }
@@ -1727,8 +1727,7 @@ double KstDataWizard::getFontSize(KstViewWindow *w) {
   // if there are already plots in the window, use the the first one's font size...
   //
 
-// xxx  plotList = w->view()->findChildrenType<Kst2DPlot>(false);
-
+  plotList = w->view()->findChildrenType<Kst2DPlot>(false);
   if (!plotList.isEmpty()) {
     size = plotList[0]->xTickLabel()->fontSize();
   } else {

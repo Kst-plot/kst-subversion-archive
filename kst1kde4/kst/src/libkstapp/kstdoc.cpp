@@ -861,7 +861,7 @@ void KstDoc::saveDocument(QTextStream& ts, bool saveAbsoluteVectorPositions) {
       KstPlotBaseList plots;
       Kst2DPlotPtr plot;
 
-// xxx      plots = viewWindow->view()->findChildrenType<KstPlotBase>(true);
+      plots = viewWindow->view()->findChildrenType<KstPlotBase>(true);
       for (it = plots.begin(); it != plots.end(); ++it) {
         plot = kst_cast<Kst2DPlot>(*it);
         if (plot) {
@@ -1274,7 +1274,7 @@ bool KstDoc::event(QEvent *e) {
               Kst2DPlotList pl;
               Kst2DPlotList::iterator i;
 
-// xxx              pl = viewWindow->view()->findChildrenType<Kst2DPlot>(true);
+              pl = viewWindow->view()->findChildrenType<Kst2DPlot>(true);
               for (i = pl.begin(); i != pl.end(); ++i) {
                 QList<KstBaseCurve*>::const_iterator j;
 

@@ -316,12 +316,17 @@ void KstViewWindow::print(KstPainter& paint, const QSize& size, int pages, int l
     if (monochrome) {
       tlv->forEachChild2(&Kst2DPlot::pushPlotColors);
       tlv->forEachChild<const QColor&>(&Kst2DPlot::pushCurveColor, Qt::black, false);
-      // additional pushes for enhanced readability
+
       if (enhanceReadability) {
+        Kst2DPlotList::iterator it;
         Kst2DPlotList plotList;
 
-// xxx        plotList = tlv->findChildrenType<Kst2DPlot>(false);
-        for (Kst2DPlotList::Iterator it = plotList.begin(); it != plotList.end(); ++it ) {
+        //
+        // additional pushes for enhanced readability...
+        //
+
+        plotList = tlv->findChildrenType<Kst2DPlot>(false);
+        for (it = plotList.begin(); it != plotList.end(); ++it ) {
           (*it)->changeToMonochrome(pointStyleOrder, lineStyleOrder, lineWidthOrder, maxLineWidth, pointDensity);
         }
       }
@@ -343,6 +348,7 @@ void KstViewWindow::print(KstPainter& paint, const QSize& size, int pages, int l
       const QRect geom(view()->geometry());
       const double ratioWindow = double(geom.width()) / double(geom.height());
       const double ratioPrinter = double(sizeNew.width()) / double(sizeNew.height());
+
       if (ratioWindow > ratioPrinter) {
         sizeNew.setHeight(int(double(sizeNew.width()) / ratioWindow));
       } else if (ratioWindow < ratioPrinter) {
@@ -359,12 +365,15 @@ void KstViewWindow::print(KstPainter& paint, const QSize& size, int pages, int l
     if (monochrome) {
       tlv->forEachChild2(&Kst2DPlot::popPlotColors);
       tlv->forEachChild2(&Kst2DPlot::popCurveColor);
-      // additional pops to undo enhanced readability
       if (enhanceReadability) {
         Kst2DPlotList plotList;
         Kst2DPlotList::iterator it;
 
-// xxx        plostList = tlv->findChildrenType<Kst2DPlot>(false);
+        //
+        // additional pops to undo enhanced readability...
+        //
+
+        plotList = tlv->findChildrenType<Kst2DPlot>(false);
         for (it = plotList.begin(); it != plotList.end(); ++it ) {
           (*it)->undoChangeToMonochrome(pointStyleOrder, lineStyleOrder, lineWidthOrder);
         }
@@ -442,7 +451,7 @@ QString KstViewWindow::createPlotObject(const QString& suggestedName, bool promp
     //
 
     duplicate = false;
-// xxx    windows = app->subWindowList(QMdiArea::CreationOrder); 
+    windows = app->subWindowList(QMdiArea::CreationOrder); 
     for (i = windows.constBegin(); i != windows.constEnd() && !duplicate; ++i) {
       KstViewWindow *viewWindow;
 
@@ -514,7 +523,7 @@ QString KstViewWindow::createPlot(const QString& suggestedName, bool prompt) {
   Kst2DPlotPtr plot;
   QString name;
 
-// xxx  plotList = view()->findChildrenType<Kst2DPlot>(false);
+  plotList = view()->findChildrenType<Kst2DPlot>(false);
   name = createPlotObject(suggestedName, prompt);
   plot = kst_cast<Kst2DPlot>(view()->findChild(name));
 

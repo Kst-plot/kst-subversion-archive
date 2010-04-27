@@ -53,7 +53,7 @@ class KstChangeNptsDialog;
 class KstChooseColorDialog;
 class KstCurveDifferentiate;
 // xxx class KstDataManager;
-// xxx class KstDataNotifier;
+class KstDataNotifier;
 class KstDebugDialog;
 class KstDebugNotifier;
 class KstDoc;
@@ -338,7 +338,7 @@ class KST_EXPORT KstApp : public QMainWindow, private Ui_MainWindow {
     KstTopLevelView::ViewMode _viewMode;
     QString _createType;
     QPointer<KstDebugNotifier> _debugNotifier;
-// xxx    QPointer<KstDataNotifier> _dataNotifier;
+    QPointer<KstDataNotifier> _dataNotifier;
 };
 
 #endif
