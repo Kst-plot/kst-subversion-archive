@@ -94,20 +94,23 @@ KstTopLevelView::KstTopLevelView(const KstTopLevelView& tlv)
   _standardActions |= Edit;
   _backgroundColor = tlv._backgroundColor;
 
-  // these always have these values
   _type = "TopLevelView";
 }
 
 
 KstTopLevelView::~KstTopLevelView() {
-  for (QMap<QString,KstGfxMouseHandler*>::Iterator i = _handlers.begin(); i != _handlers.end(); ++i) {
-// xxx    delete i.data();
+  QMap<QString,KstGfxMouseHandler*>::iterator i;
+
+  for (i = _handlers.begin(); i != _handlers.end(); ++i) {
+    delete *i;
   }
 }
 
 
 KstViewObject* KstTopLevelView::copyObjectQuietly() const {
-  KstTopLevelView *tlv = new KstTopLevelView(*this);
+  KstTopLevelView *tlv;
+
+  tlv = new KstTopLevelView(*this);
 
   return tlv;
 }

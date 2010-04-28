@@ -23,6 +23,8 @@ set(kstapp_LIB_SRCS
     kstviewwidget.cpp
     kstviewwindow.cpp
 # widgets...
+    kcolorbutton.cpp
+    kdualcolorbutton.cpp
     kled.cpp
     kst2dplotwidget.cpp
     kstdatanotifier.cpp
