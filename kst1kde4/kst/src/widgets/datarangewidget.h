@@ -23,7 +23,6 @@ public:
   KstDataRange(QWidget *parent = 0);
   virtual ~KstDataRange(); 
 
-  void modified();
   void updateEnables();
   void update();
   void setAllowTime(bool allow);
@@ -37,7 +36,10 @@ public:
   bool isStartAbsoluteTime();
   bool isRangeRelativeTime();
 
-private Q_SLOTS:
+public slots:
+  void modified();
+
+private slots:
   void clickedCountFromEnd();
   void ClickedReadToEnd();
   void clickedDoSkip();

@@ -22,12 +22,9 @@ public:
   EditMultipleWidget(QWidget *parent = 0);
   virtual ~EditMultipleWidget(); 
 
+public slots:
   void selectAllObjects( );
   void applyFilter(const QString& filter);
-
-Q_SIGNALS:
-
-private Q_SLOTS:
 };
  
 #endif
