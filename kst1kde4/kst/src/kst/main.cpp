@@ -365,6 +365,16 @@ int main(int argc, char *argv[]) {
   KCmdLineArgs::init( argc, argv, &aboutData );
   KCmdLineArgs::addCmdLineOptions( options ); // Add our own options.
 */
+/* xxx	
+	AnyOption *opt = new AnyOption();
+	opt->addUsage(""); //SET THE USAGE/HELP
+	opt->setOption();
+	opt->setFlag();
+	
+	opt->processCommandArgs( argc, argv );
+
+*/
+
   QApplication app(argc, argv);
 // xxx  KImageIO::registerFormats();
 
