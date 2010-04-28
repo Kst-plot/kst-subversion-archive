@@ -3,8 +3,9 @@ include_directories(${CMAKE_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/src/extdate ${CMAKE_
 ########### next target ###############
 
 set(kst_SRCS 
-		main.cpp
-		kaboutdata.cpp)
+		kaboutdata.cpp
+#		kcmdlineargs.cpp
+		main.cpp)
 set(kst_RCCS kst.qrc)
 
 qt4_add_resources(kst_RCC_SRCS ${kst_RCCS})
