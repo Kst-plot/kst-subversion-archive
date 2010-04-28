@@ -313,21 +313,32 @@ class KstObjectList : public QLinkedList<T> {
     mutable KstRWLock _lock;
 };
 
-/* Does locking for you automatically. */
 template<class T, class S>
 KstObjectList<QExplicitlySharedDataPointer<S> > kstObjectSubList(KstObjectList<QExplicitlySharedDataPointer<T> >& list) {
-  list.lock().readLock();
   KstObjectList<QExplicitlySharedDataPointer<S> > rc;
-  typename KstObjectList<QExplicitlySharedDataPointer<T> >::Iterator it;
+  typename KstObjectList<QExplicitlySharedDataPointer<T> >::iterator it;
+
+  //
+  // does locking for you automatically...
+  //
+
+  list.lock().readLock();
 
   for (it = list.begin(); it != list.end(); ++it) {
-    S *x = dynamic_cast<S*>((*it).data());
+    S *x;
+
+    x = dynamic_cast<S*>((*it).data());
     if (x != 0L) {
-      rc.append(x);
+      QExplicitlySharedDataPointer<S> xPtr;
+
+      xPtr = x;
+
+      rc.append(xPtr);
     }
   }
 
   list.lock().unlock();
+
   return rc;
 }
 
