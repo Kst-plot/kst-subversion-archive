@@ -23,7 +23,6 @@ public:
   KstDataDialog(QWidget *parent = 0);
   virtual ~KstDataDialog(); 
 
-  void wasModifiedApply();
   void update();
   void show();
   void showNew(const QString& field);
@@ -42,7 +41,10 @@ public:
   void closeEvent(QCloseEvent *e);
   void cleanup();
 
-private Q_SLOTS:
+public slots:
+  void wasModifiedApply();
+
+private slots:
   void ok();
   void apply();
   void close();

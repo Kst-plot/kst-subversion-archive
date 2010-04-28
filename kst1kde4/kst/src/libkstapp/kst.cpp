@@ -475,7 +475,9 @@ void KstApp::initActions() {
 /* xxx
   connect(_actionManagerData, SIGNAL(triggered()), _dataManager, SLOT(show_I()));
   connect(_actionManagerView, SIGNAL(triggered()), _viewManager, SLOT(show_I())); 
+*/
   connect(_actionNewVector, SIGNAL(triggered()), KstVectorDialog::globalInstance(), SLOT(show())); 
+/* xxx
   connect(_actionNewCurve, SIGNAL(triggered()), KstCurveDialog::globalInstance(), SLOT(show()));
   connect(_actionNewEquation, SIGNAL(triggered()), KstEqDialog::globalInstance(), SLOT(show())); 
   connect(_actionNewHistogram, SIGNAL(triggered()), KstHsDialog::globalInstance(), SLOT(show()));

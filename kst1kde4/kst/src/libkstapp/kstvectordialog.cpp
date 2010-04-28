@@ -16,8 +16,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <assert.h>
-
 #include <QButtonGroup>
 #include <QCheckBox>
 #include <QFileDialog>
@@ -47,13 +45,14 @@ KstVectorDialog *KstVectorDialog::globalInstance() {
   if (!_inst) {
     _inst = new KstVectorDialog(KstApp::inst());
   }
+
   return _inst;
 }
 
 
 KstVectorDialog::KstVectorDialog(QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl) : KstDataDialog(parent) {
   _w = new Ui::VectorDialogWidget();
-  _w->setupUi(this);
+  _w->setupUi(_contents);
 
   setMultiple(true);
   _inTest = false;

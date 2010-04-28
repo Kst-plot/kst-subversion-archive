@@ -14,8 +14,7 @@
 #include "kstdataobjectcollection.h"
 #include "kstdoc.h"
 
-KstDataDialog::KstDataDialog(QWidget *parent) : QDialog(parent) 
-{
+KstDataDialog::KstDataDialog(QWidget *parent) : QDialog(parent) {
   setupUi(this);
 
   _dp = 0L;
@@ -30,11 +29,12 @@ KstDataDialog::KstDataDialog(QWidget *parent) : QDialog(parent)
   _editMultipleWidget->hide();
 }
 
-KstDataDialog::~KstDataDialog()
-{}
 
-void KstDataDialog::ok()
-{
+KstDataDialog::~KstDataDialog() {
+}
+
+
+void KstDataDialog::ok() {
   _ok->setEnabled(false);
   _apply->setEnabled(false);
   _cancel->setEnabled(false);
@@ -57,8 +57,8 @@ void KstDataDialog::ok()
   }
 }
 
-void KstDataDialog::apply()
-{
+
+void KstDataDialog::apply() {
   if (!_newDialog && !_dp) {
     if (editObject()) {
       _apply->setEnabled(false);
@@ -66,36 +66,36 @@ void KstDataDialog::apply()
   }
 }
 
-void KstDataDialog::close()
-{
+
+void KstDataDialog::close() {
   _dp = 0L;
   QDialog::close();
 }
 
-void KstDataDialog::wasModifiedApply()
-{
+
+void KstDataDialog::wasModifiedApply() {
   if (!_newDialog && _dp) {
     _apply->setEnabled(true);
   }
 }
 
-void KstDataDialog::reject()
-{
+
+void KstDataDialog::reject() {
   _dp = 0L;
   QDialog::reject();
 }
 
-void KstDataDialog::update()
-{
+
+void KstDataDialog::update() {
 }
 
-void KstDataDialog::show()
-{
+
+void KstDataDialog::show() {
   showNew(QString::null);
 }
 
-void KstDataDialog::showNew(const QString& field)
-{
+
+void KstDataDialog::showNew(const QString& field) {
   Q_UNUSED(field) //used by plugin dialogs which inherit this class
 
   _newDialog = true;
@@ -118,8 +118,8 @@ void KstDataDialog::showNew(const QString& field)
   _cancel->setEnabled(true);
 }
 
-void KstDataDialog::showEdit(const QString& field)
-{
+
+void KstDataDialog::showEdit(const QString& field) {
   _newDialog = false;
   _dp = findObject(field);
 
@@ -128,7 +128,7 @@ void KstDataDialog::showEdit(const QString& field)
   } else {
     if (_multiple) {
 	    _editMultiple->show();
-	    _editMultiple->setText(i18n("Edit Multiple >>"));
+	    _editMultiple->setText(QObject::tr("Edit Multiple >>"));
 	    _editMultipleWidget->hide();
 	    _editMultipleMode = false;
     }
@@ -148,26 +148,26 @@ void KstDataDialog::showEdit(const QString& field)
   }
 }
 
-QString KstDataDialog::editTitle()
-{
+
+QString KstDataDialog::editTitle() {
   return QString::null;
 }
 
-QString KstDataDialog::newTitle()
-{
+
+QString KstDataDialog::newTitle() {
   return QString::null;
 }
 
-void KstDataDialog::fillFieldsForEdit()
-{
+
+void KstDataDialog::fillFieldsForEdit() {
 }
 
-void KstDataDialog::fillFieldsForNew()
-{
+
+void KstDataDialog::fillFieldsForNew() {
 }
 
-KstObjectPtr KstDataDialog::findObject( const QString & name )
-{
+
+KstObjectPtr KstDataDialog::findObject( const QString & name ) {
   KstObjectPtr obj;
 
   KST::dataObjectList.lock().readLock();
@@ -177,32 +177,32 @@ KstObjectPtr KstDataDialog::findObject( const QString & name )
   return obj;
 }
 
-bool KstDataDialog::newObject()
-{
+
+bool KstDataDialog::newObject() {
   return false;
 }
 
-bool KstDataDialog::editObject()
-{
+
+bool KstDataDialog::editObject() {
   return false;
 }
 
-void KstDataDialog::populateEditMultiple()
-{
+
+void KstDataDialog::populateEditMultiple() {
 }
 
-bool KstDataDialog::multiple()
-{
+
+bool KstDataDialog::multiple() {
   return _multiple;
 }
 
-void KstDataDialog::setMultiple(bool multiple)
-{
+
+void KstDataDialog::setMultiple(bool multiple) {
   _multiple = multiple;
 }
 
-void KstDataDialog::toggleEditMultiple()
-{
+
+void KstDataDialog::toggleEditMultiple() {
   if (_multiple) {
 	  if (_editMultipleMode) {
 	    cleanup();
@@ -217,7 +217,7 @@ void KstDataDialog::toggleEditMultiple()
 
 	    populateEditMultiple();
 	    _editMultipleWidget->show();
-	    _editMultiple->setText(i18n("Edit Multiple <<"));
+	    _editMultiple->setText(QObject::tr("Edit Multiple <<"));
 	    adjustSize();
 	    resize(minimumSizeHint());
 	    setFixedHeight(height());
@@ -225,13 +225,11 @@ void KstDataDialog::toggleEditMultiple()
   }
 }
 
-void KstDataDialog::closeEvent(QCloseEvent *e)
-{
+void KstDataDialog::closeEvent(QCloseEvent *e) {
   cleanup();
   QWidget::closeEvent(e);
 }
 
-void KstDataDialog::cleanup()
-{
-}
 
+void KstDataDialog::cleanup() {
+}

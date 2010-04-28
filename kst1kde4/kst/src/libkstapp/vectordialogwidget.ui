@@ -11,14 +11,14 @@
     <height>432</height>
    </rect>
   </property>
-  <layout class="QGridLayout">
+  <layout class="QVBoxLayout">
    <property name="margin">
     <number>0</number>
    </property>
    <property name="spacing">
     <number>0</number>
    </property>
-   <item row="0" column="0">
+   <item>
     <widget class="QGroupBox" name="sourceGroup">
      <property name="title">
       <string>Source</string>
@@ -69,7 +69,7 @@
      </layout>
     </widget>
    </item>
-   <item row="2" column="0">
+   <item>
     <widget class="KstDataRange" name="_kstDataRange" native="true">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
@@ -79,7 +79,7 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="0">
+   <item>
     <widget class="QGroupBox" name="_rvectorGroup">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
@@ -185,7 +185,7 @@
      </layout>
     </widget>
    </item>
-   <item row="3" column="0">
+   <item>
     <widget class="QGroupBox" name="_svectorGroup">
      <property name="enabled">
       <bool>false</bool>
