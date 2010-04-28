@@ -15,7 +15,7 @@
   </property>
   <layout class="QGridLayout">
    <item row="0" column="0">
-    <widget class="Q3GroupBox" name="groupBox1">
+    <widget class="QGroupBox" name="groupBox1">
      <property name="title">
       <string>Settings</string>
      </property>

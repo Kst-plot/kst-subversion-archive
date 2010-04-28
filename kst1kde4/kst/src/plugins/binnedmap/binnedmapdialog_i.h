@@ -18,17 +18,16 @@
 #ifndef BINNEDMAPDIALOGI_H
 #define BINNEDMAPDIALOGI_H
 
+#include "ui_binnedmapdialogwidget.h"
 #include "binnedmap.h"
 
 #include "kstdatadialog.h"
 #include "kst_export.h"
 
-class BinnedMapDialogWidget;
-
 class KST_EXPORT BinnedMapDialogI : public KstDataDialog {
   Q_OBJECT
   public:
-    BinnedMapDialogI(QWidget* parent = 0, const char* name = 0, bool modal = false, WFlags fl = 0);
+    BinnedMapDialogI(QWidget* parent = 0, const char* name = 0, bool modal = false, Qt::WindowFlags fl = 0);
     virtual ~BinnedMapDialogI();
 
   public slots:
@@ -46,7 +45,7 @@ class KST_EXPORT BinnedMapDialogI : public KstDataDialog {
   private:
     bool editSingleObject(BinnedMapPtr cps);
     static const QString& defaultTag;
-    BinnedMapDialogWidget *_w;
+    Ui_BinnedMapDialogWidget *_w;
 };
 
 #endif

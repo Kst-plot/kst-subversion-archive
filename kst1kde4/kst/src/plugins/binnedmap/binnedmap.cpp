@@ -47,7 +47,7 @@ KST_KEY_DATAOBJECT_PLUGIN( binnedmap )
 
 K_EXPORT_COMPONENT_FACTORY( kstobject_binnedmap, KGenericFactory<BinnedMap>( "kstobject_binnedmap" ) )
 
-BinnedMap::BinnedMap( QObject */*parent*/, const char */*name*/, const QStringList &/*args*/ )
+BinnedMap::BinnedMap( QObject */*parent*/, const QStringList &/*args*/ )
     : KstDataObject() {
   _typeString = i18n("Plugin");
   _type = "Plugin";
@@ -171,27 +171,33 @@ void BinnedMap::setZ(KstVectorPtr new_z) {
 
 void BinnedMap::setMap(const QString &name) {
   QString tname;
+  KstMatrixPtr m;
 
   if (name.isEmpty()) {
     tname = i18n("map");
   } else {
     tname = name;
   }
+  
   KstWriteLocker blockMatrixUpdates(&KST::matrixList.lock());
-  KstMatrixPtr m = new KstMatrix(KstObjectTag(tname, tag()), this);
+  
+  m = new KstMatrix(KstObjectTag(tname, tag()), this);
   _outputMatrices.insert(MAP, m);
 }
 
 void BinnedMap::setHitsMap(const QString &name) {
   QString tname;
+  KstMatrixPtr m;
 
   if (name.isEmpty()) {
     tname = i18n("hits map");
   } else {
     tname = name;
   }
+
   KstWriteLocker blockMatrixUpdates(&KST::matrixList.lock());
-  KstMatrixPtr m = new KstMatrix(KstObjectTag(tname, tag()), this);
+
+  m = new KstMatrix(KstObjectTag(tname, tag()), this);
   _outputMatrices.insert(HITSMAP, m);
 }
 
@@ -359,18 +365,22 @@ QString BinnedMap::propertyString() const {
 
 
 KstDataObjectPtr BinnedMap::makeDuplicate(KstDataObjectDataObjectMap&) {
-  return 0;
+  return KstDataObjectPtr();
 }
 
 
 void BinnedMap::showNewDialog() {
-  BinnedMapDialogI *dialog = new BinnedMapDialogI;
+  BinnedMapDialogI *dialog;
+
+  dialog = new BinnedMapDialogI;
   dialog->show();
 }
 
 
 void BinnedMap::showEditDialog() {
-  BinnedMapDialogI *dialog = new BinnedMapDialogI;
+  BinnedMapDialogI *dialog;
+
+  dialog = new BinnedMapDialogI;
   dialog->showEdit(tagName());
 }
 
@@ -382,6 +392,7 @@ void BinnedMap::load(const QDomElement &e) {
 
   while (!n.isNull()) {
     QDomElement e = n.toElement();
+
     if (!e.isNull()) {
       if (e.tagName() == "tag") {
         setTagName(KstObjectTag::fromString(e.text()));
@@ -390,6 +401,7 @@ void BinnedMap::load(const QDomElement &e) {
       } else if (e.tagName() == "omatrix") {
         KstWriteLocker blockMatrixUpdates(&KST::matrixList.lock());
         KstMatrixPtr m;
+
         m = new KstMatrix(KstObjectTag(e.text(), tag()), this);
         _outputMatrices.insert(e.attribute("name"), m);
       } else if (e.tagName() == "minX") {
@@ -414,18 +426,21 @@ void BinnedMap::load(const QDomElement &e) {
 
 void BinnedMap::save(QTextStream& ts, const QString& indent) {
   QString l2 = indent + "  ";
+  KstVectorMap::iterator iv;
+  KstMatrixMap::Iterator im;
+
   ts << indent << "<plugin name=\"Binned Map\">" << endl;
   ts << l2 << "<tag>" << Qt::escape(tagName()) << "</tag>" << endl;
 
-  for (KstVectorMap::Iterator i = _inputVectors.begin(); i != _inputVectors.end(); ++i) {
-    ts << l2 << "<ivector name=\"" << Qt::escape(i.key()) << "\">"
-        << Qt::escape(i.data()->tagName())
+  for (iv = _inputVectors.begin(); iv != _inputVectors.end(); ++iv) {
+    ts << l2 << "<ivector name=\"" << Qt::escape(iv.key()) << "\">"
+        << Qt::escape((*iv)->tagName())
         << "</ivector>" << endl;
   }
 
-  for (KstMatrixMap::Iterator i = _outputMatrices.begin(); i != _outputMatrices.end(); ++i) {
-    ts << l2 << "<omatrix name=\"" << Qt::escape(i.key());
-    ts << "\">" << Qt::escape(i.data()->tagName())
+  for (im = _outputMatrices.begin(); im != _outputMatrices.end(); ++im) {
+    ts << l2 << "<omatrix name=\"" << Qt::escape(im.key());
+    ts << "\">" << Qt::escape((*im)->tagName())
         << "</omatrix>" << endl;
   }
   ts << 12 << "<minX>" << xMin() << "</minX>" << endl;

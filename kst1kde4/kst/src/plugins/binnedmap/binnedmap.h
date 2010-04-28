@@ -17,12 +17,14 @@
 #ifndef BINNEDMAP_H 
 #define BINNEDMAP_H 
 
+#include <QExplicitlySharedDataPointer>
+
 #include <kstdataobject.h>
 
 class BinnedMap : public KstDataObject {
   Q_OBJECT
   public:
-    BinnedMap(QObject *parent, const char *name, const QStringList &args);
+    BinnedMap(QObject *parent, const QStringList &args);
     virtual ~BinnedMap();
 
     static void autoSize(KstVectorPtr x, KstVectorPtr y, int *nx, double *minx, double *maxx, int *ny, double *miny, double *maxy);
@@ -92,7 +94,7 @@ class BinnedMap : public KstDataObject {
     bool _autoBin;
 };
 
-typedef QExplicitlySharedPointer<BinnedMap> BinnedMapPtr;
+typedef QExplicitlySharedDataPointer<BinnedMap> BinnedMapPtr;
 typedef KstObjectList<BinnedMapPtr> BinnedMapList;
 
 #endif
