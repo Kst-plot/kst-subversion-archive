@@ -26,7 +26,7 @@
 #include <kimageio.h>
 
 #include "kaboutdata.h"
-// #include "kcmdlineargs.h"
+#include "anyoption.h" //replacement for kcmdlineargs
 
 #include "dialoglauncher-gui.h"
 #include "kst.h"
