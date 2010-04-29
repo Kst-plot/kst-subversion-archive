@@ -46,9 +46,9 @@ KstScalar::KstScalar(KstObjectTag in_tag, KstObject *provider, double val, bool 
     do {
       _tag = nt.arg(iAnonymousScalarCounter++);
     } while (KstData::self()->vectorTagNameNotUniqueInternal(_tag));  // FIXME: why vector?
-    KstObject::setTagName(KstObjectTag(_tag, in_tag.context()));
+    KstObject::setTag(KstObjectTag(_tag, in_tag.context()));
   } else {
-    KstObject::setTagName(KST::suggestUniqueScalarTag(in_tag));
+    KstObject::setTag(KST::suggestUniqueScalarTag(in_tag));
   }
 
 
@@ -69,7 +69,7 @@ KstScalar::KstScalar(const QDomElement& e)
     QDomElement e = n.toElement();
     if(!e.isNull()) {
       if (e.tagName() == "tag") {
-        setTagName(KstObjectTag::fromString(e.text()));
+        setTag(KstObjectTag::fromString(e.text()));
       } else if (e.tagName() == "orphan") {
         _orphan = true;
       } else if (e.tagName() == "value") {
@@ -183,7 +183,7 @@ void KstScalar::setEditable(bool editable) {
 }
 
 
-void KstScalar::setTagName(const KstObjectTag& newTag) {
+void KstScalar::setTag(const KstObjectTag& newTag) {
   if (newTag == tag()) {
     return;
   }

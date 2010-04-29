@@ -397,7 +397,7 @@ public:
   double verticalSizeFactor();
   double horizontalSizeFactor();
 
-  virtual void setTagName(const KstObjectTag& newTag);
+  virtual void setTag(const KstObjectTag& newTag);
 
 protected:
   QHash<QString, KstScalarPtr> _scalars;

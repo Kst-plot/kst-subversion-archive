@@ -46,9 +46,11 @@ KstCurveDialog *KstCurveDialog::globalInstance() {
 
 
 KstCurveDialog::KstCurveDialog(QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl) : KstDataDialog(parent) {
+printf("kcd0\n");
   _w = new Ui::CurveDialogWidget();
+printf("kcd1\n");
   _w->setupUi(_contents);
-
+printf("kcd2\n");
   setMultiple(true);
 
   connect(_w->_xVector, SIGNAL(newVectorCreated(const QString&)), this, SIGNAL(modified()));
@@ -617,7 +619,7 @@ bool KstCurveDialog::editObject() {
     }
 
     cp->writeLock();
-    cp->setTagName(KstObjectTag(tag_name, cp->tag().context())); // FIXME: doesn't allow changing tag context
+    cp->setTag(KstObjectTag(tag_name, cp->tag().context())); // FIXME: doesn't allow changing tag context
     QString legend_text = _legendText->text();
     if (legend_text==defaultTag) {
       cp->setLegendText(QString(""));

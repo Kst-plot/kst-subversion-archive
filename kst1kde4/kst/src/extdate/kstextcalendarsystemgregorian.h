@@ -49,7 +49,7 @@ class ExtCalendarSystemGregorianPrivate;
 class ExtCalendarSystemGregorian: public ExtCalendarSystem
 {
 public:
-  ExtCalendarSystemGregorian (const KLocale * locale = 0);
+  ExtCalendarSystemGregorian (const QLocale * locale = 0);
   virtual ~ExtCalendarSystemGregorian ();
 
   virtual int year (const ExtDate & date) const;

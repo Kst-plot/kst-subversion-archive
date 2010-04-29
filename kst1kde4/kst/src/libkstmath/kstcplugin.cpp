@@ -49,7 +49,7 @@ KstCPlugin::KstCPlugin(const QDomElement& pluginElement)
     QDomElement e = n.toElement();
     if (!e.isNull()) {
       if (e.tagName() == "tag") {
-        setTagName(KstObjectTag::fromString(e.text()));
+        setTag(KstObjectTag::fromString(e.text()));
       } else if (e.tagName() == "name") {
         pluginName = e.text();
       } else if (e.tagName() == "ivector") {
@@ -871,15 +871,15 @@ KstDataObjectPtr KstCPlugin::makeDuplicate(KstDataObjectDataObjectMap& duplicate
   //
 
   plugin->setPlugin(_plugin);
-  plugin->setTagName(KstObjectTag(tag().tag() + "'", tag().context())); // FIXME: unique tag generation method
+  plugin->setTag(KstObjectTag(tag().tag() + "'", tag().context())); // FIXME: unique tag generation method
   duplicatedMap.insert(KstDataObjectPtr(this), KstDataObjectPtr(plugin));  
 
   return KstDataObjectPtr(plugin);
 }
 
 
-void KstCPlugin::setTagName(const KstObjectTag& tag) {
-  KstObject::setTagName(tag);
+void KstCPlugin::setTag(const KstObjectTag& tag) {
+  KstObject::setTag(tag);
 }
 
 
@@ -893,17 +893,17 @@ void KstCPlugin::setTagName(const QString &in_tag) {
     return;
   }
 
-  KstObject::setTagName(newTag);
+  KstObject::setTag(newTag);
 
   for (iterV = outputVectors().begin(); iterV != outputVectors().end(); ++iterV) {
-    (*iterV)->setTagName(KstObjectTag((*iterV)->tag().tag(), tag()));
+    (*iterV)->setTag(KstObjectTag((*iterV)->tag().tag(), tag()));
   }
 
   for (iterS = outputScalars().begin(); iterS != outputScalars().end(); ++iterS) {
-    (*iterS)->setTagName(KstObjectTag((*iterS)->tag().tag(), tag()));
+    (*iterS)->setTag(KstObjectTag((*iterS)->tag().tag(), tag()));
   }
 
   for (iterStr = outputStrings().begin(); iterStr != outputStrings().end(); ++iterStr) {
-    (*iterStr)->setTagName(KstObjectTag((*iterStr)->tag().tag(), tag()));
+    (*iterStr)->setTag(KstObjectTag((*iterStr)->tag().tag(), tag()));
   }
 }

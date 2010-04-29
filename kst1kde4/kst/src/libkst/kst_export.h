@@ -18,11 +18,10 @@
 #ifndef KST_EXPORT_H
 #define KST_EXPORT_H
 
-#include <kdeversion.h>
-#include <kdemacros.h>
+#include <QtGlobal>
 
-#define KST_EXPORT KDE_EXPORT
-#define KSTMDI_EXPORT KDE_EXPORT
-#define KJSEMBED_EXPORT KDE_EXPORT
+#define KST_EXPORT Q_DECL_EXPORT 
+#define KSTMDI_EXPORT Q_DECL_EXPORT 
+#define KJSEMBED_EXPORT Q_DECL_EXPORT 
 
 #endif

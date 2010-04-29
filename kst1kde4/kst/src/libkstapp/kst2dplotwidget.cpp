@@ -1639,9 +1639,9 @@ void Kst2dPlotWidget::fillPlot( Kst2DPlotPtr plot ) {
     QString tag = _title->text().trimmed();
 
     if (tag.isEmpty()) {
-      plot->setTagName(KstObjectTag(KST::suggestPlotName(), KstObjectTag::globalTagContext));
+      plot->setTag(KstObjectTag(KST::suggestPlotName(), KstObjectTag::globalTagContext));
     } else {
-      plot->setTagName(KstObjectTag(tag+"randomtextasholdingpattern", KstObjectTag::globalTagContext));
+      plot->setTag(KstObjectTag(tag+"randomtextasholdingpattern", KstObjectTag::globalTagContext));
       if (KstData::self()->viewObjectNameNotUnique(tag)) {
         int j = 1;
 
@@ -1650,7 +1650,7 @@ void Kst2dPlotWidget::fillPlot( Kst2DPlotPtr plot ) {
         }
         tag = tag + "-" + QString::number(j);
       }
-      plot->setTagName(KstObjectTag(tag, KstObjectTag::globalTagContext));
+      plot->setTag(KstObjectTag(tag, KstObjectTag::globalTagContext));
     }
   }
 

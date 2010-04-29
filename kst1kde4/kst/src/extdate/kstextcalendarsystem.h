@@ -28,7 +28,7 @@
 
 #include "kstextdatetime.h"
 
-class KLocale;
+class QLocale;
 
 namespace KST {
 class ExtCalendarSystemPrivate;
@@ -52,7 +52,7 @@ public:
    *
    * @param locale It will use this locale for translations, 0 means global.
    */
-  ExtCalendarSystem(const KLocale * locale = 0);
+  ExtCalendarSystem(const QLocale * locale = 0);
 
   /**
    * Descructor.
@@ -349,7 +349,7 @@ public:
   virtual bool isSolar() const = 0;
 
 protected:
-  const KLocale * locale() const;
+  const QLocale * locale() const;
 
 private:
   ExtCalendarSystemPrivate * d;

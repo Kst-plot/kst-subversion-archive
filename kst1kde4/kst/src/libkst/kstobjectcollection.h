@@ -21,8 +21,6 @@
 #include <QHash>
 #include <QMultiHash>
 
-#include <kdebug.h>
-
 #include "kstobject.h"
 
 // Forward Declarations
@@ -425,7 +423,7 @@ void KstObjectCollection<T>::doRename(T *o, const KstObjectTag& newTag) {
 
   _root.removeDescendant(o, &_index);
 
-  o->KstObject::setTagName(newTag);
+  o->KstObject::setTag(newTag);
 
   if (_root.addDescendant(o, &_index)) {
     if (_updateDisplayTags) {

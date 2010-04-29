@@ -118,7 +118,7 @@ void KstCSD::commonConstructor(const QString& in_tag, KstVectorPtr in_V, double 
   _typeString = QObject::tr("Spectrogram");
   _type = "Spectrogram";
   _inputVectors[INVECTOR] = in_V;
-  KstObject::setTagName(KstObjectTag::fromString(in_tag));
+  KstObject::setTag(KstObjectTag::fromString(in_tag));
   _frequency = in_freq;
   _average = in_average;
   _apodize = in_apodize;
@@ -496,6 +496,6 @@ void KstCSD::setTagName(const QString &in_tag) {
     return;
   }
 
-  KstObject::setTagName(newTag);
-  (*_outMatrix)->setTagName(KstObjectTag("csd", tag()));
+  KstObject::setTag(newTag);
+  (*_outMatrix)->setTag(KstObjectTag("csd", tag()));
 }

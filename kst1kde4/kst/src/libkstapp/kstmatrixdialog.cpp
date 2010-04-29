@@ -777,7 +777,7 @@ bool KstMatrixDialog::editObject() {
     }
 
     mp->writeLock();
-    mp->setTagName(KstObjectTag(tagName, mp->tag().context())); // FIXME: can't change tag context
+    mp->setTag(KstObjectTag(tagName, mp->tag().context())); // FIXME: can't change tag context
     mp->unlock();
 
     //

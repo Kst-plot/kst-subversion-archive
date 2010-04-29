@@ -23,6 +23,7 @@
 #include <QMetaObject>
 #include <QPainter>
 #include <QTimer>
+#include <QTextStream>
 
 #include <kio/netaccess.h>
 

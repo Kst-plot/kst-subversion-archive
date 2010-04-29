@@ -27,9 +27,6 @@
 #include <QString>
 #include <QStringList>
 
-#include <kdebug.h>
-#include <kglobal.h>
-
 #include "kst_export.h"
 #include "rwlock.h"
 
@@ -205,14 +202,14 @@ class KST_EXPORT KstObject : public QObject, public QSharedData, public KstRWLoc
     virtual QString tagName() const;
     virtual KstObjectTag& tag();
     virtual const KstObjectTag& tag() const;
-    virtual void setTagName(const KstObjectTag& tag);
-
+    virtual void setTag(const KstObjectTag& tag);
     virtual QString tagLabel() const;
-    // Returns count - 2 to account for "this" and the list pointer, therefore
+
+    // returns count - 2 to account for "this" and the list pointer, therefore
     // you MUST have a reference-counted pointer to call this function
     virtual int getUsage() const;
 
-    // Returns true if update has already been done
+    // returns true if update has already been done
     virtual bool checkUpdateCounter(int update_counter);
 
     int operator==(const QString&) const;
@@ -239,8 +236,6 @@ class KST_EXPORT KstObject : public QObject, public QSharedData, public KstRWLoc
 };
 
 typedef QExplicitlySharedDataPointer<KstObject> KstObjectPtr;
-
-#include <qlinkedlist.h>
 
 template<class T>
 class KstObjectList : public QLinkedList<T> {

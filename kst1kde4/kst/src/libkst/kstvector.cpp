@@ -50,10 +50,10 @@ KstVector::KstVector(KstObjectTag in_tag, int size, KstObject *provider, bool is
     QString nt = QObject::tr("Anonymous Vector %1");
 
     do {
-      KstObject::setTagName(KstObjectTag(nt.arg(anonymousVectorCounter++), in_tag.context()));
+      KstObject::setTag(KstObjectTag(nt.arg(anonymousVectorCounter++), in_tag.context()));
     } while (KstData::self()->vectorTagNameNotUnique(tagName(), false));
   } else {
-    KstObject::setTagName(KST::suggestUniqueVectorTag(in_tag));
+    KstObject::setTag(KST::suggestUniqueVectorTag(in_tag));
   }
 
   _v = static_cast<double*>(KST::malloc(size * sizeof(double)));
@@ -110,10 +110,10 @@ KstVector::KstVector(const QDomElement& e)
     QString nt = QObject::tr("Anonymous Vector %1");
 
     do {
-      KstObject::setTagName(KstObjectTag(nt.arg(anonymousVectorCounter++), in_tag.context()));
+      KstObject::setTag(KstObjectTag(nt.arg(anonymousVectorCounter++), in_tag.context()));
     } while (KstData::self()->vectorTagNameNotUnique(tagName(), false));
   } else {
-    KstObject::setTagName(KST::suggestUniqueVectorTag(in_tag));
+    KstObject::setTag(KST::suggestUniqueVectorTag(in_tag));
   }
 
   createScalars();
@@ -334,19 +334,19 @@ void KstVector::renameScalars() {
     KstWriteLocker sl(&KST::scalarList.lock());
     KST::scalarList.setUpdateDisplayTags(false);
 
-    _scalars["max"]->setTagName(KstObjectTag("Max", tag()));
-    _scalars["min"]->setTagName(KstObjectTag("Min", tag()));
-    _scalars["maxindex"]->setTagName(KstObjectTag("MaxIndex", tag()));
-    _scalars["minindex"]->setTagName(KstObjectTag("MinIndex", tag()));
-    _scalars["last"]->setTagName(KstObjectTag("Last", tag()));
-    _scalars["first"]->setTagName(KstObjectTag("First", tag()));
-    _scalars["mean"]->setTagName(KstObjectTag("Mean", tag()));
-    _scalars["sigma"]->setTagName(KstObjectTag("Sigma", tag()));
-    _scalars["rms"]->setTagName(KstObjectTag("Rms", tag()));
-    _scalars["ns"]->setTagName(KstObjectTag("NS", tag()));
-    _scalars["sum"]->setTagName(KstObjectTag("Sum", tag()));
-    _scalars["sumsquared"]->setTagName(KstObjectTag("SumSquared", tag()));
-    _scalars["minpos"]->setTagName(KstObjectTag("MinPos", tag()));
+    _scalars["max"]->setTag(KstObjectTag("Max", tag()));
+    _scalars["min"]->setTag(KstObjectTag("Min", tag()));
+    _scalars["maxindex"]->setTag(KstObjectTag("MaxIndex", tag()));
+    _scalars["minindex"]->setTag(KstObjectTag("MinIndex", tag()));
+    _scalars["last"]->setTag(KstObjectTag("Last", tag()));
+    _scalars["first"]->setTag(KstObjectTag("First", tag()));
+    _scalars["mean"]->setTag(KstObjectTag("Mean", tag()));
+    _scalars["sigma"]->setTag(KstObjectTag("Sigma", tag()));
+    _scalars["rms"]->setTag(KstObjectTag("Rms", tag()));
+    _scalars["ns"]->setTag(KstObjectTag("NS", tag()));
+    _scalars["sum"]->setTag(KstObjectTag("Sum", tag()));
+    _scalars["sumsquared"]->setTag(KstObjectTag("SumSquared", tag()));
+    _scalars["minpos"]->setTag(KstObjectTag("MinPos", tag()));
 
     KST::scalarList.setUpdateDisplayTags(true);
   }
@@ -599,7 +599,7 @@ void KstVector::save(QTextStream &ts, const QString& indent, bool saveAbsolutePo
 }
 
 
-void KstVector::setTagName(const KstObjectTag& newTag) {
+void KstVector::setTag(const KstObjectTag& newTag) {
   if (newTag == tag()) {
     return;
   }

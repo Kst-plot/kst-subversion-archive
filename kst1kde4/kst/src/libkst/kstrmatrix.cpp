@@ -89,7 +89,6 @@ KstRMatrix::KstRMatrix(const QDomElement &e) : KstMatrix(KstObjectTag::invalidTa
   }
 
   if (in_provider) {
-    // provider overrides filename
     in_file = in_provider;
   }
 
@@ -97,9 +96,8 @@ KstRMatrix::KstRMatrix(const QDomElement &e) : KstMatrix(KstObjectTag::invalidTa
   if (in_file) {
     tag.setContext(in_file->tag().fullTag());
   }
-  setTagName(tag);
+  setTag(tag);
 
-  // call common constructor
   commonConstructor(in_file, in_field, in_xStart, in_yStart, in_xNumSteps, in_yNumSteps, in_doAve, in_doSkip, in_skip);
 }
 
@@ -139,7 +137,7 @@ void KstRMatrix::change(KstDataSourcePtr file, const QString &field,
                         bool doAve, bool doSkip, int skip) {
   Q_ASSERT(myLockStatus() == KstRWLock::WRITELOCKED);
 
-  setTagName(tag);
+  setTag(tag);
   commonConstructor(file, field, xStart, yStart, xNumSteps, yNumSteps, doAve, doSkip, skip);
 
   setDirty(true);
@@ -600,7 +598,7 @@ void KstRMatrix::changeFile(KstDataSourcePtr file) {
   if (_file) {
     _file->writeLock();
   }
-  setTagName(KstObjectTag(tag().tag(), _file->tag(), false));
+  setTag(KstObjectTag(tag().tag(), _file->tag(), false));
   reset();
   if (_file) {
     _file->unlock();

@@ -13,14 +13,14 @@
 **
 **********************************************************************/
 
-#include "kstextdatetime.h"
-#include <qregexp.h>
-
-#include <kglobal.h>
-#include <klocale.h>
-#include <kdebug.h>
-#include <assert.h>
 #include <time.h>
+
+#include <QLocale>
+#include <QObject>
+#include <QRegExp>
+#include <QStringList>
+
+#include "kstextdatetime.h"
 
 namespace KST {
 static const uint SECS_PER_DAY  = 86400;
@@ -46,25 +46,21 @@ static const uint MSECS_PER_MIN = 60000;
 uint ExtDate::m_monthLength[] = {31, 28, 31, 30,  31,  30,  31,  31,  30,  31,  30,  31};
 uint ExtDate::m_monthOrigin[] = { 0, 30, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334};
 
-#ifndef I18N_NOOP2
-#define I18N_NOOP2(x, y) I18N_NOOP(y)
-#endif
-
 const char* const ExtDate::m_shortMonthNames[12] = {
-	I18N_NOOP("Jan"), I18N_NOOP("Feb"), I18N_NOOP("Mar"), I18N_NOOP("Apr"), I18N_NOOP2("Short form may", "May"), I18N_NOOP("Jun"),
-	I18N_NOOP("Jul"), I18N_NOOP("Aug"), I18N_NOOP("Sep"), I18N_NOOP("Oct"), I18N_NOOP("Nov"), I18N_NOOP("Dec")
+	QT_TR_NOOP("Jan"), QT_TR_NOOP("Feb"), QT_TR_NOOP("Mar"), QT_TR_NOOP("Apr"), QT_TR_NOOP("May"), QT_TR_NOOP("Jun"),
+	QT_TR_NOOP("Jul"), QT_TR_NOOP("Aug"), QT_TR_NOOP("Sep"), QT_TR_NOOP("Oct"), QT_TR_NOOP("Nov"), QT_TR_NOOP("Dec")
 };
 const char* const ExtDate::m_shortDayNames[7] = {
-	I18N_NOOP("Mon"), I18N_NOOP("Tue"), I18N_NOOP("Wed"), I18N_NOOP("Thu"), I18N_NOOP("Fri"), I18N_NOOP("Sat"), I18N_NOOP("Sun")
+	QT_TR_NOOP("Mon"), QT_TR_NOOP("Tue"), QT_TR_NOOP("Wed"), QT_TR_NOOP("Thu"), QT_TR_NOOP("Fri"), QT_TR_NOOP("Sat"), QT_TR_NOOP("Sun")
 };
 const char* const ExtDate::m_longMonthNames[12] = {
-	I18N_NOOP("January"), I18N_NOOP("February"), I18N_NOOP("March"), I18N_NOOP("April"), I18N_NOOP2("Long form may", "May"),
-	I18N_NOOP("June"), I18N_NOOP("July"), I18N_NOOP("August"), I18N_NOOP("September"), I18N_NOOP("October"),
-	I18N_NOOP("November"), I18N_NOOP("December")
+	QT_TR_NOOP("January"), QT_TR_NOOP("February"), QT_TR_NOOP("March"), QT_TR_NOOP("April"), QT_TR_NOOP("May"),
+	QT_TR_NOOP("June"), QT_TR_NOOP("July"), QT_TR_NOOP("August"), QT_TR_NOOP("September"), QT_TR_NOOP("October"),
+	QT_TR_NOOP("November"), QT_TR_NOOP("December")
 };
 const char* const ExtDate::m_longDayNames[7] = {
-	I18N_NOOP("Monday"), I18N_NOOP("Tuesday"), I18N_NOOP("Wednesday"), I18N_NOOP("Thursday"),
-	I18N_NOOP("Friday"), I18N_NOOP("Saturday"), I18N_NOOP("Sunday")
+	QT_TR_NOOP("Monday"), QT_TR_NOOP("Tuesday"), QT_TR_NOOP("Wednesday"), QT_TR_NOOP("Thursday"),
+	QT_TR_NOOP("Friday"), QT_TR_NOOP("Saturday"), QT_TR_NOOP("Sunday")
 };
 
 ExtDate::ExtDate( int y, int m, int d)
@@ -194,10 +190,10 @@ int ExtDate::weekNumber( int *yearNum ) const
 
 #ifndef QT_NO_TEXTDATE
 // ### to whoever wrote this code: Please read kcalendarsystem.h api documentation
-QString ExtDate::shortMonthName( int month ) {return i18n(m_shortMonthNames[month-1]);}
-QString ExtDate::shortDayName( int weekday ) {return i18n(m_shortDayNames[weekday-1]);}
-QString ExtDate::longMonthName( int month ) {return i18n(m_longMonthNames[month-1]);}
-QString ExtDate::longDayName( int weekday ) {return i18n(m_longDayNames[weekday-1]);}
+QString ExtDate::shortMonthName( int month ) {return QObject::tr(m_shortMonthNames[month-1]);}
+QString ExtDate::shortDayName( int weekday ) {return QObject::tr(m_shortDayNames[weekday-1]);}
+QString ExtDate::longMonthName( int month ) {return QObject::tr(m_longMonthNames[month-1]);}
+QString ExtDate::longDayName( int weekday ) {return QObject::tr(m_longDayNames[weekday-1]);}
 #endif //QT_NO_TEXTDATE
 
 #ifndef QT_NO_TEXTSTRING
@@ -219,7 +215,7 @@ QString ExtDate::toString( Qt::DateFormat f) const
 			break;
 
 		case Qt::LocalDate :	// local settings
-			a_format = KGlobal::locale()->dateFormat();
+			a_format = QLocale().dateFormat(QLocale::LongFormat);
 			break;
 
 		default :
@@ -355,7 +351,7 @@ ExtDate ExtDate::currentDate(Qt::TimeSpec ts)
 			break;
 
 		default :
-			assert(0);
+      Q_ASSERT(0);
 			break;
 	}
 	return ExtDate(a_current_time_tm.tm_year + 1900, a_current_time_tm.tm_mon + 1, a_current_time_tm.tm_mday);
@@ -764,8 +760,8 @@ QString ExtDateTime::toString( Qt::DateFormat f ) const
 	}
 #endif
 	else if ( f == Qt::LocalDate ) {
-		return toString( KGlobal::locale()->dateFormat()
-						+ " " + KGlobal::locale()->timeFormat() );
+		return toString( QLocale().dateFormat(QLocale::LongFormat)
+						+ " " + QLocale().timeFormat(QLocale::LongFormat) );
 	}
 
 	return QString::null;

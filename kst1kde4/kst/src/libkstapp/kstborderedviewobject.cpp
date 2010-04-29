@@ -17,6 +17,7 @@
 
 #include <QPainter>
 #include <QTextDocument>
+#include <QTextStream>
 #include <QVariant>
 
 #include "kstborderedviewobject.h"

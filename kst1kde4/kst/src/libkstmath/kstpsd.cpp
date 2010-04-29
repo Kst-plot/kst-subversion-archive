@@ -131,7 +131,7 @@ void KstPSD::commonConstructor(const QString& in_tag, KstVectorPtr in_V,
   if (in_V) {
     _inputVectors[INVECTOR] = in_V;
   }
-  KstObject::setTagName(KstObjectTag::fromString(in_tag));
+  KstObject::setTag(KstObjectTag::fromString(in_tag));
   _freq = in_freq;
   _average = in_average;
   _apodize = in_apodize;
@@ -540,7 +540,7 @@ void KstPSD::setTagName(const QString &in_tag) {
     return;
   }
 
-  KstObject::setTagName(newTag);
-  (*_sVector)->setTagName(KstObjectTag("sv", tag()));
-  (*_fVector)->setTagName(KstObjectTag("freq", tag()));
+  KstObject::setTag(newTag);
+  (*_sVector)->setTag(KstObjectTag("sv", tag()));
+  (*_fVector)->setTag(KstObjectTag("freq", tag()));
 }

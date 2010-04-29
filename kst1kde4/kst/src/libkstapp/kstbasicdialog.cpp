@@ -277,7 +277,7 @@ bool KstBasicDialog::newObject() {
     if (tagName == defaultTag) {
       tagName = KST::suggestPluginName(ptr->propertyString());
     }
-    ptr->setTagName(KstObjectTag::fromString(tagName));
+    ptr->setTag(KstObjectTag::fromString(tagName));
   
     //
     // save the vectors and scalars...

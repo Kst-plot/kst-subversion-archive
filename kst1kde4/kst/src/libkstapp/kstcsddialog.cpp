@@ -52,7 +52,7 @@ KstCsdDialog *KstCsdDialog::globalInstance() {
 KstCsdDialog::KstCsdDialog(QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl)
 : KstDataDialog(parent) {
   _w = new Ui::CSDDialogWidget();
-  _w->setupUi(parent);
+  _w->setupUi(_contents);
 
   setMultiple(true);
 

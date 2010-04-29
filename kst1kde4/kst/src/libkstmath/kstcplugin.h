@@ -41,7 +41,7 @@ class KST_EXPORT KstCPlugin : public KstDataObject {
     virtual bool setModule(KstPluginPtr plugin);
     virtual bool setPlugin(KstPluginPtr plugin);
     virtual void setTagName(const QString& tag);
-    virtual void setTagName(const KstObjectTag& tag);
+    virtual void setTag(const KstObjectTag& tag);
     virtual KstDataObjectPtr makeDuplicate(KstDataObjectDataObjectMap& duplicatedMap);
     virtual UpdateType update(int update_counter);
     virtual QString propertyString() const;

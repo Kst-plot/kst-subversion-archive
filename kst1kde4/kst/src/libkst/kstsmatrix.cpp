@@ -16,7 +16,9 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QDataStream>
 #include <QTextDocument>
+#include <QTextStream>
 
 #include "kstsmatrix.h"
 
@@ -27,10 +29,11 @@ KstSMatrix::KstSMatrix(const QDomElement &e) : KstMatrix() {
   int in_nX = 2, in_nY = 2;
   QString in_tag = QString::null;
 
-  /* parse the DOM tree */
   QDomNode n = e.firstChild();
+
   while (!n.isNull()) {
     QDomElement e = n.toElement();
+
     if (!e.isNull()) {
       if (e.tagName() == "tag") {
         in_tag = e.text();
@@ -63,6 +66,7 @@ KstSMatrix::KstSMatrix(const QDomElement &e) : KstMatrix() {
   change(KstObjectTag::fromString(in_tag), in_nX, in_nY, in_xMin, in_yMin, in_xStep, in_yStep, in_gradZMin, in_gradZMax, in_xDirection);
 }
 
+
 KstSMatrix::KstSMatrix(KstObjectTag tag,
                        uint nX, uint nY, double minX, double minY,
                        double stepX, double stepY,
@@ -73,6 +77,7 @@ KstSMatrix::KstSMatrix(KstObjectTag tag,
   _zSize = 0;
   change(tag, nX, nY, minX, minY, stepX, stepY, gradZMin, gradZMax, xDirection);
 }
+
 
 void KstSMatrix::save(QTextStream &ts, const QString& indent) {
   QString indent2 = "  ";
@@ -91,13 +96,17 @@ void KstSMatrix::save(QTextStream &ts, const QString& indent) {
   ts << indent << "</smatrix>" << endl;
 }
 
+
 void KstSMatrix::change(KstObjectTag tag, uint nX,
                         uint nY, double minX, double minY, double stepX,
                         double stepY, double gradZMin, double gradZMax,
                         bool xDirection) {
-  setTagName(tag);
+  setTag(tag);
 
-  // some checks on parameters
+  //
+  // some checks on parameters...
+  //
+
   if (nX < 1) {
     nX = 1;
   }
@@ -125,8 +134,14 @@ void KstSMatrix::change(KstObjectTag tag, uint nX,
     resizeZ(_nX*_nY, false);
   }
 
-  // zIncrement can be negative, to reverse gradient direction
+  //
+  // zIncrement can be negative, to reverse gradient direction...
+  //
+
   double zIncrement;
+  double sum = 0.0;
+  double sumsquared = 0.0;
+
   if (_xDirection) {
     if (_nX > 1) {
       zIncrement = (_gradZMax - _gradZMin) / (_nX - 1);
@@ -140,11 +155,11 @@ void KstSMatrix::change(KstObjectTag tag, uint nX,
       zIncrement = 0.0;
     }
   }
+  
+  //
+  // fill in the matrix with the gradient...
+  //
 
-  double sum = 0.0;
-  double sumsquared = 0.0;
-
-  // fill in the matrix with the gradient
   for (int i = 0; i < _nX; i++) {
     for (int j = 0; j < _nY; j++) {
       if (_xDirection) {

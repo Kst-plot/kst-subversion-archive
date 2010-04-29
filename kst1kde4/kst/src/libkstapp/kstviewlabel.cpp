@@ -16,6 +16,16 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QApplication>
+#include <QBitmap>
+#include <QCheckBox>
+#include <QMetaObject>
+#include <QRegExp>
+#include <QSpinBox>
+#include <QStack>
+#include <QTextEdit>
+#include <QTextStream>
+
 #include "kstviewlabel.h"
 
 #include "enodes.h"
@@ -39,14 +49,7 @@
 #include <knuminput.h>
 #include <kpopupmenu.h>
 */
-#include <QApplication>
-#include <QBitmap>
-#include <QCheckBox>
-#include <QMetaObject>
-#include <QTextEdit>
-#include <QRegExp>
-#include <QSpinBox>
-#include <QStack>
+
 
 #include <stdlib.h>
 

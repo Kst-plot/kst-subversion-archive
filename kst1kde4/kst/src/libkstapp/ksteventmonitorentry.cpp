@@ -100,7 +100,7 @@ void EventMonitorEntry::commonConstructor(const QString &in_tag) {
 
   _typeString = QObject::tr("Event");
   _type = "Event";
-  KstObject::setTagName(KstObjectTag::fromString(in_tag));
+  KstObject::setTag(KstObjectTag::fromString(in_tag));
 
   xv = new KstVector(KstObjectTag("x", tag()), NS, this);
   _xVector = _outputVectors.insert(OUTXVECTOR, xv);
@@ -662,10 +662,10 @@ void EventMonitorEntry::setTagName(const QString &in_tag) {
     return;
   }
 
-  KstObject::setTagName(newTag);
+  KstObject::setTag(newTag);
 
-  (*_xVector)->setTagName(KstObjectTag("x", tag()));
-  (*_yVector)->setTagName(KstObjectTag("y", tag()));
+  (*_xVector)->setTag(KstObjectTag("x", tag()));
+  (*_yVector)->setTag(KstObjectTag("y", tag()));
 }
 
 #include "ksteventmonitorentry.moc"

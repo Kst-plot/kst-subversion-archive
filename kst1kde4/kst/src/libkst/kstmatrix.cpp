@@ -53,9 +53,9 @@ KstMatrix::KstMatrix(KstObjectTag in_tag, KstObject *provider, uint nX, uint nY,
     do {
       _tag = nt.arg(anonymousMatrixCounter++);
     } while (KstData::self()->matrixTagNameNotUnique(_tag, false));
-    KstObject::setTagName(KstObjectTag(_tag, in_tag.context()));
+    KstObject::setTag(KstObjectTag(_tag, in_tag.context()));
   } else {
-    KstObject::setTagName(KST::suggestUniqueMatrixTag(in_tag));
+    KstObject::setTag(KST::suggestUniqueMatrixTag(in_tag));
   }
 
   createScalars();
@@ -386,7 +386,7 @@ KstObject::UpdateType KstMatrix::internalUpdate(KstObject::UpdateType providerUp
 }
 
 
-void KstMatrix::setTagName(const KstObjectTag& tag) {
+void KstMatrix::setTag(const KstObjectTag& tag) {
   if (tag == this->tag()) {
     return;
   }
@@ -463,15 +463,15 @@ void KstMatrix::renameScalars() {
   KstWriteLocker sl(&KST::scalarList.lock());
   KST::scalarList.setUpdateDisplayTags(false);
 
-  _scalars["max"]->setTagName(KstObjectTag("Max", tag()));
-  _scalars["min"]->setTagName(KstObjectTag("Min", tag()));
-  _scalars["mean"]->setTagName(KstObjectTag("Mean", tag()));
-  _scalars["sigma"]->setTagName(KstObjectTag("Sigma", tag()));
-  _scalars["rms"]->setTagName(KstObjectTag("Rms", tag()));
-  _scalars["ns"]->setTagName(KstObjectTag("NS", tag()));
-  _scalars["sum"]->setTagName(KstObjectTag("Sum", tag()));
-  _scalars["sumsquared"]->setTagName(KstObjectTag("SumSquared", tag()));
-  _scalars["minpos"]->setTagName(KstObjectTag("MinPos", tag()));
+  _scalars["max"]->setTag(KstObjectTag("Max", tag()));
+  _scalars["min"]->setTag(KstObjectTag("Min", tag()));
+  _scalars["mean"]->setTag(KstObjectTag("Mean", tag()));
+  _scalars["sigma"]->setTag(KstObjectTag("Sigma", tag()));
+  _scalars["rms"]->setTag(KstObjectTag("Rms", tag()));
+  _scalars["ns"]->setTag(KstObjectTag("NS", tag()));
+  _scalars["sum"]->setTag(KstObjectTag("Sum", tag()));
+  _scalars["sumsquared"]->setTag(KstObjectTag("SumSquared", tag()));
+  _scalars["minpos"]->setTag(KstObjectTag("MinPos", tag()));
 
   KST::scalarList.setUpdateDisplayTags(true);
 
@@ -553,7 +553,7 @@ bool KstMatrix::saveable() const {
 
 void KstMatrix::change(const KstObjectTag& newTag, uint nX, uint nY, double minX, double minY, double stepX, double stepY) {
   if (tag() != newTag) {
-    setTagName(newTag);
+    setTag(newTag);
   }
   _nX = nX;
   _nY = nY;

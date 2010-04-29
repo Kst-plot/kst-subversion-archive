@@ -27,20 +27,20 @@
 // systems.
 // Also default gregorian and factory classes
 
-#include <kglobal.h>
+#include <QLocale>
+#include <QObject>
 
 #include "kstextcalendarsystem.h"
-#include "klocale.h"
 
 namespace KST {
 
 class ExtCalendarSystemPrivate
 {
 public:
-  const KLocale * locale;
+  const QLocale * locale;
 };
 
-ExtCalendarSystem::ExtCalendarSystem(const KLocale * locale)
+ExtCalendarSystem::ExtCalendarSystem(const QLocale * locale)
   : d(new ExtCalendarSystemPrivate)
 {
   d->locale = locale;
@@ -51,12 +51,17 @@ ExtCalendarSystem::~ExtCalendarSystem()
   delete d;
 }
 
-const KLocale * ExtCalendarSystem::locale() const
+const QLocale * ExtCalendarSystem::locale() const
 {
-  if ( d->locale )
+  if ( d->locale ) {
     return d->locale;
+  }
 
-  return KGlobal::locale();
+  QLocale *locale;
+
+  locale = new QLocale();
+
+  return locale;
 }
 
 QString ExtCalendarSystem::dayString(const ExtDate & pDate, bool bShort) const
@@ -128,24 +133,24 @@ QString ExtCalendarSystem::weekDayName (int weekDay, bool shortName) const
   if ( shortName )
     switch ( weekDay )
       {
-      case 1:  return ki18n("Mon").toString(locale());
-      case 2:  return ki18n("Tue").toString(locale());
-      case 3:  return ki18n("Wed").toString(locale());
-      case 4:  return ki18n("Thu").toString(locale());
-      case 5:  return ki18n("Fri").toString(locale());
-      case 6:  return ki18n("Sat").toString(locale());
-      case 7:  return ki18n("Sun").toString(locale());
+      case 1:  return QObject::tr("Mon");
+      case 2:  return QObject::tr("Tue");
+      case 3:  return QObject::tr("Wed");
+      case 4:  return QObject::tr("Thu");
+      case 5:  return QObject::tr("Fri");
+      case 6:  return QObject::tr("Sat");
+      case 7:  return QObject::tr("Sun");
       }
   else
     switch ( weekDay )
       {
-      case 1:  return ki18n("Monday").toString(locale());
-      case 2:  return ki18n("Tuesday").toString(locale());
-      case 3:  return ki18n("Wednesday").toString(locale());
-      case 4:  return ki18n("Thursday").toString(locale());
-      case 5:  return ki18n("Friday").toString(locale());
-      case 6:  return ki18n("Saturday").toString(locale());
-      case 7:  return ki18n("Sunday").toString(locale());
+      case 1:  return QObject::tr("Monday");
+      case 2:  return QObject::tr("Tuesday");
+      case 3:  return QObject::tr("Wednesday");
+      case 4:  return QObject::tr("Thursday");
+      case 5:  return QObject::tr("Friday");
+      case 6:  return QObject::tr("Saturday");
+      case 7:  return QObject::tr("Sunday");
       }
 
   return QString::null;

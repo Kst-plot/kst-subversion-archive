@@ -113,7 +113,7 @@ bool BinnedMapDialogI::newObject() {
     if (tagName == defaultTag) {
       tagName = KST::suggestPluginName("binnedmap");
     }
-    map->setTagName(KstObjectTag::fromString(tagName));
+    map->setTag(KstObjectTag::fromString(tagName));
   
     //
     // save the vectors and scalars...
@@ -175,7 +175,7 @@ bool BinnedMapDialogI::editObject() {
       _tagName->setFocus();
       map->unlock();
     } else {
-      map->setTagName(KstObjectTag::fromString(_tagName->text()));
+      map->setTag(KstObjectTag::fromString(_tagName->text()));
       map->inputVectors().clear();
       map->unlock();
     
@@ -188,7 +188,7 @@ bool BinnedMapDialogI::editObject() {
 
         map->setDirty();    
 
-// xxx        emit modified();
+        emit modified();
       } else {
         QMessageBox::warning(this, QObject::tr("Kst"), QObject::tr("There is an error in the values you entered."));
       }

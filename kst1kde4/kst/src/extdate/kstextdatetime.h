@@ -17,15 +17,11 @@
 #define KSTEXTDATETIME_H
 
 #include <limits.h>
-#include "qstring.h"
+
+#include <QString>
 #include "qnamespace.h"
 #include "qdatetime.h"
-#include <kdeversion.h>
-#if KDE_VERSION >= KDE_MAKE_VERSION(3,2,0)
-#include <kdemacros.h>
-#endif
 #include "kst_export.h"
-
 
 #define INVALID_DAY LONG_MIN
 

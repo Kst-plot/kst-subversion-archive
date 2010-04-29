@@ -15,16 +15,16 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QBitmap>
+#include <QMetaObject>
+#include <QPainter>
+#include <QTextStream>
+#include <QVariant>
+
 #include "kstaccessibility.h" 
 #include "kstgfxellipsemousehandler.h"
 #include "kstviewellipse.h"
 #include "kstviewobjectfactory.h"
-
-#include <QBitmap>
-#include <QMetaObject>
-#include <QPainter>
-#include <QVariant>
-
 
 KstViewEllipse::KstViewEllipse()
 : KstViewObject("Ellipse"), _borderWidth(1) {

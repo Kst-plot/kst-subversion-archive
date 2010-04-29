@@ -419,7 +419,7 @@ KstTopLevelViewPtr KstViewWindow::view() const {
 
 void KstViewWindow::setCaption(const QString& caption) {
   QMdiSubWindow::setWindowTitle(caption);
-  _view->setTagName(KstObjectTag(caption, KstObjectTag::globalTagContext));  // FIXME: global tag context?
+  _view->setTag(KstObjectTag(caption, KstObjectTag::globalTagContext));  // FIXME: global tag context?
 }
 
 

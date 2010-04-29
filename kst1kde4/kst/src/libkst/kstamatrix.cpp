@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include <QTextDocument>
+#include <QTextStream>
 
 #include "kstamatrix.h"
 #include "kstdebug.h"
@@ -38,9 +39,10 @@ KstAMatrix::KstAMatrix(const QDomElement &e) : KstMatrix() {
   
   while (!n.isNull()) {
     QDomElement e = n.toElement();
+
     if (!e.isNull()) {
       if (e.tagName() == "tag") {
-        setTagName(KstObjectTag::fromString(e.text()));
+        setTag(KstObjectTag::fromString(e.text()));
       } else if (e.tagName() == "nx") {
         in_nX = e.text().toInt();
       } else if (e.tagName() == "ny") {

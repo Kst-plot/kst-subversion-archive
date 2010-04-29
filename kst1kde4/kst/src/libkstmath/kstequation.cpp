@@ -149,7 +149,7 @@ void KstEquation::commonConstructor(const QString& in_tag, const QString& in_equ
     tagName = in_tag;
   }
 
-  KstObject::setTagName(KstObjectTag::fromString(tagName));
+  KstObject::setTag(KstObjectTag::fromString(tagName));
 
   KstVectorPtr xv(new KstVector(KstObjectTag("xsv", tag()), 2, this));
   _xOutVector = _outputVectors.insert(XOUTVECTOR, xv);
@@ -401,9 +401,9 @@ void KstEquation::setTagName(const QString &in_tag) {
     return;
   }
 
-  KstObject::setTagName(newTag);
-  (*_xOutVector)->setTagName(KstObjectTag("xsv", tag()));
-  (*_yOutVector)->setTagName(KstObjectTag("sv", tag()));
+  KstObject::setTag(newTag);
+  (*_xOutVector)->setTag(KstObjectTag("xsv", tag()));
+  (*_yOutVector)->setTag(KstObjectTag("sv", tag()));
 }
 
 

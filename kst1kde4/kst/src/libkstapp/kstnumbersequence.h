@@ -18,6 +18,8 @@
 #ifndef KSTNUMBERSEQUENCE_H
 #define KSTNUMBERSEQUENCE_H
 
+#include <QtGlobal>
+
 #include "kst_export.h"
 
 class KST_EXPORT KstNumberSequence {
@@ -27,10 +29,10 @@ class KST_EXPORT KstNumberSequence {
     KstNumberSequence(int min, int max);
     ~KstNumberSequence();
 
-    int next(); //next number
+    int next();
     void reset();
 
-    int current(); // current number - does not advance sequence
+    int current();
     void setRange(int min, int max);
 
     // numberSequence will be advanced when this sequence rolls over
@@ -38,7 +40,7 @@ class KST_EXPORT KstNumberSequence {
     void hookToNextSequence(KstNumberSequence* numberSequence);
 
   private:
-    int _curr;    // current number
+    int _curr;
     int _min;
     int _max;
     KstNumberSequence* _nextSequence;

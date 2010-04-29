@@ -156,7 +156,7 @@ void KstVectorView::commonConstructor(const QString &in_tag) {
   } else {
     tagName = in_tag;
   }
-  KstObject::setTagName(KstObjectTag::fromString(tagName));
+  KstObject::setTag(KstObjectTag::fromString(tagName));
 
   v = new KstVector(KstObjectTag("X", tag()), 0, this);
   _cxVector = _outputVectors.insert(OUT_XVECTOR, v);
@@ -661,9 +661,9 @@ void KstVectorView::setTagName(const QString &in_tag) {
     return;
   }
 
-  KstObject::setTagName(newTag);
-  (*_cxVector)->setTagName(KstObjectTag("X", tag()));
-  (*_cyVector)->setTagName(KstObjectTag("Y", tag()));
+  KstObject::setTag(newTag);
+  (*_cxVector)->setTag(KstObjectTag("X", tag()));
+  (*_cyVector)->setTag(KstObjectTag("Y", tag()));
 }
 
 #include "kstvectorview.moc"

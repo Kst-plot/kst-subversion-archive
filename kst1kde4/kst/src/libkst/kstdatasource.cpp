@@ -189,7 +189,7 @@ static KstDataSourcePtr findPluginFor(const QString& filename, const QString& ty
       if (l.count() > 0) {
         QDomElement e2 = l.item(0).toElement();
         if (!e2.isNull()) {
-          plugin->setTagName(KstObjectTag::fromString(e2.text()));
+          plugin->setTag(KstObjectTag::fromString(e2.text()));
         }
       }
       return plugin;
@@ -450,9 +450,9 @@ KstDataSource::KstDataSource(QSettings *cfg, const QString& filename, const QStr
   QString tn = QObject::tr("DS-%1").arg(shortFilename);
   int count = 1;
 
-  KstObject::setTagName(KstObjectTag(tn, KstObjectTag::globalTagContext));  // are DataSources always top-level?
+  KstObject::setTag(KstObjectTag(tn, KstObjectTag::globalTagContext));  // are DataSources always top-level?
   while (KstData::self()->dataSourceTagNameNotUnique(tagName(), false)) {
-    KstObject::setTagName(KstObjectTag(tn + QString("-%1").arg(count++), KstObjectTag::globalTagContext));  // are DataSources always top-level?
+    KstObject::setTag(KstObjectTag(tn + QString("-%1").arg(count++), KstObjectTag::globalTagContext));  // are DataSources always top-level?
   }
 
   _numFramesScalar = new KstScalar(KstObjectTag("frames", tag()));
@@ -483,13 +483,13 @@ KstDataSource::~KstDataSource() {
 }
 
 
-void KstDataSource::setTagName(const KstObjectTag& in_tag) {
+void KstDataSource::setTag(const KstObjectTag& in_tag) {
   if (in_tag == tag()) {
     return;
   }
 
-  KstObject::setTagName(in_tag);
-  _numFramesScalar->setTagName(KstObjectTag("frames", tag()));
+  KstObject::setTag(in_tag);
+  _numFramesScalar->setTag(KstObjectTag("frames", tag()));
 
   QHash<QString, KstString>::iterator it;
   
@@ -497,7 +497,7 @@ void KstDataSource::setTagName(const KstObjectTag& in_tag) {
     KstObjectTag stag = it->tag();
 
     stag.setContext(tag().fullTag());
-    it->setTagName(stag);
+    it->setTag(stag);
   }
 }
 

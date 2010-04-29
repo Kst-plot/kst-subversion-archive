@@ -556,7 +556,7 @@ bool KstPluginDialog::saveOutputs(KstCPluginPtr plugin, QExplicitlySharedDataPoi
             v = new KstVector(KstObjectTag(nt, plugin->tag()), 0, plugin.data());
             plugin->outputVectors().insert((*it)._name, v);
           }
-          v->setTagName(KstObjectTag(nt, plugin->tag()));
+          v->setTag(KstObjectTag(nt, plugin->tag()));
         } else if (plugin->outputVectors()[(*it)._name]->tagName() != nt) {
           KstVectorPtr v;
   
@@ -572,7 +572,7 @@ bool KstPluginDialog::saveOutputs(KstCPluginPtr plugin, QExplicitlySharedDataPoi
             v = new KstVector(KstObjectTag(nt, plugin->tag()), 0, plugin.data());
             plugin->outputVectors().insert((*it)._name, v);
           }
-          v->setTagName(KstObjectTag(nt, plugin->tag()));
+          v->setTag(KstObjectTag(nt, plugin->tag()));
         }
       } else if ((*it)._type == Plugin::Data::IOValue::StringType) {
         if (!KstData::self()->vectorTagNameNotUnique(nt, false)) {
@@ -586,7 +586,7 @@ bool KstPluginDialog::saveOutputs(KstCPluginPtr plugin, QExplicitlySharedDataPoi
             s = new KstString(KstObjectTag(nt, plugin->tag()), plugin.data());
             plugin->outputStrings().insert((*it)._name, s);
           }
-          s->setTagName(KstObjectTag(nt, plugin->tag()));
+          s->setTag(KstObjectTag(nt, plugin->tag()));
   
         } else if (plugin->outputStrings()[(*it)._name]->tagName() != nt) {
           KstStringPtr s;
@@ -603,7 +603,7 @@ bool KstPluginDialog::saveOutputs(KstCPluginPtr plugin, QExplicitlySharedDataPoi
             s = new KstString(KstObjectTag(nt, plugin->tag()), plugin.data());
             plugin->outputStrings().insert((*it)._name, s);
           }
-          s->setTagName(KstObjectTag(nt, plugin->tag()));
+          s->setTag(KstObjectTag(nt, plugin->tag()));
         }
       } else if ((*it)._type == Plugin::Data::IOValue::PidType) {
         // Nothing
@@ -619,7 +619,7 @@ bool KstPluginDialog::saveOutputs(KstCPluginPtr plugin, QExplicitlySharedDataPoi
             s = new KstScalar(KstObjectTag(nt, plugin->tag()), plugin.data());
             plugin->outputScalars().insert((*it)._name, s);
           }
-          s->setTagName(KstObjectTag(nt, plugin->tag()));
+          s->setTag(KstObjectTag(nt, plugin->tag()));
         } else if (plugin->outputScalars()[(*it)._name]->tagName() != nt) {
           KstScalarPtr s;
   
@@ -635,7 +635,7 @@ bool KstPluginDialog::saveOutputs(KstCPluginPtr plugin, QExplicitlySharedDataPoi
             s = new KstScalar(KstObjectTag(nt, plugin->tag()), plugin.data());
             plugin->outputScalars().insert((*it)._name, s);
           }
-          s->setTagName(KstObjectTag(nt, plugin->tag()));
+          s->setTag(KstObjectTag(nt, plugin->tag()));
         }
       }
     }
@@ -671,7 +671,7 @@ bool KstPluginDialog::newObject() {
       if (tagName == plugin_defaultTag) {
         tagName = KST::suggestPluginName(_pluginList[pitem]);
       }
-      plugin->setTagName(KstObjectTag(tagName, KstObjectTag::globalTagContext));
+      plugin->setTag(KstObjectTag(tagName, KstObjectTag::globalTagContext));
 
       if (!saveInputs(plugin, pPtr)) {
         QMessageBox::warning(this, QObject::tr("Kst"), QObject::tr("There is an error in the inputs you entered."));

@@ -14,12 +14,11 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 #include "binnedmap.h"
 
 #include <QTextDocument>
 
-#include <kdebug.h>
-#include <kmessagebox.h>
 #include <kgenericfactory.h>
 
 #include <kstdatacollection.h>
@@ -395,7 +394,7 @@ void BinnedMap::load(const QDomElement &e) {
 
     if (!e.isNull()) {
       if (e.tagName() == "tag") {
-        setTagName(KstObjectTag::fromString(e.text()));
+        setTag(KstObjectTag::fromString(e.text()));
       } else if (e.tagName() == "ivector") {
         _inputVectorLoadQueue.append(qMakePair(e.attribute("name"), e.text()));
       } else if (e.tagName() == "omatrix") {

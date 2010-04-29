@@ -25,6 +25,7 @@
 #include <QBitmap>
 #include <QMetaObject>
 #include <QPainter>
+#include <QTextStream>
 #include <QVariant>
 
 #define SIZE_ARROW (2.0 * sqrt(3.0))

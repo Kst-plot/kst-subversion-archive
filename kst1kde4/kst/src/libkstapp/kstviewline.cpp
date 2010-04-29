@@ -15,17 +15,18 @@
  *                                                                         *
  ***************************************************************************/ 
    
-#include "kstaccessibility.h" 
-#include "kstgfxlinemousehandler.h"
-#include "kstviewline.h"
-#include "kstviewobjectfactory.h"
+#include <math.h>
 
 #include <QBitmap>
 #include <QMetaObject>
 #include <QPainter>
+#include <QTextStream>
 #include <QVariant>
 
-#include <math.h>
+#include "kstaccessibility.h" 
+#include "kstgfxlinemousehandler.h"
+#include "kstviewline.h"
+#include "kstviewobjectfactory.h"
 
 KstViewLine::KstViewLine(const QString& type)
 : KstViewObject(type), _width(1) {

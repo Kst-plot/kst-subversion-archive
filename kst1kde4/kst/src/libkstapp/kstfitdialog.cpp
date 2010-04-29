@@ -219,7 +219,7 @@ bool KstFitDialog::newObject() {
           tagName = KST::suggestPluginName(_pluginList[pitem], KstObjectTag::fromString(_strCurve));
         }
 
-        plugin->setTagName(KstObjectTag(tagName, KstObjectTag::globalTagContext)); // FIXME: tag context always global?
+        plugin->setTag(KstObjectTag(tagName, KstObjectTag::globalTagContext)); // FIXME: tag context always global?
 
         plugin->setPlugin(pPtr);
 

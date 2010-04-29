@@ -15,8 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-// NOTE: only include this from .cpp files
-
 #ifndef KSTMATH_H
 #define KSTMATH_H
 
@@ -62,12 +60,12 @@ static double nan__()
 ** gets #undeffed by the C++ math routines later. Use the
 ** std:: version in those cases.
 */
+
 #ifdef isnan
 #define KST_ISNAN(a)    isnan(a)
 #elif defined(__APPLE__)
 #define KST_ISNAN(a)    (a == NAN ? 1 : 0)
 #else
-  // HUH? Ok let's get rid of the silliness here sometime.
 #define KST_ISNAN(a)    isnan(a)
 #endif
 

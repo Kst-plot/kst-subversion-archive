@@ -47,7 +47,7 @@ KstImage::KstImage(const QDomElement& e) : KstBaseCurve(e){
     QDomElement e = n.toElement(); // try to convert the node to an element.
     if( !e.isNull() ) { // the node was really an element.
       if (e.tagName() == "tag") {
-        setTagName(KstObjectTag::fromString(e.text()));
+        setTag(KstObjectTag::fromString(e.text()));
       } else if (e.tagName() == "matrixtag") {
         in_matrixName = e.text();
       } else if (e.tagName() == "legend") {
@@ -121,9 +121,9 @@ KstImage::KstImage(const QString &tag, KstMatrixPtr matrix, double lowerZ, doubl
   if (tag == QString::null) {
     QString tagName = KST::suggestImageName(KstObjectTag(matrix->tag()));
 
-    setTagName(KstObjectTag(tagName, KstObjectTag::globalTagContext)); 
+    setTag(KstObjectTag(tagName, KstObjectTag::globalTagContext)); 
   } else {
-    setTagName(KstObjectTag(tag, KstObjectTag::globalTagContext));
+    setTag(KstObjectTag(tag, KstObjectTag::globalTagContext));
   }
 
   _typeString = QObject::tr("Image");
@@ -151,9 +151,9 @@ KstImage::KstImage(const QString &tag, KstMatrixPtr matrix, int numContours,
   if (tag == QString::null) {
     QString tagName = KST::suggestImageName(KstObjectTag(matrix->tag()));
 
-    setTagName(KstObjectTag(tagName, KstObjectTag::globalTagContext)); 
+    setTag(KstObjectTag(tagName, KstObjectTag::globalTagContext)); 
   } else {
-    setTagName(KstObjectTag(tag, KstObjectTag::globalTagContext));
+    setTag(KstObjectTag(tag, KstObjectTag::globalTagContext));
   }
 
   _typeString = QObject::tr("Image");
@@ -183,9 +183,9 @@ KstImage::KstImage(const QString &tag, KstMatrixPtr matrix,
   if (tag == QString::null) {
     QString tagName = KST::suggestImageName(KstObjectTag(matrix->tag()));
 
-    setTagName(KstObjectTag(tagName, KstObjectTag::globalTagContext)); 
+    setTag(KstObjectTag(tagName, KstObjectTag::globalTagContext)); 
   } else {
-    setTagName(KstObjectTag(tag, KstObjectTag::globalTagContext));
+    setTag(KstObjectTag(tag, KstObjectTag::globalTagContext));
   }
 
   _typeString = QObject::tr("Image");
@@ -395,7 +395,7 @@ void KstImage::setThresholdToSpikeInsensitive(double per) {
 
 void KstImage::changeToColorOnly(const QString &in_tag, KstMatrixPtr in_matrix,
                                      double lowerZ, double upperZ, bool autoThreshold, KColorCollection* pal) {
-  setTagName(KstObjectTag(in_tag, KstObjectTag::globalTagContext));  // FIXME: always top-level?
+  setTag(KstObjectTag(in_tag, KstObjectTag::globalTagContext));  // FIXME: always top-level?
   if (_inputMatrices.contains(THEMATRIX)) {
     _inputMatrices[THEMATRIX] = in_matrix;
   }
@@ -414,7 +414,7 @@ void KstImage::changeToColorOnly(const QString &in_tag, KstMatrixPtr in_matrix,
 
 void KstImage::changeToContourOnly(const QString &in_tag, KstMatrixPtr in_matrix,
                                        int numContours, const QColor& contourColor, int contourWeight) {
-  setTagName(KstObjectTag(in_tag, KstObjectTag::globalTagContext));  // FIXME: always top-level?
+  setTag(KstObjectTag(in_tag, KstObjectTag::globalTagContext));  // FIXME: always top-level?
   if (_inputMatrices.contains(THEMATRIX)) {
     _inputMatrices[THEMATRIX] = in_matrix;
   }
@@ -435,7 +435,7 @@ void KstImage::changeToContourOnly(const QString &in_tag, KstMatrixPtr in_matrix
 void KstImage::changeToColorAndContour(const QString &in_tag, KstMatrixPtr in_matrix,
                                                double lowerZ, double upperZ, bool autoThreshold, KColorCollection* pal,
                                                int numContours, const QColor& contourColor, int contourWeight) {
-  setTagName(KstObjectTag(in_tag, KstObjectTag::globalTagContext));  // FIXME: always top-level?
+  setTag(KstObjectTag(in_tag, KstObjectTag::globalTagContext));  // FIXME: always top-level?
   if (_inputMatrices.contains(THEMATRIX)) {
     _inputMatrices[THEMATRIX] = in_matrix;
   }

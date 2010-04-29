@@ -31,9 +31,9 @@ KstString::KstString(KstObjectTag in_tag, KstObject *provider, const QString& va
     do {
       _tag = nt.arg(anonymousStringCounter++);
     } while (KstData::self()->vectorTagNameNotUniqueInternal(_tag));  // FIXME: why vector?
-    KstObject::setTagName(KstObjectTag(_tag, in_tag.context()));
+    KstObject::setTag(KstObjectTag(_tag, in_tag.context()));
   } else {
-    KstObject::setTagName(KST::suggestUniqueStringTag(in_tag));
+    KstObject::setTag(KST::suggestUniqueStringTag(in_tag));
   }
 
   KST::stringList.lock().writeLock();
@@ -50,7 +50,7 @@ KstString::KstString(QDomElement& e)
     QDomElement e = n.toElement();
     if (!e.isNull()) {
       if (e.tagName() == "tag") {
-        setTagName(KstObjectTag::fromString(e.text()));
+        setTag(KstObjectTag::fromString(e.text()));
       } else if (e.tagName() == "orphan") {
         _orphan = true;
       } else if (e.tagName() == "value") {
@@ -77,7 +77,7 @@ KstString::~KstString() {
 }
 
 
-void KstString::setTagName(const KstObjectTag& tag) {
+void KstString::setTag(const KstObjectTag& tag) {
   if (tag == this->tag()) {
     return;
   }

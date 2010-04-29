@@ -15,8 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <assert.h>
-
 #include <QFile>
 #include <QFileInfo>
 #include <QSettings>
@@ -32,13 +30,11 @@
 #include "kstscalar.h"
 #include "stdinsource.h"
 
-// Eventually this will move to another file but I leave it here until then
-// to avoid confusion between the function plugins and Kst applicaton plugins.
 namespace KST {
   class Plugin : public QSharedData {
     public:
       Plugin(KService::Ptr svc) : QSharedData(), service(svc), _lib(0L) {
-        assert(service);
+        Q_ASSERT(service);
         _plugLib = service->library();
       }
 
@@ -77,7 +73,7 @@ namespace KST {
       }
 
       bool loadLibrary() const {
-        assert(service);
+        Q_ASSERT(service);
         if (_lib) {
           return true;
         }

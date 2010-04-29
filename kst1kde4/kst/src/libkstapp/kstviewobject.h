@@ -25,9 +25,6 @@
 #include <QMouseEvent>
 #include <QPointer>
 
-#include <kdeversion.h>
-#include <kdemacros.h>
-
 #include "kstobject.h"
 #include "kstalignment.h"
 #include "kstpainter.h"

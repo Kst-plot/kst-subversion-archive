@@ -505,7 +505,7 @@ bool KstImageDialog::editObject() {
     }
 
     ip->writeLock();
-    ip->setTagName(KstObjectTag(tag_name, ip->tag().context())); // FIXME: doesn't allow changing tag context
+    ip->setTag(KstObjectTag(tag_name, ip->tag().context())); // FIXME: doesn't allow changing tag context
     ip->unlock();
 
     //

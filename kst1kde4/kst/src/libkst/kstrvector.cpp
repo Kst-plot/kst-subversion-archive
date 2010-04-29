@@ -16,7 +16,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <assert.h>
 #include <math.h>
 #include <stdlib.h>
 
@@ -105,7 +104,7 @@ KstRVector::KstRVector(const QDomElement &e, const QString &o_file,
     // use datasource as tag context for this RVector
     // allow unique vector names to be displayed at top-level
     if (o_file == "|") {
-      setTagName(KstObjectTag(tag().tag(), in_file->tag(), false));
+      setTag(KstObjectTag(tag().tag(), in_file->tag(), false));
     }
   }
 
@@ -222,7 +221,7 @@ void KstRVector::changeFile(KstDataSourcePtr in_file) {
   if (_file) {
     _file->writeLock();
   }
-  setTagName(KstObjectTag(tag().tag(), _file->tag(), false));
+  setTag(KstObjectTag(tag().tag(), _file->tag(), false));
   reset();
   if (_file) {
     _file->unlock();
@@ -646,13 +645,15 @@ KstObject::UpdateType KstRVector::doUpdate(bool force) {
       _v[0] = KST::NOPOINT;
       nRead = 1;
     } else if (_file->samplesPerFrame(_field) > 1) {
-      assert(newNumberOfFrames - _numberOfFrames - 1 > 0 || newNumberOfFrames - _numberOfFrames - 1 == -1 || force);
-      assert(newStartingFrame + _numberOfFrames >= 0);
-      assert(newStartingFrame + newNumberOfFrames - 1 >= 0);
+      Q_ASSERT(newNumberOfFrames - _numberOfFrames - 1 > 0 || newNumberOfFrames - _numberOfFrames - 1 == -1 || force);
+      Q_ASSERT(newStartingFrame + _numberOfFrames >= 0);
+      Q_ASSERT(newStartingFrame + newNumberOfFrames - 1 >= 0);
+
       nRead = _file->readFieldLarge(_v+_numberOfFrames*_samplesPerFrame, _field, newStartingFrame + _numberOfFrames, newNumberOfFrames - _numberOfFrames - 1);
       nRead += _file->readFieldLarge(_v+(newNumberOfFrames-1)*_samplesPerFrame, _field, newStartingFrame + newNumberOfFrames - 1, -1);
     } else {
-      assert(newStartingFrame + _numberOfFrames >= 0);
+      Q_ASSERT(newStartingFrame + _numberOfFrames >= 0);
+
       if (newNumberOfFrames - _numberOfFrames > 0 || newNumberOfFrames - _numberOfFrames == -1) {
         nRead = _file->readFieldLarge(_v+_numberOfFrames*_samplesPerFrame, _field, newStartingFrame + _numberOfFrames, newNumberOfFrames - _numberOfFrames);
       }
@@ -730,11 +731,21 @@ void KstRVector::reload() {
 
   if (_file) {
     _file->writeLock();
-    if (_file->reset()) { // try the efficient way first
+    if (_file->reset()) {
+      //
+      // try the efficient way first...
+      //
+
       reset();
-    } else { // the inefficient way
+    } else {
+      //
+      // else the inefficient way...
+      //
+
       KstDataSourcePtr newsrc = KstDataSource::loadSource(_file->fileName(), _file->fileType());
-      assert(newsrc != _file);
+
+      Q_ASSERT(newsrc != _file);
+
       if (newsrc) {
         _file->unlock();
         KST::dataSourceList.lock().writeLock();

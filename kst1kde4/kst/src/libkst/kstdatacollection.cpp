@@ -87,12 +87,11 @@ void *KST::malloc(size_t size) {
 }
 
 
-K_GLOBAL_STATIC(KstData, sdData)
 KstData *KstData::_self = 0L;
 
 KstData *KstData::self() {
   if (!_self) {
-// xxx    _self = sdData.setObject(_self, new KstData);
+    _self = new KstData;
   }
   return _self;
 }
@@ -101,7 +100,7 @@ KstData *KstData::self() {
 void KstData::replaceSelf(KstData *newInstance) {
   delete _self;
   _self = 0L;
-// xxx _self = sdData.setObject(_self, newInstance);
+  _self = newInstance;
 }
 
 

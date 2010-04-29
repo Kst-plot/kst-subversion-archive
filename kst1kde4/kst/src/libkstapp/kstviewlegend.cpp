@@ -23,10 +23,11 @@
 #include <QCheckBox>
 #include <QFontComboBox>
 #include <QMetaObject>
-#include <QStack>
 #include <QRadioButton>
-#include <QTextDocument>
 #include <QSpinBox>
+#include <QStack>
+#include <QTextDocument>
+#include <QTextStream>
 
 /* xxx #include <kglobal.h>
 #include <kcolorbutton.h> */

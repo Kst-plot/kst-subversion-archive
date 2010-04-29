@@ -478,16 +478,14 @@ void KstApp::initActions() {
 */
   connect(_actionNewVector, SIGNAL(triggered()), KstVectorDialog::globalInstance(), SLOT(show())); 
   connect(_actionNewCurve, SIGNAL(triggered()), KstCurveDialog::globalInstance(), SLOT(show()));
-/* xxx
-  connect(_actionNewEquation, SIGNAL(triggered()), KstEqDialog::globalInstance(), SLOT(show())); 
+  connect(_actionNewEquation, SIGNAL(triggered()), KstEqDialog::globalInstance(), SLOT(show()));
   connect(_actionNewHistogram, SIGNAL(triggered()), KstHsDialog::globalInstance(), SLOT(show()));
   connect(_actionNewSpectrum, SIGNAL(triggered()), KstPsdDialog::globalInstance(), SLOT(show()));
-  connect(_actionNewPlugin, SIGNAL(triggered()), this, SLOT(selectDataPlugin()));
   connect(_actionNewEventMonitor, SIGNAL(triggered()), KstEventMonitor::globalInstance(), SLOT(show())); 
   connect(_actionNewMatrix, SIGNAL(triggered()), KstMatrixDialog::globalInstance(), SLOT(show()));
   connect(_actionNewImage, SIGNAL(triggered()), KstImageDialog::globalInstance(), SLOT(show()));
   connect(_actionNewSpectrogram, SIGNAL(triggered()), KstCsdDialog::globalInstance(), SLOT(show()));
-*/
+  connect(_actionNewPlugin, SIGNAL(triggered()), this, SLOT(selectDataPlugin()));
 
   connect(_actionViewScalars, SIGNAL(triggered()), this, SLOT(showViewScalarsDialog()));
   connect(_actionViewVectors, SIGNAL(triggered()), this, SLOT(showViewVectorsDialog()));

@@ -15,6 +15,9 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QTextDocument>
+#include <QTextStream>
+
 #include "kstavector.h"
 #include "kstdebug.h"
 

@@ -51,9 +51,10 @@ KstEqDialog *KstEqDialog::globalInstance() {
 }
 
 
-KstEqDialog::KstEqDialog(QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl)
-: KstDataDialog(parent) {
+KstEqDialog::KstEqDialog(QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl) : KstDataDialog(parent) {
+printf("eqd0\n");
   _w = new Ui::EqDialogWidget();
+printf("eqd1\n");
   _w->setupUi(_contents);
 
   setMultiple(true);
@@ -78,6 +79,7 @@ KstEqDialog::KstEqDialog(QWidget* parent, const char* name, bool modal, Qt::Wind
   connect(_w->_xVectors, SIGNAL(selectionChangedLabel(const QString&)), this, SLOT(wasModifiedApply()));
   connect(_w->_doInterpolation, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
   connect(_w->_curveAppearance, SIGNAL(changed()), this, SLOT(wasModifiedApply()));
+printf("eqd9\n");
 }
 
 

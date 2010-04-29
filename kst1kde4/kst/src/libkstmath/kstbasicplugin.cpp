@@ -77,7 +77,7 @@ KstDataObjectPtr KstBasicPlugin::makeDuplicate(KstDataObjectDataObjectMap &map) 
   // set the same plugin...
   //
   
-  plugin->setTagName(KstObjectTag(tag().tag() + "'", tag().context())); // FIXME: unique tag generation method
+  plugin->setTag(KstObjectTag(tag().tag() + "'", tag().context())); // FIXME: unique tag generation method
   map.insert(KstDataObjectPtr(this), KstDataObjectPtr(plugin));
 
   return KstDataObjectPtr(plugin);
@@ -258,7 +258,7 @@ void KstBasicPlugin::load(const QDomElement &e) {
     QDomElement e = n.toElement();
     if (!e.isNull()) {
       if (e.tagName() == "tag") {
-        KstObject::setTagName(KstObjectTag::fromString(e.text()));
+        KstObject::setTag(KstObjectTag::fromString(e.text()));
       } else if (e.tagName() == "ivector") {
         _inputVectorLoadQueue.append(qMakePair(e.attribute("name"), e.text()));
       } else if (e.tagName() == "iscalar") {
@@ -567,8 +567,8 @@ double KstBasicPlugin::defaultScalarValue(const QString& name) const {
 }
 
 
-void KstBasicPlugin::setTagName(const KstObjectTag& tag) {
-  KstObject::setTagName(tag);
+void KstBasicPlugin::setTag(const KstObjectTag& tag) {
+  KstObject::setTag(tag);
 }
 
 
@@ -579,15 +579,15 @@ void KstBasicPlugin::setTagName(const QString &in_tag) {
     return;
   }
 
-  KstObject::setTagName(newTag);
+  KstObject::setTag(newTag);
 
   for (KstVectorMap::Iterator iter = outputVectors().begin(); iter != outputVectors().end(); ++iter) {
-    (*iter)->setTagName(KstObjectTag((*iter)->tag().tag(), tag()));
+    (*iter)->setTag(KstObjectTag((*iter)->tag().tag(), tag()));
   }
   for (KstScalarMap::Iterator iter = outputScalars().begin(); iter != outputScalars().end(); ++iter) {
-    (*iter)->setTagName(KstObjectTag((*iter)->tag().tag(), tag()));
+    (*iter)->setTag(KstObjectTag((*iter)->tag().tag(), tag()));
   }
   for (KstStringMap::Iterator iter = outputStrings().begin(); iter != outputStrings().end(); ++iter) {
-    (*iter)->setTagName(KstObjectTag((*iter)->tag().tag(), tag()));
+    (*iter)->setTag(KstObjectTag((*iter)->tag().tag(), tag()));
   }
 }

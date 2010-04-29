@@ -109,7 +109,7 @@ void KstHistogram::commonConstructor(const QString &in_tag, KstVectorPtr in_V,
   } else {
     tagName = in_tag;
   }
-  KstObject::setTagName(KstObjectTag::fromString(tagName));
+  KstObject::setTag(KstObjectTag::fromString(tagName));
 
   _inputVectors[RAWVECTOR] = in_V;
 
@@ -486,7 +486,7 @@ void KstHistogram::setTagName(const QString &in_tag) {
     return;
   }
 
-  KstObject::setTagName(newTag);
-  (*_bVector)->setTagName(KstObjectTag("bins", tag()));
-  (*_hVector)->setTagName(KstObjectTag("sv", tag()));
+  KstObject::setTag(newTag);
+  (*_bVector)->setTag(KstObjectTag("bins", tag()));
+  (*_hVector)->setTag(KstObjectTag("sv", tag()));
 }

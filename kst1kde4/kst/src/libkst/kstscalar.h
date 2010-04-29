@@ -35,7 +35,7 @@ class KST_EXPORT KstScalar : public KstPrimitive {
     virtual ~KstScalar();
 
   public:
-    void setTagName(const KstObjectTag& tag);
+    void setTag(const KstObjectTag& tag);
 
     /* return true if any scalars are dirty at the moment */
     static bool scalarsDirty();

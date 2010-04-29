@@ -52,7 +52,7 @@ class KST_EXPORT KstBasicPlugin : public KstDataObject {
     virtual KstDataObjectPtr makeDuplicate(KstDataObjectDataObjectMap&);
 
     virtual void setTagName(const QString& tag);
-    virtual void setTagName(const KstObjectTag& tag);
+    virtual void setTag(const KstObjectTag& tag);
 
   public slots:
     //Pure virtual slots from KstDataObject

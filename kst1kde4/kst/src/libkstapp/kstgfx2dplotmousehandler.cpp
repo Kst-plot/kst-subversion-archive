@@ -80,7 +80,7 @@ void KstGfx2DPlotMouseHandler::releasePress(KstTopLevelViewPtr view, const QPoin
 
     plot = new Kst2DPlot;
     copyDefaults(KstViewObjectPtr(plot));
-    plot->setTagName(KstObjectTag(KST::suggestPlotName(), KstObjectTag::globalTagContext));  // FIXME: tag context
+    plot->setTag(KstObjectTag(KST::suggestPlotName(), KstObjectTag::globalTagContext));  // FIXME: tag context
     plot->move(_prevBand.topLeft());
     plot->resize(_prevBand.size());
     KstViewObjectPtr container = view->findDeepestChild(_prevBand);

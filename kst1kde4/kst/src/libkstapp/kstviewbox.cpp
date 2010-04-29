@@ -15,18 +15,17 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QBitmap>
+#include <QMetaObject>
+#include <QMap>
+#include <QPainter>
+#include <QPair>
+#include <QTextStream>
+
 #include "kstgfxrectanglemousehandler.h"
 #include "kst.h"
 #include "kstviewbox.h"
 #include "kstviewobjectfactory.h"
-
-// xxx #include <kglobal.h>
-
-#include <QBitmap>
-#include <QMetaObject>
-#include <QPainter>
-#include <QMap>
-#include <QPair>
 
 KstViewBox::KstViewBox()
 : KstViewObject("Box"), _borderColor(QColor(0, 0, 0)), _borderWidth(0) {

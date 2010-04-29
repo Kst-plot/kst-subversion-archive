@@ -33,7 +33,7 @@ KstPlotGroup::KstPlotGroup()
 : KstMetaPlot("PlotGroup") {
   _standardActions |= Delete | Raise | Zoom | Lower | RaiseToTop | LowerToBottom;
   _layoutActions |= Delete | Copy | Raise | Lower | RaiseToTop | LowerToBottom | Rename | MoveTo;
-  setTagName(KstObjectTag(QObject::tr("Plot Group %1").arg(++pgcount), KstObjectTag::globalTagContext));  // FIXME: tag context?
+  setTag(KstObjectTag(QObject::tr("Plot Group %1").arg(++pgcount), KstObjectTag::globalTagContext));  // FIXME: tag context?
   _type = "PlotGroup";
   setBorderColor(Qt::blue);
   _container = false; // plot group is a container that doesn't behave like one
@@ -60,7 +60,7 @@ KstPlotGroup::KstPlotGroup(const QDomElement& e)
   // always have these values
   _standardActions |= Delete | Raise | Zoom | Lower | RaiseToTop | LowerToBottom;
   _layoutActions |= Delete | Copy | Raise | Lower | RaiseToTop | LowerToBottom | Rename | MoveTo;
-  setTagName(KstObjectTag(QObject::tr("Plot Group %1").arg(++pgcount), KstObjectTag::globalTagContext));  // FIXME: tag context?
+  setTag(KstObjectTag(QObject::tr("Plot Group %1").arg(++pgcount), KstObjectTag::globalTagContext));  // FIXME: tag context?
   _type = "PlotGroup";
   _container = false; // plot group is a container that doesn't behave like one
   setBorderColor(Qt::blue);
@@ -72,7 +72,7 @@ KstPlotGroup::KstPlotGroup(const KstPlotGroup& plotGroup)
   _type = "PlotGroup";
   _container = false; // plot group is a container that doesn't behave like one
 
-  setTagName(KstObjectTag(QObject::tr("Plot Group %1").arg(++pgcount), KstObjectTag::globalTagContext));  // FIXME: tag context?
+  setTag(KstObjectTag(QObject::tr("Plot Group %1").arg(++pgcount), KstObjectTag::globalTagContext));  // FIXME: tag context?
 }
 
 

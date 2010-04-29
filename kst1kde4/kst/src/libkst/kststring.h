@@ -18,7 +18,8 @@
 #ifndef KSTSTRING_H
 #define KSTSTRING_H
 
-#include <qdom.h>
+#include <QDomElement>
+
 #include "kstprimitive.h"
 #include "kstobjectcollection.h"
 
@@ -32,7 +33,7 @@ class KST_EXPORT KstString : public KstPrimitive {
     ~KstString();
 
   public:
-    void setTagName(const KstObjectTag& tag);
+    void setTag(const KstObjectTag& tag);
     void save(QTextStream &ts, const QString& indent = QString::null);
     UpdateType update(int updateCounter = -1);
     KstString& operator=(const QString& v);

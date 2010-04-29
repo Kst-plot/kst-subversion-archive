@@ -695,7 +695,7 @@ void Kst2DPlot::commonConstructor(const QString &in_tag,
 
   _i_per = 0;
 
-  KstObject::setTagName(KstObjectTag(in_tag, KstObjectTag::globalTagContext));  // FIXME: tag context
+  KstObject::setTag(KstObjectTag(in_tag, KstObjectTag::globalTagContext));  // FIXME: tag context
   _isTied = false;
 
   _XMin = xmin_in;
@@ -8021,10 +8021,10 @@ void Kst2DPlot::renameScalars() {
   KstWriteLocker sl(&KST::scalarList.lock());
   KST::scalarList.setUpdateDisplayTags(false);
 
-  _scalars["xmax"]->setTagName(KstObjectTag("XMax", tag()));
-  _scalars["xmin"]->setTagName(KstObjectTag("XMin", tag()));
-  _scalars["ymax"]->setTagName(KstObjectTag("YMax", tag()));
-  _scalars["ymin"]->setTagName(KstObjectTag("YMin", tag()));
+  _scalars["xmax"]->setTag(KstObjectTag("XMax", tag()));
+  _scalars["xmin"]->setTag(KstObjectTag("XMin", tag()));
+  _scalars["ymax"]->setTag(KstObjectTag("YMax", tag()));
+  _scalars["ymin"]->setTag(KstObjectTag("YMin", tag()));
 
   KST::scalarList.setUpdateDisplayTags(true);
 }
@@ -8036,12 +8036,12 @@ void Kst2DPlot::updateScalars() {
   _scalars["ymin"]->setValue(_YMin);
 }
 
-void Kst2DPlot::setTagName(const KstObjectTag& newTag) {
+void Kst2DPlot::setTag(const KstObjectTag& newTag) {
   if (newTag == tag()) {
     return;
   }
 
-  this->KstObject::setTagName(newTag);
+  this->KstObject::setTag(newTag);
 
   renameScalars();
 

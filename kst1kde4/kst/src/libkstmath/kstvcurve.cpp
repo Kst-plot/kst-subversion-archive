@@ -207,9 +207,9 @@ void KstVCurve::commonConstructor(const QString &in_tag, const QColor &in_color)
   _color = in_color;
   if (in_tag == QString::null) {
     QString tag_name = KST::suggestCurveName(yVTag());
-    setTagName(KstObjectTag::fromString(tag_name));
+    setTag(KstObjectTag::fromString(tag_name));
   } else {
-    setTagName(KstObjectTag::fromString(in_tag));
+    setTag(KstObjectTag::fromString(in_tag));
   }
   updateParsedLegendTag();
 }

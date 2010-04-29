@@ -41,9 +41,7 @@ class KST_EXPORT KstEquation : public KstDataObject {
     virtual void save(QTextStream &ts, const QString& indent = QString::null);
     virtual QString propertyString() const;
 
-    /** equations used to edit the vector */
     void setEquation(const QString &Equation);
-
     void setExistingXVector(KstVectorPtr xvector, bool do_interp);
 
     virtual QString equation() const { return _equation; }

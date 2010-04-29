@@ -24,6 +24,7 @@
 #include <QMetaObject>
 #include <QMetaProperty>
 #include <QTextDocument>
+#include <QTextStream>
 
 #include "kst.h"
 #include "kst2dplot.h"
@@ -144,7 +145,7 @@ void KstViewObject::load(const QDomElement& e) {
 
     if (!el.isNull()) { // the node was really an element.
       if (el.tagName() == "tag") {
-        setTagName(KstObjectTag::fromString(el.text()));
+        setTag(KstObjectTag::fromString(el.text()));
       } else if (el.tagName() == "transparent") {
         _transparent = true;
       } else if (el.tagName() == "columns") {
@@ -1900,7 +1901,7 @@ void KstViewObject::rename() {
 
   done = !ok;
   while (!done) {
-    setTagName(KstObjectTag(newName+"tmpholdingstring", KstObjectTag::globalTagContext));
+    setTag(KstObjectTag(newName+"tmpholdingstring", KstObjectTag::globalTagContext));
 
     if (KstData::self()->viewObjectNameNotUnique(newName)) {
       newName = QInputDialog::getText(KstApp::inst()->activeSubWindow(), QObject::tr("Kst"), QObject::tr("%1 is not a unique name: Enter a new name for %2:").arg(newName).arg(oldName), QLineEdit::Normal, oldName, &ok);
@@ -1912,10 +1913,10 @@ void KstViewObject::rename() {
   }
 
   if (ok) {
-    setTagName(KstObjectTag(newName, KstObjectTag::globalTagContext)); // FIXME: handle tag context
+    setTag(KstObjectTag(newName, KstObjectTag::globalTagContext)); // FIXME: handle tag context
      KstApp::inst()->updateViewManager(true);
   } else {
-    setTagName(KstObjectTag(oldName, KstObjectTag::globalTagContext)); // FIXME: handle tag context
+    setTag(KstObjectTag(oldName, KstObjectTag::globalTagContext)); // FIXME: handle tag context
   }
 }
 
@@ -1966,7 +1967,7 @@ void KstViewObject::readBinary(QDataStream& str) {
   uint i;
 
   str >> tagName;
-  setTagName(KstObjectTag(tagName, KstObjectTag::globalTagContext)); // FIXME: tag context
+  setTag(KstObjectTag(tagName, KstObjectTag::globalTagContext)); // FIXME: tag context
 
   // FIXME: rename objects if they cause a namespace conflict
   str >> _geom >> _backgroundColor >> _foregroundColor;

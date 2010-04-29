@@ -15,11 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <kdebug.h>
-
 #include "kstobject.h"
 
-/** Tag globals */
 const QChar KstObjectTag::tagSeparator = QChar('/');
 const QChar KstObjectTag::tagSeparatorReplacement = QChar('_');
 
@@ -34,7 +31,7 @@ static int i = 0;
 
 KstObject::KstObject() : QObject(), QSharedData(), KstRWLock(),
                          _lastUpdateCounter(0),
-                         _tag(tr("Object %1").arg(++i), KstObjectTag::globalTagContext)
+                         _tag(QObject::tr("Object %1").arg(++i), KstObjectTag::globalTagContext)
 {
   _dirty = false;
   _lastUpdate = KstObject::NO_CHANGE;
@@ -50,13 +47,17 @@ int KstObject::operator==(const QString& tag) const {
 }
 
 
-// Returns true if update has already been done
 bool KstObject::checkUpdateCounter(int update_counter) {
+  //
+  // returns true if update has already been done...
+  //
+
   if (update_counter == _lastUpdateCounter) {
     return true;
   } else if (update_counter > 0) {
     _lastUpdateCounter = update_counter;
   }
+
   return false;
 }
 
@@ -76,7 +77,7 @@ inline const KstObjectTag& KstObject::tag() const {
 }
 
 
-void KstObject::setTagName(const KstObjectTag& tag) {
+void KstObject::setTag(const KstObjectTag& tag) {
   if (tag == _tag) {
     return;
   }

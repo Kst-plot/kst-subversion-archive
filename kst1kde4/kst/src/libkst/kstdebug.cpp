@@ -22,14 +22,13 @@
 #include "kstrevision.h"
 #include "logevents.h"
 
-K_GLOBAL_STATIC(KstDebug, sd)
 KstDebug *KstDebug::_self = 0L;
 static QMutex soLock;
 
 KstDebug *KstDebug::self() {
   QMutexLocker ml(&soLock);
   if (!_self) {
-// xxx    sd.setObject(_self, new KstDebug);
+    _self = new KstDebug;
   }
 
   return _self;

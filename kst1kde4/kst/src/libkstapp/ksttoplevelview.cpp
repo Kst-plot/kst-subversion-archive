@@ -47,7 +47,7 @@
 KstTopLevelView::KstTopLevelView(QWidget *parent, const char *name, Qt::WindowFlags w)
 : KstViewObject("TopLevelView"), _w(new KstViewWidget(KstTopLevelViewPtr(this), parent, name, w)) {
   _onGrid = true;
-  setTagName(KstObjectTag(name, KstObjectTag::globalTagContext));  // FIXME: tag context
+  setTag(KstObjectTag(name, KstObjectTag::globalTagContext));  // FIXME: tag context
   commonConstructor();
 }
 

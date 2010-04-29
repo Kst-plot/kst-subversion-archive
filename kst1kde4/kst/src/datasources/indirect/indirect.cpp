@@ -183,11 +183,7 @@ int understands_indirect(QSettings*, const QString& filename) {
     }
     return QFile::exists(ifn.trimmed()) ? percent : 0;
   } else {
-#if KDE_VERSION >= KDE_MAKE_VERSION(3,3,0)
     return KIO::NetAccess::exists(url, true, 0L) ? percent : 0;
-#else
-    return KIO::NetAccess::exists(url, true) ? percent : 0;
-#endif
   }
 }
 

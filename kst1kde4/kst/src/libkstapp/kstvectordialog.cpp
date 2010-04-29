@@ -739,7 +739,7 @@ bool KstVectorDialog::editSingleObjectRV(KstVectorPtr vcPtr) {
 
     svp->writeLock();
     svp->changeRange(x0, x1, n);
-    svp->setTagName(KstObjectTag(_tagName->text(), svp->tag().context())); // FIXME: doesn't verify uniqueness, doesn't allow changing tag context
+    svp->setTag(KstObjectTag(_tagName->text(), svp->tag().context())); // FIXME: doesn't verify uniqueness, doesn't allow changing tag context
     svp->unlock();
   }
   file->unlock();
@@ -798,7 +798,7 @@ bool KstVectorDialog::editObject() {
       return false;
     }
 
-    _dp->setTagName(KstObjectTag(tagName, _dp->tag().context())); // FIXME: doesn't allow changing tag context
+    _dp->setTag(KstObjectTag(tagName, _dp->tag().context())); // FIXME: doesn't allow changing tag context
     _dp->unlock();
 
     //

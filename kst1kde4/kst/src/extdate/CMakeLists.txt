@@ -1,4 +1,4 @@
-include_directories(${CMAKE_SOURCE_DIR} ${KDE4_INCLUDES})
+include_directories(${CMAKE_SOURCE_DIR} ${QT_INCLUDES})
 
 ########### next target ###############
 
@@ -11,7 +11,7 @@ set(kstextdate_LIB_SRCS
 
 ADD_LIBRARY(kstextdate SHARED ${kstextdate_LIB_SRCS})
 
-target_link_libraries(kstextdate ${KDE4_KDECORE_LIBS} kdeui)
+target_link_libraries(kstextdate QtCore)
 
 set_target_properties(kstextdate PROPERTIES VERSION 1.2.0 SOVERSION 1)
 install(TARGETS kstextdate 

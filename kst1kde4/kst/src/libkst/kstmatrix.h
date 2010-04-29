@@ -18,7 +18,7 @@
 #ifndef KSTMATRIX_H
 #define KSTMATRIX_H
 
-#include <qhash.h>
+#include <QHash>
 
 #include "kstscalar.h"
 #include "kstprimitive.h"
@@ -88,36 +88,20 @@ class KST_EXPORT KstMatrix: public KstPrimitive {
     virtual QString yLabel() const;
 
     void zero();
-
-    // clear out the matrix
     void blank();
 
-    // get usage of this matrix by other objects
     virtual int getUsage() const;
-
-    // save the matrix
     virtual void save(QTextStream &ts, const QString& indent = QString::null);
+    virtual void setTag(const KstObjectTag& tag);
 
-    // set tag name of the matrix
-    virtual void setTagName(const KstObjectTag& tag);
-
-    // the statistics scalars for this matrix
     const ScalarCollection& scalars() const;
-
-    // set the labels for this matrix
     void setLabel(const QString& newLabel);
     void setXLabel(const QString& newLabel);
     void setYLabel(const QString& newLabel);
-
-    // whether or not this matrix can be edited
     bool editable() const;
-
     void setEditable(bool editable);
-
-    // whether or not this matrix can be saved
     bool saveable() const;
 
-    // matrix dimensions
     int xNumSteps() const { return _nX; }
     int yNumSteps() const { return _nY; }
     double xStepSize() const { return _stepX; }
