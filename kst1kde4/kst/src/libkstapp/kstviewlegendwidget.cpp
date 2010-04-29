@@ -20,8 +20,7 @@
 #include "kst_export.h"
 #include "kstviewlegendwidget.h"
 
-KstViewLegendWidget::KstViewLegendWidget(QWidget* parent, const char* name, Qt::WindowFlags fl) : QDialog(parent, fl)
-{ 
+KstViewLegendWidget::KstViewLegendWidget(QWidget* parent, const char* name, Qt::WindowFlags fl) : QDialog(parent, fl) {
   setupUi(this);
 
   connect(DisplayedCurveList, SIGNAL(clicked(QListBoxItem*)), this, SLOT(updateButtons()));
@@ -60,8 +59,7 @@ KstViewLegendWidget::~KstViewLegendWidget() {
 }
 
 
-void KstViewLegendWidget::updateButtons()
-{
+void KstViewLegendWidget::updateButtons() {
   bool selected = false;
   uint count = AvailableCurveList->count();
   uint i;
@@ -103,8 +101,7 @@ void KstViewLegendWidget::updateButtons()
 }
 
 
-void KstViewLegendWidget::removeDisplayedCurve()
-{
+void KstViewLegendWidget::removeDisplayedCurve() {
   uint count = DisplayedCurveList->count();
 
   if (count > 0) {
@@ -123,8 +120,7 @@ void KstViewLegendWidget::removeDisplayedCurve()
 }
 
 
-void KstViewLegendWidget::addDisplayedCurve()
-{
+void KstViewLegendWidget::addDisplayedCurve() {
   uint count = AvailableCurveList->count();
 
   if (count > 0) {
@@ -143,14 +139,12 @@ void KstViewLegendWidget::addDisplayedCurve()
 }
 
 
-void KstViewLegendWidget::changedFgColor( )
-{
+void KstViewLegendWidget::changedFgColor( ) {
   _changedFgColor = true;
 }
 
 
-void KstViewLegendWidget::changedBgColor( )
-{
+void KstViewLegendWidget::changedBgColor( ) {
   _changedBgColor = true;
 }
 

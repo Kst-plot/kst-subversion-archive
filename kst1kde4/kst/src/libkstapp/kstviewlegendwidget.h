@@ -18,6 +18,8 @@
 #ifndef KSTVIEWLEGENDWIDGETI_H
 #define KSTVIEWLEGENDWIDGETI_H
 
+#include <QDialog>
+
 #include "kcolorbutton.h"
 #include "klineedit.h"
 

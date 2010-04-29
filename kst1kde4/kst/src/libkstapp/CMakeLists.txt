@@ -114,7 +114,7 @@ set(kstapp_LIB_SRCS
 #    kstiface.h
 #    kstiface_impl.h)
 
-kde4_add_ui_files(kstapp_LIB_SRCS
+qt4_wrap_ui(kstapp_UI_HDRS
     basicdialogwidget.ui
     changefiledialog.ui
     changenptsdialog.ui
@@ -156,7 +156,7 @@ kde4_add_ui_files(kstapp_LIB_SRCS
     viewstringsdialog.ui
     viewvectorsdialog.ui)
 
-kde4_add_library(kstapp SHARED ${kstapp_LIB_SRCS})
+kde4_add_library(kstapp SHARED ${kstapp_LIB_SRCS} ${kstapp_UI_HDRS})
 
 target_link_libraries(kstapp kstbase kstmath kstwidgets ${KDE4_KDECORE_LIBS} QtXml QtGui)
 

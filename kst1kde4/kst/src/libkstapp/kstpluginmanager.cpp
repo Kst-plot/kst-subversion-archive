@@ -17,13 +17,14 @@
 
 #include <QCheckBox>
 #include <QComboBox>
+#include <QFileDialog>
 #include <QImage>
 #include <QLabel>
 #include <QListView>
 #include <QMessageBox>
 #include <QRadioButton>
 #include <QRegExp>
-#include <QFileDialog>
+#include <QUrl>
 
 #include "kstpluginmanager.h"
 #include "plugincollection.h"
