@@ -26,7 +26,7 @@
 #include <kimageio.h>
 
 #include "kaboutdata.h"
-#include "anyoption.h" //replacement for kcmdlineargs
+// xxx #include <tclap/CmdLine.h> //replacement for kcmdlineargs
 
 #include "dialoglauncher-gui.h"
 #include "kst.h"
@@ -366,70 +366,6 @@ int main(int argc, char *argv[]) {
   KCmdLineArgs::addCmdLineOptions( options ); // Add our own options.
 */
 
-	AnyOption *opt = new AnyOption();
-
-//SET THE USAGE/HELP
-/* xxx
-  opt->addUsage( "" );
-  opt->addUsage( "Usage: " );
-  opt->addUsage( "" );
-	opt->addUsage( " -h  --help :Prints this help " );
-	opt->addUsage("y <Y> :Field for Y axis (multiple allowed)"); 
-	opt->addUsage("z <Z> :Field for a Z image (multiple allowed)");
-	opt->addUsage("ye <equation> :Equation for Y axis (multiple allowed)");
-	opt->addUsage("E <text> :Pass argument to extension.  text is of format extensionname:argumentlist");
-	opt->addUsage("e <E> :Field for Y errors (multiple allowed)");
-	opt->addUsage("xe <X> :X vector for equations x0:x1:n");
-	opt->addUsage("p <Y> :Field for power spectrum (multiple allowed)");
-	opt->addUsage("h <Y> :Field for histogram (multiple allowed)");
-	opt->addUsage("r <f> :Sample rate for power spectrum");
-	opt->addUsage("ru <U> :Units for psd sample rate");
-	opt->addUsage("yu <U> :Units for y vectors");
-	opt->addUsage("l <P> :Length of FFTs is 2^P");
-	opt->addUsage("f <F0> :First frame to read");
-	opt->addUsage("n <NS> :Number of frames to read");
-	opt->addUsage("s <NS> :Number of frames to skip each read");
-	opt->addUsage("a :Apply boxcar filter before skipping frames");
-	opt->addUsage("m <NC> :Separate plots arranged in <NC> columns");
-	opt->addUsage("d :Display as points rather than curves");
-	opt->addUsage("g :Provide a legend box");
-	opt->addUsage("w <file> :Display the data wizard");
-	opt->addUsage("print <file> :Print to file and exit");
-	opt->addUsage("png <file> :Save as a png file and exit");
-	opt->addUsage("nq :Bypass the quickstart dialog");
-	opt->addUsage("F <dataFile> :Override a *.kst file's data file with <datafile>");
-	opt->addUsage("+[Files] :Data files (if -y given) or *.kst file");
-*/
-	opt->setOption('y');
-	opt->setOption('z');
-	opt->setOption("ye");
-	opt->setOption('e');
-	opt->setOption('E');
-	opt->setOption("xe");
-	opt->setOption('p');
-	opt->setOption('h');
-	opt->setOption('r');
-	opt->setOption("ru");
-	opt->setOption("yu");
-	opt->setOption('l');
-	opt->setOption('f');
-	opt->setOption('n');
-	opt->setOption('s');
-	opt->setOption('m');
-	opt->setOption('w');
-	opt->setOption("print");
-	opt->setOption("png");
-	opt->setOption("F");
-	opt->setOption('+');
-
-	opt->setFlag('a');
-	opt->setFlag('d');
-	opt->setFlag('g');
-	opt->setFlag("nq");
-	opt->setFlag("help", 'h');
-	
-	opt->processCommandArgs( argc, argv );
-
   QApplication app(argc, argv);
 // xxx  KImageIO::registerFormats();
 
@@ -446,10 +382,6 @@ int main(int argc, char *argv[]) {
 
     KstApp *kst = new KstApp;
 
-/* for debug
-	if (opt->getFlag( "help" )){
-		opt->printUsage();
-}*/
  
 /* xxx
 
