@@ -16,7 +16,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <assert.h>
 #include <stdio.h>
 
 #include <QLineEdit>
@@ -227,7 +226,7 @@ bool KstFitDialog::newObject() {
         if (saveOutputs(plugin, pPtr)) {
           if (plugin->isValid()) {
             if (!createCurve(plugin)) {
-              QMessageBox::warning(this, i18n("Kst"), i18n("Could not create curve from fit, possibly due to a bad plugin."));
+              QMessageBox::warning(this, QObject::tr("Kst"), QObject::tr("Could not create curve from fit, possibly due to a bad plugin."));
 
               return false;
             }
@@ -235,27 +234,27 @@ bool KstFitDialog::newObject() {
             KST::dataObjectList.append(plugin);
             KST::dataObjectList.lock().unlock();
           } else {
-            QMessageBox::warning(this, i18n("Kst"), i18n("There is something wrong (i.e, there is a bug) with the creation of the fit plugin."));
+            QMessageBox::warning(this, QObject::tr("Kst"), QObject::tr("There is something wrong (i.e, there is a bug) with the creation of the fit plugin."));
 
             return false;
           }
         } else {
-          QMessageBox::warning(this, i18n("Kst"), i18n("There is an error in the outputs you entered."));
+          QMessageBox::warning(this, QObject::tr("Kst"), QObject::tr("There is an error in the outputs you entered."));
 
           return false;
         }
       } else {
-        QMessageBox::warning(this, i18n("Kst"), i18n("There is an error in the inputs you entered."));
+        QMessageBox::warning(this, QObject::tr("Kst"), QObject::tr("There is an error in the inputs you entered."));
 
         return false;
       }
     } else {
-      QMessageBox::warning(this, i18n("Kst"), i18n("There is something wrong (i.e, there is a bug) with the selected plugin.\n"));
+      QMessageBox::warning(this, QObject::tr("Kst"), QObject::tr("There is something wrong (i.e, there is a bug) with the selected plugin.\n"));
 
       return false;
     }
 
-// xxx    emit modified();
+    emit modified();
   }
 
   return true;

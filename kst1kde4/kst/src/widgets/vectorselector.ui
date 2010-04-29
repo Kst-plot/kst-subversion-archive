@@ -84,23 +84,5 @@
     <include location="global">kst_export.h</include>
   </includes>
   <connections>
-    <connection>
-      <sender>_newVector</sender>
-      <signal>clicked()</signal>
-      <receiver>VectorSelector</receiver>
-      <slot>createNewVector()</slot>
-    </connection>
-    <connection>
-      <sender>_editVector</sender>
-      <signal>clicked()</signal>
-      <receiver>VectorSelector</receiver>
-      <slot>editVector()</slot>
-    </connection>
-    <connection>
-      <sender>VectorSelector</sender>
-      <signal>selectionChanged(QString)</signal>
-      <receiver>VectorSelector</receiver>
-      <slot>selectionWatcher(QString)</slot>
-    </connection>
   </connections>
 </ui>

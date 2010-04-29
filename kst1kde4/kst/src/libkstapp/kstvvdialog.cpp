@@ -441,7 +441,7 @@ bool KstVvDialog::newObject() {
     vv = 0L;
     vc = 0L;
 
-// xxx    emit modified();
+    emit modified();
   }
 
   return true;
@@ -619,7 +619,7 @@ bool KstVvDialog::editObject() {
     }
   }
 
-// xxx  emit modified();
+  emit modified();
 
   return true;
 }

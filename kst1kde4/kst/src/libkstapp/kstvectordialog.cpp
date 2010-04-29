@@ -77,7 +77,7 @@ KstVectorDialog::KstVectorDialog(QWidget* parent, const char* name, bool modal, 
   connect(_w->_kstDataRange->DoSkip, SIGNAL(clicked()), this, SLOT(setDoSkipDirty()));
 
   //
-  // for apply button...
+  // connections for apply button...
   //
 
   connect(_w->_readFromSource, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
@@ -141,8 +141,7 @@ void KstVectorDialog::selectingFolder() {
 }
 
 
-void KstVectorDialog::selectFolder()
-{
+void KstVectorDialog::selectFolder() {
   QTimer::singleShot(0, this, SLOT(selectingFolder()));
 }
 
@@ -317,18 +316,11 @@ void KstVectorDialog::fillFieldsForRVEdit() {
   _ok->setEnabled(_w->Field->isEnabled());
   _w->Field->setItemText(_w->Field->currentIndex(), rvp->field());
 
-  // select the proper file
 // xxx  _w->FileName->setURL(rvp->filename());
-
-  // fill the vector range entries
   _w->_kstDataRange->CountFromEnd->setChecked(rvp->countFromEOF());
   _w->_kstDataRange->setF0Value(rvp->reqStartFrame());
-
-  // fill number of frames entries
   _w->_kstDataRange->ReadToEnd->setChecked(rvp->readToEOF());
   _w->_kstDataRange->setNValue(rvp->reqNumFrames());
-
-  // fill in frames to skip box
   _w->_kstDataRange->Skip->setValue(rvp->skip());
   _w->_kstDataRange->DoSkip->setChecked(rvp->doSkip());
   _w->_kstDataRange->DoFilter->setChecked(rvp->doAve());
@@ -415,7 +407,10 @@ bool KstVectorDialog::newObject() {
     tagName.remove('[');
     tagName.remove(']');
 
-    // if there is not an active DataSource, create one
+    //
+    // if there is not an active DataSource, create one...
+    //
+
     {
       KST::dataSourceList.lock().writeLock();
       KstDataSourceList::Iterator it;
@@ -502,7 +497,7 @@ bool KstVectorDialog::newObject() {
 
     vector = 0L;
 
-// xxx    emit modified();
+    emit modified();
   } else {
     KstSVectorPtr svector;
     double x0 = _w->_xMin->text().toDouble();
@@ -523,7 +518,7 @@ bool KstVectorDialog::newObject() {
 
     svector = 0L;
 
-// xxx    emit modified();
+    emit modified();
   }
 
   return true;
@@ -754,9 +749,9 @@ bool KstVectorDialog::editSingleObjectRV(KstVectorPtr vcPtr) {
 
 
 bool KstVectorDialog::editObject() {
-  // if editing multiple objects, edit each one
   if (_editMultipleMode) {
-    // get dirties first
+    bool didEdit = false;
+
 // xxx    _fileNameDirty = !_w->FileName->url().isEmpty();
     _skipDirty = _w->_kstDataRange->Skip->text() != " ";
     _f0Dirty = !_w->_kstDataRange->F0->text().isEmpty();
@@ -765,8 +760,6 @@ bool KstVectorDialog::editObject() {
     _xMinDirty = !_w->_xMin->text().isEmpty();
     _xMaxDirty = !_w->_xMax->text().isEmpty();
 
-    // now edit the vectors
-    bool didEdit = false;
     for (uint i = 0; i < _editMultipleWidget->_objectList->count(); i++) {
       if (_editMultipleWidget->_objectList->item(i)->isSelected()) {
         KstVectorList::Iterator vcIter;
@@ -787,6 +780,7 @@ bool KstVectorDialog::editObject() {
         didEdit = true;
       }
     }
+
     if (!didEdit) {
       QMessageBox::warning(this, QObject::tr("Kst"), QObject::tr("Select one or more objects to edit."));
 
@@ -829,7 +823,7 @@ bool KstVectorDialog::editObject() {
     }
   }
 
-// xxx  emit modified();
+  emit modified();
 
   return true;
 }
@@ -865,7 +859,6 @@ void KstVectorDialog::configureSource() {
     }
   }
 /* xxx
-  assert(_configWidget);
   KDialogBase *dlg = new KDialogBase(this, "Data Config Dialog", true, tr("Configure Data Source"));
   if (isNew) {
     connect(dlg, SIGNAL(okClicked()), _configWidget, SLOT(save()));
@@ -911,7 +904,6 @@ void KstVectorDialog::populateEditMultipleRV() {
   _w->_kstDataRange->DoFilter->setChecked(Qt::PartiallyChecked);
   _w->_kstDataRange->DoSkip->setTristate(true);
   _w->_kstDataRange->DoSkip->setChecked(Qt::PartiallyChecked);
-
   _w->_kstDataRange->Skip->setEnabled(true);
   _w->_kstDataRange->N->setEnabled(true);
   _w->_kstDataRange->F0->setEnabled(true);

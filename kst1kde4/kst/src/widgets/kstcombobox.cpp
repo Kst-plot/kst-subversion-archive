@@ -15,6 +15,10 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QCompleter>
+#include <QLineEdit>
+#include <QStringList>
+
 #include "kstcombobox.h"
 
 KstComboBox::KstComboBox(QWidget *parent, const char *name)
@@ -34,48 +38,58 @@ KstComboBox::KstComboBox(bool rw, QWidget *parent, const char *name)
 KstComboBox::~KstComboBox() {
 }
 
+
 void KstComboBox::setEditable(bool rw) {
   _trueRW = rw;
 }
 
+
 void KstComboBox::commonConstructor() {
   QComboBox::setEditable( true );
 
-  if (!_trueRW) { //if not truly read write then go into psuedo mode for read only
-// xxx    setInsertionPolicy( NoInsertion );
-// xxx    setCompletionMode( KGlobalSettings::CompletionPopupAuto );
+  if (!_trueRW) {
+    //
+    // if not truly read write then go into psuedo mode for read only...
+    //
 
-    //DON'T HANDLE THE EDIT'S RETURNPRESSED IN qcombobox.cpp... RATHER HANDLE HERE!
-// xxx    disconnect( lineEdit(), SIGNAL(returnPressed()), this, SLOT(returnPressed()) );
-    connect( this, SIGNAL(returnPressed()), this, SLOT(validate()) );
+    setInsertPolicy( NoInsert );
+
+    //
+    // don't handle the edit's returnpressed in qcombobox.cpp,
+    // but rather handle it here...
+    //
+
+// xxx    lineEdit()->disconnect( SIGNAL(returnPressed()), this, SLOT(returnPressed()) );
+// xxx    connect( this, SIGNAL(returnPressed()), this, SLOT(validate()) );
   }
 }
+
 
 void KstComboBox::focusInEvent(QFocusEvent *event) {
-  //WARNING!! If the list of items changes programmatically while the combo has focus
-  //this will bug out!!  Unfortunately I see no way to check whether the list of items
-  //changes programmatically other than to provide my own input methods or poll with a
-  //timer.  Neither is a good idea IMO...
-/* xxx
+  //
+  // if the list of items changes programmatically while the combo has focus
+  //  this will fail! Unfortunately I see no way to check whether the list of 
+  //  items changes programmatically other than to provide my own input methods 
+  //  or poll with a timer. Neither is a good idea IMO...
+  //
+
   if (!_trueRW) {
-    if (KCompletion *comp = completionObject()) {
-      comp->clear();
-      for (int i = 0; i < count(); ++i) {
-        comp->addItem(text(i));
-      }
+    QStringList strings;
+    QCompleter *completer;
+    int i;
+
+    for (i = 0; i < count(); ++i) {
+      strings.append(itemText(i));
     }
+    completer = new QCompleter(strings, this);
+    setCompleter(completer);
   }
 
-  KComboBox::focusInEvent(event);
-*/
+  QComboBox::focusInEvent(event);
 }
 
-void KstComboBox::focusOutEvent(QFocusEvent *event) {
-  //WARNING!! If the list of items changes programmatically while the combo has focus
-  //this will bug out!!  Unfortunately I see no way to check whether the list of items
-  //changes programmatically other than to provide my own input methods or poll with a
-  //timer.  Neither is a good idea IMO...
 
+void KstComboBox::focusOutEvent(QFocusEvent *event) {
   validate(false);
 
   QComboBox::focusOutEvent(event);
@@ -83,27 +97,23 @@ void KstComboBox::focusOutEvent(QFocusEvent *event) {
 
 
 void KstComboBox::validate(bool rp) {
-/* xxx
   if (!_trueRW) {
     int match = -1;
-    for (int i = 0; i < count(); ++i) {
-      match = currentText() == text(i) ? i : match;
+    int i;
+
+    for (i = 0; i < count(); ++i) {
+      match = currentText() == itemText(i) ? i : match;
     }
 
     if (match < 0 && count()) {
       lineEdit()->blockSignals(true);
-      lineEdit()->setText( text(currentItem()) );
+      lineEdit()->setText( itemText(currentIndex()) );
       lineEdit()->blockSignals(false);
-
-    } else if (match != currentItem() || rp) {
-      setCurrentItem(match);
+    } else if (match != currentIndex() || rp) {
+      setCurrentIndex(match);
 
       emit activated(match);
-      emit activated(text(match));
+      emit activated(itemText(match));
     }
   }
-*/
 }
-
-
-// xxx #include "kstcombobox.moc"

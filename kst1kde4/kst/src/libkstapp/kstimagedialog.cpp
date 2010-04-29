@@ -45,7 +45,7 @@ KstImageDialog *KstImageDialog::globalInstance() {
 
 KstImageDialog::KstImageDialog(QWidget* parent, const char* name, bool modal, Qt::WFlags fl) : KstDataDialog(parent) {
   _w = new Ui::ImageDialogWidget();
-  _w->setupUi(this);
+  _w->setupUi(_contents);
 
   setMultiple(true);
   connect(_w->_matrix, SIGNAL(newMatrixCreated(const QString&)), this, SIGNAL(modified()));
@@ -57,7 +57,10 @@ KstImageDialog::KstImageDialog(QWidget* parent, const char* name, bool modal, Qt
   connect(_w->_useVariableWeight, SIGNAL(clicked()), this, SLOT(updateEnables()));
   connect(_w->_realTimeAutoThreshold, SIGNAL(clicked()), this, SLOT(updateEnables()));
 
-  // for multiple edit mode
+  //
+  // connections for multiple edit mode...
+  //
+
   connect(_w->_colorOnly, SIGNAL(clicked()), this, SLOT(setColorOnlyDirty()));
   connect(_w->_contourOnly, SIGNAL(clicked()), this, SLOT(setContourOnlyDirty()));
   connect(_w->_colorAndContour, SIGNAL(clicked()), this, SLOT(setColorAndContourDirty()));
@@ -65,7 +68,10 @@ KstImageDialog::KstImageDialog(QWidget* parent, const char* name, bool modal, Qt
   connect(_w->_useVariableWeight, SIGNAL(clicked()), this, SLOT(setUseVariableWeightDirty()));
 // xxx  connect(_w->_contourColor, SIGNAL(clicked()), this, SLOT(setContourColorDirty()));
 
-  // for apply button
+  //
+  // connections for apply button...
+  //
+
   connect(_w->_matrix, SIGNAL(selectionChanged(const QString&)), this, SLOT(wasModifiedApply()));
   connect(_w->_matrix, SIGNAL(selectionChangedLabel(const QString&)), this, SLOT(wasModifiedApply()));
   connect(_w->_colorOnly, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
@@ -285,7 +291,7 @@ bool KstImageDialog::newObject() {
 
   image = 0L; // drop the reference
 
-// xxx  emit modified();
+  emit modified();
 
   return true;
 }
@@ -522,7 +528,7 @@ bool KstImageDialog::editObject() {
     }
   }
 
-// xxx  emit modified();
+  emit modified();
 
   return true;
 }

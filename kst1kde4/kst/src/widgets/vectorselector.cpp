@@ -18,25 +18,32 @@
 
 VectorSelector::VectorSelector(QWidget *parent) : QWidget(parent) {
   setupUi(this);
+/* xxx
   update();
-// xxx  _newVector->setPixmap(BarIcon("kst_vectornew"));
-// xxx  _editVector->setPixmap(BarIcon("kst_vectoredit"));
+
+  _newVector->setIcon(QIcon(":/kst_vectornew.png"));
+  _editVector->setIcon(QIcon(":/kst_vectoredit"));
+
   _provideNoneVector = false;
-  update();
+
   connect(_vector, SIGNAL(activated(const QString&)), this, SIGNAL(selectionChanged(const QString&)));
+  connect(_newVector, SIGNAL(clicked()), this, SLOT(createNewVector()));
+  connect(_editVector, SIGNAL(clicked()), this, SLOT(editVector()));
+  connect(this, SIGNAL(selectionChanged(QString)), this, SLOT(selectionWatcher(QString)));
+*/
 }
 
-VectorSelector::~VectorSelector()
-{
+
+VectorSelector::~VectorSelector() {
 }
 
-void VectorSelector::allowNewVectors( bool allowed )
-{
+
+void VectorSelector::allowNewVectors( bool allowed ) {
   _newVector->setEnabled(allowed);
 }
 
-QString VectorSelector::selectedVector()
-{
+
+QString VectorSelector::selectedVector() {
   KstVectorPtr ptr = *KST::vectorList.findTag(_vector->currentText());
   if (!ptr || (_provideNoneVector && _vector->currentIndex() == 0)) {
     return QString::null;
@@ -45,8 +52,8 @@ QString VectorSelector::selectedVector()
   }
 }
 
-void VectorSelector::update()
-{
+
+void VectorSelector::update() {
 /* xxx
   if (_vector->listBox()->isVisible()) {
     QTimer::singleShot(250, this, SLOT(update()));
@@ -96,22 +103,22 @@ void VectorSelector::update()
   setEdit(_vector->currentText());
 }
 
-void VectorSelector::createNewVector()
-{
+
+void VectorSelector::createNewVector() {
 /* xxx
   KstDialogs::self()->newVectorDialog(this, SLOT(newVectorCreated(KstVectorPtr)), SLOT(setSelection(KstVectorPtr)), SLOT(update()));
 */
 }
 
-void VectorSelector::selectionWatcher( const QString & tag )
-{
+
+void VectorSelector::selectionWatcher( const QString & tag ) {
   QString label = "[" + tag + "]";
 // xxx  emit selectionChangedLabel(label);
   setEdit(tag);
 }
 
-void VectorSelector::setSelection( const QString & tag )
-{
+
+void VectorSelector::setSelection( const QString & tag ) {
   if (tag.isEmpty()) {
     if (_provideNoneVector) {
       blockSignals(true);
@@ -134,8 +141,8 @@ void VectorSelector::setSelection( const QString & tag )
   }
 }
 
-void VectorSelector::newVectorCreated( KstVectorPtr v )
-{
+
+void VectorSelector::newVectorCreated( KstVectorPtr v ) {
   v->readLock();
   QString name = v->tagName();
   v->unlock();
@@ -143,8 +150,8 @@ void VectorSelector::newVectorCreated( KstVectorPtr v )
 // xxx  emit newVectorCreated(name);
 }
 
-void VectorSelector::setSelection( KstVectorPtr v )
-{
+
+void VectorSelector::setSelection( KstVectorPtr v ) {
   if (v) {
     v->readLock();
     setSelection(v->tag().tagString());
@@ -154,16 +161,16 @@ void VectorSelector::setSelection( KstVectorPtr v )
   }
 }
 
-void VectorSelector::provideNoneVector( bool provide )
-{
+
+void VectorSelector::provideNoneVector( bool provide ) {
   if (provide != _provideNoneVector) {
     _provideNoneVector = provide;
     update();
   }
 }
 
-void VectorSelector::editVector()
-{
+
+void VectorSelector::editVector() {
   KstDataObjectPtr pro;
 
   KST::vectorList.lock().readLock();
@@ -182,8 +189,8 @@ void VectorSelector::editVector()
   }
 }
 
-void VectorSelector::setEdit( const QString& tag )
-{
+
+void VectorSelector::setEdit( const QString& tag ) {
   KstVectorPtr vec;
   KstRVectorPtr rvp;
   KstSVectorPtr svp;

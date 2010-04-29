@@ -50,18 +50,24 @@ KstPsdDialog *KstPsdDialog::globalInstance() {
 
 KstPsdDialog::KstPsdDialog(QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl) : KstDataDialog(parent) {
   _w = new Ui::PSDDialogWidget();
-  _w->setupUi(this);
+  _w->setupUi(_contents);
 
   setMultiple(true);
   connect(_w->_vector, SIGNAL(newVectorCreated(const QString&)), this, SIGNAL(modified()));
 
-  // for multiple edit mode
+  //
+  // connections for multiple edit mode...
+  //
+
   connect(_w->_kstFFTOptions->Apodize, SIGNAL(clicked()), this, SLOT(setApodizeDirty()));
   connect(_w->_kstFFTOptions->RemoveMean, SIGNAL(clicked()), this, SLOT(setRemoveMeanDirty()));
   connect(_w->_kstFFTOptions->Interleaved, SIGNAL(clicked()), this, SLOT(setInterleavedDirty()));
   connect(_w->_kstFFTOptions->InterpolateHoles, SIGNAL(clicked()), this, SLOT(setInterpolateHolesDirty()));
 
-  // for apply button
+  //
+  // connections for apply button...
+  //
+
   connect(_w->_vector, SIGNAL(selectionChanged(const QString&)), this, SLOT(wasModifiedApply()));
   connect(_w->_vector, SIGNAL(selectionChangedLabel(const QString&)), this, SLOT(wasModifiedApply()));
   connect(_w->_kstFFTOptions->ApodizeFxn, SIGNAL(highlighted(int)), this, SLOT(wasModifiedApply()));
@@ -266,7 +272,7 @@ bool KstPsdDialog::newObject() {
       psd = 0L;
       vc = 0L;
 
-// xxx      emit modified();
+      emit modified();
 
       retVal = true;
     }
@@ -449,7 +455,9 @@ bool KstPsdDialog::editObject() {
       return false;
     }
   }
-// xxx  emit modified();
+
+  emit modified();
+
   return true;
 }
 

@@ -44,6 +44,8 @@ class KstCurveDialog : public KstDataDialog {
     void setVector(const QString& name);
 
   private:
+    bool editSingleObject(KstVCurvePtr cvPtr);
+
     static QPointer<KstCurveDialog> _inst;
 
     // the following are for the multiple edit mode
@@ -69,10 +71,7 @@ class KstCurveDialog : public KstDataDialog {
     bool _checkBoxYVectorOffsetDirty : 1;
     bool _scalarSelectorYVectorOffsetDirty : 1;
 
-    bool editSingleObject(KstVCurvePtr cvPtr);
-
   private slots:
-    // multiple edit mode
     void setCheckBoxXMinusSameAsPlusDirty();
     void setCheckBoxYMinusSameAsPlusDirty();
     void setColorDirty() { _colorDirty = true; }
@@ -91,6 +90,7 @@ class KstCurveDialog : public KstDataDialog {
     void fillFieldsForEdit();
     void fillFieldsForNew();
     void cleanup();
+
     Ui::CurveDialogWidget *_w;
 };
 

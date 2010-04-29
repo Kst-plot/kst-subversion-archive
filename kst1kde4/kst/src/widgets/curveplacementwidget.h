@@ -19,24 +19,27 @@
 
 class KST_EXPORT CurvePlacementWidget : public QWidget, public Ui::CurvePlacementWidget {
    Q_OBJECT
+
 public:
   CurvePlacementWidget(QWidget *parent = 0);
   virtual ~CurvePlacementWidget(); 
 
   bool    existingPlot();
   bool    newPlot();
-  void    setExistingPlot( bool existingPlot );
-  void    setNewPlot( bool newPlot );
   QString plotName();
   int     columns();
+  bool    reGrid();
+
+public slots:
+  void    setExistingPlot( bool existingPlot );
+  void    setNewPlot( bool newPlot );
   void    setCols( int c );
   void    setCurrentPlot( const QString & p );
   void    newWindow();
   void    update();
   void    updatePlotList();
   void    updateEnabled();
-  void    updateGrid();
-  bool    reGrid();
+  void    updateGrid();  
 };
 
 #endif

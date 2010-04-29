@@ -41,7 +41,7 @@ KstMatrixDialog *KstMatrixDialog::globalInstance() {
 
 KstMatrixDialog::KstMatrixDialog(QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl) : KstDataDialog(parent) {
   _w = new Ui::MatrixDialogWidget();
-  _w->setupUi(this);
+  _w->setupUi(_contents);
 
   setMultiple(true);
   _inTest = false;
@@ -83,7 +83,7 @@ KstMatrixDialog::KstMatrixDialog(QWidget* parent, const char* name, bool modal, 
   connect(_w->_doAve, SIGNAL(clicked()), this, SLOT(setDoAveDirty()));
 
   //
-  // for apply button...
+  // connections for apply button...
   //
 
 // xxx  connect(_w->_fileName, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
@@ -435,7 +435,7 @@ bool KstMatrixDialog::new_IRMatrix() {
 
   matrix = 0L; // drop the reference
 
-// xxx  emit modified();
+  emit modified();
 
   return true;
 }
@@ -483,7 +483,7 @@ bool KstMatrixDialog::new_ISMatrix() {
 
   matrix = 0L; // drop the reference
 
-// xxx  emit modified();
+  emit modified();
 
   return true;
 }
@@ -813,7 +813,7 @@ bool KstMatrixDialog::editObject() {
     }
   }
 
-// xxx  emit modified();
+  emit modified();
 
   return true;
 }

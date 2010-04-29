@@ -43,9 +43,10 @@ KstEventMonitor* KstEventMonitor::globalInstance() {
 
 KstEventMonitor::KstEventMonitor(QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl) : KstDataDialog(parent) {
   _w = new Ui::EventMonitorWidget();
-  _w->setupUi(this);
+  _w->setupUi(_contents);
 
   setMultiple(true);
+
   connect(_w->_vectorSelectorEq, SIGNAL(newVectorCreated(const QString&)), this, SIGNAL(modified()));
   connect(_w->_scalarSelectorEq, SIGNAL(newScalarCreated()), this, SIGNAL(modified()));
   connect(_w->_vectorSelectorEq, SIGNAL(selectionChangedLabel(const QString&)), _w->lineEditEquation, SLOT(insert(const QString&)));
@@ -54,14 +55,20 @@ KstEventMonitor::KstEventMonitor(QWidget* parent, const char* name, bool modal, 
   connect(_w->_scalarSelectorEq, SIGNAL(selectionChangedLabel(const QString&)), _w->lineEditEquation, SLOT(setFocus()));
   connect(_w->_pushButtonELOGConfigure, SIGNAL(clicked()), KstApp::inst(), SLOT(EventELOGConfigure()));
 
-  // more multiple edit mode
+  //
+  // connections for multiple edit mode...
+  //
+
   connect(_w->checkBoxDebug, SIGNAL(clicked()), this, SLOT(setcheckBoxDebugDirty()));
   connect(_w->checkBoxEMailNotify, SIGNAL(clicked()), this, SLOT(setcheckBoxEMailNotifyDirty()));
   connect(_w->checkBoxELOGNotify, SIGNAL(clicked()), this, SLOT(setcheckBoxELOGNotifyDirty()));
   connect(_w->_useScript, SIGNAL(clicked()), this, SLOT(setScriptDirty()));
   connect(_w->_script, SIGNAL(textChanged()), this, SLOT(setScriptDirty()));
 
-  // for apply button
+  //
+  // connections for apply button...
+  //
+
   connect(_w->lineEditEquation, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
   connect(_w->lineEditDescription, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
   connect(_w->checkBoxDebug, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
@@ -218,7 +225,7 @@ bool KstEventMonitor::newObject() {
 
   event = 0L; // drop the reference before we update
 
-// xxx  emit modified();
+  emit modified();
 
   return true;
 }
@@ -356,7 +363,7 @@ bool KstEventMonitor::editObject() {
     }
   }
 
-// xxx  emit modified();
+  emit modified();
 
   return true;
 }

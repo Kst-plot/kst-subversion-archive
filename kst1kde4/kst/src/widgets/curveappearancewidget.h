@@ -22,29 +22,36 @@ public:
   CurveAppearanceWidget(QWidget *parent = 0);
   virtual ~CurveAppearanceWidget();
 
-  void    modified();
   bool    showLines();
   bool    showPoints();
   bool    showBars();
-  void    fillCombo();
-  void    setColor( QColor c );
   QColor  color();
-  void    drawLine();
   int     pointType();
+  int     lineStyle();
+  int     lineWidth();
+  void    resizeEvent( QResizeEvent * pEvent );
+  int     barStyle();
+  int     pointDensity();
+
+public slots:
+  void    setColor( QColor c );
+  void    drawLine();
   void    reset(QColor newColor);
-  void    comboChanged();
   void    reset();
   void    setUsePoints( bool usePoints );
   void    setMustUseLines( bool bMustUseLines );
   void    redrawCombo();
-  void    fillLineStyleCombo();
-  int     lineStyle();
-  int     lineWidth();
   void    setValue( bool hasLines, bool hasPoints, bool hasBars, const QColor & c, int pointType, int lineWidth, int lineStyle, int barStyle, int pointDensity );
-  void    resizeEvent( QResizeEvent * pEvent );
-  int     barStyle();
-  int     pointDensity();
   void    enableSettings();
+
+private slots:
+  void    modified();
+  void    fillCombo();
+  void    comboChanged();
+  void    fillLineStyleCombo();
+
+signals:
+  void    changed();  
 };
 
 #endif

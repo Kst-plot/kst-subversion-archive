@@ -55,15 +55,22 @@ KstCsdDialog::KstCsdDialog(QWidget* parent, const char* name, bool modal, Qt::Wi
   _w->setupUi(parent);
 
   setMultiple(true);
+
   connect(_w->_vector, SIGNAL(newVectorCreated(const QString&)), this, SIGNAL(modified()));
 
-  //for multiple edit mode
+  //
+  // connections for multiple edit mode...
+  //
+
   connect(_w->_kstFFTOptions->Apodize, SIGNAL(clicked()), this, SLOT(setApodizeDirty()));
   connect(_w->_kstFFTOptions->RemoveMean, SIGNAL(clicked()), this, SLOT(setRemoveMeanDirty()));
   connect(_w->_kstFFTOptions->Interleaved, SIGNAL(clicked()), this, SLOT(setInterleavedDirty()));
   connect(_w->_kstFFTOptions->InterpolateHoles, SIGNAL(clicked()), this, SLOT(setInterpolateHolesDirty()));
 
-  // for apply button
+  //
+  // connections for apply button...
+  //
+
   connect(_w->_vector, SIGNAL(selectionChanged(const QString&)), this, SLOT(wasModifiedApply()));
   connect(_w->_vector, SIGNAL(selectionChangedLabel(const QString&)), this, SLOT(wasModifiedApply()));
   connect(_w->_windowSize, SIGNAL(valueChanged(int)), this, SLOT(wasModifiedApply()));
@@ -204,7 +211,8 @@ bool KstCsdDialog::newObject() {
     KST::dataObjectList.lock().unlock();
   
     csd = 0L;
-// xxx    emit modified();
+
+    emit modified();
   }
 
   return true;
@@ -451,7 +459,8 @@ bool KstCsdDialog::editObject() {
       return false;
     }
   }
-// xxx  emit modified();
+
+  emit modified();
 
   return true;
 }

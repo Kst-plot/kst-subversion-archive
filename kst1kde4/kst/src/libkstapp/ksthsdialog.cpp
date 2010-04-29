@@ -52,21 +52,28 @@ KstHsDialog *KstHsDialog::globalInstance() {
 KstHsDialog::KstHsDialog(QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl)
 : KstDataDialog(parent) {
   _w = new Ui::HistogramDialogWidget();
-  _w->setupUi(this);
+  _w->setupUi(_contents);
 
   setMultiple(true);
+
   connect(_w->AutoBin, SIGNAL(clicked()), this, SLOT(autoBin()));
   connect(_w->_vector, SIGNAL(newVectorCreated(const QString&)), this, SIGNAL(modified()));
   connect(_w->_realTimeAutoBin, SIGNAL(clicked()), this, SLOT(updateButtons()));
 
-  // signals for multiple edit mode
+  //
+  // connections for multiple edit mode...
+  //
+
   connect(_w->_realTimeAutoBin, SIGNAL(clicked()), this, SLOT(setRealTimeAutoBinDirty()));
   connect(_w->NormIsPercent, SIGNAL(clicked()), this, SLOT(setNormIsPercentDirty()));
   connect(_w->NormIsFraction, SIGNAL(clicked()), this, SLOT(setNormIsFractionDirty()));
   connect(_w->PeakIs1, SIGNAL(clicked()), this, SLOT(setPeakIs1Dirty()));
   connect(_w->NormIsNumber, SIGNAL(clicked()), this, SLOT(setNormIsNumberDirty()));
 
-  // for apply button
+  //
+  // connections for apply button...
+  //
+
   connect(_w->_vector, SIGNAL(selectionChanged(const QString&)), this, SLOT(wasModifiedApply()));
   connect(_w->_vector, SIGNAL(selectionChangedLabel(const QString&)), this, SLOT(wasModifiedApply()));
   connect(_w->Min, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
@@ -312,7 +319,7 @@ bool KstHsDialog::newObject() {
     hs = 0L;
     vc = 0L;
 
-// xxx    emit modified();
+    emit modified();
   }
 
   return true;
@@ -477,7 +484,7 @@ bool KstHsDialog::editObject() {
     }
   }
 
-// xxx  emit modified();
+  emit modified();
 
   return true;
 }

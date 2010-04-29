@@ -46,6 +46,7 @@ KstEqDialog *KstEqDialog::globalInstance() {
   if (!_inst) {
     _inst = new KstEqDialog(KstApp::inst());
   }
+
   return _inst;
 }
 
@@ -53,18 +54,25 @@ KstEqDialog *KstEqDialog::globalInstance() {
 KstEqDialog::KstEqDialog(QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl)
 : KstDataDialog(parent) {
   _w = new Ui::EqDialogWidget();
-  _w->setupUi(this);
+  _w->setupUi(_contents);
 
   setMultiple(true);
+
   connect(_w->_vectors, SIGNAL(newVectorCreated(const QString&)), this, SIGNAL(modified()));
   connect(_w->_xVectors, SIGNAL(newVectorCreated(const QString&)), this, SIGNAL(modified()));
   connect(_w->_scalars, SIGNAL(newScalarCreated()), this, SIGNAL(modified()));
 
-  // for edit multiple mode
+  //
+  // connections for edit multiple mode...
+  //
+
   connect(_w->_doInterpolation, SIGNAL(clicked()), this, SLOT(setDoInterpolationDirty()));
   populateFunctionList();
 
-  // for apply button
+  // 
+  // connections for apply button...
+  //
+
   connect(_w->_equation, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
   connect(_w->_xVectors, SIGNAL(selectionChanged(const QString&)), this, SLOT(wasModifiedApply()));
   connect(_w->_xVectors, SIGNAL(selectionChangedLabel(const QString&)), this, SLOT(wasModifiedApply()));
@@ -285,7 +293,7 @@ bool KstEqDialog::newObject() {
     eq = 0L; 
     vc = 0L;
 
-// xxx    emit modified();
+    emit modified();
   }
 
   return true;
@@ -438,7 +446,7 @@ bool KstEqDialog::editObject() {
     }
   }
 
-// xxx  emit modified();
+  emit modified();
 
   return true;
 }

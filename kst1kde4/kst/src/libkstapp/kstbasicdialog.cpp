@@ -157,15 +157,15 @@ QString KstBasicDialog::editTitle() {
 
   ptr = kst_cast<KstBasicPlugin>(_dp);
   if (ptr) {
-    return tr("Edit ") + ptr->name();
+    return QObject::tr("Edit ") + ptr->name();
   }
 
-  return tr("Edit ") + _pluginName;
+  return QObject::tr("Edit ") + _pluginName;
 }
 
 
 QString KstBasicDialog::newTitle() {
-  return tr("New ") + _pluginName;
+  return QObject::tr("New ") + _pluginName;
 }
 
 
@@ -286,12 +286,12 @@ bool KstBasicDialog::newObject() {
     if (!editSingleObject(ptr, error) || !ptr->isValid()) {
       QString str;
   
-      str = tr("There is an error in the values you entered.");
+      str = QObject::tr("There is an error in the values you entered.");
       if (!error.isEmpty()) {
         str += "\n";
         str += error;
       }
-      QMessageBox::warning(this, tr("Kst"), str);
+      QMessageBox::warning(this, QObject::tr("Kst"), str);
   
       return false;
     }
@@ -328,7 +328,7 @@ bool KstBasicDialog::newObject() {
     }
   
     if (!ptr->isValid()) {
-      QMessageBox::warning(this, tr("Kst"), tr("There is an error in the plugin you entered."));
+      QMessageBox::warning(this, QObject::tr("Kst"), QObject::tr("There is an error in the plugin you entered."));
   
       return false;
     }
@@ -340,7 +340,7 @@ bool KstBasicDialog::newObject() {
   
     ptr = 0L; // drop the reference
   
-  // xxx  emit modified();
+    emit modified();
   }
 
   return true;
@@ -385,12 +385,12 @@ bool KstBasicDialog::editObject() {
     if (!editSingleObject(ptr, error) || !ptr->isValid()) {
       QString str;
   
-      str = tr("There is an error in the values you entered.\n");
+      str = QObject::tr("There is an error in the values you entered.\n");
       if (!error.isEmpty()) {
         str += "\n";
         str += error;
       }
-      QMessageBox::warning(this, tr("Kst"), str);
+      QMessageBox::warning(this, QObject::tr("Kst"), str);
   
       return false;
     }
@@ -398,13 +398,14 @@ bool KstBasicDialog::editObject() {
     ptr->setRecursed(false);
     if (ptr->recursion()) {
       ptr->setRecursed(true);
-      QMessageBox::warning(this, tr("Kst"), tr("There is a recursion resulting from the plugin you entered."));
+      QMessageBox::warning(this, QObject::tr("Kst"), QObject::tr("There is a recursion resulting from the plugin you entered."));
       
       return false;
     }
   
     ptr->setDirty();
-// xxx    emit modified();
+
+    emit modified();
 
     retVal = true;
   }
@@ -462,7 +463,7 @@ bool KstBasicDialog::editSingleObject(KstBasicPluginPtr ptr, QString &error) {
           if (!error.isEmpty()) {
             error += "\n";
           }
-          error += tr("%1 '%2' is not a valid vector name.").arg(label(*ivI)->text().toLatin1().data()).arg(w->_vector->currentText());
+          error += QObject::tr("%1 '%2' is not a valid vector name.").arg(label(*ivI)->text().toLatin1().data()).arg(w->_vector->currentText());
         }
       }
     }
@@ -497,7 +498,7 @@ bool KstBasicDialog::editSingleObject(KstBasicPluginPtr ptr, QString &error) {
             if (!error.isEmpty()) {
               error += "\n";
             }
-            error += tr("%1 '%2' is not a valid scalar name or value.").arg(label(*isI)->text().toLatin1().data()).arg(w->_scalar->currentText());
+            error += QObject::tr("%1 '%2' is not a valid scalar name or value.").arg(label(*isI)->text().toLatin1().data()).arg(w->_scalar->currentText());
           }
         }
       }
@@ -520,7 +521,7 @@ bool KstBasicDialog::editSingleObject(KstBasicPluginPtr ptr, QString &error) {
           if (!error.isEmpty()) {
             error += "\n";
           }
-          error += tr("%1 '%2' is not a valid string name.").arg(label(*istrI)->text().toLatin1().data()).arg(w->_string->currentText());
+          error += QObject::tr("%1 '%2' is not a valid string name.").arg(label(*istrI)->text().toLatin1().data()).arg(w->_string->currentText());
         }
       }
     }

@@ -150,12 +150,12 @@ KstApp::KstApp(QWidget *parent, const char *name) : QMainWindow(parent) {
 
   _stopping = false;
 
+  initDocument();
   initDialogs();
   initMenuBar();
   initToolBar();
   initStatusBar();
   initActions();
-  initDocument();
 
 // xxx  KstDebug::self()->setHandler(_doc);
 // xxx  setWindowTitle(_doc->title());
@@ -477,8 +477,8 @@ void KstApp::initActions() {
   connect(_actionManagerView, SIGNAL(triggered()), _viewManager, SLOT(show_I())); 
 */
   connect(_actionNewVector, SIGNAL(triggered()), KstVectorDialog::globalInstance(), SLOT(show())); 
-/* xxx
   connect(_actionNewCurve, SIGNAL(triggered()), KstCurveDialog::globalInstance(), SLOT(show()));
+/* xxx
   connect(_actionNewEquation, SIGNAL(triggered()), KstEqDialog::globalInstance(), SLOT(show())); 
   connect(_actionNewHistogram, SIGNAL(triggered()), KstHsDialog::globalInstance(), SLOT(show()));
   connect(_actionNewSpectrum, SIGNAL(triggered()), KstPsdDialog::globalInstance(), SLOT(show()));
@@ -488,6 +488,7 @@ void KstApp::initActions() {
   connect(_actionNewImage, SIGNAL(triggered()), KstImageDialog::globalInstance(), SLOT(show()));
   connect(_actionNewSpectrogram, SIGNAL(triggered()), KstCsdDialog::globalInstance(), SLOT(show()));
 */
+
   connect(_actionViewScalars, SIGNAL(triggered()), this, SLOT(showViewScalarsDialog()));
   connect(_actionViewVectors, SIGNAL(triggered()), this, SLOT(showViewVectorsDialog()));
   connect(_actionViewMatrices, SIGNAL(triggered()), this, SLOT(showViewMatricesDialog()));

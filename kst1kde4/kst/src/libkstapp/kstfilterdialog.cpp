@@ -16,8 +16,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <assert.h>
-
 #include <QLineEdit>
 
 #include "curveappearancewidget.h"
@@ -319,7 +317,7 @@ bool KstFilterDialog::newObject() {
       }
     }
 
-// xxx    emit modified();
+    emit modified();
   }
 
   return true;

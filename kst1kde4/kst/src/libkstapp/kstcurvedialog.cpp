@@ -47,7 +47,7 @@ KstCurveDialog *KstCurveDialog::globalInstance() {
 
 KstCurveDialog::KstCurveDialog(QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl) : KstDataDialog(parent) {
   _w = new Ui::CurveDialogWidget();
-  _w->setupUi(this);
+  _w->setupUi(_contents);
 
   setMultiple(true);
 
@@ -61,7 +61,7 @@ KstCurveDialog::KstCurveDialog(QWidget* parent, const char* name, bool modal, Qt
   connect(_w->_checkBoxYMinusSameAsPlus, SIGNAL(clicked()), this, SLOT(toggledYErrorSame()));
 
   //
-  // multiple edit mode...
+  // connections for multiple edit mode...
   //
 
   connect(_w->_checkBoxXMinusSameAsPlus, SIGNAL(clicked()), this, SLOT(setCheckBoxXMinusSameAsPlusDirty()));
@@ -74,7 +74,7 @@ KstCurveDialog::KstCurveDialog(QWidget* parent, const char* name, bool modal, Qt
   connect(_w->_checkBoxYVectorOffset, SIGNAL(clicked()), this, SLOT(setCheckBoxYVectorOffsetDirty()));
 
   //
-  // for apply button...
+  // connections for apply button...
   //
 
   connect(_w->_xVector, SIGNAL(selectionChanged(const QString&)), this, SLOT(wasModifiedApply()));
@@ -102,12 +102,12 @@ KstCurveDialog::KstCurveDialog(QWidget* parent, const char* name, bool modal, Qt
   connect(_w->_checkBoxIgnoreAutoscale, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
   connect(_w->_checkBoxYVectorOffset, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
   connect(_w->_scalarSelectorYVectorOffset, SIGNAL(selectionChanged(const QString&)), this, SLOT(wasModifiedApply()));
-
+/* xxx
   _w->_xError->provideNoneVector(true);
   _w->_yError->provideNoneVector(true);
   _w->_xMinusError->provideNoneVector(true);
   _w->_yMinusError->provideNoneVector(true);
-
+*/
   _w->_checkBoxXMinusSameAsPlus->setChecked(true);
   _w->_checkBoxYMinusSameAsPlus->setChecked(true);
 
@@ -192,10 +192,13 @@ void KstCurveDialog::fillFieldsForEdit() {
       _w->_scalarSelectorYVectorOffset->setSelection(cp->yVectorOffsetTag().displayString());
     } else {
       //
-      // if the user doesn't have the y-offset enabled then we set the scalar giving the mean
-      //  of the y-vector as a reasonable default...
+      // if the user doesn't have the y-offset enabled then we set the 
+      //  scalar giving the mean of the y-vector as a reasonable default...
       //
-      KstVectorPtr yVector = *cp->inputVectors().find("Y");
+
+      KstVectorPtr yVector;
+
+      yVector = *cp->inputVectors().find("Y");
       if (yVector) {
         KstScalarPtr meanScalar;
   
@@ -267,44 +270,61 @@ void KstCurveDialog::update() {
 
 bool KstCurveDialog::newObject() {
   if (_w->_xVector->selectedVector().isEmpty() || _w->_yVector->selectedVector().isEmpty()) {
-    QMessageBox::warning(this, i18n("Kst"), i18n("New curve not made: define vectors first."));
+    QMessageBox::warning(this, QObject::tr("Kst"), QObject::tr("New curve not made: define vectors first."));
+
     return false;
   }
 
-  KstVectorPtr EXMinus, EYMinus;
+  KstVectorPtr VX;
+  KstVectorPtr VY;
+  KstVectorPtr EX;
+  KstVectorPtr EY;
+  KstVectorPtr EXMinus;
+  KstVectorPtr EYMinus;
 
-  // find VX and VY
   KST::vectorList.lock().readLock();
-  KstVectorPtr VX = *KST::vectorList.findTag(_w->_xVector->selectedVector());
-  KstVectorPtr VY = *KST::vectorList.findTag(_w->_yVector->selectedVector());
-  KstVectorPtr EX = *KST::vectorList.findTag(_w->_xError->selectedVector());
-  KstVectorPtr EY = *KST::vectorList.findTag(_w->_yError->selectedVector());
+  VX = *KST::vectorList.findTag(_w->_xVector->selectedVector());
+  VY = *KST::vectorList.findTag(_w->_yVector->selectedVector());
+  EX = *KST::vectorList.findTag(_w->_xError->selectedVector());
+  EY = *KST::vectorList.findTag(_w->_yError->selectedVector());
+
   if (_w->_checkBoxXMinusSameAsPlus->isChecked()) {
     EXMinus = EX;
   } else {
     EXMinus = *KST::vectorList.findTag(_w->_xMinusError->selectedVector());
   }
+
   if (_w->_checkBoxYMinusSameAsPlus->isChecked()) {
     EYMinus = EY;
   } else {
     EYMinus = *KST::vectorList.findTag(_w->_yMinusError->selectedVector());
   }
   KST::vectorList.lock().unlock();
+
   if (VX && VY) {
-    // readlock the vectors, because when we update the curve, they get read
+    QString tagName;
+
+    //
+    // readlock the vectors, because when we update the curve, they get read...
+    //
+
     VX->readLock();
     VY->readLock();
   
-    QString tag_name = _tagName->text();
-    if (tag_name == defaultTag) {
-      tag_name = KST::suggestCurveName(VY->tag());
+    tagName = _tagName->text();
+    if (tagName == defaultTag) {
+      tagName = KST::suggestCurveName(VY->tag());
     }
-  
-    // verify that the curve name is unique
-    if (KstData::self()->dataTagNameNotUnique(tag_name)) {
+
+    //
+    // verify that the curve name is unique...
+    //
+
+    if (KstData::self()->dataTagNameNotUnique(tagName)) {
       _tagName->setFocus();
       VY->unlock();
       VX->unlock();
+
       return false;
     }
   
@@ -329,7 +349,7 @@ bool KstCurveDialog::newObject() {
       color = _w->_curveAppearance->color();
     }
 
-    curve = new KstVCurve(tag_name, VX, VY, EX, EY, EXMinus, EYMinus, color);
+    curve = new KstVCurve(tagName, VX, VY, EX, EY, EXMinus, EYMinus, color);
   
     if (EX) {
       EX->unlock();
@@ -409,7 +429,7 @@ bool KstCurveDialog::newObject() {
   
     curve = 0L; // drop the reference
 
-// xxx    emit modified();
+    emit modified();
   }
 
   return true;
@@ -417,10 +437,14 @@ bool KstCurveDialog::newObject() {
 
 
 bool KstCurveDialog::editSingleObject(KstVCurvePtr cvPtr) {
+  //
+  // leave this scope here to destroy the local variables...
+  //
 
-  { // leave this scope here to destroy the iterator
+  { 
     KstReadLocker ml(&KST::vectorList.lock());
-    KstVectorList::Iterator it;
+    KstVectorList::iterator it;
+
     if (_xVectorDirty) {
       it = KST::vectorList.findTag(_w->_xVector->selectedVector());
       if (it != KST::vectorList.end()) {
@@ -513,6 +537,7 @@ bool KstCurveDialog::editSingleObject(KstVCurvePtr cvPtr) {
   }
 
   cvPtr->unlock();
+
   return true;
 }
 
@@ -539,7 +564,10 @@ bool KstCurveDialog::editObject() {
     _yMinusErrorDirty = _w->_yMinusError->_vector->currentIndex() != 0;
     _spinBoxLineWidthDirty = _w->_curveAppearance->_spinBoxLineWidth->text() != " ";
 
-    // the current selection may not have been set for the following
+    //
+    // the current selection may not have been set for the following...
+    //
+
     _comboDirty = _w->_curveAppearance->_combo->currentIndex() > 0;
     _comboLineStyleDirty = _w->_curveAppearance->_comboLineStyle->currentIndex() > 0;
     _comboPointDensityDirty = _w->_curveAppearance->_comboPointDensity->currentIndex() > 0;
@@ -570,8 +598,10 @@ bool KstCurveDialog::editObject() {
         didEdit = true;
       }
     }
+
     if (!didEdit) {
-      QMessageBox::warning(this, i18n("Kst"), i18n("Select one or more objects to edit."));
+      QMessageBox::warning(this, QObject::tr("Kst"), QObject::tr("Select one or more objects to edit."));
+
       return false;
     }
   } else {
@@ -582,6 +612,7 @@ bool KstCurveDialog::editObject() {
     tag_name = _tagName->text();
     if (!cp || (tag_name != cp->tagName() && KstData::self()->dataTagNameNotUnique(tag_name))) {
       _tagName->setFocus();
+
       return false;
     }
 
@@ -595,7 +626,6 @@ bool KstCurveDialog::editObject() {
     }
     cp->unlock();
 
-    // then edit the object
     _xVectorDirty = true;
     _yVectorDirty = true;
     _xErrorDirty = true;
@@ -623,7 +653,7 @@ bool KstCurveDialog::editObject() {
     }
   }
 
-// xxx  emit modified();
+  emit modified();
 
   return true;
 }
@@ -657,7 +687,10 @@ void KstCurveDialog::populateEditMultiple() {
   _w->_interp->insertItem(4, "");
   _w->_interp->setCurrentIndex(4);
 
-  // single blank characters to differentiate between QPixmaps
+  //
+  // single blank characters to differentiate between QPixmaps...
+  //
+
   _w->_curveAppearance->_combo->insertItem(0, " ");
   _w->_curveAppearance->_combo->setCurrentIndex(0);
   _w->_curveAppearance->_comboPointDensity->insertItem(0, " ");
@@ -762,7 +795,10 @@ void KstCurveDialog::setCheckBoxYVectorOffsetDirty() {
 
 
 void KstCurveDialog::cleanup() {
-  // get rid of the blanks in _curveAppearance
+  //
+  // get rid of the blanks in _curveAppearance...
+  //
+
   if (_editMultipleMode) {
     _w->_curveAppearance->_combo->removeItem(0);
     _w->_curveAppearance->_comboLineStyle->removeItem(0);
@@ -780,4 +816,3 @@ void KstCurveDialog::setVector(const QString& name) {
 }
 
 #include "kstcurvedialog.moc"
-

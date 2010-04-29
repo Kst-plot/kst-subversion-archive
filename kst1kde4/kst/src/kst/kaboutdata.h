@@ -24,6 +24,7 @@
 #define KABOUTDATA_H
 
 #include <QtCore/QString>
+#include <QtCore/QStringList>
 #include <QtCore/QSharedDataPointer>
 
 template <class T> class QList;
@@ -248,10 +249,10 @@ public:
 private:
 
     explicit KAboutLicense( enum KAboutData::LicenseKey licenseType, const KAboutData *aboutData );
+ 
+// xxx    explicit KAboutLicense( const QString &pathToFile, const KAboutData *aboutData );
 
-//xxx    explicit KAboutLicense( const QString &pathToFile, const KAboutData *aboutData );
-
-//xxx    explicit KAboutLicense( const KLocalizedString &licenseText, const KAboutData *aboutData );
+    explicit KAboutLicense( const QString &licenseText, const KAboutData *aboutData );
 
     class Private;
     QSharedDataPointer<Private> d;

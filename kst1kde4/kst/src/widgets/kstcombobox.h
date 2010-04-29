@@ -37,8 +37,9 @@ class KST_EXPORT KstComboBox : public QComboBox {
   public:
     KstComboBox(QWidget *parent=0, const char *name=0);
     KstComboBox(bool rw, QWidget *parent=0, const char *name=0);
-    void setEditable(bool rw);
     virtual ~KstComboBox();
+
+    void setEditable(bool rw);
 
   protected:
     virtual void focusInEvent(QFocusEvent *event);
@@ -49,7 +50,7 @@ class KST_EXPORT KstComboBox : public QComboBox {
 
   private:
     void commonConstructor();
-    bool _trueRW; //captures whether this combo is *truly* read write as opposed to psuedo
+    bool _trueRW; // captures whether this combo is *truly* read write as opposed to psuedo
 };
 
 

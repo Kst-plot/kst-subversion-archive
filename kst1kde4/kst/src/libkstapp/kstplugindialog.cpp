@@ -15,8 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <assert.h>
-
 #include <QComboBox>
 #include <QFrame>
 #include <QGroupBox>
@@ -56,7 +54,7 @@ KstPluginDialog *KstPluginDialog::globalInstance() {
 KstPluginDialog::KstPluginDialog(QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl)
 : KstDataDialog(parent) {
   _w = new Ui::PluginDialogWidget();
-  _w->setupUi(this);
+  _w->setupUi(_contents);
 
   setMultiple(false);
   connect(_w->PluginCombo, SIGNAL(highlighted(int)), this, SLOT(wasModifiedApply()));
@@ -705,7 +703,7 @@ bool KstPluginDialog::newObject() {
   KST::dataObjectList.lock().unlock();
   plugin = 0L;
 
-// xxx  emit modified();
+  emit modified();
 
   return true;
 }
@@ -772,7 +770,7 @@ bool KstPluginDialog::editObject() {
   
     pp->setDirty();
   
-// xxx    emit modified();
+    emit modified();
   }
 
   return rc;

@@ -23,32 +23,35 @@ public:
   KstDataDialog(QWidget *parent = 0);
   virtual ~KstDataDialog(); 
 
-  void update();
-  void show();
-  void showNew(const QString& field);
-  void showEdit(const QString& field);
   QString editTitle();
   QString newTitle();
   void fillFieldsForEdit();
   void fillFieldsForNew();
   KstObjectPtr findObject( const QString & name );
-  bool newObject();
-  bool editObject();
   void populateEditMultiple();
-  bool multiple();
   void setMultiple(bool multiple);
-  void toggleEditMultiple();
   void closeEvent(QCloseEvent *e);
   void cleanup();
 
 public slots:
+  bool multiple();
+  bool newObject();
+  bool editObject();
+  void update();
+  void show();
   void wasModifiedApply();
+  void toggleEditMultiple();
+  void showNew(const QString& field);
+  void showEdit(const QString& field);
 
 private slots:
   void ok();
   void apply();
   void close();
   void reject();
+
+signals:
+  void modified();
 
 protected:
   KstObjectPtr _dp;

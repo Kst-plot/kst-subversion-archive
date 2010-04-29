@@ -132,7 +132,7 @@ class KAboutLicense::Private : public QSharedData
 public:
     Private( enum KAboutData::LicenseKey licenseType, const KAboutData *aboutData );
 // xxx    Private( const QString &pathToFile, const KAboutData *aboutData );
-// xxx    Private( const QString &licenseText, const KAboutData *aboutData );
+    Private( const QString &licenseText, const KAboutData *aboutData );
     Private( const Private& other);
 public:
     enum KAboutData::LicenseKey  _licenseKey;
@@ -156,7 +156,7 @@ KAboutLicense::Private::Private( const QString &pathToFile, const KAboutData *ab
     _aboutData( aboutData )
 {
 }
-
+*/
 KAboutLicense::Private::Private( const QString &licenseText, const KAboutData *aboutData )
   : QSharedData(),
     _licenseKey( KAboutData::License_Custom ),
@@ -164,7 +164,7 @@ KAboutLicense::Private::Private( const QString &licenseText, const KAboutData *a
     _aboutData( aboutData )
 {
 }
-*/
+
 KAboutLicense::Private::Private(const KAboutLicense::Private& other)
   : QSharedData(other),
     _licenseKey( other._licenseKey ),
@@ -183,12 +183,12 @@ KAboutLicense::KAboutLicense( const QString &pathToFile, const KAboutData *about
   : d(new Private(pathToFile,aboutData))
 {
 }
-
+*/
 KAboutLicense::KAboutLicense( const QString &licenseText, const KAboutData *aboutData )
   : d(new Private(licenseText,aboutData))
 {
 }
-*/
+
 KAboutLicense::KAboutLicense(const KAboutLicense& other)
   : d(other.d)
 {
@@ -215,7 +215,8 @@ KAboutLicense::text() const
     case KAboutData::License_File:
         pathToFile = d->_pathToLicenseTextFile;
         break;
-/* xxx    case KAboutData::License_GPL_V2:
+/* xxx
+    case KAboutData::License_GPL_V2:
         knownLicense = true;
         pathToFile = KStandardDirs::locate("data", "LICENSES/GPL_V2");
         break;
@@ -243,7 +244,8 @@ KAboutLicense::text() const
         knownLicense = true;
         pathToFile = KStandardDirs::locate("data", "LICENSES/LGPL_V3");
         break;
-*/    case KAboutData::License_Custom:
+*/
+    case KAboutData::License_Custom:
         if (!d->_licenseText.isEmpty()) {
             result = d->_licenseText;
             break;
@@ -463,19 +465,19 @@ KAboutData::~KAboutData()
 }
 
 KAboutData::KAboutData(const KAboutData& other): d(new Private)
-{/* xxx
+{
     *d = *other.d;
     QList<KAboutLicense>::iterator it = d->_licenseList.begin(), itEnd = d->_licenseList.end();
     for ( ; it != itEnd; ++it) {
         KAboutLicense& al = *it;
         al.d.detach();
         al.d->_aboutData = this;
-    }*/
+    }
 }
 
 KAboutData&
 KAboutData::operator=(const KAboutData& other)
-{/* xxx
+{
     if (this != &other) {
         *d = *other.d;
         QList<KAboutLicense>::iterator it = d->_licenseList.begin(), itEnd = d->_licenseList.end();
@@ -485,7 +487,7 @@ KAboutData::operator=(const KAboutData& other)
             al.d->_aboutData = this;
         }
     }
-    return *this;*/
+    return *this;
 }
 
 KAboutData &
@@ -519,14 +521,14 @@ KAboutData::setTranslator( const QString& name,
 
 KAboutData &
 KAboutData::setLicenseText( const QString &licenseText )
-{/* xxx
+{
     d->_licenseList[0] = KAboutLicense(licenseText,this);
-    return *this;*/
+    return *this;
 }
 
 KAboutData &
 KAboutData::addLicenseText( const QString &licenseText )
-{/* xxx
+{
 
     KAboutLicense &firstLicense = d->_licenseList[0];
     if (d->_licenseList.count() == 1 && firstLicense.d->_licenseKey == License_Unknown) {
@@ -534,26 +536,26 @@ KAboutData::addLicenseText( const QString &licenseText )
     } else {
         d->_licenseList.append(KAboutLicense(licenseText,this));
     }
-    return *this;*/
+    return *this;
 }
 
 KAboutData &
 KAboutData::setLicenseTextFile( const QString &pathToFile )
-{/* xxx
+{
     d->_licenseList[0] = KAboutLicense(pathToFile,this);
-    return *this;*/
+    return *this;
 }
 
 KAboutData &
 KAboutData::addLicenseTextFile( const QString &pathToFile )
-{/* xxx
+{
     KAboutLicense &firstLicense = d->_licenseList[0];
     if (d->_licenseList.count() == 1 && firstLicense.d->_licenseKey == License_Unknown) {
         firstLicense = KAboutLicense(pathToFile,this);
     } else {
         d->_licenseList.append(KAboutLicense(pathToFile,this));
     }
-    return *this;*/
+    return *this;
 }
 
 KAboutData &
@@ -690,10 +692,12 @@ KAboutData::internalProgramName() const
 /// the i18n() call will be done here in advance.
 void
 KAboutData::translateInternalProgramName() const
-{/* xxx
+{
   d->_translatedProgramName.clear();
+/* xxx
   if( KGlobal::locale())
-      d->_translatedProgramName = programName().toUtf8();*/
+      d->_translatedProgramName = programName().toUtf8();
+*/
 }
 
 QString
@@ -801,8 +805,8 @@ KAboutData::credits() const
 QList<KAboutPerson>
 KAboutData::translators() const
 {
-/* xxx    QList<KAboutPerson> personList;
-    
+    QList<KAboutPerson> personList;
+/* xxx
     KLocale *tmpLocale = NULL;
     if (KGlobal::locale()) {
         // There could be many catalogs loaded into the global locale,
@@ -812,24 +816,22 @@ KAboutData::translators() const
         tmpLocale = new KLocale(*KGlobal::locale());
         tmpLocale->setActiveCatalog(catalogName());
     }
-
+*/
     QString translatorName;
     if (!d->translatorName.isEmpty()) {
         translatorName = d->translatorName;
-    }
-    else {
-        translatorName = ki18nc("NAME OF TRANSLATORS", NAME_OF_TRANSLATORS).toString(tmpLocale);
+    } else {
+// xxx        translatorName = ki18nc("NAME OF TRANSLATORS", NAME_OF_TRANSLATORS).toString(tmpLocale);
     }
 
     QString translatorEmail;
     if (!d->translatorEmail.isEmpty()) {
         translatorEmail = d->translatorEmail;
-    }
-    else {
-        translatorEmail = ki18nc("EMAIL OF TRANSLATORS", EMAIL_OF_TRANSLATORS).toString(tmpLocale);
+    } else {
+// xxx        translatorEmail = ki18nc("EMAIL OF TRANSLATORS", EMAIL_OF_TRANSLATORS).toString(tmpLocale);
     }
 
-    delete tmpLocale;
+// xxx    delete tmpLocale;
 
     if ( translatorName.isEmpty() || translatorName == QString::fromUtf8( NAME_OF_TRANSLATORS ) )
         return personList;
@@ -854,10 +856,10 @@ KAboutData::translators() const
             ++eit;
         }
 
-        personList.append( KAboutPerson( (*nit).trimmed(), email.trimmed() ) );
+// xxx        personList.append( KAboutPerson( (*nit).trimmed(), email.trimmed() ) );
     }
 
-    return personList; */
+    return personList;
 }
 
 QString
