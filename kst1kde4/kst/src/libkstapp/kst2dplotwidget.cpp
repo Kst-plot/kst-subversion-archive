@@ -172,7 +172,10 @@ Kst2dPlotWidget::Kst2dPlotWidget(QWidget* parent, const char* name, Qt::WindowFl
   connect(UseCurve, SIGNAL(clicked()), this, SLOT(updateButtons()));
   connect(UseVector, SIGNAL(clicked()), this, SLOT(updateButtons()));
 
-  // grid lines
+  //
+  // grid lines...
+  //
+
   connect(_xMajorGrid, SIGNAL(clicked()), this, SLOT(updateAxesButtons()));
   connect(_yMajorGrid, SIGNAL(clicked()), this, SLOT(updateAxesButtons()));
   connect(_xMinorGrid, SIGNAL(clicked()), this, SLOT(updateAxesButtons()));
@@ -186,15 +189,15 @@ Kst2dPlotWidget::Kst2dPlotWidget(QWidget* parent, const char* name, Qt::WindowFl
   QColor defaultColor((KstSettings::globalSettings()->foregroundColor.red() + KstSettings::globalSettings()->backgroundColor.red())/2,
           (KstSettings::globalSettings()->foregroundColor.green() + KstSettings::globalSettings()->backgroundColor.green())/2,
           (KstSettings::globalSettings()->foregroundColor.blue() + KstSettings::globalSettings()->backgroundColor.blue())/2);
-// xxx  _majorGridColor->setColor(defaultColor);
-// xxx  _minorGridColor->setColor(defaultColor);
+  _majorGridColor->setColor(defaultColor);
+  _minorGridColor->setColor(defaultColor);
 
   //
   // set defaults...
   //
 
-// xxx  plotColors->setBackground(KstSettings::globalSettings()->backgroundColor);
-// xxx  plotColors->setForeground(KstSettings::globalSettings()->foregroundColor);
+  _plotColors->setBackground(KstSettings::globalSettings()->backgroundColor);
+  _plotColors->setForeground(KstSettings::globalSettings()->foregroundColor);
 
   _xMajorTickSpacing->setCurrentIndex(1);
   _yMajorTickSpacing->setCurrentIndex(1);
@@ -214,19 +217,22 @@ Kst2dPlotWidget::Kst2dPlotWidget(QWidget* parent, const char* name, Qt::WindowFl
   _majorPenWidth->setValue(0);
   _minorPenWidth->setValue(0);
 
-// xxx  _colorMarker->setColor(QColor("black"));
+  _colorMarker->setColor(QColor("black"));
   _spinBoxMarkerLineWidth->setValue(0);
   _checkBoxDefaultMarkerColor->setChecked(true);
   fillMarkerLineCombo();
 }
 
+
 Kst2dPlotWidget::~Kst2dPlotWidget() {
 }
+
 
 void Kst2dPlotWidget::resizeEvent(QResizeEvent *event) {
   fillMarkerLineCombo();
 // xxx  View2DPlotWidget::resizeEvent(event);
 }
+
 
 void Kst2dPlotWidget::generateDefaultLabels(bool xl, bool yl, bool zl) {
   disconnect(YAxisText, SIGNAL(textChanged(const QString &)), this, SLOT(modifiedYAxisText()));
@@ -251,6 +257,7 @@ void Kst2dPlotWidget::generateDefaultLabels(bool xl, bool yl, bool zl) {
   connect(TopLabelText, SIGNAL(textChanged(const QString &)), this, SLOT(modifiedTopAxisText()));
 }
 
+
 void Kst2dPlotWidget::updateButtons() {
   bool selected = false;
   uint count = AvailableCurveList->count();
@@ -259,6 +266,7 @@ void Kst2dPlotWidget::updateButtons() {
   for (i = 0; i < count; ++i) {
     if (AvailableCurveList->item(i)->isSelected()) {
       selected = true;
+
       break;
     }
   }
@@ -274,6 +282,7 @@ void Kst2dPlotWidget::updateButtons() {
   for (i = 0; i < count; ++i) {
     if (DisplayedCurveList->item(i)->isSelected()) {
       selected = true;
+
       break;
     }
   }
@@ -339,8 +348,9 @@ void Kst2dPlotWidget::updateButtons() {
     RemoveAllPlotMarkers->setEnabled(count > 0);
   }
 
-// xxx  _colorMarker->setEnabled(_checkBoxDefaultMarkerColor->checkState() != Qt::Checked);
+  _colorMarker->setEnabled(_checkBoxDefaultMarkerColor->checkState() != Qt::Checked);
 }
+
 
 void Kst2dPlotWidget::addDisplayedCurve() {
   uint count = AvailableCurveList->count();
@@ -354,9 +364,11 @@ void Kst2dPlotWidget::addDisplayedCurve() {
       }
     }
     updateButtons();
+
     emit changed();
   }
 }
+
 
 void Kst2dPlotWidget::removeDisplayedCurve() {
   uint count = DisplayedCurveList->count();
@@ -370,9 +382,11 @@ void Kst2dPlotWidget::removeDisplayedCurve() {
       }
     }
     updateButtons();
+
     emit changed();
   }
 }
+
 
 void Kst2dPlotWidget::upDisplayedCurve() {
   if (DisplayedCurveList->up()) {
@@ -380,11 +394,13 @@ void Kst2dPlotWidget::upDisplayedCurve() {
   }
 }
 
+
 void Kst2dPlotWidget::downDisplayedCurve() {
   if (DisplayedCurveList->down()) {
     emit changed();
   }
 }
+
 
 void Kst2dPlotWidget::fillMarkerLineCombo() {
   QRect rect;
@@ -419,16 +435,17 @@ void Kst2dPlotWidget::fillMarkerLineCombo() {
   _comboMarkerLineStyle->setCurrentIndex(currentItem);
 }
 
+
 void Kst2dPlotWidget::updateAxesButtons() {
   bool major = _xMajorGrid->isChecked() || _yMajorGrid->isChecked();
   bool minor = _xMinorGrid->isChecked() || _yMinorGrid->isChecked();
 
   _checkBoxDefaultMajorGridColor->setEnabled(major);
   _checkBoxDefaultMinorGridColor->setEnabled(minor);
-/* xxx
+
   _majorGridColor->setEnabled(major && _checkBoxDefaultMajorGridColor->checkState() != Qt::Checked);
   _minorGridColor->setEnabled(minor && _checkBoxDefaultMinorGridColor->checkState() != Qt::Checked);
-*/
+
   _majorPenWidth->setEnabled(major);
   _minorPenWidth->setEnabled(minor);
   _majorPenWidthLabel->setEnabled(major);
@@ -437,6 +454,7 @@ void Kst2dPlotWidget::updateAxesButtons() {
   _xMinorTicks->setEnabled(_xMinorTicksAuto->checkState() != Qt::Checked);
   _yMinorTicks->setEnabled(_yMinorTicksAuto->checkState() != Qt::Checked);
 }
+
 
 void Kst2dPlotWidget::updateScalarCombo() {
   KstScalarList::const_iterator i;
@@ -463,6 +481,7 @@ void Kst2dPlotWidget::updateScalarCombo() {
     scalarSelectorY2->insertItem(0, str);
   }
 }
+
 
 void Kst2dPlotWidget::updatePlotMarkers(const Kst2DPlot *plot) {
   KstMarkerList::const_iterator it;
@@ -527,22 +546,27 @@ void Kst2dPlotWidget::updatePlotMarkers(const Kst2DPlot *plot) {
   }
 }
 
+
 void Kst2dPlotWidget::populateEditMultiple(QRadioButton *radioButtonWidget) {
   radioButtonWidget->setChecked(false);
 }
+
 
 void Kst2dPlotWidget::populateEditMultiple(QComboBox *comboWidget) {
   comboWidget->insertItem(0, QString(" "));
   comboWidget->setCurrentIndex(comboWidget->count()-1);
 }
-/* xxx
+
+
 void Kst2dPlotWidget::populateEditMultiple(KColorButton *colorButton) {
   colorButton->setColor(QColor());
 }
-*/
+
+
 void Kst2dPlotWidget::populateEditMultiple(QLineEdit *lineEditWidget) {
   lineEditWidget->setText(QString(" "));
 }
+
 
 void Kst2dPlotWidget::populateEditMultiple(QSpinBox *spinBoxWidget) {
   spinBoxWidget->setMinimum(spinBoxWidget->minimum() - 1);
@@ -550,10 +574,12 @@ void Kst2dPlotWidget::populateEditMultiple(QSpinBox *spinBoxWidget) {
   spinBoxWidget->setValue(spinBoxWidget->minimum());
 }
 
+
 void Kst2dPlotWidget::populateEditMultiple(QCheckBox *checkBoxWidget) {
   checkBoxWidget->setTristate();
   checkBoxWidget->setCheckState(Qt::PartiallyChecked);
 }
+
 
 void Kst2dPlotWidget::populateEditMultiple(const Kst2DPlot *plot) {
   Q_UNUSED(plot)
@@ -596,8 +622,8 @@ void Kst2dPlotWidget::populateEditMultiple(const Kst2DPlot *plot) {
   populateEditMultiple(YAxisText);
   populateEditMultiple(XAxisText);
   populateEditMultiple(TopLabelText);
-// xxx  populateEditMultiple(_majorGridColor);
-// xxx  populateEditMultiple(_minorGridColor);
+  populateEditMultiple(_majorGridColor);
+  populateEditMultiple(_minorGridColor);
   populateEditMultiple(_comboBoxTopLabelJustify);
   populateEditMultiple(FontComboBox);
   populateEditMultiple(_checkBoxAutoLabelTop);
@@ -681,7 +707,7 @@ void Kst2dPlotWidget::populateEditMultiple(const Kst2DPlot *plot) {
 
   populateEditMultiple(_checkBoxDefaultMarkerColor);
   populateEditMultiple(_spinBoxMarkerLineWidth);
-// xxx  populateEditMultiple(_colorMarker);
+  populateEditMultiple(_colorMarker);
   populateEditMultiple(_comboMarkerLineStyle);
   UseCurve->setEnabled(false);
   UseVector->setEnabled(false);
@@ -698,6 +724,7 @@ void Kst2dPlotWidget::populateEditMultiple(const Kst2DPlot *plot) {
 
   updateAxesButtons();
 }
+
 
 void Kst2dPlotWidget::fillWidget(const Kst2DPlot *plot) {
   QString xMinExp, xMaxExp, yMinExp, yMaxExp;
@@ -747,8 +774,8 @@ void Kst2dPlotWidget::fillWidget(const Kst2DPlot *plot) {
   _xMinorGrid->setChecked(plot->hasXMinorGrid());
   _yMajorGrid->setChecked(plot->hasYMajorGrid());
   _yMinorGrid->setChecked(plot->hasYMinorGrid());
-// xxx  _majorGridColor->setColor(plot->majorGridColor());
-// xxx  _minorGridColor->setColor(plot->minorGridColor());
+  _majorGridColor->setColor(plot->majorGridColor());
+  _minorGridColor->setColor(plot->minorGridColor());
   _majorPenWidth->setValue(plot->majorPenWidth());
   _minorPenWidth->setValue(plot->minorPenWidth());
   _checkBoxDefaultMajorGridColor->setChecked(plot->defaultMajorGridColor());
@@ -992,12 +1019,11 @@ void Kst2dPlotWidget::fillWidget(const Kst2DPlot *plot) {
   if (vl) {
     ShowLegend->setChecked(true);
     TrackContents->setChecked(vl->trackContents());
-  } else { // plot does not currently have a legend: use defaults.
+  } else {
     ShowLegend->setChecked(false);
   }
-  // initialize the plot color widget
-// xxx  plotColors->setForeground(plot->foregroundColor());
-// xxx  plotColors->setBackground(plot->backgroundColor());
+  _plotColors->setForeground(plot->foregroundColor());
+  _plotColors->setBackground(plot->backgroundColor());
 
   _axisPenWidth->setValue(plot->axisPenWidth());
 
@@ -1013,13 +1039,19 @@ void Kst2dPlotWidget::fillWidget(const Kst2DPlot *plot) {
   _yMarksOutsidePlot->setChecked(plot->yTicksOutPlot() && !plot->yTicksInPlot());
   _yMarksInsideAndOutsidePlot->setChecked(plot->yTicksOutPlot() && plot->yTicksInPlot());
 
-  // update axis suppression
+  //
+  // update axis suppression...
+  //
+
   _suppressTop->setChecked(plot->suppressTop());
   _suppressBottom->setChecked(plot->suppressBottom());
   _suppressRight->setChecked(plot->suppressRight());
   _suppressLeft->setChecked(plot->suppressLeft());
 
-  // update axes transforms
+  //
+  // update axes transforms...
+  //
+
   _yTransformRight->setChecked(!plot->yTransformedExp().isEmpty());
   _yTransformRightExp->setText(plot->yTransformedExp());
   _xTransformTop->setChecked(!plot->xTransformedExp().isEmpty());
@@ -1028,17 +1060,21 @@ void Kst2dPlotWidget::fillWidget(const Kst2DPlot *plot) {
   _xReversed->setChecked(plot->xReversed());
   _yReversed->setChecked(plot->yReversed());
 
-  // update marker attributes
+  //
+  // update marker attributes...
+  //
+
   _comboMarkerLineStyle->setCurrentIndex(plot->lineStyleMarkers());
   _spinBoxMarkerLineWidth->setValue(plot->lineWidthMarkers());
   _checkBoxDefaultMarkerColor->setChecked(plot->defaultColorMarker());
-// xxx  _colorMarker->setColor(plot->colorMarkers());
-// xxx  _colorMarker->setEnabled(!plot->defaultColorMarker());
+  _colorMarker->setColor(plot->colorMarkers());
+  _colorMarker->setEnabled(!plot->defaultColorMarker());
 
   updateButtons();
   updateAxesButtons();
   _scalarDest = TopLabelText;
 }
+
 
 void Kst2dPlotWidget::applyContents(Kst2DPlotPtr plot) {
   if (!_editMultipleMode) {
@@ -1059,6 +1095,7 @@ void Kst2dPlotWidget::applyContents(Kst2DPlotPtr plot) {
     curves.clear();
   }
 }
+
 
 void Kst2dPlotWidget::applyAppearance(Kst2DPlotPtr plot) {
   if (!_editMultipleMode || XAxisText->text().compare(QString(" ")) != 0) {
@@ -1085,8 +1122,8 @@ void Kst2dPlotWidget::applyAppearance(Kst2DPlotPtr plot) {
     }
   }
 
-// xxx  plot->setForegroundColor(plotColors->foreground());
-// xxx  plot->setBackgroundColor(plotColors->background());
+  plot->setForegroundColor(_plotColors->foreground());
+  plot->setBackgroundColor(_plotColors->background());
 
   QColor majorGridColor = plot->majorGridColor();
   QColor minorGridColor = plot->minorGridColor();
@@ -1104,14 +1141,14 @@ void Kst2dPlotWidget::applyAppearance(Kst2DPlotPtr plot) {
   } else if (_checkBoxDefaultMinorGridColor->checkState() == Qt::Unchecked) {
     defaultMinorGridColor = false;
   }
-/* xxx
+
   if (_majorGridColor->color() != QColor()) {
     majorGridColor = _majorGridColor->color();
   }
   if (_minorGridColor->color() != QColor()) {
     minorGridColor = _minorGridColor->color();
   }
-*/
+
   plot->setGridLinesColor(majorGridColor, minorGridColor, defaultMajorGridColor, defaultMinorGridColor);
 
   if (!_editMultipleMode || _axisPenWidth->value() != _axisPenWidth->minimum()) {
@@ -1214,6 +1251,7 @@ void Kst2dPlotWidget::applyAppearance(Kst2DPlotPtr plot) {
   plot->setDirty();
 }
 
+
 void Kst2dPlotWidget::applyXAxis(Kst2DPlotPtr plot) {
   if (_xOffsetAuto->isDown()) {
     plot->setXOffsetMode(OFFSET_AUTO);
@@ -1301,6 +1339,7 @@ void Kst2dPlotWidget::applyXAxis(Kst2DPlotPtr plot) {
 
   plot->setDirty();
 }
+
 
 void Kst2dPlotWidget::applyYAxis(Kst2DPlotPtr plot) {
   if (_yOffsetAuto->isDown()) {
@@ -1391,6 +1430,7 @@ void Kst2dPlotWidget::applyYAxis(Kst2DPlotPtr plot) {
   plot->setDirty();
 }
 
+
 void Kst2dPlotWidget::applyRange(Kst2DPlotPtr plot) {
   if (XAC->isChecked()) {
     plot->setXScaleMode(AC);
@@ -1477,6 +1517,7 @@ void Kst2dPlotWidget::applyRange(Kst2DPlotPtr plot) {
   plot->setDirty();
 }
 
+
 void Kst2dPlotWidget::addPlotMarker() {
   // silently do nothing if there is no text, to
   // be consistent with "Add" button disabled
@@ -1510,6 +1551,7 @@ void Kst2dPlotWidget::addPlotMarker() {
   }
 }
 
+
 void Kst2dPlotWidget::removePlotMarker() {
   uint count = PlotMarkerList->count();
   int i;
@@ -1524,6 +1566,7 @@ void Kst2dPlotWidget::removePlotMarker() {
   }
 }
 
+
 void Kst2dPlotWidget::removeAllPlotMarkers() {
   uint count = PlotMarkerList->count();
   int i;
@@ -1535,6 +1578,7 @@ void Kst2dPlotWidget::removeAllPlotMarkers() {
     updateButtons();
   }
 }
+
 
 void Kst2dPlotWidget::applyPlotMarkers(Kst2DPlotPtr plot) {
   if (!_editMultipleMode) {
@@ -1597,11 +1641,11 @@ void Kst2dPlotWidget::applyPlotMarkers(Kst2DPlotPtr plot) {
   if (!_editMultipleMode || _spinBoxMarkerLineWidth->value() != _spinBoxMarkerLineWidth->minimum()) {
     plot->setLineWidthMarkers(_spinBoxMarkerLineWidth->value());
   }
-/* xxx
+
   if (_colorMarker->color() != QColor()) {
     plot->setColorMarkers(_colorMarker->color());
   }
-*/
+
   if (_checkBoxDefaultMarkerColor->checkState() == Qt::Checked) {
     plot->setDefaultColorMarker(true);
   } else if (_checkBoxDefaultMarkerColor->checkState() == Qt::Unchecked) {
@@ -1610,6 +1654,7 @@ void Kst2dPlotWidget::applyPlotMarkers(Kst2DPlotPtr plot) {
 
   plot->setDirty();
 }
+
 
 void Kst2dPlotWidget::fillPlot( Kst2DPlotPtr plot ) {
   applyContents(plot);
@@ -1657,21 +1702,26 @@ void Kst2dPlotWidget::fillPlot( Kst2DPlotPtr plot ) {
   plot->setDirty();
 }
 
+
 void Kst2dPlotWidget::insertCurrentScalar() {
   _scalarDest->insert(ScalarList->currentText());
 }
+
 
 void Kst2dPlotWidget::setScalarDestXLabel() {
   _scalarDest = XAxisText;
 }
 
+
 void Kst2dPlotWidget::setScalarDestYLabel() {
   _scalarDest = YAxisText;
 }
 
+
 void Kst2dPlotWidget::setScalarDestTopLabel() {
   _scalarDest = TopLabelText;
 }
+
 
 void Kst2dPlotWidget::editLegend() {
   KstTopLevelViewPtr tlv;
@@ -1681,6 +1731,7 @@ void Kst2dPlotWidget::editLegend() {
   ShowLegend->setChecked(true);
 }
 
+
 void Kst2dPlotWidget::insertXExpressionMin(const QString& strIn) {
   QString str;
 
@@ -1688,6 +1739,7 @@ void Kst2dPlotWidget::insertXExpressionMin(const QString& strIn) {
 
   XExpressionMin->insert(str);
 }
+
 
 void Kst2dPlotWidget::insertYExpressionMin(const QString& strIn) {
   QString str;
@@ -1697,6 +1749,7 @@ void Kst2dPlotWidget::insertYExpressionMin(const QString& strIn) {
   YExpressionMin->insert(str);
 }
 
+
 void Kst2dPlotWidget::insertXExpressionMax(const QString& strIn) {
   QString str;
 
@@ -1704,6 +1757,7 @@ void Kst2dPlotWidget::insertXExpressionMax(const QString& strIn) {
 
   XExpressionMax->insert(str);
 }
+
 
 void Kst2dPlotWidget::insertYExpressionMax(const QString& strIn) {
   QString str;
@@ -1713,25 +1767,31 @@ void Kst2dPlotWidget::insertYExpressionMax(const QString& strIn) {
   YExpressionMax->insert(str);
 }
 
+
 void Kst2dPlotWidget::modifiedYAxisText() {
   _checkBoxAutoLabelY->setChecked(false);
 }
+
 
 void Kst2dPlotWidget::modifiedXAxisText() {
   _checkBoxAutoLabelX->setChecked(false);
 }
 
+
 void Kst2dPlotWidget::modifiedTopAxisText() {
   _checkBoxAutoLabelTop->setChecked(false);
 }
+
 
 void Kst2dPlotWidget::autoLabelY() {
   generateDefaultLabels(false, true, false);
 }
 
+
 void Kst2dPlotWidget::autoLabelX() {
   generateDefaultLabels(true, false, false);
 }
+
 
 void Kst2dPlotWidget::autoLabelTop() {
   generateDefaultLabels(false, false, true);

@@ -201,6 +201,16 @@
             <bool>false</bool>
            </property>
           </widget>
+          <widget class="KDualColorButton" name="_colors">
+           <property name="sizePolicy">
+            <sizepolicy>
+	     <hsizetype>5</hsizetype>
+	     <vsizetype>0</vsizetype>
+	     <horstretch>0</horstretch>
+	     <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+          </widget>
          </item>
          <item>
           <spacer name="spacer40">
@@ -310,6 +320,20 @@
              </widget>
             </item>
             <item>
+             <widget class="KColorButton" name="_majorGridColor">
+              <property name="text">
+               <string></string>
+              </property>
+              <property name="color">
+               <color>
+	        <red>207</red>
+	        <green>229</green>
+	        <blue>235</blue>
+               </color>
+              </property>
+             </widget>
+            </item>
+            <item>
              <widget class="QCheckBox" name="_checkBoxDefaultMajorGridColor">
               <property name="text">
                <string>Default</string>
@@ -391,6 +415,20 @@
               </property>
               <property name="wordWrap">
                <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="KColorButton" name="_minorGridColor">
+              <property name="text">
+               <string></string>
+              </property>
+              <property name="color">
+               <color>
+                <red>228</red>
+                <green>254</green>
+                <blue>255</blue>
+               </color>
               </property>
              </widget>
             </item>
@@ -557,6 +595,16 @@
            </property>
            <property name="buddy">
             <cstring>_valueOffset</cstring>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QDoubleSpinBox" name="_valueOffset">
+           <property name="minimum">
+            <number>-24</number>
+           </property>
+           <property name="maximum">
+            <number>24</number>
            </property>
           </widget>
          </item>
@@ -1095,6 +1143,7 @@
  </tabstops>
  <includes>
   <include location="global">math.h</include>
+  <include location="global">kdualcolorbutton.h</include>
   <include location="local">kstsettings.h</include>
   <include location="local">kstplotdefines.h</include>
   <include location="local">ktimezonecombo.h</include>
@@ -1102,677 +1151,5 @@
 </includes>
  <resources/>
  <connections>
-  <connection>
-   <sender>_cancel</sender>
-   <signal>clicked()</signal>
-   <receiver>KstSettingsDlg</receiver>
-   <slot>close()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>_timer</sender>
-   <signal>valueChanged(int)</signal>
-   <receiver>KstSettingsDlg</receiver>
-   <slot>setDirty()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>_defaults</sender>
-   <signal>clicked()</signal>
-   <receiver>KstSettingsDlg</receiver>
-   <slot>defaults()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>_ok</sender>
-   <signal>clicked()</signal>
-   <receiver>KstSettingsDlg</receiver>
-   <slot>save()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>_ok</sender>
-   <signal>clicked()</signal>
-   <receiver>KstSettingsDlg</receiver>
-   <slot>close()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>_colors</sender>
-   <signal>bgChanged(QColor)</signal>
-   <receiver>KstSettingsDlg</receiver>
-   <slot>setDirty()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>_colors</sender>
-   <signal>fgChanged(QColor)</signal>
-   <receiver>KstSettingsDlg</receiver>
-   <slot>setDirty()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>_xMajorGrid</sender>
-   <signal>clicked()</signal>
-   <receiver>KstSettingsDlg</receiver>
-   <slot>updateAxesButtons()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>_xMinorGrid</sender>
-   <signal>clicked()</signal>
-   <receiver>KstSettingsDlg</receiver>
-   <slot>updateAxesButtons()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>_yMajorGrid</sender>
-   <signal>clicked()</signal>
-   <receiver>KstSettingsDlg</receiver>
-   <slot>updateAxesButtons()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>_yMinorGrid</sender>
-   <signal>clicked()</signal>
-   <receiver>KstSettingsDlg</receiver>
-   <slot>updateAxesButtons()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>_checkBoxDefaultMajorGridColor</sender>
-   <signal>clicked()</signal>
-   <receiver>KstSettingsDlg</receiver>
-   <slot>updateAxesButtons()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>_checkBoxDefaultMinorGridColor</sender>
-   <signal>clicked()</signal>
-   <receiver>KstSettingsDlg</receiver>
-   <slot>updateAxesButtons()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>_checkBoxXInterpret</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>_comboBoxXInterpret</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>_checkBoxXInterpret</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>_comboBoxXDisplay</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>_configureSource</sender>
-   <signal>clicked()</signal>
-   <receiver>KstSettingsDlg</receiver>
-   <slot>configureSource()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>_source</sender>
-   <signal>activated(QString)</signal>
-   <receiver>KstSettingsDlg</receiver>
-   <slot>sourceChanged(QString)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>_xMajorGrid</sender>
-   <signal>clicked()</signal>
-   <receiver>KstSettingsDlg</receiver>
-   <slot>setDirty()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>_xMinorGrid</sender>
-   <signal>clicked()</signal>
-   <receiver>KstSettingsDlg</receiver>
-   <slot>setDirty()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>_yMajorGrid</sender>
-   <signal>clicked()</signal>
-   <receiver>KstSettingsDlg</receiver>
-   <slot>setDirty()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>_yMinorGrid</sender>
-   <signal>clicked()</signal>
-   <receiver>KstSettingsDlg</receiver>
-   <slot>setDirty()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>_majorGridColor</sender>
-   <signal>changed(QColor)</signal>
-   <receiver>KstSettingsDlg</receiver>
-   <slot>setDirty()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>_minorGridColor</sender>
-   <signal>changed(QColor)</signal>
-   <receiver>KstSettingsDlg</receiver>
-   <slot>setDirty()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>_checkBoxDefaultMajorGridColor</sender>
-   <signal>clicked()</signal>
-   <receiver>KstSettingsDlg</receiver>
-   <slot>setDirty()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>_checkBoxDefaultMinorGridColor</sender>
-   <signal>clicked()</signal>
-   <receiver>KstSettingsDlg</receiver>
-   <slot>setDirty()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>_comboBoxXDisplay</sender>
-   <signal>activated(int)</signal>
-   <receiver>KstSettingsDlg</receiver>
-   <slot>setDirty()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>_promptWindowClose</sender>
-   <signal>clicked()</signal>
-   <receiver>KstSettingsDlg</receiver>
-   <slot>setDirty()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>_showQuickStart</sender>
-   <signal>clicked()</signal>
-   <receiver>KstSettingsDlg</receiver>
-   <slot>setDirty()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>_tiedZoomGlobal</sender>
-   <signal>clicked()</signal>
-   <receiver>KstSettingsDlg</receiver>
-   <slot>setDirty()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>_lineEditSender</sender>
-   <signal>textChanged(QString)</signal>
-   <receiver>KstSettingsDlg</receiver>
-   <slot>setDirty()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>_lineEditHost</sender>
-   <signal>textChanged(QString)</signal>
-   <receiver>KstSettingsDlg</receiver>
-   <slot>setDirty()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>_lineEditLogin</sender>
-   <signal>textChanged(QString)</signal>
-   <receiver>KstSettingsDlg</receiver>
-   <slot>setDirty()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>_lineEditPassword</sender>
-   <signal>textChanged(QString)</signal>
-   <receiver>KstSettingsDlg</receiver>
-   <slot>setDirty()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>_checkBoxAuthentication</sender>
-   <signal>clicked()</signal>
-   <receiver>KstSettingsDlg</receiver>
-   <slot>setDirty()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>_buttonGroupEncryption</sender>
-   <signal>clicked(int)</signal>
-   <receiver>KstSettingsDlg</receiver>
-   <slot>setDirty()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>_buttonGroupAuthentication</sender>
-   <signal>clicked(int)</signal>
-   <receiver>KstSettingsDlg</receiver>
-   <slot>setDirty()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>_checkBoxXInterpret</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>KstSettingsDlg</receiver>
-   <slot>setDirty()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>_checkBoxAuthentication</sender>
-   <signal>clicked()</signal>
-   <receiver>KstSettingsDlg</receiver>
-   <slot>updateEMailSettings()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>_comboBoxXInterpret</sender>
-   <signal>activated(QString)</signal>
-   <receiver>KstSettingsDlg</receiver>
-   <slot>setDirty()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>_fontSize</sender>
-   <signal>valueChanged(int)</signal>
-   <receiver>KstSettingsDlg</receiver>
-   <slot>setDirty()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>_valueOffset</sender>
-   <signal>valueChanged(double)</signal>
-   <receiver>KstSettingsDlg</receiver>
-   <slot>updateTimezone(double)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>_fontMinSize</sender>
-   <signal>valueChanged(int)</signal>
-   <receiver>KstSettingsDlg</receiver>
-   <slot>setDirty()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
  </connections>
 </ui>

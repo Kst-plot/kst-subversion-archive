@@ -34,6 +34,7 @@ public:
   void allowDirectEntry( bool allowed );
 
 Q_SIGNALS:
+  void newStringCreated();
 
 private Q_SLOTS:
 };

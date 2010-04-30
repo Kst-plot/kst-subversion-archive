@@ -16,9 +16,12 @@
 
 StringSelector::StringSelector(QWidget *parent) : QWidget(parent) {
   setupUi(this);
+
   update();
-// xxx  _newString->setPixmap(BarIcon("kst_stringnew"));
-// xxx  _editString->setPixmap(BarIcon("kst_stringedit"));
+
+ _newString->setIcon(QIcon(":/kst_stringnew.png"));
+ _editString->setIcon(QIcon(":/kst_stringedit.png"));
+
   connect(_selectString, SIGNAL(clicked()), this, SLOT(selectString()));
   connect(_newString, SIGNAL(clicked()), this, SLOT(createNewString()));
   connect(_editString, SIGNAL(clicked()), this, SLOT(editString()));
@@ -26,17 +29,17 @@ StringSelector::StringSelector(QWidget *parent) : QWidget(parent) {
   connect(this, SIGNAL(selectionChanged(const QString&)), this, SLOT(selectionWatcher(const QString&)));
 }
 
-StringSelector::~StringSelector()
-{
+
+StringSelector::~StringSelector() {
 }
 
-void StringSelector::allowNewStrings( bool allowed )
-{
+
+void StringSelector::allowNewStrings( bool allowed ) {
   _newString->setEnabled(allowed);
 }
 
-void StringSelector::update()
-{
+
+void StringSelector::update() {
   /* xxx if (_string->listBox()->isVisible()) {
     QTimer::singleShot(250, this, SLOT(update()));
     return;
@@ -82,8 +85,8 @@ void StringSelector::update()
   blockSignals(false);
 }
 
-void StringSelector::createNewString()
-{
+
+void StringSelector::createNewString() {
   StringEditor *se = new StringEditor(this);
   se->setWindowTitle(tr("New String"));
 
@@ -95,7 +98,9 @@ void StringSelector::createNewString()
 
 		  s->setOrphan(true);
 		  s->setEditable(true);
-//		  emit newStringCreated();
+
+		  emit newStringCreated();
+
 		  update();
 		  setSelection(s);
 		  _editString->setEnabled(true);
@@ -105,8 +110,8 @@ void StringSelector::createNewString()
   }
 }
 
-void StringSelector::selectString()
-{
+
+void StringSelector::selectString() {
 /* xxx
   ComboBoxSelectionI *selection = new ComboBoxSelectionI(this, "string selector");
   int i;
@@ -125,8 +130,8 @@ void StringSelector::selectString()
 
 }
 
-void StringSelector::editString()
-{
+
+void StringSelector::editString() {
   StringEditor *se = new StringEditor(this);
   se->setWindowTitle(tr("Edit string"));
   if (se ) {    
@@ -162,8 +167,8 @@ void StringSelector::editString()
   }
 }
 
-void StringSelector::selectionWatcher( const QString & tag )
-{   
+
+void StringSelector::selectionWatcher( const QString & tag ) {   
   KstStringPtr p;
   QString label = "["+tag+"]";
   bool editable = false;
@@ -180,8 +185,8 @@ void StringSelector::selectionWatcher( const QString & tag )
  _editString->setEnabled(editable);
 }
 
-void StringSelector::setSelection( const QString & tag )
-{
+
+void StringSelector::setSelection( const QString & tag ) {
   if (!tag.isEmpty()) {
     if (_string->currentText() != tag) {
       blockSignals(true);
@@ -192,13 +197,13 @@ void StringSelector::setSelection( const QString & tag )
   }
 }
 
-void StringSelector::setSelection( KstStringPtr s )
-{
+
+void StringSelector::setSelection( KstStringPtr s ) {
   setSelection(s->tagName());
 }
 
-QString StringSelector::selectedString()
-{
+
+QString StringSelector::selectedString() {
   KstStringPtr ptr = *KST::stringList.findTag(_string->currentText());
 
   if (ptr) {
@@ -208,7 +213,7 @@ QString StringSelector::selectedString()
   }
 }
 
-void StringSelector::allowDirectEntry( bool allowed )
-{
+
+void StringSelector::allowDirectEntry( bool allowed ) {
   _string->setEditable(allowed);
 }

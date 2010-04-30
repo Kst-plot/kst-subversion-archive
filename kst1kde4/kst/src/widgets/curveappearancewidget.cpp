@@ -9,6 +9,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QLineEdit>
 #include <QPainter>
 #include <QPen>
 #include <QTimer>
@@ -30,7 +31,7 @@ CurveAppearanceWidget::CurveAppearanceWidget(QWidget *parent) : QWidget(parent) 
   connect(_comboLineStyle, SIGNAL(activated(int)), this, SLOT(modified()));
   connect(_comboPointDensity, SIGNAL(activated(int)), this, SLOT(modified()));
   connect(_spinBoxLineWidth, SIGNAL(valueChanged(int)), this, SLOT(modified()));
-// xxx  connect(_spinBoxLineWidth->child("qt_spinbox_edit"), SIGNAL(textChanged(const QString&)), this, SLOT(modified()));
+  connect(_spinBoxLineWidth->findChild<QLineEdit*>(), SIGNAL(textChanged(const QString&)), this, SLOT(modified()));
   connect(_barStyle, SIGNAL(activated(int)), this, SLOT(modified()));
 
   reset();
@@ -44,7 +45,7 @@ CurveAppearanceWidget::~CurveAppearanceWidget() {
 
 
 void CurveAppearanceWidget::modified() {
-// xxx  emit changed();
+  emit changed();
 }
 
 

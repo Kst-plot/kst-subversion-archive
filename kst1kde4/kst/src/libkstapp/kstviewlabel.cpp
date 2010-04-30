@@ -636,13 +636,13 @@ bool KstViewLabel::fillConfigWidget(QWidget *w, bool isNew) const {
   widget->_rotation->setValue(double(rotation()));
   widget->_fontSize->setValue(int(fontSize()));
   widget->_horizontal->setCurrentIndex(horizJustifyWrap());
-// xxx  widget->_fontColor->setColor(foregroundColor());
+  widget->_fontColor->setColor(foregroundColor());
   widget->_font->setCurrentFont(fontName());
 
   widget->_transparent->setChecked(transparent());
   widget->_border->setValue(borderWidth());
-// xxx  widget->_boxColors->setForeground(borderColor());
-// xxx  widget->_boxColors->setBackground(backgroundColor());
+  widget->_boxColors->setForeground(borderColor());
+  widget->_boxColors->setBackground(backgroundColor());
   widget->_margin->setValue(labelMargin());
 
   widget->_text->setFocus();
@@ -676,11 +676,11 @@ bool KstViewLabel::readConfigWidget(QWidget *w, bool editMultipleMode) {
   if (!editMultipleMode || widget->_horizontal->currentText().compare(QString(" ")) != 0) {
     setHorizJustifyWrap(widget->_horizontal->currentIndex());
   }
-/* xxx
+
   if (!editMultipleMode || widget->_fontColor->color() != QColor()) {
     setForegroundColor(widget->_fontColor->color());
   }
-*/
+
   if (!editMultipleMode || widget->_font->currentText().compare(QString(" ")) != 0) {
     setFontName(widget->_font->currentFont().family());
   }
@@ -692,7 +692,7 @@ bool KstViewLabel::readConfigWidget(QWidget *w, bool editMultipleMode) {
   if (!editMultipleMode || widget->_border->value() != widget->_border->minimum()) {
     setBorderWidth(widget->_border->value());
   }
-/* xxx
+
   if (!editMultipleMode || widget->_changedFgColor) {
     setBorderColor(widget->_boxColors->foreground());
   }
@@ -700,89 +700,88 @@ bool KstViewLabel::readConfigWidget(QWidget *w, bool editMultipleMode) {
   if (!editMultipleMode || widget->_changedBgColor) {
     setBackgroundColor(widget->_boxColors->background());
   }
-*/
+
   if (!editMultipleMode || widget->_margin->value() != widget->_margin->minimum()) {
     setLabelMargin(widget->_margin->value());
   }
 
   reparse(); // calls setDirty()
+
   return true;
 }
 
 
 void KstViewLabel::connectConfigWidget(QWidget *parent, QWidget *w) const {
   KstViewLabelWidget *widget = dynamic_cast<KstViewLabelWidget*>(w);
-  if (!widget) {
-    return;
-  }
 
-  connect(widget->_text, SIGNAL(textChanged()), parent, SLOT(modified()));
-  connect(widget->_font, SIGNAL(activated(int)), parent, SLOT(modified()));
-  connect(widget->_fontSize, SIGNAL(valueChanged(int)), parent, SLOT(modified()));
-// xxx  connect(widget->_fontSize->child("qt_spinbox_edit"), SIGNAL(textChanged(const QString&)), parent, SLOT(modified()));
-  connect(widget->_horizontal, SIGNAL(activated(int)), parent, SLOT(modified()));
-// xxx  connect(widget->_fontColor, SIGNAL(changed(const QColor&)), parent, SLOT(modified()));  
-  connect(widget->_precision, SIGNAL(valueChanged(int)), parent, SLOT(modified()));
-// xxx  connect(widget->_precision->child("qt_spinbox_edit"), SIGNAL(textChanged(const QString&)), parent, SLOT(modified()));
-  connect(widget->_rotation, SIGNAL(valueChanged(int)), parent, SLOT(modified()));
-  connect(widget->_rotation, SIGNAL(valueChanged(double)), parent, SLOT(modified()));
-// xxx  connect(widget->_rotation->child("qt_spinbox_edit"), SIGNAL(textChanged(const QString&)), parent, SLOT(modified()));
-  connect(widget->_transparent, SIGNAL(pressed()), parent, SLOT(modified()));
-// xxx  connect(widget->_boxColors, SIGNAL(fgChanged(const QColor&)), parent, SLOT(modified()));
-// xxx  connect(widget->_boxColors, SIGNAL(bgChanged(const QColor&)), parent, SLOT(modified()));
-// xxx  connect(widget->_boxColors, SIGNAL(fgChanged(const QColor&)), widget, SLOT(changedFgColor()));
-// xxx  connect(widget->_boxColors, SIGNAL(bgChanged(const QColor&)), widget, SLOT(changedBgColor()));
-  connect(widget->_margin, SIGNAL(valueChanged(int)), parent, SLOT(modified()));
-// xxx connect(widget->_margin->child("qt_spinbox_edit"), SIGNAL(textChanged(const QString&)), parent, SLOT(modified()));
-  connect(widget->_border, SIGNAL(valueChanged(int)), parent, SLOT(modified()));
-// xxx  connect(widget->_border->child("qt_spinbox_edit"), SIGNAL(textChanged(const QString&)), parent, SLOT(modified()));
+  if (widget) {
+    connect(widget->_text, SIGNAL(textChanged()), parent, SLOT(modified()));
+    connect(widget->_font, SIGNAL(activated(int)), parent, SLOT(modified()));
+    connect(widget->_fontSize, SIGNAL(valueChanged(int)), parent, SLOT(modified()));
+    connect(widget->_fontSize->findChild<QLineEdit*>(), SIGNAL(textChanged(const QString&)), parent, SLOT(modified()));
+    connect(widget->_horizontal, SIGNAL(activated(int)), parent, SLOT(modified()));
+    connect(widget->_fontColor, SIGNAL(changed(const QColor&)), parent, SLOT(modified()));  
+    connect(widget->_precision, SIGNAL(valueChanged(int)), parent, SLOT(modified()));
+    connect(widget->_precision->findChild<QLineEdit*>(), SIGNAL(textChanged(const QString&)), parent, SLOT(modified()));
+    connect(widget->_rotation, SIGNAL(valueChanged(int)), parent, SLOT(modified()));
+    connect(widget->_rotation, SIGNAL(valueChanged(double)), parent, SLOT(modified()));
+    connect(widget->_rotation->findChild<QLineEdit*>(), SIGNAL(textChanged(const QString&)), parent, SLOT(modified()));
+    connect(widget->_transparent, SIGNAL(pressed()), parent, SLOT(modified()));
+    connect(widget->_boxColors, SIGNAL(fgChanged(const QColor&)), parent, SLOT(modified()));
+    connect(widget->_boxColors, SIGNAL(bgChanged(const QColor&)), parent, SLOT(modified()));
+    connect(widget->_boxColors, SIGNAL(fgChanged(const QColor&)), widget, SLOT(changedFgColor()));
+    connect(widget->_boxColors, SIGNAL(bgChanged(const QColor&)), widget, SLOT(changedBgColor()));
+    connect(widget->_margin, SIGNAL(valueChanged(int)), parent, SLOT(modified()));
+  connect(widget->_margin->findChild<QLineEdit*>(), SIGNAL(textChanged(const QString&)), parent, SLOT(modified()));
+    connect(widget->_border, SIGNAL(valueChanged(int)), parent, SLOT(modified()));
+    connect(widget->_border->findChild<QLineEdit*>(), SIGNAL(textChanged(const QString&)), parent, SLOT(modified()));
+  }
 }
 
 
 void KstViewLabel::populateEditMultiple(QWidget *w) {
   KstViewLabelWidget *widget = dynamic_cast<KstViewLabelWidget*>(w);
-  if (!widget) {
-    return;
+
+  if (widget) {  
+    widget->_text->setText(QString(" "));
+  
+    widget->_font->insertItem(0, QString(" "));
+    widget->_font->setCurrentIndex(widget->_font->count()-1);
+  
+    widget->_fontSize->setMinimum(widget->_fontSize->minimum() - 1);
+    widget->_fontSize->setSpecialValueText(QString(" "));
+    widget->_fontSize->setValue(widget->_fontSize->minimum());
+  
+    widget->_horizontal->insertItem(0, QString(" "));
+    widget->_horizontal->setCurrentIndex(widget->_horizontal->count()-1);
+  
+    widget->_fontColor->setColor(QColor());
+  
+    widget->_transparent->setTristate();
+    widget->_transparent->setCheckState(Qt::PartiallyChecked);
+  
+    widget->_boxColors->setForeground(QColor());
+    widget->_boxColors->setBackground(QColor());
+  
+    widget->_precision->setMinimum(widget->_precision->minimum() - 1);
+    widget->_precision->setSpecialValueText(QString(" "));
+    widget->_precision->setValue(widget->_precision->minimum());
+  
+    widget->_rotation->setMinimum(widget->_rotation->minimum() - 1);
+    widget->_rotation->setSpecialValueText(QString(" "));
+    widget->_rotation->setValue(widget->_rotation->minimum());
+  
+    widget->_margin->setMinimum(widget->_margin->minimum() - 1);
+    widget->_margin->setSpecialValueText(QString(" "));
+    widget->_margin->setValue(widget->_margin->minimum());
+  
+    widget->_border->setMinimum(widget->_border->minimum() - 1);
+    widget->_border->setSpecialValueText(QString(" "));
+    widget->_border->setValue(widget->_border->minimum());
+  
+    widget->_changedFgColor = false;
+    widget->_changedBgColor = false;
   }
-
-  widget->_text->setText(QString(" "));
-
-  widget->_font->insertItem(0, QString(" "));
-  widget->_font->setCurrentIndex(widget->_font->count()-1);
-
-  widget->_fontSize->setMinimum(widget->_fontSize->minimum() - 1);
-  widget->_fontSize->setSpecialValueText(QString(" "));
-  widget->_fontSize->setValue(widget->_fontSize->minimum());
-
-  widget->_horizontal->insertItem(0, QString(" "));
-  widget->_horizontal->setCurrentIndex(widget->_horizontal->count()-1);
-
-// xxx  widget->_fontColor->setColor(QColor());
-
-  widget->_transparent->setTristate();
-  widget->_transparent->setCheckState(Qt::PartiallyChecked);
-/* xxx
-  widget->_boxColors->setForeground(QColor());
-  widget->_boxColors->setBackground(QColor());
-*/
-  widget->_precision->setMinimum(widget->_precision->minimum() - 1);
-  widget->_precision->setSpecialValueText(QString(" "));
-  widget->_precision->setValue(widget->_precision->minimum());
-
-  widget->_rotation->setMinimum(widget->_rotation->minimum() - 1);
-  widget->_rotation->setSpecialValueText(QString(" "));
-  widget->_rotation->setValue(widget->_rotation->minimum());
-
-  widget->_margin->setMinimum(widget->_margin->minimum() - 1);
-  widget->_margin->setSpecialValueText(QString(" "));
-  widget->_margin->setValue(widget->_margin->minimum());
-
-  widget->_border->setMinimum(widget->_border->minimum() - 1);
-  widget->_border->setSpecialValueText(QString(" "));
-  widget->_border->setValue(widget->_border->minimum());
-
-  widget->_changedFgColor = false;
-  widget->_changedBgColor = false;
 }
 
 
@@ -826,12 +825,15 @@ int KstViewLabel::horizJustifyWrap() const {
     case KST_JUSTIFY_H_LEFT:
       return 0;
       break;
+
     case KST_JUSTIFY_H_RIGHT:
       return 1;
       break;
+
     case KST_JUSTIFY_H_CENTER:
       return 2;
       break;
+
     default:
       return 0;  
   }
@@ -845,15 +847,19 @@ void KstViewLabel::setHorizJustifyWrap(int justify) {
     case 0:
       justifySet = KST_JUSTIFY_H_LEFT;
       break;
+
     case 1:
       justifySet = KST_JUSTIFY_H_RIGHT;
       break;
+
     case 2:
       justifySet = KST_JUSTIFY_H_CENTER;
       break;
+
     default:
       justifySet = KST_JUSTIFY_H_LEFT;
   }
+
   setJustification(SET_KST_JUSTIFY(justifySet, KST_JUSTIFY_V(justification())));
 }
 

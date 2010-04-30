@@ -137,6 +137,7 @@
     <addaction name="_actionToolBar"/>
     <addaction name="_actionStatusBar"/>
     <addaction name="separator"/>
+    <addaction name="_actionSettings"/>
    </widget>
    <widget class="QMenu" name="_menuHelp">
     <property name="title">
@@ -950,6 +951,14 @@
    </property>
    <property name="whatsThis">
     <string>Toggle Statusbar</string>
+   </property>
+  </action>
+  <action name="_actionSettings">
+   <property name="text">
+    <string>&amp;Configure Kst</string>
+   </property>
+   <property name="whatsThis">
+    <string>Bring up a dialog box to configure Kst settings.</string>
    </property>
   </action>
   <action name="_actionLayout">

@@ -48,6 +48,7 @@ KstImageDialog::KstImageDialog(QWidget* parent, const char* name, bool modal, Qt
   _w->setupUi(_contents);
 
   setMultiple(true);
+
   connect(_w->_matrix, SIGNAL(newMatrixCreated(const QString&)), this, SIGNAL(modified()));
   connect(_w->_autoThreshold, SIGNAL(clicked()), this, SLOT(calcAutoThreshold()));
   connect(_w->_smartThreshold, SIGNAL(clicked()), this, SLOT(calcSmartThreshold()));
@@ -66,7 +67,7 @@ KstImageDialog::KstImageDialog(QWidget* parent, const char* name, bool modal, Qt
   connect(_w->_colorAndContour, SIGNAL(clicked()), this, SLOT(setColorAndContourDirty()));
   connect(_w->_realTimeAutoThreshold, SIGNAL(clicked()), this, SLOT(setRealTimeAutoThresholdDirty()));
   connect(_w->_useVariableWeight, SIGNAL(clicked()), this, SLOT(setUseVariableWeightDirty()));
-// xxx  connect(_w->_contourColor, SIGNAL(clicked()), this, SLOT(setContourColorDirty()));
+  connect(_w->_contourColor, SIGNAL(clicked()), this, SLOT(setContourColorDirty()));
 
   //
   // connections for apply button...
@@ -83,13 +84,13 @@ KstImageDialog::KstImageDialog(QWidget* parent, const char* name, bool modal, Qt
   connect(_w->_autoThreshold, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
   connect(_w->_smartThreshold, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
   connect(_w->_smartThresholdValue, SIGNAL(valueChanged(double)), this, SLOT(wasModifiedApply()));
-// xxx  connect(_w->_smartThresholdValue->child("qt_spinbox_edit"), SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_smartThresholdValue->findChild<QLineEdit*>(), SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
   connect(_w->_realTimeAutoThreshold, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
   connect(_w->_numContourLines, SIGNAL(valueChanged(int)), this, SLOT(wasModifiedApply()));
-// xxx  connect(_w->_numContourLines->child("qt_spinbox_edit"), SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
-// xxx  connect(_w->_contourColor, SIGNAL(changed(const QColor&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_numContourLines->findChild<QLineEdit*>(), SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_contourColor, SIGNAL(changed(const QColor&)), this, SLOT(wasModifiedApply()));
   connect(_w->_contourWeight, SIGNAL(valueChanged(int)), this, SLOT(wasModifiedApply()));
-// xxx  connect(_w->_contourWeight->child("qt_spinbox_edit"), SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_w->_contourWeight->findChild<QLineEdit*>(), SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
   connect(_w->_useVariableWeight, SIGNAL(clicked()), this, SLOT(wasModifiedApply()));
 }
 
@@ -152,7 +153,7 @@ void KstImageDialog::fillFieldsForEditNoUpdate() {
     _w->_realTimeAutoThreshold->setChecked(ip->autoThreshold());
     _w->_colorPalette->refresh(ip->paletteName());
     _w->_numContourLines->setValue(ip->numContourLines());
-// xxx    _w->_contourColor->setColor(ip->contourColor());
+    _w->_contourColor->setColor(ip->contourColor());
     tempWeight = ip->contourWeight();
     _w->_useVariableWeight->setChecked(tempWeight == -1);
     if (tempWeight >= 0) {
@@ -260,7 +261,7 @@ bool KstImageDialog::newObject() {
   if (_w->_contourOnly->isChecked()) {
     QColor tempColor;
 
-// xxx    tempColor = _w->_contourColor->color();
+    tempColor = _w->_contourColor->color();
     image = new KstImage(tag_name, matrix, _w->_numContourLines->text().toInt(), tempColor,
                          _w->_useVariableWeight->isChecked() ? -1 : _w->_contourWeight->value());
   } else if (_w->_colorOnly->isChecked()) {
@@ -272,8 +273,9 @@ bool KstImageDialog::newObject() {
 */
   } else {
     QColor tempColor;
-/* xxx
+
     tempColor = _w->_contourColor->color();
+/* xxx
     KPalette* newPal = new KPalette(_w->_colorPalette->selectedPalette());
 
     image = new KstImage(tag_name, matrix, lowerZDouble, upperZDouble,
@@ -334,7 +336,7 @@ bool KstImageDialog::editSingleObject(KstImagePtr imPtr) {
     if (_w->_contourOnly->isChecked()) {
       QColor tempColor;
 
-// xxx      tempColor = _w->_contourColor->color();
+      tempColor = _w->_contourColor->color();
       imPtr->changeToContourOnly(imPtr->tagName(), matrix, _w->_numContourLines->text().toInt(), tempColor,
                               _w->_useVariableWeight->isChecked() ? -1 : _w->_contourWeight->value());
     } else if (_w->_colorOnly->isChecked()) {
@@ -347,7 +349,7 @@ bool KstImageDialog::editSingleObject(KstImagePtr imPtr) {
     } else {
       QColor tempColor;
 
-// xxx      tempColor = _w->_contourColor->color();
+      tempColor = _w->_contourColor->color();
 /* xxx
       KPalette* newPal = new KPalette(_w->_colorPalette->selectedPalette());
 
@@ -401,7 +403,7 @@ bool KstImageDialog::editSingleObject(KstImagePtr imPtr) {
     }
 
     if (_contourColorDirty) {
-// xxx      pContourColor = _w->_contourColor->color();
+      pContourColor = _w->_contourColor->color();
     } else {
       pContourColor = imPtr->contourColor();
     }
@@ -708,7 +710,7 @@ void KstImageDialog::populateEditMultiple() {
   _w->_contourWeight->setValue(_w->_contourWeight->minimum());
   _w->_useVariableWeight->setTristate(true);
   _w->_useVariableWeight->setChecked(Qt::PartiallyChecked);
-// xxx  _w->_contourColor->setColor(QColor()); //default color
+  _w->_contourColor->setColor(QColor()); //default color
 
   _tagName->setText("");
   _tagName->setEnabled(false);

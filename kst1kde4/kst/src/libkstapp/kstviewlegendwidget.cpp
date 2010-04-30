@@ -108,7 +108,7 @@ void KstViewLegendWidget::removeDisplayedCurve() {
     for (int i = count-1; i >= 0; i--) {
       if (DisplayedCurveList->item(i)->isSelected()) {
         AvailableCurveList->addItem(DisplayedCurveList->item(i)->text());
-// xxx        DisplayedCurveList->removeIndex(i);
+        DisplayedCurveList->removeItemWidget(DisplayedCurveList->item(i));
       }
     }
     updateButtons();
@@ -127,7 +127,7 @@ void KstViewLegendWidget::addDisplayedCurve() {
     for (int i = count-1; i >= 0; i--) {
       if (AvailableCurveList->item(i)->isSelected()) {
         DisplayedCurveList->addItem(AvailableCurveList->item(i)->text());
-// xxx        AvailableCurveList->removeIndex(i);
+        AvailableCurveList->removeItemWidget(AvailableCurveList->item(i));
       }
     }
     updateButtons();

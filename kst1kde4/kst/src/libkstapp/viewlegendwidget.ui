@@ -210,6 +210,13 @@
         </property>
        </widget>
       </item>
+      <item row="1" column="7">
+       <widget class="KColorButton" name="_fontColor">
+        <property name="text">
+         <string></string>
+        </property>
+       </widget>
+      </item>
       <item row="1" column="0" colspan="2">
        <widget class="QCheckBox" name="_vertical">
         <property name="text">
@@ -322,6 +329,18 @@
        </widget>
       </item>
       <item>
+       <widget class="KDualColorButton" name="_boxColors">
+        <property name="sizePolicy">
+         <sizepolicy>
+          <hsizetype>0</hsizetype>
+          <vsizetype>0</vsizetype>
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+       </widget>
+      </item>
+      <item>
        <spacer name="spacer8">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
@@ -398,6 +417,8 @@
  <includes>
   <include location="global">kst_export.h</include>
   <include location="local">plotlistbox.h</include>
+  <include location="global">kcolorbutton.h</include>
+  <include location="global">kdualcolorbutton.h</include>
  </includes>
  <resources/>
  <connections/>

@@ -34,6 +34,7 @@ public:
 
 Q_SIGNALS:
   void selectionChanged(const QString&);
+  void newScalarCreated();
 
 private Q_SLOTS:
   void createNewScalar();

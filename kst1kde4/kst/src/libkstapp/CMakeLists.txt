@@ -120,7 +120,7 @@ qt4_wrap_ui(kstapp_UI_HDRS
     curvedifferentiate.ui
     datamanager.ui
     datasourcemetadatadialog.ui
-# xxx    datawizard.ui
+    datawizard.ui
     debugdialog.ui
     editviewobjectdialog.ui
     eqdialogwidget.ui

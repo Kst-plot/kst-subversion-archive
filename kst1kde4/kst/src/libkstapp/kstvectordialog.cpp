@@ -978,7 +978,6 @@ void KstVectorDialog::setDoFilterDirty() {
 void KstVectorDialog::setDoSkipDirty() {
   _w->_kstDataRange->DoSkip->setTristate(false);
   _doSkipDirty = true;
-  // also assume the number of frames to skip is dirty too
   _skipDirty = true;
 }
 

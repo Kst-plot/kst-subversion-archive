@@ -28,14 +28,12 @@
 #include "ksttimezones.h"
 #include "ktimezonecombo.h"
 
-KstSettingsDlg::KstSettingsDlg(QWidget* parent, const char *name, Qt::WindowFlags fl) 
-: QDialog(parent, fl)
-{
+KstSettingsDlg::KstSettingsDlg(QWidget* parent, const char *name, Qt::WindowFlags fl) : QDialog(parent, fl) {
   QString hours = QObject::tr(" hours");
   QLineEdit* edit;
 
   setupUi(this);
-
+printf("-1\n");
   fillAxesSettings();
   updateCurveColorSettings();
   setSettings(KstSettings::globalSettings());
@@ -44,43 +42,89 @@ KstSettingsDlg::KstSettingsDlg(QWidget* parent, const char *name, Qt::WindowFlag
   updateAxesSettings();
   updateEMailSettings();
   updateUTCOffset();
+printf("0\n");
   _source->insertItems(0, KstDataSource::pluginList());
   if (_source->count() > 0) {
     sourceChanged(_source->itemText(0));
   } else {
     _configureSource->setEnabled(false);
   }
-/* xxx
-  edit = dynamic_cast<QLineEdit*>(_valueOffset->child("qt_spinbox_edit"));
+
+  edit = _valueOffset->findChild<QLineEdit*>();
   if (edit) {
     edit->setMaxLength(5 + hours.length());
   }
-  _valueOffset->setRange(-24.0, 24.0, 0.50, false);
+printf("2\n");
+  _valueOffset->setRange(-24.0, 24.0);
+  _valueOffset->setSingleStep(0.50);
   _valueOffset->setSuffix(QObject::tr(" hours"));
-  _colorPalette->_label->setText(QObject::tr("Curve color sequence: "));
-*/
+// xxx  _colorPalette->_label->setText(QObject::tr("Curve color sequence: "));
+
   connect(_spinBoxLineWidth, SIGNAL(valueChanged(int)), this, SLOT(setDirty()));
-/* xxx  
-  connect(_spinBoxLineWidth->child("qt_spinbox_edit"), SIGNAL(textChanged(const QString&)), this, SLOT(setDirty()));
-  connect(_valueOffset->child("qt_spinbox_edit"), SIGNAL(textChanged(const QString&)), this, SLOT(updateTimezone(const QString&)));
-  connect(_timer->child("qt_spinbox_edit"), SIGNAL(textChanged(const QString&)), this, SLOT(setDirty()));
-  connect(_kIntSpinBoxEMailPort->child("qt_spinbox_edit"), SIGNAL(textChanged(const QString&)), this, SLOT(setDirty()));
+  connect(_spinBoxLineWidth->findChild<QLineEdit*>(), SIGNAL(textChanged(const QString&)), this, SLOT(setDirty()));
+  connect(_valueOffset->findChild<QLineEdit*>(), SIGNAL(textChanged(const QString&)), this, SLOT(updateTimezone(const QString&)));
+  connect(_timer->findChild<QLineEdit*>(), SIGNAL(textChanged(const QString&)), this, SLOT(setDirty()));
+  connect(_kIntSpinBoxEMailPort->findChild<QLineEdit*>(), SIGNAL(textChanged(const QString&)), this, SLOT(setDirty()));
   connect(_colorPalette->_palette, SIGNAL(activated(int)), this, SLOT(setDirty()));
-  connect(_fontSize->child("qt_spinbox_edit"), SIGNAL(textChanged(const QString&)), this, SLOT(setDirty()));
-  connect(_fontMinSize->child("qt_spinbox_edit"), SIGNAL(textChanged(const QString&)), this, SLOT(setDirty()));
-*/
+  connect(_fontSize->findChild<QLineEdit*>(), SIGNAL(textChanged(const QString&)), this, SLOT(setDirty()));
+  connect(_fontMinSize->findChild<QLineEdit*>(), SIGNAL(textChanged(const QString&)), this, SLOT(setDirty()));
+
+  connect(_cancel, SIGNAL(clicked()), this, SLOT(close()));
+  connect(_timer, SIGNAL(valueChanged(int)), this, SLOT(setDirty()));
+  connect(_defaults, SIGNAL(clicked()), this, SLOT(defaults()));
+  connect(_ok, SIGNAL(clicked()), this, SLOT(save()));
+  connect(_ok, SIGNAL(clicked()), this, SLOT(close()));
+  connect(_colors, SIGNAL(bgChanged(QColor)), this, SLOT(setDirty()));
+  connect(_colors, SIGNAL(bgChanged(QColor)), this, SLOT(setDirty()));
+  connect(_xMajorGrid, SIGNAL(clicked()), this, SLOT(updateAxesButtons()));
+  connect(_xMinorGrid, SIGNAL(clicked()), this, SLOT(updateAxesButtons()));
+  connect(_yMajorGrid, SIGNAL(clicked()), this, SLOT(updateAxesButtons()));
+  connect(_yMinorGrid, SIGNAL(clicked()), this, SLOT(updateAxesButtons()));
+  connect(_checkBoxDefaultMajorGridColor, SIGNAL(clicked()), this, SLOT(updateAxesButtons()));
+  connect(_checkBoxDefaultMinorGridColor, SIGNAL(clicked()), this, SLOT(updateAxesButtons()));
+  connect(_checkBoxXInterpret, SIGNAL(toggled(bool)), _comboBoxXInterpret, SLOT(setEnabled(bool)));
+  connect(_checkBoxXInterpret, SIGNAL(toggled(bool)), _comboBoxXDisplay, SLOT(setEnabled(bool)));
+  connect(_configureSource, SIGNAL(clicked()), this, SLOT(configureSource()));
+  connect(_source, SIGNAL(clicked(QString)), this, SLOT(sourceChanged(QString)));
+  connect(_xMajorGrid, SIGNAL(clicked()), this, SLOT(setDirty()));
+  connect(_xMinorGrid, SIGNAL(clicked()), this, SLOT(setDirty()));
+  connect(_yMajorGrid, SIGNAL(clicked()), this, SLOT(setDirty()));
+  connect(_yMinorGrid, SIGNAL(clicked()), this, SLOT(setDirty()));
+  connect(_majorGridColor, SIGNAL(changed(QColor)), this, SLOT(setDirty()));
+  connect(_minorGridColor, SIGNAL(changed(QColor)), this, SLOT(setDirty()));
+  connect(_checkBoxDefaultMajorGridColor, SIGNAL(clicked()), this, SLOT(setDirty()));
+  connect(_checkBoxDefaultMinorGridColor, SIGNAL(clicked()), this, SLOT(setDirty()));
+  connect(_comboBoxXDisplay, SIGNAL(activated(int)), this, SLOT(setDirty()));
+  connect(_promptWindowClose, SIGNAL(clicked()), this, SLOT(setDirty()));
+  connect(_showQuickStart, SIGNAL(clicked()), this, SLOT(setDirty()));
+  connect(_tiedZoomGlobal, SIGNAL(clicked()), this, SLOT(setDirty()));
+  connect(_lineEditSender, SIGNAL(textChanged(QString)), this, SLOT(setDirty()));
+  connect(_lineEditHost, SIGNAL(textChanged(QString)), this, SLOT(setDirty()));
+  connect(_lineEditLogin, SIGNAL(textChanged(QString)), this, SLOT(setDirty()));
+  connect(_lineEditPassword, SIGNAL(textChanged(QString)), this, SLOT(setDirty()));
+  connect(_checkBoxAuthentication, SIGNAL(clicked()), this, SLOT(setDirty()));
+  connect(_buttonGroupEncryption, SIGNAL(clicked(int)), this, SLOT(setDirty()));
+  connect(_buttonGroupAuthentication, SIGNAL(clicked(int)), this, SLOT(setDirty()));
+  connect(_checkBoxXInterpret, SIGNAL(toggled(bool)), this, SLOT(setDirty()));
+  connect(_checkBoxAuthentication, SIGNAL(clicked()), this, SLOT(updateEMailSettings()));
+  connect(_comboBoxXInterpret, SIGNAL(activated(QString)), this, SLOT(setDirty()));
+  connect(_fontSize, SIGNAL(valueChanged(int)), this, SLOT(setDirty()));
+  connect(_valueOffset, SIGNAL(valueChanged(double)), this, SLOT(updateTimezone(double)));
+  connect(_fontMinSize, SIGNAL(valueChanged(int)), this, SLOT(setDirty()));
+printf("3\n");
 }
+
 
 KstSettingsDlg::~KstSettingsDlg() {
 }
 
-void KstSettingsDlg::setSettings(const KstSettings *settings)
-{
+
+void KstSettingsDlg::setSettings(const KstSettings *settings) {
   _timer->setValue(settings->plotUpdateTimer);
   _fontSize->setValue(settings->plotFontSize);
   _fontMinSize->setValue(settings->plotFontMinSize);
-// xxx  _colors->setBackground(settings->backgroundColor);
-// xxx  _colors->setForeground(settings->foregroundColor);
+  _colors->setBackground(settings->backgroundColor);
+  _colors->setForeground(settings->foregroundColor);
   _promptPlotDelete->setChecked(settings->promptPlotDelete);
   _promptWindowClose->setChecked(settings->promptWindowClose);
   _showQuickStart->setChecked(settings->showQuickStart);
@@ -90,8 +134,8 @@ void KstSettingsDlg::setSettings(const KstSettings *settings)
   _yMajorGrid->setChecked(settings->yMajor);
   _xMinorGrid->setChecked(settings->xMinor);
   _yMinorGrid->setChecked(settings->yMinor);
-// xxx  _majorGridColor->setColor(settings->majorColor);
-// xxx  _minorGridColor->setColor(settings->minorColor);
+  _majorGridColor->setColor(settings->majorColor);
+  _minorGridColor->setColor(settings->minorColor);
   _checkBoxDefaultMajorGridColor->setChecked(settings->majorGridColorDefault);
   _checkBoxDefaultMinorGridColor->setChecked(settings->minorGridColorDefault);
 
@@ -117,8 +161,7 @@ void KstSettingsDlg::setSettings(const KstSettings *settings)
 }
 
 
-void KstSettingsDlg::defaults()
-{
+void KstSettingsDlg::defaults() {
   KstSettings s;
 
   setSettings(&s);
@@ -126,20 +169,17 @@ void KstSettingsDlg::defaults()
 }
 
 
-void KstSettingsDlg::setDirty()
-{
+void KstSettingsDlg::setDirty() {
   _dirty = true;
 }
 
 
-void KstSettingsDlg::setClean()
-{
+void KstSettingsDlg::setClean() {
   _dirty = false;
 }
 
 
-void KstSettingsDlg::save()
-{
+void KstSettingsDlg::save() {
   if (!_dirty) {
     return;
   }
@@ -149,8 +189,8 @@ void KstSettingsDlg::save()
   s.plotUpdateTimer   = _timer->value();
   s.plotFontSize      = _fontSize->value();
   s.plotFontMinSize   = _fontMinSize->value();
-// xxx  s.backgroundColor   = _colors->background();
-// xxx  s.foregroundColor   = _colors->foreground();
+  s.backgroundColor   = _colors->background();
+  s.foregroundColor   = _colors->foreground();
   s.promptPlotDelete  = _promptPlotDelete->isChecked();
   s.promptWindowClose = _promptWindowClose->isChecked();
   s.showQuickStart    = _showQuickStart->isChecked();
@@ -162,10 +202,10 @@ void KstSettingsDlg::save()
   s.yMajor            = _yMajorGrid->isChecked();
   s.xMinor            = _xMinorGrid->isChecked();
   s.yMinor            = _yMinorGrid->isChecked();
-// xxx  s.majorColor        = _majorGridColor->color();
-// xxx  s.minorColor        = _minorGridColor->color();
-// xxx  s.majorGridColorDefault = _checkBoxDefaultMajorGridColor->isChecked();
-// xxx  s.minorGridColorDefault = _checkBoxDefaultMinorGridColor->isChecked();
+  s.majorColor        = _majorGridColor->color();
+  s.minorColor        = _minorGridColor->color();
+  s.majorGridColorDefault = _checkBoxDefaultMajorGridColor->isChecked();
+  s.minorGridColorDefault = _checkBoxDefaultMinorGridColor->isChecked();
   s.xAxisInterpret        = _checkBoxXInterpret->isChecked();
   s.xAxisInterpretation   = (KstAxisInterpretation)(_comboBoxXInterpret->currentIndex());
   s.xAxisDisplay          = (KstAxisDisplay)(_comboBoxXDisplay->currentIndex());
@@ -207,20 +247,18 @@ void KstSettingsDlg::save()
 }
 
 
-void KstSettingsDlg::updateAxesButtons()
-{
+void KstSettingsDlg::updateAxesButtons() {
   bool major = _xMajorGrid->isChecked() || _yMajorGrid->isChecked();
   bool minor = _xMinorGrid->isChecked() || _yMinorGrid->isChecked();
 
   _checkBoxDefaultMajorGridColor->setEnabled(major);
   _checkBoxDefaultMinorGridColor->setEnabled(minor);
-// xxx  _majorGridColor->setEnabled(major && !_checkBoxDefaultMajorGridColor->isChecked());
-// xxx  _minorGridColor->setEnabled(minor && !_checkBoxDefaultMinorGridColor->isChecked());
+  _majorGridColor->setEnabled(major && !_checkBoxDefaultMajorGridColor->isChecked());
+  _minorGridColor->setEnabled(minor && !_checkBoxDefaultMinorGridColor->isChecked());
 }
 
 
-void KstSettingsDlg::updateAxesSettings()
-{
+void KstSettingsDlg::updateAxesSettings() {
   bool interpret = true;
 
   _comboBoxXInterpret->setEnabled(interpret);
@@ -228,8 +266,7 @@ void KstSettingsDlg::updateAxesSettings()
 }
 
 
-void KstSettingsDlg::updateEMailSettings()
-{
+void KstSettingsDlg::updateEMailSettings() {
   bool authenticate = _checkBoxAuthentication->isChecked();
 
   _lineEditLogin->setEnabled(authenticate);
@@ -240,14 +277,12 @@ void KstSettingsDlg::updateEMailSettings()
 }
 
 
-void KstSettingsDlg::updateCurveColorSettings()
-{
+void KstSettingsDlg::updateCurveColorSettings() {
     _colorPalette->refresh();
 }
 
 
-void KstSettingsDlg::fillAxesSettings()
-{
+void KstSettingsDlg::fillAxesSettings() {
   unsigned int i;
 
   for (i = 0; i < numAxisInterpretations; i++) {
@@ -259,8 +294,7 @@ void KstSettingsDlg::fillAxesSettings()
 }
 
 
-void KstSettingsDlg::configureSource()
-{
+void KstSettingsDlg::configureSource() {
   KstDataSourceConfigWidget *cw;
   cw = KstDataSource::configWidgetForPlugin(_source->currentText());
 
@@ -280,14 +314,12 @@ void KstSettingsDlg::configureSource()
 }
 
 
-void KstSettingsDlg::updateUTCOffset()
-{
+void KstSettingsDlg::updateUTCOffset() {
   setUTCOffset(_tz->tzName());
 }
 
 
-int KstSettingsDlg::utcOffset(const QString& timezone)
-{
+int KstSettingsDlg::utcOffset(const QString& timezone) {
   int seconds = 0;
 
   if (timezone.startsWith("UTC")) {
@@ -315,33 +347,33 @@ int KstSettingsDlg::utcOffset(const QString& timezone)
 }
 
 
-void KstSettingsDlg::setUTCOffset(const QString& timezone)
-{
+void KstSettingsDlg::setUTCOffset(const QString& timezone) {
   double hours = double(utcOffset(timezone)) / 3600.0;
-/* xxx
-  _valueOffset->child("qt_spinbox_edit")->blockSignals(true);
+
+  _valueOffset->findChild<QLineEdit*>()->blockSignals(true);
   _valueOffset->blockSignals(true);
+
   _valueOffset->setValue(hours);
-  _valueOffset->child("qt_spinbox_edit")->blockSignals(false);
+
+  _valueOffset->findChild<QLineEdit*>()->blockSignals(false);
   _valueOffset->blockSignals(false);
-*/
+
   setDirty();
 }
 
 
-void KstSettingsDlg::updateTimezone(const QString& strHours)
-{
+void KstSettingsDlg::updateTimezone(const QString& strHours) {
   double hours = 0.0;
   QString strHrs = strHours;
 
-// xxx  strHrs.replace(_valueOffset->suffix(), "");
+  strHrs.replace(_valueOffset->suffix(), "");
   hours = strHrs.toDouble();
   if (hours > 24.0) {
     hours = 24.0;
-// xxx    _valueOffset->setValue(hours);
+    _valueOffset->setValue(hours);
   } else if (hours < -24.0) {
     hours = -24.0;
-// xxx    _valueOffset->setValue(hours);
+    _valueOffset->setValue(hours);
   } else {
     updateTimezone(hours);
   }
@@ -349,22 +381,19 @@ void KstSettingsDlg::updateTimezone(const QString& strHours)
 }
 
 
-void KstSettingsDlg::updateTimezone(double hours)
-{
+void KstSettingsDlg::updateTimezone(double hours) {
   _tz->setCurrentIndex(0);
 // xxx  _tz->setCurrentText(timezoneFromUTCOffset(hours));
   setDirty();
 }
 
 
-void KstSettingsDlg::sourceChanged(const QString& name)
-{
+void KstSettingsDlg::sourceChanged(const QString& name) {
   _configureSource->setEnabled(KstDataSource::pluginHasConfigWidget(name));
 }
 
 
-QString KstSettingsDlg::timezoneFromUTCOffset(double hours)
-{
+QString KstSettingsDlg::timezoneFromUTCOffset(double hours) {
   QString tzName;
   bool negative = false;
   int offnum = int( floor( ( hours * 100.0 ) + 0.5 ) );

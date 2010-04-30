@@ -125,6 +125,13 @@
         <item row="0" column="1" colspan="3">
          <widget class="QFontComboBox" name="_font"/>
         </item>
+        <item row="2" column="1">
+         <widget class="KColorButton" name="_fontColor">
+          <property name="text">
+           <string></string>
+          </property>
+         </widget>
+        </item>
         <item row="1" column="0">
          <widget class="QLabel" name="textLabel5_3">
           <property name="text">
@@ -226,6 +233,18 @@
          </widget>
         </item>
         <item>
+         <widget class="KDualColorButton" name="_boxColors">
+          <property name="sizePolicy">
+           <sizepolicy>
+            <hsizetype>0</hsizetype>
+            <vsizetype>0</vsizetype>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+         </widget>
+        </item>
+        <item>
          <spacer name="spacer1">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
@@ -312,7 +331,9 @@
   <include location="local">kst_export.h</include>
   <include location="local">scalarselector.h</include>
   <include location="local">stringselector.h</include>
- </includes>
+  <include location="global">kcolorbutton.h</include>
+  <include location="global">kdualcolorbutton.h</include>
+</includes>
  <resources/>
  <connections/>
 </ui>

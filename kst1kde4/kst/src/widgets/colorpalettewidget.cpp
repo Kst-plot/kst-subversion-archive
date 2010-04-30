@@ -11,6 +11,8 @@
 
 #include <QPainter>
 
+#include "kcolorcollection.h"
+
 #include "colorpalettewidget.h"
 
 ColorPaletteWidget::ColorPaletteWidget(QWidget *parent) : QWidget(parent) {
@@ -18,12 +20,12 @@ ColorPaletteWidget::ColorPaletteWidget(QWidget *parent) : QWidget(parent) {
   refresh();
 }
 
-ColorPaletteWidget::~ColorPaletteWidget()
-{
+
+ColorPaletteWidget::~ColorPaletteWidget() {
 }
 
-void ColorPaletteWidget::updatePalette( const QString &palette )
-{
+
+void ColorPaletteWidget::updatePalette( const QString &palette ) {
   int height = _palette->height();
   int width = 7 * height;
   QPixmap pix(width, height);
@@ -32,47 +34,46 @@ void ColorPaletteWidget::updatePalette( const QString &palette )
   p.fillRect(p.window(), QColor("white"));
 
   if (!palette.isEmpty()) {
-    QPalette* newPal = 0L;
+    KColorCollection* colors = 0L;
     QColor color;
-    int nrColors = 0;
+    int numColors = 0;
     int size = 1;
     int step = 1;
     int pos = 0;
     int i;
   
-    newPal = new QPalette(palette);
-    if (newPal) {
-/* xxx
-      nrColors = newPal->nrColors();
+    colors = new KColorCollection(palette);
+    if (colors) {
+      numColors = colors->count();
   
-      if (nrColors > 0) {
-        size = width / nrColors;
+      if (numColors > 0) {
+        size = width / numColors;
         if (size == 0) {
           size = 1;
-          step = nrColors / width;
+          step = numColors / width;
         }
       }
 
-      for (i=0; i<nrColors; i+=step) {
-        color = newPal->color(i);
+      for (i=0; i<numColors; i+=step) {
+        color = colors->color(i);
         p.fillRect(pos*size, 0, size, height, QBrush(color));
         ++pos;
       }  
       _paletteDisplay->setPixmap(pix);
-*/  
-      delete newPal;
+  
+      delete colors;
     }
   }
 }
 
-QString ColorPaletteWidget::selectedPalette()
-{
+
+QString ColorPaletteWidget::selectedPalette() {
   return _palette->currentText();
 }
 
-void ColorPaletteWidget::refresh()
-{
-  QStringList palList; // xxx  = QPalette::getPaletteList();
+
+void ColorPaletteWidget::refresh() {
+  QStringList palList = KColorCollection::installedCollections();
   int index;
 
   _palette->clear();
@@ -89,9 +90,9 @@ void ColorPaletteWidget::refresh()
   }
 }
 
-void ColorPaletteWidget::refresh( const QString & palette )
-{
-  QStringList palList; // xxx = QPalette::getPaletteList();
+
+void ColorPaletteWidget::refresh( const QString & palette ) {
+  QStringList palList = KColorCollection::installedCollections();
   int i;
   
   _palette->clear();
@@ -110,11 +111,7 @@ void ColorPaletteWidget::refresh( const QString & palette )
   _palette->setCurrentIndex(i);
 }
 
-int ColorPaletteWidget::currentPaletteIndex()
-{
+
+int ColorPaletteWidget::currentPaletteIndex() {
   return _palette->currentIndex();
 }
-
-
-
-

@@ -34,7 +34,7 @@
         <bool>false</bool>
        </property>
        <property name="buddy">
-        <cstring>Name</cstring>
+        <cstring>_title</cstring>
        </property>
       </widget>
      </item>
@@ -217,7 +217,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tab">
+     <widget class="QWidget" name="tab2">
       <attribute name="title">
        <string>Appearan&amp;ce</string>
       </attribute>
@@ -332,10 +332,66 @@
             </property>
            </widget>
           </item>
+          <item row="0" column="1">
+           <widget class="KDualColorButton" name="_plotColors">
+            <property name="sizePolicy">
+             <sizepolicy>
+              <hsizetype>0</hsizetype>
+              <vsizetype>0</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+           </widget>
+          </item>
           <item row="2" column="2">
            <widget class="QCheckBox" name="_checkBoxDefaultMinorGridColor">
             <property name="text">
              <string>Default</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="KColorButton" name="_minorGridColor">
+            <property name="sizePolicy">
+             <sizepolicy>
+              <hsizetype>0</hsizetype>
+              <vsizetype>0</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string></string>
+            </property>
+            <property name="color">
+             <color>
+              <red>228</red>
+              <green>254</green>
+              <blue>255</blue>
+             </color>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="KColorButton" name="_majorGridColor">
+            <property name="sizePolicy">
+             <sizepolicy>
+              <hsizetype>0</hsizetype>
+              <vsizetype>0</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string></string>
+            </property>
+            <property name="color">
+             <color>
+              <red>207</red>
+              <green>229</green>
+              <blue>235</blue>
+             </color>
             </property>
            </widget>
           </item>
@@ -869,7 +925,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tab">
+     <widget class="QWidget" name="tab3">
       <attribute name="title">
        <string>X Axis</string>
       </attribute>
@@ -1716,7 +1772,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tab">
+     <widget class="QWidget" name="tab4">
       <attribute name="title">
        <string>Rang&amp;e</string>
       </attribute>
@@ -2159,7 +2215,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tab">
+     <widget class="QWidget" name="tab5">
       <attribute name="title">
        <string>Mar&amp;kers</string>
       </attribute>
@@ -2170,6 +2226,21 @@
           <string>Appearance</string>
          </property>
          <layout class="QHBoxLayout">
+          <item>
+           <widget class="KColorButton" name="_colorMarker">
+            <property name="sizePolicy">
+             <sizepolicy>
+              <hsizetype>0</hsizetype>
+              <vsizetype>0</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+           <property name="text">
+            <string>-</string>
+           </property>
+          </widget>
+         </item>
          <item>
            <widget class="QCheckBox" name="_checkBoxDefaultMarkerColor">
             <property name="text">
@@ -2195,7 +2266,7 @@
              <bool>false</bool>
             </property>
             <property name="buddy">
-             <cstring>_comboLineStyle</cstring>
+             <cstring>_comboMarkerLineStyle</cstring>
             </property>
            </widget>
           </item>
@@ -2233,7 +2304,7 @@
              <bool>false</bool>
             </property>
             <property name="buddy">
-             <cstring>_spinBoxLineWidth</cstring>
+             <cstring>_spinBoxMarkerLineWidth</cstring>
             </property>
            </widget>
           </item>
@@ -2619,6 +2690,8 @@
   <include location="local">plotlistbox.h</include>
   <include location="local">vectorselector.h</include>
   <include location="local">kstcombobox.h</include>
+  <include location="global">kdualcolorbutton.h</include>
+  <include location="global">kcolorbutton.h</include>
  </includes>
  <resources/>
  <connections/>

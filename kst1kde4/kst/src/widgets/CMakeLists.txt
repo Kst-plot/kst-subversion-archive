@@ -1,4 +1,4 @@
-include_directories(${CMAKE_SOURCE_DIR} ./ ${CMAKE_SOURCE_DIR}/src/extdate ${CMAKE_SOURCE_DIR}/src/libkst ${CMAKE_SOURCE_DIR}/src/libkstmath ${KDE4_INCLUDES} ${KDE4_INCLUDE_DIR} ${QT_INCLUDES})
+include_directories(${CMAKE_SOURCE_DIR} ./ ${CMAKE_SOURCE_DIR}/src/extdate ${CMAKE_SOURCE_DIR}/src/libkde ${CMAKE_SOURCE_DIR}/src/libkst ${CMAKE_SOURCE_DIR}/src/libkstmath ${KDE4_INCLUDES} ${KDE4_INCLUDE_DIR} ${QT_INCLUDES})
 
 ########### next target ###############
 
@@ -40,7 +40,7 @@ qt4_wrap_ui(kstwidgets_UI_HDRS
 
 kde4_add_library(kstwidgets SHARED ${kstwidgets_LIB_SRCS} ${kstwidgets_UI_HDRS})
 
-target_link_libraries(kstwidgets kstbase kstmath ${KDE4_KDEUI_LIBS} ${KDE4_KPARTS_LIBS} ${QT_LIBRARIES})
+target_link_libraries(kstwidgets kstkde kstbase kstmath ${KDE4_KDEUI_LIBS} ${KDE4_KPARTS_LIBS} ${QT_LIBRARIES})
 
 set_target_properties(kstwidgets PROPERTIES VERSION 1.0.0 SOVERSION 1)
 install(TARGETS kstwidgets 

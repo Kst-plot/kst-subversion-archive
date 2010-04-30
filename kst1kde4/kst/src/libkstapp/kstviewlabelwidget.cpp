@@ -43,31 +43,26 @@ KstViewLabelWidget::KstViewLabelWidget( QWidget* parent, const char* name, Qt::W
 }
 
 
-KstViewLabelWidget::~KstViewLabelWidget()
-{
+KstViewLabelWidget::~KstViewLabelWidget() {
 }
 
 
-void KstViewLabelWidget::insertScalarInText(const QString &str)
-{
+void KstViewLabelWidget::insertScalarInText(const QString &str) {
   _text->insertPlainText("["+str+"]");
 }
 
 
-void KstViewLabelWidget::insertStringInText(const QString &str)
-{
+void KstViewLabelWidget::insertStringInText(const QString &str) {
   _text->insertPlainText("["+str+"]");
 }
 
 
-void KstViewLabelWidget::changedFgColor( )
-{
+void KstViewLabelWidget::changedFgColor( ) {
   _changedFgColor = true;
 }
 
 
-void KstViewLabelWidget::changedBgColor( )
-{
+void KstViewLabelWidget::changedBgColor( ) {
   _changedBgColor = true;
 }
 

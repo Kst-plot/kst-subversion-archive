@@ -77,7 +77,7 @@ class Kst2dPlotWidget: public QWidget, public Ui::View2DPlotWidget {
   private:
     void populateEditMultiple(QRadioButton *radioButtonWidget);
     void populateEditMultiple(QComboBox *comboWidget);
-// xxx    void populateEditMultiple(KColorButton *colorButton);
+    void populateEditMultiple(KColorButton *colorButton);
     void populateEditMultiple(QLineEdit *lineEditWidget);
     void populateEditMultiple(QSpinBox *spinBoxWidget);
     void populateEditMultiple(QCheckBox *checkBoxWidget);

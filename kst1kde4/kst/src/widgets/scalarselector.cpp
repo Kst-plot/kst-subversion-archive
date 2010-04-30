@@ -22,8 +22,9 @@ ScalarSelector::ScalarSelector(QWidget *parent) : QWidget(parent) {
   setupUi(this);
 
   update();
-// xxx _newScalar->setIcon(QPixmap(BarIcon("kst_scalarnew"));
-// xxx _editScalar->setPixmap(BarIcon("kst_scalaredit"));
+
+ _newScalar->setIcon(QIcon(":/kst_salarnew.png"));
+ _editScalar->setIcon(QIcon(":/kst_scalaredit.png"));
 
   connect(_selectScalar, SIGNAL(clicked()), this, SLOT(selectScalar()));
   connect(_newScalar, SIGNAL(clicked()), this, SLOT(createNewScalar()));
@@ -32,16 +33,17 @@ ScalarSelector::ScalarSelector(QWidget *parent) : QWidget(parent) {
   connect(this, SIGNAL(selectionChanged(const QString&)), this, SLOT(selectionWatcher(const QString&)));
 }
 
+
 ScalarSelector::~ScalarSelector() {
 }
 
-void ScalarSelector::allowNewScalars( bool allowed )
-{
+
+void ScalarSelector::allowNewScalars( bool allowed ) {
   _newScalar->setEnabled(allowed);
 }
 
-void ScalarSelector::update()
-{
+
+void ScalarSelector::update() {
 /* xxx
   if (_scalar->listBox()->isVisible()) {
     QTimer::singleShot(250, this, SLOT(update()));
@@ -99,8 +101,8 @@ void ScalarSelector::update()
   blockSignals(false);
 }
 
-void ScalarSelector::createNewScalar()
-{
+
+void ScalarSelector::createNewScalar() {
   ScalarEditor *se = new ScalarEditor(this);
   se->setWindowTitle(tr("New Scalar"));
 
@@ -124,23 +126,25 @@ void ScalarSelector::createNewScalar()
       if (scalar) {
         scalar->setOrphan(true);
         scalar->setEditable(true);
-// xxx        emit newScalarCreated();
+
+        emit newScalarCreated();
+
         update();
         setSelection(scalar);
       }
       _editScalar->setEnabled(true);
     } else {
-      QMessageBox::warning(this, tr("Kst"), tr("Error creating the scalar. Please enter a valid value."));
+      QMessageBox::warning(this, QObject::tr("Kst"), QObject::tr("Error creating the scalar. Please enter a valid value."));
     }
   }
 
   delete se;
 }
 
-void ScalarSelector::selectScalar()
-{
+
+void ScalarSelector::selectScalar() {
 /* xxx
-  ComboBoxSelectionI *selection = new ComboBoxSelectionI(this, "scalar selector");
+  ComboBoxSelection *selection = new ComboBoxSelection(this, "scalar selector");
   int i;
 
   selection->reset();
@@ -157,8 +161,8 @@ void ScalarSelector::selectScalar()
 */
 }
 
-void ScalarSelector::editScalar()
-{
+
+void ScalarSelector::editScalar() {
   ScalarEditor *se = new ScalarEditor(this);
   KstScalarPtr scalarOld = *KST::scalarList.findTag(_scalar->currentText());
 
@@ -169,7 +173,7 @@ void ScalarSelector::editScalar()
     se->_value->setFocus();
   }
 
-  se->setWindowTitle(tr("Edit Scalar"));
+  se->setWindowTitle(QObject::tr("Edit Scalar"));
 
   int rc = se->exec();
   if (rc == QDialog::Accepted) {
@@ -209,8 +213,8 @@ void ScalarSelector::editScalar()
   delete se;
 }
 
-void ScalarSelector::selectionWatcher( const QString & tag )
-{
+
+void ScalarSelector::selectionWatcher( const QString & tag ) {
   bool editable = false;
 
   QString label = "["+tag+"]";
@@ -224,8 +228,8 @@ void ScalarSelector::selectionWatcher( const QString & tag )
   _editScalar->setEnabled(editable);
 }
 
-void ScalarSelector::setSelection( const QString & tag )
-{
+
+void ScalarSelector::setSelection( const QString & tag ) {
   if (!tag.isEmpty()) {
     blockSignals(true);
 // xxx    _scalar->setCurrentText(tag);
@@ -234,13 +238,13 @@ void ScalarSelector::setSelection( const QString & tag )
   }
 }
 
-void ScalarSelector::setSelection( KstScalarPtr s )
-{
+
+void ScalarSelector::setSelection( KstScalarPtr s ) {
   setSelection(s->tagName());
 }
 
-QString ScalarSelector::selectedScalar()
-{
+
+QString ScalarSelector::selectedScalar() {
   KstScalarPtr ptr = *KST::scalarList.findTag(_scalar->currentText());
   if (ptr) {
     return _scalar->currentText();
@@ -256,8 +260,7 @@ QString ScalarSelector::selectedScalar()
 //  is created with the given value and returned.
 //
 
-KstScalarPtr ScalarSelector::selectedScalarPtr()
-{
+KstScalarPtr ScalarSelector::selectedScalarPtr() {
   KstScalarPtr ptr = *KST::scalarList.findTag(_scalar->currentText());
 
   if (!ptr) {
@@ -275,7 +278,7 @@ KstScalarPtr ScalarSelector::selectedScalarPtr()
   return ptr;
 }
 
-void ScalarSelector::allowDirectEntry( bool allowed )
-{
+
+void ScalarSelector::allowDirectEntry( bool allowed ) {
   _scalar->setEditable(allowed);
 }

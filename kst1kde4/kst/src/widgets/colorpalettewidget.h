@@ -13,6 +13,7 @@
 #define COLORPALETTEWIDGET_H
  
 #include <QWidget>
+
 #include "ui_colorpalettewidget.h"
 #include "kst_export.h"
 
@@ -22,10 +23,10 @@ public:
   ColorPaletteWidget(QWidget *parent = 0);
   virtual ~ColorPaletteWidget(); 
 
-  void    updatePalette( const QString &palette);
+  void    updatePalette(const QString &palette);
   QString selectedPalette();
   void    refresh();
-  void    refresh( const QString & palette );
+  void    refresh(const QString & palette);
   int     currentPaletteIndex();
 };
  

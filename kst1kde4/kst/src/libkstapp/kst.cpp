@@ -507,6 +507,7 @@ void KstApp::initActions() {
   connect(_actionManagerExtension, SIGNAL(triggered()), this, SLOT(showExtensionManager()));
   connect(_actionStatusBar, SIGNAL(toggled(bool)), this, SLOT(slotViewStatusBar()));
   connect(_actionToolBar, SIGNAL(toggled(bool)), this, SLOT(slotViewToolBar()));
+  connect(_actionSettings, SIGNAL(triggered()), this, SLOT(slotPreferences()));
 
   connect(_actionNewPlot, SIGNAL(triggered()), this, SLOT(newPlot()));
   connect(_actionTiedZoom, SIGNAL(toggled(bool)), this, SLOT(tieAll()));
@@ -515,11 +516,7 @@ void KstApp::initActions() {
 
 /* xxx
   fileKeyBindings = KStdAction::keyBindings(this, SLOT(slotConfigureKeys()), actionCollection());
-
   fileKeyBindings->setWhatsThis(QObject::tr("Bring up a dialog box to configure shortcuts."));
-
-  filePreferences = KStdAction::preferences(this, SLOT(slotPreferences()), actionCollection());
-  filePreferences->setWhatsThis(QObject::tr("Bring up a dialog box to configure Kst settings."));
 */
 }
 
