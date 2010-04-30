@@ -334,12 +334,12 @@ bool KstVvDialog::newObject() {
   }
 
   if (_w->_xVector->selectedVector().isEmpty()) {
-    QMessageBox::warning(this, i18n("Kst"), i18n("New VectorView not made: define X vector first."));
+    QMessageBox::warning(this, QObject::tr("Kst"), QObject::tr("New VectorView not made: define X vector first."));
     return false;
   }
 
   if (_w->_yVector->selectedVector().isEmpty()) {
-    QMessageBox::warning(this, i18n("Kst"), i18n("New VectorView not made: define Y vector first."));
+    QMessageBox::warning(this, QObject::tr("Kst"), QObject::tr("New VectorView not made: define Y vector first."));
     return false;
   }
 
@@ -532,7 +532,7 @@ bool KstVvDialog::editSingleObject(KstVectorViewPtr vvPtr) {
   if (vvPtr->recursion()) {
     vvPtr->setRecursed(true);
     vvPtr->unlock();
-    QMessageBox::critical(this, i18n("Kst"), i18n("There is a recursion resulting from the vector view you entered."));
+    QMessageBox::critical(this, QObject::tr("Kst"), QObject::tr("There is a recursion resulting from the vector view you entered."));
 
     return false;
   }
@@ -584,7 +584,7 @@ bool KstVvDialog::editObject() {
       }
     }
     if (!didEdit) {
-      QMessageBox::warning(this, i18n("Kst"), i18n("Select one or more objects to edit."));
+      QMessageBox::warning(this, QObject::tr("Kst"), QObject::tr("Select one or more objects to edit."));
       return false;
     }
   } else {

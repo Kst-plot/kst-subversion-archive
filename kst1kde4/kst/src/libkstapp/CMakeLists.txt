@@ -1,4 +1,4 @@
-include_directories(${CMAKE_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/src/extdate ${CMAKE_SOURCE_DIR}/src/libkst ${CMAKE_SOURCE_DIR}/src/libkstmath ${CMAKE_SOURCE_DIR}/src/widgets ${KDE4_INCLUDES} ${KDE4_INCLUDE_DIR} ${QT_INCLUDES})
+include_directories(${CMAKE_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/src/libkde ${CMAKE_SOURCE_DIR}/src/extdate ${CMAKE_SOURCE_DIR}/src/libkde ${CMAKE_SOURCE_DIR}/src/libkst ${CMAKE_SOURCE_DIR}/src/libkstmath ${CMAKE_SOURCE_DIR}/src/widgets ${KDE4_INCLUDES} ${KDE4_INCLUDE_DIR} ${QT_INCLUDES})
 
 ########### next target ###############
 
@@ -23,16 +23,12 @@ set(kstapp_LIB_SRCS
     kstviewwidget.cpp
     kstviewwindow.cpp
 # widgets...
-    kcolorbutton.cpp
-    kdualcolorbutton.cpp
-    kled.cpp
     kst2dplotwidget.cpp
     kstdatanotifier.cpp
     kstdebugnotifier.cpp
     kstlogwidget.cpp
     kstviewlabelwidget.cpp
     kstviewlegendwidget.cpp
-    ktimezonecombo.cpp
 # dialogs...
     datasourcemetadatadialog.cpp
     kstbasicdialog.cpp
@@ -158,7 +154,7 @@ qt4_wrap_ui(kstapp_UI_HDRS
 
 kde4_add_library(kstapp SHARED ${kstapp_LIB_SRCS} ${kstapp_UI_HDRS})
 
-target_link_libraries(kstapp kstbase kstmath kstwidgets ${KDE4_KDECORE_LIBS} QtXml QtGui)
+target_link_libraries(kstapp kstkde kstbase kstmath kstwidgets ${KDE4_KDECORE_LIBS} QtXml QtGui)
 
 set_target_properties(kstapp PROPERTIES VERSION ${KST_LIBKST_VERSION} SOVERSION 1)
 install(TARGETS kstapp 

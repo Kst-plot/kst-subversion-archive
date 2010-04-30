@@ -94,7 +94,7 @@ void KstFilterDialog::updatePluginList() {
   for (it = _pluginMap.begin(); it != _pluginMap.end(); ++it) {
     if ((*it)._isFilter) {
       _pluginList += (*it)._name;
-      _w->PluginCombo->insertItem(0, i18n("%1 (v%2) - %3").arg((*it)._readableName)
+      _w->PluginCombo->insertItem(0, QObject::tr("%1 (v%2) - %3").arg((*it)._readableName)
                               .arg((*it)._version)
                               .arg((*it)._description));
       if ((*it)._name == previous) {
@@ -291,7 +291,7 @@ bool KstFilterDialog::newObject() {
           if (saveOutputs(plugin, pPtr)) {
             if (plugin->isValid()) {
               if (!createCurve(plugin)) {
-                QMessageBox::warning(this, i18n("Kst"), i18n("There is an error in the plugin you entered."));
+                QMessageBox::warning(this, QObject::tr("Kst"), QObject::tr("There is an error in the plugin you entered."));
 
                 return false;
               } else {
@@ -300,17 +300,17 @@ bool KstFilterDialog::newObject() {
                 KST::dataObjectList.lock().unlock();
               }
             } else {
-              QMessageBox::warning(this, i18n("Kst"), i18n("There is an error in the plugin you entered."));
+              QMessageBox::warning(this, QObject::tr("Kst"), QObject::tr("There is an error in the plugin you entered."));
 
               return false;
             }
           } else {
-            QMessageBox::warning(this, i18n("Kst"), i18n("There is an error in the outputs you entered."));
+            QMessageBox::warning(this, QObject::tr("Kst"), QObject::tr("There is an error in the outputs you entered."));
 
             return false;
           }
         } else {
-          QMessageBox::warning(this, i18n("Kst"), i18n("There is an error in the inputs you entered."));
+          QMessageBox::warning(this, QObject::tr("Kst"), QObject::tr("There is an error in the inputs you entered."));
 
           return false;
         }
@@ -344,13 +344,13 @@ void KstFilterDialog::generateEntries(bool input, int& cnt, QWidget *parent, QGr
   }
 
   if (input) {
-    stringLabelTemplate = i18n("Input String - %1:");
-    scalarLabelTemplate = i18n("Input Scalar - %1:");
-    vectorLabelTemplate = i18n("Input Vector - %1:");
+    stringLabelTemplate = QObject::tr("Input String - %1:");
+    scalarLabelTemplate = QObject::tr("Input Scalar - %1:");
+    vectorLabelTemplate = QObject::tr("Input Vector - %1:");
   } else {
-    stringLabelTemplate = i18n("Output String - %1:");
-    scalarLabelTemplate = i18n("Output Scalar - %1:");
-    vectorLabelTemplate = i18n("Output Vector - %1:");
+    stringLabelTemplate = QObject::tr("Output String - %1:");
+    scalarLabelTemplate = QObject::tr("Output Scalar - %1:");
+    vectorLabelTemplate = QObject::tr("Output Vector - %1:");
   }
 
   for (it = table.begin(); it != table.end(); ++it) {

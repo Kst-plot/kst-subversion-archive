@@ -24,6 +24,7 @@
 #include <QListWidget>
 #include <QVector>
 
+#include "kst_export.h"
 #include "ktimezonecombo.h"
 #include "ksttimezones.h"
 

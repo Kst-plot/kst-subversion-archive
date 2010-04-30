@@ -23,7 +23,7 @@ set(kstwidgets_LIB_SRCS
     vectorselector.cpp
     kstcombobox.cpp)
 
-kde4_add_ui_files(kstwidgets_LIB_SRCS
+qt4_wrap_ui(kstwidgets_UI_HDRS
     comboboxselection.ui
     stringeditor.ui
     scalareditor.ui
@@ -38,7 +38,7 @@ kde4_add_ui_files(kstwidgets_LIB_SRCS
     datarangewidget.ui
     colorpalettewidget.ui)
 
-kde4_add_library(kstwidgets SHARED ${kstwidgets_LIB_SRCS})
+kde4_add_library(kstwidgets SHARED ${kstwidgets_LIB_SRCS} ${kstwidgets_UI_HDRS})
 
 target_link_libraries(kstwidgets kstbase kstmath ${KDE4_KDEUI_LIBS} ${KDE4_KPARTS_LIBS} ${QT_LIBRARIES})
 

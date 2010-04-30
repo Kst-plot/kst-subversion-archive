@@ -22,7 +22,6 @@
 #include <kemailsettings.h>
 
 #include "kstsettings.h"
-#include "ksttimezones.h"
 
 KstSettings::KstSettings() {
   plotUpdateTimer = 200;

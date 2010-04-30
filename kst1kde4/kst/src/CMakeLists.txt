@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 2.6)
 
 add_subdirectory(extdate)
+add_subdirectory(libkde)
 add_subdirectory(libkst)
 add_subdirectory(libkstmath)
 add_subdirectory(datasources)

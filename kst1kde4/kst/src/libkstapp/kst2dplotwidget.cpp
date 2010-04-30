@@ -137,17 +137,17 @@ Kst2dPlotWidget::Kst2dPlotWidget(QWidget* parent, const char* name, Qt::WindowFl
   FontComboBox->setFontFilters(QFontComboBox::AllFonts);
 
   for (unsigned i = 0; i < numMajorTickSpacings; ++i) {
-    _xMajorTickSpacing->addItem(i18n(MajorTickSpacings[i].label));
-    _yMajorTickSpacing->addItem(i18n(MajorTickSpacings[i].label));
+    _xMajorTickSpacing->addItem(QObject::tr(MajorTickSpacings[i].label));
+    _yMajorTickSpacing->addItem(QObject::tr(MajorTickSpacings[i].label));
   }
 
   for (unsigned i = 0; i < numAxisInterpretations; ++i) {
-    _comboBoxXInterpret->addItem(i18n(AxisInterpretations[i].label));
-    _comboBoxYInterpret->addItem(i18n(AxisInterpretations[i].label));
+    _comboBoxXInterpret->addItem(QObject::tr(AxisInterpretations[i].label));
+    _comboBoxYInterpret->addItem(QObject::tr(AxisInterpretations[i].label));
   }
   for (unsigned i = 0; i < numAxisDisplays; ++i) {
-    _comboBoxXDisplay->addItem(i18n(AxisDisplays[i].label));
-    _comboBoxYDisplay->addItem(i18n(AxisDisplays[i].label));
+    _comboBoxXDisplay->addItem(QObject::tr(AxisDisplays[i].label));
+    _comboBoxYDisplay->addItem(QObject::tr(AxisDisplays[i].label));
   }
 
   _comboBoxXInterpret->setEnabled(false);
@@ -205,9 +205,9 @@ Kst2dPlotWidget::Kst2dPlotWidget(QWidget* parent, const char* name, Qt::WindowFl
   _xOffsetAuto->setChecked(true);
   _yOffsetAuto->setChecked(true);
 
-  _comboBoxTopLabelJustify->addItem(i18n("Left"));
-  _comboBoxTopLabelJustify->addItem(i18n("Right"));
-  _comboBoxTopLabelJustify->addItem(i18n("Center"));
+  _comboBoxTopLabelJustify->addItem(QObject::tr("Left"));
+  _comboBoxTopLabelJustify->addItem(QObject::tr("Right"));
+  _comboBoxTopLabelJustify->addItem(QObject::tr("Center"));
 
   // FIXME: should use kstsettings
   _axisPenWidth->setValue(0);
@@ -469,11 +469,11 @@ void Kst2dPlotWidget::updatePlotMarkers(const Kst2DPlot *plot) {
 
   for (it = plot->plotMarkers().begin(); it != plot->plotMarkers().end(); ++it) {
     if ((*it).isRising) {
-      PlotMarkerList->insertItem(0, i18n("%1 [rising]").arg(QString::number((*it).value, 'g', MARKER_LABEL_PRECISION)));
+      PlotMarkerList->insertItem(0, QObject::tr("%1 [rising]").arg(QString::number((*it).value, 'g', MARKER_LABEL_PRECISION)));
     } else if ((*it).isFalling) {
-      PlotMarkerList->insertItem(0, i18n("%1 [falling]").arg(QString::number((*it).value, 'g', MARKER_LABEL_PRECISION)));
+      PlotMarkerList->insertItem(0, QObject::tr("%1 [falling]").arg(QString::number((*it).value, 'g', MARKER_LABEL_PRECISION)));
     } else if ((*it).isVectorValue) {
-      PlotMarkerList->insertItem(0, i18n("%1 [value]").arg(QString::number((*it).value, 'g', MARKER_LABEL_PRECISION)));
+      PlotMarkerList->insertItem(0, QObject::tr("%1 [value]").arg(QString::number((*it).value, 'g', MARKER_LABEL_PRECISION)));
     } else {
       PlotMarkerList->insertItem(0, QString::number((*it).value, 'g', MARKER_LABEL_PRECISION));
     }
@@ -1402,7 +1402,7 @@ void Kst2dPlotWidget::applyRange(Kst2DPlotPtr plot) {
     if (!_editMultipleMode || (XExpressionMin->text() != QString(" ") && XExpressionMax->text() != QString(" "))) {
       if (!plot->setXExpressions(XExpressionMin->text(), XExpressionMax->text())) {
         if (!_editMultipleMode) {
-          QMessageBox::warning(this, i18n("Kst"), i18n("There is a problem with the X range expressions."));
+          QMessageBox::warning(this, QObject::tr("Kst"), QObject::tr("There is a problem with the X range expressions."));
           return;
         }
       }
@@ -1430,7 +1430,7 @@ void Kst2dPlotWidget::applyRange(Kst2DPlotPtr plot) {
       plot->optimizeXExps();
     }
   } else {
-     KstDebug::self()->log(i18n("Internal error: No X scale type checked in %1.").arg(_title->text()), KstDebug::Error);
+     KstDebug::self()->log(QObject::tr("Internal error: No X scale type checked in %1.").arg(_title->text()), KstDebug::Error);
   }
 
   if (YAC->isChecked()) {
@@ -1443,7 +1443,7 @@ void Kst2dPlotWidget::applyRange(Kst2DPlotPtr plot) {
     if (!_editMultipleMode || (YExpressionMin->text() != QString(" ") && YExpressionMax->text() != QString(" "))) {
       if (!plot->setYExpressions(YExpressionMin->text(), YExpressionMax->text())) {
         if (!_editMultipleMode) {
-          QMessageBox::warning(this, i18n("Kst"), i18n("There is a problem with the Y range expressions."));
+          QMessageBox::warning(this, QObject::tr("Kst"), QObject::tr("There is a problem with the Y range expressions."));
           return;
         }
       }
@@ -1471,7 +1471,7 @@ void Kst2dPlotWidget::applyRange(Kst2DPlotPtr plot) {
       plot->optimizeYExps();
     }
   } else {
-    KstDebug::self()->log(i18n( "Internal error: No Y scale type checked in %1." ).arg(_title->text()), KstDebug::Error);
+    KstDebug::self()->log(QObject::tr( "Internal error: No Y scale type checked in %1." ).arg(_title->text()), KstDebug::Error);
   }
 
   plot->setDirty();
@@ -1500,11 +1500,11 @@ void Kst2dPlotWidget::addPlotMarker() {
         PlotMarkerList->insertItem(i, stringnum);
         NewPlotMarker->clear();
       } else {
-        QMessageBox::warning(this, i18n("Kst"), i18n("A plot marker with equal (or very close) value already exists.") );
+        QMessageBox::warning(this, QObject::tr("Kst"), QObject::tr("A plot marker with equal (or very close) value already exists.") );
         NewPlotMarker->selectAll();
       }
     } else {
-      QMessageBox::warning(this, i18n("Kst"), i18n("The text you have entered is not a valid number.") );
+      QMessageBox::warning(this, QObject::tr("Kst"), QObject::tr("The text you have entered is not a valid number.") );
       NewPlotMarker->selectAll();
     }
   }
@@ -1548,11 +1548,11 @@ void Kst2dPlotWidget::applyPlotMarkers(Kst2DPlotPtr plot) {
     for (i = 0; i < PlotMarkerList->count(); ++i) {
       marker.value = PlotMarkerList->item(i)->text().toDouble();
 
-      // FIXME: this is very broken.  you can't search for i18n() substrings!
+      // FIXME: this is very broken.  you can't search for QObject::tr() substrings!
 
-      if (!PlotMarkerList->item(i)->text().contains( i18n("rising") ) &&
-          !PlotMarkerList->item(i)->text().contains( i18n("falling") ) &&
-          !PlotMarkerList->item(i)->text().contains( i18n("value") )) {
+      if (!PlotMarkerList->item(i)->text().contains( QObject::tr("rising") ) &&
+          !PlotMarkerList->item(i)->text().contains( QObject::tr("falling") ) &&
+          !PlotMarkerList->item(i)->text().contains( QObject::tr("value") )) {
         newMarkers.append(marker);
       }
     }

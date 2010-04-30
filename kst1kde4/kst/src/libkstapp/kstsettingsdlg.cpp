@@ -31,7 +31,7 @@
 KstSettingsDlg::KstSettingsDlg(QWidget* parent, const char *name, Qt::WindowFlags fl) 
 : QDialog(parent, fl)
 {
-  QString hours = i18n(" hours");
+  QString hours = QObject::tr(" hours");
   QLineEdit* edit;
 
   setupUi(this);
@@ -56,8 +56,8 @@ KstSettingsDlg::KstSettingsDlg(QWidget* parent, const char *name, Qt::WindowFlag
     edit->setMaxLength(5 + hours.length());
   }
   _valueOffset->setRange(-24.0, 24.0, 0.50, false);
-  _valueOffset->setSuffix(i18n(" hours"));
-  _colorPalette->_label->setText(i18n("Curve color sequence: "));
+  _valueOffset->setSuffix(QObject::tr(" hours"));
+  _colorPalette->_label->setText(QObject::tr("Curve color sequence: "));
 */
   connect(_spinBoxLineWidth, SIGNAL(valueChanged(int)), this, SLOT(setDirty()));
 /* xxx  
@@ -266,7 +266,7 @@ void KstSettingsDlg::configureSource()
 
   if (cw) {
 /* xxx
-    KDialogBase *dlg = new KDialogBase(this, "Data Config Dialog", true, i18n("Configure Data Source"));
+    KDialogBase *dlg = new KDialogBase(this, "Data Config Dialog", true, QObject::tr("Configure Data Source"));
 
     connect(dlg, SIGNAL(okClicked()), cw, SLOT(save()));
     cw->reparent(dlg, QPoint(0, 0));

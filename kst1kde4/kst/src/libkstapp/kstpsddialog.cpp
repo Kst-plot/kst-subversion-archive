@@ -178,7 +178,7 @@ bool KstPsdDialog::newObject() {
   }
 
   if (_w->_vector->selectedVector().isEmpty()) {
-    QMessageBox::warning(this, i18n("Kst"), i18n("New spectrum not made: define vectors first."));
+    QMessageBox::warning(this, QObject::tr("Kst"), QObject::tr("New spectrum not made: define vectors first."));
     return false;
   }
 
@@ -371,7 +371,7 @@ bool KstPsdDialog::editSingleObject(KstPSDPtr psPtr) {
   if (psPtr->recursion()) {
     psPtr->setRecursed(true);
     psPtr->unlock();
-    QMessageBox::critical(this, i18n("Kst"), i18n("There is a recursion resulting from the spectrum  you entered."));
+    QMessageBox::critical(this, QObject::tr("Kst"), QObject::tr("There is a recursion resulting from the spectrum  you entered."));
     return false;
   }
 
@@ -419,7 +419,7 @@ bool KstPsdDialog::editObject() {
       }
     } 
     if (!didEdit) {
-      QMessageBox::warning(this, i18n("Kst"), i18n("Select one or more objects to edit."));
+      QMessageBox::warning(this, QObject::tr("Kst"), QObject::tr("Select one or more objects to edit."));
       return false;  
     }
   } else {

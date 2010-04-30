@@ -1364,23 +1364,23 @@ bool KstViewObject::popupMenu(QMenu *menu, const QPoint& pos, KstViewObjectPtr t
   }
 
   if (_standardActions & Edit) {
-    menu->addAction(i18n("&Edit..."), this, SLOT(edit()));
+    menu->addAction(QObject::tr("&Edit..."), this, SLOT(edit()));
     rc = true;
   }
 
   if (_standardActions & Delete) {
-    menu->addAction(i18n("&Delete"), this, SLOT(deleteObject()));
+    menu->addAction(QObject::tr("&Delete"), this, SLOT(deleteObject()));
     rc = true;
   }
 
   if (_layoutActions & Rename) {
-    menu->addAction(i18n("Re&name..."), this, SLOT(rename()));
+    menu->addAction(QObject::tr("Re&name..."), this, SLOT(rename()));
     rc = true;
   }
 
 
   if (_standardActions & Zoom) {
-    action = menu->addAction(i18n("Maximi&ze"), this, SLOT(zoomToggle()));
+    action = menu->addAction(QObject::tr("Maximi&ze"), this, SLOT(zoomToggle()));
     if (_maximized) {
       action->setChecked(true);
     }
@@ -1388,7 +1388,7 @@ bool KstViewObject::popupMenu(QMenu *menu, const QPoint& pos, KstViewObjectPtr t
   }
 
   if (_standardActions & Pause) {
-    action = menu->addAction(i18n("&Pause"), this, SLOT(pauseToggle()));
+    action = menu->addAction(QObject::tr("&Pause"), this, SLOT(pauseToggle()));
     if (KstApp::inst()->paused()) {
       action->setChecked(true);
     }
@@ -1416,22 +1416,22 @@ bool KstViewObject::layoutPopupMenu(QMenu *menu, const QPoint& pos, KstViewObjec
   }
 
   if (_layoutActions & Edit) {
-    menu->addAction(i18n("&Edit..."), this, SLOT(edit()));
+    menu->addAction(QObject::tr("&Edit..."), this, SLOT(edit()));
     rc = true;
   }
 
   if (_layoutActions & Delete) {
-    menu->addAction(i18n("&Delete"), this, SLOT(deleteObject()));
+    menu->addAction(QObject::tr("&Delete"), this, SLOT(deleteObject()));
     rc = true;
   }
 
   if (_layoutActions & Rename) {
-    menu->addAction(i18n("Re&name..."), this, SLOT(rename()));
+    menu->addAction(QObject::tr("Re&name..."), this, SLOT(rename()));
     rc = true;
   }
 
   if (_layoutActions & Raise) {
-    action = menu->addAction(i18n("&Raise"), this, SLOT(raise()));
+    action = menu->addAction(QObject::tr("&Raise"), this, SLOT(raise()));
     rc = true;
     if (_parent && !_parent->_children.empty() && _parent->_children.last().data() == this) {
       action->setEnabled(false);
@@ -1439,7 +1439,7 @@ bool KstViewObject::layoutPopupMenu(QMenu *menu, const QPoint& pos, KstViewObjec
   }
 
   if (_layoutActions & Lower) {
-    action = menu->addAction(i18n("&Lower"), this, SLOT(lower()));
+    action = menu->addAction(QObject::tr("&Lower"), this, SLOT(lower()));
     rc = true;
     if (_parent && !_parent->_children.empty() && _parent->_children.first().data() == this) {
       action->setEnabled(false);
@@ -1447,7 +1447,7 @@ bool KstViewObject::layoutPopupMenu(QMenu *menu, const QPoint& pos, KstViewObjec
   }
 
   if (_layoutActions & RaiseToTop) {
-    action = menu->addAction(i18n("Raise to &Top"), this, SLOT(raiseToTop()));
+    action = menu->addAction(QObject::tr("Raise to &Top"), this, SLOT(raiseToTop()));
     rc = true;
     if (_parent && !_parent->_children.empty() && _parent->_children.last().data() == this) {
       action->setEnabled(false);
@@ -1455,7 +1455,7 @@ bool KstViewObject::layoutPopupMenu(QMenu *menu, const QPoint& pos, KstViewObjec
   }
 
   if (_layoutActions & LowerToBottom) {
-    action = menu->addAction(i18n("Lower to &Bottom"), this, SLOT(lowerToBottom()));
+    action = menu->addAction(QObject::tr("Lower to &Bottom"), this, SLOT(lowerToBottom()));
     rc = true;
     if (_parent && !_parent->_children.empty() && _parent->_children.first().data() == this) {
       action->setEnabled(false);
@@ -1471,7 +1471,7 @@ bool KstViewObject::layoutPopupMenu(QMenu *menu, const QPoint& pos, KstViewObjec
     int i = 0;
 
     action = menu->addMenu(submenu);
-    submenu->setTitle(i18n("&Move To"));
+    submenu->setTitle(QObject::tr("&Move To"));
     
     windows = KstApp::inst()->subWindowList(QMdiArea::CreationOrder);
   
@@ -1509,7 +1509,7 @@ bool KstViewObject::layoutPopupMenu(QMenu *menu, const QPoint& pos, KstViewObjec
     tlv = kst_cast<KstTopLevelView>(topParent);
 
     action = menu->addMenu(submenu);
-    submenu->setTitle(i18n("&Copy To"));
+    submenu->setTitle(QObject::tr("&Copy To"));
 
     for (it = windows.constBegin(); it != windows.constEnd(); ++it) {
       KstViewWindow *viewWindow;
@@ -1518,7 +1518,7 @@ bool KstViewObject::layoutPopupMenu(QMenu *menu, const QPoint& pos, KstViewObjec
       if (viewWindow) {
         hasEntry = true;
         if (tlv && tlv == viewWindow->view()) {
-          submenu->addAction(i18n("%1 (here)").arg((*it)->windowTitle()), this, SLOT(copyTo(int)));
+          submenu->addAction(QObject::tr("%1 (here)").arg((*it)->windowTitle()), this, SLOT(copyTo(int)));
         } else {
           submenu->addAction((*it)->windowTitle(), this, SLOT(copyTo(int)));
         }
@@ -2100,9 +2100,9 @@ bool KstViewObject::paste(QMimeSource* source, KstViewObjectList* list) {
             if (number == 0) {
               plotName = copy->tagName();
             } else if (number == 1) {
-              plotName = i18n("%1-copy").arg(copy->tagName());
+              plotName = QObject::tr("%1-copy").arg(copy->tagName());
             } else {
-              plotName = i18n("%1-copy%2").arg(copy->tagName()).arg(number);
+              plotName = QObject::tr("%1-copy%2").arg(copy->tagName()).arg(number);
             }
             number++;
             if (findChild(plotName)) {

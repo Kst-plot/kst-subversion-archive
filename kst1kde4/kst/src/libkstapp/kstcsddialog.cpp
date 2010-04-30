@@ -175,7 +175,7 @@ bool KstCsdDialog::newObject() {
   }
 
   if (_w->_vector->selectedVector().isEmpty()) {
-    QMessageBox::warning(this, i18n("Kst"), i18n("New spectrogram not made: define vectors first."));
+    QMessageBox::warning(this, QObject::tr("Kst"), QObject::tr("New spectrogram not made: define vectors first."));
     return false;
   }
 
@@ -360,7 +360,7 @@ bool KstCsdDialog::editSingleObject(KstCSDPtr csPtr) {
   if (csPtr->recursion()) {
     csPtr->setRecursed(true);
     csPtr->unlock();
-    QMessageBox::warning(this, i18n("Kst"), i18n("There is a recursion resulting from the spectrogram you entered."));
+    QMessageBox::warning(this, QObject::tr("Kst"), QObject::tr("There is a recursion resulting from the spectrogram you entered."));
     return false;
   }
 
@@ -420,7 +420,7 @@ bool KstCsdDialog::editObject() {
       }
     }
     if (!didEdit) {
-      QMessageBox::warning(this, i18n("Kst"), i18n("Select one or more objects to edit."));
+      QMessageBox::warning(this, QObject::tr("Kst"), QObject::tr("Select one or more objects to edit."));
       return false; 
     }
   } else {

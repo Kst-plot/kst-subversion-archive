@@ -23,10 +23,8 @@
 
 #include "kstdataobject.h"
 #include "kstpainter.h"
-//#include "kst_export.h"
 #include "labelparser.h"
 
-// context for rendering a curve in a plot
 class KstCurveRenderContext {
   public:
     KstCurveRenderContext() : p(0L), Lx(0.0), Hx(0.0), Ly(0.0), Hy(0.0),

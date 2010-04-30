@@ -26,7 +26,7 @@
 
 class KstTimezones;
 
-class KTimezoneCombo : public QComboBox {
+class KST_EXPORT KTimezoneCombo : public QComboBox {
   Q_OBJECT
   public:
     KTimezoneCombo(QWidget *parent = 0L, const char *name = 0L, KstTimezones *db = 0L);

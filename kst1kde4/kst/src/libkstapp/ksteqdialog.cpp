@@ -209,7 +209,7 @@ bool KstEqDialog::newObject() {
   
     if (!eq->isValid()) {
       QStringList::const_iterator i;
-      QString strWarning = i18n("There is an error in the equation you entered.\n");
+      QString strWarning = QObject::tr("There is an error in the equation you entered.\n");
   
       eq = 0L;
   
@@ -218,7 +218,7 @@ bool KstEqDialog::newObject() {
         strWarning += "\n";
       }
   
-      QMessageBox::warning(this, i18n("Kst"), strWarning);
+      QMessageBox::warning(this, QObject::tr("Kst"), strWarning);
 
       return false;
     }
@@ -304,7 +304,7 @@ bool KstEqDialog::newObject() {
 
 bool KstEqDialog::checkEntries() {
   if (_w->_xVectors->selectedVector().isEmpty() && !_editMultipleMode) {
-    QMessageBox::warning(this, i18n("Kst"), i18n("An X vector must be defined first."));
+    QMessageBox::warning(this, QObject::tr("Kst"), QObject::tr("An X vector must be defined first."));
 
     return false;
   }
@@ -352,14 +352,14 @@ bool KstEqDialog::editSingleObject(KstEquationPtr eqPtr) {
     eqPtr->setEquation(_w->_equation->text());
     if (!eqPtr->isValid()) {
       QStringList::const_iterator i;
-      QString strWarning = i18n("There is an error in the equation you entered.\n");
+      QString strWarning = QObject::tr("There is an error in the equation you entered.\n");
 
       for (i = Equation::errorStack.begin(); i != Equation::errorStack.end(); ++i) {
         strWarning += *i;
         strWarning += "\n";
       }
 
-      QMessageBox::warning(this, i18n("Kst"), strWarning);
+      QMessageBox::warning(this, QObject::tr("Kst"), strWarning);
       eqPtr->unlock();
 
       return true;
@@ -369,7 +369,7 @@ bool KstEqDialog::editSingleObject(KstEquationPtr eqPtr) {
     if (eqPtr->recursion()) {
       eqPtr->setRecursed(true);
       eqPtr->unlock();
-      QMessageBox::critical(this, i18n("Kst"), i18n("There is a recursion resulting from the equation you entered."));
+      QMessageBox::critical(this, QObject::tr("Kst"), QObject::tr("There is a recursion resulting from the equation you entered."));
 
       return false;
     }
@@ -415,7 +415,7 @@ bool KstEqDialog::editObject() {
       }
     } 
     if (!didEdit) {
-      QMessageBox::warning(this, i18n("Kst"), i18n("Select one or more objects to edit."));
+      QMessageBox::warning(this, QObject::tr("Kst"), QObject::tr("Select one or more objects to edit."));
       return false;  
     }
   } else {

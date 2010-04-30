@@ -22,6 +22,8 @@
 
 #include <QtGui/QWidget>
 
+#include "kst_export.h"
+
 class QColor;
 
 /**
@@ -40,7 +42,7 @@ class QColor;
  * @author Joerg Habenicht, Richard J. Moore (rich@kde.org) 1998, 1999
  */
 
-class KLed : public QWidget
+class KST_EXPORT KLed : public QWidget
 {
     Q_OBJECT
     Q_ENUMS( State Shape Look )
