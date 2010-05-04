@@ -26,7 +26,6 @@
 #include <kimageio.h>
 
 #include "kaboutdata.h"
-// xxx #include <tclap/CmdLine.h> //replacement for kcmdlineargs
 
 #include "dialoglauncher-gui.h"
 #include "kst.h"

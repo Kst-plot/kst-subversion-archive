@@ -4,7 +4,6 @@ include_directories(${CMAKE_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/src/extdate ${CMAKE_
 
 set(kst_SRCS 
 		kaboutdata.cpp
-		anyoption.cpp
 		main.cpp)
 set(kst_RCCS kst.qrc)
 

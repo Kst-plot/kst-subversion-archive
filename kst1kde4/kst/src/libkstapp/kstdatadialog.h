@@ -35,8 +35,6 @@ public:
 
 public slots:
   bool multiple();
-  bool newObject();
-  bool editObject();
   void update();
   void show();
   void wasModifiedApply();
@@ -54,6 +52,9 @@ signals:
   void modified();
 
 protected:
+  virtual bool newObject();
+  virtual bool editObject();
+
   KstObjectPtr _dp;
   bool _editMultipleMode;
   bool _multiple;

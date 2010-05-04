@@ -37,8 +37,6 @@ class KST_EXPORT KstVectorDialog : public KstDataDialog {
   public slots:
     void selectFolder();
     void selectingFolder();
-    bool newObject();
-    bool editObject();
     void populateEditMultiple();
     void updateCompletion();
 
@@ -53,7 +51,10 @@ class KST_EXPORT KstVectorDialog : public KstDataDialog {
     void testURL();
     void showFields();
 
-    // for multiple edit mode
+    //
+    // for multiple edit mode...
+    //
+
     void setF0Dirty() { _f0Dirty = true; }
     void setNDirty() { _nDirty = true; }
     void setCountFromEndDirty();
@@ -62,9 +63,11 @@ class KST_EXPORT KstVectorDialog : public KstDataDialog {
     void setDoSkipDirty();
 
   protected:
-    QString editTitle() { return tr("Edit Vector"); }
-    QString newTitle() { return tr("New Vector"); }
+    QString editTitle() { return QObject::tr("Edit Vector"); }
+    QString newTitle() { return QObject::tr("New Vector"); }
     KstObjectPtr findObject(const QString& name);
+    bool newObject();
+    bool editObject();
 
   private:
     void fillFieldsForEdit();
@@ -80,7 +83,16 @@ class KST_EXPORT KstVectorDialog : public KstDataDialog {
     Ui::VectorDialogWidget *_w;
     bool _inTest : 1;
 
-    // the following are for the multiple edit mode
+    //
+    // for multiple edit mode...
+    //
+
+    bool editSingleObject(KstVectorPtr vcPtr);
+    bool editSingleObjectRV(KstVectorPtr vcPtr);
+    bool editSingleObjectSV(KstVectorPtr vcPtr);
+    void populateEditMultipleRV();
+    void populateEditMultipleSV();
+
     bool _fileNameDirty : 1;
     bool _f0Dirty : 1;
     bool _nDirty : 1;
@@ -93,11 +105,6 @@ class KST_EXPORT KstVectorDialog : public KstDataDialog {
     bool _xMinDirty : 1;
     bool _xMaxDirty : 1;
     bool _hierarchy : 1;
-    bool editSingleObject(KstVectorPtr vcPtr);
-    bool editSingleObjectRV(KstVectorPtr vcPtr);
-    bool editSingleObjectSV(KstVectorPtr vcPtr);
-    void populateEditMultipleRV();
-    void populateEditMultipleSV();
 };
 
 #endif

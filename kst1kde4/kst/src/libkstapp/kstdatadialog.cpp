@@ -9,6 +9,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <stdio.h>
+
 #include "kst.h"
 #include "kstdatadialog.h"
 #include "kstdataobjectcollection.h"

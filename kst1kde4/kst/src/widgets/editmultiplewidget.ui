@@ -114,24 +114,5 @@
   <includes>
     <include location="global">kst_export.h</include>
   </includes>
-  <connections>
-    <connection>
-      <sender>_selectAllBut</sender>
-      <signal>clicked()</signal>
-      <receiver>EditMultipleWidget</receiver>
-      <slot>selectAllObjects()</slot>
-    </connection>
-    <connection>
-      <sender>_selectNoneBut</sender>
-      <signal>clicked()</signal>
-      <receiver>_objectList</receiver>
-      <slot>clearSelection()</slot>
-    </connection>
-    <connection>
-      <sender>_filterEdit</sender>
-      <signal>textChanged(QString)</signal>
-      <receiver>EditMultipleWidget</receiver>
-      <slot>applyFilter(QString)</slot>
-    </connection>
-  </connections>
+  <connections/>
 </ui>

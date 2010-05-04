@@ -11,52 +11,59 @@
 
 #include "curveplacementwidget.h"
 
-CurvePlacementWidget::CurvePlacementWidget(QWidget *parent) : QWidget(parent) 
-{
+CurvePlacementWidget::CurvePlacementWidget(QWidget *parent) : QWidget(parent)  {
   setupUi(this);
+
+  connect(_plotWindow, SIGNAL(activated(int)), this, SLOT(updatePlotList()));
+  connect(_newWindow, SIGNAL(clicked()), this, SLOT(newWindow()));
+  connect(_inPlot, SIGNAL(clicked()), this, SLOT(updateEnabled()));
+  connect(_newPlot, SIGNAL(clicked()), this, SLOT(updateEnabled()));
+  connect(_dontPlace, SIGNAL(clicked()), this, SLOT(updateEnabled()));
+  connect(_plotWindow, SIGNAL(textChanged(QString)), this, SLOT(updateGrid()));
+  connect(_reGrid, SIGNAL(clicked()), this, SLOT(updateEnabled()));
 }
 
-CurvePlacementWidget::~CurvePlacementWidget() 
-{
+
+CurvePlacementWidget::~CurvePlacementWidget() {
 }
 
-bool CurvePlacementWidget::existingPlot()
-{
+
+bool CurvePlacementWidget::existingPlot() {
   return _inPlot->isChecked();
 }
 
-bool CurvePlacementWidget::newPlot()
-{
+
+bool CurvePlacementWidget::newPlot() {
   return _newPlot->isChecked();
 }
 
-void CurvePlacementWidget::setExistingPlot( bool existingPlot )
-{
+
+void CurvePlacementWidget::setExistingPlot( bool existingPlot ) {
   _inPlot->setChecked(existingPlot);
 }
 
-void CurvePlacementWidget::setNewPlot( bool newPlot )
-{
+
+void CurvePlacementWidget::setNewPlot( bool newPlot ) {
   _newPlot->setChecked(newPlot);
 }
 
-QString CurvePlacementWidget::plotName()
-{
+
+QString CurvePlacementWidget::plotName() {
   return _plotList->currentText();
 }
 
-int CurvePlacementWidget::columns()
-{
+
+int CurvePlacementWidget::columns() {
   return _plotColumns->value();
 }
 
-void CurvePlacementWidget::setCols( int c )
-{
+
+void CurvePlacementWidget::setCols( int c ) {
   _plotColumns->setValue(c);
 }
 
-void CurvePlacementWidget::setCurrentPlot( const QString &plotName )
-{
+
+void CurvePlacementWidget::setCurrentPlot( const QString &plotName ) {
   int index;
 
   index = _plotList->findText(plotName, Qt::MatchExactly | Qt::MatchCaseSensitive);
@@ -65,14 +72,14 @@ void CurvePlacementWidget::setCurrentPlot( const QString &plotName )
   }
 }
 
-void CurvePlacementWidget::newWindow()
-{
+
+void CurvePlacementWidget::newWindow() {
   KstData::self()->newWindow(this);
   update();
 }
 
-void CurvePlacementWidget::update()
-{
+
+void CurvePlacementWidget::update() {
   QStringList::ConstIterator i;
   QStringList windows;
   QString plotName;
@@ -97,8 +104,8 @@ void CurvePlacementWidget::update()
   updateGrid();
 }
 
-void CurvePlacementWidget::updatePlotList()
-{
+
+void CurvePlacementWidget::updatePlotList() {
   QStringList::ConstIterator i;
   QStringList plots;
   QString old;
@@ -121,8 +128,8 @@ void CurvePlacementWidget::updatePlotList()
   }
 }
 
-void CurvePlacementWidget::updateEnabled()
-{
+
+void CurvePlacementWidget::updateEnabled() {
   _plotWindow->setEnabled(_plotWindow->count() > 0);
 
   _inPlot->setEnabled(_plotList->count() > 0 );
@@ -132,8 +139,8 @@ void CurvePlacementWidget::updateEnabled()
   _plotColumns->setEnabled(_newPlot->isChecked() && _reGrid->isChecked());
 }
 
-void CurvePlacementWidget::updateGrid()
-{
+
+void CurvePlacementWidget::updateGrid() {
   int cols = KstData::self()->columns(_plotWindow->currentText());
 
   _reGrid->setChecked(cols > -1);
@@ -142,8 +149,8 @@ void CurvePlacementWidget::updateGrid()
   }
 }
 
-bool CurvePlacementWidget::reGrid()
-{
+
+bool CurvePlacementWidget::reGrid() {
   return _reGrid->isChecked();
 }
 

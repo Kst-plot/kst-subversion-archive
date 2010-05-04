@@ -34,11 +34,11 @@ class KstEventMonitor : public KstDataDialog, public Ui::EventMonitorWidget {
   protected:
     QString editTitle() { return tr("Edit Event Monitor"); }
     QString newTitle() { return tr("New Event Monitor"); }
+    bool newObject();
+    bool editObject();
 
   public slots:
     void update();
-    bool newObject();
-    bool editObject();
     void enableELOG();
     void disableELOG();
     void populateEditMultiple();

@@ -25,18 +25,21 @@ public:
   void    allowNewVectors( bool allowed );
   QString selectedVector();
   void    update();
-  void    createNewVector();
   void    selectionWatcher( const QString & tag );
   void    setSelection( const QString & tag );
   void    newVectorCreated( KstVectorPtr v );
   void    setSelection( KstVectorPtr v );
   void    provideNoneVector( bool provide );
-  void    editVector();
   void    setEdit( const QString& tag );
 
 Q_SIGNALS:
+  void    selectionChanged(const QString&);
   void    selectionChangedLabel(const QString&);
   void    newVectorCreated(const QString&);
+
+public Q_SLOTS:
+  void    editVector();
+  void    createNewVector();
 
 private Q_SLOTS:
 

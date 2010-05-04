@@ -33,13 +33,13 @@ class KST_EXPORT KstVvDialog : public KstDataDialog {
   protected:
     QString editTitle() { return tr("Edit Vector View"); }
     QString newTitle() { return tr("New Vector View"); }
+    bool newObject();
+    bool editObject();
 
   public slots:
     void update();
     void updateWindow();
     void updatePlotList();
-    bool newObject();
-    bool editObject();
     void populateEditMultiple();
     void setXVector(const QString& name);
     void setYVector(const QString& name);

@@ -15,7 +15,12 @@
 
 EditMultipleWidget::EditMultipleWidget(QWidget *parent) : QWidget(parent) {
   setupUi(this);
+
   _objectList->setSelectionMode(QAbstractItemView::ExtendedSelection);
+
+  connect(_selectAllBut, SIGNAL(clicked()), this, SLOT(selectAllObjects()));
+  connect(_selectNoneBut, SIGNAL(clicked()), _objectList, SLOT(clearSelection()));
+  connect(_filterEdit, SIGNAL(textChanged(QString)), this, SLOT(applyFilter(QString)));
 }
 
 EditMultipleWidget::~EditMultipleWidget( ) {

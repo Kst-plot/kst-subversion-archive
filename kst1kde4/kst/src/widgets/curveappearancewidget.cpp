@@ -34,6 +34,22 @@ CurveAppearanceWidget::CurveAppearanceWidget(QWidget *parent) : QWidget(parent) 
   connect(_spinBoxLineWidth->findChild<QLineEdit*>(), SIGNAL(textChanged(const QString&)), this, SLOT(modified()));
   connect(_barStyle, SIGNAL(activated(int)), this, SLOT(modified()));
 
+  connect(_color, SIGNAL(changed(QColor)), this, SLOT(fillCombo()));
+  connect(_color, SIGNAL(changed(QColor)), this, SLOT(drawLine()));
+  connect(_color, SIGNAL(changed(QColor)), this, SLOT(fillLineStyleCombo()));
+  connect(_showLines, SIGNAL(clicked()), this, SLOT(drawLine()));
+  connect(_showLines, SIGNAL(toggled(bool)), this, SLOT(enableSettings()));
+  connect(_showPoints, SIGNAL(clicked()), this, SLOT(drawLine()));
+  connect(_showPoints, SIGNAL(toggled(bool)), this, SLOT(enableSettings()));
+  connect(_showBars, SIGNAL(clicked()), this, SLOT(drawLine()));
+  connect(_showBars, SIGNAL(toggled(bool)), this, SLOT(enableSettings()));
+  connect(_combo, SIGNAL(activated(int)), this, SLOT(drawLine()));
+  connect(_combo, SIGNAL(activated(int)), this, SLOT(comboChanged()));
+  connect(_comboLineStyle, SIGNAL(activated(int)), this, SLOT(drawLine()));
+  connect(_spinBoxLineWidth, SIGNAL(valueChanged(int)), this, SLOT(drawLine()));
+  connect(_spinBoxLineWidth, SIGNAL(valueChanged(int)), this, SLOT(drawLine()));
+  connect(_barStyle, SIGNAL(activated(int)), this, SLOT(drawLine()));
+
   reset();
 
   QTimer::singleShot(0, this, SLOT(drawLine()));

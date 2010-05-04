@@ -25,18 +25,21 @@ public:
   void    allowNewMatrices( bool allowed );
   QString selectedMatrix();
   void    update();
-  void    createNewMatrix();
-  void    selectionWatcher( const QString & tag );
   void    setSelection( const QString & tag );
   void    newMatrixCreated( KstMatrixPtr v );
   void    setSelection( KstMatrixPtr v );
   void    provideNoneMatrix( bool provide );
-  void    editMatrix();
   void    setEdit(const QString& tag);
 
 Q_SIGNALS:
+  void    selectionChanged(const QString&);
   void    selectionChangedLabel(const QString&);
   void    newMatrixCreated(const QString&);
+
+public Q_SLOTS:
+  void    editMatrix();
+  void    createNewMatrix();
+  void    selectionWatcher(const QString &tag);
 
 private Q_SLOTS:
 

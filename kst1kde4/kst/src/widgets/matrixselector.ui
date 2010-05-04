@@ -78,24 +78,5 @@
     <include location="local">kstmatrix.h</include>
     <include location="global">kst_export.h</include>
   </includes>
-  <connections>
-    <connection>
-      <sender>MatrixSelector</sender>
-      <signal>selectionChanged(QString)</signal>
-      <receiver>MatrixSelector</receiver>
-      <slot>selectionWatcher(QString)</slot>
-    </connection>
-    <connection>
-      <sender>_editMatrix</sender>
-      <signal>clicked()</signal>
-      <receiver>MatrixSelector</receiver>
-      <slot>editMatrix()</slot>
-    </connection>
-    <connection>
-      <sender>_newMatrix</sender>
-      <signal>clicked()</signal>
-      <receiver>MatrixSelector</receiver>
-      <slot>createNewMatrix()</slot>
-    </connection>
-  </connections>
+  <connections/>
 </ui>

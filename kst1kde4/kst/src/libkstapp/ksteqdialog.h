@@ -34,13 +34,13 @@ class KST_EXPORT KstEqDialog : public KstDataDialog {
   protected:
     QString editTitle() { return tr("Edit Equation"); }
     QString newTitle() { return tr("New Equation"); }
+    bool newObject();
+    bool editObject();
 
   public slots:
     void update();
     void updateWindow();
     void populateEditMultiple();
-    bool newObject();
-    bool editObject();
 
   private:
     static QPointer<KstEqDialog> _inst;

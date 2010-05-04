@@ -11,15 +11,19 @@
 
 #include <QMessageBox>
 
+#include "fftoptionswidget.h"
 #include "kstobjectdefaults.h"
 #include "psdcalculator.h"
 
-#include "fftoptionswidget.h"
-
-
 KstFFTOptions::KstFFTOptions(QWidget *parent) : QWidget(parent) {
   setupUi(this);
+
   update();
+
+  connect(Interleaved, SIGNAL(clicked()), this, SLOT(clickedInterleaved()));
+  connect(Apodize, SIGNAL(clicked()), this, SLOT(clickedApodize()));
+  connect(Apodize, SIGNAL(clicked()), this, SLOT(changedApodizeFxn()));
+  connect(ApodizeFxn, SIGNAL(activated(int)), this, SLOT(changedApodizeFxn()));
 }
 
 

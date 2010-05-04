@@ -8,16 +8,10 @@
     <x>0</x>
     <y>0</y>
     <width>509</width>
-    <height>432</height>
+    <height>486</height>
    </rect>
   </property>
-  <layout class="QVBoxLayout">
-   <property name="margin">
-    <number>0</number>
-   </property>
-   <property name="spacing">
-    <number>0</number>
-   </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QGroupBox" name="sourceGroup">
      <property name="title">
@@ -160,7 +154,7 @@
         <item>
          <layout class="QHBoxLayout">
           <item>
-           <widget class="KstComboBox" name="Field"/>
+           <widget class="KstComboBox" name="Field" native="true"/>
           </item>
           <item>
            <widget class="QPushButton" name="_pushButtonHierarchy">
@@ -329,7 +323,6 @@
  <tabstops>
   <tabstop>_readFromSource</tabstop>
   <tabstop>_generateX</tabstop>
-  <tabstop>FileName</tabstop>
   <tabstop>Field</tabstop>
   <tabstop>_configure</tabstop>
   <tabstop>_kstDataRange</tabstop>

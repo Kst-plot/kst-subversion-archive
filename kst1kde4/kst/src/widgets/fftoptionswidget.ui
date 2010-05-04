@@ -445,30 +445,5 @@
     <include location="local">knuminput.h</include>
     <include location="local">knuminput.h</include>
   </includes>
-  <connections>
-    <connection>
-      <sender>Interleaved</sender>
-      <signal>clicked()</signal>
-      <receiver>FFTOptions</receiver>
-      <slot>clickedInterleaved()</slot>
-    </connection>
-    <connection>
-      <sender>Apodize</sender>
-      <signal>clicked()</signal>
-      <receiver>FFTOptions</receiver>
-      <slot>clickedApodize()</slot>
-    </connection>
-    <connection>
-      <sender>ApodizeFxn</sender>
-      <signal>activated(int)</signal>
-      <receiver>FFTOptions</receiver>
-      <slot>changedApodizeFxn()</slot>
-    </connection>
-    <connection>
-      <sender>Apodize</sender>
-      <signal>clicked()</signal>
-      <receiver>FFTOptions</receiver>
-      <slot>changedApodizeFxn()</slot>
-    </connection>
-  </connections>
+  <connections/>
 </ui>

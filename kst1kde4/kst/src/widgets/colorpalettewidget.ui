@@ -76,18 +76,5 @@
   <includes>
     <include location="global">kst_export.h</include>
   </includes>
-  <connections>
-    <connection>
-      <sender>_palette</sender>
-      <signal>highlighted(QString)</signal>
-      <receiver>ColorPaletteWidget</receiver>
-      <slot>updatePalette(QString)</slot>
-    </connection>
-    <connection>
-      <sender>_palette</sender>
-      <signal>activated(QString)</signal>
-      <receiver>ColorPaletteWidget</receiver>
-      <slot>updatePalette(QString)</slot>
-    </connection>
-  </connections>
+  <connections/>
 </ui>

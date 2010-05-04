@@ -402,6 +402,10 @@ bool KstVectorDialog::newObject() {
   QString tagName = _tagName->text();
 
   if (_w->_readFromSource->isChecked()) {
+    KstRVectorPtr vector;
+    KstFrameSize f0;
+    KstFrameSize n;
+
     tagName.replace(defaultTag, _w->Field->currentText());
     tagName = KST::suggestVectorName(tagName);
     tagName.remove('[');
@@ -412,8 +416,9 @@ bool KstVectorDialog::newObject() {
     //
 
     {
+      KstDataSourceList::iterator it;
+
       KST::dataSourceList.lock().writeLock();
-      KstDataSourceList::Iterator it;
 
 // xxx      it = KST::dataSourceList.findReusableFileName(_w->FileName->url());
       if (it == KST::dataSourceList.end()) {
@@ -424,6 +429,7 @@ bool KstVectorDialog::newObject() {
 
           return false;
         }
+
         if (file->isEmpty()) {
           KST::dataSourceList.lock().unlock();
           QMessageBox::warning(this, QObject::tr("Kst"), QObject::tr("The file does not contain data."));
@@ -434,18 +440,18 @@ bool KstVectorDialog::newObject() {
       } else {
         file = *it;
       }
+
       KST::dataSourceList.lock().unlock();
     }
+
     file->readLock();
+
     if (!file->isValidField(_w->Field->currentText())) {
       file->unlock();
       QMessageBox::warning(this, tr("Kst"), tr("The requested field is not defined for the requested file."));
+
       return false;
     }
-
-    KstRVectorPtr vector;
-    KstFrameSize f0;
-    KstFrameSize n;
 
     if (_w->_kstDataRange->isStartRelativeTime()) {
       f0 = file->sampleForTimeLarge(_w->_kstDataRange->f0Value());

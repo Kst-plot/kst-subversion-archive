@@ -25,7 +25,6 @@ public:
 
   void allowNewScalars( bool allowed );
   void update();  
-  void selectionWatcher( const QString & tag );
   void setSelection( const QString & tag );
   void setSelection( KstScalarPtr s );
   QString selectedScalar();
@@ -38,6 +37,7 @@ Q_SIGNALS:
   void newScalarCreated();
 
 private Q_SLOTS:
+  void selectionWatcher(const QString &);
   void createNewScalar();
   void editScalar();
   void selectScalar();

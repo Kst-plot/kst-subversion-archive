@@ -34,12 +34,12 @@ class KstCurveDialog : public KstDataDialog {
   protected:
     QString editTitle() { return tr("Edit Curve"); }
     QString newTitle() { return tr("New Curve"); }
+    bool newObject();
+    bool editObject();
  
   public slots:
     void update();
     void updateWindow();
-    bool newObject();
-    bool editObject();
     void populateEditMultiple();
     void setVector(const QString& name);
 

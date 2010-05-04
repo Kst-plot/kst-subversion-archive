@@ -17,7 +17,11 @@
 
 ColorPaletteWidget::ColorPaletteWidget(QWidget *parent) : QWidget(parent) {
   setupUi(this);
+
   refresh();
+
+  connect(_palette, SIGNAL(highlighted(QString)), this, SLOT(updatePalette(QString)));
+  connect(_palette, SIGNAL(activated(QString)), this, SLOT(updatePalette(QString)));
 }
 
 

@@ -23,11 +23,13 @@ public:
   ColorPaletteWidget(QWidget *parent = 0);
   virtual ~ColorPaletteWidget(); 
 
-  void    updatePalette(const QString &palette);
   QString selectedPalette();
   void    refresh();
   void    refresh(const QString & palette);
   int     currentPaletteIndex();
+
+public Q_SLOTS:
+  void    updatePalette(const QString &palette);
 };
  
 #endif

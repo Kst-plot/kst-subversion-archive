@@ -35,12 +35,12 @@ class KstPsdDialog : public KstDataDialog {
   protected:
     QString editTitle() { return tr("Edit Spectrum"); }
     QString newTitle() { return tr("New Spectrum"); }
+    bool newObject();
+    bool editObject();
  
   public slots:
     void update();
     void updateWindow();
-    bool newObject();
-    bool editObject();
     void populateEditMultiple();
     void setVector(const QString& name);
 

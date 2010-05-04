@@ -38,6 +38,8 @@ class KST_EXPORT KstMatrixDialog : public KstDataDialog {
   protected:
     QString editTitle() { return tr("Edit Matrix"); }
     QString newTitle() { return tr("New Matrix"); }
+    bool newObject();
+    bool editObject();
 
   public slots:
     void selectFolder();
@@ -45,8 +47,6 @@ class KST_EXPORT KstMatrixDialog : public KstDataDialog {
     void update();
     void updateWindow();
     void updateCompletion();
-    bool newObject();
-    bool editObject();
     void populateEditMultiple();
 
   signals:

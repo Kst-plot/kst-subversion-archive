@@ -31,11 +31,13 @@ class KST_EXPORT KstPluginDialog : public KstDataDialog {
     static KstPluginDialog *globalInstance();
     static const QString& plugin_defaultTag;
 
+  protected:
+    bool newObject();
+    bool editObject();
+
   public slots:
     void updateForm();
     void update();
-    bool newObject();
-    bool editObject();
     virtual void showNew(const QString &field);
     virtual void updatePluginList();
 

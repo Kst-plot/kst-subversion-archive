@@ -791,7 +791,9 @@ void KstApp::selectDataPlugin() {
 
 
 void KstApp::forceUpdate() {
-  _updateThread->forceUpdate();
+  if (_updateThread) {
+    _updateThread->forceUpdate();
+  }
 }
 
 

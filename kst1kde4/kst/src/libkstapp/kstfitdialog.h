@@ -27,9 +27,11 @@ class KstFitDialog : public KstPluginDialog {
     virtual ~KstFitDialog();
     static KstFitDialog *globalInstance();
 
+  protected:
+    bool newObject();
+
   public slots:
     void show_setCurve(const QString& strCurve, const QString& strPlotName, const QString& strWindow);
-    bool newObject();
     void updatePluginList();
 
   private:

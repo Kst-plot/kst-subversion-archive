@@ -25,6 +25,9 @@ MatrixSelector::MatrixSelector(QWidget *parent) : QWidget(parent) {
   update();
 
   connect(_matrix, SIGNAL(activated(const QString&)), this, SIGNAL(selectionChanged(const QString&)));
+  connect(this, SIGNAL(selectionChanged(QString)), this, SLOT(selectionWatcher(QString)));
+  connect(_editMatrix, SIGNAL(clicked()), this, SLOT(editMatrix()));
+  connect(_newMatrix, SIGNAL(clicked()), this, SLOT(createNewMatrix()));
 }
 
 

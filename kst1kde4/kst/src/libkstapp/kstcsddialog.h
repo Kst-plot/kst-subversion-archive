@@ -36,12 +36,12 @@ class KstCsdDialog : public KstDataDialog {
   protected:
     QString editTitle() { return tr("Edit Spectrogram"); }
     QString newTitle() { return tr("New Spectrogram"); }
+    bool newObject();
+    bool editObject();
 
   public slots:
     void update();
     void updateWindow();
-    bool newObject();
-    bool editObject();
     void populateEditMultiple();
     void setVector(const QString& name);
 

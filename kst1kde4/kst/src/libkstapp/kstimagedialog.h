@@ -34,12 +34,12 @@ class KST_EXPORT KstImageDialog : public KstDataDialog {
   protected:
     QString editTitle() { return tr("Edit Image"); }
     QString newTitle() { return tr("New Image"); }
+    bool newObject();
+    bool editObject();
 
   public slots:
     void update();
     void updateWindow();
-    bool newObject();
-    bool editObject();
     void populateEditMultiple();
     void setMatrix(const QString& name);
 

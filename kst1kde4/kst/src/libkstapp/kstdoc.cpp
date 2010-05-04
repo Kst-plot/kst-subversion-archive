@@ -1092,7 +1092,9 @@ void KstDoc::samplesEnd() {
 
 void KstDoc::wasModified() {
   _modified = true;
+
   forceUpdate();
+
   QTimer::singleShot(0, this, SIGNAL(updateDialogs()));
 }
 
@@ -1236,6 +1238,7 @@ void KstDoc::purge() {
 
 void KstDoc::forceUpdate() {
   _nextEventPaint = false;
+
   KstApp::inst()->forceUpdate();
 }
 

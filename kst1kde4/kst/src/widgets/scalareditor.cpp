@@ -13,6 +13,9 @@
 
 ScalarEditor::ScalarEditor(QWidget *parent) : QDialog(parent) {
   setupUi(this);
+
+  connect(_pushButtonOK, SIGNAL(clicked()), this, SLOT(accept()));
+  connect(_pushButtonCancel, SIGNAL(clicked()), this, SLOT(reject()));
 }
 
 ScalarEditor::~ScalarEditor() {
