@@ -163,54 +163,5 @@
   <include location="local">kstdataobject.h</include>
  </includes>
  <resources/>
- <connections>
-  <connection>
-   <sender>_ok</sender>
-   <signal>clicked()</signal>
-   <receiver>KstDataDialog</receiver>
-   <slot>ok()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>_apply</sender>
-   <signal>clicked()</signal>
-   <receiver>KstDataDialog</receiver>
-   <slot>apply()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>_cancel</sender>
-   <signal>clicked()</signal>
-   <receiver>KstDataDialog</receiver>
-   <slot>close()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>

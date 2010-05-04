@@ -80,7 +80,7 @@ void KstChooseColorDialog::updateChooseColorDialog() {
     //
 
     QLineEdit* dsName = new QLineEdit(colorFrame);
-// xxx    KColorCombo* dsColor = new KColorCombo(colorFrame);
+    KColorCombo* dsColor = new KColorCombo(colorFrame);
     QMap<QString, QColor>::const_iterator itColor;
 
     dsName->setReadOnly(true);
@@ -89,10 +89,10 @@ void KstChooseColorDialog::updateChooseColorDialog() {
     _lineEdits.push_back(dsName);
     dsName->show();
 
-// xxx    dsColor->setColor(KstColorSequence::next());
-// xxx    _grid->addWidget(dsColor, i, 1);
-// xxx    _colorCombos.push_back(dsColor);
-// xxx    dsColor->show();
+    dsColor->setColor(KstColorSequence::next());
+    _grid->addWidget(dsColor, i, 1);
+    _colorCombos.push_back(dsColor);
+    dsColor->show();
 
     itColor = _fileColors.find(*it);
     if (itColor != _fileColors.end()) {
@@ -100,13 +100,13 @@ void KstChooseColorDialog::updateChooseColorDialog() {
       // set the color to the existing value, if present...
       //
 
-// xxx      dsColor->setColor(*itColor);
+      dsColor->setColor(*itColor);
     } else {
       //
       // else assign a custom color...
       //
 
-// xxx      dsColor->setColor(QColor(0x11, 0x22, 0x33));
+      dsColor->setColor(QColor(0x11, 0x22, 0x33));
     }
 
     i++;
@@ -121,6 +121,7 @@ void KstChooseColorDialog::updateChooseColorDialog() {
 void KstChooseColorDialog::cleanColorGroup() {
   while (!_lineEdits.isEmpty()) {
     QLineEdit* lineEdit = _lineEdits.back();
+
     _lineEdits.pop_back();
 
     delete lineEdit;
@@ -128,6 +129,7 @@ void KstChooseColorDialog::cleanColorGroup() {
 
   while (!_colorCombos.isEmpty()) {
     KColorCombo* colorCombo = _colorCombos.back();
+
     _colorCombos.pop_back();
 
     delete colorCombo;
@@ -147,6 +149,9 @@ void KstChooseColorDialog::showChooseColorDialog() {
 
 
 void KstChooseColorDialog::applyColors() {
+  KstVCurveList cvList;
+  KstVCurveList::iterator cv_iter;
+
   OK->setEnabled(false);
   Cancel->setEnabled(false);
 
@@ -154,8 +159,6 @@ void KstChooseColorDialog::applyColors() {
   _xSelected = xVector->isChecked();
   _override = _applyToNewCurves->isChecked();
 
-  KstVCurveList cvList;
-  KstVCurveList::iterator cv_iter;
 
   cvList = kstObjectSubList<KstDataObject, KstVCurve>(KST::dataObjectList);
   for (cv_iter = cvList.begin(); cv_iter != cvList.end(); ++cv_iter) {
@@ -196,7 +199,7 @@ QColor KstChooseColorDialog::getColorForFile(const QString &fileName) {
 
   for (fn_iter = _lineEdits.begin(); fn_iter != _lineEdits.end(); ++fn_iter) {
     if (fileName == (*fn_iter)->text()) {
-// xxx      return (*kc_iter)->color();
+      return (*kc_iter)->color();
     }
     ++kc_iter;
   }

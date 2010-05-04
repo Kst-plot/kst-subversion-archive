@@ -16,7 +16,7 @@
 #include "ui_datarangewidget.h"
 #include "kst_export.h"
 
-class KST_EXPORT KstDataRange : public QWidget, public Ui::KstDataRange
+class KST_EXPORT KstDataRange : public QWidget, public Ui::DataRange
  {
    Q_OBJECT
 public:
@@ -36,12 +36,15 @@ public:
   bool isStartAbsoluteTime();
   bool isRangeRelativeTime();
 
+signals:
+  void changed();
+
 public slots:
   void modified();
 
 private slots:
   void clickedCountFromEnd();
-  void ClickedReadToEnd();
+  void clickedReadToEnd();
   void clickedDoSkip();
 
 private:

@@ -15,16 +15,12 @@
  *                                                                         *
  ***************************************************************************/
 
-// include files for Qt
 #include <QLineEdit>
 #include <QListWidget>
 #include <QPushButton>
 #include <QRegExp>
 #include <QStringList>
 
-// include files for KDE
-
-// application specific includes
 #include "comboboxselection_i.h"
 
 ComboBoxSelectionI::ComboBoxSelectionI(QWidget *parent, const char* name, bool modal, Qt::WindowFlags fl)
@@ -77,6 +73,7 @@ void ComboBoxSelectionI::sort() {
     search.prepend("*");
     search.append("*");
   }
+
   QRegExp regexp(search, Qt::CaseInsensitive, QRegExp::Wildcard);
 
   OK->setEnabled(false);

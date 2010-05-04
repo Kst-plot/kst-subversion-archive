@@ -66,7 +66,7 @@
       <string>The sample ranges for the vectors selected in this list will be changed.</string>
      </property>
      <property name="selectionMode">
-      <enum>QListWidget::Extended</enum>
+      <enum>QAbstractItemView::ExtendedSelection</enum>
      </property>
     </widget>
    </item>
@@ -134,7 +134,7 @@
   <customwidget>
    <class>KstDataRange</class>
    <extends>QWidget</extends>
-   <header>kstdatarange.h</header>
+   <header>datarangewidget.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
@@ -146,38 +146,5 @@
   <tabstop>Cancel</tabstop>
  </tabstops>
  <resources/>
- <connections>
-  <connection>
-   <sender>Cancel</sender>
-   <signal>clicked()</signal>
-   <receiver>KstChangeNptsDialog</receiver>
-   <slot>reject()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>CurveList</sender>
-   <signal>selectionChanged()</signal>
-   <receiver>KstChangeNptsDialog</receiver>
-   <slot>updateTimeCombo()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>

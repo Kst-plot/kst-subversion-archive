@@ -65,10 +65,15 @@ bool CurveAppearanceWidget::showBars() {
 
 
 void CurveAppearanceWidget::fillCombo() {
-  bool keepBlank = _combo->count() > 0 && _combo->itemText(0) == " ";
-    
-  QRect rect = _combo->style()->subControlRect(
+  bool keepBlank;
+  QRect rect;
+  int currentItem;
+  int ptype;
+
+  keepBlank = _combo->count() > 0 && _combo->itemText(0) == " ";
+  rect = _combo->style()->subControlRect(
             QStyle::CC_ComboBox, 0L, QStyle::SC_ComboBoxEditField, _combo );
+
   rect.setLeft( rect.left() + 2 );
   rect.setRight( rect.right() - 2 );
   rect.setTop( rect.top() + 2 );
@@ -78,12 +83,13 @@ void CurveAppearanceWidget::fillCombo() {
   // fill the point type dialog with point types
   //
 
-  QPixmap ppix( rect.width(), rect.height() );
-  QPainter pp( &ppix );
+  QPixmap ppix(rect.width(), rect.height());
+  QPainter pp(&ppix);
   QPen pen(color(), 1, Qt::SolidLine);
+
   pen.setCapStyle(Qt::RoundCap);
 
-  int currentItem = _combo->currentIndex();
+  currentItem = _combo->currentIndex();
   _combo->clear();
   pp.setPen(pen);
 
@@ -91,14 +97,14 @@ void CurveAppearanceWidget::fillCombo() {
     _combo->insertItem(0, " ");
   }
 
-  for (int ptype = 0; ptype < KSTPOINT_MAXTYPE; ptype++) {
+  for (ptype = 0; ptype < KSTPOINT_MAXTYPE; ptype++) {
     pp.fillRect(pp.window(), QColor("white"));
     KstCurvePointSymbol::draw(ptype, &pp, ppix.width()/2, ppix.height()/2, 0, 600);
-// xxx    _combo->insertItem(ppix);
+    _combo->insertItem(0, QIcon(ppix), QString(""));
   }
 
   if (currentItem > 0) {
-    _combo->setCurrentIndex( currentItem );
+    _combo->setCurrentIndex(currentItem);
   }
 }
 
@@ -122,10 +128,12 @@ void CurveAppearanceWidget::drawLine() {
   p.fillRect(p.window(), QColor("white"));
 
   if (showBars()) {
-    QRect rectBar((pix.width()-pix.height())/2,
-            pix.height()/2, 
-            pix.height(), 
-            (pix.height()/2)+1);
+    QRect rectBar;
+
+    rectBar.setLeft((pix.width()-pix.height())/2);
+    rectBar.setTop(pix.height()/2);
+    rectBar.setWidth(pix.height());
+    rectBar.setHeight((pix.height()/2)+1);
 
     if (barStyle() == 1) {
       p.fillRect(rectBar,QBrush(QColor(color())));
@@ -176,9 +184,6 @@ void CurveAppearanceWidget::reset(QColor newColor) {
 
 
 void CurveAppearanceWidget::comboChanged() {
-  // but combo can't be changed unless _showPoints is checked anyways
-  // or we are in editMultipleMode
-  //_showPoints->setChecked(true); 
   drawLine();
 }
 
@@ -220,10 +225,13 @@ void CurveAppearanceWidget::redrawCombo() {
 
 
 void CurveAppearanceWidget::fillLineStyleCombo() {
-  bool keepBlank = _comboLineStyle->count() > 0 && _comboLineStyle->itemText(0) == " ";
+  bool keepBlank;
+  QRect rect;
 
-  QRect rect = _comboLineStyle->style()->subControlRect(
+  keepBlank = _comboLineStyle->count() > 0 && _comboLineStyle->itemText(0) == " ";
+  rect = _comboLineStyle->style()->subControlRect(
             QStyle::CC_ComboBox, 0L, QStyle::SC_ComboBoxEditField, _comboLineStyle );
+
   rect.setLeft(rect.left() + 2);
   rect.setRight(rect.right() - 2);
   rect.setTop(rect.top() + 2);
@@ -251,7 +259,7 @@ void CurveAppearanceWidget::fillLineStyleCombo() {
     pp.setPen(pen);
     pp.fillRect(pp.window(), QColor("white"));
     pp.drawLine(1, ppix.height()/2, ppix.width()-1, ppix.height()/2);
-// xxx    _comboLineStyle->insertItem(ppix);
+    _comboLineStyle->insertItem(0, QIcon(ppix), QString(""));
   }
   _comboLineStyle->setCurrentIndex(currentItem);
 }
@@ -275,7 +283,7 @@ int CurveAppearanceWidget::lineWidth() {
 }
 
 
-void CurveAppearanceWidget::setValue( bool hasLines, bool hasPoints, bool hasBars, const QColor & c, int pointType, int lineWidth, int lineStyle, int barStyle, int pointDensity ) {
+void CurveAppearanceWidget::setValue( bool hasLines, bool hasPoints, bool hasBars, const QColor &c, int pointType, int lineWidth, int lineStyle, int barStyle, int pointDensity ) {
   fillCombo();
   fillLineStyleCombo();
 
@@ -286,14 +294,19 @@ void CurveAppearanceWidget::setValue( bool hasLines, bool hasPoints, bool hasBar
   _spinBoxLineWidth->setValue(lineWidth);
   _combo->setCurrentIndex(pointType);
   _barStyle->setCurrentIndex(barStyle);
+
   if (lineStyle < 0 || lineStyle >= (int)KSTLINESTYLE_MAXTYPE) {
     lineStyle = 0;
   }
+
   _comboLineStyle->setCurrentIndex(lineStyle);
+
   if (pointDensity < 0 || pointDensity >= KSTPOINTDENSITY_MAXTYPE) {
     pointDensity = 0;
   }
+
   _comboPointDensity->setCurrentIndex(pointDensity);
+
   enableSettings();
   drawLine();
 }
@@ -301,25 +314,34 @@ void CurveAppearanceWidget::setValue( bool hasLines, bool hasPoints, bool hasBar
 
 void CurveAppearanceWidget::resizeEvent( QResizeEvent * pEvent ) {
   QWidget::resizeEvent(pEvent);
+
   redrawCombo();
 }
 
 
 int CurveAppearanceWidget::barStyle() {
+  int rc;
+
   if (_barStyle->count() > 0 && _barStyle->itemText(0) == " ") {
-    return _barStyle->currentIndex() - 1;
+    rc = _barStyle->currentIndex() - 1;
   } else {
-    return _barStyle->currentIndex();
+    rc = _barStyle->currentIndex();
   }
+
+  return rc;
 }
 
 
 int CurveAppearanceWidget::pointDensity() {
+  int rc;
+
   if (_comboPointDensity->count() > 0 && _comboPointDensity->itemText(0) == " ") {
-    return _comboPointDensity->currentIndex() - 1;
+    rc = _comboPointDensity->currentIndex() - 1;
   } else {
-    return _comboPointDensity->currentIndex();
+    rc = _comboPointDensity->currentIndex();
   }
+
+  return rc;
 }
 
 

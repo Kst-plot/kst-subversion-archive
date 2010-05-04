@@ -17,8 +17,7 @@
 #include "datarangewidget.h"
 #include "timedefinitions.h"
 
-KstDataRange::KstDataRange(QWidget *parent) : QWidget(parent) 
-{
+KstDataRange::KstDataRange(QWidget *parent) : QWidget(parent) {
   setupUi(this);
 
   connect(F0, SIGNAL(textChanged(const QString&)), this, SLOT(modified()));
@@ -26,8 +25,11 @@ KstDataRange::KstDataRange(QWidget *parent) : QWidget(parent)
   connect(_startUnits, SIGNAL(activated(int)), this, SLOT(modified()));
   connect(_rangeUnits, SIGNAL(activated(int)), this, SLOT(modified()));
   connect(CountFromEnd, SIGNAL(clicked()), this, SLOT(modified()));
+  connect(CountFromEnd, SIGNAL(clicked()), this, SLOT(clickedCountFromEnd()));
   connect(ReadToEnd, SIGNAL(clicked()), this, SLOT(modified()));
+  connect(ReadToEnd, SIGNAL(clicked()), this, SLOT(clickedReadToEnd()));
   connect(DoSkip, SIGNAL(clicked()), this, SLOT(modified()));
+  connect(DoSkip, SIGNAL(clicked()), this, SLOT(clickedDoSkip()));
   connect(DoFilter, SIGNAL(clicked()), this, SLOT(modified()));
   connect(Skip, SIGNAL(valueChanged(int)), this, SLOT(modified()));
 
@@ -35,17 +37,17 @@ KstDataRange::KstDataRange(QWidget *parent) : QWidget(parent)
   update();
 }
 
-KstDataRange::~KstDataRange()
-{
+
+KstDataRange::~KstDataRange() {
 }
 
-void KstDataRange::modified()
-{
-// xxx  emit changed();
+
+void KstDataRange::modified() {
+  emit changed();
 }
 
-void KstDataRange::clickedCountFromEnd()
-{
+
+void KstDataRange::clickedCountFromEnd() {
   if (CountFromEnd->isChecked()) {
     N->setEnabled(true);
 	  _rangeUnits->setEnabled(true);
@@ -58,8 +60,8 @@ void KstDataRange::clickedCountFromEnd()
   }
 }
 
-void KstDataRange::ClickedReadToEnd()
-{
+
+void KstDataRange::clickedReadToEnd() {
   if (ReadToEnd->isChecked()) {
 	  F0->setEnabled(true);
 	  _startUnits->setEnabled(true);
@@ -75,8 +77,8 @@ void KstDataRange::ClickedReadToEnd()
   }
 }
 
-void KstDataRange::clickedDoSkip()
-{
+
+void KstDataRange::clickedDoSkip() {
   if (DoSkip->isChecked()) {
 	  Skip->setEnabled(true);
 	  DoFilter->setEnabled(true);
@@ -85,6 +87,7 @@ void KstDataRange::clickedDoSkip()
 	  DoFilter->setEnabled(false);
   }
 }
+
 
 void KstDataRange::updateEnables() {
   if (DoSkip->isChecked()) {
@@ -114,12 +117,12 @@ void KstDataRange::updateEnables() {
   }
 }
 
-void KstDataRange::update()
-{
+
+void KstDataRange::update() {
   CountFromEnd->setChecked(KST::vectorDefaults.countFromEOF());
   ReadToEnd->setChecked(KST::vectorDefaults.readToEOF());
   F0->setText(QString::number(KST::vectorDefaults.f0(), 'g', 15));
-  if (KST::vectorDefaults.n()>=0) {
+  if (KST::vectorDefaults.n() >= 0) {
     N->setText(QString::number(KST::vectorDefaults.n(), 'g', 15));
   } else {
     N->setText("");
@@ -129,12 +132,12 @@ void KstDataRange::update()
   DoFilter->setChecked(KST::vectorDefaults.doAve());
 
   clickedCountFromEnd();
-  ClickedReadToEnd();
+  clickedReadToEnd();
   clickedDoSkip();
 }
 
-void KstDataRange::setAllowTime(bool allow)
-{
+
+void KstDataRange::setAllowTime(bool allow) {
   if (allow != _time) {
 	  _time = allow;
 	  _startUnits->clear();
@@ -152,23 +155,23 @@ void KstDataRange::setAllowTime(bool allow)
   }
 }
 
-void KstDataRange::setF0Value(double v)
-{
+
+void KstDataRange::setF0Value(double v) {
   F0->setText(QString::number(v, 'g', 15));
 }
 
-void KstDataRange::setNValue(double v)
-{
+
+void KstDataRange::setNValue(double v) {
   N->setText(QString::number(v, 'g', 15));
 }
 
-double KstDataRange::interpret(const char *txt)
-{
+
+double KstDataRange::interpret(const char *txt) {
   return Equation::interpret(txt);
 }
 
-double KstDataRange::f0Value()
-{
+
+double KstDataRange::f0Value() {
   const int cur = _startUnits->currentIndex();
   
   if (cur == KST::dateTimeEntry) {
@@ -183,8 +186,8 @@ double KstDataRange::f0Value()
   return ::d2i(interpret(F0->text().toLatin1()) * KST::timeDefinitions[cur].factor);
 }
 
-double KstDataRange::nValue()
-{
+
+double KstDataRange::nValue() {
   int cur = _rangeUnits->currentIndex();
 
   if (cur >= KST::dateTimeEntry) {
@@ -194,8 +197,8 @@ double KstDataRange::nValue()
   return ::d2i(interpret(N->text().toLatin1()) * KST::timeDefinitions[cur].factor);
 }
 
-KST::ExtDateTime KstDataRange::f0DateTimeValue()
-{
+
+KST::ExtDateTime KstDataRange::f0DateTimeValue() {
   const int cur = _startUnits->currentIndex();
   
   KST::ExtDateTime edt;
@@ -206,18 +209,18 @@ KST::ExtDateTime KstDataRange::f0DateTimeValue()
   return edt;
 }
 
-bool KstDataRange::isStartRelativeTime()
-{
+
+bool KstDataRange::isStartRelativeTime() {
   return _startUnits->currentIndex() > KST::dateTimeEntry;
 }
 
-bool KstDataRange::isStartAbsoluteTime()
-{
+
+bool KstDataRange::isStartAbsoluteTime() {
   return _startUnits->currentIndex() == KST::dateTimeEntry;
 }
 
-bool KstDataRange::isRangeRelativeTime()
-{
+
+bool KstDataRange::isRangeRelativeTime() {
   return _rangeUnits->currentIndex() > KST::dateTimeEntry;
 }
 

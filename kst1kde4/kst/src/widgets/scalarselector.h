@@ -33,6 +33,7 @@ public:
   void allowDirectEntry( bool allowed );
 
 Q_SIGNALS:
+  void selectionChangedLabel(const QString&);
   void selectionChanged(const QString&);
   void newScalarCreated();
 

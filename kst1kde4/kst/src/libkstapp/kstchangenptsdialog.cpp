@@ -38,6 +38,8 @@ KstChangeNptsDialog::KstChangeNptsDialog(
   connect(Apply, SIGNAL(clicked()), this, SLOT(applyNptsChange()));
   connect(OK, SIGNAL(clicked()), this, SLOT(OKNptsChange()));
   connect(CurveList, SIGNAL(selectionChanged()), this, SLOT(changedSelection()));
+  connect(Cancel, SIGNAL(clicked()), this, SLOT(reject()));
+  connect(CurveList, SIGNAL(selectionChanged()), this, SLOT(updateTimeCombo()));
   connect(_kstDataRange, SIGNAL(changed()), this, SLOT(modifiedRange()));
 
   _modifiedRange = false;
@@ -57,7 +59,7 @@ void KstChangeNptsDialog::selectNone() {
 
 
 void KstChangeNptsDialog::selectAll() {
-  CurveList->selectAll(true);
+  CurveList->selectAll();
 
   if (CurveList->count() > 0) {
     OK->setEnabled(true);
@@ -69,7 +71,7 @@ void KstChangeNptsDialog::selectAll() {
 bool KstChangeNptsDialog::updateChangeNptsDialog() {
   QStringList qsl;
   int inserted = 0;
-  uint i;
+  int i;
   
   for (i = 0; i < CurveList->count(); i++) {
     if (CurveList->item(i)->isSelected()) {
@@ -97,9 +99,9 @@ bool KstChangeNptsDialog::updateChangeNptsDialog() {
     vector->readLock();
     
     tag = vector->tag().displayString();
-    CurveList->insertItem(tag, -1);
+    CurveList->insertItem(-1, tag);
     if (qsl.contains(tag)) {
-      CurveList->setSelected(inserted, true);
+      CurveList->item(inserted)->setSelected(true);
     }
     ++inserted;
     
@@ -118,7 +120,7 @@ void KstChangeNptsDialog::showChangeNptsDialog() {
   updateDefaults(0);
   _modifiedRange = false;
   if (!selected) {
-    CurveList->selectAll(true);
+    CurveList->selectAll();
   }
   show();
   raise();
@@ -133,15 +135,15 @@ void KstChangeNptsDialog::OKNptsChange() {
 
 void KstChangeNptsDialog::applyNptsChange() {
   KstRVectorList rvl;
-  uint i;
+  int i;
 
   rvl = kstObjectSubList<KstVector,KstRVector>(KST::vectorList);
 
   for (i = 0; i < CurveList->count(); ++i) {
-    if (CurveList->isSelected(i)) {
+    if (CurveList->item(i)->isSelected()) {
       KstRVectorPtr vector;
 
-      vector = *(rvl.findTag(CurveList->text(i)));
+      vector = *(rvl.findTag(CurveList->item(i)->text()));
       if (vector) {
         KstDataSourcePtr ds;
         KstFrameSize f0;
@@ -229,8 +231,8 @@ void KstChangeNptsDialog::updateDefaults(int index) {
 
   disconnect(_kstDataRange, SIGNAL(changed()), this, SLOT(modifiedRange()));
 
-  _kstDataRange->_startUnits->setCurrentItem(0);
-  _kstDataRange->_rangeUnits->setCurrentItem(0);
+  _kstDataRange->_startUnits->setCurrentIndex(0);
+  _kstDataRange->_rangeUnits->setCurrentIndex(0);
 
   //
   // fill the vector range entries
@@ -262,13 +264,13 @@ void KstChangeNptsDialog::updateDefaults(int index) {
 
 
 void KstChangeNptsDialog::changedSelection() {
-  int index = -1;
-  unsigned int i;
   bool selected = false;
   bool enable;
+  int index = -1;
+  int i;
 
   for (i=0; i<CurveList->count(); ++i) {
-    if (CurveList->isSelected(i)) {
+    if (CurveList->item(i)->isSelected()) {
       selected = true;
       if (index == -1) {
         index = i;
@@ -305,10 +307,10 @@ void KstChangeNptsDialog::updateTimeCombo() {
   uint i;
 
   for (i = 0; i < cnt; ++i) {
-    if (CurveList->isSelected(i)) {
+    if (CurveList->item(i)->isSelected()) {
       KstRVectorPtr vector;
 
-      vector = *(rvl.findTag(CurveList->text(i)));
+      vector = *(rvl.findTag(CurveList->item(i)->text()));
       if (vector) {
         KstDataSourcePtr ds;
 

@@ -54,6 +54,12 @@ QString VectorSelector::selectedVector() {
 
 
 void VectorSelector::update() {
+  KstVectorList::const_iterator i;
+  QStringList vectors;
+  QString prev;
+  bool found = false;
+  int index;
+
 /* xxx
   if (_vector->listBox()->isVisible()) {
     QTimer::singleShot(250, this, SLOT(update()));
@@ -63,22 +69,19 @@ void VectorSelector::update() {
 */
   blockSignals(true);
 
-  QString prev = _vector->currentText();
-  bool found = false;
-  int index;
+  prev = _vector->currentText();
 
   _vector->clear();
   if (_provideNoneVector) {
     _vector->insertItem(0, tr("<None>"));
   }
 
-  QStringList vectors;
-
   KST::vectorList.lock().readLock();
-  for (KstVectorList::ConstIterator i = KST::vectorList.begin(); i != KST::vectorList.end(); ++i) {
+  for (i = KST::vectorList.begin(); i != KST::vectorList.end(); ++i) {
     (*i)->readLock();
     if (!(*i)->isScalarList()){
       QString tag = (*i)->tag().displayString();
+
       vectors << tag;
       if (!found && tag == prev) {
         found = true;
@@ -113,7 +116,9 @@ void VectorSelector::createNewVector() {
 
 void VectorSelector::selectionWatcher( const QString & tag ) {
   QString label = "[" + tag + "]";
-// xxx  emit selectionChangedLabel(label);
+
+  emit selectionChangedLabel(label);
+
   setEdit(tag);
 }
 
@@ -143,11 +148,14 @@ void VectorSelector::setSelection( const QString & tag ) {
 
 
 void VectorSelector::newVectorCreated( KstVectorPtr v ) {
+  QString name;
+
   v->readLock();
-  QString name = v->tagName();
+  name = v->tagName();
   v->unlock();
   v = 0L; // deref
-// xxx  emit newVectorCreated(name);
+
+  emit newVectorCreated(name);
 }
 
 

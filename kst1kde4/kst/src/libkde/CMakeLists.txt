@@ -5,6 +5,7 @@ include_directories(${CMAKE_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_SOUR
 set(kstkde_LIB_SRCS
     kcolorbutton.cpp
     kcolorcollection.cpp
+    kcolorcombo.cpp
     kdualcolorbutton.cpp
     kled.cpp
     ksttimezones.cpp

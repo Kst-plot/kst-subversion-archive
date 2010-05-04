@@ -101,7 +101,7 @@ set(kstapp_LIB_SRCS
 # xxx    kstviewvectorsdialog.cpp
 # xxx    kstviewmatricesdialog.cpp
 # xxx    kstviewfitsdialog.cpp
-# xxx    kstchangenptsdialog.cpp
+    kstchangenptsdialog.cpp
 # xxx    kstchangefiledialog.cpp
 # xxx    kstdatawizard.cpp
     kst.cpp)

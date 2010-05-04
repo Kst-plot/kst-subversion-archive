@@ -40,24 +40,28 @@ void StringSelector::allowNewStrings( bool allowed ) {
 
 
 void StringSelector::update() {
+  KstStringList::iterator i;
+  QStringList strings;
+  QString prev = _string->currentText();
+  bool found = false;
+
   /* xxx if (_string->listBox()->isVisible()) {
     QTimer::singleShot(250, this, SLOT(update()));
     return;
   }*/
 
   blockSignals(true);
-    
-  KstStringList::Iterator i;
-  QStringList strings;
-  QString prev = _string->currentText();
-  bool found = false;
+
+  prev = _string->currentText();
     
   _string->clear();
     
 	KST::stringList.lock().readLock();
   for (i = KST::stringList.begin(); i != KST::stringList.end(); ++i) {
+    QString tag;
+
 		(*i)->readLock();
-	  QString tag = (*i)->tag().displayString();
+	  tag = (*i)->tag().displayString();
 		strings << tag;
 		(*i)->unlock();
 
@@ -79,8 +83,8 @@ void StringSelector::update() {
 
 	if (!_string->currentText().isNull()) {
 		selectionWatcher(_string->currentText());
-	}*/
-
+	}
+*/
     
   blockSignals(false);
 }
@@ -88,12 +92,15 @@ void StringSelector::update() {
 
 void StringSelector::createNewString() {
   StringEditor *se = new StringEditor(this);
+
   se->setWindowTitle(tr("New String"));
 
   if (se) {
   	int rc = se->exec();
+
 	  if (rc == QDialog::Accepted) {
-          KstStringPtr s;
+      KstStringPtr s;
+
 		  s = new KstString(KstObjectTag(se->_name->text(), KstObjectTag::globalTagContext), 0L, se->_value->text());
 
 		  s->setOrphan(true);
@@ -133,9 +140,11 @@ void StringSelector::selectString() {
 
 void StringSelector::editString() {
   StringEditor *se = new StringEditor(this);
+
   se->setWindowTitle(tr("Edit string"));
   if (se ) {    
     KstStringPtr pold = *KST::stringList.findTag(_string->currentText());
+
     if (pold && pold->editable()) { 
       se->_value->setText(pold->value());
       se->_name->setText(pold->tag().tagString()); 
@@ -145,9 +154,9 @@ void StringSelector::editString() {
       
     int rc = se->exec();
     if (rc == QDialog::Accepted) {
-		  QString val = se->_value->text();
-  
+		  QString val = se->_value->text();  
 		  KstStringPtr p = *KST::stringList.findTag(se->_name->text());
+
 		  if (p) {
 			  p->setValue(val);
 			  setSelection(p);
@@ -156,7 +165,9 @@ void StringSelector::editString() {
   
 			  p->setOrphan(true);
 			  p->setEditable(true);
-			  //emit newStringCreated();
+
+			  emit newStringCreated();
+
 			  update();
 			  setSelection(p);
 			  _editString->setEnabled(true);
@@ -173,7 +184,7 @@ void StringSelector::selectionWatcher( const QString & tag ) {
   QString label = "["+tag+"]";
   bool editable = false;
 
-// xxx emit selectionChangedLabel(label);
+  emit selectionChangedLabel(label);
 
   KST::stringList.lock().readLock();
   p = *KST::stringList.findTag(tag);

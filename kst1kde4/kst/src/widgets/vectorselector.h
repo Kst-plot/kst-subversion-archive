@@ -35,6 +35,8 @@ public:
   void    setEdit( const QString& tag );
 
 Q_SIGNALS:
+  void    selectionChangedLabel(const QString&);
+  void    newVectorCreated(const QString&);
 
 private Q_SLOTS:
 

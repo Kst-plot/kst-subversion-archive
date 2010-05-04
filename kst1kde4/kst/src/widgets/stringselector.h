@@ -34,6 +34,7 @@ public:
   void allowDirectEntry( bool allowed );
 
 Q_SIGNALS:
+  void selectionChangedLabel(const QString&);
   void newStringCreated();
 
 private Q_SLOTS:

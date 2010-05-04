@@ -104,9 +104,10 @@ void ScalarSelector::update() {
 
 void ScalarSelector::createNewScalar() {
   ScalarEditor *se = new ScalarEditor(this);
-  se->setWindowTitle(tr("New Scalar"));
+  int rc;
 
-  int rc = se->exec();
+  se->setWindowTitle(tr("New Scalar"));
+  rc = se->exec();
   if (rc == QDialog::Accepted) {
     bool ok = false;
     double val = se->_value->text().toFloat(&ok);
@@ -199,7 +200,9 @@ void ScalarSelector::editScalar() {
         if (scalar) {
           scalar->setOrphan(true);
           scalar->setEditable(true);
-// xxx          emit newScalarCreated();
+
+          emit newScalarCreated();
+
           update();
           setSelection(scalar);
         }
@@ -215,10 +218,11 @@ void ScalarSelector::editScalar() {
 
 
 void ScalarSelector::selectionWatcher( const QString & tag ) {
+  QString label = "["+tag+"]";
   bool editable = false;
 
-  QString label = "["+tag+"]";
-// xxx  emit selectionChangedLabel(label);
+  emit selectionChangedLabel(label);
+
   KST::scalarList.lock().readLock();
   KstScalarPtr p = *KST::scalarList.findTag(tag);
   if (p && p->editable()) {
@@ -266,9 +270,10 @@ KstScalarPtr ScalarSelector::selectedScalarPtr() {
   if (!ptr) {
     if (_scalar->isEditable()) {
       KstWriteLocker sl(&KST::scalarList.lock());
+      double val;
       bool ok;
-      double val = _scalar->currentText().toDouble(&ok);
 
+      val = _scalar->currentText().toDouble(&ok);
       if (ok) {
         ptr = new KstScalar(KstObjectTag::fromString(_scalar->currentText()), 0L, val, true, false);
       }

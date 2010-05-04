@@ -21,10 +21,15 @@ KstDataDialog::KstDataDialog(QWidget *parent) : QDialog(parent) {
   _newDialog = false;
   _multiple = false;
   _editMultipleMode = false;
+
   connect(this, SIGNAL(modified()), KstApp::inst()->document(), SLOT(wasModified()));
   connect(_editMultiple, SIGNAL(clicked()), this, SLOT(toggleEditMultiple()));
   connect(_tagName, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
   connect(_legendText, SIGNAL(textChanged(const QString&)), this, SLOT(wasModifiedApply()));
+  connect(_ok, SIGNAL(clicked()), this, SLOT(ok()));
+  connect(_apply, SIGNAL(clicked()), this, SLOT(apply()));
+  connect(_cancel, SIGNAL(clicked()), this, SLOT(close()));
+
   _editMultiple->hide();
   _editMultipleWidget->hide();
 }
