@@ -17,8 +17,6 @@
 
 #include "kstdatasource.h"
 
-#include <assert.h>
-
 #include <q3deepcopy.h>
 #include <QFile>
 #include <QFileInfo>

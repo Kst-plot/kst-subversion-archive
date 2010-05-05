@@ -274,9 +274,18 @@ class KstObjectList : public QLinkedList<T> {
       return QLinkedList<T>::end();
     }
 
-    virtual typename QLinkedList<T>::ConstIterator findTag(const QString& x) const {
-      for (typename QLinkedList<T>::ConstIterator it = QLinkedList<T>::begin(); it != QLinkedList<T>::end(); ++it) {
+    virtual typename QLinkedList<T>::const_iterator findTag(const QString& x) const {
+      for (typename QLinkedList<T>::const_iterator it = QLinkedList<T>::begin(); it != QLinkedList<T>::end(); ++it) {
         if (*(*it) == x) {
+          return it;
+        }
+      }
+      return QLinkedList<T>::end();
+    }
+
+    virtual typename QLinkedList<T>::iterator findChild(T& x) {
+      for (typename QLinkedList<T>::iterator it = QLinkedList<T>::begin(); it != QLinkedList<T>::end(); ++it) {
+        if (*it == x) {
           return it;
         }
       }
@@ -285,7 +294,7 @@ class KstObjectList : public QLinkedList<T> {
 
     virtual int findIndexTag(const QString& x) const {
       int i = 0;
-      for (typename QLinkedList<T>::ConstIterator it = QLinkedList<T>::begin(); it != QLinkedList<T>::end(); ++it) {
+      for (typename QLinkedList<T>::const_iterator it = QLinkedList<T>::begin(); it != QLinkedList<T>::end(); ++it) {
         if (*(*it) == x) {
           return i;
         }
@@ -294,8 +303,8 @@ class KstObjectList : public QLinkedList<T> {
       return -1;
     }
 
-    virtual typename QLinkedList<T>::Iterator removeTag(const QString& x) {
-      typename QLinkedList<T>::Iterator it = findTag(x);
+    virtual typename QLinkedList<T>::iterator removeTag(const QString& x) {
+      typename QLinkedList<T>::iterator it = findTag(x);
       if (it != QLinkedList<T>::end()) {
         return QLinkedList<T>::erase(it);
       }

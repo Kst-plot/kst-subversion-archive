@@ -84,11 +84,11 @@ KstViewWindow::KstViewWindow(const QDomElement& e, QWidget* parent, const char* 
 
 
 void KstViewWindow::commonConstructor() {
-// xxx  config = kapp->config();
+  config = new QSettings();
 
-// xxx  connect(this, SIGNAL(focusInEventOccurs( QMdiSubWindow*)), this, SLOT(slotActivated(QMdiSubWindow*)));
+  connect(this, SIGNAL(focusInEventOccurs( QMdiSubWindow*)), this, SLOT(slotActivated(QMdiSubWindow*)));
 
-// xxx  QTimer::singleShot(0, this, SLOT(updateActions()));
+  QTimer::singleShot(0, this, SLOT(updateActions()));
 
 // xxx  QVBoxLayout *vb = new QVBoxLayout(this);
 // xxx  vb->setAutoAdd(true);

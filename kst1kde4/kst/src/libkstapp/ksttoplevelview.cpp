@@ -434,22 +434,17 @@ bool KstTopLevelView::handlePress(const QPoint& pos, bool shift) {
   if (_pressTarget) {
     _pressDirection = _pressTarget->directionFor(pos);
   
-    if (shift && _pressDirection < 1) {
-      KstViewObjectList::iterator it;
-  
-// xxx    it = _selectionList.find(_pressTarget);
-  
+    if (shift && _pressDirection < 1) {  
       if (_pressTarget->isSelected()) {
         _pressTarget->setSelected(false);
-        if (it != _selectionList.end()) {
-// xxx        _selectionList.remove(it);
-        }
+        _selectionList.removeAll(_pressTarget);
       } else {
         _pressTarget->setSelected(true);
-        if (it == _selectionList.end()) {
-// xxx        _selectionList.append(_pressTarget);
+        if (!_selectionList.contains(_pressTarget)) {
+          _selectionList.append(_pressTarget);
         }
       }
+
       _pressTarget = 0L;
       _pressDirection = -1;
       _moveOffset = QPoint(-1, -1);
@@ -619,8 +614,7 @@ void KstTopLevelView::moveSnapToBorders(int *xMin, int *yMin, const KstViewObjec
   KstViewObjectList::const_iterator i;
 
   for (i = obj->children().begin(); i != obj->children().end(); ++i) {
-/* xxx
-    if (_selectionList.find(*i) == _selectionList.end() && _pressTarget != *i) {
+    if (!_selectionList.contains(*i) && _pressTarget != *i) {
       const QRect rect((*i)->geometry());
 
       moveSnapToBorders(xMin, yMin, *i, r);
@@ -654,7 +648,6 @@ void KstTopLevelView::moveSnapToBorders(int *xMin, int *yMin, const KstViewObjec
         }
       }
     }
-*/
   }
 }
 
@@ -1504,22 +1497,22 @@ void KstTopLevelView::condenseXAxis() {
             if (geom.top() - geomItem.bottom() == 1) {
               geom = geom.unite(geomItem);
               plotsProcess.append(*i);
-// xxx              plots.remove(*i);
+              plots.removeAll(*i);
               added = true;
               break;
             } else if (geomItem.top() - geom.bottom() == 1) {
               plotsProcess.prepend(*i);
-// xxx              plots.remove(*i);        
+              plots.removeAll(*i);        
               added = true;
               break;
             } else if (fabs(aspect.y - (aspectItem.y + aspectItem.h)) < close) { 
               plotsProcess.append(*i);
-// xxx              plots.remove(*i);        
+              plots.removeAll(*i);        
               added = true;
               break;
             } else if (fabs(aspectItem.y - (aspect.y + aspect.h)) < close) {
               plotsProcess.prepend(*i);
-// xxx              plots.remove(*i);        
+              plots.removeAll(*i);        
               added = true;
               break;
             }
@@ -1609,22 +1602,22 @@ void KstTopLevelView::condenseYAxis() {
               (fabs(aspectItem.y - aspect.y) < close && fabs(aspectItem.h - aspect.h) < close)) {
             if (geom.left() - geomItem.right() == 1) {
               plotsProcess.append(*i);
-// xxx              plots.remove(*i);
+              plots.removeAll(*i);
               added = true;
               break;
             } else if (geomItem.left() - geom.right() == 1) {
               plotsProcess.prepend(*i);
-// xxx              plots.remove(*i);
+              plots.removeAll(*i);
               added = true;
               break;
             } else if (fabs(aspect.x - (aspectItem.x + aspectItem.w)) < close) { 
               plotsProcess.append(*i);
-// xxx              plots.remove(*i);        
+              plots.removeAll(*i);        
               added = true;
               break;
             } else if (fabs(aspectItem.x - (aspect.x + aspect.w)) < close) {
               plotsProcess.prepend(*i);
-// xxx              plots.remove(*i);        
+              plots.removeAll(*i);        
               added = true;
               break;
             }

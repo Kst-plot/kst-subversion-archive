@@ -18,8 +18,6 @@
 #ifndef KSTVIEWWINDOW_H
 #define KSTVIEWWINDOW_H
 
-#include <config.h>
-
 #include "kst.h"
 #include "kstdatacollection.h"
 #include "kstdefaultnames.h"

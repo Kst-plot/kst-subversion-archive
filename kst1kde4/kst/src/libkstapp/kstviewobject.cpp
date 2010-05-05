@@ -1602,6 +1602,7 @@ void KstViewObject::raiseToTop() {
     if (_parent->_children.contains(obj)) {
       _parent->_children.removeAll(obj);
       _parent->_children.append(obj);
+
       KstApp::inst()->document()->setModified();
       setDirty();
     }
@@ -1617,6 +1618,7 @@ void KstViewObject::lowerToBottom() {
     if (_parent->_children.contains(obj)) {
       _parent->_children.removeAll(obj);
       _parent->_children.prepend(obj);
+
       KstApp::inst()->document()->setModified();
       setDirty();
     }
@@ -1627,51 +1629,60 @@ void KstViewObject::lowerToBottom() {
 void KstViewObject::raise() {
   if (_parent) {
     KstViewObjectPtr obj;
-/* xxx
+    KstViewObjectList::iterator it;
+
     obj = this;
-    if (_parent->_children.contains(obj)) {
-      it = _parent->_children.remove(it);
-      ++it;
+    it = _parent->_children.findChild(obj);
+
+    if (it != _parent->_children.end()) {
+      it = _parent->_children.erase(it);
       if (it != _parent->_children.end()) {
-        _parent->_children.insert(it, t);
-      } else {
-        _parent->_children.append(t);
+        ++it;
       }
+      if (it != _parent->_children.end()) {
+        _parent->_children.insert(it, obj);
+      } else {
+        _parent->_children.append(obj);
+      }
+
       KstApp::inst()->document()->setModified();
       setDirty();
     }
-*/
   }
 }
 
 
 void KstViewObject::lower() {
   if (_parent) {
-/* xxx
-    KstViewObjectPtr t = this;
-    KstViewObjectList::iterator it = _parent->_children.find(t);
+    KstViewObjectPtr obj;
+    KstViewObjectList::iterator it;
+
+    obj  = this;
+    it = _parent->_children.findChild(obj);
 
     if (it != _parent->_children.end()) {
-      it = _parent->_children.remove(it);
+      it = _parent->_children.erase(it);
       if (!_parent->_children.isEmpty() && it != _parent->_children.begin()) {
         --it;
-        _parent->_children.insert(it, t);
+        _parent->_children.insert(it, obj);
       } else {
-        _parent->_children.prepend(t);
+        _parent->_children.prepend(obj);
       }
+
       KstApp::inst()->document()->setModified();
       setDirty();
     }
-*/
   }
 }
 
 
 void KstViewObject::remove() {
-  KstApp::inst()->document()->setModified();
-  KstViewObjectPtr vop(this);
+  KstViewObjectPtr vop;
   KstViewObjectPtr tlp;
 
+  KstApp::inst()->document()->setModified();
+
+  vop = this;
   tlp = topLevelParent();
   if (tlp) {
     KstTopLevelViewPtr tlv;
@@ -1694,7 +1705,7 @@ void KstViewObject::remove() {
     removeChild(_children.first());
   }
 
-  vop = 0L; // basically "delete this;"
+  vop = 0L; // deref
 
   QTimer::singleShot(0, KstApp::inst(), SLOT(updateDialogs()));
 }
@@ -1714,11 +1725,11 @@ void KstViewObject::moveTo(int id) {
       KstViewObjectList::iterator it; 
 
       t = this;
-// xxx      it = _parent->_children.find(t);
+      it = _parent->_children.findChild(t);
       if (it != _parent->_children.end()) {
         KstApp::inst()->document()->setModified();
         setDirty();
-// xxx        _parent->_children.remove(it);
+        _parent->_children.erase(it);
         viewWindow->view()->appendChild(t, true);
         viewWindow->view()->paint(KstPainter::P_PAINT);
       }
@@ -1745,7 +1756,6 @@ void KstViewObject::copyTo(int id) {
 
 
 void KstViewObject::updateFromAspect() {
-  // FIXME: also take into account the maximum minimum child size in our children
   setMinimumSize(minimumSize().expandedTo(QSize(_children.count(), _children.count())));
 
   const QRect myOldGeom(_geom);
@@ -1840,6 +1850,8 @@ void KstViewObject::setMaximized(bool maximized) {
 
 
 void KstViewObject::zoomToggle() {
+  KstViewObjectList::iterator it;
+
   if (_maximized) {
     _maximized = false;
     _aspect = _aspectOldZoomedObject;
@@ -1859,7 +1871,7 @@ void KstViewObject::zoomToggle() {
     setOnGrid(false);
   }
 
-  for (KstViewObjectList::Iterator it = _children.begin(); it != _children.end(); ++it) {
+  for (it = _children.begin(); it != _children.end(); ++it) {
     (*it)->parentResized();
   }
   setDirty();
@@ -1870,7 +1882,7 @@ void KstViewObject::recursivelyQuery(bool (KstViewObject::*method)() const, KstV
   bool has = (this->*method)();
 
   if (has) {
-// xxx    list.append(this);
+    list.append(KstViewObjectPtr(this));
   }
 
   if (!has || (has && matchRecurse)) {
@@ -1885,7 +1897,7 @@ void KstViewObject::recursivelyQuery(bool (KstViewObject::*method)() const, KstV
 
 void KstViewObject::detach() {
   if (_parent) {
-// xxx    _parent->removeChild(this);
+    _parent->removeChild(KstViewObjectPtr(this));
     _parent = 0L;
   }
 }
