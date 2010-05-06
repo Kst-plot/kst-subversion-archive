@@ -397,137 +397,153 @@ void KstVectorDialog::fillFieldsForNew() {
 }
 
 
-bool KstVectorDialog::newObject() {
+bool KstVectorDialog::createVectorFromSource() {
   KstDataSourcePtr file;
   QString tagName = _tagName->text();
+  KstRVectorPtr vector;
+  KstFrameSize f0;
+  KstFrameSize n;
 
-  if (_w->_readFromSource->isChecked()) {
-    KstRVectorPtr vector;
-    KstFrameSize f0;
-    KstFrameSize n;
+  tagName.replace(defaultTag, _w->Field->currentText());
+  tagName = KST::suggestVectorName(tagName);
+  tagName.remove('[');
+  tagName.remove(']');
 
-    tagName.replace(defaultTag, _w->Field->currentText());
-    tagName = KST::suggestVectorName(tagName);
-    tagName.remove('[');
-    tagName.remove(']');
+  //
+  // if there is not an active DataSource, create one...
+  //
 
-    //
-    // if there is not an active DataSource, create one...
-    //
+  {
+    KstDataSourceList::iterator it;
 
-    {
-      KstDataSourceList::iterator it;
-
-      KST::dataSourceList.lock().writeLock();
+    KST::dataSourceList.lock().writeLock();
 
 // xxx      it = KST::dataSourceList.findReusableFileName(_w->FileName->url());
-      if (it == KST::dataSourceList.end()) {
+    if (it == KST::dataSourceList.end()) {
 // xxx        file = KstDataSource::loadSource(_w->FileName->url());
-        if (!file || !file->isValid()) {
-          KST::dataSourceList.lock().unlock();
-          QMessageBox::warning(this, QObject::tr("Kst"), QObject::tr("The file could not be loaded."));
-
-          return false;
-        }
-
-        if (file->isEmpty()) {
-          KST::dataSourceList.lock().unlock();
-          QMessageBox::warning(this, QObject::tr("Kst"), QObject::tr("The file does not contain data."));
-
-          return false;
-        }
-        KST::dataSourceList.append(file);
-      } else {
-        file = *it;
-      }
-
-      KST::dataSourceList.lock().unlock();
-    }
-
-    file->readLock();
-
-    if (!file->isValidField(_w->Field->currentText())) {
-      file->unlock();
-      QMessageBox::warning(this, tr("Kst"), tr("The requested field is not defined for the requested file."));
-
-      return false;
-    }
-
-    if (_w->_kstDataRange->isStartRelativeTime()) {
-      f0 = file->sampleForTimeLarge(_w->_kstDataRange->f0Value());
-    } else if (_w->_kstDataRange->isStartAbsoluteTime()) {
-      bool ok = false;
-
-      f0 = file->sampleForTimeLarge(_w->_kstDataRange->f0DateTimeValue(), &ok);
-      if (!ok) {
-        file->unlock();
-        QMessageBox::warning(this, QObject::tr("Kst"), QObject::tr("The requested field or file could not use the specified date."));
+      if (!file || !file->isValid()) {
+        KST::dataSourceList.lock().unlock();
+        QMessageBox::warning(this, QObject::tr("Kst"), QObject::tr("The file could not be loaded."));
 
         return false;
       }
-    } else {
-      f0 = (KstFrameSize)_w->_kstDataRange->f0Value();
-    }
 
-    if (_w->_kstDataRange->isRangeRelativeTime()) {
-      double nValStored = _w->_kstDataRange->nValue();
+      if (file->isEmpty()) {
+        KST::dataSourceList.lock().unlock();
+        QMessageBox::warning(this, QObject::tr("Kst"), QObject::tr("The file does not contain data."));
 
-      if (_w->_kstDataRange->CountFromEnd->isChecked()) {
-        KstFrameSize frameCount = file->frameCountLarge(_w->Field->currentText());
-        double msCount = file->relativeTimeForSampleLarge(frameCount - 1);
-
-        n = frameCount - 1 - file->sampleForTimeLarge(msCount - nValStored);
-      } else {
-        double fTime = file->relativeTimeForSampleLarge(f0);
-
-        n = file->sampleForTimeLarge(fTime + nValStored) - file->sampleForTimeLarge(fTime);
+        return false;
       }
+      KST::dataSourceList.append(file);
     } else {
-      n = (KstFrameSize)_w->_kstDataRange->nValue();
-    }
-    file->unlock();
-
-    //
-    // create the vector
-    //
-
-    vector = new KstRVector(file, _w->Field->currentText(),
-        KstObjectTag(tagName, file->tag(), false),
-        _w->_kstDataRange->CountFromEnd->isChecked() ? -1 : f0,
-        _w->_kstDataRange->ReadToEnd->isChecked() ? -1 : n,
-        _w->_kstDataRange->Skip->value(),
-        _w->_kstDataRange->DoSkip->isChecked(),
-        _w->_kstDataRange->DoFilter->isChecked());
-
-    emit vectorCreated(KstVectorPtr(vector));
-
-    vector = 0L;
-
-    emit modified();
-  } else {
-    KstSVectorPtr svector;
-    double x0 = _w->_xMin->text().toDouble();
-    double x1 = _w->_xMax->text().toDouble();
-    int n = _w->_N->value();
-    QString tagName = _tagName->text();
-
-    if (tagName == defaultTag) {
-      tagName = KST::suggestVectorName(QString("(%1..%2)").arg(x0).arg(x1));
-    } else {
-      tagName.remove('[');
-      tagName.remove(']');
+      file = *it;
     }
 
-    svector = new KstSVector(x0, x1, n, KstObjectTag(tagName, KstObjectTag::globalTagContext));
-
-    emit vectorCreated(KstVectorPtr(svector));
-
-    svector = 0L;
-
-    emit modified();
+    KST::dataSourceList.lock().unlock();
   }
 
+  file->readLock();
+
+  if (!file->isValidField(_w->Field->currentText())) {
+    file->unlock();
+    QMessageBox::warning(this, tr("Kst"), tr("The requested field is not defined for the requested file."));
+
+    return false;
+  }
+
+  if (_w->_kstDataRange->isStartRelativeTime()) {
+    f0 = file->sampleForTimeLarge(_w->_kstDataRange->f0Value());
+  } else if (_w->_kstDataRange->isStartAbsoluteTime()) {
+    bool ok = false;
+
+    f0 = file->sampleForTimeLarge(_w->_kstDataRange->f0DateTimeValue(), &ok);
+    if (!ok) {
+      file->unlock();
+      QMessageBox::warning(this, QObject::tr("Kst"), QObject::tr("The requested field or file could not use the specified date."));
+
+      return false;
+    }
+  } else {
+    f0 = (KstFrameSize)_w->_kstDataRange->f0Value();
+  }
+
+  if (_w->_kstDataRange->isRangeRelativeTime()) {
+    double nValStored = _w->_kstDataRange->nValue();
+
+    if (_w->_kstDataRange->CountFromEnd->isChecked()) {
+      KstFrameSize frameCount = file->frameCountLarge(_w->Field->currentText());
+      double msCount = file->relativeTimeForSampleLarge(frameCount - 1);
+
+      n = frameCount - 1 - file->sampleForTimeLarge(msCount - nValStored);
+    } else {
+      double fTime = file->relativeTimeForSampleLarge(f0);
+
+      n = file->sampleForTimeLarge(fTime + nValStored) - file->sampleForTimeLarge(fTime);
+    }
+  } else {
+    n = (KstFrameSize)_w->_kstDataRange->nValue();
+  }
+  file->unlock();
+
+  //
+  // create the vector
+  //
+
+  vector = new KstRVector(file, _w->Field->currentText(),
+      KstObjectTag(tagName, file->tag(), false),
+      _w->_kstDataRange->CountFromEnd->isChecked() ? -1 : f0,
+      _w->_kstDataRange->ReadToEnd->isChecked() ? -1 : n,
+      _w->_kstDataRange->Skip->value(),
+      _w->_kstDataRange->DoSkip->isChecked(),
+      _w->_kstDataRange->DoFilter->isChecked());
+
+  emit vectorCreated(KstVectorPtr(vector));
+
+  vector = 0L;
+
+  emit modified();
+
   return true;
+}
+
+
+bool KstVectorDialog::createVectorGenerated() {
+  KstSVectorPtr sVector;
+  QString tagName;
+  double x0 = _w->_xMin->text().toDouble();
+  double x1 = _w->_xMax->text().toDouble();
+  int n = _w->_N->value();
+
+  tagName = _tagName->text();
+  if (tagName == defaultTag) {
+    tagName = KST::suggestVectorName(QString("(%1..%2)").arg(x0).arg(x1));
+  } else {
+    tagName.remove('[');
+    tagName.remove(']');
+  }
+
+  sVector = new KstSVector(x0, x1, n, KstObjectTag(tagName, KstObjectTag::globalTagContext));
+
+  emit vectorCreated(KstVectorPtr(sVector));
+
+  sVector = 0L;
+
+  emit modified();
+
+  return true;
+}
+
+
+bool KstVectorDialog::newObject() {
+  bool rc;
+
+  if (_w->_readFromSource->isChecked()) {
+    rc = createVectorFromSource();
+  } else {
+    rc = createVectorGenerated();
+  }
+
+  return rc;
 }
 
 
@@ -637,6 +653,7 @@ bool KstVectorDialog::editSingleObjectRV(KstVectorPtr vcPtr) {
         f0 = file->sampleForTimeLarge(_w->_kstDataRange->f0Value());
       } else if (_w->_kstDataRange->isStartAbsoluteTime()) {
         bool ok = false;
+
         f0 = file->sampleForTime(_w->_kstDataRange->f0DateTimeValue(), &ok);
         if (!ok) {
           file->unlock();

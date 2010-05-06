@@ -24,11 +24,10 @@
 class KstViewFitsDialog : public QDialog, public Ui::KstViewFitsDialog {
   Q_OBJECT
   public:
-    KstViewFitsDialog(QWidget* parent = 0,
-                        const char* name = 0,
+    KstViewFitsDialog(QWidget* parent = 0, const char* name = 0,
                         bool modal = false, Qt::WindowFlags fl = 0 );
     virtual ~KstViewFitsDialog();
-    KstFitTable* tableFits;
+    KstFitTable* _tableFits;
 
     bool hasContent() const;
 

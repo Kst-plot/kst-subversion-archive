@@ -356,7 +356,7 @@ void kstObjectSplitList(KstObjectList<QExplicitlySharedDataPointer<T> >& list, K
   for (it = list.begin(); it != list.end(); ++it) {
     S *x = dynamic_cast<S*>((*it).data());
     if (x != 0L) {
-      inclusive.append(x);
+      inclusive.append(QExplicitlySharedDataPointer<S>(x));
     } else {
       exclusive.append(*it);
     }

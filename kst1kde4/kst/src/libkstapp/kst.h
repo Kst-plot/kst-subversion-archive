@@ -42,7 +42,6 @@ enum DataType { DataOnly, DataPSD, PSDOnly };
 enum LineType { LineOnly, PointOnly, LinePoint };
 enum PlotType { OnePlot, MultiplePlots, CycleThrough, ExistingPlot, ExistingCycle};
 
-// forward declaration of the Kst classes
 class GraphicEditor;
 class Kst2DPlot;
 typedef KstObjectMap<QExplicitlySharedDataPointer<Kst2DPlot> > Kst2DPlotMap;
@@ -65,21 +64,18 @@ class KstMonochromeDialog;
 class KstPlotDialog;
 class KstQuickStartDialog;
 class KstVectorSaveDialog;
-/* xxx
 class KstViewFitsDialog;
-class KstViewManager;
+// xxx class KstViewManager;
 class KstViewMatricesDialog;
-class KstViewScalarsDialog;
-class KstViewStringsDialog;
+// xxx class KstViewScalarsDialog;
+// xxx class KstViewStringsDialog;
 class KstViewVectorsDialog;
-*/
 class KstViewWindow;
 class StatusLabel;
 class UpdateThread;
 
 class QLabel;
 class QProgressBar;
-class KProgress;
 
 
 class KstOpen {
@@ -88,6 +84,7 @@ class KstOpen {
     int n, f, s;
     bool ave;
 };
+
 
 class KST_EXPORT KstApp : public QMainWindow, private Ui_MainWindow {
   Q_OBJECT
@@ -233,6 +230,7 @@ class KST_EXPORT KstApp : public QMainWindow, private Ui_MainWindow {
     void showChangeNptsDialog();
     void showGraphFileDialog();
     void showDebugDialog();
+    void showAboutDialog();
     void showDebugLog();
     void showPluginManager();
     void showExtensionManager();
@@ -293,9 +291,11 @@ class KST_EXPORT KstApp : public QMainWindow, private Ui_MainWindow {
 /* xxx
     KstViewScalarsDialog *_viewScalarsDialog;
     KstViewStringsDialog *_viewStringsDialog;
+*/
     KstViewVectorsDialog *_viewVectorsDialog;
     KstViewMatricesDialog *_viewMatricesDialog;
     KstViewFitsDialog *_viewFitsDialog;
+/* xxx
     KstChangeFileDialog *_changeFileDialog;
     KstChooseColorDialog *_chooseColorDialog;
     KstCurveDifferentiate *_differentiateCurvesDialog;

@@ -92,6 +92,8 @@ class KST_EXPORT KstVectorDialog : public KstDataDialog {
     bool editSingleObjectSV(KstVectorPtr vcPtr);
     void populateEditMultipleRV();
     void populateEditMultipleSV();
+    bool createVectorFromSource();
+    bool createVectorGenerated();
 
     bool _fileNameDirty : 1;
     bool _f0Dirty : 1;

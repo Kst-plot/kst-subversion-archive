@@ -25,14 +25,14 @@
 class KstViewScalarsDialog : public QDialog, public Ui::KstViewScalarsDialog {
   Q_OBJECT
   public:
-    KstViewScalarsDialog(QWidget* parent = 0,
-        const char* name = 0,
-        bool modal = false, Qt::WindowFlags fl = 0 );
+    KstViewScalarsDialog(QWidget* parent = 0, const char* name = 0,
+                          bool modal = false, Qt::WindowFlags fl = 0 );
     virtual ~KstViewScalarsDialog();
-    KListViewSearchLineWidget *searchWidget;
-    KstScalarListView *listViewScalars;
 
     bool hasContent() const;
+
+    KListViewSearchLineWidget *_searchWidget;
+    KstScalarListView *_listViewScalars;
 
   protected slots:
     virtual void languageChange();

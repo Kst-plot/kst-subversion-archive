@@ -18,9 +18,9 @@
 #include <QComboBox>
 #include <QLabel>
 #include <QLayout>
-#include <QListBox>
+#include <QListWidget>
 #include <QPushButton>
-#include <QTable>
+#include <QTableWidget>
 #include <QTimer>
 
 #include "kstcplugin.h"
@@ -28,24 +28,19 @@
 #include "kstdataobjectcollection.h"
 #include "kstviewfitsdialog.h"
 
-KstViewFitsDialog::KstViewFitsDialog(QWidget* parent,
-                                             const char* name,
-                                             bool modal,
-                                             Qt::WindowFlags fl) 
-: QDialog(parent, name, modal, fl) {
+KstViewFitsDialog::KstViewFitsDialog(QWidget* parent, const char* name,
+                                             bool modal, Qt::WindowFlags fl) 
+: QDialog(parent, fl) {
   setupUi(this);
-  tableFits = new KstFitTable(this, "tableFits");
-  tableFits->setNumRows(0);
-  tableFits->setNumCols(1);
-  tableFits->setReadOnly(true);
-  tableFits->setSorting(false);
-  tableFits->setSelectionMode(QTable::Single);
-  layout2->addWidget(tableFits, 2, 0);
+
+  _tableFits = new KstFitTable(this, "tableFits");
+  _tableFits->setRowCount(0);
+  _tableFits->setColumnCount(1);
+  _tableFits->setSelectionMode(QAbstractItemView::SingleSelection);
+  hboxLayout->addWidget(_tableFits, 2, 0);
 
   connect(Cancel, SIGNAL(clicked()), this, SLOT(close()));
   connect(_comboBoxFits, SIGNAL(activated(const QString&)), this, SLOT(fitChanged(const QString&)));
-
-  tableFits->setReadOnly(true);
 }
 
 KstViewFitsDialog::~KstViewFitsDialog() {
@@ -70,6 +65,7 @@ bool KstViewFitsDialog::hasContent() const {
 
 
 void KstViewFitsDialog::fillComboBox(const QString& str) {
+  KstCPluginList::iterator it;
   KstCPluginList fits;
   QString fitName = str;
   bool changed = false;
@@ -77,15 +73,17 @@ void KstViewFitsDialog::fillComboBox(const QString& str) {
 
   _comboBoxFits->clear();
   fits = kstObjectSubList<KstDataObject,KstCPlugin>(KST::dataObjectList);
-  for (i = 0; i < fits.count(); i++) {
-    KstCPluginPtr fit = fits[i];
 
+  for (it = fits.begin(); it != fits.end(); ++it) {
+    KstCPluginPtr fit;
+
+    fit = *it;
     fit->readLock();
 
     if (fit->plugin()->data()._isFit) {
-      _comboBoxFits->insertItem(fit->tagName());
+      _comboBoxFits->insertItem(0, fit->tagName());
       if (fitName == fit->tagName() || fitName.isEmpty()) {
-        _comboBoxFits->setCurrentItem(_comboBoxFits->count() - 1);
+        _comboBoxFits->setCurrentIndex(_comboBoxFits->count() - 1);
         if (fitName.isEmpty()) {
           fitName = fit->tagName();
         }
@@ -103,16 +101,20 @@ void KstViewFitsDialog::fillComboBox(const QString& str) {
 }
 
 void KstViewFitsDialog::updateViewFitsDialog() {
+/* xxx
   if (_comboBoxFits->listBox()->isVisible()) {
     QTimer::singleShot(250, this, SLOT(updateViewFitsDialog()));
   } else {
+*/
     QString old;
     if (_comboBoxFits->count() > 0) {
-      int idx = _comboBoxFits->currentItem();
-      old = _comboBoxFits->text(idx);
+      int idx;
+
+      idx = _comboBoxFits->currentIndex();
+      old = _comboBoxFits->itemText(idx);
     }
     fillComboBox(old);
-  }
+// xxx  }
 }
 
 void KstViewFitsDialog::showViewFitsDialog(const QString& fit) {
@@ -135,14 +137,18 @@ void KstViewFitsDialog::fitChanged(const QString& strFit) {
   double chi2Nu = 0.0;
   int numParams = 0;
   int numCovars = 0;
+  int i;
 
   fits = kstObjectSubList<KstDataObject,KstCPlugin>(KST::dataObjectList);
   plugin = *(fits.findTag(strFit));
   if (plugin) {
+    KstScalarPtr scalarChi2Nu;
+    KstVectorPtr vectorParam;
     plugin->readLock();
 
     const KstScalarMap& scalars = plugin->outputScalars();
-    KstScalarPtr scalarChi2Nu = scalars["chi^2/nu"];
+    
+    scalarChi2Nu = scalars["chi^2/nu"];
     if (scalarChi2Nu) {
       scalarChi2Nu->readLock();
       chi2Nu = scalarChi2Nu->value();
@@ -150,11 +156,13 @@ void KstViewFitsDialog::fitChanged(const QString& strFit) {
     }
 
     const KstVectorMap& vectors = plugin->outputVectors();
-    KstVectorPtr vectorParam = vectors["Parameters"];
+    vectorParam = vectors["Parameters"];
 
     if (vectorParam) {
+      KstVectorPtr vectorCovar;
+
       vectorParam->readLock();
-      KstVectorPtr vectorCovar = vectors["Covariance"];
+      vectorCovar = vectors["Covariance"];
       if (vectorCovar) {
         vectorCovar->readLock();
         numParams = vectorParam->length();
@@ -164,11 +172,11 @@ void KstViewFitsDialog::fitChanged(const QString& strFit) {
           params = new double[numParams];
           covars = new double[numCovars];
 
-          for (int i = 0; i < numParams; i++) {
+          for (i = 0; i < numParams; i++) {
             params[i] = vectorParam->value(i);
           }
 
-          for (int i = 0; i < numCovars; i++) {
+          for (i = 0; i < numCovars; i++) {
             covars[i] = vectorCovar->value(i);
           }
         }
@@ -179,14 +187,14 @@ void KstViewFitsDialog::fitChanged(const QString& strFit) {
     plugin->unlock();
   }
 
-  tableFits->setParameters(params, numParams, covars, numCovars, chi2Nu);
+  _tableFits->setParameters(params, numParams, covars, numCovars, chi2Nu);
 
   if (numParams > 0) {
-    tableFits->horizontalHeader()->setLabel(0, tr("Value"));
-    tableFits->horizontalHeader()->setLabel(1, tr("Covariance:"));
+    _tableFits->horizontalHeaderItem(0)->setText(QObject::tr("Value"));
+    _tableFits->horizontalHeaderItem(1)->setText(QObject::tr("Covariance:"));
 
-    tableFits->verticalHeader()->setLabel(numParams+0, "---");
-    tableFits->verticalHeader()->setLabel(numParams+1, tr("Chi^2/Nu"));
+    _tableFits->verticalHeaderItem(numParams+0)->setText("---");
+    _tableFits->verticalHeaderItem(numParams+1)->setText(QObject::tr("Chi^2/Nu"));
 
     if (plugin) {
       QExplicitlySharedDataPointer<Plugin> pluginBase;
@@ -196,17 +204,17 @@ void KstViewFitsDialog::fitChanged(const QString& strFit) {
 
       if (pluginBase) {
         textLabelFit->setText(pluginBase->data()._readableName);
-        for (int i = 0; i < numParams; i++) {
+        for (i = 0; i < numParams; i++) {
           QString parameterName = pluginBase->parameterName(i);
-          tableFits->horizontalHeader()->setLabel(i + 2, parameterName);
-          tableFits->verticalHeader()->setLabel(i, parameterName);
+          _tableFits->horizontalHeaderItem(i+2)->setText(parameterName);
+          _tableFits->verticalHeaderItem(i)->setText(parameterName);
         }
       }
       plugin->unlock();
     }
   }
 
-  tableFits->update();
+  _tableFits->update();
 }
 
 void KstViewFitsDialog::updateDefaults(int index) {

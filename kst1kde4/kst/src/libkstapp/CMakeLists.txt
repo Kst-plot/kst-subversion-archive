@@ -32,6 +32,7 @@ set(kstapp_LIB_SRCS
 # dialogs...
     datasourcemetadatadialog.cpp
     kstbasicdialog.cpp
+    kstchangenptsdialog.cpp
     kstchoosecolordialog.cpp
     kstcsddialog.cpp
     kstcurvedialog.cpp
@@ -44,12 +45,19 @@ set(kstapp_LIB_SRCS
     kstgraphfiledialog.cpp
     ksthsdialog.cpp
     kstimagedialog.cpp
+    kstmatrixdialog.cpp
     kstmonochromedialog.cpp
     kstplugindialog.cpp
     kstpsddialog.cpp
     kstquickstartdialog.cpp
     kstsettingsdlg.cpp
+    kstvectordialog.cpp
     kstvectorsavedialog.cpp
+    kstviewfitsdialog.cpp
+    kstviewmatricesdialog.cpp
+# xxx    kstviewscalarsdialog.cpp
+# xxx    kstviewstringsdialog.cpp
+    kstviewvectorsdialog.cpp
     kstvvdialog.cpp
 # handlers...
     kstgfx2dplotmousehandler.cpp
@@ -63,6 +71,12 @@ set(kstapp_LIB_SRCS
     kstgfxrectanglemousehandler.cpp
     kstgfxtextmousehandler.cpp
     kstgfxtlvmousehandler.cpp
+# widgets...
+    kstfittable.cpp
+    kstmatrixtable.cpp
+# xxx    kstscalarlistview.cpp
+# xxx    kststringlistview.cpp
+    kstvectortable.cpp
 # other...
     kstdatacollection-gui.cpp
     dialoglauncher-gui.cpp
@@ -76,9 +90,6 @@ set(kstapp_LIB_SRCS
     plotmimesource.cpp
     kstplotdrag.cpp
     kstviewobjectimagedrag.cpp
-    kstvectortable.cpp
-    kstmatrixtable.cpp
-    kstfittable.cpp
     kstdrag.cpp
     kstfieldselect.cpp
     ksteventmonitor.cpp
@@ -88,20 +99,10 @@ set(kstapp_LIB_SRCS
     kstpluginmanager.cpp
     kstdoc.cpp
     emailthread.cpp
-    kstmatrixdialog.cpp
     ksteventmonitorentry.cpp
 # xxx    kstviewmanager.cpp
-# xxx    kstviewstringsdialog.cpp
     updatethread.cpp
-    kstvectordialog.cpp
 # xxx    kstprintoptionspage.cpp
-# xxx    kstscalarlistview.cpp
-# xxx    kststringlistview.cpp
-# xxx    kstviewscalarsdialog.cpp
-# xxx    kstviewvectorsdialog.cpp
-# xxx    kstviewmatricesdialog.cpp
-# xxx    kstviewfitsdialog.cpp
-    kstchangenptsdialog.cpp
 # xxx    kstchangefiledialog.cpp
 # xxx    kstdatawizard.cpp
     kst.cpp)

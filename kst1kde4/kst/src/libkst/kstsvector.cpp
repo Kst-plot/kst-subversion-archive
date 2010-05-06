@@ -22,21 +22,22 @@
 #include "kstsvector.h"
 
 KstSVector::KstSVector(const QDomElement &e) : KstVector(e) {
-  double in_x0 = 0.0;
-  double in_x1 = 1.0;
-  int in_n = 2;
+  double x0 = 0.0;
+  double x1 = 1.0;
+  int num = 2;
 
-  // parse the DOM tree
   QDomNode n = e.firstChild();
+
   while (!n.isNull()) {
     QDomElement e = n.toElement();
+
     if (!e.isNull()) {
       if (e.tagName() == "N") {
-        in_n = e.text().toInt();
+        num = e.text().toInt();
       } else if (e.tagName() == "min") {
-        in_x0 = e.text().toDouble();
+        x0 = e.text().toDouble();
       } else if (e.tagName() == "max") {
-        in_x1 = e.text().toDouble();
+        x1 = e.text().toDouble();
       }
     }
     n = n.nextSibling();
@@ -44,14 +45,14 @@ KstSVector::KstSVector(const QDomElement &e) : KstVector(e) {
 
   _saveable = true;
   _saveData = false;
-  changeRange( in_x0,  in_x1,  in_n );
+  changeRange(x0,  x1,  num);
 }
 
 
 KstSVector::KstSVector(double x0, double x1, int n, KstObjectTag tag) : KstVector(tag, n) {
   _saveable = true;
   _saveData = false;
-  changeRange( x0, x1, n );
+  changeRange(x0, x1, n);
 }
 
 

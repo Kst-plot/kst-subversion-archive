@@ -80,10 +80,10 @@
 #include "kstviewmanager.h"
 #include "kstviewscalarsdialog.h"
 #include "kstviewstringsdialog.h"
+*/
 #include "kstviewvectorsdialog.h"
 #include "kstviewmatricesdialog.h"
 #include "kstviewfitsdialog.h"
-*/
 #include "kstviewwidget.h"
 #include "kstviewwindow.h"
 #include "plotmimesource.h"
@@ -120,6 +120,10 @@ KstApp::KstApp(QWidget *parent, const char *name) : QMainWindow(parent) {
   setupUi(this);
 
   ::inst = this;
+
+  _viewVectorsDialog = 0L;
+  _viewMatricesDialog = 0L;
+  _viewFitsDialog = 0L;
 
   _dataBar = 0L;
   _readyBar = 0L;
@@ -263,9 +267,9 @@ void KstApp::initDialogs() {
 // xxx  _viewManager = new KstViewManager(doc, this);
 // xxx  _viewScalarsDialog = new KstViewScalarsDialog(this);
 // xxx  _viewStringsDialog = new KstViewStringsDialog(this);
-// xxx  _viewVectorsDialog = new KstViewVectorsDialog(this);
-// xxx  _viewMatricesDialog = new KstViewMatricesDialog(this);
-// xxx  _viewFitsDialog = new KstViewFitsDialog(this);
+  _viewVectorsDialog = new KstViewVectorsDialog(this);
+  _viewMatricesDialog = new KstViewMatricesDialog(this);
+  _viewFitsDialog = new KstViewFitsDialog(this);
 // xxx  _changeFileDialog = new KstChangeFileDialog(this);
 // xxx  _chooseColorDialog = new KstChooseColorDialog(this);
 // xxx  _differentiateCurvesDialog = new KstCurveDifferentiate(this);
@@ -451,6 +455,8 @@ void KstApp::initMenuBar() {
   _actionDialogChangeNpts->setIcon(QIcon((":/kst_changenpts.png")));
   _actionDialogDifferentiateCurves->setIcon(QIcon((":/kst_differentiatecurves.png")));
   _actionDialogChooseColor->setIcon(QIcon((":/kst_choosecolor.png")));
+
+  _actionDialogAbout->setIcon(QIcon(":/kst.png"));
 }
 
 
@@ -513,6 +519,9 @@ void KstApp::initActions() {
   connect(_actionTiedZoom, SIGNAL(toggled(bool)), this, SLOT(tieAll()));
   connect(_actionGroupMouse, SIGNAL(triggered(QAction*)), this, SLOT(toggleMouseMode()));
   connect(_actionDataMode, SIGNAL(toggled(bool)), this, SLOT(toggleDataMode()));
+
+  connect(_actionDialogDebug, SIGNAL(triggered()), this, SLOT(showDebugDialog()));
+  connect(_actionDialogAbout, SIGNAL(triggered()), this, SLOT(showAboutDialog()));
 
 /* xxx
   fileKeyBindings = KStdAction::keyBindings(this, SLOT(slotConfigureKeys()), actionCollection());
@@ -1855,27 +1864,37 @@ void KstApp::showViewStringsDialog() {
 
 
 void KstApp::showViewVectorsDialog() {
-// xxx  _viewVectorsDialog->showViewVectorsDialog();
+  if (_viewVectorsDialog) {
+    _viewVectorsDialog->showViewVectorsDialog();
+  }
 }
 
 
 void KstApp::showViewVectorsDialog(const QString &vector) {
-// xxx  _viewVectorsDialog->showViewVectorsDialog(vector);
+  if (_viewVectorsDialog) {
+    _viewVectorsDialog->showViewVectorsDialog(vector);
+  }
 }
 
 
 void KstApp::showViewMatricesDialog() {
-// xxx  _viewMatricesDialog->showViewMatricesDialog();
+  if (_viewMatricesDialog) {
+    _viewMatricesDialog->showViewMatricesDialog();
+  }
 }
 
 
 void KstApp::showViewMatricesDialog(const QString &matrix) {
-// xxx  _viewMatricesDialog->showViewMatricesDialog(matrix);
+  if (_viewMatricesDialog) {
+    _viewMatricesDialog->showViewMatricesDialog(matrix);
+  }
 }
 
 
 void KstApp::showViewFitsDialog() {
-// xxx  _viewFitsDialog->showViewFitsDialog();
+  if (_viewFitsDialog) {
+    _viewFitsDialog->showViewFitsDialog();
+  }
 }
 
 
@@ -1906,6 +1925,11 @@ void KstApp::showGraphFileDialog() {
 
 void KstApp::showDebugDialog() {
   _debugDialog->show_I();
+}
+
+
+void KstApp::showAboutDialog() {
+// xxx  _debugDialog->show_I();
 }
 
 
@@ -1941,29 +1965,42 @@ void KstApp::updateDataNotifier() {
 
 
 void KstApp::updateDataDialogs(bool dm, bool vm) {
+printf("zzzz\n");
 /* xxx
   _actionViewScalarsDialog->setEnabled(_viewScalarsDialog->hasContent());
   _actionViewStringsDialog->setEnabled(_viewStringsDialog->hasContent());
-  _actionViewVectorsDialog->setEnabled(_viewVectorsDialog->hasContent());
-  _actionViewMatricesDialog->setEnabled(_viewMatricesDialog->hasContent());
-  _actionViewFitsDialog->setEnabled(_viewFitsDialog->hasContent());
+*/
+  if (_viewVectorsDialog) {
+    _actionViewVectors->setEnabled(_viewVectorsDialog->hasContent());
+  }
 
+  if (_viewMatricesDialog) {
+    _actionViewMatrices->setEnabled(_viewMatricesDialog->hasContent());
+  }
+  
+  if (_viewFitsDialog) {
+    _actionViewFits->setEnabled(_viewFitsDialog->hasContent());
+  }
+/* xxx
   if (!_viewScalarsDialog->isHidden()) {
     _viewScalarsDialog->updateViewScalarsDialog();
   }
   if (!_viewStringsDialog->isHidden()) {
     _viewStringsDialog->updateViewStringsDialog();
   }
-  if (!_viewVectorsDialog->isHidden()) {
+*/
+  if (_viewVectorsDialog && !_viewVectorsDialog->isHidden()) {
     _viewVectorsDialog->updateViewVectorsDialog();
   }
-  if (!_viewMatricesDialog->isHidden()) {
+
+  if (_viewMatricesDialog && !_viewMatricesDialog->isHidden()) {
     _viewMatricesDialog->updateViewMatricesDialog();
   }
-  if (!_viewFitsDialog->isHidden()) {
+
+  if (_viewFitsDialog && !_viewFitsDialog->isHidden()) {
     _viewFitsDialog->updateViewFitsDialog();
   }
-*/
+
   if (dm) {
 // xxx    _dataManager->updateContents();
   }
@@ -1972,6 +2009,7 @@ void KstApp::updateDataDialogs(bool dm, bool vm) {
   }
 
   updateMemoryStatus();
+printf("yyyy\n");
 }
 
 
@@ -1981,6 +2019,7 @@ void KstApp::updateVisibleDialogs() {
 
 
 void KstApp::updateDialogs(bool onlyVisible) {
+printf("aaaa\n");
   if (!_stopping) {
     if (!onlyVisible || KstVectorDialog::globalInstance()->isVisible()) {
       KstVectorDialog::globalInstance()->update();
@@ -2045,6 +2084,7 @@ void KstApp::updateDialogs(bool onlyVisible) {
     updateDataManager(onlyVisible);
     updateViewManager(onlyVisible);
   }
+printf("bbbb\n");
 }
 
 

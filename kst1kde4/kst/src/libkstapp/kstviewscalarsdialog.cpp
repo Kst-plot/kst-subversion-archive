@@ -21,16 +21,14 @@
 #include "kstdatacollection.h"
 #include "kstviewscalarsdialog.h"
 
-KstViewScalarsDialog::KstViewScalarsDialog(QWidget* parent,
-                                           const char* name,
-                                           bool modal,
-                                           Qt::WindowFlags fl)
-: QDialog(parent, name, modal, fl) {
+KstViewScalarsDialog::KstViewScalarsDialog(QWidget* parent, const char* name,
+                                           bool modal, Qt::WindowFlags fl)
+: QDialog(parent, fl) {
   setupUi(this);
 
-  listViewScalars = new KstScalarListView(this, &KST::scalarList);
-  listViewScalars->setShowSortIndicator(false);
-  searchWidget = new KListViewSearchLineWidget(listViewScalars, this);
+  _listViewScalars = new KstScalarListView(this, &KST::scalarList);
+  _listViewScalars->setShowSortIndicator(false);
+  _searchWidget = new KListViewSearchLineWidget(listViewScalars, this);
   QBoxLayout *box = dynamic_cast<QBoxLayout*>(layout());
   if (box) {
     box->insertWidget(0, searchWidget);
@@ -52,19 +50,20 @@ bool KstViewScalarsDialog::hasContent() const {
 }
 
 void KstViewScalarsDialog::updateViewScalarsDialog() {
-  listViewScalars->update();
-  if (searchWidget) {
-    searchWidget->searchLine()->updateSearch(); 
+  _listViewScalars->update();
+  if (_searchWidget) {
+    _searchWidget->searchLine()->updateSearch(); 
   }
 
-  // use whole width
-  int c0Width = listViewScalars->columnWidth(0);
-  int c1Width = listViewScalars->columnWidth(1);
-  int totalWidth = listViewScalars->header()->rect().width();
+  int c0Width = _listViewScalars->columnWidth(0);
+  int c1Width = _listViewScalars->columnWidth(1);
+  int totalWidth = _listViewScalars->header()->rect().width();
+
   c0Width = totalWidth * c0Width/(c0Width + c1Width);
   c1Width = totalWidth - c0Width;
-  listViewScalars->setColumnWidth(0, c0Width);
-  listViewScalars->setColumnWidth(1, c1Width);
+
+  _listViewScalars->setColumnWidth(0, c0Width);
+  _listViewScalars->setColumnWidth(1, c1Width);
 }
 
 
@@ -76,14 +75,10 @@ void KstViewScalarsDialog::showViewScalarsDialog() {
 }
 
 
-/*
- *  Sets the strings of the subwidgets using the current
- *  language.
- */
 void KstViewScalarsDialog::languageChange() {
   setCaption(QObject::tr("View Scalar Values"));
-  listViewScalars->header()->setLabel(0, QObject::tr("Scalar"));
-  listViewScalars->header()->setLabel(1, QObject::tr("Value"));
+  _listViewScalars->header()->setLabel(0, QObject::tr("Scalar"));
+  _listViewScalars->header()->setLabel(1, QObject::tr("Value"));
   KstViewScalarsDialog::languageChange();
 }
 

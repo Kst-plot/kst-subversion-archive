@@ -17,41 +17,44 @@
 
 #include <QLayout>
 #include <QPushButton>
-#include <QTable>
+#include <QTableWidget>
 
 #include "kstviewvectorsdialog.h"
 #include "vectorselector.h"
 
-KstViewVectorsDialog::KstViewVectorsDialog(QWidget* parent,
-                                             const char* name,
-                                             bool modal,
-                                             Qt::WindowFlags fl)
-: QDialog(parent, name, modal, fl) {
+KstViewVectorsDialog::KstViewVectorsDialog(QWidget* parent, const char* name,
+                                             bool modal, Qt::WindowFlags fl)
+: QDialog(parent, fl) {
   setupUi(this);
+
   tableVectors = new KstVectorTable(this, "tableVectors");
-  tableVectors->setNumRows(0);
-  tableVectors->setNumCols(2);
-  tableVectors->setReadOnly(true);
-  tableVectors->setSorting(false);
-  tableVectors->setLeftMargin(0);
-  tableVectors->setSelectionMode(QTable::Single);
+  tableVectors->setRowCount(0);
+  tableVectors->setColumnCount(2);;
+  tableVectors->setSelectionMode(QAbstractItemView::SingleSelection);
   if (tableVectors->verticalHeader()) {
     tableVectors->verticalHeader()->hide();
   }
-  layout2->insertWidget(1, tableVectors);
+
+  vboxLayout->insertWidget(1, tableVectors);
 
   connect(Cancel, SIGNAL(clicked()), this, SLOT(close()));
   connect(vectorSelector, SIGNAL(selectionChanged(const QString&)), this, SLOT(vectorChanged(const QString&)));
   connect(vectorSelector, SIGNAL(newVectorCreated(const QString&)), this, SLOT(vectorChanged(const QString&)));
-
-  if (tableVectors->numCols() != 2) {
-    for (; 0 < tableVectors->numCols(); ) {
+/* xxx
+  if (tableVectors->columnCount() != 2) {
+    for (; 0 < tableVectors->columnCount(); ) {
       tableVectors->removeColumn(0);
     }
-    tableVectors->insertColumns(0, 2);
-  }
 
-  tableVectors->setReadOnly(true);
+    //
+    // insert two columns...
+    //
+
+    tableVectors->insertColumn(0);
+    tableVectors->insertColumn(0);
+  }
+*/
+
   languageChange();
 }
 
@@ -66,17 +69,22 @@ bool KstViewVectorsDialog::hasContent() const {
 
 
 void KstViewVectorsDialog::updateViewVectorsDialog() {
+  QString vector;
+
   vectorSelector->update();
-  QString vector = vectorSelector->selectedVector();
+  vector = vectorSelector->selectedVector();
   tableVectors->setVector(vector);
   updateViewVectorsDialog(vector);
 }
 
 
 void KstViewVectorsDialog::updateViewVectorsDialog(const QString& vectorName) {
+  KstVectorPtr vector;
+  QRect rect;
   int needed = 0;
+
   KST::vectorList.lock().readLock();
-  KstVectorPtr vector = *KST::vectorList.findTag(vectorName);
+  vector = *KST::vectorList.findTag(vectorName);
   KST::vectorList.lock().unlock();
   if (vector) {
     vector->readLock();
@@ -84,10 +92,10 @@ void KstViewVectorsDialog::updateViewVectorsDialog(const QString& vectorName) {
     vector->unlock();
   }
 
-  if (needed != tableVectors->numRows()) {
-    tableVectors->setNumRows(needed);
+  if (needed != tableVectors->rowCount()) {
+    tableVectors->setRowCount(needed);
   }
-  QRect rect = tableVectors->horizontalHeader()->rect();
+  rect = tableVectors->horizontalHeader()->rect();
   tableVectors->setColumnWidth(0, rect.width() / 5);
   tableVectors->setColumnWidth(1, rect.width() - (rect.width() / 5));
 }
@@ -102,10 +110,12 @@ void KstViewVectorsDialog::showViewVectorsDialog() {
 
 
 void KstViewVectorsDialog::showViewVectorsDialog(const QString &vectorName) {
+  KstVectorPtr vector;
+
   updateViewVectorsDialog();
 
   KST::vectorList.lock().readLock();
-  KstVectorPtr vector = *KST::vectorList.findTag(vectorName);
+  vector = *KST::vectorList.findTag(vectorName);
   KST::vectorList.lock().unlock();
   if (vector) {
     vectorSelector->setSelection(vector);
@@ -123,15 +133,13 @@ void KstViewVectorsDialog::vectorChanged(const QString& vector) {
 }
 
 
-/*
- *  Sets the strings of the subwidgets using the current
- *  language.
- */
 void KstViewVectorsDialog::languageChange() {
-  setCaption(QObject::tr("View Vector Values"));
-  tableVectors->horizontalHeader()->setLabel(0, QObject::tr("Index"));
-  tableVectors->horizontalHeader()->setLabel(1, QObject::tr("Value"));
+/* xxx
+  setWindowTitle(QObject::tr("View Vector Values"));
+  tableVectors->horizontalHeaderItem(0)->setText(QObject::tr("Index"));
+  tableVectors->horizontalHeaderItem(1)->setText(QObject::tr("Value"));
   KstViewVectorsDialog::languageChange();
+*/
 }
 
 
@@ -140,4 +148,3 @@ void KstViewVectorsDialog::updateDefaults(int index) {
 }
 
 #include "kstviewvectorsdialog.moc"
-

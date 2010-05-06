@@ -16,12 +16,6 @@
  ***************************************************************************/
 
 #include "updatethread.h"
-
-#ifdef MULTICORE_UPDATES
-#include "updatethread-multicore.cpp"
-#else
-#include <assert.h>
-
 #include "kstdatacollection.h"
 #include "kstdataobjectcollection.h"
 #include "kstdoc.h"
@@ -101,6 +95,7 @@ void UpdateThread::run() {
       } else {
         QApplication::postEvent(_doc, new ThreadEvent(ThreadEvent::Repaint));
       }
+
       // Wait for UI thread to finish events.  If we don't wait
       // 1: the UI thread could get flooded with events
       // 2: the update thread could change vectors during a paint, causing
@@ -112,6 +107,7 @@ void UpdateThread::run() {
       // true 'close' to when we asked.  This will safely keep the
       // update thread from over filling the UI thread.  The usleeps
       // will hopefully give the UI thread a chance to set itself...
+
       usleep(1000); // 1 ms on 2.6 kernel. 10ms on 2.4 kernel
 
       while (!_done && _doc->updating()) {  // wait for the UI to finish old events
@@ -165,7 +161,7 @@ bool UpdateThread::doUpdates(bool force, bool *gotData) {
     KstBaseCurveList::iterator itcl;
     KstDataObjectList::iterator itdol;
 
-// xxx    kstObjectSplitList<KstDataObject, KstBaseCurve>(KST::dataObjectList, cl, dol);
+    kstObjectSplitList<KstDataObject, KstBaseCurve>(KST::dataObjectList, cl, dol);
 // xxx    qSort(cl);
 // xxx    qSort(dol);
 
@@ -405,4 +401,3 @@ bool UpdateThread::paused() const {
   return _paused;
 }
 
-#endif

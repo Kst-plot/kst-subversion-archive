@@ -144,6 +144,8 @@
      <string>&amp;Help</string>
     </property>
     <addaction name="_actionDialogDebug"/>
+    <addaction name="separator"/>
+    <addaction name="_actionDialogAbout"/>
    </widget>
    <addaction name="_menuFile"/>
    <addaction name="_menuEdit"/>
@@ -832,6 +834,17 @@
    </property>
    <property name="whatsThis">
     <string>Bring up a dialog to display debugging information.</string>
+   </property>
+  </action>
+  <action name="_actionDialogAbout">
+   <property name="text">
+    <string>&amp;About Kst...</string>
+   </property>
+   <property name="statusTip">
+    <string>Bring up a dialog to display version and license information.</string>
+   </property>
+   <property name="whatsThis">
+    <string>Bring up a dialog to display version and license information.</string>
    </property>
   </action>
   <action name="_actionOpen">
