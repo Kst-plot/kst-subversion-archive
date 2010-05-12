@@ -13,44 +13,43 @@
   <property name="windowTitle">
    <string>View Vector Values</string>
   </property>
-  <layout class="QGridLayout">
-   <item row="0" column="0">
-    <layout class="QVBoxLayout">
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="VectorSelector" name="vectorSelector" native="true"/>
+   </item>
+   <item>
+    <widget class="QTableView" name="_table"/>
+   </item>
+   <item>
+    <layout class="QHBoxLayout">
      <item>
-      <widget class="VectorSelector" name="vectorSelector" native="true"/>
+      <spacer name="spacer4">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeType">
+        <enum>QSizePolicy::Expanding</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>391</width>
+         <height>31</height>
+        </size>
+       </property>
+      </spacer>
      </item>
      <item>
-      <layout class="QHBoxLayout">
-       <item>
-        <spacer name="spacer4">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeType">
-          <enum>QSizePolicy::Expanding</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>391</width>
-           <height>31</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item>
-        <widget class="QPushButton" name="Cancel">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="text">
-          <string>Close</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
+      <widget class="QPushButton" name="Cancel">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>Close</string>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>

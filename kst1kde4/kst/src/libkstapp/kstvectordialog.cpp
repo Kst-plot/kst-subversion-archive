@@ -536,10 +536,12 @@ bool KstVectorDialog::createVectorGenerated() {
 
 bool KstVectorDialog::newObject() {
   bool rc;
-
+printf("a\n");
   if (_w->_readFromSource->isChecked()) {
+printf("b\n");
     rc = createVectorFromSource();
   } else {
+printf("c\n");
     rc = createVectorGenerated();
   }
 

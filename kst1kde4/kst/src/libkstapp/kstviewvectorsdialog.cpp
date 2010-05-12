@@ -27,39 +27,19 @@ KstViewVectorsDialog::KstViewVectorsDialog(QWidget* parent, const char* name,
 : QDialog(parent, fl) {
   setupUi(this);
 
-  tableVectors = new KstVectorTable(this, "tableVectors");
-  tableVectors->setRowCount(0);
-  tableVectors->setColumnCount(2);;
-  tableVectors->setSelectionMode(QAbstractItemView::SingleSelection);
-  if (tableVectors->verticalHeader()) {
-    tableVectors->verticalHeader()->hide();
-  }
-
-  vboxLayout->insertWidget(1, tableVectors);
+  _model = 0L;
 
   connect(Cancel, SIGNAL(clicked()), this, SLOT(close()));
   connect(vectorSelector, SIGNAL(selectionChanged(const QString&)), this, SLOT(vectorChanged(const QString&)));
   connect(vectorSelector, SIGNAL(newVectorCreated(const QString&)), this, SLOT(vectorChanged(const QString&)));
-/* xxx
-  if (tableVectors->columnCount() != 2) {
-    for (; 0 < tableVectors->columnCount(); ) {
-      tableVectors->removeColumn(0);
-    }
-
-    //
-    // insert two columns...
-    //
-
-    tableVectors->insertColumn(0);
-    tableVectors->insertColumn(0);
-  }
-*/
 
   languageChange();
 }
 
 
 KstViewVectorsDialog::~KstViewVectorsDialog() {
+  delete _model;
+  _model = 0L;
 }
 
 
@@ -69,35 +49,22 @@ bool KstViewVectorsDialog::hasContent() const {
 
 
 void KstViewVectorsDialog::updateViewVectorsDialog() {
-  QString vector;
-
   vectorSelector->update();
-  vector = vectorSelector->selectedVector();
-  tableVectors->setVector(vector);
-  updateViewVectorsDialog(vector);
+  vectorChanged(QString());
 }
 
 
 void KstViewVectorsDialog::updateViewVectorsDialog(const QString& vectorName) {
   KstVectorPtr vector;
-  QRect rect;
-  int needed = 0;
 
   KST::vectorList.lock().readLock();
   vector = *KST::vectorList.findTag(vectorName);
   KST::vectorList.lock().unlock();
-  if (vector) {
-    vector->readLock();
-    needed = vector->length();
-    vector->unlock();
-  }
 
-  if (needed != tableVectors->rowCount()) {
-    tableVectors->setRowCount(needed);
+  if (vector) {
+    vectorSelector->setSelection(vector);
+    vectorChanged(vectorName);
   }
-  rect = tableVectors->horizontalHeader()->rect();
-  tableVectors->setColumnWidth(0, rect.width() / 5);
-  tableVectors->setColumnWidth(1, rect.width() - (rect.width() / 5));
 }
 
 
@@ -112,24 +79,39 @@ void KstViewVectorsDialog::showViewVectorsDialog() {
 void KstViewVectorsDialog::showViewVectorsDialog(const QString &vectorName) {
   KstVectorPtr vector;
 
-  updateViewVectorsDialog();
-
   KST::vectorList.lock().readLock();
   vector = *KST::vectorList.findTag(vectorName);
   KST::vectorList.lock().unlock();
+
   if (vector) {
     vectorSelector->setSelection(vector);
-    updateViewVectorsDialog();
+    vectorChanged(vectorName);
     show();
     raise();
   }
 }
 
 
-void KstViewVectorsDialog::vectorChanged(const QString& vector) {
-  updateViewVectorsDialog(vector);
-  tableVectors->setVector(vector);
-  tableVectors->update();
+void KstViewVectorsDialog::vectorChanged(const QString& vectorName) {
+  KstVectorPtr vector;
+  KstVectorList::iterator it;
+
+  if (_model) {
+    delete _model;
+    _model = 0L;
+  }
+
+  KST::vectorList.lock().readLock();
+  it = KST::vectorList.findTag(vectorName);
+  if (it != KST::vectorList.end()) {
+    vector = *it;
+  }
+  KST::vectorList.lock().unlock();
+
+  if (vector) {
+    _model = new ModelVector(vector);
+    _table->setModel(_model);
+  }
 }
 
 

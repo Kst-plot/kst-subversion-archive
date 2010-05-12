@@ -172,9 +172,9 @@ bool KstDoc::newDocument() {
   _absFilePath = QDir::homePath();
   _title = "Untitled";
 // xxx  KstApp::inst()->newWindow(QObject::tr("default name of first window", "W1"));
-// xxx  createScalars();
+  createScalars();
 
-// xxx  emit updateDialogs();
+  emit updateDialogs();
 
   return true;
 }
@@ -946,28 +946,28 @@ void KstDoc::deleteContents() {
 
   KST::dataObjectList.lock().writeLock();
   tmpDol = KST::dataObjectList;
-// xxx  KST::dataObjectList.clear();
+  KST::dataObjectList.clear();
   KST::dataObjectList.lock().unlock();
   tmpDol.clear();
 
   KST::dataSourceList.lock().writeLock();
-// xxx  KST::dataSourceList.clear();
+  KST::dataSourceList.clear();
   KST::dataSourceList.lock().unlock();
 
   KST::matrixList.lock().writeLock();
-// xxx  KST::matrixList.clear();
+  KST::matrixList.clear();
   KST::matrixList.lock().unlock();
 
   KST::vectorList.lock().writeLock();
-// xxx  KST::vectorList.clear();
+  KST::vectorList.clear();
   KST::vectorList.lock().unlock();
 
   KST::scalarList.lock().writeLock();
-// xxx  KST::scalarList.clear();
+  KST::scalarList.clear();
   KST::scalarList.lock().unlock();
 
   KST::stringList.lock().writeLock();
-// xxx  KST::stringList.clear();
+  KST::stringList.clear();
   KST::stringList.lock().unlock();
 
   emit updateDialogs();
@@ -1023,9 +1023,9 @@ void KstDoc::samplesUp() {
 
 
 void KstDoc::samplesDown() {
-  bool changed = false;
   KstRVectorList rvl;
   KstRVectorList::iterator it;
+  bool changed = false;
 
   rvl = kstObjectSubList<KstVector,KstRVector>(KST::vectorList);
   for (it = rvl.begin(); it != rvl.end(); ++it) {
@@ -1063,6 +1063,7 @@ void KstDoc::samplesDown() {
   if (changed) {
     setModified();
     forceUpdate();
+
     emit dataChanged();
   }
 }
@@ -1072,7 +1073,7 @@ void KstDoc::samplesEnd() {
   KstRVectorPtr v;
   KstRVectorList rvl;
   KstRVectorList::iterator it;
-
+/* xxx
   rvl = kstObjectSubList<KstVector,KstRVector>(KST::vectorList);
   for (it = rvl.begin(); it != rvl.end(); ++it) {
     v = *it;
@@ -1085,7 +1086,7 @@ void KstDoc::samplesEnd() {
 
   setModified();
   forceUpdate();
-
+*/
   emit dataChanged();
 }
 

@@ -18,7 +18,7 @@
 
 VectorSelector::VectorSelector(QWidget *parent) : QWidget(parent) {
   setupUi(this);
-/* xxx
+
   update();
 
   _newVector->setIcon(QIcon(":/kst_vectornew.png"));
@@ -30,7 +30,6 @@ VectorSelector::VectorSelector(QWidget *parent) : QWidget(parent) {
   connect(_newVector, SIGNAL(clicked()), this, SLOT(createNewVector()));
   connect(_editVector, SIGNAL(clicked()), this, SLOT(editVector()));
   connect(this, SIGNAL(selectionChanged(QString)), this, SLOT(selectionWatcher(QString)));
-*/
 }
 
 
@@ -57,9 +56,9 @@ void VectorSelector::update() {
   KstVectorList::const_iterator i;
   QStringList vectors;
   QString prev;
+  QString tag;
   bool found = false;
   int index;
-
 /* xxx
   if (_vector->listBox()->isVisible()) {
     QTimer::singleShot(250, this, SLOT(update()));
@@ -73,27 +72,26 @@ void VectorSelector::update() {
 
   _vector->clear();
   if (_provideNoneVector) {
-    _vector->insertItem(0, tr("<None>"));
+    _vector->insertItem(0, QObject::tr("<None>"));
   }
 
   KST::vectorList.lock().readLock();
   for (i = KST::vectorList.begin(); i != KST::vectorList.end(); ++i) {
     (*i)->readLock();
-    if (!(*i)->isScalarList()){
-      QString tag = (*i)->tag().displayString();
-
-      vectors << tag;
+    if (!(*i)->isScalarList()) {
+      tag = (*i)->tag().displayString();
+      vectors.append(tag);
       if (!found && tag == prev) {
         found = true;
       }
     }
     (*i)->unlock();
   }
-
   KST::vectorList.lock().unlock();
 
-// xxx  qHeapSort(vectors);
+  qSort(vectors);
   _vector->addItems(vectors);
+
   if (found) {
     index = _vector->findText(prev);
     if (index != -1) {
@@ -108,9 +106,7 @@ void VectorSelector::update() {
 
 
 void VectorSelector::createNewVector() {
-/* xxx
   KstDialogs::self()->newVectorDialog(this, SLOT(newVectorCreated(KstVectorPtr)), SLOT(setSelection(KstVectorPtr)), SLOT(update()));
-*/
 }
 
 
@@ -193,20 +189,26 @@ void VectorSelector::editVector() {
     pro->showDialog(false);
     pro->unlock();
   } else {
-// xxx    KstDialogs::self()->showVectorDialog(_vector->currentText(), true);
+    KstDialogs::self()->showVectorDialog(_vector->currentText(), true);
   }
 }
 
 
 void VectorSelector::setEdit( const QString& tag ) {
+  KstVectorList::iterator it;
   KstVectorPtr vec;
   KstRVectorPtr rvp;
   KstSVectorPtr svp;
   KstDataObjectPtr pro;
 
-  KST::vectorList.lock().readLock();
-  vec = *KST::vectorList.findTag(tag);
-  KST::vectorList.lock().unlock();
+  if (!tag.isEmpty()) {
+    KST::vectorList.lock().readLock();
+    it = KST::vectorList.findTag(tag);
+    if (it != KST::vectorList.end()) {
+      vec = *KST::vectorList.findTag(tag);
+    }
+    KST::vectorList.lock().unlock();
+  }
 
   if (vec) {
     pro = kst_cast<KstDataObject>(vec->provider());

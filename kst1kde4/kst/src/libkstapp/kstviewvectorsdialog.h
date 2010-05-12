@@ -19,7 +19,7 @@
 #define KSTVIEWVECTORSDIALOGI_H
 
 #include "ui_viewvectorsdialog.h"
-#include "kstvectortable.h"
+#include "modelvector.h"
 
 class KstViewVectorsDialog : public QDialog, public Ui::KstViewVectorsDialog {
   Q_OBJECT
@@ -28,7 +28,8 @@ class KstViewVectorsDialog : public QDialog, public Ui::KstViewVectorsDialog {
                         const char* name = 0,
                         bool modal = false, Qt::WindowFlags fl = 0 );
     virtual ~KstViewVectorsDialog();
-    KstVectorTable* tableVectors;
+
+    ModelVector *_model; 
 
     bool hasContent() const;
 

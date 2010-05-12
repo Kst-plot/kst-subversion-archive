@@ -184,9 +184,10 @@ KstApp::KstApp(QWidget *parent, const char *name) : QMainWindow(parent) {
   //
   // data manager signals...
   //
-/* xxx
-  connect(_doc, SIGNAL(updateDialogs()), this, SLOT(updateDialogs()));
+
+// xxx  connect(_doc, SIGNAL(updateDialogs()), this, SLOT(updateDialogs()));
   connect(_doc, SIGNAL(dataChanged()), this, SLOT(updateDataDialogs()));
+/* xxx
   connect(_dataManager, SIGNAL(docChanged()), this, SLOT(registerDocChange()));
   connect(_dataManager, SIGNAL(editDataVector(const QString&)), KstVectorDialog::globalInstance(), SLOT(showEdit(const QString&)));
   connect(_dataManager, SIGNAL(editStaticVector(const QString&)), KstVectorDialog::globalInstance(), SLOT(showEdit(const QString&)));
@@ -522,6 +523,9 @@ void KstApp::initActions() {
 
   connect(_actionDialogDebug, SIGNAL(triggered()), this, SLOT(showDebugDialog()));
   connect(_actionDialogAbout, SIGNAL(triggered()), this, SLOT(showAboutDialog()));
+
+// xxx remove following...
+_actionViewVectors->setEnabled(true);
 
 /* xxx
   fileKeyBindings = KStdAction::keyBindings(this, SLOT(slotConfigureKeys()), actionCollection());
@@ -1965,15 +1969,19 @@ void KstApp::updateDataNotifier() {
 
 
 void KstApp::updateDataDialogs(bool dm, bool vm) {
-printf("zzzz\n");
 /* xxx
-  _actionViewScalarsDialog->setEnabled(_viewScalarsDialog->hasContent());
-  _actionViewStringsDialog->setEnabled(_viewStringsDialog->hasContent());
+  if (_actionViewScalarsDialog) {
+    _actionViewScalarsDialog->setEnabled(_viewScalarsDialog->hasContent()); 
+  }
+
+  if (_actionViewStringsDialog) {
+    _actionViewStringsDialog->setEnabled(_viewStringsDialog->hasContent());
+  }
 */
   if (_viewVectorsDialog) {
     _actionViewVectors->setEnabled(_viewVectorsDialog->hasContent());
   }
-
+/* xxx
   if (_viewMatricesDialog) {
     _actionViewMatrices->setEnabled(_viewMatricesDialog->hasContent());
   }
@@ -1981,18 +1989,19 @@ printf("zzzz\n");
   if (_viewFitsDialog) {
     _actionViewFits->setEnabled(_viewFitsDialog->hasContent());
   }
-/* xxx
-  if (!_viewScalarsDialog->isHidden()) {
+
+  if (_viewScalarsDialog && !_viewScalarsDialog->isHidden()) {
     _viewScalarsDialog->updateViewScalarsDialog();
-  }
-  if (!_viewStringsDialog->isHidden()) {
+  } 
+
+  if (_viewStringsDialog && !_viewStringsDialog->isHidden()) {
     _viewStringsDialog->updateViewStringsDialog();
   }
 */
   if (_viewVectorsDialog && !_viewVectorsDialog->isHidden()) {
     _viewVectorsDialog->updateViewVectorsDialog();
   }
-
+/* xxx
   if (_viewMatricesDialog && !_viewMatricesDialog->isHidden()) {
     _viewMatricesDialog->updateViewMatricesDialog();
   }
@@ -2001,15 +2010,16 @@ printf("zzzz\n");
     _viewFitsDialog->updateViewFitsDialog();
   }
 
-  if (dm) {
-// xxx    _dataManager->updateContents();
+  if (dm && _dataManager) {
+    _dataManager->updateContents();
   }
-  if (vm) {
-// xxx    _viewManager->updateContents();
+
+  if (vm && _viewManager) {
+    _viewManager->updateContents();
   }
 
   updateMemoryStatus();
-printf("yyyy\n");
+*/
 }
 
 
@@ -2019,8 +2029,8 @@ void KstApp::updateVisibleDialogs() {
 
 
 void KstApp::updateDialogs(bool onlyVisible) {
-printf("aaaa\n");
   if (!_stopping) {
+/* xxx
     if (!onlyVisible || KstVectorDialog::globalInstance()->isVisible()) {
       KstVectorDialog::globalInstance()->update();
     }
@@ -2063,7 +2073,6 @@ printf("aaaa\n");
     if (!onlyVisible || KstMatrixDialog::globalInstance()->isVisible()) {
       KstMatrixDialog::globalInstance()->update();
     }
-/* xxx
     if (!onlyVisible || changeFileDialog->isVisible()) {
       _changeFileDialog->updateChangeFileDialog();
     }
@@ -2084,7 +2093,6 @@ printf("aaaa\n");
     updateDataManager(onlyVisible);
     updateViewManager(onlyVisible);
   }
-printf("bbbb\n");
 }
 
 
@@ -2098,9 +2106,9 @@ void KstApp::updateDialogsForWindow() {
     KstPsdDialog::globalInstance()->updateWindow();
     KstCurveDialog::globalInstance()->updateWindow();
     KstImageDialog::globalInstance()->updateWindow();
+*/
     updateDataManager(false);
     updateViewManager(false);
-*/
   }
 }
 
@@ -2664,7 +2672,7 @@ void KstApp::updatePausedState(bool state) {
 
 void KstApp::fromEnd() {
   _doc->samplesEnd();
-  setPaused(false);
+// xxx  setPaused(false);
 }
 
 

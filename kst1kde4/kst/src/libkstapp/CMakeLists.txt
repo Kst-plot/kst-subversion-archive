@@ -59,6 +59,7 @@ set(kstapp_LIB_SRCS
 # xxx    kstviewstringsdialog.cpp
     kstviewvectorsdialog.cpp
     kstvvdialog.cpp
+    modelvector.cpp
 # handlers...
     kstgfx2dplotmousehandler.cpp
     kstgfxarrowmousehandler.cpp

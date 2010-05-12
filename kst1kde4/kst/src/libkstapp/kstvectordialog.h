@@ -15,6 +15,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 #ifndef KSTVECTORDIALOGI_H
 #define KSTVECTORDIALOGI_H
 
