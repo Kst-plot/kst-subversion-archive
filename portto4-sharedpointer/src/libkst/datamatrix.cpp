@@ -51,9 +51,8 @@ DataMatrix::DataInfo::DataInfo() :
 
 
 DataMatrix::DataMatrix(ObjectStore *store)
-  : Matrix(store) {
-  _dp = new DataPrimitive(this);
-
+  : Matrix(store), DataPrimitive(this)
+{
 }
 
 
@@ -63,10 +62,10 @@ const QString& DataMatrix::typeString() const {
 
 
 void DataMatrix::save(QXmlStreamWriter &xml) {
-  if (_dp->dataSource()) {
+  if (this->dataSource()) {
     xml.writeStartElement(staticTypeTag);
 
-    _dp->saveFilename(xml);
+    this->saveFilename(xml);
 
     xml.writeAttribute("field", _field);
     xml.writeAttribute("reqxstart", QString::number(_reqXStart));
@@ -107,7 +106,7 @@ void DataMatrix::changeFrames(int xStart, int yStart,
                         double stepX, double stepY) {
   KstWriteLocker l(this);
 
-  commonConstructor(_dp->dataSource(), _field, xStart, yStart, xNumSteps, yNumSteps, doAve, doSkip, skip, minX, minY, stepX, stepY);
+  commonConstructor(this->dataSource(), _field, xStart, yStart, xNumSteps, yNumSteps, doAve, doSkip, skip, minX, minY, stepX, stepY);
 }
 
 
@@ -133,8 +132,8 @@ int DataMatrix::reqYNumSteps() const {
 
 /*
 QString DataMatrix::filename() const {
-  if (_dp->dataSource()) {
-    return QString(_dp->dataSource()->fileName());
+  if (this->dataSource()) {
+    return QString(this->dataSource()->fileName());
   }
   return QString::null;
 }
@@ -170,14 +169,14 @@ QString DataMatrix::label() const {
   QString returnLabel;
 
   _field.toInt(&ok);
-  if (ok && _dp->dataSource()) {
-    _dp->dataSource()->readLock();
-    if (_dp->dataSource()->fileType() == "ASCII") {
+  if (ok && this->dataSource()) {
+    this->dataSource()->readLock();
+    if (this->dataSource()->fileType() == "ASCII") {
       returnLabel = i18n("Column %1").arg(_field);
     } else {
       returnLabel = _field;
     }
-    _dp->dataSource()->unlock();
+    this->dataSource()->unlock();
   } else {
     returnLabel = _field;
   }
@@ -186,20 +185,20 @@ QString DataMatrix::label() const {
 
 
 bool DataMatrix::isValid() const {
-  if (_dp->dataSource()) {
-    _dp->dataSource()->readLock();
-    bool fieldValid = _dp->dataSource()->matrix().isValid(_field);
-    _dp->dataSource()->unlock();
+  if (this->dataSource()) {
+    this->dataSource()->readLock();
+    bool fieldValid = this->dataSource()->matrix().isValid(_field);
+    this->dataSource()->unlock();
     return fieldValid;
   }
   return false;
 }
 
 
-bool DataMatrix::_checkValidity(const DataSourcePtr ds) const {
+bool DataMatrix::checkValidity(const DataSourcePtr ds) const {
   if (ds) {
     ds->readLock();
-    bool rc = ds->matrix().isValid(_dp->_field);
+    bool rc = ds->matrix().isValid(this->_field);
     ds->unlock();
     return rc;
   }
@@ -323,15 +322,15 @@ void DataMatrix::doUpdateNoSkip(int realXStart, int realYStart) {
 }
 
 qint64 DataMatrix::minInputSerial() const {
-  if (_dp->dataSource()) {
-    return (_dp->dataSource()->serial());
+  if (this->dataSource()) {
+    return (this->dataSource()->serial());
   }
   return LLONG_MAX;
 }
 
 qint64 DataMatrix::minInputSerialOfLastChange() const {
-  if (_dp->dataSource()) {
-    return (_dp->dataSource()->serialOfLastChange());
+  if (this->dataSource()) {
+    return (this->dataSource()->serialOfLastChange());
   }
   return LLONG_MAX;
 }
@@ -346,7 +345,7 @@ void DataMatrix::_resetFieldScalars() {
 }
 
 void DataMatrix::_resetFieldStrings() {
-  const QMap<QString, QString> meta_strings = _dp->dataSource()->matrix().metaStrings(_field);
+  const QMap<QString, QString> meta_strings = this->dataSource()->matrix().metaStrings(_field);
 
   QStringList fieldStringKeys = _fieldStrings.keys();
   // remove field strings that no longer need to exist
@@ -420,8 +419,8 @@ QString DataMatrix::yLabel() const {
 }
 
 void DataMatrix::internalUpdate() {
-  if (_dp->dataSource()) {
-    _dp->dataSource()->writeLock();
+  if (this->dataSource()) {
+    this->dataSource()->writeLock();
   } else {
     return;
   }
@@ -435,7 +434,7 @@ void DataMatrix::internalUpdate() {
   int realXStart;
   int realYStart;
 
-  const DataInfo info = _dp->dataSource()->matrix().dataInfo(_field);
+  const DataInfo info = this->dataSource()->matrix().dataInfo(_field);
   int xSize = info.xSize;
   int ySize = info.ySize;
 
@@ -509,7 +508,7 @@ void DataMatrix::internalUpdate() {
   _lastDoSkip = _doSkip;
   _lastSkip = _skip;
 
-  _dp->dataSource()->unlock();
+  this->dataSource()->unlock();
 
   Matrix::internalUpdate();
 }
@@ -518,21 +517,21 @@ void DataMatrix::internalUpdate() {
 void DataMatrix::reload() {
   Q_ASSERT(myLockStatus() == KstRWLock::WRITELOCKED);
 
-  if (_dp->dataSource()) {
-    _dp->dataSource()->writeLock();
-    _dp->dataSource()->reset();
-    _dp->dataSource()->unlock();
+  if (this->dataSource()) {
+    this->dataSource()->writeLock();
+    this->dataSource()->reset();
+    this->dataSource()->unlock();
     reset();
   }
 }
 
 
-PrimitivePtr DataMatrix::_makeDuplicate() const {
+PrimitivePtr DataMatrix::makeDuplicate() const {
   Q_ASSERT(store());
   DataMatrixPtr matrix = store()->createObject<DataMatrix>();
 
   matrix->writeLock();
-  matrix->change(_dp->dataSource(), _field, _reqXStart, _reqYStart, _reqNX, _reqNY, _doAve, _doSkip, _skip, _minX, _minY, _stepX, _stepY);
+  matrix->change(this->dataSource(), _field, _reqXStart, _reqYStart, _reqNX, _reqNY, _doAve, _doSkip, _skip, _minX, _minY, _stepX, _stepY);
   if (descriptiveNameIsManual()) {
     matrix->setDescriptiveName(descriptiveName());
   }
@@ -551,7 +550,7 @@ void DataMatrix::commonConstructor(DataSourcePtr in_file, const QString &field,
   _reqYStart = reqYStart;
   _reqNX = reqNX;
   _reqNY = reqNY;
-  _dp->setDataSource(in_file);
+  this->setDataSource(in_file);
   _field = field;
   _doAve = doAve;
   _doSkip = doSkip;
@@ -566,10 +565,10 @@ void DataMatrix::commonConstructor(DataSourcePtr in_file, const QString &field,
   _saveable = true;
   _editable = true;
 
-  if (!_dp->dataSource()) {
+  if (!this->dataSource()) {
     Debug::self()->log(i18n("Data file for matrix %1 was not opened.", Name()), Debug::Warning);
   } else {
-    const DataInfo info = _dp->dataSource()->matrix().dataInfo(_field);
+    const DataInfo info = this->dataSource()->matrix().dataInfo(_field);
     _samplesPerFrameCache = info.samplesPerFrame;
     _invertXHint = info.invertXHint;
     _invertYHint = info.invertYHint;
@@ -593,8 +592,8 @@ void DataMatrix::commonConstructor(DataSourcePtr in_file, const QString &field,
 void DataMatrix::reset() { // must be called with a lock
   Q_ASSERT(myLockStatus() == KstRWLock::WRITELOCKED);
 
-  if (_dp->dataSource()) {
-    const DataInfo info = _dp->dataSource()->matrix().dataInfo(_field);
+  if (this->dataSource()) {
+    const DataInfo info = this->dataSource()->matrix().dataInfo(_field);
     _samplesPerFrameCache = info.samplesPerFrame;
     _invertXHint = info.invertXHint;
     _invertYHint = info.invertYHint;
@@ -628,13 +627,13 @@ void DataMatrix::changeFile(DataSourcePtr in_file) {
   if (!in_file) {
     Debug::self()->log(i18n("Data file for vector %1 was not opened.", Name()), Debug::Warning);
   }
-  _dp->setDataSource(in_file);
-  if (_dp->dataSource()) {
-    _dp->dataSource()->writeLock();
+  this->setDataSource(in_file);
+  if (this->dataSource()) {
+    this->dataSource()->writeLock();
   }
   reset();
-  if (_dp->dataSource()) {
-    _dp->dataSource()->unlock();
+  if (this->dataSource()) {
+    this->dataSource()->unlock();
   }
 }
 
@@ -654,18 +653,18 @@ QString DataMatrix::descriptionTip() const {
       "  %2\n"
       "  Field: %3\n"
       "  %4 x %5"
-      ).arg(Name()).arg(_dp->dataSource()->fileName()).arg(field()).arg(_nX).arg(_nY);
+      ).arg(Name()).arg(this->dataSource()->fileName()).arg(field()).arg(_nX).arg(_nY);
 }
 
 QString DataMatrix::propertyString() const {
-  return i18n("%1 of %2").arg(field()).arg(_dp->dataSource()->fileName());
+  return i18n("%1 of %2").arg(field()).arg(this->dataSource()->fileName());
 }
 
 
 int DataMatrix::readMatrix(MatrixData* data, const QString& matrix, int xStart, int yStart, int xNumSteps, int yNumSteps, int skip)
 {
   ReadInfo p = { data, xStart, yStart, xNumSteps, yNumSteps, skip};
-  return _dp->dataSource()->matrix().read(matrix, p);
+  return this->dataSource()->matrix().read(matrix, p);
 }
 
 

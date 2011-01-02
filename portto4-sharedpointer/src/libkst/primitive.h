@@ -24,7 +24,7 @@
 #include "object.h"
 #include "objectlist.h"
 #include "objectmap.h"
-#include "dataprimitive.h"
+//#include "dataprimitive.h"
 
 namespace Kst {
 
@@ -74,7 +74,7 @@ class KSTCORE_EXPORT Primitive : public Object
     virtual qint64 minInputSerial() const;
     virtual qint64 minInputSerialOfLastChange() const;
 
-    DataPrimitive *_dp;
+    //DataPrimitive *_dp;
 
   protected:
     /** Possibly null.  Be careful, this is non-standard usage of a KstShared.
@@ -85,6 +85,7 @@ class KSTCORE_EXPORT Primitive : public Object
 #else
     QPointer<Object> _provider;
 #endif
+    /*
   private:
     friend class DataPrimitive;
     // Some stuff only needed by data primitives...
@@ -98,6 +99,7 @@ class KSTCORE_EXPORT Primitive : public Object
     virtual bool _checkValidity(const DataSourcePtr ds) const;
   public:
     DataPrimitive *dp() const {return _dp;}
+    */
 };
 
 typedef SharedPtr<Primitive> PrimitivePtr;
