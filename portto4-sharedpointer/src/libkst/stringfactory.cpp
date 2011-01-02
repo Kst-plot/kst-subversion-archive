@@ -49,21 +49,21 @@ PrimitivePtr StringFactory::generatePrimitive(ObjectStore *store, QXmlStreamRead
         }
         Object::processShortNameIndexAttributes(attrs);
       } else {
-        return 0;
+        return PrimitivePtr();
       }
     } else if (xml.isEndElement()) {
       if (n == "string") {
         break;
       } else {
         Debug::self()->log(QObject::tr("Error creating string from Kst file."), Debug::Warning);
-        return 0;
+        return PrimitivePtr();
       }
     }
     xml.readNext();
   }
 
   if (xml.hasError()) {
-    return 0;
+    return PrimitivePtr();
   }
 
   StringPtr string = store->createObject<String>();

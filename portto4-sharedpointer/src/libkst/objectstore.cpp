@@ -85,7 +85,7 @@ ObjectPtr ObjectStore::retrieveObject(const QString name) const {
   int match = -1;
 
   if (name.isEmpty()) {
-    return NULL;
+    return ObjectPtr();
   }
 
   QString shortName;
@@ -103,7 +103,7 @@ ObjectPtr ObjectStore::retrieveObject(const QString name) const {
   for (int i = 0; i < size; ++i) {
     if (_list.at(i)->descriptiveName() == name) {
       if (match != -1) 
-        return NULL; // not unique, so... no match
+        return ObjectPtr(); // not unique, so... no match
       match = i;
     }
   }
@@ -111,7 +111,7 @@ ObjectPtr ObjectStore::retrieveObject(const QString name) const {
   if (match >-1) 
     return _list.at(match);
 
-  return NULL;
+  return ObjectPtr();
 }
 
 void ObjectStore::rebuildDataSourceList() {

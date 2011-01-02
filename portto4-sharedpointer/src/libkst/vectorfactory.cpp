@@ -54,21 +54,21 @@ PrimitivePtr VectorFactory::generatePrimitive(ObjectStore *store, QXmlStreamRead
         data = qUncompress(qbca);
 
       } else {
-        return 0;
+        return PrimitivePtr();
       }
     } else if (xml.isEndElement()) {
       if (n == Vector::staticTypeTag) {
         break;
       } else {
         Debug::self()->log(QObject::tr("Error creating vector from Kst file."), Debug::Warning);
-        return 0;
+        return PrimitivePtr();
       }
     }
     xml.readNext();
   }
 
   if (xml.hasError()) {
-    return 0;
+    return PrimitivePtr();
   }
 
   VectorPtr vector = store->createObject<Vector>();
@@ -111,21 +111,21 @@ PrimitivePtr GeneratedVectorFactory::generatePrimitive(ObjectStore *store, QXmlS
         }
         Object::processShortNameIndexAttributes(attrs);
       } else {
-        return 0;
+        return PrimitivePtr();
       }
     } else if (xml.isEndElement()) {
       if (n == GeneratedVector::staticTypeTag) {
         break;
       } else {
         Debug::self()->log(QObject::tr("Error creating generated vector from Kst file."), Debug::Warning);
-        return 0;
+        return PrimitivePtr();
       }
     }
     xml.readNext();
   }
 
   if (xml.hasError()) {
-    return 0;
+    return PrimitivePtr();
   }
 
   GeneratedVectorPtr vector = store->createObject<GeneratedVector>();
@@ -168,21 +168,21 @@ PrimitivePtr EditableVectorFactory::generatePrimitive(ObjectStore *store, QXmlSt
         data = qUncompress(qbca);
 
       } else {
-        return 0;
+        return PrimitivePtr();
       }
     } else if (xml.isEndElement()) {
       if (n == EditableVector::staticTypeTag) {
         break;
       } else {
         Debug::self()->log(QObject::tr("Error creating vector from Kst file."), Debug::Warning);
-        return 0;
+        return PrimitivePtr();
       }
     }
     xml.readNext();
   }
 
   if (xml.hasError()) {
-    return 0;
+    return PrimitivePtr();
   }
 
   EditableVectorPtr vector = store->createObject<EditableVector>();
@@ -240,28 +240,28 @@ PrimitivePtr DataVectorFactory::generatePrimitive(ObjectStore *store, QXmlStream
         data = qUncompress(qbca);
 
       } else {
-        return 0;
+        return PrimitivePtr();
       }
     } else if (xml.isEndElement()) {
       if (n == DataVector::staticTypeTag) {
         break;
       } else {
         Debug::self()->log(QObject::tr("Error creating vector from Kst file."), Debug::Warning);
-        return 0;
+        return PrimitivePtr();
       }
     }
     xml.readNext();
   }
 
   if (xml.hasError()) {
-    return 0;
+    return PrimitivePtr();
   }
 
   Q_ASSERT(store);
   DataSourcePtr dataSource = DataSourcePluginManager::findOrLoadSource(store, file);
 
   if (!dataSource) {
-    return 0; //Couldn't find a suitable datasource
+    return PrimitivePtr(); //Couldn't find a suitable datasource
   }
 
   DataVectorPtr vector = store->createObject<DataVector>();

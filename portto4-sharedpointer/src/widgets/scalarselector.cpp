@@ -96,7 +96,7 @@ ScalarPtr ScalarSelector::selectedScalar() {
     }
 
     if (!ok) {
-      return 0;
+      return ScalarPtr();
     }
 
     // Check if a scalar with this value exist & is orphan.

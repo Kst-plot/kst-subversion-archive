@@ -19,7 +19,7 @@
 #ifndef SharedPTR_H
 #define SharedPTR_H
 
-//#define KST_USE_QSHAREDPOINTER
+#define KST_USE_QSHAREDPOINTER
 #ifdef KST_USE_QSHAREDPOINTER
 #include <QSharedPointer>
 #else
@@ -58,9 +58,6 @@ public:
 
   //explicit // should compile with 'explicit'
   SharedPtr(T* t) : QSharedPointer<T>(t) {}
-
-  explicit SharedPtr(int v) { Q_ASSERT(v==0); }
-  explicit SharedPtr(long int v) { Q_ASSERT(v==0); }
 
   template<class Y>
   SharedPtr(const SharedPtr<Y>& p) { *this = p.template objectCast<T>(); }

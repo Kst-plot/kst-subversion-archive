@@ -243,7 +243,7 @@ DataSourcePtr DataSourcePluginManager::findPluginFor(ObjectStore *store, const Q
       return plugin;
     }
   }
-  return 0L;
+  return DataSourcePtr();
 }
 
 
@@ -257,7 +257,7 @@ DataSourcePtr DataSourcePluginManager::loadSource(ObjectStore *store, const QStr
 #endif
   QString fn = obtainFile(filename);
   if (fn.isEmpty()) {
-    return 0L;
+    return DataSourcePtr();
   }
 
   DataSourcePtr dataSource = findPluginFor(store, fn, type);

@@ -356,7 +356,7 @@ void DataMatrix::_resetFieldStrings() {
     if (!meta_strings.contains(key)) {
       StringPtr sp = _fieldStrings[key];
       _fieldStrings.remove(key);
-      sp = 0L;
+      sp = StringPtr();
     }
   }
   // find or insert strings, to set their value

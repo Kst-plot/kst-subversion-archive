@@ -61,21 +61,21 @@ PrimitivePtr GeneratedMatrixFactory::generatePrimitive(ObjectStore *store, QXmlS
         Object::processShortNameIndexAttributes(attrs);
 
       } else {
-        return 0;
+        return PrimitivePtr();
       }
     } else if (xml.isEndElement()) {
       if (n == GeneratedMatrix::staticTypeTag) {
         break;
       } else {
         Debug::self()->log(QObject::tr("Error creating Generated Matrix from Kst file."), Debug::Warning);
-        return 0;
+        return PrimitivePtr();
       }
     }
     xml.readNext();
   }
 
   if (xml.hasError()) {
-    return 0;
+    return PrimitivePtr();
   }
 
   GeneratedMatrixPtr matrix = store->createObject<GeneratedMatrix>();
@@ -130,21 +130,21 @@ PrimitivePtr EditableMatrixFactory::generatePrimitive(ObjectStore *store, QXmlSt
         data = qUncompress(qbca);
 
       } else {
-        return 0;
+        return PrimitivePtr();
       }
     } else if (xml.isEndElement()) {
       if (n == EditableMatrix::staticTypeTag) {
         break;
       } else {
         Debug::self()->log(QObject::tr("Error creating Editable Matrix from Kst file."), Debug::Warning);
-        return 0;
+        return PrimitivePtr();
       }
     }
     xml.readNext();
   }
 
   if (xml.hasError()) {
-    return 0;
+    return PrimitivePtr();
   }
 
   EditableMatrixPtr matrix = store->createObject<EditableMatrix>();
@@ -205,28 +205,28 @@ PrimitivePtr DataMatrixFactory::generatePrimitive(ObjectStore *store, QXmlStream
         }
         Object::processShortNameIndexAttributes(attrs);
       } else {
-        return 0;
+        return PrimitivePtr();
       }
     } else if (xml.isEndElement()) {
       if (n == DataMatrix::staticTypeTag) {
         break;
       } else {
         Debug::self()->log(QObject::tr("Error creating Data Matrix from Kst file."), Debug::Warning);
-        return 0;
+        return PrimitivePtr();
       }
     }
     xml.readNext();
   }
 
   if (xml.hasError()) {
-    return 0;
+    return PrimitivePtr();
   }
 
   Q_ASSERT(store);
   DataSourcePtr dataSource = DataSourcePluginManager::findOrLoadSource(store, file);
 
   if (!dataSource) {
-    return 0; //Couldn't find a suitable datasource
+    return PrimitivePtr(); //Couldn't find a suitable datasource
   }
 
   DataMatrixPtr matrix = store->createObject<DataMatrix>();

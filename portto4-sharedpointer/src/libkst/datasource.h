@@ -256,7 +256,7 @@ class DataSourceList : public QList<DataSourcePtr> {
           return *it;
         }
       }
-      return 0;
+      return DataSourcePtr();
     }
 
     virtual DataSourcePtr findFileName(const QString& x) {
@@ -265,7 +265,7 @@ class DataSourceList : public QList<DataSourcePtr> {
           return *it;
         }
       }
-      return 0;
+      return DataSourcePtr();
     }
 
     // @since 1.1.0
@@ -275,7 +275,7 @@ class DataSourceList : public QList<DataSourcePtr> {
           return *it;
         }
       }
-      return 0;
+      return DataSourcePtr();
     }
 
     // @since 1.1.0

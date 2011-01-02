@@ -25,37 +25,37 @@ class DialogLauncherGui : public DialogLauncher {
     virtual ~DialogLauncherGui();
 
     //primitives
-    virtual void showVectorDialog(QString &vectorname, ObjectPtr objectPtr = 0, bool modal = false);
+    virtual void showVectorDialog(QString &vectorname, ObjectPtr objectPtr = ObjectPtr(), bool modal = false);
 
-    virtual void showMatrixDialog(QString &matrixName, ObjectPtr objectPtr = 0, bool modal = false);
+    virtual void showMatrixDialog(QString &matrixName, ObjectPtr objectPtr = ObjectPtr(), bool modal = false);
 
-    virtual void showScalarDialog(QString &scalarname, ObjectPtr objectPtr = 0, bool modal = false);
+    virtual void showScalarDialog(QString &scalarname, ObjectPtr objectPtr = ObjectPtr(), bool modal = false);
 
-    virtual void showStringDialog(QString &stringname, ObjectPtr objectPtr = 0, bool modal = false);
+    virtual void showStringDialog(QString &stringname, ObjectPtr objectPtr = ObjectPtr(), bool modal = false);
 
     //standard objects
-    virtual void showCurveDialog(ObjectPtr objectPtr = 0, VectorPtr vector = 0);
+    virtual void showCurveDialog(ObjectPtr objectPtr = ObjectPtr(), VectorPtr vector = VectorPtr());
     virtual void showMultiCurveDialog(QList<ObjectPtr> curves);
 
-    virtual void showImageDialog(ObjectPtr objectPtr = 0, MatrixPtr matrix = 0);
+    virtual void showImageDialog(ObjectPtr objectPtr = ObjectPtr(), MatrixPtr matrix = MatrixPtr());
     virtual void showMultiImageDialog(QList<ObjectPtr> images);
 
     //standard data objects
-    virtual void showEquationDialog(ObjectPtr objectPtr = 0);
+    virtual void showEquationDialog(ObjectPtr objectPtr = ObjectPtr());
 
-    virtual void showHistogramDialog(ObjectPtr objectPtr = 0, VectorPtr vector = 0);
+    virtual void showHistogramDialog(ObjectPtr objectPtr = ObjectPtr(), VectorPtr vector = VectorPtr());
 
-    virtual void showPowerSpectrumDialog(ObjectPtr objectPtr = 0, VectorPtr vector = 0);
+    virtual void showPowerSpectrumDialog(ObjectPtr objectPtr = ObjectPtr(), VectorPtr vector = VectorPtr());
 
-    virtual void showCSDDialog(ObjectPtr objectPtr = 0, VectorPtr vector = 0);
+    virtual void showCSDDialog(ObjectPtr objectPtr = ObjectPtr(), VectorPtr vector = VectorPtr());
 
-    virtual void showEventMonitorDialog(ObjectPtr objectPtr = 0);
+    virtual void showEventMonitorDialog(ObjectPtr objectPtr = ObjectPtr());
 
     //plugins
-    virtual void showBasicPluginDialog(QString pluginName, ObjectPtr objectPtr = 0, VectorPtr vectorX = 0, VectorPtr vectorY = 0, PlotItemInterface *plotItem = 0 );
+    virtual void showBasicPluginDialog(QString pluginName, ObjectPtr objectPtr = ObjectPtr(), VectorPtr vectorX = VectorPtr(), VectorPtr vectorY = VectorPtr(), PlotItemInterface *plotItem = 0 );
 
     //show appropriate dialog
-    virtual void showObjectDialog(ObjectPtr objectPtr = 0);
+    virtual void showObjectDialog(ObjectPtr objectPtr = ObjectPtr());
 
     virtual void showMultiObjectDialog(QList<ObjectPtr> objects);
 

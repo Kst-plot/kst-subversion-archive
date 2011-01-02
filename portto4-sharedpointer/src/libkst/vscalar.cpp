@@ -33,7 +33,7 @@ const QString VScalar::staticTypeTag = I18N_NOOP("vscalar");
 VScalar::VScalar(ObjectStore *store)
 : Scalar(store) {
 
-  _file = 0L;
+  _file = DataSourcePtr();
   _field.clear();
 
   setOrphan(true);
@@ -41,7 +41,7 @@ VScalar::VScalar(ObjectStore *store)
 
 
 VScalar::~VScalar() {
-  _file = 0;
+  _file = DataSourcePtr();
 }
 
 

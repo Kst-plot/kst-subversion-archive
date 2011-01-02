@@ -645,7 +645,7 @@ void DataVector::_resetFieldStrings() {
       StringPtr sp = _fieldStrings[key];
       _strings.remove(key);
       _fieldStrings.remove(key);
-      sp = 0L;
+      sp = StringPtr();
     }
   }
   // find or insert strings, to set their value
@@ -684,7 +684,7 @@ void DataVector::_resetFieldScalars() {
       ScalarPtr sp = _fieldScalars[key];
       _scalars.remove(key);
       _fieldScalars.remove(key);
-      sp = 0L;
+      sp = ScalarPtr();
     }
   }
   // find or insert scalars, to set their value

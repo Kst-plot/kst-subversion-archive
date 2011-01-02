@@ -52,21 +52,21 @@ PrimitivePtr ScalarFactory::generatePrimitive(ObjectStore *store, QXmlStreamRead
         }
         Object::processShortNameIndexAttributes(attrs);
       } else {
-        return 0;
+        return PrimitivePtr();
       }
     } else if (xml.isEndElement()) {
       if (n == "scalar") {
         break;
       } else {
         Debug::self()->log(QObject::tr("Error creating scalar from Kst file."), Debug::Warning);
-        return 0;
+        return PrimitivePtr();
       }
     }
     xml.readNext();
   }
 
   if (xml.hasError()) {
-    return 0;
+    return PrimitivePtr();
   }
 
   ScalarPtr scalar = store->createObject<Scalar>();
@@ -110,28 +110,28 @@ PrimitivePtr DataScalarFactory::generatePrimitive(ObjectStore *store, QXmlStream
         }
         Object::processShortNameIndexAttributes(attrs);
       } else {
-        return 0;
+        return PrimitivePtr();
       }
     } else if (xml.isEndElement()) {
       if (n == DataScalar::staticTypeTag) {
         break;
       } else {
         Debug::self()->log(QObject::tr("Error creating scalar from Kst file."), Debug::Warning);
-        return 0;
+        return PrimitivePtr();
       }
     }
     xml.readNext();
   }
 
   if (xml.hasError()) {
-    return 0;
+    return PrimitivePtr();
   }
 
   Q_ASSERT(store);
   DataSourcePtr dataSource = DataSourcePluginManager::findOrLoadSource(store, file);
 
   if (!dataSource) {
-    return 0; //Couldn't find a suitable datasource
+    return PrimitivePtr(); //Couldn't find a suitable datasource
   }
 
   DataScalarPtr scalar = store->createObject<DataScalar>();
@@ -179,28 +179,28 @@ PrimitivePtr VScalarFactory::generatePrimitive(ObjectStore *store, QXmlStreamRea
         }
         Object::processShortNameIndexAttributes(attrs);
       } else {
-        return 0;
+        return PrimitivePtr();
       }
     } else if (xml.isEndElement()) {
       if (n == VScalar::staticTypeTag) {
         break;
       } else {
         Debug::self()->log(QObject::tr("Error creating scalar from Kst file."), Debug::Warning);
-        return 0;
+        return PrimitivePtr();
       }
     }
     xml.readNext();
   }
 
   if (xml.hasError()) {
-    return 0;
+    return PrimitivePtr();
   }
 
   Q_ASSERT(store);
   DataSourcePtr dataSource = DataSourcePluginManager::findOrLoadSource(store, file);
 
   if (!dataSource) {
-    return 0; //Couldn't find a suitable datasource
+    return PrimitivePtr(); //Couldn't find a suitable datasource
   }
 
   VScalarPtr scalar = store->createObject<VScalar>();

@@ -54,12 +54,12 @@ void PrimitiveFactory::registerFactory(const QStringList& nodes, PrimitiveFactor
 
 PrimitivePtr PrimitiveFactory::parse(ObjectStore *store, QXmlStreamReader& stream) {
   if (!primitive_factories) {
-    return 0;
+    return PrimitivePtr();
   }
 
   PrimitiveFactory *f = primitive_factories->value(stream.name().toString());
   if (!f) {
-    return 0;
+    return PrimitivePtr();
   }
 
   return f->generatePrimitive(store, stream);
