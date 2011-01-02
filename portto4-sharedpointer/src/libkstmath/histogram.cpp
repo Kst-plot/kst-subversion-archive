@@ -109,8 +109,8 @@ void Histogram::change(VectorPtr in_V,
 
 
 Histogram::~Histogram() {
-  _bVector = 0L;
-  _hVector = 0L;
+  _bVector = VectorPtr();
+  _hVector = VectorPtr();
 
   delete[] _Bins;
   _Bins = 0L;

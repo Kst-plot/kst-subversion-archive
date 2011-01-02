@@ -55,31 +55,31 @@ DataObjectPtr HistogramFactory::generateObject(ObjectStore *store, QXmlStreamRea
         Object::processShortNameIndexAttributes(attrs);
 
       } else {
-        return 0;
+        return DataObjectPtr();
       }
     } else if (xml.isEndElement()) {
       if (n == Histogram::staticTypeTag) {
         break;
       } else {
         Debug::self()->log(QObject::tr("Error creating Histogram from Kst file."), Debug::Warning);
-        return 0;
+        return DataObjectPtr();
       }
     }
     xml.readNext();
   }
 
   if (xml.hasError()) {
-    return 0;
+    return DataObjectPtr();
   }
 
-  VectorPtr vector = 0;
+  VectorPtr vector;
   if (store && !VectorName.isEmpty()) {
     vector = kst_cast<Vector>(store->retrieveObject(VectorName));
   }
 
   if (!vector) {
     Debug::self()->log(QObject::tr("Error creating Histogram from Kst file.  Could not find Vector."), Debug::Warning);
-    return 0;
+    return DataObjectPtr();
   }
 
   HistogramPtr histogram = store->createObject<Histogram>();

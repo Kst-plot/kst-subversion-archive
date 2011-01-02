@@ -54,12 +54,12 @@ void RelationFactory::registerFactory(const QStringList& nodes, RelationFactory 
 
 RelationPtr RelationFactory::parse(ObjectStore *store, QXmlStreamReader& stream) {
   if (!relation_factories) {
-    return 0;
+    return RelationPtr();
   }
 
   RelationFactory *f = relation_factories->value(stream.name().toString());
   if (!f) {
-    return 0;
+    return RelationPtr();
   }
 
   return f->generateRelation(store, stream);

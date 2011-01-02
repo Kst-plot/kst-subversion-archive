@@ -78,59 +78,59 @@ RelationPtr CurveFactory::generateRelation(ObjectStore *store, QXmlStreamReader&
         Object::processShortNameIndexAttributes(attrs);
 
       } else {
-        return 0;
+        return DataObjectPtr();
       }
     } else if (xml.isEndElement()) {
       if (n == Curve::staticTypeTag) {
         break;
       } else {
         Debug::self()->log(QObject::tr("Error creating Curve from Kst file."), Debug::Warning);
-        return 0;
+        return DataObjectPtr();
       }
     }
     xml.readNext();
   }
 
   if (xml.hasError()) {
-    return 0;
+    return DataObjectPtr();
   }
 
-  VectorPtr xVector = 0;
+  VectorPtr xVector;
   if (store && !xVectorName.isEmpty()) {
     xVector = kst_cast<Vector>(store->retrieveObject(xVectorName));
   }
 
   if (!xVector) {
     Debug::self()->log(QObject::tr("Error creating Curve from Kst file.  Could not find xVector."), Debug::Warning);
-    return 0;
+    return RelationPtr();
   }
 
-  VectorPtr yVector = 0;
+  VectorPtr yVector;
   if (store && !yVectorName.isEmpty()) {
     yVector = kst_cast<Vector>(store->retrieveObject(yVectorName));
   }
 
   if (!yVector) {
     Debug::self()->log(QObject::tr("Error creating Curve from Kst file.  Could not find yVector."), Debug::Warning);
-    return 0;
+    return DataObjectPtr();
   }
 
-  VectorPtr errorXVector = 0;
+  VectorPtr errorXVector;
   if (store && !errorXVectorName.isEmpty()) {
     errorXVector = kst_cast<Vector>(store->retrieveObject(errorXVectorName));
   }
 
-  VectorPtr errorYVector = 0;
+  VectorPtr errorYVector;
   if (store && !errorYVectorName.isEmpty()) {
     errorYVector = kst_cast<Vector>(store->retrieveObject(errorYVectorName));
   }
 
-  VectorPtr errorXMinusVector = 0;
+  VectorPtr errorXMinusVector;
   if (store && !errorXMinusVectorName.isEmpty()) {
     errorXMinusVector = kst_cast<Vector>(store->retrieveObject(errorXMinusVectorName));
   }
 
-  VectorPtr errorYMinusVector = 0;
+  VectorPtr errorYMinusVector;
   if (store && !errorYMinusVectorName.isEmpty()) {
     errorYMinusVector = kst_cast<Vector>(store->retrieveObject(errorYMinusVectorName));
   }

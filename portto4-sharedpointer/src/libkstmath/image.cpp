@@ -349,7 +349,7 @@ MatrixPtr Image::matrix() const {
   if (_inputMatrices.contains(THEMATRIX)) {
     return _inputMatrices[THEMATRIX];
   } else {
-    return NULL;
+    return MatrixPtr();
   }
 }
 
@@ -397,7 +397,7 @@ QString Image::topLabel() const {
 
 
 DataObjectPtr Image::providerDataObject() const {
-  DataObjectPtr provider = 0L;
+  DataObjectPtr provider;
   // FIXME: fix this.. I don't know what's going on here
 #if 0
   matrixList.lock().readLock();

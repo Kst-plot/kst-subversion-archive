@@ -109,8 +109,8 @@ void PSD::change(VectorPtr in_V,
 
 
 PSD::~PSD() {
-  _sVector = 0L;
-  _fVector = 0L;
+  _sVector = VectorPtr();
+  _fVector = VectorPtr();
 }
 
 

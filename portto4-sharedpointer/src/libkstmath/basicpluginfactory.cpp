@@ -49,7 +49,7 @@ DataObjectPtr BasicPluginFactory::generateObject(ObjectStore *store, QXmlStreamR
         if (configWidget) {
           if (!configWidget->configurePropertiesFromXml(store, attrs) ) {
             Debug::self()->log(QObject::tr("Error unable to create data object from plugin"), Debug::Warning);
-            return 0;
+            return DataObjectPtr();
           } else {
             if (xml.isEndElement() && n == BasicPlugin::staticTypeTag) {
               break;
@@ -57,7 +57,7 @@ DataObjectPtr BasicPluginFactory::generateObject(ObjectStore *store, QXmlStreamR
           }
         } else {
           Debug::self()->log(QObject::tr("Error unable to find plugin for data object"), Debug::Warning);
-          return 0;
+          return DataObjectPtr();
         }
 
         dataObject = kst_cast<BasicPlugin>(DataObject::createPlugin(pluginName, store, configWidget, false));
@@ -118,7 +118,7 @@ DataObjectPtr BasicPluginFactory::generateObject(ObjectStore *store, QXmlStreamR
           xml.readNext();
         }
       } else {
-        return 0;
+        return DataObjectPtr();
       }
     }
     if (xml.isEndElement()) {
@@ -126,14 +126,14 @@ DataObjectPtr BasicPluginFactory::generateObject(ObjectStore *store, QXmlStreamR
         break;
       } else {
         Debug::self()->log(QObject::tr("Error creating Plugin Object from Kst file."), Debug::Warning);
-        return 0;
+        return DataObjectPtr();
       }
     }
     xml.readNext();
   }
 
   if (xml.hasError()) {
-    return 0;
+    return DataObjectPtr();
   }
 
   dataObject->writeLock();

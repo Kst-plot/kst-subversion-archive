@@ -64,31 +64,31 @@ RelationPtr ImageFactory::generateRelation(ObjectStore *store, QXmlStreamReader&
         Object::processShortNameIndexAttributes(attrs);
 
       } else {
-        return 0;
+        return DataObjectPtr();
       }
     } else if (xml.isEndElement()) {
       if (n == Image::staticTypeTag) {
         break;
       } else {
         Debug::self()->log(QObject::tr("Error creating Image from Kst file."), Debug::Warning);
-        return 0;
+        return DataObjectPtr();
       }
     }
     xml.readNext();
   }
 
   if (xml.hasError()) {
-    return 0;
+    return DataObjectPtr();
   }
 
-  MatrixPtr matrix = 0;
+  MatrixPtr matrix;
   if (store && !matrixName.isEmpty()) {
     matrix = kst_cast<Matrix>(store->retrieveObject(matrixName));
   }
 
   if (!matrix) {
     Debug::self()->log(QObject::tr("Error creating Image from Kst file.  Could not find matrix."), Debug::Warning);
-    return 0;
+    return DataObjectPtr();
   }
 
   ImagePtr image = store->createObject<Image>();

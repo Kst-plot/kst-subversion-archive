@@ -1492,7 +1492,7 @@ void Curve::yRange(double xFrom, double xTo, double* yMin, double* yMax) {
 
 
 DataObjectPtr Curve::providerDataObject() const {
-  DataObjectPtr provider = 0L;
+  DataObjectPtr provider;
   // FIXME: fix this.. I don't know what's going on here
 #if 0
   vectorList.lock().readLock();

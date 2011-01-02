@@ -87,7 +87,7 @@ ObjectPtr BasicPluginDialog::createNewDataObject() {
     msg += dataObject->errorMessage();
     QMessageBox::warning(this, tr("Kst"), msg);
 
-    return 0;
+    return ObjectPtr();
   }
 
   return dataObject;

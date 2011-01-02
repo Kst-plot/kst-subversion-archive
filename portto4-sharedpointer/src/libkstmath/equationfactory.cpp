@@ -51,31 +51,31 @@ DataObjectPtr EquationFactory::generateObject(ObjectStore *store, QXmlStreamRead
         //past the </equation> node to the </objects> node...
         //eq = xml.readElementText();
       } else {
-        return 0;
+        return DataObjectPtr();
       }
     } else if (xml.isEndElement()) {
       if (n == "equation") {
         break;
       } else {
         Debug::self()->log(QObject::tr("Error creating equation from Kst file."), Debug::Warning);
-        return 0;
+        return DataObjectPtr();
       }
     }
     xml.readNext();
   }
 
   if (xml.hasError()) {
-    return 0;
+    return DataObjectPtr();
   }
 
-  VectorPtr vector = 0;
+  VectorPtr vector;
   if (store && !xVector.isEmpty()) {
     vector = kst_cast<Vector>(store->retrieveObject(xVector));
   }
 
   if (!vector) {
     Debug::self()->log(QObject::tr("Error creating equation from Kst file.  Could not find xVector."), Debug::Warning);
-    return 0;
+    return DataObjectPtr();
   }
 
   EquationPtr equation = store->createObject<Equation>();

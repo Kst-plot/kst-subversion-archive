@@ -357,7 +357,7 @@ DataObjectPtr DataObject::createPlugin(const QString& name, ObjectStore *store, 
     }
   }
 #endif
-  return 0L;
+  return DataObjectPtr();
 }
 
 

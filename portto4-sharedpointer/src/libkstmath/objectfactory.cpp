@@ -54,12 +54,12 @@ void ObjectFactory::registerFactory(const QStringList& nodes, ObjectFactory *fac
 
 DataObjectPtr ObjectFactory::parse(ObjectStore *store, QXmlStreamReader& stream) {
   if (!factories) {
-    return 0;
+    return DataObjectPtr();
   }
 
   ObjectFactory *f = factories->value(stream.name().toString());
   if (!f) {
-    return 0;
+    return DataObjectPtr();
   }
 
   return f->generateObject(store, stream);

@@ -96,7 +96,7 @@ void CSD::change(VectorPtr in_V, double in_freq, bool in_average,
 
 
 CSD::~CSD() {
-  _outMatrix = 0L;
+  _outMatrix = MatrixPtr();
 }
 
 void CSD::internalUpdate() {
