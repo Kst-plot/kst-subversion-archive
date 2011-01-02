@@ -1,0 +1,91 @@
+Export eps to vector format.
+  kst 1.x did this by printing to file a .ps file, and then modifying it by adding the bounding box.
+
+------------
+
+Shared axis from the command line
+
+---------
+
+Smarter ASCII reader:
+  should be able to use huristics to get information about
+  the ascii file.
+    (eg, is it a CSV?  Does it have a field name header?)
+  these should be used only for new files, and should be used to sed the defaults, which can still be changed with 'configure'.
+
+------------
+
+Fixup line/arrow dimensions tab:
+  x,y instead of length/angle
+
+----------
+
+Scientific notation (instead of C's %e notation) for extreme axis numbers
+
+--------
+
+Edit multiple for other view objects (arrow, line, label...)
+
+--------
+
+Edit multiple for vectors
+(or get rid of the option in the dialog)
+
+--------
+
+data source text box doesn't recognise initial ~ as a euphemism for
+   the user's home directory (QDirModel doesn't handle this...)
+   (nor QDir, though QDir seems to know about $HOME).
+
+------------
+
+1.x kst file read compatibility...
+
+---------
+
+Thread kst2
+
+--------------------
+
+When you have many plots on a window (like 35), and the numbers in
+the axis labels are large, they often overwrite each other (so you can't
+tell any of the numbers apart).  
+
+--------------------
+
+in <ctrl> or <shift> zoom modes the line cursor should appear in all tied plots.
+
+--------------------
+
+Tied zoom icon should be a mag glass + paper clip
+Replace layout mode icon with zoom icon, and invert sense
+
+--------------------
+
+Legends can get larger than the plot if there are enought things in them.  This should not be. 
+
+--------
+
+vector selectors in curve dialog can't grow when you extend the window size.
+
+-------
+
+Some automagic way of deciding if plugin dialogs can make plots.
+
+-------
+
+Using QSharedPointer
+
+The idea is that the live time of an object is handled externally to the object.
+The usage of the object is reference counted by QSharedPointer. Maybe we don't
+need the ObjectStore because in principle is only a wrapper for global variables.
+Then it should be possible to remove all the 'friend class Kst::ObjectStore;' lines
+(friend is not our friend.)
+
+Use CMake build system with the option -Dkst_merge_files=1 because touching 
+sharedptr.h requires a complete rebuild which is many times faster with above option.
+
+-------
+
+
+

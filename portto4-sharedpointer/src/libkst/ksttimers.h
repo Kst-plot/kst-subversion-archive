@@ -1,0 +1,22 @@
+/***************************************************************************
+ *                                                                         *
+ *   copyright : (C) 2007 The University of Toronto                        *
+ *                   netterfield@astro.utoronto.ca                         *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+#ifndef KSTTIMERS_H
+#define KSTTIMERS_H
+
+#include <config.h>
+
+#ifdef HAVE_KST_USE_TIMERS
+#define BENCHMARK
+#endif
+
+#endif

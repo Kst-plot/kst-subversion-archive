@@ -1,0 +1,34 @@
+
+Draw an ellipse that spans many plots.  It ends up in the back, and can't be brought to the front.
+
+--------------------
+
+Artifacts when resizing large arrowheads.
+
+--------------------
+
+Curves are rendered slightly above where they should be.  Take a plot
+that it is of very boring data (like always exactly zero) and it'll be
+drawn one pixel above the axis tick mark for zero.  (This is not always the same - sometimes above, sometimes below, sometimes right.)
+So: it appears that ticks and curves use different rounding
+
+Probably related bug: points don't always appear centered on the line.
+--------------------
+
+With live data, occasionally the last few (several) samples show as a
+flat-line (at about the value of the last sample at the previous update)
+which magically fixes itself upon the next update.  I think I have
+reported this before.
+
+and (same bug)
+
+With live data, add a label which contains a scalar showing the
+"Last" value of a vector.  As the data is scrolling by, sometimes this
+scalar will indicate a value strikingly similar to the "Min" (or perhaps
+"First") value on the plot rather than the Last value.
+
+** This appears to be either a BLASTpol defile bug, or a filesystem issue.  **
+
+--------------------
+
+Select box tool.  Escape to cancel.  Mouse zooms don't work until you actually draw a box.

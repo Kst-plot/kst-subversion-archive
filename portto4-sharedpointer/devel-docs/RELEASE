@@ -1,0 +1,43 @@
+How to make a Kst release:
+
+Create and Update Branch
+
+1.  Update code from SVN (svn update)
+2.  Create branch for release (svn cp)
+    eg, svn cp https://svn.kde.org/home/kde/branches/work/kst/portto4 https://svn.kde.org/home/kde/branches/work/kst/2.0.0-beta3
+3.  In the branch, update the RELEASE.NOTES (kst/RELEASE.NOTES)
+4.  Update the version number in config.h and kst.pri 
+    [NOTE:  This step should be moved to immediately after the release and be done in the working directory, not the branch]
+5.  Build Kst in the branch ensuring no errors occur. (kst/build-kst)
+6.  Run Kst tests ensuring no errors occur. (kst/run-tests)  [NOTE:  A number of tests will report that the test has always failed.  However, none should actually fail]
+
+Packaging for Linux  
+
+Note:  Linux package is distributed as a source tarball.
+
+1.  Export the source from the created branch to a clean directory (svn export)
+2.  Remove all old_ and admin directories from the exported source tree.
+3.  Create a tarball of the source tree (tar -cf kst-2.0.0.tar sourcetree/kst) / (gzip -9 kst-2.0.0.tar)
+
+Packaging for Windows
+
+Note:  Windows package is distributed as a binary zip file.
+
+1.  Get the latest source from the branch.
+2.  Build Kst in Release Mode
+3.  Create kst/bin and kst/plugin directories to package from.
+4.  Copy built kst.exe and current mingwm10.dll QtCore4.dll QtGui4.dll QtOpenGL4.dll QtSvg4.dll QtXml4.dll into kst/bin
+5.  Copy DataSource and DataObject Plugins to kst/plugin
+6.  Verify that Kst current currently from the packaged directory.
+7.  Create a zip file of kst directory.
+
+
+Test, Distribute and Announce the Release
+
+1.  Open the tarball and build the source / run tests.
+2.  Upload tarball to uploads.kst.org and e-mail ftpadmin@kst.org to notify them of the new file.
+3.  Update website information to indicate the new release.  [SVN location - svn.kde.org/home/kde/trunk/www/areas/extragear/apps/kst]
+4.  Update the windows binary zip file available on the website with the build package.
+5.  Login to kde-apps.org and update the version and upload the file.
+6.  E-mail the kst List notifying everyone of the release.
+
