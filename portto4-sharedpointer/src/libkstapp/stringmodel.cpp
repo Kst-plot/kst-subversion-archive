@@ -51,7 +51,7 @@ void StringModel::generateObjectList() {
 
   foreach(String* string, sol) {
     if (string->orphan()) {
-      _objectList.append(string);
+      _objectList.append(string->toSharedPtr());
     }
   }
 }
@@ -110,7 +110,7 @@ QModelIndex StringModel::index(int row, int col, const QModelIndex& parent) cons
   }
 
   const int count = _objectList.count();
-  ObjectPtr object = 0;
+  ObjectPtr object;
   if (!parent.isValid()) {
     if (row < count) {
       return createIndex(row, col);

@@ -394,7 +394,7 @@ void Curve::showNewDialog() {
 
 
 void Curve::showEditDialog() {
-  DialogLauncher::self()->showCurveDialog(this);
+  DialogLauncher::self()->showCurveDialog(this->toSharedPtr());
 }
 
 

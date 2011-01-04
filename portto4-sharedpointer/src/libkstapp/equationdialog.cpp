@@ -221,7 +221,7 @@ EquationDialog::EquationDialog(ObjectPtr dataObject, QWidget *parent)
   if (editMode() == Edit) {
     configureTab(dataObject);
   } else {
-    configureTab(0);
+    configureTab(ObjectPtr());
   }
 
   connect(_equationTab, SIGNAL(optionsChanged()), this, SLOT(updateButtons()));

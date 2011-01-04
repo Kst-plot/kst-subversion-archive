@@ -205,7 +205,7 @@ void CSD::showNewDialog() {
 
 
 void CSD::showEditDialog() {
-  DialogLauncher::self()->showCSDDialog(this);
+  DialogLauncher::self()->showCSDDialog(toSharedPtr());
 }
 
 

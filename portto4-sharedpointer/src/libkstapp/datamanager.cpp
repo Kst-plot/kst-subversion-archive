@@ -277,7 +277,7 @@ void DataManager::showEquationDialog() {
 
 void DataManager::showCurveDialog() {
   if (VectorPtr vector = kst_cast<Vector>(_currentObject)) {
-    DialogLauncher::self()->showCurveDialog(0, vector);
+    DialogLauncher::self()->showCurveDialog(ObjectPtr(), vector);
   } else {
     DialogLauncher::self()->showCurveDialog();
   }
@@ -286,7 +286,7 @@ void DataManager::showCurveDialog() {
 
 void DataManager::showCSDDialog() {
   if (VectorPtr vector = kst_cast<Vector>(_currentObject)) {
-    DialogLauncher::self()->showCSDDialog(0, vector);
+    DialogLauncher::self()->showCSDDialog(ObjectPtr(), vector);
   } else {
     DialogLauncher::self()->showCSDDialog();
   }
@@ -295,7 +295,7 @@ void DataManager::showCSDDialog() {
 
 void DataManager::showPowerSpectrumDialog() {
   if (VectorPtr vector = kst_cast<Vector>(_currentObject)) {
-    DialogLauncher::self()->showPowerSpectrumDialog(0, vector);
+    DialogLauncher::self()->showPowerSpectrumDialog(ObjectPtr(), vector);
   } else {
     DialogLauncher::self()->showPowerSpectrumDialog();
   }
@@ -304,7 +304,7 @@ void DataManager::showPowerSpectrumDialog() {
 
 void DataManager::showHistogramDialog() {
   if (VectorPtr vector = kst_cast<Vector>(_currentObject)) {
-    DialogLauncher::self()->showHistogramDialog(0, vector);
+    DialogLauncher::self()->showHistogramDialog(ObjectPtr(), vector);
   } else {
     DialogLauncher::self()->showHistogramDialog();
   }
@@ -313,7 +313,7 @@ void DataManager::showHistogramDialog() {
 
 void DataManager::showImageDialog() {
   if (MatrixPtr matrix = kst_cast<Matrix>(_currentObject)) {
-    DialogLauncher::self()->showImageDialog(0, matrix);
+    DialogLauncher::self()->showImageDialog(ObjectPtr(), matrix);
   } else {
     DialogLauncher::self()->showImageDialog();
   }
@@ -322,9 +322,9 @@ void DataManager::showImageDialog() {
 
 void DataManager::showPluginDialog(QString &pluginName) {
   if (VectorPtr vector = kst_cast<Vector>(_currentObject)) {
-    DialogLauncher::self()->showBasicPluginDialog(pluginName, 0, vector);
+    DialogLauncher::self()->showBasicPluginDialog(pluginName, ObjectPtr(), vector);
   } else if (CurvePtr curve = kst_cast<Curve>(_currentObject)) {
-    DialogLauncher::self()->showBasicPluginDialog(pluginName, 0, curve->xVector(), curve->yVector());
+    DialogLauncher::self()->showBasicPluginDialog(pluginName, ObjectPtr(), curve->xVector(), curve->yVector());
   } else {
     DialogLauncher::self()->showBasicPluginDialog(pluginName);
   }
@@ -353,10 +353,10 @@ void DataManager::deleteObject() {
   } else if (PrimitivePtr primitive = kst_cast<Primitive>(_currentObject)) {
     _doc->objectStore()->removeObject(primitive);
   }
-  _currentObject = 0;
+  _currentObject.clear();
   _doc->session()->triggerReset();
   // Now select the next item
-  _session->selectionModel()->select(model->index(row,0), QItemSelectionModel::Select);
+  _session->selectionModel()->select(model->index(row, 0), QItemSelectionModel::Select);
   // Cleanup and return
   _doc->objectStore()->cleanUpDataSourceList();
 }

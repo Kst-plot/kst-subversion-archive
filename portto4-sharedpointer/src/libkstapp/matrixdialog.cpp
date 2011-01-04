@@ -578,7 +578,7 @@ MatrixDialog::MatrixDialog(ObjectPtr dataObject, QWidget *parent)
   if (editMode() == Edit) {
     configureTab(dataObject);
   } else {
-    configureTab(0);
+    configureTab(ObjectPtr());
   }
 
   connect(_matrixTab, SIGNAL(sourceChanged()), this, SLOT(updateButtons()));
@@ -693,7 +693,7 @@ ObjectPtr MatrixDialog::createNewDataObject() {
   case MatrixTab::GeneratedMatrix:
     return createNewGeneratedMatrix();
   default:
-    return 0;
+    return ObjectPtr();
   }
 }
 
@@ -703,7 +703,7 @@ ObjectPtr MatrixDialog::createNewDataMatrix() {
 
   //FIXME better validation than this please...
   if (!dataSource)
-    return 0;
+    return ObjectPtr();
 
   const QString field = _matrixTab->field();
   const int skip = _matrixTab->skip();
@@ -842,7 +842,7 @@ ObjectPtr MatrixDialog::editExistingDataObject() const {
 
       //FIXME better validation than this please...
       if (!dataSource)
-        return 0;
+        return ObjectPtr();
 
       const QString field = _matrixTab->field();
       const int skip = _matrixTab->skip();

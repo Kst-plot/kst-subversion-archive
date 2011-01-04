@@ -39,6 +39,20 @@ Object::~Object() {
 }
 
 
+ObjectPtr Object::toSharedPtr() const
+{
+  ObjectPtr ptr = _weakpointer.toStrongRef().objectCast<Object>();
+  if (!ptr.isNull()) {
+    return ptr;
+  }
+  Object* This = const_cast<Object*>(this);
+  ObjectPtr sptr(This);
+  ptr = sptr;
+  This->_weakpointer = ptr.toWeakRef();
+  return ptr;
+}
+
+
 QString Object::type() {
   return staticMetaObject.className();
 }
@@ -73,7 +87,7 @@ void Object::deleteDependents() {
 }
 
 
-bool Object::uses(ObjectPtr p) const {
+bool Object::uses(Object* p) const {
    Q_UNUSED(p)
 
    return false;

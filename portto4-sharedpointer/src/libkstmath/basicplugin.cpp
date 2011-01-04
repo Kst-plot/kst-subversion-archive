@@ -103,7 +103,7 @@ void BasicPlugin::showNewDialog() {
 
 
 void BasicPlugin::showEditDialog() {
-  DialogLauncher::self()->showBasicPluginDialog(_pluginName, this);
+  DialogLauncher::self()->showBasicPluginDialog(_pluginName, toSharedPtr());
 }
 
 

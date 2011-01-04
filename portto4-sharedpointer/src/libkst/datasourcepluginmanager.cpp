@@ -113,10 +113,11 @@ static void scanPlugins() {
 
   Debug::self()->log(i18n("Scanning for data-source plugins."));
 
-  foreach (QObject *plugin, QPluginLoader::staticInstances()) {
+  QObjectList plugins = QPluginLoader::staticInstances();
+  foreach (QObject *plugin, plugins) {
     //try a cast
     if (DataSourcePluginInterface *ds = dynamic_cast<DataSourcePluginInterface*>(plugin)) {
-      tmpList.append(ds);
+      tmpList.append(SharedPtr<PluginInterface>(ds));
     }
   }
 
@@ -149,7 +150,7 @@ static void scanPlugins() {
         QObject *plugin = loader.instance();
         if (plugin) {
           if (DataSourcePluginInterface *ds = dynamic_cast<DataSourcePluginInterface*>(plugin)) {
-            tmpList.append(ds);
+            tmpList.append(SharedPtr<PluginInterface>(ds));
             Debug::self()->log(QString("Plugin loaded: %1").arg(fileName));
           }
         } else {
@@ -203,12 +204,16 @@ QList<DataSourcePluginManager::PluginSortContainer> DataSourcePluginManager::bes
   PluginList info = _pluginList;
 
   if (!type.isEmpty()) {
+    PluginList::Iterator b = info.begin();
+    PluginList::Iterator e = info.end();    
     for (PluginList::Iterator it = info.begin(); it != info.end(); ++it) {
-      if (DataSourcePluginInterface *p = dynamic_cast<DataSourcePluginInterface*>((*it).data())) {
+      PluginInterface* p0 = it->data();
+      DataSourcePluginInterface *p = qobject_cast<DataSourcePluginInterface*>(p0);
+      if (p) {
         if (p->provides(type)) {
           PluginSortContainer psc;
           psc.match = 100;
-          psc.plugin = p;
+          psc.plugin = *it;
           bestPlugins.append(psc);
           return bestPlugins;
         }
@@ -220,7 +225,7 @@ QList<DataSourcePluginManager::PluginSortContainer> DataSourcePluginManager::bes
     PluginSortContainer psc;
     if (DataSourcePluginInterface *p = dynamic_cast<DataSourcePluginInterface*>((*it).data())) {
       if ((psc.match = p->understands(&settingsObject, filename)) > 0) {
-        psc.plugin = p;
+        psc.plugin = *it;
         bestPlugins.append(psc);
       }
     }
@@ -238,7 +243,7 @@ DataSourcePtr DataSourcePluginManager::findPluginFor(ObjectStore *store, const Q
 
   // we don't actually iterate here, unless the first plugin fails.  (Not sure this helps at all.)
   for (QList<PluginSortContainer>::Iterator i = bestPlugins.begin(); i != bestPlugins.end(); ++i) {
-    DataSourcePtr plugin = (*i).plugin->create(store, &settingsObject, filename, QString(), e);
+    DataSourcePtr plugin(i->plugin->create(store, &settingsObject, filename, QString(), e));
     if (plugin) {
       return plugin;
     }

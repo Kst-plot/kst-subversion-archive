@@ -116,7 +116,7 @@ PowerSpectrumDialog::PowerSpectrumDialog(ObjectPtr dataObject, QWidget *parent)
   if (editMode() == Edit) {
     configureTab(dataObject);
   } else {
-    configureTab(0);
+    configureTab();
   }
 
   connect(_powerSpectrumTab, SIGNAL(vectorChanged()), this, SLOT(updateButtons()));

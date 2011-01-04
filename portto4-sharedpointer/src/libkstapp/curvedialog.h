@@ -98,7 +98,7 @@ class CurveDialog : public DataDialog {
     void editSingleMode();
 
   private:
-    void configureTab(ObjectPtr curve=0);
+    void configureTab(ObjectPtr curve = ObjectPtr());
 
     CurveTab *_curveTab;
 };

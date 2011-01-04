@@ -168,7 +168,7 @@ void Image::showNewDialog() {
 
 
 void Image::showEditDialog() {
-  DialogLauncher::self()->showImageDialog(this);
+  DialogLauncher::self()->showImageDialog(toSharedPtr());
 }
 
 
@@ -460,7 +460,7 @@ void Image::updatePaintObjects(const CurveRenderContext& context) {
   int numberOfLinesDrawn = 0;
 #endif
 
-  ImagePtr image = this;
+  ImagePtr image = toSharedPtr();
 
   _image = QImage();
   _lines.clear();

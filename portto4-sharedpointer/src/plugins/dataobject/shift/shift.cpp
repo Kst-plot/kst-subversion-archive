@@ -91,13 +91,13 @@ class ConfigWidgetShiftPlugin : public Kst::DataObjectConfigWidget, public Ui_Sh
         Kst::Object* object = _store->retrieveObject(vectorName);
         Kst::Vector* vector = static_cast<Kst::Vector*>(object);
         if (vector) {
-          setSelectedVector(vector);
+          setSelectedVector(vector->toSharedPtr());
         }
         QString scalarName = _cfg->value("Input Scalar Shift").toString();
         object = _store->retrieveObject(scalarName);
         Kst::Scalar* scalar = static_cast<Kst::Scalar*>(object);
         if (scalar) {
-          setSelectedScalar(scalar);
+          setSelectedScalar(scalar->toSharedPtr());
         }
         _cfg->endGroup();
       }

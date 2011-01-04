@@ -65,7 +65,7 @@ void StringSelector::emitSelectionChanged() {
 
 
 StringPtr StringSelector::selectedString() const {
-  return qVariantValue<String*>(_string->itemData(_string->currentIndex()));
+  return qVariantValue<String*>(_string->itemData(_string->currentIndex()))->toSharedPtr();
 }
 
 
@@ -85,7 +85,7 @@ void StringSelector::setSelectedString(StringPtr selectedString) {
 
 void StringSelector::newString() {
   QString stringName;
-  DialogLauncher::self()->showStringDialog(stringName, 0, true);
+  DialogLauncher::self()->showStringDialog(stringName, ObjectPtr(), true);
   fillStrings();
   StringPtr string = kst_cast<String>(_store->retrieveObject(stringName));
 

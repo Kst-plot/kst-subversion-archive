@@ -88,7 +88,7 @@ class ConfigWidgetChopPlugin : public Kst::DataObjectConfigWidget, public Ui_Cho
         Kst::Object* object = _store->retrieveObject(vectorName);
         Kst::Vector* vector = static_cast<Kst::Vector*>(object);
         if (vector) {
-          setSelectedVector(vector);
+          setSelectedVector(vector->toSharedPtr());
         }
         _cfg->endGroup();
       }

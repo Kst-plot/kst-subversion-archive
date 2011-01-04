@@ -71,7 +71,7 @@ private:
   bool _setStringArg(QString &arg, QString Message);
   DataVectorPtr createOrFindDataVector(QString field, DataSourcePtr ds);
   void createOrFindPlot(const QString name);
-  void createCurveInPlot(VectorPtr xv, VectorPtr yv, VectorPtr ev=0);
+  void createCurveInPlot(VectorPtr xv, VectorPtr yv, VectorPtr ev = VectorPtr());
   void createImageInPlot(MatrixPtr m);
 };
 

@@ -305,7 +305,7 @@ VectorDialog::VectorDialog(ObjectPtr dataObject, QWidget *parent)
   if (editMode() == Edit) {
     configureTab(dataObject);
   } else {
-    configureTab(0);
+    configureTab(ObjectPtr());
   }
 
   connect(_vectorTab, SIGNAL(sourceChanged()), this, SLOT(updateButtons()));
@@ -395,7 +395,7 @@ ObjectPtr VectorDialog::createNewDataObject() {
   case VectorTab::GeneratedVector:
     return createNewGeneratedVector();
   default:
-    return 0;
+    return ObjectPtr();
   }
 }
 
@@ -405,7 +405,7 @@ ObjectPtr VectorDialog::createNewDataVector() {
 
   //FIXME better validation than this please...
   if (!dataSource)
-    return 0;
+    return ObjectPtr();
 
   const QString field = _vectorTab->field();
   const DataRange *dataRange = _vectorTab->dataRange();
@@ -493,7 +493,7 @@ ObjectPtr VectorDialog::editExistingDataObject() const {
 
       //FIXME better validation than this please...
       if (!dataSource)
-        return 0;
+        return DataSourcePtr();
 
       const QString field = _vectorTab->field();
       const DataRange *dataRange = _vectorTab->dataRange();

@@ -117,9 +117,6 @@ DataSourceConfigWidget* DataSource::configWidget() {
   DataSourceConfigWidget *w = DataSourcePluginManager::configWidgetForSource(_filename, fileType());
   Q_ASSERT(w);
 
-  //This is still ugly to me...
-  w->_instance = this;
-  w->load();
   return w;
 }
 

@@ -106,7 +106,7 @@ class HistogramDialog : public DataDialog {
     void editSingleMode();
 
   private:
-    void configureTab(ObjectPtr object=0);
+    void configureTab(ObjectPtr object = ObjectPtr());
 
     HistogramTab *_histogramTab;
 };

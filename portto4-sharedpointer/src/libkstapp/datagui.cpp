@@ -64,8 +64,8 @@ void DataGui::removeCurveFromPlots(Relation *relation) {
       bool plotUpdated = false;
 
       foreach (PlotRenderItem* renderItem, plotItem->renderItems()) {
-        if (renderItem->relationList().contains(relation)) {
-          renderItem->removeRelation(relation);
+        if (renderItem->relationList().contains(relation->toSharedPtr())) {
+          renderItem->removeRelation(relation->toSharedPtr());
           plotUpdated = true;
         }
       }

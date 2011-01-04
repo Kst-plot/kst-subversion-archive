@@ -26,11 +26,13 @@
 #include <QStringList>
 #include <QMetaType>
 #include <QXmlStreamWriter>
+#include <QWeakPointer>
 
 #include "namedobject.h"
 #include "kst_export.h"
 #include "sharedptr.h"
 #include "rwlock.h"
+
 
 namespace Kst {
 
@@ -77,7 +79,10 @@ class KSTCORE_EXPORT Object : public QObject, public Shared, public KstRWLock, p
     virtual bool used() const {return _used;}
     void setUsed(bool used_in) {_used = used_in;}
 
-    virtual bool uses(ObjectPtr p) const;
+    virtual bool uses(Object* p) const;
+
+    ObjectPtr toSharedPtr() const;
+
 
   protected:
     Object();
@@ -96,8 +101,11 @@ class KSTCORE_EXPORT Object : public QObject, public Shared, public KstRWLock, p
 
     qint64 _serial;
     qint64 _serialOfLastChange;
+
+
   private:
     bool _used;
+    QWeakPointer<QObject> _weakpointer;
   };
 
 

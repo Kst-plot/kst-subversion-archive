@@ -291,7 +291,7 @@ CurveDialog::CurveDialog(ObjectPtr dataObject, QWidget *parent)
   if (editMode() == Edit) {
     configureTab(dataObject);
   } else {
-    configureTab(0);
+    configureTab(ObjectPtr());
   }
 
   connect(_curveTab, SIGNAL(vectorsChanged()), this, SLOT(updateButtons()));
@@ -462,25 +462,25 @@ ObjectPtr CurveDialog::editExistingDataObject() const {
           VectorPtr xVector = _curveTab->xVectorDirty() ? _curveTab->xVector() : curve->xVector();
           VectorPtr yVector = _curveTab->yVectorDirty() ? _curveTab->yVector() : curve->yVector();
 
-          VectorPtr xError = 0;
+          VectorPtr xError;
           if (_curveTab->xErrorDirty()) {
             xError = _curveTab->xError();
           } else if (curve->hasXError()) {
             xError = curve->xErrorVector();
           }
-          VectorPtr yError = 0;
+          VectorPtr yError;
           if (_curveTab->yErrorDirty()) {
             yError = _curveTab->yError();
           } else if (curve->hasYError()) {
             yError = curve->yErrorVector();
           }
-          VectorPtr xMinusError = 0;
+          VectorPtr xMinusError;
           if (_curveTab->xMinusErrorDirty()) {
             xMinusError = _curveTab->xMinusError();
           } else if (curve->hasXMinusError()) {
             xMinusError = curve->xMinusErrorVector();
           }
-          VectorPtr yMinusError = 0;
+          VectorPtr yMinusError;
           if (_curveTab->yMinusErrorDirty()) {
             yMinusError = _curveTab->yMinusError();
           } else if (curve->hasYMinusError()) {

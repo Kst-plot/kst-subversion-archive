@@ -240,7 +240,7 @@ ScalarDialog::ScalarDialog(ObjectPtr dataObject, QWidget *parent)
   if (editMode() == Edit) {
     configureTab(dataObject);
   } else {
-    configureTab(0);
+    configureTab(ObjectPtr());
   }
 
   connect(_scalarTab, SIGNAL(valueChanged()), this, SLOT(updateButtons()));
@@ -305,7 +305,7 @@ ObjectPtr ScalarDialog::createNewDataObject() {
   case ScalarTab::GeneratedScalar:
     return createNewGeneratedScalar();
   default:
-    return 0;
+    return ObjectPtr();
   }
 }
 
@@ -320,7 +320,7 @@ ObjectPtr ScalarDialog::createNewGeneratedScalar(){
   }
 
   if (!ok) {
-    return 0; //invalid
+    return ObjectPtr(); //invalid
   }
 
   ScalarPtr scalar = _document->objectStore()->createObject<Scalar>();
@@ -347,7 +347,7 @@ ObjectPtr ScalarDialog::createNewDataScalar() {
   const DataSourcePtr dataSource = _scalarTab->dataSource();
 
   if (!dataSource)
-    return 0;
+    return ObjectPtr();
 
   const QString field = _scalarTab->field();
 
@@ -377,7 +377,7 @@ ObjectPtr ScalarDialog::createNewVScalar() {
   const DataSourcePtr dataSource = _scalarTab->dataSource();
 
   if (!dataSource)
-    return 0;
+    return ObjectPtr();
 
   const QString field = _scalarTab->fieldRV();
   const int f0 = _scalarTab->F0();

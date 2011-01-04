@@ -205,7 +205,7 @@ StringDialog::StringDialog(ObjectPtr dataObject, QWidget *parent)
   if (editMode() == Edit) {
     configureTab(dataObject);
   } else {
-    configureTab(0);
+    configureTab(ObjectPtr());
   }
 
   connect(_stringTab, SIGNAL(valueChanged()), this, SLOT(updateButtons()));
@@ -250,7 +250,7 @@ ObjectPtr StringDialog::createNewDataObject() {
   case StringTab::GeneratedString:
     return createNewGeneratedString();
   default:
-    return 0;
+    return ObjectPtr();
   }
 }
 
@@ -289,7 +289,7 @@ ObjectPtr StringDialog::createNewDataString() {
   const DataSourcePtr dataSource = _stringTab->dataSource();
 
   if (!dataSource)
-    return 0;
+    return ObjectPtr();
 
   const QString field = _stringTab->field();
 

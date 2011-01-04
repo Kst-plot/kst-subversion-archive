@@ -26,7 +26,9 @@ DataSourceDialog::DataSourceDialog(DataDialog::EditMode mode, DataSourcePtr data
   QVBoxLayout *layout = new QVBoxLayout(this);
 
   _dataSource->readLock();
-  QWidget *widget = _dataSource->configWidget();
+  DataSourceConfigWidget *widget = _dataSource->configWidget();
+  widget->setInstance(_dataSource);
+  widget->load();
   connect(this, SIGNAL(ok()), widget, SLOT(save()));
 
   if (mode == DataDialog::Edit) {

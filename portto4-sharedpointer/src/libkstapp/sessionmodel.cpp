@@ -53,17 +53,17 @@ void SessionModel::generateObjectList() {
   ObjectList<DataObject> dol = _store->getObjects<DataObject>();
   _objectList.clear();
 
-  foreach(Primitive* P, pol) {
+  foreach(const PrimitivePtr& P, pol) {
     if (!P->provider()) {
       _objectList.append(P);
     }
   }
 
-  foreach(Relation* relation, rol) {
+  foreach(const RelationPtr& relation, rol) {
     _objectList.append(relation);
   }
 
-  foreach(DataObject* dataObject, dol) {
+  foreach(const DataObjectPtr& dataObject, dol) {
     _objectList.append(dataObject);
   }
 }
@@ -101,7 +101,7 @@ QVariant SessionModel::data(const QModelIndex& index, int role) const {
     if (index.parent().isValid()) {
       Q_ASSERT(!index.parent().parent().isValid());
       QVariant p = data(index.parent(), role);
-      DataObjectPtr parent = qVariantValue<DataObject*>(p);
+      DataObjectPtr parent = qVariantValue<DataObject*>(p)->toSharedPtr();
       const int vectorCount = parent->outputVectors().count();
       if (index.row() < vectorCount) {
         if (VectorPtr v = parent->outputVectors().values()[index.row()]) {
@@ -124,7 +124,7 @@ QVariant SessionModel::data(const QModelIndex& index, int role) const {
   if (index.internalPointer()) { //parent().isValid()) {
     Q_ASSERT(!index.parent().parent().isValid());
     DataObject *parent = static_cast<DataObject*>(index.internalPointer());
-    return dataObjectOutputData(parent, index);
+    return dataObjectOutputData(parent->toSharedPtr(), index);
   }
 
   Q_ASSERT(_store);
@@ -307,7 +307,7 @@ QModelIndex SessionModel::parent(const QModelIndex& index) const {
   }
 
   Q_ASSERT(_store);
-  const int cnt = _objectList.indexOf(dop);
+  const int cnt = _objectList.indexOf(dop->toSharedPtr());
   if (cnt < 0) {
     return QModelIndex();
   }

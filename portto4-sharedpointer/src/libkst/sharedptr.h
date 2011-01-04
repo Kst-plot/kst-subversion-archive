@@ -56,7 +56,7 @@ public:
   SharedPtr()  {}
   ~SharedPtr() {}
 
-  //explicit // should compile with 'explicit'
+  explicit // should compile with 'explicit'
   SharedPtr(T* t) : QSharedPointer<T>(t) {}
 
   template<class Y>
@@ -240,8 +240,13 @@ inline SharedPtr<T> kst_cast(SharedPtr<U> object) {
 // FIXME: make this safe
 template <typename T>
 inline SharedPtr<T> kst_cast(QObject *object) {
-  return qobject_cast<T*>(object);
+  T* obj = qobject_cast<T*>(object);
+  if (obj) {
+    return SharedPtr<T>(obj);
+  }
+  return SharedPtr();
 }
+
 
 }
 #endif

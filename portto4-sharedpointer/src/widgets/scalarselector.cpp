@@ -103,7 +103,7 @@ ScalarPtr ScalarSelector::selectedScalar() {
     foreach(Scalar* scalar, _store->getObjects<Scalar>()) {
       if (scalar->orphan()) {
         if (scalar->value() == value) {
-          return scalar;
+          return scalar->toSharedPtr();
         }
       }
     }
@@ -123,7 +123,7 @@ ScalarPtr ScalarSelector::selectedScalar() {
 
     return scalar;
   }
-  return qVariantValue<Scalar*>(_scalar->itemData(_scalar->currentIndex()));
+  return qVariantValue<Scalar*>(_scalar->itemData(_scalar->currentIndex()))->toSharedPtr();
 }
 
 
@@ -158,7 +158,7 @@ void ScalarSelector::setSelectedScalar(ScalarPtr selectedScalar) {
 
 void ScalarSelector::newScalar() {
   QString scalarName;
-  DialogLauncher::self()->showScalarDialog(scalarName, 0, true);
+  DialogLauncher::self()->showScalarDialog(scalarName, ObjectPtr(), true);
   fillScalars();
   ScalarPtr scalar = kst_cast<Scalar>(_store->retrieveObject(scalarName));
 
@@ -171,7 +171,7 @@ void ScalarSelector::newScalar() {
 
 void ScalarSelector::editScalar() {
   if (selectedScalar()->provider()) {
-    DialogLauncher::self()->showObjectDialog(selectedScalar()->provider());
+    DialogLauncher::self()->showObjectDialog(selectedScalar()->provider()->toSharedPtr());
   } else {
     QString scalarName;
 #ifdef KST_USE_QSHAREDPOINTER
@@ -213,7 +213,7 @@ void ScalarSelector::fillScalars() {
 
   qSort(list);
 
-  ScalarPtr current = qVariantValue<Scalar*>(_scalar->itemData(_scalar->currentIndex()));;
+  ScalarPtr current = qVariantValue<Scalar*>(_scalar->itemData(_scalar->currentIndex()))->toSharedPtr();
 
   _scalar->clear();
   foreach (QString string, list) {

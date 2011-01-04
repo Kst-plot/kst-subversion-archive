@@ -71,7 +71,7 @@ class PowerSpectrumDialog : public DataDialog {
     void editSingleMode();
 
   private:
-    void configureTab(ObjectPtr object=0);
+    void configureTab(ObjectPtr object = ObjectPtr());
 
     PowerSpectrumTab *_powerSpectrumTab;
 };

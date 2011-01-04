@@ -114,7 +114,7 @@ class KSTMATH_EXPORT Relation : public Object {
     virtual double midY() const { return (MaxY+MinY)*0.5; }
     virtual void yRange(double xFrom, double xTo, double* yMin, double* yMax) = 0;
 
-    virtual bool uses(ObjectPtr p) const;
+    virtual bool uses(ObjectPtr) const;
 
     // this returns the data object providing the data for this basecurve.
     // E.g. for VCurves, it returns the data object providing the y vector

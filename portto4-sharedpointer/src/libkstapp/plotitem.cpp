@@ -682,7 +682,7 @@ void PlotItem::showFilterDialog(QAction* action) {
     foreach (RelationPtr relation, renderer->relationList()) {
       if (relation->Name() == action->text()) {
         if (CurvePtr curve = kst_cast<Curve>(relation)) {
-          DialogLauncher::self()->showBasicPluginDialog(DataObject::filterPluginList().first(), 0, curve->xVector(), curve->yVector(), this);
+          DialogLauncher::self()->showBasicPluginDialog(DataObject::filterPluginList().first(), ObjectPtr(), curve->xVector(), curve->yVector(), this);
         }
       }
     }
@@ -695,7 +695,7 @@ void PlotItem::showFitDialog(QAction* action) {
     foreach (RelationPtr relation, renderer->relationList()) {
       if (relation->Name() == action->text()) {
         if (CurvePtr curve = kst_cast<Curve>(relation)) {
-          DialogLauncher::self()->showBasicPluginDialog(DataObject::fitsPluginList().first(), 0, curve->xVector(), curve->yVector(), this);
+          DialogLauncher::self()->showBasicPluginDialog(DataObject::fitsPluginList().first(), ObjectPtr(), curve->xVector(), curve->yVector(), this);
         }
       }
     }

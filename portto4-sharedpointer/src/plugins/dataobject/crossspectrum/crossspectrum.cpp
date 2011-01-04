@@ -107,25 +107,25 @@ class ConfigCrossSpectrumPlugin : public Kst::DataObjectConfigWidget, public Ui_
         Kst::Object* object = _store->retrieveObject(vectorName);
         Kst::Vector* vectorOne = static_cast<Kst::Vector*>(object);
         if (vectorOne) {
-          setSelectedVectorOne(vectorOne);
+          setSelectedVectorOne(vectorOne->toSharedPtr());
         }
         vectorName = _cfg->value("Input Vector Two").toString();
         object = _store->retrieveObject(vectorName);
         Kst::Vector* vectorTwo = static_cast<Kst::Vector*>(object);
         if (vectorTwo) {
-          setSelectedVectorTwo(vectorTwo);
+          setSelectedVectorTwo(vectorTwo->toSharedPtr());
         }
         QString scalarName = _cfg->value("Input Scalar FFT").toString();
         object = _store->retrieveObject(scalarName);
         Kst::Scalar* scalarFFT = static_cast<Kst::Scalar*>(object);
         if (scalarFFT) {
-          setSelectedScalarFFT(scalarFFT);
+          setSelectedScalarFFT(scalarFFT->toSharedPtr());
         }
         scalarName = _cfg->value("Input Scalar Sample Rate").toString();
         object = _store->retrieveObject(scalarName);
         Kst::Scalar* scalarRate = static_cast<Kst::Scalar*>(object);
         if (scalarRate) {
-          setSelectedScalarRate(scalarRate);
+          setSelectedScalarRate(scalarRate->toSharedPtr());
         }
         _cfg->endGroup();
       }

@@ -41,10 +41,13 @@ class KSTCORE_EXPORT ObjectStore
     ObjectStore();
     ~ObjectStore();
 
-    template<class T> SharedPtr<T> createObject();
+    template<class T> 
+    SharedPtr<T> createObject();
 
-    template<class T> bool addObject(T *o);
-    bool removeObject(Object *o);
+    template<class T> 
+    bool addObject(const SharedPtr<T>& o);
+
+    bool removeObject(const ObjectPtr&);
 
     ObjectPtr retrieveObject(const QString name) const;
 
@@ -53,7 +56,9 @@ class KSTCORE_EXPORT ObjectStore
 
     /** get a list containing only objects of type T in the object store
      ** T must inherit from Kst::Object */
-    template<class T> const ObjectList<T> getObjects() const;
+    // TODO return ObjectList<SharedPtr<T> >
+    template<class T> 
+    const ObjectList<T> getObjects() const;
 
     /**  get just the data sources */
     DataSourceList dataSourceList() const;
@@ -111,8 +116,8 @@ const ObjectList<T> ObjectStore::getObjects() const {
 template<class T>
 SharedPtr<T> ObjectStore::createObject() {
   KstWriteLocker l(&(this->_lock));
-  T *object = new T(this);
-  addObject(object);
+  T* object = new T(this);
+  addObject(object->toSharedPtr());
 
 
 #ifdef KST_USE_QSHAREDPOINTER
@@ -130,7 +135,7 @@ SharedPtr<T> ObjectStore::createObject() {
 
 // Add an object to the store.
 template<class T>
-bool ObjectStore::addObject(T *o) {
+bool ObjectStore::addObject(const SharedPtr<T>& o) {
   if (!o) {
     return false;
   }

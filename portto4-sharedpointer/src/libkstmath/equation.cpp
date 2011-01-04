@@ -98,8 +98,8 @@ void Equation::attach() {
 
 const CurveHintList *Equation::curveHints() const {
   _curveHints->clear();
-  _curveHints->append(new CurveHint(i18n("Equation Curve"),
-                      _xOutVector->shortName(), _yOutVector->shortName()));
+  _curveHints->append(CurveHintPtr(new CurveHint(i18n("Equation Curve"),
+                      _xOutVector->shortName(), _yOutVector->shortName())));
   return _curveHints;
 }
 
@@ -492,7 +492,7 @@ void Equation::showNewDialog() {
 
 
 void Equation::showEditDialog() {
-  DialogLauncher::self()->showEquationDialog(this);
+  DialogLauncher::self()->showEquationDialog(toSharedPtr());
 }
 
 

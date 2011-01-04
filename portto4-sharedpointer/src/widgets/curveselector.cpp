@@ -45,7 +45,7 @@ void CurveSelector::emitSelectionChanged() {
 
 
 CurvePtr CurveSelector::selectedCurve() const {
-  return qVariantValue<Curve*>(_curve->itemData(_curve->currentIndex()));
+  return qVariantValue<Curve*>(_curve->itemData(_curve->currentIndex()))->toSharedPtr();
 }
 
 

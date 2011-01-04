@@ -26,11 +26,10 @@ class ObjectStore;
 class DataSource;
 class DataSourceConfigWidget;
 
-#ifdef KST_USE_QSHAREDPOINTER
-class PluginInterface {
-#else
-class PluginInterface : public Shared {
-#endif
+class KSTCORE_EXPORT PluginInterface : public QObject 
+{
+    Q_OBJECT
+
   public:
     PluginInterface() {}
 
@@ -43,7 +42,10 @@ class PluginInterface : public Shared {
 };
 
 
-class DataSourcePluginInterface : public PluginInterface {
+class KSTCORE_EXPORT DataSourcePluginInterface : public PluginInterface 
+{
+  Q_OBJECT
+
   public:
     virtual ~DataSourcePluginInterface() {}
 

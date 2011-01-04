@@ -118,31 +118,31 @@ class ConfigEffectiveBandwidthPlugin : public Kst::DataObjectConfigWidget, publi
         Kst::Object* object = _store->retrieveObject(vectorName);
         Kst::Vector* vectorX = static_cast<Kst::Vector*>(object);
         if (vectorX) {
-          setSelectedVectorX(vectorX);
+          setSelectedVectorX(vectorX->toSharedPtr());
         }
         vectorName = _cfg->value("Input Vector Y").toString();
         object = _store->retrieveObject(vectorName);
         Kst::Vector* vectorY = static_cast<Kst::Vector*>(object);
         if (vectorY) {
-          setSelectedVectorY(vectorY);
+          setSelectedVectorY(vectorY->toSharedPtr());
         }
         QString scalarName = _cfg->value("Input Scalar Min. White Noise Freq.").toString();
         object = _store->retrieveObject(scalarName);
         Kst::Scalar* scalarMin = static_cast<Kst::Scalar*>(object);
         if (scalarMin) {
-          setSelectedScalarMin(scalarMin);
+          setSelectedScalarMin(scalarMin->toSharedPtr());
         }
         scalarName = _cfg->value("Input Scalar Sampling Frequency (Hz)").toString();
         object = _store->retrieveObject(scalarName);
         Kst::Scalar* scalarFreq = static_cast<Kst::Scalar*>(object);
         if (scalarFreq) {
-          setSelectedScalarFreq(scalarFreq);
+          setSelectedScalarFreq(scalarFreq->toSharedPtr());
         }
         scalarName = _cfg->value("Input Scalar K").toString();
         object = _store->retrieveObject(scalarName);
         Kst::Scalar* scalarK = static_cast<Kst::Scalar*>(object);
         if (scalarK) {
-          setSelectedScalarK(scalarK);
+          setSelectedScalarK(scalarK->toSharedPtr());
         }
         _cfg->endGroup();
       }

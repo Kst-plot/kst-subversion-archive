@@ -325,7 +325,6 @@ class KSTCORE_EXPORT DataSourceConfigWidget : public QWidget
   private:
     DataSourcePtr _instance;
     QSettings& _cfg;
-    friend class DataSource;
 };
 
 

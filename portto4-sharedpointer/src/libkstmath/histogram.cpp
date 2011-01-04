@@ -323,7 +323,7 @@ void Histogram::showNewDialog() {
 
 
 void Histogram::showEditDialog() {
-  DialogLauncher::self()->showHistogramDialog(this);
+  DialogLauncher::self()->showHistogramDialog(toSharedPtr());
 }
 
 

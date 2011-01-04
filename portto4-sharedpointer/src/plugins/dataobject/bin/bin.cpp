@@ -89,13 +89,13 @@ class ConfigWidgetBinPlugin : public Kst::DataObjectConfigWidget, public Ui_BinC
         Kst::Object* object = _store->retrieveObject(vectorName);
         Kst::Vector* vector = static_cast<Kst::Vector*>(object);
         if (vector) {
-          setSelectedVector(vector);
+          setSelectedVector(vector->toSharedPtr());
         }
         QString scalarName = _cfg->value("Input Bin Scalar").toString();
         object = _store->retrieveObject(scalarName);
         Kst::Scalar* binScalar = static_cast<Kst::Scalar*>(object);
         if (binScalar) {
-          setSelectedScalar(binScalar);
+          setSelectedScalar(binScalar->toSharedPtr());
         }
         _cfg->endGroup();
       }

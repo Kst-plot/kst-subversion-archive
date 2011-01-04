@@ -61,7 +61,7 @@ class CumulativeSumSource : public Kst::BasicPlugin {
 };
 
 
-class CumulativeSumPlugin : public QObject, public Kst::DataObjectPluginInterface {
+class CumulativeSumPlugin : public Kst::DataObjectPluginInterface {
     Q_OBJECT
     Q_INTERFACES(Kst::DataObjectPluginInterface)
   public:

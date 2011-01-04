@@ -261,9 +261,9 @@ void CommandLineParser::createCurveInPlot(VectorPtr xv, VectorPtr yv, VectorPtr 
 
     curve->setXVector(xv);
     curve->setYVector(yv);
-    curve->setXError(0);
-    curve->setXMinusError(0);
-    curve->setYMinusError(0);
+    curve->setXError(VectorPtr());
+    curve->setXMinusError(VectorPtr());
+    curve->setYMinusError(VectorPtr());
     curve->setColor(ColorSequence::next());
     curve->setHasPoints(_usePoints);
     curve->setHasLines(_useLines);
@@ -274,7 +274,7 @@ void CommandLineParser::createCurveInPlot(VectorPtr xv, VectorPtr yv, VectorPtr 
     if (ev) {
       curve->setYError(ev);
     } else {
-      curve->setYError(0);
+      curve->setYError(VectorPtr());
     }
 
     curve->writeLock();
@@ -435,7 +435,7 @@ bool CommandLineParser::processCommandLine(bool *ok) {
             _usePoints = true;
           }
         } else {
-          ev = 0;
+          ev.clear();
           if (!_overrideStyle) {
             _useBargraph=false;
             _useLines = true;
@@ -478,7 +478,7 @@ bool CommandLineParser::processCommandLine(bool *ok) {
           powerspectrum->registerChange();
           powerspectrum->unlock();
 
-          VectorPtr ev=0;
+          VectorPtr ev;
 
           if ( !_overrideStyle ) {
               _useBargraph=false;
@@ -518,7 +518,7 @@ bool CommandLineParser::processCommandLine(bool *ok) {
           histogram->registerChange();
           histogram->unlock();
 
-          VectorPtr ev=0;
+          VectorPtr ev;
 
           if ( !_overrideStyle ) {
               _useBargraph=true;

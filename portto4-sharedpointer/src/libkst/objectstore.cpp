@@ -41,7 +41,7 @@ ObjectStore::~ObjectStore()
 }
 
 
-bool ObjectStore::removeObject(Object *o) {
+bool ObjectStore::removeObject(const ObjectPtr& o) {
   if (!this) {
     return false;
   }
@@ -153,10 +153,10 @@ void ObjectStore::clear() {
 #if NAMEDEBUG > 0
   qDebug () << "Clearing object store " << (void*) this;
 #endif
-  foreach(DataSource *ds, _dataSourceList) {
+  foreach(const DataSourcePtr& ds, _dataSourceList) {
     removeObject(ds);
   }
-  foreach(Object *o, _list) {
+  foreach(const ObjectPtr& o, _list) {
     removeObject(o);
   }
 

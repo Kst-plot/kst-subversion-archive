@@ -104,13 +104,13 @@ class ConfigLockInPlugin : public Kst::DataObjectConfigWidget, public Ui_LockInC
         Kst::Object* object = _store->retrieveObject(vectorName);
         Kst::Vector* vector = static_cast<Kst::Vector*>(object);
         if (vector) {
-          setSelectedInputVector(vector);
+          setSelectedInputVector(vector->toSharedPtr());
         }
         vectorName = _cfg->value(IN_REF_VECTOR).toString();
         Kst::Object* object2 = _store->retrieveObject(vectorName);
         Kst::Vector* vector2 = static_cast<Kst::Vector*>(object2);
         if (vector2) {
-          setSelectedRefVector(vector2);
+          setSelectedRefVector(vector2->toSharedPtr());
         }
         _cfg->endGroup();
       }

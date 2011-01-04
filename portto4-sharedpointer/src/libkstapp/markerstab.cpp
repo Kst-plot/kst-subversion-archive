@@ -247,12 +247,12 @@ PlotMarkers MarkersTab::plotMarkers() const {
   if (isVectorSource()) {
     plotMarker.setVector(vector());
   } else {
-    plotMarker.setVector(0);
+    plotMarker.setVector(VectorPtr());
   }
   if (isCurveSource()) {
     plotMarker.setCurve(curve());
   } else {
-    plotMarker.setCurve(0);
+    plotMarker.setCurve(CurvePtr());
   }
   plotMarker.setCurveMarkerMode(curveMarkerMode());
   return plotMarker;
