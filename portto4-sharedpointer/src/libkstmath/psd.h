@@ -97,12 +97,11 @@ class KSTMATH_EXPORT PSD : public DataObject {
         double in_gaussianSigma = 3.0, PSDType in_output = PSDAmplitudeSpectralDensity, bool interpolateHoles = false);
     virtual void internalUpdate();
 
-  protected:
 
     PSD(ObjectStore *store);
     virtual ~PSD();
 
-    friend class ObjectStore;
+  protected:
 
     virtual QString _automaticDescriptiveName() const;
     virtual void _initializeShortName();

@@ -37,10 +37,12 @@ namespace Kst {
 
 class ObjectStore;
 
-class KSTMATH_EXPORT Equation : public DataObject {
+class KSTMATH_EXPORT Equation : public DataObject
+{
   Q_OBJECT
 
   public:
+
     static const QString staticTypeString;
     const QString& typeString() const { return staticTypeString; }
     static const QString staticTypeTag;
@@ -80,11 +82,10 @@ class KSTMATH_EXPORT Equation : public DataObject {
     virtual PrimitiveList inputPrimitives() const;
     virtual void replaceInput(PrimitivePtr p, PrimitivePtr new_p);
 
-  protected:
-    Equation(ObjectStore *store);
     ~Equation();
+    Equation(ObjectStore *store);    
 
-    friend class ObjectStore;
+  protected:
 
     virtual QString _automaticDescriptiveName() const;
     virtual void _initializeShortName();

@@ -57,11 +57,8 @@ class KSTCORE_EXPORT Vector : public Primitive
     static const QString staticTypeTag;
 
 
-  protected:
     Vector(ObjectStore *store);
     virtual ~Vector();
-
-    friend class ObjectStore; 
 
     virtual void _initializeShortName();
 

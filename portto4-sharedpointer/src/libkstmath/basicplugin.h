@@ -24,6 +24,8 @@ class KSTMATH_EXPORT BasicPlugin : public DataObject {
   Q_OBJECT
 
   public:
+    virtual ~BasicPlugin();
+
     static const QString staticTypeString;
     const QString& typeString() const { return staticTypeString; }
     static const QString staticTypeTag;
@@ -94,9 +96,10 @@ class KSTMATH_EXPORT BasicPlugin : public DataObject {
 
     virtual void internalUpdate();
     virtual bool hasParameterVector() const { return _outputVectors.contains("Parameters Vector");}
+
   protected:
     BasicPlugin(ObjectStore *store);
-    virtual ~BasicPlugin();
+
 
     //Pure virtual methods inherited from DataObject
     //We do this one ourselves for benefit of all plugins...
@@ -104,6 +107,7 @@ class KSTMATH_EXPORT BasicPlugin : public DataObject {
     virtual QString parameterName(int index) const;
     QString _errorString;
     virtual void _initializeShortName();
+
   private:
     bool inputsExist() const;
     void updateOutput() const;

@@ -30,16 +30,15 @@ class KSTCORE_EXPORT Matrix : public Primitive {
   Q_OBJECT
 
   public:
+
     virtual const QString& typeString() const;
     static const QString staticTypeString;
 
     virtual QString descriptionTip() const;
 
-  protected:
-    Matrix(ObjectStore *store);
     virtual ~Matrix();
+    Matrix(ObjectStore *store);
 
-    friend class ObjectStore;
     virtual void _initializeShortName();
 
   public:

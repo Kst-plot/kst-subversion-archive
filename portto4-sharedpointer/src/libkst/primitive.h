@@ -51,12 +51,11 @@ class KSTCORE_EXPORT Primitive : public Object
 
     virtual ObjectList<Primitive> outputPrimitives() const {return ObjectList<Primitive>();}
 
-  protected:
     Primitive(ObjectStore *store, Object* provider = 0L);
 
     virtual ~Primitive();
 
-    friend class ObjectStore;
+  protected:
 
     virtual QString _automaticDescriptiveName() const;
 
@@ -81,6 +80,7 @@ class KSTCORE_EXPORT Primitive : public Object
     // Data Primitives "have a" DataPrimitive.  Rather than using dynamic
     // cast to see if a primitive is a data primitive, check to see if _dp
     // has been allocated.  Only access the following through dp()->
+    
     virtual SharedPtr<Primitive> _makeDuplicate() const {return 0;}
     virtual bool _checkValidity(const DataSourcePtr ds) const;
   public:

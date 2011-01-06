@@ -40,7 +40,7 @@ class Object;
 typedef SharedPtr<Object> ObjectPtr;
 
 
-class KSTCORE_EXPORT Object : public QObject, public Shared, public KstRWLock, public NamedObject 
+class KSTCORE_EXPORT Object : public QObject, public Shared<Object>, public KstRWLock, public NamedObject 
 {
     Q_OBJECT
 
@@ -76,12 +76,12 @@ class KSTCORE_EXPORT Object : public QObject, public Shared, public KstRWLock, p
 
     virtual bool uses(ObjectPtr p) const;
 
-  protected:
     Object();
     virtual ~Object();
 
-    friend class ObjectStore;
     ObjectStore *_store;  // set by ObjectStore
+
+  protected:
 
     virtual qint64 minInputSerial() const = 0;
     virtual qint64 minInputSerialOfLastChange() const = 0;

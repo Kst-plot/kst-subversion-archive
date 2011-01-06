@@ -73,11 +73,11 @@ class KSTMATH_EXPORT EventMonitorEntry : public DataObject {
     virtual QString descriptionTip() const;
 
     virtual void internalUpdate();
-  protected:
+
     EventMonitorEntry(ObjectStore *store);
     ~EventMonitorEntry();
 
-    friend class ObjectStore;
+  protected:
 
     virtual QString _automaticDescriptiveName() const;
     virtual void _initializeShortName();

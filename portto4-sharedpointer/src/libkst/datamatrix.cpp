@@ -369,7 +369,7 @@ void DataMatrix::_resetFieldStrings() {
       _fieldStrings.insert(key, sp = store()->createObject<String>());
       sp->setProvider(this);
       sp->setSlaveName(key);
-      sp->_KShared_ref();
+      //sp->_KShared_ref();
     } else {  // find it
       sp = _fieldStrings[key];
     }

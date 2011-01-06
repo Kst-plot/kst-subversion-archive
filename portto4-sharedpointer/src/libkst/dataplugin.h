@@ -26,9 +26,12 @@ class ObjectStore;
 class DataSource;
 class DataSourceConfigWidget;
 
-class PluginInterface : public Shared {
+class KSTCORE_EXPORT PluginInterface : public QObject, public Shared<PluginInterface> 
+{
+  Q_OBJECT
+
   public:
-    PluginInterface() {}
+    PluginInterface() : Shared<PluginInterface> (this) {}
 
     virtual ~PluginInterface() {}
 

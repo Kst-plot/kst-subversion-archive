@@ -47,6 +47,9 @@ class KSTMATH_EXPORT DataObject : public Object
     Q_OBJECT
 
   public:
+
+    virtual ~DataObject();
+
     //enum Kind { GenericPlugin, PrimitivePlugin, FitPlugin, FilterPlugin };
 
     virtual void attach();
@@ -135,7 +138,7 @@ class KSTMATH_EXPORT DataObject : public Object
 
   protected:
     DataObject(ObjectStore *store);
-    virtual ~DataObject();
+    
 
     double *vectorRealloced(VectorPtr v, double *memptr, int newSize) const;
 

@@ -60,7 +60,7 @@ void DataSourcePluginManager::init() {
 
 
 
-static PluginList _pluginList;
+static DataSourcePluginList _pluginList;
 void DataSourcePluginManager::cleanupForExit() {
   _pluginList.clear();
   qDebug() << "cleaning up for exit in datasource";
@@ -109,13 +109,13 @@ QString DataSourcePluginManager::obtainFile(const QString& source) {
 
 // Scans for plugins and stores the information for them in "_pluginList"
 static void scanPlugins() {
-  PluginList tmpList;
+  DataSourcePluginList tmpList;
 
   Debug::self()->log(i18n("Scanning for data-source plugins."));
 
   foreach (QObject *plugin, QPluginLoader::staticInstances()) {
     //try a cast
-    if (DataSourcePluginInterface *ds = dynamic_cast<DataSourcePluginInterface*>(plugin)) {
+    if (DataSourcePluginInterface *ds = qobject_cast<DataSourcePluginInterface*>(plugin)) {
       tmpList.append(ds);
     }
   }
@@ -148,7 +148,7 @@ static void scanPlugins() {
         QPluginLoader loader(d.absoluteFilePath(fileName));
         QObject *plugin = loader.instance();
         if (plugin) {
-          if (DataSourcePluginInterface *ds = dynamic_cast<DataSourcePluginInterface*>(plugin)) {
+          if (DataSourcePluginInterface *ds = qobject_cast<DataSourcePluginInterface*>(plugin)) {
             tmpList.append(ds);
             Debug::self()->log(QString("Plugin loaded: %1").arg(fileName));
           }
@@ -177,7 +177,7 @@ QStringList DataSourcePluginManager::pluginList() {
   // Ensure state.  When using kstapp MainWindow calls init.
   init();
 
-  for (PluginList::ConstIterator it = _pluginList.begin(); it != _pluginList.end(); ++it) {
+  for (DataSourcePluginList::ConstIterator it = _pluginList.begin(); it != _pluginList.end(); ++it) {
     plugins += (*it)->pluginName();
   }
 
@@ -200,11 +200,10 @@ QList<DataSourcePluginManager::PluginSortContainer> DataSourcePluginManager::bes
   QList<PluginSortContainer> bestPlugins;
   DataSourcePluginManager::init();
 
-  PluginList info = _pluginList;
 
   if (!type.isEmpty()) {
-    for (PluginList::Iterator it = info.begin(); it != info.end(); ++it) {
-      if (DataSourcePluginInterface *p = dynamic_cast<DataSourcePluginInterface*>((*it).data())) {
+    for (DataSourcePluginList::Iterator it = _pluginList.begin(); it != _pluginList.end(); ++it) {
+      if (DataSourcePluginInterface *p = it->data()) {
         if (p->provides(type)) {
           PluginSortContainer psc;
           psc.match = 100;
@@ -216,9 +215,9 @@ QList<DataSourcePluginManager::PluginSortContainer> DataSourcePluginManager::bes
     }
   }
 
-  for (PluginList::Iterator it = info.begin(); it != info.end(); ++it) {
+  for (DataSourcePluginList::Iterator it = _pluginList.begin(); it != _pluginList.end(); ++it) {
     PluginSortContainer psc;
-    if (DataSourcePluginInterface *p = dynamic_cast<DataSourcePluginInterface*>((*it).data())) {
+    if (DataSourcePluginInterface *p = it->data()) {
       if ((psc.match = p->understands(&settingsObject, filename)) > 0) {
         psc.plugin = p;
         bestPlugins.append(psc);
@@ -296,10 +295,8 @@ bool DataSourcePluginManager::validSource(const QString& filename) {
 
   DataSourcePluginManager::init();
 
-  PluginList info = _pluginList;
-
-  for (PluginList::Iterator it = info.begin(); it != info.end(); ++it) {
-    if (DataSourcePluginInterface *p = dynamic_cast<DataSourcePluginInterface*>((*it).data())) {
+  for (DataSourcePluginList::Iterator it = _pluginList.begin(); it != _pluginList.end(); ++it) {
+    if (DataSourcePluginInterface *p = it->data()) {
       if ((p->understands(&settingsObject, filename)) > 0) {
         return true;
       }
@@ -314,9 +311,7 @@ bool DataSourcePluginManager::validSource(const QString& filename) {
 bool DataSourcePluginManager::pluginHasConfigWidget(const QString& plugin) {
   initPlugins();
 
-  PluginList info = _pluginList;
-
-  for (PluginList::ConstIterator it = info.begin(); it != info.end(); ++it) {
+  for (DataSourcePluginList::ConstIterator it = _pluginList.begin(); it != _pluginList.end(); ++it) {
     if ((*it)->pluginName() == plugin) {
       return (*it)->hasConfigWidget();
     }
@@ -329,10 +324,8 @@ bool DataSourcePluginManager::pluginHasConfigWidget(const QString& plugin) {
 DataSourceConfigWidget* DataSourcePluginManager::configWidgetForPlugin(const QString& plugin) {
   initPlugins();
 
-  PluginList info = _pluginList;
-
-  for (PluginList::Iterator it = info.begin(); it != info.end(); ++it) {
-    if (DataSourcePluginInterface *p = dynamic_cast<DataSourcePluginInterface*>((*it).data())) {
+  for (DataSourcePluginList::Iterator it = _pluginList.begin(); it != _pluginList.end(); ++it) {
+    if (DataSourcePluginInterface *p = it->data()) {
       if (p->pluginName() == plugin) {
         return p->configWidget(&settingsObject, QString());
       }

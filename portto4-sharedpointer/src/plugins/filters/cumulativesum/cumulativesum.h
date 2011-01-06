@@ -20,10 +20,13 @@
 #include <basicplugin.h>
 #include <dataobjectplugin.h>
 
-class CumulativeSumSource : public Kst::BasicPlugin {
+class CumulativeSumSource : public Kst::BasicPlugin
+{
   Q_OBJECT
 
   public:
+    ~CumulativeSumSource();
+
     virtual QString _automaticDescriptiveName() const;
 
     virtual QString descriptionTip() const;
@@ -47,17 +50,15 @@ class CumulativeSumSource : public Kst::BasicPlugin {
 
   protected:
     CumulativeSumSource(Kst::ObjectStore *store);
-    ~CumulativeSumSource();
-
-  friend class Kst::ObjectStore;
-
 
 };
 
 
-class CumulativeSumPlugin : public QObject, public Kst::DataObjectPluginInterface {
+class CumulativeSumPlugin : public Kst::DataObjectPluginInterface
+{
     Q_OBJECT
     Q_INTERFACES(Kst::DataObjectPluginInterface)
+
   public:
     virtual ~CumulativeSumPlugin() {}
 

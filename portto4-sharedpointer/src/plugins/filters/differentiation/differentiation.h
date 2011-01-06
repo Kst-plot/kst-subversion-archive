@@ -20,10 +20,13 @@
 #include <basicplugin.h>
 #include <dataobjectplugin.h>
 
-class DifferentiationSource : public Kst::BasicPlugin {
+class DifferentiationSource : public Kst::BasicPlugin
+{
   Q_OBJECT
 
   public:
+    ~DifferentiationSource();
+
     virtual QString _automaticDescriptiveName() const;
 
     virtual QString descriptionTip() const;
@@ -45,19 +48,17 @@ class DifferentiationSource : public Kst::BasicPlugin {
 
     virtual void saveProperties(QXmlStreamWriter &s);
 
-  protected:
-    DifferentiationSource(Kst::ObjectStore *store);
-    ~DifferentiationSource();
 
-  friend class Kst::ObjectStore;
-
+    DifferentiationSource(Kst::ObjectStore *store);    
 
 };
 
 
-class DifferentiationPlugin : public QObject, public Kst::DataObjectPluginInterface {
+class DifferentiationPlugin : public Kst::DataObjectPluginInterface
+{
     Q_OBJECT
     Q_INTERFACES(Kst::DataObjectPluginInterface)
+
   public:
     virtual ~DifferentiationPlugin() {}
 

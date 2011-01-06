@@ -20,10 +20,13 @@
 #include <basicplugin.h>
 #include <dataobjectplugin.h>
 
-class SyncBinSource : public Kst::BasicPlugin {
+class SyncBinSource : public Kst::BasicPlugin
+{
   Q_OBJECT
 
   public:
+    ~SyncBinSource();
+
     virtual QString _automaticDescriptiveName() const;
 
     Kst::VectorPtr vectorX() const;
@@ -47,18 +50,16 @@ class SyncBinSource : public Kst::BasicPlugin {
     virtual void saveProperties(QXmlStreamWriter &s);
 
   protected:
-    SyncBinSource(Kst::ObjectStore *store);
-    ~SyncBinSource();
-
-  friend class Kst::ObjectStore;
-
+    SyncBinSource(Kst::ObjectStore *store);    
 
 };
 
 
-class SyncBinPlugin : public QObject, public Kst::DataObjectPluginInterface {
+class SyncBinPlugin : public QObject, public Kst::DataObjectPluginInterface
+{
     Q_OBJECT
     Q_INTERFACES(Kst::DataObjectPluginInterface)
+
   public:
     virtual ~SyncBinPlugin() {}
 

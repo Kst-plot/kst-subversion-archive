@@ -88,11 +88,11 @@ class KSTMATH_EXPORT CSD : public DataObject {
     virtual QString descriptionTip() const;
 
     virtual void internalUpdate();
-  protected:
+
     CSD(ObjectStore *store);
     virtual ~CSD();
 
-    friend class ObjectStore;
+  protected:
 
     virtual QString _automaticDescriptiveName() const;
     virtual void _initializeShortName();

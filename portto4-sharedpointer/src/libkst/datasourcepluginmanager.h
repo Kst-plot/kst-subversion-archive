@@ -26,7 +26,7 @@ namespace Kst {
 
 class ObjectStore;
 
-typedef ObjectList<PluginInterface> PluginList;
+typedef ObjectList<DataSourcePluginInterface> DataSourcePluginList;
 
 
 class KSTCORE_EXPORT DataSourcePluginManager

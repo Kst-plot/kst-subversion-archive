@@ -155,8 +155,8 @@ void CumulativeSumSource::setupOutputs() {
 
 
 bool CumulativeSumSource::algorithm() {
-  Kst::VectorPtr inputVector = _inputVectors[VECTOR_IN];
-  Kst::ScalarPtr inputScalar = _inputScalars[SCALAR_IN];
+  const Kst::VectorPtr inputVector = _inputVectors[VECTOR_IN];
+  const Kst::ScalarPtr inputScalar = _inputScalars[SCALAR_IN];
   Kst::VectorPtr outputVector = _outputVectors[VECTOR_OUT];
 
   /* Memory allocation */

@@ -45,8 +45,8 @@ LIBS += -L$$OUTPUT_DIR/lib -L$$OUTPUT_DIR/plugin
 #VERSION = 2.0.0
 
 # use precompiled headers
-PRECOMPILED_HEADER = $$TOPLEVELDIR/pch.h
-CONFIG += precompile_header
+#PRECOMPILED_HEADER = $$TOPLEVELDIR/pch.h
+#CONFIG += precompile_header
 
 # similar to qtLibraryTarget from mkspecs\features\qt_functions.p
 defineReplace(kstlib) {

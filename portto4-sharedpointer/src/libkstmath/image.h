@@ -122,11 +122,10 @@ class KSTMATH_EXPORT Image : public Relation {
     virtual bool invertXHint() const;
     virtual bool invertYHint() const;
 
-  protected:
     Image(ObjectStore *store);
     virtual ~Image();
 
-    friend class ObjectStore;
+protected:
 
     virtual QString _automaticDescriptiveName() const;
     virtual void _initializeShortName();

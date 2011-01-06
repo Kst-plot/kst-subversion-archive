@@ -22,7 +22,9 @@ namespace Kst {
 
 class Relation;
 
-class CurveHint : public Shared {
+class CurveHint : public QObject, public Shared<CurveHint> 
+{
+  Q_OBJECT
   friend class DataObject;
   public:
     explicit CurveHint(const QString& name = QString(), const QString& x = QString(), const QString& y = QString());

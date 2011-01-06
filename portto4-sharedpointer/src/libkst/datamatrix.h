@@ -121,15 +121,16 @@ class KSTCORE_EXPORT DataMatrix : public Matrix//, public DataPrimitive
 
     virtual QString xLabel() const;
     virtual QString yLabel() const;
-  protected:
+
     DataMatrix(ObjectStore *store);
     virtual ~DataMatrix();
+
+  protected:
 
     // update DataMatrix
     virtual qint64 minInputSerial() const;
     virtual qint64 minInputSerialOfLastChange() const;
 
-    friend class ObjectStore;
 
     virtual QString _automaticDescriptiveName() const;
 

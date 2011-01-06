@@ -130,11 +130,10 @@ class KSTCORE_EXPORT DataVector : public Vector
     bool isValid() const;
     virtual void internalUpdate();
 
-  protected:
     DataVector(ObjectStore *store);
     virtual ~DataVector();
 
-    friend class ObjectStore;
+  protected:
 
     virtual QString _automaticDescriptiveName() const;
 

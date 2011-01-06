@@ -97,11 +97,11 @@ public:
         NormalizationType new_norm_in,
         bool realTimeAutoBin = false);
 
-  protected:
+
     Histogram(ObjectStore *store);
     virtual ~Histogram();
 
-    friend class ObjectStore;
+  protected:
 
     virtual QString _automaticDescriptiveName() const;
     virtual void _initializeShortName();

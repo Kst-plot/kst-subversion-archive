@@ -159,12 +159,10 @@ class KSTMATH_EXPORT Curve: public Relation
 
     virtual QString descriptionTip() const;
 
-  protected:
     Curve(ObjectStore *store);
-
     virtual ~Curve();
 
-    friend class ObjectStore;
+  protected:
 
     virtual QString _automaticDescriptiveName() const;
     virtual void _initializeShortName();
