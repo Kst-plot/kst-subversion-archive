@@ -70,11 +70,7 @@ void VectorSelector::emitSelectionChanged() {
 
 
 VectorPtr VectorSelector::selectedVector() const {
-  Vector* vec = qVariantValue<Vector*>(_vector->itemData(_vector->currentIndex()));
-  if (vec) {
-    return vec->toSharedPtr();
-  }
-  return VectorPtr();
+  return qVariantValue<Vector*>(_vector->itemData(_vector->currentIndex()));
 }
 
 
@@ -131,7 +127,7 @@ void VectorSelector::newVector() {
   if (_isX) {
     newName = _dialogDefaults->value("curve/xvectorfield","INDEX").toString();
   }
-  DialogLauncher::self()->showVectorDialog(newName, ObjectPtr(), true);
+  DialogLauncher::self()->showVectorDialog(newName, 0, true);
   fillVectors();
   VectorPtr vector = kst_cast<Vector>(_store->retrieveObject(newName));
 
@@ -145,14 +141,10 @@ void VectorSelector::newVector() {
 
 void VectorSelector::editVector() {
   if (selectedVector()->provider()) {
-    DialogLauncher::self()->showObjectDialog(selectedVector()->provider()->toSharedPtr());
+    DialogLauncher::self()->showObjectDialog(selectedVector()->provider());
   } else {
     QString vectorname;
-#ifdef KST_USE_QSHAREDPOINTER
-    DialogLauncher::self()->showVectorDialog(vectorname, selectedVector().objectCast<Object>(), true);
-#else
     DialogLauncher::self()->showVectorDialog(vectorname, ObjectPtr(selectedVector()), true);
-#endif
   }
   fillVectors(); // we might have just changed the name, so refill the combo.
 

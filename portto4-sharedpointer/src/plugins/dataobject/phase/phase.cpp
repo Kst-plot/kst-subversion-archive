@@ -109,25 +109,25 @@ class ConfigPhasePlugin : public Kst::DataObjectConfigWidget, public Ui_PhaseCon
         Kst::Object* object = _store->retrieveObject(vectorName);
         Kst::Vector* vectorTime = static_cast<Kst::Vector*>(object);
         if (vectorTime) {
-          setSelectedVectorTime(vectorTime->toSharedPtr());
+          setSelectedVectorTime(vectorTime);
         }
         vectorName = _cfg->value("Input Vector Data").toString();
         object = _store->retrieveObject(vectorName);
         Kst::Vector* vectorData = static_cast<Kst::Vector*>(object);
         if (vectorData) {
-          setSelectedVectorData(vectorData->toSharedPtr());
+          setSelectedVectorData(vectorData);
         }
         QString scalarName = _cfg->value("Input Scalar Period").toString();
         object = _store->retrieveObject(scalarName);
         Kst::Scalar* scalarPeriod = static_cast<Kst::Scalar*>(object);
         if (scalarPeriod) {
-          setSelectedScalarPeriod(scalarPeriod->toSharedPtr());
+          setSelectedScalarPeriod(scalarPeriod);
         }
         scalarName = _cfg->value("Input Scalar Zero Phase").toString();
         object = _store->retrieveObject(scalarName);
         Kst::Scalar* scalarZeroPhase = static_cast<Kst::Scalar*>(object);
         if (scalarZeroPhase) {
-          setSelectedScalarZeroPhase(scalarZeroPhase->toSharedPtr());
+          setSelectedScalarZeroPhase(scalarZeroPhase);
         }
         _cfg->endGroup();
       }

@@ -94,7 +94,7 @@ DataObjectPtr BasicPlugin::makeDuplicate() const {
   return DataObjectPtr(plugin);
 #endif
   // FIXME: implement this
-  return ObjectPtr();
+  return 0L;
 }
 
 void BasicPlugin::showNewDialog() {
@@ -103,7 +103,7 @@ void BasicPlugin::showNewDialog() {
 
 
 void BasicPlugin::showEditDialog() {
-  DialogLauncher::self()->showBasicPluginDialog(_pluginName, toSharedPtr());
+  DialogLauncher::self()->showBasicPluginDialog(_pluginName, this);
 }
 
 
@@ -112,7 +112,7 @@ VectorPtr BasicPlugin::inputVector(const QString& vector) const {
   if (i != _inputVectors.end())
     return *i;
   else
-    return VectorPtr();
+    return 0;
 }
 
 
@@ -121,7 +121,7 @@ ScalarPtr BasicPlugin::inputScalar(const QString& scalar) const {
   if (i != _inputScalars.end())
     return *i;
   else
-    return ScalarPtr();
+    return 0;
 }
 
 
@@ -130,7 +130,7 @@ StringPtr BasicPlugin::inputString(const QString& string) const {
   if (i != _inputStrings.end())
     return *i;
   else
-    return StringPtr();
+    return 0;
 }
 
 
@@ -139,7 +139,7 @@ VectorPtr BasicPlugin::outputVector(const QString& vector) const {
   if (i != _outputVectors.end())
     return *i;
   else
-    return VectorPtr();
+    return 0;
 }
 
 
@@ -148,7 +148,7 @@ ScalarPtr BasicPlugin::outputScalar(const QString& scalar) const {
   if (i != _outputScalars.end())
     return *i;
   else
-    return ScalarPtr();
+    return 0;
 }
 
 
@@ -157,7 +157,7 @@ StringPtr BasicPlugin::outputString(const QString& string) const {
   if (i != _outputStrings.end())
     return *i;
   else
-    return StringPtr();
+    return 0;
 }
 
 

@@ -159,13 +159,13 @@ void ScalarModel::addDataObject(DataObjectPtr dataObject, ScalarTreeItem* parent
 
   QMap<QString, ObjectPtr> objectMap;
   foreach(Scalar* scalar, dataObject->outputScalars()) {
-    objectMap.insert(scalar->Name(), scalar->toSharedPtr());
+    objectMap.insert(scalar->Name(), scalar);
   }
   foreach(Vector* vector, dataObject->outputVectors()) {
-    objectMap.insert(vector->Name(), vector->toSharedPtr());
+    objectMap.insert(vector->Name(), vector);
   }
   foreach(Matrix* matrix, dataObject->outputMatrices()) {
-    objectMap.insert(matrix->Name(), matrix->toSharedPtr());
+    objectMap.insert(matrix->Name(), matrix);
   }
 
   QMapIterator<QString, ObjectPtr> iObject(objectMap);
@@ -209,28 +209,28 @@ void ScalarModel::addDataSource(DataSourcePtr dataSource, ScalarTreeItem* parent
 void ScalarModel::createTree() {
   QMap<QString, ObjectPtr> objectMap;
   foreach(DataVector* vector, _store->getObjects<DataVector>()) {
-    objectMap.insert(vector->Name(), vector->toSharedPtr());
+    objectMap.insert(vector->Name(), vector);
   }
   foreach(GeneratedVector* vector, _store->getObjects<GeneratedVector>()) {
-    objectMap.insert(vector->Name(), vector->toSharedPtr());
+    objectMap.insert(vector->Name(), vector);
   }
   foreach(DataMatrix* matrix, _store->getObjects<DataMatrix>()) {
-    objectMap.insert(matrix->Name(), matrix->toSharedPtr());
+    objectMap.insert(matrix->Name(), matrix);
   }
   foreach(GeneratedMatrix* matrix, _store->getObjects<GeneratedMatrix>()) {
-    objectMap.insert(matrix->Name(), matrix->toSharedPtr());
+    objectMap.insert(matrix->Name(), matrix);
   }
   foreach(DataObjectPtr dataObject, _store->getObjects<DataObject>()) {
     objectMap.insert(dataObject->Name(), dataObject);
   }
   foreach(Scalar* scalar, _store->getObjects<Scalar>()) {
     if (scalar->orphan()) {
-      objectMap.insert(scalar->Name(), scalar->toSharedPtr());
+      objectMap.insert(scalar->Name(), scalar);
     }
   }
   foreach(DataSource* ds, _store->dataSourceList()) {
     if (!ds->scalar().list().isEmpty()) {
-      objectMap.insert(ds->shortName(), ds->toSharedPtr());
+      objectMap.insert(ds->shortName(), ds);
     }
   }
 

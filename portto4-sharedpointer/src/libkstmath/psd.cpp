@@ -109,15 +109,15 @@ void PSD::change(VectorPtr in_V,
 
 
 PSD::~PSD() {
-  _sVector = VectorPtr();
-  _fVector = VectorPtr();
+  _sVector = 0L;
+  _fVector = 0L;
 }
 
 
 const CurveHintList *PSD::curveHints() const {
   _curveHints->clear();
-  _curveHints->append(CurveHintPtr(new CurveHint(i18n("PSD Curve"), _fVector->shortName(),
-                      _sVector->shortName())));
+  _curveHints->append(new CurveHint(i18n("PSD Curve"), _fVector->shortName(),
+                      _sVector->shortName()));
   return _curveHints;
 }
 
@@ -316,7 +316,7 @@ void PSD::showNewDialog() {
 
 
 void PSD::showEditDialog() {
-  DialogLauncher::self()->showPowerSpectrumDialog(toSharedPtr());
+  DialogLauncher::self()->showPowerSpectrumDialog(this);
 }
 
 

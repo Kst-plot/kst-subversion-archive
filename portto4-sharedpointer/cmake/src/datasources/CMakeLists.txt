@@ -7,8 +7,8 @@ if(MSVC)
 endif()
 
 kst_add_plugin(. ascii)
-#kst_add_plugin(. qimagesource)
-#kst_add_plugin(. sampledatasource)
+kst_add_plugin(. qimagesource)
+kst_add_plugin(. sampledatasource)
 
 if(getdata)
 	message(STATUS "Building 'dirfile' datasource plugin")

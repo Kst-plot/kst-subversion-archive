@@ -109,8 +109,8 @@ void Histogram::change(VectorPtr in_V,
 
 
 Histogram::~Histogram() {
-  _bVector = VectorPtr();
-  _hVector = VectorPtr();
+  _bVector = 0L;
+  _hVector = 0L;
 
   delete[] _Bins;
   _Bins = 0L;
@@ -323,7 +323,7 @@ void Histogram::showNewDialog() {
 
 
 void Histogram::showEditDialog() {
-  DialogLauncher::self()->showHistogramDialog(toSharedPtr());
+  DialogLauncher::self()->showHistogramDialog(this);
 }
 
 

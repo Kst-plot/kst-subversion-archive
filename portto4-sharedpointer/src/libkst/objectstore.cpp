@@ -41,7 +41,7 @@ ObjectStore::~ObjectStore()
 }
 
 
-bool ObjectStore::removeObject(const ObjectPtr& o) {
+bool ObjectStore::removeObject(Object *o) {
   if (!this) {
     return false;
   }
@@ -85,7 +85,7 @@ ObjectPtr ObjectStore::retrieveObject(const QString name) const {
   int match = -1;
 
   if (name.isEmpty()) {
-    return ObjectPtr();
+    return NULL;
   }
 
   QString shortName;
@@ -103,7 +103,7 @@ ObjectPtr ObjectStore::retrieveObject(const QString name) const {
   for (int i = 0; i < size; ++i) {
     if (_list.at(i)->descriptiveName() == name) {
       if (match != -1) 
-        return ObjectPtr(); // not unique, so... no match
+        return NULL; // not unique, so... no match
       match = i;
     }
   }
@@ -111,7 +111,7 @@ ObjectPtr ObjectStore::retrieveObject(const QString name) const {
   if (match >-1) 
     return _list.at(match);
 
-  return ObjectPtr();
+  return NULL;
 }
 
 void ObjectStore::rebuildDataSourceList() {
@@ -153,10 +153,10 @@ void ObjectStore::clear() {
 #if NAMEDEBUG > 0
   qDebug () << "Clearing object store " << (void*) this;
 #endif
-  foreach(const DataSourcePtr& ds, _dataSourceList) {
+  foreach(DataSource *ds, _dataSourceList) {
     removeObject(ds);
   }
-  foreach(const ObjectPtr& o, _list) {
+  foreach(Object *o, _list) {
     removeObject(o);
   }
 

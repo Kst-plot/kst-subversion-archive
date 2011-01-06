@@ -24,7 +24,7 @@
 #include "object.h"
 #include "objectlist.h"
 #include "objectmap.h"
-//#include "dataprimitive.h"
+#include "dataprimitive.h"
 
 namespace Kst {
 
@@ -40,11 +40,7 @@ class KSTCORE_EXPORT Primitive : public Object
     // Must not be a ObjectPtr!
     virtual void setProvider(Object* obj);
 
-#ifdef KST_USE_QSHAREDPOINTER
-    inline Object* provider() const { return _provider; }
-#else
     inline ObjectPtr provider() const { return ObjectPtr(_provider); }
-#endif
 
     void setSlaveName(QString slaveName);
     QString slaveName() { return _slaveName; }
@@ -58,12 +54,7 @@ class KSTCORE_EXPORT Primitive : public Object
   protected:
     Primitive(ObjectStore *store, Object* provider = 0L);
 
-#ifdef KST_USE_QSHAREDPOINTER
-    public:
-#endif
     virtual ~Primitive();
-
-    protected:
 
     friend class ObjectStore;
 
@@ -74,18 +65,13 @@ class KSTCORE_EXPORT Primitive : public Object
     virtual qint64 minInputSerial() const;
     virtual qint64 minInputSerialOfLastChange() const;
 
-    //DataPrimitive *_dp;
+    DataPrimitive *_dp;
 
   protected:
     /** Possibly null.  Be careful, this is non-standard usage of a KstShared.
      * FIXME: pretty sure this is wrong: it shouldn't be a qpointer... not sure
      * what should be going on here! */
-#ifdef KST_USE_QSHAREDPOINTER
-    Object* _provider;
-#else
     QPointer<Object> _provider;
-#endif
-    /*
   private:
     friend class DataPrimitive;
     // Some stuff only needed by data primitives...
@@ -95,11 +81,10 @@ class KSTCORE_EXPORT Primitive : public Object
     // Data Primitives "have a" DataPrimitive.  Rather than using dynamic
     // cast to see if a primitive is a data primitive, check to see if _dp
     // has been allocated.  Only access the following through dp()->
-    virtual SharedPtr<Primitive> _makeDuplicate() const {return SharedPtr<Primitive>();}
+    virtual SharedPtr<Primitive> _makeDuplicate() const {return 0;}
     virtual bool _checkValidity(const DataSourcePtr ds) const;
   public:
     DataPrimitive *dp() const {return _dp;}
-    */
 };
 
 typedef SharedPtr<Primitive> PrimitivePtr;

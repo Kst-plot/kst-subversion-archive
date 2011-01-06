@@ -109,7 +109,7 @@ class VectorDialog : public DataDialog {
   private:
     ObjectPtr createNewDataVector();
     ObjectPtr createNewGeneratedVector();
-    void configureTab(ObjectPtr vector = ObjectPtr());
+    void configureTab(ObjectPtr vector=0);
 
   private Q_SLOTS:
     void updateButtons();

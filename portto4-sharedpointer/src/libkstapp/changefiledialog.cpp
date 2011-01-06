@@ -130,7 +130,7 @@ void ChangeFileDialog::sourceValid(QString filename, int requestID) {
 
 
 void ChangeFileDialog::fileNameChanged(const QString &file) {
-  _dataSource = DataSourcePtr();
+  _dataSource = 0;
   updateButtons();
 
   _requestID += 1;
@@ -148,10 +148,9 @@ void ChangeFileDialog::updatePrimitiveList() {
   ObjectList<Primitive> primitives;
 
   foreach (PrimitivePtr P, allPrimitives) {
-    DataPrimitive* dp = dynamic_cast<DataPrimitive*>(P.data());
-    if (dp) {
+    if (P->dp()) {
       primitives.append(P);
-      fileNameList.append(dp->filename());
+      fileNameList.append(P->dp()->filename());
     }
   }
 
@@ -257,9 +256,9 @@ void ChangeFileDialog::selectAllFromFile() {
 
   for (int i = 0; i < _changeFilePrimitiveList->count(); i++) {
     if (DataVectorPtr vector = kst_cast<DataVector>(_store->retrieveObject(_changeFilePrimitiveList->item(i)->text()))) {
-      _changeFilePrimitiveList->item(i)->setSelected(vector->filename() == _files->currentText());
+      _changeFilePrimitiveList->item(i)->setSelected(vector->dp()->filename() == _files->currentText());
     } else if (DataMatrixPtr matrix = kst_cast<DataMatrix>(_store->retrieveObject(_changeFilePrimitiveList->item(i)->text()))) {
-      _changeFilePrimitiveList->item(i)->setSelected(matrix->filename() == _files->currentText());
+      _changeFilePrimitiveList->item(i)->setSelected(matrix->dp()->filename() == _files->currentText());
     }
   }
   addButtonClicked();
@@ -293,27 +292,25 @@ void ChangeFileDialog::apply() {
   int n_selectedItems = selectedItems.size();
   for (int i = 0; i < n_selectedItems; ++i) {
     PrimitivePtr prim = kst_cast<Primitive>(_store->retrieveObject(selectedItems[i]->text()));
-    DataPrimitive* dprim = dynamic_cast<DataPrimitive*>(prim.data());
-    if (prim && dprim) {
-      if (prim) {
+    if (prim) {
+      if (prim->dp()) {
         prim->readLock();
         _dataSource->readLock();
-        bool valid = dprim->checkValidity(_dataSource);
+        bool valid = prim->dp()->checkValidity(_dataSource);
         _dataSource->unlock();
         prim->unlock();
         if (!valid) {
           if (invalid > 0) {
             invalidSources += ", ";
           }
-          invalidSources += dprim->field();
+          invalidSources += prim->dp()->field();
           ++invalid;
         } else if (_duplicateSelected->isChecked()) {
           prim->readLock();
-          PrimitivePtr newPrim = dprim->makeDuplicate();
-          DataPrimitive* dnewPrim = dynamic_cast<DataPrimitive*>(newPrim.data());
+          PrimitivePtr newPrim = prim->dp()->makeDuplicate();
           prim->unlock();
           newPrim->writeLock();
-          dnewPrim->changeFile(_dataSource);
+          newPrim->dp()->changeFile(_dataSource);
           newPrim->unlock();
           duplicatedPrimitiveMap[prim] = newPrim;
           duplicatedPrimitiveList.append(prim);
@@ -327,17 +324,17 @@ void ChangeFileDialog::apply() {
           }
         } else {
           prim->readLock();
-          if (!oldSources.contains(dprim->dataSource())) {
-            oldSources << dprim->dataSource();
+          if (!oldSources.contains(prim->dp()->dataSource())) {
+            oldSources << prim->dp()->dataSource();
           }
           prim->unlock();
           prim->writeLock();
-          dprim->changeFile(_dataSource);
+          prim->dp()->changeFile(_dataSource);
           prim->unlock();
         }
       }
     }
-    prim = PrimitivePtr();
+    prim = 0;
   }
 
   // Duplicate data objects:

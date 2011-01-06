@@ -126,31 +126,31 @@ class ConfigSyncBinPlugin : public Kst::DataObjectConfigWidget, public Ui_SyncBi
         Kst::Object* object = _store->retrieveObject(vectorName);
         Kst::Vector* vectorX = static_cast<Kst::Vector*>(object);
         if (vectorX) {
-          setSelectedVectorX(vectorX->toSharedPtr());
+          setSelectedVectorX(vectorX);
         }
         vectorName = _cfg->value("Input Vector Y").toString();
         object = _store->retrieveObject(vectorName);
         Kst::Vector* vectorY = static_cast<Kst::Vector*>(object);
         if (vectorY) {
-          setSelectedVectorY(vectorY->toSharedPtr());
+          setSelectedVectorY(vectorY);
         }
         QString scalarName = _cfg->value("Input Scalar Number of Bins").toString();
         object = _store->retrieveObject(scalarName);
         Kst::Scalar* scalarBins = static_cast<Kst::Scalar*>(object);
         if (scalarBins) {
-          setSelectedScalarBins(scalarBins->toSharedPtr());
+          setSelectedScalarBins(scalarBins);
         }
         scalarName = _cfg->value("Input Scalar X Min").toString();
         object = _store->retrieveObject(scalarName);
         Kst::Scalar* scalarXMin = static_cast<Kst::Scalar*>(object);
         if (scalarXMin) {
-          setSelectedScalarXMin(scalarXMin->toSharedPtr());
+          setSelectedScalarXMin(scalarXMin);
         }
         scalarName = _cfg->value("Input Scalar X Max").toString();
         object = _store->retrieveObject(scalarName);
         Kst::Scalar* scalarXMax = static_cast<Kst::Scalar*>(object);
         if (scalarXMax) {
-          setSelectedScalarXMax(scalarXMax->toSharedPtr());
+          setSelectedScalarXMax(scalarXMax);
         }
         _cfg->endGroup();
       }

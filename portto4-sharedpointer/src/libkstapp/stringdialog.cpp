@@ -205,7 +205,7 @@ StringDialog::StringDialog(ObjectPtr dataObject, QWidget *parent)
   if (editMode() == Edit) {
     configureTab(dataObject);
   } else {
-    configureTab(ObjectPtr());
+    configureTab(0);
   }
 
   connect(_stringTab, SIGNAL(valueChanged()), this, SLOT(updateButtons()));
@@ -225,9 +225,9 @@ StringDialog::~StringDialog() {
 
 void StringDialog::configureTab(ObjectPtr object) {
   if (DataStringPtr dataString = kst_cast<DataString>(object)) {
-    _stringTab->setFile(dataString->dataSource()->fileName());
-    _stringTab->setDataSource(dataString->dataSource());
-    _stringTab->setField(dataString->field());
+    _stringTab->setFile(dataString->dp()->dataSource()->fileName());
+    _stringTab->setDataSource(dataString->dp()->dataSource());
+    _stringTab->setField(dataString->dp()->field());
     _stringTab->hideGeneratedOptions();
   } else if (StringPtr string = kst_cast<String>(object)) { // edit value string
     _stringTab->hideDataOptions();
@@ -250,7 +250,7 @@ ObjectPtr StringDialog::createNewDataObject() {
   case StringTab::GeneratedString:
     return createNewGeneratedString();
   default:
-    return ObjectPtr();
+    return 0;
   }
 }
 
@@ -289,7 +289,7 @@ ObjectPtr StringDialog::createNewDataString() {
   const DataSourcePtr dataSource = _stringTab->dataSource();
 
   if (!dataSource)
-    return ObjectPtr();
+    return 0;
 
   const QString field = _stringTab->field();
 

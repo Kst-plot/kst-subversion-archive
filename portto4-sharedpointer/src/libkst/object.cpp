@@ -24,32 +24,14 @@ namespace Kst {
 
 const QString Object::staticTypeString = I18N_NOOP("Object");
 
-#ifdef KST_USE_QSHAREDPOINTER
-Object::Object() : 
-#else
-Object::Object() : Shared(), 
-#endif
-  KstRWLock(), NamedObject(),
+Object::Object() :
+  Shared(), KstRWLock(), NamedObject(),
   _store(0L), _serial(0), _serialOfLastChange(0)
 {
 }
 
 
 Object::~Object() {
-}
-
-
-ObjectPtr Object::toSharedPtr() const
-{
-  ObjectPtr ptr = _weakpointer.toStrongRef().objectCast<Object>();
-  if (!ptr.isNull()) {
-    return ptr;
-  }
-  Object* This = const_cast<Object*>(this);
-  ObjectPtr sptr(This);
-  ptr = sptr;
-  This->_weakpointer = ptr.toWeakRef();
-  return ptr;
 }
 
 
@@ -69,11 +51,7 @@ const QString& Object::typeString() const {
 // Returns count - 1 to account for "this" and the list pointer, therefore
 // you MUST have a reference-counted pointer to call this function
 int Object::getUsage() const {
-#ifdef KST_USE_QSHAREDPOINTER
-  return -1;
-#else
   return _KShared_count() - 1;
-#endif
 }
 
 
@@ -87,7 +65,7 @@ void Object::deleteDependents() {
 }
 
 
-bool Object::uses(Object* p) const {
+bool Object::uses(ObjectPtr p) const {
    Q_UNUSED(p)
 
    return false;

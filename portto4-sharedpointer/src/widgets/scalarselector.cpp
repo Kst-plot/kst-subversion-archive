@@ -96,14 +96,14 @@ ScalarPtr ScalarSelector::selectedScalar() {
     }
 
     if (!ok) {
-      return ScalarPtr();
+      return 0;
     }
 
     // Check if a scalar with this value exist & is orphan.
     foreach(Scalar* scalar, _store->getObjects<Scalar>()) {
       if (scalar->orphan()) {
         if (scalar->value() == value) {
-          return scalar->toSharedPtr();
+          return scalar;
         }
       }
     }
@@ -123,7 +123,7 @@ ScalarPtr ScalarSelector::selectedScalar() {
 
     return scalar;
   }
-  return qVariantValue<Scalar*>(_scalar->itemData(_scalar->currentIndex()))->toSharedPtr();
+  return qVariantValue<Scalar*>(_scalar->itemData(_scalar->currentIndex()));
 }
 
 
@@ -158,7 +158,7 @@ void ScalarSelector::setSelectedScalar(ScalarPtr selectedScalar) {
 
 void ScalarSelector::newScalar() {
   QString scalarName;
-  DialogLauncher::self()->showScalarDialog(scalarName, ObjectPtr(), true);
+  DialogLauncher::self()->showScalarDialog(scalarName, 0, true);
   fillScalars();
   ScalarPtr scalar = kst_cast<Scalar>(_store->retrieveObject(scalarName));
 
@@ -171,14 +171,10 @@ void ScalarSelector::newScalar() {
 
 void ScalarSelector::editScalar() {
   if (selectedScalar()->provider()) {
-    DialogLauncher::self()->showObjectDialog(selectedScalar()->provider()->toSharedPtr());
+    DialogLauncher::self()->showObjectDialog(selectedScalar()->provider());
   } else {
     QString scalarName;
-#ifdef KST_USE_QSHAREDPOINTER
-    DialogLauncher::self()->showScalarDialog(scalarName, selectedScalar().objectCast<Object>(), true);
-#else
     DialogLauncher::self()->showScalarDialog(scalarName, ObjectPtr(selectedScalar()), true);
-#endif
   }
   fillScalars();
 }
@@ -213,7 +209,7 @@ void ScalarSelector::fillScalars() {
 
   qSort(list);
 
-  ScalarPtr current = qVariantValue<Scalar*>(_scalar->itemData(_scalar->currentIndex()))->toSharedPtr();
+  ScalarPtr current = qVariantValue<Scalar*>(_scalar->itemData(_scalar->currentIndex()));;
 
   _scalar->clear();
   foreach (QString string, list) {

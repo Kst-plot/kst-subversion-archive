@@ -224,13 +224,13 @@ DataVectorPtr CommandLineParser::createOrFindDataVector(QString field, DataSourc
     // check to see if an identical vector already exists.  If so, use it.
     for (int i=0; i<_vectors.count(); i++) {
       xv = _vectors.at(i);
-      if (field == xv->field()) {
+      if (field == xv->dp()->field()) {
         if ((xv->reqStartFrame() == _startFrame) &&
             (xv->reqNumFrames() == _numFrames) &&
             (xv->skip() == _skip) &&
             (xv->doSkip() == (_skip>0)) &&
             (xv->doAve() == _doAve) ){
-          if (xv->filename()==ds->fileName()) {
+          if (xv->dp()->filename()==ds->fileName()) {
             found = true;
             break;
           }
@@ -261,9 +261,9 @@ void CommandLineParser::createCurveInPlot(VectorPtr xv, VectorPtr yv, VectorPtr 
 
     curve->setXVector(xv);
     curve->setYVector(yv);
-    curve->setXError(VectorPtr());
-    curve->setXMinusError(VectorPtr());
-    curve->setYMinusError(VectorPtr());
+    curve->setXError(0);
+    curve->setXMinusError(0);
+    curve->setYMinusError(0);
     curve->setColor(ColorSequence::next());
     curve->setHasPoints(_usePoints);
     curve->setHasLines(_useLines);
@@ -274,7 +274,7 @@ void CommandLineParser::createCurveInPlot(VectorPtr xv, VectorPtr yv, VectorPtr 
     if (ev) {
       curve->setYError(ev);
     } else {
-      curve->setYError(VectorPtr());
+      curve->setYError(0);
     }
 
     curve->writeLock();
@@ -435,7 +435,7 @@ bool CommandLineParser::processCommandLine(bool *ok) {
             _usePoints = true;
           }
         } else {
-          ev.clear();
+          ev = 0;
           if (!_overrideStyle) {
             _useBargraph=false;
             _useLines = true;
@@ -478,7 +478,7 @@ bool CommandLineParser::processCommandLine(bool *ok) {
           powerspectrum->registerChange();
           powerspectrum->unlock();
 
-          VectorPtr ev;
+          VectorPtr ev=0;
 
           if ( !_overrideStyle ) {
               _useBargraph=false;
@@ -518,7 +518,7 @@ bool CommandLineParser::processCommandLine(bool *ok) {
           histogram->registerChange();
           histogram->unlock();
 
-          VectorPtr ev;
+          VectorPtr ev=0;
 
           if ( !_overrideStyle ) {
               _useBargraph=true;

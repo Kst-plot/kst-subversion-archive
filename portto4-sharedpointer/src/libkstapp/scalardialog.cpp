@@ -240,7 +240,7 @@ ScalarDialog::ScalarDialog(ObjectPtr dataObject, QWidget *parent)
   if (editMode() == Edit) {
     configureTab(dataObject);
   } else {
-    configureTab(ObjectPtr());
+    configureTab(0);
   }
 
   connect(_scalarTab, SIGNAL(valueChanged()), this, SLOT(updateButtons()));
@@ -254,15 +254,15 @@ ScalarDialog::~ScalarDialog() {
 
 void ScalarDialog::configureTab(ObjectPtr object) {
   if (DataScalarPtr dataScalar = kst_cast<DataScalar>(object)) {
-    _scalarTab->setFile(dataScalar->dataSource()->fileName());
-    _scalarTab->setDataSource(dataScalar->dataSource());
-    _scalarTab->setField(dataScalar->field());
+    _scalarTab->setFile(dataScalar->dp()->dataSource()->fileName());
+    _scalarTab->setDataSource(dataScalar->dp()->dataSource());
+    _scalarTab->setField(dataScalar->dp()->field());
     _scalarTab->hideGeneratedOptions();
     _scalarTab->setDataOptions();
   } else if (VScalarPtr vScalar = kst_cast<VScalar>(object)) {
-    _scalarTab->setFile(vScalar->dataSource()->fileName());
-    _scalarTab->setDataSource(vScalar->dataSource());
-    _scalarTab->setFieldRV(vScalar->field());
+    _scalarTab->setFile(vScalar->dp()->dataSource()->fileName());
+    _scalarTab->setDataSource(vScalar->dp()->dataSource());
+    _scalarTab->setFieldRV(vScalar->dp()->field());
     _scalarTab->setF0(vScalar->F0());
     _scalarTab->hideGeneratedOptions();
     _scalarTab->setRVOptions();
@@ -305,7 +305,7 @@ ObjectPtr ScalarDialog::createNewDataObject() {
   case ScalarTab::GeneratedScalar:
     return createNewGeneratedScalar();
   default:
-    return ObjectPtr();
+    return 0;
   }
 }
 
@@ -320,7 +320,7 @@ ObjectPtr ScalarDialog::createNewGeneratedScalar(){
   }
 
   if (!ok) {
-    return ObjectPtr(); //invalid
+    return 0; //invalid
   }
 
   ScalarPtr scalar = _document->objectStore()->createObject<Scalar>();
@@ -347,7 +347,7 @@ ObjectPtr ScalarDialog::createNewDataScalar() {
   const DataSourcePtr dataSource = _scalarTab->dataSource();
 
   if (!dataSource)
-    return ObjectPtr();
+    return 0;
 
   const QString field = _scalarTab->field();
 
@@ -377,7 +377,7 @@ ObjectPtr ScalarDialog::createNewVScalar() {
   const DataSourcePtr dataSource = _scalarTab->dataSource();
 
   if (!dataSource)
-    return ObjectPtr();
+    return 0;
 
   const QString field = _scalarTab->fieldRV();
   const int f0 = _scalarTab->F0();

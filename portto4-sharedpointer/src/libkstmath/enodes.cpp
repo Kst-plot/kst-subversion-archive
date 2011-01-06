@@ -80,7 +80,7 @@ double Equations::interpret(ObjectStore *store, const char *txt, bool *ok, int l
     ctx.sampleCount = 2;
     ctx.noPoint = Kst::NOPOINT;
     ctx.x = 0.0;
-    ctx.xVector = VectorPtr();
+    ctx.xVector = 0L;
     Equations::FoldVisitor vis(&ctx, &eq);
     double v = eq->value(&ctx);
     delete eq;
@@ -687,7 +687,7 @@ double DataNode::value(Context *ctx) {
         ctx.sampleCount = 2;
         ctx.noPoint = Kst::NOPOINT;
         ctx.x = 0.0;
-        ctx.xVector = VectorPtr();
+        ctx.xVector = 0L;
         Equations::FoldVisitor vis(&ctx, &_equation);
       } else {
         ParsedEquation = 0L;
@@ -711,13 +711,13 @@ double DataNode::value(Context *ctx) {
         ctx.sampleCount = 2;
         ctx.noPoint = Kst::NOPOINT;
         ctx.x = 0.0;
-        ctx.xVector = VectorPtr();
+        ctx.xVector = 0L;
         Equations::FoldVisitor vis(&ctx, &_equation);
       } else {
         ParsedEquation = 0L;
         mutex().unlock();
         _vectorIndex.clear();
-        _vector = VectorPtr();
+        _vector = 0L;
         return ctx->noPoint;
       }
     }

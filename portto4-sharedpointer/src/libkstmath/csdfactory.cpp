@@ -62,31 +62,31 @@ DataObjectPtr CSDFactory::generateObject(ObjectStore *store, QXmlStreamReader& x
         }
         Object::processShortNameIndexAttributes(attrs);
       } else {
-        return DataObjectPtr();
+        return 0;
       }
     } else if (xml.isEndElement()) {
       if (n == CSD::staticTypeTag) {
         break;
       } else {
         Debug::self()->log(QObject::tr("Error creating CSD from Kst file."), Debug::Warning);
-        return DataObjectPtr();
+        return 0;
       }
     }
     xml.readNext();
   }
 
   if (xml.hasError()) {
-    return DataObjectPtr();
+    return 0;
   }
 
-  VectorPtr vector;
+  VectorPtr vector = 0;
   if (store && !vectorName.isEmpty()) {
     vector = kst_cast<Vector>(store->retrieveObject(vectorName));
   }
 
   if (!vector) {
     Debug::self()->log(QObject::tr("Error creating CSD from Kst file.  Could not find Vector."), Debug::Warning);
-    return DataObjectPtr();
+    return 0;
   }
 
   CSDPtr csd = store->createObject<CSD>();

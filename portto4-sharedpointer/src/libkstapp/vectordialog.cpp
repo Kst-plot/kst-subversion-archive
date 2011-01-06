@@ -305,7 +305,7 @@ VectorDialog::VectorDialog(ObjectPtr dataObject, QWidget *parent)
   if (editMode() == Edit) {
     configureTab(dataObject);
   } else {
-    configureTab(ObjectPtr());
+    configureTab(0);
   }
 
   connect(_vectorTab, SIGNAL(sourceChanged()), this, SLOT(updateButtons()));
@@ -353,9 +353,9 @@ void VectorDialog::configureTab(ObjectPtr vector) {
     _vectorTab->setNumberOfSamples(_dialogDefaults->value("genVector/length",1000).toInt());
   } else if (DataVectorPtr dataVector = kst_cast<DataVector>(vector)) {
     _vectorTab->setVectorMode(VectorTab::DataVector);
-    _vectorTab->setFile(dataVector->dataSource()->fileName());
-    _vectorTab->setDataSource(dataVector->dataSource());
-    _vectorTab->setField(dataVector->field());
+    _vectorTab->setFile(dataVector->dp()->dataSource()->fileName());
+    _vectorTab->setDataSource(dataVector->dp()->dataSource());
+    _vectorTab->setField(dataVector->dp()->field());
     _vectorTab->dataRange()->setRange(dataVector->numFrames());
     _vectorTab->dataRange()->setStart(dataVector->startFrame());
     _vectorTab->dataRange()->setCountFromEnd(dataVector->countFromEOF());
@@ -395,7 +395,7 @@ ObjectPtr VectorDialog::createNewDataObject() {
   case VectorTab::GeneratedVector:
     return createNewGeneratedVector();
   default:
-    return ObjectPtr();
+    return 0;
   }
 }
 
@@ -405,7 +405,7 @@ ObjectPtr VectorDialog::createNewDataVector() {
 
   //FIXME better validation than this please...
   if (!dataSource)
-    return ObjectPtr();
+    return 0;
 
   const QString field = _vectorTab->field();
   const DataRange *dataRange = _vectorTab->dataRange();
@@ -493,7 +493,7 @@ ObjectPtr VectorDialog::editExistingDataObject() const {
 
       //FIXME better validation than this please...
       if (!dataSource)
-        return DataSourcePtr();
+        return 0;
 
       const QString field = _vectorTab->field();
       const DataRange *dataRange = _vectorTab->dataRange();

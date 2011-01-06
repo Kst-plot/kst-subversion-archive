@@ -177,7 +177,7 @@ void DataObject::scanPlugins() {
   foreach (QObject *plugin, QPluginLoader::staticInstances()) {
     //try a cast
     if (DataObjectPluginInterface *basicPlugin = dynamic_cast<DataObjectPluginInterface*>(plugin)) {
-      tmpList.append(SharedPtr<DataObjectPluginInterface>(basicPlugin));
+      tmpList.append(basicPlugin);
     }
   }
 
@@ -201,14 +201,14 @@ void DataObject::scanPlugins() {
 
   foreach (QString pluginPath, pluginPaths) {
     QDir d(pluginPath);
-	  Debug::self()->log(i18n("Path: ") + pluginPath);
+	Debug::self()->log(i18n("Path: ") + pluginPath);
     foreach (QString fileName, d.entryList(QDir::Files)) {		
         QPluginLoader loader(d.absoluteFilePath(fileName));
         QObject *plugin = loader.instance();
         if (plugin) {
-          if (DataObjectPluginInterface *dataObjectPlugin = qobject_cast<DataObjectPluginInterface*>(plugin)) {
-            tmpList.append(SharedPtr<DataObjectPluginInterface>(dataObjectPlugin));
-            Debug::self()->log(i18n("Loaded: ") + fileName);
+          if (DataObjectPluginInterface *dataObjectPlugin = dynamic_cast<DataObjectPluginInterface*>(plugin)) {
+            tmpList.append(dataObjectPlugin);
+			Debug::self()->log(i18n("Loaded: ") + fileName);
           }
         }
     }
@@ -341,9 +341,8 @@ DataObjectPtr DataObject::createPlugin(const QString& name, ObjectStore *store, 
 
   for (DataObjectPluginList::ConstIterator it = _pluginList.begin(); it != _pluginList.end(); ++it) {
     if ((*it)->pluginName() == name) {
-      DataObject* object((*it)->create(store, configWidget, setupInputsOutputs));
-      if (object) {
-        return DataObjectPtr(object);
+      if (DataObjectPtr object = (*it)->create(store, configWidget, setupInputsOutputs)) {
+        return object;
       }
     }
   }
@@ -358,7 +357,7 @@ DataObjectPtr DataObject::createPlugin(const QString& name, ObjectStore *store, 
     }
   }
 #endif
-  return DataObjectPtr();
+  return 0L;
 }
 
 
@@ -464,38 +463,38 @@ void DataObject::writeLockInputsAndOutputs() const {
 
   QList<StringPtr> sl = _inputStrings.values();
   for (QList<StringPtr>::Iterator i = sl.begin(); i != sl.end(); ++i) {
-    inputs += (*i).objectCast<Primitive>();
+    inputs += (*i).data();
   }
   sl = _outputStrings.values();
   for (QList<StringPtr>::Iterator i = sl.begin(); i != sl.end(); ++i) {
-    outputs += (*i).objectCast<Primitive>();
+    outputs += (*i).data();
   }
 
   QList<ScalarPtr> sc = _inputScalars.values();
   for (QList<ScalarPtr>::Iterator i = sc.begin(); i != sc.end(); ++i) {
-    inputs += (*i).objectCast<Primitive>();
+    inputs += (*i).data();
   }
   sc = _outputScalars.values();
   for (QList<ScalarPtr>::Iterator i = sc.begin(); i != sc.end(); ++i) {
-    outputs += (*i).objectCast<Primitive>();
+    outputs += (*i).data();
   }
 
   QList<VectorPtr> vl = _inputVectors.values();
   for (QList<VectorPtr>::Iterator i = vl.begin(); i != vl.end(); ++i) {
-    inputs += (*i).objectCast<Primitive>();
+    inputs += (*i).data();
   }
   vl = _outputVectors.values();
   for (QList<VectorPtr>::Iterator i = vl.begin(); i != vl.end(); ++i) {
-    outputs += (*i).objectCast<Primitive>();
+    outputs += (*i).data();
   }
 
   QList<MatrixPtr> ml = _inputMatrices.values();
   for (QList<MatrixPtr>::Iterator i = ml.begin(); i != ml.end(); ++i) {
-    inputs += (*i).objectCast<Primitive>();
+    inputs += (*i).data();
   }
   ml = _outputMatrices.values();
   for (QList<MatrixPtr>::Iterator i = ml.begin(); i != ml.end(); ++i) {
-    outputs += (*i).objectCast<Primitive>();
+    outputs += (*i).data();
   }
 
   qSort(inputs);
@@ -634,19 +633,19 @@ const CurveHintList* DataObject::curveHints() const {
 void DataObject::deleteDependents() {
   DataObjectList dataObjects = _store->getObjects<DataObject>();
   foreach (DataObjectPtr object, dataObjects) {
-    bool usesObject = object->uses(toSharedPtr());
+    bool usesObject = object->uses(this);
     if (!usesObject) {
       for (VectorMap::Iterator j = _outputVectors.begin(); !usesObject && j != _outputVectors.end(); ++j) {
-        usesObject = object->uses(j.value().data()->toSharedPtr().objectCast<Object>());
+        usesObject = object->uses(j.value().data());
       }
       for (ScalarMap::Iterator j = _outputScalars.begin(); !usesObject && j != _outputScalars.end(); ++j) {
-        usesObject = object->uses(j.value().data()->toSharedPtr().objectCast<Object>());
+        usesObject = object->uses(j.value().data());
       }
       for (StringMap::Iterator j = _outputStrings.begin(); !usesObject && j != _outputStrings.end(); ++j) {
-        usesObject = object->uses(j.value().data()->toSharedPtr().objectCast<Object>());
+        usesObject = object->uses(j.value().data());
       }
       for (MatrixMap::Iterator j = _outputMatrices.begin(); !usesObject && j != _outputMatrices.end(); ++j) {
-        usesObject = object->uses(j.value().data()->toSharedPtr().objectCast<Object>());
+        usesObject = object->uses(j.value().data());
       }
     }
     if (usesObject) {
@@ -656,19 +655,19 @@ void DataObject::deleteDependents() {
 
   RelationList relations = _store->getObjects<Relation>();
   foreach (RelationPtr relation, relations) {
-    bool usesRelation = relation->uses(toSharedPtr());
+    bool usesRelation = relation->uses(this);
     if (!usesRelation) {
       for (VectorMap::Iterator j = _outputVectors.begin(); !usesRelation && j != _outputVectors.end(); ++j) {
-        usesRelation = relation->uses(j.value().data()->toSharedPtr());
+        usesRelation = relation->uses(j.value().data());
       }
       for (ScalarMap::Iterator j = _outputScalars.begin(); !usesRelation && j != _outputScalars.end(); ++j) {
-        usesRelation = relation->uses(j.value().data()->toSharedPtr());
+        usesRelation = relation->uses(j.value().data());
       }
       for (StringMap::Iterator j = _outputStrings.begin(); !usesRelation && j != _outputStrings.end(); ++j) {
-        usesRelation = relation->uses(j.value().data()->toSharedPtr());
+        usesRelation = relation->uses(j.value().data());
       }
       for (MatrixMap::Iterator j = _outputMatrices.begin(); !usesRelation && j != _outputMatrices.end(); ++j) {
-        usesRelation = relation->uses(j.value().data()->toSharedPtr());
+        usesRelation = relation->uses(j.value().data());
       }
     }
     if (usesRelation) {

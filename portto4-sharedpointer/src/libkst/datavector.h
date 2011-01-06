@@ -30,7 +30,7 @@ namespace Kst {
  *@author cbn
  */
 
-class KSTCORE_EXPORT DataVector : public Vector, public DataPrimitive
+class KSTCORE_EXPORT DataVector : public Vector
 {
     Q_OBJECT
 
@@ -132,13 +132,7 @@ class KSTCORE_EXPORT DataVector : public Vector, public DataPrimitive
 
   protected:
     DataVector(ObjectStore *store);
-
-#ifdef KST_USE_QSHAREDPOINTER
-    public:
-#endif
     virtual ~DataVector();
-
-    protected:
 
     friend class ObjectStore;
 
@@ -193,8 +187,8 @@ class KSTCORE_EXPORT DataVector : public Vector, public DataPrimitive
     QHash<QString, StringPtr> _fieldStrings;
 
     /** make a copy of the DataVector */
-    virtual PrimitivePtr makeDuplicate() const;
-    virtual bool checkValidity(const DataSourcePtr ds) const;
+    virtual PrimitivePtr _makeDuplicate() const;
+    virtual bool _checkValidity(const DataSourcePtr ds) const;
 
     friend class TestDataSource;
     friend class TestHistogram;

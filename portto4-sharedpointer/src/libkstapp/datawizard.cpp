@@ -949,10 +949,10 @@ void DataWizard::finished() {
 
       curve->setXVector(xv);
       curve->setYVector(vector);
-      curve->setXError(VectorPtr());
-      curve->setYError(VectorPtr());
-      curve->setXMinusError(VectorPtr());
-      curve->setYMinusError(VectorPtr());
+      curve->setXError(0);
+      curve->setYError(0);
+      curve->setXMinusError(0);
+      curve->setYMinusError(0);
       curve->setColor(color);
       curve->setHasPoints(_pagePlot->drawLinesAndPoints() || _pagePlot->drawPoints());
       curve->setHasLines(_pagePlot->drawLinesAndPoints() || _pagePlot->drawLines());

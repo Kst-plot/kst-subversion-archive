@@ -578,7 +578,7 @@ MatrixDialog::MatrixDialog(ObjectPtr dataObject, QWidget *parent)
   if (editMode() == Edit) {
     configureTab(dataObject);
   } else {
-    configureTab(ObjectPtr());
+    configureTab(0);
   }
 
   connect(_matrixTab, SIGNAL(sourceChanged()), this, SLOT(updateButtons()));
@@ -619,8 +619,8 @@ void MatrixDialog::configureTab(ObjectPtr matrix) {
 
   } else if (DataMatrixPtr dataMatrix = kst_cast<DataMatrix>(matrix)) {
     _matrixTab->setMatrixMode(MatrixTab::DataMatrix);
-    _matrixTab->setFile(dataMatrix->dataSource()->fileName());
-    _matrixTab->setDataSource(dataMatrix->dataSource());
+    _matrixTab->setFile(dataMatrix->dp()->dataSource()->fileName());
+    _matrixTab->setDataSource(dataMatrix->dp()->dataSource());
     _matrixTab->setField(dataMatrix->field());
     _matrixTab->setXStartCountFromEnd(dataMatrix->xCountFromEnd());
     _matrixTab->setYStartCountFromEnd(dataMatrix->yCountFromEnd());
@@ -693,7 +693,7 @@ ObjectPtr MatrixDialog::createNewDataObject() {
   case MatrixTab::GeneratedMatrix:
     return createNewGeneratedMatrix();
   default:
-    return ObjectPtr();
+    return 0;
   }
 }
 
@@ -703,7 +703,7 @@ ObjectPtr MatrixDialog::createNewDataMatrix() {
 
   //FIXME better validation than this please...
   if (!dataSource)
-    return ObjectPtr();
+    return 0;
 
   const QString field = _matrixTab->field();
   const int skip = _matrixTab->skip();
@@ -842,7 +842,7 @@ ObjectPtr MatrixDialog::editExistingDataObject() const {
 
       //FIXME better validation than this please...
       if (!dataSource)
-        return ObjectPtr();
+        return 0;
 
       const QString field = _matrixTab->field();
       const int skip = _matrixTab->skip();

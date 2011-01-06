@@ -96,7 +96,7 @@ void CSD::change(VectorPtr in_V, double in_freq, bool in_average,
 
 
 CSD::~CSD() {
-  _outMatrix = MatrixPtr();
+  _outMatrix = 0L;
 }
 
 void CSD::internalUpdate() {
@@ -205,7 +205,7 @@ void CSD::showNewDialog() {
 
 
 void CSD::showEditDialog() {
-  DialogLauncher::self()->showCSDDialog(toSharedPtr());
+  DialogLauncher::self()->showCSDDialog(this);
 }
 
 

@@ -33,7 +33,7 @@ const QString VScalar::staticTypeTag = I18N_NOOP("vscalar");
 VScalar::VScalar(ObjectStore *store)
 : Scalar(store) {
 
-  _file = DataSourcePtr();
+  _file = 0L;
   _field.clear();
 
   setOrphan(true);
@@ -41,7 +41,7 @@ VScalar::VScalar(ObjectStore *store)
 
 
 VScalar::~VScalar() {
-  _file = DataSourcePtr();
+  _file = 0;
 }
 
 
@@ -193,7 +193,7 @@ bool VScalar::isValid() const {
 bool VScalar::_checkValidity(const DataSourcePtr ds) const {
   if (ds) {
     ds->readLock();
-    bool rc = ds->vector().isValid(_field);
+    bool rc = ds->vector().isValid(_dp->_field);
     ds->unlock();
     return rc;
   }

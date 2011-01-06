@@ -394,7 +394,7 @@ void Curve::showNewDialog() {
 
 
 void Curve::showEditDialog() {
-  DialogLauncher::self()->showCurveDialog(this->toSharedPtr());
+  DialogLauncher::self()->showCurveDialog(this);
 }
 
 
@@ -1098,10 +1098,10 @@ qDebug() << "y not in bounds"
     b_1 = benchtmp.elapsed();
 #endif
 
-    VectorPtr exv = _inputVectors.contains(EXVECTOR) ? *_inputVectors.find(EXVECTOR) : VectorPtr();
-    VectorPtr eyv = _inputVectors.contains(EYVECTOR) ? *_inputVectors.find(EYVECTOR) : VectorPtr();
-    VectorPtr exmv = _inputVectors.contains(EXMINUSVECTOR) ? *_inputVectors.find(EXMINUSVECTOR) : VectorPtr();
-    VectorPtr eymv = _inputVectors.contains(EYMINUSVECTOR) ? *_inputVectors.find(EYMINUSVECTOR) : VectorPtr();
+    VectorPtr exv = _inputVectors.contains(EXVECTOR) ? *_inputVectors.find(EXVECTOR) : 0;
+    VectorPtr eyv = _inputVectors.contains(EYVECTOR) ? *_inputVectors.find(EYVECTOR) : 0;
+    VectorPtr exmv = _inputVectors.contains(EXMINUSVECTOR) ? *_inputVectors.find(EXMINUSVECTOR) : 0;
+    VectorPtr eymv = _inputVectors.contains(EYMINUSVECTOR) ? *_inputVectors.find(EYMINUSVECTOR) : 0;
     // draw the bargraph bars, if any...
     if (hasBars()) {
       bool visible = true;
@@ -1492,7 +1492,7 @@ void Curve::yRange(double xFrom, double xTo, double* yMin, double* yMax) {
 
 
 DataObjectPtr Curve::providerDataObject() const {
-  DataObjectPtr provider;
+  DataObjectPtr provider = 0L;
   // FIXME: fix this.. I don't know what's going on here
 #if 0
   vectorList.lock().readLock();

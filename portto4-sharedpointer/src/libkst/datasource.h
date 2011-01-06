@@ -256,7 +256,7 @@ class DataSourceList : public QList<DataSourcePtr> {
           return *it;
         }
       }
-      return DataSourcePtr();
+      return 0;
     }
 
     virtual DataSourcePtr findFileName(const QString& x) {
@@ -265,7 +265,7 @@ class DataSourceList : public QList<DataSourcePtr> {
           return *it;
         }
       }
-      return DataSourcePtr();
+      return 0;
     }
 
     // @since 1.1.0
@@ -275,7 +275,7 @@ class DataSourceList : public QList<DataSourcePtr> {
           return *it;
         }
       }
-      return DataSourcePtr();
+      return 0;
     }
 
     // @since 1.1.0
@@ -325,6 +325,7 @@ class KSTCORE_EXPORT DataSourceConfigWidget : public QWidget
   private:
     DataSourcePtr _instance;
     QSettings& _cfg;
+    friend class DataSource;
 };
 
 

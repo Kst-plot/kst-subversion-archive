@@ -48,21 +48,21 @@ DataSourcePtr DataSourcePluginFactory::generateDataSource(ObjectStore *store, QX
         propertyAttributes = xml.attributes();
         xml.readElementText();
       } else {
-        return DataSourcePtr();
+        return 0;
       }
     } else if (xml.isEndElement()) {
       if (n == DataSource::staticTypeTag) {
         break;
       } else {
         Debug::self()->log(QObject::tr("Error creating data source from Kst file."), Debug::Warning);
-        return DataSourcePtr();
+        return 0;
       }
     }
     xml.readNext();
   }
 
   if (xml.hasError()) {
-    return DataSourcePtr();
+    return 0;
   }
 
   DataSourcePtr dataSource = DataSourcePluginManager::loadSource(store, fileName, fileType);

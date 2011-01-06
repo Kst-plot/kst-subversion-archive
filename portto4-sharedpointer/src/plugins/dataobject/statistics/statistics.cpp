@@ -87,7 +87,7 @@ class ConfigWidgetStatisticsPlugin : public Kst::DataObjectConfigWidget, public 
         Kst::Object* object = _store->retrieveObject(vectorName);
         Kst::Vector* vector = static_cast<Kst::Vector*>(object);
         if (vector) {
-          setSelectedVector(vector->toSharedPtr());
+          setSelectedVector(vector);
         }
         _cfg->endGroup();
       }

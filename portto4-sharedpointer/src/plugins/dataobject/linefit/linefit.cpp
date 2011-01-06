@@ -95,13 +95,13 @@ class ConfigWidgetLineFitPlugin : public Kst::DataObjectConfigWidget, public Ui_
         Kst::Object* object = _store->retrieveObject(vectorName);
         Kst::Vector* vector = static_cast<Kst::Vector*>(object);
         if (vector) {
-          setSelectedVectorX(vector->toSharedPtr());
+          setSelectedVectorX(vector);
         }
         vectorName = _cfg->value("Input Vector Y").toString();
         object = _store->retrieveObject(vectorName);
         Kst::Vector* vectory = static_cast<Kst::Vector*>(object);
         if (vectory) {
-          setSelectedVectorY(vectory->toSharedPtr());
+          setSelectedVectorY(vectory);
         }
         _cfg->endGroup();
       }

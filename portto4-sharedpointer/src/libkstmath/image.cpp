@@ -168,7 +168,7 @@ void Image::showNewDialog() {
 
 
 void Image::showEditDialog() {
-  DialogLauncher::self()->showImageDialog(toSharedPtr());
+  DialogLauncher::self()->showImageDialog(this);
 }
 
 
@@ -349,7 +349,7 @@ MatrixPtr Image::matrix() const {
   if (_inputMatrices.contains(THEMATRIX)) {
     return _inputMatrices[THEMATRIX];
   } else {
-    return MatrixPtr();
+    return NULL;
   }
 }
 
@@ -397,7 +397,7 @@ QString Image::topLabel() const {
 
 
 DataObjectPtr Image::providerDataObject() const {
-  DataObjectPtr provider;
+  DataObjectPtr provider = 0L;
   // FIXME: fix this.. I don't know what's going on here
 #if 0
   matrixList.lock().readLock();
@@ -460,7 +460,7 @@ void Image::updatePaintObjects(const CurveRenderContext& context) {
   int numberOfLinesDrawn = 0;
 #endif
 
-  ImagePtr image = toSharedPtr();
+  ImagePtr image = this;
 
   _image = QImage();
   _lines.clear();

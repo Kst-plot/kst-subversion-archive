@@ -51,21 +51,21 @@ DataObjectPtr EventMonitorFactory::generateObject(ObjectStore *store, QXmlStream
         logEmail = attrs.value("logemail").toString() == "true" ? true : false;
         logELOG = attrs.value("logelog").toString() == "true" ? true : false;
       } else {
-        return DataObjectPtr();
+        return 0;
       }
     } else if (xml.isEndElement()) {
       if (n == EventMonitorEntry::staticTypeTag) {
         break;
       } else {
         Debug::self()->log(QObject::tr("Error creating EventMonitorEntry from Kst file."), Debug::Warning);
-        return DataObjectPtr();
+        return 0;
       }
     }
     xml.readNext();
   }
 
   if (xml.hasError()) {
-    return DataObjectPtr();
+    return 0;
   }
 
   EventMonitorEntryPtr eventMonitor = store->createObject<EventMonitorEntry>();

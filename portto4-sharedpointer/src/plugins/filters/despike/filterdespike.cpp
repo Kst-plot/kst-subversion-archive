@@ -109,19 +109,19 @@ class ConfigWidgetFilterDespikePlugin : public Kst::DataObjectConfigWidget, publ
         Kst::Object* object = _store->retrieveObject(vectorName);
         Kst::Vector* vector = static_cast<Kst::Vector*>(object);
         if (vector) {
-          setSelectedVector(vector->toSharedPtr());
+          setSelectedVector(vector);
         }
         QString scalarName = _cfg->value("Spacing Scalar").toString();
         object = _store->retrieveObject(scalarName);
         Kst::Scalar* spacingScalar = static_cast<Kst::Scalar*>(object);
         if (spacingScalar) {
-          setSelectedSpacingScalar(spacingScalar->toSharedPtr());
+          setSelectedSpacingScalar(spacingScalar);
         }
         scalarName = _cfg->value("NSigma Scalar").toString();
         object = _store->retrieveObject(scalarName);
         Kst::Scalar* nSigmaScalar = static_cast<Kst::Scalar*>(object);
         if (nSigmaScalar) {
-          setSelectedNSigmaScalar(nSigmaScalar->toSharedPtr());
+          setSelectedNSigmaScalar(nSigmaScalar);
         }
         _cfg->endGroup();
       }

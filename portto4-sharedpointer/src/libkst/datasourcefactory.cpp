@@ -54,11 +54,11 @@ void DataSourceFactory::registerFactory(const QStringList& nodes, DataSourceFact
 
 DataSourcePtr DataSourceFactory::parse(ObjectStore *store, QXmlStreamReader& stream) {
   if (!factories) {
-    return DataSourcePtr();
+    return 0;
   }
   DataSourceFactory *f = factories->value(stream.name().toString());
   if (!f) {
-    return DataSourcePtr();
+    return 0;
   }
 
   return f->generateDataSource(store, stream);

@@ -281,7 +281,7 @@ HistogramDialog::HistogramDialog(ObjectPtr dataObject, QWidget *parent)
   if (editMode() == Edit) {
     configureTab(dataObject);
   } else {
-    configureTab();
+    configureTab(0);
   }
 
   connect(_histogramTab, SIGNAL(vectorChanged()), this, SLOT(updateButtons()));

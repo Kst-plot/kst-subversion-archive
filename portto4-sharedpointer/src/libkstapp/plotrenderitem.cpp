@@ -447,7 +447,7 @@ void PlotRenderItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) {
   qreal range = qMax(plotItem()->xMax() - plotItem()->xMin(), plotItem()->yMax() - plotItem()->yMin());
   double distance = 1000;
   bool first = true;
-  RelationPtr closestRelation;
+  RelationPtr closestRelation = 0;
   foreach (RelationPtr relation, _relationList) {
     double relationsDistance = relation->distanceToPoint(point.x(), range, point.y());
     if (first) {

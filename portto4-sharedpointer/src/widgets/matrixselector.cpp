@@ -52,7 +52,7 @@ void MatrixSelector::setObjectStore(ObjectStore *store) {
 
 
 MatrixPtr MatrixSelector::selectedMatrix() const {
-  return qVariantValue<Matrix*>(_matrix->itemData(_matrix->currentIndex()))->toSharedPtr();
+  return qVariantValue<Matrix*>(_matrix->itemData(_matrix->currentIndex()));
 }
 
 
@@ -78,7 +78,7 @@ void MatrixSelector::setSelectedMatrix(MatrixPtr selectedMatrix) {
 
 void MatrixSelector::newMatrix() {
   QString matrixName;
-  DialogLauncher::self()->showMatrixDialog(matrixName, ObjectPtr(), true);
+  DialogLauncher::self()->showMatrixDialog(matrixName, 0, true);
   fillMatrices();
   MatrixPtr matrix = kst_cast<Matrix>(_store->retrieveObject(matrixName));
 
@@ -90,11 +90,7 @@ void MatrixSelector::newMatrix() {
 
 void MatrixSelector::editMatrix() {
   QString matrixName;
-#ifdef KST_USE_QSHAREDPOINTER
-  DialogLauncher::self()->showMatrixDialog(matrixName, selectedMatrix().objectCast<Object>(), true);
-#else
   DialogLauncher::self()->showMatrixDialog(matrixName, ObjectPtr(selectedMatrix()), true);
-#endif
 }
 
 

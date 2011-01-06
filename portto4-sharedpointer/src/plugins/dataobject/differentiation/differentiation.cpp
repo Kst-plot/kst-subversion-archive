@@ -85,13 +85,13 @@ class ConfigDifferentiationPlugin : public Kst::DataObjectConfigWidget, public U
         Kst::Object* object = _store->retrieveObject(vectorName);
         Kst::Vector* vector = static_cast<Kst::Vector*>(object);
         if (vector) {
-          setSelectedVector(vector->toSharedPtr());
+          setSelectedVector(vector);
         }
         QString scalarName = _cfg->value("Input Scalar").toString();
         object = _store->retrieveObject(scalarName);
         Kst::Scalar* scalarStep = static_cast<Kst::Scalar*>(object);
         if (scalarStep) {
-          setSelectedScalar(scalarStep->toSharedPtr());
+          setSelectedScalar(scalarStep);
         }
         _cfg->endGroup();
       }

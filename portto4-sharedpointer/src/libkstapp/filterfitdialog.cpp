@@ -208,7 +208,7 @@ ObjectPtr FilterFitDialog::createNewDataObject() {
     msg += dataObject->errorMessage();
     QMessageBox::warning(this, tr("Kst"), msg);
 
-    return ObjectPtr();
+    return 0;
   }
 
   PlotItem *plotItem = 0;
@@ -242,9 +242,12 @@ ObjectPtr FilterFitDialog::createNewDataObject() {
 
   if (plotItem) {
     CurvePtr curve = _document->objectStore()->createObject<Curve>();
-
     Q_ASSERT(curve);
 
+    if (!_vectorX) {
+      setVectorX(dataObject->inputVectors().value(dataObject->inputVectorList().first()));
+    }
+    Q_ASSERT(_vectorX);
     curve->setXVector(_vectorX);
 
     VectorPtr yVector = dataObject->outputVectors().value(dataObject->outputVectorList().first());

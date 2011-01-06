@@ -112,25 +112,25 @@ class ConfigGenericFilterPlugin : public Kst::DataObjectConfigWidget, public Ui_
         Kst::Object* object = _store->retrieveObject(vectorName);
         Kst::Vector* vector = static_cast<Kst::Vector*>(object);
         if (vector) {
-          setSelectedVector(vector->toSharedPtr());
+          setSelectedVector(vector);
         }
         QString scalarName = _cfg->value("Input Scalar Interval").toString();
         object = _store->retrieveObject(scalarName);
         Kst::Scalar* binScalar = static_cast<Kst::Scalar*>(object);
         if (binScalar) {
-          setSelectedScalar(binScalar->toSharedPtr());
+          setSelectedScalar(binScalar);
         }
         QString stringName = _cfg->value("Input String Numerator").toString();
         object = _store->retrieveObject(stringName);
         Kst::String* stringNum = static_cast<Kst::String*>(object);
         if (stringNum) {
-          setSelectedStringNumerator(stringNum->toSharedPtr());
+          setSelectedStringNumerator(stringNum);
         }
         stringName = _cfg->value("Input String Denominator").toString();
         object = _store->retrieveObject(stringName);
         Kst::String* stringDenom = static_cast<Kst::String*>(object);
         if (stringDenom) {
-          setSelectedStringDenominator(stringDenom->toSharedPtr());
+          setSelectedStringDenominator(stringDenom);
         }
         _cfg->endGroup();
       }
