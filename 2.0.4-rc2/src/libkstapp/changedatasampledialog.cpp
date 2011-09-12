@@ -21,6 +21,9 @@
 #include "dialogdefaults.h"
 #include "updatemanager.h"
 
+#include <QMessageBox>
+
+
 namespace Kst {
 
 ChangeDataSampleDialog::ChangeDataSampleDialog(QWidget *parent)
