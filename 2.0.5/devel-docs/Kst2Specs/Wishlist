@@ -1,0 +1,41 @@
+Shared axis from the command line
+
+---------
+
+Smarter ASCII reader:
+  should be able to use huristics to get information about
+  the ascii file.
+    (eg, is it a CSV?  Does it have a field name header?)
+  these should be used only for new files, and should be used to sed the defaults, which can still be changed with 'configure'.
+
+------------
+
+Fixup line/arrow dimensions tab:
+  x,y instead of length/angle
+
+--------
+
+Edit multiple for other view objects (arrow, line, label...)
+
+------------
+
+1.x kst file read compatibility...
+
+---------
+
+Thread kst2
+
+--------------------
+
+When you have many plots on a window (like 35), and the numbers in
+the axis labels are large, they often overwrite each other (so you can't
+tell any of the numbers apart).  
+
+--------------------
+
+in <ctrl> or <shift> zoom modes the line cursor should appear in all tied plots.
+
+--------------------
+
+Some automagic way of deciding if plugin dialogs can make plots.
+
