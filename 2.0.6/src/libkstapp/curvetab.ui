@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>CurveTab</class>
+ <widget class="QWidget" name="CurveTab">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>534</width>
+    <height>261</height>
+   </rect>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout_2">
+   <item>
+    <widget class="QGroupBox" name="GroupBox">
+     <property name="title">
+      <string>Curve Contents</string>
+     </property>
+     <layout class="QGridLayout" name="_2">
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+      <property name="verticalSpacing">
+       <number>0</number>
+      </property>
+      <item row="0" column="0">
+       <widget class="QLabel" name="_xVectorLabel">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>&amp;X-axis vector:</string>
+        </property>
+        <property name="wordWrap">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="Kst::VectorSelector" name="_xVector" native="true"/>
+      </item>
+      <item row="0" column="2">
+       <widget class="QLabel" name="_yVectorLabel">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>&amp;Y-axis vector:</string>
+        </property>
+        <property name="wordWrap">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="3">
+       <widget class="Kst::VectorSelector" name="_yVector" native="true"/>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="_xErrorLabel">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>+X e&amp;rror bar:</string>
+        </property>
+        <property name="wordWrap">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="Kst::VectorSelector" name="_xError" native="true"/>
+      </item>
+      <item row="1" column="2">
+       <widget class="QLabel" name="_yErrorLabel">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>&amp;+Y error bar:</string>
+        </property>
+        <property name="wordWrap">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="3">
+       <widget class="Kst::VectorSelector" name="_yError" native="true"/>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="_xMinusErrorLabel">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>-X error bar:</string>
+        </property>
+        <property name="wordWrap">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="Kst::VectorSelector" name="_xMinusError" native="true"/>
+      </item>
+      <item row="2" column="2">
+       <widget class="QLabel" name="_yMinusErrorLabel">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>&amp;-Y error bar:</string>
+        </property>
+        <property name="wordWrap">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="3">
+       <widget class="Kst::VectorSelector" name="_yMinusError" native="true"/>
+      </item>
+      <item row="3" column="0" colspan="4">
+       <layout class="QHBoxLayout" name="_3">
+        <item>
+         <widget class="QCheckBox" name="_xMinusSameAsPlus">
+          <property name="text">
+           <string>&amp;Use +X error bar for -X</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="_yMinusSameAsPlus">
+          <property name="text">
+           <string>U&amp;se +Y error bar for -Y</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer>
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Fixed</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>71</width>
+            <height>31</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <item>
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <widget class="Kst::CurveAppearance" name="_curveAppearance" native="true">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="_ignoreAutoScale">
+         <property name="text">
+          <string>I&amp;gnore in automatic axes range calculations</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <widget class="Kst::CurvePlacement" name="_curvePlacement" native="true">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>87</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>Kst::VectorSelector</class>
+   <extends>QWidget</extends>
+   <header>vectorselector.h</header>
+  </customwidget>
+  <customwidget>
+   <class>Kst::CurvePlacement</class>
+   <extends>QWidget</extends>
+   <header>curveplacement.h</header>
+  </customwidget>
+  <customwidget>
+   <class>Kst::CurveAppearance</class>
+   <extends>QWidget</extends>
+   <header>curveappearance.h</header>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>_xVector</tabstop>
+  <tabstop>_yVector</tabstop>
+  <tabstop>_xError</tabstop>
+  <tabstop>_yError</tabstop>
+  <tabstop>_xMinusError</tabstop>
+  <tabstop>_yMinusError</tabstop>
+  <tabstop>_xMinusSameAsPlus</tabstop>
+  <tabstop>_yMinusSameAsPlus</tabstop>
+  <tabstop>_ignoreAutoScale</tabstop>
+  <tabstop>_curveAppearance</tabstop>
+  <tabstop>_curvePlacement</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>
