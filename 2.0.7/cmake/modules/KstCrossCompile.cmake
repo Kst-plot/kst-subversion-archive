@@ -1,0 +1,14 @@
+
+set(CMAKE_SYSTEM_NAME Windows)
+
+# MinGW on Ubuntu: i686-w64-mingw32/x86_64-w64-mingw32 or i586-mingw32msvc
+set(TOOLNAME ${kst_cross})
+set(TOOLCHAIN "${TOOLNAME}-")
+set(CMAKE_C_COMPILER   "${TOOLCHAIN}gcc"     CACHE PATH "Mingw C compiler" FORCE)
+set(CMAKE_CXX_COMPILER "${TOOLCHAIN}g++"     CACHE PATH "Mingw C++ compiler" FORCE)
+set(CMAKE_RC_COMPILER  "${TOOLCHAIN}windres" CACHE PATH "Mingw rc compiler" FORCE)
+
+set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
+set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
+

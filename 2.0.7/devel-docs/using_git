@@ -1,0 +1,77 @@
+Using Git as subversion client
+
+http://git-scm.com/
+
+Help:
+    git help svn
+
+
+Set up svn mirror, done only once
+---------------------------------
+Create a new directory e.g 'kst', and init your git repository with the svn path
+    
+    git svn init svn+ssh://YOU_USERNAME@svn.kde.org/home/kde/branches/work/kst/portto4/kst
+
+Download the author mapping file into your new 'kst' folder from,
+    https://github.com/downloads/syntheticpp/kst/.svn-author-file
+or copy it from a svn checkout. Without this file git doesn't know the name 
+and email address of the committer.
+
+Configure git to use this file:
+
+    git config --add svn.authorfile .svn-author-file
+
+
+Then get all commits 
+
+    git svn fetch
+
+this will take a while. (It is possible to start at a later revision, 
+for instance -r1307223, but then it is not possible to use other remote branches)
+
+When finished there is an internally managed remote branch 'git-svn',
+listed by 'git branch -r'.
+
+Update the current local branch ('master' by default) with the fetched
+svn commits:
+
+    git svn rebase
+
+
+Update existing repository with svn commits
+-------------------------------------------
+
+    git svn fetch
+    git svn rebase
+    
+    
+Rebase errors
+-------------
+When there are errors while rebasing, fix the mentioned <files>
+then
+
+   git add <files>
+   git rebase --continue
+   
+    
+
+Committing
+----------
+First commit your changes to your local branch
+ 
+     git commit "message" -a
+     
+then commit to the svn repository
+ 
+     git svn dcommit
+
+
+History
+-------
+Browse history offline with a git-GUI gitk, gitg, qgit, ...
+
+
+
+
+
+

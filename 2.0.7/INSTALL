@@ -1,0 +1,203 @@
+=========================
+Building Kst with CMake
+=========================
+
+Install CMake from www.cmake.org or your distribution (version >= 2.8).
+
+
+3rd party libraries
+-------------------
+
+	Install Qt 4 and make sure qmake is found.
+		Add the folder with qmake to the environment variable PATH.
+		If you've compiled Qt by yourself or qmake is not found after
+		installing Qt fix PATH,
+		Linux/Unix: export PATH=<your path to qt>/bin:$PATH
+		Windows   : set PATH=<your path to qt>\bin;%PATH%
+
+	Libraries for plugins:
+	Currently only Getdata, Gsl, and Netcdf are supported.
+	On pkg systems the libraries should be found automatically,
+	on non-pkg systems like Windows you must point to the libraries
+	by environment variables NETCDF_DIR, GETDATA_DIR, and GSL_DIR.
+
+
+Generating build system files
+-----------------------------
+
+	CMake is a build system file generator. On all systems it could
+	generate files for several build systems, for instance Makefiles
+	for make, project files for Visual Studio, Xcode, Eclipse.
+
+	Running cmake without any argument lists all supported build
+	systems on your system. Passing one of them as -G"<build system name>" 
+	argument when running cmake selects this.
+
+
+Building out-of-source
+----------------------
+
+	The standard way of using CMake is to build in a folder which doesn't resides
+	in the source tree. This has the advantage, that a complete fresh build could
+	be done by simply deleting all files in the build folder and to re-run cmake 
+	again.
+
+	Another benefit of out-of-source builds is that several builds (debug, release,
+	command-line builds, IDE project files) could all use the same source tree.
+
+	Therefore when using cmake create a folder outside of the source tree and
+	select this folder when using CMake's GUI, cmake-gui, or go into this folder
+	when you call cmake from the shell.
+
+
+Using cmake
+-------------
+
+	When calling cmake you must pass the path to the source tree (absolute are relative)
+	and optionally the generator (each system has its own default). Additional arguments 
+	could be passed with the -D prefix.
+
+	Here some examples, assuming the build folder is in the same folder as the source tree:
+
+	* Makefiles on Linux
+		cmake ../kst/cmake
+	
+	* Project files for QtCreator:
+		Open the kst/cmake/CMakeLists.txt file and select the build folder
+		or create the files in the command line using the -G"CodeBlocks *" option, eg
+			cmake ../kst/cmake -G"CodeBlocks - Unix Makefiles"
+	
+	* Project files for Xcode
+		cmake ../kst/cmake -GXcode
+		
+	* Project files for Visual Studio 10
+		cmake ..\kst\cmake -G"Visual Studio 10"
+
+	* NMake files for Visual Studio
+		cmake ..\kst\cmake -G"NMake Makefiles"
+
+	* Makefiles for MinGW
+		cmake ..\kst\cmake -G"MinGW Makefiles"
+
+
+	Daily work:
+
+	* Re-running cmake is simple
+		cmake .
+
+	* Adding new files 
+		The cmake build system scans the directories, so no need to update any file,
+		just re-run cmake. Also the mocing rules are generated.
+
+	* Unused source code file
+		Because cmake scans the directories for *.cpp and *.h files it will also
+		add files to the build system which are not mentioned to build. To exclude
+		them change their ending and re-run cmake.
+
+	* Projects
+		'make help' lists the available targets.
+
+
+Options
+-------
+
+	Options could be passed by the -D prefix when running cmake.
+	Available options will be listed on each cmake run.
+	Here the options with their default value:
+
+    -- kst_version_string       = 2.0.x   : Version string. 
+    -- kst_release              = OFF   : Build release version: optimize for speed, don't embedded debug symbols. Toggle with '-Dkst_release=1'
+    -- kst_deploy               = OFF   : Deploy into install dir. Toggle with '-Dkst_deploy=1'
+    -- kst_merge_files          = OFF   : Merge files to speedup build about factor 5. Toggle with '-Dkst_merge_files=1'
+    -- kst_merge_rebuild        = OFF   : Rebuild generated files from merged files build. Toggle with '-Dkst_merge_rebuild=1'
+    -- kst_verbose              = OFF   : Make verbose CMake run and Makefiles. Toggle with '-Dkst_verbose=1'
+    -- kst_install_prefix       = /home/synth/sandbox/kst/kst/_b/INSTALLED   : Install path for Kst, using a default if not set. 
+    -- kst_install_libdir       = lib   : Install directory name for libraries. 
+    -- kst_3rdparty             = ON    : Build plugins depending on 3rd party libraries. Toggle with '-Dkst_3rdparty=0'
+    -- kst_dataobjects          = ON    : Build dataobject plugins. Toggle with '-Dkst_dataobjects=0'
+    -- kst_test                 = OFF   : Build unit tests. Toggle with '-Dkst_test=1'
+    -- kst_pch                  = ON    : Use precompiled headers. Toggle with '-Dkst_pch=0'
+    -- kst_svnversion           = ON    : Use svnversion's output for Kst's version information. Toggle with '-Dkst_svnversion=0'
+    -- kst_rpath                = OFF   : Use rpath. Toggle with '-Dkst_rpath=1'
+    -- kst_3rdparty_build       = OFF   : Download and build 3rd party libraries. Toggle with '-Dkst_3rdparty_build=1'
+    -- kst_3rdparty_download    = OFF   : Download precompiled 3rd party libraries. Toggle with '-Dkst_3rdparty_download=1'
+    -- kst_console              = OFF   : Open console on Windows. Toggle with '-Dkst_console=1'
+    -- kst_edit_cont            = OFF   : Enable "Edit and Continue" for Visual Studio. Toggle with '-Dkst_edit_cont=1'
+    -- kst_python               = OFF   : Install Python support. Toggle with '-Dkst_python=1'
+    -- kst_python_build         = OFF   : Download and build NumPy/SciPy then install Python support. Toggle with '-Dkst_python_build=1'
+
+
+	To enable a option pass the value ON or 1, eg
+		cmake ../kst/cmake -Dkst_merge_files=1
+
+
+Using the merged files build
+-----------------------------
+
+	When the option 'kst_merge_files' is used then for each library a files 
+	is generated(merged_const.cpp) which includes all source files of this 
+	library, this speeds up compilation about factor 5.
+
+	When you heavily work on one file you could comment out the relevant 
+	define in the 'merged_const.cpp' file, so only the file 'merged_touched.cpp'
+	file will be re-compiled again an again.
+
+	The CMake macro 'kst_dont_merge' is only active when the option 'kst_merge_files'
+	is used. 'kst_dont_merge' prevents the adding of the listed files to the generated
+	file, all listed files will be compiled separately. Sometimes this is needed because
+	of too much compiler errors, and it is simpler not to merge the file.
+
+	- Adding new files
+	  When you add new files the merging files have to be rebuild:
+		cmake -Dkst_merge_rebuild=1 .
+	  Or start over by completely  cleaning the build folder.
+
+	- Starting over with same configuration
+	  Delete all files but CMakeCache.txt and call
+		cmake .
+
+
+Packaging
+----------
+
+	- Source .tar.gz, .tar.bz2, .zip:
+		make package_source
+
+	- Binary .tar.gz and install .sh:
+		make package
+
+	- Binary .deb:
+		create : cpack -G DEB --config CPackConfig.cmake
+		list   : dpkg-deb -c Kst-*.deb
+		install: dpkg -i Kst-*.deb
+
+	- Binary .rpm:
+		create : cpack -G RPM --config CPackConfig.cmake
+		list   : rpm -qlp Kst-*.rpm              
+		install: rpm -U Kst-*.rpm   
+
+	- Binary .dmg 
+		make packages
+
+
+Status
+-------
+
+	Kst builds, starts, and loads all plugins. Tested on Linux,
+	Windows, and MacOSX.
+	
+	Nice to have:
+	- add pre-compiled headers for Mac, Xcode
+
+
+
+Releasing
+----------
+
+	To build a release for Windows install the "Qt SDK for Windows"
+	(it ships also MinGW) and call in the folder which contains the 
+	kst dir:
+	
+		kst\misc\mingw-release-download-deps.bat <Kst version name>
+		
+

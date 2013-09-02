@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=ServiceType
+X-KDE-ServiceType=Kst Extension
+X-KDE-Derived=Kst/Plugin
+
+[PropertyDef::X-Kst-Enabled]
+Type=bool
+
+[PropertyDef::X-Kst-Extension-Name]
+Type=QString
+

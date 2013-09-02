@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=ServiceType
+X-KDE-ServiceType=Kst/Plugin
+
+[PropertyDef::X-Kst-Plugin-Author]
+Type=QString
+
+[PropertyDef::X-Kst-Plugin-Version]
+Type=QString
+
